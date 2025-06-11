@@ -1,0 +1,686 @@
+{
+  "common": {
+    "oneDayTrip": "One day",
+    "multiDaysTrip": "Multi days",
+    "sa": "Saudi Arabia",
+    "discount": "Disc",
+    "review": "Review",
+    "reviews": "Reviews",
+    "guest": "Guest",
+    "guests": "Guests",
+    "ticket": "Ticket",
+    "tickets": "Tickets",
+    "lunchMeal": "Lunch Meal",
+    "lunchMeals": "Lunch Meals",
+    "dates": "Dates",
+    "hour": "Hour",
+    "hours": "Hours",
+    "day": "Day",
+    "days": "Days",
+    "months": "Months",
+    "allMonths": "Months",
+    "years": "Years",
+    "onePerson": "One Person",
+    "onePersonOnly": "Person",
+    "person": "Person",
+    "people": "People",
+    "stars": "Stars",
+    "star": "Star",
+    "all": "All",
+    "packages": "Packages",
+    "activities": "Activities",
+    "multiCities": "Multi Cities",
+    "customizable": "Customizable",
+    "available": "Available",
+    "historyAndCivilization": "History and Civilization",
+    "from": "From",
+    "to": "To",
+    "morning": "Morning",
+    "night": "Night",
+    "PUBLIC": "Groups",
+    "PRIVATE": "Private",
+    "MALE": "Male",
+    "FEMALE": "Female",
+    "error": "Sorry, we couldn't find the page you were looking for.",
+    "errorHappens": "An error occurred",
+    "notAvailable": "This trip is not available for booking now"
+  },
+  "weekDays": {
+    "sunday": "Sun",
+    "monday": "Mon",
+    "tuesday": "Tue",
+    "wednesday": "Wed",
+    "thursday": "Thu",
+    "friday": "Fri",
+    "saturday": "Sat"
+  },
+  "daysNumber": {
+    "1": "First Day",
+    "2": "Second Day",
+    "3": "Third Day",
+    "4": "Fourth Day",
+    "5": "Fifth Day",
+    "6": "Sixth Day",
+    "7": "Seventh Day",
+    "8": "Eighth Day",
+    "9": "Ninth Day",
+    "10": "Tenth Day"
+  },
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  },
+  "pagesHead": {
+    "appName": "Guestna",
+    "content": "GuestNa App, Tourism, Saudi Arabia",
+    "title": {
+      "home": "Home",
+      "discover": "Discover",
+      "tripDetails": "Trip Details",
+      "packageInfo": "Package Information",
+      "addActivity": "Add Activity",
+      "checkout": "Checkout",
+      "booking": "Booking",
+      "bookingStatus": "Booking Status",
+      "termsAndConditions": "Terms and conditions",
+      "privacyPolicy": "Privacy policy",
+      "returnPolicy": "Return policy",
+      "signUp": "Sign Up",
+      "login": "Login",
+      "confirmAccount": "Confirm Account",
+      "forgetPassword": "Forget Password",
+      "resetPassword": "Reset Password",
+      "profile": "Profile",
+      "contactUs": "Contact Us",
+      "faq": "FAQ",
+      "error": "404: This page could not be found"
+    }
+  },
+  "links": {
+    "bookNow": "Book Now",
+    "showAll": "Show All",
+    "search": "Search",
+    "reset": "Reset",
+    "clearAll": "Clear All",
+    "more": "Learn more",
+    "watchTripDetails": "Watch Trip Details",
+    "watchPackageDetails": "Watch Package Details",
+    "backHome": "Back Home",
+    "addToFavorites": "Add to Favorites",
+    "share": "Share",
+    "save": "Save",
+    "saveChange": "Save Change",
+    "saveChanges": "Save Changes",
+    "send": "Send",
+    "showAllImages": "Show All Images",
+    "showAllReviews": "Show All Reviews",
+    "customizeYourPackage": "Customize Your Package",
+    "deleteActivity": "Delete Activity",
+    "replace": "Replace",
+    "follow": "Follow",
+    "edit": "Edit",
+    "verification": "Verification",
+    "cancel": "Cancel",
+
+    "goToLocation": "Go to Location",
+    "bookForPrivate": "Booking for Private Group",
+    "showAllDates": "Show All Dates",
+    "continuePayment": "Continue Payment",
+    "confirmPayment": "Confirm Payment",
+    "returnToActivity": "Return to Activity",
+    "returnToPackage": "Return to Package",
+    "sendStcOtp": "Send Stc Otp"
+  },
+  "header": {
+    "discover": "Discover",
+    "schools": "Schools",
+    "companies": "Companies",
+    "aboutUs": "About Us",
+    "contactUs": "Contact Us",
+    "login": "Login",
+    "showSettings": "Show Settings",
+    "chooseFavoriteLanguage": "Choose Favorite Language",
+    "chooseCountry": "Choose Country",
+    "country": "Country",
+    "language": "Language",
+    "currency": "Currency"
+  },
+  "hero": {
+    "title": "See Saudi Arabia Through GuestNa’s Eyes",
+    "subTitle": "Tourist activities, experiences, adventures, and more!",
+    "always": "always",
+    "together": "together",
+    "forever": "forever"
+  },
+  "filtersBox": {
+    "multiDaysTrips": "Multi Days Trips",
+    "singleDayTrips": "Single Days Trips",
+    "place": "Place",
+    "searchDestination": "Search Your Destination",
+    "checkIn": "Check In",
+    "addDates": "Add Dates",
+    "addDay": "Add The Day",
+    "checkOut": "Check Out",
+    "guestsNumber": "Number Of Guests",
+    "addGuests": "Add Guests",
+    "budget": "Budget",
+    "setBudget": "Set Your Budget",
+    "searchByLocation": "Search by location",
+    "maximum": "Maximum",
+    "minimum": "Minimum",
+    "mobileTitle": "Where do you want to go?"
+  },
+  "highestActivities": {
+    "title": "Highest-rated activities",
+    "subTitle": "Short on time? Pick a one-day trip!"
+  },
+  "bestSelling": {
+    "title": "Best-selling packages",
+    "subTitle": "One day isn't enough? These trips are for you!"
+  },
+  "similarExperiences": {
+    "title": "Similar Experiences"
+  },
+  "womenOnly": {
+    "activities": {
+      "title": "For Women",
+      "subTitle": "Tailored experiences designed for exciting, safe, and unforgettable adventures"
+    },
+    "packages": {
+      "title": "For Women",
+      "subTitle": "Tailored experiences designed for exciting, safe, and unforgettable adventures"
+    }
+  },
+  "trending": {
+    "badge": "Trending Now"
+  },
+  "exclusiveOffers": {
+    "title": "Deals You Can’t Miss",
+    "subTitle": "Travel more, pay less—don’t miss out!"
+  },
+  "payments": {
+    "badge": "Easy payment",
+    "title": "Every destination on your mind, even the ones you never thought of...GuestNa takes you there",
+    "subTitle": "Choose a ready-made experience or customize your own adventure for unforgettable memories!",
+    "confidentialityOfInformation": "Your Information is Safe & Secure",
+    "customerSupport": "We value our customers ",
+    "transparentPolicies": "Clear and transparent policies",
+    "safePayment": "Flexible payment options"
+  },
+  "blogs": {
+    "title": "Browse Groups",
+    "subTitle": "Get ideas on what to do, see and eat"
+  },
+  "mostBeautifulPlaces": {
+    "title": "Want to explore the most beautiful places in Saudi Arabia?"
+  },
+  "tripDetails": {
+    "favoriteByGuests": {
+      "title": "Favorite by guests",
+      "subTitle": "One of the most loved activities in Justina is listening"
+    },
+    "accordionsGroup": {
+      "package": {
+        "description": "Package description",
+        "contents": "Package contents",
+        "exempted": "Exempted from package",
+        "itinerary": "Package Itinerary"
+      },
+      "activity": {
+        "description": "Activity description",
+        "contents": "Activity contents",
+        "exempted": "Exempted from activity",
+        "itinerary": "Activity Itinerary"
+      },
+      "gatheringLocation": "Gathering Location",
+      "whatToBring": "What to Bring",
+      "extraInfo": "Extra information",
+      "healthInformation": "Health Information",
+      "returnPolicy": "Return Policy"
+    },
+    "availableDates": {
+      "title": "Choose from available dates",
+      "joinGroup": "To join to"
+    }
+  },
+  "bookWithConfidence": {
+    "title": "Book with confidence",
+    "items": {
+      "lowestPrice": {
+        "title": "Lowest price guarantee",
+        "subTitle": "Did you find it cheaper? Refund the difference at the event location Get the answers you need, when you need them"
+      },
+      "privacyProtection": {
+        "title": "Privacy Protection",
+        "subTitle": "We use SSL encryption to keep your data secure Get the answers you need, when you need them"
+      },
+      "support": {
+        "title": "24/7 global support",
+        "subTitle": "Get the answers you need, when you need them"
+      },
+      "callUs": {
+        "title": "Call Us",
+        "subTitle": "We will be happy to assist you with your booking. Call now: +966 54 753 4666"
+      }
+    }
+  },
+  "finalDetails": {
+    "stepper": {
+      "selectYourActivity": "Select Your Activity",
+      "selectYourPackage": "Select Your Package",
+      "contactInfo": "Contact Information",
+      "paymentDetails": "Payment Details"
+    },
+    "finalDetailsActivity": "Final Details For The Activity",
+    "finalDetailsPackage": "Final Details For The Package",
+    "mainActivity": "Main Activity",
+    "extraActivity": "Extra Activity",
+    "extraActivityWidget": "This activity has been added as an additional service and includes additional costs",
+    "freeReturn": "Cancel shipping - when notifications arrive 24 hours before the event starts",
+    "finalPrice": "Price Details",
+    "travelersNumber": "Travelers Number",
+    "mealsNumber": "Meals Number",
+    "total": "Total",
+    "includingVAT": "Including VAT"
+  },
+
+  "bookingStatus": {
+    "title": "Congratulations! Your reservation has been completed successfully. Your reservation number is:",
+    "subTitle": "Now you can relax and prepare yourself for the trip."
+  },
+
+  "discover": {
+    "subHeader": {
+      "title": "Explore Saudi Arabia’s top destinations"
+    },
+    "sideFilters": {
+      "title": "Classifications",
+      "destinations": "Destinations",
+      "budget": "Budget",
+      "typeOfTrips": "Type of trips",
+      "typeOfExperience": "Type of experience",
+      "languageProvided": "Language provided",
+      "customizedTours": "Customized tours to",
+      "rating": "Rating",
+      "chooseDate": "Choose date range"
+    },
+    "similarResult": "Your current filters returned no trips. Showing similar trips that closely match your criteria.",
+    "sorting": {
+      "sortingBy": "Sort By: ",
+      "mostPopular": "Most popular",
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "lowestPrice": "Lowest price",
+      "highestPrice": "Hightest price",
+      "highestLover": "Recommended",
+      "highestRate": "Highest rate"
+    }
+  },
+
+  "customization": {
+    "breadcrumb": "Choose your trip details",
+    "title": "Trip Customization",
+    "actions": {
+      "changeDay": "Change day",
+      "changeTime": "Change time",
+      "addActivity": "Add activity",
+      "moreServices": "More services"
+    },
+    "validations": {
+      "addedNewDay": "New day added successfully!",
+      "switchedDay": "Trip date changed successfully!",
+      "changedTime": "Trip time changed successfully!",
+      "deletedActivity": "Activity deleted successfully!",
+      "changedDay": "Trip date changed successfully!",
+      "addedActivitySuccessfully": "Activity added successfully!",
+      "replacedActivitySuccessfully": "Activity replaced successfully!"
+    },
+
+    "services": {
+      "meals": "Meals",
+      "personalServices": "Personal services",
+      "photography": "Photography",
+      "translators": "Translators",
+      "transportation": "Transportation",
+      "accommodation": "Accommodation",
+      "successMessage": "Your Services have been added successfully!"
+    },
+
+    "messages": {
+      "deletingConfirm": "Are you sure you want to delete this activity?"
+    }
+  },
+
+  "profile": {
+    "aside": {
+      "information": "My information",
+      "messages": "Messages",
+      "notifications": "Notifications",
+      "bookings": "My bookings",
+      "favorites": "Favorites",
+      "logout": "Logout",
+      "logoutConfirm": "Do you really want to log out?"
+    },
+
+    "information": {
+      "accountData": "Account Data",
+      "verifiedMail": "E-mail (Verified)",
+      "unverifiedMail": "E-mail (Unverified)",
+      "personalInformation": {
+        "title": "Personal Information",
+        "name": "Name",
+        "birthDay": "Birth Data",
+        "phoneNumber": "Phone Number",
+        "gender": "Gender",
+        "nationality": "Nationality",
+        "countryOfResidence": "Country of Residence",
+        "city": "City"
+      }
+    },
+
+    "editingDataForms": {
+      "emailEditing": "Email Editing",
+      "personalInformationEditing": "Personal Information Editing"
+    },
+
+    "myFavorites": {
+      "emptyFavorites": {
+        "title": "There are no favorites added yet",
+        "subTitle1": "Click on the heart icon",
+        "subTitle2": "On any item to add it to your favorites list and it will appear here."
+      }
+    },
+
+    "myBookings": {
+      "emptyBookings": {
+        "title": "No trips booked...yet!",
+        "subTitle": "It's time to pack your bags and start planning your next adventure."
+      }
+    },
+
+    "myMessages": {
+      "emptyMessages": {
+        "title": "You have no messages",
+        "subTitle": "Any new messages you receive will appear here."
+      }
+    },
+
+    "myNotifications": {
+      "emptyNotifications": {
+        "title": "You have no notifications yet",
+        "subTitle": "You'll receive notifications about your trips and account here. Ready to book your next trip?"
+      }
+    }
+  },
+
+  "contactUs": {
+    "title": "Support",
+    "subTitle": "Message us",
+    "workHours": {
+      "title": "Support work Hours",
+      "subTitle": "Sunday to Thursday from 9 am to 11 pm, Friday and Saturday from 1 pm to 8 pm"
+    },
+    "contactByPhone": "Contact support by phone",
+    "contactSupport": {
+      "title": "Contact Us",
+      "subTitle": "Contact support"
+    },
+    "contactBySocial": "Contact us on social media"
+  },
+
+  "faq": {
+    "title": "How can we help you?",
+    "subTitle": "We're here to help. Explore our comprehensive help center to find answers to your question",
+    "searchPlaceholder": "what are you looking for",
+    "emptyFaq": "Oops! There is no question matching your search word"
+  },
+
+  "validations": {
+    "noTrip": "There is no trip matching your search criteria",
+    "tryAgain": "Try again"
+  },
+
+  "forms": {
+    "auth": {
+      "signUp": {
+        "title": "Welcome to GuestNa",
+        "subTitle": "Please complete the data to create your account",
+        "confirmUsingMail": "You will use this email to log in and manage your tour packages and activities",
+        "confirmTermsAndConditions": "I confirm that I agree to",
+        "isMarketingEmails": "I agree to receive marketing email newsletters from Guestna.com",
+
+        "name": "Create a new account"
+      },
+
+      "login": {
+        "title": "Welcome back to GuestNa",
+        "haveAnAccount": "Don't have an account?",
+        "createAccount": "Create an account",
+
+        "email": "Email address",
+        "phone": "Mobile number",
+
+        "name": "Login",
+
+        "loginBy": "Or login by",
+        "rememberMe": "Remember me"
+      },
+
+      "confirmAccount": {
+        "titlePhone": "Enter the code we sent via SMS to",
+        "titleEmail": "Enter the code we sent via mail to",
+        "moreOptions": "More options",
+        "name": "Confirm Account",
+        "resendOtp": "Resend OTP",
+        "successMessage": "OTP has been sent successfully",
+        "loginSuccessMessage": "You have been logged in successfully",
+        "selectResendType": "Choose a method to get the OTP",
+        "willSendOtp": "We will send you the OTP"
+      },
+
+      "forgetPassword": {
+        "name": "Forgot your password",
+        "titleEmail": "To reset your password, please enter the email address associated with your account",
+        "titlePhone": "To reset your password, please enter the phone number associated with your account",
+        "sendOtp": "Send OTP"
+      },
+
+      "resetPassword": {
+        "name": "Reset new password",
+        "resetPassword": "Reset Password"
+      }
+    },
+
+    "contactForm": {
+      "title": "Contacts Details",
+      "subTitle": "We will use this information to send confirmations and updates regarding your reservation.",
+      "checkBoxLabel": "Receive SMS updates about your booking. Message rates may apply."
+    },
+
+    "paymentMethodsForm": {
+      "title": "Payment Details",
+      "subTitle": "Pay using:"
+    },
+
+    "methods": {
+      "credit": "Credit/Debit Card",
+      "stc": "STC",
+      "tamara": "TAMARA",
+      "apple": "Apple Pay"
+    },
+
+    "name": {
+      "name": "Name",
+      "error": {
+        "min": "Name should be less than 3 characters",
+        "max": "Name should be more than 50 characters",
+        "invalid": "Name should contain only letters",
+        "wordMinLength": "Name should be two words each word be more than 3 characters"
+      }
+    },
+
+    "email": {
+      "name": "Email",
+      "error": "Please enter a valid email address",
+      "is_exists": "This email address already exists",
+      "done": "Your account has been added",
+      "mailing": "Keep sending email"
+    },
+
+    "phone": {
+      "name": "Phone",
+      "error": {
+        "invalid": "Invalid phone number",
+        "min": "Number should be more than 12",
+        "max": "Number should be less than 14"
+      }
+    },
+
+    "cardholderName": {
+      "name": "Cardholder Name",
+      "error": {
+        "validation": "First and last name are required",
+        "minAndMax": "Each name must be between 2 and 20 characters"
+      }
+    },
+
+    "cardNumber": {
+      "name": "Credit/Debit Card Number",
+      "error": {
+        "notAvailable": "Not available card number",
+        "min": "Card Number can't be less than 15 digits",
+        "max": "Card Number can't be more than 16 digits"
+      }
+    },
+
+    "expirationDate": {
+      "title": "Expiration Date"
+    },
+
+    "cvc": {
+      "name": "Card Verification Code (CVC)",
+      "error": {
+        "notAvailable": "Not available CVC",
+        "min": "CVC can't be less than 3 digits",
+        "max": "CVC can't be more than 4 digits"
+      }
+    },
+
+    "stc": {
+      "name": "STC",
+      "error": {
+        "invalid": "Phone number must be started with 05 and 10 digits",
+        "min": "Card Number must be exactly 10 digits",
+        "max": "Card Number must be exactly 10 digits"
+      }
+    },
+
+    "stcOtp": {
+      "name": "Verification Code (OTP)",
+      "error": "OTP Number must be exactly 6 digits"
+    },
+
+    "searchBar": {
+      "placeholder": "Find the trip or place you want to visit",
+      "error": {
+        "min": "Search word should be more than 3 digits",
+        "max": "Search word should be less than 200 digits"
+      }
+    },
+
+    "password": {
+      "name": "Password",
+      "error": {
+        "min": "Password should be more than 8 characters",
+        "max": "Password should be less than 50 characters",
+        "invalid": "Password must contain at least 8 characters, 1 letter, 1 number, and 1 special character"
+      }
+    },
+
+    "confirmPassword": {
+      "name": "Confirm Password",
+      "error": {
+        "min": "Password should be more than 8 characters",
+        "max": "Password should be less than 50 characters",
+        "match": "This does not match the password"
+      }
+    },
+
+    "verificationCode": {
+      "name": "Verification Code",
+      "error": {
+        "min": "Verification Code must be 4 digits",
+        "max": "Verification Code must be 4 digits"
+      }
+    },
+
+    "promoCode": {
+      "label": "Promo code",
+      "placeholder": "Enter the promo code",
+      "useCode": "Use the promo code",
+      "successMessage": "Discount has been applied successfully"
+    },
+
+    "subject": {
+      "name": "Subject",
+      "error": {
+        "min": "Subject should be more than 5 characters",
+        "max": "Subject should be less than 50 characters"
+      }
+    },
+
+    "message": {
+      "name": "Message",
+      "error": {
+        "min": "Message should be more than 5 characters",
+        "max": "Message should be less than 225 characters"
+      }
+    },
+
+    "validation": {
+      "require": "This field is required",
+      "sending": "Sending Now ...",
+      "success": "Your data has been sent successfully",
+      "addedToFavorites": "Added to favorites successfully",
+      "checkYourEmail": "Please, Check your gmail",
+      "addGuest": "Add Guest first please",
+
+      "payment": {
+        "success": "Payment was done successfully!",
+        "sendOtp": "Please send OTP!",
+        "resendOtp": "Please resend OTP!"
+      },
+
+      "api_errors": {
+        "other_error": "Error , please try again"
+      }
+    }
+  },
+  "footer": {
+    "company": "Company",
+    "aboutUs": "About Us",
+    "articles": "Articles",
+    "bePartner": "Be Partner",
+    "jobOffers": "Job Offers",
+    "support": "Support",
+    "callUs": "Call Us",
+    "faq": "FAQ",
+    "map": "Map",
+    "legal": "Legal",
+    "terms": "Terms and Conditions",
+    "privacy": "Privacy Policy",
+    "return": "Return Policy",
+    "advertising": "Advertising on Guestna",
+    "paymentMethods": "Payment Methods"
+  }
+}

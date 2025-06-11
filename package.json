@@ -1,0 +1,53 @@
+{
+  "name": "guestna",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@googlemaps/js-api-loader": "^1.16.8",
+    "@material-ui/core": "^4.12.4",
+    "@mui/icons-material": "^6.1.5",
+    "@mui/lab": "^6.0.0-beta.14",
+    "@mui/material": "^6.1.5",
+    "@mui/x-date-pickers": "^8.5.1",
+    "@next/third-parties": "^15.3.2",
+    "@react-google-maps/api": "^2.20.3",
+    "@reduxjs/toolkit": "^2.5.0",
+    "@tanstack/react-query": "^5.59.16",
+    "axios": "^1.7.7",
+    "clsx": "^2.1.1",
+    "dayjs": "^1.11.13",
+    "formik": "^2.4.6",
+    "js-cookie": "^3.0.5",
+    "nanoid": "^5.0.9",
+    "next": "14.2.15",
+    "next-intl": "^3.23.5",
+    "notistack": "^1.0.6-next.3",
+    "nprogress": "^0.2.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-phone-number-input": "^3.4.12",
+    "react-redux": "^9.2.0",
+    "react-slick": "^0.30.2",
+    "redux-persist": "^6.0.0",
+    "slick-carousel": "^1.8.1",
+    "swiper": "^11.1.14",
+    "tailwind-merge": "^2.5.5",
+    "yup": "^1.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.15",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "5.8.3"
+  }
+}

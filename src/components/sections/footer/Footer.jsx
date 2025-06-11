@@ -1,0 +1,198 @@
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+
+import { useLocale, useTranslations } from "next-intl";
+
+import { Container } from "@mui/material";
+import Grid from "@mui/material/Grid2";
+
+// import pay1 from "@assets/pay12.png";
+import pay2 from "@assets/paymentLogos/mada.svg";
+import pay3 from "@assets/paymentLogos/visa.svg";
+import pay5 from "@assets/paymentLogos/master-card.svg";
+import pay8 from "@assets/paymentLogos/apple-pay.svg";
+import pay13 from "@assets/paymentLogos/amExpress.png";
+import pay14 from "@assets/paymentLogos/tamara.svg";
+
+const Footer = () => {
+  const locale = useLocale();
+  const t = useTranslations();
+
+  const footerLinks = {
+    company: {
+      name: t("footer.company"),
+      links: [
+        {
+          name: t("footer.aboutUs"),
+          url: `${
+            locale === "ar" ? "https://guestna.app" : "https://guestna.app/en"
+          }`,
+        },
+        // {
+        //   name: t("footer.articles"),
+        //   url: "/articles",
+        // },
+        // {
+        //   name: t("footer.bePartner"),
+        //   url: "/be-partner",
+        // },
+        // {
+        //   name: t("footer.jobOffers"),
+        //   url: "/job-offers",
+        // },
+      ],
+    },
+    support: {
+      name: t("footer.support"),
+      links: [
+        {
+          name: t("footer.callUs"),
+          url: `/${locale}/contact-us`,
+        },
+        {
+          name: t("footer.faq"),
+          url: `/${locale}/faq`,
+        },
+        // {
+        //   name: t("footer.map"),
+        //   url: "/map",
+        // },
+      ],
+    },
+    legal: {
+      name: t("footer.legal"),
+      links: [
+        {
+          name: t("footer.terms"),
+          url: `/${locale}/terms-and-conditions`,
+        },
+        {
+          name: t("footer.privacy"),
+          url: `/${locale}/privacy-policy`,
+        },
+        {
+          name: t("footer.return"),
+          url: "/return-policy",
+        },
+        // {
+        //   name: t("footer.advertising"),
+        //   url: "/advertising",
+        // },
+      ],
+    },
+    payment: {
+      name: t("footer.paymentMethods"),
+      methods: [
+        // { name: "STC", image: pay1 },
+        { name: "mada", image: pay2 },
+        { name: "Visa", image: pay3 },
+        { name: "mastercard", image: pay5 },
+        { name: "Apple Pay", image: pay8 },
+        { name: "American Express Pay", image: pay13 },
+        { name: "Tamara pay", image: pay14 },
+      ],
+    },
+  };
+
+  const renderedCompanyLinks = footerLinks.company.links.map(
+    (companyLink, index) => (
+      <Link
+        href={companyLink.url}
+        key={index}
+        target="_blank"
+        className="font-normal leading-7 capitalize transition-all duration-200 ease-in-out border-b border-transparent w-fit text-footerLink hover:border-footerLink"
+      >
+        {companyLink.name}
+      </Link>
+    )
+  );
+
+  const renderedSupportLinks = footerLinks.support.links.map(
+    (supportLink, index) => (
+      <Link
+        href={supportLink.url}
+        key={index}
+        className="font-normal leading-7 capitalize transition-all duration-200 ease-in-out border-b border-transparent w-fit text-footerLink hover:border-footerLink"
+      >
+        {supportLink.name}
+      </Link>
+    )
+  );
+
+  const renderedLegalLinks = footerLinks.legal.links.map((legalLink, index) => (
+    <Link
+      href={legalLink.url}
+      key={index}
+      className="font-normal leading-7 capitalize transition-all duration-200 ease-in-out border-b border-transparent w-fit text-footerLink hover:border-footerLink"
+    >
+      {legalLink.name}
+    </Link>
+  ));
+
+  const renderedPaymentLinks = footerLinks.payment.methods.map(
+    (paymentMethod, index) => (
+      <Image
+        key={index}
+        src={paymentMethod.image}
+        alt="payment method"
+        width={40}
+        height={26}
+        priority="true"
+        className="object-contain h-[26px] w-auto rounded-md "
+        title={paymentMethod.name}
+      />
+    )
+  );
+
+  return (
+    <footer className="py-10 lg:py-20 font-mulish">
+      <Container maxWidth="lg">
+        <Grid container spacing={{ xs: 4, sm: 5, md: 6 }}>
+          <Grid
+            size={{ xs: 6, sm: 6, lg: 3 }}
+            className="flex flex-col gap-1 lg:gap-2"
+          >
+            <h4 className="lg:pb-2 text-[#000000cc] font-bold">
+              {footerLinks.company.name}
+            </h4>
+            {renderedCompanyLinks}
+          </Grid>
+
+          <Grid
+            size={{ xs: 6, sm: 6, lg: 3 }}
+            className="flex flex-col gap-1 lg:gap-2"
+          >
+            <h4 className="pb-2 text-[#000000cc] font-bold">
+              {footerLinks.support.name}
+            </h4>
+            {renderedSupportLinks}
+          </Grid>
+
+          <Grid
+            size={{ xs: 6, sm: 6, lg: 3 }}
+            className="flex flex-col gap-1 lg:gap-2"
+          >
+            <h4 className="pb-2 text-[#000000cc] font-bold">
+              {footerLinks.legal.name}
+            </h4>
+            {renderedLegalLinks}
+          </Grid>
+
+          <Grid
+            size={{ xs: 6, sm: 6, lg: 3 }}
+            className="flex flex-col gap-1 lg:gap-2"
+          >
+            <h4 className="pb-2 text-[#000000cc] font-bold">
+              {footerLinks.payment.name}
+            </h4>
+            <div className="flex flex-wrap gap-2">{renderedPaymentLinks}</div>
+          </Grid>
+        </Grid>
+      </Container>
+    </footer>
+  );
+};
+
+export default Footer;

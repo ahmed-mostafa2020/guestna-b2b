@@ -1,0 +1,685 @@
+{
+  "common": {
+    "oneDayTrip": "رحلات اليوم الواحد",
+    "multiDaysTrip": "رحلات متعددة الأيام",
+    "sa": "السعودية",
+    "discount": "خصم",
+    "review": "مراجعة",
+    "reviews": "المراجعات",
+    "guest": "ضيفا",
+    "guests": "ضيوف",
+    "ticket": "تذكرة",
+    "tickets": "تذاكر",
+    "lunchMeal": "وجبة غداء",
+    "lunchMeals": "وجبات غداء",
+    "dates": "التواريخ",
+    "hour": "ساعة",
+    "hours": "ساعات",
+    "day": "يوما",
+    "days": "أيام",
+    "months": "أشهر",
+    "allMonths": "الشهور",
+    "years": "الأعوام",
+    "onePerson": "للشخص الواحد",
+    "onePersonOnly": "للشخص",
+    "person": "شخص",
+    "people": "أشخاص",
+    "stars": "نجوم",
+    "star": "نجمة",
+    "all": "الكل",
+    "packages": "الباقات",
+    "activities": "الأنشطة",
+    "multiCities": "متعددة المدن",
+    "customizable": "قابلة للتخصيص",
+    "available": "متاحة",
+    "historyAndCivilization": "التاريخ والحضارة",
+    "from": "من",
+    "to": "إلى",
+    "morning": "صباحاً",
+    "night": "مساءً",
+    "PUBLIC": "مجموعات",
+    "PRIVATE": "رحلة خاصة",
+    "MALE": "ذكر",
+    "FEMALE": "أنثى",
+    "error": "عذراً، لم نستطع إيجاد الصفحة التي تبحث عنها",
+    "errorHappens": "حدث خطأ",
+    "notAvailable": "هذه الرحلة غير متاحة للحجز الان"
+  },
+  "weekDays": {
+    "sunday": "الأحد",
+    "monday": "الإثنين",
+    "tuesday": "الثلاثاء",
+    "wednesday": "الأربعاء",
+    "thursday": "الخميس",
+    "friday": "الجمعة",
+    "saturday": "السبت"
+  },
+  "daysNumber": {
+    "1": "اليوم الأول",
+    "2": " اليوم الثاني",
+    "3": " اليوم الثالث",
+    "4": " اليوم الرابع",
+    "5": "اليوم الخامس",
+    "6": "اليوم السادس",
+    "7": "اليوم السابع",
+    "8": "اليوم الثامن",
+    "9": "اليوم التاسع",
+    "10": "اليوم العاشر"
+  },
+  "months": {
+    "january": "يناير",
+    "february": "فبراير",
+    "march": "مارس",
+    "april": "أبريل",
+    "may": "مايو",
+    "june": "يونيو",
+    "july": "يوليو",
+    "august": "أغسطس",
+    "september": "سبتمبر",
+    "october": "أكتوبر",
+    "november": "نوفمبر",
+    "december": "ديسمبر"
+  },
+  "pagesHead": {
+    "appName": "جستنا",
+    "content": "جستينا،GuestNa، تطبيق، سياحة، المملكة العربية السعودية،",
+    "title": {
+      "home": "الرئيسية",
+      "discover": "اكتشف",
+      "tripDetails": "تفاصيل الرحلة",
+      "packageInfo": "تفاصيل الباقة",
+      "addActivity": "اضف نشاطا",
+      "checkout": "الدفع",
+      "booking": "الحجز",
+      "bookingStatus": "حالة الحجز",
+      "termsAndConditions": "الأحكام و الشروط",
+      "privacyPolicy": "سياسة الخصوصية",
+      "returnPolicy": "سياسة الإسترجاع",
+      "signUp": "تسجيل حساب جديد",
+      "login": "تسجيل دخول",
+      "confirmAccount": "تأكيد الحساب",
+      "forgetPassword": "نسيت كلمة المرور",
+      "resetPassword": "إعادة تعيين كلمة مرور",
+      "profile": "بياناتي",
+      "contactUs": "تواصل معنا",
+      "faq": "الأسئلة الشائعة",
+      "error": "404 : لم يتم العثور على هذه الصفحة"
+    }
+  },
+  "links": {
+    "bookNow": "احجز الآن",
+    "showAll": "عرض الكل",
+    "search": "ابحث",
+    "reset": "إعادة ضبط",
+    "clearAll": "مسح الكل",
+    "more": "اعرف أكثر",
+    "watchTripDetails": "شاهد تفاصيل الرحلة",
+    "watchPackageDetails": "شاهد تفاصيل الباقة",
+    "backHome": "الرجوع للرئيسية",
+    "addToFavorites": "إضافة إلى قائمة الأمنيات",
+    "share": "مشاركة",
+    "save": "حفظ",
+    "saveChange": "حفظ التغيير",
+    "saveChanges": "حفظ التغيرات",
+    "send": "إرسال",
+    "showAllImages": "عرض كل الصور البالغ عددها",
+    "showAllReviews": "عرض كل التقييمات البالغ عددها",
+    "customizeYourPackage": "تخصيص الحزمة الخاصة بك",
+    "deleteActivity": "حذف النشاط",
+    "replace": "استبدال",
+    "follow": "متابعة",
+    "edit": "تعديل",
+    "verification": "تحقيق",
+    "cancel": "إلغاء",
+
+    "goToLocation": "انتقل إلى الموقع",
+    "bookForPrivate": "حجز لمجموعة خاصة",
+    "showAllDates": "عرض كل التواريخ",
+    "continuePayment": "متابعة الدفع",
+    "confirmPayment": "تأكيد الدفع",
+    "returnToActivity": "العودة إلى النشاط",
+    "returnToPackage": "العودة إلى الباقة",
+    "sendStcOtp": "ارسل رمز التحقق OTP"
+  },
+  "header": {
+    "discover": "اكتشف",
+    "schools": "جستنا للمدارس",
+    "companies": "جستنا للشركات",
+    "aboutUs": "تعرف علينا ",
+    "contactUs": "تواصل معنا",
+    "login": "تسجيل دخول",
+    "showSettings": "إعدادات العرض",
+    "chooseFavoriteLanguage": "اختيار اللغة المفضلة",
+    "chooseCountry": "اختيار البلد",
+    "country": "البلد",
+    "language": "اللغة",
+    "currency": "عملة"
+  },
+  "hero": {
+    "title": "شوف المملكة بعيون جستنا",
+    "subTitle": "أنشطة سياحية، تجارب، مغامرات وأكثر",
+    "always": "دوما",
+    "together": "معا",
+    "forever": "للأبد"
+  },
+  "filtersBox": {
+    "multiDaysTrips": "رحلات متعددة الايام",
+    "singleDayTrips": "رحلات اليوم الواحد",
+    "place": "المكان",
+    "searchDestination": "ابحث عن وجهتك",
+    "checkIn": "تسجيل الوصول",
+    "addDates": "إضافة التواريخ",
+    "addDay": "اختر اليوم",
+    "checkOut": "تسجيل المغادرة",
+    "guestsNumber": "عدد الضيوف",
+    "addGuests": "إضافة الضيوف",
+    "budget": "الميزانية",
+    "setBudget": "حدد ميزانيتك",
+    "searchByLocation": "البحث حسب المكان",
+    "maximum": "الحد الآقصى",
+    "minimum": "الحد الأدنى",
+    "mobileTitle": "وين ودّك تسافر؟"
+  },
+  "highestActivities": {
+    "title": "الأنشطة الأعلى تقييمًا",
+    "subTitle": "ماعندك وقت؟ اختر من رحلة مدتها يوم"
+  },
+  "bestSelling": {
+    "title": "الباقات الاكثر مبيعاً",
+    "subTitle": "ما يكفي يوم واحد؟ هذي الرحلات لك"
+  },
+  "similarExperiences": {
+    "title": "تجارب مشابهة"
+  },
+  "womenOnly": {
+    "activities": {
+      "title": "رحلات نسائية",
+      "subTitle": "تجارب ورحلات خُصصت لتعيشي مغامرات حماسية، آمنة، ومثالية"
+    },
+    "packages": {
+      "title": "رحلات نسائية",
+      "subTitle": "تجارب ورحلات خُصصت لتعيشي مغامرات حماسية، آمنة، ومثالية"
+    }
+  },
+  "trending": {
+    "badge": "الرائج الآن"
+  },
+  "exclusiveOffers": {
+    "title": "عروض ما تتفوّت",
+    "subTitle": "سافر أكثر، ادفع أقل، ولا تفوّت الفرصة!"
+  },
+  "payments": {
+    "badge": "سهولة الدفع",
+    "title": "كل مكان في بالك، وحتى الوجهة اللي بخيالك؛ جستنا تاخذك له",
+    "subTitle": "اختار تجربة جاهزة، أو خصص مغامرتك بنفسك، وعيش مغامرات لا تُنسى!",
+    "confidentialityOfInformation": "معلوماتك بالحفظ والصون",
+    "customerSupport": "عملاءنا بعيوننا",
+    "transparentPolicies": "سياسات واضحة",
+    "safePayment": "خيارات دفع تناسب الجميع"
+  },
+  "blogs": {
+    "title": "استعراض المجموعات",
+    "subTitle": "احصل على أفكار حول ما يمكن ممارسته ومشاهدته وتناوله"
+  },
+  "mostBeautifulPlaces": {
+    "title": "ودّك تستكشف أجمل الأماكن بالسعودية؟"
+  },
+  "tripDetails": {
+    "favoriteByGuests": {
+      "title": "مفضلة لدى الضيوف",
+      "subTitle": "أحد أكثر الأنشطة التي أحبها الضيوف في جستنا"
+    },
+    "accordionsGroup": {
+      "package": {
+        "description": "وصف الباقة",
+        "contents": "محتوى الباقة",
+        "exempted": "المستثنى من الباقة",
+        "itinerary": "خط سير الباقة"
+      },
+      "activity": {
+        "description": "وصف النشاط",
+        "contents": "محتوى النشاط",
+        "exempted": "المستثنى من النشاط",
+        "itinerary": "خط سير النشاط"
+      },
+      "gatheringLocation": "موقع التجمع",
+      "whatToBring": "ماذا يجب إحضاره",
+      "extraInfo": "معلومات إضافية",
+      "healthInformation": "معلومات صحية",
+      "returnPolicy": "سياسة الإسترجاع"
+    },
+    "availableDates": {
+      "title": "اختر من التواريخ المتاحة",
+      "joinGroup": "للإنضمام إلى"
+    }
+  },
+  "bookWithConfidence": {
+    "title": "احجز بثقة",
+    "items": {
+      "lowestPrice": {
+        "title": "ضمان أقل سعر",
+        "subTitle": "هل وجدته أرخص؟  برد الفرق في موقع الفعالية"
+      },
+      "privacyProtection": {
+        "title": "حماية الخصوصية",
+        "subTitle": "نحن نستخدم تشفير SSL للحفاظ على أمان بياناتك"
+      },
+      "support": {
+        "title": "دعم عالمي على مدار الساعة طوال أيام الأسبوع",
+        "subTitle": "احصل على الإجابات التي تحتاجها، عندما تحتاج إليها"
+      },
+      "callUs": {
+        "title": "اتصل بنا",
+        "subTitle": "سنكون سعداء بمساعدتك في حجزك اتصل الان :966 54 753 4666+"
+      }
+    }
+  },
+  "finalDetails": {
+    "stepper": {
+      "selectYourActivity": "اختر نشاطك",
+      "selectYourPackage": "اختر باقتك",
+      "contactInfo": "معلومات الاتصال",
+      "paymentDetails": "تفاصيل الدفع"
+    },
+    "finalDetailsActivity": "التفاصيل النهائية للنشاط",
+    "finalDetailsPackage": "التفاصيل النهائية للباقة",
+    "mainActivity": "النشاط الأساسي",
+    "extraActivity": "النشاط الإضافي",
+    "extraActivityWidget": "تمت إضافة هذا النشاط كخدمة إضافية، ويشمل تكاليف إضافية",
+    "freeReturn": "إلغاء مجاني -عند الإشعار قبل 24 ساعة من وقت بدء الفعالية",
+    "finalPrice": "تفاصيل الأسعار",
+    "travelersNumber": "عدد المسافرين",
+    "mealsNumber": "عدد الوجبات",
+    "total": "المجموع",
+    "includingVAT": "يشمل ضريبة القيمة المضافة"
+  },
+
+  "bookingStatus": {
+    "title": "مبروك! تم إتمام عملية حجزك بنجاح. رقم الحجز الخاص بك هو: ",
+    "subTitle": "يمكنك الآن الاسترخاء وتجهيز نفسك للرحلة."
+  },
+
+  "discover": {
+    "subHeader": {
+      "title": "تعرف على الوجهات الساحرة في المملكة"
+    },
+    "sideFilters": {
+      "title": "التصنيفات",
+      "destinations": "الوجهات",
+      "budget": "الميزانية",
+      "typeOfTrips": "نوع الجولات",
+      "typeOfExperience": "نوع التجربة",
+      "languageProvided": "اللغة المقدمة",
+      "customizedTours": "جولات مخصصة إلى",
+      "rating": "التقييمات",
+      "chooseDate": "اختر تاريخ بداية و نهاية"
+    },
+    "similarResult": "لم تُظهر اختياراتك الحالية أي رحلات.  إليك بعض الرحلات التي تتطابق بشكل قريب مع معاييرك.",
+
+    "sorting": {
+      "sortingBy": "ترتيب حسب: ",
+      "mostPopular": "الاكثر شعبية",
+      "newest": "الأحدث",
+      "oldest": "الأقدم",
+      "lowestPrice": "الأقل سعرا",
+      "highestPrice": "الأعلى سعرا",
+      "highestLover": "خيارات موصى بها",
+      "highestRate": "أفضل تعليقات"
+    }
+  },
+
+  "customization": {
+    "breadcrumb": "اختر تفاصيل رحلتك",
+    "title": "تخصيص الرحلة",
+    "actions": {
+      "changeDay": "تبديل اليوم",
+      "changeTime": "تعديل الموعد",
+      "addActivity": "إضافة نشاط",
+      "moreServices": "المزيد من الخدمات"
+    },
+    "validations": {
+      "addedNewDay": "تم إضافة يوما جديدا بنجاح!",
+      "switchedDay": "تم تبديل يوم الرحلة بنجاح!",
+      "changedTime": "تم تغيير موعد الرحلة بنجاح! ",
+      "deletedActivity": "تم حذف الرحلة بنجاح!",
+      "changedDay": "تم تغيير يوم الرحلة بنجاح!",
+      "addedActivitySuccessfully": "تم إضافة النشاط بنجاح!",
+      "replacedActivitySuccessfully": "تم استبدال النشاط بنجاح!"
+    },
+
+    "services": {
+      "meals": "الوجبات",
+      "personalServices": "الخدمات الشخصية",
+      "photography": "التصوير",
+      "translators": "المترجمون",
+      "transportation": "وسيلة النقل",
+      "accommodation": "الإقامة",
+      "successMessage": "تمت إضافة خدماتك بنجاح!"
+    },
+
+    "messages": {
+      "deletingConfirm": "هل تريد بالتأكيد حذف هذا النشاط ؟"
+    }
+  },
+
+  "profile": {
+    "aside": {
+      "information": "بياناتي",
+      "messages": "الرسائل",
+      "notifications": "الإشعارات",
+      "bookings": "حجوزاتي",
+      "favorites": "المفضلة والإهتمامات",
+      "logout": "تسجيل خروج",
+      "logoutConfirm": "هل تريد حقا تسجيل خروج؟"
+    },
+
+    "information": {
+      "accountData": "معلومات الحساب",
+      "verifiedMail": "البريد الإلكتروني (  تم التحقق )",
+      "unverifiedMail": "البريد الإلكتروني ( لم يتم التحقق )",
+      "personalInformation": {
+        "title": "المعلومات الشخصية",
+        "name": "الاسم",
+        "birthDay": "تاريخ الميلاد",
+        "phoneNumber": "رقم الجوال",
+        "gender": "الجنس",
+        "nationality": "الجنسية",
+        "countryOfResidence": "بلد الإقامة",
+        "city": "المدينة"
+      }
+    },
+
+    "editingDataForms": {
+      "emailEditing": "تعديل البريد الإلكتروني",
+      "personalInformationEditing": "تعديل المعلومات الشخصية"
+    },
+
+    "myFavorites": {
+      "emptyFavorites": {
+        "title": "لا يوجد مفضلات مضافة بعد",
+        "subTitle1": "قم بالضغط على علامة القلب",
+        "subTitle2": "على أي عنصر لإضافته إلى قائمة المفضلة وسيظهر هنا."
+      }
+    },
+
+    "myBookings": {
+      "emptyBookings": {
+        "title": "لا يوجد رحلات محجوزة...حتى الآن!",
+        "subTitle": "حان الوقت لتجهيز حقائبك والبدء في التخطيط لمغامرتك القادمة."
+      }
+    },
+
+    "myMessages": {
+      "emptyMessages": {
+        "title": "ليس لديك أي رسائل",
+        "subTitle": "ستظهر هنا أي رسائل جديدة تتلقاها."
+      }
+    },
+
+    "myNotifications": {
+      "emptyNotifications": {
+        "title": "لا توجد إشعارات حتى الآن",
+        "subTitle": "ستتلقى إشعارات حول رحلاتك وحسابك هنا. هل أنت مستعد لحجز رحلتك القادمة؟"
+      }
+    }
+  },
+
+  "contactUs": {
+    "title": "الدعم",
+    "subTitle": "راسلنا",
+    "workHours": {
+      "title": "أوقات عمل فريق الدعم",
+      "subTitle": "الأحد للخميس من 9 صباحاً إلى 11 مساءً ,الجمعة والسبت من 1 مساءً إلى 8 مساءً"
+    },
+    "contactByPhone": "تواصل مع الدعم تليفونيا",
+    "contactSupport": {
+      "title": "تواصل معنا",
+      "subTitle": "تواصل مع الدعم"
+    },
+    "contactBySocial": "تواصل معنا عبر وسائل التواصل الاجتماعي"
+  },
+
+  "faq": {
+    "title": "كيف يمكننا مساعدتك؟",
+    "subTitle": "نحن هنا للمساعدة استكشف مركز المساعدة الشامل الخاص بنا للعثور على إجابات لسؤالك",
+    "searchPlaceholder": "ما الذي تبحث عنه",
+    "emptyFaq": "عفواً! لا يوجد سؤال يطابق كلمة البحث التي بحثت عنها"
+  },
+
+  "validations": {
+    "noTrip": "لا توجد رحلة تطابق معايير البحث الخاصة بك",
+    "tryAgain": "حاول مرة أخرى"
+  },
+
+  "forms": {
+    "auth": {
+      "signUp": {
+        "title": "مرحبا بك في جستنا",
+        "subTitle": "يرجى إكمال البيانات لإنشاء حسابك",
+        "confirmUsingMail": "ستستخدم هذا البريد الإلكتروني لتسجيل الدخول وإدارة باقاتك السياحية والأنشطة الخاصة بك.",
+        "confirmTermsAndConditions": "أؤكد أنني أوافق على",
+        "isMarketingEmails": "أوافق على تلقي رسائل البريد الإلكتروني التسويقية الإخبارية من Guestna.com",
+
+        "name": "إنشاء حساب جديد"
+      },
+
+      "login": {
+        "title": "مرحبا بك مجددا في جستنا",
+        "haveAnAccount": "ليس لديك حساب؟",
+        "createAccount": "قم بإنشاء حساب",
+
+        "email": "عنوان البريد الإلكتروني",
+        "phone": "رقم الهاتف المحمول",
+
+        "name": "تسجيل دخول",
+        "loginBy": "أو تسجيل الدخول بواسطة",
+        "rememberMe": "تذكرني"
+      },
+
+      "confirmAccount": {
+        "titlePhone": "ادخل الرمز الذي أرسلناه عبر الرسالة القصيرة إلى",
+        "titleEmail": "ادخل الرمز الذي أرسلناه عبر البريد الإلكتروني إلى",
+        "moreOptions": "المزيد من الخيارات",
+        "name": "تأكيد الحساب",
+        "resendOtp": "إعادة إرسال رمز التحقق",
+        "successMessage": "تم إرسال رمز التحقق بنجاح",
+        "loginSuccessMessage": "تم تسجيل دخولك بنجاح",
+        "selectResendType": "اختر طريقة للحصل على رمز التحقق",
+        "willSendOtp": "سنرسل لك رمز التحقق"
+      },
+
+      "forgetPassword": {
+        "name": "هل نسيت كلمة المرور؟",
+        "titleEmail": "لإعادة ضبط كلمة المرور، يرجى إدخال عنوان البريد الإلكتروني المرتبط بحسابك",
+        "titlePhone": "لإعادة ضبط كلمة المرور، يرجى إدخال رقم الهاتف المرتبط بحسابك",
+        "sendOtp": "ارسل رمز التحقق"
+      },
+
+      "resetPassword": {
+        "name": "إعادة تعيين كلمة مرور",
+        "resetPassword": "تعيين كلمة مرور جديدة"
+      }
+    },
+
+    "contactForm": {
+      "title": "تفاصيل الاتصال",
+      "subTitle": "سنستخدم هذه المعلومات لإرسال تأكيدات والتحديثات المتعلقة بحجزك.",
+      "checkBoxLabel": "تلقي تحديثات الرسائل القصيرة حول الحجز الخاص بك. قد يتم تطبيق أسعار الرسائل."
+    },
+
+    "paymentMethodsForm": {
+      "title": "تفاصيل الدفع",
+      "subTitle": "ادفع باستخدام:"
+    },
+
+    "methods": {
+      "credit": "بطاقة الائتمان/الخصم",
+      "stc": "STC",
+      "tamara": "تمارا",
+      "applePay": "آبل باي"
+    },
+
+    "name": {
+      "name": "الاسم",
+      "error": {
+        "min": "يجب ألا يقل الاسم عن 3 أحرف",
+        "max": "يجب ألا يزيد الاسم عن 50 حرفا",
+        "invalid": " يجب أن يتكون الاسم من أحرف فقط",
+        "wordMinLength": "يجب أن يتكون الاسم من كلمتين على الأقل كل كلمة لا تقل عن 3 أحرف"
+      }
+    },
+
+    "email": {
+      "name": "البريد الإلكتروني",
+      "error": "من فضلك قم بإدخال بريد إلكتروني صحيح",
+      "is_exists": "هذا البريد الإلكتروني موجود بالفعل",
+      "done": "تم وضع حسابك في القائمة البريدية بنجاح!",
+      "mailing": "ابق على تواصل معنا"
+    },
+
+    "phone": {
+      "name": "رقم الهاتف",
+      "error": {
+        "invalid": "رقم هاتف غير صحيح",
+        "min": "يجب ألا يقل عن 12 أرقام",
+        "max": "يجب ألا يقل عن 14 رقما"
+      }
+    },
+
+    "cardholderName": {
+      "name": "اسم صاحب البطاقة",
+      "error": {
+        "validation": "يجب إدخال الاسم الأول والثاني",
+        "minAndMax": "يجب أن لا يقل الاسم الأول أو الثاني عن حرفين ولا يزيد عن 20 حرفا"
+      }
+    },
+
+    "cardNumber": {
+      "name": "رقم بطاقة الائتمان/الخصم",
+      "error": {
+        "notAvailable": "هذا الرقم غير صحيح",
+        "min": "رقم البطاقة يجب أن لا يقل عن 15 رقما",
+        "max": "رقم البطاقة يجب أن لا يزيد عن 16 حرفا"
+      }
+    },
+
+    "expirationDate": {
+      "title": "تاريخ انتهاء الصلاحية"
+    },
+
+    "cvc": {
+      "name": "رمز التحقق من البطاقة (CVC)",
+      "error": {
+        "notAvailable": "هذا الرقم غير صحيح",
+        "min": "رمز التحقق من البطاقة يجب أن لا يقل عن 3 أحرف",
+        "max": "رمز التحقق من البطاقة يجب أن لا يزيد عن 4 أحرف"
+      }
+    },
+
+    "stc": {
+      "name": "STC",
+      "error": {
+        "invalid": "يجب أن يبدأ الرقم ب 05 وأن يكون 10 أرقام",
+        "min": "يجب ألا يقل عن 10 أحرف",
+        "max": "يجب ألا يزيد عن 10 أحرف"
+      }
+    },
+
+    "stcOtp": {
+      "name": "رمز التحقق (OTP)",
+      "error": "رمز التحقق يجب أن يكون 6 أرقام"
+    },
+
+    "searchBar": {
+      "placeholder": "ابحث عن الوجهة أو الرحلة اللي ودّك فيها",
+      "error": {
+        "min": "يجب ألا تقل كلمة البحث عن 3 أحرف",
+        "max": "يجب ألا تزيد كلمة البحث عن 200 حرفا"
+      }
+    },
+
+    "password": {
+      "name": "كلمة المرور",
+      "error": {
+        "min": "يجب ألا تقل كلمة المرور عن 8 أحرف",
+        "max": "يجب ألا تزيد كلمة المرور عن 50 حرفا",
+        "invalid": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل، حرف واحد، رقم واحد، وحرف خاص واحد"
+      }
+    },
+
+    "confirmPassword": {
+      "name": "تأكيد كلمة المرور",
+      "error": {
+        "min": "يجب ألا تقل كلمة المرور عن 8 أحرف",
+        "max": "يجب ألا تزيد كلمة المرور عن 50 حرفا",
+        "match": "هذا لا يطابق كلمة المرور"
+      }
+    },
+
+    "verificationCode": {
+      "name": "رمز التحقق",
+      "error": {
+        "min": "يجب أن يكون رمز التحقق 4 أرقام",
+        "max": "يجب أن يكون رمز التحقق 4 أرقام"
+      }
+    },
+
+    "promoCode": {
+      "label": "كود الخصم",
+      "placeholder": "ادخل كود الخصم",
+      "useCode": "استخدام الكود",
+      "successMessage": "تم تطبيق الخصم بنجاح"
+    },
+
+    "subject": {
+      "name": "عنوان الرسالة",
+      "error": {
+        "min": "العنوان يجب أن يكون أكثر من 5 أحرف",
+        "max": "العنوان يجب أن يكون أقل من 50 حرفا"
+      }
+    },
+
+    "message": {
+      "name": "الرسالة",
+      "error": {
+        "min": "الرسالة يجب أن تكون أكثر من 5 أحرف",
+        "max": "الرسالة يجب أن تكون أقل من 225 حرفا"
+      }
+    },
+    "validation": {
+      "require": "هذا الحقل مطلوب",
+      "sending": "يتم الارسال ...",
+      "success": "تم ارسال بيناتاك بنجاح.",
+      "addedToFavorites": "تمت الإضافة إلى قائمة المفضلات بنجاح",
+      "checkYourEmail": "من فضلك قم بالتأكد من البريد الإلكتروني الخاص بك",
+      "addGuest": "من فضلك قم باختيار الضيوف أولا",
+
+      "payment": {
+        "success": "تمت عملية الدفع بنجاح!",
+        "sendOtp": "من فضلك أدخل رمز التحقق OTP!",
+        "resendOtp": "من فضلك قم بإعادة إدخال رمز التحقق OTP!"
+      },
+
+      "api_errors": {
+        "other_error": "حدث خطأ! برجاء المحاولة مرة أخرى"
+      }
+    }
+  },
+  "footer": {
+    "company": "الشركة",
+    "aboutUs": "عنا",
+    "articles": "المقالات",
+    "bePartner": "كن شريكا",
+    "jobOffers": "فرص وظيفية",
+    "support": "دعم",
+    "callUs": "اتصل بنا",
+    "faq": "الأسئلة الشائعة",
+    "map": "خريطة موقعنا",
+    "legal": "قانوني",
+    "terms": "الأحكام والشروط",
+    "privacy": "سياسة الخصوصية",
+    "return": "سياسة الإسترجاع ",
+    "advertising": "الاعلان علي جستنا",
+    "paymentMethods": "طرق الدفع"
+  }
+}

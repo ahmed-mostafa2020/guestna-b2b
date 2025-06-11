@@ -1,0 +1,83 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
+
+import { useDispatch } from "react-redux";
+import { resetSignUpData } from "@store/forms/auth/signUp/signUpFormSlice";
+import { resetLoginData } from "@store/forms/auth/login/loginFormSlice";
+import { clearProfile } from "@store/profile/profileInfoSlice";
+
+import { useState } from "react";
+
+import { CONSTANT_VALUES } from "@constants/constantValues";
+import ActionsDialog from "../customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
+
+import { useSnackbar } from "notistack";
+import Cookies from "js-cookie";
+
+const LogoutButton = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const locale = useLocale();
+  const t = useTranslations();
+
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const clearToken = () => {
+    try {
+      Cookies.remove(CONSTANT_VALUES.AUTH_TOKEN);
+      Cookies.remove(CONSTANT_VALUES.PROFILE_IMAGE);
+      Cookies.remove(CONSTANT_VALUES.USER_ID);
+
+      dispatch(resetSignUpData());
+      dispatch(resetLoginData());
+      dispatch(clearProfile());
+
+      setIsOpen(false);
+
+      router.push(`/${locale}`);
+    } catch (error) {
+      console.error("Logout failed:", error);
+      enqueueSnackbar(t("validations.tryAgain"), {
+        variant: "error",
+      });
+    }
+  };
+
+  const handleOpen = () => {
+    setIsOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
+  return (
+    <>
+      <button
+        onClick={handleOpen}
+        aria-label={t("profile.aside.logout")}
+        className="px-3 py-4 text-sm transition-all duration-150 ease-in-out rounded-lg text-start font-ibm lg:text-lg hover:text-white hover:bg-error"
+      >
+        {t("profile.aside.logout")}
+      </button>
+
+      <ActionsDialog
+        open={isOpen}
+        handleClose={handleClose}
+        closeButton={false}
+        bgcolor="rgba(0, 0, 0, 0.3)"
+        header={t("profile.aside.logout")}
+        content={t("profile.aside.logoutConfirm")}
+        cancelButton={t("links.cancel")}
+        confirmButton={t("profile.aside.logout")}
+        handleConfirm={clearToken}
+      />
+    </>
+  );
+};
+
+export default LogoutButton;
