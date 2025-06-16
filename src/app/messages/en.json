@@ -41,6 +41,7 @@
     "PRIVATE": "Private",
     "MALE": "Male",
     "FEMALE": "Female",
+    "guestna": "Guestna",
     "error": "Sorry, we couldn't find the page you were looking for.",
     "errorHappens": "An error occurred",
     "notAvailable": "This trip is not available for booking now"
@@ -159,8 +160,6 @@
     "title": "Enter the world of educational learning",
     "subTitle": "Make your students' trips unforgettable memories",
     "with": "with",
-
-    "guestna": "Guestna",
     "advantages": "... Safe, diverse, and ready-to-implement school programs"
   },
   "filtersBox": {
@@ -180,6 +179,10 @@
     "maximum": "Maximum",
     "minimum": "Minimum",
     "mobileTitle": "Where do you want to go?"
+  },
+  "trending": {
+    "title": "Trending Now",
+    "subTitle": "Discover the most popular trips in Saudi Arabia"
   },
   "highestActivities": {
     "title": "Highest-rated activities",
@@ -202,9 +205,7 @@
       "subTitle": "Tailored experiences designed for exciting, safe, and unforgettable adventures"
     }
   },
-  "trending": {
-    "badge": "Trending Now"
-  },
+
   "exclusiveOffers": {
     "title": "Deals You Can’t Miss",
     "subTitle": "Travel more, pay less—don’t miss out!"

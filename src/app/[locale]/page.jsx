@@ -17,16 +17,14 @@ import { useFetchData } from "@hooks/useFetchData";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 
-import HeroSection from "@components/sections/heroSection/HeroSection";
-import StatusTripsSection from "@components/sections/statusTripsSection/StatusTripsSection";
+import HeroSection from "@components/sections/pages/home/heroSection/HeroSection";
+import Plans from "@components/sections/pages/home/heroSection/plans";
 import HighestActivitiesSection from "@components/sections/highestActivities/HighestActivitiesSection";
 import BestSellingSection from "@components/sections/bestSelling/BestSellingSection";
 import ActivitiesSection from "@components/sections/womenOnly/ActivitiesSection";
 import PackagesSection from "@components/sections/womenOnly/PackagesSection";
-import TrendingNowSection from "@components/sections/trendingNow/TrendingNowSection";
 import ExclusiveOffersSection from "@components/sections/exclusiveOffers/ExclusiveOffersSection";
 import PaymentSection from "@components/sections/paymentSection/PaymentSection";
-// import BlogsSection from "@components/sections/blogs/BlogsSection";
 import CategoriesSection from "@components/sections/categories/CategoriesSection";
 import MostBeautifulPlaces from "@components/sections/mostBeautifulPlaces/MostBeautifulPlaces";
 import ResponsiveSeparator from "@components/common/separators/ResponsiveSeparator";
@@ -76,10 +74,10 @@ export default function Home() {
 
   return (
     <>
-      <main className="overflow-hidden bg-homeBg">
+      <main className="overflow-hidden bg-activityDetailsBg">
         <HeroSection />
 
-        <StatusTripsSection />
+        <Plans />
         <ResponsiveSeparator />
 
         <HighestActivitiesSection />
@@ -101,9 +99,6 @@ export default function Home() {
             <ResponsiveSeparator />
           </>
         )}
-
-        <TrendingNowSection />
-        <ResponsiveSeparator />
 
         <ExclusiveOffersSection />
         <ResponsiveSeparator />
