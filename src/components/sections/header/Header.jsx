@@ -1,17 +1,22 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+
 import { useLocale, useTranslations } from "next-intl";
 
+import { useDispatch } from "react-redux";
+import actGetNavbarData from "@store/navbarData/act/actGetNavbarData";
+
+import { useEffect } from "react";
+
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { getHeaders } from "@utils/getHeaders";
+import Logo from "../../common/Logo";
 import TemporaryDrawer from "./TemporaryDrawer";
 import SettingsButton from "./SettingsButton";
 import ProfileImage from "../pages/profile/ProfileImage";
 
 import { Container } from "@mui/material";
-
-import logo from "@assets/logo.png";
 
 import Cookies from "js-cookie";
 
@@ -19,12 +24,16 @@ const Header = () => {
   const locale = useLocale();
   const t = useTranslations();
 
+  const dispatch = useDispatch();
+
+  const headers = getHeaders();
+
   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
 
   const navLinks = [
     {
-      name: t("header.discover"),
-      link: `/${locale}/discover`,
+      name: t("header.home"),
+      link: `/${locale}`,
       isDisabled: false,
       isBlank: false,
     },
@@ -33,12 +42,6 @@ const Header = () => {
       link: "https://guestna-edu.com",
       isDisabled: false,
       isBlank: true,
-    },
-    {
-      name: t("header.companies"),
-      link: "companies",
-      isDisabled: true,
-      isBlank: false,
     },
     {
       name: t("header.aboutUs"),
@@ -78,26 +81,21 @@ const Header = () => {
     </div>
   ));
 
+  useEffect(() => {
+    dispatch(actGetNavbarData(headers));
+  }, [dispatch, headers]);
+
   return (
     <>
       <div className="text-sm bg-yellow-100 centered">
-        <span>GuestNa 2.0 is out</span>
+        <span>GuestNa B2B beta version</span>
         <span className="m-2">|</span>
-        <span>جستنا 2.0 بين يديك</span>
+        <span>جستنا للمدارس نسخة تجريبية</span>
       </div>
 
       <header className="py-2">
         <Container maxWidth="lg" className="flex items-center justify-between">
-          <Link href={`/${locale}`} className="w-fit">
-            <Image
-              src={logo}
-              alt="logo"
-              height={72}
-              width={150}
-              priority={true}
-              className="object-contain"
-            />
-          </Link>
+          <Logo />
 
           <nav className="hidden gap-4 lg:flex">{renderedNavLinks}</nav>
 

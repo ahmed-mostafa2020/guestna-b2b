@@ -19,7 +19,9 @@ const SliderWithArrowsSection = ({
 
   const getVisibleSlides = () => {
     if (typeof window !== "undefined") {
-      if (window.innerWidth < 640) return 1;
+      if (window.innerWidth < 640) {
+        return cardType === "date" ? 2.5 : 1;
+      }
       if (window.innerWidth < 1024) return 2;
       return cardType === "date" ? 5 : 3.4;
     }
@@ -39,17 +41,17 @@ const SliderWithArrowsSection = ({
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex + visibleSlides >= dataList?.length
+      prevIndex + Math.floor(visibleSlides) >= dataList?.length
         ? 0
-        : prevIndex + visibleSlides
+        : prevIndex + Math.floor(visibleSlides)
     );
   };
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0
-        ? Math.max(0, dataList?.length - visibleSlides)
-        : Math.max(0, prevIndex - visibleSlides)
+        ? Math.max(0, dataList?.length - Math.floor(visibleSlides))
+        : Math.max(0, prevIndex - Math.floor(visibleSlides))
     );
   };
 
@@ -62,6 +64,8 @@ const SliderWithArrowsSection = ({
           ? "w-full"
           : visibleSlides === 2
           ? "w-1/2"
+          : visibleSlides === 2.5 && cardType === "date"
+          ? "w-[40%]"
           : cardType === "date"
           ? "w-1/5"
           : "w-[30%]"

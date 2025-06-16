@@ -5,17 +5,17 @@ import { END_POINTS } from "@constants/APIs";
 
 import axios from "axios";
 
-const actGetCities = createAsyncThunk(
-  "address/actGetCities",
-  async ({ countryId, headers }, thunkAPI) => {
+const actGetNavbarData = createAsyncThunk(
+  "navbarData/actGetNavbarData",
+  async (headers, thunkAPI) => {
     const { rejectWithValue, signal } = thunkAPI;
 
     try {
       const response = await axios.get(
-        `${END_POINTS.MAIN}${END_POINTS.ADDRESS.CITIES}/${countryId}`,
+        `${END_POINTS.MAIN}${END_POINTS.NAVBAR}`,
         {
           signal,
-          headers: headers,
+          headers,
         }
       );
 
@@ -29,4 +29,4 @@ const actGetCities = createAsyncThunk(
   }
 );
 
-export default actGetCities;
+export default actGetNavbarData;

@@ -142,9 +142,9 @@
     "sendStcOtp": "Send Stc Otp"
   },
   "header": {
+    "home": "Home",
     "discover": "Discover",
     "schools": "Schools",
-    "companies": "Companies",
     "aboutUs": "About Us",
     "contactUs": "Contact Us",
     "login": "Login",
@@ -156,11 +156,12 @@
     "currency": "Currency"
   },
   "hero": {
-    "title": "See Saudi Arabia Through GuestNa’s Eyes",
-    "subTitle": "Tourist activities, experiences, adventures, and more!",
-    "always": "always",
-    "together": "together",
-    "forever": "forever"
+    "title": "Enter the world of educational learning",
+    "subTitle": "Make your students' trips unforgettable memories",
+    "with": "with",
+
+    "guestna": "Guestna",
+    "advantages": "... Safe, diverse, and ready-to-implement school programs"
   },
   "filtersBox": {
     "multiDaysTrips": "Multi Days Trips",

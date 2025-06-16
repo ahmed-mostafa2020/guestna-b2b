@@ -16,7 +16,7 @@ const NotFound = () => {
   }, [t]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center lg:min-h-screen">
       <ErrorComponent
         statusCode="404"
         errorMessage={t("common.errorHappens")}

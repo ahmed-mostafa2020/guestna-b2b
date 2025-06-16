@@ -27,7 +27,7 @@ const TripsSection = ({
         {sectionHelmet && (
           <>
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-titleColor lg:text-[32px] text-lg font-medium lg:leading-10">
+              <h2 className="text-titleColor lg:text-[32px] text-xl font-medium lg:leading-10">
                 {data.title}
               </h2>
 
@@ -42,7 +42,7 @@ const TripsSection = ({
               </Link>
             </div>
 
-            <h3 className="lg:text-[28px] text-sm lg:leading-9 w-[80%] lg:w-full">
+            <h3 className="lg:text-[28px] lg:leading-9 w-[80%] lg:w-full">
               {data.subTitle}
             </h3>
           </>
@@ -57,9 +57,9 @@ const TripsSection = ({
             <Swiper
               spaceBetween={20}
               breakpoints={{
-                320: { slidesPerView: sectionHelmet == true ? 1.2 : 3.5 },
-                480: { slidesPerView: sectionHelmet == true ? 1.5 : 4.5 },
-                640: { slidesPerView: sectionHelmet == true ? 1.7 : 6.5 },
+                320: { slidesPerView: sectionHelmet == true ? 1.4 : 3.5 },
+                480: { slidesPerView: sectionHelmet == true ? 1.7 : 4.5 },
+                640: { slidesPerView: sectionHelmet == true ? 2 : 6.5 },
                 1024: { slidesPerView: data.cardsPerView },
               }}
               className="mySwiper"

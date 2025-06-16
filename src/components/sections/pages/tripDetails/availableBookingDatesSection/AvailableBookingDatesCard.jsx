@@ -71,7 +71,7 @@ const AvailableBookingDatesCard = ({
   return (
     <div className="flex flex-col gap-8 px-4 py-6 bg-white border rounded-xl border-accordionBorder">
       <div className="flex flex-col gap-2">
-        <h4>
+        <h4 className="text-sm lg:text-base">
           {formatDate(bookingDate, locale, {
             weekday: "long",
             day: "numeric",
@@ -83,14 +83,14 @@ const AvailableBookingDatesCard = ({
           <Link
             href={`/${locale}/customization/${tripSlug}`}
             onClick={() => dispatch(setTripDate(bookingDate))}
-            className="border-b border-black w-fit"
+            className="text-xs border-b border-black w-fit lg:text-base"
           >
             {t("links.bookForPrivate")}
           </Link>
         )}
 
         {bookingDateQuantity > 0 && (
-          <p>
+          <p className="text-sm lg:text-base">
             {t("tripDetails.availableDates.joinGroup")}{" "}
             {formatNumbersUint(
               bookingDateQuantity,
@@ -102,7 +102,7 @@ const AvailableBookingDatesCard = ({
       </div>
 
       <div className="flex flex-col gap-4">
-        <h4 className="flex">
+        <h4 className="flex text-sm lg:text-base">
           <span className="font-semibold">{formatCurrency(price)}</span> /{" "}
           {t("common.onePersonOnly")}
         </h4>

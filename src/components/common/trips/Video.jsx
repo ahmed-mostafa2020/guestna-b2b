@@ -16,7 +16,7 @@ import EastIcon from "@mui/icons-material/East";
 
 const Video = ({
   height = "100%",
-  width = " 100%",
+  width = "100%",
   src,
   poster,
   statusImage,

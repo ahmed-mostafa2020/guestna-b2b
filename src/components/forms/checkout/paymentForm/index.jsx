@@ -38,12 +38,12 @@ import { useSnackbar } from "notistack";
 
 import { CircularProgress, RadioGroup } from "@mui/material";
 
-import pay11 from "@assets/paymentLogos/mada.svg";
-import pay3 from "@assets/paymentLogos/visa.svg";
-import pay5 from "@assets/paymentLogos/master-card.svg";
-import pay13 from "@assets/paymentLogos/amExpress.png";
+import madaLogo from "@assets/paymentLogos/mada.svg";
+import visaLogo from "@assets/paymentLogos/visa.svg";
+import mastercardLogo from "@assets/paymentLogos/master-card.svg";
+import amExpressLogo from "@assets/paymentLogos/amExpress.png";
 
-import pay14 from "@assets/paymentLogos/pay14.jpg";
+import tamaraArabic from "@assets/paymentLogos/tamaraArabic.jpg";
 
 import applePay from "@assets/paymentLogos/apple-pay.svg";
 
@@ -291,15 +291,15 @@ const PaymentForm = () => {
   };
 
   const creditImages = [
-    { image: pay11, name: "mada" },
-    { image: pay3, name: "Visa" },
-    { image: pay5, name: "mastercard" },
-    { image: pay13, name: "American Express" },
+    { image: madaLogo, name: "mada" },
+    { image: visaLogo, name: "Visa" },
+    { image: mastercardLogo, name: "mastercard" },
+    { image: amExpressLogo, name: "American Express" },
   ];
 
-  // const stcImage = [{ image: pay12, name: "stc" }];
+  // const stcImage = [{ image: stc, name: "stc" }];
   const tamaraImage = [
-    { image: locale === "ar" ? pay14 : tamaraEnglish, name: "tamara" },
+    { image: locale === "ar" ? tamaraArabic : tamaraEnglish, name: "tamara" },
   ];
 
   const appleImage = [{ image: applePay, name: "apple pay" }];

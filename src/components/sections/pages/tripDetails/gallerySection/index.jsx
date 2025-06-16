@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useSelector } from "react-redux";
 
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import GalleryHeader from "./GalleryHeader";
 import ImageWithPlaceholder from "@components/common/imagesPlaceholder/ImageWithPlaceholder";
@@ -18,6 +18,8 @@ import { Container } from "@mui/material";
 import { imagesListIcon } from "@assets/svg";
 
 const GallerySection = () => {
+  const [height, setHeight] = useState(250);
+
   const [open, setOpen] = useState(false);
 
   const locale = useLocale();
@@ -46,11 +48,20 @@ const GallerySection = () => {
           alt="activity image"
           width={500}
           height={500}
-          className="object-cover max-h-[600px]"
+          className="object-cover max-h-[250px] lg:max-h-[600px]"
         />
       </SwiperSlide>
     </Fragment>
   ));
+
+  useEffect(() => {
+    const handleResize = () => {
+      setHeight(window.innerWidth >= 1024 ? 550 : 250);
+    };
+    handleResize(); // Set initial value
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <>
@@ -66,7 +77,7 @@ const GallerySection = () => {
                   alt={`${tripData?.name} image`}
                   width={430}
                   height={550}
-                  className={`w-[430px] h-[550px] object-cover ${
+                  className={`w-[430px] h-[250px] lg:h-[550px] object-cover ${
                     locale === "ar"
                       ? "rounded-tl-2xl rounded-bl-2xl"
                       : "rounded-tr-2xl rounded-br-2xl"
@@ -111,7 +122,7 @@ const GallerySection = () => {
                 <Video
                   src={tripData?.video}
                   width="430"
-                  height="550"
+                  height={height}
                   poster={specialGalleryImages?.[3]?.url}
                   showTitleLink={false}
                   cornerVideo={true}

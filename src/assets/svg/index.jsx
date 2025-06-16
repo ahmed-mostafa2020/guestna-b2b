@@ -1,3 +1,173 @@
+const discoverIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+  >
+    <circle cx="12" cy="12" r="9.5" stroke="#008774" />
+    <circle cx="12" cy="12" r="7.5" stroke="#008774" />
+    <path d="M4.5 12H6.5" stroke="#008774" strokeLinecap="round" />
+    <path d="M17.5 12H19.5" stroke="#008774" strokeLinecap="round" />
+    <path d="M12 4.5V6.5" stroke="#008774" strokeLinecap="round" />
+    <path d="M12 17.5V19.5" stroke="#008774" strokeLinecap="round" />
+    <path
+      d="M8.54333 8.60832L10.492 13.4801C10.4971 13.4928 10.5072 13.5029 10.5199 13.508L15.3917 15.4567C15.4325 15.473 15.473 15.4325 15.4567 15.3917L13.508 10.5199C13.5029 10.5072 13.4928 10.4971 13.4801 10.492L8.60832 8.54333C8.56751 8.527 8.527 8.56751 8.54333 8.60832Z"
+      stroke="#008774"
+      strokeLinecap="round"
+    />
+    <path d="M13 11L11 13" stroke="#008774" strokeLinecap="round" />
+  </svg>
+);
+
+const schoolsIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+  >
+    <path
+      d="M10.0495 2.53126L4.02953 6.46126C2.09953 7.72126 2.09953 10.5413 4.02953 11.8013L10.0495 15.7313C11.1295 16.4413 12.9095 16.4413 13.9895 15.7313L19.9795 11.8013C21.8995 10.5413 21.8995 7.73126 19.9795 6.47126L13.9895 2.54126C12.9095 1.82126 11.1295 1.82126 10.0495 2.53126Z"
+      stroke="#008774"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M5.63012 13.0781L5.62012 17.7681C5.62012 19.0381 6.60012 20.3981 7.80012 20.7981L10.9901 21.8581C11.5401 22.0381 12.4501 22.0381 13.0101 21.8581L16.2001 20.7981C17.4001 20.3981 18.3801 19.0381 18.3801 17.7681V13.1281"
+      stroke="#008774"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M21.4004 15V9"
+      stroke="#008774"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const companiesIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+  >
+    <path
+      d="M12.37 2.14984L21.37 5.74982C21.72 5.88982 22 6.30981 22 6.67981V9.99982C22 10.5498 21.55 10.9998 21 10.9998H3C2.45 10.9998 2 10.5498 2 9.99982V6.67981C2 6.30981 2.28 5.88982 2.63 5.74982L11.63 2.14984C11.83 2.06984 12.17 2.06984 12.37 2.14984Z"
+      stroke="#008774"
+      strokeWidth="1.5"
+      stroke-miterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M22 22H2V19C2 18.45 2.45 18 3 18H21C21.55 18 22 18.45 22 19V22Z"
+      stroke="#008774"
+      strokeWidth="1.5"
+      stroke-miterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M4 18V11"
+      stroke="#008774"
+      strokeWidth="1.5"
+      stroke-miterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M8 18V11"
+      stroke="#008774"
+      strokeWidth="1.5"
+      stroke-miterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M12 18V11"
+      stroke="#008774"
+      strokeWidth="1.5"
+      stroke-miterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M16 18V11"
+      stroke="#008774"
+      strokeWidth="1.5"
+      stroke-miterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M20 18V11"
+      stroke="#008774"
+      strokeWidth="1.5"
+      stroke-miterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M1 22H23"
+      stroke="#008774"
+      strokeWidth="1.5"
+      stroke-miterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M12 8.5C12.8284 8.5 13.5 7.82843 13.5 7C13.5 6.17157 12.8284 5.5 12 5.5C11.1716 5.5 10.5 6.17157 10.5 7C10.5 7.82843 11.1716 8.5 12 8.5Z"
+      stroke="#008774"
+      strokeWidth="1.5"
+      stroke-miterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const aboutUsIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+  >
+    <path
+      d="M12.0001 7.89062L10.9301 9.75063C10.6901 10.1606 10.8901 10.5006 11.3601 10.5006H12.6301C13.1101 10.5006 13.3001 10.8406 13.0601 11.2506L12.0001 13.1106"
+      stroke="#008774"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M8.30035 18.0402V16.8802C6.00035 15.4902 4.11035 12.7802 4.11035 9.90018C4.11035 4.95018 8.66035 1.07018 13.8004 2.19018C16.0604 2.69018 18.0404 4.19018 19.0704 6.26018C21.1604 10.4602 18.9604 14.9202 15.7304 16.8702V18.0302C15.7304 18.3202 15.8404 18.9902 14.7704 18.9902H9.26035C8.16035 19.0002 8.30035 18.5702 8.30035 18.0402Z"
+      stroke="#008774"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M8.5 21.9992C10.79 21.3492 13.21 21.3492 15.5 21.9992"
+      stroke="#008774"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 const globalDarkIcon = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -751,6 +921,23 @@ const phoneIcon = (
   </svg>
 );
 
+const greenPhoneIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="21"
+    viewBox="0 0 20 21"
+    fill="none"
+  >
+    <path
+      d="M18.3087 15.5849C18.3087 15.8849 18.242 16.1932 18.1003 16.4932C17.9587 16.7932 17.7753 17.0766 17.5337 17.3432C17.1253 17.7932 16.6753 18.1182 16.167 18.3266C15.667 18.5349 15.1253 18.6432 14.542 18.6432C13.692 18.6432 12.7837 18.4432 11.8253 18.0349C10.867 17.6266 9.90866 17.0766 8.95866 16.3849C8.00033 15.6849 7.09199 14.9099 6.22533 14.0516C5.36699 13.1849 4.59199 12.2766 3.90033 11.3266C3.21699 10.3766 2.66699 9.42656 2.26699 8.4849C1.86699 7.5349 1.66699 6.62656 1.66699 5.7599C1.66699 5.19323 1.76699 4.65156 1.96699 4.15156C2.16699 3.64323 2.48366 3.17656 2.92533 2.7599C3.45866 2.2349 4.04199 1.97656 4.65866 1.97656C4.89199 1.97656 5.12533 2.02656 5.33366 2.12656C5.55033 2.22656 5.74199 2.37656 5.89199 2.59323L7.82533 5.31823C7.97533 5.52656 8.08366 5.71823 8.15866 5.90156C8.23366 6.07656 8.27533 6.25156 8.27533 6.4099C8.27533 6.6099 8.21699 6.8099 8.10033 7.00156C7.99199 7.19323 7.83366 7.39323 7.63366 7.59323L7.00033 8.25156C6.90866 8.34323 6.86699 8.45156 6.86699 8.5849C6.86699 8.65156 6.87533 8.7099 6.89199 8.77656C6.91699 8.84323 6.94199 8.89323 6.95866 8.94323C7.10866 9.21823 7.36699 9.57656 7.73366 10.0099C8.10866 10.4432 8.50866 10.8849 8.94199 11.3266C9.39199 11.7682 9.82533 12.1766 10.267 12.5516C10.7003 12.9182 11.0587 13.1682 11.342 13.3182C11.3837 13.3349 11.4337 13.3599 11.492 13.3849C11.5587 13.4099 11.6253 13.4182 11.7003 13.4182C11.842 13.4182 11.9503 13.3682 12.042 13.2766L12.6753 12.6516C12.8837 12.4432 13.0837 12.2849 13.2753 12.1849C13.467 12.0682 13.6587 12.0099 13.867 12.0099C14.0253 12.0099 14.192 12.0432 14.3753 12.1182C14.5587 12.1932 14.7503 12.3016 14.9587 12.4432L17.717 14.4016C17.9337 14.5516 18.0837 14.7266 18.1753 14.9349C18.2587 15.1432 18.3087 15.3516 18.3087 15.5849Z"
+      stroke="#00A991"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+    />
+  </svg>
+);
+
 const wrongIcon = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -1047,6 +1234,10 @@ const newSarSmall = (
 );
 
 export {
+  discoverIcon,
+  schoolsIcon,
+  companiesIcon,
+  aboutUsIcon,
   globalDarkIcon,
   globalLightIcon,
   searchIconWhite,
@@ -1078,6 +1269,7 @@ export {
   lockIcon,
   headPhoneIcon,
   phoneIcon,
+  greenPhoneIcon,
   wrongIcon,
   calenderIcon,
   smsIcon,

@@ -6,6 +6,8 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useSelector } from "react-redux";
 
+import { useEffect, useState } from "react";
+
 import Video from "../../common/trips/Video";
 
 import { Container } from "@mui/material";
@@ -14,12 +16,23 @@ import { listIcon } from "@assets/svg";
 import waves from "@assets/sectionBackground/waves.png";
 
 const MostBeautifulPlaces = () => {
+  const [height, setHeight] = useState(300);
+
   const mostBeautifulPlacesData = useSelector(
     (state) => state.homeData.items.mostBeautifulPlaces
   );
 
   const locale = useLocale();
   const t = useTranslations();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setHeight(window.innerWidth >= 1024 ? 600 : 250);
+    };
+    handleResize(); // Set initial value
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <section className="relative py-10 bg-badge">
@@ -73,7 +86,7 @@ const MostBeautifulPlaces = () => {
           {/* Last column - same width as first */}
           <Video
             src={mostBeautifulPlacesData?.[0]?.video}
-            height="610"
+            height={height}
             width="400"
             linkTitle={mostBeautifulPlacesData?.[0]?.name}
             slug={mostBeautifulPlacesData?.[0]?.slug}

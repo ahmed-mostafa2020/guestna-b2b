@@ -29,8 +29,9 @@ import PaymentSection from "@components/sections/paymentSection/PaymentSection";
 // import BlogsSection from "@components/sections/blogs/BlogsSection";
 import CategoriesSection from "@components/sections/categories/CategoriesSection";
 import MostBeautifulPlaces from "@components/sections/mostBeautifulPlaces/MostBeautifulPlaces";
-import SmallSeparator from "@components/common/separators/SmallSeparator";
+import ResponsiveSeparator from "@components/common/separators/ResponsiveSeparator";
 import LargeSeparator from "@components/common/separators/LargeSeparator";
+import SmallSeparator from "@components/common/separators/SmallSeparator";
 
 export default function Home() {
   // useReportWebVitals((metric) => {
@@ -79,7 +80,7 @@ export default function Home() {
         <HeroSection />
 
         <StatusTripsSection />
-        <LargeSeparator />
+        <ResponsiveSeparator />
 
         <HighestActivitiesSection />
         <SmallSeparator />
@@ -90,29 +91,29 @@ export default function Home() {
         {data?.womenOnly.length >= 1 && (
           <>
             <ActivitiesSection />
-            <LargeSeparator />
+            <ResponsiveSeparator />
           </>
         )}
 
         {data?.packagesWomenOnly.length >= 1 && (
           <>
             <PackagesSection />
-            <LargeSeparator />
+            <ResponsiveSeparator />
           </>
         )}
 
         <TrendingNowSection />
-        <LargeSeparator />
+        <ResponsiveSeparator />
 
         <ExclusiveOffersSection />
-        <LargeSeparator />
+        <ResponsiveSeparator />
 
         <PaymentSection />
         <LargeSeparator />
 
         {/* <BlogsSection /> */}
         <CategoriesSection />
-        <LargeSeparator />
+        <ResponsiveSeparator />
 
         <MostBeautifulPlaces />
       </main>

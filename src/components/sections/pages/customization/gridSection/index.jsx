@@ -27,6 +27,7 @@ const GridSection = () => {
       SmallSizeGrid={() => <SmallSizeGrid packageDays={packageDays} />}
       largeGridPercent={7.5}
       smallGridPercent={4.5}
+      reverseInMobile={true}
     />
   );
 };

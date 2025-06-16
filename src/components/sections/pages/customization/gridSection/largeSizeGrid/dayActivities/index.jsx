@@ -84,7 +84,7 @@ const DayActivities = ({
   ));
 
   return (
-    <section className="flex flex-col gap-5 pb-8 lg:pb-16">
+    <section className="flex flex-col gap-5 pb-6 lg:pb-16">
       <div className="bg-white gap-2 px-4 py-3 flex items-center justify-between border-2 border-[#EAEAEA] rounded-md event-shadow">
         <p className="text-[#4B4D53] font-ibm text-xl font-medium">
           {t(`daysNumber.${activityNumber}`)}/{" "}

@@ -1,13 +1,15 @@
 "use client";
-import * as React from "react";
 
 import Link from "next/link";
 
 import { useTranslations, useLocale } from "next-intl";
 
+import { useState } from "react";
+
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import SettingsButton from "./SettingsButton";
 import ProfileImage from "../pages/profile/ProfileImage";
+import Logo from "../../common/Logo";
 
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -16,14 +18,20 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+
 import MenuIcon from "@mui/icons-material/Menu";
+import {
+  aboutUsIcon,
+  companiesIcon,
+  discoverIcon,
+  greenPhoneIcon,
+  schoolsIcon,
+} from "@assets/svg";
 
 import Cookies from "js-cookie";
 
 const TemporaryDrawer = () => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const t = useTranslations();
 
   const locale = useLocale();
@@ -41,6 +49,7 @@ const TemporaryDrawer = () => {
       link: `/${locale}/discover`,
       isDisabled: false,
       isBlank: false,
+      icon: discoverIcon,
     },
     {
       name: t("header.schools"),
@@ -51,12 +60,14 @@ const TemporaryDrawer = () => {
       }`,
       isDisabled: false,
       isBlank: true,
+      icon: schoolsIcon,
     },
     {
       name: t("header.companies"),
       link: "companies",
       isDisabled: true,
       isBlank: false,
+      icon: companiesIcon,
     },
     {
       name: t("header.aboutUs"),
@@ -65,27 +76,30 @@ const TemporaryDrawer = () => {
       }`,
       isDisabled: false,
       isBlank: true,
+      icon: aboutUsIcon,
     },
     {
       name: t("header.contactUs"),
       link: "https://api.whatsapp.com/send?phone=966547534666",
       isDisabled: false,
       isBlank: true,
+      icon: greenPhoneIcon,
     },
   ];
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
+        <Logo />
+
         {navLinks.map((navLink, index) => (
           <ListItem key={navLink.name} disablePadding>
             <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              <ListItemIcon sx={{ minWidth: "fit-content" }}>
+                {navLink.icon}
               </ListItemIcon>
-              {/* <Link href={`/${locale}/${navLink.link}`}>{navLink.name}</Link> */}
               {navLink.isDisabled ? (
-                <span className="px-4 py-3 text-lg font-medium leading-8 tracking-tight text-gray-400 capitalize border-b border-transparent border-solid cursor-not-allowed font-ibm">
+                <span className="px-4 py-3 text-lg font-medium leading-8 tracking-tight text-gray-400 capitalize border-b border-transparent border-solid cursor-not-allowed">
                   {navLink.name}
                 </span>
               ) : (
@@ -93,7 +107,7 @@ const TemporaryDrawer = () => {
                   href={navLink.link}
                   key={index}
                   target={navLink.isBlank ? "_blank" : "_self"}
-                  className="px-4 py-3 text-lg font-medium leading-8 tracking-tight capitalize transition-all duration-200 ease-in-out border-b border-transparent border-solid font-ibm hover:border-mainColor hover:text-mainColor"
+                  className="px-4 py-3 text-lg font-medium leading-8 tracking-tight capitalize transition-all duration-200 ease-in-out hover:text-mainColor"
                 >
                   {navLink.name}
                 </Link>

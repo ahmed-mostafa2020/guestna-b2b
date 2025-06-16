@@ -6,6 +6,7 @@ export const END_POINTS = {
   TRIPS: `${BASE_URL}guestnaTrips/`,
   PAYMENTS: `${BASE_URL}bookings/`,
   HOME: "homePageTrips",
+  NAVBAR: "navebar",
   TRIPDETAILS: "info",
   SIDE_FILTERS: "filtratinDetails",
   ALL_TRIPS: "all",

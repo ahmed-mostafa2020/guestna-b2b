@@ -158,19 +158,19 @@ const EventCard = ({ event, activityNumber, activityDay, packageDays }) => {
   return (
     <>
       {/* Event Card */}
-      <div className="flex flex-wrap bg-white border border-[#E1E1E1] rounded-xl overflow-hidden transition-all ease-in-out duration-200">
-        <figure className="w-full lg:w-[150px] h-[155px]">
+      <div className="flex lg:flex-wrap bg-white border border-[#E1E1E1] rounded-xl overflow-hidden transition-all ease-in-out duration-200">
+        <figure className="w-[150px] h-full lg:h-[155px] ">
           <ImageWithPlaceholder
             src={oneEvent.thumbnail.web}
             alt={oneEvent.name}
             width={150}
-            height={158}
-            className="w-[150px] h-[158px]"
+            height={200}
+            className="w-[150px] h-[188px] lg:h-[158px]"
           />
         </figure>
 
         <div className="flex flex-col flex-1 gap-4 py-4 lg:gap-8 ps-5 pe-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-start justify-between gap-1 lg:items-center">
             <h3 className="text-xl font-medium text-black font-ibm">
               {oneEvent.name}
             </h3>
@@ -187,7 +187,7 @@ const EventCard = ({ event, activityNumber, activityDay, packageDays }) => {
             <div className="flex justify-center w-full gap-3 md:w-fit">
               <button
                 onClick={() => handleDialog("changeDay", true)}
-                className="font-semibold w-[160px] py-3 rounded-lg border-2 border-[#FDF3E9] bg-[#FDF3E9] transition-all ease-in-out duration-200 hover:bg-[#F4E3D3] hover:border-[#F4E3D3]"
+                className="font-semibold flex-1 lg:w-[160px] py-3 rounded-lg border-2 border-[#FDF3E9] bg-[#FDF3E9] transition-all ease-in-out duration-200 hover:bg-[#F4E3D3] hover:border-[#F4E3D3]"
               >
                 {t("customization.actions.changeDay")}
               </button>
@@ -195,7 +195,7 @@ const EventCard = ({ event, activityNumber, activityDay, packageDays }) => {
               <button
                 onClick={() => handleDialog("changeTime", true)}
                 disabled={oneEvent.availableTimes?.length <= 1}
-                className={`font-semibold w-[160px] py-3 rounded-lg border-2 border-[#F0F5FC] bg-[#F0F5FC] transition-all ease-in-out duration-200 hover:bg-[#E3EBF5] hover:border-[#E3EBF5] disabled:opacity-50 disabled:cursor-not-allowed`}
+                className={`font-semibold flex-1 lg:w-[160px] py-3 rounded-lg border-2 border-[#F0F5FC] bg-[#F0F5FC] transition-all ease-in-out duration-200 hover:bg-[#E3EBF5] hover:border-[#E3EBF5] disabled:opacity-50 disabled:cursor-not-allowed`}
               >
                 {t("customization.actions.changeTime")}
               </button>

@@ -8,13 +8,13 @@ import { useLocale, useTranslations } from "next-intl";
 import { Container } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 
-// import pay1 from "@assets/pay12.png";
-import pay2 from "@assets/paymentLogos/mada.svg";
-import pay3 from "@assets/paymentLogos/visa.svg";
-import pay5 from "@assets/paymentLogos/master-card.svg";
-import pay8 from "@assets/paymentLogos/apple-pay.svg";
-import pay13 from "@assets/paymentLogos/amExpress.png";
-import pay14 from "@assets/paymentLogos/tamara.svg";
+// import stcLogo from "@assets/paymentLogos/stc.png";
+import madaLogo from "@assets/paymentLogos/mada.svg";
+import visaLogo from "@assets/paymentLogos/visa.svg";
+import masterCardLogo from "@assets/paymentLogos/master-card.svg";
+import applePayLogo from "@assets/paymentLogos/apple-pay.svg";
+import amExpressLogo from "@assets/paymentLogos/amExpress.png";
+import tamaraLogo from "@assets/paymentLogos/tamara.svg";
 
 const Footer = () => {
   const locale = useLocale();
@@ -85,13 +85,13 @@ const Footer = () => {
     payment: {
       name: t("footer.paymentMethods"),
       methods: [
-        // { name: "STC", image: pay1 },
-        { name: "mada", image: pay2 },
-        { name: "Visa", image: pay3 },
-        { name: "mastercard", image: pay5 },
-        { name: "Apple Pay", image: pay8 },
-        { name: "American Express Pay", image: pay13 },
-        { name: "Tamara pay", image: pay14 },
+        // { name: "STC", image: stcLogo },
+        { name: "mada", image: madaLogo },
+        { name: "Visa", image: visaLogo },
+        { name: "mastercard", image: masterCardLogo },
+        { name: "Apple Pay", image: applePayLogo },
+        { name: "American Express Pay", image: amExpressLogo },
+        { name: "Tamara pay", image: tamaraLogo },
       ],
     },
   };
@@ -151,7 +151,7 @@ const Footer = () => {
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 4, sm: 5, md: 6 }}>
           <Grid
-            size={{ xs: 6, sm: 6, lg: 3 }}
+            size={{ xs: 4, sm: 3, lg: 3 }}
             className="flex flex-col gap-1 lg:gap-2"
           >
             <h4 className="lg:pb-2 text-[#000000cc] font-bold">
@@ -161,7 +161,7 @@ const Footer = () => {
           </Grid>
 
           <Grid
-            size={{ xs: 6, sm: 6, lg: 3 }}
+            size={{ xs: 4, sm: 3, lg: 3 }}
             className="flex flex-col gap-1 lg:gap-2"
           >
             <h4 className="pb-2 text-[#000000cc] font-bold">
@@ -171,7 +171,7 @@ const Footer = () => {
           </Grid>
 
           <Grid
-            size={{ xs: 6, sm: 6, lg: 3 }}
+            size={{ xs: 4, sm: 3, lg: 3 }}
             className="flex flex-col gap-1 lg:gap-2"
           >
             <h4 className="pb-2 text-[#000000cc] font-bold">
@@ -181,7 +181,7 @@ const Footer = () => {
           </Grid>
 
           <Grid
-            size={{ xs: 6, sm: 6, lg: 3 }}
+            size={{ xs: 6, sm: 3, lg: 3 }}
             className="flex flex-col gap-1 lg:gap-2"
           >
             <h4 className="pb-2 text-[#000000cc] font-bold">

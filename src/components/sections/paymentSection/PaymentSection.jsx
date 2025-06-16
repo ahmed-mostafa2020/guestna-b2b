@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 
+import { useEffect, useState } from "react";
+
 import Video from "../../common/trips/Video";
 import ImageWithPlaceholder from "../../common/imagesPlaceholder/ImageWithPlaceholder";
 
@@ -12,12 +14,12 @@ import paymentBg from "@assets/sectionBackground/paymentBg.png";
 import plans from "@assets/sectionBackground/plans.png";
 
 import visa from "@assets/paymentLogos/visa.png";
-// import pay1 from "@assets/paymentLogos/pay12.png";
-import pay2 from "@assets/paymentLogos/mada.svg";
-import pay5 from "@assets/paymentLogos/master-card.svg";
-import pay8 from "@assets/paymentLogos/apple-pay.svg";
-import pay13 from "@assets/paymentLogos/amExpress.png";
-import pay14 from "@assets/paymentLogos/tamara.svg";
+// import stcLogo from "@assets/paymentLogos/stc.png";
+import madaLogo from "@assets/paymentLogos/mada.svg";
+import masterCard from "@assets/paymentLogos/master-card.svg";
+import applePayLogo from "@assets/paymentLogos/apple-pay.svg";
+import amExpressLogo from "@assets/paymentLogos/amExpress.png";
+import tamaraLogo from "@assets/paymentLogos/tamara.svg";
 
 import poster from "@assets/img-payment.png";
 import { doneIcon } from "@assets/svg";
@@ -25,6 +27,8 @@ import { doneIcon } from "@assets/svg";
 import { Container } from "@mui/material";
 
 const PaymentSection = () => {
+  const [height, setHeight] = useState(300);
+
   const mostBeautifulPlacesData = useSelector(
     (state) => state.homeData.items.mostBeautifulPlaces
   );
@@ -48,12 +52,12 @@ const PaymentSection = () => {
 
   const paymentMethods = [
     { name: "visa", image: visa },
-    // { name: "STC", image: pay1 },
-    { name: "mada", image: pay2 },
-    { name: "masterCard", image: pay5 },
-    { name: "Apple pay", image: pay8 },
-    { name: "American Express pay", image: pay13 },
-    { name: "Tamara pay", image: pay14 },
+    // { name: "STC", image: stcLogo},
+    { name: "mada", image: madaLogo },
+    { name: "masterCard", image: masterCard },
+    { name: "Apple pay", image: applePayLogo },
+    { name: "American Express pay", image: amExpressLogo },
+    { name: "Tamara pay", image: tamaraLogo },
   ];
 
   const renderedPaymentMethods = paymentMethods.map((paymentMethod, index) => (
@@ -67,6 +71,15 @@ const PaymentSection = () => {
       className="object-contain h-7"
     />
   ));
+
+  useEffect(() => {
+    const handleResize = () => {
+      setHeight(window.innerWidth >= 1024 ? 510 : 250);
+    };
+    handleResize(); // Set initial value
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <section className="relative pt-5 bg-white lg:pt-20 pb-36">
@@ -116,15 +129,15 @@ const PaymentSection = () => {
           </div>
         </div>
 
-        <div className="relative w-[300px] lg:w-[420px] h-[350px] lg:h-[510px]">
+        <div className="relative w-[250px] lg:w-[420px] h-[250px] lg:h-[510px]">
           <Video
-            height="510"
+            height={height}
             src={mostBeautifulPlacesData?.[0]?.video}
             poster={poster}
             showTitleLink={false}
           />
 
-          <figure className="hidden lg:flex absolute z-[5] lg:bottom-[-30px]  items-end justify-center w-full -translate-x-1/2 end-1/2 ">
+          <figure className=" lg:flex absolute z-[5] lg:bottom-[-30px]  items-end justify-center w-full -translate-x-1/2 end-1/2 ">
             {/* <Image
               src={review}
               alt="reviews"
@@ -139,7 +152,7 @@ const PaymentSection = () => {
                 alt="reviews"
                 width={210}
                 height={235}
-                className={`absolute object-cover  bottom-[-40px] rounded-[16px] w-[210px] h-[235px] ${
+                className={`absolute object-cover lg:bottom-[-75px] -bottom-[100px] rounded-[16px] lg:w-[210px] w-[150px] lg:h-[235px] h-[150px] box-shadow ${
                   locale === "ar" ? "end-6" : "end-[-300px]"
                 } `}
               />

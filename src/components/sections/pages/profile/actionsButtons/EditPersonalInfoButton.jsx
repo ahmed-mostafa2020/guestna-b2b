@@ -7,6 +7,7 @@ import actGetCountriesAndNationalities from "@store/address/act/actGetCountriesA
 
 import { useState } from "react";
 
+import { getHeaders } from "@utils/getHeaders";
 import CustomizedModal from "@components/common/customizedModal";
 import FrameWithImagedHeader from "@components/common/frameWithImagedHeader/FrameWithImagedHeader";
 import PersonalDataEditing from "@components/forms/personalDataEditing";
@@ -19,10 +20,12 @@ const EditPersonalInfoButton = () => {
   const locale = useLocale();
   const dispatch = useDispatch();
 
+  const headers = getHeaders(locale);
+
   const handleClick = () => {
     setOpen(true);
     if (list.length === 0 && loading !== "loading") {
-      dispatch(actGetCountriesAndNationalities(locale));
+      dispatch(actGetCountriesAndNationalities(headers));
     }
   };
 

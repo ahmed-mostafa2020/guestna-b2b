@@ -33,6 +33,8 @@ import promoCode from "./forms/promoCode/promoCodeSlice";
 
 import address from "./address/addressSlice";
 
+import navbar from "./navbarData/navbarDataSlice";
+
 const rootPersistConfig = {
   key: "root",
   storage,
@@ -44,6 +46,7 @@ const rootPersistConfig = {
     "loginForm",
     "favorites",
     "address",
+    "navbar",
   ],
 };
 
@@ -68,6 +71,7 @@ const rootReducer = combineReducers({
   promoCode,
 
   address,
+  navbar,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);

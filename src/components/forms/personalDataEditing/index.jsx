@@ -40,6 +40,8 @@ const PersonalDataEditing = ({ handleClose }) => {
   const locale = useLocale();
   const t = useTranslations();
 
+  const headers = getHeaders(locale);
+
   const profileData = useSelector((state) => state.profileData.data);
   const userInfo = profileData?.userInfo || {};
 
@@ -94,7 +96,7 @@ const PersonalDataEditing = ({ handleClose }) => {
       dispatch(
         actGetCities({
           countryId: selectedCountryId,
-          locale: locale,
+          headers: headers,
         })
       );
     }
@@ -108,8 +110,6 @@ const PersonalDataEditing = ({ handleClose }) => {
   };
 
   const dispatch = useDispatch();
-
-  const headers = getHeaders(locale);
 
   const infoEditing = createPersonalInfoEditingSchema(t);
 
