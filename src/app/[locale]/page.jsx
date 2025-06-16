@@ -17,8 +17,11 @@ import { useFetchData } from "@hooks/useFetchData";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 
-import HeroSection from "@components/sections/pages/home/heroSection/HeroSection";
-import Plans from "@components/sections/pages/home/heroSection/plans";
+import HeroSection from "@components/sections/pages/home/heroSection";
+import Plans from "@components/sections/pages/home/plans";
+import MainCategoriesSection from "@components/sections/pages/home/mainCategories";
+import Features from "@components/sections/pages/home/features";
+
 import HighestActivitiesSection from "@components/sections/highestActivities/HighestActivitiesSection";
 import BestSellingSection from "@components/sections/bestSelling/BestSellingSection";
 import ActivitiesSection from "@components/sections/womenOnly/ActivitiesSection";
@@ -78,6 +81,10 @@ export default function Home() {
         <HeroSection />
 
         <Plans />
+
+        <MainCategoriesSection />
+
+        <Features />
         <ResponsiveSeparator />
 
         <HighestActivitiesSection />

@@ -180,9 +180,31 @@
     "minimum": "Minimum",
     "mobileTitle": "Where do you want to go?"
   },
-  "trending": {
-    "title": "Trending Now",
-    "subTitle": "Discover the most popular trips in Saudi Arabia"
+  "plans": {
+    "title": "Plan your school trip with ease, all options in one place.",
+    "subTitle": "Let's start a journey together that will create unforgettable memories"
+  },
+  "mainCategories": {
+    "title": "More than 400 educational destinations in more than 20 cities around Saudi Arabia",
+    "subTitle": "We believe that every school trip should be a unique educational and entertaining experience. With our customization features, you can easily design trip itineraries that suit your students' needs and your school's goals."
+  },
+  "features": {
+    "feature1": {
+      "title": "Selection and customization",
+      "description": "Select and customize safe learning experiences and trips using advanced and simple technologies."
+    },
+    "feature2": {
+      "title": "Comprehensive technical and professional support",
+      "description": "Covering all school needs and providing comprehensive and integrated technical and professional support"
+    },
+    "feature3": {
+      "title": "Various activities and adventures",
+      "description": "Providing diverse and innovative activities and adventures for students through partnerships with local service providers."
+    },
+    "feature4": {
+      "title": "Integrating education with entertainment",
+      "description": "Integrating education and entertainment to create flexible experiences that are adaptable to diverse educational curricula and objectives"
+    }
   },
   "highestActivities": {
     "title": "Highest-rated activities",

@@ -1,0 +1,79 @@
+import Image from "next/image";
+
+import { useTranslations } from "next-intl";
+
+import { Container } from "@mui/material";
+
+import features from "@assets/sectionBackground/features.webp";
+import choosing from "@assets/choosing.webp";
+import support from "@assets/support.webp";
+import adventure from "@assets/adventure.webp";
+import entertainment from "@assets/entertainment.webp";
+
+const Features = () => {
+  const t = useTranslations();
+
+  const featuresList = [
+    {
+      image: choosing,
+      title: t("features.feature1.title"),
+      description: t("features.feature1.description"),
+    },
+    {
+      image: support,
+      title: t("features.feature2.title"),
+      description: t("features.feature2.description"),
+    },
+    {
+      image: adventure,
+      title: t("features.feature3.title"),
+      description: t("features.feature3.description"),
+    },
+    {
+      image: entertainment,
+      title: t("features.feature4.title"),
+      description: t("features.feature4.description"),
+    },
+  ];
+
+  const renderedFeatures = featuresList.map((feature) => (
+    <div key={feature.title} className="flex-col flex-1 gap-2 centered">
+      <Image
+        src={feature.image}
+        alt={feature.title}
+        width={100}
+        height={100}
+        className="object-cover mb-2 bg-gray-200 rounded-[100px]"
+      />
+
+      <h3 className="text-center text-mainColor lg:text-[28px] text-xl font-semibold font-ibm text-nowrap">
+        {feature.title}
+      </h3>
+
+      <p className="text-lg font-medium leading-6 text-center text-textLight lg:text-xl font-ibm">
+        {feature.description}
+      </p>
+    </div>
+  ));
+
+  return (
+    <section>
+      <Container maxWidth="lg">
+        <Image
+          src={features}
+          alt="features"
+          width={1400}
+          height={340}
+          priority={true}
+          className="object-fit"
+        />
+
+        <div className="flex flex-wrap gap-4 px-6 pt-6 pb-6 mt-0 bg-white lg:pt-12 lg:-mt-28">
+          {renderedFeatures}
+        </div>
+      </Container>
+    </section>
+  );
+};
+
+export default Features;
