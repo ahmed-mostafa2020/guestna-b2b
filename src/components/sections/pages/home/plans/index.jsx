@@ -25,9 +25,7 @@ const Plans = () => {
 
       <div className="flex lg:flex-1 flex-col gap-2 lg:gap-4 z-[2] py-6 lg:pb-20 lg:pt-10 ps-14">
         <Container maxWidth="lg lg:pt-16 lg:pb-32 pt-8 pb-12">
-          <h3
-            className={`text-xl lg:text-4xl lg:leading-[44px] font-semibold lg:py-2 w-full lg:w-[55%] pb-3 lg:pb-6`}
-          >
+          <h3 className="text-xl text-center lg:text-start lg:text-4xl lg:leading-[44px] font-semibold lg:py-2 w-full lg:w-[55%] pb-3 lg:pb-6">
             <span className="text-secColor pe-1">{t("common.guestna")}</span>
             {t("plans.title")}
           </h3>

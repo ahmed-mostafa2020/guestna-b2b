@@ -5,10 +5,10 @@ import { useTranslations } from "next-intl";
 import { Container } from "@mui/material";
 
 import features from "@assets/sectionBackground/features.webp";
-import choosing from "@assets/choosing.webp";
-import support from "@assets/support.webp";
-import adventure from "@assets/adventure.webp";
-import entertainment from "@assets/entertainment.webp";
+import choosing from "@assets/choosing.svg";
+import support from "@assets/support.svg";
+import adventure from "@assets/adventure.svg";
+import entertainment from "@assets/entertainment.svg";
 
 const Features = () => {
   const t = useTranslations();
@@ -43,10 +43,10 @@ const Features = () => {
         alt={feature.title}
         width={100}
         height={100}
-        className="object-cover mb-2 bg-gray-200 rounded-[100px]"
+        className="object-cover lg:mb-2 bg-gray-200 rounded-[100px]"
       />
 
-      <h3 className="text-center text-mainColor lg:text-[28px] text-xl font-semibold font-ibm text-nowrap">
+      <h3 className="text-center text-titleColor lg:text-[28px] text-xl font-semibold font-ibm text-nowrap">
         {feature.title}
       </h3>
 
@@ -68,7 +68,7 @@ const Features = () => {
           className="object-fit"
         />
 
-        <div className="flex flex-wrap gap-4 px-6 pt-6 pb-6 mt-0 bg-white lg:pt-12 lg:-mt-28">
+        <div className="flex flex-wrap gap-5 px-6 pt-6 pb-6 mt-0 bg-white lg:pt-12 lg:-mt-28">
           {renderedFeatures}
         </div>
       </Container>

@@ -22,7 +22,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   aboutUsIcon,
-  companiesIcon,
   discoverIcon,
   greenPhoneIcon,
   schoolsIcon,
@@ -61,13 +60,6 @@ const TemporaryDrawer = () => {
       isDisabled: false,
       isBlank: true,
       icon: schoolsIcon,
-    },
-    {
-      name: t("header.companies"),
-      link: "companies",
-      isDisabled: true,
-      isBlank: false,
-      icon: companiesIcon,
     },
     {
       name: t("header.aboutUs"),

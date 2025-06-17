@@ -38,6 +38,7 @@ import guestGif from "@assets/gif/guest.gif";
 
 import { searchIconBlack, searchIconWhite } from "@assets/svg";
 import CustomizedModal from "../common/customizedModal";
+import { Container } from "@mui/material";
 
 const FiltersBox = () => {
   const [value, setValue] = useState("multiDays");
@@ -355,126 +356,130 @@ const FiltersBox = () => {
     <>
       {/* Web */}
       <div className="hidden w-full mt-16 transition-all duration-200 ease-in-out lg:block">
-        <Box>
-          <TabContext value={value}>
-            <Box>
-              <TabList
-                onChange={handleChange}
-                aria-label="filters"
-                className="w-fit rounded-t-2xl"
-                sx={{
-                  "& .MuiTabs-indicator": {
-                    backgroundColor: "#007473",
-                  },
-                }}
-              >
-                <Tab
-                  onClick={() => {
-                    dispatch(switchTripsType(CONSTANT_VALUES.PACKAGE));
-                    dispatch(clearActivityDayDate());
-                  }}
-                  label={t("filtersBox.multiDaysTrips")}
-                  value="multiDays"
+        <Container maxWidth="lg">
+          <Box>
+            <TabContext value={value}>
+              <Box>
+                <TabList
+                  onChange={handleChange}
+                  aria-label="filters"
+                  className="w-fit rounded-t-2xl"
                   sx={{
-                    "&.MuiButtonBase-root": {
-                      backgroundColor: "white",
-                    },
-                    "&.MuiButtonBase-root ,&.Mui-selected": {
-                      color: "#bbb",
-                      fontSize: "18px",
-                      padding: "16px 24px",
-                      fontWeight: 500,
-                      fontFamily: "var(--font-somar-sans), sans-serif",
-                      transition: "all 0.2s ease-in-out",
-                    },
-                    "&.Mui-selected": {
-                      color: "white",
+                    "& .MuiTabs-indicator": {
                       backgroundColor: "#007473",
                     },
                   }}
-                />
-                <Tab
-                  onClick={() => {
-                    dispatch(switchTripsType(CONSTANT_VALUES.ACTIVITY));
-                    dispatch(clearCheckInDate());
-                    dispatch(clearCheckOutDate());
-                  }}
-                  label={t("filtersBox.singleDayTrips")}
-                  value="singleDay"
-                  sx={{
-                    "&.MuiButtonBase-root": {
-                      backgroundColor: "white",
-                    },
-                    "&.MuiButtonBase-root ,&.Mui-selected": {
-                      color: "#bbb",
-                      fontSize: "18px",
-                      padding: "16px 24px",
-                      fontWeight: 500,
-                      fontFamily: "var(--font-somar-sans), sans-serif",
-                      transition: "all 0.2s ease-in-out",
-                    },
-                    "&.Mui-selected": {
-                      color: "white",
-                      backgroundColor: "#007473",
-                    },
-                  }}
-                />
-              </TabList>
-            </Box>
-
-            <TabPanel value="multiDays" sx={{ padding: 0 }}>
-              <div className="flex items-center px-3 bg-white rounded-b-2xl rounded-e-2xl">
-                {renderedMultiDaysButtonsList}
-
-                <Link
-                  onClick={() => {
-                    dispatch(setTripsTypes(CONSTANT_VALUES.PACKAGE));
-                  }}
-                  href={{
-                    pathname: `/${locale}/discover`,
-                    query: constructQueryString(),
-                  }}
-                  className="w-20 h-20 my-2 transition-all duration-200 ease-in-out rounded-lg ms-2 bg-mainColor hover:bg-linksHover centered"
                 >
-                  {searchIconWhite}
-                </Link>
-              </div>
-            </TabPanel>
+                  <Tab
+                    onClick={() => {
+                      dispatch(switchTripsType(CONSTANT_VALUES.PACKAGE));
+                      dispatch(clearActivityDayDate());
+                    }}
+                    label={t("filtersBox.multiDaysTrips")}
+                    value="multiDays"
+                    sx={{
+                      "&.MuiButtonBase-root": {
+                        backgroundColor: "white",
+                      },
+                      "&.MuiButtonBase-root ,&.Mui-selected": {
+                        color: "#bbb",
+                        fontSize: "18px",
+                        padding: "16px 24px",
+                        fontWeight: 500,
+                        fontFamily: "var(--font-somar-sans), sans-serif",
+                        transition: "all 0.2s ease-in-out",
+                      },
+                      "&.Mui-selected": {
+                        color: "white",
+                        backgroundColor: "#007473",
+                      },
+                    }}
+                  />
+                  <Tab
+                    onClick={() => {
+                      dispatch(switchTripsType(CONSTANT_VALUES.ACTIVITY));
+                      dispatch(clearCheckInDate());
+                      dispatch(clearCheckOutDate());
+                    }}
+                    label={t("filtersBox.singleDayTrips")}
+                    value="singleDay"
+                    sx={{
+                      "&.MuiButtonBase-root": {
+                        backgroundColor: "white",
+                      },
+                      "&.MuiButtonBase-root ,&.Mui-selected": {
+                        color: "#bbb",
+                        fontSize: "18px",
+                        padding: "16px 24px",
+                        fontWeight: 500,
+                        fontFamily: "var(--font-somar-sans), sans-serif",
+                        transition: "all 0.2s ease-in-out",
+                      },
+                      "&.Mui-selected": {
+                        color: "white",
+                        backgroundColor: "#007473",
+                      },
+                    }}
+                  />
+                </TabList>
+              </Box>
 
-            <TabPanel value="singleDay" sx={{ padding: 0 }}>
-              <div className="flex items-center px-3 bg-white rounded-b-2xl rounded-e-2xl">
-                {renderedSingleDayButtonsList}
+              <TabPanel value="multiDays" sx={{ padding: 0 }}>
+                <div className="flex items-center px-3 bg-white rounded-b-2xl rounded-e-2xl">
+                  {renderedMultiDaysButtonsList}
 
-                <Link
-                  onClick={() => {
-                    dispatch(setTripsTypes(CONSTANT_VALUES.ACTIVITY));
-                  }}
-                  href={{
-                    pathname: `/${locale}/discover`,
-                    query: constructQueryString(),
-                  }}
-                  className="w-20 h-20 my-2 transition-all duration-200 ease-in-out rounded-lg ms-2 bg-mainColor hover:bg-linksHover centered"
-                >
-                  {searchIconWhite}
-                </Link>
-              </div>
-            </TabPanel>
-          </TabContext>
-        </Box>
+                  <Link
+                    onClick={() => {
+                      dispatch(setTripsTypes(CONSTANT_VALUES.PACKAGE));
+                    }}
+                    href={{
+                      pathname: `/${locale}/discover`,
+                      query: constructQueryString(),
+                    }}
+                    className="w-20 h-20 my-2 transition-all duration-200 ease-in-out rounded-lg ms-2 bg-mainColor hover:bg-linksHover centered"
+                  >
+                    {searchIconWhite}
+                  </Link>
+                </div>
+              </TabPanel>
+
+              <TabPanel value="singleDay" sx={{ padding: 0 }}>
+                <div className="flex items-center px-3 bg-white rounded-b-2xl rounded-e-2xl">
+                  {renderedSingleDayButtonsList}
+
+                  <Link
+                    onClick={() => {
+                      dispatch(setTripsTypes(CONSTANT_VALUES.ACTIVITY));
+                    }}
+                    href={{
+                      pathname: `/${locale}/discover`,
+                      query: constructQueryString(),
+                    }}
+                    className="w-20 h-20 my-2 transition-all duration-200 ease-in-out rounded-lg ms-2 bg-mainColor hover:bg-linksHover centered"
+                  >
+                    {searchIconWhite}
+                  </Link>
+                </div>
+              </TabPanel>
+            </TabContext>
+          </Box>
+        </Container>
       </div>
 
       {/* Mobile */}
       <div className="flex w-full -mb-10 transition-all duration-200 ease-in-out cursor-pointer lg:hidden">
-        <div
-          onClick={handleOpen}
-          className="flex items-center w-full gap-3 p-3 bg-white rounded-2xl"
-        >
-          {searchIconBlack}
+        <Container maxWidth="lg">
+          <div
+            onClick={handleOpen}
+            className="flex items-center w-full gap-3 p-3 bg-white rounded-2xl"
+          >
+            {searchIconBlack}
 
-          <h2 className="text-base font-medium">
-            {t("filtersBox.mobileTitle")}
-          </h2>
-        </div>
+            <h2 className="text-base font-medium">
+              {t("filtersBox.mobileTitle")}
+            </h2>
+          </div>
+        </Container>
       </div>
 
       <CustomizedModal
