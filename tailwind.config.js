@@ -34,6 +34,9 @@ module.exports = {
         headerBg: "#012F47",
         figure: "#f4f4f46e",
       },
+      boxShadow: {
+        card: "0px 0px 4px 0px rgba(0, 0, 0, 0.16)",
+      },
       fontFamily: {
         somar: ["var(--font-somar-sans)", "sans-serif"],
         ibm: ["IBM Plex Sans Arabic", "sans-serif"],
