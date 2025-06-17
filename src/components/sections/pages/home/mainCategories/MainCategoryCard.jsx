@@ -10,6 +10,9 @@ import ImageWithPlaceholder from "@components/common/imagesPlaceholder/ImageWith
 
 const MainCategoryCard = ({ category }) => {
   const locale = useLocale();
+
+  if (!category) return null;
+
   return (
     <div
       key={category._id}
@@ -23,7 +26,7 @@ const MainCategoryCard = ({ category }) => {
         className="w-[290px] h-[430px] object-cover rounded-lg group-hover:filter"
       />
 
-      <div className="absolute inset-0 transition-all duration-200 ease-in-out bg-black bg-opacity-0 group-hover:bg-opacity-30"></div>
+      <div className="absolute inset-0 transition-all duration-200 ease-in-out bg-black bg-opacity-0 group-hover:bg-opacity-40"></div>
 
       <Link
         href={`/${locale}/discover?categories=${category._id}`}
