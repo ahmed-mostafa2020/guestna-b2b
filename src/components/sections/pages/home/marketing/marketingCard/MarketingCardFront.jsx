@@ -22,7 +22,9 @@ const MarketingCardFront = ({ market }) => {
       />
 
       <div className="flex flex-col justify-center gap-2 px-4 py-6 text-center bg-white">
-        <h4 className="font-semibold text-[17px] leading-7">{market.name}</h4>
+        <h4 className="font-semibold text-[17px] lg:leading-7">
+          {market.name}
+        </h4>
 
         <p className="font-medium leading-[22px] text-textLight">
           {market.description}

@@ -14,7 +14,7 @@ const MarketingCardBack = ({ market }) => {
   const renderedContentList = market?.contents.map((item, index) => (
     <li
       key={item._id}
-      className={`flex items-center gap-1 ${
+      className={`flex items-start lg:items-center gap-1 ${
         index !== market.contents.length - 1 ? "mb-0.5" : ""
       }`}
     >
@@ -27,7 +27,7 @@ const MarketingCardBack = ({ market }) => {
           className="object-cover"
         />
       </figure>
-      <span className="text-sm font-medium">{item.title}</span>
+      <span className="text-sm font-medium text-start">{item.title}</span>
     </li>
   ));
 
