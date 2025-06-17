@@ -20,6 +20,7 @@ import ErrorComponent from "@feedback/error/ErrorComponent";
 import HeroSection from "@components/sections/pages/home/heroSection";
 import Plans from "@components/sections/pages/home/plans";
 import MainCategoriesSection from "@components/sections/pages/home/mainCategories";
+import MessagesSection from "@components/sections/pages/home/messages";
 import Features from "@components/sections/pages/home/features";
 
 import HighestActivitiesSection from "@components/sections/highestActivities/HighestActivitiesSection";
@@ -83,6 +84,9 @@ export default function Home() {
         <Plans />
 
         <MainCategoriesSection />
+
+        <MessagesSection />
+        <ResponsiveSeparator />
 
         <Features />
         <ResponsiveSeparator />

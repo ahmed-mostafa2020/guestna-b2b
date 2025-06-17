@@ -1,5 +1,7 @@
 import { useTranslations } from "next-intl";
 
+import MainCategoriesSlider from "./MainCategoriesSlider";
+
 import { Container } from "@mui/material";
 
 const MainCategoriesSection = () => {
@@ -9,13 +11,13 @@ const MainCategoriesSection = () => {
     <section className="z-[2] relative">
       <Container
         maxWidth="lg"
-        className="flex flex-col gap-4 py-8 -mt-30 lg:-mt-64 lg:py-16"
+        className="flex flex-col gap-5 py-8 -mt-30 lg:-mt-64 lg:py-16"
       >
-        <div className="flex items-center justify-end">
-          <div className="h-[425px] w-[295px] border border-black">hi</div>
+        <div className="flex justify-end">
+          <MainCategoriesSlider />
         </div>
 
-        <h2 className="text-xl font-semibold text-center text-mainColor lg:leading-[60px] lg:text-5xl">
+        <h2 className="text-xl pt-2 font-semibold text-center text-mainColor lg:leading-[60px] lg:text-5xl">
           {t("mainCategories.title")}
         </h2>
 
