@@ -12,7 +12,7 @@ const MarketingCardFront = ({ market }) => {
   if (!market) return null;
 
   return (
-    <div className="flex flex-col justify-center overflow-hidden transition-all duration-200 ease-in-out border rounded-2xl border-border hover:shadow-card ">
+    <div className="flex flex-col justify-center overflow-hidden transition-all duration-200 ease-in-out border rounded-2xl border-border shadow-card">
       <ImageWithPlaceholder
         src={market.image}
         alt={market.name}

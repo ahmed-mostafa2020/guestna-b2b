@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 
 import { memo } from "react";
 
+import { CONSTANT_VALUES } from "@constants/constantValues";
 import ImageWithPlaceholder from "@components/common/imagesPlaceholder/ImageWithPlaceholder";
 
 const MarketingCardBack = ({ market }) => {
@@ -32,7 +33,7 @@ const MarketingCardBack = ({ market }) => {
   ));
 
   return (
-    <div className="flex flex-col justify-center overflow-hidden transition-all duration-200 ease-in-out border rounded-2xl border-border hover:shadow-card">
+    <div className="flex flex-col justify-center overflow-hidden transition-all duration-200 ease-in-out border rounded-2xl border-border shadow-card">
       <ImageWithPlaceholder
         src={market.hoverImage}
         alt={market.name}
@@ -46,7 +47,7 @@ const MarketingCardBack = ({ market }) => {
 
         <Link
           target="_blank"
-          href="https://api.whatsapp.com/send?phone=966547534666"
+          href={CONSTANT_VALUES.WHATSAPP_CONTACT}
           className="px-6 py-3 mx-auto mt-3 text-white transition-all duration-200 ease-in-out rounded-lg lg:px-16 centered bg-mainColor hover:bg-linksHover"
         >
           {t("links.contactUs")}

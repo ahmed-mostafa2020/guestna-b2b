@@ -8,7 +8,7 @@ import { useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import SettingsButton from "./SettingsButton";
-import ProfileImage from "../pages/profile/ProfileImage";
+import ProfileImage from "../../sections/pages/profile/ProfileImage";
 import Logo from "../../common/Logo";
 
 import Box from "@mui/material/Box";

@@ -14,7 +14,7 @@ import { getHeaders } from "@utils/getHeaders";
 import Logo from "../../common/Logo";
 import TemporaryDrawer from "./TemporaryDrawer";
 import SettingsButton from "./SettingsButton";
-import ProfileImage from "../pages/profile/ProfileImage";
+import ProfileImage from "../../sections/pages/profile/ProfileImage";
 
 import { Container } from "@mui/material";
 

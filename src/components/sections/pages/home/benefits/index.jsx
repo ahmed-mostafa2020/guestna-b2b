@@ -4,16 +4,16 @@ import { useTranslations } from "next-intl";
 
 import { Container } from "@mui/material";
 
-import features from "@assets/sectionBackground/features.webp";
+import benefits from "@assets/sectionBackground/benefits.webp";
 import choosing from "@assets/choosing.svg";
 import support from "@assets/support.svg";
 import adventure from "@assets/adventure.svg";
 import entertainment from "@assets/entertainment.svg";
 
-const Features = () => {
+const Benefits = () => {
   const t = useTranslations();
 
-  const featuresList = [
+  const benefitsList = [
     {
       image: choosing,
       title: t("features.feature1.title"),
@@ -36,22 +36,22 @@ const Features = () => {
     },
   ];
 
-  const renderedFeatures = featuresList.map((feature) => (
-    <div key={feature.title} className="flex-col flex-1 gap-2 centered">
+  const renderedBenefits = benefitsList.map((benefit) => (
+    <div key={benefit.title} className="flex-col flex-1 gap-2 centered">
       <Image
-        src={feature.image}
-        alt={feature.title}
+        src={benefit.image}
+        alt={benefit.title}
         width={100}
         height={100}
         className="object-cover lg:mb-2 bg-gray-200 rounded-[100px]"
       />
 
       <h3 className="text-center text-titleColor lg:text-[28px] text-xl font-semibold font-ibm text-nowrap">
-        {feature.title}
+        {benefit.title}
       </h3>
 
       <p className="text-lg font-medium leading-6 text-center text-textLight lg:text-xl font-ibm">
-        {feature.description}
+        {benefit.description}
       </p>
     </div>
   ));
@@ -60,8 +60,8 @@ const Features = () => {
     <section>
       <Container maxWidth="lg">
         <Image
-          src={features}
-          alt="features"
+          src={benefits}
+          alt="benefits"
           width={1400}
           height={340}
           priority={true}
@@ -69,11 +69,11 @@ const Features = () => {
         />
 
         <div className="flex flex-wrap gap-5 px-6 pt-6 pb-6 mt-0 bg-white lg:pt-12 lg:-mt-28">
-          {renderedFeatures}
+          {renderedBenefits}
         </div>
       </Container>
     </section>
   );
 };
 
-export default Features;
+export default Benefits;

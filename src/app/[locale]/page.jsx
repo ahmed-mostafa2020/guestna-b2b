@@ -21,19 +21,11 @@ import HeroSection from "@components/sections/pages/home/heroSection";
 import Plans from "@components/sections/pages/home/plans";
 import MainCategoriesSection from "@components/sections/pages/home/mainCategories";
 import MarketingSection from "@components/sections/pages/home/marketing";
-import Features from "@components/sections/pages/home/features";
+import Benefits from "@components/sections/pages/home/benefits";
 
 import HighestActivitiesSection from "@components/sections/highestActivities/HighestActivitiesSection";
-import BestSellingSection from "@components/sections/bestSelling/BestSellingSection";
-import ActivitiesSection from "@components/sections/womenOnly/ActivitiesSection";
-import PackagesSection from "@components/sections/womenOnly/PackagesSection";
-import ExclusiveOffersSection from "@components/sections/exclusiveOffers/ExclusiveOffersSection";
-import PaymentSection from "@components/sections/paymentSection/PaymentSection";
-import CategoriesSection from "@components/sections/categories/CategoriesSection";
-import MostBeautifulPlaces from "@components/sections/mostBeautifulPlaces/MostBeautifulPlaces";
-import ResponsiveSeparator from "@components/common/separators/ResponsiveSeparator";
-import LargeSeparator from "@components/common/separators/LargeSeparator";
 import SmallSeparator from "@components/common/separators/SmallSeparator";
+import FeatureTrips from "@/src/components/sections/pages/home/featureTrips";
 
 export default function Home() {
   // useReportWebVitals((metric) => {
@@ -47,7 +39,7 @@ export default function Home() {
     document.title = `${t("pagesHead.appName")} | ${t("pagesHead.title.home")}`;
   }, [t]);
 
-  const { data, error, isLoading } = useFetchData(
+  const { error, isLoading } = useFetchData(
     `${END_POINTS.TRIPS}${END_POINTS.HOME}`,
     {}, // no additional params
     {
@@ -86,42 +78,16 @@ export default function Home() {
         <MainCategoriesSection />
 
         <MarketingSection />
-        <ResponsiveSeparator />
+        <SmallSeparator />
 
-        <Features />
-        <ResponsiveSeparator />
+        <FeatureTrips />
+        <SmallSeparator />
+
+        <Benefits />
+        <SmallSeparator />
 
         <HighestActivitiesSection />
         <SmallSeparator />
-
-        <BestSellingSection />
-        <SmallSeparator />
-
-        {data?.womenOnly.length >= 1 && (
-          <>
-            <ActivitiesSection />
-            <ResponsiveSeparator />
-          </>
-        )}
-
-        {data?.packagesWomenOnly.length >= 1 && (
-          <>
-            <PackagesSection />
-            <ResponsiveSeparator />
-          </>
-        )}
-
-        <ExclusiveOffersSection />
-        <ResponsiveSeparator />
-
-        <PaymentSection />
-        <LargeSeparator />
-
-        {/* <BlogsSection /> */}
-        <CategoriesSection />
-        <ResponsiveSeparator />
-
-        <MostBeautifulPlaces />
       </main>
     </>
   );

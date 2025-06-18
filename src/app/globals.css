@@ -292,6 +292,30 @@ input[type="number"]::-webkit-outer-spin-button {
   left: 7px;
 }
 
+/* pagination bullets */
+.swiper-pagination-fraction,
+.swiper-pagination-custom,
+.swiper-horizontal > .swiper-pagination-bullets,
+.swiper-pagination-bullets.swiper-pagination-horizontal {
+  display: flex !important;
+  width: fit-content !important;
+  background-color: black !important;
+  border-radius: 16px !important;
+  padding: 8px 16px !important;
+  left: 50% !important;
+  bottom: 0 !important;
+}
+.swiper-pagination-bullet {
+  width: 16px !important;
+  height: 16px !important;
+  background-color: #c8c8c8 !important;
+  opacity: 1 !important;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #007473 !important;
+}
+
 /* videos list (slides & arrows)  */
 .slick-slide {
   display: flex !important;

@@ -14,8 +14,8 @@ import QueryProvider from "@components/libraries/QueryProvider";
 import GoogleTagManager from "@components/libraries/GoogleTagManager";
 import GoogleAnalytics from "@components/libraries/GoogleAnalytics";
 
-import Header from "@components/sections/header/Header";
-import Footer from "@components/sections/footer/Footer";
+import Header from "@components/layout/header/Header";
+import Footer from "@components/layout/footer/Footer";
 
 export const metadata = {
   title: "منصة جستنا السياحية",
