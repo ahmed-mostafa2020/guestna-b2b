@@ -9,7 +9,7 @@ const Logo = () => {
   const locale = useLocale();
 
   return (
-    <Link href={`/${locale}`} className="w-fit">
+    <Link href={`/${locale}`} className="outline-none w-fit">
       <Image
         src={logo}
         alt="logo"

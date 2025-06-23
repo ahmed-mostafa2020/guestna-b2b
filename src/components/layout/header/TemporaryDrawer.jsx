@@ -10,6 +10,7 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import SettingsButton from "./SettingsButton";
 import ProfileImage from "../../sections/pages/profile/ProfileImage";
 import Logo from "../../common/Logo";
+import ServicesDropdown from "./ServicesDropdown";
 
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -20,12 +21,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 
 import MenuIcon from "@mui/icons-material/Menu";
-import {
-  aboutUsIcon,
-  discoverIcon,
-  greenPhoneIcon,
-  schoolsIcon,
-} from "@assets/svg";
+import { aboutUsIcon, discoverIcon, greenPhoneIcon } from "@assets/svg";
 
 import Cookies from "js-cookie";
 
@@ -49,17 +45,6 @@ const TemporaryDrawer = () => {
       isDisabled: false,
       isBlank: false,
       icon: discoverIcon,
-    },
-    {
-      name: t("header.schools"),
-      link: `${
-        locale === "ar"
-          ? "https://gplusa.framer.ai/"
-          : "https://gpluse.framer.ai/"
-      }`,
-      isDisabled: false,
-      isBlank: true,
-      icon: schoolsIcon,
     },
     {
       name: t("header.aboutUs"),
@@ -107,6 +92,9 @@ const TemporaryDrawer = () => {
             </ListItemButton>
           </ListItem>
         ))}
+        <div className="px-4">
+          <ServicesDropdown />
+        </div>
       </List>
     </Box>
   );

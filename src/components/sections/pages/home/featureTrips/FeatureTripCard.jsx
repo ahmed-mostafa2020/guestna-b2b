@@ -21,7 +21,7 @@ const FeatureTripCard = ({ featureTrip }) => {
         className="w-full h-[350px] object-cover rounded-t-xl"
       />
 
-      <div className="px-6 py-5 bg-[#DCDCDA] flex justify-between items-center gap-2">
+      <div className="flex-wrap px-6 py-5 bg-[#DCDCDA] flex justify-between items-center gap-2">
         <h4 className="text-lg font-medium lg:text-xl">{featureTrip.name}</h4>
 
         <Link

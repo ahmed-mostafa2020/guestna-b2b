@@ -15,6 +15,7 @@ import Logo from "../../common/Logo";
 import TemporaryDrawer from "./TemporaryDrawer";
 import SettingsButton from "./SettingsButton";
 import ProfileImage from "../../sections/pages/profile/ProfileImage";
+import ServicesDropdown from "./ServicesDropdown";
 
 import { Container } from "@mui/material";
 
@@ -36,12 +37,6 @@ const Header = () => {
       link: `/${locale}`,
       isDisabled: false,
       isBlank: false,
-    },
-    {
-      name: t("header.schools"),
-      link: "https://guestna-edu.com",
-      isDisabled: false,
-      isBlank: true,
     },
     {
       name: t("header.aboutUs"),
@@ -97,7 +92,11 @@ const Header = () => {
         <Container maxWidth="lg" className="flex items-center justify-between">
           <Logo />
 
-          <nav className="hidden gap-4 lg:flex">{renderedNavLinks}</nav>
+          <nav className="items-center hidden gap-4 lg:flex">
+            {renderedNavLinks}
+
+            <ServicesDropdown />
+          </nav>
 
           <div className="hidden gap-4 centered lg:flex">
             <SettingsButton />

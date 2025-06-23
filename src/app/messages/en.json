@@ -149,6 +149,8 @@
     "schools": "Schools",
     "aboutUs": "About Us",
     "contactUs": "Contact Us",
+    "services": "Services",
+    "b2c": "GuestNa for Individuals",
     "login": "Login",
     "showSettings": "Show Settings",
     "chooseFavoriteLanguage": "Choose Favorite Language",
@@ -161,7 +163,10 @@
     "title": "Enter the world of educational learning",
     "subTitle": "Make your students' trips unforgettable memories",
     "with": "with",
-    "advantages": "... Safe, diverse, and ready-to-implement school programs"
+    "advantages": "... Safe, diverse, and ready-to-implement school programs",
+    "safe": "Safe",
+    "diverse": "Diverse",
+    "ready": "Ready-to-implement"
   },
   "filtersBox": {
     "multiDaysTrips": "Multi Days Trips",

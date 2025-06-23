@@ -10,9 +10,9 @@ import {
   updateGuestCount,
   resetFilters,
   setTripsTypes,
-  clearActivityDayDate,
-  clearCheckOutDate,
-  clearCheckInDate,
+  // clearActivityDayDate,
+  // clearCheckOutDate,
+  // clearCheckInDate,
 } from "@store/searchFilter/searchFilterSlice";
 import { Fragment, useEffect, useMemo, useState } from "react";
 
@@ -28,8 +28,8 @@ import BudgetButtonMenu from "./menus/BudgetButtonMenu";
 import FilterAccordion from "./FilterAccordion";
 
 import Box from "@mui/material/Box";
-import Tab from "@mui/material/Tab";
-import { TabContext, TabList, TabPanel } from "@mui/lab";
+// import Tab from "@mui/material/Tab";
+import { TabContext, TabPanel } from "@mui/lab";
 
 import earthGif from "@assets/gif/earth.gif";
 import dates from "@assets/gif/dates.gif";
@@ -41,7 +41,7 @@ import CustomizedModal from "../common/customizedModal";
 import { Container } from "@mui/material";
 
 const FiltersBox = () => {
-  const [value, setValue] = useState("multiDays");
+  const [value, _] = useState("multiDays");
 
   const dispatch = useDispatch();
 
@@ -122,9 +122,9 @@ const FiltersBox = () => {
   const locale = useLocale();
   const t = useTranslations();
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  // const handleChange = (event, newValue) => {
+  //   setValue(newValue);
+  // };
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -185,51 +185,51 @@ const FiltersBox = () => {
     },
   ];
 
-  const singleDayButtonsList = [
-    {
-      image: earthGif,
-      title: t("filtersBox.place"),
-      subTitle:
-        cities.length !== 0 ? destination : t("filtersBox.searchDestination"),
-      children: <PlaceButtonMenu places={places} />,
-    },
-    {
-      image: dates,
-      title: t("filtersBox.addDay"),
-      subTitle:
-        activityDayDate.day !== null
-          ? `${activityDayDate.day}/${activityDayDate.month}/${activityDayDate.year}`
-          : t("filtersBox.addDates"),
-      children: <DatesMenu type="activityDay" />,
-    },
-    {
-      image: guestGif,
-      title: t("filtersBox.guestsNumber"),
-      subTitle: getTotalGuests(guests),
-      children: (
-        <GuestsButtonMenu
-          targetAudiences={targetAudiences}
-          countState={guests}
-          updateCountAction={updateGuestCount}
-        />
-      ),
-    },
-    {
-      image: budgetGif,
-      title: t("filtersBox.budget"),
-      subTitle:
-        budgetRange.min !== CONSTANT_VALUES.MIN_BUDGET ||
-        budgetRange.max !== CONSTANT_VALUES.MAX_BUDGET ? (
-          <>
-            <span>{formatCurrency(budgetRange.min)}</span> :{" "}
-            <span>{formatCurrency(budgetRange.max)}</span>
-          </>
-        ) : (
-          t("filtersBox.setBudget")
-        ),
-      children: <BudgetButtonMenu />,
-    },
-  ];
+  // const singleDayButtonsList = [
+  //   {
+  //     image: earthGif,
+  //     title: t("filtersBox.place"),
+  //     subTitle:
+  //       cities.length !== 0 ? destination : t("filtersBox.searchDestination"),
+  //     children: <PlaceButtonMenu places={places} />,
+  //   },
+  //   {
+  //     image: dates,
+  //     title: t("filtersBox.addDay"),
+  //     subTitle:
+  //       activityDayDate.day !== null
+  //         ? `${activityDayDate.day}/${activityDayDate.month}/${activityDayDate.year}`
+  //         : t("filtersBox.addDates"),
+  //     children: <DatesMenu type="activityDay" />,
+  //   },
+  //   {
+  //     image: guestGif,
+  //     title: t("filtersBox.guestsNumber"),
+  //     subTitle: getTotalGuests(guests),
+  //     children: (
+  //       <GuestsButtonMenu
+  //         targetAudiences={targetAudiences}
+  //         countState={guests}
+  //         updateCountAction={updateGuestCount}
+  //       />
+  //     ),
+  //   },
+  //   {
+  //     image: budgetGif,
+  //     title: t("filtersBox.budget"),
+  //     subTitle:
+  //       budgetRange.min !== CONSTANT_VALUES.MIN_BUDGET ||
+  //       budgetRange.max !== CONSTANT_VALUES.MAX_BUDGET ? (
+  //         <>
+  //           <span>{formatCurrency(budgetRange.min)}</span> :{" "}
+  //           <span>{formatCurrency(budgetRange.max)}</span>
+  //         </>
+  //       ) : (
+  //         t("filtersBox.setBudget")
+  //       ),
+  //     children: <BudgetButtonMenu />,
+  //   },
+  // ];
 
   // Web
   const renderedMultiDaysButtonsList = multiDaysButtonsList.map(
@@ -247,20 +247,20 @@ const FiltersBox = () => {
     )
   );
 
-  const renderedSingleDayButtonsList = singleDayButtonsList.map(
-    (filterButton, index) => (
-      <div className="flex-1" key={index}>
-        <FilterButton
-          gif={filterButton.image}
-          title={filterButton.title}
-          subTitle={filterButton.subTitle}
-          index={index}
-        >
-          {filterButton.children}
-        </FilterButton>
-      </div>
-    )
-  );
+  // const renderedSingleDayButtonsList = singleDayButtonsList.map(
+  //   (filterButton, index) => (
+  //     <div className="flex-1" key={index}>
+  //       <FilterButton
+  //         gif={filterButton.image}
+  //         title={filterButton.title}
+  //         subTitle={filterButton.subTitle}
+  //         index={index}
+  //       >
+  //         {filterButton.children}
+  //       </FilterButton>
+  //     </div>
+  //   )
+  // );
 
   // Mobile
   const renderedMultiDaysAccordionsList = multiDaysButtonsList.map(
@@ -277,19 +277,19 @@ const FiltersBox = () => {
     )
   );
 
-  const renderedSingleDayAccordionsList = singleDayButtonsList.map(
-    (accordion, index) => (
-      <Fragment key={index}>
-        <FilterAccordion
-          index={index}
-          title={accordion.title}
-          subTitle={accordion.subTitle}
-        >
-          {accordion.children}
-        </FilterAccordion>
-      </Fragment>
-    )
-  );
+  // const renderedSingleDayAccordionsList = singleDayButtonsList.map(
+  //   (accordion, index) => (
+  //     <Fragment key={index}>
+  //       <FilterAccordion
+  //         index={index}
+  //         title={accordion.title}
+  //         subTitle={accordion.subTitle}
+  //       >
+  //         {accordion.children}
+  //       </FilterAccordion>
+  //     </Fragment>
+  //   )
+  // );
 
   // Function to construct the query string
   const constructQueryString = () => {
@@ -355,11 +355,11 @@ const FiltersBox = () => {
   return (
     <>
       {/* Web */}
-      <div className="hidden w-full mt-16 transition-all duration-200 ease-in-out lg:block">
+      <div className="hidden w-full mt-8 transition-all duration-200 ease-in-out lg:block">
         <Container maxWidth="lg">
           <Box>
             <TabContext value={value}>
-              <Box>
+              {/* <Box>
                 <TabList
                   onChange={handleChange}
                   aria-label="filters"
@@ -422,10 +422,10 @@ const FiltersBox = () => {
                     }}
                   />
                 </TabList>
-              </Box>
+              </Box> */}
 
               <TabPanel value="multiDays" sx={{ padding: 0 }}>
-                <div className="flex items-center px-3 bg-white rounded-b-2xl rounded-e-2xl">
+                <div className="flex items-center px-3 bg-white border rounded-2xl border-mainColor">
                   {renderedMultiDaysButtonsList}
 
                   <Link
@@ -443,7 +443,7 @@ const FiltersBox = () => {
                 </div>
               </TabPanel>
 
-              <TabPanel value="singleDay" sx={{ padding: 0 }}>
+              {/* <TabPanel value="singleDay" sx={{ padding: 0 }}>
                 <div className="flex items-center px-3 bg-white rounded-b-2xl rounded-e-2xl">
                   {renderedSingleDayButtonsList}
 
@@ -460,7 +460,7 @@ const FiltersBox = () => {
                     {searchIconWhite}
                   </Link>
                 </div>
-              </TabPanel>
+              </TabPanel> */}
             </TabContext>
           </Box>
         </Container>
@@ -491,7 +491,7 @@ const FiltersBox = () => {
       >
         <div className="p-4">
           <TabContext value={value}>
-            <TabList
+            {/* <TabList
               onChange={handleChange}
               aria-label="filters"
               sx={{
@@ -557,7 +557,7 @@ const FiltersBox = () => {
                   },
                 }}
               />
-            </TabList>
+            </TabList> */}
 
             <TabPanel value="multiDays" sx={{ padding: 0, marginTop: "12px" }}>
               <div className="flex flex-col gap-6 ">
@@ -565,11 +565,11 @@ const FiltersBox = () => {
               </div>
             </TabPanel>
 
-            <TabPanel value="singleDay" sx={{ padding: 0, marginTop: "12px" }}>
+            {/* <TabPanel value="singleDay" sx={{ padding: 0, marginTop: "12px" }}>
               <div className="flex flex-col gap-6 ">
                 {renderedSingleDayAccordionsList}
               </div>
-            </TabPanel>
+            </TabPanel> */}
           </TabContext>
         </div>
 

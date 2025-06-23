@@ -10,7 +10,6 @@ import { doneIcon } from "@assets/svg";
 
 const LanguagesDropdown = () => {
   const locale = useLocale();
-
   const t = useTranslations();
 
   const [selectedLanguage, setSelectedLanguage] = useState(
