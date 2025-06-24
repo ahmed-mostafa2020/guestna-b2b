@@ -97,11 +97,7 @@ const TripCard = ({ activityCard, imageWidth = 300 }) => {
                   t("common.day"),
                   t("common.days")
                 )
-              : calculateHours(
-                  activityCard.fromHour || "8AM",
-                  activityCard.toHour || "11AM",
-                  t
-                )}
+              : calculateHours(activityCard.fromHour, activityCard.toHour, t)}
           </h4>
 
           {activityCard.rate >= 1 && activityCard.reviewsCount && (
