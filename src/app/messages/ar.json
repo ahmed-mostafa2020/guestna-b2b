@@ -2,6 +2,8 @@
   "common": {
     "oneDayTrip": "رحلات اليوم الواحد",
     "multiDaysTrip": "رحلات متعددة الأيام",
+    "halfDayTrip": "رحلات نصف يوم",
+
     "sa": "السعودية",
     "discount": "خصم",
     "review": "مراجعة",

@@ -18,7 +18,13 @@ const Trips = () => {
     cardsPerView: 3.3,
   };
 
-  return <PackageTemplate fetchedData={trips} sectionData={sectionData} />;
+  return (
+    <PackageTemplate
+      fetchedData={trips}
+      sectionData={sectionData}
+      newCard={true}
+    />
+  );
 };
 
 export default Trips;

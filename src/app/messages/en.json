@@ -1,7 +1,8 @@
 {
   "common": {
-    "oneDayTrip": "One day",
-    "multiDaysTrip": "Multi days",
+    "oneDayTrip": "One day trip",
+    "multiDaysTrip": "Multi days trip",
+    "halfDayTrip": "Half day trip",
     "sa": "Saudi Arabia",
     "discount": "Disc",
     "review": "Review",
