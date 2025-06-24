@@ -5,8 +5,6 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useEffect } from "react";
 
-import { END_POINTS } from "@constants/APIs";
-
 import {
   setHomeData,
   setHomeDataLoading,
@@ -14,6 +12,7 @@ import {
 } from "@store/home/homeDataSlice";
 
 import { useFetchData } from "@hooks/useFetchData";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 
@@ -22,10 +21,9 @@ import Plans from "@components/sections/pages/home/plans";
 import MainCategoriesSection from "@components/sections/pages/home/mainCategories";
 import MarketingSection from "@components/sections/pages/home/marketing";
 import Benefits from "@components/sections/pages/home/benefits";
-
-import HighestActivitiesSection from "@components/sections/highestActivities/HighestActivitiesSection";
+import Trips from "@components/sections/pages/home/trips/Trips";
 import SmallSeparator from "@components/common/separators/SmallSeparator";
-import FeatureTrips from "@/src/components/sections/pages/home/featureTrips";
+import FeatureTrips from "@components/sections/pages/home/featureTrips";
 
 export default function Home() {
   // useReportWebVitals((metric) => {
@@ -40,7 +38,7 @@ export default function Home() {
   }, [t]);
 
   const { error, isLoading } = useFetchData(
-    `${END_POINTS.TRIPS}${END_POINTS.HOME}`,
+    `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.HOME}`,
     {}, // no additional params
     {
       lang: locale,
@@ -86,7 +84,7 @@ export default function Home() {
         <Benefits />
         <SmallSeparator />
 
-        <HighestActivitiesSection />
+        <Trips />
         <SmallSeparator />
       </main>
     </>

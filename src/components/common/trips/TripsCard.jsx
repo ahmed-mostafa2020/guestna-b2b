@@ -1,28 +1,28 @@
 "use client";
 
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+// import { useParams } from "next/navigation";
 
 import { useLocale, useTranslations } from "next-intl";
 
-import { useDispatch, useSelector } from "react-redux";
-import { actGetCustomizedTrips } from "@store/customization/act/actGetCustomizedTrips";
-import { setActivityData } from "@store/customization/customizationSlice";
+// import { useDispatch, useSelector } from "react-redux";
+// import { actGetCustomizedTrips } from "@store/customization/act/actGetCustomizedTrips";
+// import { setActivityData } from "@store/customization/customizationSlice";
 
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import { CUSTOMIZATION_ACTIONS } from "@constants/customizationActions";
-import formatCurrency from "@utils/FormatCurrency";
-import calculateDiscountedPrice from "@utils/CalculateDiscountedPrice";
+// import { CUSTOMIZATION_ACTIONS } from "@constants/customizationActions";
+// import formatCurrency from "@utils/FormatCurrency";
+// import calculateDiscountedPrice from "@utils/CalculateDiscountedPrice";
 import calculateHours from "@utils/CalculateHours";
 import formatNumbersUint from "@utils/FormatNumbersUint";
 
 import ImageWithPlaceholder from "../imagesPlaceholder/ImageWithPlaceholder";
-import FavoriteButton from "./FavoriteButton";
+// import FavoriteButton from "./FavoriteButton";
 
-import discountImage from "@assets/discountBg.png";
+// import discountImage from "@assets/discountBg.png";
 
 import {
   profileIcon,
@@ -33,71 +33,69 @@ import {
   earthIcon,
   groupsIcon,
 } from "@assets/svg";
-import { useSnackbar } from "notistack";
+// import { useSnackbar } from "notistack";
 
 const TripsCard = ({
   activityCard,
   imageWidth = 300,
   newDesign,
-  oneSize = false,
+  // oneSize = false,
 }) => {
   const [shouldSlide, setShouldSlide] = useState(false);
 
-  const { activityDayNumber } = useSelector((state) => state.customizationData);
+  // const { activityDayNumber } = useSelector((state) => state.customizationData);
 
   const textRef = useRef(null);
 
   const t = useTranslations();
   const locale = useLocale();
 
-  const params = useParams();
+  // const dispatch = useDispatch();
 
-  const dispatch = useDispatch();
+  // const { enqueueSnackbar } = useSnackbar();
 
-  const { enqueueSnackbar } = useSnackbar();
+  // const handleAddActivity = async () => {
+  //   const addedTripData = {
+  //     day: activityDayNumber || 1,
+  //     item: {
+  //       activity: activityCard._id,
+  //       fromHour: activityCard.fromHour,
+  //       toHour: activityCard.toHour,
+  //     },
+  //   };
 
-  const handleAddActivity = async () => {
-    const addedTripData = {
-      day: activityDayNumber || 1,
-      item: {
-        activity: activityCard._id,
-        fromHour: activityCard.fromHour,
-        toHour: activityCard.toHour,
-      },
-    };
+  //   try {
+  //     // Dispatch and wait for the API call to complete
+  //     await dispatch(
+  //       actGetCustomizedTrips({
+  //         customTripReqType: CUSTOMIZATION_ACTIONS.ADD_NEW_TRIP,
+  //         activity: addedTripData,
+  //         locale,
+  //       })
+  //     ).unwrap(); // This enables proper error handling
 
-    try {
-      // Dispatch and wait for the API call to complete
-      await dispatch(
-        actGetCustomizedTrips({
-          customTripReqType: CUSTOMIZATION_ACTIONS.ADD_NEW_TRIP,
-          activity: addedTripData,
-          locale,
-        })
-      ).unwrap(); // This enables proper error handling
+  //     // Only runs if the API call succeeds
+  //     dispatch(setActivityData(activityCard));
 
-      // Only runs if the API call succeeds
-      dispatch(setActivityData(activityCard));
-
-      // Show success message
-      enqueueSnackbar(
-        t("customization.validations.addedActivitySuccessfully"),
-        {
-          variant: "success",
-          preventDuplicate: true,
-        }
-      );
-    } catch (error) {
-      // Show error message
-      enqueueSnackbar(
-        error.message || "Failed to add activity. Please try again.",
-        {
-          variant: "error",
-          preventDuplicate: true,
-        }
-      );
-    }
-  };
+  //     // Show success message
+  //     enqueueSnackbar(
+  //       t("customization.validations.addedActivitySuccessfully"),
+  //       {
+  //         variant: "success",
+  //         preventDuplicate: true,
+  //       }
+  //     );
+  //   } catch (error) {
+  //     // Show error message
+  //     enqueueSnackbar(
+  //       error.message || "Failed to add activity. Please try again.",
+  //       {
+  //         variant: "error",
+  //         preventDuplicate: true,
+  //       }
+  //     );
+  //   }
+  // };
 
   useEffect(() => {
     // Check if text length exceeds 33 letters
@@ -132,14 +130,9 @@ const TripsCard = ({
     }
   }, [numCities, activityCard.cities]);
 
-  const isPackage =
-    activityCard.guestnaTripsType == CONSTANT_VALUES.PACKAGE && !oneSize
-      ? true
-      : false;
-
   return (
     <div className="rounded-2xl overflow-hidden flex flex-col card-shadow relative border border-[#E4E6E8]">
-      {activityCard.guestnaTripsType == CONSTANT_VALUES.PACKAGE ? (
+      {activityCard.tripsType == CONSTANT_VALUES.PACKAGE ? (
         <div className="flex items-center ps-4 gap-2 absolute z-[1] text-xs text-badge top-8">
           {activityCard.isCustomizable && (
             <p className="px-3 py-1 bg-white rounded-2xl">
@@ -169,18 +162,6 @@ const TripsCard = ({
         </p>
       )}
 
-      {!!activityCard.discountedPrice && (
-        <figure className="absolute z-[1] top-0 end-4">
-          <p className="absolute flex flex-wrap justify-center text-base text-center text-white top-3">
-            <span>{activityCard.discountedPrice * 100}%</span>
-
-            <span className="uppercase">{t("common.discount")}</span>
-          </p>
-
-          <Image src={discountImage} alt="discount" width={43} height={80} />
-        </figure>
-      )}
-
       <ImageWithPlaceholder
         src={activityCard.thumbnail.web}
         alt={activityCard.name}
@@ -190,16 +171,8 @@ const TripsCard = ({
       />
 
       <div
-        className={`mt-[-30px] relative bg-white z-[1] rounded-tr-[32px] p-4 flex flex-col ${
-          isPackage ? "gap-3" : "gap-1"
-        }  `}
+        className={`mt-[-30px] relative bg-white z-[1] rounded-tr-[32px] p-4 flex flex-col ${"gap-1"}  `}
       >
-        <FavoriteButton
-          tripId={activityCard._id}
-          favoriteState={activityCard.isFavorite}
-          isAbsolute={true}
-        />
-
         <div className="flex justify-between">
           {renderCities}
 
@@ -220,15 +193,15 @@ const TripsCard = ({
         <div className="overflow-hidden">
           <h3
             ref={textRef}
-            className={`font-semibold text-nowrap inline-block ${
-              isPackage ? "text-xl" : "text-base"
-            } ${
-              shouldSlide
-                ? locale == "ar"
-                  ? "sliding-text-ar"
-                  : "sliding-text-en"
-                : ""
-            }  `}
+            className={`font-semibold text-nowrap inline-block 
+              text-base
+             ${
+               shouldSlide
+                 ? locale == "ar"
+                   ? "sliding-text-ar"
+                   : "sliding-text-en"
+                 : ""
+             }  `}
           >
             {activityCard.name}
           </h3>
@@ -249,8 +222,8 @@ const TripsCard = ({
             </h4>
           )}
           <h4 className="flex items-center gap-1">
-            {activityCard.visibility === "PRIVATE" ? profileIcon : groupsIcon}
-            {t(`common.${activityCard.visibility}`)}
+            {activityCard.tripsType === "PRIVATE" ? profileIcon : groupsIcon}
+            {t(`common.${activityCard.tripsType}`)}
           </h4>
 
           {activityCard.guestRange && activityCard.availableSeats > 10 && (
@@ -275,58 +248,18 @@ const TripsCard = ({
         </div>
 
         <div
-          className={`flex items-center justify-between gap-2 ${
-            isPackage ? "mt-6" : "mt-2"
-          }   ${newDesign ? "flex-wrap" : ""}`}
+          className={`flex items-center justify-between gap-2
+             mt-2
+            ${newDesign ? "flex-wrap" : ""}`}
         >
-          <div className="flex flex-col items-start">
-            <div
-              dir="ltr"
-              className="flex items-center justify-end flex-shrink-0 gap-x-1"
-            >
-              {activityCard.discountedPrice ? (
-                <>
-                  <h3 className="text-xl font-semibold text-end">
-                    {calculateDiscountedPrice(
-                      activityCard.price,
-                      activityCard.discountedPrice
-                    )}
-                  </h3>
-
-                  <del className="text-end text-[#EB0101] text-sm font-medium">
-                    {formatCurrency(activityCard.price)}
-                  </del>
-                </>
-              ) : (
-                <h3 className="flex-1 text-xl font-semibold text-end">
-                  {formatCurrency(activityCard.price)}
-                </h3>
-              )}
-            </div>
-            <span className="text-sm font-medium tracking-tight capitalize text-textLight">
-              {t("common.onePerson")}
-            </span>
-          </div>
-
-          {params.addActivity ? (
-            <button
-              onClick={handleAddActivity}
-              className={`px-4 text-center  py-[10px] capitalize rounded-[10px] text-white bg-mainColor border-2 border-mainColor font-medium text-base transition-all ease-in-out duration-200 hover:bg-linksHover hover:border-linksHover ${
-                newDesign ? "lg:w-full" : "lg:w-[140px]"
-              }`}
-            >
-              {t("links.bookNow")}
-            </button>
-          ) : (
-            <Link
-              href={`/${locale}/discover/${activityCard.slug}`}
-              className={`px-4 text-center  py-[10px] capitalize rounded-[10px] text-white bg-mainColor border-2 border-mainColor font-medium text-base transition-all ease-in-out duration-200 hover:bg-linksHover hover:border-linksHover ${
-                newDesign ? "lg:w-full" : "lg:w-[140px]"
-              }`}
-            >
-              {t("links.bookNow")}
-            </Link>
-          )}
+          <Link
+            href={`/${locale}/discover/${activityCard.slug}`}
+            className={`px-8 text-center py-3 capitalize rounded-[10px] text-white bg-mainColor border-2 border-mainColor font-medium text-base transition-all ease-in-out duration-200 hover:bg-linksHover hover:border-linksHover mx-auto
+               
+            `}
+          >
+            {t("links.viewTripDetails")}
+          </Link>
         </div>
       </div>
     </div>

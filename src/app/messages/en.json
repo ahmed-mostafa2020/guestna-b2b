@@ -29,6 +29,9 @@
     "all": "All",
     "packages": "Packages",
     "activities": "Activities",
+    "PACKAGE": "Packages",
+    "ACTIVITY": "Activities",
+    "HALF_DAY": "Half Day",
     "multiCities": "Multi Cities",
     "customizable": "Customizable",
     "available": "Available",
@@ -114,8 +117,8 @@
     "reset": "Reset",
     "clearAll": "Clear All",
     "more": "Learn more",
-    "watchTripDetails": "Watch Trip Details",
-    "watchPackageDetails": "Watch Package Details",
+    "viewTripDetails": "View Trip Details",
+    "viewPackageDetails": "View Package Details",
     "backHome": "Back Home",
     "addToFavorites": "Add to Favorites",
     "share": "Share",
@@ -133,7 +136,6 @@
     "verification": "Verification",
     "cancel": "Cancel",
     "contactUS": "Contact Us",
-
     "goToLocation": "Go to Location",
     "bookForPrivate": "Booking for Private Group",
     "showAllDates": "Show All Dates",
@@ -184,7 +186,10 @@
     "searchByLocation": "Search by location",
     "maximum": "Maximum",
     "minimum": "Minimum",
-    "mobileTitle": "Where do you want to go?"
+    "mobileTitle": "Where do you want to go?",
+    "tripDuration": "Trip Duration",
+    "tripType": "Trip Type",
+    "Academic stage": "Academic Stage"
   },
   "plans": {
     "title": "Plan your school trip with ease, all options in one place.",
@@ -211,6 +216,10 @@
       "title": "Integrating education with entertainment",
       "description": "Integrating education and entertainment to create flexible experiences that are adaptable to diverse educational curricula and objectives"
     }
+  },
+  "trips": {
+    "title": "Unforgettable learning experiences",
+    "subTitle": "Various trips"
   },
   "highestActivities": {
     "title": "Highest-rated activities",

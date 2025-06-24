@@ -1,3 +1,7 @@
+"use client";
+
+import { useSelector } from "react-redux";
+
 import MainCategoryCard from "./MainCategoryCard";
 import { Container } from "@mui/material";
 
@@ -6,28 +10,11 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 const MainCategoriesSlider = () => {
-  const mainCategoriesList = [
-    {
-      _id: "684eda97bb9f5c64271c8937",
-      icon: "https://ik.imagekit.io/v51ywmzjoGuestna/uploads/th%20(32).jpg?updatedAt=1749998319742",
-      name: "سياحي",
-      description: "السفر من أجل الترفيه والاستكشاف",
-    },
-    {
-      _id: "684eda97bb9f5c64271c8937",
-      icon: "https://ik.imagekit.io/v51ywmzjoGuestna/uploads/th%20(32).jpg?updatedAt=1749998319742",
-      name: "سياحي",
-      description: "السفر من أجل الترفيه والاستكشاف",
-    },
-    {
-      _id: "684eda97bb9f5c64271c8937",
-      icon: "https://ik.imagekit.io/v51ywmzjoGuestna/uploads/th%20(32).jpg?updatedAt=1749998319742",
-      name: "سياحي",
-      description: "السفر من أجل الترفيه والاستكشاف",
-    },
-  ];
+  const mainCategories = useSelector(
+    (state) => state.homeData.items.categories
+  );
 
-  const renderedMainCategories = mainCategoriesList.map((category) => (
+  const renderedMainCategories = mainCategories?.map((category) => (
     <SwiperSlide key={category._id}>
       <MainCategoryCard category={category} />
     </SwiperSlide>

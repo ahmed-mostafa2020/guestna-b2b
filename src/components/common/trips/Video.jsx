@@ -136,7 +136,7 @@ const Video = ({
                 {linkTitle}
               </h4>
               <h5 className="text-xs font-medium">
-                {t("links.watchTripDetails")}{" "}
+                {t("links.viewTripDetails")}{" "}
                 {locale == "ar" ? <WestIcon /> : <EastIcon />}
               </h5>
             </div>

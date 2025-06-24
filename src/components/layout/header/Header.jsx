@@ -7,7 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useDispatch } from "react-redux";
 import actGetNavbarData from "@store/navbarData/act/actGetNavbarData";
 
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { getHeaders } from "@utils/getHeaders";
@@ -58,22 +58,25 @@ const Header = () => {
   ];
 
   const renderedNavLinks = navLinks.map((navLink, index) => (
-    <div key={index}>
-      {navLink.isDisabled ? (
-        <span className="px-4 py-3 text-lg font-medium leading-8 tracking-tight text-gray-400 capitalize border-b border-transparent border-solid cursor-not-allowed font-ibm">
-          {navLink.name}
-        </span>
-      ) : (
-        <Link
-          href={navLink.link}
-          key={index}
-          target={navLink.isBlank ? "_blank" : "_self"}
-          className="px-4 py-3 text-lg font-medium leading-8 tracking-tight capitalize transition-all duration-200 ease-in-out border-b border-transparent border-solid font-ibm hover:border-mainColor hover:text-mainColor"
-        >
-          {navLink.name}
-        </Link>
-      )}
-    </div>
+    <Fragment key={index}>
+      <div>
+        {navLink.isDisabled ? (
+          <span className="px-4 py-3 text-lg font-medium leading-8 tracking-tight text-gray-400 capitalize border-b border-transparent border-solid cursor-not-allowed font-ibm">
+            {navLink.name}
+          </span>
+        ) : (
+          <Link
+            href={navLink.link}
+            target={navLink.isBlank ? "_blank" : "_self"}
+            className="px-4 py-3 text-lg font-medium leading-8 tracking-tight capitalize transition-all duration-200 ease-in-out border-b border-transparent border-solid font-ibm hover:border-mainColor hover:text-mainColor"
+          >
+            {navLink.name}
+          </Link>
+        )}
+      </div>
+      {/* Insert ServicesDropdown after the first item */}
+      {index === 0 && <ServicesDropdown />}
+    </Fragment>
   ));
 
   useEffect(() => {
@@ -94,8 +97,6 @@ const Header = () => {
 
           <nav className="items-center hidden gap-4 lg:flex">
             {renderedNavLinks}
-
-            <ServicesDropdown />
           </nav>
 
           <div className="hidden gap-4 centered lg:flex">

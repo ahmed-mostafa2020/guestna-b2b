@@ -1,3 +1,7 @@
+"use client";
+
+import { useSelector } from "react-redux";
+
 import FeatureTripCard from "./FeatureTripCard";
 
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -8,46 +12,11 @@ import { Pagination } from "swiper/modules";
 import { Container } from "@mui/material";
 
 const FeatureTrips = () => {
-  const featureTripsList = [
-    {
-      _id: "684ee26714c2d0add2770beb",
-      slug: "king-fahd-public-library-in-jeddah",
-      tripsType: "ACTIVITY",
-      feature: {
-        image: {
-          app: "https://ik.imagekit.io/v51ywmzjoGuestna/uploads/image%20(6).png?updatedAt=1750237147726",
-          web: "https://ik.imagekit.io/v51ywmzjoGuestna/uploads/image%20(6).png?updatedAt=1750237147726",
-        },
-      },
-      name: "مكتبة الملك فهد العامة بجدة",
-    },
-    {
-      _id: "684fd940b1080a92b23f22ff",
-      slug: "farm-trip-in-jeddah",
-      tripsType: "ACTIVITY",
-      feature: {
-        image: {
-          app: "https://ik.imagekit.io/v51ywmzjoGuestna/uploads/WhatsApp%20Image%202025-06-18%20at%203.06.22%20PM.jpeg?updatedAt=1750248494216",
-          web: "https://ik.imagekit.io/v51ywmzjoGuestna/uploads/WhatsApp%20Image%202025-06-18%20at%203.06.22%20PM.jpeg?updatedAt=1750248494216",
-        },
-      },
-      name: "رحلة المزرعة في مدينة جدة",
-    },
-    {
-      _id: "684fe0085032b491f6dac0e0",
-      slug: "cultural-and-nature-day-in-jeddah",
-      tripsType: "PACKAGE",
-      feature: {
-        image: {
-          app: "https://ik.imagekit.io/v51ywmzjoGuestna/uploads/image%20(7).png?updatedAt=1750248270330",
-          web: "https://ik.imagekit.io/v51ywmzjoGuestna/uploads/image%20(7).png?updatedAt=1750248270330",
-        },
-      },
-      name: "يوم ثقافي وطبيعي في جدة",
-    },
-  ];
+  const featureTrips = useSelector(
+    (state) => state.homeData.items.featureTrips
+  );
 
-  const renderedFeatureTrips = featureTripsList.map((featureTrip) => (
+  const renderedFeatureTrips = featureTrips?.map((featureTrip) => (
     <SwiperSlide key={featureTrip._id}>
       <FeatureTripCard featureTrip={featureTrip} />
     </SwiperSlide>

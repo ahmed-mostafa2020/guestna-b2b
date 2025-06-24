@@ -31,15 +31,17 @@ const TripsSection = ({
                 {data.title}
               </h2>
 
-              <Link
-                href={{
-                  pathname: `/${locale}/discover`,
-                  query: filters,
-                }}
-                className="text-sm border-b lg:text-xl border-textDark"
-              >
-                {t("links.showAll")}
-              </Link>
+              {filters && (
+                <Link
+                  href={{
+                    pathname: `/${locale}/discover`,
+                    query: filters,
+                  }}
+                  className="text-sm border-b lg:text-xl border-textDark"
+                >
+                  {t("links.showAll")}
+                </Link>
+              )}
             </div>
 
             <h3 className="lg:text-[28px] lg:leading-9 w-[80%] lg:w-full">
