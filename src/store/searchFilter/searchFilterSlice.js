@@ -46,6 +46,11 @@ const initialState = {
   rate: null,
 
   otherFilters: {},
+
+  // B2B
+  tripDuration: [],
+  tripType: [],
+  academicStage: [],
 };
 
 const searchFilterSlice = createSlice({
@@ -278,6 +283,40 @@ const searchFilterSlice = createSlice({
 
     // Reset all filters
     resetFilters: () => initialState,
+
+    // B2B
+    // Trip duration selection toggle
+    toggleTripDuration: (state, action) => {
+      const tripDuration_id = action.payload;
+      const tripDurationIndex = state.tripDuration.indexOf(tripDuration_id);
+      if (tripDurationIndex === -1) {
+        state.tripDuration.push(tripDuration_id);
+      } else {
+        state.tripDuration.splice(tripDurationIndex, 1);
+      }
+    },
+
+    // Trip type selection toggle
+    toggleTripType: (state, action) => {
+      const tripTypeId = action.payload;
+      const tripTypeIndex = state.tripType.indexOf(tripTypeId);
+      if (tripTypeIndex === -1) {
+        state.tripType.push(tripTypeId);
+      } else {
+        state.tripType.splice(tripTypeIndex, 1);
+      }
+    },
+
+    // Trip type selection toggle
+    toggleAcademicStage: (state, action) => {
+      const academicStageId = action.payload;
+      const academicStageIndex = state.academicStage.indexOf(academicStageId);
+      if (academicStageIndex === -1) {
+        state.academicStage.push(academicStageId);
+      } else {
+        state.academicStage.splice(academicStageIndex, 1);
+      }
+    },
   },
 });
 
@@ -309,6 +348,11 @@ export const {
   clearCheckOutDate,
   clearActivityDayDate,
   resetFilters,
+
+  // B2B
+  toggleTripDuration,
+  toggleTripType,
+  toggleAcademicStage,
 } = searchFilterSlice.actions;
 
 export default searchFilterSlice.reducer;

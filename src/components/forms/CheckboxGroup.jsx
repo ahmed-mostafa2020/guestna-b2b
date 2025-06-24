@@ -18,7 +18,7 @@ const CheckboxGroup = ({
       <FormControlLabel
         sx={{
           marginInlineStart: 0,
-          width: "100%",
+          // width: "100%",
           padding: "6px",
           textTransform: "capitalize",
           "& .MuiFormControlLabel-label": {

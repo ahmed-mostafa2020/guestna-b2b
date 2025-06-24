@@ -42,7 +42,7 @@ const HeroSection = () => {
           {t("hero.advantages")}
 
           <span
-            className={`text-start block text-secColor transition-all ease-linear duration-500 leading-5 w-32 ${
+            className={`text-start block text-secColor transition-all ease-linear duration-500 leading-5 w-20 lg:w-32 ${
               fade
                 ? "lg:opacity-100 lg:translate-x-0"
                 : "lg:opacity-0 lg:translate-x-10"

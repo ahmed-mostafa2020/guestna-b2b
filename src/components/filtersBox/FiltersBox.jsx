@@ -21,15 +21,17 @@ import formatCurrency from "@utils/FormatCurrency";
 import formatNumbersUint from "@utils/FormatNumbersUint";
 import FilterButton from "./FilterButton";
 import PlaceButtonMenu from "./menus/places/PlaceButtonMenu";
-import DatesMenu from "./menus/dates/DatesMenu";
-import GuestsButtonMenu from "./menus/guests/GuestsButtonMenu";
+import TripDuration from "./menus/tripDuration";
+import TripType from "./menus/tripType";
+import AcademicStage from "./menus/academicStage";
 import BudgetButtonMenu from "./menus/BudgetButtonMenu";
 import FilterAccordion from "./FilterAccordion";
 
 import earthGif from "@assets/gif/earth.gif";
+import tripDuration from "@assets/gif/tripDuration.gif";
+import tripType from "@assets/gif/tripType.gif";
 import dates from "@assets/gif/dates.gif";
 import budgetGif from "@assets/gif/budget.gif";
-import guestGif from "@assets/gif/guest.gif";
 
 import { searchIconBlack, searchIconWhite } from "@assets/svg";
 import CustomizedModal from "../common/customizedModal";
@@ -132,25 +134,25 @@ const FiltersBox = () => {
       children: <PlaceButtonMenu places={places} />,
     },
     {
-      image: dates,
-      title: t("filtersBox.addDay"),
+      image: tripDuration,
+      title: t("filtersBox.tripDuration"),
       subTitle:
         activityDayDate.day !== null
           ? `${activityDayDate.day}/${activityDayDate.month}/${activityDayDate.year}`
           : t("filtersBox.addDates"),
-      children: <DatesMenu type="activityDay" />,
+      children: <TripDuration />,
     },
     {
-      image: guestGif,
-      title: t("filtersBox.guestsNumber"),
+      image: tripType,
+      title: t("filtersBox.tripType"),
       subTitle: getTotalGuests(guests),
-      children: (
-        <GuestsButtonMenu
-          targetAudiences={targetAudiences}
-          countState={guests}
-          updateCountAction={updateGuestCount}
-        />
-      ),
+      children: <TripType />,
+    },
+    {
+      image: dates,
+      title: t("filtersBox.AcademicStage"),
+      subTitle: getTotalGuests(guests),
+      children: <AcademicStage />,
     },
     {
       image: budgetGif,
