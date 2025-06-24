@@ -11,7 +11,7 @@ const Plans = () => {
   const t = useTranslations();
 
   return (
-    <section className="relative flex text-white bg-[#19191950]">
+    <section className="z-[1] relative flex text-white bg-[#19191950]">
       <Image
         src={plan}
         alt="plans"

@@ -222,48 +222,6 @@
     "title": "Unforgettable learning experiences",
     "subTitle": "Various trips"
   },
-  "highestActivities": {
-    "title": "Highest-rated activities",
-    "subTitle": "Short on time? Pick a one-day trip!"
-  },
-  "bestSelling": {
-    "title": "Best-selling packages",
-    "subTitle": "One day isn't enough? These trips are for you!"
-  },
-  "similarExperiences": {
-    "title": "Similar Experiences"
-  },
-  "womenOnly": {
-    "activities": {
-      "title": "For Women",
-      "subTitle": "Tailored experiences designed for exciting, safe, and unforgettable adventures"
-    },
-    "packages": {
-      "title": "For Women",
-      "subTitle": "Tailored experiences designed for exciting, safe, and unforgettable adventures"
-    }
-  },
-
-  "exclusiveOffers": {
-    "title": "Deals You Can’t Miss",
-    "subTitle": "Travel more, pay less—don’t miss out!"
-  },
-  "payments": {
-    "badge": "Easy payment",
-    "title": "Every destination on your mind, even the ones you never thought of...GuestNa takes you there",
-    "subTitle": "Choose a ready-made experience or customize your own adventure for unforgettable memories!",
-    "confidentialityOfInformation": "Your Information is Safe & Secure",
-    "customerSupport": "We value our customers ",
-    "transparentPolicies": "Clear and transparent policies",
-    "safePayment": "Flexible payment options"
-  },
-  "blogs": {
-    "title": "Browse Groups",
-    "subTitle": "Get ideas on what to do, see and eat"
-  },
-  "mostBeautifulPlaces": {
-    "title": "Want to explore the most beautiful places in Saudi Arabia?"
-  },
   "tripDetails": {
     "favoriteByGuests": {
       "title": "Favorite by guests",

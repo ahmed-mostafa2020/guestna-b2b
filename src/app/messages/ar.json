@@ -3,7 +3,6 @@
     "oneDayTrip": "رحلات اليوم الواحد",
     "multiDaysTrip": "رحلات متعددة الأيام",
     "halfDayTrip": "رحلات نصف يوم",
-
     "sa": "السعودية",
     "discount": "خصم",
     "review": "مراجعة",
@@ -138,7 +137,6 @@
     "verification": "تحقيق",
     "cancel": "إلغاء",
     "contactUs": "تواصل معنا",
-
     "goToLocation": "انتقل إلى الموقع",
     "bookForPrivate": "حجز لمجموعة خاصة",
     "showAllDates": "عرض كل التواريخ",
@@ -156,7 +154,6 @@
     "contactUs": "تواصل معنا",
     "services": "خدماتنا",
     "b2c": "جستنا للأفراد",
-
     "login": "تسجيل دخول",
     "showSettings": "إعدادات العرض",
     "chooseFavoriteLanguage": "اختيار اللغة المفضلة",
@@ -224,48 +221,6 @@
   "trips": {
     "title": "تجارب تعليمية لا تُنسى",
     "subTitle": "رحلات متنوعة"
-  },
-  "highestActivities": {
-    "title": "الأنشطة الأعلى تقييمًا",
-    "subTitle": "ماعندك وقت؟ اختر من رحلة مدتها يوم"
-  },
-  "bestSelling": {
-    "title": "الباقات الاكثر مبيعاً",
-    "subTitle": "ما يكفي يوم واحد؟ هذي الرحلات لك"
-  },
-  "similarExperiences": {
-    "title": "تجارب مشابهة"
-  },
-  "womenOnly": {
-    "activities": {
-      "title": "رحلات نسائية",
-      "subTitle": "تجارب ورحلات خُصصت لتعيشي مغامرات حماسية، آمنة، ومثالية"
-    },
-    "packages": {
-      "title": "رحلات نسائية",
-      "subTitle": "تجارب ورحلات خُصصت لتعيشي مغامرات حماسية، آمنة، ومثالية"
-    }
-  },
-
-  "exclusiveOffers": {
-    "title": "عروض ما تتفوّت",
-    "subTitle": "سافر أكثر، ادفع أقل، ولا تفوّت الفرصة!"
-  },
-  "payments": {
-    "badge": "سهولة الدفع",
-    "title": "كل مكان في بالك، وحتى الوجهة اللي بخيالك؛ جستنا تاخذك له",
-    "subTitle": "اختار تجربة جاهزة، أو خصص مغامرتك بنفسك، وعيش مغامرات لا تُنسى!",
-    "confidentialityOfInformation": "معلوماتك بالحفظ والصون",
-    "customerSupport": "عملاءنا بعيوننا",
-    "transparentPolicies": "سياسات واضحة",
-    "safePayment": "خيارات دفع تناسب الجميع"
-  },
-  "blogs": {
-    "title": "استعراض المجموعات",
-    "subTitle": "احصل على أفكار حول ما يمكن ممارسته ومشاهدته وتناوله"
-  },
-  "mostBeautifulPlaces": {
-    "title": "ودّك تستكشف أجمل الأماكن بالسعودية؟"
   },
   "tripDetails": {
     "favoriteByGuests": {

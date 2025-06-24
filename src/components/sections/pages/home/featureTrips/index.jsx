@@ -29,9 +29,9 @@ const FeatureTrips = () => {
           <Swiper
             spaceBetween={20}
             breakpoints={{
-              320: { slidesPerView: 2.5 },
-              480: { slidesPerView: 2.2 },
-              640: { slidesPerView: 2.5 },
+              320: { slidesPerView: 1.2 },
+              480: { slidesPerView: 1.2 },
+              640: { slidesPerView: 1.2 },
               1024: { slidesPerView: 1.35 },
             }}
             pagination={{

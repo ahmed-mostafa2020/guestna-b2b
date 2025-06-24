@@ -8,7 +8,7 @@ const MainCategoriesSection = () => {
   const t = useTranslations();
 
   return (
-    <section className="z-[2] relative">
+    <section className="relative">
       <Container
         maxWidth="lg"
         className="flex flex-col gap-5 py-8 -mt-30 lg:-mt-64 lg:py-16"

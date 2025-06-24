@@ -14,7 +14,7 @@ const MarketingSection = () => {
   const marketings = useSelector((state) => state.homeData.items.marketings);
 
   const renderedMarketings = marketings?.map((market) => (
-    <SwiperSlide key={market._id}>
+    <SwiperSlide key={market.name}>
       <MarketingCard market={market} />
     </SwiperSlide>
   ));

@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 import { useEffect, useState } from "react";
 
-// import FiltersBox from "../../../../filtersBox/FiltersBox";
+import FiltersBox from "../../../../filtersBox/FiltersBox";
 
 const HeroSection = () => {
   const t = useTranslations();
@@ -53,7 +53,7 @@ const HeroSection = () => {
         </h3>
       </div>
 
-      {/* <FiltersBox /> */}
+      <FiltersBox />
     </section>
   );
 };

@@ -6,7 +6,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { useDispatch, useSelector } from "react-redux";
 import {
   switchTripsType,
-  // toggleTripsTypes,
   updateGuestCount,
   resetFilters,
   setTripsTypes,
@@ -27,10 +26,6 @@ import GuestsButtonMenu from "./menus/guests/GuestsButtonMenu";
 import BudgetButtonMenu from "./menus/BudgetButtonMenu";
 import FilterAccordion from "./FilterAccordion";
 
-import Box from "@mui/material/Box";
-// import Tab from "@mui/material/Tab";
-import { TabContext, TabPanel } from "@mui/lab";
-
 import earthGif from "@assets/gif/earth.gif";
 import dates from "@assets/gif/dates.gif";
 import budgetGif from "@assets/gif/budget.gif";
@@ -41,8 +36,6 @@ import CustomizedModal from "../common/customizedModal";
 import { Container } from "@mui/material";
 
 const FiltersBox = () => {
-  const [value, _] = useState("multiDays");
-
   const dispatch = useDispatch();
 
   const data = useSelector((state) => state.homeData.items);
@@ -130,7 +123,7 @@ const FiltersBox = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const multiDaysButtonsList = [
+  const singleDayButtonsList = [
     {
       image: earthGif,
       title: t("filtersBox.place"),
@@ -140,21 +133,12 @@ const FiltersBox = () => {
     },
     {
       image: dates,
-      title: t("filtersBox.checkIn"),
+      title: t("filtersBox.addDay"),
       subTitle:
-        checkInDate.day !== null
-          ? `${checkInDate.day}/${checkInDate.month + 1}/${checkInDate.year}`
+        activityDayDate.day !== null
+          ? `${activityDayDate.day}/${activityDayDate.month}/${activityDayDate.year}`
           : t("filtersBox.addDates"),
-      children: <DatesMenu type="checkIn" />,
-    },
-    {
-      image: dates,
-      title: t("filtersBox.checkOut"),
-      subTitle:
-        checkOutDate.day !== null
-          ? `${checkOutDate.day}/${checkOutDate.month + 1}/${checkOutDate.year}`
-          : t("filtersBox.addDates"),
-      children: <DatesMenu type="checkOut" />,
+      children: <DatesMenu type="activityDay" />,
     },
     {
       image: guestGif,
@@ -185,54 +169,8 @@ const FiltersBox = () => {
     },
   ];
 
-  // const singleDayButtonsList = [
-  //   {
-  //     image: earthGif,
-  //     title: t("filtersBox.place"),
-  //     subTitle:
-  //       cities.length !== 0 ? destination : t("filtersBox.searchDestination"),
-  //     children: <PlaceButtonMenu places={places} />,
-  //   },
-  //   {
-  //     image: dates,
-  //     title: t("filtersBox.addDay"),
-  //     subTitle:
-  //       activityDayDate.day !== null
-  //         ? `${activityDayDate.day}/${activityDayDate.month}/${activityDayDate.year}`
-  //         : t("filtersBox.addDates"),
-  //     children: <DatesMenu type="activityDay" />,
-  //   },
-  //   {
-  //     image: guestGif,
-  //     title: t("filtersBox.guestsNumber"),
-  //     subTitle: getTotalGuests(guests),
-  //     children: (
-  //       <GuestsButtonMenu
-  //         targetAudiences={targetAudiences}
-  //         countState={guests}
-  //         updateCountAction={updateGuestCount}
-  //       />
-  //     ),
-  //   },
-  //   {
-  //     image: budgetGif,
-  //     title: t("filtersBox.budget"),
-  //     subTitle:
-  //       budgetRange.min !== CONSTANT_VALUES.MIN_BUDGET ||
-  //       budgetRange.max !== CONSTANT_VALUES.MAX_BUDGET ? (
-  //         <>
-  //           <span>{formatCurrency(budgetRange.min)}</span> :{" "}
-  //           <span>{formatCurrency(budgetRange.max)}</span>
-  //         </>
-  //       ) : (
-  //         t("filtersBox.setBudget")
-  //       ),
-  //     children: <BudgetButtonMenu />,
-  //   },
-  // ];
-
   // Web
-  const renderedMultiDaysButtonsList = multiDaysButtonsList.map(
+  const renderedButtonsList = singleDayButtonsList.map(
     (filterButton, index) => (
       <div className="flex-1" key={index}>
         <FilterButton
@@ -247,23 +185,8 @@ const FiltersBox = () => {
     )
   );
 
-  // const renderedSingleDayButtonsList = singleDayButtonsList.map(
-  //   (filterButton, index) => (
-  //     <div className="flex-1" key={index}>
-  //       <FilterButton
-  //         gif={filterButton.image}
-  //         title={filterButton.title}
-  //         subTitle={filterButton.subTitle}
-  //         index={index}
-  //       >
-  //         {filterButton.children}
-  //       </FilterButton>
-  //     </div>
-  //   )
-  // );
-
   // Mobile
-  const renderedMultiDaysAccordionsList = multiDaysButtonsList.map(
+  const renderedAccordionsList = singleDayButtonsList.map(
     (accordion, index) => (
       <Fragment key={index}>
         <FilterAccordion
@@ -276,20 +199,6 @@ const FiltersBox = () => {
       </Fragment>
     )
   );
-
-  // const renderedSingleDayAccordionsList = singleDayButtonsList.map(
-  //   (accordion, index) => (
-  //     <Fragment key={index}>
-  //       <FilterAccordion
-  //         index={index}
-  //         title={accordion.title}
-  //         subTitle={accordion.subTitle}
-  //       >
-  //         {accordion.children}
-  //       </FilterAccordion>
-  //     </Fragment>
-  //   )
-  // );
 
   // Function to construct the query string
   const constructQueryString = () => {
@@ -357,112 +266,22 @@ const FiltersBox = () => {
       {/* Web */}
       <div className="hidden w-full mt-8 transition-all duration-200 ease-in-out lg:block">
         <Container maxWidth="lg">
-          <Box>
-            <TabContext value={value}>
-              {/* <Box>
-                <TabList
-                  onChange={handleChange}
-                  aria-label="filters"
-                  className="w-fit rounded-t-2xl"
-                  sx={{
-                    "& .MuiTabs-indicator": {
-                      backgroundColor: "#007473",
-                    },
-                  }}
-                >
-                  <Tab
-                    onClick={() => {
-                      dispatch(switchTripsType(CONSTANT_VALUES.PACKAGE));
-                      dispatch(clearActivityDayDate());
-                    }}
-                    label={t("filtersBox.multiDaysTrips")}
-                    value="multiDays"
-                    sx={{
-                      "&.MuiButtonBase-root": {
-                        backgroundColor: "white",
-                      },
-                      "&.MuiButtonBase-root ,&.Mui-selected": {
-                        color: "#bbb",
-                        fontSize: "18px",
-                        padding: "16px 24px",
-                        fontWeight: 500,
-                        fontFamily: "var(--font-somar-sans), sans-serif",
-                        transition: "all 0.2s ease-in-out",
-                      },
-                      "&.Mui-selected": {
-                        color: "white",
-                        backgroundColor: "#007473",
-                      },
-                    }}
-                  />
-                  <Tab
-                    onClick={() => {
-                      dispatch(switchTripsType(CONSTANT_VALUES.ACTIVITY));
-                      dispatch(clearCheckInDate());
-                      dispatch(clearCheckOutDate());
-                    }}
-                    label={t("filtersBox.singleDayTrips")}
-                    value="singleDay"
-                    sx={{
-                      "&.MuiButtonBase-root": {
-                        backgroundColor: "white",
-                      },
-                      "&.MuiButtonBase-root ,&.Mui-selected": {
-                        color: "#bbb",
-                        fontSize: "18px",
-                        padding: "16px 24px",
-                        fontWeight: 500,
-                        fontFamily: "var(--font-somar-sans), sans-serif",
-                        transition: "all 0.2s ease-in-out",
-                      },
-                      "&.Mui-selected": {
-                        color: "white",
-                        backgroundColor: "#007473",
-                      },
-                    }}
-                  />
-                </TabList>
-              </Box> */}
+          <div className="flex items-center px-3 bg-white border rounded-2xl border-mainColor z-[2]">
+            {renderedButtonsList}
 
-              <TabPanel value="multiDays" sx={{ padding: 0 }}>
-                <div className="flex items-center px-3 bg-white border rounded-2xl border-mainColor">
-                  {renderedMultiDaysButtonsList}
-
-                  <Link
-                    onClick={() => {
-                      dispatch(setTripsTypes(CONSTANT_VALUES.PACKAGE));
-                    }}
-                    href={{
-                      pathname: `/${locale}/discover`,
-                      query: constructQueryString(),
-                    }}
-                    className="w-20 h-20 my-2 transition-all duration-200 ease-in-out rounded-lg ms-2 bg-mainColor hover:bg-linksHover centered"
-                  >
-                    {searchIconWhite}
-                  </Link>
-                </div>
-              </TabPanel>
-
-              {/* <TabPanel value="singleDay" sx={{ padding: 0 }}>
-                <div className="flex items-center px-3 bg-white rounded-b-2xl rounded-e-2xl">
-                  {renderedSingleDayButtonsList}
-
-                  <Link
-                    onClick={() => {
-                      dispatch(setTripsTypes(CONSTANT_VALUES.ACTIVITY));
-                    }}
-                    href={{
-                      pathname: `/${locale}/discover`,
-                      query: constructQueryString(),
-                    }}
-                    className="w-20 h-20 my-2 transition-all duration-200 ease-in-out rounded-lg ms-2 bg-mainColor hover:bg-linksHover centered"
-                  >
-                    {searchIconWhite}
-                  </Link>
-                </div>
-              </TabPanel> */}
-            </TabContext>
-          </Box>
+            <Link
+              onClick={() => {
+                dispatch(setTripsTypes(CONSTANT_VALUES.PACKAGE));
+              }}
+              href={{
+                pathname: `/${locale}/discover`,
+                query: constructQueryString(),
+              }}
+              className="w-20 h-20 my-2 transition-all duration-200 ease-in-out rounded-lg ms-2 bg-mainColor hover:bg-linksHover centered"
+            >
+              {searchIconWhite}
+            </Link>
+          </div>
         </Container>
       </div>
 
@@ -474,7 +293,6 @@ const FiltersBox = () => {
             className="flex items-center w-full gap-3 p-3 bg-white rounded-2xl"
           >
             {searchIconBlack}
-
             <h2 className="text-base font-medium">
               {t("filtersBox.mobileTitle")}
             </h2>
@@ -490,87 +308,7 @@ const FiltersBox = () => {
         padding={false}
       >
         <div className="p-4">
-          <TabContext value={value}>
-            {/* <TabList
-              onChange={handleChange}
-              aria-label="filters"
-              sx={{
-                "& .MuiTabs-indicator": {
-                  display: "none",
-                },
-              }}
-            >
-              <Tab
-                onClick={() => {
-                  dispatch(switchTripsType(CONSTANT_VALUES.PACKAGE));
-                  dispatch(clearActivityDayDate());
-                }}
-                label={t("filtersBox.multiDaysTrips")}
-                value="multiDays"
-                sx={{
-                  "&.MuiButtonBase-root": {
-                    backgroundColor: "transparent",
-                    color: "#1F2626",
-                    fontWeight: 500,
-                    fontSize: "15px",
-                    borderBottom: "1px solid transparent",
-                  },
-                  "&.MuiButtonBase-root ,&.Mui-selected": {
-                    padding: "12px",
-                    fontFamily: "var(--font-somar-sans), sans-serif",
-                    transition: "all 0.2s ease-in-out",
-                  },
-                  "&.Mui-selected": {
-                    color: "#007473",
-                    fontWeight: 700,
-                    fontSize: "16px",
-                    borderBottom: "1px solid #007473",
-                  },
-                }}
-              />
-              <Tab
-                onClick={() => {
-                  dispatch(switchTripsType(CONSTANT_VALUES.ACTIVITY));
-                  dispatch(clearCheckInDate());
-                  dispatch(clearCheckOutDate());
-                }}
-                label={t("filtersBox.singleDayTrips")}
-                value="singleDay"
-                sx={{
-                  "&.MuiButtonBase-root": {
-                    backgroundColor: "transparent",
-                    color: "#1F2626",
-                    fontWeight: 500,
-                    fontSize: "15px",
-                    borderBottom: "1px solid transparent",
-                  },
-                  "&.MuiButtonBase-root ,&.Mui-selected": {
-                    padding: "12px",
-                    fontFamily: "var(--font-somar-sans), sans-serif",
-                    transition: "all 0.2s ease-in-out",
-                  },
-                  "&.Mui-selected": {
-                    color: "#007473",
-                    fontWeight: 700,
-                    fontSize: "16px",
-                    borderBottom: "1px solid #007473",
-                  },
-                }}
-              />
-            </TabList> */}
-
-            <TabPanel value="multiDays" sx={{ padding: 0, marginTop: "12px" }}>
-              <div className="flex flex-col gap-6 ">
-                {renderedMultiDaysAccordionsList}
-              </div>
-            </TabPanel>
-
-            {/* <TabPanel value="singleDay" sx={{ padding: 0, marginTop: "12px" }}>
-              <div className="flex flex-col gap-6 ">
-                {renderedSingleDayAccordionsList}
-              </div>
-            </TabPanel> */}
-          </TabContext>
+          <div className="flex flex-col gap-6">{renderedAccordionsList}</div>
         </div>
 
         <div className="sticky bottom-0 flex items-center justify-between w-full gap-6 px-4 py-6 bg-white border-t end-0 border-textLight">
