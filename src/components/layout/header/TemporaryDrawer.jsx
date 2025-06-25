@@ -92,7 +92,7 @@ const TemporaryDrawer = () => {
             </ListItemButton>
           </ListItem>
         ))}
-        <div className="px-4">
+        <div className="px-4" onClick={(e) => e.stopPropagation()}>
           <ServicesDropdown />
         </div>
       </List>

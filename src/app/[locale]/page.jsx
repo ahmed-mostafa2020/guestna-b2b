@@ -74,6 +74,7 @@ export default function Home() {
         <Plans />
 
         <MainCategoriesSection />
+        <SmallSeparator />
 
         <MarketingSection />
         <SmallSeparator />
