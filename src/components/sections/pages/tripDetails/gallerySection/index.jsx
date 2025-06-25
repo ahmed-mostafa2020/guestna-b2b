@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 
 import { Fragment, useEffect, useState } from "react";
 
-import GalleryHeader from "./GalleryHeader";
+// import GalleryHeader from "./GalleryHeader";
 import ImageWithPlaceholder from "@components/common/imagesPlaceholder/ImageWithPlaceholder";
 import Video from "@components/common/trips/Video";
 import CustomizedModal from "@components/common/customizedModal";
@@ -34,13 +34,11 @@ const GallerySection = () => {
 
   const data = useSelector((state) => state.tripDetailsData.data);
 
-  const tripData = data?.trip;
-
-  const specialGalleryImages = tripData?.gallary?.filter(
+  const specialGalleryImages = data?.gallary?.filter(
     (image) => image.urlType === "DISTINCTIVE"
   );
 
-  const imagesList = tripData?.gallary.map((image) => (
+  const imagesList = data?.gallary?.map((image) => (
     <Fragment key={image._id}>
       <SwiperSlide>
         <ImageWithPlaceholder
@@ -67,14 +65,15 @@ const GallerySection = () => {
     <>
       <section className="gallery-section">
         <Container maxWidth="lg" className="flex flex-col gap-4">
-          <GalleryHeader tripData={tripData} />
+          {/* <GalleryHeader tripData={data} /> */}
+          <h1 className="text-xl font-semibold lg:text-5xl">{data?.name}</h1>
 
           <div className="flex-row-reverse flex-wrap gap-3 centered">
             <div className="relative">
               {specialGalleryImages?.[3]?.url && (
                 <ImageWithPlaceholder
                   src={specialGalleryImages?.[3]?.url || ""}
-                  alt={`${tripData?.name} image`}
+                  alt={`${data?.name} image`}
                   width={430}
                   height={550}
                   className={`w-[430px] h-[250px] lg:h-[550px] object-cover ${
@@ -91,7 +90,7 @@ const GallerySection = () => {
               >
                 {imagesListIcon}
                 <span className="text-base">
-                  {t("links.showAllImages")} {tripData?.gallary?.length}
+                  {t("links.showAllImages")} {data?.gallary?.length}
                 </span>
               </button>
             </div>
@@ -100,7 +99,7 @@ const GallerySection = () => {
               {specialGalleryImages?.[2]?.url && (
                 <ImageWithPlaceholder
                   src={specialGalleryImages?.[2]?.url}
-                  alt={`${tripData?.name} image`}
+                  alt={`${data?.name} image`}
                   width={305}
                   height={267}
                   className="w-[305px] h-[267px] object-cover"
@@ -109,7 +108,7 @@ const GallerySection = () => {
               {specialGalleryImages?.[0]?.url && (
                 <ImageWithPlaceholder
                   src={specialGalleryImages?.[0]?.url}
-                  alt={`${tripData?.name} image`}
+                  alt={`${data?.name} image`}
                   width={305}
                   height={267}
                   className="w-[305px] h-[267px] object-cover"
@@ -118,9 +117,9 @@ const GallerySection = () => {
             </div>
 
             <div>
-              {tripData?.video ? (
+              {data?.video ? (
                 <Video
-                  src={tripData?.video}
+                  src={data?.video}
                   width="430"
                   height={height}
                   poster={specialGalleryImages?.[3]?.url}
@@ -131,7 +130,7 @@ const GallerySection = () => {
                 specialGalleryImages?.[1]?.url && (
                   <ImageWithPlaceholder
                     src={specialGalleryImages?.[1]?.url}
-                    alt={`${tripData?.name} image`}
+                    alt={`${data?.name} image`}
                     width={430}
                     height={550}
                     className={`w-[430px] h-[550px] object-cover ${

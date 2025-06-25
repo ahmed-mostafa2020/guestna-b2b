@@ -18,57 +18,53 @@ import ExtraInformation from "./accordionsDetails/ExtraInformation";
 const AccordionsGroupSection = () => {
   const data = useSelector((state) => state.tripDetailsData.data);
 
-  const tripData = data?.trip;
   const tripType =
-    tripData?.guestnaTripsType === CONSTANT_VALUES.PACKAGE
-      ? "package"
-      : "activity";
+    data?.tripsType === CONSTANT_VALUES.PACKAGE ? "package" : "activity";
 
   const t = useTranslations();
 
   const accordionsList = [
     {
-      isShown: tripData?.description,
+      isShown: data?.description,
       title: t(`tripDetails.accordionsGroup.${tripType}.description`),
-      children: <p>{tripData?.description}</p>,
+      children: <p>{data?.description}</p>,
     },
     {
-      isShown: tripData?.services?.length > 0,
+      isShown: data?.services,
       title: t(`tripDetails.accordionsGroup.${tripType}.contents`),
-      children: <Services data={tripData?.services} />,
+      children: <Services data={data?.services} />,
     },
     {
-      isShown: tripData?.exemptedFromTrip?.length > 0,
+      isShown: data?.exemptedFromTrip,
       title: t(`tripDetails.accordionsGroup.${tripType}.exempted`),
-      children: <ExemptedFromTrip data={tripData?.exemptedFromTrip} />,
+      children: <ExemptedFromTrip data={data?.exemptedFromTrip} />,
     },
     {
-      isShown: tripData?.itinerary?.length > 0,
+      isShown: data?.itinerary,
       title: t(`tripDetails.accordionsGroup.${tripType}.itinerary`),
-      children: <Itinerary data={tripData?.itinerary} />,
+      children: <Itinerary data={data?.itinerary} />,
     },
 
     {
-      isShown:
-        tripData?.gatheringLocation?.lat && tripData?.gatheringLocation?.lng,
+      isShown: data?.gatheringLocation,
       title: t("tripDetails.accordionsGroup.gatheringLocation"),
       children: (
         <Map
-          lat={tripData?.gatheringLocation?.lat || 0}
-          lng={tripData?.gatheringLocation?.lng || 0}
+          lat={data?.gatheringLocation?.lat || 0}
+          lng={data?.gatheringLocation?.lng || 0}
           locationLink={true}
         />
       ),
     },
     {
-      isShown: tripData?.mustHaveItems?.length > 0,
+      isShown: data?.mustHaveItems,
       title: t("tripDetails.accordionsGroup.whatToBring"),
-      children: <MustHaveItems data={tripData?.mustHaveItems} />,
+      children: <MustHaveItems data={data?.mustHaveItems} />,
     },
     {
-      isShown: tripData?.attributes?.length > 0,
+      isShown: data?.attributes,
       title: t("tripDetails.accordionsGroup.extraInfo"),
-      children: <ExtraInformation data={tripData?.attributes} />,
+      children: <ExtraInformation data={data?.attributes} />,
     },
   ];
 

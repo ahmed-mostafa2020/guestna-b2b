@@ -14,7 +14,7 @@ import { locationIcon, timeIcon } from "@assets/svg";
 const GalleryHeader = ({ tripData }) => {
   const t = useTranslations();
 
-  const numCities = tripData?.cities.length;
+  const numCities = tripData?.cities?.length;
   const renderCities = useMemo(() => {
     if (numCities === 1) {
       return (
@@ -28,7 +28,7 @@ const GalleryHeader = ({ tripData }) => {
         <div className="flex items-center gap-1">
           {locationIcon}
 
-          {tripData?.cities.map((city, index) => (
+          {tripData?.cities?.map((city, index) => (
             <h4 key={city._id} className="text-sm font-medium capitalize">
               {city.name}
               {index != tripData?.cities.length - 1 && <span>-</span>}

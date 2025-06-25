@@ -21,9 +21,9 @@ const MainCategoryCard = ({ category }) => {
       <ImageWithPlaceholder
         src={category.icon}
         alt={category.name}
-        width={290}
+        width={370}
         height={430}
-        className="w-[290px] h-[430px] object-cover rounded-lg group-hover:filter"
+        className="w-full h-[430px] object-cover rounded-lg group-hover:filter"
       />
 
       <div className="absolute inset-0 transition-all duration-200 ease-in-out bg-black bg-opacity-0 group-hover:bg-opacity-40"></div>

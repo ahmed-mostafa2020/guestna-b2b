@@ -19,9 +19,8 @@ import {
 
 import { useEffect } from "react";
 
-import { END_POINTS } from "@constants/APIs";
-
 import { useFetchData } from "@hooks/useFetchData";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
@@ -30,10 +29,7 @@ import CustomizedBreadcrumbs from "@components/common/breadcrumbs/CustomizedBrea
 import SmallSeparator from "@components/common/separators/SmallSeparator";
 import GridSection from "@components/sections/pages/tripDetails/gridSection";
 
-import AvailableBookingDatesCardSection from "@components/sections/pages/tripDetails/availableBookingDatesSection";
 import ReviewsSection from "@components/sections/pages/tripDetails/reviewsSection";
-import SimilarExperiencesSection from "@components/sections/pages/tripDetails/similarExperiencesSection";
-import BestSellingSection from "@components/sections/pages/tripDetails/bestSellingSection";
 
 const TripDetails = ({ params }) => {
   const locale = useLocale();
@@ -53,7 +49,7 @@ const TripDetails = ({ params }) => {
   const dispatch = useDispatch();
 
   const { data, error, isLoading } = useFetchData(
-    `${END_POINTS.TRIPS}${END_POINTS.TRIPDETAILS}/${params.tripSlug}`,
+    `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.TRIPDETAILS}/${params.tripSlug}`,
     {},
     {
       lang: locale,
@@ -64,8 +60,6 @@ const TripDetails = ({ params }) => {
     }
   );
 
-  const tripData = data?.trip;
-
   // Dispatch clearTripGuests only when tripSlug changes
   useEffect(() => {
     if (params.tripSlug !== tripSlug) {
@@ -75,9 +69,9 @@ const TripDetails = ({ params }) => {
 
   // Save tripId and tripSlug
   useEffect(() => {
-    dispatch(setTripId(tripData?._id));
+    dispatch(setTripId(data?._id));
     dispatch(setTripSlug(params.tripSlug));
-  }, [dispatch, params.tripSlug, tripData]);
+  }, [dispatch, params.tripSlug, data]);
 
   // Save tripDate , tripName and trip customization
   useEffect(() => {
@@ -86,16 +80,16 @@ const TripDetails = ({ params }) => {
     // }
 
     dispatch(setFirstAvailableDate(firstAvailableDate));
-    dispatch(setTripName(tripData?.name));
+    dispatch(setTripName(data?.name));
 
     dispatch(setTripCustomization(false));
-  }, [dispatch, tripData, firstAvailableDate]);
+  }, [dispatch, data, firstAvailableDate]);
 
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | 
-    ${tripData?.name || t("pagesHead.title.tripDetails")}
+    ${data?.name || t("pagesHead.title.tripDetails")}
     `;
-  }, [t, tripData]);
+  }, [t, data]);
 
   if (isLoading)
     return (
@@ -138,13 +132,13 @@ const TripDetails = ({ params }) => {
       name: t("pagesHead.title.discover"),
       link: "discover",
     },
-    { id: 3, type: "text", name: data?.trip?.name },
+    { id: 3, type: "text", name: data?.name },
   ];
 
   return (
     <main
       className={`py-5 overflow-hidden ${
-        data?.trip?.guestnaTripsType === CONSTANT_VALUES.PACKAGE
+        data?.tripsType === CONSTANT_VALUES.PACKAGE
           ? "bg-packageDetailsBg"
           : "bg-activityDetailsBg"
       }  lg:py-10`}
@@ -156,13 +150,6 @@ const TripDetails = ({ params }) => {
 
       <GridSection />
 
-      {data?.trip?.bookingDay.length >= 1 && (
-        <>
-          <SmallSeparator />
-          <AvailableBookingDatesCardSection />
-        </>
-      )}
-
       {data?.reviews?.length >= 1 && (
         <>
           <SmallSeparator />
@@ -170,11 +157,6 @@ const TripDetails = ({ params }) => {
           <ReviewsSection reviewsData={data.reviews} />
         </>
       )}
-
-      <SmallSeparator />
-      <SimilarExperiencesSection />
-      <SmallSeparator />
-      <BestSellingSection />
     </main>
   );
 };

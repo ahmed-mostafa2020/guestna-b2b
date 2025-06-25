@@ -7,7 +7,7 @@ export const B2B_END_POINTS = {
   PAYMENTS: `${BASE_URL}bookings/`,
   HOME: "home/info",
   NAVBAR: "navebar",
-  TRIPDETAILS: "info",
+  TRIPDETAILS: "trips/info",
   SIDE_FILTERS: "filtratinDetails",
   ALL_TRIPS: "all",
   CUSTOMIZATION: "tripCustomizableInfo",

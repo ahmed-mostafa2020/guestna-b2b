@@ -249,10 +249,7 @@
       "healthInformation": "معلومات صحية",
       "returnPolicy": "سياسة الإسترجاع"
     },
-    "availableDates": {
-      "title": "اختر من التواريخ المتاحة",
-      "joinGroup": "للإنضمام إلى"
-    }
+    "validationMessage": "يتطلب تسجيل دخول"
   },
   "bookWithConfidence": {
     "title": "احجز بثقة",

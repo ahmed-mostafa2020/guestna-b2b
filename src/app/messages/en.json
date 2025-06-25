@@ -249,10 +249,7 @@
       "healthInformation": "Health Information",
       "returnPolicy": "Return Policy"
     },
-    "availableDates": {
-      "title": "Choose from available dates",
-      "joinGroup": "To join to"
-    }
+    "validationMessage": "Login is required"
   },
   "bookWithConfidence": {
     "title": "Book with confidence",

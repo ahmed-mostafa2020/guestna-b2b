@@ -5,9 +5,12 @@ import { useTranslations } from "next-intl";
 import { memo } from "react";
 
 import FilterAccordion from "@components/filtersBox/FilterAccordion";
+import ValidationMessage from "./ValidationMessage";
 
 const Itinerary = ({ data }) => {
   const t = useTranslations();
+
+  if (data.length === 0) return <ValidationMessage />;
 
   const renderedData = data?.map((item, index) => (
     <li key={index}>

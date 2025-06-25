@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import React, { memo, useEffect, useRef, useState } from "react";
 
 import { Loader } from "@googlemaps/js-api-loader";
+import ValidationMessage from "./ValidationMessage";
 
 const Map = ({
   lat,
@@ -35,8 +36,6 @@ const Map = ({
   const [mapMarkers, setMapMarkers] = useState([]);
 
   const t = useTranslations();
-
-  // const t = useTranslations();
 
   useEffect(() => {
     const initMap = async () => {
@@ -115,6 +114,8 @@ const Map = ({
     JSON.stringify(controls),
   ]);
 
+  if (lat === null || lng === null) return <ValidationMessage />;
+
   return (
     <>
       <div ref={mapRef} className={`w-full ${height}`} />
@@ -124,7 +125,7 @@ const Map = ({
           <Link
             target="_blank"
             href={`https://www.google.com/maps?q=${lat},${lng}`}
-            className="mt-4 text-base font-bold font-ibm rounded-lg text-white px-8 py-2 bg-mainColor transition-all ease-in-out duration-200 hover:bg-linksHover"
+            className="px-8 py-2 mt-4 text-base font-bold text-white transition-all duration-200 ease-in-out rounded-lg font-ibm bg-mainColor hover:bg-linksHover"
           >
             {t("links.goToLocation")}
           </Link>

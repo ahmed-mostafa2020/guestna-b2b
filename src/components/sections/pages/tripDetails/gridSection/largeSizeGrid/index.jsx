@@ -1,8 +1,9 @@
 import AccordionsGroupSection from "./accordionsGroupSection";
+import TripTagsListing from "./tripTags/TripTagsListing";
 
 const LargeSizeSection = () => {
   return (
-    <>
+    <div className="flex flex-col gap-5">
       {/* {data?.trip?.loversCount >= 0 && (
         <FavoredByGuestsSection
           rating={data?.rate || 4.73}
@@ -10,8 +11,10 @@ const LargeSizeSection = () => {
         />
       )} */}
 
+      <TripTagsListing />
+
       <AccordionsGroupSection />
-    </>
+    </div>
   );
 };
 

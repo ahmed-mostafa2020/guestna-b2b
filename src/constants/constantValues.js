@@ -1,7 +1,7 @@
 export const CONSTANT_VALUES = {
   WHATSAPP_CONTACT: "https://api.whatsapp.com/send?phone=966547534666",
   MIN_BUDGET: 50,
-  MAX_BUDGET: 3000,
+  MAX_BUDGET: 5000,
   PER_PAGE: 15,
   PACKAGE: "PACKAGE",
   ACTIVITY: "ACTIVITY",

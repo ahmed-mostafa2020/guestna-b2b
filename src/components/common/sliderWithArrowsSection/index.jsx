@@ -3,27 +3,20 @@
 import { memo, useEffect, useState } from "react";
 
 import { cn } from "@utils/cn";
-import AvailableBookingDatesCard from "../../sections/pages/tripDetails/availableBookingDatesSection/AvailableBookingDatesCard";
 import ReviewsCard from "../../sections/pages/tripDetails/reviewsSection/ReviewsCard";
 
 import { chevronLeftIcon, chevronRightIcon, largeStarIcon } from "@assets/svg";
 
-const SliderWithArrowsSection = ({
-  dataList,
-  tripData,
-  title,
-  subTitle,
-  cardType,
-}) => {
+const SliderWithArrowsSection = ({ dataList, title, subTitle, cardType }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const getVisibleSlides = () => {
     if (typeof window !== "undefined") {
       if (window.innerWidth < 640) {
-        return cardType === "date" ? 2.5 : 1;
+        return 1;
       }
       if (window.innerWidth < 1024) return 2;
-      return cardType === "date" ? 5 : 3.4;
+      return 3.4;
     }
     return 4;
   };
@@ -71,23 +64,12 @@ const SliderWithArrowsSection = ({
           : "w-[30%]"
       )}
     >
-      {cardType === "date" ? (
-        <AvailableBookingDatesCard
-          bookingDate={item.bookingDay}
-          bookingDateQuantity={item.totalQuantity}
-          price={
-            tripData?.discountPrice ? tripData?.discountPrice : tripData?.price
-          }
-          isCustomizable={tripData?.isCustomizable}
-        />
-      ) : (
-        <ReviewsCard
-          imageSrc={item.createdBy?.image}
-          name={item.createdBy?.name}
-          date={item.createdAt}
-          comment={item.comment}
-        />
-      )}
+      <ReviewsCard
+        imageSrc={item.createdBy?.image}
+        name={item.createdBy?.name}
+        date={item.createdAt}
+        comment={item.comment}
+      />
     </div>
   ));
 
