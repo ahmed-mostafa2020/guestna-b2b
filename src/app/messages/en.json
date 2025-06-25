@@ -136,7 +136,7 @@
     "edit": "Edit",
     "verification": "Verification",
     "cancel": "Cancel",
-    "contactUS": "Contact Us",
+    "contactUs": "Contact Us",
     "goToLocation": "Go to Location",
     "bookForPrivate": "Booking for Private Group",
     "showAllDates": "Show All Dates",
@@ -166,10 +166,10 @@
     "title": "Enter the world of educational learning",
     "subTitle": "Make your students' trips unforgettable memories",
     "with": "with",
-    "advantages": "... Safe, diverse, and ready-to-implement school programs",
+    "advantages": "school programs",
     "safe": "Safe",
     "diverse": "Diverse",
-    "ready": "Ready-to-implement"
+    "ready": "Ready"
   },
   "filtersBox": {
     "multiDaysTrips": "Multi Days Trips",

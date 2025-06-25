@@ -59,7 +59,7 @@ const TripsSection = ({
             <Swiper
               spaceBetween={20}
               breakpoints={{
-                320: { slidesPerView: sectionHelmet == true ? 1.4 : 3.5 },
+                320: { slidesPerView: sectionHelmet == true ? 1.3 : 3.5 },
                 480: { slidesPerView: sectionHelmet == true ? 1.7 : 4.5 },
                 640: { slidesPerView: sectionHelmet == true ? 2 : 6.5 },
                 1024: { slidesPerView: data.cardsPerView },

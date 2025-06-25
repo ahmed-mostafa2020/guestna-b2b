@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 import { useTranslations } from "next-intl";
@@ -22,7 +24,9 @@ const FeatureTripCard = ({ featureTrip }) => {
       />
 
       <div className="flex-wrap px-6 py-5 bg-[#DCDCDA] flex justify-between items-center gap-2">
-        <h4 className="text-lg font-medium lg:text-xl">{featureTrip.name}</h4>
+        <h4 className="w-full text-lg font-medium lg:text-xl lg:w-fit">
+          {featureTrip.name}
+        </h4>
 
         <Link
           target="_blank"

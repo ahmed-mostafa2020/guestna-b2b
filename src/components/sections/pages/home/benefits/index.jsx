@@ -37,7 +37,7 @@ const Benefits = () => {
   ];
 
   const renderedBenefits = benefitsList.map((benefit) => (
-    <div key={benefit.title} className="flex-col flex-1 gap-2 centered">
+    <div key={benefit.title} className="flex-col gap-2 lg:flex-1 centered">
       <Image
         src={benefit.image}
         alt={benefit.title}
@@ -46,7 +46,7 @@ const Benefits = () => {
         className="object-cover lg:mb-2 bg-gray-200 rounded-[100px]"
       />
 
-      <h3 className="text-center text-titleColor lg:text-[28px] text-xl font-semibold font-ibm text-nowrap">
+      <h3 className="text-center text-titleColor lg:text-[28px] text-xl font-semibold font-ibm text-wrap lg:text-nowrap">
         {benefit.title}
       </h3>
 
@@ -68,7 +68,7 @@ const Benefits = () => {
           className="object-fit"
         />
 
-        <div className="flex flex-wrap gap-5 px-6 pt-6 pb-6 mt-0 bg-white lg:pt-12 lg:-mt-28">
+        <div className="flex flex-wrap justify-center gap-5 px-6 pt-6 pb-6 mt-0 bg-white lg:pt-12 lg:-mt-28">
           {renderedBenefits}
         </div>
       </Container>

@@ -11,7 +11,7 @@ const MainCategoriesSection = () => {
     <section className="relative">
       <Container
         maxWidth="lg"
-        className="flex flex-col gap-5 py-8 -mt-30 lg:-mt-64 lg:py-16"
+        className="flex flex-col gap-5 py-8 -mt-30 lg:-mt-52 lg:py-16"
       >
         <div className="flex justify-end">
           <MainCategoriesSlider />

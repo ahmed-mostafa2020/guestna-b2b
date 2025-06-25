@@ -36,7 +36,7 @@ const HeroSection = () => {
           {t("hero.subTitle")}
         </h2>
 
-        <h3 className="justify-center px-7 lg:px-0 gap-1 lg:text-center flex text-xl lg:text-[48px] font-medium leading-8 lg:leading-[70px] text-black text-start items-center">
+        <h3 className="justify-center px-7 lg:px-0 gap-1 lg:text-center flex text-lg lg:text-[48px] font-medium leading-8 lg:leading-[70px] text-black text-start items-center">
           {t("hero.with")}
           <span className="text-secColor">{t("common.guestna")}</span>
           {t("hero.advantages")}

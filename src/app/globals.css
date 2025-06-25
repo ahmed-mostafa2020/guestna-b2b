@@ -195,7 +195,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .sliding-text-en {
-  animation: slideTextEnglish 6s linear infinite;
+  animation: slideTextEnglish 7s linear infinite;
 }
 
 .sliding-text-ar {
