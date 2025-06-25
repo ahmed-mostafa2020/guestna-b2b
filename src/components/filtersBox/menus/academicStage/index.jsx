@@ -3,22 +3,22 @@
 import { useSelector } from "react-redux";
 import { toggleAcademicStage } from "@store/searchFilter/searchFilterSlice";
 
+import { memo } from "react";
+
 import CheckboxListing from "../checkboxListing";
 
-const AcademicStage = () => {
-  const academicStageList = useSelector((state) => state.homeData.items.stages);
-
+const AcademicStageButtonMenu = ({ stagesList }) => {
   const academicStage = useSelector(
     (state) => state.searchFilter.academicStage
   );
 
   return (
     <CheckboxListing
-      list={academicStageList}
+      list={stagesList}
       state={academicStage}
       action={toggleAcademicStage}
     />
   );
 };
 
-export default AcademicStage;
+export default memo(AcademicStageButtonMenu);

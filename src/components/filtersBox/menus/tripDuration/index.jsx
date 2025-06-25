@@ -7,7 +7,7 @@ import { memo } from "react";
 
 import CheckboxListing from "../checkboxListing";
 
-const TripDuration = ({ tripDurationsList }) => {
+const TripDurationButtonMenu = ({ tripDurationsList }) => {
   const selectedTripDurations = useSelector(
     (state) => state.searchFilter.tripDuration
   );
@@ -21,4 +21,4 @@ const TripDuration = ({ tripDurationsList }) => {
   );
 };
 
-export default memo(TripDuration);
+export default memo(TripDurationButtonMenu);

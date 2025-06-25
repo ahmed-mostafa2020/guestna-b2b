@@ -9,16 +9,16 @@ import {
   resetFilters,
   setTripsTypes,
 } from "@store/searchFilter/searchFilterSlice";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { SORTING_TYPE } from "@constants/sorting";
 import formatCurrency from "@utils/FormatCurrency";
 import FilterButton from "./FilterButton";
 import PlaceButtonMenu from "./menus/places/PlaceButtonMenu";
-import TripDuration from "./menus/tripDuration";
-import TripType from "./menus/tripType";
-import AcademicStage from "./menus/academicStage";
+import TripDurationButtonMenu from "./menus/TripDuration";
+import TripTypeButtonMenu from "./menus/tripType";
+import AcademicStageButtonMenu from "./menus/academicStage";
 import BudgetButtonMenu from "./menus/BudgetButtonMenu";
 import FilterAccordion from "./FilterAccordion";
 
@@ -54,8 +54,8 @@ const FiltersBox = () => {
       name: t("common.halfDayTrip"),
     },
   ];
-  // const subCategories = data?.subCategories;
-  // const stages = data?.stages;
+  const subCategoriesList = data?.subCategories;
+  const stagesList = data?.stages;
 
   const {
     tripsType,
@@ -65,9 +65,9 @@ const FiltersBox = () => {
     activityDayDate,
     guests,
     budgetRange,
-    // tripDuration,
-    // tripType,
-    // academicStage,
+    tripDuration,
+    tripType,
+    academicStage,
   } = useSelector((state) => state.searchFilter);
 
   // Reset all filters
@@ -80,39 +80,40 @@ const FiltersBox = () => {
     dispatch(switchTripsType(CONSTANT_VALUES.PACKAGE));
   }, [dispatch]);
 
-  // const getSelectedItemsText = (list, selectedItems) => {
-  //   const items = list || [];
+  // Get selected items
+  const getSelectedItemsText = (list, selectedItems) => {
+    const items = list || [];
+    const selections = selectedItems || [];
 
-  //   if (items.length === 0) return "";
+    if (selections.length === 0) return "";
 
-  //   const getItemNameById = (itemId) => {
-  //     const item = items.find((item) => item._id === itemId);
-  //     return item?.name || "";
-  //   };
-
-  //   if (selectedItems.length === 1) {
-  //     return getItemNameById(selectedItems[0]._id);
-  //   }
-
-  //   return `${getItemNameById(selectedItems[0]?._id)} + ...`;
-  // };
-
-  // Places
-
-  const destination = useMemo(() => {
-    const places = data?.cities || [];
-
-    const getCityNameById = (cityId) => {
-      const city = places.find((city) => city._id === cityId);
-      return city ? city.name : "";
+    const getItemNameById = (itemId) => {
+      const item = items.find((item) => item._id === itemId);
+      return item?.name || "";
     };
 
-    return cities.length > 1
-      ? `${getCityNameById(cities[0])} + ...`
-      : cities.length === 1
-      ? getCityNameById(cities[0])
+    return selections.length > 1
+      ? `${getItemNameById(selections[0])} + ...`
+      : selections.length === 1
+      ? getItemNameById(selections[0])
       : "";
-  }, [cities, data?.cities]);
+  };
+
+  // Places
+  // const destination = useMemo(() => {
+  //   const places = data?.cities || [];
+
+  //   const getCityNameById = (cityId) => {
+  //     const city = places.find((city) => city._id === cityId);
+  //     return city ? city.name : "";
+  //   };
+
+  //   return cities.length > 1
+  //     ? `${getCityNameById(cities[0])} + ...`
+  //     : cities.length === 1
+  //     ? getCityNameById(cities[0])
+  //     : "";
+  // }, [cities, data?.cities]);
 
   // const handleChange = (event, newValue) => {
   //   setValue(newValue);
@@ -126,32 +127,43 @@ const FiltersBox = () => {
     {
       image: earthGif,
       title: t("filtersBox.place"),
-      // subTitle:
-      //   cities.length !== 0
-      //     ? getSelectedItemsText(data?.cities, cities)
-      //     : t("filtersBox.searchDestination"),
       subTitle:
-        cities.length !== 0 ? destination : t("filtersBox.searchDestination"),
+        cities.length !== 0
+          ? getSelectedItemsText(data?.cities, cities)
+          : t("filtersBox.searchDestination"),
+      // subTitle:
+      //   cities.length !== 0 ? destination : t("filtersBox.searchDestination"),
       children: <PlaceButtonMenu places={places} />,
     },
     {
       image: tripDurationImage,
       title: t("filtersBox.tripDuration"),
-      subTitle: t("filtersBox.setTripDuration"),
+      subTitle:
+        tripDuration.length !== 0
+          ? getSelectedItemsText(tripDurationsList, tripDuration)
+          : t("filtersBox.setTripDuration"),
 
-      children: <TripDuration tripDurationsList={tripDurationsList} />,
+      children: (
+        <TripDurationButtonMenu tripDurationsList={tripDurationsList} />
+      ),
     },
     {
       image: tripTypeImage,
       title: t("filtersBox.tripType"),
-      subTitle: t("filtersBox.setTripType"),
-      children: <TripType />,
+      subTitle:
+        tripType.length !== 0
+          ? getSelectedItemsText(data?.subCategories, tripType)
+          : t("filtersBox.setTripType"),
+      children: <TripTypeButtonMenu subCategoriesList={subCategoriesList} />,
     },
     {
       image: dates,
       title: t("filtersBox.AcademicStage"),
-      subTitle: t("filtersBox.setAcademicStage"),
-      children: <AcademicStage />,
+      subTitle:
+        academicStage.length !== 0
+          ? getSelectedItemsText(data?.stages, academicStage)
+          : t("filtersBox.setAcademicStage"),
+      children: <AcademicStageButtonMenu stagesList={stagesList} />,
     },
     {
       image: budgetGif,
