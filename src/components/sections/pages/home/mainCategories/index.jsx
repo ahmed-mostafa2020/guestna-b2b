@@ -9,15 +9,11 @@ const MainCategoriesSection = () => {
 
   return (
     <section className="relative">
-      <Container
-        maxWidth="lg"
-        className="flex flex-col gap-5 py-8 -mt-30 lg:-mt-52 lg:py-16"
-      >
-        <div className="flex justify-end">
-          <MainCategoriesSlider />
-        </div>
-
-        <h2 className="text-xl pt-2 font-semibold text-center text-mainColor lg:leading-[60px] lg:text-5xl">
+      <div className="py-8 -mt-30 lg:-mt-52">
+        <MainCategoriesSlider />
+      </div>
+      <Container maxWidth="lg" className="flex flex-col gap-5">
+        <h2 className="text-xl font-semibold text-center text-mainColor lg:leading-[60px] lg:text-5xl">
           {t("mainCategories.title")}
         </h2>
 
