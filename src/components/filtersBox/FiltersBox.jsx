@@ -6,19 +6,14 @@ import { useLocale, useTranslations } from "next-intl";
 import { useDispatch, useSelector } from "react-redux";
 import {
   switchTripsType,
-  updateGuestCount,
   resetFilters,
   setTripsTypes,
-  // clearActivityDayDate,
-  // clearCheckOutDate,
-  // clearCheckInDate,
 } from "@store/searchFilter/searchFilterSlice";
 import { Fragment, useEffect, useMemo, useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { SORTING_TYPE } from "@constants/sorting";
 import formatCurrency from "@utils/FormatCurrency";
-import formatNumbersUint from "@utils/FormatNumbersUint";
 import FilterButton from "./FilterButton";
 import PlaceButtonMenu from "./menus/places/PlaceButtonMenu";
 import TripDuration from "./menus/tripDuration";
@@ -28,8 +23,8 @@ import BudgetButtonMenu from "./menus/BudgetButtonMenu";
 import FilterAccordion from "./FilterAccordion";
 
 import earthGif from "@assets/gif/earth.gif";
-import tripDuration from "@assets/gif/tripDuration.gif";
-import tripType from "@assets/gif/tripType.gif";
+import tripDurationImage from "@assets/gif/tripDuration.gif";
+import tripTypeImage from "@assets/gif/tripType.gif";
 import dates from "@assets/gif/dates.gif";
 import budgetGif from "@assets/gif/budget.gif";
 
@@ -38,11 +33,29 @@ import CustomizedModal from "../common/customizedModal";
 import { Container } from "@mui/material";
 
 const FiltersBox = () => {
+  const locale = useLocale();
+  const t = useTranslations();
+
   const dispatch = useDispatch();
 
   const data = useSelector((state) => state.homeData.items);
   const places = data?.cities;
-  const targetAudiences = data?.targetAudiences;
+  const tripDurationsList = [
+    {
+      _id: CONSTANT_VALUES.PACKAGE,
+      name: t("common.multiDaysTrip"),
+    },
+    {
+      _id: CONSTANT_VALUES.ACTIVITY,
+      name: t("common.oneDayTrip"),
+    },
+    {
+      _id: CONSTANT_VALUES.HALF_DAY,
+      name: t("common.halfDayTrip"),
+    },
+  ];
+  // const subCategories = data?.subCategories;
+  // const stages = data?.stages;
 
   const {
     tripsType,
@@ -52,6 +65,9 @@ const FiltersBox = () => {
     activityDayDate,
     guests,
     budgetRange,
+    // tripDuration,
+    // tripType,
+    // academicStage,
   } = useSelector((state) => state.searchFilter);
 
   // Reset all filters
@@ -64,7 +80,25 @@ const FiltersBox = () => {
     dispatch(switchTripsType(CONSTANT_VALUES.PACKAGE));
   }, [dispatch]);
 
+  // const getSelectedItemsText = (list, selectedItems) => {
+  //   const items = list || [];
+
+  //   if (items.length === 0) return "";
+
+  //   const getItemNameById = (itemId) => {
+  //     const item = items.find((item) => item._id === itemId);
+  //     return item?.name || "";
+  //   };
+
+  //   if (selectedItems.length === 1) {
+  //     return getItemNameById(selectedItems[0]._id);
+  //   }
+
+  //   return `${getItemNameById(selectedItems[0]?._id)} + ...`;
+  // };
+
   // Places
+
   const destination = useMemo(() => {
     const places = data?.cities || [];
 
@@ -80,43 +114,6 @@ const FiltersBox = () => {
       : "";
   }, [cities, data?.cities]);
 
-  const getTotalGuests = (guests) => {
-    const {
-      families,
-      couples,
-      olds,
-      adults,
-      individuals,
-      teenagers,
-      children,
-      babies,
-      male,
-      female,
-      employees,
-      disabled,
-    } = guests;
-
-    const totalGuests =
-      families +
-      couples +
-      olds +
-      adults +
-      individuals +
-      teenagers +
-      children +
-      babies +
-      male +
-      female +
-      employees +
-      disabled;
-    return totalGuests >= 1
-      ? formatNumbersUint(totalGuests, t("common.guest"), t("common.guests"))
-      : t("filtersBox.addGuests");
-  };
-
-  const locale = useLocale();
-  const t = useTranslations();
-
   // const handleChange = (event, newValue) => {
   //   setValue(newValue);
   // };
@@ -129,29 +126,31 @@ const FiltersBox = () => {
     {
       image: earthGif,
       title: t("filtersBox.place"),
+      // subTitle:
+      //   cities.length !== 0
+      //     ? getSelectedItemsText(data?.cities, cities)
+      //     : t("filtersBox.searchDestination"),
       subTitle:
         cities.length !== 0 ? destination : t("filtersBox.searchDestination"),
       children: <PlaceButtonMenu places={places} />,
     },
     {
-      image: tripDuration,
+      image: tripDurationImage,
       title: t("filtersBox.tripDuration"),
-      subTitle:
-        activityDayDate.day !== null
-          ? `${activityDayDate.day}/${activityDayDate.month}/${activityDayDate.year}`
-          : t("filtersBox.addDates"),
-      children: <TripDuration />,
+      subTitle: t("filtersBox.setTripDuration"),
+
+      children: <TripDuration tripDurationsList={tripDurationsList} />,
     },
     {
-      image: tripType,
+      image: tripTypeImage,
       title: t("filtersBox.tripType"),
-      subTitle: getTotalGuests(guests),
+      subTitle: t("filtersBox.setTripType"),
       children: <TripType />,
     },
     {
       image: dates,
       title: t("filtersBox.AcademicStage"),
-      subTitle: getTotalGuests(guests),
+      subTitle: t("filtersBox.setAcademicStage"),
       children: <AcademicStage />,
     },
     {
