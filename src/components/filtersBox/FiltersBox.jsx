@@ -16,7 +16,7 @@ import { SORTING_TYPE } from "@constants/sorting";
 import formatCurrency from "@utils/FormatCurrency";
 import FilterButton from "./FilterButton";
 import PlaceButtonMenu from "./menus/places/PlaceButtonMenu";
-import TripDurationButtonMenu from "./menus/TripDuration";
+import TripDurationButtonMenu from "./menus/tripDuration";
 import TripTypeButtonMenu from "./menus/tripType";
 import AcademicStageButtonMenu from "./menus/academicStage";
 import BudgetButtonMenu from "./menus/BudgetButtonMenu";
