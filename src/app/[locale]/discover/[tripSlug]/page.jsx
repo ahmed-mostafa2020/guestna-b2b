@@ -30,8 +30,11 @@ import SmallSeparator from "@components/common/separators/SmallSeparator";
 import GridSection from "@components/sections/pages/tripDetails/gridSection";
 
 import ReviewsSection from "@components/sections/pages/tripDetails/reviewsSection";
+import RegisterChildForm from "@components/forms/registerChild";
 
 const TripDetails = ({ params }) => {
+  const userType = useSelector((state) => state.users.userType);
+
   const locale = useLocale();
   const t = useTranslations();
 
@@ -157,6 +160,8 @@ const TripDetails = ({ params }) => {
           <ReviewsSection reviewsData={data.reviews} />
         </>
       )}
+
+      {userType && <RegisterChildForm />}
     </main>
   );
 };

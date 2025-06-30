@@ -147,6 +147,8 @@
     "confirmPayment": "Confirm Payment",
     "returnToActivity": "Return to Activity",
     "returnToPackage": "Return to Package",
+    "login": "Login",
+    "continuaAsGuest": "Continua as a guest (Quick login)",
     "sendStcOtp": "Send Stc Otp"
   },
   "header": {
@@ -282,6 +284,14 @@
       }
     },
     "activityLocation": "Activity location"
+  },
+  "registerChild": {
+    "popup": {
+      "header": "Complete your child's registration",
+      "toComplete": "To quickly complete registration using your children's saved data | ",
+      "haveNoAccount": "I have not created an account yet",
+      "quickRegister": "Complete registration now without creating an account"
+    }
   },
   "finalDetails": {
     "stepper": {

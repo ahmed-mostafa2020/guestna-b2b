@@ -33,6 +33,20 @@ const PreBookingSection = ({ tripData }) => {
         )
       : formatCurrency(tripData?.price);
 
+  const handleClick = () => {
+    handleClose();
+
+    if (typeof window !== "undefined") {
+      const target = document.querySelector("#register-child-form");
+      if (target) {
+        window.scrollTo({
+          top: target.offsetTop,
+          behavior: "smooth",
+        });
+      }
+    }
+  };
+
   return (
     <>
       <FrameWithImagedHeader withBorder={true}>
@@ -70,12 +84,44 @@ const PreBookingSection = ({ tripData }) => {
           handleClose={handleClose}
           closeButton={true}
           bgcolor="rgba(0, 0, 0, 0.3)"
-          header="header"
+          header={t("registerChild.popup.header")}
           closeDialogButton={true}
         >
-          <button onClick={handleClose} className="">
-            close
-          </button>
+          <div className="flex-col gap-6 px-4 centered ">
+            <div className="flex-col flex-wrap w-full gap-2 centered">
+              <Link
+                href={`/${locale}/login`}
+                className="w-full p-3 text-base font-semibold text-center text-white capitalize transition-all duration-200 ease-in-out border-2 rounded-lg bg-mainColor border-mainColor hover:bg-linksHover hover:border-linksHover"
+              >
+                {t("links.login")}
+              </Link>
+
+              <div className="flex flex-wrap items-center">
+                <p className="text-sm font-medium text-textLight pe-2 opacity-70">
+                  {t("registerChild.popup.toComplete")}
+                </p>
+                <Link
+                  href={`/${locale}/login`}
+                  className="text-sm font-semibold border-b text-mainColor border-mainColor"
+                >
+                  {t("registerChild.popup.haveNoAccount")}
+                </Link>
+              </div>
+            </div>
+
+            <div className="flex-col w-full gap-2 centered">
+              <button
+                onClick={handleClick}
+                className="w-full p-3 text-base font-semibold text-center transition-all duration-200 ease-in-out bg-white border-2 rounded-lg text-secColor border-secColor hover:bg-secColor hover:border-secColor hover:text-white"
+              >
+                {t("links.continuaAsGuest")}
+              </button>
+
+              <p className="text-xs font-semibold opacity-30">
+                {t("registerChild.popup.quickRegister")}
+              </p>
+            </div>
+          </div>
         </ActionsDialog>
       )}
     </>

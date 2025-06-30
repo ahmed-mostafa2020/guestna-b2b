@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale } from "next-intl";
+
 import { memo } from "react";
 
 import { backIcon } from "@assets/svg";
@@ -16,6 +18,8 @@ const Dialog = ({
 
   closeDialogButton = false,
 }) => {
+  const locale = useLocale();
+
   return (
     <section className="h-[94%] mx-auto centered max-w-[570px]">
       <div className="w-full bg-white rounded-2xl">
@@ -28,7 +32,11 @@ const Dialog = ({
               onClick={handleClose}
               className="absolute -translate-y-1/2 top-1/2 start-5"
             >
-              {backIcon}
+              <span
+                className={`${locale !== "ar" && "rotate-180 inline-block"}`}
+              >
+                {backIcon}
+              </span>
             </button>
           )}
         </div>
