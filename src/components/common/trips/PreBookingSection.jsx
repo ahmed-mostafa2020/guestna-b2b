@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 
+import { useState } from "react";
+
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import formatCurrency from "@utils/FormatCurrency";
 import calculateDiscountedPrice from "@utils/CalculateDiscountedPrice";
