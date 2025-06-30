@@ -36,7 +36,7 @@ const AccordionsGroupSection = () => {
       ),
       children: isAuth
         ? data?.description
-        : `${data?.description.substring(0, 120)}...`,
+        : `${data?.description?.substring(0, 120)}...`,
     },
     {
       isShown: data?.services,
@@ -57,13 +57,14 @@ const AccordionsGroupSection = () => {
     },
 
     {
-      isShown: data?.gatheringLocation,
+      isShown: data?.gatheringLocation || true,
       title: t("tripDetails.accordionsGroup.gatheringLocation"),
       children: (
         <Map
           lat={data?.gatheringLocation?.lat || 0}
           lng={data?.gatheringLocation?.lng || 0}
           locationLink={true}
+          isAuth={isAuth}
         />
       ),
     },

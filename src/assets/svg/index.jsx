@@ -1282,6 +1282,25 @@ const newSarSmall = (
   </svg>
 );
 
+const backIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="21"
+    viewBox="0 0 20 21"
+    fill="none"
+  >
+    <path
+      d="M7.42578 17.0999L12.8591 11.6666C13.5008 11.0249 13.5008 9.9749 12.8591 9.33324L7.42578 3.8999"
+      stroke="black"
+      strokeWidth="2"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export {
   discoverIcon,
   schoolsIcon,
@@ -1336,4 +1355,5 @@ export {
   largeFacebookIcon,
   newSarLarge,
   newSarSmall,
+  backIcon,
 };

@@ -15,6 +15,7 @@ const ActionsDialog = ({
   cancelButton,
   confirmButton,
   handleConfirm,
+  closeDialogButton,
 }) => {
   return (
     <CustomizedModal
@@ -31,6 +32,7 @@ const ActionsDialog = ({
         confirmButton={confirmButton}
         handleClose={handleClose}
         handleConfirm={handleConfirm}
+        closeDialogButton={closeDialogButton}
       >
         {children}
       </Dialog>

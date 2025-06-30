@@ -28,6 +28,7 @@ function calculateHours(fromHour, toHour, t) {
   if (hoursDifference < 0) {
     hoursDifference += 24;
   }
+
   return formatNumbersUint(
     hoursDifference,
     t("common.hour"),

@@ -28,4 +28,9 @@ export const CONSTANT_VALUES = {
   URLS: {
     VERCEL_URL: "https://guestna.vercel.app",
   },
+
+  USERS: {
+    VISITOR: "VISITOR",
+    PARENT: "PARENT",
+  },
 };

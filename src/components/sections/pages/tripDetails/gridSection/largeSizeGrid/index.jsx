@@ -1,7 +1,14 @@
+"user client";
+
+import { useSelector } from "react-redux";
+
+import { CONSTANT_VALUES } from "@constants/constantValues";
 import AccordionsGroupSection from "./accordionsGroupSection";
-// import TripTagsListing from "./tripTags/TripTagsListing";
+import TripTagsListing from "./tripTags/TripTagsListing";
 
 const LargeSizeSection = () => {
+  const userType = useSelector((state) => state.users.userType);
+
   return (
     <div className="flex flex-col gap-5">
       {/* {data?.trip?.loversCount >= 0 && (
@@ -10,8 +17,7 @@ const LargeSizeSection = () => {
           reviewsCount={data?.reviewsCount || 20}
         />
       )} */}
-
-      {/* <TripTagsListing /> */}
+      {userType === CONSTANT_VALUES.USERS.VISITOR && <TripTagsListing />}
 
       <AccordionsGroupSection />
     </div>

@@ -35,6 +35,8 @@ import address from "./address/addressSlice";
 
 import navbar from "./navbarData/navbarDataSlice";
 
+import users from "./users/usersSlice";
+
 const rootPersistConfig = {
   key: "root",
   storage,
@@ -47,6 +49,8 @@ const rootPersistConfig = {
     "favorites",
     "address",
     "navbar",
+
+    "users",
   ],
 };
 
@@ -72,6 +76,8 @@ const rootReducer = combineReducers({
 
   address,
   navbar,
+
+  users,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);

@@ -13,6 +13,7 @@ const Map = ({
   lat,
   lng,
   locationLink = true,
+  isAuth,
   zoom = 14,
   mapType = "roadmap",
   markers = [
@@ -114,7 +115,7 @@ const Map = ({
     JSON.stringify(controls),
   ]);
 
-  if (lat === null || lng === null) return <ValidationMessage />;
+  if (!isAuth) return <ValidationMessage />;
 
   return (
     <>

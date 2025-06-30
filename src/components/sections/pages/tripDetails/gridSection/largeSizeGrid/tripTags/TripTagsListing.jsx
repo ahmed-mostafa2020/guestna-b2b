@@ -11,7 +11,6 @@ import formatDate from "@utils/FormateDate";
 import TripTags from ".";
 
 import { largeLocationIcon, largeTimeIcon, calenderIcon } from "@assets/svg";
-import calculateHours from "@/src/utils/CalculateHours";
 
 const TripTagsListing = () => {
   const data = useSelector((state) => state.tripDetailsData.data) || {};
@@ -50,7 +49,9 @@ const TripTagsListing = () => {
   // Hours
   const hours =
     data?.fromHour && data?.toHour
-      ? calculateHours(data.fromHour, data.toHour, t)
+      ? `${t("common.from")} ${data?.fromHour} ${t("common.to")} ${
+          data?.toHour
+        }`
       : null;
 
   // Day date

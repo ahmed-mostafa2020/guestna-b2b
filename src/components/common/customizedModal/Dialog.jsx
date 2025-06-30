@@ -2,6 +2,8 @@
 
 import { memo } from "react";
 
+import { backIcon } from "@assets/svg";
+
 const Dialog = ({
   header,
   title,
@@ -11,13 +13,25 @@ const Dialog = ({
   confirmButton,
   handleClose,
   handleConfirm,
+
+  closeDialogButton = false,
 }) => {
   return (
     <section className="h-[94%] mx-auto centered max-w-[570px]">
-      <div className="w-full bg-white rounded-2xl ">
-        <h2 className="px-4 py-6 text-xl font-semibold text-center text-black border-b border-black">
-          {header}
-        </h2>
+      <div className="w-full bg-white rounded-2xl">
+        <div className="relative">
+          <h2 className="px-4 py-6 text-xl font-semibold text-center text-black border-b border-black">
+            {header}
+          </h2>
+          {closeDialogButton && (
+            <button
+              onClick={handleClose}
+              className="absolute -translate-y-1/2 top-1/2 start-5"
+            >
+              {backIcon}
+            </button>
+          )}
+        </div>
 
         <div className="px-4 py-8">
           {title && (
@@ -28,21 +42,23 @@ const Dialog = ({
 
           {children && children}
 
-          <div className="w-full gap-4 mt-8 centered">
-            <button
-              onClick={handleClose}
-              className="flex-1 px-8 py-3 font-semibold transition-all duration-200 ease-in-out bg-white border-2 rounded-lg border-mainColor hover:text-white hover:bg-linksHover hover:border-linksHover"
-            >
-              {cancelButton}
-            </button>
+          {handleClose && handleConfirm && (
+            <div className="w-full gap-4 mt-8 centered">
+              <button
+                onClick={handleClose}
+                className="flex-1 px-8 py-3 font-semibold transition-all duration-200 ease-in-out bg-white border-2 rounded-lg border-mainColor hover:text-white hover:bg-linksHover hover:border-linksHover"
+              >
+                {cancelButton}
+              </button>
 
-            <button
-              onClick={handleConfirm}
-              className="flex-1 px-8 py-3 font-semibold text-white transition-all duration-200 ease-in-out border-2 rounded-lg bg-mainColor border-mainColor hover:bg-linksHover hover:border-linksHover"
-            >
-              {confirmButton}
-            </button>
-          </div>
+              <button
+                onClick={handleConfirm}
+                className="flex-1 px-8 py-3 font-semibold text-white transition-all duration-200 ease-in-out border-2 rounded-lg bg-mainColor border-mainColor hover:bg-linksHover hover:border-linksHover"
+              >
+                {confirmButton}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </section>
