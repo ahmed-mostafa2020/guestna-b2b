@@ -68,8 +68,8 @@ const GallerySection = () => {
       <section className="gallery-section">
         <Container maxWidth="lg" className="flex flex-col gap-4 lg:gap-6">
           {/* <GalleryHeader tripData={data} /> */}
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-semibold text-mainColor lg:text-5xl">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h1 className="text-xl font-semibold text-mainColor lg:text-5xl ">
               {data?.name}
             </h1>
 

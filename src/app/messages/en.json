@@ -260,17 +260,21 @@
   "bookWithConfidence": {
     "why": "why GuestNa",
     "items": {
-      "lowestPrice": {
-        "title": "Lowest price guarantee",
-        "subTitle": "Did you find it cheaper? Refund the difference at the event location Get the answers you need, when you need them"
+      "choosing": {
+        "title": "Selection and customization",
+        "subTitle": "Select and customize safe educational experiences and trips using advanced and simple technologies."
       },
-      "privacyProtection": {
-        "title": "Privacy Protection",
-        "subTitle": "We use SSL encryption to keep your data secure Get the answers you need, when you need them"
+      "entertainment": {
+        "title": "Integrating education with entertainment",
+        "subTitle": "Integrating education with entertainment to create flexible experiences that are adaptable to diverse educational curricula and objectives"
       },
       "support": {
-        "title": "24/7 global support",
-        "subTitle": "Get the answers you need, when you need them"
+        "title": "Comprehensive technical and professional support",
+        "subTitle": "Covering all school needs, and providing comprehensive and integrated technical and professional support"
+      },
+      "activities": {
+        "title": "Various activities and adventures",
+        "subTitle": "Providing diverse and innovative activities and adventures for students through partnerships with local service providers."
       },
       "callUs": {
         "title": "Call Us",
