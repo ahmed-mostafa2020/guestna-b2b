@@ -7,10 +7,10 @@ import { memo } from "react";
 import FilterAccordion from "@components/filtersBox/FilterAccordion";
 import ValidationMessage from "./ValidationMessage";
 
-const Itinerary = ({ data }) => {
+const Itinerary = ({ data, isAuth }) => {
   const t = useTranslations();
 
-  if (data.length === 0) return <ValidationMessage />;
+  if (!isAuth && data.length === 0) return <ValidationMessage />;
 
   const renderedData = data?.map((item, index) => (
     <li key={index}>

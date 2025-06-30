@@ -6,12 +6,12 @@ import { useSelector } from "react-redux";
 
 import { Fragment, useEffect, useState } from "react";
 
-// import GalleryHeader from "./GalleryHeader";
+import GalleryHeader from "./GalleryHeader";
 import ImageWithPlaceholder from "@components/common/imagesPlaceholder/ImageWithPlaceholder";
 import Video from "@components/common/trips/Video";
 import CustomizedModal from "@components/common/customizedModal";
 import ImagesSlider from "@components/common/sliderWithArrowsSection/ImagesSlider";
-import DownloadButton from "./DownloadButton";
+// import DownloadButton from "./DownloadButton";
 
 import { SwiperSlide } from "swiper/react";
 
@@ -67,14 +67,12 @@ const GallerySection = () => {
     <>
       <section className="gallery-section">
         <Container maxWidth="lg" className="flex flex-col gap-4 lg:gap-6">
-          {/* <GalleryHeader tripData={data} /> */}
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <h1 className="text-xl font-semibold text-mainColor lg:text-5xl ">
+          <GalleryHeader tripData={data} />
+          {/* <div className="flex flex-wrap items-center justify-between gap-3">
+            <h1 className="text-xl font-semibold text-mainColor lg:text-5xl">
               {data?.name}
             </h1>
-
-            <DownloadButton />
-          </div>
+          </div> */}
 
           <div className="flex-row-reverse flex-wrap gap-3 centered">
             <div className="relative">

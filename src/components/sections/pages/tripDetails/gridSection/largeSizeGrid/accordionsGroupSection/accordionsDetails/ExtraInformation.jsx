@@ -1,6 +1,10 @@
 import { memo } from "react";
 
-const ExtraInformation = ({ data }) => {
+import ValidationMessage from "./ValidationMessage";
+
+const ExtraInformation = ({ data, isAuth }) => {
+  if (!isAuth && data.length === 0) return <ValidationMessage />;
+
   const renderedData = data?.map((list) => (
     <div key={list._id}>
       <h3 className="pb-2 text-xl font-medium text-black">{list.name}</h3>

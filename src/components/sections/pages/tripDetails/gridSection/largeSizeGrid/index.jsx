@@ -1,5 +1,5 @@
 import AccordionsGroupSection from "./accordionsGroupSection";
-import TripTagsListing from "./tripTags/TripTagsListing";
+// import TripTagsListing from "./tripTags/TripTagsListing";
 
 const LargeSizeSection = () => {
   return (
@@ -11,7 +11,7 @@ const LargeSizeSection = () => {
         />
       )} */}
 
-      <TripTagsListing />
+      {/* <TripTagsListing /> */}
 
       <AccordionsGroupSection />
     </div>

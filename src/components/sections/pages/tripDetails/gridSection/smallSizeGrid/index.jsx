@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 import { useSelector } from "react-redux";
 
-import PreBookingSection from "@components/common/trips/PreBookingSection";
+// import PreBookingSection from "@components/common/trips/PreBookingSection";
 import BookWithConfidenceSection from "@components/common/trips/BookWithConfidenceSection";
 import Map from "../largeSizeGrid/accordionsGroupSection/accordionsDetails/Map";
 
@@ -15,7 +15,7 @@ const SmallSizeGrid = () => {
 
   return (
     <>
-      <PreBookingSection tripData={data} />
+      {/* <PreBookingSection tripData={data} /> */}
 
       <BookWithConfidenceSection />
 

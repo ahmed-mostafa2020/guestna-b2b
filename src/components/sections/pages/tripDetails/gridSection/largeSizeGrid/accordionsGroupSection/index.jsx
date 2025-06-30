@@ -18,6 +18,8 @@ import ExtraInformation from "./accordionsDetails/ExtraInformation";
 const AccordionsGroupSection = () => {
   const data = useSelector((state) => state.tripDetailsData.data);
 
+  const isAuth = data?.isAuth;
+
   const tripType =
     data?.tripsType === CONSTANT_VALUES.PACKAGE ? "package" : "activity";
 
@@ -27,22 +29,31 @@ const AccordionsGroupSection = () => {
     {
       isShown: data?.description,
       title: t(`tripDetails.accordionsGroup.${tripType}.description`),
-      children: <p>{data?.description}</p>,
+      children: isAuth ? (
+        <p>{data?.description}</p>
+      ) : (
+        <p>{data?.description}</p>
+      ),
+      children: isAuth
+        ? data?.description
+        : `${data?.description.substring(0, 120)}...`,
     },
     {
       isShown: data?.services,
       title: t(`tripDetails.accordionsGroup.${tripType}.contents`),
-      children: <Services data={data?.services} />,
+      children: <Services data={data?.services} isAuth={isAuth} />,
     },
     {
       isShown: data?.exemptedFromTrip,
       title: t(`tripDetails.accordionsGroup.${tripType}.exempted`),
-      children: <ExemptedFromTrip data={data?.exemptedFromTrip} />,
+      children: (
+        <ExemptedFromTrip data={data?.exemptedFromTrip} isAuth={isAuth} />
+      ),
     },
     {
       isShown: data?.itinerary,
       title: t(`tripDetails.accordionsGroup.${tripType}.itinerary`),
-      children: <Itinerary data={data?.itinerary} />,
+      children: <Itinerary data={data?.itinerary} isAuth={isAuth} />,
     },
 
     {
@@ -59,12 +70,12 @@ const AccordionsGroupSection = () => {
     {
       isShown: data?.mustHaveItems,
       title: t("tripDetails.accordionsGroup.whatToBring"),
-      children: <MustHaveItems data={data?.mustHaveItems} />,
+      children: <MustHaveItems data={data?.mustHaveItems} isAuth={isAuth} />,
     },
     {
       isShown: data?.attributes,
       title: t("tripDetails.accordionsGroup.extraInfo"),
-      children: <ExtraInformation data={data?.attributes} />,
+      children: <ExtraInformation data={data?.attributes} isAuth={isAuth} />,
     },
   ];
 

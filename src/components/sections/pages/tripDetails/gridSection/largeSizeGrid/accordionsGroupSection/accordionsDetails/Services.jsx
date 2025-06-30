@@ -1,8 +1,8 @@
 import ImageWithPlaceholder from "@components/common/imagesPlaceholder/ImageWithPlaceholder";
 import ValidationMessage from "./ValidationMessage";
 
-const Services = ({ data }) => {
-  if (data.length === 0) return <ValidationMessage />;
+const Services = ({ data, isAuth }) => {
+  if (!isAuth && data.length === 0) return <ValidationMessage />;
 
   const renderedData = data?.map((item, index) => (
     <li
