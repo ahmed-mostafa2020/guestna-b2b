@@ -25,6 +25,8 @@
     "onePersonOnly": "للشخص",
     "person": "شخص",
     "people": "أشخاص",
+    "student": "طالبا",
+    "students": "طلابا",
     "stars": "نجوم",
     "star": "نجمة",
     "all": "الكل",
@@ -124,6 +126,7 @@
     "addToFavorites": "إضافة إلى قائمة الأمنيات",
     "share": "مشاركة",
     "save": "حفظ",
+    "downloadFile": "تحميل الملف",
     "saveChange": "حفظ التغيير",
     "saveChanges": "حفظ التغيرات",
     "send": "إرسال",
@@ -226,6 +229,9 @@
     "subTitle": "رحلات متنوعة"
   },
   "tripDetails": {
+    "tags": {
+      "capacity": "قدرة استعاب الرحلة الواحدة"
+    },
     "favoriteByGuests": {
       "title": "مفضلة لدى الضيوف",
       "subTitle": "أحد أكثر الأنشطة التي أحبها الضيوف في جستنا"
@@ -252,7 +258,7 @@
     "validationMessage": "يتطلب تسجيل دخول"
   },
   "bookWithConfidence": {
-    "title": "احجز بثقة",
+    "why": "ليش جستنا",
     "items": {
       "lowestPrice": {
         "title": "ضمان أقل سعر",
@@ -270,7 +276,8 @@
         "title": "اتصل بنا",
         "subTitle": "سنكون سعداء بمساعدتك في حجزك اتصل الان :966 54 753 4666+"
       }
-    }
+    },
+    "activityLocation": "موقع النشاط"
   },
   "finalDetails": {
     "stepper": {

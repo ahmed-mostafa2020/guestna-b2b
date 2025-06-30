@@ -11,6 +11,8 @@ import ImageWithPlaceholder from "@components/common/imagesPlaceholder/ImageWith
 import Video from "@components/common/trips/Video";
 import CustomizedModal from "@components/common/customizedModal";
 import ImagesSlider from "@components/common/sliderWithArrowsSection/ImagesSlider";
+import DownloadButton from "./DownloadButton";
+
 import { SwiperSlide } from "swiper/react";
 
 import { Container } from "@mui/material";
@@ -64,9 +66,15 @@ const GallerySection = () => {
   return (
     <>
       <section className="gallery-section">
-        <Container maxWidth="lg" className="flex flex-col gap-4">
+        <Container maxWidth="lg" className="flex flex-col gap-4 lg:gap-6">
           {/* <GalleryHeader tripData={data} /> */}
-          <h1 className="text-xl font-semibold lg:text-5xl">{data?.name}</h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-semibold text-mainColor lg:text-5xl">
+              {data?.name}
+            </h1>
+
+            <DownloadButton />
+          </div>
 
           <div className="flex-row-reverse flex-wrap gap-3 centered">
             <div className="relative">

@@ -2,14 +2,14 @@
 
 import { useTranslations } from "next-intl";
 
-import LockPersonIcon from "@mui/icons-material/LockPerson";
+import { lockIcon } from "@assets/svg";
 
 const ValidationMessage = () => {
   const t = useTranslations();
 
   return (
     <div className="flex items-center gap-1">
-      <LockPersonIcon />
+      {lockIcon}
 
       <p className="text-lg font-medium lg:text-xl">
         {t("tripDetails.validationMessage")}

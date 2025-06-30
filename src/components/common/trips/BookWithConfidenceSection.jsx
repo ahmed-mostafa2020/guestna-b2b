@@ -10,6 +10,7 @@ import { walletIcon, lockIcon, headPhoneIcon, phoneIcon } from "@assets/svg";
 
 const BookWithConfidenceSection = () => {
   const t = useTranslations();
+
   const itemsList = [
     {
       icon: walletIcon,
@@ -27,6 +28,11 @@ const BookWithConfidenceSection = () => {
       subTitle: t("bookWithConfidence.items.support.subTitle"),
     },
     {
+      icon: headPhoneIcon,
+      title: t("bookWithConfidence.items.support.title"),
+      subTitle: t("bookWithConfidence.items.support.subTitle"),
+    },
+    {
       icon: phoneIcon,
       title: t("bookWithConfidence.items.callUs.title"),
       subTitle: t("bookWithConfidence.items.callUs.subTitle"),
@@ -37,22 +43,24 @@ const BookWithConfidenceSection = () => {
     <div key={item.title} className="flex gap-2">
       <span className="inline-block">{item.icon}</span>
 
-      <div>
-        <h3>{item.title}</h3>
-        <h3
-          className={`text-textLight ${
+      <div className="flex flex-col gap-2">
+        <h3 className="text-lg font-medium lg:text-xl">{item.title}</h3>
+        <h4
+          className={`text-[#545454] font-light ${
             index == itemsList.length - 1 && "lg:w-[80%]"
           }`}
         >
           {item.subTitle}
-        </h3>
+        </h4>
       </div>
     </div>
   ));
 
   return (
-    <FrameWithImagedHeader imageSrc={headerSection} fontFamily="font-ibm">
-      <h3 className="text-xl font-semibold">{t("bookWithConfidence.title")}</h3>
+    <FrameWithImagedHeader imageSrc={headerSection}>
+      <h3 className="text-xl font-semibold lg:text-2xl text-mainColor">
+        {t("bookWithConfidence.why")}
+      </h3>
 
       <div className="flex flex-col gap-3">{renderedItemsList}</div>
     </FrameWithImagedHeader>

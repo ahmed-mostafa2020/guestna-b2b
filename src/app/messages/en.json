@@ -25,6 +25,8 @@
     "onePersonOnly": "Person",
     "person": "Person",
     "people": "People",
+    "student": "student",
+    "students": "students",
     "stars": "Stars",
     "star": "Star",
     "all": "All",
@@ -124,6 +126,7 @@
     "addToFavorites": "Add to Favorites",
     "share": "Share",
     "save": "Save",
+    "downloadFile": "Download file",
     "saveChange": "Save Change",
     "saveChanges": "Save Changes",
     "send": "Send",
@@ -226,6 +229,9 @@
     "subTitle": "Various trips"
   },
   "tripDetails": {
+    "tags": {
+      "capacity": "Trip capacity is"
+    },
     "favoriteByGuests": {
       "title": "Favorite by guests",
       "subTitle": "One of the most loved activities in Justina is listening"
@@ -252,7 +258,7 @@
     "validationMessage": "Login is required"
   },
   "bookWithConfidence": {
-    "title": "Book with confidence",
+    "why": "why GuestNa",
     "items": {
       "lowestPrice": {
         "title": "Lowest price guarantee",
@@ -270,7 +276,8 @@
         "title": "Call Us",
         "subTitle": "We will be happy to assist you with your booking. Call now: +966 54 753 4666"
       }
-    }
+    },
+    "activityLocation": "Activity location"
   },
   "finalDetails": {
     "stepper": {

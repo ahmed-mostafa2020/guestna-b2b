@@ -40,7 +40,7 @@ const ContactUsData = () => {
         </h3>
         <div className="gap-2 px-8 py-3 text-white rounded-lg w-fit centered bg-mainColor">
           {whiteWhatsAppIcon}
-          <h4 className="font-semibold">01018658666</h4>
+          <h4 className="font-semibold">966547534666</h4>
         </div>
       </div>
 

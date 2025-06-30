@@ -118,7 +118,7 @@ const Map = ({
 
   return (
     <>
-      <div ref={mapRef} className={`w-full ${height}`} />
+      <div ref={mapRef} className={`w-full ${height} rounded-lg`} />
 
       {locationLink && (
         <div className="flex items-center justify-end">
