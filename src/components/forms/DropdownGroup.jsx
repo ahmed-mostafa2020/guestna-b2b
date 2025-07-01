@@ -46,7 +46,7 @@ const DropdownGroup = ({
             left: isRTL ? "" : "90% !important",
           },
         }}
-        className="border-2 border-[#eaeaea] rounded-lg "
+        className="border-2 border-[#eaeaea] rounded-lg font-ibm"
       >
         <MenuItem value="" disabled>
           <em>{placeholder}</em>

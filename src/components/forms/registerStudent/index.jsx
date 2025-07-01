@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useSelector } from "react-redux";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { createRegisterChildSchema } from "@utils/validationSchemas";
@@ -39,9 +39,10 @@ const RegisterStudentForm = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  // Nationality
+  // Academic stage
   const academicStage = useSelector((state) => state.homeData.items.stages);
   const [stage, setStage] = useState("");
+  const [stageError, setStageError] = useState("");
   const handleChangeStage = (event) => {
     setStage(event.target.value);
   };
@@ -51,16 +52,52 @@ const RegisterStudentForm = () => {
     (state) => state.address?.list?.nationalities
   );
   const [nationality, setNationality] = useState("");
+  const [nationalityError, setNationalityError] = useState("");
   const handleChangeNationality = (event) => {
     setNationality(event.target.value);
   };
 
+  // Validate custom fields
+  const validateCustomFields = () => {
+    let isValid = true;
+
+    if (!stage) {
+      setStageError(t("forms.validation.required"));
+      isValid = false;
+    } else {
+      setStageError("");
+    }
+
+    if (!nationality) {
+      setNationalityError(t("forms.validation.required"));
+      isValid = false;
+    } else {
+      setNationalityError("");
+    }
+
+    return isValid;
+  };
+
+  // Check if form is completely valid
+  const isFormValid = useMemo(() => {
+    return stage && nationality;
+  }, [stage, nationality]);
+
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
+    // Validate custom fields before submission
+    if (!validateCustomFields()) {
+      setSubmitting(false);
+      return;
+    }
+
     let data = {
       studentName: values.studentName,
       nationalId: values.nationalId,
       email: values.email,
       phone: values.mobile,
+      academicStage: stage,
+      nationality: nationality,
+      promoCode: values.promoCode,
     };
 
     let registerFormData = JSON.stringify(data);
@@ -116,7 +153,8 @@ const RegisterStudentForm = () => {
           studentName: "",
           nationalId: "",
           email: "",
-          mobile: "",
+          phone: "",
+          promoCode: "",
         }}
         validationSchema={registerChildSchema}
         onSubmit={handleSubmit}
@@ -184,6 +222,11 @@ const RegisterStudentForm = () => {
                   // onChange={(e) => setFieldValue("nationality", e.target.value)}
                   menuItemsList={academicStage}
                 />
+                {stageError && (
+                  <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+                    {stageError}
+                  </div>
+                )}
               </div>
 
               <div className="w-full lg:w-[49%]">
@@ -217,6 +260,11 @@ const RegisterStudentForm = () => {
                   // onChange={(e) => setFieldValue("nationality", e.target.value)}
                   menuItemsList={nationalities}
                 />
+                {nationalityError && (
+                  <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+                    {nationalityError}
+                  </div>
+                )}
               </div>
 
               <div className="relative flex flex-col gap-2 mb-6 lg:w-[49%] w-full">
@@ -258,9 +306,27 @@ const RegisterStudentForm = () => {
               </div>
             </div>
 
+            <div className="w-full lg:w-1/3">
+              <TextInputGroup
+                label={t("forms.promoCode.label")}
+                type="text"
+                name="promoCode"
+                placeholder={t("forms.promoCode.placeholder")}
+                value={values.promoCode}
+                errors={errors.promoCode}
+                touched={touched.promoCode}
+                onChange={(e) => {
+                  handleChange(e);
+                }}
+                onBlur={handleBlur}
+                minLength="4"
+                maxLength="6"
+              />
+            </div>
+
             <button
               type="submit"
-              disabled={!isValid || isSubmitting}
+              disabled={!isValid || isSubmitting || !isFormValid}
               className={`mx-auto px-20 lg:px-40 w-fit centered gap-2  mt-4 lg:mt-8 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                 isValid && "hover:bg-linksHover hover:border-linksHover"
               }`}

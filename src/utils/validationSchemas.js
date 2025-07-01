@@ -314,4 +314,6 @@ export const createRegisterChildSchema = (t) =>
       .required(t("forms.validation.require")),
 
     mobile: createPhoneValidation(t, false),
+
+    promoCode: Yup.string().optional(),
   });
