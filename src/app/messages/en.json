@@ -149,6 +149,7 @@
     "returnToPackage": "Return to Package",
     "login": "Login",
     "continuaAsGuest": "Continua as a guest (Quick login)",
+    "register": "Register",
     "sendStcOtp": "Send Stc Otp"
   },
   "header": {
@@ -538,6 +539,10 @@
       "apple": "Apple Pay"
     },
 
+    "registerForm": {
+      "title": "Enter student information"
+    },
+
     "name": {
       "name": "Name",
       "error": {
@@ -550,6 +555,7 @@
 
     "email": {
       "name": "Email",
+      "parentEmail": "Parent Email",
       "error": "Please enter a valid email address",
       "is_exists": "This email address already exists",
       "done": "Your account has been added",
@@ -558,6 +564,7 @@
 
     "phone": {
       "name": "Phone",
+      "parentPhone": "Parent Phone",
       "error": {
         "invalid": "Invalid phone number",
         "min": "Number should be more than 12",
@@ -648,6 +655,31 @@
       "placeholder": "Enter the promo code",
       "useCode": "Use the promo code",
       "successMessage": "Discount has been applied successfully"
+    },
+
+    "studentName": {
+      "name": "Student name",
+      "placeholder": "Student's full name in English",
+      "error": {
+        "min": "Student name should be less than 3 characters",
+        "max": "Student name Student name be more than 50 characters",
+        "invalid": "Name should contain only letters",
+        "wordMinLength": "Student name should be two words each word be more than 3 characters"
+      }
+    },
+
+    "nationalId": {
+      "name": "National ID",
+      "placeholder": "National ID card number of the guardian",
+      "error": {
+        "invalid": "The number must start with 1 or 2 and must be 10 characters long",
+        "min": "National ID number must be exactly 10 digits",
+        "max": "National ID number must be exactly 10 digits"
+      }
+    },
+
+    "academicStages": {
+      "name": "Academic Stages"
     },
 
     "subject": {

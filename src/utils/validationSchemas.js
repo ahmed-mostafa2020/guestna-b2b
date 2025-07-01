@@ -279,41 +279,39 @@ export const createPersonalInfoEditingSchema = (t) =>
       .required(t("forms.validation.require"))
       .min(2, t("forms.name.error.min"))
       .max(50, t("forms.name.error.max")),
+  });
 
-    // gender: Yup.string()
-    //   .optional()
-    //   .oneOf(["male", "female"], t("forms.gender.error.invalid")),
+export const createRegisterChildSchema = (t) =>
+  Yup.object().shape({
+    studentName: Yup.string()
+      .trim()
+      .required(t("forms.validation.require"))
+      .matches(/^[\p{L}\s]+$/u, t("forms.studentName.error.invalid"))
+      .test(
+        "min-word-length",
+        t("forms.studentName.error.wordMinLength"),
+        function (value) {
+          if (!value) return true; // Let required validation handle empty values
 
-    // birthDate: Yup.date()
-    //   .optional()
-    //   .max(new Date(), t("forms.birthDate.error.future"))
-    //   .test(
-    //     "adult-check",
-    //     t("forms.birthDate.error.minAge"),
-    //     (value) => calculateAge(value) >= 18
-    //   ),
+          const words = value.trim().split(/\s+/); // Split by whitespace and remove empty strings
 
-    // nationality: Yup.string()
-    //   .optional()
-    //   .test(
-    //     "valid-selection",
-    //     t("forms.validation.invalidSelection"),
-    //     (value) => value && value !== "select" // Assuming 'select' is default dropdown value
-    //   ),
+          // Must have at least 2 words
+          if (words.length < 2) return false;
 
-    // country: Yup.string()
-    //   .optional()
-    //   .test(
-    //     "valid-selection",
-    //     t("forms.validation.invalidSelection"),
-    //     (value) => value && value !== "select"
-    //   ),
+          // Each word must be at least 3 characters
+          return words.every((word) => word.length >= 3);
+        }
+      ),
 
-    // city: Yup.string()
-    //   .optional()
-    //   .test(
-    //     "valid-selection",
-    //     t("forms.validation.invalidSelection"),
-    //     (value) => value && value !== "select"
-    //   ),
+    nationalId: Yup.string()
+      .required(t("forms.validation.require"))
+      .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
+      .min(10, t("forms.nationalId.error.min"))
+      .max(10, t("forms.nationalId.error.max")),
+
+    email: Yup.string()
+      .email(t("forms.email.error"))
+      .required(t("forms.validation.require")),
+
+    mobile: createPhoneValidation(t, false),
   });

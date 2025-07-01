@@ -33,7 +33,7 @@ const DropdownGroup = ({
   ));
 
   return (
-    <FormControl sx={{ m: 1, minWidth: 120 }}>
+    <FormControl sx={{ m: 1, minWidth: 120, width: "100% " }}>
       <label className="mb-2 font-medium capitalize font-ibm">{label}</label>
       <Select
         value={value}

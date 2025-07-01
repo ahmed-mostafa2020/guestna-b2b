@@ -15,11 +15,7 @@ const Profile = () => {
     )}`;
   }, [t]);
 
-  return (
-    <>
-      <ProfileInformation />
-    </>
-  );
+  return <ProfileInformation />;
 };
 
 export default Profile;

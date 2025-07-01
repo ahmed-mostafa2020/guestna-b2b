@@ -59,7 +59,7 @@ const GalleryHeader = ({ tripData }) => {
 
   return (
     <>
-      <h1 className="text-xl font-semibold text-mainColor lg:text-5xl">
+      <h1 className="text-xl font-semibold text-titleColor lg:text-5xl">
         {tripData?.name}
       </h1>
 

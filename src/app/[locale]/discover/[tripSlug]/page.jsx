@@ -30,7 +30,7 @@ import SmallSeparator from "@components/common/separators/SmallSeparator";
 import GridSection from "@components/sections/pages/tripDetails/gridSection";
 
 import ReviewsSection from "@components/sections/pages/tripDetails/reviewsSection";
-import RegisterChildForm from "@components/forms/registerChild";
+import RegisterStudentForm from "@components/forms/registerStudent";
 
 const TripDetails = ({ params }) => {
   const userType = useSelector((state) => state.users.userType);
@@ -161,7 +161,7 @@ const TripDetails = ({ params }) => {
         </>
       )}
 
-      {userType && <RegisterChildForm />}
+      {userType === CONSTANT_VALUES.USERS.VISITOR && <RegisterStudentForm />}
     </main>
   );
 };

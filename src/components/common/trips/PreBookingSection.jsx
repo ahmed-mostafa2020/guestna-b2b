@@ -37,7 +37,7 @@ const PreBookingSection = ({ tripData }) => {
     handleClose();
 
     if (typeof window !== "undefined") {
-      const target = document.querySelector("#register-child-form");
+      const target = document.querySelector("#register-student-form");
       if (target) {
         window.scrollTo({
           top: target.offsetTop,
@@ -64,7 +64,7 @@ const PreBookingSection = ({ tripData }) => {
           onClick={handleOpen}
           className="w-full px-8 py-3 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor"
         >
-          {t("links.bookNow")}
+          {t("links.register")}
         </button>
 
         {tripData?.isCustomizable &&
