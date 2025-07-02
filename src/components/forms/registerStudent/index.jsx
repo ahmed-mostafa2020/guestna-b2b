@@ -39,8 +39,12 @@ const RegisterStudentForm = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const { academicStages, nationalities } = useSelector(
+    (state) => state.tripDetailsData.data
+  );
+
   // Academic stage
-  const academicStage = useSelector((state) => state.homeData.items.stages);
+  // const academicStage = useSelector((state) => state.homeData.items.stages);
   const [stage, setStage] = useState("");
   const [stageError, setStageError] = useState("");
   const handleChangeStage = (event) => {
@@ -48,9 +52,9 @@ const RegisterStudentForm = () => {
   };
 
   // Nationality
-  const nationalities = useSelector(
-    (state) => state.address?.list?.nationalities
-  );
+  // const nationalities = useSelector(
+  //   (state) => state.address?.list?.nationalities
+  // );
   const [nationality, setNationality] = useState("");
   const [nationalityError, setNationalityError] = useState("");
   const handleChangeNationality = (event) => {
@@ -220,7 +224,7 @@ const RegisterStudentForm = () => {
                   onChange={handleChangeStage}
                   // value={values.nationality}
                   // onChange={(e) => setFieldValue("nationality", e.target.value)}
-                  menuItemsList={academicStage}
+                  menuItemsList={academicStages}
                 />
                 {stageError && (
                   <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
