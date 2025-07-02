@@ -16,6 +16,7 @@ import {
   setTripName,
   setTripCustomization,
 } from "@store/checkout/checkoutSlice";
+import { setUser } from "@store/users/usersSlice";
 
 import { useEffect } from "react";
 
@@ -33,8 +34,6 @@ import ReviewsSection from "@components/sections/pages/tripDetails/reviewsSectio
 import RegisterStudentForm from "@components/forms/registerStudent";
 
 const TripDetails = ({ params }) => {
-  const userType = useSelector((state) => state.users.userType);
-
   const locale = useLocale();
   const t = useTranslations();
 
@@ -95,6 +94,10 @@ const TripDetails = ({ params }) => {
     `;
   }, [t, data]);
 
+  useEffect(() => {
+    dispatch(setUser(CONSTANT_VALUES.USERS.PARENT));
+  }, [dispatch]);
+
   if (isLoading)
     return (
       <div className="w-full min-h-screen centered">
@@ -154,7 +157,7 @@ const TripDetails = ({ params }) => {
 
       <GridSection />
 
-      {data?.trip?.reviews?.length >= 1 && (
+      {data.trip?.reviews?.length >= 1 && (
         <>
           <SmallSeparator />
 
@@ -162,7 +165,7 @@ const TripDetails = ({ params }) => {
         </>
       )}
 
-      {userType === CONSTANT_VALUES.USERS.VISITOR && <RegisterStudentForm />}
+      <RegisterStudentForm />
     </main>
   );
 };

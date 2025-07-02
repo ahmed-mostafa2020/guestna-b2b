@@ -701,6 +701,8 @@
     "validation": {
       "require": "This field is required",
       "sending": "Sending Now ...",
+      "downloading": "Downloading Now ...",
+
       "success": "Your data has been sent successfully",
       "addedToFavorites": "Added to favorites successfully",
       "checkYourEmail": "Please, Check your gmail",

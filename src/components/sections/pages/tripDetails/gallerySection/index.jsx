@@ -34,7 +34,7 @@ const GallerySection = () => {
     setOpen(false);
   };
 
-  const data = useSelector((state) => state.tripDetailsData.data);
+  const data = useSelector((state) => state.tripDetailsData.data.trip);
 
   const specialGalleryImages = data?.gallary?.filter(
     (image) => image.urlType === "DISTINCTIVE"

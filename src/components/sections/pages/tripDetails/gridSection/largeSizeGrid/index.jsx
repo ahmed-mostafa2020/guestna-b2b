@@ -17,7 +17,7 @@ const LargeSizeSection = () => {
           reviewsCount={data?.reviewsCount || 20}
         />
       )} */}
-      {userType === CONSTANT_VALUES.USERS.VISITOR && <TripTagsListing />}
+      {userType === CONSTANT_VALUES.USERS.PARENT && <TripTagsListing />}
 
       <AccordionsGroupSection />
     </div>

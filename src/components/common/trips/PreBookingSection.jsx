@@ -25,13 +25,9 @@ const PreBookingSection = ({ tripData }) => {
   const locale = useLocale();
   const t = useTranslations();
 
-  const defaultPriceWithFormatting =
-    tripData?.discountedPrice || 100
-      ? calculateDiscountedPrice(
-          tripData?.price || 100,
-          tripData?.discountedPrice || 0.1
-        )
-      : formatCurrency(tripData?.price);
+  const defaultPriceWithFormatting = tripData?.discountedPrice
+    ? calculateDiscountedPrice(tripData?.price, tripData?.discountedPrice)
+    : formatCurrency(tripData?.price);
 
   const handleClick = () => {
     handleClose();

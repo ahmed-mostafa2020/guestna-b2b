@@ -16,6 +16,7 @@ import {
   setTripName,
   setTripCustomization,
 } from "@store/checkout/checkoutSlice";
+import { setUser } from "@store/users/usersSlice";
 
 import { useEffect } from "react";
 
@@ -30,11 +31,8 @@ import SmallSeparator from "@components/common/separators/SmallSeparator";
 import GridSection from "@components/sections/pages/tripDetails/gridSection";
 
 import ReviewsSection from "@components/sections/pages/tripDetails/reviewsSection";
-import RegisterStudentForm from "@components/forms/registerStudent";
 
 const TripDetails = ({ params }) => {
-  const userType = useSelector((state) => state.users.userType);
-
   const locale = useLocale();
   const t = useTranslations();
 
@@ -72,7 +70,7 @@ const TripDetails = ({ params }) => {
 
   // Save tripId and tripSlug
   useEffect(() => {
-    dispatch(setTripId(data?._id));
+    dispatch(setTripId(data?.trip?._id));
     dispatch(setTripSlug(params.tripSlug));
   }, [dispatch, params.tripSlug, data]);
 
@@ -83,16 +81,20 @@ const TripDetails = ({ params }) => {
     // }
 
     dispatch(setFirstAvailableDate(firstAvailableDate));
-    dispatch(setTripName(data?.name));
+    dispatch(setTripName(data?.trip?.name));
 
     dispatch(setTripCustomization(false));
   }, [dispatch, data, firstAvailableDate]);
 
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | 
-    ${data?.name || t("pagesHead.title.tripDetails")}
+    ${data?.trip?.name || t("pagesHead.title.tripDetails")}
     `;
   }, [t, data]);
+
+  useEffect(() => {
+    dispatch(setUser(CONSTANT_VALUES.USERS.VISITOR));
+  }, [dispatch]);
 
   if (isLoading)
     return (
@@ -132,10 +134,10 @@ const TripDetails = ({ params }) => {
     {
       id: 2,
       type: "link",
-      name: data?.categories[0].name,
-      link: `discover?categories=${data?.categories[0]._id}`,
+      name: data?.trip?.categories[0].name,
+      link: `discover?categories=${data?.trip?.categories[0]._id}`,
     },
-    { id: 3, type: "text", name: data?.name },
+    { id: 3, type: "text", name: data?.trip?.name },
   ];
 
   return (
@@ -153,15 +155,13 @@ const TripDetails = ({ params }) => {
 
       <GridSection />
 
-      {data?.reviews?.length >= 1 && (
+      {data?.trip?.reviews?.length >= 1 && (
         <>
           <SmallSeparator />
 
-          <ReviewsSection reviewsData={data.reviews} />
+          <ReviewsSection reviewsData={data?.trip?.reviews} />
         </>
       )}
-
-      {userType === CONSTANT_VALUES.USERS.VISITOR && <RegisterStudentForm />}
     </main>
   );
 };

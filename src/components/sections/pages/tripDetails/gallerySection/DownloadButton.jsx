@@ -2,19 +2,92 @@
 
 import { useTranslations } from "next-intl";
 
+import { useSelector } from "react-redux";
+
+import { useState } from "react";
+
 import SystemUpdateAltIcon from "@mui/icons-material/SystemUpdateAlt";
+import { CircularProgress } from "@mui/material";
 
 const DownloadButton = () => {
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const fileUrl = useSelector(
+    (state) => state.tripDetailsData.data.trip?.detailsFile
+  );
+
   const t = useTranslations();
+
+  const handleDownloadWithFetch = async () => {
+    if (!fileUrl || isDownloading) {
+      console.error("No file URL available or download in progress");
+      return;
+    }
+
+    setIsDownloading(true);
+
+    try {
+      const response = await fetch(fileUrl);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+
+      // Extract filename from Content-Disposition header or URL
+      const contentDisposition = response.headers.get("content-disposition");
+      let fileName = "download";
+
+      if (contentDisposition) {
+        const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+        if (fileNameMatch) {
+          fileName = fileNameMatch[1];
+        }
+      } else {
+        fileName = fileUrl.split("/").pop() || "download";
+      }
+
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Clean up the object URL
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download failed:", error);
+
+      // Fallback: open in new tab
+      window.open(fileUrl, "_blank");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   return (
     <button
-      // onClick={handleDownload}
-      className="gap-1 px-4 py-3 font-semibold transition-all duration-200 ease-in-out bg-transparent border-2 rounded-lg centered border-mainColor hover:text-mainColor"
+      onClick={handleDownloadWithFetch}
+      disabled={!fileUrl || isDownloading}
+      className={`gap-1 px-4 py-3 font-semibold transition-all duration-200 ease-in-out bg-transparent border-2 rounded-lg centered border-mainColor hover:text-mainColor ${
+        !fileUrl || isDownloading ? "opacity-70 cursor-not-allowed" : ""
+      }`}
     >
-      <SystemUpdateAltIcon />
-
-      {t("links.downloadFile")}
+      {isDownloading ? (
+        <>
+          {t("forms.validation.downloading")}
+          <CircularProgress size={14} sx={{ color: "#ED8A22" }} />
+        </>
+      ) : (
+        <>
+          <SystemUpdateAltIcon />
+          {t("links.downloadFile")}
+        </>
+      )}
     </button>
   );
 };

@@ -13,7 +13,7 @@ import TripTags from ".";
 import { largeLocationIcon, largeTimeIcon, calenderIcon } from "@assets/svg";
 
 const TripTagsListing = () => {
-  const data = useSelector((state) => state.tripDetailsData.data) || {};
+  const data = useSelector((state) => state.tripDetailsData.data.trip) || {};
 
   const locale = useLocale();
   const t = useTranslations();

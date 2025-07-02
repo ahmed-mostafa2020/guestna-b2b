@@ -10,17 +10,17 @@ import BookWithConfidenceSection from "@components/common/trips/BookWithConfiden
 import Map from "../largeSizeGrid/accordionsGroupSection/accordionsDetails/Map";
 
 const SmallSizeGrid = () => {
-  const data = useSelector((state) => state.tripDetailsData.data);
+  const data = useSelector((state) => state.tripDetailsData.data.trip);
 
   const userType = useSelector((state) => state.users.userType);
 
-  const isAuth = data?.isAuth;
+  const isAuth = data?.isAuth ?? true;
 
   const t = useTranslations();
 
   return (
     <>
-      {userType === CONSTANT_VALUES.USERS.VISITOR && (
+      {userType === CONSTANT_VALUES.USERS.PARENT && (
         <PreBookingSection tripData={data} />
       )}
 
@@ -28,7 +28,7 @@ const SmallSizeGrid = () => {
 
       {data?.location &&
         isAuth &&
-        userType === CONSTANT_VALUES.USERS.VISITOR && (
+        userType === CONSTANT_VALUES.USERS.PARENT && (
           <div className="flex flex-col gap-3 lg:gap-5">
             <h4 className="text-lg font-semibold text-mainColor lg:text-2xl">
               {t("bookWithConfidence.activityLocation")}

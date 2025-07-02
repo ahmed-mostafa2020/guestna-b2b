@@ -16,9 +16,9 @@ import MustHaveItems from "./accordionsDetails/MustHaveItems";
 import ExtraInformation from "./accordionsDetails/ExtraInformation";
 
 const AccordionsGroupSection = () => {
-  const data = useSelector((state) => state.tripDetailsData.data);
+  const data = useSelector((state) => state.tripDetailsData.data.trip);
 
-  const isAuth = data?.isAuth;
+  const isAuth = data?.isAuth ?? true;
 
   const tripType =
     data?.tripsType === CONSTANT_VALUES.PACKAGE ? "package" : "activity";
