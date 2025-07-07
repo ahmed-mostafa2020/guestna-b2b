@@ -11,15 +11,25 @@ import calculateDiscountedPrice from "@utils/CalculateDiscountedPrice";
 
 import FrameWithImagedHeader from "../frameWithImagedHeader/FrameWithImagedHeader";
 import ActionsDialog from "../../sections/pages/customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
+import CustomizedModal from "../customizedModal";
+import ParentLoginForm from "../../forms/auth/parentLogin";
 
 const PreBookingSection = ({ tripData }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isParentLoginFormOpen, setIsParentLoginFormOpen] = useState(false);
 
   const handleOpen = () => {
     setIsOpen(true);
   };
   const handleClose = () => {
     setIsOpen(false);
+  };
+
+  const handleParentLoginFormOpen = () => {
+    setIsParentLoginFormOpen(true);
+  };
+  const handleParentLoginFormClose = () => {
+    setIsParentLoginFormOpen(false);
   };
 
   const locale = useLocale();
@@ -45,6 +55,7 @@ const PreBookingSection = ({ tripData }) => {
 
   const handleLoginForm = () => {
     handleClose();
+    handleParentLoginFormOpen();
     // Show parent login form
   };
 
@@ -124,6 +135,21 @@ const PreBookingSection = ({ tripData }) => {
             </div>
           </div>
         </ActionsDialog>
+      )}
+
+      {/* Parent login form */}
+      {isParentLoginFormOpen && (
+        <div className="bg-white centered">
+          <CustomizedModal
+            open={isParentLoginFormOpen}
+            handleClose={handleParentLoginFormClose}
+            bgcolor="rgba(0, 0, 0, 0.5)"
+            customizedCloseButton={true}
+            padding={false}
+          >
+            <ParentLoginForm />
+          </CustomizedModal>
+        </div>
       )}
     </>
   );

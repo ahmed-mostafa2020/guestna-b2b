@@ -10,7 +10,6 @@ export const B2B_END_POINTS = {
   TRIPDETAILS: "trips/info",
   PARENT_TRIPDETAILS: "organizationTrips/info",
   STUDENT_REGISTER: "organizationTrips/booking/info",
-  PARENT_LOGIN: "auth/login/parent",
 
   SIDE_FILTERS: "filtratinDetails",
   ALL_TRIPS: "all",
@@ -32,6 +31,8 @@ export const B2B_END_POINTS = {
   },
 
   AUTH: {
+    PARENT_LOGIN: "auth/login/parent",
+
     SIGNUP: "users/signup",
     CONFIRM_ACCOUNT: "accounts/confirm",
     LOGIN_PHONE: "auth/loginPhone",
