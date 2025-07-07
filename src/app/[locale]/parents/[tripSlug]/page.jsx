@@ -11,7 +11,6 @@ import {
 import {
   setTripId,
   setTripSlug,
-  clearTripGuests,
   setFirstAvailableDate,
   setTripName,
   setTripCustomization,
@@ -37,9 +36,6 @@ const TripDetails = ({ params }) => {
   const locale = useLocale();
   const t = useTranslations();
 
-  // const defaultTripDate = useSelector((state) => state.checkoutData.tripDate);
-  const tripSlug = useSelector((state) => state.checkoutData.tripSlug);
-
   const firstAvailableDate = useSelector((state) => {
     const bookingDays = state.tripDetailsData.data?.trip?.bookingDay;
     if (bookingDays && bookingDays.length > 0) {
@@ -62,13 +58,6 @@ const TripDetails = ({ params }) => {
       onLoading: setTripDetailsDataLoading,
     }
   );
-
-  // Dispatch clearTripGuests only when tripSlug changes
-  useEffect(() => {
-    if (params.tripSlug !== tripSlug) {
-      dispatch(clearTripGuests());
-    }
-  }, [dispatch, tripSlug, params.tripSlug]);
 
   // Save tripId and tripSlug
   useEffect(() => {

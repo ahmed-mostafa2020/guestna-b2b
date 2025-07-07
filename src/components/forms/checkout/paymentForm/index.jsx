@@ -317,15 +317,9 @@ const PaymentForm = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-9">
-        <h2 className="text-lg font-semibold lg:text-[28px]">
-          {t("forms.paymentMethodsForm.title")}
-        </h2>
-
-        <h3 className="font-semibold">
-          {t("forms.paymentMethodsForm.subTitle")}
-        </h3>
-      </div>
+      <h3 className="font-semibold">
+        {t("forms.paymentMethodsForm.subTitle")}
+      </h3>
 
       <Formik
         initialValues={{

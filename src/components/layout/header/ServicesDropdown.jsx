@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const ServicesDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const dropdownRef = useRef();
 
   const locale = useLocale();
   const t = useTranslations();
@@ -12,6 +14,20 @@ const ServicesDropdown = () => {
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const dropdownList = [
     {
@@ -37,7 +53,7 @@ const ServicesDropdown = () => {
   ));
 
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <button
         className="flex items-center justify-between w-full p-3 text-base font-medium rounded-md bg-[#FCFCFC]"
         onClick={toggleDropdown}

@@ -7,10 +7,10 @@ import SmallSizeGrid from "./smallSizeGrid";
 const GridSection = () => {
   return (
     <ResponsiveGridLayout
-      LargeSizeGrid={LargeSizeGrid}
-      SmallSizeGrid={SmallSizeGrid}
-      largeGridPercent={7.25}
-      smallGridPercent={4.75}
+      LargeSizeGrid={SmallSizeGrid}
+      SmallSizeGrid={LargeSizeGrid}
+      largeGridPercent={4.75}
+      smallGridPercent={7.25}
     />
   );
 };

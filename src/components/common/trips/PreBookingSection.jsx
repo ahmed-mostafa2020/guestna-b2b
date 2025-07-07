@@ -43,6 +43,11 @@ const PreBookingSection = ({ tripData }) => {
     }
   };
 
+  const handleLoginForm = () => {
+    handleClose();
+    // Show parent login form
+  };
+
   return (
     <>
       <FrameWithImagedHeader withBorder={true}>
@@ -85,14 +90,14 @@ const PreBookingSection = ({ tripData }) => {
         >
           <div className="flex-col gap-6 px-4 centered ">
             <div className="flex-col flex-wrap w-full gap-2 centered">
-              <Link
-                href={`/${locale}/login`}
+              <button
+                onClick={handleLoginForm}
                 className="w-full p-3 text-base font-semibold text-center text-white capitalize transition-all duration-200 ease-in-out border-2 rounded-lg bg-mainColor border-mainColor hover:bg-linksHover hover:border-linksHover"
               >
                 {t("links.login")}
-              </Link>
+              </button>
 
-              <div className="flex flex-wrap items-center">
+              {/* <div className="flex flex-wrap items-center">
                 <p className="text-sm font-medium text-textLight pe-2 opacity-70">
                   {t("registerChild.popup.toComplete")}
                 </p>
@@ -102,7 +107,7 @@ const PreBookingSection = ({ tripData }) => {
                 >
                   {t("registerChild.popup.haveNoAccount")}
                 </Link>
-              </div>
+              </div> */}
             </div>
 
             <div className="flex-col w-full gap-2 centered">

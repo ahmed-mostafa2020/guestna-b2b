@@ -1,18 +1,17 @@
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import formatDate from "@utils/FormateDate";
 import FrameWithImagedHeader from "@components/common/frameWithImagedHeader/FrameWithImagedHeader";
 import ImageWithPlaceholder from "@components/common/imagesPlaceholder/ImageWithPlaceholder";
 import headerImage from "@assets/sectionBackground/checkoutHeader.png";
 import NotCustomizableTripsItinerary from "./tripsItinerary/NotCustomizableTripsItinerary";
 import CustomizableTripsActivities from "./tripsItinerary/CustomizableTripsActivities";
-
-import { dateIcon } from "@assets/svg";
+import TripTagsListing from "../../../../tripDetails/gridSection/largeSizeGrid/tripTags/TripTagsListing";
 
 const TripLastDetailsSection = ({ finalTripDetails }) => {
-  const locale = useLocale();
   const t = useTranslations();
+
+  const data = finalTripDetails || {};
 
   const isCustomizedActivities = finalTripDetails.customActivites
     ? true
@@ -27,7 +26,7 @@ const TripLastDetailsSection = ({ finalTripDetails }) => {
   return (
     <FrameWithImagedHeader imageSrc={headerImage} imageBgColor="#E2E6EE">
       <h3 className="text-xl font-semibold">
-        {finalTripDetails.guestnaTripsType === CONSTANT_VALUES.PACKAGE
+        {finalTripDetails.tripsType === CONSTANT_VALUES.PACKAGE
           ? t("finalDetails.finalDetailsPackage")
           : t("finalDetails.finalDetailsActivity")}
       </h3>
@@ -48,15 +47,7 @@ const TripLastDetailsSection = ({ finalTripDetails }) => {
       </div>
 
       <div className="flex items-center gap-1 py-4 border-y border-textDark">
-        {dateIcon}
-        <p className="text-base font-medium">
-          {formatDate(finalTripDetails.bookingDay, locale, {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}
-        </p>
+        <TripTagsListing data={data} />
       </div>
 
       <div className="flex flex-col gap-4">{renderedItineraries}</div>

@@ -3,7 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setFinalTripDetailsData } from "@store/checkout/finalTripDetailsSlice";
 
 import { useMemo, useState } from "react";
 
@@ -33,6 +34,8 @@ const RegisterStudentForm = () => {
 
   const router = useRouter();
 
+  const dispatch = useDispatch();
+
   const headers = getHeaders(locale);
 
   const registerChildSchema = createRegisterChildSchema(t);
@@ -43,7 +46,7 @@ const RegisterStudentForm = () => {
     (state) => state.tripDetailsData.data
   );
 
-  const tripId = useSelector((state) => state.tripDetailsData.data.trip._id);
+  const tripId = useSelector((state) => state.tripDetailsData.data?.trip?._id);
 
   // Academic stage
   // const academicStage = useSelector((state) => state.homeData.items.stages);
@@ -129,6 +132,8 @@ const RegisterStudentForm = () => {
           enqueueSnackbar(t("forms.validation.success"), {
             variant: "success",
           });
+
+          dispatch(setFinalTripDetailsData(response.data));
 
           router.push(`/${locale}/checkout`);
         }
@@ -327,7 +332,6 @@ const RegisterStudentForm = () => {
                 }}
                 onBlur={handleBlur}
                 minLength="4"
-                maxLength="6"
               />
             </div>
 

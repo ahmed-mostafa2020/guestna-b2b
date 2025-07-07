@@ -2,9 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import { useSelector } from "react-redux";
-
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 
 import formatNumbersUint from "@utils/FormatNumbersUint";
 import formatDate from "@utils/FormateDate";
@@ -12,9 +10,7 @@ import TripTags from ".";
 
 import { largeLocationIcon, largeTimeIcon, calenderIcon } from "@assets/svg";
 
-const TripTagsListing = () => {
-  const data = useSelector((state) => state.tripDetailsData.data.trip) || {};
-
+const TripTagsListing = ({ data }) => {
   const locale = useLocale();
   const t = useTranslations();
 
@@ -102,4 +98,4 @@ const TripTagsListing = () => {
   );
 };
 
-export default TripTagsListing;
+export default memo(TripTagsListing);

@@ -9,6 +9,8 @@ import TripTagsListing from "./tripTags/TripTagsListing";
 const LargeSizeSection = () => {
   const userType = useSelector((state) => state.users.userType);
 
+  const data = useSelector((state) => state.tripDetailsData.data.trip) || {};
+
   return (
     <div className="flex flex-col gap-5">
       {/* {data?.trip?.loversCount >= 0 && (
@@ -17,7 +19,9 @@ const LargeSizeSection = () => {
           reviewsCount={data?.reviewsCount || 20}
         />
       )} */}
-      {userType === CONSTANT_VALUES.USERS.PARENT && <TripTagsListing />}
+      {userType === CONSTANT_VALUES.USERS.PARENT && (
+        <TripTagsListing data={data} />
+      )}
 
       <AccordionsGroupSection />
     </div>
