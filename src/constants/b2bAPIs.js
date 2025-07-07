@@ -9,6 +9,7 @@ export const B2B_END_POINTS = {
   NAVBAR: "navebar",
   TRIPDETAILS: "trips/info",
   PARENT_TRIPDETAILS: "organizationTrips/info",
+  STUDENT_REGISTER: "organizationTrips/booking/info",
   SIDE_FILTERS: "filtratinDetails",
   ALL_TRIPS: "all",
   CUSTOMIZATION: "tripCustomizableInfo",

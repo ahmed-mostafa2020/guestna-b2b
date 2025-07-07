@@ -63,15 +63,15 @@ const TripTagsListing = () => {
   });
 
   // Available seat
-  const availableSeats = data.availableSeats;
-  const capacity =
-    t("tripDetails.tags.capacity") +
-    " " +
-    formatNumbersUint(
-      availableSeats,
-      t("common.student"),
-      t("common.students")
-    );
+  // const availableSeats = data.availableSeats;
+  // const capacity =
+  //   t("tripDetails.tags.capacity") +
+  //   " " +
+  //   formatNumbersUint(
+  //     availableSeats,
+  //     t("common.student"),
+  //     t("common.students")
+  //   );
 
   const tagsList = useMemo(
     () => [
@@ -80,9 +80,16 @@ const TripTagsListing = () => {
       { icon: largeTimeIcon, text: tripDuration },
       { icon: largeTimeIcon, text: hours },
       { icon: calenderIcon, text: tripDay },
-      { icon: calenderIcon, text: capacity },
+      // { icon: calenderIcon, text: capacity },
     ],
-    [renderCities, firstCategoryName, tripDuration, hours, tripDay, capacity]
+    [
+      renderCities,
+      firstCategoryName,
+      tripDuration,
+      hours,
+      tripDay,
+      // , capacity
+    ]
   );
 
   const renderedTagsList = tagsList.map(

@@ -664,7 +664,7 @@
         "min": "Student name should be less than 3 characters",
         "max": "Student name Student name be more than 50 characters",
         "invalid": "Name should contain only letters",
-        "wordMinLength": "Student name should be two words each word be more than 3 characters"
+        "wordMinLength": "The student's name must be full"
       }
     },
 

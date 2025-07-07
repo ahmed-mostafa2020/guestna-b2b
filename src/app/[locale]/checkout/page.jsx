@@ -66,40 +66,40 @@ const Checkout = () => {
   const userId = Cookies.get(CONSTANT_VALUES.USER_ID);
 
   // Use fetch data, but handle the case where tripSlug is null
-  const { data, error, isLoading } = useFetchData(
-    tripSlug ? `${END_POINTS.TRIPS}${END_POINTS.CHECKOUT}/${tripSlug}` : null,
-    {},
-    {
-      method: "POST",
-      body: {
-        bookingDay: bookingDate,
-        targetAudiences,
-        isCustom: isCustomizable,
-      },
+  // const { data, error, isLoading } = useFetchData(
+  //   tripSlug ? `${END_POINTS.TRIPS}${END_POINTS.CHECKOUT}/${tripSlug}` : null,
+  //   {},
+  //   {
+  //     method: "POST",
+  //     body: {
+  //       bookingDay: bookingDate,
+  //       targetAudiences,
+  //       isCustom: isCustomizable,
+  //     },
 
-      lang: locale,
+  //     lang: locale,
 
-      devicespecificid: userId,
+  //     devicespecificid: userId,
 
-      onSuccess: setFinalTripDetailsData,
-      onError: setFinalTripDetailsDataError,
-      onLoading: setFinalTripDetailsDataLoading,
-    }
-  );
+  //     onSuccess: setFinalTripDetailsData,
+  //     onError: setFinalTripDetailsDataError,
+  //     onLoading: setFinalTripDetailsDataLoading,
+  //   }
+  // );
 
   // Get user data
-  const {
-    data: userData,
-    error: userDataError,
-    isLoading: userDataIsLoading,
-  } = useFetchData(
-    `${END_POINTS.MAIN}${END_POINTS.AUTH.USER_DATA}`,
-    {},
-    {
-      method: "GET",
-      lang: locale,
-    }
-  );
+  // const {
+  //   data: userData,
+  //   error: userDataError,
+  //   isLoading: userDataIsLoading,
+  // } = useFetchData(
+  //   `${END_POINTS.MAIN}${END_POINTS.AUTH.USER_DATA}`,
+  //   {},
+  //   {
+  //     method: "GET",
+  //     lang: locale,
+  //   }
+  // );
 
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
@@ -119,37 +119,37 @@ const Checkout = () => {
     );
   }
 
-  if (isLoading || userDataIsLoading)
-    return (
-      <div className="w-full min-h-screen centered">
-        <FullScreenLoading status="pending" />
-      </div>
-    );
+  // if (isLoading || userDataIsLoading)
+  //   return (
+  //     <div className="w-full min-h-screen centered">
+  //       <FullScreenLoading status="pending" />
+  //     </div>
+  //   );
 
-  if (error || userDataError)
-    return (
-      <ErrorComponent
-        statusCode={error?.response?.data?.statusCode || "404"}
-        errorMessage={
-          error?.response?.data?.message ||
-          "Please Select Another Date For This Trip"
-        }
-      />
-    );
+  // if (error || userDataError)
+  //   return (
+  //     <ErrorComponent
+  //       statusCode={error?.response?.data?.statusCode || "404"}
+  //       errorMessage={
+  //         error?.response?.data?.message ||
+  //         "Please Select Another Date For This Trip"
+  //       }
+  //     />
+  //   );
 
-  if (userData) {
-    dispatch(
-      updateFormData({
-        name: userData?.name || "",
-        email: userData?.email || "",
-        mobile: userData?.phone || "",
-      })
-    );
-  }
+  // if (userData) {
+  //   dispatch(
+  //     updateFormData({
+  //       name: userData?.name || "",
+  //       email: userData?.email || "",
+  //       mobile: userData?.phone || "",
+  //     })
+  //   );
+  // }
 
   return (
     <main className="py-5 lg:py-10 bg-activityDetailsBg">
-      <StepperSection tripType={data?.guestnaTripsType} tripSlug={tripSlug} />
+      {/* <StepperSection tripType={data?.guestnaTripsType} tripSlug={tripSlug} /> */}
 
       <SmallSeparator />
 

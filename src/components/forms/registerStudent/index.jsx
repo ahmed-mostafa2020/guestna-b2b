@@ -43,6 +43,8 @@ const RegisterStudentForm = () => {
     (state) => state.tripDetailsData.data
   );
 
+  const tripId = useSelector((state) => state.tripDetailsData.data.trip._id);
+
   // Academic stage
   // const academicStage = useSelector((state) => state.homeData.items.stages);
   const [stage, setStage] = useState("");
@@ -95,13 +97,14 @@ const RegisterStudentForm = () => {
     }
 
     let data = {
-      studentName: values.studentName,
-      nationalId: values.nationalId,
+      name: values.studentName,
+      nationalId: `${values.nationalId}`,
       email: values.email,
       phone: values.mobile,
       academicStage: stage,
       nationality: nationality,
       promoCode: values.promoCode,
+      trip: tripId,
     };
 
     let registerFormData = JSON.stringify(data);
@@ -109,7 +112,7 @@ const RegisterStudentForm = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.CONTACT_US}`,
+      url: `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.STUDENT_REGISTER}`,
       headers,
       data: registerFormData,
     };
@@ -121,8 +124,8 @@ const RegisterStudentForm = () => {
         resetForm();
 
         // Change acc to response
-        const { message } = response.data;
-        if (message) {
+        const { _id } = response.data;
+        if (_id) {
           enqueueSnackbar(t("forms.validation.success"), {
             variant: "success",
           });

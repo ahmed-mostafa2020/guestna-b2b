@@ -296,7 +296,7 @@ export const createRegisterChildSchema = (t) =>
           const words = value.trim().split(/\s+/); // Split by whitespace and remove empty strings
 
           // Must have at least 2 words
-          if (words.length < 2) return false;
+          if (words.length < 4) return false;
 
           // Each word must be at least 3 characters
           return words.every((word) => word.length >= 3);
