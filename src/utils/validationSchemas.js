@@ -4,25 +4,13 @@ import { isValidPhoneNumber } from "react-phone-number-input";
 // import calculateAge from "./calculateAge";
 
 // Reusable phone validation function
-// export const createPhoneValidation = (t) => {
-//   return Yup.string()
-//     .transform((value) => (value ? String(value).replace(/\s/g, "") : value)) // Remove ALL whitespace
-//     .test("phone-validation", t("forms.phone.error.invalid"), (value) => {
-//       if (!value) return !required; // Skip if empty and not required
-
-//       const phoneString = String(value).replace(/\s/g, "");
-
-//       if (phoneString.length < 13) return false;
-
-//       return isValidPhoneNumber(phoneString);
-//     });
-// };
 
 export const createPhoneValidation = (t, required = true) => {
   let schema = Yup.string()
     .transform((value) => (value ? String(value).replace(/\s/g, "") : value))
     .test("phone-validation", t("forms.phone.error.invalid"), (value) => {
       if (!value) return !required;
+
       const phoneString = String(value).replace(/\s/g, "");
       return phoneString.length >= 13 && isValidPhoneNumber(phoneString);
     });
@@ -313,7 +301,7 @@ export const createRegisterChildSchema = (t) =>
       .email(t("forms.email.error"))
       .required(t("forms.validation.require")),
 
-    mobile: createPhoneValidation(t, false),
+    mobile: createPhoneValidation(t),
 
     promoCode: Yup.string().optional(),
   });

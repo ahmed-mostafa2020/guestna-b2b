@@ -27,6 +27,13 @@ import { useSnackbar } from "notistack";
 import { CircularProgress, Container } from "@mui/material";
 
 const RegisterStudentForm = () => {
+  const parentEmail = useSelector(
+    (state) => state.parentLoginForm.parentData?.email
+  );
+  const parentPhone = useSelector(
+    (state) => state.parentLoginForm.parentData?.phone
+  );
+
   const [formErrors, setFormErrors] = useState([]);
 
   const locale = useLocale();
@@ -49,7 +56,6 @@ const RegisterStudentForm = () => {
   const tripId = useSelector((state) => state.tripDetailsData.data?.trip?._id);
 
   // Academic stage
-  // const academicStage = useSelector((state) => state.homeData.items.stages);
   const [stage, setStage] = useState("");
   const [stageError, setStageError] = useState("");
   const handleChangeStage = (event) => {
@@ -57,9 +63,6 @@ const RegisterStudentForm = () => {
   };
 
   // Nationality
-  // const nationalities = useSelector(
-  //   (state) => state.address?.list?.nationalities
-  // );
   const [nationality, setNationality] = useState("");
   const [nationalityError, setNationalityError] = useState("");
   const handleChangeNationality = (event) => {
@@ -164,8 +167,8 @@ const RegisterStudentForm = () => {
         initialValues={{
           studentName: "",
           nationalId: "",
-          email: "",
-          phone: "",
+          email: parentEmail || "",
+          mobile: parentPhone || "",
           promoCode: "",
         }}
         validationSchema={registerChildSchema}

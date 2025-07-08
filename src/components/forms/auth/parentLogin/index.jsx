@@ -5,10 +5,7 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 
 import { useDispatch } from "react-redux";
-import {
-  setLoggedEmail,
-  submitForm,
-} from "@store/forms/auth/login/loginFormSlice";
+import { submitParentData } from "@store/forms/auth/parentLogin/parentLoginFormSlice";
 
 import { useState } from "react";
 
@@ -16,6 +13,7 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import getErrorMessage from "@utils/getErrorMessage ";
 import { createLoginEmailMethodSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
+import setToken from "@utils/setToken";
 import TextInputGroup from "../../TextInputGroup";
 import Logo from "@components/common/Logo";
 
@@ -64,13 +62,12 @@ const ParentLoginForm = () => {
         resetForm();
 
         if (response.data) {
-          dispatch(setLoggedEmail(values.email));
           enqueueSnackbar(t("forms.auth.confirmAccount.loginSuccessMessage"), {
             variant: "success",
           });
-          // save token local storage
+          setToken(response.data.token);
 
-          dispatch(submitForm());
+          dispatch(submitParentData(response.data.user));
         }
       })
 

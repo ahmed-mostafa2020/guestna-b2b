@@ -25,6 +25,7 @@ import customizationData from "./customization/customizationSlice";
 import servicesData from "./services/servicesSlice";
 import signUpForm from "./forms/auth/signUp/signUpFormSlice";
 import loginForm from "./forms/auth/login/loginFormSlice";
+import parentLoginForm from "./forms/auth/parentLogin/parentLoginFormSlice";
 import profileData from "./profile/profileInfoSlice";
 import faqData from "./faq/faqSlice";
 
@@ -46,6 +47,7 @@ const rootPersistConfig = {
     // "customizationData",
     "signUpForm",
     "loginForm",
+    "parentLoginForm",
     "favorites",
     "address",
     "navbar",
@@ -68,6 +70,7 @@ const rootReducer = combineReducers({
   servicesData,
   signUpForm,
   loginForm,
+  parentLoginForm,
   profileData,
   faqData,
 

@@ -19,7 +19,7 @@ const Services = ({ data, isAuth }) => {
         className="object-contain mb-3 w-[100px] h-[100px] rounded-md border  p-3 border-mainColor"
       />
 
-      <div>
+      <div className="text-center">
         <h4 className="font-medium text-black">{item.service.name}</h4>
         <h4 className="text-sm">{item.note}</h4>
       </div>
