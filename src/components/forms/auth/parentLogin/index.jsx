@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { useLocale, useTranslations } from "next-intl";
 
 import { useDispatch } from "react-redux";
@@ -11,9 +13,11 @@ import {
 import { useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import getErrorMessage from "@utils/getErrorMessage ";
 import { createLoginEmailMethodSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import TextInputGroup from "../../TextInputGroup";
+import Logo from "@components/common/Logo";
 
 import { Formik } from "formik";
 
@@ -23,9 +27,10 @@ import { useSnackbar } from "notistack";
 
 import axios from "axios";
 
+import hello from "@assets/gif/hello.gif";
+
 const ParentLoginForm = () => {
   const [formErrors, setFormErrors] = useState([]);
-  const [disabledButton, setDisabledButton] = useState(false);
 
   const locale = useLocale();
   const t = useTranslations();
@@ -58,46 +63,26 @@ const ParentLoginForm = () => {
         setFormErrors([]);
         resetForm();
 
-        if (response.data === true) {
+        if (response.data) {
           dispatch(setLoggedEmail(values.email));
-          enqueueSnackbar(t("forms.validation.success"), {
+          enqueueSnackbar(t("forms.auth.confirmAccount.loginSuccessMessage"), {
             variant: "success",
           });
+          // save token local storage
 
           dispatch(submitForm());
-          setDisabledButton(true);
         }
       })
 
       .catch((error) => {
-        // Reset form states
-        setDisabledButton(false);
         setSubmitting(false);
+        console.error("Error details:", error + formErrors);
+        const errorMessage = getErrorMessage(error, t);
 
-        if (error.response.data.statusCode === 409) {
-          dispatch(submitForm());
+        enqueueSnackbar(errorMessage, { variant: "error" });
+        if (setFormErrors) {
+          setFormErrors([errorMessage]);
         }
-
-        // Log the full error for debugging
-        console.log("Error details:", error + formErrors);
-
-        // Extract error message
-        const errorMessage =
-          !(
-            error.response?.data?.statusCode >= 200 &&
-            error.response?.data?.statusCode < 300
-          ) && error.response?.data?.message;
-        const defaultErrorMessage = t(
-          "forms.validation.api_errors.other_error"
-        );
-
-        // Show error notification
-        enqueueSnackbar(errorMessage || defaultErrorMessage, {
-          variant: "error",
-        });
-
-        // Set form errors
-        setFormErrors([errorMessage || "An unknown error occurred."]);
       });
   };
 
@@ -121,57 +106,76 @@ const ParentLoginForm = () => {
         handleSubmit,
         isSubmitting,
       }) => (
-        <form
-          onSubmit={handleSubmit}
-          className="px-2 lg:px-6 lg:w-[530px] bg-white rounded-2xl mx-auto my-5"
-        >
-          <div className="flex flex-col w-full py-5 gap-7 lg:pt-10">
-            <TextInputGroup
-              label={t("forms.email.name")}
-              type="email"
-              name="email"
-              value={values.email}
-              errors={errors.email}
-              touched={touched.email}
-              onChange={(e) => {
-                handleChange(e);
-              }}
-              onBlur={handleBlur}
-              placeholder="guestna@gmail.com"
-            />
-
-            <TextInputGroup
-              label={t("forms.password.name")}
-              type="password"
-              name="password"
-              value={values.password}
-              errors={errors.password}
-              touched={touched.password}
-              onChange={(e) => {
-                handleChange(e);
-              }}
-              onBlur={handleBlur}
-            />
-
-            <button
-              type="submit"
-              disabled={!isValid || isSubmitting || disabledButton}
-              className={`centered gap-2 w-full mt-4 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
-                isValid && "hover:bg-linksHover hover:border-linksHover"
-              }`}
-            >
-              {isSubmitting ? (
-                <>
-                  {t("forms.validation.sending")}
-
-                  <CircularProgress size={24} sx={{ color: "#ED8A22" }} />
-                </>
-              ) : (
-                t("forms.auth.login.name")
-              )}
-            </button>
+        <div className="lg:w-[530px] w-[400px] bg-white rounded-2xl mx-auto my-5">
+          <div className="p-4 border-b border-black centered">
+            <Logo />
           </div>
-        </form>
+
+          <div className="flex flex-col w-full gap-5 px-8 py-8 lg:gap-7">
+            <div className="flex-col gap-1 centered">
+              <div className="flex items-center gap-1">
+                <h3 className="text-xl lg:text-2xl text-mainColor">
+                  {t("forms.auth.login.title")}
+                </h3>
+
+                <Image src={hello} alt="hello" width={36} height={36} />
+              </div>
+              <h4 className="text-[#4E4E4E] text-lg lg:text-xl">
+                {t("forms.auth.login.parentSubTitle")}
+              </h4>
+            </div>
+
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col gap-5 lg:gap-7"
+            >
+              <TextInputGroup
+                label={t("forms.email.name")}
+                type="email"
+                name="email"
+                value={values.email}
+                errors={errors.email}
+                touched={touched.email}
+                onChange={(e) => {
+                  handleChange(e);
+                }}
+                onBlur={handleBlur}
+                placeholder="guestna@gmail.com"
+              />
+
+              <TextInputGroup
+                label={t("forms.password.name")}
+                type="password"
+                name="password"
+                value={values.password}
+                errors={errors.password}
+                touched={touched.password}
+                onChange={(e) => {
+                  handleChange(e);
+                }}
+                onBlur={handleBlur}
+              />
+
+              <button
+                type="submit"
+                disabled={!isValid || isSubmitting}
+                className={`centered gap-2 w-full mt-4 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
+                  isValid && "hover:bg-linksHover hover:border-linksHover"
+                }`}
+              >
+                {isSubmitting ? (
+                  <>
+                    {t("forms.validation.sending")}
+
+                    <CircularProgress size={24} sx={{ color: "#ED8A22" }} />
+                  </>
+                ) : (
+                  t("forms.auth.login.name")
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
       )}
     </Formik>
   );

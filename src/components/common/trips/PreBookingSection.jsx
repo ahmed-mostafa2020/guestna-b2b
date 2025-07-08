@@ -139,6 +139,7 @@ const PreBookingSection = ({ tripData }) => {
 
       {/* Parent login form */}
       {isParentLoginFormOpen && (
+        // && parentLogin || token
         <div className="bg-white centered">
           <CustomizedModal
             open={isParentLoginFormOpen}

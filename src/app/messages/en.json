@@ -485,6 +485,7 @@
 
       "login": {
         "title": "Welcome back to GuestNa",
+        "parentSubTitle": "Log in to manage and book your school trips.",
         "haveAnAccount": "Don't have an account?",
         "createAccount": "Create an account",
 
@@ -708,6 +709,7 @@
       "addedToFavorites": "Added to favorites successfully",
       "checkYourEmail": "Please, Check your gmail",
       "addGuest": "Add Guest first please",
+      "registerChild": "Please register your child in a trip first",
 
       "payment": {
         "success": "Payment was done successfully!",

@@ -24,11 +24,11 @@ const Checkout = () => {
   }, [t]);
 
   // Conditional rendering based on tripSlug
-  if (tripSlug === null) {
+  if (!tripSlug) {
     return (
       <ErrorComponent
         statusCode="404"
-        errorMessage="Please Select A Trip First"
+        errorMessage={t("forms.validation.registerChild")}
       />
     );
   }

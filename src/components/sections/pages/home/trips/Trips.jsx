@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 import { useSelector } from "react-redux";
 
-import PackageTemplate from "@/src/components/common/trips/sectionsTemplates/PackageTemplate";
+import PackageTemplate from "@components/common/trips/sectionsTemplates/PackageTemplate";
 
 const Trips = () => {
   const trips = useSelector((state) => state.homeData.items.trips);
