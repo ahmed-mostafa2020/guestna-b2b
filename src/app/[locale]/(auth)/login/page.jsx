@@ -8,7 +8,7 @@ import { useEffect } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import AuthFormsFrame from "@components/common/AuthFormsFrame";
-import LoginForm from "@components/forms/auth/login";
+import RolesLoginForm from "@components/forms/auth/rolesLogin";
 
 import { Container } from "@mui/material";
 import Cookies from "js-cookie";
@@ -37,7 +37,7 @@ const Login = () => {
   return (
     <Container className="py-5 centered lg:py-10">
       <AuthFormsFrame title={t("forms.auth.login.name")}>
-        <LoginForm />
+        <RolesLoginForm />
       </AuthFormsFrame>
     </Container>
   );

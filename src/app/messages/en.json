@@ -495,7 +495,14 @@
         "name": "Login",
 
         "loginBy": "Or login by",
-        "rememberMe": "Remember me"
+        "rememberMe": "Remember me",
+
+        "rolesMenu": {
+          "schools": "Schools Login",
+          "individuals": "Individuals login",
+          "servicesProviders": "Service Providers Login",
+          "organizations": "Organizations Login"
+        }
       },
 
       "confirmAccount": {

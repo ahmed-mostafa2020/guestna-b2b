@@ -5,7 +5,7 @@ const AuthFormsFrame = ({ title, children }) => {
         {title}
       </h1>
 
-      <div className="px-4 py-8">{children}</div>
+      {children}
     </div>
   );
 };

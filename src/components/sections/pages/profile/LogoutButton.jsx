@@ -7,10 +7,12 @@ import { useDispatch } from "react-redux";
 import { resetSignUpData } from "@store/forms/auth/signUp/signUpFormSlice";
 import { resetLoginData } from "@store/forms/auth/login/loginFormSlice";
 import { clearProfile } from "@store/profile/profileInfoSlice";
+import { setUser } from "@store/users/usersSlice";
 
 import { useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { USERS } from "@constants/users";
 import ActionsDialog from "../customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
 
 import { useSnackbar } from "notistack";
@@ -31,6 +33,8 @@ const LogoutButton = () => {
       Cookies.remove(CONSTANT_VALUES.AUTH_TOKEN);
       Cookies.remove(CONSTANT_VALUES.PROFILE_IMAGE);
       Cookies.remove(CONSTANT_VALUES.USER_ID);
+
+      dispatch(setUser(USERS.VISITOR));
 
       dispatch(resetSignUpData());
       dispatch(resetLoginData());

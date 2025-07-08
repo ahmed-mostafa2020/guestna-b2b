@@ -495,7 +495,14 @@
 
         "name": "تسجيل دخول",
         "loginBy": "أو تسجيل الدخول بواسطة",
-        "rememberMe": "تذكرني"
+        "rememberMe": "تذكرني",
+
+        "rolesMenu": {
+          "schools": "تسجيل دخول للمدارس",
+          "individuals": "تسجيل دخول للافراد",
+          "servicesProviders": "تسجيل دخول مزودي الخدمات",
+          "organizations": "تسجيل دخول للشركات"
+        }
       },
 
       "confirmAccount": {

@@ -1,7 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+
 import { useState } from "react";
+
+import RolesMenu from "./RolesMenu";
 
 import { Box } from "@mui/material";
 import Menu from "@mui/material/Menu";
@@ -33,12 +36,12 @@ const LoginButton = () => {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        sx={{ marginTop: "10px" }}
+        sx={{ marginTop: "10px", borderRadius: "12px !important" }}
       >
         <Box
           className="outline-none"
           sx={{
-            width: "400px",
+            maxWidth: "515px",
             padding: "24px 16px",
             position: "relative",
             transition: "all 0.2s ease-in-out",
@@ -51,7 +54,9 @@ const LoginButton = () => {
             <CloseIcon fontSize="16" />
           </span>
 
-          <div className="flex flex-col gap-3 mt-10"></div>
+          <div className="flex flex-col gap-3 mt-10">
+            <RolesMenu handleClose={handleClose} />
+          </div>
         </Box>
       </Menu>
     </>

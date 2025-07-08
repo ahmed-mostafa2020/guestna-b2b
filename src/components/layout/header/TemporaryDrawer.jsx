@@ -8,9 +8,11 @@ import { useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import SettingsButton from "./SettingsButton";
-import ProfileImage from "../../sections/pages/profile/ProfileImage";
+// import ProfileImage from "../../sections/pages/profile/ProfileImage";
 import Logo from "../../common/Logo";
 import ServicesDropdown from "./ServicesDropdown";
+import LoginButton from "./LoginButton";
+import LogoutButton from "../../sections/pages/profile/LogoutButton";
 
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -40,8 +42,8 @@ const TemporaryDrawer = () => {
 
   const navLinks = [
     {
-      name: t("header.discover"),
-      link: `/${locale}/discover`,
+      name: t("header.home"),
+      link: `/${locale}`,
       isDisabled: false,
       isBlank: false,
       icon: discoverIcon,
@@ -114,21 +116,7 @@ const TemporaryDrawer = () => {
         <div className="flex flex-col gap-3 px-3">
           <SettingsButton />
 
-          {token ? (
-            <Link
-              href={`/${locale}/profile`}
-              className="px-3 py-2 transition-all duration-200 ease-in-out border rounded-lg centered border-border"
-            >
-              <ProfileImage />
-            </Link>
-          ) : (
-            <Link
-              href={`/${locale}/login`}
-              className="px-4 py-2 font-bold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor hover:bg-linksHover hover:border-linksHover"
-            >
-              {t("header.login")}
-            </Link>
-          )}
+          {token ? <LogoutButton /> : <LoginButton />}
         </div>
       </Drawer>
     </>
