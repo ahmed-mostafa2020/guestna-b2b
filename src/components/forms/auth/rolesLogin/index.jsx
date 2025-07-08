@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useLocale, useTranslations } from "next-intl";
 
@@ -38,6 +38,7 @@ const RolesLoginForm = () => {
   const t = useTranslations();
 
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const headers = getHeaders(locale);
 
@@ -74,6 +75,7 @@ const RolesLoginForm = () => {
             variant: "success",
           });
           setToken(response.data.token);
+          router.push(`/${locale}`);
 
           dispatch(submitParentData(response.data.user));
           dispatch(setUser(response.data.userType));
