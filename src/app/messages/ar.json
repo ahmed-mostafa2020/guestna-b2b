@@ -499,8 +499,8 @@
 
         "rolesMenu": {
           "schools": "تسجيل دخول للمدارس",
-          "individuals": "تسجيل دخول للافراد",
-          "servicesProviders": "تسجيل دخول مزودي الخدمات",
+          "individuals": "تسجيل دخول مسئولي الرحلات",
+          "servicesProviders": "تسجيل دخول مسئولي المالية",
           "organizations": "تسجيل دخول للشركات"
         }
       },

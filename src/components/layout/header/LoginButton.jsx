@@ -36,7 +36,12 @@ const LoginButton = () => {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        sx={{ marginTop: "10px", borderRadius: "12px !important" }}
+        sx={{
+          marginTop: "10px",
+          "& .MuiPaper-root": {
+            borderRadius: "12px",
+          },
+        }}
       >
         <Box
           className="outline-none"

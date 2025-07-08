@@ -499,8 +499,8 @@
 
         "rolesMenu": {
           "schools": "Schools Login",
-          "individuals": "Individuals login",
-          "servicesProviders": "Service Providers Login",
+          "individuals": "Trips operators login",
+          "servicesProviders": "Finance officers Login",
           "organizations": "Organizations Login"
         }
       },
