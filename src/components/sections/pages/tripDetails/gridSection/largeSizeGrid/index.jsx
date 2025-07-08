@@ -2,7 +2,7 @@
 
 import { useSelector } from "react-redux";
 
-import { CONSTANT_VALUES } from "@constants/constantValues";
+import { USERS } from "@constants/users";
 import AccordionsGroupSection from "./accordionsGroupSection";
 import TripTagsListing from "./tripTags/TripTagsListing";
 
@@ -19,9 +19,7 @@ const LargeSizeSection = () => {
           reviewsCount={data?.reviewsCount || 20}
         />
       )} */}
-      {userType === CONSTANT_VALUES.USERS.PARENT && (
-        <TripTagsListing data={data} />
-      )}
+      {userType === USERS.B2B_PARENT && <TripTagsListing data={data} />}
 
       <AccordionsGroupSection />
     </div>

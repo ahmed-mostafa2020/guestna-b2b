@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { CONSTANT_VALUES } from "@constants/constantValues";
+import { USERS } from "@constants/users";
 
 const initialState = {
-  userType: CONSTANT_VALUES.USERS.VISITOR,
+  userType: USERS.VISITOR,
   loading: "idle",
   error: null,
 };

@@ -14,12 +14,14 @@ import { getHeaders } from "@utils/getHeaders";
 import Logo from "../../common/Logo";
 import TemporaryDrawer from "./TemporaryDrawer";
 import SettingsButton from "./SettingsButton";
-import ProfileImage from "../../sections/pages/profile/ProfileImage";
+// import ProfileImage from "../../sections/pages/profile/ProfileImage";
 import ServicesDropdown from "./ServicesDropdown";
+import LoginButton from "./LoginButton";
 
 import { Container } from "@mui/material";
 
 import Cookies from "js-cookie";
+import LogoutButton from "../../sections/pages/profile/LogoutButton";
 
 const Header = () => {
   const locale = useLocale();
@@ -102,21 +104,7 @@ const Header = () => {
           <div className="hidden gap-4 centered lg:flex">
             <SettingsButton />
 
-            {token ? (
-              <Link
-                href={`/${locale}/profile`}
-                className="px-3 py-2 transition-all duration-200 ease-in-out border rounded-lg border-border"
-              >
-                <ProfileImage />
-              </Link>
-            ) : (
-              <Link
-                href={`/${locale}/login`}
-                className="px-4 py-2 font-bold text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor hover:bg-linksHover hover:border-linksHover"
-              >
-                {t("header.login")}
-              </Link>
-            )}
+            {token ? <LogoutButton /> : <LoginButton />}
           </div>
 
           <div className="lg:hidden">

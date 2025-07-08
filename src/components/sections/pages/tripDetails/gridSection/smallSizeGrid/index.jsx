@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 import { useSelector } from "react-redux";
 
-import { CONSTANT_VALUES } from "@constants/constantValues";
+import { USERS } from "@constants/users";
 import PreBookingSection from "@components/common/trips/PreBookingSection";
 import BookWithConfidenceSection from "@components/common/trips/BookWithConfidenceSection";
 import Map from "../largeSizeGrid/accordionsGroupSection/accordionsDetails/Map";
@@ -20,29 +20,25 @@ const SmallSizeGrid = () => {
 
   return (
     <>
-      {userType === CONSTANT_VALUES.USERS.PARENT && (
-        <PreBookingSection tripData={data} />
-      )}
+      {userType === USERS.B2B_PARENT && <PreBookingSection tripData={data} />}
 
       <BookWithConfidenceSection />
 
-      {data?.location &&
-        isAuth &&
-        userType === CONSTANT_VALUES.USERS.PARENT && (
-          <div className="flex flex-col gap-3 lg:gap-5">
-            <h4 className="text-lg font-semibold text-mainColor lg:text-2xl">
-              {t("bookWithConfidence.activityLocation")}
-            </h4>
+      {data?.location && isAuth && userType === USERS.B2B_PARENT && (
+        <div className="flex flex-col gap-3 lg:gap-5">
+          <h4 className="text-lg font-semibold text-mainColor lg:text-2xl">
+            {t("bookWithConfidence.activityLocation")}
+          </h4>
 
-            <Map
-              lat={data?.location?.lat || 0}
-              lng={data?.location?.lng || 0}
-              locationLink={false}
-              isAuth={isAuth}
-              height="h-48"
-            />
-          </div>
-        )}
+          <Map
+            lat={data?.location?.lat || 0}
+            lng={data?.location?.lng || 0}
+            locationLink={false}
+            isAuth={isAuth}
+            height="h-48"
+          />
+        </div>
+      )}
     </>
   );
 };

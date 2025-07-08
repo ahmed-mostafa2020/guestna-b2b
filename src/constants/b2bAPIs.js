@@ -32,6 +32,7 @@ export const B2B_END_POINTS = {
 
   AUTH: {
     PARENT_LOGIN: "auth/login/parent",
+    LOGIN: "auth/login/dash",
 
     SIGNUP: "users/signup",
     CONFIRM_ACCOUNT: "accounts/confirm",

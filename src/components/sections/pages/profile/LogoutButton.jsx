@@ -60,7 +60,7 @@ const LogoutButton = () => {
       <button
         onClick={handleOpen}
         aria-label={t("profile.aside.logout")}
-        className="px-3 py-4 text-sm transition-all duration-150 ease-in-out rounded-lg text-start font-ibm lg:text-lg hover:text-white hover:bg-error"
+        className="px-4 py-2 font-bold text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-error bg-error hover:border-red-800 hover:bg-red-700"
       >
         {t("profile.aside.logout")}
       </button>

@@ -6,7 +6,6 @@ import { useState } from "react";
 import LanguagesDropdown from "./LanguagesDropdown";
 import CountriesDropdown from "./CountriesDropdown";
 
-import * as React from "react";
 import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";

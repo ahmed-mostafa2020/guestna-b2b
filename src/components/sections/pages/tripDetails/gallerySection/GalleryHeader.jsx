@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 
 import { memo } from "react";
 
-import { CONSTANT_VALUES } from "@constants/constantValues";
+import { USERS } from "@constants/users";
 
 import DownloadButton from "./DownloadButton";
 
@@ -65,7 +65,7 @@ const GalleryHeader = ({ tripData }) => {
         {tripData?.name}
       </h1>
 
-      {userType === CONSTANT_VALUES.USERS.PARENT && (
+      {userType === USERS.B2B_PARENT && (
         <div className="flex flex-wrap items-center justify-end">
           <div className="flex items-center gap-3">
             <button onClick={handleShare} className="flex items-center gap-1">

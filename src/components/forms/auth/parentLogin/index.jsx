@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useDispatch } from "react-redux";
 import { submitParentData } from "@store/forms/auth/parentLogin/parentLoginFormSlice";
+import { setUser } from "@store/users/usersSlice";
 
 import { useState } from "react";
 
@@ -68,6 +69,7 @@ const ParentLoginForm = () => {
           setToken(response.data.token);
 
           dispatch(submitParentData(response.data.user));
+          dispatch(setUser(response.data.userType));
         }
       })
 

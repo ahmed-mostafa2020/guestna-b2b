@@ -23,6 +23,7 @@ import { useEffect } from "react";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { USERS } from "@constants/users";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import GallerySection from "@components/sections/pages/tripDetails/gallerySection";
@@ -93,7 +94,7 @@ const TripDetails = ({ params }) => {
   }, [t, data]);
 
   useEffect(() => {
-    dispatch(setUser(CONSTANT_VALUES.USERS.VISITOR));
+    dispatch(setUser(USERS.VISITOR));
   }, [dispatch]);
 
   if (isLoading)
