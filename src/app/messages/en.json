@@ -549,7 +549,20 @@
     },
 
     "registerForm": {
-      "title": "Enter student information"
+      "title": "Enter student information",
+      "numberOfStudents": "Number of students",
+
+      "studentsNumber": {
+        "1": "The first student",
+        "2": "The second student",
+        "3": "The third student",
+        "4": "The fourth student",
+        "5": "The fifth student",
+        "6": "The sixth student",
+        "7": "The seventh student",
+        "8": "The eighth student",
+        "9": "The ninth student"
+      }
     },
 
     "name": {
@@ -679,7 +692,7 @@
 
     "nationalId": {
       "name": "National ID",
-      "placeholder": "National ID card number of the guardian",
+      "placeholder": "National ID card number of the student",
       "error": {
         "invalid": "The number must start with 1 or 2 and must be 10 characters long",
         "min": "National ID number must be exactly 10 digits",

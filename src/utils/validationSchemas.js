@@ -271,6 +271,26 @@ export const createPersonalInfoEditingSchema = (t) =>
 
 export const createRegisterChildSchema = (t) =>
   Yup.object().shape({
+    parentName: Yup.string()
+      .trim()
+      .required(t("forms.validation.require"))
+      .matches(/^[\p{L}\s]+$/u, t("forms.parentName.error.invalid"))
+      .test(
+        "min-word-length",
+        t("forms.parentName.error.wordMinLength"),
+        function (value) {
+          if (!value) return true;
+
+          const words = value.trim().split(/\s+/);
+
+          // Must have at least 2 words
+          if (words.length < 3) return false;
+
+          // Each word must be at least 3 characters
+          return words.every((word) => word.length >= 3);
+        }
+      ),
+
     studentName: Yup.string()
       .trim()
       .required(t("forms.validation.require"))
@@ -279,9 +299,9 @@ export const createRegisterChildSchema = (t) =>
         "min-word-length",
         t("forms.studentName.error.wordMinLength"),
         function (value) {
-          if (!value) return true; // Let required validation handle empty values
+          if (!value) return true;
 
-          const words = value.trim().split(/\s+/); // Split by whitespace and remove empty strings
+          const words = value.trim().split(/\s+/);
 
           // Must have at least 2 words
           if (words.length < 4) return false;

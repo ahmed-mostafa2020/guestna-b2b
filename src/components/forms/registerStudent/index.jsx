@@ -56,6 +56,12 @@ const RegisterStudentForm = () => {
   const tripId = useSelector((state) => state.tripDetailsData.data?.trip?._id);
 
   // Academic stage
+  const [childrenNumber, setChildrenNumber] = useState(1);
+  const handleChangeChildrenNumber = (event) => {
+    setChildrenNumber(event.target.value);
+  };
+
+  // Academic stage
   const [stage, setStage] = useState("");
   const [stageError, setStageError] = useState("");
   const handleChangeStage = (event) => {
@@ -103,6 +109,7 @@ const RegisterStudentForm = () => {
     }
 
     let data = {
+      parentName: values.parentName,
       name: values.studentName,
       nationalId: `${values.nationalId}`,
       email: values.email,
@@ -165,6 +172,9 @@ const RegisterStudentForm = () => {
       </h3>
       <Formik
         initialValues={{
+          parentName: "",
+          childrenNumber: childrenNumber,
+          // childrenNumber: storedChildrenNumber || childrenNumber || 1,
           studentName: "",
           nationalId: "",
           email: parentEmail || "",
@@ -190,64 +200,46 @@ const RegisterStudentForm = () => {
           isSubmitting,
         }) => (
           <form onSubmit={handleSubmit}>
-            <div className="flex flex-wrap w-full gap-x-5 gap-y-7">
-              <div className="w-full lg:w-[49%]">
-                <TextInputGroup
-                  label={t("forms.studentName.name")}
-                  type="text"
-                  name="studentName"
-                  placeholder={t("forms.studentName.placeholder")}
-                  value={values.studentName}
-                  errors={errors.studentName}
-                  touched={touched.studentName}
-                  onChange={(e) => {
-                    handleChange(e);
-                  }}
-                  onBlur={handleBlur}
-                  minLength="2"
-                  maxLength="50"
-                />
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-7">
+              <TextInputGroup
+                label={t("forms.parentName.name")}
+                type="text"
+                name="parentName"
+                placeholder={t("forms.parentName.placeholder")}
+                value={values.parentName}
+                errors={errors.parentName}
+                touched={touched.parentName}
+                onChange={(e) => {
+                  handleChange(e);
+                }}
+                onBlur={handleBlur}
+                minLength="2"
+                maxLength="50"
+              />
 
-              <div className="w-full lg:w-[49%]">
-                <TextInputGroup
-                  label={t("forms.email.parentEmail")}
-                  type="email"
-                  name="email"
-                  value={values.email}
-                  errors={errors.email}
-                  touched={touched.email}
-                  onChange={(e) => {
-                    handleChange(e);
-                  }}
-                  onBlur={handleBlur}
-                  placeholder="guestna@gmail.com"
-                />
-              </div>
+              <DropdownGroup
+                label={t("forms.registerForm.numberOfStudents")}
+                placeholder={childrenNumber}
+                value={stage}
+                onChange={handleChangeChildrenNumber}
+                menuItemsList={academicStages}
+              />
 
-              {/* Nationality */}
-              <div className="w-full lg:w-[49%]">
-                <DropdownGroup
-                  label={t(
-                    "profile.information.personalInformation.nationality"
-                  )}
-                  placeholder={t(
-                    "profile.information.personalInformation.nationality"
-                  )}
-                  value={nationality}
-                  onChange={handleChangeNationality}
-                  // value={values.nationality}
-                  // onChange={(e) => setFieldValue("nationality", e.target.value)}
-                  menuItemsList={nationalities}
-                />
-                {nationalityError && (
-                  <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-                    {nationalityError}
-                  </div>
-                )}
-              </div>
+              <TextInputGroup
+                label={t("forms.email.parentEmail")}
+                type="email"
+                name="email"
+                value={values.email}
+                errors={errors.email}
+                touched={touched.email}
+                onChange={(e) => {
+                  handleChange(e);
+                }}
+                onBlur={handleBlur}
+                placeholder="guestna@gmail.com"
+              />
 
-              <div className="relative flex flex-col gap-2 mb-6 lg:w-[49%] w-full">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-medium capitalize font-ibm">
                   {t("forms.phone.parentPhone")}
                 </label>
@@ -284,9 +276,25 @@ const RegisterStudentForm = () => {
                   </div>
                 )}
               </div>
-            </div>
 
-            <div className="w-full lg:w-1/3">
+              {/* Nationality */}
+              <DropdownGroup
+                label={t("profile.information.personalInformation.nationality")}
+                placeholder={t(
+                  "profile.information.personalInformation.nationality"
+                )}
+                value={nationality}
+                onChange={handleChangeNationality}
+                // value={values.nationality}
+                // onChange={(e) => setFieldValue("nationality", e.target.value)}
+                menuItemsList={nationalities}
+              />
+              {nationalityError && (
+                <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+                  {nationalityError}
+                </div>
+              )}
+
               <TextInputGroup
                 label={t("forms.promoCode.label")}
                 type="text"
@@ -303,9 +311,12 @@ const RegisterStudentForm = () => {
               />
             </div>
 
-            {/*
-            <div className="flex-wrap w-full gap-x-5 gap-y-7">
-              <div className="w-full lg:w-1/3">
+            <div className="flex flex-col gap-4 mt-6">
+              <h3 className="text-lg font-semibold text-titleColor lg:text-2xl ">
+                first child
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-6">
                 <TextInputGroup
                   label={t("forms.studentName.name")}
                   type="text"
@@ -321,10 +332,8 @@ const RegisterStudentForm = () => {
                   minLength="2"
                   maxLength="50"
                 />
-              </div>
 
-              // Academic stage
-              <div className="w-full lg:w-1/3">
+                {/* // Academic stage */}
                 <DropdownGroup
                   label={t("forms.academicStages.name")}
                   placeholder={t("forms.academicStages.name")}
@@ -339,9 +348,7 @@ const RegisterStudentForm = () => {
                     {stageError}
                   </div>
                 )}
-              </div>
 
-              <div className="w-full lg:w-1/3">
                 <TextInputGroup
                   label={t("forms.nationalId.name")}
                   type="number"
@@ -357,7 +364,7 @@ const RegisterStudentForm = () => {
                   maxLength="10"
                 />
               </div>
-            </div> */}
+            </div>
 
             <button
               type="submit"
