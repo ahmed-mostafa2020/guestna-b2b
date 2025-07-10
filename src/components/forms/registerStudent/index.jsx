@@ -55,11 +55,22 @@ const RegisterStudentForm = () => {
 
   const tripId = useSelector((state) => state.tripDetailsData.data?.trip?._id);
 
-  // Academic stage
+  // Children number
   const [childrenNumber, setChildrenNumber] = useState(1);
   const handleChangeChildrenNumber = (event) => {
     setChildrenNumber(event.target.value);
   };
+  const childrenNumberList = [
+    { _id: 1, name: "1", value: 1 },
+    { _id: 2, name: "2", value: 2 },
+    { _id: 3, name: "3", value: 3 },
+    { _id: 4, name: "4", value: 4 },
+    { _id: 5, name: "5", value: 5 },
+    { _id: 6, name: "6", value: 6 },
+    { _id: 7, name: "7", value: 7 },
+    { _id: 8, name: "8", value: 8 },
+    { _id: 9, name: "9", value: 9 },
+  ];
 
   // Academic stage
   const [stage, setStage] = useState("");
@@ -164,6 +175,66 @@ const RegisterStudentForm = () => {
       });
   };
 
+  const renderedChildrenNumbersRows = Array.from(
+    { length: childrenNumber },
+    (_, index) => (
+      <div key={index} className="flex flex-col gap-4 mt-6">
+        <h3 className="text-lg font-semibold text-titleColor lg:text-2xl ">
+          {t(`forms.registerForm.childrenNumber.${index + 1}`)}
+        </h3>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-6">
+          <TextInputGroup
+            label={t("forms.studentName.name")}
+            type="text"
+            name="studentName"
+            placeholder={t("forms.studentName.placeholder")}
+            value={values.studentName}
+            errors={errors.studentName}
+            touched={touched.studentName}
+            onChange={(e) => {
+              handleChange(e);
+            }}
+            onBlur={handleBlur}
+            minLength="2"
+            maxLength="50"
+          />
+
+          {/* Academic stage */}
+          <DropdownGroup
+            label={t("forms.academicStages.name")}
+            placeholder={t("forms.academicStages.name")}
+            value={stage}
+            onChange={handleChangeStage}
+            // value={values.nationality}
+            // onChange={(e) => setFieldValue("nationality", e.target.value)}
+            menuItemsList={academicStages}
+          />
+          {stageError && (
+            <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+              {stageError}
+            </div>
+          )}
+
+          <TextInputGroup
+            label={t("forms.nationalId.name")}
+            type="number"
+            name="nationalId"
+            inputMode="numeric"
+            placeholder={t("forms.nationalId.placeholder")}
+            value={values.nationalId}
+            errors={errors.nationalId}
+            touched={touched.nationalId}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            minLength="10"
+            maxLength="10"
+          />
+        </div>
+      </div>
+    )
+  );
+
   return (
     <Container maxWidth="lg" id="register-student-form">
       <div className="my-6 border-b border-black lg:my-12"></div>
@@ -175,11 +246,11 @@ const RegisterStudentForm = () => {
           parentName: "",
           childrenNumber: childrenNumber,
           // childrenNumber: storedChildrenNumber || childrenNumber || 1,
-          studentName: "",
-          nationalId: "",
           email: parentEmail || "",
           mobile: parentPhone || "",
           promoCode: "",
+          studentName: "",
+          nationalId: "",
         }}
         validationSchema={registerChildSchema}
         onSubmit={handleSubmit}
@@ -218,11 +289,11 @@ const RegisterStudentForm = () => {
               />
 
               <DropdownGroup
-                label={t("forms.registerForm.numberOfStudents")}
+                label={t("forms.registerForm.numberOfChildren")}
                 placeholder={childrenNumber}
                 value={stage}
                 onChange={handleChangeChildrenNumber}
-                menuItemsList={academicStages}
+                menuItemsList={childrenNumberList}
               />
 
               <TextInputGroup
@@ -311,60 +382,7 @@ const RegisterStudentForm = () => {
               />
             </div>
 
-            <div className="flex flex-col gap-4 mt-6">
-              <h3 className="text-lg font-semibold text-titleColor lg:text-2xl ">
-                first child
-              </h3>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-6">
-                <TextInputGroup
-                  label={t("forms.studentName.name")}
-                  type="text"
-                  name="studentName"
-                  placeholder={t("forms.studentName.placeholder")}
-                  value={values.studentName}
-                  errors={errors.studentName}
-                  touched={touched.studentName}
-                  onChange={(e) => {
-                    handleChange(e);
-                  }}
-                  onBlur={handleBlur}
-                  minLength="2"
-                  maxLength="50"
-                />
-
-                {/* // Academic stage */}
-                <DropdownGroup
-                  label={t("forms.academicStages.name")}
-                  placeholder={t("forms.academicStages.name")}
-                  value={stage}
-                  onChange={handleChangeStage}
-                  // value={values.nationality}
-                  // onChange={(e) => setFieldValue("nationality", e.target.value)}
-                  menuItemsList={academicStages}
-                />
-                {stageError && (
-                  <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-                    {stageError}
-                  </div>
-                )}
-
-                <TextInputGroup
-                  label={t("forms.nationalId.name")}
-                  type="number"
-                  name="nationalId"
-                  inputMode="numeric"
-                  placeholder={t("forms.nationalId.placeholder")}
-                  value={values.nationalId}
-                  errors={errors.nationalId}
-                  touched={touched.nationalId}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  minLength="10"
-                  maxLength="10"
-                />
-              </div>
-            </div>
+            {renderedChildrenNumbersRows}
 
             <button
               type="submit"

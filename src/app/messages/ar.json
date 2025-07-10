@@ -550,9 +550,9 @@
 
     "registerForm": {
       "title": "ادخل معلومات الطالب/ـة",
-      "numberOfStudents": "عدد الأبناء",
+      "numberOfChildren": "عدد الأبناء",
 
-      "studentsNumber": {
+      "childrenNumber": {
         "1": "الابن الأول",
         "2": "الابن الثاني",
         "3": "الابن الثالث",

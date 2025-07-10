@@ -291,25 +291,51 @@ export const createRegisterChildSchema = (t) =>
         }
       ),
 
-    studentName: Yup.string()
-      .trim()
-      .required(t("forms.validation.require"))
-      .matches(/^[\p{L}\s]+$/u, t("forms.studentName.error.invalid"))
-      .test(
-        "min-word-length",
-        t("forms.studentName.error.wordMinLength"),
-        function (value) {
-          if (!value) return true;
+    children: Yup.array().of(
+      Yup.object({
+        studentName: Yup.string()
+          .trim()
+          .required(t("forms.validation.require"))
+          .matches(/^[\p{L}\s]+$/u, t("forms.studentName.error.invalid"))
+          .test(
+            "min-word-length",
+            t("forms.studentName.error.wordMinLength"),
+            function (value) {
+              if (!value) return true;
 
-          const words = value.trim().split(/\s+/);
+              const words = value.trim().split(/\s+/);
 
-          // Must have at least 2 words
-          if (words.length < 4) return false;
+              // Must have at least 2 words
+              if (words.length < 4) return false;
 
-          // Each word must be at least 3 characters
-          return words.every((word) => word.length >= 3);
-        }
-      ),
+              // Each word must be at least 3 characters
+              return words.every((word) => word.length >= 3);
+            }
+          ),
+        stage: Yup.string().required("Required"),
+        nationalId: Yup.string().required("Required"),
+      })
+    ),
+
+    // studentName: Yup.string()
+    //   .trim()
+    //   .required(t("forms.validation.require"))
+    //   .matches(/^[\p{L}\s]+$/u, t("forms.studentName.error.invalid"))
+    //   .test(
+    //     "min-word-length",
+    //     t("forms.studentName.error.wordMinLength"),
+    //     function (value) {
+    //       if (!value) return true;
+
+    //       const words = value.trim().split(/\s+/);
+
+    //       // Must have at least 2 words
+    //       if (words.length < 4) return false;
+
+    //       // Each word must be at least 3 characters
+    //       return words.every((word) => word.length >= 3);
+    //     }
+    //   ),
 
     nationalId: Yup.string()
       .required(t("forms.validation.require"))

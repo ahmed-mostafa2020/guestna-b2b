@@ -550,18 +550,18 @@
 
     "registerForm": {
       "title": "Enter student information",
-      "numberOfStudents": "Number of students",
+      "numberOfChildren": "Number of children",
 
-      "studentsNumber": {
-        "1": "The first student",
-        "2": "The second student",
-        "3": "The third student",
-        "4": "The fourth student",
-        "5": "The fifth student",
-        "6": "The sixth student",
-        "7": "The seventh student",
-        "8": "The eighth student",
-        "9": "The ninth student"
+      "childrenNumber": {
+        "1": "The first child",
+        "2": "The second child",
+        "3": "The third child",
+        "4": "The fourth child",
+        "5": "The fifth child",
+        "6": "The sixth child",
+        "7": "The seventh child",
+        "8": "The eighth child",
+        "9": "The ninth child"
       }
     },
 
