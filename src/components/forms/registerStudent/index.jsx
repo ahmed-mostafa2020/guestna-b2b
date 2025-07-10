@@ -209,41 +209,6 @@ const RegisterStudentForm = () => {
                 />
               </div>
 
-              <div className="lg:w-[49%] w-full">
-                <TextInputGroup
-                  label={t("forms.nationalId.name")}
-                  type="number"
-                  name="nationalId"
-                  inputMode="numeric"
-                  placeholder={t("forms.nationalId.placeholder")}
-                  value={values.nationalId}
-                  errors={errors.nationalId}
-                  touched={touched.nationalId}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  minLength="10"
-                  maxLength="10"
-                />
-              </div>
-
-              {/* Academic stage */}
-              <div className="w-full lg:w-[49%]">
-                <DropdownGroup
-                  label={t("forms.academicStages.name")}
-                  placeholder={t("forms.academicStages.name")}
-                  value={stage}
-                  onChange={handleChangeStage}
-                  // value={values.nationality}
-                  // onChange={(e) => setFieldValue("nationality", e.target.value)}
-                  menuItemsList={academicStages}
-                />
-                {stageError && (
-                  <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-                    {stageError}
-                  </div>
-                )}
-              </div>
-
               <div className="w-full lg:w-[49%]">
                 <TextInputGroup
                   label={t("forms.email.parentEmail")}
@@ -337,6 +302,62 @@ const RegisterStudentForm = () => {
                 minLength="4"
               />
             </div>
+
+            {/*
+            <div className="flex-wrap w-full gap-x-5 gap-y-7">
+              <div className="w-full lg:w-1/3">
+                <TextInputGroup
+                  label={t("forms.studentName.name")}
+                  type="text"
+                  name="studentName"
+                  placeholder={t("forms.studentName.placeholder")}
+                  value={values.studentName}
+                  errors={errors.studentName}
+                  touched={touched.studentName}
+                  onChange={(e) => {
+                    handleChange(e);
+                  }}
+                  onBlur={handleBlur}
+                  minLength="2"
+                  maxLength="50"
+                />
+              </div>
+
+              // Academic stage
+              <div className="w-full lg:w-1/3">
+                <DropdownGroup
+                  label={t("forms.academicStages.name")}
+                  placeholder={t("forms.academicStages.name")}
+                  value={stage}
+                  onChange={handleChangeStage}
+                  // value={values.nationality}
+                  // onChange={(e) => setFieldValue("nationality", e.target.value)}
+                  menuItemsList={academicStages}
+                />
+                {stageError && (
+                  <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+                    {stageError}
+                  </div>
+                )}
+              </div>
+
+              <div className="w-full lg:w-1/3">
+                <TextInputGroup
+                  label={t("forms.nationalId.name")}
+                  type="number"
+                  name="nationalId"
+                  inputMode="numeric"
+                  placeholder={t("forms.nationalId.placeholder")}
+                  value={values.nationalId}
+                  errors={errors.nationalId}
+                  touched={touched.nationalId}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  minLength="10"
+                  maxLength="10"
+                />
+              </div>
+            </div> */}
 
             <button
               type="submit"
