@@ -269,8 +269,79 @@ export const createPersonalInfoEditingSchema = (t) =>
       .max(50, t("forms.name.error.max")),
   });
 
-export const createRegisterChildSchema = (t) =>
-  Yup.object().shape({
+// export const createRegisterChildSchema = (t) =>
+//   Yup.object().shape({
+//     parentName: Yup.string()
+//       .trim()
+//       .required(t("forms.validation.require"))
+//       .matches(/^[\p{L}\s]+$/u, t("forms.parentName.error.invalid"))
+//       .test(
+//         "min-word-length",
+//         t("forms.parentName.error.wordMinLength"),
+//         function (value) {
+//           if (!value) return true;
+
+//           const words = value.trim().split(/\s+/);
+
+//           // Must have at least 2 words
+//           if (words.length < 3) return false;
+
+//           // Each word must be at least 3 characters
+//           return words.every((word) => word.length >= 3);
+//         }
+//       ),
+
+//     childrenNumber: Yup.number().required("Number of children is required"),
+
+//     email: Yup.string()
+//       .email(t("forms.email.error"))
+//       .required(t("forms.validation.require")),
+
+//     mobile: createPhoneValidation(t),
+
+//     promoCode: Yup.string().optional(),
+
+//     nationalId: Yup.string()
+//       .required(t("forms.validation.require"))
+//       .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
+//       .min(10, t("forms.nationalId.error.min"))
+//       .max(10, t("forms.nationalId.error.max")),
+
+//     children: Yup.array()
+//       .of(
+//         Yup.object().shape({
+//           studentName: Yup.string()
+//             .trim()
+//             .required(t("forms.validation.require"))
+//             .matches(/^[\p{L}\s]+$/u, t("forms.studentName.error.invalid"))
+//             .test(
+//               "min-word-length",
+//               t("forms.studentName.error.wordMinLength"),
+//               function (value) {
+//                 if (!value) return true;
+
+//                 const words = value.trim().split(/\s+/);
+
+//                 // Must have at least 2 words
+//                 if (words.length < 4) return false;
+
+//                 // Each word must be at least 3 characters
+//                 return words.every((word) => word.length >= 3);
+//               }
+//             ),
+
+//           academicStage: Yup.string().required("Academic stage is required"),
+//           nationalId: Yup.string()
+//             .min(10, "National ID must be exactly 10 characters")
+//             .max(10, "National ID must be exactly 10 characters")
+//             .required("National ID is required"),
+//         })
+//       )
+//       .min(1, "At least one child is required"),
+//   });
+
+export const createRegisterChildSchema = (t, childrenCount) => {
+  return Yup.object().shape({
     parentName: Yup.string()
       .trim()
       .required(t("forms.validation.require"))
@@ -283,7 +354,7 @@ export const createRegisterChildSchema = (t) =>
 
           const words = value.trim().split(/\s+/);
 
-          // Must have at least 2 words
+          // Must have at least 3 words
           if (words.length < 3) return false;
 
           // Each word must be at least 3 characters
@@ -291,57 +362,7 @@ export const createRegisterChildSchema = (t) =>
         }
       ),
 
-    children: Yup.array().of(
-      Yup.object({
-        studentName: Yup.string()
-          .trim()
-          .required(t("forms.validation.require"))
-          .matches(/^[\p{L}\s]+$/u, t("forms.studentName.error.invalid"))
-          .test(
-            "min-word-length",
-            t("forms.studentName.error.wordMinLength"),
-            function (value) {
-              if (!value) return true;
-
-              const words = value.trim().split(/\s+/);
-
-              // Must have at least 2 words
-              if (words.length < 4) return false;
-
-              // Each word must be at least 3 characters
-              return words.every((word) => word.length >= 3);
-            }
-          ),
-        stage: Yup.string().required("Required"),
-        nationalId: Yup.string().required("Required"),
-      })
-    ),
-
-    // studentName: Yup.string()
-    //   .trim()
-    //   .required(t("forms.validation.require"))
-    //   .matches(/^[\p{L}\s]+$/u, t("forms.studentName.error.invalid"))
-    //   .test(
-    //     "min-word-length",
-    //     t("forms.studentName.error.wordMinLength"),
-    //     function (value) {
-    //       if (!value) return true;
-
-    //       const words = value.trim().split(/\s+/);
-
-    //       // Must have at least 2 words
-    //       if (words.length < 4) return false;
-
-    //       // Each word must be at least 3 characters
-    //       return words.every((word) => word.length >= 3);
-    //     }
-    //   ),
-
-    nationalId: Yup.string()
-      .required(t("forms.validation.require"))
-      .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
-      .min(10, t("forms.nationalId.error.min"))
-      .max(10, t("forms.nationalId.error.max")),
+    childrenNumber: Yup.number().required(t("forms.validation.require")),
 
     email: Yup.string()
       .email(t("forms.email.error"))
@@ -350,4 +371,42 @@ export const createRegisterChildSchema = (t) =>
     mobile: createPhoneValidation(t),
 
     promoCode: Yup.string().optional(),
+
+    nationality: Yup.string().required(t("forms.validation.require")),
+
+    children: Yup.array()
+      .of(
+        Yup.object().shape({
+          studentName: Yup.string()
+            .trim()
+            .required(t("forms.validation.require"))
+            .matches(/^[\p{L}\s]+$/u, t("forms.studentName.error.invalid"))
+            .test(
+              "min-word-length",
+              t("forms.studentName.error.wordMinLength"),
+              function (value) {
+                if (!value) return true;
+
+                const words = value.trim().split(/\s+/);
+
+                // Must have at least 4 words
+                if (words.length < 3) return false;
+
+                // Each word must be at least 3 characters
+                return words.every((word) => word.length >= 3);
+              }
+            ),
+
+          academicStage: Yup.string().required(t("forms.validation.require")),
+
+          nationalId: Yup.string()
+            .required(t("forms.validation.require"))
+            .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
+            .min(10, t("forms.nationalId.error.min"))
+            .max(10, t("forms.nationalId.error.max")),
+        })
+      )
+      .min(1, t("forms.validation.require"))
+      .length(childrenCount, `Must have exactly ${childrenCount} children`),
   });
+};

@@ -16,7 +16,7 @@ import getErrorMessage from "@utils/getErrorMessage ";
 import TextInputGroup from "../TextInputGroup";
 import DropdownGroup from "../DropdownGroup";
 
-import { Field, Formik } from "formik";
+import { Field, FieldArray, Formik } from "formik";
 import PhoneInputWithCountrySelect from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 
@@ -27,6 +27,13 @@ import { useSnackbar } from "notistack";
 import { CircularProgress, Container } from "@mui/material";
 
 const RegisterStudentForm = () => {
+  const [_, setNationalityError] = useState("");
+  const [__, setStageError] = useState("");
+
+  const [childrenNumber, setChildrenNumber] = useState(1);
+  const [nationality, setNationality] = useState("");
+  const [childrenStages, setChildrenStages] = useState({});
+
   const parentEmail = useSelector(
     (state) => state.parentLoginForm.parentData?.email
   );
@@ -45,9 +52,9 @@ const RegisterStudentForm = () => {
 
   const headers = getHeaders(locale);
 
-  const registerChildSchema = createRegisterChildSchema(t);
-
-  const { enqueueSnackbar } = useSnackbar();
+  const registerChildSchema = useMemo(() => {
+    return createRegisterChildSchema(t, childrenNumber);
+  }, [childrenNumber, t]);
 
   const { academicStages, nationalities } = useSelector(
     (state) => state.tripDetailsData.data
@@ -55,11 +62,17 @@ const RegisterStudentForm = () => {
 
   const tripId = useSelector((state) => state.tripDetailsData.data?.trip?._id);
 
-  // Children number
-  const [childrenNumber, setChildrenNumber] = useState(1);
-  const handleChangeChildrenNumber = (event) => {
-    setChildrenNumber(event.target.value);
+  const { enqueueSnackbar } = useSnackbar();
+
+  // Helper function to generate initial children array
+  const generateInitialChildren = (count) => {
+    return Array.from({ length: count }, () => ({
+      studentName: "",
+      academicStage: "",
+      nationalId: "",
+    }));
   };
+
   const childrenNumberList = [
     { _id: 1, name: "1", value: 1 },
     { _id: 2, name: "2", value: 2 },
@@ -72,25 +85,11 @@ const RegisterStudentForm = () => {
     { _id: 9, name: "9", value: 9 },
   ];
 
-  // Academic stage
-  const [stage, setStage] = useState("");
-  const [stageError, setStageError] = useState("");
-  const handleChangeStage = (event) => {
-    setStage(event.target.value);
-  };
-
-  // Nationality
-  const [nationality, setNationality] = useState("");
-  const [nationalityError, setNationalityError] = useState("");
-  const handleChangeNationality = (event) => {
-    setNationality(event.target.value);
-  };
-
   // Validate custom fields
   const validateCustomFields = () => {
     let isValid = true;
 
-    if (!stage) {
+    if (!childrenStages) {
       setStageError(t("forms.validation.required"));
       isValid = false;
     } else {
@@ -107,11 +106,6 @@ const RegisterStudentForm = () => {
     return isValid;
   };
 
-  // Check if form is completely valid
-  const isFormValid = useMemo(() => {
-    return stage && nationality;
-  }, [stage, nationality]);
-
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
     // Validate custom fields before submission
     if (!validateCustomFields()) {
@@ -120,12 +114,15 @@ const RegisterStudentForm = () => {
     }
 
     let data = {
-      parentName: values.parentName,
-      name: values.studentName,
-      nationalId: `${values.nationalId}`,
+      name: values.parentName,
+      childs: values.children.map((child) => ({
+        name: child.studentName,
+        nationalId: `${child.nationalId}`,
+        academicStage: child.academicStage,
+      })),
+      quantity: values.childrenNumber,
       email: values.email,
       phone: values.mobile,
-      academicStage: stage,
       nationality: nationality,
       promoCode: values.promoCode,
       trip: tripId,
@@ -175,66 +172,6 @@ const RegisterStudentForm = () => {
       });
   };
 
-  const renderedChildrenNumbersRows = Array.from(
-    { length: childrenNumber },
-    (_, index) => (
-      <div key={index} className="flex flex-col gap-4 mt-6">
-        <h3 className="text-lg font-semibold text-titleColor lg:text-2xl ">
-          {t(`forms.registerForm.childrenNumber.${index + 1}`)}
-        </h3>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-6">
-          <TextInputGroup
-            label={t("forms.studentName.name")}
-            type="text"
-            name="studentName"
-            placeholder={t("forms.studentName.placeholder")}
-            value={values.studentName}
-            errors={errors.studentName}
-            touched={touched.studentName}
-            onChange={(e) => {
-              handleChange(e);
-            }}
-            onBlur={handleBlur}
-            minLength="2"
-            maxLength="50"
-          />
-
-          {/* Academic stage */}
-          <DropdownGroup
-            label={t("forms.academicStages.name")}
-            placeholder={t("forms.academicStages.name")}
-            value={stage}
-            onChange={handleChangeStage}
-            // value={values.nationality}
-            // onChange={(e) => setFieldValue("nationality", e.target.value)}
-            menuItemsList={academicStages}
-          />
-          {stageError && (
-            <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-              {stageError}
-            </div>
-          )}
-
-          <TextInputGroup
-            label={t("forms.nationalId.name")}
-            type="number"
-            name="nationalId"
-            inputMode="numeric"
-            placeholder={t("forms.nationalId.placeholder")}
-            value={values.nationalId}
-            errors={errors.nationalId}
-            touched={touched.nationalId}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            minLength="10"
-            maxLength="10"
-          />
-        </div>
-      </div>
-    )
-  );
-
   return (
     <Container maxWidth="lg" id="register-student-form">
       <div className="my-6 border-b border-black lg:my-12"></div>
@@ -245,12 +182,11 @@ const RegisterStudentForm = () => {
         initialValues={{
           parentName: "",
           childrenNumber: childrenNumber,
-          // childrenNumber: storedChildrenNumber || childrenNumber || 1,
           email: parentEmail || "",
           mobile: parentPhone || "",
           promoCode: "",
-          studentName: "",
-          nationalId: "",
+          nationality: "",
+          children: generateInitialChildren(childrenNumber),
         }}
         validationSchema={registerChildSchema}
         onSubmit={handleSubmit}
@@ -269,140 +205,234 @@ const RegisterStudentForm = () => {
           setFieldValue,
           handleSubmit,
           isSubmitting,
-        }) => (
-          <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-7">
-              <TextInputGroup
-                label={t("forms.parentName.name")}
-                type="text"
-                name="parentName"
-                placeholder={t("forms.parentName.placeholder")}
-                value={values.parentName}
-                errors={errors.parentName}
-                touched={touched.parentName}
-                onChange={(e) => {
-                  handleChange(e);
-                }}
-                onBlur={handleBlur}
-                minLength="2"
-                maxLength="50"
-              />
+        }) => {
+          // Define handlers inside the Formik render function
+          const handleChangeChildrenNumber = (event) => {
+            const newCount = parseInt(event.target.value);
+            setChildrenNumber(newCount);
 
-              <DropdownGroup
-                label={t("forms.registerForm.numberOfChildren")}
-                placeholder={childrenNumber}
-                value={stage}
-                onChange={handleChangeChildrenNumber}
-                menuItemsList={childrenNumberList}
-              />
+            // Update the children array in Formik
+            const newChildren = generateInitialChildren(newCount);
+            setFieldValue("children", newChildren);
+            setFieldValue("childrenNumber", newCount);
 
-              <TextInputGroup
-                label={t("forms.email.parentEmail")}
-                type="email"
-                name="email"
-                value={values.email}
-                errors={errors.email}
-                touched={touched.email}
-                onChange={(e) => {
-                  handleChange(e);
-                }}
-                onBlur={handleBlur}
-                placeholder="guestna@gmail.com"
-              />
+            // Reset stages for new children count
+            const newStages = {};
+            for (let i = 0; i < newCount; i++) {
+              newStages[i] = childrenStages[i] || "";
+            }
+            setChildrenStages(newStages);
+          };
 
-              <div className="relative flex flex-col gap-2">
-                <label className="font-medium capitalize font-ibm">
-                  {t("forms.phone.parentPhone")}
-                </label>
+          const handleChangeNationality = (event) => {
+            setNationality(event.target.value);
+            setFieldValue("nationality", event.target.value);
+          };
 
-                <Field name="mobile">
-                  {({ field }) => (
-                    <PhoneInputWithCountrySelect
-                      {...field}
-                      international
-                      defaultCountry="SA"
-                      value={values.mobile}
-                      onChange={(value) => {
-                        setFieldValue("mobile", value);
-                        // dispatch(updateField({ field: "mobile", value }));
-                      }}
-                      errors={errors.mobile}
-                      touched={touched.mobile}
-                      onBlur={handleBlur}
-                      id="mobile"
-                      addInternationalOption={false}
-                      style={{ direction: "ltr" }}
-                      className={cn(
-                        "flex bg-white w-full gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50  transition-all duration-200 ease-in-out",
-                        errors.mobile && touched.mobile
-                          ? "border-error PhoneInputInput-focus:border-error hover:border-error"
-                          : "border-border PhoneInputInput-focus:border-textDark hover:border-textDark"
-                      )}
-                    />
+          const handleChangeChildStage = (childIndex, event) => {
+            const newStage = event.target.value;
+            setChildrenStages((prev) => ({
+              ...prev,
+              [childIndex]: newStage,
+            }));
+            setFieldValue(`children[${childIndex}].academicStage`, newStage);
+          };
+
+          return (
+            <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-7">
+                <TextInputGroup
+                  label={t("forms.parentName.name")}
+                  type="text"
+                  name="parentName"
+                  placeholder={t("forms.parentName.placeholder")}
+                  value={values.parentName}
+                  errors={errors.parentName}
+                  touched={touched.parentName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  minLength="2"
+                  maxLength="50"
+                />
+
+                <DropdownGroup
+                  label={t("forms.registerForm.numberOfChildren")}
+                  placeholder={childrenNumber}
+                  value={values.childrenNumber}
+                  onChange={handleChangeChildrenNumber}
+                  menuItemsList={childrenNumberList}
+                />
+
+                <TextInputGroup
+                  label={t("forms.email.parentEmail")}
+                  type="email"
+                  name="email"
+                  value={values.email}
+                  errors={errors.email}
+                  touched={touched.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="guestna@gmail.com"
+                />
+
+                <div className="relative flex flex-col gap-2">
+                  <label className="font-medium capitalize font-ibm">
+                    {t("forms.phone.parentPhone")}
+                  </label>
+
+                  <Field name="mobile">
+                    {({ field }) => (
+                      <PhoneInputWithCountrySelect
+                        {...field}
+                        international
+                        defaultCountry="SA"
+                        value={values.mobile}
+                        onChange={(value) => {
+                          setFieldValue("mobile", value);
+                        }}
+                        errors={errors.mobile}
+                        touched={touched.mobile}
+                        onBlur={handleBlur}
+                        id="mobile"
+                        addInternationalOption={false}
+                        style={{ direction: "ltr" }}
+                        className={cn(
+                          "flex bg-white w-full gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50  transition-all duration-200 ease-in-out",
+                          errors.mobile && touched.mobile
+                            ? "border-error PhoneInputInput-focus:border-error hover:border-error"
+                            : "border-border PhoneInputInput-focus:border-textDark hover:border-textDark"
+                        )}
+                      />
+                    )}
+                  </Field>
+                  {errors.mobile && touched.mobile && (
+                    <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+                      {errors.mobile}
+                    </div>
                   )}
-                </Field>
-                {errors.mobile && touched.mobile && (
-                  <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-                    {errors.mobile}
-                  </div>
-                )}
+                </div>
+
+                {/* Nationality */}
+                <div className="relative flex flex-col gap-2">
+                  <DropdownGroup
+                    label={t(
+                      "profile.information.personalInformation.nationality"
+                    )}
+                    placeholder={t(
+                      "profile.information.personalInformation.nationality"
+                    )}
+                    value={values.nationality}
+                    onChange={handleChangeNationality}
+                    menuItemsList={nationalities}
+                  />
+                  {errors.nationality && touched.nationality && (
+                    <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+                      {errors.nationality}
+                    </div>
+                  )}
+                </div>
+
+                <TextInputGroup
+                  label={t("forms.promoCode.label")}
+                  type="text"
+                  name="promoCode"
+                  placeholder={t("forms.promoCode.placeholder")}
+                  value={values.promoCode}
+                  errors={errors.promoCode}
+                  touched={touched.promoCode}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  minLength="4"
+                />
               </div>
 
-              {/* Nationality */}
-              <DropdownGroup
-                label={t("profile.information.personalInformation.nationality")}
-                placeholder={t(
-                  "profile.information.personalInformation.nationality"
+              {/* Dynamic Children Fields */}
+              <FieldArray
+                name="children"
+                className="transition-all duration-200 ease-in-out"
+              >
+                {({ push, remove }) => (
+                  <div>
+                    {values.children.map((child, index) => (
+                      <div key={index} className="flex flex-col gap-4 mt-6">
+                        <h3 className="text-lg font-semibold text-titleColor lg:text-2xl">
+                          {t(`forms.registerForm.childrenNumber.${index + 1}`)}
+                        </h3>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-6">
+                          <TextInputGroup
+                            label={t("forms.studentName.name")}
+                            type="text"
+                            name={`children[${index}].studentName`}
+                            placeholder={t("forms.studentName.placeholder")}
+                            value={values.children[index].studentName}
+                            errors={errors.children?.[index]?.studentName}
+                            touched={touched.children?.[index]?.studentName}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            minLength="2"
+                            maxLength="50"
+                          />
+
+                          {/* Academic stage */}
+                          <div className="relative flex flex-col gap-2">
+                            <DropdownGroup
+                              label={t("forms.academicStages.name")}
+                              placeholder={t("forms.academicStages.name")}
+                              value={childrenStages[index] || ""}
+                              onChange={(event) =>
+                                handleChangeChildStage(index, event)
+                              }
+                              menuItemsList={academicStages}
+                            />
+                            {errors.children?.[index]?.academicStage &&
+                              touched.children?.[index]?.academicStage && (
+                                <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+                                  {errors.children[index].academicStage}
+                                </div>
+                              )}
+                          </div>
+
+                          <TextInputGroup
+                            label={t("forms.nationalId.name")}
+                            type="number"
+                            name={`children[${index}].nationalId`}
+                            inputMode="numeric"
+                            placeholder={t("forms.nationalId.placeholder")}
+                            value={values.children[index].nationalId}
+                            errors={errors.children?.[index]?.nationalId}
+                            touched={touched.children?.[index]?.nationalId}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            minLength="10"
+                            maxLength="10"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
-                value={nationality}
-                onChange={handleChangeNationality}
-                // value={values.nationality}
-                // onChange={(e) => setFieldValue("nationality", e.target.value)}
-                menuItemsList={nationalities}
-              />
-              {nationalityError && (
-                <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-                  {nationalityError}
-                </div>
-              )}
+              </FieldArray>
 
-              <TextInputGroup
-                label={t("forms.promoCode.label")}
-                type="text"
-                name="promoCode"
-                placeholder={t("forms.promoCode.placeholder")}
-                value={values.promoCode}
-                errors={errors.promoCode}
-                touched={touched.promoCode}
-                onChange={(e) => {
-                  handleChange(e);
-                }}
-                onBlur={handleBlur}
-                minLength="4"
-              />
-            </div>
-
-            {renderedChildrenNumbersRows}
-
-            <button
-              type="submit"
-              disabled={!isValid || isSubmitting || !isFormValid}
-              className={`mx-auto px-20 lg:px-40 w-fit centered gap-2  mt-4 lg:mt-8 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
-                isValid && "hover:bg-linksHover hover:border-linksHover"
-              }`}
-            >
-              {isSubmitting ? (
-                <>
-                  {t("forms.validation.sending")}
-
-                  <CircularProgress size={24} sx={{ color: "#ED8A22" }} />
-                </>
-              ) : (
-                t("links.continuePayment")
-              )}
-            </button>
-          </form>
-        )}
+              <button
+                type="submit"
+                disabled={!isValid || isSubmitting}
+                className={`mx-auto px-20 lg:px-40 w-fit centered gap-2 mt-4 lg:mt-8 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
+                  isValid && "hover:bg-linksHover hover:border-linksHover"
+                }`}
+              >
+                {isSubmitting ? (
+                  <>
+                    {t("forms.validation.sending")}
+                    <CircularProgress size={24} sx={{ color: "#ED8A22" }} />
+                  </>
+                ) : (
+                  t("links.continuePayment")
+                )}
+              </button>
+            </form>
+          );
+        }}
       </Formik>
     </Container>
   );
