@@ -2,6 +2,8 @@
 
 import { useLocale } from "next-intl";
 
+import { memo } from "react";
+
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
@@ -58,4 +60,4 @@ const DropdownGroup = ({
   );
 };
 
-export default DropdownGroup;
+export default memo(DropdownGroup);
