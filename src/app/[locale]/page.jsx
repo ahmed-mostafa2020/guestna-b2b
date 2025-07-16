@@ -23,6 +23,7 @@ import MarketingSection from "@components/sections/pages/home/marketing";
 import Benefits from "@components/sections/pages/home/benefits";
 import Trips from "@components/sections/pages/home/trips/Trips";
 import SmallSeparator from "@components/common/separators/SmallSeparator";
+import ResponsiveSeparator from "@components/common/separators/ResponsiveSeparator";
 import FeatureTrips from "@components/sections/pages/home/featureTrips";
 
 import ParentTrip from "@components/sections/pages/home/ParentTrip";
@@ -72,6 +73,7 @@ export default function Home() {
     <>
       <main className="overflow-hidden bg-activityDetailsBg">
         <HeroSection />
+        <SmallSeparator />
 
         <Plans />
 
@@ -82,10 +84,10 @@ export default function Home() {
         <SmallSeparator />
 
         <FeatureTrips />
-        <SmallSeparator />
+        <ResponsiveSeparator />
 
         <Benefits />
-        <SmallSeparator />
+        <ResponsiveSeparator />
 
         <Trips />
         <SmallSeparator />

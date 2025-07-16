@@ -209,7 +209,7 @@
   },
   "mainCategories": {
     "title": "More than 400 educational destinations in more than 20 cities around Saudi Arabia",
-    "subTitle": "We believe that every school trip should be a unique educational and entertaining experience. With our customization features, you can easily design trip itineraries that suit your students' needs and your school's goals."
+    "subTitle": "Each school trip is a unique educational and entertaining experience, with customized programs that easily fit the needs of students and the goals of the school."
   },
   "features": {
     "feature1": {
@@ -728,12 +728,13 @@
       "require": "This field is required",
       "sending": "Sending Now ...",
       "downloading": "Downloading Now ...",
-
       "success": "Your data has been sent successfully",
       "addedToFavorites": "Added to favorites successfully",
       "checkYourEmail": "Please, Check your gmail",
       "addGuest": "Add Guest first please",
       "registerChild": "Please register your child in a trip first",
+      "thanksMessage": "Thank You!",
+      "willContactYou": "Your contact request has been sent, we will respond to you shortly.",
 
       "payment": {
         "success": "Payment was done successfully!",

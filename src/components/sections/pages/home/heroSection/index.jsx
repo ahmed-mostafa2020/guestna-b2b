@@ -26,7 +26,7 @@ const HeroSection = () => {
   }, [phrases.length]);
 
   return (
-    <section className="relative flex flex-col pt-8 pb-16 lg:py-10 centered z-[2]">
+    <section className="relative flex flex-col py-5 lg:py-10 centered z-[2]">
       <div className="w-full mb-2 -mt-5 text-center lg:m-0">
         <h1 className="text-lg font-semibold lg:text-2xl lg:pb-2 text-mainColor">
           {t("hero.title")}

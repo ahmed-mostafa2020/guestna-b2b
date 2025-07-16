@@ -11,6 +11,8 @@ import FrameWithImagedHeader from "@components/common/frameWithImagedHeader/Fram
 import CustomizedModal from "@components/common/customizedModal";
 import RequestQuoteForm from "@components/forms/requestQuote";
 
+import Cookies from "js-cookie";
+
 const RequestQuote = () => {
   const [isRequestQuoteFormOpen, setIsRequestQuoteFormOpen] = useState(false);
 
@@ -23,16 +25,20 @@ const RequestQuote = () => {
 
   const t = useTranslations();
 
+  const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
+
   return (
     <>
       <FrameWithImagedHeader withBorder={true}>
         <div className="flex items-center justify-between gap-2">
-          <button
-            onClick={handleRequestQuoteFormOpen}
-            className="flex-1 py-3 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor"
-          >
-            {t("links.requestQuote")}
-          </button>
+          {!token && (
+            <button
+              onClick={handleRequestQuoteFormOpen}
+              className="flex-1 py-3 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor"
+            >
+              {t("links.requestQuote")}
+            </button>
+          )}
 
           <Link
             target="_blank"
