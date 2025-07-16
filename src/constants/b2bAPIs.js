@@ -18,6 +18,7 @@ export const B2B_END_POINTS = {
   SERVICES: "services/customizableservice",
   PACKAGE_INFO: "packageImageInfo",
   ADD_ACTIVITY: "tripActivitiesCustomizable",
+  REQUEST_QUOTE: "asks/new",
 
   PROMO_CODE: "promoCodeDiscounts/validCode",
   CHECKOUT: "finalTripBookingDetails",

@@ -127,8 +127,8 @@ const TripDetails = ({ params }) => {
     {
       id: 2,
       type: "link",
-      name: data?.trip?.categories[0]?.name,
-      link: `discover?categories=${data?.trip?.categories[0]?._id}`,
+      name: data?.trip?.categories?.name,
+      link: `discover?categories=${data?.trip?.categories?._id}`,
     },
     { id: 3, type: "text", name: data?.trip?.name },
   ];

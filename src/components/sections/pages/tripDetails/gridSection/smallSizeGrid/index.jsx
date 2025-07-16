@@ -1,13 +1,19 @@
 "use client";
 
+import { usePathname } from "next/navigation";
+
 import { useTranslations } from "next-intl";
 
 import { useSelector } from "react-redux";
 
 import { USERS } from "@constants/users";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 import PreBookingSection from "@components/common/trips/PreBookingSection";
 import BookWithConfidenceSection from "@components/common/trips/BookWithConfidenceSection";
 import Map from "../largeSizeGrid/accordionsGroupSection/accordionsDetails/Map";
+import RequestQuote from "../../requestQuote";
+
+import Cookies from "js-cookie";
 
 const SmallSizeGrid = () => {
   const data = useSelector((state) => state.tripDetailsData.data.trip);
@@ -16,11 +22,19 @@ const SmallSizeGrid = () => {
 
   const isAuth = data?.isAuth ?? true;
 
+  const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
+
+  const pathname = usePathname();
+
   const t = useTranslations();
 
   return (
     <>
-      {userType === USERS.B2B_PARENT && <PreBookingSection tripData={data} />}
+      {pathname?.includes("/parents/") ? (
+        <PreBookingSection tripData={data} />
+      ) : !token ? (
+        <RequestQuote />
+      ) : null}
 
       <BookWithConfidenceSection />
 

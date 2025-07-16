@@ -4,13 +4,13 @@ import Link from "next/link";
 
 import { useLocale, useTranslations } from "next-intl";
 
-import { useDispatch } from "react-redux";
-import actGetNavbarData from "@store/navbarData/act/actGetNavbarData";
+// import { useDispatch } from "react-redux";
+// import actGetNavbarData from "@store/navbarData/act/actGetNavbarData";
 
-import { Fragment, useEffect } from "react";
+import { Fragment } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import { getHeaders } from "@utils/getHeaders";
+// import { getHeaders } from "@utils/getHeaders";
 import Logo from "../../common/Logo";
 import TemporaryDrawer from "./TemporaryDrawer";
 import SettingsButton from "./SettingsButton";
@@ -27,9 +27,9 @@ const Header = () => {
   const locale = useLocale();
   const t = useTranslations();
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const headers = getHeaders();
+  // const headers = getHeaders();
 
   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
 
@@ -81,9 +81,9 @@ const Header = () => {
     </Fragment>
   ));
 
-  useEffect(() => {
-    dispatch(actGetNavbarData(headers));
-  }, [dispatch, headers]);
+  // useEffect(() => {
+  //   dispatch(actGetNavbarData(headers));
+  // }, [dispatch, headers]);
 
   return (
     <>

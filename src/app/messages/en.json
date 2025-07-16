@@ -130,6 +130,7 @@
     "saveChange": "Save Change",
     "saveChanges": "Save Changes",
     "send": "Send",
+    "sendRequest": "Send Request",
     "showAllImages": "Show All Images",
     "showAllReviews": "Show All Reviews",
     "customizeYourPackage": "Customize Your Package",
@@ -139,6 +140,7 @@
     "edit": "Edit",
     "verification": "Verification",
     "cancel": "Cancel",
+    "requestQuote": "Request Quote",
     "contactUs": "Contact Us",
     "goToLocation": "Go to Location",
     "bookForPrivate": "Booking for Private Group",
@@ -486,6 +488,8 @@
       "login": {
         "title": "Welcome back to GuestNa",
         "parentSubTitle": "Log in to manage and book your school trips.",
+        "requestQuoteSubTitle": "Great! We've got you covered so we can serve you better.",
+
         "haveAnAccount": "Don't have an account?",
         "createAccount": "Create an account",
 

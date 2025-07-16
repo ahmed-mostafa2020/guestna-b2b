@@ -130,6 +130,7 @@
     "saveChange": "حفظ التغيير",
     "saveChanges": "حفظ التغيرات",
     "send": "إرسال",
+    "sendRequest": "إرسال الطلب",
     "showAllImages": "عرض كل الصور البالغ عددها",
     "showAllReviews": "عرض كل التقييمات البالغ عددها",
     "customizeYourPackage": "تخصيص الحزمة الخاصة بك",
@@ -139,6 +140,7 @@
     "edit": "تعديل",
     "verification": "تحقيق",
     "cancel": "إلغاء",
+    "requestQuote": "طلب عرض سعر",
     "contactUs": "تواصل معنا",
     "goToLocation": "انتقل إلى الموقع",
     "bookForPrivate": "حجز لمجموعة خاصة",
@@ -487,6 +489,7 @@
       "login": {
         "title": "مرحبا بك مجددا في جستنا",
         "parentSubTitle": "سجل الدخول لإدارة وحجز رحلاتك المدرسية.",
+        "requestQuoteSubTitle": "رائع! خلينا نعرفك أكثر عشان نقدر نخدمك بشكل أفضل",
         "haveAnAccount": "ليس لديك حساب؟",
         "createAccount": "قم بإنشاء حساب",
 
@@ -713,6 +716,14 @@
 
     "academicStages": {
       "name": "المراحل الدراسية"
+    },
+
+    "organizationName": {
+      "name": "اسم المؤسسة",
+      "error": {
+        "min": "يجب ألا يقل اسم المؤسسة عن 3 أحرف",
+        "max": "يجب ألا يزيد اسم المؤسسة عن 50 حرفا"
+      }
     },
 
     "subject": {

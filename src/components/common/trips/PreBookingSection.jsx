@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import formatCurrency from "@utils/FormatCurrency";
@@ -156,4 +156,4 @@ const PreBookingSection = ({ tripData }) => {
   );
 };
 
-export default PreBookingSection;
+export default memo(PreBookingSection);
