@@ -4,11 +4,13 @@ import { useTranslations } from "next-intl";
 
 import { Container } from "@mui/material";
 
-import benefits from "@assets/sectionBackground/benefits.webp";
-
+import choosingBg from "@assets/choosingBg.png";
 import choosing from "@assets/choosing.svg";
+import supportBg from "@assets/supportBg.png";
 import support from "@assets/support.svg";
+import adventureBg from "@assets/adventureBg.png";
 import adventure from "@assets/adventure.svg";
+import entertainmentBg from "@assets/entertainmentBg.png";
 import entertainment from "@assets/entertainment.svg";
 
 const Benefits = () => {
@@ -16,21 +18,25 @@ const Benefits = () => {
 
   const benefitsList = [
     {
+      imageBg: choosingBg,
       image: choosing,
       title: t("features.feature1.title"),
       description: t("features.feature1.description"),
     },
     {
+      imageBg: supportBg,
       image: support,
       title: t("features.feature2.title"),
       description: t("features.feature2.description"),
     },
     {
+      imageBg: adventureBg,
       image: adventure,
       title: t("features.feature3.title"),
       description: t("features.feature3.description"),
     },
     {
+      imageBg: entertainmentBg,
       image: entertainment,
       title: t("features.feature4.title"),
       description: t("features.feature4.description"),
@@ -38,38 +44,41 @@ const Benefits = () => {
   ];
 
   const renderedBenefits = benefitsList.map((benefit) => (
-    <div key={benefit.title} className="flex-col gap-2 lg:flex-1 centered">
+    <div key={benefit.title} className="flex-col gap-2 centered">
       <Image
-        src={benefit.image}
+        src={benefit.imageBg}
         alt={benefit.title}
-        width={100}
-        height={100}
-        className="object-cover border-2 border-[#EFEFEF] lg:mb-2 bg-[#EFEFEF] rounded-[100px]"
+        width={310}
+        height={340}
+        priority={true}
+        className="object-fit w-[354px]"
       />
 
-      <h3 className="text-center text-titleColor lg:text-[28px] text-xl font-semibold font-ibm text-wrap lg:text-nowrap">
-        {benefit.title}
-      </h3>
+      <div className="flex-col gap-3 -mt-16 centered">
+        <Image
+          src={benefit.image}
+          alt={benefit.title}
+          width={100}
+          height={100}
+          priority={true}
+          className="object-cover border-2 border-[#EFEFEF] bg-[#EFEFEF] rounded-[100px]"
+        />
 
-      <p className="text-lg font-medium leading-6 text-center text-textLight lg:text-xl font-ibm">
-        {benefit.description}
-      </p>
+        <h3 className="text-xl font-medium text-center text-titleColor lg:text-2xl text-wrap lg:text-nowrap">
+          {benefit.title}
+        </h3>
+
+        <p className="text-lg font-medium w-[95%] text-center text-[#495151] lg:text-xl pb-6">
+          {benefit.description}
+        </p>
+      </div>
     </div>
   ));
 
   return (
     <section>
       <Container maxWidth="lg">
-        <Image
-          src={benefits}
-          alt="benefits"
-          width={1400}
-          height={340}
-          priority={true}
-          className="object-fit "
-        />
-
-        <div className="flex flex-wrap justify-center gap-5 px-6 pt-6 pb-6 mt-0 bg-white lg:pt-12 lg:-mt-28">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  w-fit mx-auto rounded-3xl overflow-hidden justify-center gap-[1px] bg-white shadow-card">
           {renderedBenefits}
         </div>
       </Container>

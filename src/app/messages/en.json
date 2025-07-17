@@ -214,19 +214,19 @@
   "features": {
     "feature1": {
       "title": "Selection and customization",
-      "description": "Select and customize safe learning experiences and trips using advanced and simple technologies."
+      "description": "Personalizing safe learning experiences with advanced technologies."
     },
     "feature2": {
-      "title": "Comprehensive technical and professional support",
-      "description": "Covering all school needs and providing comprehensive and integrated technical and professional support"
+      "title": "Comprehensive technical support",
+      "description": "Full coverage of schools' needs with integrated support."
     },
     "feature3": {
-      "title": "Various activities and adventures",
-      "description": "Providing diverse and innovative activities and adventures for students through partnerships with local service providers."
+      "title": "Various adventures",
+      "description": "Innovative events in collaboration with local providers."
     },
     "feature4": {
       "title": "Integrating education with entertainment",
-      "description": "Integrating education and entertainment to create flexible experiences that are adaptable to diverse educational curricula and objectives"
+      "description": "Fun and guided learning experiences."
     }
   },
   "trips": {
