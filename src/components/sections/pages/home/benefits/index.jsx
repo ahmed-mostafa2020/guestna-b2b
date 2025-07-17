@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Container } from "@mui/material";
 
 import benefits from "@assets/sectionBackground/benefits.webp";
+
 import choosing from "@assets/choosing.svg";
 import support from "@assets/support.svg";
 import adventure from "@assets/adventure.svg";
@@ -43,7 +44,7 @@ const Benefits = () => {
         alt={benefit.title}
         width={100}
         height={100}
-        className="object-cover lg:mb-2 bg-gray-200 rounded-[100px]"
+        className="object-cover border-2 border-[#EFEFEF] lg:mb-2 bg-[#EFEFEF] rounded-[100px]"
       />
 
       <h3 className="text-center text-titleColor lg:text-[28px] text-xl font-semibold font-ibm text-wrap lg:text-nowrap">
@@ -65,7 +66,7 @@ const Benefits = () => {
           width={1400}
           height={340}
           priority={true}
-          className="object-fit"
+          className="object-fit "
         />
 
         <div className="flex flex-wrap justify-center gap-5 px-6 pt-6 pb-6 mt-0 bg-white lg:pt-12 lg:-mt-28">
