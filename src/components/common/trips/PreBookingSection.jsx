@@ -14,13 +14,36 @@ import ActionsDialog from "../../sections/pages/customization/gridSection/largeS
 import CustomizedModal from "../customizedModal";
 import ParentLoginForm from "../../forms/auth/parentLogin";
 
+import Cookies from "js-cookie";
+
 const PreBookingSection = ({ tripData }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isParentLoginFormOpen, setIsParentLoginFormOpen] = useState(false);
 
-  const handleOpen = () => {
-    setIsOpen(true);
+  const handleClick = () => {
+    handleClose();
+
+    if (typeof window !== "undefined") {
+      const target = document.querySelector("#register-student-form");
+      if (target) {
+        window.scrollTo({
+          top: target.offsetTop,
+          behavior: "smooth",
+        });
+      }
+    }
   };
+
+  const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
+
+  const handleOpen = () => {
+    if (token) {
+      handleClick();
+    } else {
+      setIsOpen(true);
+    }
+  };
+
   const handleClose = () => {
     setIsOpen(false);
   };
@@ -38,20 +61,6 @@ const PreBookingSection = ({ tripData }) => {
   const defaultPriceWithFormatting = tripData?.discountedPrice
     ? calculateDiscountedPrice(tripData?.price, tripData?.discountedPrice)
     : formatCurrency(tripData?.price);
-
-  const handleClick = () => {
-    handleClose();
-
-    if (typeof window !== "undefined") {
-      const target = document.querySelector("#register-student-form");
-      if (target) {
-        window.scrollTo({
-          top: target.offsetTop,
-          behavior: "smooth",
-        });
-      }
-    }
-  };
 
   const handleLoginForm = () => {
     handleClose();
