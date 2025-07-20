@@ -3,6 +3,10 @@ import { memo } from "react";
 import TextInputGroup from "../TextInputGroup";
 import DropdownGroup from "../DropdownGroup";
 
+import { Field } from "formik";
+import PhoneInputWithCountrySelect from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+
 const ChildForm = ({
   child,
   index,
@@ -10,10 +14,12 @@ const ChildForm = ({
   touched,
   handleChange,
   handleBlur,
+  setFieldValue,
   childrenStages,
   handleChangeChildStage,
   academicStages,
   t,
+  cn,
 }) => {
   return (
     <div className="flex flex-col gap-4 mt-6">
@@ -64,6 +70,56 @@ const ChildForm = ({
           onBlur={handleBlur}
           minLength="10"
           maxLength="10"
+        />
+
+        <div className="relative flex flex-col gap-2">
+          <label className="font-medium capitalize font-ibm">
+            {t("forms.phone.studentPhone")}
+          </label>
+          <Field name={`children[${index}].studentMobile`}>
+            {({ field }) => (
+              <PhoneInputWithCountrySelect
+                {...field}
+                international
+                defaultCountry="SA"
+                value={child.studentMobile}
+                onChange={(value) => {
+                  setFieldValue(`children[${index}].studentMobile`, value);
+                }}
+                errors={errors.children?.[index]?.studentMobile}
+                touched={touched.children?.[index]?.studentMobile}
+                onBlur={handleBlur}
+                id={`children[${index}].studentMobile`}
+                addInternationalOption={false}
+                style={{ direction: "ltr" }}
+                className={cn(
+                  "flex bg-white w-full gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out",
+                  errors.children?.[index]?.studentMobile &&
+                    touched.children?.[index]?.studentMobile
+                    ? "border-error PhoneInputInput-focus:border-error hover:border-error"
+                    : "border-border PhoneInputInput-focus:border-textDark hover:textDark"
+                )}
+              />
+            )}
+          </Field>
+          {errors.children?.[index]?.studentMobile &&
+            touched.children?.[index]?.studentMobile && (
+              <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+                {errors.children?.[index]?.studentMobile}
+              </div>
+            )}
+        </div>
+
+        <TextInputGroup
+          label={t("forms.email.studentEmail")}
+          type="email"
+          name={`children[${index}].studentEmail`}
+          value={child.studentEmail}
+          errors={errors.children?.[index]?.studentEmail}
+          touched={touched.children?.[index]?.studentEmail}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          placeholder="guestna@gmail.com"
         />
       </div>
     </div>

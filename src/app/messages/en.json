@@ -582,6 +582,7 @@
     "email": {
       "name": "Email",
       "parentEmail": "Parent Email",
+      "studentEmail": "Student Email (If Available)",
       "error": "Please enter a valid email address",
       "is_exists": "This email address already exists",
       "done": "Your account has been added",
@@ -591,6 +592,8 @@
     "phone": {
       "name": "Phone",
       "parentPhone": "Parent Phone",
+      "backupPhone": "Backup Phone",
+      "studentPhone": "Student Phone Number (If Available)",
       "error": {
         "invalid": "Invalid phone number",
         "min": "Number should be more than 12",
@@ -694,6 +697,14 @@
       }
     },
 
+    "relationship": {
+      "name": "ٌRelationship",
+      "error": {
+        "min": "ٌRelationship should be more than 2 characters",
+        "max": "ٌRelationship should be less than 50 characters"
+      }
+    },
+
     "nationalId": {
       "name": "National ID",
       "placeholder": "National ID card number of the student",
@@ -706,6 +717,10 @@
 
     "academicStages": {
       "name": "Academic Stages"
+    },
+
+    "grade": {
+      "name": "Grade"
     },
 
     "subject": {

@@ -24,7 +24,7 @@ const ParentFormFields = ({
   cn,
 }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-7">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-7">
       <TextInputGroup
         label={t("forms.parentName.name")}
         type="text"
@@ -48,15 +48,16 @@ const ParentFormFields = ({
       />
 
       <TextInputGroup
-        label={t("forms.email.parentEmail")}
-        type="email"
-        name="email"
-        value={values.email}
-        errors={errors.email}
-        touched={touched.email}
+        label={t("forms.relationship.name")}
+        type="text"
+        name="relationship"
+        value={values.relationship}
+        errors={errors.relationship}
+        touched={touched.relationship}
         onChange={handleChange}
         onBlur={handleBlur}
-        placeholder="guestna@gmail.com"
+        minLength="2"
+        maxLength="50"
       />
 
       <div className="relative flex flex-col gap-2">
@@ -94,6 +95,54 @@ const ParentFormFields = ({
           </div>
         )}
       </div>
+
+      <div className="relative flex flex-col gap-2">
+        <label className="font-medium capitalize font-ibm">
+          {t("forms.phone.backupPhone")}
+        </label>
+        <Field name="backupMobile">
+          {({ field }) => (
+            <PhoneInputWithCountrySelect
+              {...field}
+              international
+              defaultCountry="SA"
+              value={values.backupMobile}
+              onChange={(value) => {
+                setFieldValue("backupMobile", value);
+              }}
+              errors={errors.backupMobile}
+              touched={touched.backupMobile}
+              onBlur={handleBlur}
+              id="backupMobile"
+              addInternationalOption={false}
+              style={{ direction: "ltr" }}
+              className={cn(
+                "flex bg-white w-full gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out",
+                errors.backupMobile && touched.backupMobile
+                  ? "border-error PhoneInputInput-focus:border-error hover:border-error"
+                  : "border-border PhoneInputInput-focus:border-textDark hover:textDark"
+              )}
+            />
+          )}
+        </Field>
+        {errors.backupMobile && touched.backupMobile && (
+          <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+            {errors.backupMobile}
+          </div>
+        )}
+      </div>
+
+      <TextInputGroup
+        label={t("forms.email.parentEmail")}
+        type="email"
+        name="email"
+        value={values.email}
+        errors={errors.email}
+        touched={touched.email}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        placeholder="guestna@gmail.com"
+      />
 
       <div className="relative flex flex-col gap-2">
         <DropdownGroup

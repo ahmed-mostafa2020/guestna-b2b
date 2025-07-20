@@ -68,6 +68,8 @@ const RegisterStudentForm = () => {
       studentName: "",
       academicStage: "",
       nationalId: "",
+      studentMobile: "",
+      studentEmail: "",
     }));
   };
 
@@ -113,17 +115,24 @@ const RegisterStudentForm = () => {
 
     let data = {
       name: values.parentName,
+      quantity: values.childrenNumber,
+      relationship: values.relationship,
+
+      phone: values.mobile,
+      backupPhone: values.backupMobile,
+      email: values.email,
+      nationality: nationality,
+      trip: tripId,
+      ...(values.promoCode && { promoCode: values.promoCode }),
+
       childs: values.children.map((child) => ({
         name: child.studentName,
         nationalId: `${child.nationalId}`,
         academicStage: child.academicStage,
+        // academicStage: child.academicStage,
+        ...(child.studentMobile && { phone: child.studentMobile }),
+        ...(child.studentEmail && { email: child.studentEmail }),
       })),
-      quantity: values.childrenNumber,
-      email: values.email,
-      phone: values.mobile,
-      nationality: nationality,
-      promoCode: values.promoCode,
-      trip: tripId,
     };
 
     let registerFormData = JSON.stringify(data);
@@ -180,10 +189,12 @@ const RegisterStudentForm = () => {
         initialValues={{
           parentName: "",
           childrenNumber: childrenNumber,
-          email: parentEmail || "",
+          relationship: "",
           mobile: parentPhone || "",
-          promoCode: "",
+          backupMobile: "",
+          email: parentEmail || "",
           nationality: "",
+          promoCode: "",
           children: generateInitialChildren(childrenNumber),
         }}
         validationSchema={registerChildSchema}
@@ -290,10 +301,12 @@ const RegisterStudentForm = () => {
                         touched={touched}
                         handleChange={handleChange}
                         handleBlur={handleBlur}
+                        setFieldValue={setFieldValue}
                         childrenStages={childrenStages}
                         handleChangeChildStage={handleChangeChildStage}
                         academicStages={academicStages}
                         t={t}
+                        cn={cn}
                       />
                     ))}
                   </div>
