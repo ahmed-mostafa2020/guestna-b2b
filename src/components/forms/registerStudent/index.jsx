@@ -13,18 +13,16 @@ import { createRegisterChildSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import { cn } from "@utils/cn";
 import getErrorMessage from "@utils/getErrorMessage ";
-import TextInputGroup from "../TextInputGroup";
-import DropdownGroup from "../DropdownGroup";
 
-import { Field, FieldArray, Formik } from "formik";
-import PhoneInputWithCountrySelect from "react-phone-number-input";
-import "react-phone-number-input/style.css";
+import { FieldArray, Formik } from "formik";
 
 import axios from "axios";
 
 import { useSnackbar } from "notistack";
 
 import { CircularProgress, Container } from "@mui/material";
+import ParentFormFields from "./ParentFormFields";
+import ChildForm from "./ChildForm";
 
 const RegisterStudentForm = () => {
   const [_, setNationalityError] = useState("");
@@ -190,7 +188,7 @@ const RegisterStudentForm = () => {
         }}
         validationSchema={registerChildSchema}
         onSubmit={handleSubmit}
-        enableReinitialize
+        // enableReinitialize={false}
         validateOnBlur={true}
         validateOnChange={true}
         validateOnMount={true}
@@ -240,111 +238,25 @@ const RegisterStudentForm = () => {
 
           return (
             <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-7">
-                <TextInputGroup
-                  label={t("forms.parentName.name")}
-                  type="text"
-                  name="parentName"
-                  placeholder={t("forms.parentName.placeholder")}
-                  value={values.parentName}
-                  errors={errors.parentName}
-                  touched={touched.parentName}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  minLength="2"
-                  maxLength="50"
-                />
-
-                <DropdownGroup
-                  label={t("forms.registerForm.numberOfChildren")}
-                  placeholder={childrenNumber}
-                  value={values.childrenNumber}
-                  onChange={handleChangeChildrenNumber}
-                  menuItemsList={childrenNumberList}
-                />
-
-                <TextInputGroup
-                  label={t("forms.email.parentEmail")}
-                  type="email"
-                  name="email"
-                  value={values.email}
-                  errors={errors.email}
-                  touched={touched.email}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder="guestna@gmail.com"
-                />
-
-                <div className="relative flex flex-col gap-2">
-                  <label className="font-medium capitalize font-ibm">
-                    {t("forms.phone.parentPhone")}
-                  </label>
-
-                  <Field name="mobile">
-                    {({ field }) => (
-                      <PhoneInputWithCountrySelect
-                        {...field}
-                        international
-                        defaultCountry="SA"
-                        value={values.mobile}
-                        onChange={(value) => {
-                          setFieldValue("mobile", value);
-                        }}
-                        errors={errors.mobile}
-                        touched={touched.mobile}
-                        onBlur={handleBlur}
-                        id="mobile"
-                        addInternationalOption={false}
-                        style={{ direction: "ltr" }}
-                        className={cn(
-                          "flex bg-white w-full gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50  transition-all duration-200 ease-in-out",
-                          errors.mobile && touched.mobile
-                            ? "border-error PhoneInputInput-focus:border-error hover:border-error"
-                            : "border-border PhoneInputInput-focus:border-textDark hover:border-textDark"
-                        )}
-                      />
-                    )}
-                  </Field>
-                  {errors.mobile && touched.mobile && (
-                    <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-                      {errors.mobile}
-                    </div>
-                  )}
-                </div>
-
-                {/* Nationality */}
-                <div className="relative flex flex-col gap-2">
-                  <DropdownGroup
-                    label={t(
-                      "profile.information.personalInformation.nationality"
-                    )}
-                    placeholder={t(
-                      "profile.information.personalInformation.nationality"
-                    )}
-                    value={values.nationality}
-                    onChange={handleChangeNationality}
-                    menuItemsList={nationalities}
-                  />
-                  {errors.nationality && touched.nationality && (
-                    <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-                      {errors.nationality}
-                    </div>
-                  )}
-                </div>
-
-                <TextInputGroup
-                  label={t("forms.promoCode.label")}
-                  type="text"
-                  name="promoCode"
-                  placeholder={t("forms.promoCode.placeholder")}
-                  value={values.promoCode}
-                  errors={errors.promoCode}
-                  touched={touched.promoCode}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  minLength="4"
-                />
-              </div>
+              <ParentFormFields
+                values={values}
+                errors={errors}
+                touched={touched}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+                setFieldValue={setFieldValue}
+                childrenNumber={childrenNumber}
+                handleChangeChildrenNumber={(event) =>
+                  handleChangeChildrenNumber(event, setFieldValue)
+                }
+                handleChangeNationality={(event) =>
+                  handleChangeNationality(event, setFieldValue)
+                }
+                childrenNumberList={childrenNumberList}
+                nationalities={nationalities}
+                t={t}
+                cn={cn}
+              />
 
               {/* Dynamic Children Fields */}
               <FieldArray
@@ -354,61 +266,19 @@ const RegisterStudentForm = () => {
                 {({ push, remove }) => (
                   <div>
                     {values.children.map((child, index) => (
-                      <div key={index} className="flex flex-col gap-4 mt-6">
-                        <h3 className="text-lg font-semibold text-titleColor lg:text-2xl">
-                          {t(`forms.registerForm.childrenNumber.${index + 1}`)}
-                        </h3>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-6">
-                          <TextInputGroup
-                            label={t("forms.studentName.name")}
-                            type="text"
-                            name={`children[${index}].studentName`}
-                            placeholder={t("forms.studentName.placeholder")}
-                            value={values.children[index].studentName}
-                            errors={errors.children?.[index]?.studentName}
-                            touched={touched.children?.[index]?.studentName}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            minLength="2"
-                            maxLength="50"
-                          />
-
-                          {/* Academic stage */}
-                          <div className="relative flex flex-col gap-2">
-                            <DropdownGroup
-                              label={t("forms.academicStages.name")}
-                              placeholder={t("forms.academicStages.name")}
-                              value={childrenStages[index] || ""}
-                              onChange={(event) =>
-                                handleChangeChildStage(index, event)
-                              }
-                              menuItemsList={academicStages}
-                            />
-                            {errors.children?.[index]?.academicStage &&
-                              touched.children?.[index]?.academicStage && (
-                                <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-                                  {errors.children[index].academicStage}
-                                </div>
-                              )}
-                          </div>
-
-                          <TextInputGroup
-                            label={t("forms.nationalId.name")}
-                            type="number"
-                            name={`children[${index}].nationalId`}
-                            inputMode="numeric"
-                            placeholder={t("forms.nationalId.placeholder")}
-                            value={values.children[index].nationalId}
-                            errors={errors.children?.[index]?.nationalId}
-                            touched={touched.children?.[index]?.nationalId}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            minLength="10"
-                            maxLength="10"
-                          />
-                        </div>
-                      </div>
+                      <ChildForm
+                        key={`child-${index}`}
+                        child={child}
+                        index={index}
+                        errors={errors}
+                        touched={touched}
+                        handleChange={handleChange}
+                        handleBlur={handleBlur}
+                        childrenStages={childrenStages}
+                        handleChangeChildStage={handleChangeChildStage}
+                        academicStages={academicStages}
+                        t={t}
+                      />
                     ))}
                   </div>
                 )}
