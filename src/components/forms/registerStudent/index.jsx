@@ -209,9 +209,24 @@ const RegisterStudentForm = () => {
             const newCount = parseInt(event.target.value);
             setChildrenNumber(newCount);
 
-            // Update the children array in Formik
-            const newChildren = generateInitialChildren(newCount);
-            setFieldValue("children", newChildren);
+            // Preserve existing children data
+            let updatedChildren = [...values.children];
+
+            if (updatedChildren.length < newCount) {
+              // Add empty children if increasing
+              for (let i = updatedChildren.length; i < newCount; i++) {
+                updatedChildren.push({
+                  studentName: "",
+                  academicStage: "",
+                  nationalId: "",
+                });
+              }
+            } else if (updatedChildren.length > newCount) {
+              // Remove extra children if decreasing
+              updatedChildren = updatedChildren.slice(0, newCount);
+            }
+
+            setFieldValue("children", updatedChildren);
             setFieldValue("childrenNumber", newCount);
 
             // Reset stages for new children count
@@ -263,6 +278,7 @@ const RegisterStudentForm = () => {
                 name="children"
                 className="transition-all duration-200 ease-in-out"
               >
+                {/* eslint-disable-next-line no-unused-vars */}
                 {({ push, remove }) => (
                   <div>
                     {values.children.map((child, index) => (
