@@ -36,6 +36,9 @@ const RegisterStudentForm = () => {
 
   const [childrenStages, setChildrenStages] = useState({});
   const [gradesList, setGradesList] = useState({});
+  const [childrenNationalIdImages, setChildrenNationalIdImages] = useState([]); // array of files
+  const [childrenNationalIdImagesError, setChildrenNationalIdImagesError] =
+    useState([]);
 
   const parentEmail = useSelector(
     (state) => state.parentLoginForm.parentData?.email
@@ -127,12 +130,26 @@ const RegisterStudentForm = () => {
       setNationalityError("");
     }
 
+    // parent
     if (!nationalIdImage) {
       setNationalIdImageError("National ID image is required.");
       isValid = false;
     } else {
       setNationalIdImageError("");
     }
+
+    // children
+    // Validate each child's image
+    const errors = [];
+    values.children.forEach((child, idx) => {
+      if (!childrenNationalIdImages[idx]) {
+        errors[idx] = "National ID image is required for this child.";
+        isValid = false;
+      } else {
+        errors[idx] = "";
+      }
+    });
+    setChildrenNationalIdImagesError(errors);
 
     return isValid;
   };
@@ -171,8 +188,14 @@ const RegisterStudentForm = () => {
     values.children.forEach((child, idx) => {
       formData.append(`childs[${idx}][name]`, child.studentName);
       formData.append(`childs[${idx}][nationalId]`, `${child.nationalId}`);
+      formData.append(
+        `childs[${idx}][nationalIdImage]`,
+        childrenNationalIdImages[idx]
+      );
+
       formData.append(`childs[${idx}][academicStage]`, child.academicStage);
       formData.append(`childs[${idx}][grade]`, child.grade);
+
       formData.append(`childs[${idx}][formsType]`, formsType);
 
       if (child.studentMobile)
@@ -377,8 +400,21 @@ const RegisterStudentForm = () => {
                         childrenStages={childrenStages}
                         academicStages={academicStages}
                         handleChangeChildStage={handleChangeChildStage}
-                        gradesList={gradesList[index] || []} // Pass grades for this child
+                        gradesList={gradesList[index] || []}
                         handleChangeChildGrade={handleChangeChildGrade}
+                        onChildImageChange={(file) => {
+                          const updated = [...childrenNationalIdImages];
+                          updated[index] = file;
+                          setChildrenNationalIdImages(updated);
+
+                          // Clear error for this child on new file
+                          setChildrenNationalIdImagesError((prev) => {
+                            const arr = [...prev];
+                            arr[index] = "";
+                            return arr;
+                          });
+                        }}
+                        imageError={childrenNationalIdImagesError[index]}
                         t={t}
                         cn={cn}
                       />

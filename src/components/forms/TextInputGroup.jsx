@@ -29,6 +29,7 @@ const TextInputGroup = memo(
     uploadFile = false,
     onFileChange,
     nationalIdImageError,
+    imageError,
     // labelFontFamily = "IBM Plex Sans Arabic, sans-serif",
   }) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -163,9 +164,9 @@ const TextInputGroup = memo(
                   {fileError}
                 </span>
               )}
-              {!fileError && nationalIdImageError && (
+              {!fileError && (nationalIdImageError || imageError) && (
                 <span className="absolute flex w-full text-xs transition-all duration-200 ease-in-out text-error -bottom-6">
-                  {nationalIdImageError}
+                  {nationalIdImageError || imageError}
                 </span>
               )}
             </>

@@ -20,6 +20,8 @@ const ChildForm = ({
   academicStages,
   gradesList,
   handleChangeChildGrade,
+  onChildImageChange,
+  imageError,
   t,
   cn,
 }) => {
@@ -88,6 +90,12 @@ const ChildForm = ({
           onBlur={handleBlur}
           minLength="10"
           maxLength="10"
+          uploadFile={true}
+          onFileChange={(e) => {
+            const file = e.target.files && e.target.files[0];
+            onChildImageChange(file || null);
+          }}
+          imageError={imageError}
         />
 
         <div className="relative flex flex-col gap-2">
