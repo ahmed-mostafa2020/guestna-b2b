@@ -707,7 +707,8 @@
 
     "nationalId": {
       "name": "National ID",
-      "placeholder": "National ID card number of the student",
+      "studentPlaceholder": "National ID card number of the student",
+      "parentPlaceholder": "National ID card number of the guardian",
       "error": {
         "invalid": "The number must start with 1 or 2 and must be 10 characters long",
         "min": "National ID number must be exactly 10 digits",

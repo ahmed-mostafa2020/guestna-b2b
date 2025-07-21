@@ -379,6 +379,12 @@ export const createRegisterChildSchema = (t, childrenCount) => {
 
     nationality: Yup.string().required(t("forms.validation.require")),
 
+    nationalId: Yup.string()
+      .required(t("forms.validation.require"))
+      .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
+      .min(10, t("forms.nationalId.error.min"))
+      .max(10, t("forms.nationalId.error.max")),
+
     promoCode: Yup.string().optional(),
 
     children: Yup.array()
@@ -414,7 +420,6 @@ export const createRegisterChildSchema = (t, childrenCount) => {
             .max(10, t("forms.nationalId.error.max")),
 
           studentMobile: createPhoneValidation(t, false),
-
           studentEmail: Yup.string().email(t("forms.email.error")).optional(),
         })
       )

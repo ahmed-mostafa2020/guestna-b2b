@@ -153,7 +153,13 @@ const RegisterStudentForm = () => {
     return isValid;
   };
 
-  const handleSubmit = (values, { setSubmitting, resetForm }) => {
+  const handleSubmit = (
+    values,
+    {
+      setSubmitting,
+      // , resetForm
+    }
+  ) => {
     // Validate custom fields before submission
     if (!validateCustomFields(values)) {
       setSubmitting(false);
@@ -169,6 +175,7 @@ const RegisterStudentForm = () => {
     formData.append("backupPhone", values.backupMobile);
     formData.append("email", values.email);
     formData.append("nationality", nationality);
+    formData.append("nationalId", values.nationalId);
     formData.append("trip", tripId);
     formData.append("formsType", formsType);
     if (values.promoCode) formData.append("promoCode", values.promoCode);
@@ -199,7 +206,7 @@ const RegisterStudentForm = () => {
       .then((response) => {
         setSubmitting(false);
         setFormErrors([]);
-        resetForm();
+        // resetForm();
 
         // Change acc to response
         const { _id } = response.data;

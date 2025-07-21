@@ -160,6 +160,21 @@ const ParentFormFields = ({
       </div>
 
       <TextInputGroup
+        label={t("forms.nationalId.name")}
+        type="number"
+        name="nationalId"
+        inputMode="numeric"
+        placeholder={t("forms.nationalId.parentPlaceholder")}
+        value={values.nationalId}
+        errors={errors.nationalId}
+        touched={touched.nationalId}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        minLength="10"
+        maxLength="10"
+      />
+
+      <TextInputGroup
         label={t("forms.promoCode.label")}
         type="text"
         name="promoCode"
