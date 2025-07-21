@@ -18,6 +18,8 @@ const ChildForm = ({
   childrenStages,
   handleChangeChildStage,
   academicStages,
+  gradesList,
+  handleChangeChildGrade,
   t,
   cn,
 }) => {
@@ -53,6 +55,22 @@ const ChildForm = ({
             touched.children?.[index]?.academicStage && (
               <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
                 {errors.children[index].academicStage}
+              </div>
+            )}
+        </div>
+
+        <div className="relative flex flex-col gap-2">
+          <DropdownGroup
+            label={t("forms.grade.name")}
+            placeholder={t("forms.grade.name")}
+            value={child.grade}
+            onChange={(event) => handleChangeChildGrade(index, event)}
+            menuItemsList={gradesList}
+          />
+          {errors.children?.[index]?.grade &&
+            touched.children?.[index]?.grade && (
+              <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+                {errors.children[index].grade}
               </div>
             )}
         </div>

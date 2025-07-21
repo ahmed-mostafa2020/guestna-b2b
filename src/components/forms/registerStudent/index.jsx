@@ -27,10 +27,12 @@ import ChildForm from "./ChildForm";
 const RegisterStudentForm = () => {
   const [_, setNationalityError] = useState("");
   const [__, setStageError] = useState("");
+  const [___, setGradeError] = useState("");
 
   const [childrenNumber, setChildrenNumber] = useState(1);
   const [nationality, setNationality] = useState("");
   const [childrenStages, setChildrenStages] = useState({});
+  const [gradesList, setGradesList] = useState({});
 
   const parentEmail = useSelector(
     (state) => state.parentLoginForm.parentData?.email
@@ -48,7 +50,7 @@ const RegisterStudentForm = () => {
 
   const dispatch = useDispatch();
 
-  const headers = getHeaders(locale);
+  const headers = getHeaders(locale, true);
 
   const registerChildSchema = useMemo(() => {
     return createRegisterChildSchema(t, childrenNumber);
@@ -56,6 +58,14 @@ const RegisterStudentForm = () => {
 
   const { academicStages, nationalities } = useSelector(
     (state) => state.tripDetailsData.data
+  );
+
+  const educationSystem = useSelector(
+    (state) => state.tripDetailsData.data?.trip?.educationSystem
+  );
+
+  const formsType = useSelector(
+    (state) => state.tripDetailsData.data?.trip?.categories?.formsType
   );
 
   const tripId = useSelector((state) => state.tripDetailsData.data?.trip?._id);
@@ -67,6 +77,7 @@ const RegisterStudentForm = () => {
     return Array.from({ length: count }, () => ({
       studentName: "",
       academicStage: "",
+      grade: "",
       nationalId: "",
       studentMobile: "",
       studentEmail: "",
@@ -86,16 +97,52 @@ const RegisterStudentForm = () => {
   ];
 
   // Validate custom fields
-  const validateCustomFields = () => {
+  // const validateCustomFields = () => {
+  //   let isValid = true;
+
+  //   if (!childrenStages) {
+  //     setStageError(t("forms.validation.required"));
+  //     isValid = false;
+  //   } else {
+  //     setStageError("");
+  //   }
+
+  //   if (!gradesList) {
+  //     setGradeError(t("forms.validation.required"));
+  //     isValid = false;
+  //   } else {
+  //     setGradeError("");
+  //   }
+
+  //   if (!nationality) {
+  //     setNationalityError(t("forms.validation.required"));
+  //     isValid = false;
+  //   } else {
+  //     setNationalityError("");
+  //   }
+
+  //   return isValid;
+  // };
+  const validateCustomFields = (values) => {
     let isValid = true;
 
-    if (!childrenStages) {
+    // Validate stages
+    if (!childrenStages || Object.values(childrenStages).some((v) => !v)) {
       setStageError(t("forms.validation.required"));
       isValid = false;
     } else {
       setStageError("");
     }
 
+    // Validate grades
+    if (values.children.some((child) => !child.grade)) {
+      setGradeError(t("forms.validation.required"));
+      isValid = false;
+    } else {
+      setGradeError("");
+    }
+
+    // Validate nationality
     if (!nationality) {
       setNationalityError(t("forms.validation.required"));
       isValid = false;
@@ -108,41 +155,42 @@ const RegisterStudentForm = () => {
 
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
     // Validate custom fields before submission
-    if (!validateCustomFields()) {
+    if (!validateCustomFields(values)) {
       setSubmitting(false);
       return;
     }
 
-    let data = {
-      name: values.parentName,
-      quantity: values.childrenNumber,
-      relationship: values.relationship,
+    // Create FormData
+    const formData = new FormData();
+    formData.append("name", values.parentName);
+    formData.append("quantity", values.childrenNumber);
+    formData.append("relationship", values.relationship);
+    formData.append("phone", values.mobile);
+    formData.append("backupPhone", values.backupMobile);
+    formData.append("email", values.email);
+    formData.append("nationality", nationality);
+    formData.append("trip", tripId);
+    formData.append("formsType", formsType);
+    if (values.promoCode) formData.append("promoCode", values.promoCode);
 
-      phone: values.mobile,
-      backupPhone: values.backupMobile,
-      email: values.email,
-      nationality: nationality,
-      trip: tripId,
-      ...(values.promoCode && { promoCode: values.promoCode }),
-
-      childs: values.children.map((child) => ({
-        name: child.studentName,
-        nationalId: `${child.nationalId}`,
-        academicStage: child.academicStage,
-        // academicStage: child.academicStage,
-        ...(child.studentMobile && { phone: child.studentMobile }),
-        ...(child.studentEmail && { email: child.studentEmail }),
-      })),
-    };
-
-    let registerFormData = JSON.stringify(data);
+    // Append each child as a nested object (adjust keys as your backend expects)
+    values.children.forEach((child, idx) => {
+      formData.append(`childs[${idx}][name]`, child.studentName);
+      formData.append(`childs[${idx}][nationalId]`, `${child.nationalId}`);
+      formData.append(`childs[${idx}][academicStage]`, child.academicStage);
+      formData.append(`childs[${idx}][grade]`, child.grade);
+      if (child.studentMobile)
+        formData.append(`childs[${idx}][phone]`, child.studentMobile);
+      if (child.studentEmail)
+        formData.append(`childs[${idx}][email]`, child.studentEmail);
+    });
 
     let config = {
       method: "post",
       maxBodyLength: Infinity,
       url: `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.STUDENT_REGISTER}`,
       headers,
-      data: registerFormData,
+      data: formData,
     };
     axios
       .request(config)
@@ -229,7 +277,10 @@ const RegisterStudentForm = () => {
                 updatedChildren.push({
                   studentName: "",
                   academicStage: "",
+                  grade: "",
                   nationalId: "",
+                  studentMobile: "",
+                  studentEmail: "",
                 });
               }
             } else if (updatedChildren.length > newCount) {
@@ -253,13 +304,34 @@ const RegisterStudentForm = () => {
             setFieldValue("nationality", event.target.value);
           };
 
-          const handleChangeChildStage = (childIndex, event) => {
+          const handleChangeChildStage = async (childIndex, event) => {
             const newStage = event.target.value;
             setChildrenStages((prev) => ({
               ...prev,
               [childIndex]: newStage,
             }));
             setFieldValue(`children[${childIndex}].academicStage`, newStage);
+
+            // Fetch grades for the selected stage
+            try {
+              const response = await axios.get(
+                `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.STUDENTS_GRADES}/${newStage}/${educationSystem}`
+              );
+              setGradesList((prev) => ({
+                ...prev,
+                [childIndex]: response.data, // adjust according to your API response
+              }));
+            } catch (error) {
+              setGradesList((prev) => ({
+                ...prev,
+                [childIndex]: [],
+              }));
+            }
+          };
+
+          const handleChangeChildGrade = (childIndex, event) => {
+            const newGrade = event.target.value;
+            setFieldValue(`children[${childIndex}].grade`, newGrade);
           };
 
           return (
@@ -303,8 +375,10 @@ const RegisterStudentForm = () => {
                         handleBlur={handleBlur}
                         setFieldValue={setFieldValue}
                         childrenStages={childrenStages}
-                        handleChangeChildStage={handleChangeChildStage}
                         academicStages={academicStages}
+                        handleChangeChildStage={handleChangeChildStage}
+                        gradesList={gradesList[index] || []} // Pass grades for this child
+                        handleChangeChildGrade={handleChangeChildGrade}
                         t={t}
                         cn={cn}
                       />

@@ -405,6 +405,7 @@ export const createRegisterChildSchema = (t, childrenCount) => {
             ),
 
           academicStage: Yup.string().required(t("forms.validation.require")),
+          grade: Yup.string().required(t("forms.validation.require")),
 
           nationalId: Yup.string()
             .required(t("forms.validation.require"))

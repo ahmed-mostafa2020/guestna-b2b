@@ -10,6 +10,7 @@ export const B2B_END_POINTS = {
   TRIPDETAILS: "trips/info",
   PARENT_TRIPDETAILS: "organizationTrips/info",
   STUDENT_REGISTER: "organizationTrips/booking/info",
+  STUDENTS_GRADES: "grades/booking",
 
   SIDE_FILTERS: "filtratinDetails",
   ALL_TRIPS: "all",
