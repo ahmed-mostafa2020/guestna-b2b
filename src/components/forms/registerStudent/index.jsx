@@ -179,6 +179,8 @@ const RegisterStudentForm = () => {
       formData.append(`childs[${idx}][nationalId]`, `${child.nationalId}`);
       formData.append(`childs[${idx}][academicStage]`, child.academicStage);
       formData.append(`childs[${idx}][grade]`, child.grade);
+      formData.append(`childs[${idx}][formsType]`, formsType);
+
       if (child.studentMobile)
         formData.append(`childs[${idx}][phone]`, child.studentMobile);
       if (child.studentEmail)
