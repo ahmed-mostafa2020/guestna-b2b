@@ -20,6 +20,9 @@ const ParentFormFields = ({
   handleChangeNationality,
   childrenNumberList,
   nationalities,
+  setNationalIdImage,
+  nationalIdImageError,
+  setNationalIdImageError,
   t,
   cn,
 }) => {
@@ -172,6 +175,13 @@ const ParentFormFields = ({
         onBlur={handleBlur}
         minLength="10"
         maxLength="10"
+        uploadFile={true}
+        onFileChange={(e) => {
+          const file = e.target.files && e.target.files[0];
+          setNationalIdImage(file || null);
+          setNationalIdImageError(""); // Clear error on new file
+        }}
+        nationalIdImageError={nationalIdImageError}
       />
 
       <TextInputGroup

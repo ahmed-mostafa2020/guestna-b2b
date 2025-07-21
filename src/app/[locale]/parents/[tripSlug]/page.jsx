@@ -49,8 +49,7 @@ const TripDetails = ({ params }) => {
   const dispatch = useDispatch();
 
   const { data, error, isLoading } = useFetchData(
-    // `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.PARENT_TRIPDETAILS}/${params.tripSlug}`,
-    `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.PARENT_TRIPDETAILS}/king-fahd-public-library-in-jeddah-riyadh-modern-school-2025-10-05t091610305z`,
+    `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.PARENT_TRIPDETAILS}/${params.tripSlug}`,
     {},
     {
       lang: locale,

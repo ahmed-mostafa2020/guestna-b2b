@@ -2,6 +2,8 @@ import { memo, useState } from "react";
 
 import { cn } from "@utils/cn";
 
+import { uploadFileIcon } from "@assets/svg";
+
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
@@ -24,9 +26,15 @@ const TextInputGroup = memo(
     autoFocus = false,
     textarea = false,
     rows = 4,
+    uploadFile = false,
+    onFileChange,
+    nationalIdImageError,
     // labelFontFamily = "IBM Plex Sans Arabic, sans-serif",
   }) => {
     const [showPassword, setShowPassword] = useState(false);
+
+    const [selectedFileName, setSelectedFileName] = useState("");
+    const [fileError, setFileError] = useState("");
 
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword);
@@ -108,6 +116,59 @@ const TextInputGroup = memo(
             >
               {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
             </button>
+          )}
+
+          {uploadFile && (
+            <>
+              <input
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                id={`${name}-upload`}
+                onChange={(e) => {
+                  setFileError("");
+                  const file = e.target.files && e.target.files[0];
+                  if (file) {
+                    if (
+                      file.type === "image/svg+xml" ||
+                      file.name.toLowerCase().endsWith(".svg")
+                    ) {
+                      setFileError("SVG images are not allowed");
+                      setSelectedFileName("");
+                      if (onFileChange) onFileChange({ target: { files: [] } });
+                      return;
+                    }
+                    setSelectedFileName(file.name);
+                    if (onFileChange) onFileChange(e);
+                  }
+                }}
+              />
+              <label
+                htmlFor={`${name}-upload`}
+                className="absolute inset-y-0 flex items-center cursor-pointer end-0 pe-4"
+              >
+                {uploadFileIcon}
+              </label>
+              {selectedFileName && (
+                <span className="absolute flex w-full text-xs text-green-600 transition-all duration-200 ease-in-out -bottom-6">
+                  ✅{" "}
+                  {selectedFileName.length > 50
+                    ? `${selectedFileName.substring(0, 50)}...`
+                    : selectedFileName}{" "}
+                  uploaded
+                </span>
+              )}
+              {fileError && (
+                <span className="absolute flex w-full text-xs transition-all duration-200 ease-in-out text-error -bottom-6">
+                  {fileError}
+                </span>
+              )}
+              {!fileError && nationalIdImageError && (
+                <span className="absolute flex w-full text-xs transition-all duration-200 ease-in-out text-error -bottom-6">
+                  {nationalIdImageError}
+                </span>
+              )}
+            </>
           )}
         </div>
 

@@ -31,6 +31,9 @@ const RegisterStudentForm = () => {
 
   const [childrenNumber, setChildrenNumber] = useState(1);
   const [nationality, setNationality] = useState("");
+  const [nationalIdImage, setNationalIdImage] = useState(null);
+  const [nationalIdImageError, setNationalIdImageError] = useState("");
+
   const [childrenStages, setChildrenStages] = useState({});
   const [gradesList, setGradesList] = useState({});
 
@@ -97,32 +100,6 @@ const RegisterStudentForm = () => {
   ];
 
   // Validate custom fields
-  // const validateCustomFields = () => {
-  //   let isValid = true;
-
-  //   if (!childrenStages) {
-  //     setStageError(t("forms.validation.required"));
-  //     isValid = false;
-  //   } else {
-  //     setStageError("");
-  //   }
-
-  //   if (!gradesList) {
-  //     setGradeError(t("forms.validation.required"));
-  //     isValid = false;
-  //   } else {
-  //     setGradeError("");
-  //   }
-
-  //   if (!nationality) {
-  //     setNationalityError(t("forms.validation.required"));
-  //     isValid = false;
-  //   } else {
-  //     setNationalityError("");
-  //   }
-
-  //   return isValid;
-  // };
   const validateCustomFields = (values) => {
     let isValid = true;
 
@@ -148,6 +125,13 @@ const RegisterStudentForm = () => {
       isValid = false;
     } else {
       setNationalityError("");
+    }
+
+    if (!nationalIdImage) {
+      setNationalIdImageError("National ID image is required.");
+      isValid = false;
+    } else {
+      setNationalIdImageError("");
     }
 
     return isValid;
@@ -176,6 +160,9 @@ const RegisterStudentForm = () => {
     formData.append("email", values.email);
     formData.append("nationality", nationality);
     formData.append("nationalId", values.nationalId);
+    if (nationalIdImage) {
+      formData.append("nationalIdImage", nationalIdImage);
+    }
     formData.append("trip", tripId);
     formData.append("formsType", formsType);
     if (values.promoCode) formData.append("promoCode", values.promoCode);
@@ -251,6 +238,7 @@ const RegisterStudentForm = () => {
           backupMobile: "",
           email: parentEmail || "",
           nationality: "",
+          nationalId: "",
           promoCode: "",
           children: generateInitialChildren(childrenNumber),
         }}
@@ -359,6 +347,9 @@ const RegisterStudentForm = () => {
                 handleChangeNationality={(event) =>
                   handleChangeNationality(event, setFieldValue)
                 }
+                setNationalIdImage={setNationalIdImage}
+                nationalIdImageError={nationalIdImageError}
+                setNationalIdImageError={setNationalIdImageError}
                 childrenNumberList={childrenNumberList}
                 nationalities={nationalities}
                 t={t}
