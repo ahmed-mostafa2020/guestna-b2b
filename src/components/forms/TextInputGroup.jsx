@@ -139,6 +139,13 @@ const TextInputGroup = memo(
                       if (onFileChange) onFileChange({ target: { files: [] } });
                       return;
                     }
+                    if (file.size > 2 * 1024 * 1024) {
+                      // 2 MB in bytes
+                      setFileError("Maximum allowed file size is 2 MB");
+                      setSelectedFileName("");
+                      if (onFileChange) onFileChange({ target: { files: [] } });
+                      return;
+                    }
                     setSelectedFileName(file.name);
                     if (onFileChange) onFileChange(e);
                   }
@@ -151,10 +158,13 @@ const TextInputGroup = memo(
                 {uploadFileIcon}
               </label>
               {selectedFileName && (
-                <span className="absolute flex w-full text-xs text-green-600 transition-all duration-200 ease-in-out -bottom-6">
+                <span
+                  title={selectedFileName}
+                  className="absolute flex w-full text-xs text-green-600 transition-all duration-200 ease-in-out -bottom-6"
+                >
                   ✅{" "}
-                  {selectedFileName.length > 50
-                    ? `${selectedFileName.substring(0, 50)}...`
+                  {selectedFileName.length > 40
+                    ? `${selectedFileName.substring(0, 40)}...`
                     : selectedFileName}{" "}
                   uploaded
                 </span>

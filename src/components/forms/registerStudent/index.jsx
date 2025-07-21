@@ -184,24 +184,27 @@ const RegisterStudentForm = () => {
     formData.append("formsType", formsType);
     if (values.promoCode) formData.append("promoCode", values.promoCode);
 
-    // Append each child as a nested object (adjust keys as your backend expects)
+    // Append each child as a nested object
     values.children.forEach((child, idx) => {
-      formData.append(`childs[${idx}][name]`, child.studentName);
-      formData.append(`childs[${idx}][nationalId]`, `${child.nationalId}`);
-      formData.append(
-        `childs[${idx}][nationalIdImage]`,
-        childrenNationalIdImages[idx]
-      );
+      formData.append(`childs[${idx}].name`, child.studentName);
+      formData.append(`childs[${idx}].nationalId`, `${child.nationalId}`);
 
-      formData.append(`childs[${idx}][academicStage]`, child.academicStage);
-      formData.append(`childs[${idx}][grade]`, child.grade);
+      if (childrenNationalIdImages[idx]) {
+        formData.append(
+          `childs[${idx}].nationalIdImage`,
+          childrenNationalIdImages[idx]
+        );
+      }
 
-      formData.append(`childs[${idx}][formsType]`, formsType);
+      formData.append(`childs[${idx}].academicStage`, child.academicStage);
+      formData.append(`childs[${idx}].grade`, child.grade);
+
+      formData.append(`childs[${idx}].formsType`, formsType);
 
       if (child.studentMobile)
-        formData.append(`childs[${idx}][phone]`, child.studentMobile);
+        formData.append(`childs[${idx}].phone`, child.studentMobile);
       if (child.studentEmail)
-        formData.append(`childs[${idx}][email]`, child.studentEmail);
+        formData.append(`childs[${idx}].email`, child.studentEmail);
     });
 
     let config = {
