@@ -77,14 +77,13 @@ const ResetNewPassword = () => {
         resetForm();
 
         // Only show success if status is 200 and token exists
-        if (
-          (response.status === 201 || response.status === 200) &&
-          response.data.token
-        ) {
+
+        const token = response.data.token;
+        if ((response.status === 201 || response.status === 200) && token) {
           enqueueSnackbar(t("forms.validation.success"), {
             variant: "success",
           });
-          setToken(response.data.token, rememberMe);
+          setToken(token, true);
           setDisabledButton(true);
           router.push(`/${locale}`);
         }
