@@ -1,17 +1,17 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useLocale, useTranslations } from "next-intl";
 
-import { useDispatch, useSelector } from "react-redux";
-import { submitForm } from "@store/forms/auth/login/loginFormSlice";
+// import { useDispatch, useSelector } from "react-redux";
+// import { submitForm } from "@store/forms/auth/login/loginFormSlice";
 
 import { useState } from "react";
 
 import { useSnackbar } from "notistack";
 
-import { END_POINTS } from "@constants/APIs";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { createResetNewPasswordSchema } from "@utils/validationSchemas";
 import setToken from "@utils/setToken";
 import { getHeaders } from "@utils/getHeaders";
@@ -28,16 +28,19 @@ const ResetNewPassword = () => {
   const [formErrors, setFormErrors] = useState([]);
   const [disabledButton, setDisabledButton] = useState(false);
 
-  const { email, phone, forgetPasswordId, rememberMe } = useSelector(
-    (state) => state.loginForm
-  );
+  // const { email, phone, forgetPasswordId, rememberMe } = useSelector(
+  //   (state) => state.loginForm
+  // );
 
   const locale = useLocale();
   const t = useTranslations();
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
 
   const headers = getHeaders(locale);
 
@@ -47,21 +50,22 @@ const ResetNewPassword = () => {
 
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
     let data = {
+      token: token,
       password: values.password,
-      _id: forgetPasswordId,
+      confirmPassword: values.confirmPassword,
     };
-    if (email) {
-      data.email = email;
-    } else {
-      data.phone = phone;
-    }
+    // if (email) {
+    //   data.email = email;
+    // } else {
+    //   data.phone = phone;
+    // }
 
     let resetNewPasswordData = JSON.stringify(data);
 
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `${END_POINTS.MAIN}${END_POINTS.AUTH.RESET_PASSWORD}`,
+      url: `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.AUTH.RESET_PASSWORD}`,
       headers,
       data: resetNewPasswordData,
     };
@@ -78,7 +82,7 @@ const ResetNewPassword = () => {
           enqueueSnackbar(t("forms.validation.success"), {
             variant: "success",
           });
-          dispatch(submitForm(response.data));
+          // dispatch(submitForm(response.data));
 
           setToken(token, rememberMe);
 
@@ -110,7 +114,7 @@ const ResetNewPassword = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-5 lg:gap-10">
+      <div className="flex flex-col gap-5 p-4 pxy-6 lg:gap-10">
         <h2>{t("forms.auth.resetPassword.name")}</h2>
 
         <Formik

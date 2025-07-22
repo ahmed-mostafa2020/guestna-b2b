@@ -36,14 +36,14 @@ export const B2B_END_POINTS = {
   AUTH: {
     PARENT_LOGIN: "auth/login/parent",
     ROLES_LOGIN: "auth/login/dash",
+    RESET_PASSWORD: "auth/password",
+    FORGET_PASSWORD: "auth/send/resetPassword",
 
     SIGNUP: "users/signup",
     CONFIRM_ACCOUNT: "accounts/confirm",
     LOGIN_PHONE: "auth/loginPhone",
     LOGIN_MAIL: "auth/loginEmail",
-    FORGET_PASSWORD: "auth/checkUserForgetPassword",
     OTP: "accounts/confirmForgetPassword",
-    RESET_PASSWORD: "accounts/resetPasswordForget",
     RESEND_OTP: "otps/resend",
     USER_DATA: "users/currentUser",
   },
