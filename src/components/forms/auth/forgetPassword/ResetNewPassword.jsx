@@ -76,39 +76,26 @@ const ResetNewPassword = () => {
         setFormErrors([]);
         resetForm();
 
-        const { token } = response;
-        console.log(response);
-
-        if (token) {
+        // Only show success if status is 200 and token exists
+        if (
+          (response.status === 201 || response.status === 200) &&
+          response.data.token
+        ) {
           enqueueSnackbar(t("forms.validation.success"), {
             variant: "success",
           });
-          // dispatch(submitForm(response.data));
-
-          setToken(token, rememberMe);
-
+          setToken(response.data.token, rememberMe);
           setDisabledButton(true);
           router.push(`/${locale}`);
         }
       })
 
       .catch((error) => {
-        // Reset form states
         setDisabledButton(false);
         setSubmitting(false);
 
-        // Log the full error for debugging
-        console.log("Error details:", error + formErrors);
-
-        // Extract error message
         const errorMessage = getErrorMessage(error, t);
-
-        // Show error notification
-        enqueueSnackbar(errorMessage, {
-          variant: "error",
-        });
-
-        // Set form errors
+        enqueueSnackbar(errorMessage || formErrors, { variant: "error" });
         setFormErrors([errorMessage || "An unknown error occurred."]);
       });
   };
