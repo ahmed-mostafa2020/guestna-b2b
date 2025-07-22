@@ -76,8 +76,6 @@ const ResetNewPassword = () => {
         setFormErrors([]);
         resetForm();
 
-        // Only show success if status is 200 and token exists
-
         const token = response.data.token;
         if ((response.status === 201 || response.status === 200) && token) {
           enqueueSnackbar(t("forms.validation.success"), {
