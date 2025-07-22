@@ -40,7 +40,7 @@ const ResetNewPassword = () => {
   const router = useRouter();
 
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const tokenCode = searchParams.get("token");
 
   const headers = getHeaders(locale);
 
@@ -50,7 +50,7 @@ const ResetNewPassword = () => {
 
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
     let data = {
-      token: token,
+      token: tokenCode,
       password: values.password,
       confirmedPassword: values.confirmPassword,
     };
