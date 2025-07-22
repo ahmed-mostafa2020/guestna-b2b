@@ -1,17 +1,12 @@
 import { memo } from "react";
 
-import ResponsiveGridLayout from "@components/common/responsiveGridLayout";
-import FeedbackText from "./FeedbackText";
-import SuccessImage from "./SuccessImage";
+import { Container } from "@mui/material";
 
-const SuccessBooking = ({ orderId }) => {
+const SuccessBooking = ({ data }) => {
   return (
-    <ResponsiveGridLayout
-      LargeSizeGrid={() => <FeedbackText orderId={orderId} />}
-      SmallSizeGrid={SuccessImage}
-      largeGridPercent={6}
-      smallGridPercent={6}
-    />
+    <Container maxWidth="lg" className="flex-col centered ">
+      <div className="">{data.bookingInfo.orderId}</div>
+    </Container>
   );
 };
 
