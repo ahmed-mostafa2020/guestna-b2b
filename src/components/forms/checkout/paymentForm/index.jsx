@@ -9,6 +9,7 @@ import { resetPromoCode } from "@store/forms/promoCode/promoCodeSlice";
 import { useEffect, useState } from "react";
 
 import { END_POINTS } from "@constants/APIs";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import {
   createCreditSchema,
@@ -18,13 +19,12 @@ import {
 } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import { cn } from "@utils/cn";
-import calculateDiscountedPrice from "@utils/CalculateDiscountedPrice";
 
 import TextInputGroup from "../../TextInputGroup";
 import SelectionGroup from "../../SelectionGroup";
 import PaymentMethod from "./PaymentMethod";
 import OtpCounter from "./OtpCounter";
-import PromoCodeForm from "../promoCodeForm";
+// import PromoCodeForm from "../promoCodeForm";
 import TamaraWidget from "./TamaraWidget";
 import AppleWidget from "./AppleWidget";
 
@@ -105,73 +105,38 @@ const PaymentForm = () => {
   };
 
   const tripId = useSelector((state) => state.checkoutData.tripId);
-  const bookingDay = useSelector((state) => state.checkoutData.tripDate);
-  const firstAvailableDate = useSelector(
-    (state) => state.checkoutData.firstAvailableDate
-  );
 
-  const promoCodeData = useSelector((state) => state.promoCode.promoCodeData);
+  // const promoCodeData = useSelector((state) => state.promoCode.promoCodeData);
 
-  const isCustomizable = useSelector(
-    (state) => state.checkoutData.isCustomizable
-  );
+  // const isCustomizable = useSelector(
+  //   (state) => state.checkoutData.isCustomizable
+  // );
 
-  const checkoutFormData = useSelector(
-    (state) => state.checkoutFormData.formData
-  );
+  const {
+    client,
+    quantity,
+    basePriceTotalWithVat,
+    promoCode,
+    discountedTotalPriceWithVat,
+  } = useSelector((state) => state.finalTripDetailsData.data);
 
-  const targetAudiencesWithQuantity = useSelector(
-    (state) => state.finalTripDetailsData.data.targetAudiencesWithQuantity
-  );
-
-  const finalTripDetails = useSelector(
-    (state) => state.finalTripDetailsData.data
-  );
-
-  const finalPrice = promoCodeData?.discount
-    ? calculateDiscountedPrice(
-        finalTripDetails?.totalAmountWithVAT,
-        promoCodeData?.discount / 100,
-        false
-      )
-    : finalTripDetails?.totalAmountWithVAT;
+  const finalPrice = promoCode
+    ? discountedTotalPriceWithVat
+    : basePriceTotalWithVat;
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const vercelUrl = CONSTANT_VALUES.URLS.VERCEL_URL;
+  const vercelUrl = CONSTANT_VALUES.URLS.B2B_VERCEL_URL;
 
   const baseData = {
     trip: tripId,
-    bookingDay: bookingDay || firstAvailableDate,
-    promoCode: promoCodeData?._id,
-    isCustom: isCustomizable || false,
-    userInfo: {
-      name: checkoutFormData.name,
-      email: checkoutFormData.email,
-      phone: checkoutFormData.mobile,
-    },
-    targetAudiences: targetAudiencesWithQuantity,
-    isSMSupdates: checkoutFormData.isSMSupdates,
+    quantity: quantity,
+    client: client,
+    ...(promoCode && { promoCode: promoCode }),
+    // isCustom: isCustomizable || false,
   };
 
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
-    // let data = {
-    //   paymentMethod: currentPaymentMethod,
-    //   trip: tripId,
-    //   bookingDay: bookingDay || firstAvailableDate,
-    //   promoCode: promoCodeData?._id,
-    //   isCustom: isCustomizable || false,
-
-    //   userInfo: {
-    //     name: checkoutFormData.name,
-    //     email: checkoutFormData.email,
-    //     phone: checkoutFormData.mobile,
-    //   },
-    //   targetAudiences: targetAudiencesWithQuantity,
-    //   redirectUrl: `${vercelUrl}/${locale}/bookingStatus`,
-    //   isSMSupdates: checkoutFormData.isSMSupdates,
-    // };
-
     const data = {
       ...baseData,
       paymentMethod: currentPaymentMethod,
@@ -213,7 +178,7 @@ const PaymentForm = () => {
       url:
         isFormSubmitted && showStcOtp
           ? `${END_POINTS.PAYMENTS}${END_POINTS.CONFIRM_STC_PAYMENT}/${stcBookingId}`
-          : `${END_POINTS.PAYMENTS}${END_POINTS.PAYMENT}`,
+          : `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.PAYMENT}`,
       headers,
       data: isFormSubmitted && showStcOtp ? stcOtpData : paymentJsonData,
     };
@@ -581,13 +546,6 @@ const PaymentForm = () => {
                     <div className="flex flex-col gap-4 px-4 py-8 bg-[#FAF9F9] transition-all duration-200 ease-in-out">
                       <div className="lg:w-[510px]">
                         <div className="flex lg:w-[510px]">
-                          {/* <TamaraWidget
-                          price={finalPrice}
-                          publicKey={process.env.NEXT_PUBLIC_TAMARA_WIDGET_KEY}
-                          lang={locale}
-                          currency="SAR"
-                          paymentType="installment"
-                        /> */}
                           <AppleWidget baseData={baseData} />
                         </div>
 
@@ -638,7 +596,7 @@ const PaymentForm = () => {
               )}
             </RadioGroup>
 
-            <PromoCodeForm />
+            {/* <PromoCodeForm /> */}
 
             <div className="flex-col w-full gap-2 centered">
               <button

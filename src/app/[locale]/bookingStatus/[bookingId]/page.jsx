@@ -9,10 +9,9 @@ import { useFetchData } from "@hooks/useFetchData";
 
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
-import ResponsiveGridLayout from "@components/common/responsiveGridLayout";
 
-import FeedbackText from "@components/sections/pages/bookingStatus/FeedbackText";
-import SuccessImage from "@components/sections/pages/bookingStatus/SuccessImage";
+import SuccessBooking from "@components/sections/pages/bookingStatus/SuccessBooking";
+import FailedBooking from "@components/sections/pages/bookingStatus/FailedBooking";
 
 const BookingStatus = ({ params }) => {
   const locale = useLocale();
@@ -51,16 +50,13 @@ const BookingStatus = ({ params }) => {
 
   return (
     <>
-      {data.isBooking && (
-        <div className="py-20">
-          <ResponsiveGridLayout
-            LargeSizeGrid={() => <FeedbackText orderId={data.orderId} />}
-            SmallSizeGrid={SuccessImage}
-            largeGridPercent={6}
-            smallGridPercent={6}
-          />
-        </div>
-      )}
+      <div className="py-10  lg:py-20">
+        {data.isBooking ? (
+          <SuccessBooking orderId={data.orderId} />
+        ) : (
+          <FailedBooking />
+        )}
+      </div>
     </>
   );
 };

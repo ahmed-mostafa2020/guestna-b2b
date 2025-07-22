@@ -318,8 +318,15 @@
   },
 
   "bookingStatus": {
-    "title": "Congratulations! Your reservation has been completed successfully. Your reservation number is:",
-    "subTitle": "Now you can relax and prepare yourself for the trip."
+    "success": {
+      "title": "Congratulations! Your reservation has been completed successfully. Your reservation number is:",
+      "subTitle": "Now you can relax and prepare yourself for the trip."
+    },
+
+    "failure": {
+      "title": "Thank you for your request",
+      "subTitle": "We are unable to proceed with the process, please try again to complete the process"
+    }
   },
 
   "discover": {

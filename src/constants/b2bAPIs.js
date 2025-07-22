@@ -11,6 +11,7 @@ export const B2B_END_POINTS = {
   PARENT_TRIPDETAILS: "organizationTrips/info",
   STUDENT_REGISTER: "organizationTrips/booking/info",
   STUDENTS_GRADES: "grades/booking",
+  STUDENTS_GRADES: "grades/booking",
 
   SIDE_FILTERS: "filtratinDetails",
   ALL_TRIPS: "all",
@@ -20,10 +21,10 @@ export const B2B_END_POINTS = {
   PACKAGE_INFO: "packageImageInfo",
   ADD_ACTIVITY: "tripActivitiesCustomizable",
   REQUEST_QUOTE: "asks/new",
+  PAYMENT: "bookings/initiation",
 
   PROMO_CODE: "promoCodeDiscounts/validCode",
   CHECKOUT: "finalTripBookingDetails",
-  PAYMENT: "initiationguestnaTripBooking",
   CONFIRM_STC_PAYMENT: "confirmSTCPayment",
   CHECK_BOOKING: "checkBooking",
   APPLE_BOOKING: {
