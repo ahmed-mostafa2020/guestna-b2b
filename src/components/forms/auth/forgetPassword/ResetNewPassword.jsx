@@ -52,7 +52,7 @@ const ResetNewPassword = () => {
     let data = {
       token: token,
       password: values.password,
-      confirmPassword: values.confirmPassword,
+      confirmedPassword: values.confirmPassword,
     };
     // if (email) {
     //   data.email = email;

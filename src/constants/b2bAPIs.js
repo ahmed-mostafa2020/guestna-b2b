@@ -22,11 +22,11 @@ export const B2B_END_POINTS = {
   ADD_ACTIVITY: "tripActivitiesCustomizable",
   REQUEST_QUOTE: "asks/new",
   PAYMENT: "bookings/initiation",
+  CHECK_BOOKING: "bookings/checkBooking",
 
   PROMO_CODE: "promoCodeDiscounts/validCode",
   CHECKOUT: "finalTripBookingDetails",
   CONFIRM_STC_PAYMENT: "confirmSTCPayment",
-  CHECK_BOOKING: "checkBooking",
   APPLE_BOOKING: {
     INITIATE: "initiationguestnaAppleTripBooking",
     CONFIRM: "guestnaTripConfermedAppleBooking",

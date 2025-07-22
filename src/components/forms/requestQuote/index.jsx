@@ -4,6 +4,8 @@ import Image from "next/image";
 
 import { useLocale, useTranslations } from "next-intl";
 
+import { useSelector } from "react-redux";
+
 import { useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -31,6 +33,8 @@ const RequestQuoteForm = () => {
   const [showThanksMessage, setShowThanksMessage] = useState(false);
   const [formErrors, setFormErrors] = useState([]);
 
+  const tripId = useSelector((state) => state.checkoutData.tripId);
+
   const locale = useLocale();
   const t = useTranslations();
 
@@ -44,6 +48,7 @@ const RequestQuoteForm = () => {
     let data = {
       email: values.email,
       phone: `${values.mobile}`,
+      trip: tripId,
       ...(values.name && { name: values.name }),
       ...(values.organizationName && {
         organizatinName: values.organizationName,

@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useEffect } from "react";
 
-import { END_POINTS } from "@constants/APIs";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { useFetchData } from "@hooks/useFetchData";
 
 import ErrorComponent from "@feedback/error/ErrorComponent";
@@ -18,7 +18,7 @@ const BookingStatus = ({ params }) => {
   const t = useTranslations();
 
   const { data, error, isLoading } = useFetchData(
-    `${END_POINTS.PAYMENTS}${END_POINTS.CHECK_BOOKING}/${params.bookingId}`,
+    `${B2B_END_POINTS.PAYMENTS}${B2B_END_POINTS.CHECK_BOOKING}/${params.bookingId}`,
     {},
     {
       method: "GET",
@@ -50,7 +50,7 @@ const BookingStatus = ({ params }) => {
 
   return (
     <>
-      <div className="py-10  lg:py-20">
+      <div className="py-10 lg:py-20">
         {data.isBooking ? (
           <SuccessBooking orderId={data.orderId} />
         ) : (
