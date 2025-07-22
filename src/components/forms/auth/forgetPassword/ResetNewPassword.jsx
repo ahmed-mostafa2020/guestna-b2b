@@ -76,7 +76,8 @@ const ResetNewPassword = () => {
         setFormErrors([]);
         resetForm();
 
-        const { token } = response.data;
+        const { token } = response;
+        console.log(response);
 
         if (token) {
           enqueueSnackbar(t("forms.validation.success"), {
