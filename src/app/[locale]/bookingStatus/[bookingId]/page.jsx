@@ -54,7 +54,7 @@ const BookingStatus = ({ params }) => {
 
   return (
     <>
-      <div className="relative py-5 lg:py-16">
+      <div className="relative py-5 overflow-hidden lg:py-16">
         {data.isBooking ? (
           <>
             <Image
@@ -63,7 +63,9 @@ const BookingStatus = ({ params }) => {
               width={400}
               height={400}
               priority={true}
-              className="absolute -start-24 top-10 opacity-60 w-[400px] h-[400px] object-contain"
+              className={`-z-[1] absolute -start-24 top-10 opacity-50 w-[400px] h-[400px] object-contain ${
+                locale === "ar" ? "" : "rotate-180"
+              }`}
             />
 
             <SuccessBooking data={data} />
@@ -73,7 +75,11 @@ const BookingStatus = ({ params }) => {
               width={300}
               height={300}
               priority={true}
-              className="absolute end-0 -bottom-10 opacity-60 w-[300px] h-[300px] object-contain"
+              className={`-z-[1] absolute opacity-50 w-[300px] h-[300px] object-contain ${
+                locale === "ar"
+                  ? "end-0 -bottom-10"
+                  : "rotate-[270deg] bottom-0 -end-10"
+              }`}
             />
           </>
         ) : (

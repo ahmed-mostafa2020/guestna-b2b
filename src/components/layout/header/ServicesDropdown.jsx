@@ -83,7 +83,7 @@ const ServicesDropdown = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute -bottom-[80px] z-10 w-full py-2 bg-[#FCFCFC]">
+        <div className="absolute -bottom-[80px] z-10 w-max py-2 bg-[#FCFCFC]">
           {renderedDropdownList}
         </div>
       )}

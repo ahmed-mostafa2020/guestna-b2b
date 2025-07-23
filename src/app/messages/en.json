@@ -320,8 +320,8 @@
 
   "bookingStatus": {
     "success": {
-      "title": "Congratulations! Your reservation has been completed successfully. Your reservation number is:",
-      "subTitle": "Now you can relax and prepare yourself for the trip.",
+      "title": "Thank You!",
+      "subTitle": "Your payment has been completed successfully",
       "data": {
         "senderName": "Sender's Name",
         "bookingId": "Reference Number",

@@ -44,11 +44,11 @@ const SuccessBooking = ({ data }) => {
         priority={true}
       />
 
-      <h2 className="font-semibold lg:text-5xl text-2xl text-transparent bg-clip-text bg-gradient-to-r from-[#49A7A6] to-[#327171]">
+      <h2 className="font-semibold text-center lg:text-5xl text-2xl text-transparent bg-clip-text bg-gradient-to-r from-[#49A7A6] to-[#327171]">
         {t("bookingStatus.success.title")}
       </h2>
 
-      <h3 className="text-transparent bg-clip-text bg-gradient-to-r from-[#49A7A6] to-[#327171] text-xl font-medium lg:text-3xl pb-2">
+      <h3 className="text-transparent text-center bg-clip-text bg-gradient-to-r from-[#49A7A6] to-[#327171] text-xl font-medium lg:text-3xl pb-2">
         {t("bookingStatus.success.subTitle")}
       </h3>
 
