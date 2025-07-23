@@ -31,8 +31,8 @@ const TripTagsListing = ({ data }) => {
   }, [numCities, cities]);
 
   // Category
-  const categories = useMemo(() => data.categories || [], [data.categories]);
-  const firstCategoryName = categories[0]?.name || "";
+  const categories = useMemo(() => data.categories, [data.categories]);
+  const firstCategoryName = categories?.name || "";
 
   // Duration
   const duration = data?.duration;
