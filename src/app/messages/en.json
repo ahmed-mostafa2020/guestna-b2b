@@ -142,6 +142,7 @@
     "cancel": "Cancel",
     "requestQuote": "Request Quote",
     "contactUs": "Contact Us",
+    "shareReceipt": "Share Receipt",
     "goToLocation": "Go to Location",
     "bookForPrivate": "Booking for Private Group",
     "showAllDates": "Show All Dates",
@@ -320,7 +321,13 @@
   "bookingStatus": {
     "success": {
       "title": "Congratulations! Your reservation has been completed successfully. Your reservation number is:",
-      "subTitle": "Now you can relax and prepare yourself for the trip."
+      "subTitle": "Now you can relax and prepare yourself for the trip.",
+      "data": {
+        "senderName": "Sender's Name",
+        "bookingId": "Reference Number",
+        "paymentTime": "Payment Time",
+        "paymentMethod": "Payment Method"
+      }
     },
 
     "failure": {

@@ -16,11 +16,11 @@ const ThanksMessage = () => {
         height={220}
       />
 
-      <h2 className="text-transparent bg-clip-text bg-gradient-to-r from-[#49A7A6] to-[#327171] text-2xl font-semibold lg:text-5xl">
+      <h2 className="text-transparent bg-clip-text bg-gradient-to-r from-[#49A7A6] to-[#327171] text-2xl font-semibold lg:text-5xl pb-2">
         {t("forms.validation.thanksMessage")}
       </h2>
 
-      <h3 className="text-transparent bg-clip-text bg-gradient-to-r from-[#49A7A6] to-[#327171] text-xl font-medium lg:text-3xl">
+      <h3 className="text-transparent bg-clip-text bg-gradient-to-r from-[#49A7A6] to-[#327171] text-xl font-medium lg:text-3xl pb-2">
         {t("forms.validation.willContactYou")}
       </h3>
     </div>

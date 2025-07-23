@@ -48,7 +48,7 @@ const ErrorComponent = ({
             <Link
               href={`/${locale}`}
               replace={true}
-              className="flex-1 py-3 font-bold text-center text-white transition-all duration-200 ease-in-out rounded-lg btn-shadow w-fit bg-mainColor hover:bg-linksHover"
+              className="flex-1 py-3 font-bold text-center text-white transition-all duration-200 ease-in-out rounded-lg w-fit bg-mainColor hover:bg-linksHover"
             >
               {t("links.backHome")}
             </Link>

@@ -122,7 +122,7 @@
     "more": "اعرف أكثر",
     "viewTripDetails": "شاهد تفاصيل الرحلة",
     "viewPackageDetails": "شاهد تفاصيل الباقة",
-    "backHome": "الرجوع للرئيسية",
+    "backHome": "الرجوع للصفحة الرئيسية",
     "addToFavorites": "إضافة إلى قائمة الأمنيات",
     "share": "مشاركة",
     "save": "حفظ",
@@ -142,6 +142,7 @@
     "cancel": "إلغاء",
     "requestQuote": "طلب عرض سعر",
     "contactUs": "تواصل معنا",
+    "shareReceipt": "مشاركة الإيصال",
     "goToLocation": "انتقل إلى الموقع",
     "bookForPrivate": "حجز لمجموعة خاصة",
     "showAllDates": "عرض كل التواريخ",
@@ -319,8 +320,14 @@
 
   "bookingStatus": {
     "success": {
-      "title": "مبروك! تم إتمام عملية حجزك بنجاح. رقم الحجز الخاص بك هو: ",
-      "subTitle": "يمكنك الآن الاسترخاء وتجهيز نفسك للرحلة."
+      "title": "شكرا لك!",
+      "subTitle": "تمت عملية الدفع الخاصة بك بنجاح",
+      "data": {
+        "senderName": "اسم المرسل",
+        "bookingId": "رقم المرجع",
+        "paymentTime": "وقت الدفع",
+        "paymentMethod": "طريقة الدفع"
+      }
     },
 
     "failure": {

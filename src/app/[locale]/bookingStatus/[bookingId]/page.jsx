@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { useLocale, useTranslations } from "next-intl";
 
 import { useEffect } from "react";
@@ -13,6 +15,8 @@ import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import SuccessBooking from "@components/sections/pages/bookingStatus/SuccessBooking";
 import FailedBooking from "@components/sections/pages/bookingStatus/FailedBooking";
 
+import ringTop from "@assets/sectionBackground/ringTop.png";
+import ringBottom from "@assets/sectionBackground/ringBottom.png";
 const BookingStatus = ({ params }) => {
   const locale = useLocale();
   const t = useTranslations();
@@ -50,8 +54,31 @@ const BookingStatus = ({ params }) => {
 
   return (
     <>
-      <div className="py-10 lg:py-20">
-        {data.isBooking ? <SuccessBooking data={data} /> : <FailedBooking />}
+      <div className="relative py-5 lg:py-16">
+        {data.isBooking ? (
+          <>
+            <Image
+              src={ringTop}
+              alt="ring"
+              width={400}
+              height={400}
+              priority={true}
+              className="absolute -start-24 top-10 opacity-60 w-[400px] h-[400px] object-contain"
+            />
+
+            <SuccessBooking data={data} />
+            <Image
+              src={ringBottom}
+              alt="ring"
+              width={300}
+              height={300}
+              priority={true}
+              className="absolute end-0 -bottom-10 opacity-60 w-[300px] h-[300px] object-contain"
+            />
+          </>
+        ) : (
+          <FailedBooking />
+        )}
       </div>
     </>
   );
