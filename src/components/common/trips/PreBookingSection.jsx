@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 
-import { memo, useState } from "react";
+import { useSelector } from "react-redux";
+
+import { memo, useEffect, useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import formatCurrency from "@utils/FormatCurrency";
@@ -17,6 +19,7 @@ import ParentLoginForm from "../../forms/auth/parentLogin";
 import Cookies from "js-cookie";
 
 const PreBookingSection = ({ tripData }) => {
+  const isSubmitted = useSelector((state) => state.parentLoginForm.isSubmitted);
   const [isOpen, setIsOpen] = useState(false);
   const [isParentLoginFormOpen, setIsParentLoginFormOpen] = useState(false);
 
@@ -67,6 +70,18 @@ const PreBookingSection = ({ tripData }) => {
     handleParentLoginFormOpen();
     // Show parent login form
   };
+
+  useEffect(() => {
+    if (isParentLoginFormOpen && isSubmitted) {
+      const target = document.querySelector("#register-student-form");
+      if (target) {
+        window.scrollTo({
+          top: target.offsetTop,
+          behavior: "smooth",
+        });
+      }
+    }
+  }, [isParentLoginFormOpen, isSubmitted]);
 
   return (
     <>
@@ -147,7 +162,7 @@ const PreBookingSection = ({ tripData }) => {
       )}
 
       {/* Parent login form */}
-      {isParentLoginFormOpen && (
+      {isParentLoginFormOpen && !isSubmitted && (
         // && parentLogin || token
         <div className="bg-white centered">
           <CustomizedModal

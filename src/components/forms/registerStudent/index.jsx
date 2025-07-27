@@ -358,7 +358,7 @@ const RegisterStudentForm = () => {
           };
 
           return (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} id="register-student-form">
               <ParentFormFields
                 values={values}
                 errors={errors}
