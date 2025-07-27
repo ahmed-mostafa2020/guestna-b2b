@@ -14,6 +14,7 @@ import Itinerary from "./accordionsDetails/Itinerary";
 import Map from "./accordionsDetails/Map";
 import MustHaveItems from "./accordionsDetails/MustHaveItems";
 import ExtraInformation from "./accordionsDetails/ExtraInformation";
+import Benefits from "./accordionsDetails/Benefits";
 
 const AccordionsGroupSection = () => {
   const data = useSelector((state) => state.tripDetailsData.data.trip);
@@ -77,6 +78,11 @@ const AccordionsGroupSection = () => {
       isShown: data?.attributes,
       title: t("tripDetails.accordionsGroup.extraInfo"),
       children: <ExtraInformation data={data?.attributes} isAuth={isAuth} />,
+    },
+    {
+      isShown: data?.benefits,
+      title: t(`tripDetails.accordionsGroup.benefits`),
+      children: <Benefits data={data?.benefits} isAuth={isAuth} />,
     },
   ];
 

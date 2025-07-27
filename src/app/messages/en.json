@@ -259,7 +259,8 @@
       "whatToBring": "What to Bring",
       "extraInfo": "Extra information",
       "healthInformation": "Health Information",
-      "returnPolicy": "Return Policy"
+      "returnPolicy": "Return Policy",
+      "benefits": "What the student benefits from"
     },
     "validationMessage": "Login is required"
   },
@@ -571,6 +572,7 @@
       "numberOfChildren": "Number of children",
 
       "childrenNumber": {
+        "0": "The child",
         "1": "The first child",
         "2": "The second child",
         "3": "The third child",

@@ -50,6 +50,15 @@ const DownloadButton = () => {
         }
       } else {
         fileName = fileUrl.split("/").pop() || "download";
+        // Remove anything after .pdf (including _updateAt or +...)
+        const pdfIndex = fileName.toLowerCase().indexOf(".pdf");
+        if (pdfIndex !== -1) {
+          fileName = fileName.substring(0, pdfIndex + 4); // keep up to and including ".pdf"
+        }
+        // If fileName does not have .pdf, add it
+        if (!fileName.toLowerCase().endsWith(".pdf")) {
+          fileName += ".pdf";
+        }
       }
 
       link.download = fileName;

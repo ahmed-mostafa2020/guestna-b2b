@@ -259,7 +259,8 @@
       "whatToBring": "ماذا يجب إحضاره",
       "extraInfo": "معلومات إضافية",
       "healthInformation": "معلومات صحية",
-      "returnPolicy": "سياسة الإسترجاع"
+      "returnPolicy": "سياسة الإسترجاع",
+      "benefits": "ما يستفيده الطالب"
     },
     "validationMessage": "يتطلب تسجيل دخول"
   },
@@ -570,6 +571,7 @@
       "numberOfChildren": "عدد الأبناء",
 
       "childrenNumber": {
+        "0": "الابن",
         "1": "الابن الأول",
         "2": "الابن الثاني",
         "3": "الابن الثالث",

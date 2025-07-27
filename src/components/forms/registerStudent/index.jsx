@@ -420,6 +420,7 @@ const RegisterStudentForm = () => {
                         imageError={childrenNationalIdImagesError[index]}
                         t={t}
                         cn={cn}
+                        childrenNumber={childrenNumber}
                       />
                     ))}
                   </div>

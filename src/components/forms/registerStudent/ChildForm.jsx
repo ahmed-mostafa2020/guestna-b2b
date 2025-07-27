@@ -24,11 +24,14 @@ const ChildForm = ({
   imageError,
   t,
   cn,
+  childrenNumber,
 }) => {
   return (
     <div className="flex flex-col gap-4 mt-6">
       <h3 className="text-lg font-semibold text-titleColor lg:text-2xl">
-        {t(`forms.registerForm.childrenNumber.${index + 1}`)}
+        {childrenNumber > 1
+          ? t(`forms.registerForm.childrenNumber.${index + 1}`)
+          : t(`forms.registerForm.childrenNumber.${index}`)}
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-6">
         <TextInputGroup

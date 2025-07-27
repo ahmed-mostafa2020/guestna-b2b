@@ -16,7 +16,7 @@ const MainCategoryCard = ({ category }) => {
   return (
     <div
       key={category._id}
-      className="relative overflow-hidden rounded-lg group"
+      className="relative overflow-hidden rounded-lg group cursor-grab"
     >
       <ImageWithPlaceholder
         src={category.icon}
