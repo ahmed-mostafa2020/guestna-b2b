@@ -7,7 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useDispatch } from "react-redux";
 import { submitParentData } from "@store/forms/auth/parentLogin/parentLoginFormSlice";
-import { setUser } from "@store/users/usersSlice";
+import { setUser, setUserToken } from "@store/users/usersSlice";
 
 import { useState } from "react";
 
@@ -75,6 +75,8 @@ const RolesLoginForm = () => {
             variant: "success",
           });
           setToken(response.data.token);
+          dispatch(setUserToken(response.data.token));
+
           router.push(`/${locale}`);
 
           dispatch(submitParentData(response.data.user));

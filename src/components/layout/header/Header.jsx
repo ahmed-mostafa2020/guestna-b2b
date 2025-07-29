@@ -9,19 +9,15 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { Fragment } from "react";
 
-import { CONSTANT_VALUES } from "@constants/constantValues";
 // import { getHeaders } from "@utils/getHeaders";
 import Logo from "../../common/Logo";
 import TemporaryDrawer from "./TemporaryDrawer";
 import SettingsButton from "./SettingsButton";
 // import ProfileImage from "../../sections/pages/profile/ProfileImage";
 import ServicesDropdown from "./ServicesDropdown";
-import LoginButton from "./LoginButton";
+import AuthToggleButton from "./AuthToggleButton";
 
 import { Container } from "@mui/material";
-
-import Cookies from "js-cookie";
-import LogoutButton from "../../sections/pages/profile/LogoutButton";
 
 const Header = () => {
   const locale = useLocale();
@@ -30,8 +26,6 @@ const Header = () => {
   // const dispatch = useDispatch();
 
   // const headers = getHeaders();
-
-  const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
 
   const navLinks = [
     {
@@ -103,8 +97,7 @@ const Header = () => {
 
           <div className="hidden gap-4 centered lg:flex">
             <SettingsButton />
-
-            {token ? <LogoutButton /> : <LoginButton />}
+            <AuthToggleButton />{" "}
           </div>
 
           <div className="lg:hidden">

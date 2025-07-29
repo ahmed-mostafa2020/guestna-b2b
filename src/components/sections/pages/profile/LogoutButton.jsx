@@ -35,6 +35,7 @@ const LogoutButton = () => {
       Cookies.remove(CONSTANT_VALUES.USER_ID);
 
       dispatch(setUser(USERS.VISITOR));
+      dispatch(setUserToken(null));
 
       dispatch(resetSignUpData());
       dispatch(resetLoginData());

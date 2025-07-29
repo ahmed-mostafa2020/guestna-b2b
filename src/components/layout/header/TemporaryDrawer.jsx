@@ -6,13 +6,11 @@ import { useTranslations, useLocale } from "next-intl";
 
 import { useState } from "react";
 
-import { CONSTANT_VALUES } from "@constants/constantValues";
 import SettingsButton from "./SettingsButton";
 // import ProfileImage from "../../sections/pages/profile/ProfileImage";
 import Logo from "../../common/Logo";
 import ServicesDropdown from "./ServicesDropdown";
-import LoginButton from "./LoginButton";
-import LogoutButton from "../../sections/pages/profile/LogoutButton";
+import AuthToggleButton from "./AuthToggleButton";
 
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -25,16 +23,12 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import MenuIcon from "@mui/icons-material/Menu";
 import { aboutUsIcon, discoverIcon, greenPhoneIcon } from "@assets/svg";
 
-import Cookies from "js-cookie";
-
 const TemporaryDrawer = () => {
   const [open, setOpen] = useState(false);
   const t = useTranslations();
 
   const locale = useLocale();
   const anchor = locale === "ar" ? "right" : "left";
-
-  const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -116,7 +110,7 @@ const TemporaryDrawer = () => {
         <div className="flex flex-col gap-3 px-3">
           <SettingsButton />
 
-          {token ? <LogoutButton /> : <LoginButton />}
+          <AuthToggleButton />
         </div>
       </Drawer>
     </>

@@ -4,6 +4,7 @@ import { USERS } from "@constants/users";
 
 const initialState = {
   userType: USERS.VISITOR,
+  userToken: null,
   loading: "idle",
   error: null,
 };
@@ -17,6 +18,9 @@ const userSlice = createSlice({
       state.loading = "succeeded";
       state.error = null;
     },
+    setUserToken: (state, action) => {
+      state.userToken = action.payload;
+    },
     setUserLoading: (state) => {
       state.loading = "loading";
     },
@@ -27,5 +31,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, setUserLoading, setUserError } = userSlice.actions;
+export const { setUser, setUserToken, setUserLoading, setUserError } =
+  userSlice.actions;
 export default userSlice.reducer;
