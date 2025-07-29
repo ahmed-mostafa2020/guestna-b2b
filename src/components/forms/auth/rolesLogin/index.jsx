@@ -5,9 +5,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { useLocale, useTranslations } from "next-intl";
 
-import { useDispatch } from "react-redux";
-import { submitParentData } from "@store/forms/auth/parentLogin/parentLoginFormSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser, setUserToken } from "@store/users/usersSlice";
+import {
+  submitForm,
+  toggleConfirmTermsAndConditions,
+} from "@store/forms/auth/login/loginFormSlice";
 
 import { useState } from "react";
 
@@ -20,7 +23,7 @@ import TextInputGroup from "../../TextInputGroup";
 
 import { Formik } from "formik";
 
-import { CircularProgress } from "@mui/material";
+import { Checkbox, CircularProgress, FormControlLabel } from "@mui/material";
 
 import { useSnackbar } from "notistack";
 
@@ -29,6 +32,10 @@ import axios from "axios";
 import hello from "@assets/gif/hello.gif";
 
 const RolesLoginForm = () => {
+  const confirmTermsAndConditions = useSelector(
+    (state) => state.loginForm.confirmTermsAndConditions
+  );
+
   const [formErrors, setFormErrors] = useState([]);
 
   const searchParams = useSearchParams();
@@ -79,7 +86,7 @@ const RolesLoginForm = () => {
 
           router.push(`/${locale}`);
 
-          dispatch(submitParentData(response.data.user));
+          dispatch(submitForm(response.data.user));
           dispatch(setUser(response.data.userType));
         }
       })
@@ -98,7 +105,11 @@ const RolesLoginForm = () => {
 
   return (
     <Formik
-      initialValues={{ email: "", password: "" }}
+      initialValues={{
+        email: "",
+        password: "",
+        confirmTermsAndConditions: false,
+      }}
       validationSchema={loginSchema}
       onSubmit={handleSubmit}
       enableReinitialize
@@ -162,10 +173,51 @@ const RolesLoginForm = () => {
                 onBlur={handleBlur}
               />
 
+              <div className="flex flex-col">
+                <div className="flex items-center gap-4">
+                  <FormControlLabel
+                    sx={{
+                      marginInlineStart: 0,
+                      "& .MuiFormControlLabel-label": {
+                        color: "1F2626",
+                        fontWeight: "medium",
+                        fontSize: "16px",
+                        fontFamily: "var(--font-somar-sans), sans-serif",
+                      },
+                    }}
+                    control={
+                      <Checkbox
+                        checked={confirmTermsAndConditions}
+                        onChange={() =>
+                          dispatch(toggleConfirmTermsAndConditions())
+                        }
+                        sx={{
+                          color: "#1F2626",
+                          "& .MuiSvgIcon-root": { fontSize: 28 },
+                          "&.Mui-checked": {
+                            color: "#008F8F",
+                          },
+                        }}
+                      />
+                    }
+                    label={t("forms.auth.signUp.confirmTermsAndConditions")}
+                  />
+
+                  <button
+                    type="button"
+                    className="border-b text-mainColor border-mainColor"
+                  >
+                    {t("pagesHead.title.termsAndConditions")}
+                  </button>
+                </div>
+              </div>
+
               <button
                 type="submit"
-                disabled={!isValid || isSubmitting}
-                className={`centered gap-2 w-full mt-4 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
+                disabled={
+                  !isValid || isSubmitting || !confirmTermsAndConditions
+                }
+                className={`centered gap-2 w-full py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                   isValid && "hover:bg-linksHover hover:border-linksHover"
                 }`}
               >

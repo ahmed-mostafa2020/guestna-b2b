@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   loginData: {},
   isSubmitted: false,
+  confirmTermsAndConditions: false,
 
   loggedEmail: null,
   loggedPhone: null,
@@ -25,6 +26,13 @@ const loginFormSlice = createSlice({
     submitForm: (state, action) => {
       state.loginData = action.payload;
       state.isSubmitted = true;
+    },
+
+    toggleConfirmTermsAndConditions: (state) => {
+      state.confirmTermsAndConditions = !state.confirmTermsAndConditions;
+    },
+    setConfirmTermsAndConditions: (state) => {
+      state.confirmTermsAndConditions = true;
     },
 
     toggleRememberMe: (state) => {
@@ -65,6 +73,8 @@ const loginFormSlice = createSlice({
 
 export const {
   submitForm,
+  toggleConfirmTermsAndConditions,
+  setConfirmTermsAndConditions,
   toggleRememberMe,
   setSendingOtpOption,
   setResetPasswordBy,
