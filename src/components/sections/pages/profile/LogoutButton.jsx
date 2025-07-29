@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { resetSignUpData } from "@store/forms/auth/signUp/signUpFormSlice";
 import { resetLoginData } from "@store/forms/auth/login/loginFormSlice";
 import { clearProfile } from "@store/profile/profileInfoSlice";
-import { setUser } from "@store/users/usersSlice";
+import { setUser, setUserToken } from "@store/users/usersSlice";
 
 import { useState } from "react";
 
