@@ -17,16 +17,23 @@ const Dialog = ({
   handleConfirm,
 
   closeDialogButton = false,
+  width,
 }) => {
   const locale = useLocale();
 
   return (
-    <section className="h-[94%] mx-auto centered max-w-[570px]">
-      <div className="w-full bg-white rounded-2xl">
+    <section
+      className={`max-h-[80%] mx-auto centered ${
+        width ? width : "max-w-[570px]"
+      }`}
+    >
+      <div className="w-full m-auto bg-white rounded-2xl">
         <div className="relative">
-          <h2 className="px-4 py-6 text-xl font-semibold text-center text-black border-b border-black">
-            {header}
-          </h2>
+          {header && (
+            <h2 className="px-4 py-6 text-xl font-semibold text-center text-black border-b border-black">
+              {header}
+            </h2>
+          )}
           {closeDialogButton && (
             <button
               onClick={handleClose}

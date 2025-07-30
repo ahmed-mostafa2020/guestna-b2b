@@ -46,7 +46,6 @@ const PreBookingSection = ({ tripData }) => {
       setIsOpen(true);
     }
   };
-
   const handleClose = () => {
     setIsOpen(false);
   };
