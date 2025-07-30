@@ -17,6 +17,14 @@ const ProfileTabs = () => {
 
   const tabs = [
     { name: t("profile.aside.information"), path: `${profileBasePath}` },
+    {
+      name: t("profile.aside.activities"),
+      path: `${profileBasePath}/activities-trips`,
+    },
+    {
+      name: t("profile.aside.packages"),
+      path: `${profileBasePath}/packages-trips`,
+    },
     { name: t("profile.aside.messages"), path: `${profileBasePath}/messages` },
     {
       name: t("profile.aside.notifications"),

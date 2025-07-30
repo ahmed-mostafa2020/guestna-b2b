@@ -12,6 +12,7 @@ import ProfilePagesFilters from "./ProfilePagesFilters";
 const ProfilePageTemplate = ({
   title,
   endpoint,
+  method,
   emptyStateComponent,
   contentComponent,
   filterButtons = [],
@@ -24,6 +25,7 @@ const ProfilePageTemplate = ({
     endpoint,
     {},
     {
+      method: method || "GET",
       lang: locale,
       ...additionalParams,
     }

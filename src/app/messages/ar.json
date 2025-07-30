@@ -404,6 +404,8 @@
   "profile": {
     "aside": {
       "information": "بياناتي",
+      "activities": "الأنشطة",
+      "packages": "الباقات",
       "messages": "الرسائل",
       "notifications": "الإشعارات",
       "bookings": "حجوزاتي",

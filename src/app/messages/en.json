@@ -403,6 +403,8 @@
   "profile": {
     "aside": {
       "information": "My information",
+      "activities": "Activities",
+      "packages": "Packages",
       "messages": "Messages",
       "notifications": "Notifications",
       "bookings": "My bookings",
