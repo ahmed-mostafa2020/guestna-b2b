@@ -57,9 +57,10 @@ export const B2B_END_POINTS = {
       PACKAGES: "profile/organizationTrips/package/all",
     },
 
+    BOOKINGS: "profile/bookings/all",
+
     UPLOAD_PHOTO: "users/avatar", //MAIN
     VERIFIED_EMAIL: "users/sendConfirmed", //MAIN
-    MY_BOOKINGS: "myTripBooking", //PAYMENTS
     FAVORITES: "myLovers", // TRIPS
 
     EDIT_PERSONAL_INFO: "users/modify", //MAIN

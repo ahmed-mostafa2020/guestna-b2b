@@ -22,7 +22,6 @@ import ProfileTabs from "@components/sections/pages/profile/ProfileTabs";
 import ProfileImageWithName from "@components/sections/pages/profile/ProfileImageWithName";
 // import ResponsiveGridLayout from "@components/common/responsiveGridLayout";
 
-import { Container } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 
 import Cookies from "js-cookie";
@@ -77,22 +76,20 @@ const ProfileLayout = ({ children }) => {
     );
 
   return (
-    <div className="py-6 lg:py-12 bg-activityDetailsBg">
-      <Container>
-        <Grid container spacing={{ xs: 4, sm: 5, md: 6 }}>
-          <Grid size={{ xs: 12, sm: 3, lg: 3 }}>
-            <div className="flex flex-col gap-6 lg:gap-12">
-              <ProfileImageWithName />
-              <ProfileTabs />
-            </div>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 9, lg: 9 }}>{children}</Grid>
+    <div className="p-6 lg:p-12 bg-activityDetailsBg">
+      <Grid container spacing={{ xs: 4, sm: 5, md: 6 }}>
+        <Grid size={{ xs: 12, sm: 3, lg: 3 }}>
+          <div className="flex flex-col gap-6 lg:gap-12">
+            <ProfileImageWithName />
+            <ProfileTabs />
+          </div>
         </Grid>
-        {/* <ResponsiveGridLayout
+        <Grid size={{ xs: 12, sm: 9, lg: 9 }}>{children}</Grid>
+      </Grid>
+      {/* <ResponsiveGridLayout
           LargeSizeGrid={children}
           SmallSizeGrid={ProfileTabs}
         /> */}
-      </Container>
     </div>
   );
 };

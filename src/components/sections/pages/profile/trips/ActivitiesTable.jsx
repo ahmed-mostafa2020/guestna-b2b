@@ -5,11 +5,10 @@ const ActivitiesTable = ({ data }) => {
   const getTripTypeColor = (type) => {
     switch (type) {
       case "ACTIVITY":
-        return "bg-trip-activity text-white";
+        return "bg-green-100 text-white";
       case "HALF_DAY":
-        return "bg-trip-half-day text-white";
-      case "FULL_DAY":
-        return "bg-trip-full-day text-white";
+        return "bg-green-200 text-white";
+
       default:
         return "bg-muted text-muted-foreground";
     }
@@ -170,17 +169,6 @@ const ActivitiesTable = ({ data }) => {
           </Card>
         ))}
       </div>
-
-      {/* Pagination Info */}
-      <Card className="bg-muted/50">
-        <CardContent className="p-4">
-          <div className="text-sm text-center text-muted-foreground">
-            الصفحة {data.pageInfo.currentPage} من إجمالي {data.pageInfo.total}{" "}
-            عنصر
-            {data.pageInfo.hasNextPage && " • يوجد صفحات إضافية"}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
