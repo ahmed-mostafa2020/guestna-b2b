@@ -86,7 +86,7 @@ const RolesLoginForm = () => {
           setToken(response.data.token);
           dispatch(setUserToken(response.data.token));
 
-          router.push(`/${locale}`);
+          router.push(`/${locale}/profile`);
 
           dispatch(submitForm(response.data.user));
           dispatch(setUser(response.data.userType));

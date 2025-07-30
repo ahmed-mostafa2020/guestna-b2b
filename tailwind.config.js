@@ -37,6 +37,7 @@ module.exports = {
       boxShadow: {
         card: "0px 0px 4px 0px rgba(0, 0, 0, 0.16)",
         tag: "0px 0px 8px 0px rgba(0, 0, 0, 0.08)",
+        profile: "4px 4px 16px 0 rgba(0, 0, 0, 0.08)",
       },
       fontFamily: {
         somar: ["var(--font-somar-sans)", "sans-serif"],

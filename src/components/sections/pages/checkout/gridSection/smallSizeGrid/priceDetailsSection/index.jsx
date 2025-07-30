@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 
 import formatCurrency from "@utils/FormatCurrency";
 import FrameWithImagedHeader from "@components/common/frameWithImagedHeader/FrameWithImagedHeader";
-import formatNumbersUint from "@/src/utils/FormatNumbersUint";
+import formatNumbersUint from "@utils/FormatNumbersUint";
 
 const PriceDetailsSection = ({ finalTripDetails }) => {
   // const promoCodeData = useSelector((state) => state.promoCode.promoCodeData);

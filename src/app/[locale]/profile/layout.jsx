@@ -15,7 +15,7 @@ import { useEffect } from "react";
 
 import { useFetchData } from "@hooks/useFetchData";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import { END_POINTS } from "@constants/APIs";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import ProfileTabs from "@components/sections/pages/profile/ProfileTabs";
@@ -44,7 +44,7 @@ const ProfileLayout = ({ children }) => {
   }, [locale, router]);
 
   const { data, error, isLoading } = useFetchData(
-    `${END_POINTS.MAIN}${END_POINTS.PROFILE.INFORMATION}`,
+    `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.PROFILE.INFORMATION}`,
     {},
     {
       lang: locale,

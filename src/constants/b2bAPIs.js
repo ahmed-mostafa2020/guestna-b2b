@@ -51,7 +51,12 @@ export const B2B_END_POINTS = {
   FAVORITE: "favorite",
 
   PROFILE: {
-    INFORMATION: "users/userInfo", //MAIN
+    INFORMATION: "auth/userInfo", //MAIN
+    TRIPS: {
+      ACTIVITIES: "profile/organizationTrips/activity/all",
+      PACKAGES: "profile/organizationTrips/package/all",
+    },
+
     UPLOAD_PHOTO: "users/avatar", //MAIN
     VERIFIED_EMAIL: "users/sendConfirmed", //MAIN
     MY_BOOKINGS: "myTripBooking", //PAYMENTS

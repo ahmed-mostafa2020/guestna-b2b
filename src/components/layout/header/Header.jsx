@@ -97,7 +97,7 @@ const Header = () => {
 
           <div className="hidden gap-4 centered lg:flex">
             <SettingsButton />
-            <AuthToggleButton />{" "}
+            <AuthToggleButton />
           </div>
 
           <div className="lg:hidden">
