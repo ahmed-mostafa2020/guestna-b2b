@@ -1,46 +1,49 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+// import Link from "next/link";
+// import { usePathname } from "next/navigation";
 
-import { useLocale, useTranslations } from "next-intl";
+// import { useLocale, useTranslations } from "next-intl";
 
-import LogoutButton from "./LogoutButton";
+// import LogoutButton from "./LogoutButton";
+import NavigationDropdown from "./NavigationDropdown";
 
 const ProfileTabs = () => {
-  const pathname = usePathname();
+  // const pathname = usePathname();
 
-  const locale = useLocale();
-  const t = useTranslations();
+  // const locale = useLocale();
+  // const t = useTranslations();
 
-  const profileBasePath = `/${locale}/profile`;
+  // const profileBasePath = `/${locale}/profile`;
 
-  const tabs = [
-    { name: t("profile.aside.information"), path: `${profileBasePath}` },
-    {
-      name: t("profile.aside.activities"),
-      path: `${profileBasePath}/activities-trips`,
-    },
-    {
-      name: t("profile.aside.packages"),
-      path: `${profileBasePath}/packages-trips`,
-    },
+  // const tabs = [
+  //   { name: t("profile.aside.information"), path: `${profileBasePath}` },
+  //   {
+  //     name: t("profile.aside.activities"),
+  //     path: `${profileBasePath}/activities-trips`,
+  //   },
+  //   {
+  //     name: t("profile.aside.packages"),
+  //     path: `${profileBasePath}/packages-trips`,
+  //   },
 
-    { name: t("profile.aside.messages"), path: `${profileBasePath}/messages` },
-    {
-      name: t("profile.aside.notifications"),
-      path: `${profileBasePath}/notifications`,
-    },
-    { name: t("profile.aside.bookings"), path: `${profileBasePath}/bookings` },
-    {
-      name: t("profile.aside.favorites"),
-      path: `${profileBasePath}/favorites`,
-    },
-  ];
+  //   { name: t("profile.aside.messages"), path: `${profileBasePath}/messages` },
+  //   {
+  //     name: t("profile.aside.notifications"),
+  //     path: `${profileBasePath}/notifications`,
+  //   },
+  //   { name: t("profile.aside.bookings"), path: `${profileBasePath}/bookings` },
+  //   {
+  //     name: t("profile.aside.favorites"),
+  //     path: `${profileBasePath}/favorites`,
+  //   },
+  // ];
 
   return (
-    <aside className="flex flex-col space-y-4 ">
-      {tabs.map((tab) => (
+    <aside className="flex flex-col p-6 h-full space-y-4 bg-white border-e border-[#CAC9C9]">
+      <NavigationDropdown />
+
+      {/* {tabs.map((tab) => (
         <Link
           key={tab.path}
           href={tab.path}
@@ -54,9 +57,9 @@ const ProfileTabs = () => {
         >
           {tab.name}
         </Link>
-      ))}
+      ))} */}
 
-      <LogoutButton />
+      {/* <LogoutButton /> */}
     </aside>
   );
 };

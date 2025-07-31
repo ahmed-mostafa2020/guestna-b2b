@@ -19,7 +19,6 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import ProfileTabs from "@components/sections/pages/profile/ProfileTabs";
-import ProfileImageWithName from "@components/sections/pages/profile/ProfileImageWithName";
 // import ResponsiveGridLayout from "@components/common/responsiveGridLayout";
 
 import Grid from "@mui/material/Grid2";
@@ -76,15 +75,16 @@ const ProfileLayout = ({ children }) => {
     );
 
   return (
-    <div className="p-6 lg:p-12 bg-activityDetailsBg">
-      <Grid container spacing={{ xs: 4, sm: 5, md: 6 }}>
-        <Grid size={{ xs: 12, sm: 3, lg: 3 }}>
-          <div className="flex flex-col gap-6 lg:gap-12">
-            <ProfileImageWithName />
+    <div className="bg-[#F8F9FA] border-t border-b border-[#CAC9C9]">
+      <Grid container>
+        <Grid size={{ xs: 12, sm: 3, lg: 2.5 }}>
+          <div className="flex flex-col w-full h-full gap-6 lg:gap-12">
             <ProfileTabs />
           </div>
         </Grid>
-        <Grid size={{ xs: 12, sm: 9, lg: 9 }}>{children}</Grid>
+        <Grid size={{ xs: 12, sm: 9, lg: 9.5 }}>
+          <div className="p-4 lg:p-7">{children}</div>
+        </Grid>
       </Grid>
       {/* <ResponsiveGridLayout
           LargeSizeGrid={children}

@@ -4,6 +4,8 @@ import Link from "next/link";
 
 import { useLocale, useTranslations } from "next-intl";
 
+import { useSelector } from "react-redux";
+
 // import { useDispatch } from "react-redux";
 // import actGetNavbarData from "@store/navbarData/act/actGetNavbarData";
 
@@ -15,11 +17,14 @@ import TemporaryDrawer from "./TemporaryDrawer";
 import SettingsButton from "./SettingsButton";
 // import ProfileImage from "../../sections/pages/profile/ProfileImage";
 import ServicesDropdown from "./ServicesDropdown";
+import Notifications from "./Notifications";
 import AuthToggleButton from "./AuthToggleButton";
 
 import { Container } from "@mui/material";
 
 const Header = () => {
+  const userToken = useSelector((state) => state.users.userToken);
+
   const locale = useLocale();
   const t = useTranslations();
 
@@ -97,6 +102,9 @@ const Header = () => {
 
           <div className="hidden gap-4 centered lg:flex">
             <SettingsButton />
+
+            {userToken && <Notifications />}
+
             <AuthToggleButton />
           </div>
 
