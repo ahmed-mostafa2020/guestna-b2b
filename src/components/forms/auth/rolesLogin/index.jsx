@@ -1,15 +1,24 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import {
+  useRouter,
+  //  useSearchParams
+} from "next/navigation";
 
 import { useLocale, useTranslations } from "next-intl";
 
-import { useDispatch, useSelector } from "react-redux";
-import { setUser, setUserToken } from "@store/users/usersSlice";
+import {
+  useDispatch,
+  //  useSelector
+} from "react-redux";
+import {
+  // setUser,
+  setUserToken,
+} from "@store/users/usersSlice";
 import {
   submitForm,
-  toggleConfirmTermsAndConditions,
+  // toggleConfirmTermsAndConditions,
 } from "@store/forms/auth/login/loginFormSlice";
 
 import { useState } from "react";
@@ -20,11 +29,15 @@ import { createLoginEmailMethodSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import setToken from "@utils/setToken";
 import TextInputGroup from "../../TextInputGroup";
-import TermsAndConditions from "./TermsAndConditions";
+// import TermsAndConditions from "./TermsAndConditions";
 
 import { Formik } from "formik";
 
-import { Checkbox, CircularProgress, FormControlLabel } from "@mui/material";
+import {
+  //  Checkbox,
+  CircularProgress,
+  //  FormControlLabel
+} from "@mui/material";
 
 import { useSnackbar } from "notistack";
 
@@ -33,15 +46,15 @@ import axios from "axios";
 import hello from "@assets/gif/hello.gif";
 
 const RolesLoginForm = () => {
-  const confirmTermsAndConditions = useSelector(
-    (state) => state.loginForm.confirmTermsAndConditions
-  );
+  // const confirmTermsAndConditions = useSelector(
+  //   (state) => state.loginForm.confirmTermsAndConditions
+  // );
 
   const [formErrors, setFormErrors] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
 
-  const searchParams = useSearchParams();
-  const userType = searchParams.get("userType");
+  // const searchParams = useSearchParams();
+  // const userType = searchParams.get("userType");
 
   const locale = useLocale();
   const t = useTranslations();
@@ -59,7 +72,7 @@ const RolesLoginForm = () => {
     let data = {
       email: values.email,
       password: values.password,
-      userType: userType,
+      // userType: userType,
     };
 
     let rolesLoginFormData = JSON.stringify(data);
@@ -89,7 +102,7 @@ const RolesLoginForm = () => {
           router.push(`/${locale}/profile`);
 
           dispatch(submitForm(response.data.user));
-          dispatch(setUser(response.data.userType));
+          // dispatch(setUser(response.data.userType));
         }
       })
 
@@ -105,12 +118,12 @@ const RolesLoginForm = () => {
       });
   };
 
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
-  const handleClose = () => {
-    setIsOpen(false);
-  };
+  // const handleOpen = () => {
+  //   setIsOpen(true);
+  // };
+  // const handleClose = () => {
+  //   setIsOpen(false);
+  // };
 
   return (
     <>
@@ -118,7 +131,7 @@ const RolesLoginForm = () => {
         initialValues={{
           email: "",
           password: "",
-          confirmTermsAndConditions: false,
+          // confirmTermsAndConditions: false,
         }}
         validationSchema={loginSchema}
         onSubmit={handleSubmit}
@@ -183,7 +196,7 @@ const RolesLoginForm = () => {
                   onBlur={handleBlur}
                 />
 
-                <div className="flex flex-col">
+                {/* <div className="flex flex-col">
                   <div className="flex items-center gap-4">
                     <FormControlLabel
                       sx={{
@@ -221,12 +234,13 @@ const RolesLoginForm = () => {
                       {t("pagesHead.title.termsAndConditions")}
                     </button>
                   </div>
-                </div>
+                </div> */}
 
                 <button
                   type="submit"
                   disabled={
-                    !isValid || isSubmitting || !confirmTermsAndConditions
+                    !isValid || isSubmitting
+                    // || !confirmTermsAndConditions
                   }
                   className={`centered gap-2 w-full py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                     isValid && "hover:bg-linksHover hover:border-linksHover"
@@ -248,7 +262,7 @@ const RolesLoginForm = () => {
         )}
       </Formik>
 
-      {isOpen && <TermsAndConditions handleClose={handleClose} />}
+      {/* {isOpen && <TermsAndConditions handleClose={handleClose} />} */}
     </>
   );
 };

@@ -1,30 +1,38 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
-import { useState } from "react";
+// import { useState } from "react";
 
-import RolesMenu from "./RolesMenu";
+// import RolesMenu from "./RolesMenu";
 
-import { Box } from "@mui/material";
-import Menu from "@mui/material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
+// import { Box } from "@mui/material";
+// import Menu from "@mui/material/Menu";
+// import CloseIcon from "@mui/icons-material/Close";
+import Link from "next/link";
 
 const LoginButton = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  // const [anchorEl, setAnchorEl] = useState(null);
+  // const open = Boolean(anchorEl);
+  // const handleClick = (event) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
+  // const handleClose = () => {
+  //   setAnchorEl(null);
+  // };
 
+  const locale = useLocale();
   const t = useTranslations();
 
   return (
     <>
-      <button
+      <Link
+        href={`/${locale}/login`}
+        className="px-4 py-2 font-bold text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor hover:bg-linksHover hover:border-linksHover"
+      >
+        {t("header.login")}
+      </Link>
+      {/* <button
         onClick={handleClick}
         className="px-4 py-2 font-bold text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor hover:bg-linksHover hover:border-linksHover"
       >
@@ -63,7 +71,7 @@ const LoginButton = () => {
             <RolesMenu handleClose={handleClose} />
           </div>
         </Box>
-      </Menu>
+      </Menu> */}
     </>
   );
 };

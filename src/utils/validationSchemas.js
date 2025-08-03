@@ -187,7 +187,7 @@ export const createLoginEmailMethodSchema = (t) =>
         /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
         t("forms.password.error.invalid")
       ),
-    confirmTermsAndConditions: Yup.boolean().required(),
+    // confirmTermsAndConditions: Yup.boolean().required(),
   });
 
 export const createLoginPhoneMethodSchema = (t) =>
