@@ -49,20 +49,20 @@ const NavigationDropdown = () => {
   const navigationItems = [
     {
       id: "home",
-      title: "الرئيسية",
+      title: t("profile.aside.main"),
       icon: homeIcon,
       path: `${profileBasePath}`,
       hasDropdown: false,
     },
     {
       id: "tourism-programs",
-      title: "إدارة البرامج السياحية",
+      title: t("profile.aside.programs.title"),
       icon: <TravelIcon />,
       hasDropdown: true,
       subItems: [
         {
-          title: "الباقات والأنشطة",
-          path: `${profileBasePath}/activities-trips`,
+          title: t("profile.aside.programs.trips"),
+          path: `${profileBasePath}/trips`,
         },
       ],
     },

@@ -1,71 +1,48 @@
-import { Badge, Card, CardContent } from "@mui/material";
+"use client";
+
+import { useLocale, useTranslations } from "next-intl";
+
 import { memo } from "react";
 
+import formatDate from "@utils/FormateDate";
+
+import { Badge, Card, CardContent } from "@mui/material";
+import Link from "next/link";
+
 const ActivitiesTable = ({ data }) => {
-  const getTripTypeColor = (type) => {
-    switch (type) {
-      case "ACTIVITY":
-        return "bg-green-100 text-white";
-      case "HALF_DAY":
-        return "bg-green-200 text-white";
-
-      default:
-        return "bg-muted text-muted-foreground";
-    }
-  };
-
-  const getTripTypeLabel = (type) => {
-    switch (type) {
-      case "ACTIVITY":
-        return "نشاط";
-      case "HALF_DAY":
-        return "نصف يوم";
-      case "FULL_DAY":
-        return "يوم كامل";
-      default:
-        return type;
-    }
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("ar-SA", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-  };
-
-  const formatPrice = (price) => {
-    return `${price.toLocaleString()} ريال`;
-  };
+  const locale = useLocale();
+  const t = useTranslations();
 
   return (
-    <div className="w-full space-y-6" dir="rtl">
+    <div className="w-full space-y-6">
       {/* Desktop Table */}
-      <Card className="hidden shadow-lg md:block">
+      <Card
+        className="hidden md:block"
+        sx={{
+          borderRadius: "16px",
+          boxShadow: "0 0 4px 0 rgba(0, 0, 0, 0.16)",
+        }}
+      >
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className=" bg-table-header">
-                  <th className="px-6 py-4 font-semibold text-right">
-                    اسم الرحلة
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("profile.tables.activities.header.tripName")}
                   </th>
-                  <th className="px-6 py-4 font-semibold text-right">النوع</th>
-                  <th className="px-6 py-4 font-semibold text-right">
-                    التاريخ
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("profile.tables.activities.header.date")}
                   </th>
-                  <th className="px-6 py-4 font-semibold text-right">السعر</th>
-                  <th className="px-6 py-4 font-semibold text-right">
-                    المقاعد المتاحة
+
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("profile.tables.activities.header.location")}
                   </th>
-                  <th className="px-6 py-4 font-semibold text-right">
-                    المدينة
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("profile.tables.activities.header.category")}
                   </th>
-                  <th className="px-6 py-4 font-semibold text-right">الفئة</th>
-                  <th className="px-6 py-4 font-semibold text-right">
-                    المنظمة
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("profile.tables.activities.header.tripLink")}
                   </th>
                 </tr>
               </thead>
@@ -73,41 +50,42 @@ const ActivitiesTable = ({ data }) => {
                 {data.nodes.map((trip, index) => (
                   <tr
                     key={trip._id}
-                    className={`border-b border-table-border transition-colors hover:bg-accent/50 ${
+                    className={`${
+                      index != data.nodes.length - 1 &&
+                      "border-b border-table-border"
+                    } transition-colors hover:bg-accent/50 ${
                       index % 2 === 0 ? "bg-table-row-even" : "bg-white"
                     }`}
                   >
-                    <td className="px-6 py-4 font-medium text-foreground">
+                    <td className="px-6 py-4 text-sm font-medium text-foreground">
                       {trip.name}
                     </td>
-                    <td className="px-6 py-4">
-                      <Badge className={getTripTypeColor(trip.tripsType)}>
-                        {getTripTypeLabel(trip.tripsType)}
-                      </Badge>
+
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                      {formatDate(trip.day, locale, {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </td>
-                    <td className="px-6 py-4 text-muted-foreground">
-                      {formatDate(trip.day)}
-                    </td>
-                    <td className="px-6 py-4 font-semibold text-primary">
-                      {formatPrice(trip.price)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">
-                          {trip.availableSeats}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-muted-foreground">
+
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
                       {trip.cities}
                     </td>
                     <td className="px-6 py-4">
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-sm">
                         {trip.categories}
                       </Badge>
                     </td>
-                    <td className="px-6 py-4 text-sm text-muted-foreground">
-                      {trip.organization}
+                    <td className="px-6 py-4">
+                      <Link
+                        href={`/${locale}/parents/${trip.slug}`}
+                        className="text-sm transition-all duration-150 ease-in-out border-b text-mainColor hover:text-secColor border-mainColor hover:border-secColor"
+                      >
+                        {t("profile.tables.activities.header.link")}
+                      </Link>
                     </td>
                   </tr>
                 ))}
@@ -129,25 +107,21 @@ const ActivitiesTable = ({ data }) => {
                 <h3 className="text-lg font-bold leading-relaxed text-foreground">
                   {trip.name}
                 </h3>
-                <Badge className={getTripTypeColor(trip.tripsType)}>
-                  {getTripTypeLabel(trip.tripsType)}
-                </Badge>
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">
-                    {formatDate(trip.day)}
+                    {formatDate(trip.day, locale, {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-primary">
-                    {formatPrice(trip.price)}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span>{trip.availableSeats} مقعد متاح</span>
-                </div>
+
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">{trip.cities}</span>
                 </div>
@@ -158,11 +132,6 @@ const ActivitiesTable = ({ data }) => {
                   <Badge variant="outline" className="text-xs">
                     {trip.categories}
                   </Badge>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">
-                    {trip.organization}
-                  </span>
                 </div>
               </div>
             </CardContent>

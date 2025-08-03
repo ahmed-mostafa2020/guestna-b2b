@@ -403,6 +403,11 @@
 
   "profile": {
     "aside": {
+      "main": "الرئيسية",
+      "programs": {
+        "title": "إدارة البرامج السياحية",
+        "trips": "الأنشطة والباقات"
+      },
       "information": "بياناتي",
       "activities": "الأنشطة",
       "packages": "الباقات",
@@ -412,6 +417,30 @@
       "favorites": "المفضلة والإهتمامات",
       "logout": "تسجيل خروج",
       "logoutConfirm": "هل تريد حقا تسجيل خروج؟"
+    },
+    "tables": {
+      "activities": {
+        "header": {
+          "tripName": "اسم النشاط",
+          "date": "التاريخ/الوقت",
+          "location": "الموقع",
+          "category": "النوع",
+          "tripLink": "رابط الرحلة",
+          "link": "الرابط"
+        }
+      },
+      "packages": {
+        "header": {
+          "tripName": "اسم الباقة",
+          "date": "التاريخ/الوقت",
+          "location": "الموقع",
+          "category": "النوع",
+          "activitiesCount": "عدد الأنشطة",
+          "duration": "المدة",
+          "tripLink": "رابط الباقة",
+          "link": "الرابط"
+        }
+      }
     },
 
     "information": {

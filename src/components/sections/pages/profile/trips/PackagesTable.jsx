@@ -1,50 +1,50 @@
-import { Badge, Card, CardContent } from "@mui/material";
+"use client";
+
+import Link from "next/link";
+
+import { useLocale, useTranslations } from "next-intl";
+
 import { memo } from "react";
 
+import formatDate from "@utils/FormateDate";
+import formatNumbersUint from "@utils/FormatNumbersUint";
+
+import { Card, CardContent } from "@mui/material";
+
 const PackagesTable = ({ data }) => {
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("ar-SA", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-  };
-
-  const formatPrice = (price) => {
-    return `${price.toLocaleString()} ريال`;
-  };
-
-  const formatDuration = (duration) => {
-    return duration === 1 ? "يوم واحد" : `${duration} أيام`;
-  };
+  const locale = useLocale();
+  const t = useTranslations();
 
   return (
     <div className="w-full space-y-6" dir="rtl">
       {/* Desktop Table */}
-      <Card className="hidden shadow-lg md:block">
+      <Card
+        className="hidden md:block"
+        sx={{
+          borderRadius: "16px",
+          boxShadow: "0 0 4px 0 rgba(0, 0, 0, 0.16)",
+        }}
+      >
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="bg-table-header">
-                  <th className="px-6 py-4 font-semibold text-right">
-                    اسم الباقة
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("profile.tables.packages.header.tripName")}
                   </th>
-                  <th className="px-6 py-4 font-semibold text-right">النوع</th>
-                  <th className="px-6 py-4 font-semibold text-right">
-                    التاريخ
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("profile.tables.activities.header.date")}
                   </th>
-                  <th className="px-6 py-4 font-semibold text-right">السعر</th>
-                  <th className="px-6 py-4 font-semibold text-right">
-                    المقاعد المتاحة
+
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("profile.tables.packages.header.activitiesCount")}
                   </th>
-                  <th className="px-6 py-4 font-semibold text-right">المدة</th>
-                  <th className="px-6 py-4 font-semibold text-right">
-                    عدد الأنشطة
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("profile.tables.packages.header.duration")}
                   </th>
-                  <th className="px-6 py-4 font-semibold text-right">
-                    المنظمة
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("profile.tables.activities.header.tripLink")}
                   </th>
                 </tr>
               </thead>
@@ -52,43 +52,49 @@ const PackagesTable = ({ data }) => {
                 {data.nodes.map((pkg, index) => (
                   <tr
                     key={pkg._id}
-                    className={`border-b border-table-border transition-colors hover:bg-accent/50 ${
+                    className={`${
+                      index != data.nodes.length - 1 &&
+                      "border-b border-table-border"
+                    } transition-colors hover:bg-accent/50 ${
                       index % 2 === 0 ? "bg-table-row-even" : "bg-white"
                     }`}
                   >
-                    <td className="px-6 py-4 font-medium text-foreground">
+                    <td className="px-6 py-4 text-sm font-medium text-foreground">
                       {pkg.name}
                     </td>
-                    <td className="px-6 py-4">
-                      <Badge className="bg-muted text-muted-foreground">
-                        باقة سياحية
-                      </Badge>
+
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                      {formatDate(pkg.day, locale, {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </td>
-                    <td className="px-6 py-4 text-muted-foreground">
-                      {formatDate(pkg.day)}
-                    </td>
-                    <td className="px-6 py-4 font-semibold text-foreground">
-                      {formatPrice(pkg.price)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">
-                          {pkg.availableSeats}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-muted-foreground">
-                      {formatDuration(pkg.duration)}
-                    </td>
+
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium">
+                        <span className="text-sm font-medium">
                           {pkg.activitiesCount}
                         </span>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-muted-foreground">
-                      {pkg.organization}
+                      {formatNumbersUint(
+                        pkg.duration,
+                        t("common.day"),
+                        t("common.days")
+                      )}
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <Link
+                        href={`/${locale}/parents/${pkg.slug}`}
+                        className="text-sm transition-all duration-150 ease-in-out border-b text-mainColor hover:text-secColor border-mainColor hover:border-secColor"
+                      >
+                        {t("profile.tables.activities.header.link")}
+                      </Link>
                     </td>
                   </tr>
                 ))}
@@ -110,28 +116,28 @@ const PackagesTable = ({ data }) => {
                 <h3 className="text-lg font-bold leading-relaxed text-foreground">
                   {pkg.name}
                 </h3>
-                <Badge className="bg-muted text-muted-foreground">
-                  باقة سياحية
-                </Badge>
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">
-                    {formatDate(pkg.day)}
+                    {formatDate(pkg.day, locale, {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-foreground">
-                    {formatPrice(pkg.price)}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span>{pkg.availableSeats} مقعد متاح</span>
-                </div>
+
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">
-                    {formatDuration(pkg.duration)}
+                    {formatNumbersUint(
+                      pkg.duration,
+                      t("common.day"),
+                      t("common.days")
+                    )}
                   </span>
                 </div>
               </div>

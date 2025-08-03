@@ -11,6 +11,7 @@ import ProfilePagesFilters from "./ProfilePagesFilters";
 
 const ProfilePageTemplate = ({
   title,
+  tableTitle,
   endpoint,
   method,
   emptyStateComponent,
@@ -55,7 +56,11 @@ const ProfilePageTemplate = ({
 
   return (
     <main>
-      <h2 className="pb-3 text-xl font-medium lg:pb-7 lg:text-3xl">{title}</h2>
+      {tableTitle && (
+        <h2 className="text-xl font-medium lg:text-2xl text-titleColor">
+          {tableTitle}
+        </h2>
+      )}
 
       {isEmpty ? (
         typeof emptyStateComponent === "function" ? (

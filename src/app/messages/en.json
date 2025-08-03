@@ -402,6 +402,12 @@
 
   "profile": {
     "aside": {
+      "main": "Main",
+      "programs": {
+        "title": "Tourism Program Management",
+        "trips": "Trips"
+      },
+
       "information": "My information",
       "activities": "Activities",
       "packages": "Packages",
@@ -411,6 +417,31 @@
       "favorites": "Favorites",
       "logout": "Logout",
       "logoutConfirm": "Do you really want to log out?"
+    },
+
+    "tables": {
+      "activities": {
+        "header": {
+          "tripName": "Activity Name",
+          "date": "Date/Time",
+          "location": "Location",
+          "category": "Category",
+          "tripLink": "Activity Link",
+          "link": "The link"
+        }
+      },
+      "packages": {
+        "header": {
+          "tripName": "Package Name",
+          "date": "Date/Time",
+          "location": "Location",
+          "category": "Category",
+          "activitiesCount": "Activities Count",
+          "duration": "Duration",
+          "tripLink": "Package Link",
+          "link": "The link"
+        }
+      }
     },
 
     "information": {
