@@ -1,18 +1,30 @@
 "use client";
 
-import { memo, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Chip,
-  TablePagination,
+  memo,
+
+  // useState
+} from "react";
+
+import formatCurrency from "@utils/FormatCurrency";
+import formatDate from "@utils/FormateDate";
+
+import {
+  // Table,
+  // TableBody,
+  // TableCell,
+  // TableContainer,
+  // TableHead,
+  // TableRow,
+  // Paper,
+  // Chip,
+  // TablePagination,
   Typography,
+  Badge,
+  CardContent,
+  Card,
 } from "@mui/material";
 
 const statusColors = {
@@ -23,8 +35,11 @@ const statusColors = {
 };
 
 const BookingsTable = ({ data }) => {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const locale = useLocale();
+  const t = useTranslations();
+
+  // const [page, setPage] = useState(0);
+  // const [rowsPerPage, setRowsPerPage] = useState(10);
 
   if (!data || !data.nodes) {
     return (
@@ -32,77 +47,188 @@ const BookingsTable = ({ data }) => {
     );
   }
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+  // const handleChangePage = (event, newPage) => {
+  //   setPage(newPage);
+  // };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  // const handleChangeRowsPerPage = (event) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  //   setPage(0);
+  // };
 
   return (
-    <div className="p-4">
-      <TableContainer component={Paper} className="rounded-lg shadow-md">
-        <Table aria-label="bookings table">
-          <TableHead className="bg-gray-50">
-            <TableRow>
-              <TableCell className="font-bold">Booking ID</TableCell>
-              <TableCell className="font-bold">Date</TableCell>
-              <TableCell className="font-bold">Activity</TableCell>
-              <TableCell className="font-bold">Organization</TableCell>
-              <TableCell className="font-bold">City</TableCell>
-              <TableCell className="font-bold">Category</TableCell>
-              <TableCell className="font-bold">Type</TableCell>
-              <TableCell className="font-bold">Quantity</TableCell>
-              <TableCell className="font-bold">Price</TableCell>
-              <TableCell className="font-bold">Status</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.nodes
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((booking) => (
-                <TableRow key={booking._id} hover className="hover:bg-gray-50">
-                  <TableCell className="text-sm">
-                    {booking._id.substring(0, 8)}...
-                  </TableCell>
-                  <TableCell>
-                    {new Date(booking.bookingDay).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="text-right">{booking.name}</TableCell>
-                  <TableCell>{booking.organization}</TableCell>
-                  <TableCell>{booking.cities?.[0]?.name || "N/A"}</TableCell>
-                  <TableCell>{booking.categories}</TableCell>
-                  <TableCell>{booking.guestnaTripsType}</TableCell>
-                  <TableCell>{booking.quantity}</TableCell>
-                  <TableCell className="font-medium">
-                    {booking.price.toLocaleString()} SAR
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={booking.status}
-                      className={`${
-                        statusColors[booking.status] || "bg-gray-100"
-                      } capitalize`}
-                      size="small"
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={data.pageInfo.total}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          className="border-t"
-        />
-      </TableContainer>
+    <div className="w-full space-y-6">
+      {/* Desktop Table */}
+      <Card
+        className="hidden md:block"
+        sx={{
+          borderRadius: "16px",
+          boxShadow: "0 0 4px 0 rgba(0, 0, 0, 0.16)",
+        }}
+      >
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className=" bg-table-header">
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("profile.tables.bookings.header.schoolName")}
+                  </th>
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("profile.tables.bookings.header.tripType")}
+                  </th>
+
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("profile.tables.bookings.header.location")}
+                  </th>
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("profile.tables.bookings.header.tripName")}
+                  </th>
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("profile.tables.bookings.header.date")}
+                  </th>
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("profile.tables.bookings.header.price")}
+                  </th>
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("profile.tables.bookings.header.status")}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.nodes.map((booking, index) => (
+                  <tr
+                    key={booking._id}
+                    className={`${
+                      index != data.nodes.length - 1 &&
+                      "border-b border-table-border"
+                    } transition-colors hover:bg-accent/50 ${
+                      index % 2 === 0 ? "bg-table-row-even" : "bg-white"
+                    }`}
+                  >
+                    <td className="px-6 py-4 text-sm font-medium text-foreground">
+                      {booking.organization}
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium text-foreground">
+                      {t(`common.${booking.guestnaTripsType}`)}
+                    </td>
+
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                      {booking.cities[0].name}
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium text-foreground">
+                      {booking.name}
+                    </td>
+
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                      {formatDate(booking.bookingDay, locale, {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </td>
+
+                    <td className="px-6 py-4 text-sm font-medium text-foreground">
+                      {formatCurrency(booking.price)}
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <Badge
+                        variant="outline"
+                        sx={{
+                          background: statusColors[booking.status],
+                          borderColor: statusColors[booking.status],
+                          // color: "white",
+                          px: 1.5,
+                          py: 0.5,
+                          borderRadius: "8px",
+                        }}
+                        className={`text-sm capitalize ${
+                          statusColors[booking.status]
+                        }`}
+                      >
+                        {booking.status}
+                      </Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Mobile Cards */}
+      <div className="space-y-4 md:hidden">
+        {data.nodes.map((booking) => (
+          <Card
+            key={booking._id}
+            className="transition-shadow shadow-md hover:shadow-lg"
+          >
+            <CardContent className="p-4 space-y-3">
+              <div className="flex items-start justify-between">
+                <h3 className="text-lg font-bold leading-relaxed text-foreground">
+                  {booking.name}
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground">
+                    {formatDate(booking.bookingDay, locale, {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground">
+                    {booking.cities[0].name}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground">
+                    {formatCurrency(booking.price)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground">
+                    {booking.organization}
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Badge
+                    variant="outline"
+                    sx={{
+                      background: statusColors[booking.status],
+                      borderColor: statusColors[booking.status],
+                      // color: "white",
+                      px: 1.5,
+                      py: 0.5,
+                      borderRadius: "8px",
+                    }}
+                    className={`text-sm capitalize ${
+                      statusColors[booking.status]
+                    }`}
+                  >
+                    {booking.status}
+                  </Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };

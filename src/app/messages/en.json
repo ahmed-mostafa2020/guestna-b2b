@@ -413,7 +413,7 @@
       "packages": "Packages",
       "messages": "Messages",
       "notifications": "Notifications",
-      "bookings": "My bookings",
+      "bookings": "Bookings",
       "favorites": "Favorites",
       "logout": "Logout",
       "logoutConfirm": "Do you really want to log out?"
@@ -439,6 +439,20 @@
           "activitiesCount": "Activities Count",
           "duration": "Duration",
           "tripLink": "Package Link",
+          "link": "The link"
+        }
+      },
+      "bookings": {
+        "header": {
+          "schoolName": "School Name",
+          "tripType": "Trip Type",
+          "academicStage": "Academic Stage",
+          "location": "Location",
+          "tripName": "Trip Name",
+          "date": "Date/Time",
+          "price": "Price",
+          "status": "Status",
+          "tripLink": "Trip Link",
           "link": "The link"
         }
       }

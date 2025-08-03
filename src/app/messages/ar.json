@@ -413,7 +413,7 @@
       "packages": "الباقات",
       "messages": "الرسائل",
       "notifications": "الإشعارات",
-      "bookings": "حجوزاتي",
+      "bookings": "حجوزات",
       "favorites": "المفضلة والإهتمامات",
       "logout": "تسجيل خروج",
       "logoutConfirm": "هل تريد حقا تسجيل خروج؟"
@@ -439,6 +439,18 @@
           "duration": "المدة",
           "tripLink": "رابط الباقة",
           "link": "الرابط"
+        }
+      },
+      "bookings": {
+        "header": {
+          "schoolName": "اسم المدرسة",
+          "tripType": "نوع الرحلة",
+          "academicStage": "المرحلة",
+          "location": "الموقع",
+          "tripName": "اسم الرحلة",
+          "date": "التاريخ/الوقت",
+          "price": "السعر",
+          "status": "الحالة"
         }
       }
     },
