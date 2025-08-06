@@ -51,7 +51,7 @@ const TripDetails = ({ params }) => {
   const dispatch = useDispatch();
 
   const { data, error, isLoading } = useFetchData(
-    `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.TRIPDETAILS}/${params.tripSlug}`,
+    `${B2B_END_POINTS.TRIPDETAILS}/${params.tripSlug}`,
     {},
     {
       lang: locale,

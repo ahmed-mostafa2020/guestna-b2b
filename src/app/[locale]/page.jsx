@@ -41,7 +41,7 @@ export default function Home() {
   }, [t]);
 
   const { error, isLoading } = useFetchData(
-    `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.HOME}`,
+    `${B2B_END_POINTS.HOME}`,
     {}, // no additional params
     {
       lang: locale,
