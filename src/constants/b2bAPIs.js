@@ -1,5 +1,5 @@
 // EndPoint paths
-const BASE_URL = "https://cultural-enrika-guestna-43d7043d.koyeb.app/b2b/";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const B2B_END_POINTS = {
   MAIN: BASE_URL,

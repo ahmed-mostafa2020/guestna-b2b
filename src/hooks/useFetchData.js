@@ -17,6 +17,8 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
 
   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
 
+  const reqKey = process.env.NEXT_PUBLIC_REQ_KEY;
+
   // Fetch data function
   const fetchData = useCallback(async () => {
     const method = options.method || "GET";
@@ -25,6 +27,7 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
       url: endpoint,
       headers: {
         lang: options.lang || "ar",
+        reqKey: reqKey,
         devicespecificid: options.devicespecificid || "",
         ...(token && { authorization: `Bearer ${token}` }),
       },
@@ -35,6 +38,7 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
   }, [
     endpoint,
     token,
+    reqKey,
     options.method,
     options.lang,
     options.devicespecificid,
