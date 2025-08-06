@@ -12,7 +12,7 @@ export async function GET(request) {
     );
   }
 
-  const backendURL = `${process.env.BASE_URL}${path}`;
+  const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${path}`;
   const headers = {
     "Content-Type": "application/json",
     reqKey: process.env.SECURE_REQ_KEY,
@@ -44,7 +44,7 @@ export async function POST(request) {
     );
   }
 
-  const backendURL = `${process.env.BASE_URL}${path}`;
+  const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${path}`;
   const headers = {
     "Content-Type": "application/json",
     reqKey: process.env.SECURE_REQ_KEY,
