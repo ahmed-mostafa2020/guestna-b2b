@@ -28,6 +28,7 @@ import getErrorMessage from "@utils/getErrorMessage ";
 import { createLoginEmailMethodSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import setToken from "@utils/setToken";
+import getProxyUrl from "@utils/getProxyUrl";
 import TextInputGroup from "../../TextInputGroup";
 // import TermsAndConditions from "./TermsAndConditions";
 
@@ -80,7 +81,7 @@ const RolesLoginForm = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.AUTH.ROLES_LOGIN}`,
+      url: getProxyUrl(B2B_END_POINTS.AUTH.ROLES_LOGIN),
 
       headers,
       data: rolesLoginFormData,

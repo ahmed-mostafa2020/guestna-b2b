@@ -13,6 +13,7 @@ import { createRegisterChildSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import { cn } from "@utils/cn";
 import getErrorMessage from "@utils/getErrorMessage ";
+import getProxyUrl from "@utils/getProxyUrl";
 
 import { FieldArray, Formik } from "formik";
 
@@ -57,6 +58,7 @@ const RegisterStudentForm = () => {
   const dispatch = useDispatch();
 
   const headers = getHeaders(locale, true);
+  const headersGetMethod = getHeaders(locale);
 
   const registerChildSchema = useMemo(() => {
     return createRegisterChildSchema(t, childrenNumber);
@@ -210,7 +212,9 @@ const RegisterStudentForm = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.STUDENT_REGISTER}`,
+      // url: `${B2B_END_POINTS.SECURE_MAIN}${B2B_END_POINTS.STUDENT_REGISTER}`,
+      url: getProxyUrl(B2B_END_POINTS.STUDENT_REGISTER),
+
       headers,
       data: formData,
     };
@@ -338,7 +342,10 @@ const RegisterStudentForm = () => {
             // Fetch grades for the selected stage
             try {
               const response = await axios.get(
-                `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.STUDENTS_GRADES}/${newStage}/${educationSystem}`
+                getProxyUrl(
+                  `${B2B_END_POINTS.STUDENTS_GRADES}/${newStage}/${educationSystem}`
+                ),
+                { headers: headersGetMethod }
               );
               setGradesList((prev) => ({
                 ...prev,

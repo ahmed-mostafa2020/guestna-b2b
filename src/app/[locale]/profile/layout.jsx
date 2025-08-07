@@ -42,7 +42,7 @@ const ProfileLayout = ({ children }) => {
   }, [locale, router]);
 
   const { data, error, isLoading } = useFetchData(
-    `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.PROFILE.INFORMATION}`,
+    `${B2B_END_POINTS.PROFILE.INFORMATION}`,
     {},
     {
       lang: locale,

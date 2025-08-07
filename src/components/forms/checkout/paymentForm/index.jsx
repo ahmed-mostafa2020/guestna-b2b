@@ -48,6 +48,7 @@ import tamaraArabic from "@assets/paymentLogos/tamaraArabic.jpg";
 import applePay from "@assets/paymentLogos/apple-pay.svg";
 
 import tamaraEnglish from "@assets/paymentLogos/tamaraEnglish.svg";
+import getProxyUrl from "@utils/getProxyUrl";
 
 const PaymentForm = () => {
   const [formErrors, setFormErrors] = useState([]);
@@ -177,8 +178,11 @@ const PaymentForm = () => {
       maxBodyLength: Infinity,
       url:
         isFormSubmitted && showStcOtp
-          ? `${END_POINTS.PAYMENTS}${END_POINTS.CONFIRM_STC_PAYMENT}/${stcBookingId}`
-          : `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.PAYMENT}`,
+          ? getProxyUrl(
+              `${END_POINTS.PAYMENTS}${END_POINTS.CONFIRM_STC_PAYMENT}/${stcBookingId}`
+            )
+          : getProxyUrl(B2B_END_POINTS.PAYMENT),
+
       headers,
       data: isFormSubmitted && showStcOtp ? stcOtpData : paymentJsonData,
     };

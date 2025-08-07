@@ -13,7 +13,7 @@ const BookingsPage = () => {
   return (
     <ProfilePageTemplate
       title={t("profile.aside.bookings")}
-      endpoint={`${B2B_END_POINTS.MAIN}${B2B_END_POINTS.PROFILE.BOOKINGS}`}
+      endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS}`}
       method="POST"
       emptyStateComponent={<EmptyBookings />}
       contentComponent={(data) => <MyBookingsTrips data={data} />}

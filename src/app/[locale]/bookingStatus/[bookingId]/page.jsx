@@ -22,7 +22,7 @@ const BookingStatus = ({ params }) => {
   const t = useTranslations();
 
   const { data, error, isLoading } = useFetchData(
-    `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.CHECK_BOOKING}/${params.bookingId}`,
+    `${B2B_END_POINTS.CHECK_BOOKING}/${params.bookingId}`,
     {},
     {
       method: "GET",

@@ -15,6 +15,7 @@ import getErrorMessage from "@utils/getErrorMessage ";
 import { createLoginEmailMethodSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import setToken from "@utils/setToken";
+import getProxyUrl from "@utils/getProxyUrl";
 import TextInputGroup from "../../TextInputGroup";
 import Logo from "@components/common/Logo";
 
@@ -50,7 +51,7 @@ const ParentLoginForm = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.AUTH.PARENT_LOGIN}`,
+      url: getProxyUrl(B2B_END_POINTS.AUTH.PARENT_LOGIN),
 
       headers,
       data: parentLoginFormData,

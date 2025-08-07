@@ -12,6 +12,7 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import getErrorMessage from "@utils/getErrorMessage ";
 import { createRequestQuoteSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
+import getProxyUrl from "@utils/getProxyUrl";
 import { cn } from "@utils/cn";
 import Logo from "@components/common/Logo";
 import TextInputGroup from "../TextInputGroup";
@@ -60,7 +61,7 @@ const RequestQuoteForm = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.REQUEST_QUOTE}`,
+      url: getProxyUrl(B2B_END_POINTS.REQUEST_QUOTE),
 
       headers,
       data: requestQuoteData,

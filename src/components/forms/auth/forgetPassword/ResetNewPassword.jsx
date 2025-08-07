@@ -23,6 +23,7 @@ import { Formik } from "formik";
 import axios from "axios";
 
 import { CircularProgress } from "@mui/material";
+import getProxyUrl from "@/src/utils/getProxyUrl";
 
 const ResetNewPassword = () => {
   const [formErrors, setFormErrors] = useState([]);
@@ -65,7 +66,7 @@ const ResetNewPassword = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.AUTH.RESET_PASSWORD}`,
+      url: getProxyUrl(B2B_END_POINTS.AUTH.RESET_PASSWORD),
       headers,
       data: resetNewPasswordData,
     };
