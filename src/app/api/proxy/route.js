@@ -12,11 +12,16 @@ export async function GET(request) {
     );
   }
 
+  const token = request.headers.get("authorization");
+  const devicespecificid = request.headers.get("devicespecificid");
+
   const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${path}`;
   const headers = {
     "Content-Type": "application/json",
     reqKey: process.env.SECURE_REQ_KEY,
     lang: request.headers.get("lang") || "ar",
+    ...(token && { authorization: token }),
+    ...(devicespecificid && { devicespecificid }),
   };
 
   const authHeader = request.headers.get("authorization");
@@ -44,11 +49,16 @@ export async function POST(request) {
     );
   }
 
+  const token = request.headers.get("authorization");
+  const devicespecificid = request.headers.get("devicespecificid");
+
   const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${path}`;
   const headers = {
     "Content-Type": "application/json",
     reqKey: process.env.SECURE_REQ_KEY,
     lang: request.headers.get("lang") || "ar",
+    ...(token && { authorization: token }),
+    ...(devicespecificid && { devicespecificid }),
   };
 
   const authHeader = request.headers.get("authorization");
