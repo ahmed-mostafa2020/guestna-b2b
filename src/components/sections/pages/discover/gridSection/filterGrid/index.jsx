@@ -16,7 +16,7 @@ import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import buildFilter from "@utils/BuildFilter";
 // import getSelectedTargetAudiences from "@utils/getSelectedTargetAudiences";
 import Destinations from "./menus/Destinations";
-import BudgetRange from "./menus/BudgetRange";
+// import BudgetRange from "./menus/BudgetRange";
 import TripsType from "./menus/TripsType";
 import ExperiencesType from "./menus/ExperiencesType";
 import Languages from "./menus/Languages";
@@ -65,7 +65,7 @@ const FilterGrid = () => {
         />
       ),
     },
-    { children: <BudgetRange title={t("discover.sideFilters.budget")} /> },
+    // { children: <BudgetRange title={t("discover.sideFilters.budget")} /> },
     {
       children: (
         <TripsType

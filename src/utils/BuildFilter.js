@@ -8,7 +8,7 @@ const buildFilter = ({
   checkOutDate,
   activityDayDate,
   cities,
-  budgetRange,
+  // budgetRange,
   categories,
   languages,
   // targetAudiences,
@@ -50,10 +50,10 @@ const buildFilter = ({
     //   : {}),
     ...(searchTerm?.length > 0 ? { searchTerm } : {}),
     ...(cities.length > 0 ? { cities } : {}),
-    priceRange: {
-      min: budgetRange?.min,
-      max: budgetRange?.max,
-    },
+    // priceRange: {
+    //   min: budgetRange?.min,
+    //   max: budgetRange?.max,
+    // },
     ...(categories?.length > 0 ? { categories } : {}),
     ...(languages?.length > 0 ? { languages } : {}),
     // ...(true ? { targetAudiences } : {}),

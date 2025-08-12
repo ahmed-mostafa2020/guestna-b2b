@@ -13,20 +13,20 @@ import { Fragment, useEffect, useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { SORTING_TYPE } from "@constants/sorting";
-import formatCurrency from "@utils/FormatCurrency";
+// import formatCurrency from "@utils/FormatCurrency";
 import FilterButton from "./FilterButton";
 import PlaceButtonMenu from "./menus/places/PlaceButtonMenu";
 import TripDurationButtonMenu from "./menus/tripDuration";
 import TripTypeButtonMenu from "./menus/tripType";
 import AcademicStageButtonMenu from "./menus/academicStage";
-import BudgetButtonMenu from "./menus/BudgetButtonMenu";
+// import BudgetButtonMenu from "./menus/BudgetButtonMenu";
 import FilterAccordion from "./FilterAccordion";
 
 import earthGif from "@assets/gif/earth.gif";
 import tripDurationImage from "@assets/gif/tripDuration.gif";
 import tripTypeImage from "@assets/gif/tripType.gif";
 import dates from "@assets/gif/dates.gif";
-import budgetGif from "@assets/gif/budget.gif";
+// import budgetGif from "@assets/gif/budget.gif";
 
 import { searchIconBlack, searchIconWhite } from "@assets/svg";
 import CustomizedModal from "../common/customizedModal";
@@ -64,7 +64,7 @@ const FiltersBox = () => {
     checkOutDate,
     activityDayDate,
     guests,
-    budgetRange,
+    // budgetRange,
     tripDuration,
     tripType,
     academicStage,
@@ -165,21 +165,21 @@ const FiltersBox = () => {
           : t("filtersBox.setAcademicStage"),
       children: <AcademicStageButtonMenu stagesList={stagesList} />,
     },
-    {
-      image: budgetGif,
-      title: t("filtersBox.budget"),
-      subTitle:
-        budgetRange.min !== CONSTANT_VALUES.MIN_BUDGET ||
-        budgetRange.max !== CONSTANT_VALUES.MAX_BUDGET ? (
-          <>
-            <span>{formatCurrency(budgetRange.min)}</span> :{" "}
-            <span>{formatCurrency(budgetRange.max)}</span>
-          </>
-        ) : (
-          t("filtersBox.setBudget")
-        ),
-      children: <BudgetButtonMenu />,
-    },
+    // {
+    //   image: budgetGif,
+    //   title: t("filtersBox.budget"),
+    //   subTitle:
+    //     budgetRange.min !== CONSTANT_VALUES.MIN_BUDGET ||
+    //     budgetRange.max !== CONSTANT_VALUES.MAX_BUDGET ? (
+    //       <>
+    //         <span>{formatCurrency(budgetRange.min)}</span> :{" "}
+    //         <span>{formatCurrency(budgetRange.max)}</span>
+    //       </>
+    //     ) : (
+    //       t("filtersBox.setBudget")
+    //     ),
+    //   children: <BudgetButtonMenu />,
+    // },
   ];
 
   // Web
@@ -263,13 +263,13 @@ const FiltersBox = () => {
     });
 
     // Add budget range
-    if (
-      budgetRange.min !== CONSTANT_VALUES.MIN_BUDGET ||
-      budgetRange.max !== CONSTANT_VALUES.MAX_BUDGET
-    ) {
-      queryParams.append("minBudget", budgetRange.min);
-      queryParams.append("maxBudget", budgetRange.max);
-    }
+    // if (
+    //   budgetRange.min !== CONSTANT_VALUES.MIN_BUDGET ||
+    //   budgetRange.max !== CONSTANT_VALUES.MAX_BUDGET
+    // ) {
+    //   queryParams.append("minBudget", budgetRange.min);
+    //   queryParams.append("maxBudget", budgetRange.max);
+    // }
 
     return queryParams.toString();
   };
