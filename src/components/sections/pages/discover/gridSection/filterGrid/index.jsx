@@ -11,16 +11,16 @@ import { Fragment, useMemo, useRef } from "react";
 
 import { useUpdateQueryParams } from "@hooks/useUpdateQueryParams";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import { agesIdsList } from "@constants/targetAudiencesIds";
+// import { agesIdsList } from "@constants/targetAudiencesIds";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import buildFilter from "@utils/BuildFilter";
-import getSelectedTargetAudiences from "@utils/getSelectedTargetAudiences";
+// import getSelectedTargetAudiences from "@utils/getSelectedTargetAudiences";
 import Destinations from "./menus/Destinations";
 import BudgetRange from "./menus/BudgetRange";
 import TripsType from "./menus/TripsType";
 import ExperiencesType from "./menus/ExperiencesType";
 import Languages from "./menus/Languages";
-import TargetAudiences from "./menus/TargetAudiences";
+// import TargetAudiences from "./menus/TargetAudiences";
 import Ratings from "./menus/Ratings";
 import ResetButton from "./resetButton";
 import FilterCalender from "./FilterCalender";
@@ -28,9 +28,13 @@ import FilterAccordion from "@components/filtersBox/FilterAccordion";
 
 const FilterGrid = () => {
   // Side filters data
-  const { cities, categories, languages, targetAudiences } = useSelector(
-    (state) => state.discoverSideFilters.sideFilters
-  );
+  const {
+    cities,
+    categories,
+    languages,
+
+    // targetAudiences
+  } = useSelector((state) => state.discoverSideFilters.sideFilters);
 
   const { loading } = useSelector((state) => state.discoverData);
 
@@ -86,14 +90,14 @@ const FilterGrid = () => {
         />
       ),
     },
-    {
-      children: (
-        <TargetAudiences
-          title={t("discover.sideFilters.customizedTours")}
-          targetAudiences={targetAudiences}
-        />
-      ),
-    },
+    // {
+    //   children: (
+    //     <TargetAudiences
+    //       title={t("discover.sideFilters.customizedTours")}
+    //       targetAudiences={targetAudiences}
+    //     />
+    //   ),
+    // },
     {
       children: (
         <Ratings
@@ -138,10 +142,10 @@ const FilterGrid = () => {
   const updateQueryParams = useUpdateQueryParams();
 
   // Target audience
-  const selectedTargetAudiences = getSelectedTargetAudiences(
-    guests,
-    agesIdsList
-  );
+  // const selectedTargetAudiences = getSelectedTargetAudiences(
+  //   guests,
+  //   agesIdsList
+  // );
 
   // Available Seats
   const availableSeats = Object.values(guests).reduce(
@@ -158,7 +162,7 @@ const FilterGrid = () => {
       activityDayDate,
       cities: selectedCities,
       categories: selectedCategories,
-      targetAudiences: selectedTargetAudiences,
+      // targetAudiences: selectedTargetAudiences,
       languages: selectedLanguages,
       budgetRange,
       availableSeats,
@@ -172,7 +176,7 @@ const FilterGrid = () => {
     activityDayDate,
     selectedCities,
     selectedCategories,
-    selectedTargetAudiences,
+    // selectedTargetAudiences,
     selectedLanguages,
     budgetRange,
     availableSeats,

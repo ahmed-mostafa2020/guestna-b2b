@@ -11,7 +11,7 @@ const buildFilter = ({
   budgetRange,
   categories,
   languages,
-  targetAudiences,
+  // targetAudiences,
   availableSeats,
   rate,
   searchTerm,
@@ -45,9 +45,9 @@ const buildFilter = ({
 
   return {
     ...dateConfig,
-    ...(allTripsTypes?.length > 0 || tripsType
-      ? { guestnaTripsTypes: allTripsTypes }
-      : {}),
+    // ...(allTripsTypes?.length > 0 || tripsType
+    //   ? { guestnaTripsTypes: allTripsTypes }
+    //   : {}),
     ...(searchTerm?.length > 0 ? { searchTerm } : {}),
     ...(cities.length > 0 ? { cities } : {}),
     priceRange: {
@@ -56,7 +56,7 @@ const buildFilter = ({
     },
     ...(categories?.length > 0 ? { categories } : {}),
     ...(languages?.length > 0 ? { languages } : {}),
-    ...(true ? { targetAudiences } : {}),
+    // ...(true ? { targetAudiences } : {}),
     availableSeats: availableSeats || 1,
     ...(rate !== null ? { rate } : {}),
   };

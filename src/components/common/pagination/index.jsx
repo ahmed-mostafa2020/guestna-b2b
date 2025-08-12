@@ -8,10 +8,10 @@ import { actGetDiscoverTrips } from "@store/discover/act/actGetDiscoverTrips";
 import { useMemo } from "react";
 
 import { useUpdateQueryParams } from "@hooks/useUpdateQueryParams";
-import { agesIdsList } from "@constants/targetAudiencesIds";
+// import { agesIdsList } from "@constants/targetAudiencesIds";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import buildFilter from "@utils/BuildFilter";
-import getSelectedTargetAudiences from "@utils/getSelectedTargetAudiences";
+// import getSelectedTargetAudiences from "@utils/getSelectedTargetAudiences";
 
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
@@ -47,10 +47,10 @@ const Pagination = ({
   const updateQueryParams = useUpdateQueryParams();
 
   // Target audience
-  const selectedTargetAudiences = getSelectedTargetAudiences(
-    guests,
-    agesIdsList
-  );
+  // const selectedTargetAudiences = getSelectedTargetAudiences(
+  //   guests,
+  //   agesIdsList
+  // );
 
   // Available Seats
   const availableSeats = Object.values(guests).reduce(
@@ -70,7 +70,7 @@ const Pagination = ({
       budgetRange,
       categories,
       languages,
-      targetAudiences: selectedTargetAudiences,
+      // targetAudiences: selectedTargetAudiences,
       availableSeats,
       rate,
     });
@@ -83,7 +83,7 @@ const Pagination = ({
     activityDayDate,
     cities,
     categories,
-    selectedTargetAudiences,
+    // selectedTargetAudiences,
     languages,
     budgetRange,
     availableSeats,

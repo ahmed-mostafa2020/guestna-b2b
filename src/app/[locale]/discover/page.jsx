@@ -435,8 +435,8 @@ import { actGetDiscoverTrips } from "@store/discover/act/actGetDiscoverTrips";
 
 import { useEffect, useMemo, useState, useRef } from "react";
 
-// import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { END_POINTS } from "@constants/APIs";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
+// import { END_POINTS } from "@constants/APIs";
 import { useFetchData } from "@hooks/useFetchData";
 import { SORTING_TYPE } from "@constants/sorting";
 import { agesIdsList } from "@constants/targetAudiencesIds";
@@ -723,7 +723,7 @@ const Discover = () => {
     error: sideFiltersError,
     // isLoading: sideFiltersLoading,
   } = useFetchData(
-    `${END_POINTS.TRIPS}${END_POINTS.SIDE_FILTERS}`,
+    `${B2B_END_POINTS.DISCOVER_SIDE_FILTERS}`,
     {},
     {
       method: "GET",

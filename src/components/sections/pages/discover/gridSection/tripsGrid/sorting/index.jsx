@@ -20,14 +20,14 @@ const Sorting = () => {
     },
     { name: t("discover.sorting.newest"), value: SORTING_TYPE.NEWEST },
     { name: t("discover.sorting.oldest"), value: SORTING_TYPE.OLDEST },
-    {
-      name: t("discover.sorting.lowestPrice"),
-      value: SORTING_TYPE.LOWEST_PRICE,
-    },
-    {
-      name: t("discover.sorting.highestPrice"),
-      value: SORTING_TYPE.HIGHEST_PRICE,
-    },
+    // {
+    //   name: t("discover.sorting.lowestPrice"),
+    //   value: SORTING_TYPE.LOWEST_PRICE,
+    // },
+    // {
+    //   name: t("discover.sorting.highestPrice"),
+    //   value: SORTING_TYPE.HIGHEST_PRICE,
+    // },
     {
       name: t("discover.sorting.highestLover"),
       value: SORTING_TYPE.HIGHEST_LOVER,

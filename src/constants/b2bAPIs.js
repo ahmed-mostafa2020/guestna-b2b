@@ -8,6 +8,7 @@ export const B2B_END_POINTS = {
   HOME: "home/info",
   NAVBAR: "navebar",
   DISCOVER: "trips/all",
+  DISCOVER_SIDE_FILTERS: "trips/filtratinDetails",
   TRIPDETAILS: "trips/info",
   PARENT_TRIPDETAILS: "organizationTrips/info",
   STUDENT_REGISTER: "organizationTrips/booking/info",

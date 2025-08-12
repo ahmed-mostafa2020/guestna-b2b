@@ -9,8 +9,8 @@ import { actGetDiscoverTrips } from "@store/discover/act/actGetDiscoverTrips";
 import { memo, useMemo, useState } from "react";
 
 import { useUpdateQueryParams } from "@hooks/useUpdateQueryParams";
-import { agesIdsList } from "@constants/targetAudiencesIds";
-import getSelectedTargetAudiences from "@utils/getSelectedTargetAudiences";
+// import { agesIdsList } from "@constants/targetAudiencesIds";
+// import getSelectedTargetAudiences from "@utils/getSelectedTargetAudiences";
 import buildFilter from "@utils/BuildFilter";
 
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
@@ -42,10 +42,10 @@ const SortingDropdown = ({ sortingList, title }) => {
   } = useSelector((state) => state.searchFilter);
 
   // Target audience
-  const selectedTargetAudiences = getSelectedTargetAudiences(
-    guests,
-    agesIdsList
-  );
+  // const selectedTargetAudiences = getSelectedTargetAudiences(
+  //   guests,
+  //   agesIdsList
+  // );
 
   // Available Seats
   const availableSeats = Object.values(guests).reduce(
@@ -65,7 +65,7 @@ const SortingDropdown = ({ sortingList, title }) => {
       budgetRange,
       categories: selectedCategories,
       languages: selectedLanguages,
-      targetAudiences: selectedTargetAudiences,
+      // targetAudiences: selectedTargetAudiences,
       availableSeats,
       rate,
     });
@@ -78,7 +78,7 @@ const SortingDropdown = ({ sortingList, title }) => {
     activityDayDate,
     selectedCities,
     selectedCategories,
-    selectedTargetAudiences,
+    // selectedTargetAudiences,
     selectedLanguages,
     budgetRange,
     availableSeats,

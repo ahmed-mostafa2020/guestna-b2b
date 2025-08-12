@@ -5,9 +5,9 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
-  switchTripsType,
+  // switchTripsType,
   resetFilters,
-  setTripsTypes,
+  // setTripsTypes,
 } from "@store/searchFilter/searchFilterSlice";
 import { Fragment, useEffect, useState } from "react";
 
@@ -58,7 +58,7 @@ const FiltersBox = () => {
   const stagesList = data?.stages;
 
   const {
-    tripsType,
+    // tripsType,
     cities,
     checkInDate,
     checkOutDate,
@@ -76,9 +76,9 @@ const FiltersBox = () => {
   }, [dispatch]);
 
   // Trip type
-  useEffect(() => {
-    dispatch(switchTripsType(CONSTANT_VALUES.PACKAGE));
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(switchTripsType(CONSTANT_VALUES.PACKAGE));
+  // }, [dispatch]);
 
   // Get selected items
   const getSelectedItemsText = (list, selectedItems) => {
@@ -224,7 +224,7 @@ const FiltersBox = () => {
     queryParams.append("sorting", SORTING_TYPE.NEWEST);
 
     // Add trips type
-    queryParams.append("tripsType", tripsType);
+    // queryParams.append("tripsType", tripsType);
 
     // Add cities
     cities.forEach((city) => {
@@ -283,9 +283,9 @@ const FiltersBox = () => {
             {renderedButtonsList}
 
             <Link
-              onClick={() => {
-                dispatch(setTripsTypes(CONSTANT_VALUES.PACKAGE));
-              }}
+              // onClick={() => {
+              //   dispatch(setTripsTypes(CONSTANT_VALUES.PACKAGE));
+              // }}
               href={{
                 pathname: `/${locale}/discover`,
                 query: constructQueryString(),
@@ -335,15 +335,15 @@ const FiltersBox = () => {
           </button>
 
           <Link
-            onClick={() => {
-              dispatch(
-                setTripsTypes(
-                  tripsType === CONSTANT_VALUES.PACKAGE
-                    ? CONSTANT_VALUES.PACKAGE
-                    : CONSTANT_VALUES.ACTIVITY
-                )
-              );
-            }}
+            // onClick={() => {
+            //   dispatch(
+            //     setTripsTypes(
+            //       tripsType === CONSTANT_VALUES.PACKAGE
+            //         ? CONSTANT_VALUES.PACKAGE
+            //         : CONSTANT_VALUES.ACTIVITY
+            //     )
+            //   );
+            // }}
             href={{
               pathname: `/${locale}/discover`,
               query: constructQueryString(),

@@ -31,6 +31,7 @@ const nextConfig = {
       "storage.googleapis.com",
       "drive.google.com",
       "cultural-enrika-guestna-43d7043d.koyeb.app",
+      "localhost",
     ],
   },
   async headers() {
