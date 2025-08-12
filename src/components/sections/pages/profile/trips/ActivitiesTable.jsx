@@ -132,6 +132,13 @@ const ActivitiesTable = ({ data }) => {
                   <Badge variant="outline" className="text-xs">
                     {trip.categories}
                   </Badge>
+
+                  <Link
+                    href={`/${locale}/parents/${trip.slug}`}
+                    className="text-sm transition-all duration-150 ease-in-out border-b text-mainColor hover:text-secColor border-mainColor hover:border-secColor"
+                  >
+                    {t("profile.tables.activities.header.link")}
+                  </Link>
                 </div>
               </div>
             </CardContent>

@@ -141,7 +141,7 @@ const PaymentForm = () => {
     const data = {
       ...baseData,
       paymentMethod: currentPaymentMethod,
-      redirectUrl: `${vercelUrl}/${locale}/bookingStatus`,
+      redirectUrl: `${vercelUrl}${locale}/bookingStatus`,
     };
     // Conditionally add payment information based on the payment method
     if (currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD) {
@@ -170,7 +170,7 @@ const PaymentForm = () => {
     let stcOtpData = JSON.stringify({
       otp: String(values.stcOtp),
       transactionUrl: stcOtpTransactionUrl,
-      redirectUrl: `${vercelUrl}/${locale}/bookingStatus`,
+      redirectUrl: `${vercelUrl}${locale}/bookingStatus`,
     });
 
     let config = {

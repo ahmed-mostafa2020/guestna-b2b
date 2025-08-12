@@ -12,11 +12,71 @@ import { CircularProgress } from "@mui/material";
 const DownloadButton = () => {
   const [isDownloading, setIsDownloading] = useState(false);
 
+  const t = useTranslations();
+
   const fileUrl = useSelector(
     (state) => state.tripDetailsData.data.trip?.detailsFile
   );
 
-  const t = useTranslations();
+  // const handleDownloadWithFetch = async () => {
+  //   if (!fileUrl || isDownloading) {
+  //     console.error("No file URL available or download in progress");
+  //     return;
+  //   }
+
+  //   setIsDownloading(true);
+
+  //   try {
+  //     const response = await fetch(fileUrl);
+
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+
+  //     const blob = await response.blob();
+  //     const url = window.URL.createObjectURL(blob);
+
+  //     const link = document.createElement("a");
+  //     link.href = url;
+
+  //     // Extract filename from Content-Disposition header or URL
+  //     const contentDisposition = response.headers.get("content-disposition");
+  //     let fileName = "download";
+
+  //     if (contentDisposition) {
+  //       const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+  //       if (fileNameMatch) {
+  //         fileName = fileNameMatch[1];
+  //       }
+  //     } else {
+  //       fileName = fileUrl.split("/").pop() || "download";
+  //       // Remove anything after .pdf (including _updateAt or +...)
+  //       const pdfIndex = fileName.toLowerCase().indexOf(".pdf");
+  //       if (pdfIndex !== -1) {
+  //         fileName = fileName.substring(0, pdfIndex + 4); // keep up to and including ".pdf"
+  //       }
+  //       // If fileName does not have .pdf, add it
+  //       if (!fileName.toLowerCase().endsWith(".pdf")) {
+  //         fileName += ".pdf";
+  //       }
+  //     }
+
+  //     link.download = fileName;
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     document.body.removeChild(link);
+
+  //     // Clean up the object URL
+  //     window.URL.revokeObjectURL(url);
+  //   } catch (error) {
+  //     console.error("Download failed:", error);
+
+  //     // Fallback: open in new tab
+  //     window.open(fileUrl, "_blank");
+  //   } finally {
+  //     setIsDownloading(false);
+  //   }
+  // };
 
   const handleDownloadWithFetch = async () => {
     if (!fileUrl || isDownloading) {
@@ -27,19 +87,51 @@ const DownloadButton = () => {
     setIsDownloading(true);
 
     try {
-      const response = await fetch(fileUrl);
+      // Get auth token and device ID (adjust based on how you store them)
+      const token = localStorage.getItem("authToken"); // or however you store it
+      const deviceId = localStorage.getItem("deviceId"); // or however you store it
+
+      // Extract the path from the fileUrl
+      // Assuming fileUrl is like: "https://backend.com/api/files/download/123"
+      // We want to extract the path part after the base URL
+      const url = new URL(fileUrl);
+      const pathToDownload = url.pathname + url.search; // includes query params if any
+
+      // Create proxy URL with the path as a query parameter
+      const proxyUrl = `/api/proxy?path=${encodeURIComponent(pathToDownload)}`;
+
+      // Set up headers for the proxy request
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      headers["reqKey"] = process.env.NEXT_PUBLIC_REQ_KEY;
+
+      if (token) {
+        headers["authorization"] = token; // or `Bearer ${token}` if needed
+      }
+
+      if (deviceId) {
+        headers["devicespecificid"] = deviceId;
+      }
+
+      // Make request through your proxy
+      const response = await fetch(proxyUrl, {
+        method: "POST", // Your proxy expects POST
+        headers: headers,
+        body: JSON.stringify({}), // Empty body since it's a download request
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
+      const url_blob = window.URL.createObjectURL(blob);
 
       const link = document.createElement("a");
-      link.href = url;
+      link.href = url_blob;
 
-      // Extract filename from Content-Disposition header or URL
+      // Extract filename from Content-Disposition header or original URL
       const contentDisposition = response.headers.get("content-disposition");
       let fileName = "download";
 
@@ -67,12 +159,16 @@ const DownloadButton = () => {
       document.body.removeChild(link);
 
       // Clean up the object URL
-      window.URL.revokeObjectURL(url);
+      window.URL.revokeObjectURL(url_blob);
     } catch (error) {
       console.error("Download failed:", error);
 
-      // Fallback: open in new tab
-      window.open(fileUrl, "_blank");
+      // Fallback: try direct download
+      try {
+        window.open(fileUrl, "_blank");
+      } catch (fallbackError) {
+        console.error("Fallback download also failed:", fallbackError);
+      }
     } finally {
       setIsDownloading(false);
     }
@@ -102,107 +198,3 @@ const DownloadButton = () => {
 };
 
 export default DownloadButton;
-
-// 'use client';
-
-// import { useState } from 'react';
-// import { FiDownload, FiLoader } from 'react-icons/fi';
-// import axios from 'axios';
-
-// export default function DownloadButton() {
-//   const [isLoading, setIsLoading] = useState(false);
-//   const [error, setError] = useState(null);
-//   const [progress, setProgress] = useState(0);
-
-//   const handleDownload = async () => {
-//     setIsLoading(true);
-//     setError(null);
-//     setProgress(0);
-
-//     try {
-//       // 1. First get the file path from your API
-//       const { data } = await axios.get('/api/get-file-path');
-
-//       if (!data.filePath) {
-//         throw new Error('No file path received');
-//       }
-
-//       // 2. Download the actual file with progress
-//       const response = await axios({
-//         url: data.filePath,
-//         method: 'GET',
-//         responseType: 'blob',
-//         onDownloadProgress: (progressEvent) => {
-//           const percentCompleted = Math.round(
-//             (progressEvent.loaded * 100) / progressEvent.total
-//           );
-//           setProgress(percentCompleted);
-//         }
-//       });
-
-//       // 3. Create download link
-//       const url = window.URL.createObjectURL(new Blob([response.data]));
-//       const link = document.createElement('a');
-//       link.href = url;
-//       link.setAttribute(
-//         'download',
-//         data.fileName || `download-${Date.now()}`
-//       );
-//       document.body.appendChild(link);
-//       link.click();
-
-//       // 4. Clean up
-//       link.remove();
-//       window.URL.revokeObjectURL(url);
-
-//     } catch (err) {
-//       setError(err.message || 'Download failed');
-//     } finally {
-//       setIsLoading(false);
-//       setProgress(0);
-//     }
-//   };
-
-//   return (
-//     <div className="flex flex-col items-center w-full max-w-xs gap-2">
-//       <button
-//         onClick={handleDownload}
-//         disabled={isLoading}
-//         className={`
-//           flex items-center justify-center gap-2
-//           px-4 py-2 w-full rounded-lg font-medium
-//           ${isLoading
-//             ? 'bg-gray-400 cursor-not-allowed'
-//             : 'bg-blue-600 hover:bg-blue-700 text-white'
-//           }
-//           transition-colors duration-200
-//         `}
-//       >
-//         {isLoading ? (
-//           <>
-//             <FiLoader className="animate-spin" />
-//             Downloading... {progress}%
-//           </>
-//         ) : (
-//           <>
-//             <FiDownload />
-//             Download File
-//           </>
-//         )}
-//       </button>
-
-//       {error && (
-//         <p className="text-sm text-center text-red-500">{error}</p>
-//       )}
-
-//       {isLoading && (
-//         <div className="w-full bg-gray-200 rounded-full h-2.5">
-//           <div
-//             className="bg-blue-600 h-2.5 rounded-full"
-//             style={{ width: `${progress}%` }}
-//           ></div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }

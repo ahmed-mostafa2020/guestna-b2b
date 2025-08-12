@@ -152,6 +152,13 @@ const PackagesTable = ({ data }) => {
                   <span className="text-sm text-muted-foreground">
                     {pkg.organization}
                   </span>
+
+                  <Link
+                    href={`/${locale}/parents/${pkg.slug}`}
+                    className="text-sm transition-all duration-150 ease-in-out border-b text-mainColor hover:text-secColor border-mainColor hover:border-secColor"
+                  >
+                    {t("profile.tables.activities.header.link")}
+                  </Link>
                 </div>
               </div>
             </CardContent>

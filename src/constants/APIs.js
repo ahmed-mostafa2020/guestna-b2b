@@ -3,7 +3,8 @@ const BASE_URL = "https://cultural-enrika-guestna-43d7043d.koyeb.app/";
 
 export const END_POINTS = {
   MAIN: BASE_URL,
-  TRIPS: `${BASE_URL}guestnaTrips/`,
+  TRIPS: "guestnaTrips/",
+  // TRIPS: `${BASE_URL}guestnaTrips/`,
   PAYMENTS: `${BASE_URL}bookings/`,
   HOME: "homePageTrips",
   NAVBAR: "navebar",

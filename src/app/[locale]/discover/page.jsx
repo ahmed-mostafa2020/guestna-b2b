@@ -435,6 +435,7 @@ import { actGetDiscoverTrips } from "@store/discover/act/actGetDiscoverTrips";
 
 import { useEffect, useMemo, useState, useRef } from "react";
 
+// import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { END_POINTS } from "@constants/APIs";
 import { useFetchData } from "@hooks/useFetchData";
 import { SORTING_TYPE } from "@constants/sorting";
@@ -443,7 +444,7 @@ import { agesIdsList } from "@constants/targetAudiencesIds";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import buildFilter from "@utils/BuildFilter";
-import getSelectedTargetAudiences from "@utils/getSelectedTargetAudiences";
+// import getSelectedTargetAudiences from "@utils/getSelectedTargetAudiences";
 import SubHeaderSection from "@components/sections/pages/discover/subHeaderSection";
 import LargeSeparator from "@components/common/separators/LargeSeparator";
 import GridSection from "@components/sections/pages/discover/gridSection";
@@ -458,7 +459,7 @@ const Discover = () => {
     tripsType,
     allTripsTypes,
     cities,
-    guests,
+    // guests,
     activityDayDate,
     checkOutDate,
     checkInDate,
@@ -493,13 +494,13 @@ const Discover = () => {
   }, [searchParams]);
 
   // Target audience processing
-  const chosenTargetAudiences = useMemo(() => {
-    const targetAudienceList = {};
-    Object.entries(guests).forEach(([key, value]) => {
-      targetAudienceList[key] = value;
-    });
-    return getSelectedTargetAudiences(targetAudienceList, agesIdsList);
-  }, [guests]);
+  // const chosenTargetAudiences = useMemo(() => {
+  //   const targetAudienceList = {};
+  //   Object.entries(guests).forEach(([key, value]) => {
+  //     targetAudienceList[key] = value;
+  //   });
+  //   return getSelectedTargetAudiences(targetAudienceList, agesIdsList);
+  // }, [guests]);
 
   // Initialize filters from URL params only once on initial load
   useEffect(() => {
@@ -652,7 +653,7 @@ const Discover = () => {
     if (!isFiltersInitialized) return {};
 
     return buildFilter({
-      tripsType,
+      // tripsType,
       allTripsTypes,
       checkInDate,
       checkOutDate,
@@ -663,7 +664,7 @@ const Discover = () => {
         max: budgetRange.max || CONSTANT_VALUES.MAX_BUDGET,
       },
       availableSeats: totalGuests,
-      targetAudiences: chosenTargetAudiences,
+      // targetAudiences: chosenTargetAudiences,
       searchTerm: searchParams.get("searchTerm") || "",
       categories,
       languages,
@@ -671,7 +672,7 @@ const Discover = () => {
     });
   }, [
     isFiltersInitialized,
-    tripsType,
+    // tripsType,
     allTripsTypes,
     checkInDate,
     checkOutDate,
@@ -679,7 +680,7 @@ const Discover = () => {
     cities,
     budgetRange,
     totalGuests,
-    chosenTargetAudiences,
+    // chosenTargetAudiences,
     categories,
     languages,
     rate,

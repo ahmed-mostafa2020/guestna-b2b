@@ -24,7 +24,7 @@ const FAQPage = () => {
   }, [t]);
 
   const { data, error, isLoading } = useFetchData(
-    `${END_POINTS.MAIN}${END_POINTS.FAQ}`,
+    `${END_POINTS.FAQ}`,
     {},
     {
       method: "POST",

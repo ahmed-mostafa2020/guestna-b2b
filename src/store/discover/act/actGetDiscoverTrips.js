@@ -1,8 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { END_POINTS } from "@constants/APIs";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { getHeaders } from "@utils/getHeaders";
+import getProxyUrl from "@utils/getProxyUrl";
 
 import axios from "axios";
 
@@ -22,7 +23,7 @@ export const actGetDiscoverTrips = createAsyncThunk(
 
       const response = await axios({
         method: "POST",
-        url: `${END_POINTS.TRIPS}${END_POINTS.ALL_TRIPS}`,
+        url: getProxyUrl(B2B_END_POINTS.DISCOVER),
         data: body,
         headers,
       });

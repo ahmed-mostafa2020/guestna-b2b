@@ -40,9 +40,9 @@ const NavigationDropdown = () => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  const handleSubItemClick = (item, subItem) => {
-    console.log(`Clicked: ${item} -> ${subItem}`);
-  };
+  // const handleSubItemClick = (item, subItem) => {
+  //   console.log(`Clicked: ${item} -> ${subItem}`);
+  // };
 
   const profileBasePath = `/${locale}/profile`;
 
@@ -195,9 +195,9 @@ const NavigationDropdown = () => {
                       <ListItem key={subItem.name} disablePadding>
                         <ListItemButton
                           className="w-full py-2 ps-12"
-                          onClick={() =>
-                            handleSubItemClick(item.title, subItem)
-                          }
+                          // onClick={() =>
+                          //   handleSubItemClick(item.title, subItem)
+                          // }
                           sx={{
                             backgroundColor: "transparent",
                             "&:hover": {

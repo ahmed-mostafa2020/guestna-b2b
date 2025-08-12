@@ -3,10 +3,11 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const B2B_END_POINTS = {
   MAIN: BASE_URL,
-  TRIPS: `${BASE_URL}guestnaTrips/`,
+  TRIPS: "guestnaTrips/",
   PAYMENTS: `${BASE_URL}bookings/`,
   HOME: "home/info",
   NAVBAR: "navebar",
+  DISCOVER: "trips/all",
   TRIPDETAILS: "trips/info",
   PARENT_TRIPDETAILS: "organizationTrips/info",
   STUDENT_REGISTER: "organizationTrips/booking/info",

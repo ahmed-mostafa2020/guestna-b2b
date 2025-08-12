@@ -1,15 +1,15 @@
 "use client";
 
-import Link from "next/link";
+// import Link from "next/link";
 
-import { useLocale } from "next-intl";
+// import { useLocale } from "next-intl";
 
 import { memo } from "react";
 
 import ImageWithPlaceholder from "@components/common/imagesPlaceholder/ImageWithPlaceholder";
 
 const MainCategoryCard = ({ category }) => {
-  const locale = useLocale();
+  // const locale = useLocale();
 
   if (!category) return null;
 
@@ -28,8 +28,8 @@ const MainCategoryCard = ({ category }) => {
 
       <div className="absolute inset-0 transition-all duration-200 ease-in-out bg-black bg-opacity-0 group-hover:bg-opacity-40"></div>
 
-      <Link
-        href={`/${locale}/discover?categories=${category._id}`}
+      <div
+        // href={`/${locale}/discover?categories=${category._id}`}
         className="absolute  text-center bottom-0 left-0 right-0 bg-[rgba(10,10,10,0.76)] backdrop-blur-[12px] px-3 py-3 z-[2] text-white transition-all duration-500 
   ease-in-out h-16 group-hover:h-full group-hover:rounded-lg centered flex-col gap-2"
       >
@@ -38,7 +38,7 @@ const MainCategoryCard = ({ category }) => {
         <p className="hidden overflow-auto leading-8 transition-all duration-500 ease-in-out group-hover:block">
           {category.description}
         </p>
-      </Link>
+      </div>
     </div>
   );
 };
