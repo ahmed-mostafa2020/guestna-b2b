@@ -8,11 +8,14 @@ const buildFilter = ({
   checkOutDate,
   activityDayDate,
   cities,
+  tripType,
+  tripDuration,
+  academicStage,
   // budgetRange,
   categories,
   languages,
   // targetAudiences,
-  availableSeats,
+  // availableSeats,
   rate,
   searchTerm,
 }) => {
@@ -45,11 +48,14 @@ const buildFilter = ({
 
   return {
     ...dateConfig,
-    // ...(allTripsTypes?.length > 0 || tripsType
-    //   ? { guestnaTripsTypes: allTripsTypes }
+    // ...(allTripsTypes?.length > 0 || tripType
+    //   ? { tripsTypes: allTripsTypes }
     //   : {}),
     ...(searchTerm?.length > 0 ? { searchTerm } : {}),
     ...(cities.length > 0 ? { cities } : {}),
+    ...(tripDuration?.length > 0 ? { tripsTypes: tripDuration } : {}),
+    ...(academicStage?.length > 0 ? { academicStages: academicStage } : {}),
+    ...(tripType?.length > 0 ? { supCategories: tripType } : {}),
     // priceRange: {
     //   min: budgetRange?.min,
     //   max: budgetRange?.max,
@@ -57,7 +63,7 @@ const buildFilter = ({
     ...(categories?.length > 0 ? { categories } : {}),
     ...(languages?.length > 0 ? { languages } : {}),
     // ...(true ? { targetAudiences } : {}),
-    availableSeats: availableSeats || 1,
+    // availableSeats: availableSeats || 1,
     ...(rate !== null ? { rate } : {}),
   };
 };

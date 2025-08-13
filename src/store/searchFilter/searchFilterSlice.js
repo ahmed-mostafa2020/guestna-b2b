@@ -4,7 +4,7 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 
 // Initial state
 const initialState = {
-  tripsType: CONSTANT_VALUES.PACKAGE,
+  tripsType: null,
   allTripsTypes: [],
   guests: {
     families: 0,
@@ -285,6 +285,17 @@ const searchFilterSlice = createSlice({
     resetFilters: () => initialState,
 
     // B2B
+    // Add tripDuration
+    addTripDuration: (state, action) => {
+      const tripDurationId = action.payload;
+      const tripDurationIndex = state.tripDuration.indexOf(tripDurationId);
+      if (tripDurationIndex === -1) {
+        state.tripDuration.push(tripDurationId);
+      } else {
+        return;
+      }
+    },
+
     // Trip duration selection toggle
     toggleTripDuration: (state, action) => {
       const tripDuration_id = action.payload;
@@ -293,6 +304,17 @@ const searchFilterSlice = createSlice({
         state.tripDuration.push(tripDuration_id);
       } else {
         state.tripDuration.splice(tripDurationIndex, 1);
+      }
+    },
+
+    // Add Trip type
+    addTripType: (state, action) => {
+      const tripTypeId = action.payload;
+      const tripTypeIndex = state.tripType.indexOf(tripTypeId);
+      if (tripTypeIndex === -1) {
+        state.tripType.push(tripTypeId);
+      } else {
+        return;
       }
     },
 
@@ -307,7 +329,18 @@ const searchFilterSlice = createSlice({
       }
     },
 
-    // Trip type selection toggle
+    // academic stage selection toggle
+    // Add academic stage
+    addAcademicStage: (state, action) => {
+      const academicStageId = action.payload;
+      const academicStageIndex = state.academicStage.indexOf(academicStageId);
+      if (academicStageIndex === -1) {
+        state.academicStage.push(academicStageId);
+      } else {
+        return;
+      }
+    },
+
     toggleAcademicStage: (state, action) => {
       const academicStageId = action.payload;
       const academicStageIndex = state.academicStage.indexOf(academicStageId);
@@ -350,8 +383,11 @@ export const {
   resetFilters,
 
   // B2B
+  addTripDuration,
   toggleTripDuration,
+  addTripType,
   toggleTripType,
+  addAcademicStage,
   toggleAcademicStage,
 } = searchFilterSlice.actions;
 

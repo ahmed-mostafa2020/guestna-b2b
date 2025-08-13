@@ -150,7 +150,7 @@ const TripsCard = ({
             </p>
           )}
         </div>
-      ) : (
+      ) : activityCard.tripsType === CONSTANT_VALUES.ONE_DAY ? (
         <p
           className={`font-medium absolute z-[1] bg-white text-xs py-1 px-3 text-badge top-8 ${
             locale == "ar"
@@ -160,6 +160,18 @@ const TripsCard = ({
         >
           {t("common.oneDayTrip")}
         </p>
+      ) : activityCard.tripsType === CONSTANT_VALUES.HALF_DAY ? (
+        <p
+          className={`font-medium absolute z-[1] bg-white text-xs py-1 px-3 text-badge top-8 ${
+            locale == "ar"
+              ? "rounded-bl-2xl rounded-tl-2xl"
+              : "rounded-br-2xl rounded-tr-2xl"
+          }`}
+        >
+          {t("common.halfDayTrip")}
+        </p>
+      ) : (
+        ""
       )}
 
       <ImageWithPlaceholder

@@ -42,7 +42,7 @@ const ErrorComponent = ({
             </p>
           )}
 
-          <div className="w-full gap-2 m-auto lg:w-1/3 centered">
+          <div className="w-full gap-2 m-auto lg:w-[60%] centered">
             {isResetButton && <ResetButton />}
 
             <Link

@@ -418,15 +418,18 @@ import {
   setDiscoverSideFiltersDataLoading,
 } from "@store/searchFilter/discoverSideFiltersSlice";
 import {
+  addAcademicStage,
   addCategory,
   addCity,
   addLanguage,
+  addTripDuration,
+  addTripType,
   resetFilters,
   setRate,
   setTripsTypes,
   switchTripsType,
   updateActivityDayDate,
-  updateBudgetRange,
+  // updateBudgetRange,
   updateCheckInDate,
   updateCheckOutDate,
   updateGuestCount,
@@ -459,11 +462,14 @@ const Discover = () => {
     tripsType,
     allTripsTypes,
     cities,
+    tripType,
+    tripDuration,
+    academicStage,
     // guests,
     activityDayDate,
     checkOutDate,
     checkInDate,
-    budgetRange,
+    // budgetRange,
     categories,
     languages,
     rate,
@@ -483,15 +489,15 @@ const Discover = () => {
   // };
 
   // Calculate total guests
-  const totalGuests = useMemo(() => {
-    return Math.max(
-      1,
-      Object.entries(agesIdsList).reduce((sum, [_, type]) => {
-        const count = parseInt(searchParams.get(type)) || 0;
-        return sum + count;
-      }, 0)
-    );
-  }, [searchParams]);
+  // const totalGuests = useMemo(() => {
+  //   return Math.max(
+  //     1,
+  //     Object.entries(agesIdsList).reduce((sum, [_, type]) => {
+  //       const count = parseInt(searchParams.get(type)) || 0;
+  //       return sum + count;
+  //     }, 0)
+  //   );
+  // }, [searchParams]);
 
   // Target audience processing
   // const chosenTargetAudiences = useMemo(() => {
@@ -515,12 +521,50 @@ const Discover = () => {
         dispatch(resetFilters());
 
         // Trips type
-        if (searchParams.get("tripsType")) {
-          const urlTripsType = searchParams.get("tripsType");
+        // if (searchParams.get("tripsType")) {
+        //   const urlTripsType = searchParams.get("tripsType");
+        //   dispatch(setTripsTypes(urlTripsType));
+        //   if (urlTripsType !== tripsType) {
+        //     dispatch(switchTripsType(urlTripsType));
+        //   }
+        // }
+
+        // Trips type
+        if (searchParams.get("tripType")) {
+          const urlTripsType = searchParams.get("tripType");
           dispatch(setTripsTypes(urlTripsType));
-          if (urlTripsType !== tripsType) {
+          if (urlTripsType !== tripType) {
             dispatch(switchTripsType(urlTripsType));
           }
+        }
+
+        // tripType
+        // if (searchParams.has("supCategories")) {
+        //   const urlTripType = searchParams.getAll("supCategories") || [];
+        //   if (urlTripType.length > 0) {
+        //     urlTripType.forEach((tripType) => {
+        //       if (
+        //         tripType === "" ||
+        //         tripType === null ||
+        //         tripType === undefined
+        //       ) {
+        //         return;
+        //       } else {
+        //         dispatch(addTripType(tripType));
+        //       }
+        //     });
+        //   }
+        // }
+        if (searchParams.has("supCategories")) {
+          // Handles both ?supCategories=val1,val2 and ?supCategories=val1&supCategories=val2
+          let urlTripType = searchParams.getAll("supCategories") || [];
+          urlTripType = urlTripType
+            .flatMap((val) => val.split(","))
+            .filter(Boolean);
+
+          urlTripType.forEach((tripType) => {
+            dispatch(addTripType(tripType));
+          });
         }
 
         // Cities
@@ -535,6 +579,31 @@ const Discover = () => {
               }
             });
           }
+        }
+
+        // tripDuration
+        if (searchParams.has("tripsTypes")) {
+          const urlTripDuration = searchParams.getAll("tripsTypes") || [];
+          if (urlTripDuration.length > 0) {
+            urlTripDuration.forEach((tripDuration) => {
+              if (
+                tripDuration === "" ||
+                tripDuration === null ||
+                tripDuration === undefined
+              ) {
+                return;
+              } else {
+                dispatch(addTripDuration(tripDuration));
+              }
+            });
+          }
+        }
+
+        // academicStage
+        if (searchParams.has("academicStages")) {
+          const academicStages =
+            searchParams.get("academicStages")?.split(",") || [];
+          academicStages.forEach((id) => id && dispatch(addAcademicStage(id)));
         }
 
         // Check-in date
@@ -559,13 +628,13 @@ const Discover = () => {
         }
 
         // Budget range
-        if (searchParams.get("minBudget") && searchParams.get("maxBudget")) {
-          const minBudget = parseInt(searchParams.get("minBudget"), 10);
-          const maxBudget = parseInt(searchParams.get("maxBudget"), 10);
-          if (!isNaN(minBudget) && !isNaN(maxBudget)) {
-            dispatch(updateBudgetRange([minBudget, maxBudget]));
-          }
-        }
+        // if (searchParams.get("minBudget") && searchParams.get("maxBudget")) {
+        //   const minBudget = parseInt(searchParams.get("minBudget"), 10);
+        //   const maxBudget = parseInt(searchParams.get("maxBudget"), 10);
+        //   if (!isNaN(minBudget) && !isNaN(maxBudget)) {
+        //     dispatch(updateBudgetRange([minBudget, maxBudget]));
+        //   }
+        // }
 
         // Available seats
         const agesByType = Object.fromEntries(
@@ -659,11 +728,15 @@ const Discover = () => {
       checkOutDate,
       activityDayDate,
       cities,
-      budgetRange: {
-        min: budgetRange.min || CONSTANT_VALUES.MIN_BUDGET,
-        max: budgetRange.max || CONSTANT_VALUES.MAX_BUDGET,
-      },
-      availableSeats: totalGuests,
+      tripsType,
+      tripType,
+      tripDuration,
+      academicStage,
+      // budgetRange: {
+      //   min: budgetRange.min || CONSTANT_VALUES.MIN_BUDGET,
+      //   max: budgetRange.max || CONSTANT_VALUES.MAX_BUDGET,
+      // },
+      // availableSeats: totalGuests,
       // targetAudiences: chosenTargetAudiences,
       searchTerm: searchParams.get("searchTerm") || "",
       categories,
@@ -678,8 +751,11 @@ const Discover = () => {
     checkOutDate,
     activityDayDate,
     cities,
-    budgetRange,
-    totalGuests,
+    tripsType,
+    tripDuration,
+    academicStage,
+    // budgetRange,
+    // totalGuests,
     // chosenTargetAudiences,
     categories,
     languages,

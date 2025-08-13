@@ -223,13 +223,25 @@ const FiltersBox = () => {
     // sorting type
     queryParams.append("sorting", SORTING_TYPE.NEWEST);
 
-    // Add trips type
-    // queryParams.append("tripsType", tripsType);
-
     // Add cities
     cities.forEach((city) => {
       queryParams.append("cities", city);
     });
+
+    // Add trips type
+    if (tripType.length > 0) {
+      queryParams.append("supCategories", tripType);
+    }
+
+    // Add tripDuration
+    if (tripDuration.length > 0) {
+      queryParams.append("tripsTypes", tripDuration);
+    }
+
+    // Add academicStage
+    if (academicStage.length > 0) {
+      queryParams.append("academicStages", academicStage);
+    }
 
     // Add check-in date
     if (checkInDate.day) {

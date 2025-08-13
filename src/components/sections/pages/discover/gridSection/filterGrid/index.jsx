@@ -44,8 +44,21 @@ const FilterGrid = () => {
   const targetRef = useRef(null);
 
   const tripsTypeList = [
-    { name: t("common.multiDaysTrip"), value: CONSTANT_VALUES.PACKAGE },
-    { name: t("common.oneDayTrip"), value: CONSTANT_VALUES.ACTIVITY },
+    {
+      name: t("common.multiDaysTrip"),
+      value: CONSTANT_VALUES.PACKAGE,
+      id: CONSTANT_VALUES.PACKAGE,
+    },
+    {
+      name: t("common.oneDayTrip"),
+      value: CONSTANT_VALUES.ACTIVITY,
+      id: CONSTANT_VALUES.ACTIVITY,
+    },
+    {
+      name: t("common.halfDayTrip"),
+      value: CONSTANT_VALUES.HALF_DAY,
+      id: CONSTANT_VALUES.HALF_DAY,
+    },
   ];
 
   const ratingsList = [
@@ -134,6 +147,9 @@ const FilterGrid = () => {
     categories: selectedCategories,
     languages: selectedLanguages,
     rate,
+    tripType,
+    tripDuration,
+    academicStage,
   } = useSelector((state) => state.searchFilter);
 
   // Sort
@@ -161,6 +177,9 @@ const FilterGrid = () => {
       checkOutDate,
       activityDayDate,
       cities: selectedCities,
+      tripType,
+      tripDuration,
+      academicStage,
       categories: selectedCategories,
       // targetAudiences: selectedTargetAudiences,
       languages: selectedLanguages,
@@ -180,7 +199,12 @@ const FilterGrid = () => {
     selectedLanguages,
     budgetRange,
     availableSeats,
+
     rate,
+
+    tripType,
+    tripDuration,
+    academicStage,
   ]);
 
   const searchParams = useSearchParams();
@@ -248,6 +272,10 @@ const FilterGrid = () => {
         ...(selectedCities?.length > 0 ? { cities: selectedCities } : {}),
 
         rate: rate,
+
+        ...(tripDuration?.length > 0 ? { tripsTypes: tripDuration } : {}),
+        ...(academicStage?.length > 0 ? { academicStages: academicStage } : {}),
+        ...(tripType?.length > 0 ? { supCategories: tripType } : {}),
       }
       // { isAppend: true }
     );
