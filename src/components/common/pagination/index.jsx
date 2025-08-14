@@ -42,6 +42,9 @@ const Pagination = ({
     categories,
     languages,
     rate,
+    tripType,
+    tripDuration,
+    academicStage,
   } = useSelector((state) => state.searchFilter);
 
   const updateQueryParams = useUpdateQueryParams();
@@ -73,6 +76,9 @@ const Pagination = ({
       // targetAudiences: selectedTargetAudiences,
       availableSeats,
       rate,
+      tripType,
+      tripDuration,
+      academicStage,
     });
   }, [
     tripsType,
@@ -88,6 +94,9 @@ const Pagination = ({
     // budgetRange,
     availableSeats,
     rate,
+    tripType,
+    tripDuration,
+    academicStage,
   ]);
 
   const handlePageChange = (newPage) => {

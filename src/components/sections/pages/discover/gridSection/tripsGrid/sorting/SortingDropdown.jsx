@@ -39,6 +39,9 @@ const SortingDropdown = ({ sortingList, title }) => {
     categories: selectedCategories,
     languages: selectedLanguages,
     rate,
+    tripType,
+    tripDuration,
+    academicStage,
   } = useSelector((state) => state.searchFilter);
 
   // Target audience
@@ -68,6 +71,9 @@ const SortingDropdown = ({ sortingList, title }) => {
       // targetAudiences: selectedTargetAudiences,
       availableSeats,
       rate,
+      tripType,
+      tripDuration,
+      academicStage,
     });
   }, [
     tripsType,
@@ -83,6 +89,9 @@ const SortingDropdown = ({ sortingList, title }) => {
     budgetRange,
     availableSeats,
     rate,
+    tripType,
+    tripDuration,
+    academicStage,
   ]);
 
   const getNameByValue = (value) => {
