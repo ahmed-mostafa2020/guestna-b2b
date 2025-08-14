@@ -16,15 +16,6 @@ import {
 const InfoCardsListing = ({ infoData }) => {
   const t = useTranslations();
 
-  const totalSchools = useMemo(() => {
-    return (
-      infoData?.monthlyRevenue?.reduce(
-        (sum, month) => sum + month.totalCount,
-        0
-      ) || 0
-    );
-  }, [infoData?.monthlyRevenue]);
-
   const totalRevenue = useMemo(() => {
     return (
       infoData?.monthlyRevenue?.reduce(
@@ -44,7 +35,7 @@ const InfoCardsListing = ({ infoData }) => {
       {
         icon: totalStudentsIcon,
         title: t("profile.infoCards.totalSchools"),
-        value: totalSchools,
+        value: infoData?.schoolsCount,
       },
       {
         icon: totalRevenueIcon,
@@ -57,11 +48,17 @@ const InfoCardsListing = ({ infoData }) => {
         value: infoData?.tripsCount,
       },
     ].filter(Boolean); // Filter out any null/undefined items
-  }, [t, infoData?.studentsCount, totalRevenue, infoData?.tripsCount]);
+  }, [
+    t,
+    infoData?.studentsCount,
+    infoData?.schoolsCount,
+    totalRevenue,
+    infoData?.tripsCount,
+  ]);
 
-  const renderedInfoCards = infoCardsListing.map((item, index) => (
-    <InfoCard key={index} item={item} />
-  ));
+  const renderedInfoCards = infoCardsListing.map(
+    (item, index) => item.value && <InfoCard key={index} item={item} />
+  );
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-6">

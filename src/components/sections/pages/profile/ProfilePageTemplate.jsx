@@ -74,7 +74,7 @@ const ProfilePageTemplate = ({
             <ProfilePagesFilters buttonsList={filterButtons} />
           )}
 
-          <div className="py-3 lg:py-6">
+          <div className="py-3 lg:py-4">
             {typeof contentComponent === "function"
               ? contentComponent(data)
               : React.isValidElement(contentComponent)
