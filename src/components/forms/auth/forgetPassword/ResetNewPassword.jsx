@@ -16,6 +16,7 @@ import { createResetNewPasswordSchema } from "@utils/validationSchemas";
 import setToken from "@utils/setToken";
 import { getHeaders } from "@utils/getHeaders";
 import getErrorMessage from "@utils/getErrorMessage ";
+import getProxyUrl from "@utils/getProxyUrl";
 import TextInputGroup from "../../TextInputGroup";
 
 import { Formik } from "formik";
@@ -23,7 +24,6 @@ import { Formik } from "formik";
 import axios from "axios";
 
 import { CircularProgress } from "@mui/material";
-import getProxyUrl from "@/src/utils/getProxyUrl";
 
 const ResetNewPassword = () => {
   const [formErrors, setFormErrors] = useState([]);

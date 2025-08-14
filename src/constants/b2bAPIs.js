@@ -55,6 +55,9 @@ export const B2B_END_POINTS = {
 
   PROFILE: {
     INFORMATION: "auth/userInfo", //MAIN
+
+    INFO: "profile/users/management/info",
+
     TRIPS: {
       ACTIVITIES: "profile/organizationTrips/activity/all",
       PACKAGES: "profile/organizationTrips/package/all",

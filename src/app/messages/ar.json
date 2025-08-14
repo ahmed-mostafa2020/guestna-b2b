@@ -418,6 +418,14 @@
       "logout": "تسجيل خروج",
       "logoutConfirm": "هل تريد حقا تسجيل خروج؟"
     },
+
+    "infoCards": {
+      "totalStudents": "إجمالي الطلاب",
+      "totalSchools": "إجمالي المدارس",
+      "totalRevenue": "إجمالي الإيرادات",
+      "totalActivities": "إجمالي الأنشطة"
+    },
+
     "tables": {
       "activities": {
         "header": {

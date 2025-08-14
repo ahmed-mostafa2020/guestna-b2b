@@ -419,6 +419,13 @@
       "logoutConfirm": "Do you really want to log out?"
     },
 
+    "infoCards": {
+      "totalStudents": "Total Students",
+      "totalSchools": "Total Schools",
+      "totalRevenue": "Total Revenue",
+      "totalActivities": "Total Activities"
+    },
+
     "tables": {
       "activities": {
         "header": {

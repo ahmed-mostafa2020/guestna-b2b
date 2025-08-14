@@ -1,15 +1,20 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { useEffect } from "react";
 
+import { useFetchData } from "@hooks/useFetchData";
+import ErrorComponent from "@feedback/error/ErrorComponent";
+import FullScreenLoading from "@feedback/loading/FullScreenLoading";
+import InfoCardsListing from "@components/sections/pages/profile/trips/infoCards/InfoCardsListing";
 import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageTemplate";
 import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBookings";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import MyBookingsTrips from "@components/sections/pages/profile/myBookings";
 
 const Profile = () => {
+  const locale = useLocale();
   const t = useTranslations();
 
   useEffect(() => {
@@ -18,8 +23,42 @@ const Profile = () => {
     )}`;
   }, [t]);
 
+  const {
+    data: infoData,
+    error,
+    isLoading,
+  } = useFetchData(
+    `${B2B_END_POINTS.PROFILE.INFO}`,
+    {},
+    {
+      lang: locale,
+      // onSuccess: setProfile,
+      // onError: setProfileError,
+      // onLoading: setProfileLoading,
+    }
+  );
+
+  if (isLoading)
+    return (
+      <div className="w-full min-h-screen centered">
+        <FullScreenLoading status="pending" />
+      </div>
+    );
+
+  if (error)
+    return (
+      <ErrorComponent
+        statusCode={error.response?.data?.statusCode}
+        errorMessage={error.response?.data?.message}
+      />
+    );
+
+  console.log("Info Data:", infoData);
+
   return (
-    <>
+    <main className="flex flex-col gap-4">
+      <InfoCardsListing infoData={infoData} />
+
       <ProfilePageTemplate
         title={t("profile.aside.bookings")}
         tableTitle={t("profile.aside.bookings")}
@@ -28,7 +67,7 @@ const Profile = () => {
         emptyStateComponent={<EmptyBookings />}
         contentComponent={(data) => <MyBookingsTrips data={data} />}
       />
-    </>
+    </main>
   );
 };
 

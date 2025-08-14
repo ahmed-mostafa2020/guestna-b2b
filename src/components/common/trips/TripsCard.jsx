@@ -251,7 +251,7 @@ const TripsCard = ({
               <h4 className="flex items-center gap-1">
                 {ticketsIcon}
                 {formatNumbersUint(
-                  activityCard.availableSeats,
+                  activityCard.availableSeats.min,
                   t("common.ticket"),
                   t("common.tickets")
                 )}
