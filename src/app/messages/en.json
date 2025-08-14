@@ -426,6 +426,15 @@
       "totalActivities": "Total Activities"
     },
 
+    "donutChart": {
+      "title": "The best selling activities"
+    },
+
+    "revenueLineChart": {
+      "title": "Total monthly revenues",
+      "label": "Revenues"
+    },
+
     "tables": {
       "activities": {
         "header": {

@@ -7,10 +7,14 @@ import { useEffect } from "react";
 import { useFetchData } from "@hooks/useFetchData";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
+
 import InfoCardsListing from "@components/sections/pages/profile/trips/infoCards/InfoCardsListing";
+import RevenueLineChart from "@components/sections/pages/profile/trips/charts/RevenueLineChart";
+import DonutChart from "@components/sections/pages/profile/trips/charts/DonutChart";
+
 import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageTemplate";
 import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBookings";
-import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import MyBookingsTrips from "@components/sections/pages/profile/myBookings";
 
 const Profile = () => {
@@ -53,11 +57,15 @@ const Profile = () => {
       />
     );
 
-  console.log("Info Data:", infoData);
-
   return (
     <main className="flex flex-col gap-4">
       <InfoCardsListing infoData={infoData} />
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+        <RevenueLineChart infoData={infoData} />
+
+        <DonutChart infoData={infoData} />
+      </div>
 
       <ProfilePageTemplate
         title={t("profile.aside.bookings")}

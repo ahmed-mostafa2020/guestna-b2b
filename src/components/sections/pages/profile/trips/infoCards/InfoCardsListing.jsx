@@ -44,7 +44,7 @@ const InfoCardsListing = ({ infoData }) => {
       {
         icon: totalStudentsIcon,
         title: t("profile.infoCards.totalSchools"),
-        value: formatCurrency(totalSchools),
+        value: totalSchools,
       },
       {
         icon: totalRevenueIcon,

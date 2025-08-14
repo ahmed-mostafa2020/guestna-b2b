@@ -426,6 +426,15 @@
       "totalActivities": "إجمالي الأنشطة"
     },
 
+    "donutChart": {
+      "title": "الأنشطة الأكثر طلبا"
+    },
+
+    "revenueLineChart": {
+      "title": "إجمالي الإيردات الشهرية",
+      "label": "الإيردات"
+    },
+
     "tables": {
       "activities": {
         "header": {
