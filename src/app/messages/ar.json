@@ -154,6 +154,8 @@
     "send": "إرسال",
     "sendRequest": "إرسال الطلب",
     "confirm": "أوافق",
+    "ConfirmationOfAchievement": "تاكيد الإنجاز",
+    "finalReport": "تقرير ختامي",
     "showAllImages": "عرض كل الصور البالغ عددها",
     "showAllReviews": "عرض كل التقييمات البالغ عددها",
     "customizeYourPackage": "تخصيص الحزمة الخاصة بك",
@@ -497,6 +499,10 @@
           "status": "الحالة",
           "actions": "الإجراءات"
         }
+      },
+      "reports": {
+        "title": "تقارير إغلاق الرحلات",
+        "subTitle": "تأكيد اكتمال الرحلات وإعداد التقارير الختامية"
       }
     },
 

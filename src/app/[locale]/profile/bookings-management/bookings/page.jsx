@@ -13,8 +13,8 @@ const BookingsPage = () => {
   return (
     <ProfilePageTemplate
       title={t("profile.aside.bookings")}
-      tableTitle={t("profile.aside.bookings")}
-
+      tableTitle={t("profile.tables.reports.title")}
+      subTitle={t("profile.tables.reports.subTitle")}
       endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.BOOKINGS}`}
       method="POST"
       emptyStateComponent={<EmptyBookings />}

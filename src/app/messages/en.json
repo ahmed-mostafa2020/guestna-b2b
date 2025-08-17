@@ -155,6 +155,8 @@
     "send": "Send",
     "sendRequest": "Send Request",
     "confirm": "Confirm",
+    "ConfirmationOfAchievement": "Confirmation of Achievement",
+    "finalReport": "Final Report",
     "showAllImages": "Show All Images",
     "showAllReviews": "Show All Reviews",
     "customizeYourPackage": "Customize Your Package",
@@ -430,6 +432,11 @@
         "title": "Tourism Program Management",
         "trips": "Trips"
       },
+      "bookingsManagement": {
+        "title": "Bookings Management",
+        "bookings": "Bookings",
+        "integratedBookingsManagement": "Integrated Bookings Management"
+      },
 
       "information": "My information",
       "activities": "Activities",
@@ -493,6 +500,10 @@
           "status": "Status",
           "actions": "Actions"
         }
+      },
+      "reports": {
+        "title": "Trips Closure Reports",
+        "subTitle": "Confirm trips completion and prepare final reports"
       }
     },
 
