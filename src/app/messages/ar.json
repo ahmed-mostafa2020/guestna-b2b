@@ -128,6 +128,7 @@
       "forgetPassword": "نسيت كلمة المرور",
       "resetPassword": "إعادة تعيين كلمة مرور",
       "profile": "بياناتي",
+      "integratedBookingsManagement": "إدارة الحجوزات المتكاملة",
       "contactUs": "تواصل معنا",
       "faq": "الأسئلة الشائعة",
       "error": "404 : لم يتم العثور على هذه الصفحة"
@@ -136,6 +137,7 @@
   "links": {
     "bookNow": "احجز الآن",
     "showAll": "عرض الكل",
+    "showDetails": "عرض التفاصيل",
     "search": "ابحث",
     "reset": "إعادة ضبط",
     "clearAll": "مسح الكل",
@@ -428,6 +430,11 @@
         "title": "إدارة البرامج السياحية",
         "trips": "الأنشطة والباقات"
       },
+      "bookingsManagement": {
+        "title": "إدارة الحجوزات",
+        "bookings": "الحجوزات",
+        "integratedBookingsManagement": "إدارة الحجوزات المتكاملة"
+      },
       "information": "بياناتي",
       "activities": "الأنشطة",
       "packages": "الباقات",
@@ -487,7 +494,8 @@
           "tripName": "اسم الرحلة",
           "date": "التاريخ/الوقت",
           "price": "السعر",
-          "status": "الحالة"
+          "status": "الحالة",
+          "actions": "الإجراءات"
         }
       }
     },

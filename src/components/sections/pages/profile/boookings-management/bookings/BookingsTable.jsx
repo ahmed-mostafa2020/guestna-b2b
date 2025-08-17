@@ -8,17 +8,9 @@ import {
   // useState
 } from "react";
 
-import formatCurrency from "@utils/FormatCurrency";
 import formatDate from "@utils/FormateDate";
 
-import { Typography, Badge, CardContent, Card } from "@mui/material";
-
-const statusColors = {
-  initiated: "bg-yellow-100 text-yellow-800",
-  paid: "bg-green-100 text-green-800",
-  cancelled: "bg-red-100 text-red-800",
-  completed: "bg-blue-100 text-blue-800",
-};
+import { Typography, CardContent, Card } from "@mui/material";
 
 const BookingsTable = ({ data }) => {
   const locale = useLocale();
@@ -58,26 +50,21 @@ const BookingsTable = ({ data }) => {
               <thead>
                 <tr className=" bg-table-header">
                   <th className="px-6 py-4 font-medium text-start">
-                    {t("profile.tables.bookings.header.schoolName")}
+                    {t("profile.tables.bookings.header.tripName")}
                   </th>
+
                   <th className="px-6 py-4 font-medium text-start">
                     {t("profile.tables.bookings.header.tripType")}
                   </th>
 
                   <th className="px-6 py-4 font-medium text-start">
-                    {t("profile.tables.bookings.header.location")}
-                  </th>
-                  <th className="px-6 py-4 font-medium text-start">
-                    {t("profile.tables.bookings.header.tripName")}
-                  </th>
-                  <th className="px-6 py-4 font-medium text-start">
                     {t("profile.tables.bookings.header.date")}
                   </th>
                   <th className="px-6 py-4 font-medium text-start">
-                    {t("profile.tables.bookings.header.price")}
+                    {t("profile.infoCards.totalStudents")}
                   </th>
                   <th className="px-6 py-4 font-medium text-start">
-                    {t("profile.tables.bookings.header.status")}
+                    {t("profile.tables.bookings.header.actions")}
                   </th>
                 </tr>
               </thead>
@@ -93,21 +80,15 @@ const BookingsTable = ({ data }) => {
                     }`}
                   >
                     <td className="px-6 py-4 text-sm font-medium text-foreground">
-                      {booking.organization}
-                    </td>
-                    <td className="px-6 py-4 text-sm font-medium text-foreground">
-                      {t(`common.${booking.guestnaTripsType}`)}
-                    </td>
-
-                    <td className="px-6 py-4 text-sm text-muted-foreground">
-                      {booking.cities[0].name}
-                    </td>
-                    <td className="px-6 py-4 text-sm font-medium text-foreground">
                       {booking.name}
                     </td>
 
+                    <td className="px-6 py-4 text-sm font-medium text-foreground">
+                      {booking.categories}
+                    </td>
+
                     <td className="px-6 py-4 text-sm text-muted-foreground">
-                      {formatDate(booking.bookingDay, locale, {
+                      {formatDate(booking.day, locale, {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
@@ -117,27 +98,13 @@ const BookingsTable = ({ data }) => {
                     </td>
 
                     <td className="px-6 py-4 text-sm font-medium text-foreground">
-                      {formatCurrency(booking.price)}
+                      {booking.availableSeats}
                     </td>
 
                     <td className="px-6 py-4">
-                      <Badge
-                        variant="outline"
-                        sx={{
-                          background: statusColors[booking.status],
-                          borderColor: statusColors[booking.status],
-                          // color: "white",
-                          px: 1.5,
-                          py: 0.5,
-                          borderRadius: "8px",
-                        }}
-                        className={`text-sm capitalize ${
-                          statusColors[booking.status]
-                        }`}
-                      >
-                        {t(`common.bookingStatus.${booking.status}`) ||
-                          booking.status}
-                      </Badge>
+                      <button className="rounded-lg text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out">
+                        {t("links.showDetails")}
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -155,16 +122,20 @@ const BookingsTable = ({ data }) => {
             className="transition-shadow shadow-md hover:shadow-lg"
           >
             <CardContent className="p-4 space-y-3">
-              <div className="flex items-start justify-between">
+              <div className="flex flex-col items-start justify-between">
                 <h3 className="text-lg font-bold leading-relaxed text-foreground">
                   {booking.name}
                 </h3>
+
+                <span className="text-muted-foreground">
+                  {booking.categories}
+                </span>
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">
-                    {formatDate(booking.bookingDay, locale, {
+                    {formatDate(booking.day, locale, {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
@@ -176,41 +147,16 @@ const BookingsTable = ({ data }) => {
 
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">
-                    {booking.cities[0].name}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground">
-                    {formatCurrency(booking.price)}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground">
-                    {booking.organization}
+                    {booking.availableSeats}
                   </span>
                 </div>
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Badge
-                    variant="outline"
-                    sx={{
-                      background: statusColors[booking.status],
-                      borderColor: statusColors[booking.status],
-                      // color: "white",
-                      px: 1.5,
-                      py: 0.5,
-                      borderRadius: "8px",
-                    }}
-                    className={`text-sm capitalize ${
-                      statusColors[booking.status]
-                    }`}
-                  >
-                    {t(`common.bookingStatus.${booking.status}`) ||
-                      booking.status}
-                  </Badge>
+                  <button className="rounded-lg text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out">
+                    {t("links.showDetails")}
+                  </button>
                 </div>
               </div>
             </CardContent>

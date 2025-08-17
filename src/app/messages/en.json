@@ -129,6 +129,7 @@
       "forgetPassword": "Forget Password",
       "resetPassword": "Reset Password",
       "profile": "Profile",
+      "integratedBookingsManagement": "Integrated Bookings Management",
       "contactUs": "Contact Us",
       "faq": "FAQ",
       "error": "404: This page could not be found"
@@ -137,6 +138,7 @@
   "links": {
     "bookNow": "Book Now",
     "showAll": "Show All",
+    "showDetails": "Show Details",
     "search": "Search",
     "reset": "Reset",
     "clearAll": "Clear All",
@@ -489,8 +491,7 @@
           "date": "Date/Time",
           "price": "Price",
           "status": "Status",
-          "tripLink": "Trip Link",
-          "link": "The link"
+          "actions": "Actions"
         }
       }
     },

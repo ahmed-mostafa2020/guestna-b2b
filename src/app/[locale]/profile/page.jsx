@@ -65,7 +65,7 @@ const Profile = () => {
       </div>
 
       <ProfilePageTemplate
-        title={t("profile.aside.bookings")}
+        title={t("pagesHead.title.profile")}
         tableTitle={t("profile.aside.bookings")}
         endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS}`}
         method="POST"

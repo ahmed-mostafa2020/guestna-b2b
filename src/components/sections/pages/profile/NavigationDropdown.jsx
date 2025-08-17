@@ -21,7 +21,7 @@ import {
   ExpandMore as ExpandMoreIcon,
   TravelExplore as TravelIcon,
   // People as PeopleIcon,
-  // BookOnline as BookingIcon,
+  BookOnline as BookingIcon,
   // LocationOn as LocationIcon,
   // Receipt as ReceiptIcon,
   // LocalOffer as OfferIcon,
@@ -38,6 +38,15 @@ const NavigationDropdown = () => {
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
+  };
+
+  // Check if any sub-item path matches the current pathname
+  const isAccordionExpanded = (item) => {
+    if (expanded === item.id) return true;
+    if (item.hasDropdown && item.subItems) {
+      return item.subItems.some((subItem) => pathname === subItem.path);
+    }
+    return false;
   };
 
   // const handleSubItemClick = (item, subItem) => {
@@ -63,6 +72,24 @@ const NavigationDropdown = () => {
         {
           title: t("profile.aside.programs.trips"),
           path: `${profileBasePath}/trips`,
+        },
+      ],
+    },
+    {
+      id: "bookings-management",
+      title: t("profile.aside.bookingsManagement.title"),
+      icon: <BookingIcon />,
+      hasDropdown: true,
+      subItems: [
+        {
+          title: t("profile.aside.bookingsManagement.bookings"),
+          path: `${profileBasePath}/bookings-management/bookings`,
+        },
+        {
+          title: t(
+            "profile.aside.bookingsManagement.integratedBookingsManagement"
+          ),
+          path: `${profileBasePath}/bookings-management/integrated-bookings`,
         },
       ],
     },
@@ -116,16 +143,23 @@ const NavigationDropdown = () => {
             {!item.hasDropdown ? (
               <Link
                 href={item.path}
-                className={`flex items-center w-full gap-1 px-4 py-3 mb-3${
-                  pathname === item.path ? "text-mainColor" : "text-[#797979]"
+                className={`flex items-center w-full gap-1 px-4 py-3 mb-3 rounded-lg transition-colors ${
+                  pathname === item.path
+                    ? "text-white bg-mainColor"
+                    : "hover:text-mainColor"
                 }`}
               >
-                {item.icon}
+                {React.cloneElement(item.icon, {
+                  sx: {
+                    color: pathname === item.path ? "white" : "#008F8F",
+                    transition: "color 0.2s",
+                  },
+                })}
                 {item.title}
               </Link>
             ) : (
               <Accordion
-                expanded={expanded === item.id}
+                expanded={isAccordionExpanded(item)}
                 onChange={handleChange(item.id)}
                 elevation={0}
                 className="border-none shadow-none"
@@ -151,7 +185,7 @@ const NavigationDropdown = () => {
                   expandIcon={
                     <ExpandMoreIcon
                       sx={{
-                        color: expanded === item.id ? "white" : "#007473",
+                        color: isAccordionExpanded(item) ? "white" : "#007473",
                       }}
                     />
                   }
@@ -176,7 +210,7 @@ const NavigationDropdown = () => {
                   <Box className="flex items-center w-full gap-1">
                     {React.cloneElement(item.icon, {
                       sx: {
-                        color: expanded === item.id ? "white" : "#008F8F",
+                        color: isAccordionExpanded(item) ? "white" : "#008F8F",
                         transition: "color 0.2s",
                       },
                     })}
