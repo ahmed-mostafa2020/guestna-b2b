@@ -157,14 +157,6 @@
     "confirm": "Confirm",
     "ConfirmationOfAchievement": "Confirmation of Achievement",
     "finalReport": "Final Report",
-    "showAllImages": "Show All Images",
-    "showAllReviews": "Show All Reviews",
-    "customizeYourPackage": "Customize Your Package",
-    "deleteActivity": "Delete Activity",
-    "replace": "Replace",
-    "follow": "Follow",
-    "edit": "Edit",
-    "verification": "Verification",
     "cancel": "Cancel",
     "requestQuote": "Request Quote",
     "contactUs": "Contact Us",
@@ -784,118 +776,105 @@
       "name": "Confirm Password",
       "error": {
         "min": "Password should be more than 8 characters",
-        "max": "Password should be less than 50 characters",
-        "match": "This does not match the password"
-      }
-    },
-
-    "verificationCode": {
-      "name": "Verification Code",
-      "error": {
-        "min": "Verification Code must be 4 digits",
-        "max": "Verification Code must be 4 digits"
-      }
-    },
-
-    "promoCode": {
-      "label": "Promo code",
-      "placeholder": "Enter the promo code",
-      "useCode": "Use the promo code",
-      "successMessage": "Discount has been applied successfully"
-    },
-
-    "studentName": {
-      "name": "Student name",
-      "placeholder": "Student's full name in English",
-      "error": {
-        "min": "Student name should be less than 3 characters",
-        "max": "Student name Student name be more than 50 characters",
-        "invalid": "Name should contain only letters",
-        "wordMinLength": "The student's name must be full"
-      }
-    },
-
-    "relationship": {
-      "name": "ٌRelationship",
-      "error": {
-        "min": "ٌRelationship should be more than 2 characters",
-        "max": "ٌRelationship should be less than 50 characters"
-      }
-    },
-
-    "nationalId": {
-      "name": "National ID",
-      "studentPlaceholder": "National ID card number of the student",
-      "parentPlaceholder": "National ID card number of the guardian",
-      "error": {
-        "invalid": "The number must start with 1 or 2 and must be 10 characters long",
-        "min": "National ID number must be exactly 10 digits",
-        "max": "National ID number must be exactly 10 digits"
-      }
-    },
-
-    "academicStages": {
-      "name": "Academic Stages"
-    },
-
-    "grade": {
-      "name": "Grade"
-    },
-
-    "subject": {
-      "name": "Subject",
-      "error": {
-        "min": "Subject should be more than 5 characters",
-        "max": "Subject should be less than 50 characters"
-      }
-    },
-
-    "message": {
-      "name": "Message",
-      "error": {
-        "min": "Message should be more than 5 characters",
-        "max": "Message should be less than 225 characters"
-      }
-    },
-
-    "validation": {
-      "require": "This field is required",
-      "sending": "Sending Now ...",
-      "downloading": "Downloading Now ...",
-      "success": "Your data has been sent successfully",
-      "addedToFavorites": "Added to favorites successfully",
-      "checkYourEmail": "Please, Check your gmail",
-      "addGuest": "Add Guest first please",
-      "registerChild": "Please register your child in a trip first",
-      "thanksMessage": "Thank You!",
-      "willContactYou": "Your contact request has been sent, we will respond to you shortly.",
-
-      "payment": {
-        "success": "Payment was done successfully!",
-        "sendOtp": "Please send OTP!",
-        "resendOtp": "Please resend OTP!"
+        "label": "Promo code",
+        "placeholder": "Enter the promo code",
+        "useCode": "Use the promo code",
+        "successMessage": "Discount has been applied successfully"
       },
 
-      "api_errors": {
-        "other_error": "Error , please try again"
+      "studentName": {
+        "name": "Student name",
+        "placeholder": "Student's full name in English",
+        "error": {
+          "min": "Student name should be less than 3 characters",
+          "max": "Student name Student name be more than 50 characters",
+          "invalid": "Name should contain only letters",
+          "wordMinLength": "The student's name must be full"
+        }
+      },
+
+      "relationship": {
+        "name": "ٌRelationship",
+        "error": {
+          "min": "ٌRelationship should be more than 2 characters",
+          "max": "ٌRelationship should be less than 50 characters"
+        }
+      },
+
+      "nationalId": {
+        "name": "National ID",
+        "studentPlaceholder": "National ID card number of the student",
+        "parentPlaceholder": "National ID card number of the guardian",
+        "error": {
+          "invalid": "The number must start with 1 or 2 and must be 10 characters long",
+          "min": "National ID number must be exactly 10 digits",
+          "max": "National ID number must be exactly 10 digits"
+        }
+      },
+
+      "academicStages": {
+        "name": "Academic Stages"
+      },
+
+      "grade": {
+        "name": "Grade"
+      },
+
+      "subject": {
+        "name": "Subject",
+        "error": {
+          "min": "Subject should be more than 5 characters",
+          "max": "Subject should be less than 50 characters"
+        }
+      },
+
+      "message": {
+        "name": "Message",
+        "error": {
+          "min": "Message should be more than 5 characters",
+          "max": "Message should be less than 225 characters"
+        }
+      },
+
+      "validation": {
+        "require": "This field is required",
+        "sending": "Sending Now ...",
+        "downloading": "Downloading Now ...",
+        "success": "Your data has been sent successfully",
+        "addedToFavorites": "Added to favorites successfully",
+        "checkYourEmail": "Please, Check your gmail",
+        "addGuest": "Add Guest first please",
+        "registerChild": "Please register your child in a trip first",
+        "thanksMessage": "Thank You!",
+        "willContactYou": "Your contact request has been sent, we will respond to you shortly.",
+
+        "payment": {
+          "success": "Payment was done successfully!",
+          "sendOtp": "Please send OTP!",
+          "resendOtp": "Please resend OTP!"
+        },
+
+        "api_errors": {
+          "other_error": "Error , please try again"
+        }
       }
+    },
+    "footer": {
+      "company": "Company",
+      "aboutUs": "About Us",
+      "articles": "Articles",
+      "bePartner": "Be Partner",
+      "jobOffers": "Job Offers",
+      "support": "Support",
+      "callUs": "Call Us",
+      "faq": "FAQ",
+      "map": "Map",
+      "legal": "Legal",
+      "terms": "Terms and Conditions",
+      "privacy": "Privacy Policy",
+      "return": "Return Policy",
+      "advertising": "Advertising on Guestna",
+      "paymentMethods": "Payment Methods"
     }
-  },
-  "footer": {
-    "company": "Company",
-    "aboutUs": "About Us",
-    "articles": "Articles",
-    "bePartner": "Be Partner",
-    "jobOffers": "Job Offers",
-    "support": "Support",
-    "callUs": "Call Us",
-    "faq": "FAQ",
-    "map": "Map",
-    "legal": "Legal",
-    "terms": "Terms and Conditions",
-    "privacy": "Privacy Policy",
-    "return": "Return Policy",
-    "advertising": "Advertising on Guestna",
-    "paymentMethods": "Payment Methods"
   }
 }
