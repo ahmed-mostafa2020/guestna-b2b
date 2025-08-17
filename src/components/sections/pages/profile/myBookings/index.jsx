@@ -149,7 +149,8 @@ const BookingsTable = ({ data }) => {
                           statusColors[booking.status]
                         }`}
                       >
-                        {booking.status}
+                        {t(`common.bookingStatus.${booking.status}`) ||
+                          booking.status}
                       </Badge>
                     </td>
                   </tr>
@@ -221,7 +222,8 @@ const BookingsTable = ({ data }) => {
                       statusColors[booking.status]
                     }`}
                   >
-                    {booking.status}
+                    {t(`common.bookingStatus.${booking.status}`) ||
+                      booking.status}
                   </Badge>
                 </div>
               </div>

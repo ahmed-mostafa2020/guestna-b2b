@@ -50,7 +50,28 @@
     "guestna": "Guestna",
     "error": "Sorry, we couldn't find the page you were looking for.",
     "errorHappens": "An error occurred",
-    "notAvailable": "This trip is not available for booking now"
+    "notAvailable": "This trip is not available for booking now",
+
+    "bookingStatus": {
+      "pending": "Pending",
+      "initiated": "Initiated",
+      "paid": "Paid",
+      "failed": "Failed",
+      "authorized": "Authorized",
+      "captured": "Captured",
+      "refunded": "Refunded",
+      "voided": "Voided",
+      "verified": "Verified",
+      "canceled": "Canceled",
+      "CANCELED": "Canceled"
+    },
+
+    "organizationTripStatus": {
+      "DONE": "Done",
+      "PENDING": "Pending",
+      "CANCLED": "Cancelled",
+      "SCHEDULED": "Scheduled"
+    }
   },
   "weekDays": {
     "sunday": "Sun",

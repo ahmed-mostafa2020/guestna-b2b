@@ -36,9 +36,6 @@ const Profile = () => {
     {},
     {
       lang: locale,
-      // onSuccess: setProfile,
-      // onError: setProfileError,
-      // onLoading: setProfileLoading,
     }
   );
 
