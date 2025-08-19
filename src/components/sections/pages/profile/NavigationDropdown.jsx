@@ -80,7 +80,7 @@ const NavigationDropdown = () => {
       id: "activities-market",
       title: t("profile.aside.activitiesMarket"),
       icon: <StorefrontIcon />,
-      path: `/${locale}/discover`,
+      path: `${profileBasePath}/activities-market`,
       hasDropdown: false,
     },
     {

@@ -445,6 +445,9 @@
       "bookings": "Bookings",
       "favorites": "Favorites",
       "activitiesMarket": "Activities Market",
+      "activitiesMarketTitle": "Educational Activities Market",
+      "activitiesMarketDescription": "Discover the best educational activities and school trips",
+      "myBookings": "My Bookings",
       "logout": "Logout",
       "logoutConfirm": "Do you really want to log out?"
     },

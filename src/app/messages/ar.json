@@ -452,10 +452,12 @@
       "bookings": "حجوزات",
       "favorites": "المفضلة والإهتمامات",
       "activitiesMarket": "سوق الأنشطة",
+      "activitiesMarketTitle": "سوق الأنشطة التعليمية",
+      "activitiesMarketDescription": "اكتشف أفضل الأنشطة التعليمية والرحلات المدرسية",
+      "myBookings": "حجوزاتي",
       "logout": "تسجيل خروج",
       "logoutConfirm": "هل تريد حقا تسجيل خروج؟"
     },
-
     "infoCards": {
       "totalStudents": "إجمالي الطلاب",
       "totalSchools": "إجمالي المدارس",
