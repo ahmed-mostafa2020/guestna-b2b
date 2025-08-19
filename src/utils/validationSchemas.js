@@ -476,3 +476,15 @@ export const createSurveySchema = (t) =>
       .required(t("forms.validation.require")),
     note: Yup.string(),
   });
+
+export const createConfirmRequestSchema = (t) =>
+  Yup.object().shape({
+    day: Yup.date()
+      .required(t("forms.validation.require"))
+      .min(new Date(), t("forms.confirmRequest.day.error.pastDate")),
+    availableSeats: Yup.number()
+      .required(t("forms.validation.require"))
+      .min(1, t("forms.confirmRequest.availableSeats.error.min"))
+      .max(1000, t("forms.confirmRequest.availableSeats.error.max")),
+    note: Yup.string().optional(),
+  });

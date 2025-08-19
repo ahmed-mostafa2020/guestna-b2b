@@ -284,6 +284,7 @@
     "validationMessage": "Login is required",
     "revsionTime": "Your request will be reviewed within 24 hours"
   },
+
   "bookWithConfidence": {
     "why": "why GuestNa",
     "items": {
@@ -822,6 +823,62 @@
 
       "grade": {
         "name": "Grade"
+      },
+
+      "organizationName": {
+        "name": "Organization Name",
+        "error": {
+          "min": "Organization name should be more than 3 characters",
+          "max": "Organization name should be less than 50 characters"
+        }
+      },
+
+      "survey": {
+        "title": "Activity Completion Survey",
+        "subtitle": "Please complete the survey to confirm activity completion and activate the final report",
+        "selectAnswer": "Select Answer",
+        "submit": "Complete Survey",
+        "rating": {
+          "label": "How was the overall activity experience?"
+        },
+        "learningObjectives": {
+          "label": "Were the educational objectives of the activity achieved?",
+          "fully": "Fully achieved",
+          "mostly": "Mostly achieved",
+          "partially": "Partially achieved",
+          "not": "Not achieved"
+        },
+        "schedule": {
+          "label": "Did the activity adhere to the specified schedule?",
+          "yes": "Yes, adhered to schedule",
+          "partial": "Partially adhered",
+          "no": "No, did not adhere"
+        },
+        "notes": {
+          "label": "Additional Notes",
+          "placeholder": "Add any notes or comments..."
+        }
+      },
+
+      "confirmRequest": {
+        "title": "Confirm Trip Request",
+        "day": {
+          "label": "Trip Date",
+          "error": {
+            "pastDate": "Cannot select a date in the past"
+          }
+        },
+        "availableSeats": {
+          "label": "Number of participants",
+          "error": {
+            "min": "Number must be greater than 0",
+            "max": "Number is too large"
+          }
+        },
+        "note": {
+          "label": "Additional Notes (Optional)",
+          "placeholder": "Any special requests or requirements..."
+        }
       },
 
       "subject": {
