@@ -166,6 +166,7 @@
     "edit": "تعديل",
     "verification": "تحقيق",
     "cancel": "إلغاء",
+    "requestNewActivity": "طلب نشاط جديد",
     "requestQuote": "طلب عرض سعر",
     "contactUs": "تواصل معنا",
     "shareReceipt": "مشاركة الإيصال",
@@ -437,6 +438,7 @@
       },
       "bookingsManagement": {
         "title": "إدارة الحجوزات",
+        "ordersManagement": "إدارة الطلبات",
         "bookings": "الحجوزات",
         "integratedBookingsManagement": "إدارة الحجوزات المتكاملة"
       },
@@ -469,6 +471,17 @@
     },
 
     "tables": {
+      "orders": {
+        "title": "الطلبات",
+        "followOrders": "متابعة جميع الطلبات",
+        "normal": {
+          "title": "طلبات من سوق جستنا"
+        },
+        "customizable": {
+          "title": "طلبات الأنشطة المخصصة"
+        },
+        "tripsOrdersManagement": "إدارة طلبات الأنشطة"
+      },
       "activities": {
         "header": {
           "tripName": "اسم النشاط",

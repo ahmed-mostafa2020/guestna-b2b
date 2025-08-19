@@ -159,6 +159,7 @@
     "ConfirmationOfAchievement": "Confirmation of Achievement",
     "finalReport": "Final Report",
     "cancel": "Cancel",
+    "requestNewActivity": "Request New Activity",
     "requestQuote": "Request Quote",
     "contactUs": "Contact Us",
     "shareReceipt": "Share Receipt",
@@ -429,6 +430,7 @@
       },
       "bookingsManagement": {
         "title": "Bookings Management",
+        "ordersManagement": "Orders Management",
         "bookings": "Bookings",
         "integratedBookingsManagement": "Integrated Bookings Management"
       },
@@ -462,6 +464,17 @@
     },
 
     "tables": {
+      "orders": {
+        "title": "Orders",
+        "followOrders": "Follow All Orders",
+        "normal": {
+          "title": "Orders from Guestna Market"
+        },
+        "customizable": {
+          "title": "Customized Activities Orders"
+        },
+        "tripsOrdersManagement": "Activities Orders Management"
+      },
       "activities": {
         "header": {
           "tripName": "Activity Name",

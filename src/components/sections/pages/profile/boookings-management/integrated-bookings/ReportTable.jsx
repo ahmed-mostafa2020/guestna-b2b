@@ -2,16 +2,13 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import {
-  memo,
-  useState
-} from "react";
+import { memo, useState } from "react";
 
 import formatDate from "@utils/FormateDate";
 import SurveyForm from "@components/forms/survey";
 
 import { Typography, CardContent, Card } from "@mui/material";
-import CustomizedModal from "@/src/components/common/customizedModal";
+import CustomizedModal from "@components/common/customizedModal";
 
 const Report = ({ data }) => {
   const locale = useLocale();

@@ -77,11 +77,22 @@ const NavigationDropdown = () => {
       ],
     },
     {
+      id: "activities-market",
+      title: t("profile.aside.activitiesMarket"),
+      icon: <StorefrontIcon />,
+      path: `/${locale}/discover`,
+      hasDropdown: false,
+    },
+    {
       id: "bookings-management",
       title: t("profile.aside.bookingsManagement.title"),
       icon: <BookingIcon />,
       hasDropdown: true,
       subItems: [
+        {
+          title: t("profile.aside.bookingsManagement.ordersManagement"),
+          path: `${profileBasePath}/bookings-management/orders`,
+        },
         {
           title: t("profile.aside.bookingsManagement.bookings"),
           path: `${profileBasePath}/bookings-management/bookings`,
@@ -94,13 +105,7 @@ const NavigationDropdown = () => {
         },
       ],
     },
-    {
-      id: "activities-market",
-      title: t("profile.aside.activitiesMarket"),
-      icon: <StorefrontIcon />,
-      path: `/${locale}/discover`,
-      hasDropdown: false,
-    },
+
     // {
     //   id: "user-management",
     //   title: "إدارة المستخدمين",

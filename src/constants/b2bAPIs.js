@@ -67,6 +67,10 @@ export const B2B_END_POINTS = {
       BOOKINGS: "profile/organizationTrips/all",
       RPORTS: "profile/organizationTrips/report/all",
       SURVEY: "surveys/new",
+      ORDERS: {
+        NORMAL: "profile/askTrips/normal/all",
+        CUSTOMIZABLE: "profile/askTrips/custom/all",
+      },
     },
 
     BOOKINGS: "profile/bookings/all",
