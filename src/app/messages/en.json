@@ -156,6 +156,8 @@
     "sendRequest": "Send Request",
     "confirmRequest": "Confirm request",
     "confirm": "Confirm",
+    "remindGuestna": "Remind Guestna",
+    "sendToManager": "Send to Manager",
     "ConfirmationOfAchievement": "Confirmation of Achievement",
     "finalReport": "Final Report",
     "cancel": "Cancel",
@@ -464,17 +466,6 @@
     },
 
     "tables": {
-      "orders": {
-        "title": "Orders",
-        "followOrders": "Follow All Orders",
-        "normal": {
-          "title": "Orders from Guestna Market"
-        },
-        "customizable": {
-          "title": "Customized Activities Orders"
-        },
-        "tripsOrdersManagement": "Activities Orders Management"
-      },
       "activities": {
         "header": {
           "tripName": "Activity Name",
@@ -508,12 +499,25 @@
           "date": "Date/Time",
           "price": "Price",
           "status": "Status",
-          "actions": "Actions"
+          "actions": "Actions",
+          "participants": "Participants"
         }
       },
       "reports": {
         "title": "Trips Closure Reports",
         "subTitle": "Confirm trips completion and prepare final reports"
+      },
+      "orders": {
+        "title": "Orders",
+        "tripsOrdersManagement": "Activities Orders Management",
+
+        "followOrders": "Follow All Orders",
+        "normal": {
+          "title": "Orders from Guestna Market"
+        },
+        "customizable": {
+          "title": "Customized Activities Orders"
+        }
       }
     },
 

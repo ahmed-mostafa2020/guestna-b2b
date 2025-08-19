@@ -66,8 +66,8 @@
     },
 
     "organizationTripStatus": {
-      "DONE": "مكتمل",
-      "PENDING": "قيد الانتظار",
+      "DONE": "تمت الموافقة",
+      "PENDING": "قيد المراجعة",
       "CANCLED": "ملغي",
       "SCHEDULED": "مجدول"
     }
@@ -155,6 +155,8 @@
     "sendRequest": "إرسال الطلب",
     "confirmRequest": "تأكيد الطلب",
     "confirm": "أوافق",
+    "remindGuestna": "تذكير لجستنا",
+    "sendToManager": "إرسال للمدير",
     "ConfirmationOfAchievement": "تاكيد الإنجاز",
     "finalReport": "تقرير ختامي",
     "showAllImages": "عرض كل الصور البالغ عددها",
@@ -471,17 +473,6 @@
     },
 
     "tables": {
-      "orders": {
-        "title": "الطلبات",
-        "followOrders": "متابعة جميع الطلبات",
-        "normal": {
-          "title": "طلبات من سوق جستنا"
-        },
-        "customizable": {
-          "title": "طلبات الأنشطة المخصصة"
-        },
-        "tripsOrdersManagement": "إدارة طلبات الأنشطة"
-      },
       "activities": {
         "header": {
           "tripName": "اسم النشاط",
@@ -515,12 +506,26 @@
           "date": "التاريخ/الوقت",
           "price": "السعر",
           "status": "الحالة",
-          "actions": "الإجراءات"
+          "actions": "الإجراءات",
+          "participants": "المشاركون"
         }
       },
       "reports": {
         "title": "تقارير إغلاق الرحلات",
         "subTitle": "تأكيد اكتمال الرحلات وإعداد التقارير الختامية"
+      },
+
+      "orders": {
+        "title": "الطلبات",
+        "tripsOrdersManagement": "إدارة طلبات الأنشطة",
+
+        "followOrders": "متابعة جميع الطلبات",
+        "normal": {
+          "title": "طلبات من سوق جستنا"
+        },
+        "customizable": {
+          "title": "طلبات الأنشطة المخصصة"
+        }
       }
     },
 

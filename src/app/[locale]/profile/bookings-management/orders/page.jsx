@@ -6,7 +6,9 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import TripsOrdersManagement from "@components/sections/pages/profile/boookings-management/orders/TripsOrdersManagement";
 import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageTemplate";
 import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBookings";
-import BookingsTable from "@components/sections/pages/profile/boookings-management/bookings/BookingsTable";
+
+import NormalTripsTable from "@components/sections/pages/profile/boookings-management/orders/NormalTripsTable";
+import CustomizedTripsTable from "@components/sections/pages/profile/boookings-management/orders/CustomizedTripsTable";
 
 const OrdersPage = () => {
   const t = useTranslations();
@@ -26,7 +28,7 @@ const OrdersPage = () => {
           endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.NORMAL}`}
           method="POST"
           emptyStateComponent={<EmptyBookings />}
-          contentComponent={(data) => <BookingsTable data={data} />}
+          contentComponent={(data) => <NormalTripsTable data={data} />}
         />
 
         <ProfilePageTemplate
@@ -35,7 +37,7 @@ const OrdersPage = () => {
           endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.CUSTOMIZABLE}`}
           method="POST"
           emptyStateComponent={<EmptyBookings />}
-          contentComponent={(data) => <BookingsTable data={data} />}
+          contentComponent={(data) => <CustomizedTripsTable data={data} />}
         />
       </div>
     </>
