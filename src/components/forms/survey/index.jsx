@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import { Formik } from "formik";
-import * as Yup from "yup";
+import { createSurveySchema } from "@utils/validationSchemas";
 import axios from "axios";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -27,17 +27,7 @@ const SurveyForm = ({ tripId, organizationId, onClose, onSuccess }) => {
   const headers = getHeaders(locale);
 
   // Validation schema
-  const surveySchema = Yup.object().shape({
-    learningObjectivesAchieved: Yup.string().required(
-      t("forms.validation.require")
-    ),
-    activityOnSchedule: Yup.string().required(t("forms.validation.require")),
-    rate: Yup.number()
-      .min(1, t("forms.validation.require"))
-      .max(5)
-      .required(t("forms.validation.require")),
-    note: Yup.string(),
-  });
+  const surveySchema = createSurveySchema(t);
 
   // Dropdown options
   const learningObjectivesOptions = [

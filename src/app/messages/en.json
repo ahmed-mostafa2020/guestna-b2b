@@ -154,6 +154,7 @@
     "saveChanges": "Save Changes",
     "send": "Send",
     "sendRequest": "Send Request",
+    "confirmRequest": "Confirm request",
     "confirm": "Confirm",
     "ConfirmationOfAchievement": "Confirmation of Achievement",
     "finalReport": "Final Report",
@@ -280,7 +281,8 @@
       "returnPolicy": "Return Policy",
       "benefits": "What the student benefits from"
     },
-    "validationMessage": "Login is required"
+    "validationMessage": "Login is required",
+    "revsionTime": "Your request will be reviewed within 24 hours"
   },
   "bookWithConfidence": {
     "why": "why GuestNa",
@@ -437,6 +439,7 @@
       "notifications": "Notifications",
       "bookings": "Bookings",
       "favorites": "Favorites",
+      "activitiesMarket": "Activities Market",
       "logout": "Logout",
       "logoutConfirm": "Do you really want to log out?"
     },
@@ -481,6 +484,7 @@
         }
       },
       "bookings": {
+        "title": "Trips List",
         "header": {
           "schoolName": "School Name",
           "tripType": "Trip Type",

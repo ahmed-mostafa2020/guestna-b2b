@@ -63,10 +63,10 @@ export const B2B_END_POINTS = {
       PACKAGES: "profile/organizationTrips/package/all",
     },
 
-    BOOKINGS_MANAGEMENT:{
+    BOOKINGS_MANAGEMENT: {
       BOOKINGS: "profile/organizationTrips/all",
       RPORTS: "profile/organizationTrips/report/all",
-      SURVEY:"surveys/new"
+      SURVEY: "surveys/new",
     },
 
     BOOKINGS: "profile/bookings/all",
@@ -77,6 +77,8 @@ export const B2B_END_POINTS = {
 
     EDIT_PERSONAL_INFO: "users/modify", //MAIN
   },
+
+  CONFIRM_REQUEST: "profile/askTrips/new",
 
   ADDRESS: {
     COUNTRIES_AND_NATIONALITIES: "profile/editFields", //MAIN

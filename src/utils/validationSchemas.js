@@ -463,3 +463,16 @@ export const createRequestQuoteSchema = (t) =>
       .min(3, t("forms.organizationName.error.min"))
       .max(50, t("forms.organizationName.error.max")),
   });
+
+export const createSurveySchema = (t) =>
+  Yup.object().shape({
+    learningObjectivesAchieved: Yup.string().required(
+      t("forms.validation.require")
+    ),
+    activityOnSchedule: Yup.string().required(t("forms.validation.require")),
+    rate: Yup.number()
+      .min(1, t("forms.validation.require"))
+      .max(5)
+      .required(t("forms.validation.require")),
+    note: Yup.string(),
+  });

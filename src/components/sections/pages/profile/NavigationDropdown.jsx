@@ -25,6 +25,7 @@ import {
   // LocationOn as LocationIcon,
   // Receipt as ReceiptIcon,
   // LocalOffer as OfferIcon,
+  Storefront as StorefrontIcon,
 } from "@mui/icons-material";
 import { homeIcon } from "@assets/svg";
 
@@ -92,6 +93,13 @@ const NavigationDropdown = () => {
           path: `${profileBasePath}/bookings-management/integrated-bookings`,
         },
       ],
+    },
+    {
+      id: "activities-market",
+      title: t("profile.aside.activitiesMarket"),
+      icon: <StorefrontIcon />,
+      path: `/${locale}/discover`,
+      hasDropdown: false,
     },
     // {
     //   id: "user-management",
