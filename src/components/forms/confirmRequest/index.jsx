@@ -1,7 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import { Formik } from "formik";
@@ -24,7 +24,8 @@ const ConfirmRequestForm = ({ onClose }) => {
   const locale = useLocale();
   const t = useTranslations();
   const { enqueueSnackbar } = useSnackbar();
-  const params = useParams();
+
+  const router = useRouter();
 
   const headers = getHeaders(locale);
   const confirmRequestSchema = createConfirmRequestSchema(t);
@@ -56,6 +57,8 @@ const ConfirmRequestForm = ({ onClose }) => {
         });
 
         if (onClose) onClose();
+
+        router.push(`/${locale}/profile/bookings-management/orders`);
       })
       .catch((error) => {
         setSubmitting(false);

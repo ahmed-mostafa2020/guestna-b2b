@@ -37,7 +37,9 @@ const SmallSizeGrid = () => {
         <RequestQuote />
       ) : null}
 
-      {pathname?.includes("/discover/") && token && <ConfirmRequest />}
+      {pathname?.includes("/discover/") && isAuth && token && (
+        <ConfirmRequest />
+      )}
 
       <BookWithConfidenceSection />
 

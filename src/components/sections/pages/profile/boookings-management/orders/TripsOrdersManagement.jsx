@@ -16,7 +16,7 @@ const TripsOrdersManagement = () => {
         </h2>
       </div>
 
-      <button className="flex items-center gap-2 rounded-lg text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out">
+      <button className="flex text-sm lg:text-base items-center gap-2 rounded-lg text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out">
         <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white text-mainColor  text-lg">
           +
         </span>

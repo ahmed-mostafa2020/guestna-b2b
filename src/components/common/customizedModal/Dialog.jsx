@@ -48,7 +48,8 @@ const Dialog = ({
           )}
         </div>
 
-        <div className="px-4 py-8">
+        <div className="lg:p-8 p-4">
+          {/* px-4 py-8 */}
           {title && (
             <h3 className="text-xl font-semibold text-black">{title}</h3>
           )}
