@@ -1,9 +1,42 @@
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useState } from "react";
+import axios from "axios";
 
 import { activitiesOrdersManagementIcon } from "@assets/svg";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { getHeaders } from "@utils/getHeaders";
+import getProxyUrl from "@utils/getProxyUrl";
 
 const TripsOrdersManagement = () => {
   const t = useTranslations();
+  const locale = useLocale();
+
+  const [formSelectionData, setFormSelectionData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleRequestNewActivity = async () => {
+    setLoading(true);
+    try {
+      const headers = getHeaders(locale);
+      const config = {
+        method: "get",
+        url: getProxyUrl(
+          B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ADD_NEW_ACTIVITY
+            .FORM_SELECTION
+        ),
+        headers,
+      };
+
+      const response = await axios.request(config);
+      setFormSelectionData(response.data);
+      console.log("Form selection data:", response.data);
+    } catch (error) {
+      console.error("Error fetching form selection data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex items-center justify-between rounded-2xl shadow-card p-4 lg:p-8 mb-4 lg:mb-8 bg-white">
       <div className="flex items-center gap-2">
@@ -16,9 +49,13 @@ const TripsOrdersManagement = () => {
         </h2>
       </div>
 
-      <button className="flex text-sm lg:text-base items-center gap-2 rounded-lg text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out">
-        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white text-mainColor  text-lg">
-          +
+      <button
+        onClick={handleRequestNewActivity}
+        disabled={loading}
+        className="flex text-sm lg:text-base items-center gap-2 rounded-lg text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-white text-mainColor font-bold">
+          {loading ? "..." : "+"}
         </span>
 
         {t("links.requestNewActivity")}
