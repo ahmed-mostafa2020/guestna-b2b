@@ -14,6 +14,7 @@ import getProxyUrl from "@utils/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
+import FileUploadGroup from "../FileUploadGroup";
 import { CONSTANT_VALUES } from "@/src/constants/constantValues";
 
 const CustomNewTripForm = ({formSelectionData}) => {
@@ -43,6 +44,22 @@ const CustomNewTripForm = ({formSelectionData}) => {
   const cityOptions = cityData.map(item => item.name);
   const academicStageOptions = academicStageData.map(item => item.name);
   const servicesOptions = servicesData.map(item => item.name);
+
+  // Prevent negative values in number inputs
+  const handleKeyDown = (e) => {
+    if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '+') {
+      e.preventDefault();
+    }
+  };
+
+  // Handle input change to prevent negative values
+  const handleNumberChange = (formikHandleChange) => (e) => {
+    const value = e.target.value;
+    if (value < 1) {
+      e.target.value = 1;
+    }
+    formikHandleChange(e);
+  };
 
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
     const formData = new FormData();
@@ -92,7 +109,10 @@ const CustomNewTripForm = ({formSelectionData}) => {
         
         // Handle arrays differently for FormData
         if (Array.isArray(valueToSend)) {
-          formData.append(key, JSON.stringify(valueToSend));
+          // Append each array item individually with indexed keys
+          valueToSend.forEach((item, index) => {
+            formData.append(`${key}[${index}]`, item);
+          });
         } else {
           formData.append(key, valueToSend);
         }
@@ -117,8 +137,8 @@ const CustomNewTripForm = ({formSelectionData}) => {
         setFormErrors([]);
         resetForm();
 
-        const { message } = response.data;
-        if (message) {
+        const  res  = response.data;
+        if (res) {
           enqueueSnackbar(t("forms.customTrip.success"), {
             variant: "success",
           });
@@ -139,7 +159,7 @@ const CustomNewTripForm = ({formSelectionData}) => {
 
   return (
     <div className="px-4 py-8 bg-white rounded-2xl w-[90%] mx-auto">
-      <h3 className="pb-4 text-lg font-medium text-black lg:text-xl lg:pb-8">
+      <h3 className="pb-4 text-center text-lg font-medium text-black lg:text-2xl lg:pb-8">
         {t("forms.customTrip.title")}
       </h3>
 
@@ -258,10 +278,11 @@ const CustomNewTripForm = ({formSelectionData}) => {
                     value={values.duration}
                     errors={errors.duration}
                     touched={touched.duration}
-                    onChange={handleChange}
+                    onChange={handleNumberChange(handleChange)}
                     onBlur={handleBlur}
+                    onKeyDown={handleKeyDown}
                     placeholder={t("forms.customTrip.tripDuration.placeholder")}
-                   
+                    min="0"
                   />
                 </div>
 
@@ -273,10 +294,11 @@ const CustomNewTripForm = ({formSelectionData}) => {
                     value={values.availableSeats}
                     errors={errors.availableSeats}
                     touched={touched.availableSeats}
-                    onChange={handleChange}
+                    onChange={handleNumberChange(handleChange)}
                     onBlur={handleBlur}
+                    onKeyDown={handleKeyDown}
                     placeholder={t("forms.customTrip.expectedParticipants.placeholder")}
-                   
+                    min="0"
                   />
                 </div>
 
@@ -288,9 +310,11 @@ const CustomNewTripForm = ({formSelectionData}) => {
                     value={values.basePrice}
                     errors={errors.basePrice}
                     touched={touched.basePrice}
-                    onChange={handleChange}
+                    onChange={handleNumberChange(handleChange)}
                     onBlur={handleBlur}
+                    onKeyDown={handleKeyDown}
                     placeholder={t("forms.customTrip.price.placeholder")}
+                    min="0"
                     minLength={1}
                     maxLength={8}
                   />
@@ -361,18 +385,21 @@ const CustomNewTripForm = ({formSelectionData}) => {
 
               {/* File Upload */}
               <div className="mt-6">
-                <TextInputGroup
-                  // type="text"
+                <FileUploadGroup
                   name="file"
                   placeholder={t("forms.customTrip.attachFile.label")}
                   errors={errors.file}
                   touched={touched.file}
                   onBlur={handleBlur}
-                  uploadFile={true}
+                  value={values.file}
                   onFileChange={(e) => {
                     const file = e.target.files && e.target.files[0];
                     setFieldValue("file", file);
                   }}
+                  accept="image/*,application/pdf,.doc,.docx"
+                  maxSizeInMB={5}
+                  allowedTypes={["image/jpeg", "image/png", "image/jpg", "image/webp", "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"]}
+                  disallowedTypes={["image/svg+xml"]}
                 />
               </div>
 

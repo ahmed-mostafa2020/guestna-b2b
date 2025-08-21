@@ -66,7 +66,7 @@ const CustomizedTripsTable = ({ data }) => {
               <thead>
                 <tr className=" bg-table-header">
                   <th className="px-6 py-4 font-medium text-start">
-                    {t("profile.tables.bookings.header.tripName")}
+                    {t("profile.tables.bookings.header.orderId")}
                   </th>
                   <th className="px-6 py-4 font-medium text-start">
                     {t("profile.tables.bookings.header.location")}
@@ -102,7 +102,7 @@ const CustomizedTripsTable = ({ data }) => {
                     }`}
                   >
                     <td className="px-6 py-4 text-sm font-medium text-foreground">
-                      {booking.name}
+                      {booking.orderId || index + 1}
                     </td>
 
                     <td className="px-6 py-4 text-sm font-medium text-foreground">
@@ -124,7 +124,7 @@ const CustomizedTripsTable = ({ data }) => {
                     </td>
 
                     <td className="px-6 py-4 text-sm font-medium text-foreground">
-                      {formatCurrency(booking.tripPrice)}
+                    {formatCurrency(booking.basePrice || booking.tripPrice)}
                     </td>
 
                     <td className="px-6 py-4">
@@ -138,13 +138,14 @@ const CustomizedTripsTable = ({ data }) => {
                     </td>
 
                     <td className="px-6 py-4">
-                      <button className="rounded-md text-white bg-mainColor px-4 py-2 hover:bg-titleColor text-sm me-2 transition-all duration-200 ease-in-out border border-mainColor hover:border-titleColor">
+                      {/* <button className="rounded-md text-white bg-mainColor px-4 py-2 hover:bg-titleColor text-sm me-2 transition-all duration-200 ease-in-out border border-mainColor hover:border-titleColor">
                         {t("links.remindGuestna")}
                       </button>
 
                       <button className="rounded-md border border-gray-300  px-4 py-2 hover:bg-secColor text-sm transition-all duration-200 ease-in-out hover:border-secColor hover:text-white">
                         {t("links.sendToManager")}
-                      </button>
+                      </button> */}
+                      ...
                     </td>
                   </tr>
                 ))}
@@ -156,7 +157,7 @@ const CustomizedTripsTable = ({ data }) => {
 
       {/* Mobile Cards */}
       <div className="space-y-4 md:hidden">
-        {data.nodes.map((booking) => (
+        {data.nodes.map((booking, index) => (
           <Card
             key={booking._id}
             className="transition-shadow shadow-md hover:shadow-lg"
@@ -164,7 +165,7 @@ const CustomizedTripsTable = ({ data }) => {
             <CardContent className="p-4 space-y-3">
               <div className="flex flex-col items-start justify-between">
                 <h3 className="text-lg font-bold leading-relaxed text-foreground">
-                  {booking.name}
+                {booking.orderId || index + 1}
                 </h3>
               </div>
 
@@ -197,21 +198,22 @@ const CustomizedTripsTable = ({ data }) => {
                   </span>
 
                   <span className="text-muted-foreground">
-                    {formatCurrency(booking.tripPrice)}
+                    {formatCurrency(booking.basePrice || booking.tripPrice)}
                   </span>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
                   <button className="rounded-md text-white bg-mainColor px-4 py-2 hover:bg-titleColor text-sm me-2 transition-all duration-200 ease-in-out border border-mainColor hover:border-titleColor">
                     {t("links.remindGuestna")}
                   </button>
 
                   <button className="rounded-md border border-gray-300  px-4 py-2 hover:bg-secColor text-sm transition-all duration-200 ease-in-out hover:border-secColor hover:text-white">
                     {t("links.sendToManager")}
-                  </button>
-                </div>
+                  </button> 
+                </div>*/}
+                ...
               </div>
             </CardContent>
           </Card>

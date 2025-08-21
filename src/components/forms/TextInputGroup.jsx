@@ -17,6 +17,7 @@ const TextInputGroup = memo(
     touched,
     onChange,
     onBlur,
+    onKeyDown,
     placeholder,
     textarea = false,
     uploadFile = false,
@@ -30,6 +31,7 @@ const TextInputGroup = memo(
     autoFocus,
     nationalIdImageError,
     imageError,
+    readOnly = false,
 
 
     // labelFontFamily = "IBM Plex Sans Arabic, sans-serif",
@@ -59,7 +61,7 @@ const TextInputGroup = memo(
           {textarea ? (
             <textarea
               className={cn(
-                "text-sm resize-none font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full  rounded-lg outline-none placeholder:font-normal placeholder:text-sm placeholder:text-textLight selection:bg-buttonsHover",
+                "text-sm resize-none font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full  rounded-lg outline-none placeholder:font-normal placeholder:text-base placeholder:text-textLight selection:bg-buttonsHover",
                 textAlign && `text-${textAlign}`,
                 border && "border-2",
                 touched && errors && border
@@ -78,6 +80,7 @@ const TextInputGroup = memo(
               maxLength={maxLength}
               rows={rows}
               placeholder={placeholder}
+              readOnly={readOnly}
             />
           ) : (
             <input
@@ -105,6 +108,7 @@ const TextInputGroup = memo(
               touched={touched ? "true" : "false"}
               onChange={onChange}
               onBlur={onBlur}
+              onKeyDown={onKeyDown}
               placeholder={placeholder}
               autoComplete={
                 name === "cardholderName" ? "new-password" : "false"

@@ -495,6 +495,7 @@
         "title": "Trips List",
         "header": {
           "schoolName": "School Name",
+          "orderId": "Order ID",
           "tripType": "Trip Type",
           "academicStage": "Academic Stage",
           "location": "Location",
@@ -997,7 +998,7 @@
     "price": {
       "placeholder": "Proposed Price (SAR)",
       "error": {
-        "min": "Proposed price must be at least 9 SAR"
+        "min": "Proposed price must be at least 1 SAR"
       }
     },
     
