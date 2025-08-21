@@ -270,76 +270,7 @@ export const createPersonalInfoEditingSchema = (t) =>
       .max(50, t("forms.name.error.max")),
   });
 
-// export const createRegisterChildSchema = (t) =>
-//   Yup.object().shape({
-//     parentName: Yup.string()
-//       .trim()
-//       .required(t("forms.validation.require"))
-//       .matches(/^[\p{L}\s]+$/u, t("forms.parentName.error.invalid"))
-//       .test(
-//         "min-word-length",
-//         t("forms.parentName.error.wordMinLength"),
-//         function (value) {
-//           if (!value) return true;
 
-//           const words = value.trim().split(/\s+/);
-
-//           // Must have at least 2 words
-//           if (words.length < 3) return false;
-
-//           // Each word must be at least 3 characters
-//           return words.every((word) => word.length >= 3);
-//         }
-//       ),
-
-//     childrenNumber: Yup.number().required("Number of children is required"),
-
-//     email: Yup.string()
-//       .email(t("forms.email.error"))
-//       .required(t("forms.validation.require")),
-
-//     mobile: createPhoneValidation(t),
-
-//     promoCode: Yup.string().optional(),
-
-//     nationalId: Yup.string()
-//       .required(t("forms.validation.require"))
-//       .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
-//       .min(10, t("forms.nationalId.error.min"))
-//       .max(10, t("forms.nationalId.error.max")),
-
-//     children: Yup.array()
-//       .of(
-//         Yup.object().shape({
-//           studentName: Yup.string()
-//             .trim()
-//             .required(t("forms.validation.require"))
-//             .matches(/^[\p{L}\s]+$/u, t("forms.studentName.error.invalid"))
-//             .test(
-//               "min-word-length",
-//               t("forms.studentName.error.wordMinLength"),
-//               function (value) {
-//                 if (!value) return true;
-
-//                 const words = value.trim().split(/\s+/);
-
-//                 // Must have at least 2 words
-//                 if (words.length < 4) return false;
-
-//                 // Each word must be at least 3 characters
-//                 return words.every((word) => word.length >= 3);
-//               }
-//             ),
-
-//           academicStage: Yup.string().required("Academic stage is required"),
-//           nationalId: Yup.string()
-//             .min(10, "National ID must be exactly 10 characters")
-//             .max(10, "National ID must be exactly 10 characters")
-//             .required("National ID is required"),
-//         })
-//       )
-//       .min(1, "At least one child is required"),
-//   });
 
 export const createRegisterChildSchema = (t, childrenCount) => {
   return Yup.object().shape({
@@ -487,4 +418,32 @@ export const createConfirmRequestSchema = (t) =>
       .min(1, t("forms.confirmRequest.availableSeats.error.min"))
       .max(1000, t("forms.confirmRequest.availableSeats.error.max")),
     note: Yup.string().optional(),
+  });
+
+export const createCustomNewTripSchema = (t) =>
+  Yup.object().shape({
+    category: Yup.string().required(t("forms.validation.require")),
+    tripType: Yup.string().required(t("forms.validation.require")),
+    city: Yup.string().required(t("forms.validation.require")),
+    academicStage: Yup.string().required(t("forms.validation.require")),
+    duration: Yup.number()
+      .required(t("forms.validation.require"))
+      .min(1, t("forms.customTrip.tripDuration.error.min"))
+      .max(30, t("forms.customTrip.tripDuration.error.max")),
+    availableSeats: Yup.number()
+      .required(t("forms.validation.require"))
+      .min(1, t("forms.customTrip.expectedParticipants.error.min"))
+      .max(1000, t("forms.customTrip.expectedParticipants.error.max")),
+    day: Yup.date()
+      .required(t("forms.validation.require"))
+      .min(new Date(), t("forms.customTrip.proposedTripDate.error.pastDate")),
+    services: Yup.string().required(t("forms.validation.require")),
+    description: Yup.string()
+      .required(t("forms.validation.require"))
+      .min(10, t("forms.customTrip.tripDescription.error.min"))
+      .max(500, t("forms.customTrip.tripDescription.error.max")),
+    specialRequirements: Yup.string()
+      .optional()
+      .max(300, t("forms.customTrip.specialRequirements.error.max")),
+    file: Yup.mixed().optional(),
   });

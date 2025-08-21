@@ -936,26 +936,144 @@
         },
 
         "api_errors": {
-          "other_error": "Error , please try again"
+          "other_error": "An error occurred! Please try again"
         }
       }
     },
-    "footer": {
-      "company": "Company",
-      "aboutUs": "About Us",
-      "articles": "Articles",
-      "bePartner": "Be Partner",
-      "jobOffers": "Job Offers",
-      "support": "Support",
-      "callUs": "Call Us",
-      "faq": "FAQ",
-      "map": "Map",
-      "legal": "Legal",
-      "terms": "Terms and Conditions",
-      "privacy": "Privacy Policy",
-      "return": "Return Policy",
-      "advertising": "Advertising on Guestna",
-      "paymentMethods": "Payment Methods"
+
+  "customTrip": {
+    "title": "Request to Create a New Trip",
+    "submit": "Send Request to Guestna Team",
+    "success": "Your request has been sent successfully",
+    
+    "selectedTrip": {
+      "label": "Selected Trip",
+      "placeholder": "Trip Number",
+      "options": {
+        "cultural": "Cultural Trip",
+        "educational": "Educational Trip",
+        "adventure": "Adventure Trip",
+        "historical": "Historical Trip"
+      }
+    },
+    
+    "tripType": {
+      "label": "Trip Type",
+      "placeholder": "Trip Type",
+      "options": {
+        "oneDay": "One Day Trip",
+        "multiDay": "Multi-Day Trip",
+        "weekend": "Weekend Trip"
+      }
+    },
+    
+    "city": {
+      "label": "City",
+      "placeholder": "City",
+      "options": {
+        "riyadh": "Riyadh",
+        "jeddah": "Jeddah",
+        "dammam": "Dammam",
+        "mecca": "Mecca",
+        "medina": "Medina"
+      }
+    },
+    
+    "targetedTrip": {
+      "label": "Targeted Trip",
+      "placeholder": "Target Stage",
+      "options": {
+        "students": "Students",
+        "employees": "Employees",
+        "families": "Families",
+        "seniors": "Seniors"
+      }
+    },
+    
+    "educationalObjectives": {
+      "label": "Educational Objectives",
+      "placeholder": "Educational Objectives",
+      "options": {
+        "cultural": "Cultural Objectives",
+        "scientific": "Scientific Objectives",
+        "historical": "Historical Objectives",
+        "environmental": "Environmental Objectives"
+      }
+    },
+    
+    "tripDuration": {
+      "label": "Trip Duration",
+      "placeholder": "Trip Duration",
+      "error": {
+        "min": "Trip duration must be at least 1 day",
+        "max": "Trip duration cannot exceed 30 days"
+      }
+    },
+    
+    "expectedParticipants": {
+      "label": "Expected Number",
+      "placeholder": "Expected Number",
+      "error": {
+        "min": "Number must be at least 1 person",
+        "max": "Number cannot exceed 1000 people"
+      }
+    },
+    
+    "proposedTripDate": {
+      "label": "Proposed Trip Date",
+      "error": {
+        "pastDate": "Trip date cannot be in the past"
+      }
+    },
+    
+    "services": {
+      "label": "Services",
+      "placeholder": "Services",
+      "options": {
+        "transportation": "Transportation",
+        "accommodation": "Accommodation",
+        "meals": "Meals",
+        "guide": "Tour Guide"
+      }
+    },
+    
+    "tripDescription": {
+      "label": "Trip Description",
+      "placeholder": "Trip Description",
+      "error": {
+        "min": "Description must be at least 10 characters",
+        "max": "Description cannot exceed 500 characters"
+      }
+    },
+    
+    "specialRequirements": {
+      "label": "Any Special Requirements",
+      "placeholder": "Any Special Requirements",
+      "error": {
+        "max": "Special requirements cannot exceed 300 characters"
+      }
+    },
+    
+    "attachFile": {
+      "label": "Attach File"
     }
+  },
+  "footer": {
+    "company": "Company",
+    "aboutUs": "About Us",
+    "articles": "Articles",
+    "bePartner": "Be Partner",
+    "jobOffers": "Job Offers",
+    "support": "Support",
+    "callUs": "Call Us",
+    "faq": "FAQ",
+    "map": "Map",
+    "legal": "Legal",
+    "terms": "Terms and Conditions",
+    "privacy": "Privacy Policy",
+    "return": "Return Policy",
+    "advertising": "Advertising on Guestna",
+    "paymentMethods": "Payment Methods"
   }
+}
 }

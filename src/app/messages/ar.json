@@ -967,6 +967,124 @@
       "api_errors": {
         "other_error": "حدث خطأ! برجاء المحاولة مرة أخرى"
       }
+    },
+
+    "customTrip": {
+      "title": "طلب إنشاء رحلة جديدة",
+      "submit": "إرسال الطلب إلى فريق جستنا",
+      "success": "تم إرسال طلبك بنجاح",
+      
+      "selectedTrip": {
+        "label": "الرحلة المختارة",
+        "placeholder": "رقم الحل",
+        "options": {
+          "cultural": "رحلة ثقافية",
+          "educational": "رحلة تعليمية",
+          "adventure": "رحلة مغامرة",
+          "historical": "رحلة تاريخية"
+        }
+      },
+      
+      "tripType": {
+        "label": "نوع الرحلة",
+        "placeholder": "نوع الرحلة",
+        "options": {
+          "oneDay": "رحلة يوم واحد",
+          "multiDay": "رحلة متعددة الأيام",
+          "weekend": "رحلة نهاية أسبوع"
+        }
+      },
+      
+      "city": {
+        "label": "المدينة",
+        "placeholder": "المدينة",
+        "options": {
+          "riyadh": "الرياض",
+          "jeddah": "جدة",
+          "dammam": "الدمام",
+          "mecca": "مكة المكرمة",
+          "medina": "المدينة المنورة"
+        }
+      },
+      
+      "targetedTrip": {
+        "label": "الرحلة المستهدفة",
+        "placeholder": "المرحلة المستهدفة",
+        "options": {
+          "students": "طلاب",
+          "employees": "موظفين",
+          "families": "عائلات",
+          "seniors": "كبار السن"
+        }
+      },
+      
+      "educationalObjectives": {
+        "label": "الأهداف التعليمية",
+        "placeholder": "الأهداف التعليمية",
+        "options": {
+          "cultural": "أهداف ثقافية",
+          "scientific": "أهداف علمية",
+          "historical": "أهداف تاريخية",
+          "environmental": "أهداف بيئية"
+        }
+      },
+      
+      "tripDuration": {
+        "label": "مدة الرحلة",
+        "placeholder": "مدة الرحلة",
+        "error": {
+          "min": "يجب أن تكون مدة الرحلة يوم واحد على الأقل",
+          "max": "لا يمكن أن تتجاوز مدة الرحلة 30 يوماً"
+        }
+      },
+      
+      "expectedParticipants": {
+        "label": "العدد المتوقع",
+        "placeholder": "العدد المتوقع",
+        "error": {
+          "min": "يجب أن يكون العدد شخص واحد على الأقل",
+          "max": "لا يمكن أن يتجاوز العدد 1000 شخص"
+        }
+      },
+      
+      "proposedTripDate": {
+        "label": "تاريخ الرحلة المقترح",
+        "error": {
+          "pastDate": "لا يمكن أن يكون تاريخ الرحلة في الماضي"
+        }
+      },
+      
+      "services": {
+        "label": "الخدمات",
+        "placeholder": "الخدمات",
+        "options": {
+          "transportation": "المواصلات",
+          "accommodation": "الإقامة",
+          "meals": "الوجبات",
+          "guide": "مرشد سياحي"
+        }
+      },
+      
+      "tripDescription": {
+        "label": "وصف الرحلة",
+        "placeholder": "وصف الرحلة",
+        "error": {
+          "min": "يجب أن يكون الوصف 10 أحرف على الأقل",
+          "max": "لا يمكن أن يتجاوز الوصف 500 حرف"
+        }
+      },
+      
+      "specialRequirements": {
+        "label": "أي متطلبات خاصة",
+        "placeholder": "أي متطلبات خاصة",
+        "error": {
+          "max": "لا يمكن أن تتجاوز المتطلبات الخاصة 300 حرف"
+        }
+      },
+      
+      "attachFile": {
+        "label": "إرفاق ملف"
+      }
     }
   },
   "footer": {

@@ -78,7 +78,7 @@ const TripsOrdersManagement = () => {
         customizedCloseButton={true}
         padding={false}
       >
-        <CustomNewTripForm />
+        <CustomNewTripForm  formSelectionData={formSelectionData}/>
       </CustomizedModal>
     </>
   );
