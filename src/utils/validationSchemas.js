@@ -425,7 +425,7 @@ export const createCustomNewTripSchema = (t) =>
     category: Yup.string().required(t("forms.validation.require")),
     tripType: Yup.string().required(t("forms.validation.require")),
     city: Yup.string().required(t("forms.validation.require")),
-    academicStage: Yup.array().min(1, t("forms.validation.require")),
+    academicStages: Yup.array().min(1, t("forms.validation.require")),
     duration: Yup.number()
       .required(t("forms.validation.require"))
       .min(1, t("forms.customTrip.tripDuration.error.min"))

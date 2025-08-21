@@ -27,10 +27,10 @@ const SelectionGroup = ({
         multiple={multiple}
         IconComponent={KeyboardArrowDown}
         renderValue={(selected) => {
-          if (multiple && Array.isArray(selected) && selected.length === 0) {
+          if (multiple && (!selected || !Array.isArray(selected) || selected.length === 0)) {
             return <span style={{ color: '#9ca3af' }}>{placeholder}</span>;
           }
-          if (!multiple && selected === '') {
+          if (!multiple && (!selected || selected === '')) {
             return <span style={{ color: '#9ca3af' }}>{placeholder}</span>;
           }
           return multiple ? selected.join(', ') : selected;

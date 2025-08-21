@@ -55,8 +55,9 @@ const CustomNewTripForm = ({formSelectionData}) => {
     
     // Add all form fields to FormData
     Object.keys(values).forEach(key => {
-      if (key === 'file' && values[key]) {
-        formData.append(key, values[key]);
+      if (key === 'file') {
+        // Always append file field, even if null/undefined
+        formData.append(key, values[key] || '');
       } else if (values[key] !== null && values[key] !== undefined) {
         let valueToSend = values[key];
         
@@ -71,7 +72,7 @@ const CustomNewTripForm = ({formSelectionData}) => {
           case 'city':
             valueToSend = findIdByName(cityData, values[key]);
             break;
-          case 'academicStage':
+          case 'academicStages':
             // Handle array for multi-select
             if (Array.isArray(values[key])) {
               valueToSend = values[key].map(name => findIdByName(academicStageData, name));
@@ -161,7 +162,7 @@ const CustomNewTripForm = ({formSelectionData}) => {
             category: "",
             tripType: "",
             city: "",
-            academicStage: [],
+            academicStages: [],
             duration: "",
             availableSeats: "",
             basePrice: "",
@@ -169,7 +170,7 @@ const CustomNewTripForm = ({formSelectionData}) => {
             services: [],
             description: "",
             specialRequirements: "",
-            // file: null,
+            file: null,
           }}
           validationSchema={customTripSchema}
           onSubmit={handleSubmit}
@@ -237,12 +238,12 @@ const CustomNewTripForm = ({formSelectionData}) => {
                 {/* Academic Stage */}
                 <div className="somar-placeholder">
                   <SelectionGroup
-                    name="academicStage"
-                    value={values.academicStage}
+                    name="academicStages"
+                    value={values.academicStages}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    touched={touched.academicStage}
-                    errors={errors.academicStage}
+                    touched={touched.academicStages}
+                    errors={errors.academicStages}
                     placeholder={t("forms.customTrip.targetedTrip.placeholder")}
                     list={academicStageOptions}
                     multiple={true}
@@ -324,8 +325,6 @@ const CustomNewTripForm = ({formSelectionData}) => {
                 </div>
                 </div>
 
-        
-
               <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Trip Description */}
                       <div className="somar-placeholder">
@@ -363,9 +362,9 @@ const CustomNewTripForm = ({formSelectionData}) => {
               {/* File Upload */}
               <div className="mt-6">
                 <TextInputGroup
-                  label={t("forms.customTrip.attachFile.label")}
-                  type="file"
+                  // type="text"
                   name="file"
+                  placeholder={t("forms.customTrip.attachFile.label")}
                   errors={errors.file}
                   touched={touched.file}
                   onBlur={handleBlur}
