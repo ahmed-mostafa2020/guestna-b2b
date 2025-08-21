@@ -8,6 +8,7 @@ import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
 import CustomizedModal from "@components/common/customizedModal";
 import CustomNewTripForm from "@components/forms/customNewTrip";
+import { CircularProgress } from "@mui/material";
 
 const TripsOrdersManagement = () => {
   const t = useTranslations();
@@ -64,7 +65,7 @@ const TripsOrdersManagement = () => {
           className="flex text-sm lg:text-base items-center gap-2 rounded-lg text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <span className="flex items-center justify-center w-6 h-6 rounded-full bg-white text-mainColor font-bold">
-            {loading ? "..." : "+"}
+            {loading ? <CircularProgress size={20} /> : "+"}
           </span>
 
           {t("links.requestNewActivity")}
