@@ -9,27 +9,29 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const TextInputGroup = memo(
   ({
-    type = "text",
     label,
+    type,
     name,
-    inputMode,
+    value,
     errors,
     touched,
-    value,
     onChange,
     onBlur,
-    border = true,
-    placeholder = "",
-    textAlign,
-    maxLength,
-    minLength,
-    autoFocus = false,
+    placeholder,
     textarea = false,
-    rows = 4,
     uploadFile = false,
     onFileChange,
+    rows = 3,
+    minLength,
+    maxLength,
+    textAlign,
+    border = true,
+    inputMode,
+    autoFocus,
     nationalIdImageError,
     imageError,
+
+
     // labelFontFamily = "IBM Plex Sans Arabic, sans-serif",
   }) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -57,13 +59,16 @@ const TextInputGroup = memo(
           {textarea ? (
             <textarea
               className={cn(
-                "text-sm resize-none font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full  rounded-lg outline-none placeholder:font-normal placeholder:text-sm placeholder:font-ibm placeholder:text-textLight selection:bg-buttonsHover",
+                "text-sm resize-none font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full  rounded-lg outline-none placeholder:font-normal placeholder:text-sm placeholder:text-textLight selection:bg-buttonsHover",
                 textAlign && `text-${textAlign}`,
                 border && "border-2",
                 touched && errors && border
                   ? "border-error focus:border-error hover:border-error"
                   : "border-border focus:border-textDark hover:border-textDark"
               )}
+              style={{ 
+                fontFamily: 'inherit'
+              }}
               id={name}
               name={name}
               value={value}
@@ -72,17 +77,21 @@ const TextInputGroup = memo(
               minLength={minLength}
               maxLength={maxLength}
               rows={rows}
+              placeholder={placeholder}
             />
           ) : (
             <input
               className={cn(
-                "text-sm font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full  rounded-lg outline-none placeholder:font-normal placeholder:text-sm placeholder:font-ibm placeholder:text-textLight selection:bg-buttonsHover",
+                "text-sm font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full  rounded-lg outline-none placeholder:font-normal placeholder:text-sm placeholder:text-textLight selection:bg-buttonsHover",
                 textAlign && `text-${textAlign}`,
                 border && "border-2",
                 touched && errors && border
                   ? "border-error focus:border-error hover:border-error"
                   : "border-border focus:border-textDark hover:border-textDark"
               )}
+              style={{ 
+                fontFamily: 'inherit'
+              }}
               type={type === "password" && showPassword ? "text" : type}
               inputMode={
                 inputMode ? inputMode : type

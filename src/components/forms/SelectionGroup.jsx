@@ -12,9 +12,10 @@ const SelectionGroup = ({
   errors,
   placeholder,
   list,
+  multiple = false,
 }) => {
   return (
-    <FormControl error={touched && Boolean(errors)} className="relative">
+    <FormControl error={touched && Boolean(errors)} className="relative w-full">
       <Select
         labelId={`${name}-label`}
         id={name}
@@ -23,12 +24,24 @@ const SelectionGroup = ({
         onChange={onChange}
         onBlur={onBlur}
         displayEmpty
+        multiple={multiple}
         IconComponent={KeyboardArrowDown}
+        renderValue={(selected) => {
+          if (multiple && Array.isArray(selected) && selected.length === 0) {
+            return <span style={{ color: '#9ca3af' }}>{placeholder}</span>;
+          }
+          if (!multiple && selected === '') {
+            return <span style={{ color: '#9ca3af' }}>{placeholder}</span>;
+          }
+          return multiple ? selected.join(', ') : selected;
+        }}
         sx={{
+          width: "100%",
           "& .MuiSelect-select": {
             paddingRight: "40px !important",
             border: "1px solid #d1d5db",
             borderRadius: "8px",
+            width: "100%",
             "&:focus": {
               borderColor: "#ED8A22",
               boxShadow: "0 0 0 1px #ED8A22",
@@ -52,9 +65,11 @@ const SelectionGroup = ({
           },
         }}
       >
-        <MenuItem value="" disabled>
-          {placeholder}
-        </MenuItem>
+        {!multiple && (
+          <MenuItem value="" disabled>
+            {placeholder}
+          </MenuItem>
+        )}
         {list.map((item) => (
           <MenuItem
             key={item}
