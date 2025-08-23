@@ -1,5 +1,6 @@
 
 
+import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { memo, useState } from "react";
 import { Formik } from "formik";
@@ -22,6 +23,8 @@ const CustomNewTripForm = ({formSelectionData}) => {
 
   const locale = useLocale();
   const t = useTranslations();
+
+  const router = useRouter();
 
   const headers = getHeaders(locale);
   const customTripSchema = createCustomNewTripSchema(t);
@@ -142,6 +145,9 @@ const CustomNewTripForm = ({formSelectionData}) => {
           enqueueSnackbar(t("forms.customTrip.success"), {
             variant: "success",
           });
+
+          // Force a full page reload to refresh all data
+          window.location.reload();
         }
       })
       .catch((error) => {
