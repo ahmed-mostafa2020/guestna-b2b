@@ -110,7 +110,7 @@
   },
   "pagesHead": {
     "appName": "Guestna",
-    "content": "GuestNa App, Tourism, Saudi Arabia",
+    "content": "See Saudi Arabia Through GuestNa's Eyes",
     "title": {
       "home": "Home",
       "discover": "Discover",
@@ -363,7 +363,7 @@
 
   "discover": {
     "subHeader": {
-      "title": "Explore Saudi Arabia’s top destinations"
+      "content": "See Saudi Arabia Through GuestNa's Eyes"
     },
     "sideFilters": {
       "title": "Classifications",
