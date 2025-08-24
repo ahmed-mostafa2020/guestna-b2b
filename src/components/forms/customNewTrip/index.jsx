@@ -13,10 +13,10 @@ import { getHeaders } from "@utils/getHeaders";
 import getErrorMessage from "@utils/getErrorMessage ";
 import getProxyUrl from "@utils/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
 import FileUploadGroup from "../FileUploadGroup";
-import { CONSTANT_VALUES } from "@/src/constants/constantValues";
 
 const CustomNewTripForm = ({formSelectionData}) => {
   const [formErrors, setFormErrors] = useState([]);
@@ -33,9 +33,9 @@ const CustomNewTripForm = ({formSelectionData}) => {
   // Keep full objects for _id lookup
   const categoryData = formSelectionData.categories;
   const tripTypeData = [
+    {name: t("forms.customTrip.tripType.options.halfDay"), _id: CONSTANT_VALUES.HALF_DAY },
     {name: t("forms.customTrip.tripType.options.oneDay"), _id: CONSTANT_VALUES.ACTIVITY },
     {name: t("forms.customTrip.tripType.options.multiDay"), _id: CONSTANT_VALUES.PACKAGE },
-    {name: t("forms.customTrip.tripType.options.weekend"), _id: CONSTANT_VALUES.HALF_DAY },
   ];
   const cityData = formSelectionData.cities;
   const academicStageData = formSelectionData.academicStages;

@@ -35,7 +35,7 @@ const InfoCardsListing = ({ infoData }) => {
       {
         icon: totalStudentsIcon,
         title: t("profile.infoCards.totalSchools"),
-        value: infoData?.schoolsCount,
+        value: infoData?.schoolsCount || 1,
       },
       {
         icon: totalRevenueIcon,
@@ -57,7 +57,7 @@ const InfoCardsListing = ({ infoData }) => {
   ]);
 
   const renderedInfoCards = infoCardsListing.map(
-    (item, index) => item.value && <InfoCard key={index} item={item} />
+    (item, index) =>  <InfoCard key={index} item={item} />
   );
 
   return (

@@ -22,6 +22,7 @@ const OrdersPage = () => {
           {t("profile.tables.orders.followOrders")}
         </h2>
 
+        <div className="flex flex-col gap-4 lg:gap-8">
         <ProfilePageTemplate
           title={t("profile.aside.bookingsManagement.ordersManagement")}
           tableTitle={t("profile.tables.orders.normal.title")}
@@ -37,9 +38,20 @@ const OrdersPage = () => {
           endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.CUSTOMIZABLE}`}
           method="POST"
           emptyStateComponent={<EmptyBookings />}
-          contentComponent={(data) => <CustomizedTripsTable data={data} />}
+          contentComponent={(data, currentPage, setCurrentPage, enablePagination) => (
+            <CustomizedTripsTable 
+              data={data} 
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              enablePagination={enablePagination}
+            />
+          )}
+          enablePagination={true}
         />
       </div>
+        </div>
+
+
     </>
   );
 };

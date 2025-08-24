@@ -957,7 +957,7 @@
       "options": {
         "oneDay": "One Day Trip",
         "multiDay": "Multi-Day Trip",
-        "weekend": "Weekend Trip"
+        "halfDay": "Half Day Trip"
       }
     },
     
@@ -1043,6 +1043,14 @@
     "return": "Return Policy",
     "advertising": "Advertising on Guestna",
     "paymentMethods": "Payment Methods"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "showing": "Showing",
+    "to": "to",
+    "of": "of",
+    "results": "results"
   }
 }
 }

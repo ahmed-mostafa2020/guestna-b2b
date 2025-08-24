@@ -2,12 +2,12 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import React, { memo, useEffect } from "react";
+import React, { memo, useEffect, useState } from "react";
 
 import { useFetchData } from "@hooks/useFetchData";
 import ErrorComponent from "@feedback/error/ErrorComponent";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
-import ProfilePagesFilters from "./ProfilePagesFilters";
 
 const ProfilePageTemplate = ({
   title,
@@ -19,9 +19,13 @@ const ProfilePageTemplate = ({
   contentComponent,
   filterButtons = [],
   additionalParams = {},
+  enablePagination = false,
 }) => {
   const locale = useLocale();
   const t = useTranslations();
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const requestBody = enablePagination ? { perPage: CONSTANT_VALUES.TABLE_PER_PAGE, page: currentPage } : {};
 
   const { data, error, isLoading } = useFetchData(
     endpoint,
@@ -29,6 +33,7 @@ const ProfilePageTemplate = ({
     {
       method: method || "GET",
       lang: locale,
+      body: requestBody,
       ...additionalParams,
     }
   );
@@ -58,11 +63,11 @@ const ProfilePageTemplate = ({
   return (
     <main>
       {tableTitle && (
-        <h2 className="text-xl font-medium lg:text-2xl text-titleColor">
+        <h2 className="text-xl font-medium lg:text-2xl text-titleColor pb-4">
           {tableTitle}
         </h2>
       )}
-      {subTitle && <p className="text-base font-normal">{subTitle}</p>}
+
 
       {isEmpty ? (
         typeof emptyStateComponent === "function" ? (
@@ -73,16 +78,33 @@ const ProfilePageTemplate = ({
       ) : (
         <>
           {filterButtons.length > 0 && (
-            <ProfilePagesFilters buttonsList={filterButtons} />
+            <div className="flex flex-wrap gap-2 mb-4">
+              {filterButtons.map((button, index) => (
+                <button
+                  key={index}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    button.active
+                      ? "bg-primary text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                  onClick={button.onClick}
+                >
+                  {button.label}
+                </button>
+              ))}
+            </div>
           )}
-
-          <div className="py-3 lg:py-4">
-            {typeof contentComponent === "function"
-              ? contentComponent(data)
-              : React.isValidElement(contentComponent)
-              ? React.cloneElement(contentComponent, { data })
-              : contentComponent}
-          </div>
+          
+          {typeof contentComponent === "function"
+            ? contentComponent(data, currentPage, setCurrentPage, enablePagination)
+            : React.isValidElement(contentComponent)
+            ? React.cloneElement(contentComponent, { 
+                data, 
+                currentPage, 
+                setCurrentPage, 
+                enablePagination 
+              })
+            : contentComponent}
         </>
       )}
     </main>
