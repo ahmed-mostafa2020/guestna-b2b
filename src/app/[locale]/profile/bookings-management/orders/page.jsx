@@ -29,7 +29,15 @@ const OrdersPage = () => {
           endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.NORMAL}`}
           method="POST"
           emptyStateComponent={<EmptyBookings />}
-          contentComponent={(data) => <NormalTripsTable data={data} />}
+          contentComponent={(data, currentPage, setCurrentPage, enablePagination) => (
+            <NormalTripsTable 
+              data={data} 
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              enablePagination={enablePagination}
+            />
+          )}
+          enablePagination={true}
         />
 
         <ProfilePageTemplate

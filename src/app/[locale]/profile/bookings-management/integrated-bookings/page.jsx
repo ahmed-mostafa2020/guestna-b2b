@@ -18,7 +18,15 @@ const IntegratedBookingsManagementPage = () => {
       endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.RPORTS}`}
       method="POST"
       emptyStateComponent={<EmptyBookings />}
-      contentComponent={(data) => <ReportTable data={data} />}
+      contentComponent={(data, currentPage, setCurrentPage, enablePagination) => (
+        <ReportTable 
+          data={data} 
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          enablePagination={enablePagination}
+        />
+      )}
+      enablePagination={true}
     />
   );
 };

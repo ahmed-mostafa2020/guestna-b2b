@@ -9,12 +9,12 @@ import { memo } from "react";
 import formatDate from "@utils/FormateDate";
 import formatNumbersUint from "@utils/FormatNumbersUint";
 
-import { Card, CardContent } from "@mui/material";
+import { CardContent, Card } from "@mui/material";
+import Pagination from "@components/common/Pagination";
 
-const PackagesTable = ({ data }) => {
+const PackagesTable = ({ data, currentPage, setCurrentPage, enablePagination }) => {
   const locale = useLocale();
   const t = useTranslations();
-
   return (
     <div className="w-full space-y-6" dir="rtl">
       {/* Desktop Table */}
@@ -165,6 +165,16 @@ const PackagesTable = ({ data }) => {
           </Card>
         ))}
       </div>
+
+      {/* Pagination */}
+      {enablePagination && data && (
+        <Pagination
+          pageInfo={data.pageInfo || data}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          className="mt-6"
+        />
+      )}
     </div>
   );
 };

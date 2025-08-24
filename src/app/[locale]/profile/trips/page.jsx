@@ -19,7 +19,15 @@ const TripsPage = () => {
         endpoint={`${B2B_END_POINTS.PROFILE.TRIPS.ACTIVITIES}`}
         method="POST"
         emptyStateComponent={<EmptyTrips />}
-        contentComponent={(data) => <ActivitiesTable data={data} />}
+        contentComponent={(data, currentPage, setCurrentPage, enablePagination) => (
+          <ActivitiesTable 
+            data={data} 
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            enablePagination={enablePagination}
+          />
+        )}
+        enablePagination={true}
         // filterButtons={filterButtons}
         // additionalParams={{ lang: locale }}
       />
@@ -30,7 +38,15 @@ const TripsPage = () => {
         endpoint={`${B2B_END_POINTS.PROFILE.TRIPS.PACKAGES}`}
         method="POST"
         emptyStateComponent={<EmptyTrips />}
-        contentComponent={(data) => <PackagesTable data={data} />}
+        contentComponent={(data, currentPage, setCurrentPage, enablePagination) => (
+          <PackagesTable 
+            data={data} 
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            enablePagination={enablePagination}
+          />
+        )}
+        enablePagination={true}
         // filterButtons={filterButtons}
         // additionalParams={{ lang: locale }}
       />

@@ -11,8 +11,10 @@ import {
 import formatDate from "@utils/FormateDate";
 
 import { Typography, CardContent, Card } from "@mui/material";
+import { CONSTANT_VALUES } from "@constants/constantValues";
+import Pagination from "@components/common/Pagination";
 
-const BookingsTable = ({ data }) => {
+const BookingsTable = ({ data, currentPage, setCurrentPage, enablePagination }) => {
   const locale = useLocale();
   const t = useTranslations();
 
@@ -158,6 +160,37 @@ const BookingsTable = ({ data }) => {
           </Card>
         ))}
       </div>
+
+      {/* Pagination */}
+      {enablePagination && (
+        <div>
+          {data?.pageInfo && (
+            <Pagination
+              pageInfo={data.pageInfo}
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+              className="mt-6"
+            />
+          )}
+          
+          {/* Test pagination with mock data if no pageInfo */}
+          {!data?.pageInfo && (
+            <Pagination
+              pageInfo={{
+                total: 25,
+                perPage: CONSTANT_VALUES.TABLE_PER_PAGE,
+                currentPage: currentPage,
+                totalPages: 3,
+                hasNextPage: currentPage < 3,
+                hasPreviousPage: currentPage > 1
+              }}
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+              className="mt-6"
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 };

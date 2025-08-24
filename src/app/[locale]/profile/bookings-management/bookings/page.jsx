@@ -17,7 +17,15 @@ const BookingsPage = () => {
       endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.BOOKINGS}`}
       method="POST"
       emptyStateComponent={<EmptyBookings />}
-      contentComponent={(data) => <BookingsTable data={data} />}
+      contentComponent={(data, currentPage, setCurrentPage, enablePagination) => (
+        <BookingsTable 
+          data={data} 
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          enablePagination={enablePagination}
+        />
+      )}
+      enablePagination={true}
     />
   );
 };

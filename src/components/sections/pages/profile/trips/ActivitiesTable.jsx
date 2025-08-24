@@ -3,13 +3,13 @@
 import { useLocale, useTranslations } from "next-intl";
 
 import { memo } from "react";
-
+import { CardContent, Card } from "@mui/material";
 import formatDate from "@utils/FormateDate";
-
-import { Badge, Card, CardContent } from "@mui/material";
+import Badge from "@mui/material/Badge";
 import Link from "next/link";
+import Pagination from "@components/common/Pagination";
 
-const ActivitiesTable = ({ data }) => {
+const ActivitiesTable = ({ data, currentPage, setCurrentPage, enablePagination }) => {
   const locale = useLocale();
   const t = useTranslations();
 
@@ -145,6 +145,16 @@ const ActivitiesTable = ({ data }) => {
           </Card>
         ))}
       </div>
+
+      {/* Pagination */}
+      {enablePagination && data && (
+        <Pagination
+          pageInfo={data.pageInfo || data}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          className="mt-6"
+        />
+      )}
     </div>
   );
 };

@@ -9,8 +9,9 @@ import SurveyForm from "@components/forms/survey";
 
 import { Typography, CardContent, Card } from "@mui/material";
 import CustomizedModal from "@components/common/customizedModal";
+import Pagination from "@components/common/Pagination";
 
-const Report = ({ data }) => {
+const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
   const locale = useLocale();
   const t = useTranslations();
   const [showSurveyForm, setShowSurveyForm] = useState(false);
@@ -204,6 +205,16 @@ const Report = ({ data }) => {
             </Card>
           ))}
         </div>
+
+        {/* Pagination */}
+        {enablePagination && data && (
+          <Pagination
+            pageInfo={data.pageInfo || data}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            className="mt-6"
+          />
+        )}
       </div>
 
       {showSurveyForm && (
