@@ -1,5 +1,5 @@
+import { useLocale, useTranslations } from "next-intl";
 import { memo } from "react";
-import { useTranslations } from "next-intl";
 
 const Pagination = ({ 
   pageInfo, 
@@ -7,6 +7,8 @@ const Pagination = ({
   onPageChange,
   className = ""
 }) => {
+
+  const locale = useLocale();
   const t = useTranslations();
 
   // Handle different API response formats
@@ -122,21 +124,30 @@ const Pagination = ({
       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
         <div>
           <p className="text-sm text-gray-700">
-            {t("pagination.showing")} <span className="font-medium">{((activePage - 1) * 10) + 1}</span> {t("pagination.to")}{" "}
-            <span className="font-medium">{Math.min(activePage * 10, pageInfo.totalCount || 0)}</span> {t("pagination.of")}{" "}
-            <span className="font-medium">{pageInfo.totalCount || 0}</span> {t("pagination.results")}
+            {t("pagination.allResults")} {": "}
+            <span className="font-medium">{pageInfo.total || pageInfo.totalCount || 0}</span> {" , "}
+            {t("pagination.show")} {" "}
+
+             {t("pagination.of")}{" "}
+
+             <span className="font-medium">{((activePage - 1) * (pageInfo.perPage || 10)) + 1}</span>{" "}
+
+             {t("pagination.to")}{" "}
+             <span className="font-medium">{Math.min(activePage * (pageInfo.perPage || 10), pageInfo.total || pageInfo.totalCount || 0)}</span>
+
+
           </p>
         </div>
-        
         <div>
           <nav className="relative z-0 inline-flex -space-x-px rounded-md" aria-label="Pagination">
             <button
               onClick={() => handlePageClick(activePage - 1)}
               disabled={!hasPreviousPage}
-              className="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-s-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className="sr-only">{t("pagination.previous")}</span>
-              <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              
+              <svg className={`w-5 h-5 ${locale == "ar" ? "" : "rotate-180"}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
               </svg>
             </button>
@@ -148,10 +159,10 @@ const Pagination = ({
             <button
               onClick={() => handlePageClick(activePage + 1)}
               disabled={!hasNextPage}
-              className="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-e-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className="sr-only">{t("pagination.next")}</span>
-              <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <svg className={`w-5 h-5 ${locale == "ar" ? "" : "rotate-180"}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
               

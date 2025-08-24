@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import {
   memo,
 
-  // useState
+  
 } from "react";
 
 import formatDate from "@utils/FormateDate";
@@ -40,14 +40,9 @@ const NormalTripsTable = ({ data }) => {
     );
   }
 
-  // const handleChangePage = (event, newPage) => {
-  //   setPage(newPage);
-  // };
+  
 
-  // const handleChangeRowsPerPage = (event) => {
-  //   setRowsPerPage(parseInt(event.target.value, 10));
-  //   setPage(0);
-  // };
+ 
 
   return (
     <div className="w-full space-y-6">

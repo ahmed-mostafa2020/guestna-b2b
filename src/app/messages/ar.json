@@ -1073,9 +1073,9 @@
   "pagination": {
     "previous": "السابق",
     "next": "التالي",
-    "showing": "عرض",
+    "show": "عرض",
+    "allResults": "جميع النتائج",
     "to": "إلى",
-    "of": "من",
-    "results": "نتيجة"
+    "of": "من"
   }
 }

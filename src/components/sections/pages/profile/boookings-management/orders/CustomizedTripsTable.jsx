@@ -4,8 +4,6 @@ import { useLocale, useTranslations } from "next-intl";
 
 import {
   memo,
-
-  // useState
 } from "react";
 
 import formatDate from "@utils/FormateDate";
@@ -18,9 +16,6 @@ import { Typography, CardContent, Card } from "@mui/material";
 const CustomizedTripsTable = ({ data, currentPage, setCurrentPage, enablePagination }) => {
   const locale = useLocale();
   const t = useTranslations();
-
-  // const [page, setPage] = useState(0);
-  // const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const getStatusStyles = (status) => {
     switch (status) {
@@ -42,15 +37,6 @@ const CustomizedTripsTable = ({ data, currentPage, setCurrentPage, enablePaginat
       <Typography className="p-4 text-center">Loading bookings...</Typography>
     );
   }
-
-  // const handleChangePage = (event, newPage) => {
-  //   setPage(newPage);
-  // };
-
-  // const handleChangeRowsPerPage = (event) => {
-  //   setRowsPerPage(parseInt(event.target.value, 10));
-  //   setPage(0);
-  // };
 
   return (
     <div className="w-full space-y-6">

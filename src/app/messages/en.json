@@ -1047,10 +1047,10 @@
   "pagination": {
     "previous": "Previous",
     "next": "Next",
-    "showing": "Showing",
+    "show": "Show",
+    "allResults": "All Results",
     "to": "to",
-    "of": "of",
-    "results": "results"
+    "of": "of"
   }
 }
 }
