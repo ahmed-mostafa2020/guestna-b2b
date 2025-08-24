@@ -189,10 +189,10 @@ const CustomNewTripForm = ({formSelectionData}) => {
             tripType: "",
             city: "",
             academicStages: [],
-            duration: "",
             availableSeats: "",
             basePrice: "",
             day: "",
+            endDay: "",
             services: [],
             description: "",
             specialRequirements: "",
@@ -276,19 +276,18 @@ const CustomNewTripForm = ({formSelectionData}) => {
                   />
                 </div>
 
-                {/* Trip Duration */}
+                       {/* Services */}
                 <div className="somar-placeholder">
-                  <TextInputGroup
-                    type="number"
-                    name="duration"
-                    value={values.duration}
-                    errors={errors.duration}
-                    touched={touched.duration}
-                    onChange={handleNumberChange(handleChange)}
+                  <SelectionGroup
+                    name="services"
+                    value={values.services}
+                    onChange={handleChange}
                     onBlur={handleBlur}
-                    onKeyDown={handleKeyDown}
-                    placeholder={t("forms.customTrip.tripDuration.placeholder")}
-                    min="0"
+                    touched={touched.services}
+                    errors={errors.services}
+                    placeholder={t("forms.customTrip.services.placeholder")}
+                    list={servicesOptions}
+                    multiple={true}
                   />
                 </div>
 
@@ -308,9 +307,46 @@ const CustomNewTripForm = ({formSelectionData}) => {
                   />
                 </div>
 
-                {/* Price */}
+                {/* Proposed Trip Date */}
                 <div className="somar-placeholder">
                   <TextInputGroup
+                    label={t("forms.customTrip.proposedTripDate.startLabel")}
+                    type="date"
+                    name="day"
+                    value={values.day}
+                    errors={errors.day}
+                    touched={touched.day}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    min={new Date().toISOString().split('T')[0]}
+                    max={values.endDay || undefined}
+                  />
+                </div>
+
+                {/* End Date - Only show for multi-day trips */}
+                {(() => {
+                  const selectedTripType = tripTypeData.find(item => item.name === values.tripType);
+                  return selectedTripType?._id === CONSTANT_VALUES.PACKAGE;
+                })() && (
+                  <div className="somar-placeholder">
+                    <TextInputGroup
+                      label={t("forms.customTrip.proposedTripDate.endLabel")}
+                      type="date"
+                      name="endDay"
+                      value={values.endDay}
+                      errors={errors.endDay}
+                      touched={touched.endDay}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      min={values.day || new Date().toISOString().split('T')[0]}
+                    />
+                  </div>
+                )}
+
+                 {/* Price */}
+                 <div className="somar-placeholder">
+                  <TextInputGroup
+                  label={t("forms.customTrip.price.placeholder")}
                     type="number"
                     name="basePrice"
                     value={values.basePrice}
@@ -323,34 +359,6 @@ const CustomNewTripForm = ({formSelectionData}) => {
                     min="0"
                     minLength={1}
                     maxLength={8}
-                  />
-                </div>
-
-                {/* Proposed Trip Date */}
-                <div className="somar-placeholder">
-                  <TextInputGroup
-                    type="date"
-                    name="day"
-                    value={values.day}
-                    errors={errors.day}
-                    touched={touched.day}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  />
-                </div>
-
-                {/* Services */}
-                <div className="somar-placeholder">
-                  <SelectionGroup
-                    name="services"
-                    value={values.services}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    touched={touched.services}
-                    errors={errors.services}
-                    placeholder={t("forms.customTrip.services.placeholder")}
-                    list={servicesOptions}
-                    multiple={true}
                   />
                 </div>
                 </div>

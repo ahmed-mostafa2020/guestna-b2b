@@ -426,17 +426,26 @@ export const createCustomNewTripSchema = (t) =>
     tripType: Yup.string().required(t("forms.validation.require")),
     city: Yup.string().required(t("forms.validation.require")),
     academicStages: Yup.array().min(1, t("forms.validation.require")),
-    duration: Yup.number()
-      .required(t("forms.validation.require"))
-      .min(1, t("forms.customTrip.tripDuration.error.min"))
-      .max(30, t("forms.customTrip.tripDuration.error.max")),
     availableSeats: Yup.number()
       .required(t("forms.validation.require"))
       .min(1, t("forms.customTrip.expectedParticipants.error.min"))
       .max(1000, t("forms.customTrip.expectedParticipants.error.max")),
     day: Yup.date()
       .required(t("forms.validation.require"))
-      .min(new Date(), t("forms.customTrip.proposedTripDate.error.pastDate")),
+      .min(new Date(), t("forms.customTrip.proposedTripDate.error.pastDate"))
+      .test('start-before-end', t("forms.customTrip.proposedTripDate.error.startAfterEnd"), function(value) {
+        const { endDay } = this.parent;
+        if (!endDay || !value) return true;
+        return new Date(value) <= new Date(endDay);
+      }),
+    endDay: Yup.date()
+      .optional() 
+      .min(new Date(), t("forms.customTrip.proposedTripDate.error.pastDate"))
+      .test('end-after-start', t("forms.customTrip.proposedTripDate.error.endBeforeStart"), function(value) {
+        const { day } = this.parent;
+        if (!day || !value) return true;
+        return new Date(value) >= new Date(day);
+      }),
     services: Yup.array().min(1, t("forms.validation.require")),
     basePrice: Yup.number()
       .required(t("forms.validation.require"))

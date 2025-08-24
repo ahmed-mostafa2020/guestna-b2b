@@ -976,12 +976,11 @@
       "success": "تم إرسال طلبك بنجاح",
       
       "selectedTrip": {
-        "placeholder": "نوع الباقة"
-        
+        "placeholder": "نوع الرحلة"
       },
       
       "tripType": {
-        "placeholder": "نوع الرحلة",
+        "placeholder": "مدة الرحلة",
         "options": {
           "oneDay": "رحلة يوم واحد",
           "multiDay": "رحلة متعددة الأيام",
@@ -997,16 +996,6 @@
         "placeholder": "المرحلة المستهدفة"
       },
       
-      
-      
-      "tripDuration": {
-        "placeholder": "مدة الرحلة",
-        "error": {
-          "min": "يجب أن تكون مدة الرحلة يوم واحد على الأقل",
-          "max": "لا يمكن أن تتجاوز مدة الرحلة 30 يوماً"
-        }
-      },
-      
       "expectedParticipants": {
         "placeholder": "العدد المتوقع",
         "error": {
@@ -1016,8 +1005,12 @@
       },
       
       "proposedTripDate": {
+        "startLabel": "تاريخ بداية الرحلة",
+        "endLabel": "تاريخ نهاية الرحلة",
         "error": {
-          "pastDate": "لا يمكن أن يكون تاريخ الرحلة في الماضي"
+          "pastDate": "لا يمكن أن يكون تاريخ الرحلة في الماضي",
+          "startAfterEnd": "تاريخ البداية يجب أن يكون قبل تاريخ النهاية",
+          "endBeforeStart": "تاريخ النهاية يجب أن يكون بعد تاريخ البداية"
         }
       },
       

@@ -953,7 +953,7 @@
     },
     
     "tripType": {
-      "placeholder": "Trip Type",
+      "placeholder": "Trip Duration",
       "options": {
         "oneDay": "One Day Trip",
         "multiDay": "Multi-Day Trip",
@@ -971,16 +971,6 @@
       
     },
     
-
-    
-    "tripDuration": {
-      "placeholder": "Trip Duration",
-      "error": {
-        "min": "Trip duration must be at least 1 day",
-        "max": "Trip duration cannot exceed 30 days"
-      }
-    },
-    
     "expectedParticipants": {
       "placeholder": "Expected Number",
       "error": {
@@ -990,8 +980,12 @@
     },
     
     "proposedTripDate": {
+      "startLabel": "Proposed Trip Date",
+      "endLabel": "Proposed Trip Date",
       "error": {
-        "pastDate": "Trip date cannot be in the past"
+        "pastDate": "Trip date cannot be in the past",
+        "startAfterEnd": "Start date must be before end date",
+        "endBeforeStart": "End date must be after start date"
       }
     },
     
