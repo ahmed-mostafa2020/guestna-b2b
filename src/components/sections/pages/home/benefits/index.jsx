@@ -64,11 +64,11 @@ const Benefits = () => {
           className="object-cover border-2 border-[#EFEFEF] bg-[#EFEFEF] rounded-[100px]"
         />
 
-        <h3 className="text-xl font-medium text-center text-titleColor lg:text-2xl text-wrap lg:text-nowrap">
+        <h3 className="text-lg font-medium text-center text-titleColor lg:text-xl text-wrap lg:text-nowrap">
           {benefit.title}
         </h3>
 
-        <p className="text-lg font-medium w-[95%] text-center text-[#495151] lg:text-xl pb-6">
+        <p className="text-base font-medium w-[95%] text-center text-[#495151] lg:text-lg pb-6">
           {benefit.description}
         </p>
       </div>

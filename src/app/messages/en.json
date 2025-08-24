@@ -143,7 +143,7 @@
     "reset": "Reset",
     "clearAll": "Clear All",
     "more": "Learn more",
-    "viewTripDetails": "View Trip Details",
+    "viewTripDetails": "Take a look at the trip",
     "viewPackageDetails": "View Package Details",
     "backHome": "Back Home",
     "addToFavorites": "Add to Favorites",
@@ -187,20 +187,20 @@
     "b2c": "GuestNa for Individuals",
     "login": "Login",
     "showSettings": "Show Settings",
-    "chooseFavoriteLanguage": "Choose Favorite Language",
-    "chooseCountry": "Choose Country",
+    "chooseFavoriteLanguage": "Choose a Language",
+    "chooseCountry": "Choose a Country",
     "country": "Country",
     "language": "Language",
     "currency": "Currency"
   },
   "hero": {
-    "title": "Enter the world of educational learning",
-    "subTitle": "Make your students' trips unforgettable memories",
+    "title": "Edutainment is the Future",
+    "subTitle": "The Adventure Begins Outside the Classroom",
     "with": "with",
     "advantages": "school programs",
     "safe": "Safe",
     "diverse": "Diverse",
-    "ready": "Ready"
+    "ready": "well-prepared"
   },
   "filtersBox": {
     "multiDaysTrips": "Multi Days Trips",
@@ -209,7 +209,7 @@
     "setTripDuration": "Set trip duration",
     "setTripType": "Set trip type",
     "setAcademicStage": "Set academic stage",
-    "searchDestination": "Search Your Destination",
+    "searchDestination": "Where would you like to go?",
     "checkIn": "Check In",
     "addDates": "Add Dates",
     "addDay": "Add The Day",
@@ -218,7 +218,7 @@
     "addGuests": "Add Guests",
     "budget": "Budget",
     "setBudget": "Set Your Budget",
-    "searchByLocation": "Search by location",
+    "searchByLocation": "Search Anywhere",
     "maximum": "Maximum",
     "minimum": "Minimum",
     "mobileTitle": "Where do you want to go?",
@@ -227,16 +227,16 @@
     "AcademicStage": "Academic Stage"
   },
   "plans": {
-    "title": "Plan your school trip with ease, all options in one place.",
-    "subTitle": "Let's start a journey together that will create unforgettable memories"
+    "title": "All You Need for an Unforgettable School Trip, Right Here",
+    "subTitle": "We’ll Take Care of the Planning, So You Can Just Enjoy the Adventure"
   },
   "mainCategories": {
-    "title": "More than 400 educational destinations in more than 20 cities around Saudi Arabia",
+    "title": "Educational Destinations All Over Saudi Arabia",
     "subTitle": "Each school trip is a unique educational and entertaining experience, with customized programs that easily fit the needs of students and the goals of the school."
   },
   "features": {
     "feature1": {
-      "title": "Selection and customization",
+      "title": "Customized Trips That Fit Your Objectives",
       "description": "Personalizing safe learning experiences with advanced technologies."
     },
     "feature2": {
@@ -254,7 +254,7 @@
   },
   "trips": {
     "title": "Unforgettable learning experiences",
-    "subTitle": "Various trips"
+    "subTitle": "Every destination we visit and every adventure we experience is filled with meaningful moments. These moments become stories worth sharing and unforgettable memories."
   },
   "tripDetails": {
     "tags": {
@@ -293,18 +293,18 @@
     "items": {
       "choosing": {
         "title": "Selection and customization",
-        "subTitle": "Select and customize safe educational experiences and trips using advanced and simple technologies."
+        "subTitle": "With our easy‑to‑use digital tools, you’ll design safe, personalized learning adventures your students will love."
       },
       "entertainment": {
-        "title": "Integrating education with entertainment",
-        "subTitle": "Integrating education with entertainment to create flexible experiences that are adaptable to diverse educational curricula and objectives"
+        "title": "Trips designed to inspire the mind, spark joy, and make school subjects come alive.",
+        "subTitle": "Blending education and entertainment to craft flexible experiences tailored to varied curricula and learning goals."
       },
       "support": {
         "title": "Comprehensive technical and professional support",
-        "subTitle": "Covering all school needs, and providing comprehensive and integrated technical and professional support"
+        "subTitle": "We cover all your school’s needs through seamless, end-to-end technical and professional support."
       },
       "activities": {
-        "title": "Various activities and adventures",
+        "title": "Adventures Made for Everyone",
         "subTitle": "Providing diverse and innovative activities and adventures for students through partnerships with local service providers."
       },
       "callUs": {
