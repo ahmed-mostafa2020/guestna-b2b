@@ -528,6 +528,26 @@
         },
         "customizable": {
           "title": "طلبات الأنشطة المخصصة"
+        },
+        "bookingDetails": {
+          "title": "تفاصيل الحجز",
+          "tripInfo": "معلومات الرحلة",
+          "schoolInfo": "معلومات المدرسة",
+          "tripDescription": "وصف الرحلة",
+          "location": "الموقع",
+          "time": "الوقت",
+          "fees": "الرسوم",
+          "bookingStatus": "حالة الحجز",
+          "schoolName": "اسم المدرسة",
+          "contactPerson": "جهة الاتصال",
+          "phoneNumber": "رقم الهاتف",
+          "bookingDate": "تاريخ الحجز",
+          "tripStartDate": "تاريخ بداية الرحلة",
+          "tripEndDate": "تاريخ انتهاء الرحلة",
+          "category": "الفئة",
+          "participants": "عدد المشاركين",
+          "printReport": "طباعة التقرير",
+          "sendDetails": "إرسال التفاصيل"
         }
       }
     },
@@ -971,14 +991,14 @@
     },
 
     "customTrip": {
-      "title": "طلب إنشاء رحلة جديدة",
-      "submit": "إرسال الطلب إلى فريق جستنا",
-      "success": "تم إرسال طلبك بنجاح",
-      
+      "title": "Request to Create a New Trip",
+      "submit": "Send Request to Guestna Team",
+      "success": "Your request has been sent successfully",
+
       "selectedTrip": {
         "placeholder": "نوع الرحلة"
       },
-      
+
       "tripType": {
         "placeholder": "مدة الرحلة",
         "options": {
@@ -987,15 +1007,15 @@
           "halfDay": "رحلة نصف يوم "
         }
       },
-      
+
       "city": {
         "placeholder": "المدينة"
       },
-      
+
       "targetedTrip": {
         "placeholder": "المرحلة المستهدفة"
       },
-      
+
       "expectedParticipants": {
         "placeholder": "العدد المتوقع",
         "error": {
@@ -1003,7 +1023,7 @@
           "max": "لا يمكن أن يتجاوز العدد 1000 شخص"
         }
       },
-      
+
       "proposedTripDate": {
         "startLabel": "تاريخ بداية الرحلة",
         "endLabel": "تاريخ نهاية الرحلة",
@@ -1013,19 +1033,18 @@
           "endBeforeStart": "تاريخ النهاية يجب أن يكون بعد تاريخ البداية"
         }
       },
-      
+
       "price": {
         "placeholder": "الميزانية المقترحة بالريال السعودي",
         "error": {
           "min": "يجب أن لا يقل السعر عن 1 ريال سعودي"
         }
       },
-      
+
       "services": {
         "placeholder": "الخدمات"
       },
-      
-      
+
       "tripDescription": {
         "placeholder": "وصف الرحلة",
         "error": {
@@ -1033,14 +1052,14 @@
           "max": "لا يمكن أن يتجاوز الوصف 500 حرف"
         }
       },
-      
+
       "specialRequirements": {
         "placeholder": "أي متطلبات خاصة",
         "error": {
           "max": "لا يمكن أن تتجاوز المتطلبات الخاصة 300 حرف"
         }
       },
-      
+
       "attachFile": {
         "label": "إرفاق ملف"
       }

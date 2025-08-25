@@ -521,6 +521,26 @@
         },
         "customizable": {
           "title": "Customized Activities Orders"
+        },
+        "bookingDetails": {
+          "title": "Booking Details",
+          "tripInfo": "Trip Information",
+          "schoolInfo": "School Information",
+          "tripDescription": "Trip Description",
+          "location": "Location",
+          "time": "Time",
+          "fees": "Fees",
+          "bookingStatus": "Booking Status",
+          "schoolName": "School Name",
+          "contactPerson": "Contact Person",
+          "phoneNumber": "Phone Number",
+          "bookingDate": "Booking Date",
+          "tripStartDate": "Trip Start Date",
+          "tripEndDate": "Trip End Date",
+          "category": "Category",
+          "participants": "Participants",
+          "printReport": "Print Report",
+          "sendDetails": "Send Details"
         }
       }
     },
@@ -942,109 +962,104 @@
       }
     },
 
-  "customTrip": {
-    "title": "Request to Create a New Trip",
-    "submit": "Send Request to Guestna Team",
-    "success": "Your request has been sent successfully",
-    
-    "selectedTrip": {
-      "placeholder": "Category type"
-     
-    },
-    
-    "tripType": {
-      "placeholder": "Trip Duration",
-      "options": {
-        "oneDay": "One Day Trip",
-        "multiDay": "Multi-Day Trip",
-        "halfDay": "Half Day Trip"
-      }
-    },
-    
-    "city": {
-      "placeholder": "City"
-      
-    },
-    
-    "targetedTrip": {
-      "placeholder": "Target Stage"
-      
-    },
-    
-    "expectedParticipants": {
-      "placeholder": "Expected Number",
-      "error": {
-        "min": "Number must be at least 1 person",
-        "max": "Number cannot exceed 1000 people"
-      }
-    },
-    
-    "proposedTripDate": {
-      "startLabel": "Proposed Trip Date",
-      "endLabel": "Proposed Trip Date",
-      "error": {
-        "pastDate": "Trip date cannot be in the past",
-        "startAfterEnd": "Start date must be before end date",
-        "endBeforeStart": "End date must be after start date"
-      }
-    },
-    
-    "price": {
-      "placeholder": "Proposed Price (SAR)",
-      "error": {
-        "min": "Proposed price must be at least 1 SAR"
-      }
-    },
-    
-    "services": {
-      "placeholder": "Services"
-      
-    },
+    "customTrip": {
+      "title": "Request to Create a New Trip",
+      "submit": "Send Request to Guestna Team",
+      "success": "Your request has been sent successfully",
 
-    
-    "tripDescription": {
-      "placeholder": "Trip Description",
-      "error": {
-        "min": "Description must be at least 10 characters",
-        "max": "Description cannot exceed 500 characters"
+      "selectedTrip": {
+        "placeholder": "Category type"
+      },
+
+      "tripType": {
+        "placeholder": "Trip Duration",
+        "options": {
+          "oneDay": "One Day Trip",
+          "multiDay": "Multi-Day Trip",
+          "halfDay": "Half Day Trip"
+        }
+      },
+
+      "city": {
+        "placeholder": "City"
+      },
+
+      "targetedTrip": {
+        "placeholder": "Target Stage"
+      },
+
+      "expectedParticipants": {
+        "placeholder": "Expected Number",
+        "error": {
+          "min": "Number must be at least 1 person",
+          "max": "Number cannot exceed 1000 people"
+        }
+      },
+
+      "proposedTripDate": {
+        "startLabel": "Proposed Trip Date",
+        "endLabel": "Proposed Trip Date",
+        "error": {
+          "pastDate": "Trip date cannot be in the past",
+          "startAfterEnd": "Start date must be before end date",
+          "endBeforeStart": "End date must be after start date"
+        }
+      },
+
+      "price": {
+        "placeholder": "Proposed Price (SAR)",
+        "error": {
+          "min": "Proposed price must be at least 1 SAR"
+        }
+      },
+
+      "services": {
+        "placeholder": "Services"
+      },
+
+      "tripDescription": {
+        "placeholder": "Trip Description",
+        "error": {
+          "min": "Description must be at least 10 characters",
+          "max": "Description cannot exceed 500 characters"
+        }
+      },
+
+      "specialRequirements": {
+        "placeholder": "Any Special Requirements",
+        "error": {
+          "max": "Special requirements cannot exceed 300 characters"
+        }
+      },
+
+      "attachFile": {
+        "label": "Attach File"
       }
     },
-    
-    "specialRequirements": {
-      "placeholder": "Any Special Requirements",
-      "error": {
-        "max": "Special requirements cannot exceed 300 characters"
-      }
+    "footer": {
+      "company": "Company",
+      "aboutUs": "About Us",
+      "articles": "Articles",
+      "bePartner": "Be Partner",
+      "jobOffers": "Job Offers",
+      "support": "Support",
+      "callUs": "Call Us",
+      "faq": "FAQ",
+      "map": "Map",
+      "legal": "Legal",
+      "terms": "Terms and Conditions",
+      "privacy": "Privacy Policy",
+      "return": "Return Policy",
+      "advertising": "Advertising on Guestna",
+      "paymentMethods": "Payment Methods"
     },
-    
-    "attachFile": {
-      "label": "Attach File"
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "show": "Show",
+      "allResults": "All Results",
+      "to": "to",
+      "of": "of"
     }
-  },
-  "footer": {
-    "company": "Company",
-    "aboutUs": "About Us",
-    "articles": "Articles",
-    "bePartner": "Be Partner",
-    "jobOffers": "Job Offers",
-    "support": "Support",
-    "callUs": "Call Us",
-    "faq": "FAQ",
-    "map": "Map",
-    "legal": "Legal",
-    "terms": "Terms and Conditions",
-    "privacy": "Privacy Policy",
-    "return": "Return Policy",
-    "advertising": "Advertising on Guestna",
-    "paymentMethods": "Payment Methods"
-  },
-  "pagination": {
-    "previous": "Previous",
-    "next": "Next",
-    "show": "Show",
-    "allResults": "All Results",
-    "to": "to",
-    "of": "of"
   }
-}
 }

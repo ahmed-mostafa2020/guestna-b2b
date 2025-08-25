@@ -38,7 +38,7 @@ const CustomizedModal = ({
         {handleClose && !customizedCloseButton && closeButton ? (
           <div className="flex items-center w-full mb-3">
             <button onClick={handleClose} className="outline-none centered">
-              <CloseIcon sx={{ color: "white", fontSize: "24px" }} />
+              <CloseIcon sx={{ color: "white", fontSize: "24px", zIndex: 3 }} />
             </button>
           </div>
         ) : closeButton ? (
@@ -46,7 +46,7 @@ const CustomizedModal = ({
             onClick={handleClose}
             className="mt-4 bg-white rounded-full outline-none ms-4 w-7 h-7 centered"
           >
-            <CloseIcon sx={{ color: "black", fontSize: "22px" }} />
+            <CloseIcon sx={{ color: "black", fontSize: "22px", zIndex: 3 }} />
           </button>
         ) : null}
 

@@ -2,11 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import {
-  memo,
-
-  
-} from "react";
+import { memo } from "react";
 
 import formatCurrency from "@utils/FormatCurrency";
 import formatDate from "@utils/FormateDate";
@@ -24,18 +20,11 @@ const BookingsTable = ({ data }) => {
   const locale = useLocale();
   const t = useTranslations();
 
-  // const [page, setPage] = useState(0);
-  // const [rowsPerPage, setRowsPerPage] = useState(10);
-
   if (!data || !data.nodes) {
     return (
       <Typography className="p-4 text-center">Loading bookings...</Typography>
     );
   }
-
-  
-
- 
 
   return (
     <div className="w-full space-y-6">

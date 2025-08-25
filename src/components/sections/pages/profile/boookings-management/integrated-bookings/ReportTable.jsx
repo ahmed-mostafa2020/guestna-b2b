@@ -26,18 +26,11 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
     setSelectedBooking(null);
   };
 
-  // const [page, setPage] = useState(0);
-  // const [rowsPerPage, setRowsPerPage] = useState(10);
-
   if (!data || !data.nodes) {
     return (
       <Typography className="p-4 text-center">Loading bookings...</Typography>
     );
   }
-
-  
-
- 
 
   return (
     <>

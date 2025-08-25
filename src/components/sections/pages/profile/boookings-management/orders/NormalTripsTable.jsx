@@ -2,23 +2,21 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import {
-  memo,
-
-  
-} from "react";
+import { memo } from "react";
 
 import formatDate from "@utils/FormateDate";
 
 import { Typography, CardContent, Card } from "@mui/material";
 import Pagination from "@components/common/Pagination";
 
-const NormalTripsTable = ({ data, currentPage, setCurrentPage, enablePagination }) => {
+const NormalTripsTable = ({
+  data,
+  currentPage,
+  setCurrentPage,
+  enablePagination,
+}) => {
   const locale = useLocale();
   const t = useTranslations();
-
-  // const [page, setPage] = useState(0);
-  // const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const getStatusStyles = (status) => {
     switch (status) {
@@ -40,10 +38,6 @@ const NormalTripsTable = ({ data, currentPage, setCurrentPage, enablePagination 
       <Typography className="p-4 text-center">Loading bookings...</Typography>
     );
   }
-
-  
-
- 
 
   return (
     <div className="w-full space-y-6">
@@ -192,7 +186,7 @@ const NormalTripsTable = ({ data, currentPage, setCurrentPage, enablePagination 
               className="mt-6"
             />
           )}
-          
+
           {/* Test pagination with mock data if no pageInfo */}
           {!data?.pageInfo && (
             <Pagination
@@ -202,7 +196,7 @@ const NormalTripsTable = ({ data, currentPage, setCurrentPage, enablePagination 
                 currentPage: currentPage,
                 totalPages: 3,
                 hasNextPage: currentPage < 3,
-                hasPreviousPage: currentPage > 1
+                hasPreviousPage: currentPage > 1,
               }}
               currentPage={currentPage}
               onPageChange={setCurrentPage}

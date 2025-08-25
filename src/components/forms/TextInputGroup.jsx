@@ -32,7 +32,10 @@ const TextInputGroup = memo(
     nationalIdImageError,
     imageError,
     readOnly = false,
-
+    style,
+    onClick,
+    min,
+    max,
 
     // labelFontFamily = "IBM Plex Sans Arabic, sans-serif",
   }) => {
@@ -90,10 +93,12 @@ const TextInputGroup = memo(
                 border && "border-2",
                 touched && errors && border
                   ? "border-error focus:border-error hover:border-error"
-                  : "border-border focus:border-textDark hover:border-textDark"
+                  : "border-border focus:border-textDark hover:border-textDark",
+                type === 'date' && "cursor-pointer"
               )}
               style={{ 
-                fontFamily: 'inherit'
+                fontFamily: 'inherit',
+                ...style
               }}
               type={type === "password" && showPassword ? "text" : type}
               inputMode={
@@ -109,6 +114,7 @@ const TextInputGroup = memo(
               onChange={onChange}
               onBlur={onBlur}
               onKeyDown={onKeyDown}
+              onClick={onClick}
               placeholder={placeholder}
               autoComplete={
                 name === "cardholderName" ? "new-password" : "false"
@@ -119,6 +125,9 @@ const TextInputGroup = memo(
               // aria-autocomplete={name === "cardholderName" ? "none" : "list"}
               maxLength={maxLength}
               minLength={minLength}
+              min={min}
+              max={max}
+              readOnly={readOnly}
             />
           )}
 

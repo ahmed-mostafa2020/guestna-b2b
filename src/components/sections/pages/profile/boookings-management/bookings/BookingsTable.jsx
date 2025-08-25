@@ -2,34 +2,41 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import {
-  memo,
-
-  
-} from "react";
+import { memo, useState } from "react";
 
 import formatDate from "@utils/FormateDate";
 
 import { Typography, CardContent, Card } from "@mui/material";
-import { CONSTANT_VALUES } from "@constants/constantValues";
 import Pagination from "@components/common/Pagination";
+import BookingDetailsModal from "./BookingDetailsModal";
+import CustomizedModal from "@/src/components/common/customizedModal";
 
-const BookingsTable = ({ data, currentPage, setCurrentPage, enablePagination }) => {
+const BookingsTable = ({
+  data,
+  currentPage,
+  setCurrentPage,
+  enablePagination,
+}) => {
   const locale = useLocale();
   const t = useTranslations();
 
-  // const [page, setPage] = useState(0);
-  // const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
+
+  const handleShowModal = (bookingId) => {
+    console.log("Opening modal for booking ID:", bookingId);
+    setSelectedBookingId(bookingId);
+  };
+
+  const handleCloseModal = () => {
+    console.log("Closing modal");
+    setSelectedBookingId(null);
+  };
 
   if (!data || !data.nodes) {
     return (
       <Typography className="p-4 text-center">Loading bookings...</Typography>
     );
   }
-
-  
-
- 
 
   return (
     <div className="w-full space-y-6">
@@ -99,7 +106,10 @@ const BookingsTable = ({ data, currentPage, setCurrentPage, enablePagination }) 
                     </td>
 
                     <td className="px-6 py-4">
-                      <button className="rounded-md text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out">
+                      <button
+                        onClick={() => handleShowModal(booking._id)}
+                        className="rounded-md text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
+                      >
                         {t("links.showDetails")}
                       </button>
                     </td>
@@ -151,7 +161,10 @@ const BookingsTable = ({ data, currentPage, setCurrentPage, enablePagination }) 
 
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <button className="rounded-lg text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out">
+                  <button
+                    onClick={() => handleShowModal(booking._id)}
+                    className="rounded-lg text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
+                  >
                     {t("links.showDetails")}
                   </button>
                 </div>
@@ -172,24 +185,26 @@ const BookingsTable = ({ data, currentPage, setCurrentPage, enablePagination }) 
               className="mt-6"
             />
           )}
-          
-          {/* Test pagination with mock data if no pageInfo */}
-          {!data?.pageInfo && (
-            <Pagination
-              pageInfo={{
-                total: 25,
-                perPage: CONSTANT_VALUES.TABLE_PER_PAGE,
-                currentPage: currentPage,
-                totalPages: 3,
-                hasNextPage: currentPage < 3,
-                hasPreviousPage: currentPage > 1
-              }}
-              currentPage={currentPage}
-              onPageChange={setCurrentPage}
-              className="mt-6"
-            />
-          )}
         </div>
+      )}
+
+      {/* Single Modal Outside Loop */}
+      {selectedBookingId && (
+        <CustomizedModal
+          open={true}
+          handleClose={handleCloseModal}
+          bgcolor="rgba(0, 0, 0, 0.15)"
+          customizedCloseButton={true}
+          padding={false}
+        >
+          <BookingDetailsModal
+            open={true}
+            onClose={handleCloseModal}
+            booking={data.nodes.find(
+              (booking) => booking._id === selectedBookingId
+            )}
+          />
+        </CustomizedModal>
       )}
     </div>
   );

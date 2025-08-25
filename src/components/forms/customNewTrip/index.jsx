@@ -147,7 +147,7 @@ const CustomNewTripForm = ({formSelectionData}) => {
           });
 
           // Force a full page reload to refresh all data
-          window.location.reload();
+          // window.location.reload();
         }
       })
       .catch((error) => {
@@ -320,6 +320,8 @@ const CustomNewTripForm = ({formSelectionData}) => {
                     onBlur={handleBlur}
                     min={new Date().toISOString().split('T')[0]}
                     max={values.endDay || undefined}
+                    style={{ cursor: 'pointer' }}
+                    onClick={(e) => e.target.showPicker && e.target.showPicker()}
                   />
                 </div>
 
@@ -339,6 +341,8 @@ const CustomNewTripForm = ({formSelectionData}) => {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       min={values.day || new Date().toISOString().split('T')[0]}
+                      style={{ cursor: 'pointer' }}
+                      onClick={(e) => e.target.showPicker && e.target.showPicker()}
                     />
                   </div>
                 )}
