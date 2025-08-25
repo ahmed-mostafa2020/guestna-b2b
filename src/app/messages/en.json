@@ -523,7 +523,7 @@
           "title": "Customized Activities Orders"
         },
         "bookingDetails": {
-          "title": "Booking Details",
+          "title": "Trip Details",
           "tripInfo": "Trip Information",
           "schoolInfo": "School Information",
           "tripDescription": "Trip Description",
