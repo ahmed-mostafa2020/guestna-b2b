@@ -2,9 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import {
-  memo,
-} from "react";
+import { memo } from "react";
 
 import formatDate from "@utils/FormateDate";
 import formatCurrency from "@utils/FormatCurrency";
@@ -12,7 +10,12 @@ import Pagination from "@components/common/Pagination";
 
 import { Typography, CardContent, Card } from "@mui/material";
 
-const CustomizedTripsTable = ({ data, currentPage, setCurrentPage, enablePagination }) => {
+const CustomizedTripsTable = ({
+  data,
+  currentPage,
+  setCurrentPage,
+  enablePagination,
+}) => {
   const locale = useLocale();
   const t = useTranslations();
 
@@ -51,7 +54,7 @@ const CustomizedTripsTable = ({ data, currentPage, setCurrentPage, enablePaginat
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className=" bg-table-header">
+                <tr className=" bg-table-header hover:bg-gray-50 transition-colors">
                   <th className="px-6 py-4 font-medium text-start">
                     {t("profile.tables.bookings.header.orderId")}
                   </th>
@@ -111,7 +114,7 @@ const CustomizedTripsTable = ({ data, currentPage, setCurrentPage, enablePaginat
                     </td>
 
                     <td className="px-6 py-4 text-sm font-medium text-foreground">
-                    {formatCurrency(booking.basePrice || booking.tripPrice)}
+                      {formatCurrency(booking.basePrice || booking.tripPrice)}
                     </td>
 
                     <td className="px-6 py-4">
@@ -152,7 +155,7 @@ const CustomizedTripsTable = ({ data, currentPage, setCurrentPage, enablePaginat
             <CardContent className="p-4 space-y-3">
               <div className="flex flex-col items-start justify-between">
                 <h3 className="text-lg font-bold leading-relaxed text-foreground">
-                {booking.orderId || index + 1}
+                  {booking.orderId || index + 1}
                 </h3>
               </div>
 

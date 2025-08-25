@@ -23,43 +23,51 @@ const OrdersPage = () => {
         </h2>
 
         <div className="flex flex-col gap-4 lg:gap-8">
-        <ProfilePageTemplate
-          title={t("profile.aside.bookingsManagement.ordersManagement")}
-          tableTitle={t("profile.tables.orders.normal.title")}
-          endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.NORMAL}`}
-          method="POST"
-          emptyStateComponent={<EmptyBookings />}
-          contentComponent={(data, currentPage, setCurrentPage, enablePagination) => (
-            <NormalTripsTable 
-              data={data} 
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              enablePagination={enablePagination}
-            />
-          )}
-          enablePagination={true}
-        />
+          <ProfilePageTemplate
+            title={t("profile.aside.bookingsManagement.ordersManagement")}
+            tableTitle={t("profile.tables.orders.normal.title")}
+            endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.NORMAL}`}
+            method="POST"
+            emptyStateComponent={<EmptyBookings />}
+            contentComponent={(
+              data,
+              currentPage,
+              setCurrentPage,
+              enablePagination
+            ) => (
+              <NormalTripsTable
+                data={data}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                enablePagination={enablePagination}
+              />
+            )}
+            enablePagination={true}
+          />
 
-        <ProfilePageTemplate
-          title={t("profile.aside.bookingsManagement.ordersManagement")}
-          tableTitle={t("profile.tables.orders.customizable.title")}
-          endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.CUSTOMIZABLE}`}
-          method="POST"
-          emptyStateComponent={<EmptyBookings />}
-          contentComponent={(data, currentPage, setCurrentPage, enablePagination) => (
-            <CustomizedTripsTable 
-              data={data} 
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              enablePagination={enablePagination}
-            />
-          )}
-          enablePagination={true}
-        />
-      </div>
+          <ProfilePageTemplate
+            title={t("profile.aside.bookingsManagement.ordersManagement")}
+            tableTitle={t("profile.tables.orders.customizable.title")}
+            endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.CUSTOMIZABLE}`}
+            method="POST"
+            emptyStateComponent={<EmptyBookings />}
+            contentComponent={(
+              data,
+              currentPage,
+              setCurrentPage,
+              enablePagination
+            ) => (
+              <CustomizedTripsTable
+                data={data}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                enablePagination={enablePagination}
+              />
+            )}
+            enablePagination={true}
+          />
         </div>
-
-
+      </div>
     </>
   );
 };

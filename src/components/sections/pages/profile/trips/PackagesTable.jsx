@@ -12,7 +12,12 @@ import formatNumbersUint from "@utils/FormatNumbersUint";
 import { CardContent, Card } from "@mui/material";
 import Pagination from "@components/common/Pagination";
 
-const PackagesTable = ({ data, currentPage, setCurrentPage, enablePagination }) => {
+const PackagesTable = ({
+  data,
+  currentPage,
+  setCurrentPage,
+  enablePagination,
+}) => {
   const locale = useLocale();
   const t = useTranslations();
   return (
@@ -29,7 +34,7 @@ const PackagesTable = ({ data, currentPage, setCurrentPage, enablePagination }) 
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-table-header">
+                <tr className=" bg-table-header">
                   <th className="px-6 py-4 font-medium text-start">
                     {t("profile.tables.packages.header.tripName")}
                   </th>
@@ -55,9 +60,7 @@ const PackagesTable = ({ data, currentPage, setCurrentPage, enablePagination }) 
                     className={`${
                       index != data.nodes.length - 1 &&
                       "border-b border-table-border"
-                    } transition-colors hover:bg-accent/50 ${
-                      index % 2 === 0 ? "bg-table-row-even" : "bg-white"
-                    }`}
+                    } transition-colors hover:bg-gray-50`}
                   >
                     <td className="px-6 py-4 text-sm font-medium text-foreground">
                       {pkg.name}

@@ -53,7 +53,7 @@ const NormalTripsTable = ({
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className=" bg-table-header">
+                <tr className=" bg-table-header hover:bg-gray-50 transition-colors">
                   <th className="px-6 py-4 font-medium text-start">
                     {t("profile.tables.bookings.header.tripName")}
                   </th>

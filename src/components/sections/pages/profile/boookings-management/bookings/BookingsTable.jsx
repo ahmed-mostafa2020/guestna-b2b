@@ -84,7 +84,7 @@ const BookingsTable = ({
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className=" bg-table-header">
+                <tr className="bg-table-header">
                   <th className="px-6 py-4 font-medium text-start">
                     {t("profile.tables.bookings.header.tripName")}
                   </th>
@@ -108,25 +108,20 @@ const BookingsTable = ({
                 {data.nodes.map((booking, index) => (
                   <tr
                     key={booking._id}
-                    className={`${
-                      index != data.nodes.length - 1 &&
-                      "border-b border-table-border"
-                    } transition-colors hover:bg-accent/50 ${
-                      index % 2 === 0 ? "bg-table-row-even" : "bg-white"
-                    }`}
+                    className="hover:bg-gray-50 transition-colors"
                   >
                     <td className="px-6 py-4 text-sm font-medium text-foreground">
                       {booking.name}
                     </td>
 
-                    <td className="px-6 py-4 text-sm font-medium text-foreground">
-                      {booking.categories}
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                      {booking.cities}
                     </td>
 
                     <td className="px-6 py-4 text-sm text-muted-foreground">
                       {formatDate(booking.day, locale, {
                         year: "numeric",
-                        month: "long",
+                        month: "short",
                         day: "numeric",
                         hour: "2-digit",
                         minute: "2-digit",
@@ -225,7 +220,7 @@ const BookingsTable = ({
         <CustomizedModal
           open={true}
           handleClose={handleCloseModal}
-          bgcolor="rgba(0, 0, 0, 0.2)"
+          bgcolor="rgba(0, 0, 0, 0.5)"
           customizedCloseButton={true}
           padding={false}
         >

@@ -73,9 +73,7 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
                       className={`${
                         index != data.nodes.length - 1 &&
                         "border-b border-table-border"
-                      } transition-colors hover:bg-accent/50 ${
-                        index % 2 === 0 ? "bg-table-row-even" : "bg-white"
-                      }`}
+                      } transition-colors hover:bg-gray-50`}
                     >
                       <td className="px-6 py-4 text-sm font-medium text-foreground">
                         {booking.organization.name}
