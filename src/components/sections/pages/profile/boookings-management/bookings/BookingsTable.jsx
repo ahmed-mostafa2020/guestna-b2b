@@ -5,11 +5,16 @@ import { useLocale, useTranslations } from "next-intl";
 import { memo, useState } from "react";
 
 import formatDate from "@utils/FormateDate";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { getHeaders } from "@utils/getHeaders";
+import getProxyUrl from "@utils/getProxyUrl";
 
-import { Typography, CardContent, Card } from "@mui/material";
 import Pagination from "@components/common/Pagination";
 import BookingDetailsModal from "./BookingDetailsModal";
-import CustomizedModal from "@/src/components/common/customizedModal";
+import CustomizedModal from "@components/common/customizedModal";
+
+import axios from "axios";
+import { Typography, CardContent, Card } from "@mui/material";
 
 const BookingsTable = ({
   data,
@@ -20,16 +25,43 @@ const BookingsTable = ({
   const locale = useLocale();
   const t = useTranslations();
 
-  const [selectedBookingId, setSelectedBookingId] = useState(null);
+  const headers = getHeaders(locale);
 
-  const handleShowModal = (bookingId) => {
-    console.log("Opening modal for booking ID:", bookingId);
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
+  const [bookingDetails, setBookingDetails] = useState(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
+
+  const fetchBookingDetails = async (bookingId) => {
+    console.log("Fetching booking details for ID:", bookingId);
+    setLoadingDetails(true);
+    try {
+      const response = await axios.post(
+        getProxyUrl(
+          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.BOOKING_DETAILS}/${bookingId}`
+        ),
+        {},
+        {
+          headers,
+        }
+      );
+
+      setBookingDetails(response.data);
+    } catch (error) {
+      console.error("Error fetching booking details:", error);
+      console.error("Error details:", error.response?.data);
+    } finally {
+      setLoadingDetails(false);
+    }
+  };
+
+  const handleShowModal = async (bookingId) => {
     setSelectedBookingId(bookingId);
+    await fetchBookingDetails(bookingId);
   };
 
   const handleCloseModal = () => {
-    console.log("Closing modal");
     setSelectedBookingId(null);
+    setBookingDetails(null);
   };
 
   if (!data || !data.nodes) {
@@ -193,7 +225,7 @@ const BookingsTable = ({
         <CustomizedModal
           open={true}
           handleClose={handleCloseModal}
-          bgcolor="rgba(0, 0, 0, 0.15)"
+          bgcolor="rgba(0, 0, 0, 0.2)"
           customizedCloseButton={true}
           padding={false}
         >
@@ -203,6 +235,8 @@ const BookingsTable = ({
             booking={data.nodes.find(
               (booking) => booking._id === selectedBookingId
             )}
+            bookingDetails={bookingDetails}
+            loadingDetails={loadingDetails}
           />
         </CustomizedModal>
       )}

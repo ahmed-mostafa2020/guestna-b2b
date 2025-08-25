@@ -65,6 +65,8 @@ export const B2B_END_POINTS = {
 
     BOOKINGS_MANAGEMENT: {
       BOOKINGS: "profile/organizationTrips/all",
+      BOOKING_DETAILS: "profile/bookings/info",
+
       RPORTS: "profile/organizationTrips/report/all",
       SURVEY: "surveys/new",
       ORDERS: {

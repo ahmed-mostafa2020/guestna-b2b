@@ -4,7 +4,13 @@ import { useTranslations, useLocale } from "next-intl";
 import formatDate from "@utils/FormateDate";
 import formatCurrency from "@utils/FormatCurrency";
 
-const BookingDetailsModal = ({ open, onClose, booking }) => {
+const BookingDetailsModal = ({
+  open,
+  onClose,
+  booking,
+  bookingDetails,
+  loadingDetails,
+}) => {
   const locale = useLocale();
   const t = useTranslations();
 
@@ -32,10 +38,10 @@ const BookingDetailsModal = ({ open, onClose, booking }) => {
                 <p className="text-sm text-gray-600">
                   {t("profile.tables.orders.bookingDetails.tripDescription")}
                 </p>
-                <p className="font-medium">
-                  {booking.description ||
-                    booking.name ||
-                    "زيارة تعليمية للمتحف الوطني"}
+                <p className="font-medium" title={booking.description}>
+                  {booking.description?.length <= 70
+                    ? booking.description
+                    : booking.description?.slice(0, 70) + "..."}
                 </p>
               </div>
             </div>
@@ -48,27 +54,25 @@ const BookingDetailsModal = ({ open, onClose, booking }) => {
                 <p className="text-sm text-gray-600">
                   {t("profile.tables.orders.bookingDetails.location")}
                 </p>
-                <p className="font-medium">
-                  {booking.location || booking.city || "الرياض"}
-                </p>
+                <p className="font-medium">{booking.cities}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                <span className="text-orange-600 text-sm">⏰</span>
+            {booking.fromHour && booking.toHour && (
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                  <span className="text-orange-600 text-sm">⏰</span>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">
+                    {t("profile.tables.orders.bookingDetails.time")}
+                  </p>
+                  <p className="font-medium">
+                    {`${booking.toHour} - ${booking.fromHour}`}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-gray-600">
-                  {t("profile.tables.orders.bookingDetails.time")}
-                </p>
-                <p className="font-medium">
-                  {booking.fromHour &&
-                    booking.toHour &&
-                    `${booking.toHour} - ${booking.fromHour}`}
-                </p>
-              </div>
-            </div>
+            )}
 
             <div className="flex items-center gap-3 flex-wrap">
               <div className="flex items-center gap-3">
@@ -132,8 +136,7 @@ const BookingDetailsModal = ({ open, onClose, booking }) => {
                     {t("profile.tables.orders.bookingDetails.bookingStatus")}
                   </p>
                   <p className="font-medium">
-                    {t(`common.organizationTripStatus.${booking.status}`) ||
-                      "مؤكد"}
+                    {t(`common.organizationTripStatus.${booking.status}`)}
                   </p>
                 </div>
               </div>
@@ -194,11 +197,106 @@ const BookingDetailsModal = ({ open, onClose, booking }) => {
                 <p className="text-sm text-gray-600">
                   {t("profile.tables.orders.bookingDetails.phoneNumber")}
                 </p>
-                <p className="font-medium">{booking.organization?.pone}</p>
+                <p className="font-medium text-end" dir="ltr">
+                  {booking.organization?.pone}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                <span className="text-blue-600 text-sm">📅</span>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">
+                  {t("profile.tables.orders.bookingDetails.bookingDate")}
+                </p>
+                <p className="font-medium">
+                  {formatDate(booking.createdAt, locale, {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                  })}
+                </p>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Students Table */}
+      <div className="mt-8">
+        <h3 className="text-lg font-medium pb-4">
+          {t("profile.tables.orders.studentsTable.title")}
+        </h3>
+
+        {loadingDetails ? (
+          <div className="text-center py-8">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-mainColor"></div>
+            <p className="mt-2 text-gray-600">
+              {t("profile.tables.orders.studentsTable.loading")}
+            </p>
+          </div>
+        ) : bookingDetails?.nodes?.length > 0 ? (
+          <div className="border border-gray-200 rounded-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-right text-sm font-medium text-gray-700">
+                      {t("profile.tables.orders.studentsTable.studentName")}
+                    </th>
+                    <th className="px-4 py-3 text-right text-sm font-medium text-gray-700">
+                      {t("profile.tables.orders.studentsTable.parentName")}
+                    </th>
+                    <th className="px-4 py-3 text-right text-sm font-medium text-gray-700">
+                      {t("profile.tables.orders.studentsTable.grade")}
+                    </th>
+                    <th className="px-4 py-3 text-right text-sm font-medium text-gray-700">
+                      {t("profile.tables.orders.studentsTable.parentPhone")}
+                    </th>
+                    <th className="px-4 py-3 text-right text-sm font-medium text-gray-700">
+                      {t("profile.tables.orders.studentsTable.nationalId")}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {bookingDetails.nodes.map((student, index) => (
+                    <tr
+                      key={student._id || index}
+                      className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                    >
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        {student.child.name}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        {student.parent.name}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        {student.child.grade.name}
+                      </td>
+                      <td
+                        className="px-4 py-3 text-sm text-gray-600 text-end"
+                        dir="ltr"
+                      >
+                        {student.parent.phone}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        {student.child.nationalId}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-8 text-gray-500">
+            {t("profile.tables.orders.studentsTable.noData")}
+          </div>
+        )}
       </div>
 
       {/* Action Buttons */}
@@ -206,9 +304,6 @@ const BookingDetailsModal = ({ open, onClose, booking }) => {
         <button className="bg-mainColor w-full hover:bg-titleColor text-white px-6 py-2 rounded-lg font-medium transition-colors">
           {t("profile.tables.orders.bookingDetails.printReport")}
         </button>
-        {/* <button className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-          {t("profile.tables.orders.bookingDetails.sendDetails")}
-        </button> */}
       </div>
     </div>
   );

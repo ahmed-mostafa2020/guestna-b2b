@@ -548,6 +548,16 @@
           "participants": "عدد المشاركين",
           "printReport": "طباعة التقرير",
           "sendDetails": "إرسال التفاصيل"
+        },
+        "studentsTable": {
+          "title": "قائمة الطلاب",
+          "studentName": "اسم الطالب",
+          "parentName": "اسم ولي الأمر",
+          "grade": "الصف",
+          "parentPhone": "رقم ولي الأمر",
+          "nationalId": "رقم الهوية",
+          "loading": "جاري تحميل بيانات الطلاب...",
+          "noData": "لا توجد بيانات طلاب متاحة"
         }
       }
     },

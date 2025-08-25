@@ -541,6 +541,16 @@
           "participants": "Participants",
           "printReport": "Print Report",
           "sendDetails": "Send Details"
+        },
+        "studentsTable": {
+          "title": "Students List",
+          "studentName": "Student Name",
+          "parentName": "Parent Name",
+          "grade": "Grade",
+          "parentPhone": "Parent Phone",
+          "nationalId": "National ID",
+          "loading": "Loading students data...",
+          "noData": "No students data available"
         }
       }
     },
