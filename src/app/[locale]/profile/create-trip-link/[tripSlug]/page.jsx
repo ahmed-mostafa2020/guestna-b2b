@@ -2,12 +2,14 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
+import { useEffect } from "react";
+
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
-import { useEffect } from "react";
-import TripsInfoCardsListing from "@/src/components/sections/pages/profile/createTripLink/TripsInfoCardsListing";
+import TripsInfoCardsListing from "@components/sections/pages/profile/createTripLink/TripsInfoCardsListing";
+import CreateTripLink from "@components/sections/pages/profile/createTripLink";
 
 const CreateTripLinkPage = ({ params }) => {
   const locale = useLocale();
@@ -50,10 +52,7 @@ const CreateTripLinkPage = ({ params }) => {
     <main className="flex flex-col gap-6">
       <TripsInfoCardsListing data={data} />
 
-      <div className="flex gap-4 flex-wrap">
-        <div className="flex-1"> {tripSlug}</div>
-        <div className="flex-1"> {tripSlug}</div>
-      </div>
+      <CreateTripLink data={data} />
     </main>
   );
 };
