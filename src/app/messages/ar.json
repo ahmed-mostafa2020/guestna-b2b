@@ -138,7 +138,7 @@
       "resetPassword": "إعادة تعيين كلمة مرور",
       "profile": "بياناتي",
       "integratedBookingsManagement": "إدارة الحجوزات المتكاملة",
-      "createTripLink": "إنشاء رابط للرحلة",
+      "createTripLink": "إنشاء رابط لرحلة",
       "users": "المستخدمون",
       "contactUs": "تواصل معنا",
       "faq": "الأسئلة الشائعة",
@@ -536,9 +536,9 @@
       "modal": {
         "title": "إنشاء رابط واتساب",
         "subtitle": "تم إنشاء رابط واتساب لـ",
-        "duration": "3 أيام",
         "copyButton": "نسخ الرابط",
-        "closeButton": "إغلاق"
+        "closeButton": "إغلاق",
+        "copySuccess": "تم نسخ الرابط بنجاح!"
       }
     },
 

@@ -3,8 +3,9 @@ import { useTranslations, useLocale } from "next-intl";
 
 import { memo, useState } from "react";
 
-import { smallWhatsappIcon, posterIcon } from "@assets/svg";
+import { smallWhatsappIcon, posterIcon, copyIcon } from "@assets/svg";
 import CustomizedModal from "@components/common/customizedModal";
+import { useSnackbar } from "notistack";
 
 import templete from "@assets/templete.png";
 import generateLink from "@assets/generateLink.png";
@@ -13,6 +14,7 @@ const CreateTripLink = ({ data }) => {
   const locale = useLocale();
   const t = useTranslations();
   const [showLinkModal, setShowLinkModal] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   const tripLink = `${window.location.origin}/${locale}/parents/${data?.tripData?.slug}`;
 
@@ -37,9 +39,18 @@ const CreateTripLink = ({ data }) => {
     window.location.href = mailtoUrl;
   };
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(tripLink);
-    // You can add a toast notification here if needed
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(tripLink);
+      enqueueSnackbar(t("profile.createTripLink.modal.copySuccess"), {
+        variant: "success",
+      });
+    } catch (error) {
+      console.error("Failed to copy link:", error);
+      enqueueSnackbar("Failed to copy link", {
+        variant: "error",
+      });
+    }
   };
 
   const handleOpenLinkModal = () => {
@@ -88,13 +99,16 @@ const CreateTripLink = ({ data }) => {
 
         {/* Booking */}
         <div className="lg:flex-1 flex gap-4 flex-wrap lg:flex-nowrap items-center">
-          <figure className="cursor-pointer w-[192px] h-[240px]" onClick={handleOpenLinkModal}>
+          <figure
+            className="cursor-pointer min-w-[192px] h-[240px]"
+            onClick={handleOpenLinkModal}
+          >
             <Image
               src={generateLink}
               alt="generateLink"
               width={192}
               height={240}
-              className="rounded-lg w-[192px] h-[240px] cursor-pointer hover:opacity-80 transition-opacity"
+              className="rounded-lg w-[192px] h-[240px] "
               priority={true}
             />
           </figure>
@@ -146,26 +160,27 @@ const CreateTripLink = ({ data }) => {
           customizedCloseButton={true}
           padding={false}
         >
-          <div className="bg-white mx-auto w-[90%] max-w-md rounded-xl p-6 text-center">
-            <h2 className="text-xl font-semibold mb-4 text-titleColor">
+          <div className="bg-white mx-auto flex flex-col gap-4 w-[90%] max-w-md rounded-xl p-6 text-center">
+            <h2 className="text-xl font-semibold text-titleColor">
               {t("profile.createTripLink.modal.title")}
             </h2>
-            
-            <p className="text-sm text-gray-600 mb-6">
-              {t("profile.createTripLink.modal.subtitle")} "{data?.tripData?.name}" - {t("profile.createTripLink.modal.duration")}
+
+            <p className=" ">
+              {t("profile.createTripLink.modal.subtitle")} "
+              {data?.tripData?.name}"
             </p>
 
-            <div className="bg-gray-50 rounded-lg p-4 mb-6 border-2 border-dashed border-gray-300">
+            <div className="bg-gray-50 rounded-lg p-4 border-2 border-dashed border-gray-300">
               <div className="flex items-center gap-2 text-sm text-gray-700">
-                <span className="text-mainColor">🔗</span>
-                <span className="flex-1 text-left break-all">{tripLink}</span>
                 <button
                   onClick={handleCopyLink}
                   className="p-2 hover:bg-gray-200 rounded transition-colors"
                   title={t("profile.createTripLink.modal.copyButton")}
                 >
-                  📋
+                  {copyIcon}
                 </button>
+                <span className="flex-1 text-left break-all">{tripLink}</span>
+                <span className="text-mainColor">🔗</span>
               </div>
             </div>
 

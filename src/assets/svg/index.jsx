@@ -1564,6 +1564,31 @@ const posterIcon = (
   </svg>
 );
 
+const copyIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="27"
+    height="27"
+    viewBox="0 0 27 27"
+    fill="none"
+  >
+    <path
+      d="M15.75 7.875V7.875C15.75 7.24772 15.75 6.93407 15.6981 6.67326C15.4851 5.60219 14.6478 4.76493 13.5767 4.55188C13.3159 4.5 13.0023 4.5 12.375 4.5H9.9C7.35442 4.5 6.08162 4.5 5.29081 5.29081C4.5 6.08162 4.5 7.35442 4.5 9.9V12.375C4.5 13.0023 4.5 13.3159 4.55188 13.5767C4.76493 14.6478 5.60219 15.4851 6.67326 15.6981C6.93407 15.75 7.24772 15.75 7.875 15.75V15.75"
+      stroke="#222222"
+      strokeWidth="1.35"
+    />
+    <rect
+      x="11.25"
+      y="11.25"
+      width="11.25"
+      height="11.25"
+      rx="2.7"
+      stroke="#222222"
+      strokeWidth="1.35"
+    />
+  </svg>
+);
+
 export {
   discoverIcon,
   schoolsIcon,
@@ -1629,4 +1654,5 @@ export {
   totalActivitiesIcon,
   activitiesOrdersManagementIcon,
   posterIcon,
+  copyIcon,
 };
