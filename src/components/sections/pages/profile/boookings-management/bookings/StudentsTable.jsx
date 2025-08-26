@@ -53,8 +53,11 @@ const StudentsTable = ({ bookingDetails, loadingDetails }) => {
                   <tbody className="divide-y divide-gray-200">
                     {bookingDetails.nodes.map((student, index) => (
                       <tr
-                        key={student._id || index}
-                        className="hover:bg-gray-50 transition-colors"
+                        key={student._id}
+                        className={`${
+                          index != bookingDetails.nodes.length - 1 &&
+                          "border-b border-table-border"
+                        } transition-colors hover:bg-gray-50`}
                       >
                         <td className="px-6 py-4 text-sm font-medium text-foreground">
                           {student.child.name}

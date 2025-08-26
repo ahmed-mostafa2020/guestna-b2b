@@ -148,12 +148,12 @@ const PackagesTable = ({
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">
-                    {pkg.activitiesCount} نشاط
+                    {pkg.activitiesCount}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">
-                    {pkg.organization}
+                    {pkg.organization?.name}
                   </span>
 
                   <Link

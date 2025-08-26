@@ -108,7 +108,10 @@ const BookingsTable = ({
                 {data.nodes.map((booking, index) => (
                   <tr
                     key={booking._id}
-                    className="hover:bg-gray-50 transition-colors"
+                    className={`${
+                      index != data.nodes.length - 1 &&
+                      "border-b border-table-border"
+                    } transition-colors hover:bg-gray-50`}
                   >
                     <td className="px-6 py-4 text-sm font-medium text-foreground">
                       {booking.name}
