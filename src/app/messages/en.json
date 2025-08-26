@@ -504,6 +504,37 @@
       "label": "Revenues"
     },
 
+    "createTripLink": {
+      "poster": {
+        "title": "Create trip poster",
+        "subTitle": "Through this section, you can design and modify the trip poster and choose the appropriate theme for you.",
+        "links": {
+          "generateLink": "Create poster"
+        }
+      },
+      "booking": {
+        "title": "Create booking link",
+        "subTitle": "Through this section, you can design and modify the trip poster and choose the appropriate theme for you.",
+        "shareMessage": "Join this amazing trip:",
+        "emailSubject": "Invitation to join a trip",
+        "emailBody": "Hello,\n\nWe invite you to join this amazing trip:",
+        "linkLabel": "Registration link",
+        "links": {
+          "generateLink": "Create link",
+          "whatsapp": "Whatsapp",
+          "email": "Email",
+          "poster": "Poster"
+        }
+      },
+      "modal": {
+        "title": "Create WhatsApp Link",
+        "subtitle": "WhatsApp link created for",
+        "duration": "3 days",
+        "copyButton": "Copy Link",
+        "closeButton": "Close"
+      }
+    },
+
     "tables": {
       "activities": {
         "header": {
