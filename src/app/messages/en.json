@@ -132,6 +132,7 @@
       "integratedBookingsManagement": "Integrated Bookings Management",
       "contactUs": "Contact Us",
       "faq": "FAQ",
+      "createTripLink": "Create Trip Link",
       "error": "404: This page could not be found"
     }
   },
@@ -457,7 +458,11 @@
       "totalStudents": "Total Students",
       "totalSchools": "Total Schools",
       "totalRevenue": "Total Revenue",
-      "totalActivities": "Total Activities"
+      "totalActivities": "Total Activities",
+      "totalTrips": "Total Trips",
+      "scheduledTrips": "Scheduled Trips",
+      "donTrips": "Done Trips",
+      "pendingTrips": "Pending Trips"
     },
 
     "donutChart": {

@@ -131,6 +131,7 @@
       "integratedBookingsManagement": "إدارة الحجوزات المتكاملة",
       "contactUs": "تواصل معنا",
       "faq": "الأسئلة الشائعة",
+      "createTripLink": "إنشاء رابط للرحلة",
       "error": "404 : لم يتم العثور على هذه الصفحة"
     }
   },
@@ -463,7 +464,11 @@
       "totalStudents": "إجمالي الطلاب",
       "totalSchools": "إجمالي المدارس",
       "totalRevenue": "إجمالي الإيرادات",
-      "totalActivities": "إجمالي الأنشطة"
+      "totalActivities": "إجمالي الأنشطة",
+      "totalTrips": "إجمالي الرحلات",
+      "scheduledTrips": "الرحلات المجدولة",
+      "donTrips": "الرحلات السابقة",
+      "pendingTrips": "الرحلات قيد التنفيذ"
     },
 
     "donutChart": {

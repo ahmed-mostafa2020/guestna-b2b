@@ -95,7 +95,7 @@ const ActivitiesTable = ({
                     </td>
                     <td className="px-6 py-4">
                       <Link
-                        href={`/${locale}/profile/create-link/${trip.slug}`}
+                        href={`/${locale}/profile/create-trip-link/${trip.slug}`}
                         className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white  border-mainColor hover:bg-secColor "
                       >
                         {t("links.tripManagement")}

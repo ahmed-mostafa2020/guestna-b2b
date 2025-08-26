@@ -78,6 +78,7 @@ export const B2B_END_POINTS = {
         },
       },
     },
+    CREATE_TRIP_LINK: "profile/organizationTrips/poster",
 
     BOOKINGS: "profile/bookings/all",
 
