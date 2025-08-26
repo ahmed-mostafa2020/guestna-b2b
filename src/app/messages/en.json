@@ -156,6 +156,7 @@
     "sendRequest": "Send Request",
     "confirmRequest": "Confirm request",
     "confirm": "Confirm",
+    "tripManagement": "Trip Management",
     "remindGuestna": "Remind Guestna",
     "sendToManager": "Send to Manager",
     "ConfirmationOfAchievement": "Confirmation of Achievement",
@@ -550,7 +551,8 @@
           "parentPhone": "Parent Phone",
           "nationalId": "National ID",
           "loading": "Loading students data...",
-          "noData": "No students data available"
+          "noData": "No students data available",
+          "actions": "Actions"
         }
       }
     },

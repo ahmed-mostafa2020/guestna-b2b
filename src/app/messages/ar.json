@@ -155,6 +155,7 @@
     "sendRequest": "إرسال الطلب",
     "confirmRequest": "تأكيد الطلب",
     "confirm": "أوافق",
+    "tripManagement": "إدارة الرحلات",
     "remindGuestna": "تذكير لجستنا",
     "sendToManager": "إرسال للمدير",
     "ConfirmationOfAchievement": "تاكيد الإنجاز",
@@ -482,7 +483,8 @@
           "location": "الموقع",
           "category": "النوع",
           "tripLink": "رابط الرحلة",
-          "link": "الرابط"
+          "link": "الرابط",
+          "actions": "الإجراءات"
         }
       },
       "packages": {
@@ -494,7 +496,8 @@
           "activitiesCount": "عدد الأنشطة",
           "duration": "المدة",
           "tripLink": "رابط الباقة",
-          "link": "الرابط"
+          "link": "الرابط",
+          "actions": "الإجراءات"
         }
       },
       "bookings": {
@@ -557,7 +560,8 @@
           "parentPhone": "رقم ولي الأمر",
           "nationalId": "رقم الهوية",
           "loading": "جاري تحميل بيانات الطلاب...",
-          "noData": "لا توجد بيانات طلاب متاحة"
+          "noData": "لا توجد بيانات طلاب متاحة",
+          "actions": "الإجراءات"
         }
       }
     },

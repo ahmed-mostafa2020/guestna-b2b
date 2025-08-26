@@ -28,10 +28,16 @@ const BookingsTable = ({
   const headers = getHeaders(locale);
 
   const [selectedBookingId, setSelectedBookingId] = useState(null);
-  const [bookingDetails, setBookingDetails] = useState(null);
+  const [bookingDetailsCache, setBookingDetailsCache] = useState({});
   const [loadingDetails, setLoadingDetails] = useState(false);
 
   const fetchBookingDetails = async (bookingId) => {
+    // Check if data is already cached
+    if (bookingDetailsCache[bookingId]) {
+      console.log("Using cached booking details for ID:", bookingId);
+      return bookingDetailsCache[bookingId];
+    }
+
     console.log("Fetching booking details for ID:", bookingId);
     setLoadingDetails(true);
     try {
@@ -45,10 +51,17 @@ const BookingsTable = ({
         }
       );
 
-      setBookingDetails(response.data);
+      // Cache the response
+      setBookingDetailsCache(prev => ({
+        ...prev,
+        [bookingId]: response.data
+      }));
+
+      return response.data;
     } catch (error) {
       console.error("Error fetching booking details:", error);
       console.error("Error details:", error.response?.data);
+      return null;
     } finally {
       setLoadingDetails(false);
     }
@@ -56,12 +69,11 @@ const BookingsTable = ({
 
   const handleShowModal = async (bookingId) => {
     setSelectedBookingId(bookingId);
-    await fetchBookingDetails(bookingId);
+    const details = await fetchBookingDetails(bookingId);
   };
 
   const handleCloseModal = () => {
     setSelectedBookingId(null);
-    setBookingDetails(null);
   };
 
   if (!data || !data.nodes) {
@@ -233,7 +245,7 @@ const BookingsTable = ({
             booking={data.nodes.find(
               (booking) => booking._id === selectedBookingId
             )}
-            bookingDetails={bookingDetails}
+            bookingDetails={bookingDetailsCache[selectedBookingId]}
             loadingDetails={loadingDetails}
           />
         </CustomizedModal>

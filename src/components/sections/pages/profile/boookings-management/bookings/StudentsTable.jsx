@@ -1,19 +1,19 @@
 import { useTranslations } from "next-intl";
 import { memo } from "react";
-import { Typography, CardContent, Card } from "@mui/material";
+import { CardContent, Card, CircularProgress } from "@mui/material";
 
 const StudentsTable = ({ bookingDetails, loadingDetails }) => {
   const t = useTranslations();
 
   return (
     <div className="w-full space-y-6 mt-8">
-      <h3 className="text-lg font-medium pb-4">
+      <h3 className="text-lg font-medium pt-2">
         {t("profile.tables.orders.studentsTable.title")}
       </h3>
 
       {loadingDetails ? (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-mainColor"></div>
+        <div className="text-center py-3">
+          <CircularProgress size={20} color="primary" />
           <p className="mt-2 text-gray-600">
             {t("profile.tables.orders.studentsTable.loading")}
           </p>
@@ -145,9 +145,9 @@ const StudentsTable = ({ bookingDetails, loadingDetails }) => {
           </div>
         </>
       ) : (
-        <Typography className="p-4 text-center text-gray-500">
+        <p className="p-4 text-center text-gray-500">
           {t("profile.tables.orders.studentsTable.noData")}
-        </Typography>
+        </p>
       )}
     </div>
   );
