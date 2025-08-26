@@ -19,10 +19,6 @@ const CreateTripLinkPage = ({ params }) => {
     {},
     {
       lang: locale,
-
-      //   onSuccess: setTripDetailsData,
-      //   onError: setTripDetailsDataError,
-      //   onLoading: setTripDetailsDataLoading,
     }
   );
 

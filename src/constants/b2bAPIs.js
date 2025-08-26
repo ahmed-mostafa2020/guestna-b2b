@@ -78,9 +78,16 @@ export const B2B_END_POINTS = {
         },
       },
     },
+
+    SCHOOL_TEAM_MANAGEMENT: {
+      USERS: {
+        INFO: "profile/users/users/count/info",
+        TABLE: "profile/users/school/all",
+      },
+    },
     CREATE_TRIP_LINK: "profile/organizationTrips/poster",
 
-    BOOKINGS: "profile/bookings/all",
+    BOOKINGS: "profile/users/school/all",
 
     UPLOAD_PHOTO: "users/avatar", //MAIN
     VERIFIED_EMAIL: "users/sendConfirmed", //MAIN

@@ -20,7 +20,7 @@ import {
 import {
   ExpandMore as ExpandMoreIcon,
   TravelExplore as TravelIcon,
-  // People as PeopleIcon,
+  People as PeopleIcon,
   BookOnline as BookingIcon,
   // LocationOn as LocationIcon,
   // Receipt as ReceiptIcon,
@@ -49,10 +49,6 @@ const NavigationDropdown = () => {
     }
     return false;
   };
-
-  // const handleSubItemClick = (item, subItem) => {
-  //   console.log(`Clicked: ${item} -> ${subItem}`);
-  // };
 
   const profileBasePath = `/${locale}/profile`;
 
@@ -103,6 +99,22 @@ const NavigationDropdown = () => {
           ),
           path: `${profileBasePath}/bookings-management/integrated-bookings`,
         },
+      ],
+    },
+    {
+      id: "school-team-management",
+      title: t("profile.aside.schoolTeamManagement.title"),
+      icon: <PeopleIcon />,
+      hasDropdown: true,
+      subItems: [
+        {
+          title: t("profile.aside.schoolTeamManagement.users"),
+          path: `${profileBasePath}/school-team-management/users`,
+        },
+        // {
+        //   title: t("profile.aside.schoolTeamManagement.students"),
+        //   path: `${profileBasePath}/school-team-management/students`,
+        // },
       ],
     },
 

@@ -130,9 +130,10 @@
       "resetPassword": "Reset Password",
       "profile": "Profile",
       "integratedBookingsManagement": "Integrated Bookings Management",
+      "createTripLink": "Create Trip Link",
+      "users": "Users",
       "contactUs": "Contact Us",
       "faq": "FAQ",
-      "createTripLink": "Create Trip Link",
       "error": "404: This page could not be found"
     }
   },
@@ -438,6 +439,11 @@
         "bookings": "Bookings",
         "integratedBookingsManagement": "Integrated Bookings Management"
       },
+      "schoolTeamManagement": {
+        "title": "School Team Management",
+        "users": "Users",
+        "students": "Students"
+      },
 
       "information": "My information",
       "activities": "Activities",
@@ -462,7 +468,10 @@
       "totalTrips": "Total Trips",
       "scheduledTrips": "Scheduled Trips",
       "donTrips": "Done Trips",
-      "pendingTrips": "Pending Trips"
+      "pendingTrips": "Pending Trips",
+      "students": "Total Students",
+      "stuff": "Stuff",
+      "bookings": "Bookings"
     },
 
     "donutChart": {

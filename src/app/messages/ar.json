@@ -129,9 +129,10 @@
       "resetPassword": "إعادة تعيين كلمة مرور",
       "profile": "بياناتي",
       "integratedBookingsManagement": "إدارة الحجوزات المتكاملة",
+      "createTripLink": "إنشاء رابط للرحلة",
+      "users": "المستخدمون",
       "contactUs": "تواصل معنا",
       "faq": "الأسئلة الشائعة",
-      "createTripLink": "إنشاء رابط للرحلة",
       "error": "404 : لم يتم العثور على هذه الصفحة"
     }
   },
@@ -446,6 +447,11 @@
         "bookings": "الحجوزات",
         "integratedBookingsManagement": "إدارة الحجوزات المتكاملة"
       },
+      "schoolTeamManagement": {
+        "title": "إدارة فريق المدرسة",
+        "users": "المستخدمون",
+        "students": "الطلاب"
+      },
       "information": "بياناتي",
       "activities": "الأنشطة",
       "packages": "الباقات",
@@ -468,7 +474,10 @@
       "totalTrips": "إجمالي الرحلات",
       "scheduledTrips": "الرحلات المجدولة",
       "donTrips": "الرحلات السابقة",
-      "pendingTrips": "الرحلات قيد التنفيذ"
+      "pendingTrips": "الرحلات قيد التنفيذ",
+      "students": "إجمالي الطلاب",
+      "stuff": "عدد المدرسين",
+      "bookings": "عدد الحجوزات"
     },
 
     "donutChart": {
