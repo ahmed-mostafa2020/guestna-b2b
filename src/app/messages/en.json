@@ -508,9 +508,9 @@
       "modal": {
         "title": "Create WhatsApp Link",
         "subtitle": "WhatsApp link created for",
-        "duration": "3 days",
         "copyButton": "Copy Link",
-        "closeButton": "Close"
+        "closeButton": "Close",
+        "copySuccess": "Link copied successfully!"
       }
     },
 
