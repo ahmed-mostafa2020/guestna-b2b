@@ -270,8 +270,6 @@ export const createPersonalInfoEditingSchema = (t) =>
       .max(50, t("forms.name.error.max")),
   });
 
-
-
 export const createRegisterChildSchema = (t, childrenCount) => {
   return Yup.object().shape({
     parentName: Yup.string()
@@ -433,19 +431,27 @@ export const createCustomNewTripSchema = (t) =>
     day: Yup.date()
       .required(t("forms.validation.require"))
       .min(new Date(), t("forms.customTrip.proposedTripDate.error.pastDate"))
-      .test('start-before-end', t("forms.customTrip.proposedTripDate.error.startAfterEnd"), function(value) {
-        const { endDay } = this.parent;
-        if (!endDay || !value) return true;
-        return new Date(value) <= new Date(endDay);
-      }),
+      .test(
+        "start-before-end",
+        t("forms.customTrip.proposedTripDate.error.startAfterEnd"),
+        function (value) {
+          const { endDay } = this.parent;
+          if (!endDay || !value) return true;
+          return new Date(value) <= new Date(endDay);
+        }
+      ),
     endDay: Yup.date()
-      .optional() 
+      .optional()
       .min(new Date(), t("forms.customTrip.proposedTripDate.error.pastDate"))
-      .test('end-after-start', t("forms.customTrip.proposedTripDate.error.endBeforeStart"), function(value) {
-        const { day } = this.parent;
-        if (!day || !value) return true;
-        return new Date(value) >= new Date(day);
-      }),
+      .test(
+        "end-after-start",
+        t("forms.customTrip.proposedTripDate.error.endBeforeStart"),
+        function (value) {
+          const { day } = this.parent;
+          if (!day || !value) return true;
+          return new Date(value) >= new Date(day);
+        }
+      ),
     services: Yup.array().min(1, t("forms.validation.require")),
     basePrice: Yup.number()
       .required(t("forms.validation.require"))
@@ -458,4 +464,19 @@ export const createCustomNewTripSchema = (t) =>
       .optional()
       .max(300, t("forms.customTrip.specialRequirements.error.max")),
     file: Yup.mixed().optional(),
+  });
+
+// add users form
+export const createAddUserSchema = (t) =>
+  Yup.object().shape({
+    name: Yup.string()
+      .trim()
+      .required(t("forms.validation.require"))
+      .min(2, t("forms.name.error.min"))
+      .max(50, t("forms.name.error.max")),
+    email: Yup.string()
+      .email(t("forms.email.error"))
+      .required(t("forms.validation.require")),
+    mobile: createPhoneValidation(t),
+    role: Yup.string().required(t("forms.validation.require")),
   });
