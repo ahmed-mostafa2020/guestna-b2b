@@ -1,26 +1,64 @@
 "use client";
 
+import React, { useState, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { memo } from "react";
 
 import formatDate from "@utils/FormateDate";
 import formatCurrency from "@utils/FormatCurrency";
+import { exportToExcel, exportModalToPDF } from "@utils/exportUtils";
 import StudentsTable from "./StudentsTable";
 
-const BookingDetailsModal = ({
-  open,
-  onClose,
-  booking,
-  bookingDetails,
-  loadingDetails,
-}) => {
+const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
   const locale = useLocale();
   const t = useTranslations();
+  const [showExportOptions, setShowExportOptions] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isCapturingPDF, setIsCapturingPDF] = useState(false);
+  const modalRef = useRef(null);
 
   if (!booking) return null;
 
+  const handleExport = async (format) => {
+    setIsExporting(true);
+    setShowExportOptions(false);
+
+    try {
+      let result;
+      if (format === "excel") {
+        result = exportToExcel(booking, bookingDetails, t, locale);
+      } else if (format === "pdf") {
+        // Use canvas screenshot approach for PDF
+        if (modalRef.current) {
+          setIsCapturingPDF(true);
+          // Longer delay to ensure all students are rendered
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          result = await exportModalToPDF(modalRef.current, booking, locale);
+          setIsCapturingPDF(false);
+        } else {
+          throw new Error("Modal element not found");
+        }
+      }
+
+      if (result.success) {
+        // You can add a success notification here if you have a notification system
+        console.log(`Export successful: ${result.filename}`);
+      } else {
+        console.error("Export failed:", result.error);
+        // You can add an error notification here
+      }
+    } catch (error) {
+      console.error("Export error:", error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
-    <div className="space-y-6 p-6 bg-white mx-auto w-[75%] rounded-xl">
+    <div
+      ref={modalRef}
+      className="space-y-6 p-6 bg-white mx-auto w-[75%] rounded-xl mb-5"
+    >
       <h2 className="text-center text-2xl font-semibold">
         {t("profile.tables.orders.bookingDetails.title")} {booking.name}
       </h2>
@@ -153,7 +191,11 @@ const BookingDetailsModal = ({
                     {t("profile.tables.orders.bookingDetails.fees")}
                   </p>
                   <p className="font-medium">
-                    {booking.price ? formatCurrency(booking.price) : "120 ريال"}
+                    {booking.price
+                      ? formatCurrency(booking.price)
+                      : booking.fees
+                      ? formatCurrency(booking.fees)
+                      : "120 ريال"}
                   </p>
                 </div>
               </div>
@@ -233,13 +275,76 @@ const BookingDetailsModal = ({
       <StudentsTable
         bookingDetails={bookingDetails}
         loadingDetails={loadingDetails}
+        showAllForPDF={isCapturingPDF}
       />
 
       {/* Action Buttons */}
       {booking.status === "DONE" && (
-        <button className="bg-mainColor w-full hover:bg-titleColor text-white px-6 py-2 rounded-lg font-medium transition-colors">
-          {t("profile.tables.orders.bookingDetails.printReport")}
-        </button>
+        <div className="relative">
+          <button
+            onClick={() => setShowExportOptions(!showExportOptions)}
+            disabled={isExporting}
+            className="bg-mainColor w-full hover:bg-titleColor text-white px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            {isExporting ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                {t("forms.validation.downloading")}
+              </>
+            ) : (
+              <>
+                {t("profile.tables.orders.bookingDetails.printReport")}
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </>
+            )}
+          </button>
+
+          {showExportOptions && (
+            <div className="absolute bottom-full left-0 right-0 mb-2 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-10">
+              <button
+                onClick={() => handleExport("excel")}
+                className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors flex items-center gap-3"
+              >
+                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <span className="text-green-600 text-sm">📊</span>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900">Excel</p>
+                  <p className="text-sm text-gray-500">
+                    {t("common.export.excel.description")}
+                  </p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => handleExport("pdf")}
+                className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors flex items-center gap-3 border-t border-gray-100"
+              >
+                <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                  <span className="text-red-600 text-sm">📄</span>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900">PDF</p>
+                  <p className="text-sm text-gray-500">
+                    {t("common.export.pdf.description")}
+                  </p>
+                </div>
+              </button>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

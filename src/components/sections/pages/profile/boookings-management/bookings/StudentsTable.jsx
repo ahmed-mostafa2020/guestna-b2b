@@ -1,9 +1,57 @@
 import { useTranslations } from "next-intl";
-import { memo } from "react";
-import { CardContent, Card, CircularProgress } from "@mui/material";
 
-const StudentsTable = ({ bookingDetails, loadingDetails }) => {
+import { memo, useState, useMemo } from "react";
+
+import { CONSTANT_VALUES } from "@constants/constantValues";
+import {
+  CardContent,
+  Card,
+  CircularProgress,
+} from "@mui/material";
+import Pagination from "@components/common/Pagination";
+
+const StudentsTable = ({ bookingDetails, loadingDetails, showAllForPDF = false }) => {
   const t = useTranslations();
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = CONSTANT_VALUES.TABLE_PER_PAGE;
+
+  // Calculate pagination data
+  const paginatedData = useMemo(() => {
+    if (!bookingDetails?.nodes) return { data: [], pageInfo: null };
+
+    // If capturing for PDF, show all students
+    if (showAllForPDF) {
+      return {
+        data: bookingDetails.nodes,
+        pageInfo: {
+          totalPages: 1,
+          currentPage: 1,
+          total: bookingDetails.nodes.length,
+          perPage: bookingDetails.nodes.length
+        }
+      };
+    }
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const data = bookingDetails.nodes.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(bookingDetails.nodes.length / itemsPerPage);
+    
+    const pageInfo = {
+      totalPages,
+      currentPage,
+      total: bookingDetails.nodes.length,
+      perPage: itemsPerPage
+    };
+
+    return { data, pageInfo };
+  }, [bookingDetails?.nodes, currentPage, itemsPerPage, showAllForPDF]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div className="w-full space-y-6 mt-8">
@@ -18,7 +66,7 @@ const StudentsTable = ({ bookingDetails, loadingDetails }) => {
             {t("profile.tables.orders.studentsTable.loading")}
           </p>
         </div>
-      ) : bookingDetails?.nodes?.length > 0 ? (
+      ) : paginatedData.data.length > 0 ? (
         <>
           {/* Desktop Table */}
           <Card
@@ -51,11 +99,11 @@ const StudentsTable = ({ bookingDetails, loadingDetails }) => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {bookingDetails.nodes.map((student, index) => (
+                    {paginatedData.data.map((student, index) => (
                       <tr
                         key={student._id}
                         className={`${
-                          index != bookingDetails.nodes.length - 1 &&
+                          index != paginatedData.data.length - 1 &&
                           "border-b border-table-border"
                         } transition-colors hover:bg-gray-50`}
                       >
@@ -87,7 +135,7 @@ const StudentsTable = ({ bookingDetails, loadingDetails }) => {
 
           {/* Mobile Cards */}
           <div className="md:hidden space-y-4">
-            {bookingDetails.nodes.map((student, index) => (
+            {paginatedData.data.map((student, index) => (
               <Card key={student._id || index} className="shadow-sm">
                 <CardContent className="p-4">
                   <div className="space-y-3">
@@ -143,6 +191,16 @@ const StudentsTable = ({ bookingDetails, loadingDetails }) => {
               </Card>
             ))}
           </div>
+
+          {/* Pagination Controls */}
+          {paginatedData.pageInfo && !showAllForPDF && (
+            <Pagination
+              pageInfo={paginatedData.pageInfo}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+              className="mt-6"
+            />
+          )}
         </>
       ) : (
         <p className="p-4 text-center text-gray-500">

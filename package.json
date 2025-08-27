@@ -25,7 +25,9 @@
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
     "formik": "^2.4.6",
+    "html2canvas": "^1.4.1",
     "js-cookie": "^3.0.5",
+    "jspdf": "^3.0.2",
     "nanoid": "^5.0.9",
     "next": "14.2.15",
     "next-intl": "^3.23.5",
@@ -41,6 +43,7 @@
     "slick-carousel": "^1.8.1",
     "swiper": "^11.1.14",
     "tailwind-merge": "^2.5.5",
+    "xlsx": "^0.18.5",
     "yup": "^1.5.0"
   },
   "devDependencies": {
