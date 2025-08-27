@@ -108,7 +108,7 @@ const CreateTripLink = ({ data }) => {
               alt="generateLink"
               width={192}
               height={240}
-              className="rounded-lg w-[192px] h-[240px] "
+              className="rounded-lg w-[192px] h-[240px]"
               priority={true}
             />
           </figure>
