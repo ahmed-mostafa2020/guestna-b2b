@@ -52,9 +52,9 @@ const BookingsTable = ({
       );
 
       // Cache the response
-      setBookingDetailsCache(prev => ({
+      setBookingDetailsCache((prev) => ({
         ...prev,
-        [bookingId]: response.data
+        [bookingId]: response.data,
       }));
 
       return response.data;
@@ -240,8 +240,6 @@ const BookingsTable = ({
           padding={false}
         >
           <BookingDetailsModal
-            open={true}
-            onClose={handleCloseModal}
             booking={data.nodes.find(
               (booking) => booking._id === selectedBookingId
             )}

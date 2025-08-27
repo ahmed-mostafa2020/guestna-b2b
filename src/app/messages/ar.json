@@ -48,6 +48,45 @@
     "MALE": "ذكر",
     "FEMALE": "أنثى",
     "guestna": "جستنا",
+    "export": {
+      "filename": "تقرير_الحجز",
+      "pdf": {
+        "title": "تقرير الحجز",
+        "description": "تصدير كملف PDF"
+      },
+      "excel": {
+        "description": "تصدير كملف Excel"
+      },
+      "sheets": {
+        "tripInfo": "معلومات الرحلة",
+        "students": "قائمة الطلاب"
+      },
+      "tripInfo": {
+        "title": "معلومات الرحلة",
+        "description": "الوصف",
+        "location": "الموقع",
+        "time": "الوقت",
+        "startDate": "تاريخ البداية",
+        "endDate": "تاريخ النهاية",
+        "status": "الحالة",
+        "fees": "الرسوم"
+      },
+      "schoolInfo": {
+        "title": "معلومات المدرسة",
+        "name": "اسم المدرسة",
+        "contactPerson": "الشخص المسؤول",
+        "phone": "رقم الهاتف",
+        "bookingDate": "تاريخ الحجز"
+      },
+      "students": {
+        "title": "قائمة الطلاب",
+        "studentName": "اسم الطالب",
+        "parentName": "اسم ولي الأمر",
+        "grade": "الصف",
+        "parentPhone": "هاتف ولي الأمر",
+        "nationalId": "الهوية الوطنية"
+      }
+    },
     "error": "عذراً، لم نستطع إيجاد الصفحة التي تبحث عنها",
     "errorHappens": "حدث خطأ",
     "notAvailable": "هذه الرحلة غير متاحة للحجز الان",
@@ -1072,9 +1111,9 @@
     },
 
     "customTrip": {
-      "title": "Request to Create a New Trip",
-      "submit": "Send Request to Guestna Team",
-      "success": "Your request has been sent successfully",
+      "title": "طلب إنشاء رحلة جديدة",
+      "submit": "إرسال الطلب إلى فريق جستنا",
+      "success": "تم إرسال طلبك بنجاح",
 
       "selectedTrip": {
         "placeholder": "نوع الرحلة"

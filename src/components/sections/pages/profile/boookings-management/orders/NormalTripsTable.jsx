@@ -53,7 +53,7 @@ const NormalTripsTable = ({
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className=" bg-table-header hover:bg-gray-50 transition-colors">
+                <tr className=" bg-table-header ">
                   <th className="px-6 py-4 font-medium text-start">
                     {t("profile.tables.bookings.header.tripName")}
                   </th>
@@ -76,9 +76,7 @@ const NormalTripsTable = ({
                     className={`${
                       index != data.nodes.length - 1 &&
                       "border-b border-table-border"
-                    } transition-colors hover:bg-accent/50 ${
-                      index % 2 === 0 ? "bg-table-row-even" : "bg-white"
-                    }`}
+                    } transition-colors hover:bg-gray-50`}
                   >
                     <td className="px-6 py-4 text-sm font-medium text-foreground">
                       {booking.name}
