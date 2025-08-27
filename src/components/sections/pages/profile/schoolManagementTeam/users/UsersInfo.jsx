@@ -1,11 +1,14 @@
-import { memo } from "react";
-import { Typography, Box, Button } from "@mui/material";
-import { PersonOutline, Add } from "@mui/icons-material";
+import { memo, useState } from "react";
+import { Button } from "@mui/material";
 import UserCard from "./UserCard";
 import { useTranslations } from "next-intl";
+import CustomizedModal from "@/src/components/common/customizedModal";
+import OrganizationUserForm from "@/src/components/forms/newOrganizationUser";
 
-const UsersInfo = ({ users = [] }) => {
+const UsersInfo = ({ users = [], organization }) => {
   const t = useTranslations();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (!users.length) {
     return null;
@@ -19,12 +22,26 @@ const UsersInfo = ({ users = [] }) => {
 
       <div className="flex justify-center mt-2">
         <Button
+          onClick={() => setIsModalOpen(true)}
           variant="contained"
           className="!bg-mainColor !text-white font-medium hover:!bg-linksHover text-white font-bold"
         >
           {t("profile.schools_users.add_new_user")}
         </Button>
       </div>
+
+      <CustomizedModal
+        open={isModalOpen}
+        handleClose={() => setIsModalOpen(false)}
+        bgcolor="rgba(0, 0, 0, 0.5)"
+        customizedCloseButton={true}
+        padding={false}
+      >
+        <OrganizationUserForm
+          handleClose={() => setIsModalOpen(false)}
+          organization={organization}
+        />
+      </CustomizedModal>
     </div>
   );
 };

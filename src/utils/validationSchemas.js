@@ -480,3 +480,32 @@ export const createAddUserSchema = (t) =>
     mobile: createPhoneValidation(t),
     role: Yup.string().required(t("forms.validation.require")),
   });
+
+export const createAddOrganizationUserSchema = (t) =>
+  Yup.object().shape({
+    email: Yup.string()
+      .email(t("forms.email.error"))
+      .required(t("forms.validation.require")),
+    mobile: createPhoneValidation(t),
+    name: Yup.string()
+      .trim()
+      .optional()
+      .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
+      .test(
+        "min-word-length",
+        t("forms.name.error.wordMinLength"),
+        function (value) {
+          if (!value) return true;
+
+          const words = value.trim().split(/\s+/);
+
+          // Must have at least 2 words
+          if (words.length < 2) return false;
+
+          // Each word must be at least 3 characters
+          return words.every((word) => word.length >= 3);
+        }
+      ),
+
+    userType: Yup.string().required(t("forms.validation.require")),
+  });

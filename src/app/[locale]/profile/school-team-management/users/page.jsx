@@ -10,6 +10,7 @@ import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import UsersInfoCardsListing from "@components/sections/pages/profile/schoolManagementTeam/users/UsersInfoCardsListing";
 import UsersManagement from "@/src/components/sections/pages/profile/schoolManagementTeam/users/UsersManagement";
+import { Button } from "@mui/material";
 
 const UsersPage = () => {
   const locale = useLocale();
@@ -64,6 +65,16 @@ const UsersPage = () => {
   return (
     <main className="flex flex-col gap-6">
       <UsersInfoCardsListing data={data} />
+
+      <div className="flex justify-end mt-2">
+        <Button
+          // onClick={() => setIsModalOpen(true)}
+          variant="contained"
+          className="!bg-mainColor !text-white font-medium hover:!bg-linksHover text-white font-bold"
+        >
+          {t("profile.tables.orders.bookingDetails.printReport")}
+        </Button>
+      </div>
 
       <UsersManagement
         data={tableData}

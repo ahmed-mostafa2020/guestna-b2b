@@ -487,7 +487,13 @@
       "copy": "Copy",
       "edit": "Edit",
       "add_new_user": "Add New User",
-      "search": "Search..."
+      "search": "Search...",
+      "form": {
+        "title": "Add User Data",
+        "userTypePlaceholder": "Job grade",
+        "parsoneName": "Contact Person Name",
+        "phone": "Mobile number"
+      }
     },
     "donutChart": {
       "title": "The best selling activities"

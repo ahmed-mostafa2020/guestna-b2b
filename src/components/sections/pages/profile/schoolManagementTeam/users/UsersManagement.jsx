@@ -7,15 +7,13 @@ const UsersManagement = ({ data, setCearchTerm, searchTerm }) => {
   const users = data?.users || [];
 
   return (
-    <Container maxWidth="xl" className="py-6">
-      <Paper className="p-6 shadow-sm">
+    <dev>
+      <Paper className="p-6 shadow-sm rounded-lg">
         <UsersHeader setCearchTerm={setCearchTerm} searchTerm={searchTerm} />
 
-        {/* <UsersStats users={users} /> */}
-
-        <UsersInfo users={users} />
+        <UsersInfo users={users} organization={data._id} />
       </Paper>
-    </Container>
+    </dev>
   );
 };
 
