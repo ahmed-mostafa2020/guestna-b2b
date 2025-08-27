@@ -2,17 +2,19 @@
 
 import { useTranslations, useLocale } from "next-intl";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import UsersInfoCardsListing from "@components/sections/pages/profile/schoolManagementTeam/users/UsersInfoCardsListing";
+import UsersManagement from "@/src/components/sections/pages/profile/schoolManagementTeam/users/UsersManagement";
 
 const UsersPage = () => {
   const locale = useLocale();
   const t = useTranslations();
+  const [searchTerm, setCearchTerm] = useState("");
 
   const { data, error, isLoading } = useFetchData(
     `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.INFO}`,
@@ -31,6 +33,9 @@ const UsersPage = () => {
     {},
     {
       method: "POST",
+      body: {
+        searchTerm,
+      },
       lang: locale,
     }
   );
@@ -60,7 +65,11 @@ const UsersPage = () => {
     <main className="flex flex-col gap-6">
       <UsersInfoCardsListing data={data} />
 
-      {/* <table tableData={tableData} /> */}
+      <UsersManagement
+        data={tableData}
+        setCearchTerm={setCearchTerm}
+        searchTerm={searchTerm}
+      />
     </main>
   );
 };

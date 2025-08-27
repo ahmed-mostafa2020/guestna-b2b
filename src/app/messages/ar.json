@@ -70,6 +70,15 @@
       "PENDING": "قيد المراجعة",
       "CANCLED": "ملغي",
       "SCHEDULED": "مجدول"
+    },
+
+    "usersType": {
+      "VISITOR": "الزائر",
+      "B2B_PARENT": "والد",
+      "B2B_ADMINISTRATION": "إدارة المدارس",
+      "B2B_STAFF_MANAGER": "مدير المدرسة",
+      "B2B_STAFF_FINANCE": "مسؤول المالية",
+      "B2B_STAFF_STMS": "منسق أنشطة"
     }
   },
   "weekDays": {
@@ -476,10 +485,17 @@
       "donTrips": "الرحلات السابقة",
       "pendingTrips": "الرحلات قيد التنفيذ",
       "students": "إجمالي الطلاب",
-      "stuff": "عدد المدرسين",
+      "stuff": "عدد المدراء",
       "bookings": "عدد الحجوزات"
     },
-
+    "schools_users": {
+      "schoolsUsers": "المدارس والمستخدمين",
+      "delete": "حذف",
+      "copy": "نسخ",
+      "edit": "تعديل",
+      "add_new_user": "إضافة مستخدم جديد",
+      "search": "البحث..."
+    },
     "donutChart": {
       "title": "الأنشطة الأكثر طلبا"
     },
