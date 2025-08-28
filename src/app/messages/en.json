@@ -711,6 +711,24 @@
         "title": "You have no notifications yet",
         "subTitle": "You'll receive notifications about your trips and account here. Ready to book your next trip?"
       }
+    },
+    "myWallet": {
+      "title": "Wallet and Payments",
+      "totalBalance": "Total Balance",
+      "holdBalance": "Hold Balance",
+      "availableBalance": "Available Balance",
+      "transactions": "Transactions Log",
+      "noTransactions": "No transactions",
+      "emptyTransactions": "No transactions",
+      "printReport": "Print Report",
+      "filterTransactions": "Filter Transactions",
+      "transactionStatus": "Status",
+      "transactionName": "Transaction Name",
+      "transactionDate": "Transaction Date",
+      "transactionAmount": "Amount",
+      "date": "Date",
+      "referenceNumber": "Ref. Number",
+      "withdraw": "Withdraw"
     }
   },
 

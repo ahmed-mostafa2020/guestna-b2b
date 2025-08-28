@@ -722,6 +722,24 @@
         "title": "لا توجد إشعارات حتى الآن",
         "subTitle": "ستتلقى إشعارات حول رحلاتك وحسابك هنا.هل أنت مستعد لحجز رحلتك القادمة؟"
       }
+    },
+    "myWallet": {
+      "title": "الفوتير و المدفوعات",
+      "totalBalance": "اجمالي الرصيد",
+      "holdBalance": "الرصيد المعلق",
+      "availableBalance": "الرصيد المتاح",
+      "transactions": "سجل المعاملات",
+      "noTransactions": "لا توجد معاملات",
+      "emptyTransactions": "لا توجد معاملات",
+      "printReport": "طباعة التقرير",
+      "filterTransactions": "تصفية المعاملات",
+      "transactionStatus": "الحالة",
+      "transactionName": "اسم العملية",
+      "transactionDate": "تاريخ المعاملة",
+      "transactionAmount": "المبلغ",
+      "date": "التاريخ",
+      "referenceNumber": "رقم المرجع",
+      "withdraw": "سحب"
     }
   },
 

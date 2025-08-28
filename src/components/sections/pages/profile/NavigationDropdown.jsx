@@ -26,6 +26,7 @@ import {
   // Receipt as ReceiptIcon,
   // LocalOffer as OfferIcon,
   Storefront as StorefrontIcon,
+  Wallet,
 } from "@mui/icons-material";
 import { homeIcon } from "@assets/svg";
 
@@ -157,6 +158,22 @@ const NavigationDropdown = () => {
     //   hasDropdown: true,
     //   subItems: ["الأكواد النشطة", "الأكواد المنتهية", "إنشاء كود جديد"],
     // },
+    {
+      id: "my-wallet",
+      title: t("profile.myWallet.title"),
+      icon: <Wallet />,
+      hasDropdown: true,
+      subItems: [
+        {
+          title: t("profile.myWallet.transactions"),
+          path: `${profileBasePath}/my-wallet/transactions`,
+        },
+        {
+          title: t("profile.myWallet.withdraw"),
+          path: `${profileBasePath}/my-wallet/withdraw`,
+        },
+      ],
+    },
   ];
 
   return (
