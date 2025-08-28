@@ -11,6 +11,8 @@ import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import UsersInfoCardsListing from "@components/sections/pages/profile/schoolManagementTeam/users/UsersInfoCardsListing";
 import UsersManagement from "@/src/components/sections/pages/profile/schoolManagementTeam/users/UsersManagement";
 import { Button } from "@mui/material";
+import * as XLSX from "xlsx";
+import { download } from "@/src/hooks/useDownload";
 
 const UsersPage = () => {
   const locale = useLocale();
@@ -62,13 +64,35 @@ const UsersPage = () => {
       />
     );
 
+  const handleExportToExcel = () => {
+    const users = tableData?.users || [];
+
+    const exportUsers = users.map((user) => ({
+      Name: user.name || "-",
+      Email: user.email || "-",
+      "Job grade": t(`common.usersType.${user.userType}`),
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(exportUsers || []);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet 1");
+
+    const blob = new Blob(
+      [XLSX.write(workbook, { bookType: "xlsx", type: "array" })],
+      {
+        type: "application/octet-stream",
+      }
+    );
+
+    download(blob, "Users");
+  };
+
   return (
     <main className="flex flex-col gap-6">
       <UsersInfoCardsListing data={data} />
 
       <div className="flex justify-end mt-2">
         <Button
-          // onClick={() => setIsModalOpen(true)}
+          onClick={() => handleExportToExcel()}
           variant="contained"
           className="!bg-mainColor !text-white font-medium hover:!bg-linksHover text-white font-bold"
         >

@@ -23,7 +23,7 @@ const UsersHeader = ({ setCearchTerm, searchTerm }) => {
             placeholder={t("profile.schools_users.search")}
             size="small"
             className="w-full md:w-64"
-            value={searchValue||searchTerm}
+            value={searchValue || searchTerm}
             onChange={(e) => {
               const value = e.target.value;
               setSearchValue(value);
