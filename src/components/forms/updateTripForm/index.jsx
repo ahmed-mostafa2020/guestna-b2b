@@ -323,7 +323,7 @@ const UpdateTripForm = ({ tripId, tripData, formSelectionData, onClose }) => {
   return (
     <div className="px-4 py-8 bg-white rounded-2xl w-[90%] mx-auto">
       <h3 className="pb-4 text-center text-lg font-medium text-black lg:text-2xl lg:pb-8">
-        {t("links.editTrip")}
+        {t("links.requestQuote")} {t("common.trip")} : {tripData?.name}
       </h3>
 
       <div className="p-4">
