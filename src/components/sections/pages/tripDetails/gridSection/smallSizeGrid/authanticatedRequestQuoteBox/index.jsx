@@ -27,6 +27,7 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
   const [loading, setLoading] = useState(false);
   const [tripDetails, setTripDetails] = useState(null);
   const [lastFetchedTripId, setLastFetchedTripId] = useState(null);
+  const [formSelectionData, setFormSelectionData] = useState(null);
 
   const fetchTripDetails = async () => {
     if (!tripId) return null;
@@ -37,10 +38,7 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
         getProxyUrl(
           `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.INFO}/${tripId}`
         ),
-        {},
-        {
-          headers,
-        }
+        { headers }
       );
       setTripDetails(response.data);
       setLastFetchedTripId(tripId);
@@ -55,20 +53,49 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
     }
   };
 
+  const fetchFormSelectionData = async () => {
+    try {
+      const config = {
+        method: "get",
+        url: getProxyUrl(
+          B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ADD_NEW_ACTIVITY.FORM_SELECTION
+        ),
+        headers,
+      };
+
+      const response = await axios.request(config);
+      setFormSelectionData(response.data);
+      console.log("Form selection data:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching form selection data:", error);
+      return null;
+    }
+  };
+
   const showUpdateTripForm = async () => {
     try {
+      setLoading(true);
+      
+      // Fetch trip details if needed
       let details = tripDetails;
-
-      // Fetch if we don't have data or tripId has changed
       if (!details || lastFetchedTripId !== tripId) {
         details = await fetchTripDetails();
       }
 
-      if (details) {
+      // Fetch form selection data if needed
+      let selectionData = formSelectionData;
+      if (!selectionData) {
+        selectionData = await fetchFormSelectionData();
+      }
+
+      if (details && selectionData) {
         handleOpenEditModal();
       }
     } catch (error) {
       console.error("Failed to get trip details:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -107,7 +134,12 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
           customizedCloseButton={true}
           padding={false}
         >
-          <UpdateTripForm />
+          <UpdateTripForm 
+            tripId={tripId}
+            tripData={tripDetails}
+            formSelectionData={formSelectionData}
+            onClose={handleCloseEditModal}
+          />
         </CustomizedModal>
       )}
     </>

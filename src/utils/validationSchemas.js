@@ -466,6 +466,55 @@ export const createCustomNewTripSchema = (t) =>
     file: Yup.mixed().optional(),
   });
 
+export const createUpdateTripSchema = (t) => {
+  Yup.object().shape({
+    category: Yup.string().optional(), // readonly field
+    tripType: Yup.string().optional(), // readonly field
+    city: Yup.string().optional(), // readonly field
+    academicStages: Yup.array().min(1, t("forms.validation.require")),
+    availableSeats: Yup.number()
+      .required(t("forms.validation.require"))
+      .min(1, t("forms.customTrip.expectedParticipants.error.min"))
+      .max(1000, t("forms.customTrip.expectedParticipants.error.max")),
+    day: Yup.date()
+      .required(t("forms.validation.require"))
+      .min(new Date(), t("forms.customTrip.proposedTripDate.error.pastDate"))
+      .test(
+        "start-before-end",
+        t("forms.customTrip.proposedTripDate.error.startAfterEnd"),
+        function (value) {
+          const { endDay } = this.parent;
+          if (!endDay || !value) return true;
+          return new Date(value) <= new Date(endDay);
+        }
+      ),
+    endDay: Yup.date()
+      .optional()
+      .min(new Date(), t("forms.customTrip.proposedTripDate.error.pastDate"))
+      .test(
+        "end-after-start",
+        t("forms.customTrip.proposedTripDate.error.endBeforeStart"),
+        function (value) {
+          const { day } = this.parent;
+          if (!day || !value) return true;
+          return new Date(value) >= new Date(day);
+        }
+      ),
+    services: Yup.array().min(1, t("forms.validation.require")),
+    basePrice: Yup.number()
+      .required(t("forms.validation.require"))
+      .min(1, t("forms.customTrip.price.error.min")),
+    description: Yup.string()
+      .required(t("forms.validation.require"))
+      .min(10, t("forms.customTrip.tripDescription.error.min"))
+      .max(500, t("forms.customTrip.tripDescription.error.max")),
+    specialRequirements: Yup.string()
+      .optional()
+      .max(300, t("forms.customTrip.specialRequirements.error.max")),
+    file: Yup.mixed().optional(), // file is optional
+  });
+};
+
 export const createAddOrganizationUserSchema = (t) =>
   Yup.object().shape({
     email: Yup.string()
