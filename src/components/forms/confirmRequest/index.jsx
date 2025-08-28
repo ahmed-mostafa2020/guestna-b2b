@@ -32,7 +32,7 @@ const ConfirmRequestForm = ({ onClose }) => {
 
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
     const data = {
-      day: values.day, // Already in YYYY-MM-DD format
+      day: values.day,
       availableSeats: values.availableSeats,
       trip: tripId,
       ...(values.note && { note: values.note }),

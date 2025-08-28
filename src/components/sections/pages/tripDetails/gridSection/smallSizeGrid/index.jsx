@@ -12,6 +12,7 @@ import ConfirmRequest from "./ConfirmRequest";
 import PreBookingSection from "@components/common/trips/PreBookingSection";
 import BookWithConfidenceSection from "@components/common/trips/BookWithConfidenceSection";
 import Map from "../largeSizeGrid/accordionsGroupSection/accordionsDetails/Map";
+import AuthanticatedRequestQuoteBox from "./authanticatedRequestQuoteBox";
 import RequestQuote from "../../requestQuote";
 
 import Cookies from "js-cookie";
@@ -38,7 +39,10 @@ const SmallSizeGrid = () => {
       ) : null}
 
       {pathname?.includes("/discover/") && isAuth && token && (
-        <ConfirmRequest tripId={data?._id} />
+        <>
+          <AuthanticatedRequestQuoteBox tripId={data?._id} />
+          <ConfirmRequest tripId={data?._id} />
+        </>
       )}
 
       <BookWithConfidenceSection />
