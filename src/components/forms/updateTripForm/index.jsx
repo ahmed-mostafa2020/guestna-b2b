@@ -559,6 +559,7 @@ const UpdateTripForm = ({ tripId, tripData, formSelectionData, onClose }) => {
                     )}
                     textarea={true}
                     rows={3}
+                    readOnly={true}
                   />
                 </div>
 
