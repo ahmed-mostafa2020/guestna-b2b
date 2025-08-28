@@ -1030,6 +1030,7 @@
         },
         "availableSeats": {
           "label": "Number of participants",
+          "secondaryLabel": "Number of students",
           "error": {
             "min": "Number must be greater than 0",
             "max": "Number is too large"

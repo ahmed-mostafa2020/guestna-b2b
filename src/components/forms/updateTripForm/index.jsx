@@ -76,8 +76,8 @@ const UpdateTripForm = ({ tripId, tripData, formSelectionData, onClose }) => {
         city: tripData.city?.name || "",
         academicStages:
           tripData.academicStages?.map((stage) => stage.name) || [],
-        availableSeats: tripData.availableSeats?.min || "",
-        basePrice: tripData.price || "",
+        availableSeats: `${tripData.availableSeats?.min}` || "",
+        basePrice: `${tripData.price}` || "",
         day: tripData.fromDay ? tripData.fromDay.split("T")[0] : "",
         endDay: tripData.toDay ? tripData.toDay.split("T")[0] : "",
         services: tripData.services?.map((service) => service.name) || [],
@@ -162,13 +162,22 @@ const UpdateTripForm = ({ tripId, tripData, formSelectionData, onClose }) => {
       formData.append("trip", tripData._id || tripId);
       formData.append("isCustomizedTrip", hasChanged);
 
-      // Add all form fields to FormData
+      // Add number fields separately as strings
+      formData.append("availableSeats", `${values.availableSeats}`);
+      formData.append("basePrice", `${values.basePrice}`);
+
+      // Add all other form fields to FormData
       Object.keys(values).forEach((key) => {
         if (key === "file") {
           if (values[key]) {
             formData.append(key, values[key]);
           }
-        } else if (values[key] !== null && values[key] !== undefined) {
+        } else if (
+          key !== "availableSeats" &&
+          key !== "basePrice" &&
+          values[key] !== null &&
+          values[key] !== undefined
+        ) {
           let valueToSend = values[key];
 
           // Convert names to _id for dropdown fields
@@ -232,10 +241,16 @@ const UpdateTripForm = ({ tripId, tripData, formSelectionData, onClose }) => {
         isCustomizedTrip: hasChanged,
       };
 
-      // Add all form fields to JSON data
+      // Add number fields separately as strings
+      jsonData.availableSeats = `${values.availableSeats}`;
+      jsonData.basePrice = `${values.basePrice}`;
+
+      // Add all other form fields to JSON data
       Object.keys(values).forEach((key) => {
         if (
           key !== "file" &&
+          key !== "availableSeats" &&
+          key !== "basePrice" &&
           values[key] !== null &&
           values[key] !== undefined
         ) {
@@ -425,6 +440,9 @@ const UpdateTripForm = ({ tripId, tripData, formSelectionData, onClose }) => {
 
                 {/* Services */}
                 <div className="somar-placeholder">
+                  <label className="block pb-2 font-medium">
+                    {t("forms.customTrip.services.placeholder")}
+                  </label>
                   <SelectionGroup
                     name="services"
                     value={values.services}
@@ -443,6 +461,9 @@ const UpdateTripForm = ({ tripId, tripData, formSelectionData, onClose }) => {
                   <TextInputGroup
                     type="number"
                     name="availableSeats"
+                    label={t(
+                      "forms.confirmRequest.availableSeats.secondaryLabel"
+                    )}
                     value={values.availableSeats}
                     errors={errors.availableSeats}
                     touched={touched.availableSeats}
