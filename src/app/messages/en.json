@@ -110,6 +110,14 @@
       "PENDING": "Pending",
       "CANCLED": "Cancelled",
       "SCHEDULED": "Scheduled"
+    },
+    "usersType": {
+      "VISITOR": "Visitor",
+      "B2B_PARENT": "Parent",
+      "B2B_ADMINISTRATION": "School Administration",
+      "B2B_STAFF_MANAGER": "Head Teacher",
+      "B2B_STAFF_FINANCE": "Finance Officer",
+      "B2B_STAFF_STMS": "Trips Coordinator"
     }
   },
   "weekDays": {
@@ -509,10 +517,24 @@
       "donTrips": "Done Trips",
       "pendingTrips": "Pending Trips",
       "students": "Total Students",
-      "stuff": "Stuff",
+      "stuff": "Managers",
       "bookings": "Bookings"
     },
-
+    "schools_users": {
+      "schoolsUsers": "Schools And Users",
+      "delete": "Delete",
+      "copy": "Copy",
+      "edit": "Edit",
+      "add_new_user": "Add New User",
+      "search": "Search...",
+      "no_users": "No users found matching your search",
+      "form": {
+        "title": "Add User Data",
+        "userTypePlaceholder": "Job grade",
+        "parsoneName": "Contact Person Name",
+        "phone": "Mobile number"
+      }
+    },
     "donutChart": {
       "title": "The best selling activities"
     },

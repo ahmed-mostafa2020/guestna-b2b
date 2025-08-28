@@ -28,11 +28,6 @@ const UsersInfoCardsListing = ({ data }) => {
       value: data?.bookingCount,
       icon: totalStudentsIcon,
     },
-    // {
-    //   title: t("profile.infoCards.pendingTrips"),
-    //   value: data?.pendingTripCount,
-    //   icon: totalActivitiesIcon,
-    // },
   ];
 
   const renderedInfoCards = cardsList.map((item) => (

@@ -66,6 +66,7 @@ const companiesIcon = (
       stroke="#008774"
       strokeWidth="1.5"
       strokeMiterlimit="10"
+      strokeMiterlimit="10"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -73,6 +74,7 @@ const companiesIcon = (
       d="M22 22H2V19C2 18.45 2.45 18 3 18H21C21.55 18 22 18.45 22 19V22Z"
       stroke="#008774"
       strokeWidth="1.5"
+      strokeMiterlimit="10"
       strokeMiterlimit="10"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -82,6 +84,7 @@ const companiesIcon = (
       stroke="#008774"
       strokeWidth="1.5"
       strokeMiterlimit="10"
+      strokeMiterlimit="10"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -89,6 +92,7 @@ const companiesIcon = (
       d="M8 18V11"
       stroke="#008774"
       strokeWidth="1.5"
+      strokeMiterlimit="10"
       strokeMiterlimit="10"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -98,6 +102,7 @@ const companiesIcon = (
       stroke="#008774"
       strokeWidth="1.5"
       strokeMiterlimit="10"
+      strokeMiterlimit="10"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -105,6 +110,7 @@ const companiesIcon = (
       d="M16 18V11"
       stroke="#008774"
       strokeWidth="1.5"
+      strokeMiterlimit="10"
       strokeMiterlimit="10"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -114,6 +120,7 @@ const companiesIcon = (
       stroke="#008774"
       strokeWidth="1.5"
       strokeMiterlimit="10"
+      strokeMiterlimit="10"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -122,6 +129,7 @@ const companiesIcon = (
       stroke="#008774"
       strokeWidth="1.5"
       strokeMiterlimit="10"
+      strokeMiterlimit="10"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -129,6 +137,7 @@ const companiesIcon = (
       d="M12 8.5C12.8284 8.5 13.5 7.82843 13.5 7C13.5 6.17157 12.8284 5.5 12 5.5C11.1716 5.5 10.5 6.17157 10.5 7C10.5 7.82843 11.1716 8.5 12 8.5Z"
       stroke="#008774"
       strokeWidth="1.5"
+      strokeMiterlimit="10"
       strokeMiterlimit="10"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -1116,6 +1125,31 @@ const smallWhatsappIcon = (
   </svg>
 );
 
+const smallWhatsappIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="12"
+    height="13"
+    viewBox="0 0 12 13"
+    fill="none"
+  >
+    <path
+      d="M3.42301 11.0655C4.16355 11.5099 5.0522 11.7567 5.94085 11.7567C8.65618 11.7567 10.8778 9.53508 10.8778 6.81976C10.8778 4.10444 8.65618 1.88281 5.94085 1.88281C3.22553 1.88281 1.00391 4.10444 1.00391 6.81976C1.00391 7.70841 1.25075 8.54769 1.64571 9.28824L1.22135 10.9204C1.12522 11.2901 1.46745 11.6243 1.83479 11.5193L3.42301 11.0655Z"
+      stroke="#008F8F"
+      strokeWidth="0.740542"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M8.162 8.22557C8.162 8.30555 8.1442 8.38775 8.10638 8.46773C8.06856 8.54771 8.01961 8.62324 7.95508 8.69434C7.84606 8.8143 7.72591 8.90095 7.59019 8.95649C7.45669 9.01203 7.31207 9.04091 7.15632 9.04091C6.92937 9.04091 6.68685 8.98759 6.43098 8.87873C6.17511 8.76987 5.91924 8.62324 5.66559 8.43885C5.40972 8.25223 5.1672 8.04562 4.93581 7.81679C4.70663 7.58574 4.49971 7.34359 4.31504 7.09032C4.13259 6.83706 3.98575 6.58379 3.87895 6.33275C3.77215 6.07948 3.71875 5.83732 3.71875 5.60627C3.71875 5.4552 3.74545 5.3108 3.79885 5.1775C3.85225 5.04198 3.9368 4.91757 4.05472 4.80649C4.19712 4.66653 4.35286 4.59766 4.51751 4.59766C4.57981 4.59766 4.64211 4.61099 4.69773 4.63765C4.75558 4.66431 4.80676 4.70429 4.84681 4.76206L5.363 5.48853C5.40305 5.54407 5.43197 5.59517 5.452 5.64404C5.47202 5.6907 5.48315 5.73735 5.48315 5.77956C5.48315 5.83288 5.46757 5.8862 5.43642 5.9373C5.4075 5.98839 5.36522 6.04171 5.31182 6.09503L5.14273 6.27054C5.11825 6.29498 5.10713 6.32386 5.10713 6.35941C5.10713 6.37718 5.10935 6.39273 5.1138 6.4105C5.12048 6.42828 5.12715 6.44161 5.1316 6.45494C5.17165 6.52825 5.24063 6.62378 5.33852 6.7393C5.43865 6.85483 5.54545 6.97258 5.66114 7.09032C5.78129 7.20807 5.89699 7.31693 6.01491 7.4169C6.13061 7.51465 6.22628 7.5813 6.30193 7.62129C6.31306 7.62573 6.32641 7.6324 6.34198 7.63906C6.35978 7.64573 6.37758 7.64795 6.39761 7.64795C6.43543 7.64795 6.46436 7.63462 6.48883 7.61018L6.65793 7.44356C6.71355 7.38802 6.76695 7.34581 6.81813 7.31915C6.8693 7.28805 6.92047 7.2725 6.9761 7.2725C7.01837 7.2725 7.06287 7.28138 7.11182 7.30138C7.16077 7.32137 7.21194 7.35025 7.26757 7.38802L8.00403 7.9101C8.06188 7.95009 8.10193 7.99675 8.1264 8.05229C8.14865 8.10783 8.162 8.16337 8.162 8.22557Z"
+      stroke="#008F8F"
+      strokeWidth="0.740542"
+      strokeMiterlimit="10"
+    />
+  </svg>
+);
+
 const whiteWhatsAppIcon = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -1659,6 +1693,7 @@ export {
   calenderIcon,
   smsIcon,
   whatsAppIcon,
+  smallWhatsappIcon,
   smallWhatsappIcon,
   whiteWhatsAppIcon,
   greenWhatsAppIcon,

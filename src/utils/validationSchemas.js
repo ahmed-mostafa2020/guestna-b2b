@@ -466,17 +466,31 @@ export const createCustomNewTripSchema = (t) =>
     file: Yup.mixed().optional(),
   });
 
-// add users form
-export const createAddUserSchema = (t) =>
+export const createAddOrganizationUserSchema = (t) =>
   Yup.object().shape({
-    name: Yup.string()
-      .trim()
-      .required(t("forms.validation.require"))
-      .min(2, t("forms.name.error.min"))
-      .max(50, t("forms.name.error.max")),
     email: Yup.string()
       .email(t("forms.email.error"))
       .required(t("forms.validation.require")),
     mobile: createPhoneValidation(t),
-    role: Yup.string().required(t("forms.validation.require")),
+    name: Yup.string()
+      .trim()
+      .optional()
+      .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
+      .test(
+        "min-word-length",
+        t("forms.name.error.wordMinLength"),
+        function (value) {
+          if (!value) return true;
+
+          const words = value.trim().split(/\s+/);
+
+          // Must have at least 2 words
+          if (words.length < 2) return false;
+
+          // Each word must be at least 3 characters
+          return words.every((word) => word.length >= 3);
+        }
+      ),
+
+    userType: Yup.string().required(t("forms.validation.require")),
   });
