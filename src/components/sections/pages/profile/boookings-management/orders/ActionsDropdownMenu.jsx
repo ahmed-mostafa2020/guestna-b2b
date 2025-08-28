@@ -109,11 +109,11 @@ const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
             },
           }}
         >
-          <p className="w-full hover:bg-gray-100 transition-all duration-200 ease-in-out cursor-pointer py-2  font-ibm border-b-2 border-gray-200 text-center">
+          <button className="w-full hover:bg-gray-100 transition-all duration-200 ease-in-out cursor-pointer py-2  font-ibm border-b-2 border-gray-200 text-center">
             {t("links.showDetails")}
-          </p>
+          </button>
 
-          <p
+          <button
             onClick={sendRemind}
             className="w-full hover:bg-gray-100 transition-all duration-200 ease-in-out cursor-pointer py-2  font-ibm border-b-2 border-gray-200 text-center"
           >
@@ -122,11 +122,14 @@ const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
             ) : (
               t("links.remindGuestna")
             )}
-          </p>
+          </button>
 
-          <p className="w-full hover:bg-gray-100 transition-all duration-200 ease-in-out cursor-pointer py-2 font-ibm text-center">
+          <button
+            disabled={bookingStatus !== "PENDING"}
+            className="w-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-all duration-200 ease-in-out cursor-pointer py-2 font-ibm text-center"
+          >
             {t("links.edit")}
-          </p>
+          </button>
         </Menu>
       </div>
     </>
