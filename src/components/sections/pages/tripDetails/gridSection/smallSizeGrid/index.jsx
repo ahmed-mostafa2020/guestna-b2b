@@ -38,7 +38,7 @@ const SmallSizeGrid = () => {
       ) : null}
 
       {pathname?.includes("/discover/") && isAuth && token && (
-        <ConfirmRequest />
+        <ConfirmRequest tripId={data?._id} />
       )}
 
       <BookWithConfidenceSection />

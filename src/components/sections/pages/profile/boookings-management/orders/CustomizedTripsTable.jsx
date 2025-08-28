@@ -7,6 +7,7 @@ import { memo } from "react";
 import formatDate from "@utils/FormateDate";
 import formatCurrency from "@utils/FormatCurrency";
 import Pagination from "@components/common/Pagination";
+import ActionsDropdownMenu from "./ActionsDropdownMenu";
 
 import { Typography, CardContent, Card } from "@mui/material";
 
@@ -133,7 +134,10 @@ const CustomizedTripsTable = ({
                       <button className="rounded-md border border-gray-300  px-4 py-2 hover:bg-secColor text-sm transition-all duration-200 ease-in-out hover:border-secColor hover:text-white">
                         {t("links.sendToManager")}
                       </button> */}
-                      ...
+                      <ActionsDropdownMenu
+                        bookingId={booking._id}
+                        bookingStatus={booking.status}
+                      />
                     </td>
                   </tr>
                 ))}
@@ -192,16 +196,10 @@ const CustomizedTripsTable = ({
               </div>
 
               <div className="space-y-2">
-                {/* <div className="flex items-center gap-2">
-                  <button className="rounded-md text-white bg-mainColor px-4 py-2 hover:bg-titleColor text-sm me-2 transition-all duration-200 ease-in-out border border-mainColor hover:border-titleColor">
-                    {t("links.remindGuestna")}
-                  </button>
-
-                  <button className="rounded-md border border-gray-300  px-4 py-2 hover:bg-secColor text-sm transition-all duration-200 ease-in-out hover:border-secColor hover:text-white">
-                    {t("links.sendToManager")}
-                  </button> 
-                </div>*/}
-                ...
+                <ActionsDropdownMenu
+                  bookingId={booking._id}
+                  bookingStatus={booking.status}
+                />
               </div>
             </CardContent>
           </Card>

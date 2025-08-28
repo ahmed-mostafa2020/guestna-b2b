@@ -1039,6 +1039,7 @@
         "sending": "Sending Now ...",
         "downloading": "Downloading Now ...",
         "success": "Your data has been sent successfully",
+        "reminderSentSuccessfully": "Reminder sent successfully",
         "addedToFavorites": "Added to favorites successfully",
         "checkYourEmail": "Please, Check your gmail",
         "addGuest": "Add Guest first please",

@@ -76,6 +76,11 @@ export const B2B_END_POINTS = {
           FORM_SELECTION: "profile/askTrips/form/selections",
           CUSTOM_TRIP: "profile/askTrips/custom/new",
         },
+        UPDATE_ORDER: {
+          INFO: "profile/trips/info",
+          SUBMIT: "profile/askTrips/custom/edit",
+        },
+        REMIND: "profile/askTrips/reminder/admin",
       },
     },
 
