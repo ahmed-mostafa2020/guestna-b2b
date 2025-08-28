@@ -1,14 +1,15 @@
+import { useTranslations } from "next-intl";
+import { memo, useState } from "react";
+
 import { TextField, InputAdornment, IconButton } from "@mui/material";
 import { Search } from "@mui/icons-material";
-import { memo, useState } from "react";
-import { useTranslations } from "next-intl";
 
-const UsersHeader = ({ setCearchTerm, searchTerm }) => {
+const UsersHeader = ({ setSearchTerm, searchTerm }) => {
   const t = useTranslations();
   const [searchValue, setSearchValue] = useState("");
 
   const handleSearch = () => {
-    setCearchTerm(searchValue.trim());
+    setSearchTerm(searchValue.trim());
   };
 
   return (
@@ -28,7 +29,7 @@ const UsersHeader = ({ setCearchTerm, searchTerm }) => {
               const value = e.target.value;
               setSearchValue(value);
               if (value === "") {
-                setCearchTerm("");
+                setSearchTerm("");
               }
             }}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}

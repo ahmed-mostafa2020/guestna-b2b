@@ -38,7 +38,7 @@ const OrganizationUserForm = ({ organization, handleClose }) => {
 
   const headers = getHeaders(locale);
 
-  const requestQuoteSchema = createAddOrganizationUserSchema(t);
+  const addOrganizationUserSchema = createAddOrganizationUserSchema(t);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -56,7 +56,7 @@ const OrganizationUserForm = ({ organization, handleClose }) => {
       organization,
     };
 
-    let requestQuoteData = JSON.stringify(data);
+    let newUserData = JSON.stringify(data);
 
     let config = {
       method: "post",
@@ -66,7 +66,7 @@ const OrganizationUserForm = ({ organization, handleClose }) => {
       ),
 
       headers,
-      data: requestQuoteData,
+      data: newUserData,
     };
     axios
       .request(config)
@@ -97,7 +97,7 @@ const OrganizationUserForm = ({ organization, handleClose }) => {
   return (
     <Formik
       initialValues={{ email: "", mobile: "", name: "", userType: "" }}
-      validationSchema={requestQuoteSchema}
+      validationSchema={addOrganizationUserSchema}
       onSubmit={handleSubmit}
       enableReinitialize
       validateOnBlur={true}
@@ -233,6 +233,17 @@ const OrganizationUserForm = ({ organization, handleClose }) => {
                 ) : (
                   t("links.sendRequest")
                 )}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleClose}
+                className={`centered gap-2 w-full mt-4 py-3 text-base font-medium text-center transition-all duration-200 ease-in-out border-2 rounded-lg border-[#E6F4F4] bg-[#E6F4F4] hover:shadow-md   ${
+                  isValid &&
+                  "hover:bg-secColor hover:border-secColor hover:text-white"
+                }`}
+              >
+                {t("links.cancel")}
               </button>
             </form>
           </div>

@@ -1,15 +1,17 @@
 import { memo } from "react";
-import { Container, Paper } from "@mui/material";
+
 import UsersHeader from "./UsersHeader";
 import UsersInfo from "./UsersInfo";
 
-const UsersManagement = ({ data, setCearchTerm, searchTerm }) => {
+import { Paper } from "@mui/material";
+
+const UsersManagement = ({ data, setSearchTerm, searchTerm }) => {
   const users = data?.users || [];
 
   return (
     <dev>
       <Paper className="p-6 shadow-sm rounded-lg">
-        <UsersHeader setCearchTerm={setCearchTerm} searchTerm={searchTerm} />
+        <UsersHeader setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
 
         <UsersInfo users={users} organization={data._id} />
       </Paper>

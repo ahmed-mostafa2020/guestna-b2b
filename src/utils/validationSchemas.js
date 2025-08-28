@@ -466,21 +466,6 @@ export const createCustomNewTripSchema = (t) =>
     file: Yup.mixed().optional(),
   });
 
-// add users form
-export const createAddUserSchema = (t) =>
-  Yup.object().shape({
-    name: Yup.string()
-      .trim()
-      .required(t("forms.validation.require"))
-      .min(2, t("forms.name.error.min"))
-      .max(50, t("forms.name.error.max")),
-    email: Yup.string()
-      .email(t("forms.email.error"))
-      .required(t("forms.validation.require")),
-    mobile: createPhoneValidation(t),
-    role: Yup.string().required(t("forms.validation.require")),
-  });
-
 export const createAddOrganizationUserSchema = (t) =>
   Yup.object().shape({
     email: Yup.string()

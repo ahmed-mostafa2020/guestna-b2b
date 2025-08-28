@@ -528,12 +528,13 @@
       "bookings": "عدد الحجوزات"
     },
     "schools_users": {
-      "schoolsUsers": "المدارس والمستخدمين",
+      "schoolsUsers": "المدارس والمستخدمون",
       "delete": "حذف",
       "copy": "نسخ",
       "edit": "تعديل",
       "add_new_user": "إضافة مستخدم جديد",
       "search": "البحث...",
+      "no_users": "لا يوجد مستخدم يطابق البحث",
       "form": {
         "title": "اضافة بيانات المستخدم",
         "userTypePlaceholder": "الدرجة الوظيفية",

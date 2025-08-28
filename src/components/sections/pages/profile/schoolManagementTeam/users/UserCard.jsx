@@ -1,8 +1,9 @@
-import { Card, CardContent, Chip } from "@mui/material";
-import { memo } from "react";
 import Image from "next/image";
-import schoolProfileImage from "@assets/schoolProfile.png";
 import { useTranslations } from "next-intl";
+import { memo } from "react";
+
+import schoolProfileImage from "@assets/schoolProfile.png";
+import { Card, CardContent, Chip } from "@mui/material";
 
 const UserCard = ({ user }) => {
   const t = useTranslations();
@@ -15,13 +16,13 @@ const UserCard = ({ user }) => {
           <div className="flex items-center gap-3">
             <Image
               src={user.image || schoolProfileImage}
-              alt="image"
+              alt="userImage"
               height={72}
               width={100}
               priority={true}
               className="w-20 h-15 rounded-md object-cover"
             />
-            <div className="flex-1 min-w-0">
+            <div className="flex flex-col flex-1 min-w-0 gap-2">
               <h3 className="text-sm font-medium text-textDark truncate">
                 {user.name}
               </h3>
@@ -29,11 +30,11 @@ const UserCard = ({ user }) => {
               <Chip
                 label={t(`common.usersType.${user.userType}`)}
                 size="small"
-                className="text-xs !bg-[#e9e1ff] !text-textDark"
+                className="text-xs !bg-[#e9e1ff] !text-textDark w-fit"
               />
             </div>
           </div>
-          <div className="flex gap-3 text-sm text-textDark flex-shrink-0">
+          <div className="flex gap-3 text-sm font-ibm text-textDark flex-shrink-0">
             <button className="hover:text-error transition-colors duration-200">
               {t("profile.schools_users.delete")}
             </button>
@@ -52,7 +53,7 @@ const UserCard = ({ user }) => {
             <div className="flex-shrink-0">
               <Image
                 src={user.image || schoolProfileImage}
-                alt="image"
+                alt="userImage"
                 height={72}
                 width={100}
                 priority={true}
@@ -73,9 +74,9 @@ const UserCard = ({ user }) => {
               />
             </div>
           </div>
-          
+
           {/* Actions below user info on mobile */}
-          <div className="flex gap-2 sm:gap-4 text-xs text-textDark justify-start flex-wrap">
+          <div className="flex gap-2 sm:gap-4 text-xs font-ibm text-textDark justify-start flex-wrap">
             <button className="hover:text-error transition-colors duration-200">
               {t("profile.schools_users.delete")}
             </button>

@@ -9,15 +9,15 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import UsersInfoCardsListing from "@components/sections/pages/profile/schoolManagementTeam/users/UsersInfoCardsListing";
-import UsersManagement from "@/src/components/sections/pages/profile/schoolManagementTeam/users/UsersManagement";
+import UsersManagement from "@components/sections/pages/profile/schoolManagementTeam/users/UsersManagement";
 import { Button } from "@mui/material";
 import * as XLSX from "xlsx";
-import { download } from "@/src/hooks/useDownload";
+import { download } from "@hooks/useDownload";
 
 const UsersPage = () => {
   const locale = useLocale();
   const t = useTranslations();
-  const [searchTerm, setCearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data, error, isLoading } = useFetchData(
     `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.INFO}`,
@@ -90,19 +90,21 @@ const UsersPage = () => {
     <main className="flex flex-col gap-6">
       <UsersInfoCardsListing data={data} />
 
-      <div className="flex justify-end mt-2">
-        <Button
-          onClick={() => handleExportToExcel()}
-          variant="contained"
-          className="!bg-mainColor !text-white font-medium hover:!bg-linksHover text-white font-bold"
-        >
-          {t("profile.tables.orders.bookingDetails.printReport")}
-        </Button>
-      </div>
+      {tableData?.users?.length > 0 && (
+        <div className="flex justify-end mt-2">
+          <Button
+            onClick={() => handleExportToExcel()}
+            variant="contained"
+            className="!bg-mainColor !font-somar !text-white font-medium hover:!bg-linksHover"
+          >
+            {t("profile.tables.orders.bookingDetails.printReport")}
+          </Button>
+        </div>
+      )}
 
       <UsersManagement
         data={tableData}
-        setCearchTerm={setCearchTerm}
+        setSearchTerm={setSearchTerm}
         searchTerm={searchTerm}
       />
     </main>
