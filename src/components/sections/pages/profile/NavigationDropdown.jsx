@@ -29,6 +29,7 @@ import {
   Wallet,
 } from "@mui/icons-material";
 import { homeIcon } from "@assets/svg";
+import { CalendarIcon } from "@mui/x-date-pickers";
 
 const NavigationDropdown = () => {
   const [expanded, setExpanded] = useState(false);
@@ -173,6 +174,13 @@ const NavigationDropdown = () => {
           path: `${profileBasePath}/my-wallet/withdraw`,
         },
       ],
+    },
+    {
+      id: "calendar",
+      title: t("profile.calendar.title"),
+      icon: <CalendarIcon />,
+      path: `${profileBasePath}/calendar`,
+      hasDropdown: false,
     },
   ];
 

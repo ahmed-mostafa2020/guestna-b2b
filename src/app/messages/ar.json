@@ -1,4 +1,102 @@
 {
+  "profile": {
+    "calendar": {
+      "summary": {
+        "potentialEvents": "الأحداث المحتملة",
+        "academicEvents": "الأحداث الأكاديمية",
+        "scheduledTrips": "الرحلات المجدولة",
+        "totalEvents": "إجمالي الأحداث"
+      },
+      "tabs": {
+        "calendar": "التقويم",
+        "events": "الأحداث",
+        "sync": "المزامنة"
+      },
+      "calendar": {
+        "selectedDayEvents": "أحداث اليوم المحدد",
+        "noEventsTitle": "لا توجد أحداث لهذا اليوم",
+        "noEventsDescription": "لم يتم العثور على أي أحداث مجدولة لهذا التاريخ",
+        "addNewEvent": "إضافة حدث جديد",
+        "addEvent": "إضافة حدث +",
+        "uploadCalendar": "رفع التقويم",
+        "interactiveCalendar": "التقويم التفاعلي",
+        "info": "يمكنك فقط تحديد التواريخ الحالية والمستقبلية",
+        "days": {
+          "sunday": "الأحد",
+          "monday": "الاثنين",
+          "tuesday": "الثلاثاء",
+          "wednesday": "الأربعاء",
+          "thursday": "الخميس",
+          "friday": "الجمعة",
+          "saturday": "السبت"
+        }
+      },
+      "events": {
+        "search": {
+          "title": "البحث",
+          "printReport": "طباعة التقرير"
+        },
+        "filters": {
+          "eventName": "اسم الحدث",
+          "eventType": "نوع الحدث",
+          "eventDate": "تاريخ الحدث",
+          "location": "الموقع"
+        },
+        "list": {
+          "title": "جميع الأحداث"
+        },
+        "semesterStart": {
+          "title": "بداية الفصل الدراسي الثاني",
+          "subtitle": "بداية الدراسة للفصل الثاني"
+        },
+        "boardMeeting": {
+          "title": "اجتماع مجلس الإدارة",
+          "subtitle": "مناقشة الخطط المستقبلية"
+        },
+        "schoolTrip": {
+          "title": "رحلة مدرسية",
+          "subtitle": "زيارة المتحف الوطني"
+        },
+        "types": {
+          "academic": "أكاديمي",
+          "administrative": "إداري",
+          "entertainment": "ترفيهي",
+          "social": "اجتماعي"
+        }
+      },
+      "modal": {
+        "addEvent": {
+          "title": "أضف حدث أو نشاط جديد إلى التقويم",
+          "fields": {
+            "eventType": "نوع الحدث",
+            "selectEventType": "اختر نوع الحدث",
+            "time": "الوقت",
+            "location": "الموقع",
+            "locationPlaceholder": "مثال: قاعة اجتماعات",
+            "eventTitle": "عنوان الحدث",
+            "eventTitlePlaceholder": "مثال: اجتماع مع فريق العمل",
+            "date": "التاريخ",
+            "participants": "عدد المشتركين",
+            "participantsPlaceholder": "العدد المتوقع",
+            "description": "وصف الحدث",
+            "descriptionPlaceholder": "اكتب وصفاً مفصلاً للحدث..."
+          },
+          "actions": {
+            "cancel": "إلغاء",
+            "save": "حفظ الحدث"
+          }
+        }
+      },
+      "actions": {
+        "view": "مشاهدة",
+        "edit": "تعديل"
+      },
+      "sync": {
+        "title": "مزامنة التقويم",
+        "description": "محتوى تبويب المزامنة سيتم إضافته هنا"
+      }
+    }
+  },
   "common": {
     "oneDayTrip": "رحلات اليوم الواحد",
     "multiDaysTrip": "رحلات متعددة الأيام",
@@ -724,7 +822,7 @@
       }
     },
     "myWallet": {
-      "title": "الفوتير و المدفوعات",
+      "title": "الفواتير و المدفوعات",
       "totalBalance": "اجمالي الرصيد",
       "holdBalance": "الرصيد المعلق",
       "availableBalance": "الرصيد المتاح",
@@ -740,6 +838,20 @@
       "date": "التاريخ",
       "referenceNumber": "رقم المرجع",
       "withdraw": "سحب"
+    },
+    "calendar": {
+      "title": "مزامنة التقويم الاكاديمي",
+      "summary": {
+        "potentialEvents": "الأحداث المحتملة",
+        "academicEvents": "الأحداث الأكاديمية",
+        "scheduledTrips": "الرحلات المجدولة",
+        "totalEvents": "إجمالي الأحداث"
+      },
+      "tabs": {
+        "calendar": "التقويم",
+        "events": "الأحداث",
+        "sync": "المزامنة"
+      }
     }
   },
 

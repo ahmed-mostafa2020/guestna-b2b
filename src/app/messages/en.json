@@ -729,6 +729,20 @@
       "date": "Date",
       "referenceNumber": "Ref. Number",
       "withdraw": "Withdraw"
+    },
+    "calendar": {
+      "title": "Calendar",
+      "summary": {
+        "potentialEvents": "Potential Events",
+        "academicEvents": "Academic Events",
+        "scheduledTrips": "Scheduled Trips",
+        "totalEvents": "Total Events"
+      },
+      "tabs": {
+        "calendar": "Calendar",
+        "events": "Events",
+        "sync": "Sync"
+      }
     }
   },
 

@@ -95,6 +95,8 @@ export const B2B_END_POINTS = {
 
     BOOKINGS: "profile/users/school/all",
 
+    INVOICES: "profile/organizations/invoices",
+
     UPLOAD_PHOTO: "users/avatar", //MAIN
     VERIFIED_EMAIL: "users/sendConfirmed", //MAIN
     FAVORITES: "myLovers", // TRIPS
