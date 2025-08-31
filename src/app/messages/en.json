@@ -32,6 +32,8 @@
     "all": "All",
     "packages": "Packages",
     "activities": "Activities",
+    "anActivity": "Activity",
+    "multiActivities": "Activities",
     "PACKAGE": "Packages",
     "ACTIVITY": "Activities",
     "HALF_DAY": "Half Day",
@@ -211,6 +213,15 @@
     "sendToManager": "Send to Manager",
     "ConfirmationOfAchievement": "Confirmation of Achievement",
     "finalReport": "Final Report",
+    "showAllImages": "Show all images totaling",
+    "showAllReviews": "Show all reviews totaling",
+    "customizeYourPackage": "Customize your package",
+    "deleteActivity": "Delete activity",
+    "replace": "Replace",
+    "follow": "Follow",
+    "edit": "Edit",
+    "editTrip": "Edit trip",
+    "verification": "Verification",
     "cancel": "Cancel",
     "requestNewActivity": "Request New Activity",
     "requestQuote": "Request Quote",
@@ -591,24 +602,15 @@
 
     "tables": {
       "ordersInfo": {
-        "title": "Orders",
-        "tripsOrdersManagement": "Activities Orders Management",
-        "followOrders": "Follow All Orders",
-        "normal": {
-          "title": "Orders from Guestna Market"
-        },
-        "customizable": {
-          "title": "Customized Activities Orders"
-        },
         "orderDetails": {
           "title": "Order Details -",
           "tripInfo": "Trip Information",
           "bookingInfo": "Booking Information",
           "tripName": "Trip Name",
           "tripType": "Trip Type",
-          "location": "Location",
-          "basePrice": "Price",
           "category": "Category",
+          "basePrice": "Price",
+          "location": "Location",
           "tripDate": "Trip Date",
           "orderId": "Order ID",
           "availableSeats": "Available Seats",
@@ -616,142 +618,145 @@
           "academicStages": "Academic Stages",
           "services": "Services",
           "status": "Status"
-        },
-        "activities": {
-          "header": {
-            "tripName": "Activity Name",
-            "date": "Date/Time",
-            "location": "Location",
-            "category": "Category",
-            "tripLink": "Activity Link",
-            "link": "The link"
-          }
-        },
-        "packages": {
-          "header": {
-            "tripName": "Package Name",
-            "date": "Date/Time",
-            "location": "Location",
-            "category": "Category",
-            "activitiesCount": "Activities Count",
-            "duration": "Duration",
-            "tripLink": "Package Link",
-            "link": "The link"
-          }
-        },
-        "bookings": {
-          "title": "Trips List",
-          "header": {
-            "schoolName": "School Name",
-            "orderId": "Order ID",
-            "tripType": "Trip Type",
-            "academicStage": "Academic Stage",
-            "location": "Location",
-            "tripName": "Trip Name",
-            "date": "Date/Time",
-            "price": "Price",
-            "status": "Status",
-            "actions": "Actions",
-            "participants": "Participants"
-          }
-        },
-        "reports": {
-          "title": "Trips Closure Reports",
-          "subTitle": "Confirm trips completion and prepare final reports"
-        },
-        "orders": {
-          "title": "Orders",
-          "tripsOrdersManagement": "Activities Orders Management",
-
-          "followOrders": "Follow All Orders",
-          "normal": {
-            "title": "Orders from Guestna Market"
-          },
-          "customizable": {
-            "title": "Customized Activities Orders"
-          },
-          "bookingDetails": {
-            "title": "Trip Details",
-            "tripInfo": "Trip Information",
-            "schoolInfo": "School Information",
-            "tripDescription": "Trip Description",
-            "location": "Location",
-            "time": "Time",
-            "fees": "Fees",
-            "bookingStatus": "Booking Status",
-            "schoolName": "School Name",
-            "contactPerson": "Contact Person",
-            "phoneNumber": "Phone Number",
-            "bookingDate": "Booking Date",
-            "tripStartDate": "Trip Start Date",
-            "tripEndDate": "Trip End Date",
-            "category": "Category",
-            "participants": "Participants",
-            "printReport": "Print Report",
-            "sendDetails": "Send Details"
-          },
-          "studentsTable": {
-            "title": "Students List",
-            "studentName": "Student Name",
-            "parentName": "Parent Name",
-            "grade": "Grade",
-            "parentPhone": "Parent Phone",
-            "nationalId": "National ID",
-            "loading": "Loading students data...",
-            "noData": "No students data available",
-            "actions": "Actions"
-          }
         }
       },
+      "activities": {
+        "header": {
+          "tripName": "Activity Name",
+          "date": "Date/Time",
+          "location": "Location",
+          "category": "Category",
+          "tripLink": "Activity Link",
+          "link": "The link",
+          "actions": "Actions"
+        }
+      },
+      "packages": {
+        "header": {
+          "tripName": "Package Name",
+          "date": "Date/Time",
+          "location": "Location",
+          "category": "Category",
+          "activitiesCount": "Activities Count",
+          "duration": "Duration",
+          "tripLink": "Package Link",
+          "link": "The link",
+          "actions": "Actions"
+        }
+      },
+      "bookings": {
+        "title": "Trips List",
+        "header": {
+          "schoolName": "School Name",
+          "orderId": "Order ID",
+          "tripType": "Trip Type",
+          "academicStage": "Academic Stage",
+          "location": "Location",
+          "tripName": "Trip Name",
+          "date": "Date/Time",
+          "price": "Price",
+          "status": "Status",
+          "actions": "Actions",
+          "participants": "Participants"
+        }
+      },
+      "reports": {
+        "title": "Trips Closure Reports",
+        "subTitle": "Confirm trips completion and prepare final reports"
+      },
 
-      "information": {
-        "accountData": "Account Data",
-        "verifiedMail": "E-mail (Verified)",
-        "unverifiedMail": "E-mail (Unverified)",
-        "personalInformation": {
-          "title": "Personal Information",
-          "name": "Name",
-          "birthDay": "Birth Data",
+      "orders": {
+        "title": "Orders",
+        "tripsOrdersManagement": "Activities Orders Management",
+
+        "followOrders": "Follow All Orders",
+        "normal": {
+          "title": "Orders from Guestna Market"
+        },
+        "customizable": {
+          "title": "Customized Activities Orders"
+        },
+        "bookingDetails": {
+          "title": "Trip Details:",
+          "tripInfo": "Trip Information",
+          "schoolInfo": "School Information",
+          "tripDescription": "Trip Description",
+          "location": "Location",
+          "time": "Time",
+          "fees": "Fees",
+          "bookingStatus": "Booking Status",
+          "schoolName": "School Name",
+          "contactPerson": "Contact Person",
           "phoneNumber": "Phone Number",
-          "gender": "Gender",
-          "nationality": "Nationality",
-          "countryOfResidence": "Country of Residence",
-          "city": "City"
+          "bookingDate": "Booking Date",
+          "tripStartDate": "Trip Start Date",
+          "tripEndDate": "Trip End Date",
+          "category": "Category",
+          "participants": "Participants",
+          "printReport": "Print Report",
+          "sendDetails": "Send Details"
+        },
+        "studentsTable": {
+          "title": "Students List",
+          "studentName": "Student Name",
+          "parentName": "Parent Name",
+          "grade": "Grade",
+          "parentPhone": "Parent Phone",
+          "nationalId": "National ID",
+          "loading": "Loading students data...",
+          "noData": "No students data available",
+          "actions": "Actions"
         }
-      },
+      }
+    },
 
-      "editingDataForms": {
-        "emailEditing": "Email Editing",
-        "personalInformationEditing": "Personal Information Editing"
-      },
+    "information": {
+      "accountData": "Account Data",
+      "verifiedMail": "E-mail (Verified)",
+      "unverifiedMail": "E-mail (Not Verified)",
+      "personalInformation": {
+        "title": "Personal Information",
+        "name": "Name",
+        "birthDay": "Birth Data",
+        "phoneNumber": "Phone Number",
+        "gender": "Gender",
+        "nationality": "Nationality",
+        "countryOfResidence": "Country of Residence",
+        "city": "City"
+      }
+    },
 
-      "myFavorites": {
-        "emptyFavorites": {
-          "title": "There are no favorites added yet",
-          "subTitle1": "Click on the heart icon",
-          "subTitle2": "On any item to add it to your favorites list and it will appear here."
-        }
-      },
+    "editingDataForms": {
+      "emailEditing": "Email Editing",
+      "personalInformationEditing": "Personal Information Editing"
+    },
 
-      "myBookings": {
-        "emptyBookings": {
-          "title": "No trips booked...yet!",
-          "subTitle": "It's time to pack your bags and start planning your next adventure."
-        }
-      },
+    "myFavorites": {
+      "emptyFavorites": {
+        "title": "There are no favorites added yet",
+        "subTitle1": "Click on the heart icon",
+        "subTitle2": "On any item to add it to your favorites list and it will appear here."
+      }
+    },
 
-      "myMessages": {
-        "emptyMessages": {
-          "title": "You have no messages",
-          "subTitle": "Any new messages you receive will appear here."
-        }
-      },
+    "myBookings": {
+      "emptyBookings": {
+        "title": "No trips booked...yet!",
+        "subTitle": "It's time to pack your bags and start planning your next adventure."
+      }
+    },
 
-      "myNotifications": {
-        "emptyNotifications": {
-          "title": "You have no notifications yet",
-          "subTitle": "You'll receive notifications about your trips and account here. Ready to book your next trip?"
-        }
+    "myMessages": {
+      "emptyMessages": {
+        "title": "You have no messages",
+        "subTitle": "Any new messages you receive will appear here."
+      }
+    },
+
+    "myNotifications": {
+      "emptyNotifications": {
+        "title": "You have no notifications yet",
+        "subTitle": "You'll receive notifications about your trips and account here. Ready to book your next trip?"
       }
     },
 
@@ -863,7 +868,8 @@
         "credit": "Credit/Debit Card",
         "stc": "STC",
         "tamara": "TAMARA",
-        "apple": "Apple Pay"
+        "apple": "Apple Pay",
+        "applePay": "Apple Pay"
       },
 
       "registerForm": {
@@ -1196,32 +1202,32 @@
         "attachFile": {
           "label": "Attach File"
         }
-      },
-      "footer": {
-        "company": "Company",
-        "aboutUs": "About Us",
-        "articles": "Articles",
-        "bePartner": "Be Partner",
-        "jobOffers": "Job Offers",
-        "support": "Support",
-        "callUs": "Call Us",
-        "faq": "FAQ",
-        "map": "Map",
-        "legal": "Legal",
-        "terms": "Terms and Conditions",
-        "privacy": "Privacy Policy",
-        "return": "Return Policy",
-        "advertising": "Advertising on Guestna",
-        "paymentMethods": "Payment Methods"
-      },
-      "pagination": {
-        "previous": "Previous",
-        "next": "Next",
-        "show": "Show",
-        "allResults": "All Results",
-        "to": "to",
-        "of": "of"
       }
     }
+  },
+  "footer": {
+    "company": "Company",
+    "aboutUs": "About Us",
+    "articles": "Articles",
+    "bePartner": "Be Partner",
+    "jobOffers": "Job Offers",
+    "support": "Support",
+    "callUs": "Call Us",
+    "faq": "FAQ",
+    "map": "Map",
+    "legal": "Legal",
+    "terms": "Terms and Conditions",
+    "privacy": "Privacy Policy",
+    "return": "Return Policy",
+    "advertising": "Advertising on Guestna",
+    "paymentMethods": "Payment Methods"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "show": "Show",
+    "allResults": "All Results",
+    "to": "to",
+    "of": "of"
   }
 }
