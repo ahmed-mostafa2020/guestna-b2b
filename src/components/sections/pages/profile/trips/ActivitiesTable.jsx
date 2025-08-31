@@ -123,7 +123,7 @@ const ActivitiesTable = ({
                 </h3>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="grid grid-cols-1 gap-3 text-sm">
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">
                     {formatDate(trip.day, locale, {
@@ -136,16 +136,10 @@ const ActivitiesTable = ({
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-muted-foreground">{trip.cities}</span>
-                </div>
-              </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-xs">
-                    {trip.categories}
-                  </Badge>
+                  <Badge variant="outline">{trip.categories}</Badge>
 
                   <Link
                     href={`/${locale}/parents/${trip.slug}`}
@@ -154,6 +148,15 @@ const ActivitiesTable = ({
                     {t("profile.tables.activities.header.link")}
                   </Link>
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Link
+                  href={`/${locale}/profile/create-trip-link/${trip.slug}`}
+                  className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white  border-mainColor hover:bg-secColor "
+                >
+                  {t("links.tripManagement")}
+                </Link>
               </div>
             </CardContent>
           </Card>

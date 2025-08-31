@@ -32,6 +32,8 @@
     "all": "الكل",
     "packages": "الباقات",
     "activities": "الأنشطة",
+    "anActivity": "نشاطا",
+    "multiActivities": "أنشطة",
     "PACKAGE": "الباقات",
     "ACTIVITY": "الأنشطة",
     "HALF_DAY": "نصف يوم",
