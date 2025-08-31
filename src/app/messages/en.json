@@ -521,6 +521,18 @@
       "stuff": "Managers",
       "bookings": "Bookings"
     },
+
+    "filters": {
+      "title": "Filter Trips",
+      "status": {
+        "all": "All Trips",
+        "pending": "Pending Trips",
+        "done": "Completed Trips",
+        "scheduled": "Scheduled Trips",
+        "cancelled": "Cancelled Trips",
+        "trips": "trips"
+      }
+    },
     "schools_users": {
       "schoolsUsers": "Schools And Users",
       "delete": "Delete",

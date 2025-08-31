@@ -1,0 +1,7 @@
+export const TRIP_STATUS = {
+  ALL: "ALL",
+  SCHEDULED: "SCHEDULED",
+  DONE: "DONE",
+  PENDING: "PENDING",
+  CANCELLED: "CANCELLED",
+};
