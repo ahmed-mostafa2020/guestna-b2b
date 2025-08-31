@@ -773,435 +773,435 @@
         "subTitle": "Contact support"
       },
       "contactBySocial": "Contact us on social media"
+    }
+  },
+
+  "faq": {
+    "title": "How can we help you?",
+    "subTitle": "We're here to help. Explore our comprehensive help center to find answers to your question",
+    "searchPlaceholder": "what are you looking for",
+    "emptyFaq": "Oops! There is no question matching your search word"
+  },
+
+  "validations": {
+    "noTrip": "There is no trip matching your search criteria",
+    "tryAgain": "Try again"
+  },
+
+  "forms": {
+    "auth": {
+      "signUp": {
+        "title": "Welcome to GuestNa",
+        "subTitle": "Please complete the data to create your account",
+        "confirmUsingMail": "You will use this email to log in and manage your tour packages and activities",
+        "confirmTermsAndConditions": "I confirm that I agree to",
+        "isMarketingEmails": "I agree to receive marketing email newsletters from Guestna.com",
+
+        "name": "Create a new account"
+      },
+
+      "login": {
+        "title": "Welcome back to GuestNa",
+        "parentSubTitle": "Log in to manage and book your school trips.",
+        "requestQuoteSubTitle": "Great! We've got you covered so we can serve you better.",
+
+        "haveAnAccount": "Don't have an account?",
+        "createAccount": "Create an account",
+
+        "email": "Email address",
+        "phone": "Mobile number",
+
+        "name": "Login",
+
+        "loginBy": "Or login by",
+        "rememberMe": "Remember me",
+
+        "rolesMenu": {
+          "schools": "Schools Login",
+          "individuals": "Trips operators login",
+          "servicesProviders": "Finance officers Login",
+          "organizations": "Organizations Login"
+        },
+
+        "termsAndConditions": {
+          "title": "I confirm that I agree to",
+          "text": "Last modified: December 16, 2013\n\nWelcome to www.lorem-ipsum.info. This website is provided as a service to our visitors and may be used for informational purposes only. Since the Terms and Conditions contain legal obligations, please read them carefully.\n\n1. Your Agreement\n\nBy using this website, you agree to be bound by and comply with these Terms and Conditions. If you do not agree to these Terms and Conditions, please do not use this website.\n\nNote: We reserve the right, at our sole discretion, to change, modify, or alter these Terms and Conditions at any time. Unless otherwise stated, amendments become effective immediately. Please review these Terms and Conditions periodically. Your continued use of the website after changes and/or modifications are posted will constitute your acceptance of the revised Terms and Conditions and the reasonableness of these standards for providing notice of changes. For your information, this page was last updated as of the date indicated above these Terms and Conditions.\n\n2. Privacy\nPlease review our Privacy Policy, which governs your visit to this website, to understand our practices.\n\n3. Linked Sites\nThis website may contain links to other independent third-party websites (\"Linked Sites\"). These Linked Sites are provided solely for the convenience of our visitors. These Linked Sites are not under our control, and we are not responsible for their content nor do we endorse them, including any information or materials contained therein. You will need to make your own independent judgment regarding your interaction with these Linked Sites.\n\n4. Forward-Looking Statements\nAll materials reproduced on this website are current as of the date of original publication or submission. The availability of a document on this website does not mean the information contained therein has not been modified or superseded by events or by a subsequent document or submission. We have no obligation or policy to update any information or data contained in this website, and therefore, these information or data should not be relied upon as being current as of the date you access this website.\n\n5. Disclaimer of Warranties and Limitation of Liability\na. This website may contain inaccuracies and typographical errors. We do not warrant the accuracy or completeness of the materials, or the reliability of any advice, opinion, statement, or other information displayed or distributed through the website. You expressly understand and agree that: (a) your use of the website, including any reliance on any opinion, advice, statement, memorandum, or information contained herein, shall be at your sole risk; (b) the website is provided on an \"AS IS\" and \"AS AVAILABLE\" basis; (c) except as expressly provided herein, we disclaim all warranties of any kind, whether express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, effort, ownership, and non-infringement; (iv) we make no warranty regarding the results that may be obtained from this website, or the products or services advertised or offered or the merchants involved; (v) any material downloaded or otherwise obtained through the use of the website is done at your own discretion and risk; and (vi) you will be solely responsible for any damage to your computer system or loss of data that results from downloading any such material.\nb. You expressly understand and agree that in no event, including but not limited to negligence, shall we be liable for any direct, indirect, incidental, special, punitive, or consequential damages resulting from the use or inability to use any of our sites or materials or functions on any such sites, even if we have been advised of the possibility of such damages. The foregoing limitations apply notwithstanding any failure of essential purpose of any limited remedy.\n\n6. Exceptions and Limitations\nSome jurisdictions do not allow the exclusion of certain warranties or the limitation or exclusion of liability for incidental or consequential damages. Accordingly, our liability in such jurisdiction shall be limited to the maximum extent permitted by law.\n\n7. Our Proprietary Rights\nThis website and all its contents are intended solely for personal, non-commercial use. Except as expressly provided, nothing within the website shall be construed as granting any license under our or any third party's intellectual property rights, whether by estoppel, implication, waiver, or otherwise. Without limiting the generality of the foregoing, you acknowledge and agree that all content available through the website and its services and used to operate it is protected by copyright, trademark, patent, or other proprietary rights. You agree not to: (a) modify, alter, or deface any of the trademarks, service marks, trade dress (collectively referred to as \"Trademarks\") or other intellectual property we provide in connection with the website; (b) retain your ownership"
+        }
+      },
+
+      "confirmAccount": {
+        "titlePhone": "Enter the code we sent via SMS to",
+        "titleEmail": "Enter the code we sent via mail to",
+        "moreOptions": "More options",
+        "name": "Confirm Account",
+        "resendOtp": "Resend OTP",
+        "successMessage": "OTP has been sent successfully",
+        "loginSuccessMessage": "You have been logged in successfully",
+        "selectResendType": "Choose a method to get the OTP",
+        "willSendOtp": "We will send you the OTP"
+      },
+
+      "forgetPassword": {
+        "name": "Forgot your password",
+        "titleEmail": "To reset your password, please enter the email address associated with your account",
+        "titlePhone": "To reset your password, please enter the phone number associated with your account",
+        "sendOtp": "Send OTP"
+      },
+
+      "resetPassword": {
+        "name": "Reset new password",
+        "resetPassword": "Reset Password"
+      }
     },
 
-    "faq": {
-      "title": "How can we help you?",
-      "subTitle": "We're here to help. Explore our comprehensive help center to find answers to your question",
-      "searchPlaceholder": "what are you looking for",
-      "emptyFaq": "Oops! There is no question matching your search word"
+    "contactForm": {
+      "title": "Contacts Details",
+      "subTitle": "We will use this information to send confirmations and updates regarding your reservation.",
+      "checkBoxLabel": "Receive SMS updates about your booking. Message rates may apply."
     },
 
-    "validations": {
-      "noTrip": "There is no trip matching your search criteria",
-      "tryAgain": "Try again"
+    "paymentMethodsForm": {
+      "title": "Payment Details",
+      "subTitle": "Pay using:"
     },
 
-    "forms": {
-      "auth": {
-        "signUp": {
-          "title": "Welcome to GuestNa",
-          "subTitle": "Please complete the data to create your account",
-          "confirmUsingMail": "You will use this email to log in and manage your tour packages and activities",
-          "confirmTermsAndConditions": "I confirm that I agree to",
-          "isMarketingEmails": "I agree to receive marketing email newsletters from Guestna.com",
+    "methods": {
+      "credit": "Credit/Debit Card",
+      "stc": "STC",
+      "tamara": "TAMARA",
+      "apple": "Apple Pay",
+      "applePay": "Apple Pay"
+    },
 
-          "name": "Create a new account"
-        },
+    "registerForm": {
+      "title": "Enter student information",
+      "numberOfChildren": "Number of children",
 
-        "login": {
-          "title": "Welcome back to GuestNa",
-          "parentSubTitle": "Log in to manage and book your school trips.",
-          "requestQuoteSubTitle": "Great! We've got you covered so we can serve you better.",
+      "childrenNumber": {
+        "0": "The child",
+        "1": "The first child",
+        "2": "The second child",
+        "3": "The third child",
+        "4": "The fourth child",
+        "5": "The fifth child",
+        "6": "The sixth child",
+        "7": "The seventh child",
+        "8": "The eighth child",
+        "9": "The ninth child"
+      }
+    },
 
-          "haveAnAccount": "Don't have an account?",
-          "createAccount": "Create an account",
+    "name": {
+      "name": "Name",
+      "error": {
+        "min": "Name should be less than 3 characters",
+        "max": "Name should be more than 50 characters",
+        "invalid": "Name should contain only letters",
+        "wordMinLength": "Name should be two words each word be more than 3 characters"
+      }
+    },
 
-          "email": "Email address",
-          "phone": "Mobile number",
+    "email": {
+      "name": "Email",
+      "parentEmail": "Parent Email",
+      "studentEmail": "Student Email (If Available)",
+      "error": "Please enter a valid email address",
+      "is_exists": "This email address already exists",
+      "done": "Your account has been added",
+      "mailing": "Keep sending email"
+    },
 
-          "name": "Login",
+    "phone": {
+      "name": "Phone",
+      "parentPhone": "Parent Phone",
+      "backupPhone": "Backup Phone",
+      "studentPhone": "Student Phone Number (If Available)",
+      "error": {
+        "invalid": "Invalid phone number",
+        "min": "Number should be more than 12",
+        "max": "Number should be less than 14"
+      }
+    },
 
-          "loginBy": "Or login by",
-          "rememberMe": "Remember me",
+    "cardholderName": {
+      "name": "Cardholder Name",
+      "error": {
+        "validation": "First and last name are required",
+        "minAndMax": "Each name must be between 2 and 20 characters"
+      }
+    },
 
-          "rolesMenu": {
-            "schools": "Schools Login",
-            "individuals": "Trips operators login",
-            "servicesProviders": "Finance officers Login",
-            "organizations": "Organizations Login"
-          },
+    "cardNumber": {
+      "name": "Credit/Debit Card Number",
+      "error": {
+        "notAvailable": "Not available card number",
+        "min": "Card Number can't be less than 15 digits",
+        "max": "Card Number can't be more than 16 digits"
+      }
+    },
 
-          "termsAndConditions": {
-            "title": "I confirm that I agree to",
-            "text": "Last modified: December 16, 2013\n\nWelcome to www.lorem-ipsum.info. This website is provided as a service to our visitors and may be used for informational purposes only. Since the Terms and Conditions contain legal obligations, please read them carefully.\n\n1. Your Agreement\n\nBy using this website, you agree to be bound by and comply with these Terms and Conditions. If you do not agree to these Terms and Conditions, please do not use this website.\n\nNote: We reserve the right, at our sole discretion, to change, modify, or alter these Terms and Conditions at any time. Unless otherwise stated, amendments become effective immediately. Please review these Terms and Conditions periodically. Your continued use of the website after changes and/or modifications are posted will constitute your acceptance of the revised Terms and Conditions and the reasonableness of these standards for providing notice of changes. For your information, this page was last updated as of the date indicated above these Terms and Conditions.\n\n2. Privacy\nPlease review our Privacy Policy, which governs your visit to this website, to understand our practices.\n\n3. Linked Sites\nThis website may contain links to other independent third-party websites (\"Linked Sites\"). These Linked Sites are provided solely for the convenience of our visitors. These Linked Sites are not under our control, and we are not responsible for their content nor do we endorse them, including any information or materials contained therein. You will need to make your own independent judgment regarding your interaction with these Linked Sites.\n\n4. Forward-Looking Statements\nAll materials reproduced on this website are current as of the date of original publication or submission. The availability of a document on this website does not mean the information contained therein has not been modified or superseded by events or by a subsequent document or submission. We have no obligation or policy to update any information or data contained in this website, and therefore, these information or data should not be relied upon as being current as of the date you access this website.\n\n5. Disclaimer of Warranties and Limitation of Liability\na. This website may contain inaccuracies and typographical errors. We do not warrant the accuracy or completeness of the materials, or the reliability of any advice, opinion, statement, or other information displayed or distributed through the website. You expressly understand and agree that: (a) your use of the website, including any reliance on any opinion, advice, statement, memorandum, or information contained herein, shall be at your sole risk; (b) the website is provided on an \"AS IS\" and \"AS AVAILABLE\" basis; (c) except as expressly provided herein, we disclaim all warranties of any kind, whether express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, effort, ownership, and non-infringement; (iv) we make no warranty regarding the results that may be obtained from this website, or the products or services advertised or offered or the merchants involved; (v) any material downloaded or otherwise obtained through the use of the website is done at your own discretion and risk; and (vi) you will be solely responsible for any damage to your computer system or loss of data that results from downloading any such material.\nb. You expressly understand and agree that in no event, including but not limited to negligence, shall we be liable for any direct, indirect, incidental, special, punitive, or consequential damages resulting from the use or inability to use any of our sites or materials or functions on any such sites, even if we have been advised of the possibility of such damages. The foregoing limitations apply notwithstanding any failure of essential purpose of any limited remedy.\n\n6. Exceptions and Limitations\nSome jurisdictions do not allow the exclusion of certain warranties or the limitation or exclusion of liability for incidental or consequential damages. Accordingly, our liability in such jurisdiction shall be limited to the maximum extent permitted by law.\n\n7. Our Proprietary Rights\nThis website and all its contents are intended solely for personal, non-commercial use. Except as expressly provided, nothing within the website shall be construed as granting any license under our or any third party's intellectual property rights, whether by estoppel, implication, waiver, or otherwise. Without limiting the generality of the foregoing, you acknowledge and agree that all content available through the website and its services and used to operate it is protected by copyright, trademark, patent, or other proprietary rights. You agree not to: (a) modify, alter, or deface any of the trademarks, service marks, trade dress (collectively referred to as \"Trademarks\") or other intellectual property we provide in connection with the website; (b) retain your ownership"
-          }
-        },
+    "expirationDate": {
+      "title": "Expiration Date"
+    },
 
-        "confirmAccount": {
-          "titlePhone": "Enter the code we sent via SMS to",
-          "titleEmail": "Enter the code we sent via mail to",
-          "moreOptions": "More options",
-          "name": "Confirm Account",
-          "resendOtp": "Resend OTP",
-          "successMessage": "OTP has been sent successfully",
-          "loginSuccessMessage": "You have been logged in successfully",
-          "selectResendType": "Choose a method to get the OTP",
-          "willSendOtp": "We will send you the OTP"
-        },
+    "cvc": {
+      "name": "Card Verification Code (CVC)",
+      "error": {
+        "notAvailable": "Not available CVC",
+        "min": "CVC can't be less than 3 digits",
+        "max": "CVC can't be more than 4 digits"
+      }
+    },
 
-        "forgetPassword": {
-          "name": "Forgot your password",
-          "titleEmail": "To reset your password, please enter the email address associated with your account",
-          "titlePhone": "To reset your password, please enter the phone number associated with your account",
-          "sendOtp": "Send OTP"
-        },
+    "stc": {
+      "name": "STC",
+      "error": {
+        "invalid": "Phone number must be started with 05 and 10 digits",
+        "min": "Card Number must be exactly 10 digits",
+        "max": "Card Number must be exactly 10 digits"
+      }
+    },
 
-        "resetPassword": {
-          "name": "Reset new password",
-          "resetPassword": "Reset Password"
-        }
+    "stcOtp": {
+      "name": "Verification Code (OTP)",
+      "error": "OTP Number must be exactly 6 digits"
+    },
+
+    "searchBar": {
+      "placeholder": "Find the trip or place you want to visit",
+      "error": {
+        "min": "Search word should be more than 3 digits",
+        "max": "Search word should be less than 200 digits"
+      }
+    },
+
+    "password": {
+      "name": "Password",
+      "error": {
+        "min": "Password should be more than 8 characters",
+        "max": "Password should be less than 50 characters",
+        "invalid": "Password must contain at least 8 characters, 1 letter, 1 number, and 1 special character"
+      }
+    },
+
+    "confirmPassword": {
+      "name": "Confirm Password",
+      "error": {
+        "min": "Password should be more than 8 characters",
+        "label": "Promo code",
+        "placeholder": "Enter the promo code",
+        "useCode": "Use the promo code",
+        "successMessage": "Discount has been applied successfully"
+      }
+    },
+
+    "studentName": {
+      "name": "Student name",
+      "placeholder": "Student's full name in English",
+      "error": {
+        "min": "Student name should be less than 3 characters",
+        "max": "Student name Student name be more than 50 characters",
+        "invalid": "Name should contain only letters",
+        "wordMinLength": "The student's name must be full"
+      }
+    },
+
+    "relationship": {
+      "name": "ٌRelationship",
+      "error": {
+        "min": "ٌRelationship should be more than 2 characters",
+        "max": "ٌRelationship should be less than 50 characters"
+      }
+    },
+
+    "nationalId": {
+      "name": "National ID",
+      "studentPlaceholder": "National ID card number of the student",
+      "parentPlaceholder": "National ID card number of the guardian",
+      "error": {
+        "invalid": "The number must start with 1 or 2 and must be 10 characters long",
+        "min": "National ID number must be exactly 10 digits",
+        "max": "National ID number must be exactly 10 digits"
+      }
+    },
+
+    "academicStages": {
+      "name": "Academic Stages"
+    },
+
+    "grade": {
+      "name": "Grade"
+    },
+
+    "organizationName": {
+      "name": "Organization Name",
+      "error": {
+        "min": "Organization name should be more than 3 characters",
+        "max": "Organization name should be less than 50 characters"
+      }
+    },
+
+    "survey": {
+      "title": "Activity Completion Survey",
+      "subtitle": "Please complete the survey to confirm activity completion and activate the final report",
+      "selectAnswer": "Select Answer",
+      "submit": "Complete Survey",
+      "rating": {
+        "label": "How was the overall activity experience?"
       },
-
-      "contactForm": {
-        "title": "Contacts Details",
-        "subTitle": "We will use this information to send confirmations and updates regarding your reservation.",
-        "checkBoxLabel": "Receive SMS updates about your booking. Message rates may apply."
+      "learningObjectives": {
+        "label": "Were the educational objectives of the activity achieved?",
+        "fully": "Fully achieved",
+        "mostly": "Mostly achieved",
+        "partially": "Partially achieved",
+        "not": "Not achieved"
       },
-
-      "paymentMethodsForm": {
-        "title": "Payment Details",
-        "subTitle": "Pay using:"
+      "schedule": {
+        "label": "Did the activity adhere to the specified schedule?",
+        "yes": "Yes, adhered to schedule",
+        "partial": "Partially adhered",
+        "no": "No, did not adhere"
       },
+      "notes": {
+        "label": "Additional Notes",
+        "placeholder": "Add any notes or comments..."
+      }
+    },
 
-      "methods": {
-        "credit": "Credit/Debit Card",
-        "stc": "STC",
-        "tamara": "TAMARA",
-        "apple": "Apple Pay",
-        "applePay": "Apple Pay"
-      },
-
-      "registerForm": {
-        "title": "Enter student information",
-        "numberOfChildren": "Number of children",
-
-        "childrenNumber": {
-          "0": "The child",
-          "1": "The first child",
-          "2": "The second child",
-          "3": "The third child",
-          "4": "The fourth child",
-          "5": "The fifth child",
-          "6": "The sixth child",
-          "7": "The seventh child",
-          "8": "The eighth child",
-          "9": "The ninth child"
-        }
-      },
-
-      "name": {
-        "name": "Name",
+    "confirmRequest": {
+      "title": "Confirm Trip Request",
+      "day": {
+        "label": "Trip Date",
         "error": {
-          "min": "Name should be less than 3 characters",
-          "max": "Name should be more than 50 characters",
-          "invalid": "Name should contain only letters",
-          "wordMinLength": "Name should be two words each word be more than 3 characters"
+          "pastDate": "Cannot select a date in the past"
         }
       },
-
-      "email": {
-        "name": "Email",
-        "parentEmail": "Parent Email",
-        "studentEmail": "Student Email (If Available)",
-        "error": "Please enter a valid email address",
-        "is_exists": "This email address already exists",
-        "done": "Your account has been added",
-        "mailing": "Keep sending email"
-      },
-
-      "phone": {
-        "name": "Phone",
-        "parentPhone": "Parent Phone",
-        "backupPhone": "Backup Phone",
-        "studentPhone": "Student Phone Number (If Available)",
+      "availableSeats": {
+        "label": "Number of participants",
+        "secondaryLabel": "Number of students",
         "error": {
-          "invalid": "Invalid phone number",
-          "min": "Number should be more than 12",
-          "max": "Number should be less than 14"
+          "min": "Number must be greater than 0",
+          "max": "Number is too large"
+        }
+      },
+      "note": {
+        "label": "Additional Notes (Optional)",
+        "placeholder": "Any special requests or requirements..."
+      }
+    },
+
+    "subject": {
+      "name": "Subject",
+      "error": {
+        "min": "Subject should be more than 5 characters",
+        "max": "Subject should be less than 50 characters"
+      }
+    },
+
+    "message": {
+      "name": "Message",
+      "error": {
+        "min": "Message should be more than 5 characters",
+        "max": "Message should be less than 225 characters"
+      }
+    },
+
+    "validation": {
+      "require": "This field is required",
+      "sending": "Sending Now ...",
+      "downloading": "Downloading Now ...",
+      "success": "Your data has been sent successfully",
+      "reminderSentSuccessfully": "Reminder sent successfully",
+      "addedToFavorites": "Added to favorites successfully",
+      "checkYourEmail": "Please, Check your gmail",
+      "addGuest": "Add Guest first please",
+      "registerChild": "Please register your child in a trip first",
+      "thanksMessage": "Thank You!",
+      "willContactYou": "Your contact request has been sent, we will respond to you shortly.",
+
+      "payment": {
+        "success": "Payment was done successfully!",
+        "sendOtp": "Please send OTP!",
+        "resendOtp": "Please resend OTP!"
+      },
+
+      "api_errors": {
+        "other_error": "An error occurred! Please try again"
+      }
+    },
+
+    "customTrip": {
+      "title": "Request to Create a New Trip",
+      "submit": "Send Request to Guestna Team",
+      "success": "Your request has been sent successfully",
+
+      "selectedTrip": {
+        "placeholder": "Category type"
+      },
+
+      "tripType": {
+        "placeholder": "Trip Duration",
+        "options": {
+          "oneDay": "One Day Trip",
+          "multiDay": "Multi-Day Trip",
+          "halfDay": "Half Day Trip"
         }
       },
 
-      "cardholderName": {
-        "name": "Cardholder Name",
+      "city": {
+        "placeholder": "City"
+      },
+
+      "targetedTrip": {
+        "placeholder": "Target Stage"
+      },
+
+      "expectedParticipants": {
+        "placeholder": "Expected Number",
         "error": {
-          "validation": "First and last name are required",
-          "minAndMax": "Each name must be between 2 and 20 characters"
+          "min": "Number must be at least 1 person",
+          "max": "Number cannot exceed 1000 people"
         }
       },
 
-      "cardNumber": {
-        "name": "Credit/Debit Card Number",
+      "proposedTripDate": {
+        "startLabel": "Proposed Trip Date",
+        "endLabel": "Proposed Trip Date",
         "error": {
-          "notAvailable": "Not available card number",
-          "min": "Card Number can't be less than 15 digits",
-          "max": "Card Number can't be more than 16 digits"
+          "pastDate": "Trip date cannot be in the past",
+          "startAfterEnd": "Start date must be before end date",
+          "endBeforeStart": "End date must be after start date"
         }
       },
 
-      "expirationDate": {
-        "title": "Expiration Date"
-      },
-
-      "cvc": {
-        "name": "Card Verification Code (CVC)",
+      "price": {
+        "placeholder": "Proposed Price (SAR)",
         "error": {
-          "notAvailable": "Not available CVC",
-          "min": "CVC can't be less than 3 digits",
-          "max": "CVC can't be more than 4 digits"
+          "min": "Proposed price must be at least 1 SAR"
         }
       },
 
-      "stc": {
-        "name": "STC",
+      "services": {
+        "placeholder": "Services"
+      },
+
+      "tripDescription": {
+        "placeholder": "Trip Description",
         "error": {
-          "invalid": "Phone number must be started with 05 and 10 digits",
-          "min": "Card Number must be exactly 10 digits",
-          "max": "Card Number must be exactly 10 digits"
+          "min": "Description must be at least 10 characters",
+          "max": "Description cannot exceed 500 characters"
         }
       },
 
-      "stcOtp": {
-        "name": "Verification Code (OTP)",
-        "error": "OTP Number must be exactly 6 digits"
-      },
-
-      "searchBar": {
-        "placeholder": "Find the trip or place you want to visit",
+      "specialRequirements": {
+        "placeholder": "Any Special Requirements",
         "error": {
-          "min": "Search word should be more than 3 digits",
-          "max": "Search word should be less than 200 digits"
+          "max": "Special requirements cannot exceed 300 characters"
         }
       },
 
-      "password": {
-        "name": "Password",
-        "error": {
-          "min": "Password should be more than 8 characters",
-          "max": "Password should be less than 50 characters",
-          "invalid": "Password must contain at least 8 characters, 1 letter, 1 number, and 1 special character"
-        }
-      },
-
-      "confirmPassword": {
-        "name": "Confirm Password",
-        "error": {
-          "min": "Password should be more than 8 characters",
-          "label": "Promo code",
-          "placeholder": "Enter the promo code",
-          "useCode": "Use the promo code",
-          "successMessage": "Discount has been applied successfully"
-        },
-
-        "studentName": {
-          "name": "Student name",
-          "placeholder": "Student's full name in English",
-          "error": {
-            "min": "Student name should be less than 3 characters",
-            "max": "Student name Student name be more than 50 characters",
-            "invalid": "Name should contain only letters",
-            "wordMinLength": "The student's name must be full"
-          }
-        },
-
-        "relationship": {
-          "name": "ٌRelationship",
-          "error": {
-            "min": "ٌRelationship should be more than 2 characters",
-            "max": "ٌRelationship should be less than 50 characters"
-          }
-        },
-
-        "nationalId": {
-          "name": "National ID",
-          "studentPlaceholder": "National ID card number of the student",
-          "parentPlaceholder": "National ID card number of the guardian",
-          "error": {
-            "invalid": "The number must start with 1 or 2 and must be 10 characters long",
-            "min": "National ID number must be exactly 10 digits",
-            "max": "National ID number must be exactly 10 digits"
-          }
-        },
-
-        "academicStages": {
-          "name": "Academic Stages"
-        },
-
-        "grade": {
-          "name": "Grade"
-        },
-
-        "organizationName": {
-          "name": "Organization Name",
-          "error": {
-            "min": "Organization name should be more than 3 characters",
-            "max": "Organization name should be less than 50 characters"
-          }
-        },
-
-        "survey": {
-          "title": "Activity Completion Survey",
-          "subtitle": "Please complete the survey to confirm activity completion and activate the final report",
-          "selectAnswer": "Select Answer",
-          "submit": "Complete Survey",
-          "rating": {
-            "label": "How was the overall activity experience?"
-          },
-          "learningObjectives": {
-            "label": "Were the educational objectives of the activity achieved?",
-            "fully": "Fully achieved",
-            "mostly": "Mostly achieved",
-            "partially": "Partially achieved",
-            "not": "Not achieved"
-          },
-          "schedule": {
-            "label": "Did the activity adhere to the specified schedule?",
-            "yes": "Yes, adhered to schedule",
-            "partial": "Partially adhered",
-            "no": "No, did not adhere"
-          },
-          "notes": {
-            "label": "Additional Notes",
-            "placeholder": "Add any notes or comments..."
-          }
-        },
-
-        "confirmRequest": {
-          "title": "Confirm Trip Request",
-          "day": {
-            "label": "Trip Date",
-            "error": {
-              "pastDate": "Cannot select a date in the past"
-            }
-          },
-          "availableSeats": {
-            "label": "Number of participants",
-            "secondaryLabel": "Number of students",
-            "error": {
-              "min": "Number must be greater than 0",
-              "max": "Number is too large"
-            }
-          },
-          "note": {
-            "label": "Additional Notes (Optional)",
-            "placeholder": "Any special requests or requirements..."
-          }
-        },
-
-        "subject": {
-          "name": "Subject",
-          "error": {
-            "min": "Subject should be more than 5 characters",
-            "max": "Subject should be less than 50 characters"
-          }
-        },
-
-        "message": {
-          "name": "Message",
-          "error": {
-            "min": "Message should be more than 5 characters",
-            "max": "Message should be less than 225 characters"
-          }
-        },
-
-        "validation": {
-          "require": "This field is required",
-          "sending": "Sending Now ...",
-          "downloading": "Downloading Now ...",
-          "success": "Your data has been sent successfully",
-          "reminderSentSuccessfully": "Reminder sent successfully",
-          "addedToFavorites": "Added to favorites successfully",
-          "checkYourEmail": "Please, Check your gmail",
-          "addGuest": "Add Guest first please",
-          "registerChild": "Please register your child in a trip first",
-          "thanksMessage": "Thank You!",
-          "willContactYou": "Your contact request has been sent, we will respond to you shortly.",
-
-          "payment": {
-            "success": "Payment was done successfully!",
-            "sendOtp": "Please send OTP!",
-            "resendOtp": "Please resend OTP!"
-          },
-
-          "api_errors": {
-            "other_error": "An error occurred! Please try again"
-          }
-        }
-      },
-
-      "customTrip": {
-        "title": "Request to Create a New Trip",
-        "submit": "Send Request to Guestna Team",
-        "success": "Your request has been sent successfully",
-
-        "selectedTrip": {
-          "placeholder": "Category type"
-        },
-
-        "tripType": {
-          "placeholder": "Trip Duration",
-          "options": {
-            "oneDay": "One Day Trip",
-            "multiDay": "Multi-Day Trip",
-            "halfDay": "Half Day Trip"
-          }
-        },
-
-        "city": {
-          "placeholder": "City"
-        },
-
-        "targetedTrip": {
-          "placeholder": "Target Stage"
-        },
-
-        "expectedParticipants": {
-          "placeholder": "Expected Number",
-          "error": {
-            "min": "Number must be at least 1 person",
-            "max": "Number cannot exceed 1000 people"
-          }
-        },
-
-        "proposedTripDate": {
-          "startLabel": "Proposed Trip Date",
-          "endLabel": "Proposed Trip Date",
-          "error": {
-            "pastDate": "Trip date cannot be in the past",
-            "startAfterEnd": "Start date must be before end date",
-            "endBeforeStart": "End date must be after start date"
-          }
-        },
-
-        "price": {
-          "placeholder": "Proposed Price (SAR)",
-          "error": {
-            "min": "Proposed price must be at least 1 SAR"
-          }
-        },
-
-        "services": {
-          "placeholder": "Services"
-        },
-
-        "tripDescription": {
-          "placeholder": "Trip Description",
-          "error": {
-            "min": "Description must be at least 10 characters",
-            "max": "Description cannot exceed 500 characters"
-          }
-        },
-
-        "specialRequirements": {
-          "placeholder": "Any Special Requirements",
-          "error": {
-            "max": "Special requirements cannot exceed 300 characters"
-          }
-        },
-
-        "attachFile": {
-          "label": "Attach File"
-        }
+      "attachFile": {
+        "label": "Attach File"
       }
     }
   },
