@@ -8,6 +8,18 @@ import formatDate from "@utils/FormateDate";
 import formatCurrency from "@utils/FormatCurrency";
 import { exportToExcel, exportModalToPDF } from "@utils/exportUtils";
 import StudentsTable from "./StudentsTable";
+import {
+  locationIcon,
+  timeIcon,
+  dateIcon,
+  schoolsIcon,
+  profileIcon,
+  walletIcon,
+  ticketsIcon,
+  companiesIcon,
+  phoneIcon,
+  schoolIcon,
+} from "@assets/svg";
 
 const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
   const locale = useLocale();
@@ -71,133 +83,104 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
           </h3>
 
           <div className="space-y-4 border-2 border-border rounded-lg p-3">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                <span className="text-orange-600 text-sm">🏛️</span>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">
-                  {t("profile.tables.orders.bookingDetails.tripDescription")}
-                </p>
-                <p className="font-medium" title={booking.description}>
-                  {booking.description?.length <= 70
-                    ? booking.description
-                    : booking.description?.slice(0, 70) + "..."}
-                </p>
-              </div>
+            <div className="flex flex-col gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              <p className="text-sm text-gray-600">
+                {t("profile.tables.orders.bookingDetails.tripDescription")}:
+              </p>
+              <p className="font-medium" title={booking.description}>
+                {booking.description?.length <= 70
+                  ? booking.description
+                  : booking.description?.slice(0, 70) + "..."}
+              </p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                <span className="text-orange-600 text-sm">📍</span>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">
-                  {t("profile.tables.orders.bookingDetails.location")}
-                </p>
-                <p className="font-medium">{booking.cities}</p>
-              </div>
+            <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              {locationIcon}
+              <p className="text-sm text-gray-600">
+                {t("profile.tables.orders.bookingDetails.location")}:
+              </p>
+              <p className="font-medium">{booking.cities}</p>
             </div>
 
             {booking.fromHour && booking.toHour && (
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                  <span className="text-orange-600 text-sm">⏰</span>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">
-                    {t("profile.tables.orders.bookingDetails.time")}
-                  </p>
-                  <p className="font-medium">
-                    {`${booking.toHour} - ${booking.fromHour}`}
-                  </p>
-                </div>
+              <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+                {timeIcon}
+                <p className="text-sm text-gray-600">
+                  {t("profile.tables.orders.bookingDetails.time")}:
+                </p>
+                <p className="font-medium">
+                  {`${booking.toHour} - ${booking.fromHour}`}
+                </p>
               </div>
             )}
 
             <div className="flex items-center gap-3 flex-wrap">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-blue-600 text-sm">📅</span>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">
-                    {t("profile.tables.orders.bookingDetails.tripStartDate")}
-                  </p>
-                  <p className="font-medium">
-                    {booking.day &&
-                      formatDate(booking.day, locale, {
+              <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+                {dateIcon}
+                <p className="text-sm text-gray-600">
+                  {t("profile.tables.orders.bookingDetails.tripStartDate")}:
+                </p>
+                <p className="font-medium">
+                  {booking.day &&
+                    formatDate(booking.day, locale, {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+                {dateIcon}
+                <p className="text-sm text-gray-600">
+                  {t("profile.tables.orders.bookingDetails.tripEndDate")}:
+                </p>
+                <p className="font-medium">
+                  {booking.day && booking.duration > 1
+                    ? formatDate(
+                        new Date(
+                          new Date(booking.day).getTime() +
+                            booking.duration * 24 * 60 * 60 * 1000
+                        ),
+                        locale,
+                        {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        }
+                      )
+                    : formatDate(booking.day, locale, {
                         year: "numeric",
                         month: "short",
                         day: "numeric",
                       })}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 ">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-blue-600 text-sm">📅</span>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">
-                    {t("profile.tables.orders.bookingDetails.tripEndDate")}
-                  </p>
-                  <p className="font-medium">
-                    {booking.day && booking.duration > 1
-                      ? formatDate(
-                          new Date(
-                            new Date(booking.day).getTime() +
-                              booking.duration * 24 * 60 * 60 * 1000
-                          ),
-                          locale,
-                          {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          }
-                        )
-                      : formatDate(booking.day, locale, {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                  </p>
-                </div>
+                </p>
               </div>
             </div>
 
             <div className="flex items-center gap-3 flex-wrap">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                  <span className="text-orange-600 text-sm">📅</span>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">
-                    {t("profile.tables.orders.bookingDetails.bookingStatus")}
-                  </p>
-                  <p className="font-medium">
-                    {t(`common.organizationTripStatus.${booking.status}`)}
-                  </p>
-                </div>
+              <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+                {ticketsIcon}
+                <p className="text-sm text-gray-600">
+                  {t("profile.tables.orders.bookingDetails.bookingStatus")}:
+                </p>
+                <p className="font-medium">
+                  {t(`common.organizationTripStatus.${booking.status}`)}
+                </p>
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                  <span className="text-orange-600 text-sm">💰</span>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">
-                    {t("profile.tables.orders.bookingDetails.fees")}
-                  </p>
-                  <p className="font-medium">
-                    {booking.price
-                      ? formatCurrency(booking.price)
-                      : booking.fees
-                      ? formatCurrency(booking.fees)
-                      : "120 ريال"}
-                  </p>
-                </div>
+              <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+                {walletIcon}
+                <p className="text-sm text-gray-600">
+                  {t("profile.tables.orders.bookingDetails.fees")}:
+                </p>
+                <p className="font-medium">
+                  {booking.price
+                    ? formatCurrency(booking.price)
+                    : booking.fees
+                    ? formatCurrency(booking.fees)
+                    : "120 ريال"}
+                </p>
               </div>
             </div>
           </div>
@@ -210,62 +193,46 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
           </h3>
 
           <div className="space-y-4 border-2 border-border rounded-lg p-3">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-blue-600 text-sm">🏫</span>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">
-                  {t("profile.tables.orders.bookingDetails.schoolName")}
-                </p>
-                <p className="font-medium">{booking.organization?.name}</p>
-              </div>
+            <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              {schoolIcon}
+              <p className="text-sm text-gray-600">
+                {t("profile.tables.orders.bookingDetails.schoolName")}:
+              </p>
+              <p className="font-medium">{booking.organization?.name}</p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-blue-600 text-sm">👨‍🏫</span>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">
-                  {t("profile.tables.orders.bookingDetails.contactPerson")}
-                </p>
-                <p className="font-medium">{booking.organization?.name}</p>
-              </div>
+            <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              {profileIcon}
+              <p className="text-sm text-gray-600">
+                {t("profile.tables.orders.bookingDetails.contactPerson")}:
+              </p>
+              <p className="font-medium">{booking.organization?.name}</p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-blue-600 text-sm">📞</span>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">
-                  {t("profile.tables.orders.bookingDetails.phoneNumber")}
-                </p>
-                <p className="font-medium text-end" dir="ltr">
-                  {booking.organization?.pone}
-                </p>
-              </div>
+            <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              {phoneIcon}
+              <p className="text-sm text-gray-600">
+                {t("profile.tables.orders.bookingDetails.phoneNumber")}:
+              </p>
+              <p className="font-medium text-end" dir="ltr">
+                {booking.organization?.pone}
+              </p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-blue-600 text-sm">📅</span>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">
-                  {t("profile.tables.orders.bookingDetails.bookingDate")}
-                </p>
-                <p className="font-medium">
-                  {formatDate(booking.createdAt, locale, {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                  })}
-                </p>
-              </div>
+            <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              {dateIcon}
+              <p className="text-sm text-gray-600">
+                {t("profile.tables.orders.bookingDetails.bookingDate")}:
+              </p>
+              <p className="font-medium">
+                {formatDate(booking.createdAt, locale, {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                })}
+              </p>
             </div>
           </div>
         </div>
