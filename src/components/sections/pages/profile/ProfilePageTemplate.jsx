@@ -12,7 +12,6 @@ import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 const ProfilePageTemplate = ({
   title,
   tableTitle,
-  subTitle,
   endpoint,
   method,
   emptyStateComponent,

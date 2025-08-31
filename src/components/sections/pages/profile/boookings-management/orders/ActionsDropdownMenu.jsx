@@ -1,8 +1,8 @@
+// src/components/ActionsDropdownMenu.js
+
 "use client";
 
-// import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-
 import { useState } from "react";
 
 import { getHeaders } from "@utils/getHeaders";
@@ -13,71 +13,66 @@ import { actionsIcon } from "@assets/svg";
 
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
 
-const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
-  const [loading, setLoading] = useState(false);
+import { useOrderDetailsModal } from "@hooks/useOrderDetailsModal";
 
+import CustomizedModal from "@components/common/customizedModal";
+import OrderDetailsModal from "./OrderDetailsModal";
+
+const ActionsDropdownMenu = ({
+  bookingId,
+  // bookingStatus,
+  customizableOrder = false,
+}) => {
   const locale = useLocale();
   const t = useTranslations();
-
-  const headers = getHeaders(locale);
-
   const { enqueueSnackbar } = useSnackbar();
+  const headers = getHeaders(locale);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const [loading, setLoading] = useState(false);
 
+  // Use the custom hook to handle modal logic
+  const {
+    selectedOrderId,
+    currentOrderDetails,
+    loadingDetails,
+    openModal,
+    closeModal,
+  } = useOrderDetailsModal(locale);
+
+  const handleClick = (event) => setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
+
+  // Send reminder logic
   const sendRemind = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const response = await axios.get(
+      await axios.get(
         getProxyUrl(
           `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.REMIND}/${bookingId}`
         ),
         { headers }
       );
-
-      if (response.data) {
-        enqueueSnackbar(t("forms.validation.reminderSentSuccessfully"), {
-          variant: "success",
-        });
-      }
+      enqueueSnackbar(t("forms.validation.reminderSentSuccessfully"), {
+        variant: "success",
+      });
     } catch (error) {
       console.error("Error sending reminder:", error);
-      console.error("Error details:", error.response?.data);
-      const errorMessage = error.response?.data?.message;
-
-      const defaultErrorMessage = t("forms.validation.api_errors.other_error");
-
-      // Show error notification
-      enqueueSnackbar(errorMessage || defaultErrorMessage, {
-        variant: "error",
-      });
+      const errorMessage =
+        error.response?.data?.message ||
+        t("forms.validation.api_errors.other_error");
+      enqueueSnackbar(errorMessage, { variant: "error" });
     } finally {
       setLoading(false);
       handleClose();
     }
   };
-
-  const buttonsList = [
-    {
-      title: t("links.edit"),
-      // onClick: showUpdateOrderForm,
-    },
-    {
-      title: t("links.remindGuestna"),
-      onClick: sendRemind,
-    },
-  ];
 
   return (
     <>
@@ -96,11 +91,7 @@ const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
-          slotProps={{
-            list: {
-              "aria-labelledby": "basic-button",
-            },
-          }}
+          slotProps={{ list: { "aria-labelledby": "basic-button" } }}
           PaperProps={{
             sx: {
               minWidth: "200px",
@@ -109,29 +100,53 @@ const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
             },
           }}
         >
-          <button className="w-full hover:bg-gray-100 transition-all duration-200 ease-in-out cursor-pointer py-2  font-ibm border-b-2 border-gray-200 text-center">
-            {t("links.showDetails")}
-          </button>
-
-          <button
-            onClick={sendRemind}
-            className="w-full hover:bg-gray-100 transition-all duration-200 ease-in-out cursor-pointer py-2  font-ibm border-b-2 border-gray-200 text-center"
+          <MenuItem
+            onClick={() => {
+              handleClose();
+              openModal(bookingId);
+            }}
+            disabled={loadingDetails}
           >
+            {loadingDetails ? (
+              <CircularProgress size={17} color="primary" />
+            ) : (
+              t("links.showDetails")
+            )}
+          </MenuItem>
+          <MenuItem onClick={sendRemind} disabled={loading}>
             {loading ? (
               <CircularProgress size={17} color="primary" />
             ) : (
               t("links.remindGuestna")
             )}
-          </button>
-
-          <button
-            disabled={bookingStatus !== "PENDING"}
-            className="w-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-all duration-200 ease-in-out cursor-pointer py-2 font-ibm text-center"
-          >
-            {t("links.edit")}
-          </button>
+          </MenuItem>
+          {customizableOrder && (
+            <MenuItem
+              onClick={() => {
+                handleClose(); /* Logic for "Show Details" if needed */
+              }}
+            >
+              {t("links.edit")}
+            </MenuItem>
+          )}
         </Menu>
       </div>
+
+      <CustomizedModal
+        open={Boolean(selectedOrderId)}
+        handleClose={closeModal}
+        bgcolor="rgba(0, 0, 0, 0.5)"
+        customizedCloseButton={true}
+        padding={false}
+      >
+        {selectedOrderId && (
+          <OrderDetailsModal
+            orderId={selectedOrderId}
+            orderDetails={currentOrderDetails}
+            loading={loadingDetails}
+          />
+        )}
+      </CustomizedModal>
     </>
   );
 };

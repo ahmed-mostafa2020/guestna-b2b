@@ -599,6 +599,25 @@
     },
 
     "tables": {
+      "ordersInfo": {
+        "orderDetails": {
+          "title": "تفاصيل الطلب -",
+          "tripInfo": "معلومات الرحلة",
+          "bookingInfo": "معلومات الحجز",
+          "tripName": "اسم الرحلة",
+          "tripType": "نوع الرحلة",
+          "category": "الفئة",
+          "basePrice": "السعر",
+          "location": "الموقع",
+          "tripDate": "تاريخ الرحلة",
+          "orderId": "رقم الطلب",
+          "availableSeats": "المقاعد المتاحة",
+          "note": "ملاحظات",
+          "academicStages": "المراحل الأكاديمية",
+          "services": "الخدمات",
+          "status": "الحالة"
+        }
+      },
       "activities": {
         "header": {
           "tripName": "اسم النشاط",

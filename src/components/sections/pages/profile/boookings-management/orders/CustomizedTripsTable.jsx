@@ -9,7 +9,7 @@ import formatCurrency from "@utils/FormatCurrency";
 import Pagination from "@components/common/Pagination";
 import ActionsDropdownMenu from "./ActionsDropdownMenu";
 
-import { Typography, CardContent, Card } from "@mui/material";
+import { Typography, CardContent, Card, CircularProgress } from "@mui/material";
 
 const CustomizedTripsTable = ({
   data,
@@ -37,7 +37,9 @@ const CustomizedTripsTable = ({
 
   if (!data || !data.nodes) {
     return (
-      <Typography className="p-4 text-center">Loading bookings...</Typography>
+      <div className="w-full min-h-[400px] centered">
+        <CircularProgress size={50} color="primary" />
+      </div>
     );
   }
 
@@ -137,6 +139,7 @@ const CustomizedTripsTable = ({
                       <ActionsDropdownMenu
                         bookingId={booking._id}
                         bookingStatus={booking.status}
+                        customizableOrder={true}
                       />
                     </td>
                   </tr>
@@ -199,6 +202,7 @@ const CustomizedTripsTable = ({
                 <ActionsDropdownMenu
                   bookingId={booking._id}
                   bookingStatus={booking.status}
+                  customizableOrder={true}
                 />
               </div>
             </CardContent>

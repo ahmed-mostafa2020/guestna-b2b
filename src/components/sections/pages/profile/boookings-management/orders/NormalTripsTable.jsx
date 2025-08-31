@@ -9,7 +9,7 @@ import { TRIP_STATUS } from "@constants/tripStatus";
 import Pagination from "@components/common/Pagination";
 import ActionsDropdownMenu from "./ActionsDropdownMenu";
 
-import { Typography, CardContent, Card } from "@mui/material";
+import { Typography, CardContent, Card, CircularProgress } from "@mui/material";
 
 const NormalTripsTable = ({
   data,
@@ -37,7 +37,9 @@ const NormalTripsTable = ({
 
   if (!data || !data.nodes) {
     return (
-      <Typography className="p-4 text-center">Loading bookings...</Typography>
+      <div className="w-full min-h-[400px] centered">
+        <CircularProgress size={50} color="primary" />
+      </div>
     );
   }
 
@@ -108,6 +110,7 @@ const NormalTripsTable = ({
                       <ActionsDropdownMenu
                         bookingId={booking._id}
                         bookingStatus={booking.status}
+                        customizableOrder={false}
                       />
                     </td>
                   </tr>
@@ -160,6 +163,7 @@ const NormalTripsTable = ({
                 <ActionsDropdownMenu
                   bookingId={booking._id}
                   bookingStatus={booking.status}
+                  customizableOrder={false}
                 />
               </div>
             </CardContent>

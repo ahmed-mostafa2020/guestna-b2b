@@ -18,7 +18,13 @@ const BookingsPage = () => {
   };
 
   // Prepare the request body with status filter
-  const requestBody = selectedStatus ? { status: selectedStatus } : {};
+  const requestBody = selectedStatus
+    ? {
+        filter: {
+          status: selectedStatus,
+        },
+      }
+    : {};
 
   return (
     <div className="flex flex-col gap-4 lg:gap-6">

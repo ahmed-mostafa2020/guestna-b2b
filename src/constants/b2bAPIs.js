@@ -77,8 +77,8 @@ export const B2B_END_POINTS = {
           CUSTOM_TRIP: "profile/askTrips/custom/new",
         },
         UPDATE_ORDER: {
-          INFO: "profile/trips/info",
-          SUBMIT: "profile/askTrips/custom/edit",
+          INFO: "profile/askTrips/info",
+          SUBMIT: "profile/askTrips/edit",
         },
         REMIND: "profile/askTrips/reminder/admin",
       },
@@ -93,7 +93,7 @@ export const B2B_END_POINTS = {
     },
     CREATE_TRIP_LINK: "profile/organizationTrips/poster",
 
-    BOOKINGS: "profile/users/school/all",
+    BOOKINGS: "profile/bookings/all",
 
     UPLOAD_PHOTO: "users/avatar", //MAIN
     VERIFIED_EMAIL: "users/sendConfirmed", //MAIN
