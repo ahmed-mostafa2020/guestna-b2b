@@ -428,53 +428,6 @@ const TransactionsPage = () => {
           </div>
         </div>
 
-        {/* Summary Section */}
-        {!isLoading && !error && (
-          <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
-            <div className="flex justify-between items-center">
-              <div className="text-sm text-gray-600">
-                {invoicesData &&
-                (invoicesData.availableBalance !== undefined ||
-                  invoicesData.totalRevenue !== undefined) ? (
-                  <>
-                    إجمالي الإيرادات:{" "}
-                    <span className="font-medium text-gray-900">
-                      {balanceData.totalBalance.toLocaleString("ar-SA")} ريال
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    إجمالي المعاملات:{" "}
-                    <span className="font-medium text-gray-900">
-                      {transactions.length}
-                    </span>
-                  </>
-                )}
-              </div>
-              <div className="text-sm text-gray-600">
-                {invoicesData &&
-                (invoicesData.availableBalance !== undefined ||
-                  invoicesData.totalRevenue !== undefined) ? (
-                  <>
-                    الرصيد المتاح:{" "}
-                    <span className="font-medium text-gray-900">
-                      {balanceData.availableBalance.toLocaleString("ar-SA")}{" "}
-                      ريال
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    المعاملات المفلترة:{" "}
-                    <span className="font-medium text-gray-900">
-                      {filteredTransactions.length}
-                    </span>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Transactions Table Section */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
