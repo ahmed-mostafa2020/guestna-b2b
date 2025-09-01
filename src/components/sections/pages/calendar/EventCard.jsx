@@ -1,22 +1,25 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 const EventCard = ({ event, onView, onEdit }) => {
+  const t = useTranslations();
   const getEventTypeLabel = (type) => {
     switch (type) {
       case "TRIP":
-        return "رحلة";
+        return t("profile.calendar.events.types.trip");
       case "ACADEMIC":
-        return "أكاديمي";
+        return t("profile.calendar.events.types.academic");
       case "ADMINISTRATIVE":
-        return "إداري";
+        return t("profile.calendar.events.types.administrative");
       case "ENTERTAINMENT":
-        return "ترفيهي";
+        return t("profile.calendar.events.types.entertainment");
       case "METING":
-        return "اجتماع";
+        return t("profile.calendar.events.types.meeting");
       case "EXAM":
-        return "امتحان";
+        return t("profile.calendar.events.types.exam");
       default:
-        return "اجتماعي";
+        return t("profile.calendar.events.types.social");
     }
   };
 
@@ -67,13 +70,13 @@ const EventCard = ({ event, onView, onEdit }) => {
             onClick={() => onView(event)}
             className="text-blue-600 hover:text-blue-800 text-sm font-medium"
           >
-            مشاهدة
+            {t("profile.calendar.actions.view")}
           </button>
           <button
             onClick={() => onEdit(event)}
             className="text-green-600 hover:text-green-800 text-sm font-medium"
           >
-            تعديل
+            {t("profile.calendar.actions.edit")}
           </button>
         </div>
       </div>

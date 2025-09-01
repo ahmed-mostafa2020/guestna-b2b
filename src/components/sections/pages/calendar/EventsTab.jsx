@@ -199,8 +199,8 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
           </div>
         ) : (
           <EmptyState
-            title="لا توجد أحداث"
-            description="لم يتم العثور على أي أحداث"
+            title={t("profile.calendar.events.noEventsTitle")}
+            description={t("profile.calendar.events.noEventsDescription")}
           />
         )}
       </div>

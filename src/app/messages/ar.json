@@ -851,6 +851,109 @@
         "calendar": "التقويم",
         "events": "الأحداث",
         "sync": "المزامنة"
+      },
+      "calendar": {
+        "selectedDayEvents": "أحداث اليوم المحدد",
+        "noEventsTitle": "لا توجد أحداث لهذا اليوم",
+        "noEventsDescription": "لم يتم العثور على أي أحداث مجدولة لهذا التاريخ",
+        "addNewEvent": "إضافة حدث جديد",
+        "addEvent": "أضف حدث",
+        "uploadCalendar": "رفع التقويم",
+        "interactiveCalendar": "التقويم التفاعلي",
+        "info": "يمكنك فقط تحديد التواريخ الحالية والمستقبلية",
+        "days": {
+          "sunday": "الأحد",
+          "monday": "الاثنين",
+          "tuesday": "الثلاثاء",
+          "wednesday": "الأربعاء",
+          "thursday": "الخميس",
+          "friday": "الجمعة",
+          "saturday": "السبت"
+        }
+      },
+      "events": {
+        "search": {
+          "title": "البحث",
+          "printReport": "طباعة التقرير"
+        },
+        "filters": {
+          "eventName": "اسم الحدث",
+          "eventType": "نوع الحدث",
+          "eventDate": "تاريخ الحدث",
+          "location": "الموقع"
+        },
+        "list": {
+          "title": "جميع الأحداث"
+        },
+        "noEventsTitle": "لا توجد أحداث",
+        "noEventsDescription": "لا توجد أحداث متاحة",
+        "loadingEvents": "جاري تحميل الأحداث...",
+        "types": {
+          "trip": "رحلة",
+          "academic": "أكاديمي",
+          "administrative": "إداري",
+          "entertainment": "ترفيهي",
+          "meeting": "اجتماع",
+          "exam": "امتحان"
+        }
+      },
+      "modal": {
+        "addEvent": {
+          "title": "إضافة حدث جديد",
+          "editEvent": "تعديل الحدث",
+          "fields": {
+            "eventName": "اسم الحدث",
+            "eventNamePlaceholder": "أدخل اسم الحدث",
+            "eventType": "نوع الحدث",
+            "selectEventType": "اختر نوع الحدث",
+            "time": "الوقت",
+            "location": "الموقع",
+            "locationPlaceholder": "أدخل موقع الحدث",
+            "date": "التاريخ",
+            "participants": "عدد المشاركين",
+            "participantsPlaceholder": "أدخل عدد المشاركين",
+            "description": "وصف الحدث",
+            "descriptionPlaceholder": "أدخل وصف الحدث"
+          },
+          "actions": {
+            "cancel": "إلغاء",
+            "save": "إضافة الحدث",
+            "edit": "تعديل الحدث",
+            "loading": "جاري التحميل...",
+            "saving": "جاري الإضافة...",
+            "editing": "جاري التعديل..."
+          },
+          "errors": {
+            "eventNameRequired": "اسم الحدث مطلوب",
+            "descriptionRequired": "وصف الحدث مطلوب",
+            "eventTypeRequired": "نوع الحدث مطلوب",
+            "locationRequired": "موقع الحدث مطلوب",
+            "participantsRequired": "عدد المشاركين يجب أن يكون رقم موجب",
+            "dateRequired": "تاريخ الحدث مطلوب",
+            "timeRequired": "وقت الحدث مطلوب",
+            "generalError": "حدث خطأ أثناء إضافة الحدث",
+            "editError": "حدث خطأ أثناء تعديل الحدث"
+          }
+        },
+        "eventDetails": {
+          "title": "تفاصيل الحدث",
+          "close": "إغلاق",
+          "fields": {
+            "eventType": "نوع الحدث:",
+            "date": "التاريخ:",
+            "time": "الوقت:",
+            "location": "الموقع:",
+            "participants": "عدد المشاركين:"
+          }
+        }
+      },
+      "actions": {
+        "view": "مشاهدة",
+        "edit": "تعديل"
+      },
+      "sync": {
+        "title": "مزامنة التقويم",
+        "description": "محتوى تبويب المزامنة سيتم إضافته هنا"
       }
     }
   },

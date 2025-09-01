@@ -14,19 +14,19 @@ const EventDetailsModal = ({ event, onClose }) => {
   const getEventTypeLabel = (type) => {
     switch (type) {
       case "TRIP":
-        return "رحلة";
+        return t("profile.calendar.events.types.trip");
       case "ACADEMIC":
-        return "أكاديمي";
+        return t("profile.calendar.events.types.academic");
       case "ADMINISTRATIVE":
-        return "إداري";
+        return t("profile.calendar.events.types.administrative");
       case "ENTERTAINMENT":
-        return "ترفيهي";
+        return t("profile.calendar.events.types.entertainment");
       case "METING":
-        return "اجتماع";
+        return t("profile.calendar.events.types.meeting");
       case "EXAM":
-        return "امتحان";
+        return t("profile.calendar.events.types.exam");
       default:
-        return "اجتماعي";
+        return t("profile.calendar.events.types.social");
     }
   };
 
@@ -51,7 +51,10 @@ const EventDetailsModal = ({ event, onClose }) => {
 
   return (
     <Modal isOpen={true} onClose={onClose} maxWidth="max-w-md">
-      <ModalHeader title="تفاصيل الحدث" onClose={onClose} />
+      <ModalHeader
+        title={t("profile.calendar.modal.eventDetails.title")}
+        onClose={onClose}
+      />
 
       {/* Event Details */}
       <div className="p-6 space-y-4">
@@ -67,7 +70,9 @@ const EventDetailsModal = ({ event, onClose }) => {
 
         {/* Event Type */}
         <div className="flex items-center justify-between">
-          <span className="text-gray-600 font-medium">نوع الحدث:</span>
+          <span className="text-gray-600 font-medium">
+            {t("profile.calendar.modal.eventDetails.fields.eventType")}
+          </span>
           <span
             className={`px-3 py-1 rounded-full text-xs font-medium ${getEventTypeColor(
               event.happeningType
@@ -79,7 +84,9 @@ const EventDetailsModal = ({ event, onClose }) => {
 
         {/* Date */}
         <div className="flex items-center justify-between">
-          <span className="text-gray-600 font-medium">التاريخ:</span>
+          <span className="text-gray-600 font-medium">
+            {t("profile.calendar.modal.eventDetails.fields.date")}
+          </span>
           <span className="text-gray-900">
             {new Date(event.day).toLocaleDateString("ar-SA", {
               weekday: "long",
@@ -92,19 +99,25 @@ const EventDetailsModal = ({ event, onClose }) => {
 
         {/* Time */}
         <div className="flex items-center justify-between">
-          <span className="text-gray-600 font-medium">الوقت:</span>
+          <span className="text-gray-600 font-medium">
+            {t("profile.calendar.modal.eventDetails.fields.time")}
+          </span>
           <span className="text-gray-900">{event.time}</span>
         </div>
 
         {/* Location */}
         <div className="flex items-center justify-between">
-          <span className="text-gray-600 font-medium">الموقع:</span>
+          <span className="text-gray-600 font-medium">
+            {t("profile.calendar.modal.eventDetails.fields.location")}
+          </span>
           <span className="text-gray-900">{event.place}</span>
         </div>
 
         {/* Participants Count */}
         <div className="flex items-center justify-between">
-          <span className="text-gray-600 font-medium">عدد المشاركين:</span>
+          <span className="text-gray-600 font-medium">
+            {t("profile.calendar.modal.eventDetails.fields.participants")}
+          </span>
           <span className="text-gray-900">{event.participantsCount}</span>
         </div>
       </div>
@@ -112,7 +125,7 @@ const EventDetailsModal = ({ event, onClose }) => {
       <ModalFooter
         onCancel={onClose}
         onConfirm={onClose}
-        cancelText="إغلاق"
+        cancelText={t("profile.calendar.modal.eventDetails.close")}
         confirmText=""
         isForm={false}
       />

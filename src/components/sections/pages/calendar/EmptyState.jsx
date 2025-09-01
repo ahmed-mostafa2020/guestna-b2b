@@ -1,6 +1,9 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 const EmptyState = ({ title, description, icon = null }) => {
+  const t = useTranslations();
   return (
     <div className="text-center py-16">
       <div className="w-28 h-28 mx-auto mb-6 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center shadow-lg">

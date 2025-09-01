@@ -1,6 +1,9 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 const TabNavigation = ({ activeTab, setActiveTab }) => {
+  const t = useTranslations();
   return (
     <div className="flex justify-between items-center gap-1 mb-8 bg-gradient-to-r from-green-400 to-emerald-500 p-1 rounded-xl overflow-hidden">
       <button
@@ -11,7 +14,7 @@ const TabNavigation = ({ activeTab, setActiveTab }) => {
             : "text-white hover:text-green-100 hover:bg-white/10"
         }`}
       >
-        التقويم
+        {t("profile.calendar.tabs.calendar")}
       </button>
       <button
         onClick={() => setActiveTab("events")}
@@ -21,7 +24,7 @@ const TabNavigation = ({ activeTab, setActiveTab }) => {
             : "text-white hover:text-green-100 hover:bg-white/10"
         }`}
       >
-        الاحداث
+        {t("profile.calendar.tabs.events")}
       </button>
     </div>
   );

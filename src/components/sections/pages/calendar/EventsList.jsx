@@ -3,8 +3,10 @@
 import EventCard from "./EventCard";
 import LoadingState from "./LoadingState";
 import EmptyState from "./EmptyState";
+import { useTranslations } from "next-intl";
 
 const EventsList = ({ events, isLoading, title, subtitle, onView, onEdit }) => {
+  const t = useTranslations();
   if (isLoading) {
     return (
       <div className="bg-white rounded-xl p-8 shadow-lg border-0">
@@ -21,8 +23,8 @@ const EventsList = ({ events, isLoading, title, subtitle, onView, onEdit }) => {
         <h2 className="text-xl font-semibold text-gray-900 mb-4">{title}</h2>
         <p className="text-gray-600 mb-6">{subtitle}</p>
         <EmptyState
-          title="لا توجد أحداث لهذا اليوم"
-          description="لم يتم العثور على أي أحداث مجدولة لهذا التاريخ"
+          title={t("profile.calendar.calendar.noEventsTitle")}
+          description={t("profile.calendar.calendar.noEventsDescription")}
         />
       </div>
     );

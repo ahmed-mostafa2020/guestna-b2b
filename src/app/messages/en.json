@@ -742,6 +742,111 @@
         "calendar": "Calendar",
         "events": "Events",
         "sync": "Sync"
+      },
+      "calendar": {
+        "selectedDayEvents": "Selected Day Events",
+        "noEventsTitle": "No events for this day",
+        "noEventsDescription": "No events found scheduled for this date",
+        "addNewEvent": "Add New Event",
+        "addEvent": "Add Event +",
+        "uploadCalendar": "Upload Calendar",
+        "interactiveCalendar": "Interactive Calendar",
+        "info": "You can only select current and future dates",
+        "days": {
+          "sunday": "Sunday",
+          "monday": "Monday",
+          "tuesday": "Tuesday",
+          "wednesday": "Wednesday",
+          "thursday": "Thursday",
+          "friday": "Friday",
+          "saturday": "Saturday"
+        }
+      },
+      "events": {
+        "search": {
+          "title": "Search",
+          "printReport": "Print Report"
+        },
+        "filters": {
+          "eventName": "Event Name",
+          "eventType": "Event Type",
+          "eventDate": "Event Date",
+          "location": "Location",
+          "participants": "Participants",
+          "time": "Time"
+        },
+        "list": {
+          "title": "All Events"
+        },
+        "noEventsTitle": "No events found",
+        "noEventsDescription": "No events available",
+        "loadingEvents": "Loading events...",
+        "types": {
+          "trip": "Trip",
+          "academic": "Academic",
+          "administrative": "Administrative",
+          "entertainment": "Entertainment",
+          "meeting": "Meeting",
+          "exam": "Exam"
+        }
+      },
+      "modal": {
+        "addEvent": {
+          "title": "Add New Event",
+          "editEvent": "Edit Event",
+          "fields": {
+            "eventName": "Event Name",
+            "eventNamePlaceholder": "Enter event name",
+            "eventType": "Event Type",
+            "selectEventType": "Select event type",
+            "time": "Time",
+            "location": "Location",
+            "locationPlaceholder": "Enter event location",
+            "date": "Date",
+            "participants": "Number of Participants",
+            "participantsPlaceholder": "Enter number of participants",
+            "description": "Event Description",
+            "descriptionPlaceholder": "Enter event description"
+          },
+          "actions": {
+            "cancel": "Cancel",
+            "save": "Save Event",
+            "edit": "Edit Event",
+            "loading": "Loading...",
+            "saving": "Saving...",
+            "editing": "Editing..."
+          },
+          "errors": {
+            "eventNameRequired": "Event name is required",
+            "descriptionRequired": "Event description is required",
+            "eventTypeRequired": "Event type is required",
+            "locationRequired": "Event location is required",
+            "participantsRequired": "Number of participants must be a positive number",
+            "dateRequired": "Event date is required",
+            "timeRequired": "Event time is required",
+            "generalError": "An error occurred while saving the event",
+            "editError": "An error occurred while editing the event"
+          }
+        },
+        "eventDetails": {
+          "title": "Event Details",
+          "close": "Close",
+          "fields": {
+            "eventType": "Event Type:",
+            "date": "Date:",
+            "time": "Time:",
+            "location": "Location:",
+            "participants": "Number of Participants:"
+          }
+        }
+      },
+      "actions": {
+        "view": "View",
+        "edit": "Edit"
+      },
+      "sync": {
+        "title": "Calendar Sync",
+        "description": "Sync tab content will be added here"
       }
     }
   },

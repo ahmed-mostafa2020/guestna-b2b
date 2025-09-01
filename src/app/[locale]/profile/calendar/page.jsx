@@ -123,7 +123,7 @@ const CalendarPage = () => {
           <EventsList
             events={getEventsForDate(selectedDate)}
             isLoading={selectedDateEvents?.isLoading}
-            title="أحداث اليوم المحدد"
+            title={t("profile.calendar.calendar.selectedDayEvents")}
             subtitle={selectedDate.toLocaleDateString("ar-SA", {
               weekday: "long",
               year: "numeric",
@@ -160,9 +160,11 @@ const CalendarPage = () => {
           <div className="p-6 border-b border-gray-100">
             {/* Title and Print Button Row */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-              <h2 className="text-xl font-semibold text-green-600">البحث</h2>
+              <h2 className="text-xl font-semibold text-green-600">
+                {t("profile.calendar.events.search.title")}
+              </h2>
               <button className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-semibold">
-                طباعة التقرير
+                {t("profile.calendar.events.search.printReport")}
               </button>
             </div>
 
@@ -170,7 +172,9 @@ const CalendarPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="relative">
                 <select className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none">
-                  <option>اسم الحدث</option>
+                  <option>
+                    {t("profile.calendar.events.filters.eventName")}
+                  </option>
                 </select>
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                   <svg
@@ -190,7 +194,9 @@ const CalendarPage = () => {
               </div>
               <div className="relative">
                 <select className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none">
-                  <option>نوع الحدث</option>
+                  <option>
+                    {t("profile.calendar.events.filters.eventType")}
+                  </option>
                 </select>
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                   <svg
@@ -210,7 +216,9 @@ const CalendarPage = () => {
               </div>
               <div className="relative">
                 <select className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none">
-                  <option>تاريخ الحدث</option>
+                  <option>
+                    {t("profile.calendar.events.filters.eventDate")}
+                  </option>
                 </select>
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                   <svg
@@ -230,7 +238,9 @@ const CalendarPage = () => {
               </div>
               <div className="relative">
                 <select className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none">
-                  <option>الموقع</option>
+                  <option>
+                    {t("profile.calendar.events.filters.location")}
+                  </option>
                 </select>
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                   <svg
@@ -254,12 +264,14 @@ const CalendarPage = () => {
           {/* Events List Section */}
           <div className="p-6">
             <h3 className="text-xl font-semibold text-green-600 mb-6">
-              جميع الأحداث
+              {t("profile.calendar.events.list.title")}
             </h3>
             {allEvents?.isLoading ? (
               <div className="text-center py-16">
                 <div className="animate-spin w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-                <p className="text-gray-500">جاري تحميل الأحداث...</p>
+                <p className="text-gray-500">
+                  {t("profile.calendar.events.loadingEvents")}
+                </p>
               </div>
             ) : getEventsList().length > 0 ? (
               <div className="space-y-4">
@@ -281,8 +293,12 @@ const CalendarPage = () => {
                             {event.about}
                           </h4>
                           <p className="text-sm text-gray-600 mb-2">
-                            الموقع: {event.place} | المشاركون:{" "}
-                            {event.participantsCount} | الوقت: {event.time}
+                            {t("profile.calendar.events.filters.location")}:{" "}
+                            {event.place} |{" "}
+                            {t("profile.calendar.events.filters.participants")}:{" "}
+                            {event.participantsCount} |{" "}
+                            {t("profile.calendar.events.filters.time")}:{" "}
+                            {event.time}
                           </p>
                           <span
                             className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
@@ -302,18 +318,20 @@ const CalendarPage = () => {
                             }`}
                           >
                             {event.happeningType === "TRIP"
-                              ? "رحلة"
+                              ? t("profile.calendar.events.types.trip")
                               : event.happeningType === "ACADEMIC"
-                              ? "أكاديمي"
+                              ? t("profile.calendar.events.types.academic")
                               : event.happeningType === "ADMINISTRATIVE"
-                              ? "إداري"
+                              ? t(
+                                  "profile.calendar.events.types.administrative"
+                                )
                               : event.happeningType === "ENTERTAINMENT"
-                              ? "ترفيهي"
+                              ? t("profile.calendar.events.types.entertainment")
                               : event.happeningType === "METING"
-                              ? "اجتماع"
+                              ? t("profile.calendar.events.types.meeting")
                               : event.happeningType === "EXAM"
-                              ? "امتحان"
-                              : "اجتماعي"}
+                              ? t("profile.calendar.events.types.exam")
+                              : t("profile.calendar.events.types.social")}
                           </span>
                         </div>
                       </div>
@@ -325,7 +343,7 @@ const CalendarPage = () => {
                           }}
                           className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                         >
-                          مشاهدة
+                          {t("profile.calendar.actions.view")}
                         </button>
                         <button
                           onClick={() => {
@@ -334,7 +352,7 @@ const CalendarPage = () => {
                           }}
                           className="text-green-600 hover:text-green-800 text-sm font-medium"
                         >
-                          تعديل
+                          {t("profile.calendar.actions.edit")}
                         </button>
                       </div>
                     </div>
@@ -347,10 +365,10 @@ const CalendarPage = () => {
                   <div className="w-16 h-16 bg-gradient-to-br from-gray-300 to-gray-400 rounded-full shadow-inner"></div>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                  لا توجد أحداث
+                  {t("profile.calendar.events.noEventsTitle")}
                 </h3>
                 <p className="text-gray-500 mb-6 text-lg">
-                  لم يتم العثور على أي أحداث
+                  {t("profile.calendar.events.noEventsDescription")}
                 </p>
               </div>
             )}

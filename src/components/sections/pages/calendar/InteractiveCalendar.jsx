@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 const InteractiveCalendar = ({
   currentMonth,
   selectedDate,
@@ -7,6 +9,7 @@ const InteractiveCalendar = ({
   onMonthChange,
   onAddEvent,
 }) => {
+  const t = useTranslations();
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -63,11 +66,11 @@ const InteractiveCalendar = ({
             onClick={onAddEvent}
             className="border-2 border-green-300 text-green-600 px-6 py-3 rounded-xl hover:bg-green-50 hover:border-green-400 transition-all duration-200 font-medium"
           >
-            أضف حدث
+            {t("profile.calendar.calendar.addEvent")}
           </button>
         </div>
         <h3 className="text-lg font-semibold text-gray-900">
-          التقويم التفاعلي
+          {t("profile.calendar.calendar.interactiveCalendar")}
         </h3>
       </div>
 
@@ -142,7 +145,7 @@ const InteractiveCalendar = ({
       <div className="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
         <div className="flex items-center text-blue-800 text-sm">
           <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
-          <span>يمكنك فقط تحديد التواريخ الحالية والمستقبلية</span>
+          <span>{t("profile.calendar.calendar.info")}</span>
         </div>
       </div>
     </div>

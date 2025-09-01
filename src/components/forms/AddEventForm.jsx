@@ -53,12 +53,18 @@ const AddEventForm = ({
 
   // Event types based on the calendar page
   const eventTypes = [
-    { value: "TRIP", label: "رحلة" },
-    { value: "ACADEMIC", label: "أكاديمي" },
-    { value: "ADMINISTRATIVE", label: "إداري" },
-    { value: "ENTERTAINMENT", label: "ترفيهي" },
-    { value: "METING", label: "اجتماع" },
-    { value: "EXAM", label: "امتحان" },
+    { value: "TRIP", label: t("profile.calendar.events.types.trip") },
+    { value: "ACADEMIC", label: t("profile.calendar.events.types.academic") },
+    {
+      value: "ADMINISTRATIVE",
+      label: t("profile.calendar.events.types.administrative"),
+    },
+    {
+      value: "ENTERTAINMENT",
+      label: t("profile.calendar.events.types.entertainment"),
+    },
+    { value: "METING", label: t("profile.calendar.events.types.meeting") },
+    { value: "EXAM", label: t("profile.calendar.events.types.exam") },
   ];
 
   // Map Arabic labels to English values
@@ -99,31 +105,41 @@ const AddEventForm = ({
     const newErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = "اسم الحدث مطلوب";
+      newErrors.name = t(
+        "profile.calendar.modal.addEvent.errors.eventNameRequired"
+      );
     }
 
     if (!formData.about.trim()) {
-      newErrors.about = "وصف الحدث مطلوب";
+      newErrors.about = t(
+        "profile.calendar.modal.addEvent.errors.descriptionRequired"
+      );
     }
 
     if (!formData.happeningType) {
-      newErrors.happeningType = "نوع الحدث مطلوب";
+      newErrors.happeningType = t(
+        "profile.calendar.modal.addEvent.errors.eventTypeRequired"
+      );
     }
 
     if (!formData.place.trim()) {
-      newErrors.place = "موقع الحدث مطلوب";
+      newErrors.place = t(
+        "profile.calendar.modal.addEvent.errors.locationRequired"
+      );
     }
 
     if (!formData.participantsCount || formData.participantsCount < 1) {
-      newErrors.participantsCount = "عدد المشاركين يجب أن يكون رقم موجب";
+      newErrors.participantsCount = t(
+        "profile.calendar.modal.addEvent.errors.participantsRequired"
+      );
     }
 
     if (!formData.day) {
-      newErrors.day = "تاريخ الحدث مطلوب";
+      newErrors.day = t("profile.calendar.modal.addEvent.errors.dateRequired");
     }
 
     if (!formData.time) {
-      newErrors.time = "وقت الحدث مطلوب";
+      newErrors.time = t("profile.calendar.modal.addEvent.errors.timeRequired");
     }
 
     setErrors(newErrors);
@@ -166,8 +182,8 @@ const AddEventForm = ({
       } else {
         setErrors({
           general: eventToEdit
-            ? "حدث خطأ أثناء تعديل الحدث"
-            : "حدث خطأ أثناء إضافة الحدث",
+            ? t("profile.calendar.modal.addEvent.errors.editError")
+            : t("profile.calendar.modal.addEvent.errors.generalError"),
         });
       }
     } finally {
@@ -178,11 +194,17 @@ const AddEventForm = ({
   return (
     <Modal isOpen={true} onClose={onClose}>
       <ModalHeader
-        title={eventToEdit ? "تعديل الحدث" : "إضافة حدث جديد"}
+        title={
+          eventToEdit
+            ? t("profile.calendar.modal.addEvent.editEvent")
+            : t("profile.calendar.modal.addEvent.title")
+        }
         onClose={onClose}
         subtitle={
           selectedDate
-            ? `التاريخ المحدد: ${selectedDate.toLocaleDateString("ar-SA", {
+            ? `${t(
+                "profile.calendar.modal.addEvent.fields.date"
+              )}: ${selectedDate.toLocaleDateString("ar-SA", {
                 weekday: "long",
                 year: "numeric",
                 month: "long",
@@ -203,12 +225,14 @@ const AddEventForm = ({
 
         {/* Event Name */}
         <TextInputGroup
-          label="اسم الحدث"
+          label={t("profile.calendar.modal.addEvent.fields.eventName")}
           type="text"
           name="name"
           value={formData.name}
           onChange={handleInputChange}
-          placeholder="أدخل اسم الحدث"
+          placeholder={t(
+            "profile.calendar.modal.addEvent.fields.eventNamePlaceholder"
+          )}
           errors={errors.name}
           touched={!!errors.name}
           maxLength={100}
@@ -216,12 +240,14 @@ const AddEventForm = ({
 
         {/* Event Description */}
         <TextInputGroup
-          label="وصف الحدث"
+          label={t("profile.calendar.modal.addEvent.fields.description")}
           type="text"
           name="about"
           value={formData.about}
           onChange={handleInputChange}
-          placeholder="أدخل وصف الحدث"
+          placeholder={t(
+            "profile.calendar.modal.addEvent.fields.descriptionPlaceholder"
+          )}
           errors={errors.about}
           touched={!!errors.about}
           textarea={true}
@@ -231,7 +257,9 @@ const AddEventForm = ({
 
         {/* Event Type */}
         <div className="space-y-2">
-          <label className="font-medium capitalize font-ibm">نوع الحدث</label>
+          <label className="font-medium capitalize font-ibm">
+            {t("profile.calendar.modal.addEvent.fields.eventType")}
+          </label>
           <SelectionGroup
             name="happeningType"
             value={
@@ -239,7 +267,9 @@ const AddEventForm = ({
                 ?.label || ""
             }
             onChange={handleInputChange}
-            placeholder="اختر نوع الحدث"
+            placeholder={t(
+              "profile.calendar.modal.addEvent.fields.selectEventType"
+            )}
             list={eventTypes.map((type) => type.label)}
             errors={errors.happeningType}
             touched={!!errors.happeningType}
@@ -248,12 +278,14 @@ const AddEventForm = ({
 
         {/* Location */}
         <TextInputGroup
-          label="موقع الحدث"
+          label={t("profile.calendar.modal.addEvent.fields.location")}
           type="text"
           name="place"
           value={formData.place}
           onChange={handleInputChange}
-          placeholder="أدخل موقع الحدث"
+          placeholder={t(
+            "profile.calendar.modal.addEvent.fields.locationPlaceholder"
+          )}
           errors={errors.place}
           touched={!!errors.place}
           maxLength={200}
@@ -261,12 +293,14 @@ const AddEventForm = ({
 
         {/* Participants Count */}
         <TextInputGroup
-          label="عدد المشاركين"
+          label={t("profile.calendar.modal.addEvent.fields.participants")}
           type="number"
           name="participantsCount"
           value={formData.participantsCount}
           onChange={handleInputChange}
-          placeholder="أدخل عدد المشاركين"
+          placeholder={t(
+            "profile.calendar.modal.addEvent.fields.participantsPlaceholder"
+          )}
           errors={errors.participantsCount}
           touched={!!errors.participantsCount}
           min={1}
@@ -277,7 +311,7 @@ const AddEventForm = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Date */}
           <TextInputGroup
-            label="تاريخ الحدث"
+            label={t("profile.calendar.modal.addEvent.fields.date")}
             type="date"
             name="day"
             value={formData.day}
@@ -289,7 +323,7 @@ const AddEventForm = ({
 
           {/* Time */}
           <TextInputGroup
-            label="وقت الحدث"
+            label={t("profile.calendar.modal.addEvent.fields.time")}
             type="time"
             name="time"
             value={formData.time}
@@ -303,8 +337,12 @@ const AddEventForm = ({
       <ModalFooter
         onCancel={onClose}
         onConfirm={() => {}}
-        cancelText="إلغاء"
-        confirmText={eventToEdit ? "تعديل الحدث" : "إضافة الحدث"}
+        cancelText={t("profile.calendar.modal.addEvent.actions.cancel")}
+        confirmText={
+          eventToEdit
+            ? t("profile.calendar.modal.addEvent.actions.edit")
+            : t("profile.calendar.modal.addEvent.actions.save")
+        }
         isLoading={isSubmitting}
         isForm={true}
       />
