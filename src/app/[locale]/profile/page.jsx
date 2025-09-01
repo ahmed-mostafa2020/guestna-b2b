@@ -69,8 +69,16 @@ const Profile = () => {
         tableTitle={t("profile.aside.bookings")}
         endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS}`}
         method="POST"
+        enablePagination={true}
         emptyStateComponent={<EmptyBookings />}
-        contentComponent={(data) => <MyBookingsTrips data={data} />}
+        contentComponent={(data, currentPage, setCurrentPage, enablePagination) => (
+          <MyBookingsTrips 
+            data={data} 
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            enablePagination={enablePagination}
+          />
+        )}
       />
     </main>
   );

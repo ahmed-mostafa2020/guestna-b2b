@@ -6,6 +6,7 @@ import { memo } from "react";
 
 import formatCurrency from "@utils/FormatCurrency";
 import formatDate from "@utils/FormateDate";
+import Pagination from "@components/common/Pagination";
 
 import {
   Typography,
@@ -22,7 +23,7 @@ const statusColors = {
   completed: "bg-blue-100 text-blue-800",
 };
 
-const BookingsTable = ({ data }) => {
+const BookingsTable = ({ data, currentPage, setCurrentPage, enablePagination }) => {
   const locale = useLocale();
   const t = useTranslations();
 
@@ -207,6 +208,16 @@ const BookingsTable = ({ data }) => {
           </Card>
         ))}
       </div>
+
+      {/* Pagination Component */}
+      {enablePagination && data?.pageInfo && (
+        <Pagination
+          pageInfo={data.pageInfo}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          className="mt-6"
+        />
+      )}
     </div>
   );
 };
