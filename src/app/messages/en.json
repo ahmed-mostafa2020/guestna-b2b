@@ -728,7 +728,102 @@
       "transactionAmount": "Amount",
       "date": "Date",
       "referenceNumber": "Ref. Number",
-      "withdraw": "Withdraw"
+      "withdraw": "Withdraw",
+      "withdrawPage": {
+        "pageHeader": {
+          "title": "Withdraw Money",
+          "description": "Choose your preferred withdrawal method and withdraw your money easily and securely"
+        },
+        "balanceCards": {
+          "totalBalance": "Total Balance",
+          "availableBalance": "Available Balance",
+          "holdBalance": "Hold Balance",
+          "error": {
+            "message": "Error loading balance data",
+            "retry": "Retry"
+          }
+        },
+        "stcPay": {
+          "amount": {
+            "label": "Withdrawal Amount",
+            "placeholder": "Enter amount",
+            "limits": "Min: {min} SAR | Max: {max} SAR"
+          },
+          "phone": {
+            "label": "Phone Number",
+            "placeholder": "0501234567",
+            "hint": "Valid Saudi phone number"
+          },
+          "notes": {
+            "label": "Notes (Optional)",
+            "placeholder": "Add any notes or special instructions for the withdrawal..."
+          }
+        },
+        "bankTransfer": {
+          "amount": {
+            "label": "Withdrawal Amount",
+            "placeholder": "Enter amount",
+            "limits": "Min: {min} SAR | Max: {max} SAR"
+          },
+          "bankName": {
+            "label": "Bank Name",
+            "placeholder": "Enter bank name",
+            "hint": "Example: Saudi National Bank, Al Rajhi Bank"
+          },
+          "clientName": {
+            "label": "Account Holder Name",
+            "placeholder": "Account holder name as it appears in the bank"
+          },
+          "iban": {
+            "label": "IBAN Number",
+            "placeholder": "SA1234567890123456789012",
+            "hint": "Valid Saudi IBAN number"
+          },
+          "notes": {
+            "label": "Notes (Optional)",
+            "placeholder": "Add any notes or special instructions for the withdrawal..."
+          }
+        },
+        "transferMethod": {
+          "title": "Transfer Method",
+          "stcPay": {
+            "title": "STC Pay",
+            "description": "Instant withdrawal to phone number"
+          },
+          "bankTransfer": {
+            "title": "Bank Transfer",
+            "description": "Transfer to bank account"
+          }
+        },
+        "validation": {
+          "amountRequired": "Please enter a valid amount",
+          "amountExceedsBalance": "The requested amount exceeds the available balance ({balance} SAR)",
+          "minAmount": "Minimum withdrawal amount is 50 SAR",
+          "phoneRequired": "Please enter phone number",
+          "phoneInvalid": "Please enter a valid phone number (Example: 0501234567)",
+          "bankNameRequired": "Please enter bank name",
+          "clientNameRequired": "Please enter account holder name",
+          "ibanRequired": "Please enter IBAN number",
+          "ibanInvalid": "Please enter a valid IBAN number (Example: SA1234567890123456789012)"
+        },
+        "success": {
+          "message": "Withdrawal request submitted successfully"
+        },
+        "error": {
+          "submission": "Error occurred while submitting withdrawal request"
+        },
+        "submitting": "Submitting...",
+        "submitButton": "Submit Withdrawal Request",
+        "loadingBalance": "Loading balance data...",
+        "informationSection": {
+          "title": "Important Information",
+          "minAmount": "Minimum withdrawal: 50 SAR",
+          "maxAmount": "Maximum withdrawal: Available balance",
+          "stcPayInfo": "STC Pay: Instant withdrawal within minutes",
+          "bankTransferInfo": "Bank transfer: 1-3 business days",
+          "bankFees": "Bank fees will be deducted according to the bank"
+        }
+      }
     },
     "calendar": {
       "title": "Calendar",

@@ -837,7 +837,102 @@
       "transactionAmount": "المبلغ",
       "date": "التاريخ",
       "referenceNumber": "رقم المرجع",
-      "withdraw": "سحب"
+      "withdraw": "سحب",
+      "withdrawPage": {
+        "pageHeader": {
+          "title": "سحب الأموال",
+          "description": "اختر وسيلة السحب المفضلة لديك وسحب أموالك بسهولة وأمان"
+        },
+        "balanceCards": {
+          "totalBalance": "إجمالي الرصيد",
+          "availableBalance": "الرصيد المتاح",
+          "holdBalance": "الرصيد المعلق",
+          "error": {
+            "message": "حدث خطأ في تحميل بيانات الرصيد",
+            "retry": "إعادة المحاولة"
+          }
+        },
+        "stcPay": {
+          "amount": {
+            "label": "مبلغ السحب",
+            "placeholder": "أدخل المبلغ",
+            "limits": "الحد الأدنى: {min} ريال | الحد الأقصى: {max} ريال"
+          },
+          "phone": {
+            "label": "رقم الهاتف",
+            "placeholder": "0501234567",
+            "hint": "رقم هاتف سعودي صحيح"
+          },
+          "notes": {
+            "label": "ملاحظات (اختياري)",
+            "placeholder": "أضف أي ملاحظات أو تعليمات خاصة بعملية السحب..."
+          }
+        },
+        "bankTransfer": {
+          "amount": {
+            "label": "مبلغ السحب",
+            "placeholder": "أدخل المبلغ",
+            "limits": "الحد الأدنى: {min} ريال | الحد الأقصى: {max} ريال"
+          },
+          "bankName": {
+            "label": "اسم البنك",
+            "placeholder": "أدخل اسم البنك",
+            "hint": "مثال: البنك الأهلي السعودي، بنك الراجحي"
+          },
+          "clientName": {
+            "label": "اسم صاحب الحساب",
+            "placeholder": "اسم صاحب الحساب كما يظهر في البنك"
+          },
+          "iban": {
+            "label": "رقم الآيبان",
+            "placeholder": "SA1234567890123456789012",
+            "hint": "رقم آيبان سعودي صحيح"
+          },
+          "notes": {
+            "label": "ملاحظات (اختياري)",
+            "placeholder": "أضف أي ملاحظات أو تعليمات خاصة بعملية السحب..."
+          }
+        },
+        "transferMethod": {
+          "title": "وسيلة التحويل",
+          "stcPay": {
+            "title": "STC Pay",
+            "description": "سحب فوري إلى رقم الهاتف"
+          },
+          "bankTransfer": {
+            "title": "تحويل بنكي",
+            "description": "تحويل إلى الحساب البنكي"
+          }
+        },
+        "validation": {
+          "amountRequired": "يرجى إدخال مبلغ صحيح",
+          "amountExceedsBalance": "المبلغ المطلوب يتجاوز الرصيد المتاح ({balance} ريال)",
+          "minAmount": "الحد الأدنى للسحب هو 50 ريال",
+          "phoneRequired": "يرجى إدخال رقم الهاتف",
+          "phoneInvalid": "يرجى إدخال رقم هاتف صحيح (مثال: 0501234567)",
+          "bankNameRequired": "يرجى إدخال اسم البنك",
+          "clientNameRequired": "يرجى إدخال اسم صاحب الحساب",
+          "ibanRequired": "يرجى إدخال رقم الآيبان",
+          "ibanInvalid": "يرجى إدخال رقم آيبان صحيح (مثال: SA1234567890123456789012)"
+        },
+        "success": {
+          "message": "تم تقديم طلب السحب بنجاح"
+        },
+        "error": {
+          "submission": "حدث خطأ أثناء تقديم طلب السحب"
+        },
+        "submitting": "جاري التقديم...",
+        "submitButton": "تقديم طلب السحب",
+        "loadingBalance": "جاري تحميل بيانات الرصيد...",
+        "informationSection": {
+          "title": "معلومات مهمة",
+          "minAmount": "الحد الأدنى للسحب: 50 ريال",
+          "maxAmount": "الحد الأقصى للسحب: الرصيد المتاح",
+          "stcPayInfo": "STC Pay: سحب فوري خلال دقائق",
+          "bankTransferInfo": "التحويل البنكي: 1-3 أيام عمل",
+          "bankFees": "سيتم خصم رسوم بنكية حسب البنك"
+        }
+      }
     },
     "calendar": {
       "title": "مزامنة التقويم الاكاديمي",
