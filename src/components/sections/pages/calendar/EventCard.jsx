@@ -53,18 +53,18 @@ const EventCard = ({ event, onView, onEdit }) => {
           })}
         </span>
       </div>
-      <p className="text-gray-600 text-sm mb-3">
+      <p className="text-gray-600 text-sm mb-6">
         الموقع: {event.place} | المشاركون: {event.participantsCount} | الوقت:{" "}
         {event.time}
       </p>
-      <div className="flex items-center justify-between">
-        <span
+      <div className="flex items-center justify-between mt-2">
+        <div
           className={`px-3 py-1 rounded-full text-xs font-medium text-white ${getEventTypeColor(
             event.happeningType
           )}`}
         >
           {getEventTypeLabel(event.happeningType)}
-        </span>
+        </div>
         <div className="flex space-x-2 gap-x-2">
           <button
             onClick={() => onView(event)}

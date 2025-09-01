@@ -101,7 +101,7 @@ export const B2B_END_POINTS = {
 
     BOOKINGS: "profile/users/school/all",
 
-    INVOICES: "profile/organizations/invoices",
+    INVOICES: "profile/organizationTrips/invoices/all",
     WITHDRAWALS: "profile/askWithdrawals/new",
 
     UPLOAD_PHOTO: "users/avatar", //MAIN

@@ -823,6 +823,65 @@
           "bankTransferInfo": "Bank transfer: 1-3 business days",
           "bankFees": "Bank fees will be deducted according to the bank"
         }
+      },
+      "transactionsPage": {
+        "pageHeader": {
+          "title": "Wallet and Payments"
+        },
+        "balanceCards": {
+          "totalBalance": "Total Balance",
+          "availableBalance": "Available Balance",
+          "holdBalance": "Hold Balance"
+        },
+        "filters": {
+          "title": "Filter Transactions",
+          "refresh": "Refresh",
+          "printReport": "Print Report",
+          "operationName": {
+            "placeholder": "Transaction Name"
+          },
+          "transactionDate": {
+            "placeholder": "Transaction Date"
+          },
+          "status": {
+            "placeholder": "Status",
+            "completed": "Completed",
+            "processing": "Processing",
+            "pending": "Pending"
+          },
+          "clearFilters": "Clear Filters"
+        },
+        "table": {
+          "title": "Transactions Log",
+          "headers": {
+            "operationName": "Transaction Name",
+            "transactionDate": "Transaction Date",
+            "referenceNumber": "Ref. Number",
+            "transactionAmount": "Amount",
+            "transactionStatus": "Status"
+          },
+          "loading": "Loading...",
+          "balanceSummary": {
+            "title": "Balance Summary Available",
+            "description": "Balance information loaded successfully. Individual transaction details are not available at the moment."
+          },
+          "noTransactions": {
+            "title": "No transactions",
+            "description": "No transactions found at the moment"
+          },
+          "noResults": {
+            "title": "No results",
+            "description": "Please adjust filters to get results"
+          }
+        },
+        "loading": {
+          "message": "Loading data..."
+        },
+        "error": {
+          "title": "Error loading data",
+          "description": "Please try again",
+          "retry": "Retry"
+        }
       }
     },
     "calendar": {
