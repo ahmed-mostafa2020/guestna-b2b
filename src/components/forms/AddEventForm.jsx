@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { getHeaders } from "@utils/getHeaders";
@@ -10,7 +10,12 @@ import axios from "axios";
 import TextInputGroup from "./TextInputGroup";
 import SelectionGroup from "./SelectionGroup";
 
-const AddEventForm = ({ selectedDate, onClose, onSuccess }) => {
+const AddEventForm = ({
+  selectedDate,
+  onClose,
+  onSuccess,
+  eventToEdit = null,
+}) => {
   const t = useTranslations();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
@@ -25,6 +30,23 @@ const AddEventForm = ({ selectedDate, onClose, onSuccess }) => {
     time: "",
     participantsCount: 1,
   });
+
+  // Initialize form data when editing
+  useEffect(() => {
+    if (eventToEdit) {
+      setFormData({
+        name: eventToEdit.name || "",
+        about: eventToEdit.about || "",
+        happeningType: eventToEdit.happeningType || "",
+        place: eventToEdit.place || "",
+        day: eventToEdit.day
+          ? new Date(eventToEdit.day).toISOString().split("T")[0]
+          : "",
+        time: eventToEdit.time || "",
+        participantsCount: eventToEdit.participantsCount || 1,
+      });
+    }
+  }, [eventToEdit]);
 
   // Event types based on the calendar page
   const eventTypes = [
@@ -118,8 +140,12 @@ const AddEventForm = ({ selectedDate, onClose, onSuccess }) => {
 
     try {
       const config = {
-        method: "post",
-        url: getProxyUrl(B2B_END_POINTS.PROFILE.HAPPENINGS.NEW),
+        method: eventToEdit ? "put" : "post",
+        url: getProxyUrl(
+          eventToEdit
+            ? `${B2B_END_POINTS.PROFILE.HAPPENINGS.ALL}/${eventToEdit._id}`
+            : B2B_END_POINTS.PROFILE.HAPPENINGS.NEW
+        ),
         headers: getHeaders(),
         data: formData,
       };
@@ -131,11 +157,15 @@ const AddEventForm = ({ selectedDate, onClose, onSuccess }) => {
         onClose();
       }
     } catch (error) {
-      console.error("Error adding event:", error);
+      console.error("Error saving event:", error);
       if (error.response?.data?.message) {
         setErrors({ general: error.response.data.message });
       } else {
-        setErrors({ general: "حدث خطأ أثناء إضافة الحدث" });
+        setErrors({
+          general: eventToEdit
+            ? "حدث خطأ أثناء تعديل الحدث"
+            : "حدث خطأ أثناء إضافة الحدث",
+        });
       }
     } finally {
       setIsSubmitting(false);
@@ -148,7 +178,9 @@ const AddEventForm = ({ selectedDate, onClose, onSuccess }) => {
         {/* Header */}
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-900">إضافة حدث جديد</h2>
+            <h2 className="text-2xl font-bold text-gray-900">
+              {eventToEdit ? "تعديل الحدث" : "إضافة حدث جديد"}
+            </h2>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
@@ -305,8 +337,10 @@ const AddEventForm = ({ selectedDate, onClose, onSuccess }) => {
               {isSubmitting ? (
                 <div className="flex items-center justify-center">
                   <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"></div>
-                  جاري الإضافة...
+                  {eventToEdit ? "جاري التعديل..." : "جاري الإضافة..."}
                 </div>
+              ) : eventToEdit ? (
+                "تعديل الحدث"
               ) : (
                 "إضافة الحدث"
               )}

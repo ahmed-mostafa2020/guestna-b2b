@@ -7,6 +7,7 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { getHeaders } from "@utils/getHeaders";
 import axios from "axios";
 import AddEventForm from "@components/forms/AddEventForm";
+import EventDetailsModal from "@components/forms/EventDetailsModal";
 
 const CalendarPage = () => {
   const t = useTranslations();
@@ -14,6 +15,9 @@ const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [showAddEventModal, setShowAddEventModal] = useState(false);
+  const [eventToEdit, setEventToEdit] = useState(null);
+  const [showEventDetailsModal, setShowEventDetailsModal] = useState(false);
+  const [eventToView, setEventToView] = useState(null);
 
   // Fetch events counts for summary cards
   const { data: countsData, isLoading: countsLoading } = useFetchData(
@@ -21,6 +25,8 @@ const CalendarPage = () => {
     {},
     { method: "GET" }
   );
+
+  console.log(countsData, "countsData");
 
   // Fetch events for selected date
   const { data: selectedDateEvents, refetch: refetchSelectedDateEvents } =
@@ -48,6 +54,7 @@ const CalendarPage = () => {
       method: "POST",
       body: {
         sort: "NEWEST",
+        filter: {},
         page: 1,
         perPage: 10,
       },
@@ -58,22 +65,22 @@ const CalendarPage = () => {
   const summaryData = [
     {
       title: t("profile.calendar.summary.potentialEvents"),
-      count: countsData?.potentialEvents || "0",
+      count: countsData?.potentialConflicts || "0",
       color: "bg-orange-100 text-orange-600",
     },
     {
       title: t("profile.calendar.summary.academicEvents"),
-      count: countsData?.academicEvents || "0",
+      count: countsData?.academicCount || "0",
       color: "bg-blue-100 text-blue-600",
     },
     {
       title: t("profile.calendar.summary.scheduledTrips"),
-      count: countsData?.scheduledTrips || "0",
+      count: countsData?.scheduledTripCount || "0",
       color: "bg-green-100 text-green-600",
     },
     {
       title: t("profile.calendar.summary.totalEvents"),
-      count: countsData?.totalEvents || "0",
+      count: countsData?.totalCount || "0",
       color: "bg-purple-100 text-purple-600",
     },
   ];
@@ -94,8 +101,8 @@ const CalendarPage = () => {
 
   // Get all events for events tab from API data
   const getEventsList = () => {
-    if (!allEvents?.data?.nodes) return [];
-    return allEvents.data.nodes || [];
+    if (!allEvents?.nodes) return [];
+    return allEvents.nodes || [];
   };
 
   // Refetch events when selected date changes
@@ -232,7 +239,7 @@ const CalendarPage = () => {
             {selectedDateEvents?.isLoading ? (
               <div className="text-center py-16">
                 <div className="animate-spin w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-                <p className="text-gray-500">جاري تحميل الأحداث...</p>
+                <p className="text-gray-500">جاري تحميل الأحداث.</p>
               </div>
             ) : getEventsForDate(selectedDate).length > 0 ? (
               <div className="space-y-4">
@@ -285,10 +292,22 @@ const CalendarPage = () => {
                           : "اجتماعي"}
                       </span>
                       <div className="flex space-x-2 gap-x-2">
-                        <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        <button
+                          onClick={() => {
+                            setEventToView(event);
+                            setShowEventDetailsModal(true);
+                          }}
+                          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                        >
                           مشاهدة
                         </button>
-                        <button className="text-green-600 hover:text-green-800 text-sm font-medium">
+                        <button
+                          onClick={() => {
+                            setEventToEdit(event);
+                            setShowAddEventModal(true);
+                          }}
+                          className="text-green-600 hover:text-green-800 text-sm font-medium"
+                        >
                           تعديل
                         </button>
                       </div>
@@ -319,7 +338,10 @@ const CalendarPage = () => {
                   رفع التقويم
                 </button>
                 <button
-                  onClick={() => setShowAddEventModal(true)}
+                  onClick={() => {
+                    setEventToEdit(null);
+                    setShowAddEventModal(true);
+                  }}
                   className="border-2 border-green-300 text-green-600 px-6 py-3 rounded-xl hover:bg-green-50 hover:border-green-400 transition-all duration-200 font-medium"
                 >
                   أضف حدث
@@ -574,10 +596,22 @@ const CalendarPage = () => {
                         </div>
                       </div>
                       <div className="flex space-x-3 space-x-reverse">
-                        <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        <button
+                          onClick={() => {
+                            setEventToView(event);
+                            setShowEventDetailsModal(true);
+                          }}
+                          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                        >
                           مشاهدة
                         </button>
-                        <button className="text-green-600 hover:text-green-800 text-sm font-medium">
+                        <button
+                          onClick={() => {
+                            setEventToEdit(event);
+                            setShowAddEventModal(true);
+                          }}
+                          className="text-green-600 hover:text-green-800 text-sm font-medium"
+                        >
                           تعديل
                         </button>
                       </div>
@@ -602,12 +636,27 @@ const CalendarPage = () => {
         </div>
       )}
 
-      {/* Add Event Modal */}
+      {/* Add/Edit Event Modal */}
       {showAddEventModal && (
         <AddEventForm
           selectedDate={selectedDate}
-          onClose={() => setShowAddEventModal(false)}
+          onClose={() => {
+            setShowAddEventModal(false);
+            setEventToEdit(null);
+          }}
           onSuccess={handleEventAdded}
+          eventToEdit={eventToEdit}
+        />
+      )}
+
+      {/* Event Details Modal */}
+      {showEventDetailsModal && (
+        <EventDetailsModal
+          event={eventToView}
+          onClose={() => {
+            setShowEventDetailsModal(false);
+            setEventToView(null);
+          }}
         />
       )}
     </div>
