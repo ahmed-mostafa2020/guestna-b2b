@@ -226,7 +226,7 @@ const UpdateTripForm = ({ tripId, tripData, formSelectionData, onClose }) => {
         method: "post",
         maxBodyLength: Infinity,
         url: getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.SUBMIT}`
+          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.CUSTOM_TRIP_SUBMIT}`
         ),
         headers: {
           ...headers,
@@ -295,7 +295,7 @@ const UpdateTripForm = ({ tripId, tripData, formSelectionData, onClose }) => {
         method: "post",
         maxBodyLength: Infinity,
         url: getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.SUBMIT}`
+          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.CUSTOM_TRIP_SUBMIT}`
         ),
         headers: {
           ...headers,

@@ -36,7 +36,7 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
     try {
       const response = await axios.get(
         getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.INFO}/${tripId}`
+          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.CUSTOM_TRIP}/${tripId}`
         ),
         { headers }
       );
@@ -58,7 +58,8 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
       const config = {
         method: "get",
         url: getProxyUrl(
-          B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ADD_NEW_ACTIVITY.FORM_SELECTION
+          B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ADD_NEW_ACTIVITY
+            .FORM_SELECTION
         ),
         headers,
       };
@@ -76,7 +77,7 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
   const showUpdateTripForm = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch trip details if needed
       let details = tripDetails;
       if (!details || lastFetchedTripId !== tripId) {
@@ -134,7 +135,7 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
           customizedCloseButton={true}
           padding={false}
         >
-          <UpdateTripForm 
+          <UpdateTripForm
             tripId={tripId}
             tripData={tripDetails}
             formSelectionData={formSelectionData}
