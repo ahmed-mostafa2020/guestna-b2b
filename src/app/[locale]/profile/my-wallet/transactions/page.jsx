@@ -128,10 +128,10 @@ const TransactionsPage = () => {
             0
           );
           const completedAmount = processedTransactions
-            .filter((t) => t.status === "completed")
+            .filter((t) => t.status === "DONE")
             .reduce((sum, t) => sum + t.amount, 0);
           const pendingAmount = processedTransactions
-            .filter((t) => t.status === "pending" || t.status === "processing")
+            .filter((t) => t.status === "PENDING" || t.status === "SCHEDULED")
             .reduce((sum, t) => sum + t.amount, 0);
 
           setBalanceData({
@@ -167,31 +167,38 @@ const TransactionsPage = () => {
 
   // Map API status to component status
   const mapInvoiceStatus = (apiStatus) => {
-    if (!apiStatus) return "pending";
+    if (!apiStatus) return "PENDING";
 
+    // Handle the new status enum values
     const statusMap = {
-      done: "completed",
-      paid: "completed",
-      completed: "completed",
-      success: "completed",
-      approved: "completed",
-      settled: "completed",
-      confirmed: "completed",
-      pending: "pending",
-      processing: "processing",
-      in_progress: "processing",
-      under_review: "processing",
-      cancelled: "pending",
-      failed: "pending",
-      rejected: "pending",
-      declined: "pending",
-      overdue: "pending",
-      draft: "pending",
-      unpaid: "pending",
+      DONE: "DONE",
+      PENDING: "PENDING",
+      CANCLED: "CANCLED",
+      SCHEDULED: "SCHEDULED",
+      ENDED: "ENDED",
+      // Legacy status mappings for backward compatibility
+      done: "DONE",
+      paid: "DONE",
+      completed: "DONE",
+      success: "DONE",
+      approved: "DONE",
+      settled: "DONE",
+      confirmed: "DONE",
+      pending: "PENDING",
+      processing: "PENDING",
+      in_progress: "PENDING",
+      under_review: "PENDING",
+      cancelled: "CANCLED",
+      failed: "CANCLED",
+      rejected: "CANCLED",
+      declined: "CANCLED",
+      overdue: "PENDING",
+      draft: "PENDING",
+      unpaid: "PENDING",
     };
 
-    const normalizedStatus = apiStatus.toLowerCase().replace(/[_\s]/g, "");
-    return statusMap[normalizedStatus] || "pending";
+    const normalizedStatus = apiStatus.toUpperCase().replace(/[_\s]/g, "");
+    return statusMap[normalizedStatus] || "PENDING";
   };
 
   // Filter states
@@ -203,6 +210,27 @@ const TransactionsPage = () => {
 
   // Status configuration
   const statusConfig = {
+    DONE: {
+      label: "مكتمل",
+      className: "bg-green-100 text-green-800 border-green-200",
+    },
+    PENDING: {
+      label: "قيد المراجعة",
+      className: "bg-yellow-100 text-yellow-800 border-yellow-200",
+    },
+    CANCLED: {
+      label: "ملغي",
+      className: "bg-red-100 text-red-800 border-red-200",
+    },
+    SCHEDULED: {
+      label: "مجدول",
+      className: "bg-blue-100 text-blue-800 border-blue-200",
+    },
+    ENDED: {
+      label: "انتهت",
+      className: "bg-gray-100 text-gray-800 border-gray-200",
+    },
+    // Legacy status mappings for backward compatibility
     completed: {
       label: "مكتمل",
       className: "bg-green-100 text-green-800 border-green-200",

@@ -1,4 +1,6 @@
 import { useTranslations } from "next-intl";
+import Pagination from "@components/common/Pagination";
+import PerPageSelector from "@components/common/PerPageSelector";
 
 const TransactionsTable = ({
   filteredTransactions,
@@ -129,55 +131,20 @@ const TransactionsTable = ({
       {/* Pagination Controls */}
       {pagination && onPageChange && onPerPageChange && (
         <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2 space-x-reverse">
-              <span className="text-sm text-gray-700">عرض</span>
-              <select
-                value={pagination.perPage}
-                onChange={(e) => onPerPageChange(parseInt(e.target.value))}
-                className="border border-gray-300 rounded-md px-2 py-1 text-sm"
-              >
-                <option value={10}>10</option>
-                <option value={25}>25</option>
-                <option value={50}>50</option>
-                <option value={100}>100</option>
-              </select>
-              <span className="text-sm text-gray-700">عنصر في الصفحة</span>
-            </div>
-
-            <div className="flex items-center space-x-2 space-x-reverse">
-              <button
-                onClick={() => onPageChange(pagination.page - 1)}
-                disabled={pagination.page <= 1}
-                className="px-3 py-1 text-sm border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
-              >
-                السابق
-              </button>
-              <span className="text-sm text-gray-700">
-                الصفحة {apiPageInfo?.currentPage || pagination.page} من{" "}
-                {Math.ceil(
-                  (apiPageInfo?.total || 0) /
-                    (apiPageInfo?.perPage || pagination.perPage)
-                )}
-              </span>
-              <button
-                onClick={() => onPageChange(pagination.page + 1)}
-                disabled={!apiPageInfo?.hasNextPage}
-                className="px-3 py-1 text-sm border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
-              >
-                التالي
-              </button>
-            </div>
+          <div className="flex items-center justify-between mb-4">
+            <PerPageSelector
+              currentPerPage={pagination.perPage}
+              onPerPageChange={onPerPageChange}
+              options={[10, 25, 50, 100]}
+            />
           </div>
 
-          {/* Total items info */}
-          {apiPageInfo?.total > 0 && (
-            <div className="mt-2 text-center">
-              <span className="text-sm text-gray-600">
-                إجمالي العناصر: {apiPageInfo.total}
-              </span>
-            </div>
-          )}
+          <Pagination
+            pageInfo={apiPageInfo}
+            currentPage={pagination.page}
+            onPageChange={onPageChange}
+            className=""
+          />
         </div>
       )}
     </div>

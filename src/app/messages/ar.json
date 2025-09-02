@@ -107,7 +107,8 @@
       "DONE": "تمت الموافقة",
       "PENDING": "قيد المراجعة",
       "CANCLED": "ملغي",
-      "SCHEDULED": "مجدول"
+      "SCHEDULED": "مجدول",
+      "ENDED": "انتهت"
     },
     "usersType": {
       "VISITOR": "الزائر",
@@ -882,7 +883,9 @@
           "noResults": {
             "title": "لا توجد نتائج",
             "description": "يرجى تعديل الفلاتر للحصول على نتائج"
-          }
+          },
+          "show": "عرض",
+          "itemsPerPage": "عنصر في الصفحة"
         },
         "loading": {
           "message": "جاري تحميل البيانات..."

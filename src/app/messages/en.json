@@ -109,7 +109,8 @@
       "DONE": "Done",
       "PENDING": "Pending",
       "CANCLED": "Cancelled",
-      "SCHEDULED": "Scheduled"
+      "SCHEDULED": "Scheduled",
+      "ENDED": "Ended"
     },
     "usersType": {
       "VISITOR": "Visitor",
@@ -872,7 +873,9 @@
           "noResults": {
             "title": "No results",
             "description": "Please adjust filters to get results"
-          }
+          },
+          "show": "Show",
+          "itemsPerPage": "items per page"
         },
         "loading": {
           "message": "Loading data..."
