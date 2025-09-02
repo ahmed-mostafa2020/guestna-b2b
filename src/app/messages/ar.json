@@ -950,11 +950,13 @@
         "loadingEvents": "جاري تحميل الأحداث...",
         "types": {
           "trip": "رحلة",
-          "academic": "أكاديمي",
-          "administrative": "إداري",
-          "entertainment": "ترفيهي",
           "meeting": "اجتماع",
-          "exam": "امتحان"
+          "training": "تدريب",
+          "conference": "مؤتمر",
+          "academic": "أكاديمي",
+          "leave": "إجازة",
+          "exam": "امتحان",
+          "other": "أخرى"
         }
       },
       "modal": {

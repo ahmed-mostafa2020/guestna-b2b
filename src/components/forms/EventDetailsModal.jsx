@@ -122,13 +122,14 @@ const EventDetailsModal = ({ event, onClose }) => {
         </div>
       </div>
 
-      <ModalFooter
-        onCancel={onClose}
-        onConfirm={onClose}
-        cancelText={t("profile.calendar.modal.eventDetails.close")}
-        confirmText=""
-        isForm={false}
-      />
+      <div className="p-6">
+        <button
+          onClick={onClose}
+          className="px-6 py-3 font-medium text-white transition-all duration-200 ease-in-out border-2 rounded-lg bg-mainColor border-mainColor hover:bg-linksHover hover:border-linksHover"
+        >
+          {t("profile.calendar.modal.eventDetails.close")}
+        </button>
+      </div>
     </Modal>
   );
 };

@@ -18,8 +18,8 @@ import { chevronLeftIcon, chevronRightIcon } from "@assets/svg";
 
 // Utility to generate calendar grid
 const generateCalendar = (month, year) => {
-  const firstDay = new Date(year, month, 1).getDay(); // month is zero-based
-  const daysInMonth = new Date(year, month + 1, 0).getDate(); // month is zero-based
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   const calendar = [[]];
   let currentWeek = 0;

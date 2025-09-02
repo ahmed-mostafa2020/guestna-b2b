@@ -54,17 +54,16 @@ const AddEventForm = ({
   // Event types based on the calendar page
   const eventTypes = [
     { value: "TRIP", label: t("profile.calendar.events.types.trip") },
-    { value: "ACADEMIC", label: t("profile.calendar.events.types.academic") },
-    {
-      value: "ADMINISTRATIVE",
-      label: t("profile.calendar.events.types.administrative"),
-    },
-    {
-      value: "ENTERTAINMENT",
-      label: t("profile.calendar.events.types.entertainment"),
-    },
     { value: "METING", label: t("profile.calendar.events.types.meeting") },
+    { value: "TRAINING", label: t("profile.calendar.events.types.training") },
+    {
+      value: "CONFERENCE",
+      label: t("profile.calendar.events.types.conference"),
+    },
+    { value: "ACADEMIC", label: t("profile.calendar.events.types.academic") },
+    { value: "LEAVE", label: t("profile.calendar.events.types.leave") },
     { value: "EXAM", label: t("profile.calendar.events.types.exam") },
+    { value: "OTHER", label: t("profile.calendar.events.types.other") },
   ];
 
   // Map Arabic labels to English values
@@ -149,8 +148,10 @@ const AddEventForm = ({
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("i am here");
 
     if (!validateForm()) {
+      console.log("not valid");
       return;
     }
 
@@ -159,12 +160,8 @@ const AddEventForm = ({
 
     try {
       const config = {
-        method: eventToEdit ? "put" : "post",
-        url: getProxyUrl(
-          eventToEdit
-            ? `${B2B_END_POINTS.PROFILE.HAPPENINGS.ALL}/${eventToEdit._id}`
-            : B2B_END_POINTS.PROFILE.HAPPENINGS.NEW
-        ),
+        method: "post",
+        url: getProxyUrl(B2B_END_POINTS.PROFILE.HAPPENINGS.NEW),
         headers: getHeaders(),
         data: formData,
       };
@@ -215,137 +212,149 @@ const AddEventForm = ({
       />
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="p-6 space-y-6">
-        {/* General Error */}
-        {errors.general && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-            {errors.general}
-          </div>
-        )}
-
-        {/* Event Name */}
-        <TextInputGroup
-          label={t("profile.calendar.modal.addEvent.fields.eventName")}
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleInputChange}
-          placeholder={t(
-            "profile.calendar.modal.addEvent.fields.eventNamePlaceholder"
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="p-6 space-y-6">
+          {/* General Error */}
+          {errors.general && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+              {errors.general}
+            </div>
           )}
-          errors={errors.name}
-          touched={!!errors.name}
-          maxLength={100}
-        />
 
-        {/* Event Description */}
-        <TextInputGroup
-          label={t("profile.calendar.modal.addEvent.fields.description")}
-          type="text"
-          name="about"
-          value={formData.about}
-          onChange={handleInputChange}
-          placeholder={t(
-            "profile.calendar.modal.addEvent.fields.descriptionPlaceholder"
-          )}
-          errors={errors.about}
-          touched={!!errors.about}
-          textarea={true}
-          rows={4}
-          maxLength={500}
-        />
-
-        {/* Event Type */}
-        <div className="space-y-2">
-          <label className="font-medium capitalize font-ibm">
-            {t("profile.calendar.modal.addEvent.fields.eventType")}
-          </label>
-          <SelectionGroup
-            name="happeningType"
-            value={
-              eventTypes.find((type) => type.value === formData.happeningType)
-                ?.label || ""
-            }
+          {/* Event Name */}
+          <TextInputGroup
+            label={t("profile.calendar.modal.addEvent.fields.eventName")}
+            type="text"
+            name="name"
+            id="event-name"
+            value={formData.name}
             onChange={handleInputChange}
             placeholder={t(
-              "profile.calendar.modal.addEvent.fields.selectEventType"
+              "profile.calendar.modal.addEvent.fields.eventNamePlaceholder"
             )}
-            list={eventTypes.map((type) => type.label)}
-            errors={errors.happeningType}
-            touched={!!errors.happeningType}
+            errors={errors.name}
+            touched={!!errors.name}
+            maxLength={100}
           />
+
+          {/* Event Description */}
+          <TextInputGroup
+            label={t("profile.calendar.modal.addEvent.fields.description")}
+            type="text"
+            name="about"
+            id="event-description"
+            value={formData.about}
+            onChange={handleInputChange}
+            placeholder={t(
+              "profile.calendar.modal.addEvent.fields.descriptionPlaceholder"
+            )}
+            errors={errors.about}
+            touched={!!errors.about}
+            textarea={true}
+            rows={4}
+            maxLength={500}
+          />
+
+          {/* Event Type */}
+          <div className="space-y-2">
+            <label
+              htmlFor="event-type"
+              className="font-medium capitalize font-ibm"
+            >
+              {t("profile.calendar.modal.addEvent.fields.eventType")}
+            </label>
+            <SelectionGroup
+              name="happeningType"
+              id="event-type"
+              value={
+                eventTypes.find((type) => type.value === formData.happeningType)
+                  ?.label || ""
+              }
+              onChange={handleInputChange}
+              placeholder={t(
+                "profile.calendar.modal.addEvent.fields.selectEventType"
+              )}
+              list={eventTypes.map((type) => type.label)}
+              errors={errors.happeningType}
+              touched={!!errors.happeningType}
+            />
+          </div>
+
+          {/* Location */}
+          <TextInputGroup
+            label={t("profile.calendar.modal.addEvent.fields.location")}
+            type="text"
+            name="place"
+            id="event-location"
+            value={formData.place}
+            onChange={handleInputChange}
+            placeholder={t(
+              "profile.calendar.modal.addEvent.fields.locationPlaceholder"
+            )}
+            errors={errors.place}
+            touched={!!errors.place}
+            maxLength={200}
+          />
+
+          {/* Participants Count */}
+          <TextInputGroup
+            label={t("profile.calendar.modal.addEvent.fields.participants")}
+            type="number"
+            name="participantsCount"
+            id="event-participants"
+            value={formData.participantsCount}
+            onChange={handleInputChange}
+            placeholder={t(
+              "profile.calendar.modal.addEvent.fields.participantsPlaceholder"
+            )}
+            errors={errors.participantsCount}
+            touched={!!errors.participantsCount}
+            min={1}
+            max={1000}
+          />
+
+          {/* Date and Time Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Date */}
+            <TextInputGroup
+              label={t("profile.calendar.modal.addEvent.fields.date")}
+              type="date"
+              name="day"
+              id="event-date"
+              value={formData.day}
+              onChange={handleInputChange}
+              errors={errors.day}
+              touched={!!errors.day}
+              min={new Date().toISOString().split("T")[0]}
+            />
+
+            {/* Time */}
+            <TextInputGroup
+              label={t("profile.calendar.modal.addEvent.fields.time")}
+              type="time"
+              name="time"
+              id="event-time"
+              value={formData.time}
+              onChange={handleInputChange}
+              errors={errors.time}
+              touched={!!errors.time}
+            />
+          </div>
         </div>
 
-        {/* Location */}
-        <TextInputGroup
-          label={t("profile.calendar.modal.addEvent.fields.location")}
-          type="text"
-          name="place"
-          value={formData.place}
-          onChange={handleInputChange}
-          placeholder={t(
-            "profile.calendar.modal.addEvent.fields.locationPlaceholder"
-          )}
-          errors={errors.place}
-          touched={!!errors.place}
-          maxLength={200}
+        <ModalFooter
+          onCancel={onClose}
+          onConfirm={handleSubmit}
+          cancelText={t("profile.calendar.modal.addEvent.actions.cancel")}
+          confirmText={
+            eventToEdit
+              ? t("profile.calendar.modal.addEvent.actions.edit")
+              : t("profile.calendar.modal.addEvent.actions.save")
+          }
+          isLoading={isSubmitting}
+          isForm={true}
         />
-
-        {/* Participants Count */}
-        <TextInputGroup
-          label={t("profile.calendar.modal.addEvent.fields.participants")}
-          type="number"
-          name="participantsCount"
-          value={formData.participantsCount}
-          onChange={handleInputChange}
-          placeholder={t(
-            "profile.calendar.modal.addEvent.fields.participantsPlaceholder"
-          )}
-          errors={errors.participantsCount}
-          touched={!!errors.participantsCount}
-          min={1}
-          max={1000}
-        />
-
-        {/* Date and Time Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Date */}
-          <TextInputGroup
-            label={t("profile.calendar.modal.addEvent.fields.date")}
-            type="date"
-            name="day"
-            value={formData.day}
-            onChange={handleInputChange}
-            errors={errors.day}
-            touched={!!errors.day}
-            min={new Date().toISOString().split("T")[0]}
-          />
-
-          {/* Time */}
-          <TextInputGroup
-            label={t("profile.calendar.modal.addEvent.fields.time")}
-            type="time"
-            name="time"
-            value={formData.time}
-            onChange={handleInputChange}
-            errors={errors.time}
-            touched={!!errors.time}
-          />
-        </div>
       </form>
-
-      <ModalFooter
-        onCancel={onClose}
-        onConfirm={() => {}}
-        cancelText={t("profile.calendar.modal.addEvent.actions.cancel")}
-        confirmText={
-          eventToEdit
-            ? t("profile.calendar.modal.addEvent.actions.edit")
-            : t("profile.calendar.modal.addEvent.actions.save")
-        }
-        isLoading={isSubmitting}
-        isForm={true}
-      />
     </Modal>
   );
 };

@@ -23,6 +23,15 @@ const CalendarPage = () => {
   const [showEventDetailsModal, setShowEventDetailsModal] = useState(false);
   const [eventToView, setEventToView] = useState(null);
 
+  // Filter state for events tab
+  const [filters, setFilters] = useState({
+    searchTerm: "",
+    day: "",
+    happeningType: "",
+  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage] = useState(10);
+
   // Fetch events counts for summary cards
   const { data: countsData, isLoading: countsLoading } = useFetchData(
     B2B_END_POINTS.PROFILE.HAPPENINGS.COUNTS,
@@ -32,7 +41,7 @@ const CalendarPage = () => {
 
   console.log(countsData, "countsData");
 
-  // Fetch events for selected date
+  // Fetch events for selected date (calendar tab - filter by selected day only)
   const { data: selectedDateEvents, refetch: refetchSelectedDateEvents } =
     useFetchData(
       B2B_END_POINTS.PROFILE.HAPPENINGS.ALL,
@@ -50,7 +59,27 @@ const CalendarPage = () => {
       }
     );
 
-  // Fetch all events for events tab
+  // Build filter object for events tab (only include non-empty values)
+  const buildEventsFilter = () => {
+    if (activeTab !== "events") return {};
+
+    const filter = {};
+
+    // Only add non-empty values to filter
+    if (filters.searchTerm && filters.searchTerm.trim() !== "") {
+      filter.searchTerm = filters.searchTerm.trim();
+    }
+    if (filters.day && filters.day !== "") {
+      filter.day = filters.day;
+    }
+    if (filters.happeningType && filters.happeningType !== "") {
+      filter.happeningType = filters.happeningType;
+    }
+
+    return filter;
+  };
+
+  // Fetch all events for events tab (conditional filter object)
   const { data: allEvents, refetch: refetchAllEvents } = useFetchData(
     B2B_END_POINTS.PROFILE.HAPPENINGS.ALL,
     {},
@@ -58,9 +87,11 @@ const CalendarPage = () => {
       method: "POST",
       body: {
         sort: "NEWEST",
-        filter: {},
-        page: 1,
-        perPage: 10,
+        ...(Object.keys(buildEventsFilter()).length > 0 && {
+          filter: buildEventsFilter(),
+        }),
+        page: currentPage,
+        perPage: perPage,
       },
     }
   );
@@ -107,6 +138,48 @@ const CalendarPage = () => {
     refetchSelectedDateEvents();
     refetchAllEvents();
   };
+
+  // Valid happeningType values
+  const validHappeningTypes = [
+    "TRIP",
+    "METING",
+    "TRAINING",
+    "CONFERENCE",
+    "ACADEMIC",
+    "LEAVE",
+    "EXAM",
+    "OTHER",
+  ];
+
+  // Handle filter changes with validation
+  const handleFilterChange = (filterType, value) => {
+    // Validate happeningType
+    if (
+      filterType === "happeningType" &&
+      value &&
+      !validHappeningTypes.includes(value)
+    ) {
+      console.warn(
+        `Invalid happeningType: ${value}. Must be one of: ${validHappeningTypes.join(
+          ", "
+        )}`
+      );
+      return;
+    }
+
+    setFilters((prev) => ({
+      ...prev,
+      [filterType]: value,
+    }));
+    setCurrentPage(1); // Reset to first page when filters change
+  };
+
+  // Refetch events when filters change (only for events tab)
+  useEffect(() => {
+    if (activeTab === "events") {
+      refetchAllEvents();
+    }
+  }, [filters, currentPage, activeTab, refetchAllEvents]);
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -169,55 +242,55 @@ const CalendarPage = () => {
             </div>
 
             {/* Filter Dropdowns Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Search Term Input */}
               <div className="relative">
-                <select className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none">
-                  <option>
-                    {t("profile.calendar.events.filters.eventName")}
-                  </option>
-                </select>
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <svg
-                    className="w-4 h-4 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
+                <input
+                  type="text"
+                  placeholder={t("profile.calendar.events.filters.eventName")}
+                  value={filters.searchTerm}
+                  onChange={(e) =>
+                    handleFilterChange("searchTerm", e.target.value)
+                  }
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                />
               </div>
+
+              {/* Event Type Filter */}
               <div className="relative">
-                <select className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none">
-                  <option>
+                <select
+                  value={filters.happeningType}
+                  onChange={(e) =>
+                    handleFilterChange("happeningType", e.target.value)
+                  }
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none"
+                >
+                  <option value="">
                     {t("profile.calendar.events.filters.eventType")}
                   </option>
-                </select>
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <svg
-                    className="w-4 h-4 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div className="relative">
-                <select className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none">
-                  <option>
-                    {t("profile.calendar.events.filters.eventDate")}
+                  <option value="TRIP">
+                    {t("profile.calendar.events.types.trip")}
+                  </option>
+                  <option value="METING">
+                    {t("profile.calendar.events.types.meeting")}
+                  </option>
+                  <option value="TRAINING">
+                    {t("profile.calendar.events.types.training")}
+                  </option>
+                  <option value="CONFERENCE">
+                    {t("profile.calendar.events.types.conference")}
+                  </option>
+                  <option value="ACADEMIC">
+                    {t("profile.calendar.events.types.academic")}
+                  </option>
+                  <option value="LEAVE">
+                    {t("profile.calendar.events.types.leave")}
+                  </option>
+                  <option value="EXAM">
+                    {t("profile.calendar.events.types.exam")}
+                  </option>
+                  <option value="OTHER">
+                    {t("profile.calendar.events.types.other")}
                   </option>
                 </select>
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -236,27 +309,15 @@ const CalendarPage = () => {
                   </svg>
                 </div>
               </div>
+
+              {/* Date Filter */}
               <div className="relative">
-                <select className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none">
-                  <option>
-                    {t("profile.calendar.events.filters.location")}
-                  </option>
-                </select>
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <svg
-                    className="w-4 h-4 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
+                <input
+                  type="date"
+                  value={filters.day}
+                  onChange={(e) => handleFilterChange("day", e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                />
               </div>
             </div>
           </div>
@@ -306,14 +367,18 @@ const CalendarPage = () => {
                                 ? "bg-green-100 text-green-600"
                                 : event.happeningType === "ACADEMIC"
                                 ? "bg-purple-100 text-purple-600"
-                                : event.happeningType === "ADMINISTRATIVE"
-                                ? "bg-blue-100 text-blue-600"
-                                : event.happeningType === "ENTERTAINMENT"
-                                ? "bg-orange-100 text-orange-600"
                                 : event.happeningType === "METING"
                                 ? "bg-indigo-100 text-indigo-600"
+                                : event.happeningType === "TRAINING"
+                                ? "bg-blue-100 text-blue-600"
+                                : event.happeningType === "CONFERENCE"
+                                ? "bg-yellow-100 text-yellow-600"
+                                : event.happeningType === "LEAVE"
+                                ? "bg-orange-100 text-orange-600"
                                 : event.happeningType === "EXAM"
                                 ? "bg-red-100 text-red-600"
+                                : event.happeningType === "OTHER"
+                                ? "bg-gray-100 text-gray-600"
                                 : "bg-gray-100 text-gray-600"
                             }`}
                           >
@@ -321,17 +386,19 @@ const CalendarPage = () => {
                               ? t("profile.calendar.events.types.trip")
                               : event.happeningType === "ACADEMIC"
                               ? t("profile.calendar.events.types.academic")
-                              : event.happeningType === "ADMINISTRATIVE"
-                              ? t(
-                                  "profile.calendar.events.types.administrative"
-                                )
-                              : event.happeningType === "ENTERTAINMENT"
-                              ? t("profile.calendar.events.types.entertainment")
                               : event.happeningType === "METING"
                               ? t("profile.calendar.events.types.meeting")
+                              : event.happeningType === "TRAINING"
+                              ? t("profile.calendar.events.types.training")
+                              : event.happeningType === "CONFERENCE"
+                              ? t("profile.calendar.events.types.conference")
+                              : event.happeningType === "LEAVE"
+                              ? t("profile.calendar.events.types.leave")
                               : event.happeningType === "EXAM"
                               ? t("profile.calendar.events.types.exam")
-                              : t("profile.calendar.events.types.social")}
+                              : event.happeningType === "OTHER"
+                              ? t("profile.calendar.events.types.other")
+                              : t("profile.calendar.events.types.other")}
                           </span>
                         </div>
                       </div>

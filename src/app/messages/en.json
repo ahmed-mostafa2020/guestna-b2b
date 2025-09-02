@@ -940,11 +940,13 @@
         "loadingEvents": "Loading events...",
         "types": {
           "trip": "Trip",
-          "academic": "Academic",
-          "administrative": "Administrative",
-          "entertainment": "Entertainment",
           "meeting": "Meeting",
-          "exam": "Exam"
+          "training": "Training",
+          "conference": "Conference",
+          "academic": "Academic",
+          "leave": "Leave",
+          "exam": "Exam",
+          "other": "Other"
         }
       },
       "modal": {
