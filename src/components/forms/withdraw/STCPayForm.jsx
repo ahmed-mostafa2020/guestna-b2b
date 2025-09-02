@@ -1,18 +1,21 @@
 import { useTranslations } from "next-intl";
 
 const STCPayForm = ({
-  withdrawAmount,
-  setWithdrawAmount,
-  phoneNumber,
-  setPhoneNumber,
-  withdrawNotes,
-  setWithdrawNotes,
-  balance,
+  values,
   errors,
-  renderError,
+  touched,
+  setFieldValue,
+  balance,
   formatPhoneNumber,
 }) => {
   const t = useTranslations("profile.myWallet.withdrawPage.stcPay");
+
+  // Render error message
+  const renderError = (field) => {
+    return errors[field] && touched[field] ? (
+      <p className="text-red-600 text-sm mt-1">{errors[field]}</p>
+    ) : null;
+  };
 
   return (
     <div className="space-y-6">
@@ -24,24 +27,27 @@ const STCPayForm = ({
           <input
             type="number"
             placeholder={t("amount.placeholder")}
-            value={withdrawAmount}
-            onChange={(e) => setWithdrawAmount(e.target.value)}
+            value={values.withdrawAmount}
+            onChange={(e) => setFieldValue("withdrawAmount", e.target.value)}
+            onBlur={() =>
+              setFieldValue("withdrawAmount", values.withdrawAmount)
+            }
             className={`w-full px-4 py-3 border-2 rounded-xl text-right focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-base transition-all duration-200 ${
-              errors.amount
+              errors.withdrawAmount && touched.withdrawAmount
                 ? "border-red-500"
                 : "border-gray-300 hover:border-gray-400"
             }`}
             min="50"
-            max={balance.availableBalance}
+            max={balance?.availableBalance}
             step="0.01"
             id="withdraw-amount"
             name="withdrawAmount"
           />
-          {renderError("amount")}
+          {renderError("withdrawAmount")}
           <p className="text-xs text-gray-500 mt-2 text-right">
             {t("amount.limits", {
               min: "50",
-              max: balance.availableBalance.toLocaleString("ar-SA"),
+              max: balance?.availableBalance?.toLocaleString("ar-SA") || 0,
             })}
           </p>
         </div>
@@ -53,10 +59,13 @@ const STCPayForm = ({
           <input
             type="tel"
             placeholder={t("phone.placeholder")}
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(formatPhoneNumber(e.target.value))}
+            value={values.phoneNumber}
+            onChange={(e) =>
+              setFieldValue("phoneNumber", formatPhoneNumber(e.target.value))
+            }
+            onBlur={() => setFieldValue("phoneNumber", values.phoneNumber)}
             className={`w-full px-4 py-3 border-2 rounded-xl text-right focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-base transition-all duration-200 ${
-              errors.phone
+              errors.phoneNumber && touched.phoneNumber
                 ? "border-red-500"
                 : "border-gray-300 hover:border-gray-400"
             }`}
@@ -64,7 +73,7 @@ const STCPayForm = ({
             id="phone-number"
             name="phoneNumber"
           />
-          {renderError("phone")}
+          {renderError("phoneNumber")}
           <p className="text-xs text-gray-500 mt-2 text-right">
             {t("phone.hint")}
           </p>
@@ -77,8 +86,9 @@ const STCPayForm = ({
         </label>
         <textarea
           placeholder={t("notes.placeholder")}
-          value={withdrawNotes}
-          onChange={(e) => setWithdrawNotes(e.target.value)}
+          value={values.withdrawNotes}
+          onChange={(e) => setFieldValue("withdrawNotes", e.target.value)}
+          onBlur={() => setFieldValue("withdrawNotes", values.withdrawNotes)}
           rows={3}
           className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl text-right focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none text-base transition-all duration-200 hover:border-gray-400"
           id="withdraw-notes"
