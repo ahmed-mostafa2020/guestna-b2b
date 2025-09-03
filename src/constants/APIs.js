@@ -4,7 +4,6 @@ const BASE_URL = process.env.NEXT_PUBLIC_B2C_BASE_URL;
 export const END_POINTS = {
   MAIN: BASE_URL,
   TRIPS: "guestnaTrips/",
-  // TRIPS: `${BASE_URL}guestnaTrips/`,
   PAYMENTS: `${BASE_URL}bookings/`,
   HOME: "homePageTrips",
   NAVBAR: "navebar",
