@@ -122,6 +122,7 @@ const ActionsDropdownMenu = ({
           </MenuItem>
           {customizableOrder && (
             <MenuItem
+              disabled={true}
               onClick={() => {
                 handleClose(); /* Logic for "Show Details" if needed */
               }}
