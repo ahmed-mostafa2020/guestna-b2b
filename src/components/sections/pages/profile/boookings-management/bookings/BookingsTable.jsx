@@ -14,7 +14,7 @@ import BookingDetailsModal from "./BookingDetailsModal";
 import CustomizedModal from "@components/common/customizedModal";
 
 import axios from "axios";
-import { Typography, CardContent, Card } from "@mui/material";
+import { Typography, CardContent, Card, CircularProgress } from "@mui/material";
 
 const BookingsTable = ({
   data,
@@ -34,11 +34,9 @@ const BookingsTable = ({
   const fetchBookingDetails = async (bookingId) => {
     // Check if data is already cached
     if (bookingDetailsCache[bookingId]) {
-      console.log("Using cached booking details for ID:", bookingId);
       return bookingDetailsCache[bookingId];
     }
 
-    console.log("Fetching booking details for ID:", bookingId);
     setLoadingDetails(true);
     try {
       const response = await axios.post(
@@ -78,7 +76,9 @@ const BookingsTable = ({
 
   if (!data || !data.nodes) {
     return (
-      <Typography className="p-4 text-center">Loading bookings...</Typography>
+      <div className="w-full min-h-[400px] centered">
+        <CircularProgress size={50} color="primary" />
+      </div>
     );
   }
 

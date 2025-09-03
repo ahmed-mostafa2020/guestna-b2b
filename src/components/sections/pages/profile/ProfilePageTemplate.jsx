@@ -12,7 +12,6 @@ import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 const ProfilePageTemplate = ({
   title,
   tableTitle,
-  subTitle,
   endpoint,
   method,
   emptyStateComponent,
@@ -20,12 +19,19 @@ const ProfilePageTemplate = ({
   filterButtons = [],
   additionalParams = {},
   enablePagination = false,
+  bodyParameters = {},
 }) => {
   const locale = useLocale();
   const t = useTranslations();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const requestBody = enablePagination ? { perPage: CONSTANT_VALUES.TABLE_PER_PAGE, page: currentPage } : {};
+  const requestBody = enablePagination
+    ? {
+        perPage: CONSTANT_VALUES.TABLE_PER_PAGE,
+        page: currentPage,
+        ...bodyParameters,
+      }
+    : {};
 
   const { data, error, isLoading } = useFetchData(
     endpoint,
@@ -68,7 +74,6 @@ const ProfilePageTemplate = ({
         </h2>
       )}
 
-
       {isEmpty ? (
         typeof emptyStateComponent === "function" ? (
           emptyStateComponent(data)
@@ -94,15 +99,20 @@ const ProfilePageTemplate = ({
               ))}
             </div>
           )}
-          
+
           {typeof contentComponent === "function"
-            ? contentComponent(data, currentPage, setCurrentPage, enablePagination)
+            ? contentComponent(
+                data,
+                currentPage,
+                setCurrentPage,
+                enablePagination
+              )
             : React.isValidElement(contentComponent)
-            ? React.cloneElement(contentComponent, { 
-                data, 
-                currentPage, 
-                setCurrentPage, 
-                enablePagination 
+            ? React.cloneElement(contentComponent, {
+                data,
+                currentPage,
+                setCurrentPage,
+                enablePagination,
               })
             : contentComponent}
         </>

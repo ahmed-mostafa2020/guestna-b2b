@@ -83,8 +83,10 @@ export const B2B_END_POINTS = {
           CUSTOM_TRIP: "profile/askTrips/custom/new",
         },
         UPDATE_ORDER: {
-          INFO: "profile/trips/info",
-          SUBMIT: "profile/askTrips/custom/edit",
+          INFO: "profile/askTrips/info",
+          SUBMIT: "profile/askTrips/edit",
+          CUSTOM_TRIP: "profile/trips/info", // discover details info
+          CUSTOM_TRIP_SUBMIT: "profile/askTrips/custom/edit", // discover details edit
         },
         REMIND: "profile/askTrips/reminder/admin",
       },
@@ -99,7 +101,7 @@ export const B2B_END_POINTS = {
     },
     CREATE_TRIP_LINK: "profile/organizationTrips/poster",
 
-    BOOKINGS: "profile/users/school/all",
+    BOOKINGS: "profile/bookings/all",
 
     // check this end point
     INVOICES: "profile/organizationTrips/invoices/all",

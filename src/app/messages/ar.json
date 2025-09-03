@@ -32,6 +32,8 @@
     "all": "الكل",
     "packages": "الباقات",
     "activities": "الأنشطة",
+    "anActivity": "نشاطا",
+    "multiActivities": "أنشطة",
     "PACKAGE": "الباقات",
     "ACTIVITY": "الأنشطة",
     "HALF_DAY": "نصف يوم",
@@ -45,6 +47,7 @@
     "night": "مساءً",
     "PUBLIC": "مجموعات",
     "PRIVATE": "رحلة خاصة",
+    "trip": "رحلة",
     "MALE": "ذكر",
     "FEMALE": "أنثى",
     "guestna": "جستنا",
@@ -528,6 +531,18 @@
       "stuff": "عدد المدراء",
       "bookings": "عدد الحجوزات"
     },
+
+    "filters": {
+      "title": "قائمة الرحلات",
+      "status": {
+        "all": "كل الرحلات",
+        "pending": "رحلات قيد التنفيذ",
+        "done": "رحلات تم تنفيذها",
+        "scheduled": "رحلات مجدولة",
+        "cancelled": "رحلات غير مكتملة",
+        "trips": "رحلة"
+      }
+    },
     "schools_users": {
       "schoolsUsers": "المدارس والمستخدمون",
       "delete": "حذف",
@@ -584,6 +599,25 @@
     },
 
     "tables": {
+      "ordersInfo": {
+        "orderDetails": {
+          "title": "تفاصيل الطلب -",
+          "tripInfo": "معلومات الرحلة",
+          "bookingInfo": "معلومات الحجز",
+          "tripName": "اسم الرحلة",
+          "tripType": "نوع الرحلة",
+          "category": "الفئة",
+          "basePrice": "السعر",
+          "location": "الموقع",
+          "tripDate": "تاريخ الرحلة",
+          "orderId": "رقم الطلب",
+          "availableSeats": "المقاعد المتاحة",
+          "note": "ملاحظات",
+          "academicStages": "المراحل الأكاديمية",
+          "services": "الخدمات",
+          "status": "الحالة"
+        }
+      },
       "activities": {
         "header": {
           "tripName": "اسم النشاط",
@@ -1358,6 +1392,7 @@
       },
       "availableSeats": {
         "label": "عدد المشاركين",
+        "secondaryLabel": "عدد الطلاب",
         "error": {
           "min": "يجب أن يكون العدد أكبر من 0",
           "max": "العدد كبير جداً"

@@ -6,8 +6,15 @@ import { memo } from "react";
 
 import formatCurrency from "@utils/FormatCurrency";
 import formatDate from "@utils/FormateDate";
+import Pagination from "@components/common/Pagination";
 
-import { Typography, Badge, CardContent, Card } from "@mui/material";
+import {
+  Typography,
+  Badge,
+  CardContent,
+  Card,
+  CircularProgress,
+} from "@mui/material";
 
 const statusColors = {
   initiated: "bg-yellow-100 text-yellow-800",
@@ -16,13 +23,15 @@ const statusColors = {
   completed: "bg-blue-100 text-blue-800",
 };
 
-const BookingsTable = ({ data }) => {
+const BookingsTable = ({ data, currentPage, setCurrentPage, enablePagination }) => {
   const locale = useLocale();
   const t = useTranslations();
 
   if (!data || !data.nodes) {
     return (
-      <Typography className="p-4 text-center">Loading bookings...</Typography>
+      <div className="w-full min-h-[400px] centered">
+        <CircularProgress size={50} color="primary" />
+      </div>
     );
   }
 
@@ -66,11 +75,11 @@ const BookingsTable = ({ data }) => {
                 </tr>
               </thead>
               <tbody>
-                {data.nodes.map((booking, index) => (
+                {data?.nodes?.map((booking, index) => (
                   <tr
                     key={booking._id}
                     className={`${
-                      index != data.nodes.length - 1 &&
+                      index != data?.nodes?.length - 1 &&
                       "border-b border-table-border"
                     } transition-colors hover:bg-gray-50`}
                   >
@@ -131,7 +140,7 @@ const BookingsTable = ({ data }) => {
 
       {/* Mobile Cards */}
       <div className="space-y-4 md:hidden">
-        {data.nodes.map((booking) => (
+        {data?.nodes?.map((booking) => (
           <Card
             key={booking._id}
             className="transition-shadow shadow-md hover:shadow-lg"
@@ -199,6 +208,16 @@ const BookingsTable = ({ data }) => {
           </Card>
         ))}
       </div>
+
+      {/* Pagination Component */}
+      {enablePagination && data?.pageInfo && (
+        <Pagination
+          pageInfo={data.pageInfo}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          className="mt-6"
+        />
+      )}
     </div>
   );
 };
