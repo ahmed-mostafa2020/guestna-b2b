@@ -22,13 +22,6 @@ const TransactionsFilters = ({
         {/* Action Buttons */}
         <div className="flex gap-3">
           <button
-            onClick={() => window.location.reload()}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2"
-          >
-            {refreshIcon}
-            {t("refresh")}
-          </button>
-          <button
             onClick={() => window.print()}
             className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2"
           >

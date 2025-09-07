@@ -1,6 +1,5 @@
 import { useTranslations } from "next-intl";
 import Pagination from "@components/common/Pagination";
-import PerPageSelector from "@components/common/PerPageSelector";
 
 const TransactionsTable = ({
   filteredTransactions,
@@ -131,14 +130,6 @@ const TransactionsTable = ({
       {/* Pagination Controls */}
       {pagination && onPageChange && onPerPageChange && (
         <div className="px-6 py-4 border-t border-border bg-packageDetailsBg">
-          <div className="flex items-center justify-between mb-4">
-            <PerPageSelector
-              currentPerPage={pagination.perPage}
-              onPerPageChange={onPerPageChange}
-              options={[10, 25, 50, 100]}
-            />
-          </div>
-
           <Pagination
             pageInfo={apiPageInfo}
             currentPage={pagination.page}
