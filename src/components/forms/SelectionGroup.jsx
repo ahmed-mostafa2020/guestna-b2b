@@ -13,6 +13,7 @@ const SelectionGroup = ({
   placeholder,
   list,
   multiple = false,
+  disabled = false,
 }) => {
   return (
     <FormControl error={touched && Boolean(errors)} className="relative w-full">
@@ -25,15 +26,23 @@ const SelectionGroup = ({
         onBlur={onBlur}
         displayEmpty
         multiple={multiple}
+        disabled={disabled}
         IconComponent={KeyboardArrowDown}
         renderValue={(selected) => {
-          if (multiple && (!selected || !Array.isArray(selected) || selected.length === 0)) {
-            return <span className="text-light opacity-60 ">{placeholder}</span>;
+          if (
+            multiple &&
+            (!selected || !Array.isArray(selected) || selected.length === 0)
+          ) {
+            return (
+              <span className="text-light opacity-60 ">{placeholder}</span>
+            );
           }
-          if (!multiple && (!selected || selected === '')) {
-            return <span className="text-light opacity-60 ">{placeholder}</span>;
+          if (!multiple && (!selected || selected === "")) {
+            return (
+              <span className="text-light opacity-60 ">{placeholder}</span>
+            );
           }
-          return multiple ? selected.join(', ') : selected;
+          return multiple ? selected.join(", ") : selected;
         }}
         sx={{
           width: "100%",

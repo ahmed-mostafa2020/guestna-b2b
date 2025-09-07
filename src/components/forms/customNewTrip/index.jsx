@@ -1,6 +1,3 @@
-
-
-import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { memo, useState } from "react";
 import { Formik } from "formik";
@@ -18,13 +15,11 @@ import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
 import FileUploadGroup from "../FileUploadGroup";
 
-const CustomNewTripForm = ({formSelectionData}) => {
+const CustomNewTripForm = ({ formSelectionData }) => {
   const [formErrors, setFormErrors] = useState([]);
 
   const locale = useLocale();
   const t = useTranslations();
-
-  const router = useRouter();
 
   const headers = getHeaders(locale);
   const customTripSchema = createCustomNewTripSchema(t);
@@ -33,24 +28,33 @@ const CustomNewTripForm = ({formSelectionData}) => {
   // Keep full objects for _id lookup
   const categoryData = formSelectionData.categories;
   const tripTypeData = [
-    {name: t("forms.customTrip.tripType.options.halfDay"), _id: CONSTANT_VALUES.HALF_DAY },
-    {name: t("forms.customTrip.tripType.options.oneDay"), _id: CONSTANT_VALUES.ACTIVITY },
-    {name: t("forms.customTrip.tripType.options.multiDay"), _id: CONSTANT_VALUES.PACKAGE },
+    {
+      name: t("forms.customTrip.tripType.options.halfDay"),
+      _id: CONSTANT_VALUES.HALF_DAY,
+    },
+    {
+      name: t("forms.customTrip.tripType.options.oneDay"),
+      _id: CONSTANT_VALUES.ACTIVITY,
+    },
+    {
+      name: t("forms.customTrip.tripType.options.multiDay"),
+      _id: CONSTANT_VALUES.PACKAGE,
+    },
   ];
   const cityData = formSelectionData.cities;
   const academicStageData = formSelectionData.academicStages;
   const servicesData = formSelectionData.services;
 
   // Extract names for dropdown display
-  const categoryOptions = categoryData.map(item => item.name);
-  const tripTypeOptions = tripTypeData.map(item => item.name);
-  const cityOptions = cityData.map(item => item.name);
-  const academicStageOptions = academicStageData.map(item => item.name);
-  const servicesOptions = servicesData.map(item => item.name);
+  const categoryOptions = categoryData.map((item) => item.name);
+  const tripTypeOptions = tripTypeData.map((item) => item.name);
+  const cityOptions = cityData.map((item) => item.name);
+  const academicStageOptions = academicStageData.map((item) => item.name);
+  const servicesOptions = servicesData.map((item) => item.name);
 
   // Prevent negative values in number inputs
   const handleKeyDown = (e) => {
-    if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '+') {
+    if (e.key === "-" || e.key === "e" || e.key === "E" || e.key === "+") {
       e.preventDefault();
     }
   };
@@ -66,50 +70,54 @@ const CustomNewTripForm = ({formSelectionData}) => {
 
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
     const formData = new FormData();
-    
+
     // Helper function to find _id by name
     const findIdByName = (options, name) => {
-      const option = options.find(opt => opt.name === name);
+      const option = options.find((opt) => opt.name === name);
       return option ? option._id : name;
     };
-    
+
     // Add all form fields to FormData
-    Object.keys(values).forEach(key => {
-      if (key === 'file') {
+    Object.keys(values).forEach((key) => {
+      if (key === "file") {
         // Always append file field, even if null/undefined
-        formData.append(key, values[key] || '');
+        formData.append(key, values[key] || "");
       } else if (values[key] !== null && values[key] !== undefined) {
         let valueToSend = values[key];
-        
+
         // Convert names to _id for dropdown fields
         switch (key) {
-          case 'category':
+          case "category":
             valueToSend = findIdByName(categoryData, values[key]);
             break;
-          case 'tripType':
+          case "tripType":
             valueToSend = findIdByName(tripTypeData, values[key]);
             break;
-          case 'city':
+          case "city":
             valueToSend = findIdByName(cityData, values[key]);
             break;
-          case 'academicStages':
+          case "academicStages":
             // Handle array for multi-select
             if (Array.isArray(values[key])) {
-              valueToSend = values[key].map(name => findIdByName(academicStageData, name));
+              valueToSend = values[key].map((name) =>
+                findIdByName(academicStageData, name)
+              );
             } else {
               valueToSend = findIdByName(academicStageData, values[key]);
             }
             break;
-          case 'services':
+          case "services":
             // Handle array for multi-select
             if (Array.isArray(values[key])) {
-              valueToSend = values[key].map(name => findIdByName(servicesData, name));
+              valueToSend = values[key].map((name) =>
+                findIdByName(servicesData, name)
+              );
             } else {
               valueToSend = findIdByName(servicesData, values[key]);
             }
             break;
         }
-        
+
         // Handle arrays differently for FormData
         if (Array.isArray(valueToSend)) {
           // Append each array item individually with indexed keys
@@ -125,10 +133,12 @@ const CustomNewTripForm = ({formSelectionData}) => {
     const config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: getProxyUrl(`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ADD_NEW_ACTIVITY.CUSTOM_TRIP}`),
+      url: getProxyUrl(
+        `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ADD_NEW_ACTIVITY.CUSTOM_TRIP}`
+      ),
       headers: {
         ...headers,
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
       data: formData,
     };
@@ -140,7 +150,7 @@ const CustomNewTripForm = ({formSelectionData}) => {
         setFormErrors([]);
         resetForm();
 
-        const  res  = response.data;
+        const res = response.data;
         if (res) {
           enqueueSnackbar(t("forms.customTrip.success"), {
             variant: "success",
@@ -173,14 +183,14 @@ const CustomNewTripForm = ({formSelectionData}) => {
         <style jsx>{`
           .somar-placeholder input::placeholder,
           .somar-placeholder textarea::placeholder {
-            font-family: 'somar', sans-serif !important;
+            font-family: "somar", sans-serif !important;
           }
           .somar-placeholder .MuiSelect-select span {
-            font-family: 'somar', sans-serif !important;
+            font-family: "somar", sans-serif !important;
           }
           .somar-placeholder input,
           .somar-placeholder textarea {
-            font-family: 'somar', sans-serif !important;
+            font-family: "somar", sans-serif !important;
           }
         `}</style>
         <Formik
@@ -276,7 +286,7 @@ const CustomNewTripForm = ({formSelectionData}) => {
                   />
                 </div>
 
-                       {/* Services */}
+                {/* Services */}
                 <div className="somar-placeholder">
                   <SelectionGroup
                     name="services"
@@ -302,7 +312,9 @@ const CustomNewTripForm = ({formSelectionData}) => {
                     onChange={handleNumberChange(handleChange)}
                     onBlur={handleBlur}
                     onKeyDown={handleKeyDown}
-                    placeholder={t("forms.customTrip.expectedParticipants.placeholder")}
+                    placeholder={t(
+                      "forms.customTrip.expectedParticipants.placeholder"
+                    )}
                     min="0"
                   />
                 </div>
@@ -318,16 +330,20 @@ const CustomNewTripForm = ({formSelectionData}) => {
                     touched={touched.day}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    min={new Date().toISOString().split('T')[0]}
+                    min={new Date().toISOString().split("T")[0]}
                     max={values.endDay || undefined}
-                    style={{ cursor: 'pointer' }}
-                    onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                    style={{ cursor: "pointer" }}
+                    onClick={(e) =>
+                      e.target.showPicker && e.target.showPicker()
+                    }
                   />
                 </div>
 
                 {/* End Date - Only show for multi-day trips */}
                 {(() => {
-                  const selectedTripType = tripTypeData.find(item => item.name === values.tripType);
+                  const selectedTripType = tripTypeData.find(
+                    (item) => item.name === values.tripType
+                  );
                   return selectedTripType?._id === CONSTANT_VALUES.PACKAGE;
                 })() && (
                   <div className="somar-placeholder">
@@ -340,17 +356,19 @@ const CustomNewTripForm = ({formSelectionData}) => {
                       touched={touched.endDay}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      min={values.day || new Date().toISOString().split('T')[0]}
-                      style={{ cursor: 'pointer' }}
-                      onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                      min={values.day || new Date().toISOString().split("T")[0]}
+                      style={{ cursor: "pointer" }}
+                      onClick={(e) =>
+                        e.target.showPicker && e.target.showPicker()
+                      }
                     />
                   </div>
                 )}
 
-                 {/* Price */}
-                 <div className="somar-placeholder">
+                {/* Price */}
+                <div className="somar-placeholder">
                   <TextInputGroup
-                  label={t("forms.customTrip.price.placeholder")}
+                    label={t("forms.customTrip.price.placeholder")}
                     type="number"
                     name="basePrice"
                     value={values.basePrice}
@@ -365,40 +383,44 @@ const CustomNewTripForm = ({formSelectionData}) => {
                     maxLength={8}
                   />
                 </div>
-                </div>
+              </div>
 
               <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {/* Trip Description */}
-                      <div className="somar-placeholder">
-                        <TextInputGroup
-                          type="text"
-                          name="description"
-                          value={values.description}
-                          errors={errors.description}
-                          touched={touched.description}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          placeholder={t("forms.customTrip.tripDescription.placeholder")}
-                          textarea={true}
-                          rows={3}
-                        />
-                      </div>
+                {/* Trip Description */}
+                <div className="somar-placeholder">
+                  <TextInputGroup
+                    type="text"
+                    name="description"
+                    value={values.description}
+                    errors={errors.description}
+                    touched={touched.description}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder={t(
+                      "forms.customTrip.tripDescription.placeholder"
+                    )}
+                    textarea={true}
+                    rows={3}
+                  />
+                </div>
 
-                    {/* Special Requirements */}
-                    <div className="somar-placeholder">
-                      <TextInputGroup
-                        type="text"
-                        name="specialRequirements"
-                        value={values.specialRequirements}
-                        errors={errors.specialRequirements}
-                        touched={touched.specialRequirements}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        placeholder={t("forms.customTrip.specialRequirements.placeholder")}
-                        textarea={true}
-                        rows={3}
-                      />
-                    </div>
+                {/* Special Requirements */}
+                <div className="somar-placeholder">
+                  <TextInputGroup
+                    type="text"
+                    name="specialRequirements"
+                    value={values.specialRequirements}
+                    errors={errors.specialRequirements}
+                    touched={touched.specialRequirements}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder={t(
+                      "forms.customTrip.specialRequirements.placeholder"
+                    )}
+                    textarea={true}
+                    rows={3}
+                  />
+                </div>
               </div>
 
               {/* File Upload */}
@@ -416,7 +438,15 @@ const CustomNewTripForm = ({formSelectionData}) => {
                   }}
                   accept="image/*,application/pdf,.doc,.docx"
                   maxSizeInMB={5}
-                  allowedTypes={["image/jpeg", "image/png", "image/jpg", "image/webp", "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"]}
+                  allowedTypes={[
+                    "image/jpeg",
+                    "image/png",
+                    "image/jpg",
+                    "image/webp",
+                    "application/pdf",
+                    "application/msword",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                  ]}
                   disallowedTypes={["image/svg+xml"]}
                 />
               </div>
@@ -428,15 +458,14 @@ const CustomNewTripForm = ({formSelectionData}) => {
                   disabled={isSubmitting || !isValid || !dirty}
                   className=" centered w-full py-3 text-white bg-mainColor rounded-lg hover:bg-titleColor disabled:opacity-50"
                 >
-                  {isSubmitting
-                    ? (
-                      <div className="flex items-center gap-2">
+                  {isSubmitting ? (
+                    <div className="flex items-center gap-2">
                       <CircularProgress color="inherit" size={20} />
                       {t("forms.validation.sending")}
-                      </div>
-                    )
-                    : t("forms.customTrip.submit")}
-                    
+                    </div>
+                  ) : (
+                    t("forms.customTrip.submit")
+                  )}
                 </button>
               </div>
             </form>

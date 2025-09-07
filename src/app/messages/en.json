@@ -32,6 +32,8 @@
     "all": "All",
     "packages": "Packages",
     "activities": "Activities",
+    "anActivity": "Activity",
+    "multiActivities": "Activities",
     "PACKAGE": "Packages",
     "ACTIVITY": "Activities",
     "HALF_DAY": "Half Day",
@@ -45,6 +47,7 @@
     "night": "Night",
     "PUBLIC": "Groups",
     "PRIVATE": "Private",
+    "trip": "Trip",
     "MALE": "Male",
     "FEMALE": "Female",
     "guestna": "Guestna",
@@ -211,6 +214,15 @@
     "sendToManager": "Send to Manager",
     "ConfirmationOfAchievement": "Confirmation of Achievement",
     "finalReport": "Final Report",
+    "showAllImages": "Show all images totaling",
+    "showAllReviews": "Show all reviews totaling",
+    "customizeYourPackage": "Customize your package",
+    "deleteActivity": "Delete activity",
+    "replace": "Replace",
+    "follow": "Follow",
+    "edit": "Edit",
+    "editTrip": "Edit trip",
+    "verification": "Verification",
     "cancel": "Cancel",
     "requestNewActivity": "Request New Activity",
     "requestQuote": "Request Quote",
@@ -521,6 +533,19 @@
       "stuff": "Managers",
       "bookings": "Bookings"
     },
+
+    "filters": {
+      "title": "Filter Trips",
+      "status": {
+        "all": "All Trips",
+        "pending": "Pending Trips",
+        "done": "Completed Trips",
+        "scheduled": "Scheduled Trips",
+        "cancelled": "Cancelled Trips",
+        "trips": "trips"
+      }
+    },
+
     "schools_users": {
       "schoolsUsers": "Schools And Users",
       "delete": "Delete",
@@ -577,6 +602,25 @@
     },
 
     "tables": {
+      "ordersInfo": {
+        "orderDetails": {
+          "title": "Order Details -",
+          "tripInfo": "Trip Information",
+          "bookingInfo": "Booking Information",
+          "tripName": "Trip Name",
+          "tripType": "Trip Type",
+          "category": "Category",
+          "basePrice": "Price",
+          "location": "Location",
+          "tripDate": "Trip Date",
+          "orderId": "Order ID",
+          "availableSeats": "Available Seats",
+          "note": "Notes",
+          "academicStages": "Academic Stages",
+          "services": "Services",
+          "status": "Status"
+        }
+      },
       "activities": {
         "header": {
           "tripName": "Activity Name",
@@ -584,7 +628,8 @@
           "location": "Location",
           "category": "Category",
           "tripLink": "Activity Link",
-          "link": "The link"
+          "link": "The link",
+          "actions": "Actions"
         }
       },
       "packages": {
@@ -596,7 +641,8 @@
           "activitiesCount": "Activities Count",
           "duration": "Duration",
           "tripLink": "Package Link",
-          "link": "The link"
+          "link": "The link",
+          "actions": "Actions"
         }
       },
       "bookings": {
@@ -619,6 +665,7 @@
         "title": "Trips Closure Reports",
         "subTitle": "Confirm trips completion and prepare final reports"
       },
+
       "orders": {
         "title": "Orders",
         "tripsOrdersManagement": "Activities Orders Management",
@@ -631,7 +678,7 @@
           "title": "Customized Activities Orders"
         },
         "bookingDetails": {
-          "title": "Trip Details",
+          "title": "Trip Details:",
           "tripInfo": "Trip Information",
           "schoolInfo": "School Information",
           "tripDescription": "Trip Description",
@@ -667,7 +714,7 @@
     "information": {
       "accountData": "Account Data",
       "verifiedMail": "E-mail (Verified)",
-      "unverifiedMail": "E-mail (Unverified)",
+      "unverifiedMail": "E-mail (Not Verified)",
       "personalInformation": {
         "title": "Personal Information",
         "name": "Name",
@@ -732,37 +779,12 @@
       "withdraw": "Withdraw",
       "withdrawPage": {
         "pageHeader": {
-          "title": "Withdraw Money",
-          "description": "Choose your preferred withdrawal method and withdraw your money easily and securely"
+          "title": "Withdraw",
+          "description": "Withdraw your available balance to your bank account"
         },
-        "balanceCards": {
-          "totalBalance": "Total Balance",
-          "availableBalance": "Available Balance",
-          "holdBalance": "Hold Balance",
-          "error": {
-            "message": "Error loading balance data",
-            "retry": "Retry"
-          }
-        },
-        "stcPay": {
+        "form": {
           "amount": {
-            "label": "Withdrawal Amount",
-            "placeholder": "Enter amount",
-            "limits": "Min: {min} SAR | Max: {max} SAR"
-          },
-          "phone": {
-            "label": "Phone Number",
-            "placeholder": "0501234567",
-            "hint": "Valid Saudi phone number"
-          },
-          "notes": {
-            "label": "Notes (Optional)",
-            "placeholder": "Add any notes or special instructions for the withdrawal..."
-          }
-        },
-        "bankTransfer": {
-          "amount": {
-            "label": "Withdrawal Amount",
+            "label": "Amount",
             "placeholder": "Enter amount",
             "limits": "Min: {min} SAR | Max: {max} SAR"
           },
@@ -1005,7 +1027,8 @@
       },
       "sync": {
         "title": "Calendar Sync",
-        "description": "Sync tab content will be added here"
+        "description": "Sync tab content will be added here",
+        "newField": "New field added"
       }
     }
   },
@@ -1118,7 +1141,8 @@
       "credit": "Credit/Debit Card",
       "stc": "STC",
       "tamara": "TAMARA",
-      "apple": "Apple Pay"
+      "apple": "Apple Pay",
+      "applePay": "Apple Pay"
     },
 
     "registerForm": {
@@ -1240,140 +1264,141 @@
         "placeholder": "Enter the promo code",
         "useCode": "Use the promo code",
         "successMessage": "Discount has been applied successfully"
-      },
+      }
+    },
 
-      "studentName": {
-        "name": "Student name",
-        "placeholder": "Student's full name in English",
+    "studentName": {
+      "name": "Student name",
+      "placeholder": "Student's full name in English",
+      "error": {
+        "min": "Student name should be less than 3 characters",
+        "max": "Student name Student name be more than 50 characters",
+        "invalid": "Name should contain only letters",
+        "wordMinLength": "The student's name must be full"
+      }
+    },
+
+    "relationship": {
+      "name": "ٌRelationship",
+      "error": {
+        "min": "ٌRelationship should be more than 2 characters",
+        "max": "ٌRelationship should be less than 50 characters"
+      }
+    },
+
+    "nationalId": {
+      "name": "National ID",
+      "studentPlaceholder": "National ID card number of the student",
+      "parentPlaceholder": "National ID card number of the guardian",
+      "error": {
+        "invalid": "The number must start with 1 or 2 and must be 10 characters long",
+        "min": "National ID number must be exactly 10 digits",
+        "max": "National ID number must be exactly 10 digits"
+      }
+    },
+
+    "academicStages": {
+      "name": "Academic Stages"
+    },
+
+    "grade": {
+      "name": "Grade"
+    },
+
+    "organizationName": {
+      "name": "Organization Name",
+      "error": {
+        "min": "Organization name should be more than 3 characters",
+        "max": "Organization name should be less than 50 characters"
+      }
+    },
+
+    "survey": {
+      "title": "Activity Completion Survey",
+      "subtitle": "Please complete the survey to confirm activity completion and activate the final report",
+      "selectAnswer": "Select Answer",
+      "submit": "Complete Survey",
+      "rating": {
+        "label": "How was the overall activity experience?"
+      },
+      "learningObjectives": {
+        "label": "Were the educational objectives of the activity achieved?",
+        "fully": "Fully achieved",
+        "mostly": "Mostly achieved",
+        "partially": "Partially achieved",
+        "not": "Not achieved"
+      },
+      "schedule": {
+        "label": "Did the activity adhere to the specified schedule?",
+        "yes": "Yes, adhered to schedule",
+        "partial": "Partially adhered",
+        "no": "No, did not adhere"
+      },
+      "notes": {
+        "label": "Additional Notes",
+        "placeholder": "Add any notes or comments..."
+      }
+    },
+
+    "confirmRequest": {
+      "title": "Confirm Trip Request",
+      "day": {
+        "label": "Trip Date",
         "error": {
-          "min": "Student name should be less than 3 characters",
-          "max": "Student name Student name be more than 50 characters",
-          "invalid": "Name should contain only letters",
-          "wordMinLength": "The student's name must be full"
+          "pastDate": "Cannot select a date in the past"
         }
       },
-
-      "relationship": {
-        "name": "ٌRelationship",
+      "availableSeats": {
+        "label": "Number of participants",
+        "secondaryLabel": "Number of students",
         "error": {
-          "min": "ٌRelationship should be more than 2 characters",
-          "max": "ٌRelationship should be less than 50 characters"
+          "min": "Number must be greater than 0",
+          "max": "Number is too large"
         }
       },
+      "note": {
+        "label": "Additional Notes (Optional)",
+        "placeholder": "Any special requests or requirements..."
+      }
+    },
 
-      "nationalId": {
-        "name": "National ID",
-        "studentPlaceholder": "National ID card number of the student",
-        "parentPlaceholder": "National ID card number of the guardian",
-        "error": {
-          "invalid": "The number must start with 1 or 2 and must be 10 characters long",
-          "min": "National ID number must be exactly 10 digits",
-          "max": "National ID number must be exactly 10 digits"
-        }
+    "subject": {
+      "name": "Subject",
+      "error": {
+        "min": "Subject should be more than 5 characters",
+        "max": "Subject should be less than 50 characters"
+      }
+    },
+
+    "message": {
+      "name": "Message",
+      "error": {
+        "min": "Message should be more than 5 characters",
+        "max": "Message should be less than 225 characters"
+      }
+    },
+
+    "validation": {
+      "require": "This field is required",
+      "sending": "Sending Now ...",
+      "downloading": "Downloading Now ...",
+      "success": "Your data has been sent successfully",
+      "reminderSentSuccessfully": "Reminder sent successfully",
+      "addedToFavorites": "Added to favorites successfully",
+      "checkYourEmail": "Please, Check your gmail",
+      "addGuest": "Add Guest first please",
+      "registerChild": "Please register your child in a trip first",
+      "thanksMessage": "Thank You!",
+      "willContactYou": "Your contact request has been sent, we will respond to you shortly.",
+
+      "payment": {
+        "success": "Payment was done successfully!",
+        "sendOtp": "Please send OTP!",
+        "resendOtp": "Please resend OTP!"
       },
 
-      "academicStages": {
-        "name": "Academic Stages"
-      },
-
-      "grade": {
-        "name": "Grade"
-      },
-
-      "organizationName": {
-        "name": "Organization Name",
-        "error": {
-          "min": "Organization name should be more than 3 characters",
-          "max": "Organization name should be less than 50 characters"
-        }
-      },
-
-      "survey": {
-        "title": "Activity Completion Survey",
-        "subtitle": "Please complete the survey to confirm activity completion and activate the final report",
-        "selectAnswer": "Select Answer",
-        "submit": "Complete Survey",
-        "rating": {
-          "label": "How was the overall activity experience?"
-        },
-        "learningObjectives": {
-          "label": "Were the educational objectives of the activity achieved?",
-          "fully": "Fully achieved",
-          "mostly": "Mostly achieved",
-          "partially": "Partially achieved",
-          "not": "Not achieved"
-        },
-        "schedule": {
-          "label": "Did the activity adhere to the specified schedule?",
-          "yes": "Yes, adhered to schedule",
-          "partial": "Partially adhered",
-          "no": "No, did not adhere"
-        },
-        "notes": {
-          "label": "Additional Notes",
-          "placeholder": "Add any notes or comments..."
-        }
-      },
-
-      "confirmRequest": {
-        "title": "Confirm Trip Request",
-        "day": {
-          "label": "Trip Date",
-          "error": {
-            "pastDate": "Cannot select a date in the past"
-          }
-        },
-        "availableSeats": {
-          "label": "Number of participants",
-          "error": {
-            "min": "Number must be greater than 0",
-            "max": "Number is too large"
-          }
-        },
-        "note": {
-          "label": "Additional Notes (Optional)",
-          "placeholder": "Any special requests or requirements..."
-        }
-      },
-
-      "subject": {
-        "name": "Subject",
-        "error": {
-          "min": "Subject should be more than 5 characters",
-          "max": "Subject should be less than 50 characters"
-        }
-      },
-
-      "message": {
-        "name": "Message",
-        "error": {
-          "min": "Message should be more than 5 characters",
-          "max": "Message should be less than 225 characters"
-        }
-      },
-
-      "validation": {
-        "require": "This field is required",
-        "sending": "Sending Now ...",
-        "downloading": "Downloading Now ...",
-        "success": "Your data has been sent successfully",
-        "reminderSentSuccessfully": "Reminder sent successfully",
-        "addedToFavorites": "Added to favorites successfully",
-        "checkYourEmail": "Please, Check your gmail",
-        "addGuest": "Add Guest first please",
-        "registerChild": "Please register your child in a trip first",
-        "thanksMessage": "Thank You!",
-        "willContactYou": "Your contact request has been sent, we will respond to you shortly.",
-
-        "payment": {
-          "success": "Payment was done successfully!",
-          "sendOtp": "Please send OTP!",
-          "resendOtp": "Please resend OTP!"
-        },
-
-        "api_errors": {
-          "other_error": "An error occurred! Please try again"
-        }
+      "api_errors": {
+        "other_error": "An error occurred! Please try again"
       }
     },
 
@@ -1450,31 +1475,31 @@
       "attachFile": {
         "label": "Attach File"
       }
-    },
-    "footer": {
-      "company": "Company",
-      "aboutUs": "About Us",
-      "articles": "Articles",
-      "bePartner": "Be Partner",
-      "jobOffers": "Job Offers",
-      "support": "Support",
-      "callUs": "Call Us",
-      "faq": "FAQ",
-      "map": "Map",
-      "legal": "Legal",
-      "terms": "Terms and Conditions",
-      "privacy": "Privacy Policy",
-      "return": "Return Policy",
-      "advertising": "Advertising on Guestna",
-      "paymentMethods": "Payment Methods"
-    },
-    "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "show": "Show",
-      "allResults": "All Results",
-      "to": "to",
-      "of": "of"
     }
+  },
+  "footer": {
+    "company": "Company",
+    "aboutUs": "About Us",
+    "articles": "Articles",
+    "bePartner": "Be Partner",
+    "jobOffers": "Job Offers",
+    "support": "Support",
+    "callUs": "Call Us",
+    "faq": "FAQ",
+    "map": "Map",
+    "legal": "Legal",
+    "terms": "Terms and Conditions",
+    "privacy": "Privacy Policy",
+    "return": "Return Policy",
+    "advertising": "Advertising on Guestna",
+    "paymentMethods": "Payment Methods"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "show": "Show",
+    "allResults": "All Results",
+    "to": "to",
+    "of": "of"
   }
 }

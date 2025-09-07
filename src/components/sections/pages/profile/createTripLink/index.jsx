@@ -100,7 +100,7 @@ const CreateTripLink = ({ data }) => {
         {/* Booking */}
         <div className="lg:flex-1 flex gap-4 flex-wrap lg:flex-nowrap items-center">
           <figure
-            className="cursor-pointer min-w-[192px] h-[240px]"
+            className="cursor-pointer min-w-[192px] h-[240px] hover:shadow-lg transition-all duration-200 ease-in-out rounded-lg"
             onClick={handleOpenLinkModal}
           >
             <Image

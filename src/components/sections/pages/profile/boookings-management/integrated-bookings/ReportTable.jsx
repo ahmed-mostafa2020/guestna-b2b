@@ -7,7 +7,7 @@ import { memo, useState } from "react";
 import formatDate from "@utils/FormateDate";
 import SurveyForm from "@components/forms/survey";
 
-import { Typography, CardContent, Card } from "@mui/material";
+import { Typography, CardContent, Card, CircularProgress } from "@mui/material";
 import CustomizedModal from "@components/common/customizedModal";
 import Pagination from "@components/common/Pagination";
 
@@ -28,7 +28,9 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
 
   if (!data || !data.nodes) {
     return (
-      <Typography className="p-4 text-center">Loading bookings...</Typography>
+      <div className="w-full min-h-[400px] centered">
+        <CircularProgress size={50} color="primary" />
+      </div>
     );
   }
 

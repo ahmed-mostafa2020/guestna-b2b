@@ -5,10 +5,11 @@ import { useLocale, useTranslations } from "next-intl";
 import { memo } from "react";
 
 import formatDate from "@utils/FormateDate";
+import { TRIP_STATUS } from "@constants/tripStatus";
 import Pagination from "@components/common/Pagination";
 import ActionsDropdownMenu from "./ActionsDropdownMenu";
 
-import { Typography, CardContent, Card } from "@mui/material";
+import { Typography, CardContent, Card, CircularProgress } from "@mui/material";
 
 const NormalTripsTable = ({
   data,
@@ -21,13 +22,13 @@ const NormalTripsTable = ({
 
   const getStatusStyles = (status) => {
     switch (status) {
-      case "DONE":
+      case TRIP_STATUS.DONE:
         return "bg-green-100 text-green-800 border border-green-200";
-      case "PENDING":
+      case TRIP_STATUS.PENDING:
         return "bg-yellow-100 text-yellow-800 border border-yellow-200";
-      case "CANCLED":
+      case TRIP_STATUS.CANCELLED:
         return "bg-red-100 text-red-800 border border-red-200";
-      case "SCHEDULED":
+      case TRIP_STATUS.SCHEDULED:
         return "bg-blue-100 text-blue-800 border border-blue-200";
       case "ENDED":
         return "bg-gray-100 text-gray-800 border border-gray-200";
@@ -38,7 +39,9 @@ const NormalTripsTable = ({
 
   if (!data || !data.nodes) {
     return (
-      <Typography className="p-4 text-center">Loading bookings...</Typography>
+      <div className="w-full min-h-[400px] centered">
+        <CircularProgress size={50} color="primary" />
+      </div>
     );
   }
 
@@ -109,6 +112,7 @@ const NormalTripsTable = ({
                       <ActionsDropdownMenu
                         bookingId={booking._id}
                         bookingStatus={booking.status}
+                        customizableOrder={false}
                       />
                     </td>
                   </tr>
@@ -161,6 +165,7 @@ const NormalTripsTable = ({
                 <ActionsDropdownMenu
                   bookingId={booking._id}
                   bookingStatus={booking.status}
+                  customizableOrder={false}
                 />
               </div>
             </CardContent>

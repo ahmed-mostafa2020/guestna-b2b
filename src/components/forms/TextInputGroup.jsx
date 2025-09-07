@@ -65,14 +65,15 @@ const TextInputGroup = memo(
             <textarea
               className={cn(
                 "text-sm resize-none font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full  rounded-lg outline-none placeholder:font-normal placeholder:text-base placeholder:text-textLight selection:bg-buttonsHover",
+                readOnly && "cursor-not-allowed opacity-50",
                 textAlign && `text-${textAlign}`,
                 border && "border-2",
                 touched && errors && border
                   ? "border-error focus:border-error hover:border-error"
                   : "border-border focus:border-textDark hover:border-textDark"
               )}
-              style={{ 
-                fontFamily: 'inherit'
+              style={{
+                fontFamily: "inherit",
               }}
               id={name}
               name={name}
@@ -94,11 +95,11 @@ const TextInputGroup = memo(
                 touched && errors && border
                   ? "border-error focus:border-error hover:border-error"
                   : "border-border focus:border-textDark hover:border-textDark",
-                type === 'date' && "cursor-pointer"
+                type === "date" && "cursor-pointer"
               )}
-              style={{ 
-                fontFamily: 'inherit',
-                ...style
+              style={{
+                fontFamily: "inherit",
+                ...style,
               }}
               type={type === "password" && showPassword ? "text" : type}
               inputMode={
