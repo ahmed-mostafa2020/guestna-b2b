@@ -795,7 +795,8 @@
           },
           "clientName": {
             "label": "Account Holder Name",
-            "placeholder": "Account holder name as it appears in the bank"
+            "placeholder": "Account holder name as it appears in the bank",
+            "hint": "Only letters (A-Z, a-z) and spaces are allowed"
           },
           "iban": {
             "label": "IBAN Number",

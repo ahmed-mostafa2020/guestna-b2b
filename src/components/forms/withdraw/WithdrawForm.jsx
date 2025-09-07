@@ -54,13 +54,13 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
       clientName:
         transferMethod === "bank"
           ? Yup.string()
-              .required(t("validation.clientNameRequired"))
+              .required("Account Holder Name is required.")
               .matches(
-                /^[a-zA-Z\u0600-\u06FF\s]+$/,
-                t("validation.clientNameInvalid")
+                /^[a-zA-Z\s]+$/,
+                "Account Holder Name should only contain letters and spaces."
               )
-              .min(2, t("validation.clientNameMinLength"))
-              .max(50, t("validation.clientNameMaxLength"))
+              .min(2, "Account Holder Name must be at least 2 characters.")
+              .max(50, "Account Holder Name must not exceed 50 characters.")
           : Yup.string().notRequired(),
       ibanNumber:
         transferMethod === "bank"
@@ -144,10 +144,10 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
     return cleaned.replace(/(.{4})/g, "$1 ").trim();
   };
 
-  // Format client name input (only allow letters and spaces)
+  // Format client name input (only allow letters A-Z, a-z and spaces)
   const formatClientName = (value) => {
-    // Remove any characters that are not letters (English or Arabic) or spaces
-    return value.replace(/[^a-zA-Z\u0600-\u06FF\s]/g, "");
+    // Remove any characters that are not letters (A-Z, a-z) or spaces
+    return value.replace(/[^a-zA-Z\s]/g, "");
   };
 
   return (

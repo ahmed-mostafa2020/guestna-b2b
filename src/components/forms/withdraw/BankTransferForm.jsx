@@ -100,6 +100,9 @@ const BankTransferForm = ({
             name="clientName"
           />
           {renderError("clientName")}
+          <p className="text-xs text-gray-500 mt-2 text-right">
+            {t("clientName.hint")}
+          </p>
         </div>
 
         <div>
