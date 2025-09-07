@@ -17,59 +17,57 @@ const TransactionsTable = ({
   const t = useTranslations("profile.myWallet.transactionsPage.table");
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h3 className="text-xl font-semibold text-gray-900 text-right">
+    <div className="bg-white rounded-lg shadow-card border border-border overflow-hidden">
+      <div className="px-6 py-4 border-b border-border">
+        <h3 className="text-xl font-semibold text-textDark text-right font-ibm">
           {t("title")}
         </h3>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50">
+          <thead className="bg-packageDetailsBg">
             <tr>
-              <th className="px-6 py-4 text-right text-sm font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-4 text-right text-sm font-medium text-textLight uppercase tracking-wider font-ibm">
                 {t("headers.operationName")}
               </th>
-              <th className="px-6 py-4 text-right text-sm font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-4 text-right text-sm font-medium text-textLight uppercase tracking-wider font-ibm">
                 {t("headers.transactionDate")}
               </th>
-              <th className="px-6 py-4 text-right text-sm font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-4 text-right text-sm font-medium text-textLight uppercase tracking-wider font-ibm">
                 {t("headers.referenceNumber")}
               </th>
-              <th className="px-6 py-4 text-right text-sm font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-4 text-right text-sm font-medium text-textLight uppercase tracking-wider font-ibm">
                 {t("headers.transactionAmount")}
               </th>
-              <th className="px-6 py-4 text-right text-sm font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-4 text-right text-sm font-medium text-textLight uppercase tracking-wider font-ibm">
                 {t("headers.transactionStatus")}
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-border">
             {filteredTransactions.length > 0 ? (
               filteredTransactions.map((transaction) => (
-                <tr key={transaction.id} className="hover:bg-gray-50">
+                <tr key={transaction.id} className="hover:bg-packageDetailsBg">
                   <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-medium text-textDark font-ibm">
                       {transaction.operationName}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className="text-sm text-gray-900">
+                    <div className="text-sm text-textDark font-ibm">
                       {transaction.date}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className="text-sm text-gray-900">
+                    <div className="text-sm text-textDark font-ibm">
                       {transaction.referenceNumber}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <div
-                      className={`text-sm font-medium ${
-                        transaction.amount < 0
-                          ? "text-red-600"
-                          : "text-gray-900"
+                      className={`text-sm font-medium font-ibm ${
+                        transaction.amount < 0 ? "text-error" : "text-textDark"
                       }`}
                     >
                       {formatCurrency(transaction.amount)}
@@ -77,7 +75,7 @@ const TransactionsTable = ({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <span
-                      className={`inline-flex px-3 py-1 text-xs font-medium rounded-full border ${
+                      className={`inline-flex px-3 py-1 text-xs font-medium rounded-full border font-ibm ${
                         statusConfig[transaction.status].className
                       }`}
                     >
@@ -89,22 +87,22 @@ const TransactionsTable = ({
             ) : (
               <tr>
                 <td colSpan="5" className="px-6 py-12 text-center">
-                  <div className="text-gray-500">
+                  <div className="text-textLight">
                     {isLoading ? (
                       <div className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-                        <span className="ml-2">{t("loading")}</span>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-mainColor"></div>
+                        <span className="ml-2 font-ibm">{t("loading")}</span>
                       </div>
                     ) : transactions.length === 0 ? (
                       <div>
-                        <p className="text-lg font-medium mb-2">
+                        <p className="text-lg font-medium mb-2 font-ibm text-textDark">
                           {invoicesData &&
                           (invoicesData.availableBalance !== undefined ||
                             invoicesData.totalRevenue !== undefined)
                             ? t("balanceSummary.title")
                             : t("noTransactions.title")}
                         </p>
-                        <p className="text-sm">
+                        <p className="text-sm font-ibm">
                           {invoicesData &&
                           (invoicesData.availableBalance !== undefined ||
                             invoicesData.totalRevenue !== undefined)
@@ -114,10 +112,12 @@ const TransactionsTable = ({
                       </div>
                     ) : (
                       <div>
-                        <p className="text-lg font-medium mb-2">
+                        <p className="text-lg font-medium mb-2 font-ibm text-textDark">
                           {t("noResults.title")}
                         </p>
-                        <p className="text-sm">{t("noResults.description")}</p>
+                        <p className="text-sm font-ibm">
+                          {t("noResults.description")}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -130,7 +130,7 @@ const TransactionsTable = ({
 
       {/* Pagination Controls */}
       {pagination && onPageChange && onPerPageChange && (
-        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
+        <div className="px-6 py-4 border-t border-border bg-packageDetailsBg">
           <div className="flex items-center justify-between mb-4">
             <PerPageSelector
               currentPerPage={pagination.perPage}
