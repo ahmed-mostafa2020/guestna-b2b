@@ -595,7 +595,8 @@
         "copyButton": "نسخ الرابط",
         "closeButton": "إغلاق",
         "copySuccess": "تم نسخ الرابط بنجاح!"
-      }
+      },
+      "linkCreated": "تم إنشاء رابط التسجيل بنجاح!"
     },
 
     "tables": {

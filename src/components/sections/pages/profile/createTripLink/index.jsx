@@ -1,26 +1,39 @@
 import Image from "next/image";
-import { useTranslations, useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { memo, useState } from "react";
+import axios from "axios";
 
-import { smallWhatsappIcon, posterIcon, copyIcon } from "@assets/svg";
+import { TRIP_STATUS } from "@constants/tripStatus";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { getHeaders } from "@utils/getHeaders";
+import getProxyUrl from "@utils/getProxyUrl";
+import getErrorMessage from "@utils/getErrorMessage ";
 import CustomizedModal from "@components/common/customizedModal";
 import { useSnackbar } from "notistack";
 
+import { smallWhatsappIcon, posterIcon, copyIcon } from "@assets/svg";
 import templete from "@assets/templete.png";
 import generateLink from "@assets/generateLink.png";
+import { CircularProgress } from "@mui/material";
 
 const CreateTripLink = ({ data }) => {
   const locale = useLocale();
   const t = useTranslations();
   const [showLinkModal, setShowLinkModal] = useState(false);
+
+  const tripData = data?.tripData;
+
+  const [tripStatus, setTripStatus] = useState(tripData?.status);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+
   const { enqueueSnackbar } = useSnackbar();
 
-  const tripLink = `${window.location.origin}/${locale}/parents/${data?.tripData?.slug}`;
+  const tripLink = `${window.location.origin}/${locale}/parents/${tripData?.slug}`;
 
   const handleWhatsAppShare = () => {
     const message = `${t("profile.createTripLink.booking.shareMessage")} ${
-      data?.tripData?.name
+      tripData?.name
     }\n\n${tripLink}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
@@ -28,10 +41,10 @@ const CreateTripLink = ({ data }) => {
 
   const handleEmailShare = () => {
     const subject = `${t("profile.createTripLink.booking.emailSubject")} ${
-      data?.tripData?.name
+      tripData?.name
     }`;
     const body = `${t("profile.createTripLink.booking.emailBody")}\n\n${
-      data?.tripData?.name
+      tripData?.name
     }\n\n${t("profile.createTripLink.booking.linkLabel")}: ${tripLink}`;
     const mailtoUrl = `mailto:?subject=${encodeURIComponent(
       subject
@@ -53,8 +66,87 @@ const CreateTripLink = ({ data }) => {
     }
   };
 
-  const handleOpenLinkModal = () => {
-    setShowLinkModal(true);
+  // const handleOpenLinkModal = async () => {
+  //   if (tripData?.status !== TRIP_STATUS.SCHEDULED) {
+  //     setShowLinkModal(true);
+  //   }
+
+  //   if (tripData?.status === TRIP_STATUS.SCHEDULED) {
+  //     setIsUpdatingStatus(true);
+  //     try {
+  //       const headers = getHeaders(locale);
+  //       const response = await axios.patch(
+  //         getProxyUrl(
+  //           `${B2B_END_POINTS.PROFILE.UPDATE_TRIP_STATUS}/${tripData._id}`
+  //         ),
+  //         {},
+  //         { headers }
+  //       );
+
+  //       if (response.data) {
+  //         enqueueSnackbar(t("forms.customTrip.success"), {
+  //           variant: "success",
+  //         });
+  //         // Update trip status locally to enable buttons
+  //         tripData.status = TRIP_STATUS.PENDING;
+  //         setShowLinkModal(true);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error updating trip status:", error);
+  //       console.log("Error details:", error);
+
+  //       const errorMessage = getErrorMessage(error, t);
+  //       enqueueSnackbar(errorMessage, {
+  //         variant: "error",
+  //       });
+  //       setIsUpdatingStatus(false);
+  //       return; // Don't open modal if status update failed
+  //     } finally {
+  //       setIsUpdatingStatus(false);
+  //     }
+  //   }
+  // };
+
+  const handleOpenLinkModal = async () => {
+    // Check if the trip is already scheduled before proceeding
+    const isScheduled = tripStatus === TRIP_STATUS.SCHEDULED;
+
+    if (!isScheduled) {
+      // If the trip is not scheduled, simply open the modal
+      setShowLinkModal(true);
+      return;
+    }
+
+    // If the trip is scheduled, we need to update its status
+    setIsUpdatingStatus(true);
+    const tripUrl = getProxyUrl(
+      `${B2B_END_POINTS.PROFILE.UPDATE_TRIP_STATUS}/${tripData._id}`
+    );
+
+    try {
+      const headers = getHeaders(locale);
+      const response = await axios.patch(tripUrl, {}, { headers });
+
+      if (response.data) {
+        // Show success message
+        enqueueSnackbar(t("profile.createTripLink.linkCreated"), {
+          variant: "success",
+        });
+
+        setTripStatus(TRIP_STATUS.PENDING);
+
+        setShowLinkModal(true);
+      }
+    } catch (error) {
+      console.error("Failed to update trip status:", error);
+      const errorMessage = getErrorMessage(error, t);
+      enqueueSnackbar(errorMessage, {
+        variant: "error",
+      });
+    } finally {
+      // This block always executes, regardless of success or failure
+      setIsUpdatingStatus(false);
+    }
   };
 
   const handleCloseLinkModal = () => {
@@ -64,7 +156,7 @@ const CreateTripLink = ({ data }) => {
   return (
     <div className="flex flex-col gap-4 lg:gap-6">
       <h2 className="text-lg lg:text-2xl font-medium text-titleColor">
-        {data?.tripData?.name}
+        {tripData?.name}
       </h2>
 
       <div className="flex flex-wrap gap-8">
@@ -100,8 +192,10 @@ const CreateTripLink = ({ data }) => {
         {/* Booking */}
         <div className="lg:flex-1 flex gap-4 flex-wrap lg:flex-nowrap items-center">
           <figure
-            className="cursor-pointer min-w-[192px] h-[240px] hover:shadow-lg transition-all duration-200 ease-in-out rounded-lg"
-            onClick={handleOpenLinkModal}
+            className={`cursor-pointer min-w-[192px] h-[240px] hover:shadow-lg transition-all duration-200 ease-in-out rounded-lg relative ${
+              isUpdatingStatus ? "opacity-50 pointer-events-none" : ""
+            }`}
+            onClick={() => !isUpdatingStatus && handleOpenLinkModal()}
           >
             <Image
               src={generateLink}
@@ -111,6 +205,11 @@ const CreateTripLink = ({ data }) => {
               className="rounded-lg w-[192px] h-[240px]"
               priority={true}
             />
+            {isUpdatingStatus && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-lg">
+                <CircularProgress size={40} sx={{ color: "primary" }} />
+              </div>
+            )}
           </figure>
 
           <div className="flex flex-col gap-4">
@@ -124,16 +223,18 @@ const CreateTripLink = ({ data }) => {
 
             <div className="flex gap-2">
               <button
+                disabled={tripStatus === TRIP_STATUS.SCHEDULED}
                 onClick={handleWhatsAppShare}
-                className="flex items-center gap-1 px-4 text-sm rounded-[4px] transition-all duration-150 hover:text-mainColor ease-in-out border border-titleColor bg-[#E6F6F4] py-1 w-fit text-titleColor hover:shadow-md"
+                className="flex items-center disabled:opacity-50 disabled:cursor-not-allowed gap-1 px-4 text-sm rounded-[4px] transition-all duration-150 hover:text-mainColor ease-in-out border border-titleColor bg-[#E6F6F4] py-1 w-fit text-titleColor hover:shadow-md"
               >
                 {smallWhatsappIcon}
                 {t("profile.createTripLink.booking.links.whatsapp")}
               </button>
 
               <button
+                disabled={tripStatus === TRIP_STATUS.SCHEDULED}
                 onClick={handleEmailShare}
-                className="flex items-center gap-1 px-4 text-sm rounded-[4px] transition-all duration-150 hover:text-mainColor ease-in-out border border-titleColor bg-[#E6F6F4] py-1 w-fit text-titleColor hover:shadow-md"
+                className="flex items-center disabled:opacity-50 disabled:cursor-not-allowed gap-1 px-4 text-sm rounded-[4px] transition-all duration-150 hover:text-mainColor ease-in-out border border-titleColor bg-[#E6F6F4] py-1 w-fit text-titleColor hover:shadow-md"
               >
                 <span>@</span>
                 {t("profile.createTripLink.booking.links.email")}
@@ -166,8 +267,7 @@ const CreateTripLink = ({ data }) => {
             </h2>
 
             <p className=" ">
-              {t("profile.createTripLink.modal.subtitle")} "
-              {data?.tripData?.name}"
+              {t("profile.createTripLink.modal.subtitle")} "{tripData?.name}"
             </p>
 
             <div className="bg-gray-50 rounded-lg p-4 border-2 border-dashed border-gray-300">

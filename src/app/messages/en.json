@@ -598,7 +598,8 @@
         "copyButton": "Copy Link",
         "closeButton": "Close",
         "copySuccess": "Link copied successfully!"
-      }
+      },
+      "linkCreated": "Booking link created successfully!"
     },
 
     "tables": {

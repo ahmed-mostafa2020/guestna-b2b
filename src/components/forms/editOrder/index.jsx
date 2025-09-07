@@ -75,12 +75,6 @@ const EditOrderForm = ({
 
     formData.append("askTrip", orderId);
 
-    // Helper function to find _id by name
-    const findIdByName = (options, name) => {
-      const option = options.find((opt) => opt.name === name);
-      return option ? option._id : name;
-    };
-
     // Add all form fields to FormData
     Object.keys(values).forEach((key) => {
       if (key === "file") {
@@ -89,36 +83,7 @@ const EditOrderForm = ({
       } else if (values[key] !== null && values[key] !== undefined) {
         let valueToSend = values[key];
 
-        // Convert names to _id for dropdown fields
-        switch (key) {
-          case "category":
-            valueToSend = findIdByName(categoryData, values[key]);
-            break;
-          case "city":
-            valueToSend = findIdByName(cityData, values[key]);
-            break;
-          case "academicStages":
-            // Handle array for multi-select
-            if (Array.isArray(values[key])) {
-              valueToSend = values[key].map((name) =>
-                findIdByName(academicStageData, name)
-              );
-            } else {
-              valueToSend = findIdByName(academicStageData, values[key]);
-            }
-            break;
-          case "services":
-            // Handle array for multi-select
-            if (Array.isArray(values[key])) {
-              valueToSend = values[key].map((name) =>
-                findIdByName(servicesData, name)
-              );
-            } else {
-              valueToSend = findIdByName(servicesData, values[key]);
-            }
-            break;
-        }
-
+        // Values are already IDs, no conversion needed
         // Handle arrays differently for FormData
         if (Array.isArray(valueToSend)) {
           // Append each array item individually with indexed keys
@@ -153,7 +118,7 @@ const EditOrderForm = ({
 
         const res = response.data;
         if (res) {
-          enqueueSnackbar(t("forms.editOrder.success"), {
+          enqueueSnackbar(t("forms.customTrip.success"), {
             variant: "success",
           });
           onClose(); // Close the modal after successful update
@@ -197,14 +162,15 @@ const EditOrderForm = ({
     };
 
     return {
-      category: orderDetails.category?.name || "",
-      city: orderDetails.city?.name || "",
-      academicStages: findNamesByObjects(orderDetails.academicStages) || [],
+      category: orderDetails.category?._id || "",
+      city: orderDetails.city?._id || "",
+      academicStages:
+        orderDetails.academicStages?.map((stage) => stage._id) || [],
       availableSeats: orderDetails.availableSeats || "",
       basePrice: orderDetails.basePrice || "",
       day: formatDate(orderDetails.day) || "",
       endDay: formatDate(orderDetails.endDay) || "",
-      services: findNamesByObjects(orderDetails.services) || [],
+      services: orderDetails.services?.map((service) => service._id) || [],
       description: orderDetails.description || "",
       specialRequirements: orderDetails.specialRequirements || "",
       file: null, // File uploads are not pre-populated
@@ -260,13 +226,24 @@ const EditOrderForm = ({
               isSubmitting,
               setFieldValue,
             }) => {
-              // Debug validation issues
-              console.log("Form validation debug:", {
-                isValid,
-                dirty,
-                errors,
-                values,
-                isSubmitting,
+              // Check if form has actual changes by comparing with initial values
+              const initialValues = getInitialValues();
+              const hasChanges = Object.keys(values).some((key) => {
+                if (key === "file") {
+                  // File is considered changed if a new file is selected
+                  return values[key] !== null;
+                }
+                if (
+                  Array.isArray(values[key]) &&
+                  Array.isArray(initialValues[key])
+                ) {
+                  // Compare arrays (for academicStages, services)
+                  return (
+                    JSON.stringify(values[key].sort()) !==
+                    JSON.stringify(initialValues[key].sort())
+                  );
+                }
+                return values[key] !== initialValues[key];
               });
 
               return (
@@ -276,8 +253,15 @@ const EditOrderForm = ({
                     <div className="somar-placeholder">
                       <SelectionGroup
                         name="category"
-                        value={values.category}
-                        onChange={handleChange}
+                        value={findNameById(categoryData, values.category)}
+                        onChange={(e) => {
+                          const selectedName = e.target.value;
+                          const selectedId =
+                            categoryData.find(
+                              (cat) => cat.name === selectedName
+                            )?._id || "";
+                          setFieldValue("category", selectedId);
+                        }}
                         onBlur={handleBlur}
                         touched={touched.category}
                         errors={errors.category}
@@ -292,8 +276,14 @@ const EditOrderForm = ({
                     <div className="somar-placeholder">
                       <SelectionGroup
                         name="city"
-                        value={values.city}
-                        onChange={handleChange}
+                        value={findNameById(cityData, values.city)}
+                        onChange={(e) => {
+                          const selectedName = e.target.value;
+                          const selectedId =
+                            cityData.find((city) => city.name === selectedName)
+                              ?._id || "";
+                          setFieldValue("city", selectedId);
+                        }}
                         onBlur={handleBlur}
                         touched={touched.city}
                         errors={errors.city}
@@ -306,8 +296,23 @@ const EditOrderForm = ({
                     <div className="somar-placeholder">
                       <SelectionGroup
                         name="academicStages"
-                        value={values.academicStages}
-                        onChange={handleChange}
+                        value={values.academicStages
+                          .map((id) => findNameById(academicStageData, id))
+                          .filter((name) => name)}
+                        onChange={(e) => {
+                          const selectedNames = Array.isArray(e.target.value)
+                            ? e.target.value
+                            : [e.target.value];
+                          const selectedIds = selectedNames
+                            .map(
+                              (name) =>
+                                academicStageData.find(
+                                  (stage) => stage.name === name
+                                )?._id
+                            )
+                            .filter((id) => id);
+                          setFieldValue("academicStages", selectedIds);
+                        }}
                         onBlur={handleBlur}
                         touched={touched.academicStages}
                         errors={errors.academicStages}
@@ -323,8 +328,23 @@ const EditOrderForm = ({
                     <div className="somar-placeholder">
                       <SelectionGroup
                         name="services"
-                        value={values.services}
-                        onChange={handleChange}
+                        value={values.services
+                          .map((id) => findNameById(servicesData, id))
+                          .filter((name) => name)}
+                        onChange={(e) => {
+                          const selectedNames = Array.isArray(e.target.value)
+                            ? e.target.value
+                            : [e.target.value];
+                          const selectedIds = selectedNames
+                            .map(
+                              (name) =>
+                                servicesData.find(
+                                  (service) => service.name === name
+                                )?._id
+                            )
+                            .filter((id) => id);
+                          setFieldValue("services", selectedIds);
+                        }}
                         onBlur={handleBlur}
                         touched={touched.services}
                         errors={errors.services}
@@ -487,7 +507,7 @@ const EditOrderForm = ({
                   <div className="w-full pt-4 lg:pt-8 flex gap-4 justify-center">
                     <button
                       type="submit"
-                      disabled={isSubmitting || !isValid}
+                      disabled={isSubmitting || !isValid || !hasChanges}
                       className="px-6 py-3 text-white bg-mainColor rounded-lg hover:bg-titleColor disabled:opacity-50"
                     >
                       {isSubmitting ? (

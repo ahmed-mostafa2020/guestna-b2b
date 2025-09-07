@@ -100,6 +100,7 @@ export const B2B_END_POINTS = {
       },
     },
     CREATE_TRIP_LINK: "profile/organizationTrips/poster",
+    UPDATE_TRIP_STATUS: "profile/organizationTrips/generate/url",
 
     BOOKINGS: "profile/bookings/all",
 
