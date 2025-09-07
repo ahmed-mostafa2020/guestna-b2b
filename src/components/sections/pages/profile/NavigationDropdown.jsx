@@ -63,6 +63,13 @@ const NavigationDropdown = () => {
       hasDropdown: false,
     },
     {
+      id: "activities-market",
+      title: t("profile.aside.activitiesMarket"),
+      icon: <StorefrontIcon />,
+      path: `${profileBasePath}/activities-market`,
+      hasDropdown: false,
+    },
+    {
       id: "tourism-programs",
       title: t("profile.aside.programs.title"),
       icon: <TravelIcon />,
@@ -73,13 +80,6 @@ const NavigationDropdown = () => {
           path: `${profileBasePath}/trips`,
         },
       ],
-    },
-    {
-      id: "activities-market",
-      title: t("profile.aside.activitiesMarket"),
-      icon: <StorefrontIcon />,
-      path: `${profileBasePath}/activities-market`,
-      hasDropdown: false,
     },
     {
       id: "bookings-management",

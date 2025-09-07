@@ -20,12 +20,13 @@ import { CircularProgress } from "@mui/material";
 
 import { useOrderDetailsModal } from "@hooks/useOrderDetailsModal";
 
+import { TRIP_STATUS } from "@constants/tripStatus";
 import CustomizedModal from "@components/common/customizedModal";
 import OrderDetailsModal from "./OrderDetailsModal";
 
 const ActionsDropdownMenu = ({
   bookingId,
-  // bookingStatus,
+  bookingStatus,
   customizableOrder = false,
 }) => {
   const locale = useLocale();
@@ -74,6 +75,11 @@ const ActionsDropdownMenu = ({
     }
   };
 
+  const showOrderDetails = () => {
+    openModal(bookingId);
+    handleClose();
+  };
+
   return (
     <>
       <div>
@@ -113,18 +119,20 @@ const ActionsDropdownMenu = ({
               t("links.showDetails")
             )}
           </MenuItem>
-          <MenuItem onClick={sendRemind} disabled={loading}>
-            {loading ? (
-              <CircularProgress size={17} color="primary" />
-            ) : (
-              t("links.remindGuestna")
-            )}
-          </MenuItem>
+          {bookingStatus !== TRIP_STATUS.DONE && (
+            <MenuItem onClick={sendRemind} disabled={loading}>
+              {loading ? (
+                <CircularProgress size={17} color="primary" />
+              ) : (
+                t("links.remindGuestna")
+              )}
+            </MenuItem>
+          )}
+
           {customizableOrder && (
             <MenuItem
-              disabled={true}
               onClick={() => {
-                handleClose(); /* Logic for "Show Details" if needed */
+                showOrderDetails();
               }}
             >
               {t("links.edit")}
