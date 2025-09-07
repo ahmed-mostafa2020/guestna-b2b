@@ -454,7 +454,7 @@ export const createCustomNewTripSchema = (t) =>
     file: Yup.mixed().optional(),
   });
 
-export const createUpdateTripSchema = (t) => {
+export const createUpdateTripSchema = (t) =>
   Yup.object().shape({
     category: Yup.string().optional(), // readonly field
     tripType: Yup.string().optional(), // readonly field
@@ -466,7 +466,6 @@ export const createUpdateTripSchema = (t) => {
       .max(1000, t("forms.customTrip.expectedParticipants.error.max")),
     day: Yup.date()
       .required(t("forms.validation.require"))
-      .min(new Date(), t("forms.customTrip.proposedTripDate.error.pastDate"))
       .test(
         "start-before-end",
         t("forms.customTrip.proposedTripDate.error.startAfterEnd"),
@@ -478,7 +477,6 @@ export const createUpdateTripSchema = (t) => {
       ),
     endDay: Yup.date()
       .optional()
-      .min(new Date(), t("forms.customTrip.proposedTripDate.error.pastDate"))
       .test(
         "end-after-start",
         t("forms.customTrip.proposedTripDate.error.endBeforeStart"),
@@ -488,20 +486,18 @@ export const createUpdateTripSchema = (t) => {
           return new Date(value) >= new Date(day);
         }
       ),
-    services: Yup.array().min(1, t("forms.validation.require")),
+    services: Yup.array().optional(),
     basePrice: Yup.number()
       .required(t("forms.validation.require"))
       .min(1, t("forms.customTrip.price.error.min")),
     description: Yup.string()
-      .required(t("forms.validation.require"))
-      .min(10, t("forms.customTrip.tripDescription.error.min"))
+      .optional()
       .max(500, t("forms.customTrip.tripDescription.error.max")),
     specialRequirements: Yup.string()
       .optional()
       .max(300, t("forms.customTrip.specialRequirements.error.max")),
-    file: Yup.mixed().optional(), // file is optional
+    // file: Yup.mixed().optional(),
   });
-};
 
 export const createAddOrganizationUserSchema = (t) =>
   Yup.object().shape({

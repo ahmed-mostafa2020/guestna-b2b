@@ -1404,6 +1404,7 @@
 
     "customTrip": {
       "title": "Request to Create a New Trip",
+      "edit": "Request to Edit a Trip",
       "submit": "Send Request to Guestna Team",
       "success": "Your request has been sent successfully",
 

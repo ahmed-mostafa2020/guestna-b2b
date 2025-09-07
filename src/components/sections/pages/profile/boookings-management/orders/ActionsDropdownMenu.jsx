@@ -19,10 +19,12 @@ import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
 
 import { useOrderDetailsModal } from "@hooks/useOrderDetailsModal";
+import { useEditOrderModal } from "@hooks/useEditOrderModal";
 
 import { TRIP_STATUS } from "@constants/tripStatus";
 import CustomizedModal from "@components/common/customizedModal";
 import OrderDetailsModal from "./OrderDetailsModal";
+import EditOrderForm from "@components/forms/editOrder";
 
 const ActionsDropdownMenu = ({
   bookingId,
@@ -46,6 +48,17 @@ const ActionsDropdownMenu = ({
     openModal,
     closeModal,
   } = useOrderDetailsModal(locale);
+
+  // Use the edit order modal hook
+  const {
+    selectedEditOrderId,
+    currentEditOrderDetails,
+    loadingEditDetails,
+    formSelectionData,
+    loadingFormSelection,
+    openEditModal,
+    closeEditModal,
+  } = useEditOrderModal(locale);
 
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
@@ -77,6 +90,11 @@ const ActionsDropdownMenu = ({
 
   const showOrderDetails = () => {
     openModal(bookingId);
+    handleClose();
+  };
+
+  const showEditOrderForm = () => {
+    openEditModal(bookingId);
     handleClose();
   };
 
@@ -131,16 +149,20 @@ const ActionsDropdownMenu = ({
 
           {customizableOrder && (
             <MenuItem
-              onClick={() => {
-                showOrderDetails();
-              }}
+              onClick={showEditOrderForm}
+              disabled={loadingEditDetails}
             >
-              {t("links.edit")}
+              {loadingEditDetails ? (
+                <CircularProgress size={17} color="primary" />
+              ) : (
+                t("links.edit")
+              )}
             </MenuItem>
           )}
         </Menu>
       </div>
 
+      {/* Order Details Modal */}
       <CustomizedModal
         open={Boolean(selectedOrderId)}
         handleClose={closeModal}
@@ -153,6 +175,30 @@ const ActionsDropdownMenu = ({
             orderId={selectedOrderId}
             orderDetails={currentOrderDetails}
             loading={loadingDetails}
+          />
+        )}
+      </CustomizedModal>
+
+      {/* Edit Order Modal */}
+      <CustomizedModal
+        open={Boolean(selectedEditOrderId)}
+        handleClose={closeEditModal}
+        bgcolor="rgba(0, 0, 0, 0.5)"
+        customizedCloseButton={true}
+        padding={false}
+      >
+        {selectedEditOrderId && (
+          <EditOrderForm
+            orderDetails={currentEditOrderDetails}
+            loading={loadingEditDetails}
+            onClose={closeEditModal}
+            orderId={selectedEditOrderId}
+            formSelectionData={formSelectionData || {
+              categories: [],
+              cities: [],
+              academicStages: [],
+              services: []
+            }}
           />
         )}
       </CustomizedModal>
