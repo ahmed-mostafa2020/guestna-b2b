@@ -58,6 +58,7 @@ const ActionsDropdownMenu = ({
     loadingFormSelection,
     openEditModal,
     closeEditModal,
+    refreshCustomizedTripsTable,
   } = useEditOrderModal(locale);
 
   const handleClick = (event) => setAnchorEl(event.currentTarget);
@@ -199,6 +200,7 @@ const ActionsDropdownMenu = ({
               academicStages: [],
               services: []
             }}
+            onOrderUpdate={refreshCustomizedTripsTable}
           />
         )}
       </CustomizedModal>

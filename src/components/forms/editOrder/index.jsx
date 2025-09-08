@@ -20,6 +20,7 @@ const EditOrderForm = ({
   onClose,
   formSelectionData,
   orderId,
+  onOrderUpdate,
 }) => {
   const [formErrors, setFormErrors] = useState([]);
 
@@ -121,6 +122,15 @@ const EditOrderForm = ({
           enqueueSnackbar(t("forms.customTrip.success"), {
             variant: "success",
           });
+          
+          // Call the update callback to refresh the table data
+          if (onOrderUpdate && typeof onOrderUpdate === 'function') {
+            console.log('Calling onOrderUpdate callback from EditOrderForm');
+            onOrderUpdate(res);
+          } else {
+            console.log('onOrderUpdate callback not available or not a function');
+          }
+          
           onClose(); // Close the modal after successful update
         }
       })
@@ -538,4 +548,4 @@ const EditOrderForm = ({
   );
 };
 
-export default EditOrderForm;
+export default memo(EditOrderForm);
