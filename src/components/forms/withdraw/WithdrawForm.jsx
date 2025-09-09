@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { useFetchData } from "@hooks/useFetchData";
 import TransferMethodSelector from "./TransferMethodSelector";
 import STCPayForm from "./STCPayForm";
 import BankTransferForm from "./BankTransferForm";
@@ -14,9 +15,30 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
 
   // Form state
   const [transferMethod, setTransferMethod] = useState("stc");
+  const [selectedTrip, setSelectedTrip] = useState(null);
+
+  // Fetch trips for withdrawal dropdown
+  const {
+    data: tripsData,
+    isLoading: tripsLoading,
+    error: tripsError,
+  } = useFetchData(
+    "profile/organizationTrips/invoices/trips/all",
+    {
+      page: 1,
+      perPage: 100, // Get more trips for selection
+    },
+    {
+      method: "GET",
+    }
+  );
+
+  // Get trips from the response (no need to filter as this endpoint returns completed trips)
+  const completedTrips = tripsData || [];
 
   // Initial form values
   const initialValues = {
+    selectedTripId: "",
     withdrawAmount: "",
     phoneNumber: "",
     bankName: "",
@@ -28,6 +50,10 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   // Yup validation schema
   const getValidationSchema = () => {
     return Yup.object().shape({
+      selectedTripId:
+        transferMethod === "bank"
+          ? Yup.string().required(t("validation.tripRequired"))
+          : Yup.string().notRequired(),
       withdrawAmount: Yup.number()
         .required(t("validation.amountRequired"))
         .min(50, t("validation.minAmount"))
@@ -70,11 +96,22 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
     });
   };
 
+  // Handle trip selection
+  const handleTripSelection = (tripId, setFieldValue) => {
+    setFieldValue("selectedTripId", tripId);
+
+    // Find the selected trip to get its details
+    const trip = completedTrips.find((t) => t._id === tripId);
+    if (trip) {
+      setSelectedTrip(trip);
+    }
+  };
+
   // Handle form submission
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       const requestBody = {
-        trip: {},
+        trip: selectedTrip ? { id: selectedTrip._id } : {},
         amount: parseFloat(values.withdrawAmount),
         type: transferMethod === "stc" ? "STC_PAY" : "BANK_TRANSFER",
         note: values.withdrawNotes || "",
@@ -181,22 +218,38 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
               balance={balance}
               formatIBAN={formatIBAN}
               formatClientName={formatClientName}
+              completedTrips={completedTrips}
+              tripsLoading={tripsLoading}
+              tripsError={tripsError}
+              selectedTrip={selectedTrip}
+              onTripSelection={handleTripSelection}
             />
           )}
 
           {/* Transfer Method Selection */}
           <TransferMethodSelector
             transferMethod={transferMethod}
-            setTransferMethod={setTransferMethod}
+            setTransferMethod={(method) => {
+              setTransferMethod(method);
+              // Reset selected trip when switching methods
+              setSelectedTrip(null);
+              setFieldValue("selectedTripId", "");
+            }}
           />
 
           {/* Submit Button */}
           <div className="mt-8 pt-6 border-t border-gray-200">
             <button
               type="submit"
-              disabled={isSubmitting || balanceLoading}
+              disabled={
+                isSubmitting ||
+                balanceLoading ||
+                (transferMethod === "bank" && !selectedTrip)
+              }
               className={`w-full py-4 px-6 rounded-2xl font-bold text-white text-base transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-4 transform hover:-translate-y-1 ${
-                isSubmitting || balanceLoading
+                isSubmitting ||
+                balanceLoading ||
+                (transferMethod === "bank" && !selectedTrip)
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 focus:ring-green-500 shadow-lg hover:shadow-xl"
               }`}
