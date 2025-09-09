@@ -1,4 +1,4 @@
-// EndPoint paths b2b
+// EndPoint paths
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const B2B_END_POINTS = {
