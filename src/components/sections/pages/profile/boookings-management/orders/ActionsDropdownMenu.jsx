@@ -26,11 +26,7 @@ import CustomizedModal from "@components/common/customizedModal";
 import OrderDetailsModal from "./OrderDetailsModal";
 import EditOrderForm from "@components/forms/editOrder";
 
-const ActionsDropdownMenu = ({
-  bookingId,
-  bookingStatus,
-  customizableOrder = false,
-}) => {
+const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
   const locale = useLocale();
   const t = useTranslations();
   const { enqueueSnackbar } = useSnackbar();
@@ -138,6 +134,7 @@ const ActionsDropdownMenu = ({
               t("links.showDetails")
             )}
           </MenuItem>
+
           {bookingStatus !== TRIP_STATUS.DONE && (
             <MenuItem onClick={sendRemind} disabled={loading}>
               {loading ? (
@@ -148,11 +145,8 @@ const ActionsDropdownMenu = ({
             </MenuItem>
           )}
 
-          {customizableOrder && (
-            <MenuItem
-              onClick={showEditOrderForm}
-              disabled={loadingEditDetails}
-            >
+          {bookingStatus !== TRIP_STATUS.DONE && (
+            <MenuItem onClick={showEditOrderForm} disabled={loadingEditDetails}>
               {loadingEditDetails ? (
                 <CircularProgress size={17} color="primary" />
               ) : (
@@ -194,12 +188,14 @@ const ActionsDropdownMenu = ({
             loading={loadingEditDetails}
             onClose={closeEditModal}
             orderId={selectedEditOrderId}
-            formSelectionData={formSelectionData || {
-              categories: [],
-              cities: [],
-              academicStages: [],
-              services: []
-            }}
+            formSelectionData={
+              formSelectionData || {
+                categories: [],
+                cities: [],
+                academicStages: [],
+                services: [],
+              }
+            }
             onOrderUpdate={refreshCustomizedTripsTable}
           />
         )}

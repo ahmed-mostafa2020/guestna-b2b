@@ -141,7 +141,6 @@ const CustomizedTripsTable = ({
                       <ActionsDropdownMenu
                         bookingId={booking._id}
                         bookingStatus={booking.status}
-                        customizableOrder={true}
                       />
                     </td>
                   </tr>
@@ -204,7 +203,6 @@ const CustomizedTripsTable = ({
                 <ActionsDropdownMenu
                   bookingId={booking._id}
                   bookingStatus={booking.status}
-                  customizableOrder={true}
                 />
               </div>
             </CardContent>
