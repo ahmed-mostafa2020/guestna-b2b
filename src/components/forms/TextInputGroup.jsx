@@ -36,6 +36,7 @@ const TextInputGroup = memo(
     onClick,
     min,
     max,
+    required = false,
 
     // labelFontFamily = "IBM Plex Sans Arabic, sans-serif",
   }) => {
@@ -57,6 +58,7 @@ const TextInputGroup = memo(
             // style={{ fontFamily: labelFontFamily && labelFontFamily }}
           >
             {label}
+            {required && <span className="text-error">{"*"}</span>}
           </label>
         )}
 

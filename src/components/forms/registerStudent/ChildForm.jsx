@@ -46,6 +46,7 @@ const ChildForm = ({
           onBlur={handleBlur}
           minLength="2"
           maxLength="50"
+          required={true}
         />
 
         <div className="relative flex flex-col gap-2">
@@ -55,6 +56,7 @@ const ChildForm = ({
             value={childrenStages[index] || ""}
             onChange={(event) => handleChangeChildStage(index, event)}
             menuItemsList={academicStages}
+            required={true}
           />
           {errors.children?.[index]?.academicStage &&
             touched.children?.[index]?.academicStage && (
@@ -71,6 +73,7 @@ const ChildForm = ({
             value={child.grade}
             onChange={(event) => handleChangeChildGrade(index, event)}
             menuItemsList={gradesList}
+            required={true}
           />
           {errors.children?.[index]?.grade &&
             touched.children?.[index]?.grade && (

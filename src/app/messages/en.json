@@ -1187,7 +1187,7 @@
     "phone": {
       "name": "Phone",
       "parentPhone": "Parent Phone",
-      "backupPhone": "Backup Phone",
+      "backupPhone": "Backup Phone (Optional)",
       "studentPhone": "Student Phone Number (If Available)",
       "error": {
         "invalid": "Invalid phone number",
@@ -1280,7 +1280,7 @@
     },
 
     "relationship": {
-      "name": "ٌRelationship",
+      "name": "Relationship (Optional)",
       "error": {
         "min": "ٌRelationship should be more than 2 characters",
         "max": "ٌRelationship should be less than 50 characters"
@@ -1288,7 +1288,7 @@
     },
 
     "nationalId": {
-      "name": "National ID",
+      "name": "National ID (Optional)",
       "studentPlaceholder": "National ID card number of the student",
       "parentPlaceholder": "National ID card number of the guardian",
       "error": {

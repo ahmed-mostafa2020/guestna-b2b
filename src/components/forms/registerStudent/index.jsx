@@ -33,7 +33,7 @@ const RegisterStudentForm = () =>
     const [___, setGradeError] = useState("");
 
     const [childrenNumber, setChildrenNumber] = useState(1);
-    const [nationality, setNationality] = useState("");
+    const [nationality, setNationality] = useState("68052bdd38ea31c8cf95dc04");
     const [nationalIdImage, setNationalIdImage] = useState(null);
     const [nationalIdImageError, setNationalIdImageError] = useState("");
 
@@ -169,12 +169,18 @@ const RegisterStudentForm = () =>
       // formData.append("formsType", tripMainCategory);
       formData.append("name", values.parentName);
       formData.append("quantity", values.childrenNumber);
-      formData.append("relationship", values.relationship);
+      if (values.relationship) {
+        formData.append("relationship", values.relationship);
+      }
       formData.append("phone", values.mobile);
-      formData.append("backupPhone", values.backupMobile);
+      if (values.backupMobile) {
+        formData.append("backupPhone", values.backupMobile);
+      }
       formData.append("email", values.email);
       formData.append("nationality", nationality);
-      formData.append("nationalId", values.nationalId);
+      if (values.nationalId) {
+        formData.append("nationalId", values.nationalId);
+      }
       if (nationalIdImage) {
         formData.append("nationalIdImage", nationalIdImage);
       }
@@ -185,7 +191,9 @@ const RegisterStudentForm = () =>
       // Append each child as a nested object
       values.children.forEach((child, idx) => {
         formData.append(`childs[${idx}].name`, child.studentName);
-        formData.append(`childs[${idx}].nationalId`, `${child.nationalId}`);
+        if (child.nationalId) {
+          formData.append(`childs[${idx}].nationalId`, `${child.nationalId}`);
+        }
 
         if (childrenNationalIdImages[idx]) {
           formData.append(
@@ -262,7 +270,7 @@ const RegisterStudentForm = () =>
             mobile: parentPhone || "",
             backupMobile: "",
             email: parentEmail || "",
-            nationality: "",
+            nationality: "68052bdd38ea31c8cf95dc04",
             nationalId: "",
             promoCode: "",
             children: generateInitialChildren(childrenNumber),

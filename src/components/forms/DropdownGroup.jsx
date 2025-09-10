@@ -14,6 +14,7 @@ const DropdownGroup = ({
   value,
   onChange,
   menuItemsList = [],
+  required = false,
 }) => {
   const locale = useLocale();
   const isRTL = locale === "ar";
@@ -36,7 +37,11 @@ const DropdownGroup = ({
 
   return (
     <FormControl sx={{ m: 1, minWidth: 120, width: "100% " }}>
-      <label className="mb-2 font-medium capitalize font-ibm">{label}</label>
+      <div className="flex gap-0.5">
+        <label className="mb-2 font-medium capitalize font-ibm">{label}</label>
+        {required && <span className="text-error">{"*"}</span>}
+      </div>
+
       <Select
         value={value}
         onChange={onChange}

@@ -301,7 +301,7 @@ export const createRegisterChildSchema = (t, childrenCount) => {
       .max(50, t("forms.relationship.error.max")),
 
     mobile: createPhoneValidation(t),
-    backupMobile: createPhoneValidation(t, true),
+    backupMobile: createPhoneValidation(t, false),
 
     email: Yup.string()
       .email(t("forms.email.error"))
@@ -310,7 +310,8 @@ export const createRegisterChildSchema = (t, childrenCount) => {
     nationality: Yup.string().required(t("forms.validation.require")),
 
     nationalId: Yup.string()
-      .required(t("forms.validation.require"))
+      // .required(t("forms.validation.require"))
+      .optional()
       .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
       .min(10, t("forms.nationalId.error.min"))
       .max(10, t("forms.nationalId.error.max")),
@@ -332,7 +333,7 @@ export const createRegisterChildSchema = (t, childrenCount) => {
 
                 const words = value.trim().split(/\s+/);
 
-                // Must have at least 4 words
+                // Must have at least 3 words
                 if (words.length < 3) return false;
 
                 // Each word must be at least 3 characters
@@ -344,7 +345,8 @@ export const createRegisterChildSchema = (t, childrenCount) => {
           grade: Yup.string().required(t("forms.validation.require")),
 
           nationalId: Yup.string()
-            .required(t("forms.validation.require"))
+            // .required(t("forms.validation.require"))
+            .optional()
             .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
             .min(10, t("forms.nationalId.error.min"))
             .max(10, t("forms.nationalId.error.max")),
