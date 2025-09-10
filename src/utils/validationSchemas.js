@@ -296,7 +296,7 @@ export const createRegisterChildSchema = (t, childrenCount) => {
 
     relationship: Yup.string()
       .trim()
-      .required(t("forms.validation.require"))
+      .optional()
       .min(2, t("forms.relationship.error.min"))
       .max(50, t("forms.relationship.error.max")),
 

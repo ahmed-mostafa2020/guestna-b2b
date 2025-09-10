@@ -26,8 +26,6 @@ import SmallSeparator from "@components/common/separators/SmallSeparator";
 import ResponsiveSeparator from "@components/common/separators/ResponsiveSeparator";
 import FeatureTrips from "@components/sections/pages/home/featureTrips";
 
-import ParentTrip from "@components/sections/pages/home/ParentTrip";
-
 export default function Home() {
   // useReportWebVitals((metric) => {
   //   console.log(metric);
@@ -91,8 +89,6 @@ export default function Home() {
 
         <Trips />
         <SmallSeparator />
-
-        <ParentTrip />
       </main>
     </>
   );

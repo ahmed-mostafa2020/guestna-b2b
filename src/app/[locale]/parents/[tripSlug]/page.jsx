@@ -60,11 +60,12 @@ const TripDetails = ({ params }) => {
     }
   );
 
+  const tripData = data?.trip;
   // Save tripId and tripSlug
   useEffect(() => {
-    dispatch(setTripId(data?.trip?._id));
+    dispatch(setTripId(tripData?._id));
     dispatch(setTripSlug(params.tripSlug));
-  }, [dispatch, params.tripSlug, data]);
+  }, [dispatch, params.tripSlug, tripData]);
 
   // Save tripDate , tripName and trip customization
   useEffect(() => {
@@ -73,20 +74,20 @@ const TripDetails = ({ params }) => {
     // }
 
     dispatch(setFirstAvailableDate(firstAvailableDate));
-    dispatch(setTripName(data?.trip?.name));
+    dispatch(setTripName(tripData?.name));
 
     dispatch(setTripCustomization(false));
-  }, [dispatch, data, firstAvailableDate]);
+  }, [dispatch, tripData, firstAvailableDate]);
 
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | 
-    ${data?.trip?.name || t("pagesHead.title.tripDetails")}
+    ${tripData?.name || t("pagesHead.title.tripDetails")}
     `;
-  }, [t, data]);
+  }, [t, tripData]);
 
-  useEffect(() => {
-    dispatch(setUser(USERS.B2B_PARENT));
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(setUser(USERS.B2B_PARENT));
+  // }, [dispatch]);
 
   if (isLoading)
     return (
@@ -126,10 +127,10 @@ const TripDetails = ({ params }) => {
     {
       id: 2,
       type: "link",
-      name: data?.trip?.categories?.name,
-      link: `discover?categories=${data?.trip?.categories?._id}`,
+      name: tripData?.categories?.name,
+      link: `discover?categories=${tripData?.categories?._id}`,
     },
-    { id: 3, type: "text", name: data?.trip?.name },
+    { id: 3, type: "text", name: tripData?.name },
   ];
 
   return (
@@ -155,7 +156,9 @@ const TripDetails = ({ params }) => {
         </>
       )}
 
-      <RegisterStudentForm />
+      <RegisterStudentForm
+      //  tripMainCategory={tripData?.categories?.formsType}
+      />
     </main>
   );
 };
