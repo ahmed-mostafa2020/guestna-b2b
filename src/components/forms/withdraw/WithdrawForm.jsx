@@ -50,10 +50,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   // Yup validation schema
   const getValidationSchema = () => {
     return Yup.object().shape({
-      selectedTripId:
-        transferMethod === "bank"
-          ? Yup.string().required(t("validation.tripRequired"))
-          : Yup.string().notRequired(),
+      selectedTripId: Yup.string().required(t("validation.tripRequired")),
       withdrawAmount: Yup.number()
         .required(t("validation.amountRequired"))
         .min(50, t("validation.minAmount"))
@@ -104,6 +101,8 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
     const trip = completedTrips.find((t) => t._id === tripId);
     if (trip) {
       setSelectedTrip(trip);
+      // Auto-fill the withdrawal amount with the trip's amount
+      setFieldValue("withdrawAmount", trip.amount.toString());
     }
   };
 
@@ -205,6 +204,11 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
               setFieldValue={setFieldValue}
               balance={balance}
               formatPhoneNumber={formatPhoneNumber}
+              completedTrips={completedTrips}
+              tripsLoading={tripsLoading}
+              tripsError={tripsError}
+              selectedTrip={selectedTrip}
+              onTripSelection={handleTripSelection}
             />
           )}
 
@@ -241,15 +245,9 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
           <div className="mt-8 pt-6 border-t border-gray-200">
             <button
               type="submit"
-              disabled={
-                isSubmitting ||
-                balanceLoading ||
-                (transferMethod === "bank" && !selectedTrip)
-              }
+              disabled={isSubmitting || balanceLoading || !selectedTrip}
               className={`w-full py-4 px-6 rounded-2xl font-bold text-white text-base transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-4 transform hover:-translate-y-1 ${
-                isSubmitting ||
-                balanceLoading ||
-                (transferMethod === "bank" && !selectedTrip)
+                isSubmitting || balanceLoading || !selectedTrip
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 focus:ring-green-500 shadow-lg hover:shadow-xl"
               }`}

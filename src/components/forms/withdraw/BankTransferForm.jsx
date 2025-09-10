@@ -90,17 +90,11 @@ const BankTransferForm = ({
             type="number"
             placeholder={t("amount.placeholder")}
             value={values.withdrawAmount}
-            onChange={(e) => setFieldValue("withdrawAmount", e.target.value)}
-            onBlur={() =>
-              setFieldValue("withdrawAmount", values.withdrawAmount)
-            }
-            disabled={!selectedTrip}
-            className={`w-full px-4 py-3 border-2 rounded-xl text-right focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-base transition-all duration-200 ${
+            readOnly
+            className={`w-full px-4 py-3 border-2 rounded-xl text-right text-base transition-all duration-200 bg-gray-50 cursor-not-allowed ${
               errors.withdrawAmount && touched.withdrawAmount
                 ? "border-red-500"
-                : selectedTrip
-                ? "border-gray-300 hover:border-gray-400"
-                : "border-gray-200 bg-gray-50 cursor-not-allowed"
+                : "border-gray-200"
             }`}
             min="50"
             max={balance?.availableBalance}
@@ -111,10 +105,7 @@ const BankTransferForm = ({
           {renderError("withdrawAmount")}
           <p className="text-xs text-gray-500 mt-2 text-right">
             {selectedTrip
-              ? t("amount.limits", {
-                  min: "50",
-                  max: balance?.availableBalance?.toLocaleString("ar-SA") || 0,
-                })
+              ? t("amount.autoFilled")
               : t("amount.selectTripFirst")}
           </p>
         </div>
