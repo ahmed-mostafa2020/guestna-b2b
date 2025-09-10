@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setProfile,
   setProfileError,
@@ -15,6 +15,7 @@ import { useEffect } from "react";
 
 import { useFetchData } from "@hooks/useFetchData";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { USERS } from "@constants/users";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
@@ -26,6 +27,8 @@ import Grid from "@mui/material/Grid2";
 import Cookies from "js-cookie";
 
 const ProfileLayout = ({ children }) => {
+  const userType = useSelector((state) => state.users.userType);
+
   const locale = useLocale();
 
   const router = useRouter();
@@ -36,10 +39,10 @@ const ProfileLayout = ({ children }) => {
     // Check for user token
     const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
 
-    if (!token) {
+    if (userType === USERS.VISITOR || userType === USERS.B2B_PARENT || !token) {
       router.push(`/${locale}`);
     }
-  }, [locale, router]);
+  }, [locale, router, userType]);
 
   const { data, error, isLoading } = useFetchData(
     `${B2B_END_POINTS.PROFILE.INFORMATION}`,
