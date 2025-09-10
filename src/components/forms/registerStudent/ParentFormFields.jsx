@@ -53,16 +53,16 @@ const ParentFormFields = ({
       />
 
       <TextInputGroup
-        label={t("forms.relationship.name")}
-        type="text"
-        name="relationship"
-        value={values.relationship}
-        errors={errors.relationship}
-        touched={touched.relationship}
+        label={t("forms.email.parentEmail")}
+        type="email"
+        name="email"
+        value={values.email}
+        errors={errors.email}
+        touched={touched.email}
         onChange={handleChange}
         onBlur={handleBlur}
-        minLength="2"
-        maxLength="50"
+        placeholder="guestna@gmail.com"
+        required={true}
       />
 
       <div className="relative flex flex-col gap-2">
@@ -141,16 +141,16 @@ const ParentFormFields = ({
       </div>
 
       <TextInputGroup
-        label={t("forms.email.parentEmail")}
-        type="email"
-        name="email"
-        value={values.email}
-        errors={errors.email}
-        touched={touched.email}
+        label={t("forms.relationship.name")}
+        type="text"
+        name="relationship"
+        value={values.relationship}
+        errors={errors.relationship}
+        touched={touched.relationship}
         onChange={handleChange}
         onBlur={handleBlur}
-        placeholder="guestna@gmail.com"
-        required={true}
+        minLength="2"
+        maxLength="50"
       />
 
       <div className="relative flex flex-col gap-2">
@@ -158,8 +158,9 @@ const ParentFormFields = ({
           label={t("profile.information.personalInformation.nationality")}
           placeholder={t("profile.information.personalInformation.nationality")}
           value={
-            values.nationality || 
-            (nationalities?.find(n => n._id === "68052bdd38ea31c8cf95dc04")?._id)
+            values.nationality ||
+            nationalities?.find((n) => n._id === "68052bdd38ea31c8cf95dc04")
+              ?._id
           }
           onChange={handleChangeNationality}
           menuItemsList={nationalities}
