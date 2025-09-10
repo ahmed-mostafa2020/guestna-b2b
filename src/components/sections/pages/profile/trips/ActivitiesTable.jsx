@@ -46,9 +46,7 @@ const ActivitiesTable = ({
                   <th className="px-6 py-4 font-medium text-start">
                     {t("profile.tables.activities.header.category")}
                   </th>
-                  <th className="px-6 py-4 font-medium text-start">
-                    {t("profile.tables.activities.header.tripLink")}
-                  </th>
+
                   <th className="px-6 py-4 text-right text-sm font-medium text-gray-700">
                     {t("profile.tables.orders.studentsTable.actions")}
                   </th>
@@ -85,14 +83,7 @@ const ActivitiesTable = ({
                         {trip.categories}
                       </Badge>
                     </td>
-                    <td className="px-6 py-4">
-                      <Link
-                        href={`/${locale}/parents/${trip.slug}`}
-                        className="text-sm transition-all duration-150 ease-in-out border-b text-mainColor hover:text-secColor border-mainColor hover:border-secColor"
-                      >
-                        {t("profile.tables.activities.header.link")}
-                      </Link>
-                    </td>
+
                     <td className="px-6 py-4">
                       <Link
                         href={`/${locale}/profile/create-trip-link/${trip.slug}`}
@@ -140,13 +131,6 @@ const ActivitiesTable = ({
                   <span className="text-muted-foreground">{trip.cities}</span>
 
                   <Badge variant="outline">{trip.categories}</Badge>
-
-                  <Link
-                    href={`/${locale}/parents/${trip.slug}`}
-                    className="text-sm transition-all duration-150 ease-in-out border-b text-mainColor hover:text-secColor border-mainColor hover:border-secColor"
-                  >
-                    {t("profile.tables.activities.header.link")}
-                  </Link>
                 </div>
               </div>
 

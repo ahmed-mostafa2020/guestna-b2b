@@ -48,9 +48,7 @@ const PackagesTable = ({
                   <th className="px-6 py-4 font-medium text-start">
                     {t("profile.tables.packages.header.duration")}
                   </th>
-                  <th className="px-6 py-4 font-medium text-start">
-                    {t("profile.tables.activities.header.tripLink")}
-                  </th>
+
                   <th className="px-6 py-4 text-right text-sm font-medium text-gray-700">
                     {t("profile.tables.orders.studentsTable.actions")}
                   </th>
@@ -92,15 +90,6 @@ const PackagesTable = ({
                         t("common.day"),
                         t("common.days")
                       )}
-                    </td>
-
-                    <td className="px-6 py-4">
-                      <Link
-                        href={`/${locale}/parents/${pkg.slug}`}
-                        className="text-sm transition-all duration-150 ease-in-out border-b text-mainColor hover:text-secColor border-mainColor hover:border-secColor"
-                      >
-                        {t("profile.tables.activities.header.link")}
-                      </Link>
                     </td>
 
                     <td className="px-6 py-4">
@@ -172,13 +161,6 @@ const PackagesTable = ({
               <div className="space-y-2">
                 <div className="flex items-center gap-2"></div>
                 <div className="flex items-center gap-2">
-                  <Link
-                    href={`/${locale}/parents/${pkg.slug}`}
-                    className="text-sm transition-all duration-150 ease-in-out border-b text-mainColor hover:text-secColor border-mainColor hover:border-secColor"
-                  >
-                    {t("profile.tables.activities.header.link")}
-                  </Link>
-
                   <Link
                     href={`/${locale}/profile/create-trip-link/${pkg.slug}`}
                     className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white  border-mainColor hover:bg-secColor "
