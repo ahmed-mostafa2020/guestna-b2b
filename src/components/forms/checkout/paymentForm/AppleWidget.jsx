@@ -15,7 +15,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const [currentBookingId, setCurrentBookingId] = useState(null);
 
   const price = useSelector(
-    (state) => state.finalTripDetailsData.data.totalAmountWithVAT
+    (state) => state.finalTripDetailsData.data.basePriceTotalWithVat
   );
 
   const tripName = useSelector((state) => state.finalTripDetailsData.data.name);
@@ -33,7 +33,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
       currency: currency,
       description: tripName,
       publishable_api_key: appleWidgetKey,
-      callback_url: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.CALLBACK}?lang=${locale}&amount=${price}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
+      callback_url: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
       methods: ["applepay"],
       apple_pay: {
         country: "SA",
