@@ -1170,7 +1170,8 @@
         "min": "Name should be less than 3 characters",
         "max": "Name should be more than 50 characters",
         "invalid": "Name should contain only letters",
-        "wordMinLength": "Name should be two words each word be more than 3 characters"
+        "wordMinLength": "Name should be two words each word be more than 3 characters",
+        "multipleSpaces": "Multiple consecutive spaces between names are not allowed"
       }
     },
 
@@ -1275,7 +1276,8 @@
         "min": "Student name should be less than 3 characters",
         "max": "Student name Student name be more than 50 characters",
         "invalid": "Name should contain only letters",
-        "wordMinLength": "The student's name must be full"
+        "wordMinLength": "The student's name must be full",
+        "multipleSpaces": "Multiple consecutive spaces between names are not allowed"
       }
     },
 

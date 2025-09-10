@@ -156,9 +156,7 @@ const TripDetails = ({ params }) => {
         </>
       )}
 
-      <RegisterStudentForm
-      //  tripMainCategory={tripData?.categories?.formsType}
-      />
+      <RegisterStudentForm tripMainCategory={tripData?.categories?.formsType} />
     </main>
   );
 };

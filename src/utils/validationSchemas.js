@@ -277,6 +277,15 @@ export const createRegisterChildSchema = (t, childrenCount) => {
       .required(t("forms.validation.require"))
       .matches(/^[\p{L}\s]+$/u, t("forms.parentName.error.invalid"))
       .test(
+        "no-multiple-spaces",
+        t("forms.parentName.error.multipleSpaces"),
+        function (value) {
+          if (!value) return true;
+          // Check for multiple consecutive spaces
+          return !/\s{2,}/.test(value);
+        }
+      )
+      .test(
         "min-word-length",
         t("forms.parentName.error.wordMinLength"),
         function (value) {
@@ -325,6 +334,15 @@ export const createRegisterChildSchema = (t, childrenCount) => {
             .trim()
             .required(t("forms.validation.require"))
             .matches(/^[\p{L}\s]+$/u, t("forms.studentName.error.invalid"))
+            .test(
+              "no-multiple-spaces",
+              t("forms.studentName.error.multipleSpaces"),
+              function (value) {
+                if (!value) return true;
+                // Check for multiple consecutive spaces
+                return !/\s{2,}/.test(value);
+              }
+            )
             .test(
               "min-word-length",
               t("forms.studentName.error.wordMinLength"),
