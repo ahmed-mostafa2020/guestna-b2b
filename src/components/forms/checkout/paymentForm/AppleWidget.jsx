@@ -14,6 +14,7 @@ import axios from "axios";
 
 const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const [currentBookingId, setCurrentBookingId] = useState(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const price = useSelector(
     (state) => state.finalTripDetailsData.data.basePriceTotalWithVat
@@ -27,6 +28,10 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const appleWidgetKey = process.env.NEXT_PUBLIC_APPLE_WIDGET_KEY;
 
   useEffect(() => {
+    // Prevent re-initialization if already initialized
+    if (isInitialized) {
+      return;
+    }
     // Check if Moyasar is available
     if (typeof window === "undefined" || !window.Moyasar) {
       console.error("Moyasar SDK not loaded");
@@ -146,16 +151,23 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
       },
     });
 
+    // Mark as initialized
+    setIsInitialized(true);
+
     // Cleanup function to destroy Moyasar instance
     return () => {
       if (window.Moyasar && window.Moyasar.destroy) {
         window.Moyasar.destroy();
       }
+      setIsInitialized(false);
     };
   }, [
     // Removed currentBookingId and setCurrentBookingId from dependencies
     locale,
-    baseData,
+    baseData.trip,
+    baseData.quantity,
+    baseData.client,
+    baseData.promoCode,
     appleWidgetKey,
     currency,
     vercelUrl,
