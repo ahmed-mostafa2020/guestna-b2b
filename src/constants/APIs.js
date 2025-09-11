@@ -1,5 +1,5 @@
 // EndPoint paths
-const BASE_URL = process.env.NEXT_PUBLIC_B2C_BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const END_POINTS = {
   MAIN: BASE_URL,
