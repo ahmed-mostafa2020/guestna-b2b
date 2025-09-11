@@ -189,6 +189,7 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import { reportError, addBreadcrumb } from "@utils/bugsnag";
 
 import axios from "axios";
+import { getHeaders } from "@utils/getHeaders";
 
 const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const price = useSelector(
@@ -222,9 +223,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
               baseData,
               {
                 timeout: 30000,
-                headers: {
-                  "Content-Type": "application/json",
-                },
+                headers: getHeaders(locale),
               }
             )
             .then((response) => {
@@ -286,9 +285,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                   confirmationData,
                   {
                     timeout: 30000,
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
+                    headers: getHeaders(locale),
                   }
                 )
                 .then((response) => {
