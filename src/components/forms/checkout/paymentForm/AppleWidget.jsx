@@ -1,10 +1,8 @@
 "use client";
 
 import { useLocale } from "next-intl";
-
 import { useSelector } from "react-redux";
-
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useRef } from "react";
 
 import { END_POINTS } from "@constants/APIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
@@ -13,8 +11,9 @@ import { reportError, addBreadcrumb } from "@utils/bugsnag";
 import axios from "axios";
 
 const AppleWidget = ({ baseData, currency = "SAR" }) => {
-  const [currentBookingId, setCurrentBookingId] = useState(null);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const widgetRef = useRef(null);
+  const isInitializedRef = useRef(false);
+  const bookingIdRef = useRef(null); // Use ref instead of closure variable
 
   const price = useSelector(
     (state) => state.finalTripDetailsData.data.basePriceTotalWithVat
@@ -28,28 +27,36 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const appleWidgetKey = process.env.NEXT_PUBLIC_APPLE_WIDGET_KEY;
 
   useEffect(() => {
-    // Prevent re-initialization if already initialized
-    if (isInitialized) {
+    // Prevent multiple initializations
+    if (isInitializedRef.current) {
+      console.log("Apple Pay widget already initialized, skipping...");
       return;
     }
+
+    // Check if required data is available
+    if (!price || !tripName || !appleWidgetKey || !baseData) {
+      console.log("Missing required data for Apple Pay initialization");
+      return;
+    }
+
     // Check if Moyasar is available
     if (typeof window === "undefined" || !window.Moyasar) {
       console.error("Moyasar SDK not loaded");
       return;
     }
 
-    // Store booking ID in closure to avoid dependency issues
-    let bookingId = null;
+    console.log("Initializing Apple Pay widget...");
 
-    Moyasar.init({
-      element: ".mysr-form",
-      amount: price * 100,
-      language: locale,
-      currency: currency,
-      description: tripName,
-      publishable_api_key: appleWidgetKey,
-      callback_url: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
-      methods: ["applepay"],
+    try {
+      Moyasar.init({
+        element: ".mysr-form",
+        amount: price * 100,
+        language: locale,
+        currency: currency,
+        description: tripName,
+        publishable_api_key: appleWidgetKey,
+        callback_url: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
+        methods: ["applepay"],
       apple_pay: {
         country: "SA",
         label: "Guestna",
@@ -69,111 +76,95 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
             console.log("Apple Pay initiation started");
             addBreadcrumb("Apple Pay initiation started", { baseData });
 
-            // Call the initiation endpoint
-            const initiationData = baseData;
-
             const response = await axios.post(
               `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.INITIATE}`,
-              initiationData
+              baseData
             );
 
-            // Store the booking ID in closure
-            bookingId = response.data.bookingId;
-            console.log(
-              "Apple Pay initiation successful, bookingId:",
-              bookingId
-            );
-            addBreadcrumb("Apple Pay initiation successful", { bookingId });
+            bookingIdRef.current = response.data.bookingId;
+            console.log("Apple Pay initiation successful, bookingId:", bookingIdRef.current);
+            addBreadcrumb("Apple Pay initiation successful", { bookingId: bookingIdRef.current });
 
             resolve({});
-          } catch (error) {
-            console.error("Apple Pay initiation failed:", error);
-            reportError(error, {
-              context: "Apple Pay initiation",
-              baseData,
-              endpoint: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.INITIATE}`,
-            });
-            reject(error);
-          }
-        });
-      },
-      on_completed: function (payment) {
-        return new Promise(async function (resolve, reject) {
-          try {
-            console.log("Apple Pay completion started", payment);
-            addBreadcrumb("Apple Pay completion started", {
-              paymentId: payment?.id,
-            });
-
-            if (payment && payment.id) {
-              // Call the confirmation endpoint
-              const confirmationData = {
-                trip: baseData.trip,
-                bookingId: bookingId, // Use the booking ID from closure
-                paymentId: payment.id,
-              };
-
-              const response = await axios.post(
-                `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.CONFIRM}`,
-                confirmationData
-              );
-              console.log("Apple Pay confirmation successful:", response);
-              addBreadcrumb("Apple Pay confirmation successful", {
-                paymentId: payment.id,
-                bookingId,
-              });
-
-              // Clean up stored booking ID
-              bookingId = null;
-
-              resolve({});
-            } else {
-              console.error("Invalid payment object:", payment);
-              const error = new Error("Invalid payment object");
+            } catch (error) {
+              console.error("Apple Pay initiation failed:", error);
               reportError(error, {
-                context: "Apple Pay completion",
-                payment,
-                bookingId,
+                context: "Apple Pay initiation",
+                baseData,
+                endpoint: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.INITIATE}`,
               });
               reject(error);
             }
-          } catch (error) {
-            console.error("Apple Pay confirmation failed:", error);
-            reportError(error, {
-              context: "Apple Pay confirmation",
-              payment,
-              bookingId,
-              endpoint: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.CONFIRM}`,
-            });
-            reject(error);
-          }
-        });
-      },
-    });
+          });
+        },
+        on_completed: function (payment) {
+          return new Promise(async function (resolve, reject) {
+            try {
+              console.log("Apple Pay completion started", payment);
+              addBreadcrumb("Apple Pay completion started", {
+                paymentId: payment?.id,
+              });
 
-    // Mark as initialized
-    setIsInitialized(true);
+              if (payment && payment.id) {
+                const confirmationData = {
+                  trip: baseData.trip,
+                  bookingId: bookingIdRef.current,
+                  paymentId: payment.id,
+                };
 
-    // Cleanup function to destroy Moyasar instance
+                const response = await axios.post(
+                  `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.CONFIRM}`,
+                  confirmationData
+                );
+                console.log("Apple Pay confirmation successful:", response);
+                addBreadcrumb("Apple Pay confirmation successful", {
+                  paymentId: payment.id,
+                  bookingId: bookingIdRef.current,
+                });
+
+                bookingIdRef.current = null;
+                resolve({});
+              } else {
+                console.error("Invalid payment object:", payment);
+                const error = new Error("Invalid payment object");
+                reportError(error, {
+                  context: "Apple Pay completion",
+                  payment,
+                  bookingId: bookingIdRef.current,
+                });
+                reject(error);
+              }
+            } catch (error) {
+              console.error("Apple Pay confirmation failed:", error);
+              reportError(error, {
+                context: "Apple Pay confirmation",
+                payment,
+                bookingId: bookingIdRef.current,
+                endpoint: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.CONFIRM}`,
+              });
+              reject(error);
+            }
+          });
+        },
+      });
+
+      // Mark as initialized
+      isInitializedRef.current = true;
+      console.log("Apple Pay widget initialized successfully");
+    } catch (error) {
+      console.error("Failed to initialize Apple Pay widget:", error);
+      reportError(error, { context: "Apple Pay widget initialization" });
+    }
+
+    // Cleanup function
     return () => {
       if (window.Moyasar && window.Moyasar.destroy) {
+        console.log("Cleaning up Apple Pay widget");
         window.Moyasar.destroy();
       }
-      setIsInitialized(false);
+      isInitializedRef.current = false;
     };
-  }, [
-    // Removed currentBookingId and setCurrentBookingId from dependencies
-    locale,
-    baseData.trip,
-    baseData.quantity,
-    baseData.client,
-    baseData.promoCode,
-    appleWidgetKey,
-    currency,
-    vercelUrl,
-    price,
-    tripName,
-  ]);
+  }, []); // Empty dependency array to prevent re-initialization
 
   return (
     <div className="flex">
