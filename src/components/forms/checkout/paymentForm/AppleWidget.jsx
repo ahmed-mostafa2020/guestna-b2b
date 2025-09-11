@@ -8,6 +8,7 @@ import { memo, useEffect, useState } from "react";
 
 import { END_POINTS } from "@constants/APIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { reportError, addBreadcrumb } from "@utils/bugsnag";
 
 import axios from "axios";
 
@@ -61,6 +62,8 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
         return new Promise(async function (resolve, reject) {
           try {
             console.log("Apple Pay initiation started");
+            addBreadcrumb("Apple Pay initiation started", { baseData });
+            
             // Call the initiation endpoint
             const initiationData = baseData;
 
@@ -72,10 +75,16 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
             // Store the booking ID in closure
             bookingId = response.data.bookingId;
             console.log("Apple Pay initiation successful, bookingId:", bookingId);
+            addBreadcrumb("Apple Pay initiation successful", { bookingId });
 
             resolve({});
           } catch (error) {
             console.error("Apple Pay initiation failed:", error);
+            reportError(error, {
+              context: "Apple Pay initiation",
+              baseData,
+              endpoint: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.INITIATE}`
+            });
             reject(error);
           }
         });
@@ -84,6 +93,8 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
         return new Promise(async function (resolve, reject) {
           try {
             console.log("Apple Pay completion started", payment);
+            addBreadcrumb("Apple Pay completion started", { paymentId: payment?.id });
+            
             if (payment && payment.id) {
               // Call the confirmation endpoint
               const confirmationData = {
@@ -97,6 +108,10 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                 confirmationData
               );
               console.log("Apple Pay confirmation successful:", response);
+              addBreadcrumb("Apple Pay confirmation successful", { 
+                paymentId: payment.id,
+                bookingId 
+              });
 
               // Clean up stored booking ID
               bookingId = null;
@@ -104,10 +119,22 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
               resolve({});
             } else {
               console.error("Invalid payment object:", payment);
-              reject(new Error("Invalid payment object"));
+              const error = new Error("Invalid payment object");
+              reportError(error, {
+                context: "Apple Pay completion",
+                payment,
+                bookingId
+              });
+              reject(error);
             }
           } catch (error) {
             console.error("Apple Pay confirmation failed:", error);
+            reportError(error, {
+              context: "Apple Pay confirmation",
+              payment,
+              bookingId,
+              endpoint: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.CONFIRM}`
+            });
             reject(error);
           }
         });
