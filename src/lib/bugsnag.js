@@ -1,6 +1,7 @@
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
 import BugsnagPerformance from "@bugsnag/browser-performance";
+import React from "react";
 
 const BugsnagKey = process.env.NEXT_PUBLIC_BUGSNAG_KEY;
 
@@ -8,7 +9,7 @@ const BugsnagKey = process.env.NEXT_PUBLIC_BUGSNAG_KEY;
 if (typeof window !== "undefined") {
   Bugsnag.start({
     apiKey: BugsnagKey,
-    plugins: [new BugsnagPluginReact()],
+    plugins: [new BugsnagPluginReact(React)],
     enabledReleaseStages: ["production", "staging", "development"],
     releaseStage: process.env.NODE_ENV,
     appVersion: process.env.NEXT_PUBLIC_APP_VERSION || "1.0.0",
