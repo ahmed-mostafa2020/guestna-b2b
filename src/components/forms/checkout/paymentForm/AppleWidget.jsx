@@ -70,7 +70,11 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
             console.log("🔄 Payment initiating...");
             addBreadcrumb("Apple Pay initiation started", { baseData });
 
-            const response = await axios.post(
+            // Always resolve immediately to keep widget open, make API call in background
+            resolve({});
+
+            // Make API call in background without blocking the widget
+            axios.post(
               `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.INITIATE}`,
               baseData,
               {
@@ -79,26 +83,29 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                   'Content-Type': 'application/json',
                 },
               }
-            );
-
-            if (response.data && response.data.bookingId) {
-              console.log("✅ Apple Pay initiation successful, bookingId:", response.data.bookingId);
-              addBreadcrumb("Apple Pay initiation successful", { 
-                bookingId: response.data.bookingId 
+            ).then(response => {
+              if (response.data && response.data.bookingId) {
+                console.log("✅ Apple Pay initiation successful, bookingId:", response.data.bookingId);
+                addBreadcrumb("Apple Pay initiation successful", { 
+                  bookingId: response.data.bookingId 
+                });
+                // Store bookingId globally for later use
+                window.applePayBookingId = response.data.bookingId;
+              } else {
+                console.error("❌ Invalid response: missing bookingId");
+              }
+            }).catch(error => {
+              console.error("❌ Error in background API call", error);
+              reportError(error, {
+                context: "Apple Pay initiation background",
+                baseData,
+                endpoint: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.INITIATE}`,
               });
-              resolve({});
-            } else {
-              console.error("❌ Invalid response: missing bookingId");
-              reject(new Error("Invalid response: missing bookingId"));
-            }
+            });
+
           } catch (error) {
             console.error("❌ Error in on_initiating", error);
-            reportError(error, {
-              context: "Apple Pay initiation",
-              baseData,
-              endpoint: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.INITIATE}`,
-            });
-            reject(error);
+            resolve({}); // Always resolve to keep widget open
           }
         });
       },
@@ -111,12 +118,17 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                 paymentId: payment.id,
               });
 
+              // Always resolve immediately to prevent widget from closing
+              resolve({});
+
+              // Make confirmation API call in background
               const confirmationData = {
                 trip: baseData.trip,
+                bookingId: window.applePayBookingId, // Use stored bookingId
                 paymentId: payment.id,
               };
 
-              const response = await axios.post(
+              axios.post(
                 `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.CONFIRM}`,
                 confirmationData,
                 {
@@ -125,27 +137,32 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                     'Content-Type': 'application/json',
                   },
                 }
-              );
-
-              console.log("✅ Apple Pay confirmation successful:", response.data);
-              addBreadcrumb("Apple Pay confirmation successful", {
-                paymentId: payment.id,
-                responseData: response.data,
+              ).then(response => {
+                console.log("✅ Apple Pay confirmation successful:", response.data);
+                addBreadcrumb("Apple Pay confirmation successful", {
+                  paymentId: payment.id,
+                  responseData: response.data,
+                });
+                
+                // Redirect or handle success here if needed
+                // window.location.href = successUrl;
+                
+              }).catch(error => {
+                console.error("❌ Error in confirmation API call", error);
+                reportError(error, {
+                  context: "Apple Pay confirmation background",
+                  payment,
+                  endpoint: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.CONFIRM}`,
+                });
               });
 
-              resolve({});
             } else {
               console.error("❌ Invalid payment object:", payment);
-              reject(new Error("Invalid payment object"));
+              resolve({}); // Still resolve to keep widget stable
             }
           } catch (error) {
             console.error("❌ Error in on_completed", error);
-            reportError(error, {
-              context: "Apple Pay confirmation",
-              payment,
-              endpoint: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.CONFIRM}`,
-            });
-            reject(error);
+            resolve({}); // Always resolve to prevent widget closing
           }
         });
       },
