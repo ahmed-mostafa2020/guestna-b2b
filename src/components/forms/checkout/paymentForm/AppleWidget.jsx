@@ -23,7 +23,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
 
   const locale = useLocale();
 
-  const vercelUrl = CONSTANT_VALUES.URLS.VERCEL_URL;
+  const vercelUrl = CONSTANT_VALUES.URLS.B2B_VERCEL_URL;
   const appleWidgetKey = process.env.NEXT_PUBLIC_APPLE_WIDGET_KEY;
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
           try {
             console.log("Apple Pay initiation started");
             addBreadcrumb("Apple Pay initiation started", { baseData });
-            
+
             // Call the initiation endpoint
             const initiationData = baseData;
 
@@ -74,7 +74,10 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
 
             // Store the booking ID in closure
             bookingId = response.data.bookingId;
-            console.log("Apple Pay initiation successful, bookingId:", bookingId);
+            console.log(
+              "Apple Pay initiation successful, bookingId:",
+              bookingId
+            );
             addBreadcrumb("Apple Pay initiation successful", { bookingId });
 
             resolve({});
@@ -83,7 +86,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
             reportError(error, {
               context: "Apple Pay initiation",
               baseData,
-              endpoint: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.INITIATE}`
+              endpoint: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.INITIATE}`,
             });
             reject(error);
           }
@@ -93,8 +96,10 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
         return new Promise(async function (resolve, reject) {
           try {
             console.log("Apple Pay completion started", payment);
-            addBreadcrumb("Apple Pay completion started", { paymentId: payment?.id });
-            
+            addBreadcrumb("Apple Pay completion started", {
+              paymentId: payment?.id,
+            });
+
             if (payment && payment.id) {
               // Call the confirmation endpoint
               const confirmationData = {
@@ -108,9 +113,9 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                 confirmationData
               );
               console.log("Apple Pay confirmation successful:", response);
-              addBreadcrumb("Apple Pay confirmation successful", { 
+              addBreadcrumb("Apple Pay confirmation successful", {
                 paymentId: payment.id,
-                bookingId 
+                bookingId,
               });
 
               // Clean up stored booking ID
@@ -123,7 +128,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
               reportError(error, {
                 context: "Apple Pay completion",
                 payment,
-                bookingId
+                bookingId,
               });
               reject(error);
             }
@@ -133,7 +138,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
               context: "Apple Pay confirmation",
               payment,
               bookingId,
-              endpoint: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.CONFIRM}`
+              endpoint: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.CONFIRM}`,
             });
             reject(error);
           }
