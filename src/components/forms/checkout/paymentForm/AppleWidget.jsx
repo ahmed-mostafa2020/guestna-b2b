@@ -65,28 +65,44 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
             mutate(baseData, {
               onSuccess: (data) => {
                 if (!data?.bookingId) {
-                  enqueueSnackbar(t("forms.validation.payment.error") || "Error generating booking ID", {
-                    variant: "error",
-                  });
+                  enqueueSnackbar(
+                    t("forms.validation.payment.error") ||
+                      "Error generating booking ID",
+                    {
+                      variant: "error",
+                    }
+                  );
                   reject();
                 }
                 setCurrentBookingId(data.bookingId);
-                enqueueSnackbar(t("forms.validation.payment.initiation") || "Payment initiated successfully", {
-                  variant: "success",
-                });
+                enqueueSnackbar(
+                  t("forms.validation.payment.initiation") ||
+                    "Payment initiated successfully",
+                  {
+                    variant: "success",
+                  }
+                );
                 resolve({});
               },
               onError: (error) => {
-                enqueueSnackbar(t("forms.validation.payment.error") || "Error initiating payment", {
-                  variant: "error",
-                });
+                enqueueSnackbar(
+                  t("forms.validation.payment.error") ||
+                    "Error initiating payment",
+                  {
+                    variant: "error",
+                  }
+                );
                 reject();
               },
             });
           } catch (error) {
-            enqueueSnackbar(t("forms.validation.payment.error") || "Payment initiation failed", {
-              variant: "error",
-            });
+            enqueueSnackbar(
+              t("forms.validation.payment.error") ||
+                "Payment initiation failed",
+              {
+                variant: "error",
+              }
+            );
             reject();
           }
         });
@@ -104,28 +120,43 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
               mutateComferm(confirmationData, {
                 onSuccess: () => {
                   setCurrentBookingId("");
-                  enqueueSnackbar(t("forms.validation.payment.success") || "Payment completed successfully", {
-                    variant: "success",
-                  });
+                  enqueueSnackbar(
+                    t("forms.validation.payment.success") ||
+                      "Payment completed successfully",
+                    {
+                      variant: "success",
+                    }
+                  );
                   resolve({});
                 },
                 onError: (error) => {
-                  enqueueSnackbar(t("forms.validation.payment.error") || "Payment confirmation failed", {
-                    variant: "error",
-                  });
+                  enqueueSnackbar(
+                    t("forms.validation.payment.error") ||
+                      "Payment confirmation failed",
+                    {
+                      variant: "error",
+                    }
+                  );
                   reject();
                 },
               });
             } else {
-              enqueueSnackbar(t("forms.validation.payment.error") || "Invalid payment data", {
-                variant: "error",
-              });
+              enqueueSnackbar(
+                t("forms.validation.payment.error") || "Invalid payment data",
+                {
+                  variant: "error",
+                }
+              );
               reject();
             }
           } catch (error) {
-            enqueueSnackbar(t("forms.validation.payment.error") || "Payment completion failed", {
-              variant: "error",
-            });
+            enqueueSnackbar(
+              t("forms.validation.payment.error") ||
+                "Payment completion failed",
+              {
+                variant: "error",
+              }
+            );
             reject();
           }
         });
@@ -143,9 +174,58 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
     tripName,
   ]);
 
+  // Test functions for debugging
+  // const testInitiation = () => {
+  //   console.log("🧪 Testing Apple Pay Initiation...");
+  //   console.log("Base Data:", baseData);
+
+  //   mutate(baseData, {
+  //     onSuccess: (data) => {
+  //       console.log("✅ Initiation Success:", data);
+  //       enqueueSnackbar("Test Initiation Success: " + JSON.stringify(data), {
+  //         variant: "success",
+  //       });
+  //       if (data?.bookingId) {
+  //         setCurrentBookingId(data.bookingId);
+  //       }
+  //     },
+  //     onError: (error) => {
+  //       console.error("❌ Initiation Error:", error);
+  //       enqueueSnackbar(
+  //         "Test Initiation Error: " + (error?.message || JSON.stringify(error)),
+  //         {
+  //           variant: "error",
+  //         }
+  //       );
+  //     },
+  //   });
+  // };
+
   return (
-    <div className="flex">
+    <div className="flex flex-col gap-4">
       <div className="mysr-form"></div>
+
+      {/* Debug Test Buttons - Remove in production */}
+      {/* {process.env.NODE_ENV === "development" && (
+        <div className="flex flex-col gap-2 p-4 bg-gray-100 rounded-lg">
+          <h4 className="font-semibold text-sm">Apple Pay Debug Tools</h4>
+          <div className="flex gap-2">
+            <button
+              onClick={testInitiation}
+              className="px-4 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+            >
+              Test Initiation API
+            </button>
+          </div>
+          <div className="text-xs text-gray-600">
+            <p>Current Booking ID: {currentBookingId || "None"}</p>
+            <p>
+              Price: {price} {currency}
+            </p>
+            <p>Trip Name: {tripName}</p>
+          </div>
+        </div>
+      )} */}
     </div>
   );
 };

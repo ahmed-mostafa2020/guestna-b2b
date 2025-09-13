@@ -2,25 +2,23 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import Cookies from "js-cookie";
-import { CONSTANT_VALUES } from "../constants/constantValues";
+import { getHeaders } from "../utils/getHeaders";
+import getProxyUrl from "../utils/getProxyUrl";
 
 export const useMutationData = (endpoint, options = {}) => {
   const dispatch = useDispatch();
   const [customLoading, setCustomLoading] = useState(false);
-  const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
+  const locale = options.lang || "ar";
 
   // Define the mutationFn separately and pass it as part of the options
   const mutationFn = async (variables) => {
     const method = options.method || "POST";
 
+    // Use proxy pattern instead of direct API calls
     const config = {
       method,
-      url: `${process.env.NEXT_PUBLIC_BASE_URL}${endpoint}`,
-      headers: {
-        lang: options.lang || "ar",
-        ...(token && { authorization: `Bearer ${token}` }), // Add Authorization header if token exists
-      },
+      url: getProxyUrl(endpoint),
+      headers: getHeaders(locale),
       data: variables,
     };
 
