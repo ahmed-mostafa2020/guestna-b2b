@@ -11,6 +11,8 @@ import {
   LoadingState,
   ErrorState,
 } from "@components/sections/pages/myWallet/transactions";
+import formatCurrency from "@utils/FormatCurrency";
+import formatDate from "@utils/FormateDate";
 
 const TransactionsPage = () => {
   // State for transactions and balances
@@ -93,13 +95,13 @@ const TransactionsPage = () => {
               invoice.organizationName ||
               "رحلة",
             date: invoice.day
-              ? new Date(invoice.day).toLocaleDateString("ar-SA")
+              ? formatDate(invoice.day, "ar")
               : invoice.createdAt
-              ? new Date(invoice.createdAt).toLocaleDateString("ar-SA")
+              ? formatDate(invoice.createdAt, "ar")
               : invoice.date
-              ? new Date(invoice.date).toLocaleDateString("ar-SA")
+              ? formatDate(invoice.date, "ar")
               : invoice.issueDate
-              ? new Date(invoice.issueDate).toLocaleDateString("ar-SA")
+              ? formatDate(invoice.issueDate, "ar")
               : "غير محدد",
             referenceNumber:
               invoice.orderId ||
@@ -245,10 +247,9 @@ const TransactionsPage = () => {
     },
   };
 
-  // Format currency
-  const formatCurrency = (amount) => {
-    const formattedAmount = Math.abs(amount).toLocaleString("ar-SA");
-    return `${amount < 0 ? "-" : ""}${formattedAmount} ريال`;
+  // Format currency using utility function
+  const formatCurrencyAmount = (amount) => {
+    return formatCurrency(amount);
   };
 
   // Handle filter changes
@@ -299,7 +300,7 @@ const TransactionsPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] p-6">
+    <div className="min-h-screen bg-sidePageBg p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Page Header */}
         <PageHeader />
@@ -327,7 +328,7 @@ const TransactionsPage = () => {
           transactions={transactions}
           invoicesData={invoicesData}
           statusConfig={statusConfig}
-          formatCurrency={formatCurrency}
+          formatCurrency={formatCurrencyAmount}
           pagination={pagination}
           apiPageInfo={apiPageInfo}
           onPageChange={handlePageChange}

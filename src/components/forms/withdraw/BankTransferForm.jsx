@@ -8,6 +8,11 @@ const BankTransferForm = ({
   balance,
   formatIBAN,
   formatClientName,
+  completedTrips,
+  tripsLoading,
+  tripsError,
+  selectedTrip,
+  onTripSelection,
 }) => {
   const t = useTranslations("profile.myWallet.withdrawPage.bankTransfer");
 
@@ -20,6 +25,62 @@ const BankTransferForm = ({
 
   return (
     <div className="space-y-6">
+      {/* Trips Dropdown */}
+      <div>
+        <label className="block text-gray-700 font-semibold text-base mb-2 text-right">
+          {t("trips.label")} *
+        </label>
+        <div className="relative">
+          <select
+            value={values.selectedTripId || ""}
+            onChange={(e) => onTripSelection(e.target.value, setFieldValue)}
+            className={`w-full px-4 py-3 border-2 rounded-xl text-right focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-base transition-all duration-200 appearance-none cursor-pointer ${
+              errors.selectedTripId && touched.selectedTripId
+                ? "border-red-500"
+                : "border-gray-300 hover:border-gray-400"
+            }`}
+            id="selected-trip"
+            name="selectedTripId"
+            disabled={tripsLoading}
+          >
+            <option value="">
+              {tripsLoading
+                ? t("trips.loading")
+                : completedTrips.length === 0
+                ? t("trips.noTrips")
+                : t("trips.placeholder")}
+            </option>
+            {completedTrips.map((trip) => (
+              <option key={trip._id} value={trip._id}>
+                {trip.name}
+              </option>
+            ))}
+          </select>
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <svg
+              className="w-5 h-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </div>
+        </div>
+        {renderError("selectedTripId")}
+        {tripsError && (
+          <p className="text-red-600 text-sm mt-1">{t("trips.error")}</p>
+        )}
+        {!tripsLoading && !tripsError && completedTrips.length === 0 && (
+          <p className="text-amber-600 text-sm mt-1">{t("trips.noTrips")}</p>
+        )}
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-gray-700 font-semibold text-base mb-2 text-right">
@@ -29,14 +90,11 @@ const BankTransferForm = ({
             type="number"
             placeholder={t("amount.placeholder")}
             value={values.withdrawAmount}
-            onChange={(e) => setFieldValue("withdrawAmount", e.target.value)}
-            onBlur={() =>
-              setFieldValue("withdrawAmount", values.withdrawAmount)
-            }
-            className={`w-full px-4 py-3 border-2 rounded-xl text-right focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-base transition-all duration-200 ${
+            readOnly
+            className={`w-full px-4 py-3 border-2 rounded-xl text-right text-base transition-all duration-200 bg-gray-50 cursor-not-allowed ${
               errors.withdrawAmount && touched.withdrawAmount
                 ? "border-red-500"
-                : "border-gray-300 hover:border-gray-400"
+                : "border-gray-200"
             }`}
             min="50"
             max={balance?.availableBalance}
@@ -46,10 +104,9 @@ const BankTransferForm = ({
           />
           {renderError("withdrawAmount")}
           <p className="text-xs text-gray-500 mt-2 text-right">
-            {t("amount.limits", {
-              min: "50",
-              max: balance?.availableBalance?.toLocaleString("ar-SA") || 0,
-            })}
+            {selectedTrip
+              ? t("amount.autoFilled")
+              : t("amount.selectTripFirst")}
           </p>
         </div>
 
@@ -100,6 +157,9 @@ const BankTransferForm = ({
             name="clientName"
           />
           {renderError("clientName")}
+          <p className="text-xs text-gray-500 mt-2 text-right">
+            {t("clientName.hint")}
+          </p>
         </div>
 
         <div>

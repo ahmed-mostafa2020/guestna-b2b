@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { useFetchData } from "@hooks/useFetchData";
 import TransferMethodSelector from "./TransferMethodSelector";
 import STCPayForm from "./STCPayForm";
 import BankTransferForm from "./BankTransferForm";
@@ -14,9 +15,30 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
 
   // Form state
   const [transferMethod, setTransferMethod] = useState("stc");
+  const [selectedTrip, setSelectedTrip] = useState(null);
+
+  // Fetch trips for withdrawal dropdown
+  const {
+    data: tripsData,
+    isLoading: tripsLoading,
+    error: tripsError,
+  } = useFetchData(
+    "profile/organizationTrips/invoices/trips/all",
+    {
+      page: 1,
+      perPage: 100, // Get more trips for selection
+    },
+    {
+      method: "GET",
+    }
+  );
+
+  // Get trips from the response (no need to filter as this endpoint returns completed trips)
+  const completedTrips = tripsData || [];
 
   // Initial form values
   const initialValues = {
+    selectedTripId: "",
     withdrawAmount: "",
     phoneNumber: "",
     bankName: "",
@@ -28,6 +50,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   // Yup validation schema
   const getValidationSchema = () => {
     return Yup.object().shape({
+      selectedTripId: Yup.string().required(t("validation.tripRequired")),
       withdrawAmount: Yup.number()
         .required(t("validation.amountRequired"))
         .min(50, t("validation.minAmount"))
@@ -54,13 +77,13 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
       clientName:
         transferMethod === "bank"
           ? Yup.string()
-              .required(t("validation.clientNameRequired"))
+              .required("Account Holder Name is required.")
               .matches(
-                /^[a-zA-Z\u0600-\u06FF\s]+$/,
-                t("validation.clientNameInvalid")
+                /^[a-zA-Z\s]+$/,
+                "Account Holder Name should only contain letters and spaces."
               )
-              .min(2, t("validation.clientNameMinLength"))
-              .max(50, t("validation.clientNameMaxLength"))
+              .min(2, "Account Holder Name must be at least 2 characters.")
+              .max(50, "Account Holder Name must not exceed 50 characters.")
           : Yup.string().notRequired(),
       ibanNumber:
         transferMethod === "bank"
@@ -70,11 +93,24 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
     });
   };
 
+  // Handle trip selection
+  const handleTripSelection = (tripId, setFieldValue) => {
+    setFieldValue("selectedTripId", tripId);
+
+    // Find the selected trip to get its details
+    const trip = completedTrips.find((t) => t._id === tripId);
+    if (trip) {
+      setSelectedTrip(trip);
+      // Auto-fill the withdrawal amount with the trip's amount
+      setFieldValue("withdrawAmount", trip.amount.toString());
+    }
+  };
+
   // Handle form submission
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       const requestBody = {
-        trip: {},
+        trip: selectedTrip ? { id: selectedTrip._id } : {},
         amount: parseFloat(values.withdrawAmount),
         type: transferMethod === "stc" ? "STC_PAY" : "BANK_TRANSFER",
         note: values.withdrawNotes || "",
@@ -144,10 +180,10 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
     return cleaned.replace(/(.{4})/g, "$1 ").trim();
   };
 
-  // Format client name input (only allow letters and spaces)
+  // Format client name input (only allow letters A-Z, a-z and spaces)
   const formatClientName = (value) => {
-    // Remove any characters that are not letters (English or Arabic) or spaces
-    return value.replace(/[^a-zA-Z\u0600-\u06FF\s]/g, "");
+    // Remove any characters that are not letters (A-Z, a-z) or spaces
+    return value.replace(/[^a-zA-Z\s]/g, "");
   };
 
   return (
@@ -168,6 +204,11 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
               setFieldValue={setFieldValue}
               balance={balance}
               formatPhoneNumber={formatPhoneNumber}
+              completedTrips={completedTrips}
+              tripsLoading={tripsLoading}
+              tripsError={tripsError}
+              selectedTrip={selectedTrip}
+              onTripSelection={handleTripSelection}
             />
           )}
 
@@ -181,22 +222,32 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
               balance={balance}
               formatIBAN={formatIBAN}
               formatClientName={formatClientName}
+              completedTrips={completedTrips}
+              tripsLoading={tripsLoading}
+              tripsError={tripsError}
+              selectedTrip={selectedTrip}
+              onTripSelection={handleTripSelection}
             />
           )}
 
           {/* Transfer Method Selection */}
           <TransferMethodSelector
             transferMethod={transferMethod}
-            setTransferMethod={setTransferMethod}
+            setTransferMethod={(method) => {
+              setTransferMethod(method);
+              // Reset selected trip when switching methods
+              setSelectedTrip(null);
+              setFieldValue("selectedTripId", "");
+            }}
           />
 
           {/* Submit Button */}
           <div className="mt-8 pt-6 border-t border-gray-200">
             <button
               type="submit"
-              disabled={isSubmitting || balanceLoading}
+              disabled={isSubmitting || balanceLoading || !selectedTrip}
               className={`w-full py-4 px-6 rounded-2xl font-bold text-white text-base transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-4 transform hover:-translate-y-1 ${
-                isSubmitting || balanceLoading
+                isSubmitting || balanceLoading || !selectedTrip
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 focus:ring-green-500 shadow-lg hover:shadow-xl"
               }`}

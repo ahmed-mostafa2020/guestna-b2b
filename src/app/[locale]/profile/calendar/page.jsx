@@ -33,7 +33,11 @@ const CalendarPage = () => {
   const [perPage] = useState(10);
 
   // Fetch events counts for summary cards
-  const { data: countsData, isLoading: countsLoading } = useFetchData(
+  const {
+    data: countsData,
+    isLoading: countsLoading,
+    refetch: refetchCounts,
+  } = useFetchData(
     B2B_END_POINTS.PROFILE.HAPPENINGS.COUNTS,
     {},
     { method: "GET" }
@@ -137,6 +141,7 @@ const CalendarPage = () => {
   const handleEventAdded = () => {
     refetchSelectedDateEvents();
     refetchAllEvents();
+    refetchCounts(); // Also refetch the counts data to update summary cards
   };
 
   // Valid happeningType values
