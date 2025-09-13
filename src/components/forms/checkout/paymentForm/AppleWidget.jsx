@@ -1,12 +1,12 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { useSelector } from "react-redux";
 import { memo, useEffect, useState, useRef } from "react";
 import { END_POINTS } from "@constants/APIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import { useMutationData } from "@hooks/useMutationData";
-import { useSnackbar } from "notistack";
+import axios from "axios";
+import { useMutationData } from "@/src/hooks/useMutationData";
 
 const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const [currentBookingId, setCurrentBookingId] = useState(null);
@@ -18,8 +18,6 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const tripName = useSelector((state) => state.finalTripDetailsData.data.name);
 
   const locale = useLocale();
-  const t = useTranslations();
-  const { enqueueSnackbar } = useSnackbar();
 
   const vercelUrl = CONSTANT_VALUES.URLS.B2B_VERCEL_URL;
   const appleWidgetKey = process.env.NEXT_PUBLIC_APPLE_WIDGET_KEY;
@@ -65,44 +63,20 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
             mutate(baseData, {
               onSuccess: (data) => {
                 if (!data?.bookingId) {
-                  enqueueSnackbar(
-                    t("forms.validation.payment.error") ||
-                      "Error generating booking ID",
-                    {
-                      variant: "error",
-                    }
-                  );
+                  alert("issue at generate Id");
                   reject();
                 }
                 setCurrentBookingId(data.bookingId);
-                enqueueSnackbar(
-                  t("forms.validation.payment.initiation") ||
-                    "Payment initiated successfully",
-                  {
-                    variant: "success",
-                  }
-                );
                 resolve({});
               },
               onError: (error) => {
-                enqueueSnackbar(
-                  t("forms.validation.payment.error") ||
-                    "Error initiating payment",
-                  {
-                    variant: "error",
-                  }
-                );
+                alert("on error generate Id");
+
                 reject();
               },
             });
           } catch (error) {
-            enqueueSnackbar(
-              t("forms.validation.payment.error") ||
-                "Payment initiation failed",
-              {
-                variant: "error",
-              }
-            );
+            alert("on error Initiation");
             reject();
           }
         });
@@ -120,43 +94,20 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
               mutateComferm(confirmationData, {
                 onSuccess: () => {
                   setCurrentBookingId("");
-                  enqueueSnackbar(
-                    t("forms.validation.payment.success") ||
-                      "Payment completed successfully",
-                    {
-                      variant: "success",
-                    }
-                  );
                   resolve({});
                 },
                 onError: (error) => {
-                  enqueueSnackbar(
-                    t("forms.validation.payment.error") ||
-                      "Payment confirmation failed",
-                    {
-                      variant: "error",
-                    }
-                  );
+                  alert("error to confirmed");
                   reject();
                 },
               });
             } else {
-              enqueueSnackbar(
-                t("forms.validation.payment.error") || "Invalid payment data",
-                {
-                  variant: "error",
-                }
-              );
+              alert("faild generate paymentId");
+
               reject();
             }
           } catch (error) {
-            enqueueSnackbar(
-              t("forms.validation.payment.error") ||
-                "Payment completion failed",
-              {
-                variant: "error",
-              }
-            );
+            alert("faild on complete");
             reject();
           }
         });
@@ -174,7 +125,6 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
     tripName,
   ]);
 
-  // Test functions for debugging
   // const testInitiation = () => {
   //   console.log("🧪 Testing Apple Pay Initiation...");
   //   console.log("Base Data:", baseData);
@@ -202,10 +152,9 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   // };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex">
       <div className="mysr-form"></div>
 
-      {/* Debug Test Buttons - Remove in production */}
       {/* {process.env.NODE_ENV === "development" && (
         <div className="flex flex-col gap-2 p-4 bg-gray-100 rounded-lg">
           <h4 className="font-semibold text-sm">Apple Pay Debug Tools</h4>
