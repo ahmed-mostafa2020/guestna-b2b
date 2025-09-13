@@ -104,7 +104,7 @@ const ParentFormFields = ({
         )}
       </div>
 
-      <div className="relative flex flex-col gap-2">
+      {/* <div className="relative flex flex-col gap-2">
         <label className="font-medium capitalize font-ibm">
           {t("forms.phone.backupPhone")}
         </label>
@@ -138,8 +138,9 @@ const ParentFormFields = ({
             {errors.backupMobile}
           </div>
         )}
-      </div>
+      </div> */}
 
+      {/* 
       <TextInputGroup
         label={t("forms.relationship.name")}
         type="text"
@@ -151,7 +152,7 @@ const ParentFormFields = ({
         onBlur={handleBlur}
         minLength="2"
         maxLength="50"
-      />
+      /> */}
 
       <div className="relative flex flex-col gap-2">
         <DropdownGroup
@@ -173,7 +174,7 @@ const ParentFormFields = ({
         )}
       </div>
 
-      <TextInputGroup
+      {/* <TextInputGroup
         label={t("forms.nationalId.name")}
         type="number"
         name="nationalId"
@@ -193,7 +194,7 @@ const ParentFormFields = ({
           setNationalIdImageError(""); // Clear error on new file
         }}
         nationalIdImageError={nationalIdImageError}
-      />
+      /> */}
 
       <TextInputGroup
         label={t("forms.promoCode.label")}

@@ -83,7 +83,7 @@ const ChildForm = ({
             )}
         </div>
 
-        <TextInputGroup
+        {/* <TextInputGroup
           label={t("forms.nationalId.name")}
           type="number"
           name={`children[${index}].nationalId`}
@@ -102,8 +102,9 @@ const ChildForm = ({
             onChildImageChange(file || null);
           }}
           imageError={imageError}
-        />
+        /> */}
 
+        {/* 
         <div className="relative flex flex-col gap-2">
           <label className="font-medium capitalize font-ibm">
             {t("forms.phone.studentPhone")}
@@ -140,9 +141,9 @@ const ChildForm = ({
                 {errors.children?.[index]?.studentMobile}
               </div>
             )}
-        </div>
+        </div> */}
 
-        <TextInputGroup
+        {/* <TextInputGroup
           label={t("forms.email.studentEmail")}
           type="email"
           name={`children[${index}].studentEmail`}
@@ -152,7 +153,7 @@ const ChildForm = ({
           onChange={handleChange}
           onBlur={handleBlur}
           placeholder="guestna@gmail.com"
-        />
+        /> */}
       </div>
     </div>
   );

@@ -85,6 +85,54 @@ export async function POST(request) {
   }
 }
 
+export async function PUT(request) {
+  const { searchParams } = new URL(request.url);
+  const pathPut = searchParams.get("path");
+
+  if (!pathPut) {
+    return NextResponse.json(
+      { error: "Missing path parameter" },
+      { status: 400 }
+    );
+  }
+
+  const token = request.headers.get("authorization");
+  const devicespecificid = request.headers.get("devicespecificid");
+  const contentType = request.headers.get("content-type");
+
+  const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${pathPut}`;
+
+  const headers = {
+    reqKey: process.env.SECURE_REQ_KEY,
+    lang: request.headers.get("lang") || "ar",
+    ...(token && { authorization: token }),
+    ...(devicespecificid && { devicespecificid }),
+  };
+
+  let body = undefined;
+  if (contentType?.includes("application/json")) {
+    body = await request.json();
+    headers["Content-Type"] = "application/json";
+  } else if (contentType?.includes("multipart/form-data")) {
+    const formData = await request.formData();
+    const axiosFormData = new FormData();
+    for (const [key, value] of formData.entries()) {
+      axiosFormData.append(key, value);
+    }
+    body = axiosFormData;
+  }
+
+  try {
+    const response = await axios.put(backendURL, body, { headers });
+    return NextResponse.json(response.data);
+  } catch (error) {
+    console.error("Proxy error:", error.response?.data || error.message);
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { error: "Proxy error" };
+    return NextResponse.json(data, { status });
+  }
+}
+
 export async function PATCH(request) {
   const { searchParams } = new URL(request.url);
   const pathPatch = searchParams.get("path");
