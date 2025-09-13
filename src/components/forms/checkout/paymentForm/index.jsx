@@ -606,7 +606,7 @@ const PaymentForm = () => {
               <button
                 type="submit"
                 disabled={!isValid || isSubmitting || disabledButton}
-                className={`centered gap-5 lg:w-[540px] mt-8 lg:mt-12  py-4 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor  bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
+                className={`centered gap-5 lg:w-[540px] mt-8 lg:mt-12 lg:py-4 py-2 px-4 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor  bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                   isValid && "hover:bg-linksHover hover:border-linksHover"
                 }`}
               >

@@ -53,7 +53,7 @@ const ChildForm = ({
         {/* Wrap the two dropdowns in a new container */}
         <div className="sm:col-span-2 grid grid-cols-2 gap-x-4 gap-y-6">
           {/* Academic Stage Dropdown */}
-          <div className=" relative flex-1 flex-col gap-2">
+          <div className="relative flex flex-1 flex-col gap-2">
             <DropdownGroup
               label={t("forms.academicStages.name")}
               placeholder={t("forms.academicStages.name")}
