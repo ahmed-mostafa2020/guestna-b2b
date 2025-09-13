@@ -1398,7 +1398,8 @@
       "payment": {
         "success": "Payment was done successfully!",
         "sendOtp": "Please send OTP!",
-        "resendOtp": "Please resend OTP!"
+        "resendOtp": "Please resend OTP!",
+        "error": "An error occurred! Please try again"
       },
 
       "api_errors": {
