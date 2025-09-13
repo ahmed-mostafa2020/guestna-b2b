@@ -55,11 +55,11 @@ const PackagesTable = ({
                 </tr>
               </thead>
               <tbody>
-                {data.nodes.map((pkg, index) => (
+                {data?.nodes?.map((pkg, index) => (
                   <tr
                     key={pkg._id}
                     className={`${
-                      index != data.nodes.length - 1 &&
+                      index != data?.nodes?.length - 1 &&
                       "border-b border-table-border"
                     } transition-colors hover:bg-gray-50`}
                   >
@@ -110,7 +110,7 @@ const PackagesTable = ({
 
       {/* Mobile Cards */}
       <div className="space-y-4 md:hidden">
-        {data.nodes.map((pkg) => (
+        {data?.nodes?.map((pkg) => (
           <Card
             key={pkg._id}
             className="transition-shadow shadow-md hover:shadow-lg"

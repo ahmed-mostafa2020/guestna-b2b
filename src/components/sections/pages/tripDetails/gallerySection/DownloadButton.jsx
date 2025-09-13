@@ -15,7 +15,7 @@ const DownloadButton = () => {
   const t = useTranslations();
 
   const fileUrl = useSelector(
-    (state) => state.tripDetailsData.data.trip?.detailsFile
+    (state) => state.tripDetailsData?.data?.trip?.detailsFile
   );
 
   // const handleDownloadWithFetch = async () => {

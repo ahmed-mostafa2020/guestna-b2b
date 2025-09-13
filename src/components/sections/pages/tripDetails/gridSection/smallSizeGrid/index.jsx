@@ -17,7 +17,7 @@ import RequestQuote from "../../requestQuote";
 import Cookies from "js-cookie";
 
 const SmallSizeGrid = () => {
-  const data = useSelector((state) => state.tripDetailsData.data.trip);
+  const data = useSelector((state) => state.tripDetailsData?.data?.trip);
 
   const userType = useSelector((state) => state.users.userType);
 

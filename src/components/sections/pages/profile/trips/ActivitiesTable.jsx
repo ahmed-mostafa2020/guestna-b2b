@@ -53,11 +53,11 @@ const ActivitiesTable = ({
                 </tr>
               </thead>
               <tbody>
-                {data.nodes.map((trip, index) => (
+                {data?.nodes?.map((trip, index) => (
                   <tr
                     key={trip._id}
                     className={`${
-                      index != data.nodes.length - 1 &&
+                      index != data?.nodes?.length - 1 &&
                       "border-b border-table-border"
                     } transition-colors hover:bg-gray-50`}
                   >
@@ -102,7 +102,7 @@ const ActivitiesTable = ({
 
       {/* Mobile Cards */}
       <div className="space-y-4 md:hidden">
-        {data.nodes.map((trip) => (
+        {data?.nodes?.map((trip) => (
           <Card
             key={trip._id}
             className="transition-shadow shadow-md hover:shadow-lg"

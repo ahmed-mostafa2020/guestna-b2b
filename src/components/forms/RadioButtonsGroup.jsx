@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 
 const RadioButtonsGroup = ({ list, onChange, genderState }) => {
-  const gender = useSelector((state) => state.profileData.data.gender);
+  const gender = useSelector((state) => state.profileData?.data?.gender);
 
   const t = useTranslations();
 

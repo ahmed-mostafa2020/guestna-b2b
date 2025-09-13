@@ -69,11 +69,11 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.nodes.map((booking, index) => (
+                  {data?.nodes?.map((booking, index) => (
                     <tr
                       key={booking._id}
                       className={`${
-                        index != data.nodes.length - 1 &&
+                        index != data?.nodes?.length - 1 &&
                         "border-b border-table-border"
                       } transition-colors hover:bg-gray-50`}
                     >
@@ -133,7 +133,7 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
 
         {/* Mobile Cards */}
         <div className="space-y-4 md:hidden">
-          {data.nodes.map((booking) => (
+          {data?.nodes?.map((booking) => (
             <Card
               key={booking._id}
               className="transition-shadow shadow-md hover:shadow-lg"

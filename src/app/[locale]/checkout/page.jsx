@@ -15,7 +15,7 @@ import { Container } from "@mui/material";
 const Checkout = () => {
   const t = useTranslations();
 
-  const tripSlug = useSelector((state) => state.finalTripDetailsData.data.slug);
+  const tripSlug = useSelector((state) => state.finalTripDetailsData?.data?.slug);
 
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(

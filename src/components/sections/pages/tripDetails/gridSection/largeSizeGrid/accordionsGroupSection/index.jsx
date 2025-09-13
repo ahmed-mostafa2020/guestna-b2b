@@ -17,7 +17,7 @@ import ExtraInformation from "./accordionsDetails/ExtraInformation";
 import Benefits from "./accordionsDetails/Benefits";
 
 const AccordionsGroupSection = () => {
-  const data = useSelector((state) => state.tripDetailsData.data.trip);
+  const data = useSelector((state) => state.tripDetailsData?.data?.trip);
 
   const isAuth = data?.isAuth ?? true;
 
