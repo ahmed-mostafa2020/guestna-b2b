@@ -15,6 +15,7 @@ const DropdownGroup = ({
   onChange,
   menuItemsList = [],
   required = false,
+  disabled = false,
 }) => {
   const locale = useLocale();
   const isRTL = locale === "ar";
@@ -36,7 +37,10 @@ const DropdownGroup = ({
   ));
 
   return (
-    <FormControl sx={{ m: 1, minWidth: 120, width: "100% " }}>
+    <FormControl
+      sx={{ m: 1, minWidth: 120, width: "100% ", opacity: disabled ? 0.7 : 1 }}
+      disabled={disabled}
+    >
       <div className="flex gap-0.5">
         <label className="mb-2 font-medium capitalize font-ibm">{label}</label>
         {required && <span className="text-error">{"*"}</span>}
@@ -49,8 +53,8 @@ const DropdownGroup = ({
         inputProps={{ "aria-label": "Without label" }}
         sx={{
           "& .MuiSelect-icon": {
-            right: isRTL ? "90% !important" : "",
-            left: isRTL ? "" : "90% !important",
+            right: isRTL ? "85% !important" : "",
+            left: isRTL ? "" : "85% !important",
           },
         }}
         className="border-2 border-[#eaeaea] rounded-lg font-ibm"

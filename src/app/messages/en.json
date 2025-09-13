@@ -1301,7 +1301,8 @@
     },
 
     "academicStages": {
-      "name": "Academic Stages"
+      "name": "Academic Stages",
+      "selectFirst": "Select academic stage first"
     },
 
     "grade": {

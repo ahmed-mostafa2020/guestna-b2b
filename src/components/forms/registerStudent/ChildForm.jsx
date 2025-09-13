@@ -34,6 +34,7 @@ const ChildForm = ({
           : t(`forms.registerForm.childrenNumber.${index}`)}
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-6">
+        {/* Student Name field stays in its own column */}
         <TextInputGroup
           label={t("forms.studentName.name")}
           type="text"
@@ -49,38 +50,54 @@ const ChildForm = ({
           required={true}
         />
 
-        <div className="relative flex flex-col gap-2">
-          <DropdownGroup
-            label={t("forms.academicStages.name")}
-            placeholder={t("forms.academicStages.name")}
-            value={childrenStages[index] || ""}
-            onChange={(event) => handleChangeChildStage(index, event)}
-            menuItemsList={academicStages}
-            required={true}
-          />
-          {errors.children?.[index]?.academicStage &&
-            touched.children?.[index]?.academicStage && (
-              <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-                {errors.children[index].academicStage}
-              </div>
-            )}
-        </div>
+        {/* Wrap the two dropdowns in a new container */}
+        <div className="sm:col-span-2 grid grid-cols-2 gap-x-4 gap-y-6">
+          {/* Academic Stage Dropdown */}
+          <div className=" relative flex-1 flex-col gap-2">
+            <DropdownGroup
+              label={t("forms.academicStages.name")}
+              placeholder={t("forms.academicStages.name")}
+              value={childrenStages[index] || ""}
+              onChange={(event) => handleChangeChildStage(index, event)}
+              menuItemsList={academicStages}
+              required={true}
+            />
+            {errors.children?.[index]?.academicStage &&
+              touched.children?.[index]?.academicStage && (
+                <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+                  {errors.children[index].academicStage}
+                </div>
+              )}
+          </div>
 
-        <div className="relative flex flex-col gap-2">
-          <DropdownGroup
-            label={t("forms.grade.name")}
-            placeholder={t("forms.grade.name")}
-            value={child.grade}
-            onChange={(event) => handleChangeChildGrade(index, event)}
-            menuItemsList={gradesList}
-            required={true}
-          />
-          {errors.children?.[index]?.grade &&
-            touched.children?.[index]?.grade && (
-              <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-                {errors.children[index].grade}
-              </div>
-            )}
+          {/* Grade Dropdown */}
+          <div className="relative flex-1 flex-col gap-2">
+            <div className="relative">
+              <DropdownGroup
+                label={t("forms.grade.name")}
+                placeholder={
+                  !childrenStages[index]
+                    ? t("forms.academicStages.selectFirst") ||
+                      "Please select academic stage first"
+                    : t("forms.grade.name")
+                }
+                value={child.grade}
+                onChange={(event) => handleChangeChildGrade(index, event)}
+                menuItemsList={gradesList}
+                required={true}
+                disabled={!childrenStages[index]}
+                className={
+                  !childrenStages[index] ? "opacity-60 cursor-not-allowed" : ""
+                }
+              />
+            </div>
+            {errors.children?.[index]?.grade &&
+              touched.children?.[index]?.grade && (
+                <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+                  {errors.children[index].grade}
+                </div>
+              )}
+          </div>
         </div>
 
         {/* <TextInputGroup

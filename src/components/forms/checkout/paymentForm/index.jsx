@@ -469,7 +469,7 @@ const PaymentForm = () => {
               </div> */}
 
               {/* TAMARA */}
-              <div className="flex flex-col transition-all duration-200 ease-in-out">
+              {/* <div className="flex flex-col transition-all duration-200 ease-in-out">
                 <PaymentMethod
                   value={CONSTANT_VALUES.PAYMENT_METHODS.TAMARA}
                   currentPaymentMethod={currentPaymentMethod}
@@ -533,7 +533,7 @@ const PaymentForm = () => {
                     </div>
                   </div>
                 )}
-              </div>
+              </div> */}
 
               {/* Apple pay */}
               {canMakePayments && (
