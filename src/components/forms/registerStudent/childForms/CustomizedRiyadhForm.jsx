@@ -3,8 +3,9 @@ import { memo } from "react";
 import TextInputGroup from "../../TextInputGroup";
 import DropdownGroup from "../../DropdownGroup";
 import FileUploadGroup from "../../FileUploadGroup";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 
-const OutSideRiyadh = ({
+const CustomizedRiyadhForm = ({
   child,
   index,
   errors,
@@ -24,6 +25,7 @@ const OutSideRiyadh = ({
   t,
   cn,
   childrenNumber,
+  tripMainCategory,
 }) => {
   return (
     <div className="flex flex-col gap-4 mt-6">
@@ -68,7 +70,11 @@ const OutSideRiyadh = ({
 
         {/* National ID Image Upload */}
         <FileUploadGroup
-          label={t("forms.nationalId.imageUpload")}
+          label={
+            tripMainCategory === CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH
+              ? t("forms.nationalId.imageUpload")
+              : t("forms.nationalId.imageOptional")
+          }
           name={`children[${index}].nationalIdImage`}
           placeholder={t("forms.nationalId.imageUpload")}
           errors={errors.children?.[index]?.nationalIdImage}
@@ -76,8 +82,21 @@ const OutSideRiyadh = ({
           onBlur={handleBlur}
           onFileChange={(e) => {
             const file = e.target.files && e.target.files[0];
-            setFieldValue(`children[${index}].nationalIdImage`, file || null);
-            onNationalIdImageChange(file || null);
+            if (file) {
+              setFieldValue(`children[${index}].nationalIdImage`, file);
+              onNationalIdImageChange(file);
+            } else {
+              // For RIYADH_VIBES, don't set null - leave field undefined
+              // For OUTSIDE_RIYADH, set null to trigger validation
+              const isOutsideRiyadh =
+                tripMainCategory ===
+                CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH;
+              setFieldValue(
+                `children[${index}].nationalIdImage`,
+                isOutsideRiyadh ? null : undefined
+              );
+              onNationalIdImageChange(isOutsideRiyadh ? null : undefined);
+            }
           }}
           accept="image/*,application/pdf"
           maxSizeInMB={5}
@@ -88,7 +107,9 @@ const OutSideRiyadh = ({
             "application/pdf",
           ]}
           value={child.nationalIdImage}
-          required={true}
+          required={
+            tripMainCategory === CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH
+          }
         />
 
         {/* Academic Stages and Grades - Full width on mobile, 2 columns on larger screens */}
@@ -145,4 +166,4 @@ const OutSideRiyadh = ({
   );
 };
 
-export default memo(OutSideRiyadh);
+export default memo(CustomizedRiyadhForm);

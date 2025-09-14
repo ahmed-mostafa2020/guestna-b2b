@@ -25,7 +25,7 @@ import { useSnackbar } from "notistack";
 import { CircularProgress, Container } from "@mui/material";
 import ParentFormFields from "./ParentFormFields";
 import ChildForm from "./childForms/ChildForm";
-import OutSideRiyadh from "./childForms/OutSideRiyadh";
+import CustomizedRiyadhForm from "./childForms/CustomizedRiyadhForm";
 
 const RegisterStudentForm = ({ tripMainCategory }) => {
   const [_, setNationalityError] = useState("");
@@ -92,9 +92,14 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
         nationalId: "",
         studentMobile: "",
         studentEmail: "",
-        ...(tripMainCategory ===
-          CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH && {
-          nationalIdImage: null,
+        ...((tripMainCategory ===
+          CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH ||
+          tripMainCategory ===
+            CONSTANT_VALUES.MAIN_CATEGORIES.RIYADH_VIBES) && {
+          nationalIdImage:
+            tripMainCategory === CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH
+              ? null
+              : undefined,
         }),
       };
       return child;
@@ -329,9 +334,15 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
                   nationalId: "",
                   studentMobile: "",
                   studentEmail: "",
-                  ...(tripMainCategory ===
-                    CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH && {
-                    nationalIdImage: null,
+                  ...((tripMainCategory ===
+                    CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH ||
+                    tripMainCategory ===
+                      CONSTANT_VALUES.MAIN_CATEGORIES.RIYADH_VIBES) && {
+                    nationalIdImage:
+                      tripMainCategory ===
+                      CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH
+                        ? null
+                        : undefined,
                   }),
                 };
 
@@ -429,8 +440,10 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
                   <div>
                     {values.children.map((child, index) => {
                       return tripMainCategory ===
-                        CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH ? (
-                        <OutSideRiyadh
+                        CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH ||
+                        tripMainCategory ===
+                          CONSTANT_VALUES.MAIN_CATEGORIES.RIYADH_VIBES ? (
+                        <CustomizedRiyadhForm
                           key={`child-${index}`}
                           child={child}
                           index={index}
@@ -475,6 +488,7 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
                           t={t}
                           cn={cn}
                           childrenNumber={childrenNumber}
+                          tripMainCategory={tripMainCategory}
                         />
                       ) : (
                         <ChildForm

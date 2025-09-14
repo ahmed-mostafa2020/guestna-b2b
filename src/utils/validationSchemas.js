@@ -299,6 +299,9 @@ export const createRegisterChildSchema = (
   const isOutsideRiyadh =
     tripMainCategory === CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH;
 
+  const RiyadhVibes =
+    tripMainCategory === CONSTANT_VALUES.MAIN_CATEGORIES.RIYADH_VIBES;
+
   return Yup.object().shape({
     parentName: Yup.string()
       .trim()
@@ -387,17 +390,18 @@ export const createRegisterChildSchema = (
           grade: Yup.string().required(t("forms.validation.require")),
 
           // Conditional validation for nationalId - required only for OUTSIDE_RIYADH
-          nationalId: isOutsideRiyadh
-            ? Yup.string()
-                .required(t("forms.validation.require"))
-                .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
-                .min(10, t("forms.nationalId.error.min"))
-                .max(10, t("forms.nationalId.error.max"))
-            : Yup.string()
-                .optional()
-                .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
-                .min(10, t("forms.nationalId.error.min"))
-                .max(10, t("forms.nationalId.error.max")),
+          nationalId:
+            isOutsideRiyadh || RiyadhVibes
+              ? Yup.string()
+                  .required(t("forms.validation.require"))
+                  .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
+                  .min(10, t("forms.nationalId.error.min"))
+                  .max(10, t("forms.nationalId.error.max"))
+              : Yup.string()
+                  .optional()
+                  .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
+                  .min(10, t("forms.nationalId.error.min"))
+                  .max(10, t("forms.nationalId.error.max")),
 
           // Conditional validation for nationalIdImage - required only for OUTSIDE_RIYADH
           nationalIdImage: isOutsideRiyadh
