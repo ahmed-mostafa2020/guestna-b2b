@@ -39,6 +39,7 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
 
   const [childrenStages, setChildrenStages] = useState({});
   const [gradesList, setGradesList] = useState({});
+  const [gradesLoading, setGradesLoading] = useState({});
   const [childrenNationalIdImages, setChildrenNationalIdImages] = useState([]); // array of files
   const [childrenNationalIdImagesError, setChildrenNationalIdImagesError] =
     useState([]);
@@ -377,6 +378,12 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
             }));
             setFieldValue(`children[${childIndex}].academicStage`, newStage);
 
+            // Set loading state for this child's grade dropdown
+            setGradesLoading((prev) => ({
+              ...prev,
+              [childIndex]: true,
+            }));
+
             // Fetch grades for the selected stage
             try {
               const response = await axios.get(
@@ -393,6 +400,12 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
               setGradesList((prev) => ({
                 ...prev,
                 [childIndex]: [],
+              }));
+            } finally {
+              // Clear loading state
+              setGradesLoading((prev) => ({
+                ...prev,
+                [childIndex]: false,
               }));
             }
           };
@@ -456,6 +469,7 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
                           academicStages={academicStages}
                           handleChangeChildStage={handleChangeChildStage}
                           gradesList={gradesList[index] || []}
+                          gradesLoading={gradesLoading[index] || false}
                           handleChangeChildGrade={handleChangeChildGrade}
                           onChildImageChange={(file) => {
                             const updated = [...childrenNationalIdImages];
@@ -504,6 +518,7 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
                           academicStages={academicStages}
                           handleChangeChildStage={handleChangeChildStage}
                           gradesList={gradesList[index] || []}
+                          gradesLoading={gradesLoading[index] || false}
                           handleChangeChildGrade={handleChangeChildGrade}
                           onChildImageChange={(file) => {
                             const updated = [...childrenNationalIdImages];

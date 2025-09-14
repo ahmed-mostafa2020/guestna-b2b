@@ -1336,7 +1336,8 @@
     "academicStages": {
       "name": "Academic Stages",
       "placeholder": "Select Academic Stage",
-      "selectFirst": "Select stage first"
+      "selectFirst": "Select stage first",
+      "loading": "Loading academic stages..."
     },
 
     "grade": {

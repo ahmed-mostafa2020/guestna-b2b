@@ -6,6 +6,7 @@ import DropdownGroup from "../../DropdownGroup";
 import { Field } from "formik";
 import PhoneInputWithCountrySelect from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import { CircularProgress } from "@mui/material";
 
 const ChildForm = ({
   child,
@@ -19,6 +20,7 @@ const ChildForm = ({
   handleChangeChildStage,
   academicStages,
   gradesList,
+  gradesLoading,
   handleChangeChildGrade,
   onChildImageChange,
   imageError,
@@ -79,17 +81,26 @@ const ChildForm = ({
                   !childrenStages[index]
                     ? t("forms.academicStages.selectFirst") ||
                       "Please select academic stage first"
+                    : gradesLoading
+                    ? t("forms.academicStages.loading")
                     : t("forms.grade.name")
                 }
                 value={child.grade}
                 onChange={(event) => handleChangeChildGrade(index, event)}
                 menuItemsList={gradesList}
                 required={true}
-                disabled={!childrenStages[index]}
+                disabled={!childrenStages[index] || gradesLoading}
                 className={
-                  !childrenStages[index] ? "opacity-60 cursor-not-allowed" : ""
+                  !childrenStages[index] || gradesLoading
+                    ? "opacity-60 cursor-not-allowed"
+                    : ""
                 }
               />
+              {gradesLoading && (
+                <div className="absolute end-10 top-[70%] transform -translate-y-1/2 pointer-events-none">
+                  <CircularProgress size={20} sx={{ color: "#ED8A22" }} />
+                </div>
+              )}
             </div>
             {errors.children?.[index]?.grade &&
               touched.children?.[index]?.grade && (

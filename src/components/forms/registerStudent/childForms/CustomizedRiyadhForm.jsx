@@ -4,6 +4,7 @@ import TextInputGroup from "../../TextInputGroup";
 import DropdownGroup from "../../DropdownGroup";
 import FileUploadGroup from "../../FileUploadGroup";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { CircularProgress } from "@mui/material";
 
 const CustomizedRiyadhForm = ({
   child,
@@ -17,6 +18,7 @@ const CustomizedRiyadhForm = ({
   handleChangeChildStage,
   academicStages,
   gradesList,
+  gradesLoading,
   handleChangeChildGrade,
   onChildImageChange,
   onNationalIdImageChange,
@@ -141,17 +143,26 @@ const CustomizedRiyadhForm = ({
                   !childrenStages[index]
                     ? t("forms.academicStages.selectFirst") ||
                       "Please select academic stage first"
+                    : gradesLoading
+                    ? t("forms.academicStages.loading")
                     : t("forms.grade.name")
                 }
                 value={child.grade}
                 onChange={(event) => handleChangeChildGrade(index, event)}
                 menuItemsList={gradesList}
-                required={true}
-                disabled={!childrenStages[index]}
+                required={gradesLoading}
+                disabled={!childrenStages[index] || gradesLoading}
                 className={
-                  !childrenStages[index] ? "opacity-60 cursor-not-allowed" : ""
+                  !childrenStages[index] || gradesLoading
+                    ? "opacity-60 cursor-not-allowed"
+                    : ""
                 }
               />
+              {gradesLoading && (
+                <div className="absolute end-10 top-[70%] transform -translate-y-1/2 pointer-events-none">
+                  <CircularProgress size={20} sx={{ color: "#ED8A22" }} />
+                </div>
+              )}
             </div>
             {errors.children?.[index]?.grade &&
               touched.children?.[index]?.grade && (
