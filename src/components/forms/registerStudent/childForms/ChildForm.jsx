@@ -1,7 +1,7 @@
 import { memo } from "react";
 
-import TextInputGroup from "../TextInputGroup";
-import DropdownGroup from "../DropdownGroup";
+import TextInputGroup from "../../TextInputGroup";
+import DropdownGroup from "../../DropdownGroup";
 
 import { Field } from "formik";
 import PhoneInputWithCountrySelect from "react-phone-number-input";

@@ -26,32 +26,39 @@ const DropdownGroup = ({
         onChange(event);
       }
     } catch (error) {
-      console.error('Dropdown onChange error:', error);
+      console.error("Dropdown onChange error:", error);
     }
   };
 
-  const renderedMenuItems = menuItemsList?.map((item) => (
-    <MenuItem
-      key={item._id || item.id || Math.random()}
-      value={item._id || item.id}
-      sx={{
-        fontFamily: "var(--font-somar-sans), sans-serif",
-      }}
-    >
-      {typeof item.name === "string"
-        ? item.name
-        : locale === "ar"
-        ? item.name?.ar
-        : item.name?.en}
-    </MenuItem>
-  )) || [];
+  const renderedMenuItems =
+    menuItemsList?.map((item) => (
+      <MenuItem
+        key={item._id || item.id || Math.random()}
+        value={item._id || item.id}
+        sx={{
+          fontFamily: "var(--font-somar-sans), sans-serif",
+        }}
+      >
+        {typeof item.name === "string"
+          ? item.name
+          : locale === "ar"
+          ? item.name?.ar
+          : item.name?.en}
+      </MenuItem>
+    )) || [];
 
   return (
     <FormControl
-      sx={{ m: 1, minWidth: 120, width: "100%", opacity: disabled ? 0.7 : 1 }}
+      sx={{
+        m: 1,
+        minWidth: 120,
+        width: "100%",
+        opacity: disabled ? 0.7 : 1,
+      }}
       disabled={disabled}
     >
       <div className="flex gap-0.5">
+        {/* font-ibm */}
         <label className="mb-2 font-medium capitalize font-ibm">{label}</label>
         {required && <span className="text-error">{"*"}</span>}
       </div>

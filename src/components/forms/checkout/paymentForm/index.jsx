@@ -550,12 +550,12 @@ const PaymentForm = () => {
                     CONSTANT_VALUES.PAYMENT_METHODS.APPLE && (
                     <div className="flex flex-col gap-4 px-4 py-8 bg-[#FAF9F9] transition-all duration-200 ease-in-out">
                       <div className="lg:w-[510px]">
-                        {/* <div className="flex lg:w-[510px]">
+                        <div className="flex lg:w-[510px]">
                           <AppleWidget baseData={baseData} />
-                        </div> */}
+                        </div>
 
                         {/* Test */}
-                        {tripId === "68c173a23e41d7d2a0845c78" && (
+                        {/* {tripId === "68c173a23e41d7d2a0845c78" && (
                           <div className="flex flex-col gap-4 px-4 py-8 bg-[#FAF9F9] transition-all duration-200 ease-in-out">
                             <div className="lg:w-[510px]">
                               <div className="flex lg:w-[510px]">
@@ -563,7 +563,7 @@ const PaymentForm = () => {
                               </div>
                             </div>
                           </div>
-                        )}
+                        )} */}
 
                         {/* <div className="relative flex flex-col gap-2 mb-6">
                         <label className="font-medium capitalize font-ibm">

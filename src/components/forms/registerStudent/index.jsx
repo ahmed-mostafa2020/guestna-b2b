@@ -9,6 +9,7 @@ import { setFinalTripDetailsData } from "@store/checkout/finalTripDetailsSlice";
 import { memo, useMemo, useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 import { createRegisterChildSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import { cn } from "@utils/cn";
@@ -23,7 +24,7 @@ import { useSnackbar } from "notistack";
 
 import { CircularProgress, Container } from "@mui/material";
 import ParentFormFields from "./ParentFormFields";
-import ChildForm from "./ChildForm";
+import ChildForm from "./childForms/ChildForm";
 
 const RegisterStudentForm = ({ tripMainCategory }) => {
   const [_, setNationalityError] = useState("");
@@ -387,49 +388,55 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
               />
 
               {/* Dynamic Children Fields */}
-              <FieldArray
-                name="children"
-                className="transition-all duration-200 ease-in-out"
-              >
-                {/* eslint-disable-next-line no-unused-vars */}
-                {({ push, remove }) => (
-                  <div>
-                    {values.children.map((child, index) => (
-                      <ChildForm
-                        key={`child-${index}`}
-                        child={child}
-                        index={index}
-                        errors={errors}
-                        touched={touched}
-                        handleChange={handleChange}
-                        handleBlur={handleBlur}
-                        setFieldValue={setFieldValue}
-                        childrenStages={childrenStages}
-                        academicStages={academicStages}
-                        handleChangeChildStage={handleChangeChildStage}
-                        gradesList={gradesList[index] || []}
-                        handleChangeChildGrade={handleChangeChildGrade}
-                        onChildImageChange={(file) => {
-                          const updated = [...childrenNationalIdImages];
-                          updated[index] = file;
-                          setChildrenNationalIdImages(updated);
 
-                          // Clear error for this child on new file
-                          setChildrenNationalIdImagesError((prev) => {
-                            const arr = [...prev];
-                            arr[index] = "";
-                            return arr;
-                          });
-                        }}
-                        imageError={childrenNationalIdImagesError[index]}
-                        t={t}
-                        cn={cn}
-                        childrenNumber={childrenNumber}
-                      />
-                    ))}
-                  </div>
-                )}
-              </FieldArray>
+              {tripMainCategory ===
+              CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH ? (
+                <OutSideRiyadh />
+              ) : (
+                <FieldArray
+                  name="children"
+                  className="transition-all duration-200 ease-in-out"
+                >
+                  {/* eslint-disable-next-line no-unused-vars */}
+                  {({ push, remove }) => (
+                    <div>
+                      {values.children.map((child, index) => (
+                        <ChildForm
+                          key={`child-${index}`}
+                          child={child}
+                          index={index}
+                          errors={errors}
+                          touched={touched}
+                          handleChange={handleChange}
+                          handleBlur={handleBlur}
+                          setFieldValue={setFieldValue}
+                          childrenStages={childrenStages}
+                          academicStages={academicStages}
+                          handleChangeChildStage={handleChangeChildStage}
+                          gradesList={gradesList[index] || []}
+                          handleChangeChildGrade={handleChangeChildGrade}
+                          onChildImageChange={(file) => {
+                            const updated = [...childrenNationalIdImages];
+                            updated[index] = file;
+                            setChildrenNationalIdImages(updated);
+
+                            // Clear error for this child on new file
+                            setChildrenNationalIdImagesError((prev) => {
+                              const arr = [...prev];
+                              arr[index] = "";
+                              return arr;
+                            });
+                          }}
+                          imageError={childrenNationalIdImagesError[index]}
+                          t={t}
+                          cn={cn}
+                          childrenNumber={childrenNumber}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </FieldArray>
+              )}
 
               <button
                 type="submit"

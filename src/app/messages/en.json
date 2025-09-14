@@ -1292,7 +1292,7 @@
         "min": "Parent Name should be more than 3 characters",
         "max": "Parent Name should be less than 50 characters",
         "invalid": "Parent Name should contain only letters",
-        "wordMinLength": "Parent Name should be three words each word be more than 3 characters",
+        "wordMinLength": "Name should be 3 words each word be more than 3 characters",
         "multipleSpaces": "Multiple consecutive spaces between names are not allowed"
       }
     },
