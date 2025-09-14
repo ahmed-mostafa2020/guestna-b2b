@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { CONSTANT_VALUES } from "../constants/constantValues";
 // import calculateAge from "./calculateAge";
 
 // Reusable phone validation function
@@ -265,129 +266,6 @@ export const createPersonalInfoEditingSchema = (t) =>
 
     name: Yup.string()
       .trim()
-      .required(t("forms.validation.require"))
-      .min(2, t("forms.name.error.min"))
-      .max(50, t("forms.name.error.max")),
-  });
-
-export const createRegisterChildSchema = (t, childrenCount) => {
-  return Yup.object().shape({
-    parentName: Yup.string()
-      .trim()
-      .required(t("forms.validation.require"))
-      .matches(/^[\p{L}\s]+$/u, t("forms.parentName.error.invalid"))
-      .test(
-        "no-multiple-spaces",
-        t("forms.parentName.error.multipleSpaces"),
-        function (value) {
-          if (!value) return true;
-          // Check for multiple consecutive spaces
-          return !/\s{2,}/.test(value);
-        }
-      )
-      .test(
-        "min-word-length",
-        t("forms.parentName.error.wordMinLength"),
-        function (value) {
-          if (!value) return true;
-
-          const words = value.trim().split(/\s+/);
-
-          // Must have at least 3 words
-          if (words.length < 3) return false;
-
-          // Each word must be at least 3 characters
-          return words.every((word) => word.length >= 3);
-        }
-      ),
-
-    childrenNumber: Yup.number().required(t("forms.validation.require")),
-
-    relationship: Yup.string()
-      .trim()
-      .optional()
-      .min(2, t("forms.relationship.error.min"))
-      .max(50, t("forms.relationship.error.max")),
-
-    mobile: createPhoneValidation(t),
-    backupMobile: createPhoneValidation(t, false),
-
-    email: Yup.string()
-      .email(t("forms.email.error"))
-      .required(t("forms.validation.require")),
-
-    nationality: Yup.string().required(t("forms.validation.require")),
-
-    nationalId: Yup.string()
-      // .required(t("forms.validation.require"))
-      .optional()
-      .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
-      .min(10, t("forms.nationalId.error.min"))
-      .max(10, t("forms.nationalId.error.max")),
-
-    promoCode: Yup.string().optional(),
-
-    children: Yup.array()
-      .of(
-        Yup.object().shape({
-          studentName: Yup.string()
-            .trim()
-            .required(t("forms.validation.require"))
-            .matches(/^[\p{L}\s]+$/u, t("forms.studentName.error.invalid"))
-            .test(
-              "no-multiple-spaces",
-              t("forms.studentName.error.multipleSpaces"),
-              function (value) {
-                if (!value) return true;
-                // Check for multiple consecutive spaces
-                return !/\s{2,}/.test(value);
-              }
-            )
-            .test(
-              "min-word-length",
-              t("forms.studentName.error.wordMinLength"),
-              function (value) {
-                if (!value) return true;
-
-                const words = value.trim().split(/\s+/);
-
-                // Must have at least 3 words
-                if (words.length < 3) return false;
-
-                // Each word must be at least 3 characters
-                return words.every((word) => word.length >= 3);
-              }
-            ),
-
-          academicStage: Yup.string().required(t("forms.validation.require")),
-          grade: Yup.string().required(t("forms.validation.require")),
-
-          nationalId: Yup.string()
-            // .required(t("forms.validation.require"))
-            .optional()
-            .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
-            .min(10, t("forms.nationalId.error.min"))
-            .max(10, t("forms.nationalId.error.max")),
-
-          studentMobile: createPhoneValidation(t, false),
-          studentEmail: Yup.string().email(t("forms.email.error")).optional(),
-        })
-      )
-      .min(1, t("forms.validation.require"))
-      .length(childrenCount, `Must have exactly ${childrenCount} children`),
-  });
-};
-
-export const createRequestQuoteSchema = (t) =>
-  Yup.object().shape({
-    email: Yup.string()
-      .email(t("forms.email.error"))
-      .required(t("forms.validation.require")),
-
-    mobile: createPhoneValidation(t),
-
-    name: Yup.string()
-      .trim()
       .optional()
       .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
       .test(
@@ -412,6 +290,151 @@ export const createRequestQuoteSchema = (t) =>
       .min(3, t("forms.organizationName.error.min"))
       .max(50, t("forms.organizationName.error.max")),
   });
+
+export const createRegisterChildSchema = (
+  t,
+  childrenCount,
+  tripMainCategory
+) => {
+  const isOutsideRiyadh =
+    tripMainCategory === CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH;
+
+  return Yup.object().shape({
+    parentName: Yup.string()
+      .trim()
+      .required(t("forms.validation.require"))
+      .min(3, t("forms.parentName.error.min"))
+      .max(50, t("forms.parentName.error.max"))
+      .matches(/^[a-zA-Zء-ي\s]+$/, t("forms.parentName.error.invalid"))
+      .test(
+        "no-multiple-spaces",
+        t("forms.parentName.error.multipleSpaces"),
+        (value) => {
+          if (!value) return true;
+          return !/\s{2,}/.test(value);
+        }
+      )
+      .test(
+        "is-full-name",
+        t("forms.parentName.error.wordMinLength"),
+        (value) => {
+          if (!value) return false;
+          const words = value.trim().split(/\s+/);
+
+          // Must have at least 3 words
+          if (words.length < 3) return false;
+
+          // Each word must be at least 3 characters
+          return words.every((word) => word.length >= 3);
+        }
+      ),
+
+    email: Yup.string()
+      .email(t("forms.email.error"))
+      .required(t("forms.validation.require")),
+
+    mobile: createPhoneValidation(t),
+
+    backupMobile: createPhoneValidation(t, false),
+
+    nationality: Yup.string().required(t("forms.validation.require")),
+
+    nationalId: Yup.string()
+      .optional()
+      .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
+      .min(10, t("forms.nationalId.error.min"))
+      .max(10, t("forms.nationalId.error.max")),
+
+    promoCode: Yup.string().optional(),
+
+    childrenNumber: Yup.number().required().min(1).max(9),
+
+    relationship: Yup.string().optional(),
+
+    children: Yup.array()
+      .of(
+        Yup.object().shape({
+          studentName: Yup.string()
+            .trim()
+            .required(t("forms.validation.require"))
+            .min(3, t("forms.studentName.error.min"))
+            .max(50, t("forms.studentName.error.max"))
+            .matches(/^[a-zA-Zء-ي\s]+$/, t("forms.studentName.error.invalid"))
+            .test(
+              "no-multiple-spaces",
+              t("forms.studentName.error.multipleSpaces"),
+              (value) => {
+                if (!value) return true;
+                return !/\s{2,}/.test(value);
+              }
+            )
+            .test(
+              "is-full-name",
+              t("forms.studentName.error.wordMinLength"),
+              (value) => {
+                if (!value) return false;
+                const words = value.trim().split(/\s+/);
+
+                // Must have at least 2 words
+                if (words.length < 2) return false;
+
+                // Each word must be at least 3 characters
+                return words.every((word) => word.length >= 3);
+              }
+            ),
+
+          academicStage: Yup.string().required(t("forms.validation.require")),
+          grade: Yup.string().required(t("forms.validation.require")),
+
+          // Conditional validation for nationalId - required only for OUTSIDE_RIYADH
+          nationalId: isOutsideRiyadh
+            ? Yup.string()
+                .required(t("forms.validation.require"))
+                .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
+                .min(10, t("forms.nationalId.error.min"))
+                .max(10, t("forms.nationalId.error.max"))
+            : Yup.string()
+                .optional()
+                .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
+                .min(10, t("forms.nationalId.error.min"))
+                .max(10, t("forms.nationalId.error.max")),
+
+          // Conditional validation for nationalIdImage - required only for OUTSIDE_RIYADH
+          nationalIdImage: isOutsideRiyadh
+            ? Yup.mixed()
+                .required(t("forms.nationalId.error.imageRequired"))
+                .test(
+                  "fileSize",
+                  t("forms.nationalId.error.imageSize"),
+                  (value) => {
+                    if (!value) return false;
+                    return value.size <= 5 * 1024 * 1024; // 5MB
+                  }
+                )
+                .test(
+                  "fileType",
+                  t("forms.nationalId.error.imageFormat"),
+                  (value) => {
+                    if (!value) return false;
+                    const allowedTypes = [
+                      "image/jpeg",
+                      "image/png",
+                      "image/jpg",
+                      "application/pdf",
+                    ];
+                    return allowedTypes.includes(value.type);
+                  }
+                )
+            : Yup.mixed().optional(),
+
+          studentMobile: createPhoneValidation(t, false),
+          studentEmail: Yup.string().email(t("forms.email.error")).optional(),
+        })
+      )
+      .min(1, t("forms.validation.require"))
+      .length(childrenCount, `Must have exactly ${childrenCount} children`),
+  });
+};
 
 export const createSurveySchema = (t) =>
   Yup.object().shape({

@@ -17,6 +17,7 @@ const FileUploadGroup = memo(
     allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"],
     disallowedTypes = ["image/svg+xml"],
     value = null,
+    required = false,
   }) => {
     const [selectedFileName, setSelectedFileName] = useState("");
     const [fileError, setFileError] = useState("");
@@ -24,12 +25,14 @@ const FileUploadGroup = memo(
     const handleFileChange = (e) => {
       setFileError("");
       const file = e.target.files && e.target.files[0];
-      
+
       if (file) {
         // Check for disallowed file types
         if (
-          disallowedTypes.some(type => 
-            file.type === type || file.name.toLowerCase().endsWith(type.replace('image/', '.'))
+          disallowedTypes.some(
+            (type) =>
+              file.type === type ||
+              file.name.toLowerCase().endsWith(type.replace("image/", "."))
           )
         ) {
           setFileError("SVG images are not allowed");
@@ -67,11 +70,9 @@ const FileUploadGroup = memo(
     return (
       <div className="relative min-w-[25%] flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
         {label && (
-          <label
-            htmlFor={name}
-            className="font-medium capitalize font-ibm"
-          >
+          <label htmlFor={name} className="font-medium capitalize font-ibm">
             {label}
+            {required && <span className="text-error">{"*"}</span>}
           </label>
         )}
 
@@ -96,34 +97,33 @@ const FileUploadGroup = memo(
                 ? "border-error focus:border-error hover:border-error"
                 : "border-border focus:border-textDark hover:border-textDark"
             )}
-            style={{ 
-              fontFamily: 'inherit'
+            style={{
+              fontFamily: "inherit",
             }}
           >
-            <span className={cn(
-              "flex-1",
-              !selectedFileName && !value ? "text-textLight" : "text-textDark"
-            )}>
-              {selectedFileName || (value?.name) || placeholder || "Choose file..."}
+            <span
+              className={cn(
+                "flex-1",
+                !selectedFileName && !value ? "text-textLight" : "text-textDark"
+              )}
+            >
+              {selectedFileName ||
+                value?.name ||
+                placeholder ||
+                "Choose file..."}
             </span>
-            
-            <div className="flex items-center ml-2">
-              {uploadFileIcon}
-            </div>
+
+            <div className="flex items-center ml-2">{uploadFileIcon}</div>
           </div>
         </div>
 
         {/* Error messages */}
-        {(touched && errors) && (
-          <span className="text-xs text-error font-medium">
-            {errors}
-          </span>
+        {touched && errors && (
+          <span className="text-xs text-error font-medium">{errors}</span>
         )}
-        
+
         {fileError && (
-          <span className="text-xs text-error font-medium">
-            {fileError}
-          </span>
+          <span className="text-xs text-error font-medium">{fileError}</span>
         )}
       </div>
     );

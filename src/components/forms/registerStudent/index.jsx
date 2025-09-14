@@ -25,6 +25,7 @@ import { useSnackbar } from "notistack";
 import { CircularProgress, Container } from "@mui/material";
 import ParentFormFields from "./ParentFormFields";
 import ChildForm from "./childForms/ChildForm";
+import OutSideRiyadh from "./childForms/OutSideRiyadh";
 
 const RegisterStudentForm = ({ tripMainCategory }) => {
   const [_, setNationalityError] = useState("");
@@ -62,8 +63,8 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
   const headersGetMethod = getHeaders(locale);
 
   const registerChildSchema = useMemo(() => {
-    return createRegisterChildSchema(t, childrenNumber);
-  }, [childrenNumber, t]);
+    return createRegisterChildSchema(t, childrenNumber, tripMainCategory);
+  }, [childrenNumber, t, tripMainCategory]);
 
   const { academicStages, nationalities } = useSelector(
     (state) => state.tripDetailsData.data
@@ -83,14 +84,21 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
 
   // Helper function to generate initial children array
   const generateInitialChildren = (count) => {
-    return Array.from({ length: count }, () => ({
-      studentName: "",
-      academicStage: "",
-      grade: "",
-      nationalId: "",
-      studentMobile: "",
-      studentEmail: "",
-    }));
+    return Array.from({ length: count }, () => {
+      const child = {
+        studentName: "",
+        academicStage: "",
+        grade: "",
+        nationalId: "",
+        studentMobile: "",
+        studentEmail: "",
+        ...(tripMainCategory ===
+          CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH && {
+          nationalIdImage: null,
+        }),
+      };
+      return child;
+    });
   };
 
   const childrenNumberList = [
@@ -288,6 +296,21 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
           handleSubmit,
           isSubmitting,
         }) => {
+          // Debug logging to understand form state
+          console.log("Form State Debug:", {
+            isValid,
+            nationality,
+            tripMainCategory,
+            childrenStages,
+            childrenStagesValues: Object.values(childrenStages),
+            childrenGrades: values.children.map((child) => child.grade),
+            nationalIdImages: values.children.map(
+              (child) => child.nationalIdImage
+            ),
+            errors,
+            touched,
+          });
+
           // Define handlers inside the Formik render function
           const handleChangeChildrenNumber = (event) => {
             const newCount = parseInt(event.target.value);
@@ -299,14 +322,20 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
             if (updatedChildren.length < newCount) {
               // Add empty children if increasing
               for (let i = updatedChildren.length; i < newCount; i++) {
-                updatedChildren.push({
+                const newChild = {
                   studentName: "",
                   academicStage: "",
                   grade: "",
                   nationalId: "",
                   studentMobile: "",
                   studentEmail: "",
-                });
+                  ...(tripMainCategory ===
+                    CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH && {
+                    nationalIdImage: null,
+                  }),
+                };
+
+                updatedChildren.push(newChild);
               }
             } else if (updatedChildren.length > newCount) {
               // Remove extra children if decreasing
@@ -388,20 +417,20 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
               />
 
               {/* Dynamic Children Fields */}
+              {/* tripMainCategory ===
+              CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH */}
 
-              {tripMainCategory ===
-              CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH ? (
-                <OutSideRiyadh />
-              ) : (
-                <FieldArray
-                  name="children"
-                  className="transition-all duration-200 ease-in-out"
-                >
-                  {/* eslint-disable-next-line no-unused-vars */}
-                  {({ push, remove }) => (
-                    <div>
-                      {values.children.map((child, index) => (
-                        <ChildForm
+              <FieldArray
+                name="children"
+                className="transition-all duration-200 ease-in-out"
+              >
+                {/* eslint-disable-next-line no-unused-vars */}
+                {({ push, remove }) => (
+                  <div>
+                    {values.children.map((child, index) => {
+                      return tripMainCategory ===
+                        CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH ? (
+                        <OutSideRiyadh
                           key={`child-${index}`}
                           child={child}
                           index={index}
@@ -427,22 +456,85 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
                               return arr;
                             });
                           }}
+                          onNationalIdImageChange={(file) => {
+                            const updated = [...childrenNationalIdImages];
+                            updated[index] = file;
+                            setChildrenNationalIdImages(updated);
+
+                            // Clear error for this child on new file
+                            setChildrenNationalIdImagesError((prev) => {
+                              const arr = [...prev];
+                              arr[index] = "";
+                              return arr;
+                            });
+                          }}
+                          imageError={childrenNationalIdImagesError[index]}
+                          nationalIdImageError={
+                            childrenNationalIdImagesError[index]
+                          }
+                          t={t}
+                          cn={cn}
+                          childrenNumber={childrenNumber}
+                        />
+                      ) : (
+                        <ChildForm
+                          key={`child-${index}`}
+                          child={child}
+                          index={index}
+                          errors={errors}
+                          touched={touched}
+                          handleChange={handleChange}
+                          handleBlur={handleBlur}
+                          setFieldValue={setFieldValue}
+                          childrenStages={childrenStages}
+                          academicStages={academicStages}
+                          handleChangeChildStage={handleChangeChildStage}
+                          gradesList={gradesList[index] || []}
+                          handleChangeChildGrade={handleChangeChildGrade}
+                          onChildImageChange={(file) => {
+                            const updated = [...childrenNationalIdImages];
+                            updated[index] = file;
+                            setChildrenNationalIdImages(updated);
+
+                            // Set only the file name in Formik values
+                            setFieldValue(
+                              `children[${index}].nationalIdImage`,
+                              file ? file.name : null
+                            );
+
+                            // Clear error for this child on new file
+                            setChildrenNationalIdImagesError((prev) => {
+                              const arr = [...prev];
+                              arr[index] = "";
+                              return arr;
+                            });
+                          }}
                           imageError={childrenNationalIdImagesError[index]}
                           t={t}
                           cn={cn}
                           childrenNumber={childrenNumber}
                         />
-                      ))}
-                    </div>
-                  )}
-                </FieldArray>
-              )}
+                      );
+                    })}
+                  </div>
+                )}
+              </FieldArray>
 
               <button
                 type="submit"
-                disabled={!isValid || isSubmitting}
+                disabled={
+                  !isValid ||
+                  isSubmitting ||
+                  !nationality ||
+                  Object.values(childrenStages).some((v) => !v) ||
+                  values.children.some((child) => !child.grade)
+                }
                 className={`mx-auto px-20 lg:px-40 w-fit centered gap-2 mt-4 lg:mt-8 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
-                  isValid && "hover:bg-linksHover hover:border-linksHover"
+                  isValid &&
+                  nationality &&
+                  !Object.values(childrenStages).some((v) => !v) &&
+                  !values.children.some((child) => !child.grade) &&
+                  "hover:bg-linksHover hover:border-linksHover"
                 }`}
               >
                 {isSubmitting ? (
