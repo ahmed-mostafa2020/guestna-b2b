@@ -9,7 +9,7 @@ export const useMutationData = (endpoint, options = {}) => {
   const dispatch = useDispatch();
   const [customLoading, setCustomLoading] = useState(false);
   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
-  const reqKey = process.env.NEXT_PUBLIC_REQ_KEY;
+
   // Define the mutationFn separately and pass it as part of the options
   const mutationFn = async (variables) => {
     const method = options.method || "POST";
@@ -20,7 +20,6 @@ export const useMutationData = (endpoint, options = {}) => {
       headers: {
         lang: options.lang || "ar",
         ...(token && { authorization: `Bearer ${token}` }), // Add Authorization header if token exists
-        reqKey: reqKey,
       },
       data: variables,
     };
