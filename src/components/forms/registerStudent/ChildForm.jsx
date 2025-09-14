@@ -56,7 +56,7 @@ const ChildForm = ({
           <div className="relative flex flex-1 flex-col gap-2">
             <DropdownGroup
               label={t("forms.academicStages.name")}
-              placeholder={t("forms.academicStages.name")}
+              placeholder={t("forms.academicStages.placeholder")}
               value={childrenStages[index] || ""}
               onChange={(event) => handleChangeChildStage(index, event)}
               menuItemsList={academicStages}

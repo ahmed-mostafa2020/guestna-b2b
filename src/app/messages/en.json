@@ -1270,6 +1270,33 @@
       }
     },
 
+    "verificationCode": {
+      "name": "Verification Code",
+      "error": {
+        "min": "Verification Code must be exactly 4 digits",
+        "max": "Verification Code must be exactly 4 digits"
+      }
+    },
+
+    "promoCode": {
+      "label": "Promo code",
+      "placeholder": "Enter the promo code",
+      "useCode": "Use the promo code",
+      "successMessage": "Discount has been applied successfully"
+    },
+
+    "parentName": {
+      "name": "Parent Name",
+      "placeholder": "Parent Name",
+      "error": {
+        "min": "Parent Name should be more than 3 characters",
+        "max": "Parent Name should be less than 50 characters",
+        "invalid": "Parent Name should contain only letters",
+        "wordMinLength": "Parent Name should be three words each word be more than 3 characters",
+        "multipleSpaces": "Multiple consecutive spaces between names are not allowed"
+      }
+    },
+
     "studentName": {
       "name": "Student name",
       "placeholder": "Student's full name in English",
@@ -1303,7 +1330,8 @@
 
     "academicStages": {
       "name": "Academic Stages",
-      "selectFirst": "Select academic stage first"
+      "placeholder": "Select Academic Stage",
+      "selectFirst": "Select stage first"
     },
 
     "grade": {

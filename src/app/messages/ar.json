@@ -1364,6 +1364,7 @@
 
     "academicStages": {
       "name": "المراحل الدراسية",
+      "placeholder": "اختر المرحلة",
       "selectFirst": " اختر المرحلة أولاً"
     },
 
