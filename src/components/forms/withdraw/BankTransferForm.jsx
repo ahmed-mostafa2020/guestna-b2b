@@ -52,7 +52,12 @@ const BankTransferForm = ({
             </option>
             {completedTrips.map((trip) => (
               <option key={trip._id} value={trip._id}>
-                {trip.name}
+                {trip.name ||
+                  trip.tripName ||
+                  trip.operationName ||
+                  trip.tripTitle ||
+                  trip.organizationName ||
+                  "رحلة"}
               </option>
             ))}
           </select>

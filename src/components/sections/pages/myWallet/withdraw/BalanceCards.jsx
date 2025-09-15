@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 
 const BalanceCards = ({ balanceData, isLoading }) => {
   const t = useTranslations("profile.myWallet.transactionsPage.balanceCards");
+  console.log(balanceData);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

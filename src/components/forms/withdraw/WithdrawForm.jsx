@@ -5,36 +5,27 @@ import { useTranslations } from "next-intl";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { useFetchData } from "@hooks/useFetchData";
 import TransferMethodSelector from "./TransferMethodSelector";
 import STCPayForm from "./STCPayForm";
 import BankTransferForm from "./BankTransferForm";
 
-const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
+const WithdrawForm = ({
+  invoicesData,
+  balanceData,
+  balanceLoading,
+  refetchBalance,
+}) => {
   const t = useTranslations("profile.myWallet.withdrawPage");
 
   // Form state
   const [transferMethod, setTransferMethod] = useState("stc");
   const [selectedTrip, setSelectedTrip] = useState(null);
 
-  // Fetch trips for withdrawal dropdown
-  const {
-    data: tripsData,
-    isLoading: tripsLoading,
-    error: tripsError,
-  } = useFetchData(
-    "profile/organizationTrips/invoices/trips/all",
-    {
-      page: 1,
-      perPage: 100, // Get more trips for selection
-    },
-    {
-      method: "GET",
-    }
-  );
+  console.log(invoicesData);
 
-  // Get trips from the response (no need to filter as this endpoint returns completed trips)
-  const completedTrips = tripsData || [];
+  // Filter invoices to only show DONE status trips
+  const completedTrips =
+    invoicesData?.nodes?.filter((invoice) => invoice.status === "DONE") || [];
 
   // Initial form values
   const initialValues = {
@@ -51,16 +42,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   const getValidationSchema = () => {
     return Yup.object().shape({
       selectedTripId: Yup.string().required(t("validation.tripRequired")),
-      withdrawAmount: Yup.number()
-        .required(t("validation.amountRequired"))
-        .min(50, t("validation.minAmount"))
-        .max(
-          balance?.availableBalance || 0,
-          t("validation.amountExceedsBalance", {
-            balance: balance?.availableBalance?.toLocaleString("ar-SA") || 0,
-          })
-        )
-        .positive(t("validation.amountRequired")),
+
       phoneNumber:
         transferMethod === "stc"
           ? Yup.string()
@@ -202,11 +184,11 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
               errors={errors}
               touched={touched}
               setFieldValue={setFieldValue}
-              balance={balance}
+              balance={balanceData}
               formatPhoneNumber={formatPhoneNumber}
               completedTrips={completedTrips}
-              tripsLoading={tripsLoading}
-              tripsError={tripsError}
+              tripsLoading={false}
+              tripsError={null}
               selectedTrip={selectedTrip}
               onTripSelection={handleTripSelection}
             />
@@ -219,12 +201,12 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
               errors={errors}
               touched={touched}
               setFieldValue={setFieldValue}
-              balance={balance}
+              balance={balanceData}
               formatIBAN={formatIBAN}
               formatClientName={formatClientName}
               completedTrips={completedTrips}
-              tripsLoading={tripsLoading}
-              tripsError={tripsError}
+              tripsLoading={false}
+              tripsError={null}
               selectedTrip={selectedTrip}
               onTripSelection={handleTripSelection}
             />

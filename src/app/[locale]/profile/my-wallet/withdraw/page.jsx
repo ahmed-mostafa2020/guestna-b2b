@@ -39,8 +39,8 @@ const WithdrawPage = () => {
       body: {
         sort: "NEWEST",
         filter: {},
-        page: pagination.page,
-        perPage: pagination.perPage,
+        page: 1,
+        perPage: 100,
       },
       cacheTime: 300000, // 5 minutes
       staleTime: 300000,
@@ -50,83 +50,31 @@ const WithdrawPage = () => {
 
   // Process API data when it arrives
   useEffect(() => {
-    if (invoicesData) {
+    if (invoicesData?.nodes) {
       try {
-        // Handle the new API response structure with pageInfo and nodes
-        const data =
-          invoicesData.nodes ||
-          invoicesData.data ||
-          invoicesData.invoices ||
-          invoicesData;
-        const pageInfo = invoicesData.pageInfo || {};
+        const invoiceDetails = invoicesData.nodes;
+        console.log(invoiceDetails);
 
-        if (Array.isArray(data)) {
-          // Transform API data to match our component structure
-          const processedTransactions = data.map((invoice, index) => ({
-            id: invoice._id || invoice.id || invoice.invoiceId || index + 1,
-            operationName:
-              invoice.name ||
-              invoice.tripName ||
-              invoice.operationName ||
-              invoice.tripTitle ||
-              invoice.organizationName ||
-              "رحلة",
-            date: invoice.day
-              ? new Date(invoice.day).toLocaleDateString("ar-SA")
-              : invoice.createdAt
-              ? new Date(invoice.createdAt).toLocaleDateString("ar-SA")
-              : invoice.date
-              ? new Date(invoice.date).toLocaleDateString("ar-SA")
-              : invoice.issueDate
-              ? new Date(invoice.issueDate).toLocaleDateString("ar-SA")
-              : "غير محدد",
-            referenceNumber:
-              invoice.orderId ||
-              invoice.referenceNumber ||
-              invoice.invoiceNumber ||
-              invoice.bookingReference ||
-              invoice.invoiceId ||
-              `INV${index + 1}`,
-            amount: parseFloat(
-              invoice.amount ||
-                invoice.totalAmount ||
-                invoice.price ||
-                invoice.invoiceAmount ||
-                0
-            ),
-            status: mapInvoiceStatus(
-              invoice.status || invoice.paymentStatus || invoice.invoiceStatus
-            ),
-          }));
+        const totalBalance = invoiceDetails.reduce(
+          (sum, invoice) => sum + invoice.amount,
+          0
+        );
+        const availableBalance = invoiceDetails.reduce(
+          (sum, invoice) =>
+            invoice.status === "DONE" ? sum + invoice.amount : sum,
+          0
+        );
+        const holdBalance = invoiceDetails.reduce(
+          (sum, invoice) =>
+            invoice.status === "PENDING" ? sum + invoice.amount : sum,
+          0
+        );
 
-          setTransactions(processedTransactions);
-
-          // Calculate balance data from transactions
-          const totalAmount = processedTransactions.reduce(
-            (sum, t) => sum + t.amount,
-            0
-          );
-          const completedAmount = processedTransactions
-            .filter((t) => t.status === "DONE")
-            .reduce((sum, t) => sum + t.amount, 0);
-          const pendingAmount = processedTransactions
-            .filter((t) => t.status === "PENDING" || t.status === "SCHEDULED")
-            .reduce((sum, t) => sum + t.amount, 0);
-
-          setBalanceData({
-            totalBalance: totalAmount,
-            availableBalance: completedAmount,
-            holdBalance: pendingAmount,
-          });
-        } else {
-          console.warn("API response is not an array:", data);
-          setTransactions([]);
-          setBalanceData({
-            totalBalance: 0,
-            availableBalance: 0,
-            holdBalance: 0,
-          });
-        }
+        setBalanceData({
+          totalBalance,
+          availableBalance,
+          holdBalance,
+        });
       } catch (error) {
         console.error("Error processing invoice data:", error);
         setTransactions([]);
@@ -144,42 +92,6 @@ const WithdrawPage = () => {
     }
   }, [invoicesData, isLoading]);
 
-  // Map API status to component status
-  const mapInvoiceStatus = (apiStatus) => {
-    if (!apiStatus) return "PENDING";
-
-    // Handle the new status enum values
-    const statusMap = {
-      DONE: "DONE",
-      PENDING: "PENDING",
-      CANCLED: "CANCLED",
-      SCHEDULED: "SCHEDULED",
-      ENDED: "ENDED",
-      // Legacy status mappings for backward compatibility
-      done: "DONE",
-      paid: "DONE",
-      completed: "DONE",
-      success: "DONE",
-      approved: "DONE",
-      settled: "DONE",
-      confirmed: "DONE",
-      pending: "PENDING",
-      processing: "PENDING",
-      in_progress: "PENDING",
-      under_review: "PENDING",
-      cancelled: "CANCLED",
-      failed: "CANCLED",
-      rejected: "CANCLED",
-      declined: "CANCLED",
-      overdue: "PENDING",
-      draft: "PENDING",
-      unpaid: "PENDING",
-    };
-
-    const normalizedStatus = apiStatus.toUpperCase().replace(/[_\s]/g, "");
-    return statusMap[normalizedStatus] || "PENDING";
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 lg:p-8">
       <div className="max-w-6xl mx-auto space-y-4">
@@ -191,7 +103,8 @@ const WithdrawPage = () => {
 
         {/* Withdrawal Form */}
         <WithdrawForm
-          balance={balanceData}
+          invoicesData={invoicesData}
+          balanceData={balanceData}
           balanceLoading={isLoading}
           refetchBalance={refetch}
         />
