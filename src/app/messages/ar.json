@@ -1353,8 +1353,8 @@
 
     "nationalId": {
       "name": "رقم الهوية",
-      "studentPlaceholder": "رقم بطاقة الهوية  للطالب",
-      "parentPlaceholder": "رقم بطاقة الهوية  لولي الأمر",
+      "studentPlaceholder": "رقم الهوية للطالب",
+      "parentPlaceholder": "رقم الهوية لولي الأمر",
       "imageUpload": "صورة الهوية",
       "imageOptional": "صورة الهوية (غير إلزامية)",
       "error": {

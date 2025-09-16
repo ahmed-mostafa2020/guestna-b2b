@@ -36,83 +36,93 @@ const CustomizedRiyadhForm = ({
           ? t(`forms.registerForm.childrenNumber.${index + 1}`)
           : t(`forms.registerForm.childrenNumber.${index}`)}
       </h3>
+
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-6">
-        {/* Student Name field */}
-        <TextInputGroup
-          label={t("forms.studentName.name")}
-          type="text"
-          name={`children[${index}].studentName`}
-          placeholder={t("forms.studentName.placeholder")}
-          value={child.studentName}
-          errors={errors.children?.[index]?.studentName}
-          touched={touched.children?.[index]?.studentName}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          minLength="2"
-          maxLength="50"
-          required={true}
-        />
+        {/* Student Name - This will occupy one full column on all screen sizes due to the parent grid */}
+        <div className="sm:col-span-1">
+          <TextInputGroup
+            label={t("forms.studentName.name")}
+            type="text"
+            name={`children[${index}].studentName`}
+            placeholder={t("forms.studentName.placeholder")}
+            value={child.studentName}
+            errors={errors.children?.[index]?.studentName}
+            touched={touched.children?.[index]?.studentName}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            minLength="2"
+            maxLength="50"
+            required={true}
+          />
+        </div>
 
-        {/* National ID field with validation */}
-        <TextInputGroup
-          label={t("forms.nationalId.name")}
-          type="text"
-          name={`children[${index}].nationalId`}
-          inputMode="numeric"
-          placeholder={t("forms.nationalId.studentPlaceholder")}
-          value={child.nationalId}
-          errors={errors.children?.[index]?.nationalId}
-          touched={touched.children?.[index]?.nationalId}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          minLength="10"
-          maxLength="10"
-          required={true}
-        />
+        {/* National ID and Image Upload - Half width on small screens, full width on extra-small */}
+        <div className="grid grid-cols-2 gap-4 col-span-1 sm:col-span-2">
+          {/* National ID field with validation */}
+          <div className="col-span-1">
+            <TextInputGroup
+              label={t("forms.nationalId.name")}
+              type="text"
+              name={`children[${index}].nationalId`}
+              inputMode="numeric"
+              placeholder={t("forms.nationalId.studentPlaceholder")}
+              value={child.nationalId}
+              errors={errors.children?.[index]?.nationalId}
+              touched={touched.children?.[index]?.nationalId}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              minLength="10"
+              maxLength="10"
+              required={true}
+            />
+          </div>
 
-        {/* National ID Image Upload */}
-        <FileUploadGroup
-          label={
-            tripMainCategory === CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH
-              ? t("forms.nationalId.imageUpload")
-              : t("forms.nationalId.imageOptional")
-          }
-          name={`children[${index}].nationalIdImage`}
-          placeholder={t("forms.nationalId.imageUpload")}
-          errors={errors.children?.[index]?.nationalIdImage}
-          touched={touched.children?.[index]?.nationalIdImage}
-          onBlur={handleBlur}
-          onFileChange={(e) => {
-            const file = e.target.files && e.target.files[0];
-            if (file) {
-              setFieldValue(`children[${index}].nationalIdImage`, file);
-              onNationalIdImageChange(file);
-            } else {
-              // For RIYADH_VIBES, don't set null - leave field undefined
-              // For OUTSIDE_RIYADH, set null to trigger validation
-              const isOutsideRiyadh =
+          {/* National ID Image Upload */}
+          <div className="col-span-1">
+            <FileUploadGroup
+              label={
                 tripMainCategory ===
-                CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH;
-              setFieldValue(
-                `children[${index}].nationalIdImage`,
-                isOutsideRiyadh ? null : undefined
-              );
-              onNationalIdImageChange(isOutsideRiyadh ? null : undefined);
-            }
-          }}
-          accept="image/*,application/pdf"
-          maxSizeInMB={5}
-          allowedTypes={[
-            "image/jpeg",
-            "image/png",
-            "image/jpg",
-            "application/pdf",
-          ]}
-          value={child.nationalIdImage}
-          required={
-            tripMainCategory === CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH
-          }
-        />
+                CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH
+                  ? t("forms.nationalId.imageUpload")
+                  : t("forms.nationalId.imageOptional")
+              }
+              name={`children[${index}].nationalIdImage`}
+              placeholder={t("forms.nationalId.imageUpload")}
+              errors={errors.children?.[index]?.nationalIdImage}
+              touched={touched.children?.[index]?.nationalIdImage}
+              onBlur={handleBlur}
+              onFileChange={(e) => {
+                const file = e.target.files && e.target.files[0];
+                if (file) {
+                  setFieldValue(`children[${index}].nationalIdImage`, file);
+                  onNationalIdImageChange(file);
+                } else {
+                  const isOutsideRiyadh =
+                    tripMainCategory ===
+                    CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH;
+                  setFieldValue(
+                    `children[${index}].nationalIdImage`,
+                    isOutsideRiyadh ? null : undefined
+                  );
+                  onNationalIdImageChange(isOutsideRiyadh ? null : undefined);
+                }
+              }}
+              accept="image/*,application/pdf"
+              maxSizeInMB={5}
+              allowedTypes={[
+                "image/jpeg",
+                "image/png",
+                "image/jpg",
+                "application/pdf",
+              ]}
+              value={child.nationalIdImage}
+              required={
+                tripMainCategory ===
+                CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH
+              }
+            />
+          </div>
+        </div>
 
         {/* Academic Stages and Grades - Full width on mobile, 2 columns on larger screens */}
         <div className="sm:col-span-3 grid grid-cols-2 sm:grid-cols-2 gap-x-4 gap-y-6">

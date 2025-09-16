@@ -1319,8 +1319,8 @@
 
     "nationalId": {
       "name": "ID",
-      "studentPlaceholder": "ID card number of the student",
-      "parentPlaceholder": "ID card number of the guardian",
+      "studentPlaceholder": "Student ID",
+      "parentPlaceholder": "Parent ID",
       "imageUpload": "ID Photo",
       "imageOptional": "ID Photo (Optional)",
       "error": {
