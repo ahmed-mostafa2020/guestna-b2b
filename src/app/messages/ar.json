@@ -902,6 +902,9 @@
           "title": "تصفية المعاملات",
           "refresh": "تحديث",
           "printReport": "طباعة التقرير",
+          "searchTerm": {
+            "placeholder": "البحث في المعاملات"
+          },
           "operationName": {
             "placeholder": "اسم العملية"
           },
@@ -910,9 +913,13 @@
           },
           "status": {
             "placeholder": "الحالة",
+            "done": "مكتمل",
+            "pending": "قيد المراجعة",
+            "cancelled": "ملغي",
+            "scheduled": "مجدول",
+            "ended": "انتهت",
             "completed": "مكتمل",
-            "processing": "قيد المعالجة",
-            "pending": "معلقة"
+            "processing": "قيد المعالجة"
           },
           "clearFilters": "مسح الفلاتر"
         },

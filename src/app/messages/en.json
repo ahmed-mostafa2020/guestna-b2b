@@ -861,6 +861,9 @@
           "title": "Filter Transactions",
           "refresh": "Refresh",
           "printReport": "Print Report",
+          "searchTerm": {
+            "placeholder": "Search transactions"
+          },
           "operationName": {
             "placeholder": "Transaction Name"
           },
@@ -869,9 +872,13 @@
           },
           "status": {
             "placeholder": "Status",
+            "done": "Done",
+            "pending": "Pending",
+            "cancelled": "Cancelled",
+            "scheduled": "Scheduled",
+            "ended": "Ended",
             "completed": "Completed",
-            "processing": "Processing",
-            "pending": "Pending"
+            "processing": "Processing"
           },
           "clearFilters": "Clear Filters"
         },

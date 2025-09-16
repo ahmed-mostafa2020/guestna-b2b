@@ -56,11 +56,33 @@ const TransactionsPage = () => {
     return () => clearTimeout(timer);
   }, [filters.searchTerm]);
 
-  // API data fetching
+  // Separate API call for balance data (unfiltered)
+  const {
+    data: balanceInvoicesData,
+    isLoading: balanceLoading,
+    error: balanceError,
+  } = useFetchData(
+    B2B_END_POINTS.PROFILE.INVOICES,
+    {},
+    {
+      method: "POST",
+      body: {
+        sort: "NEWEST",
+        filter: {},
+        page: 1,
+        perPage: 1000, // Get all data for balance calculation
+      },
+      cacheTime: 300000, // 5 minutes
+      staleTime: 300000,
+      queryKeySuffix: "balance-data-all",
+    }
+  );
+
+  // API data fetching for filtered transactions
   const {
     data: invoicesData,
-    isLoading,
-    error,
+    isLoading: transactionsLoading,
+    error: transactionsError,
     refetch,
   } = useFetchData(
     B2B_END_POINTS.PROFILE.INVOICES,
@@ -83,10 +105,105 @@ const TransactionsPage = () => {
     }
   );
 
-  // Process API data when it arrives
+  // Combined loading state
+  const isLoading = balanceLoading || transactionsLoading;
+  const error = balanceError || transactionsError;
+
+  // Process balance data (unfiltered)
+  useEffect(() => {
+    if (balanceInvoicesData) {
+      try {
+        const balanceData_raw =
+          balanceInvoicesData.nodes ||
+          balanceInvoicesData.data ||
+          balanceInvoicesData.invoices ||
+          balanceInvoicesData;
+
+        if (Array.isArray(balanceData_raw)) {
+          // Calculate balance data from all invoices (unfiltered)
+          const totalAmount = balanceData_raw.reduce(
+            (sum, invoice) =>
+              sum +
+              parseFloat(
+                invoice.amount ||
+                  invoice.totalAmount ||
+                  invoice.price ||
+                  invoice.invoiceAmount ||
+                  0
+              ),
+            0
+          );
+
+          const completedAmount = balanceData_raw
+            .filter((invoice) => {
+              const status = mapInvoiceStatus(
+                invoice.status || invoice.paymentStatus || invoice.invoiceStatus
+              );
+              return status === "DONE";
+            })
+            .reduce(
+              (sum, invoice) =>
+                sum +
+                parseFloat(
+                  invoice.amount ||
+                    invoice.totalAmount ||
+                    invoice.price ||
+                    invoice.invoiceAmount ||
+                    0
+                ),
+              0
+            );
+
+          const pendingAmount = balanceData_raw
+            .filter((invoice) => {
+              const status = mapInvoiceStatus(
+                invoice.status || invoice.paymentStatus || invoice.invoiceStatus
+              );
+              return status === "PENDING" || status === "SCHEDULED";
+            })
+            .reduce(
+              (sum, invoice) =>
+                sum +
+                parseFloat(
+                  invoice.amount ||
+                    invoice.totalAmount ||
+                    invoice.price ||
+                    invoice.invoiceAmount ||
+                    0
+                ),
+              0
+            );
+
+          setBalanceData({
+            totalBalance: totalAmount,
+            availableBalance: completedAmount,
+            holdBalance: pendingAmount,
+          });
+        } else {
+          console.warn(
+            "Balance API response is not an array:",
+            balanceData_raw
+          );
+          setBalanceData({
+            totalBalance: 0,
+            availableBalance: 0,
+            holdBalance: 0,
+          });
+        }
+      } catch (error) {
+        console.error("Error processing balance data:", error);
+        setBalanceData({
+          totalBalance: 0,
+          availableBalance: 0,
+          holdBalance: 0,
+        });
+      }
+    }
+  }, [balanceInvoicesData]);
+
+  // Process filtered transactions data
   useEffect(() => {
     if (invoicesData) {
-      console.log("Raw API response:", invoicesData); // Debug log
       try {
         // Handle the new API response structure with pageInfo and nodes
         const data =
@@ -146,49 +263,20 @@ const TransactionsPage = () => {
           }));
 
           setTransactions(processedTransactions);
-
-          // Calculate balance data from transactions
-          const totalAmount = processedTransactions.reduce(
-            (sum, t) => sum + t.amount,
-            0
-          );
-          const completedAmount = processedTransactions
-            .filter((t) => t.status === "DONE")
-            .reduce((sum, t) => sum + t.amount, 0);
-          const pendingAmount = processedTransactions
-            .filter((t) => t.status === "PENDING" || t.status === "SCHEDULED")
-            .reduce((sum, t) => sum + t.amount, 0);
-
-          setBalanceData({
-            totalBalance: totalAmount,
-            availableBalance: completedAmount,
-            holdBalance: pendingAmount,
-          });
         } else {
-          console.warn("API response is not an array:", data);
+          console.warn("Filtered API response is not an array:", data);
           setTransactions([]);
-          setBalanceData({
-            totalBalance: 0,
-            availableBalance: 0,
-            holdBalance: 0,
-          });
         }
       } catch (error) {
-        console.error("Error processing invoice data:", error);
+        console.error("Error processing filtered invoice data:", error);
         setTransactions([]);
-        setBalanceData({
-          totalBalance: 0,
-          availableBalance: 0,
-          holdBalance: 0,
-        });
       }
-    } else if (invoicesData === null && !isLoading) {
+    } else if (invoicesData === null && !transactionsLoading) {
       // Handle case when API returns null/undefined
-      console.warn("API returned null/undefined data");
+      console.warn("Filtered API returned null/undefined data");
       setTransactions([]);
-      setBalanceData({ totalBalance: 0, availableBalance: 0, holdBalance: 0 });
     }
-  }, [invoicesData, isLoading]);
+  }, [invoicesData, transactionsLoading]);
 
   // Map API status to component status
   const mapInvoiceStatus = (apiStatus) => {
@@ -327,7 +415,7 @@ const TransactionsPage = () => {
         {error && <ErrorState refetch={refetch} />}
 
         {/* Balance Cards Section */}
-        <BalanceCards balanceData={balanceData} isLoading={isLoading} />
+        <BalanceCards balanceData={balanceData} isLoading={balanceLoading} />
 
         {/* Actions and Filters Section */}
         <TransactionsFilters
