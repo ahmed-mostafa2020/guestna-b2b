@@ -26,13 +26,13 @@ const Login = () => {
   }, [t]);
 
   // Check for token
-  useEffect(() => {
-    const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
+  // useEffect(() => {
+  //   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
 
-    if (token) {
-      router.push(`/${locale}`);
-    }
-  }, [router, locale]);
+  //   if (token) {
+  //     router.push(`/${locale}`);
+  //   }
+  // }, [router, locale]);
 
   return (
     <Container className="py-5 centered lg:py-10">

@@ -25,6 +25,7 @@ import RememberMe from "./RememberMe";
 import PhoneInputWithCountrySelect from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 // import "react-phone-number-input/flags.css";
+import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import { Field, Formik } from "formik";
 
@@ -170,6 +171,11 @@ const PhoneMethodForm = ({ redirect = true }) => {
                     addInternationalOption={false}
                     // flagUrl={`https://purecatamphetamine.github.io/country-flag-icons/3x2/{XX}.svg`}
                     style={{ direction: "ltr" }}
+                    flagComponent={({ country }) => (
+                      <span style={{ fontSize: "1.2em", marginRight: "0.5em" }}>
+                        {getUnicodeFlagIcon(country)}
+                      </span>
+                    )}
                     className={cn(
                       "flex bg-white w-full gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50  transition-all duration-200 ease-in-out",
                       errors.mobile && touched.mobile

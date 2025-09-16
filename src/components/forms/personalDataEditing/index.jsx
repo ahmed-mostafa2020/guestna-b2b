@@ -14,6 +14,8 @@ import getErrorMessage from "@utils/getErrorMessage ";
 import { cn } from "@utils/cn";
 import { createPersonalInfoEditingSchema } from "@utils/validationSchemas";
 import TextInputGroup from "../TextInputGroup";
+import DropdownGroup from "../DropdownGroup";
+import RadioButtonsGroup from "../RadioButtonsGroup";
 
 import { Field, Formik } from "formik";
 
@@ -24,9 +26,8 @@ import { useSnackbar } from "notistack";
 import axios from "axios";
 import PhoneInputWithCountrySelect from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
-import DropdownGroup from "../DropdownGroup";
-import RadioButtonsGroup from "../RadioButtonsGroup";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -224,6 +225,11 @@ const PersonalDataEditing = ({ handleClose }) => {
                     id="mobile"
                     addInternationalOption={false}
                     style={{ direction: "ltr" }}
+                    flagComponent={({ country }) => (
+                      <span style={{ fontSize: "1.2em", marginRight: "0.5em" }}>
+                        {getUnicodeFlagIcon(country)}
+                      </span>
+                    )}
                     className={cn(
                       "flex bg-white w-full gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50  transition-all duration-200 ease-in-out",
                       errors.mobile && touched.mobile
