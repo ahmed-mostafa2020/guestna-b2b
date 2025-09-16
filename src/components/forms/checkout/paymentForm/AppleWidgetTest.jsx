@@ -1,12 +1,13 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 import { memo, useEffect, useState, useRef } from "react";
 import { END_POINTS } from "@constants/APIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import axios from "axios";
 import { useMutationDataTest } from "@hooks/useMutationDataTest";
+import { useSnackbar } from "notistack";
 
 const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
   const [currentBookingId, setCurrentBookingId] = useState(null);
@@ -18,6 +19,8 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
   const tripName = useSelector((state) => state.finalTripDetailsData.data.name);
 
   const locale = useLocale();
+  const t = useTranslations();
+  const { enqueueSnackbar } = useSnackbar();
 
   const vercelUrl = CONSTANT_VALUES.URLS.B2B_VERCEL_URL;
   const appleWidgetKey = process.env.NEXT_PUBLIC_APPLE_WIDGET_KEY;
@@ -63,20 +66,25 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
             mutate(baseData, {
               onSuccess: (data) => {
                 if (!data?.bookingId) {
-                  alert("issue at generate Id");
+                  enqueueSnackbar(t("forms.validation.error"), {
+                    variant: "error",
+                  });
                   reject();
                 }
                 setCurrentBookingId(data.bookingId);
                 resolve({});
               },
               onError: (error) => {
-                alert("on error generate Id");
-
+                enqueueSnackbar(t("forms.validation.error"), {
+                  variant: "error",
+                });
                 reject();
               },
             });
           } catch (error) {
-            alert("on error Initiation");
+            enqueueSnackbar(error || t("forms.validation.error"), {
+              variant: "error",
+            });
             reject();
           }
         });
@@ -94,20 +102,31 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
               mutateComferm(confirmationData, {
                 onSuccess: () => {
                   setCurrentBookingId("");
+                  enqueueSnackbar(t("forms.validation.success"), {
+                    variant: "success",
+                  });
                   resolve({});
                 },
                 onError: (error) => {
-                  alert("error to confirmed");
+                  enqueueSnackbar(error || t("forms.validation.error"), {
+                    variant: "error",
+                  });
                   reject();
                 },
               });
             } else {
-              alert("faild generate paymentId");
-
+              enqueueSnackbar(
+                "faild generate paymentId" || t("forms.validation.error"),
+                {
+                  variant: "error",
+                }
+              );
               reject();
             }
           } catch (error) {
-            alert("faild on complete");
+            enqueueSnackbar(error || t("forms.validation.error"), {
+              variant: "error",
+            });
             reject();
           }
         });
