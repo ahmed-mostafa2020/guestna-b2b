@@ -144,37 +144,37 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
     tripName,
   ]);
 
-  const testInitiation = () => {
-    console.log("🧪 Testing Apple Pay Initiation...");
-    console.log("Base Data:", baseData);
+  // const testInitiation = () => {
+  //   console.log("🧪 Testing Apple Pay Initiation...");
+  //   console.log("Base Data:", baseData);
 
-    mutate(baseData, {
-      onSuccess: (data) => {
-        console.log("✅ Initiation Success:", data);
-        enqueueSnackbar("Test Initiation Success: " + JSON.stringify(data), {
-          variant: "success",
-        });
-        if (data?.bookingId) {
-          setCurrentBookingId(data.bookingId);
-        }
-      },
-      onError: (error) => {
-        console.error("❌ Initiation Error:", error);
-        enqueueSnackbar(
-          "Test Initiation Error: " + (error?.message || JSON.stringify(error)),
-          {
-            variant: "error",
-          }
-        );
-      },
-    });
-  };
+  //   mutate(baseData, {
+  //     onSuccess: (data) => {
+  //       console.log("✅ Initiation Success:", data);
+  //       enqueueSnackbar("Test Initiation Success: " + JSON.stringify(data), {
+  //         variant: "success",
+  //       });
+  //       if (data?.bookingId) {
+  //         setCurrentBookingId(data.bookingId);
+  //       }
+  //     },
+  //     onError: (error) => {
+  //       console.error("❌ Initiation Error:", error);
+  //       enqueueSnackbar(
+  //         "Test Initiation Error: " + (error?.message || JSON.stringify(error)),
+  //         {
+  //           variant: "error",
+  //         }
+  //       );
+  //     },
+  //   });
+  // };
 
   return (
     <div className="flex">
       <div className="mysr-form"></div>
 
-      {process.env.NODE_ENV === "development" && (
+      {/* {process.env.NODE_ENV === "development" && (
         <div className="flex flex-col gap-2 p-4 bg-gray-100 rounded-lg">
           <h4 className="font-semibold text-sm">Apple Pay Debug Tools</h4>
           <div className="flex gap-2">
@@ -193,7 +193,7 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
             <p>Trip Name: {tripName}</p>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
