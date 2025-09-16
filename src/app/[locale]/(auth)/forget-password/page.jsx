@@ -31,13 +31,13 @@ const ForgetPassword = () => {
   }, [t]);
 
   // Check for token
-  useEffect(() => {
-    const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
+  // useEffect(() => {
+  //   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
 
-    if (token) {
-      router.push(`/${locale}`);
-    }
-  }, [router, locale]);
+  //   if (token) {
+  //     router.push(`/${locale}`);
+  //   }
+  // }, [router, locale]);
 
   return (
     <Container className="py-5 lg:py-10 centered">
