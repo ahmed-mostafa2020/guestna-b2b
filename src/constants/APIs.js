@@ -1,5 +1,5 @@
 // EndPoint paths
-const BASE_URL = process.env.NEXT_PUBLIC_B2C_BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const END_POINTS = {
   MAIN: BASE_URL,
@@ -22,9 +22,9 @@ export const END_POINTS = {
   CONFIRM_STC_PAYMENT: "confirmSTCPayment",
   CHECK_BOOKING: "checkBooking",
   APPLE_BOOKING: {
-    INITIATE: "initiationguestnaAppleTripBooking",
-    CONFIRM: "guestnaTripConfermedAppleBooking",
-    CALLBACK: "confermedAppleBooking",
+    INITIATE: "initiation/apple",
+    CONFIRM: "confermed/apple",
+    CALLBACK: "confermed/trip/apple",
   },
 
   AUTH: {

@@ -36,6 +36,7 @@ const TextInputGroup = memo(
     onClick,
     min,
     max,
+    required = false,
 
     // labelFontFamily = "IBM Plex Sans Arabic, sans-serif",
   }) => {
@@ -53,10 +54,13 @@ const TextInputGroup = memo(
         {label && (
           <label
             htmlFor={name}
-            className="font-medium capitalize font-ibm"
+            className={`font-medium capitalize font-ibm ${
+              readOnly ? "text-textLight" : ""
+            }`}
             // style={{ fontFamily: labelFontFamily && labelFontFamily }}
           >
             {label}
+            {required && <span className="text-error">{"*"}</span>}
           </label>
         )}
 
@@ -89,7 +93,8 @@ const TextInputGroup = memo(
           ) : (
             <input
               className={cn(
-                "text-sm font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full  rounded-lg outline-none placeholder:font-normal placeholder:text-sm placeholder:text-textLight selection:bg-buttonsHover",
+                "text-sm font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full  rounded-lg outline-none placeholder:font-normal placeholder:text-sm placeholder:text-textLight selection:bg-buttonsHover ",
+                readOnly && "cursor-not-allowed opacity-90",
                 textAlign && `text-${textAlign}`,
                 border && "border-2",
                 touched && errors && border

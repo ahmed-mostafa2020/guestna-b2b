@@ -9,7 +9,7 @@ import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
 import FrameWithImagedHeader from "@components/common/frameWithImagedHeader/FrameWithImagedHeader";
 import CustomizedModal from "@components/common/customizedModal";
-import UpdateTripForm from "@components/forms/updateTripForm";
+import AuthenticatedRequestQuote from "@components/forms/requestQuote/AuthenticatedRequestQuote";
 
 import { CircularProgress } from "@mui/material";
 import axios from "axios";
@@ -66,7 +66,6 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
 
       const response = await axios.request(config);
       setFormSelectionData(response.data);
-      console.log("Form selection data:", response.data);
       return response.data;
     } catch (error) {
       console.error("Error fetching form selection data:", error);
@@ -135,7 +134,7 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
           customizedCloseButton={true}
           padding={false}
         >
-          <UpdateTripForm
+          <AuthenticatedRequestQuote
             tripId={tripId}
             tripData={tripDetails}
             formSelectionData={formSelectionData}

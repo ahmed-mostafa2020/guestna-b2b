@@ -1,11 +1,12 @@
 import { memo } from "react";
 
-import TextInputGroup from "../TextInputGroup";
-import DropdownGroup from "../DropdownGroup";
+import TextInputGroup from "../../TextInputGroup";
+import DropdownGroup from "../../DropdownGroup";
 
 import { Field } from "formik";
 import PhoneInputWithCountrySelect from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import { CircularProgress } from "@mui/material";
 
 const ChildForm = ({
   child,
@@ -19,6 +20,7 @@ const ChildForm = ({
   handleChangeChildStage,
   academicStages,
   gradesList,
+  gradesLoading,
   handleChangeChildGrade,
   onChildImageChange,
   imageError,
@@ -34,6 +36,7 @@ const ChildForm = ({
           : t(`forms.registerForm.childrenNumber.${index}`)}
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-6">
+        {/* Student Name field stays in its own column */}
         <TextInputGroup
           label={t("forms.studentName.name")}
           type="text"
@@ -46,41 +49,69 @@ const ChildForm = ({
           onBlur={handleBlur}
           minLength="2"
           maxLength="50"
+          required={true}
         />
 
-        <div className="relative flex flex-col gap-2">
-          <DropdownGroup
-            label={t("forms.academicStages.name")}
-            placeholder={t("forms.academicStages.name")}
-            value={childrenStages[index] || ""}
-            onChange={(event) => handleChangeChildStage(index, event)}
-            menuItemsList={academicStages}
-          />
-          {errors.children?.[index]?.academicStage &&
-            touched.children?.[index]?.academicStage && (
-              <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-                {errors.children[index].academicStage}
-              </div>
-            )}
+        {/* Wrap the two dropdowns in a new container */}
+        <div className="sm:col-span-2 grid grid-cols-2 gap-x-4 gap-y-6">
+          {/* Academic Stage Dropdown */}
+          <div className="relative flex flex-1 flex-col gap-2">
+            <DropdownGroup
+              label={t("forms.academicStages.name")}
+              placeholder={t("forms.academicStages.placeholder")}
+              value={childrenStages[index] || ""}
+              onChange={(event) => handleChangeChildStage(index, event)}
+              menuItemsList={academicStages}
+              required={true}
+            />
+            {errors.children?.[index]?.academicStage &&
+              touched.children?.[index]?.academicStage && (
+                <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+                  {errors.children[index].academicStage}
+                </div>
+              )}
+          </div>
+
+          {/* Grade Dropdown */}
+          <div className="relative flex-1 flex-col gap-2">
+            <div className="relative">
+              <DropdownGroup
+                label={t("forms.grade.name")}
+                placeholder={
+                  !childrenStages[index]
+                    ? t("forms.academicStages.selectFirst") ||
+                      "Please select academic stage first"
+                    : gradesLoading
+                    ? t("forms.academicStages.loading")
+                    : t("forms.grade.name")
+                }
+                value={child.grade}
+                onChange={(event) => handleChangeChildGrade(index, event)}
+                menuItemsList={gradesList}
+                required={true}
+                disabled={!childrenStages[index] || gradesLoading}
+                className={
+                  !childrenStages[index] || gradesLoading
+                    ? "opacity-60 cursor-not-allowed"
+                    : ""
+                }
+              />
+              {gradesLoading && (
+                <div className="absolute end-10 top-[70%] transform -translate-y-1/2 pointer-events-none">
+                  <CircularProgress size={20} sx={{ color: "#ED8A22" }} />
+                </div>
+              )}
+            </div>
+            {errors.children?.[index]?.grade &&
+              touched.children?.[index]?.grade && (
+                <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+                  {errors.children[index].grade}
+                </div>
+              )}
+          </div>
         </div>
 
-        <div className="relative flex flex-col gap-2">
-          <DropdownGroup
-            label={t("forms.grade.name")}
-            placeholder={t("forms.grade.name")}
-            value={child.grade}
-            onChange={(event) => handleChangeChildGrade(index, event)}
-            menuItemsList={gradesList}
-          />
-          {errors.children?.[index]?.grade &&
-            touched.children?.[index]?.grade && (
-              <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-                {errors.children[index].grade}
-              </div>
-            )}
-        </div>
-
-        <TextInputGroup
+        {/* <TextInputGroup
           label={t("forms.nationalId.name")}
           type="number"
           name={`children[${index}].nationalId`}
@@ -99,8 +130,9 @@ const ChildForm = ({
             onChildImageChange(file || null);
           }}
           imageError={imageError}
-        />
+        /> */}
 
+        {/* 
         <div className="relative flex flex-col gap-2">
           <label className="font-medium capitalize font-ibm">
             {t("forms.phone.studentPhone")}
@@ -137,9 +169,9 @@ const ChildForm = ({
                 {errors.children?.[index]?.studentMobile}
               </div>
             )}
-        </div>
+        </div> */}
 
-        <TextInputGroup
+        {/* <TextInputGroup
           label={t("forms.email.studentEmail")}
           type="email"
           name={`children[${index}].studentEmail`}
@@ -149,7 +181,7 @@ const ChildForm = ({
           onChange={handleChange}
           onBlur={handleBlur}
           placeholder="guestna@gmail.com"
-        />
+        /> */}
       </div>
     </div>
   );

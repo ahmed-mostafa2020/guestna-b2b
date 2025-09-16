@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { CONSTANT_VALUES } from "../constants/constantValues";
 // import calculateAge from "./calculateAge";
 
 // Reusable phone validation function
@@ -146,7 +147,7 @@ export const createSignUpSchema = (t) =>
       .min(8, t("forms.password.error.min"))
       .max(50, t("forms.password.error.max"))
       .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
         t("forms.password.error.invalid")
       ),
 
@@ -184,7 +185,7 @@ export const createLoginEmailMethodSchema = (t) =>
       .min(8, t("forms.password.error.min"))
       .max(50, t("forms.password.error.max"))
       .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
         t("forms.password.error.invalid")
       ),
     // confirmTermsAndConditions: Yup.boolean().required(),
@@ -200,7 +201,7 @@ export const createLoginPhoneMethodSchema = (t) =>
       .min(8, t("forms.password.error.min"))
       .max(50, t("forms.password.error.max"))
       .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
         t("forms.password.error.invalid")
       ),
   });
@@ -225,7 +226,7 @@ export const createResetNewPasswordSchema = (t) =>
       .min(8, t("forms.password.error.min"))
       .max(50, t("forms.password.error.max"))
       .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
         t("forms.password.error.invalid")
       ),
 
@@ -265,109 +266,6 @@ export const createPersonalInfoEditingSchema = (t) =>
 
     name: Yup.string()
       .trim()
-      .required(t("forms.validation.require"))
-      .min(2, t("forms.name.error.min"))
-      .max(50, t("forms.name.error.max")),
-  });
-
-export const createRegisterChildSchema = (t, childrenCount) => {
-  return Yup.object().shape({
-    parentName: Yup.string()
-      .trim()
-      .required(t("forms.validation.require"))
-      .matches(/^[\p{L}\s]+$/u, t("forms.parentName.error.invalid"))
-      .test(
-        "min-word-length",
-        t("forms.parentName.error.wordMinLength"),
-        function (value) {
-          if (!value) return true;
-
-          const words = value.trim().split(/\s+/);
-
-          // Must have at least 3 words
-          if (words.length < 3) return false;
-
-          // Each word must be at least 3 characters
-          return words.every((word) => word.length >= 3);
-        }
-      ),
-
-    childrenNumber: Yup.number().required(t("forms.validation.require")),
-
-    relationship: Yup.string()
-      .trim()
-      .required(t("forms.validation.require"))
-      .min(2, t("forms.relationship.error.min"))
-      .max(50, t("forms.relationship.error.max")),
-
-    mobile: createPhoneValidation(t),
-    backupMobile: createPhoneValidation(t, true),
-
-    email: Yup.string()
-      .email(t("forms.email.error"))
-      .required(t("forms.validation.require")),
-
-    nationality: Yup.string().required(t("forms.validation.require")),
-
-    nationalId: Yup.string()
-      .required(t("forms.validation.require"))
-      .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
-      .min(10, t("forms.nationalId.error.min"))
-      .max(10, t("forms.nationalId.error.max")),
-
-    promoCode: Yup.string().optional(),
-
-    children: Yup.array()
-      .of(
-        Yup.object().shape({
-          studentName: Yup.string()
-            .trim()
-            .required(t("forms.validation.require"))
-            .matches(/^[\p{L}\s]+$/u, t("forms.studentName.error.invalid"))
-            .test(
-              "min-word-length",
-              t("forms.studentName.error.wordMinLength"),
-              function (value) {
-                if (!value) return true;
-
-                const words = value.trim().split(/\s+/);
-
-                // Must have at least 4 words
-                if (words.length < 3) return false;
-
-                // Each word must be at least 3 characters
-                return words.every((word) => word.length >= 3);
-              }
-            ),
-
-          academicStage: Yup.string().required(t("forms.validation.require")),
-          grade: Yup.string().required(t("forms.validation.require")),
-
-          nationalId: Yup.string()
-            .required(t("forms.validation.require"))
-            .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
-            .min(10, t("forms.nationalId.error.min"))
-            .max(10, t("forms.nationalId.error.max")),
-
-          studentMobile: createPhoneValidation(t, false),
-          studentEmail: Yup.string().email(t("forms.email.error")).optional(),
-        })
-      )
-      .min(1, t("forms.validation.require"))
-      .length(childrenCount, `Must have exactly ${childrenCount} children`),
-  });
-};
-
-export const createRequestQuoteSchema = (t) =>
-  Yup.object().shape({
-    email: Yup.string()
-      .email(t("forms.email.error"))
-      .required(t("forms.validation.require")),
-
-    mobile: createPhoneValidation(t),
-
-    name: Yup.string()
-      .trim()
       .optional()
       .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
       .test(
@@ -393,6 +291,155 @@ export const createRequestQuoteSchema = (t) =>
       .max(50, t("forms.organizationName.error.max")),
   });
 
+export const createRegisterChildSchema = (
+  t,
+  childrenCount,
+  tripMainCategory
+) => {
+  const isOutsideRiyadh =
+    tripMainCategory === CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH;
+
+  const RiyadhVibes =
+    tripMainCategory === CONSTANT_VALUES.MAIN_CATEGORIES.RIYADH_VIBES;
+
+  return Yup.object().shape({
+    parentName: Yup.string()
+      .trim()
+      .required(t("forms.validation.require"))
+      .min(3, t("forms.parentName.error.min"))
+      .max(50, t("forms.parentName.error.max"))
+      .matches(/^[a-zA-Zء-ي\s]+$/, t("forms.parentName.error.invalid"))
+      .test(
+        "no-multiple-spaces",
+        t("forms.parentName.error.multipleSpaces"),
+        (value) => {
+          if (!value) return true;
+          return !/\s{2,}/.test(value);
+        }
+      )
+      .test(
+        "is-full-name",
+        t("forms.parentName.error.wordMinLength"),
+        (value) => {
+          if (!value) return false;
+          const words = value.trim().split(/\s+/);
+
+          // Must have at least 3 words
+          if (words.length < 3) return false;
+
+          // Each word must be at least 3 characters
+          return words.every((word) => word.length >= 3);
+        }
+      ),
+
+    email: Yup.string()
+      .email(t("forms.email.error"))
+      .required(t("forms.validation.require")),
+
+    mobile: createPhoneValidation(t),
+
+    backupMobile: createPhoneValidation(t, false),
+
+    nationality: Yup.string().required(t("forms.validation.require")),
+
+    nationalId: Yup.string()
+      .optional()
+      .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
+      .min(10, t("forms.nationalId.error.min"))
+      .max(10, t("forms.nationalId.error.max")),
+
+    promoCode: Yup.string().optional(),
+
+    childrenNumber: Yup.number().required().min(1).max(9),
+
+    relationship: Yup.string().optional(),
+
+    children: Yup.array()
+      .of(
+        Yup.object().shape({
+          studentName: Yup.string()
+            .trim()
+            .required(t("forms.validation.require"))
+            .min(3, t("forms.studentName.error.min"))
+            .max(50, t("forms.studentName.error.max"))
+            .matches(/^[a-zA-Zء-ي\s]+$/, t("forms.studentName.error.invalid"))
+            .test(
+              "no-multiple-spaces",
+              t("forms.studentName.error.multipleSpaces"),
+              (value) => {
+                if (!value) return true;
+                return !/\s{2,}/.test(value);
+              }
+            )
+            .test(
+              "is-full-name",
+              t("forms.studentName.error.wordMinLength"),
+              (value) => {
+                if (!value) return false;
+                const words = value.trim().split(/\s+/);
+
+                // Must have at least 2 words
+                if (words.length < 2) return false;
+
+                // Each word must be at least 3 characters
+                return words.every((word) => word.length >= 3);
+              }
+            ),
+
+          academicStage: Yup.string().required(t("forms.validation.require")),
+          grade: Yup.string().required(t("forms.validation.require")),
+
+          // Conditional validation for nationalId - required only for OUTSIDE_RIYADH
+          nationalId:
+            isOutsideRiyadh || RiyadhVibes
+              ? Yup.string()
+                  .required(t("forms.validation.require"))
+                  .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
+                  .min(10, t("forms.nationalId.error.min"))
+                  .max(10, t("forms.nationalId.error.max"))
+              : Yup.string()
+                  .optional()
+                  .matches(/^[1-2]\d{9}$/, t("forms.nationalId.error.invalid"))
+                  .min(10, t("forms.nationalId.error.min"))
+                  .max(10, t("forms.nationalId.error.max")),
+
+          // Conditional validation for nationalIdImage - required only for OUTSIDE_RIYADH
+          nationalIdImage: isOutsideRiyadh
+            ? Yup.mixed()
+                .required(t("forms.nationalId.error.imageRequired"))
+                .test(
+                  "fileSize",
+                  t("forms.nationalId.error.imageSize"),
+                  (value) => {
+                    if (!value) return false;
+                    return value.size <= 5 * 1024 * 1024; // 5MB
+                  }
+                )
+                .test(
+                  "fileType",
+                  t("forms.nationalId.error.imageFormat"),
+                  (value) => {
+                    if (!value) return false;
+                    const allowedTypes = [
+                      "image/jpeg",
+                      "image/png",
+                      "image/jpg",
+                      "application/pdf",
+                    ];
+                    return allowedTypes.includes(value.type);
+                  }
+                )
+            : Yup.mixed().optional(),
+
+          studentMobile: createPhoneValidation(t, false),
+          studentEmail: Yup.string().email(t("forms.email.error")).optional(),
+        })
+      )
+      .min(1, t("forms.validation.require"))
+      .length(childrenCount, `Must have exactly ${childrenCount} children`),
+  });
+};
+
 export const createSurveySchema = (t) =>
   Yup.object().shape({
     learningObjectivesAchieved: Yup.string().required(
@@ -404,6 +451,83 @@ export const createSurveySchema = (t) =>
       .max(5)
       .required(t("forms.validation.require")),
     note: Yup.string(),
+  });
+
+export const createRequestQuoteSchema = (t) =>
+  Yup.object().shape({
+    email: Yup.string()
+      .email(t("forms.email.error"))
+      .required(t("forms.validation.require")),
+    mobile: createPhoneValidation(t, true),
+    name: Yup.string()
+      .trim()
+      .optional()
+      .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
+      .test(
+        "min-word-length",
+        t("forms.name.error.wordMinLength"),
+        function (value) {
+          if (!value) return true;
+
+          const words = value.trim().split(/\s+/);
+
+          // Must have at least 2 words
+          if (words.length < 2) return false;
+
+          // Each word must be at least 3 characters
+          return words.every((word) => word.length >= 3);
+        }
+      ),
+    organizationName: Yup.string()
+      .trim()
+      .optional()
+      .min(3, t("forms.organizationName.error.min"))
+      .max(50, t("forms.organizationName.error.max")),
+  });
+
+export const createAuthenticatedRequestQuoteSchema = (t) =>
+  Yup.object().shape({
+    category: Yup.string().optional(), // readonly field
+    tripType: Yup.string().optional(), // readonly field
+    city: Yup.string().optional(), // readonly field
+    academicStages: Yup.array().min(1, t("forms.validation.require")),
+    availableSeats: Yup.number()
+      .required(t("forms.validation.require"))
+      .min(1, t("forms.customTrip.expectedParticipants.error.min"))
+      .max(1000, t("forms.customTrip.expectedParticipants.error.max")),
+    day: Yup.date()
+      .required(t("forms.validation.require"))
+      .test(
+        "start-before-end",
+        t("forms.customTrip.proposedTripDate.error.startAfterEnd"),
+        function (value) {
+          const { endDay } = this.parent;
+          if (!endDay || !value) return true;
+          return new Date(value) <= new Date(endDay);
+        }
+      ),
+    endDay: Yup.date()
+      .optional()
+      .test(
+        "end-after-start",
+        t("forms.customTrip.proposedTripDate.error.endBeforeStart"),
+        function (value) {
+          const { day } = this.parent;
+          if (!day || !value) return true;
+          return new Date(value) >= new Date(day);
+        }
+      ),
+    services: Yup.array().optional(),
+    basePrice: Yup.number()
+      .required(t("forms.validation.require"))
+      .min(1, t("forms.customTrip.price.error.min")),
+    description: Yup.string()
+      .optional()
+      .max(500, t("forms.customTrip.tripDescription.error.max")),
+    specialRequirements: Yup.string()
+      .optional()
+      .max(300, t("forms.customTrip.specialRequirements.error.max")),
+    // file: Yup.mixed().optional(),
   });
 
 export const createCustomNewTripSchema = (t) =>
@@ -453,55 +577,6 @@ export const createCustomNewTripSchema = (t) =>
       .max(300, t("forms.customTrip.specialRequirements.error.max")),
     file: Yup.mixed().optional(),
   });
-
-export const createUpdateTripSchema = (t) => {
-  Yup.object().shape({
-    category: Yup.string().optional(), // readonly field
-    tripType: Yup.string().optional(), // readonly field
-    city: Yup.string().optional(), // readonly field
-    academicStages: Yup.array().min(1, t("forms.validation.require")),
-    availableSeats: Yup.number()
-      .required(t("forms.validation.require"))
-      .min(1, t("forms.customTrip.expectedParticipants.error.min"))
-      .max(1000, t("forms.customTrip.expectedParticipants.error.max")),
-    day: Yup.date()
-      .required(t("forms.validation.require"))
-      .min(new Date(), t("forms.customTrip.proposedTripDate.error.pastDate"))
-      .test(
-        "start-before-end",
-        t("forms.customTrip.proposedTripDate.error.startAfterEnd"),
-        function (value) {
-          const { endDay } = this.parent;
-          if (!endDay || !value) return true;
-          return new Date(value) <= new Date(endDay);
-        }
-      ),
-    endDay: Yup.date()
-      .optional()
-      .min(new Date(), t("forms.customTrip.proposedTripDate.error.pastDate"))
-      .test(
-        "end-after-start",
-        t("forms.customTrip.proposedTripDate.error.endBeforeStart"),
-        function (value) {
-          const { day } = this.parent;
-          if (!day || !value) return true;
-          return new Date(value) >= new Date(day);
-        }
-      ),
-    services: Yup.array().min(1, t("forms.validation.require")),
-    basePrice: Yup.number()
-      .required(t("forms.validation.require"))
-      .min(1, t("forms.customTrip.price.error.min")),
-    description: Yup.string()
-      .required(t("forms.validation.require"))
-      .min(10, t("forms.customTrip.tripDescription.error.min"))
-      .max(500, t("forms.customTrip.tripDescription.error.max")),
-    specialRequirements: Yup.string()
-      .optional()
-      .max(300, t("forms.customTrip.specialRequirements.error.max")),
-    file: Yup.mixed().optional(), // file is optional
-  });
-};
 
 export const createAddOrganizationUserSchema = (t) =>
   Yup.object().shape({

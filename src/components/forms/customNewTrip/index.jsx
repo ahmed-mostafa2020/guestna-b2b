@@ -15,7 +15,7 @@ import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
 import FileUploadGroup from "../FileUploadGroup";
 
-const CustomNewTripForm = ({ formSelectionData }) => {
+const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
   const [formErrors, setFormErrors] = useState([]);
 
   const locale = useLocale();
@@ -24,6 +24,12 @@ const CustomNewTripForm = ({ formSelectionData }) => {
   const headers = getHeaders(locale);
   const customTripSchema = createCustomNewTripSchema(t);
   const { enqueueSnackbar } = useSnackbar();
+
+  console.log("CustomNewTripForm props:", {
+    hasFormSelectionData: !!formSelectionData,
+    hasOnClose: typeof onClose === "function",
+    hasOnSuccess: typeof onSuccess === "function",
+  });
 
   // Keep full objects for _id lookup
   const categoryData = formSelectionData.categories;
@@ -152,12 +158,31 @@ const CustomNewTripForm = ({ formSelectionData }) => {
 
         const res = response.data;
         if (res) {
+          console.log("Response data exists, showing success message");
           enqueueSnackbar(t("forms.customTrip.success"), {
             variant: "success",
           });
 
-          // Force a full page reload to refresh all data
-          // window.location.reload();
+          // Call the success callback to refresh table data
+          if (onSuccess && typeof onSuccess === "function") {
+            console.log(
+              "Calling onSuccess callback from CustomNewTripForm with data:",
+              res
+            );
+            onSuccess(res);
+          } else {
+            console.log(
+              "onSuccess callback not available or not a function, type:",
+              typeof onSuccess
+            );
+            // Fallback: close modal if onClose is available
+            if (onClose && typeof onClose === "function") {
+              console.log("Calling onClose as fallback");
+              onClose();
+            }
+          }
+        } else {
+          console.log("No response data received");
         }
       })
       .catch((error) => {

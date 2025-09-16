@@ -13,6 +13,7 @@ import {
   //  useSelector
 } from "react-redux";
 import {
+  setUser,
   // setUser,
   setUserToken,
 } from "@store/users/usersSlice";
@@ -99,6 +100,7 @@ const RolesLoginForm = () => {
           });
           setToken(response.data.token);
           dispatch(setUserToken(response.data.token));
+          dispatch(setUser(response.data.userType));
 
           router.push(`/${locale}/profile`);
 

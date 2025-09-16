@@ -27,8 +27,8 @@ export const CONSTANT_VALUES = {
   },
 
   URLS: {
-    VERCEL_URL: "https://guestna.vercel.app",
-    B2B_VERCEL_URL: "https://guestna-b2b.vercel.app/",
+    VERCEL_URL: process.env.NEXT_PUBLIC_B2C_VERCEL,
+    B2B_VERCEL_URL: process.env.NEXT_PUBLIC_B2B_VERCEL,
   },
 
   USERS: {

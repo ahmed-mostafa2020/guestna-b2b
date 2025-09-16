@@ -5,9 +5,12 @@ import { useTranslations } from "next-intl";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { getHeaders } from "@utils/getHeaders";
+import { useFetchData } from "@hooks/useFetchData";
 import TransferMethodSelector from "./TransferMethodSelector";
 import STCPayForm from "./STCPayForm";
 import BankTransferForm from "./BankTransferForm";
+import { useLocale } from "next-intl";
 
 const WithdrawForm = ({
   invoicesData,
@@ -15,6 +18,8 @@ const WithdrawForm = ({
   balanceLoading,
   refetchBalance,
 }) => {
+const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
+  const locale = useLocale();
   const t = useTranslations("profile.myWallet.withdrawPage");
 
   // Form state
@@ -108,10 +113,7 @@ const WithdrawForm = ({
         `/api/proxy?path=${B2B_END_POINTS.PROFILE.WITHDRAWALS}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            lang: "ar",
-          },
+          headers: getHeaders(locale),
           body: JSON.stringify(requestBody),
         }
       );

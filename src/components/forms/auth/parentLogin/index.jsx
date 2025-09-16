@@ -69,9 +69,9 @@ const ParentLoginForm = () => {
           });
           setToken(response.data.token);
           dispatch(setUserToken(response.data.token));
+          dispatch(setUser(response.data.userType));
 
           dispatch(submitParentData(response.data.user));
-          dispatch(setUser(response.data.userType));
         }
       })
 

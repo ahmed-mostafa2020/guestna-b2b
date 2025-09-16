@@ -16,14 +16,7 @@ import {
 const InfoCardsListing = ({ infoData }) => {
   const t = useTranslations();
 
-  const totalRevenue = useMemo(() => {
-    return (
-      infoData?.monthlyRevenue?.reduce(
-        (sum, month) => sum + month.totalPrice,
-        0
-      ) || 0
-    );
-  }, [infoData?.monthlyRevenue]);
+  const totalRevenue = infoData?.totalRevenue || 0;
 
   const infoCardsListing = useMemo(() => {
     return [
@@ -56,9 +49,9 @@ const InfoCardsListing = ({ infoData }) => {
     infoData?.tripsCount,
   ]);
 
-  const renderedInfoCards = infoCardsListing.map(
-    (item, index) =>  <InfoCard key={index} item={item} />
-  );
+  const renderedInfoCards = infoCardsListing.map((item, index) => (
+    <InfoCard key={index} item={item} />
+  ));
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-6">

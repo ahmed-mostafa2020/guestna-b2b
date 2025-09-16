@@ -12,7 +12,7 @@ const AuthenticationBy = () => {
   const locale = useLocale();
   const t = useTranslations();
 
-  const vercelUrl = CONSTANT_VALUES.URLS.VERCEL_URL;
+  const vercelUrl = CONSTANT_VALUES.URLS.B2B_VERCEL_URL;
 
   // Google
   const googleAuthUrl =

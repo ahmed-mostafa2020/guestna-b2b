@@ -12,7 +12,7 @@ import {
   schoolIcon,
 } from "@assets/svg";
 import { CircularProgress } from "@mui/material";
-import formatCurrency from "@/src/utils/FormatCurrency";
+import formatCurrency from "@utils/FormatCurrency";
 
 const OrderDetailsModal = ({ orderId, orderDetails, loading }) => {
   const t = useTranslations();

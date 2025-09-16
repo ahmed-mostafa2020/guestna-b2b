@@ -1,9 +1,12 @@
 import { useTranslations, useLocale } from "next-intl";
 import { useState } from "react";
 import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
+import { useSnackbar } from "notistack";
 
 import { activitiesOrdersManagementIcon } from "@assets/svg";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
 import CustomizedModal from "@components/common/customizedModal";
@@ -13,10 +16,68 @@ import { CircularProgress } from "@mui/material";
 const TripsOrdersManagement = () => {
   const t = useTranslations();
   const locale = useLocale();
+  const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [formSelectionData, setFormSelectionData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Function to refresh CustomizedTripsTable data with direct API call
+  const refreshCustomizedTripsTable = async () => {
+    console.log(
+      "Refreshing CustomizedTripsTable after new activity creation - making direct API request"
+    );
+
+    try {
+      const headers = getHeaders(locale);
+
+      // Make direct API request to fetch fresh table data
+      const response = await axios.post(
+        getProxyUrl(
+          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.CUSTOMIZABLE}`
+        ),
+        {
+          perPage: CONSTANT_VALUES.TABLE_PER_PAGE || 10,
+          page: 1,
+        },
+        { headers }
+      );
+
+      console.log("Fresh CustomizedTripsTable data fetched:", response.data);
+
+      // Update the cache with fresh data
+      queryClient.setQueryData(
+        [
+          "fetchData",
+          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.CUSTOMIZABLE}`,
+          "POST",
+          JSON.stringify({}),
+          JSON.stringify({
+            perPage: CONSTANT_VALUES.TABLE_PER_PAGE || 10,
+            page: 1,
+          }),
+        ],
+        response.data
+      );
+
+      // Also invalidate to trigger re-render
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          return (
+            query.queryKey[0] === "fetchData" &&
+            query.queryKey[1] ===
+              `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.CUSTOMIZABLE}`
+          );
+        },
+      });
+
+      console.log("CustomizedTripsTable data refreshed successfully");
+    } catch (error) {
+      console.error("Error refreshing CustomizedTripsTable data:", error);
+      enqueueSnackbar("Error refreshing table data", { variant: "error" });
+    }
+  };
 
   const handleRequestNewActivity = async () => {
     // Only fetch data if it doesn't exist
@@ -35,7 +96,6 @@ const TripsOrdersManagement = () => {
 
         const response = await axios.request(config);
         setFormSelectionData(response.data);
-        console.log("Form selection data:", response.data);
       } catch (error) {
         console.error("Error fetching form selection data:", error);
       } finally {
@@ -44,6 +104,16 @@ const TripsOrdersManagement = () => {
     }
 
     setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleNewActivitySuccess = (responseData) => {
+    // Refresh the CustomizedTripsTable when new activity is created
+    refreshCustomizedTripsTable();
+    handleModalClose();
   };
 
   return (
@@ -74,12 +144,18 @@ const TripsOrdersManagement = () => {
 
       <CustomizedModal
         open={isModalOpen}
-        handleClose={() => setIsModalOpen(false)}
+        handleClose={handleModalClose}
         bgcolor="rgba(0, 0, 0, 0.5)"
         customizedCloseButton={true}
         padding={false}
       >
-        <CustomNewTripForm  formSelectionData={formSelectionData}/>
+        {isModalOpen && (
+          <CustomNewTripForm
+            formSelectionData={formSelectionData}
+            onClose={handleModalClose}
+            onSuccess={handleNewActivitySuccess}
+          />
+        )}
       </CustomizedModal>
     </>
   );
