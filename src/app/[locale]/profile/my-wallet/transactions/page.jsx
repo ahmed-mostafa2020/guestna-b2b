@@ -37,6 +37,25 @@ const TransactionsPage = () => {
     hasNextPage: false,
   });
 
+  // Filter states
+  const [filters, setFilters] = useState({
+    searchTerm: "",
+    day: "",
+    status: "",
+  });
+
+  // Debounced search term to prevent too many API calls
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(filters.searchTerm);
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timer);
+  }, [filters.searchTerm]);
+
   // API data fetching
   const {
     data: invoicesData,
@@ -50,13 +69,17 @@ const TransactionsPage = () => {
       method: "POST",
       body: {
         sort: "NEWEST",
-        filter: {},
+        filter: {
+          searchTerm: debouncedSearchTerm || "",
+          day: filters.day || "",
+          status: filters.status || "",
+        },
         page: pagination.page,
         perPage: pagination.perPage,
       },
       cacheTime: 300000, // 5 minutes
       staleTime: 300000,
-      queryKeySuffix: `page-${pagination.page}-perPage-${pagination.perPage}`,
+      queryKeySuffix: `page-${pagination.page}-perPage-${pagination.perPage}-search-${debouncedSearchTerm}-day-${filters.day}-status-${filters.status}`,
     }
   );
 
@@ -203,13 +226,6 @@ const TransactionsPage = () => {
     return statusMap[normalizedStatus] || "PENDING";
   };
 
-  // Filter states
-  const [filters, setFilters] = useState({
-    operationName: "",
-    transactionDate: "",
-    status: "",
-  });
-
   // Status configuration
   const statusConfig = {
     DONE: {
@@ -258,15 +274,27 @@ const TransactionsPage = () => {
       ...prev,
       [field]: value,
     }));
+
+    // Reset to first page when filters change
+    setPagination((prev) => ({
+      ...prev,
+      page: 1,
+    }));
   };
 
   // Clear filters
   const clearFilters = () => {
     setFilters({
-      operationName: "",
-      transactionDate: "",
+      searchTerm: "",
+      day: "",
       status: "",
     });
+
+    // Reset to first page when clearing filters
+    setPagination((prev) => ({
+      ...prev,
+      page: 1,
+    }));
   };
 
   // Handle pagination changes
@@ -284,20 +312,8 @@ const TransactionsPage = () => {
     }));
   };
 
-  // Filter transactions based on selected filters
-  const filteredTransactions = transactions.filter((transaction) => {
-    const matchesOperationName =
-      !filters.operationName ||
-      transaction.operationName === filters.operationName;
-
-    const matchesDate =
-      !filters.transactionDate || transaction.date === filters.transactionDate;
-
-    const matchesStatus =
-      !filters.status || transaction.status === filters.status;
-
-    return matchesOperationName && matchesDate && matchesStatus;
-  });
+  // Since we're doing server-side filtering, we use the raw transactions data
+  const filteredTransactions = transactions;
 
   return (
     <div className="min-h-screen bg-sidePageBg p-6">

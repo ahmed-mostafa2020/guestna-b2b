@@ -91,9 +91,11 @@ const TransactionsFilters = ({
                 name="status"
               >
                 <option value="">{t("status.placeholder")}</option>
-                <option value="completed">{t("status.completed")}</option>
-                <option value="processing">{t("status.processing")}</option>
-                <option value="pending">{t("status.pending")}</option>
+                <option value="DONE">{t("status.done")}</option>
+                <option value="PENDING">{t("status.pending")}</option>
+                <option value="CANCLED">{t("status.cancelled")}</option>
+                <option value="SCHEDULED">{t("status.scheduled")}</option>
+                <option value="ENDED">{t("status.ended")}</option>
               </select>
               <KeyboardArrowDown className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
             </div>
