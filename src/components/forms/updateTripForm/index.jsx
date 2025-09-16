@@ -524,7 +524,7 @@ const UpdateTripForm = ({ tripId, tripData, formSelectionData, onClose }) => {
                 )}
 
                 {/* Price */}
-                {/* <div className="somar-placeholder">
+                <div className="somar-placeholder">
                   <TextInputGroup
                     label={t("forms.customTrip.price.placeholder")}
                     type="number"
@@ -539,8 +539,9 @@ const UpdateTripForm = ({ tripId, tripData, formSelectionData, onClose }) => {
                     min="0"
                     minLength={1}
                     maxLength={8}
+                    readOnly={true}
                   />
-                </div> */}
+                </div>
               </div>
 
               <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
