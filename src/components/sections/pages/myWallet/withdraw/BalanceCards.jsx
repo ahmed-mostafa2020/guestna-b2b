@@ -33,7 +33,7 @@ const BalanceCards = ({ balanceData, isLoading }) => {
             {isLoading ? (
               <div className="animate-pulse bg-disabled h-10 w-32 rounded"></div>
             ) : (
-              formatCurrency(balanceData.availableBalance, "ar")
+              formatCurrency(balanceData.availableBalance)
             )}
           </p>
         </div>
@@ -49,7 +49,7 @@ const BalanceCards = ({ balanceData, isLoading }) => {
             {isLoading ? (
               <div className="animate-pulse bg-disabled h-10 w-32 rounded"></div>
             ) : (
-              formatCurrency(balanceData.holdBalance, "ar")
+              formatCurrency(balanceData.holdBalance)
             )}
           </p>
         </div>
