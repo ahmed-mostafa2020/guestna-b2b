@@ -3,10 +3,20 @@ import formatNumbersUint from "./FormatNumbersUint";
 function calculateHours(fromHour, toHour, t) {
   // Function to convert 12-hour format to 24-hour format
   const convertTo24Hour = (time) => {
+    // Handle undefined or null time
+    if (!time || typeof time !== "string") {
+      return 0; // Default to 0 (midnight) if time is invalid
+    }
+
     const period = time.slice(-2); // "AM" or "PM"
     let [hours] = time.slice(0, -2).split(":"); // Example: "08" from "08AM"
 
     hours = parseInt(hours, 10);
+
+    // Handle invalid hours
+    if (isNaN(hours)) {
+      return 0;
+    }
 
     // Convert to 24-hour format
     if (period === "PM" && hours !== 12) {
