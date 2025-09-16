@@ -823,10 +823,14 @@
           "amountRequired": "Please enter a valid amount",
           "amountExceedsBalance": "The requested amount exceeds the available balance ({balance} SAR)",
           "minAmount": "Minimum withdrawal amount is 50 SAR",
+          "tripRequired": "Please select a completed trip",
           "phoneRequired": "Please enter phone number",
           "phoneInvalid": "Please enter a valid phone number (Example: 0501234567)",
           "bankNameRequired": "Please enter bank name",
-          "clientNameRequired": "Please enter account holder name",
+          "clientNameRequired": "Account Holder Name is required.",
+          "clientNameInvalid": "Account Holder Name should only contain letters and spaces.",
+          "clientNameMin": "Account Holder Name must be at least 2 characters.",
+          "clientNameMax": "Account Holder Name must not exceed 50 characters.",
           "ibanRequired": "Please enter IBAN number",
           "ibanInvalid": "Please enter a valid IBAN number (Example: SA1234567890123456789012)"
         },
@@ -846,6 +850,66 @@
           "stcPayInfo": "STC Pay: Instant withdrawal within minutes",
           "bankTransferInfo": "Bank transfer: 1-3 business days",
           "bankFees": "Bank fees will be deducted according to the bank"
+        },
+        "stcPay": {
+          "trips": {
+            "label": "Completed Trips",
+            "placeholder": "Select trip name",
+            "loading": "Loading trips...",
+            "error": "Error loading trips",
+            "noTrips": "No completed trips available"
+          },
+          "amount": {
+            "label": "Withdrawal Amount",
+            "placeholder": "Enter amount",
+            "limits": "Min: {min} SAR | Max: {max} SAR",
+            "selectTripFirst": "Please select a trip first",
+            "autoFilled": "Amount automatically filled from selected trip"
+          },
+          "phone": {
+            "label": "Phone Number",
+            "placeholder": "0501234567",
+            "hint": "Valid Saudi phone number"
+          },
+          "notes": {
+            "label": "Notes (Optional)",
+            "placeholder": "Add any notes or special instructions for the withdrawal..."
+          }
+        },
+        "bankTransfer": {
+          "trips": {
+            "label": "Completed Trips",
+            "placeholder": "Select trip name",
+            "loading": "Loading trips...",
+            "error": "Error loading trips",
+            "noTrips": "No completed trips available"
+          },
+          "amount": {
+            "label": "Withdrawal Amount",
+            "placeholder": "Enter amount",
+            "limits": "Min: {min} SAR | Max: {max} SAR",
+            "selectTripFirst": "Please select a trip first",
+            "autoFilled": "Amount automatically filled from selected trip"
+          },
+          "bankName": {
+            "label": "Bank Name",
+            "placeholder": "Enter bank name",
+            "hint": "Example: Saudi National Bank, Al Rajhi Bank"
+          },
+          "clientName": {
+            "label": "Account Holder Name",
+            "placeholder": "Account holder name as it appears in the bank",
+            "hint": "Only letters (A-Z, a-z) and spaces are allowed"
+          },
+          "iban": {
+            "label": "IBAN Number",
+            "placeholder": "SA1234567890123456789012",
+            "hint": "Valid Saudi IBAN number"
+          },
+          "notes": {
+            "label": "Notes (Optional)",
+            "placeholder": "Add any notes or special instructions for the withdrawal..."
+          }
         }
       },
       "transactionsPage": {

@@ -20,9 +20,6 @@ const WithdrawForm = ({
   // Form state
   const [transferMethod, setTransferMethod] = useState("stc");
   const [selectedTrip, setSelectedTrip] = useState(null);
-
-  console.log(invoicesData);
-
   // Filter invoices to only show DONE status trips
   const completedTrips =
     invoicesData?.nodes?.filter((invoice) => invoice.status === "DONE") || [];
@@ -59,13 +56,10 @@ const WithdrawForm = ({
       clientName:
         transferMethod === "bank"
           ? Yup.string()
-              .required("Account Holder Name is required.")
-              .matches(
-                /^[a-zA-Z\s]+$/,
-                "Account Holder Name should only contain letters and spaces."
-              )
-              .min(2, "Account Holder Name must be at least 2 characters.")
-              .max(50, "Account Holder Name must not exceed 50 characters.")
+              .required(t("validation.clientNameRequired"))
+              .matches(/^[a-zA-Z\s]+$/, t("validation.clientNameInvalid"))
+              .min(2, t("validation.clientNameMin"))
+              .max(50, t("validation.clientNameMax"))
           : Yup.string().notRequired(),
       ibanNumber:
         transferMethod === "bank"
