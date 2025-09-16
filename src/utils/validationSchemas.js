@@ -147,7 +147,7 @@ export const createSignUpSchema = (t) =>
       .min(8, t("forms.password.error.min"))
       .max(50, t("forms.password.error.max"))
       .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
         t("forms.password.error.invalid")
       ),
 
@@ -185,7 +185,7 @@ export const createLoginEmailMethodSchema = (t) =>
       .min(8, t("forms.password.error.min"))
       .max(50, t("forms.password.error.max"))
       .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
         t("forms.password.error.invalid")
       ),
     // confirmTermsAndConditions: Yup.boolean().required(),
@@ -201,7 +201,7 @@ export const createLoginPhoneMethodSchema = (t) =>
       .min(8, t("forms.password.error.min"))
       .max(50, t("forms.password.error.max"))
       .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
         t("forms.password.error.invalid")
       ),
   });
@@ -226,7 +226,7 @@ export const createResetNewPasswordSchema = (t) =>
       .min(8, t("forms.password.error.min"))
       .max(50, t("forms.password.error.max"))
       .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
         t("forms.password.error.invalid")
       ),
 

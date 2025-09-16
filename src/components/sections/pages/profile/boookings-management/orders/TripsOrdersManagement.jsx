@@ -96,7 +96,6 @@ const TripsOrdersManagement = () => {
 
         const response = await axios.request(config);
         setFormSelectionData(response.data);
-        console.log("Form selection data:", response.data);
       } catch (error) {
         console.error("Error fetching form selection data:", error);
       } finally {

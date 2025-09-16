@@ -150,7 +150,7 @@ const CustomizedRiyadhForm = ({
                 value={child.grade}
                 onChange={(event) => handleChangeChildGrade(index, event)}
                 menuItemsList={gradesList}
-                required={gradesLoading}
+                required={true}
                 disabled={!childrenStages[index] || gradesLoading}
                 className={
                   !childrenStages[index] || gradesLoading

@@ -87,7 +87,7 @@
         "parentName": "Parent Name",
         "grade": "Grade",
         "parentPhone": "Parent Phone",
-        "nationalId": "National ID"
+        "nationalId": "ID"
       }
     },
     "error": "Sorry, we couldn't find the page you were looking for.",
@@ -379,8 +379,8 @@
   },
   "registerChild": {
     "popup": {
-      "header": "Complete your child's registration",
-      "toComplete": "To quickly complete registration using your children's saved data | ",
+      "header": "Complete your student's registration",
+      "toComplete": "To quickly complete registration using your students's saved data | ",
       "haveNoAccount": "I have not created an account yet",
       "quickRegister": "Complete registration now without creating an account"
     }
@@ -704,7 +704,7 @@
           "parentName": "Parent Name",
           "grade": "Grade",
           "parentPhone": "Parent Phone",
-          "nationalId": "National ID",
+          "nationalId": "ID",
           "loading": "Loading students data...",
           "noData": "No students data available",
           "actions": "Actions"
@@ -1149,19 +1149,19 @@
 
     "registerForm": {
       "title": "Enter student information",
-      "numberOfChildren": "Number of children",
+      "numberOfChildren": "Number of students",
 
       "childrenNumber": {
-        "0": "The child",
-        "1": "The first child",
-        "2": "The second child",
-        "3": "The third child",
-        "4": "The fourth child",
-        "5": "The fifth child",
-        "6": "The sixth child",
-        "7": "The seventh child",
-        "8": "The eighth child",
-        "9": "The ninth child"
+        "0": "The student",
+        "1": "The first student",
+        "2": "The second student",
+        "3": "The third student",
+        "4": "The fourth student",
+        "5": "The fifth student",
+        "6": "The sixth student",
+        "7": "The seventh student",
+        "8": "The eighth student",
+        "9": "The ninth student"
       }
     },
 
@@ -1318,17 +1318,17 @@
     },
 
     "nationalId": {
-      "name": "National ID",
-      "studentPlaceholder": "National ID card number of the student",
-      "parentPlaceholder": "National ID card number of the guardian",
-      "imageUpload": "National ID Image",
-      "imageOptional": "National ID Image (Optional)",
+      "name": "ID",
+      "studentPlaceholder": "ID card number of the student",
+      "parentPlaceholder": "ID card number of the guardian",
+      "imageUpload": "ID Photo",
+      "imageOptional": "ID Photo (Optional)",
       "error": {
         "invalid": "The number must start with 1 or 2 and must be 10 characters long",
-        "min": "National ID number must be exactly 10 digits",
-        "max": "National ID number must be exactly 10 digits",
-        "imageRequired": "National ID image is required",
-        "imageSize": "Image size must be less than 5MB",
+        "min": "ID number must be exactly 10 digits",
+        "max": "ID number must be exactly 10 digits",
+        "imageRequired": "ID Photo is required",
+        "imageSize": "Photo size must be less than 5MB",
         "imageFormat": "Only JPG, PNG, and PDF files are allowed"
       }
     },
@@ -1426,7 +1426,7 @@
       "addedToFavorites": "Added to favorites successfully",
       "checkYourEmail": "Please, Check your gmail",
       "addGuest": "Add Guest first please",
-      "registerChild": "Please register your child in a trip first",
+      "registerChild": "Please register your student in a trip first",
       "thanksMessage": "Thank You!",
       "willContactYou": "Your contact request has been sent, we will respond to you shortly.",
 
