@@ -15,68 +15,8 @@ const DownloadButton = () => {
   const t = useTranslations();
 
   const fileUrl = useSelector(
-    (state) => state.tripDetailsData.data.trip?.detailsFile
+    (state) => state.tripDetailsData?.data?.trip?.detailsFile
   );
-
-  // const handleDownloadWithFetch = async () => {
-  //   if (!fileUrl || isDownloading) {
-  //     console.error("No file URL available or download in progress");
-  //     return;
-  //   }
-
-  //   setIsDownloading(true);
-
-  //   try {
-  //     const response = await fetch(fileUrl);
-
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-  //     }
-
-  //     const blob = await response.blob();
-  //     const url = window.URL.createObjectURL(blob);
-
-  //     const link = document.createElement("a");
-  //     link.href = url;
-
-  //     // Extract filename from Content-Disposition header or URL
-  //     const contentDisposition = response.headers.get("content-disposition");
-  //     let fileName = "download";
-
-  //     if (contentDisposition) {
-  //       const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
-  //       if (fileNameMatch) {
-  //         fileName = fileNameMatch[1];
-  //       }
-  //     } else {
-  //       fileName = fileUrl.split("/").pop() || "download";
-  //       // Remove anything after .pdf (including _updateAt or +...)
-  //       const pdfIndex = fileName.toLowerCase().indexOf(".pdf");
-  //       if (pdfIndex !== -1) {
-  //         fileName = fileName.substring(0, pdfIndex + 4); // keep up to and including ".pdf"
-  //       }
-  //       // If fileName does not have .pdf, add it
-  //       if (!fileName.toLowerCase().endsWith(".pdf")) {
-  //         fileName += ".pdf";
-  //       }
-  //     }
-
-  //     link.download = fileName;
-  //     document.body.appendChild(link);
-  //     link.click();
-  //     document.body.removeChild(link);
-
-  //     // Clean up the object URL
-  //     window.URL.revokeObjectURL(url);
-  //   } catch (error) {
-  //     console.error("Download failed:", error);
-
-  //     // Fallback: open in new tab
-  //     window.open(fileUrl, "_blank");
-  //   } finally {
-  //     setIsDownloading(false);
-  //   }
-  // };
 
   const handleDownloadWithFetch = async () => {
     if (!fileUrl || isDownloading) {
@@ -175,25 +115,27 @@ const DownloadButton = () => {
   };
 
   return (
-    <button
-      onClick={handleDownloadWithFetch}
-      disabled={!fileUrl || isDownloading}
-      className={`gap-1 px-4 py-3 font-semibold transition-all duration-200 ease-in-out bg-transparent border-2 rounded-lg centered border-mainColor hover:text-mainColor ${
-        !fileUrl || isDownloading ? "opacity-70 cursor-not-allowed" : ""
-      }`}
-    >
-      {isDownloading ? (
-        <>
-          {t("forms.validation.downloading")}
-          <CircularProgress size={14} sx={{ color: "#ED8A22" }} />
-        </>
-      ) : (
-        <>
-          <SystemUpdateAltIcon />
-          {t("links.downloadFile")}
-        </>
-      )}
-    </button>
+    fileUrl && (
+      <button
+        onClick={handleDownloadWithFetch}
+        disabled={!fileUrl || isDownloading}
+        className={`gap-1 px-4 py-3 font-semibold transition-all duration-200 ease-in-out bg-transparent border-2 rounded-lg centered border-mainColor hover:text-mainColor ${
+          !fileUrl || isDownloading ? "opacity-70 cursor-not-allowed" : ""
+        }`}
+      >
+        {isDownloading ? (
+          <>
+            {t("forms.validation.downloading")}
+            <CircularProgress size={14} sx={{ color: "#ED8A22" }} />
+          </>
+        ) : (
+          <>
+            <SystemUpdateAltIcon />
+            {t("links.downloadFile")}
+          </>
+        )}
+      </button>
+    )
   );
 };
 

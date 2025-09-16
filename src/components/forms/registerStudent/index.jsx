@@ -6,9 +6,10 @@ import { useLocale, useTranslations } from "next-intl";
 import { useDispatch, useSelector } from "react-redux";
 import { setFinalTripDetailsData } from "@store/checkout/finalTripDetailsSlice";
 
-import { useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 import { createRegisterChildSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import { cn } from "@utils/cn";
@@ -23,20 +24,22 @@ import { useSnackbar } from "notistack";
 
 import { CircularProgress, Container } from "@mui/material";
 import ParentFormFields from "./ParentFormFields";
-import ChildForm from "./ChildForm";
+import ChildForm from "./childForms/ChildForm";
+import CustomizedRiyadhForm from "./childForms/CustomizedRiyadhForm";
 
-const RegisterStudentForm = () => {
+const RegisterStudentForm = ({ tripMainCategory }) => {
   const [_, setNationalityError] = useState("");
   const [__, setStageError] = useState("");
   const [___, setGradeError] = useState("");
 
   const [childrenNumber, setChildrenNumber] = useState(1);
-  const [nationality, setNationality] = useState("");
+  const [nationality, setNationality] = useState("68052bdd38ea31c8cf95dc04");
   const [nationalIdImage, setNationalIdImage] = useState(null);
   const [nationalIdImageError, setNationalIdImageError] = useState("");
 
   const [childrenStages, setChildrenStages] = useState({});
   const [gradesList, setGradesList] = useState({});
+  const [gradesLoading, setGradesLoading] = useState({});
   const [childrenNationalIdImages, setChildrenNationalIdImages] = useState([]); // array of files
   const [childrenNationalIdImagesError, setChildrenNationalIdImagesError] =
     useState([]);
@@ -61,8 +64,8 @@ const RegisterStudentForm = () => {
   const headersGetMethod = getHeaders(locale);
 
   const registerChildSchema = useMemo(() => {
-    return createRegisterChildSchema(t, childrenNumber);
-  }, [childrenNumber, t]);
+    return createRegisterChildSchema(t, childrenNumber, tripMainCategory);
+  }, [childrenNumber, t, tripMainCategory]);
 
   const { academicStages, nationalities } = useSelector(
     (state) => state.tripDetailsData.data
@@ -82,14 +85,26 @@ const RegisterStudentForm = () => {
 
   // Helper function to generate initial children array
   const generateInitialChildren = (count) => {
-    return Array.from({ length: count }, () => ({
-      studentName: "",
-      academicStage: "",
-      grade: "",
-      nationalId: "",
-      studentMobile: "",
-      studentEmail: "",
-    }));
+    return Array.from({ length: count }, () => {
+      const child = {
+        studentName: "",
+        academicStage: "",
+        grade: "",
+        nationalId: "",
+        studentMobile: "",
+        studentEmail: "",
+        ...((tripMainCategory ===
+          CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH ||
+          tripMainCategory ===
+            CONSTANT_VALUES.MAIN_CATEGORIES.RIYADH_VIBES) && {
+          nationalIdImage:
+            tripMainCategory === CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH
+              ? null
+              : undefined,
+        }),
+      };
+      return child;
+    });
   };
 
   const childrenNumberList = [
@@ -132,24 +147,13 @@ const RegisterStudentForm = () => {
       setNationalityError("");
     }
 
-    // parent
-    if (!nationalIdImage) {
-      setNationalIdImageError("National ID image is required.");
-      isValid = false;
-    } else {
-      setNationalIdImageError("");
-    }
+    // parent - file upload is now optional
+    setNationalIdImageError("");
 
-    // children
-    // Validate each child's image
+    // children - file uploads are now optional
     const errors = [];
     values.children.forEach((child, idx) => {
-      if (!childrenNationalIdImages[idx]) {
-        errors[idx] = "National ID image is required for this child.";
-        isValid = false;
-      } else {
-        errors[idx] = "";
-      }
+      errors[idx] = "";
     });
     setChildrenNationalIdImagesError(errors);
 
@@ -171,25 +175,34 @@ const RegisterStudentForm = () => {
 
     // Create FormData
     const formData = new FormData();
+    formData.append("formsType", tripMainCategory);
     formData.append("name", values.parentName);
     formData.append("quantity", values.childrenNumber);
-    formData.append("relationship", values.relationship);
+    if (values.relationship) {
+      formData.append("relationship", values.relationship);
+    }
     formData.append("phone", values.mobile);
-    formData.append("backupPhone", values.backupMobile);
+    if (values.backupMobile) {
+      formData.append("backupPhone", values.backupMobile);
+    }
     formData.append("email", values.email);
     formData.append("nationality", nationality);
-    formData.append("nationalId", values.nationalId);
+    if (values.nationalId) {
+      formData.append("nationalId", values.nationalId);
+    }
     if (nationalIdImage) {
       formData.append("nationalIdImage", nationalIdImage);
     }
     formData.append("trip", tripId);
-    formData.append("formsType", formsType);
+    // formData.append("formsType", formsType);
     if (values.promoCode) formData.append("promoCode", values.promoCode);
 
     // Append each child as a nested object
     values.children.forEach((child, idx) => {
       formData.append(`childs[${idx}].name`, child.studentName);
-      formData.append(`childs[${idx}].nationalId`, `${child.nationalId}`);
+      if (child.nationalId) {
+        formData.append(`childs[${idx}].nationalId`, `${child.nationalId}`);
+      }
 
       if (childrenNationalIdImages[idx]) {
         formData.append(
@@ -226,8 +239,7 @@ const RegisterStudentForm = () => {
         // resetForm();
 
         // Change acc to response
-        const { _id } = response.data;
-        if (_id) {
+        if (response) {
           enqueueSnackbar(t("forms.validation.success"), {
             variant: "success",
           });
@@ -267,7 +279,7 @@ const RegisterStudentForm = () => {
           mobile: parentPhone || "",
           backupMobile: "",
           email: parentEmail || "",
-          nationality: "",
+          nationality: "68052bdd38ea31c8cf95dc04",
           nationalId: "",
           promoCode: "",
           children: generateInitialChildren(childrenNumber),
@@ -290,6 +302,21 @@ const RegisterStudentForm = () => {
           handleSubmit,
           isSubmitting,
         }) => {
+          // Debug logging to understand form state
+          console.log("Form State Debug:", {
+            isValid,
+            nationality,
+            tripMainCategory,
+            childrenStages,
+            childrenStagesValues: Object.values(childrenStages),
+            childrenGrades: values.children.map((child) => child.grade),
+            nationalIdImages: values.children.map(
+              (child) => child.nationalIdImage
+            ),
+            errors,
+            touched,
+          });
+
           // Define handlers inside the Formik render function
           const handleChangeChildrenNumber = (event) => {
             const newCount = parseInt(event.target.value);
@@ -301,14 +328,26 @@ const RegisterStudentForm = () => {
             if (updatedChildren.length < newCount) {
               // Add empty children if increasing
               for (let i = updatedChildren.length; i < newCount; i++) {
-                updatedChildren.push({
+                const newChild = {
                   studentName: "",
                   academicStage: "",
                   grade: "",
                   nationalId: "",
                   studentMobile: "",
                   studentEmail: "",
-                });
+                  ...((tripMainCategory ===
+                    CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH ||
+                    tripMainCategory ===
+                      CONSTANT_VALUES.MAIN_CATEGORIES.RIYADH_VIBES) && {
+                    nationalIdImage:
+                      tripMainCategory ===
+                      CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH
+                        ? null
+                        : undefined,
+                  }),
+                };
+
+                updatedChildren.push(newChild);
               }
             } else if (updatedChildren.length > newCount) {
               // Remove extra children if decreasing
@@ -339,6 +378,12 @@ const RegisterStudentForm = () => {
             }));
             setFieldValue(`children[${childIndex}].academicStage`, newStage);
 
+            // Set loading state for this child's grade dropdown
+            setGradesLoading((prev) => ({
+              ...prev,
+              [childIndex]: true,
+            }));
+
             // Fetch grades for the selected stage
             try {
               const response = await axios.get(
@@ -355,6 +400,12 @@ const RegisterStudentForm = () => {
               setGradesList((prev) => ({
                 ...prev,
                 [childIndex]: [],
+              }));
+            } finally {
+              // Clear loading state
+              setGradesLoading((prev) => ({
+                ...prev,
+                [childIndex]: false,
               }));
             }
           };
@@ -390,6 +441,9 @@ const RegisterStudentForm = () => {
               />
 
               {/* Dynamic Children Fields */}
+              {/* tripMainCategory ===
+              CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH */}
+
               <FieldArray
                 name="children"
                 className="transition-all duration-200 ease-in-out"
@@ -397,48 +451,119 @@ const RegisterStudentForm = () => {
                 {/* eslint-disable-next-line no-unused-vars */}
                 {({ push, remove }) => (
                   <div>
-                    {values.children.map((child, index) => (
-                      <ChildForm
-                        key={`child-${index}`}
-                        child={child}
-                        index={index}
-                        errors={errors}
-                        touched={touched}
-                        handleChange={handleChange}
-                        handleBlur={handleBlur}
-                        setFieldValue={setFieldValue}
-                        childrenStages={childrenStages}
-                        academicStages={academicStages}
-                        handleChangeChildStage={handleChangeChildStage}
-                        gradesList={gradesList[index] || []}
-                        handleChangeChildGrade={handleChangeChildGrade}
-                        onChildImageChange={(file) => {
-                          const updated = [...childrenNationalIdImages];
-                          updated[index] = file;
-                          setChildrenNationalIdImages(updated);
+                    {values.children.map((child, index) => {
+                      return tripMainCategory ===
+                        CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH ||
+                        tripMainCategory ===
+                          CONSTANT_VALUES.MAIN_CATEGORIES.RIYADH_VIBES ? (
+                        <CustomizedRiyadhForm
+                          key={`child-${index}`}
+                          child={child}
+                          index={index}
+                          errors={errors}
+                          touched={touched}
+                          handleChange={handleChange}
+                          handleBlur={handleBlur}
+                          setFieldValue={setFieldValue}
+                          childrenStages={childrenStages}
+                          academicStages={academicStages}
+                          handleChangeChildStage={handleChangeChildStage}
+                          gradesList={gradesList[index] || []}
+                          gradesLoading={gradesLoading[index] || false}
+                          handleChangeChildGrade={handleChangeChildGrade}
+                          onChildImageChange={(file) => {
+                            const updated = [...childrenNationalIdImages];
+                            updated[index] = file;
+                            setChildrenNationalIdImages(updated);
 
-                          // Clear error for this child on new file
-                          setChildrenNationalIdImagesError((prev) => {
-                            const arr = [...prev];
-                            arr[index] = "";
-                            return arr;
-                          });
-                        }}
-                        imageError={childrenNationalIdImagesError[index]}
-                        t={t}
-                        cn={cn}
-                        childrenNumber={childrenNumber}
-                      />
-                    ))}
+                            // Clear error for this child on new file
+                            setChildrenNationalIdImagesError((prev) => {
+                              const arr = [...prev];
+                              arr[index] = "";
+                              return arr;
+                            });
+                          }}
+                          onNationalIdImageChange={(file) => {
+                            const updated = [...childrenNationalIdImages];
+                            updated[index] = file;
+                            setChildrenNationalIdImages(updated);
+
+                            // Clear error for this child on new file
+                            setChildrenNationalIdImagesError((prev) => {
+                              const arr = [...prev];
+                              arr[index] = "";
+                              return arr;
+                            });
+                          }}
+                          imageError={childrenNationalIdImagesError[index]}
+                          nationalIdImageError={
+                            childrenNationalIdImagesError[index]
+                          }
+                          t={t}
+                          cn={cn}
+                          childrenNumber={childrenNumber}
+                          tripMainCategory={tripMainCategory}
+                        />
+                      ) : (
+                        <ChildForm
+                          key={`child-${index}`}
+                          child={child}
+                          index={index}
+                          errors={errors}
+                          touched={touched}
+                          handleChange={handleChange}
+                          handleBlur={handleBlur}
+                          setFieldValue={setFieldValue}
+                          childrenStages={childrenStages}
+                          academicStages={academicStages}
+                          handleChangeChildStage={handleChangeChildStage}
+                          gradesList={gradesList[index] || []}
+                          gradesLoading={gradesLoading[index] || false}
+                          handleChangeChildGrade={handleChangeChildGrade}
+                          onChildImageChange={(file) => {
+                            const updated = [...childrenNationalIdImages];
+                            updated[index] = file;
+                            setChildrenNationalIdImages(updated);
+
+                            // Set only the file name in Formik values
+                            setFieldValue(
+                              `children[${index}].nationalIdImage`,
+                              file ? file.name : null
+                            );
+
+                            // Clear error for this child on new file
+                            setChildrenNationalIdImagesError((prev) => {
+                              const arr = [...prev];
+                              arr[index] = "";
+                              return arr;
+                            });
+                          }}
+                          imageError={childrenNationalIdImagesError[index]}
+                          t={t}
+                          cn={cn}
+                          childrenNumber={childrenNumber}
+                        />
+                      );
+                    })}
                   </div>
                 )}
               </FieldArray>
 
               <button
                 type="submit"
-                disabled={!isValid || isSubmitting}
+                disabled={
+                  !isValid ||
+                  isSubmitting ||
+                  !nationality ||
+                  Object.values(childrenStages).some((v) => !v) ||
+                  values.children.some((child) => !child.grade)
+                }
                 className={`mx-auto px-20 lg:px-40 w-fit centered gap-2 mt-4 lg:mt-8 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
-                  isValid && "hover:bg-linksHover hover:border-linksHover"
+                  isValid &&
+                  nationality &&
+                  !Object.values(childrenStages).some((v) => !v) &&
+                  !values.children.some((child) => !child.grade) &&
+                  "hover:bg-linksHover hover:border-linksHover"
                 }`}
               >
                 {isSubmitting ? (
@@ -458,4 +583,4 @@ const RegisterStudentForm = () => {
   );
 };
 
-export default RegisterStudentForm;
+export default memo(RegisterStudentForm);

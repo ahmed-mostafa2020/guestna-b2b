@@ -9,14 +9,19 @@ import * as Yup from "yup";
 import { getHeaders } from "@utils/getHeaders";
 import getErrorMessage from "@utils/getErrorMessage ";
 import getProxyUrl from "@utils/getProxyUrl";
-import { createUpdateTripSchema } from "@utils/validationSchemas";
+import { createAuthenticatedRequestQuoteSchema } from "@utils/validationSchemas";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
 import FileUploadGroup from "../FileUploadGroup";
 
-const UpdateTripForm = ({ tripId, tripData, formSelectionData, onClose }) => {
+const AuthenticatedRequestQuote = ({
+  tripId,
+  tripData,
+  formSelectionData,
+  onClose,
+}) => {
   const [formErrors, setFormErrors] = useState([]);
 
   const locale = useLocale();
@@ -25,7 +30,7 @@ const UpdateTripForm = ({ tripId, tripData, formSelectionData, onClose }) => {
 
   const headers = getHeaders(locale);
   // Create custom validation schema for update form (make readonly fields optional)
-  const updateTripSchema = createUpdateTripSchema(t);
+  const updateTripSchema = createAuthenticatedRequestQuoteSchema(t);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -539,6 +544,7 @@ const UpdateTripForm = ({ tripId, tripData, formSelectionData, onClose }) => {
                     min="0"
                     minLength={1}
                     maxLength={8}
+                    readOnly={true}
                   />
                 </div>
               </div>
@@ -635,4 +641,4 @@ const UpdateTripForm = ({ tripId, tripData, formSelectionData, onClose }) => {
   );
 };
 
-export default memo(UpdateTripForm);
+export default memo(AuthenticatedRequestQuote);

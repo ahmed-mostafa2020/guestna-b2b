@@ -93,9 +93,9 @@ const TripDetails = ({ params }) => {
     `;
   }, [t, data]);
 
-  useEffect(() => {
-    dispatch(setUser(USERS.VISITOR));
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(setUser(USERS.VISITOR));
+  // }, [dispatch]);
 
   if (isLoading)
     return (

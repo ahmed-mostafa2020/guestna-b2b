@@ -69,11 +69,11 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.nodes.map((booking, index) => (
+                  {data?.nodes?.map((booking, index) => (
                     <tr
                       key={booking._id}
                       className={`${
-                        index != data.nodes.length - 1 &&
+                        index != data?.nodes?.length - 1 &&
                         "border-b border-table-border"
                       } transition-colors hover:bg-gray-50`}
                     >
@@ -100,7 +100,7 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
 
                       <td className="px-6 py-4">
                         <div className="flex gap-[6px] items-center justify-end">
-                          {booking.survey && (
+                          {!booking.survey && (
                             <button
                               onClick={() => handleSurveyFormOpen(booking)}
                               className="flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
@@ -110,11 +110,11 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
                           )}
 
                           <button
-                            disabled={booking.survey}
+                            disabled={!booking.survey}
                             className={`${
-                              booking.survey ? "flex-1" : "w-[48%]"
+                              !booking.survey ? "flex-1" : "w-[48%]"
                             } rounded-md text-sm px-4 py-2 border border-secColor transition-all duration-200 ease-in-out ${
-                              booking.survey
+                              !booking.survey
                                 ? "opacity-70 cursor-not-allowed text-gray-700 border-gray-300"
                                 : "hover:text-mainColor hover:border-mainColor"
                             }`}
@@ -133,7 +133,7 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
 
         {/* Mobile Cards */}
         <div className="space-y-4 md:hidden">
-          {data.nodes.map((booking) => (
+          {data?.nodes?.map((booking) => (
             <Card
               key={booking._id}
               className="transition-shadow shadow-md hover:shadow-lg"

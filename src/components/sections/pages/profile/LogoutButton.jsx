@@ -18,7 +18,7 @@ import ActionsDialog from "../customization/gridSection/largeSizeGrid/dayActivit
 import { useSnackbar } from "notistack";
 import Cookies from "js-cookie";
 
-const LogoutButton = () => {
+const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const locale = useLocale();
@@ -43,6 +43,16 @@ const LogoutButton = () => {
 
       setIsOpen(false);
 
+      // Call the modal close callback first
+      if (onModalClose && typeof onModalClose === 'function') {
+        onModalClose();
+      }
+
+      // Call the callback to close the dropdown after logout completes
+      if (onLogoutComplete && typeof onLogoutComplete === 'function') {
+        onLogoutComplete();
+      }
+
       router.push(`/${locale}`);
     } catch (error) {
       console.error("Logout failed:", error);
@@ -54,10 +64,16 @@ const LogoutButton = () => {
 
   const handleOpen = () => {
     setIsOpen(true);
+    if (onModalOpen && typeof onModalOpen === 'function') {
+      onModalOpen();
+    }
   };
 
   const handleClose = () => {
     setIsOpen(false);
+    if (onModalClose && typeof onModalClose === 'function') {
+      onModalClose();
+    }
   };
 
   return (

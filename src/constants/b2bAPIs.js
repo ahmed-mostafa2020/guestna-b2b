@@ -13,7 +13,6 @@ export const B2B_END_POINTS = {
   PARENT_TRIPDETAILS: "organizationTrips/info",
   STUDENT_REGISTER: "organizationTrips/booking/info",
   STUDENTS_GRADES: "grades/booking",
-  STUDENTS_GRADES: "grades/booking",
 
   SIDE_FILTERS: "filtratinDetails",
   ALL_TRIPS: "all",
@@ -30,9 +29,9 @@ export const B2B_END_POINTS = {
   CHECKOUT: "finalTripBookingDetails",
   CONFIRM_STC_PAYMENT: "confirmSTCPayment",
   APPLE_BOOKING: {
-    INITIATE: "initiationguestnaAppleTripBooking",
-    CONFIRM: "guestnaTripConfermedAppleBooking",
-    CALLBACK: "confermedAppleBooking",
+    INITIATE: "initiation/apple",
+    CONFIRM: "confermed/apple",
+    CALLBACK: "confermed/trip/apple",
   },
 
   AUTH: {
@@ -100,6 +99,7 @@ export const B2B_END_POINTS = {
       },
     },
     CREATE_TRIP_LINK: "profile/organizationTrips/poster",
+    UPDATE_TRIP_STATUS: "profile/organizationTrips/generate/url",
 
     BOOKINGS: "profile/bookings/all",
 

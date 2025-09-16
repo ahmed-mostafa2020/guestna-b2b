@@ -40,6 +40,7 @@ const ParentFormFields = ({
         onBlur={handleBlur}
         minLength="2"
         maxLength="50"
+        required={true}
       />
 
       <DropdownGroup
@@ -48,25 +49,29 @@ const ParentFormFields = ({
         value={values.childrenNumber}
         onChange={handleChangeChildrenNumber}
         menuItemsList={childrenNumberList}
+        required={true}
       />
 
       <TextInputGroup
-        label={t("forms.relationship.name")}
-        type="text"
-        name="relationship"
-        value={values.relationship}
-        errors={errors.relationship}
-        touched={touched.relationship}
+        label={t("forms.email.parentEmail")}
+        type="email"
+        name="email"
+        value={values.email}
+        errors={errors.email}
+        touched={touched.email}
         onChange={handleChange}
         onBlur={handleBlur}
-        minLength="2"
-        maxLength="50"
+        placeholder="guestna@gmail.com"
+        required={true}
       />
 
       <div className="relative flex flex-col gap-2">
-        <label className="font-medium capitalize font-ibm">
-          {t("forms.phone.parentPhone")}
-        </label>
+        <div className="flex items-center gap-0.5">
+          <label className="font-medium capitalize font-ibm">
+            {t("forms.phone.parentPhone")}
+          </label>
+          <span className="text-error">{"*"}</span>
+        </div>
         <Field name="mobile">
           {({ field }) => (
             <PhoneInputWithCountrySelect
@@ -99,7 +104,7 @@ const ParentFormFields = ({
         )}
       </div>
 
-      <div className="relative flex flex-col gap-2">
+      {/* <div className="relative flex flex-col gap-2">
         <label className="font-medium capitalize font-ibm">
           {t("forms.phone.backupPhone")}
         </label>
@@ -133,27 +138,34 @@ const ParentFormFields = ({
             {errors.backupMobile}
           </div>
         )}
-      </div>
+      </div> */}
 
+      {/* 
       <TextInputGroup
-        label={t("forms.email.parentEmail")}
-        type="email"
-        name="email"
-        value={values.email}
-        errors={errors.email}
-        touched={touched.email}
+        label={t("forms.relationship.name")}
+        type="text"
+        name="relationship"
+        value={values.relationship}
+        errors={errors.relationship}
+        touched={touched.relationship}
         onChange={handleChange}
         onBlur={handleBlur}
-        placeholder="guestna@gmail.com"
-      />
+        minLength="2"
+        maxLength="50"
+      /> */}
 
       <div className="relative flex flex-col gap-2">
         <DropdownGroup
           label={t("profile.information.personalInformation.nationality")}
           placeholder={t("profile.information.personalInformation.nationality")}
-          value={values.nationality}
+          value={
+            values.nationality ||
+            nationalities?.find((n) => n._id === "68052bdd38ea31c8cf95dc04")
+              ?._id
+          }
           onChange={handleChangeNationality}
           menuItemsList={nationalities}
+          required={true}
         />
         {errors.nationality && touched.nationality && (
           <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
@@ -162,7 +174,7 @@ const ParentFormFields = ({
         )}
       </div>
 
-      <TextInputGroup
+      {/* <TextInputGroup
         label={t("forms.nationalId.name")}
         type="number"
         name="nationalId"
@@ -182,7 +194,7 @@ const ParentFormFields = ({
           setNationalIdImageError(""); // Clear error on new file
         }}
         nationalIdImageError={nationalIdImageError}
-      />
+      /> */}
 
       <TextInputGroup
         label={t("forms.promoCode.label")}

@@ -1,64 +1,49 @@
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
 
-import {
-  // useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 import LogoutButton from "../../sections/pages/profile/LogoutButton";
 import ProfileImage from "../../sections/pages/profile/ProfileImage";
 
 const ProfileDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const dropdownRef = useRef();
   const logoutButtonRef = useRef();
 
   const locale = useLocale();
   const t = useTranslations();
+  const pathname = usePathname();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  // Close dropdown when clicking outside
-  // useEffect(() => {
-  //   const handleClickOutside = (event) => {
-  //     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-  //       setIsOpen(false);
-  //     }
-  //   };
+  // Close dropdown when pathname changes (navigation between pages)
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
-  //   document.addEventListener("mousedown", handleClickOutside);
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, []);
-  // useEffect(() => {
-  //   const handleClickOutside = (event) => {
-  //     if (
-  //       isOpen &&
-  //       dropdownRef.current &&
-  //       !dropdownRef.current.contains(event.target)
-  //     ) {
-  //       // If click is outside dropdown
-  //       if (
-  //         !(
-  //           logoutButtonRef.current &&
-  //           logoutButtonRef.current.contains(event.target)
-  //         )
-  //       ) {
-  //         setIsOpen(false);
-  //       }
-  //     }
-  //   };
+  // Close dropdown when clicking outside (but not when logout modal is open)
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isOpen &&
+        !isLogoutModalOpen &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    };
 
-  //   document.addEventListener("mousedown", handleClickOutside);
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, [isOpen]);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, isLogoutModalOpen]);
 
   const dropdownList = [
     {
@@ -115,8 +100,12 @@ const ProfileDropdown = () => {
         <div className="absolute -bottom-[120px] z-10 w-max py-2 bg-[#FCFCFC]">
           {renderedDropdownList}
           <div ref={logoutButtonRef}>
-            <LogoutButton />
-          </div>{" "}
+            <LogoutButton 
+              onLogoutComplete={() => setIsOpen(false)}
+              onModalOpen={() => setIsLogoutModalOpen(true)}
+              onModalClose={() => setIsLogoutModalOpen(false)}
+            />
+          </div>
         </div>
       )}
     </div>

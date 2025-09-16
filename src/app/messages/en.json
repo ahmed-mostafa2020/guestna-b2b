@@ -87,7 +87,7 @@
         "parentName": "Parent Name",
         "grade": "Grade",
         "parentPhone": "Parent Phone",
-        "nationalId": "National ID"
+        "nationalId": "ID"
       }
     },
     "error": "Sorry, we couldn't find the page you were looking for.",
@@ -379,8 +379,8 @@
   },
   "registerChild": {
     "popup": {
-      "header": "Complete your child's registration",
-      "toComplete": "To quickly complete registration using your children's saved data | ",
+      "header": "Complete your student's registration",
+      "toComplete": "To quickly complete registration using your students's saved data | ",
       "haveNoAccount": "I have not created an account yet",
       "quickRegister": "Complete registration now without creating an account"
     }
@@ -426,7 +426,7 @@
 
   "discover": {
     "subHeader": {
-      "content": "See Saudi Arabia Through GuestNa's Eyes"
+      "title": "Discover the Kingdom's charming destinations"
     },
     "sideFilters": {
       "title": "Classifications",
@@ -598,7 +598,8 @@
         "copyButton": "Copy Link",
         "closeButton": "Close",
         "copySuccess": "Link copied successfully!"
-      }
+      },
+      "linkCreated": "Booking link created successfully!"
     },
 
     "tables": {
@@ -703,7 +704,7 @@
           "parentName": "Parent Name",
           "grade": "Grade",
           "parentPhone": "Parent Phone",
-          "nationalId": "National ID",
+          "nationalId": "ID",
           "loading": "Loading students data...",
           "noData": "No students data available",
           "actions": "Actions"
@@ -1219,19 +1220,19 @@
 
     "registerForm": {
       "title": "Enter student information",
-      "numberOfChildren": "Number of children",
+      "numberOfChildren": "Number of students",
 
       "childrenNumber": {
-        "0": "The child",
-        "1": "The first child",
-        "2": "The second child",
-        "3": "The third child",
-        "4": "The fourth child",
-        "5": "The fifth child",
-        "6": "The sixth child",
-        "7": "The seventh child",
-        "8": "The eighth child",
-        "9": "The ninth child"
+        "0": "The student",
+        "1": "The first student",
+        "2": "The second student",
+        "3": "The third student",
+        "4": "The fourth student",
+        "5": "The fifth student",
+        "6": "The sixth student",
+        "7": "The seventh student",
+        "8": "The eighth student",
+        "9": "The ninth student"
       }
     },
 
@@ -1241,7 +1242,8 @@
         "min": "Name should be less than 3 characters",
         "max": "Name should be more than 50 characters",
         "invalid": "Name should contain only letters",
-        "wordMinLength": "Name should be two words each word be more than 3 characters"
+        "wordMinLength": "Name should be two words each word be more than 3 characters",
+        "multipleSpaces": "Multiple consecutive spaces between names are not allowed"
       }
     },
 
@@ -1258,7 +1260,7 @@
     "phone": {
       "name": "Phone",
       "parentPhone": "Parent Phone",
-      "backupPhone": "Backup Phone",
+      "backupPhone": "Backup Phone (Optional)",
       "studentPhone": "Student Phone Number (If Available)",
       "error": {
         "invalid": "Invalid phone number",
@@ -1339,6 +1341,33 @@
       }
     },
 
+    "verificationCode": {
+      "name": "Verification Code",
+      "error": {
+        "min": "Verification Code must be exactly 4 digits",
+        "max": "Verification Code must be exactly 4 digits"
+      }
+    },
+
+    "promoCode": {
+      "label": "Promo code",
+      "placeholder": "Enter the promo code",
+      "useCode": "Use the promo code",
+      "successMessage": "Discount has been applied successfully"
+    },
+
+    "parentName": {
+      "name": "Parent Name",
+      "placeholder": "Parent Name",
+      "error": {
+        "min": "Parent Name should be more than 3 characters",
+        "max": "Parent Name should be less than 50 characters",
+        "invalid": "Parent Name should contain only letters",
+        "wordMinLength": "Name should be 3 words each word be more than 3 characters",
+        "multipleSpaces": "Multiple consecutive spaces between names are not allowed"
+      }
+    },
+
     "studentName": {
       "name": "Student name",
       "placeholder": "Student's full name in English",
@@ -1346,12 +1375,13 @@
         "min": "Student name should be less than 3 characters",
         "max": "Student name Student name be more than 50 characters",
         "invalid": "Name should contain only letters",
-        "wordMinLength": "The student's name must be full"
+        "wordMinLength": "The student's name must be full",
+        "multipleSpaces": "Multiple consecutive spaces between names are not allowed"
       }
     },
 
     "relationship": {
-      "name": "ٌRelationship",
+      "name": "Relationship (Optional)",
       "error": {
         "min": "ٌRelationship should be more than 2 characters",
         "max": "ٌRelationship should be less than 50 characters"
@@ -1359,18 +1389,26 @@
     },
 
     "nationalId": {
-      "name": "National ID",
-      "studentPlaceholder": "National ID card number of the student",
-      "parentPlaceholder": "National ID card number of the guardian",
+      "name": "ID",
+      "studentPlaceholder": "ID card number of the student",
+      "parentPlaceholder": "ID card number of the guardian",
+      "imageUpload": "ID Photo",
+      "imageOptional": "ID Photo (Optional)",
       "error": {
         "invalid": "The number must start with 1 or 2 and must be 10 characters long",
-        "min": "National ID number must be exactly 10 digits",
-        "max": "National ID number must be exactly 10 digits"
+        "min": "ID number must be exactly 10 digits",
+        "max": "ID number must be exactly 10 digits",
+        "imageRequired": "ID Photo is required",
+        "imageSize": "Photo size must be less than 5MB",
+        "imageFormat": "Only JPG, PNG, and PDF files are allowed"
       }
     },
 
     "academicStages": {
-      "name": "Academic Stages"
+      "name": "Academic Stages",
+      "placeholder": "Select Academic Stage",
+      "selectFirst": "Select stage first",
+      "loading": "Loading academic stages..."
     },
 
     "grade": {
@@ -1459,14 +1497,15 @@
       "addedToFavorites": "Added to favorites successfully",
       "checkYourEmail": "Please, Check your gmail",
       "addGuest": "Add Guest first please",
-      "registerChild": "Please register your child in a trip first",
+      "registerChild": "Please register your student in a trip first",
       "thanksMessage": "Thank You!",
       "willContactYou": "Your contact request has been sent, we will respond to you shortly.",
 
       "payment": {
         "success": "Payment was done successfully!",
         "sendOtp": "Please send OTP!",
-        "resendOtp": "Please resend OTP!"
+        "resendOtp": "Please resend OTP!",
+        "error": "An error occurred! Please try again"
       },
 
       "api_errors": {
@@ -1476,6 +1515,7 @@
 
     "customTrip": {
       "title": "Request to Create a New Trip",
+      "edit": "Request to Edit a Trip",
       "submit": "Send Request to Guestna Team",
       "success": "Your request has been sent successfully",
 

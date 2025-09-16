@@ -11,7 +11,8 @@
       "@feedback/*": ["src/feedback/*"],
       "@hooks/*": ["src/hooks/*"],
       "@layouts/*": ["src/layouts/*"],
-      "@validations/*": ["src/validations/*"]
+      "@validations/*": ["src/validations/*"],
+      "@lib/*": ["src/lib/*"]
     }
   }
 }

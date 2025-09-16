@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { KeyboardArrowDown } from "@mui/icons-material";
-import { printIcon, refreshIcon } from "@/src/assets/svg";
+import { printIcon, refreshIcon } from "@assets/svg";
 
 const TransactionsFilters = ({
   filters,

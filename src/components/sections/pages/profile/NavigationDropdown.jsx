@@ -18,6 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 import {
+  Home as HomeIcon,
   ExpandMore as ExpandMoreIcon,
   TravelExplore as TravelIcon,
   People as PeopleIcon,
@@ -28,7 +29,6 @@ import {
   Storefront as StorefrontIcon,
   Wallet,
 } from "@mui/icons-material";
-import { homeIcon } from "@assets/svg";
 import { CalendarIcon } from "@mui/x-date-pickers";
 
 const NavigationDropdown = () => {
@@ -58,8 +58,15 @@ const NavigationDropdown = () => {
     {
       id: "home",
       title: t("profile.aside.main"),
-      icon: homeIcon,
+      icon: <HomeIcon />,
       path: `${profileBasePath}`,
+      hasDropdown: false,
+    },
+    {
+      id: "activities-market",
+      title: t("profile.aside.activitiesMarket"),
+      icon: <StorefrontIcon />,
+      path: `${profileBasePath}/activities-market`,
       hasDropdown: false,
     },
     {
@@ -73,13 +80,6 @@ const NavigationDropdown = () => {
           path: `${profileBasePath}/trips`,
         },
       ],
-    },
-    {
-      id: "activities-market",
-      title: t("profile.aside.activitiesMarket"),
-      icon: <StorefrontIcon />,
-      path: `${profileBasePath}/activities-market`,
-      hasDropdown: false,
     },
     {
       id: "bookings-management",
@@ -187,13 +187,13 @@ const NavigationDropdown = () => {
   return (
     <Box className="w-full max-w-md overflow-hidden">
       {/* Navigation Items */}
-      <List className="p-0">
+      <List className="p-0 space-y-1 sm:space-y-2">
         {navigationItems.map((item, _) => (
-          <Box key={item.id} className="flex flex-col w-full gap-2">
+          <Box key={item.id} className="flex flex-col w-full">
             {!item.hasDropdown ? (
               <Link
                 href={item.path}
-                className={`flex items-center w-full gap-1 px-4 py-3 mb-3 rounded-lg transition-colors ${
+                className={`text-xs sm:text-sm lg:text-base flex items-center w-full gap-2 sm:gap-3 px-2 sm:px-4 py-2 sm:py-3 mb-2 sm:mb-3 rounded-lg transition-colors ${
                   pathname === item.path
                     ? "text-white bg-mainColor"
                     : "hover:text-mainColor"
@@ -203,9 +203,15 @@ const NavigationDropdown = () => {
                   sx: {
                     color: pathname === item.path ? "white" : "#008F8F",
                     transition: "color 0.2s",
+                    fontSize: {
+                      xs: "18px",
+                      sm: "20px",
+                      lg: "24px",
+                    },
+                    display: { xs: "none", md: "none", lg: "block" },
                   },
                 })}
-                {item.title}
+                <span className="truncate">{item.title}</span>
               </Link>
             ) : (
               <Accordion
@@ -216,7 +222,7 @@ const NavigationDropdown = () => {
                 sx={{
                   "&.MuiAccordion-rounded": {
                     borderRadius: "8px",
-                    marginBottom: "12px",
+                    marginBottom: { xs: "8px", sm: "12px" },
                     overflow: "hidden",
                     backgroundColor: "transparent",
                     border: "none",
@@ -236,10 +242,11 @@ const NavigationDropdown = () => {
                     <ExpandMoreIcon
                       sx={{
                         color: isAccordionExpanded(item) ? "white" : "#007473",
+                        fontSize: { xs: "18px", sm: "20px", lg: "24px" },
                       }}
                     />
                   }
-                  className="min-h-0 px-4 py-3"
+                  className="min-h-0 px-2 sm:px-4 py-2 sm:py-3"
                   sx={{
                     background: "#FBFBFB",
                     boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.02)",
@@ -250,22 +257,24 @@ const NavigationDropdown = () => {
                       boxShadow: "none",
                     },
                     "& .MuiAccordionSummary-content": {
-                      margin: "12px 0",
+                      margin: { xs: "8px 0", sm: "12px 0" },
                       "&.Mui-expanded": {
-                        margin: "12px 0",
+                        margin: { xs: "8px 0", sm: "12px 0" },
                       },
                     },
                   }}
                 >
-                  <Box className="flex items-center w-full gap-1">
+                  <Box className="flex items-center w-full gap-2 sm:gap-3">
                     {React.cloneElement(item.icon, {
                       sx: {
                         color: isAccordionExpanded(item) ? "white" : "#008F8F",
                         transition: "color 0.2s",
+                        fontSize: { xs: "18px", sm: "20px", lg: "24px" },
+                        display: { xs: "none", md: "none", lg: "block" },
                       },
                     })}
                     <Typography
-                      className="font-medium"
+                      className="font-medium text-xs sm:text-sm lg:text-base truncate"
                       sx={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
                     >
                       {item.title}
@@ -278,7 +287,7 @@ const NavigationDropdown = () => {
                     {item.subItems.map((subItem, _) => (
                       <ListItem key={subItem.name} disablePadding>
                         <ListItemButton
-                          className="w-full py-2 ps-12"
+                          className="w-full py-1 sm:py-2 ps-8 sm:ps-12"
                           // onClick={() =>
                           //   handleSubItemClick(item.title, subItem)
                           // }
@@ -291,7 +300,7 @@ const NavigationDropdown = () => {
                         >
                           <Link
                             href={subItem.path}
-                            className={`w-full text-start hover:text-mainColor ${
+                            className={`w-full text-start hover:text-mainColor text-xs sm:text-sm lg:text-base truncate ${
                               pathname === subItem.path
                                 ? "text-mainColor"
                                 : "text-black"

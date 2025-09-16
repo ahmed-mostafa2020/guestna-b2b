@@ -49,6 +49,7 @@ import applePay from "@assets/paymentLogos/apple-pay.svg";
 
 import tamaraEnglish from "@assets/paymentLogos/tamaraEnglish.svg";
 import getProxyUrl from "@utils/getProxyUrl";
+import AppleWidgetTest from "./AppleWidgetTest";
 
 const PaymentForm = () => {
   const [formErrors, setFormErrors] = useState([]);
@@ -141,7 +142,7 @@ const PaymentForm = () => {
     const data = {
       ...baseData,
       paymentMethod: currentPaymentMethod,
-      redirectUrl: `${vercelUrl}${locale}/bookingStatus`,
+      redirectUrl: `${vercelUrl}/${locale}/bookingStatus`,
     };
     // Conditionally add payment information based on the payment method
     if (currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD) {
@@ -469,7 +470,7 @@ const PaymentForm = () => {
               </div> */}
 
               {/* TAMARA */}
-              <div className="flex flex-col transition-all duration-200 ease-in-out">
+              {/* <div className="flex flex-col transition-all duration-200 ease-in-out">
                 <PaymentMethod
                   value={CONSTANT_VALUES.PAYMENT_METHODS.TAMARA}
                   currentPaymentMethod={currentPaymentMethod}
@@ -533,7 +534,7 @@ const PaymentForm = () => {
                     </div>
                   </div>
                 )}
-              </div>
+              </div> */}
 
               {/* Apple pay */}
               {canMakePayments && (
@@ -552,6 +553,20 @@ const PaymentForm = () => {
                         <div className="flex lg:w-[510px]">
                           <AppleWidget baseData={baseData} />
                         </div>
+
+                        {/* Test */}
+                        {tripId === "68c173a23e41d7d2a0845c78" && (
+                          <>
+                            <h2>Test</h2>
+                            <div className="flex flex-col gap-4 px-4 py-8 bg-[#FAF9F9] transition-all duration-200 ease-in-out">
+                              <div className="lg:w-[510px]">
+                                <div className="flex lg:w-[510px]">
+                                  <AppleWidgetTest baseData={baseData} />
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )}
 
                         {/* <div className="relative flex flex-col gap-2 mb-6">
                         <label className="font-medium capitalize font-ibm">
@@ -606,7 +621,7 @@ const PaymentForm = () => {
               <button
                 type="submit"
                 disabled={!isValid || isSubmitting || disabledButton}
-                className={`centered gap-5 lg:w-[540px] mt-8 lg:mt-12  py-4 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor  bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
+                className={`centered gap-5 lg:w-[540px] mt-8 lg:mt-12 lg:py-4 py-2 px-4 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor  bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                   isValid && "hover:bg-linksHover hover:border-linksHover"
                 }`}
               >
