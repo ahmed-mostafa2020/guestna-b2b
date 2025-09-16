@@ -302,21 +302,6 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
           handleSubmit,
           isSubmitting,
         }) => {
-          // Debug logging to understand form state
-          console.log("Form State Debug:", {
-            isValid,
-            nationality,
-            tripMainCategory,
-            childrenStages,
-            childrenStagesValues: Object.values(childrenStages),
-            childrenGrades: values.children.map((child) => child.grade),
-            nationalIdImages: values.children.map(
-              (child) => child.nationalIdImage
-            ),
-            errors,
-            touched,
-          });
-
           // Define handlers inside the Formik render function
           const handleChangeChildrenNumber = (event) => {
             const newCount = parseInt(event.target.value);
