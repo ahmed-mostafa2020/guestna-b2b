@@ -286,7 +286,7 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
         }}
         validationSchema={registerChildSchema}
         onSubmit={handleSubmit}
-        // enableReinitialize={false}
+        enableReinitialize={false}
         validateOnBlur={true}
         validateOnChange={true}
         validateOnMount={true}
@@ -301,6 +301,7 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
           setFieldValue,
           handleSubmit,
           isSubmitting,
+          validateForm,
         }) => {
           // Define handlers inside the Formik render function
           const handleChangeChildrenNumber = (event) => {
@@ -339,6 +340,7 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
               updatedChildren = updatedChildren.slice(0, newCount);
             }
 
+            // Update form values
             setFieldValue("children", updatedChildren);
             setFieldValue("childrenNumber", newCount);
 
@@ -348,6 +350,9 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
               newStages[i] = childrenStages[i] || "";
             }
             setChildrenStages(newStages);
+
+            // Trigger Formik validation to refresh isValid based on current values
+            validateForm();
           };
 
           const handleChangeNationality = (event) => {

@@ -435,8 +435,7 @@ export const createRegisterChildSchema = (
           studentEmail: Yup.string().email(t("forms.email.error")).optional(),
         })
       )
-      .min(1, t("forms.validation.require"))
-      .length(childrenCount, `Must have exactly ${childrenCount} children`),
+      .min(1, t("forms.validation.require")),
   });
 };
 
