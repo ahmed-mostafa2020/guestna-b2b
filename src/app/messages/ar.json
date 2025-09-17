@@ -51,6 +51,7 @@
     "MALE": "ذكر",
     "FEMALE": "أنثى",
     "guestna": "جستنا",
+    "startsWith": "تبدأ من",
     "export": {
       "filename": "تقرير_الحجز",
       "pdf": {

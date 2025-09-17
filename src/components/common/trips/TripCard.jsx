@@ -9,6 +9,7 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import calculateHours from "@utils/CalculateHours";
 import formatNumbersUint from "@utils/FormatNumbersUint";
+import formatCurrency from "@utils/FormatCurrency";
 import ImageWithPlaceholder from "../imagesPlaceholder/ImageWithPlaceholder";
 import FavoriteButton from "./FavoriteButton";
 
@@ -140,12 +141,23 @@ const TripCard = ({ activityCard, imageWidth = 300 }) => {
             : activityCard.description}
         </h4>
 
-        <Link
-          href={`/${locale}/discover/${activityCard.slug}`}
-          className="px-8 text-center py-3 capitalize rounded-[10px] text-white bg-mainColor border-2 border-mainColor font-medium text-base transition-all ease-in-out duration-200 hover:bg-linksHover hover:border-linksHover mx-auto lg:mt-6 mt-3"
-        >
-          {t("links.viewTripDetails")}
-        </Link>
+        <div className="flex items-center justify-between gap-2 lg:mt-6 mt-3">
+          {activityCard.price && (
+            <div className="flex gap-1">
+              <span className="text-textLight">{t("common.startsWith")}</span>
+              <span className="font-semibold">
+                {formatCurrency(activityCard.price)}
+              </span>
+            </div>
+          )}
+
+          <Link
+            href={`/${locale}/discover/${activityCard.slug}`}
+            className="px-6 text-center py-3 capitalize rounded-[10px] text-white bg-mainColor border-2 border-mainColor font-medium text-base transition-all ease-in-out duration-200 hover:bg-linksHover hover:border-linksHover mx-auto "
+          >
+            {t("links.viewTripDetails")}
+          </Link>
+        </div>
       </div>
     </div>
   );

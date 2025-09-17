@@ -58,8 +58,6 @@ const StudentsTable = ({
     setCurrentPage(page);
   };
 
-  // console.log(paginatedData);
-
   return (
     <div className="w-full space-y-6 mt-8">
       <h3 className="text-lg font-medium pt-2">
@@ -108,7 +106,7 @@ const StudentsTable = ({
                   <tbody className="divide-y divide-gray-200">
                     {paginatedData.data.map((student, index) => (
                       <tr
-                        key={student._id}
+                        key={`desktop-${student._id}-${currentPage}-${index}`}
                         className={`${
                           index != paginatedData.data.length - 1 &&
                           "border-b border-table-border"
@@ -143,7 +141,10 @@ const StudentsTable = ({
           {/* Mobile Cards */}
           <div className="md:hidden space-y-4">
             {paginatedData.data.map((student, index) => (
-              <Card key={student._id || index} className="shadow-sm">
+              <Card
+                key={`mobile-${student._id}-${currentPage}-${index}`}
+                className="shadow-sm"
+              >
                 <CardContent className="p-4">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">

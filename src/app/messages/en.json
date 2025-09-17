@@ -51,6 +51,7 @@
     "MALE": "Male",
     "FEMALE": "Female",
     "guestna": "Guestna",
+    "startsWith": "Starts with",
     "export": {
       "filename": "Booking_Report",
       "pdf": {

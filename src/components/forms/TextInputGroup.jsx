@@ -38,7 +38,7 @@ const TextInputGroup = memo(
     max,
     required = false,
 
-    // labelFontFamily = "IBM Plex Sans Arabic, sans-serif",
+    labelFontFamily = "IBM Plex Sans Arabic, sans-serif",
   }) => {
     const [showPassword, setShowPassword] = useState(false);
 
@@ -57,7 +57,7 @@ const TextInputGroup = memo(
             className={`font-medium capitalize font-ibm ${
               readOnly ? "text-textLight" : ""
             }`}
-            // style={{ fontFamily: labelFontFamily && labelFontFamily }}
+            style={{ fontFamily: labelFontFamily && labelFontFamily }}
           >
             {label}
             {required && <span className="text-error">{"*"}</span>}

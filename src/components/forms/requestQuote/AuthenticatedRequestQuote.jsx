@@ -5,7 +5,6 @@ import { Formik } from "formik";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
-import * as Yup from "yup";
 import { getHeaders } from "@utils/getHeaders";
 import getErrorMessage from "@utils/getErrorMessage ";
 import getProxyUrl from "@utils/getProxyUrl";
@@ -499,6 +498,7 @@ const AuthenticatedRequestQuote = ({
                     onClick={(e) =>
                       e.target.showPicker && e.target.showPicker()
                     }
+                    labelFontFamily="var(--font-somar-sans), sans-serif"
                   />
                 </div>
 
@@ -524,12 +524,13 @@ const AuthenticatedRequestQuote = ({
                       onClick={(e) =>
                         e.target.showPicker && e.target.showPicker()
                       }
+                      labelFontFamily="var(--font-somar-sans), sans-serif"
                     />
                   </div>
                 )}
 
                 {/* Price */}
-                <div className="somar-placeholder">
+                {/* <div className="somar-placeholder">
                   <TextInputGroup
                     label={t("forms.customTrip.price.placeholder")}
                     type="number"
@@ -546,7 +547,7 @@ const AuthenticatedRequestQuote = ({
                     maxLength={8}
                     readOnly={true}
                   />
-                </div>
+                </div> */}
               </div>
 
               <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">

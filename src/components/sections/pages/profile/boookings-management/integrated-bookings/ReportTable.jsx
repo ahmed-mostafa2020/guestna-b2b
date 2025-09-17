@@ -10,6 +10,7 @@ import SurveyForm from "@components/forms/survey";
 import { Typography, CardContent, Card, CircularProgress } from "@mui/material";
 import CustomizedModal from "@components/common/customizedModal";
 import Pagination from "@components/common/Pagination";
+import { TRIP_STATUS } from "@/src/constants/tripStatus";
 
 const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
   const locale = useLocale();
@@ -102,18 +103,20 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
                         <div className="flex gap-[6px] items-center justify-end">
                           {!booking.survey && (
                             <button
+                              disabled={booking.status !== TRIP_STATUS.PENDING}
                               onClick={() => handleSurveyFormOpen(booking)}
-                              className="flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
+                              className="disabled:opacity-70 disabled:cursor-not-allowed flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
                             >
                               {t("links.ConfirmationOfAchievement")}
                             </button>
                           )}
 
                           <button
-                            disabled={!booking.survey}
+                            disabled={true}
+                            // disabled={!booking.survey}
                             className={`${
                               !booking.survey ? "flex-1" : "w-full"
-                            } rounded-md text-sm px-4 py-2 border border-secColor transition-all duration-200 ease-in-out ${
+                            } disabled:opacity-70 disabled:cursor-not-allowed rounded-md text-sm px-4 py-2 border border-secColor transition-all duration-200 ease-in-out ${
                               !booking.survey
                                 ? "opacity-70 cursor-not-allowed text-gray-700 border-gray-300"
                                 : "hover:text-mainColor hover:border-mainColor"
@@ -173,18 +176,20 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
                   <div className="flex gap-[6px] items-center justify-end">
                     {booking.survey && (
                       <button
+                        disabled={booking.status !== TRIP_STATUS.PENDING}
                         onClick={() => handleSurveyFormOpen(booking)}
-                        className="flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
+                        className="disabled:opacity-70 disabled:cursor-not-allowed flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
                       >
                         {t("links.ConfirmationOfAchievement")}
                       </button>
                     )}
 
                     <button
-                      disabled={booking.survey}
+                      disabled={true}
+                      // disabled={booking.survey}
                       className={`${
                         booking.survey && "flex-1"
-                      } rounded-md text-sm px-4 py-2 border border-secColor transition-all duration-200 ease-in-out ${
+                      } disabled:opacity-70 disabled:cursor-not-allowed rounded-md text-sm px-4 py-2 border border-secColor transition-all duration-200 ease-in-out ${
                         booking.survey
                           ? "opacity-70 cursor-not-allowed text-gray-700 border-gray-300"
                           : "hover:text-mainColor hover:border-mainColor"

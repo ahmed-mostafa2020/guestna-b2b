@@ -144,7 +144,7 @@ const BookingsTable = ({
                     </td>
 
                     <td className="px-6 py-4 text-sm font-medium text-foreground">
-                      {booking.availableSeats}
+                      {booking.bookingQuantity}
                     </td>
 
                     <td className="px-6 py-4">
@@ -196,7 +196,7 @@ const BookingsTable = ({
 
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">
-                    {booking.availableSeats}
+                    {booking.bookingQuantity}
                   </span>
                 </div>
               </div>
