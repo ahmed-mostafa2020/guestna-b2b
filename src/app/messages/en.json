@@ -1429,6 +1429,7 @@
       "registerChild": "Please register your student in a trip first",
       "thanksMessage": "Thank You!",
       "willContactYou": "Your contact request has been sent, we will respond to you shortly.",
+      "svg": "SVG images are not allowed",
 
       "payment": {
         "success": "Payment was done successfully!",

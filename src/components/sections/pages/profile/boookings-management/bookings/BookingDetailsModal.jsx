@@ -31,6 +31,8 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
 
   if (!booking) return null;
 
+  console.log(bookingDetails);
+
   const handleExport = async (format) => {
     setIsExporting(true);
     setShowExportOptions(false);
@@ -175,11 +177,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
                   {t("profile.tables.orders.bookingDetails.fees")}:
                 </p>
                 <p className="font-medium">
-                  {booking.price
-                    ? formatCurrency(booking.price)
-                    : booking.fees
-                    ? formatCurrency(booking.fees)
-                    : "120 ريال"}
+                  {booking.price ? formatCurrency(booking.price) : ""}
                 </p>
               </div>
             </div>

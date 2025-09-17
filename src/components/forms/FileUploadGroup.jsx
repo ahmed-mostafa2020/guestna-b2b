@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { memo, useState } from "react";
 import { cn } from "@utils/cn";
 import { uploadFileIcon } from "@assets/svg";
@@ -22,6 +23,8 @@ const FileUploadGroup = memo(
     const [selectedFileName, setSelectedFileName] = useState("");
     const [fileError, setFileError] = useState("");
 
+    const t = useTranslations();
+
     const handleFileChange = (e) => {
       setFileError("");
       const file = e.target.files && e.target.files[0];
@@ -35,7 +38,7 @@ const FileUploadGroup = memo(
               file.name.toLowerCase().endsWith(type.replace("image/", "."))
           )
         ) {
-          setFileError("SVG images are not allowed");
+          setFileError(t("forms.validation.svg"));
           setSelectedFileName("");
           if (onFileChange) onFileChange({ target: { files: [] } });
           return;
@@ -119,11 +122,15 @@ const FileUploadGroup = memo(
 
         {/* Error messages */}
         {touched && errors && (
-          <span className="text-xs text-error font-medium">{errors}</span>
+          <span className="absolute -bottom-4 start-0 text-xs text-error font-medium">
+            {errors}
+          </span>
         )}
 
         {fileError && (
-          <span className="text-xs text-error font-medium">{fileError}</span>
+          <span className="absolute -bottom-4 start-0 text-xs text-error font-medium">
+            {fileError}
+          </span>
         )}
       </div>
     );

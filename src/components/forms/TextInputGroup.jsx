@@ -162,7 +162,7 @@ const TextInputGroup = memo(
                       file.type === "image/svg+xml" ||
                       file.name.toLowerCase().endsWith(".svg")
                     ) {
-                      setFileError("SVG images are not allowed");
+                      setFileError(t("forms.validation.svg"));
                       setSelectedFileName("");
                       if (onFileChange) onFileChange({ target: { files: [] } });
                       return;

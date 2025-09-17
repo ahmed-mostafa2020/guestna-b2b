@@ -8,6 +8,7 @@ import formatDate from "@utils/FormateDate";
 import Badge from "@mui/material/Badge";
 import Link from "next/link";
 import Pagination from "@components/common/Pagination";
+import { TRIP_STATUS } from "@/src/constants/tripStatus";
 
 const ActivitiesTable = ({
   data,
@@ -85,12 +86,19 @@ const ActivitiesTable = ({
                     </td>
 
                     <td className="px-6 py-4">
-                      <Link
-                        href={`/${locale}/profile/create-trip-link/${trip.slug}`}
-                        className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white  border-mainColor hover:bg-secColor "
-                      >
-                        {t("links.tripManagement")}
-                      </Link>
+                      {trip.status === TRIP_STATUS.SCHEDULED ||
+                      trip.status === TRIP_STATUS.PENDING ? (
+                        <Link
+                          href={`/${locale}/profile/create-trip-link/${trip.slug}`}
+                          className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
+                        >
+                          {t("links.tripManagement")}
+                        </Link>
+                      ) : (
+                        <span className="text-sm px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
+                          {t("links.tripManagement")}
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -135,12 +143,19 @@ const ActivitiesTable = ({
               </div>
 
               <div className="space-y-2">
-                <Link
-                  href={`/${locale}/profile/create-trip-link/${trip.slug}`}
-                  className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white  border-mainColor hover:bg-secColor "
-                >
-                  {t("links.tripManagement")}
-                </Link>
+                {trip.status === TRIP_STATUS.SCHEDULED ||
+                trip.status === TRIP_STATUS.PENDING ? (
+                  <Link
+                    href={`/${locale}/profile/create-trip-link/${trip.slug}`}
+                    className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
+                  >
+                    {t("links.tripManagement")}
+                  </Link>
+                ) : (
+                  <span className="text-sm px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
+                    {t("links.tripManagement")}
+                  </span>
+                )}
               </div>
             </CardContent>
           </Card>

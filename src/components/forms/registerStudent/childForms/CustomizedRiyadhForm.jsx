@@ -107,7 +107,7 @@ const CustomizedRiyadhForm = ({
                   onNationalIdImageChange(isOutsideRiyadh ? null : undefined);
                 }
               }}
-              accept="image/*,application/pdf"
+              // accept="image/*,application/pdf"
               maxSizeInMB={5}
               allowedTypes={[
                 "image/jpeg",

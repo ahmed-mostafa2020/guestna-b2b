@@ -3,14 +3,14 @@ import { useTranslations } from "next-intl";
 import { memo, useState, useMemo } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import {
-  CardContent,
-  Card,
-  CircularProgress,
-} from "@mui/material";
+import { CardContent, Card, CircularProgress } from "@mui/material";
 import Pagination from "@components/common/Pagination";
 
-const StudentsTable = ({ bookingDetails, loadingDetails, showAllForPDF = false }) => {
+const StudentsTable = ({
+  bookingDetails,
+  loadingDetails,
+  showAllForPDF = false,
+}) => {
   const t = useTranslations();
 
   // Pagination state
@@ -19,39 +19,46 @@ const StudentsTable = ({ bookingDetails, loadingDetails, showAllForPDF = false }
 
   // Calculate pagination data
   const paginatedData = useMemo(() => {
-    if (!bookingDetails?.nodes) return { data: [], pageInfo: null };
+    // Determine the source array based on API response shape
+    const source = Array.isArray(bookingDetails)
+      ? bookingDetails
+      : bookingDetails?.nodes && Array.isArray(bookingDetails.nodes)
+      ? bookingDetails.nodes
+      : [];
 
     // If capturing for PDF, show all students
     if (showAllForPDF) {
       return {
-        data: bookingDetails.nodes,
+        data: source,
         pageInfo: {
           totalPages: 1,
           currentPage: 1,
-          total: bookingDetails.nodes.length,
-          perPage: bookingDetails.nodes.length
-        }
+          total: source.length,
+          perPage: source.length,
+        },
       };
     }
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const data = bookingDetails.nodes.slice(startIndex, endIndex);
-    const totalPages = Math.ceil(bookingDetails.nodes.length / itemsPerPage);
-    
+    const data = source.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(source.length / itemsPerPage) || 1;
+
     const pageInfo = {
       totalPages,
       currentPage,
-      total: bookingDetails.nodes.length,
-      perPage: itemsPerPage
+      total: source.length,
+      perPage: itemsPerPage,
     };
 
     return { data, pageInfo };
-  }, [bookingDetails?.nodes, currentPage, itemsPerPage, showAllForPDF]);
+  }, [bookingDetails, currentPage, itemsPerPage, showAllForPDF]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+
+  // console.log(paginatedData);
 
   return (
     <div className="w-full space-y-6 mt-8">

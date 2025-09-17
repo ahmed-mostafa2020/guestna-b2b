@@ -39,11 +39,11 @@ const BookingsTable = ({
 
     setLoadingDetails(true);
     try {
-      const response = await axios.post(
+      const response = await axios.get(
         getProxyUrl(
           `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.BOOKING_DETAILS}/${bookingId}`
         ),
-        {},
+        // {},
         {
           headers,
         }
