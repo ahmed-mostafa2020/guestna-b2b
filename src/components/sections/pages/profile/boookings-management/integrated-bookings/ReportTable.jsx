@@ -112,7 +112,7 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
                           <button
                             disabled={!booking.survey}
                             className={`${
-                              !booking.survey ? "flex-1" : "w-[48%]"
+                              !booking.survey ? "flex-1" : "w-full"
                             } rounded-md text-sm px-4 py-2 border border-secColor transition-all duration-200 ease-in-out ${
                               !booking.survey
                                 ? "opacity-70 cursor-not-allowed text-gray-700 border-gray-300"
@@ -183,7 +183,7 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
                     <button
                       disabled={booking.survey}
                       className={`${
-                        booking.survey ? "flex-1" : "w-[48%]"
+                        booking.survey && "flex-1"
                       } rounded-md text-sm px-4 py-2 border border-secColor transition-all duration-200 ease-in-out ${
                         booking.survey
                           ? "opacity-70 cursor-not-allowed text-gray-700 border-gray-300"
