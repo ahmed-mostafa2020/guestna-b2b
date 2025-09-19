@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import React from "react";
 import { useTranslations } from "next-intl";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -20,24 +21,41 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   const [transferMethod, setTransferMethod] = useState("stc");
   const [selectedTrip, setSelectedTrip] = useState(null);
 
-  // Fetch trips for withdrawal dropdown
+  // Fetch trips for withdrawal dropdown from organizations invoices endpoint
   const {
-    data: tripsData,
+    data: invoicesData,
     isLoading: tripsLoading,
     error: tripsError,
   } = useFetchData(
-    "profile/organizationTrips/invoices/trips/all",
-    {
-      page: 1,
-      perPage: 100, // Get more trips for selection
-    },
+    B2B_END_POINTS.PROFILE.TRIPS,
+    {},
     {
       method: "GET",
     }
   );
 
-  // Get trips from the response (no need to filter as this endpoint returns completed trips)
-  const completedTrips = tripsData || [];
+  // Extract trips from the API response - each trip has _id, name, orderId, and amount
+  const completedTrips = React.useMemo(() => {
+    if (!invoicesData) return [];
+
+    // Handle different response structures
+    const data =
+      invoicesData.nodes ||
+      invoicesData.data ||
+      invoicesData.invoices ||
+      invoicesData;
+
+    if (Array.isArray(data)) {
+      return data.map((trip) => ({
+        _id: trip._id, // Use the _id from the response
+        name: trip.name, // Use the name from the response
+        orderId: trip.orderId, // Keep orderId for reference
+        amount: parseFloat(trip.amount || 0), // Use the amount from the response
+      }));
+    }
+
+    return [];
+  }, [invoicesData]);
 
   // Initial form values
   const initialValues = {
@@ -54,16 +72,6 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   const getValidationSchema = () => {
     return Yup.object().shape({
       selectedTripId: Yup.string().required(t("validation.tripRequired")),
-      withdrawAmount: Yup.number()
-        .required(t("validation.amountRequired"))
-        .min(50, t("validation.minAmount"))
-        .max(
-          balance?.availableBalance || 0,
-          t("validation.amountExceedsBalance", {
-            balance: balance?.availableBalance?.toLocaleString("ar-SA") || 0,
-          })
-        )
-        .positive(t("validation.amountRequired")),
       phoneNumber:
         transferMethod === "stc"
           ? Yup.string()
@@ -90,7 +98,17 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
           : Yup.string().notRequired(),
       ibanNumber:
         transferMethod === "bank"
-          ? Yup.string().required(t("validation.ibanRequired"))
+          ? Yup.string()
+              .required(t("validation.ibanRequired"))
+              .min(15, "IBAN must be at least 15 characters")
+              .max(34, "IBAN must not exceed 34 characters")
+              .test("iban-format", "Invalid IBAN format", function (value) {
+                if (!value) return false;
+                // Remove spaces and convert to uppercase
+                const cleanIban = value.replace(/\s/g, "").toUpperCase();
+                // Basic IBAN validation - should start with 2 letters followed by 2 numbers
+                return /^[A-Z]{2}[0-9]{2}[A-Z0-9]+$/.test(cleanIban);
+              })
           : Yup.string().notRequired(),
       withdrawNotes: Yup.string(),
     });
@@ -102,6 +120,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
 
     // Find the selected trip to get its details
     const trip = completedTrips.find((t) => t._id === tripId);
+
     if (trip) {
       setSelectedTrip(trip);
       // Auto-fill the withdrawal amount with the trip's amount
@@ -113,7 +132,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       const requestBody = {
-        trip: selectedTrip ? { id: selectedTrip._id } : {},
+        trip: selectedTrip._id,
         amount: parseFloat(values.withdrawAmount),
         type: transferMethod === "stc" ? "STC_PAY" : "BANK_TRANSFER",
         note: values.withdrawNotes || "",
@@ -126,7 +145,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
           bankTransfer: {
             bankName: values.bankName,
             clientName: values.clientName,
-            iban: values.ibanNumber.replace(/\s/g, ""),
+            iban: values.ibanNumber.replace(/\s/g, "").toUpperCase(),
           },
         }),
       };
@@ -175,7 +194,15 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   };
 
   const formatIBAN = (value) => {
-    const cleaned = value.replace(/\s/g, "").toUpperCase();
+    // Remove all spaces and convert to uppercase
+    let cleaned = value.replace(/\s/g, "").toUpperCase();
+
+    // Remove any non-alphanumeric characters
+    cleaned = cleaned.replace(/[^A-Z0-9]/g, "");
+
+    // Ensure it doesn't exceed 34 characters (max IBAN length)
+    cleaned = cleaned.substring(0, 34);
+
     // Format with spaces every 4 characters for better readability
     return cleaned.replace(/(.{4})/g, "$1 ").trim();
   };
