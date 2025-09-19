@@ -17,11 +17,9 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   const locale = useLocale();
   const t = useTranslations("profile.myWallet.withdrawPage");
 
-  // Form state
   const [transferMethod, setTransferMethod] = useState("stc");
   const [selectedTrip, setSelectedTrip] = useState(null);
 
-  // Fetch trips for withdrawal dropdown from organizations invoices endpoint
   const {
     data: invoicesData,
     isLoading: tripsLoading,
@@ -34,11 +32,9 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
     }
   );
 
-  // Extract trips from the API response - each trip has _id, name, orderId, and amount
   const completedTrips = React.useMemo(() => {
     if (!invoicesData) return [];
 
-    // Handle different response structures
     const data =
       invoicesData.nodes ||
       invoicesData.data ||
@@ -47,17 +43,16 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
 
     if (Array.isArray(data)) {
       return data.map((trip) => ({
-        _id: trip._id, // Use the _id from the response
-        name: trip.name, // Use the name from the response
-        orderId: trip.orderId, // Keep orderId for reference
-        amount: parseFloat(trip.amount || 0), // Use the amount from the response
+        _id: trip._id,
+        name: trip.name,
+        orderId: trip.orderId,
+        amount: parseFloat(trip.amount || 0),
       }));
     }
 
     return [];
   }, [invoicesData]);
 
-  // Initial form values
   const initialValues = {
     selectedTripId: "",
     withdrawAmount: "",
@@ -68,7 +63,6 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
     withdrawNotes: "",
   };
 
-  // Yup validation schema
   const getValidationSchema = () => {
     return Yup.object().shape({
       selectedTripId: Yup.string().required(t("validation.tripRequired")),
@@ -128,7 +122,6 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       const requestBody = {
@@ -162,14 +155,10 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
       const result = await response.json();
 
       if (response.ok) {
-        // Success
         alert(t("success.message"));
-        // Reset form
         resetForm();
-        // Refresh balance
         refetchBalance();
       } else {
-        // API error
         throw new Error(result.message || t("error.submission"));
       }
     } catch (error) {
@@ -180,7 +169,6 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
     }
   };
 
-  // Format phone number input
   const formatPhoneNumber = (value) => {
     const cleaned = value.replace(/\D/g, "");
     if (cleaned.startsWith("0")) {
@@ -194,22 +182,16 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   };
 
   const formatIBAN = (value) => {
-    // Remove all spaces and convert to uppercase
     let cleaned = value.replace(/\s/g, "").toUpperCase();
 
-    // Remove any non-alphanumeric characters
     cleaned = cleaned.replace(/[^A-Z0-9]/g, "");
 
-    // Ensure it doesn't exceed 34 characters (max IBAN length)
     cleaned = cleaned.substring(0, 34);
 
-    // Format with spaces every 4 characters for better readability
     return cleaned.replace(/(.{4})/g, "$1 ").trim();
   };
 
-  // Format client name input (only allow letters A-Z, a-z and spaces)
   const formatClientName = (value) => {
-    // Remove any characters that are not letters (A-Z, a-z) or spaces
     return value.replace(/[^a-zA-Z\s]/g, "");
   };
 

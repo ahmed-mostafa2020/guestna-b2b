@@ -11,15 +11,12 @@ import {
 } from "@components/sections/pages/myWallet/withdraw";
 
 const WithdrawPage = () => {
-  // State for transactions and balances
-  const [transactions, setTransactions] = useState([]);
   const [balanceData, setBalanceData] = useState({
     totalBalance: 0,
     availableBalance: 0,
     holdBalance: 0,
   });
 
-  // API data fetching
   const {
     data: invoicesData,
     isLoading,
@@ -42,8 +39,6 @@ const WithdrawPage = () => {
       });
     }
   }, [invoicesData]);
-
-  console.log(balanceData);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 lg:p-8">
