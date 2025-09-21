@@ -16,7 +16,7 @@ const TripsPage = () => {
       <ProfilePageTemplate
         title={t("profile.aside.programs.trips")}
         tableTitle={t("common.activities")}
-        endpoint={`${B2B_END_POINTS.PROFILE.TRIPS.ACTIVITIES}`}
+        endpoint={`${B2B_END_POINTS.PROFILE.ALL_TRIPS.ACTIVITIES}`}
         method="POST"
         emptyStateComponent={<EmptyTrips />}
         contentComponent={(
@@ -38,7 +38,7 @@ const TripsPage = () => {
       <ProfilePageTemplate
         title={t("profile.aside.programs.trips")}
         tableTitle={t("common.packages")}
-        endpoint={`${B2B_END_POINTS.PROFILE.TRIPS.PACKAGES}`}
+        endpoint={`${B2B_END_POINTS.PROFILE.ALL_TRIPS.PACKAGES}`}
         method="POST"
         emptyStateComponent={<EmptyTrips />}
         contentComponent={(
