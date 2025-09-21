@@ -61,6 +61,7 @@ const TripDetails = ({ params }) => {
   );
 
   const tripData = data?.trip;
+  const availableSeats = tripData?.availableSeats;
   // Save tripId and tripSlug
   useEffect(() => {
     dispatch(setTripId(tripData?._id));
@@ -156,7 +157,10 @@ const TripDetails = ({ params }) => {
         </>
       )}
 
-      <RegisterStudentForm tripMainCategory={tripData?.categories?.formsType} />
+      <RegisterStudentForm
+        tripMainCategory={tripData?.categories?.formsType}
+        availableSeats={availableSeats}
+      />
     </main>
   );
 };

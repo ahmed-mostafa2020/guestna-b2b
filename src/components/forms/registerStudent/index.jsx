@@ -27,7 +27,7 @@ import ParentFormFields from "./ParentFormFields";
 import ChildForm from "./childForms/ChildForm";
 import CustomizedRiyadhForm from "./childForms/CustomizedRiyadhForm";
 
-const RegisterStudentForm = ({ tripMainCategory }) => {
+const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
   const [_, setNationalityError] = useState("");
   const [__, setStageError] = useState("");
   const [___, setGradeError] = useState("");
@@ -107,17 +107,30 @@ const RegisterStudentForm = ({ tripMainCategory }) => {
     });
   };
 
-  const childrenNumberList = [
-    { _id: 1, name: "1", value: 1 },
-    { _id: 2, name: "2", value: 2 },
-    { _id: 3, name: "3", value: 3 },
-    { _id: 4, name: "4", value: 4 },
-    { _id: 5, name: "5", value: 5 },
-    { _id: 6, name: "6", value: 6 },
-    { _id: 7, name: "7", value: 7 },
-    { _id: 8, name: "8", value: 8 },
-    { _id: 9, name: "9", value: 9 },
-  ];
+  const seatsArray = useMemo(() => {
+    return Array.from({ length: availableSeats }, (_, i) => ({
+      _id: i + 1,
+      name: String(i + 1),
+      value: i + 1,
+    }));
+  }, [availableSeats]);
+
+  // Memoized childrenNumberList - only recalculates when availableSeats changes
+  const childrenNumberList = useMemo(() => {
+    return availableSeats < 9
+      ? seatsArray
+      : [
+          { _id: 1, name: "1", value: 1 },
+          { _id: 2, name: "2", value: 2 },
+          { _id: 3, name: "3", value: 3 },
+          { _id: 4, name: "4", value: 4 },
+          { _id: 5, name: "5", value: 5 },
+          { _id: 6, name: "6", value: 6 },
+          { _id: 7, name: "7", value: 7 },
+          { _id: 8, name: "8", value: 8 },
+          { _id: 9, name: "9", value: 9 },
+        ];
+  }, [availableSeats, seatsArray]);
 
   // Validate custom fields
   const validateCustomFields = (values) => {
