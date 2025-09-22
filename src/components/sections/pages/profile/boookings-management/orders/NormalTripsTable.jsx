@@ -98,9 +98,9 @@ const NormalTripsTable = ({
                       })}
                     </td>
 
-                    <td className="px-6 py-4">
+                    <td className="px-1 lg:px-6 py-4">
                       <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusStyles(
+                        className={`px-1 lg:px-3 py-1 rounded-full lg:text-sm text-[10px] font-medium ${getStatusStyles(
                           booking.status
                         )}`}
                       >
@@ -108,7 +108,7 @@ const NormalTripsTable = ({
                       </span>
                     </td>
 
-                    <td className="px-6 py-4">
+                    <td className="px-1 lg:px-6 py-4">
                       <ActionsDropdownMenu
                         bookingId={booking._id}
                         bookingStatus={booking.status}

@@ -115,7 +115,6 @@ const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
     }));
   }, [availableSeats]);
 
-  // Memoized childrenNumberList - only recalculates when availableSeats changes
   const childrenNumberList = useMemo(() => {
     return availableSeats < 9
       ? seatsArray

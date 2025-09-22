@@ -59,9 +59,12 @@ const Profile = () => {
       <InfoCardsListing infoData={infoData} />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-        <RevenueLineChart infoData={infoData} />
-
-        <DonutChart infoData={infoData} />
+        <div className="lg:col-span-8">
+          <RevenueLineChart infoData={infoData} />
+        </div>
+        <div className="lg:col-span-4">
+          <DonutChart infoData={infoData} />
+        </div>
       </div>
 
       <ProfilePageTemplate
@@ -71,9 +74,14 @@ const Profile = () => {
         method="POST"
         enablePagination={true}
         emptyStateComponent={<EmptyBookings />}
-        contentComponent={(data, currentPage, setCurrentPage, enablePagination) => (
-          <MyBookingsTrips 
-            data={data} 
+        contentComponent={(
+          data,
+          currentPage,
+          setCurrentPage,
+          enablePagination
+        ) => (
+          <MyBookingsTrips
+            data={data}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             enablePagination={enablePagination}

@@ -102,7 +102,7 @@ const CustomizedTripsTable = ({
                       {booking.city}
                     </td>
 
-                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                    <td className="px-1 lg:px-6 py-4 text-sm text-muted-foreground">
                       {formatDate(booking.day, locale, {
                         year: "numeric",
                         month: "long",
@@ -120,9 +120,9 @@ const CustomizedTripsTable = ({
                       {formatCurrency(booking.basePrice || booking.tripPrice)}
                     </td>
 
-                    <td className="px-6 py-4">
+                    <td className="px-1 lg:px-6 py-4">
                       <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusStyles(
+                        className={`px-1 lg:px-3 py-1 rounded-full text-xs font-medium ${getStatusStyles(
                           booking.status
                         )}`}
                       >

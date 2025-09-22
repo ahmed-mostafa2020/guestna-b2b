@@ -85,17 +85,17 @@ const ActivitiesTable = ({
                       </Badge>
                     </td>
 
-                    <td className="px-6 py-4">
+                    <td className="px-1 lg:px-6 py-4">
                       {trip.status === TRIP_STATUS.SCHEDULED ||
                       trip.status === TRIP_STATUS.PENDING ? (
                         <Link
                           href={`/${locale}/profile/create-trip-link/${trip.slug}`}
-                          className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
+                          className="text-sm transition-all px-1 lg:px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
                         >
                           {t("links.tripManagement")}
                         </Link>
                       ) : (
-                        <span className="text-sm px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
+                        <span className="text-sm px-1 lg:px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
                           {t("links.tripManagement")}
                         </span>
                       )}
