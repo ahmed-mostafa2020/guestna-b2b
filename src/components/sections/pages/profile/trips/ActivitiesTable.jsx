@@ -1,14 +1,16 @@
 "use client";
 
+import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 
 import { memo } from "react";
-import { CardContent, Card } from "@mui/material";
+
 import formatDate from "@utils/FormateDate";
-import Badge from "@mui/material/Badge";
-import Link from "next/link";
+import { TRIP_STATUS } from "@constants/tripStatus";
 import Pagination from "@components/common/Pagination";
-import { TRIP_STATUS } from "@/src/constants/tripStatus";
+
+import { CardContent, Card } from "@mui/material";
+import Badge from "@mui/material/Badge";
 
 const ActivitiesTable = ({
   data,

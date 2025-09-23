@@ -10,7 +10,7 @@ import { memo, useState } from "react";
 
 import { END_POINTS } from "@constants/APIs";
 import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage ";
+import getErrorMessage from "@utils/getErrorMessage";
 import { cn } from "@utils/cn";
 import { createPersonalInfoEditingSchema } from "@utils/validationSchemas";
 import TextInputGroup from "../TextInputGroup";

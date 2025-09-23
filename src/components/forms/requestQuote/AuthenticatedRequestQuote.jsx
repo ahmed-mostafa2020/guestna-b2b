@@ -6,7 +6,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
 import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage ";
+import getErrorMessage from "@utils/getErrorMessage";
 import getProxyUrl from "@utils/getProxyUrl";
 import { createAuthenticatedRequestQuoteSchema } from "@utils/validationSchemas";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";

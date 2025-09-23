@@ -13,7 +13,7 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import { createRegisterChildSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import { cn } from "@utils/cn";
-import getErrorMessage from "@utils/getErrorMessage ";
+import getErrorMessage from "@utils/getErrorMessage";
 import getProxyUrl from "@utils/getProxyUrl";
 
 import { FieldArray, Formik } from "formik";

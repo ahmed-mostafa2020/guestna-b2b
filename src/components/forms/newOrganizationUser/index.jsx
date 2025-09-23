@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import getErrorMessage from "@utils/getErrorMessage ";
+import getErrorMessage from "@utils/getErrorMessage";
 import { createAddOrganizationUserSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";

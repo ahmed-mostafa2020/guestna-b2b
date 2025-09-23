@@ -18,7 +18,7 @@ import { END_POINTS } from "@constants/APIs";
 import { createVerificationCodeSchema } from "@utils/validationSchemas";
 import setToken from "@utils/setToken";
 import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage ";
+import getErrorMessage from "@utils/getErrorMessage";
 import TextInputGroup from "../../TextInputGroup";
 import MoreOptions from "./moreOptions";
 import ResendOtpVerification from "./resendOtp/ResendOtpVerification";

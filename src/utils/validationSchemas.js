@@ -605,3 +605,75 @@ export const createAddOrganizationUserSchema = (t) =>
 
     userType: Yup.string().required(t("forms.validation.require")),
   });
+
+export const createWithdrawValidationSchema = (t, isBankTransfer) => {
+  return Yup.object().shape({
+    selectedTripId: Yup.string().required(t("validation.tripRequired")),
+
+    phoneNumber: isBankTransfer
+      ? createPhoneValidation(t, true)
+      : Yup.string()
+          .required(t("forms.validation.require"))
+          .matches(/^05[0-9]{8}$/, t("forms.stc.error.invalid")),
+
+    bankName: isBankTransfer
+      ? Yup.string().required(t("validation.bankNameRequired"))
+      : Yup.string().notRequired(),
+
+    clientName: isBankTransfer
+      ? Yup.string()
+          .trim()
+          .required()
+          .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
+          .test(
+            "min-word-length",
+            t("forms.name.error.wordMinLength"),
+            function (value) {
+              if (!value) return true;
+
+              const words = value.trim().split(/\s+/);
+
+              // Must have at least 2 words
+              if (words.length < 2) return false;
+
+              // Each word must be at least 3 characters
+              return words.every((word) => word.length >= 3);
+            }
+          )
+      : Yup.string()
+          .trim()
+          .optional()
+          .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
+          .test(
+            "min-word-length",
+            t("forms.name.error.wordMinLength"),
+            function (value) {
+              if (!value) return true;
+
+              const words = value.trim().split(/\s+/);
+
+              // Must have at least 2 words
+              if (words.length < 2) return false;
+
+              // Each word must be at least 3 characters
+              return words.every((word) => word.length >= 3);
+            }
+          ),
+
+    ibanNumber: isBankTransfer
+      ? Yup.string()
+          .required(t("validation.ibanRequired"))
+          .min(15, "IBAN must be at least 15 characters")
+          .max(34, "IBAN must not exceed 34 characters")
+          .test("iban-format", "Invalid IBAN format", function (value) {
+            if (!value) return false;
+            // Remove spaces and convert to uppercase
+            const cleanIban = value.replace(/\s/g, "").toUpperCase();
+            // Basic IBAN validation - should start with 2 letters followed by 2 numbers
+            return /^[A-Z]{2}[0-9]{2}[A-Z0-9]+$/.test(cleanIban);
+          })
+      : Yup.string().notRequired(),
+
+    withdrawNotes: Yup.string(),
+  });
+};

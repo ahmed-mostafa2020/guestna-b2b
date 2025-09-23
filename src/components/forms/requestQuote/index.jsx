@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import getErrorMessage from "@utils/getErrorMessage ";
+import getErrorMessage from "@utils/getErrorMessage";
 import { createRequestQuoteSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";

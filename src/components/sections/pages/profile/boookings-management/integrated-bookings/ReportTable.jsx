@@ -5,12 +5,12 @@ import { useLocale, useTranslations } from "next-intl";
 import { memo, useState } from "react";
 
 import formatDate from "@utils/FormateDate";
+import { TRIP_STATUS } from "@constants/tripStatus";
 import SurveyForm from "@components/forms/survey";
-
-import { Typography, CardContent, Card, CircularProgress } from "@mui/material";
 import CustomizedModal from "@components/common/customizedModal";
 import Pagination from "@components/common/Pagination";
-import { TRIP_STATUS } from "@/src/constants/tripStatus";
+
+import { CardContent, Card, CircularProgress } from "@mui/material";
 
 const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
   const locale = useLocale();

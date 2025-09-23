@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useSnackbar } from "notistack";
 
 import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage ";
+import getErrorMessage from "@utils/getErrorMessage";
 import { END_POINTS } from "@constants/APIs";
 
 import axios from "axios";

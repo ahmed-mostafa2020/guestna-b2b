@@ -1,17 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import React from "react";
-import { useTranslations } from "next-intl";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
+import { useTranslations, useLocale } from "next-intl";
+
+import { useMemo, useState } from "react";
+import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { getHeaders } from "@utils/getHeaders";
-import { useFetchData } from "@hooks/useFetchData";
+import getProxyUrl from "@utils/getProxyUrl";
+import getErrorMessage from "@utils/getErrorMessage";
 import TransferMethodSelector from "./TransferMethodSelector";
 import STCPayForm from "./STCPayForm";
 import BankTransferForm from "./BankTransferForm";
-import { useLocale } from "next-intl";
+
+import { Formik, Form } from "formik";
+import { createWithdrawValidationSchema } from "@utils/validationSchemas";
+import { useSnackbar } from "notistack";
 
 const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   const locale = useLocale();
@@ -32,7 +35,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
     }
   );
 
-  const completedTrips = React.useMemo(() => {
+  const completedTrips = useMemo(() => {
     if (!invoicesData) return [];
 
     const data =
@@ -63,50 +66,14 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
     withdrawNotes: "",
   };
 
-  const getValidationSchema = () => {
-    return Yup.object().shape({
-      selectedTripId: Yup.string().required(t("validation.tripRequired")),
-      phoneNumber:
-        transferMethod === "stc"
-          ? Yup.string()
-              .required(t("validation.phoneRequired"))
-              .matches(
-                /^(05|5)(5|0|3|6|4|9|1|8|7)([0-9]{7})$/,
-                t("validation.phoneInvalid")
-              )
-          : Yup.string().notRequired(),
-      bankName:
-        transferMethod === "bank"
-          ? Yup.string().required(t("validation.bankNameRequired"))
-          : Yup.string().notRequired(),
-      clientName:
-        transferMethod === "bank"
-          ? Yup.string()
-              .required("Account Holder Name is required.")
-              .matches(
-                /^[a-zA-Z\s]+$/,
-                "Account Holder Name should only contain letters and spaces."
-              )
-              .min(2, "Account Holder Name must be at least 2 characters.")
-              .max(50, "Account Holder Name must not exceed 50 characters.")
-          : Yup.string().notRequired(),
-      ibanNumber:
-        transferMethod === "bank"
-          ? Yup.string()
-              .required(t("validation.ibanRequired"))
-              .min(15, "IBAN must be at least 15 characters")
-              .max(34, "IBAN must not exceed 34 characters")
-              .test("iban-format", "Invalid IBAN format", function (value) {
-                if (!value) return false;
-                // Remove spaces and convert to uppercase
-                const cleanIban = value.replace(/\s/g, "").toUpperCase();
-                // Basic IBAN validation - should start with 2 letters followed by 2 numbers
-                return /^[A-Z]{2}[0-9]{2}[A-Z0-9]+$/.test(cleanIban);
-              })
-          : Yup.string().notRequired(),
-      withdrawNotes: Yup.string(),
-    });
-  };
+  const isBankTransfer = transferMethod === "bank";
+
+  const withdrawalValidationSchema = createWithdrawValidationSchema(
+    t,
+    isBankTransfer
+  );
+
+  const { enqueueSnackbar } = useSnackbar();
 
   // Handle trip selection
   const handleTripSelection = (tripId, setFieldValue) => {
@@ -134,7 +101,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
             phone: values.phoneNumber,
           },
         }),
-        ...(transferMethod === "bank" && {
+        ...(isBankTransfer && {
           bankTransfer: {
             bankName: values.bankName,
             clientName: values.clientName,
@@ -144,7 +111,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
       };
 
       const response = await fetch(
-        `/api/proxy?path=${B2B_END_POINTS.PROFILE.WITHDRAWALS}`,
+        getProxyUrl(B2B_END_POINTS.PROFILE.WITHDRAWALS),
         {
           method: "POST",
           headers: getHeaders(locale),
@@ -155,7 +122,9 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
       const result = await response.json();
 
       if (response.ok) {
-        alert(t("success.message"));
+        enqueueSnackbar(t("forms.validation.success"), {
+          variant: "success",
+        });
         resetForm();
         refetchBalance();
       } else {
@@ -163,7 +132,8 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
       }
     } catch (error) {
       console.error("Withdrawal error:", error);
-      alert(error.message || t("error.submission"));
+      const errorMessage = getErrorMessage(error, t);
+      enqueueSnackbar(errorMessage, { variant: "error" });
     } finally {
       setSubmitting(false);
     }
@@ -198,7 +168,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={getValidationSchema()}
+      validationSchema={withdrawalValidationSchema}
       onSubmit={handleSubmit}
       enableReinitialize
     >
@@ -222,7 +192,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
           )}
 
           {/* Bank Transfer Form */}
-          {transferMethod === "bank" && (
+          {isBankTransfer && (
             <BankTransferForm
               values={values}
               errors={errors}
