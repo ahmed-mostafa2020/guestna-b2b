@@ -26,9 +26,7 @@ const Footer = () => {
       links: [
         {
           name: t("footer.aboutUs"),
-          url: `${
-            locale === "ar" ? "https://guestna.app" : "https://guestna.app/en"
-          }`,
+          url: "https://about.guestna.app",
         },
         // {
         //   name: t("footer.articles"),
