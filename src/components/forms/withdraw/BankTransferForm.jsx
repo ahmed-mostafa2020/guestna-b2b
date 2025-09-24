@@ -7,6 +7,7 @@ const BankTransferForm = ({
   errors,
   touched,
   setFieldValue,
+  handleBlur,
   balance,
   formatIBAN,
   formatClientName,
@@ -62,11 +63,11 @@ const BankTransferForm = ({
             errors={errors.withdrawAmount}
             touched={touched.withdrawAmount}
             onChange={(e) => setFieldValue("withdrawAmount", e.target.value)}
-            onBlur={() => setFieldValue("withdrawAmount", values.withdrawAmount)}
+            onBlur={handleBlur}
             min="50"
             max={balance?.availableBalance}
             readOnly={true}
-            required={true}
+            // required={true}
             textAlign="right"
           />
           <p className="text-xs text-gray-500 mt-2 text-right">
@@ -86,13 +87,13 @@ const BankTransferForm = ({
             errors={errors.bankName}
             touched={touched.bankName}
             onChange={(e) => setFieldValue("bankName", e.target.value)}
-            onBlur={() => setFieldValue("bankName", values.bankName)}
+            onBlur={handleBlur}
             required={true}
             textAlign="right"
           />
-          <p className="text-xs text-gray-500 mt-2 text-right">
+          {/* <p className="text-xs text-gray-500 mt-2 text-right">
             {t("bankName.hint")}
-          </p>
+          </p> */}
         </div>
       </div>
 
@@ -109,13 +110,10 @@ const BankTransferForm = ({
             onChange={(e) =>
               setFieldValue("clientName", formatClientName(e.target.value))
             }
-            onBlur={() => setFieldValue("clientName", values.clientName)}
+            onBlur={handleBlur}
             required={true}
             textAlign="right"
           />
-          <p className="text-xs text-gray-500 mt-2 text-right">
-            {t("clientName.hint")}
-          </p>
         </div>
 
         <div>
@@ -130,7 +128,7 @@ const BankTransferForm = ({
             onChange={(e) =>
               setFieldValue("ibanNumber", formatIBAN(e.target.value))
             }
-            onBlur={() => setFieldValue("ibanNumber", values.ibanNumber)}
+            onBlur={handleBlur}
             maxLength="34"
             required={true}
             textAlign="right"
@@ -147,7 +145,7 @@ const BankTransferForm = ({
           errors={errors.withdrawNotes}
           touched={touched.withdrawNotes}
           onChange={(e) => setFieldValue("withdrawNotes", e.target.value)}
-          onBlur={() => setFieldValue("withdrawNotes", values.withdrawNotes)}
+          onBlur={handleBlur}
           textarea={true}
           rows={3}
           textAlign="right"

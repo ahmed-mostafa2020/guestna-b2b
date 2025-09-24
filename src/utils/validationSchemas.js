@@ -607,36 +607,39 @@ export const createAddOrganizationUserSchema = (t) =>
   });
 
 export const createWithdrawValidationSchema = (t, isBankTransfer) => {
+  // Create a translation function that works with the form's context
+  const getValidationMessage = (key) => {
+    if (isBankTransfer) {
+      return t(`bankTransfer.validation.${key}`);
+    } else {
+      return t(`stcPay.validation.${key}`);
+    }
+  };
+
   return Yup.object().shape({
-    selectedTripId: Yup.string().required(
-      t("profile.myWallet.withdrawPage.validation.tripRequired")
-    ),
+    selectedTripId: Yup.string().required(getValidationMessage("tripRequired")),
 
     phoneNumber: isBankTransfer
       ? createPhoneValidation(t, true)
       : Yup.string()
-          .required(t("forms.validation.require"))
-          .matches(
-            /^05[0-9]{8}$/,
-            t("profile.myWallet.withdrawPage.validation.phoneInvalid")
-          ),
+          .required(getValidationMessage("phoneRequired"))
+          .matches(/^05[0-9]{8}$/, getValidationMessage("phoneInvalid")),
 
     bankName: isBankTransfer
-      ? Yup.string().required(
-          t("profile.myWallet.withdrawPage.validation.bankNameRequired")
-        )
+      ? Yup.string()
+          .required(getValidationMessage("bankNameRequired"))
+          .min(3, getValidationMessage("bankNameMinLength"))
+          .max(50, getValidationMessage("bankNameMaxLength"))
       : Yup.string().notRequired(),
 
     clientName: isBankTransfer
       ? Yup.string()
           .trim()
-          .required(
-            t("profile.myWallet.withdrawPage.validation.clientNameRequired")
-          )
-          .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
+          .required(getValidationMessage("clientNameRequired"))
+          .matches(/^[\p{L}\s]+$/u, getValidationMessage("nameInvalid"))
           .test(
             "min-word-length",
-            t("forms.name.error.wordMinLength"),
+            getValidationMessage("nameMinLength"),
             function (value) {
               if (!value) return true;
 
@@ -652,10 +655,10 @@ export const createWithdrawValidationSchema = (t, isBankTransfer) => {
       : Yup.string()
           .trim()
           .optional()
-          .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
+          .matches(/^[\p{L}\s]+$/u, getValidationMessage("nameInvalid"))
           .test(
             "min-word-length",
-            t("forms.name.error.wordMinLength"),
+            getValidationMessage("nameMinLength"),
             function (value) {
               if (!value) return true;
 
@@ -671,18 +674,18 @@ export const createWithdrawValidationSchema = (t, isBankTransfer) => {
 
     ibanNumber: isBankTransfer
       ? Yup.string()
-          .required(t("profile.myWallet.withdrawPage.validation.ibanRequired"))
-          .min(15, t("profile.myWallet.withdrawPage.validation.ibanMinLength"))
-          .max(34, t("profile.myWallet.withdrawPage.validation.ibanMaxLength"))
+          .required(getValidationMessage("ibanRequired"))
+          .min(15, getValidationMessage("ibanMinLength"))
+          .max(34, getValidationMessage("ibanMaxLength"))
           .test(
             "iban-format",
-            t("profile.myWallet.withdrawPage.validation.ibanInvalid"),
+            getValidationMessage("ibanInvalid"),
             function (value) {
               if (!value) return false;
               // Remove spaces and convert to uppercase
               const cleanIban = value.replace(/\s/g, "").toUpperCase();
-              // Basic IBAN validation - should start with 2 letters followed by 2 numbers
-              return /^[A-Z]{2}[0-9]{2}[A-Z0-9]+$/.test(cleanIban);
+              // IBAN validation - 2 letters, 2 digits, then 11-30 alphanumeric characters
+              return /^[A-Z]{2}\d{2}[A-Z0-9]{11,30}$/.test(cleanIban);
             }
           )
       : Yup.string().notRequired(),

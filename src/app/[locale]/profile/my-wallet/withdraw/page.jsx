@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { WithdrawForm } from "@components/forms/withdraw";
@@ -11,6 +12,7 @@ import {
 } from "@components/sections/pages/myWallet/withdraw";
 
 const WithdrawPage = () => {
+  const t = useTranslations();
   const [balanceData, setBalanceData] = useState({
     totalBalance: 0,
     availableBalance: 0,
@@ -39,6 +41,13 @@ const WithdrawPage = () => {
       });
     }
   }, [invoicesData]);
+
+  // Set page title (localized)
+  useEffect(() => {
+    document.title = `${t("pagesHead.appName")} | ${t(
+      "profile.myWallet.withdrawPage.pageHeader.title"
+    )}`;
+  }, [t]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 lg:p-8">

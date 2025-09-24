@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { TransactionsFilters } from "@components/forms/transactions";
@@ -15,6 +16,7 @@ import formatCurrency from "@utils/FormatCurrency";
 import formatDate from "@utils/FormateDate";
 
 const TransactionsPage = () => {
+  const t = useTranslations();
   // State for transactions and balances
   const [transactions, setTransactions] = useState([]);
   const [balanceData, setBalanceData] = useState({
@@ -166,6 +168,13 @@ const TransactionsPage = () => {
       setBalanceData({ totalBalance: 0, availableBalance: 0, holdBalance: 0 });
     }
   }, [invoicesData, isLoading]);
+
+  // Set page title (localized)
+  useEffect(() => {
+    document.title = `${t("pagesHead.appName")} | ${t(
+      "profile.myWallet.transactionsPage.pageHeader.title"
+    )}`;
+  }, [t]);
 
   // Map API status to component status
   const mapInvoiceStatus = (apiStatus) => {

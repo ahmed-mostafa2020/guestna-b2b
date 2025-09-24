@@ -7,6 +7,7 @@ const STCPayForm = ({
   errors,
   touched,
   setFieldValue,
+  handleBlur,
   balance,
   formatPhoneNumber,
   completedTrips,
@@ -61,11 +62,11 @@ const STCPayForm = ({
             errors={errors.withdrawAmount}
             touched={touched.withdrawAmount}
             onChange={(e) => setFieldValue("withdrawAmount", e.target.value)}
-            onBlur={() => setFieldValue("withdrawAmount", values.withdrawAmount)}
+            onBlur={handleBlur}
             min="50"
             max={balance?.availableBalance}
             readOnly={true}
-            required={true}
+            // required={true}
             textAlign="right"
           />
           <p className="text-xs text-gray-500 mt-2 text-right">
@@ -87,14 +88,11 @@ const STCPayForm = ({
             onChange={(e) =>
               setFieldValue("phoneNumber", formatPhoneNumber(e.target.value))
             }
-            onBlur={() => setFieldValue("phoneNumber", values.phoneNumber)}
+            onBlur={handleBlur}
             maxLength="10"
             required={true}
             textAlign="right"
           />
-          <p className="text-xs text-gray-500 mt-2 text-right">
-            {t("phone.hint")}
-          </p>
         </div>
       </div>
 
@@ -107,7 +105,7 @@ const STCPayForm = ({
           errors={errors.withdrawNotes}
           touched={touched.withdrawNotes}
           onChange={(e) => setFieldValue("withdrawNotes", e.target.value)}
-          onBlur={() => setFieldValue("withdrawNotes", values.withdrawNotes)}
+          onBlur={handleBlur}
           textarea={true}
           rows={3}
           textAlign="right"

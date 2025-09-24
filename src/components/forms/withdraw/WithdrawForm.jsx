@@ -171,8 +171,10 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
       validationSchema={withdrawalValidationSchema}
       onSubmit={handleSubmit}
       enableReinitialize
+      validateOnBlur={true}
+      validateOnChange={true}
     >
-      {({ values, errors, touched, setFieldValue, isSubmitting }) => (
+      {({ values, errors, touched, setFieldValue, handleBlur, isSubmitting }) => (
         <Form className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           {/* STC Pay Form */}
           {transferMethod === "stc" && (
@@ -181,6 +183,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
               errors={errors}
               touched={touched}
               setFieldValue={setFieldValue}
+              handleBlur={handleBlur}
               balance={balance}
               formatPhoneNumber={formatPhoneNumber}
               completedTrips={completedTrips}
@@ -198,6 +201,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
               errors={errors}
               touched={touched}
               setFieldValue={setFieldValue}
+              handleBlur={handleBlur}
               balance={balance}
               formatIBAN={formatIBAN}
               formatClientName={formatClientName}

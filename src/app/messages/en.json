@@ -833,7 +833,9 @@
           "ibanRequired": "Please enter IBAN number",
           "ibanInvalid": "Please enter a valid IBAN number (Example: SA1234567890123456789012)",
           "ibanMinLength": "IBAN must be at least 15 characters",
-          "ibanMaxLength": "IBAN must not exceed 34 characters"
+          "ibanMaxLength": "IBAN must not exceed 34 characters",
+          "nameInvalid": "Name should contain only letters and spaces",
+          "nameMinLength": "Name must contain at least 2 words, each word must be at least 3 characters"
         },
         "success": {
           "message": "Withdrawal request submitted successfully"
@@ -884,6 +886,19 @@
           "notes": {
             "label": "Notes (Optional)",
             "placeholder": "Add any notes or special instructions for the withdrawal..."
+          },
+          "validation": {
+            "tripRequired": "Please select a completed trip",
+            "bankNameRequired": "Please enter bank name",
+            "bankNameMinLength": "Bank name must be at least 3 characters",
+            "bankNameMaxLength": "Bank name must not exceed 50 characters",
+            "clientNameRequired": "Please enter account holder name",
+            "ibanRequired": "Please enter IBAN number",
+            "ibanInvalid": "Please enter a valid IBAN number (Example: SA1234567890123456789012)",
+            "ibanMinLength": "IBAN must be at least 15 characters",
+            "ibanMaxLength": "IBAN must not exceed 34 characters",
+            "nameInvalid": "Name should contain only letters and spaces",
+            "nameMinLength": "Name must contain at least 2 words, each word must be at least 3 characters"
           }
         },
         "stcPay": {
@@ -908,6 +923,11 @@
           "notes": {
             "label": "Notes (Optional)",
             "placeholder": "Add any notes or special instructions for the withdrawal..."
+          },
+          "validation": {
+            "tripRequired": "Please select a completed trip",
+            "phoneRequired": "Please enter phone number",
+            "phoneInvalid": "Please enter a valid phone number (Example: 0501234567)"
           }
         }
       },
