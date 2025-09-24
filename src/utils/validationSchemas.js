@@ -608,22 +608,31 @@ export const createAddOrganizationUserSchema = (t) =>
 
 export const createWithdrawValidationSchema = (t, isBankTransfer) => {
   return Yup.object().shape({
-    selectedTripId: Yup.string().required(t("validation.tripRequired")),
+    selectedTripId: Yup.string().required(
+      t("profile.myWallet.withdrawPage.validation.tripRequired")
+    ),
 
     phoneNumber: isBankTransfer
       ? createPhoneValidation(t, true)
       : Yup.string()
           .required(t("forms.validation.require"))
-          .matches(/^05[0-9]{8}$/, t("forms.stc.error.invalid")),
+          .matches(
+            /^05[0-9]{8}$/,
+            t("profile.myWallet.withdrawPage.validation.phoneInvalid")
+          ),
 
     bankName: isBankTransfer
-      ? Yup.string().required(t("validation.bankNameRequired"))
+      ? Yup.string().required(
+          t("profile.myWallet.withdrawPage.validation.bankNameRequired")
+        )
       : Yup.string().notRequired(),
 
     clientName: isBankTransfer
       ? Yup.string()
           .trim()
-          .required()
+          .required(
+            t("profile.myWallet.withdrawPage.validation.clientNameRequired")
+          )
           .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
           .test(
             "min-word-length",
@@ -662,16 +671,20 @@ export const createWithdrawValidationSchema = (t, isBankTransfer) => {
 
     ibanNumber: isBankTransfer
       ? Yup.string()
-          .required(t("validation.ibanRequired"))
-          .min(15, "IBAN must be at least 15 characters")
-          .max(34, "IBAN must not exceed 34 characters")
-          .test("iban-format", "Invalid IBAN format", function (value) {
-            if (!value) return false;
-            // Remove spaces and convert to uppercase
-            const cleanIban = value.replace(/\s/g, "").toUpperCase();
-            // Basic IBAN validation - should start with 2 letters followed by 2 numbers
-            return /^[A-Z]{2}[0-9]{2}[A-Z0-9]+$/.test(cleanIban);
-          })
+          .required(t("profile.myWallet.withdrawPage.validation.ibanRequired"))
+          .min(15, t("profile.myWallet.withdrawPage.validation.ibanMinLength"))
+          .max(34, t("profile.myWallet.withdrawPage.validation.ibanMaxLength"))
+          .test(
+            "iban-format",
+            t("profile.myWallet.withdrawPage.validation.ibanInvalid"),
+            function (value) {
+              if (!value) return false;
+              // Remove spaces and convert to uppercase
+              const cleanIban = value.replace(/\s/g, "").toUpperCase();
+              // Basic IBAN validation - should start with 2 letters followed by 2 numbers
+              return /^[A-Z]{2}[0-9]{2}[A-Z0-9]+$/.test(cleanIban);
+            }
+          )
       : Yup.string().notRequired(),
 
     withdrawNotes: Yup.string(),
