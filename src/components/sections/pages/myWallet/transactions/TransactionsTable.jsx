@@ -72,15 +72,9 @@ const TransactionsTable = ({
                     <td colSpan="5" className="px-6 py-12 text-center">
                       <div className="text-muted-foreground">
                         <p className="text-lg font-medium mb-2 text-foreground">
-                          {t(
-                            "profile.myWallet.transactionsPage.table.noResults.title"
-                          )}
+                          {t("noResults.title")}
                         </p>
-                        <p className="text-sm">
-                          {t(
-                            "profile.myWallet.transactionsPage.table.noResults.description"
-                          )}
-                        </p>
+                        <p className="text-sm">{t("noResults.description")}</p>
                       </div>
                     </td>
                   </tr>
@@ -120,7 +114,10 @@ const TransactionsTable = ({
                             "bg-gray-100 text-gray-800 border border-gray-200"
                           }`}
                         >
-                          {tCommon("common.organizationTripStatus." + transaction.status) ||
+                          {tCommon(
+                            "common.organizationTripStatus." +
+                              transaction.status
+                          ) ||
                             statusConfig[transaction.status]?.label ||
                             transaction.status}
                         </span>
@@ -198,7 +195,9 @@ const TransactionsTable = ({
                       "bg-gray-100 text-gray-800 border border-gray-200"
                     }`}
                   >
-                    {tCommon("common.organizationTripStatus." + transaction.status) ||
+                    {tCommon(
+                      "common.organizationTripStatus." + transaction.status
+                    ) ||
                       statusConfig[transaction.status]?.label ||
                       transaction.status}
                   </span>

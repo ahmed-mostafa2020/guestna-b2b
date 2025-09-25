@@ -1,4 +1,3 @@
-export { default as PageHeader } from "./PageHeader";
 export { default as BalanceCards } from "./BalanceCards";
 export { default as TransactionsTable } from "./TransactionsTable";
 export { default as LoadingState } from "./LoadingState";

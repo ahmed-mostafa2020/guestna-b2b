@@ -6,7 +6,6 @@ import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { TransactionsFilters } from "@components/forms/transactions";
 import {
-  PageHeader,
   BalanceCards,
   TransactionsTable,
   LoadingState,
@@ -103,7 +102,6 @@ const TransactionsPage = () => {
   // Process API data when it arrives
   useEffect(() => {
     if (invoicesData) {
-      console.log("Raw API response:", invoicesData); // Debug log
       try {
         // Handle the new API response structure with pageInfo and nodes
         const data =
@@ -248,26 +246,6 @@ const TransactionsPage = () => {
       DONE: TRIP_STATUS.DONE,
       PENDING: TRIP_STATUS.PENDING,
       CANCLED: TRIP_STATUS.CANCELLED,
-      // ENDED: "ENDED",
-      // // Legacy status mappings for backward compatibility
-      // done: "DONE",
-      // paid: "DONE",
-      // completed: "DONE",
-      // success: "DONE",
-      // approved: "DONE",
-      // settled: "DONE",
-      // confirmed: "DONE",
-      // pending: "PENDING",
-      // processing: "PENDING",
-      // in_progress: "PENDING",
-      // under_review: "PENDING",
-      // cancelled: "CANCLED",
-      // failed: "CANCLED",
-      // rejected: "CANCLED",
-      // declined: "CANCLED",
-      // overdue: "PENDING",
-      // draft: "PENDING",
-      // unpaid: "PENDING",
     };
 
     const normalizedStatus = apiStatus.toUpperCase().replace(/[_\s]/g, "");
@@ -411,12 +389,12 @@ const TransactionsPage = () => {
 
   // Server-side filtering is handled by the API call, no client-side filtering needed
 
-  if (transactionsLoading || balanceLoading)
-    return (
-      <div className="w-full min-h-screen centered">
-        <FullScreenLoading status="pending" />
-      </div>
-    );
+  // if (transactionsLoading || balanceLoading)
+  //   return (
+  //     <div className="w-full min-h-screen centered">
+  //       <FullScreenLoading status="pending" />
+  //     </div>
+  //   );
 
   if (error || balanceError)
     return (
@@ -433,37 +411,34 @@ const TransactionsPage = () => {
     );
 
   return (
-    <div className="min-h-screen bg-sidePageBg p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Page Header */}
-        <PageHeader />
+    <div className="max-w-7xl mx-auto space-y-6">
+      {/* Balance Cards Section */}
+      <BalanceCards balanceData={balanceData} balanceLoading={balanceLoading} />
 
-        {/* Loading and Error States */}
-        {transactionsLoading && <LoadingState />}
+      {/* Actions and Filters Section */}
 
-        {error && <ErrorState refetch={refetch} />}
+      {transactionsLoading ? (
+        <FullScreenLoading status="pending" />
+      ) : (
+        <div>
+          <TransactionsFilters
+            filters={filters}
+            handleFilterChange={handleFilterChange}
+            data={processedData}
+            clearFilters={clearFilters}
+          />
 
-        {/* Balance Cards Section */}
-        <BalanceCards balanceData={balanceData} isLoading={balanceLoading} />
-
-        {/* Actions and Filters Section */}
-        <TransactionsFilters
-          filters={filters}
-          handleFilterChange={handleFilterChange}
-          data={processedData}
-          clearFilters={clearFilters}
-        />
-
-        {/* Transactions Table Section */}
-        <TransactionsTable
-          data={processedData}
-          currentPage={pagination.page}
-          setCurrentPage={handlePageChange}
-          enablePagination={true}
-          statusConfig={statusConfig}
-          formatCurrency={formatCurrencyAmount}
-        />
-      </div>
+          {/* Transactions Table Section */}
+          <TransactionsTable
+            data={processedData}
+            currentPage={pagination.page}
+            setCurrentPage={handlePageChange}
+            enablePagination={true}
+            statusConfig={statusConfig}
+            formatCurrency={formatCurrencyAmount}
+          />
+        </div>
+      )}
     </div>
   );
 };
