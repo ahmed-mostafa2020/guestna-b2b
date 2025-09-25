@@ -35,17 +35,13 @@ const SummaryCards = ({ countsData, isLoading }) => {
           key={index}
           className="bg-white rounded-xl p-6 shadow-lg border-0 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
         >
-          <div className="flex items-center justify-center">
+          <div className="flex text-center items-center justify-center">
             <div>
-              <p className="text-sm text-gray-500 mb-3 font-medium">
-                {item.title}
-              </p>
+              <p className="text-gray-500 pb-3 font-medium">{item.title}</p>
               {isLoading ? (
-                <div className="animate-pulse">
-                  <div className="h-10 bg-gray-200 rounded w-20"></div>
-                </div>
+                <div className="mx-auto animate-pulse h-7 bg-gray-200 rounded w-24"></div>
               ) : (
-                <p className="text-4xl font-bold text-gray-900">{item.count}</p>
+                <p className="text-2xl font-semibold">{item.count}</p>
               )}
             </div>
           </div>

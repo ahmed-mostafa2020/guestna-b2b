@@ -977,6 +977,9 @@
     },
     "calendar": {
       "title": "مزامنة التقويم الاكاديمي",
+      "pageHeader": {
+        "title": "مزامنة التقويم الاكاديمي"
+      },
       "summary": {
         "potentialEvents": "الأحداث المحتملة",
         "academicEvents": "الأحداث الأكاديمية",

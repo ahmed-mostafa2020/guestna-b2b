@@ -995,6 +995,9 @@
     },
     "calendar": {
       "title": "Calendar",
+      "pageHeader": {
+        "title": "Calendar"
+      },
       "summary": {
         "potentialEvents": "Potential Events",
         "academicEvents": "Academic Events",

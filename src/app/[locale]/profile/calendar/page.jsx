@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useState, useEffect } from "react";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -14,6 +14,7 @@ import {
 } from "@components/sections/pages/calendar";
 
 const CalendarPage = () => {
+  const locale = useLocale();
   const t = useTranslations();
   const [activeTab, setActiveTab] = useState("calendar");
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -40,10 +41,8 @@ const CalendarPage = () => {
   } = useFetchData(
     B2B_END_POINTS.PROFILE.HAPPENINGS.COUNTS,
     {},
-    { method: "GET" }
+    { method: "GET", lang: locale }
   );
-
-  console.log(countsData, "countsData");
 
   // Fetch events for selected date (calendar tab - filter by selected day only)
   const { data: selectedDateEvents, refetch: refetchSelectedDateEvents } =
@@ -52,6 +51,7 @@ const CalendarPage = () => {
       {},
       {
         method: "POST",
+        lang: locale,
         body: {
           sort: "NEWEST",
           filter: {
@@ -186,6 +186,12 @@ const CalendarPage = () => {
     }
   }, [filters, currentPage, activeTab, refetchAllEvents]);
 
+  useEffect(() => {
+    document.title = `${t("pagesHead.appName")} | ${t(
+      "profile.calendar.pageHeader.title"
+    )}`;
+  }, [t]);
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Summary Cards */}
@@ -197,6 +203,18 @@ const CalendarPage = () => {
       {/* Main Content */}
       {activeTab === "calendar" && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Right Column - Interactive Calendar */}
+          <InteractiveCalendar
+            currentMonth={currentMonth}
+            selectedDate={selectedDate}
+            onDateSelect={setSelectedDate}
+            onMonthChange={navigateMonth}
+            onAddEvent={() => {
+              setEventToEdit(null);
+              setShowAddEventModal(true);
+            }}
+          />
+
           {/* Left Column - Events List */}
           <EventsList
             events={getEventsForDate(selectedDate)}
@@ -214,18 +232,6 @@ const CalendarPage = () => {
             }}
             onEdit={(event) => {
               setEventToEdit(event);
-              setShowAddEventModal(true);
-            }}
-          />
-
-          {/* Right Column - Interactive Calendar */}
-          <InteractiveCalendar
-            currentMonth={currentMonth}
-            selectedDate={selectedDate}
-            onDateSelect={setSelectedDate}
-            onMonthChange={navigateMonth}
-            onAddEvent={() => {
-              setEventToEdit(null);
               setShowAddEventModal(true);
             }}
           />
