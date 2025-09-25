@@ -33,7 +33,7 @@ const EventsList = ({ events, isLoading, title, subtitle, onView, onEdit }) => {
   return (
     <div className="bg-white rounded-xl p-8 shadow-lg border-0">
       <h2 className="text-xl font-semibold text-gray-900 mb-4">{title}</h2>
-      <p className="text-gray-600 mb-6">{subtitle}</p>
+      <p className="text-gray-600 pb-4">{subtitle}</p>
       <div className="space-y-4">
         {events.map((event) => (
           <EventCard

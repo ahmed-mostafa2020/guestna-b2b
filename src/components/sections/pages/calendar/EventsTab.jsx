@@ -1,10 +1,15 @@
 "use client";
 
+import { useLocale } from "next-intl";
+
 import EventCard from "./EventCard";
 import LoadingState from "./LoadingState";
 import EmptyState from "./EmptyState";
+import formatDate from "@utils/FormateDate";
 
 const EventsTab = ({ events, isLoading, onView, onEdit }) => {
+  const locale = useLocale();
+
   const getEventTypeLabel = (type) => {
     switch (type) {
       case "TRIP":
@@ -157,7 +162,7 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4 space-x-reverse">
                     <div className="text-sm text-gray-500 font-medium">
-                      {new Date(event.day).toLocaleDateString("ar-SA", {
+                      {formatDate(event.day, locale, {
                         day: "2-digit",
                         month: "short",
                       })}

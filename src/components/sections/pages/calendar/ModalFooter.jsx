@@ -1,5 +1,8 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { CircularProgress } from "@mui/material";
+
 const ModalFooter = ({
   onCancel,
   onConfirm,
@@ -9,6 +12,8 @@ const ModalFooter = ({
   confirmDisabled = false,
   isForm = false,
 }) => {
+  const t = useTranslations();
+
   return (
     <div className="p-6 border-t border-gray-200">
       <div className="flex gap-4">
@@ -23,12 +28,12 @@ const ModalFooter = ({
           type={isForm ? "submit" : "button"}
           onClick={!isForm ? onConfirm : undefined}
           disabled={confirmDisabled || isLoading}
-          className="flex-1 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 px-6 py-3 bg-mainColor text-white rounded-xl hover:bg-linksHover transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? (
-            <div className="flex items-center justify-center">
-              <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"></div>
-              جاري التحميل...
+            <div className="flex items-center justify-center gap-2">
+              {t("forms.validation.sending")}
+              <CircularProgress size={20} color="white" />
             </div>
           ) : (
             confirmText

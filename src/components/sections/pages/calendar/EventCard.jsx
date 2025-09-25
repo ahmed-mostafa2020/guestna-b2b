@@ -1,9 +1,12 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import formatDate from "@utils/FormateDate";
 
 const EventCard = ({ event, onView, onEdit }) => {
+  const locale = useLocale();
   const t = useTranslations();
+
   const getEventTypeLabel = (type) => {
     switch (type) {
       case "TRIP":
@@ -18,8 +21,10 @@ const EventCard = ({ event, onView, onEdit }) => {
         return t("profile.calendar.events.types.meeting");
       case "EXAM":
         return t("profile.calendar.events.types.exam");
-      default:
+      case "SOCIAL":
         return t("profile.calendar.events.types.social");
+      default:
+        return t("profile.calendar.events.types.other");
     }
   };
 
@@ -37,6 +42,8 @@ const EventCard = ({ event, onView, onEdit }) => {
         return "bg-indigo-500";
       case "EXAM":
         return "bg-red-500";
+      case "SOCIAL":
+        return "bg-pink-500";
       default:
         return "bg-gray-500";
     }
@@ -47,7 +54,7 @@ const EventCard = ({ event, onView, onEdit }) => {
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-medium text-gray-900">{event.about}</h3>
         <span className="text-sm text-gray-500">
-          {new Date(event.day).toLocaleDateString("ar-SA", {
+          {formatDate(event.day, locale, {
             day: "2-digit",
             month: "short",
           })}

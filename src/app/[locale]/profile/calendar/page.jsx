@@ -14,6 +14,7 @@ import {
 } from "@components/sections/pages/calendar";
 
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
+import formatDate from "@utils/FormateDate";
 
 const CalendarPage = () => {
   const locale = useLocale();
@@ -242,7 +243,7 @@ const CalendarPage = () => {
                   selectedDateEventsLoading || selectedDateEventsFetching
                 }
                 title={t("profile.calendar.calendar.selectedDayEvents")}
-                subtitle={selectedDate.toLocaleDateString("ar-SA", {
+                subtitle={formatDate(selectedDate, locale, {
                   weekday: "long",
                   year: "numeric",
                   month: "long",
@@ -381,7 +382,7 @@ const CalendarPage = () => {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-4 space-x-reverse">
                             <div className="text-sm text-gray-500 font-medium">
-                              {new Date(event.day).toLocaleDateString("ar-SA", {
+                              {formatDate(event.day, locale, {
                                 day: "2-digit",
                                 month: "short",
                               })}

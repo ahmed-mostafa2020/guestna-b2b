@@ -693,3 +693,42 @@ export const createWithdrawValidationSchema = (t, isBankTransfer) => {
     withdrawNotes: Yup.string(),
   });
 };
+
+// Calendar Event Form
+export const createAddEventSchema = (t) =>
+  Yup.object().shape({
+    name: Yup.string()
+      .trim()
+      .required(t("forms.validation.require"))
+      .min(2, t("profile.calendar.modal.addEvent.validation.name.min"))
+      .max(100, t("profile.calendar.modal.addEvent.validation.name.max")),
+
+    about: Yup.string()
+      .trim()
+      .required(t("forms.validation.require"))
+      .min(5, t("profile.calendar.modal.addEvent.validation.about.min"))
+      .max(500, t("profile.calendar.modal.addEvent.validation.about.max")),
+
+    happeningType: Yup.string()
+      .required(t("forms.validation.require")),
+
+    place: Yup.string()
+      .trim()
+      .required(t("forms.validation.require"))
+      .min(2, t("profile.calendar.modal.addEvent.validation.place.min"))
+      .max(100, t("profile.calendar.modal.addEvent.validation.place.max")),
+
+    day: Yup.date()
+      .required(t("forms.validation.require"))
+      .min(new Date().toISOString().split('T')[0], t("profile.calendar.modal.addEvent.validation.day.pastDate")),
+
+    time: Yup.string()
+      .required(t("forms.validation.require"))
+      .matches(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, t("profile.calendar.modal.addEvent.validation.time.format")),
+
+    participantsCount: Yup.number()
+      .required(t("forms.validation.require"))
+      .min(1, t("profile.calendar.modal.addEvent.validation.participants.min"))
+      .max(1000, t("profile.calendar.modal.addEvent.validation.participants.max"))
+      .integer(t("profile.calendar.modal.addEvent.validation.participants.integer")),
+  });

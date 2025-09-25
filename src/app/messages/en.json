@@ -1055,6 +1055,7 @@
           "academic": "Academic",
           "leave": "Leave",
           "exam": "Exam",
+          "social": "Social",
           "other": "Other"
         }
       },
@@ -1083,6 +1084,31 @@
             "loading": "Loading...",
             "saving": "Saving...",
             "editing": "Editing..."
+          },
+          "validation": {
+            "name": {
+              "min": "Event name must be at least 2 characters",
+              "max": "Event name must not exceed 100 characters"
+            },
+            "about": {
+              "min": "Event description must be at least 5 characters",
+              "max": "Event description must not exceed 500 characters"
+            },
+            "place": {
+              "min": "Location must be at least 2 characters",
+              "max": "Location must not exceed 100 characters"
+            },
+            "day": {
+              "pastDate": "Event date cannot be in the past"
+            },
+            "time": {
+              "format": "Please enter a valid time (HH:MM format)"
+            },
+            "participants": {
+              "min": "At least 1 participant is required",
+              "max": "Maximum 1000 participants allowed",
+              "integer": "Number of participants must be a whole number"
+            }
           },
           "errors": {
             "eventNameRequired": "Event name is required",
