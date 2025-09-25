@@ -9,7 +9,7 @@ import axios from "axios";
 
 import TextInputGroup from "./TextInputGroup";
 import SelectionGroup from "./SelectionGroup";
-import Modal from "@components/sections/pages/calendar/Modal";
+import CustomizedModal from "@components/common/customizedModal";
 import ModalHeader from "@components/sections/pages/calendar/ModalHeader";
 import ModalFooter from "@components/sections/pages/calendar/ModalFooter";
 
@@ -189,7 +189,16 @@ const AddEventForm = ({
   };
 
   return (
-    <Modal isOpen={true} onClose={onClose}>
+    <CustomizedModal
+      open={true}
+      handleClose={onClose}
+      bgcolor="rgba(0, 0, 0, 0.5)"
+      customizedCloseButton={true}
+      closeButton={false}
+      padding={false}
+    >
+      <div className="flex items-center justify-center min-h-screen p-4">
+        <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
       <ModalHeader
         title={
           eventToEdit
@@ -355,7 +364,9 @@ const AddEventForm = ({
           isForm={true}
         />
       </form>
-    </Modal>
+        </div>
+      </div>
+    </CustomizedModal>
   );
 };
 

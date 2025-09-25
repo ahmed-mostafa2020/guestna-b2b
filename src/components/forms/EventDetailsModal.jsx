@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import Modal from "@components/sections/pages/calendar/Modal";
+import CustomizedModal from "@components/common/customizedModal";
 import ModalHeader from "@components/sections/pages/calendar/ModalHeader";
 import ModalFooter from "@components/sections/pages/calendar/ModalFooter";
 
@@ -50,7 +50,16 @@ const EventDetailsModal = ({ event, onClose }) => {
   };
 
   return (
-    <Modal isOpen={true} onClose={onClose} maxWidth="max-w-md">
+    <CustomizedModal
+      open={true}
+      handleClose={onClose}
+      bgcolor="rgba(0, 0, 0, 0.5)"
+      customizedCloseButton={true}
+      closeButton={false}
+      padding={false}
+    >
+      <div className="flex items-center justify-center min-h-screen p-4">
+        <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
       <ModalHeader
         title={t("profile.calendar.modal.eventDetails.title")}
         onClose={onClose}
@@ -130,7 +139,9 @@ const EventDetailsModal = ({ event, onClose }) => {
           {t("profile.calendar.modal.eventDetails.close")}
         </button>
       </div>
-    </Modal>
+        </div>
+      </div>
+    </CustomizedModal>
   );
 };
 
