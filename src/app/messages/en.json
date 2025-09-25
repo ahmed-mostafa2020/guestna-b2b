@@ -952,9 +952,9 @@
           },
           "status": {
             "placeholder": "Status",
-            "completed": "Completed",
-            "processing": "Processing",
-            "pending": "Pending"
+            "completed": "Done",
+            "pending": "Pending",
+            "canceled": "Canceled"
           },
           "clearFilters": "Clear Filters"
         },

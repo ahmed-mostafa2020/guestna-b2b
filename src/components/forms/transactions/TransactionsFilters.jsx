@@ -12,8 +12,12 @@ const TransactionsFilters = ({
 
   // Extract unique values for filter options from server data (safe access)
   const transactions = data?.nodes || [];
-  const uniqueSearchTerms = Array.from(new Set(transactions.map((t) => t.searchTerm || t.name).filter(Boolean)));
-  const uniqueDays = Array.from(new Set(transactions.map((t) => t.day).filter(Boolean)));
+  const uniqueSearchTerms = Array.from(
+    new Set(transactions.map((t) => t.searchTerm || t.name).filter(Boolean))
+  );
+  const uniqueDays = Array.from(
+    new Set(transactions.map((t) => t.createdAt || t.day).filter(Boolean))
+  );
 
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
@@ -43,9 +47,7 @@ const TransactionsFilters = ({
           <div className="relative flex-1">
             <select
               value={filters.searchTerm}
-              onChange={(e) =>
-                handleFilterChange("searchTerm", e.target.value)
-              }
+              onChange={(e) => handleFilterChange("searchTerm", e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               id="operation-name-filter"
               name="searchTerm"
@@ -63,7 +65,7 @@ const TransactionsFilters = ({
           {/* Transaction Date Filter */}
           <div className="relative flex-1">
             <select
-              value={filters.day}
+              value={filters.displayDay || filters.day}
               onChange={(e) => handleFilterChange("day", e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               id="transaction-date-filter"
@@ -90,20 +92,22 @@ const TransactionsFilters = ({
             >
               <option value="">{t("status.placeholder")}</option>
               <option value="DONE">{t("status.completed")}</option>
-              <option value="PENDING">{t("status.processing")}</option>
-              <option value="CANCLED">{t("status.pending")}</option>
-              <option value="SCHEDULED">مجدول</option>
+              <option value="PENDING">{t("status.pending")}</option>
+              <option value="CANCLED">{t("status.canceled")}</option>
             </select>
             <KeyboardArrowDown className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
           </div>
         </div>
 
         {/* Clear Filters Button */}
-        {(filters.searchTerm || filters.day || filters.status) && (
+        {(filters.searchTerm ||
+          filters.day ||
+          filters.displayDay ||
+          filters.status) && (
           <div className="text-center">
             <button
               onClick={clearFilters}
-              className="text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors duration-200"
+              className="text-red-600 hover:text-red-700 text-sm font-medium transition-colors duration-200"
             >
               {t("clearFilters")}
             </button>

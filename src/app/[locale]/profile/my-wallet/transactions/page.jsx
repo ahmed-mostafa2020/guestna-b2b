@@ -15,8 +15,8 @@ import {
 import formatCurrency from "@utils/FormatCurrency";
 import formatDate from "@utils/FormateDate";
 import { TRIP_STATUS } from "@constants/tripStatus";
-import FullScreenLoading from "@/src/feedback/loading/FullScreenLoading";
-import ErrorComponent from "@/src/feedback/error/ErrorComponent";
+import FullScreenLoading from "@feedback/loading/FullScreenLoading";
+import ErrorComponent from "@feedback/error/ErrorComponent";
 
 const TransactionsPage = () => {
   const locale = useLocale();
@@ -33,14 +33,15 @@ const TransactionsPage = () => {
   // Filter states (move above API call so we can include in request body)
   const [filters, setFilters] = useState({
     searchTerm: "",
-    day: "",
+    day: "", // This will store the formatted date (YYYY-MM-DD) for API
+    displayDay: "", // This will store the display date for UI
     status: "",
   });
 
-  // Build API filter with only non-empty values
+  // Build API filter with only non-empty values and proper date format
   const apiFilter = {
     ...(filters.searchTerm ? { searchTerm: filters.searchTerm } : {}),
-    ...(filters.day ? { day: filters.day } : {}),
+    ...(filters.day ? { day: filters.day } : {}), // Use createdAt field for API with formatted date
     ...(filters.status ? { status: filters.status } : {}),
   };
 
@@ -67,14 +68,15 @@ const TransactionsPage = () => {
 
       cacheTime: 300000, // 5 minutes
       staleTime: 300000,
-      // Include filters in query key to automatically refetch when filters change
-      queryKeySuffix: `page-${pagination.page}-perPage-${pagination.perPage}-filters-${filters.searchTerm}|${filters.day}|${filters.status}`,
+      // Separate cache key for balance - not dependent on filters
+      queryKeySuffix: `balance-data`,
+      enabled: true, // Always enabled for balance
     }
   );
 
   const {
     data: invoicesData,
-    isLoading,
+    isLoading: transactionsLoading,
     error,
     refetch,
   } = useFetchData(
@@ -93,7 +95,8 @@ const TransactionsPage = () => {
       cacheTime: 300000, // 5 minutes
       staleTime: 300000,
       // Include filters in query key to automatically refetch when filters change
-      queryKeySuffix: `page-${pagination.page}-perPage-${pagination.perPage}-filters-${filters.searchTerm}|${filters.day}|${filters.status}`,
+      queryKeySuffix: `transactions-page-${pagination.page}-perPage-${pagination.perPage}-filters-${filters.searchTerm}|${filters.day}|${filters.status}`,
+      enabled: true, // Always enabled for transactions
     }
   );
 
@@ -139,14 +142,47 @@ const TransactionsPage = () => {
               invoice.tripTitle ||
               invoice.organizationName ||
               "رحلة",
-            day: invoice.day
-              ? formatDate(invoice.day, "ar")
-              : invoice.createdAt
-              ? formatDate(invoice.createdAt, "ar")
+            day: invoice.createdAt
+              ? formatDate(invoice.createdAt, locale, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              : invoice.day
+              ? formatDate(invoice.day, locale, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
               : invoice.date
-              ? formatDate(invoice.date, "ar")
+              ? formatDate(invoice.date, locale, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
               : invoice.issueDate
-              ? formatDate(invoice.issueDate, "ar")
+              ? formatDate(invoice.issueDate, locale, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              : "غير محدد",
+            createdAt: invoice.createdAt
+              ? formatDate(invoice.createdAt, locale)
+              : invoice.day
+              ? formatDate(invoice.day, locale)
+              : invoice.date
+              ? formatDate(invoice.date, locale)
+              : invoice.issueDate
+              ? formatDate(invoice.issueDate, locale)
               : "غير محدد",
             referenceNumber:
               invoice.orderId ||
@@ -176,7 +212,9 @@ const TransactionsPage = () => {
               perPage: pageInfo.perPage || 10,
               hasNextPage: pageInfo.hasNextPage || false,
               hasPreviousPage: pageInfo.hasPreviousPage || false,
-              totalPages: pageInfo.totalPages || Math.ceil((pageInfo.total || 0) / (pageInfo.perPage || 10)),
+              totalPages:
+                pageInfo.totalPages ||
+                Math.ceil((pageInfo.total || 0) / (pageInfo.perPage || 10)),
             },
           });
         } else {
@@ -187,12 +225,12 @@ const TransactionsPage = () => {
         console.error("Error processing invoice data:", error);
         setProcessedData({ nodes: [], pageInfo: {} });
       }
-    } else if (invoicesData === null && !isLoading) {
+    } else if (invoicesData === null && !transactionsLoading) {
       // Handle case when API returns null/undefined
       console.warn("API returned null/undefined data");
       setProcessedData({ nodes: [], pageInfo: {} });
     }
-  }, [invoicesData, isLoading]);
+  }, [invoicesData, transactionsLoading]);
 
   // Set page title (localized)
   useEffect(() => {
@@ -210,7 +248,6 @@ const TransactionsPage = () => {
       DONE: TRIP_STATUS.DONE,
       PENDING: TRIP_STATUS.PENDING,
       CANCLED: TRIP_STATUS.CANCELLED,
-      SCHEDULED: TRIP_STATUS.SCHEDULED,
       // ENDED: "ENDED",
       // // Legacy status mappings for backward compatibility
       // done: "DONE",
@@ -237,12 +274,72 @@ const TransactionsPage = () => {
     return statusMap[normalizedStatus] || "PENDING";
   };
 
+  // Convert display date to API format (YYYY-MM-DD)
+  const convertDateToApiFormat = (displayDate) => {
+    if (!displayDate) return "";
+
+    try {
+      // Parse Arabic formatted date and convert to YYYY-MM-DD
+      // Assuming displayDate is in Arabic format like "سبتمبر ٢٠٢٥"
+      const arabicMonths = {
+        يناير: "01",
+        فبراير: "02",
+        مارس: "03",
+        أبريل: "04",
+        مايو: "05",
+        يونيو: "06",
+        يوليو: "07",
+        أغسطس: "08",
+        سبتمبر: "09",
+        أكتوبر: "10",
+        نوفمبر: "11",
+        ديسمبر: "12",
+      };
+
+      // Extract month and year from Arabic date
+      const parts = displayDate.split(" ");
+      if (parts.length >= 2) {
+        const month = arabicMonths[parts[0]];
+        const year = parts[1].replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d)); // Convert Arabic numerals
+
+        if (month && year) {
+          return `${year}-${month}-01`; // Default to first day of month
+        }
+      }
+
+      // If it's already in YYYY-MM-DD format, return as is
+      if (/^\d{4}-\d{2}-\d{2}$/.test(displayDate)) {
+        return displayDate;
+      }
+
+      // If it's an ISO date string, extract the date part
+      if (displayDate.includes("T")) {
+        return displayDate.split("T")[0];
+      }
+
+      return "";
+    } catch (error) {
+      console.error("Error converting date:", error);
+      return "";
+    }
+  };
+
   // Handle filter changes and reset to first page
   const handleFilterChange = (field, value) => {
-    setFilters((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    if (field === "day") {
+      // Handle date field specially
+      const apiDate = convertDateToApiFormat(value);
+      setFilters((prev) => ({
+        ...prev,
+        day: apiDate, // Store API format
+        displayDay: value, // Store display format
+      }));
+    } else {
+      setFilters((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    }
     setPagination((prev) => ({ ...prev, page: 1 }));
   };
 
@@ -260,10 +357,7 @@ const TransactionsPage = () => {
       label: "ملغي",
       className: "bg-red-100 text-red-800 border-red-200",
     },
-    SCHEDULED: {
-      label: "مجدول",
-      className: "bg-blue-100 text-blue-800 border-blue-200",
-    },
+
     ENDED: {
       label: "انتهت",
       className: "bg-gray-100 text-gray-800 border-gray-200",
@@ -288,14 +382,16 @@ const TransactionsPage = () => {
     return formatCurrency(amount);
   };
 
-  // Clear filters
+  // Clear filters and refetch data without filters
   const clearFilters = () => {
     setFilters({
       searchTerm: "",
       day: "",
+      displayDay: "",
       status: "",
     });
     setPagination((prev) => ({ ...prev, page: 1 }));
+    // The API will automatically refetch due to the filter changes
   };
 
   // Handle pagination changes
@@ -315,7 +411,7 @@ const TransactionsPage = () => {
 
   // Server-side filtering is handled by the API call, no client-side filtering needed
 
-  if (isLoading || balanceLoading)
+  if (transactionsLoading || balanceLoading)
     return (
       <div className="w-full min-h-screen centered">
         <FullScreenLoading status="pending" />
@@ -325,8 +421,14 @@ const TransactionsPage = () => {
   if (error || balanceError)
     return (
       <ErrorComponent
-        statusCode={error.response?.data?.statusCode}
-        errorMessage={error.response?.data?.message}
+        statusCode={
+          error?.response?.data?.statusCode ||
+          balanceError?.response?.data?.statusCode
+        }
+        errorMessage={
+          error?.response?.data?.message ||
+          balanceError?.response?.data?.message
+        }
       />
     );
 
@@ -337,7 +439,7 @@ const TransactionsPage = () => {
         <PageHeader />
 
         {/* Loading and Error States */}
-        {isLoading && <LoadingState />}
+        {transactionsLoading && <LoadingState />}
 
         {error && <ErrorState refetch={refetch} />}
 

@@ -935,8 +935,8 @@
           "status": {
             "placeholder": "الحالة",
             "completed": "مكتمل",
-            "processing": "قيد المعالجة",
-            "pending": "معلقة"
+            "pending": "قيد المعالجة",
+            "canceled": "ملغي"
           },
           "clearFilters": "مسح الفلاتر"
         },
