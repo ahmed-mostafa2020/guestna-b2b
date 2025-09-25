@@ -5,10 +5,15 @@ import { printIcon } from "@assets/svg";
 const TransactionsFilters = ({
   filters,
   handleFilterChange,
-  transactions,
+  data,
   clearFilters,
 }) => {
   const t = useTranslations("profile.myWallet.transactionsPage.filters");
+
+  // Extract unique values for filter options from server data (safe access)
+  const transactions = data?.nodes || [];
+  const uniqueSearchTerms = Array.from(new Set(transactions.map((t) => t.searchTerm || t.name).filter(Boolean)));
+  const uniqueDays = Array.from(new Set(transactions.map((t) => t.day).filter(Boolean)));
 
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
@@ -31,85 +36,80 @@ const TransactionsFilters = ({
         </div>
       </div>
 
-      {/* Second Row: Filter Dropdowns - Only show when we have transactions */}
-      {transactions.length > 0 && (
-        <div className="space-y-4">
-          <div className="flex flex-col lg:flex-row gap-4">
-            {/* Operation Name Filter */}
-            <div className="relative flex-1">
-              <select
-                value={filters.searchTerm}
-                onChange={(e) =>
-                  handleFilterChange("searchTerm", e.target.value)
-                }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                id="operation-name-filter"
-                name="searchTerm"
-              >
-                <option value="">{t("operationName.placeholder")}</option>
-                {Array.from(new Set(transactions.map((t) => t.searchTerm))).map(
-                  (name, index) => (
-                    <option key={index} value={name}>
-                      {name}
-                    </option>
-                  )
-                )}
-              </select>
-              <KeyboardArrowDown className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-            </div>
-
-            {/* Transaction Date Filter */}
-            <div className="relative flex-1">
-              <select
-                value={filters.day}
-                onChange={(e) => handleFilterChange("day", e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                id="transaction-date-filter"
-                name="day"
-              >
-                <option value="">{t("transactionDate.placeholder")}</option>
-                {Array.from(new Set(transactions.map((t) => t.day))).map(
-                  (day, index) => (
-                    <option key={index} value={day}>
-                      {day}
-                    </option>
-                  )
-                )}
-              </select>
-              <KeyboardArrowDown className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-            </div>
-
-            {/* Status Filter */}
-            <div className="relative flex-1">
-              <select
-                value={filters.status}
-                onChange={(e) => handleFilterChange("status", e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                id="status-filter"
-                name="status"
-              >
-                <option value="">{t("status.placeholder")}</option>
-                <option value="completed">{t("status.completed")}</option>
-                <option value="processing">{t("status.processing")}</option>
-                <option value="pending">{t("status.pending")}</option>
-              </select>
-              <KeyboardArrowDown className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-            </div>
+      {/* Second Row: Filter Dropdowns - Always show filters for server-side filtering */}
+      <div className="space-y-4">
+        <div className="flex flex-col lg:flex-row gap-4">
+          {/* Operation Name Filter */}
+          <div className="relative flex-1">
+            <select
+              value={filters.searchTerm}
+              onChange={(e) =>
+                handleFilterChange("searchTerm", e.target.value)
+              }
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              id="operation-name-filter"
+              name="searchTerm"
+            >
+              <option value="">{t("operationName.placeholder")}</option>
+              {uniqueSearchTerms.map((name, index) => (
+                <option key={index} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
+            <KeyboardArrowDown className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
           </div>
 
-          {/* Clear Filters Button */}
-          {(filters.searchTerm || filters.day || filters.status) && (
-            <div className="text-center">
-              <button
-                onClick={clearFilters}
-                className="text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors duration-200"
-              >
-                {t("clearFilters")}
-              </button>
-            </div>
-          )}
+          {/* Transaction Date Filter */}
+          <div className="relative flex-1">
+            <select
+              value={filters.day}
+              onChange={(e) => handleFilterChange("day", e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              id="transaction-date-filter"
+              name="day"
+            >
+              <option value="">{t("transactionDate.placeholder")}</option>
+              {uniqueDays.map((day, index) => (
+                <option key={index} value={day}>
+                  {day}
+                </option>
+              ))}
+            </select>
+            <KeyboardArrowDown className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+          </div>
+
+          {/* Status Filter - Using predefined status options for server-side filtering */}
+          <div className="relative flex-1">
+            <select
+              value={filters.status}
+              onChange={(e) => handleFilterChange("status", e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              id="status-filter"
+              name="status"
+            >
+              <option value="">{t("status.placeholder")}</option>
+              <option value="DONE">{t("status.completed")}</option>
+              <option value="PENDING">{t("status.processing")}</option>
+              <option value="CANCLED">{t("status.pending")}</option>
+              <option value="SCHEDULED">مجدول</option>
+            </select>
+            <KeyboardArrowDown className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+          </div>
         </div>
-      )}
+
+        {/* Clear Filters Button */}
+        {(filters.searchTerm || filters.day || filters.status) && (
+          <div className="text-center">
+            <button
+              onClick={clearFilters}
+              className="text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors duration-200"
+            >
+              {t("clearFilters")}
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -1,146 +1,183 @@
-import { useTranslations } from "next-intl";
+"use client";
+
+import { useLocale, useTranslations } from "next-intl";
+import { memo } from "react";
 import Pagination from "@components/common/Pagination";
+import { Typography, CardContent, Card, CircularProgress } from "@mui/material";
 
 const TransactionsTable = ({
-  filteredTransactions,
-  isLoading,
-  transactions,
-  invoicesData,
+  data,
+  currentPage,
+  setCurrentPage,
+  enablePagination,
   statusConfig,
   formatCurrency,
-  pagination,
-  apiPageInfo,
-  onPageChange,
-  onPerPageChange,
 }) => {
+  const locale = useLocale();
   const t = useTranslations("profile.myWallet.transactionsPage.table");
-  console.log("transactions", transactions);
+
+  if (!data || !data.nodes) {
+    return (
+      <div className="w-full min-h-[400px] centered">
+        <CircularProgress size={50} color="primary" />
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-white rounded-lg shadow-card border border-border overflow-hidden">
-      <div className="px-6 py-4 border-b border-border">
-        <h3 className="text-xl font-semibold text-textDark text-right font-ibm">
-          {t("title")}
-        </h3>
-      </div>
+    <div className="w-full space-y-6">
+      {/* Desktop Table */}
+      <Card
+        className="hidden md:block"
+        sx={{
+          borderRadius: "16px",
+          boxShadow: "0 0 4px 0 rgba(0, 0, 0, 0.16)",
+        }}
+      >
+        <CardContent className="p-0">
+          <div className="px-6 py-4 border-b border-border">
+            <h3 className="text-xl font-semibold text-textDark text-right font-ibm">
+              {t("title")}
+            </h3>
+          </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-packageDetailsBg">
-            <tr>
-              <th className="px-6 py-4 text-right text-sm font-medium text-textLight uppercase tracking-wider font-ibm">
-                {t("headers.operationName")}
-              </th>
-              <th className="px-6 py-4 text-right text-sm font-medium text-textLight uppercase tracking-wider font-ibm">
-                {t("headers.transactionDate")}
-              </th>
-              <th className="px-6 py-4 text-right text-sm font-medium text-textLight uppercase tracking-wider font-ibm">
-                {t("headers.referenceNumber")}
-              </th>
-              <th className="px-6 py-4 text-right text-sm font-medium text-textLight uppercase tracking-wider font-ibm">
-                {t("headers.transactionAmount")}
-              </th>
-              <th className="px-6 py-4 text-right text-sm font-medium text-textLight uppercase tracking-wider font-ibm">
-                {t("headers.transactionStatus")}
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-border">
-            {filteredTransactions.length > 0 ? (
-              filteredTransactions.map((transaction) => (
-                <tr key={transaction.id} className="hover:bg-packageDetailsBg">
-                  <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className="text-sm font-medium text-textDark font-ibm">
-                      {transaction.searchTerm}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className="text-sm text-textDark font-ibm">
-                      {transaction.day}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className="text-sm text-textDark font-ibm">
-                      {transaction.referenceNumber}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div
-                      className={`text-sm font-medium font-ibm ${
-                        transaction.amount < 0 ? "text-error" : "text-textDark"
-                      }`}
-                    >
-                      {formatCurrency(transaction.amount)}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <span
-                      className={`inline-flex px-3 py-1 text-xs font-medium rounded-full border font-ibm ${
-                        statusConfig[transaction.status].className
-                      }`}
-                    >
-                      {statusConfig[transaction.status].label}
-                    </span>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-table-header">
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("headers.operationName")}
+                  </th>
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("headers.transactionDate")}
+                  </th>
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("headers.referenceNumber")}
+                  </th>
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("headers.transactionAmount")}
+                  </th>
+                  <th className="px-6 py-4 font-medium text-start">
+                    {t("headers.transactionStatus")}
+                  </th>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="5" className="px-6 py-12 text-center">
-                  <div className="text-textLight">
-                    {isLoading ? (
-                      <div className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-mainColor"></div>
-                        <span className="ml-2 font-ibm">{t("loading")}</span>
-                      </div>
-                    ) : transactions.length === 0 ? (
-                      <div>
-                        <p className="text-lg font-medium mb-2 font-ibm text-textDark">
-                          {invoicesData &&
-                          (invoicesData.availableBalance !== undefined ||
-                            invoicesData.totalRevenue !== undefined)
-                            ? t("balanceSummary.title")
-                            : t("noTransactions.title")}
-                        </p>
-                        <p className="text-sm font-ibm">
-                          {invoicesData &&
-                          (invoicesData.availableBalance !== undefined ||
-                            invoicesData.totalRevenue !== undefined)
-                            ? t("balanceSummary.description")
-                            : t("noTransactions.description")}
-                        </p>
-                      </div>
-                    ) : (
-                      <div>
-                        <p className="text-lg font-medium mb-2 font-ibm text-textDark">
-                          {t("noResults.title")}
-                        </p>
-                        <p className="text-sm font-ibm">
-                          {t("noResults.description")}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {data?.nodes?.map((transaction, index) => (
+                  <tr
+                    key={transaction._id || transaction.id}
+                    className={`${
+                      index != data?.nodes?.length - 1 &&
+                      "border-b border-table-border"
+                    } transition-colors hover:bg-gray-50`}
+                  >
+                    <td className="px-6 py-4 text-sm font-medium text-foreground">
+                      {transaction.searchTerm || transaction.name || "رحلة"}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                      {transaction.day}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                      {transaction.referenceNumber}
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium">
+                      <span
+                        className={`${
+                          transaction.amount < 0 ? "text-error" : "text-foreground"
+                        }`}
+                      >
+                        {formatCurrency(transaction.amount)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          statusConfig[transaction.status]?.className ||
+                          "bg-gray-100 text-gray-800 border border-gray-200"
+                        }`}
+                      >
+                        {statusConfig[transaction.status]?.label || transaction.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Mobile Cards */}
+      <div className="space-y-4 md:hidden">
+        {data?.nodes?.map((transaction) => (
+          <Card
+            key={transaction._id || transaction.id}
+            className="transition-shadow shadow-md hover:shadow-lg"
+          >
+            <CardContent className="p-4 space-y-3">
+              <div className="flex flex-col items-start justify-between">
+                <h3 className="text-lg font-bold leading-relaxed text-foreground">
+                  {transaction.searchTerm || transaction.name || "رحلة"}
+                </h3>
+                <span className="text-muted-foreground text-sm">
+                  {transaction.referenceNumber}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="flex flex-col gap-1">
+                  <span className="text-muted-foreground">
+                    {t("headers.transactionDate")}
+                  </span>
+                  <span className="font-medium">
+                    {transaction.day}
+                  </span>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <span className="text-muted-foreground">
+                    {t("headers.transactionAmount")}
+                  </span>
+                  <span
+                    className={`font-medium ${
+                      transaction.amount < 0 ? "text-error" : "text-foreground"
+                    }`}
+                  >
+                    {formatCurrency(transaction.amount)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    statusConfig[transaction.status]?.className ||
+                    "bg-gray-100 text-gray-800 border border-gray-200"
+                  }`}
+                >
+                  {statusConfig[transaction.status]?.label || transaction.status}
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      {/* Pagination Controls */}
-      {pagination && onPageChange && onPerPageChange && (
-        <div className="px-6 py-4 border-t border-border bg-packageDetailsBg">
-          <Pagination
-            pageInfo={apiPageInfo}
-            currentPage={pagination.page}
-            onPageChange={onPageChange}
-            className=""
-          />
+      {/* Pagination */}
+      {enablePagination && (
+        <div>
+          {data?.pageInfo && (
+            <Pagination
+              pageInfo={data.pageInfo}
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+              className="mt-6"
+            />
+          )}
         </div>
       )}
     </div>
   );
 };
 
-export default TransactionsTable;
+export default memo(TransactionsTable);

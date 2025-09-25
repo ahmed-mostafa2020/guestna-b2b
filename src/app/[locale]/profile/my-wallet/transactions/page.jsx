@@ -21,13 +21,8 @@ import ErrorComponent from "@/src/feedback/error/ErrorComponent";
 const TransactionsPage = () => {
   const locale = useLocale();
   const t = useTranslations();
-  // State for transactions and balances
-  const [transactions, setTransactions] = useState([]);
-  // const [balanceData, setBalanceData] = useState({
-  //   totalBalance: 0,
-  //   availableBalance: 0,
-  //   holdBalance: 0,
-  // });
+  // State for processed transactions data
+  const [processedData, setProcessedData] = useState(null);
 
   // Pagination states
   const [pagination, setPagination] = useState({
@@ -128,8 +123,16 @@ const TransactionsPage = () => {
         if (Array.isArray(data)) {
           // Transform API data to match our component structure
           const processedTransactions = data.map((invoice, index) => ({
+            _id: invoice._id || invoice.id || invoice.invoiceId || index + 1,
             id: invoice._id || invoice.id || invoice.invoiceId || index + 1,
             searchTerm:
+              invoice.name ||
+              invoice.tripName ||
+              invoice.searchTerm ||
+              invoice.tripTitle ||
+              invoice.organizationName ||
+              "رحلة",
+            name:
               invoice.name ||
               invoice.tripName ||
               invoice.searchTerm ||
@@ -164,48 +167,30 @@ const TransactionsPage = () => {
             ),
           }));
 
-          setTransactions(processedTransactions);
-
-          // Calculate balance data from transactions
-          const totalAmount = processedTransactions.reduce(
-            (sum, t) => sum + t.amount,
-            0
-          );
-          // const completedAmount = processedTransactions
-          //   .filter((t) => t.status === "DONE")
-          //   .reduce((sum, t) => sum + t.amount, 0);
-          // const pendingAmount = processedTransactions
-          //   .filter((t) => t.status === "PENDING" || t.status === "SCHEDULED")
-          //   .reduce((sum, t) => sum + t.amount, 0);
-
-          // setBalanceData({
-          //   totalBalance: totalAmount,
-          //   availableBalance: completedAmount,
-          //   holdBalance: pendingAmount,
-          // });
+          // Create processed data structure that matches your table pattern
+          setProcessedData({
+            nodes: processedTransactions,
+            pageInfo: {
+              total: pageInfo.total || 0,
+              currentPage: pageInfo.currentPage || 1,
+              perPage: pageInfo.perPage || 10,
+              hasNextPage: pageInfo.hasNextPage || false,
+              hasPreviousPage: pageInfo.hasPreviousPage || false,
+              totalPages: pageInfo.totalPages || Math.ceil((pageInfo.total || 0) / (pageInfo.perPage || 10)),
+            },
+          });
         } else {
           console.warn("API response is not an array:", data);
-          setTransactions([]);
-          // setBalanceData({
-          //   totalBalance: 0,
-          //   availableBalance: 0,
-          //   holdBalance: 0,
-          // });
+          setProcessedData({ nodes: [], pageInfo: {} });
         }
       } catch (error) {
         console.error("Error processing invoice data:", error);
-        setTransactions([]);
-        // setBalanceData({
-        //   totalBalance: 0,
-        //   availableBalance: 0,
-        //   holdBalance: 0,
-        // });
+        setProcessedData({ nodes: [], pageInfo: {} });
       }
     } else if (invoicesData === null && !isLoading) {
       // Handle case when API returns null/undefined
       console.warn("API returned null/undefined data");
-      setTransactions([]);
-      // setBalanceData({ totalBalance: 0, availableBalance: 0, holdBalance: 0 });
+      setProcessedData({ nodes: [], pageInfo: {} });
     }
   }, [invoicesData, isLoading]);
 
@@ -328,18 +313,7 @@ const TransactionsPage = () => {
     }));
   };
 
-  // Filter transactions based on selected filters
-  const filteredTransactions = transactions.filter((transaction) => {
-    const matchesSearchTerm =
-      !filters.searchTerm || transaction.searchTerm === filters.searchTerm;
-
-    const matchesDate = !filters.day || transaction.day === filters.day;
-
-    const matchesStatus =
-      !filters.status || transaction.status === filters.status;
-
-    return matchesSearchTerm && matchesDate && matchesStatus;
-  });
+  // Server-side filtering is handled by the API call, no client-side filtering needed
 
   if (isLoading || balanceLoading)
     return (
@@ -374,22 +348,18 @@ const TransactionsPage = () => {
         <TransactionsFilters
           filters={filters}
           handleFilterChange={handleFilterChange}
-          transactions={transactions}
+          data={processedData}
           clearFilters={clearFilters}
         />
 
         {/* Transactions Table Section */}
         <TransactionsTable
-          filteredTransactions={filteredTransactions}
-          isLoading={isLoading}
-          transactions={transactions}
-          invoicesData={invoicesData}
+          data={processedData}
+          currentPage={pagination.page}
+          setCurrentPage={handlePageChange}
+          enablePagination={true}
           statusConfig={statusConfig}
           formatCurrency={formatCurrencyAmount}
-          pagination={pagination}
-          apiPageInfo={apiPageInfo}
-          onPageChange={handlePageChange}
-          onPerPageChange={handlePerPageChange}
         />
       </div>
     </div>
