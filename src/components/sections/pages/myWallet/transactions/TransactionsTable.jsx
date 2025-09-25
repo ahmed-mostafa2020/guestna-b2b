@@ -14,6 +14,7 @@ const TransactionsTable = ({
   onPerPageChange,
 }) => {
   const t = useTranslations("profile.myWallet.transactionsPage.table");
+  console.log("transactions", transactions);
 
   return (
     <div className="bg-white rounded-lg shadow-card border border-border overflow-hidden">
@@ -50,12 +51,12 @@ const TransactionsTable = ({
                 <tr key={transaction.id} className="hover:bg-packageDetailsBg">
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <div className="text-sm font-medium text-textDark font-ibm">
-                      {transaction.operationName}
+                      {transaction.searchTerm}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <div className="text-sm text-textDark font-ibm">
-                      {transaction.date}
+                      {transaction.day}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">

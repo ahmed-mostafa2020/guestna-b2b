@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { KeyboardArrowDown } from "@mui/icons-material";
-import { printIcon, refreshIcon } from "@assets/svg";
+import { printIcon } from "@assets/svg";
 
 const TransactionsFilters = ({
   filters,
@@ -38,22 +38,22 @@ const TransactionsFilters = ({
             {/* Operation Name Filter */}
             <div className="relative flex-1">
               <select
-                value={filters.operationName}
+                value={filters.searchTerm}
                 onChange={(e) =>
-                  handleFilterChange("operationName", e.target.value)
+                  handleFilterChange("searchTerm", e.target.value)
                 }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 id="operation-name-filter"
-                name="operationName"
+                name="searchTerm"
               >
                 <option value="">{t("operationName.placeholder")}</option>
-                {Array.from(
-                  new Set(transactions.map((t) => t.operationName))
-                ).map((name, index) => (
-                  <option key={index} value={name}>
-                    {name}
-                  </option>
-                ))}
+                {Array.from(new Set(transactions.map((t) => t.searchTerm))).map(
+                  (name, index) => (
+                    <option key={index} value={name}>
+                      {name}
+                    </option>
+                  )
+                )}
               </select>
               <KeyboardArrowDown className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
             </div>
@@ -61,19 +61,17 @@ const TransactionsFilters = ({
             {/* Transaction Date Filter */}
             <div className="relative flex-1">
               <select
-                value={filters.transactionDate}
-                onChange={(e) =>
-                  handleFilterChange("transactionDate", e.target.value)
-                }
+                value={filters.day}
+                onChange={(e) => handleFilterChange("day", e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 id="transaction-date-filter"
-                name="transactionDate"
+                name="day"
               >
                 <option value="">{t("transactionDate.placeholder")}</option>
-                {Array.from(new Set(transactions.map((t) => t.date))).map(
-                  (date, index) => (
-                    <option key={index} value={date}>
-                      {date}
+                {Array.from(new Set(transactions.map((t) => t.day))).map(
+                  (day, index) => (
+                    <option key={index} value={day}>
+                      {day}
                     </option>
                   )
                 )}
@@ -100,9 +98,7 @@ const TransactionsFilters = ({
           </div>
 
           {/* Clear Filters Button */}
-          {(filters.operationName ||
-            filters.transactionDate ||
-            filters.status) && (
+          {(filters.searchTerm || filters.day || filters.status) && (
             <div className="text-center">
               <button
                 onClick={clearFilters}
