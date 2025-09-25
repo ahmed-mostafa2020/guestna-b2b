@@ -420,7 +420,7 @@ const TransactionsPage = () => {
       {transactionsLoading ? (
         <FullScreenLoading status="pending" />
       ) : (
-        <div>
+        <div className="space-y-6">
           <TransactionsFilters
             filters={filters}
             handleFilterChange={handleFilterChange}

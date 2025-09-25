@@ -24,7 +24,7 @@ const TransactionsFilters = ({
       {/* First Row: Title and Action Buttons */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
         {/* Title */}
-        <h3 className="text-lg font-semibold text-gray-900 text-right">
+        <h3 className="lg:text-2xl text-xl font-medium text-titleColor text-right">
           {t("title")}
         </h3>
 
@@ -48,7 +48,7 @@ const TransactionsFilters = ({
             <select
               value={filters.searchTerm}
               onChange={(e) => handleFilterChange("searchTerm", e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent cursor-pointer"
               id="operation-name-filter"
               name="searchTerm"
             >
@@ -67,7 +67,7 @@ const TransactionsFilters = ({
             <select
               value={filters.displayDay || filters.day}
               onChange={(e) => handleFilterChange("day", e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent cursor-pointer"
               id="transaction-date-filter"
               name="day"
             >
@@ -86,7 +86,7 @@ const TransactionsFilters = ({
             <select
               value={filters.status}
               onChange={(e) => handleFilterChange("status", e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent cursor-pointer"
               id="status-filter"
               name="status"
             >
