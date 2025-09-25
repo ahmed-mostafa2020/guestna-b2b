@@ -53,21 +53,20 @@ const InteractiveCalendar = ({
   return (
     <div className="bg-white rounded-xl p-8 shadow-lg border-0">
       <div className="flex items-center justify-between mb-6">
+        <h3 className="text-lg font-semibold text-gray-900">
+          {t("profile.calendar.calendar.interactiveCalendar")}
+        </h3>
         <div className="flex gap-2">
+          <button className="border-2 border-orange-300 text-orange-600 px-6 py-3 rounded-xl hover:bg-orange-50 hover:border-orange-400 transition-all duration-200 font-medium">
+            رفع التقويم
+          </button>
           <button
             onClick={onAddEvent}
             className="border-2 border-green-300 text-green-600 px-6 py-3 rounded-xl hover:bg-green-50 hover:border-green-400 transition-all duration-200 font-medium"
           >
             {t("profile.calendar.calendar.addEvent")}
           </button>
-
-          <button className="border-2 border-orange-300 text-orange-600 px-6 py-3 rounded-xl hover:bg-orange-50 hover:border-orange-400 transition-all duration-200 font-medium">
-            رفع التقويم
-          </button>
         </div>
-        <h3 className="text-lg font-semibold text-gray-900">
-          {t("profile.calendar.calendar.interactiveCalendar")}
-        </h3>
       </div>
 
       {/* Calendar Navigation */}

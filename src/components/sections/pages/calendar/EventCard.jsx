@@ -2,52 +2,11 @@
 
 import { useTranslations, useLocale } from "next-intl";
 import formatDate from "@utils/FormateDate";
+import { getEventTypeLabel, getEventTypeColor } from "@utils/eventTypeUtils";
 
 const EventCard = ({ event, onView, onEdit }) => {
   const locale = useLocale();
   const t = useTranslations();
-
-  const getEventTypeLabel = (type) => {
-    switch (type) {
-      case "TRIP":
-        return t("profile.calendar.events.types.trip");
-      case "ACADEMIC":
-        return t("profile.calendar.events.types.academic");
-      case "ADMINISTRATIVE":
-        return t("profile.calendar.events.types.administrative");
-      case "ENTERTAINMENT":
-        return t("profile.calendar.events.types.entertainment");
-      case "METING":
-        return t("profile.calendar.events.types.meeting");
-      case "EXAM":
-        return t("profile.calendar.events.types.exam");
-      case "SOCIAL":
-        return t("profile.calendar.events.types.social");
-      default:
-        return t("profile.calendar.events.types.other");
-    }
-  };
-
-  const getEventTypeColor = (type) => {
-    switch (type) {
-      case "TRIP":
-        return "bg-green-500";
-      case "ACADEMIC":
-        return "bg-purple-500";
-      case "ADMINISTRATIVE":
-        return "bg-blue-500";
-      case "ENTERTAINMENT":
-        return "bg-orange-500";
-      case "METING":
-        return "bg-indigo-500";
-      case "EXAM":
-        return "bg-red-500";
-      case "SOCIAL":
-        return "bg-pink-500";
-      default:
-        return "bg-gray-500";
-    }
-  };
 
   return (
     <div className="border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-all duration-200 hover:border-green-200 bg-gradient-to-r from-gray-50 to-white">
@@ -66,11 +25,12 @@ const EventCard = ({ event, onView, onEdit }) => {
       </p>
       <div className="flex items-center justify-between mt-2">
         <div
-          className={`px-3 py-1 rounded-full text-xs font-medium text-white ${getEventTypeColor(
-            event.happeningType
+          className={`px-3 py-1 rounded-full text-xs font-medium ${getEventTypeColor(
+            event.happeningType,
+            "solid"
           )}`}
         >
-          {getEventTypeLabel(event.happeningType)}
+          {getEventTypeLabel(event.happeningType, t)}
         </div>
         <div className="flex space-x-2 gap-x-2">
           <button

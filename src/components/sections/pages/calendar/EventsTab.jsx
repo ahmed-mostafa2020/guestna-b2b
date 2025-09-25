@@ -1,52 +1,16 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import EventCard from "./EventCard";
 import LoadingState from "./LoadingState";
 import EmptyState from "./EmptyState";
 import formatDate from "@utils/FormateDate";
+import { getEventTypeLabel, getEventTypeColor } from "@utils/eventTypeUtils";
 
 const EventsTab = ({ events, isLoading, onView, onEdit }) => {
   const locale = useLocale();
-
-  const getEventTypeLabel = (type) => {
-    switch (type) {
-      case "TRIP":
-        return "رحلة";
-      case "ACADEMIC":
-        return "أكاديمي";
-      case "ADMINISTRATIVE":
-        return "إداري";
-      case "ENTERTAINMENT":
-        return "ترفيهي";
-      case "METING":
-        return "اجتماع";
-      case "EXAM":
-        return "امتحان";
-      default:
-        return "اجتماعي";
-    }
-  };
-
-  const getEventTypeColor = (type) => {
-    switch (type) {
-      case "TRIP":
-        return "bg-green-100 text-green-600";
-      case "ACADEMIC":
-        return "bg-purple-100 text-purple-600";
-      case "ADMINISTRATIVE":
-        return "bg-blue-100 text-blue-600";
-      case "ENTERTAINMENT":
-        return "bg-orange-100 text-orange-600";
-      case "METING":
-        return "bg-indigo-100 text-indigo-600";
-      case "EXAM":
-        return "bg-red-100 text-red-600";
-      default:
-        return "bg-gray-100 text-gray-600";
-    }
-  };
+  const t = useTranslations();
 
   return (
     <div className="bg-white rounded-xl shadow-lg border-0">
@@ -177,10 +141,11 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
                       </p>
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getEventTypeColor(
-                          event.happeningType
+                          event.happeningType,
+                          "light"
                         )}`}
                       >
-                        {getEventTypeLabel(event.happeningType)}
+                        {getEventTypeLabel(event.happeningType, t)}
                       </span>
                     </div>
                   </div>

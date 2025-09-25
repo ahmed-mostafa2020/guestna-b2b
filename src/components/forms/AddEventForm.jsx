@@ -14,6 +14,7 @@ import CustomizedModal from "@components/common/customizedModal";
 import ModalHeader from "@components/sections/pages/calendar/ModalHeader";
 import ModalFooter from "@components/sections/pages/calendar/ModalFooter";
 import formatDate from "@utils/FormateDate";
+import { getEventTypes, mapLabelToValue } from "@utils/eventTypeUtils";
 
 const AddEventForm = ({
   selectedDate,
@@ -39,37 +40,8 @@ const AddEventForm = ({
     participantsCount: eventToEdit?.participantsCount || 1,
   });
 
-  // Event types based on the calendar page
-  const eventTypes = [
-    { value: "TRIP", label: t("profile.calendar.events.types.trip") },
-    { value: "METING", label: t("profile.calendar.events.types.meeting") },
-    { value: "TRAINING", label: t("profile.calendar.events.types.training") },
-    {
-      value: "CONFERENCE",
-      label: t("profile.calendar.events.types.conference"),
-    },
-    { value: "ACADEMIC", label: t("profile.calendar.events.types.academic") },
-    { value: "LEAVE", label: t("profile.calendar.events.types.leave") },
-    { value: "EXAM", label: t("profile.calendar.events.types.exam") },
-    { value: "SOCIAL", label: t("profile.calendar.events.types.social") },
-    { value: "OTHER", label: t("profile.calendar.events.types.other") },
-  ];
-
-  // Map Arabic labels to English values
-  const mapArabicToEnglish = (arabicValue) => {
-    const mapping = {
-      [t("profile.calendar.events.types.trip")]: "TRIP",
-      [t("profile.calendar.events.types.meeting")]: "METING",
-      [t("profile.calendar.events.types.training")]: "TRAINING",
-      [t("profile.calendar.events.types.conference")]: "CONFERENCE",
-      [t("profile.calendar.events.types.academic")]: "ACADEMIC",
-      [t("profile.calendar.events.types.leave")]: "LEAVE",
-      [t("profile.calendar.events.types.exam")]: "EXAM",
-      [t("profile.calendar.events.types.social")]: "SOCIAL",
-      [t("profile.calendar.events.types.other")]: "OTHER",
-    };
-    return mapping[arabicValue] || arabicValue;
-  };
+  // Get event types from centralized utility
+  const eventTypes = getEventTypes(t);
 
   // Submit handler
   const handleSubmit = async (values, { setSubmitting, setStatus }) => {
@@ -88,7 +60,7 @@ const AddEventForm = ({
       // Prepare form data with mapped happening type
       const submissionData = {
         ...values,
-        happeningType: mapArabicToEnglish(values.happeningType),
+        happeningType: mapLabelToValue(values.happeningType, t),
         participantsCount: parseInt(values.participantsCount),
       };
 
@@ -244,13 +216,7 @@ const AddEventForm = ({
                       }
                       onChange={(e) => {
                         const selectedLabel = e.target.value;
-                        const selectedType = eventTypes.find(
-                          (type) => type.label === selectedLabel
-                        );
-                        setFieldValue(
-                          "happeningType",
-                          selectedType?.value || selectedLabel
-                        );
+                        setFieldValue("happeningType", selectedLabel);
                       }}
                       placeholder={t(
                         "profile.calendar.modal.addEvent.fields.selectEventType"

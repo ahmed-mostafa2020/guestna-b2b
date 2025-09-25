@@ -1,10 +1,10 @@
 "use client";
-
 import { useTranslations, useLocale } from "next-intl";
 import CustomizedModal from "@components/common/customizedModal";
 import ModalHeader from "@components/sections/pages/calendar/ModalHeader";
 import ModalFooter from "@components/sections/pages/calendar/ModalFooter";
 import formatDate from "@utils/FormateDate";
+import { getEventTypeLabel, getEventTypeColor } from "@utils/eventTypeUtils";
 
 const EventDetailsModal = ({ event, onClose }) => {
   const t = useTranslations();
@@ -12,51 +12,11 @@ const EventDetailsModal = ({ event, onClose }) => {
 
   if (!event) return null;
 
-  // Event types mapping
-  const getEventTypeLabel = (type) => {
-    switch (type) {
-      case "TRIP":
-        return t("profile.calendar.events.types.trip");
-      case "ACADEMIC":
-        return t("profile.calendar.events.types.academic");
-      case "ADMINISTRATIVE":
-        return t("profile.calendar.events.types.administrative");
-      case "ENTERTAINMENT":
-        return t("profile.calendar.events.types.entertainment");
-      case "METING":
-        return t("profile.calendar.events.types.meeting");
-      case "EXAM":
-        return t("profile.calendar.events.types.exam");
-      default:
-        return t("profile.calendar.events.types.social");
-    }
-  };
-
-  const getEventTypeColor = (type) => {
-    switch (type) {
-      case "TRIP":
-        return "bg-green-100 text-green-600";
-      case "ACADEMIC":
-        return "bg-purple-100 text-purple-600";
-      case "ADMINISTRATIVE":
-        return "bg-blue-100 text-blue-600";
-      case "ENTERTAINMENT":
-        return "bg-orange-100 text-orange-600";
-      case "METING":
-        return "bg-indigo-100 text-indigo-600";
-      case "EXAM":
-        return "bg-red-100 text-red-600";
-      default:
-        return "bg-gray-100 text-gray-600";
-    }
-  };
-
   return (
     <CustomizedModal
       open={true}
       handleClose={onClose}
       bgcolor="rgba(0, 0, 0, 0.5)"
-      customizedCloseButton={true}
       closeButton={false}
       padding={false}
     >
@@ -86,10 +46,11 @@ const EventDetailsModal = ({ event, onClose }) => {
               </span>
               <span
                 className={`px-3 py-1 rounded-full text-xs font-medium ${getEventTypeColor(
-                  event.happeningType
+                  event.happeningType,
+                  "light"
                 )}`}
               >
-                {getEventTypeLabel(event.happeningType)}
+                {getEventTypeLabel(event.happeningType, t)}
               </span>
             </div>
 
