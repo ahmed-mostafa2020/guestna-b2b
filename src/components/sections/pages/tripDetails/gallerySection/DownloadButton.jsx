@@ -25,6 +25,8 @@ const DownloadButton = () => {
       return;
     }
 
+    console.log("File URL:", fileUrl); // Debug log
+
     // For iOS devices, open the file in a new tab instead of downloading
     if (isIOS()) {
       try {
@@ -38,87 +40,80 @@ const DownloadButton = () => {
     setIsDownloading(true);
 
     try {
-      // Get auth token and device ID (adjust based on how you store them)
-      const token = localStorage.getItem("authToken"); // or however you store it
-      const deviceId = localStorage.getItem("deviceId"); // or however you store it
-
-      // Extract the path from the fileUrl
-      // Assuming fileUrl is like: "https://backend.com/api/files/download/123"
-      // We want to extract the path part after the base URL
-      const url = new URL(fileUrl);
-      const pathToDownload = url.pathname + url.search; // includes query params if any
-
-      // Create proxy URL with the path as a query parameter
-      const proxyUrl = `/api/proxy?path=${encodeURIComponent(pathToDownload)}`;
-
-      // Set up headers for the proxy request
-      const headers = {
-        "Content-Type": "application/json",
-      };
-      headers["reqKey"] = process.env.NEXT_PUBLIC_REQ_KEY;
-
-      if (token) {
-        headers["authorization"] = token; // or `Bearer ${token}` if needed
-      }
-
-      if (deviceId) {
-        headers["devicespecificid"] = deviceId;
-      }
-
-      // Make request through your proxy
-      const response = await fetch(proxyUrl, {
-        method: "POST", // Your proxy expects POST
-        headers: headers,
-        body: JSON.stringify({}), // Empty body since it's a download request
+      // Force download using fetch + blob approach for better control
+      console.log("Starting file download...");
+      
+      const response = await fetch(fileUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/pdf,application/octet-stream,*/*',
+        },
       });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
+      // Get the file as a blob
       const blob = await response.blob();
-      const url_blob = window.URL.createObjectURL(blob);
+      console.log("File blob created, size:", blob.size);
 
-      const link = document.createElement("a");
-      link.href = url_blob;
+      // Create a blob URL
+      const blobUrl = window.URL.createObjectURL(blob);
 
-      // Extract filename from Content-Disposition header or original URL
-      const contentDisposition = response.headers.get("content-disposition");
-      let fileName = "download";
-
-      if (contentDisposition) {
-        const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
-        if (fileNameMatch) {
-          fileName = fileNameMatch[1];
-        }
-      } else {
-        fileName = fileUrl.split("/").pop() || "download";
-        // Remove anything after .pdf (including _updateAt or +...)
-        const pdfIndex = fileName.toLowerCase().indexOf(".pdf");
-        if (pdfIndex !== -1) {
-          fileName = fileName.substring(0, pdfIndex + 4); // keep up to and including ".pdf"
-        }
-        // If fileName does not have .pdf, add it
-        if (!fileName.toLowerCase().endsWith(".pdf")) {
-          fileName += ".pdf";
-        }
+      // Extract filename from URL
+      let fileName = fileUrl.split("/").pop() || "trip-details";
+      
+      // Clean up filename
+      const pdfIndex = fileName.toLowerCase().indexOf(".pdf");
+      if (pdfIndex !== -1) {
+        fileName = fileName.substring(0, pdfIndex + 4);
+      }
+      if (!fileName.toLowerCase().endsWith(".pdf")) {
+        fileName += ".pdf";
       }
 
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      console.log("Downloading file as:", fileName);
 
-      // Clean up the object URL
-      window.URL.revokeObjectURL(url_blob);
+      // Create download link and force download
+      const downloadLink = document.createElement("a");
+      downloadLink.href = blobUrl;
+      downloadLink.download = fileName; // This forces download instead of opening
+      downloadLink.style.display = "none";
+      
+      // Add to DOM, click, and remove
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+
+      // Clean up the blob URL after a short delay
+      setTimeout(() => {
+        window.URL.revokeObjectURL(blobUrl);
+        console.log("Blob URL cleaned up");
+      }, 1000);
+
+      console.log("Download initiated successfully");
+
     } catch (error) {
       console.error("Download failed:", error);
-
-      // Fallback: try direct download
+      
+      // Fallback: Try direct link approach
       try {
-        window.open(fileUrl, "_blank");
+        console.log("Trying fallback download method...");
+        const fallbackLink = document.createElement("a");
+        fallbackLink.href = fileUrl;
+        fallbackLink.download = fileUrl.split("/").pop() || "trip-details.pdf";
+        fallbackLink.target = "_blank";
+        fallbackLink.style.display = "none";
+        document.body.appendChild(fallbackLink);
+        fallbackLink.click();
+        document.body.removeChild(fallbackLink);
+        console.log("Fallback download attempted");
       } catch (fallbackError) {
-        console.error("Fallback download also failed:", fallbackError);
+        console.error("Fallback download failed:", fallbackError);
+        // Last resort: open in new tab
+        console.log("Opening file in new tab as last resort");
+        window.open(fileUrl, "_blank");
       }
     } finally {
       setIsDownloading(false);

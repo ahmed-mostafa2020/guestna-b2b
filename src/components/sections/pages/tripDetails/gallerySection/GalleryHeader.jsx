@@ -2,19 +2,13 @@
 
 import { useTranslations } from "next-intl";
 
-import { useSelector } from "react-redux";
-
 import { memo } from "react";
-
-import { USERS } from "@constants/users";
 
 import DownloadButton from "./DownloadButton";
 
 import IosShareIcon from "@mui/icons-material/IosShare";
 
 const GalleryHeader = ({ tripData }) => {
-  const userType = useSelector((state) => state.users.userType);
-
   const t = useTranslations();
 
   // const numCities = tripData?.cities?.length;
@@ -65,18 +59,16 @@ const GalleryHeader = ({ tripData }) => {
         {tripData?.name}
       </h1>
 
-      {userType === USERS.B2B_PARENT && (
-        <div className="flex flex-wrap items-center justify-end">
-          <div className="flex items-center gap-3">
-            <button onClick={handleShare} className="flex items-center gap-1">
-              <IosShareIcon fontSize="small" />
-              {t("links.share")}
-            </button>
+      <div className="flex flex-wrap items-center justify-end">
+        <div className="flex items-center gap-3">
+          <button onClick={handleShare} className="flex items-center gap-1">
+            <IosShareIcon fontSize="small" />
+            {t("links.share")}
+          </button>
 
-            <DownloadButton />
-          </div>
+          <DownloadButton />
         </div>
-      )}
+      </div>
     </>
   );
 };
