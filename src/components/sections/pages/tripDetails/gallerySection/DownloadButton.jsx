@@ -8,6 +8,7 @@ import { useState } from "react";
 
 import SystemUpdateAltIcon from "@mui/icons-material/SystemUpdateAlt";
 import { CircularProgress } from "@mui/material";
+import { isIOS } from "@utils/deviceDetection";
 
 const DownloadButton = () => {
   const [isDownloading, setIsDownloading] = useState(false);
@@ -21,6 +22,16 @@ const DownloadButton = () => {
   const handleDownloadWithFetch = async () => {
     if (!fileUrl || isDownloading) {
       console.error("No file URL available or download in progress");
+      return;
+    }
+
+    // For iOS devices, open the file in a new tab instead of downloading
+    if (isIOS()) {
+      try {
+        window.open(fileUrl, "_blank");
+      } catch (error) {
+        console.error("Failed to open file on iOS:", error);
+      }
       return;
     }
 
@@ -131,7 +142,7 @@ const DownloadButton = () => {
         ) : (
           <>
             <SystemUpdateAltIcon />
-            {t("links.downloadFile")}
+            {isIOS() ? t("links.viewFile") : t("links.downloadFile")}
           </>
         )}
       </button>
