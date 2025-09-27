@@ -67,7 +67,7 @@ export const B2B_END_POINTS = {
       CREATE: "profile/happenings/new",
       COUNTS: "profile/happenings/counts",
       ALL: "profile/happenings/all",
-      UPDATE: "profile/happenings/update",
+      UPDATE: "profile/happenings/edit",
     },
 
     BOOKINGS_MANAGEMENT: {

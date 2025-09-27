@@ -55,7 +55,7 @@ const AddEventForm = ({
           )
         : getProxyUrl(B2B_END_POINTS.PROFILE.HAPPENINGS.CREATE);
 
-      const method = eventToEdit ? "PUT" : "POST";
+      const method = eventToEdit ? "PATCH" : "POST";
 
       // Prepare form data with mapped happening type
       const submissionData = {
@@ -293,6 +293,13 @@ const AddEventForm = ({
                       touched={touched.time}
                     />
                   </div>
+
+                  {/* Edit mode helper text */}
+                  {eventToEdit && !dirty && (
+                    <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg text-sm">
+                      {t("profile.calendar.modal.addEvent.errors.noChangesMessage")}
+                    </div>
+                  )}
                 </div>
 
                 <ModalFooter
@@ -307,7 +314,11 @@ const AddEventForm = ({
                       : t("profile.calendar.modal.addEvent.actions.save")
                   }
                   isLoading={isSubmitting}
-                  confirmDisabled={!isValid || isSubmitting}
+                  confirmDisabled={
+                    !isValid || 
+                    isSubmitting || 
+                    (eventToEdit && !dirty) // For PATCH: disable if no changes made
+                  }
                   isForm={true}
                 />
               </Form>
