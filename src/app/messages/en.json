@@ -374,7 +374,8 @@
       },
       "callUs": {
         "title": "Call Us",
-        "subTitle": "We will be happy to assist you with your booking. Call now: +966 54 753 4666"
+        "subTitle": "We will be happy to assist you with your booking. Call now: ",
+        "phone": "+966 54 753 4666"
       }
     },
     "activityLocation": "Activity location"

@@ -36,6 +36,7 @@ const BookWithConfidenceSection = () => {
       icon: phoneIcon,
       title: t("bookWithConfidence.items.callUs.title"),
       subTitle: t("bookWithConfidence.items.callUs.subTitle"),
+      phone: t("bookWithConfidence.items.callUs.phone"),
     },
   ];
 
@@ -45,12 +46,13 @@ const BookWithConfidenceSection = () => {
 
       <div className="flex flex-col gap-[6px]">
         <h3 className="text-lg font-medium lg:text-xl">{item.title}</h3>
+
         <h4
           className={`text-[#545454] font-light ${
             index == itemsList.length - 1 && "lg:w-[80%]"
           }`}
         >
-          {item.subTitle}
+          {item.subTitle} {item.phone && <span dir="ltr">{item.phone}</span>}
         </h4>
       </div>
     </div>
