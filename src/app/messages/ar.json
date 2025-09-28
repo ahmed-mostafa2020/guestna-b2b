@@ -1025,6 +1025,11 @@
           "participants": "عدد المشاركين",
           "time": "الوقت"
         },
+        "card": {
+          "location": "الموقع",
+          "participants": "المشاركون",
+          "time": "الوقت"
+        },
         "list": {
           "title": "جميع الأحداث"
         },

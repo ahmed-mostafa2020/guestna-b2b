@@ -1043,6 +1043,11 @@
           "participants": "Participants",
           "time": "Time"
         },
+        "card": {
+          "location": "Location",
+          "participants": "Participants",
+          "time": "Time"
+        },
         "list": {
           "title": "All Events"
         },

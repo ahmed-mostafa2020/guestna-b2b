@@ -15,6 +15,9 @@ import {
 
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import formatDate from "@utils/FormateDate";
+import { getEventTypeColor } from "@utils/eventTypeUtils";
+import { getEventTypeLabel } from "@utils/eventTypeUtils";
+import { CircularProgress } from "@mui/material";
 
 const CalendarPage = () => {
   const locale = useLocale();
@@ -92,7 +95,12 @@ const CalendarPage = () => {
   };
 
   // Fetch all events for events tab (conditional filter object)
-  const { data: allEvents, refetch: refetchAllEvents } = useFetchData(
+  const { 
+    data: allEvents, 
+    refetch: refetchAllEvents,
+    isLoading: allEventsLoading,
+    isFetching: allEventsFetching
+  } = useFetchData(
     B2B_END_POINTS.PROFILE.HAPPENINGS.ALL,
     {},
     {
@@ -268,10 +276,10 @@ const CalendarPage = () => {
               <div className="p-6 border-b border-gray-100">
                 {/* Title and Print Button Row */}
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-                  <h2 className="text-xl font-semibold text-green-600">
+                  <h2 className="text-xl font-semibold text-mainColor">
                     {t("profile.calendar.events.search.title")}
                   </h2>
-                  <button className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-semibold">
+                  <button className="bg-gradient-to-r from-mainColor to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-mainColorHover hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-semibold">
                     {t("profile.calendar.events.search.printReport")}
                   </button>
                 </div>
@@ -363,13 +371,13 @@ const CalendarPage = () => {
 
               {/* Events List Section */}
               <div className="p-6">
-                <h3 className="text-xl font-semibold text-green-600 mb-6">
+                <h3 className="text-xl font-semibold text-mainColor pb-6">
                   {t("profile.calendar.events.list.title")}
                 </h3>
-                {allEvents?.isLoading ? (
+                {allEventsLoading || allEventsFetching ? (
                   <div className="text-center py-16">
-                    <div className="animate-spin w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-                    <p className="text-gray-500">
+                    <CircularProgress size={32} color="primary" />
+                    <p className="text-gray-500 mt-4">
                       {t("profile.calendar.events.loadingEvents")}
                     </p>
                   </div>
@@ -389,10 +397,10 @@ const CalendarPage = () => {
                               })}
                             </div>
                             <div className="flex-1">
-                              <h4 className="font-semibold text-gray-900 mb-1">
-                                {event.about}
+                              <h4 className="font-semibold text-gray-900 pb-1">
+                                {event.name}
                               </h4>
-                              <p className="text-sm text-gray-600 mb-2">
+                              <p className="text-sm text-gray-600 pb-2">
                                 {t("profile.calendar.events.filters.location")}:{" "}
                                 {event.place} |{" "}
                                 {t(

@@ -20,7 +20,7 @@ const EventCard = ({ event, onView, onEdit }) => {
         </span>
       </div>
       <p className="text-gray-600 text-sm mb-6">
-        الموقع: {event.place} | المشاركون: {event.participantsCount} | الوقت:{" "}
+        {t("profile.calendar.events.card.location")}: {event.place} | {t("profile.calendar.events.card.participants")}: {event.participantsCount} | {t("profile.calendar.events.card.time")}:{" "}
         {event.time}
       </p>
       <div className="flex items-center justify-between mt-2">
