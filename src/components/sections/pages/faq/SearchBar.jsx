@@ -13,7 +13,7 @@ import {
 import { END_POINTS } from "@constants/APIs";
 import { getHeaders } from "@utils/getHeaders";
 import { createSearchBarSchema } from "@utils/validationSchemas";
-import getErrorMessage from "@utils/getErrorMessage ";
+import getErrorMessage from "@utils/getErrorMessage";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import TextInputGroup from "@components/forms/TextInputGroup";
 

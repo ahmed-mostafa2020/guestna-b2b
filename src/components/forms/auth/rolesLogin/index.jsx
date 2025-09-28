@@ -25,7 +25,7 @@ import {
 import { useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import getErrorMessage from "@utils/getErrorMessage ";
+import getErrorMessage from "@utils/getErrorMessage";
 import { createLoginEmailMethodSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import setToken from "@utils/setToken";

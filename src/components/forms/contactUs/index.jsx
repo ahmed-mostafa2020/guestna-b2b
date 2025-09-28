@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { createContactUsSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage ";
+import getErrorMessage from "@utils/getErrorMessage";
 import { END_POINTS } from "@constants/APIs";
 import TextInputGroup from "../TextInputGroup";
 

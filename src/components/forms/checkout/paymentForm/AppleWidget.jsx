@@ -2,11 +2,10 @@
 
 import { useLocale } from "next-intl";
 import { useSelector } from "react-redux";
-import { memo, useEffect, useState, useRef } from "react";
+import { memo, useEffect, useState } from "react";
 import { END_POINTS } from "@constants/APIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import axios from "axios";
-import { useMutationData } from "@/src/hooks/useMutationData";
+import { useMutationData } from "@hooks/useMutationData";
 
 const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const [currentBookingId, setCurrentBookingId] = useState(null);

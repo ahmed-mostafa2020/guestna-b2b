@@ -1,6 +1,7 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import formatDate from "@utils/FormateDate";
 
 const InteractiveCalendar = ({
   currentMonth,
@@ -9,6 +10,7 @@ const InteractiveCalendar = ({
   onMonthChange,
   onAddEvent,
 }) => {
+  const locale = useLocale();
   const t = useTranslations();
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
@@ -33,13 +35,6 @@ const InteractiveCalendar = ({
     return days;
   };
 
-  const formatDate = (date) => {
-    return date.toLocaleDateString("ar-SA", {
-      year: "numeric",
-      month: "long",
-    });
-  };
-
   const isSameDay = (date1, date2) => {
     return date1.toDateString() === date2.toDateString();
   };
@@ -58,9 +53,12 @@ const InteractiveCalendar = ({
   return (
     <div className="bg-white rounded-xl p-8 shadow-lg border-0">
       <div className="flex items-center justify-between mb-6">
+        <h3 className="text-lg font-semibold text-gray-900">
+          {t("profile.calendar.calendar.interactiveCalendar")}
+        </h3>
         <div className="flex gap-2">
           <button className="border-2 border-orange-300 text-orange-600 px-6 py-3 rounded-xl hover:bg-orange-50 hover:border-orange-400 transition-all duration-200 font-medium">
-            رفع التقويم
+            {t("profile.calendar.calendar.uploadCalendar")}
           </button>
           <button
             onClick={onAddEvent}
@@ -69,9 +67,6 @@ const InteractiveCalendar = ({
             {t("profile.calendar.calendar.addEvent")}
           </button>
         </div>
-        <h3 className="text-lg font-semibold text-gray-900">
-          {t("profile.calendar.calendar.interactiveCalendar")}
-        </h3>
       </div>
 
       {/* Calendar Navigation */}
@@ -83,7 +78,10 @@ const InteractiveCalendar = ({
           &lt;
         </button>
         <h4 className="text-xl font-semibold text-gray-900">
-          {formatDate(currentMonth)}
+          {formatDate(currentMonth, locale, {
+            year: "numeric",
+            month: "long",
+          })}
         </h4>
         <button
           onClick={() => onMonthChange("next")}

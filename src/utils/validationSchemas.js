@@ -605,3 +605,130 @@ export const createAddOrganizationUserSchema = (t) =>
 
     userType: Yup.string().required(t("forms.validation.require")),
   });
+
+export const createWithdrawValidationSchema = (t, isBankTransfer) => {
+  // Create a translation function that works with the form's context
+  const getValidationMessage = (key) => {
+    if (isBankTransfer) {
+      return t(`bankTransfer.validation.${key}`);
+    } else {
+      return t(`stcPay.validation.${key}`);
+    }
+  };
+
+  return Yup.object().shape({
+    selectedTripId: Yup.string().required(getValidationMessage("tripRequired")),
+
+    phoneNumber: isBankTransfer
+      ? createPhoneValidation(t, true)
+      : Yup.string()
+          .required(getValidationMessage("phoneRequired"))
+          .matches(/^05[0-9]{8}$/, getValidationMessage("phoneInvalid")),
+
+    bankName: isBankTransfer
+      ? Yup.string()
+          .required(getValidationMessage("bankNameRequired"))
+          .min(3, getValidationMessage("bankNameMinLength"))
+          .max(50, getValidationMessage("bankNameMaxLength"))
+      : Yup.string().notRequired(),
+
+    clientName: isBankTransfer
+      ? Yup.string()
+          .trim()
+          .required(getValidationMessage("clientNameRequired"))
+          .matches(/^[\p{L}\s]+$/u, getValidationMessage("nameInvalid"))
+          .test(
+            "min-word-length",
+            getValidationMessage("nameMinLength"),
+            function (value) {
+              if (!value) return true;
+
+              const words = value.trim().split(/\s+/);
+
+              // Must have at least 2 words
+              if (words.length < 2) return false;
+
+              // Each word must be at least 3 characters
+              return words.every((word) => word.length >= 3);
+            }
+          )
+      : Yup.string()
+          .trim()
+          .optional()
+          .matches(/^[\p{L}\s]+$/u, getValidationMessage("nameInvalid"))
+          .test(
+            "min-word-length",
+            getValidationMessage("nameMinLength"),
+            function (value) {
+              if (!value) return true;
+
+              const words = value.trim().split(/\s+/);
+
+              // Must have at least 2 words
+              if (words.length < 2) return false;
+
+              // Each word must be at least 3 characters
+              return words.every((word) => word.length >= 3);
+            }
+          ),
+
+    ibanNumber: isBankTransfer
+      ? Yup.string()
+          .required(getValidationMessage("ibanRequired"))
+          .min(15, getValidationMessage("ibanMinLength"))
+          .max(34, getValidationMessage("ibanMaxLength"))
+          .test(
+            "iban-format",
+            getValidationMessage("ibanInvalid"),
+            function (value) {
+              if (!value) return false;
+              // Remove spaces and convert to uppercase
+              const cleanIban = value.replace(/\s/g, "").toUpperCase();
+              // IBAN validation - 2 letters, 2 digits, then 11-30 alphanumeric characters
+              return /^[A-Z]{2}\d{2}[A-Z0-9]{11,30}$/.test(cleanIban);
+            }
+          )
+      : Yup.string().notRequired(),
+
+    withdrawNotes: Yup.string(),
+  });
+};
+
+// Calendar Event Form
+export const createAddEventSchema = (t) =>
+  Yup.object().shape({
+    name: Yup.string()
+      .trim()
+      .required(t("forms.validation.require"))
+      .min(2, t("profile.calendar.modal.addEvent.validation.name.min"))
+      .max(100, t("profile.calendar.modal.addEvent.validation.name.max")),
+
+    about: Yup.string()
+      .trim()
+      .required(t("forms.validation.require"))
+      .min(5, t("profile.calendar.modal.addEvent.validation.about.min"))
+      .max(500, t("profile.calendar.modal.addEvent.validation.about.max")),
+
+    happeningType: Yup.string()
+      .required(t("forms.validation.require")),
+
+    place: Yup.string()
+      .trim()
+      .required(t("forms.validation.require"))
+      .min(2, t("profile.calendar.modal.addEvent.validation.place.min"))
+      .max(100, t("profile.calendar.modal.addEvent.validation.place.max")),
+
+    day: Yup.date()
+      .required(t("forms.validation.require"))
+      .min(new Date().toISOString().split('T')[0], t("profile.calendar.modal.addEvent.validation.day.pastDate")),
+
+    time: Yup.string()
+      .required(t("forms.validation.require"))
+      .matches(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, t("profile.calendar.modal.addEvent.validation.time.format")),
+
+    participantsCount: Yup.number()
+      .required(t("forms.validation.require"))
+      .min(1, t("profile.calendar.modal.addEvent.validation.participants.min"))
+      .max(1000, t("profile.calendar.modal.addEvent.validation.participants.max"))
+      .integer(t("profile.calendar.modal.addEvent.validation.participants.integer")),
+  });

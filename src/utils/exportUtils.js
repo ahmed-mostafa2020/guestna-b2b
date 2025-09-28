@@ -15,53 +15,29 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
     // Create a new workbook
     const workbook = XLSX.utils.book_new();
 
-    // Define text based on locale
-    const isArabic = locale === "ar";
-    const labels = isArabic
-      ? {
-          tripInfo: "معلومات الرحلة",
-          description: "الوصف",
-          location: "الموقع",
-          time: "الوقت",
-          startDate: "تاريخ البداية",
-          endDate: "تاريخ النهاية",
-          status: "الحالة",
-          fees: "الرسوم",
-          schoolInfo: "معلومات المدرسة",
-          schoolName: "اسم المدرسة",
-          contactPerson: "الشخص المسؤول",
-          phone: "رقم الهاتف",
-          bookingDate: "تاريخ الحجز",
-          students: "قائمة الطلاب",
-          studentName: "اسم الطالب",
-          parentName: "اسم ولي الأمر",
-          grade: "الصف",
-          parentPhone: "هاتف ولي الأمر",
-          nationalId: "الهوية الوطنية",
-          filename: "تقرير_الحجز",
-        }
-      : {
-          tripInfo: "Trip Information",
-          description: "Description",
-          location: "Location",
-          time: "Time",
-          startDate: "Start Date",
-          endDate: "End Date",
-          status: "Status",
-          fees: "Fees",
-          schoolInfo: "School Information",
-          schoolName: "School Name",
-          contactPerson: "Contact Person",
-          phone: "Phone Number",
-          bookingDate: "Booking Date",
-          students: "Students List",
-          studentName: "Student Name",
-          parentName: "Parent Name",
-          grade: "Grade",
-          parentPhone: "Parent Phone",
-          nationalId: "National ID",
-          filename: "Booking_Report",
-        };
+    // Define text using translation function
+    const labels = {
+      tripInfo: t("exportUtils.bookingReport.tripInfo"),
+      description: t("exportUtils.bookingReport.description"),
+      location: t("exportUtils.bookingReport.location"),
+      time: t("exportUtils.bookingReport.time"),
+      startDate: t("exportUtils.bookingReport.startDate"),
+      endDate: t("exportUtils.bookingReport.endDate"),
+      status: t("exportUtils.bookingReport.status"),
+      fees: t("exportUtils.bookingReport.fees"),
+      schoolInfo: t("exportUtils.bookingReport.schoolInfo"),
+      schoolName: t("exportUtils.bookingReport.schoolName"),
+      contactPerson: t("exportUtils.bookingReport.contactPerson"),
+      phone: t("exportUtils.bookingReport.phone"),
+      bookingDate: t("exportUtils.bookingReport.bookingDate"),
+      students: t("exportUtils.bookingReport.students"),
+      studentName: t("exportUtils.bookingReport.studentName"),
+      parentName: t("exportUtils.bookingReport.parentName"),
+      grade: t("exportUtils.bookingReport.grade"),
+      parentPhone: t("exportUtils.bookingReport.parentPhone"),
+      nationalId: t("exportUtils.bookingReport.nationalId"),
+      filename: t("exportUtils.bookingReport.filename"),
+    };
 
     // Trip Information Sheet
     const tripData = [
@@ -250,9 +226,8 @@ export const exportModalToPDF = async (modalElement, booking, locale) => {
     // Add image to PDF
     pdf.addImage(imgData, "PNG", x, y, scaledWidth, scaledHeight);
 
-    // Generate filename
-    const isArabic = locale === "ar";
-    const filenamePrefix = isArabic ? "تقرير_الحجز" : "Booking_Report";
+    // Generate filename using translation
+    const filenamePrefix = t("exportUtils.bookingReport.filename");
     const filename = `${filenamePrefix}_${booking.name || "booking"}_${
       new Date().toISOString().split("T")[0]
     }.pdf`;
@@ -286,61 +261,37 @@ export const exportToPDF = async (booking, bookingDetails, t, locale) => {
     const margin = 20;
     const isArabic = locale === "ar";
 
-    // Define text based on locale
-    const labels = isArabic
-      ? {
-          title: "تقرير الحجز",
-          tripInfo: "معلومات الرحلة",
-          description: "الوصف",
-          location: "الموقع",
-          time: "الوقت",
-          startDate: "تاريخ البداية",
-          endDate: "تاريخ النهاية",
-          status: "الحالة",
-          fees: "الرسوم",
-          schoolInfo: "معلومات المدرسة",
-          schoolName: "اسم المدرسة",
-          contactPerson: "الشخص المسؤول",
-          phone: "رقم الهاتف",
-          bookingDate: "تاريخ الحجز",
-          students: "قائمة الطلاب",
-          studentName: "اسم الطالب",
-          parentName: "اسم ولي الأمر",
-          grade: "الصف",
-          parentPhone: "هاتف ولي الأمر",
-          nationalId: "الهوية الوطنية",
-          filename: "تقرير_الحجز",
-        }
-      : {
-          title: "Booking Report",
-          tripInfo: "Trip Information",
-          description: "Description",
-          location: "Location",
-          time: "Time",
-          startDate: "Start Date",
-          endDate: "End Date",
-          status: "Status",
-          fees: "Fees",
-          schoolInfo: "School Information",
-          schoolName: "School Name",
-          contactPerson: "Contact Person",
-          phone: "Phone Number",
-          bookingDate: "Booking Date",
-          students: "Students List",
-          studentName: "Student Name",
-          parentName: "Parent Name",
-          grade: "Grade",
-          parentPhone: "Parent Phone",
-          nationalId: "National ID",
-          filename: "Booking_Report",
-        };
+    // Define text using translation function
+    const labels = {
+      title: t("exportUtils.bookingReport.title"),
+      tripInfo: t("exportUtils.bookingReport.tripInfo"),
+      description: t("exportUtils.bookingReport.description"),
+      location: t("exportUtils.bookingReport.location"),
+      time: t("exportUtils.bookingReport.time"),
+      startDate: t("exportUtils.bookingReport.startDate"),
+      endDate: t("exportUtils.bookingReport.endDate"),
+      status: t("exportUtils.bookingReport.status"),
+      fees: t("exportUtils.bookingReport.fees"),
+      schoolInfo: t("exportUtils.bookingReport.schoolInfo"),
+      schoolName: t("exportUtils.bookingReport.schoolName"),
+      contactPerson: t("exportUtils.bookingReport.contactPerson"),
+      phone: t("exportUtils.bookingReport.phone"),
+      bookingDate: t("exportUtils.bookingReport.bookingDate"),
+      students: t("exportUtils.bookingReport.students"),
+      studentName: t("exportUtils.bookingReport.studentName"),
+      parentName: t("exportUtils.bookingReport.parentName"),
+      grade: t("exportUtils.bookingReport.grade"),
+      parentPhone: t("exportUtils.bookingReport.parentPhone"),
+      nationalId: t("exportUtils.bookingReport.nationalId"),
+      filename: t("exportUtils.bookingReport.filename"),
+    };
 
     // Helper function to format currency properly
     const formatPrice = (price) => {
       if (!price) return "";
       if (typeof price === "object") {
         return price.amount
-          ? `${price.amount} ${price.currency || "ريال"}`
+          ? `${price.amount} ${price.currency || t("exportUtils.bookingReport.currency")}`
           : "";
       }
       return formatCurrency(price);

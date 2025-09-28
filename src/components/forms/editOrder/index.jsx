@@ -7,7 +7,7 @@ import { CircularProgress } from "@mui/material";
 
 import { createUpdateTripSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage ";
+import getErrorMessage from "@utils/getErrorMessage";
 import getProxyUrl from "@utils/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import TextInputGroup from "../TextInputGroup";
@@ -122,15 +122,17 @@ const EditOrderForm = ({
           enqueueSnackbar(t("forms.customTrip.success"), {
             variant: "success",
           });
-          
+
           // Call the update callback to refresh the table data
-          if (onOrderUpdate && typeof onOrderUpdate === 'function') {
-            console.log('Calling onOrderUpdate callback from EditOrderForm');
+          if (onOrderUpdate && typeof onOrderUpdate === "function") {
+            console.log("Calling onOrderUpdate callback from EditOrderForm");
             onOrderUpdate(res);
           } else {
-            console.log('onOrderUpdate callback not available or not a function');
+            console.log(
+              "onOrderUpdate callback not available or not a function"
+            );
           }
-          
+
           onClose(); // Close the modal after successful update
         }
       })

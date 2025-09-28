@@ -1,4 +1,4 @@
-// EndPoint paths b2b
+// EndPoint paths
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const B2B_END_POINTS = {
@@ -64,8 +64,10 @@ export const B2B_END_POINTS = {
 
     HAPPENINGS: {
       NEW: "profile/happenings/new",
+      CREATE: "profile/happenings/new",
       COUNTS: "profile/happenings/counts",
       ALL: "profile/happenings/all",
+      UPDATE: "profile/happenings/edit",
     },
 
     BOOKINGS_MANAGEMENT: {
@@ -104,7 +106,12 @@ export const B2B_END_POINTS = {
     BOOKINGS: "profile/bookings/all",
 
     // check this end point
-    INVOICES: "profile/organizationTrips/invoices/all",
+    // INVOICES: "profile/organizationTrips/invoices/all",
+    INVOICES: "profile/askWithdrawals/invoices/all",
+    BALANCE: "profile/organizations/invoices",
+
+    ORGANIZATIONS_INVOICES: "profile/organizations/invoices",
+    TRIPS: "profile/organizationTrips/invoices/trips/all",
     WITHDRAWALS: "profile/askWithdrawals/new",
 
     UPLOAD_PHOTO: "users/avatar", //MAIN

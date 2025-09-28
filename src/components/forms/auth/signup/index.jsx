@@ -25,7 +25,7 @@ import { END_POINTS } from "@constants/APIs";
 import { createSignUpSchema } from "@utils/validationSchemas";
 import { cn } from "@utils/cn";
 import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage ";
+import getErrorMessage from "@utils/getErrorMessage";
 import TextInputGroup from "../../TextInputGroup";
 
 import { Field, Formik } from "formik";

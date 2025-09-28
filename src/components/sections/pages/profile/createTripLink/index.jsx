@@ -8,7 +8,7 @@ import { TRIP_STATUS } from "@constants/tripStatus";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
-import getErrorMessage from "@utils/getErrorMessage ";
+import getErrorMessage from "@utils/getErrorMessage";
 import CustomizedModal from "@components/common/customizedModal";
 import { useSnackbar } from "notistack";
 

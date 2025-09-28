@@ -25,28 +25,16 @@ const DownloadButton = () => {
       return;
     }
 
-    console.log("File URL:", fileUrl); // Debug log
-
-    // For iOS devices, open the file in a new tab instead of downloading
-    if (isIOS()) {
-      try {
-        window.open(fileUrl, "_blank");
-      } catch (error) {
-        console.error("Failed to open file on iOS:", error);
-      }
-      return;
-    }
-
     setIsDownloading(true);
 
     try {
       // Force download using fetch + blob approach for better control
       console.log("Starting file download...");
-      
+
       const response = await fetch(fileUrl, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Accept': 'application/pdf,application/octet-stream,*/*',
+          Accept: "application/pdf,application/octet-stream,*/*",
         },
       });
 
@@ -63,7 +51,7 @@ const DownloadButton = () => {
 
       // Extract filename from URL
       let fileName = fileUrl.split("/").pop() || "trip-details";
-      
+
       // Clean up filename
       const pdfIndex = fileName.toLowerCase().indexOf(".pdf");
       if (pdfIndex !== -1) {
@@ -80,7 +68,7 @@ const DownloadButton = () => {
       downloadLink.href = blobUrl;
       downloadLink.download = fileName; // This forces download instead of opening
       downloadLink.style.display = "none";
-      
+
       // Add to DOM, click, and remove
       document.body.appendChild(downloadLink);
       downloadLink.click();
@@ -93,10 +81,9 @@ const DownloadButton = () => {
       }, 1000);
 
       console.log("Download initiated successfully");
-
     } catch (error) {
       console.error("Download failed:", error);
-      
+
       // Fallback: Try direct link approach
       try {
         console.log("Trying fallback download method...");
