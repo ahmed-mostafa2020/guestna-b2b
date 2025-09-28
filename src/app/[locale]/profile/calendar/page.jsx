@@ -95,11 +95,11 @@ const CalendarPage = () => {
   };
 
   // Fetch all events for events tab (conditional filter object)
-  const { 
-    data: allEvents, 
+  const {
+    data: allEvents,
     refetch: refetchAllEvents,
     isLoading: allEventsLoading,
-    isFetching: allEventsFetching
+    isFetching: allEventsFetching,
   } = useFetchData(
     B2B_END_POINTS.PROFILE.HAPPENINGS.ALL,
     {},
@@ -279,7 +279,7 @@ const CalendarPage = () => {
                   <h2 className="text-xl font-semibold text-mainColor">
                     {t("profile.calendar.events.search.title")}
                   </h2>
-                  <button className="bg-gradient-to-r from-mainColor to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-mainColorHover hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-semibold">
+                  <button className="bg-mainColor text-white px-6 py-3 rounded-xl hover:bg-mainColorHover transition-all duration-200 shadow-lg hover:shadow-xl font-semibold">
                     {t("profile.calendar.events.search.printReport")}
                   </button>
                 </div>

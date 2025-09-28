@@ -951,6 +951,32 @@
             "transactionAmount": "المبلغ",
             "transactionStatus": "الحالة"
           },
+          "status": {
+            "completed": "مكتمل",
+            "done": "مكتمل",
+            "pending": "قيد المراجعة",
+            "cancelled": "ملغي",
+            "ended": "انتهت",
+            "processing": "قيد المعالجة"
+          },
+          "defaultValues": {
+            "trip": "رحلة",
+            "undefined": "غير محدد"
+          },
+          "months": {
+            "january": "يناير",
+            "february": "فبراير",
+            "march": "مارس",
+            "april": "أبريل",
+            "may": "مايو",
+            "june": "يونيو",
+            "july": "يوليو",
+            "august": "أغسطس",
+            "september": "سبتمبر",
+            "october": "أكتوبر",
+            "november": "نوفمبر",
+            "december": "ديسمبر"
+          },
           "loading": "جاري التحميل...",
           "balanceSummary": {
             "title": "ملخص الرصيد متاح",
@@ -1132,6 +1158,33 @@
         "title": "مزامنة التقويم",
         "description": "محتوى تبويب المزامنة سيتم إضافته هنا"
       }
+    }
+  },
+
+  "exportUtils": {
+    "bookingReport": {
+      "title": "تقرير الحجز",
+      "tripInfo": "معلومات الرحلة",
+      "description": "الوصف",
+      "location": "الموقع",
+      "time": "الوقت",
+      "startDate": "تاريخ البداية",
+      "endDate": "تاريخ النهاية",
+      "status": "الحالة",
+      "fees": "الرسوم",
+      "schoolInfo": "معلومات المدرسة",
+      "schoolName": "اسم المدرسة",
+      "contactPerson": "الشخص المسؤول",
+      "phone": "رقم الهاتف",
+      "bookingDate": "تاريخ الحجز",
+      "students": "قائمة الطلاب",
+      "studentName": "اسم الطالب",
+      "parentName": "اسم ولي الأمر",
+      "grade": "الصف",
+      "parentPhone": "هاتف ولي الأمر",
+      "nationalId": "الهوية الوطنية",
+      "filename": "تقرير_الحجز",
+      "currency": "ريال"
     }
   },
 

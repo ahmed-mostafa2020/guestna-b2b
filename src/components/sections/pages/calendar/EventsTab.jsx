@@ -18,9 +18,11 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
       <div className="p-6 border-b border-gray-100">
         {/* Title and Print Button Row */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-          <h2 className="text-xl font-semibold text-green-600">البحث</h2>
-          <button className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-semibold">
-            طباعة التقرير
+          <h2 className="text-xl font-semibold text-mainColor">
+            {t("profile.calendar.events.search.title")}
+          </h2>
+          <button className="bg-gradient-to-r from-mainColor to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-mainColorHover hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-semibold">
+            {t("profile.calendar.events.search.printReport")}
           </button>
         </div>
 
@@ -28,7 +30,7 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="relative">
             <select className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none">
-              <option>اسم الحدث</option>
+              <option>{t("profile.calendar.events.filters.eventName")}</option>
             </select>
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg
@@ -48,7 +50,7 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
           </div>
           <div className="relative">
             <select className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none">
-              <option>نوع الحدث</option>
+              <option>{t("profile.calendar.events.filters.eventType")}</option>
             </select>
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg
@@ -68,7 +70,7 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
           </div>
           <div className="relative">
             <select className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none">
-              <option>تاريخ الحدث</option>
+              <option>{t("profile.calendar.events.filters.eventDate")}</option>
             </select>
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg
@@ -88,7 +90,7 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
           </div>
           <div className="relative">
             <select className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none">
-              <option>الموقع</option>
+              <option>{t("profile.calendar.events.filters.location")}</option>
             </select>
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg
@@ -111,8 +113,8 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
 
       {/* Events List Section */}
       <div className="p-6">
-        <h3 className="text-xl font-semibold text-green-600 mb-6">
-          جميع الأحداث
+        <h3 className="text-xl font-semibold text-mainColor mb-6">
+          {t("profile.calendar.events.list.title")}
         </h3>
         {isLoading ? (
           <LoadingState />
@@ -136,8 +138,8 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
                         {event.about}
                       </h4>
                       <p className="text-sm text-gray-600 mb-2">
-                        الموقع: {event.place} | المشاركون:{" "}
-                        {event.participantsCount} | الوقت: {event.time}
+                        {t("profile.calendar.events.card.location")}: {event.place} | {t("profile.calendar.events.card.participants")}:{" "}
+                        {event.participantsCount} | {t("profile.calendar.events.card.time")}: {event.time}
                       </p>
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getEventTypeColor(
@@ -154,13 +156,13 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
                       onClick={() => onView(event)}
                       className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                     >
-                      مشاهدة
+                      {t("profile.calendar.actions.view")}
                     </button>
                     <button
                       onClick={() => onEdit(event)}
                       className="text-green-600 hover:text-green-800 text-sm font-medium"
                     >
-                      تعديل
+                      {t("profile.calendar.actions.edit")}
                     </button>
                   </div>
                 </div>

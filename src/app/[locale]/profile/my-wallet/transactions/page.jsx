@@ -127,19 +127,18 @@ const TransactionsPage = () => {
             _id: invoice._id || invoice.id || invoice.invoiceId || index + 1,
             id: invoice._id || invoice.id || invoice.invoiceId || index + 1,
             searchTerm:
+              invoice.tripName ||
+              invoice.searchTerm ||
+              invoice.tripTitle ||
+              invoice.organizationName ||
+              t("profile.myWallet.transactionsPage.table.defaultValues.trip"),
+            operationName:
               invoice.name ||
               invoice.tripName ||
               invoice.searchTerm ||
               invoice.tripTitle ||
               invoice.organizationName ||
-              "رحلة",
-            name:
-              invoice.name ||
-              invoice.tripName ||
-              invoice.searchTerm ||
-              invoice.tripTitle ||
-              invoice.organizationName ||
-              "رحلة",
+              t("profile.myWallet.transactionsPage.table.defaultValues.trip"),
             day: invoice.createdAt
               ? formatDate(invoice.createdAt, locale, {
                   year: "numeric",
@@ -172,7 +171,7 @@ const TransactionsPage = () => {
                   hour: "2-digit",
                   minute: "2-digit",
                 })
-              : "غير محدد",
+              : t("profile.myWallet.transactionsPage.table.defaultValues.undefined"),
             createdAt: invoice.createdAt
               ? formatDate(invoice.createdAt, locale)
               : invoice.day
@@ -181,7 +180,7 @@ const TransactionsPage = () => {
               ? formatDate(invoice.date, locale)
               : invoice.issueDate
               ? formatDate(invoice.issueDate, locale)
-              : "غير محدد",
+              : t("profile.myWallet.transactionsPage.table.defaultValues.undefined"),
             referenceNumber:
               invoice.orderId ||
               invoice.referenceNumber ||
@@ -324,34 +323,21 @@ const TransactionsPage = () => {
   // Status configuration
   const statusConfig = {
     DONE: {
-      label: "مكتمل",
+      label: t("profile.myWallet.transactionsPage.table.status.done"),
       className: "bg-green-100 text-green-800 border-green-200",
     },
     PENDING: {
-      label: "قيد المراجعة",
+      label: t("profile.myWallet.transactionsPage.table.status.pending"),
       className: "bg-yellow-100 text-yellow-800 border-yellow-200",
     },
     CANCLED: {
-      label: "ملغي",
+      label: t("profile.myWallet.transactionsPage.table.status.cancelled"),
       className: "bg-red-100 text-red-800 border-red-200",
     },
 
     ENDED: {
-      label: "انتهت",
+      label: t("profile.myWallet.transactionsPage.table.status.ended"),
       className: "bg-gray-100 text-gray-800 border-gray-200",
-    },
-    // Legacy status mappings for backward compatibility
-    completed: {
-      label: "مكتمل",
-      className: "bg-green-100 text-green-800 border-green-200",
-    },
-    processing: {
-      label: "قيد المعالجة",
-      className: "bg-yellow-100 text-yellow-800 border-yellow-200",
-    },
-    pending: {
-      label: "معلقة",
-      className: "bg-red-100 text-red-800 border-red-200",
     },
   };
 

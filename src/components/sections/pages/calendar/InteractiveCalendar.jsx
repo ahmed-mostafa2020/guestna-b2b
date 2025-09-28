@@ -58,7 +58,7 @@ const InteractiveCalendar = ({
         </h3>
         <div className="flex gap-2">
           <button className="border-2 border-orange-300 text-orange-600 px-6 py-3 rounded-xl hover:bg-orange-50 hover:border-orange-400 transition-all duration-200 font-medium">
-            رفع التقويم
+            {t("profile.calendar.calendar.uploadCalendar")}
           </button>
           <button
             onClick={onAddEvent}

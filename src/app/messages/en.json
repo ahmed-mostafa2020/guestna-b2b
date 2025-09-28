@@ -969,6 +969,18 @@
             "transactionAmount": "Amount",
             "transactionStatus": "Status"
           },
+          "status": {
+            "completed": "Completed",
+            "done": "Completed",
+            "pending": "Under Review",
+            "cancelled": "Cancelled",
+            "ended": "Ended",
+            "processing": "Processing"
+          },
+          "defaultValues": {
+            "trip": "Trip",
+            "undefined": "Not specified"
+          },
           "loading": "Loading...",
           "balanceSummary": {
             "title": "Balance Summary Available",
@@ -1011,18 +1023,17 @@
         "events": "Events",
         "sync": "Sync"
       },
-      "calendar": {
-        "selectedDayEvents": "Selected Day Events",
-        "noEventsTitle": "No events for this day",
-        "noEventsDescription": "No events found scheduled for this date",
-        "addNewEvent": "Add New Event",
-        "addEvent": "Add Event +",
-        "uploadCalendar": "Upload Calendar",
-        "interactiveCalendar": "Interactive Calendar",
-        "info": "You can only select current and future dates",
-        "days": {
-          "sunday": "Sunday",
-          "monday": "Monday",
+        "calendar": {
+          "selectedDayEvents": "Selected Day Events",
+          "noEventsTitle": "No events for this day",
+          "noEventsDescription": "No events found scheduled for this date",
+          "addEvent": "Add Event",
+          "uploadCalendar": "Upload Calendar",
+          "interactiveCalendar": "Interactive Calendar",
+          "info": "You can only select current and future dates",
+          "days": {
+            "sunday": "Sunday",
+            "monday": "Monday",
           "tuesday": "Tuesday",
           "wednesday": "Wednesday",
           "thursday": "Thursday",
@@ -1151,6 +1162,33 @@
         "description": "Sync tab content will be added here",
         "newField": "New field added"
       }
+    }
+  },
+
+  "exportUtils": {
+    "bookingReport": {
+      "title": "Booking Report",
+      "tripInfo": "Trip Information",
+      "description": "Description",
+      "location": "Location",
+      "time": "Time",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "status": "Status",
+      "fees": "Fees",
+      "schoolInfo": "School Information",
+      "schoolName": "School Name",
+      "contactPerson": "Contact Person",
+      "phone": "Phone Number",
+      "bookingDate": "Booking Date",
+      "students": "Students List",
+      "studentName": "Student Name",
+      "parentName": "Parent Name",
+      "grade": "Grade",
+      "parentPhone": "Parent Phone",
+      "nationalId": "National ID",
+      "filename": "Booking_Report",
+      "currency": "SAR"
     }
   },
 
