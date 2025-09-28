@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 
 const EventsList = ({ events, isLoading, title, subtitle, onView, onEdit }) => {
   const t = useTranslations();
+  console.log(events);
   if (isLoading) {
     return (
       <div className="bg-white rounded-xl p-8 shadow-lg border-0">

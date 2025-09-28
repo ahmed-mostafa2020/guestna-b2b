@@ -238,7 +238,8 @@ const CalendarPage = () => {
 
               {/* Left Column - Events List */}
               <EventsList
-                events={getEventsForDate(selectedDate)}
+                // events={getEventsForDate(selectedDate)}
+                events={getEventsList()}
                 isLoading={
                   selectedDateEventsLoading || selectedDateEventsFetching
                 }
@@ -402,45 +403,12 @@ const CalendarPage = () => {
                                 {event.time}
                               </p>
                               <span
-                                className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
-                                  event.happeningType === "TRIP"
-                                    ? "bg-green-100 text-green-600"
-                                    : event.happeningType === "ACADEMIC"
-                                    ? "bg-purple-100 text-purple-600"
-                                    : event.happeningType === "METING"
-                                    ? "bg-indigo-100 text-indigo-600"
-                                    : event.happeningType === "TRAINING"
-                                    ? "bg-blue-100 text-blue-600"
-                                    : event.happeningType === "CONFERENCE"
-                                    ? "bg-yellow-100 text-yellow-600"
-                                    : event.happeningType === "LEAVE"
-                                    ? "bg-orange-100 text-orange-600"
-                                    : event.happeningType === "EXAM"
-                                    ? "bg-red-100 text-red-600"
-                                    : event.happeningType === "OTHER"
-                                    ? "bg-gray-100 text-gray-600"
-                                    : "bg-gray-100 text-gray-600"
-                                }`}
+                                className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getEventTypeColor(
+                                  event.happeningType,
+                                  "solid"
+                                )}`}
                               >
-                                {event.happeningType === "TRIP"
-                                  ? t("profile.calendar.events.types.trip")
-                                  : event.happeningType === "ACADEMIC"
-                                  ? t("profile.calendar.events.types.academic")
-                                  : event.happeningType === "METING"
-                                  ? t("profile.calendar.events.types.meeting")
-                                  : event.happeningType === "TRAINING"
-                                  ? t("profile.calendar.events.types.training")
-                                  : event.happeningType === "CONFERENCE"
-                                  ? t(
-                                      "profile.calendar.events.types.conference"
-                                    )
-                                  : event.happeningType === "LEAVE"
-                                  ? t("profile.calendar.events.types.leave")
-                                  : event.happeningType === "EXAM"
-                                  ? t("profile.calendar.events.types.exam")
-                                  : event.happeningType === "OTHER"
-                                  ? t("profile.calendar.events.types.other")
-                                  : t("profile.calendar.events.types.other")}
+                                {getEventTypeLabel(event.happeningType, t)}
                               </span>
                             </div>
                           </div>

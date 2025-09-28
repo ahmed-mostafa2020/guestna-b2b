@@ -36,6 +36,7 @@ const BookWithConfidenceSection = () => {
       icon: phoneIcon,
       title: t("bookWithConfidence.items.callUs.title"),
       subTitle: t("bookWithConfidence.items.callUs.subTitle"),
+      phone: t("bookWithConfidence.items.callUs.phone"),
     },
   ];
 
@@ -50,7 +51,7 @@ const BookWithConfidenceSection = () => {
             index == itemsList.length - 1 && "lg:w-[80%]"
           }`}
         >
-          {item.subTitle}
+          {item.subTitle} {item.phone && <span dir="ltr">{item.phone}</span>}
         </h4>
       </div>
     </div>

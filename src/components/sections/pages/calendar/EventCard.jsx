@@ -10,9 +10,9 @@ const EventCard = ({ event, onView, onEdit }) => {
 
   return (
     <div className="border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-all duration-200 hover:border-green-200 bg-gradient-to-r from-gray-50 to-white">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="font-medium text-gray-900">{event.about}</h3>
-        <span className="text-sm text-gray-500">
+      <div className="flex items-center justify-between gap-0.5 mb-3">
+        <h3 className="font-medium text-gray-900">{event.name}</h3>
+        <span className="text-sm text-nowrap text-gray-500">
           {formatDate(event.day, locale, {
             day: "2-digit",
             month: "short",

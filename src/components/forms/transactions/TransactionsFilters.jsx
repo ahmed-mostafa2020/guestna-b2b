@@ -32,7 +32,7 @@ const TransactionsFilters = ({
         <div className="flex gap-3">
           <button
             onClick={() => window.print()}
-            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2"
+            className="bg-mainColor hover:bg-mainColor/90 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2"
           >
             {printIcon}
             {t("printReport")}

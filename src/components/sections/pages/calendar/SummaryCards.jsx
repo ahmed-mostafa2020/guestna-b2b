@@ -7,9 +7,9 @@ const SummaryCards = ({ countsData, isLoading }) => {
 
   const summaryData = [
     {
-      title: t("profile.calendar.summary.potentialEvents"),
-      count: countsData?.potentialConflicts || "0",
-      color: "bg-orange-100 text-orange-600",
+      title: t("profile.calendar.summary.totalEvents"),
+      count: countsData?.totalCount || "0",
+      color: "bg-purple-100 text-purple-600",
     },
     {
       title: t("profile.calendar.summary.academicEvents"),
@@ -17,14 +17,15 @@ const SummaryCards = ({ countsData, isLoading }) => {
       color: "bg-blue-100 text-blue-600",
     },
     {
+      title: t("profile.calendar.summary.conflictingEvents"),
+      count: countsData?.potentialConflicts || "0",
+      color: "bg-orange-100 text-orange-600",
+    },
+
+    {
       title: t("profile.calendar.summary.scheduledTrips"),
       count: countsData?.scheduledTripCount || "0",
       color: "bg-green-100 text-green-600",
-    },
-    {
-      title: t("profile.calendar.summary.totalEvents"),
-      count: countsData?.totalCount || "0",
-      color: "bg-purple-100 text-purple-600",
     },
   ];
 
