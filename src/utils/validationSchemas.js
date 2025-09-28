@@ -619,8 +619,13 @@ export const createWithdrawValidationSchema = (t, isBankTransfer) => {
   return Yup.object().shape({
     selectedTripId: Yup.string().required(getValidationMessage("tripRequired")),
 
+    withdrawAmount: Yup.number()
+      .required(getValidationMessage("amountRequired") || t("validation.amountRequired"))
+      .min(50, getValidationMessage("minAmount") || t("validation.minAmount"))
+      .positive("Amount must be positive"),
+
     phoneNumber: isBankTransfer
-      ? createPhoneValidation(t, true)
+      ? Yup.string().notRequired() // No phone validation for bank transfer
       : Yup.string()
           .required(getValidationMessage("phoneRequired"))
           .matches(/^05[0-9]{8}$/, getValidationMessage("phoneInvalid")),

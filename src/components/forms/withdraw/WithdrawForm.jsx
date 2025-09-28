@@ -122,17 +122,22 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
       const result = await response.json();
 
       if (response.ok) {
-        enqueueSnackbar(t("forms.validation.success"), {
+        enqueueSnackbar(t("success.message"), {
           variant: "success",
         });
         resetForm();
         refetchBalance();
       } else {
-        throw new Error(result.message || t("error.submission"));
+        // Handle API error response
+        const apiErrorMessage = result.message || result.error || t("error.submission");
+        console.error("API Error:", result);
+        enqueueSnackbar(apiErrorMessage, { variant: "error" });
+        return; // Don't throw, just show the error and return
       }
     } catch (error) {
       console.error("Withdrawal error:", error);
-      const errorMessage = getErrorMessage(error, t);
+      // Handle network or other errors
+      const errorMessage = error.message || getErrorMessage(error, t) || t("error.submission");
       enqueueSnackbar(errorMessage, { variant: "error" });
     } finally {
       setSubmitting(false);
@@ -174,7 +179,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
       validateOnBlur={true}
       validateOnChange={true}
     >
-      {({ values, errors, touched, setFieldValue, handleBlur, isSubmitting }) => (
+      {({ values, errors, touched, setFieldValue, handleBlur, isSubmitting, isValid }) => (
         <Form className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           {/* STC Pay Form */}
           {transferMethod === "stc" && (
@@ -228,9 +233,9 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
           <div className="mt-8 pt-6 border-t border-gray-200">
             <button
               type="submit"
-              disabled={isSubmitting || balanceLoading || !selectedTrip}
+              disabled={isSubmitting || balanceLoading || !selectedTrip || !isValid}
               className={`w-full py-4 px-6 rounded-2xl font-bold text-white text-base transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-4 transform hover:-translate-y-1 ${
-                isSubmitting || balanceLoading || !selectedTrip
+                isSubmitting || balanceLoading || !selectedTrip || !isValid
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 focus:ring-green-500 shadow-lg hover:shadow-xl"
               }`}
@@ -249,6 +254,31 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
               <p className="text-center text-gray-500 mt-2 text-base">
                 {t("loadingBalance")}
               </p>
+            )}
+            
+            {/* Debug info - remove in production */}
+            {!selectedTrip && (
+              <p className="text-center text-amber-600 mt-2 text-sm">
+                {t("debug.selectTrip")}
+              </p>
+            )}
+            {selectedTrip && !isValid && (
+              <div className="text-center mt-2">
+                <p className="text-red-600 text-sm mb-2">
+                  {t("debug.fillRequiredFields")}
+                </p>
+                {/* Show specific validation errors for debugging */}
+                {Object.keys(errors).length > 0 && (
+                  <div className="text-xs text-red-500 bg-red-50 p-2 rounded">
+                    <p className="font-semibold mb-1">Validation Errors:</p>
+                    {Object.entries(errors).map(([field, error]) => (
+                      <p key={field} className="mb-1">
+                        <strong>{field}:</strong> {error}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </Form>

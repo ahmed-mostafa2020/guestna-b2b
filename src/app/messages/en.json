@@ -878,6 +878,10 @@
         "submitting": "Submitting...",
         "submitButton": "Submit Withdrawal Request",
         "loadingBalance": "Loading balance data...",
+        "debug": {
+          "selectTrip": "Please select a trip to enable submission",
+          "fillRequiredFields": "Please fill all required fields correctly"
+        },
         "informationSection": {
           "title": "Important Information",
           "minAmount": "Minimum withdrawal: 50 SAR",

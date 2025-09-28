@@ -936,6 +936,10 @@
         "submitting": "جاري التقديم...",
         "submitButton": "تقديم طلب السحب",
         "loadingBalance": "جاري تحميل بيانات الرصيد...",
+        "debug": {
+          "selectTrip": "يرجى اختيار رحلة لتفعيل زر التقديم",
+          "fillRequiredFields": "يرجى ملء جميع الحقول المطلوبة بشكل صحيح"
+        },
         "informationSection": {
           "title": "معلومات مهمة",
           "minAmount": "الحد الأدنى للسحب: 50 ريال",
