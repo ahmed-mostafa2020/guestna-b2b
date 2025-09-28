@@ -18,6 +18,7 @@ import formatDate from "@utils/FormateDate";
 import { getEventTypeColor } from "@utils/eventTypeUtils";
 import { getEventTypeLabel } from "@utils/eventTypeUtils";
 import { CircularProgress } from "@mui/material";
+import Pagination from "@components/common/Pagination";
 
 const CalendarPage = () => {
   const locale = useLocale();
@@ -38,7 +39,7 @@ const CalendarPage = () => {
     happeningType: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(10);
+  const [perPage] = useState(5);
 
   // Fetch events counts for summary cards
   const {
@@ -195,12 +196,22 @@ const CalendarPage = () => {
     setCurrentPage(1); // Reset to first page when filters change
   };
 
+  // Handle pagination changes
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  const handlePerPageChange = (newPerPage) => {
+    setPerPage(newPerPage);
+    setCurrentPage(1); // Reset to first page when changing per page
+  };
+
   // Refetch events when filters change (only for events tab)
   useEffect(() => {
     if (activeTab === "events") {
       refetchAllEvents();
     }
-  }, [filters, currentPage, activeTab, refetchAllEvents]);
+  }, [filters, currentPage, perPage, activeTab, refetchAllEvents]);
 
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
@@ -246,8 +257,7 @@ const CalendarPage = () => {
 
               {/* Left Column - Events List */}
               <EventsList
-                // events={getEventsForDate(selectedDate)}
-                events={getEventsList()}
+                events={getEventsForDate(selectedDate)}
                 isLoading={
                   selectedDateEventsLoading || selectedDateEventsFetching
                 }
@@ -266,6 +276,8 @@ const CalendarPage = () => {
                   setEventToEdit(event);
                   setShowAddEventModal(true);
                 }}
+                showPagination={true}
+                itemsPerPage={3}
               />
             </div>
           )}
@@ -455,6 +467,123 @@ const CalendarPage = () => {
                     <p className="text-gray-500 mb-6 text-lg">
                       {t("profile.calendar.events.noEventsDescription")}
                     </p>
+                  </div>
+                )}
+
+                {/* Pagination Controls */}
+                {(allEvents?.pageInfo?.total > 0 ||
+                  getEventsList().length > 0) && (
+                  <div className="mt-6 border-t border-gray-200 pt-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      {/* Per Page Selector */}
+
+                      {/* Pagination Info and Controls */}
+                      <div className="flex flex-col sm:flex-row justify-between w-full sm:items-center gap-4">
+                        {/* Pagination Info */}
+                        <div className="text-sm text-gray-700">
+                          {t("pagination.show")} {t("pagination.of")}{" "}
+                          {(currentPage - 1) * perPage + 1} {t("pagination.to")}{" "}
+                          {Math.min(
+                            currentPage * perPage,
+                            allEvents?.pageInfo?.total || 0
+                          )}{" "}
+                          ,{t("pagination.allResults")}{" "}
+                          {allEvents?.pageInfo?.total || 0}{" "}
+                        </div>
+
+                        {/* Pagination Buttons */}
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                          >
+                            <svg
+                              className={`w-4 h-4 ${
+                                locale === "ar" ? "" : "rotate-180"
+                              }`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 5l7 7-7 7"
+                              />
+                            </svg>
+                            {t("pagination.previous")}
+                          </button>
+
+                          {/* Page Numbers */}
+                          {(() => {
+                            const totalPages = Math.ceil(
+                              (allEvents?.pageInfo?.total || 0) / perPage
+                            );
+                            const pages = [];
+                            const maxVisible = 5;
+                            let startPage = Math.max(
+                              1,
+                              currentPage - Math.floor(maxVisible / 2)
+                            );
+                            let endPage = Math.min(
+                              totalPages,
+                              startPage + maxVisible - 1
+                            );
+
+                            if (endPage - startPage + 1 < maxVisible) {
+                              startPage = Math.max(1, endPage - maxVisible + 1);
+                            }
+
+                            for (let i = startPage; i <= endPage; i++) {
+                              pages.push(
+                                <button
+                                  key={i}
+                                  onClick={() => handlePageChange(i)}
+                                  className={`px-3 py-1 text-sm border rounded-md ${
+                                    i === currentPage
+                                      ? "bg-mainColor text-white border-mainColor"
+                                      : "border-gray-300 hover:bg-gray-50"
+                                  }`}
+                                >
+                                  {i}
+                                </button>
+                              );
+                            }
+                            return pages;
+                          })()}
+
+                          <button
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={
+                              currentPage >=
+                              Math.ceil(
+                                (allEvents?.pageInfo?.total || 0) / perPage
+                              )
+                            }
+                            className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                          >
+                            {t("pagination.next")}
+                            <svg
+                              className={`w-4 h-4 ${
+                                locale === "ar" ? "rotate-180" : ""
+                              }`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 5l7 7-7 7"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
