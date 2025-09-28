@@ -22,10 +22,10 @@ import { useEffect } from "react";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import { USERS } from "../../../../constants/users";
 
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
+import { TRIP_STATUS } from "@constants/tripStatus";
 import GallerySection from "@components/sections/pages/tripDetails/gallerySection";
 import CustomizedBreadcrumbs from "@components/common/breadcrumbs/CustomizedBreadcrumbs";
 import SmallSeparator from "@components/common/separators/SmallSeparator";
@@ -134,6 +134,11 @@ const TripDetails = ({ params }) => {
     { id: 3, type: "text", name: tripData?.name },
   ];
 
+  const endDate = new Date(tripData?.endAvailableBookingDay);
+  const currentDate = new Date();
+
+  const isBookingAvailable = endDate > currentDate;
+
   return (
     <main
       className={`py-5 overflow-hidden ${
@@ -157,10 +162,14 @@ const TripDetails = ({ params }) => {
         </>
       )}
 
-      <RegisterStudentForm
-        tripMainCategory={tripData?.categories?.formsType}
-        availableSeats={availableSeats}
-      />
+      {tripData?.availableSeats > 0 &&
+        tripData?.status === TRIP_STATUS.PENDING &&
+        isBookingAvailable && (
+          <RegisterStudentForm
+            tripMainCategory={tripData?.categories?.formsType}
+            availableSeats={availableSeats}
+          />
+        )}
     </main>
   );
 };

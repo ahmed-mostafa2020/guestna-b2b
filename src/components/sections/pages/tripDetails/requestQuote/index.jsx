@@ -11,8 +11,6 @@ import FrameWithImagedHeader from "@components/common/frameWithImagedHeader/Fram
 import CustomizedModal from "@components/common/customizedModal";
 import RequestQuoteForm from "@components/forms/requestQuote";
 
-import Cookies from "js-cookie";
-
 const RequestQuote = () => {
   const [isRequestQuoteFormOpen, setIsRequestQuoteFormOpen] = useState(false);
 
@@ -24,8 +22,6 @@ const RequestQuote = () => {
   };
 
   const t = useTranslations();
-
-  const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
 
   return (
     <>
