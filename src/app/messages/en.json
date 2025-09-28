@@ -242,6 +242,36 @@
     "register": "Register",
     "sendStcOtp": "Send Stc Otp"
   },
+
+  "booking": {
+    "unavailable": {
+      "noSeats": {
+        "title": "Trip Fully Booked",
+        "subtitle": "Unfortunately, all seats for this trip have been reserved. Please check other available trips."
+      },
+      "expired": {
+        "title": "Booking Period Expired",
+        "subtitle": "The booking period for this trip has ended. You can no longer register for this trip."
+      },
+      "scheduled": {
+        "title": "Trip Already Scheduled",
+        "subtitle": "This trip has been scheduled and is no longer accepting new registrations. The trip is confirmed and ready to begin."
+      },
+      "done": {
+        "title": "Trip Completed",
+        "subtitle": "This trip has already been completed. Thank you for your interest! Please explore our other exciting upcoming trips."
+      },
+      "cancelled": {
+        "title": "Trip Cancelled",
+        "subtitle": "Unfortunately, this trip has been cancelled. We apologize for any inconvenience. Please check our other available trips."
+      },
+      "unknown": {
+        "title": "Trip Not Available",
+        "subtitle": "This trip is currently not available for booking. Please contact support for more information or explore other trips."
+      }
+    }
+  },
+
   "header": {
     "home": "Home",
     "discover": "Discover",

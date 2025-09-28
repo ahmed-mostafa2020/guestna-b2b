@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { memo, useEffect, useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { TRIP_STATUS } from "@constants/tripStatus";
 import formatCurrency from "@utils/FormatCurrency";
 import calculateDiscountedPrice from "@utils/CalculateDiscountedPrice";
 
@@ -82,6 +83,67 @@ const PreBookingSection = ({ tripData }) => {
     }
   }, [isParentLoginFormOpen, isSubmitted]);
 
+  const endDate = new Date(tripData?.endAvailableBookingDay);
+  const currentDate = new Date();
+
+  const isBookingAvailable = endDate > currentDate;
+
+  // Determine booking status and get appropriate message
+  const getBookingStatus = () => {
+    // Priority 1: Check available seats (only if trip is PENDING)
+    if (tripData?.status === TRIP_STATUS.PENDING && tripData?.availableSeats <= 0) {
+      return {
+        canBook: false,
+        messageKey: 'noSeats'
+      };
+    }
+    
+    // Priority 2: Check if booking period has expired (only if trip is PENDING)
+    if (tripData?.status === TRIP_STATUS.PENDING && !isBookingAvailable) {
+      return {
+        canBook: false,
+        messageKey: 'expired'
+      };
+    }
+    
+    // Priority 3: Check specific trip status
+    switch (tripData?.status) {
+      case TRIP_STATUS.PENDING:
+        // Trip is pending and has seats and booking period is valid
+        return {
+          canBook: true,
+          messageKey: null
+        };
+      
+      case TRIP_STATUS.SCHEDULED:
+        return {
+          canBook: false,
+          messageKey: 'scheduled'
+        };
+      
+      case TRIP_STATUS.DONE:
+        return {
+          canBook: false,
+          messageKey: 'done'
+        };
+      
+      case TRIP_STATUS.CANCELLED:
+        return {
+          canBook: false,
+          messageKey: 'cancelled'
+        };
+      
+      default:
+        // Unknown status or no status
+        return {
+          canBook: false,
+          messageKey: 'unknown'
+        };
+    }
+  };
+
+  const bookingStatus = getBookingStatus();
+
   return (
     <>
       <FrameWithImagedHeader withBorder={true}>
@@ -95,14 +157,28 @@ const PreBookingSection = ({ tripData }) => {
           </span>
         </h3>
 
-        <button
-          onClick={handleOpen}
-          className="w-full px-8 py-3 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor"
-        >
-          {t("links.register")}
-        </button>
+        {bookingStatus.canBook ? (
+          <button
+            onClick={handleOpen}
+            className="w-full px-8 py-3 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor"
+          >
+            {t("links.register")}
+          </button>
+        ) : (
+          <div className="w-full p-6 text-center bg-gray-50 border-2 border-gray-200 rounded-lg">
+            <div className="mb-2">
+              <h4 className="text-lg font-semibold text-gray-800">
+                {t(`booking.unavailable.${bookingStatus.messageKey}.title`)}
+              </h4>
+            </div>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              {t(`booking.unavailable.${bookingStatus.messageKey}.subtitle`)}
+            </p>
+          </div>
+        )}
 
-        {tripData?.isCustomizable &&
+        {bookingStatus.canBook &&
+          tripData?.isCustomizable &&
           tripData?.guestnaTripsType === CONSTANT_VALUES.PACKAGE && (
             <Link
               href={`/${locale}/customization/${tripData?.slug}`}
