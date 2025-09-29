@@ -25,6 +25,14 @@ const AddEventForm = ({
   const locale = useLocale();
   const t = useTranslations();
 
+  // Helper function to format date for API (avoids timezone issues)
+  const formatDateForAPI = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   // Initial form values
   const getInitialValues = () => ({
     name: eventToEdit?.name || "",
@@ -32,9 +40,9 @@ const AddEventForm = ({
     happeningType: eventToEdit?.happeningType || "",
     place: eventToEdit?.place || "",
     day: eventToEdit?.day
-      ? new Date(eventToEdit.day).toISOString().split("T")[0]
+      ? formatDateForAPI(new Date(eventToEdit.day))
       : selectedDate
-      ? selectedDate.toISOString().split("T")[0]
+      ? formatDateForAPI(selectedDate)
       : "",
     time: eventToEdit?.time || "",
     participantsCount: eventToEdit?.participantsCount || 1,
@@ -277,7 +285,7 @@ const AddEventForm = ({
                       onBlur={handleBlur}
                       errors={errors.day}
                       touched={touched.day}
-                      min={new Date().toISOString().split("T")[0]}
+                      min={formatDateForAPI(new Date())}
                     />
 
                     {/* Time */}

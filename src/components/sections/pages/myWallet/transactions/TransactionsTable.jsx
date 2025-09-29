@@ -88,7 +88,9 @@ const TransactionsTable = ({
                       } transition-colors hover:bg-gray-50`}
                     >
                       <td className="px-6 py-4 text-sm font-medium text-foreground">
-                        {transaction.searchTerm || transaction.name || "رحلة"}
+                        {transaction.operationName ||
+                          transaction.name ||
+                          "رحلة"}
                       </td>
                       <td className="px-6 py-4 text-sm text-muted-foreground">
                         {transaction.day}
@@ -98,7 +100,7 @@ const TransactionsTable = ({
                       </td>
                       <td className="px-6 py-4 text-sm font-medium">
                         <span
-                          className={`${
+                          className={`text-start ${
                             transaction.amount < 0
                               ? "text-error"
                               : "text-foreground"
@@ -157,7 +159,7 @@ const TransactionsTable = ({
               <CardContent className="p-4 space-y-3">
                 <div className="flex flex-col items-start justify-between">
                   <h3 className="text-lg font-bold leading-relaxed text-foreground">
-                    {transaction.searchTerm || transaction.name || "رحلة"}
+                    {transaction.operationName || transaction.name || "رحلة"}
                   </h3>
                   <span className="text-muted-foreground text-sm">
                     {transaction.referenceNumber}

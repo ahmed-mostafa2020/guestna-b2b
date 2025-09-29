@@ -108,8 +108,8 @@
       "CANCELED": "ملغي"
     },
     "organizationTripStatus": {
-      "DONE": "تمت الموافقة",
-      "PENDING": "قيد المراجعة",
+      "DONE": "مكتمل",
+      "PENDING": "قيد المعالجة",
       "CANCLED": "ملغي",
       "SCHEDULED": "مجدول",
       "ENDED": "انتهت"

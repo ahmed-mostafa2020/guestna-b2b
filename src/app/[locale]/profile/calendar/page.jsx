@@ -18,11 +18,18 @@ import formatDate from "@utils/FormateDate";
 import { getEventTypeColor } from "@utils/eventTypeUtils";
 import { getEventTypeLabel } from "@utils/eventTypeUtils";
 import { CircularProgress } from "@mui/material";
-import Pagination from "@components/common/Pagination";
 
 const CalendarPage = () => {
   const locale = useLocale();
   const t = useTranslations();
+
+  // Helper function to format date for API (avoids timezone issues)
+  const formatDateForAPI = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   const [activeTab, setActiveTab] = useState("calendar");
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -67,7 +74,7 @@ const CalendarPage = () => {
       body: {
         sort: "NEWEST",
         filter: {
-          day: selectedDate.toISOString().split("T")[0],
+          day: formatDateForAPI(selectedDate),
         },
         page: 1,
         perPage: 10,
