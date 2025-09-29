@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { KeyboardArrowDown } from "@mui/icons-material";
+import { KeyboardArrowDown, CalendarToday } from "@mui/icons-material";
 import { printIcon } from "@assets/svg";
 
 const TransactionsFilters = ({
@@ -10,13 +10,34 @@ const TransactionsFilters = ({
 }) => {
   const t = useTranslations("profile.myWallet.transactionsPage.filters");
 
+  // Helper function to format date for API (avoids timezone issues)
+  const formatDateForAPI = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // Convert API date string back to input format if needed
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return "";
+    // If it's already in YYYY-MM-DD format, return as is
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+      return dateString;
+    }
+    // If it's in another format, try to parse and format
+    try {
+      const date = new Date(dateString);
+      return formatDateForAPI(date);
+    } catch {
+      return "";
+    }
+  };
+
   // Extract unique values for filter options from server data (safe access)
   const transactions = data?.nodes || [];
   const uniqueSearchTerms = Array.from(
     new Set(transactions.map((t) => t.searchTerm || t.name).filter(Boolean))
-  );
-  const uniqueDays = Array.from(
-    new Set(transactions.map((t) => t.createdAt || t.day).filter(Boolean))
   );
 
   return (
@@ -42,7 +63,7 @@ const TransactionsFilters = ({
 
       {/* Second Row: Filter Dropdowns - Always show filters for server-side filtering */}
       <div className="space-y-4">
-        <div className="flex flex-col lg:flex-row gap-4">
+        <div className="flex flex-col lg:flex-row gap-4 items-center">
           {/* Operation Name Filter */}
           <div className="relative flex-1">
             <select
@@ -64,21 +85,25 @@ const TransactionsFilters = ({
 
           {/* Transaction Date Filter */}
           <div className="relative flex-1">
-            <select
-              value={filters.displayDay || filters.day}
-              onChange={(e) => handleFilterChange("day", e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent cursor-pointer"
+            <input
+              type="date"
+              value={formatDateForInput(filters.displayDay || filters.day)}
+              onChange={(e) => {
+                const selectedDate = e.target.value;
+                // If date is selected, format it properly for API
+                if (selectedDate) {
+                  const date = new Date(selectedDate + "T00:00:00"); // Add time to avoid timezone issues
+                  handleFilterChange("day", formatDateForAPI(date));
+                } else {
+                  handleFilterChange("day", "");
+                }
+              }}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-right bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent cursor-pointer"
               id="transaction-date-filter"
               name="day"
-            >
-              <option value="">{t("transactionDate.placeholder")}</option>
-              {uniqueDays.map((day, index) => (
-                <option key={index} value={day}>
-                  {day}
-                </option>
-              ))}
-            </select>
-            <KeyboardArrowDown className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+              placeholder={t("transactionDate.placeholder")}
+            />
+            {/* <CalendarToday className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" /> */}
           </div>
 
           {/* Status Filter - Using predefined status options for server-side filtering */}
