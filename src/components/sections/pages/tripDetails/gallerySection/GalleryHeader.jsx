@@ -10,6 +10,7 @@ import IosShareIcon from "@mui/icons-material/IosShare";
 
 const GalleryHeader = ({ tripData }) => {
   const t = useTranslations();
+  const isAuth = tripData?.isAuth;
 
   // const numCities = tripData?.cities?.length;
   // const renderCities = useMemo(() => {
@@ -66,7 +67,7 @@ const GalleryHeader = ({ tripData }) => {
             {t("links.share")}
           </button>
 
-          <DownloadButton />
+          {isAuth && <DownloadButton />}
         </div>
       </div>
     </>

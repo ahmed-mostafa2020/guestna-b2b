@@ -16,7 +16,7 @@ const Services = ({ data, isAuth }) => {
         alt={item.service.name}
         width={100}
         height={100}
-        className="object-contain mb-3 w-[100px] h-[100px] rounded-md border  p-3 border-mainColor"
+        className="object-contain mb-3 w-[100px] h-[100px] rounded-md p-3"
       />
 
       <div className="text-center">

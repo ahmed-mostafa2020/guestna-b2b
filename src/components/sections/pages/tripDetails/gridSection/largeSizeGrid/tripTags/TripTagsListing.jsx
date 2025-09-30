@@ -94,7 +94,9 @@ const TripTagsListing = ({ data }) => {
   );
 
   return (
-    <div className="flex-wrap gap-3 centered lg:gap-5">{renderedTagsList}</div>
+    <div className="flex-wrap gap-3 flex items-center lg:gap-5">
+      {renderedTagsList}
+    </div>
   );
 };
 

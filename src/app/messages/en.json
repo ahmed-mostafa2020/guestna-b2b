@@ -1624,7 +1624,7 @@
       "checkYourEmail": "Please, Check your gmail",
       "addGuest": "Add Guest first please",
       "thanksMessage": "Thank You!",
-      "willContactYou": "Your contact request has been sent, we will respond to you shortly.",
+      "willContactYou": "Your contact request has been sent, we will respond to you within 24 hours.",
       "svg": "SVG images are not allowed",
 
       "payment": {
@@ -1644,6 +1644,10 @@
       "edit": "Request to Edit a Trip",
       "submit": "Send Request to Guestna Team",
       "success": "Your request has been sent successfully",
+      "thanksMessage": {
+        "title": "Thank You!",
+        "description": "Your request has been sent successfully. Our team will contact you within 24 hours."
+      },
 
       "selectedTrip": {
         "placeholder": "Category type"

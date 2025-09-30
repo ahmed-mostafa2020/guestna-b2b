@@ -158,12 +158,16 @@ const RequestQuoteForm = () => {
                   }}
                   onBlur={handleBlur}
                   placeholder="guestna@gmail.com"
+                  required={true}
                 />
 
                 <div className="relative flex flex-col gap-2">
-                  <label className="font-medium capitalize font-ibm">
-                    {t("forms.phone.name")}
-                  </label>
+                  <div className="flex items-center gap-0.5">
+                    <label className="font-medium capitalize font-ibm">
+                      {t("forms.phone.name")}
+                    </label>
+                    <span className="text-error">{"*"}</span>
+                  </div>
 
                   <Field name="mobile">
                     {({ field }) => (

@@ -33,6 +33,7 @@ const FilterAccordion = ({
           margin: 0,
           border: "none",
           boxShadow: "none",
+          paddingBlock: "5px",
         },
 
         "&::before": {
@@ -70,7 +71,7 @@ const FilterAccordion = ({
           padding: "16px",
           backgroundColor: "white",
           borderRadius: "12px",
-          boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.08)",
+          boxShadow: "2px 2px 4px 2px rgba(0, 0, 0, 0.03)",
         }}
       >
         <div className="custom-scrollbar">{children}</div>
