@@ -35,7 +35,7 @@ const MainCategoryCard = ({ category }) => {
       >
         <h4 className="text-lg font-semibold lg:text-xl">{category.name}</h4>
 
-        <p className="hidden overflow-auto leading-8 transition-all duration-500 ease-in-out group-hover:block">
+        <p className="hidden leading-8 transition-all duration-500 ease-in-out group-hover:block">
           {category.description}
         </p>
       </Link>

@@ -9,7 +9,7 @@ const MainCategoriesSection = () => {
 
   return (
     <section className="relative">
-      <div className="py-8 -mt-30 lg:-mt-44">
+      <div className="py-2 -mt-20 lg:-mt-44">
         <MainCategoriesSlider />
       </div>
 

@@ -291,7 +291,7 @@ const FiltersBox = () => {
       {/* Web */}
       <div className="hidden w-full mt-8 transition-all duration-200 ease-in-out lg:block">
         <Container maxWidth="lg">
-          <div className="flex items-center px-3 bg-white border rounded-2xl border-mainColor z-[2]">
+          <div className="mx-auto w-[82%] flex items-center px-3 bg-white border rounded-2xl border-mainColor z-[2]">
             {renderedButtonsList}
 
             <Link

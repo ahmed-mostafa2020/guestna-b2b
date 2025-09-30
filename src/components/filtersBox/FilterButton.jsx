@@ -48,7 +48,7 @@ const FilterButton = ({ gif, title, subTitle, index, children }) => {
       <Button
         onClick={handleClick}
         ref={anchorEl}
-        className={`group transition-all duration-200 ease-in-out ${
+        className={`group transition-all duration-200 ease-in-out !rounded-xl ${
           open ? "opened" : ""
         }`}
         sx={{
@@ -58,7 +58,7 @@ const FilterButton = ({ gif, title, subTitle, index, children }) => {
             backgroundColor: "#F4F5F5",
           },
           "&:hover": {
-            backgroundColor: "#E1F5F5",
+            backgroundColor: "#EBFFFD",
           },
         }}
       >
