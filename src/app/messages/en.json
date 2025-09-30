@@ -965,6 +965,8 @@
           },
           "validation": {
             "tripRequired": "Please select a completed trip",
+            "amountRequired": "Please enter a valid amount",
+            "minAmount": "Minimum withdrawal amount is 50 SAR",
             "phoneRequired": "Please enter phone number",
             "phoneInvalid": "Please enter a valid phone number (Example: 0501234567)"
           }

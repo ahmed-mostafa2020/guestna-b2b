@@ -15,13 +15,13 @@ const MainCategoriesSection = () => {
 
       <Container
         maxWidth="lg"
-        className="flex flex-col gap-3 py-5 lg:gap-7 lg:py-10"
+        className="flex flex-col gap-3 py-3 lg:gap-5 lg:py-6"
       >
-        <h2 className="text-xl font-semibold text-center text-mainColor lg:leading-[60px] lg:text-4xl">
+        <h2 className="text-xl font-bold text-center text-mainColor lg:leading-[60px] lg:text-5xl">
           {t("mainCategories.title")}
         </h2>
 
-        <h3 className="text-lg font-medium text-center text-secColor lg:text-3xl lg:leading-10">
+        <h3 className="text-lg font-bold text-center text-secColor lg:text-3xl lg:leading-10">
           {t("mainCategories.subTitle")}
         </h3>
       </Container>

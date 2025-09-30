@@ -664,10 +664,8 @@ export const createWithdrawValidationSchema = (t, isBankTransfer) => {
     selectedTripId: Yup.string().required(getValidationMessage("tripRequired")),
 
     withdrawAmount: Yup.number()
-      .required(
-        getValidationMessage("amountRequired") || t("validation.amountRequired")
-      )
-      .min(50, getValidationMessage("minAmount") || t("validation.minAmount"))
+      // .required(getValidationMessage("amountRequired"))
+      // .min(50, getValidationMessage("minAmount"))
       .positive("Amount must be positive"),
 
     phoneNumber: isBankTransfer

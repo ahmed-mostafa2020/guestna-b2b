@@ -29,7 +29,7 @@ const MainCategoriesSlider = () => {
             320: { slidesPerView: 1.5 },
             480: { slidesPerView: 1.7 },
             640: { slidesPerView: 2.75 },
-            1024: { slidesPerView: 3.5 },
+            1024: { slidesPerView: 4.5 },
           }}
           className="mySwiper"
         >

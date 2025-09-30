@@ -327,7 +327,7 @@ const CalendarPage = () => {
                       onChange={(e) =>
                         handleFilterChange("happeningType", e.target.value)
                       }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none"
+                      className="w-full px-4 py-3 pr-10 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22gray%22%3e%3cpath fill-rule=%22evenodd%22 d=%22M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z%22 clip-rule=%22evenodd%22/%3e%3c/svg%3e')] bg-[length:1.25rem] bg-[right_1rem_center] bg-no-repeat"
                     >
                       <option value="">
                         {t("profile.calendar.events.filters.eventType")}
@@ -357,7 +357,7 @@ const CalendarPage = () => {
                         {t("profile.calendar.events.types.other")}
                       </option>
                     </select>
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <div className="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
                       <svg
                         className="w-4 h-4 text-gray-400"
                         fill="none"
@@ -408,7 +408,7 @@ const CalendarPage = () => {
                         className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-200"
                       >
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4 space-x-reverse">
+                          <div className="flex items-center gap-4">
                             <div className="text-sm text-gray-500 font-medium">
                               {formatDate(event.day, locale, {
                                 day: "2-digit",
@@ -439,7 +439,7 @@ const CalendarPage = () => {
                               </span>
                             </div>
                           </div>
-                          <div className="flex space-x-3 space-x-reverse">
+                          <div className="flex gap-2">
                             <button
                               onClick={() => {
                                 setEventToView(event);

@@ -27,7 +27,7 @@ const Plans = () => {
         maxWidth="lg"
         className="pt-8 pb-12 flex items-center lg:pt-16 lg:pb-32 z-[2] flex-col  text-center"
       >
-        <h3 className="text-xl text-center lg:text-4xl lg:leading-[44px] font-bold lg:py-2 w-full lg:w-[55%] pb-3 lg:pb-6">
+        <h3 className="text-xl text-center lg:text-4xl lg:leading-[44px] font-bold lg:py-2 w-full lg:w-[60%] pb-3 lg:pb-6">
           <span className="text-secColor pe-1">{t("common.guestna")}</span>
           {t("plans.title")}
         </h3>

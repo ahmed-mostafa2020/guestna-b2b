@@ -1,6 +1,6 @@
 {
   "common": {
-    "oneDayTrip": "رحلات اليوم الواحد",
+    "oneDayTrip": "رحلات يوم كامل",
     "multiDaysTrip": "رحلات متعددة الأيام",
     "halfDayTrip": "رحلات نصف يوم",
     "sa": "السعودية",
@@ -850,6 +850,8 @@
           },
           "validation": {
             "tripRequired": "يرجى اختيار رحلة مكتملة",
+            "amountRequired": "يرجى إدخال مبلغ صحيح",
+            "minAmount": "الحد الأدنى لمبلغ السحب هو 50 ريال",
             "phoneRequired": "يرجى إدخال رقم الهاتف",
             "phoneInvalid": "يرجى إدخال رقم هاتف صحيح (مثال: 0501234567)"
           }
@@ -1060,7 +1062,7 @@
         "noEventsTitle": "لا توجد أحداث لهذا اليوم",
         "noEventsDescription": "لم يتم العثور على أي أحداث مجدولة لهذا التاريخ",
         "addNewEvent": "إضافة حدث جديد",
-        "addEvent": "أضف حدث",
+        "addEvent": "أضف حدثا",
         "uploadCalendar": "رفع التقويم",
         "interactiveCalendar": "التقويم التفاعلي",
         "info": "يمكنك فقط تحديد التواريخ الحالية والمستقبلية",

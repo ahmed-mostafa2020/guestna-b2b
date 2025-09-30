@@ -32,7 +32,7 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
             <select className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none">
               <option>{t("profile.calendar.events.filters.eventName")}</option>
             </select>
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <div className="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
               <svg
                 className="w-4 h-4 text-gray-400"
                 fill="none"
@@ -52,7 +52,7 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
             <select className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none">
               <option>{t("profile.calendar.events.filters.eventType")}</option>
             </select>
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <div className="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
               <svg
                 className="w-4 h-4 text-gray-400"
                 fill="none"
@@ -72,7 +72,7 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
             <select className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none">
               <option>{t("profile.calendar.events.filters.eventDate")}</option>
             </select>
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <div className="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
               <svg
                 className="w-4 h-4 text-gray-400"
                 fill="none"
@@ -92,7 +92,7 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
             <select className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none">
               <option>{t("profile.calendar.events.filters.location")}</option>
             </select>
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <div className="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
               <svg
                 className="w-4 h-4 text-gray-400"
                 fill="none"
@@ -126,7 +126,7 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
                 className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-200"
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4 space-x-reverse">
+                  <div className="flex items-center gap-4">
                     <div className="text-sm text-gray-500 font-medium">
                       {formatDate(event.day, locale, {
                         day: "2-digit",
@@ -138,8 +138,11 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
                         {event.about}
                       </h4>
                       <p className="text-sm text-gray-600 mb-2">
-                        {t("profile.calendar.events.card.location")}: {event.place} | {t("profile.calendar.events.card.participants")}:{" "}
-                        {event.participantsCount} | {t("profile.calendar.events.card.time")}: {event.time}
+                        {t("profile.calendar.events.card.location")}:{" "}
+                        {event.place} |{" "}
+                        {t("profile.calendar.events.card.participants")}:{" "}
+                        {event.participantsCount} |{" "}
+                        {t("profile.calendar.events.card.time")}: {event.time}
                       </p>
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getEventTypeColor(
@@ -151,7 +154,7 @@ const EventsTab = ({ events, isLoading, onView, onEdit }) => {
                       </span>
                     </div>
                   </div>
-                  <div className="flex space-x-3 space-x-reverse">
+                  <div className="flex gap-2">
                     <button
                       onClick={() => onView(event)}
                       className="text-blue-600 hover:text-blue-800 text-sm font-medium"

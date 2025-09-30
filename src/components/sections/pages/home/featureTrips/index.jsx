@@ -24,30 +24,30 @@ const FeatureTrips = () => {
 
   return (
     <section>
-      <Container maxWidth="lg" sx={{ paddingInlineEnd: 0 }}>
-        <div className="relative md:me-[-50vw] lg:me-[-33.33vw] lg:pe-[328px]">
-          <Swiper
-            spaceBetween={20}
-            breakpoints={{
-              320: { slidesPerView: 1.2 },
-              480: { slidesPerView: 1.2 },
-              640: { slidesPerView: 1.2 },
-              1024: { slidesPerView: 1.35 },
-            }}
-            pagination={{
-              clickable: true,
-              // dynamicBullets: true,
-            }}
-            modules={[Pagination]}
-            style={{
-              paddingBottom: "50px", // Space for pagination
-            }}
-            className="mySwiper"
-          >
-            {renderedFeatureTrips}
-          </Swiper>
-        </div>
-      </Container>
+      <div className="relative ">
+        <Swiper
+          spaceBetween={20}
+          centeredSlides={true}
+          initialSlide={1}
+          breakpoints={{
+            320: { slidesPerView: 1.2 },
+            480: { slidesPerView: 1.2 },
+            640: { slidesPerView: 1.4 },
+            1024: { slidesPerView: 1.6 },
+          }}
+          pagination={{
+            clickable: true,
+            // dynamicBullets: true,
+          }}
+          modules={[Pagination]}
+          style={{
+            paddingBottom: "50px", // Space for pagination
+          }}
+          className="mySwiper"
+        >
+          {renderedFeatureTrips}
+        </Swiper>
+      </div>
     </section>
   );
 };

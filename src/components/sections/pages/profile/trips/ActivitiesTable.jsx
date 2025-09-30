@@ -50,7 +50,7 @@ const ActivitiesTable = ({
                     {t("profile.tables.activities.header.category")}
                   </th>
 
-                  <th className="px-6 py-4 text-right text-sm font-medium text-gray-700">
+                  <th className="px-6 py-4 text-sm font-medium text-gray-700">
                     {t("profile.tables.orders.studentsTable.actions")}
                   </th>
                 </tr>

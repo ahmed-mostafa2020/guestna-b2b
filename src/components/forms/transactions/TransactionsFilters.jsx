@@ -37,7 +37,7 @@ const TransactionsFilters = ({
   // Extract unique values for filter options from server data (safe access)
   const transactions = data?.nodes || [];
   const uniqueSearchTerms = Array.from(
-    new Set(transactions.map((t) => t.searchTerm || t.name).filter(Boolean))
+    new Set(transactions.map((t) => t.operationName).filter(Boolean))
   );
 
   return (

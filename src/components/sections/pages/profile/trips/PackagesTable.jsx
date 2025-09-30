@@ -22,7 +22,7 @@ const PackagesTable = ({
   const locale = useLocale();
   const t = useTranslations();
   return (
-    <div className="w-full space-y-6" dir="rtl">
+    <div className="w-full space-y-6">
       {/* Desktop Table */}
       <Card
         className="hidden md:block"
@@ -50,7 +50,7 @@ const PackagesTable = ({
                     {t("profile.tables.packages.header.duration")}
                   </th>
 
-                  <th className="px-6 py-4 text-right text-sm font-medium text-gray-700">
+                  <th className="px-6 py-4 text-sm font-medium text-gray-700">
                     {t("profile.tables.orders.studentsTable.actions")}
                   </th>
                 </tr>
