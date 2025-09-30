@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { memo } from "react";
 
 import formatDate from "@utils/FormateDate";
 import formatCurrency from "@utils/FormatCurrency";
-import { exportToExcel, exportModalToPDF } from "@utils/exportUtils";
+import { exportToExcel } from "@utils/exportUtils";
 import StudentsTable from "./StudentsTable";
 import {
   locationIcon,
@@ -17,78 +17,112 @@ import {
   ticketsIcon,
   phoneIcon,
   schoolIcon,
-  printIcon,
 } from "@assets/svg";
 
 const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
   const locale = useLocale();
   const t = useTranslations();
-  const [showExportOptions, setShowExportOptions] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const [isCapturingPDF, setIsCapturingPDF] = useState(false);
-  const [isPrinting, setIsPrinting] = useState(false);
-  const modalRef = useRef(null);
 
   if (!booking) return null;
 
-  const handleExport = async (format) => {
+  // Process bookingDetails to ensure StudentsTable gets the right structure
+  const processedBookingDetails = React.useMemo(() => {
+    if (!bookingDetails) return { nodes: [] };
+
+    let studentsArray = [];
+
+    if (Array.isArray(bookingDetails)) {
+      studentsArray = bookingDetails;
+    } else if (bookingDetails?.nodes && Array.isArray(bookingDetails.nodes)) {
+      studentsArray = bookingDetails.nodes;
+    } else if (
+      bookingDetails?.data?.nodes &&
+      Array.isArray(bookingDetails.data.nodes)
+    ) {
+      studentsArray = bookingDetails.data.nodes;
+    } else if (bookingDetails?.data && Array.isArray(bookingDetails.data)) {
+      studentsArray = bookingDetails.data;
+    } else if (bookingDetails && typeof bookingDetails === "object") {
+      // Look for arrays in the object that contain student-like data
+      const keys = Object.keys(bookingDetails);
+      for (const key of keys) {
+        if (
+          Array.isArray(bookingDetails[key]) &&
+          bookingDetails[key].length > 0
+        ) {
+          const firstItem = bookingDetails[key][0];
+          if (
+            firstItem &&
+            (firstItem.child || firstItem.parent || firstItem.student)
+          ) {
+            studentsArray = bookingDetails[key];
+            break;
+          }
+        }
+      }
+    }
+
+    return { nodes: studentsArray };
+  }, [bookingDetails]);
+
+  const handleExcelExport = async () => {
     setIsExporting(true);
-    setShowExportOptions(false);
 
     try {
-      let result;
-      if (format === "excel") {
-        result = exportToExcel(booking, bookingDetails, t, locale);
-      } else if (format === "pdf") {
-        // Use canvas screenshot approach for PDF
-        if (modalRef.current) {
-          setIsCapturingPDF(true);
-          // Longer delay to ensure all students are rendered
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          result = await exportModalToPDF(modalRef.current, booking, locale);
-          setIsCapturingPDF(false);
-        } else {
-          throw new Error("Modal element not found");
+      // Ensure we're using all students data (not paginated)
+
+      // Handle different possible data structures
+      let studentsArray = [];
+
+      // Extract students array from various possible structures
+      if (Array.isArray(bookingDetails)) {
+        studentsArray = bookingDetails;
+      } else if (bookingDetails?.nodes && Array.isArray(bookingDetails.nodes)) {
+        studentsArray = bookingDetails.nodes;
+      } else if (
+        bookingDetails?.data?.nodes &&
+        Array.isArray(bookingDetails.data.nodes)
+      ) {
+        studentsArray = bookingDetails.data.nodes;
+      } else if (bookingDetails?.data && Array.isArray(bookingDetails.data)) {
+        studentsArray = bookingDetails.data;
+      } else if (bookingDetails && typeof bookingDetails === "object") {
+        // Look for arrays in the object that contain student-like data
+        const keys = Object.keys(bookingDetails);
+        for (const key of keys) {
+          if (
+            Array.isArray(bookingDetails[key]) &&
+            bookingDetails[key].length > 0
+          ) {
+            const firstItem = bookingDetails[key][0];
+            if (
+              firstItem &&
+              (firstItem.child || firstItem.parent || firstItem.student)
+            ) {
+              studentsArray = bookingDetails[key];
+
+              break;
+            }
+          }
         }
       }
 
+      const allStudentsData = { nodes: studentsArray };
+
+      const result = exportToExcel(booking, allStudentsData, t, locale);
+
       if (result.success) {
-        // You can add a success notification here if you have a notification system
-        console.log(`Export successful: ${result.filename}`);
       } else {
-        console.error("Export failed:", result.error);
-        // You can add an error notification here
       }
     } catch (error) {
-      console.error("Export error:", error);
     } finally {
       setIsExporting(false);
     }
   };
 
-  const handlePrint = async () => {
-    setIsPrinting(true);
-    setIsCapturingPDF(true);
-
-    try {
-      // Wait for all students to be rendered
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // Trigger browser print dialog
-      window.print();
-    } catch (error) {
-      console.error("Print error:", error);
-    } finally {
-      setIsPrinting(false);
-      setIsCapturingPDF(false);
-    }
-  };
-
   return (
-    <div
-      ref={modalRef}
-      className="space-y-6 p-6 bg-white mx-auto w-[75%] rounded-xl mb-5"
-    >
+    <div className="space-y-6 p-6 bg-white mx-auto w-[75%] rounded-xl mb-5">
       <h2 className="text-center text-2xl font-semibold">
         {t("profile.tables.orders.bookingDetails.title")} {booking.name}
       </h2>
@@ -254,175 +288,31 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
 
       {/* Students Table */}
       <StudentsTable
-        bookingDetails={bookingDetails}
+        bookingDetails={processedBookingDetails}
         loadingDetails={loadingDetails}
-        showAllForPDF={isCapturingPDF}
       />
 
       {/* Action Buttons */}
       <div className="space-y-3 print:hidden">
-        {/* Print Button */}
+        {/* Excel Export Button */}
         <button
-          onClick={handlePrint}
-          disabled={isPrinting || loadingDetails}
-          className="bg-blue-600 w-full hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          onClick={handleExcelExport}
+          disabled={isExporting || loadingDetails}
+          className="bg-green-600 w-full hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {isPrinting ? (
+          {isExporting ? (
             <>
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              {t("forms.validation.preparing")}
+              {t("forms.validation.downloading")}
             </>
           ) : (
             <>
-              {printIcon}
-              {t("profile.tables.orders.bookingDetails.printReport")}
+              <span className="text-lg">📊</span>
+              {t("profile.tables.orders.bookingDetails.exportExcel")}
             </>
           )}
         </button>
-
-        {/* Export Options */}
-        <div className="relative">
-          <button
-            onClick={() => setShowExportOptions(!showExportOptions)}
-            disabled={isExporting}
-            className="bg-mainColor w-full hover:bg-titleColor text-white px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {isExporting ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                {t("forms.validation.downloading")}
-              </>
-            ) : (
-              <>
-                {t("profile.tables.orders.bookingDetails.exportReport")}
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </>
-            )}
-          </button>
-
-          {showExportOptions && (
-            <div className="absolute bottom-full left-0 right-0 mb-2 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-10">
-              <button
-                onClick={() => handleExport("excel")}
-                className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors flex items-center gap-3"
-              >
-                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                  <span className="text-green-600 text-sm">📊</span>
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900">Excel</p>
-                  <p className="text-sm text-gray-500">
-                    {t("common.export.excel.description")}
-                  </p>
-                </div>
-              </button>
-
-              <button
-                onClick={() => handleExport("pdf")}
-                className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors flex items-center gap-3 border-t border-gray-100"
-              >
-                <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                  <span className="text-red-600 text-sm">📄</span>
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900">PDF</p>
-                  <p className="text-sm text-gray-500">
-                    {t("common.export.pdf.description")}
-                  </p>
-                </div>
-              </button>
-            </div>
-          )}
-        </div>
       </div>
-
-      {/* Print Styles */}
-      <style jsx global>{`
-        @media print {
-          body * {
-            visibility: hidden;
-          }
-
-          /* Show only the modal content */
-          .space-y-6.p-6.bg-white,
-          .space-y-6.p-6.bg-white * {
-            visibility: visible;
-          }
-
-          .space-y-6.p-6.bg-white {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            margin: 0;
-            padding: 20px;
-          }
-
-          /* Hide pagination and action buttons */
-          .print\\:hidden {
-            display: none !important;
-          }
-
-          /* Ensure table is fully visible */
-          table {
-            page-break-inside: auto;
-          }
-
-          tr {
-            page-break-inside: avoid;
-            page-break-after: auto;
-          }
-
-          /* Optimize layout for printing */
-          .grid {
-            display: block !important;
-          }
-
-          .lg\\:grid-cols-2 > div {
-            width: 100% !important;
-            margin-bottom: 20px;
-          }
-
-          /* Ensure all content is visible */
-          .overflow-x-auto {
-            overflow: visible !important;
-          }
-
-          /* Remove shadows and borders for cleaner print */
-          .shadow-card,
-          .shadow-sm,
-          .shadow-lg {
-            box-shadow: none !important;
-          }
-
-          /* Adjust font sizes for print */
-          body {
-            font-size: 12pt;
-          }
-
-          h2 {
-            font-size: 18pt;
-            margin-bottom: 15pt;
-          }
-
-          h3 {
-            font-size: 14pt;
-            margin-bottom: 10pt;
-          }
-        }
-      `}</style>
     </div>
   );
 };

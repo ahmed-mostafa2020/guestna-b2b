@@ -727,6 +727,7 @@
           "participants": "عدد المشاركين",
           "printReport": "طباعة التقرير",
           "exportReport": "تصدير التقرير",
+          "exportExcel": "تصدير إلى Excel",
           "sendDetails": "إرسال التفاصيل"
         },
         "studentsTable": {

@@ -6,11 +6,7 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import { CardContent, Card, CircularProgress } from "@mui/material";
 import Pagination from "@components/common/Pagination";
 
-const StudentsTable = ({
-  bookingDetails,
-  loadingDetails,
-  showAllForPDF = false,
-}) => {
+const StudentsTable = ({ bookingDetails, loadingDetails }) => {
   const t = useTranslations();
 
   // Pagination state
@@ -26,19 +22,7 @@ const StudentsTable = ({
       ? bookingDetails.nodes
       : [];
 
-    // If capturing for PDF, show all students
-    if (showAllForPDF) {
-      return {
-        data: source,
-        pageInfo: {
-          totalPages: 1,
-          currentPage: 1,
-          total: source.length,
-          perPage: source.length,
-        },
-      };
-    }
-
+    // Normal pagination mode
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const data = source.slice(startIndex, endIndex);
@@ -52,7 +36,7 @@ const StudentsTable = ({
     };
 
     return { data, pageInfo };
-  }, [bookingDetails, currentPage, itemsPerPage, showAllForPDF]);
+  }, [bookingDetails, currentPage, itemsPerPage]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -201,7 +185,7 @@ const StudentsTable = ({
           </div>
 
           {/* Pagination Controls */}
-          {paginatedData.pageInfo && !showAllForPDF && (
+          {paginatedData.pageInfo && (
             <Pagination
               pageInfo={paginatedData.pageInfo}
               currentPage={currentPage}

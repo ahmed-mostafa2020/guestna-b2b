@@ -102,6 +102,8 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
     XLSX.utils.book_append_sheet(workbook, tripSheet, labels.tripInfo);
 
     // Students Information Sheet
+    console.log("Excel Export - students count:", bookingDetails?.nodes?.length || 0);
+    
     if (bookingDetails?.nodes?.length > 0) {
       const studentsData = [
         [
@@ -113,7 +115,7 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
         ],
       ];
 
-      bookingDetails.nodes.forEach((student) => {
+      bookingDetails.nodes.forEach((student, index) => {
         studentsData.push([
           student.child?.name || "",
           student.parent?.name || "",
@@ -123,8 +125,11 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
         ]);
       });
 
+      console.log(`Excel Export - Added ${studentsData.length - 1} students to sheet`);
       const studentsSheet = XLSX.utils.aoa_to_sheet(studentsData);
       XLSX.utils.book_append_sheet(workbook, studentsSheet, labels.students);
+    } else {
+      console.log("Excel Export - No students found or empty array");
     }
 
     // Generate filename with booking name and date
@@ -147,8 +152,9 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
  * @param {HTMLElement} modalElement - Modal DOM element to capture
  * @param {Object} booking - Booking data for filename
  * @param {string} locale - Current locale
+ * @param {Function} t - Translation function
  */
-export const exportModalToPDF = async (modalElement, booking, locale) => {
+export const exportModalToPDF = async (modalElement, booking, locale, t) => {
   try {
     // Dynamic import for jsPDF to avoid SSR issues
     const { jsPDF } = await import("jspdf");
@@ -160,17 +166,19 @@ export const exportModalToPDF = async (modalElement, booking, locale) => {
     const canvas = await html2canvas(modalElement, {
       useCORS: true,
       allowTaint: true,
-      scale: 1.5, // Balanced quality and performance
+      scale: 1.2, // Slightly lower scale for better performance with large content
       backgroundColor: "#ffffff",
-      logging: true, // Enable logging to debug
+      logging: false, // Disable logging for cleaner output
       width: modalElement.scrollWidth,
       height: modalElement.scrollHeight,
       scrollX: 0,
       scrollY: 0,
-      foreignObjectRendering: false, // Better table rendering
+      foreignObjectRendering: false,
       removeContainer: false,
-      imageTimeout: 15000,
+      imageTimeout: 30000, // Increased timeout for large tables
       onclone: (clonedDoc, element) => {
+        console.log("PDF Export - Cloning DOM for screenshot...");
+        
         // Force all elements to be visible
         const allElements = clonedDoc.querySelectorAll("*");
         allElements.forEach((el) => {
@@ -184,16 +192,28 @@ export const exportModalToPDF = async (modalElement, booking, locale) => {
           if (style.overflow === "hidden") {
             style.overflow = "visible";
           }
+          if (style.maxHeight) {
+            style.maxHeight = "none";
+          }
         });
 
-        // Specifically handle tables
+        // Specifically handle tables and pagination
         const tables = clonedDoc.querySelectorAll("table, .space-y-4");
         tables.forEach((table) => {
           table.style.display = "block";
           table.style.visibility = "visible";
           table.style.overflow = "visible";
           table.style.maxHeight = "none";
+          table.style.height = "auto";
         });
+        
+        // Hide pagination controls
+        const paginationElements = clonedDoc.querySelectorAll('[class*="pagination"], .print\\:hidden');
+        paginationElements.forEach((el) => {
+          el.style.display = "none";
+        });
+        
+        console.log("PDF Export - DOM cloning completed");
       },
     });
 
@@ -211,20 +231,55 @@ export const exportModalToPDF = async (modalElement, booking, locale) => {
     const imgWidth = canvas.width;
     const imgHeight = canvas.height;
 
-    // Calculate scaling to fit the image in the PDF
-    const ratio = Math.min(
-      pdfWidth / (imgWidth * 0.264583),
-      pdfHeight / (imgHeight * 0.264583)
-    );
-    const scaledWidth = imgWidth * 0.264583 * ratio;
-    const scaledHeight = imgHeight * 0.264583 * ratio;
+    console.log(`PDF Export - Canvas size: ${imgWidth}x${imgHeight}`);
+    console.log(`PDF Export - PDF page size: ${pdfWidth}x${pdfHeight}mm`);
 
-    // Center the image
-    const x = (pdfWidth - scaledWidth) / 2;
-    const y = (pdfHeight - scaledHeight) / 2;
+    // Convert pixels to mm (1 pixel = 0.264583 mm at 96 DPI)
+    const imgWidthMM = imgWidth * 0.264583;
+    const imgHeightMM = imgHeight * 0.264583;
 
-    // Add image to PDF
-    pdf.addImage(imgData, "PNG", x, y, scaledWidth, scaledHeight);
+    // Calculate scaling to fit width, maintain aspect ratio
+    const scale = pdfWidth / imgWidthMM;
+    const scaledWidth = pdfWidth;
+    const scaledHeight = imgHeightMM * scale;
+
+    console.log(`PDF Export - Scaled size: ${scaledWidth}x${scaledHeight}mm`);
+
+    // If content is taller than one page, split into multiple pages
+    if (scaledHeight > pdfHeight) {
+      console.log("PDF Export - Content requires multiple pages");
+      
+      const pagesNeeded = Math.ceil(scaledHeight / pdfHeight);
+      console.log(`PDF Export - Creating ${pagesNeeded} pages`);
+      
+      for (let i = 0; i < pagesNeeded; i++) {
+        if (i > 0) {
+          pdf.addPage();
+        }
+        
+        const sourceY = (i * pdfHeight) / scale;
+        const sourceHeight = Math.min(pdfHeight / scale, imgHeight - sourceY);
+        
+        // Create a temporary canvas for this page section
+        const pageCanvas = document.createElement('canvas');
+        pageCanvas.width = imgWidth;
+        pageCanvas.height = sourceHeight;
+        const pageCtx = pageCanvas.getContext('2d');
+        
+        // Draw the section of the original canvas
+        pageCtx.drawImage(canvas, 0, sourceY, imgWidth, sourceHeight, 0, 0, imgWidth, sourceHeight);
+        
+        const pageImgData = pageCanvas.toDataURL("image/png");
+        const pageHeight = Math.min(pdfHeight, scaledHeight - (i * pdfHeight));
+        
+        pdf.addImage(pageImgData, "PNG", 0, 0, scaledWidth, pageHeight);
+      }
+    } else {
+      // Single page - center the image
+      const x = 0;
+      const y = (pdfHeight - scaledHeight) / 2;
+      pdf.addImage(imgData, "PNG", x, y, scaledWidth, scaledHeight);
+    }
 
     // Generate filename using translation
     const filenamePrefix = t("exportUtils.bookingReport.filename");
