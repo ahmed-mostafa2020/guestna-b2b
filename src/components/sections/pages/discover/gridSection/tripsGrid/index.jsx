@@ -11,7 +11,7 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import TripsCard from "@components/common/trips/TripsCard";
 import Sorting from "./sorting";
-import Pagination from "@components/common/pagination";
+import Pagination from "@components/common/Pagination";
 
 import InfoIcon from "@mui/icons-material/Info";
 

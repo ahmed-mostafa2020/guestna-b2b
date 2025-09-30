@@ -577,6 +577,50 @@ export const createCustomNewTripSchema = (t) =>
     file: Yup.mixed().optional(),
   });
 
+export const createUpdateTripSchema = (t) =>
+  Yup.object().shape({
+    category: Yup.string().required(t("forms.validation.require")),
+    city: Yup.string().required(t("forms.validation.require")),
+    academicStages: Yup.array().min(1, t("forms.validation.require")),
+    availableSeats: Yup.number()
+      .required(t("forms.validation.require"))
+      .min(1, t("forms.customTrip.expectedParticipants.error.min"))
+      .max(1000, t("forms.customTrip.expectedParticipants.error.max")),
+    day: Yup.date()
+      .required(t("forms.validation.require"))
+      .test(
+        "start-before-end",
+        t("forms.customTrip.proposedTripDate.error.startAfterEnd"),
+        function (value) {
+          const { endDay } = this.parent;
+          if (!endDay || !value) return true;
+          return new Date(value) <= new Date(endDay);
+        }
+      ),
+    endDay: Yup.date()
+      .optional()
+      .test(
+        "end-after-start",
+        t("forms.customTrip.proposedTripDate.error.endBeforeStart"),
+        function (value) {
+          const { day } = this.parent;
+          if (!day || !value) return true;
+          return new Date(value) >= new Date(day);
+        }
+      ),
+    services: Yup.array().min(1, t("forms.validation.require")),
+    basePrice: Yup.number()
+      .required(t("forms.validation.require"))
+      .min(1, t("forms.customTrip.price.error.min")),
+    description: Yup.string()
+      .optional()
+      .max(500, t("forms.customTrip.tripDescription.error.max")),
+    specialRequirements: Yup.string()
+      .optional()
+      .max(300, t("forms.customTrip.specialRequirements.error.max")),
+    file: Yup.mixed().optional(),
+  });
+
 export const createAddOrganizationUserSchema = (t) =>
   Yup.object().shape({
     email: Yup.string()
@@ -620,7 +664,9 @@ export const createWithdrawValidationSchema = (t, isBankTransfer) => {
     selectedTripId: Yup.string().required(getValidationMessage("tripRequired")),
 
     withdrawAmount: Yup.number()
-      .required(getValidationMessage("amountRequired") || t("validation.amountRequired"))
+      .required(
+        getValidationMessage("amountRequired") || t("validation.amountRequired")
+      )
       .min(50, getValidationMessage("minAmount") || t("validation.minAmount"))
       .positive("Amount must be positive"),
 
@@ -714,8 +760,7 @@ export const createAddEventSchema = (t) =>
       .min(5, t("profile.calendar.modal.addEvent.validation.about.min"))
       .max(500, t("profile.calendar.modal.addEvent.validation.about.max")),
 
-    happeningType: Yup.string()
-      .required(t("forms.validation.require")),
+    happeningType: Yup.string().required(t("forms.validation.require")),
 
     place: Yup.string()
       .trim()
@@ -725,15 +770,26 @@ export const createAddEventSchema = (t) =>
 
     day: Yup.date()
       .required(t("forms.validation.require"))
-      .min(new Date().toISOString().split('T')[0], t("profile.calendar.modal.addEvent.validation.day.pastDate")),
+      .min(
+        new Date().toISOString().split("T")[0],
+        t("profile.calendar.modal.addEvent.validation.day.pastDate")
+      ),
 
     time: Yup.string()
       .required(t("forms.validation.require"))
-      .matches(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, t("profile.calendar.modal.addEvent.validation.time.format")),
+      .matches(
+        /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
+        t("profile.calendar.modal.addEvent.validation.time.format")
+      ),
 
     participantsCount: Yup.number()
       .required(t("forms.validation.require"))
       .min(1, t("profile.calendar.modal.addEvent.validation.participants.min"))
-      .max(1000, t("profile.calendar.modal.addEvent.validation.participants.max"))
-      .integer(t("profile.calendar.modal.addEvent.validation.participants.integer")),
+      .max(
+        1000,
+        t("profile.calendar.modal.addEvent.validation.participants.max")
+      )
+      .integer(
+        t("profile.calendar.modal.addEvent.validation.participants.integer")
+      ),
   });
