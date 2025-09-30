@@ -726,6 +726,7 @@
           "category": "الفئة",
           "participants": "عدد المشاركين",
           "printReport": "طباعة التقرير",
+          "exportReport": "تصدير التقرير",
           "sendDetails": "إرسال التفاصيل"
         },
         "studentsTable": {

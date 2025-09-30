@@ -12,13 +12,12 @@ import {
   locationIcon,
   timeIcon,
   dateIcon,
-  schoolsIcon,
   profileIcon,
   walletIcon,
   ticketsIcon,
-  companiesIcon,
   phoneIcon,
   schoolIcon,
+  printIcon,
 } from "@assets/svg";
 
 const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
@@ -27,11 +26,10 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
   const [showExportOptions, setShowExportOptions] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isCapturingPDF, setIsCapturingPDF] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
   const modalRef = useRef(null);
 
   if (!booking) return null;
-
-  console.log(bookingDetails);
 
   const handleExport = async (format) => {
     setIsExporting(true);
@@ -65,6 +63,24 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
       console.error("Export error:", error);
     } finally {
       setIsExporting(false);
+    }
+  };
+
+  const handlePrint = async () => {
+    setIsPrinting(true);
+    setIsCapturingPDF(true);
+
+    try {
+      // Wait for all students to be rendered
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // Trigger browser print dialog
+      window.print();
+    } catch (error) {
+      console.error("Print error:", error);
+    } finally {
+      setIsPrinting(false);
+      setIsCapturingPDF(false);
     }
   };
 
@@ -244,7 +260,27 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
       />
 
       {/* Action Buttons */}
-      {booking.status === "DONE" && (
+      <div className="space-y-3 print:hidden">
+        {/* Print Button */}
+        <button
+          onClick={handlePrint}
+          disabled={isPrinting || loadingDetails}
+          className="bg-blue-600 w-full hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          {isPrinting ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              {t("forms.validation.preparing")}
+            </>
+          ) : (
+            <>
+              {printIcon}
+              {t("profile.tables.orders.bookingDetails.printReport")}
+            </>
+          )}
+        </button>
+
+        {/* Export Options */}
         <div className="relative">
           <button
             onClick={() => setShowExportOptions(!showExportOptions)}
@@ -258,7 +294,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
               </>
             ) : (
               <>
-                {t("profile.tables.orders.bookingDetails.printReport")}
+                {t("profile.tables.orders.bookingDetails.exportReport")}
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -310,7 +346,83 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
             </div>
           )}
         </div>
-      )}
+      </div>
+
+      {/* Print Styles */}
+      <style jsx global>{`
+        @media print {
+          body * {
+            visibility: hidden;
+          }
+
+          /* Show only the modal content */
+          .space-y-6.p-6.bg-white,
+          .space-y-6.p-6.bg-white * {
+            visibility: visible;
+          }
+
+          .space-y-6.p-6.bg-white {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            margin: 0;
+            padding: 20px;
+          }
+
+          /* Hide pagination and action buttons */
+          .print\\:hidden {
+            display: none !important;
+          }
+
+          /* Ensure table is fully visible */
+          table {
+            page-break-inside: auto;
+          }
+
+          tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+          }
+
+          /* Optimize layout for printing */
+          .grid {
+            display: block !important;
+          }
+
+          .lg\\:grid-cols-2 > div {
+            width: 100% !important;
+            margin-bottom: 20px;
+          }
+
+          /* Ensure all content is visible */
+          .overflow-x-auto {
+            overflow: visible !important;
+          }
+
+          /* Remove shadows and borders for cleaner print */
+          .shadow-card,
+          .shadow-sm,
+          .shadow-lg {
+            box-shadow: none !important;
+          }
+
+          /* Adjust font sizes for print */
+          body {
+            font-size: 12pt;
+          }
+
+          h2 {
+            font-size: 18pt;
+            margin-bottom: 15pt;
+          }
+
+          h3 {
+            font-size: 14pt;
+            margin-bottom: 10pt;
+          }
+        }
+      `}</style>
     </div>
   );
 };

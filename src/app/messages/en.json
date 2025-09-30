@@ -729,6 +729,7 @@
           "category": "Category",
           "participants": "Participants",
           "printReport": "Print Report",
+          "exportReport": "Export Report",
           "sendDetails": "Send Details"
         },
         "studentsTable": {
@@ -1611,13 +1612,13 @@
     "validation": {
       "require": "This field is required",
       "sending": "Sending Now ...",
-      "downloading": "Downloading Now ...",
+      "downloading": "Downloading...",
+      "preparing": "Preparing..., Now ...",
       "success": "Your data has been sent successfully",
       "reminderSentSuccessfully": "Reminder sent successfully",
       "addedToFavorites": "Added to favorites successfully",
       "checkYourEmail": "Please, Check your gmail",
       "addGuest": "Add Guest first please",
-      "registerChild": "Please register your student in a trip first",
       "thanksMessage": "Thank You!",
       "willContactYou": "Your contact request has been sent, we will respond to you shortly.",
       "svg": "SVG images are not allowed",
