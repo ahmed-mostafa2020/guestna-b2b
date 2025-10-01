@@ -12,16 +12,39 @@ import getProxyUrl from "@utils/getProxyUrl";
 import { createChildImageUploadSchema } from "@utils/validationSchemas";
 
 import FileUploadGroup from "../FileUploadGroup";
+import SelectionGroup from "../SelectionGroup";
+import TextInputGroup from "../TextInputGroup";
 import { CircularProgress } from "@mui/material";
 
-const ChildImageUploadForm = ({ clientId, childId, childData, onSuccess }) => {
+const ChildImageUploadForm = ({ clientId, childId, onSuccess }) => {
   const t = useTranslations();
   const { enqueueSnackbar } = useSnackbar();
   const [uploadStatus, setUploadStatus] = useState(null);
 
+  // Define selection options
+  const sizeOptions = [
+    t("confirmingData.form.options.sizes.S"),
+    t("confirmingData.form.options.sizes.M"),
+    t("confirmingData.form.options.sizes.L"),
+    t("confirmingData.form.options.sizes.XL"),
+  ];
+
+  const sizeValues = ["S", "M", "L", "XL"];
+
+  const foodAllergyOptions = [
+    t("confirmingData.form.options.foodAllergy.yes"),
+    t("confirmingData.form.options.foodAllergy.no"),
+  ];
+
+  const foodAllergyValues = ["yes", "no"];
+
   // Initial form values
   const initialValues = {
     file: null,
+    size: "",
+    foodAllergy: "",
+    foodAllergyDetails: "",
+    generalNotes: "",
   };
 
   // Submit handler
@@ -30,11 +53,8 @@ const ChildImageUploadForm = ({ clientId, childId, childData, onSuccess }) => {
 
     try {
       if (!values.file) {
-        setFieldError(
-          "file",
-          t("confirmingData.form.validation.imageRequired")
-        );
-        enqueueSnackbar(t("confirmingData.form.validation.imageRequired"), {
+        setFieldError("file", t("confirmingData.form.validation.fileRequired"));
+        enqueueSnackbar(t("confirmingData.form.validation.fileRequired"), {
           variant: "error",
         });
         return;
@@ -48,6 +68,14 @@ const ChildImageUploadForm = ({ clientId, childId, childData, onSuccess }) => {
       // Create FormData for file upload
       const formData = new FormData();
       formData.append("file", values.file);
+      formData.append("size", values.size);
+      formData.append("foodAllergy", values.foodAllergy);
+      if (values.foodAllergy === "yes" && values.foodAllergyDetails) {
+        formData.append("foodAllergyDetails", values.foodAllergyDetails);
+      }
+      if (values.generalNotes) {
+        formData.append("generalNotes", values.generalNotes);
+      }
 
       setUploadStatus("uploading");
 
@@ -65,7 +93,7 @@ const ChildImageUploadForm = ({ clientId, childId, childData, onSuccess }) => {
         setUploadStatus("success");
 
         // Show success snackbar
-        enqueueSnackbar(t("confirmingData.form.success.imageUploaded"), {
+        enqueueSnackbar(t("confirmingData.form.success.dataSaved"), {
           variant: "success",
         });
 
@@ -75,7 +103,7 @@ const ChildImageUploadForm = ({ clientId, childId, childData, onSuccess }) => {
         }
       } else {
         setUploadStatus("error");
-        enqueueSnackbar(t("confirmingData.form.errors.uploadFailed"), {
+        enqueueSnackbar(t("confirmingData.form.errors.saveFailed"), {
           variant: "error",
         });
       }
@@ -105,6 +133,9 @@ const ChildImageUploadForm = ({ clientId, childId, childData, onSuccess }) => {
         initialValues={initialValues}
         validationSchema={createChildImageUploadSchema(t)}
         onSubmit={handleSubmit}
+        validateOnChange={true}
+        validateOnBlur={true}
+        validateOnMount={false}
       >
         {({
           values,
@@ -113,18 +144,19 @@ const ChildImageUploadForm = ({ clientId, childId, childData, onSuccess }) => {
           setFieldValue,
           setFieldTouched,
           isSubmitting,
+          isValid,
         }) => (
           <Form>
             <div className="space-y-6">
-              {/* Upload Status - Keep for visual feedback during upload */}
-              {/* {uploadStatus === "uploading" && (
+              {/* Upload Status - Keep for visual feedback during saving */}
+              {uploadStatus === "uploading" && (
                 <div className="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                   <CircularProgress size={20} />
                   <span className="text-blue-700">
-                    {t("confirmingData.form.status.uploading")}
+                    {t("confirmingData.form.status.saving")}
                   </span>
                 </div>
-              )} */}
+              )}
 
               {/* Instructions */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -140,9 +172,9 @@ const ChildImageUploadForm = ({ clientId, childId, childData, onSuccess }) => {
 
               {/* File Upload */}
               <FileUploadGroup
-                label={t("confirmingData.form.fields.image")}
+                label={t("confirmingData.form.fields.file")}
                 name="file"
-                placeholder={t("confirmingData.form.fields.imagePlaceholder")}
+                placeholder={t("confirmingData.form.fields.filePlaceholder")}
                 accept="image/*"
                 maxSizeInMB={5}
                 allowedTypes={[
@@ -158,13 +190,125 @@ const ChildImageUploadForm = ({ clientId, childId, childData, onSuccess }) => {
                 onFileChange={(e) => {
                   const file = e.target.files && e.target.files[0];
                   setFieldValue("file", file);
-                  setFieldTouched("file", true);
                 }}
                 onBlur={() => setFieldTouched("file", true)}
               />
 
+              {/* Student Size */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium pb-2">
+                  {t("confirmingData.form.fields.size")}
+                  <span className="text-red-500 ml-1">*</span>
+                </label>
+                <SelectionGroup
+                  name="size"
+                  value={
+                    values.size
+                      ? sizeOptions[sizeValues.indexOf(values.size)]
+                      : ""
+                  }
+                  placeholder={t("confirmingData.form.fields.sizePlaceholder")}
+                  list={sizeOptions}
+                  errors={errors.size}
+                  touched={touched.size}
+                  onChange={(e) => {
+                    const selectedIndex = sizeOptions.indexOf(e.target.value);
+                    const actualValue =
+                      selectedIndex >= 0 ? sizeValues[selectedIndex] : "";
+                    setFieldValue("size", actualValue);
+                  }}
+                  onBlur={() => setFieldTouched("size", true)}
+                />
+              </div>
+
+              {/* Food Allergy */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium pb-2">
+                  {t("confirmingData.form.fields.foodAllergy")}
+                  <span className="text-red-500 ml-1">*</span>
+                </label>
+                <SelectionGroup
+                  name="foodAllergy"
+                  value={
+                    values.foodAllergy
+                      ? foodAllergyOptions[
+                          foodAllergyValues.indexOf(values.foodAllergy)
+                        ]
+                      : ""
+                  }
+                  placeholder={t("confirmingData.form.fields.foodAllergy")}
+                  list={foodAllergyOptions}
+                  errors={errors.foodAllergy}
+                  touched={touched.foodAllergy}
+                  onChange={(e) => {
+                    const selectedIndex = foodAllergyOptions.indexOf(
+                      e.target.value
+                    );
+                    const actualValue =
+                      selectedIndex >= 0
+                        ? foodAllergyValues[selectedIndex]
+                        : "";
+                    setFieldValue("foodAllergy", actualValue);
+                    // Clear allergy details if "no" is selected
+                    if (actualValue === "no") {
+                      setFieldValue("foodAllergyDetails", "");
+                    }
+                  }}
+                  onBlur={() => setFieldTouched("foodAllergy", true)}
+                />
+              </div>
+
+              {/* Food Allergy Details - Show only if "yes" is selected */}
+              {values.foodAllergy === "yes" && (
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium pb-2">
+                    {t("confirmingData.form.fields.foodAllergyDetails")}
+                    <span className="text-red-500 ml-1">*</span>
+                  </label>
+                  <TextInputGroup
+                    name="foodAllergyDetails"
+                    value={values.foodAllergyDetails}
+                    placeholder={t(
+                      "confirmingData.form.fields.foodAllergyDetailsPlaceholder"
+                    )}
+                    errors={errors.foodAllergyDetails}
+                    touched={touched.foodAllergyDetails}
+                    required={true}
+                    textarea={true}
+                    rows={3}
+                    onChange={(e) => {
+                      setFieldValue("foodAllergyDetails", e.target.value);
+                    }}
+                    onBlur={() => setFieldTouched("foodAllergyDetails", true)}
+                  />
+                </div>
+              )}
+
+              {/* General Notes */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium ">
+                  {t("confirmingData.form.fields.generalNotes")}
+                </label>
+                <TextInputGroup
+                  name="generalNotes"
+                  value={values.generalNotes}
+                  placeholder={t(
+                    "confirmingData.form.fields.generalNotesPlaceholder"
+                  )}
+                  errors={errors.generalNotes}
+                  touched={touched.generalNotes}
+                  required={false}
+                  textarea={true}
+                  rows={4}
+                  onChange={(e) => {
+                    setFieldValue("generalNotes", e.target.value);
+                  }}
+                  onBlur={() => setFieldTouched("generalNotes", true)}
+                />
+              </div>
+
               {/* Child Info Reminder */}
-              {childData && (
+              {/* {childData && (
                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                   <p className="text-sm text-gray-600">
                     {t("confirmingData.form.reminder", {
@@ -174,15 +318,15 @@ const ChildImageUploadForm = ({ clientId, childId, childData, onSuccess }) => {
                     })}
                   </p>
                 </div>
-              )}
+              )} */}
 
               {/* Submit Button */}
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  disabled={isSubmitting || !values.file}
+                  disabled={!isValid || isSubmitting}
                   className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
-                    isSubmitting || !values.file
+                    !isValid || isSubmitting
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                       : "bg-mainColor text-white hover:bg-linksHover focus:ring-2 focus:ring-mainColor focus:ring-offset-2"
                   }`}
@@ -190,10 +334,10 @@ const ChildImageUploadForm = ({ clientId, childId, childData, onSuccess }) => {
                   {isSubmitting ? (
                     <div className="flex items-center gap-2">
                       <CircularProgress size={16} color="inherit" />
-                      {t("confirmingData.form.actions.uploading")}
+                      {t("confirmingData.form.actions.submitting")}
                     </div>
                   ) : (
-                    t("confirmingData.form.actions.upload")
+                    t("confirmingData.form.actions.submit")
                   )}
                 </button>
               </div>

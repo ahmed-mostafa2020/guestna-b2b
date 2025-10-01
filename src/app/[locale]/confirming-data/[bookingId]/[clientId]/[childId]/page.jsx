@@ -61,19 +61,6 @@ const ConfirmingDataPage = () => {
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">
-        {/* Image Upload Form */}
-        <ChildImageUploadForm
-          bookingId={bookingId}
-          clientId={clientId}
-          childId={childId}
-          childData={childData}
-          onSuccess={() => {
-            // Optionally refetch data or show success message
-            refetch();
-          }}
-          v
-        />
-
         <div className="bg-white border mt-4 border-gray-200 rounded-lg shadow-lg p-6">
           <h1 className="text-2xl font-bold text-gray-900 pb-6">
             {t("confirmingData.title")}
@@ -222,6 +209,18 @@ const ConfirmingDataPage = () => {
               )}
             </div>
           )}
+
+          {/* Image Upload Form */}
+          <ChildImageUploadForm
+            bookingId={bookingId}
+            clientId={clientId}
+            childId={childId}
+            childData={childData}
+            onSuccess={() => {
+              // Optionally refetch data or show success message
+              refetch();
+            }}
+          />
         </div>
       </div>
     </main>

@@ -792,11 +792,11 @@ export const createAddEventSchema = (t) =>
       ),
   });
 
-// Child Image Upload Schema
+// Student Information Completion Schema
 export const createChildImageUploadSchema = (t) =>
   Yup.object().shape({
     file: Yup.mixed()
-      .required(t("confirmingData.form.validation.imageRequired"))
+      .required(t("confirmingData.form.validation.fileRequired"))
       .test(
         "fileSize",
         t("confirmingData.form.validation.fileSizeError"),
@@ -814,4 +814,20 @@ export const createChildImageUploadSchema = (t) =>
           return allowedTypes.includes(value.type);
         }
       ),
+    size: Yup.string()
+      .required(t("confirmingData.form.validation.sizeRequired")),
+    foodAllergy: Yup.string()
+      .required(t("confirmingData.form.validation.foodAllergyRequired")),
+    foodAllergyDetails: Yup.string()
+      .when("foodAllergy", {
+        is: "yes",
+        then: (schema) => schema
+          .required(t("confirmingData.form.validation.foodAllergyDetailsRequired"))
+          .min(3, t("confirmingData.form.validation.foodAllergyDetailsMin"))
+          .max(200, t("confirmingData.form.validation.foodAllergyDetailsMax")),
+        otherwise: (schema) => schema.notRequired()
+      }),
+    generalNotes: Yup.string()
+      .max(500, t("confirmingData.form.validation.generalNotesMax"))
+      .notRequired(),
   });

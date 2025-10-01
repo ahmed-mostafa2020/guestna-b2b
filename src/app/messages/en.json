@@ -1744,37 +1744,62 @@
       "nationalIdImage": "National ID Image"
     },
     "form": {
-      "title": "Upload Student Image",
+      "title": "Complete Student Information",
       "fields": {
-        "image": "Student Image",
-        "imagePlaceholder": "Select student image file..."
+        "file": "Student ID",
+        "filePlaceholder": "Select student ID file...",
+        "size": "Student Size",
+        "sizePlaceholder": "Select student size",
+        "foodAllergy": "Food Allergy",
+        "foodAllergyDetails": "Allergy Details",
+        "foodAllergyDetailsPlaceholder": "Specify the type of allergy...",
+        "generalNotes": "General Notes",
+        "generalNotesPlaceholder": "Add any additional notes..."
+      },
+      "options": {
+        "sizes": {
+          "S": "Small (S)",
+          "M": "Medium (M)",
+          "L": "Large (L)",
+          "XL": "Extra Large (XL)"
+        },
+        "foodAllergy": {
+          "yes": "Yes",
+          "no": "No"
+        }
       },
       "instructions": {
-        "title": "Image Requirements",
-        "format": "Accepted formats: JPG, PNG, WEBP",
+        "title": "Information Completion Instructions",
+        "format": "Accepted ID formats: JPG, PNG, WEBP",
         "size": "Maximum file size: 5MB",
-        "quality": "Please ensure the image is clear and recent"
+        "quality": "Please fill all required fields accurately"
       },
       "actions": {
-        "upload": "Upload Image",
-        "uploading": "Uploading..."
+        "submit": "Save Information",
+        "submitting": "Saving..."
       },
       "status": {
-        "uploading": "Uploading image, please wait...",
-        "success": "Image uploaded successfully!",
-        "error": "Failed to upload image"
+        "saving": "Saving information, please wait...",
+        "success": "Information saved successfully!",
+        "error": "Failed to save information"
       },
       "success": {
-        "imageUploaded": "Student image has been uploaded successfully!"
+        "dataSaved": "Student information has been saved successfully!"
       },
       "errors": {
-        "uploadFailed": "Failed to upload image. Please try again.",
-        "generalError": "An error occurred while uploading the image."
+        "saveFailed": "Failed to save information. Please try again.",
+        "generalError": "An error occurred while saving the information."
       },
       "validation": {
-        "imageRequired": "Please select an image file",
+        "fileRequired": "Please select an ID file",
         "fileSizeError": "File size must be less than 5MB",
-        "fileTypeError": "Only JPG, PNG, and WEBP files are allowed"
+        "fileTypeError": "Only JPG, PNG, and WEBP files are allowed",
+        "sizeRequired": "Please select student size",
+        "foodAllergyRequired": "Please specify if student has food allergies",
+        "foodAllergyDetailsRequired": "Please provide allergy details",
+        "foodAllergyDetailsMin": "Allergy details must be at least 3 characters",
+        "foodAllergyDetailsMax": "Allergy details must be less than 200 characters",
+        "generalNotesMax": "General notes must be less than 500 characters"
       },
       "reminder": "You are uploading an image for student: {childName}",
       "unknownStudent": "Unknown Student"

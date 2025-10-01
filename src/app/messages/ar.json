@@ -1732,37 +1732,62 @@
       "nationalIdImage": "صورة الهوية"
     },
     "form": {
-      "title": "رفع صورة الطالب",
+      "title": "استكمال معلومات الطالب",
       "fields": {
-        "image": "صورة الطالب",
-        "imagePlaceholder": "اختر ملف صورة الطالب..."
+        "file": "هوية الطالب",
+        "filePlaceholder": "اختر ملف هوية الطالب...",
+        "size": "مقاس الطالب",
+        "sizePlaceholder": "اختر مقاس الطالب",
+        "foodAllergy": "حساسية الطعام",
+        "foodAllergyDetails": "تفاصيل الحساسية",
+        "foodAllergyDetailsPlaceholder": "اذكر نوع الحساسية...",
+        "generalNotes": "ملاحظات عامة",
+        "generalNotesPlaceholder": "أضف أي ملاحظات إضافية..."
+      },
+      "options": {
+        "sizes": {
+          "S": "صغير (S)",
+          "M": "متوسط (M)", 
+          "L": "كبير (L)",
+          "XL": "كبير جداً (XL)"
+        },
+        "foodAllergy": {
+          "yes": "نعم",
+          "no": "لا"
+        }
       },
       "instructions": {
-        "title": "متطلبات الصورة",
-        "format": "الصيغ المقبولة: JPG, PNG, WEBP",
+        "title": "تعليمات استكمال المعلومات",
+        "format": "الصيغ المقبولة للهوية: JPG, PNG, WEBP",
         "size": "الحد الأقصى لحجم الملف: 5 ميجابايت",
-        "quality": "يرجى التأكد من أن الصورة واضحة وحديثة"
+        "quality": "يرجى ملء جميع الحقول المطلوبة بدقة"
       },
       "actions": {
-        "upload": "رفع الصورة",
-        "uploading": "جاري الرفع..."
+        "submit": "حفظ المعلومات",
+        "submitting": "جاري الحفظ..."
       },
       "status": {
-        "uploading": "جاري رفع الصورة، يرجى الانتظار...",
-        "success": "تم رفع الصورة بنجاح!",
-        "error": "فشل في رفع الصورة"
+        "saving": "جاري حفظ المعلومات، يرجى الانتظار...",
+        "success": "تم حفظ المعلومات بنجاح!",
+        "error": "فشل في حفظ المعلومات"
       },
       "success": {
-        "imageUploaded": "تم رفع صورة الطالب بنجاح!"
+        "dataSaved": "تم حفظ معلومات الطالب بنجاح!"
       },
       "errors": {
-        "uploadFailed": "فشل في رفع الصورة. يرجى المحاولة مرة أخرى.",
-        "generalError": "حدث خطأ أثناء رفع الصورة."
+        "saveFailed": "فشل في حفظ المعلومات. يرجى المحاولة مرة أخرى.",
+        "generalError": "حدث خطأ أثناء حفظ المعلومات."
       },
       "validation": {
-        "imageRequired": "يرجى اختيار ملف صورة",
+        "fileRequired": "يرجى اختيار ملف الهوية",
         "fileSizeError": "يجب أن يكون حجم الملف أقل من 5 ميجابايت",
-        "fileTypeError": "يُسمح فقط بملفات JPG و PNG و WEBP"
+        "fileTypeError": "يُسمح فقط بملفات JPG و PNG و WEBP",
+        "sizeRequired": "يرجى اختيار مقاس الطالب",
+        "foodAllergyRequired": "يرجى تحديد ما إذا كان لديه حساسية طعام",
+        "foodAllergyDetailsRequired": "يرجى ذكر تفاصيل الحساسية",
+        "foodAllergyDetailsMin": "يجب أن تكون تفاصيل الحساسية على الأقل 3 أحرف",
+        "foodAllergyDetailsMax": "يجب أن تكون تفاصيل الحساسية أقل من 200 حرف",
+        "generalNotesMax": "يجب أن تكون الملاحظات أقل من 500 حرف"
       },
       "reminder": "أنت تقوم برفع صورة للطالب: {childName}",
       "unknownStudent": "طالب غير معروف"
