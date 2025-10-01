@@ -73,6 +73,8 @@ export const B2B_END_POINTS = {
     BOOKINGS_MANAGEMENT: {
       BOOKINGS: "profile/organizationTrips/all",
       BOOKING_DETAILS: "profile/bookings/info",
+      CHILD_INFO: "profile/bookings/reClintinfo",
+      CHILD_IMAGE_UPLOAD: "profile/bookings/image",
 
       RPORTS: "profile/organizationTrips/report/all",
       SURVEY: "surveys/new",

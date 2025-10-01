@@ -186,6 +186,7 @@
       "users": "Users",
       "contactUs": "Contact Us",
       "faq": "FAQ",
+      "confirmingData": "Confirming Data",
       "error": "404: This page could not be found"
     }
   },
@@ -1717,6 +1718,52 @@
       "attachFile": {
         "label": "Attach File"
       }
+    }
+  },
+  "confirmingData": {
+    "title": "Child Information Confirmation",
+    "childInfo": {
+      "title": "Child Details",
+      "name": "Name",
+      "age": "Age",
+      "grade": "Grade",
+      "school": "School"
+    },
+    "form": {
+      "title": "Upload Child Image",
+      "fields": {
+        "image": "Child Image",
+        "imagePlaceholder": "Select child image file..."
+      },
+      "instructions": {
+        "title": "Image Requirements",
+        "format": "Accepted formats: JPG, PNG, WEBP",
+        "size": "Maximum file size: 5MB",
+        "quality": "Please ensure the image is clear and recent"
+      },
+      "actions": {
+        "upload": "Upload Image",
+        "uploading": "Uploading..."
+      },
+      "status": {
+        "uploading": "Uploading image, please wait...",
+        "success": "Image uploaded successfully!",
+        "error": "Failed to upload image"
+      },
+      "success": {
+        "imageUploaded": "Child image has been uploaded successfully!"
+      },
+      "errors": {
+        "uploadFailed": "Failed to upload image. Please try again.",
+        "generalError": "An error occurred while uploading the image."
+      },
+      "validation": {
+        "imageRequired": "Please select an image file",
+        "fileSizeError": "File size must be less than 5MB",
+        "fileTypeError": "Only JPG, PNG, and WEBP files are allowed"
+      },
+      "reminder": "You are uploading an image for: {childName}",
+      "unknownChild": "Unknown Child"
     }
   },
   "footer": {

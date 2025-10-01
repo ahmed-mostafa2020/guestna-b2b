@@ -791,3 +791,27 @@ export const createAddEventSchema = (t) =>
         t("profile.calendar.modal.addEvent.validation.participants.integer")
       ),
   });
+
+// Child Image Upload Schema
+export const createChildImageUploadSchema = (t) =>
+  Yup.object().shape({
+    image: Yup.mixed()
+      .required(t("confirmingData.form.validation.imageRequired"))
+      .test(
+        "fileSize",
+        t("confirmingData.form.validation.fileSizeError"),
+        (value) => {
+          if (!value) return true; // Let required validation handle this
+          return value.size <= 5 * 1024 * 1024; // 5MB max
+        }
+      )
+      .test(
+        "fileType",
+        t("confirmingData.form.validation.fileTypeError"),
+        (value) => {
+          if (!value) return true; // Let required validation handle this
+          const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+          return allowedTypes.includes(value.type);
+        }
+      ),
+  });

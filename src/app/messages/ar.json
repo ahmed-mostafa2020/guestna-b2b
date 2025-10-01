@@ -185,6 +185,7 @@
       "users": "المستخدمون",
       "contactUs": "تواصل معنا",
       "faq": "الأسئلة الشائعة",
+      "confirmingData": "تأكيد البيانات",
       "error": "404 : لم يتم العثور على هذه الصفحة"
     }
   },
@@ -1705,6 +1706,52 @@
       "attachFile": {
         "label": "إرفاق ملف"
       }
+    }
+  },
+  "confirmingData": {
+    "title": "تأكيد معلومات الطفل",
+    "childInfo": {
+      "title": "تفاصيل الطفل",
+      "name": "الاسم",
+      "age": "العمر",
+      "grade": "الصف",
+      "school": "المدرسة"
+    },
+    "form": {
+      "title": "رفع صورة الطفل",
+      "fields": {
+        "image": "صورة الطفل",
+        "imagePlaceholder": "اختر ملف صورة الطفل..."
+      },
+      "instructions": {
+        "title": "متطلبات الصورة",
+        "format": "الصيغ المقبولة: JPG, PNG, WEBP",
+        "size": "الحد الأقصى لحجم الملف: 5 ميجابايت",
+        "quality": "يرجى التأكد من أن الصورة واضحة وحديثة"
+      },
+      "actions": {
+        "upload": "رفع الصورة",
+        "uploading": "جاري الرفع..."
+      },
+      "status": {
+        "uploading": "جاري رفع الصورة، يرجى الانتظار...",
+        "success": "تم رفع الصورة بنجاح!",
+        "error": "فشل في رفع الصورة"
+      },
+      "success": {
+        "imageUploaded": "تم رفع صورة الطفل بنجاح!"
+      },
+      "errors": {
+        "uploadFailed": "فشل في رفع الصورة. يرجى المحاولة مرة أخرى.",
+        "generalError": "حدث خطأ أثناء رفع الصورة."
+      },
+      "validation": {
+        "imageRequired": "يرجى اختيار ملف صورة",
+        "fileSizeError": "يجب أن يكون حجم الملف أقل من 5 ميجابايت",
+        "fileTypeError": "يُسمح فقط بملفات JPG و PNG و WEBP"
+      },
+      "reminder": "أنت تقوم برفع صورة لـ: {childName}",
+      "unknownChild": "طفل غير معروف"
     }
   },
   "footer": {
