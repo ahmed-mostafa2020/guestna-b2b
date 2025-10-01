@@ -70,19 +70,19 @@ const StudentsTable = ({ bookingDetails, loadingDetails }) => {
                 <table className="w-full">
                   <thead>
                     <tr>
-                      <th className="px-6 py-4 text-sm font-medium text-gray-700">
+                      <th className="px-6 py-4 text-start text-sm font-medium text-gray-700">
                         {t("profile.tables.orders.studentsTable.studentName")}
                       </th>
-                      <th className="px-6 py-4 text-sm font-medium text-gray-700">
+                      <th className="px-6 py-4 text-start text-sm font-medium text-gray-700">
                         {t("profile.tables.orders.studentsTable.parentName")}
                       </th>
-                      <th className="px-6 py-4 text-sm font-medium text-gray-700">
+                      <th className="px-6 py-4 text-start text-sm font-medium text-gray-700">
                         {t("profile.tables.orders.studentsTable.grade")}
                       </th>
-                      <th className="px-6 py-4 text-sm font-medium text-gray-700">
+                      <th className="px-6 py-4 text-start text-sm font-medium text-gray-700">
                         {t("profile.tables.orders.studentsTable.parentPhone")}
                       </th>
-                      <th className="px-6 py-4 text-sm font-medium text-gray-700">
+                      <th className="px-6 py-4 text-start text-sm font-medium text-gray-700">
                         {t("profile.tables.orders.studentsTable.nationalId")}
                       </th>
                     </tr>

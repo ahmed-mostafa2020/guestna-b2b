@@ -50,7 +50,7 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className=" bg-table-header">
+                  <tr className=" bg-table-header border-b-2 border-tableRowBorder">
                     <th className="px-6 py-4 font-medium text-start">
                       {t("profile.tables.bookings.header.schoolName")}
                     </th>
@@ -174,7 +174,7 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
 
                 <div className="space-y-2">
                   <div className="flex gap-[6px] items-center justify-end">
-                    {booking.survey && (
+                    {!booking.survey && (
                       <button
                         disabled={booking.status !== TRIP_STATUS.PENDING}
                         onClick={() => handleSurveyFormOpen(booking)}
@@ -186,11 +186,11 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
 
                     <button
                       disabled={true}
-                      // disabled={booking.survey}
+                      // disabled={!booking.survey}
                       className={`${
-                        booking.survey && "flex-1"
+                        !booking.survey ? "flex-1" : "w-full"
                       } disabled:opacity-70 disabled:cursor-not-allowed rounded-md text-sm px-4 py-2 border border-secColor transition-all duration-200 ease-in-out ${
-                        booking.survey
+                        !booking.survey
                           ? "opacity-70 cursor-not-allowed text-gray-700 border-gray-300"
                           : "hover:text-mainColor hover:border-mainColor"
                       }`}
