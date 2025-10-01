@@ -1,9 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Formik, Form } from "formik";
-import { useState } from "react";
 import axios from "axios";
+import { useSnackbar } from "notistack";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { getHeaders } from "@utils/getHeaders";
@@ -13,48 +14,40 @@ import { createChildImageUploadSchema } from "@utils/validationSchemas";
 import FileUploadGroup from "../FileUploadGroup";
 import { CircularProgress } from "@mui/material";
 
-const ChildImageUploadForm = ({
-  bookingId,
-  clientId,
-  childId,
-  childData,
-  onSuccess,
-}) => {
-  console.log(childData);
+const ChildImageUploadForm = ({ clientId, childId, childData, onSuccess }) => {
   const t = useTranslations();
+  const { enqueueSnackbar } = useSnackbar();
   const [uploadStatus, setUploadStatus] = useState(null);
 
   // Initial form values
   const initialValues = {
-    image: null,
+    file: null,
   };
 
   // Submit handler
-  const handleSubmit = async (
-    values,
-    { setSubmitting, setStatus, setFieldError }
-  ) => {
-    setStatus(null);
+  const handleSubmit = async (values, { setSubmitting, setFieldError }) => {
     setUploadStatus(null);
 
     try {
-      if (!values.image) {
+      if (!values.file) {
         setFieldError(
-          "image",
+          "file",
           t("confirmingData.form.validation.imageRequired")
         );
+        enqueueSnackbar(t("confirmingData.form.validation.imageRequired"), {
+          variant: "error",
+        });
         return;
       }
 
       const headers = getHeaders();
       const url = getProxyUrl(
-        `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.CHILD_IMAGE_UPLOAD}/${bookingId}/${clientId}`
+        `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.CHILD_IMAGE_UPLOAD}/${clientId}/${childId}`
       );
 
       // Create FormData for file upload
       const formData = new FormData();
-      formData.append("image", values.image);
-      formData.append("childId", childId);
+      formData.append("file", values.file);
 
       setUploadStatus("uploading");
 
@@ -68,11 +61,12 @@ const ChildImageUploadForm = ({
         data: formData,
       });
 
-      if (response.status === 200 || response.status === 201) {
+      if (response.status === 200) {
         setUploadStatus("success");
-        setStatus({
-          type: "success",
-          message: t("confirmingData.form.success.imageUploaded"),
+
+        // Show success snackbar
+        enqueueSnackbar(t("confirmingData.form.success.imageUploaded"), {
+          variant: "success",
         });
 
         // Call success callback
@@ -81,26 +75,21 @@ const ChildImageUploadForm = ({
         }
       } else {
         setUploadStatus("error");
-        setStatus({
-          type: "error",
-          message: t("confirmingData.form.errors.uploadFailed"),
+        enqueueSnackbar(t("confirmingData.form.errors.uploadFailed"), {
+          variant: "error",
         });
       }
     } catch (error) {
       console.error("Error uploading image:", error);
       setUploadStatus("error");
 
-      if (error.response?.data?.message) {
-        setStatus({
-          type: "error",
-          message: error.response.data.message,
-        });
-      } else {
-        setStatus({
-          type: "error",
-          message: t("confirmingData.form.errors.generalError"),
-        });
-      }
+      const errorMessage =
+        error.response?.data?.message ||
+        t("confirmingData.form.errors.generalError");
+
+      enqueueSnackbar(errorMessage, {
+        variant: "error",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -108,7 +97,7 @@ const ChildImageUploadForm = ({
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-6">
+      <h2 className="text-xl font-semibold text-gray-900 pb-6">
         {t("confirmingData.form.title")}
       </h2>
 
@@ -124,46 +113,18 @@ const ChildImageUploadForm = ({
           setFieldValue,
           setFieldTouched,
           isSubmitting,
-          status,
         }) => (
           <Form>
             <div className="space-y-6">
-              {/* Status Messages */}
-              {status && (
-                <div
-                  className={`px-4 py-3 rounded-lg ${
-                    status.type === "success"
-                      ? "bg-green-50 border border-green-200 text-green-700"
-                      : "bg-red-50 border border-red-200 text-red-700"
-                  }`}
-                >
-                  {status.message}
-                </div>
-              )}
-
-              {/* Upload Status */}
-              {uploadStatus && (
+              {/* Upload Status - Keep for visual feedback during upload */}
+              {/* {uploadStatus === "uploading" && (
                 <div className="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  {uploadStatus === "uploading" && (
-                    <>
-                      <CircularProgress size={20} />
-                      <span className="text-blue-700">
-                        {t("confirmingData.form.status.uploading")}
-                      </span>
-                    </>
-                  )}
-                  {uploadStatus === "success" && (
-                    <span className="text-green-700">
-                      {t("confirmingData.form.status.success")}
-                    </span>
-                  )}
-                  {uploadStatus === "error" && (
-                    <span className="text-red-700">
-                      {t("confirmingData.form.status.error")}
-                    </span>
-                  )}
+                  <CircularProgress size={20} />
+                  <span className="text-blue-700">
+                    {t("confirmingData.form.status.uploading")}
+                  </span>
                 </div>
-              )}
+              )} */}
 
               {/* Instructions */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -180,7 +141,7 @@ const ChildImageUploadForm = ({
               {/* File Upload */}
               <FileUploadGroup
                 label={t("confirmingData.form.fields.image")}
-                name="image"
+                name="file"
                 placeholder={t("confirmingData.form.fields.imagePlaceholder")}
                 accept="image/*"
                 maxSizeInMB={5}
@@ -191,15 +152,15 @@ const ChildImageUploadForm = ({
                   "image/webp",
                 ]}
                 disallowedTypes={["image/svg+xml"]}
-                errors={errors.image}
-                touched={touched.image}
+                errors={errors.file}
+                touched={touched.file}
                 required={true}
                 onFileChange={(e) => {
                   const file = e.target.files && e.target.files[0];
-                  setFieldValue("image", file);
-                  setFieldTouched("image", true);
+                  setFieldValue("file", file);
+                  setFieldTouched("file", true);
                 }}
-                onBlur={() => setFieldTouched("image", true)}
+                onBlur={() => setFieldTouched("file", true)}
               />
 
               {/* Child Info Reminder */}
@@ -219,9 +180,9 @@ const ChildImageUploadForm = ({
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  disabled={isSubmitting || !values.image}
+                  disabled={isSubmitting || !values.file}
                   className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
-                    isSubmitting || !values.image
+                    isSubmitting || !values.file
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                       : "bg-mainColor text-white hover:bg-linksHover focus:ring-2 focus:ring-mainColor focus:ring-offset-2"
                   }`}

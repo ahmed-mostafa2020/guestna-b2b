@@ -61,7 +61,20 @@ const ConfirmingDataPage = () => {
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-6">
+        {/* Image Upload Form */}
+        <ChildImageUploadForm
+          bookingId={bookingId}
+          clientId={clientId}
+          childId={childId}
+          childData={childData}
+          onSuccess={() => {
+            // Optionally refetch data or show success message
+            refetch();
+          }}
+          v
+        />
+
+        <div className="bg-white border mt-4 border-gray-200 rounded-lg shadow-lg p-6">
           <h1 className="text-2xl font-bold text-gray-900 pb-6">
             {t("confirmingData.title")}
           </h1>
@@ -70,24 +83,24 @@ const ConfirmingDataPage = () => {
           {childData && (
             <div className="mb-8 space-y-6">
               {/* Trip Information */}
-              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <h2 className="text-lg font-semibold text-blue-800 mb-4">
+              <div className="p-4 rounded-lg border border-gray-200">
+                <h2 className="text-lg font-semibold text-mainColor mb-4">
                   {t("confirmingData.tripInfo.title")}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <span className="font-medium text-blue-700">
+                    <span className="font-medium text-titleColor">
                       {t("confirmingData.tripInfo.name")}:
                     </span>
-                    <span className="ml-2 text-blue-900">
+                    <span className="me-2 text-gray-900">
                       {childData?.trip?.name || "N/A"}
                     </span>
                   </div>
                   <div>
-                    <span className="font-medium text-blue-700">
+                    <span className="font-medium text-titleColor">
                       {t("confirmingData.tripInfo.orderId")}:
                     </span>
-                    <span className="ml-2 text-blue-900">
+                    <span className="me-2 text-gray-900">
                       {childData?.orderId || "N/A"}
                     </span>
                   </div>
@@ -95,32 +108,32 @@ const ConfirmingDataPage = () => {
               </div>
 
               {/* Parent Information */}
-              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                <h2 className="text-lg font-semibold text-green-800 mb-4">
+              <div className="p-4 rounded-lg border border-gray-200">
+                <h2 className="text-lg font-semibold text-mainColor mb-4">
                   {t("confirmingData.parentInfo.title")}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <span className="font-medium text-green-700">
+                    <span className="font-medium text-titleColor">
                       {t("confirmingData.parentInfo.name")}:
                     </span>
-                    <span className="ml-2 text-green-900">
+                    <span className="me-2 text-gray-900">
                       {childData?.parent?.name || "N/A"}
                     </span>
                   </div>
                   <div>
-                    <span className="font-medium text-green-700">
+                    <span className="font-medium text-titleColor">
                       {t("confirmingData.parentInfo.phone")}:
                     </span>
-                    <span className="ml-2 text-green-900" dir="ltr">
+                    <span className="me-2 text-gray-900" dir="ltr">
                       {childData?.parent?.phone || "N/A"}
                     </span>
                   </div>
                   <div>
-                    <span className="font-medium text-green-700">
+                    <span className="font-medium text-titleColor">
                       {t("confirmingData.parentInfo.nationalId")}:
                     </span>
-                    <span className="ml-2 text-green-900">
+                    <span className="me-2 text-gray-900">
                       {childData?.parent?.nationalId || "N/A"}
                     </span>
                   </div>
@@ -129,8 +142,8 @@ const ConfirmingDataPage = () => {
 
               {/* Student Information */}
               {childData?.childs && childData.childs.length > 0 && (
-                <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
-                  <h2 className="text-lg font-semibold text-orange-800 mb-4">
+                <div className="p-4 rounded-lg border border-gray-200">
+                  <h2 className="text-lg font-semibold text-mainColor mb-4">
                     {t("confirmingData.studentInfo.title")}
                   </h2>
                   {childData.childs.map((child, index) => {
@@ -142,26 +155,26 @@ const ConfirmingDataPage = () => {
                       <div key={child._id} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <span className="font-medium text-orange-700">
+                            <span className="font-medium text-titleColor">
                               {t("confirmingData.studentInfo.name")}:
                             </span>
-                            <span className="ml-2 text-orange-900">
+                            <span className="me-2 text-gray-900">
                               {child.name || "N/A"}
                             </span>
                           </div>
                           <div>
-                            <span className="font-medium text-orange-700">
+                            <span className="font-medium text-titleColor">
                               {t("confirmingData.studentInfo.nationalId")}:
                             </span>
-                            <span className="ml-2 text-orange-900">
+                            <span className="me-2 text-gray-900">
                               {child.nationalId || "N/A"}
                             </span>
                           </div>
                           <div>
-                            <span className="font-medium text-orange-700">
+                            <span className="font-medium text-titleColor">
                               {t("confirmingData.studentInfo.phone")}:
                             </span>
-                            <span className="ml-2 text-orange-900">
+                            <span className="me-2 text-gray-900" dir="ltr">
                               {child.phone || "N/A"}
                             </span>
                           </div>
@@ -170,7 +183,7 @@ const ConfirmingDataPage = () => {
                             <span className="font-medium text-orange-700">
                               {t("confirmingData.studentInfo.academicStage")}:
                             </span>
-                            <span className="ml-2 text-orange-900">
+                            <span className="me-2 text-orange-900">
                               {child.academicStage || "N/A"}
                             </span>
                           </div> */}
@@ -179,7 +192,7 @@ const ConfirmingDataPage = () => {
                             <span className="font-medium text-orange-700">
                               {t("confirmingData.studentInfo.grade")}:
                             </span>
-                            <span className="ml-2 text-orange-900">
+                            <span className="me-2 text-orange-900">
                               {child.grade || "N/A"}
                             </span>
                           </div> */}
@@ -209,18 +222,6 @@ const ConfirmingDataPage = () => {
               )}
             </div>
           )}
-
-          {/* Image Upload Form */}
-          <ChildImageUploadForm
-            bookingId={bookingId}
-            clientId={clientId}
-            childId={childId}
-            childData={childData}
-            onSuccess={() => {
-              // Optionally refetch data or show success message
-              refetch();
-            }}
-          />
         </div>
       </div>
     </main>

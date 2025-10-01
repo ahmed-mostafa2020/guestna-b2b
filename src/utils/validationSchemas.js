@@ -795,7 +795,7 @@ export const createAddEventSchema = (t) =>
 // Child Image Upload Schema
 export const createChildImageUploadSchema = (t) =>
   Yup.object().shape({
-    image: Yup.mixed()
+    file: Yup.mixed()
       .required(t("confirmingData.form.validation.imageRequired"))
       .test(
         "fileSize",
