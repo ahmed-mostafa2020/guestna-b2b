@@ -1725,7 +1725,8 @@
     "tripInfo": {
       "title": "Trip Information",
       "name": "Trip Name",
-      "orderId": "Order ID"
+      "orderId": "Order ID",
+      "schoolName": "School Name"
     },
     "parentInfo": {
       "title": "Parent Information",
@@ -1758,6 +1759,7 @@
       },
       "options": {
         "sizes": {
+          "XS": "Small (XS)",
           "S": "Small (S)",
           "M": "Medium (M)",
           "L": "Large (L)",

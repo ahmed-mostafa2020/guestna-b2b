@@ -23,13 +23,14 @@ const ChildImageUploadForm = ({ clientId, childId, onSuccess }) => {
 
   // Define selection options
   const sizeOptions = [
+    t("confirmingData.form.options.sizes.XS"),
     t("confirmingData.form.options.sizes.S"),
     t("confirmingData.form.options.sizes.M"),
     t("confirmingData.form.options.sizes.L"),
     t("confirmingData.form.options.sizes.XL"),
   ];
 
-  const sizeValues = ["S", "M", "L", "XL"];
+  const sizeValues = ["XS", "S", "M", "L", "XL"];
 
   const foodAllergyOptions = [
     t("confirmingData.form.options.foodAllergy.yes"),

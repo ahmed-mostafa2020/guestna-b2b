@@ -71,7 +71,7 @@ const ConfirmingDataPage = () => {
             <div className="mb-8 space-y-6">
               {/* Trip Information */}
               <div className="p-4 rounded-lg border border-gray-200">
-                <h2 className="text-lg font-semibold text-mainColor mb-4">
+                <h2 className="text-lg font-semibold text-mainColor pb-4">
                   {t("confirmingData.tripInfo.title")}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -83,6 +83,7 @@ const ConfirmingDataPage = () => {
                       {childData?.trip?.name || "N/A"}
                     </span>
                   </div>
+
                   <div>
                     <span className="font-medium text-titleColor">
                       {t("confirmingData.tripInfo.orderId")}:
@@ -91,12 +92,23 @@ const ConfirmingDataPage = () => {
                       {childData?.orderId || "N/A"}
                     </span>
                   </div>
+
+                  {childData?.schoolName && (
+                    <div>
+                      <span className="font-medium text-titleColor">
+                        {t("confirmingData.tripInfo.schoolName")}:
+                      </span>
+                      <span className="me-2 text-gray-900">
+                        {childData?.schoolName || "N/A"}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Parent Information */}
               <div className="p-4 rounded-lg border border-gray-200">
-                <h2 className="text-lg font-semibold text-mainColor mb-4">
+                <h2 className="text-lg font-semibold text-mainColor pb-4">
                   {t("confirmingData.parentInfo.title")}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -108,14 +120,7 @@ const ConfirmingDataPage = () => {
                       {childData?.parent?.name || "N/A"}
                     </span>
                   </div>
-                  <div>
-                    <span className="font-medium text-titleColor">
-                      {t("confirmingData.parentInfo.phone")}:
-                    </span>
-                    <span className="me-2 text-gray-900" dir="ltr">
-                      {childData?.parent?.phone || "N/A"}
-                    </span>
-                  </div>
+
                   <div>
                     <span className="font-medium text-titleColor">
                       {t("confirmingData.parentInfo.nationalId")}:
@@ -124,13 +129,21 @@ const ConfirmingDataPage = () => {
                       {childData?.parent?.nationalId || "N/A"}
                     </span>
                   </div>
+                  <div>
+                    <span className="font-medium text-titleColor">
+                      {t("confirmingData.parentInfo.phone")}:
+                    </span>
+                    <span className="me-2 text-gray-900" dir="ltr">
+                      {childData?.parent?.phone || "N/A"}
+                    </span>
+                  </div>
                 </div>
               </div>
 
               {/* Student Information */}
               {childData?.childs && childData.childs.length > 0 && (
                 <div className="p-4 rounded-lg border border-gray-200">
-                  <h2 className="text-lg font-semibold text-mainColor mb-4">
+                  <h2 className="text-lg font-semibold text-mainColor pb-4">
                     {t("confirmingData.studentInfo.title")}
                   </h2>
                   {childData.childs.map((child, index) => {
