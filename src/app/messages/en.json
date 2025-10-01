@@ -1721,19 +1721,33 @@
     }
   },
   "confirmingData": {
-    "title": "Child Information Confirmation",
-    "childInfo": {
-      "title": "Child Details",
-      "name": "Name",
-      "age": "Age",
+    "title": "Student Information Confirmation",
+    "tripInfo": {
+      "title": "Trip Information",
+      "name": "Trip Name",
+      "orderId": "Order ID"
+    },
+    "parentInfo": {
+      "title": "Parent Information",
+      "name": "Parent Name",
+      "phone": "Phone Number",
+      "nationalId": "National ID"
+    },
+    "studentInfo": {
+      "title": "Student Information",
+      "name": "Student Name",
+      "nationalId": "National ID",
+      "phone": "Phone Number",
+      "academicStage": "Academic Stage",
       "grade": "Grade",
-      "school": "School"
+      "currentImage": "Current National ID Image",
+      "nationalIdImage": "National ID Image"
     },
     "form": {
-      "title": "Upload Child Image",
+      "title": "Upload Student Image",
       "fields": {
-        "image": "Child Image",
-        "imagePlaceholder": "Select child image file..."
+        "image": "Student Image",
+        "imagePlaceholder": "Select student image file..."
       },
       "instructions": {
         "title": "Image Requirements",
@@ -1751,7 +1765,7 @@
         "error": "Failed to upload image"
       },
       "success": {
-        "imageUploaded": "Child image has been uploaded successfully!"
+        "imageUploaded": "Student image has been uploaded successfully!"
       },
       "errors": {
         "uploadFailed": "Failed to upload image. Please try again.",
@@ -1762,8 +1776,8 @@
         "fileSizeError": "File size must be less than 5MB",
         "fileTypeError": "Only JPG, PNG, and WEBP files are allowed"
       },
-      "reminder": "You are uploading an image for: {childName}",
-      "unknownChild": "Unknown Child"
+      "reminder": "You are uploading an image for student: {childName}",
+      "unknownStudent": "Unknown Student"
     }
   },
   "footer": {

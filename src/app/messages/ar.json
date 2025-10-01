@@ -1709,19 +1709,33 @@
     }
   },
   "confirmingData": {
-    "title": "تأكيد معلومات الطفل",
-    "childInfo": {
-      "title": "تفاصيل الطفل",
-      "name": "الاسم",
-      "age": "العمر",
+    "title": "تأكيد معلومات الطالب",
+    "tripInfo": {
+      "title": "معلومات الرحلة",
+      "name": "اسم الرحلة",
+      "orderId": "رقم الطلب"
+    },
+    "parentInfo": {
+      "title": "معلومات ولي الأمر",
+      "name": "اسم ولي الأمر",
+      "phone": "رقم الهاتف",
+      "nationalId": "رقم الهوية"
+    },
+    "studentInfo": {
+      "title": "معلومات الطالب",
+      "name": "اسم الطالب",
+      "nationalId": "رقم الهوية",
+      "phone": "رقم الهاتف",
+      "academicStage": "المرحلة الدراسية",
       "grade": "الصف",
-      "school": "المدرسة"
+      "currentImage": "صورة الهوية الحالية",
+      "nationalIdImage": "صورة الهوية"
     },
     "form": {
-      "title": "رفع صورة الطفل",
+      "title": "رفع صورة الطالب",
       "fields": {
-        "image": "صورة الطفل",
-        "imagePlaceholder": "اختر ملف صورة الطفل..."
+        "image": "صورة الطالب",
+        "imagePlaceholder": "اختر ملف صورة الطالب..."
       },
       "instructions": {
         "title": "متطلبات الصورة",
@@ -1739,7 +1753,7 @@
         "error": "فشل في رفع الصورة"
       },
       "success": {
-        "imageUploaded": "تم رفع صورة الطفل بنجاح!"
+        "imageUploaded": "تم رفع صورة الطالب بنجاح!"
       },
       "errors": {
         "uploadFailed": "فشل في رفع الصورة. يرجى المحاولة مرة أخرى.",
@@ -1750,8 +1764,8 @@
         "fileSizeError": "يجب أن يكون حجم الملف أقل من 5 ميجابايت",
         "fileTypeError": "يُسمح فقط بملفات JPG و PNG و WEBP"
       },
-      "reminder": "أنت تقوم برفع صورة لـ: {childName}",
-      "unknownChild": "طفل غير معروف"
+      "reminder": "أنت تقوم برفع صورة للطالب: {childName}",
+      "unknownStudent": "طالب غير معروف"
     }
   },
   "footer": {

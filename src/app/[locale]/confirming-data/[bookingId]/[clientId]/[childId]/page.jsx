@@ -24,15 +24,19 @@ const ConfirmingDataPage = () => {
     )}`;
   }, [t]);
 
+  // Construct API URL for fetching child data
+  const apiUrl = `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.CHILD_INFO}/${bookingId}/${clientId}/${childId}`;
+
   const {
     data: childData,
     error,
     isLoading,
     refetch,
   } = useFetchData(
-    ` ${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.CHILD_INFO}/${bookingId}/${clientId}/${childId}`,
+    apiUrl,
     {},
     {
+      method: "GET",
       lang: locale,
     }
   );
@@ -57,51 +61,152 @@ const ConfirmingDataPage = () => {
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">
+        <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-6">
+          <h1 className="text-2xl font-bold text-gray-900 pb-6">
             {t("confirmingData.title")}
           </h1>
 
-          {/* Child Information Display */}
+          {/* Booking Information Display */}
           {childData && (
-            <div className="mb-8 p-4 bg-gray-50 rounded-lg">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                {t("confirmingData.childInfo.title")}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <span className="font-medium text-gray-600">
-                    {t("confirmingData.childInfo.name")}:
-                  </span>
-                  <span className="ml-2 text-gray-900">
-                    {childData?.name || "N/A"}
-                  </span>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">
-                    {t("confirmingData.childInfo.age")}:
-                  </span>
-                  <span className="ml-2 text-gray-900">
-                    {childData?.age || "N/A"}
-                  </span>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">
-                    {t("confirmingData.childInfo.grade")}:
-                  </span>
-                  <span className="ml-2 text-gray-900">
-                    {childData?.grade || "N/A"}
-                  </span>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">
-                    {t("confirmingData.childInfo.school")}:
-                  </span>
-                  <span className="ml-2 text-gray-900">
-                    {childData?.school || "N/A"}
-                  </span>
+            <div className="mb-8 space-y-6">
+              {/* Trip Information */}
+              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <h2 className="text-lg font-semibold text-blue-800 mb-4">
+                  {t("confirmingData.tripInfo.title")}
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <span className="font-medium text-blue-700">
+                      {t("confirmingData.tripInfo.name")}:
+                    </span>
+                    <span className="ml-2 text-blue-900">
+                      {childData?.trip?.name || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-blue-700">
+                      {t("confirmingData.tripInfo.orderId")}:
+                    </span>
+                    <span className="ml-2 text-blue-900">
+                      {childData?.orderId || "N/A"}
+                    </span>
+                  </div>
                 </div>
               </div>
+
+              {/* Parent Information */}
+              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                <h2 className="text-lg font-semibold text-green-800 mb-4">
+                  {t("confirmingData.parentInfo.title")}
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <span className="font-medium text-green-700">
+                      {t("confirmingData.parentInfo.name")}:
+                    </span>
+                    <span className="ml-2 text-green-900">
+                      {childData?.parent?.name || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-green-700">
+                      {t("confirmingData.parentInfo.phone")}:
+                    </span>
+                    <span className="ml-2 text-green-900" dir="ltr">
+                      {childData?.parent?.phone || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-green-700">
+                      {t("confirmingData.parentInfo.nationalId")}:
+                    </span>
+                    <span className="ml-2 text-green-900">
+                      {childData?.parent?.nationalId || "N/A"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Student Information */}
+              {childData?.childs && childData.childs.length > 0 && (
+                <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
+                  <h2 className="text-lg font-semibold text-orange-800 mb-4">
+                    {t("confirmingData.studentInfo.title")}
+                  </h2>
+                  {childData.childs.map((child, index) => {
+                    // Find the specific child we're working with
+                    const isCurrentChild = child._id === childId;
+                    if (!isCurrentChild) return null;
+
+                    return (
+                      <div key={child._id} className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <span className="font-medium text-orange-700">
+                              {t("confirmingData.studentInfo.name")}:
+                            </span>
+                            <span className="ml-2 text-orange-900">
+                              {child.name || "N/A"}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="font-medium text-orange-700">
+                              {t("confirmingData.studentInfo.nationalId")}:
+                            </span>
+                            <span className="ml-2 text-orange-900">
+                              {child.nationalId || "N/A"}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="font-medium text-orange-700">
+                              {t("confirmingData.studentInfo.phone")}:
+                            </span>
+                            <span className="ml-2 text-orange-900">
+                              {child.phone || "N/A"}
+                            </span>
+                          </div>
+
+                          {/* <div>
+                            <span className="font-medium text-orange-700">
+                              {t("confirmingData.studentInfo.academicStage")}:
+                            </span>
+                            <span className="ml-2 text-orange-900">
+                              {child.academicStage || "N/A"}
+                            </span>
+                          </div> */}
+
+                          {/* <div>
+                            <span className="font-medium text-orange-700">
+                              {t("confirmingData.studentInfo.grade")}:
+                            </span>
+                            <span className="ml-2 text-orange-900">
+                              {child.grade || "N/A"}
+                            </span>
+                          </div> */}
+                        </div>
+
+                        {/* Current National ID Image */}
+                        {/* {child.nationalIdImage && (
+                          <div className="mt-4">
+                            <span className="font-medium text-orange-700">
+                              {t("confirmingData.studentInfo.currentImage")}:
+                            </span>
+                            <div className="mt-2">
+                              <img
+                                src={child.nationalIdImage}
+                                alt={t(
+                                  "confirmingData.studentInfo.nationalIdImage"
+                                )}
+                                className="max-w-xs rounded-lg border border-gray-300 shadow-sm"
+                              />
+                            </div>
+                          </div>
+                        )} */}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
 

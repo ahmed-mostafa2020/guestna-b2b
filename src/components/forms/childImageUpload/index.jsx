@@ -20,6 +20,7 @@ const ChildImageUploadForm = ({
   childData,
   onSuccess,
 }) => {
+  console.log(childData);
   const t = useTranslations();
   const [uploadStatus, setUploadStatus] = useState(null);
 
@@ -29,13 +30,19 @@ const ChildImageUploadForm = ({
   };
 
   // Submit handler
-  const handleSubmit = async (values, { setSubmitting, setStatus, setFieldError }) => {
+  const handleSubmit = async (
+    values,
+    { setSubmitting, setStatus, setFieldError }
+  ) => {
     setStatus(null);
     setUploadStatus(null);
 
     try {
       if (!values.image) {
-        setFieldError("image", t("confirmingData.form.validation.imageRequired"));
+        setFieldError(
+          "image",
+          t("confirmingData.form.validation.imageRequired")
+        );
         return;
       }
 
@@ -67,7 +74,7 @@ const ChildImageUploadForm = ({
           type: "success",
           message: t("confirmingData.form.success.imageUploaded"),
         });
-        
+
         // Call success callback
         if (onSuccess) {
           onSuccess();
@@ -82,7 +89,7 @@ const ChildImageUploadForm = ({
     } catch (error) {
       console.error("Error uploading image:", error);
       setUploadStatus("error");
-      
+
       if (error.response?.data?.message) {
         setStatus({
           type: "error",
@@ -177,7 +184,12 @@ const ChildImageUploadForm = ({
                 placeholder={t("confirmingData.form.fields.imagePlaceholder")}
                 accept="image/*"
                 maxSizeInMB={5}
-                allowedTypes={["image/jpeg", "image/png", "image/jpg", "image/webp"]}
+                allowedTypes={[
+                  "image/jpeg",
+                  "image/png",
+                  "image/jpg",
+                  "image/webp",
+                ]}
                 disallowedTypes={["image/svg+xml"]}
                 errors={errors.image}
                 touched={touched.image}
@@ -195,7 +207,9 @@ const ChildImageUploadForm = ({
                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                   <p className="text-sm text-gray-600">
                     {t("confirmingData.form.reminder", {
-                      childName: childData.name || t("confirmingData.form.unknownChild"),
+                      childName:
+                        childData?.childs?.[0]?.name ||
+                        t("confirmingData.form.unknownStudent"),
                     })}
                   </p>
                 </div>
