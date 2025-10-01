@@ -1747,8 +1747,8 @@
     "form": {
       "title": "Complete Student Information",
       "fields": {
-        "file": "Student ID",
-        "filePlaceholder": "Select student ID file...",
+        "file": "Student ID Image",
+        "filePlaceholder": "Select student ID image ...",
         "size": "Student Size",
         "sizePlaceholder": "Select student size",
         "foodAllergy": "Food Allergy",
