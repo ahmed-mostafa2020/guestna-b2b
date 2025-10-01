@@ -25,7 +25,7 @@ import SelectionGroup from "../../SelectionGroup";
 import PaymentMethod from "./PaymentMethod";
 import OtpCounter from "./OtpCounter";
 // import PromoCodeForm from "../promoCodeForm";
-import TamaraWidget from "./TamaraWidget";
+// import TamaraWidget from "./TamaraWidget";
 import AppleWidget from "./AppleWidget";
 
 import axios from "axios";

@@ -68,9 +68,9 @@ const BankTransferForm = ({
             max={balance?.availableBalance}
             readOnly={true}
             // required={true}
-            textAlign="right"
+            textAlign="start"
           />
-          <p className="text-xs text-gray-500 mt-2 text-right">
+          <p className="text-xs text-gray-500 mt-2 text-start">
             {selectedTrip
               ? t("amount.autoFilled")
               : t("amount.selectTripFirst")}
@@ -89,9 +89,9 @@ const BankTransferForm = ({
             onChange={(e) => setFieldValue("bankName", e.target.value)}
             onBlur={handleBlur}
             required={true}
-            textAlign="right"
+            textAlign="start"
           />
-          {/* <p className="text-xs text-gray-500 mt-2 text-right">
+          {/* <p className="text-xs text-gray-500 mt-2 text-start">
             {t("bankName.hint")}
           </p> */}
         </div>
@@ -112,7 +112,7 @@ const BankTransferForm = ({
             }
             onBlur={handleBlur}
             required={true}
-            textAlign="right"
+            textAlign="start"
           />
         </div>
 
@@ -131,7 +131,7 @@ const BankTransferForm = ({
             onBlur={handleBlur}
             maxLength="34"
             required={true}
-            textAlign="right"
+            textAlign="start"
           />
         </div>
       </div>
@@ -148,7 +148,7 @@ const BankTransferForm = ({
           onBlur={handleBlur}
           textarea={true}
           rows={3}
-          textAlign="right"
+          textAlign="start"
         />
       </div>
     </div>

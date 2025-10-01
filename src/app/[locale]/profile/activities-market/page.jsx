@@ -46,10 +46,10 @@ const ActivitiesMarketPage = () => {
     <>
       <section className="pt-8 pb-6 bg-gradient-to-br from-gray-100 to-gray-200 mb-4 lg:mb-8">
         <div className="centered gap-4 flex-col text-center ">
-          <h1 className="text-4xl lg:text-6xl font-bold mb-4 font-arabic text-foreground">
+          <h1 className="text-4xl lg:text-6xl font-bold mb-4 text-foreground">
             {t("profile.aside.activitiesMarketTitle")}
           </h1>
-          <p className="text-xl text-muted-foreground font-arabic max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             {t("profile.aside.activitiesMarketDescription")}
           </p>
         </div>

@@ -5,7 +5,7 @@ const InformationSection = () => {
 
   return (
     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 shadow-sm">
-      <div className="text-center sm:text-right">
+      <div className="text-center sm:text-start">
         <h3 className="text-xl font-bold text-blue-900 mb-4">{t("title")}</h3>
         <ul className="text-blue-800 space-y-2 text-sm">
           <li className="flex items-center justify-center sm:justify-start">

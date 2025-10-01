@@ -15,7 +15,7 @@ const UsersHeader = ({ setSearchTerm, searchTerm }) => {
   return (
     <div className="mb-6">
       <div className="flex flex-col md:flex-row gap-4 items-center md:items-center justify-between">
-        <h1 className="text-lg lg:text-2xl font-bold text-titleColor order-2 md:order-1 text-center md:text-left">
+        <h1 className="text-lg lg:text-2xl font-bold text-titleColor order-2 md:order-1 text-center md:text-end">
           {t("profile.schools_users.schoolsUsers")}
         </h1>
 

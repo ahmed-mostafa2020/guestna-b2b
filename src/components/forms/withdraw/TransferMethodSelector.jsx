@@ -5,7 +5,7 @@ const TransferMethodSelector = ({ transferMethod, setTransferMethod }) => {
 
   return (
     <div className="mt-8 pt-6 border-t border-gray-200">
-      <h3 className="text-xl font-bold text-gray-900 mb-6 text-center sm:text-right">
+      <h3 className="text-xl font-bold text-gray-900 mb-6 text-center sm:text-start">
         {t("title")}
       </h3>
       <div className="flex flex-col gap-4 mt-4">
@@ -25,7 +25,7 @@ const TransferMethodSelector = ({ transferMethod, setTransferMethod }) => {
             className="w-5 h-5 me-2 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500 checked:bg-green-600 checked:border-green-600"
             id="transfer-method-stc"
           />
-          <div className="text-right flex-1">
+          <div className="text-start flex-1">
             <span className="text-gray-900 font-bold text-base block mb-1">
               {t("stcPay.title")}
             </span>
@@ -51,7 +51,7 @@ const TransferMethodSelector = ({ transferMethod, setTransferMethod }) => {
             className="w-5 h-5 me-2 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500 checked:border-green-600"
             id="transfer-method-bank"
           />
-          <div className="text-right flex-1">
+          <div className="text-start flex-1">
             <span className="text-gray-900 font-bold text-base block mb-1">
               {t("bankTransfer.title")}
             </span>

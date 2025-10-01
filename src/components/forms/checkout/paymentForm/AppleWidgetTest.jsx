@@ -2,10 +2,9 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
-import { memo, useEffect, useState, useRef } from "react";
+import { memo, useEffect, useState } from "react";
 import { END_POINTS } from "@constants/APIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import axios from "axios";
 import { useMutationDataTest } from "@hooks/useMutationDataTest";
 import { useSnackbar } from "notistack";
 
@@ -102,7 +101,7 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
               // Call the confirmation endpoint
               const confirmationData = {
                 trip: baseData.trip,
-                bookingId: currentBookingId, // Use ref value instead of state
+                bookingId: currentBookingId,
                 paymentId: payment.id,
               };
               mutateComferm(confirmationData, {

@@ -69,7 +69,7 @@ const STCPayForm = ({
             // required={true}
             textAlign="right"
           />
-          <p className="text-xs text-gray-500 mt-2 text-right">
+          <p className="text-xs text-gray-500 mt-2 text-start">
             {selectedTrip
               ? t("amount.autoFilled")
               : t("amount.selectTripFirst")}

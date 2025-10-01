@@ -40,7 +40,7 @@ const TransactionsTable = ({
       >
         <CardContent className="p-0">
           <div className="px-6 py-4 border-b border-border">
-            <h3 className="lg:text-2xl text-xl font-medium text-titleColor text-right ">
+            <h3 className="lg:text-2xl text-xl font-medium text-titleColor text-start">
               {t("title")}
             </h3>
           </div>

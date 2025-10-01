@@ -279,7 +279,7 @@ const CreateTripLink = ({ data }) => {
                 >
                   {copyIcon}
                 </button>
-                <span className="flex-1 text-left break-all">{tripLink}</span>
+                <span className="flex-1 text-end break-all">{tripLink}</span>
                 <span className="text-mainColor">🔗</span>
               </div>
             </div>
