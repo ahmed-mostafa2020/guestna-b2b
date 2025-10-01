@@ -1,8 +1,10 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
-import { useEffect } from "react";
+// import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
+
+import { useEffect } from "react";
 
 import { useFetchData } from "@hooks/useFetchData";
 import ErrorComponent from "@feedback/error/ErrorComponent";
@@ -75,24 +77,6 @@ const ConfirmingDataPage = () => {
                   {t("confirmingData.tripInfo.title")}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <span className="font-medium text-titleColor">
-                      {t("confirmingData.tripInfo.name")}:
-                    </span>
-                    <span className="me-2 text-gray-900">
-                      {childData?.trip?.name || "N/A"}
-                    </span>
-                  </div>
-
-                  <div>
-                    <span className="font-medium text-titleColor">
-                      {t("confirmingData.tripInfo.orderId")}:
-                    </span>
-                    <span className="me-2 text-gray-900">
-                      {childData?.orderId || "N/A"}
-                    </span>
-                  </div>
-
                   {childData?.schoolName && (
                     <div>
                       <span className="font-medium text-titleColor">
@@ -103,6 +87,30 @@ const ConfirmingDataPage = () => {
                       </span>
                     </div>
                   )}
+
+                  <div>
+                    <span className="font-medium text-titleColor">
+                      {t("confirmingData.tripInfo.name")}:
+                    </span>
+                    <span className="me-2 text-gray-900">
+                      {childData?.trip?.name || "N/A"}
+                    </span>
+                    {/* <Link
+                      href={`${locale}/parents/${childData?.trip?.slug}`}
+                      className="me-2 text-secColor border-b border-secColor"
+                    >
+                      {childData?.trip?.name || "N/A"}
+                    </Link> */}
+                  </div>
+
+                  <div>
+                    <span className="font-medium text-titleColor">
+                      {t("confirmingData.tripInfo.orderId")}:
+                    </span>
+                    <span className="me-2 text-gray-900">
+                      {childData?.orderId || "N/A"}
+                    </span>
+                  </div>
                 </div>
               </div>
 

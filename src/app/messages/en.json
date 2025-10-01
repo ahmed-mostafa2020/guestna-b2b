@@ -1786,7 +1786,8 @@
         "error": "Failed to save information"
       },
       "success": {
-        "dataSaved": "Student information has been saved successfully!"
+        "dataSaved": "Student information has been saved successfully!",
+        "redirecting": "Redirecting to home page..."
       },
       "errors": {
         "saveFailed": "Failed to save information. Please try again.",

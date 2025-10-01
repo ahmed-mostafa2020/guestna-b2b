@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { Formik, Form } from "formik";
 import axios from "axios";
 import { useSnackbar } from "notistack";
@@ -18,6 +19,7 @@ import { CircularProgress } from "@mui/material";
 
 const ChildImageUploadForm = ({ clientId, childId, onSuccess }) => {
   const t = useTranslations();
+  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [uploadStatus, setUploadStatus] = useState(null);
 
@@ -49,7 +51,7 @@ const ChildImageUploadForm = ({ clientId, childId, onSuccess }) => {
   };
 
   // Submit handler
-  const handleSubmit = async (values, { setSubmitting, setFieldError }) => {
+  const handleSubmit = async (values, { setSubmitting, setFieldError, resetForm }) => {
     setUploadStatus(null);
 
     try {
@@ -100,6 +102,21 @@ const ChildImageUploadForm = ({ clientId, childId, onSuccess }) => {
         enqueueSnackbar(t("confirmingData.form.success.dataSaved"), {
           variant: "success",
         });
+
+        // Reset form
+        resetForm();
+
+        // Show redirecting message
+        setTimeout(() => {
+          enqueueSnackbar(t("confirmingData.form.success.redirecting"), {
+            variant: "info",
+          });
+        }, 1000);
+
+        // Redirect to home page after a short delay
+        setTimeout(() => {
+          router.push("/");
+        }, 2500);
       } else {
         setUploadStatus("error");
         enqueueSnackbar(t("confirmingData.form.errors.saveFailed"), {
