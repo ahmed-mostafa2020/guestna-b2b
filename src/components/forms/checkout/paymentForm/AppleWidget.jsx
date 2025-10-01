@@ -14,6 +14,12 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
     (state) => state.finalTripDetailsData.data.basePriceTotalWithVat
   );
 
+  const discountedPrice = useSelector(
+    (state) => state.finalTripDetailsData.data.discountedTotalPriceWithVat
+  );
+
+  const finalPrice = discountedPrice ? discountedPrice : price;
+
   const tripName = useSelector((state) => state.finalTripDetailsData.data.name);
 
   const locale = useLocale();
@@ -35,7 +41,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   useEffect(() => {
     Moyasar.init({
       element: ".mysr-form",
-      amount: +price * 100,
+      amount: +finalPrice * 100,
       language: locale,
       currency: currency,
       description: tripName,
@@ -120,7 +126,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
     appleWidgetKey,
     currency,
     vercelUrl,
-    price,
+    finalPrice,
     tripName,
   ]);
 
