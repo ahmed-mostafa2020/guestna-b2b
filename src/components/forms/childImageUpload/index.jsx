@@ -69,12 +69,15 @@ const ChildImageUploadForm = ({ clientId, childId, onSuccess }) => {
       const formData = new FormData();
       formData.append("file", values.file);
       formData.append("size", values.size);
-      formData.append("foodAllergy", values.foodAllergy);
+      formData.append(
+        "hasFoodAllergy",
+        values.foodAllergy === "yes" ? true : false
+      );
       if (values.foodAllergy === "yes" && values.foodAllergyDetails) {
-        formData.append("foodAllergyDetails", values.foodAllergyDetails);
+        formData.append("foodAllergy", values.foodAllergyDetails);
       }
       if (values.generalNotes) {
-        formData.append("generalNotes", values.generalNotes);
+        formData.append("note", values.generalNotes);
       }
 
       setUploadStatus("uploading");
@@ -96,11 +99,6 @@ const ChildImageUploadForm = ({ clientId, childId, onSuccess }) => {
         enqueueSnackbar(t("confirmingData.form.success.dataSaved"), {
           variant: "success",
         });
-
-        // Call success callback
-        if (onSuccess) {
-          onSuccess();
-        }
       } else {
         setUploadStatus("error");
         enqueueSnackbar(t("confirmingData.form.errors.saveFailed"), {

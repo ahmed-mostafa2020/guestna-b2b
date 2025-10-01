@@ -212,14 +212,12 @@ const ConfirmingDataPage = () => {
 
           {/* Image Upload Form */}
           <ChildImageUploadForm
-            bookingId={bookingId}
             clientId={clientId}
             childId={childId}
-            childData={childData}
-            onSuccess={() => {
-              // Optionally refetch data or show success message
-              refetch();
-            }}
+            // onSuccess={() => {
+            //   // Optionally refetch data or show success message
+            //   refetch();
+            // }}
           />
         </div>
       </div>
