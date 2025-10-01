@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Formik, Form } from "formik";
 import axios from "axios";
@@ -17,7 +17,8 @@ import SelectionGroup from "../SelectionGroup";
 import TextInputGroup from "../TextInputGroup";
 import { CircularProgress } from "@mui/material";
 
-const ChildImageUploadForm = ({ clientId, childId, onSuccess }) => {
+const ChildImageUploadForm = ({ clientId, childId }) => {
+  const locale = useLocale();
   const t = useTranslations();
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
@@ -51,7 +52,10 @@ const ChildImageUploadForm = ({ clientId, childId, onSuccess }) => {
   };
 
   // Submit handler
-  const handleSubmit = async (values, { setSubmitting, setFieldError, resetForm }) => {
+  const handleSubmit = async (
+    values,
+    { setSubmitting, setFieldError, resetForm }
+  ) => {
     setUploadStatus(null);
 
     try {
@@ -63,7 +67,7 @@ const ChildImageUploadForm = ({ clientId, childId, onSuccess }) => {
         return;
       }
 
-      const headers = getHeaders();
+      const headers = getHeaders(locale);
       const url = getProxyUrl(
         `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.CHILD_IMAGE_UPLOAD}/${clientId}/${childId}`
       );
@@ -115,8 +119,8 @@ const ChildImageUploadForm = ({ clientId, childId, onSuccess }) => {
 
         // Redirect to home page after a short delay
         setTimeout(() => {
-          router.push("/");
-        }, 2500);
+          router.push(`/${locale}`);
+        }, 2000);
       } else {
         setUploadStatus("error");
         enqueueSnackbar(t("confirmingData.form.errors.saveFailed"), {
