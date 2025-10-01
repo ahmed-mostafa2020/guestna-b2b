@@ -9,9 +9,10 @@ import { TRIP_STATUS } from "@constants/tripStatus";
 import Pagination from "@components/common/Pagination";
 import ActionsDropdownMenu from "./ActionsDropdownMenu";
 
-import { Typography, CardContent, Card, CircularProgress } from "@mui/material";
+import { CardContent, Card, CircularProgress } from "@mui/material";
 
 const NormalTripsTable = ({
+  tableTitle,
   data,
   currentPage,
   setCurrentPage,
@@ -55,11 +56,17 @@ const NormalTripsTable = ({
           boxShadow: "0 0 4px 0 rgba(0, 0, 0, 0.16)",
         }}
       >
+        {tableTitle && (
+          <h2 className="text-xl font-medium lg:text-2xl text-titleColor pt-4 px-4">
+            {tableTitle}
+          </h2>
+        )}
+
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className=" bg-table-header ">
+                <tr className=" bg-table-header border-b-2 border-tableRowBorder">
                   <th className="px-6 py-4 font-medium text-start">
                     {t("profile.tables.bookings.header.tripName")}
                   </th>
@@ -124,6 +131,12 @@ const NormalTripsTable = ({
 
       {/* Mobile Cards */}
       <div className="space-y-4 md:hidden">
+        {tableTitle && (
+          <h2 className="text-xl font-medium lg:text-2xl text-titleColor pt-4 px-4">
+            {tableTitle}
+          </h2>
+        )}
+
         {data?.nodes?.map((booking) => (
           <Card
             key={booking._id}

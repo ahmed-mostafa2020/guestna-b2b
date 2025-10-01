@@ -11,7 +11,6 @@ import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 
 const ProfilePageTemplate = ({
   title,
-  tableTitle,
   endpoint,
   method,
   emptyStateComponent,
@@ -68,11 +67,11 @@ const ProfilePageTemplate = ({
 
   return (
     <main>
-      {tableTitle && (
+      {/* {tableTitle && (
         <h2 className="text-xl font-medium lg:text-2xl text-titleColor pb-4">
           {tableTitle}
         </h2>
-      )}
+      )} */}
 
       {isEmpty ? (
         typeof emptyStateComponent === "function" ? (

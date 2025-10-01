@@ -285,7 +285,7 @@ const NavigationDropdown = () => {
                 <AccordionDetails className="p-0">
                   <List className="py-0">
                     {item.subItems.map((subItem, _) => (
-                      <ListItem key={subItem.name} disablePadding>
+                      <ListItem key={subItem.title} disablePadding>
                         <ListItemButton
                           className="w-full py-1 sm:py-2 ps-8 sm:ps-12"
                           // onClick={() =>

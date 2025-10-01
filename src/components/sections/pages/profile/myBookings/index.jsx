@@ -8,13 +8,7 @@ import formatCurrency from "@utils/FormatCurrency";
 import formatDate from "@utils/FormateDate";
 import Pagination from "@components/common/Pagination";
 
-import {
-  Typography,
-  Badge,
-  CardContent,
-  Card,
-  CircularProgress,
-} from "@mui/material";
+import { Badge, CardContent, Card, CircularProgress } from "@mui/material";
 
 const statusColors = {
   initiated: "bg-yellow-100 text-yellow-800",
@@ -25,6 +19,7 @@ const statusColors = {
 };
 
 const BookingsTable = ({
+  tableTitle,
   data,
   currentPage,
   setCurrentPage,
@@ -52,10 +47,16 @@ const BookingsTable = ({
         }}
       >
         <CardContent className="p-0">
+          {tableTitle && (
+            <h2 className="text-xl font-medium lg:text-2xl text-titleColor pb-4">
+              {tableTitle}
+            </h2>
+          )}
+
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className=" bg-table-header">
+                <tr className=" bg-table-header border-b-2 border-tableRowBorder">
                   <th className="px-6 py-4 font-medium text-start">
                     {t("profile.tables.bookings.header.schoolName")}
                   </th>
@@ -146,6 +147,12 @@ const BookingsTable = ({
 
       {/* Mobile Cards */}
       <div className="space-y-4 md:hidden">
+        {tableTitle && (
+          <h2 className="text-xl font-medium lg:text-2xl text-titleColor pt-4 px-4">
+            {tableTitle}
+          </h2>
+        )}
+
         {data?.nodes?.map((booking) => (
           <Card
             key={booking._id}

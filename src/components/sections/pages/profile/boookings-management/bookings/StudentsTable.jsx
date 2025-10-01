@@ -44,10 +44,6 @@ const StudentsTable = ({ bookingDetails, loadingDetails }) => {
 
   return (
     <div className="w-full space-y-6 mt-8">
-      <h3 className="text-lg font-medium pt-2">
-        {t("profile.tables.orders.studentsTable.title")}
-      </h3>
-
       {loadingDetails ? (
         <div className="text-center py-3">
           <CircularProgress size={20} color="primary" />
@@ -65,11 +61,15 @@ const StudentsTable = ({ bookingDetails, loadingDetails }) => {
               boxShadow: "0 0 4px 0 rgba(0, 0, 0, 0.16)",
             }}
           >
+            <h2 className="text-xl font-medium lg:text-2xl text-titleColor pt-4 px-4">
+              {t("profile.tables.orders.studentsTable.title")}
+            </h2>
+
             <CardContent className="p-0">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr>
+                    <tr className="border-b-2 border-tableRowBorder">
                       <th className="px-6 py-4 text-start text-sm font-medium text-gray-700">
                         {t("profile.tables.orders.studentsTable.studentName")}
                       </th>

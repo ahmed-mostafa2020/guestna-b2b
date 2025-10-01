@@ -69,7 +69,6 @@ const Profile = () => {
 
       <ProfilePageTemplate
         title={t("pagesHead.title.profile")}
-        tableTitle={t("profile.aside.bookings")}
         endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS}`}
         method="POST"
         enablePagination={true}
@@ -81,6 +80,7 @@ const Profile = () => {
           enablePagination
         ) => (
           <MyBookingsTrips
+            tableTitle={t("profile.aside.bookings")}
             data={data}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}

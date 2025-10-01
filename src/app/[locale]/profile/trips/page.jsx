@@ -15,7 +15,6 @@ const TripsPage = () => {
     <div className="flex flex-col gap-4 lg:gap:8">
       <ProfilePageTemplate
         title={t("profile.aside.programs.trips")}
-        tableTitle={t("common.activities")}
         endpoint={`${B2B_END_POINTS.PROFILE.ALL_TRIPS.ACTIVITIES}`}
         method="POST"
         emptyStateComponent={<EmptyTrips />}
@@ -26,6 +25,7 @@ const TripsPage = () => {
           enablePagination
         ) => (
           <ActivitiesTable
+            tableTitle={t("common.activities")}
             data={data}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
@@ -37,7 +37,6 @@ const TripsPage = () => {
 
       <ProfilePageTemplate
         title={t("profile.aside.programs.trips")}
-        tableTitle={t("common.packages")}
         endpoint={`${B2B_END_POINTS.PROFILE.ALL_TRIPS.PACKAGES}`}
         method="POST"
         emptyStateComponent={<EmptyTrips />}
@@ -48,6 +47,7 @@ const TripsPage = () => {
           enablePagination
         ) => (
           <PackagesTable
+            tableTitle={t("common.packages")}
             data={data}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}

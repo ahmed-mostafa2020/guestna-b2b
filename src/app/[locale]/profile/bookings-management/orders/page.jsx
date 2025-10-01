@@ -25,7 +25,6 @@ const OrdersPage = () => {
         <div className="flex flex-col gap-4 lg:gap-8">
           <ProfilePageTemplate
             title={t("profile.aside.bookingsManagement.ordersManagement")}
-            tableTitle={t("profile.tables.orders.normal.title")}
             endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.NORMAL}`}
             method="POST"
             emptyStateComponent={<EmptyBookings />}
@@ -36,6 +35,7 @@ const OrdersPage = () => {
               enablePagination
             ) => (
               <NormalTripsTable
+                tableTitle={t("profile.tables.orders.normal.title")}
                 data={data}
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
@@ -47,7 +47,6 @@ const OrdersPage = () => {
 
           <ProfilePageTemplate
             title={t("profile.aside.bookingsManagement.ordersManagement")}
-            tableTitle={t("profile.tables.orders.customizable.title")}
             endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.CUSTOMIZABLE}`}
             method="POST"
             emptyStateComponent={<EmptyBookings />}
@@ -58,6 +57,7 @@ const OrdersPage = () => {
               enablePagination
             ) => (
               <CustomizedTripsTable
+                tableTitle={t("profile.tables.orders.customizable.title")}
                 data={data}
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}

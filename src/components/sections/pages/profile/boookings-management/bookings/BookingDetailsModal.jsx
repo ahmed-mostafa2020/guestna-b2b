@@ -135,8 +135,8 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
           </h3>
 
           <div className="space-y-4 border-2 border-border rounded-lg p-3">
-            <div className="flex flex-col gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
-              <p className="text-sm text-gray-600">
+            <div className="flex flex-col gap-1 rounded-lg p-2 w-fit text-sm text-gray-600">
+              <p className="">
                 {t("profile.tables.orders.bookingDetails.tripDescription")}:
               </p>
               <p className="font-medium" title={booking.description}>

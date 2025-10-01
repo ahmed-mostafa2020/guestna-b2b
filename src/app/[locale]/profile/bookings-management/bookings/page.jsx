@@ -35,7 +35,6 @@ const BookingsPage = () => {
 
       <ProfilePageTemplate
         title={t("profile.aside.bookings")}
-        tableTitle={t("profile.tables.bookings.title")}
         endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.BOOKINGS}`}
         method="POST"
         bodyParameters={requestBody}
@@ -47,6 +46,7 @@ const BookingsPage = () => {
           enablePagination
         ) => (
           <BookingsTable
+            tableTitle={t("profile.tables.bookings.title")}
             data={data}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}

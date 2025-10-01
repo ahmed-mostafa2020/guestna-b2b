@@ -12,7 +12,13 @@ import Pagination from "@components/common/Pagination";
 
 import { CardContent, Card, CircularProgress } from "@mui/material";
 
-const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
+const Report = ({
+  data,
+  currentPage,
+  setCurrentPage,
+  enablePagination,
+  tableTitle,
+}) => {
   const locale = useLocale();
   const t = useTranslations();
   const [showSurveyForm, setShowSurveyForm] = useState(false);
@@ -46,6 +52,11 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
             boxShadow: "0 0 4px 0 rgba(0, 0, 0, 0.16)",
           }}
         >
+          {tableTitle && (
+            <h2 className="text-xl font-medium lg:text-2xl text-titleColor pt-4 px-4">
+              {tableTitle}
+            </h2>
+          )}
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -136,6 +147,12 @@ const Report = ({ data, currentPage, setCurrentPage, enablePagination }) => {
 
         {/* Mobile Cards */}
         <div className="space-y-4 md:hidden">
+          {tableTitle && (
+            <h2 className="text-xl font-medium lg:text-2xl text-titleColor pt-4 px-4">
+              {tableTitle}
+            </h2>
+          )}
+
           {data?.nodes?.map((booking) => (
             <Card
               key={booking._id}
