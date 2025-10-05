@@ -6,7 +6,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
-  Button,
   CircularProgress,
   Alert,
   Box,
@@ -18,6 +17,9 @@ import { CheckCircle, CelebrationOutlined } from "@mui/icons-material";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import getProxyUrl from "@utils/getProxyUrl";
+import getHeaders from "@utils/getHeaders";
+import Image from "next/image";
+import thanksMessage from "@assets/sectionBackground/thanksMessage.png";
 
 const FreeBookingButton = () => {
   const locale = useLocale();
@@ -56,9 +58,7 @@ const FreeBookingButton = () => {
 
       const response = await fetch(getProxyUrl(B2B_END_POINTS.FREE_BOOKING), {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: getHeaders(locale),
         body: JSON.stringify(requestBody),
       });
 
@@ -85,17 +85,17 @@ const FreeBookingButton = () => {
   // Success state
   if (bookingStatus === "success") {
     return (
-      <Card className="max-w-md mx-auto bg-green-50 border-green-200">
+      <Card className="max-w-md mx-auto bg-green-50 border-green-200 font-somar">
         <CardContent className="text-center py-8">
-          <CheckCircle className="text-green-500 mb-4" sx={{ fontSize: 64 }} />
-          <Typography variant="h5" className="font-bold text-green-700 mb-2">
+          <CheckCircle className="text-mainColor mb-4" sx={{ fontSize: 64 }} />
+          <Typography variant="h5" className="font-bold text-mainColor mb-2">
             {t("forms.freeBooking.successTitle")}
           </Typography>
-          <Typography variant="body1" className="text-green-600 mb-4">
+          <Typography variant="body1" className="text-mainColor mb-4">
             {t("forms.freeBooking.successMessage")}
           </Typography>
-          <CircularProgress size={24} className="text-green-500" />
-          <Typography variant="body2" className="text-green-500 mt-2">
+          <CircularProgress size={24} className="text-mainColor" />
+          <Typography variant="body2" className="text-mainColor mt-2">
             Redirecting...
           </Typography>
         </CardContent>
@@ -104,58 +104,60 @@ const FreeBookingButton = () => {
   }
 
   return (
-    <Card className="max-w-md mx-auto bg-gradient-to-br from-green-50 to-blue-50 border-green-200">
-      <CardContent className="text-center py-8">
+    <Card className="w-full mx-auto bg-gradient-to-br from-green-50 to-blue-50 border-green-200 !rounded-xl">
+      <CardContent className="text-center py-8 relative">
+        <Image
+          src={thanksMessage}
+          alt="success request quote"
+          width={172}
+          height={182}
+          className="absolute top-0 start-0 hidden lg:block"
+        />
+
+        <Image
+          src={thanksMessage}
+          alt="success request quote"
+          width={172}
+          height={182}
+          className="absolute top-0 end-0 hidden lg:block"
+        />
+
         {/* Celebration Icon */}
         <CelebrationOutlined
-          className="text-green-500 mb-4"
+          className="text-secColor mb-4"
           sx={{ fontSize: 64 }}
         />
 
         {/* Title */}
-        <Typography variant="h4" className="font-bold text-green-700 mb-2">
+        <h4 className="text-2xl font-bold text-mainColor pb-2">
           {t("forms.freeBooking.title")}
-        </Typography>
+        </h4>
 
         {/* Subtitle */}
-        <Typography variant="h6" className="text-green-600 mb-4">
+        <h6 className="text-xl font-bold text-mainColor pb-4">
           {t("forms.freeBooking.subtitle")}
-        </Typography>
+        </h6>
 
         {/* Description */}
-        <Typography
-          variant="body1"
-          className="text-gray-700 mb-6 leading-relaxed"
-        >
+        <p className="text-lg text-mainColor pb-6 leading-relaxed">
           {t("forms.freeBooking.description")}
-        </Typography>
+        </p>
 
         {/* Error Alert */}
         {bookingStatus === "error" && (
-          <Alert severity="error" className="mb-4">
-            <Typography variant="body2">
+          <Alert severity="error" className="pb-4">
+            <p>
               <strong>{t("forms.freeBooking.errorTitle")}</strong>
-            </Typography>
-            <Typography variant="body2">{errorMessage}</Typography>
+            </p>
+            <p>{errorMessage}</p>
           </Alert>
         )}
 
         {/* Confirm Button */}
-        <Button
-          variant="contained"
-          size="large"
+        <button
           onClick={handleFreeBooking}
           disabled={isLoading}
-          className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold text-lg min-w-[200px]"
-          sx={{
-            backgroundColor: "#16a34a",
-            "&:hover": {
-              backgroundColor: "#15803d",
-            },
-            "&:disabled": {
-              backgroundColor: "#9ca3af",
-            },
-          }}
+          className="bg-secColor hover:bg-secColor/80 text-white px-8 py-3 rounded-lg font-semibold text-lg min-w-[200px] transition-all duration-300 ease-in-out"
         >
           {isLoading ? (
             <Box className="flex items-center gap-2">
@@ -165,11 +167,11 @@ const FreeBookingButton = () => {
           ) : (
             t("forms.freeBooking.confirmButton")
           )}
-        </Button>
+        </button>
 
         {/* Trip Info Display (for debugging) */}
-        {process.env.NODE_ENV === "development" && (
-          <Box className="mt-6 p-4 bg-gray-100 rounded-lg text-left">
+        {/* {process.env.NODE_ENV === "development" && (
+          <Box className="mt-6 p-4 bg-titleColor rounded-lg text-left">
             <Typography variant="caption" className="text-gray-600">
               Debug Info:
             </Typography>
@@ -188,7 +190,7 @@ const FreeBookingButton = () => {
               )}
             </pre>
           </Box>
-        )}
+        )} */}
       </CardContent>
     </Card>
   );
