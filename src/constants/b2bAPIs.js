@@ -23,6 +23,7 @@ export const B2B_END_POINTS = {
   ADD_ACTIVITY: "tripActivitiesCustomizable",
   REQUEST_QUOTE: "asks/new",
   PAYMENT: "bookings/initiation",
+  FREE_BOOKING: "bookings/free/initiation",
   CHECK_BOOKING: "bookings/checkBooking",
 
   PROMO_CODE: "promoCodeDiscounts/validCode",

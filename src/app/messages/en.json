@@ -1336,6 +1336,17 @@
       "subTitle": "Pay using:"
     },
 
+    "freeBooking": {
+      "title": "Congratulations! This Trip is Free",
+      "subtitle": "You're all set! This amazing trip is completely free of charge.",
+      "description": "Click the button below to confirm your free booking and secure your spot on this exciting adventure.",
+      "confirmButton": "Confirm Free Booking",
+      "successTitle": "Booking Confirmed!",
+      "successMessage": "Your free booking has been successfully confirmed. You will receive a confirmation email shortly.",
+      "errorTitle": "Booking Failed",
+      "errorMessage": "Sorry, we couldn't process your free booking. Please try again or contact support."
+    },
+
     "methods": {
       "credit": "Credit/Debit Card",
       "stc": "STC",

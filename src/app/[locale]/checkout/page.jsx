@@ -16,6 +16,12 @@ const Checkout = () => {
   const t = useTranslations();
 
   const tripSlug = useSelector((state) => state.finalTripDetailsData?.data?.slug);
+  const finalTripData = useSelector((state) => state.finalTripDetailsData?.data);
+  
+  // Check if trip is free
+  const isFreeTrip = 
+    (finalTripData?.discountedTotalPriceWithVat === 0) || 
+    (finalTripData?.basePriceTotalWithVat === 0);
 
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
@@ -37,7 +43,7 @@ const Checkout = () => {
     <main className="py-5 lg:py-10 bg-activityDetailsBg">
       <Container maxWidth="lg">
         <h2 className="text-lg font-semibold lg:text-[28px] lg:pb-12 pb-6">
-          {t("forms.paymentMethodsForm.title")}
+          {isFreeTrip ? t("forms.freeBooking.title") : t("forms.paymentMethodsForm.title")}
         </h2>
       </Container>
 
