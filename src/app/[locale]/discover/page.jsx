@@ -475,6 +475,8 @@ const Discover = () => {
     rate,
   } = useSelector((state) => state.searchFilter);
 
+  const { currentPage } = useSelector((state) => state.discoverData);
+
   const locale = useLocale();
   const t = useTranslations();
   const dispatch = useDispatch();
@@ -793,6 +795,24 @@ const Discover = () => {
     isFiltersInitialized,
     searchParams,
   ]);
+
+  // Handle page changes
+  useEffect(() => {
+    if (!isFiltersInitialized || currentPage === 1) {
+      return;
+    }
+
+    const sortingType = searchParams.get("sorting") || SORTING_TYPE.NEWEST;
+
+    dispatch(
+      actGetDiscoverTrips({
+        page: currentPage,
+        sortType: sortingType,
+        filter,
+        locale,
+      })
+    );
+  }, [currentPage, dispatch, filter, isFiltersInitialized, locale, searchParams]);
 
   // Side filters data request
   const {

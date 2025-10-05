@@ -1640,7 +1640,7 @@
       "svg": "SVG images are not allowed",
 
       "payment": {
-        "success": "Payment was done successfully!",
+        "success": "Processing payment now",
         "sendOtp": "Please send OTP!",
         "resendOtp": "Please resend OTP!",
         "error": "An error occurred! Please try again"

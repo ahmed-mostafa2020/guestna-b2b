@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setCurrentPage } from "@store/discover/discoverSlice";
 
 import { useMemo, useRef } from "react";
@@ -16,6 +16,7 @@ import Pagination from "@components/common/Pagination";
 import InfoIcon from "@mui/icons-material/Info";
 
 const TripsGrid = () => {
+  const dispatch = useDispatch();
   const { trips, currentPage, lastPage, totalItems } = useSelector(
     (state) => state.discoverData
   );
@@ -31,6 +32,12 @@ const TripsGrid = () => {
         block: "start",
       });
     }
+  };
+
+  // Handle page change
+  const handlePageChange = (page) => {
+    dispatch(setCurrentPage(page));
+    scrollingToTop();
   };
 
   const renderedTrips = useMemo(() => {
@@ -49,7 +56,6 @@ const TripsGrid = () => {
   return (
     <div ref={targetRef} className="flex flex-col gap-4 lg:gap-8">
       <Sorting />
-
       <div className="relative">
         {trips.isConvergentData && (
           <div className="absolute flex items-center gap-1 z-[2] -top-8 text-error start-0">
@@ -78,12 +84,9 @@ const TripsGrid = () => {
       </div>
 
       <Pagination
+        pageInfo={trips?.pageInfo}
         currentPage={currentPage}
-        lastPage={lastPage}
-        itemsPerPage={CONSTANT_VALUES.PER_PAGE}
-        totalItems={totalItems}
-        setCurrentPage={setCurrentPage}
-        scrollingToTop={scrollingToTop}
+        onPageChange={handlePageChange}
       />
     </div>
   );

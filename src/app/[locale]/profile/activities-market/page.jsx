@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useDispatch, useSelector } from "react-redux";
 import { actGetDiscoverTrips } from "@store/discover/act/actGetDiscoverTrips";
+import { setCurrentPage } from "@store/discover/discoverSlice";
 
 import { useEffect } from "react";
 
@@ -12,7 +13,7 @@ import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import TripsGrid from "@components/sections/pages/discover/gridSection/tripsGrid";
 
 const ActivitiesMarketPage = () => {
-  const { trips, loading, error } = useSelector((state) => state.discoverData);
+  const { trips, loading, error, currentPage } = useSelector((state) => state.discoverData);
 
   const locale = useLocale();
   const t = useTranslations();
@@ -25,9 +26,18 @@ const ActivitiesMarketPage = () => {
     )}`;
   }, [t]);
 
+  // Initial data fetch
   useEffect(() => {
-    dispatch(actGetDiscoverTrips({ locale }));
-  }, []);
+    dispatch(actGetDiscoverTrips({ page: 1, locale }));
+    dispatch(setCurrentPage(1));
+  }, [dispatch, locale]);
+
+  // Handle page changes
+  useEffect(() => {
+    if (currentPage === 1) return;
+
+    dispatch(actGetDiscoverTrips({ page: currentPage, locale }));
+  }, [currentPage, dispatch, locale]);
 
   if (error) {
     return (
