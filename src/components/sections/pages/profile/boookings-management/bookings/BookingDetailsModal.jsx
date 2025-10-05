@@ -23,6 +23,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
   const locale = useLocale();
   const t = useTranslations();
   const [isExporting, setIsExporting] = useState(false);
+  console.log("bookingDetails", bookingDetails);
 
   if (!booking) return null;
 

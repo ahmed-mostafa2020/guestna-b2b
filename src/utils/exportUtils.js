@@ -36,6 +36,16 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
       grade: t("exportUtils.bookingReport.grade"),
       parentPhone: t("exportUtils.bookingReport.parentPhone"),
       nationalId: t("exportUtils.bookingReport.nationalId"),
+      orderId: t("exportUtils.bookingReport.orderId"),
+      academicStage: t("exportUtils.bookingReport.academicStage"),
+      size: t("exportUtils.bookingReport.size"),
+      hasFoodAllergy: t("exportUtils.bookingReport.hasFoodAllergy"),
+      foodAllergyDetails: t("exportUtils.bookingReport.foodAllergyDetails"),
+      note: t("exportUtils.bookingReport.note"),
+      parentEmail: t("exportUtils.bookingReport.parentEmail"),
+      childPhone: t("exportUtils.bookingReport.childPhone"),
+      childNationalId: t("exportUtils.bookingReport.childNationalId"),
+      nationalIdImage: t("exportUtils.bookingReport.nationalIdImage"),
       filename: t("exportUtils.bookingReport.filename"),
     };
 
@@ -102,30 +112,63 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
     XLSX.utils.book_append_sheet(workbook, tripSheet, labels.tripInfo);
 
     // Students Information Sheet
-    console.log("Excel Export - students count:", bookingDetails?.nodes?.length || 0);
-    
+    console.log(
+      "Excel Export - students count:",
+      bookingDetails?.nodes?.length || 0
+    );
+
     if (bookingDetails?.nodes?.length > 0) {
       const studentsData = [
         [
+          labels.orderId,
           labels.studentName,
-          labels.parentName,
+          labels.academicStage,
           labels.grade,
+          labels.size,
+          labels.childPhone,
+          labels.childNationalId,
+          labels.nationalIdImage,
+          labels.hasFoodAllergy,
+          labels.foodAllergyDetails,
+          labels.parentName,
+          labels.parentEmail,
           labels.parentPhone,
           labels.nationalId,
+          labels.note,
         ],
       ];
 
       bookingDetails.nodes.forEach((student, index) => {
+        // Create hyperlink for national ID image if URL exists
+        const nationalIdImageCell = student.child?.nationalIdImage
+          ? {
+              f: `HYPERLINK("${student.child.nationalIdImage}", "View Image")`,
+              l: { Target: student.child.nationalIdImage },
+            }
+          : "";
+
         studentsData.push([
+          student.orderId || "",
           student.child?.name || "",
-          student.parent?.name || "",
+          student.child?.academicStage?.name || "",
           student.child?.grade?.name || "",
-          student.parent?.phone || "",
+          student.child?.size || "",
+          student.child?.phone || "",
           student.child?.nationalId || "",
+          nationalIdImageCell,
+          student.child?.hasFoodAllergy ? "Yes" : "",
+          student.child?.foodAllergy || "",
+          student.parent?.name || "",
+          student.parent?.email || "",
+          student.parent?.phone || "",
+          student.parent?.nationalId || student.child?.nationalId || "",
+          student.child?.note || "",
         ]);
       });
 
-      console.log(`Excel Export - Added ${studentsData.length - 1} students to sheet`);
+      console.log(
+        `Excel Export - Added ${studentsData.length - 1} students to sheet`
+      );
       const studentsSheet = XLSX.utils.aoa_to_sheet(studentsData);
       XLSX.utils.book_append_sheet(workbook, studentsSheet, labels.students);
     } else {
@@ -178,7 +221,7 @@ export const exportModalToPDF = async (modalElement, booking, locale, t) => {
       imageTimeout: 30000, // Increased timeout for large tables
       onclone: (clonedDoc, element) => {
         console.log("PDF Export - Cloning DOM for screenshot...");
-        
+
         // Force all elements to be visible
         const allElements = clonedDoc.querySelectorAll("*");
         allElements.forEach((el) => {
@@ -206,13 +249,15 @@ export const exportModalToPDF = async (modalElement, booking, locale, t) => {
           table.style.maxHeight = "none";
           table.style.height = "auto";
         });
-        
+
         // Hide pagination controls
-        const paginationElements = clonedDoc.querySelectorAll('[class*="pagination"], .print\\:hidden');
+        const paginationElements = clonedDoc.querySelectorAll(
+          '[class*="pagination"], .print\\:hidden'
+        );
         paginationElements.forEach((el) => {
           el.style.display = "none";
         });
-        
+
         console.log("PDF Export - DOM cloning completed");
       },
     });
@@ -248,30 +293,40 @@ export const exportModalToPDF = async (modalElement, booking, locale, t) => {
     // If content is taller than one page, split into multiple pages
     if (scaledHeight > pdfHeight) {
       console.log("PDF Export - Content requires multiple pages");
-      
+
       const pagesNeeded = Math.ceil(scaledHeight / pdfHeight);
       console.log(`PDF Export - Creating ${pagesNeeded} pages`);
-      
+
       for (let i = 0; i < pagesNeeded; i++) {
         if (i > 0) {
           pdf.addPage();
         }
-        
+
         const sourceY = (i * pdfHeight) / scale;
         const sourceHeight = Math.min(pdfHeight / scale, imgHeight - sourceY);
-        
+
         // Create a temporary canvas for this page section
-        const pageCanvas = document.createElement('canvas');
+        const pageCanvas = document.createElement("canvas");
         pageCanvas.width = imgWidth;
         pageCanvas.height = sourceHeight;
-        const pageCtx = pageCanvas.getContext('2d');
-        
+        const pageCtx = pageCanvas.getContext("2d");
+
         // Draw the section of the original canvas
-        pageCtx.drawImage(canvas, 0, sourceY, imgWidth, sourceHeight, 0, 0, imgWidth, sourceHeight);
-        
+        pageCtx.drawImage(
+          canvas,
+          0,
+          sourceY,
+          imgWidth,
+          sourceHeight,
+          0,
+          0,
+          imgWidth,
+          sourceHeight
+        );
+
         const pageImgData = pageCanvas.toDataURL("image/png");
-        const pageHeight = Math.min(pdfHeight, scaledHeight - (i * pdfHeight));
-        
+        const pageHeight = Math.min(pdfHeight, scaledHeight - i * pdfHeight);
+
         pdf.addImage(pageImgData, "PNG", 0, 0, scaledWidth, pageHeight);
       }
     } else {
@@ -346,7 +401,9 @@ export const exportToPDF = async (booking, bookingDetails, t, locale) => {
       if (!price) return "";
       if (typeof price === "object") {
         return price.amount
-          ? `${price.amount} ${price.currency || t("exportUtils.bookingReport.currency")}`
+          ? `${price.amount} ${
+              price.currency || t("exportUtils.bookingReport.currency")
+            }`
           : "";
       }
       return formatCurrency(price);

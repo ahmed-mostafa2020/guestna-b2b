@@ -1218,10 +1218,21 @@
       "bookingDate": "تاريخ الحجز",
       "students": "قائمة الطلاب",
       "studentName": "اسم الطالب",
+      "childPhone": "هاتف الطالب",
+      "childNationalId": "رقم الهوية الوطنية للطالب",
+      "nationalIdImage": "صورة الهوية الوطنية",
       "parentName": "اسم ولي الأمر",
       "grade": "الصف",
       "parentPhone": "هاتف ولي الأمر",
       "nationalId": "الهوية الوطنية",
+      "orderId": "رقم الطلب",
+      "academicStage": "المرحلة الدراسية",
+      "size": "المقاس",
+      "note": "ملاحظة",
+      "hasFoodAllergy": "لديه حساسية طعام",
+      "foodAllergyDetails": "تفاصيل حساسية الطعام",
+      "parentEmail": "البريد الإلكتروني لولي الأمر",
+
       "filename": "تقرير_الحجز",
       "currency": "ريال"
     }
