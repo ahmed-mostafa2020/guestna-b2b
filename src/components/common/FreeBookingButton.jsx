@@ -2,25 +2,36 @@
 
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
-import { Button, CircularProgress, Alert, Box, Typography, Card, CardContent } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Alert,
+  Box,
+  Typography,
+  Card,
+  CardContent,
+} from "@mui/material";
 import { CheckCircle, CelebrationOutlined } from "@mui/icons-material";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import getProxyUrl from "@utils/getProxyUrl";
 
 const FreeBookingButton = () => {
+  const locale = useLocale();
   const t = useTranslations();
   const router = useRouter();
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [bookingStatus, setBookingStatus] = useState(null); // null, 'success', 'error'
   const [errorMessage, setErrorMessage] = useState("");
 
   // Get data from Redux store with safe access
-  const finalTripData = useSelector((state) => state.finalTripDetailsData?.data);
+  const finalTripData = useSelector(
+    (state) => state.finalTripDetailsData?.data
+  );
 
   const handleFreeBooking = async () => {
     setIsLoading(true);
@@ -30,14 +41,14 @@ const FreeBookingButton = () => {
     try {
       // Prepare the request body based on finalTripDetailsData
       const requestBody = {
-        trip: finalTripData?.trip,
+        trip: finalTripData?._id,
         client: finalTripData?.client,
         quantity: finalTripData?.quantity || 1,
         promoCode: finalTripData?.promoCode || null,
       };
 
       // Remove null/undefined values
-      Object.keys(requestBody).forEach(key => {
+      Object.keys(requestBody).forEach((key) => {
         if (requestBody[key] === null || requestBody[key] === undefined) {
           delete requestBody[key];
         }
@@ -55,15 +66,9 @@ const FreeBookingButton = () => {
 
       if (response.ok) {
         setBookingStatus("success");
-        
+        console.log(data);
         // Redirect to booking status page after 3 seconds
-        setTimeout(() => {
-          if (data?.bookingId) {
-            router.push(`/bookingStatus/${data.bookingId}`);
-          } else {
-            router.push("/profile/bookings");
-          }
-        }, 3000);
+        router.push(`/bookingStatus/${data}`);
       } else {
         setBookingStatus("error");
         setErrorMessage(data?.message || t("forms.freeBooking.errorMessage"));
@@ -102,20 +107,26 @@ const FreeBookingButton = () => {
     <Card className="max-w-md mx-auto bg-gradient-to-br from-green-50 to-blue-50 border-green-200">
       <CardContent className="text-center py-8">
         {/* Celebration Icon */}
-        <CelebrationOutlined className="text-green-500 mb-4" sx={{ fontSize: 64 }} />
-        
+        <CelebrationOutlined
+          className="text-green-500 mb-4"
+          sx={{ fontSize: 64 }}
+        />
+
         {/* Title */}
         <Typography variant="h4" className="font-bold text-green-700 mb-2">
           {t("forms.freeBooking.title")}
         </Typography>
-        
+
         {/* Subtitle */}
         <Typography variant="h6" className="text-green-600 mb-4">
           {t("forms.freeBooking.subtitle")}
         </Typography>
-        
+
         {/* Description */}
-        <Typography variant="body1" className="text-gray-700 mb-6 leading-relaxed">
+        <Typography
+          variant="body1"
+          className="text-gray-700 mb-6 leading-relaxed"
+        >
           {t("forms.freeBooking.description")}
         </Typography>
 
@@ -125,9 +136,7 @@ const FreeBookingButton = () => {
             <Typography variant="body2">
               <strong>{t("forms.freeBooking.errorTitle")}</strong>
             </Typography>
-            <Typography variant="body2">
-              {errorMessage}
-            </Typography>
+            <Typography variant="body2">{errorMessage}</Typography>
           </Alert>
         )}
 
@@ -165,14 +174,18 @@ const FreeBookingButton = () => {
               Debug Info:
             </Typography>
             <pre className="text-xs text-gray-700 mt-1">
-              {JSON.stringify({
-                trip: finalTripData?.trip,
-                client: finalTripData?.client,
-                quantity: finalTripData?.quantity,
-                promoCode: finalTripData?.promoCode,
-                discountedTotal: finalTripData?.discountedTotalPriceWithVat,
-                baseTotal: finalTripData?.basePriceTotalWithVat,
-              }, null, 2)}
+              {JSON.stringify(
+                {
+                  trip: finalTripData?.trip,
+                  client: finalTripData?.client,
+                  quantity: finalTripData?.quantity,
+                  promoCode: finalTripData?.promoCode,
+                  discountedTotal: finalTripData?.discountedTotalPriceWithVat,
+                  baseTotal: finalTripData?.basePriceTotalWithVat,
+                },
+                null,
+                2
+              )}
             </pre>
           </Box>
         )}
