@@ -15,9 +15,10 @@ import {
 } from "@mui/material";
 import { CheckCircle, CelebrationOutlined } from "@mui/icons-material";
 
+import axios from "axios";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import getProxyUrl from "@utils/getProxyUrl";
-import getHeaders from "@utils/getHeaders";
+import { getHeaders } from "@utils/getHeaders";
 import Image from "next/image";
 import thanksMessage from "@assets/sectionBackground/thanksMessage.png";
 
@@ -56,52 +57,64 @@ const FreeBookingButton = () => {
         }
       });
 
-      const response = await fetch(getProxyUrl(B2B_END_POINTS.FREE_BOOKING), {
-        method: "POST",
-        headers: getHeaders(locale),
-        body: JSON.stringify(requestBody),
-      });
+      const response = await axios.post(
+        getProxyUrl(B2B_END_POINTS.FREE_BOOKING),
+        requestBody,
+        {
+          headers: getHeaders(locale),
+        }
+      );
 
-      const data = await response.json();
-
-      if (response.ok) {
+      if (response.data) {
         setBookingStatus("success");
-        console.log(data);
-        // Redirect to booking status page after 3 seconds
-        router.push(`/bookingStatus/${data}`);
-      } else {
-        setBookingStatus("error");
-        setErrorMessage(data?.message || t("forms.freeBooking.errorMessage"));
+        console.log(response.data);
+        // Redirect to booking status page
+        router.push(`/bookingStatus/${response.data}`);
       }
     } catch (error) {
       console.error("Free booking error:", error);
       setBookingStatus("error");
-      setErrorMessage(t("forms.freeBooking.errorMessage"));
+
+      // Handle different error scenarios
+      if (error.response) {
+        // Server responded with error status
+        const errorMsg =
+          error.response.data?.message ||
+          error.response.data?.error ||
+          t("common.errorHappens");
+        setErrorMessage(errorMsg);
+      } else if (error.request) {
+        // Request was made but no response received
+        setErrorMessage(t("common.errorHappens"));
+      } else {
+        // Something else happened
+        setErrorMessage(t("common.errorHappens"));
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   // Success state
-  if (bookingStatus === "success") {
-    return (
-      <Card className="max-w-md mx-auto bg-green-50 border-green-200 font-somar">
-        <CardContent className="text-center py-8">
-          <CheckCircle className="text-mainColor mb-4" sx={{ fontSize: 64 }} />
-          <Typography variant="h5" className="font-bold text-mainColor mb-2">
-            {t("forms.freeBooking.successTitle")}
-          </Typography>
-          <Typography variant="body1" className="text-mainColor mb-4">
-            {t("forms.freeBooking.successMessage")}
-          </Typography>
-          <CircularProgress size={24} className="text-mainColor" />
-          <Typography variant="body2" className="text-mainColor mt-2">
-            Redirecting...
-          </Typography>
-        </CardContent>
-      </Card>
-    );
-  }
+  //   if (bookingStatus === "success") {
+  //     return (
+  //       <Card className="max-w-md mx-auto bg-green-50 border-green-200 font-somar">
+  //         <CardContent className="text-center py-8">
+  //           <CheckCircle className="text-mainColor mb-4" sx={{ fontSize: 64 }} />
+  //           <Typography variant="h5" className="font-bold text-mainColor mb-2">
+  //             {t("forms.freeBooking.successTitle")}
+  //           </Typography>
+  //           <Typography variant="body1" className="text-mainColor mb-4">
+  //             {t("forms.freeBooking.successMessage")}
+  //           </Typography>
+  //           <CircularProgress size={24} className="text-mainColor" />
+  //           <Typography variant="body2" className="text-mainColor mt-2">
+  //             {t("forms.childImageUpload.success.redirecting")}
+  //           </Typography>
+  //         </CardContent>
+  //       </Card>
+  //     );
+  //   }
 
   return (
     <Card className="w-full mx-auto bg-gradient-to-br from-green-50 to-blue-50 border-green-200 !rounded-xl">
@@ -157,18 +170,17 @@ const FreeBookingButton = () => {
         <button
           onClick={handleFreeBooking}
           disabled={isLoading}
-          className="bg-secColor hover:bg-secColor/80 text-white px-8 py-3 rounded-lg font-semibold text-lg min-w-[200px] transition-all duration-300 ease-in-out"
+          className="bg-secColor hover:bg-secColor/80 text-white px-8 py-3 rounded-lg font-semibold text-lg min-w-[200px] transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed mt-4"
         >
           {isLoading ? (
             <Box className="flex items-center gap-2">
               <CircularProgress size={20} color="inherit" />
-              <span>Processing...</span>
+              <span>{t("forms.validation.sending")}</span>
             </Box>
           ) : (
             t("forms.freeBooking.confirmButton")
           )}
         </button>
-
         {/* Trip Info Display (for debugging) */}
         {/* {process.env.NODE_ENV === "development" && (
           <Box className="mt-6 p-4 bg-titleColor rounded-lg text-left">
