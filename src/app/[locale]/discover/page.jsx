@@ -457,6 +457,7 @@ const Discover = () => {
   const [isFiltersInitialized, setIsFiltersInitialized] = useState(false);
   const [shouldFetchData, setShouldFetchData] = useState(false);
   const initialLoadComplete = useRef(false);
+  const isInitialPageLoad = useRef(true);
 
   const {
     tripsType,
@@ -787,6 +788,7 @@ const Discover = () => {
 
     // Keep track of current page
     dispatch(setCurrentPage(1));
+    isInitialPageLoad.current = false; // Mark initial load as complete
   }, [
     dispatch,
     filter,
@@ -798,11 +800,19 @@ const Discover = () => {
 
   // Handle page changes
   useEffect(() => {
-    if (!isFiltersInitialized || currentPage === 1) {
+    // Skip if filters not initialized
+    if (!isFiltersInitialized) {
+      return;
+    }
+
+    // Skip the very first page load (handled by main useEffect above)
+    if (isInitialPageLoad.current && currentPage === 1) {
       return;
     }
 
     const sortingType = searchParams.get("sorting") || SORTING_TYPE.NEWEST;
+
+    console.log("Pagination triggered - Fetching page:", currentPage);
 
     dispatch(
       actGetDiscoverTrips({
@@ -812,7 +822,7 @@ const Discover = () => {
         locale,
       })
     );
-  }, [currentPage, dispatch, filter, isFiltersInitialized, locale, searchParams]);
+  }, [currentPage]);
 
   // Side filters data request
   const {

@@ -36,6 +36,7 @@ const TripsGrid = () => {
 
   // Handle page change
   const handlePageChange = (page) => {
+    console.log("TripsGrid - Page change requested:", page);
     dispatch(setCurrentPage(page));
     scrollingToTop();
   };

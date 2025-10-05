@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { actGetDiscoverTrips } from "@store/discover/act/actGetDiscoverTrips";
 import { setCurrentPage } from "@store/discover/discoverSlice";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
@@ -14,6 +14,7 @@ import TripsGrid from "@components/sections/pages/discover/gridSection/tripsGrid
 
 const ActivitiesMarketPage = () => {
   const { trips, loading, error, currentPage } = useSelector((state) => state.discoverData);
+  const isInitialPageLoad = useRef(true);
 
   const locale = useLocale();
   const t = useTranslations();
@@ -30,14 +31,20 @@ const ActivitiesMarketPage = () => {
   useEffect(() => {
     dispatch(actGetDiscoverTrips({ page: 1, locale }));
     dispatch(setCurrentPage(1));
+    isInitialPageLoad.current = false; // Mark initial load as complete
   }, [dispatch, locale]);
 
   // Handle page changes
   useEffect(() => {
-    if (currentPage === 1) return;
+    // Skip the very first page load (handled by initial useEffect above)
+    if (isInitialPageLoad.current && currentPage === 1) {
+      return;
+    }
+
+    console.log("Activities Market - Pagination triggered, fetching page:", currentPage);
 
     dispatch(actGetDiscoverTrips({ page: currentPage, locale }));
-  }, [currentPage, dispatch, locale]);
+  }, [currentPage]);
 
   if (error) {
     return (
