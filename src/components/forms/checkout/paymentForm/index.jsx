@@ -25,7 +25,7 @@ import SelectionGroup from "../../SelectionGroup";
 import PaymentMethod from "./PaymentMethod";
 import OtpCounter from "./OtpCounter";
 // import PromoCodeForm from "../promoCodeForm";
-import TamaraWidget from "./TamaraWidget";
+import TamaraWidget from "./TamaraWidget"; //tamara payment
 import AppleWidget from "./AppleWidget";
 
 import axios from "axios";
@@ -469,7 +469,7 @@ const PaymentForm = () => {
                 )}
               </div> */}
 
-              {/* TAMARA */}
+              {/* tamara payment */}
               <div className="flex flex-col transition-all duration-200 ease-in-out">
                 <PaymentMethod
                   value={CONSTANT_VALUES.PAYMENT_METHODS.TAMARA}
