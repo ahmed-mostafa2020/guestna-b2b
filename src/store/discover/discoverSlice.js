@@ -19,15 +19,15 @@ const discoverSlice = createSlice({
   name: "discover",
   initialState,
   reducers: {
-    // setDiscoverData: (state, action) => {
-    //   state.loading = "succeeded";
-    //   state.error = null;
-    //   state.trips = action.payload;
-    //   state.lastPage = Math.round(
-    //     action.payload.pageInfo.total / CONSTANT_VALUES.PER_PAGE
-    //   );
-    //   state.totalItems = action.payload.pageInfo.total;
-    // },
+    setDiscoverData: (state, action) => {
+      state.loading = "succeeded";
+      state.error = null;
+      state.trips = action.payload;
+      state.lastPage = Math.round(
+        action.payload.pageInfo.total / CONSTANT_VALUES.PER_PAGE
+      );
+      state.totalItems = action.payload.pageInfo.total;
+    },
 
     setSortBy: (state, action) => {
       state.sortBy = action.payload;
@@ -68,7 +68,7 @@ const discoverSlice = createSlice({
 });
 
 export const {
-  // setDiscoverData,
+  setDiscoverData,
   setSearchTerm,
   setSortBy,
   setCurrentPage,

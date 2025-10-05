@@ -3,23 +3,31 @@
 import { useLocale, useTranslations } from "next-intl";
 
 import { useDispatch, useSelector } from "react-redux";
-import { actGetDiscoverTrips } from "@store/discover/act/actGetDiscoverTrips";
 import { setCurrentPage } from "@store/discover/discoverSlice";
+import { setDiscoverData } from "@store/discover/discoverSlice";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import TripsGrid from "@components/sections/pages/discover/gridSection/tripsGrid";
+import { usePaginatedTrips } from "@hooks/usePaginatedTrips";
 
 const ActivitiesMarketPage = () => {
-  const { trips, loading, error, currentPage } = useSelector((state) => state.discoverData);
-  const isInitialPageLoad = useRef(true);
+  const { currentPage } = useSelector((state) => state.discoverData);
 
   const locale = useLocale();
   const t = useTranslations();
 
   const dispatch = useDispatch();
+
+  // Use cached pagination hook
+  const { data, isLoading, error, isFetching } = usePaginatedTrips({
+    page: currentPage,
+    // sortType: null, // No sorting for activities market
+    // filter: null, // No filters for activities market
+    locale,
+  });
 
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
@@ -27,35 +35,32 @@ const ActivitiesMarketPage = () => {
     )}`;
   }, [t]);
 
-  // Initial data fetch
+  // Initialize current page on mount
   useEffect(() => {
-    dispatch(actGetDiscoverTrips({ page: 1, locale }));
     dispatch(setCurrentPage(1));
-    isInitialPageLoad.current = false; // Mark initial load as complete
-  }, [dispatch, locale]);
+  }, [dispatch]);
 
-  // Handle page changes
+  // Update Redux store when data changes (for TripsGrid component)
   useEffect(() => {
-    // Skip the very first page load (handled by initial useEffect above)
-    if (isInitialPageLoad.current && currentPage === 1) {
-      return;
+    if (data) {
+      dispatch(setDiscoverData(data));
     }
-
-    console.log("Activities Market - Pagination triggered, fetching page:", currentPage);
-
-    dispatch(actGetDiscoverTrips({ page: currentPage, locale }));
-  }, [currentPage]);
+  }, [data, dispatch]);
 
   if (error) {
     return (
       <ErrorComponent
-        statusCode={error?.statusCode || "404"}
-        errorMessage={error?.message || t("validations.tryAgain")}
+        statusCode={error?.response?.status || "404"}
+        errorMessage={
+          error?.response?.data?.message ||
+          error?.message ||
+          t("validations.tryAgain")
+        }
       />
     );
   }
 
-  if (loading === "loading") {
+  if (isLoading) {
     return <FullScreenLoading status="pending" />;
   }
 
@@ -69,6 +74,16 @@ const ActivitiesMarketPage = () => {
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             {t("profile.aside.activitiesMarketDescription")}
           </p>
+
+          {/* Show fetching indicator when loading new page */}
+          {isFetching && !isLoading && (
+            <div className="flex items-center gap-2 text-sm text-mainColor">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-mainColor"></div>
+              <span>
+                {t("profile.myWallet.transactionsPage.table.loading.message")}
+              </span>
+            </div>
+          )}
         </div>
       </section>
 
