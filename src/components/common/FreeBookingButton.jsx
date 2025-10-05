@@ -170,7 +170,7 @@ const FreeBookingButton = () => {
         <button
           onClick={handleFreeBooking}
           disabled={isLoading}
-          className="bg-secColor hover:bg-secColor/80 text-white px-8 py-3 rounded-lg font-semibold text-lg min-w-[200px] transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+          className="bg-mainColor hover:bg-secColor text-white px-8 py-3 rounded-lg font-semibold text-lg min-w-[200px] transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed mt-4"
         >
           {isLoading ? (
             <Box className="flex items-center gap-2">
@@ -181,28 +181,6 @@ const FreeBookingButton = () => {
             t("forms.freeBooking.confirmButton")
           )}
         </button>
-        {/* Trip Info Display (for debugging) */}
-        {/* {process.env.NODE_ENV === "development" && (
-          <Box className="mt-6 p-4 bg-titleColor rounded-lg text-left">
-            <Typography variant="caption" className="text-gray-600">
-              Debug Info:
-            </Typography>
-            <pre className="text-xs text-gray-700 mt-1">
-              {JSON.stringify(
-                {
-                  trip: finalTripData?.trip,
-                  client: finalTripData?.client,
-                  quantity: finalTripData?.quantity,
-                  promoCode: finalTripData?.promoCode,
-                  discountedTotal: finalTripData?.discountedTotalPriceWithVat,
-                  baseTotal: finalTripData?.basePriceTotalWithVat,
-                },
-                null,
-                2
-              )}
-            </pre>
-          </Box>
-        )} */}
       </CardContent>
     </Card>
   );
