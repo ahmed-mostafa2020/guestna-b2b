@@ -1,12 +1,13 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import { useSearchParams, useRouter } from "next/navigation";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentPage } from "@store/discover/discoverSlice";
 import { setDiscoverData } from "@store/discover/discoverSlice";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
@@ -15,17 +16,21 @@ import { usePaginatedTrips } from "@hooks/usePaginatedTrips";
 
 const ActivitiesMarketPage = () => {
   const { currentPage } = useSelector((state) => state.discoverData);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const isInitialMount = useRef(true);
 
   const locale = useLocale();
   const t = useTranslations();
 
   const dispatch = useDispatch();
 
+  // Get page from URL or default to 1
+  const pageFromUrl = parseInt(searchParams.get("page")) || 1;
+
   // Use cached pagination hook
   const { data, isLoading, error, isFetching } = usePaginatedTrips({
     page: currentPage,
-    // sortType: null, // No sorting for activities market
-    // filter: null, // No filters for activities market
     locale,
   });
 
@@ -35,10 +40,35 @@ const ActivitiesMarketPage = () => {
     )}`;
   }, [t]);
 
-  // Initialize current page on mount
+  // Initialize current page from URL on mount
   useEffect(() => {
-    dispatch(setCurrentPage(1));
-  }, [dispatch]);
+    if (isInitialMount.current) {
+      dispatch(setCurrentPage(pageFromUrl));
+      isInitialMount.current = false;
+    }
+  }, [dispatch, pageFromUrl]);
+
+  // Update URL when currentPage changes (skip on initial mount)
+  useEffect(() => {
+    // Skip if this is the initial mount
+    if (isInitialMount.current) {
+      return;
+    }
+
+    // Skip if URL already matches current page
+    if (currentPage === pageFromUrl) {
+      return;
+    }
+
+    const params = new URLSearchParams(searchParams.toString());
+    if (currentPage === 1) {
+      params.delete("page");
+    } else {
+      params.set("page", currentPage.toString());
+    }
+    const newUrl = params.toString() ? `?${params.toString()}` : "";
+    router.push(`/${locale}/profile/activities-market${newUrl}`, { scroll: false });
+  }, [currentPage, pageFromUrl, router, searchParams, locale]);
 
   // Update Redux store when data changes (for TripsGrid component)
   useEffect(() => {

@@ -21,7 +21,7 @@ export const usePaginatedTrips = ({
 
   const fetchTrips = async () => {
     const body = {
-      perPage: CONSTANT_VALUES.PER_PAGE,
+      perPage: 10 || CONSTANT_VALUES.PER_PAGE,
       page,
       sort: sortType,
       filter,
