@@ -2,6 +2,7 @@
 
 // import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 // import { useParams } from "next/navigation";
 
 import { useLocale, useTranslations } from "next-intl";
@@ -18,6 +19,7 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 // import calculateDiscountedPrice from "@utils/CalculateDiscountedPrice";
 import calculateHours from "@utils/CalculateHours";
 import formatNumbersUint from "@utils/FormatNumbersUint";
+import formatCurrency from "@utils/FormatCurrency";
 
 import ImageWithPlaceholder from "../imagesPlaceholder/ImageWithPlaceholder";
 // import FavoriteButton from "./FavoriteButton";
@@ -42,6 +44,9 @@ const TripsCard = ({
   // oneSize = false,
 }) => {
   const [shouldSlide, setShouldSlide] = useState(false);
+
+  const path = usePathname();
+  const isActivitiesMarketTrip = path.includes("activities-market");
 
   // const { activityDayNumber } = useSelector((state) => state.customizationData);
 
@@ -187,6 +192,7 @@ const TripsCard = ({
       >
         <div className="flex justify-between">
           {renderCities}
+          {/* {!isActivitiesMarketTrip && renderCities} */}
 
           {activityCard.rate >= 1 && activityCard.reviewsCount && (
             <div className="gap-1 centered">
@@ -227,6 +233,13 @@ const TripsCard = ({
             </h4>
           )}
 
+          {/* {isActivitiesMarketTrip && (
+            <h4 className="flex items-center gap-1">
+              {earthIcon}
+           {isActivitiesMarketTrip && renderCities} 
+          </h4>
+          )} */}
+
           {activityCard.fromHour && (
             <h4 className="flex items-center gap-1">
               {timeIcon}
@@ -260,13 +273,21 @@ const TripsCard = ({
         </div>
 
         <div
-          className={`flex items-center justify-between gap-2
-             mt-2
+          className={`flex items-center justify-between gap-2 lg:mt-4 mt-2
             ${newDesign ? "flex-wrap" : ""}`}
         >
+          {activityCard.price && isActivitiesMarketTrip && (
+            <div className="flex gap-1">
+              <span className="text-textLight">{t("common.startsWith")}</span>
+              <span className="font-semibold">
+                {formatCurrency(activityCard.price)}
+              </span>
+            </div>
+          )}
+
           <Link
             href={`/${locale}/discover/${activityCard.slug}`}
-            className={`px-8 text-center py-3 capitalize rounded-[10px] text-white bg-mainColor border-2 border-mainColor font-medium text-base transition-all ease-in-out duration-200 hover:bg-linksHover hover:border-linksHover mx-auto
+            className={`px-4 text-center py-2 capitalize rounded-[10px] text-white bg-mainColor border-2 border-mainColor font-medium text-base transition-all ease-in-out duration-200 hover:bg-linksHover hover:border-linksHover mx-auto
                
             `}
           >

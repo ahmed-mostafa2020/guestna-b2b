@@ -1,6 +1,12 @@
 import { memo } from "react";
 
-import { FormControl, MenuItem, Select } from "@mui/material";
+import {
+  FormControl,
+  MenuItem,
+  Select,
+  Checkbox,
+  ListItemText,
+} from "@mui/material";
 import { KeyboardArrowDown } from "@mui/icons-material";
 
 const SelectionGroup = ({
@@ -79,14 +85,41 @@ const SelectionGroup = ({
             {placeholder}
           </MenuItem>
         )}
-        {list.map((item) => (
-          <MenuItem
-            key={item}
-            value={name === "expiryYear" ? item.toString().slice(-2) : item}
-          >
-            {item}
-          </MenuItem>
-        ))}
+        {list.map((item) => {
+          const itemValue =
+            name === "expiryYear" ? item.toString().slice(-2) : item;
+          const isSelected = multiple
+            ? Array.isArray(value) && value.includes(itemValue)
+            : value === itemValue;
+
+          return (
+            <MenuItem key={item} value={itemValue}>
+              {multiple && (
+                <Checkbox
+                  checked={isSelected}
+                  sx={{
+                    color: "#d1d5db",
+                    "&.Mui-checked": {
+                      color: "#007473",
+                    },
+                  }}
+                />
+              )}
+              {!multiple && isSelected && (
+                <Checkbox
+                  checked={true}
+                  sx={{
+                    color: "#d1d5db",
+                    "&.Mui-checked": {
+                      color: "#007473",
+                    },
+                  }}
+                />
+              )}
+              <ListItemText primary={item} />
+            </MenuItem>
+          );
+        })}
       </Select>
       {touched && errors && (
         <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
