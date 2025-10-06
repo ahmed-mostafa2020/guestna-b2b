@@ -36,6 +36,12 @@ const finalTripDetailsSlice = createSlice({
     hidePaymentMethods: (state) => {
       state.isPaymentMethodsShown = false;
     },
+    clearFinalTripDetailsData: (state) => {
+      state.data = {};
+      state.isPaymentMethodsShown = false;
+      state.loading = "idle";
+      state.error = null;
+    },
   },
 });
 
@@ -45,5 +51,6 @@ export const {
   setFinalTripDetailsDataError,
   showPaymentMethods,
   hidePaymentMethods,
+  clearFinalTripDetailsData,
 } = finalTripDetailsSlice.actions;
 export default finalTripDetailsSlice.reducer;

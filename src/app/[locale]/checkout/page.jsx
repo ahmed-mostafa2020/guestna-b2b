@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { clearFinalTripDetailsData } from "@store/checkout/finalTripDetailsSlice";
 
 import ErrorComponent from "@feedback/error/ErrorComponent";
 
@@ -14,6 +15,8 @@ import { Container } from "@mui/material";
 
 const Checkout = () => {
   const t = useTranslations();
+  const dispatch = useDispatch();
+  const timeoutRef = useRef(null);
 
   const tripSlug = useSelector((state) => state.finalTripDetailsData?.data?.slug);
   const finalTripData = useSelector((state) => state.finalTripDetailsData?.data);
@@ -28,6 +31,22 @@ const Checkout = () => {
       "pagesHead.title.checkout"
     )}`;
   }, [t]);
+
+  // Clear finalTripDetailsData after 15 minutes on checkout page
+  useEffect(() => {
+    // Set timeout for 15 minutes (900000 ms)
+    timeoutRef.current = setTimeout(() => {
+      console.log("15 minutes elapsed - Clearing checkout data");
+      dispatch(clearFinalTripDetailsData());
+    }, 15 * 60 * 1000);
+
+    // Cleanup timeout on unmount
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [dispatch]);
 
   // Conditional rendering based on tripSlug
   if (!tripSlug) {

@@ -3,7 +3,9 @@ import Link from "next/link";
 
 import { useLocale, useTranslations } from "next-intl";
 
-import { memo } from "react";
+import { memo, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { clearFinalTripDetailsData } from "@store/checkout/finalTripDetailsSlice";
 
 import formatDate from "@utils/FormateDate";
 import BookingDataCard from "./BookingDataCard";
@@ -16,6 +18,13 @@ import successBooking from "@assets/successBooking.png";
 const SuccessBooking = ({ data }) => {
   const locale = useLocale();
   const t = useTranslations();
+  const dispatch = useDispatch();
+
+  // Clear finalTripDetailsData on successful payment
+  useEffect(() => {
+    console.log("Payment successful - Clearing checkout data");
+    dispatch(clearFinalTripDetailsData());
+  }, [dispatch]);
 
   const handleShare = async () => {
     if (navigator.share) {
