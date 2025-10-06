@@ -567,6 +567,7 @@ const PaymentForm = () => {
                           </>
                         )}
 
+                        {/* tamara payment */}
                         <div className="relative flex flex-col gap-2 mb-6">
                           <label className="font-medium capitalize font-ibm">
                             {t("forms.phone.name")}

@@ -31,7 +31,7 @@ export const usePaginatedTrips = ({
 
     const response = await axios({
       method: "POST",
-      url: getProxyUrl(B2B_END_POINTS.DISCOVER),
+      url: getProxyUrl(B2B_END_POINTS.PROFILE.ACTIVITIES_MARKET),
       data: body,
       headers,
     });
@@ -40,7 +40,13 @@ export const usePaginatedTrips = ({
   };
 
   // Create a unique query key based on all parameters
-  const queryKey = ["trips", page, sortType, JSON.stringify(filter), locale];
+  const queryKey = [
+    "activitiesMarket",
+    page,
+    sortType,
+    JSON.stringify(filter),
+    locale,
+  ];
 
   const query = useQuery({
     queryKey,
