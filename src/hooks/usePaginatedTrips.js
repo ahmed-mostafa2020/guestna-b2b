@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { useDispatch } from "react-redux";
 import axios from "axios";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -17,11 +16,9 @@ export const usePaginatedTrips = ({
   filter = {},
   locale,
 }) => {
-  const dispatch = useDispatch();
-
   const fetchTrips = async () => {
     const body = {
-      perPage: 10 || CONSTANT_VALUES.PER_PAGE,
+      perPage: CONSTANT_VALUES.PER_PAGE,
       page,
       sort: sortType,
       filter,

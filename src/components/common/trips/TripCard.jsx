@@ -136,8 +136,8 @@ const TripCard = ({ activityCard, imageWidth = 300 }) => {
           className="text-sm font-medium text-textLight"
           title={activityCard.description}
         >
-          {activityCard.description.length > 150
-            ? `${activityCard.description.substring(0, 150)}...`
+          {activityCard.description.length > 100
+            ? `${activityCard.description.substring(0, 100)}...`
             : activityCard.description}
         </h4>
 

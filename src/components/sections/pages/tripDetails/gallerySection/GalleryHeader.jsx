@@ -1,20 +1,24 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
 
-import { memo } from "react";
-
-import DownloadButton from "./DownloadButton";
+import { memo, useMemo } from "react";
 
 import IosShareIcon from "@mui/icons-material/IosShare";
+import DownloadButton from "./DownloadButton";
 
 const GalleryHeader = ({ tripData }) => {
   const t = useTranslations();
-  const isAuth = tripData?.isAuth;
+  const pathname = usePathname();
 
-  // const numCities = tripData?.cities?.length;
-  // const renderCities = useMemo(() => {
-  //   if (numCities === 1) {
+  const isDiscoverPage = pathname?.includes("discover");
+  const isAuth = tripData?.isAuth;
+  const detailsFile = tripData?.detailsFile;
+
+  // const numCity = tripData?.cities?.length;
+  // const renderCity = useMemo(() => {
+  //   if (numCity === 1) {
   //     return (
   //       <h4 className="gap-1 text-sm font-medium capitalize centered">
   //         {locationIcon}
@@ -67,7 +71,7 @@ const GalleryHeader = ({ tripData }) => {
             {t("links.share")}
           </button>
 
-          {isAuth && <DownloadButton />}
+          {detailsFile && (isDiscoverPage ? isAuth : true) && <DownloadButton />}
         </div>
       </div>
     </>
