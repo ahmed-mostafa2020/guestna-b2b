@@ -109,11 +109,14 @@ const FileUploadGroup = memo(
                 "flex-1",
                 !selectedFileName && !value ? "text-textLight" : "text-textDark"
               )}
+              title={selectedFileName}
             >
-              {selectedFileName ||
-                value?.name ||
-                placeholder ||
-                "Choose file..."}
+              {selectedFileName.length <= 40
+                ? selectedFileName
+                : `${selectedFileName.slice(0, 40)}...` ||
+                  value?.name ||
+                  placeholder ||
+                  "Choose file..."}
             </span>
 
             <div className="flex items-center ml-2">{uploadFileIcon}</div>

@@ -109,6 +109,14 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
     ];
 
     const tripSheet = XLSX.utils.aoa_to_sheet(tripData);
+    
+    // Auto-fit columns for trip sheet
+    const tripColWidths = [
+      { wch: 20 }, // Label column
+      { wch: 50 }, // Value column
+    ];
+    tripSheet['!cols'] = tripColWidths;
+    
     XLSX.utils.book_append_sheet(workbook, tripSheet, labels.tripInfo);
 
     // Students Information Sheet
@@ -170,6 +178,27 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
         `Excel Export - Added ${studentsData.length - 1} students to sheet`
       );
       const studentsSheet = XLSX.utils.aoa_to_sheet(studentsData);
+      
+      // Auto-fit columns for students sheet based on content
+      const studentsColWidths = [
+        { wch: 15 }, // Order ID
+        { wch: 25 }, // Student Name
+        { wch: 20 }, // Academic Stage
+        { wch: 15 }, // Grade
+        { wch: 10 }, // Size
+        { wch: 15 }, // Child Phone
+        { wch: 18 }, // Child National ID
+        { wch: 15 }, // National ID Image
+        { wch: 15 }, // Has Food Allergy
+        { wch: 30 }, // Food Allergy Details
+        { wch: 25 }, // Parent Name
+        { wch: 30 }, // Parent Email
+        { wch: 15 }, // Parent Phone
+        { wch: 18 }, // National ID
+        { wch: 30 }, // Note
+      ];
+      studentsSheet['!cols'] = studentsColWidths;
+      
       XLSX.utils.book_append_sheet(workbook, studentsSheet, labels.students);
     } else {
       console.log("Excel Export - No students found or empty array");

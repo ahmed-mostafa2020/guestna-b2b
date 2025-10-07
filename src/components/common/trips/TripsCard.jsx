@@ -137,47 +137,34 @@ const TripsCard = ({
 
   return (
     <div className="rounded-2xl overflow-hidden flex flex-col card-shadow relative border border-[#E4E6E8]">
-      {activityCard.tripsType == CONSTANT_VALUES.PACKAGE ? (
-        <div className="flex items-center ps-4 gap-2 absolute z-[1] text-xs text-badge top-8">
-          {activityCard.isCustomizable && (
+      {/* Show badges for all trip types */}
+      <div className="flex items-center ps-4 gap-2 absolute z-[1] text-xs text-badge top-8">
+        {/* Customizable badge (only for packages) */}
+        {activityCard.tripsType === CONSTANT_VALUES.PACKAGE &&
+          activityCard.isCustomizable && (
             <p className="px-3 py-1 bg-white rounded-2xl">
               {t("common.customizable")}
             </p>
           )}
 
-          {activityCard.duration && (
-            <p className="px-3 py-1 bg-white rounded-2xl">
-              {formatNumbersUint(
-                activityCard.duration,
-                t("common.day"),
-                t("common.days")
-              )}
-            </p>
-          )}
-        </div>
-      ) : activityCard.tripsType === CONSTANT_VALUES.ONE_DAY ? (
-        <p
-          className={`font-medium absolute z-[1] bg-white text-xs py-1 px-3 text-badge top-8 ${
-            locale == "ar"
-              ? "rounded-bl-2xl rounded-tl-2xl"
-              : "rounded-br-2xl rounded-tr-2xl"
-          }`}
-        >
-          {t("common.oneDayTrip")}
-        </p>
-      ) : activityCard.tripsType === CONSTANT_VALUES.HALF_DAY ? (
-        <p
-          className={`font-medium absolute z-[1] bg-white text-xs py-1 px-3 text-badge top-8 ${
-            locale == "ar"
-              ? "rounded-bl-2xl rounded-tl-2xl"
-              : "rounded-br-2xl rounded-tr-2xl"
-          }`}
-        >
-          {t("common.halfDayTrip")}
-        </p>
-      ) : (
-        ""
-      )}
+        {activityCard.duration > 1 ? (
+          <p className="px-3 py-1 bg-white rounded-2xl">
+            {formatNumbersUint(
+              activityCard.duration,
+              t("common.day"),
+              t("common.days")
+            )}
+          </p>
+        ) : activityCard.tripsType === CONSTANT_VALUES.ACTIVITY ? (
+          <p className="px-3 py-1 bg-white rounded-2xl">
+            {t("common.oneDayTrip")}
+          </p>
+        ) : (
+          <p className="px-3 py-1 bg-white rounded-2xl">
+            {t("common.halfDayTrip")}
+          </p>
+        )}
+      </div>
 
       <ImageWithPlaceholder
         src={activityCard.thumbnail.web}

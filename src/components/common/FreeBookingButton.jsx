@@ -14,6 +14,7 @@ import {
   CardContent,
 } from "@mui/material";
 import { CheckCircle, CelebrationOutlined } from "@mui/icons-material";
+import { useSnackbar } from "notistack";
 
 import axios from "axios";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -26,6 +27,7 @@ const FreeBookingButton = () => {
   const locale = useLocale();
   const t = useTranslations();
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [isLoading, setIsLoading] = useState(false);
   const [bookingStatus, setBookingStatus] = useState(null); // null, 'success', 'error'
@@ -67,54 +69,45 @@ const FreeBookingButton = () => {
 
       if (response.data) {
         setBookingStatus("success");
-        console.log(response.data);
+        
+        // Show success snackbar
+        enqueueSnackbar(
+          t("forms.freeBooking.successMessage") || "Your confirmation has been done successfully!",
+          { variant: "success" }
+        );
+        
         // Redirect to booking status page
         router.push(`/bookingStatus/${response.data}`);
       }
     } catch (error) {
       console.error("Free booking error:", error);
       setBookingStatus("error");
+      
 
       // Handle different error scenarios
+      let errorMsg = "";
       if (error.response) {
         // Server responded with error status
-        const errorMsg =
+        errorMsg =
           error.response.data?.message ||
           error.response.data?.error ||
           t("common.errorHappens");
-        setErrorMessage(errorMsg);
       } else if (error.request) {
         // Request was made but no response received
-        setErrorMessage(t("common.errorHappens"));
+        errorMsg = t("common.errorHappens");
       } else {
         // Something else happened
-        setErrorMessage(t("common.errorHappens"));
+        errorMsg = t("common.errorHappens");
       }
+      
+      setErrorMessage(errorMsg);
+      
+      // Show error snackbar
+      enqueueSnackbar(errorMsg, { variant: "error" });
     } finally {
       setIsLoading(false);
     }
   };
-
-  // Success state
-  //   if (bookingStatus === "success") {
-  //     return (
-  //       <Card className="max-w-md mx-auto bg-green-50 border-green-200 font-somar">
-  //         <CardContent className="text-center py-8">
-  //           <CheckCircle className="text-mainColor mb-4" sx={{ fontSize: 64 }} />
-  //           <Typography variant="h5" className="font-bold text-mainColor mb-2">
-  //             {t("forms.freeBooking.successTitle")}
-  //           </Typography>
-  //           <Typography variant="body1" className="text-mainColor mb-4">
-  //             {t("forms.freeBooking.successMessage")}
-  //           </Typography>
-  //           <CircularProgress size={24} className="text-mainColor" />
-  //           <Typography variant="body2" className="text-mainColor mt-2">
-  //             {t("forms.childImageUpload.success.redirecting")}
-  //           </Typography>
-  //         </CardContent>
-  //       </Card>
-  //     );
-  //   }
 
   return (
     <Card className="w-full mx-auto bg-gradient-to-br from-green-50 to-blue-50 border-green-200 !rounded-xl">
@@ -166,21 +159,23 @@ const FreeBookingButton = () => {
           </Alert>
         )}
 
-        {/* Confirm Button */}
-        <button
-          onClick={handleFreeBooking}
-          disabled={isLoading}
-          className="bg-mainColor hover:bg-secColor text-white px-8 py-3 rounded-lg font-semibold text-lg min-w-[200px] transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed mt-4"
-        >
-          {isLoading ? (
-            <Box className="flex items-center gap-2">
-              <CircularProgress size={20} color="inherit" />
-              <span>{t("forms.validation.sending")}</span>
-            </Box>
-          ) : (
-            t("forms.freeBooking.confirmButton")
-          )}
-        </button>
+        {/* Confirm Button - Sticky on mobile */}
+        <div className="md:static md:mt-4 fixed bottom-0 left-0 right-0 p-4 bg-white shadow-lg md:shadow-none md:bg-transparent z-10 md:p-0">
+          <button
+            onClick={handleFreeBooking}
+            disabled={isLoading}
+            className="w-full md:w-auto bg-mainColor hover:bg-secColor text-white px-8 py-3 rounded-lg font-semibold text-lg md:min-w-[200px] transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? (
+              <Box className="flex items-center justify-center gap-2">
+                <CircularProgress size={20} color="inherit" />
+                <span>{t("forms.validation.sending")}</span>
+              </Box>
+            ) : (
+              t("forms.freeBooking.confirmButton")
+            )}
+          </button>
+        </div>
       </CardContent>
     </Card>
   );

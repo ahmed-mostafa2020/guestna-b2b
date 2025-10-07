@@ -8,7 +8,12 @@ import formatNumbersUint from "@utils/FormatNumbersUint";
 import formatDate from "@utils/FormateDate";
 import TripTags from ".";
 
-import { largeLocationIcon, largeTimeIcon, calenderIcon } from "@assets/svg";
+import {
+  largeLocationIcon,
+  largeTimeIcon,
+  calenderIcon,
+  schoolIcon,
+} from "@assets/svg";
 
 const TripTagsListing = ({ data }) => {
   const locale = useLocale();
@@ -58,6 +63,9 @@ const TripTagsListing = ({ data }) => {
     day: "numeric",
   });
 
+  // School name
+  const organizationName = data?.organizationName;
+
   // Available seat
   // const availableSeats = data.availableSeats;
   // const capacity =
@@ -76,6 +84,7 @@ const TripTagsListing = ({ data }) => {
       { icon: largeTimeIcon, text: tripDuration },
       { icon: largeTimeIcon, text: hours },
       { icon: calenderIcon, text: tripDay },
+      { icon: schoolIcon, text: organizationName },
       // { icon: calenderIcon, text: capacity },
     ],
     [
