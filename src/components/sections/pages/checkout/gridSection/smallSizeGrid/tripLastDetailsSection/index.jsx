@@ -13,7 +13,7 @@ const TripLastDetailsSection = ({ finalTripDetails }) => {
 
   const data = finalTripDetails || {};
 
-  const isCustomizedActivities = finalTripDetails.customActivites
+  const isCustomizedActivities = finalTripDetails?.customActivites
     ? true
     : false;
 
@@ -26,16 +26,16 @@ const TripLastDetailsSection = ({ finalTripDetails }) => {
   return (
     <FrameWithImagedHeader imageSrc={headerImage} imageBgColor="#E2E6EE">
       <h3 className="text-xl font-semibold">
-        {finalTripDetails.tripsType === CONSTANT_VALUES.PACKAGE
+        {finalTripDetails?.tripsType === CONSTANT_VALUES.PACKAGE
           ? t("finalDetails.finalDetailsPackage")
           : t("finalDetails.finalDetailsActivity")}
       </h3>
 
       <div className="flex gap-4 pt-4 pb-1">
         <figure className="w-[140px] h-[137px] rounded-xl">
-          {finalTripDetails.thumbnail?.web && (
+          {finalTripDetails?.thumbnail?.web && (
             <ImageWithPlaceholder
-              src={finalTripDetails.thumbnail?.web}
+              src={finalTripDetails.thumbnail.web}
               width={140}
               height={137}
               className="w-[140px] h-[137px] rounded-xl object-cover"
@@ -43,7 +43,7 @@ const TripLastDetailsSection = ({ finalTripDetails }) => {
           )}
         </figure>
 
-        <h3 className="text-base font-semibold">{finalTripDetails.name}</h3>
+        <h3 className="text-base font-semibold">{finalTripDetails?.name || ""}</h3>
       </div>
 
       <div className="flex items-center gap-1 py-4 border-y border-textDark">

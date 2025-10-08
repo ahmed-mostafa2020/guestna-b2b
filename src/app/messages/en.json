@@ -1645,6 +1645,8 @@
       "addedToFavorites": "Added to favorites successfully",
       "checkYourEmail": "Please, Check your gmail",
       "addGuest": "Add Guest first please",
+      "registerChild": "Please register your student for a trip first!",
+      "error": "An error occurred! Please try again",
       "thanksMessage": "Thank You!",
       "willContactYou": "Your contact request has been sent, we will respond to you within 24 hours.",
       "svg": "SVG images are not allowed",

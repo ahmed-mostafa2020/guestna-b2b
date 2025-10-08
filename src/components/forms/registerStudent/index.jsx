@@ -251,21 +251,56 @@ const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
         // resetForm();
 
         // Change acc to response
-        if (response) {
+        if (response && response.data) {
+          // Validate response data structure before dispatching
+          if (!response.data.slug) {
+            console.error(
+              "WARNING: Response missing slug field",
+              response.data
+            );
+          }
+          if (!response.data.name) {
+            console.error(
+              "WARNING: Response missing name field",
+              response.data
+            );
+          }
+          if (response.data.basePriceTotalWithVat === undefined) {
+            console.error(
+              "WARNING: Response missing basePriceTotalWithVat field",
+              response.data
+            );
+          }
+
           enqueueSnackbar(t("forms.validation.success"), {
             variant: "success",
           });
 
           dispatch(setFinalTripDetailsData(response.data));
 
-          router.push(`/${locale}/checkout`);
+          // Add small delay before navigation to ensure Redux state is updated
+          setTimeout(() => {
+            router.push(`/${locale}/checkout`);
+          }, 100);
+        } else {
+          console.error("Invalid response structure:", response);
+          enqueueSnackbar(
+            t("forms.validation.error") || "Invalid response from server",
+            {
+              variant: "error",
+            }
+          );
         }
       })
 
       .catch((error) => {
         setSubmitting(false);
 
-        console.log("Error details:", error + formErrors);
+        console.error("Registration error:", {
+          message: error?.message,
+          response: error?.response?.data,
+          status: error?.response?.status,
+        });
 
         const errorMessage = getErrorMessage(error, t);
 

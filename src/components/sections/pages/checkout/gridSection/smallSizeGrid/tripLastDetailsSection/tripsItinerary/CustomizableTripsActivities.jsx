@@ -36,7 +36,7 @@ const CustomizableTripsActivities = ({ finalTripDetails }) => {
 
   const renderedItineraries = customActivities?.map(
     (day) =>
-      day.items.length > 0 && (
+      day?.items?.length > 0 && (
         <div key={day._id}>
           {/* Day Header */}
           <h2 className="pb-3 text-xl font-semibold">
@@ -48,24 +48,24 @@ const CustomizableTripsActivities = ({ finalTripDetails }) => {
             {t("finalDetails.mainActivity")}:
           </h3>
           <div className="mb-3 space-y-1">
-            {day.items.map((item, itemIndex) => (
-              <div key={item.activity._id} className="text-base font-normal">
-                {`${itemIndex + 1}- ${item.activity.name} (${item.fromHour} - ${
-                  item.toHour
+            {day?.items?.map((item, itemIndex) => (
+              <div key={item?.activity?._id} className="text-base font-normal">
+                {`${itemIndex + 1}- ${item?.activity?.name || ""} (${item?.fromHour || ""} - ${
+                  item?.toHour || ""
                 })`}
               </div>
             ))}
           </div>
 
           {/* Additional Services Section */}
-          {day.services.length >= 1 && (
+          {day?.services?.length >= 1 && (
             <>
               <h3 className="pb-1 text-lg font-medium">
                 {t("finalDetails.extraActivity")}:
               </h3>
               <div className="space-y-1">
-                {day.services.map((service) => {
-                  const serviceId = service._id;
+                {day?.services?.map((service) => {
+                  const serviceId = service?._id;
                   return (
                     <div
                       key={serviceId}
@@ -94,10 +94,10 @@ const CustomizableTripsActivities = ({ finalTripDetails }) => {
                           </div>
                         )}
                       </div>
-                      {`${service.quantity > 1 ? service.quantity : ""} ${
-                        service.name
+                      {`${service?.quantity > 1 ? service.quantity : ""} ${
+                        service?.name || ""
                       } -`}{" "}
-                      {formatCurrency(service.price * service.quantity)}
+                      {formatCurrency((service?.price || 0) * (service?.quantity || 1))}
                     </div>
                   );
                 })}

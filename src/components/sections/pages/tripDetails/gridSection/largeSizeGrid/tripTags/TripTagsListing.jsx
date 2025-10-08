@@ -20,23 +20,23 @@ const TripTagsListing = ({ data }) => {
   const t = useTranslations();
 
   // Memoize cities to prevent dependency changes on every render
-  const cities = useMemo(() => data.cities || [], [data.cities]);
-  const numCities = cities.length;
+  const cities = useMemo(() => data?.cities || [], [data?.cities]);
+  const numCities = cities?.length || 0;
 
   const renderCities = useMemo(() => {
     if (numCities === 1) {
-      return cities[0].name;
+      return cities[0]?.name || "";
     }
-    return cities.map((city, index) => (
-      <h4 key={city._id} className="font-medium capitalize">
-        {city.name}
+    return cities?.map((city, index) => (
+      <h4 key={city?._id} className="font-medium capitalize">
+        {city?.name || ""}
         {index !== cities.length - 1 && <span> - </span>}
       </h4>
     ));
   }, [numCities, cities]);
 
   // Category
-  const categories = useMemo(() => data.categories, [data.categories]);
+  const categories = useMemo(() => data?.categories, [data?.categories]);
   const firstCategoryName = categories?.name || "";
 
   // Duration
@@ -93,6 +93,7 @@ const TripTagsListing = ({ data }) => {
       tripDuration,
       hours,
       tripDay,
+      organizationName,
       // , capacity
     ]
   );

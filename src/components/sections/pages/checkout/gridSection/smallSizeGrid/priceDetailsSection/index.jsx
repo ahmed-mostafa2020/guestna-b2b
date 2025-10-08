@@ -13,17 +13,18 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
 
   const t = useTranslations();
 
-  const priceExclTax = formatCurrency(finalTripDetails.tripBasePriceWithoutVat);
+  // Safe access with fallback values to prevent crashes
+  const priceExclTax = formatCurrency(finalTripDetails?.tripBasePriceWithoutVat || 0);
 
   const numberOfStudents = formatNumbersUint(
-    finalTripDetails.quantity,
+    finalTripDetails?.quantity || 0,
     t("common.student"),
     t("common.students")
   );
 
-  const priceWithTax = formatCurrency(finalTripDetails.basePriceTotalWithVat);
+  const priceWithTax = formatCurrency(finalTripDetails?.basePriceTotalWithVat || 0);
   const discountedPriceWithTax = formatCurrency(
-    finalTripDetails.discountedTotalPriceWithVat
+    finalTripDetails?.discountedTotalPriceWithVat || 0
   );
 
   return (

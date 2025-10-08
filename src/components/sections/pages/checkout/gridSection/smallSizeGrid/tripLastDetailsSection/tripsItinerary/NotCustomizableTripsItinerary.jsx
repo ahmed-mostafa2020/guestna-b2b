@@ -6,7 +6,7 @@ import { memo } from "react";
 const NotCustomizableTripsItinerary = ({ finalTripDetails }) => {
   const t = useTranslations();
 
-  const renderedItineraries = finalTripDetails.itinerary?.map((item) => (
+  const renderedItineraries = finalTripDetails?.itinerary?.map((item) => (
     <div key={item._id} className="flex flex-col gap-2">
       <h3 className="text-xl font-semibold">{t(`daysNumber.${item.day}`)}</h3>
 
