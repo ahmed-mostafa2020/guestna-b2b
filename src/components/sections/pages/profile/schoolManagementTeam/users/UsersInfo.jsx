@@ -30,7 +30,7 @@ const UsersInfo = ({ users = [], organization }) => {
         <Button
           onClick={() => setIsModalOpen(true)}
           variant="contained"
-          className="!bg-mainColor !text-white font-medium !font-somar hover:!bg-linksHover"
+          className="!bg-mainColor !text-white font-medium !font-somar hover:!bg-linksHover !px-8 !py-2"
         >
           {t("profile.schools_users.add_new_user")}
         </Button>
