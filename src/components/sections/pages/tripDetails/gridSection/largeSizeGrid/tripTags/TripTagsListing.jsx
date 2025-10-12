@@ -64,7 +64,7 @@ const TripTagsListing = ({ data }) => {
   });
 
   // School name
-  const organizationName = data?.organizationName;
+  const organizationName = data?.organization?.name;
 
   // Available seat
   // const availableSeats = data.availableSeats;

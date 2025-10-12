@@ -1396,6 +1396,7 @@
 
     "email": {
       "name": "Email",
+      "error_tld": "Please enter a valid email address, including a domain (e.g., .com)",
       "parentEmail": "Parent Email",
       "studentEmail": "Student Email (If Available)",
       "error": "Please enter a valid email address",

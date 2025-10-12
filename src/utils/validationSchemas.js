@@ -4,8 +4,10 @@ import { isValidPhoneNumber } from "react-phone-number-input";
 import { CONSTANT_VALUES } from "../constants/constantValues";
 // import calculateAge from "./calculateAge";
 
-// Reusable phone validation function
+// Email RGX
+const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
+// Reusable phone validation function
 export const createPhoneValidation = (t, required = true) => {
   let schema = Yup.string()
     .transform((value) => (value ? String(value).replace(/\s/g, "") : value))
@@ -34,6 +36,7 @@ export const createCheckoutSchema = (t) =>
 
     email: Yup.string()
       .email(t("forms.email.error"))
+      .matches(emailRegex, t("forms.email.error_tld"))
       .required(t("forms.validation.require")),
 
     mobile: createPhoneValidation(t),
@@ -136,7 +139,10 @@ export const createSignUpSchema = (t) =>
         }
       ),
 
-    email: Yup.string().email(t("forms.email.error")).optional(),
+    email: Yup.string()
+      .email(t("forms.email.error"))
+      .matches(emailRegex, t("forms.email.error_tld"))
+      .optional(),
     // .required(t("forms.validation.require")),
 
     mobile: createPhoneValidation(t),
@@ -177,6 +183,7 @@ export const createLoginEmailMethodSchema = (t) =>
   Yup.object().shape({
     email: Yup.string()
       .email(t("forms.email.error"))
+      .matches(emailRegex, t("forms.email.error_tld"))
       .required(t("forms.validation.require")),
 
     password: Yup.string()
@@ -210,6 +217,7 @@ export const createResetPasswordByEmailSchema = (t) =>
   Yup.object().shape({
     email: Yup.string()
       .email(t("forms.email.error"))
+      .matches(emailRegex, t("forms.email.error_tld"))
       .required(t("forms.validation.require")),
   });
 
@@ -251,6 +259,7 @@ export const createContactUsSchema = (t) =>
 
     email: Yup.string()
       .email(t("forms.email.error"))
+      .matches(emailRegex, t("forms.email.error_tld"))
       .required(t("forms.validation.require")),
 
     message: Yup.string()
@@ -334,6 +343,7 @@ export const createRegisterChildSchema = (
 
     email: Yup.string()
       .email(t("forms.email.error"))
+      .matches(emailRegex, t("forms.email.error_tld"))
       .required(t("forms.validation.require")),
 
     mobile: createPhoneValidation(t),
@@ -432,7 +442,10 @@ export const createRegisterChildSchema = (
             : Yup.mixed().optional(),
 
           studentMobile: createPhoneValidation(t, false),
-          studentEmail: Yup.string().email(t("forms.email.error")).optional(),
+          studentEmail: Yup.string()
+            .email(t("forms.email.error"))
+            .matches(emailRegex, t("forms.email.error_tld"))
+            .optional(),
         })
       )
       .min(1, t("forms.validation.require")),
@@ -456,6 +469,7 @@ export const createRequestQuoteSchema = (t) =>
   Yup.object().shape({
     email: Yup.string()
       .email(t("forms.email.error"))
+      .matches(emailRegex, t("forms.email.error_tld"))
       .required(t("forms.validation.require")),
     mobile: createPhoneValidation(t, true),
     name: Yup.string()
@@ -625,6 +639,7 @@ export const createAddOrganizationUserSchema = (t) =>
   Yup.object().shape({
     email: Yup.string()
       .email(t("forms.email.error"))
+      .matches(emailRegex, t("forms.email.error_tld"))
       .required(t("forms.validation.require")),
     mobile: createPhoneValidation(t),
     name: Yup.string()
@@ -810,23 +825,32 @@ export const createChildImageUploadSchema = (t) =>
         t("confirmingData.form.validation.fileTypeError"),
         (value) => {
           if (!value) return true; // Let required validation handle this
-          const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+          const allowedTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/jpg",
+            "image/webp",
+          ];
           return allowedTypes.includes(value.type);
         }
       ),
-    size: Yup.string()
-      .required(t("confirmingData.form.validation.sizeRequired")),
-    foodAllergy: Yup.string()
-      .required(t("confirmingData.form.validation.foodAllergyRequired")),
-    foodAllergyDetails: Yup.string()
-      .when("foodAllergy", {
-        is: "yes",
-        then: (schema) => schema
-          .required(t("confirmingData.form.validation.foodAllergyDetailsRequired"))
+    size: Yup.string().required(
+      t("confirmingData.form.validation.sizeRequired")
+    ),
+    foodAllergy: Yup.string().required(
+      t("confirmingData.form.validation.foodAllergyRequired")
+    ),
+    foodAllergyDetails: Yup.string().when("foodAllergy", {
+      is: "yes",
+      then: (schema) =>
+        schema
+          .required(
+            t("confirmingData.form.validation.foodAllergyDetailsRequired")
+          )
           .min(3, t("confirmingData.form.validation.foodAllergyDetailsMin"))
           .max(200, t("confirmingData.form.validation.foodAllergyDetailsMax")),
-        otherwise: (schema) => schema.notRequired()
-      }),
+      otherwise: (schema) => schema.notRequired(),
+    }),
     generalNotes: Yup.string()
       .max(500, t("confirmingData.form.validation.generalNotesMax"))
       .notRequired(),
