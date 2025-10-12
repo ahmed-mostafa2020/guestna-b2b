@@ -523,9 +523,8 @@
   "profile": {
     "aside": {
       "main": "الرئيسية",
-      "programs": {
-        "title": "إدارة البرامج السياحية",
-        "trips": "الأنشطة والباقات"
+      "tripsManagement": {
+        "title": "إدارة الرحلات والأنشطة"
       },
       "bookingsManagement": {
         "title": "إدارة الحجوزات",
@@ -537,6 +536,9 @@
         "title": "إدارة فريق المدرسة",
         "users": "المستخدمون",
         "students": "الطلاب"
+      },
+      "reportsAndAnalytics": {
+        "title": "التقارير والتحليلات"
       },
       "information": "بياناتي",
       "activities": "الأنشطة",

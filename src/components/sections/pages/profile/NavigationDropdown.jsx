@@ -71,16 +71,11 @@ const NavigationDropdown = () => {
       hasDropdown: false,
     },
     {
-      id: "tourism-programs",
-      title: t("profile.aside.programs.title"),
+      id: "trips-management",
+      title: t("profile.aside.tripsManagement.title"),
       icon: <TravelIcon />,
-      hasDropdown: true,
-      subItems: [
-        {
-          title: t("profile.aside.programs.trips"),
-          path: `${profileBasePath}/trips`,
-        },
-      ],
+      path: `${profileBasePath}/trips-activities-management`,
+      hasDropdown: false,
     },
     {
       id: "bookings-management",
@@ -95,12 +90,6 @@ const NavigationDropdown = () => {
         {
           title: t("profile.aside.bookingsManagement.bookings"),
           path: `${profileBasePath}/bookings-management/bookings`,
-        },
-        {
-          title: t(
-            "profile.aside.bookingsManagement.integratedBookingsManagement"
-          ),
-          path: `${profileBasePath}/bookings-management/integrated-bookings`,
         },
       ],
     },
@@ -121,45 +110,6 @@ const NavigationDropdown = () => {
       ],
     },
 
-    // {
-    //   id: "user-management",
-    //   title: "إدارة المستخدمين",
-    //   icon: <PeopleIcon />,
-    //   hasDropdown: true,
-    //   subItems: [
-    //     "المستخدمين النشطين",
-    //     "المستخدمين المحظورين",
-    //     "إضافة مستخدم جديد",
-    //   ],
-    // },
-    // {
-    //   id: "reservations",
-    //   title: "إدارة الحجوزات",
-    //   icon: <BookingIcon />,
-    //   hasDropdown: true,
-    //   subItems: ["الحجوزات الجديدة", "الحجوزات المؤكدة", "الحجوزات الملغية"],
-    // },
-    // {
-    //   id: "regions",
-    //   title: "إدارة المناطق",
-    //   icon: <LocationIcon />,
-    //   hasDropdown: true,
-    //   subItems: ["المناطق السياحية", "إضافة منطقة جديدة", "تعديل المناطق"],
-    // },
-    // {
-    //   id: "invoices",
-    //   title: "الفواتير والمدفوعات",
-    //   icon: <ReceiptIcon />,
-    //   hasDropdown: true,
-    //   subItems: ["الفواتير المدفوعة", "الفواتير المعلقة", "تقارير المدفوعات"],
-    // },
-    // {
-    //   id: "promo-codes",
-    //   title: "الأكواد الترويجية",
-    //   icon: <OfferIcon />,
-    //   hasDropdown: true,
-    //   subItems: ["الأكواد النشطة", "الأكواد المنتهية", "إنشاء كود جديد"],
-    // },
     {
       id: "my-wallet",
       title: t("profile.myWallet.title"),
@@ -183,6 +133,20 @@ const NavigationDropdown = () => {
       path: `${profileBasePath}/calendar`,
       hasDropdown: false,
     },
+    {
+      id: "reports-and-analytics",
+      title: t("profile.aside.reportsAndAnalytics.title"),
+      icon: <Wallet />,
+      hasDropdown: true,
+      subItems: [
+        {
+          title: t(
+            "profile.aside.bookingsManagement.integratedBookingsManagement"
+          ),
+          path: `${profileBasePath}/bookings-management/integrated-bookings`,
+        },
+      ],
+    },
   ];
 
   return (
@@ -194,7 +158,7 @@ const NavigationDropdown = () => {
             {!item.hasDropdown ? (
               <Link
                 href={item.path}
-                className={`text-xs sm:text-sm lg:text-base flex items-center w-full gap-2 sm:gap-3 px-2 sm:px-4 py-2 sm:py-3 mb-2 sm:mb-3 rounded-lg transition-colors ${
+                className={`border border-border text-xs sm:text-sm lg:text-base flex items-center w-full gap-2 sm:gap-3 px-2 sm:px-4 py-2 sm:py-3 mb-2 sm:mb-3 rounded-lg transition-colors ${
                   pathname === item.path
                     ? "text-white bg-mainColor"
                     : "hover:text-mainColor"
@@ -226,7 +190,6 @@ const NavigationDropdown = () => {
                     marginBottom: { xs: "8px", sm: "12px" },
                     overflow: "hidden",
                     backgroundColor: "transparent",
-                    border: "none",
                     boxShadow: "none",
                   },
                   "&:before": {
@@ -249,8 +212,11 @@ const NavigationDropdown = () => {
                   }
                   className="min-h-0 px-2 sm:px-4 py-2 sm:py-3"
                   sx={{
-                    background: "#FBFBFB",
+                    // background: "#FBFBFB",
                     boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.02)",
+                    border: "1px solid #E5E5E5",
+                    borderRadius: "8px",
+
                     "&.Mui-expanded": {
                       minHeight: 48,
                       background: "#007473",

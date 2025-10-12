@@ -523,9 +523,9 @@
   "profile": {
     "aside": {
       "main": "Main",
-      "programs": {
-        "title": "Tourism Program Management",
-        "trips": "Trips"
+
+      "tripsManagement": {
+        "title": "Trips and activities Management"
       },
       "bookingsManagement": {
         "title": "Bookings Management",
@@ -537,6 +537,9 @@
         "title": "School Team Management",
         "users": "Users",
         "students": "Students"
+      },
+      "reportsAndAnalytics": {
+        "title": "Reports and Analytics"
       },
 
       "information": "My information",
