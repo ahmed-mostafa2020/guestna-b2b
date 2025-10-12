@@ -144,7 +144,7 @@ const NavigationDropdown = () => {
           title: t(
             "profile.aside.bookingsManagement.integratedBookingsManagement"
           ),
-          path: `${profileBasePath}/bookings-management/integrated-bookings`,
+          path: `${profileBasePath}/reports-and-analytics/integrated-bookings`,
         },
       ],
     },
