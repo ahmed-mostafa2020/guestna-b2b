@@ -134,8 +134,8 @@ export const createSignUpSchema = (t) =>
           // Must have at least 2 words
           if (words.length < 2) return false;
 
-          // Each word must be at least 3 characters
-          return words.every((word) => word.length >= 3);
+          // Each word must be at least 2 characters
+          return words.every((word) => word.length >= 2);
         }
       ),
 
@@ -288,8 +288,8 @@ export const createPersonalInfoEditingSchema = (t) =>
           // Must have at least 2 words
           if (words.length < 2) return false;
 
-          // Each word must be at least 3 characters
-          return words.every((word) => word.length >= 3);
+          // Each word must be at least 2 characters
+          return words.every((word) => word.length >= 2);
         }
       ),
 
@@ -333,11 +333,11 @@ export const createRegisterChildSchema = (
           if (!value) return false;
           const words = value.trim().split(/\s+/);
 
-          // Must have at least 3 words
-          if (words.length < 3) return false;
+          // Must have at least 2 words
+          if (words.length < 2) return false;
 
-          // Each word must be at least 3 characters
-          return words.every((word) => word.length >= 3);
+          // Each word must be at least 2 characters
+          return words.every((word) => word.length >= 2);
         }
       ),
 
@@ -389,10 +389,10 @@ export const createRegisterChildSchema = (
                 const words = value.trim().split(/\s+/);
 
                 // Must have at least 2 words
-                if (words.length < 3) return false;
+                if (words.length < 2) return false;
 
-                // Each word must be at least 3 characters
-                return words.every((word) => word.length >= 3);
+                // Each word must be at least 2 characters
+                return words.every((word) => word.length >= 2);
               }
             ),
 
@@ -487,8 +487,8 @@ export const createRequestQuoteSchema = (t) =>
           // Must have at least 2 words
           if (words.length < 2) return false;
 
-          // Each word must be at least 3 characters
-          return words.every((word) => word.length >= 3);
+          // Each word must be at least 2 characters
+          return words.every((word) => word.length >= 2);
         }
       ),
     organizationName: Yup.string()
@@ -657,8 +657,8 @@ export const createAddOrganizationUserSchema = (t) =>
           // Must have at least 2 words
           if (words.length < 2) return false;
 
-          // Each word must be at least 3 characters
-          return words.every((word) => word.length >= 3);
+          // Each word must be at least 2 characters
+          return words.every((word) => word.length >= 2);
         }
       ),
 
@@ -712,8 +712,8 @@ export const createWithdrawValidationSchema = (t, isBankTransfer) => {
               // Must have at least 2 words
               if (words.length < 2) return false;
 
-              // Each word must be at least 3 characters
-              return words.every((word) => word.length >= 3);
+              // Each word must be at least 2 characters
+              return words.every((word) => word.length >= 2);
             }
           )
       : Yup.string()
@@ -731,8 +731,8 @@ export const createWithdrawValidationSchema = (t, isBankTransfer) => {
               // Must have at least 2 words
               if (words.length < 2) return false;
 
-              // Each word must be at least 3 characters
-              return words.every((word) => word.length >= 3);
+              // Each word must be at least 2 characters
+              return words.every((word) => word.length >= 2);
             }
           ),
 

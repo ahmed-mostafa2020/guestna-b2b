@@ -547,7 +547,7 @@
       "packages": "Packages",
       "messages": "Messages",
       "notifications": "Notifications",
-      "bookings": "Bookings",
+      "bookings": "Bookings Details",
       "favorites": "Favorites",
       "activitiesMarket": "Activities Market",
       "activitiesMarketTitle": "Educational Activities Market",
@@ -689,11 +689,12 @@
           "schoolName": "School Name",
           "orderId": "Order ID",
           "tripType": "Trip Type",
-          "academicStage": "Academic Stage",
           "location": "Location",
+          "academicStage": "Academic Stage",
           "tripName": "Trip Name",
+          "quantity": "Students Count",
           "date": "Date/Time",
-          "price": "Price",
+          "price": "Revenue",
           "status": "Status",
           "actions": "Actions",
           "participants": "Participants"
@@ -1389,10 +1390,10 @@
     "name": {
       "name": "Name",
       "error": {
-        "min": "Name should be less than 3 characters",
+        "min": "Name should be less than 2 characters",
         "max": "Name should be more than 50 characters",
         "invalid": "Name should contain only letters",
-        "wordMinLength": "Name should be two words each word be more than 3 characters",
+        "wordMinLength": "Name should be two words each word be more than 1 character",
         "multipleSpaces": "Multiple consecutive spaces between names are not allowed"
       }
     },
@@ -1511,10 +1512,10 @@
       "name": "Parent Name",
       "placeholder": "Parent Name",
       "error": {
-        "min": "Parent Name should be more than 3 characters",
+        "min": "Parent Name should be more than 2 characters",
         "max": "Parent Name should be less than 50 characters",
         "invalid": "Parent Name should contain only letters",
-        "wordMinLength": "Name should be 3 words each word be more than 3 characters",
+        "wordMinLength": "Name should be 3 words each word be more than 1 character",
         "multipleSpaces": "Multiple consecutive spaces between names are not allowed"
       }
     },
@@ -1523,10 +1524,10 @@
       "name": "Student name",
       "placeholder": "Student's full name in English",
       "error": {
-        "min": "Student name should be less than 3 characters",
+        "min": "Student name should be less than 2 characters",
         "max": "Student name Student name be more than 50 characters",
         "invalid": "Name should contain only letters",
-        "wordMinLength": "The student's name must be full",
+        "wordMinLength": "Name should be 3 words each word be more than 1 character",
         "multipleSpaces": "Multiple consecutive spaces between names are not allowed"
       }
     },
@@ -1569,7 +1570,7 @@
     "organizationName": {
       "name": "Organization Name",
       "error": {
-        "min": "Organization name should be more than 3 characters",
+        "min": "Organization name should be more than 1 character",
         "max": "Organization name should be less than 50 characters"
       }
     },

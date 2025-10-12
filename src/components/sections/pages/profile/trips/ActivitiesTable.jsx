@@ -42,21 +42,21 @@ const ActivitiesTable = ({
             <table className="w-full">
               <thead>
                 <tr className=" bg-table-header border-b-2 border-tableRowBorder">
-                  <th className="px-6 py-4 font-medium text-start">
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.tables.activities.header.tripName")}
                   </th>
-                  <th className="px-6 py-4 font-medium text-start">
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.tables.activities.header.date")}
                   </th>
 
-                  <th className="px-6 py-4 font-medium text-start">
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.tables.activities.header.location")}
                   </th>
-                  <th className="px-6 py-4 font-medium text-start">
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.tables.activities.header.category")}
                   </th>
 
-                  <th className="px-6 py-4 text-sm font-medium text-gray-700">
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.tables.orders.studentsTable.actions")}
                   </th>
                 </tr>
@@ -93,17 +93,17 @@ const ActivitiesTable = ({
                       </Badge>
                     </td>
 
-                    <td className="px-1 lg:px-6 py-4">
+                    <td className="px-6 py-4">
                       {trip.status === TRIP_STATUS.SCHEDULED ||
                       trip.status === TRIP_STATUS.PENDING ? (
                         <Link
                           href={`/${locale}/profile/create-trip-link/${trip.slug}`}
-                          className="text-sm transition-all px-1 lg:px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
+                          className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
                         >
                           {t("links.tripManagement")}
                         </Link>
                       ) : (
-                        <span className="text-sm px-1 lg:px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
+                        <span className="text-sm px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
                           {t("links.tripManagement")}
                         </span>
                       )}

@@ -67,27 +67,27 @@ const CustomizedTripsTable = ({
             <table className="w-full">
               <thead>
                 <tr className=" bg-table-header border-b-2 border-tableRowBorder">
-                  <th className="px-6 py-4 font-medium text-start">
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.tables.bookings.header.orderId")}
                   </th>
-                  <th className="px-6 py-4 font-medium text-start">
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.tables.bookings.header.location")}
                   </th>
 
-                  <th className="px-6 py-4 font-medium text-start">
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.tables.bookings.header.date")}
                   </th>
 
-                  <th className="px-6 py-4 font-medium text-start">
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.tables.bookings.header.participants")}
                   </th>
-                  <th className="px-6 py-4 font-medium text-start">
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.tables.bookings.header.price")}
                   </th>
-                  <th className="px-6 py-4 font-medium text-start">
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.tables.bookings.header.status")}
                   </th>
-                  <th className="px-6 py-4 font-medium text-start">
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.tables.bookings.header.actions")}
                   </th>
                 </tr>

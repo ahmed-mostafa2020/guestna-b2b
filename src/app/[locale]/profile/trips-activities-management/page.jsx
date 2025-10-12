@@ -14,7 +14,7 @@ const TripsPage = () => {
   return (
     <div className="flex flex-col gap-4 lg:gap:8">
       <ProfilePageTemplate
-        title={t("profile.aside.programs.trips")}
+        title={t("profile.aside.tripsManagement.title")}
         endpoint={`${B2B_END_POINTS.PROFILE.ALL_TRIPS.ACTIVITIES}`}
         method="POST"
         emptyStateComponent={<EmptyTrips />}
@@ -36,7 +36,7 @@ const TripsPage = () => {
       />
 
       <ProfilePageTemplate
-        title={t("profile.aside.programs.trips")}
+        title={t("profile.aside.tripsManagement.title")}
         endpoint={`${B2B_END_POINTS.PROFILE.ALL_TRIPS.PACKAGES}`}
         method="POST"
         emptyStateComponent={<EmptyTrips />}

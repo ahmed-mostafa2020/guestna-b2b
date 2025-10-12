@@ -28,6 +28,7 @@ import {
   // LocalOffer as OfferIcon,
   Storefront as StorefrontIcon,
   Wallet,
+  Analytics,
 } from "@mui/icons-material";
 
 import { CalendarIcon } from "@mui/x-date-pickers";
@@ -136,7 +137,7 @@ const NavigationDropdown = () => {
     {
       id: "reports-and-analytics",
       title: t("profile.aside.reportsAndAnalytics.title"),
-      icon: <Wallet />,
+      icon: <Analytics />,
       hasDropdown: true,
       subItems: [
         {
@@ -212,11 +213,9 @@ const NavigationDropdown = () => {
                   }
                   className="min-h-0 px-2 sm:px-4 py-2 sm:py-3"
                   sx={{
-                    // background: "#FBFBFB",
                     boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.02)",
                     border: "1px solid #E5E5E5",
                     borderRadius: "8px",
-
                     "&.Mui-expanded": {
                       minHeight: 48,
                       background: "#007473",

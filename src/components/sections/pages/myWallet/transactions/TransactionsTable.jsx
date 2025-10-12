@@ -49,19 +49,19 @@ const TransactionsTable = ({
             <table className="w-full">
               <thead>
                 <tr className="bg-table-header border-b-2 border-tableRowBorder">
-                  <th className="px-6 py-4 font-medium text-start">
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("headers.operationName")}
                   </th>
-                  <th className="px-6 py-4 font-medium text-start">
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("headers.transactionDate")}
                   </th>
-                  <th className="px-6 py-4 font-medium text-start">
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("headers.referenceNumber")}
                   </th>
-                  <th className="px-6 py-4 font-medium text-start">
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("headers.transactionAmount")}
                   </th>
-                  <th className="px-6 py-4 font-medium text-start">
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("headers.transactionStatus")}
                   </th>
                 </tr>

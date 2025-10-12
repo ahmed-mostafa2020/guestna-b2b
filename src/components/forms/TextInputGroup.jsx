@@ -74,7 +74,7 @@ const TextInputGroup = memo(
                 border && "border-2",
                 touched && errors && border
                   ? "border-error focus:border-error hover:border-error"
-                  : "border-border focus:border-textDark hover:border-textDark"
+                  : "border-border focus:border-mainColor hover:border-mainColor"
               )}
               style={{
                 fontFamily: "inherit",
@@ -93,13 +93,13 @@ const TextInputGroup = memo(
           ) : (
             <input
               className={cn(
-                "text-sm font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full  rounded-lg outline-none placeholder:font-normal placeholder:text-sm placeholder:text-textLight selection:bg-buttonsHover ",
+                "text-sm font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full rounded-lg outline-none placeholder:font-normal placeholder:text-sm placeholder:text-textLight selection:bg-buttonsHover ",
                 readOnly && "cursor-not-allowed opacity-90",
                 textAlign && `text-${textAlign}`,
                 border && "border-2",
                 touched && errors && border
                   ? "border-error focus:border-error hover:border-error"
-                  : "border-border focus:border-textDark hover:border-textDark",
+                  : "border-border focus:border-mainColor hover:border-mainColor",
                 type === "date" && "cursor-pointer"
               )}
               style={{

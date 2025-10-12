@@ -52,14 +52,20 @@ const SelectionGroup = ({
         }}
         sx={{
           width: "100%",
+
           "& .MuiSelect-select": {
             paddingRight: "40px !important",
-            border: "1px solid #d1d5db",
+            border: "2px solid #d1d5db",
             borderRadius: "8px",
             width: "100%",
+
+            "&:hover": {
+              border: "2px solid #007473",
+              // boxShadow: "0 0 0 1px #ED8A22",
+            },
             "&:focus": {
-              borderColor: "#ED8A22",
-              boxShadow: "0 0 0 1px #ED8A22",
+              border: "2px solid #007473",
+              // boxShadow: "0 0 0 1px #ED8A22",
             },
           },
           "& .MuiSelect-icon": {

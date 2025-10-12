@@ -98,7 +98,7 @@ const FileUploadGroup = memo(
               border && "border-2",
               touched && (errors || fileError) && border
                 ? "border-error focus:border-error hover:border-error"
-                : "border-border focus:border-textDark hover:border-textDark"
+                : "border-border focus:border-mainColor hover:border-mainColor"
             )}
             style={{
               fontFamily: "inherit",
