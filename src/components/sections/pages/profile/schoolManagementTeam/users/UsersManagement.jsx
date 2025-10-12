@@ -9,13 +9,13 @@ const UsersManagement = ({ data, setSearchTerm, searchTerm }) => {
   const users = data?.users || [];
 
   return (
-    <dev>
-      <Paper className="p-6 shadow-sm rounded-lg">
+    <div>
+      <Paper className="p-6 shadow-sm !rounded-2xl">
         <UsersHeader setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
 
         <UsersInfo users={users} organization={data._id} />
       </Paper>
-    </dev>
+    </div>
   );
 };
 

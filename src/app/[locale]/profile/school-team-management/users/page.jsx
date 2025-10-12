@@ -10,7 +10,6 @@ import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import UsersInfoCardsListing from "@components/sections/pages/profile/schoolManagementTeam/users/UsersInfoCardsListing";
 import UsersManagement from "@components/sections/pages/profile/schoolManagementTeam/users/UsersManagement";
-import { Button } from "@mui/material";
 import * as XLSX from "xlsx";
 import { download } from "@hooks/useDownload";
 
@@ -92,13 +91,12 @@ const UsersPage = () => {
 
       {tableData?.users?.length > 0 && (
         <div className="flex justify-end mt-2">
-          <Button
+          <button
             onClick={() => handleExportToExcel()}
-            variant="contained"
-            className="!bg-mainColor !font-somar !text-white font-medium hover:!bg-linksHover"
+            className="bg-mainColor rounded-lg text-white font-medium font-somar hover:bg-linksHover px-8 py-2"
           >
             {t("profile.tables.orders.bookingDetails.printReport")}
-          </Button>
+          </button>
         </div>
       )}
 

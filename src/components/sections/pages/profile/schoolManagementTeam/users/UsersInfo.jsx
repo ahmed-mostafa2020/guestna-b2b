@@ -5,8 +5,6 @@ import UserCard from "./UserCard";
 import CustomizedModal from "@components/common/customizedModal";
 import OrganizationUserForm from "@components/forms/newOrganizationUser";
 
-import { Button } from "@mui/material";
-
 const UsersInfo = ({ users = [], organization }) => {
   const t = useTranslations();
 
@@ -27,13 +25,12 @@ const UsersInfo = ({ users = [], organization }) => {
       ))}
 
       <div className="flex justify-center mt-2">
-        <Button
+        <button
           onClick={() => setIsModalOpen(true)}
-          variant="contained"
-          className="!bg-mainColor !text-white font-medium !font-somar hover:!bg-linksHover !px-8 !py-2"
+          className="bg-mainColor rounded-lg text-white font-medium font-somar hover:bg-linksHover px-8 py-2"
         >
           {t("profile.schools_users.add_new_user")}
-        </Button>
+        </button>
       </div>
 
       <CustomizedModal
