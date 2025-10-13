@@ -16,7 +16,7 @@ const TabNavigation = ({ activeTab, setActiveTab }) => {
             activeTab === "calendar" ? "bg-white scale-105" : ""
           }`}
         >
-          <span className="font-semibold py-3 text-center leading-tight">
+          <span className="font-medium text-xl py-3 text-center leading-tight">
             {t("profile.calendar.tabs.calendar")}
           </span>
         </button>
@@ -26,7 +26,7 @@ const TabNavigation = ({ activeTab, setActiveTab }) => {
             activeTab === "events" ? "bg-white scale-105" : ""
           }`}
         >
-          <span className="font-semibold py-3 text-center leading-tight">
+          <span className="font-medium text-xl py-3 text-center leading-tight">
             {t("profile.calendar.tabs.events")}
           </span>
         </button>

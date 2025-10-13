@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl";
 
 import { useSelector } from "react-redux";
 
-import { USERS } from "@constants/users";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import PreBookingSection from "@components/common/trips/PreBookingSection";
 import BookWithConfidenceSection from "@components/common/trips/BookWithConfidenceSection";
@@ -18,8 +17,6 @@ import Cookies from "js-cookie";
 
 const SmallSizeGrid = () => {
   const data = useSelector((state) => state.tripDetailsData?.data?.trip);
-
-  const userType = useSelector((state) => state.users.userType);
 
   const isAuth = data?.isAuth ?? true;
 
@@ -43,7 +40,7 @@ const SmallSizeGrid = () => {
 
       <BookWithConfidenceSection />
 
-      {data?.location && isAuth && userType === USERS.B2B_PARENT && (
+      {data?.location && isAuth && (
         <div className="flex flex-col gap-3 lg:gap-5">
           <h4 className="text-lg font-semibold text-mainColor lg:text-2xl">
             {t("bookWithConfidence.activityLocation")}

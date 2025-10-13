@@ -53,16 +53,16 @@ const InteractiveCalendar = ({
   return (
     <div className="bg-white rounded-xl p-8 shadow-lg border-0">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-gray-900">
+        <h3 className="text-lg font-medium text-titleColor">
           {t("profile.calendar.calendar.interactiveCalendar")}
         </h3>
         <div className="flex gap-2">
-          <button className="border-2 border-orange-300 text-orange-600 px-6 py-3 rounded-xl hover:bg-orange-50 hover:border-orange-400 transition-all duration-200 font-medium">
+          <button className="border-2 border-secColor text-mainColor px-8 py-2 rounded-lg hover:bg-secColor hover:border-secColor hover:text-white transition-all duration-200 font-medium">
             {t("profile.calendar.calendar.uploadCalendar")}
           </button>
           <button
             onClick={onAddEvent}
-            className="border-2 border-green-300 text-green-600 px-6 py-3 rounded-xl hover:bg-green-50 hover:border-green-400 transition-all duration-200 font-medium"
+            className="border-2 border-mainColor bg-mainColor text-white px-8 py-2 rounded-lg hover:bg-mainColor/80 hover:border-mainColor/80 hover:text-white transition-all duration-200 font-medium"
           >
             {t("profile.calendar.calendar.addEvent")}
           </button>

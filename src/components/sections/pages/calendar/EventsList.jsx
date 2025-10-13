@@ -6,15 +6,15 @@ import EmptyState from "./EmptyState";
 import { useTranslations, useLocale } from "next-intl";
 import { useState, useMemo } from "react";
 
-const EventsList = ({ 
-  events, 
-  isLoading, 
-  title, 
-  subtitle, 
-  onView, 
+const EventsList = ({
+  events,
+  isLoading,
+  title,
+  subtitle,
+  onView,
   onEdit,
   showPagination = true,
-  itemsPerPage = 5
+  itemsPerPage = 5,
 }) => {
   const t = useTranslations();
   const locale = useLocale();
@@ -23,7 +23,7 @@ const EventsList = ({
   // Calculate pagination
   const totalItems = events.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  
+
   const paginatedEvents = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -39,7 +39,7 @@ const EventsList = ({
   if (isLoading) {
     return (
       <div className="bg-white rounded-xl p-8 shadow-lg border-0">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">{title}</h2>
+        <h2 className="text-xl font-medium text-titleColor mb-4">{title}</h2>
         <p className="text-gray-600 mb-6">{subtitle}</p>
         <LoadingState />
       </div>
@@ -49,7 +49,7 @@ const EventsList = ({
   if (events.length === 0) {
     return (
       <div className="bg-white rounded-xl p-8 shadow-lg border-0">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">{title}</h2>
+        <h2 className="text-xl font-medium text-titleColor mb-4">{title}</h2>
         <p className="text-gray-600 mb-6">{subtitle}</p>
         <EmptyState
           title={t("profile.calendar.calendar.noEventsTitle")}
@@ -61,7 +61,7 @@ const EventsList = ({
 
   return (
     <div className="bg-white rounded-xl p-8 shadow-lg border-0">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">{title}</h2>
+      <h2 className="text-xl font-medium text-titleColor mb-4">{title}</h2>
       <p className="text-gray-600 pb-4">{subtitle}</p>
       <div className="space-y-4">
         {(showPagination ? paginatedEvents : events).map((event) => (
@@ -80,7 +80,10 @@ const EventsList = ({
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             {/* Pagination Info */}
             <div className="text-sm text-gray-700">
-              {t("pagination.show")} {((currentPage - 1) * itemsPerPage) + 1} {t("pagination.to")} {Math.min(currentPage * itemsPerPage, totalItems)}, {t("pagination.of")} {totalItems} {t("pagination.allResults")}
+              {t("pagination.show")} {(currentPage - 1) * itemsPerPage + 1}{" "}
+              {t("pagination.to")}{" "}
+              {Math.min(currentPage * itemsPerPage, totalItems)},{" "}
+              {t("pagination.of")} {totalItems} {t("pagination.allResults")}
             </div>
 
             {/* Pagination Buttons */}
@@ -90,8 +93,18 @@ const EventsList = ({
                 disabled={currentPage === 1}
                 className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
               >
-                <svg className={`w-4 h-4 ${locale === "ar" ? "" : "rotate-180"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                <svg
+                  className={`w-4 h-4 ${locale === "ar" ? "" : "rotate-180"}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
                 </svg>
                 {t("pagination.previous")}
               </button>
@@ -100,7 +113,10 @@ const EventsList = ({
               {(() => {
                 const pages = [];
                 const maxVisible = 3;
-                let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+                let startPage = Math.max(
+                  1,
+                  currentPage - Math.floor(maxVisible / 2)
+                );
                 let endPage = Math.min(totalPages, startPage + maxVisible - 1);
 
                 if (endPage - startPage + 1 < maxVisible) {
@@ -131,8 +147,18 @@ const EventsList = ({
                 className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
               >
                 {t("pagination.next")}
-                <svg className={`w-4 h-4 ${locale === "ar" ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                <svg
+                  className={`w-4 h-4 ${locale === "ar" ? "rotate-180" : ""}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
                 </svg>
               </button>
             </div>

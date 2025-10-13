@@ -17,15 +17,14 @@ const SummaryCards = ({ countsData, isLoading }) => {
       color: "bg-blue-100 text-blue-600",
     },
     {
-      title: t("profile.calendar.summary.conflictingEvents"),
-      count: countsData?.potentialConflicts || "0",
-      color: "bg-orange-100 text-orange-600",
-    },
-
-    {
       title: t("profile.calendar.summary.scheduledTrips"),
       count: countsData?.scheduledTripCount || "0",
       color: "bg-green-100 text-green-600",
+    },
+    {
+      title: t("profile.calendar.summary.conflictingEvents"),
+      count: countsData?.potentialConflicts || "0",
+      color: "bg-orange-100 text-orange-600",
     },
   ];
 
@@ -34,7 +33,7 @@ const SummaryCards = ({ countsData, isLoading }) => {
       {summaryData.map((item, index) => (
         <div
           key={index}
-          className="bg-white rounded-xl p-6 shadow-lg border-0 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+          className="bg-white rounded-xl px-8 py-4 shadow-card border-0 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
         >
           <div className="flex text-center items-center justify-center">
             <div>

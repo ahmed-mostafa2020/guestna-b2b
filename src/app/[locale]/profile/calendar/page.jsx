@@ -290,15 +290,15 @@ const CalendarPage = () => {
           )}
 
           {activeTab === "events" && (
-            <div className="bg-white rounded-xl shadow-lg border-0">
+            <div className=" rounded-xl  border-0">
               {/* Search and Filter Section */}
-              <div className="p-6 border-b border-gray-100">
+              <div className="bg-white p-4 border-b rounded-2xl border border-border ">
                 {/* Title and Print Button Row */}
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-                  <h2 className="text-xl font-semibold text-mainColor">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4 lg:mb-8">
+                  <h2 className="lg:text-2xl text-xl font-medium text-titleColor">
                     {t("profile.calendar.events.search.title")}
                   </h2>
-                  <button className="bg-mainColor text-white px-6 py-3 rounded-xl hover:bg-mainColorHover transition-all duration-200 shadow-lg hover:shadow-xl font-semibold">
+                  <button className="bg-mainColor text-white px-6 py-3 rounded-lg hover:bg-mainColorHover transition-all duration-200 shadow-lg hover:shadow-xl font-medium">
                     {t("profile.calendar.events.search.printReport")}
                   </button>
                 </div>
@@ -316,7 +316,7 @@ const CalendarPage = () => {
                       onChange={(e) =>
                         handleFilterChange("searchTerm", e.target.value)
                       }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-mainColor focus:border-transparent"
                     />
                   </div>
 
@@ -327,7 +327,7 @@ const CalendarPage = () => {
                       onChange={(e) =>
                         handleFilterChange("happeningType", e.target.value)
                       }
-                      className="w-full px-4 py-3 pr-10 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22gray%22%3e%3cpath fill-rule=%22evenodd%22 d=%22M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z%22 clip-rule=%22evenodd%22/%3e%3c/svg%3e')] bg-[length:1.25rem] bg-[right_1rem_center] bg-no-repeat"
+                      className="w-full px-4 py-3 pr-10 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-mainColor focus:border-transparent appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22gray%22%3e%3cpath fill-rule=%22evenodd%22 d=%22M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z%22 clip-rule=%22evenodd%22/%3e%3c/svg%3e')] bg-[length:1.25rem] bg-[right_1rem_center] bg-no-repeat"
                     >
                       <option value="">
                         {t("profile.calendar.events.filters.eventType")}
@@ -382,15 +382,15 @@ const CalendarPage = () => {
                       onChange={(e) =>
                         handleFilterChange("day", e.target.value)
                       }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-mainColor focus:border-transparent"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Events List Section */}
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-mainColor pb-6">
+              <div className="p-4 border border-border mt-6 bg-white rounded-2xl">
+                <h3 className="lg:text-xl text-lg font-medium text-titleColor pb-6">
                   {t("profile.calendar.events.list.title")}
                 </h3>
                 {allEventsLoading || allEventsFetching ? (
@@ -416,18 +416,19 @@ const CalendarPage = () => {
                               })}
                             </div>
                             <div className="flex-1">
-                              <h4 className="font-semibold text-gray-900 pb-1">
+                              <h4 className="font-medium text-gray-900 pb-1">
                                 {event.name}
                               </h4>
                               <p className="text-sm text-gray-600 pb-2">
-                                {t("profile.calendar.events.filters.location")}:{" "}
-                                {event.place} |{" "}
+                                {/* {t("profile.calendar.events.filters.location")}:{" "} */}
+                                {event.about}
+                                {/* |{" "}
                                 {t(
                                   "profile.calendar.events.filters.participants"
-                                )}
-                                : {event.participantsCount} |{" "}
+                                )} */}
+                                {/* : {event.participantsCount} |{" "}
                                 {t("profile.calendar.events.filters.time")}:{" "}
-                                {event.time}
+                                {event.time} */}
                               </p>
                               <span
                                 className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getEventTypeColor(
@@ -445,7 +446,7 @@ const CalendarPage = () => {
                                 setEventToView(event);
                                 setShowEventDetailsModal(true);
                               }}
-                              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                              className="text-black hover:text-mainColor text-sm font-medium"
                             >
                               {t("profile.calendar.actions.view")}
                             </button>
@@ -454,7 +455,7 @@ const CalendarPage = () => {
                                 setEventToEdit(event);
                                 setShowAddEventModal(true);
                               }}
-                              className="text-green-600 hover:text-green-800 text-sm font-medium"
+                              className="text-black hover:text-mainColor text-sm font-medium"
                             >
                               {t("profile.calendar.actions.edit")}
                             </button>
