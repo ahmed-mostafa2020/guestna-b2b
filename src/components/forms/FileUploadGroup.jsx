@@ -111,9 +111,9 @@ const FileUploadGroup = memo(
               )}
               title={selectedFileName}
             >
-              {selectedFileName.length <= 40
+              {selectedFileName.length <= 30
                 ? selectedFileName
-                : `${selectedFileName.slice(0, 40)}...` ||
+                : `${selectedFileName.slice(0, 30)}...` ||
                   value?.name ||
                   placeholder ||
                   "Choose file..."}
