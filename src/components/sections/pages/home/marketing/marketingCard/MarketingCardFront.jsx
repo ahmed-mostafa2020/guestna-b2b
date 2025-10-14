@@ -23,7 +23,7 @@ const MarketingCardFront = ({ market }) => {
         className="object-cover"
       />
 
-      <div className="flex flex-col justify-center gap-2 px-4 py-6 text-center bg-white">
+      <div className="flex flex-col justify-center gap-2 px-4 py-6 text-center bg-white min-h-[266px] lg:min-h-[218px]">
         <h4 className="font-semibold text-[17px] lg:leading-7">
           {market.name}
         </h4>

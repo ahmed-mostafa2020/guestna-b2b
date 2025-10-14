@@ -44,7 +44,7 @@ const MarketingCardBack = ({ market }) => {
         className="object-cover"
       />
 
-      <div className="flex flex-col justify-center gap-2 px-4 py-6 text-center bg-white">
+      <div className="flex flex-col justify-between gap-2 px-4 py-6 text-center bg-white min-h-[266px] lg:min-h-[218px]">
         <ul>{renderedContentList}</ul>
 
         <Link
