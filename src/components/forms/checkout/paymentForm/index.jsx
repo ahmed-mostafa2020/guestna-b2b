@@ -484,6 +484,7 @@ const PaymentForm = () => {
                     <div className="lg:w-[510px]">
                       <div className="lg:w-[510px]">
                         <TamaraWidget
+                          key="tamara-widget"
                           price={finalPrice}
                           publicKey={process.env.NEXT_PUBLIC_TAMARA_WIDGET_KEY}
                           currency="SAR"
@@ -552,7 +553,7 @@ const PaymentForm = () => {
                       <div className="lg:w-[510px]">
                         {tripId !== "68c173a23e41d7d2a0845c78" ? (
                           <div className="flex lg:w-[510px]">
-                            <AppleWidget baseData={baseData} />
+                            <AppleWidget key="apple-widget-main" baseData={baseData} />
                           </div>
                         ) : (
                           <>
@@ -560,7 +561,7 @@ const PaymentForm = () => {
                             <div className="flex flex-col gap-4 px-4 py-8 bg-[#FAF9F9] transition-all duration-200 ease-in-out">
                               <div className="lg:w-[510px]">
                                 <div className="flex lg:w-[510px]">
-                                  <AppleWidgetTest baseData={baseData} />
+                                  <AppleWidgetTest key="apple-widget-test" baseData={baseData} />
                                 </div>
                               </div>
                             </div>

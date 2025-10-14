@@ -4,8 +4,8 @@ const TransferMethodSelector = ({ transferMethod, setTransferMethod }) => {
   const t = useTranslations("profile.myWallet.withdrawPage.transferMethod");
 
   return (
-    <div className="mt-8 pt-6 border-t border-gray-200">
-      <h3 className="text-xl font-bold text-gray-900 mb-6 text-center sm:text-start">
+    <div className="mb-8 pb-6 border-gray-200">
+      <h3 className="text-xl font-medium mb-6 text-center sm:text-start">
         {t("title")}
       </h3>
       <div className="flex flex-col gap-4 mt-4">
@@ -26,7 +26,7 @@ const TransferMethodSelector = ({ transferMethod, setTransferMethod }) => {
             id="transfer-method-stc"
           />
           <div className="text-start flex-1">
-            <span className="text-gray-900 font-bold text-base block mb-1">
+            <span className="text-gray-900 font-medium text-base block mb-1">
               {t("stcPay.title")}
             </span>
             <span className="text-gray-600 text-xs">
@@ -52,7 +52,7 @@ const TransferMethodSelector = ({ transferMethod, setTransferMethod }) => {
             id="transfer-method-bank"
           />
           <div className="text-start flex-1">
-            <span className="text-gray-900 font-bold text-base block mb-1">
+            <span className="text-gray-900 font-medium text-base block mb-1">
               {t("bankTransfer.title")}
             </span>
             <span className="text-gray-600 text-xs">

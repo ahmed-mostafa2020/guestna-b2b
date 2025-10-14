@@ -129,7 +129,8 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
         refetchBalance();
       } else {
         // Handle API error response
-        const apiErrorMessage = result.message || result.error || t("error.submission");
+        const apiErrorMessage =
+          result.message || result.error || t("error.submission");
         console.error("API Error:", result);
         enqueueSnackbar(apiErrorMessage, { variant: "error" });
         return; // Don't throw, just show the error and return
@@ -137,7 +138,8 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
     } catch (error) {
       console.error("Withdrawal error:", error);
       // Handle network or other errors
-      const errorMessage = error.message || getErrorMessage(error, t) || t("error.submission");
+      const errorMessage =
+        error.message || getErrorMessage(error, t) || t("error.submission");
       enqueueSnackbar(errorMessage, { variant: "error" });
     } finally {
       setSubmitting(false);
@@ -179,8 +181,27 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
       validateOnBlur={true}
       validateOnChange={true}
     >
-      {({ values, errors, touched, setFieldValue, handleBlur, isSubmitting, isValid }) => (
+      {({
+        values,
+        errors,
+        touched,
+        setFieldValue,
+        handleBlur,
+        isSubmitting,
+        isValid,
+      }) => (
         <Form className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+          {/* Transfer Method Selection */}
+          <TransferMethodSelector
+            transferMethod={transferMethod}
+            setTransferMethod={(method) => {
+              setTransferMethod(method);
+              // Reset selected trip when switching methods
+              setSelectedTrip(null);
+              setFieldValue("selectedTripId", "");
+            }}
+          />
+
           {/* STC Pay Form */}
           {transferMethod === "stc" && (
             <STCPayForm
@@ -218,22 +239,13 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
             />
           )}
 
-          {/* Transfer Method Selection */}
-          <TransferMethodSelector
-            transferMethod={transferMethod}
-            setTransferMethod={(method) => {
-              setTransferMethod(method);
-              // Reset selected trip when switching methods
-              setSelectedTrip(null);
-              setFieldValue("selectedTripId", "");
-            }}
-          />
-
           {/* Submit Button */}
           <div className="mt-8 pt-6 border-t border-gray-200">
             <button
               type="submit"
-              disabled={isSubmitting || balanceLoading || !selectedTrip || !isValid}
+              disabled={
+                isSubmitting || balanceLoading || !selectedTrip || !isValid
+              }
               className={`w-full py-4 px-6 rounded-2xl font-bold text-white text-base transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-4 transform hover:-translate-y-1 ${
                 isSubmitting || balanceLoading || !selectedTrip || !isValid
                   ? "bg-gray-400 cursor-not-allowed"
@@ -255,7 +267,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
                 {t("loadingBalance")}
               </p>
             )}
-            
+
             {/* Debug info - remove in production */}
             {!selectedTrip && (
               <p className="text-center text-amber-600 mt-2 text-sm">

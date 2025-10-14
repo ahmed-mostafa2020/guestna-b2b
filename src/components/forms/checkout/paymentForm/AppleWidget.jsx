@@ -2,13 +2,15 @@
 
 import { useLocale } from "next-intl";
 import { useSelector } from "react-redux";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useState, useRef } from "react";
 import { END_POINTS } from "@constants/APIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { useMutationData } from "@hooks/useMutationData";
 
 const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const [currentBookingId, setCurrentBookingId] = useState(null);
+  const isInitializedRef = useRef(false);
+  const widgetContainerRef = useRef(null);
 
   const price = useSelector(
     (state) => state.finalTripDetailsData.data.basePriceTotalWithVat
@@ -39,99 +41,119 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   );
 
   useEffect(() => {
-    Moyasar.init({
-      element: ".mysr-form",
-      amount: +finalPrice * 100,
-      language: locale,
-      currency: currency,
-      description: tripName,
-      publishable_api_key: appleWidgetKey,
-      callback_url: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
-      methods: ["applepay"],
-      apple_pay: {
-        country: "SA",
-        label: "Guestna",
-        merchant_capabilities: [
-          "supports3DS",
-          "supportsCredit",
-          "supportsDebit",
-        ],
-        supported_countries: ["SA", "US"],
-        validation_url:
-          "https://apple-pay-gateway.apple.com/paymentservices/paymentSession",
-        validate_merchant_url: "https://api.moyasar.com/v1/applepay/initiate",
-      },
-      on_initiating: function () {
-        return new Promise(function (resolve, reject) {
-          try {
-            // Call the initiation endpoint
-            mutate(baseData, {
-              onSuccess: (data) => {
-                if (!data?.bookingId) {
-                  alert("issue at generate Id");
-                  reject();
-                }
-                setCurrentBookingId(data.bookingId);
-                resolve({});
-              },
-              onError: (error) => {
-                alert("on error generate Id");
+    // Prevent multiple initializations
+    if (isInitializedRef.current) {
+      return;
+    }
 
-                reject();
-              },
-            });
-          } catch (error) {
-            alert("on error Initiation");
-            reject();
-          }
-        });
-      },
-      on_completed: function (payment) {
-        return new Promise(function (resolve, reject) {
-          try {
-            if (payment && payment.id) {
-              // Call the confirmation endpoint
-              const confirmationData = {
-                trip: baseData.trip,
-                bookingId: currentBookingId, // Use ref value instead of state
-                paymentId: payment.id,
-              };
-              mutateComferm(confirmationData, {
-                onSuccess: () => {
-                  setCurrentBookingId("");
+    // Ensure Moyasar is available
+    if (typeof window === "undefined" || !window.Moyasar) {
+      console.error("Moyasar is not available");
+      return;
+    }
+
+    // Mark as initialized before calling init
+    isInitializedRef.current = true;
+
+    try {
+      Moyasar.init({
+        element: ".mysr-form",
+        amount: +finalPrice * 100,
+        language: locale,
+        currency: currency,
+        description: tripName,
+        publishable_api_key: appleWidgetKey,
+        callback_url: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
+        methods: ["applepay"],
+        apple_pay: {
+          country: "SA",
+          label: "Guestna",
+          merchant_capabilities: [
+            "supports3DS",
+            "supportsCredit",
+            "supportsDebit",
+          ],
+          supported_countries: ["SA", "US"],
+          validation_url:
+            "https://apple-pay-gateway.apple.com/paymentservices/paymentSession",
+          validate_merchant_url: "https://api.moyasar.com/v1/applepay/initiate",
+        },
+        on_initiating: function () {
+          return new Promise(function (resolve, reject) {
+            try {
+              // Call the initiation endpoint
+              mutate(baseData, {
+                onSuccess: (data) => {
+                  if (!data?.bookingId) {
+                    alert("issue at generate Id");
+                    reject();
+                  }
+                  setCurrentBookingId(data.bookingId);
                   resolve({});
                 },
                 onError: (error) => {
-                  alert("error to confirmed");
+                  alert("on error generate Id");
                   reject();
                 },
               });
-            } else {
-              alert("faild generate paymentId");
-
+            } catch (error) {
+              alert("on error Initiation");
               reject();
             }
-          } catch (error) {
-            alert("faild on complete");
-            reject();
-          }
-        });
-      },
-    });
-  }, [
-    currentBookingId,
-    setCurrentBookingId,
-    locale,
-    baseData,
-    appleWidgetKey,
-    currency,
-    vercelUrl,
-    finalPrice,
-    tripName,
-  ]);
+          });
+        },
+        on_completed: function (payment) {
+          return new Promise(function (resolve, reject) {
+            try {
+              if (payment && payment.id) {
+                // Call the confirmation endpoint
+                const confirmationData = {
+                  trip: baseData.trip,
+                  bookingId: currentBookingId,
+                  paymentId: payment.id,
+                };
+                mutateComferm(confirmationData, {
+                  onSuccess: () => {
+                    setCurrentBookingId("");
+                    resolve({});
+                  },
+                  onError: (error) => {
+                    alert("error to confirmed");
+                    reject();
+                  },
+                });
+              } else {
+                alert("faild generate paymentId");
+                reject();
+              }
+            } catch (error) {
+              alert("faild on complete");
+              reject();
+            }
+          });
+        },
+      });
+    } catch (error) {
+      console.error("Error initializing Moyasar:", error);
+      isInitializedRef.current = false;
+    }
+
+    // Cleanup function
+    return () => {
+      // Clear the widget container to prevent DOM conflicts
+      if (widgetContainerRef.current) {
+        try {
+          widgetContainerRef.current.innerHTML = "";
+        } catch (error) {
+          console.error("Error cleaning up widget:", error);
+        }
+      }
+      isInitializedRef.current = false;
+    };
+  }, []);
 
   return (
-    <div className="flex">
+    <div className="flex" ref={widgetContainerRef}>
       <div className="mysr-form"></div>
     </div>
   );
