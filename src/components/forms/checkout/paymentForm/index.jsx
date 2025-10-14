@@ -567,48 +567,6 @@ const PaymentForm = () => {
                             </div>
                           </>
                         )}
-
-                        {/* tamara payment */}
-                        <div className="relative flex flex-col gap-2 mb-6">
-                          <label className="font-medium capitalize font-ibm">
-                            {t("forms.phone.name")}
-                          </label>
-
-                          <Field name="tamaraMobile">
-                            {({ field }) => (
-                              <PhoneInput
-                                {...field}
-                                international
-                                countries={["SA", "AE", "BH", "KW", "OM"]}
-                                defaultCountry="SA"
-                                onCountryChange={(country) => {
-                                  setFieldValue("selectedCountry", country);
-                                }}
-                                value={values.tamaraMobile}
-                                onChange={(value) => {
-                                  setFieldValue("tamaraMobile", value);
-                                }}
-                                errors={errors.tamaraMobile}
-                                touched={touched.tamaraMobile}
-                                onBlur={handleBlur}
-                                id="tamaraMobile"
-                                addInternationalOption={false}
-                                style={{ direction: "ltr" }}
-                                className={cn(
-                                  "flex bg-white lg:w-[510px] gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50  transition-all duration-200 ease-in-out",
-                                  errors.tamaraMobile && touched.tamaraMobile
-                                    ? "border-error PhoneInputInput-focus:border-error hover:border-error"
-                                    : "border-border PhoneInputInput-focus:border-textDark hover:border-textDark"
-                                )}
-                              />
-                            )}
-                          </Field>
-                          {errors.tamaraMobile && touched.tamaraMobile && (
-                            <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-                              {errors.tamaraMobile}
-                            </div>
-                          )}
-                        </div>
                       </div>
                     </div>
                   )}
