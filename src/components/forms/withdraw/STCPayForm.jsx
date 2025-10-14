@@ -66,10 +66,9 @@ const STCPayForm = ({
             min="50"
             max={balance?.availableBalance}
             readOnly={true}
-            // required={true}
-            textAlign="right"
+            required={true}
           />
-          <p className="text-xs text-gray-500 mt-2 text-start">
+          <p className="text-xs text-gray-500 pt-2 text-start">
             {selectedTrip
               ? t("amount.autoFilled")
               : t("amount.selectTripFirst")}
@@ -91,7 +90,7 @@ const STCPayForm = ({
             onBlur={handleBlur}
             maxLength="10"
             required={true}
-            textAlign="right"
+            textAlign="end"
           />
         </div>
       </div>
@@ -108,7 +107,6 @@ const STCPayForm = ({
           onBlur={handleBlur}
           textarea={true}
           rows={3}
-          textAlign="right"
         />
       </div>
     </div>

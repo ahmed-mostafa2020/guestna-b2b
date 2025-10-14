@@ -5,15 +5,14 @@ const TransferMethodSelector = ({ transferMethod, setTransferMethod }) => {
 
   return (
     <div className="mb-8 pb-6 border-gray-200">
-      <h3 className="text-xl font-medium mb-6 text-center sm:text-start">
-        {t("title")}
-      </h3>
+      <h3 className=" font-medium">{t("title")}</h3>
+
       <div className="flex flex-col gap-4 mt-4">
         <label
           className={`flex items-center space-x-3 cursor-pointer p-4 border-2 rounded-2xl transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 ${
             transferMethod === "stc"
-              ? "border-green-500 bg-green-50 shadow-md"
-              : "border-gray-200 hover:border-green-300"
+              ? "border-mainColor bg-mainColor/10 shadow-md"
+              : "border-gray-200 hover:border-mainColor"
           }`}
         >
           <input
@@ -22,7 +21,7 @@ const TransferMethodSelector = ({ transferMethod, setTransferMethod }) => {
             value="stc"
             checked={transferMethod === "stc"}
             onChange={(e) => setTransferMethod(e.target.value)}
-            className="w-5 h-5 me-2 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500 checked:bg-green-600 checked:border-green-600"
+            className="w-5 h-5 me-2 text-mainColor bg-gray-100 border-gray-300 focus:ring-green-500 checked:bg-green-600 checked:border-green-600"
             id="transfer-method-stc"
           />
           <div className="text-start flex-1">
@@ -38,8 +37,8 @@ const TransferMethodSelector = ({ transferMethod, setTransferMethod }) => {
         <label
           className={`flex items-center space-x-3 cursor-pointer p-4 border-2 rounded-2xl transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 ${
             transferMethod === "bank"
-              ? "border-green-500 bg-green-50 shadow-md"
-              : "border-gray-200 hover:border-green-300"
+              ? "border-mainColor bg-mainColor/10 shadow-md"
+              : "border-gray-200 hover:border-mainColor"
           }`}
         >
           <input

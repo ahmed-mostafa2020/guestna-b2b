@@ -399,6 +399,7 @@ fieldset {
 /* OverRide images pop slider trip Details */
 .swiper-wrapper {
   align-items: center !important;
+  padding-bottom: 15px !important;
 }
 .swiper-pagination-fraction {
   top: 10px !important; /* Move to top */
