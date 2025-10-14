@@ -947,14 +947,6 @@
         "debug": {
           "selectTrip": "يرجى اختيار رحلة لتفعيل زر التقديم",
           "fillRequiredFields": "يرجى ملء جميع الحقول المطلوبة بشكل صحيح"
-        },
-        "informationSection": {
-          "title": "معلومات مهمة",
-          "minAmount": "الحد الأدنى للسحب: 50 ريال",
-          "maxAmount": "الحد الأقصى للسحب: الرصيد المتاح",
-          "stcPayInfo": "STC Pay: سحب فوري خلال دقائق",
-          "bankTransferInfo": "التحويل البنكي: 1-3 أيام عمل",
-          "bankFees": "سيتم خصم رسوم بنكية حسب البنك"
         }
       },
       "transactionsPage": {

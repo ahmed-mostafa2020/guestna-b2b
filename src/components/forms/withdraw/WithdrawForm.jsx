@@ -15,6 +15,7 @@ import BankTransferForm from "./BankTransferForm";
 import { Formik, Form } from "formik";
 import { createWithdrawValidationSchema } from "@utils/validationSchemas";
 import { useSnackbar } from "notistack";
+import { CircularProgress } from "@mui/material";
 
 const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   const locale = useLocale();
@@ -244,7 +245,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
           )}
 
           {/* Submit Button */}
-          <div className="mt-8 pt-6">
+          <div className="mt-4">
             <button
               type="submit"
               disabled={
@@ -257,8 +258,9 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
               }`}
             >
               {isSubmitting ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                <div className="flex items-center justify-center gap-2">
+                  <CircularProgress size={20} color="white" />
+
                   {t("submitting")}
                 </div>
               ) : (

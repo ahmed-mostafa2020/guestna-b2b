@@ -64,13 +64,12 @@ const BankTransferForm = ({
             touched={touched.withdrawAmount}
             onChange={(e) => setFieldValue("withdrawAmount", e.target.value)}
             onBlur={handleBlur}
-            min="50"
             max={balance?.availableBalance}
             readOnly={true}
-            // required={true}
+            required={true}
             textAlign="start"
           />
-          <p className="text-xs text-gray-500 mt-2 text-start">
+          <p className="text-xs text-gray-500 pt-2 text-start">
             {selectedTrip
               ? t("amount.autoFilled")
               : t("amount.selectTripFirst")}

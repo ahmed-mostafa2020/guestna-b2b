@@ -1,65 +1,60 @@
 import { useTranslations } from "next-intl";
+import {
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+} from "@mui/material";
 
 const TransferMethodSelector = ({ transferMethod, setTransferMethod }) => {
   const t = useTranslations("profile.myWallet.withdrawPage.transferMethod");
 
+  const transferOptions = [
+    { value: "stc", label: t("stcPay.title") },
+    { value: "bank", label: t("bankTransfer.title") },
+  ];
+
   return (
-    <div className="mb-8 pb-6 border-gray-200">
-      <h3 className=" font-medium">{t("title")}</h3>
+    <div className="mb-6 border-gray-200">
+      <FormControl className="w-full">
+        <label className="mb-2 font-medium">{t("title")}</label>
 
-      <div className="flex flex-col gap-4 mt-4">
-        <label
-          className={`flex items-center space-x-3 cursor-pointer p-4 border-2 rounded-2xl transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 ${
-            transferMethod === "stc"
-              ? "border-mainColor bg-mainColor/10 shadow-md"
-              : "border-gray-200 hover:border-mainColor"
-          }`}
+        <RadioGroup
+          aria-labelledby="transfer-method-group-label"
+          name="transferMethod"
+          value={transferMethod || ""}
+          onChange={(e) => setTransferMethod(e.target.value)}
+          sx={{ flexDirection: "column", gap: "2px" }}
         >
-          <input
-            type="radio"
-            name="transferMethod"
-            value="stc"
-            checked={transferMethod === "stc"}
-            onChange={(e) => setTransferMethod(e.target.value)}
-            className="w-5 h-5 me-2 text-mainColor bg-gray-100 border-gray-300 focus:ring-green-500 checked:bg-green-600 checked:border-green-600"
-            id="transfer-method-stc"
-          />
-          <div className="text-start flex-1">
-            <span className="text-gray-900 font-medium text-base block mb-1">
-              {t("stcPay.title")}
-            </span>
-            <span className="text-gray-600 text-xs">
-              {t("stcPay.description")}
-            </span>
-          </div>
-        </label>
-
-        <label
-          className={`flex items-center space-x-3 cursor-pointer p-4 border-2 rounded-2xl transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 ${
-            transferMethod === "bank"
-              ? "border-mainColor bg-mainColor/10 shadow-md"
-              : "border-gray-200 hover:border-mainColor"
-          }`}
-        >
-          <input
-            type="radio"
-            name="transferMethod"
-            value="bank"
-            checked={transferMethod === "bank"}
-            onChange={(e) => setTransferMethod(e.target.value)}
-            className="w-5 h-5 me-2 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500 checked:border-green-600"
-            id="transfer-method-bank"
-          />
-          <div className="text-start flex-1">
-            <span className="text-gray-900 font-medium text-base block mb-1">
-              {t("bankTransfer.title")}
-            </span>
-            <span className="text-gray-600 text-xs">
-              {t("bankTransfer.description")}
-            </span>
-          </div>
-        </label>
-      </div>
+          {transferOptions.map((option) => (
+            <FormControlLabel
+              key={option.value}
+              sx={{
+                textTransform: "capitalize",
+                margin: "0",
+                "& .MuiFormControlLabel-label": {
+                  color: "#1F2626",
+                  fontWeight: "medium",
+                  fontSize: "15px",
+                  fontFamily: "var(--font-somar-sans), sans-serif",
+                },
+              }}
+              value={option.value}
+              control={
+                <Radio
+                  sx={{
+                    color: "#1F2626",
+                    "&.Mui-checked": {
+                      color: "#008F8F",
+                    },
+                  }}
+                />
+              }
+              label={option.label}
+            />
+          ))}
+        </RadioGroup>
+      </FormControl>
     </div>
   );
 };
