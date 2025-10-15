@@ -895,6 +895,7 @@
             "placeholder": "أضف أي ملاحظات أو تعليمات خاصة بعملية السحب..."
           },
           "validation": {
+            "amountRequired": "يرجى إدخال مبلغ صحيح",
             "tripRequired": "يرجى اختيار رحلة مكتملة",
             "bankNameRequired": "يرجى إدخال اسم البنك",
             "bankNameMinLength": "يجب ألا يقل اسم البنك عن 3 أحرف",

@@ -681,7 +681,7 @@ export const createWithdrawValidationSchema = (t, isBankTransfer) => {
     withdrawAmount: Yup.number()
       // .required(getValidationMessage("amountRequired"))
       // .min(50, getValidationMessage("minAmount"))
-      .positive("Amount must be positive"),
+      .positive(getValidationMessage("amountRequired")),
 
     phoneNumber: isBankTransfer
       ? Yup.string().notRequired() // No phone validation for bank transfer

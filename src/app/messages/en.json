@@ -924,6 +924,7 @@
             "placeholder": "Add any notes or special instructions for the withdrawal..."
           },
           "validation": {
+            "amountRequired": "Please enter a valid amount",
             "tripRequired": "Please select a completed trip",
             "bankNameRequired": "Please enter bank name",
             "bankNameMinLength": "Bank name must be at least 3 characters",
