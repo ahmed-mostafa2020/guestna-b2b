@@ -14,6 +14,7 @@
     "lunchMeal": "وجبة غداء",
     "lunchMeals": "وجبات غداء",
     "dates": "التواريخ",
+    "time": "الوقت",
     "hour": "ساعة",
     "hours": "ساعات",
     "day": "يوما",
@@ -1650,11 +1651,17 @@
     "customTrip": {
       "title": "طلب إنشاء رحلة جديدة",
       "edit": "طلب تعديل رحلة",
+      "bookingDetails": "تفاصيل الحجز",
       "submit": "إرسال الطلب إلى فريق جستنا",
       "success": "تم إرسال طلبك بنجاح",
       "thanksMessage": {
         "title": "شكراً لك!",
         "description": "تم إرسال طلبك بنجاح. سيتواصل معك فريقنا خلال 24 ساعة."
+      },
+
+      "tripInfo": {
+        "title": "معلومات الرحلة",
+        "description": "وصف الرحلة"
       },
 
       "selectedTrip": {
@@ -1670,8 +1677,8 @@
         }
       },
 
-      "city": {
-        "placeholder": "المدينة"
+      "location": {
+        "placeholder": "الموقع"
       },
 
       "targetedTrip": {

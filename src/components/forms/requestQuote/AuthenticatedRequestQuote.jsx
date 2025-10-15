@@ -1,20 +1,26 @@
-import { useRouter } from "next/navigation";
+"use client";
+
 import { useLocale, useTranslations } from "next-intl";
-import { memo, useState, useEffect } from "react";
-import { Formik } from "formik";
-import axios from "axios";
-import { useSnackbar } from "notistack";
-import { CircularProgress } from "@mui/material";
+
+import { memo, useState } from "react";
+
 import { getHeaders } from "@utils/getHeaders";
 import getErrorMessage from "@utils/getErrorMessage";
 import getProxyUrl from "@utils/getProxyUrl";
 import { createAuthenticatedRequestQuoteSchema } from "@utils/validationSchemas";
+
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import TripInformation from "./TripInformation";
 import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
 import FileUploadGroup from "../FileUploadGroup";
 import ThanksMessage from "./ThanksMessage";
+
+import { Formik } from "formik";
+import axios from "axios";
+import { useSnackbar } from "notistack";
+import { CircularProgress } from "@mui/material";
 
 const AuthenticatedRequestQuote = ({
   tripId,
@@ -27,7 +33,6 @@ const AuthenticatedRequestQuote = ({
 
   const locale = useLocale();
   const t = useTranslations();
-  const router = useRouter();
 
   const headers = getHeaders(locale);
   // Create custom validation schema for update form (make readonly fields optional)
@@ -56,9 +61,6 @@ const AuthenticatedRequestQuote = ({
   const servicesData = formSelectionData?.services || [];
 
   // Extract names for dropdown display
-  const categoryOptions = categoryData.map((item) => item.name);
-  const tripTypeOptions = tripTypeData.map((item) => item.name);
-  const cityOptions = cityData.map((item) => item.name);
   const academicStageOptions = academicStageData.map((item) => item.name);
   const servicesOptions = servicesData.map((item) => item.name);
 
@@ -66,12 +68,6 @@ const AuthenticatedRequestQuote = ({
   const findNameById = (options, id) => {
     const option = options.find((opt) => opt._id === id);
     return option ? option.name : "";
-  };
-
-  // Helper function to find names by array of _ids
-  const findNamesByIds = (options, ids) => {
-    if (!Array.isArray(ids)) return [];
-    return ids.map((id) => findNameById(options, id)).filter((name) => name);
   };
 
   // Store initial values for comparison
@@ -343,7 +339,7 @@ const AuthenticatedRequestQuote = ({
   };
 
   return (
-    <div className="px-4 py-8 bg-white rounded-2xl w-[90%] mx-auto">
+    <div className="px-4 py-8 bg-white rounded-2xl w-[75%] mx-auto">
       {showThanksMessage ? (
         <div className="centered w-fit p-2 border rounded-2xl mx-auto">
           <ThanksMessage />
@@ -382,7 +378,6 @@ const AuthenticatedRequestQuote = ({
                 errors,
                 touched,
                 isValid,
-                dirty,
                 handleBlur,
                 handleChange,
                 handleSubmit,
@@ -390,56 +385,18 @@ const AuthenticatedRequestQuote = ({
                 setFieldValue,
               }) => (
                 <form onSubmit={handleSubmit}>
+                  <TripInformation tripData={tripData} />
+
+                  <h2 className="text-xl font-medium text-black pb-3">
+                    {t("forms.customTrip.bookingDetails")}
+                  </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Selected Trip - Readonly */}
-                    <div className="somar-placeholder">
-                      <SelectionGroup
-                        name="category"
-                        value={values.category}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        touched={touched.category}
-                        errors={errors.category}
-                        placeholder={t(
-                          "forms.customTrip.selectedTrip.placeholder"
-                        )}
-                        list={categoryOptions}
-                        disabled={true}
-                      />
-                    </div>
-
-                    {/* Trip Type - Readonly */}
-                    <div className="somar-placeholder">
-                      <SelectionGroup
-                        name="tripType"
-                        value={values.tripType}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        touched={touched.tripType}
-                        errors={errors.tripType}
-                        placeholder={t("forms.customTrip.tripType.placeholder")}
-                        list={tripTypeOptions}
-                        disabled={true}
-                      />
-                    </div>
-
-                    {/* City - Readonly */}
-                    <div className="somar-placeholder">
-                      <SelectionGroup
-                        name="city"
-                        value={values.city}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        touched={touched.city}
-                        errors={errors.city}
-                        placeholder={t("forms.customTrip.city.placeholder")}
-                        list={cityOptions}
-                        disabled={true}
-                      />
-                    </div>
-
                     {/* Academic Stage */}
                     <div className="somar-placeholder">
+                      <h4 className="font-medium pb-2">
+                        {t("forms.customTrip.targetedTrip.placeholder")}
+                      </h4>
+
                       <SelectionGroup
                         name="academicStages"
                         value={values.academicStages}
@@ -451,24 +408,6 @@ const AuthenticatedRequestQuote = ({
                           "forms.customTrip.targetedTrip.placeholder"
                         )}
                         list={academicStageOptions}
-                        multiple={true}
-                      />
-                    </div>
-
-                    {/* Services */}
-                    <div className="somar-placeholder">
-                      <label className="block pb-2 font-medium">
-                        {t("forms.customTrip.services.placeholder")}
-                      </label>
-                      <SelectionGroup
-                        name="services"
-                        value={values.services}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        touched={touched.services}
-                        errors={errors.services}
-                        placeholder={t("forms.customTrip.services.placeholder")}
-                        list={servicesOptions}
                         multiple={true}
                       />
                     </div>
@@ -547,65 +486,42 @@ const AuthenticatedRequestQuote = ({
                         />
                       </div>
                     )}
-
-                    {/* Price */}
-                    {/* <div className="somar-placeholder">
-                  <TextInputGroup
-                    label={t("forms.customTrip.price.placeholder")}
-                    type="number"
-                    name="basePrice"
-                    value={values.basePrice}
-                    errors={errors.basePrice}
-                    touched={touched.basePrice}
-                    onChange={handleNumberChange(handleChange)}
-                    onBlur={handleBlur}
-                    onKeyDown={handleKeyDown}
-                    placeholder={t("forms.customTrip.price.placeholder")}
-                    min="0"
-                    minLength={1}
-                    maxLength={8}
-                    readOnly={true}
-                  />
-                </div> */}
                   </div>
 
-                  <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Trip Description */}
-                    <div className="somar-placeholder">
-                      <TextInputGroup
-                        type="text"
-                        name="description"
-                        value={values.description}
-                        errors={errors.description}
-                        touched={touched.description}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        placeholder={t(
-                          "forms.customTrip.tripDescription.placeholder"
-                        )}
-                        textarea={true}
-                        rows={3}
-                        readOnly={true}
-                      />
-                    </div>
+                  {/* Services */}
+                  <div className="somar-placeholder mt-4">
+                    <label className="block pb-2 font-medium">
+                      {t("forms.customTrip.services.placeholder")}
+                    </label>
+                    <SelectionGroup
+                      name="services"
+                      value={values.services}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      touched={touched.services}
+                      errors={errors.services}
+                      placeholder={t("forms.customTrip.services.placeholder")}
+                      list={servicesOptions}
+                      multiple={true}
+                    />
+                  </div>
 
-                    {/* Special Requirements */}
-                    <div className="somar-placeholder">
-                      <TextInputGroup
-                        type="text"
-                        name="specialRequirements"
-                        value={values.specialRequirements}
-                        errors={errors.specialRequirements}
-                        touched={touched.specialRequirements}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        placeholder={t(
-                          "forms.customTrip.specialRequirements.placeholder"
-                        )}
-                        textarea={true}
-                        rows={3}
-                      />
-                    </div>
+                  {/* Special Requirements */}
+                  <div className="somar-placeholder md:col-span-2 mt-6">
+                    <TextInputGroup
+                      type="text"
+                      name="specialRequirements"
+                      value={values.specialRequirements}
+                      errors={errors.specialRequirements}
+                      touched={touched.specialRequirements}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder={t(
+                        "forms.customTrip.specialRequirements.placeholder"
+                      )}
+                      textarea={true}
+                      rows={3}
+                    />
                   </div>
 
                   {/* File Upload */}

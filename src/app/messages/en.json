@@ -14,6 +14,7 @@
     "lunchMeal": "Lunch Meal",
     "lunchMeals": "Lunch Meals",
     "dates": "Dates",
+    "time": "Time",
     "hour": "Hour",
     "hours": "Hours",
     "day": "Day",
@@ -1664,11 +1665,17 @@
     "customTrip": {
       "title": "Request to Create a New Trip",
       "edit": "Request to Edit a Trip",
+      "bookingDetails": "Booking Details",
       "submit": "Send Request to Guestna Team",
       "success": "Your request has been sent successfully",
       "thanksMessage": {
         "title": "Thank You!",
         "description": "Your request has been sent successfully. Our team will contact you within 24 hours."
+      },
+
+      "tripInfo": {
+        "title": "Trip Information",
+        "description": "Trip Description"
       },
 
       "selectedTrip": {
@@ -1684,8 +1691,8 @@
         }
       },
 
-      "city": {
-        "placeholder": "City"
+      "location": {
+        "placeholder": "Location"
       },
 
       "targetedTrip": {
