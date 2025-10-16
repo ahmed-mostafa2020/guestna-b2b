@@ -339,7 +339,7 @@ const AuthenticatedRequestQuote = ({
   };
 
   return (
-    <div className="px-4 py-8 bg-white rounded-2xl w-[75%] mx-auto">
+    <div className="px-4 py-8 mb-4 bg-white rounded-2xl w-[75%] mx-auto">
       {showThanksMessage ? (
         <div className="centered w-fit p-2 border rounded-2xl mx-auto">
           <ThanksMessage />

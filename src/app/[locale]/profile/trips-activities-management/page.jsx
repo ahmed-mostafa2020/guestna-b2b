@@ -4,9 +4,9 @@ import { useTranslations } from "next-intl";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageTemplate";
-import EmptyTrips from "@components/sections/pages/profile/trips/EmptyTrips";
 import PackagesTable from "@components/sections/pages/profile/trips/PackagesTable";
 import ActivitiesTable from "@components/sections/pages/profile/trips/ActivitiesTable";
+import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBookings";
 
 const TripsPage = () => {
   const t = useTranslations();
@@ -17,7 +17,7 @@ const TripsPage = () => {
         title={t("profile.aside.tripsManagement.title")}
         endpoint={`${B2B_END_POINTS.PROFILE.ALL_TRIPS.ACTIVITIES}`}
         method="POST"
-        emptyStateComponent={<EmptyTrips />}
+        emptyStateComponent={<EmptyBookings />}
         contentComponent={(
           data,
           currentPage,
@@ -39,7 +39,7 @@ const TripsPage = () => {
         title={t("profile.aside.tripsManagement.title")}
         endpoint={`${B2B_END_POINTS.PROFILE.ALL_TRIPS.PACKAGES}`}
         method="POST"
-        emptyStateComponent={<EmptyTrips />}
+        emptyStateComponent={<EmptyBookings />}
         contentComponent={(
           data,
           currentPage,

@@ -5,6 +5,8 @@ import { memo } from "react";
 import formatDate from "@utils/FormateDate";
 import formatCurrency from "@utils/FormatCurrency";
 
+import EmptyBookings from "../../myBookings/EmptyBookings";
+
 import {
   ResponsiveContainer,
   LineChart,
@@ -35,23 +37,28 @@ const RevenueLineChart = ({ infoData }) => {
       <h2 className="pb-4 text-lg font-medium lg:text-xl text-titleColor">
         {t("profile.revenueLineChart.title")}
       </h2>
-
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={lineData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis />
-          <Tooltip formatter={(value) => formatCurrency(Number(value))} />
-          <Legend />
-          <Line
-            type="monotone"
-            dataKey="revenue"
-            stroke="#3B82F6"
-            strokeWidth={2}
-            name={t("profile.revenueLineChart.label")}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+      {infoData?.monthlyRevenue?.length ? (
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={lineData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="revenue"
+              stroke="#3B82F6"
+              strokeWidth={2}
+              name={t("profile.revenueLineChart.label")}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      ) : (
+        <div className=" h-[200px]">
+          <EmptyBookings subTitle={false} hasLink={false} />
+        </div>
+      )}
     </div>
   );
 };

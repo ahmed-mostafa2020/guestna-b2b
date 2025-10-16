@@ -78,7 +78,6 @@ const TripInformation = ({ tripData }) => {
           </div>
 
           {/* End Date Box - Only for multi-day trips */}
-
           <div className="flex items-center gap-1 rounded-lg py-2 px-4 border border-border shadow-card w-fit">
             {calenderIcon}
 
