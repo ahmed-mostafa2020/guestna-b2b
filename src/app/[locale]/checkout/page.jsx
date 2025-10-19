@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 
 import { useSelector, useDispatch } from "react-redux";
 import { clearFinalTripDetailsData } from "@store/checkout/finalTripDetailsSlice";
+import { resetPromoCode } from "@store/forms/promoCode/promoCodeSlice";
 
 import ErrorComponent from "@feedback/error/ErrorComponent";
 
@@ -19,13 +20,20 @@ const Checkout = () => {
   const timeoutRef = useRef(null);
   const [isDataReady, setIsDataReady] = useState(false);
 
-  const tripSlug = useSelector((state) => state.finalTripDetailsData?.data?.slug);
-  const finalTripData = useSelector((state) => state.finalTripDetailsData?.data);
-  
+  const tripSlug = useSelector(
+    (state) => state.finalTripDetailsData?.data?.slug
+  );
+  const finalTripData = useSelector(
+    (state) => state.finalTripDetailsData?.data
+  );
+  const promoCodeData = useSelector(
+    (state) => state.promoCode.promoCodeData.trip
+  );
+
   // Check if trip is free
-  const isFreeTrip = 
-    (finalTripData?.discountedTotalPriceWithVat === 0) || 
-    (finalTripData?.basePriceTotalWithVat === 0);
+  const isFreeTrip =
+    promoCodeData?.discountedTotalPriceWithVat === 0 ||
+    promoCodeData?.basePriceTotalWithVat === 0;
 
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
@@ -44,19 +52,27 @@ const Checkout = () => {
     }
   }, [tripSlug, finalTripData]);
 
-  // Clear finalTripDetailsData after 15 minutes on checkout page
+  // Clear finalTripDetailsData after 30 minutes on checkout page
   useEffect(() => {
-    // Set timeout for 15 minutes (900000 ms)
+    // Set timeout for 30 minutes (1800000 ms)
     timeoutRef.current = setTimeout(() => {
-      console.log("15 minutes elapsed - Clearing checkout data");
+      console.log("30 minutes elapsed - Clearing checkout data");
       dispatch(clearFinalTripDetailsData());
-    }, 15 * 60 * 1000);
+    }, 30 * 60 * 1000);
 
     // Cleanup timeout on unmount
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
+    };
+  }, [dispatch]);
+
+  // Clear promo code data when navigating away from checkout page
+  useEffect(() => {
+    return () => {
+      // Cleanup promo code data on unmount (when user navigates away)
+      dispatch(resetPromoCode());
     };
   }, [dispatch]);
 
@@ -87,7 +103,9 @@ const Checkout = () => {
     <main className="py-5 lg:py-10 bg-activityDetailsBg">
       <Container maxWidth="lg">
         <h2 className="text-lg font-semibold lg:text-[28px] lg:pb-12 pb-6">
-          {isFreeTrip ? t("forms.freeBooking.title") : t("forms.paymentMethodsForm.title")}
+          {isFreeTrip
+            ? t("forms.freeBooking.title")
+            : t("forms.paymentMethodsForm.title")}
         </h2>
       </Container>
 

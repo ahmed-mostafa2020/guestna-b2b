@@ -2,29 +2,41 @@
 
 import { useTranslations } from "next-intl";
 
-// import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import formatCurrency from "@utils/FormatCurrency";
 import FrameWithImagedHeader from "@components/common/frameWithImagedHeader/FrameWithImagedHeader";
 import formatNumbersUint from "@utils/FormatNumbersUint";
 
 const PriceDetailsSection = ({ finalTripDetails }) => {
-  // const promoCodeData = useSelector((state) => state.promoCode.promoCodeData);
+  const promoCodeData = useSelector(
+    (state) => state.promoCode.promoCodeData.trip
+  );
 
   const t = useTranslations();
 
   // Safe access with fallback values to prevent crashes
-  const priceExclTax = formatCurrency(finalTripDetails?.tripBasePriceWithoutVat || 0);
+  const priceExclTax = formatCurrency(
+    promoCodeData?.tripBasePriceWithoutVat ||
+      finalTripDetails?.tripBasePriceWithoutVat ||
+      0
+  );
 
   const numberOfStudents = formatNumbersUint(
-    finalTripDetails?.quantity || 0,
+    promoCodeData?.quantity || finalTripDetails?.quantity || 0,
     t("common.student"),
     t("common.students")
   );
 
-  const priceWithTax = formatCurrency(finalTripDetails?.basePriceTotalWithVat || 0);
+  const priceWithTax = formatCurrency(
+    promoCodeData?.basePriceTotalWithVat ||
+      finalTripDetails?.basePriceTotalWithVat ||
+      0
+  );
   const discountedPriceWithTax = formatCurrency(
-    finalTripDetails?.discountedTotalPriceWithVat || 0
+    promoCodeData?.discountedTotalPriceWithVat ||
+      finalTripDetails?.discountedTotalPriceWithVat ||
+      0
   );
 
   return (
@@ -52,16 +64,14 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
         </div>
 
         <div className="flex flex-col">
-          {finalTripDetails?.promoCode && (
+          {promoCodeData?.promoCode && (
             <del className="text-end text-[#EB0101] text-sm  font-medium font-ibm">
               {priceWithTax}
             </del>
           )}
 
           <h4 className="text-xl leading-5 transition-all duration-200 ease-in-out font-ibm">
-            {finalTripDetails?.promoCode
-              ? discountedPriceWithTax
-              : priceWithTax}
+            {promoCodeData?.promoCode ? discountedPriceWithTax : priceWithTax}
           </h4>
         </div>
       </div>

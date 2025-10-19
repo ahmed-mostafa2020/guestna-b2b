@@ -15,7 +15,6 @@ import {
   setTripName,
   setTripCustomization,
 } from "@store/checkout/checkoutSlice";
-import { setUser } from "@store/users/usersSlice";
 
 import { useEffect } from "react";
 

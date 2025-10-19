@@ -3,15 +3,19 @@
 import { useLocale, useTranslations } from "next-intl";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setPromoCodeData } from "@store/forms/promoCode/promoCodeSlice";
+import {
+  setPromoCodeData,
+  resetPromoCode,
+} from "@store/forms/promoCode/promoCodeSlice";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { useSnackbar } from "notistack";
 
 import { getHeaders } from "@utils/getHeaders";
 import getErrorMessage from "@utils/getErrorMessage";
-import { END_POINTS } from "@constants/APIs";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import getProxyUrl from "@utils/getProxyUrl";
 
 import axios from "axios";
 
@@ -20,8 +24,13 @@ import { CircularProgress } from "@mui/material";
 const PromoCodeForm = () => {
   const [promoValue, setPromoValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const timeoutRef = useRef(null);
 
-  const { tripId } = useSelector((state) => state.checkoutData);
+  const {
+    client,
+    quantity,
+    _id: tripId,
+  } = useSelector((state) => state.finalTripDetailsData.data);
 
   const locale = useLocale();
   const t = useTranslations();
@@ -42,10 +51,16 @@ const PromoCodeForm = () => {
 
     // Axios request configuration
     const config = {
-      method: "get",
+      method: "post",
       maxBodyLength: Infinity,
-      url: `${END_POINTS.MAIN}${END_POINTS.PROMO_CODE}/${promoValue}/${tripId}`,
+      url: getProxyUrl(`${B2B_END_POINTS.PROMO_CODE}`),
       headers,
+      data: {
+        promoCode: promoValue,
+        trip: tripId,
+        client,
+        quantity,
+      },
     };
 
     // Make the API request
@@ -62,6 +77,30 @@ const PromoCodeForm = () => {
           enqueueSnackbar(t("forms.promoCode.successMessage"), {
             variant: "success",
           });
+
+          // Clear any existing timeout
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+          }
+
+          // Set 30-minute timeout to clear promo code data
+          timeoutRef.current = setTimeout(() => {
+            console.log("30 minutes elapsed - Clearing promo code data");
+            dispatch(resetPromoCode());
+          }, 30 * 60 * 1000); // 30 minutes in milliseconds
+
+          // Check if trip is free after promo code applied
+          const isFreeTrip =
+            response.data?.trip?.discountedTotalPriceWithVat === 0 ||
+            response.data?.trip?.basePriceTotalWithVat === 0;
+
+          // Scroll to top smoothly if trip is free
+          if (isFreeTrip) {
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            });
+          }
         }
       })
       .catch((error) => {
@@ -79,6 +118,16 @@ const PromoCodeForm = () => {
         });
       });
   };
+
+  // Cleanup timeout on component unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div className="pt-4">
       <div className="flex flex-col gap-2">

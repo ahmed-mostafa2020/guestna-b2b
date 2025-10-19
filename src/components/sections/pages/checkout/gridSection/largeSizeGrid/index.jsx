@@ -6,15 +6,13 @@ import PaymentForm from "@components/forms/checkout/paymentForm";
 import FreeBookingButton from "@components/common/FreeBookingButton";
 
 const LargeSizeGrid = () => {
-  // Get trip data from Redux store with safe access
-  const finalTripData = useSelector((state) => state.finalTripDetailsData?.data);
-  
-  // Check if trip is free
-  const isFreeTrip = 
-    (finalTripData?.discountedTotalPriceWithVat === 0) || 
-    (finalTripData?.basePriceTotalWithVat === 0);
+  const promoCodeData = useSelector(
+    (state) => state.promoCode.promoCodeData.trip
+  );
 
-  // Show FreeBookingButton if trip is free, otherwise show PaymentForm
+  const isFreeTrip =
+    promoCodeData?.discountedTotalPriceWithVat === 0 ||
+    promoCodeData?.basePriceTotalWithVat === 0;
   if (isFreeTrip) {
     return <FreeBookingButton />;
   }

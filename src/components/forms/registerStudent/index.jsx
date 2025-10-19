@@ -67,8 +67,10 @@ const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
     return createRegisterChildSchema(t, childrenNumber, tripMainCategory);
   }, [childrenNumber, t, tripMainCategory]);
 
-  const { academicStages, nationalities } = useSelector(
-    (state) => state.tripDetailsData.data
+  const { nationalities } = useSelector((state) => state.tripDetailsData.data);
+
+  const academicStages = useSelector(
+    (state) => state.tripDetailsData.data?.trip?.academicStages
   );
 
   const educationSystem = useSelector(
@@ -425,7 +427,7 @@ const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
             try {
               const response = await axios.get(
                 getProxyUrl(
-                  `${B2B_END_POINTS.STUDENTS_GRADES}/${newStage}/${educationSystem}`
+                  `${B2B_END_POINTS.STUDENTS_GRADES}/${tripId}/${newStage}/${educationSystem}`
                 ),
                 { headers: headersGetMethod }
               );

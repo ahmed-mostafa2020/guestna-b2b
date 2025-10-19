@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { resetPromoCode } from "@store/forms/promoCode/promoCodeSlice";
 
 import {
   CircularProgress,
@@ -27,6 +28,7 @@ const FreeBookingButton = () => {
   const locale = useLocale();
   const t = useTranslations();
   const router = useRouter();
+  const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -69,6 +71,9 @@ const FreeBookingButton = () => {
 
       if (response.data) {
         setBookingStatus("success");
+        
+        // Clear promo code data after successful booking
+        dispatch(resetPromoCode());
         
         // Show success snackbar
         enqueueSnackbar(

@@ -26,7 +26,7 @@ export const B2B_END_POINTS = {
   FREE_BOOKING: "bookings/free/initiation",
   CHECK_BOOKING: "bookings/checkBooking",
 
-  PROMO_CODE: "promoCodeDiscounts/validCode",
+  PROMO_CODE: "organizationTrips/promocode/booking/info",
   CHECKOUT: "finalTripBookingDetails",
   CONFIRM_STC_PAYMENT: "confirmSTCPayment",
   APPLE_BOOKING: {
