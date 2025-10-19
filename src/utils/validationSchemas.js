@@ -783,9 +783,17 @@ export const createAddEventSchema = (t) =>
 
     day: Yup.date()
       .required(t("forms.validation.require"))
-      .min(
-        new Date().toISOString().split("T")[0],
-        t("profile.calendar.modal.addEvent.validation.day.pastDate")
+      .test(
+        "not-past-date",
+        t("profile.calendar.modal.addEvent.validation.day.pastDate"),
+        function (value) {
+          if (!value) return true;
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const selectedDate = new Date(value);
+          selectedDate.setHours(0, 0, 0, 0);
+          return selectedDate >= today;
+        }
       ),
 
     time: Yup.string()

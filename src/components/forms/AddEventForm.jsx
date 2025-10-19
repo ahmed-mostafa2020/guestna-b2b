@@ -2,6 +2,7 @@
 
 import { useTranslations, useLocale } from "next-intl";
 import { Formik, Form } from "formik";
+import { useEffect } from "react";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
@@ -130,6 +131,9 @@ const AddEventForm = ({
             validationSchema={createAddEventSchema(t)}
             onSubmit={handleSubmit}
             enableReinitialize={true}
+            validateOnMount={true}
+            validateOnChange={true}
+            validateOnBlur={true}
           >
             {({
               values,
@@ -138,11 +142,20 @@ const AddEventForm = ({
               handleChange,
               handleBlur,
               setFieldValue,
+              setFieldTouched,
               isSubmitting,
               status,
               isValid,
               dirty,
-            }) => (
+            }) => {
+              // Mark day field as touched to show validation errors immediately
+              useEffect(() => {
+                if (values.day && errors.day) {
+                  setFieldTouched('day', true, false);
+                }
+              }, [values.day, errors.day, setFieldTouched]);
+
+              return (
               <Form>
                 <ModalHeader
                   title={
@@ -335,7 +348,8 @@ const AddEventForm = ({
                   isForm={true}
                 />
               </Form>
-            )}
+              );
+            }}
           </Formik>
         </div>
       </div>
