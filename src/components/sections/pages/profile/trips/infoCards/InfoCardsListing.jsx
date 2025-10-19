@@ -49,8 +49,8 @@ const InfoCardsListing = ({ infoData }) => {
     infoData?.tripsCount,
   ]);
 
-  const renderedInfoCards = infoCardsListing.map((item, index) => (
-    <InfoCard key={index} item={item} />
+  const renderedInfoCards = infoCardsListing.map((item) => (
+    <InfoCard key={item.title} item={item} />
   ));
 
   return (

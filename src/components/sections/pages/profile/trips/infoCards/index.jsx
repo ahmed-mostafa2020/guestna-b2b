@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-const InfoCard = ({ key, item }) => {
+const InfoCard = ({ item }) => {
   return (
     <div className="transition-all duration-300 transform hover:-translate-y-1 flex gap-2 p-4 ease-in-out bg-white border rounded-xl border-border hover:shadow-card">
       {item.icon && item.icon}

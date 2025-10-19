@@ -36,6 +36,7 @@ const TripLastDetailsSection = ({ finalTripDetails }) => {
           {finalTripDetails?.thumbnail?.web && (
             <ImageWithPlaceholder
               src={finalTripDetails.thumbnail.web}
+              alt={finalTripDetails.name || "Trip thumbnail"}
               width={140}
               height={137}
               className="w-[140px] h-[137px] rounded-xl object-cover"
