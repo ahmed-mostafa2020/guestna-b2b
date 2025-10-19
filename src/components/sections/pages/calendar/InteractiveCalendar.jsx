@@ -126,9 +126,9 @@ const InteractiveCalendar = ({
                   : isPastDate
                   ? "text-gray-400 bg-gray-50 cursor-not-allowed opacity-50"
                   : isSameDay(day, selectedDate)
-                  ? "bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl shadow-lg transform scale-105 cursor-pointer"
+                  ? "bg-black  text-white rounded-xl shadow-lg transform scale-105 cursor-pointer"
                   : isToday(day)
-                  ? "bg-green-100 text-green-800 rounded-xl border-2 border-green-200 cursor-pointer hover:bg-green-200"
+                  ? "bg-mainColor/80 text-white rounded-xl border-2 border-mainColor/80 cursor-pointer hover:bg-mainColor hover:border-mainColor"
                   : "hover:bg-gray-100 hover:shadow-md rounded-xl cursor-pointer"
               }`}
               onClick={() => !isDisabled && day && setSelectedDateSafe(day)}
