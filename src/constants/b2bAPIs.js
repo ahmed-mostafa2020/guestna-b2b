@@ -58,6 +58,8 @@ export const B2B_END_POINTS = {
 
     INFO: "profile/users/management/info",
 
+    BOOKINGS: "profile/organizationTrips/home/all",
+
     ALL_TRIPS: {
       ACTIVITIES: "profile/organizationTrips/activity/all",
       PACKAGES: "profile/organizationTrips/package/all",
@@ -108,7 +110,7 @@ export const B2B_END_POINTS = {
     CREATE_TRIP_LINK: "profile/organizationTrips/poster",
     UPDATE_TRIP_STATUS: "profile/organizationTrips/generate/url",
 
-    BOOKINGS: "profile/bookings/all",
+    // BOOKINGS: "profile/bookings/all",
 
     // check this end point
     // INVOICES: "profile/organizationTrips/invoices/all",

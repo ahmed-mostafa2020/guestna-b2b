@@ -80,7 +80,7 @@ const Profile = () => {
           enablePagination
         ) => (
           <MyBookingsTrips
-            tableTitle={t("profile.aside.bookings")}
+            tableTitle={t("profile.tables.bookings.title")}
             data={data}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}

@@ -24,8 +24,8 @@ import TextInputGroup from "../../TextInputGroup";
 import SelectionGroup from "../../SelectionGroup";
 import PaymentMethod from "./PaymentMethod";
 import OtpCounter from "./OtpCounter";
-// import PromoCodeForm from "../promoCodeForm";
-import TamaraWidget from "./TamaraWidget"; //tamara payment
+import PromoCodeForm from "../promoCodeForm";
+import TamaraWidget from "./TamaraWidget";
 import AppleWidget from "./AppleWidget";
 
 import axios from "axios";
@@ -63,10 +63,10 @@ const PaymentForm = () => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
   // For STC
-  const [showStcOtp, setShowStcOtp] = useState(false);
-  const [stcBookingId, setStcBookingId] = useState();
-  const [stcOtpTransactionUrl, setStcOtpTransactionUrl] = useState();
-  const [showCounter, setShowCounter] = useState(true);
+  // const [showStcOtp, setShowStcOtp] = useState(false);
+  // const [stcBookingId, setStcBookingId] = useState();
+  // const [stcOtpTransactionUrl, setStcOtpTransactionUrl] = useState();
+  // const [showCounter, setShowCounter] = useState(true);
 
   //  For Apple pay
   const [canMakePayments, setCanMakePayments] = useState(true);
@@ -108,7 +108,7 @@ const PaymentForm = () => {
 
   const tripId = useSelector((state) => state.checkoutData.tripId);
 
-  // const promoCodeData = useSelector((state) => state.promoCode.promoCodeData);
+  const promoCodeData = useSelector((state) => state.promoCode.promoCodeData);
 
   // const isCustomizable = useSelector(
   //   (state) => state.checkoutData.isCustomizable
@@ -469,7 +469,6 @@ const PaymentForm = () => {
                 )}
               </div> */}
 
-              {/* tamara payment */}
               <div className="flex flex-col transition-all duration-200 ease-in-out">
                 <PaymentMethod
                   value={CONSTANT_VALUES.PAYMENT_METHODS.TAMARA}
@@ -553,7 +552,10 @@ const PaymentForm = () => {
                       <div className="lg:w-[510px]">
                         {tripId !== "68c173a23e41d7d2a0845c78" ? (
                           <div className="flex lg:w-[510px]">
-                            <AppleWidget key="apple-widget-main" baseData={baseData} />
+                            <AppleWidget
+                              key="apple-widget-main"
+                              baseData={baseData}
+                            />
                           </div>
                         ) : (
                           <>
@@ -561,7 +563,10 @@ const PaymentForm = () => {
                             <div className="flex flex-col gap-4 px-4 py-8 bg-[#FAF9F9] transition-all duration-200 ease-in-out">
                               <div className="lg:w-[510px]">
                                 <div className="flex lg:w-[510px]">
-                                  <AppleWidgetTest key="apple-widget-test" baseData={baseData} />
+                                  <AppleWidgetTest
+                                    key="apple-widget-test"
+                                    baseData={baseData}
+                                  />
                                 </div>
                               </div>
                             </div>
@@ -574,7 +579,7 @@ const PaymentForm = () => {
               )}
             </RadioGroup>
 
-            {/* <PromoCodeForm /> */}
+            <PromoCodeForm />
 
             <div className="flex-col w-full gap-2 centered">
               <button

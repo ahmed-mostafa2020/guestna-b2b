@@ -203,7 +203,7 @@ const ParentFormFields = ({
         nationalIdImageError={nationalIdImageError}
       /> */}
 
-      <TextInputGroup
+      {/* <TextInputGroup
         label={t("forms.promoCode.label")}
         type="text"
         name="promoCode"
@@ -214,7 +214,7 @@ const ParentFormFields = ({
         onChange={handleChange}
         onBlur={handleBlur}
         minLength="4"
-      />
+      /> */}
     </div>
   );
 };
