@@ -63,7 +63,7 @@ const EventsList = ({
     <div className="bg-white rounded-xl p-8 shadow-lg border-0">
       <h2 className="text-xl font-medium text-titleColor mb-4">{title}</h2>
       <p className="text-gray-600 pb-4">{subtitle}</p>
-      <div className="space-y-4">
+      <div className="space-y-4 border-2 border-border p-4 rounded-xl">
         {(showPagination ? paginatedEvents : events).map((event) => (
           <EventCard
             key={event._id || event.id}
@@ -76,7 +76,7 @@ const EventsList = ({
 
       {/* Pagination Controls */}
       {showPagination && totalPages > 1 && (
-        <div className="mt-6 border-t border-gray-200 pt-4">
+        <div className="mt-6 border-t border-gray-200 pt-4 rounded-xl">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             {/* Pagination Info */}
             <div className="text-sm text-gray-700">

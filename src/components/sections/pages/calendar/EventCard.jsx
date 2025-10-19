@@ -9,31 +9,42 @@ const EventCard = ({ event, onView, onEdit }) => {
   const t = useTranslations();
 
   return (
-    <div className="border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-all duration-200 hover:border-mainColor bg-gradient-to-r from-gray-50 to-white">
-      <div className="flex items-center justify-between gap-0.5 mb-2">
-        <h3 className="font-medium text-gray-900">{event.name}</h3>
-        <span className="text-sm text-nowrap text-gray-500">
+    <div className="border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-all duration-200 hover:border-mainColor flex items-center justify-between gap-2">
+      <div className="flex gap-2 items-center flex-1 min-w-0">
+        <span className="text-nowrap flex-shrink-0">
           {formatDate(event.day, locale, {
             day: "2-digit",
             month: "short",
           })}
         </span>
-      </div>
-      <p className="text-gray-600 text-sm">
-        {t("profile.calendar.events.card.location")}: {event.place} |{" "}
-        {t("profile.calendar.events.card.participants")}:{" "}
-        {event.participantsCount} | {t("profile.calendar.events.card.time")}:{" "}
-        {event.time}
-      </p>
-      <div className="flex items-center justify-between mt-3">
-        <div
-          className={`px-3 py-1 rounded-full text-xs font-medium ${getEventTypeColor(
-            event.happeningType,
-            "solid"
-          )}`}
-        >
-          {getEventTypeLabel(event.happeningType, t)}
+
+        <div className="flex flex-col gap-2 min-w-0 flex-1">
+          <h3
+            className="font-medium text-gray-900 truncate"
+            title={event.name}
+          >
+            {event.name}
+          </h3>
+
+          <p
+            className="text-gray-600 text-sm truncate"
+            title={event.about}
+          >
+            {event.about}
+          </p>
+
+          <div
+            className={`px-3 py-1 rounded-full w-fit text-xs font-medium ${getEventTypeColor(
+              event.happeningType,
+              "solid"
+            )}`}
+          >
+            {getEventTypeLabel(event.happeningType, t)}
+          </div>
         </div>
+      </div>
+
+      <div className="flex items-center justify-between">
         <div className="flex gap-x-2">
           <button
             onClick={() => onView(event)}
