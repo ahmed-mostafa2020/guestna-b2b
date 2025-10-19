@@ -92,7 +92,7 @@ const TripInformation = ({ tripData }) => {
           </div>
 
           {/* Price Box */}
-          {tripData.basePrice && (
+          {tripData.price && (
             <div className="flex items-center gap-1 rounded-lg py-2 px-4 border border-border shadow-card w-fit">
               <svg
                 className="w-5 h-5 text-secColor"
@@ -108,9 +108,7 @@ const TripInformation = ({ tripData }) => {
                 />
               </svg>
               <p>{t("common.startsWith")}:</p>
-              <p className="font-medium">
-                {formatCurrency(tripData.basePrice)}
-              </p>
+              <p className="font-medium">{formatCurrency(tripData.price)}</p>
             </div>
           )}
         </div>

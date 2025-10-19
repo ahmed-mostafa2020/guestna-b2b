@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import { memo, useState } from "react";
+import { memo, useState, useEffect } from "react";
 
 import { getHeaders } from "@utils/getHeaders";
 import getErrorMessage from "@utils/getErrorMessage";
@@ -26,10 +26,13 @@ const AuthenticatedRequestQuote = ({
   tripId,
   tripData,
   formSelectionData,
+  gradesData = [],
+  onFetchGrades,
   onClose,
 }) => {
   const [formErrors, setFormErrors] = useState([]);
   const [showThanksMessage, setShowThanksMessage] = useState(false);
+  const [availableGrades, setAvailableGrades] = useState(gradesData || []);
 
   const locale = useLocale();
   const t = useTranslations();
@@ -60,9 +63,15 @@ const AuthenticatedRequestQuote = ({
   const academicStageData = formSelectionData?.academicStages || [];
   const servicesData = formSelectionData?.services || [];
 
+  // Update available grades when gradesData prop changes
+  useEffect(() => {
+    setAvailableGrades(gradesData || []);
+  }, [gradesData]);
+
   // Extract names for dropdown display
   const academicStageOptions = academicStageData.map((item) => item.name);
   const servicesOptions = servicesData.map((item) => item.name);
+  const gradeOptions = availableGrades.map((item) => item.name);
 
   // Helper function to find name by _id
   const findNameById = (options, id) => {
@@ -78,6 +87,7 @@ const AuthenticatedRequestQuote = ({
         city: tripData.city?.name || "",
         academicStages:
           tripData.academicStages?.map((stage) => stage.name) || [],
+        grades: tripData.grades?.map((grade) => grade.name) || [],
         availableSeats: `${tripData.availableSeats?.min}` || "",
         basePrice: `${tripData.price}` || "",
         day: tripData.fromDay ? tripData.fromDay.split("T")[0] : "",
@@ -96,6 +106,7 @@ const AuthenticatedRequestQuote = ({
         tripType: "",
         city: "",
         academicStages: [],
+        grades: [],
         availableSeats: "",
         basePrice: "",
         day: "",
@@ -112,6 +123,7 @@ const AuthenticatedRequestQuote = ({
       tripType: findNameById(tripTypeData, tripData.tripsType) || "",
       city: tripData.city?.name || "",
       academicStages: tripData.academicStages?.map((stage) => stage.name) || [],
+      grades: tripData.grades?.map((grade) => grade.name) || [],
       availableSeats: `${tripData.availableSeats?.min}` || "",
       basePrice: `${tripData.price}` || "",
       day: tripData.fromDay ? tripData.fromDay.split("T")[0] : "",
@@ -202,6 +214,15 @@ const AuthenticatedRequestQuote = ({
                 valueToSend = findIdByName(academicStageData, values[key]);
               }
               break;
+            case "grades":
+              if (Array.isArray(values[key])) {
+                valueToSend = values[key].map((name) =>
+                  findIdByName(availableGrades, name)
+                );
+              } else {
+                valueToSend = findIdByName(availableGrades, values[key]);
+              }
+              break;
             case "services":
               if (Array.isArray(values[key])) {
                 valueToSend = values[key].map((name) =>
@@ -276,6 +297,15 @@ const AuthenticatedRequestQuote = ({
                 );
               } else {
                 valueToSend = findIdByName(academicStageData, values[key]);
+              }
+              break;
+            case "grades":
+              if (Array.isArray(values[key])) {
+                valueToSend = values[key].map((name) =>
+                  findIdByName(availableGrades, name)
+                );
+              } else {
+                valueToSend = findIdByName(availableGrades, values[key]);
               }
               break;
             case "services":
@@ -400,7 +430,35 @@ const AuthenticatedRequestQuote = ({
                       <SelectionGroup
                         name="academicStages"
                         value={values.academicStages}
-                        onChange={handleChange}
+                        onChange={async (e) => {
+                          handleChange(e);
+                          // Fetch grades when academic stages change
+                          const selectedStages = e.target.value;
+                          if (
+                            selectedStages &&
+                            selectedStages.length > 0 &&
+                            onFetchGrades
+                          ) {
+                            const stageIds = selectedStages
+                              .map((stageName) => {
+                                const stage = academicStageData.find(
+                                  (s) => s.name === stageName
+                                );
+                                return stage?._id;
+                              })
+                              .filter(Boolean);
+
+                            if (stageIds.length > 0) {
+                              const grades = await onFetchGrades(stageIds);
+                              setAvailableGrades(grades || []);
+                              // Clear grades selection when stages change
+                              setFieldValue("grades", []);
+                            }
+                          } else {
+                            setAvailableGrades([]);
+                            setFieldValue("grades", []);
+                          }
+                        }}
                         onBlur={handleBlur}
                         touched={touched.academicStages}
                         errors={errors.academicStages}
@@ -412,6 +470,33 @@ const AuthenticatedRequestQuote = ({
                       />
                     </div>
 
+                    {/* Grades - Show only when academic stages are selected */}
+                    {values.academicStages &&
+                      values.academicStages.length > 0 && (
+                        <div className="somar-placeholder">
+                          <h4 className="font-medium pb-2">
+                            {t("forms.registerForm.grade.label")}
+                          </h4>
+
+                          <SelectionGroup
+                            name="grades"
+                            value={values.grades}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            touched={touched.grades}
+                            errors={errors.grades}
+                            placeholder={t(
+                              "forms.registerForm.grade.placeholder"
+                            )}
+                            list={gradeOptions}
+                            multiple={true}
+                          />
+                        </div>
+                      )}
+                  </div>
+
+                  {/* Row 2: Expected Participants and Services */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                     {/* Expected Participants */}
                     <div className="somar-placeholder">
                       <TextInputGroup
@@ -433,6 +518,27 @@ const AuthenticatedRequestQuote = ({
                       />
                     </div>
 
+                    {/* Services */}
+                    <div className="somar-placeholder">
+                      <label className="block pb-2 font-medium">
+                        {t("forms.customTrip.services.placeholder")}
+                      </label>
+                      <SelectionGroup
+                        name="services"
+                        value={values.services}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        touched={touched.services}
+                        errors={errors.services}
+                        placeholder={t("forms.customTrip.services.placeholder")}
+                        list={servicesOptions}
+                        multiple={true}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 3: Start Date and End Date */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                     {/* Proposed Trip Date */}
                     <div className="somar-placeholder">
                       <TextInputGroup
@@ -486,24 +592,6 @@ const AuthenticatedRequestQuote = ({
                         />
                       </div>
                     )}
-                  </div>
-
-                  {/* Services */}
-                  <div className="somar-placeholder mt-4">
-                    <label className="block pb-2 font-medium">
-                      {t("forms.customTrip.services.placeholder")}
-                    </label>
-                    <SelectionGroup
-                      name="services"
-                      value={values.services}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      touched={touched.services}
-                      errors={errors.services}
-                      placeholder={t("forms.customTrip.services.placeholder")}
-                      list={servicesOptions}
-                      multiple={true}
-                    />
                   </div>
 
                   {/* Special Requirements */}

@@ -1367,6 +1367,11 @@
       "title": "Enter student information",
       "numberOfChildren": "Number of students",
 
+      "grade": {
+        "label": "Grade",
+        "placeholder": "Select Grade"
+      },
+
       "childrenNumber": {
         "0": "The student",
         "1": "The first student",

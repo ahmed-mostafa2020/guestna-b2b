@@ -28,6 +28,7 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
   const [tripDetails, setTripDetails] = useState(null);
   const [lastFetchedTripId, setLastFetchedTripId] = useState(null);
   const [formSelectionData, setFormSelectionData] = useState(null);
+  const [gradesData, setGradesData] = useState([]);
 
   const fetchTripDetails = async () => {
     if (!tripId) return null;
@@ -73,6 +74,29 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
     }
   };
 
+  const fetchGradesByStages = async (stageIds) => {
+    if (!stageIds || stageIds.length === 0) {
+      setGradesData([]);
+      return [];
+    }
+
+    try {
+      const response = await axios.post(
+        getProxyUrl(
+          B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.GRADES_BY_STAGES
+        ),
+        { stages: stageIds },
+        { headers }
+      );
+      setGradesData(response.data || []);
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching grades:", error);
+      setGradesData([]);
+      return [];
+    }
+  };
+
   const showUpdateTripForm = async () => {
     try {
       setLoading(true);
@@ -87,6 +111,12 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
       let selectionData = formSelectionData;
       if (!selectionData) {
         selectionData = await fetchFormSelectionData();
+      }
+
+      // Fetch grades for the trip's academic stages
+      if (details?.academicStages && details.academicStages.length > 0) {
+        const stageIds = details.academicStages.map(stage => stage._id);
+        await fetchGradesByStages(stageIds);
       }
 
       if (details && selectionData) {
@@ -138,6 +168,8 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
             tripId={tripId}
             tripData={tripDetails}
             formSelectionData={formSelectionData}
+            gradesData={gradesData}
+            onFetchGrades={fetchGradesByStages}
             onClose={handleCloseEditModal}
           />
         </CustomizedModal>

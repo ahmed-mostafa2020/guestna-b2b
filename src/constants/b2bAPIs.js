@@ -94,7 +94,8 @@ export const B2B_END_POINTS = {
           INFO: "profile/askTrips/info",
           SUBMIT: "profile/askTrips/edit",
           CUSTOM_TRIP: "profile/trips/info", // discover details info
-          CUSTOM_TRIP_SUBMIT: "profile/askTrips/custom/edit", // discover details edit
+          CUSTOM_TRIP_SUBMIT: "profile/askTrips/custom/edit", // AuthenticatedRequestQuote
+          GRADES_BY_STAGES: "grades/stages/askTrip", // Get grades for selected academic stages
         },
         REMIND: "profile/askTrips/reminder/admin",
       },

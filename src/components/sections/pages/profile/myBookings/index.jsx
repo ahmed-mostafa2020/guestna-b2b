@@ -96,7 +96,7 @@ const BookingsTable = ({
               <tbody>
                 {data?.nodes?.map((booking, index) => (
                   <tr
-                    key={booking._id}
+                    key={`${booking._id}-${index}`}
                     className={`${
                       index != data?.nodes?.length - 1 &&
                       "border-b border-table-border"
@@ -164,9 +164,9 @@ const BookingsTable = ({
           </h2>
         )}
 
-        {data?.nodes?.map((booking) => (
+        {data?.nodes?.map((booking, index) => (
           <Card
-            key={booking._id}
+            key={`${booking._id}-${index}`}
             className="transition-shadow shadow-md hover:shadow-lg"
             sx={{
               borderRadius: "12px",
