@@ -15,7 +15,6 @@ import {
   ListItem,
   ListItemButton,
   Box,
-  Typography,
 } from "@mui/material";
 import {
   Home as HomeIcon,
@@ -177,7 +176,9 @@ const NavigationDropdown = () => {
                     display: { xs: "none", md: "none", lg: "block" },
                   },
                 })}
-                <span className="truncate">{item.title}</span>
+                <span className="truncate" title={item.title}>
+                  {item.title}
+                </span>
               </Link>
             ) : (
               <Accordion
@@ -208,6 +209,7 @@ const NavigationDropdown = () => {
                       sx={{
                         color: isAccordionExpanded(item) ? "white" : "#007473",
                         fontSize: { xs: "18px", sm: "20px", lg: "24px" },
+                        flexShrink: 0,
                       }}
                     />
                   }
@@ -224,27 +226,33 @@ const NavigationDropdown = () => {
                     },
                     "& .MuiAccordionSummary-content": {
                       margin: { xs: "8px 0", sm: "12px 0" },
+                      minWidth: 0,
+                      overflow: "hidden",
                       "&.Mui-expanded": {
                         margin: { xs: "8px 0", sm: "12px 0" },
                       },
                     },
+                    "& .MuiAccordionSummary-expandIconWrapper": {
+                      flexShrink: 0,
+                    },
                   }}
                 >
-                  <Box className="flex items-center w-full gap-2 sm:gap-3">
+                  <Box className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                     {React.cloneElement(item.icon, {
                       sx: {
                         color: isAccordionExpanded(item) ? "white" : "#008F8F",
                         transition: "color 0.2s",
                         fontSize: { xs: "18px", sm: "20px", lg: "24px" },
                         display: { xs: "none", md: "none", lg: "block" },
+                        flexShrink: 0,
                       },
                     })}
-                    <Typography
-                      className="font-medium text-xs sm:text-sm lg:text-base truncate"
-                      sx={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
+                    <span
+                      className="font-medium text-xs sm:text-sm lg:text-base truncate min-w-0"
+                      title={item.title}
                     >
                       {item.title}
-                    </Typography>
+                    </span>
                   </Box>
                 </AccordionSummary>
 
@@ -266,6 +274,7 @@ const NavigationDropdown = () => {
                         >
                           <Link
                             href={subItem.path}
+                            title={subItem.title}
                             className={`w-full text-start hover:text-mainColor text-xs sm:text-sm lg:text-base truncate ${
                               pathname === subItem.path
                                 ? "text-mainColor"
