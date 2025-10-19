@@ -63,10 +63,10 @@ const PaymentForm = () => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
   // For STC
-  // const [showStcOtp, setShowStcOtp] = useState(false);
-  // const [stcBookingId, setStcBookingId] = useState();
-  // const [stcOtpTransactionUrl, setStcOtpTransactionUrl] = useState();
-  // const [showCounter, setShowCounter] = useState(true);
+  const [showStcOtp, setShowStcOtp] = useState(false);
+  const [stcBookingId, setStcBookingId] = useState();
+  const [stcOtpTransactionUrl, setStcOtpTransactionUrl] = useState();
+  const [showCounter, setShowCounter] = useState(true);
 
   //  For Apple pay
   const [canMakePayments, setCanMakePayments] = useState(true);
