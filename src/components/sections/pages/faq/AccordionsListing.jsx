@@ -33,7 +33,7 @@ const AccordionsListing = () => {
             index={index}
             subAccordion={true}
             title={subAccordion.question}
-            summaryColor="#1F2626"
+            summaryColor="var(--color-text-dark)"
             summaryFontSize="20"
           >
             {subAccordion.answer}

@@ -33,7 +33,7 @@ const TransferMethodSelector = ({ transferMethod, setTransferMethod }) => {
                 textTransform: "capitalize",
                 margin: "0",
                 "& .MuiFormControlLabel-label": {
-                  color: "#1F2626",
+                  color: "var(--color-text-dark)",
                   fontWeight: "medium",
                   fontSize: "15px",
                   fontFamily: "var(--font-somar-sans), sans-serif",
@@ -43,9 +43,9 @@ const TransferMethodSelector = ({ transferMethod, setTransferMethod }) => {
               control={
                 <Radio
                   sx={{
-                    color: "#1F2626",
+                    color: "var(--color-text-dark)",
                     "&.Mui-checked": {
-                      color: "#008F8F",
+                      color: "var(--color-title)",
                     },
                   }}
                 />

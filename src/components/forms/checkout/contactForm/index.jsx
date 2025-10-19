@@ -174,10 +174,10 @@ const ContactForm = () => {
                     dispatch(toggleCheckbox());
                   }}
                   sx={{
-                    color: "#1F2626",
+                    color: "var(--color-text-dark)",
                     "& .MuiSvgIcon-root": { fontSize: 28 },
                     "&.Mui-checked": {
-                      color: "#008F8F",
+                      color: "var(--color-title)",
                     },
                   }}
                 />

@@ -14,7 +14,7 @@ const ServiceCategory = ({
   if (!list) return null;
 
   return (
-    <FilterAccordion title={title} summaryColor="#1F2626" summaryFontSize={22}>
+    <FilterAccordion title={title} summaryColor="var(--color-text-dark)" summaryFontSize={22}>
       {accommodation ? (
         <AccommodationListing list={list} action={action} state={state} />
       ) : Array.isArray(list) && list[0]?.list ? (

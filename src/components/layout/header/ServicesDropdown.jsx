@@ -74,7 +74,7 @@ const ServicesDropdown = () => {
         >
           <path
             d="M6 9l6 6 6-6"
-            stroke="#1F2626"
+            stroke="var(--color-text-dark)"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"

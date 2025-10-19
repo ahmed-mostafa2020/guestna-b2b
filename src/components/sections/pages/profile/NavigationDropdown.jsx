@@ -166,7 +166,7 @@ const NavigationDropdown = () => {
               >
                 {React.cloneElement(item.icon, {
                   sx: {
-                    color: pathname === item.path ? "white" : "#008F8F",
+                    color: pathname === item.path ? "white" : "var(--color-title)",
                     transition: "color 0.2s",
                     fontSize: {
                       xs: "18px",
@@ -240,7 +240,7 @@ const NavigationDropdown = () => {
                   <Box className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                     {React.cloneElement(item.icon, {
                       sx: {
-                        color: isAccordionExpanded(item) ? "white" : "#008F8F",
+                        color: isAccordionExpanded(item) ? "white" : "var(--color-title)",
                         transition: "color 0.2s",
                         fontSize: { xs: "18px", sm: "20px", lg: "24px" },
                         display: { xs: "none", md: "none", lg: "block" },

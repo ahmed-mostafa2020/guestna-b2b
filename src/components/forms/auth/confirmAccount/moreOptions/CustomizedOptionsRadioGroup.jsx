@@ -17,7 +17,7 @@ const CustomizedOptionsRadioGroup = ({ option }) => {
     <FormControlLabel
       sx={{
         textTransform: "capitalize",
-        color: "#1F2626",
+        color: "var(--color-text-dark)",
         fontWeight: "medium",
         fontSize: "15px",
         fontFamily: "var(--font-somar-sans), sans-serif",
@@ -32,9 +32,9 @@ const CustomizedOptionsRadioGroup = ({ option }) => {
       control={
         <Radio
           sx={{
-            color: "#008F8F",
+            color: "var(--color-title)",
             "&.Mui-checked": {
-              color: "#008F8F",
+              color: "var(--color-title)",
             },
           }}
         />

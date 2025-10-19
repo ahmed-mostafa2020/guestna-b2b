@@ -36,7 +36,7 @@ const SettingsButton = () => {
         className="text-black transition-all duration-200 ease-in-out rounded-lg centered hover:bg-buttonsHover"
         sx={{
           padding: "9px 4px",
-          backgroundColor: open ? "#008F8F" : "transparent",
+          backgroundColor: open ? "var(--color-title)" : "transparent",
           borderRadius: "8px",
         }}
       >

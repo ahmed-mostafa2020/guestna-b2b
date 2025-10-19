@@ -22,9 +22,9 @@ const CustomizedServiceRadioGroup = ({ option, state }) => {
       control={
         <Radio
           sx={{
-            color: "#008F8F",
+            color: "var(--color-title)",
             "&.Mui-checked": {
-              color: "#008F8F",
+              color: "var(--color-title)",
             },
           }}
         />

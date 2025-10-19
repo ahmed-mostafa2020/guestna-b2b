@@ -65,7 +65,7 @@ const LoginForm = ({ redirect = true }) => {
                       backgroundColor: "white",
                     },
                     "&.MuiButtonBase-root ,&.Mui-selected": {
-                      color: "#1F2626",
+                      color: "var(--color-text-dark)",
                       fontSize: { xs: "14px", sm: "16px" },
                       padding: "16px 24px",
                       fontWeight: 500,
@@ -87,7 +87,7 @@ const LoginForm = ({ redirect = true }) => {
                       backgroundColor: "white",
                     },
                     "&.MuiButtonBase-root ,&.Mui-selected": {
-                      color: "#1F2626",
+                      color: "var(--color-text-dark)",
                       fontSize: { xs: "14px", sm: "16px" },
                       padding: "16px 24px",
                       fontWeight: 500,

@@ -113,7 +113,7 @@ const Services = ({ handleClose, activityNumber }) => {
       <FrameWithImagedHeader>
         <FilterAccordion
           title={t("customization.services.meals")}
-          summaryColor="#1F2626"
+          summaryColor="var(--color-text-dark)"
           summaryFontSize={22}
         >
           <MealsListing list={allServices.MEALS} />

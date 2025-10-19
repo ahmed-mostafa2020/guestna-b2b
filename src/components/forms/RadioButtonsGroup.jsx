@@ -36,9 +36,9 @@ const RadioButtonsGroup = ({ list, onChange, genderState }) => {
         control={
           <Radio
             sx={{
-              color: "#1F2626",
+              color: "var(--color-text-dark)",
               "&.Mui-checked": {
-                color: "#008F8F",
+                color: "var(--color-title)",
               },
             }}
           />

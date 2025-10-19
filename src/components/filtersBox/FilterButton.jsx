@@ -77,7 +77,7 @@ const FilterButton = ({ gif, title, subTitle, index, children }) => {
                   }}
                   className="w-6 h-6 bg-white rounded-full cursor-pointer hover:bg-gray-100 centered"
                 >
-                  <CloseIcon fontSize="13" sx={{ color: "#1F2626" }} />
+                  <CloseIcon fontSize="13" sx={{ color: "var(--color-text-dark)" }} />
                 </span>
               )}
             </div>
