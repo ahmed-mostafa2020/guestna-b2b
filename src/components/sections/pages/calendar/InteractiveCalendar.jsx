@@ -51,18 +51,18 @@ const InteractiveCalendar = ({
   };
 
   return (
-    <div className="bg-white rounded-xl p-8 shadow-lg border-0">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-medium text-titleColor">
+    <div className="bg-white rounded-xl p-4 md:p-6 lg:p-8 shadow-lg border-0">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 md:mb-6">
+        <h3 className="text-base md:text-lg font-medium text-titleColor">
           {t("profile.calendar.calendar.interactiveCalendar")}
         </h3>
-        <div className="flex gap-2">
-          <button className="border-2 border-secColor text-mainColor px-8 py-2 rounded-lg hover:bg-secColor hover:border-secColor hover:text-white transition-all duration-200 font-medium">
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <button className="border-2 border-secColor text-mainColor px-4 md:px-6 lg:px-8 py-2 rounded-lg hover:bg-secColor hover:border-secColor hover:text-white transition-all duration-200 font-medium text-sm md:text-base w-full sm:w-auto">
             {t("profile.calendar.calendar.uploadCalendar")}
           </button>
           <button
             onClick={onAddEvent}
-            className="border-2 border-mainColor bg-mainColor text-white px-8 py-2 rounded-lg hover:bg-mainColor/80 hover:border-mainColor/80 hover:text-white transition-all duration-200 font-medium"
+            className="border-2 border-mainColor bg-mainColor text-white px-4 md:px-6 lg:px-8 py-2 rounded-lg hover:bg-mainColor/80 hover:border-mainColor/80 hover:text-white transition-all duration-200 font-medium text-sm md:text-base w-full sm:w-auto"
           >
             {t("profile.calendar.calendar.addEvent")}
           </button>
@@ -70,14 +70,15 @@ const InteractiveCalendar = ({
       </div>
 
       {/* Calendar Navigation */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4 md:mb-6 gap-2">
         <button
           onClick={() => onMonthChange("prev")}
-          className="p-3 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:shadow-md text-gray-600 hover:text-gray-800 font-bold text-xl"
+          className="p-2 md:p-3 hover:bg-gray-100 rounded-lg md:rounded-xl transition-all duration-200 hover:shadow-md text-gray-600 hover:text-gray-800 font-bold text-lg md:text-xl flex-shrink-0"
+          aria-label="Previous month"
         >
           &lt;
         </button>
-        <h4 className="text-xl font-semibold text-gray-900">
+        <h4 className="text-base md:text-xl font-semibold text-gray-900 text-center flex-1 min-w-0 truncate px-2">
           {formatDate(currentMonth, locale, {
             year: "numeric",
             month: "long",
@@ -85,14 +86,15 @@ const InteractiveCalendar = ({
         </h4>
         <button
           onClick={() => onMonthChange("next")}
-          className="p-3 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:shadow-md text-gray-600 hover:text-gray-800 font-bold text-xl"
+          className="p-2 md:p-3 hover:bg-gray-100 rounded-lg md:rounded-xl transition-all duration-200 hover:shadow-md text-gray-600 hover:text-gray-800 font-bold text-lg md:text-xl flex-shrink-0"
+          aria-label="Next month"
         >
           &gt;
         </button>
       </div>
 
       {/* Calendar Grid */}
-      <div className="grid grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 gap-1 sm:gap-2">
         {/* Day Headers */}
         {[
           "الأحد",
@@ -105,9 +107,10 @@ const InteractiveCalendar = ({
         ].map((day) => (
           <div
             key={day}
-            className="p-3 text-center text-sm font-semibold text-gray-700 bg-gray-50 rounded-lg"
+            className="p-1.5 sm:p-2 md:p-3 text-center text-xs sm:text-sm font-semibold text-gray-700 bg-gray-50 rounded-md sm:rounded-lg"
           >
-            {day}
+            <span className="hidden sm:inline">{day}</span>
+            <span className="sm:hidden">{day.slice(0, 3)}</span>
           </div>
         ))}
 
@@ -120,16 +123,16 @@ const InteractiveCalendar = ({
           return (
             <div
               key={index}
-              className={`p-3 text-center transition-all duration-200 font-medium ${
+              className={`p-2 sm:p-2.5 md:p-3 text-center transition-all duration-200 font-medium text-xs sm:text-sm md:text-base aspect-square flex items-center justify-center ${
                 day === null
                   ? "text-gray-300"
                   : isPastDate
-                  ? "text-gray-400 bg-gray-50 cursor-not-allowed opacity-50"
+                  ? "text-gray-400 bg-gray-50 cursor-not-allowed opacity-50 rounded-md sm:rounded-lg"
                   : isSameDay(day, selectedDate)
-                  ? "bg-black  text-white rounded-xl shadow-lg transform scale-105 cursor-pointer"
+                  ? "bg-black text-white rounded-lg sm:rounded-xl shadow-lg transform scale-105 cursor-pointer"
                   : isToday(day)
-                  ? "bg-mainColor/80 text-white rounded-xl border-2 border-mainColor/80 cursor-pointer hover:bg-mainColor hover:border-mainColor"
-                  : "hover:bg-gray-100 hover:shadow-md rounded-xl cursor-pointer"
+                  ? "bg-mainColor/80 text-white rounded-lg sm:rounded-xl border-2 border-mainColor/80 cursor-pointer hover:bg-mainColor hover:border-mainColor"
+                  : "hover:bg-gray-100 hover:shadow-md rounded-lg sm:rounded-xl cursor-pointer"
               }`}
               onClick={() => !isDisabled && day && setSelectedDateSafe(day)}
             >
