@@ -207,7 +207,7 @@ const NavigationDropdown = () => {
                   expandIcon={
                     <ExpandMoreIcon
                       sx={{
-                        color: isAccordionExpanded(item) ? "white" : "#007473",
+                        color: isAccordionExpanded(item) ? "white" : "var(--color-main)",
                         fontSize: { xs: "18px", sm: "20px", lg: "24px" },
                         flexShrink: 0,
                       }}
@@ -220,7 +220,7 @@ const NavigationDropdown = () => {
                     borderRadius: "8px",
                     "&.Mui-expanded": {
                       minHeight: 48,
-                      background: "#007473",
+                      background: "var(--color-main)",
                       color: "white",
                       boxShadow: "none",
                     },

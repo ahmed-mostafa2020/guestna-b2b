@@ -60,11 +60,11 @@ const SelectionGroup = ({
             width: "100%",
 
             "&:hover": {
-              border: "2px solid #007473",
+              border: "2px solid var(--color-main)",
               // boxShadow: "0 0 0 1px #ED8A22",
             },
             "&:focus": {
-              border: "2px solid #007473",
+              border: "2px solid var(--color-main)",
               // boxShadow: "0 0 0 1px #ED8A22",
             },
           },
@@ -106,7 +106,7 @@ const SelectionGroup = ({
                   sx={{
                     color: "#d1d5db",
                     "&.Mui-checked": {
-                      color: "#007473",
+                      color: "var(--color-main)",
                     },
                   }}
                 />
@@ -117,7 +117,7 @@ const SelectionGroup = ({
                   sx={{
                     color: "#d1d5db",
                     "&.Mui-checked": {
-                      color: "#007473",
+                      color: "var(--color-main)",
                     },
                   }}
                 />

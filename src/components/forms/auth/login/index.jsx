@@ -51,7 +51,7 @@ const LoginForm = ({ redirect = true }) => {
                     justifyContent: "center",
                   },
                   "& .MuiTabs-indicator": {
-                    backgroundColor: "#007473",
+                    backgroundColor: "var(--color-main)",
                   },
                 }}
               >
@@ -73,7 +73,7 @@ const LoginForm = ({ redirect = true }) => {
                       transition: "all 0.2s ease-in-out",
                     },
                     "&.Mui-selected": {
-                      color: "#007473",
+                      color: "var(--color-main)",
                       fontWeight: 600,
                     },
                   }}
@@ -95,7 +95,7 @@ const LoginForm = ({ redirect = true }) => {
                       transition: "all 0.2s ease-in-out",
                     },
                     "&.Mui-selected": {
-                      color: "#007473",
+                      color: "var(--color-main)",
                       fontWeight: 600,
                     },
                   }}

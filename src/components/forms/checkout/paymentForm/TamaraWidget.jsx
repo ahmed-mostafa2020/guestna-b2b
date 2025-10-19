@@ -222,7 +222,7 @@ const TamaraWidget = ({
         className="tamara-loading centered"
         style={{ margin: "1rem 0", color: "#718096" }}
       >
-        <CircularProgress sx={{ color: "#007473" }} />
+        <CircularProgress sx={{ color: "var(--color-main)" }} />
       </div>
     );
   }

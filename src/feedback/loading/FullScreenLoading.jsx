@@ -7,7 +7,7 @@ const FullScreenLoading = ({ status }) => {
         sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
         open={status == "pending" && true}
       >
-        <CircularProgress sx={{ color: "#007473" }} />
+        <CircularProgress sx={{ color: "var(--color-main)" }} />
       </Backdrop>
     </div>
   );

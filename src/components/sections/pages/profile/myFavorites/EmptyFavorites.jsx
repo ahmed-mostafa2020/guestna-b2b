@@ -26,7 +26,7 @@ const EmptyFavorites = () => {
         hasLink={false}
       />
 
-      <div className="mx-auto p-3 w-[300px] h-[280px] lg:w-[400px] lg:h-[380px] relative bg-gradient-to-b from-[#007473] via-[rgba(0,157,155,0.16)] to-[rgba(0,218,216,0.01)]">
+      <div className="mx-auto p-3 w-[300px] h-[280px] lg:w-[400px] lg:h-[380px] relative bg-gradient-to-b from-[var(--color-main)] via-[rgba(0,157,155,0.16)] to-[rgba(0,218,216,0.01)]">
         <Image
           src={arrow}
           alt="arrow"

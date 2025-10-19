@@ -119,7 +119,7 @@ const BudgetButtonMenu = () => {
           valueLabelFormat={(value) => formatCurrency(value)}
           getAriaValueText={(value) => formatCurrency(value)}
           disableSwap
-          color="#007473"
+          color="var(--color-main)"
           min={CONSTANT_VALUES.MIN_BUDGET}
           max={CONSTANT_VALUES.MAX_BUDGET}
           sx={{
@@ -131,8 +131,8 @@ const BudgetButtonMenu = () => {
               filter: "drop-shadow(0px 4.909px 4.909px rgba(0, 0, 0, 0.25))",
             },
             "& .MuiSlider-track": {
-              border: "1px solid #007473",
-              backgroundColor: "#007473",
+              border: "1px solid var(--color-main)",
+              backgroundColor: "var(--color-main)",
             },
             "& .MuiSlider-valueLabel": {
               width: "60px",
