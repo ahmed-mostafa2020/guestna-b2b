@@ -5,6 +5,41 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  
+  /* Brand Colors */
+  --color-main: #007473;
+  --color-secondary: #F09814;
+  --color-title: #008F8F;
+  --color-links-hover: #009883;
+  --color-buttons-hover: #E1F5F5;
+  --color-badge: #1858A5;
+  
+  /* Text Colors */
+  --color-text-dark: #1F2626;
+  --color-text-light: #737373;
+  
+  /* Background Colors */
+  --color-bg-home: #eeeeee;
+  --color-bg-package-details: #F3F3F3;
+  --color-bg-activity-details: #F9FAFD;
+  --color-bg-side-page: #F0F4F7;
+  --color-bg-upper-bar: #112137;
+  --color-bg-header: #012F47;
+  --color-bg-figure: #f4f4f46e;
+  
+  /* Status Colors */
+  --color-error: #bf0000;
+  --color-success: #5cb85c;
+  --color-disabled: #D9D9D9;
+  
+  /* Border Colors */
+  --color-border: #ECECEC;
+  --color-border-table-row: #1c1c1c20;
+  --color-border-accordion: #C3C3C3;
+  --color-border-pagination: #BEBEBE;
+  
+  /* Footer */
+  --color-footer-link: #00000099;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,7 +60,7 @@ body {
   font-family: var(--font-somar-sans), sans-serif;
 }
 *::selection {
-  background-color: #e1f5f5;
+  background-color: var(--color-buttons-hover);
 }
 
 @layer utilities {
@@ -98,7 +133,7 @@ input[type="number"]::-webkit-outer-spin-button {
 /* ----------- Customized classes ----------- */
 
 #nprogress .bar {
-  background: #007473 !important;
+  background: var(--color-main) !important;
 }
 .card-shadow {
   box-shadow: 0px 4px 4px 0px #0000000f;
@@ -120,9 +155,9 @@ input[type="number"]::-webkit-outer-spin-button {
   border: 4px solid transparent;
   background: linear-gradient(
       179.61deg,
-      #007473 7.77%,
+      var(--color-main) 7.77%,
       #ed8a22 47.66%,
-      #1858a5 102.41%
+      var(--color-badge) 102.41%
     )
     border-box;
   -webkit-mask-composite: destination-out;
@@ -228,7 +263,7 @@ input[type="number"]::-webkit-outer-spin-button {
 /* Side filters accordion */
 .side-filters .MuiAccordionSummary-content {
   margin: 0 !important;
-  color: #1f2626 !important;
+  color: var(--color-text-dark) !important;
 }
 
 .side-filters .MuiAccordionDetails-root {
@@ -251,7 +286,7 @@ input[type="number"]::-webkit-outer-spin-button {
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin; /* "auto" or "thin" */
-  scrollbar-color: #1f2626 white; /* thumb and track color */
+  scrollbar-color: var(--color-text-dark) white; /* thumb and track color */
 }
 /* For Webkit browsers (Chrome, Safari) */
 .custom-scrollbar::-webkit-scrollbar {
@@ -314,7 +349,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .swiper-pagination-bullet-active {
-  background-color: #007473 !important;
+  background-color: var(--color-main) !important;
 }
 
 /* videos list (slides & arrows)  */
