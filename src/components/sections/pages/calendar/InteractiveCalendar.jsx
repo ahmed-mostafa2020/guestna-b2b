@@ -140,12 +140,12 @@ const InteractiveCalendar = ({
       </div>
 
       {/* Calendar Info */}
-      <div className="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
+      {/* <div className="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
         <div className="flex items-center text-blue-800 text-sm">
           <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
           <span>{t("profile.calendar.calendar.info")}</span>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

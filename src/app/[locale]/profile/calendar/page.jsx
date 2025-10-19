@@ -242,8 +242,7 @@ const CalendarPage = () => {
           {(selectedDateEventsLoading || selectedDateEventsFetching) && (
             <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50 rounded-xl">
               <div className="flex flex-col items-center">
-                <div className="animate-spin w-8 h-8 border-4 border-mainColor border-t-transparent rounded-full mb-4"></div>
-                <p className="text-gray-600 font-medium">Loading events...</p>
+                <CircularProgress size={30} color="primary" />
               </div>
             </div>
           )}
