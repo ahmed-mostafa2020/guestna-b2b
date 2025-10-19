@@ -1166,6 +1166,10 @@
               "integer": "Number of participants must be a whole number"
             }
           },
+          "success": {
+            "createSuccess": "Event created successfully!",
+            "editSuccess": "Event updated successfully!"
+          },
           "errors": {
             "eventNameRequired": "Event name is required",
             "descriptionRequired": "Event description is required",
@@ -1485,10 +1489,7 @@
       "name": "Confirm Password",
       "error": {
         "min": "Password should be more than 8 characters",
-        "label": "Promo code",
-        "placeholder": "Enter the promo code",
-        "useCode": "Use the promo code",
-        "successMessage": "Discount has been applied successfully"
+        "match": "Passwords do not match"
       }
     },
 

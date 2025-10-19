@@ -1161,6 +1161,10 @@
               "integer": "عدد المشاركين يجب أن يكون رقم صحيح"
             }
           },
+          "success": {
+            "createSuccess": "تم إنشاء الحدث بنجاح!",
+            "editSuccess": "تم تحديث الحدث بنجاح!"
+          },
           "errors": {
             "eventNameRequired": "اسم الحدث مطلوب",
             "descriptionRequired": "وصف الحدث مطلوب",

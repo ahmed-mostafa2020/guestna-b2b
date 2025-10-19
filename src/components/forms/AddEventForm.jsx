@@ -7,6 +7,7 @@ import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
 import { createAddEventSchema } from "@utils/validationSchemas";
 import axios from "axios";
+import { useSnackbar } from "notistack";
 
 import TextInputGroup from "./TextInputGroup";
 import SelectionGroup from "./SelectionGroup";
@@ -24,6 +25,7 @@ const AddEventForm = ({
 }) => {
   const locale = useLocale();
   const t = useTranslations();
+  const { enqueueSnackbar } = useSnackbar();
 
   // Helper function to format date for API (avoids timezone issues)
   const formatDateForAPI = (date) => {
@@ -80,6 +82,13 @@ const AddEventForm = ({
       });
 
       if (response.status === 200 || response.status === 201) {
+        // Show success message
+        enqueueSnackbar(
+          eventToEdit
+            ? t("profile.calendar.modal.addEvent.success.editSuccess")
+            : t("profile.calendar.modal.addEvent.success.createSuccess"),
+          { variant: "success" }
+        );
         onSuccess();
         onClose();
       } else {
@@ -322,11 +331,7 @@ const AddEventForm = ({
                       : t("profile.calendar.modal.addEvent.actions.save")
                   }
                   isLoading={isSubmitting}
-                  confirmDisabled={
-                    !isValid || 
-                    isSubmitting || 
-                    (eventToEdit && !dirty) // For PATCH: disable if no changes made
-                  }
+                  confirmDisabled={!isValid || isSubmitting}
                   isForm={true}
                 />
               </Form>
