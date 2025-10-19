@@ -83,7 +83,8 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
     try {
       const response = await axios.post(
         getProxyUrl(
-          B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.GRADES_BY_STAGES
+          B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER
+            .GRADES_BY_STAGES
         ),
         { stages: stageIds },
         { headers }
@@ -115,7 +116,7 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
 
       // Fetch grades for the trip's academic stages
       if (details?.academicStages && details.academicStages.length > 0) {
-        const stageIds = details.academicStages.map(stage => stage._id);
+        const stageIds = details.academicStages.map((stage) => stage._id);
         await fetchGradesByStages(stageIds);
       }
 
