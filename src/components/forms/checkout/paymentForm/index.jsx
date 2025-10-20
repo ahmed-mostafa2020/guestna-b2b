@@ -109,11 +109,12 @@ const PaymentForm = () => {
   const tripId = useSelector((state) => state.checkoutData.tripId);
 
   const promoCode = useSelector(
-    (state) => state.promoCode.promoCodeData.trip.promoCode
+    (state) => state.promoCode?.promoCodeData?.trip?.promoCode
   );
   const discountedTotalPriceWithVat = useSelector(
-    (state) => state.promoCode.promoCodeData.trip.discountedTotalPriceWithVat
+    (state) => state.promoCode?.promoCodeData?.trip?.discountedTotalPriceWithVat
   );
+
   // const isCustomizable = useSelector(
   //   (state) => state.checkoutData.isCustomizable
   // );
