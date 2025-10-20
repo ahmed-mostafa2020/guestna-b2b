@@ -27,14 +27,14 @@ const Checkout = () => {
     (state) => state.finalTripDetailsData?.data
   );
 
-  const promoCodeData = useSelector(
-    (state) => state.promoCode?.promoCodeData?.trip
-  );
+  // const promoCodeData = useSelector(
+  //   (state) => state.promoCode?.promoCodeData?.trip
+  // );
 
-  // Check if trip is free
-  const isFreeTrip =
-    promoCodeData?.discountedTotalPriceWithVat === 0 ||
-    promoCodeData?.basePriceTotalWithVat === 0;
+  // // Check if trip is free
+  // const isFreeTrip =
+  //   promoCodeData?.discountedTotalPriceWithVat === 0 ||
+  //   promoCodeData?.basePriceTotalWithVat === 0;
 
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
@@ -103,10 +103,13 @@ const Checkout = () => {
   return (
     <main className="py-5 lg:py-10 bg-activityDetailsBg">
       <Container maxWidth="lg">
-        <h2 className="text-lg font-semibold lg:text-[28px] lg:pb-12 pb-6">
+        {/* <h2 className="text-lg font-semibold lg:text-[28px] lg:pb-12 pb-6">
           {isFreeTrip
             ? t("forms.freeBooking.title")
             : t("forms.paymentMethodsForm.title")}
+        </h2> */}
+        <h2 className="text-lg font-semibold lg:text-[28px] lg:pb-12 pb-6">
+          {t("forms.paymentMethodsForm.title")}
         </h2>
       </Container>
 
