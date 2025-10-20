@@ -26,8 +26,9 @@ const Checkout = () => {
   const finalTripData = useSelector(
     (state) => state.finalTripDetailsData?.data
   );
+
   const promoCodeData = useSelector(
-    (state) => state.promoCode.promoCodeData.trip
+    (state) => state.promoCode?.promoCodeData?.trip
   );
 
   // Check if trip is free
