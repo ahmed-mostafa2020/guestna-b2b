@@ -7,7 +7,7 @@ import FreeBookingButton from "@components/common/FreeBookingButton";
 
 const LargeSizeGrid = () => {
   const promoCodeData = useSelector(
-    (state) => state.promoCode.promoCodeData.trip
+    (state) => state.promoCode?.promoCodeData?.trip
   );
 
   const isFreeTrip =

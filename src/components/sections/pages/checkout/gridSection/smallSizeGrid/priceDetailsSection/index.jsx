@@ -10,7 +10,7 @@ import formatNumbersUint from "@utils/FormatNumbersUint";
 
 const PriceDetailsSection = ({ finalTripDetails }) => {
   const promoCodeData = useSelector(
-    (state) => state.promoCode.promoCodeData.trip
+    (state) => state.promoCode?.promoCodeData?.trip
   );
 
   const t = useTranslations();

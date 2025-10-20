@@ -18,7 +18,7 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
   );
 
   const discountedPrice = useSelector(
-    (state) => state.promoCode.promoCodeData.trip.discountedTotalPriceWithVat
+    (state) => state.promoCode?.promoCodeData?.trip?.discountedTotalPriceWithVat
   );
 
   const finalPrice = discountedPrice ? discountedPrice : price;
