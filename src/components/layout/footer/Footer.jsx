@@ -138,7 +138,7 @@ const Footer = () => {
         width={40}
         height={26}
         priority="true"
-        className="object-contain h-[26px] w-auto rounded-md "
+        className="object-contain h-[26px] w-auto rounded-md"
         title={paymentMethod.name}
       />
     )

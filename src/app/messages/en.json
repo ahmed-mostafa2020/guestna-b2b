@@ -710,6 +710,12 @@
         "title": "Orders",
         "tripsOrdersManagement": "Activities Orders Management",
 
+        "features": {
+          "privateGroups": "Private Groups",
+          "flexibleTimes": "Flexible Times",
+          "uniqueDestinations": "Unique Destinations",
+          "customizedActivities": "Customized Activities"
+        },
         "followOrders": "Follow All Orders",
         "normal": {
           "title": "Orders from Guestna Market"

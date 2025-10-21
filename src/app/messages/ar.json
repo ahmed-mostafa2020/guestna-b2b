@@ -706,6 +706,12 @@
         "title": "الطلبات",
         "tripsOrdersManagement": "إدارة طلبات الأنشطة",
 
+        "features": {
+          "privateGroups": "مجموعات خاصة",
+          "flexibleTimes": "اوقات مرنة",
+          "uniqueDestinations": "وجهات فريدة",
+          "customizedActivities": "أنشطة مخصصة"
+        },
         "followOrders": "متابعة جميع الطلبات",
         "normal": {
           "title": "طلبات من سوق جستنا"

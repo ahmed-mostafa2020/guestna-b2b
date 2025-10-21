@@ -1662,6 +1662,116 @@ const schoolIcon = (
   </svg>
 );
 
+const GroupIcon = ({ className = "w-6 h-6" }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z"
+      stroke="white"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M3 21V19C3 17.3431 4.34315 16 6 16H12C13.6569 16 15 17.3431 15 19V21"
+      stroke="white"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M16 11C17.6569 11 19 9.65685 19 8C19 6.34315 17.6569 5 16 5"
+      stroke="white"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M19 16C20.6569 16 22 17.3431 22 19V21"
+      stroke="white"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const CalendarIcon = ({ className = "w-6 h-6" }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect
+      x="3"
+      y="6"
+      width="18"
+      height="15"
+      rx="2"
+      stroke="white"
+      strokeWidth="1.5"
+    />
+    <path d="M3 10H21" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M7 3V6" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M17 3V6" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
+
+const LocationIcon = ({ className = "w-6 h-6" }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z"
+      stroke="white"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M12 22C16 18 20 14.4183 20 10C20 5.58172 16.4183 2 12 2C7.58172 2 4 5.58172 4 10C4 14.4183 8 18 12 22Z"
+      stroke="white"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const SuitcaseIcon = ({ className = "w-6 h-6" }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect
+      x="3"
+      y="8"
+      width="18"
+      height="13"
+      rx="2"
+      stroke="white"
+      strokeWidth="1.5"
+    />
+    <path
+      d="M8 8V6C8 4.89543 8.89543 4 10 4H14C15.1046 4 16 4.89543 16 6V8"
+      stroke="white"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <path d="M3 13H21" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
+
 export {
   discoverIcon,
   schoolsIcon,
@@ -1732,4 +1842,8 @@ export {
   refreshIcon,
   printIcon,
   schoolIcon,
+  GroupIcon,
+  CalendarIcon,
+  LocationIcon,
+  SuitcaseIcon,
 };

@@ -1,8 +1,5 @@
 import { useTranslations, useLocale } from "next-intl";
 import { useState } from "react";
-import axios from "axios";
-import { useQueryClient } from "@tanstack/react-query";
-import { useSnackbar } from "notistack";
 
 import { activitiesOrdersManagementIcon } from "@assets/svg";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -11,6 +8,11 @@ import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
 import CustomizedModal from "@components/common/customizedModal";
 import CustomNewTripForm from "@components/forms/customNewTrip";
+import FeatureCards from "./FeatureCardListing";
+
+import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
+import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
 
 const TripsOrdersManagement = () => {
@@ -118,28 +120,34 @@ const TripsOrdersManagement = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between rounded-2xl shadow-card p-4 lg:p-8 mb-4 lg:mb-8 bg-white">
-        <div className="flex items-center gap-2">
-          <span className="bg-mainColor rounded-[13px] p-2">
-            {activitiesOrdersManagementIcon}
-          </span>
+      <div className=" rounded-2xl shadow-card p-4 lg:p-8 mb-4 lg:mb-8 bg-white">
+        <div className="flex flex-col gap-6 lg:gap-14">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-2">
+              <span className="bg-mainColor rounded-[13px] p-2">
+                {activitiesOrdersManagementIcon}
+              </span>
 
-          <h2 className="text-lg font-medium lg:text-2xl text-titleColor">
-            {t("profile.tables.orders.tripsOrdersManagement")}
-          </h2>
+              <h2 className="text-base font-medium lg:text-2xl text-titleColor">
+                {t("profile.tables.orders.tripsOrdersManagement")}
+              </h2>
+            </div>
+
+            <button
+              onClick={handleRequestNewActivity}
+              disabled={loading}
+              className="flex text-sm lg:text-base items-center gap-2 rounded-lg text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-white text-mainColor font-bold">
+                {loading ? <CircularProgress size={20} /> : "+"}
+              </span>
+
+              {t("links.requestNewActivity")}
+            </button>
+          </div>
+
+          <FeatureCards />
         </div>
-
-        <button
-          onClick={handleRequestNewActivity}
-          disabled={loading}
-          className="flex text-sm lg:text-base items-center gap-2 rounded-lg text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-white text-mainColor font-bold">
-            {loading ? <CircularProgress size={20} /> : "+"}
-          </span>
-
-          {t("links.requestNewActivity")}
-        </button>
       </div>
 
       <CustomizedModal
