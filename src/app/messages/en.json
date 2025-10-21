@@ -286,6 +286,9 @@
     "showSettings": "Show Settings",
     "chooseFavoriteLanguage": "Choose a Language",
     "chooseCountry": "Choose a Country",
+    "chooseTheme": "Choose a Theme",
+    "originalTheme": "GuestNa theme",
+    "customizedTheme": "Al Motaqddema theme",
     "country": "Country",
     "language": "Language",
     "currency": "Currency"

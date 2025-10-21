@@ -285,6 +285,9 @@
     "showSettings": "إعدادات العرض",
     "chooseFavoriteLanguage": "اختر اللغة",
     "chooseCountry": "اختر البلد",
+    "chooseTheme": "اختر المظهر",
+    "originalTheme": "جستنا",
+    "customizedTheme": "المتقدمة",
     "country": "البلد",
     "language": "اللغة",
     "currency": "عملة"
