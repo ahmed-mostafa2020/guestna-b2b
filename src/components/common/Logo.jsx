@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { useLocale } from "next-intl";
+
 import { useSelector } from "react-redux";
 
 import logo from "@assets/logo.png";
