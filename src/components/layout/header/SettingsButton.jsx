@@ -8,6 +8,9 @@ import CountriesDropdown from "./CountriesDropdown";
 import ThemeDropdown from "./ThemeDropdown";
 
 import { Box } from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
@@ -25,6 +28,8 @@ const SettingsButton = () => {
   };
 
   const t = useTranslations();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <>
@@ -55,45 +60,111 @@ const SettingsButton = () => {
         </span>
       </Button>
 
-      <Menu
-        id="settings-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "settings-button",
-        }}
-        sx={{ marginTop: "10px" }}
-      >
-        <Box
-          className="outline-none"
-          sx={{
-            width: "400px",
-            padding: "24px 16px",
-            position: "relative",
-            transition: "all 0.2s ease-in-out",
+      {isMobile ? (
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          fullWidth
+          maxWidth="xs"
+          scroll="paper"
+          keepMounted
+          PaperProps={{
+            sx: {
+              width: "calc(100vw - 24px)",
+              maxWidth: "100vw",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              mx: 1.5,
+              borderRadius: 2,
+            },
           }}
         >
-          <span
-            onClick={handleClose}
-            className="absolute cursor-pointer start-5 top-5"
+          <Box
+            className="outline-none"
+            sx={{
+              width: "100%",
+              padding: "16px",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              position: "relative",
+              transition: "all 0.2s ease-in-out",
+            }}
           >
-            <CloseIcon fontSize="16" />
-          </span>
+            <span
+              onClick={handleClose}
+              className="absolute cursor-pointer start-5 top-5"
+            >
+              <CloseIcon fontSize="16" />
+            </span>
 
-          <h3 className="pb-6 text-sm font-medium text-center">
-            {t("header.showSettings")}
-          </h3>
+            <h3 className="pb-6 text-sm font-medium text-center">
+              {t("header.showSettings")}
+            </h3>
 
-          <div className="flex flex-col gap-3">
-            <LanguagesDropdown />
+            <div className="flex flex-col gap-3">
+              <LanguagesDropdown />
 
-            <ThemeDropdown />
+              <ThemeDropdown />
 
-            <CountriesDropdown />
-          </div>
-        </Box>
-      </Menu>
+              <CountriesDropdown />
+            </div>
+          </Box>
+        </Dialog>
+      ) : (
+        <Menu
+          id="settings-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          MenuListProps={{
+            "aria-labelledby": "settings-button",
+          }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          transformOrigin={{ vertical: "top", horizontal: "center" }}
+          PaperProps={{
+            sx: {
+              width: { xs: "calc(100vw - 24px)", sm: "auto" },
+              maxWidth: "100vw",
+              maxHeight: { xs: "90vh", sm: "unset" },
+              overflowY: { xs: "auto", sm: "visible" },
+              mx: { xs: 1.5, sm: 0 },
+              borderRadius: { xs: 2, sm: 2 },
+            },
+          }}
+          sx={{ marginTop: "10px" }}
+        >
+          <Box
+            className="outline-none"
+            sx={{
+              width: { xs: "100%", sm: "400px" },
+              padding: { xs: "16px", sm: "24px 16px" },
+              maxHeight: { xs: "90vh", sm: "unset" },
+              overflowY: { xs: "auto", sm: "visible" },
+              position: "relative",
+              transition: "all 0.2s ease-in-out",
+            }}
+          >
+            <span
+              onClick={handleClose}
+              className="absolute cursor-pointer start-5 top-5"
+            >
+              <CloseIcon fontSize="16" />
+            </span>
+
+            <h3 className="pb-6 text-sm font-medium text-center">
+              {t("header.showSettings")}
+            </h3>
+
+            <div className="flex flex-col gap-3">
+              <LanguagesDropdown />
+
+              <ThemeDropdown />
+
+              <CountriesDropdown />
+            </div>
+          </Box>
+        </Menu>
+      )}
     </>
   );
 };
