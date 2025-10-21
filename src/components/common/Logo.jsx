@@ -6,7 +6,7 @@ import { useLocale } from "next-intl";
 import { useSelector } from "react-redux";
 
 import logo from "@assets/logo.png";
-import alMotaqadimahLogo from "@assets/alMotaqadimahLogo.png";
+import alMotaqadimahLogo from "@assets/almotaqadimahLogo.png";
 
 const Logo = () => {
   const locale = useLocale();
