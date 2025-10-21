@@ -2,20 +2,23 @@
 
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setTheme } from "@store/theme/themeSlice";
 import { doneIcon } from "@assets/svg";
 
 const ThemeDropdown = () => {
   const t = useTranslations("header");
+  const dispatch = useDispatch();
+  const currentTheme = useSelector((state) => state.theme.currentTheme);
   const [selectedTheme, setSelectedTheme] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  // Load theme from localStorage on mount
+  // Apply theme on mount and when theme changes
   useEffect(() => {
-    const savedTheme = localStorage.getItem("app-theme") || "original";
-    const themeName = savedTheme === "original" ? t("originalTheme") : t("customizedTheme");
+    const themeName = currentTheme === "original" ? t("originalTheme") : t("customizedTheme");
     setSelectedTheme(themeName);
-    applyTheme(savedTheme);
-  }, [t]);
+    applyTheme(currentTheme);
+  }, [currentTheme, t]);
 
   const applyTheme = (themeValue) => {
     const root = document.documentElement;
@@ -60,7 +63,7 @@ const ThemeDropdown = () => {
   const selectTheme = (themeName, themeValue) => {
     setSelectedTheme(themeName);
     setIsOpen(false);
-    localStorage.setItem("app-theme", themeValue);
+    dispatch(setTheme(themeValue));
     applyTheme(themeValue);
   };
 
