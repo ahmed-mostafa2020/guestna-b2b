@@ -135,6 +135,7 @@ const SurveyForm = ({ tripId, organizationId, onClose, onSuccess }) => {
               <div className="relative flex flex-col gap-2">
                 <label className="font-medium capitalize font-ibm">
                   {t("forms.survey.learningObjectives.label")}
+                  <span className="text-xs text-error">*</span>
                 </label>
                 <SelectionGroup
                   name="learningObjectivesAchieved"
@@ -151,7 +152,8 @@ const SurveyForm = ({ tripId, organizationId, onClose, onSuccess }) => {
               {/* Schedule Adherence */}
               <div className="relative flex flex-col gap-2">
                 <label className="font-medium capitalize font-ibm">
-                  {t("forms.survey.schedule.label")}
+                  {t("forms.survey.schedule.label")}{" "}
+                  <span className="text-xs text-error">*</span>
                 </label>
                 <SelectionGroup
                   name="activityOnSchedule"

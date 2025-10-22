@@ -21,7 +21,10 @@ const InteractiveRating = ({ value = 0, onChange, label }) => {
   return (
     <div className="space-y-2">
       {label && (
-        <label className="font-medium capitalize font-ibm">{label}</label>
+        <div className="flex items-center gap-0.5">
+          <label className="font-medium capitalize font-ibm">{label}</label>
+          <span className="text-xs text-error">*</span>
+        </div>
       )}
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((star) => (

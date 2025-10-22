@@ -103,10 +103,6 @@ const NavigationDropdown = () => {
           title: t("profile.aside.schoolTeamManagement.users"),
           path: `${profileBasePath}/school-team-management/users`,
         },
-        // {
-        //   title: t("profile.aside.schoolTeamManagement.students"),
-        //   path: `${profileBasePath}/school-team-management/students`,
-        // },
       ],
     },
 
@@ -166,7 +162,8 @@ const NavigationDropdown = () => {
               >
                 {React.cloneElement(item.icon, {
                   sx: {
-                    color: pathname === item.path ? "white" : "var(--color-title)",
+                    color:
+                      pathname === item.path ? "white" : "var(--color-title)",
                     transition: "color 0.2s",
                     fontSize: {
                       xs: "18px",
@@ -207,7 +204,9 @@ const NavigationDropdown = () => {
                   expandIcon={
                     <ExpandMoreIcon
                       sx={{
-                        color: isAccordionExpanded(item) ? "white" : "var(--color-main)",
+                        color: isAccordionExpanded(item)
+                          ? "white"
+                          : "var(--color-main)",
                         fontSize: { xs: "18px", sm: "20px", lg: "24px" },
                         flexShrink: 0,
                       }}
@@ -240,7 +239,9 @@ const NavigationDropdown = () => {
                   <Box className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                     {React.cloneElement(item.icon, {
                       sx: {
-                        color: isAccordionExpanded(item) ? "white" : "var(--color-title)",
+                        color: isAccordionExpanded(item)
+                          ? "white"
+                          : "var(--color-title)",
                         transition: "color 0.2s",
                         fontSize: { xs: "18px", sm: "20px", lg: "24px" },
                         display: { xs: "none", md: "none", lg: "block" },
