@@ -23,6 +23,8 @@ const Report = ({
   const t = useTranslations();
   const [showSurveyForm, setShowSurveyForm] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [disableAchievementButton, setDisableAchievementButton] =
+    useState(false);
 
   const handleSurveyFormOpen = (booking) => {
     setSelectedBooking(booking);
@@ -114,7 +116,10 @@ const Report = ({
                         <div className="flex gap-[6px] items-center justify-end">
                           {!booking.survey && (
                             <button
-                              disabled={booking.status !== TRIP_STATUS.PENDING}
+                              disabled={
+                                booking.status !== TRIP_STATUS.PENDING ||
+                                disableAchievementButton
+                              }
                               onClick={() => handleSurveyFormOpen(booking)}
                               className="disabled:opacity-70 disabled:cursor-not-allowed flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
                             >
@@ -127,7 +132,7 @@ const Report = ({
                             // disabled={!booking.survey}
                             className={`${
                               !booking.survey ? "flex-1" : "w-full"
-                            } disabled:opacity-70 disabled:cursor-not-allowed rounded-md text-sm px-4 py-2 border border-secColor transition-all duration-200 ease-in-out ${
+                            } disabled:opacity-70 bg-white disabled:cursor-not-allowed rounded-md text-sm px-4 py-2 border border-secColor transition-all duration-200 ease-in-out ${
                               !booking.survey
                                 ? "opacity-70 cursor-not-allowed text-gray-700 border-gray-300"
                                 : "hover:text-mainColor hover:border-mainColor"
@@ -193,7 +198,10 @@ const Report = ({
                   <div className="flex gap-[6px] items-center justify-end">
                     {!booking.survey && (
                       <button
-                        disabled={booking.status !== TRIP_STATUS.PENDING}
+                        disabled={
+                          booking.status !== TRIP_STATUS.PENDING ||
+                          disableAchievementButton
+                        }
                         onClick={() => handleSurveyFormOpen(booking)}
                         className="disabled:opacity-70 disabled:cursor-not-allowed flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
                       >
@@ -206,7 +214,7 @@ const Report = ({
                       // disabled={!booking.survey}
                       className={`${
                         !booking.survey ? "flex-1" : "w-full"
-                      } disabled:opacity-70 disabled:cursor-not-allowed rounded-md text-sm px-4 py-2 border border-secColor transition-all duration-200 ease-in-out ${
+                      } disabled:opacity-70 disabled:cursor-not-allowed rounded-md text-sm px-4 py-2 bg-white border border-secColor transition-all duration-200 ease-in-out ${
                         !booking.survey
                           ? "opacity-70 cursor-not-allowed text-gray-700 border-gray-300"
                           : "hover:text-mainColor hover:border-mainColor"
@@ -248,6 +256,7 @@ const Report = ({
               onSuccess={() => {
                 // Refresh data or update state after successful survey submission
                 handleSurveyFormClose();
+                setDisableAchievementButton(true);
               }}
             />
           </CustomizedModal>
