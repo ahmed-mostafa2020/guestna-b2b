@@ -21,6 +21,7 @@ import {
   submitForm,
   // toggleConfirmTermsAndConditions,
 } from "@store/forms/auth/login/loginFormSlice";
+import { setPermissions } from "@store/permissions/permissionsSlice";
 
 import { useState } from "react";
 
@@ -101,6 +102,7 @@ const RolesLoginForm = () => {
           setToken(response.data.token);
           dispatch(setUserToken(response.data.token));
           dispatch(setUser(response.data.userType));
+          dispatch(setPermissions(response.data.user.permissions));
 
           router.push(`/${locale}/profile`);
 

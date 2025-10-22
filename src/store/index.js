@@ -40,6 +40,8 @@ import users from "./users/usersSlice";
 
 import theme from "./theme/themeSlice";
 
+import permissions from "./permissions/permissionsSlice";
+
 const rootPersistConfig = {
   key: "root",
   storage,
@@ -55,6 +57,7 @@ const rootPersistConfig = {
     "navbar",
     "users",
     "theme",
+    "permissions",
   ],
 };
 
@@ -83,6 +86,7 @@ const rootReducer = combineReducers({
   navbar,
   users,
   theme,
+  permissions,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);

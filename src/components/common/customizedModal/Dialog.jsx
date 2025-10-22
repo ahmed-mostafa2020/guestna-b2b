@@ -62,14 +62,14 @@ const Dialog = ({
             <div className="w-full gap-4 mt-8 centered">
               <button
                 onClick={handleClose}
-                className="flex-1 px-8 py-3 font-semibold transition-all duration-200 ease-in-out bg-white border-2 rounded-lg border-mainColor hover:text-white hover:bg-linksHover hover:border-linksHover"
+                className="flex-1 lg:px-8 px-4 py-3 font-semibold transition-all duration-200 ease-in-out bg-white border-2 rounded-lg border-mainColor hover:text-white hover:bg-linksHover hover:border-linksHover"
               >
                 {cancelButton}
               </button>
 
               <button
                 onClick={handleConfirm}
-                className="flex-1 px-8 py-3 font-semibold text-white transition-all duration-200 ease-in-out border-2 rounded-lg bg-mainColor border-mainColor hover:bg-linksHover hover:border-linksHover"
+                className="flex-1 lg:px-8 px-4 py-3 font-semibold text-white transition-all duration-200 ease-in-out border-2 rounded-lg bg-mainColor border-mainColor hover:bg-linksHover hover:border-linksHover"
               >
                 {confirmButton}
               </button>

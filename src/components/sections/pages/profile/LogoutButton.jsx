@@ -8,6 +8,7 @@ import { resetSignUpData } from "@store/forms/auth/signUp/signUpFormSlice";
 import { resetLoginData } from "@store/forms/auth/login/loginFormSlice";
 import { clearProfile } from "@store/profile/profileInfoSlice";
 import { setUser, setUserToken } from "@store/users/usersSlice";
+import { clearPermissions } from "@store/permissions/permissionsSlice";
 
 import { useState } from "react";
 
@@ -36,6 +37,7 @@ const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
 
       dispatch(setUser(USERS.VISITOR));
       dispatch(setUserToken(null));
+      dispatch(clearPermissions());
 
       dispatch(resetSignUpData());
       dispatch(resetLoginData());
@@ -44,12 +46,12 @@ const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
       setIsOpen(false);
 
       // Call the modal close callback first
-      if (onModalClose && typeof onModalClose === 'function') {
+      if (onModalClose && typeof onModalClose === "function") {
         onModalClose();
       }
 
       // Call the callback to close the dropdown after logout completes
-      if (onLogoutComplete && typeof onLogoutComplete === 'function') {
+      if (onLogoutComplete && typeof onLogoutComplete === "function") {
         onLogoutComplete();
       }
 
@@ -64,14 +66,14 @@ const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
 
   const handleOpen = () => {
     setIsOpen(true);
-    if (onModalOpen && typeof onModalOpen === 'function') {
+    if (onModalOpen && typeof onModalOpen === "function") {
       onModalOpen();
     }
   };
 
   const handleClose = () => {
     setIsOpen(false);
-    if (onModalClose && typeof onModalClose === 'function') {
+    if (onModalClose && typeof onModalClose === "function") {
       onModalClose();
     }
   };
