@@ -158,10 +158,11 @@ const AuthenticatedRequestQuote = ({
       return option ? option._id : name;
     };
 
-    // Check if values have changed from initial values
+    // Check if services have changed from initial values only
     const hasChanged =
       initialValues &&
-      JSON.stringify(values) !== JSON.stringify({ ...initialValues, file: "" });
+      JSON.stringify(values.services || []) !==
+        JSON.stringify(initialValues.services || []);
 
     // Check if file is being uploaded
     const hasFile = values.file && values.file instanceof File;

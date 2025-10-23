@@ -253,8 +253,8 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
               }
               className={`w-full py-4 px-6 rounded-lg font-bold text-white text-base transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-4 transform ${
                 isSubmitting || balanceLoading || !selectedTrip || !isValid
-                  ? "bg-mainColor/80 cursor-not-allowed"
-                  : "bg-gradient-to-r from-mainColor to-mainColor/80 hover:from-mainColor hover:to-mainColor/80 focus:ring-mainColor shadow-lg hover:shadow-xl"
+                  ? "bg-mainColor cursor-not-allowed"
+                  : "bg-gradient-to-r from-mainColor to-mainColor hover:from-mainColor hover:to-mainColor focus:ring-mainColor shadow-lg hover:shadow-xl"
               }`}
             >
               {isSubmitting ? (
