@@ -4,8 +4,10 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { memo, useState } from "react";
 
+import { usePermissions } from "@hooks/usePermissions";
 import formatDate from "@utils/FormateDate";
 import { TRIP_STATUS } from "@constants/tripStatus";
+import { PERMISSIONS } from "@constants/permissions";
 import SurveyForm from "@components/forms/survey";
 import CustomizedModal from "@components/common/customizedModal";
 import Pagination from "@components/common/Pagination";
@@ -19,12 +21,27 @@ const ReportTable = ({
   enablePagination,
   tableTitle,
 }) => {
+  const { hasAnyElement, hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
   const [showSurveyForm, setShowSurveyForm] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [disableAchievementButton, setDisableAchievementButton] =
     useState(false);
+
+  // Check if user has any report permissions
+  const hasAnyReportPermission = hasAnyElement([
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ACHIENVEMENT_CONFIRMATION,
+    PERMISSIONS.ELEMENT.B2B_PROFILE_FINAL_REPORT,
+  ]);
+
+  // Check individual permissions
+  const canConfirmAchievement = hasElement(
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ACHIENVEMENT_CONFIRMATION
+  );
+  const canViewFinalReport = hasElement(
+    PERMISSIONS.ELEMENT.B2B_PROFILE_FINAL_REPORT
+  );
 
   const handleSurveyFormOpen = (booking) => {
     setSelectedBooking(booking);
@@ -77,9 +94,11 @@ const ReportTable = ({
                     {/* <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.infoCards.totalStudents")}
                   </th> */}
-                    <th className="px-6 py-4 font-semibold text-start">
-                      {t("profile.tables.bookings.header.actions")}
-                    </th>
+                    {hasAnyReportPermission && (
+                      <th className="px-6 py-4 font-semibold text-start">
+                        {t("profile.tables.bookings.header.actions")}
+                      </th>
+                    )}
                   </tr>
                 </thead>
                 <tbody>
@@ -112,36 +131,40 @@ const ReportTable = ({
                       {booking.availableSeats}
                     </td> */}
 
-                      <td className="px-6 py-4">
-                        <div className="flex gap-[6px] items-center justify-end">
-                          {!booking.survey && (
-                            <button
-                              disabled={
-                                booking.status !== TRIP_STATUS.PENDING ||
-                                disableAchievementButton
-                              }
-                              onClick={() => handleSurveyFormOpen(booking)}
-                              className="disabled:opacity-70 disabled:cursor-not-allowed flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
-                            >
-                              {t("links.ConfirmationOfAchievement")}
-                            </button>
-                          )}
+                      {hasAnyReportPermission && (
+                        <td className="px-6 py-4">
+                          <div className="flex gap-[6px] items-center justify-end">
+                            {canConfirmAchievement && !booking.survey && (
+                              <button
+                                disabled={
+                                  booking.status !== TRIP_STATUS.PENDING ||
+                                  disableAchievementButton
+                                }
+                                onClick={() => handleSurveyFormOpen(booking)}
+                                className="disabled:opacity-70 disabled:cursor-not-allowed flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
+                              >
+                                {t("links.ConfirmationOfAchievement")}
+                              </button>
+                            )}
 
-                          <button
-                            disabled={true}
-                            // disabled={!booking.survey}
-                            className={`${
-                              !booking.survey ? "flex-1" : "w-full"
-                            } disabled:opacity-70 bg-white disabled:cursor-not-allowed rounded-md text-sm px-4 py-2 border border-secColor transition-all duration-200 ease-in-out ${
-                              !booking.survey
-                                ? "opacity-70 cursor-not-allowed text-gray-700 border-gray-300"
-                                : "hover:text-mainColor hover:border-mainColor"
-                            }`}
-                          >
-                            {t("links.finalReport")}
-                          </button>
-                        </div>
-                      </td>
+                            {canViewFinalReport && (
+                              <button
+                                disabled={true}
+                                // disabled={!booking.survey}
+                                className={`${
+                                  !booking.survey ? "flex-1" : "w-full"
+                                } disabled:opacity-70 bg-white disabled:cursor-not-allowed rounded-md text-sm px-4 py-2 border border-secColor transition-all duration-200 ease-in-out ${
+                                  !booking.survey
+                                    ? "opacity-70 cursor-not-allowed text-gray-700 border-gray-300"
+                                    : "hover:text-mainColor hover:border-mainColor"
+                                }`}
+                              >
+                                {t("links.finalReport")}
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>
@@ -194,36 +217,40 @@ const ReportTable = ({
                 </div> */}
                 </div>
 
-                <div className="space-y-2">
-                  <div className="flex gap-[6px] items-center justify-end">
-                    {!booking.survey && (
-                      <button
-                        disabled={
-                          booking.status !== TRIP_STATUS.PENDING ||
-                          disableAchievementButton
-                        }
-                        onClick={() => handleSurveyFormOpen(booking)}
-                        className="disabled:opacity-70 disabled:cursor-not-allowed flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
-                      >
-                        {t("links.ConfirmationOfAchievement")}
-                      </button>
-                    )}
+                {hasAnyReportPermission && (
+                  <div className="space-y-2">
+                    <div className="flex gap-[6px] items-center justify-end">
+                      {canConfirmAchievement && !booking.survey && (
+                        <button
+                          disabled={
+                            booking.status !== TRIP_STATUS.PENDING ||
+                            disableAchievementButton
+                          }
+                          onClick={() => handleSurveyFormOpen(booking)}
+                          className="disabled:opacity-70 disabled:cursor-not-allowed flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
+                        >
+                          {t("links.ConfirmationOfAchievement")}
+                        </button>
+                      )}
 
-                    <button
-                      disabled={true}
-                      // disabled={!booking.survey}
-                      className={`${
-                        !booking.survey ? "flex-1" : "w-full"
-                      } disabled:opacity-70 disabled:cursor-not-allowed rounded-md text-sm px-4 py-2 bg-white border border-secColor transition-all duration-200 ease-in-out ${
-                        !booking.survey
-                          ? "opacity-70 cursor-not-allowed text-gray-700 border-gray-300"
-                          : "hover:text-mainColor hover:border-mainColor"
-                      }`}
-                    >
-                      {t("links.finalReport")}
-                    </button>
+                      {canViewFinalReport && (
+                        <button
+                          disabled={true}
+                          // disabled={!booking.survey}
+                          className={`${
+                            !booking.survey ? "flex-1" : "w-full"
+                          } disabled:opacity-70 disabled:cursor-not-allowed rounded-md text-sm px-4 py-2 bg-white border border-secColor transition-all duration-200 ease-in-out ${
+                            !booking.survey
+                              ? "opacity-70 cursor-not-allowed text-gray-700 border-gray-300"
+                              : "hover:text-mainColor hover:border-mainColor"
+                          }`}
+                        >
+                          {t("links.finalReport")}
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
               </CardContent>
             </Card>
           ))}

@@ -1,11 +1,14 @@
 import { useTranslations } from "next-intl";
 import { memo, useState } from "react";
 
+import { usePermissions } from "@hooks/usePermissions";
+import { PERMISSIONS } from "@constants/permissions";
 import UserCard from "./UserCard";
 import CustomizedModal from "@components/common/customizedModal";
 import OrganizationUserForm from "@components/forms/newOrganizationUser";
 
 const UsersInfo = ({ users = [], organization }) => {
+  const { hasElement } = usePermissions();
   const t = useTranslations();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,14 +27,16 @@ const UsersInfo = ({ users = [], organization }) => {
         <UserCard key={user._id} user={user} />
       ))}
 
-      <div className="flex justify-center mt-2">
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-mainColor rounded-lg text-white font-medium font-somar hover:bg-linksHover px-8 py-2"
-        >
-          {t("profile.schools_users.add_new_user")}
-        </button>
-      </div>
+      {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_ADD_USER) && (
+        <div className="flex justify-center mt-2">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-mainColor rounded-lg text-white font-medium font-somar hover:bg-linksHover px-8 py-2"
+          >
+            {t("profile.schools_users.add_new_user")}
+          </button>
+        </div>
+      )}
 
       <CustomizedModal
         open={isModalOpen}

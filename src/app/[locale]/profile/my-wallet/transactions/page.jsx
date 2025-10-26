@@ -1,9 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { useState, useEffect } from "react";
+
 import { useFetchData } from "@hooks/useFetchData";
+import { usePermissions } from "@hooks/usePermissions";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { TRIP_STATUS } from "@constants/tripStatus";
+import { PERMISSIONS } from "@constants/permissions";
+
+import formatCurrency from "@utils/FormatCurrency";
+import formatDate from "@utils/FormateDate";
+import FullScreenLoading from "@feedback/loading/FullScreenLoading";
+import ErrorComponent from "@feedback/error/ErrorComponent";
+
 import { TransactionsFilters } from "@components/forms/transactions";
 import {
   BalanceCards,
@@ -11,13 +21,9 @@ import {
   LoadingState,
   ErrorState,
 } from "@components/sections/pages/myWallet/transactions";
-import formatCurrency from "@utils/FormatCurrency";
-import formatDate from "@utils/FormateDate";
-import { TRIP_STATUS } from "@constants/tripStatus";
-import FullScreenLoading from "@feedback/loading/FullScreenLoading";
-import ErrorComponent from "@feedback/error/ErrorComponent";
 
 const TransactionsPage = () => {
+  const { hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
   // State for processed transactions data
@@ -171,7 +177,9 @@ const TransactionsPage = () => {
                   hour: "2-digit",
                   minute: "2-digit",
                 })
-              : t("profile.myWallet.transactionsPage.table.defaultValues.undefined"),
+              : t(
+                  "profile.myWallet.transactionsPage.table.defaultValues.undefined"
+                ),
             createdAt: invoice.createdAt
               ? formatDate(invoice.createdAt, locale)
               : invoice.day
@@ -180,7 +188,9 @@ const TransactionsPage = () => {
               ? formatDate(invoice.date, locale)
               : invoice.issueDate
               ? formatDate(invoice.issueDate, locale)
-              : t("profile.myWallet.transactionsPage.table.defaultValues.undefined"),
+              : t(
+                  "profile.myWallet.transactionsPage.table.defaultValues.undefined"
+                ),
             referenceNumber:
               invoice.orderId ||
               invoice.referenceNumber ||
@@ -399,10 +409,14 @@ const TransactionsPage = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       {/* Balance Cards Section */}
-      <BalanceCards balanceData={balanceData} balanceLoading={balanceLoading} />
+      {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS) && (
+        <BalanceCards
+          balanceData={balanceData}
+          balanceLoading={balanceLoading}
+        />
+      )}
 
       {/* Actions and Filters Section */}
-
       {transactionsLoading ? (
         <FullScreenLoading status="pending" />
       ) : (

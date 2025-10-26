@@ -3,13 +3,16 @@
 import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 
+import { usePermissions } from "@hooks/usePermissions";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { PERMISSIONS } from "@constants/permissions";
 import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageTemplate";
 import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBookings";
 import BookingsTable from "@components/sections/pages/profile/boookings-management/bookings/BookingsTable";
 import FiltringTripsByStatus from "@components/sections/pages/profile/boookings-management/bookings/FiltringTripsByStatus";
 
 const BookingsPage = () => {
+  const { hasElement } = usePermissions();
   const t = useTranslations();
   const [selectedStatus, setSelectedStatus] = useState(null);
 
@@ -28,10 +31,14 @@ const BookingsPage = () => {
 
   return (
     <div className="flex flex-col gap-4 lg:gap-6">
-      <FiltringTripsByStatus
-        onStatusChange={handleStatusChange}
-        activeStatus={selectedStatus || "ALL"}
-      />
+      {hasElement(
+        PERMISSIONS.ELEMENT.B2B_PROFILE_BOOKINGS_TRIPS_STATUS_TABS
+      ) && (
+        <FiltringTripsByStatus
+          onStatusChange={handleStatusChange}
+          activeStatus={selectedStatus || "ALL"}
+        />
+      )}
 
       <ProfilePageTemplate
         title={t("profile.aside.bookings")}

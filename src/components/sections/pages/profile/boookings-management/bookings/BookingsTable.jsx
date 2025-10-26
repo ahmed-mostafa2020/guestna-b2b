@@ -4,12 +4,14 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { memo, useState } from "react";
 
+import { usePermissions } from "@hooks/usePermissions";
 import formatDate from "@utils/FormateDate";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { PERMISSIONS } from "@constants/permissions";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
-
 import Pagination from "@components/common/Pagination";
+
 import BookingDetailsModal from "./BookingDetailsModal";
 import CustomizedModal from "@components/common/customizedModal";
 
@@ -23,6 +25,7 @@ const BookingsTable = ({
   setCurrentPage,
   enablePagination,
 }) => {
+  const { hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
 
@@ -118,9 +121,15 @@ const BookingsTable = ({
                   <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.infoCards.totalStudents")}
                   </th>
-                  <th className="px-6 py-4 font-semibold text-start">
-                    {t("profile.tables.bookings.header.actions")}
-                  </th>
+
+                  {hasElement(
+                    PERMISSIONS.ELEMENT
+                      .B2B_PROFILE_BOOKINGS_SHOW_TRIP_DETAILS_BUTTON
+                  ) && (
+                    <th className="px-6 py-4 font-semibold text-start">
+                      {t("profile.tables.bookings.header.actions")}
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -154,14 +163,19 @@ const BookingsTable = ({
                       {booking.bookingQuantity}
                     </td>
 
-                    <td className="px-6 py-4">
-                      <button
-                        onClick={() => handleShowModal(booking._id)}
-                        className="rounded-md text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
-                      >
-                        {t("links.showDetails")}
-                      </button>
-                    </td>
+                    {hasElement(
+                      PERMISSIONS.ELEMENT
+                        .B2B_PROFILE_BOOKINGS_SHOW_TRIP_DETAILS_BUTTON
+                    ) && (
+                      <td className="px-6 py-4">
+                        <button
+                          onClick={() => handleShowModal(booking._id)}
+                          className="rounded-md text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
+                        >
+                          {t("links.showDetails")}
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -214,16 +228,21 @@ const BookingsTable = ({
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => handleShowModal(booking._id)}
-                    className="rounded-lg text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
-                  >
-                    {t("links.showDetails")}
-                  </button>
+              {hasElement(
+                PERMISSIONS.ELEMENT
+                  .B2B_PROFILE_BOOKINGS_SHOW_TRIP_DETAILS_BUTTON
+              ) && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleShowModal(booking._id)}
+                      className="rounded-lg text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
+                    >
+                      {t("links.showDetails")}
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
         ))}

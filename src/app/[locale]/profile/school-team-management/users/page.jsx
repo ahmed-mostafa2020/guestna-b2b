@@ -5,15 +5,19 @@ import { useTranslations, useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { useFetchData } from "@hooks/useFetchData";
+import { download } from "@hooks/useDownload";
+import { usePermissions } from "@hooks/usePermissions";
+
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { PERMISSIONS } from "@constants/permissions";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import UsersInfoCardsListing from "@components/sections/pages/profile/schoolManagementTeam/users/UsersInfoCardsListing";
 import UsersManagement from "@components/sections/pages/profile/schoolManagementTeam/users/UsersManagement";
 import * as XLSX from "xlsx";
-import { download } from "@hooks/useDownload";
 
 const UsersPage = () => {
+  const { hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
   const [searchTerm, setSearchTerm] = useState("");
@@ -87,18 +91,21 @@ const UsersPage = () => {
 
   return (
     <main className="flex flex-col gap-6">
-      <UsersInfoCardsListing data={data} />
-
-      {tableData?.users?.length > 0 && (
-        <div className="flex justify-end mt-2">
-          <button
-            onClick={() => handleExportToExcel()}
-            className="bg-mainColor rounded-lg text-white font-medium font-somar hover:bg-linksHover px-8 py-2"
-          >
-            {t("profile.tables.orders.bookingDetails.printReport")}
-          </button>
-        </div>
+      {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_CARDS) && (
+        <UsersInfoCardsListing data={data} />
       )}
+
+      {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_PRINT_REPORT) &&
+        tableData?.users?.length > 0 && (
+          <div className="flex justify-end mt-2">
+            <button
+              onClick={() => handleExportToExcel()}
+              className="bg-mainColor rounded-lg text-white font-medium font-somar hover:bg-linksHover px-8 py-2"
+            >
+              {t("profile.tables.orders.bookingDetails.printReport")}
+            </button>
+          </div>
+        )}
 
       <UsersManagement
         data={tableData}

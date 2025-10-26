@@ -1,7 +1,10 @@
 "use client";
 
 import { useTranslations, useLocale } from "next-intl";
+
+import { usePermissions } from "@hooks/usePermissions";
 import formatDate from "@utils/FormateDate";
+import { PERMISSIONS } from "@constants/permissions";
 
 const InteractiveCalendar = ({
   currentMonth,
@@ -10,6 +13,7 @@ const InteractiveCalendar = ({
   onMonthChange,
   onAddEvent,
 }) => {
+  const { hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
   const getDaysInMonth = (date) => {
@@ -60,12 +64,14 @@ const InteractiveCalendar = ({
           <button className="border-2 border-secColor text-mainColor px-4 md:px-6 lg:px-8 py-2 rounded-lg hover:bg-secColor hover:border-secColor hover:text-white transition-all duration-200 font-medium text-sm md:text-base w-full sm:w-auto">
             {t("profile.calendar.calendar.uploadCalendar")}
           </button>
-          <button
-            onClick={onAddEvent}
-            className="border-2 border-mainColor bg-mainColor text-white px-4 md:px-6 lg:px-8 py-2 rounded-lg hover:bg-mainColor/80 hover:border-mainColor/80 hover:text-white transition-all duration-200 font-medium text-sm md:text-base w-full sm:w-auto"
-          >
-            {t("profile.calendar.calendar.addEvent")}
-          </button>
+          {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ADD_EVENT) && (
+            <button
+              onClick={onAddEvent}
+              className="border-2 border-mainColor bg-mainColor text-white px-4 md:px-6 lg:px-8 py-2 rounded-lg hover:bg-mainColor/80 hover:border-mainColor/80 hover:text-white transition-all duration-200 font-medium text-sm md:text-base w-full sm:w-auto"
+            >
+              {t("profile.calendar.calendar.addEvent")}
+            </button>
+          )}
         </div>
       </div>
 

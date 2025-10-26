@@ -2,10 +2,14 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { memo } from "react";
 
+import { usePermissions } from "@hooks/usePermissions";
+import { PERMISSIONS } from "@constants/permissions";
+
 import schoolProfileImage from "@assets/schoolProfile.png";
 import { Card, CardContent, Chip } from "@mui/material";
 
 const UserCard = ({ user }) => {
+  const { hasElement } = usePermissions();
   const t = useTranslations();
 
   return (
@@ -35,15 +39,19 @@ const UserCard = ({ user }) => {
             </div>
           </div>
           <div className="flex gap-3 text-sm font-ibm text-textDark flex-shrink-0">
-            <button className="hover:text-error transition-colors duration-200">
-              {t("profile.schools_users.delete")}
-            </button>
-            <button className="hover:text-success transition-colors duration-200">
-              {t("profile.schools_users.copy")}
-            </button>
-            <button className="hover:text-mainColor transition-colors duration-200">
-              {t("profile.schools_users.edit")}
-            </button>
+            {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_DELETE) && (
+              <button className="hover:text-error transition-colors duration-200">
+                {t("profile.schools_users.delete")}
+              </button>
+            )}
+
+            {hasElement(
+              PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_EDIT_PERMISSIONS
+            ) && (
+              <button className="hover:text-mainColor transition-colors duration-200">
+                {t("profile.schools_users.edit")}
+              </button>
+            )}
           </div>
         </div>
 
@@ -77,15 +85,19 @@ const UserCard = ({ user }) => {
 
           {/* Actions below user info on mobile */}
           <div className="flex gap-2 sm:gap-4 text-xs font-ibm text-textDark justify-start flex-wrap">
-            <button className="hover:text-error transition-colors duration-200">
-              {t("profile.schools_users.delete")}
-            </button>
-            <button className="hover:text-success transition-colors duration-200">
-              {t("profile.schools_users.copy")}
-            </button>
-            <button className="hover:text-mainColor transition-colors duration-200">
-              {t("profile.schools_users.edit")}
-            </button>
+            {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_DELETE) && (
+              <button className="hover:text-error transition-colors duration-200">
+                {t("profile.schools_users.delete")}
+              </button>
+            )}
+
+            {hasElement(
+              PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_EDIT_PERMISSIONS
+            ) && (
+              <button className="hover:text-mainColor transition-colors duration-200">
+                {t("profile.schools_users.edit")}
+              </button>
+            )}
           </div>
         </div>
       </CardContent>

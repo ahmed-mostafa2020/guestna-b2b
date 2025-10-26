@@ -1,4 +1,6 @@
 import { useTranslations } from "next-intl";
+import { usePermissions } from "@hooks/usePermissions";
+import { PERMISSIONS } from "@constants/permissions";
 import { KeyboardArrowDown, CalendarToday } from "@mui/icons-material";
 import { printIcon } from "@assets/svg";
 
@@ -8,6 +10,7 @@ const TransactionsFilters = ({
   data,
   clearFilters,
 }) => {
+  const { hasElement } = usePermissions();
   const t = useTranslations("profile.myWallet.transactionsPage.filters");
 
   // Helper function to format date for API (avoids timezone issues)
@@ -50,15 +53,19 @@ const TransactionsFilters = ({
         </h3>
 
         {/* Action Buttons */}
-        <div className="flex gap-3">
-          <button
-            onClick={() => window.print()}
-            className="bg-mainColor hover:bg-mainColor/90 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2"
-          >
-            {printIcon}
-            {t("printReport")}
-          </button>
-        </div>
+        {hasElement(
+          PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_PRINT_REPORT
+        ) && (
+          <div className="flex gap-3">
+            <button
+              onClick={() => window.print()}
+              className="bg-mainColor hover:bg-mainColor/90 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2"
+            >
+              {printIcon}
+              {t("printReport")}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Second Row: Filter Dropdowns - Always show filters for server-side filtering */}
