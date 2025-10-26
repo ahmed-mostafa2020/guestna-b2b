@@ -3,6 +3,8 @@
 import { useTranslations } from "next-intl";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { PERMISSIONS } from "@constants/permissions";
+import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageTemplate";
 import PackagesTable from "@components/sections/pages/profile/trips/PackagesTable";
 import ActivitiesTable from "@components/sections/pages/profile/trips/ActivitiesTable";
@@ -12,7 +14,8 @@ const TripsPage = () => {
   const t = useTranslations();
 
   return (
-    <div className="flex flex-col gap-4 lg:gap:8">
+    <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_TRIPS_MANAGEMENT_PAGE}>
+      <div className="flex flex-col gap-4 lg:gap:8">
       <ProfilePageTemplate
         title={t("profile.aside.tripsManagement.title")}
         endpoint={`${B2B_END_POINTS.PROFILE.ALL_TRIPS.ACTIVITIES}`}
@@ -56,7 +59,8 @@ const TripsPage = () => {
         )}
         enablePagination={true}
       />
-    </div>
+      </div>
+    </ProtectedProfilePage>
   );
 };
 

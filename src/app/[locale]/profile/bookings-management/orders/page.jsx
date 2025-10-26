@@ -3,6 +3,8 @@
 import { useTranslations } from "next-intl";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { PERMISSIONS } from "@constants/permissions";
+import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 import TripsOrdersManagement from "@components/sections/pages/profile/boookings-management/orders/TripsOrdersManagement";
 import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageTemplate";
 import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBookings";
@@ -14,7 +16,7 @@ const OrdersPage = () => {
   const t = useTranslations();
 
   return (
-    <>
+    <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_ORDER_MANAGEMENT_PAGE}>
       <TripsOrdersManagement />
 
       <div className="flex flex-col gap-4 w-full bg-white rounded-2xl p-4 lg:p-8 shadow-card">
@@ -68,7 +70,7 @@ const OrdersPage = () => {
           />
         </div>
       </div>
-    </>
+    </ProtectedProfilePage>
   );
 };
 

@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { usePermissions } from "@hooks/usePermissions";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
+import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageTemplate";
 import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBookings";
 import BookingsTable from "@components/sections/pages/profile/boookings-management/bookings/BookingsTable";
@@ -30,7 +31,8 @@ const BookingsPage = () => {
     : {};
 
   return (
-    <div className="flex flex-col gap-4 lg:gap-6">
+    <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_BOOKINGS_PAGE}>
+      <div className="flex flex-col gap-4 lg:gap-6">
       {hasElement(
         PERMISSIONS.ELEMENT.B2B_PROFILE_BOOKINGS_TRIPS_STATUS_TABS
       ) && (
@@ -63,7 +65,8 @@ const BookingsPage = () => {
         enablePagination={true}
         key={selectedStatus} // Force re-render when status changes
       />
-    </div>
+      </div>
+    </ProtectedProfilePage>
   );
 };
 

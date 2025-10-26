@@ -8,6 +8,7 @@ import { usePermissions } from "@hooks/usePermissions";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { TRIP_STATUS } from "@constants/tripStatus";
 import { PERMISSIONS } from "@constants/permissions";
+import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 
 import formatCurrency from "@utils/FormatCurrency";
 import formatDate from "@utils/FormateDate";
@@ -407,7 +408,8 @@ const TransactionsPage = () => {
     );
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_TRANSACTIONS_LOG_PAGE}>
+      <div className="max-w-7xl mx-auto space-y-6">
       {/* Balance Cards Section */}
       {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS) && (
         <BalanceCards
@@ -439,7 +441,8 @@ const TransactionsPage = () => {
           />
         </div>
       )}
-    </div>
+      </div>
+    </ProtectedProfilePage>
   );
 };
 

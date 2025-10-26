@@ -54,12 +54,32 @@ export const usePermissions = () => {
     return menuItemList.some((item) => menuItems.includes(item));
   };
 
+  /**
+   * Check if user has access to a specific page
+   * @param {string} page - Page permission to check (e.g., "b2b_profile_main_page")
+   * @returns {boolean}
+   */
+  const hasPage = (page) => {
+    return pages.includes(page);
+  };
+
+  /**
+   * Check if user has access to any of the specified pages
+   * @param {string[]} pageList - Array of page permissions
+   * @returns {boolean}
+   */
+  const hasAnyPage = (pageList) => {
+    return pageList.some((page) => pages.includes(page));
+  };
+
   return {
     hasElement,
     hasAnyElement,
     hasAllElements,
     hasMenuItem,
     hasAnyMenuItem,
+    hasPage,
+    hasAnyPage,
     elements,
     menuItems,
     pages,

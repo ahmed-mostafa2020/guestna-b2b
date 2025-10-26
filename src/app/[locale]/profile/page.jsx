@@ -8,6 +8,7 @@ import { useFetchData } from "@hooks/useFetchData";
 import { usePermissions } from "@hooks/usePermissions";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
+import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
 
@@ -58,7 +59,8 @@ const Profile = () => {
     );
 
   return (
-    <main className="flex flex-col gap-6">
+    <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}>
+      <main className="flex flex-col gap-6">
       {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS) && (
         <InfoCardsListing infoData={infoData} />
       )}
@@ -97,7 +99,8 @@ const Profile = () => {
           )}
         />
       )}
-    </main>
+      </main>
+    </ProtectedProfilePage>
   );
 };
 

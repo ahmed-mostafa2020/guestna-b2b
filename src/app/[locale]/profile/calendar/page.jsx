@@ -4,6 +4,8 @@ import { useTranslations, useLocale } from "next-intl";
 import { useState, useEffect } from "react";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { PERMISSIONS } from "@constants/permissions";
+import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 import AddEventForm from "@components/forms/AddEventForm";
 import EventDetailsModal from "@components/forms/EventDetailsModal";
 import {
@@ -227,12 +229,13 @@ const CalendarPage = () => {
   }, [t]);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      {/* Summary Cards */}
-      <SummaryCards countsData={countsData} isLoading={countsLoading} />
+    <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_CALENDAR_PAGE}>
+      <div className="min-h-screen bg-gray-50 p-6">
+        {/* Summary Cards */}
+        <SummaryCards countsData={countsData} isLoading={countsLoading} />
 
-      {/* Tabs */}
-      <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+        {/* Tabs */}
+        <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {countsLoading || allEvents?.isLoading ? (
         <FullScreenLoading status="pending" />
@@ -622,7 +625,8 @@ const CalendarPage = () => {
           )}
         </div>
       )}
-    </div>
+      </div>
+    </ProtectedProfilePage>
   );
 };
 

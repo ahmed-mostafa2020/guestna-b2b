@@ -10,6 +10,7 @@ import { usePermissions } from "@hooks/usePermissions";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
+import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import UsersInfoCardsListing from "@components/sections/pages/profile/schoolManagementTeam/users/UsersInfoCardsListing";
@@ -90,7 +91,8 @@ const UsersPage = () => {
   };
 
   return (
-    <main className="flex flex-col gap-6">
+    <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_USERS_PAGE}>
+      <main className="flex flex-col gap-6">
       {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_CARDS) && (
         <UsersInfoCardsListing data={data} />
       )}
@@ -112,7 +114,8 @@ const UsersPage = () => {
         setSearchTerm={setSearchTerm}
         searchTerm={searchTerm}
       />
-    </main>
+      </main>
+    </ProtectedProfilePage>
   );
 };
 
