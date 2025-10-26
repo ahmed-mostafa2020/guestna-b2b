@@ -1,9 +1,12 @@
+"use client";
+
 import { useTranslations, useLocale } from "next-intl";
 import { useState } from "react";
 
-import { activitiesOrdersManagementIcon } from "@assets/svg";
+import { usePermissions } from "@hooks/usePermissions";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { PERMISSIONS } from "@constants/permissions";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
 import CustomizedModal from "@components/common/customizedModal";
@@ -14,10 +17,12 @@ import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
+import { activitiesOrdersManagementIcon } from "@assets/svg";
 
 const TripsOrdersManagement = () => {
-  const t = useTranslations();
+  const { hasElement } = usePermissions();
   const locale = useLocale();
+  const t = useTranslations();
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -133,17 +138,21 @@ const TripsOrdersManagement = () => {
               </h2>
             </div>
 
-            <button
-              onClick={handleRequestNewActivity}
-              disabled={loading}
-              className="flex text-sm lg:text-base items-center gap-2 rounded-lg text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-white text-mainColor font-bold">
-                {loading ? <CircularProgress size={20} /> : "+"}
-              </span>
+            {hasElement(
+              PERMISSIONS.ELEMENT.B2B_PROFIEL_ORDER_MANAGEMENT_CREATE_NEWTRIP
+            ) && (
+              <button
+                onClick={handleRequestNewActivity}
+                disabled={loading}
+                className="flex text-sm lg:text-base items-center gap-2 rounded-lg text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-white text-mainColor font-bold">
+                  {loading ? <CircularProgress size={20} /> : "+"}
+                </span>
 
-              {t("links.requestNewActivity")}
-            </button>
+                {t("links.requestNewActivity")}
+              </button>
+            )}
           </div>
 
           <FeatureCardListing />

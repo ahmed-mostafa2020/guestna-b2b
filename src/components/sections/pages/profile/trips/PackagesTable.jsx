@@ -3,10 +3,11 @@
 import Link from "next/link";
 
 import { useLocale, useTranslations } from "next-intl";
-
 import { memo } from "react";
 
+import { usePermissions } from "@hooks/usePermissions";
 import { TRIP_STATUS } from "@constants/tripStatus";
+import { PERMISSIONS } from "@constants/permissions";
 import formatDate from "@utils/FormateDate";
 import formatNumbersUint from "@utils/FormatNumbersUint";
 import Pagination from "@components/common/Pagination";
@@ -20,6 +21,7 @@ const PackagesTable = ({
   setCurrentPage,
   enablePagination,
 }) => {
+  const { hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
   return (
@@ -56,9 +58,13 @@ const PackagesTable = ({
                     {t("profile.tables.packages.header.duration")}
                   </th>
 
-                  <th className="px-6 py-4 font-semibold text-start">
-                    {t("profile.tables.orders.studentsTable.actions")}
-                  </th>
+                  {hasElement(
+                    PERMISSIONS.ELEMENT.B2B_PROFILE_TRIPS_MANAGEMENT_BUTTON
+                  ) && (
+                    <th className="px-6 py-4 font-semibold text-start">
+                      {t("profile.tables.orders.studentsTable.actions")}
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -98,22 +104,25 @@ const PackagesTable = ({
                         t("common.days")
                       )}
                     </td>
-
-                    <td className="px-6 py-4">
-                      {pkg.status === TRIP_STATUS.SCHEDULED ||
-                      pkg.status === TRIP_STATUS.PENDING ? (
-                        <Link
-                          href={`/${locale}/profile/create-trip-link/${pkg.slug}`}
-                          className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
-                        >
-                          {t("links.tripManagement")}
-                        </Link>
-                      ) : (
-                        <span className="text-sm px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
-                          {t("links.tripManagement")}
-                        </span>
-                      )}
-                    </td>
+                    {hasElement(
+                      PERMISSIONS.ELEMENT.B2B_PROFILE_TRIPS_MANAGEMENT_BUTTON
+                    ) && (
+                      <td className="px-6 py-4">
+                        {pkg.status === TRIP_STATUS.SCHEDULED ||
+                        pkg.status === TRIP_STATUS.PENDING ? (
+                          <Link
+                            href={`/${locale}/profile/create-trip-link/${pkg.slug}`}
+                            className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
+                          >
+                            {t("links.tripManagement")}
+                          </Link>
+                        ) : (
+                          <span className="text-sm px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
+                            {t("links.tripManagement")}
+                          </span>
+                        )}
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -178,24 +187,27 @@ const PackagesTable = ({
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2"></div>
-                <div className="flex items-center gap-2">
-                  {pkg.status === TRIP_STATUS.SCHEDULED ||
-                  pkg.status === TRIP_STATUS.PENDING ? (
-                    <Link
-                      href={`/${locale}/profile/create-trip-link/${pkg.slug}`}
-                      className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
-                    >
-                      {t("links.tripManagement")}
-                    </Link>
-                  ) : (
-                    <span className="text-sm px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
-                      {t("links.tripManagement")}
-                    </span>
-                  )}
+              {hasElement(
+                PERMISSIONS.ELEMENT.B2B_PROFILE_TRIPS_MANAGEMENT_BUTTON
+              ) && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    {pkg.status === TRIP_STATUS.SCHEDULED ||
+                    pkg.status === TRIP_STATUS.PENDING ? (
+                      <Link
+                        href={`/${locale}/profile/create-trip-link/${pkg.slug}`}
+                        className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
+                      >
+                        {t("links.tripManagement")}
+                      </Link>
+                    ) : (
+                      <span className="text-sm px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
+                        {t("links.tripManagement")}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
         ))}

@@ -8,6 +8,8 @@ import { usePermissions } from "@hooks/usePermissions";
 
 import React, { useState, useMemo } from "react";
 
+import { PERMISSIONS } from "@constants/permissions";
+
 import {
   Accordion,
   AccordionSummary,
@@ -62,7 +64,7 @@ const NavigationDropdown = () => {
       icon: <HomeIcon />,
       path: `${profileBasePath}`,
       hasDropdown: false,
-      permission: "b2b-menu-profile-home",
+      permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_MAIN_TAB,
     },
     {
       id: "activities-market",
@@ -70,7 +72,7 @@ const NavigationDropdown = () => {
       icon: <StorefrontIcon />,
       path: `${profileBasePath}/activities-market`,
       hasDropdown: false,
-      permission: "b2b-profile-activities-market",
+      permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_ACTIVITIES_MARKET_TAB,
     },
     {
       id: "trips-management",
@@ -78,24 +80,24 @@ const NavigationDropdown = () => {
       icon: <TravelIcon />,
       path: `${profileBasePath}/trips-activities-management`,
       hasDropdown: false,
-      permission: "b2b-profile-trip&activities-management",
+      permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_TRIPS_MANAGEMENT_TAB,
     },
     {
       id: "bookings-management",
       title: t("profile.aside.bookingsManagement.title"),
       icon: <BookingIcon />,
       hasDropdown: true,
-      permission: "b2b-menu-profile-order-management",
+      permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_ORDER_MANAGEMENT_TAB,
       subItems: [
         {
           title: t("profile.aside.bookingsManagement.ordersManagement"),
           path: `${profileBasePath}/bookings-management/orders`,
-          permission: "b2b-menu-profile-order-management",
+          permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_ORDER_MANAGEMENT_TAB,
         },
         {
           title: t("profile.aside.bookingsManagement.bookings"),
           path: `${profileBasePath}/bookings-management/bookings`,
-          permission: "b2b-menu-item-profile-bookings",
+          permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_BOOKINGS_TAB,
         },
       ],
     },
@@ -104,12 +106,12 @@ const NavigationDropdown = () => {
       title: t("profile.aside.schoolTeamManagement.title"),
       icon: <PeopleIcon />,
       hasDropdown: true,
-      permission: "b2b-profile-menu-item-users",
+      permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_USERS_TAB,
       subItems: [
         {
           title: t("profile.aside.schoolTeamManagement.users"),
           path: `${profileBasePath}/school-team-management/users`,
-          permission: "b2b-profile-menu-item-users",
+          permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_USERS_TAB,
         },
       ],
     },
@@ -118,17 +120,17 @@ const NavigationDropdown = () => {
       title: t("profile.myWallet.title"),
       icon: <Wallet />,
       hasDropdown: true,
-      permission: "b2b-profile-menu-item-transaction-log", // Parent permission
+      permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_TRANSACTIONS_LOG_TAB, // Parent permission
       subItems: [
         {
           title: t("profile.myWallet.transactions"),
           path: `${profileBasePath}/my-wallet/transactions`,
-          permission: "b2b-profile-menu-item-transaction-log",
+          permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_TRANSACTIONS_LOG_TAB,
         },
         {
           title: t("profile.myWallet.withdraw"),
           path: `${profileBasePath}/my-wallet/withdraw`,
-          permission: "b2b-profile-menu-item-withdraw",
+          permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_WITHDRAW_TAB,
         },
       ],
     },
@@ -138,21 +140,21 @@ const NavigationDropdown = () => {
       icon: <CalendarIcon />,
       path: `${profileBasePath}/calendar`,
       hasDropdown: false,
-      permission: "b2b-profile-menu-item-calender",
+      permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_CALENDAR_TAB,
     },
     {
       id: "reports-and-analytics",
       title: t("profile.aside.reportsAndAnalytics.title"),
       icon: <Analytics />,
       hasDropdown: true,
-      permission: "b2b-profile-menu-item-integrate-booking-management",
+      permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_INTEGRATED_BOOKINGS_TAB,
       subItems: [
         {
           title: t(
             "profile.aside.bookingsManagement.integratedBookingsManagement"
           ),
           path: `${profileBasePath}/reports-and-analytics/integrated-bookings`,
-          permission: "b2b-profile-menu-item-integrate-booking-management",
+          permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_INTEGRATED_BOOKINGS_TAB,
         },
       ],
     },

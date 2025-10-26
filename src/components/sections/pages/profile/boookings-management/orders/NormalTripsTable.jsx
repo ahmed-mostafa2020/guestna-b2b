@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { memo } from "react";
 
+import { usePermissions } from "@hooks/usePermissions";
 import formatDate from "@utils/FormateDate";
 import { TRIP_STATUS } from "@constants/tripStatus";
 import Pagination from "@components/common/Pagination";
@@ -18,6 +19,7 @@ const NormalTripsTable = ({
   setCurrentPage,
   enablePagination,
 }) => {
+  const { hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
 

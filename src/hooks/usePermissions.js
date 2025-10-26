@@ -5,16 +5,17 @@ import { useSelector } from "react-redux";
  * @returns {Object} Permission checking utilities
  */
 export const usePermissions = () => {
-  const actions = useSelector((state) => state.permissions?.actions || []);
+  const elements = useSelector((state) => state.permissions?.elements || []);
   const menuItems = useSelector((state) => state.permissions?.menuItems || []);
+  const pages = useSelector((state) => state.permissions?.page || []);
 
   /**
    * Check if user has a specific action permission
    * @param {string} action - Action permission to check (e.g., "create_trip")
    * @returns {boolean}
    */
-  const hasAction = (action) => {
-    return actions.includes(action);
+  const hasElement = (element) => {
+    return elements.includes(element);
   };
 
   /**
@@ -22,8 +23,8 @@ export const usePermissions = () => {
    * @param {string[]} actionList - Array of action permissions
    * @returns {boolean}
    */
-  const hasAnyAction = (actionList) => {
-    return actionList.some((action) => actions.includes(action));
+  const hasAnyElement = (elementList) => {
+    return elementList.some((element) => elements.includes(element));
   };
 
   /**
@@ -31,8 +32,8 @@ export const usePermissions = () => {
    * @param {string[]} actionList - Array of action permissions
    * @returns {boolean}
    */
-  const hasAllActions = (actionList) => {
-    return actionList.every((action) => actions.includes(action));
+  const hasAllElements = (elementList) => {
+    return elementList.every((element) => elements.includes(element));
   };
 
   /**
@@ -54,12 +55,13 @@ export const usePermissions = () => {
   };
 
   return {
-    hasAction,
-    hasAnyAction,
-    hasAllActions,
+    hasElement,
+    hasAnyElement,
+    hasAllElements,
     hasMenuItem,
     hasAnyMenuItem,
-    actions,
+    elements,
     menuItems,
+    pages,
   };
 };

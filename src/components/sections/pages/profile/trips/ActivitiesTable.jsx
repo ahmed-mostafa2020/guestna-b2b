@@ -5,8 +5,10 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { memo } from "react";
 
+import { usePermissions } from "@hooks/usePermissions";
 import formatDate from "@utils/FormateDate";
 import { TRIP_STATUS } from "@constants/tripStatus";
+import { PERMISSIONS } from "@constants/permissions";
 import Pagination from "@components/common/Pagination";
 
 import { CardContent, Card } from "@mui/material";
@@ -19,6 +21,7 @@ const ActivitiesTable = ({
   setCurrentPage,
   enablePagination,
 }) => {
+  const { hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
 
@@ -56,9 +59,13 @@ const ActivitiesTable = ({
                     {t("profile.tables.activities.header.category")}
                   </th>
 
-                  <th className="px-6 py-4 font-semibold text-start">
-                    {t("profile.tables.orders.studentsTable.actions")}
-                  </th>
+                  {hasElement(
+                    PERMISSIONS.ELEMENT.B2B_PROFILE_TRIPS_MANAGEMENT_BUTTON
+                  ) && (
+                    <th className="px-6 py-4 font-semibold text-start">
+                      {t("profile.tables.orders.studentsTable.actions")}
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -93,21 +100,25 @@ const ActivitiesTable = ({
                       </Badge>
                     </td>
 
-                    <td className="px-6 py-4">
-                      {trip.status === TRIP_STATUS.SCHEDULED ||
-                      trip.status === TRIP_STATUS.PENDING ? (
-                        <Link
-                          href={`/${locale}/profile/create-trip-link/${trip.slug}`}
-                          className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
-                        >
-                          {t("links.tripManagement")}
-                        </Link>
-                      ) : (
-                        <span className="text-sm px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
-                          {t("links.tripManagement")}
-                        </span>
-                      )}
-                    </td>
+                    {hasElement(
+                      PERMISSIONS.ELEMENT.B2B_PROFILE_TRIPS_MANAGEMENT_BUTTON
+                    ) && (
+                      <td className="px-6 py-4">
+                        {trip.status === TRIP_STATUS.SCHEDULED ||
+                        trip.status === TRIP_STATUS.PENDING ? (
+                          <Link
+                            href={`/${locale}/profile/create-trip-link/${trip.slug}`}
+                            className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
+                          >
+                            {t("links.tripManagement")}
+                          </Link>
+                        ) : (
+                          <span className="text-sm px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
+                            {t("links.tripManagement")}
+                          </span>
+                        )}
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -156,21 +167,25 @@ const ActivitiesTable = ({
                 </div>
               </div>
 
-              <div className="space-y-2">
-                {trip.status === TRIP_STATUS.SCHEDULED ||
-                trip.status === TRIP_STATUS.PENDING ? (
-                  <Link
-                    href={`/${locale}/profile/create-trip-link/${trip.slug}`}
-                    className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
-                  >
-                    {t("links.tripManagement")}
-                  </Link>
-                ) : (
-                  <span className="text-sm px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
-                    {t("links.tripManagement")}
-                  </span>
-                )}
-              </div>
+              {hasElement(
+                PERMISSIONS.ELEMENT.B2B_PROFILE_TRIPS_MANAGEMENT_BUTTON
+              ) && (
+                <div className="space-y-2">
+                  {trip.status === TRIP_STATUS.SCHEDULED ||
+                  trip.status === TRIP_STATUS.PENDING ? (
+                    <Link
+                      href={`/${locale}/profile/create-trip-link/${trip.slug}`}
+                      className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
+                    >
+                      {t("links.tripManagement")}
+                    </Link>
+                  ) : (
+                    <span className="text-sm px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
+                      {t("links.tripManagement")}
+                    </span>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}

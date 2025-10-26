@@ -3,27 +3,27 @@ import { usePermissions } from "@hooks/usePermissions";
 /**
  * Wrapper component to conditionally render children based on action permissions
  * @param {Object} props
- * @param {string|string[]} props.action - Single action or array of actions required
- * @param {boolean} props.requireAll - If true, requires all actions; if false, requires any action (default: false)
+ * @param {string|string[]} props.element - Single element or array of elements required
+ * @param {boolean} props.requireAll - If true, requires all elements; if false, requires any element (default: false)
  * @param {React.ReactNode} props.children - Content to render if permission is granted
  * @param {React.ReactNode} props.fallback - Content to render if permission is denied (optional)
  */
-export const CanPerformAction = ({
-  action,
+export const CanPerformElement = ({
+  element,
   requireAll = false,
   children,
   fallback = null,
 }) => {
-  const { hasAction, hasAnyAction, hasAllActions } = usePermissions();
+  const { hasElement, hasAnyElement, hasAllElements } = usePermissions();
 
   let hasPermission = false;
 
-  if (Array.isArray(action)) {
+  if (Array.isArray(element)) {
     hasPermission = requireAll
-      ? hasAllActions(action)
-      : hasAnyAction(action);
+      ? hasAllElements(element)
+      : hasAnyElement(element);
   } else {
-    hasPermission = hasAction(action);
+    hasPermission = hasElement(element);
   }
 
   return hasPermission ? children : fallback;
@@ -59,16 +59,20 @@ export const CanAccessMenuItem = ({
 };
 
 /**
- * Higher-order component to wrap any component with action permission check
+ * Higher-order component to wrap any component with element permission check
  * @param {React.Component} Component - Component to wrap
- * @param {string|string[]} action - Action permission(s) required
- * @param {boolean} requireAll - If true, requires all actions
+ * @param {string|string[]} element - Element permission(s) required
+ * @param {boolean} requireAll - If true, requires all elements
  */
-export const withActionPermission = (Component, action, requireAll = false) => {
+export const withElementPermission = (
+  Component,
+  element,
+  requireAll = false
+) => {
   return (props) => (
-    <CanPerformAction action={action} requireAll={requireAll}>
+    <CanPerformElement element={element} requireAll={requireAll}>
       <Component {...props} />
-    </CanPerformAction>
+    </CanPerformElement>
   );
 };
 
@@ -78,7 +82,11 @@ export const withActionPermission = (Component, action, requireAll = false) => {
  * @param {string|string[]} menuItem - Menu item permission(s) required
  * @param {boolean} requireAll - If true, requires all menu items
  */
-export const withMenuPermission = (Component, menuItem, requireAll = false) => {
+export const withMenuItemPermission = (
+  Component,
+  menuItem,
+  requireAll = false
+) => {
   return (props) => (
     <CanAccessMenuItem menuItem={menuItem} requireAll={requireAll}>
       <Component {...props} />

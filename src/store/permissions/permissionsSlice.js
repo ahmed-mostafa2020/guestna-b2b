@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  actions: [],
+  elements: [],
   menuItems: [],
+  pages: [],
 };
 
 const permissionsSlice = createSlice({
@@ -10,12 +11,14 @@ const permissionsSlice = createSlice({
   initialState,
   reducers: {
     setPermissions: (state, action) => {
-      state.actions = action.payload.ACTION || [];
+      state.elements = action.payload.ELEMENT || [];
       state.menuItems = action.payload.MENU_ITEM || [];
+      state.pages = action.payload.PAGE || [];
     },
     clearPermissions: (state) => {
-      state.actions = [];
+      state.elements = [];
       state.menuItems = [];
+      state.pages = [];
     },
   },
 });
