@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 export const usePermissions = () => {
   const elements = useSelector((state) => state.permissions?.elements || []);
   const menuItems = useSelector((state) => state.permissions?.menuItems || []);
-  const pages = useSelector((state) => state.permissions?.page || []);
+  const pages = useSelector((state) => state.permissions?.pages || []);
 
   /**
    * Check if user has a specific action permission
