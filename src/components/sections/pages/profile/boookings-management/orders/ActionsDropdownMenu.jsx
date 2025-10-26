@@ -5,9 +5,11 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
+import { usePermissions } from "@hooks/usePermissions";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { PERMISSIONS } from "@constants/permissions";
 
 import { actionsIcon } from "@assets/svg";
 
@@ -27,10 +29,22 @@ import OrderDetailsModal from "./OrderDetailsModal";
 import EditOrderForm from "@components/forms/editOrder";
 
 const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
+  const { hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
   const { enqueueSnackbar } = useSnackbar();
   const headers = getHeaders(locale);
+
+  // Check individual action permissions
+  const canShowDetails = hasElement(
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOW_DETAILS
+  );
+  const canRemindGuestna = hasElement(
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REMINDER_GUESTNA
+  );
+  const canUpdateTrip = hasElement(
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_UPDATE_TRIP
+  );
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -121,21 +135,23 @@ const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
             },
           }}
         >
-          <MenuItem
-            onClick={() => {
-              handleClose();
-              openModal(bookingId);
-            }}
-            disabled={loadingDetails}
-          >
-            {loadingDetails ? (
-              <CircularProgress size={17} color="primary" />
-            ) : (
-              t("links.showDetails")
-            )}
-          </MenuItem>
+          {canShowDetails && (
+            <MenuItem
+              onClick={() => {
+                handleClose();
+                openModal(bookingId);
+              }}
+              disabled={loadingDetails}
+            >
+              {loadingDetails ? (
+                <CircularProgress size={17} color="primary" />
+              ) : (
+                t("links.showDetails")
+              )}
+            </MenuItem>
+          )}
 
-          {bookingStatus !== TRIP_STATUS.DONE && (
+          {canRemindGuestna && bookingStatus !== TRIP_STATUS.DONE && (
             <MenuItem onClick={sendRemind} disabled={loading}>
               {loading ? (
                 <CircularProgress size={17} color="primary" />
@@ -145,7 +161,7 @@ const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
             </MenuItem>
           )}
 
-          {bookingStatus !== TRIP_STATUS.DONE && (
+          {canUpdateTrip && bookingStatus !== TRIP_STATUS.DONE && (
             <MenuItem onClick={showEditOrderForm} disabled={loadingEditDetails}>
               {loadingEditDetails ? (
                 <CircularProgress size={17} color="primary" />

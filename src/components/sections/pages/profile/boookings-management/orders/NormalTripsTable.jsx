@@ -7,6 +7,7 @@ import { memo } from "react";
 import { usePermissions } from "@hooks/usePermissions";
 import formatDate from "@utils/FormateDate";
 import { TRIP_STATUS } from "@constants/tripStatus";
+import { PERMISSIONS } from "@constants/permissions";
 import Pagination from "@components/common/Pagination";
 import ActionsDropdownMenu from "./ActionsDropdownMenu";
 
@@ -19,9 +20,16 @@ const NormalTripsTable = ({
   setCurrentPage,
   enablePagination,
 }) => {
-  const { hasElement } = usePermissions();
+  const { hasAnyElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
+
+  // Check if user has any order management action permissions
+  const hasAnyActionPermission = hasAnyElement([
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOW_DETAILS,
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REMINDER_GUESTNA,
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_UPDATE_TRIP,
+  ]);
 
   const getStatusStyles = (status) => {
     switch (status) {
@@ -79,9 +87,11 @@ const NormalTripsTable = ({
                   <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.tables.bookings.header.status")}
                   </th>
-                  <th className="px-6 py-4 font-semibold text-start">
-                    {t("profile.tables.bookings.header.actions")}
-                  </th>
+                  {hasAnyActionPermission && (
+                    <th className="px-6 py-4 font-semibold text-start">
+                      {t("profile.tables.bookings.header.actions")}
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -117,12 +127,14 @@ const NormalTripsTable = ({
                       </span>
                     </td>
 
-                    <td className="px-1 lg:px-6 py-4">
-                      <ActionsDropdownMenu
-                        bookingId={booking._id}
-                        bookingStatus={booking.status}
-                      />
-                    </td>
+                    {hasAnyActionPermission && (
+                      <td className="px-1 lg:px-6 py-4">
+                        <ActionsDropdownMenu
+                          bookingId={booking._id}
+                          bookingStatus={booking.status}
+                        />
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -175,12 +187,14 @@ const NormalTripsTable = ({
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <ActionsDropdownMenu
-                  bookingId={booking._id}
-                  bookingStatus={booking.status}
-                />
-              </div>
+              {hasAnyActionPermission && (
+                <div className="space-y-2">
+                  <ActionsDropdownMenu
+                    bookingId={booking._id}
+                    bookingStatus={booking.status}
+                  />
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}

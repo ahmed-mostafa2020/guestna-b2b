@@ -4,8 +4,10 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { memo } from "react";
 
+import { usePermissions } from "@hooks/usePermissions";
 import formatDate from "@utils/FormateDate";
 import formatCurrency from "@utils/FormatCurrency";
+import { PERMISSIONS } from "@constants/permissions";
 import Pagination from "@components/common/Pagination";
 import ActionsDropdownMenu from "./ActionsDropdownMenu";
 
@@ -18,8 +20,16 @@ const CustomizedTripsTable = ({
   setCurrentPage,
   enablePagination,
 }) => {
+  const { hasAnyElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
+
+  // Check if user has any order management action permissions
+  const hasAnyActionPermission = hasAnyElement([
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOW_DETAILS,
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REMINDER_GUESTNA,
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_UPDATE_TRIP,
+  ]);
 
   const getStatusStyles = (status) => {
     switch (status) {
@@ -87,9 +97,11 @@ const CustomizedTripsTable = ({
                   <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.tables.bookings.header.status")}
                   </th>
-                  <th className="px-6 py-4 font-semibold text-start">
-                    {t("profile.tables.bookings.header.actions")}
-                  </th>
+                  {hasAnyActionPermission && (
+                    <th className="px-6 py-4 font-semibold text-start">
+                      {t("profile.tables.bookings.header.actions")}
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -137,19 +149,14 @@ const CustomizedTripsTable = ({
                       </span>
                     </td>
 
-                    <td className="px-6 py-4">
-                      {/* <button className="rounded-md text-white bg-mainColor px-4 py-2 hover:bg-titleColor text-sm me-2 transition-all duration-200 ease-in-out border border-mainColor hover:border-titleColor">
-                        {t("links.remindGuestna")}
-                      </button>
-
-                      <button className="rounded-md border border-gray-300  px-4 py-2 hover:bg-secColor text-sm transition-all duration-200 ease-in-out hover:border-secColor hover:text-white">
-                        {t("links.sendToManager")}
-                      </button> */}
-                      <ActionsDropdownMenu
-                        bookingId={booking._id}
-                        bookingStatus={booking.status}
-                      />
-                    </td>
+                    {hasAnyActionPermission && (
+                      <td className="px-6 py-4">
+                        <ActionsDropdownMenu
+                          bookingId={booking._id}
+                          bookingStatus={booking.status}
+                        />
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -212,12 +219,14 @@ const CustomizedTripsTable = ({
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <ActionsDropdownMenu
-                  bookingId={booking._id}
-                  bookingStatus={booking.status}
-                />
-              </div>
+              {hasAnyActionPermission && (
+                <div className="space-y-2">
+                  <ActionsDropdownMenu
+                    bookingId={booking._id}
+                    bookingStatus={booking.status}
+                  />
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}
