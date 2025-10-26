@@ -49,8 +49,11 @@ const ProfilePageTemplate = ({
 
   if (isLoading)
     return (
-      <div className="w-full min-h-screen centered">
-        <FullScreenLoading status="pending" />
+      <div className="w-full py-12 centered">
+        <div className="flex flex-col items-center gap-3">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-mainColor"></div>
+          <p className="text-sm text-gray-500">{t("common.loading")}</p>
+        </div>
       </div>
     );
 

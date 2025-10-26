@@ -26,38 +26,22 @@ const ProtectedProfilePage = ({
   const { hasPage, pages } = usePermissions();
 
   useEffect(() => {
-    // Wait for permissions to load from Redux store
-    if (pages.length === 0) {
-      return; // Still loading permissions
-    }
-
     // Check if user has the required page permission
-    if (!hasPage(requiredPermission)) {
+    // Only redirect if permissions are loaded and user doesn't have access
+    if (pages.length > 0 && !hasPage(requiredPermission)) {
       // Redirect to main profile page or custom redirect path
       const redirectPath = redirectTo || `/${locale}/profile`;
       router.replace(redirectPath);
     }
   }, [hasPage, requiredPermission, router, locale, redirectTo, pages.length]);
 
-  // Show loading while checking permissions
-  if (pages.length === 0) {
-    return (
-      <div className="w-full min-h-screen centered">
-        <FullScreenLoading status="pending" />
-      </div>
-    );
+  // If permissions are loaded and user doesn't have access, show nothing (redirecting)
+  if (pages.length > 0 && !hasPage(requiredPermission)) {
+    return null;
   }
 
-  // If user doesn't have permission, show loading while redirecting
-  if (!hasPage(requiredPermission)) {
-    return (
-      <div className="w-full min-h-screen centered">
-        <FullScreenLoading status="pending" />
-      </div>
-    );
-  }
-
-  // User has permission, render the page
+  // User has permission or permissions still loading, render the page
+  // (Let the parent page handle its own loading state)
   return <>{children}</>;
 };
 
