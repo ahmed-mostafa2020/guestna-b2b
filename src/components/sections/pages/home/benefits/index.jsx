@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { Container } from "@mui/material";
 
@@ -14,6 +14,7 @@ import entertainmentBg from "@assets/entertainmentBg.png";
 import entertainment from "@assets/entertainment.svg";
 
 const Benefits = () => {
+  const locale = useLocale();
   const t = useTranslations();
 
   const benefitsList = [
@@ -44,7 +45,7 @@ const Benefits = () => {
   ];
 
   const renderedBenefits = benefitsList.map((benefit) => (
-    <div key={benefit.title} className="flex-col gap-2 centered">
+    <div key={benefit.title} className="flex-col gap-2 flex items-center">
       <Image
         src={benefit.imageBg}
         alt={benefit.title}
@@ -64,11 +65,11 @@ const Benefits = () => {
           className="object-cover border-2 border-[#EFEFEF] bg-[#EFEFEF] rounded-[100px]"
         />
 
-        <h3 className="text-lg font-medium text-center text-titleColor lg:text-xl text-wrap lg:text-nowrap">
+        <h3 className="text-center text-lg lg:text-xl font-medium text-titleColor break-words">
           {benefit.title}
         </h3>
 
-        <p className="text-base font-medium w-[95%] text-center text-[#495151] lg:text-lg pb-6">
+        <p className="text-center text-base lg:text-lg font-medium w-[95%] text-textLight pb-6">
           {benefit.description}
         </p>
       </div>

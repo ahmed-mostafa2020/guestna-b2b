@@ -12,7 +12,7 @@ import Pagination from "@components/common/Pagination";
 
 import { CardContent, Card, CircularProgress } from "@mui/material";
 
-const Report = ({
+const ReportTable = ({
   data,
   currentPage,
   setCurrentPage,
@@ -266,4 +266,4 @@ const Report = ({
   );
 };
 
-export default memo(Report);
+export default memo(ReportTable);

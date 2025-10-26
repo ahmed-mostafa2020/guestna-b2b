@@ -10,6 +10,7 @@ import ImageWithPlaceholder from "@components/common/imagesPlaceholder/ImageWith
 
 const MainCategoryCard = ({ category }) => {
   const locale = useLocale();
+  const isEn = locale === "en";
 
   if (!category) return null;
 
@@ -30,12 +31,16 @@ const MainCategoryCard = ({ category }) => {
 
       <Link
         href={`/${locale}/discover?categories=${category._id}`}
-        className="absolute  text-center bottom-0 left-0 right-0 bg-[rgba(10,10,10,0.76)] backdrop-blur-[12px] px-3 py-3 z-[2] text-white transition-all duration-500 
+        className="absolute text-center bottom-0 left-0 right-0 bg-[rgba(10,10,10,0.76)] backdrop-blur-[12px] px-3 py-3 z-[2] text-white transition-all duration-500 
   ease-in-out h-16 group-hover:h-full group-hover:rounded-lg centered flex-col gap-2"
       >
         <h4 className="text-lg font-semibold lg:text-xl">{category.name}</h4>
 
-        <p className="hidden leading-8 transition-all duration-500 ease-in-out group-hover:block">
+        <p
+          className={`hidden leading-8 transition-all duration-500 ease-in-out group-hover:block ${
+            isEn ? "overflow-y-scroll" : ""
+          }`}
+        >
           {category.description}
         </p>
       </Link>

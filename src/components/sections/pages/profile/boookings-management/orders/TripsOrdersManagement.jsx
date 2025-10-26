@@ -8,7 +8,7 @@ import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
 import CustomizedModal from "@components/common/customizedModal";
 import CustomNewTripForm from "@components/forms/customNewTrip";
-import FeatureCards from "./FeatureCardListing";
+import FeatureCardListing from "./FeatureCardListing";
 
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
@@ -146,7 +146,7 @@ const TripsOrdersManagement = () => {
             </button>
           </div>
 
-          <FeatureCards />
+          <FeatureCardListing />
         </div>
       </div>
 
