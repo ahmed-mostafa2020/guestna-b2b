@@ -53,6 +53,7 @@
     "FEMALE": "أنثى",
     "guestna": "جستنا",
     "startsWith": "تبدأ من",
+    "loading": "جاري التحميل",
     "export": {
       "filename": "تقرير_الحجز",
       "pdf": {
