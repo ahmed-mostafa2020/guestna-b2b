@@ -11,13 +11,14 @@ const ThemeDropdown = () => {
   const dispatch = useDispatch();
   const currentTheme = useSelector((state) => state.theme.currentTheme);
   const colorPreferences = useSelector((state) => state.theme.colorPreferences);
+  const customThemeLabel = useSelector((state) => state.theme.customThemeLabel);
   const [selectedTheme, setSelectedTheme] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
   // Apply theme on mount and when theme changes
   useEffect(() => {
     const themeName =
-      currentTheme === "original" ? t("originalTheme") : t("customizedTheme");
+      currentTheme === "original" ? t("originalTheme") : customThemeLabel 
     setSelectedTheme(themeName);
     applyTheme(currentTheme);
   }, [currentTheme, t]);

@@ -47,6 +47,7 @@ import { useSnackbar } from "notistack";
 import axios from "axios";
 
 import hello from "@assets/gif/hello.gif";
+import { set } from "nprogress";
 
 const RolesLoginForm = () => {
   // const confirmTermsAndConditions = useSelector(
@@ -109,7 +110,9 @@ const RolesLoginForm = () => {
             dispatch(
               setColorPreferences(response.data.user.colorPreferences)
             );
-         }
+            dispatch(setCustomThemeLabel(response.data.user.companyName));
+          }
+         
 
           router.push(`/${locale}/profile`);
 
