@@ -3,19 +3,21 @@
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setTheme } from "@store/theme/themeSlice";
+import { setTheme, setColorPreferences } from "@store/theme/themeSlice";
 import { doneIcon } from "@assets/svg";
 
 const ThemeDropdown = () => {
   const t = useTranslations("header");
   const dispatch = useDispatch();
   const currentTheme = useSelector((state) => state.theme.currentTheme);
+  const colorPreferences = useSelector((state) => state.theme.colorPreferences);
   const [selectedTheme, setSelectedTheme] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
   // Apply theme on mount and when theme changes
   useEffect(() => {
-    const themeName = currentTheme === "original" ? t("originalTheme") : t("customizedTheme");
+    const themeName =
+      currentTheme === "original" ? t("originalTheme") : t("customizedTheme");
     setSelectedTheme(themeName);
     applyTheme(currentTheme);
   }, [currentTheme, t]);
@@ -25,19 +27,58 @@ const ThemeDropdown = () => {
 
     if (themeValue === "customized") {
       // Apply customized theme colors
-      root.style.setProperty("--color-main", "#0B7F8F");
-      root.style.setProperty("--color-secondary", "#80AB3C");
-      root.style.setProperty("--color-title", "#259EB0");
-      root.style.setProperty("--color-text-dark", "#1D1D1B");
-      root.style.setProperty("--color-text-light", "#585652");
-      root.style.setProperty("--color-bg-home", "#FFFFFF");
-      root.style.setProperty("--color-bg-package-details", "#E1F6F8");
-      root.style.setProperty("--color-buttons-hover", "#139DBD");
-      root.style.setProperty("--color-badge", "#1858A5");
-      root.style.setProperty("--color-error", "#bf0000");
-      root.style.setProperty("--color-success", "#5cb85c");
-      root.style.setProperty("--color-border", "#18D4D9");
-      root.style.setProperty("--color-footer-link", "#CFFBFF");
+      root.style.setProperty(
+        "--color-main",
+        colorPreferences?.color_main || "#259EB0"
+      );
+      root.style.setProperty(
+        "--color-secondary",
+        colorPreferences?.color_secondary || "#80AB3C"
+      );
+      root.style.setProperty(
+        "--color-title",
+        colorPreferences?.color_title || "#259EB0"
+      );
+      root.style.setProperty(
+        "--color-text-dark",
+        colorPreferences?.color_text_dark || "#1D1D1B"
+      );
+      root.style.setProperty(
+        "--color-text-light",
+        colorPreferences?.color_text_light || "#585652"
+      );
+      root.style.setProperty(
+        "--color-bg-home",
+        colorPreferences?.color_bg_home || "#FFFFFF"
+      );
+      root.style.setProperty(
+        "--color-bg-package-details",
+        colorPreferences?.color_bg_package_details || "#E1F6F8"
+      );
+      root.style.setProperty(
+        "--color-buttons-hover",
+        colorPreferences?.color_buttons_hover || "#139DBD"
+      );
+      root.style.setProperty(
+        "--color-badge",
+        colorPreferences?.color_badge || "#1858A5"
+      );
+      root.style.setProperty(
+        "--color-error",
+        colorPreferences?.color_error || "#bf0000"
+      );
+      root.style.setProperty(
+        "--color-success",
+        colorPreferences?.color_success || "#5cb85c"
+      );
+      root.style.setProperty(
+        "--color-border",
+        colorPreferences?.color_border || "#18D4D9"
+      );
+      root.style.setProperty(
+        "--color-footer-link",
+        colorPreferences?.color_footer_link || "#CFFBFF"
+      );
     } else {
       // Apply original theme colors
       root.style.setProperty("--color-main", "#007473");
@@ -90,9 +131,7 @@ const ThemeDropdown = () => {
         onClick={toggleDropdown}
       >
         <div>
-          <h4 className="text-xs font-light text-start">
-            {t("chooseTheme")}
-          </h4>
+          <h4 className="text-xs font-light text-start">{t("chooseTheme")}</h4>
 
           <h3 className="text-lg leading-5">{selectedTheme}</h3>
         </div>
