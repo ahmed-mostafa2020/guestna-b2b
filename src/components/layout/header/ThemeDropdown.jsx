@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setTheme, setColorPreferences } from "@store/theme/themeSlice";
+import { setTheme } from "@store/theme/themeSlice";
 import { doneIcon } from "@assets/svg";
 
 const ThemeDropdown = () => {
