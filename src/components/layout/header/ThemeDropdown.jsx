@@ -25,59 +25,59 @@ const ThemeDropdown = () => {
   const applyTheme = (themeValue) => {
     const root = document.documentElement;
 
-    if (themeValue === "customized") {
+    if (themeValue === "customized" && colorPreferences) {
       // Apply customized theme colors
       root.style.setProperty(
         "--color-main",
-        colorPreferences?.color_main || "#259EB0"
+        colorPreferences.color_main 
       );
       root.style.setProperty(
         "--color-secondary",
-        colorPreferences?.color_secondary || "#80AB3C"
+        colorPreferences.color_secondary 
       );
       root.style.setProperty(
         "--color-title",
-        colorPreferences?.color_title || "#259EB0"
+        colorPreferences.color_title
       );
       root.style.setProperty(
         "--color-text-dark",
-        colorPreferences?.color_text_dark || "#1D1D1B"
+        colorPreferences?.color_text_dark 
       );
       root.style.setProperty(
         "--color-text-light",
-        colorPreferences?.color_text_light || "#585652"
+        colorPreferences.color_text_light 
       );
       root.style.setProperty(
         "--color-bg-home",
-        colorPreferences?.color_bg_home || "#FFFFFF"
+        colorPreferences.color_bg_home 
       );
       root.style.setProperty(
         "--color-bg-package-details",
-        colorPreferences?.color_bg_package_details || "#E1F6F8"
+        colorPreferences.color_bg_package_details 
       );
       root.style.setProperty(
         "--color-buttons-hover",
-        colorPreferences?.color_buttons_hover || "#139DBD"
+        colorPreferences.color_buttons_hover 
       );
       root.style.setProperty(
         "--color-badge",
-        colorPreferences?.color_badge || "#1858A5"
+        colorPreferences.color_badge 
       );
       root.style.setProperty(
         "--color-error",
-        colorPreferences?.color_error || "#bf0000"
+        colorPreferences.color_error 
       );
       root.style.setProperty(
         "--color-success",
-        colorPreferences?.color_success || "#5cb85c"
+        colorPreferences.color_success 
       );
       root.style.setProperty(
         "--color-border",
-        colorPreferences?.color_border || "#18D4D9"
+        colorPreferences.color_border 
       );
       root.style.setProperty(
         "--color-footer-link",
-        colorPreferences?.color_footer_link || "#CFFBFF"
+        colorPreferences.color_footer_link
       );
     } else {
       // Apply original theme colors
