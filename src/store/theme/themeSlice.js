@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { set } from "nprogress";
 
 const initialState = {
   currentTheme: "original", // 'original' or 'customized'
@@ -24,5 +23,5 @@ const themeSlice = createSlice({
   },
 });
 
-export const { setTheme , setColorPreferences } = themeSlice.actions;
+export const { setTheme , setColorPreferences , setCustomThemeLabel } = themeSlice.actions;
 export default themeSlice.reducer;

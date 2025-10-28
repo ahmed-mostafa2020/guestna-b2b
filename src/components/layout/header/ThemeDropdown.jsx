@@ -26,6 +26,7 @@ const ThemeDropdown = () => {
   const applyTheme = (themeValue) => {
     const root = document.documentElement;
 
+    
     if (themeValue === "customized" && colorPreferences) {
       // Apply customized theme colors
       root.style.setProperty(
@@ -109,9 +110,11 @@ const ThemeDropdown = () => {
     applyTheme(themeValue);
   };
 
+  console.log("Custom Theme Label:", customThemeLabel);
+
   const themesList = [
     { name: t("originalTheme"), value: "original" },
-    { name: t("customizedTheme"), value: "customized" },
+    { name: customThemeLabel, value:   "customized"  },
   ];
 
   const renderedThemesList = themesList.map((theme, index) => (
