@@ -18,6 +18,7 @@ import ActionsDialog from "../customization/gridSection/largeSizeGrid/dayActivit
 
 import { useSnackbar } from "notistack";
 import Cookies from "js-cookie";
+import { setColorPreferences, setCustomThemeLabel, setTheme } from "@/src/store/theme/themeSlice";
 
 const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,6 +43,10 @@ const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
       dispatch(resetSignUpData());
       dispatch(resetLoginData());
       dispatch(clearProfile());
+      dispatch(setColorPreferences(null));
+      dispatch(setCustomThemeLabel(null));
+      dispatch(setTheme("original"));
+      
 
       setIsOpen(false);
 

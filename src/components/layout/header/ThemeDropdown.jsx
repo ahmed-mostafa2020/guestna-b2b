@@ -114,8 +114,13 @@ const ThemeDropdown = () => {
 
   const themesList = [
     { name: t("originalTheme"), value: "original" },
-    { name: customThemeLabel, value:   "customized"  },
+   
   ];
+
+  
+  if (customThemeLabel || colorPreferences) {
+    themesList.push({ name: customThemeLabel, value: "customized" });
+  }
 
   const renderedThemesList = themesList.map((theme, index) => (
     <div

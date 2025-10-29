@@ -25,6 +25,7 @@ import ProfileTabs from "@components/sections/pages/profile/ProfileTabs";
 import Grid from "@mui/material/Grid2";
 
 import Cookies from "js-cookie";
+import { setColorPreferences, setCustomThemeLabel } from "@/src/store/theme/themeSlice";
 
 const ProfileLayout = ({ children }) => {
   const userType = useSelector((state) => state.users.userType);
@@ -54,10 +55,14 @@ const ProfileLayout = ({ children }) => {
       onLoading: setProfileLoading,
     }
   );
-
   useEffect(() => {
     if (data) {
+
+      console.log("Profile Layout Data:", data);
+      
       dispatch(setProfileImage(data?.image || ""));
+      dispatch(setColorPreferences(data?.colorPreferences || ""));
+      dispatch(setCustomThemeLabel(data?.companyName || ""));
       Cookies.set(CONSTANT_VALUES.PROFILE_IMAGE, data?.image || "");
     }
   }, [data, dispatch]);
