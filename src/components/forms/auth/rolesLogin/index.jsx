@@ -107,7 +107,7 @@ const RolesLoginForm = () => {
           
           console.log("User Color Preferences:", response.data.user);
           if (response.data.user.colorPreferences) {
-            dispatch(setTheme("customized"));
+           
             dispatch(
               setColorPreferences(response.data.user.colorPreferences)
             );

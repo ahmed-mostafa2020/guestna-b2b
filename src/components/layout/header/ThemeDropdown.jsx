@@ -14,90 +14,93 @@ const ThemeDropdown = () => {
   const customThemeLabel = useSelector((state) => state.theme.customThemeLabel);
   const [selectedTheme, setSelectedTheme] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+   
 
   // Apply theme on mount and when theme changes
   useEffect(() => {
     const themeName =
       currentTheme === "original" ? t("originalTheme") : customThemeLabel 
+    dispatch(setTheme(currentTheme));
     setSelectedTheme(themeName);
-    applyTheme(currentTheme);
+
+   
   }, [currentTheme, t]);
 
-  const applyTheme = (themeValue) => {
-    const root = document.documentElement;
+  // const applyTheme = (themeValue) => {
+  //   const root = document.documentElement;
 
     
-    if (themeValue === "customized" && colorPreferences) {
-      // Apply customized theme colors
-      root.style.setProperty(
-        "--color-main",
-        colorPreferences.color_main 
-      );
-      root.style.setProperty(
-        "--color-secondary",
-        colorPreferences.color_secondary 
-      );
-      root.style.setProperty(
-        "--color-title",
-        colorPreferences.color_title
-      );
-      root.style.setProperty(
-        "--color-text-dark",
-        colorPreferences?.color_text_dark 
-      );
-      root.style.setProperty(
-        "--color-text-light",
-        colorPreferences.color_text_light 
-      );
-      root.style.setProperty(
-        "--color-bg-home",
-        colorPreferences.color_bg_home 
-      );
-      root.style.setProperty(
-        "--color-bg-package-details",
-        colorPreferences.color_bg_package_details 
-      );
-      root.style.setProperty(
-        "--color-buttons-hover",
-        colorPreferences.color_buttons_hover 
-      );
-      root.style.setProperty(
-        "--color-badge",
-        colorPreferences.color_badge 
-      );
-      root.style.setProperty(
-        "--color-error",
-        colorPreferences.color_error 
-      );
-      root.style.setProperty(
-        "--color-success",
-        colorPreferences.color_success 
-      );
-      root.style.setProperty(
-        "--color-border",
-        colorPreferences.color_border 
-      );
-      root.style.setProperty(
-        "--color-footer-link",
-        colorPreferences.color_footer_link
-      );
-    } else {
-      // Apply original theme colors
-      root.style.setProperty("--color-main", "#007473");
-      root.style.setProperty("--color-secondary", "#F09814");
-      root.style.setProperty("--color-title", "#008F8F");
-      root.style.setProperty("--color-text-dark", "#1F2626");
-      root.style.setProperty("--color-text-light", "#737373");
-      root.style.setProperty("--color-bg-home", "#eeeeee");
-      root.style.setProperty("--color-bg-package-details", "#F3F3F3");
-      root.style.setProperty("--color-buttons-hover", "#E1F5F5");
-      root.style.setProperty("--color-badge", "#1858A5");
-      root.style.setProperty("--color-error", "#bf0000");
-      root.style.setProperty("--color-success", "#5cb85c");
-      root.style.setProperty("--color-border", "#ECECEC");
-      root.style.setProperty("--color-footer-link", "#00000099");
-    }
-  };
+  //   if ( themeValue === "customized" && colorPreferences) {
+  //     // Apply customized theme colors
+  //     root.style.setProperty(
+  //       "--color-main",
+  //       colorPreferences.color_main 
+  //     );
+  //     root.style.setProperty(
+  //       "--color-secondary",
+  //       colorPreferences.color_secondary 
+  //     );
+  //     root.style.setProperty(
+  //       "--color-title",
+  //       colorPreferences.color_title
+  //     );
+  //     root.style.setProperty(
+  //       "--color-text-dark",
+  //       colorPreferences?.color_text_dark 
+  //     );
+  //     root.style.setProperty(
+  //       "--color-text-light",
+  //       colorPreferences.color_text_light 
+  //     );
+  //     root.style.setProperty(
+  //       "--color-bg-home",
+  //       colorPreferences.color_bg_home 
+  //     );
+  //     root.style.setProperty(
+  //       "--color-bg-package-details",
+  //       colorPreferences.color_bg_package_details 
+  //     );
+  //     root.style.setProperty(
+  //       "--color-buttons-hover",
+  //       colorPreferences.color_buttons_hover 
+  //     );
+  //     root.style.setProperty(
+  //       "--color-badge",
+  //       colorPreferences.color_badge 
+  //     );
+  //     root.style.setProperty(
+  //       "--color-error",
+  //       colorPreferences.color_error 
+  //     );
+  //     root.style.setProperty(
+  //       "--color-success",
+  //       colorPreferences.color_success 
+  //     );
+  //     root.style.setProperty(
+  //       "--color-border",
+  //       colorPreferences.color_border 
+  //     );
+  //     root.style.setProperty(
+  //       "--color-footer-link",
+  //       colorPreferences.color_footer_link
+  //     );
+  //   } else {
+  //     // Apply original theme colors
+  //     root.style.setProperty("--color-main", "#007473");
+  //     root.style.setProperty("--color-secondary", "#F09814");
+  //     root.style.setProperty("--color-title", "#008F8F");
+  //     root.style.setProperty("--color-text-dark", "#1F2626");
+  //     root.style.setProperty("--color-text-light", "#737373");
+  //     root.style.setProperty("--color-bg-home", "#eeeeee");
+  //     root.style.setProperty("--color-bg-package-details", "#F3F3F3");
+  //     root.style.setProperty("--color-buttons-hover", "#E1F5F5");
+  //     root.style.setProperty("--color-badge", "#1858A5");
+  //     root.style.setProperty("--color-error", "#bf0000");
+  //     root.style.setProperty("--color-success", "#5cb85c");
+  //     root.style.setProperty("--color-border", "#ECECEC");
+  //     root.style.setProperty("--color-footer-link", "#00000099");
+  //   }
+  // };
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -107,7 +110,7 @@ const ThemeDropdown = () => {
     setSelectedTheme(themeName);
     setIsOpen(false);
     dispatch(setTheme(themeValue));
-    applyTheme(themeValue);
+
   };
 
   console.log("Custom Theme Label:", customThemeLabel);
@@ -119,7 +122,7 @@ const ThemeDropdown = () => {
 
   
   if (customThemeLabel || colorPreferences) {
-    themesList.push({ name: customThemeLabel, value: "customized" });
+    themesList.push({ name: customThemeLabel, value: 'customized' });
   }
 
   const renderedThemesList = themesList.map((theme, index) => (

@@ -43,8 +43,10 @@ const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
       dispatch(resetSignUpData());
       dispatch(resetLoginData());
       dispatch(clearProfile());
+
       dispatch(setColorPreferences(null));
       dispatch(setCustomThemeLabel(null));
+      
       dispatch(setTheme("original"));
       
 
