@@ -58,7 +58,6 @@ const ProfileLayout = ({ children }) => {
   useEffect(() => {
     if (data) {
 
-      console.log("Profile Layout Data:", data);
       
       dispatch(setProfileImage(data?.image || ""));
       dispatch(setColorPreferences(data?.colorPreferences || ""));
