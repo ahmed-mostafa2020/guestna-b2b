@@ -113,7 +113,6 @@ const ThemeDropdown = () => {
 
   };
 
-  console.log("Custom Theme Label:", customThemeLabel);
 
   const themesList = [
     { name: t("originalTheme"), value: "original" },

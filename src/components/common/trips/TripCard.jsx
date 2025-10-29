@@ -32,10 +32,11 @@ const TripCard = ({ activityCard, imageWidth = 300 }) => {
   }, [activityCard.name]);
 
   const numCities = activityCard.cities.length;
+ 
   const renderCities = useMemo(() => {
     if (numCities === 1) {
       return (
-        <h4 className="gap-1 font-medium capitalize centered">
+        <h4  className="gap-1 font-medium capitalize centered">
           {locationIcon}
           {activityCard.cities[0].name}
         </h4>
@@ -46,7 +47,7 @@ const TripCard = ({ activityCard, imageWidth = 300 }) => {
           {locationIcon}
 
           {activityCard.cities.map((city, index) => (
-            <h4 key={city._id} className="font-medium capitalize">
+            <h4 key={index} className="font-medium capitalize">
               {city.name}
               {index != activityCard.cities.length - 1 && <span> / </span>}
             </h4>
