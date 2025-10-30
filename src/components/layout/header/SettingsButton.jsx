@@ -104,7 +104,8 @@ const SettingsButton = () => {
             <div className="flex flex-col gap-3">
               <LanguagesDropdown />
 
-              <ThemeDropdown />
+              {/* <ThemeDropdown /> */}
+              
 
               <CountriesDropdown />
             </div>
@@ -158,7 +159,7 @@ const SettingsButton = () => {
             <div className="flex flex-col gap-3">
               <LanguagesDropdown />
 
-              <ThemeDropdown />
+              {/* <ThemeDropdown /> */}
 
               <CountriesDropdown />
             </div>

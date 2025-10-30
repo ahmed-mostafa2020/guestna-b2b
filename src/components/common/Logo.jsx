@@ -6,14 +6,17 @@ import { useLocale } from "next-intl";
 import { useSelector } from "react-redux";
 
 import logo from "@assets/logo.png";
-import alMotaqadimahLogo from "@assets/almotaqadimahLogo.png";
 
 const Logo = () => {
   const locale = useLocale();
   const currentTheme = useSelector((state) => state.theme.currentTheme);
+  const customLogo = useSelector((state) => state.theme.customLogo);
+
+  // Use custom logo if the current theme is customized and a custom logo is set
+  
 
   // Select logo based on current theme
-  const currentLogo = currentTheme === "customized" ? alMotaqadimahLogo : logo;
+  const currentLogo = currentTheme === "customized" ? customLogo : logo;
 
   return (
     <Link href={`/${locale}`} className="outline-none w-fit">

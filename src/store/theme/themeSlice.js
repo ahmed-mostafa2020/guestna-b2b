@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   currentTheme: "original", // 'original' or 'customized'
   colorPreferences: null,
-  customThemeLabel: null
+  customLogo: null
 };
 
 const themeSlice = createSlice({
@@ -88,11 +88,11 @@ const themeSlice = createSlice({
       state.colorPreferences = action.payload;
     },
 
-    setCustomThemeLabel: (state, action) => {
-      state.customThemeLabel = action.payload;
+    setCustomLogo: (state, action) => {
+      state.customLogo = action.payload;
     }
   },
 });
 
-export const { setTheme , setColorPreferences , setCustomThemeLabel } = themeSlice.actions;
+export const { setTheme , setColorPreferences , setCustomLogo } = themeSlice.actions;
 export default themeSlice.reducer;

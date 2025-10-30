@@ -22,7 +22,12 @@ import {
   // toggleConfirmTermsAndConditions,
 } from "@store/forms/auth/login/loginFormSlice";
 import { setPermissions } from "@store/permissions/permissionsSlice";
-import { setTheme  ,setColorPreferences, setCustomThemeLabel} from "@/src/store/theme/themeSlice";
+import {
+  setTheme,
+  setColorPreferences,
+ 
+  setCustomLogo,
+} from "@/src/store/theme/themeSlice";
 import { useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -104,16 +109,16 @@ const RolesLoginForm = () => {
           dispatch(setUserToken(response.data.token));
           dispatch(setUser(response.data.userType));
           dispatch(setPermissions(response.data.user.permissions));
-          
+
           console.log("User Color Preferences:", response.data.user);
+
           if (response.data.user.colorPreferences) {
-           
-            dispatch(
-              setColorPreferences(response.data.user.colorPreferences)
-            );
-            dispatch(setCustomThemeLabel(response.data.user.companyName));
+            dispatch(setColorPreferences(response.data.user.colorPreferences));
+            dispatch(setTheme("customized"));
+            dispatch(setCustomLogo(response.data.user.companyLogo));
           }
-         
+
+          
 
           router.push(`/${locale}/profile`);
 
