@@ -58,7 +58,7 @@ const ProfileLayout = ({ children }) => {
   useEffect(() => {
     if (data) {
 
-      console.log(data)
+
       dispatch(setProfileImage(data?.image || ""));
       if (data.colorPreferences) {
         dispatch(setTheme("customized"));
