@@ -110,7 +110,7 @@ const RolesLoginForm = () => {
           dispatch(setUser(response.data.userType));
           dispatch(setPermissions(response.data.user.permissions));
 
-          console.log("User Color Preferences:", response.data.user);
+          
 
           if (response.data.user.colorPreferences) {
             dispatch(setColorPreferences(response.data.user.colorPreferences));
