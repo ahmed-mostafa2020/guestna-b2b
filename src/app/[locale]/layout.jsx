@@ -15,6 +15,7 @@ import GoogleTagManager from "@components/libraries/GoogleTagManager";
 import GoogleAnalytics from "@components/libraries/GoogleAnalytics";
 import BugsnagProvider from "@components/providers/BugsnagProvider";
 import BugsnagErrorBoundary from "@components/providers/BugsnagErrorBoundary";
+import ThemeProvider from "@components/providers/ThemeProvider";
 
 import Header from "@components/layout/header/Header";
 import Footer from "@components/layout/footer/Footer";
@@ -121,6 +122,7 @@ export default async function RootLayout({ children, params: { locale } }) {
               <ReduxProvider locale={locale}>
                 <QueryProvider>
                   <NextIntlClientProvider locale={locale} messages={messages}>
+                    <ThemeProvider />
                     <ProgressBar />
                     <Header />
                     {children}
