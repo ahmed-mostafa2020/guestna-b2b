@@ -27,7 +27,7 @@ import {
   setColorPreferences,
  
   setCustomLogo,
-} from "@/src/store/theme/themeSlice";
+} from "@store/theme/themeSlice";
 import { useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
