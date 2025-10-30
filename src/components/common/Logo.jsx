@@ -1,9 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
 
 import { useLocale } from "next-intl";
 
 import { useSelector } from "react-redux";
+
+import ImageWithPlaceholder from "./imagesPlaceholder/ImageWithPlaceholder";
 
 import logo from "@assets/logo.png";
 
@@ -13,14 +14,13 @@ const Logo = () => {
   const customLogo = useSelector((state) => state.theme.customLogo);
 
   // Use custom logo if the current theme is customized and a custom logo is set
-  
 
   // Select logo based on current theme
   const currentLogo = currentTheme === "customized" ? customLogo : logo;
 
   return (
     <Link href={`/${locale}`} className="outline-none w-fit">
-      <Image
+      <ImageWithPlaceholder
         src={currentLogo}
         alt="logo"
         height={72}
