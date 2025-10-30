@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import LanguagesDropdown from "./LanguagesDropdown";
 import CountriesDropdown from "./CountriesDropdown";
-import ThemeDropdown from "./ThemeDropdown";
+
 
 import { Box } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
@@ -104,7 +104,8 @@ const SettingsButton = () => {
             <div className="flex flex-col gap-3">
               <LanguagesDropdown />
 
-              <ThemeDropdown />
+           
+              
 
               <CountriesDropdown />
             </div>
@@ -158,7 +159,7 @@ const SettingsButton = () => {
             <div className="flex flex-col gap-3">
               <LanguagesDropdown />
 
-              <ThemeDropdown />
+           
 
               <CountriesDropdown />
             </div>

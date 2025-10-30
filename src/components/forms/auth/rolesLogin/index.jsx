@@ -22,7 +22,11 @@ import {
   // toggleConfirmTermsAndConditions,
 } from "@store/forms/auth/login/loginFormSlice";
 import { setPermissions } from "@store/permissions/permissionsSlice";
-import { setTheme, setColorPreferences } from "@/src/store/theme/themeSlice";
+import {
+  setTheme,
+  setColorPreferences,
+  setCustomLogo,
+} from "@store/theme/themeSlice";
 import { useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -104,22 +108,17 @@ const RolesLoginForm = () => {
           dispatch(setUserToken(response.data.token));
           dispatch(setUser(response.data.userType));
           dispatch(setPermissions(response.data.user.permissions));
-          dispatch(submitForm(response.data.user));
 
           if (response.data.user.colorPreferences) {
-            dispatch(setTheme("customized"));
             dispatch(setColorPreferences(response.data.user.colorPreferences));
+            dispatch(setTheme("customized"));
+            dispatch(setCustomLogo(response.data.user.companyLogo));
           }
 
-          // Get user's page permissions and redirect to first accessible page
-          // API returns permissions.PAGE (uppercase) as an array
-          const userPages = response.data.user.permissions?.PAGE || [];
-          const redirectPath = getFirstAccessiblePage(userPages, locale);
-          
-          // Delay redirect slightly to ensure Redux state is updated
-          setTimeout(() => {
-            router.push(redirectPath);
-          }, 100);
+          router.push(`/${locale}/profile`);
+
+          dispatch(submitForm(response.data.user));
+          // dispatch(setUser(response.data.userType));
         }
       })
 

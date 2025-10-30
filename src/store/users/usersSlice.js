@@ -5,6 +5,7 @@ import { USERS } from "@constants/users";
 const initialState = {
   userType: USERS.VISITOR,
   userToken: null,
+  
   loading: "idle",
   error: null,
 };
