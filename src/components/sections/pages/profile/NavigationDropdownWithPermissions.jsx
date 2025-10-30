@@ -163,21 +163,18 @@ const NavigationDropdown = () => {
   // Filter navigation items based on user permissions
   const navigationItems = useMemo(() => {
     return allNavigationItems.filter((item) => {
-      // Check if user has permission for this menu item
-      if (!hasMenuItem(item.permission)) {
-        return false;
-      }
-
-      // If item has dropdown, filter sub-items based on permissions
+      // If item has dropdown, check child permissions first
       if (item.hasDropdown && item.subItems) {
+        // Filter sub-items based on permissions
         item.subItems = item.subItems.filter((subItem) =>
           hasMenuItem(subItem.permission)
         );
-        // Only show parent if it has at least one visible sub-item
+        // Show parent if user has ANY child permission (at least one visible sub-item)
         return item.subItems.length > 0;
       }
 
-      return true;
+      // For non-dropdown items, check parent permission
+      return hasMenuItem(item.permission);
     });
   }, [hasMenuItem]);
 
