@@ -37,6 +37,14 @@ const AuthenticatedRequestQuote = ({
   const locale = useLocale();
   const t = useTranslations();
 
+  // Helper function to format dates without timezone issues
+  const formatDateForInput = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const headers = getHeaders(locale);
   // Create custom validation schema for update form (make readonly fields optional)
   const updateTripSchema = createAuthenticatedRequestQuoteSchema(t);
@@ -553,8 +561,27 @@ const AuthenticatedRequestQuote = ({
                         touched={touched.day}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        min={new Date().toISOString().split("T")[0]}
-                        max={values.endDay || undefined}
+                        min={(() => {
+                          // Always use today as minimum date
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0);
+                          return formatDateForInput(today);
+                        })()}
+                        {...(() => {
+                          // Only set max if endDay exists and is in the future
+                          if (values.endDay) {
+                            const endDate = new Date(values.endDay);
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            endDate.setHours(0, 0, 0, 0);
+
+                            // Only apply max constraint if end date is in the future
+                            if (endDate >= today) {
+                              return { max: values.endDay };
+                            }
+                          }
+                          return {};
+                        })()}
                         style={{ cursor: "pointer" }}
                         onClick={(e) =>
                           e.target.showPicker && e.target.showPicker()
@@ -562,37 +589,64 @@ const AuthenticatedRequestQuote = ({
                         labelFontFamily="var(--font-somar-sans), sans-serif"
                       />
                     </div>
-
                     {/* End Date - Only show for multi-day trips */}
-                    {(() => {
+                    {/* {(() => {
                       const selectedTripType = tripTypeData.find(
                         (item) => item.name === values.tripType
                       );
                       return selectedTripType?._id === CONSTANT_VALUES.PACKAGE;
-                    })() && (
-                      <div className="somar-placeholder">
-                        <TextInputGroup
-                          label={t(
-                            "forms.customTrip.proposedTripDate.endLabel"
+                    })() && (*/}
+
+                    <div className="somar-placeholder">
+                      <TextInputGroup
+                        label={t("forms.customTrip.proposedTripDate.endLabel")}
+                        type="date"
+                        name="endDay"
+                        value={values.endDay}
+                        errors={errors.endDay}
+                        touched={touched.endDay}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        {...(() => {
+                          // If editing a trip with past end date, allow unlimited selection (no min)
+                          if (tripData?.toDay) {
+                            const existingEndDate = new Date(tripData.toDay);
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            existingEndDate.setHours(0, 0, 0, 0);
+
+                            // If existing end date is in the past, don't set min attribute
+                            if (existingEndDate < today) {
+                              return {};
+                            }
+                          }
+
+                          // For new trips or future trips, set min attribute
+                          if (values.day) {
+                            // End date can be same as start date (for 1-day trips)
+                            return { min: values.day };
+                          }
+                          // If no start date selected, use today as minimum
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0);
+                          return { min: formatDateForInput(today) };
+                        })()}
+                        style={{ cursor: "pointer" }}
+                        onClick={(e) =>
+                          e.target.showPicker && e.target.showPicker()
+                        }
+                        labelFontFamily="var(--font-somar-sans), sans-serif"
+                      />
+                      {/* Helper text for end date validation */}
+                      {values.day && (
+                        <p className="text-xs text-secColor pt-1">
+                          {t(
+                            "forms.customTrip.proposedTripDate.error.endBeforeStart"
                           )}
-                          type="date"
-                          name="endDay"
-                          value={values.endDay}
-                          errors={errors.endDay}
-                          touched={touched.endDay}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          min={
-                            values.day || new Date().toISOString().split("T")[0]
-                          }
-                          style={{ cursor: "pointer" }}
-                          onClick={(e) =>
-                            e.target.showPicker && e.target.showPicker()
-                          }
-                          labelFontFamily="var(--font-somar-sans), sans-serif"
-                        />
-                      </div>
-                    )}
+                        </p>
+                      )}
+                    </div>
+                    {/* )} */}
                   </div>
 
                   {/* Special Requirements */}

@@ -29,6 +29,7 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
   const [lastFetchedTripId, setLastFetchedTripId] = useState(null);
   const [formSelectionData, setFormSelectionData] = useState(null);
   const [gradesData, setGradesData] = useState([]);
+  const [lastFetchedGradesKey, setLastFetchedGradesKey] = useState(null);
 
   const fetchTripDetails = async () => {
     if (!tripId) return null;
@@ -55,6 +56,7 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
   };
 
   const fetchFormSelectionData = async () => {
+    // Don't set loading here since it's handled by showUpdateTripForm
     try {
       const config = {
         method: "get",
@@ -80,6 +82,14 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
       return [];
     }
 
+    // Create a cache key from stage IDs to avoid refetching same grades
+    const gradesKey = stageIds.sort().join(",");
+
+    // Return cached grades if same stages
+    if (lastFetchedGradesKey === gradesKey && gradesData.length > 0) {
+      return gradesData;
+    }
+
     try {
       const response = await axios.post(
         getProxyUrl(
@@ -90,6 +100,7 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
         { headers }
       );
       setGradesData(response.data || []);
+      setLastFetchedGradesKey(gradesKey);
       return response.data || [];
     } catch (error) {
       console.error("Error fetching grades:", error);
@@ -102,24 +113,37 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
     try {
       setLoading(true);
 
+      // Fetch both required data in parallel
+      const promises = [];
+
+      // Fetch form selection data if not cached
+      if (!formSelectionData) {
+        promises.push(fetchFormSelectionData());
+      }
+
       // Fetch trip details if needed
-      let details = tripDetails;
-      if (!details || lastFetchedTripId !== tripId) {
-        details = await fetchTripDetails();
+      if (!tripDetails || lastFetchedTripId !== tripId) {
+        promises.push(fetchTripDetails());
       }
 
-      // Fetch form selection data if needed
-      let selectionData = formSelectionData;
-      if (!selectionData) {
-        selectionData = await fetchFormSelectionData();
-      }
+      // Wait for both requests to complete
+      const results = await Promise.all(promises);
 
-      // Fetch grades for the trip's academic stages
+      // Get the data (either from cache or from fetch results)
+      const selectionData =
+        formSelectionData || results.find((r) => r?.categories);
+      const details =
+        (lastFetchedTripId === tripId
+          ? tripDetails
+          : results.find((r) => r?.fromDay)) || tripDetails;
+
+      // Fetch grades for the trip's academic stages (cached if same stages)
       if (details?.academicStages && details.academicStages.length > 0) {
         const stageIds = details.academicStages.map((stage) => stage._id);
         await fetchGradesByStages(stageIds);
       }
 
+      // Only open modal if both required data are available
       if (details && selectionData) {
         handleOpenEditModal();
       }

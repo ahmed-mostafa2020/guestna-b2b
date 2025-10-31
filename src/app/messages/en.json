@@ -1729,7 +1729,7 @@
         "error": {
           "pastDate": "Trip date cannot be in the past",
           "startAfterEnd": "Start date must be before end date",
-          "endBeforeStart": "End date must be after start date"
+          "endBeforeStart": "End date must be after start date (can be same for 1-day trip)"
         }
       },
 
