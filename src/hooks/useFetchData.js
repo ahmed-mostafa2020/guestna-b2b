@@ -61,6 +61,8 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
     cacheTime: options.cacheTime || 300000,
     staleTime: options.staleTime || 300000,
     keepPreviousData: true,
+    // refetchOnWindowFocus: false,
+    retry: 1,
   });
 
   // Redux dispatch effects

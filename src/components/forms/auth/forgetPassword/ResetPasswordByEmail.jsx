@@ -12,6 +12,7 @@ import { useState } from "react";
 import { END_POINTS } from "@constants/APIs";
 import { createResetPasswordByEmailSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
+import getProxyUrl from "@utils/getProxyUrl";
 import TextInputGroup from "../../TextInputGroup";
 
 import { Formik } from "formik";
@@ -19,7 +20,6 @@ import { Formik } from "formik";
 import { CircularProgress } from "@mui/material";
 
 import { useSnackbar } from "notistack";
-
 import axios from "axios";
 
 const ResetPasswordByEmail = () => {
@@ -49,7 +49,7 @@ const ResetPasswordByEmail = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `${END_POINTS.MAIN}${END_POINTS.AUTH.FORGET_PASSWORD}`,
+      url: getProxyUrl(END_POINTS.AUTH.FORGET_PASSWORD),
 
       headers,
       data: resetPasswordByEmailData,
@@ -98,7 +98,7 @@ const ResetPasswordByEmail = () => {
   };
 
   return (
-    <>
+    <div className="p-8">
       <h1 className="text-black font-ibm">
         {t("forms.auth.forgetPassword.titleEmail")}
       </h1>
@@ -123,7 +123,7 @@ const ResetPasswordByEmail = () => {
           isSubmitting,
         }) => (
           <form onSubmit={handleSubmit}>
-            <div className="flex flex-col gap-7 lg:w-[510px] w-full py-5 lg:pt-6 lg:pb-10">
+            <div className="flex flex-col gap-7 lg:w-[510px] w-full pt-5">
               <TextInputGroup
                 label={t("forms.email.name")}
                 type="email"
@@ -136,6 +136,7 @@ const ResetPasswordByEmail = () => {
                 }}
                 onBlur={handleBlur}
                 placeholder="guestna@gmail.com"
+                required={true}
               />
 
               <button
@@ -159,7 +160,7 @@ const ResetPasswordByEmail = () => {
           </form>
         )}
       </Formik>
-    </>
+    </div>
   );
 };
 

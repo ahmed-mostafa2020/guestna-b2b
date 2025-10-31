@@ -16,7 +16,7 @@ const BalanceCards = ({ balanceData, isLoading }) => {
           {isLoading ? (
             <div className="mx-auto animate-pulse text-center bg-disabled h-7 w-24 rounded"></div>
           ) : (
-            formatCurrency(balanceData.totalBalance)
+            formatCurrency(balanceData.totalRevenue)
           )}
         </p>
       </div>
@@ -28,7 +28,7 @@ const BalanceCards = ({ balanceData, isLoading }) => {
         </h3>
         <p className="text-xl font-bold text-textDark">
           {isLoading ? (
-            <div className="mx-auto animate-pulse  bg-disabled h-7 w-24 rounded"></div>
+            <div className="mx-auto animate-pulse bg-disabled h-7 w-24 rounded"></div>
           ) : (
             formatCurrency(balanceData.availableBalance)
           )}
@@ -42,7 +42,7 @@ const BalanceCards = ({ balanceData, isLoading }) => {
           {isLoading ? (
             <div className="mx-auto animate-pulse bg-disabled h-7 w-24 rounded"></div>
           ) : (
-            formatCurrency(balanceData.holdBalance)
+            formatCurrency(balanceData.pendingBalance)
           )}
         </p>
       </div>

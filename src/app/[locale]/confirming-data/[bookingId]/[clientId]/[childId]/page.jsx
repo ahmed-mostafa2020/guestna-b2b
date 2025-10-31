@@ -33,7 +33,6 @@ const ConfirmingDataPage = () => {
     data: childData,
     error,
     isLoading,
-    refetch,
   } = useFetchData(
     apiUrl,
     {},

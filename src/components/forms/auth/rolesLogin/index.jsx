@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import {
   useRouter,
   //  useSearchParams
@@ -35,7 +36,6 @@ import { createLoginEmailMethodSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import setToken from "@utils/setToken";
 import getProxyUrl from "@utils/getProxyUrl";
-import { getFirstAccessiblePage } from "@utils/getFirstAccessiblePage";
 import TextInputGroup from "../../TextInputGroup";
 // import TermsAndConditions from "./TermsAndConditions";
 
@@ -251,6 +251,13 @@ const RolesLoginForm = () => {
                     </button>
                   </div>
                 </div> */}
+
+                {/* <Link
+                  href={`/${locale}/forget-password`}
+                  className="text-sm transition-all duration-200 ease-in-out border-b text-titleColor font-ibm border-titleColor hover:border-linksHover hover:text-linksHover w-fit"
+                >
+                  {t("forms.auth.forgetPassword.name")}
+                </Link> */}
 
                 <button
                   type="submit"

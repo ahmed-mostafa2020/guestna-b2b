@@ -716,25 +716,7 @@ export const createWithdrawValidationSchema = (t, isBankTransfer) => {
               return words.every((word) => word.length >= 2);
             }
           )
-      : Yup.string()
-          .trim()
-          .optional()
-          .matches(/^[\p{L}\s]+$/u, getValidationMessage("nameInvalid"))
-          .test(
-            "min-word-length",
-            getValidationMessage("nameMinLength"),
-            function (value) {
-              if (!value) return true;
-
-              const words = value.trim().split(/\s+/);
-
-              // Must have at least 2 words
-              if (words.length < 2) return false;
-
-              // Each word must be at least 2 characters
-              return words.every((word) => word.length >= 2);
-            }
-          ),
+      : Yup.string().notRequired(),
 
     ibanNumber: isBankTransfer
       ? Yup.string()

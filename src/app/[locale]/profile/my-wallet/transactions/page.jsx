@@ -64,7 +64,7 @@ const TransactionsPage = () => {
     data: balanceData,
     isLoading: balanceLoading,
     error: balanceError,
-    refetch: balanceRefetch,
+    // refetch: balanceRefetch,
   } = useFetchData(
     B2B_END_POINTS.PROFILE.BALANCE,
     {},
@@ -84,7 +84,6 @@ const TransactionsPage = () => {
     data: invoicesData,
     isLoading: transactionsLoading,
     error,
-    refetch,
   } = useFetchData(
     B2B_END_POINTS.PROFILE.INVOICES,
     {},
@@ -408,39 +407,41 @@ const TransactionsPage = () => {
     );
 
   return (
-    <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_TRANSACTIONS_LOG_PAGE}>
+    <ProtectedProfilePage
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_TRANSACTIONS_LOG_PAGE}
+    >
       <div className="max-w-7xl mx-auto space-y-6">
-      {/* Balance Cards Section */}
-      {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS) && (
-        <BalanceCards
-          balanceData={balanceData}
-          balanceLoading={balanceLoading}
-        />
-      )}
-
-      {/* Actions and Filters Section */}
-      {transactionsLoading ? (
-        <FullScreenLoading status="pending" />
-      ) : (
-        <div className="space-y-6">
-          <TransactionsFilters
-            filters={filters}
-            handleFilterChange={handleFilterChange}
-            data={processedData}
-            clearFilters={clearFilters}
+        {/* Balance Cards Section */}
+        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS) && (
+          <BalanceCards
+            balanceData={balanceData}
+            balanceLoading={balanceLoading}
           />
+        )}
 
-          {/* Transactions Table Section */}
-          <TransactionsTable
-            data={processedData}
-            currentPage={pagination.page}
-            setCurrentPage={handlePageChange}
-            enablePagination={true}
-            statusConfig={statusConfig}
-            formatCurrency={formatCurrencyAmount}
-          />
-        </div>
-      )}
+        {/* Actions and Filters Section */}
+        {transactionsLoading ? (
+          <FullScreenLoading status="pending" />
+        ) : (
+          <div className="space-y-6">
+            <TransactionsFilters
+              filters={filters}
+              handleFilterChange={handleFilterChange}
+              data={processedData}
+              clearFilters={clearFilters}
+            />
+
+            {/* Transactions Table Section */}
+            <TransactionsTable
+              data={processedData}
+              currentPage={pagination.page}
+              setCurrentPage={handlePageChange}
+              enablePagination={true}
+              statusConfig={statusConfig}
+              formatCurrency={formatCurrencyAmount}
+            />
+          </div>
+        )}
       </div>
     </ProtectedProfilePage>
   );

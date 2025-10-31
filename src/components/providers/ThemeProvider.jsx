@@ -87,7 +87,6 @@ const ThemeProvider = () => {
     }
   }, [currentTheme, colorPreferences]);
 
-  // This component doesn't render anything visible
   return null;
 };
 
