@@ -41,6 +41,10 @@ const Profile = () => {
     {},
     {
       lang: locale,
+      enabled: hasElement(
+        PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS ||
+          PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS
+      ),
     }
   );
 
@@ -48,7 +52,9 @@ const Profile = () => {
 
   if (error)
     return (
-      <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}>
+      <ProtectedProfilePage
+        requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}
+      >
         <ErrorComponent
           statusCode={error.response?.data?.statusCode}
           errorMessage={error.response?.data?.message}
@@ -57,52 +63,56 @@ const Profile = () => {
     );
 
   return (
-    <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}>
+    <ProtectedProfilePage
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}
+    >
       <main className="flex flex-col gap-6">
-      {/* Info Cards Section */}
-      {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS) && (
-        isLoading ? <InfoCardsSkeleton /> : <InfoCardsListing infoData={infoData} />
-      )}
+        {/* Info Cards Section */}
+        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS) &&
+          (isLoading ? (
+            <InfoCardsSkeleton />
+          ) : (
+            <InfoCardsListing infoData={infoData} />
+          ))}
 
-      {/* Charts Section */}
-      {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS) && (
-        isLoading ? (
-          <ChartsSkeleton />
-        ) : (
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-            <div className="lg:col-span-8">
-              <RevenueLineChart infoData={infoData} />
+        {/* Charts Section */}
+        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS) &&
+          (isLoading ? (
+            <ChartsSkeleton />
+          ) : (
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+              <div className="lg:col-span-8">
+                <RevenueLineChart infoData={infoData} />
+              </div>
+              <div className="lg:col-span-4">
+                <DonutChart infoData={infoData} />
+              </div>
             </div>
-            <div className="lg:col-span-4">
-              <DonutChart infoData={infoData} />
-            </div>
-          </div>
-        )
-      )}
+          ))}
 
-      {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_TRIPS_TABLE) && (
-        <ProfilePageTemplate
-          title={t("pagesHead.title.profile")}
-          endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS}`}
-          method="POST"
-          enablePagination={true}
-          emptyStateComponent={<EmptyBookings />}
-          contentComponent={(
-            data,
-            currentPage,
-            setCurrentPage,
-            enablePagination
-          ) => (
-            <MyBookingsTrips
-              tableTitle={t("profile.tables.bookings.title")}
-              data={data}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              enablePagination={enablePagination}
-            />
-          )}
-        />
-      )}
+        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_TRIPS_TABLE) && (
+          <ProfilePageTemplate
+            title={t("pagesHead.title.profile")}
+            endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS}`}
+            method="POST"
+            enablePagination={true}
+            emptyStateComponent={<EmptyBookings />}
+            contentComponent={(
+              data,
+              currentPage,
+              setCurrentPage,
+              enablePagination
+            ) => (
+              <MyBookingsTrips
+                tableTitle={t("profile.tables.bookings.title")}
+                data={data}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                enablePagination={enablePagination}
+              />
+            )}
+          />
+        )}
       </main>
     </ProtectedProfilePage>
   );
