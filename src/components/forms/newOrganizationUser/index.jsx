@@ -29,6 +29,8 @@ const OrganizationUserForm = ({
   organizationId,
   rolesData = [],
   handleClose,
+  refetchInfo,
+  refetchTable,
 }) => {
   const [formErrors, setFormErrors] = useState([]);
 
@@ -76,10 +78,14 @@ const OrganizationUserForm = ({
         setFormErrors([]);
         resetForm();
 
-        if (response.data) {
-          enqueueSnackbar(t("forms.validation.success"), {
+        if (response.data === true) {
+          enqueueSnackbar(t("profile.schools_users.userCreatedSuccessfully"), {
             variant: "success",
           });
+          
+          // Refetch both info cards and table data
+          if (refetchInfo) refetchInfo();
+          if (refetchTable) refetchTable();
         }
         handleClose();
       })

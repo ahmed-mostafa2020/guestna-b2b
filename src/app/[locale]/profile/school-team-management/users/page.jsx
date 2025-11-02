@@ -23,7 +23,7 @@ const UsersPage = () => {
   const t = useTranslations();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data, error, isLoading } = useFetchData(
+  const { data, error, isLoading, refetch: refetchInfo } = useFetchData(
     `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.INFO}`,
     {},
     {
@@ -35,6 +35,7 @@ const UsersPage = () => {
     data: tableData,
     error: tableError,
     isLoading: tableLoading,
+    refetch: refetchTable,
   } = useFetchData(
     `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.TABLE}`,
     {},
@@ -113,6 +114,8 @@ const UsersPage = () => {
         data={tableData}
         setSearchTerm={setSearchTerm}
         searchTerm={searchTerm}
+        refetchInfo={refetchInfo}
+        refetchTable={refetchTable}
       />
       </main>
     </ProtectedProfilePage>

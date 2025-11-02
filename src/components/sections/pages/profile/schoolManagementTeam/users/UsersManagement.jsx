@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 
-const UsersManagement = ({ data, setSearchTerm, searchTerm }) => {
+const UsersManagement = ({ data, setSearchTerm, searchTerm, refetchInfo, refetchTable }) => {
   const t = useTranslations();
   // data is now an array of organizations with users
   const organizations = Array.isArray(data) ? data : [];
@@ -91,6 +91,8 @@ const UsersManagement = ({ data, setSearchTerm, searchTerm }) => {
                 org.organization?.name ||
                 t("profile.schools_users.unknown_school")
               }
+              refetchInfo={refetchInfo}
+              refetchTable={refetchTable}
             />
           </AccordionDetails>
         </Accordion>

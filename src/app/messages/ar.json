@@ -594,6 +594,7 @@
       "no_users": "لا يوجد مستخدم يطابق البحث",
       "users_count": "عدد {count} من المستخدمين",
       "unknown_school": "مدرسة غير معروفة",
+      "userCreatedSuccessfully": "تم إنشاء المستخدم بنجاح",
       "form": {
         "title": "اضافة بيانات المستخدم",
         "userTypePlaceholder": "الدرجة الوظيفية",

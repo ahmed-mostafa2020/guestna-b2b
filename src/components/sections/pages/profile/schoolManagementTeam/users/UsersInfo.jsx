@@ -13,7 +13,7 @@ import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
-const UsersInfo = ({ users = [], organizationId }) => {
+const UsersInfo = ({ users = [], organizationId, refetchInfo, refetchTable }) => {
   const { hasElement } = usePermissions();
   const t = useTranslations();
   const locale = useLocale();
@@ -101,6 +101,8 @@ const UsersInfo = ({ users = [], organizationId }) => {
           handleClose={() => setIsModalOpen(false)}
           organizationId={organizationId}
           rolesData={rolesData}
+          refetchInfo={refetchInfo}
+          refetchTable={refetchTable}
         />
       </CustomizedModal>
     </div>
