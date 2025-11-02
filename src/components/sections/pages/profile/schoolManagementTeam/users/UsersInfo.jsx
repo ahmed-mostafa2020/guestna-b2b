@@ -13,7 +13,7 @@ import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
-const UsersInfo = ({ users = [], organization }) => {
+const UsersInfo = ({ users = [], organizationId }) => {
   const { hasElement } = usePermissions();
   const t = useTranslations();
   const locale = useLocale();
@@ -26,7 +26,7 @@ const UsersInfo = ({ users = [], organization }) => {
 
   const handleAddUserClick = async () => {
     // Check if roles are already cached for this organization
-    if (cachedOrganization === organization && rolesData.length > 0) {
+    if (cachedOrganization === organizationId && rolesData.length > 0) {
       setIsModalOpen(true);
       return;
     }
@@ -38,14 +38,14 @@ const UsersInfo = ({ users = [], organization }) => {
       const config = {
         method: "get",
         url: getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.ROLES}/${organization}`
+          `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.ROLES}/${organizationId}`
         ),
         headers,
       };
 
       const response = await axios.request(config);
       setRolesData(response.data || []);
-      setCachedOrganization(organization);
+      setCachedOrganization(organizationId);
       setIsModalOpen(true);
     } catch (error) {
       enqueueSnackbar(
@@ -99,7 +99,7 @@ const UsersInfo = ({ users = [], organization }) => {
       >
         <OrganizationUserForm
           handleClose={() => setIsModalOpen(false)}
-          organization={organization}
+          organizationId={organizationId}
           rolesData={rolesData}
         />
       </CustomizedModal>

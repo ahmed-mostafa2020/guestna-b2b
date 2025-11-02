@@ -26,7 +26,7 @@ import "react-phone-number-input/style.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 const OrganizationUserForm = ({
-  organization,
+  organizationId,
   rolesData = [],
   handleClose,
 }) => {
@@ -48,14 +48,13 @@ const OrganizationUserForm = ({
     const option = options.find((opt) => opt.description === description);
     return option ? option._id : description;
   };
-
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
     let data = {
       email: values.email,
       phone: `${values.mobile}`,
       name: values.name,
       role: findIdByName(rolesData, values.role),
-      organization,
+      organization: organizationId,
     };
 
     let newUserData = JSON.stringify(data);
@@ -103,7 +102,7 @@ const OrganizationUserForm = ({
         mobile: "",
         name: "",
         role: "",
-        id: organization,
+        organization: organizationId,
       }}
       validationSchema={addOrganizationUserSchema}
       onSubmit={handleSubmit}

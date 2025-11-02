@@ -662,7 +662,7 @@ export const createAddOrganizationUserSchema = (t) =>
         }
       ),
 
-    userType: Yup.string().required(t("forms.validation.require")),
+    role: Yup.string().required(t("forms.validation.require")),
   });
 
 export const createWithdrawValidationSchema = (t, isBankTransfer) => {
