@@ -112,7 +112,7 @@ const PackagesTable = ({
                         pkg.status === TRIP_STATUS.PENDING ? (
                           <Link
                             href={`/${locale}/profile/create-trip-link/${pkg.slug}`}
-                            className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
+                            className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-linksHover"
                           >
                             {t("links.tripManagement")}
                           </Link>
@@ -196,7 +196,7 @@ const PackagesTable = ({
                     pkg.status === TRIP_STATUS.PENDING ? (
                       <Link
                         href={`/${locale}/profile/create-trip-link/${pkg.slug}`}
-                        className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
+                        className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-linksHover"
                       >
                         {t("links.tripManagement")}
                       </Link>

@@ -1657,7 +1657,7 @@
       "require": "This field is required",
       "sending": "Sending Now ...",
       "downloading": "Downloading...",
-      "preparing": "Preparing..., Now ...",
+      "loading": "Loading...",
       "success": "Your data has been sent successfully",
       "reminderSentSuccessfully": "Reminder sent successfully",
       "addedToFavorites": "Added to favorites successfully",

@@ -25,17 +25,18 @@ import PhoneInputWithCountrySelect from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
-const OrganizationUserForm = ({ organization, handleClose }) => {
+const OrganizationUserForm = ({
+  organization,
+  rolesData = [],
+  handleClose,
+}) => {
   const [formErrors, setFormErrors] = useState([]);
 
   const locale = useLocale();
   const t = useTranslations();
 
-  const userTypeData = [
-    { name: t("common.usersType.B2B_STAFF_FINANCE"), _id: "B2B_STAFF_FINANCE" },
-    { name: t("common.usersType.B2B_STAFF_STMS"), _id: "B2B_STAFF_STMS" },
-  ];
-  const userTypeOptions = userTypeData.map((item) => item.name);
+  // Use fetched roles data
+  const roleOptions = rolesData.map((item) => item.description);
 
   const headers = getHeaders(locale);
 
@@ -43,9 +44,9 @@ const OrganizationUserForm = ({ organization, handleClose }) => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const findIdByName = (options, name) => {
-    const option = options.find((opt) => opt.name === name);
-    return option ? option._id : name;
+  const findIdByName = (options, description) => {
+    const option = options.find((opt) => opt.description === description);
+    return option ? option._id : description;
   };
 
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
@@ -53,7 +54,7 @@ const OrganizationUserForm = ({ organization, handleClose }) => {
       email: values.email,
       phone: `${values.mobile}`,
       name: values.name,
-      userType: findIdByName(userTypeData, values.userType),
+      role: findIdByName(rolesData, values.role),
       organization,
     };
 
@@ -97,7 +98,13 @@ const OrganizationUserForm = ({ organization, handleClose }) => {
 
   return (
     <Formik
-      initialValues={{ email: "", mobile: "", name: "", userType: "" }}
+      initialValues={{
+        email: "",
+        mobile: "",
+        name: "",
+        role: "",
+        id: organization,
+      }}
       validationSchema={addOrganizationUserSchema}
       onSubmit={handleSubmit}
       enableReinitialize
@@ -147,23 +154,22 @@ const OrganizationUserForm = ({ organization, handleClose }) => {
 
               <div className="relative min-w-[25%] flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
                 <label
-                  htmlFor={t("profile.schools_users.form.userTypePlaceholder")}
+                  htmlFor="role"
                   className="font-medium capitalize font-ibm"
-                  // style={{ fontFamily: labelFontFamily && labelFontFamily }}
                 >
                   {t("profile.schools_users.form.userTypePlaceholder")}
                 </label>
                 <SelectionGroup
-                  name="userType"
-                  value={values.userType}
+                  name="role"
+                  value={values.role}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  touched={touched.userType}
-                  errors={errors.userType}
+                  touched={touched.role}
+                  errors={errors.role}
                   placeholder={t(
                     "profile.schools_users.form.userTypePlaceholder"
                   )}
-                  list={userTypeOptions}
+                  list={roleOptions}
                 />
               </div>
 

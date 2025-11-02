@@ -87,6 +87,7 @@ const UsersManagement = ({ data, setSearchTerm, searchTerm }) => {
             <UsersInfo
               users={org.users || []}
               organization={org.organization?._id || org._id}
+              organizationName={org.organization?.name || t("profile.schools_users.unknown_school")}
             />
           </AccordionDetails>
         </Accordion>

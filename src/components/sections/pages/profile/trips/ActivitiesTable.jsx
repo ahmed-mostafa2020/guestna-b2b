@@ -108,7 +108,7 @@ const ActivitiesTable = ({
                         trip.status === TRIP_STATUS.PENDING ? (
                           <Link
                             href={`/${locale}/profile/create-trip-link/${trip.slug}`}
-                            className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
+                            className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-linksHover"
                           >
                             {t("links.tripManagement")}
                           </Link>
@@ -175,7 +175,7 @@ const ActivitiesTable = ({
                   trip.status === TRIP_STATUS.PENDING ? (
                     <Link
                       href={`/${locale}/profile/create-trip-link/${trip.slug}`}
-                      className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-secColor"
+                      className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-linksHover"
                     >
                       {t("links.tripManagement")}
                     </Link>

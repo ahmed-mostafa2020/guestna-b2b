@@ -107,6 +107,7 @@ export const B2B_END_POINTS = {
         TABLE: "profile/users/company/all",
         // TABLE: "profile/users/school/all",
         NEW_USER: "profile/users/new",
+        ROLES: "profile/users/roles",
       },
     },
     CREATE_TRIP_LINK: "profile/organizationTrips/poster",

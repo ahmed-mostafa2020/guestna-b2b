@@ -1648,6 +1648,7 @@
       "require": "هذا الحقل مطلوب",
       "sending": "يتم الارسال ...",
       "downloading": "يتم التحميل ...",
+      "loading": "يتم التحميل ...",
       "success": "تم ارسال بيناتاك بنجاح.",
       "reminderSentSuccessfully": "تم إرسال التذكير بنجاح",
       "addedToFavorites": "تمت الإضافة إلى قائمة المفضلات بنجاح",
