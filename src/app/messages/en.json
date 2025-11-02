@@ -596,6 +596,8 @@
       "add_new_user": "Add New User",
       "search": "Search...",
       "no_users": "No users found matching your search",
+      "users_count": "{count} users",
+      "unknown_school": "Unknown School",
       "form": {
         "title": "Add User Data",
         "userTypePlaceholder": "Job grade",

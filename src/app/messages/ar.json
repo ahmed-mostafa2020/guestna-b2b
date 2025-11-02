@@ -592,6 +592,8 @@
       "add_new_user": "إضافة مستخدم جديد",
       "search": "البحث...",
       "no_users": "لا يوجد مستخدم يطابق البحث",
+      "users_count": "عدد {count} من المستخدمين",
+      "unknown_school": "مدرسة غير معروفة",
       "form": {
         "title": "اضافة بيانات المستخدم",
         "userTypePlaceholder": "الدرجة الوظيفية",

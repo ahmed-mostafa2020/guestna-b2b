@@ -22,7 +22,7 @@ const UsersInfo = ({ users = [], organization }) => {
   }
 
   return (
-    <div className="flex flex-col border border-border p-3 gap-4 rounded-lg bg-white">
+    <div className="flex flex-col p-3 gap-4 rounded-lg bg-white">
       {users.map((user) => (
         <UserCard key={user._id} user={user} />
       ))}

@@ -13,7 +13,7 @@ const UserCard = ({ user }) => {
   const t = useTranslations();
 
   return (
-    <Card className="hover:shadow-card transition-shadow duration-300 border border-border rounded-lg">
+    <Card className="border border-border !rounded-lg !shadow-none">
       <CardContent className="p-2 sm:p-3">
         {/* Desktop Layout */}
         <div className="hidden md:flex items-center justify-between">
@@ -32,9 +32,9 @@ const UserCard = ({ user }) => {
               </h3>
               <p className="text-xs text-textLight truncate">{user.email}</p>
               <Chip
-                label={t(`common.usersType.${user.userType}`)}
+                label={user.role.description}
                 size="small"
-                className="text-xs !bg-[#e9e1ff] !text-textDark w-fit"
+                className="text-xs !bg-[#e9e1ff] !text-black w-fit !font-somar"
               />
             </div>
           </div>
@@ -76,9 +76,9 @@ const UserCard = ({ user }) => {
                 {user.email}
               </p>
               <Chip
-                label={t(`common.usersType.${user.userType}`)}
+                label={user.role.description}
                 size="small"
-                className="text-xs !bg-[#e9e1ff] !text-textDark"
+                className="text-xs !bg-[#e9e1ff] !text-black !font-somar"
               />
             </div>
           </div>
