@@ -101,7 +101,7 @@ const TransactionsPage = () => {
       staleTime: 300000,
       // Include filters in query key to automatically refetch when filters change
       queryKeySuffix: `transactions-page-${pagination.page}-perPage-${pagination.perPage}-filters-${filters.searchTerm}|${filters.day}|${filters.status}`,
-      enabled: true, // Always enabled for transactions
+      enabled: hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS), // Only fetch when user has permission
     }
   );
 
@@ -373,13 +373,6 @@ const TransactionsPage = () => {
     setPagination((prev) => ({
       ...prev,
       page: newPage,
-    }));
-  };
-
-  const handlePerPageChange = (newPerPage) => {
-    setPagination((prev) => ({
-      page: 1, // Reset to first page when changing per page
-      perPage: newPerPage,
     }));
   };
 

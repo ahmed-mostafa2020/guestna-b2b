@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-
 import { useState } from "react";
 
+import { usePermissions } from "@hooks/usePermissions";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { PERMISSIONS } from "@constants/permissions";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
 import FrameWithImagedHeader from "@components/common/frameWithImagedHeader/FrameWithImagedHeader";
@@ -17,6 +18,7 @@ import axios from "axios";
 const AuthanticatedRequestQuoteBox = ({ tripId }) => {
   const locale = useLocale();
   const t = useTranslations();
+  const { hasElement } = usePermissions();
 
   const headers = getHeaders(locale);
 
@@ -158,22 +160,26 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
     <>
       <FrameWithImagedHeader withBorder={true}>
         <div className="grid grid-cols-2 gap-2">
-          <button
-            disabled={loading}
-            onClick={showUpdateTripForm}
-            className="lg:flex-1 disabled:opacity-50 disabled:cursor-not-allowed centered w-full py-3 px-4 text-white font-medium rounded-lg bg-mainColor hover:bg-mainColor/80 transition-all duration-200 ease-in-out"
-          >
-            {loading ? (
-              <CircularProgress size={24} color="white" />
-            ) : (
-              t("links.requestQuote")
-            )}
-          </button>
+          {hasElement(
+            PERMISSIONS.ELEMENT.B2B_PROFIEL_ORDER_MANAGEMENT_CREATE_NEWTRIP
+          ) && (
+            <button
+              disabled={loading}
+              onClick={showUpdateTripForm}
+              className="lg:flex-1 disabled:opacity-50 disabled:cursor-not-allowed centered w-full py-3 px-4 text-white font-medium rounded-lg bg-mainColor hover:bg-mainColor/80 transition-all duration-200 ease-in-out"
+            >
+              {loading ? (
+                <CircularProgress size={24} color="white" />
+              ) : (
+                t("links.requestQuote")
+              )}
+            </button>
+          )}
 
           <Link
             target="_blank"
             href={CONSTANT_VALUES.WHATSAPP_CONTACT}
-            className=" py-3 text-sm lg:text-base font-semibold text-center transition-all duration-200 ease-in-out bg-white border-2 rounded-lg border-secColor text-mainColor hover:text-white hover:bg-secColor"
+            className="py-3 text-sm lg:text-base font-semibold text-center transition-all duration-200 ease-in-out bg-white border-2 rounded-lg border-secColor text-mainColor hover:text-white hover:bg-secColor"
           >
             {t("links.contactUs")}
           </Link>

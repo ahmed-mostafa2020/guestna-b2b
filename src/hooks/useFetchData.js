@@ -63,6 +63,7 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
     keepPreviousData: true,
     // refetchOnWindowFocus: false,
     retry: 1,
+    enabled: options.enabled !== undefined ? options.enabled : true, // Support conditional fetching
   });
 
   // Redux dispatch effects

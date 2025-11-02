@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
 import { useTranslations } from "next-intl";
+
+import { useEffect } from "react";
+
 import { useFetchData } from "@hooks/useFetchData";
+import { usePermissions } from "@hooks/usePermissions";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
 import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
@@ -12,6 +15,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 const WithdrawPage = () => {
   const t = useTranslations();
+  const { hasElement } = usePermissions();
 
   const {
     data: balanceData,
@@ -23,6 +27,9 @@ const WithdrawPage = () => {
     {},
     {
       method: "GET",
+      enabled: hasElement(
+        PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS
+      ), // Only fetch when user has permission
     }
   );
 
@@ -39,13 +46,16 @@ const WithdrawPage = () => {
     >
       <div className="min-h-screen p-4 sm:p-6 lg:p-8">
         <div className="max-w-6xl mx-auto space-y-4">
-          {isLoading ? (
+          {/* {isLoading ? (
             <div className="flex justify-center items-center py-12">
               <CircularProgress sx={{ color: "var(--color-main)" }} />
             </div>
           ) : error ? null : balanceData ? (
             <BalanceCards balanceData={balanceData} isLoading={false} />
-          ) : null}
+          ) : null} */}
+          {hasElement(
+            PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS
+          ) && <BalanceCards balanceData={balanceData} isLoading={false} />}
 
           <WithdrawForm
             balance={balanceData}

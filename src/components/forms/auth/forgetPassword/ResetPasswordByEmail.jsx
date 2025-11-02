@@ -9,8 +9,8 @@ import { setEmail } from "@store/forms/auth/login/loginFormSlice";
 
 import { useState } from "react";
 
-import { END_POINTS } from "@constants/APIs";
 import { createResetPasswordByEmailSchema } from "@utils/validationSchemas";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
 import TextInputGroup from "../../TextInputGroup";
@@ -49,7 +49,7 @@ const ResetPasswordByEmail = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: getProxyUrl(END_POINTS.AUTH.FORGET_PASSWORD),
+      url: getProxyUrl(B2B_END_POINTS.AUTH.FORGET_PASSWORD),
 
       headers,
       data: resetPasswordByEmailData,
@@ -61,16 +61,16 @@ const ResetPasswordByEmail = () => {
         setFormErrors([]);
         resetForm();
 
-        const { email } = response.data;
+        // const { email } = response.data;
 
-        if (email) {
-          enqueueSnackbar(t("forms.validation.success"), {
+        if (response.data === true) {
+          enqueueSnackbar(t("forms.validation.checkYourEmail"), {
             variant: "success",
           });
 
-          dispatch(setEmail(email));
-          setDisabledButton(true);
-          router.push(`/${locale}/confirm-account`);
+          dispatch(setEmail(values.email));
+          // setDisabledButton(true);
+          // router.push(`/${locale}/confirm-account`);
         }
       })
 
@@ -153,7 +153,7 @@ const ResetPasswordByEmail = () => {
                     <CircularProgress size={24} sx={{ color: "#ED8A22" }} />
                   </>
                 ) : (
-                  t("forms.auth.forgetPassword.sendOtp")
+                  t("forms.auth.forgetPassword.send")
                 )}
               </button>
             </div>

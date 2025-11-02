@@ -134,7 +134,7 @@ const VerificationCodeForm = ({ redirect = true }) => {
   };
 
   return (
-    <div className="flex flex-col gap-5 lg:gap-10">
+    <div className="flex flex-col gap-5 lg:gap-10 p-8">
       {renderTitle()}
 
       <Formik
