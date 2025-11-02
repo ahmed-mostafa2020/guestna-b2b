@@ -62,9 +62,10 @@ const ProfileLayout = ({ children }) => {
   useEffect(() => {
     if (data) {
       dispatch(setProfileImage(data?.image || ""));
-      if (data.colorPreferences) {
+      if (data.colorPreferences && data.colorPreferences.length > 0) {
         dispatch(setTheme("customized"));
-        dispatch(setColorPreferences(data.colorPreferences));
+        // Extract first color preference object from array
+        dispatch(setColorPreferences(data.colorPreferences[0]));
         dispatch(setCustomLogo(data.companyLogo));
       }
 

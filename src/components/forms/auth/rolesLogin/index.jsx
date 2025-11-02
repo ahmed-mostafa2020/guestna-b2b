@@ -109,8 +109,9 @@ const RolesLoginForm = () => {
           dispatch(setUser(response.data.userType));
           dispatch(setPermissions(response.data.user.permissions));
 
-          if (response.data.user.colorPreferences) {
-            dispatch(setColorPreferences(response.data.user.colorPreferences));
+          if (response.data.user.colorPreferences && response.data.user.colorPreferences.length > 0) {
+            // Extract first color preference object from array
+            dispatch(setColorPreferences(response.data.user.colorPreferences[0]));
             dispatch(setTheme("customized"));
             dispatch(setCustomLogo(response.data.user.companyLogo));
           }
