@@ -35,7 +35,6 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
       method: "GET",
     }
   );
-  console.log(invoicesData);
 
   const completedTrips = useMemo(() => {
     if (!invoicesData) return [];
