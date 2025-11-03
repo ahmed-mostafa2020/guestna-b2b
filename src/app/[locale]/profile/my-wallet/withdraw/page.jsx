@@ -54,7 +54,7 @@ const WithdrawPage = () => {
           ) : null} */}
           {hasElement(
             PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS
-          ) && <BalanceCards balanceData={balanceData} isLoading={false} />}
+          ) && <BalanceCards balanceData={balanceData} isLoading={isLoading} />}
 
           <WithdrawForm
             balance={balanceData}

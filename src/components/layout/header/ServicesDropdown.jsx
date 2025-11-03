@@ -59,7 +59,7 @@ const ServicesDropdown = () => {
         onClick={toggleDropdown}
       >
         <div>
-          <h3 className="text-lg leading-5 font-ibm pe-8">
+          <h3 className="text-lg leading-5 font-ibm pe-2">
             {t("header.services")}
           </h3>
         </div>
