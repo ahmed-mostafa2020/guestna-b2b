@@ -11,7 +11,6 @@ import { PERMISSIONS } from "@constants/permissions";
 import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 import { WithdrawForm } from "@components/forms/withdraw";
 import { BalanceCards } from "@components/sections/pages/myWallet/withdraw";
-import CircularProgress from "@mui/material/CircularProgress";
 
 const WithdrawPage = () => {
   const t = useTranslations();

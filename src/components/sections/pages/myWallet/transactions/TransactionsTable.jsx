@@ -140,13 +140,9 @@ const TransactionsTable = ({
             <CardContent className="p-8 text-center">
               <div className="text-muted-foreground">
                 <p className="text-lg font-medium mb-2 text-foreground">
-                  {t("profile.myWallet.transactionsPage.table.noResults.title")}
+                  {t("noResults.title")}
                 </p>
-                <p className="text-sm">
-                  {t(
-                    "profile.myWallet.transactionsPage.table.noResults.description"
-                  )}
-                </p>
+                <p className="text-sm">{t("noResults.description")}</p>
               </div>
             </CardContent>
           </Card>
