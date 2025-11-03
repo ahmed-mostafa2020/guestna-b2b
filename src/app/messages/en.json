@@ -1225,6 +1225,9 @@
     "pageHeader": {
       "title": "Register your school now and enjoy an easy and unique school trip planning experience.",
       "subTitle": "We provide all schools in the Kingdom with the ability to easily register their school through our platform, discover the tourism programs designed specifically for schools, and benefit from our tools to professionally manage all the details of the trips."
+    },
+    "form": {
+      "title": "Register your school for free"
     }
   },
 

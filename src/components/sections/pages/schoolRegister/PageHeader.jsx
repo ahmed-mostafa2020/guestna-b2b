@@ -11,7 +11,7 @@ import { Container } from "@mui/material";
 const PageHeader = () => {
   const t = useTranslations();
   return (
-    <section className="py-12 mx-auto font-ibm text-black">
+    <section className="py-12 mx-auto font-ibm text-black school-register-gradient ">
       <Container maxWidth="lg" className="text-center">
         <h1 className="text-3xl font-semibold">
           {t("schoolRegister.pageHeader.title")}
@@ -27,6 +27,7 @@ const PageHeader = () => {
         width={1000}
         height={1000}
         className="mx-auto w-screen"
+        priority={true}
       />
     </section>
   );

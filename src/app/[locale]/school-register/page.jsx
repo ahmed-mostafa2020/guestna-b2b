@@ -2,9 +2,10 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import PageHeader from "@components/sections/pages/schoolRegister/PageHeader";
-
 import { useEffect } from "react";
+
+import PageHeader from "@components/sections/pages/schoolRegister/PageHeader";
+import SchoolRegisterForm from "@components/forms/schoolRegisterForm";
 
 const SchoolRegisterPage = () => {
   const locale = useLocale();
@@ -17,9 +18,11 @@ const SchoolRegisterPage = () => {
   }, [t]);
 
   return (
-    <div>
+    <>
       <PageHeader />
-    </div>
+
+      <SchoolRegisterForm />
+    </>
   );
 };
 
