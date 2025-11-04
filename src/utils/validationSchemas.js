@@ -852,39 +852,41 @@ export const createSchoolRegisterSchema = (t) =>
     salesPersonName: Yup.string()
       .trim()
       .required(t("schoolRegister.validation.salesPersonName.required"))
-      .min(3, t("schoolRegister.validation.salesPersonName.min"))
+      .min(2, t("schoolRegister.validation.salesPersonName.min"))
       .max(50, t("schoolRegister.validation.salesPersonName.max")),
 
     schoolNameArabic: Yup.string()
       .trim()
       .required(t("schoolRegister.validation.schoolNameArabic.required"))
-      .min(3, t("schoolRegister.validation.schoolNameArabic.min"))
+      .min(2, t("schoolRegister.validation.schoolNameArabic.min"))
       .max(100, t("schoolRegister.validation.schoolNameArabic.max")),
 
     schoolNameEnglish: Yup.string()
       .trim()
       .required(t("schoolRegister.validation.schoolNameEnglish.required"))
-      .min(3, t("schoolRegister.validation.schoolNameEnglish.min"))
+      .min(2, t("schoolRegister.validation.schoolNameEnglish.min"))
       .max(100, t("schoolRegister.validation.schoolNameEnglish.max")),
 
-    gender: Yup.string().required(t("schoolRegister.validation.gender.required")),
+    gender: Yup.string().required(
+      t("schoolRegister.validation.gender.required")
+    ),
 
     educationalTrack: Yup.string()
       .trim()
       .required(t("schoolRegister.validation.educationalTrack.required"))
-      .min(3, t("schoolRegister.validation.educationalTrack.min"))
+      .min(2, t("schoolRegister.validation.educationalTrack.min"))
       .max(100, t("schoolRegister.validation.educationalTrack.max")),
 
     functionalDegree: Yup.string()
       .trim()
       .required(t("schoolRegister.validation.functionalDegree.required"))
-      .min(3, t("schoolRegister.validation.functionalDegree.min"))
+      .min(2, t("schoolRegister.validation.functionalDegree.min"))
       .max(50, t("schoolRegister.validation.functionalDegree.max")),
 
     contactPersonName: Yup.string()
       .trim()
       .required(t("schoolRegister.validation.contactPersonName.required"))
-      .min(3, t("schoolRegister.validation.contactPersonName.min"))
+      .min(2, t("schoolRegister.validation.contactPersonName.min"))
       .max(50, t("schoolRegister.validation.contactPersonName.max")),
 
     email: Yup.string()
@@ -892,7 +894,7 @@ export const createSchoolRegisterSchema = (t) =>
       .matches(emailRegex, t("forms.email.error_tld"))
       .required(t("forms.validation.require")),
 
-    mobile: createPhoneValidation(t),
+    mobile: createPhoneValidation(t, true),
 
     city: Yup.string().required(t("schoolRegister.validation.city.required")),
 
@@ -901,23 +903,32 @@ export const createSchoolRegisterSchema = (t) =>
         Yup.object().shape({
           name: Yup.string()
             .trim()
-            .required(t("schoolRegister.validation.additionalUser.name.required"))
-            .min(3, t("schoolRegister.validation.additionalUser.name.min"))
+            .required(
+              t("schoolRegister.validation.additionalUser.name.required")
+            )
+            .min(2, t("schoolRegister.validation.additionalUser.name.min"))
             .max(50, t("schoolRegister.validation.additionalUser.name.max")),
 
           role: Yup.string()
             .trim()
-            .required(t("schoolRegister.validation.additionalUser.role.required"))
-            .min(3, t("schoolRegister.validation.additionalUser.role.min"))
+            .required(
+              t("schoolRegister.validation.additionalUser.role.required")
+            )
+            .min(2, t("schoolRegister.validation.additionalUser.role.min"))
             .max(50, t("schoolRegister.validation.additionalUser.role.max")),
 
           email: Yup.string()
             .email(t("schoolRegister.validation.additionalUser.email.invalid"))
-            .matches(emailRegex, t("schoolRegister.validation.additionalUser.email.invalid"))
-            .required(t("schoolRegister.validation.additionalUser.email.required")),
+            .matches(
+              emailRegex,
+              t("schoolRegister.validation.additionalUser.email.invalid")
+            )
+            .required(
+              t("schoolRegister.validation.additionalUser.email.required")
+            ),
 
-          mobile: createPhoneValidation(t),
+          mobile: createPhoneValidation(t, true),
         })
       )
-      .max(2, "Maximum 2 additional users allowed"),
+      .max(1, "Maximum 1 additional users allowed"),
   });

@@ -1221,16 +1221,6 @@
     }
   },
 
-  "schoolRegister": {
-    "pageHeader": {
-      "title": "Register your school now and enjoy an easy and unique school trip planning experience.",
-      "subTitle": "We provide all schools in the Kingdom with the ability to easily register their school through our platform, discover the tourism programs designed specifically for schools, and benefit from our tools to professionally manage all the details of the trips."
-    },
-    "form": {
-      "title": "Register your school for free"
-    }
-  },
-
   "exportUtils": {
     "bookingReport": {
       "title": "Booking Report",
@@ -1780,8 +1770,13 @@
     }
   },
   "schoolRegister": {
+    "pageHeader": {
+      "title": "Register your school now and enjoy an easy and unique school trip planning experience.",
+      "subTitle": "We provide all schools in the Kingdom with the ability to easily register their school through our platform, discover the tourism programs designed specifically for schools, and benefit from our tools to professionally manage all the details of the trips."
+    },
+
     "form": {
-      "title": "School Registration Form",
+      "title": "Register your school for free",
       "salesPersonName": {
         "label": "Sales Person Name",
         "placeholder": "Enter sales person name"
@@ -1805,7 +1800,7 @@
       },
       "educationalTrack": {
         "label": "Educational Track",
-        "placeholder": "Select educational track (Elementary, Middle, High, etc.)"
+        "placeholder": "Select educational track (Government, Private, International, etc.)"
       },
       "category": {
         "label": "Category",
@@ -1842,17 +1837,17 @@
     "validation": {
       "salesPersonName": {
         "required": "Sales person name is required",
-        "min": "Sales person name must be at least 3 characters",
+        "min": "Sales person name must be at least 2 characters",
         "max": "Sales person name cannot exceed 50 characters"
       },
       "schoolNameArabic": {
         "required": "School name in Arabic is required",
-        "min": "School name must be at least 3 characters",
+        "min": "School name must be at least 2 characters",
         "max": "School name cannot exceed 100 characters"
       },
       "schoolNameEnglish": {
         "required": "School name in English is required",
-        "min": "School name must be at least 3 characters",
+        "min": "School name must be at least 2 characters",
         "max": "School name cannot exceed 100 characters"
       },
       "gender": {
@@ -1860,7 +1855,7 @@
       },
       "educationalTrack": {
         "required": "Educational track is required",
-        "min": "Educational track must be at least 3 characters",
+        "min": "Educational track must be at least 2 characters",
         "max": "Educational track cannot exceed 100 characters"
       },
       "category": {
@@ -1868,12 +1863,12 @@
       },
       "functionalDegree": {
         "required": "Functional degree is required",
-        "min": "Functional degree must be at least 3 characters",
+        "min": "Functional degree must be at least 2 characters",
         "max": "Functional degree cannot exceed 50 characters"
       },
       "contactPersonName": {
         "required": "Contact person name is required",
-        "min": "Contact person name must be at least 3 characters",
+        "min": "Contact person name must be at least 2 characters",
         "max": "Contact person name cannot exceed 50 characters"
       },
       "city": {
@@ -1882,12 +1877,12 @@
       "additionalUser": {
         "name": {
           "required": "User name is required",
-          "min": "User name must be at least 3 characters",
+          "min": "User name must be at least 2 characters",
           "max": "User name cannot exceed 50 characters"
         },
         "role": {
           "required": "User role is required",
-          "min": "User role must be at least 3 characters",
+          "min": "User role must be at least 2 characters",
           "max": "User role cannot exceed 50 characters"
         },
         "email": {
