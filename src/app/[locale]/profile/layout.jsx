@@ -10,6 +10,12 @@ import {
   setProfileImage,
   setProfileLoading,
 } from "@store/profile/profileInfoSlice";
+import {
+  setColorPreferences,
+  setCustomLogo,
+  setTheme,
+} from "@store/theme/themeSlice";
+import { setPermissions } from "@store/permissions/permissionsSlice";
 
 import { useEffect } from "react";
 
@@ -25,11 +31,6 @@ import ProfileTabs from "@components/sections/pages/profile/ProfileTabs";
 import Grid from "@mui/material/Grid2";
 
 import Cookies from "js-cookie";
-import {
-  setColorPreferences,
-  setCustomLogo,
-  setTheme,
-} from "@store/theme/themeSlice";
 
 const ProfileLayout = ({ children }) => {
   const userType = useSelector((state) => state.users.userType);
@@ -67,6 +68,7 @@ const ProfileLayout = ({ children }) => {
         // Extract first color preference object from array
         dispatch(setColorPreferences(data.colorPreferences[0]));
         dispatch(setCustomLogo(data.companyLogo));
+        dispatch(setPermissions(data.permissions));
       }
 
       Cookies.set(CONSTANT_VALUES.PROFILE_IMAGE, data?.image || "");

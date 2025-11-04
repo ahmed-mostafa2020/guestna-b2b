@@ -1779,6 +1779,128 @@
       }
     }
   },
+  "schoolRegister": {
+    "form": {
+      "title": "School Registration Form",
+      "salesPersonName": {
+        "label": "Sales Person Name",
+        "placeholder": "Enter sales person name"
+      },
+      "schoolNameArabic": {
+        "label": "School Name (Arabic)",
+        "placeholder": "Enter school name in Arabic"
+      },
+      "schoolNameEnglish": {
+        "label": "School Name (English)",
+        "placeholder": "Enter school name in English"
+      },
+      "gender": {
+        "label": "Category",
+        "placeholder": "Select category",
+        "options": {
+          "boys": "Boys",
+          "girls": "Girls",
+          "both": "Both"
+        }
+      },
+      "educationalTrack": {
+        "label": "Educational Track",
+        "placeholder": "Select educational track (Elementary, Middle, High, etc.)"
+      },
+      "category": {
+        "label": "Category",
+        "placeholder": "Select the category that the school falls under (Boys, Girls, Both)"
+      },
+      "functionalDegree": {
+        "label": "Functional Degree",
+        "placeholder": "Enter functional degree"
+      },
+      "contactPersonName": {
+        "label": "Contact Person Name",
+        "placeholder": "Enter contact person name"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter email address"
+      },
+      "phone": {
+        "label": "Mobile Number",
+        "placeholder": "Enter mobile number"
+      },
+      "city": {
+        "label": "City",
+        "placeholder": "Select city"
+      },
+      "addUser": "Add Another User",
+      "removeUser": "Remove User",
+      "additionalUsers": "Additional Users",
+      "submit": "Submit",
+      "submitting": "Submitting...",
+      "success": "School registered successfully!",
+      "error": "An error occurred while registering the school"
+    },
+    "validation": {
+      "salesPersonName": {
+        "required": "Sales person name is required",
+        "min": "Sales person name must be at least 3 characters",
+        "max": "Sales person name cannot exceed 50 characters"
+      },
+      "schoolNameArabic": {
+        "required": "School name in Arabic is required",
+        "min": "School name must be at least 3 characters",
+        "max": "School name cannot exceed 100 characters"
+      },
+      "schoolNameEnglish": {
+        "required": "School name in English is required",
+        "min": "School name must be at least 3 characters",
+        "max": "School name cannot exceed 100 characters"
+      },
+      "gender": {
+        "required": "Category is required"
+      },
+      "educationalTrack": {
+        "required": "Educational track is required",
+        "min": "Educational track must be at least 3 characters",
+        "max": "Educational track cannot exceed 100 characters"
+      },
+      "category": {
+        "required": "Category is required"
+      },
+      "functionalDegree": {
+        "required": "Functional degree is required",
+        "min": "Functional degree must be at least 3 characters",
+        "max": "Functional degree cannot exceed 50 characters"
+      },
+      "contactPersonName": {
+        "required": "Contact person name is required",
+        "min": "Contact person name must be at least 3 characters",
+        "max": "Contact person name cannot exceed 50 characters"
+      },
+      "city": {
+        "required": "City is required"
+      },
+      "additionalUser": {
+        "name": {
+          "required": "User name is required",
+          "min": "User name must be at least 3 characters",
+          "max": "User name cannot exceed 50 characters"
+        },
+        "role": {
+          "required": "User role is required",
+          "min": "User role must be at least 3 characters",
+          "max": "User role cannot exceed 50 characters"
+        },
+        "email": {
+          "required": "User email is required",
+          "invalid": "Please enter a valid email address"
+        },
+        "phone": {
+          "required": "User phone is required",
+          "invalid": "Please enter a valid phone number"
+        }
+      }
+    }
+  },
   "confirmingData": {
     "title": "Student Information Confirmation",
     "tripInfo": {
