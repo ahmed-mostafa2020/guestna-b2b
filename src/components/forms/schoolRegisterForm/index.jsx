@@ -524,7 +524,7 @@ const SchoolRegisterForm = ({
 
                             {errors.additionalUsers?.[index]?.mobile &&
                               touched.additionalUsers?.[index]?.mobile && (
-                                <p className="text-error text-sm mt-1">
+                                <p className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
                                   {errors.additionalUsers?.[index]?.mobile}
                                 </p>
                               )}

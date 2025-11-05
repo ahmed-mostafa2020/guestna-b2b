@@ -1876,21 +1876,21 @@
       },
       "additionalUser": {
         "name": {
-          "required": "User name is required",
-          "min": "User name must be at least 2 characters",
-          "max": "User name cannot exceed 50 characters"
+          "required": "Name is required",
+          "min": "Name must be at least 2 characters",
+          "max": "Name cannot exceed 50 characters"
         },
         "role": {
-          "required": "User role is required",
-          "min": "User role must be at least 2 characters",
-          "max": "User role cannot exceed 50 characters"
+          "required": "Role is required",
+          "min": "Role must be at least 2 characters",
+          "max": "Role cannot exceed 50 characters"
         },
         "email": {
-          "required": "User email is required",
+          "required": "Email is required",
           "invalid": "Please enter a valid email address"
         },
         "phone": {
-          "required": "User phone is required",
+          "required": "Phone is required",
           "invalid": "Please enter a valid phone number"
         }
       }
