@@ -13,10 +13,10 @@ const PageHeader = () => {
   return (
     <section className="py-12 mx-auto font-ibm text-black school-register-gradient ">
       <Container maxWidth="lg" className="text-center">
-        <h1 className="text-3xl font-semibold">
+        <h1 className="lg:text-3xl text-2xl font-semibold">
           {t("schoolRegister.pageHeader.title")}
         </h1>
-        <p className="text-xl font-medium pt-3 pb-6">
+        <p className="lg:text-xl text-lg font-medium pt-3 pb-6">
           {t("schoolRegister.pageHeader.subTitle")}
         </p>
       </Container>

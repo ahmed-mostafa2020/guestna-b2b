@@ -1,63 +1,63 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useSelector } from "react-redux";
-import { Formik } from "formik";
+import { Formik, Field } from "formik";
 import { Container, CircularProgress } from "@mui/material";
 import { useSnackbar } from "notistack";
 import axios from "axios";
 
 import { createSchoolRegisterSchema } from "@utils/validationSchemas";
-import getProxyUrl from "@utils/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import getProxyUrl from "@utils/getProxyUrl";
 import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
 
+import PhoneInputWithCountrySelect from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+import getUnicodeFlagIcon from "country-flag-icons/unicode";
+
 import { Close } from "@mui/icons-material";
 
-const SchoolRegisterForm = () => {
+const SchoolRegisterForm = ({
+  cities = [],
+  roles = [],
+  educationSystems = [],
+}) => {
   const t = useTranslations();
+  const locale = useLocale();
   const { enqueueSnackbar } = useSnackbar();
   const loginData = useSelector((state) => state.loginForm.loginData);
 
-  const [cities, setCities] = useState([]);
-  const [loadingCities, setLoadingCities] = useState(true);
+  // Extract names from data for dropdowns
+  const cityNames = cities.map((city) => city.name);
+  const roleNames = roles.map(
+    (role) => role.description?.[locale] || role.name
+  );
+  const educationSystemNames = educationSystems.map((system) => system.name);
 
-  // Fetch cities on component mount
-  useEffect(() => {
-    const fetchCities = async () => {
-      try {
-        setLoadingCities(true);
-        const response = await axios.get(
-          getProxyUrl(`${B2B_END_POINTS.SCHOOL_REGISTER.CITIES}`)
-        );
-        if (response.data?.data) {
-          const cityNames = response.data.data.map((city) => city.name);
-          setCities(cityNames);
-        }
-      } catch (error) {
-        console.error("Error fetching cities:", error);
-        enqueueSnackbar("Error loading cities", { variant: "error" });
-      } finally {
-        setLoadingCities(false);
+  // Helper function to find ID by name
+  const findIdByName = (array, name) => {
+    const item = array.find((item) => {
+      if (item.description) {
+        return item.description[locale] === name || item.name === name;
       }
-    };
+      return item.name === name;
+    });
+    return item?._id || null;
+  };
 
-    fetchCities();
-  }, [enqueueSnackbar]);
-
+  // Gender options - boys and girls only (multi-select)
   const genderOptions = [
     t("schoolRegister.form.gender.options.boys"),
     t("schoolRegister.form.gender.options.girls"),
-    t("schoolRegister.form.gender.options.both"),
   ];
 
   const initialValues = {
     salesPersonName: loginData?.name || "",
     schoolNameArabic: "",
     schoolNameEnglish: "",
-    gender: "",
+    gender: [], // Multi-select array
     educationalTrack: "",
     functionalDegree: "",
     contactPersonName: "",
@@ -69,19 +69,51 @@ const SchoolRegisterForm = () => {
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      // TODO: Replace with actual API endpoint when available
-      console.log("Form submitted:", values);
+      // Prepare data for submission
+      const submissionData = {
+        salesPersonName: values.salesPersonName,
+        schoolNameArabic: values.schoolNameArabic,
+        schoolNameEnglish: values.schoolNameEnglish,
+        gender: Array.isArray(values.gender) ? values.gender : [values.gender], // Ensure array format
+        educationalTrack: findIdByName(
+          educationSystems,
+          values.educationalTrack
+        ),
+        functionalDegree: findIdByName(roles, values.functionalDegree),
+        contactPersonName: values.contactPersonName,
+        email: values.email,
+        mobile: values.mobile,
+        city: findIdByName(cities, values.city),
+        additionalUsers: values.additionalUsers.map((user) => ({
+          name: user.name,
+          role: findIdByName(roles, user.role),
+          email: user.email,
+          mobile: user.mobile,
+        })),
+      };
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await axios.post(
+        getProxyUrl(B2B_END_POINTS.SCHOOL_REGISTER.SUBMIT),
+        submissionData,
+        {
+          headers: {
+            lang: locale,
+          },
+        }
+      );
 
-      enqueueSnackbar(t("schoolRegister.form.success"), {
-        variant: "success",
-      });
-      resetForm();
+      if (response.status === 200 || response.status === 201) {
+        enqueueSnackbar(t("schoolRegister.form.success"), {
+          variant: "success",
+        });
+        resetForm();
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
-      enqueueSnackbar(t("schoolRegister.form.error"), { variant: "error" });
+      enqueueSnackbar(
+        error.response?.data?.message || t("schoolRegister.form.error"),
+        { variant: "error" }
+      );
     } finally {
       setSubmitting(false);
     }
@@ -128,7 +160,8 @@ const SchoolRegisterForm = () => {
                     placeholder={t(
                       "schoolRegister.form.salesPersonName.placeholder"
                     )}
-                    disabled={true}
+                    readOnly={true}
+                    required={true}
                   />
 
                   <div>
@@ -136,22 +169,16 @@ const SchoolRegisterForm = () => {
                       {t("schoolRegister.form.city.label")}
                       <span className="text-error ml-1">*</span>
                     </label>
-                    {loadingCities ? (
-                      <div className="flex items-center justify-center h-12 border-2 border-gray-300 rounded-lg">
-                        <CircularProgress size={20} />
-                      </div>
-                    ) : (
-                      <SelectionGroup
-                        name="city"
-                        value={values.city}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        touched={touched.city}
-                        errors={errors.city}
-                        placeholder={t("schoolRegister.form.city.placeholder")}
-                        list={cities}
-                      />
-                    )}
+                    <SelectionGroup
+                      name="city"
+                      value={values.city}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      touched={touched.city}
+                      errors={errors.city}
+                      placeholder={t("schoolRegister.form.city.placeholder")}
+                      list={cityNames}
+                    />
                   </div>
                 </div>
 
@@ -205,38 +232,47 @@ const SchoolRegisterForm = () => {
                     required={true}
                   />
 
-                  <TextInputGroup
-                    label={t("schoolRegister.form.functionalDegree.label")}
-                    labelFontFamily="var(--font-somar-sans), sans-serif"
-                    name="functionalDegree"
-                    value={values.functionalDegree}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    touched={touched.functionalDegree}
-                    errors={errors.functionalDegree}
-                    placeholder={t(
-                      "schoolRegister.form.functionalDegree.placeholder"
-                    )}
-                    required={true}
-                  />
+                  <div>
+                    <label className="block pb-2 font-medium">
+                      {t("schoolRegister.form.functionalDegree.label")}
+                      <span className="text-error ml-1">*</span>
+                    </label>
+                    <SelectionGroup
+                      name="functionalDegree"
+                      value={values.functionalDegree}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      touched={touched.functionalDegree}
+                      errors={errors.functionalDegree}
+                      placeholder={t(
+                        "schoolRegister.form.functionalDegree.placeholder"
+                      )}
+                      list={roleNames}
+                      multiple={false}
+                    />
+                  </div>
                 </div>
 
                 {/* Gender and Educational Track */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
-                  <TextInputGroup
-                    label={t("schoolRegister.form.educationalTrack.label")}
-                    labelFontFamily="var(--font-somar-sans), sans-serif"
-                    name="educationalTrack"
-                    value={values.educationalTrack}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    touched={touched.educationalTrack}
-                    errors={errors.educationalTrack}
-                    placeholder={t(
-                      "schoolRegister.form.educationalTrack.placeholder"
-                    )}
-                    required={true}
-                  />
+                  <div>
+                    <label className="block pb-2 font-medium">
+                      {t("schoolRegister.form.educationalTrack.label")}
+                      <span className="text-error ml-1">*</span>
+                    </label>
+                    <SelectionGroup
+                      name="educationalTrack"
+                      value={values.educationalTrack}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      touched={touched.educationalTrack}
+                      errors={errors.educationalTrack}
+                      placeholder={t(
+                        "schoolRegister.form.educationalTrack.placeholder"
+                      )}
+                      list={educationSystemNames}
+                    />
+                  </div>
 
                   <div>
                     <label className="block pb-2 font-medium">
@@ -252,6 +288,7 @@ const SchoolRegisterForm = () => {
                       errors={errors.gender}
                       placeholder={t("schoolRegister.form.gender.placeholder")}
                       list={genderOptions}
+                      multiple={true}
                     />
                   </div>
                 </div>
@@ -272,19 +309,54 @@ const SchoolRegisterForm = () => {
                     required={true}
                   />
 
-                  <TextInputGroup
-                    label={t("schoolRegister.form.phone.label")}
-                    labelFontFamily="var(--font-somar-sans), sans-serif"
-                    name="mobile"
-                    type="tel"
-                    value={values.mobile}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    touched={touched.mobile}
-                    errors={errors.mobile}
-                    placeholder={t("schoolRegister.form.phone.placeholder")}
-                    required={true}
-                  />
+                  <div className="relative flex flex-col gap-2">
+                    <div className="flex items-center gap-0.5">
+                      <label className="font-medium capitalize">
+                        {t("schoolRegister.form.phone.label")}
+                      </label>
+                      <span className="text-error">*</span>
+                    </div>
+
+                    <Field name="mobile">
+                      {({ field }) => (
+                        <PhoneInputWithCountrySelect
+                          {...field}
+                          international
+                          defaultCountry="SA"
+                          value={values.mobile}
+                          onChange={(value) => {
+                            setFieldValue("mobile", value);
+                          }}
+                          onBlur={handleBlur}
+                          id="mobile"
+                          addInternationalOption={false}
+                          style={{ direction: "ltr" }}
+                          flagComponent={({ country }) => (
+                            <span
+                              style={{
+                                fontSize: "1.2em",
+                                marginRight: "0.5em",
+                              }}
+                            >
+                              {getUnicodeFlagIcon(country)}
+                            </span>
+                          )}
+                          className={
+                            "flex bg-white w-full gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out " +
+                            (errors.mobile && touched.mobile
+                              ? "border-error focus-visible:ring-error"
+                              : "border-border focus-visible:ring-mainColor")
+                          }
+                        />
+                      )}
+                    </Field>
+
+                    {errors.mobile && touched.mobile && (
+                      <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+                        {errors.mobile}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div
@@ -368,22 +440,25 @@ const SchoolRegisterForm = () => {
                             required={true}
                           />
 
-                          <TextInputGroup
-                            label={t(
-                              "schoolRegister.form.functionalDegree.label"
-                            )}
-                            labelFontFamily="var(--font-somar-sans), sans-serif"
-                            name={`additionalUsers.${index}.role`}
-                            value={user.role}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            touched={touched.additionalUsers?.[index]?.role}
-                            errors={errors.additionalUsers?.[index]?.role}
-                            placeholder={t(
-                              "schoolRegister.form.functionalDegree.placeholder"
-                            )}
-                            required={true}
-                          />
+                          <div>
+                            <label className="block pb-2 font-medium">
+                              {t("schoolRegister.form.functionalDegree.label")}
+                              <span className="text-error ml-1">*</span>
+                            </label>
+                            <SelectionGroup
+                              name={`additionalUsers.${index}.role`}
+                              value={user.role}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              touched={touched.additionalUsers?.[index]?.role}
+                              errors={errors.additionalUsers?.[index]?.role}
+                              placeholder={t(
+                                "schoolRegister.form.functionalDegree.placeholder"
+                              )}
+                              list={roleNames}
+                              multiple={false}
+                            />
+                          </div>
 
                           <TextInputGroup
                             label={t("schoolRegister.form.email.label")}
@@ -401,21 +476,59 @@ const SchoolRegisterForm = () => {
                             required={true}
                           />
 
-                          <TextInputGroup
-                            label={t("schoolRegister.form.phone.label")}
-                            labelFontFamily="var(--font-somar-sans), sans-serif"
-                            name={`additionalUsers.${index}.mobile`}
-                            type="tel"
-                            value={user.mobile}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            touched={touched.additionalUsers?.[index]?.mobile}
-                            errors={errors.additionalUsers?.[index]?.mobile}
-                            placeholder={t(
-                              "schoolRegister.form.phone.placeholder"
-                            )}
-                            required={true}
-                          />
+                          <div className="relative flex flex-col gap-2">
+                            <div className="flex items-center gap-0.5">
+                              <label className="font-medium capitalize">
+                                {t("schoolRegister.form.phone.label")}
+                              </label>
+                              <span className="text-error">*</span>
+                            </div>
+
+                            <Field name={`additionalUsers.${index}.mobile`}>
+                              {({ field }) => (
+                                <PhoneInputWithCountrySelect
+                                  {...field}
+                                  international
+                                  defaultCountry="SA"
+                                  value={user.mobile}
+                                  onChange={(value) => {
+                                    setFieldValue(
+                                      `additionalUsers.${index}.mobile`,
+                                      value
+                                    );
+                                  }}
+                                  onBlur={handleBlur}
+                                  id={`additionalUsers.${index}.mobile`}
+                                  addInternationalOption={false}
+                                  style={{ direction: "ltr" }}
+                                  flagComponent={({ country }) => (
+                                    <span
+                                      style={{
+                                        fontSize: "1.2em",
+                                        marginRight: "0.5em",
+                                      }}
+                                    >
+                                      {getUnicodeFlagIcon(country)}
+                                    </span>
+                                  )}
+                                  className={
+                                    "flex bg-white w-full gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out " +
+                                    (errors.additionalUsers?.[index]?.mobile &&
+                                    touched.additionalUsers?.[index]?.mobile
+                                      ? "border-error focus-visible:ring-error"
+                                      : "border-border focus-visible:ring-mainColor")
+                                  }
+                                />
+                              )}
+                            </Field>
+
+                            {errors.additionalUsers?.[index]?.mobile &&
+                              touched.additionalUsers?.[index]?.mobile && (
+                                <p className="text-error text-sm mt-1">
+                                  {errors.additionalUsers?.[index]?.mobile}
+                                </p>
+                              )}
+                          </div>
                         </div>
                       </div>
                     ))}

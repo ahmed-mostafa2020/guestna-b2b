@@ -20,6 +20,7 @@ const SelectionGroup = ({
   list,
   multiple = false,
   disabled = false,
+  showCheckbox = true, // Always show checkbox by default
 }) => {
   return (
     <FormControl error={touched && Boolean(errors)} className="relative w-full">
@@ -100,20 +101,9 @@ const SelectionGroup = ({
 
           return (
             <MenuItem key={item} value={itemValue}>
-              {multiple && (
+              {showCheckbox && (
                 <Checkbox
                   checked={isSelected}
-                  sx={{
-                    color: "#d1d5db",
-                    "&.Mui-checked": {
-                      color: "var(--color-main)",
-                    },
-                  }}
-                />
-              )}
-              {!multiple && isSelected && (
-                <Checkbox
-                  checked={true}
                   sx={{
                     color: "#d1d5db",
                     "&.Mui-checked": {
@@ -128,9 +118,9 @@ const SelectionGroup = ({
         })}
       </Select>
       {touched && errors && (
-        <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+        <p className="absolute -bottom-5 text-error text-sm mt-1 font-ibm">
           {errors}
-        </div>
+        </p>
       )}
     </FormControl>
   );
