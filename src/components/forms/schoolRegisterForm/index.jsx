@@ -3,13 +3,22 @@
 import { useTranslations, useLocale } from "next-intl";
 import { useSelector } from "react-redux";
 import { Formik, Field } from "formik";
-import { Container, CircularProgress } from "@mui/material";
+import {
+  Container,
+  CircularProgress,
+  Skeleton,
+  Autocomplete,
+  TextField,
+} from "@mui/material";
 import { useSnackbar } from "notistack";
 import axios from "axios";
+import { useState, useCallback } from "react";
 
 import { createSchoolRegisterSchema } from "@utils/validationSchemas";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 import getProxyUrl from "@utils/getProxyUrl";
+import { getHeaders } from "@utils/getHeaders";
 import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
 
@@ -28,6 +37,12 @@ const SchoolRegisterForm = ({
   const locale = useLocale();
   const { enqueueSnackbar } = useSnackbar();
   const loginData = useSelector((state) => state.loginForm.loginData);
+
+  // State for organization autocomplete
+  const [organizationOptions, setOrganizationOptions] = useState([]);
+  const [loadingOrganizations, setLoadingOrganizations] = useState(false);
+  const [selectedOrganization, setSelectedOrganization] = useState(null);
+  const [organizationInputValue, setOrganizationInputValue] = useState("");
 
   // Extract names from data for dropdowns
   const cityNames = cities.map((city) => city.name);
@@ -57,6 +72,8 @@ const SchoolRegisterForm = ({
     salesPersonName: loginData?.name || "",
     schoolNameArabic: "",
     schoolNameEnglish: "",
+    organizationPhone: "",
+    organizationEmail: "",
     gender: [], // Multi-select array
     educationalTrack: "",
     functionalDegree: "",
@@ -69,13 +86,24 @@ const SchoolRegisterForm = ({
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
+      // Map gender options to API values
+      const mapGenderToAPI = (genderArray) => {
+        return genderArray.map((gender) => {
+          if (gender === t("schoolRegister.form.gender.options.boys")) {
+            return CONSTANT_VALUES.GENDERS.MALE;
+          } else if (gender === t("schoolRegister.form.gender.options.girls")) {
+            return CONSTANT_VALUES.GENDERS.FEMALE;
+          }
+          return gender;
+        });
+      };
+
       // Prepare data for submission
       const submissionData = {
-        // salesPersonName: values.salesPersonName,
-        organization: {
+        organization: selectedOrganization?._id || {
           city: findIdByName(cities, values.city),
-          phone:,
-          email:,
+          phone: values.organizationPhone,
+          email: values.organizationEmail,
           name: {
             ar: values.schoolNameArabic,
             en: values.schoolNameEnglish,
@@ -89,41 +117,43 @@ const SchoolRegisterForm = ({
               educationSystems,
               values.educationalTrack
             ),
-            gender: Array.isArray(values.gender)
-              ? values.gender
-              : [values.gender], // Ensure array format
+            gender: mapGenderToAPI(values.gender),
           },
-
-          functionalDegree: findIdByName(roles, values.functionalDegree),
-          contactPersonName: values.contactPersonName,
-          email: values.email,
-          phone: values.mobile,
         },
 
-        users: values.additionalUsers.map((user) => ({
-          name: user.name,
-          role: findIdByName(roles, user.role),
-          email: user.email,
-          phone: user.mobile,
-          systemType: "B2B",
-        })),
+        users: [
+          {
+            name: values.contactPersonName,
+            role: findIdByName(roles, values.functionalDegree),
+            email: values.email,
+            phone: values.mobile,
+            systemType: "B2B",
+          },
+          ...values.additionalUsers.map((user) => ({
+            name: user.name,
+            role: findIdByName(roles, user.role),
+            email: user.email,
+            phone: user.mobile,
+            systemType: "B2B",
+          })),
+        ],
       };
 
-      const response = await axios.post(
-        getProxyUrl(B2B_END_POINTS.SCHOOL_REGISTER.SUBMIT),
-        submissionData,
-        {
-          headers: {
-            lang: locale,
-          },
-        }
-      );
+      const response = await axios({
+        method: "POST",
+        url: getProxyUrl(B2B_END_POINTS.SCHOOL_REGISTER.SUBMIT),
+        data: submissionData,
+        headers: getHeaders(locale),
+      });
 
       if (response.status === 200 || response.status === 201) {
         enqueueSnackbar(t("schoolRegister.form.success"), {
           variant: "success",
         });
         resetForm();
+        setSelectedOrganization(null);
+        setOrganizationInputValue("");
+        setOrganizationOptions([]);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -135,6 +165,69 @@ const SchoolRegisterForm = ({
       setSubmitting(false);
     }
   };
+
+  // Fetch organizations by name
+  const fetchOrganizations = useCallback(
+    async (searchTerm) => {
+      if (!searchTerm || searchTerm.length < 2) {
+        setOrganizationOptions([]);
+        return;
+      }
+
+      setLoadingOrganizations(true);
+      try {
+        // Construct URL with query parameter before proxy
+        const urlWithParams = `${B2B_END_POINTS.SCHOOL_REGISTER.ORGANIZATIONS_NAME}?name=${encodeURIComponent(searchTerm)}`;
+        const response = await axios({
+          method: "GET",
+          url: getProxyUrl(urlWithParams),
+          headers: getHeaders(locale),
+        });
+
+        if (response.data?.data) {
+          setOrganizationOptions(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching organizations:", error);
+      } finally {
+        setLoadingOrganizations(false);
+      }
+    },
+    [locale]
+  );
+
+  // Fetch organization details by ID
+  const fetchOrganizationDetails = useCallback(
+    async (organizationId, setFieldValue) => {
+      try {
+        const response = await axios({
+          method: "GET",
+          url: getProxyUrl(
+            `${B2B_END_POINTS.SCHOOL_REGISTER.ORGANIZATION_INFO}/${organizationId}`
+          ),
+          headers: getHeaders(locale),
+        });
+
+        if (response.data?.data) {
+          const orgData = response.data.data;
+
+          // Auto-fill fields if data exists
+          if (orgData.phone) {
+            setFieldValue("organizationPhone", orgData.phone);
+          }
+          if (orgData.email) {
+            setFieldValue("organizationEmail", orgData.email);
+          }
+          if (orgData.city?.name) {
+            setFieldValue("city", orgData.city.name);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching organization details:", error);
+      }
+    },
+    [locale]
+  );
 
   return (
     <main className="py-8 lg:py-12 bg-packageDetailsBg">
@@ -199,37 +292,285 @@ const SchoolRegisterForm = ({
                   </div>
                 </div>
 
-                {/* School Names */}
+                {/* Organization Name Autocomplete - Arabic and English */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
+                  {/* Arabic Organization Name Autocomplete */}
+                  <div>
+                    <label className="block pb-2 font-medium font-somar">
+                      {t("schoolRegister.form.schoolNameArabic.label")}
+                      <span className="text-error ml-1">*</span>
+                    </label>
+                    <Autocomplete
+                      options={organizationOptions}
+                      getOptionLabel={(option) => option.name?.ar || ""}
+                      loading={loadingOrganizations}
+                      value={selectedOrganization}
+                      onChange={(event, newValue) => {
+                        setSelectedOrganization(newValue);
+                        if (newValue?._id) {
+                          fetchOrganizationDetails(newValue._id, setFieldValue);
+                          setFieldValue("schoolNameArabic", newValue.name?.ar || "");
+                          setFieldValue("schoolNameEnglish", newValue.name?.en || "");
+                        } else {
+                          setFieldValue("schoolNameArabic", "");
+                          setFieldValue("schoolNameEnglish", "");
+                          setFieldValue("organizationPhone", "");
+                          setFieldValue("organizationEmail", "");
+                          setFieldValue("city", "");
+                        }
+                      }}
+                      inputValue={values.schoolNameArabic}
+                      onInputChange={(event, newInputValue) => {
+                        setFieldValue("schoolNameArabic", newInputValue);
+                        if (newInputValue && newInputValue.length >= 2) {
+                          fetchOrganizations(newInputValue);
+                        }
+                      }}
+                      freeSolo
+                      disabled={!!selectedOrganization}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          name="schoolNameArabic"
+                          placeholder={t("schoolRegister.form.schoolNameArabic.placeholder")}
+                          error={touched.schoolNameArabic && !!errors.schoolNameArabic}
+                          helperText={touched.schoolNameArabic && errors.schoolNameArabic}
+                          InputProps={{
+                            ...params.InputProps,
+                            endAdornment: (
+                              <>
+                                {loadingOrganizations ? (
+                                  <CircularProgress size={20} />
+                                ) : null}
+                                {params.InputProps.endAdornment}
+                              </>
+                            ),
+                          }}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              fontFamily: "var(--font-somar-sans), sans-serif",
+                              fontSize: "1.125rem",
+                              height: "55px",
+                              borderRadius: "0.5rem",
+                              "& fieldset": {
+                                borderColor: touched.schoolNameArabic && errors.schoolNameArabic 
+                                  ? "var(--color-error)" 
+                                  : "var(--color-border)",
+                                borderWidth: "2px",
+                              },
+                              "&:hover fieldset": {
+                                borderColor: touched.schoolNameArabic && errors.schoolNameArabic 
+                                  ? "var(--color-error)" 
+                                  : "var(--color-main)",
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor: touched.schoolNameArabic && errors.schoolNameArabic 
+                                  ? "var(--color-error)" 
+                                  : "var(--color-main)",
+                              },
+                              "&.Mui-disabled": {
+                                opacity: 0.5,
+                                cursor: "not-allowed",
+                              },
+                            },
+                            "& .MuiInputBase-input": {
+                              fontFamily: "var(--font-somar-sans), sans-serif",
+                              fontSize: "1.125rem",
+                            },
+                            "& .MuiFormHelperText-root": {
+                              fontFamily: "var(--font-ibm), sans-serif",
+                              fontSize: "0.75rem",
+                              color: "var(--color-error)",
+                              marginLeft: 0,
+                              marginTop: "4px",
+                            },
+                          }}
+                        />
+                      )}
+                      renderOption={(props, option) => (
+                        <li {...props} key={option._id}>
+                          {option.name?.ar || ""}
+                        </li>
+                      )}
+                      noOptionsText={t("schoolRegister.form.organizationName.noOptions")}
+                      loadingText={<CircularProgress size={20} />}
+                    />
+                  </div>
+
+                  {/* English Organization Name Autocomplete */}
+                  <div>
+                    <label className="block pb-2 font-medium font-somar">
+                      {t("schoolRegister.form.schoolNameEnglish.label")}
+                      <span className="text-error ml-1">*</span>
+                    </label>
+                    <Autocomplete
+                      options={organizationOptions}
+                      getOptionLabel={(option) => option.name?.en || ""}
+                      loading={loadingOrganizations}
+                      value={selectedOrganization}
+                      onChange={(event, newValue) => {
+                        setSelectedOrganization(newValue);
+                        if (newValue?._id) {
+                          fetchOrganizationDetails(newValue._id, setFieldValue);
+                          setFieldValue("schoolNameArabic", newValue.name?.ar || "");
+                          setFieldValue("schoolNameEnglish", newValue.name?.en || "");
+                        } else {
+                          setFieldValue("schoolNameArabic", "");
+                          setFieldValue("schoolNameEnglish", "");
+                          setFieldValue("organizationPhone", "");
+                          setFieldValue("organizationEmail", "");
+                          setFieldValue("city", "");
+                        }
+                      }}
+                      inputValue={values.schoolNameEnglish}
+                      onInputChange={(event, newInputValue) => {
+                        setFieldValue("schoolNameEnglish", newInputValue);
+                        if (newInputValue && newInputValue.length >= 2) {
+                          fetchOrganizations(newInputValue);
+                        }
+                      }}
+                      freeSolo
+                      disabled={!!selectedOrganization}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          name="schoolNameEnglish"
+                          placeholder={t("schoolRegister.form.schoolNameEnglish.placeholder")}
+                          error={touched.schoolNameEnglish && !!errors.schoolNameEnglish}
+                          helperText={touched.schoolNameEnglish && errors.schoolNameEnglish}
+                          InputProps={{
+                            ...params.InputProps,
+                            endAdornment: (
+                              <>
+                                {loadingOrganizations ? (
+                                  <CircularProgress size={20} />
+                                ) : null}
+                                {params.InputProps.endAdornment}
+                              </>
+                            ),
+                          }}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              fontFamily: "var(--font-somar-sans), sans-serif",
+                              fontSize: "1.125rem",
+                              height: "55px",
+                              borderRadius: "0.5rem",
+                              "& fieldset": {
+                                borderColor: touched.schoolNameEnglish && errors.schoolNameEnglish 
+                                  ? "var(--color-error)" 
+                                  : "var(--color-border)",
+                                borderWidth: "2px",
+                              },
+                              "&:hover fieldset": {
+                                borderColor: touched.schoolNameEnglish && errors.schoolNameEnglish 
+                                  ? "var(--color-error)" 
+                                  : "var(--color-main)",
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor: touched.schoolNameEnglish && errors.schoolNameEnglish 
+                                  ? "var(--color-error)" 
+                                  : "var(--color-main)",
+                              },
+                              "&.Mui-disabled": {
+                                opacity: 0.5,
+                                cursor: "not-allowed",
+                              },
+                            },
+                            "& .MuiInputBase-input": {
+                              fontFamily: "var(--font-somar-sans), sans-serif",
+                              fontSize: "1.125rem",
+                            },
+                            "& .MuiFormHelperText-root": {
+                              fontFamily: "var(--font-ibm), sans-serif",
+                              fontSize: "0.75rem",
+                              color: "var(--color-error)",
+                              marginLeft: 0,
+                              marginTop: "4px",
+                            },
+                          }}
+                        />
+                      )}
+                      renderOption={(props, option) => (
+                        <li {...props} key={option._id}>
+                          {option.name?.en || ""}
+                        </li>
+                      )}
+                      noOptionsText={t("schoolRegister.form.organizationName.noOptions")}
+                      loadingText={<CircularProgress size={20} />}
+                    />
+                  </div>
+                </div>
+
+                {/* Organization Phone and Email */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
                   <TextInputGroup
-                    label={t("schoolRegister.form.schoolNameArabic.label")}
+                    label={t("schoolRegister.form.organizationEmail.label")}
                     labelFontFamily="var(--font-somar-sans), sans-serif"
-                    name="schoolNameArabic"
-                    value={values.schoolNameArabic}
+                    name="organizationEmail"
+                    type="email"
+                    value={values.organizationEmail}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    touched={touched.schoolNameArabic}
-                    errors={errors.schoolNameArabic}
+                    touched={touched.organizationEmail}
+                    errors={errors.organizationEmail}
                     placeholder={t(
-                      "schoolRegister.form.schoolNameArabic.placeholder"
+                      "schoolRegister.form.organizationEmail.placeholder"
                     )}
                     required={true}
+                    readOnly={!!selectedOrganization}
                   />
 
-                  <TextInputGroup
-                    label={t("schoolRegister.form.schoolNameEnglish.label")}
-                    labelFontFamily="var(--font-somar-sans), sans-serif"
-                    name="schoolNameEnglish"
-                    value={values.schoolNameEnglish}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    touched={touched.schoolNameEnglish}
-                    errors={errors.schoolNameEnglish}
-                    placeholder={t(
-                      "schoolRegister.form.schoolNameEnglish.placeholder"
-                    )}
-                    required={true}
-                  />
+                  <div className="relative flex flex-col gap-2">
+                    <div className="flex items-center gap-0.5">
+                      <label className="font-medium capitalize">
+                        {t("schoolRegister.form.organizationPhone.label")}
+                      </label>
+                      <span className="text-error">*</span>
+                    </div>
+
+                    <Field name="organizationPhone">
+                      {({ field }) => (
+                        <PhoneInputWithCountrySelect
+                          {...field}
+                          international
+                          defaultCountry="SA"
+                          value={values.organizationPhone}
+                          onChange={(value) => {
+                            setFieldValue("organizationPhone", value);
+                          }}
+                          onBlur={handleBlur}
+                          id="organizationPhone"
+                          addInternationalOption={false}
+                          style={{ direction: "ltr" }}
+                          disabled={!!selectedOrganization}
+                          flagComponent={({ country }) => (
+                            <span
+                              style={{
+                                fontSize: "1.2em",
+                                marginRight: "0.5em",
+                              }}
+                            >
+                              {getUnicodeFlagIcon(country)}
+                            </span>
+                          )}
+                          className={
+                            "flex bg-white w-full gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out " +
+                            (errors.organizationPhone &&
+                            touched.organizationPhone
+                              ? "border-error focus-visible:ring-error"
+                              : "border-border focus-visible:ring-mainColor")
+                          }
+                        />
+                      )}
+                    </Field>
+
+                    {errors.organizationPhone &&
+                      touched.organizationPhone && (
+                        <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+                          {errors.organizationPhone}
+                        </div>
+                      )}
+                  </div>
                 </div>
 
                 {/* Functional Degree and Contact Person Name */}

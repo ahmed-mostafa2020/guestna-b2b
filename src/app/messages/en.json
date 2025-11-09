@@ -1789,6 +1789,19 @@
         "label": "School Name (English)",
         "placeholder": "Enter school name in English"
       },
+      "organizationName": {
+        "label": "Organization Name",
+        "placeholder": "Search for organization name...",
+        "noOptions": "No organizations found"
+      },
+      "organizationEmail": {
+        "label": "Organization Email",
+        "placeholder": "Enter organization email address"
+      },
+      "organizationPhone": {
+        "label": "Organization Phone",
+        "placeholder": "Enter organization phone number"
+      },
       "gender": {
         "label": "Category",
         "placeholder": "Select category",

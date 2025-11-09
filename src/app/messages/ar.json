@@ -1780,6 +1780,19 @@
         "label": "الاسم الإنجليزي الكامل للمنشأة",
         "placeholder": "أدخل اسم المدرسة بالإنجليزية"
       },
+      "organizationName": {
+        "label": "اسم المنشأة",
+        "placeholder": "ابحث عن اسم المنشأة...",
+        "noOptions": "لم يتم العثور على منشآت"
+      },
+      "organizationEmail": {
+        "label": "البريد الإلكتروني للمنشأة",
+        "placeholder": "أدخل البريد الإلكتروني للمنشأة"
+      },
+      "organizationPhone": {
+        "label": "هاتف المنشأة",
+        "placeholder": "أدخل رقم هاتف المنشأة"
+      },
       "gender": {
         "label": "الفئة",
         "placeholder": "اختر الفئة",

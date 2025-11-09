@@ -867,6 +867,13 @@ export const createSchoolRegisterSchema = (t) =>
       .min(2, t("schoolRegister.validation.schoolNameEnglish.min"))
       .max(100, t("schoolRegister.validation.schoolNameEnglish.max")),
 
+    organizationEmail: Yup.string()
+      .email(t("forms.email.error"))
+      .matches(emailRegex, t("forms.email.error_tld"))
+      .required(t("forms.validation.require")),
+
+    organizationPhone: createPhoneValidation(t, true),
+
     gender: Yup.array()
       .of(Yup.string())
       .min(1, t("schoolRegister.validation.gender.required"))
