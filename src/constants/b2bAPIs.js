@@ -141,6 +141,7 @@ export const B2B_END_POINTS = {
   SCHOOL_REGISTER: {
     PAGE: "home/cities-eduSystems-b2b-roles",
     ORGANIZATIONS_NAME: "organizations/search-by-name",
+    ORGANIZATION_INFO: "organizations",
     SUBMIT: "organization-invitation",
   },
 

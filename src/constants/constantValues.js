@@ -41,4 +41,9 @@ export const CONSTANT_VALUES = {
     RIYADH_VIBES: "RIYADH_VIBES",
     OUTSIDE_RIYADH: "OUTSIDE_RIYADH",
   },
+
+  GENDERS: {
+    MALE: "MALE",
+    FEMALE: "FEMALE",
+  },
 };

@@ -56,7 +56,7 @@ const SelectionGroup = ({
 
           "& .MuiSelect-select": {
             paddingRight: "40px !important",
-            border: "2px solid #d1d5db",
+            border: "2px solid var(--color-border)",
             borderRadius: "8px",
             width: "100%",
 
@@ -71,7 +71,7 @@ const SelectionGroup = ({
           },
           "& .MuiSelect-icon": {
             right: "10px !important",
-            color: "#6b7280",
+            color: "var(--color-text)",
           },
           "& .MuiOutlinedInput-notchedOutline": {
             border: "none",
@@ -105,7 +105,7 @@ const SelectionGroup = ({
                 <Checkbox
                   checked={isSelected}
                   sx={{
-                    color: "#d1d5db",
+                    color: "var(--color-text)",
                     "&.Mui-checked": {
                       color: "var(--color-main)",
                     },

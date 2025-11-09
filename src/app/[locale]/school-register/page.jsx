@@ -43,9 +43,10 @@ const SchoolRegisterPage = () => {
   }
 
   return (
-    <ProtectedProfilePage
-      requiredPermission={PERMISSIONS.PAGE.B2B_INVITE_SCHOOL_PAGE}
-    >
+    // <ProtectedProfilePage
+    //   requiredPermission={PERMISSIONS.PAGE.B2B_INVITE_SCHOOL_PAGE}
+    // >
+    <>
       <PageHeader />
 
       {isLoading ? (
@@ -57,7 +58,8 @@ const SchoolRegisterPage = () => {
           educationSystems={pageData?.educationSystems || []}
         />
       )}
-    </ProtectedProfilePage>
+    </>
+    // </ProtectedProfilePage>
   );
 };
 

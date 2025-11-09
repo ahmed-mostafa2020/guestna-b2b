@@ -71,24 +71,41 @@ const SchoolRegisterForm = ({
     try {
       // Prepare data for submission
       const submissionData = {
-        salesPersonName: values.salesPersonName,
-        schoolNameArabic: values.schoolNameArabic,
-        schoolNameEnglish: values.schoolNameEnglish,
-        gender: Array.isArray(values.gender) ? values.gender : [values.gender], // Ensure array format
-        educationalTrack: findIdByName(
-          educationSystems,
-          values.educationalTrack
-        ),
-        functionalDegree: findIdByName(roles, values.functionalDegree),
-        contactPersonName: values.contactPersonName,
-        email: values.email,
-        mobile: values.mobile,
-        city: findIdByName(cities, values.city),
-        additionalUsers: values.additionalUsers.map((user) => ({
+        // salesPersonName: values.salesPersonName,
+        organization: {
+          city: findIdByName(cities, values.city),
+          phone:,
+          email:,
+          name: {
+            ar: values.schoolNameArabic,
+            en: values.schoolNameEnglish,
+          },
+          about: {
+            ar: values.aboutArabic,
+            en: values.aboutEnglish,
+          },
+          track: {
+            educationSystem: findIdByName(
+              educationSystems,
+              values.educationalTrack
+            ),
+            gender: Array.isArray(values.gender)
+              ? values.gender
+              : [values.gender], // Ensure array format
+          },
+
+          functionalDegree: findIdByName(roles, values.functionalDegree),
+          contactPersonName: values.contactPersonName,
+          email: values.email,
+          phone: values.mobile,
+        },
+
+        users: values.additionalUsers.map((user) => ({
           name: user.name,
           role: findIdByName(roles, user.role),
           email: user.email,
-          mobile: user.mobile,
+          phone: user.mobile,
+          systemType: "B2B",
         })),
       };
 
