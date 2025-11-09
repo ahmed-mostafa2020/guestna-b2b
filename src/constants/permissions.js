@@ -54,5 +54,6 @@ export const PERMISSIONS = {
     B2B_PROFILE_CALENDAR_PAGE: "b2b_profile_calender_page",
     B2B_PROFILE_INTEGRATED_BOOKINGS_PAGE:
       "b2b_profile_integrated_bookings_page",
+    B2B_INVITE_SCHOOL_PAGE: "b2b_invite_organization_sales_page",
   },
 };

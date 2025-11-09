@@ -4,13 +4,15 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useEffect } from "react";
 
+import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import pageResponse from "@constants/response";
-import { useFetchData } from "@hooks/useFetchData";
+import { PERMISSIONS } from "@constants/permissions";
 
+import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import PageHeader from "@components/sections/pages/schoolRegister/PageHeader";
 import SchoolRegisterForm from "@components/forms/schoolRegisterForm";
-import FullScreenLoading from "@feedback/loading/FullScreenLoading";
+import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 
 const SchoolRegisterPage = () => {
   const locale = useLocale();
@@ -41,7 +43,9 @@ const SchoolRegisterPage = () => {
   }
 
   return (
-    <>
+    <ProtectedProfilePage
+      requiredPermission={PERMISSIONS.PAGE.B2B_INVITE_SCHOOL_PAGE}
+    >
       <PageHeader />
 
       {isLoading ? (
@@ -53,7 +57,7 @@ const SchoolRegisterPage = () => {
           educationSystems={pageData?.educationSystems || []}
         />
       )}
-    </>
+    </ProtectedProfilePage>
   );
 };
 
