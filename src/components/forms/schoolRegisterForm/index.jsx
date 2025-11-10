@@ -380,11 +380,13 @@ const SchoolRegisterForm = ({
                           newValue.name?.en || ""
                         );
                       } else {
+                        // Clear all organization-related fields and data
                         setFieldValue("schoolNameArabic", "");
                         setFieldValue("schoolNameEnglish", "");
                         setFieldValue("organizationPhone", "");
                         setFieldValue("organizationEmail", "");
-                        setFieldValue("city", "");
+                        setOrganizationRoles([]);
+                        setOrganizationEducationSystems([]);
                       }
                     }}
                     onInputChange={(event, newInputValue) => {
@@ -401,7 +403,6 @@ const SchoolRegisterForm = ({
                       </li>
                     )}
                     loading={loadingOrganizations}
-                    disabled={!!selectedOrganization}
                     freeSolo
                     placeholder={t(
                       "schoolRegister.form.schoolNameArabic.placeholder"
@@ -434,11 +435,13 @@ const SchoolRegisterForm = ({
                           newValue.name?.en || ""
                         );
                       } else {
+                        // Clear all organization-related fields and data
                         setFieldValue("schoolNameArabic", "");
                         setFieldValue("schoolNameEnglish", "");
                         setFieldValue("organizationPhone", "");
                         setFieldValue("organizationEmail", "");
-                        setFieldValue("city", "");
+                        setOrganizationRoles([]);
+                        setOrganizationEducationSystems([]);
                       }
                     }}
                     onInputChange={(event, newInputValue) => {
@@ -455,7 +458,6 @@ const SchoolRegisterForm = ({
                       </li>
                     )}
                     loading={loadingOrganizations}
-                    disabled={!!selectedOrganization}
                     freeSolo
                     placeholder={t(
                       "schoolRegister.form.schoolNameEnglish.placeholder"
