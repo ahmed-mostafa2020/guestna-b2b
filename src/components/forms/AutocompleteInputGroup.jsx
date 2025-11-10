@@ -67,6 +67,7 @@ const AutocompleteInputGroup = ({
               "& .MuiOutlinedInput-root": {
                 fontFamily: "var(--font-somar-sans), sans-serif",
                 fontSize: "0.875rem",
+                fontWeight: 400,
                 height: "55px",
                 borderRadius: "0.5rem",
                 backgroundColor: "white",
@@ -101,19 +102,26 @@ const AutocompleteInputGroup = ({
                     : "var(--color-main)",
                 },
                 "&.Mui-disabled": {
-                  opacity: 0.8,
+                  opacity: 0.9,
                   cursor: "not-allowed",
-                  // backgroundColor: "rgba(0, 0, 0, 0.05)",
                 },
               },
               "& .MuiInputBase-input": {
                 fontFamily: "var(--font-somar-sans), sans-serif",
                 fontSize: "0.875rem",
+                fontWeight: 400,
                 padding: "0 !important",
               },
               "& .MuiInputBase-input::placeholder": {
+                fontFamily: "var(--font-somar-sans), sans-serif",
                 fontSize: "0.875rem",
-                opacity: 0.6,
+                fontWeight: 400,
+                color: "var(--color-text-light)",
+                opacity: 1,
+              },
+              "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: "inherit",
+                opacity: 0.9,
               },
             }}
           />

@@ -41,12 +41,16 @@ const SelectionGroup = ({
             (!selected || !Array.isArray(selected) || selected.length === 0)
           ) {
             return (
-              <span className="text-light opacity-60 ">{placeholder}</span>
+              <span className="text-light opacity-60 text-sm">
+                {placeholder}
+              </span>
             );
           }
           if (!multiple && (!selected || selected === "")) {
             return (
-              <span className="text-light opacity-60 ">{placeholder}</span>
+              <span className="text-light opacity-60 text-sm">
+                {placeholder}
+              </span>
             );
           }
           return multiple ? selected.join(", ") : selected;
