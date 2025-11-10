@@ -213,13 +213,8 @@ const SchoolRegisterForm = ({
         });
 
         if (response.data?.data) {
-          console.log("Organizations response:", response.data.data);
           setOrganizationOptions(response.data.data);
         } else if (response.data) {
-          console.log(
-            "Organizations response (no data wrapper):",
-            response.data
-          );
           setOrganizationOptions(
             Array.isArray(response.data) ? response.data : []
           );
@@ -249,8 +244,6 @@ const SchoolRegisterForm = ({
         const orgData = response.data?.data || response.data;
 
         if (orgData) {
-          console.log("Organization details:", orgData);
-
           // Auto-fill organization name
           if (orgData.name) {
             setFieldValue("schoolNameArabic", orgData.name.ar || "");

@@ -28,6 +28,7 @@ import {
   setColorPreferences,
   setCustomLogo,
 } from "@store/theme/themeSlice";
+import { getFirstAccessiblePage } from "@utils/getFirstAccessiblePage";
 import { useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -109,14 +110,24 @@ const RolesLoginForm = () => {
           dispatch(setUser(response.data.userType));
           dispatch(setPermissions(response.data.user.permissions));
 
-          if (response.data.user.colorPreferences && response.data.user.colorPreferences.length > 0) {
+          if (
+            response.data.user.colorPreferences &&
+            response.data.user.colorPreferences.length > 0
+          ) {
             // Extract first color preference object from array
-            dispatch(setColorPreferences(response.data.user.colorPreferences[0]));
+            dispatch(
+              setColorPreferences(response.data.user.colorPreferences[0])
+            );
             dispatch(setTheme("customized"));
             dispatch(setCustomLogo(response.data.user.companyLogo));
           }
 
-          router.push(`/${locale}/profile`);
+          // Get first accessible page based on user permissions
+          const userPages = response.data.user.permissions?.PAGE || [];
+          console.log("User page permissions:", userPages);
+          const redirectPath = getFirstAccessiblePage(userPages, locale);
+          console.log("Redirecting to:", redirectPath);
+          router.push(redirectPath);
 
           dispatch(submitForm(response.data.user));
           // dispatch(setUser(response.data.userType));

@@ -75,6 +75,10 @@ const BookingsTable = ({
                     {t("profile.tables.bookings.header.tripName")}
                   </th>
                   <th className="px-6 py-4 font-semibold text-start">
+                    {t("profile.tables.bookings.header.academicStage")}
+                  </th>
+
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.tables.bookings.header.tripType")}
                   </th>
 
@@ -107,6 +111,9 @@ const BookingsTable = ({
                     </td> */}
                     <td className="px-6 py-4 text-sm font-medium text-foreground">
                       {booking.name}
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium text-foreground">
+                      {booking.academicStage?.name}
                     </td>
 
                     <td className="px-6 py-4 text-sm font-medium text-foreground">
@@ -205,6 +212,30 @@ const BookingsTable = ({
                   </span>
                   <span className="text-foreground text-end font-medium">
                     {booking.categories?.name || booking.categories}
+                  </span>
+                </div>
+
+                {/* Quantity */}
+                <div className="flex items-start justify-between gap-2">
+                  <span className="font-medium text-gray-600 flex-shrink-0">
+                    {t("profile.tables.bookings.header.quantity")}:
+                  </span>
+                  <span className="text-foreground text-end font-medium">
+                    {formatNumbersUint(
+                      booking.bookingQuantity,
+                      t("common.student"),
+                      t("common.students")
+                    )}
+                  </span>
+                </div>
+
+                {/* Academic Stage */}
+                <div className="flex items-start justify-between gap-2">
+                  <span className="font-medium text-gray-600 flex-shrink-0">
+                    {t("profile.tables.bookings.header.academicStage")}:
+                  </span>
+                  <span className="text-foreground text-end font-medium">
+                    {booking.academicStage?.name}
                   </span>
                 </div>
 

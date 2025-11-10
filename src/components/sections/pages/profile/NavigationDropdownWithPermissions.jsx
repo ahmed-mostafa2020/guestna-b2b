@@ -249,7 +249,7 @@ const NavigationDropdown = () => {
                   className="min-h-0 px-2 sm:px-4 py-2 sm:py-3"
                   sx={{
                     boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.02)",
-                    border: "1px solid #E5E5E5",
+                    border: "1px solid var(--color-border)",
                     borderRadius: "8px",
                     "&:hover": {
                       color: "var(--color-main)",
