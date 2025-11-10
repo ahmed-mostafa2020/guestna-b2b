@@ -3,13 +3,7 @@
 import { useTranslations, useLocale } from "next-intl";
 import { useSelector } from "react-redux";
 import { Formik, Field } from "formik";
-import {
-  Container,
-  CircularProgress,
-  Skeleton,
-  Autocomplete,
-  TextField,
-} from "@mui/material";
+import { CircularProgress, Container } from "@mui/material";
 import { useSnackbar } from "notistack";
 import axios from "axios";
 import { useState, useCallback } from "react";
@@ -21,6 +15,7 @@ import getProxyUrl from "@utils/getProxyUrl";
 import { getHeaders } from "@utils/getHeaders";
 import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
+import AutocompleteInputGroup from "../AutocompleteInputGroup";
 
 import PhoneInputWithCountrySelect from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -43,19 +38,43 @@ const SchoolRegisterForm = ({
   const [loadingOrganizations, setLoadingOrganizations] = useState(false);
   const [selectedOrganization, setSelectedOrganization] = useState(null);
   const [organizationInputValue, setOrganizationInputValue] = useState("");
+  const [organizationRoles, setOrganizationRoles] = useState([]);
 
   // Extract names from data for dropdowns
   const cityNames = cities.map((city) => city.name);
-  const roleNames = roles.map(
-    (role) => role.description?.[locale] || role.name
-  );
+
+  // Use organization roles if available, otherwise use default roles
+  const availableRoles =
+    organizationRoles.length > 0 ? organizationRoles : roles;
+  const roleNames = availableRoles.map((role) => {
+    // Show description (Arabic or English based on locale), fallback to name
+    if (typeof role.description === "object") {
+      return (
+        role.description?.[locale] ||
+        role.description?.ar ||
+        role.description?.en ||
+        role.name
+      );
+    }
+    return role.description || role.name;
+  });
+
   const educationSystemNames = educationSystems.map((system) => system.name);
 
-  // Helper function to find ID by name
+  // Helper function to find ID by name/description
   const findIdByName = (array, name) => {
     const item = array.find((item) => {
+      // Check description (object or string)
       if (item.description) {
-        return item.description[locale] === name || item.name === name;
+        if (typeof item.description === "object") {
+          return (
+            item.description[locale] === name ||
+            item.description.ar === name ||
+            item.description.en === name ||
+            item.name === name
+          );
+        }
+        return item.description === name || item.name === name;
       }
       return item.name === name;
     });
@@ -88,20 +107,27 @@ const SchoolRegisterForm = ({
     try {
       // Map gender options to API values
       const mapGenderToAPI = (genderArray) => {
-        return genderArray.map((gender) => {
-          if (gender === t("schoolRegister.form.gender.options.boys")) {
+        // If both genders selected, return BOTH
+        if (genderArray.length === 2) {
+          return "BOTH";
+        }
+        // If only one gender selected
+        if (genderArray.length === 1) {
+          if (genderArray[0] === t("schoolRegister.form.gender.options.boys")) {
             return CONSTANT_VALUES.GENDERS.MALE;
-          } else if (gender === t("schoolRegister.form.gender.options.girls")) {
+          } else if (
+            genderArray[0] === t("schoolRegister.form.gender.options.girls")
+          ) {
             return CONSTANT_VALUES.GENDERS.FEMALE;
           }
-          return gender;
-        });
+        }
+        return "BOTH";
       };
 
       // Prepare data for submission
       const submissionData = {
-        organization: selectedOrganization?._id || {
-          city: findIdByName(cities, values.city),
+        organization: {
+          ...(selectedOrganization?._id && { _id: selectedOrganization._id }),
           phone: values.organizationPhone,
           email: values.organizationEmail,
           name: {
@@ -109,8 +135,8 @@ const SchoolRegisterForm = ({
             en: values.schoolNameEnglish,
           },
           about: {
-            ar: values.aboutArabic,
-            en: values.aboutEnglish,
+            ar: values.schoolNameArabic || "N/A",
+            en: values.schoolNameEnglish || "N/A",
           },
           track: {
             educationSystem: findIdByName(
@@ -124,14 +150,14 @@ const SchoolRegisterForm = ({
         users: [
           {
             name: values.contactPersonName,
-            role: findIdByName(roles, values.functionalDegree),
+            role: findIdByName(availableRoles, values.functionalDegree),
             email: values.email,
             phone: values.mobile,
             systemType: "B2B",
           },
           ...values.additionalUsers.map((user) => ({
             name: user.name,
-            role: findIdByName(roles, user.role),
+            role: findIdByName(availableRoles, user.role),
             email: user.email,
             phone: user.mobile,
             systemType: "B2B",
@@ -177,7 +203,9 @@ const SchoolRegisterForm = ({
       setLoadingOrganizations(true);
       try {
         // Construct URL with query parameter before proxy
-        const urlWithParams = `${B2B_END_POINTS.SCHOOL_REGISTER.ORGANIZATIONS_NAME}?name=${encodeURIComponent(searchTerm)}`;
+        const urlWithParams = `${
+          B2B_END_POINTS.SCHOOL_REGISTER.ORGANIZATIONS_NAME
+        }?name=${encodeURIComponent(searchTerm)}`;
         const response = await axios({
           method: "GET",
           url: getProxyUrl(urlWithParams),
@@ -185,7 +213,16 @@ const SchoolRegisterForm = ({
         });
 
         if (response.data?.data) {
+          console.log("Organizations response:", response.data.data);
           setOrganizationOptions(response.data.data);
+        } else if (response.data) {
+          console.log(
+            "Organizations response (no data wrapper):",
+            response.data
+          );
+          setOrganizationOptions(
+            Array.isArray(response.data) ? response.data : []
+          );
         }
       } catch (error) {
         console.error("Error fetching organizations:", error);
@@ -208,18 +245,31 @@ const SchoolRegisterForm = ({
           headers: getHeaders(locale),
         });
 
-        if (response.data?.data) {
-          const orgData = response.data.data;
+        // Handle response with or without data wrapper
+        const orgData = response.data?.data || response.data;
 
-          // Auto-fill fields if data exists
+        if (orgData) {
+          console.log("Organization details:", orgData);
+
+          // Auto-fill organization name
+          if (orgData.name) {
+            setFieldValue("schoolNameArabic", orgData.name.ar || "");
+            setFieldValue("schoolNameEnglish", orgData.name.en || "");
+          }
+
+          // Auto-fill phone
           if (orgData.phone) {
             setFieldValue("organizationPhone", orgData.phone);
           }
+
+          // Auto-fill email
           if (orgData.email) {
             setFieldValue("organizationEmail", orgData.email);
           }
-          if (orgData.city?.name) {
-            setFieldValue("city", orgData.city.name);
+
+          // Store organization roles for dropdown
+          if (orgData.roles && Array.isArray(orgData.roles)) {
+            setOrganizationRoles(orgData.roles);
           }
         }
       } catch (error) {
@@ -295,210 +345,112 @@ const SchoolRegisterForm = ({
                 {/* Organization Name Autocomplete - Arabic and English */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
                   {/* Arabic Organization Name Autocomplete */}
-                  <div>
-                    <label className="block pb-2 font-medium font-somar">
-                      {t("schoolRegister.form.schoolNameArabic.label")}
-                      <span className="text-error ml-1">*</span>
-                    </label>
-                    <Autocomplete
-                      options={organizationOptions}
-                      getOptionLabel={(option) => option.name?.ar || ""}
-                      loading={loadingOrganizations}
-                      value={selectedOrganization}
-                      onChange={(event, newValue) => {
-                        setSelectedOrganization(newValue);
-                        if (newValue?._id) {
-                          fetchOrganizationDetails(newValue._id, setFieldValue);
-                          setFieldValue("schoolNameArabic", newValue.name?.ar || "");
-                          setFieldValue("schoolNameEnglish", newValue.name?.en || "");
-                        } else {
-                          setFieldValue("schoolNameArabic", "");
-                          setFieldValue("schoolNameEnglish", "");
-                          setFieldValue("organizationPhone", "");
-                          setFieldValue("organizationEmail", "");
-                          setFieldValue("city", "");
-                        }
-                      }}
-                      inputValue={values.schoolNameArabic}
-                      onInputChange={(event, newInputValue) => {
-                        setFieldValue("schoolNameArabic", newInputValue);
-                        if (newInputValue && newInputValue.length >= 2) {
-                          fetchOrganizations(newInputValue);
-                        }
-                      }}
-                      freeSolo
-                      disabled={!!selectedOrganization}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          name="schoolNameArabic"
-                          placeholder={t("schoolRegister.form.schoolNameArabic.placeholder")}
-                          error={touched.schoolNameArabic && !!errors.schoolNameArabic}
-                          helperText={touched.schoolNameArabic && errors.schoolNameArabic}
-                          InputProps={{
-                            ...params.InputProps,
-                            endAdornment: (
-                              <>
-                                {loadingOrganizations ? (
-                                  <CircularProgress size={20} />
-                                ) : null}
-                                {params.InputProps.endAdornment}
-                              </>
-                            ),
-                          }}
-                          sx={{
-                            "& .MuiOutlinedInput-root": {
-                              fontFamily: "var(--font-somar-sans), sans-serif",
-                              fontSize: "1.125rem",
-                              height: "55px",
-                              borderRadius: "0.5rem",
-                              "& fieldset": {
-                                borderColor: touched.schoolNameArabic && errors.schoolNameArabic 
-                                  ? "var(--color-error)" 
-                                  : "var(--color-border)",
-                                borderWidth: "2px",
-                              },
-                              "&:hover fieldset": {
-                                borderColor: touched.schoolNameArabic && errors.schoolNameArabic 
-                                  ? "var(--color-error)" 
-                                  : "var(--color-main)",
-                              },
-                              "&.Mui-focused fieldset": {
-                                borderColor: touched.schoolNameArabic && errors.schoolNameArabic 
-                                  ? "var(--color-error)" 
-                                  : "var(--color-main)",
-                              },
-                              "&.Mui-disabled": {
-                                opacity: 0.5,
-                                cursor: "not-allowed",
-                              },
-                            },
-                            "& .MuiInputBase-input": {
-                              fontFamily: "var(--font-somar-sans), sans-serif",
-                              fontSize: "1.125rem",
-                            },
-                            "& .MuiFormHelperText-root": {
-                              fontFamily: "var(--font-ibm), sans-serif",
-                              fontSize: "0.75rem",
-                              color: "var(--color-error)",
-                              marginLeft: 0,
-                              marginTop: "4px",
-                            },
-                          }}
-                        />
-                      )}
-                      renderOption={(props, option) => (
-                        <li {...props} key={option._id}>
-                          {option.name?.ar || ""}
-                        </li>
-                      )}
-                      noOptionsText={t("schoolRegister.form.organizationName.noOptions")}
-                      loadingText={<CircularProgress size={20} />}
-                    />
-                  </div>
+                  <AutocompleteInputGroup
+                    label={t("schoolRegister.form.schoolNameArabic.label")}
+                    labelFontFamily="var(--font-somar-sans), sans-serif"
+                    name="schoolNameArabic"
+                    value={selectedOrganization}
+                    inputValue={values.schoolNameArabic}
+                    onChange={(event, newValue) => {
+                      setSelectedOrganization(newValue);
+                      if (newValue?._id) {
+                        fetchOrganizationDetails(newValue._id, setFieldValue);
+                        setFieldValue(
+                          "schoolNameArabic",
+                          newValue.name?.ar || ""
+                        );
+                        setFieldValue(
+                          "schoolNameEnglish",
+                          newValue.name?.en || ""
+                        );
+                      } else {
+                        setFieldValue("schoolNameArabic", "");
+                        setFieldValue("schoolNameEnglish", "");
+                        setFieldValue("organizationPhone", "");
+                        setFieldValue("organizationEmail", "");
+                        setFieldValue("city", "");
+                      }
+                    }}
+                    onInputChange={(event, newInputValue) => {
+                      setFieldValue("schoolNameArabic", newInputValue);
+                      if (newInputValue && newInputValue.length >= 2) {
+                        fetchOrganizations(newInputValue);
+                      }
+                    }}
+                    options={organizationOptions}
+                    getOptionLabel={(option) => option.name?.ar || ""}
+                    renderOption={(props, option) => (
+                      <li {...props} key={option._id}>
+                        {option.name?.ar || ""}
+                      </li>
+                    )}
+                    loading={loadingOrganizations}
+                    disabled={!!selectedOrganization}
+                    freeSolo
+                    placeholder={t(
+                      "schoolRegister.form.schoolNameArabic.placeholder"
+                    )}
+                    required={true}
+                    errors={errors.schoolNameArabic}
+                    touched={touched.schoolNameArabic}
+                    noOptionsText={t(
+                      "schoolRegister.form.organizationName.noOptions"
+                    )}
+                  />
 
                   {/* English Organization Name Autocomplete */}
-                  <div>
-                    <label className="block pb-2 font-medium font-somar">
-                      {t("schoolRegister.form.schoolNameEnglish.label")}
-                      <span className="text-error ml-1">*</span>
-                    </label>
-                    <Autocomplete
-                      options={organizationOptions}
-                      getOptionLabel={(option) => option.name?.en || ""}
-                      loading={loadingOrganizations}
-                      value={selectedOrganization}
-                      onChange={(event, newValue) => {
-                        setSelectedOrganization(newValue);
-                        if (newValue?._id) {
-                          fetchOrganizationDetails(newValue._id, setFieldValue);
-                          setFieldValue("schoolNameArabic", newValue.name?.ar || "");
-                          setFieldValue("schoolNameEnglish", newValue.name?.en || "");
-                        } else {
-                          setFieldValue("schoolNameArabic", "");
-                          setFieldValue("schoolNameEnglish", "");
-                          setFieldValue("organizationPhone", "");
-                          setFieldValue("organizationEmail", "");
-                          setFieldValue("city", "");
-                        }
-                      }}
-                      inputValue={values.schoolNameEnglish}
-                      onInputChange={(event, newInputValue) => {
-                        setFieldValue("schoolNameEnglish", newInputValue);
-                        if (newInputValue && newInputValue.length >= 2) {
-                          fetchOrganizations(newInputValue);
-                        }
-                      }}
-                      freeSolo
-                      disabled={!!selectedOrganization}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          name="schoolNameEnglish"
-                          placeholder={t("schoolRegister.form.schoolNameEnglish.placeholder")}
-                          error={touched.schoolNameEnglish && !!errors.schoolNameEnglish}
-                          helperText={touched.schoolNameEnglish && errors.schoolNameEnglish}
-                          InputProps={{
-                            ...params.InputProps,
-                            endAdornment: (
-                              <>
-                                {loadingOrganizations ? (
-                                  <CircularProgress size={20} />
-                                ) : null}
-                                {params.InputProps.endAdornment}
-                              </>
-                            ),
-                          }}
-                          sx={{
-                            "& .MuiOutlinedInput-root": {
-                              fontFamily: "var(--font-somar-sans), sans-serif",
-                              fontSize: "1.125rem",
-                              height: "55px",
-                              borderRadius: "0.5rem",
-                              "& fieldset": {
-                                borderColor: touched.schoolNameEnglish && errors.schoolNameEnglish 
-                                  ? "var(--color-error)" 
-                                  : "var(--color-border)",
-                                borderWidth: "2px",
-                              },
-                              "&:hover fieldset": {
-                                borderColor: touched.schoolNameEnglish && errors.schoolNameEnglish 
-                                  ? "var(--color-error)" 
-                                  : "var(--color-main)",
-                              },
-                              "&.Mui-focused fieldset": {
-                                borderColor: touched.schoolNameEnglish && errors.schoolNameEnglish 
-                                  ? "var(--color-error)" 
-                                  : "var(--color-main)",
-                              },
-                              "&.Mui-disabled": {
-                                opacity: 0.5,
-                                cursor: "not-allowed",
-                              },
-                            },
-                            "& .MuiInputBase-input": {
-                              fontFamily: "var(--font-somar-sans), sans-serif",
-                              fontSize: "1.125rem",
-                            },
-                            "& .MuiFormHelperText-root": {
-                              fontFamily: "var(--font-ibm), sans-serif",
-                              fontSize: "0.75rem",
-                              color: "var(--color-error)",
-                              marginLeft: 0,
-                              marginTop: "4px",
-                            },
-                          }}
-                        />
-                      )}
-                      renderOption={(props, option) => (
-                        <li {...props} key={option._id}>
-                          {option.name?.en || ""}
-                        </li>
-                      )}
-                      noOptionsText={t("schoolRegister.form.organizationName.noOptions")}
-                      loadingText={<CircularProgress size={20} />}
-                    />
-                  </div>
+                  <AutocompleteInputGroup
+                    label={t("schoolRegister.form.schoolNameEnglish.label")}
+                    labelFontFamily="var(--font-somar-sans), sans-serif"
+                    name="schoolNameEnglish"
+                    value={selectedOrganization}
+                    inputValue={values.schoolNameEnglish}
+                    onChange={(event, newValue) => {
+                      setSelectedOrganization(newValue);
+                      if (newValue?._id) {
+                        fetchOrganizationDetails(newValue._id, setFieldValue);
+                        setFieldValue(
+                          "schoolNameArabic",
+                          newValue.name?.ar || ""
+                        );
+                        setFieldValue(
+                          "schoolNameEnglish",
+                          newValue.name?.en || ""
+                        );
+                      } else {
+                        setFieldValue("schoolNameArabic", "");
+                        setFieldValue("schoolNameEnglish", "");
+                        setFieldValue("organizationPhone", "");
+                        setFieldValue("organizationEmail", "");
+                        setFieldValue("city", "");
+                      }
+                    }}
+                    onInputChange={(event, newInputValue) => {
+                      setFieldValue("schoolNameEnglish", newInputValue);
+                      if (newInputValue && newInputValue.length >= 2) {
+                        fetchOrganizations(newInputValue);
+                      }
+                    }}
+                    options={organizationOptions}
+                    getOptionLabel={(option) => option.name?.en || ""}
+                    renderOption={(props, option) => (
+                      <li {...props} key={option._id}>
+                        {option.name?.en || ""}
+                      </li>
+                    )}
+                    loading={loadingOrganizations}
+                    disabled={!!selectedOrganization}
+                    freeSolo
+                    placeholder={t(
+                      "schoolRegister.form.schoolNameEnglish.placeholder"
+                    )}
+                    required={true}
+                    errors={errors.schoolNameEnglish}
+                    touched={touched.schoolNameEnglish}
+                    noOptionsText={t(
+                      "schoolRegister.form.organizationName.noOptions"
+                    )}
+                  />
                 </div>
 
                 {/* Organization Phone and Email */}
@@ -564,12 +516,11 @@ const SchoolRegisterForm = ({
                       )}
                     </Field>
 
-                    {errors.organizationPhone &&
-                      touched.organizationPhone && (
-                        <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-                          {errors.organizationPhone}
-                        </div>
-                      )}
+                    {errors.organizationPhone && touched.organizationPhone && (
+                      <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+                        {errors.organizationPhone}
+                      </div>
+                    )}
                   </div>
                 </div>
 

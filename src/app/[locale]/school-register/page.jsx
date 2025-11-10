@@ -6,7 +6,6 @@ import { useEffect } from "react";
 
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import pageResponse from "@constants/response";
 import { PERMISSIONS } from "@constants/permissions";
 
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
@@ -35,7 +34,6 @@ const SchoolRegisterPage = () => {
   );
 
   // Use fetched data or fallback to static data
-  const pageData = data?.data || pageResponse;
 
   // Log error but continue with fallback data
   if (error) {
@@ -43,23 +41,23 @@ const SchoolRegisterPage = () => {
   }
 
   return (
-    // <ProtectedProfilePage
-    //   requiredPermission={PERMISSIONS.PAGE.B2B_INVITE_SCHOOL_PAGE}
-    // >
-    <>
-      <PageHeader />
+    <ProtectedProfilePage
+      requiredPermission={PERMISSIONS.PAGE.B2B_INVITE_SCHOOL_PAGE}
+    >
+      <>
+        <PageHeader />
 
-      {isLoading ? (
-        <FullScreenLoading status="pending" />
-      ) : (
-        <SchoolRegisterForm
-          cities={pageData?.cities || []}
-          roles={pageData?.roles || []}
-          educationSystems={pageData?.educationSystems || []}
-        />
-      )}
-    </>
-    // </ProtectedProfilePage>
+        {isLoading ? (
+          <FullScreenLoading status="pending" />
+        ) : (
+          <SchoolRegisterForm
+            cities={data?.cities || []}
+            roles={data?.roles || []}
+            educationSystems={data?.educationSystems || []}
+          />
+        )}
+      </>
+    </ProtectedProfilePage>
   );
 };
 
