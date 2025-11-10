@@ -39,6 +39,7 @@ const SchoolRegisterForm = ({
   const [selectedOrganization, setSelectedOrganization] = useState(null);
   const [organizationInputValue, setOrganizationInputValue] = useState("");
   const [organizationRoles, setOrganizationRoles] = useState([]);
+  const [organizationEducationSystems, setOrganizationEducationSystems] = useState([]);
 
   // Extract names from data for dropdowns
   const cityNames = cities.map((city) => city.name);
@@ -59,7 +60,12 @@ const SchoolRegisterForm = ({
     return role.description || role.name;
   });
 
-  const educationSystemNames = educationSystems.map((system) => system.name);
+  // Use organization education systems if available, otherwise use default education systems
+  const availableEducationSystems =
+    organizationEducationSystems.length > 0
+      ? organizationEducationSystems
+      : educationSystems;
+  const educationSystemNames = availableEducationSystems.map((system) => system.name);
 
   // Helper function to find ID by name/description
   const findIdByName = (array, name) => {
@@ -140,7 +146,7 @@ const SchoolRegisterForm = ({
           },
           track: {
             educationSystem: findIdByName(
-              educationSystems,
+              availableEducationSystems,
               values.educationalTrack
             ),
             gender: mapGenderToAPI(values.gender),
@@ -180,6 +186,8 @@ const SchoolRegisterForm = ({
         setSelectedOrganization(null);
         setOrganizationInputValue("");
         setOrganizationOptions([]);
+        setOrganizationRoles([]);
+        setOrganizationEducationSystems([]);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -263,6 +271,21 @@ const SchoolRegisterForm = ({
           // Store organization roles for dropdown
           if (orgData.roles && Array.isArray(orgData.roles)) {
             setOrganizationRoles(orgData.roles);
+          }
+
+          // Extract unique education systems from tracks array
+          if (orgData.tracks && Array.isArray(orgData.tracks)) {
+            const uniqueEducationSystems = [];
+            const seenIds = new Set();
+            
+            orgData.tracks.forEach((track) => {
+              if (track.educationSystem && !seenIds.has(track.educationSystem._id)) {
+                seenIds.add(track.educationSystem._id);
+                uniqueEducationSystems.push(track.educationSystem);
+              }
+            });
+            
+            setOrganizationEducationSystems(uniqueEducationSystems);
           }
         }
       } catch (error) {

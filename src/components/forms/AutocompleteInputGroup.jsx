@@ -66,7 +66,7 @@ const AutocompleteInputGroup = ({
             sx={{
               "& .MuiOutlinedInput-root": {
                 fontFamily: "var(--font-somar-sans), sans-serif",
-                fontSize: "16px",
+                fontSize: "0.875rem",
                 height: "55px",
                 borderRadius: "0.5rem",
                 backgroundColor: "white",
@@ -108,11 +108,11 @@ const AutocompleteInputGroup = ({
               },
               "& .MuiInputBase-input": {
                 fontFamily: "var(--font-somar-sans), sans-serif",
-                fontSize: "16px",
+                fontSize: "0.875rem",
                 padding: "0 !important",
               },
               "& .MuiInputBase-input::placeholder": {
-                fontSize: "16px",
+                fontSize: "0.875rem",
                 opacity: 0.6,
               },
             }}
