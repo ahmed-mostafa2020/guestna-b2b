@@ -1738,6 +1738,10 @@
         }
       },
 
+      "city": {
+        "placeholder": "City"
+      },
+
       "price": {
         "placeholder": "Proposed Price (SAR)",
         "error": {
@@ -1862,6 +1866,12 @@
         "required": "School name in English is required",
         "min": "School name must be at least 2 characters",
         "max": "School name cannot exceed 100 characters"
+      },
+      "organizationEmail": {
+        "sameAsContactEmail": "Organization email must be different from contact person email"
+      },
+      "email": {
+        "sameAsOrganizationEmail": "Contact person email must be different from organization email"
       },
       "gender": {
         "required": "Category is required"

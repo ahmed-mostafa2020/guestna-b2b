@@ -870,7 +870,16 @@ export const createSchoolRegisterSchema = (t) =>
     organizationEmail: Yup.string()
       .email(t("forms.email.error"))
       .matches(emailRegex, t("forms.email.error_tld"))
-      .required(t("forms.validation.require")),
+      .required(t("forms.validation.require"))
+      .test(
+        "emails-different",
+        t("schoolRegister.validation.organizationEmail.sameAsContactEmail"),
+        function (value) {
+          const { email } = this.parent;
+          if (!value || !email) return true;
+          return value.toLowerCase() !== email.toLowerCase();
+        }
+      ),
 
     organizationPhone: createPhoneValidation(t, true),
 
@@ -900,7 +909,16 @@ export const createSchoolRegisterSchema = (t) =>
     email: Yup.string()
       .email(t("forms.email.error"))
       .matches(emailRegex, t("forms.email.error_tld"))
-      .required(t("forms.validation.require")),
+      .required(t("forms.validation.require"))
+      .test(
+        "emails-different",
+        t("schoolRegister.validation.email.sameAsOrganizationEmail"),
+        function (value) {
+          const { organizationEmail } = this.parent;
+          if (!value || !organizationEmail) return true;
+          return value.toLowerCase() !== organizationEmail.toLowerCase();
+        }
+      ),
 
     mobile: createPhoneValidation(t, true),
 

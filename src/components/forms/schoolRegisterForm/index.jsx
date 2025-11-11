@@ -191,10 +191,22 @@ const SchoolRegisterForm = ({
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      enqueueSnackbar(
-        error.response?.data?.message || t("schoolRegister.form.error"),
-        { variant: "error" }
-      );
+      
+      // Check if error response has info array with field-specific errors
+      if (error.response?.data?.info && Array.isArray(error.response.data.info)) {
+        // Loop through info array and show each error message
+        error.response.data.info.forEach((errorItem) => {
+          const fieldName = errorItem.field || "Unknown field";
+          const errorMessage = errorItem.message || "Validation error";
+          enqueueSnackbar(`${fieldName}: ${errorMessage}`, { variant: "error" });
+        });
+      } else {
+        // Fallback to general error message
+        enqueueSnackbar(
+          error.response?.data?.message || t("schoolRegister.form.error"),
+          { variant: "error" }
+        );
+      }
     } finally {
       setSubmitting(false);
     }
