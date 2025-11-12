@@ -50,9 +50,11 @@ const LoginAs = () => {
 
       try {
         const config = {
-          method: "post",
+          method: "get",
           maxBodyLength: Infinity,
-          url: getProxyUrl(`${B2B_END_POINTS.AUTH.LOGIN_AS}?token=${tokenCode}`),
+          url: getProxyUrl(
+            `${B2B_END_POINTS.AUTH.LOGIN_AS}?token=${tokenCode}`
+          ),
           headers,
         };
 
