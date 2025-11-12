@@ -49,6 +49,7 @@ export const B2B_END_POINTS = {
     OTP: "accounts/confirmForgetPassword",
     RESEND_OTP: "otps/resend",
     USER_DATA: "users/currentUser",
+    LOGIN_AS: "auth/login-token",
   },
 
   FAVORITE: "favorite",
