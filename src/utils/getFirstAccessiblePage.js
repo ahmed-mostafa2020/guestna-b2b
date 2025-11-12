@@ -13,6 +13,10 @@ export const getFirstAccessiblePage = (userPages, locale) => {
   // Note: B2B_PROFILE_MAIN_PAGE is at the end as a fallback
   const pageRoutes = [
     {
+      permission: PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE,
+      route: `/${locale}/profile`,
+    },
+    {
       permission: PERMISSIONS.PAGE.B2B_PROFILE_BOOKINGS_PAGE,
       route: `/${locale}/profile/bookings-management/bookings`,
     },
@@ -51,10 +55,6 @@ export const getFirstAccessiblePage = (userPages, locale) => {
     {
       permission: PERMISSIONS.PAGE.B2B_PROFILE_WITHDRAW_PAGE,
       route: `/${locale}/profile/my-wallet/withdraw`,
-    },
-    {
-      permission: PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE,
-      route: `/${locale}/profile`,
     },
   ];
 
