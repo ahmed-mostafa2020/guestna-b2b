@@ -158,6 +158,13 @@ const NavigationDropdown = () => {
         },
       ],
     },
+    {
+      id: "roles-permissions",
+      title: t("profile.aside.rolesPermissions.title"),
+      icon: <PeopleIcon />,
+      hasDropdown: false,
+      // permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_ROLES_PERMISSIONS_TAB,
+    },
   ];
 
   // Filter navigation items based on user permissions
@@ -190,7 +197,7 @@ const NavigationDropdown = () => {
                 className={`border border-border text-xs sm:text-sm lg:text-base flex items-center w-full gap-2 sm:gap-3 px-2 sm:px-4 py-2 sm:py-3 mb-2 sm:mb-3 rounded-lg transition-colors ${
                   pathname === item.path
                     ? "text-white bg-mainColor"
-                    : "hover:text-mainColor"
+                    : "text-textDark hover:text-mainColor"
                 }`}
               >
                 {React.cloneElement(item.icon, {
