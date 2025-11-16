@@ -197,7 +197,7 @@ const NavigationDropdown = () => {
             {!item.hasDropdown ? (
               <Link
                 href={item.path}
-                className={`border border-border text-xs sm:text-sm lg:text-base flex items-center w-full gap-2 sm:gap-3 px-2 sm:px-4 py-2 sm:py-3 mb-2 sm:mb-3 rounded-lg transition-colors ${
+                className={`border border-border sm:text-sm lg:text-base flex items-center w-full gap-2 sm:gap-3 px-2 sm:px-4 py-2 sm:py-3 mb-2 sm:mb-3 rounded-lg transition-colors ${
                   pathname === item.path
                     ? "text-white bg-mainColor"
                     : "text-textDark hover:text-mainColor"
@@ -295,7 +295,7 @@ const NavigationDropdown = () => {
                       },
                     })}
                     <span
-                      className="font-medium text-xs sm:text-sm lg:text-base truncate min-w-0"
+                      className="font-medium sm:text-sm lg:text-base truncate min-w-0"
                       title={item.title}
                     >
                       {item.title}
@@ -324,7 +324,7 @@ const NavigationDropdown = () => {
                           <Link
                             href={subItem.path}
                             title={subItem.title}
-                            className={`w-full text-start hover:text-mainColor text-xs sm:text-sm lg:text-base truncate ${
+                            className={`w-full text-start hover:text-mainColor sm:text-sm lg:text-base truncate ${
                               pathname === subItem.path
                                 ? "text-mainColor"
                                 : "text-black"

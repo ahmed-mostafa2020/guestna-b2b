@@ -61,7 +61,8 @@ const PermissionsSection = ({
             {/* Enabled Count Badge */}
             <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full">
               <span className="text-sm font-medium text-textDark">
-                {enabledCount}/{page.child.length}
+                {enabledCount <= 1 ? enabledCount - 1 : enabledCount}/
+                {page.child.length}
               </span>
               <span className="text-xs text-textLight">
                 {t("profile.rolesPermissions.enabled")}
@@ -85,7 +86,8 @@ const PermissionsSection = ({
         {/* Mobile Enabled Count */}
         <div className="sm:hidden mt-3 flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full w-fit">
           <span className="text-sm font-medium text-textDark">
-            {enabledCount}/{page.child.length}
+            {enabledCount <= 1 ? enabledCount - 1 : enabledCount}/
+            {page.child.length}
           </span>
           <span className="text-xs text-textLight">
             {t("profile.rolesPermissions.enabled")}
