@@ -18,9 +18,10 @@ const PermissionsSection = ({
   onToggleElement,
 }) => {
   const t = useTranslations();
-  const [isExpanded, setIsExpanded] = useState(true);
+  const hasChildren = page.child && page.child.length > 0;
+  const [isExpanded, setIsExpanded] = useState(hasChildren);
 
-  const allEnabled = page.child.every((element) => permissions?.[element._id]);
+  const allEnabled = page.child?.every((element) => permissions?.[element._id]);
   const someEnabled = enabledCount > 1 && !allEnabled;
 
   return (
@@ -52,53 +53,33 @@ const PermissionsSection = ({
 
             {/* Page Info */}
             <div className="flex-1 min-w-0">
-              <h3 className="text-lg font-semibold text-titleColor">
+              <h3 className="text-base lg:text-lg font-semibold text-titleColor">
                 {page.title}
               </h3>
               <p className="text-sm text-textLight pt-1">{page.description}</p>
             </div>
-
-            {/* Enabled Count Badge */}
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full">
-              <span className="text-sm font-medium text-textDark">
-                {enabledCount <= 1 ? enabledCount - 1 : enabledCount}/
-                {page.child.length}
-              </span>
-              <span className="text-xs text-textLight">
-                {t("profile.rolesPermissions.enabled")}
-              </span>
-            </div>
           </div>
 
-          {/* Expand/Collapse Button */}
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors ms-2"
-          >
-            {isExpanded ? (
-              <ExpandLessIcon className="w-6 h-6 text-textLight" />
-            ) : (
-              <ExpandMoreIcon className="w-6 h-6 text-textLight" />
-            )}
-          </button>
-        </div>
-
-        {/* Mobile Enabled Count */}
-        <div className="sm:hidden mt-3 flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full w-fit">
-          <span className="text-sm font-medium text-textDark">
-            {enabledCount <= 1 ? enabledCount - 1 : enabledCount}/
-            {page.child.length}
-          </span>
-          <span className="text-xs text-textLight">
-            {t("profile.rolesPermissions.enabled")}
-          </span>
+          {/* Expand/Collapse Button - Only show if page has children */}
+          {hasChildren && (
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors ms-2"
+            >
+              {isExpanded ? (
+                <ExpandLessIcon className="w-6 h-6 text-textLight" />
+              ) : (
+                <ExpandMoreIcon className="w-6 h-6 text-textLight" />
+              )}
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Elements List */}
-      {isExpanded && (
+      {/* Elements List - Only render if page has children and is expanded */}
+      {hasChildren && isExpanded && (
         <div className="p-4 lg:p-6 space-y-3">
-          {page.child.map((element) => (
+          {page.child?.map((element) => (
             <div
               key={element._id}
               className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors"

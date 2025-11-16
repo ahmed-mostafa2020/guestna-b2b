@@ -68,7 +68,7 @@ const RolesPermissionsContent = () => {
     const initial = {};
     pages.forEach((page) => {
       initial[page._id] = {};
-      page.child.forEach((element) => {
+      page.child?.forEach((element) => {
         initial[page._id][element._id] =
           element.defaultChecked !== undefined ? element.defaultChecked : true;
       });
@@ -80,7 +80,7 @@ const RolesPermissionsContent = () => {
     const resetPermissions = {};
     pages.forEach((page) => {
       resetPermissions[page._id] = {};
-      page.child.forEach((element) => {
+      page.child?.forEach((element) => {
         resetPermissions[page._id][element._id] =
           element.defaultChecked !== undefined ? element.defaultChecked : true;
       });
@@ -102,11 +102,11 @@ const RolesPermissionsContent = () => {
     const page = pages.find((p) => p._id === pageId);
     if (!page) return;
 
-    const allEnabled = page.child.every(
+    const allEnabled = page.child?.every(
       (element) => permissions[pageId]?.[element._id]
     );
     const newPermissions = { ...permissions };
-    page.child.forEach((element) => {
+    page.child?.forEach((element) => {
       if (element.defaultChecked) {
         newPermissions[page._id][element._id] = true;
       } else {
@@ -118,7 +118,7 @@ const RolesPermissionsContent = () => {
 
   const toggleElementPermission = (pageId, elementId) => {
     const page = pages.find((p) => p._id === pageId);
-    const element = page?.child.find((e) => e._id === elementId);
+    const element = page?.child?.find((e) => e._id === elementId);
     if (element?.defaultChecked) {
       return;
     }
@@ -134,7 +134,7 @@ const RolesPermissionsContent = () => {
   const getEnabledCount = (pageId) => {
     const page = pages.find((p) => p._id === pageId);
     if (!page) return 0;
-    return page.child.filter((element) => permissions[pageId]?.[element._id])
+    return page.child?.filter((element) => permissions[pageId]?.[element._id])
       .length;
   };
 
@@ -152,10 +152,17 @@ const RolesPermissionsContent = () => {
 
       {/* Role Selection */}
       <section className="space-y-4">
-        <h2 className="text-xl lg:text-2xl font-medium text-titleColor">
-          {t("profile.rolesPermissions.selectRole")}
-        </h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <h2 className="text-xl lg:text-2xl font-medium text-titleColor">
+            {t("profile.rolesPermissions.selectRole")}
+          </h2>
+
+          <button className="bg-mainColor text-white px-4 py-2 rounded-lg hover:bg-linksHover transition-colors">
+            {t("profile.rolesPermissions.actions.addRole")}
+          </button>
+        </div>
+
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {roles.map((role) => (
             <RoleCard
               key={role.id}

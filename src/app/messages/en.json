@@ -1233,7 +1233,8 @@
       "users": "users",
       "actions": {
         "reset": "Reset",
-        "save": "Save Changes"
+        "save": "Save Changes",
+        "addRole": "Add New Role"
       },
       "messages": {
         "resetSuccess": "Permissions reset to default",
