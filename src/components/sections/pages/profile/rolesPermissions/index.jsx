@@ -135,7 +135,7 @@ const RolesPermissionsContent = ({
 
           <Link
             href={`/${locale}/profile/roles-permissions/add-role`}
-            className="bg-secColor text-white border-2 border-secColor px-6 py-2 rounded-lg hover:shadow-md transition-colors  font-medium"
+            className="text-mainColor border-2 border-mainColor px-6 py-2 rounded-lg hover:bg-mainColor hover:text-white  transition-colors font-medium"
           >
             {t("profile.rolesPermissions.actions.addRole")}
           </Link>
@@ -191,7 +191,7 @@ const RolesPermissionsContent = ({
                     {role.description?.[locale] || role.description}
                   </h3>
                   <p
-                    className={` mt-0.5 ${
+                    className={` pt-0.5 ${
                       selectedRole === role._id
                         ? "text-white/80"
                         : "text-textLight"

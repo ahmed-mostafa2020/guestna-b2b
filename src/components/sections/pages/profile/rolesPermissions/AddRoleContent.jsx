@@ -291,10 +291,10 @@ const AddRoleContent = ({ permissionsData, permissionsLoading }) => {
                 className="px-6 py-3 bg-mainColor text-white rounded-lg hover:bg-linksHover transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
-                  <>
+                  <div className="flex items-center gap-2">
                     {t("profile.rolesPermissions.addRole.form.submitting")}
                     <CircularProgress size={16} color="white" />
-                  </>
+                  </div>
                 ) : (
                   t("profile.rolesPermissions.addRole.form.submit")
                 )}
