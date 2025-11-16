@@ -162,7 +162,10 @@ const NavigationDropdown = () => {
       id: "roles-permissions",
       title: t("profile.aside.rolesPermissions.title"),
       icon: <PeopleIcon />,
+      path: `${profileBasePath}/roles-permissions`,
       hasDropdown: false,
+      permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_INTEGRATED_BOOKINGS_TAB,
+
       // permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_ROLES_PERMISSIONS_TAB,
     },
   ];

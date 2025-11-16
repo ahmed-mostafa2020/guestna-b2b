@@ -130,6 +130,12 @@ export const B2B_END_POINTS = {
     FAVORITES: "myLovers", // TRIPS
 
     EDIT_PERSONAL_INFO: "users/modify", //MAIN
+
+    ROLES_PERMISSIONS: {
+      GET: "profile/users/roles",
+      UPDATE: "profile/users/roles",
+      RESET: "profile/users/roles",
+    },
   },
 
   CONFIRM_REQUEST: "profile/askTrips/new",

@@ -548,6 +548,9 @@
       "reportsAndAnalytics": {
         "title": "Reports and Analytics"
       },
+      "rolesPermissions": {
+        "title": "Roles and Permissions"
+      },
 
       "information": "My information",
       "activities": "Activities",
@@ -1218,6 +1221,72 @@
         "title": "Calendar Sync",
         "description": "Sync tab content will be added here",
         "newField": "New field added"
+      }
+    },
+    "rolesPermissions": {
+      "pageTitle": "Roles & Permissions",
+      "title": "Roles & Permissions Management",
+      "description": "Manage user roles and their permissions across different pages and features",
+      "selectRole": "Select Role",
+      "permissionsFor": "Permissions for",
+      "enabled": "enabled",
+      "users": "users",
+      "actions": {
+        "reset": "Reset",
+        "save": "Save Changes"
+      },
+      "messages": {
+        "resetSuccess": "Permissions reset to default",
+        "saveSuccess": "Changes saved successfully"
+      },
+      "roles": {
+        "admin": {
+          "name": "Administrator",
+          "description": "Full system access with all permissions"
+        },
+        "manager": {
+          "name": "Manager",
+          "description": "Manage team and access most features"
+        },
+        "teacher": {
+          "name": "Teacher",
+          "description": "Manage students and educational content"
+        },
+        "viewer": {
+          "name": "Viewer",
+          "description": "Read-only access to content"
+        }
+      },
+      "pages": {
+        "dashboard": {
+          "name": "Dashboard",
+          "description": "Main dashboard with analytics and overview"
+        },
+        "trips": {
+          "name": "Trips Management",
+          "description": "Manage and organize school trips"
+        },
+        "bookings": {
+          "name": "Bookings Management",
+          "description": "Handle trip bookings and registrations"
+        },
+        "users": {
+          "name": "User Management",
+          "description": "Manage system users and permissions"
+        }
+      },
+      "elements": {
+        "analytics": "Analytics Chart",
+        "stats": "Statistics Cards",
+        "export": "Export Data",
+        "create": "Create",
+        "edit": "Edit",
+        "delete": "Delete",
+        "view": "View",
+        "manage": "Manage",
+        "approve": "Approve",
+        "cancel": "Cancel",
+        "assignRoles": "Assign Roles"
       }
     }
   },
