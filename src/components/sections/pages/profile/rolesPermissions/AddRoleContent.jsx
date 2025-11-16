@@ -293,7 +293,7 @@ const AddRoleContent = ({ permissionsData, permissionsLoading }) => {
                 {isSubmitting ? (
                   <>
                     {t("profile.rolesPermissions.addRole.form.submitting")}
-                    <CircularProgress size={20} />
+                    <CircularProgress size={16} color="white" />
                   </>
                 ) : (
                   t("profile.rolesPermissions.addRole.form.submit")

@@ -20,7 +20,7 @@ const PermissionsSection = ({
 }) => {
   const t = useTranslations();
   const hasChildren = page.child && page.child.length > 0;
-  const [isExpanded, setIsExpanded] = useState(hasChildren);
+  const [isExpanded, setIsExpanded] = useState(index === 0 && hasChildren);
 
   const allEnabled = page.child?.every((element) => permissions?.[element._id]);
   const someEnabled = enabledCount > 1 && !allEnabled;
