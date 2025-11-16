@@ -3,9 +3,13 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useSnackbar } from "notistack";
-import RoleCard from "./RoleCard";
 import PermissionsSection from "./PermissionsSection";
-import { Refresh as RefreshIcon, Save as SaveIcon } from "@mui/icons-material";
+import {
+  Refresh as RefreshIcon,
+  Save as SaveIcon,
+  CheckCircle as CheckCircleIcon,
+} from "@mui/icons-material";
+import Link from "next/link";
 
 const RolesPermissionsContent = () => {
   const t = useTranslations();
@@ -157,19 +161,75 @@ const RolesPermissionsContent = () => {
             {t("profile.rolesPermissions.selectRole")}
           </h2>
 
-          <button className="bg-mainColor text-white px-4 py-2 rounded-lg hover:bg-linksHover transition-colors">
+          <Link
+            href={`${locale}/profile/roles-permissions/add-role`}
+            className="bg-mainColor text-white px-4 py-2 rounded-lg hover:bg-linksHover transition-colors text-sm font-medium"
+          >
             {t("profile.rolesPermissions.actions.addRole")}
-          </button>
+          </Link>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Mobile Dropdown */}
+        <div className="block lg:hidden">
+          <select
+            value={selectedRole}
+            onChange={(e) => setSelectedRole(e.target.value)}
+            className="w-full px-4 py-3 border-2 border-border rounded-lg focus:border-mainColor focus:outline-none transition-colors bg-white"
+          >
+            {roles.map((role) => (
+              <option key={role.id} value={role.id}>
+                {t(role.description)} ({role.userCount}{" "}
+                {t("profile.rolesPermissions.users")})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Desktop Pills/Badges */}
+        <div className="hidden lg:flex flex-wrap gap-3">
           {roles.map((role) => (
-            <RoleCard
+            <button
               key={role.id}
-              role={role}
-              isSelected={selectedRole === role.id}
               onClick={() => setSelectedRole(role.id)}
-            />
+              className={`
+                group relative px-5 py-3 rounded-lg border-2 transition-all duration-200
+                hover:shadow-sm cursor-pointer text-start
+                ${
+                  selectedRole === role.id
+                    ? "border-mainColor bg-mainColor text-white"
+                    : "border-border bg-white hover:border-mainColor"
+                }
+              `}
+            >
+              <div className="flex items-center gap-3">
+                {/* Role Info */}
+                <div className="flex-1">
+                  <h3
+                    className={`font-semibold ${
+                      selectedRole === role.id
+                        ? "text-white"
+                        : "text-titleColor"
+                    }`}
+                  >
+                    {t(role.description)}
+                  </h3>
+                  <p
+                    className={`text-sm mt-0.5 ${
+                      selectedRole === role.id
+                        ? "text-white/80"
+                        : "text-textLight"
+                    }`}
+                  >
+                    {role.userCount} {t("profile.rolesPermissions.users")}
+                  </p>
+                </div>
+
+                {/* Selected Indicator */}
+                {selectedRole === role.id && (
+                  <CheckCircleIcon className="w-5 h-5 text-white" />
+                )}
+              </div>
+            </button>
           ))}
         </div>
       </section>

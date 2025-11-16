@@ -132,9 +132,12 @@ export const B2B_END_POINTS = {
     EDIT_PERSONAL_INFO: "users/modify", //MAIN
 
     ROLES_PERMISSIONS: {
-      GET: "profile/users/roles",
-      UPDATE: "profile/users/roles",
-      RESET: "profile/users/roles",
+      GET_ROLES: "profile/roles/all",
+      GET_PERMISSIONS: "profile/roles/permissions",
+      GET_PERMISSIONS_BY_ROLE: "profile/roles/permission",
+      ADD_ROLE: "profile/roles/new",
+      UPDATE_PERMISSIONS: "profile/roles/save",
+      RESET: "profile/roles/reset",
     },
   },
 
