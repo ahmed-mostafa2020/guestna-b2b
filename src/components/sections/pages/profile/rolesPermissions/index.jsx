@@ -1,7 +1,7 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
+import { useState, useEffect } from "react";
 import { useSnackbar } from "notistack";
 import PermissionsSection from "./PermissionsSection";
 import {
@@ -10,75 +10,47 @@ import {
   CheckCircle as CheckCircleIcon,
 } from "@mui/icons-material";
 import Link from "next/link";
+import formatNumbersUint from "@/src/utils/FormatNumbersUint";
 
-const RolesPermissionsContent = () => {
+const RolesPermissionsContent = ({
+  rolesData,
+  permissionsData,
+  rolesLoading,
+  permissionsLoading,
+}) => {
   const t = useTranslations();
+  const locale = useLocale();
   const { enqueueSnackbar } = useSnackbar();
 
-  // Mock roles data - replace with API call
-  const roles = [
-    {
-      id: "admin",
-      description: "profile.rolesPermissions.roles.admin.name",
-      summary: "profile.rolesPermissions.roles.admin.description",
-      userCount: 3,
-    },
-    {
-      id: "manager",
-      description: "profile.rolesPermissions.roles.manager.name",
-      summary: "profile.rolesPermissions.roles.manager.description",
-      userCount: 12,
-    },
-    {
-      id: "teacher",
-      description: "profile.rolesPermissions.roles.teacher.name",
-      summary: "profile.rolesPermissions.roles.teacher.description",
-      userCount: 45,
-    },
-    {
-      id: "viewer",
-      description: "profile.rolesPermissions.roles.viewer.name",
-      summary: "profile.rolesPermissions.roles.viewer.description",
-      userCount: 128,
-    },
-  ];
+  const roles = rolesData || [];
+  const pages = permissionsData || [];
 
-  // Mock pages data - replace with API call
-  const pages = [
-    {
-      _id: "68fe1d53fdd1f693b5246c95",
-      title: "Access the main profile page",
-      description: "Access the main profile page",
-      permissionType: "PAGE",
-      child: [
-        {
-          _id: "68fe1d53fdd1f693b5246c94",
-          title: "Access the main profile tab",
-          description: "Access the main profile tab",
-          defaultChecked: true,
-        },
-        {
-          _id: "68fe1d53fdd1f693b5246c96",
-          title: "Access main profile cards",
-          description: "Access main profile cards",
-          defaultChecked: false,
-        },
-      ],
-    },
-  ];
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [permissions, setPermissions] = useState({});
 
-  const [selectedRole, setSelectedRole] = useState("admin");
-  const [permissions, setPermissions] = useState(() => {
-    const initial = {};
-    pages.forEach((page) => {
-      initial[page._id] = {};
-      page.child?.forEach((element) => {
-        initial[page._id][element._id] =
-          element.defaultChecked !== undefined ? element.defaultChecked : true;
+  // Set first role as selected when roles are loaded
+  useEffect(() => {
+    if (roles.length > 0 && !selectedRole) {
+      setSelectedRole(roles[0]._id);
+    }
+  }, [roles, selectedRole]);
+
+  // Initialize permissions when pages data is loaded
+  useEffect(() => {
+    if (pages.length > 0) {
+      const initial = {};
+      pages.forEach((page) => {
+        initial[page._id] = {};
+        page.child?.forEach((element) => {
+          initial[page._id][element._id] =
+            element.defaultChecked !== undefined
+              ? element.defaultChecked
+              : true;
+        });
       });
-    });
-    return initial;
-  });
+      setPermissions(initial);
+    }
+  }, [pages]);
 
   const handleReset = () => {
     const resetPermissions = {};
@@ -162,8 +134,8 @@ const RolesPermissionsContent = () => {
           </h2>
 
           <Link
-            href={`${locale}/profile/roles-permissions/add-role`}
-            className="bg-mainColor text-white px-4 py-2 rounded-lg hover:bg-linksHover transition-colors text-sm font-medium"
+            href={`/${locale}/profile/roles-permissions/add-role`}
+            className="bg-secColor text-white border-2 border-secColor px-6 py-2 rounded-lg hover:shadow-md transition-colors  font-medium"
           >
             {t("profile.rolesPermissions.actions.addRole")}
           </Link>
@@ -177,9 +149,14 @@ const RolesPermissionsContent = () => {
             className="w-full px-4 py-3 border-2 border-border rounded-lg focus:border-mainColor focus:outline-none transition-colors bg-white"
           >
             {roles.map((role) => (
-              <option key={role.id} value={role.id}>
-                {t(role.description)} ({role.userCount}{" "}
-                {t("profile.rolesPermissions.users")})
+              <option key={role._id} value={role._id}>
+                {role.description?.[locale] || role.description} (
+                {formatNumbersUint(
+                  role.userCount || 0,
+                  t("profile.rolesPermissions.user"),
+                  t("profile.rolesPermissions.users")
+                )}
+                )
               </option>
             ))}
           </select>
@@ -189,13 +166,13 @@ const RolesPermissionsContent = () => {
         <div className="hidden lg:flex flex-wrap gap-3">
           {roles.map((role) => (
             <button
-              key={role.id}
-              onClick={() => setSelectedRole(role.id)}
+              key={role._id}
+              onClick={() => setSelectedRole(role._id)}
               className={`
                 group relative px-5 py-3 rounded-lg border-2 transition-all duration-200
                 hover:shadow-sm cursor-pointer text-start
                 ${
-                  selectedRole === role.id
+                  selectedRole === role._id
                     ? "border-mainColor bg-mainColor text-white"
                     : "border-border bg-white hover:border-mainColor"
                 }
@@ -206,26 +183,30 @@ const RolesPermissionsContent = () => {
                 <div className="flex-1">
                   <h3
                     className={`font-semibold ${
-                      selectedRole === role.id
+                      selectedRole === role._id
                         ? "text-white"
                         : "text-titleColor"
                     }`}
                   >
-                    {t(role.description)}
+                    {role.description?.[locale] || role.description}
                   </h3>
                   <p
-                    className={`text-sm mt-0.5 ${
-                      selectedRole === role.id
+                    className={` mt-0.5 ${
+                      selectedRole === role._id
                         ? "text-white/80"
                         : "text-textLight"
                     }`}
                   >
-                    {role.userCount} {t("profile.rolesPermissions.users")}
+                    {formatNumbersUint(
+                      role.userCount || 0,
+                      t("profile.rolesPermissions.user"),
+                      t("profile.rolesPermissions.users")
+                    )}
                   </p>
                 </div>
 
                 {/* Selected Indicator */}
-                {selectedRole === role.id && (
+                {selectedRole === role._id && (
                   <CheckCircleIcon className="w-5 h-5 text-white" />
                 )}
               </div>
@@ -239,19 +220,20 @@ const RolesPermissionsContent = () => {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <h2 className="text-xl lg:text-2xl font-medium text-titleColor">
             {t("profile.rolesPermissions.permissionsFor")}{" "}
-            {t(roles.find((r) => r.id === selectedRole)?.description || "")}
+            {roles.find((r) => r._id === selectedRole)?.description?.[locale] ||
+              ""}
           </h2>
           <div className="flex gap-2 flex-wrap">
             <button
               onClick={handleReset}
-              className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
+              className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors  font-medium"
             >
               <RefreshIcon className="w-4 h-4" />
               {t("profile.rolesPermissions.actions.reset")}
             </button>
             <button
               onClick={handleSave}
-              className="flex items-center gap-2 px-4 py-2 bg-mainColor text-white rounded-lg hover:bg-linksHover transition-colors text-sm font-medium"
+              className="flex items-center gap-2 px-4 py-2 bg-mainColor text-white rounded-lg hover:bg-linksHover transition-colors  font-medium"
             >
               <SaveIcon className="w-4 h-4" />
               {t("profile.rolesPermissions.actions.save")}
@@ -260,7 +242,7 @@ const RolesPermissionsContent = () => {
         </div>
 
         <div className="space-y-4">
-          {pages.map((page) => (
+          {pages.map((page, index) => (
             <PermissionsSection
               key={page._id}
               page={page}
@@ -270,6 +252,7 @@ const RolesPermissionsContent = () => {
               onToggleElement={(elementId) =>
                 toggleElementPermission(page._id, elementId)
               }
+              index={index}
             />
           ))}
         </div>

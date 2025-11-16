@@ -16,6 +16,7 @@ const PermissionsSection = ({
   enabledCount,
   onTogglePage,
   onToggleElement,
+  index,
 }) => {
   const t = useTranslations();
   const hasChildren = page.child && page.child.length > 0;
@@ -106,7 +107,7 @@ const PermissionsSection = ({
                 }}
               />
               <div className="flex-1">
-                <span className="text-sm font-medium text-textDark">
+                <span className="font-medium text-textDark">
                   {element.title}
                 </span>
               </div>

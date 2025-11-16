@@ -1230,6 +1230,7 @@
       "selectRole": "Select Role",
       "permissionsFor": "Permissions for",
       "enabled": "enabled",
+      "user": "user",
       "users": "users",
       "actions": {
         "reset": "Reset",
@@ -1238,7 +1239,51 @@
       },
       "messages": {
         "resetSuccess": "Permissions reset to default",
-        "saveSuccess": "Changes saved successfully"
+        "saveSuccess": "Changes saved successfully",
+        "addRoleSuccess": "Role created successfully"
+      },
+      "addRole": {
+        "title": "Add New Role",
+        "description": "Create a new role and assign permissions",
+        "form": {
+          "descriptionEn": {
+            "label": "Role Name (English)",
+            "placeholder": "Enter role name in English"
+          },
+          "descriptionAr": {
+            "label": "Role Name (Arabic)",
+            "placeholder": "Enter role name in Arabic"
+          },
+          "summaryEn": {
+            "label": "Role Description (English)",
+            "placeholder": "Enter role description in English"
+          },
+          "summaryAr": {
+            "label": "Role Description (Arabic)",
+            "placeholder": "Enter role description in Arabic"
+          },
+          "permissions": {
+            "label": "Permissions",
+            "placeholder": "Select permissions for this role"
+          },
+          "submit": "Create Role",
+          "submitting": "Creating Role...",
+          "cancel": "Cancel",
+          "validation": {
+            "descriptionEn": {
+              "min": "Role name (English) must be at least 3 characters"
+            },
+            "descriptionAr": {
+              "min": "Role name (Arabic) must be at least 3 characters"
+            },
+            "summaryEn": {
+              "min": "Role description (English) must be at least 5 characters"
+            },
+            "summaryAr": {
+              "min": "Role description (Arabic) must be at least 5 characters"
+            }
+          }
+        }
       },
       "roles": {
         "admin": {

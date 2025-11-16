@@ -958,3 +958,32 @@ export const createSchoolRegisterSchema = (t) =>
       )
       .max(1, "Maximum 1 additional users allowed"),
   });
+
+// Add Role Schema
+export const createAddRoleSchema = (t) =>
+  Yup.object({
+    descriptionEn: Yup.string()
+      .required(t("forms.validation.require"))
+      .min(
+        3,
+        t("profile.rolesPermissions.addRole.form.validation.descriptionEn.min")
+      ),
+    descriptionAr: Yup.string()
+      .required(t("forms.validation.require"))
+      .min(
+        3,
+        t("profile.rolesPermissions.addRole.form.validation.descriptionAr.min")
+      ),
+    summaryEn: Yup.string()
+      .required(t("forms.validation.require"))
+      .min(
+        5,
+        t("profile.rolesPermissions.addRole.form.validation.summaryEn.min")
+      ),
+    summaryAr: Yup.string()
+      .required(t("forms.validation.require"))
+      .min(
+        5,
+        t("profile.rolesPermissions.addRole.form.validation.summaryAr.min")
+      ),
+  });
