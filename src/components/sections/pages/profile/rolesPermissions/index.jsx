@@ -170,7 +170,7 @@ const RolesPermissionsContent = ({
               onClick={() => setSelectedRole(role._id)}
               className={`
                 group relative px-5 py-3 rounded-lg border-2 transition-all duration-200
-                hover:shadow-sm cursor-pointer text-start
+                hover:shadow-sm cursor-pointer text-start w-48
                 ${
                   selectedRole === role._id
                     ? "border-mainColor bg-mainColor text-white"
@@ -180,18 +180,30 @@ const RolesPermissionsContent = ({
             >
               <div className="flex items-center gap-3">
                 {/* Role Info */}
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <h3
-                    className={`font-semibold ${
+                    className={`font-semibold truncate ${
                       selectedRole === role._id
                         ? "text-white"
                         : "text-titleColor"
                     }`}
+                    title={role.description}
                   >
-                    {role.description?.[locale] || role.description}
+                    {role.description}
                   </h3>
+
+                  <span
+                    className={`text-textLight text-xs truncate ${
+                      selectedRole === role._id
+                        ? "text-white"
+                        : "text-titleColor"
+                    }`}
+                    title={role.summary}
+                  >
+                    {role.summary}
+                  </span>
                   <p
-                    className={` pt-0.5 ${
+                    className={`text-xs pt-0.5 ${
                       selectedRole === role._id
                         ? "text-white/80"
                         : "text-textLight"
@@ -220,23 +232,23 @@ const RolesPermissionsContent = ({
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <h2 className="text-xl lg:text-2xl font-medium text-titleColor">
             {t("profile.rolesPermissions.permissionsFor")}{" "}
-            {roles.find((r) => r._id === selectedRole)?.description?.[locale] ||
-              ""}
+            {roles.find((r) => r._id === selectedRole)?.description || ""}
           </h2>
+
           <div className="flex gap-2 flex-wrap">
-            <button
-              onClick={handleReset}
-              className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors  font-medium"
-            >
-              <RefreshIcon className="w-4 h-4" />
-              {t("profile.rolesPermissions.actions.reset")}
-            </button>
             <button
               onClick={handleSave}
               className="flex items-center gap-2 px-4 py-2 bg-mainColor text-white rounded-lg hover:bg-linksHover transition-colors  font-medium"
             >
               <SaveIcon className="w-4 h-4" />
               {t("profile.rolesPermissions.actions.save")}
+            </button>
+            <button
+              onClick={handleReset}
+              className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors  font-medium"
+            >
+              <RefreshIcon className="w-4 h-4" />
+              {t("profile.rolesPermissions.actions.reset")}
             </button>
           </div>
         </div>
