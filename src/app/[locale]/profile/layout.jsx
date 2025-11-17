@@ -63,12 +63,22 @@ const ProfileLayout = ({ children }) => {
   useEffect(() => {
     if (data) {
       dispatch(setProfileImage(data?.image || ""));
-      dispatch(setCustomLogo(data.companyLogo));
+
+      // Set custom logo if available
+      if (data.companyLogo) {
+        dispatch(setCustomLogo(data.companyLogo));
+      }
+
+      // Set permissions (should always be set)
+      if (data.permissions) {
+        dispatch(setPermissions(data.permissions));
+      }
+
+      // Set color preferences and theme if available
       if (data.colorPreferences && data.colorPreferences.length > 0) {
         dispatch(setTheme("customized"));
         // Extract first color preference object from array
         dispatch(setColorPreferences(data.colorPreferences[0]));
-        dispatch(setPermissions(data.permissions));
       }
 
       Cookies.set(CONSTANT_VALUES.PROFILE_IMAGE, data?.image || "");
