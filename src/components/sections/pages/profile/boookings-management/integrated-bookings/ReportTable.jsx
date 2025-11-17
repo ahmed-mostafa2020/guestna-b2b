@@ -26,8 +26,7 @@ const ReportTable = ({
   const t = useTranslations();
   const [showSurveyForm, setShowSurveyForm] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
-  const [disableAchievementButton, setDisableAchievementButton] =
-    useState(false);
+  const [disabledBookingIds, setDisabledBookingIds] = useState(new Set());
 
   // Check if user has any report permissions
   const hasAnyReportPermission = hasAnyElement([
@@ -138,7 +137,7 @@ const ReportTable = ({
                               <button
                                 disabled={
                                   booking.status !== TRIP_STATUS.PENDING ||
-                                  disableAchievementButton
+                                  disabledBookingIds.has(booking._id)
                                 }
                                 onClick={() => handleSurveyFormOpen(booking)}
                                 className="disabled:opacity-70 disabled:cursor-not-allowed flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
@@ -224,7 +223,7 @@ const ReportTable = ({
                         <button
                           disabled={
                             booking.status !== TRIP_STATUS.PENDING ||
-                            disableAchievementButton
+                            disabledBookingIds.has(booking._id)
                           }
                           onClick={() => handleSurveyFormOpen(booking)}
                           className="disabled:opacity-70 disabled:cursor-not-allowed flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
@@ -281,9 +280,10 @@ const ReportTable = ({
               organizationId={selectedBooking?.organization?._id}
               onClose={handleSurveyFormClose}
               onSuccess={() => {
-                // Refresh data or update state after successful survey submission
+                setDisabledBookingIds(
+                  (prev) => new Set([...prev, selectedBooking._id])
+                );
                 handleSurveyFormClose();
-                setDisableAchievementButton(true);
               }}
             />
           </CustomizedModal>
