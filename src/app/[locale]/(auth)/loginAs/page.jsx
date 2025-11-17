@@ -72,6 +72,11 @@ const LoginAs = () => {
           dispatch(setUser(response.data.userType));
           dispatch(setPermissions(response.data.user.permissions));
 
+          // Set custom logo if available
+          if (response.data.user.companyLogo) {
+            dispatch(setCustomLogo(response.data.user.companyLogo));
+          }
+
           // Handle color preferences if they exist
           if (
             response.data.user.colorPreferences &&
@@ -79,7 +84,6 @@ const LoginAs = () => {
           ) {
             dispatch(setColorPreferences(response.data.user.colorPreferences));
             dispatch(setTheme("customized"));
-            dispatch(setCustomLogo(response.data.user.companyLogo));
           }
 
           // Submit form with user data

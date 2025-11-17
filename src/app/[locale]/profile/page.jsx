@@ -66,7 +66,7 @@ const Profile = () => {
     <ProtectedProfilePage
       requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}
     >
-      <main className="flex flex-col gap-6">
+      <main className="flex flex-col gap-6 min-h-screen">
         {/* Info Cards Section */}
         {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS) &&
           (isLoading ? (

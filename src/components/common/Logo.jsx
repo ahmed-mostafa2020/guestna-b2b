@@ -13,10 +13,9 @@ const Logo = () => {
   const currentTheme = useSelector((state) => state.theme.currentTheme);
   const customLogo = useSelector((state) => state.theme.customLogo);
 
-  // Use custom logo if the current theme is customized and a custom logo is set
-
-  // Select logo based on current theme
-  const currentLogo = currentTheme === "customized" ? customLogo : logo;
+  // Use custom logo if available, otherwise use default logo
+  // Custom logo can exist independently of theme customization
+  const currentLogo = customLogo || logo;
 
   return (
     <Link href={`/${locale}`} className="outline-none w-fit">

@@ -110,6 +110,12 @@ const RolesLoginForm = () => {
           dispatch(setUser(response.data.userType));
           dispatch(setPermissions(response.data.user.permissions));
 
+          // Set custom logo if available
+          if (response.data.user.companyLogo) {
+            dispatch(setCustomLogo(response.data.user.companyLogo));
+          }
+
+          // Set color preferences and theme if available
           if (
             response.data.user.colorPreferences &&
             response.data.user.colorPreferences.length > 0
@@ -119,7 +125,6 @@ const RolesLoginForm = () => {
               setColorPreferences(response.data.user.colorPreferences[0])
             );
             dispatch(setTheme("customized"));
-            dispatch(setCustomLogo(response.data.user.companyLogo));
           }
 
           // Get first accessible page based on user permissions
