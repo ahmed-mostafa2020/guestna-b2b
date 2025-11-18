@@ -7,7 +7,6 @@ import axios from "axios";
 import {
   People as PeopleIcon,
   CheckCircle as CheckCircleIcon,
-  Delete as DeleteIcon,
 } from "@mui/icons-material";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 

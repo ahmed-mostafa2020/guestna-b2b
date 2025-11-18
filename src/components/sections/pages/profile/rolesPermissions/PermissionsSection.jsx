@@ -22,8 +22,15 @@ const PermissionsSection = ({
   const hasChildren = page.child && page.child.length > 0;
   const [isExpanded, setIsExpanded] = useState(index === 0 && hasChildren);
 
-  const allEnabled = page.child?.every((element) => permissions?.[element._id]);
-  const someEnabled = enabledCount > 1 && !allEnabled;
+  // Only check non-defaultChecked:true items for parent checkbox state
+  const toggleableChildren =
+    page.child?.filter((el) => el.defaultChecked !== true) || [];
+  const allEnabled =
+    toggleableChildren.length > 0 &&
+    toggleableChildren.every((element) => permissions?.[element._id]);
+  const someEnabled =
+    toggleableChildren.some((element) => permissions?.[element._id]) &&
+    !allEnabled;
 
   return (
     <div className="bg-white rounded-xl border border-border overflow-hidden">
@@ -38,9 +45,7 @@ const PermissionsSection = ({
               onChange={onTogglePage}
               icon={<CheckBoxOutlineBlankIcon />}
               checkedIcon={<CheckBoxIcon />}
-              indeterminateIcon={
-                <CheckBoxIcon className="text-mainColor opacity-50" />
-              }
+              indeterminateIcon={<CheckBoxIcon className="text-mainColor " />}
               sx={{
                 color: "var(--color-main)",
                 "&.Mui-checked": {
@@ -86,13 +91,9 @@ const PermissionsSection = ({
               className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <Checkbox
-                checked={
-                  element.defaultChecked
-                    ? (element.defaultChecked && someEnabled) || allEnabled
-                    : permissions?.[element._id]
-                }
+                checked={permissions?.[element._id] || false}
                 onChange={() => onToggleElement(element._id)}
-                disabled={!!element.defaultChecked}
+                disabled={element.defaultChecked === true}
                 icon={<CheckBoxOutlineBlankIcon />}
                 checkedIcon={<CheckBoxIcon />}
                 sx={{
@@ -102,7 +103,8 @@ const PermissionsSection = ({
                   },
                   "&.Mui-disabled": {
                     color: "var(--color-main)",
-                    opacity: 0.5,
+                    opacity: 0.6,
+                    cursor: "not-allowed",
                   },
                 }}
               />

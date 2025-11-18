@@ -43,10 +43,16 @@ const RolesPermissionsContent = ({
       pages.forEach((page) => {
         initial[page._id] = {};
         page.child?.forEach((element) => {
-          initial[page._id][element._id] =
-            element.defaultChecked !== undefined
-              ? element.defaultChecked
-              : true;
+          if (element.defaultChecked === true) {
+            // defaultChecked: true items start as UNCHECKED
+            initial[page._id][element._id] = false;
+          } else {
+            // Regular and defaultChecked: false items use their value or default to true
+            initial[page._id][element._id] =
+              element.defaultChecked !== undefined
+                ? element.defaultChecked
+                : true;
+          }
         });
       });
       setPermissions(initial);
@@ -58,8 +64,16 @@ const RolesPermissionsContent = ({
     pages.forEach((page) => {
       resetPermissions[page._id] = {};
       page.child?.forEach((element) => {
-        resetPermissions[page._id][element._id] =
-          element.defaultChecked !== undefined ? element.defaultChecked : true;
+        if (element.defaultChecked === true) {
+          // defaultChecked: true items reset to UNCHECKED
+          resetPermissions[page._id][element._id] = false;
+        } else {
+          // Regular and defaultChecked: false items use their value or default to true
+          resetPermissions[page._id][element._id] =
+            element.defaultChecked !== undefined
+              ? element.defaultChecked
+              : true;
+        }
       });
     });
     setPermissions(resetPermissions);
@@ -79,33 +93,63 @@ const RolesPermissionsContent = ({
     const page = pages.find((p) => p._id === pageId);
     if (!page) return;
 
-    const allEnabled = page.child?.every(
+    // Check state based on toggleable children only (not defaultChecked: true)
+    const toggleableChildren =
+      page.child?.filter((el) => el.defaultChecked !== true) || [];
+    const allToggleableEnabled = toggleableChildren.every(
       (element) => permissions[pageId]?.[element._id]
     );
+
     const newPermissions = { ...permissions };
+    const newState = !allToggleableEnabled;
+
+    // Toggle all children
     page.child?.forEach((element) => {
-      if (element.defaultChecked) {
-        newPermissions[page._id][element._id] = true;
+      if (element.defaultChecked === true) {
+        // defaultChecked: true items only get checked when parent is being checked (newState = true)
+        newPermissions[pageId][element._id] = newState ? true : false;
       } else {
-        newPermissions[pageId][element._id] = !allEnabled;
+        // Regular items toggle normally
+        newPermissions[pageId][element._id] = newState;
       }
     });
+
     setPermissions(newPermissions);
   };
 
   const toggleElementPermission = (pageId, elementId) => {
     const page = pages.find((p) => p._id === pageId);
     const element = page?.child?.find((e) => e._id === elementId);
-    if (element?.defaultChecked) {
+
+    // Prevent clicking on defaultChecked: true items (they are readonly)
+    if (element?.defaultChecked === true) {
       return;
     }
-    setPermissions({
+
+    const newPermissions = {
       ...permissions,
       [pageId]: {
         ...permissions[pageId],
         [elementId]: !permissions[pageId][elementId],
       },
+    };
+
+    // Check if ANY toggleable child is checked after this toggle
+    const toggleableChildren =
+      page?.child?.filter((el) => el.defaultChecked !== true) || [];
+    const anyToggleableChecked = toggleableChildren.some(
+      (child) => newPermissions[pageId]?.[child._id]
+    );
+
+    // Update defaultChecked: true items - they get checked if ANY toggleable child is checked
+    page?.child?.forEach((child) => {
+      if (child.defaultChecked === true) {
+        // defaultChecked: true items are checked when ANY toggleable child is checked
+        newPermissions[pageId][child._id] = anyToggleableChecked;
+      }
     });
+
+    setPermissions(newPermissions);
   };
 
   const getEnabledCount = (pageId) => {
