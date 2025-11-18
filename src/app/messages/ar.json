@@ -1238,7 +1238,8 @@
         "saveSuccess": "تم حفظ التغييرات بنجاح",
         "addRoleSuccess": "تم إنشاء الدور بنجاح",
         "deleteRoleSuccess": "تم حذف الدور بنجاح",
-        "fetchError": "فشل تحميل صلاحيات الدور"
+        "fetchError": "فشل تحميل صلاحيات الدور",
+        "saveError": "فشل حفظ الصلاحيات"
       },
       "addRole": {
         "title": "إضافة دور جديد",

@@ -42,7 +42,10 @@ const PermissionsSection = ({
             <Checkbox
               checked={allEnabled}
               indeterminate={someEnabled}
-              onChange={onTogglePage}
+              onChange={(e) => {
+                e.preventDefault();
+                onTogglePage();
+              }}
               icon={<CheckBoxOutlineBlankIcon />}
               checkedIcon={<CheckBoxIcon />}
               indeterminateIcon={<CheckBoxIcon className="text-mainColor" />}
@@ -92,7 +95,10 @@ const PermissionsSection = ({
             >
               <Checkbox
                 checked={permissions?.[element._id] || false}
-                onChange={() => onToggleElement(element._id)}
+                onChange={(e) => {
+                  e.preventDefault();
+                  onToggleElement(element._id);
+                }}
                 disabled={element.defaultChecked === true}
                 icon={<CheckBoxOutlineBlankIcon />}
                 checkedIcon={<CheckBoxIcon />}

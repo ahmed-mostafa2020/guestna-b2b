@@ -1244,7 +1244,8 @@
         "saveSuccess": "Changes saved successfully",
         "addRoleSuccess": "Role created successfully",
         "deleteRoleSuccess": "Role deleted successfully",
-        "fetchError": "Failed to load role permissions"
+        "fetchError": "Failed to load role permissions",
+        "saveError": "Failed to save permissions"
       },
       "addRole": {
         "title": "Add New Role",

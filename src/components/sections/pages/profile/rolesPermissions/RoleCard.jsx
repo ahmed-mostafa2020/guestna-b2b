@@ -17,7 +17,13 @@ import getProxyUrl from "@utils/getProxyUrl";
 import ActionsDialog from "../../customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
 import formatNumbersUint from "@utils/FormatNumbersUint";
 
-const RoleCard = ({ role, isSelected, onClick, disabled = false }) => {
+const RoleCard = ({
+  role,
+  isSelected,
+  onClick,
+  disabled = false,
+  onRoleDeleted,
+}) => {
   const t = useTranslations();
   const locale = useLocale();
   const { enqueueSnackbar } = useSnackbar();
@@ -58,6 +64,11 @@ const RoleCard = ({ role, isSelected, onClick, disabled = false }) => {
           t("profile.rolesPermissions.messages.deleteRoleSuccess"),
           { variant: "success" }
         );
+
+        // Call the callback to remove the role from the list
+        if (onRoleDeleted) {
+          onRoleDeleted(role._id);
+        }
       }
     } catch (error) {
       console.error("Error deleting role:", error);

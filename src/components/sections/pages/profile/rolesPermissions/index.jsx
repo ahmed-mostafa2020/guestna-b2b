@@ -2,6 +2,7 @@
 
 import { useTranslations, useLocale } from "next-intl";
 import { useState, useEffect } from "react";
+import { flushSync } from "react-dom";
 import { useSnackbar } from "notistack";
 import PermissionsSection from "./PermissionsSection";
 import RoleCard from "./RoleCard";
@@ -10,13 +11,13 @@ import {
   Save as SaveIcon,
   CheckCircle as CheckCircleIcon,
 } from "@mui/icons-material";
-import { CircularProgress } from "@mui/material";
 import Link from "next/link";
 import formatNumbersUint from "@/src/utils/FormatNumbersUint";
 import axios from "axios";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
+import FullScreenLoading from "@/src/feedback/loading/FullScreenLoading";
 
 const RolesPermissionsContent = ({
   rolesData,
@@ -28,12 +29,19 @@ const RolesPermissionsContent = ({
   const locale = useLocale();
   const { enqueueSnackbar } = useSnackbar();
 
-  const roles = rolesData || [];
+  const [roles, setRoles] = useState(rolesData || []);
   const pages = permissionsData || [];
 
   const [selectedRole, setSelectedRole] = useState(null);
   const [permissions, setPermissions] = useState({});
   const [loadingRolePermissions, setLoadingRolePermissions] = useState(false);
+
+  // Update roles when rolesData changes
+  useEffect(() => {
+    if (rolesData) {
+      setRoles(rolesData);
+    }
+  }, [rolesData]);
 
   // Set first role as selected when roles are loaded
   useEffect(() => {
@@ -65,24 +73,11 @@ const RolesPermissionsContent = ({
     }
   }, [pages]);
 
-  const handleReset = () => {
-    const resetPermissions = {};
-    pages.forEach((page) => {
-      resetPermissions[page._id] = {};
-      page.child?.forEach((element) => {
-        if (element.defaultChecked === true) {
-          // defaultChecked: true items reset to UNCHECKED
-          resetPermissions[page._id][element._id] = false;
-        } else {
-          // Regular and defaultChecked: false items use their value or default to true
-          resetPermissions[page._id][element._id] =
-            element.defaultChecked !== undefined
-              ? element.defaultChecked
-              : true;
-        }
-      });
-    });
-    setPermissions(resetPermissions);
+  const handleReset = async () => {
+    if (!selectedRole) return;
+
+    // Re-fetch permissions from API to reset to saved state
+    await fetchRolePermissions(selectedRole);
     enqueueSnackbar(t("profile.rolesPermissions.messages.resetSuccess"), {
       variant: "success",
     });
@@ -140,11 +135,62 @@ const RolesPermissionsContent = ({
     setSelectedRole(roleId);
   };
 
-  const handleSave = () => {
-    // TODO: Implement API call to save permissions
-    enqueueSnackbar(t("profile.rolesPermissions.messages.saveSuccess"), {
-      variant: "success",
-    });
+  const handleRoleDeleted = (deletedRoleId) => {
+    // Remove the deleted role from the list
+    const updatedRoles = roles.filter((role) => role._id !== deletedRoleId);
+
+    // If the deleted role was selected, select the first remaining role
+    if (selectedRole === deletedRoleId && updatedRoles.length > 0) {
+      // Use flushSync to ensure state updates happen synchronously
+      flushSync(() => {
+        setRoles(updatedRoles);
+      });
+      flushSync(() => {
+        setSelectedRole(updatedRoles[0]._id);
+      });
+    } else {
+      setRoles(updatedRoles);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!selectedRole) return;
+
+    setLoadingRolePermissions(true);
+    try {
+      // Collect all checked permission IDs
+      const permissionIds = [];
+      pages.forEach((page) => {
+        page.child?.forEach((element) => {
+          if (permissions[page._id]?.[element._id]) {
+            permissionIds.push(element._id);
+          }
+        });
+      });
+
+      const response = await axios.patch(
+        getProxyUrl(
+          `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.UPDATE_PERMISSIONS}/${selectedRole}`
+        ),
+        {
+          permissions: permissionIds,
+        },
+        { headers: getHeaders(locale) }
+      );
+
+      enqueueSnackbar(t("profile.rolesPermissions.messages.saveSuccess"), {
+        variant: "success",
+      });
+    } catch (error) {
+      console.error("Error saving permissions:", error);
+      enqueueSnackbar(
+        error?.response?.data?.message ||
+          t("profile.rolesPermissions.messages.saveError"),
+        { variant: "error" }
+      );
+    } finally {
+      setLoadingRolePermissions(false);
+    }
   };
 
   const togglePagePermissions = (pageId) => {
@@ -269,12 +315,16 @@ const RolesPermissionsContent = ({
         {/* Desktop Pills/Badges */}
         <div className="hidden lg:flex flex-wrap gap-3">
           {roles.map((role) => (
-            <div key={role._id} className="w-48">
+            <div
+              key={`${role._id}-${selectedRole === role._id}`}
+              className="w-48"
+            >
               <RoleCard
                 role={role}
                 isSelected={selectedRole === role._id}
                 onClick={() => handleRoleChange(role._id)}
                 disabled={loadingRolePermissions}
+                onRoleDeleted={handleRoleDeleted}
               />
             </div>
           ))}
@@ -307,27 +357,27 @@ const RolesPermissionsContent = ({
           </div>
         </div>
 
-        {loadingRolePermissions ? (
-          <div className="flex items-center justify-center py-12">
-            <CircularProgress sx={{ color: "var(--color-main)" }} />
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {pages.map((page, index) => (
-              <PermissionsSection
-                key={page._id}
-                page={page}
-                permissions={permissions[page._id]}
-                enabledCount={getEnabledCount(page._id)}
-                onTogglePage={() => togglePagePermissions(page._id)}
-                onToggleElement={(elementId) =>
-                  toggleElementPermission(page._id, elementId)
-                }
-                index={index}
-              />
-            ))}
+        {loadingRolePermissions && (
+          <div className="fixed inset-0  flex items-center justify-center">
+            <FullScreenLoading status="pending" />
           </div>
         )}
+
+        <div className="space-y-4">
+          {pages.map((page, index) => (
+            <PermissionsSection
+              key={page._id}
+              page={page}
+              permissions={permissions[page._id]}
+              enabledCount={getEnabledCount(page._id)}
+              onTogglePage={() => togglePagePermissions(page._id)}
+              onToggleElement={(elementId) =>
+                toggleElementPermission(page._id, elementId)
+              }
+              index={index}
+            />
+          ))}
+        </div>
       </section>
     </div>
   );
