@@ -9,6 +9,8 @@ import {
   CheckCircle as CheckCircleIcon,
   Delete as DeleteIcon,
 } from "@mui/icons-material";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+
 import { CircularProgress } from "@mui/material";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { getHeaders } from "@utils/getHeaders";
@@ -16,7 +18,7 @@ import getProxyUrl from "@utils/getProxyUrl";
 import ActionsDialog from "../../customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
 import formatNumbersUint from "@utils/FormatNumbersUint";
 
-const RoleCard = ({ role, isSelected, onClick, onDelete }) => {
+const RoleCard = ({ role, isSelected, onClick }) => {
   const t = useTranslations();
   const locale = useLocale();
   const { enqueueSnackbar } = useSnackbar();
@@ -57,9 +59,6 @@ const RoleCard = ({ role, isSelected, onClick, onDelete }) => {
           t("profile.rolesPermissions.messages.deleteRoleSuccess"),
           { variant: "success" }
         );
-        if (onDelete) {
-          onDelete(role._id);
-        }
       }
     } catch (error) {
       console.error("Error deleting role:", error);
@@ -88,7 +87,7 @@ const RoleCard = ({ role, isSelected, onClick, onDelete }) => {
     >
       {/* Selected Indicator */}
       {isSelected && (
-        <div className="absolute top-2 start-2">
+        <div className="absolute top-1 start-2">
           <CheckCircleIcon className="w-6 h-6 text-mainColor" />
         </div>
       )}
@@ -98,13 +97,13 @@ const RoleCard = ({ role, isSelected, onClick, onDelete }) => {
         <button
           onClick={handleDeleteClick}
           disabled={isDeleting}
-          className="absolute -top-1 -end-1 p-2 rounded-full hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="absolute -top-1 -end-1 p-2 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           title={t("profile.rolesPermissions.deleteRole")}
         >
           {isDeleting ? (
-            <CircularProgress size={20} className="text-red-500" />
+            <CircularProgress size={20} color="error" />
           ) : (
-            <DeleteIcon className="w-5 h-5 text-red-500" />
+            <RemoveCircleOutlineIcon color="error" />
           )}
         </button>
       )}
@@ -119,7 +118,7 @@ const RoleCard = ({ role, isSelected, onClick, onDelete }) => {
 
       {/* Role Description */}
       <p
-        className="text-sm text-textLight pb-4 line-clamp-2"
+        className="text-sm text-textLight pb-2 line-clamp-2"
         title={role.summary}
       >
         {role.summary}

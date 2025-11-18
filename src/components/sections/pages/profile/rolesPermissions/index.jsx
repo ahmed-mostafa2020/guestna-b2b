@@ -171,11 +171,6 @@ const RolesPermissionsContent = ({
                 role={role}
                 isSelected={selectedRole === role._id}
                 onClick={() => setSelectedRole(role._id)}
-                onDelete={(roleId) => {
-                  // Handle role deletion
-                  // You may want to refetch roles or update state here
-                  console.log("Role deleted:", roleId);
-                }}
               />
             </div>
           ))}
