@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { useTranslations, useLocale } from "next-intl";
 
@@ -26,6 +27,8 @@ import { aboutUsIcon, discoverIcon, greenPhoneIcon } from "@assets/svg";
 const TemporaryDrawer = () => {
   const [open, setOpen] = useState(false);
   const t = useTranslations();
+
+  const pathname = usePathname();
 
   const locale = useLocale();
   const anchor = locale === "ar" ? "right" : "left";
@@ -80,7 +83,9 @@ const TemporaryDrawer = () => {
                   href={navLink.link}
                   key={index}
                   target={navLink.isBlank ? "_blank" : "_self"}
-                  className="px-4 py-3 text-lg font-medium leading-8 tracking-tight capitalize transition-all duration-200 ease-in-out hover:text-mainColor"
+                  className={`px-4 py-3 text-lg font-medium leading-8 tracking-tight capitalize transition-all duration-200 ease-in-out hover:text-mainColor ${
+                    pathname === navLink.link ? "text-mainColor" : ""
+                  }`}
                 >
                   {navLink.name}
                 </Link>

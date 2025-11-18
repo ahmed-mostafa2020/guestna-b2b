@@ -180,3 +180,38 @@ export async function PATCH(request) {
     return NextResponse.json(data, { status });
   }
 }
+
+export async function DELETE(request) {
+  const { searchParams } = new URL(request.url);
+  const pathDelete = searchParams.get("path");
+
+  if (!pathDelete) {
+    return NextResponse.json(
+      { error: "Missing path parameter" },
+      { status: 400 }
+    );
+  }
+
+  const token = request.headers.get("authorization");
+  const devicespecificid = request.headers.get("devicespecificid");
+
+  const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${pathDelete}`;
+
+  const headers = {
+    "Content-Type": "application/json",
+    reqKey: process.env.SECURE_REQ_KEY,
+    lang: request.headers.get("lang") || "ar",
+    ...(token && { authorization: token }),
+    ...(devicespecificid && { devicespecificid }),
+  };
+
+  try {
+    const response = await axios.delete(backendURL, { headers });
+    return NextResponse.json(response.data);
+  } catch (error) {
+    console.error("Proxy error:", error.response?.data || error.message);
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { error: "Proxy error" };
+    return NextResponse.json(data, { status });
+  }
+}

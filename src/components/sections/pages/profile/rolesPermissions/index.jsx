@@ -4,6 +4,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { useState, useEffect } from "react";
 import { useSnackbar } from "notistack";
 import PermissionsSection from "./PermissionsSection";
+import RoleCard from "./RoleCard";
 import {
   Refresh as RefreshIcon,
   Save as SaveIcon,
@@ -165,64 +166,18 @@ const RolesPermissionsContent = ({
         {/* Desktop Pills/Badges */}
         <div className="hidden lg:flex flex-wrap gap-3">
           {roles.map((role) => (
-            <button
-              key={role._id}
-              onClick={() => setSelectedRole(role._id)}
-              className={`
-                group relative px-5 py-3 rounded-lg border-2 transition-all duration-200
-                hover:shadow-sm cursor-pointer text-start w-48
-                ${
-                  selectedRole === role._id
-                    ? "border-mainColor bg-mainColor text-white"
-                    : "border-border bg-white hover:border-mainColor"
-                }
-              `}
-            >
-              <div className="flex items-center gap-3">
-                {/* Role Info */}
-                <div className="flex-1 min-w-0">
-                  <h3
-                    className={`font-semibold truncate ${
-                      selectedRole === role._id
-                        ? "text-white"
-                        : "text-titleColor"
-                    }`}
-                    title={role.description}
-                  >
-                    {role.description}
-                  </h3>
-
-                  <span
-                    className={`text-textLight text-xs truncate ${
-                      selectedRole === role._id
-                        ? "text-white"
-                        : "text-titleColor"
-                    }`}
-                    title={role.summary}
-                  >
-                    {role.summary}
-                  </span>
-                  <p
-                    className={`text-xs pt-0.5 ${
-                      selectedRole === role._id
-                        ? "text-white/80"
-                        : "text-textLight"
-                    }`}
-                  >
-                    {formatNumbersUint(
-                      role.userCount || 0,
-                      t("profile.rolesPermissions.user"),
-                      t("profile.rolesPermissions.users")
-                    )}
-                  </p>
-                </div>
-
-                {/* Selected Indicator */}
-                {selectedRole === role._id && (
-                  <CheckCircleIcon className="w-5 h-5 text-white" />
-                )}
-              </div>
-            </button>
+            <div key={role._id} className="w-48">
+              <RoleCard
+                role={role}
+                isSelected={selectedRole === role._id}
+                onClick={() => setSelectedRole(role._id)}
+                onDelete={(roleId) => {
+                  // Handle role deletion
+                  // You may want to refetch roles or update state here
+                  console.log("Role deleted:", roleId);
+                }}
+              />
+            </div>
           ))}
         </div>
       </section>

@@ -1237,10 +1237,13 @@
         "save": "Save Changes",
         "addRole": "Add New Role"
       },
+      "deleteRole": "Delete Role",
+      "deleteConfirm": "Are you sure you want to delete this role? This action cannot be undone.",
       "messages": {
         "resetSuccess": "Permissions reset to default",
         "saveSuccess": "Changes saved successfully",
-        "addRoleSuccess": "Role created successfully"
+        "addRoleSuccess": "Role created successfully",
+        "deleteRoleSuccess": "Role deleted successfully"
       },
       "addRole": {
         "title": "Add New Role",

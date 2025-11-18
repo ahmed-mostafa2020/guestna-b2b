@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { useLocale, useTranslations } from "next-intl";
 
@@ -27,6 +28,7 @@ const Header = () => {
 
   const locale = useLocale();
   const t = useTranslations();
+  const pathname = usePathname();
 
   // const dispatch = useDispatch();
 
@@ -58,27 +60,36 @@ const Header = () => {
     },
   ];
 
-  const renderedNavLinks = navLinks.map((navLink, index) => (
-    <Fragment key={index}>
-      <div>
-        {navLink.isDisabled ? (
-          <span className="px-4 py-3 text-lg font-medium leading-8 tracking-tight text-gray-400 capitalize border-b border-transparent border-solid cursor-not-allowed font-ibm">
-            {navLink.name}
-          </span>
-        ) : (
-          <Link
-            href={navLink.link}
-            target={navLink.isBlank ? "_blank" : "_self"}
-            className="px-4 py-3 text-lg font-medium leading-8 tracking-tight capitalize transition-all duration-200 ease-in-out border-b border-transparent border-solid font-ibm hover:border-mainColor hover:text-mainColor"
-          >
-            {navLink.name}
-          </Link>
-        )}
-      </div>
-      {/* Insert ServicesDropdown after the first item */}
-      {index === 0 && <ServicesDropdown />}
-    </Fragment>
-  ));
+  const renderedNavLinks = navLinks.map((navLink, index) => {
+    // Check if current link is active
+    const isActive = pathname === navLink.link;
+
+    return (
+      <Fragment key={index}>
+        <div>
+          {navLink.isDisabled ? (
+            <span className="px-4 py-3 text-lg font-medium leading-8 tracking-tight text-gray-400 capitalize border-b border-transparent border-solid cursor-not-allowed font-ibm">
+              {navLink.name}
+            </span>
+          ) : (
+            <Link
+              href={navLink.link}
+              target={navLink.isBlank ? "_blank" : "_self"}
+              className={`px-4 py-3 text-lg font-medium leading-8 tracking-tight capitalize transition-all duration-200 ease-in-out border-b border-solid font-ibm hover:border-mainColor hover:text-mainColor ${
+                isActive
+                  ? "border-mainColor text-mainColor"
+                  : "border-transparent"
+              }`}
+            >
+              {navLink.name}
+            </Link>
+          )}
+        </div>
+        {/* Insert ServicesDropdown after the first item */}
+        {index === 0 && <ServicesDropdown />}
+      </Fragment>
+    );
+  });
 
   // useEffect(() => {
   //   dispatch(actGetNavbarData(headers));
