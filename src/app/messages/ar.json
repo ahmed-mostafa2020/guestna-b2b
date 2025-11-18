@@ -1237,7 +1237,8 @@
         "resetSuccess": "تم إعادة تعيين الصلاحيات إلى الوضع الافتراضي",
         "saveSuccess": "تم حفظ التغييرات بنجاح",
         "addRoleSuccess": "تم إنشاء الدور بنجاح",
-        "deleteRoleSuccess": "تم حذف الدور بنجاح"
+        "deleteRoleSuccess": "تم حذف الدور بنجاح",
+        "fetchError": "فشل تحميل صلاحيات الدور"
       },
       "addRole": {
         "title": "إضافة دور جديد",

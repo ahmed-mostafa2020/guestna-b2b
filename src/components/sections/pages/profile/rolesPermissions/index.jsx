@@ -10,8 +10,13 @@ import {
   Save as SaveIcon,
   CheckCircle as CheckCircleIcon,
 } from "@mui/icons-material";
+import { CircularProgress } from "@mui/material";
 import Link from "next/link";
 import formatNumbersUint from "@/src/utils/FormatNumbersUint";
+import axios from "axios";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { getHeaders } from "@utils/getHeaders";
+import getProxyUrl from "@utils/getProxyUrl";
 
 const RolesPermissionsContent = ({
   rolesData,
@@ -28,6 +33,7 @@ const RolesPermissionsContent = ({
 
   const [selectedRole, setSelectedRole] = useState(null);
   const [permissions, setPermissions] = useState({});
+  const [loadingRolePermissions, setLoadingRolePermissions] = useState(false);
 
   // Set first role as selected when roles are loaded
   useEffect(() => {
@@ -80,6 +86,58 @@ const RolesPermissionsContent = ({
     enqueueSnackbar(t("profile.rolesPermissions.messages.resetSuccess"), {
       variant: "success",
     });
+  };
+
+  // Fetch permissions for a specific role
+  const fetchRolePermissions = async (roleId) => {
+    if (!roleId) return;
+
+    setLoadingRolePermissions(true);
+    try {
+      const response = await axios.get(
+        getProxyUrl(
+          `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.GET_PERMISSIONS_BY_ROLE}/${roleId}`
+        ),
+        { headers: getHeaders(locale) }
+      );
+
+      if (response.data) {
+        const activePermissionIds = response.data; // Array of permission IDs
+
+        // Update permissions state based on active IDs
+        const newPermissions = {};
+        pages.forEach((page) => {
+          newPermissions[page._id] = {};
+          page.child?.forEach((element) => {
+            // Check if this element's ID is in the active permissions array
+            newPermissions[page._id][element._id] =
+              activePermissionIds.includes(element._id);
+          });
+        });
+
+        setPermissions(newPermissions);
+      }
+    } catch (error) {
+      console.error("Error fetching role permissions:", error);
+      enqueueSnackbar(
+        error?.response?.data?.message ||
+          t("profile.rolesPermissions.messages.fetchError"),
+        { variant: "error" }
+      );
+    } finally {
+      setLoadingRolePermissions(false);
+    }
+  };
+
+  // Fetch permissions when role is selected
+  useEffect(() => {
+    if (selectedRole && pages.length > 0) {
+      fetchRolePermissions(selectedRole);
+    }
+  }, [selectedRole, pages]);
+
+  const handleRoleChange = (roleId) => {
+    setSelectedRole(roleId);
   };
 
   const handleSave = () => {
@@ -189,9 +247,10 @@ const RolesPermissionsContent = ({
         {/* Mobile Dropdown */}
         <div className="block lg:hidden">
           <select
-            value={selectedRole}
-            onChange={(e) => setSelectedRole(e.target.value)}
-            className="w-full px-4 py-3 border-2 border-border rounded-lg focus:border-mainColor focus:outline-none transition-colors bg-white"
+            value={selectedRole || ""}
+            onChange={(e) => handleRoleChange(e.target.value)}
+            disabled={loadingRolePermissions}
+            className="w-full px-4 py-3 border-2 border-border rounded-lg focus:border-mainColor focus:outline-none transition-colors bg-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {roles.map((role) => (
               <option key={role._id} value={role._id}>
@@ -214,7 +273,8 @@ const RolesPermissionsContent = ({
               <RoleCard
                 role={role}
                 isSelected={selectedRole === role._id}
-                onClick={() => setSelectedRole(role._id)}
+                onClick={() => handleRoleChange(role._id)}
+                disabled={loadingRolePermissions}
               />
             </div>
           ))}
@@ -247,21 +307,27 @@ const RolesPermissionsContent = ({
           </div>
         </div>
 
-        <div className="space-y-4">
-          {pages.map((page, index) => (
-            <PermissionsSection
-              key={page._id}
-              page={page}
-              permissions={permissions[page._id]}
-              enabledCount={getEnabledCount(page._id)}
-              onTogglePage={() => togglePagePermissions(page._id)}
-              onToggleElement={(elementId) =>
-                toggleElementPermission(page._id, elementId)
-              }
-              index={index}
-            />
-          ))}
-        </div>
+        {loadingRolePermissions ? (
+          <div className="flex items-center justify-center py-12">
+            <CircularProgress sx={{ color: "var(--color-main)" }} />
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {pages.map((page, index) => (
+              <PermissionsSection
+                key={page._id}
+                page={page}
+                permissions={permissions[page._id]}
+                enabledCount={getEnabledCount(page._id)}
+                onTogglePage={() => togglePagePermissions(page._id)}
+                onToggleElement={(elementId) =>
+                  toggleElementPermission(page._id, elementId)
+                }
+                index={index}
+              />
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

@@ -17,7 +17,7 @@ import getProxyUrl from "@utils/getProxyUrl";
 import ActionsDialog from "../../customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
 import formatNumbersUint from "@utils/FormatNumbersUint";
 
-const RoleCard = ({ role, isSelected, onClick }) => {
+const RoleCard = ({ role, isSelected, onClick, disabled = false }) => {
   const t = useTranslations();
   const locale = useLocale();
   const { enqueueSnackbar } = useSnackbar();
@@ -74,9 +74,11 @@ const RoleCard = ({ role, isSelected, onClick }) => {
   return (
     <button
       onClick={onClick}
+      disabled={disabled || isDeleting}
       className={`
         relative p-6 rounded-xl border-2 transition-all duration-200
         hover:shadow-md cursor-pointer text-start w-full
+        disabled:opacity-50 disabled:cursor-not-allowed
         ${
           isSelected
             ? "border-mainColor bg-white"

@@ -1243,7 +1243,8 @@
         "resetSuccess": "Permissions reset to default",
         "saveSuccess": "Changes saved successfully",
         "addRoleSuccess": "Role created successfully",
-        "deleteRoleSuccess": "Role deleted successfully"
+        "deleteRoleSuccess": "Role deleted successfully",
+        "fetchError": "Failed to load role permissions"
       },
       "addRole": {
         "title": "Add New Role",

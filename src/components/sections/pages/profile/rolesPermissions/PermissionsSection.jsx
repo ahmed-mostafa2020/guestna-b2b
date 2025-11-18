@@ -45,7 +45,7 @@ const PermissionsSection = ({
               onChange={onTogglePage}
               icon={<CheckBoxOutlineBlankIcon />}
               checkedIcon={<CheckBoxIcon />}
-              indeterminateIcon={<CheckBoxIcon className="text-mainColor " />}
+              indeterminateIcon={<CheckBoxIcon className="text-mainColor" />}
               sx={{
                 color: "var(--color-main)",
                 "&.Mui-checked": {
