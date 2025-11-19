@@ -9,9 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@bugsnag/browser-performance": "^3.0.0",
-    "@bugsnag/js": "^8.4.0",
-    "@bugsnag/plugin-react": "^8.4.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@googlemaps/js-api-loader": "^1.16.8",

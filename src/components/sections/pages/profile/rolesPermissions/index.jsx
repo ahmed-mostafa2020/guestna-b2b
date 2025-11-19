@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import { useState, useEffect } from "react";
 import { flushSync } from "react-dom";
@@ -11,13 +12,13 @@ import {
   Save as SaveIcon,
   CheckCircle as CheckCircleIcon,
 } from "@mui/icons-material";
-import Link from "next/link";
-import formatNumbersUint from "@/src/utils/FormatNumbersUint";
-import axios from "axios";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import formatNumbersUint from "@utils/FormatNumbersUint";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
-import FullScreenLoading from "@/src/feedback/loading/FullScreenLoading";
+import FullScreenLoading from "@feedback/loading/FullScreenLoading";
+
+import axios from "axios";
 
 const RolesPermissionsContent = ({
   rolesData,
@@ -358,7 +359,7 @@ const RolesPermissionsContent = ({
         </div>
 
         {loadingRolePermissions && (
-          <div className="fixed inset-0  flex items-center justify-center">
+          <div className="fixed flex items-center justify-center">
             <FullScreenLoading status="pending" />
           </div>
         )}

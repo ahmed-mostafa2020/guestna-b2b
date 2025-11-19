@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { reportError } from "@utils/bugsnag";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -15,16 +14,8 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    // Log the error to Bugsnag
+    // Log the error to console
     console.error("ErrorBoundary caught an error:", error, errorInfo);
-    
-    // Report to Bugsnag with additional context
-    reportError(error, {
-      context: "React Error Boundary",
-      componentStack: errorInfo.componentStack,
-      errorBoundary: this.props.name || "Unknown",
-      props: this.props.errorContext || {},
-    });
 
     this.setState({
       error,
@@ -61,7 +52,8 @@ class ErrorBoundary extends React.Component {
             Something went wrong
           </h3>
           <p className="text-red-600 text-center mb-4">
-            {this.props.message || "An unexpected error occurred. Please try refreshing the page."}
+            {this.props.message ||
+              "An unexpected error occurred. Please try refreshing the page."}
           </p>
           {process.env.NODE_ENV === "development" && (
             <details className="w-full max-w-2xl">

@@ -129,10 +129,7 @@ const RoleCard = ({
       </h3>
 
       {/* Role Description */}
-      <p
-        className="text-sm text-textLight pb-2 line-clamp-2"
-        title={role.summary}
-      >
+      <p className="text-sm text-textLight pb-2 truncate" title={role.summary}>
         {role.summary}
       </p>
 

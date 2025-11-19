@@ -61,8 +61,12 @@ const Header = () => {
   ];
 
   const renderedNavLinks = navLinks.map((navLink, index) => {
-    // Check if current link is active
-    const isActive = pathname === navLink.link;
+    const pathnameWithoutLocale = pathname.replace(`/${locale}`, "") || "/";
+    const linkWithoutLocale = navLink.link.replace(`/${locale}`, "") || "/";
+
+    const isActive = navLink.link.startsWith("http")
+      ? false
+      : pathnameWithoutLocale === linkWithoutLocale;
 
     return (
       <Fragment key={index}>

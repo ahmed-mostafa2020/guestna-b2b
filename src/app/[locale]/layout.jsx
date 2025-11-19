@@ -13,8 +13,6 @@ import ReduxProvider from "@components/libraries/ReduxProvider";
 import QueryProvider from "@components/libraries/QueryProvider";
 import GoogleTagManager from "@components/libraries/GoogleTagManager";
 import GoogleAnalytics from "@components/libraries/GoogleAnalytics";
-import BugsnagProvider from "@components/providers/BugsnagProvider";
-import BugsnagErrorBoundary from "@components/providers/BugsnagErrorBoundary";
 import ThemeProvider from "@components/providers/ThemeProvider";
 
 import Header from "@components/layout/header/Header";
@@ -117,21 +115,17 @@ export default async function RootLayout({ children, params: { locale } }) {
         />
 
         <Suspense fallback={<div className="centered">Loading...</div>}>
-          <BugsnagProvider>
-            <BugsnagErrorBoundary>
-              <ReduxProvider locale={locale}>
-                <QueryProvider>
-                  <NextIntlClientProvider locale={locale} messages={messages}>
-                    <ThemeProvider />
-                    <ProgressBar />
-                    <Header />
-                    {children}
-                    <Footer />
-                  </NextIntlClientProvider>
-                </QueryProvider>
-              </ReduxProvider>
-            </BugsnagErrorBoundary>
-          </BugsnagProvider>
+          <ReduxProvider locale={locale}>
+            <QueryProvider>
+              <NextIntlClientProvider locale={locale} messages={messages}>
+                <ThemeProvider />
+                <ProgressBar />
+                <Header />
+                {children}
+                <Footer />
+              </NextIntlClientProvider>
+            </QueryProvider>
+          </ReduxProvider>
         </Suspense>
 
         <GoogleAnalytics

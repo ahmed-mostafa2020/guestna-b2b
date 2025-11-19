@@ -68,31 +68,42 @@ const TemporaryDrawer = () => {
       <List>
         <Logo />
 
-        {navLinks.map((navLink, index) => (
-          <ListItem key={navLink.name} disablePadding>
-            <ListItemButton>
-              <ListItemIcon sx={{ minWidth: "fit-content" }}>
-                {navLink.icon}
-              </ListItemIcon>
-              {navLink.isDisabled ? (
-                <span className="px-4 py-3 text-lg font-medium leading-8 tracking-tight text-gray-400 capitalize border-b border-transparent border-solid cursor-not-allowed">
-                  {navLink.name}
-                </span>
-              ) : (
-                <Link
-                  href={navLink.link}
-                  key={index}
-                  target={navLink.isBlank ? "_blank" : "_self"}
-                  className={`px-4 py-3 text-lg font-medium leading-8 tracking-tight capitalize transition-all duration-200 ease-in-out hover:text-mainColor ${
-                    pathname === navLink.link ? "text-mainColor" : ""
-                  }`}
-                >
-                  {navLink.name}
-                </Link>
-              )}
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {navLinks.map((navLink, index) => {
+          const pathnameWithoutLocale =
+            pathname.replace(`/${locale}`, "") || "/";
+          const linkWithoutLocale =
+            navLink.link.replace(`/${locale}`, "") || "/";
+
+          const isActive = navLink.link.startsWith("http")
+            ? false
+            : pathnameWithoutLocale === linkWithoutLocale;
+
+          return (
+            <ListItem key={navLink.name} disablePadding>
+              <ListItemButton>
+                <ListItemIcon sx={{ minWidth: "fit-content" }}>
+                  {navLink.icon}
+                </ListItemIcon>
+                {navLink.isDisabled ? (
+                  <span className="px-4 py-3 text-lg font-medium leading-8 tracking-tight text-gray-400 capitalize border-b border-transparent border-solid cursor-not-allowed">
+                    {navLink.name}
+                  </span>
+                ) : (
+                  <Link
+                    href={navLink.link}
+                    key={index}
+                    target={navLink.isBlank ? "_blank" : "_self"}
+                    className={`px-4 py-3 text-lg font-medium leading-8 tracking-tight capitalize transition-all duration-200 ease-in-out hover:text-mainColor ${
+                      isActive ? "text-mainColor" : ""
+                    }`}
+                  >
+                    {navLink.name}
+                  </Link>
+                )}
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
         <div className="px-4" onClick={(e) => e.stopPropagation()}>
           <ServicesDropdown />
         </div>

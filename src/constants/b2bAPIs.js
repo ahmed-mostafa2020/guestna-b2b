@@ -138,7 +138,6 @@ export const B2B_END_POINTS = {
       ADD_ROLE: "profile/roles/new",
       UPDATE_PERMISSIONS: "profile/roles/save",
       DELETE_ROLE: "profile/roles/remove",
-      RESET: "profile/roles/reset",
     },
   },
 
