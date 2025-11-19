@@ -5,7 +5,7 @@ import { memo } from "react";
 import { usePermissions } from "@hooks/usePermissions";
 import { PERMISSIONS } from "@constants/permissions";
 
-import profilePlaceholderImage from "@assets/profilePlaceholderImage.png";
+import profilePlaceholderImage from "@assets/profilePlaceholderImage.jpg";
 import { Card, CardContent, Chip } from "@mui/material";
 
 const UserCard = ({ user }) => {
