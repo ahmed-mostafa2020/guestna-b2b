@@ -140,8 +140,8 @@ const RolesPermissionsContent = ({
     // Remove the deleted role from the list
     const updatedRoles = roles.filter((role) => role._id !== deletedRoleId);
 
-    // If the deleted role was selected, select the first remaining role
-    if (selectedRole === deletedRoleId && updatedRoles.length > 0) {
+    // Always auto-activate the first role after any deletion
+    if (updatedRoles.length > 0) {
       // Use flushSync to ensure state updates happen synchronously
       flushSync(() => {
         setRoles(updatedRoles);
@@ -150,7 +150,9 @@ const RolesPermissionsContent = ({
         setSelectedRole(updatedRoles[0]._id);
       });
     } else {
+      // No roles left after deletion
       setRoles(updatedRoles);
+      setSelectedRole(null);
     }
   };
 
