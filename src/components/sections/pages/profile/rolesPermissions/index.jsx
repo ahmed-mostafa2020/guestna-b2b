@@ -2,23 +2,111 @@
 
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { flushSync } from "react-dom";
 import { useSnackbar } from "notistack";
+import axios from "axios";
+import { Refresh as RefreshIcon, Save as SaveIcon } from "@mui/icons-material";
+
 import PermissionsSection from "./PermissionsSection";
 import RoleCard from "./RoleCard";
-import {
-  Refresh as RefreshIcon,
-  Save as SaveIcon,
-  CheckCircle as CheckCircleIcon,
-} from "@mui/icons-material";
+import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import formatNumbersUint from "@utils/FormatNumbersUint";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
-import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 
-import axios from "axios";
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+/**
+ * Initializes permissions state from pages data
+ * - defaultChecked: true items start as UNCHECKED (false)
+ * - Regular items start as CHECKED (true)
+ */
+const initializePermissions = (pages) => {
+  const initial = {};
+  pages.forEach((page) => {
+    initial[page._id] = {};
+    page.child?.forEach((element) => {
+      if (element.defaultChecked === true) {
+        initial[page._id][element._id] = false;
+      } else {
+        initial[page._id][element._id] = element.defaultChecked ?? true;
+      }
+    });
+  });
+  return initial;
+};
+
+/**
+ * Converts API response (array of permission IDs) to permissions state object
+ */
+const convertApiResponseToPermissions = (activePermissionIds, pages) => {
+  const newPermissions = {};
+  pages.forEach((page) => {
+    newPermissions[page._id] = {};
+    page.child?.forEach((element) => {
+      newPermissions[page._id][element._id] = activePermissionIds.includes(
+        element._id
+      );
+    });
+  });
+  return newPermissions;
+};
+
+/**
+ * Collects all checked permission IDs from permissions state
+ */
+const collectCheckedPermissionIds = (permissions, pages) => {
+  const permissionIds = [];
+  pages.forEach((page) => {
+    page.child?.forEach((element) => {
+      if (permissions[page._id]?.[element._id]) {
+        permissionIds.push(element._id);
+      }
+    });
+  });
+  return permissionIds;
+};
+
+/**
+ * Gets toggleable children (excludes defaultChecked: true items)
+ */
+const getToggleableChildren = (page) => {
+  return page.child?.filter((el) => el.defaultChecked !== true) || [];
+};
+
+/**
+ * Checks if all toggleable children are enabled
+ */
+const areAllToggleableEnabled = (page, permissions, pageId) => {
+  const toggleableChildren = getToggleableChildren(page);
+  return toggleableChildren.every(
+    (element) => permissions[pageId]?.[element._id]
+  );
+};
+
+/**
+ * Checks if any toggleable child is checked
+ */
+const isAnyToggleableChecked = (page, permissions, pageId) => {
+  const toggleableChildren = getToggleableChildren(page);
+  return toggleableChildren.some((child) => permissions[pageId]?.[child._id]);
+};
+
+/**
+ * Updates defaultChecked items based on page state
+ * defaultChecked items are checked when ANY toggleable child is checked
+ */
+const updateDefaultCheckedItems = (page, permissions, pageId, shouldCheck) => {
+  page.child?.forEach((child) => {
+    if (child.defaultChecked === true) {
+      permissions[pageId][child._id] = shouldCheck;
+    }
+  });
+};
 
 const RolesPermissionsContent = ({
   rolesData,
@@ -30,21 +118,28 @@ const RolesPermissionsContent = ({
   const locale = useLocale();
   const { enqueueSnackbar } = useSnackbar();
 
+  // ============================================================================
+  // STATE MANAGEMENT
+  // ============================================================================
   const [roles, setRoles] = useState(rolesData || []);
-  const pages = permissionsData || [];
-
   const [selectedRole, setSelectedRole] = useState(null);
   const [permissions, setPermissions] = useState({});
   const [loadingRolePermissions, setLoadingRolePermissions] = useState(false);
 
-  // Update roles when rolesData changes
+  const pages = permissionsData || [];
+
+  // ============================================================================
+  // EFFECTS
+  // ============================================================================
+
+  // Update roles when rolesData prop changes
   useEffect(() => {
     if (rolesData) {
       setRoles(rolesData);
     }
   }, [rolesData]);
 
-  // Set first role as selected when roles are loaded
+  // Auto-select first role when roles are loaded
   useEffect(() => {
     if (roles.length > 0 && !selectedRole) {
       setSelectedRole(roles[0]._id);
@@ -54,76 +149,9 @@ const RolesPermissionsContent = ({
   // Initialize permissions when pages data is loaded
   useEffect(() => {
     if (pages.length > 0) {
-      const initial = {};
-      pages.forEach((page) => {
-        initial[page._id] = {};
-        page.child?.forEach((element) => {
-          if (element.defaultChecked === true) {
-            // defaultChecked: true items start as UNCHECKED
-            initial[page._id][element._id] = false;
-          } else {
-            // Regular and defaultChecked: false items use their value or default to true
-            initial[page._id][element._id] =
-              element.defaultChecked !== undefined
-                ? element.defaultChecked
-                : true;
-          }
-        });
-      });
-      setPermissions(initial);
+      setPermissions(initializePermissions(pages));
     }
   }, [pages]);
-
-  const handleReset = async () => {
-    if (!selectedRole) return;
-
-    // Re-fetch permissions from API to reset to saved state
-    await fetchRolePermissions(selectedRole);
-    enqueueSnackbar(t("profile.rolesPermissions.messages.resetSuccess"), {
-      variant: "success",
-    });
-  };
-
-  // Fetch permissions for a specific role
-  const fetchRolePermissions = async (roleId) => {
-    if (!roleId) return;
-
-    setLoadingRolePermissions(true);
-    try {
-      const response = await axios.get(
-        getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.GET_PERMISSIONS_BY_ROLE}/${roleId}`
-        ),
-        { headers: getHeaders(locale) }
-      );
-
-      if (response.data) {
-        const activePermissionIds = response.data; // Array of permission IDs
-
-        // Update permissions state based on active IDs
-        const newPermissions = {};
-        pages.forEach((page) => {
-          newPermissions[page._id] = {};
-          page.child?.forEach((element) => {
-            // Check if this element's ID is in the active permissions array
-            newPermissions[page._id][element._id] =
-              activePermissionIds.includes(element._id);
-          });
-        });
-
-        setPermissions(newPermissions);
-      }
-    } catch (error) {
-      console.error("Error fetching role permissions:", error);
-      enqueueSnackbar(
-        error?.response?.data?.message ||
-          t("profile.rolesPermissions.messages.fetchError"),
-        { variant: "error" }
-      );
-    } finally {
-      setLoadingRolePermissions(false);
-    }
-  };
 
   // Fetch permissions when role is selected
   useEffect(() => {
@@ -132,139 +160,220 @@ const RolesPermissionsContent = ({
     }
   }, [selectedRole, pages]);
 
-  const handleRoleChange = (roleId) => {
+  // ============================================================================
+  // API FUNCTIONS
+  // ============================================================================
+
+  /**
+   * Fetches permissions for a specific role from the API
+   */
+  const fetchRolePermissions = useCallback(
+    async (roleId) => {
+      if (!roleId) return;
+
+      setLoadingRolePermissions(true);
+      try {
+        const response = await axios.get(
+          getProxyUrl(
+            `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.GET_PERMISSIONS_BY_ROLE}/${roleId}`
+          ),
+          { headers: getHeaders(locale) }
+        );
+
+        if (response.data) {
+          const activePermissionIds = response.data;
+          const newPermissions = convertApiResponseToPermissions(
+            activePermissionIds,
+            pages
+          );
+          setPermissions(newPermissions);
+        }
+      } catch (error) {
+        console.error("Error fetching role permissions:", error);
+        enqueueSnackbar(
+          error?.response?.data?.message ||
+            t("profile.rolesPermissions.messages.fetchError"),
+          { variant: "error" }
+        );
+      } finally {
+        setLoadingRolePermissions(false);
+      }
+    },
+    [locale, pages, t, enqueueSnackbar]
+  );
+
+  /**
+   * Saves current permissions to the API
+   */
+  const savePermissions = useCallback(
+    async (roleId, permissionIds) => {
+      try {
+        await axios.patch(
+          getProxyUrl(
+            `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.UPDATE_PERMISSIONS}/${roleId}`
+          ),
+          { permissions: permissionIds },
+          { headers: getHeaders(locale) }
+        );
+
+        enqueueSnackbar(t("profile.rolesPermissions.messages.saveSuccess"), {
+          variant: "success",
+        });
+      } catch (error) {
+        console.error("Error saving permissions:", error);
+        enqueueSnackbar(
+          error?.response?.data?.message ||
+            t("profile.rolesPermissions.messages.saveError"),
+          { variant: "error" }
+        );
+        throw error;
+      }
+    },
+    [locale, t, enqueueSnackbar]
+  );
+
+  // ============================================================================
+  // EVENT HANDLERS
+  // ============================================================================
+
+  /**
+   * Handles role selection change
+   */
+  const handleRoleChange = useCallback((roleId) => {
     setSelectedRole(roleId);
-  };
+  }, []);
 
-  const handleRoleDeleted = (deletedRoleId) => {
-    // Remove the deleted role from the list
-    const updatedRoles = roles.filter((role) => role._id !== deletedRoleId);
+  /**
+   * Handles role deletion and auto-selects first remaining role
+   */
+  const handleRoleDeleted = useCallback(
+    (deletedRoleId) => {
+      const updatedRoles = roles.filter((role) => role._id !== deletedRoleId);
 
-    // Always auto-activate the first role after any deletion
-    if (updatedRoles.length > 0) {
-      // Use flushSync to ensure state updates happen synchronously
-      flushSync(() => {
+      // Always auto-activate the first role after any deletion
+      if (updatedRoles.length > 0) {
+        flushSync(() => setRoles(updatedRoles));
+        flushSync(() => setSelectedRole(updatedRoles[0]._id));
+      } else {
         setRoles(updatedRoles);
-      });
-      flushSync(() => {
-        setSelectedRole(updatedRoles[0]._id);
-      });
-    } else {
-      // No roles left after deletion
-      setRoles(updatedRoles);
-      setSelectedRole(null);
-    }
-  };
+        setSelectedRole(null);
+      }
+    },
+    [roles]
+  );
 
-  const handleSave = async () => {
+  /**
+   * Resets permissions to last saved state
+   */
+  const handleReset = useCallback(async () => {
+    if (!selectedRole) return;
+
+    await fetchRolePermissions(selectedRole);
+    enqueueSnackbar(t("profile.rolesPermissions.messages.resetSuccess"), {
+      variant: "success",
+    });
+  }, [selectedRole, fetchRolePermissions, enqueueSnackbar, t]);
+
+  /**
+   * Saves current permissions to API
+   */
+  const handleSave = useCallback(async () => {
     if (!selectedRole) return;
 
     setLoadingRolePermissions(true);
     try {
-      // Collect all checked permission IDs
-      const permissionIds = [];
-      pages.forEach((page) => {
-        page.child?.forEach((element) => {
-          if (permissions[page._id]?.[element._id]) {
-            permissionIds.push(element._id);
-          }
-        });
-      });
-
-      const response = await axios.patch(
-        getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.UPDATE_PERMISSIONS}/${selectedRole}`
-        ),
-        {
-          permissions: permissionIds,
-        },
-        { headers: getHeaders(locale) }
-      );
-
-      enqueueSnackbar(t("profile.rolesPermissions.messages.saveSuccess"), {
-        variant: "success",
-      });
-    } catch (error) {
-      console.error("Error saving permissions:", error);
-      enqueueSnackbar(
-        error?.response?.data?.message ||
-          t("profile.rolesPermissions.messages.saveError"),
-        { variant: "error" }
-      );
+      const permissionIds = collectCheckedPermissionIds(permissions, pages);
+      await savePermissions(selectedRole, permissionIds);
     } finally {
       setLoadingRolePermissions(false);
     }
-  };
+  }, [selectedRole, permissions, pages, savePermissions]);
 
-  const togglePagePermissions = (pageId) => {
-    const page = pages.find((p) => p._id === pageId);
-    if (!page) return;
+  /**
+   * Toggles all permissions for a page
+   */
+  const togglePagePermissions = useCallback(
+    (pageId) => {
+      const page = pages.find((p) => p._id === pageId);
+      if (!page) return;
 
-    // Check state based on toggleable children only (not defaultChecked: true)
-    const toggleableChildren =
-      page.child?.filter((el) => el.defaultChecked !== true) || [];
-    const allToggleableEnabled = toggleableChildren.every(
-      (element) => permissions[pageId]?.[element._id]
-    );
+      const toggleableChildren = getToggleableChildren(page);
+      const allEnabled = toggleableChildren.every(
+        (element) => permissions[pageId]?.[element._id]
+      );
 
-    const newPermissions = { ...permissions };
-    const newState = !allToggleableEnabled;
+      const newPermissions = { ...permissions };
+      const newState = !allEnabled;
 
-    // Toggle all children
-    page.child?.forEach((element) => {
-      if (element.defaultChecked === true) {
-        // defaultChecked: true items only get checked when parent is being checked (newState = true)
-        newPermissions[pageId][element._id] = newState ? true : false;
-      } else {
-        // Regular items toggle normally
-        newPermissions[pageId][element._id] = newState;
-      }
-    });
+      // Toggle all children
+      page.child?.forEach((element) => {
+        if (element.defaultChecked === true) {
+          // defaultChecked items only get checked when parent is being checked
+          newPermissions[pageId][element._id] = newState;
+        } else {
+          // Regular items toggle normally
+          newPermissions[pageId][element._id] = newState;
+        }
+      });
 
-    setPermissions(newPermissions);
-  };
+      setPermissions(newPermissions);
+    },
+    [pages, permissions]
+  );
 
-  const toggleElementPermission = (pageId, elementId) => {
-    const page = pages.find((p) => p._id === pageId);
-    const element = page?.child?.find((e) => e._id === elementId);
+  /**
+   * Toggles a single element permission
+   */
+  const toggleElementPermission = useCallback(
+    (pageId, elementId) => {
+      const page = pages.find((p) => p._id === pageId);
+      const element = page?.child?.find((e) => e._id === elementId);
 
-    // Prevent clicking on defaultChecked: true items (they are readonly)
-    if (element?.defaultChecked === true) {
-      return;
-    }
+      // Prevent clicking on defaultChecked: true items (they are readonly)
+      if (element?.defaultChecked === true) return;
 
-    const newPermissions = {
-      ...permissions,
-      [pageId]: {
-        ...permissions[pageId],
-        [elementId]: !permissions[pageId][elementId],
-      },
-    };
+      const newPermissions = {
+        ...permissions,
+        [pageId]: {
+          ...permissions[pageId],
+          [elementId]: !permissions[pageId][elementId],
+        },
+      };
 
-    // Check if ANY toggleable child is checked after this toggle
-    const toggleableChildren =
-      page?.child?.filter((el) => el.defaultChecked !== true) || [];
-    const anyToggleableChecked = toggleableChildren.some(
-      (child) => newPermissions[pageId]?.[child._id]
-    );
+      // Update defaultChecked items based on page state
+      const anyToggleableChecked = isAnyToggleableChecked(
+        page,
+        newPermissions,
+        pageId
+      );
+      updateDefaultCheckedItems(
+        page,
+        newPermissions,
+        pageId,
+        anyToggleableChecked
+      );
 
-    // Update defaultChecked: true items - they get checked if ANY toggleable child is checked
-    page?.child?.forEach((child) => {
-      if (child.defaultChecked === true) {
-        // defaultChecked: true items are checked when ANY toggleable child is checked
-        newPermissions[pageId][child._id] = anyToggleableChecked;
-      }
-    });
+      setPermissions(newPermissions);
+    },
+    [pages, permissions]
+  );
 
-    setPermissions(newPermissions);
-  };
+  /**
+   * Gets the count of enabled permissions for a page
+   */
+  const getEnabledCount = useCallback(
+    (pageId) => {
+      const page = pages.find((p) => p._id === pageId);
+      if (!page) return 0;
+      return page.child?.filter((element) => permissions[pageId]?.[element._id])
+        .length;
+    },
+    [pages, permissions]
+  );
 
-  const getEnabledCount = (pageId) => {
-    const page = pages.find((p) => p._id === pageId);
-    if (!page) return 0;
-    return page.child?.filter((element) => permissions[pageId]?.[element._id])
-      .length;
-  };
+  // ============================================================================
+  // RENDER
+  // ============================================================================
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
@@ -287,7 +396,7 @@ const RolesPermissionsContent = ({
 
           <Link
             href={`/${locale}/profile/roles-permissions/add-role`}
-            className="text-mainColor border-2 border-mainColor px-6 py-2 rounded-lg hover:bg-mainColor hover:text-white  transition-colors font-medium"
+            className="bg-mainColor text-white border-2 border-mainColor px-6 py-2 rounded-lg hover:bg-linksHover hover:border-linksHover transition-all font-medium"
           >
             {t("profile.rolesPermissions.actions.addRole")}
           </Link>
@@ -352,7 +461,7 @@ const RolesPermissionsContent = ({
             </button>
             <button
               onClick={handleReset}
-              className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors  font-medium"
+              className="flex items-center gap-2 px-4 py-2 border border-border bg-white rounded-lg transition-colors font-medium hover:border-error"
             >
               <RefreshIcon className="w-4 h-4" />
               {t("profile.rolesPermissions.actions.reset")}
