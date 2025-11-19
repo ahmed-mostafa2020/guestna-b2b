@@ -5,7 +5,7 @@ import { memo } from "react";
 import { usePermissions } from "@hooks/usePermissions";
 import { PERMISSIONS } from "@constants/permissions";
 
-import schoolProfileImage from "@assets/schoolProfile.png";
+import profilePlaceholderImage from "@assets/profilePlaceholderImage.png";
 import { Card, CardContent, Chip } from "@mui/material";
 
 const UserCard = ({ user }) => {
@@ -19,7 +19,7 @@ const UserCard = ({ user }) => {
         <div className="hidden md:flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Image
-              src={user.image || schoolProfileImage}
+              src={user.image || profilePlaceholderImage}
               alt="userImage"
               height={72}
               width={100}
@@ -60,7 +60,7 @@ const UserCard = ({ user }) => {
           <div className="flex items-center gap-2 sm:gap-3 mb-3">
             <div className="flex-shrink-0">
               <Image
-                src={user.image || schoolProfileImage}
+                src={user.image || profilePlaceholderImage}
                 alt="userImage"
                 height={72}
                 width={100}
