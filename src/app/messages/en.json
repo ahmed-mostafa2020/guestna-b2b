@@ -96,6 +96,8 @@
     "error": "Sorry, we couldn't find the page you were looking for.",
     "errorHappens": "An error occurred",
     "notAvailable": "This trip is not available for booking now",
+    "expand": "Expand",
+    "collapse": "Collapse",
 
     "bookingStatus": {
       "pending": "Pending",
@@ -1232,6 +1234,7 @@
       "enabled": "enabled",
       "user": "user",
       "users": "users",
+      "viewUsers": "View Users",
       "actions": {
         "reset": "Reset",
         "save": "Save Changes",

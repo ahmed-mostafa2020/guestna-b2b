@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import AddRoleContent from "@components/sections/pages/profile/rolesPermissions/AddRoleContent";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { PERMISSIONS } from "@constants/permissions";
+import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 
@@ -45,10 +47,14 @@ export default function AddRolePage() {
   }
 
   return (
-    <AddRoleContent
-      permissionsData={permissionsData}
-      permissionsLoading={permissionsLoading}
-      permissionsError={permissionsError}
-    />
+    <ProtectedProfilePage
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_ADD_ROLE_PAGE}
+    >
+      <AddRoleContent
+        permissionsData={permissionsData}
+        permissionsLoading={permissionsLoading}
+        permissionsError={permissionsError}
+      />
+    </ProtectedProfilePage>
   );
 }

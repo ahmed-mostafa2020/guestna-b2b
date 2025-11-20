@@ -10,6 +10,7 @@ export const PERMISSIONS = {
     B2B_PROFILE_WITHDRAW_TAB: "b2b_profile_withdraw_tab",
     B2B_PROFILE_CALENDAR_TAB: "b2b_profile_calender_tab",
     B2B_PROFILE_INTEGRATED_BOOKINGS_TAB: "b2b_profile_integrated_bookings_tab",
+    B2B_PROFILE_ROLES_PERMISSIONS_TAB: "b2b_profile_roles_permissions_tab",
   },
   ELEMENT: {
     B2B_PROFILE_MAIN_CARDS: "b2b_profile_main_cards",
@@ -41,6 +42,10 @@ export const PERMISSIONS = {
     B2B_PROFILE_ACHIENVEMENT_CONFIRMATION:
       "b2b_profile_achienvement_confirmation",
     B2B_PROFILE_FINAL_REPORT: "b2b_profile_final_report",
+    B2B_PROFILE_CHANGE_PERMISSIONS_ROLE_BTN:
+      "b2b_profile_change_permissions_role_btn",
+    B2B_PROFILE_DELETE_ROLE_BTN: "b2b_profile_delete_role_btn",
+    B2B_PROFILE_ADD_ROLE_BTN: "b2b_profile_add_role_btn",
   },
   PAGE: {
     B2B_PROFILE_MAIN_PAGE: "b2b_profile_main_page",
@@ -55,5 +60,7 @@ export const PERMISSIONS = {
     B2B_PROFILE_INTEGRATED_BOOKINGS_PAGE:
       "b2b_profile_integrated_bookings_page",
     B2B_INVITE_SCHOOL_PAGE: "b2b_invite_organization_sales_page",
+    B2B_PROFILE_ROLES_PERMISSIONS_PAGE: "b2b_profile_roles_permissions_page",
+    B2B_PROFILE_ADD_ROLE_PAGE: "b2b_profile_add_role_page",
   },
 };

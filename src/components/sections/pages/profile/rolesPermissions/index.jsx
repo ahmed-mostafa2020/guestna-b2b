@@ -6,6 +6,8 @@ import { useState, useEffect, useCallback } from "react";
 import { flushSync } from "react-dom";
 import { useSnackbar } from "notistack";
 import axios from "axios";
+import { usePermissions } from "@hooks/usePermissions";
+import { PERMISSIONS } from "@constants/permissions";
 import { Refresh as RefreshIcon, Save as SaveIcon } from "@mui/icons-material";
 
 import PermissionsSection from "./PermissionsSection";
@@ -117,6 +119,7 @@ const RolesPermissionsContent = ({
   const t = useTranslations();
   const locale = useLocale();
   const { enqueueSnackbar } = useSnackbar();
+  const { hasElement } = usePermissions();
 
   // ============================================================================
   // STATE MANAGEMENT
@@ -394,12 +397,14 @@ const RolesPermissionsContent = ({
             {t("profile.rolesPermissions.selectRole")}
           </h2>
 
-          <Link
-            href={`/${locale}/profile/roles-permissions/add-role`}
-            className="bg-mainColor text-white border-2 border-mainColor px-6 py-2 rounded-lg hover:bg-linksHover hover:border-linksHover transition-all font-medium"
-          >
-            {t("profile.rolesPermissions.actions.addRole")}
-          </Link>
+          {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ADD_ROLE_BTN) && (
+            <Link
+              href={`/${locale}/profile/roles-permissions/add-role`}
+              className="bg-mainColor text-white border-2 border-mainColor px-6 py-2 rounded-lg hover:bg-linksHover hover:border-linksHover transition-all font-medium"
+            >
+              {t("profile.rolesPermissions.actions.addRole")}
+            </Link>
+          )}
         </div>
 
         {/* Mobile Dropdown */}
@@ -414,7 +419,7 @@ const RolesPermissionsContent = ({
               <option key={role._id} value={role._id}>
                 {role.description?.[locale] || role.description} (
                 {formatNumbersUint(
-                  role.userCount || 0,
+                  role.users?.length || 0,
                   t("profile.rolesPermissions.user"),
                   t("profile.rolesPermissions.users")
                 )}
@@ -452,20 +457,26 @@ const RolesPermissionsContent = ({
           </h2>
 
           <div className="flex gap-2 flex-wrap">
-            <button
-              onClick={handleSave}
-              className="flex items-center gap-2 px-4 py-2 bg-mainColor text-white rounded-lg hover:bg-linksHover transition-colors  font-medium"
-            >
-              <SaveIcon className="w-4 h-4" />
-              {t("profile.rolesPermissions.actions.save")}
-            </button>
-            <button
-              onClick={handleReset}
-              className="flex items-center gap-2 px-4 py-2 border border-border bg-white rounded-lg transition-colors font-medium hover:border-error"
-            >
-              <RefreshIcon className="w-4 h-4" />
-              {t("profile.rolesPermissions.actions.reset")}
-            </button>
+            {hasElement(
+              PERMISSIONS.ELEMENT.B2B_PROFILE_CHANGE_PERMISSIONS_ROLE_BTN
+            ) && (
+              <>
+                <button
+                  onClick={handleSave}
+                  className="flex items-center gap-2 px-4 py-2 bg-mainColor text-white rounded-lg hover:bg-linksHover transition-colors  font-medium"
+                >
+                  <SaveIcon className="w-4 h-4" />
+                  {t("profile.rolesPermissions.actions.save")}
+                </button>
+                <button
+                  onClick={handleReset}
+                  className="flex items-center gap-2 px-4 py-2 border border-border bg-white rounded-lg transition-colors font-medium hover:border-error"
+                >
+                  <RefreshIcon className="w-4 h-4" />
+                  {t("profile.rolesPermissions.actions.reset")}
+                </button>
+              </>
+            )}
           </div>
         </div>
 

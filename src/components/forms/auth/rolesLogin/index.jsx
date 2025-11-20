@@ -267,12 +267,14 @@ const RolesLoginForm = () => {
                   </div>
                 </div> */}
 
-                <Link
-                  href={`/${locale}/forget-password`}
-                  className="text-sm transition-all duration-200 ease-in-out border-b text-titleColor font-ibm border-titleColor hover:border-linksHover hover:text-linksHover w-fit"
-                >
-                  {t("forms.auth.forgetPassword.name")}
-                </Link>
+                <div className="flex justify-end items-center">
+                  <Link
+                    href={`/${locale}/forget-password`}
+                    className="text-sm transition-all duration-200 ease-in-out border-b text-titleColor font-ibm border-titleColor hover:border-linksHover hover:text-linksHover w-fit"
+                  >
+                    {t("forms.auth.forgetPassword.name")}
+                  </Link>
+                </div>
 
                 <button
                   type="submit"

@@ -52,18 +52,18 @@ const RolesPermissionsPage = () => {
   }
 
   return (
-    // <ProtectedProfilePage
-    //   requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_ROLES_PERMISSIONS_PAGE}
-    // >
-    <div className="min-h-screen bg-gray-50 p-6">
-      <RolesPermissionsContent
-        rolesData={rolesData}
-        permissionsData={permissionsData}
-        rolesLoading={rolesLoading}
-        permissionsLoading={permissionsLoading}
-      />
-    </div>
-    // </ProtectedProfilePage>
+    <ProtectedProfilePage
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_ROLES_PERMISSIONS_PAGE}
+    >
+      <div className="min-h-screen bg-gray-50 p-6">
+        <RolesPermissionsContent
+          rolesData={rolesData}
+          permissionsData={permissionsData}
+          rolesLoading={rolesLoading}
+          permissionsLoading={permissionsLoading}
+        />
+      </div>
+    </ProtectedProfilePage>
   );
 };
 
