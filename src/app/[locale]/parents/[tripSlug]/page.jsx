@@ -16,7 +16,7 @@ import {
   setTripCustomization,
 } from "@store/checkout/checkoutSlice";
 
-import { useEffect } from "react";
+import { use, useEffect } from "react";
 
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -32,6 +32,7 @@ import GridSection from "@components/sections/pages/tripDetails/gridSection";
 
 import ReviewsSection from "@components/sections/pages/tripDetails/reviewsSection";
 import RegisterStudentForm from "@components/forms/registerStudent";
+import { setColorPreferences, setCustomLogo, setTheme } from "@/src/store/theme/themeSlice";
 
 const TripDetails = ({ params }) => {
   const locale = useLocale();
@@ -46,7 +47,6 @@ const TripDetails = ({ params }) => {
   });
 
   const dispatch = useDispatch();
-
   const { data, error, isLoading } = useFetchData(
     `${B2B_END_POINTS.PARENT_TRIPDETAILS}/${params.tripSlug}`,
     {},
@@ -61,6 +61,8 @@ const TripDetails = ({ params }) => {
 
   const tripData = data?.trip;
   const availableSeats = tripData?.availableSeats;
+ 
+ 
   // Save tripId and tripSlug
   useEffect(() => {
     dispatch(setTripId(tripData?._id));
@@ -76,14 +78,31 @@ const TripDetails = ({ params }) => {
     dispatch(setFirstAvailableDate(firstAvailableDate));
     dispatch(setTripName(tripData?.name));
 
+
     dispatch(setTripCustomization(false));
+   
+    
   }, [dispatch, tripData, firstAvailableDate]);
 
+
+  
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | 
     ${tripData?.name || t("pagesHead.title.tripDetails")}
     `;
   }, [t, tripData]);
+
+  useEffect(() => {
+    if (tripData?.company?.colorPreferences) {
+      dispatch(setColorPreferences(tripData.company.colorPreferences));
+      dispatch(setTheme("customized"));
+    }
+
+    if (tripData?.company?.logo) {
+      // Set custom logo if available
+      dispatch(setCustomLogo(tripData.company.logo));
+    }
+  });
 
   // useEffect(() => {
   //   dispatch(setUser(USERS.B2B_PARENT));

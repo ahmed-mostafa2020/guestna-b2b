@@ -105,6 +105,7 @@ const RolesLoginForm = () => {
           enqueueSnackbar(t("forms.auth.confirmAccount.loginSuccessMessage"), {
             variant: "success",
           });
+          console.log("Login Response:", response.data);
           setToken(response.data.token);
           dispatch(setUserToken(response.data.token));
           dispatch(setUser(response.data.userType));
@@ -116,14 +117,9 @@ const RolesLoginForm = () => {
           }
 
           // Set color preferences and theme if available
-          if (
-            response.data.user.colorPreferences &&
-            response.data.user.colorPreferences.length > 0
-          ) {
+          if (response.data.user.colorPreferences) {
             // Extract first color preference object from array
-            dispatch(
-              setColorPreferences(response.data.user.colorPreferences[0])
-            );
+            dispatch(setColorPreferences(response.data.user.colorPreferences));
             dispatch(setTheme("customized"));
           }
 
