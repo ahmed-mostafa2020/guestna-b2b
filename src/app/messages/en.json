@@ -1943,6 +1943,10 @@
         "label": "Educational Track",
         "placeholder": "Select educational track (Government, Private, International, etc.)"
       },
+      "stages": {
+        "label": "Educational Stages",
+        "placeholder": "Select educational stages"
+      },
       "category": {
         "label": "Category",
         "placeholder": "Select the category that the school falls under (Boys, Girls, Both)"
@@ -2004,6 +2008,9 @@
         "required": "Educational track is required",
         "min": "Educational track must be at least 2 characters",
         "max": "Educational track cannot exceed 100 characters"
+      },
+      "stages": {
+        "required": "At least one educational stage is required"
       },
       "category": {
         "required": "Category is required"

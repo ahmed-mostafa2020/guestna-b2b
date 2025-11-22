@@ -27,6 +27,7 @@ const SchoolRegisterForm = ({
   cities = [],
   roles = [],
   educationSystems = [],
+  stages = [],
 }) => {
   const t = useTranslations();
   const locale = useLocale();
@@ -39,7 +40,9 @@ const SchoolRegisterForm = ({
   const [selectedOrganization, setSelectedOrganization] = useState(null);
   const [organizationInputValue, setOrganizationInputValue] = useState("");
   const [organizationRoles, setOrganizationRoles] = useState([]);
-  const [organizationEducationSystems, setOrganizationEducationSystems] = useState([]);
+  const [organizationEducationSystems, setOrganizationEducationSystems] =
+    useState([]);
+  const [organizationStages, setOrganizationStages] = useState([]);
 
   // Extract names from data for dropdowns
   const cityNames = cities.map((city) => city.name);
@@ -65,7 +68,16 @@ const SchoolRegisterForm = ({
     organizationEducationSystems.length > 0
       ? organizationEducationSystems
       : educationSystems;
-  const educationSystemNames = availableEducationSystems.map((system) => system.name);
+  const educationSystemNames = availableEducationSystems.map(
+    (system) => system.name
+  );
+
+  // Use organization stages if available, otherwise use default stages
+  const availableStages =
+    organizationStages.length > 0 ? organizationStages : stages;
+
+  // Extract stage names for dropdown
+  const stageNames = availableStages.map((stage) => stage.name);
 
   // Helper function to find ID by name/description
   const findIdByName = (array, name) => {
@@ -101,6 +113,7 @@ const SchoolRegisterForm = ({
     organizationEmail: "",
     gender: [], // Multi-select array
     educationalTrack: "",
+    stages: [], // Multi-select array
     functionalDegree: "",
     contactPersonName: "",
     email: "",
@@ -150,6 +163,9 @@ const SchoolRegisterForm = ({
               values.educationalTrack
             ),
             gender: mapGenderToAPI(values.gender),
+            academicStages: values.stages
+              .map((stageName) => findIdByName(availableStages, stageName))
+              .filter(Boolean),
           },
         },
 
@@ -188,17 +204,23 @@ const SchoolRegisterForm = ({
         setOrganizationOptions([]);
         setOrganizationRoles([]);
         setOrganizationEducationSystems([]);
+        setOrganizationStages([]);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      
+
       // Check if error response has info array with field-specific errors
-      if (error.response?.data?.info && Array.isArray(error.response.data.info)) {
+      if (
+        error.response?.data?.info &&
+        Array.isArray(error.response.data.info)
+      ) {
         // Loop through info array and show each error message
         error.response.data.info.forEach((errorItem) => {
           const fieldName = errorItem.field || "Unknown field";
           const errorMessage = errorItem.message || "Validation error";
-          enqueueSnackbar(`${fieldName}: ${errorMessage}`, { variant: "error" });
+          enqueueSnackbar(`${fieldName}: ${errorMessage}`, {
+            variant: "error",
+          });
         });
       } else {
         // Fallback to general error message
@@ -289,15 +311,23 @@ const SchoolRegisterForm = ({
           if (orgData.tracks && Array.isArray(orgData.tracks)) {
             const uniqueEducationSystems = [];
             const seenIds = new Set();
-            
+
             orgData.tracks.forEach((track) => {
-              if (track.educationSystem && !seenIds.has(track.educationSystem._id)) {
+              if (
+                track.educationSystem &&
+                !seenIds.has(track.educationSystem._id)
+              ) {
                 seenIds.add(track.educationSystem._id);
                 uniqueEducationSystems.push(track.educationSystem);
               }
             });
-            
+
             setOrganizationEducationSystems(uniqueEducationSystems);
+          }
+
+          // Store organization stages
+          if (orgData.stages && Array.isArray(orgData.stages)) {
+            setOrganizationStages(orgData.stages);
           }
         }
       } catch (error) {
@@ -554,44 +584,6 @@ const SchoolRegisterForm = ({
                   </div>
                 </div>
 
-                {/* Functional Degree and Contact Person Name */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
-                  <TextInputGroup
-                    label={t("schoolRegister.form.contactPersonName.label")}
-                    labelFontFamily="var(--font-somar-sans), sans-serif"
-                    name="contactPersonName"
-                    value={values.contactPersonName}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    touched={touched.contactPersonName}
-                    errors={errors.contactPersonName}
-                    placeholder={t(
-                      "schoolRegister.form.contactPersonName.placeholder"
-                    )}
-                    required={true}
-                  />
-
-                  <div>
-                    <label className="block pb-2 font-medium">
-                      {t("schoolRegister.form.functionalDegree.label")}
-                      <span className="text-error ml-1">*</span>
-                    </label>
-                    <SelectionGroup
-                      name="functionalDegree"
-                      value={values.functionalDegree}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      touched={touched.functionalDegree}
-                      errors={errors.functionalDegree}
-                      placeholder={t(
-                        "schoolRegister.form.functionalDegree.placeholder"
-                      )}
-                      list={roleNames}
-                      multiple={false}
-                    />
-                  </div>
-                </div>
-
                 {/* Gender and Educational Track */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
                   <div>
@@ -628,6 +620,65 @@ const SchoolRegisterForm = ({
                       placeholder={t("schoolRegister.form.gender.placeholder")}
                       list={genderOptions}
                       multiple={true}
+                    />
+                  </div>
+                </div>
+
+                {/* Stages */}
+                {stageNames.length > 0 && (
+                  <div className="w-1/2 pe-[10px]">
+                    <label className="block pb-2 font-medium">
+                      {t("schoolRegister.form.stages.label")}
+                      <span className="text-error ml-1">*</span>
+                    </label>
+                    <SelectionGroup
+                      name="stages"
+                      value={values.stages}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      touched={touched.stages}
+                      errors={errors.stages}
+                      placeholder={t("schoolRegister.form.stages.placeholder")}
+                      list={stageNames}
+                      multiple={true}
+                    />
+                  </div>
+                )}
+
+                {/* Functional Degree and Contact Person Name */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
+                  <TextInputGroup
+                    label={t("schoolRegister.form.contactPersonName.label")}
+                    labelFontFamily="var(--font-somar-sans), sans-serif"
+                    name="contactPersonName"
+                    value={values.contactPersonName}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    touched={touched.contactPersonName}
+                    errors={errors.contactPersonName}
+                    placeholder={t(
+                      "schoolRegister.form.contactPersonName.placeholder"
+                    )}
+                    required={true}
+                  />
+
+                  <div>
+                    <label className="block pb-2 font-medium">
+                      {t("schoolRegister.form.functionalDegree.label")}
+                      <span className="text-error ml-1">*</span>
+                    </label>
+                    <SelectionGroup
+                      name="functionalDegree"
+                      value={values.functionalDegree}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      touched={touched.functionalDegree}
+                      errors={errors.functionalDegree}
+                      placeholder={t(
+                        "schoolRegister.form.functionalDegree.placeholder"
+                      )}
+                      list={roleNames}
+                      multiple={false}
                     />
                   </div>
                 </div>

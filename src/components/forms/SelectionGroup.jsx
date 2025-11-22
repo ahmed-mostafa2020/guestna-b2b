@@ -122,7 +122,7 @@ const SelectionGroup = ({
         })}
       </Select>
       {touched && errors && (
-        <p className="absolute -bottom-5 text-error text-sm mt-1 font-ibm">
+        <p className="absolute text-xs -bottom-4 text-error mt-1 font-ibm">
           {errors}
         </p>
       )}

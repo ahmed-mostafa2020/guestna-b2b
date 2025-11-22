@@ -54,6 +54,7 @@ const SchoolRegisterPage = () => {
             cities={data?.cities || []}
             roles={data?.roles || []}
             educationSystems={data?.educationSystems || []}
+            stages={data?.stages || []}
           />
         )}
       </>

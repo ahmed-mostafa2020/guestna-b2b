@@ -894,6 +894,10 @@ export const createSchoolRegisterSchema = (t) =>
       .min(2, t("schoolRegister.validation.educationalTrack.min"))
       .max(100, t("schoolRegister.validation.educationalTrack.max")),
 
+    stages: Yup.array()
+      .of(Yup.string())
+      .min(1, t("schoolRegister.validation.stages.required")),
+
     functionalDegree: Yup.string()
       .trim()
       .required(t("schoolRegister.validation.functionalDegree.required"))
