@@ -211,7 +211,11 @@ const NavigationDropdown = () => {
                       sm: "20px",
                       lg: "24px",
                     },
-                    display: { xs: "none", md: "none", lg: "block" },
+                    display: {
+                      xs: "none",
+                      md: "none",
+                      lg: "block",
+                    },
                   },
                 })}
                 <span className="truncate" title={item.title}>
@@ -271,6 +275,8 @@ const NavigationDropdown = () => {
                     },
                     "& .MuiAccordionSummary-content": {
                       margin: { xs: "8px 0", sm: "12px 0" },
+                      minWidth: 0,
+                      overflow: "hidden",
                       "&.Mui-expanded": {
                         margin: { xs: "8px 0", sm: "12px 0" },
                       },
@@ -280,7 +286,7 @@ const NavigationDropdown = () => {
                     },
                   }}
                 >
-                  <Box className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                  <Box className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 overflow-hidden">
                     {React.cloneElement(item.icon, {
                       sx: {
                         color: isAccordionExpanded(item)
@@ -288,12 +294,16 @@ const NavigationDropdown = () => {
                           : "var(--color-title)",
                         transition: "color 0.2s",
                         fontSize: { xs: "18px", sm: "20px", lg: "24px" },
-                        display: { xs: "none", md: "none", lg: "block" },
+                        display: {
+                          xs: "none",
+                          md: "none",
+                          lg: "block",
+                        },
                         flexShrink: 0,
                       },
                     })}
                     <span
-                      className="font-medium sm:text-sm lg:text-base truncate min-w-0"
+                      className="font-medium md:text-sm xl:text-base truncate block min-w-0 max-w-full"
                       title={item.title}
                     >
                       {item.title}

@@ -407,26 +407,19 @@ const RolesPermissionsContent = ({
           )}
         </div>
 
-        {/* Mobile Dropdown */}
-        <div className="block lg:hidden">
-          <select
-            value={selectedRole || ""}
-            onChange={(e) => handleRoleChange(e.target.value)}
-            disabled={loadingRolePermissions}
-            className="w-full px-4 py-3 border-2 border-border rounded-lg focus:border-mainColor focus:outline-none transition-colors bg-white disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {roles.map((role) => (
-              <option key={role._id} value={role._id}>
-                {role.description?.[locale] || role.description} (
-                {formatNumbersUint(
-                  role.users?.length || 0,
-                  t("profile.rolesPermissions.user"),
-                  t("profile.rolesPermissions.users")
-                )}
-                )
-              </option>
-            ))}
-          </select>
+        {/* Mobile - Card List */}
+        <div className="block lg:hidden space-y-3">
+          {roles.map((role) => (
+            <RoleCard
+              key={role._id}
+              role={role}
+              isSelected={selectedRole === role._id}
+              onClick={() => handleRoleChange(role._id)}
+              disabled={loadingRolePermissions}
+              onRoleDeleted={handleRoleDeleted}
+              variant="mobile"
+            />
+          ))}
         </div>
 
         {/* Desktop Pills/Badges */}

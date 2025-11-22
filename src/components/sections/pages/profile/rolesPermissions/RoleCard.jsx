@@ -36,6 +36,7 @@ const RoleCard = ({
   onClick,
   disabled = false,
   onRoleDeleted,
+  variant = "desktop", // "desktop" or "mobile"
 }) => {
   const t = useTranslations();
   const locale = useLocale();
@@ -100,6 +101,188 @@ const RoleCard = ({
     }
   };
 
+  // Mobile variant
+  if (variant === "mobile") {
+    return (
+      <div
+        className={`
+          relative w-full p-4 rounded-lg border-2 transition-all duration-200
+          disabled:opacity-50 disabled:cursor-not-allowed
+          ${
+            isSelected ? "border-mainColor bg-white shadow-sm" : "border-border"
+          }
+        `}
+      >
+        {/* Delete Button - Mobile */}
+        {isDeletable &&
+          hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_DELETE_ROLE_BTN) && (
+            <button
+              onClick={handleDeleteClick}
+              disabled={isDeleting}
+              className="absolute -top-2 -end-2 p-1.5 bg-white rounded-full shadow-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed z-10"
+              title={t("profile.rolesPermissions.deleteRole")}
+            >
+              {isDeleting ? (
+                <CircularProgress size={16} color="error" />
+              ) : (
+                <RemoveCircleOutlineIcon sx={{ fontSize: 20 }} color="error" />
+              )}
+            </button>
+          )}
+
+        <button
+          onClick={onClick}
+          disabled={disabled || isDeleting}
+          className="w-full text-start"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <h3
+                className={`text-base font-semibold truncate ${
+                  isSelected ? "text-mainColor" : "text-titleColor"
+                }`}
+                title={role.description}
+              >
+                {role.description}
+              </h3>
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-sm text-textLight">
+                  {formatNumbersUint(
+                    userCount,
+                    t("profile.rolesPermissions.user"),
+                    t("profile.rolesPermissions.users")
+                  )}
+                </p>
+                {userCount > 0 && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowUsersModal(true);
+                    }}
+                    className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                    title={t("profile.rolesPermissions.viewUsers")}
+                  >
+                    <InfoIcon className="w-4 h-4 text-mainColor" />
+                  </button>
+                )}
+              </div>
+            </div>
+            {isSelected && (
+              <div className="flex-shrink-0">
+                <div className="w-6 h-6 rounded-full bg-mainColor flex items-center justify-center">
+                  <svg
+                    className="w-4 h-4 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+              </div>
+            )}
+          </div>
+        </button>
+
+        {/* Users Modal */}
+        <Dialog
+          open={showUsersModal}
+          onClose={() => setShowUsersModal(false)}
+          maxWidth="sm"
+          fullWidth
+          PaperProps={{
+            sx: {
+              borderRadius: "12px",
+              maxHeight: "80vh",
+            },
+          }}
+        >
+          <DialogTitle
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              borderBottom: "1px solid var(--color-border)",
+              pb: 2,
+            }}
+          >
+            <div>
+              <h3 className="text-lg font-semibold text-titleColor">
+                {role.description}
+              </h3>
+              <p className="text-sm text-textLight mt-1">
+                {formatNumbersUint(
+                  userCount,
+                  t("profile.rolesPermissions.user"),
+                  t("profile.rolesPermissions.users")
+                )}
+              </p>
+            </div>
+            <IconButton
+              onClick={() => setShowUsersModal(false)}
+              size="small"
+              sx={{ color: "var(--color-text-light)" }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent sx={{ pt: 3 }}>
+            <div className="">
+              {role.users?.map((user, index) => (
+                <div
+                  key={user._id}
+                  className={`p-3 ${
+                    index !== role.users.length - 1
+                      ? "border-b border-gray-200"
+                      : ""
+                  }`}
+                >
+                  {/* User Name */}
+                  <div className="flex items-center gap-3 mb-1">
+                    <PersonIcon className="w-5 h-5 text-mainColor flex-shrink-0 mt-0.5" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-base font-semibold text-textDark break-words">
+                        {user.name}
+                      </p>
+                    </div>
+                  </div>
+                  {/* User Email */}
+                  <div className="flex items-center gap-3">
+                    <EmailIcon className="w-4 h-4 text-textLight flex-shrink-0 mt-1" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-textLight break-all">
+                        {user.email}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Delete Confirmation Dialog */}
+        <ActionsDialog
+          open={isDialogOpen}
+          handleClose={handleCloseDialog}
+          closeButton={false}
+          bgcolor="rgba(0, 0, 0, 0.3)"
+          header={t("profile.rolesPermissions.deleteRole")}
+          content={t("profile.rolesPermissions.deleteConfirm")}
+          cancelButton={t("links.cancel")}
+          confirmButton={t("profile.rolesPermissions.deleteRole")}
+          handleConfirm={handleConfirmDelete}
+        />
+      </div>
+    );
+  }
+
+  // Desktop variant
   return (
     <button
       onClick={onClick}
@@ -122,7 +305,7 @@ const RoleCard = ({
         </div>
       )}
 
-      {/* Delete Button */}
+      {/* Delete Button - Desktop */}
       {isDeletable &&
         hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_DELETE_ROLE_BTN) && (
           <button
