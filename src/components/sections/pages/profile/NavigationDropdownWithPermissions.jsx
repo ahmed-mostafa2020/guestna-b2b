@@ -335,7 +335,7 @@ const NavigationDropdown = () => {
                             className={`w-full text-start hover:text-mainColor sm:text-sm lg:text-base truncate ${
                               pathname === subItem.path
                                 ? "text-mainColor"
-                                : "text-black"
+                                : "text-textDark"
                             }`}
                           >
                             {subItem.title}
