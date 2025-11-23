@@ -263,7 +263,7 @@ const NavigationDropdown = () => {
                     boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.02)",
                     border: "1px solid var(--color-border)",
                     borderRadius: "8px",
-                    "&:hover": {
+                    "&:hover:not(.Mui-expanded)": {
                       color: "var(--color-main)",
                     },
                     minHeight: { xs: "40px", sm: "48px" },
@@ -303,7 +303,11 @@ const NavigationDropdown = () => {
                       },
                     })}
                     <span
-                      className="font-medium md:text-sm xl:text-base truncate block min-w-0 max-w-full"
+                      className={`font-medium md:text-sm xl:text-base truncate block min-w-0 max-w-full  ${
+                        isAccordionExpanded(item)
+                          ? "text-white"
+                          : "text-textDark hover:text-mainColor"
+                      }`}
                       title={item.title}
                     >
                       {item.title}
