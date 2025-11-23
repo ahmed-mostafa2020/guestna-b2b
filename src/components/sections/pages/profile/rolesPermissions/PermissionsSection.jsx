@@ -94,7 +94,7 @@ const PermissionsSection = ({
 
   const handlePageCheckboxChange = useCallback(
     (e) => {
-      e.preventDefault();
+      e.stopPropagation();
       onTogglePage();
     },
     [onTogglePage]
@@ -102,7 +102,7 @@ const PermissionsSection = ({
 
   const handleElementCheckboxChange = useCallback(
     (elementId) => (e) => {
-      e.preventDefault();
+      e.stopPropagation();
       onToggleElement(elementId);
     },
     [onToggleElement]

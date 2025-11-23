@@ -101,13 +101,16 @@ const isAnyToggleableChecked = (page, permissions, pageId) => {
 /**
  * Updates defaultChecked items based on page state
  * defaultChecked items are checked when ANY toggleable child is checked
+ * Returns the updated page permissions object
  */
-const updateDefaultCheckedItems = (page, permissions, pageId, shouldCheck) => {
+const updateDefaultCheckedItems = (page, pagePermissions, shouldCheck) => {
+  const updatedPagePermissions = { ...pagePermissions };
   page.child?.forEach((child) => {
     if (child.defaultChecked === true) {
-      permissions[pageId][child._id] = shouldCheck;
+      updatedPagePermissions[child._id] = shouldCheck;
     }
   });
+  return updatedPagePermissions;
 };
 
 const RolesPermissionsContent = ({
@@ -305,21 +308,27 @@ const RolesPermissionsContent = ({
         (element) => permissions[pageId]?.[element._id]
       );
 
-      const newPermissions = { ...permissions };
       const newState = !allEnabled;
+
+      // Create new page permissions object
+      const newPagePermissions = { ...permissions[pageId] };
 
       // Toggle all children
       page.child?.forEach((element) => {
         if (element.defaultChecked === true) {
           // defaultChecked items only get checked when parent is being checked
-          newPermissions[pageId][element._id] = newState;
+          newPagePermissions[element._id] = newState;
         } else {
           // Regular items toggle normally
-          newPermissions[pageId][element._id] = newState;
+          newPagePermissions[element._id] = newState;
         }
       });
 
-      setPermissions(newPermissions);
+      // Create new permissions object with updated page
+      setPermissions({
+        ...permissions,
+        [pageId]: newPagePermissions,
+      });
     },
     [pages, permissions]
   );
@@ -335,28 +344,31 @@ const RolesPermissionsContent = ({
       // Prevent clicking on defaultChecked: true items (they are readonly)
       if (element?.defaultChecked === true) return;
 
-      const newPermissions = {
-        ...permissions,
-        [pageId]: {
-          ...permissions[pageId],
-          [elementId]: !permissions[pageId][elementId],
-        },
+      // Toggle the element
+      let newPagePermissions = {
+        ...permissions[pageId],
+        [elementId]: !permissions[pageId][elementId],
       };
 
       // Update defaultChecked items based on page state
       const anyToggleableChecked = isAnyToggleableChecked(
         page,
-        newPermissions,
+        { ...permissions, [pageId]: newPagePermissions },
         pageId
       );
-      updateDefaultCheckedItems(
+
+      // Get updated page permissions with defaultChecked items
+      newPagePermissions = updateDefaultCheckedItems(
         page,
-        newPermissions,
-        pageId,
+        newPagePermissions,
         anyToggleableChecked
       );
 
-      setPermissions(newPermissions);
+      // Create new permissions object with updated page
+      setPermissions({
+        ...permissions,
+        [pageId]: newPagePermissions,
+      });
     },
     [pages, permissions]
   );
