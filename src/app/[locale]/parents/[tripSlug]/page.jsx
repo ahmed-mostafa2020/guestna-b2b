@@ -36,7 +36,7 @@ import {
   setColorPreferences,
   setCustomLogo,
   setTheme,
-} from "@/src/store/theme/themeSlice";
+} from "@store/theme/themeSlice";
 
 const TripDetails = ({ params }) => {
   const locale = useLocale();

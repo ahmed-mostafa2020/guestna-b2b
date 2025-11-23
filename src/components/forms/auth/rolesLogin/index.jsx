@@ -105,7 +105,6 @@ const RolesLoginForm = () => {
           enqueueSnackbar(t("forms.auth.confirmAccount.loginSuccessMessage"), {
             variant: "success",
           });
-          console.log("Login Response:", response.data);
           setToken(response.data.token);
           dispatch(setUserToken(response.data.token));
           dispatch(setUser(response.data.userType));
