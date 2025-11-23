@@ -155,6 +155,7 @@ const PermissionsSection = ({
           {/* Expand/Collapse Button */}
           {hasChildren && (
             <button
+              type="button"
               onClick={handleToggleExpand}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors ms-2"
               aria-label={
