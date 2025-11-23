@@ -304,9 +304,20 @@ const RolesPermissionsContent = ({
       if (!page) return;
 
       const toggleableChildren = getToggleableChildren(page);
-      const allEnabled = toggleableChildren.every(
-        (element) => permissions[pageId]?.[element._id]
-      );
+
+      // Determine current state and new state
+      let allEnabled;
+      if (toggleableChildren.length > 0) {
+        // If there are toggleable children, check their state
+        allEnabled = toggleableChildren.every(
+          (element) => permissions[pageId]?.[element._id]
+        );
+      } else {
+        // If only defaultChecked children exist, check if ANY child is enabled
+        allEnabled =
+          page.child?.some((element) => permissions[pageId]?.[element._id]) ||
+          false;
+      }
 
       const newState = !allEnabled;
 
@@ -315,13 +326,7 @@ const RolesPermissionsContent = ({
 
       // Toggle all children
       page.child?.forEach((element) => {
-        if (element.defaultChecked === true) {
-          // defaultChecked items only get checked when parent is being checked
-          newPagePermissions[element._id] = newState;
-        } else {
-          // Regular items toggle normally
-          newPagePermissions[element._id] = newState;
-        }
+        newPagePermissions[element._id] = newState;
       });
 
       // Create new permissions object with updated page

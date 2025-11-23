@@ -43,8 +43,22 @@ const getToggleableChildren = (children) => {
 /**
  * Calculates checkbox state for parent (page-level) checkbox
  */
-const calculateCheckboxState = (toggleableChildren, permissions) => {
+const calculateCheckboxState = (
+  toggleableChildren,
+  allChildren,
+  permissions
+) => {
   if (toggleableChildren.length === 0) {
+    // If no toggleable children (only defaultChecked), check all children
+    if (allChildren && allChildren.length > 0) {
+      const allEnabled = allChildren.every(
+        (element) => permissions?.[element._id]
+      );
+      const someEnabled =
+        allChildren.some((element) => permissions?.[element._id]) &&
+        !allEnabled;
+      return { allEnabled, someEnabled };
+    }
     return { allEnabled: false, someEnabled: false };
   }
 
@@ -78,10 +92,10 @@ const PermissionsSection = ({
   // COMPUTED VALUES
   // ============================================================================
 
-  // Calculate checkbox state based on toggleable children only
+  // Calculate checkbox state based on toggleable children, or all children if no toggleable ones
   const { allEnabled, someEnabled } = useMemo(() => {
     const toggleableChildren = getToggleableChildren(page.child);
-    return calculateCheckboxState(toggleableChildren, permissions);
+    return calculateCheckboxState(toggleableChildren, page.child, permissions);
   }, [page.child, permissions]);
 
   // ============================================================================
