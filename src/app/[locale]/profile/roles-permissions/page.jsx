@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { PERMISSIONS } from "@constants/permissions";
 import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
@@ -11,6 +11,7 @@ import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 
 const RolesPermissionsPage = () => {
+  const locale = useLocale();
   const t = useTranslations();
 
   // Fetch roles from API
@@ -18,14 +19,22 @@ const RolesPermissionsPage = () => {
     data: rolesData,
     isLoading: rolesLoading,
     error: rolesError,
-  } = useFetchData(B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.GET_ROLES);
+  } = useFetchData(
+    `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.GET_ROLES}`,
+    {},
+    { lang: locale }
+  );
 
   // Fetch all permissions from API
   const {
     data: permissionsData,
     isLoading: permissionsLoading,
     error: permissionsError,
-  } = useFetchData(B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.GET_PERMISSIONS);
+  } = useFetchData(
+    `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.GET_PERMISSIONS}`,
+    {},
+    { lang: locale }
+  );
 
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(

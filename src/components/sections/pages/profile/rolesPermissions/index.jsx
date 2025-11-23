@@ -60,15 +60,24 @@ const convertApiResponseToPermissions = (activePermissionIds, pages) => {
 
 /**
  * Collects all checked permission IDs from permissions state
+ * Includes parent page ID if any of its children are checked
  */
 const collectCheckedPermissionIds = (permissions, pages) => {
   const permissionIds = [];
   pages.forEach((page) => {
+    let hasCheckedChild = false;
+
     page.child?.forEach((element) => {
       if (permissions[page._id]?.[element._id]) {
         permissionIds.push(element._id);
+        hasCheckedChild = true;
       }
     });
+
+    // Add parent page ID if any child is checked
+    if (hasCheckedChild) {
+      permissionIds.push(page._id);
+    }
   });
   return permissionIds;
 };
