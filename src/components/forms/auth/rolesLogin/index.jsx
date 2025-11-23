@@ -116,15 +116,10 @@ const RolesLoginForm = () => {
           }
 
           // Set color preferences and theme if available
-          if (
-            response.data.user.colorPreferences &&
-            response.data.user.colorPreferences.length > 0
-          ) {
-            // Extract first color preference object from array
-            dispatch(
-              setColorPreferences(response.data.user.colorPreferences[0])
-            );
+          if (response.data.user.colorPreferences) {
+           
             dispatch(setTheme("customized"));
+            dispatch(setColorPreferences(response.data.user.colorPreferences));
           }
 
           // Get first accessible page based on user permissions

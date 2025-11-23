@@ -75,10 +75,9 @@ const ProfileLayout = ({ children }) => {
       }
 
       // Set color preferences and theme if available
-      if (data.colorPreferences && data.colorPreferences.length > 0) {
+      if (data.colorPreferences) {
         dispatch(setTheme("customized"));
-        // Extract first color preference object from array
-        dispatch(setColorPreferences(data.colorPreferences[0]));
+        dispatch(setColorPreferences(data.colorPreferences));
       }
 
       Cookies.set(CONSTANT_VALUES.PROFILE_IMAGE, data?.image || "");

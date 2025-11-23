@@ -32,6 +32,11 @@ import GridSection from "@components/sections/pages/tripDetails/gridSection";
 
 import ReviewsSection from "@components/sections/pages/tripDetails/reviewsSection";
 import RegisterStudentForm from "@components/forms/registerStudent";
+import {
+  setColorPreferences,
+  setCustomLogo,
+  setTheme,
+} from "@store/theme/themeSlice";
 
 const TripDetails = ({ params }) => {
   const locale = useLocale();
@@ -46,7 +51,6 @@ const TripDetails = ({ params }) => {
   });
 
   const dispatch = useDispatch();
-
   const { data, error, isLoading } = useFetchData(
     `${B2B_END_POINTS.PARENT_TRIPDETAILS}/${params.tripSlug}`,
     {},
@@ -61,6 +65,7 @@ const TripDetails = ({ params }) => {
 
   const tripData = data?.trip;
   const availableSeats = tripData?.availableSeats;
+
   // Save tripId and tripSlug
   useEffect(() => {
     dispatch(setTripId(tripData?._id));
@@ -84,6 +89,18 @@ const TripDetails = ({ params }) => {
     ${tripData?.name || t("pagesHead.title.tripDetails")}
     `;
   }, [t, tripData]);
+
+  useEffect(() => {
+    if (tripData?.company?.colorPreferences) {
+      dispatch(setColorPreferences(tripData.company.colorPreferences));
+      dispatch(setTheme("customized"));
+    }
+
+    if (tripData?.company?.logo) {
+      // Set custom logo if available
+      dispatch(setCustomLogo(tripData.company.logo));
+    }
+  });
 
   // useEffect(() => {
   //   dispatch(setUser(USERS.B2B_PARENT));
