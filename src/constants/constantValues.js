@@ -45,5 +45,6 @@ export const CONSTANT_VALUES = {
   GENDERS: {
     MALE: "MALE",
     FEMALE: "FEMALE",
+    BOTH: "BOTH",
   },
 };

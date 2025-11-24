@@ -128,7 +128,7 @@ const SchoolRegisterForm = ({
       const mapGenderToAPI = (genderArray) => {
         // If both genders selected, return BOTH
         if (genderArray.length === 2) {
-          return "BOTH";
+          return CONSTANT_VALUES.GENDERS.BOTH;
         }
         // If only one gender selected
         if (genderArray.length === 1) {
@@ -140,7 +140,7 @@ const SchoolRegisterForm = ({
             return CONSTANT_VALUES.GENDERS.FEMALE;
           }
         }
-        return "BOTH";
+        return CONSTANT_VALUES.GENDERS.BOTH;
       };
 
       // Prepare data for submission

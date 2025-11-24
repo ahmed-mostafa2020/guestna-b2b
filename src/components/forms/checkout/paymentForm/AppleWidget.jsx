@@ -13,7 +13,6 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const price = useSelector(
     (state) => state.finalTripDetailsData.data.basePriceTotalWithVat
   );
-  ``;
   const discountedPrice = useSelector(
     (state) => state.promoCode?.promoCodeData?.trip?.discountedTotalPriceWithVat
   );
