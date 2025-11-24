@@ -43,6 +43,7 @@ const BankTransferForm = ({
           menuItemsList={tripsMenuItems}
           required={true}
           disabled={tripsLoading}
+          insetInlineStart="95% !important"
         />
         {tripsError && (
           <p className="text-red-600 text-sm mt-1">{t("trips.error")}</p>

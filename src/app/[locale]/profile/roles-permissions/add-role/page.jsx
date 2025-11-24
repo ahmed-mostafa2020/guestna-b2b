@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import AddRoleContent from "@components/sections/pages/profile/rolesPermissions/AddRoleContent";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -11,6 +11,7 @@ import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 
 export default function AddRolePage() {
+  const locale = useLocale();
   const t = useTranslations();
 
   // Set page title
@@ -25,7 +26,11 @@ export default function AddRolePage() {
     data: permissionsData,
     isLoading: permissionsLoading,
     error: permissionsError,
-  } = useFetchData(B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.GET_PERMISSIONS);
+  } = useFetchData(
+    `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.GET_PERMISSIONS}`,
+    {},
+    { lang: locale }
+  );
 
   // Show loading state
   if (permissionsLoading) {

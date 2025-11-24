@@ -10,7 +10,7 @@ const TransferMethodSelector = ({ transferMethod, setTransferMethod }) => {
   const t = useTranslations("profile.myWallet.withdrawPage.transferMethod");
 
   const transferOptions = [
-    { value: "stc", label: t("stcPay.title") },
+    // { value: "stc", label: t("stcPay.title") },
     { value: "bank", label: t("bankTransfer.title") },
   ];
 
@@ -22,7 +22,7 @@ const TransferMethodSelector = ({ transferMethod, setTransferMethod }) => {
         <RadioGroup
           aria-labelledby="transfer-method-group-label"
           name="transferMethod"
-          value={transferMethod || ""}
+          value={transferMethod || "bank"}
           onChange={(e) => setTransferMethod(e.target.value)}
           sx={{ flexDirection: "column", gap: "2px" }}
         >

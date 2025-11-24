@@ -16,6 +16,7 @@ const DropdownGroup = ({
   menuItemsList = [],
   required = false,
   disabled = false,
+  insetInlineStart,
 }) => {
   const locale = useLocale();
   const isRTL = locale === "ar";
@@ -72,9 +73,10 @@ const DropdownGroup = ({
           "& .MuiSelect-icon": {
             right: isRTL ? "8px" : "auto",
             left: isRTL ? "auto" : "8px",
+            insetInlineStart: insetInlineStart || "auto",
           },
         }}
-        className="border-2 border-[#eaeaea] rounded-lg font-ibm"
+        className="border-2 border-[#eaeaea] rounded-lg font-ibm "
       >
         <MenuItem value="" disabled>
           <em>{placeholder}</em>

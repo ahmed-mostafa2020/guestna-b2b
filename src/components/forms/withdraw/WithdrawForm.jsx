@@ -21,7 +21,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   const locale = useLocale();
   const t = useTranslations("profile.myWallet.withdrawPage");
 
-  const [transferMethod, setTransferMethod] = useState("stc");
+  const [transferMethod, setTransferMethod] = useState("bank");
   const [selectedTrip, setSelectedTrip] = useState(null);
 
   const {
