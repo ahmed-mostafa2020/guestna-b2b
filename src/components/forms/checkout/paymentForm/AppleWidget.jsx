@@ -3,9 +3,9 @@
 import { useLocale } from "next-intl";
 import { useSelector } from "react-redux";
 import { memo, useEffect, useState } from "react";
-import { END_POINTS } from "@constants/APIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { useMutationData } from "@hooks/useMutationData";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
 
 const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const [currentBookingId, setCurrentBookingId] = useState(null);
@@ -13,7 +13,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const price = useSelector(
     (state) => state.finalTripDetailsData.data.basePriceTotalWithVat
   );
-
+  ``;
   const discountedPrice = useSelector(
     (state) => state.promoCode?.promoCodeData?.trip?.discountedTotalPriceWithVat
   );
@@ -27,12 +27,12 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const vercelUrl = CONSTANT_VALUES.URLS.B2B_VERCEL_URL;
   const appleWidgetKey = process.env.NEXT_PUBLIC_APPLE_WIDGET_KEY;
 
-  const { mutate } = useMutationData("bookings/initiation/apple", {
+  const { mutate } = useMutationData(B2B_END_POINTS.APPLE_BOOKING.INITIATE, {
     method: "POST", // Specify POST
   });
 
   const { mutate: mutateComferm } = useMutationData(
-    "bookings/confermed/apple",
+    B2B_END_POINTS.APPLE_BOOKING.CONFIRM,
     {
       method: "POST", // Specify POST
     }
@@ -46,7 +46,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
       currency: currency,
       description: tripName,
       publishable_api_key: appleWidgetKey,
-      callback_url: `${END_POINTS.PAYMENTS}${END_POINTS.APPLE_BOOKING.CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
+      callback_url: `${B2B_END_POINTS.PAYMENTS}${B2B_END_POINTS.APPLE_BOOKING.CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
       methods: ["applepay"],
       apple_pay: {
         country: "SA",

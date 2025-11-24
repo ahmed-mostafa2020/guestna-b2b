@@ -30,9 +30,14 @@ export const B2B_END_POINTS = {
   CHECKOUT: "finalTripBookingDetails",
   CONFIRM_STC_PAYMENT: "confirmSTCPayment",
   APPLE_BOOKING: {
-    INITIATE: "initiation/apple",
-    CONFIRM: "confermed/apple",
+    INITIATE: "bookings/initiation/apple",
+    CONFIRM: "bookings/confermed/apple",
     CALLBACK: "confermed/trip/apple",
+  },
+  TEST_APPLE_BOOKING: {
+    INITIATE: "bookings/initiation/appletest",
+    CONFIRM: "bookings/confermed/appletest",
+    CALLBACK: "confermed/trip/appletest",
   },
 
   AUTH: {

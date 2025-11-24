@@ -22,8 +22,8 @@ export const END_POINTS = {
   CONFIRM_STC_PAYMENT: "confirmSTCPayment",
   CHECK_BOOKING: "checkBooking",
   APPLE_BOOKING: {
-    INITIATE: "initiation/apple",
-    CONFIRM: "confermed/apple",
+    INITIATE: "bookings/initiation/apple",
+    CONFIRM: "bookings/confermed/apple",
     CALLBACK: "confermed/trip/apple",
   },
 
