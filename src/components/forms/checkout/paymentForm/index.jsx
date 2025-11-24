@@ -551,7 +551,7 @@ const PaymentForm = () => {
                     CONSTANT_VALUES.PAYMENT_METHODS.APPLE && (
                     <div className="flex flex-col gap-4 px-4 py-8 bg-[#FAF9F9] transition-all duration-200 ease-in-out">
                       <div className="lg:w-[510px]">
-                        {tripId !== "6924283b8c97b9a92af57609" ? (
+                        {tripId !== "69244a8f58e326a69aee7080" ? (
                           <div className="flex lg:w-[510px]">
                             <AppleWidget
                               key="apple-widget-main"
