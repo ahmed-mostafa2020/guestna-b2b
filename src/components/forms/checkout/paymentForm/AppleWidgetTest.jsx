@@ -10,6 +10,7 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 
 const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
   const [currentBookingId, setCurrentBookingId] = useState(null);
+  const bookingIdRef = useRef(null); // Use ref to store bookingId immediately
   const isInitializedRef = useRef(false);
   const widgetContainerRef = useRef(null);
 
@@ -95,7 +96,10 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
                       variant: "error",
                     });
                     reject();
+                    return; // Stop execution here
                   }
+                  // Store in both state and ref for immediate access
+                  bookingIdRef.current = data.bookingId;
                   setCurrentBookingId(data.bookingId);
                   resolve({});
                 },
@@ -107,9 +111,14 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
                 },
               });
             } catch (error) {
-              enqueueSnackbar(error || t("forms.validation.error"), {
-                variant: "error",
-              });
+              enqueueSnackbar(
+                error?.message ||
+                  error?.response?.data?.message ||
+                  t("forms.validation.error"),
+                {
+                  variant: "error",
+                }
+              );
               reject();
             }
           });
@@ -121,21 +130,26 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
                 // Call the confirmation endpoint
                 const confirmationData = {
                   trip: baseData.trip,
-                  bookingId: currentBookingId,
+                  bookingId: bookingIdRef.current, // Use ref value for immediate access
                   paymentId: payment.id,
                 };
                 mutateComferm(confirmationData, {
                   onSuccess: () => {
+                    bookingIdRef.current = null; // Clear ref
                     setCurrentBookingId("");
-                    enqueueSnackbar(t("forms.validation.success"), {
-                      variant: "success",
-                    });
+                    // Don't show snackbar here - user will be redirected via callback_url
+                    // Success message will be shown on the booking status page
                     resolve({});
                   },
                   onError: (error) => {
-                    enqueueSnackbar(error || t("forms.validation.error"), {
-                      variant: "error",
-                    });
+                    enqueueSnackbar(
+                      error?.message ||
+                        error?.response?.data?.message ||
+                        t("forms.validation.error"),
+                      {
+                        variant: "error",
+                      }
+                    );
                     reject();
                   },
                 });
@@ -149,9 +163,14 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
                 reject();
               }
             } catch (error) {
-              enqueueSnackbar(error || t("forms.validation.error"), {
-                variant: "error",
-              });
+              enqueueSnackbar(
+                error?.message ||
+                  error?.response?.data?.message ||
+                  t("forms.validation.error"),
+                {
+                  variant: "error",
+                }
+              );
               reject();
             }
           });
