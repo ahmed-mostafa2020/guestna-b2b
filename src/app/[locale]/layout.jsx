@@ -17,10 +17,37 @@ import ThemeProvider from "@components/providers/ThemeProvider";
 
 import Header from "@components/layout/header/Header";
 import Footer from "@components/layout/footer/Footer";
+import { getStructuredDataScript } from "@utils/structuredData";
 
-export const metadata = {
-  title: "منصة جستنا السياحية",
-  description: "جستنا،GuestNa، تطبيق، سياحة، المملكة العربية السعودية",
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://guestna.app";
+const defaultLocale = "ar";
+const locales = ["en", "ar"];
+
+const metadataByLocale = {
+  ar: {
+    title: "منصة جستنا - رحلات تعليمية موثوقة في السعودية",
+    description:
+      "جستنا تربط المدارس والجهات التعليمية بأفضل مزودي الرحلات والفعاليات في مختلف مدن المملكة مع حلول دفع موثوقة وتقارير فورية.",
+    keywords: [
+      "رحلات مدرسية",
+      "رحلات تعليمية",
+      "منصة جستنا",
+      "سياحة تعليمية",
+      "رحلات طلابية السعودية",
+    ],
+  },
+  en: {
+    title: "Guestna Platform – Trusted Educational Trips Across KSA",
+    description:
+      "Guestna connects schools and organizations with verified trip providers, digital payments, and live tracking for safer educational journeys.",
+    keywords: [
+      "Guestna",
+      "educational trips Saudi",
+      "school trips platform",
+      "student travel KSA",
+      "experiential learning",
+    ],
+  },
 };
 
 const somarSans = localFont({
@@ -29,7 +56,63 @@ const somarSans = localFont({
   weight: "400",
 });
 
-const locales = ["en", "ar"];
+export async function generateMetadata({ params: { locale } }) {
+  const normalizedLocale = locales.includes(locale) ? locale : defaultLocale;
+  const localized = metadataByLocale[normalizedLocale] || metadataByLocale.ar;
+  const localeSegment =
+    normalizedLocale === defaultLocale ? "ar" : normalizedLocale;
+  const localeUrl =
+    localeSegment === "ar" ? `${SITE_URL}/ar` : `${SITE_URL}/${localeSegment}`;
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: localized.title,
+    description: localized.description,
+    keywords: localized.keywords,
+    category: "travel",
+    applicationName: "Guestna",
+    alternates: {
+      canonical: localeUrl,
+      languages: {
+        "ar-SA": `${SITE_URL}/ar`,
+        "en-US": `${SITE_URL}/en`,
+      },
+    },
+    openGraph: {
+      type: "website",
+      locale: normalizedLocale === "ar" ? "ar_SA" : "en_US",
+      siteName: "Guestna",
+      title: localized.title,
+      description: localized.description,
+      url: localeUrl,
+      images: [
+        {
+          url: `${SITE_URL}/logo.png`,
+          width: 512,
+          height: 512,
+          alt: "Guestna logo",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: "@GuestnaApp",
+      creator: "@GuestnaApp",
+      title: localized.title,
+      description: localized.description,
+      images: [`${SITE_URL}/logo.png`],
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+    other: {
+      "geo.region": "SA",
+      "geo.placename": "Riyadh",
+      "geo.position": "24.7136;46.6753",
+    },
+  };
+}
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -99,6 +182,13 @@ export default async function RootLayout({ children, params: { locale } }) {
         <meta
           name="google-site-verification"
           content="Dy0yQBQm8XuB6racQHLnnd7zVz2jFPaIMVKzUWq9gwE"
+        />
+        <Script
+          id={`structured-data-${locale}`}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: getStructuredDataScript(locale),
+          }}
         />
       </head>
 
