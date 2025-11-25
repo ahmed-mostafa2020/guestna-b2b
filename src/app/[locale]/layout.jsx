@@ -19,7 +19,12 @@ import Header from "@components/layout/header/Header";
 import Footer from "@components/layout/footer/Footer";
 import { getStructuredDataScript } from "@utils/structuredData";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://guestna.app";
+
+const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  process.env.SITE_URL ||
+  "https://guestna-b2b.vercel.app/"
+).replace(/\/$/, "");
 const defaultLocale = "ar";
 const locales = ["en", "ar"];
 
@@ -50,11 +55,14 @@ const metadataByLocale = {
   },
 };
 
+
 const somarSans = localFont({
   src: "../fonts/SomarSans-Medium.woff2",
   variable: "--font-somar-sans",
   weight: "400",
 });
+
+
 
 export async function generateMetadata({ params: { locale } }) {
   const normalizedLocale = locales.includes(locale) ? locale : defaultLocale;

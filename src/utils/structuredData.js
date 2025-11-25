@@ -1,5 +1,8 @@
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://guestna-b2b.vercel.app/";
+const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  process.env.SITE_URL ||
+  "https://guestna-b2b.vercel.app/"
+).replace(/\/$/, "");
 const LOGO_URL = `${SITE_URL}/logo.png`;
 
 const getLocalizedBasePath = (locale = "ar") =>
@@ -96,13 +99,7 @@ export const getStructuredData = (locale = "ar") => {
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
-        dayOfWeek: [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Sunday",
-        ],
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Sunday"],
         opens: "09:00",
         closes: "18:00",
       },
