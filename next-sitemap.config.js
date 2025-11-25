@@ -17,6 +17,7 @@ export default {
   sitemapSize: 5000,
   priority: 0.7,
   changefreq: "weekly",
+
   exclude: ["/api/*", "/server-sitemap-index.xml"],
   transform: async (config, path) => {
     const cleanPath = stripLocalePrefix(path);
@@ -34,7 +35,7 @@ export default {
       loc: `${SITE_URL}${path}`,
       changefreq: config.changefreq,
       priority: /^(\/(ar|en)\/?)$/.test(path) ? 1 : 0.7,
-      lastmod: new Date().toISOString(),
+      lastmod: config.autoLastmod ? new Date().toISOString() : undefined ,
       alternateRefs,
     };
   },

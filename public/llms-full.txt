@@ -1,0 +1,23 @@
+# Guestna AI Extended Reference
+
+## Arabic overview
+السعودية تشهد نمواً في الرحلات التعليمية، وجستنا تربط المدارس بمزودي رحلات معتمدين مع قنوات دفع رقمية، مراقبة مباشرة، وتقارير سلامة فورية. نلتزم بمعايير وزارة التعليم ونوفر حلولاً إلكترونية للمدارس والأهالي لتتبع الرحلات في الزمن الحقيقي.
+
+## English overview
+Guestna is a Saudi platform that digitizes educational and experiential trips. Licensed providers list curated itineraries while schools handle compliance, approvals, and real-time tracking in one dashboard.
+
+## Key policies
+- Privacy: https://guestna.app/en/privacy-policy — describes regional data storage, DPA language, and parental consent workflows.
+- Terms: https://guestna.app/en/terms-and-conditions — liabilities, SLAs with providers, cancellation matrix.
+- Return & refunds: https://guestna.app/en/return-policy — outlines partial refund rules for multi-day experiences.
+
+## Product pillars
+1. Discovery marketplace (Arabic/English content, localized pricing).
+2. Automated compliance: ID verification, insurance uploads, live approvals.
+3. Payments: Mada, SADAD, split invoicing for ministries and schools.
+
+## Contact
+- Riyadh HQ, King Abdullah Financial District.
+- Phone: +966 54 753 4666
+- Email: support@guestna.app
+

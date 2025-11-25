@@ -1,4 +1,5 @@
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://guestna.app";
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://guestna-b2b.vercel.app/";
 const LOGO_URL = `${SITE_URL}/logo.png`;
 
 const getLocalizedBasePath = (locale = "ar") =>

@@ -1,0 +1,27 @@
+# llms.txt — Guestna AI Guide
+
+Website: https://guestna-b2b.vercel.app/
+Primary languages: Arabic (ar), English (en)
+
+## Important Pages
+- / # Homepage (ar default) — overview of bilingual trip marketplace
+- /en # English homepage — KPIs, coverage map, payments overview
+- /ar/faq # FAQ (Arabic) — safety, compliance, payment workflows
+- /en/faq # FAQ (English) — mirrored content for international teams
+- /contact-us # Contact + lead forms (localized)
+- /privacy-policy & /en/privacy-policy # Privacy pledges
+- /terms-and-conditions & /en/terms-and-conditions # Contract terms
+
+## Documentation
+- /docs/api # Public API surface (stub, redirects to contact)
+- /llms-full.txt # Extended Arabic/English summaries + policies
+
+## Sitemaps
+- /sitemap.xml # Auto-generated, includes hreflang alternates
+- /server-sitemap-index.xml # Server routes produced by next-sitemap
+
+## Notes
+- Structured data uses Organization, LocalBusiness, Service, WebSite, FAQPage
+- Content is available in Arabic and English with identical parity
+- Robots.txt allows GPTBot, Google-Extended, anthropic-ai, and other AI crawlers
+
