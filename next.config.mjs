@@ -43,6 +43,25 @@ const nextConfig = {
       },
     ];
 
+    const securityHeaders = [
+      {
+        key: "X-Content-Type-Options",
+        value: "nosniff",
+      },
+      {
+        key: "X-Frame-Options",
+        value: "SAMEORIGIN",
+      },
+      {
+        key: "Referrer-Policy",
+        value: "strict-origin-when-cross-origin",
+      },
+      {
+        key: "Permissions-Policy",
+        value: "camera=(), microphone=(), geolocation=(self)",
+      },
+    ];
+
     return [
       {
         source: "/:path*",
@@ -50,6 +69,19 @@ const nextConfig = {
           {
             key: "Content-Security-Policy",
             value: "frame-ancestors 'self' https://api.moyasar.com",
+          },
+          ...securityHeaders,
+          // Preconnect to external domains for faster loading
+          {
+            key: "Link",
+            value:
+              "<https://fonts.googleapis.com>; rel=preconnect, " +
+              "<https://fonts.gstatic.com>; rel=preconnect; crossorigin, " +
+              "<https://www.googletagmanager.com>; rel=preconnect, " +
+              "<https://cdn.moyasar.com>; rel=preconnect, " +
+              "<https://cdn.tamara.co>; rel=preconnect, " +
+              "<https://res.cloudinary.com>; rel=dns-prefetch, " +
+              "<https://ik.imagekit.io>; rel=dns-prefetch",
           },
         ],
       },

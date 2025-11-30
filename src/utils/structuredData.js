@@ -150,9 +150,46 @@ export const getStructuredData = (locale = "ar") => {
     })),
   };
 
+  const breadcrumbList = {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: locale === "ar" ? "الرئيسية" : "Home",
+        item: baseUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: locale === "ar" ? "اكتشف الرحلات" : "Discover Trips",
+        item: `${baseUrl}/discover`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: locale === "ar" ? "الأسئلة الشائعة" : "FAQ",
+        item: `${baseUrl}/faq`,
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: locale === "ar" ? "تواصل معنا" : "Contact Us",
+        item: `${baseUrl}/contact-us`,
+      },
+    ],
+  };
+
   return {
     "@context": "https://schema.org",
-    "@graph": [organization, localBusiness, webSite, service, faq],
+    "@graph": [
+      organization,
+      localBusiness,
+      webSite,
+      service,
+      faq,
+      breadcrumbList,
+    ],
   };
 };
 

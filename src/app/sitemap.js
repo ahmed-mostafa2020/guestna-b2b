@@ -21,6 +21,7 @@ const publicRoutes = [
   "/discover",
   "/packageInfo",
   "/school-register",
+  "/about-us", // Add if exists
 ];
 
 // Excluded (private) routes
@@ -98,26 +99,34 @@ export default async function sitemap() {
   try {
     const response = await axios.get(
       `${SITE_URL}/api/proxy?path=${B2B_END_POINTS.ALL_MARKET_PLACE_SLUGS}`,
-      { timeout: 6000 }
+      { timeout: 10000 } // Increased timeout
     );
 
     const trips = response.data || [];
 
-    trips.forEach((trip) => {
-      locales.forEach((locale) => {
-        sitemapEntries.push({
-          url: `${SITE_URL}/${locale}/discover/${trip.slug}`,
-          lastModified: trip.updatedAt || now,
-          changeFrequency: "weekly",
-          priority: 0.7,
-          alternates: {
-            languages: buildAlternates(`/discover/${trip.slug}`),
-          },
-        });
+    if (Array.isArray(trips) && trips.length > 0) {
+      trips.forEach((trip) => {
+        if (trip.slug) {
+          locales.forEach((locale) => {
+            sitemapEntries.push({
+              url: `${SITE_URL}/${locale}/discover/${trip.slug}`,
+              lastModified: trip.updatedAt || now,
+              changeFrequency: "weekly",
+              priority: 0.7,
+              alternates: {
+                languages: buildAlternates(`/discover/${trip.slug}`),
+              },
+            });
+          });
+        }
       });
-    });
+      console.log(`✅ Added ${trips.length} trips to sitemap`);
+    } else {
+      console.warn("⚠️ No trips found for sitemap");
+    }
   } catch (err) {
-    console.error("❌ Failed to fetch trip slugs for sitemap", err.message);
+    console.error("❌ Failed to fetch trip slugs for sitemap:", err.message);
+    // Sitemap continues without dynamic trips - not critical
   }
 
   // Remove duplicates

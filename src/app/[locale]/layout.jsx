@@ -72,9 +72,18 @@ export async function generateMetadata({ params: { locale } }) {
     metadataBase: new URL(SITE_URL),
     title: localized.title,
     description: localized.description,
-    keywords: localized.keywords,
+    // Note: keywords meta tag is deprecated and ignored by Google
+    // keywords: localized.keywords,
     category: "travel",
     applicationName: "Guestna",
+    authors: [{ name: "Guestna Team", url: SITE_URL }],
+    creator: "Guestna",
+    publisher: "Guestna",
+    formatDetection: {
+      telephone: true,
+      email: true,
+      address: true,
+    },
     alternates: {
       canonical: localeUrl,
       languages: {
@@ -89,12 +98,14 @@ export async function generateMetadata({ params: { locale } }) {
       title: localized.title,
       description: localized.description,
       url: localeUrl,
+      countryName: "Saudi Arabia",
       images: [
         {
           url: `${SITE_URL}/logo.png`,
           width: 512,
           height: 512,
           alt: "Guestna logo",
+          type: "image/png",
         },
       ],
     },
@@ -109,11 +120,26 @@ export async function generateMetadata({ params: { locale } }) {
     robots: {
       index: true,
       follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
+    verification: {
+      google: "Dy0yQBQm8XuB6racQHLnnd7zVz2jFPaIMVKzUWq9gwE",
+      // Add other verifications as needed:
+      // yandex: "your-yandex-verification-code",
+      // bing: "your-bing-verification-code",
+    },
+    // manifest: "/manifest.json", // Uncomment when PWA manifest is added
     other: {
       "geo.region": "SA",
       "geo.placename": "Riyadh",
       "geo.position": "24.7136;46.6753",
+      ICBM: "24.7136, 46.6753",
     },
   };
 }
