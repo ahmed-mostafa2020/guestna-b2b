@@ -62,8 +62,6 @@ export default function robots() {
         userAgent: "AdsBot-Google",
         disallow: "/",
       },
-
-    
     ],
   };
 }
