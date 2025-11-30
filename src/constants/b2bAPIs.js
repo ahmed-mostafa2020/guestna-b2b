@@ -14,6 +14,9 @@ export const B2B_END_POINTS = {
   STUDENT_REGISTER: "organizationTrips/booking/info",
   STUDENTS_GRADES: "grades/booking",
 
+  ALL_MARKET_PLACE_SLUGS: "home/slugs",
+  
+
   SIDE_FILTERS: "filtratinDetails",
   ALL_TRIPS: "all",
   CUSTOMIZATION: "tripCustomizableInfo",
