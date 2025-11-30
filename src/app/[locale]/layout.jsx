@@ -73,7 +73,6 @@ export async function generateMetadata({ params: { locale } }) {
     title: localized.title,
     description: localized.description,
     // Note: keywords meta tag is deprecated and ignored by Google
-    // keywords: localized.keywords,
     category: "travel",
     applicationName: "Guestna",
     authors: [{ name: "Guestna Team", url: SITE_URL }],

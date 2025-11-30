@@ -65,6 +65,10 @@ const buildAlternates = (cleanPath) => {
   return alternates;
 };
 
+// Revalidate sitemap every 1 hour (3600 seconds)
+// This prevents regenerating on every request
+export const revalidate = 3600;
+
 export default async function sitemap() {
   const now = new Date().toISOString();
   const sitemapEntries = [];
