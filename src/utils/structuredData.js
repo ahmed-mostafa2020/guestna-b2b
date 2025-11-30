@@ -1,7 +1,5 @@
 const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  process.env.SITE_URL ||
-  "https://guestna-b2b.vercel.app/"
+  process.env.NEXT_PUBLIC_B2B_VERCEL || "https://guestna-b2b.vercel.app"
 ).replace(/\/$/, "");
 const LOGO_URL = `${SITE_URL}/logo.png`;
 

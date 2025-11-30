@@ -20,9 +20,7 @@ import Footer from "@components/layout/footer/Footer";
 import { getStructuredDataScript } from "@utils/structuredData";
 
 const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  process.env.SITE_URL ||
-  "https://guestna-b2b.vercel.app/"
+  process.env.NEXT_PUBLIC_B2B_VERCEL || "https://guestna-b2b.vercel.app"
 ).replace(/\/$/, "");
 const defaultLocale = "ar";
 const locales = ["en", "ar"];

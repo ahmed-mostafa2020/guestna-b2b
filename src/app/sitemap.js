@@ -2,9 +2,7 @@ import axios from "axios";
 import { B2B_END_POINTS } from "../constants/b2bAPIs";
 
 const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  process.env.SITE_URL ||
-  "https://guestna-b2b.vercel.app"
+  process.env.NEXT_PUBLIC_B2B_VERCEL || "https://guestna-b2b.vercel.app"
 ).replace(/\/$/, "");
 
 const locales = ["ar", "en"];
@@ -101,8 +99,10 @@ export default async function sitemap() {
   // --------------------------
 
   try {
+    // Call backend directly during build (more reliable than self-referencing)
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
     const response = await axios.get(
-      `${SITE_URL}/api/proxy?path=${B2B_END_POINTS.ALL_MARKET_PLACE_SLUGS}`,
+      `${BASE_URL}${B2B_END_POINTS.ALL_MARKET_PLACE_SLUGS}`,
       { timeout: 10000 } // Increased timeout
     );
 
