@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 import EmptyProfileResponse from "../EmptyProfileResponse";
 
-import emptyFavorites from "@assets/gif/emptyFavorites.gif";
+import emptyFavorites from "@assets/gif/emptyFavorites.webp";
 import arrow from "@assets/arrow.svg";
 
 import { favoriteIcon, heartIcon } from "@assets/svg";

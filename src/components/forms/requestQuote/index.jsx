@@ -26,7 +26,7 @@ import { useSnackbar } from "notistack";
 
 import axios from "axios";
 
-import hello from "@assets/gif/hello.gif";
+import hello from "@assets/gif/hello.webp";
 import PhoneInputWithCountrySelect from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";

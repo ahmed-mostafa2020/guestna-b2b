@@ -52,7 +52,7 @@ import { useSnackbar } from "notistack";
 
 import axios from "axios";
 
-import hello from "@assets/gif/hello.gif";
+import hello from "@assets/gif/hello.webp";
 
 const RolesLoginForm = () => {
   // const confirmTermsAndConditions = useSelector(
@@ -117,7 +117,6 @@ const RolesLoginForm = () => {
 
           // Set color preferences and theme if available
           if (response.data.user.colorPreferences) {
-           
             dispatch(setTheme("customized"));
             dispatch(setColorPreferences(response.data.user.colorPreferences));
           }
