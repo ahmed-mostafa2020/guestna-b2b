@@ -15,7 +15,6 @@ export const B2B_END_POINTS = {
   STUDENTS_GRADES: "grades/booking",
 
   ALL_MARKET_PLACE_SLUGS: "home/slugs",
-  
 
   SIDE_FILTERS: "filtratinDetails",
   ALL_TRIPS: "all",
@@ -67,7 +66,9 @@ export const B2B_END_POINTS = {
 
     INFO: "profile/users/management/info",
 
+    HEADER_FILTER_BY_ORGANIZATION: "profile/organizations/hover",
     BOOKINGS: "profile/organizationTrips/home/all",
+    MOST_ACTIVE_ORGANIZATIONS: "profile/organizations/most-active",
 
     ALL_TRIPS: {
       ACTIVITIES: "profile/organizationTrips/activity/all",

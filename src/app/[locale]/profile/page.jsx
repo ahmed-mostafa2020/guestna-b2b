@@ -15,6 +15,7 @@ import InfoCardsListing from "@components/sections/pages/profile/trips/infoCards
 import InfoCardsSkeleton from "@components/sections/pages/profile/trips/infoCards/InfoCardsSkeleton";
 import RevenueLineChart from "@components/sections/pages/profile/trips/charts/RevenueLineChart";
 import DonutChart from "@components/sections/pages/profile/trips/charts/DonutChart";
+import MostActiveOrganizations from "@components/sections/pages/profile/trips/charts/MostActiveOrganizations";
 import ChartsSkeleton from "@components/sections/pages/profile/trips/charts/ChartsSkeleton";
 
 import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageTemplate";
@@ -34,23 +35,36 @@ const Profile = () => {
 
   const {
     data: infoData,
-    error,
     isLoading,
+    error,
   } = useFetchData(
     `${B2B_END_POINTS.PROFILE.INFO}`,
     {},
     {
       lang: locale,
-      enabled: hasElement(
-        PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS ||
-          PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS
-      ),
+      enabled:
+        hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS) ||
+        hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS),
     }
   );
 
-  // Removed full-screen loader - using skeleton loaders instead
+  const {
+    data: mostActiveOrganizationsData,
+    isLoading: mostActiveOrganizationsLoading,
+    error: mostActiveOrganizationsError,
+  } = useFetchData(
+    `${B2B_END_POINTS.PROFILE.MOST_ACTIVE_ORGANIZATIONS}`,
+    {},
+    {
+      lang: locale,
+      enabled: true, // Explicitly enable this request
+      // enabled: hasElement(
+      //   PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS
+      // ),
+    }
+  );
 
-  if (error)
+  if (error || mostActiveOrganizationsError)
     return (
       <ProtectedProfilePage
         requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}
@@ -89,6 +103,17 @@ const Profile = () => {
               </div>
             </div>
           ))}
+
+        {/* {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS) && */}
+        {mostActiveOrganizationsLoading ? (
+          "loading"
+        ) : (
+          <div className="w-fit min-w-[320px]">
+            <MostActiveOrganizations
+              mostActiveOrganizationsData={mostActiveOrganizationsData}
+            />
+          </div>
+        )}
 
         {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_TRIPS_TABLE) && (
           <ProfilePageTemplate
