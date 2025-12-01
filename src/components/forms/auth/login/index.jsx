@@ -12,7 +12,7 @@ import AuthenticationBy from "../authenticationBy";
 
 import { Box, Tab } from "@mui/material";
 
-import waving from "@assets/gif/waving.webp";
+import waving from "@assets/gif/waving.gif";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 
 const LoginForm = ({ redirect = true }) => {

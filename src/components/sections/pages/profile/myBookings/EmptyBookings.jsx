@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 
 import EmptyProfileResponse from "../EmptyProfileResponse";
-import emptyBookings from "@assets/gif/emptyBookings.webp";
+import emptyBookings from "@assets/gif/emptyBookings.gif";
 
 const EmptyBookings = ({ title, subTitle, image, hasLink }) => {
   const t = useTranslations();

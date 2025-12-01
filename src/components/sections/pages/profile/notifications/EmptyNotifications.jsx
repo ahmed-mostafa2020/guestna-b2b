@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl";
 
 import EmptyProfileResponse from "../EmptyProfileResponse";
 
-import emptyNotifications from "@assets/gif/emptyNotifications.webp";
+import emptyNotifications from "@assets/gif/emptyNotifications.gif";
 
 const EmptyNotifications = () => {
   const t = useTranslations();

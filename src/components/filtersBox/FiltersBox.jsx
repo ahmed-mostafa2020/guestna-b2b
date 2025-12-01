@@ -22,11 +22,11 @@ import AcademicStageButtonMenu from "./menus/academicStage";
 // import BudgetButtonMenu from "./menus/BudgetButtonMenu";
 import FilterAccordion from "./FilterAccordion";
 
-import earthGif from "@assets/gif/earth.webp";
-import tripDurationImage from "@assets/gif/tripDuration.webp";
-import tripTypeImage from "@assets/gif/tripType.webp";
-import dates from "@assets/gif/dates.webp";
-// import budgetGif from "@assets/gif/budget.webp";
+import earthGif from "@assets/gif/earth.gif";
+import tripDurationImage from "@assets/gif/tripDuration.gif";
+import tripTypeImage from "@assets/gif/tripType.gif";
+import dates from "@assets/gif/dates.gif";
+// import budgetGif from "@assets/gif/budget.gif";
 
 import { searchIconBlack, searchIconWhite } from "@assets/svg";
 import CustomizedModal from "../common/customizedModal";

@@ -27,7 +27,7 @@ import { useSnackbar } from "notistack";
 
 import axios from "axios";
 
-import hello from "@assets/gif/hello.webp";
+import hello from "@assets/gif/hello.gif";
 
 const ParentLoginForm = () => {
   const [formErrors, setFormErrors] = useState([]);
