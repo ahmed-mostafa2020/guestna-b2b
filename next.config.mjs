@@ -36,10 +36,25 @@ const nextConfig = {
     ],
   },
   async headers() {
+    const isDevelopment = process.env.NODE_ENV === "development";
+
+    // No cache in development to prevent stale styles during development
+    const staticAssetsCacheHeaders = [
+      {
+        key: "Cache-Control",
+        value: isDevelopment
+          ? "no-cache, no-store, must-revalidate"
+          : "public, max-age=86400, stale-while-revalidate=604800",
+      },
+    ];
+
+    // Immutable cache only for Next.js build assets (they have content hashes)
     const immutableCacheHeaders = [
       {
         key: "Cache-Control",
-        value: "public, max-age=31536000, immutable",
+        value: isDevelopment
+          ? "no-cache, no-store, must-revalidate"
+          : "public, max-age=31536000, immutable",
       },
     ];
 
@@ -116,14 +131,20 @@ const nextConfig = {
           },
         ],
       },
+      // Next.js build files have content hashes, safe to cache immutably
       {
         source: "/_next/static/:path*",
         headers: immutableCacheHeaders,
       },
+      // Images and fonts - shorter cache
       {
-        source:
-          "/:all*(svg|jpg|jpeg|png|gif|ico|webp|avif|css|js|woff|woff2|ttf|eot)",
-        headers: immutableCacheHeaders,
+        source: "/:all*(svg|jpg|jpeg|png|gif|ico|webp|avif|woff|woff2|ttf|eot)",
+        headers: staticAssetsCacheHeaders,
+      },
+      // CSS and JS files - shorter cache to prevent stale styles
+      {
+        source: "/:all*(css|js)",
+        headers: staticAssetsCacheHeaders,
       },
     ];
   },

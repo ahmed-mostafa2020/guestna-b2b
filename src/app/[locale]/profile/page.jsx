@@ -91,29 +91,21 @@ const Profile = () => {
 
         {/* Charts Section */}
         {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS) &&
-          (isLoading ? (
+          (isLoading || mostActiveOrganizationsLoading ? (
             <ChartsSkeleton />
           ) : (
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-              <div className="lg:col-span-8">
+            <div className="flex flex-col gap-4">
+              <div className="w-full">
                 <RevenueLineChart infoData={infoData} />
               </div>
-              <div className="lg:col-span-4">
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <MostActiveOrganizations
+                  mostActiveOrganizationsData={mostActiveOrganizationsData}
+                />
                 <DonutChart infoData={infoData} />
               </div>
             </div>
           ))}
-
-        {/* {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS) && */}
-        {mostActiveOrganizationsLoading ? (
-          "loading"
-        ) : (
-          <div className="w-full lg:w-fit lg:min-w-[400px]">
-            <MostActiveOrganizations
-              mostActiveOrganizationsData={mostActiveOrganizationsData}
-            />
-          </div>
-        )}
 
         {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_TRIPS_TABLE) && (
           <ProfilePageTemplate
