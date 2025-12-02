@@ -1339,13 +1339,22 @@
         "assignRoles": "تعيين الأدوار"
       }
     },
-    "schools_overview_cards": {
-      "total_revenue": "إجمالي الإيرادات",
-      "active_students": "الطلاب النشطين",
-      "suspended_trips": "قيد التنفيذ",
-      "scheduled_trips": "مجدولة",
-      "done_trips": "مكتملة",
-      "show_details":"عرض التفاصيل"
+    "schools_overview": {
+      "searchFilters": {
+        "searchPlaceholder": " ابحث بالاسم...",
+        "sortingBy": "ترتيب حسب: ",
+        "track": "المسار",
+        "city": "المدينة"
+      },
+      "cards": {
+        "total_revenue": "إجمالي الإيرادات",
+        "active_students": "الطلاب النشطين",
+        "suspended_trips": "قيد التنفيذ",
+        "scheduled_trips": "مجدولة",
+        "done_trips": "مكتملة",
+        "show_details": "عرض التفاصيل"
+      },
+      "no_schools_found": "لم يتم العثور على مدارس"
     }
   },
 

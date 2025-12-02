@@ -1772,7 +1772,111 @@ const SuitcaseIcon = ({ className = "w-6 h-6" }) => (
   </svg>
 );
 
+const bankSmall = (
+  <svg
+    width="28"
+    height="28"
+    viewBox="0 0 28 28"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M14.4317 2.5075L24.9317 6.70747C25.34 6.8708 25.6667 7.3608 25.6667 7.79246V11.6658C25.6667 12.3075 25.1417 12.8325 24.5 12.8325H3.50001C2.85834 12.8325 2.33334 12.3075 2.33334 11.6658V7.79246C2.33334 7.3608 2.66002 6.8708 3.06835 6.70747L13.5683 2.5075C13.8017 2.41417 14.1983 2.41417 14.4317 2.5075Z"
+      stroke="#1E1E1C"
+      stroke-width="1.5"
+      stroke-miterlimit="10"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M25.6667 25.6667H2.33334V22.1667C2.33334 21.525 2.85834 21 3.50001 21H24.5C25.1417 21 25.6667 21.525 25.6667 22.1667V25.6667Z"
+      stroke="#1E1E1C"
+      stroke-width="1.5"
+      stroke-miterlimit="10"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M4.66666 21.0026V12.8359"
+      stroke="#1E1E1C"
+      stroke-width="1.5"
+      stroke-miterlimit="10"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M9.33334 21.0026V12.8359"
+      stroke="#1E1E1C"
+      stroke-width="1.5"
+      stroke-miterlimit="10"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M14 21.0026V12.8359"
+      stroke="#1E1E1C"
+      stroke-width="1.5"
+      stroke-miterlimit="10"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M18.6667 21.0026V12.8359"
+      stroke="#1E1E1C"
+      stroke-width="1.5"
+      stroke-miterlimit="10"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M23.3333 21.0026V12.8359"
+      stroke="#1E1E1C"
+      stroke-width="1.5"
+      stroke-miterlimit="10"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M1.16666 25.6641H26.8333"
+      stroke="#1E1E1C"
+      stroke-width="1.5"
+      stroke-miterlimit="10"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M14 9.91406C14.9665 9.91406 15.75 9.13056 15.75 8.16406C15.75 7.19756 14.9665 6.41406 14 6.41406C13.0335 6.41406 12.25 7.19756 12.25 8.16406C12.25 9.13056 13.0335 9.91406 14 9.91406Z"
+      stroke="#1E1E1C"
+      stroke-width="1.5"
+      stroke-miterlimit="10"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+
+const locationGrayIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+  >
+    <path
+      d="M7.99992 8.95688C9.14867 8.95688 10.0799 8.02563 10.0799 6.87688C10.0799 5.72812 9.14867 4.79688 7.99992 4.79688C6.85117 4.79688 5.91992 5.72812 5.91992 6.87688C5.91992 8.02563 6.85117 8.95688 7.99992 8.95688Z"
+      stroke="#6C7071"
+    />
+    <path
+      d="M2.41379 5.66261C3.72712 -0.110728 12.2805 -0.104061 13.5871 5.66927C14.3538 9.05594 12.2471 11.9226 10.4005 13.6959C9.06046 14.9893 6.94046 14.9893 5.59379 13.6959C3.75379 11.9226 1.64712 9.04927 2.41379 5.66261Z"
+      stroke="#6C7071"
+    />
+  </svg>
+);
+
 export {
+  locationGrayIcon,
+  bankSmall,
   discoverIcon,
   schoolsIcon,
   companiesIcon,

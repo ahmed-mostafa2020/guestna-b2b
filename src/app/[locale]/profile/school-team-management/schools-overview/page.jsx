@@ -11,7 +11,7 @@ import ErrorComponent from "@/src/feedback/error/ErrorComponent";
 import FullScreenLoading from "@/src/feedback/loading/FullScreenLoading";
 import { useFetchData } from "@/src/hooks/useFetchData";
 import { usePermissions } from "@/src/hooks/usePermissions";
-import { Box, Grid } from "@material-ui/core";
+import { Box, Grid, Typography } from "@material-ui/core";
 import { useLocale, useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 
@@ -138,12 +138,25 @@ const SchoolsOverViewPage = () => {
       </Box>
 
       {/* Listing Section */}
-      <Grid container size={{ xs: 12, sm: 6, md: 4, lg: 3 }} spacing={2}>
-        {data?.nodes?.map((organization) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={organization.id}>
-            <SchoolOverviewCard item={organization} />
-          </Grid>
-        ))}
+      <Grid container size={{ xs: 12, sm: 6, md: 4 }} spacing={2}>
+        {data.nodes.length ? (
+          data?.nodes?.map((organization) => (
+            <Grid item xs={12} sm={6} md={4} key={organization.id}>
+              <SchoolOverviewCard item={organization} />
+            </Grid>
+          ))
+        ) : (
+          <>
+            <Box className="w-full py-10 capitalize font-bold flex justify-center items-center flex-col gap-4">
+              <Typography
+                variant="h2"
+                className="text-gray-600 text-6xl font-medium"
+              >
+                {t("profile.schools_overview.no_schools_found")}
+              </Typography>
+            </Box>
+          </>
+        )}
       </Grid>
 
       {/* Pagination */}

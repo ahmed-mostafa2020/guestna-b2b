@@ -1345,13 +1345,22 @@
       }
     },
 
-    "schools_overview_cards": {
-      "total_revenue": "Total Revenue",
-      "active_students": "Active Students",
-      "suspended_trips": "Suspended",
-      "scheduled_trips": "Scheduled",
-      "done_trips": "Done",
-      "show_details":"Show Details"
+    "schools_overview": {
+      "searchFilters": {
+        "searchPlaceholder": "search by school name",
+        "sortingBy": "Sort By: ",
+        "track": "Track",
+        "city": "City"
+      },
+      "cards": {
+        "total_revenue": "Total Revenue",
+        "active_students": "Active Students",
+        "suspended_trips": "Suspended",
+        "scheduled_trips": "Scheduled",
+        "done_trips": "Done",
+        "show_details": "Show Details"
+      },
+      "no_schools_found": "No schools found"
     }
   },
 
