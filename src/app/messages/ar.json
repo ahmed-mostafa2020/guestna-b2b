@@ -187,6 +187,7 @@
       "integratedBookingsManagement": "إدارة الحجوزات المتكاملة",
       "createTripLink": "إنشاء رابط لرحلة",
       "users": "المستخدمون",
+      "schoolsOverView": "نظرة عامة على المدارس",
       "contactUs": "تواصل معنا",
       "faq": "الأسئلة الشائعة",
       "schoolRegister": "تسجيل المدرسة",
@@ -544,7 +545,8 @@
       "schoolTeamManagement": {
         "title": "إدارة فريق المدرسة",
         "users": "المستخدمون",
-        "students": "الطلاب"
+        "students": "الطلاب",
+        "schoolsOverView": "نظرة عامة على المدارس"
       },
       "reportsAndAnalytics": {
         "title": "التقارير والتحليلات"
@@ -1336,6 +1338,14 @@
         "cancel": "إلغاء",
         "assignRoles": "تعيين الأدوار"
       }
+    },
+    "schools_overview_cards": {
+      "total_revenue": "إجمالي الإيرادات",
+      "active_students": "الطلاب النشطين",
+      "suspended_trips": "قيد التنفيذ",
+      "scheduled_trips": "مجدولة",
+      "done_trips": "مكتملة",
+      "show_details":"عرض التفاصيل"
     }
   },
 

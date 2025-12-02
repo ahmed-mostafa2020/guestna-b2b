@@ -545,7 +545,8 @@
       "schoolTeamManagement": {
         "title": "School Team Management",
         "users": "Users",
-        "students": "Students"
+        "students": "Students",
+        "schoolsOverView": "Schools Overview"
       },
       "reportsAndAnalytics": {
         "title": "Reports and Analytics"
@@ -1342,6 +1343,15 @@
         "cancel": "Cancel",
         "assignRoles": "Assign Roles"
       }
+    },
+
+    "schools_overview_cards": {
+      "total_revenue": "Total Revenue",
+      "active_students": "Active Students",
+      "suspended_trips": "Suspended",
+      "scheduled_trips": "Scheduled",
+      "done_trips": "Done",
+      "show_details":"Show Details"
     }
   },
 

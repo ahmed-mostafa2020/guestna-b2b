@@ -31,6 +31,7 @@ import {
 } from "@mui/icons-material";
 
 import { CalendarIcon } from "@mui/x-date-pickers";
+import { title } from "process";
 
 const NavigationDropdown = () => {
   const [expanded, setExpanded] = useState(false);
@@ -108,6 +109,16 @@ const NavigationDropdown = () => {
       hasDropdown: true,
       permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_USERS_TAB,
       subItems: [
+        {
+          title: t("profile.aside.schoolTeamManagement.schoolsOverView"),
+          path: `${profileBasePath}/school-team-management/schools-overview`,
+          permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_USERS_TAB,
+        },
+        {
+          title: t("profile.aside.schoolTeamManagement.students"),
+          path: `${profileBasePath}/school-team-management/students`,
+          permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_USERS_TAB,
+        },
         {
           title: t("profile.aside.schoolTeamManagement.users"),
           path: `${profileBasePath}/school-team-management/users`,
