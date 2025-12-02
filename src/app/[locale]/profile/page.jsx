@@ -108,7 +108,7 @@ const Profile = () => {
         {mostActiveOrganizationsLoading ? (
           "loading"
         ) : (
-          <div className="w-fit min-w-[320px]">
+          <div className="w-full lg:w-fit lg:min-w-[400px]">
             <MostActiveOrganizations
               mostActiveOrganizationsData={mostActiveOrganizationsData}
             />

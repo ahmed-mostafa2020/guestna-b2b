@@ -622,6 +622,11 @@
       "label": "Revenues"
     },
 
+    "barChart": {
+      "title": "The most active schools",
+      "label": "Percentage %"
+    },
+
     "createTripLink": {
       "poster": {
         "title": "Create trip poster",
