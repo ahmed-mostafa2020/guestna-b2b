@@ -12,18 +12,18 @@ import {
 import TuneIcon from "@mui/icons-material/Tune";
 import { useFetchData } from "@/src/hooks/useFetchData";
 import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 const sortOptions = ["HIGHEST_NAME", "LOWEST_NAME", "NEWEST", "OLDEST"];
 
 const SearchFilters = ({ searchTerms, onChange }) => {
   const [open, setOpen] = useState(false);
-
+ const locale = useLocale();
   const t = useTranslations();
 
   const { data } = useFetchData(
     `${B2B_END_POINTS.PROFILE.ORGANIZATIONS.CITIES_TRACKS}`,
     {},
-    {}
+    { lang: locale }
   );
 
   const cities = data?.cities || [];
@@ -80,7 +80,7 @@ const SearchFilters = ({ searchTerms, onChange }) => {
         <Box className="flex flex-col gap-3">
           {/* SEARCH */}
           <TextField
-            className="!border-2 rounded-md !border-solid !border-gray-900 !py-2"
+            className="!border-2 rounded-md !border-solid !border-gray-200 !py-2"
             placeholder={t(
               "profile.schools_overview.searchFilters.searchPlaceholder"
             )}
@@ -99,7 +99,7 @@ const SearchFilters = ({ searchTerms, onChange }) => {
 
           {/* CITY */}
           <Autocomplete
-            className="!border-2 rounded-md !border-solid !border-gray-900 py-2"
+            className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
             slotProps={{
               listbox: {
                 className: "!font-somar",
@@ -131,7 +131,7 @@ const SearchFilters = ({ searchTerms, onChange }) => {
           {/* TRACK */}
           <Autocomplete
             options={formattedTracks}
-            className="!border-2 rounded-md !border-solid !border-gray-900 py-2"
+            className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
             slotProps={{
               listbox: {
                 className: "!font-somar",
@@ -163,7 +163,7 @@ const SearchFilters = ({ searchTerms, onChange }) => {
 
           <Autocomplete
             options={formattedSortOptions}
-            className="!border-2 rounded-md !border-solid !border-gray-900 py-2"
+            className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
             slotProps={{
               listbox: {
                 className: "!font-somar",
@@ -203,7 +203,7 @@ const SearchFilters = ({ searchTerms, onChange }) => {
       </span>
       <Box className="hidden md:grid grid-cols-4 gap-4">
         <TextField
-          className="!border-2 rounded-md !border-solid !border-gray-900 !py-2"
+          className="!border-2 rounded-md !border-solid !border-gray-200 !py-2"
           placeholder={t(
             "profile.schools_overview.searchFilters.searchPlaceholder"
           )}
@@ -222,7 +222,7 @@ const SearchFilters = ({ searchTerms, onChange }) => {
 
         {/* CITY */}
         <Autocomplete
-          className="!border-2 rounded-md !border-solid !border-gray-900 py-2"
+          className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
           slotProps={{
             listbox: {
               className: "!font-somar",
@@ -254,7 +254,7 @@ const SearchFilters = ({ searchTerms, onChange }) => {
         {/* TRACK */}
         <Autocomplete
           options={formattedTracks}
-          className="!border-2 rounded-md !border-solid !border-gray-900 py-2"
+          className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
           slotProps={{
             listbox: {
               className: "!font-somar",
@@ -286,7 +286,7 @@ const SearchFilters = ({ searchTerms, onChange }) => {
 
         <Autocomplete
           options={formattedSortOptions}
-          className="!border-2 rounded-md !border-solid !border-gray-900 py-2"
+          className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
           slotProps={{
             listbox: {
               className: "!font-somar",
@@ -319,7 +319,7 @@ const SearchFilters = ({ searchTerms, onChange }) => {
 
         {/* <TextField
           size="small"
-          className="!border-2 rounded-md !border-solid !border-gray-900"
+          className="!border-2 rounded-md !border-solid !border-gray-200"
           select
           placeholder={t("profile.schools_overview.searchFilters.sortingBy")}
           value={searchTerms.sort}

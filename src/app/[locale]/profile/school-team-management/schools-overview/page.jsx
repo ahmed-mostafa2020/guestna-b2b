@@ -140,7 +140,7 @@ const SchoolsOverViewPage = () => {
         {!isLoading &&
           schools.length > 0 &&
           schools.map((organization) => (
-            <Grid item xs={12} sm={6} md={4} key={organization.id}>
+            <Grid  xs={12} sm={6} md={4} key={organization.id}>
               <SchoolOverviewCard item={organization} />
             </Grid>
           ))}
@@ -150,7 +150,7 @@ const SchoolsOverViewPage = () => {
           <Box className="w-full py-10 flex justify-center items-center flex-col gap-4">
             <Typography
               variant="h4"
-              className="text-gray-600 font-medium text-center"
+              className="text-gray-600 font-medium text-center !font-somar"
             >
               {t("profile.schools_overview.no_schools_found")}
             </Typography>
