@@ -72,6 +72,7 @@ export const B2B_END_POINTS = {
     ORGANIZATIONS: {
       ALL: "profile/organizations/all",
       CITIES_TRACKS: "profile/organizations/cities-tracks",
+      ORGANIZATION_DETAILS: "profile/organizations/organization-details",
     },
 
     ALL_TRIPS: {

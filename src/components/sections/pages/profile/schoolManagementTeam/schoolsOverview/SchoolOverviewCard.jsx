@@ -1,22 +1,28 @@
 "use client";
 
-import { Box, Typography, Button, Icon } from "@mui/material";
-import DomainIcon from "@mui/icons-material/Domain";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { Box, Typography, Button } from "@mui/material";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import {
   bankSmall,
-  discoverIcon,
-  doneIcon,
   locationGrayIcon,
-  locationIcon,
   newSarSmall,
-  schoolIcon,
 } from "@/src/assets/svg";
+import { setOrganizationId } from "@/src/store/organizationDetails/organizationDetailsSlice";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+
 
 const SchoolOverviewCard = ({ item }) => {
   const t = useTranslations();
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const handleClick = () => {
+    dispatch(setOrganizationId(item._id));
+    router.push(
+      `/profile/school-team-management/schools-overview/schools-details`
+    );
+  };
   return (
     <Box
       className="rounded-xl border border-gray-200 p-4 shadow-sm bg-white  "
@@ -133,6 +139,7 @@ const SchoolOverviewCard = ({ item }) => {
         fullWidth
         variant="contained"
         className="!font-somar font-semibold !bg-mainColor  !py-4  !text-white  rounded-lg"
+        onClick={handleClick}
       >
         {t("profile.schools_overview.cards.show_details")}
       </Button>
