@@ -1341,10 +1341,17 @@
     },
     "schools_overview": {
       "searchFilters": {
+        "title": "البحث والتصفية",
         "searchPlaceholder": " ابحث بالاسم...",
         "sortingBy": "ترتيب حسب: ",
         "track": "المسار",
-        "city": "المدينة"
+        "city": "المدينة",
+        "sort_options":{
+          "HIGHEST_NAME": "الاسم من أ إلى ي",
+          "LOWEST_NAME": "الاسم من ي إلى أ",
+          "NEWEST": "الأحدث",
+          "OLDEST": "الأقدم"
+        }
       },
       "cards": {
         "total_revenue": "إجمالي الإيرادات",

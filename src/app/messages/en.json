@@ -1347,10 +1347,17 @@
 
     "schools_overview": {
       "searchFilters": {
+        "title": "Search & Filters",
         "searchPlaceholder": "search by school name",
         "sortingBy": "Sort By: ",
         "track": "Track",
-        "city": "City"
+        "city": "City",
+        "sort_options": {
+          "HIGHEST_NAME": "Name (A-Z)",
+          "LOWEST_NAME": "Name (Z-A)",
+          "NEWEST": "Newest",
+          "OLDEST": "Oldest"
+        }
       },
       "cards": {
         "total_revenue": "Total Revenue",
