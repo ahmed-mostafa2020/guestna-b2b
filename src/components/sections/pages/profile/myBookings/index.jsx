@@ -11,6 +11,7 @@ import { TRIP_STATUS } from "@constants/tripStatus";
 import Pagination from "@components/common/Pagination";
 
 import { Badge, CardContent, Card, CircularProgress } from "@mui/material";
+import ActionsDropdownMenu from "./ActionsDropdownMenu";
 
 const getStatusStyles = (status) => {
   switch (status) {
@@ -68,32 +69,29 @@ const BookingsTable = ({
             <table className="w-full">
               <thead>
                 <tr className=" bg-table-header border-b-2 border-tableRowBorder">
-                  {/* <th className="px-6 py-4 font-semibold text-start">
+                  <th className="px-4 py-4 font-semibold text-start">
                     {t("profile.tables.bookings.header.schoolName")}
-                  </th> */}
-                  <th className="px-6 py-4 font-semibold text-start">
+                  </th>
+                  <th className="px-4 py-4 font-semibold text-start">
                     {t("profile.tables.bookings.header.tripName")}
                   </th>
-                  <th className="px-6 py-4 font-semibold text-start">
-                    {t("profile.tables.bookings.header.academicStage")}
-                  </th>
-
-                  <th className="px-6 py-4 font-semibold text-start">
+                  <th className="px-4 py-4 font-semibold text-start">
                     {t("profile.tables.bookings.header.tripType")}
                   </th>
-
-                  <th className="px-6 py-4 font-semibold text-start">
-                    {t("profile.tables.bookings.header.quantity")}
-                  </th>
-
-                  <th className="px-6 py-4 font-semibold text-start">
+                  <th className="px-4 py-4 font-semibold text-start">
                     {t("profile.tables.bookings.header.date")}
                   </th>
-                  <th className="px-6 py-4 font-semibold text-start">
+                  <th className="px-4 py-4 font-semibold text-start">
                     {t("profile.tables.bookings.header.price")}
                   </th>
-                  <th className="px-6 py-4 font-semibold text-start">
+                  <th className="px-4 py-4 font-semibold text-start">
+                    {t("profile.tables.bookings.header.quantity")}
+                  </th>
+                  <th className="px-4 py-4 font-semibold text-start">
                     {t("profile.tables.bookings.header.status")}
+                  </th>
+                  <th className="px-4 py-4 font-semibold text-start">
+                    {t("profile.tables.bookings.header.actions")}
                   </th>
                 </tr>
               </thead>
@@ -106,54 +104,61 @@ const BookingsTable = ({
                       "border-b border-table-border"
                     } transition-colors hover:bg-gray-50`}
                   >
-                    {/* <td className="px-6 py-4 text-sm font-medium text-foreground">
-                      {booking.organization}
-                    </td> */}
-                    <td className="px-6 py-4 text-sm font-medium text-foreground">
-                      {booking.name}
+                    <td className="px-4 py-4 text-sm font-medium text-foreground max-w-[200px]">
+                      <div className="truncate" title={booking.organization}>
+                        {booking.organization}
+                      </div>
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium text-foreground">
-                      {booking.academicStage?.name}
+                    <td className="px-4 py-4 text-sm font-medium text-foreground max-w-[200px]">
+                      <div className="truncate" title={booking.name}>
+                        {booking.name}
+                      </div>
                     </td>
-
-                    <td className="px-6 py-4 text-sm font-medium text-foreground">
-                      {booking.categories?.name || booking.categories}
+                    <td className="px-4 py-4 text-sm font-medium text-foreground max-w-[150px]">
+                      <div className="truncate" title={booking.category}>
+                        {booking.category}
+                      </div>
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium text-foreground">
-                      {booking.bookingQuantity}
-                    </td>
-
-                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                    <td className="px-4 py-4 text-sm text-muted-foreground">
                       {formatDate(booking.day, locale, {
                         year: "numeric",
-                        month: "long",
+                        month: "short",
                         day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
                       })}
+                      <br />
+                      <span className="text-xs text-gray-600">
+                        {booking.fromHour}
+                      </span>
                     </td>
-
-                    <td className="px-6 py-4 text-sm font-medium text-foreground">
+                    <td className="px-4 py-4 text-sm font-medium text-foreground">
                       {formatCurrency(booking.revenueAmount)}
                     </td>
-
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-4 text-sm font-medium text-foreground">
+                      {formatNumbersUint(
+                        booking.bookingQuantity,
+                        t("common.student"),
+                        t("common.students")
+                      )}
+                    </td>
+                    <td className="px-4 py-4">
                       <Badge
                         variant="outline"
                         sx={{
                           background: getStatusStyles(booking.status),
                           borderColor: getStatusStyles(booking.status),
-                          // color: "white",
                           px: 1.5,
                           py: 0.5,
                           borderRadius: "8px",
                         }}
-                        className={`text-sm capitalize ${getStatusStyles(
+                        className={`text-sm text-center capitalize ${getStatusStyles(
                           booking.status
                         )}`}
                       >
                         {t(`common.organizationTripStatus.${booking.status}`)}
                       </Badge>
+                    </td>
+                    <td className="px-4 py-4 text-sm text-center">
+                      <ActionsDropdownMenu booking={booking} />
                     </td>
                   </tr>
                 ))}
@@ -194,7 +199,7 @@ const BookingsTable = ({
                     borderRadius: "6px",
                     flexShrink: 0,
                   }}
-                  className={`text-xs capitalize ${getStatusStyles(
+                  className={`text-xs text-center capitalize ${getStatusStyles(
                     booking.status
                   )}`}
                 >
@@ -203,53 +208,30 @@ const BookingsTable = ({
                 </Badge>
               </div>
 
+              {/* Actions Button - Mobile */}
+              <div className="flex justify-center pb-3 border-b border-gray-200">
+                <ActionsDropdownMenu booking={booking} />
+              </div>
+
               {/* Data Grid */}
               <div className="space-y-3 text-sm">
+                {/* School Name */}
+                <div className="flex items-start justify-between gap-2">
+                  <span className="font-medium text-gray-600 flex-shrink-0">
+                    {t("profile.tables.bookings.header.schoolName")}:
+                  </span>
+                  <span className="text-foreground text-end font-medium">
+                    {booking.organization}
+                  </span>
+                </div>
+
                 {/* Trip Type */}
                 <div className="flex items-start justify-between gap-2">
                   <span className="font-medium text-gray-600 flex-shrink-0">
                     {t("profile.tables.bookings.header.tripType")}:
                   </span>
                   <span className="text-foreground text-end font-medium">
-                    {booking.categories?.name || booking.categories}
-                  </span>
-                </div>
-
-                {/* Quantity */}
-                <div className="flex items-start justify-between gap-2">
-                  <span className="font-medium text-gray-600 flex-shrink-0">
-                    {t("profile.tables.bookings.header.quantity")}:
-                  </span>
-                  <span className="text-foreground text-end font-medium">
-                    {formatNumbersUint(
-                      booking.bookingQuantity,
-                      t("common.student"),
-                      t("common.students")
-                    )}
-                  </span>
-                </div>
-
-                {/* Academic Stage */}
-                <div className="flex items-start justify-between gap-2">
-                  <span className="font-medium text-gray-600 flex-shrink-0">
-                    {t("profile.tables.bookings.header.academicStage")}:
-                  </span>
-                  <span className="text-foreground text-end font-medium">
-                    {booking.academicStage?.name}
-                  </span>
-                </div>
-
-                {/* Quantity */}
-                <div className="flex items-start justify-between gap-2">
-                  <span className="font-medium text-gray-600 flex-shrink-0">
-                    {t("profile.tables.bookings.header.quantity")}:
-                  </span>
-                  <span className="text-foreground text-end font-medium">
-                    {formatNumbersUint(
-                      booking.bookingQuantity,
-                      t("common.student"),
-                      t("common.students")
-                    )}
+                    {booking.category}
                   </span>
                 </div>
 
@@ -263,9 +245,25 @@ const BookingsTable = ({
                       year: "numeric",
                       month: "short",
                       day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
                     })}
+                    <br />
+                    <span className="text-xs text-gray-500">
+                      {booking.fromHour}
+                    </span>
+                  </span>
+                </div>
+
+                {/* Quantity */}
+                <div className="flex items-start justify-between gap-2">
+                  <span className="font-medium text-gray-600 flex-shrink-0">
+                    {t("profile.tables.bookings.header.quantity")}:
+                  </span>
+                  <span className="text-foreground text-end font-medium">
+                    {formatNumbersUint(
+                      booking.bookingQuantity,
+                      t("common.student"),
+                      t("common.students")
+                    )}
                   </span>
                 </div>
 

@@ -714,6 +714,20 @@
           "status": "الحالة",
           "actions": "الإجراءات",
           "participants": "المشاركون"
+        },
+        "actions": {
+          "administrativeComment": "تعليق إداري",
+          "commentPlaceholder": "أدخل الوصف",
+          "commentSuccess": "تم إرسال التعليق بنجاح"
+        },
+        "details": {
+          "title": "تفاصيل الحجز -",
+          "tripInfo": "معلومات الرحلة",
+          "bookingInfo": "معلومات الحجز",
+          "bookingId": "رقم الحجز",
+          "time": "الوقت",
+          "slug": "المعرف",
+          "note": "ملاحظات"
         }
       },
       "reports": {

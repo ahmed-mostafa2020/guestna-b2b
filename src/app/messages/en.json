@@ -718,6 +718,20 @@
           "status": "Status",
           "actions": "Actions",
           "participants": "Participants"
+        },
+        "actions": {
+          "administrativeComment": "Administrative Comment",
+          "commentPlaceholder": "Enter description",
+          "commentSuccess": "Comment submitted successfully"
+        },
+        "details": {
+          "title": "Booking Details -",
+          "tripInfo": "Trip Information",
+          "bookingInfo": "Booking Information",
+          "bookingId": "Booking ID",
+          "time": "Time",
+          "slug": "Slug",
+          "note": "Notes"
         }
       },
       "reports": {
