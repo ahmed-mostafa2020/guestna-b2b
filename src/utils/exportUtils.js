@@ -11,10 +11,6 @@ import formatCurrency from "./FormatCurrency";
  * @param {string} locale - Current locale
  */
 export const exportMyBookingToExcel = (booking, bookingDetails, t, locale) => {
-  console.log("🔵 exportMyBookingToExcel called with:", {
-    booking,
-    bookingDetails,
-  });
   try {
     // Create a new workbook
     const workbook = XLSX.utils.book_new();
@@ -29,11 +25,13 @@ export const exportMyBookingToExcel = (booking, bookingDetails, t, locale) => {
       fromHour: t("profile.tables.bookings.details.time"),
       status: t("profile.tables.bookings.header.status"),
       bookingQuantity: t("profile.tables.bookings.header.quantity"),
-      baseAvailableSeates: "Available Seats",
-      revenueAmount: "Revenue Amount",
+      baseAvailableSeates: t(
+        "profile.tables.orders.bookingDetails.availableSeats"
+      ),
+      revenueAmount: t("profile.tables.orders.bookingDetails.revenueAmount"),
       comment: t("profile.tables.bookings.actions.administrativeComment"),
-      createdBy: "Created By",
-      createdAt: "Created At",
+      createdBy: t("profile.tables.orders.bookingDetails.createdBy"),
+      createdAt: t("profile.tables.orders.bookingDetails.createdAt"),
       students: t("profile.tables.orders.bookingDetails.studentsList"),
       studentName: t("profile.tables.orders.bookingDetails.studentName"),
       nationalId: t("profile.tables.orders.bookingDetails.nationalId"),

@@ -770,12 +770,19 @@
           "tripStartDate": "تاريخ بداية الرحلة",
           "tripEndDate": "تاريخ انتهاء الرحلة",
           "category": "الفئة",
-          "createdBy": "تم إنشاء بواسطة",
+          "createdBy": "تم الإنشاء بواسطة",
+          "createdAt": "تاريخ الإنشاء",
           "participants": "عدد المشاركين",
           "printReport": "طباعة التقرير",
           "exportReport": "تصدير التقرير",
           "exportExcel": "تصدير إلى Excel",
-          "sendDetails": "إرسال التفاصيل"
+          "sendDetails": "إرسال التفاصيل",
+          "studentsList": "قائمة الطلاب",
+          "studentName": "اسم الطالب",
+          "nationalId": "رقم الهوية",
+          "grade": "الصف الدراسي",
+          "availableSeats": "المقاعد المتاحة",
+          "revenueAmount": "مبلغ الإيرادات"
         },
         "studentsTable": {
           "title": "قائمة الطلاب",

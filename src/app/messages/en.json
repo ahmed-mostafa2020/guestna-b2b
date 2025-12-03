@@ -775,11 +775,18 @@
           "tripEndDate": "Trip End Date",
           "category": "Category",
           "createdBy": "Created By",
+          "createdAt": "Created At",
           "participants": "Participants",
           "printReport": "Print Report",
           "exportReport": "Export Report",
           "exportExcel": "Export to Excel",
-          "sendDetails": "Send Details"
+          "sendDetails": "Send Details",
+          "studentsList": "Students List",
+          "studentName": "Student Name",
+          "nationalId": "National ID",
+          "grade": "Grade",
+          "availableSeats": "Available Seats",
+          "revenueAmount": "Revenue Amount"
         },
         "studentsTable": {
           "title": "Students List",

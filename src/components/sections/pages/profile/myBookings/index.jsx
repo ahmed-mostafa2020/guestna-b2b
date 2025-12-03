@@ -6,7 +6,6 @@ import { memo } from "react";
 
 import formatCurrency from "@utils/FormatCurrency";
 import formatDate from "@utils/FormateDate";
-import formatNumbersUint from "@utils/FormatNumbersUint";
 import { TRIP_STATUS } from "@constants/tripStatus";
 import Pagination from "@components/common/Pagination";
 
@@ -60,8 +59,7 @@ const BookingsTable = ({
             <p className="text-sm text-gray-500">{t("common.loading")}</p>
           </div>
         </div>
-      ) : data.nodes.length === 0 ? // Empty state - no table shown
-      null : (
+      ) : data.nodes.length === 0 ? null : ( // Empty state - no table shown
         <>
           {/* Desktop Table */}
           <Card
@@ -143,12 +141,31 @@ const BookingsTable = ({
                         <td className="px-4 py-4 text-sm font-medium text-foreground">
                           {formatCurrency(booking.revenueAmount)}
                         </td>
-                        <td className="px-4 py-4 text-sm font-medium text-foreground">
-                          {formatNumbersUint(
-                            booking.bookingQuantity,
-                            t("common.student"),
-                            t("common.students")
-                          )}
+                        <td className="px-4 py-4">
+                          <div className="flex items-center gap-1.5">
+                            {/* Progress Bar */}
+                            <div className="bg-gray-200 rounded-full h-2 overflow-hidden w-9">
+                              <div
+                                className="bg-mainColor h-full rounded-full transition-all duration-300"
+                                style={{
+                                  width: `${Math.min(
+                                    (booking.bookingQuantity /
+                                      booking.baseAvailableSeates) *
+                                      100,
+                                    100
+                                  )}%`,
+                                }}
+                              />
+                            </div>
+                            {/* Numbers */}
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="font-medium">
+                                {booking.bookingQuantity}
+                              </span>
+                              <span>/</span>
+                              <span>{booking.baseAvailableSeates}</span>
+                            </div>
+                          </div>
                         </td>
                         <td className="px-4 py-4">
                           <Badge
@@ -259,18 +276,35 @@ const BookingsTable = ({
                       </span>
                     </div>
 
-                    {/* Quantity */}
-                    <div className="flex items-start justify-between gap-2">
-                      <span className="font-medium text-gray-600 flex-shrink-0">
+                    {/* Quantity with Progress Bar */}
+                    <div className="flex justify-between gap-2">
+                      <span className="font-medium text-gray-600">
                         {t("profile.tables.bookings.header.quantity")}:
                       </span>
-                      <span className="text-foreground text-end font-medium">
-                        {formatNumbersUint(
-                          booking.bookingQuantity,
-                          t("common.student"),
-                          t("common.students")
-                        )}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        {/* Progress Bar */}
+                        <div className="w-9 bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                          <div
+                            className="bg-mainColor h-full rounded-full transition-all duration-300"
+                            style={{
+                              width: `${Math.min(
+                                (booking.bookingQuantity /
+                                  booking.baseAvailableSeates) *
+                                  100,
+                                100
+                              )}%`,
+                            }}
+                          />
+                        </div>
+                        {/* Numbers */}
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="font-semibold">
+                            {booking.bookingQuantity}
+                          </span>
+                          <span>/</span>
+                          <span>{booking.baseAvailableSeates}</span>
+                        </div>
+                      </div>
                     </div>
 
                     {/* Price */}
