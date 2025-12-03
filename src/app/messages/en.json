@@ -774,6 +774,7 @@
           "tripStartDate": "Trip Start Date",
           "tripEndDate": "Trip End Date",
           "category": "Category",
+          "createdBy": "Created By",
           "participants": "Participants",
           "printReport": "Print Report",
           "exportReport": "Export Report",

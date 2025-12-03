@@ -770,6 +770,7 @@
           "tripStartDate": "تاريخ بداية الرحلة",
           "tripEndDate": "تاريخ انتهاء الرحلة",
           "category": "الفئة",
+          "createdBy": "تم إنشاء بواسطة",
           "participants": "عدد المشاركين",
           "printReport": "طباعة التقرير",
           "exportReport": "تصدير التقرير",

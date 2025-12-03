@@ -4,13 +4,169 @@ import formatDate from "./FormateDate";
 import formatCurrency from "./FormatCurrency";
 
 /**
- * Export booking data to Excel format
+ * Export myBookings data to Excel format (for profile bookings page)
+ * @param {Object} booking - Booking data from myBookings API
+ * @param {Object} bookingDetails - Students data
+ * @param {Function} t - Translation function
+ * @param {string} locale - Current locale
+ */
+export const exportMyBookingToExcel = (booking, bookingDetails, t, locale) => {
+  console.log("🔵 exportMyBookingToExcel called with:", {
+    booking,
+    bookingDetails,
+  });
+  try {
+    // Create a new workbook
+    const workbook = XLSX.utils.book_new();
+
+    // Define text using translation function
+    const labels = {
+      tripInfo: t("profile.tables.bookings.details.tripInfo"),
+      name: t("profile.tables.bookings.header.tripName"),
+      organization: t("profile.tables.bookings.header.schoolName"),
+      category: t("profile.tables.bookings.header.tripType"),
+      day: t("profile.tables.bookings.header.date"),
+      fromHour: t("profile.tables.bookings.details.time"),
+      status: t("profile.tables.bookings.header.status"),
+      bookingQuantity: t("profile.tables.bookings.header.quantity"),
+      baseAvailableSeates: "Available Seats",
+      revenueAmount: "Revenue Amount",
+      comment: t("profile.tables.bookings.actions.administrativeComment"),
+      createdBy: "Created By",
+      createdAt: "Created At",
+      students: t("profile.tables.orders.bookingDetails.studentsList"),
+      studentName: t("profile.tables.orders.bookingDetails.studentName"),
+      nationalId: t("profile.tables.orders.bookingDetails.nationalId"),
+      grade: t("profile.tables.orders.bookingDetails.grade"),
+      filename: t("exportUtils.bookingReport.filename"),
+    };
+
+    // Trip Information Sheet - Only fields from API response
+    const tripData = [
+      [labels.tripInfo],
+      [""],
+      // Basic Info
+      [labels.name, booking.name || ""],
+      [labels.organization, booking.organization || ""],
+      [labels.category, booking.category || ""],
+      [
+        labels.day,
+        booking.day
+          ? formatDate(booking.day, locale, {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })
+          : "",
+      ],
+      [labels.fromHour, booking.fromHour || ""],
+      [
+        labels.status,
+        booking.status
+          ? t(`common.organizationTripStatus.${booking.status}`)
+          : "",
+      ],
+      [""],
+      // Booking Details
+      [labels.bookingQuantity, booking.bookingQuantity || 0],
+      [labels.baseAvailableSeates, booking.baseAvailableSeates || 0],
+      [
+        labels.revenueAmount,
+        booking.revenueAmount !== undefined
+          ? formatCurrency(booking.revenueAmount)
+          : "",
+      ],
+      [""],
+      // Comment Section (if exists)
+      ...(booking.comment?.comment
+        ? [
+            [labels.comment],
+            [labels.createdBy, booking.comment.createdBy || ""],
+            [
+              labels.createdAt,
+              booking.comment.createdAt
+                ? formatDate(booking.comment.createdAt, locale, {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : "",
+            ],
+            [""],
+            [booking.comment.comment.replace(/<[^>]*>/g, "")], // Strip HTML tags
+            [""],
+          ]
+        : []),
+    ];
+
+    const tripSheet = XLSX.utils.aoa_to_sheet(tripData);
+
+    // Auto-fit columns for trip sheet
+    const tripColWidths = [
+      { wch: 20 }, // Label column
+      { wch: 50 }, // Value column
+    ];
+    tripSheet["!cols"] = tripColWidths;
+
+    XLSX.utils.book_append_sheet(workbook, tripSheet, labels.tripInfo);
+
+    // Students Information Sheet
+    if (bookingDetails?.nodes?.length > 0) {
+      const studentsData = [
+        ["#", labels.studentName, labels.nationalId, labels.grade],
+      ];
+
+      bookingDetails.nodes.forEach((student, index) => {
+        studentsData.push([
+          index + 1,
+          student.name || "",
+          student.nationalId || "-",
+          student.grade?.name || "-",
+        ]);
+      });
+
+      const studentsSheet = XLSX.utils.aoa_to_sheet(studentsData);
+
+      // Auto-fit columns for students sheet
+      const studentsColWidths = [
+        { wch: 5 }, // #
+        { wch: 30 }, // Student Name
+        { wch: 20 }, // National ID
+        { wch: 20 }, // Grade
+      ];
+      studentsSheet["!cols"] = studentsColWidths;
+
+      XLSX.utils.book_append_sheet(workbook, studentsSheet, labels.students);
+    }
+
+    // Generate filename with booking name and date
+    const filename = `${labels.filename}_${booking.name || "booking"}_${
+      new Date().toISOString().split("T")[0]
+    }.xlsx`;
+
+    // Save the file
+    XLSX.writeFile(workbook, filename);
+
+    return { success: true, filename };
+  } catch (error) {
+    console.error("Error exporting myBooking to Excel:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Export booking data to Excel format (for bookings-management)
  * @param {Object} booking - Booking data
  * @param {Object} bookingDetails - Students data
  * @param {Function} t - Translation function
  * @param {string} locale - Current locale
  */
 export const exportToExcel = (booking, bookingDetails, t, locale) => {
+  console.log(
+    "🔴 OLD exportToExcel called - THIS SHOULD NOT BE CALLED FROM MYBOOKINGS!"
+  );
   try {
     // Create a new workbook
     const workbook = XLSX.utils.book_new();
@@ -109,14 +265,14 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
     ];
 
     const tripSheet = XLSX.utils.aoa_to_sheet(tripData);
-    
+
     // Auto-fit columns for trip sheet
     const tripColWidths = [
       { wch: 20 }, // Label column
       { wch: 50 }, // Value column
     ];
-    tripSheet['!cols'] = tripColWidths;
-    
+    tripSheet["!cols"] = tripColWidths;
+
     XLSX.utils.book_append_sheet(workbook, tripSheet, labels.tripInfo);
 
     // Students Information Sheet
@@ -178,7 +334,7 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
         `Excel Export - Added ${studentsData.length - 1} students to sheet`
       );
       const studentsSheet = XLSX.utils.aoa_to_sheet(studentsData);
-      
+
       // Auto-fit columns for students sheet based on content
       const studentsColWidths = [
         { wch: 15 }, // Order ID
@@ -197,8 +353,8 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
         { wch: 18 }, // National ID
         { wch: 30 }, // Note
       ];
-      studentsSheet['!cols'] = studentsColWidths;
-      
+      studentsSheet["!cols"] = studentsColWidths;
+
       XLSX.utils.book_append_sheet(workbook, studentsSheet, labels.students);
     } else {
       console.log("Excel Export - No students found or empty array");

@@ -1,8 +1,11 @@
+import React, { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { memo } from "react";
 import formatDate from "@utils/FormateDate";
 import formatCurrency from "@utils/FormatCurrency";
 import formatNumbersUint from "@utils/FormatNumbersUint";
+import { exportMyBookingToExcel } from "@utils/exportUtils";
+import StudentsTable from "../boookings-management/bookings/StudentsTable";
 import {
   locationIcon,
   dateIcon,
@@ -32,14 +35,74 @@ const getStatusStyles = (status) => {
 const BookingDetailsModal = ({ booking, bookingDetails, loading }) => {
   const locale = useLocale();
   const t = useTranslations();
+  const [isExporting, setIsExporting] = useState(false);
 
-  if (loading || !bookingDetails) {
-    return (
-      <div className="p-8 bg-white rounded-xl mx-auto w-[90%] md:w-[70%] flex flex-col items-center justify-center min-h-[200px]">
-        <CircularProgress size={40} color="primary" />
-      </div>
-    );
-  }
+  // Process bookingDetails to ensure StudentsTable gets the right structure
+  // MUST be before conditional returns to avoid hook order issues
+  const processedBookingDetails = React.useMemo(() => {
+    if (!bookingDetails) return { nodes: [] };
+
+    let studentsArray = [];
+
+    if (Array.isArray(bookingDetails)) {
+      studentsArray = bookingDetails;
+    } else if (bookingDetails?.nodes && Array.isArray(bookingDetails.nodes)) {
+      studentsArray = bookingDetails.nodes;
+    } else if (
+      bookingDetails?.data?.nodes &&
+      Array.isArray(bookingDetails.data.nodes)
+    ) {
+      studentsArray = bookingDetails.data.nodes;
+    } else if (bookingDetails?.data && Array.isArray(bookingDetails.data)) {
+      studentsArray = bookingDetails.data;
+    } else if (bookingDetails && typeof bookingDetails === "object") {
+      // Look for arrays in the object that contain student-like data
+      const keys = Object.keys(bookingDetails);
+      for (const key of keys) {
+        if (
+          Array.isArray(bookingDetails[key]) &&
+          bookingDetails[key].length > 0
+        ) {
+          const firstItem = bookingDetails[key][0];
+          if (
+            firstItem &&
+            (firstItem.child || firstItem.parent || firstItem.student)
+          ) {
+            studentsArray = bookingDetails[key];
+            break;
+          }
+        }
+      }
+    }
+
+    return { nodes: studentsArray };
+  }, [bookingDetails]);
+
+  const handleExcelExport = async () => {
+    if (!bookingDetails) return;
+
+    setIsExporting(true);
+
+    try {
+      // Use exportMyBookingToExcel for myBookings data structure
+      const result = exportMyBookingToExcel(
+        booking,
+        processedBookingDetails,
+        t,
+        locale
+      );
+
+      if (result.success) {
+        // Export successful
+      } else {
+        // Export failed
+      }
+    } catch (error) {
+      console.error("Export error:", error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   return (
     <div className="space-y-6 p-6 bg-white mx-auto w-[95%] md:w-[75%] rounded-xl mb-5 max-h-[90vh] overflow-y-auto">
@@ -147,6 +210,45 @@ const BookingDetailsModal = ({ booking, bookingDetails, loading }) => {
                 </span>
               </div>
             )}
+
+            {/* Administrative Comment */}
+            {booking?.comment?.comment && (
+              <div className="mt-4 p-4 bg-gray-50 border-l-4 border-mainColor rounded-lg w-full">
+                <div className="flex items-start gap-2 mb-2">
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-mainColor">
+                      {t(
+                        "profile.tables.bookings.actions.administrativeComment"
+                      )}
+                    </p>
+                    <div className="flex flex-wrap gap-2 text-sm mt-1">
+                      <span>
+                        {t("profile.tables.orders.bookingDetails.createdBy")}:{" "}
+                        <span className="font-medium">
+                          {booking.comment.createdBy}
+                        </span>
+                      </span>
+                      <span>•</span>
+                      <span>
+                        {formatDate(booking.comment.createdAt, locale, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="prose prose-sm max-w-none text-gray-800 mt-2"
+                  dangerouslySetInnerHTML={{
+                    __html: booking.comment.comment,
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
 
@@ -184,6 +286,40 @@ const BookingDetailsModal = ({ booking, bookingDetails, loading }) => {
           </div>
         </div>
       </div>
+
+      {loading || !bookingDetails ? (
+        <div className="p-8 bg-white rounded-xl mx-auto w-[90%] md:w-[70%] flex flex-col items-center justify-center min-h-[200px]">
+          <CircularProgress size={40} color="primary" />
+        </div>
+      ) : (
+        <>
+          <StudentsTable
+            bookingDetails={processedBookingDetails}
+            loadingDetails={loading}
+          />
+          {/* Action Buttons */}
+          <div className="space-y-3 print:hidden">
+            {/* Excel Export Button */}
+            <button
+              onClick={handleExcelExport}
+              disabled={isExporting || loading}
+              className="bg-green-600 w-full hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {isExporting ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  {t("forms.validation.downloading")}
+                </>
+              ) : (
+                <>
+                  <span className="text-lg">📊</span>
+                  {t("profile.tables.orders.bookingDetails.exportExcel")}
+                </>
+              )}
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
