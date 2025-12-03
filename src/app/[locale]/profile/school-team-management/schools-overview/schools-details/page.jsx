@@ -1,8 +1,11 @@
-
 "use client";
 import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
 import { useFetchData } from "@/src/hooks/useFetchData";
-import { setOrganizationDetails, setOrganizationDetailsError, setOrganizationDetailsLoading } from "@/src/store/organizationDetails/organizationDetailsSlice";
+import {
+  setOrganizationDetails,
+  setOrganizationDetailsError,
+  setOrganizationDetailsLoading,
+} from "@/src/store/organizationDetails/organizationDetailsSlice";
 import { Typography } from "@material-ui/core";
 import { Box } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
@@ -63,46 +66,45 @@ const SchoolsDetailsPage = () => {
     city: "الرياض",
   };
 
-//   const locale = useLocale();
-//   const t = useTranslations();
+  //   const locale = useLocale();
+  //   const t = useTranslations();
 
-//   const organizationId = useSelector(
-//     (state) => state.organizationDetails.organizationId
-//   );
+  //   const organizationId = useSelector(
+  //     (state) => state.organizationDetails.organizationId
+  //   );
 
+  //   const { data, isLoading, error } = useFetchData(
+  //     `${B2B_END_POINTS.PROFILE.ORGANIZATIONS.ORGANIZATION_DETAILS}/${organizationId}`,
+  //     {},
+  //     {
+  //       lang: locale,
+  //       onSuccess: setOrganizationDetails,
+  //       onLoading: setOrganizationDetailsLoading,
+  //       onError: setOrganizationDetailsError,
+  //     }
+  //     );
 
-//   const { data, isLoading, error } = useFetchData(
-//     `${B2B_END_POINTS.PROFILE.ORGANIZATIONS.ORGANIZATION_DETAILS}/${organizationId}`,
-//     {},
-//     {
-//       lang: locale,
-//       onSuccess: setOrganizationDetails,
-//       onLoading: setOrganizationDetailsLoading,
-//       onError: setOrganizationDetailsError,
-//     }
-//     );
+  const dispatch = useDispatch();
 
-    const dispatch = useDispatch();
+  dispatch(setOrganizationDetails(details));
 
-    dispatch(setOrganizationDetails(details));
-
-    return (
-      <>
-        <main className="flex flex-col gap-6 min-h-screen">
-          <Box>
-            <Typography variant="h3" className="!text-titleColor !font-somar !text-xl ">
-              اختر المدرسة التي تريد عرض تفاصيلها:
-            </Typography>
-            <Typography
-              variant="caption"
-              className="!text-textDark !font-somar "
-            >
-              إدارة جميع المدارس التابعة للشركة ومتابعة أدائها
-            </Typography>
-          </Box>
-        </main>
-      </>
-    );
+  return (
+    <>
+      <main className="flex flex-col gap-6 min-h-screen">
+        <Box>
+          <Typography
+            variant="h3"
+            className="!text-titleColor !font-somar !text-xl "
+          >
+            اختر المدرسة التي تريد عرض تفاصيلها:
+          </Typography>
+          <Typography variant="caption" className="!text-textDark !font-somar ">
+            إدارة جميع المدارس التابعة للشركة ومتابعة أدائها
+          </Typography>
+        </Box>
+      </main>
+    </>
+  );
 };
 
 export default SchoolsDetailsPage;

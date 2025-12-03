@@ -17,7 +17,7 @@ const sortOptions = ["HIGHEST_NAME", "LOWEST_NAME", "NEWEST", "OLDEST"];
 
 const SearchFilters = ({ searchTerms, onChange }) => {
   const [open, setOpen] = useState(false);
- const locale = useLocale();
+  const locale = useLocale();
   const t = useTranslations();
 
   const { data } = useFetchData(

@@ -2,15 +2,10 @@
 
 import { Box, Typography, Button } from "@mui/material";
 import { useTranslations } from "next-intl";
-import {
-  bankSmall,
-  locationGrayIcon,
-  newSarSmall,
-} from "@/src/assets/svg";
+import { bankSmall, locationGrayIcon, newSarSmall } from "@/src/assets/svg";
 import { setOrganizationId } from "@/src/store/organizationDetails/organizationDetailsSlice";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-
 
 const SchoolOverviewCard = ({ item }) => {
   const t = useTranslations();
