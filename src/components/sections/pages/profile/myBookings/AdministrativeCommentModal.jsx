@@ -32,11 +32,9 @@ const AdministrativeCommentModal = ({ booking, onClose }) => {
     setLoading(true);
     try {
       // TODO: Replace with actual API endpoint when available
-      await axios.post(
-        getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.BOOKINGS}/${booking._id}/comment`
-        ),
-        { comment },
+      await axios.patch(
+        getProxyUrl(`${B2B_END_POINTS.PROFILE.ADMINISTRATIVE_COMMENT}`),
+        { trip: booking._id, comment },
         { headers }
       );
 

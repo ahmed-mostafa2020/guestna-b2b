@@ -69,7 +69,7 @@ export const B2B_END_POINTS = {
     HEADER_FILTER_BY_ORGANIZATION: "profile/organizations/hover",
     BOOKINGS: "profile/organizationTrips/home/all",
     MOST_ACTIVE_ORGANIZATIONS: "profile/organizations/most-active",
-
+    ADMINISTRATIVE_COMMENT: "profile/organizationTrips/administrative/comment",
     ALL_TRIPS: {
       ACTIVITIES: "profile/organizationTrips/activity/all",
       PACKAGES: "profile/organizationTrips/package/all",

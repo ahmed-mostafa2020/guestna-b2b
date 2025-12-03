@@ -113,12 +113,28 @@ const Profile = () => {
             endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS}`}
             method="POST"
             enablePagination={true}
-            emptyStateComponent={<EmptyBookings />}
+            enableSearch={true}
+            emptyStateComponent={(data, searchTerm, setSearchTerm) => (
+              <>
+                <MyBookingsTrips
+                  tableTitle={t("profile.tables.bookings.title")}
+                  data={data}
+                  currentPage={1}
+                  setCurrentPage={() => {}}
+                  enablePagination={false}
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                />
+                <EmptyBookings />
+              </>
+            )}
             contentComponent={(
               data,
               currentPage,
               setCurrentPage,
-              enablePagination
+              enablePagination,
+              searchTerm,
+              setSearchTerm
             ) => (
               <MyBookingsTrips
                 tableTitle={t("profile.tables.bookings.title")}
@@ -126,6 +142,8 @@ const Profile = () => {
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
                 enablePagination={enablePagination}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
               />
             )}
           />

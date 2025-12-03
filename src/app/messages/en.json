@@ -202,6 +202,7 @@
     "showDetails": "Show Details",
     "search": "Search",
     "reset": "Reset",
+    "clear": "Clear",
     "clearAll": "Clear All",
     "more": "Learn more",
     "viewTripDetails": "Take a look at the trip",
@@ -717,7 +718,8 @@
           "price": "Revenue",
           "status": "Status",
           "actions": "Actions",
-          "participants": "Participants"
+          "participants": "Participants",
+          "searchTripName": "Search by trip name"
         },
         "actions": {
           "administrativeComment": "Administrative Comment",

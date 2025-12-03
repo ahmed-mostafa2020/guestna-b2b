@@ -19,15 +19,21 @@ const ProfilePageTemplate = ({
   additionalParams = {},
   enablePagination = false,
   bodyParameters = {},
+  enableSearch = false,
 }) => {
   const locale = useLocale();
   const t = useTranslations();
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const requestBody = enablePagination
     ? {
         perPage: CONSTANT_VALUES.TABLE_PER_PAGE,
         page: currentPage,
+        filter: {
+          ...(enableSearch && searchTerm && { searchTerm }),
+          ...bodyParameters?.filter,
+        },
         ...bodyParameters,
       }
     : {};
@@ -46,6 +52,13 @@ const ProfilePageTemplate = ({
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${title}`;
   }, [t, title]);
+
+  // Reset to page 1 when search term changes
+  useEffect(() => {
+    if (enableSearch && searchTerm !== undefined) {
+      setCurrentPage(1);
+    }
+  }, [searchTerm, enableSearch]);
 
   if (isLoading)
     return (
@@ -78,7 +91,7 @@ const ProfilePageTemplate = ({
 
       {isEmpty ? (
         typeof emptyStateComponent === "function" ? (
-          emptyStateComponent(data)
+          emptyStateComponent(data, searchTerm, setSearchTerm)
         ) : (
           emptyStateComponent
         )
@@ -107,7 +120,9 @@ const ProfilePageTemplate = ({
                 data,
                 currentPage,
                 setCurrentPage,
-                enablePagination
+                enablePagination,
+                searchTerm,
+                setSearchTerm
               )
             : React.isValidElement(contentComponent)
             ? React.cloneElement(contentComponent, {
@@ -115,6 +130,8 @@ const ProfilePageTemplate = ({
                 currentPage,
                 setCurrentPage,
                 enablePagination,
+                searchTerm,
+                setSearchTerm,
               })
             : contentComponent}
         </>

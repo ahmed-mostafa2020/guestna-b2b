@@ -201,6 +201,7 @@
     "showDetails": "عرض التفاصيل",
     "search": "ابحث",
     "reset": "إعادة ضبط",
+    "clear": "مسح",
     "clearAll": "مسح الكل",
     "more": "اعرف أكثر",
     "viewTripDetails": "تعرّف على تفاصيل الرحلة",
@@ -713,7 +714,8 @@
           "price": "الإيرادات",
           "status": "الحالة",
           "actions": "الإجراءات",
-          "participants": "المشاركون"
+          "participants": "المشاركون",
+          "searchTripName": "ابحث باسم الرحلة"
         },
         "actions": {
           "administrativeComment": "تعليق إداري",
