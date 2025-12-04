@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 
 const SelectSchoolForDetailsSkeleton = () => {
   return (
-    <Box className="flex flex-col gap-4 bg-white rounded-lg p-4 shadow">
+    <Box className="flex flex-col gap-4 bg-white rounded-lg p-4 shadow border-border border-2">
       {/* Title Skeleton */}
       <Skeleton variant="text" width={200} height={30} />
 
@@ -71,7 +71,7 @@ const SelectSchoolForDetails = () => {
 
   if (loading === "loading") return <SelectSchoolForDetailsSkeleton />;
   return (
-    <Box className="flex flex-col gap-4 bg-white rounded-lg p-4 shadow">
+    <Box className="flex flex-col gap-4 bg-white rounded-lg p-4 shadow border-2 border-border">
       <Typography variant="h3" className=" !font-somar !text-xl ">
         {t("profile.schools_overview.schools_details.select_school.title")}{" "}
       </Typography>
