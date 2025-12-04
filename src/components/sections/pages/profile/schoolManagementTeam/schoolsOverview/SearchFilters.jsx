@@ -33,6 +33,7 @@ const SearchFilters = ({ searchTerms, onChange }) => {
   console.log("Tracks fetched:", tracks);
 
   const handleFieldChange = (key, value) => {
+    console.log(key, value);
     onChange({ ...searchTerms, [key]: value });
   };
 
@@ -170,7 +171,8 @@ const SearchFilters = ({ searchTerms, onChange }) => {
               },
             }}
             value={
-              formattedTracks.find((t) => t.value === searchTerms.track) || null
+              formattedSortOptions.find((t) => t.value === searchTerms.sort) ||
+              null
             }
             onChange={(_, v) => handleFieldChange("sort", v?.value ?? "")}
             renderInput={(params) => (
@@ -293,7 +295,8 @@ const SearchFilters = ({ searchTerms, onChange }) => {
             },
           }}
           value={
-            formattedTracks.find((t) => t.value === searchTerms.track) || null
+            formattedSortOptions.find((t) => t.value === searchTerms.sort) ||
+            null
           }
           onChange={(_, v) => handleFieldChange("sort", v?.value ?? "")}
           renderInput={(params) => (
