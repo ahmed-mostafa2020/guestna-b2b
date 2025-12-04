@@ -7,7 +7,10 @@ import { useSelector } from "react-redux";
 const StateCard = ({ label, value }) => {
   return (
     <Box className="flex flex-col gap-2 bg-white border  justify-center items-center border-borderColor rounded-lg p-4">
-      <Typography variant="h4" className=" !font-somar !text-sm text-[#202224]">
+      <Typography
+        variant="h4"
+        className=" !font-somar !text-sm !text-[#202224]"
+      >
         {label}
       </Typography>
       <Typography variant="h4" className=" !font-somar !text-xl text-[#1E1E1C]">
@@ -50,9 +53,6 @@ const SchoolStats = () => {
       label: t(`profile.schools_overview.schools_details.tripsStats.${key}`),
       value,
     }));
-  
-  
-  
 
   return (
     <Grid container spacing={2} size={12}>
@@ -61,7 +61,7 @@ const SchoolStats = () => {
           <StateCard label={item.label} value={item.value} />
         </Grid>
       ))}
-      <Grid  item xs={4}>
+      <Grid item xs={4}>
         <StateCard
           value={details?.studentStats?.total}
           label={t(
