@@ -18,45 +18,41 @@ const BookingsHeader = ({ setSearchTerm, searchTerm, tableTitle }) => {
   };
 
   return (
-    <div className="mb-6">
-      <div className="flex flex-col md:flex-row gap-4 items-center md:items-center justify-between">
-        {tableTitle && (
-          <h1 className="text-lg lg:text-2xl font-medium text-titleColor order-1 md:order-1 text-center md:text-start">
-            {tableTitle}
-          </h1>
-        )}
+    <div className="flex flex-col md:flex-row gap-4 items-center md:items-center justify-between">
+      {tableTitle && (
+        <h1 className="text-lg lg:text-2xl font-medium text-titleColor order-1 md:order-1 text-center md:text-start">
+          {tableTitle}
+        </h1>
+      )}
 
-        <div className="flex flex-col md:flex-row gap-1 w-full md:w-auto order-2 md:order-2 items-center">
-          <TextField
-            placeholder={
-              t("profile.tables.bookings.header.searchTripName") + "..."
+      <div className="flex md:flex-row gap-1 w-full md:w-auto order-2 md:order-2 items-center mb-4 lg:mb-0">
+        <TextField
+          placeholder={
+            t("profile.tables.bookings.header.searchTripName") + "..."
+          }
+          size="small"
+          className="w-full md:w-72"
+          value={searchValue || searchTerm}
+          onChange={(e) => {
+            const value = e.target.value;
+            setSearchValue(value);
+            if (value === "") {
+              setSearchTerm("");
             }
-            size="small"
-            className="w-full md:w-72"
-            value={searchValue || searchTerm}
-            onChange={(e) => {
-              const value = e.target.value;
-              setSearchValue(value);
-              if (value === "") {
-                setSearchTerm("");
-              }
-            }}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconButton onClick={handleSearch}>
-                    {searchBarIcon}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
+          }}
+          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <IconButton onClick={handleSearch}>{searchBarIcon}</IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
 
-          {(searchValue || searchTerm) && (
-            <IconButton onClick={handleClear}>{wrongIcon}</IconButton>
-          )}
-        </div>
+        {(searchValue || searchTerm) && (
+          <IconButton onClick={handleClear}>{wrongIcon}</IconButton>
+        )}
       </div>
     </div>
   );

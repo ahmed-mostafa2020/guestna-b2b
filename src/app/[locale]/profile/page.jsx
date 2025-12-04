@@ -64,7 +64,23 @@ const Profile = () => {
     }
   );
 
-  if (error || mostActiveOrganizationsError)
+  const {
+    data: organizationsData,
+    isLoading: organizationsLoading,
+    error: organizationsError,
+  } = useFetchData(
+    `${B2B_END_POINTS.PROFILE.ORGANIZATIONS}`,
+    {},
+    {
+      lang: locale,
+      enabled: true, // Explicitly enable this request
+      // enabled: hasElement(
+      //   PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS
+      // ),
+    }
+  );
+
+  if (error || mostActiveOrganizationsError || organizationsError)
     return (
       <ProtectedProfilePage
         requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}

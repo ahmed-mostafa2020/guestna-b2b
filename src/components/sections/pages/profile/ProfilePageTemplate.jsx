@@ -7,7 +7,6 @@ import React, { memo, useEffect, useState } from "react";
 import { useFetchData } from "@hooks/useFetchData";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 
 const ProfilePageTemplate = ({
   title,

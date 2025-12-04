@@ -31,40 +31,42 @@ const BookingsPage = () => {
     : {};
 
   return (
-    <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_BOOKINGS_PAGE}>
+    <ProtectedProfilePage
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_BOOKINGS_PAGE}
+    >
       <div className="flex flex-col gap-4 lg:gap-6">
-      {hasElement(
-        PERMISSIONS.ELEMENT.B2B_PROFILE_BOOKINGS_TRIPS_STATUS_TABS
-      ) && (
-        <FiltringTripsByStatus
-          onStatusChange={handleStatusChange}
-          activeStatus={selectedStatus || "ALL"}
-        />
-      )}
-
-      <ProfilePageTemplate
-        title={t("profile.aside.bookings")}
-        endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.BOOKINGS}`}
-        method="POST"
-        bodyParameters={requestBody}
-        emptyStateComponent={<EmptyBookings />}
-        contentComponent={(
-          data,
-          currentPage,
-          setCurrentPage,
-          enablePagination
-        ) => (
-          <BookingsTable
-            tableTitle={t("profile.tables.bookings.title")}
-            data={data}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            enablePagination={enablePagination}
+        {hasElement(
+          PERMISSIONS.ELEMENT.B2B_PROFILE_BOOKINGS_TRIPS_STATUS_TABS
+        ) && (
+          <FiltringTripsByStatus
+            onStatusChange={handleStatusChange}
+            activeStatus={selectedStatus || "ALL"}
           />
         )}
-        enablePagination={true}
-        key={selectedStatus} // Force re-render when status changes
-      />
+
+        <ProfilePageTemplate
+          title={t("profile.aside.bookings")}
+          endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.BOOKINGS}`}
+          method="POST"
+          bodyParameters={requestBody}
+          emptyStateComponent={<EmptyBookings />}
+          contentComponent={(
+            data,
+            currentPage,
+            setCurrentPage,
+            enablePagination
+          ) => (
+            <BookingsTable
+              tableTitle={t("profile.tables.bookings.title")}
+              data={data}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              enablePagination={enablePagination}
+            />
+          )}
+          enablePagination={true}
+          key={selectedStatus} // Force re-render when status changes
+        />
       </div>
     </ProtectedProfilePage>
   );

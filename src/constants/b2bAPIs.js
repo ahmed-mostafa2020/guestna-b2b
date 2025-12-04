@@ -63,13 +63,14 @@ export const B2B_END_POINTS = {
 
   PROFILE: {
     INFORMATION: "auth/userInfo", //MAIN
-
     INFO: "profile/users/management/info",
 
     HEADER_FILTER_BY_ORGANIZATION: "profile/organizations/hover",
     BOOKINGS: "profile/organizationTrips/home/all",
     MOST_ACTIVE_ORGANIZATIONS: "profile/organizations/most-active",
     ADMINISTRATIVE_COMMENT: "profile/organizationTrips/administrative/comment",
+    ORGANIZATIONS: "profile/organizations/company",
+
     ALL_TRIPS: {
       ACTIVITIES: "profile/organizationTrips/activity/all",
       PACKAGES: "profile/organizationTrips/package/all",
