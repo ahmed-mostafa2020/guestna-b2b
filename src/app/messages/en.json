@@ -1369,11 +1369,17 @@
       },
       "schools_details": {
         "title": "Select the school you want to view details for:",
-        "caption":"Managing all company-affiliated schools and monitoring their performance.",
+        "caption": "Managing all company-affiliated schools and monitoring their performance.",
         "select_school": {
           "title": "Select the school you want to view details for:",
           "performance": "Performance",
           "students": "Students"
+        },
+        "balance": {
+          "title": "School Balance",
+          "available_balance": "Available ",
+          "pending_balance": "Pending ",
+          "total_balance": "Total "
         }
       },
       "no_schools_found": "No schools found"

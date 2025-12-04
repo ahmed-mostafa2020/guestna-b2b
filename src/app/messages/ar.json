@@ -1368,6 +1368,12 @@
           "title":"اختر المدرسة التي تريد عرض تفاصيلها:" ,
           "performance":"الاداء",
           "students":"الطلاب"
+        },
+        "balance":{
+          "title":"رصيد المدرسة",
+          "available_balance":" متاح",
+          "pending_balance":" معلق",
+          "total_balance":" الاجمالي"
         }
       },
       "no_schools_found": "لم يتم العثور على مدارس"

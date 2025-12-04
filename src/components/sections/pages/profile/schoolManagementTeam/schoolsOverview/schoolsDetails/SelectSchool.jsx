@@ -1,4 +1,4 @@
-import { locationIcon } from "@/src/assets/svg";
+import { bluelocationIcon, locationIcon } from "@/src/assets/svg";
 import { Box } from "@material-ui/core";
 import { ArrowDropDown } from "@mui/icons-material";
 import { MenuItem, Select, Skeleton, Typography } from "@mui/material";
@@ -62,19 +62,20 @@ const SelectSchoolForDetails = () => {
   };
 
   const {
-     details,
-  
+    details,
     loading,
   } = useSelector((state) => state.organizationDetails);
   const [open, setOpen] = React.useState(false);
-  
-    const t = useTranslations();
 
-  if (loading === "loading") return <SelectSchoolForDetailsSkeleton />;
+  const t = useTranslations();
+  console.log("details", details , loading);
+
+  if (loading ==='loading' ) return <SelectSchoolForDetailsSkeleton />;
   return (
     <Box className="flex flex-col gap-4 bg-white rounded-lg p-4 shadow">
       <Typography variant="h3" className=" !font-somar !text-xl ">
-        {t("profile.schools_overview.schools_details.select_school.title")}      </Typography>
+        {t("profile.schools_overview.schools_details.select_school.title")}{" "}
+      </Typography>
       <Select
         open={open}
         onOpen={() => setOpen(true)}
@@ -84,7 +85,7 @@ const SelectSchoolForDetails = () => {
           <ArrowDropDown className={`${open && "rotate-180"} left-0 me-2`} />
         )}
         size="small"
-        defaultValue={details._id}
+        defaultValue={details?._id}
         onChange={handleSchoolSelect}
         MenuProps={{
           PaperProps: {
@@ -102,9 +103,9 @@ const SelectSchoolForDetails = () => {
       >
         <MenuItem
           className="!font-somar p-2 !bg-white hover:!bg-buttonsHover "
-          value={details._id}
+          value={details?._id}
         >
-          {details.name}
+          {details?.name}
         </MenuItem>
         {[
           { _id: "6923498247e5ef30a20c1195", name: "عادل مدارس االامل" },
@@ -124,8 +125,8 @@ const SelectSchoolForDetails = () => {
       <Box className="bg-buttonsHover  p-4 rounded-lg flex gap-4 border-borderColor border-2">
         <Box className="flex items-center justify-center">
           <Image
-            src={details.image}
-            alt={details.name}
+            src={details?.image}
+            alt={details?.name}
             width={110}
             height={110}
           />
@@ -136,13 +137,14 @@ const SelectSchoolForDetails = () => {
               variant="h3"
               className=" !font-somar !text-xl !text-titleColor "
             >
-              {details.name} - {details.city}
+              {details?.name} - {details?.city}
             </Typography>
             <Typography
               variant="caption"
               className=" !font-somar  !text-titleColor flex items-center gap-1 justify-start"
             >
-              <span>{locationIcon}</span> {details.city}
+              <span>{bluelocationIcon}</span>{" "}
+              {details?.city}
             </Typography>
           </Box>
 
@@ -151,13 +153,19 @@ const SelectSchoolForDetails = () => {
               varient="caption"
               className="!font-somar bg-white p-2 rounded-full  !text-sm"
             >
-              {t("profile.schools_overview.schools_details.select_school.performance")} : 85%
+              {t(
+                "profile.schools_overview.schools_details.select_school.performance"
+              )}{" "}
+              : 85%
             </Typography>
             <Typography
               varient="caption"
               className="!font-somar  rounded-full  !text-sm"
             >
-              {t("profile.schools_overview.schools_details.select_school.students")} :{details.studentStats.total}
+              {t(
+                "profile.schools_overview.schools_details.select_school.students"
+              )}{" "}
+              :{details?.studentStats.total}
             </Typography>
           </Box>
         </Box>

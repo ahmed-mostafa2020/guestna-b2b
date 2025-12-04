@@ -1,0 +1,121 @@
+import { newSarSmall, visaCardIcon } from "@/src/assets/svg";
+import { Grid } from "@material-ui/core";
+import { Box, Skeleton, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
+import React from "react";
+import { useSelector } from "react-redux";
+
+const SchoolBalanceSkeleton = () => {
+  return (
+    <Box className="bg-[#D4FAFF66] border-[#6EC1E366] border-2 rounded-lg p-4">
+      {/* Title skeleton */}
+      <Skeleton width={220} height={32} variant="text" />
+
+      <Grid className="!mt-7" container spacing={2}>
+        {[1, 2, 3].map((item) => (
+          <Grid
+            key={item}
+            xs={4}
+            className="flex flex-col items-center justify-center gap-3"
+          >
+            {/* Label skeleton */}
+            <Skeleton width={110} height={22} variant="text" />
+
+            {/* Amount + SAR icon */}
+            <Skeleton
+              variant="rectangular"
+              width={90}
+              height={28}
+              className="rounded-md"
+            />
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
+  );
+};
+
+const SchoolBalance = () => {
+  const {
+    details,
+    loading,
+  } = useSelector((state) => state.organizationDetails);
+  const t = useTranslations();
+
+  if (loading ==='loading' ) {
+    return <SchoolBalanceSkeleton />;
+  }
+
+  return (
+    <>
+      <Box className="bg-[#D4FAFF66] border-[#6EC1E366] border-2 rounded-lg px-4 py-6">
+        <Typography variant="h3" className=" !font-somar !text-xl flex gap-2 ">
+          {" "}
+          <span> {visaCardIcon}</span>{" "}
+          {t("profile.schools_overview.schools_details.balance.title")}
+        </Typography>
+        <Grid className="!mt-7 " container size={12} spacing={2}>
+          <Grid
+            className="flex flex-col items-center justify-center gap-2"
+            xs={4}
+          >
+            <Typography
+              variant="h4"
+              className=" !font-somar !text-sm text-[#1E1E1C]"
+            >
+              {t(
+                "profile.schools_overview.schools_details.balance.available_balance"
+              )}
+            </Typography>
+            <Typography
+              variant="h4"
+              className=" !font-somar !text-sm text-[#008442] flex gap-2 items-center justify-center"
+            >
+              {details?.balance.availableBalance} <span>{newSarSmall}</span>
+            </Typography>
+          </Grid>
+          <Grid
+            className="flex flex-col items-center justify-center gap-2"
+            xs={4}
+          >
+            <Typography
+              variant="h3"
+              className=" !font-somar !text-sm text-[#1E1E1C]"
+            >
+              {t(
+                "profile.schools_overview.schools_details.balance.pending_balance"
+              )}
+            </Typography>
+            <Typography
+              variant="h4"
+              className=" !font-somar !text-sm text-[#B25B00] flex gap-2 items-center justify-center"
+            >
+              { details?.balance.pendingBalance} <span>{newSarSmall}</span>
+            </Typography>
+          </Grid>
+          <Grid
+            className="flex flex-col items-center justify-center gap-2"
+            xs={4}
+          >
+            <Typography
+              variant="h3"
+              className=" !font-somar !text-sm text-[#1E1E1C]"
+            >
+              {t(
+                "profile.schools_overview.schools_details.balance.total_balance"
+              )}
+            </Typography>
+            <Typography
+              variant="h4"
+              className=" !font-somar !text-sm text-[#1858A5] flex gap-2 items-center justify-center"
+            >
+              {details?.balance.totalBalance} <span>{newSarSmall}</span>
+            </Typography>
+          </Grid>
+        </Grid>
+      </Box>
+    </>
+  );
+};
+
+export default SchoolBalance;
