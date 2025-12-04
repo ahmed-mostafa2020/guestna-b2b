@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 
 const StateCard = ({ label, value }) => {
   return (
-    <Box className="flex flex-col gap-2 bg-white border  justify-center items-center border-borderColor rounded-lg p-4">
+    <Box className="flex flex-col gap-2 bg-white border-2  justify-center items-center border-border rounded-lg p-4">
       <Typography
         variant="h4"
         className=" !font-somar !text-sm !text-[#202224]"
@@ -22,7 +22,7 @@ const StateCard = ({ label, value }) => {
 
 const StateCardSkeleton = () => {
   return (
-    <Box className="flex flex-col gap-2 bg-white border   justify-center items-center border-borderColor rounded-lg p-4">
+    <Box className="flex flex-col gap-2 bg-white border   justify-center items-center border-border rounded-lg p-4">
       <Skeleton variant="text" width={100} height={20} />
       <Skeleton variant="text" width={100} height={20} />
     </Box>

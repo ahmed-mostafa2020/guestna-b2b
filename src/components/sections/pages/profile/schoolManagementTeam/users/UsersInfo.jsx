@@ -13,7 +13,12 @@ import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
-const UsersInfo = ({ users = [], organizationId, refetchInfo, refetchTable }) => {
+const UsersInfo = ({
+  users = [],
+  organizationId,
+  refetchInfo,
+  refetchTable,
+}) => {
   const { hasElement } = usePermissions();
   const t = useTranslations();
   const locale = useLocale();

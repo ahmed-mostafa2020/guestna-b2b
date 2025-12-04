@@ -1391,6 +1391,9 @@
         "studentStats": {
           "active": "active students",
           "total": "total students"
+        },
+        "users": {
+          "title": "Users"
         }
       },
       "no_schools_found": "No schools found"

@@ -32,7 +32,7 @@ const UserCard = ({ user }) => {
               </h3>
               <p className="text-xs text-textLight truncate">{user.email}</p>
               <Chip
-                label={user.role.description}
+                label={user.role?.description ||user.role}
                 size="small"
                 className="text-xs !bg-[#e9e1ff] !text-black w-fit !font-somar"
               />
@@ -76,7 +76,7 @@ const UserCard = ({ user }) => {
                 {user.email}
               </p>
               <Chip
-                label={user.role.description}
+                label={user.role.description || user.role}
                 size="small"
                 className="text-xs !bg-[#e9e1ff] !text-black !font-somar"
               />
