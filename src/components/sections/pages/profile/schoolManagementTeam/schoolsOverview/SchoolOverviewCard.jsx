@@ -15,7 +15,7 @@ const SchoolOverviewCard = ({ item }) => {
   const handleClick = () => {
     dispatch(setOrganizationId(item._id));
     router.push(
-      `/profile/school-team-management/schools-overview/schools-details`
+      `/profile/school-team-management/schools-overview/schools-details/${item._id}`
     );
   };
   return (
