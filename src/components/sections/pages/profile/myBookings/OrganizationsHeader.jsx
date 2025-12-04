@@ -4,7 +4,7 @@ import { memo, useState } from "react";
 import { TextField, InputAdornment, IconButton } from "@mui/material";
 import { searchBarIcon, wrongIcon } from "@assets/svg";
 
-const BookingsHeader = ({ setSearchTerm, searchTerm, tableTitle }) => {
+const OrganizationsHeader = ({ setSearchTerm, searchTerm, tableTitle }) => {
   const t = useTranslations();
   const [searchValue, setSearchValue] = useState("");
 
@@ -28,7 +28,7 @@ const BookingsHeader = ({ setSearchTerm, searchTerm, tableTitle }) => {
       <div className="flex md:flex-row gap-1 w-full md:w-auto order-2 md:order-2 items-center mb-4 lg:mb-0">
         <TextField
           placeholder={
-            t("profile.tables.bookings.header.searchTripName") + "..."
+            t("profile.tables.organizations.searchBySchoolName") + "..."
           }
           size="medium"
           className="w-full md:w-72"
@@ -58,4 +58,4 @@ const BookingsHeader = ({ setSearchTerm, searchTerm, tableTitle }) => {
   );
 };
 
-export default memo(BookingsHeader);
+export default memo(OrganizationsHeader);

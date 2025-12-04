@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useFetchData } from "@hooks/useFetchData";
 import { usePermissions } from "@hooks/usePermissions";
@@ -21,11 +21,13 @@ import ChartsSkeleton from "@components/sections/pages/profile/trips/charts/Char
 import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageTemplate";
 import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBookings";
 import MyBookingsTrips from "@components/sections/pages/profile/myBookings";
+import OrganizationsSection from "@components/sections/pages/profile/myBookings/OrganizationsSection";
 
 const Profile = () => {
   const { hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
+  const [organizationsSearchTerm, setOrganizationsSearchTerm] = useState("");
 
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
@@ -69,7 +71,7 @@ const Profile = () => {
     isLoading: organizationsLoading,
     error: organizationsError,
   } = useFetchData(
-    `${B2B_END_POINTS.PROFILE.ORGANIZATIONS}`,
+    `${B2B_END_POINTS.PROFILE.ORGANIZATIONS}?searchTerm=${organizationsSearchTerm}`,
     {},
     {
       lang: locale,
@@ -77,7 +79,8 @@ const Profile = () => {
       // enabled: hasElement(
       //   PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS
       // ),
-    }
+    },
+    [organizationsSearchTerm]
   );
 
   if (error || mostActiveOrganizationsError || organizationsError)
@@ -164,6 +167,13 @@ const Profile = () => {
             )}
           />
         )}
+
+        <OrganizationsSection
+          organizationsData={organizationsData}
+          organizationsLoading={organizationsLoading}
+          searchTerm={organizationsSearchTerm}
+          setSearchTerm={setOrganizationsSearchTerm}
+        />
       </main>
     </ProtectedProfilePage>
   );

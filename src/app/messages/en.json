@@ -736,6 +736,10 @@
           "note": "Notes"
         }
       },
+      "organizations": {
+        "title": "Schools",
+        "searchBySchoolName": "Search by school name"
+      },
       "reports": {
         "title": "Trips Closure Reports",
         "subTitle": "Confirm trips completion and prepare final reports"
