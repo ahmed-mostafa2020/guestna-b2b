@@ -1,7 +1,7 @@
 "use client";
 
-import { locationIcon } from "@/src/assets/svg";
 import SchoolBalance from "@/src/components/sections/pages/profile/schoolManagementTeam/schoolsOverview/schoolsDetails/SchoolBalance";
+import SchoolStats from "@/src/components/sections/pages/profile/schoolManagementTeam/schoolsOverview/schoolsDetails/SchoolStats";
 import SelectSchoolForDetails from "@/src/components/sections/pages/profile/schoolManagementTeam/schoolsOverview/schoolsDetails/SelectSchool";
 import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
 import { useFetchData } from "@/src/hooks/useFetchData";
@@ -10,14 +10,10 @@ import {
   setOrganizationDetailsError,
   setOrganizationDetailsLoading,
 } from "@/src/store/organizationDetails/organizationDetailsSlice";
-import { MenuItem, Typography } from "@material-ui/core";
-import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
-import { Box, Select } from "@mui/material";
-import { on } from "events";
+import { Typography } from "@material-ui/core";
+import { Box } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
 import React from "react";
-import { useDispatch } from "react-redux";
 
 const SchoolsDetailsPage = ({ params }) => {
   // const details = {
@@ -109,6 +105,8 @@ const SchoolsDetailsPage = ({ params }) => {
         <SelectSchoolForDetails />
 
         <SchoolBalance />
+
+        <SchoolStats />
       </main>
     </>
   );

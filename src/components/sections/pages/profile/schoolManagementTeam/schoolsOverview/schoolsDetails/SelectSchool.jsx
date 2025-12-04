@@ -61,16 +61,15 @@ const SelectSchoolForDetails = () => {
     setOpen(true);
   };
 
-  const {
-    details,
-    loading,
-  } = useSelector((state) => state.organizationDetails);
+  const { details, loading } = useSelector(
+    (state) => state.organizationDetails
+  );
   const [open, setOpen] = React.useState(false);
 
   const t = useTranslations();
-  console.log("details", details , loading);
+  console.log("details", details, loading);
 
-  if (loading ==='loading' ) return <SelectSchoolForDetailsSkeleton />;
+  if (loading === "loading") return <SelectSchoolForDetailsSkeleton />;
   return (
     <Box className="flex flex-col gap-4 bg-white rounded-lg p-4 shadow">
       <Typography variant="h3" className=" !font-somar !text-xl ">
@@ -143,8 +142,7 @@ const SelectSchoolForDetails = () => {
               variant="caption"
               className=" !font-somar  !text-titleColor flex items-center gap-1 justify-start"
             >
-              <span>{bluelocationIcon}</span>{" "}
-              {details?.city}
+              <span>{bluelocationIcon}</span> {details?.city}
             </Typography>
           </Box>
 

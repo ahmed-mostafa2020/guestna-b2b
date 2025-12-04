@@ -1346,7 +1346,7 @@
         "sortingBy": "ترتيب حسب: ",
         "track": "المسار",
         "city": "المدينة",
-        "sort_options":{
+        "sort_options": {
           "HIGHEST_NAME": "الاسم من أ إلى ي",
           "LOWEST_NAME": "الاسم من ي إلى أ",
           "NEWEST": "الأحدث",
@@ -1362,18 +1362,29 @@
         "show_details": "عرض التفاصيل"
       },
       "schools_details": {
-        "title":"اختر المدرسة التي تريد عرض تفاصيلها:" ,
-        "caption":"إدارة جميع المدارس التابعة للشركةومتابعة أدائها ",
-        "select_school":{
-          "title":"اختر المدرسة التي تريد عرض تفاصيلها:" ,
-          "performance":"الاداء",
-          "students":"الطلاب"
+        "title": "اختر المدرسة التي تريد عرض تفاصيلها:",
+        "caption": "إدارة جميع المدارس التابعة للشركةومتابعة أدائها ",
+        "select_school": {
+          "title": "اختر المدرسة التي تريد عرض تفاصيلها:",
+          "performance": "الاداء",
+          "students": "الطلاب"
         },
-        "balance":{
-          "title":"رصيد المدرسة",
-          "available_balance":" متاح",
-          "pending_balance":" معلق",
-          "total_balance":" الاجمالي"
+        "balance": {
+          "title": "رصيد المدرسة",
+          "available_balance": " متاح",
+          "pending_balance": " معلق",
+          "total_balance": " الاجمالي"
+        },
+        "tripsStats": {
+          "canceled": "الرحلات الملغاة",
+          "done": "رحلات مكتملة",
+          "pending": "الرحلات قيد التنفيذ ",
+          "scheduled": "الرحلات مجدولة",
+          "total": "مجموع الرحلات"
+        },
+        "studentStats": {
+          "active": "الطلاب النشطين",
+          "total": "مجموع الطلاب"
         }
       },
       "no_schools_found": "لم يتم العثور على مدارس"

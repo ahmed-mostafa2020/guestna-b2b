@@ -61,7 +61,7 @@ const SchoolBalance = () => {
           >
             <Typography
               variant="h4"
-              className=" !font-somar !text-sm text-[#1E1E1C]"
+              className=" !font-somar !text-sm text-[#202224]"
             >
               {t(
                 "profile.schools_overview.schools_details.balance.available_balance"
@@ -80,7 +80,7 @@ const SchoolBalance = () => {
           >
             <Typography
               variant="h3"
-              className=" !font-somar !text-sm text-[#1E1E1C]"
+              className=" !font-somar !text-sm text-[#202224]"
             >
               {t(
                 "profile.schools_overview.schools_details.balance.pending_balance"
@@ -99,7 +99,7 @@ const SchoolBalance = () => {
           >
             <Typography
               variant="h3"
-              className=" !font-somar !text-sm text-[#1E1E1C]"
+              className=" !font-somar !text-sm text-[#202224]"
             >
               {t(
                 "profile.schools_overview.schools_details.balance.total_balance"

@@ -1380,6 +1380,17 @@
           "available_balance": "Available ",
           "pending_balance": "Pending ",
           "total_balance": "Total "
+        },
+        "tripsStats": {
+          "canceled": "canceled trips",
+          "done": "done trips",
+          "pending": "pending trips",
+          "scheduled": "scheduled trips",
+          "total": "total trips"
+        },
+        "studentStats": {
+          "active": "active students",
+          "total": "total students"
         }
       },
       "no_schools_found": "No schools found"
