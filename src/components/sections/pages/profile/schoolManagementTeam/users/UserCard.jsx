@@ -12,6 +12,8 @@ const UserCard = ({ user }) => {
   const { hasElement } = usePermissions();
   const t = useTranslations();
 
+  
+
   return (
     <Card className="border border-border !rounded-lg !shadow-none">
       <CardContent className="p-2 sm:p-3">
@@ -32,13 +34,13 @@ const UserCard = ({ user }) => {
               </h3>
               <p className="text-xs text-textLight truncate">{user.email}</p>
               <Chip
-                label={user.role?.description ||user.role}
+                label={user.role?.description || user.role}
                 size="small"
                 className="text-xs !bg-[#e9e1ff] !text-black w-fit !font-somar"
               />
             </div>
           </div>
-          <div className="flex gap-3 text-sm font-ibm text-textDark flex-shrink-0">
+          <div className="flex gap-3 text-sm font-somar text-textDark flex-shrink-0">
             {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_DELETE) && (
               <button className="hover:text-error transition-colors duration-200">
                 {t("profile.schools_users.delete")}
@@ -84,9 +86,9 @@ const UserCard = ({ user }) => {
           </div>
 
           {/* Actions below user info on mobile */}
-          <div className="flex gap-2 sm:gap-4 text-xs font-ibm text-textDark justify-start flex-wrap">
+          <div className="flex gap-2 sm:gap-4 text-xs font-somar text-textDark justify-start flex-wrap">
             {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_DELETE) && (
-              <button className="hover:text-error transition-colors duration-200">
+              <button className="hover:text-error transition-colors  duration-200">
                 {t("profile.schools_users.delete")}
               </button>
             )}
@@ -94,7 +96,7 @@ const UserCard = ({ user }) => {
             {hasElement(
               PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_EDIT_PERMISSIONS
             ) && (
-              <button className="hover:text-mainColor transition-colors duration-200">
+              <button className="hover:text-mainColor  transition-colors duration-200">
                 {t("profile.schools_users.edit")}
               </button>
             )}
