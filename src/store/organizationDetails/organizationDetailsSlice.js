@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   organizationId: null,
-  organizationDetails: null,
+  details: null,
   loading: "idle",
   error: null,
 };
@@ -16,7 +16,7 @@ const organizationDetailsSlice = createSlice({
     },
 
     setOrganizationDetails: (state, action) => {
-      state.organizationDetails = action.payload;
+      state.details = action.payload;
       state.loading = "succeeded";
       state.error = null;
     },

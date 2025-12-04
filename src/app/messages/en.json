@@ -1367,6 +1367,15 @@
         "done_trips": "Done",
         "show_details": "Show Details"
       },
+      "schools_details": {
+        "title": "Select the school you want to view details for:",
+        "caption":"Managing all company-affiliated schools and monitoring their performance.",
+        "select_school": {
+          "title": "Select the school you want to view details for:",
+          "performance": "Performance",
+          "students": "Students"
+        }
+      },
       "no_schools_found": "No schools found"
     }
   },
