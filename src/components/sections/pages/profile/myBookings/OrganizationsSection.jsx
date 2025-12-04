@@ -15,12 +15,12 @@ const OrganizationsSection = ({
 
   const rendredSchools = schoolsData?.map((school) => {
     return (
-      <section
+      <div
         key={school._id}
         className="space-y-6 grid grid-cols-1 lg:grid-cols-2 gap-5"
       >
         <p>{school.name}</p>
-      </section>
+      </div>
     );
   });
 

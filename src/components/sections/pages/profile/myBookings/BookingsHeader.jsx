@@ -30,7 +30,7 @@ const BookingsHeader = ({ setSearchTerm, searchTerm, tableTitle }) => {
           placeholder={
             t("profile.tables.bookings.header.searchTripName") + "..."
           }
-          size="medium"
+          size="small"
           className="w-full md:w-72"
           value={searchValue || searchTerm}
           onChange={(e) => {

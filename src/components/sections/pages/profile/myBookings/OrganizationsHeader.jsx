@@ -30,7 +30,7 @@ const OrganizationsHeader = ({ setSearchTerm, searchTerm, tableTitle }) => {
           placeholder={
             t("profile.tables.organizations.searchBySchoolName") + "..."
           }
-          size="medium"
+          size="samll"
           className="w-full md:w-72"
           value={searchValue || searchTerm}
           onChange={(e) => {
