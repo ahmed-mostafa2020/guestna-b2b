@@ -79,7 +79,7 @@ const SelectSchoolForDetails = () => {
         open={open}
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
-        className="w-full !border-5 !border-borderColor"
+        className="w-full !border-5 !border-borderColor "
         IconComponent={() => (
           <ArrowDropDown className={`${open && "rotate-180"} left-0 me-2`} />
         )}
@@ -88,7 +88,7 @@ const SelectSchoolForDetails = () => {
         onChange={handleSchoolSelect}
         MenuProps={{
           PaperProps: {
-            className: "p-2",
+            className: "py-4 px-3",
           },
           anchorOrigin: {
             vertical: "bottom",
@@ -121,7 +121,7 @@ const SelectSchoolForDetails = () => {
           </MenuItem>
         ))}
       </Select>
-      <Box className="bg-buttonsHover  p-4 rounded-lg flex gap-4 border-borderColor border-2">
+      <Box className="bg-buttonsHover  p-6 rounded-lg flex gap-4 border-borderColor border-2">
         <Box className="flex items-center justify-center">
           <Image
             src={details?.image}

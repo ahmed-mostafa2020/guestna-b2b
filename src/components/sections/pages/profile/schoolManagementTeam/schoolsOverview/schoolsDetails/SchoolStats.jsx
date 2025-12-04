@@ -39,7 +39,7 @@ const SchoolStats = () => {
   if (loading === "loading")
     return (
       <>
-        {Array(4)
+        {Array(6)
           .fill(<StateCardSkeleton />)
           .map((item, index) => (
             <StateCardSkeleton key={index} />
@@ -55,9 +55,9 @@ const SchoolStats = () => {
     }));
 
   return (
-    <Grid container spacing={2} size={12}>
+    <Grid container gap={2} spacing={2} size={12}>
       {formattedStats?.map((item, index) => (
-        <Grid key={index} item xs={4}>
+        <Grid key={index}  item xs={4}>
           <StateCard label={item.label} value={item.value} />
         </Grid>
       ))}
@@ -71,6 +71,6 @@ const SchoolStats = () => {
       </Grid>
     </Grid>
   );
-};
+}; 
 
 export default SchoolStats;
