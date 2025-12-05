@@ -29,11 +29,7 @@ const SearchFilters = ({ searchTerms, onChange }) => {
   const cities = data?.cities || [];
   const tracks = data?.tracks || [];
 
-  console.log("Cities fetched:", cities);
-  console.log("Tracks fetched:", tracks);
-
   const handleFieldChange = (key, value) => {
-    console.log(key, value);
     onChange({ ...searchTerms, [key]: value });
   };
 

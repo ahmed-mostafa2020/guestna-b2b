@@ -602,6 +602,7 @@
       "copy": "Copy",
       "edit": "Edit",
       "add_new_user": "Add New User",
+      "bulk_import_users": "Bulk Import Users",
       "search": "Search...",
       "no_users": "No users found matching your search",
       "users_count": "{count} users",
@@ -612,6 +613,20 @@
         "userTypePlaceholder": "Job grade",
         "parsoneName": "Contact Person Name",
         "phone": "Mobile number"
+      },
+      "bulkImport": {
+        "title": "Bulk Import Users",
+        "description": "Upload a CSV or Excel file with columns: Name, Email, Phone, Role. Existing users with matching emails will be overwritten.",
+        "duplicatesFound": "{count} user(s) already exist and will be overwritten",
+        "preview": "Preview",
+        "users": "users",
+        "status": "Status",
+        "actions": "Actions",
+        "hasErrors": "Errors",
+        "willOverwrite": "Will Overwrite",
+        "valid": "Valid",
+        "validationErrors": "Validation Errors:",
+        "submit": "Import {count} User(s)"
       }
     },
     "donutChart": {
@@ -1849,6 +1864,20 @@
       "thanksMessage": "Thank You!",
       "willContactYou": "Your contact request has been sent, we will respond to you within 24 hours.",
       "svg": "SVG images are not allowed",
+      "noUsersToImport": "No users to import",
+      "fixErrorsBeforeSubmit": "Please fix all errors before submitting",
+      "bulkImportSuccess": "Successfully imported {count} user(s)",
+      "bulkImportPartial": "Imported {success} user(s), {failed} failed",
+      "unknownError": "Unknown error",
+      "fileParseError": "Failed to parse file",
+      "fileReadError": "Failed to read file",
+      "invalidFileType": "Please upload a valid Excel (.xlsx, .xls) or CSV file",
+      "emptyFile": "The file appears to be empty or has no valid data",
+      "duplicateEmail": "Email already exists in file",
+      "invalidRole": "Role must match one of the available roles",
+      "clickToUpload": "Click to upload",
+      "orDragDrop": "or drag and drop",
+      "supportedFormats": "CSV, XLS, XLSX (MAX. 10MB)",
 
       "payment": {
         "success": "Processing payment now",

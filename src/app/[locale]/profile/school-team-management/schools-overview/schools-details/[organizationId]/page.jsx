@@ -15,7 +15,6 @@ import {
 import { Typography } from "@material-ui/core";
 import { Box } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
-import { ref } from "process";
 import React from "react";
 
 const SchoolsDetailsPage = ({ params }) => {
