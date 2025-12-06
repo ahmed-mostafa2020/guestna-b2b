@@ -18,7 +18,7 @@ const OrganizationsHeader = ({ setSearchTerm, searchTerm, tableTitle }) => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 items-center md:items-center justify-between">
+    <div className="flex flex-col md:flex-row gap-4 items-center md:items-center justify-between mb-4">
       {tableTitle && (
         <h2 className="text-lg lg:text-2xl font-medium text-titleColor order-1 md:order-1 text-center md:text-start">
           {tableTitle}

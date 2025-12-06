@@ -179,7 +179,7 @@ export default async function RootLayout({ children, params: { locale } }) {
 
         {/* Fonts */}
         <link
-          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;500;600;700&display=swap&family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap"
+          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;500;600;700&display=swap&family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Nunito+Sans:wght@700&display=swap"
           rel="stylesheet"
         />
 

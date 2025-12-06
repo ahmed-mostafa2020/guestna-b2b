@@ -71,7 +71,9 @@ const Profile = () => {
     isLoading: organizationsLoading,
     error: organizationsError,
   } = useFetchData(
-    `${B2B_END_POINTS.PROFILE.ORGANIZATIONS}?searchTerm=${organizationsSearchTerm}`,
+    `${B2B_END_POINTS.PROFILE.ORGANIZATIONS}${
+      organizationsSearchTerm ? `?searchTerm=${organizationsSearchTerm}` : ""
+    }`,
     {},
     {
       lang: locale,
