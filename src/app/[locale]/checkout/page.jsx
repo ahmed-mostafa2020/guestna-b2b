@@ -27,12 +27,17 @@ const Checkout = () => {
     (state) => state.finalTripDetailsData?.data
   );
 
+  const tripBasePrice = useSelector(
+    (state) => state.finalTripDetailsData?.data?.basePriceTotalWithVat
+  );
+
   const promoCodeData = useSelector(
     (state) => state.promoCode?.promoCodeData?.trip
   );
 
   // Check if trip is free
   const isFreeTrip =
+    tripBasePrice === 0 ||
     promoCodeData?.discountedTotalPriceWithVat === 0 ||
     promoCodeData?.basePriceTotalWithVat === 0;
 

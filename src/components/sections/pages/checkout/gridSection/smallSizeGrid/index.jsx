@@ -11,24 +11,6 @@ const SmallSizeGrid = () => {
     (state) => state.finalTripDetailsData?.data
   );
 
-  // Check if trip is free
-  const isFreeTrip =
-    finalTripDetails?.discountedTotalPriceWithVat === 0 ||
-    finalTripDetails?.basePriceTotalWithVat === 0;
-
-  // For free trips, show a simplified layout with the free booking button
-  if (isFreeTrip) {
-    return (
-      <>
-        <PriceDetailsSection finalTripDetails={finalTripDetails} />
-
-        <TripLastDetailsSection finalTripDetails={finalTripDetails} />
-
-        <BookWithConfidenceSection />
-      </>
-    );
-  }
-
   return (
     <>
       <PriceDetailsSection finalTripDetails={finalTripDetails} />
