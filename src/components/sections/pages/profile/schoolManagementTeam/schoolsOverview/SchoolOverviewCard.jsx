@@ -20,7 +20,7 @@ const SchoolOverviewCard = ({ item }) => {
   };
   return (
     <Box
-      className="rounded-xl border border-gray-200 p-4 shadow-sm bg-white  "
+      className="rounded-xl border-2 border-border p-4 shadow-sm bg-white  "
       sx={{ direction: "rtl" }}
     >
       {/* Status Tag */}
@@ -30,12 +30,12 @@ const SchoolOverviewCard = ({ item }) => {
           <Box className="flex items-center justify-center bg-blue-200 p-4 w-12 h-12 rounded-lg me-2">
             <span className="block">{bankSmall}</span>
           </Box>
-          <Typography variant="h6" className="font-bold !font-somar">
+          <Typography variant="h6" className="font-semibold !font-somar">
             {item.name} - {item.city}
           </Typography>
         </Box>
 
-        <Box className="bg-green-100 text-green-700 px-6 py-1 rounded-full text-sm flex items-center justify-center">
+        <Box className="bg-[#00AB2B66] text-[#033440] px-4 py-2 rounded-full text-sm flex items-center justify-center gap-1">
           ممتاز
         </Box>
       </Box>
@@ -49,7 +49,7 @@ const SchoolOverviewCard = ({ item }) => {
       </Box>
 
       {/* Revenue */}
-      <Box className="bg-green-100 px-4  rounded-md mb-3 flex justify-between py-4">
+      <Box className="bg-[#4BFC4E33] px-4  rounded-md mb-3 flex justify-between py-4">
         <Typography
           variant="body"
           className="text-gray-700 !font-medium !font-somara"
@@ -66,14 +66,17 @@ const SchoolOverviewCard = ({ item }) => {
       </Box>
 
       {/* Students Count */}
-      <Box className="bg-blue-100 px-4 py-4 rounded-md mb-3 text-center flex justify-between ">
+      <Box className="bg-[#4FDCFF33] px-4 py-4 rounded-md mb-3 text-center flex justify-between ">
         <Typography
           variant="body"
-          className="text-blue-600 text-sm !font-somara"
+          className="text-[#00707F] text-sm !font-somara"
         >
           {t("profile.schools_overview.cards.active_students")}
         </Typography>
-        <Typography variant="body" className="text-blue-700 !font-somara">
+        <Typography
+          variant="body"
+          className="text-[#0B7F8F] font-bold !font-somara"
+        >
           {item.childsCount}
         </Typography>
       </Box>
@@ -81,48 +84,48 @@ const SchoolOverviewCard = ({ item }) => {
       {/* Trips Row */}
       <Box className="grid grid-cols-3 gap-2 text-center mb-4">
         {/* Pending */}
-        <Box className="bg-blue-100 py-2 rounded-lg flex flex-col">
+        <Box className="bg-[#2991AA14] py-2 rounded-lg flex flex-col">
           <Typography
             variant="body"
-            className="text-blue-600 font-bold !font-somara"
+            className="text-[#2991AA] font-bold !font-somara"
           >
             {item.suspendedTrips}
           </Typography>
           <Typography
             variant="body"
-            className="text-blue-400 text-sm font-semibold  !font-somara"
+            className="text-[#2991AA] opacity-70 text-sm font-semibold  !font-somara"
           >
             {t("profile.schools_overview.cards.suspended_trips")}
           </Typography>
         </Box>
 
         {/* Completed */}
-        <Box className="bg-green-100 py-2 rounded-lg flex flex-col">
+        <Box className="bg-[#76A13329] py-2 rounded-lg flex flex-col">
           <Typography
             variant="body"
-            className="text-green-600 font-bold !font-somara "
+            className="text-[#76A133] font-bold !font-somara "
           >
             {item.doneTrips}
           </Typography>
           <Typography
             variant="body"
-            className="text-green-400 text-sm font-semibold !font-somara "
+            className="text-[#76A133] opacity-70 text-sm font-semibold !font-somara "
           >
             {t("profile.schools_overview.cards.done_trips")}
           </Typography>
         </Box>
 
         {/* In Progress */}
-        <Box className="bg-red-100 py-2 rounded-lg flex flex-col">
+        <Box className="bg=[#EB010114] py-2 rounded-lg flex flex-col">
           <Typography
             variant="body"
-            className="text-red-600 !font-bold !font-somara"
+            className="text-[#EB0101] !font-bold !font-somara"
           >
             {item.scheduledTrips}
           </Typography>
           <Typography
             variant="body"
-            className="text-red-400 text-sm font-semibold !font-somara"
+            className="text-[#EB0101] opacity-70 text-sm font-semibold !font-somara"
           >
             {t("profile.schools_overview.cards.scheduled_trips")}
           </Typography>
@@ -133,7 +136,7 @@ const SchoolOverviewCard = ({ item }) => {
       <Button
         fullWidth
         variant="contained"
-        className="!font-somar font-semibold !bg-mainColor  !py-4  !text-white  rounded-lg"
+        className="!font-somar font-semibold !bg-[#0B7F8F]  !py-4  !text-white  rounded-lg"
         onClick={handleClick}
       >
         {t("profile.schools_overview.cards.show_details")}
