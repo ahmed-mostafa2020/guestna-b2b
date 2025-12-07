@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 // Components
 import Pagination from "@/src/components/common/Pagination";
@@ -20,6 +20,7 @@ import { useLocale, useTranslations } from "next-intl";
 // Constants
 import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
 import { PERMISSIONS } from "@/src/constants/permissions";
+import { Grid } from "@material-ui/core";
 
 const SchoolsOverViewPage = () => {
   const locale = useLocale();
@@ -118,6 +119,7 @@ const SchoolsOverViewPage = () => {
       {/* Search and Filters */}
       <Box className="bg-white p-4 rounded-md shadow-md">
         <SearchFilters
+          isLoading={isLoading}
           searchTerms={searchTerms}
           onChange={(updated) => {
             setSearchTerms(updated);

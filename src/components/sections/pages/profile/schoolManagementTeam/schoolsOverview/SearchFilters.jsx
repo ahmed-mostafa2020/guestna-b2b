@@ -8,6 +8,7 @@ import {
   IconButton,
   Collapse,
   MenuItem,
+  Skeleton,
 } from "@mui/material";
 import TuneIcon from "@mui/icons-material/Tune";
 import { useFetchData } from "@/src/hooks/useFetchData";
@@ -15,12 +16,12 @@ import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
 import { useLocale, useTranslations } from "next-intl";
 const sortOptions = ["HIGHEST_NAME", "LOWEST_NAME", "NEWEST", "OLDEST"];
 
-const SearchFilters = ({ searchTerms, onChange }) => {
+const SearchFilters = ({ searchTerms, onChange , isLoading }) => {
   const [open, setOpen] = useState(false);
   const locale = useLocale();
   const t = useTranslations();
 
-  const { data } = useFetchData(
+  const { data , isLoading: staticsLoading , error } = useFetchData(
     `${B2B_END_POINTS.PROFILE.ORGANIZATIONS.CITIES_TRACKS}`,
     {},
     { lang: locale }
@@ -95,102 +96,119 @@ const SearchFilters = ({ searchTerms, onChange }) => {
           />
 
           {/* CITY */}
-          <Autocomplete
-            className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
-            slotProps={{
-              listbox: {
-                className: "!font-somar",
-              },
-            }}
-            options={formattedCities}
-            value={
-              formattedCities.find((c) => c.value === searchTerms.city) || null
-            }
-            onChange={(_, v) => handleFieldChange("city", v?.value ?? "")}
-            renderInput={(params) => (
-              <TextField
+          {isLoading && staticsLoading ? (
+            <>
+              <Skeleton variant="autocomplete" width={100} height={28} />
+              <Skeleton variant="autocomplete" width={100} height={28} />
+              <Skeleton variant="autocomplete" width={100} height={28} />
+            </>
+          ) : (
+            <>
+              <Autocomplete
+                className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
                 slotProps={{
-                  input: {
-                    ...params.InputProps,
-                    classes: {
-                      ...params.InputProps.classes,
-                      input: "!font-somar",
-                    },
+                  listbox: {
+                    className: "!font-somar",
                   },
                 }}
-                {...params}
-                size="small"
-                placeholder={t("profile.schools_overview.searchFilters.city")}
-              />
-            )}
-          />
-
-          {/* TRACK */}
-          <Autocomplete
-            options={formattedTracks}
-            className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
-            slotProps={{
-              listbox: {
-                className: "!font-somar",
-              },
-            }}
-            value={
-              formattedTracks.find((t) => t.value === searchTerms.track) || null
-            }
-            onChange={(_, v) => handleFieldChange("track", v?.value ?? "")}
-            renderInput={(params) => (
-              <TextField
-                slotProps={{
-                  input: {
-                    ...params.InputProps,
-                    classes: {
-                      ...params.InputProps.classes,
-                      input: "!font-somar",
-                    },
-                  },
-                }}
-                {...params}
-                size="small"
-                placeholder={t("profile.schools_overview.searchFilters.track")}
-              />
-            )}
-          />
-
-          {/* SORT */}
-
-          <Autocomplete
-            options={formattedSortOptions}
-            className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
-            slotProps={{
-              listbox: {
-                className: "!font-somar",
-              },
-            }}
-            value={
-              formattedSortOptions.find((t) => t.value === searchTerms.sort) ||
-              null
-            }
-            onChange={(_, v) => handleFieldChange("sort", v?.value ?? "")}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="outlined"
-                size="small"
-                placeholder={t(
-                  "profile.schools_overview.searchFilters.sortingBy"
+                options={formattedCities}
+                value={
+                  formattedCities.find((c) => c.value === searchTerms.city) ||
+                  null
+                }
+                onChange={(_, v) => handleFieldChange("city", v?.value ?? "")}
+                renderInput={(params) => (
+                  <TextField
+                    slotProps={{
+                      input: {
+                        ...params.InputProps,
+                        classes: {
+                          ...params.InputProps.classes,
+                          input: "!font-somar",
+                        },
+                      },
+                    }}
+                    {...params}
+                    size="small"
+                    placeholder={t(
+                      "profile.schools_overview.searchFilters.city"
+                    )}
+                  />
                 )}
+              />
+
+              {/* TRACK */}
+              <Autocomplete
+                options={formattedTracks}
+                className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
                 slotProps={{
-                  input: {
-                    ...params.InputProps,
-                    classes: {
-                      ...params.InputProps.classes,
-                      input: "!font-somar",
-                    },
+                  listbox: {
+                    className: "!font-somar",
                   },
                 }}
+                value={
+                  formattedTracks.find((t) => t.value === searchTerms.track) ||
+                  null
+                }
+                onChange={(_, v) => handleFieldChange("track", v?.value ?? "")}
+                renderInput={(params) => (
+                  <TextField
+                    slotProps={{
+                      input: {
+                        ...params.InputProps,
+                        classes: {
+                          ...params.InputProps.classes,
+                          input: "!font-somar",
+                        },
+                      },
+                    }}
+                    {...params}
+                    size="small"
+                    placeholder={t(
+                      "profile.schools_overview.searchFilters.track"
+                    )}
+                  />
+                )}
               />
-            )}
-          />
+
+              {/* SORT */}
+
+              <Autocomplete
+                options={formattedSortOptions}
+                className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
+                slotProps={{
+                  listbox: {
+                    className: "!font-somar",
+                  },
+                }}
+                value={
+                  formattedSortOptions.find(
+                    (t) => t.value === searchTerms.sort
+                  ) || null
+                }
+                onChange={(_, v) => handleFieldChange("sort", v?.value ?? "")}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    size="small"
+                    placeholder={t(
+                      "profile.schools_overview.searchFilters.sortingBy"
+                    )}
+                    slotProps={{
+                      input: {
+                        ...params.InputProps,
+                        classes: {
+                          ...params.InputProps.classes,
+                          input: "!font-somar",
+                        },
+                      },
+                    }}
+                  />
+                )}
+              />
+            </>
+          )}
         </Box>
       </Collapse>
 
@@ -218,118 +236,118 @@ const SearchFilters = ({ searchTerms, onChange }) => {
           onChange={(e) => handleFieldChange("name", e.target.value)}
         />
 
-        {/* CITY */}
-        <Autocomplete
-          className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
-          slotProps={{
-            listbox: {
-              className: "!font-somar",
-            },
-          }}
-          options={formattedCities}
-          value={
-            formattedCities.find((c) => c.value === searchTerms.city) || null
-          }
-          onChange={(_, v) => handleFieldChange("city", v?.value ?? "")}
-          renderInput={(params) => (
-            <TextField
+        {isLoading && staticsLoading ? (
+          <>
+            <Skeleton variant="autocomplete" width={100} height={28} />
+            <Skeleton variant="autocomplete" width={100} height={28} />
+            <Skeleton variant="autocomplete" width={100} height={28} />
+          </>
+        ) : (
+          <>
+            <Autocomplete
+              className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
               slotProps={{
-                input: {
-                  ...params.InputProps,
-                  classes: {
-                    ...params.InputProps.classes,
-                    input: "!font-somar",
-                  },
+                listbox: {
+                  className: "!font-somar",
                 },
               }}
-              {...params}
-              size="small"
-              placeholder={t("profile.schools_overview.searchFilters.city")}
-            />
-          )}
-        />
-
-        {/* TRACK */}
-        <Autocomplete
-          options={formattedTracks}
-          className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
-          slotProps={{
-            listbox: {
-              className: "!font-somar",
-            },
-          }}
-          value={
-            formattedTracks.find((t) => t.value === searchTerms.track) || null
-          }
-          onChange={(_, v) => handleFieldChange("track", v?.value ?? "")}
-          renderInput={(params) => (
-            <TextField
-              slotProps={{
-                input: {
-                  ...params.InputProps,
-                  classes: {
-                    ...params.InputProps.classes,
-                    input: "!font-somar",
-                  },
-                },
-              }}
-              {...params}
-              size="small"
-              placeholder={t("profile.schools_overview.searchFilters.track")}
-            />
-          )}
-        />
-
-        {/* SORT */}
-
-        <Autocomplete
-          options={formattedSortOptions}
-          className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
-          slotProps={{
-            listbox: {
-              className: "!font-somar",
-            },
-          }}
-          value={
-            formattedSortOptions.find((t) => t.value === searchTerms.sort) ||
-            null
-          }
-          onChange={(_, v) => handleFieldChange("sort", v?.value ?? "")}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="outlined"
-              size="small"
-              placeholder={t(
-                "profile.schools_overview.searchFilters.sortingBy"
+              options={formattedCities}
+              value={
+                formattedCities.find((c) => c.value === searchTerms.city) ||
+                null
+              }
+              onChange={(_, v) => handleFieldChange("city", v?.value ?? "")}
+              renderInput={(params) => (
+                <TextField
+                  slotProps={{
+                    input: {
+                      ...params.InputProps,
+                      classes: {
+                        ...params.InputProps.classes,
+                        input: "!font-somar",
+                      },
+                    },
+                  }}
+                  {...params}
+                  size="small"
+                  placeholder={t("profile.schools_overview.searchFilters.city")}
+                />
               )}
+            />
+
+            {/* TRACK */}
+            <Autocomplete
+              options={formattedTracks}
+              className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
               slotProps={{
-                input: {
-                  ...params.InputProps,
-                  classes: {
-                    ...params.InputProps.classes,
-                    input: "!font-somar",
-                  },
+                listbox: {
+                  className: "!font-somar",
                 },
               }}
+              value={
+                formattedTracks.find((t) => t.value === searchTerms.track) ||
+                null
+              }
+              onChange={(_, v) => handleFieldChange("track", v?.value ?? "")}
+              renderInput={(params) => (
+                <TextField
+                  slotProps={{
+                    input: {
+                      ...params.InputProps,
+                      classes: {
+                        ...params.InputProps.classes,
+                        input: "!font-somar",
+                      },
+                    },
+                  }}
+                  {...params}
+                  size="small"
+                  placeholder={t(
+                    "profile.schools_overview.searchFilters.track"
+                  )}
+                />
+              )}
             />
-          )}
-        />
 
-        {/* <TextField
-          size="small"
-          className="!border-2 rounded-md !border-solid !border-gray-200"
-          select
-          placeholder={t("profile.schools_overview.searchFilters.sortingBy")}
-          value={searchTerms.sort}
-          onChange={(e) => handleFieldChange("sort", e.target.value)}
-        >
-          {sortOptions.map((item) => (
-            <MenuItem key={item} value={item}>
-              {item}
-            </MenuItem>
-          ))}
-        </TextField> */}
+            {/* SORT */}
+
+            <Autocomplete
+              options={formattedSortOptions}
+              className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
+              slotProps={{
+                listbox: {
+                  className: "!font-somar",
+                },
+              }}
+              value={
+                formattedSortOptions.find(
+                  (t) => t.value === searchTerms.sort
+                ) || null
+              }
+              onChange={(_, v) => handleFieldChange("sort", v?.value ?? "")}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  size="small"
+                  placeholder={t(
+                    "profile.schools_overview.searchFilters.sortingBy"
+                  )}
+                  slotProps={{
+                    input: {
+                      ...params.InputProps,
+                      classes: {
+                        ...params.InputProps.classes,
+                        input: "!font-somar",
+                      },
+                    },
+                  }}
+                />
+              )}
+            />
+          </>
+        )}
+        
       </Box>
     </Box>
   );

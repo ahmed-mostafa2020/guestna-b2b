@@ -13,7 +13,7 @@ const SchoolOverviewCard = ({ item }) => {
   const router = useRouter();
 
   const handleClick = () => {
-    dispatch(setOrganizationId(item._id));
+    // dispatch(setOrganizationId(item._id));
     router.push(
       `/profile/school-team-management/schools-overview/schools-details/${item._id}`
     );
