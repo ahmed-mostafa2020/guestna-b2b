@@ -1,6 +1,6 @@
 import { bluelocationIcon } from "@/src/assets/svg";
 import { Box } from "@material-ui/core";
-import { ArrowDropDown } from "@mui/icons-material";
+import { ArrowDropDown, Email, Phone } from "@mui/icons-material";
 import { MenuItem, Select, Skeleton, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -107,24 +107,12 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
         </MenuItem>
 
         {/* TODO: Replace with real organizations */}
-        {[
-          { _id: "6923498247e5ef30a20c1195", name: "عادل مدارس الامل" },
-          { _id: "6923498247e5ef30a20c1199", name: "عادل مدارس الامل 2" },
-        ].map((item) => (
-          <MenuItem
-            key={item._id}
-            value={item._id}
-            className="!font-somar p-2 !bg-white hover:!bg-buttonsHover"
-          >
-            {item.name}
-          </MenuItem>
-        ))}
       </Select>
 
       <Box className="bg-buttonsHover p-6 rounded-lg flex gap-4 border-borderColor border-2">
         <Image
-          src={details?.image}
-          alt={details?.name}
+          src={details.image}
+          alt={details.name}
           width={110}
           height={110}
         />
@@ -135,14 +123,26 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
               variant="h3"
               className="!font-somar !text-xl !text-titleColor"
             >
-              {details?.name} - {details?.city}
+              {details.name} - {details.city}
             </Typography>
 
             <Typography
               variant="caption"
               className="!font-somar !text-titleColor flex items-center gap-1"
             >
-              <span>{bluelocationIcon}</span> {details?.city}
+              <span className="!text-lg ">{bluelocationIcon}</span> {details.city}
+            </Typography>
+            <Typography
+              variant="caption"
+              className="!font-somar !text-titleColor flex items-center gap-1"
+            >
+              <Phone className="!text-lg" /> {details.phone}
+            </Typography>
+            <Typography
+              variant="caption"
+              className="!font-somar !text-titleColor flex items-center gap-1"
+            >
+              <Email className="!text-lg" /> {details.email}
             </Typography>
           </Box>
 
