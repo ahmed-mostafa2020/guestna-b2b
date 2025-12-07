@@ -1,4 +1,5 @@
 import { newSarSmall, visaCardIcon } from "@/src/assets/svg";
+import formatCurrency from "@/src/utils/FormatCurrency";
 import { Grid } from "@material-ui/core";
 import { Box, Skeleton, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
@@ -70,7 +71,7 @@ const SchoolBalance = ({ details, isLoading }) => {
               variant="h4"
               className=" !font-somar !text-sm text-[#008442] flex gap-2 items-center justify-center"
             >
-              {details.balance.availableBalance} <span>{newSarSmall}</span>
+              {formatCurrency(details.balance.availableBalance)} 
             </Typography>
           </Grid>
           <Grid
@@ -89,7 +90,7 @@ const SchoolBalance = ({ details, isLoading }) => {
               variant="h4"
               className=" !font-somar !text-sm text-[#B25B00] flex gap-2 items-center justify-center"
             >
-              { details.balance.pendingBalance} <span>{newSarSmall}</span>
+              { formatCurrency(details.balance.pendingBalance)} 
             </Typography>
           </Grid>
           <Grid
@@ -108,7 +109,7 @@ const SchoolBalance = ({ details, isLoading }) => {
               variant="h4"
               className=" !font-somar !text-sm text-[#1858A5] flex gap-2 items-center justify-center"
             >
-              {details.balance.totalBalance} <span>{newSarSmall}</span>
+              { formatCurrency(details.balance.totalBalance)} 
             </Typography>
           </Grid>
         </Grid>
