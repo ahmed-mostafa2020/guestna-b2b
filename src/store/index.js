@@ -42,7 +42,6 @@ import theme from "./theme/themeSlice";
 
 import permissions from "./permissions/permissionsSlice";
 
-import organizationDetails from "./organizationDetails/organizationDetailsSlice";
 const rootPersistConfig = {
   key: "root",
   storage,
@@ -64,7 +63,6 @@ const rootPersistConfig = {
 
 // merge all reducers
 const rootReducer = combineReducers({
-  organizationDetails,
   homeData,
   searchFilter,
   tripDetailsData,

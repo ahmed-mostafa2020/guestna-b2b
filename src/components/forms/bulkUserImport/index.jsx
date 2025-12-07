@@ -12,29 +12,9 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
 import getErrorMessage from "@utils/getErrorMessage";
-
-import {
-  Button,
-  CircularProgress,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Chip,
-  IconButton,
-  Typography,
-  Alert,
-} from "@mui/material";
-import {
-  UploadFile,
-  Delete as DeleteIcon,
-  CheckCircle,
-  Error as ErrorIcon,
-  CloudUpload,
-} from "@mui/icons-material";
+import UploadInstructions from "./UploadInstructions";
+import UsersPreviewTable from "./UsersPreviewTable";
+import FooterActions from "./FooterActions";
 
 const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
@@ -523,281 +503,40 @@ const BulkUserImportForm = ({
 
   const hasValidUsers =
     uploadedUsers.length > 0 && Object.keys(validationErrors).length === 0;
-  const duplicateCount = duplicateUsers.size;
 
   return (
     <div className="lg:w-[900px] w-full max-w-full bg-white rounded-2xl mx-auto my-5 max-h-[90vh] overflow-auto">
-      <div className="p-6 border-b border-border">
-        <div className="flex items-center gap-1">
-          <CloudUpload className="text-mainColor" />
-          <h3 className="text-xl lg:text-2xl font-somar">
-            {t("profile.schools_users.bulkImport.title", {
-              defaultValue: "Bulk Import Users",
-            })}
-          </h3>
-        </div>
-        <Typography variant="body2" className="text-textLight mt-2">
-          {t("profile.schools_users.bulkImport.description", {
-            defaultValue:
-              "Upload a CSV or Excel file with columns: Name, Email, Phone, Role. Existing users with matching emails will be overwritten.",
-          })}
-        </Typography>
-      </div>
+      {/* ------ Upload Section ------- */}
+      <UploadInstructions
+        t={t}
+        fileError={fileError}
+        isSubmitting={isSubmitting}
+        duplicateCount={duplicateUsers.size}
+        onUpload={handleFileUpload}
+      />
 
-      <div className="flex flex-col w-full gap-5 px-8 py-6">
-        {/* File Upload Section */}
-        <div className="flex flex-col gap-4">
-          <label
-            htmlFor="bulk-upload-file"
-            className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-mainColor transition-colors"
-          >
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <UploadFile className="text-4xl text-mainColor mb-2" />
-              <p className="mb-2 text-sm text-textDark">
-                <span className="font-semibold">
-                  {t("forms.validation.clickToUpload", {
-                    defaultValue: "Click to upload",
-                  })}
-                </span>{" "}
-                {t("forms.validation.orDragDrop", {
-                  defaultValue: "or drag and drop",
-                })}
-              </p>
-              <p className="text-xs text-textLight">
-                {t("forms.validation.supportedFormats", {
-                  defaultValue: "CSV, XLS, XLSX (MAX. 10MB)",
-                })}
-              </p>
-            </div>
-            <input
-              id="bulk-upload-file"
-              type="file"
-              accept=".csv,.xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-              className="hidden"
-              onChange={handleFileUpload}
-              disabled={isSubmitting}
-            />
-          </label>
+      {/* ------ Preview Table ------- */}
+      {uploadedUsers.length > 0 && (
+        <UsersPreviewTable
+          uploadedUsers={uploadedUsers}
+          validationErrors={validationErrors}
+          duplicateUsers={duplicateUsers}
+          roleOptions={roleOptions}
+          t={t}
+          onRemove={handleRemoveUser}
+        />
+      )}
 
-          {fileError && (
-            <Alert severity="error" onClose={() => setFileError("")}>
-              {fileError}
-            </Alert>
-          )}
-
-          {duplicateCount > 0 && (
-            <Alert severity="info">
-              {t("profile.schools_users.bulkImport.duplicatesFound", {
-                count: duplicateCount,
-                defaultValue: `${duplicateCount} user(s) already exist and will be overwritten`,
-              })}
-            </Alert>
-          )}
-        </div>
-
-        {/* Users Preview Table */}
-        {uploadedUsers.length > 0 && (
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <Typography variant="h6" className="font-somar">
-                {t("profile.schools_users.bulkImport.preview", {
-                  defaultValue: "Preview",
-                })}{" "}
-                ({uploadedUsers.length}{" "}
-                {t("profile.schools_users.bulkImport.users", {
-                  defaultValue: "users",
-                })}
-                )
-              </Typography>
-            </div>
-
-            <TableContainer
-              component={Paper}
-              className="max-h-96 overflow-auto border border-border"
-            >
-              <Table stickyHeader size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell className="font-somar font-semibold">
-                      {t("profile.schools_users.form.parsoneName", {
-                        defaultValue: "Name",
-                      })}
-                    </TableCell>
-                    <TableCell className="font-somar font-semibold">
-                      {t("forms.email.name", { defaultValue: "Email" })}
-                    </TableCell>
-                    <TableCell className="font-somar font-semibold">
-                      {t("profile.schools_users.form.phone", {
-                        defaultValue: "Phone",
-                      })}
-                    </TableCell>
-                    <TableCell className="font-somar font-semibold">
-                      {t("profile.schools_users.form.userTypePlaceholder", {
-                        defaultValue: "Role",
-                      })}
-                    </TableCell>
-                    <TableCell className="font-somar font-semibold">
-                      {t("profile.schools_users.bulkImport.status", {
-                        defaultValue: "Status",
-                      })}
-                    </TableCell>
-                    <TableCell
-                      className="font-somar font-semibold"
-                      align="center"
-                    >
-                      {t("profile.schools_users.bulkImport.actions", {
-                        defaultValue: "Actions",
-                      })}
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {uploadedUsers.map((user, index) => {
-                    const rowErrors = validationErrors[index];
-                    const hasError =
-                      rowErrors && Object.keys(rowErrors).length > 0;
-                    const isDuplicate = duplicateUsers.has(index);
-
-                    return (
-                      <TableRow
-                        key={index}
-                        sx={{
-                          backgroundColor: hasError
-                            ? "rgba(239, 68, 68, 0.1)"
-                            : isDuplicate
-                            ? "rgba(59, 130, 246, 0.1)"
-                            : "transparent",
-                        }}
-                      >
-                        <TableCell>{user.name || "-"}</TableCell>
-                        <TableCell>{user.email || "-"}</TableCell>
-                        <TableCell>{user.phone || "-"}</TableCell>
-                        <TableCell>
-                          {roleOptions.includes(user.role) ? (
-                            <Chip
-                              label={user.role}
-                              size="small"
-                              className="!bg-[#e9e1ff]"
-                            />
-                          ) : (
-                            <span className="text-error text-sm">
-                              {user.role || t("forms.validation.require")}
-                            </span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {hasError ? (
-                            <Chip
-                              icon={<ErrorIcon />}
-                              label={t(
-                                "profile.schools_users.bulkImport.hasErrors",
-                                {
-                                  defaultValue: "Errors",
-                                }
-                              )}
-                              color="error"
-                              size="small"
-                            />
-                          ) : isDuplicate ? (
-                            <Chip
-                              icon={<ErrorIcon />}
-                              label={t(
-                                "profile.schools_users.bulkImport.willOverwrite",
-                                {
-                                  defaultValue: "Will Overwrite",
-                                }
-                              )}
-                              color="info"
-                              size="small"
-                            />
-                          ) : (
-                            <Chip
-                              icon={<CheckCircle />}
-                              label={t(
-                                "profile.schools_users.bulkImport.valid",
-                                {
-                                  defaultValue: "Valid",
-                                }
-                              )}
-                              color="success"
-                              size="small"
-                            />
-                          )}
-                        </TableCell>
-                        <TableCell align="center">
-                          <IconButton
-                            size="small"
-                            onClick={() => handleRemoveUser(index)}
-                            disabled={isSubmitting}
-                            className="text-error hover:bg-error/10"
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-
-            {/* Error Details */}
-            {Object.keys(validationErrors).length > 0 && (
-              <Alert severity="error">
-                <Typography variant="body2" className="font-semibold mb-2">
-                  {t("profile.schools_users.bulkImport.validationErrors", {
-                    defaultValue: "Validation Errors:",
-                  })}
-                </Typography>
-                <ul className="list-disc list-inside space-y-1 text-sm">
-                  {Object.entries(validationErrors).map(([index, errors]) => {
-                    const user = uploadedUsers[parseInt(index)];
-                    return (
-                      <li key={index}>
-                        <span className="font-semibold">
-                          Row {parseInt(index) + 1}
-                          {user.email && ` (${user.email})`}:
-                        </span>{" "}
-                        {Object.values(errors).join(", ")}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </Alert>
-            )}
-          </div>
-        )}
-
-        {/* Action Buttons */}
-        <div className="flex gap-4 justify-end pt-4 border-t border-border">
-          <Button
-            variant="outlined"
-            onClick={handleClose}
-            disabled={isSubmitting}
-            className="!border-border !text-textDark hover:!bg-gray-50"
-          >
-            {t("links.cancel", { defaultValue: "Cancel" })}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleBulkSubmit}
-            disabled={!hasValidUsers || isSubmitting}
-            className="!bg-mainColor hover:!bg-linksHover !text-white"
-            startIcon={
-              isSubmitting ? (
-                <CircularProgress size={20} sx={{ color: "white" }} />
-              ) : null
-            }
-          >
-            {isSubmitting
-              ? t("forms.validation.sending", { defaultValue: "Submitting..." })
-              : t("profile.schools_users.bulkImport.submit", {
-                  count: uploadedUsers.length,
-                  defaultValue: `Import ${uploadedUsers.length} User(s)`,
-                })}
-          </Button>
-        </div>
-      </div>
+      {/* ------ Footer actions ------- */}
+      <FooterActions
+        t={t}
+        isSubmitting={isSubmitting}
+        onSubmit={handleBulkSubmit}
+        onClose={handleClose}
+        usersCount={uploadedUsers.length}
+        hasValidUsers={hasValidUsers}
+        existingUsers={existingUsers}
+      />
     </div>
   );
 };

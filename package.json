@@ -26,6 +26,7 @@
     "clsx": "^2.1.1",
     "country-flag-icons": "^1.5.20",
     "dayjs": "^1.11.13",
+    "file-saver": "^2.0.5",
     "formik": "^2.4.6",
     "html2canvas": "^1.4.1",
     "js-cookie": "^3.0.5",

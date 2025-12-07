@@ -35,16 +35,15 @@ const SchoolBalanceSkeleton = () => {
   );
 };
 
-const SchoolBalance = () => {
-  const {
-    details,
-    loading,
-  } = useSelector((state) => state.organizationDetails);
+const SchoolBalance = ({ details, isLoading }) => {
+
   const t = useTranslations();
 
-  if (loading ==='loading' ) {
+  if (isLoading) {
     return <SchoolBalanceSkeleton />;
   }
+
+  if (!details) return null;
 
   return (
     <>
@@ -71,7 +70,7 @@ const SchoolBalance = () => {
               variant="h4"
               className=" !font-somar !text-sm text-[#008442] flex gap-2 items-center justify-center"
             >
-              {details?.balance.availableBalance} <span>{newSarSmall}</span>
+              {details.balance.availableBalance} <span>{newSarSmall}</span>
             </Typography>
           </Grid>
           <Grid
@@ -90,7 +89,7 @@ const SchoolBalance = () => {
               variant="h4"
               className=" !font-somar !text-sm text-[#B25B00] flex gap-2 items-center justify-center"
             >
-              { details?.balance.pendingBalance} <span>{newSarSmall}</span>
+              { details.balance.pendingBalance} <span>{newSarSmall}</span>
             </Typography>
           </Grid>
           <Grid
@@ -109,7 +108,7 @@ const SchoolBalance = () => {
               variant="h4"
               className=" !font-somar !text-sm text-[#1858A5] flex gap-2 items-center justify-center"
             >
-              {details?.balance.totalBalance} <span>{newSarSmall}</span>
+              {details.balance.totalBalance} <span>{newSarSmall}</span>
             </Typography>
           </Grid>
         </Grid>

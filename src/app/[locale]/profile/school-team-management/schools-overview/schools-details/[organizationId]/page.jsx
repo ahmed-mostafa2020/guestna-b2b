@@ -51,7 +51,7 @@ const SchoolsDetailsPage = ({ params }) => {
 
         <SchoolBalance details={data} isloading={isLoading} />
 
-        <SchoolStats />
+        <SchoolStats details={data} isLoading={isLoading} />
         <Box className="bg-white border-2 border-border  rounded-lg p-4">
           <Typography
             variant="h3"

@@ -197,7 +197,7 @@ const UsersInfo = ({
               isLoadingRoles ? (
                 <CircularProgress size={20} sx={{ color: "white" }} />
               ) : (
-                <PersonAdd />
+                <PersonAdd className="me-2" />
               )
             }
             className="!bg-mainColor hover:!bg-linksHover !text-white !font-somar !font-medium !px-8 !py-2 !rounded-lg !min-w-[180px] disabled:!opacity-50"

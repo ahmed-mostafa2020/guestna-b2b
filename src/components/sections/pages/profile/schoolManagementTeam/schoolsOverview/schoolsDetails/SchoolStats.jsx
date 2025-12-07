@@ -5,6 +5,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const StateCard = ({ label, value }) => {
+  console.log("label", label, value);
   return (
     <Box className="flex flex-col gap-2 bg-white border-2  justify-center items-center border-border rounded-lg px-2 py-4">
       <Typography
@@ -29,14 +30,10 @@ const StateCardSkeleton = () => {
   );
 };
 
-const SchoolStats = () => {
-  const { details, loading } = useSelector(
-    (state) => state.organizationDetails
-  );
-
+const SchoolStats = ({ details, isLoading }) => {
   const t = useTranslations();
 
-  if (loading === "loading")
+  if (isLoading)
     return (
       <>
         {Array(6)
@@ -47,6 +44,7 @@ const SchoolStats = () => {
       </>
     );
 
+    if (!details) return null;
   const formattedStats =
     details?.tripsStats &&
     Object.entries(details?.tripsStats).map(([key, value]) => ({
@@ -54,10 +52,12 @@ const SchoolStats = () => {
       value,
     }));
 
+  
+  console.log("details", details, formattedStats);
   return (
     <Grid container gap={2} spacing={2} size={12}>
       {formattedStats?.map((item, index) => (
-        <Grid key={index}  item xs={4}>
+        <Grid key={index} item xs={4}>
           <StateCard label={item.label} value={item.value} />
         </Grid>
       ))}
@@ -71,6 +71,6 @@ const SchoolStats = () => {
       </Grid>
     </Grid>
   );
-}; 
+};
 
 export default SchoolStats;

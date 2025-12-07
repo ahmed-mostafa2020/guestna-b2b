@@ -3,13 +3,10 @@
 import { Box, Typography, Button } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { bankSmall, locationGrayIcon, newSarSmall } from "@/src/assets/svg";
-import { setOrganizationId } from "@/src/store/organizationDetails/organizationDetailsSlice";
-import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 
 const SchoolOverviewCard = ({ item }) => {
   const t = useTranslations();
-  const dispatch = useDispatch();
   const router = useRouter();
 
   const handleClick = () => {
@@ -30,9 +27,12 @@ const SchoolOverviewCard = ({ item }) => {
           <Box className="flex items-center justify-center bg-[#13A1C166] px-3 py-1 w-12 h-12 rounded-lg me-2">
             <span className="block">{bankSmall}</span>
           </Box>
-          <Typography variant="h6" className="font-semibold !font-somar">
+          <Typography variant="h6" className="font-semibold !font-somar truncate">
             {item.name} - {item.city}
           </Typography>
+          <Box className="bg-[#00AB2B66] text-[#033440] px-4 py-2 rounded-full text-sm flex items-center justify-center gap-1">
+          ممتاز
+        </Box>
         </Box>
 
         <Box className="bg-[#00AB2B66] text-[#033440] px-4 py-2 rounded-full text-sm flex items-center justify-center gap-1">
