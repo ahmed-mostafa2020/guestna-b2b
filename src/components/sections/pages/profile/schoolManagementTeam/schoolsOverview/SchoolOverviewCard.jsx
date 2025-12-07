@@ -20,14 +20,14 @@ const SchoolOverviewCard = ({ item }) => {
   };
   return (
     <Box
-      className="rounded-xl border-2 border-border p-4 shadow-sm bg-white  "
-      sx={{ direction: "rtl" }}
+      className="rounded-xl border-2 border-border px-4  py-6 shadow-sm bg-white  "
+     
     >
       {/* Status Tag */}
       <Box className="flex justify-between mb-2">
         {/* Name + Icon */}
         <Box className="flex justify-between items-center mb-1 ">
-          <Box className="flex items-center justify-center bg-blue-200 p-4 w-12 h-12 rounded-lg me-2">
+          <Box className="flex items-center justify-center bg-[#13A1C166] px-3 py-1 w-12 h-12 rounded-lg me-2">
             <span className="block">{bankSmall}</span>
           </Box>
           <Typography variant="h6" className="font-semibold !font-somar">
