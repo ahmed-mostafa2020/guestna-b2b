@@ -9,7 +9,7 @@ import { locale } from "dayjs";
 
 const SchoolOverviewCard = ({ item }) => {
   const t = useTranslations();
-  const locale = useLocale();  
+  const locale = useLocale();
 
   return (
     <Box className="rounded-xl border-2 border-border px-4  py-6 shadow-sm bg-white flex flex-col gap-8  ">
@@ -29,7 +29,7 @@ const SchoolOverviewCard = ({ item }) => {
             </Typography>
             <Box className="flex items-center gap-1 text-gray-500 text-sm mb-3 ">
               <span>{locationGrayIcon}</span>
-              <Typography className="!font-somara" variant="body1">
+              <Typography className="!font-somar" variant="body1">
                 {item.city}
               </Typography>
             </Box>
@@ -47,13 +47,13 @@ const SchoolOverviewCard = ({ item }) => {
         <Box className="bg-[#4BFC4E33] px-4  rounded-md  flex justify-between py-4">
           <Typography
             variant="body"
-            className="text-[#1E1E1C] !font-medium !font-somara"
+            className="text-[#1E1E1C] !font-medium !font-somar"
           >
             {t("profile.schools_overview.cards.total_revenue")}
           </Typography>
           <Typography
             variant="body"
-            className="text-[#1E1E1C] font-semibold !font-somara flex "
+            className="text-[#1E1E1C] font-semibold !font-somar flex "
           >
             {formatCurrency(item.totalRevenue)}
           </Typography>
@@ -63,13 +63,13 @@ const SchoolOverviewCard = ({ item }) => {
         <Box className="bg-[#4FDCFF33] px-4 py-4 rounded-md  text-center flex justify-between ">
           <Typography
             variant="body"
-            className="text-[#00707F] text-sm !font-somara"
+            className="text-[#00707F] text-sm !font-somar"
           >
             {t("profile.schools_overview.cards.active_students")}
           </Typography>
           <Typography
             variant="body"
-            className="text-[#0B7F8F] font-bold !font-somara"
+            className="text-[#0B7F8F] font-bold !font-somar"
           >
             {item.childsCount}
           </Typography>
@@ -82,13 +82,13 @@ const SchoolOverviewCard = ({ item }) => {
         <Box className="bg-[#2991AA14] shadow-[rgba(41,144,170,0.16)] py-2 rounded-lg flex flex-col">
           <Typography
             variant="body"
-            className="text-[#2991AA] font-bold !font-somara"
+            className="text-[#2991AA] font-bold !font-somar"
           >
             {item.suspendedTrips}
           </Typography>
           <Typography
             variant="body"
-            className="text-[#2991AA] opacity-70 text-sm font-semibold  !font-somara"
+            className="text-[#2991AA] opacity-70 text-sm font-semibold  !font-somar"
           >
             {t("profile.schools_overview.cards.suspended_trips")}
           </Typography>
@@ -98,13 +98,13 @@ const SchoolOverviewCard = ({ item }) => {
         <Box className="bg-[rgba(119,161,51,0.08)] shadow-[rgba(118,161,51,0.16)] py-2 rounded-lg flex flex-col">
           <Typography
             variant="body"
-            className="text-[#76A133] font-bold !font-somara "
+            className="text-[#76A133] font-bold !font-somar "
           >
             {item.doneTrips}
           </Typography>
           <Typography
             variant="body"
-            className="text-[#76A133] opacity-70 text-sm font-semibold !font-somara "
+            className="text-[#76A133] opacity-70 text-sm font-semibold !font-somar "
           >
             {t("profile.schools_overview.cards.done_trips")}
           </Typography>
@@ -114,13 +114,13 @@ const SchoolOverviewCard = ({ item }) => {
         <Box className="bg-[#EB010114] shadow-[rgba(235,1,1,0.16)] py-2 rounded-lg flex flex-col">
           <Typography
             variant="body"
-            className="text-[#EB0101] !font-bold !font-somara"
+            className="text-[#EB0101] !font-bold !font-somar"
           >
             {item.scheduledTrips}
           </Typography>
           <Typography
             variant="body"
-            className="text-[#EB0101] opacity-70 text-sm font-semibold !font-somara"
+            className="text-[#EB0101] opacity-70 text-sm font-semibold !font-somar"
           >
             {t("profile.schools_overview.cards.scheduled_trips")}
           </Typography>
