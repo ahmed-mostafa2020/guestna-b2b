@@ -4,6 +4,7 @@ import { Box, Typography, Button } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { bankSmall, locationGrayIcon, newSarSmall } from "@/src/assets/svg";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const SchoolOverviewCard = ({ item }) => {
   const t = useTranslations();
@@ -16,10 +17,7 @@ const SchoolOverviewCard = ({ item }) => {
     );
   };
   return (
-    <Box
-      className="rounded-xl border-2 border-border px-4  py-6 shadow-sm bg-white  "
-     
-    >
+    <Box className="rounded-xl border-2 border-border px-4  py-6 shadow-sm bg-white  ">
       {/* Status Tag */}
       <Box className="flex justify-between mb-2">
         {/* Name + Icon */}
@@ -27,12 +25,15 @@ const SchoolOverviewCard = ({ item }) => {
           <Box className="flex items-center justify-center bg-[#13A1C166] px-3 py-1 w-12 h-12 rounded-lg me-2">
             <span className="block">{bankSmall}</span>
           </Box>
-          <Typography variant="h6" className="font-semibold !font-somar truncate">
+          <Typography
+            variant="h6"
+            className="font-semibold !font-somar truncate"
+          >
             {item.name} - {item.city}
           </Typography>
           <Box className="bg-[#00AB2B66] text-[#033440] px-4 py-2 rounded-full text-sm flex items-center justify-center gap-1">
-          ممتاز
-        </Box>
+            ممتاز
+          </Box>
         </Box>
 
         <Box className="bg-[#00AB2B66] text-[#033440] px-4 py-2 rounded-full text-sm flex items-center justify-center gap-1">
@@ -131,16 +132,13 @@ const SchoolOverviewCard = ({ item }) => {
           </Typography>
         </Box>
       </Box>
-
       {/* Button */}
-      <Button
-        fullWidth
-        variant="contained"
+      <Link
         className="!font-somar font-semibold !bg-[#0B7F8F]  !py-4  !text-white  rounded-lg"
-        onClick={handleClick}
+        href={`/schools-details/${item.id}`}
       >
         {t("profile.schools_overview.cards.show_details")}
-      </Button>
+      </Link>
     </Box>
   );
 };

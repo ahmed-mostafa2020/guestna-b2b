@@ -4,14 +4,9 @@ import SchoolBalance from "@/src/components/sections/pages/profile/schoolManagem
 import SchoolStats from "@/src/components/sections/pages/profile/schoolManagementTeam/schoolsOverview/schoolsDetails/SchoolStats";
 import SelectSchoolForDetails from "@/src/components/sections/pages/profile/schoolManagementTeam/schoolsOverview/schoolsDetails/SelectSchool";
 import UsersInfo from "@/src/components/sections/pages/profile/schoolManagementTeam/users/UsersInfo";
-import UsersManagement from "@/src/components/sections/pages/profile/schoolManagementTeam/users/UsersManagement";
+
 import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
 import { useFetchData } from "@/src/hooks/useFetchData";
-import {
-  setOrganizationDetails,
-  setOrganizationDetailsError,
-  setOrganizationDetailsLoading,
-} from "@/src/store/organizationDetails/organizationDetailsSlice";
 import { Typography } from "@material-ui/core";
 import { Box } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
