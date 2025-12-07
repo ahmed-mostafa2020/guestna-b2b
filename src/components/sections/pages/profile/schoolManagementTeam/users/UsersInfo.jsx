@@ -207,7 +207,7 @@ const UsersInfo = ({
               : t("profile.schools_users.add_new_user")}
           </Button>
 
-          <Button
+          {/* <Button
             variant="outlined"
             onClick={handleBulkImportClick}
             disabled={isLoadingRoles}
@@ -225,7 +225,7 @@ const UsersInfo = ({
               : t("profile.schools_users.bulk_import_users", {
                   defaultValue: "Bulk Import Users",
                 })}
-          </Button>
+          </Button> */}
         </Box>
       )}
 
