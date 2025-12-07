@@ -1,24 +1,19 @@
-import { bluelocationIcon, locationIcon } from "@/src/assets/svg";
+import { bluelocationIcon } from "@/src/assets/svg";
 import { Box } from "@material-ui/core";
 import { ArrowDropDown } from "@mui/icons-material";
 import { MenuItem, Select, Skeleton, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import React, { useReducer } from "react";
-import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 const SelectSchoolForDetailsSkeleton = () => {
   return (
     <Box className="flex flex-col gap-4 bg-white rounded-lg p-4 shadow border-border border-2">
-      {/* Title Skeleton */}
       <Skeleton variant="text" width={200} height={30} />
-
-      {/* Select Skeleton */}
       <Skeleton variant="rectangular" height={40} className="rounded-md" />
 
-      {/* School Card Skeleton */}
       <Box className="bg-buttonsHover p-4 rounded-lg flex gap-4 border-borderColor border-2">
-        {/* Image Skeleton */}
         <Skeleton
           variant="rectangular"
           width={110}
@@ -26,15 +21,12 @@ const SelectSchoolForDetailsSkeleton = () => {
           className="rounded-lg"
         />
 
-        {/* Right Section */}
         <Box className="flex justify-between w-full items-start">
-          {/* School Name + City */}
           <Box className="flex flex-col gap-2 flex-1">
             <Skeleton variant="text" width={"70%"} height={28} />
             <Skeleton variant="text" width={"40%"} height={20} />
           </Box>
 
-          {/* Performance & Students */}
           <Box className="flex flex-col gap-2 items-center">
             <Skeleton
               variant="rectangular"
@@ -55,115 +47,118 @@ const SelectSchoolForDetailsSkeleton = () => {
   );
 };
 
-const SelectSchoolForDetails = () => {
-  const handleSchoolSelect = () => {
-    console.log("handleSchoolSelect");
-    setOpen(true);
+const SelectSchoolForDetails = ({ details, isLoading }) => {
+  const router = useRouter();
+  const t = useTranslations();
+
+  const [open, setOpen] = useState(false);
+  const [selectedSchool, setSelectedSchool] = useState(details?._id ?? "");
+
+  /** Sync when details changes */
+  useEffect(() => {
+    if (details?._id) setSelectedSchool(details._id);
+  }, [details]);
+
+  const handleSchoolSelect = (e) => {
+    const id = e.target.value;
+    setSelectedSchool(id);
+    router.push(
+      `/profile/school-team-management/schools-overview/schools-details/${id}`
+    );
   };
 
-  const { details, loading } = useSelector(
-    (state) => state.organizationDetails
-  );
-  const [open, setOpen] = React.useState(false);
+  if (isLoading) return <SelectSchoolForDetailsSkeleton />;
 
-  const t = useTranslations();
-  console.log("details", details, loading);
+  if (!details) return null;
 
-  if (loading === "loading") return <SelectSchoolForDetailsSkeleton />;
   return (
     <Box className="flex flex-col gap-4 bg-white rounded-lg p-4 shadow border-2 border-border">
-      <Typography variant="h3" className=" !font-somar !text-xl ">
-        {t("profile.schools_overview.schools_details.select_school.title")}{" "}
+      <Typography variant="h3" className="!font-somar !text-xl">
+        {t("profile.schools_overview.schools_details.select_school.title")}
       </Typography>
+
       <Select
+        size="small"
         open={open}
+        value={selectedSchool}
+        onChange={handleSchoolSelect}
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
-        className="w-full !border-5 !border-borderColor "
+        className="w-full !border-5 !border-borderColor"
         IconComponent={() => (
-          <ArrowDropDown className={`${open && "rotate-180"} left-0 me-2`} />
+          <ArrowDropDown
+            className={`${open ? "rotate-180" : ""} left-0 me-2`}
+          />
         )}
-        size="small"
-        defaultValue={details?._id}
-        onChange={handleSchoolSelect}
         MenuProps={{
           PaperProps: {
             className: "py-4 px-3",
           },
-          anchorOrigin: {
-            vertical: "bottom",
-            horizontal: "left",
-          },
-          transformOrigin: {
-            vertical: "top",
-            horizontal: "left",
-          },
+          anchorOrigin: { vertical: "bottom", horizontal: "left" },
+          transformOrigin: { vertical: "top", horizontal: "left" },
         }}
       >
         <MenuItem
-          className="!font-somar p-2 !bg-white hover:!bg-buttonsHover "
-          value={details?._id}
+          key={details._id}
+          value={details._id}
+          className="!font-somar p-2 !bg-white hover:!bg-buttonsHover"
         >
-          {details?.name}
+          {details.name}
         </MenuItem>
+
+        {/* TODO: Replace with real organizations */}
         {[
-          { _id: "6923498247e5ef30a20c1195", name: "عادل مدارس االامل" },
-          {
-            _id: "6923498247e5ef30a20c1199",
-            name: "عادل مدارس االامل",
-          },
+          { _id: "6923498247e5ef30a20c1195", name: "عادل مدارس الامل" },
+          { _id: "6923498247e5ef30a20c1199", name: "عادل مدارس الامل 2" },
         ].map((item) => (
           <MenuItem
-            className="!font-somar p-2 !bg-white hover:!bg-buttonsHover "
+            key={item._id}
             value={item._id}
+            className="!font-somar p-2 !bg-white hover:!bg-buttonsHover"
           >
             {item.name}
           </MenuItem>
         ))}
       </Select>
-      <Box className="bg-buttonsHover  p-6 rounded-lg flex gap-4 border-borderColor border-2">
-        <Box className="flex items-center justify-center">
-          <Image
-            src={details?.image}
-            alt={details?.name}
-            width={110}
-            height={110}
-          />
-        </Box>
+
+      <Box className="bg-buttonsHover p-6 rounded-lg flex gap-4 border-borderColor border-2">
+        <Image
+          src={details?.image}
+          alt={details?.name}
+          width={110}
+          height={110}
+        />
+
         <Box className="flex justify-between w-full items-start">
           <Box className="flex flex-col gap-1">
             <Typography
               variant="h3"
-              className=" !font-somar !text-xl !text-titleColor "
+              className="!font-somar !text-xl !text-titleColor"
             >
               {details?.name} - {details?.city}
             </Typography>
+
             <Typography
               variant="caption"
-              className=" !font-somar  !text-titleColor flex items-center gap-1 justify-start"
+              className="!font-somar !text-titleColor flex items-center gap-1"
             >
               <span>{bluelocationIcon}</span> {details?.city}
             </Typography>
           </Box>
 
-          <Box className="flex flex-col gap-1 items-center justify-center">
-            <Typography
-              varient="caption"
-              className="!font-somar bg-white p-2 rounded-full  !text-sm"
-            >
+          <Box className="flex flex-col gap-1 items-center">
+            <Typography className="!font-somar bg-white p-2 rounded-full !text-sm">
               {t(
                 "profile.schools_overview.schools_details.select_school.performance"
-              )}{" "}
+              )}
               : 85%
             </Typography>
-            <Typography
-              varient="caption"
-              className="!font-somar  rounded-full  !text-sm"
-            >
+
+            <Typography className="!font-somar rounded-full !text-sm">
               {t(
                 "profile.schools_overview.schools_details.select_school.students"
-              )}{" "}
-              :{details?.studentStats.total}
+              )}
+              :{details?.studentStats?.total}
             </Typography>
           </Box>
         </Box>
