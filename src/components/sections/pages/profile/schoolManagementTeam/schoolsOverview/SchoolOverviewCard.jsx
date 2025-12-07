@@ -55,7 +55,7 @@ const SchoolOverviewCard = ({ item }) => {
             variant="body"
             className="text-[#1E1E1C] font-semibold !font-somara flex "
           >
-            {formatCurrency(item.totalRevenue, locale)}
+            {formatCurrency(item.totalRevenue)}
           </Typography>
         </Box>
 
