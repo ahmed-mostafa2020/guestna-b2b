@@ -14,8 +14,6 @@ const LargeSizeGrid = () => {
     (state) => state.promoCode?.promoCodeData?.trip
   );
 
-  console.log("tripBasePrice", tripBasePrice);
-
   const isFreeTrip =
     tripBasePrice === 0 ||
     promoCodeData?.discountedTotalPriceWithVat === 0 ||
