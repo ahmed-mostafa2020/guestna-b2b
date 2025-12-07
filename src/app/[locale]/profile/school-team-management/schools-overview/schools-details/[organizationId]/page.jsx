@@ -27,9 +27,6 @@ const SchoolsDetailsPage = ({ params }) => {
     {},
     {
       lang: locale,
-      onSuccess: setOrganizationDetails,
-      onError: setOrganizationDetailsError,
-      onLoading: setOrganizationDetailsLoading,
     }
   );
 
