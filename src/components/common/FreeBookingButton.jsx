@@ -40,6 +40,10 @@ const FreeBookingButton = () => {
     (state) => state.finalTripDetailsData?.data
   );
 
+  const promoCode = useSelector(
+    (state) => state.promoCode?.promoCodeData?.trip?.promoCode
+  );
+
   const handleFreeBooking = async () => {
     setIsLoading(true);
     setBookingStatus(null);
@@ -51,7 +55,7 @@ const FreeBookingButton = () => {
         trip: finalTripData?._id,
         client: finalTripData?.client,
         quantity: finalTripData?.quantity || 1,
-        promoCode: finalTripData?.promoCode || null,
+        promoCode: promoCode || null,
       };
 
       // Remove null/undefined values
@@ -71,23 +75,23 @@ const FreeBookingButton = () => {
 
       if (response.data) {
         setBookingStatus("success");
-        
+
         // Clear promo code data after successful booking
         dispatch(resetPromoCode());
-        
+
         // Show success snackbar
         enqueueSnackbar(
-          t("forms.freeBooking.successMessage") || "Your confirmation has been done successfully!",
+          t("forms.freeBooking.successMessage") ||
+            "Your confirmation has been done successfully!",
           { variant: "success" }
         );
-        
+
         // Redirect to booking status page
         router.push(`/bookingStatus/${response.data}`);
       }
     } catch (error) {
       console.error("Free booking error:", error);
       setBookingStatus("error");
-      
 
       // Handle different error scenarios
       let errorMsg = "";
@@ -104,9 +108,9 @@ const FreeBookingButton = () => {
         // Something else happened
         errorMsg = t("common.errorHappens");
       }
-      
+
       setErrorMessage(errorMsg);
-      
+
       // Show error snackbar
       enqueueSnackbar(errorMsg, { variant: "error" });
     } finally {
@@ -169,7 +173,7 @@ const FreeBookingButton = () => {
           <button
             onClick={handleFreeBooking}
             disabled={isLoading}
-            className="w-full md:w-auto bg-mainColor hover:bg-secColor text-white px-8 py-3 rounded-lg font-semibold text-lg md:min-w-[200px] transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full md:w-auto bg-mainColor hover:bg-linksHover text-white px-8 py-3 rounded-lg font-semibold text-lg md:min-w-[200px] transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <Box className="flex items-center justify-center gap-2">

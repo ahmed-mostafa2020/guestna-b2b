@@ -16,6 +16,7 @@ const InteractiveCalendar = ({
   const { hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
+
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
     const month = date.getMonth();

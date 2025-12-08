@@ -114,7 +114,7 @@
     "organizationTripStatus": {
       "DONE": "مكتمل",
       "PENDING": "قيد المعالجة",
-      "CANCLED": "ملغي",
+      "CANCELLED": "ملغي",
       "SCHEDULED": "مجدول",
       "ENDED": "انتهت"
     },

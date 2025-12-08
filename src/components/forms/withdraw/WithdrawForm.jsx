@@ -16,10 +16,12 @@ import { Formik, Form } from "formik";
 import { createWithdrawValidationSchema } from "@utils/validationSchemas";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 
 const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   const locale = useLocale();
   const t = useTranslations("profile.myWallet.withdrawPage");
+  const queryClient = useQueryClient();
 
   const [transferMethod, setTransferMethod] = useState("bank");
   const [selectedTrip, setSelectedTrip] = useState(null);
@@ -128,6 +130,11 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
         });
         resetForm();
         refetchBalance();
+        // Refetch trips list to update available trips for withdrawal
+        queryClient.invalidateQueries([
+          "fetchData",
+          B2B_END_POINTS.PROFILE.TRIPS,
+        ]);
       } else {
         // Handle API error response
         const apiErrorMessage =

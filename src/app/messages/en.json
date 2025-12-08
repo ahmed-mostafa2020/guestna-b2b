@@ -116,7 +116,7 @@
     "organizationTripStatus": {
       "DONE": "Done",
       "PENDING": "Pending",
-      "CANCLED": "Cancelled",
+      "CANCELLED": "Cancelled",
       "SCHEDULED": "Scheduled",
       "ENDED": "Ended"
     },

@@ -101,7 +101,9 @@ const TransactionsPage = () => {
       staleTime: 300000,
       // Include filters in query key to automatically refetch when filters change
       queryKeySuffix: `transactions-page-${pagination.page}-perPage-${pagination.perPage}-filters-${filters.searchTerm}|${filters.day}|${filters.status}`,
-      enabled: hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS), // Only fetch when user has permission
+      enabled: hasElement(
+        PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS
+      ), // Only fetch when user has permission
     }
   );
 
@@ -254,7 +256,7 @@ const TransactionsPage = () => {
     const statusMap = {
       DONE: TRIP_STATUS.DONE,
       PENDING: TRIP_STATUS.PENDING,
-      CANCLED: TRIP_STATUS.CANCELLED,
+      CANCELLED: TRIP_STATUS.CANCELLED,
     };
 
     const normalizedStatus = apiStatus.toUpperCase().replace(/[_\s]/g, "");
@@ -340,7 +342,7 @@ const TransactionsPage = () => {
       label: t("profile.myWallet.transactionsPage.table.status.pending"),
       className: "bg-yellow-100 text-yellow-800 border-yellow-200",
     },
-    CANCLED: {
+    CANCELLED: {
       label: t("profile.myWallet.transactionsPage.table.status.cancelled"),
       className: "bg-red-100 text-red-800 border-red-200",
     },
