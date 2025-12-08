@@ -11,8 +11,15 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import axios from "axios";
 
 // Dynamically import ReactQuill to avoid SSR issues
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-import "react-quill/dist/quill.snow.css";
+const ReactQuill = dynamic(
+  () => {
+    return import("react-quill").then((mod) => {
+      import("react-quill/dist/quill.snow.css");
+      return mod.default;
+    });
+  },
+  { ssr: false }
+);
 
 const AdministrativeCommentModal = ({ booking, onClose }) => {
   const locale = useLocale();
