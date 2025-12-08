@@ -75,8 +75,8 @@ const FooterActions = ({
 
       <Button
         variant="contained"
-        className="!bg-mainColor !text-white !font-somar disabled:!cursor-not-allowed"
-        disabled={!hasValidUsers || isSubmitting}
+        className="!bg-mainColor !text-white !font-somar px-4 py-2 disabled:!bg-gray-400"
+        disabled={!hasValidUsers || isSubmitting || !usersCount}
         onClick={onSubmit}
       >
         {isSubmitting ? "Submitting..." : `Import ${usersCount} Users`}
