@@ -1,9 +1,10 @@
 import { uploadFile } from "@/src/assets/svg";
 import { Alert, Box, Button, List, ListItem, Typography } from "@mui/material";
-import { useTranslations } from "next-intl";
-import { download } from "@/hooks/useDownload";
+import { useLocale, useTranslations } from "next-intl";
 import ExcelJS from "exceljs";
 import { useState } from "react";
+import { download } from "@/src/hooks/useDownload";
+import { USER_HEADERS } from "@/src/constants/excelHeaders";
 
 
 const UploadInstructions = ({
@@ -15,6 +16,7 @@ const UploadInstructions = ({
 }) => {
   const t = useTranslations();
   const [loading, setLoading] = useState(false);
+  const locale = useLocale();
 
   const generateAndDownloadExcel = async () => {
     setLoading(true);
@@ -23,13 +25,13 @@ const UploadInstructions = ({
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("المستخدمين");
 
-      // إضافة العناوين
-      worksheet.columns = [
-        { header: "الاسم", key: "name", width: 20 },
-        { header: "البريد الإلكتروني", key: "email", width: 30 },
-        { header: "رقم الجوال", key: "phone", width: 15 },
-        { header: "الدور", key: "role", width: 20 },
-      ];
+    
+
+      worksheet.columns = USER_HEADERS.map((header) => ({
+        header: header.label[locale],
+        key: header.key,
+        width: header.width,
+      }));
 
       // تنسيق صف العناوين
       worksheet.getRow(1).eachCell((cell) => {

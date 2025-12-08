@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useState, useCallback } from "react";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useSnackbar } from "notistack";
 import axios from "axios";
@@ -15,45 +15,34 @@ import getErrorMessage from "@utils/getErrorMessage";
 import UploadInstructions from "./UploadInstructions";
 import UsersPreviewTable from "./UsersPreviewTable";
 import FooterActions from "./FooterActions";
+import { USER_HEADERS } from "@/src/constants/excelHeaders";
 
 const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
-// Create validation schema for bulk import
-const createBulkUserRowSchema = (t, roleOptions = []) => {
-  return Yup.object().shape({
+// ------------------------
+// Validation schema
+// ------------------------
+const createBulkUserRowSchema = (t, roleOptions = []) =>
+  Yup.object().shape({
     name: Yup.string()
       .trim()
       .required(t("forms.validation.require"))
       .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
-      .test(
-        "min-word-length",
-        t("forms.name.error.wordMinLength"),
-        function (value) {
-          if (!value) return false;
-          const words = value.trim().split(/\s+/);
-          if (words.length < 2) return false;
-          return words.every((word) => word.length >= 2);
-        }
-      ),
+      .test("min-word-length", t("forms.name.error.wordMinLength"), (value) => {
+        if (!value) return false;
+        const words = value.trim().split(/\s+/);
+        return words.length >= 2 && words.every((w) => w.length >= 2);
+      }),
     email: Yup.string()
       .email(t("forms.email.error"))
       .matches(emailRegex, t("forms.email.error_tld"))
       .required(t("forms.validation.require"))
       .test(
         "unique-email",
-        t("forms.validation.duplicateEmail", {
-          defaultValue: "Email already exists in file",
-        }),
+        t("forms.validation.duplicateEmail"),
         function (value) {
-          // Check for duplicates within the file
-          const currentIndex = this.parent._index;
-          const allValues = this.options.context?.allValues || [];
-          const duplicateCount = allValues.filter(
-            (item, idx) =>
-              idx !== currentIndex &&
-              item.email?.toLowerCase() === value?.toLowerCase()
-          ).length;
-          return duplicateCount === 0;
+          const allEmails = this.options.context?.allValues?.map(u => u.email?.toLowerCase()) || [];
+          return allEmails.filter(e => e === value?.toLowerCase()).length <= 1;
         }
       ),
     phone: Yup.string()
@@ -61,26 +50,40 @@ const createBulkUserRowSchema = (t, roleOptions = []) => {
       .required(t("forms.validation.require"))
       .test("phone-validation", t("forms.phone.error.invalid"), (value) => {
         if (!value) return false;
-        const phoneString = String(value).replace(/\s/g, "");
-        // Phone validation: must be at least 13 characters and valid phone number
-        if (phoneString.length < 13) return false;
-        return isValidPhoneNumber(phoneString);
+        const phoneString = value.replace(/\s/g, "");
+        return phoneString.length >= 13 && isValidPhoneNumber(phoneString);
       }),
     role: Yup.string()
       .required(t("forms.validation.require"))
-      .test(
-        "valid-role",
-        t("forms.validation.invalidRole", {
-          defaultValue: "Role must match one of the available roles",
-        }),
-        (value) => {
-          if (!value) return false;
-          return roleOptions.includes(value);
-        }
+      .test("valid-role", t("forms.validation.invalidRole"), (value) =>
+        roleOptions.includes(value)
       ),
   });
+
+// ------------------------
+// Helper: safe cell value
+// ------------------------
+const getCellValue = (cell) => {
+  if (!cell) return "";
+  if (cell?.text) return cell.text; // RichText
+  if (typeof cell === "object" && cell?.richText) {
+    return cell.richText.map((r) => r.text).join("");
+  }
+  return String(cell).trim();
 };
 
+// ------------------------
+// Helper: consistent error
+// ------------------------
+const handleError = (error, t) => {
+  if (axios.isAxiosError(error)) return getErrorMessage(error, t);
+  if (error instanceof Error) return error.message;
+  return t("forms.validation.error", { defaultValue: "Something went wrong" });
+};
+
+// ------------------------
+// Component
+// ------------------------
 const BulkUserImportForm = ({
   organizationId,
   rolesData = [],
@@ -95,447 +98,322 @@ const BulkUserImportForm = ({
 
   const [uploadedUsers, setUploadedUsers] = useState([]);
   const [validationErrors, setValidationErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [duplicateUsers, setDuplicateUsers] = useState(new Set());
   const [fileError, setFileError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const headers = getHeaders(locale);
-  const roleOptions = rolesData.map((item) => item.description);
+  const roleOptions = rolesData.map((r) => r.description);
 
-  // Find role ID by description
-  const findRoleIdByName = (description) => {
-    const role = rolesData.find((opt) => opt.description === description);
-    return role ? role._id : description;
-  };
+  const findRoleIdByName = useCallback(
+    (description) =>
+      rolesData.find((r) => r.description === description)?._id || description,
+    [rolesData]
+  );
 
-  // Check if user exists in current organization users
   const isExistingUser = useCallback(
-    (email) => {
-      return existingUsers.some(
-        (user) => user.email?.toLowerCase() === email?.toLowerCase()
-      );
-    },
+    (email) =>
+      existingUsers.some(
+        (u) => u.email?.toLowerCase() === email?.toLowerCase()
+      ),
     [existingUsers]
   );
 
-  // Validate a single user row
-  const validateUserRow = async (user, index, allUsers) => {
-    const schema = createBulkUserRowSchema(t, roleOptions);
-    try {
-      await schema.validate(user, {
-        context: { allValues: allUsers },
-        abortEarly: false,
-      });
-      return null;
-    } catch (error) {
-      if (error.inner && error.inner.length > 0) {
-        const errors = {};
-        error.inner.forEach((err) => {
-          if (err.path) {
-            errors[err.path] = err.message;
-          }
+  // ------------------------
+  // Validate row
+  // ------------------------
+  const validateUserRow = useCallback(
+    async (user, index, allUsers) => {
+      const schema = createBulkUserRowSchema(t, roleOptions);
+      try {
+        await schema.validate(user, {
+          context: { allValues: allUsers },
+          abortEarly: false,
         });
-        return errors;
+        return null;
+      } catch (err) {
+        if (err.inner && err.inner.length > 0) {
+          return err.inner.reduce((acc, e) => {
+            if (e.path) acc[e.path] = e.message;
+            return acc;
+          }, {});
+        }
+        return { _general: err.message };
       }
-      return { _general: error.message };
-    }
-  };
+    },
+    [roleOptions, t]
+  );
 
-  // Parse CSV/Excel file
-  const parseFile = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, { type: "array" });
-          const firstSheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[firstSheetName];
-          // Use first row as header to auto-detect columns
-          const jsonData = XLSX.utils.sheet_to_json(worksheet, {
-            defval: "", // Default value for empty cells
-          });
+  // ------------------------
+  // Parse Excel file
+  // ------------------------
+  const parseFile = useCallback(
+    async (file) => {
+      try {
+        const workbook = new ExcelJS.Workbook();
+        const buffer = await file.arrayBuffer();
+        await workbook.xlsx.load(buffer);
 
-          // Normalize and map the data
-          // First, get all possible column name variations
-          const columnMappings = {
-            name: [
-              "name",
-              "Name",
-              "full name",
-              "Full Name",
-              "person name",
-              "Person Name",
-              "اسم",
-              "الاسم",
-            ],
-            email: [
-              "email",
-              "Email",
-              "email address",
-              "Email Address",
-              "e-mail",
-              "E-mail",
-              "بريد إلكتروني",
-            ],
-            phone: [
-              "phone",
-              "Phone",
-              "phone number",
-              "Phone Number",
-              "mobile",
-              "Mobile",
-              "mobile number",
-              "Mobile Number",
-              "tel",
-              "telephone",
-              "هاتف",
-            ],
-            role: [
-              "role",
-              "Role",
-              "user role",
-              "User Role",
-              "job title",
-              "Job Title",
-              "position",
-              "Position",
-              "دور",
-              "المسمى الوظيفي",
-            ],
-          };
+        const worksheet = workbook.getWorksheet(1);
+        if (!worksheet) throw new Error(t("forms.validation.noWorksheet"));
 
-          // Function to find column value by trying multiple variations
-          const findColumnValue = (row, variations) => {
-            for (const variation of variations) {
-              // Try exact match first
-              if (
-                row[variation] !== undefined &&
-                row[variation] !== null &&
-                String(row[variation]).trim() !== ""
-              ) {
-                return String(row[variation]).trim();
-              }
-              // Try case-insensitive match
-              const key = Object.keys(row).find(
-                (k) => k.toLowerCase() === variation.toLowerCase()
-              );
-              if (
-                key &&
-                row[key] !== undefined &&
-                row[key] !== null &&
-                String(row[key]).trim() !== ""
-              ) {
-                return String(row[key]).trim();
-              }
-            }
-            return "";
-          };
-
-          const normalizedData = jsonData
-            .map((row, index) => {
-              const name = findColumnValue(row, columnMappings.name);
-              const email = findColumnValue(row, columnMappings.email);
-              const phone = findColumnValue(row, columnMappings.phone);
-              const role = findColumnValue(row, columnMappings.role);
-
-              return {
-                name,
-                email: email.toLowerCase(),
-                phone,
-                role,
-                _index: index,
-                _isDuplicate: false,
-              };
-            })
-            .filter((row) => {
-              // Filter out completely empty rows
-              return row.name || row.email || row.phone || row.role;
-            });
-
-          resolve(normalizedData);
-        } catch (error) {
-          reject(
-            new Error(
-              t("forms.validation.fileParseError", {
-                defaultValue: "Failed to parse file",
-              })
+        const columnIndexMap = {};
+        const headerRow = worksheet.getRow(1);
+        const excelHeaders = headerRow.values
+          .slice(1)
+          .map((h) => (h ? h.toString().trim() : ""));
+        USER_HEADERS.forEach((col) => {
+          const idx = excelHeaders.findIndex((h) =>
+            [col.label.ar, col.label.en].some(
+              (lbl) => lbl?.toLowerCase() === h.toLowerCase()
             )
           );
-        }
-      };
-      reader.onerror = () =>
-        reject(
-          new Error(
-            t("forms.validation.fileReadError", {
-              defaultValue: "Failed to read file",
-            })
-          )
-        );
-      reader.readAsArrayBuffer(file);
-    });
-  };
+          if (idx !== -1) columnIndexMap[col.key] = idx + 1;
+        });
 
-  // Handle file upload
-  const handleFileUpload = async (event) => {
-    const file = event.target.files?.[0];
+        const missingColumns = USER_HEADERS.filter(
+          (c) => !columnIndexMap[c.key]
+        );
+        if (missingColumns.length)
+          throw new Error(
+            t("forms.validation.missingColumns") +
+              missingColumns
+                .map((c) => `${c.label.ar}/${c.label.en}`)
+                .join(", ")
+          );
+
+        const validRows = [];
+
+        worksheet.eachRow((row, rowNumber) => {
+          if (rowNumber === 1) return;
+
+          const user = {
+            name: getCellValue(row.getCell(columnIndexMap.name)),
+            email: getCellValue(
+              row.getCell(columnIndexMap.email)
+            ).toLowerCase(),
+            phone: getCellValue(row.getCell(columnIndexMap.phone)),
+            role: getCellValue(row.getCell(columnIndexMap.role)),
+          };
+
+          if (!user.name && !user.email && !user.phone && !user.role) return;
+          validRows.push(user);
+        });
+
+        return { validRows };
+      } catch (err) {
+        throw new Error(handleError(err, t));
+      }
+    },
+    [t]
+  );
+
+  // ------------------------
+  // File upload handler
+  // ------------------------
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
     if (!file) return;
 
     setFileError("");
+    e.target.value = "";
 
-    // Validate file type
-    const validTypes = [
-      "application/vnd.ms-excel",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      "text/csv",
-    ];
     const validExtensions = [".xls", ".xlsx", ".csv"];
     const fileExtension = file.name
-      .substring(file.name.lastIndexOf("."))
+      .slice(file.name.lastIndexOf("."))
       .toLowerCase();
-
-    if (
-      !validTypes.includes(file.type) &&
-      !validExtensions.includes(fileExtension)
-    ) {
-      setFileError(
-        t("forms.validation.invalidFileType", {
-          defaultValue: "Please upload a valid Excel (.xlsx, .xls) or CSV file",
-        })
-      );
+    if (!validExtensions.includes(fileExtension)) {
+      setFileError(t("forms.validation.invalidFileType"));
       return;
     }
 
     try {
-      const parsedData = await parseFile(file);
-
-      if (parsedData.length === 0) {
-        setFileError(
-          t("forms.validation.emptyFile", {
-            defaultValue: "The file appears to be empty or has no valid data",
-          })
-        );
+      const { validRows } = await parseFile(file);
+      if (!validRows.length) {
+        setFileError(t("forms.validation.emptyFile"));
         return;
       }
 
-      // Validate all rows
       const errors = {};
       const duplicates = new Set();
 
-      for (let i = 0; i < parsedData.length; i++) {
-        const user = parsedData[i];
-        const rowErrors = await validateUserRow(user, i, parsedData);
-
+      for (let i = 0; i < validRows.length; i++) {
+        const rowErrors = await validateUserRow(validRows[i], i, validRows);
         if (rowErrors) {
           errors[i] = rowErrors;
+          validRows[i]._rowErrors = rowErrors;
         }
 
-        // Check for existing users
-        if (isExistingUser(user.email)) {
+        if (isExistingUser(validRows[i].email)) {
           duplicates.add(i);
-          parsedData[i]._isDuplicate = true;
+          validRows[i]._isDuplicate = true;
         }
       }
 
-      setUploadedUsers(parsedData);
+      setUploadedUsers(validRows);
       setValidationErrors(errors);
       setDuplicateUsers(duplicates);
-    } catch (error) {
-      setFileError(error.message || t("forms.validation.error"));
-      enqueueSnackbar(error.message || t("forms.validation.error"), {
-        variant: "error",
-      });
-    }
 
-    // Reset file input
-    event.target.value = "";
+      if (Object.keys(errors).length > 0) {
+        enqueueSnackbar(
+          t("forms.validation.rowsHaveErrors", {
+            count: Object.keys(errors).length,
+          }),
+          { variant: "error" }
+        );
+      }
+    } catch (err) {
+      const message = handleError(err, t);
+      console.error(message);
+      setFileError(message);
+      enqueueSnackbar(message, { variant: "error" });
+    }
   };
 
-  // Remove user from uploaded list
+  // ------------------------
+  // Remove user
+  // ------------------------
   const handleRemoveUser = (index) => {
-    const newUsers = uploadedUsers.filter((_, i) => i !== index);
-    const newErrors = { ...validationErrors };
-    delete newErrors[index];
+    const updatedUsers = uploadedUsers.filter((_, i) => i !== index);
+    const updatedErrors = { ...validationErrors };
+    delete updatedErrors[index];
 
-    // Re-validate remaining users for duplicate emails
-    setUploadedUsers(newUsers);
-    setValidationErrors(newErrors);
-
-    // Update duplicate tracking
     const emailCounts = {};
-    newUsers.forEach((user, idx) => {
-      const email = user.email?.toLowerCase();
-      if (email) {
-        emailCounts[email] = (emailCounts[email] || 0) + 1;
-      }
+    updatedUsers.forEach((u) => {
+      const email = u.email?.toLowerCase();
+      if (email) emailCounts[email] = (emailCounts[email] || 0) + 1;
     });
 
     const newDuplicates = new Set();
-    newUsers.forEach((user, idx) => {
-      if (
-        isExistingUser(user.email) ||
-        emailCounts[user.email?.toLowerCase()] > 1
-      ) {
-        newDuplicates.add(idx);
-        newUsers[idx]._isDuplicate = true;
+    updatedUsers.forEach((u, i) => {
+      if (isExistingUser(u.email) || emailCounts[u.email?.toLowerCase()] > 1) {
+        newDuplicates.add(i);
+        u._isDuplicate = true;
       }
     });
+
+    setUploadedUsers(updatedUsers);
+    setValidationErrors(updatedErrors);
     setDuplicateUsers(newDuplicates);
   };
 
-  // handle edit user in preview table
-  // Handle edit in preview table
+  // ------------------------
+  // Edit user
+  // ------------------------
   const handleEditUser = async (index, field, value) => {
     const updated = [...uploadedUsers];
     updated[index] = { ...updated[index], [field]: value };
 
-    // Revalidate this row
     const rowErrors = await validateUserRow(updated[index], index, updated);
+    const updatedErrors = { ...validationErrors };
+    rowErrors
+      ? (updatedErrors[index] = rowErrors)
+      : delete updatedErrors[index];
 
-    const newErrors = { ...validationErrors };
-    if (rowErrors) newErrors[index] = rowErrors;
-    else delete newErrors[index];
-
-    // Check duplicate by email again
     const newDuplicates = new Set(duplicateUsers);
     if (field === "email") {
       const email = value.toLowerCase();
       const isDup =
         isExistingUser(email) ||
         updated.filter((u, i) => i !== index && u.email === email).length > 0;
-
-      if (isDup) newDuplicates.add(index);
-      else newDuplicates.delete(index);
-
       updated[index]._isDuplicate = isDup;
+      isDup ? newDuplicates.add(index) : newDuplicates.delete(index);
     }
 
     setUploadedUsers(updated);
-    setValidationErrors(newErrors);
+    setValidationErrors(updatedErrors);
     setDuplicateUsers(newDuplicates);
   };
 
-  // Handle bulk submit
+  // ------------------------
+  // Bulk submit
+  // ------------------------
   const handleBulkSubmit = async () => {
-    if (uploadedUsers.length === 0) {
-      enqueueSnackbar(
-        t("forms.validation.noUsersToImport", {
-          defaultValue: "No users to import",
-        }),
-        { variant: "warning" }
-      );
+    if (!uploadedUsers.length) {
+      enqueueSnackbar(t("forms.validation.noUsersToImport"), {
+        variant: "warning",
+      });
       return;
     }
 
-    // Check for validation errors
     if (Object.keys(validationErrors).length > 0) {
-      enqueueSnackbar(
-        t("forms.validation.fixErrorsBeforeSubmit", {
-          defaultValue: "Please fix all errors before submitting",
-        }),
-        { variant: "error" }
-      );
+      enqueueSnackbar(t("forms.validation.fixErrorsBeforeSubmit"), {
+        variant: "error",
+      });
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      const results = { success: 0, failed: 0, errors: [] };
-
-      for (let i = 0; i < uploadedUsers.length; i++) {
-        const user = uploadedUsers[i];
-        const isDuplicate = existingUsers.find((u) => u.email === user.email);
-        const existingId = isDuplicate._id;
-        console.log(existingId, isDuplicate, user);
-
-        // Prepare payload
-        const payload = isDuplicate
+      const requests = uploadedUsers.map((user) => {
+        const existing = existingUsers.find((u) => u.email === user.email);
+        const payload = existing
           ? {
-              name: user.name?.trim() || "",
-              phone: user.phone?.replace(/\s/g, "") || "",
-              role: findRoleIdByName(user.role) || "",
+              name: user.name.trim(),
+              phone: user.phone.replace(/\s/g, ""),
+              role: findRoleIdByName(user.role),
             }
           : {
-              name: user.name?.trim() || "",
-              email: user.email?.toLowerCase() || "",
-              phone: user.phone?.replace(/\s/g, "") || "",
-              role: findRoleIdByName(user.role) || "",
+              name: user.name.trim(),
+              email: user.email.toLowerCase(),
+              phone: user.phone.replace(/\s/g, ""),
+              role: findRoleIdByName(user.role),
               organization: organizationId,
             };
 
-        try {
-          const url = isDuplicate
-            ? getProxyUrl(
-                `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.EDIT_USER}/${existingId}`
-              )
-            : getProxyUrl(
-                B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.NEW_USER
-              );
+        const url = existing
+          ? getProxyUrl(
+              `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.EDIT_USER}/${existing._id}`
+            )
+          : getProxyUrl(
+              B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.NEW_USER
+            );
 
-          const method = isDuplicate ? "patch" : "post";
+        const method = existing ? "patch" : "post";
+        return axios
+          .request({ method, url, headers, data: JSON.stringify(payload) })
+          .then(() => ({ status: "fulfilled", user }))
+          .catch((err) => ({
+            status: "rejected",
+            user,
+            error: handleError(err, t),
+          }));
+      });
 
-          const response = await axios.request({
-            method,
-            url,
-            headers,
-            data: JSON.stringify(payload),
-          });
+      const results = await Promise.allSettled(requests);
 
-          if (response.data === true || response.data) {
-            results.success++;
-          } else {
-            results.failed++;
-            results.errors.push({
-              index: i,
-              email: user.email,
-              error: t("forms.validation.unknownError", {
-                defaultValue: "Unknown error",
-              }),
-            });
-          }
-        } catch (error) {
-          results.failed++;
-          results.errors.push({
-            index: i,
-            email: user.email,
-            error: getErrorMessage(error, t),
+      let success = 0,
+        failed = 0,
+        errors = [];
+      results.forEach((r) => {
+        if (r.status === "fulfilled" && r.value.status === "fulfilled")
+          success++;
+        else {
+          failed++;
+          errors.push({
+            email: r.value?.user.email,
+            error: r.value?.error || "Unknown error",
           });
         }
-      }
+      });
 
-      // Show results
-      if (results.success > 0) {
+      if (success > 0)
         enqueueSnackbar(
-          t("forms.validation.bulkImportSuccess", {
-            count: results.success,
-            defaultValue: `Successfully imported ${results.success} user(s)`,
-          }),
+          t("forms.validation.bulkImportSuccess", { count: success }),
           { variant: "success" }
         );
-      }
-
-      if (results.failed > 0) {
+      if (failed > 0)
         enqueueSnackbar(
-          t("forms.validation.bulkImportPartial", {
-            success: results.success,
-            failed: results.failed,
-            defaultValue: `Imported ${results.success} user(s), ${results.failed} failed`,
-          }),
+          t("forms.validation.bulkImportPartial", { success, failed }),
           { variant: "warning" }
         );
-      }
 
-      // Refetch data
-      if (refetchInfo) refetchInfo();
-      if (refetchTable) refetchTable();
-
-      // Close modal on success
-      if (results.failed === 0) {
-        setTimeout(() => handleClose(), 1000);
-      }
-    } catch (error) {
-      enqueueSnackbar(getErrorMessage(error, t), { variant: "error" });
+      refetchInfo?.();
+      refetchTable?.();
+      if (!failed) setTimeout(handleClose, 1000);
+    } catch (err) {
+      enqueueSnackbar(handleError(err, t), { variant: "error" });
     } finally {
       setIsSubmitting(false);
     }
@@ -543,10 +421,9 @@ const BulkUserImportForm = ({
 
   const hasValidUsers =
     uploadedUsers.length > 0 && Object.keys(validationErrors).length === 0;
-  console.log(hasValidUsers, uploadedUsers, validationErrors);
+
   return (
     <div className="lg:w-[1200px] w-full max-w-full bg-white rounded-2xl mx-auto my-5 max-h-[90vh] overflow-auto">
-      {/* ------ Upload Section ------- */}
       <UploadInstructions
         roleOptions={roleOptions}
         fileError={fileError}
@@ -554,20 +431,17 @@ const BulkUserImportForm = ({
         duplicateCount={duplicateUsers.size}
         onUpload={handleFileUpload}
       />
-      {/* ------ Preview Table ------- */}
       {uploadedUsers.length > 0 && (
         <UsersPreviewTable
-          onEdit={handleEditUser}
           uploadedUsers={uploadedUsers}
           validationErrors={validationErrors}
           duplicateUsers={duplicateUsers}
           roleOptions={roleOptions}
-          t={t}
+          onEdit={handleEditUser}
           onRemove={handleRemoveUser}
+          t={t}
         />
       )}
-
-      {/* ------ Footer actions ------- */}
       <FooterActions
         t={t}
         isSubmitting={isSubmitting}
