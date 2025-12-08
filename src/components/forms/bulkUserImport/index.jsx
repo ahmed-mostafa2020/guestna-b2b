@@ -75,7 +75,7 @@ const createBulkUserRowSchema = (t, roleOptions = []) => {
         }),
         (value) => {
           if (!value) return false;
-          return roleOptions.includes(value.trim());
+          return roleOptions.includes(value);
         }
       ),
   });
@@ -383,6 +383,38 @@ const BulkUserImportForm = ({
     setDuplicateUsers(newDuplicates);
   };
 
+  // handle edit user in preview table
+  // Handle edit in preview table
+  const handleEditUser = async (index, field, value) => {
+    const updated = [...uploadedUsers];
+    updated[index] = { ...updated[index], [field]: value };
+
+    // Revalidate this row
+    const rowErrors = await validateUserRow(updated[index], index, updated);
+
+    const newErrors = { ...validationErrors };
+    if (rowErrors) newErrors[index] = rowErrors;
+    else delete newErrors[index];
+
+    // Check duplicate by email again
+    const newDuplicates = new Set(duplicateUsers);
+    if (field === "email") {
+      const email = value.toLowerCase();
+      const isDup =
+        isExistingUser(email) ||
+        updated.filter((u, i) => i !== index && u.email === email).length > 0;
+
+      if (isDup) newDuplicates.add(index);
+      else newDuplicates.delete(index);
+
+      updated[index]._isDuplicate = isDup;
+    }
+
+    setUploadedUsers(updated);
+    setValidationErrors(newErrors);
+    setDuplicateUsers(newDuplicates);
+  };
+
   // Handle bulk submit
   const handleBulkSubmit = async () => {
     if (uploadedUsers.length === 0) {
@@ -395,9 +427,8 @@ const BulkUserImportForm = ({
       return;
     }
 
-    // Check if there are validation errors
-    const hasErrors = Object.keys(validationErrors).length > 0;
-    if (hasErrors) {
+    // Check for validation errors
+    if (Object.keys(validationErrors).length > 0) {
       enqueueSnackbar(
         t("forms.validation.fixErrorsBeforeSubmit", {
           defaultValue: "Please fix all errors before submitting",
@@ -410,43 +441,54 @@ const BulkUserImportForm = ({
     setIsSubmitting(true);
 
     try {
-      // Process users - overwrite duplicates if they exist
-      const usersToProcess = uploadedUsers.map((user) => ({
-        email: user.email,
-        phone: user.phone,
-        name: user.name,
-        role: findRoleIdByName(user.role),
-        organization: organizationId,
-        overwrite: user._isDuplicate, // Flag to overwrite if duplicate
-      }));
+      const results = { success: 0, failed: 0, errors: [] };
 
-      // Submit users one by one or in batch (depending on API)
-      const results = {
-        success: 0,
-        failed: 0,
-        errors: [],
-      };
+      for (let i = 0; i < uploadedUsers.length; i++) {
+        const user = uploadedUsers[i];
+        const isDuplicate = existingUsers.find((u) => u.email === user.email);
+        const existingId = isDuplicate._id;
+        console.log(existingId, isDuplicate, user);
 
-      for (let i = 0; i < usersToProcess.length; i++) {
-        const userData = usersToProcess[i];
+        // Prepare payload
+        const payload = isDuplicate
+          ? {
+              name: user.name?.trim() || "",
+              phone: user.phone?.replace(/\s/g, "") || "",
+              role: findRoleIdByName(user.role) || "",
+            }
+          : {
+              name: user.name?.trim() || "",
+              email: user.email?.toLowerCase() || "",
+              phone: user.phone?.replace(/\s/g, "") || "",
+              role: findRoleIdByName(user.role) || "",
+              organization: organizationId,
+            };
+
         try {
-          const config = {
-            method: "post",
-            url: getProxyUrl(
-              B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.NEW_USER
-            ),
-            headers,
-            data: JSON.stringify(userData),
-          };
+          const url = isDuplicate
+            ? getProxyUrl(
+                `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.EDIT_USER}/${existingId}`
+              )
+            : getProxyUrl(
+                B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.NEW_USER
+              );
 
-          const response = await axios.request(config);
+          const method = isDuplicate ? "patch" : "post";
+
+          const response = await axios.request({
+            method,
+            url,
+            headers,
+            data: JSON.stringify(payload),
+          });
+
           if (response.data === true || response.data) {
             results.success++;
           } else {
             results.failed++;
             results.errors.push({
               index: i,
-              email: userData.email,
+              email: user.email,
               error: t("forms.validation.unknownError", {
                 defaultValue: "Unknown error",
               }),
@@ -456,7 +498,7 @@ const BulkUserImportForm = ({
           results.failed++;
           results.errors.push({
             index: i,
-            email: userData.email,
+            email: user.email,
             error: getErrorMessage(error, t),
           });
         }
@@ -490,9 +532,7 @@ const BulkUserImportForm = ({
 
       // Close modal on success
       if (results.failed === 0) {
-        setTimeout(() => {
-          handleClose();
-        }, 1000);
+        setTimeout(() => handleClose(), 1000);
       }
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error, t), { variant: "error" });
@@ -503,21 +543,21 @@ const BulkUserImportForm = ({
 
   const hasValidUsers =
     uploadedUsers.length > 0 && Object.keys(validationErrors).length === 0;
-
+  console.log(hasValidUsers, uploadedUsers, validationErrors);
   return (
-    <div className="lg:w-[900px] w-full max-w-full bg-white rounded-2xl mx-auto my-5 max-h-[90vh] overflow-auto">
+    <div className="lg:w-[1200px] w-full max-w-full bg-white rounded-2xl mx-auto my-5 max-h-[90vh] overflow-auto">
       {/* ------ Upload Section ------- */}
       <UploadInstructions
-        t={t}
+        roleOptions={roleOptions}
         fileError={fileError}
         isSubmitting={isSubmitting}
         duplicateCount={duplicateUsers.size}
         onUpload={handleFileUpload}
       />
-
       {/* ------ Preview Table ------- */}
       {uploadedUsers.length > 0 && (
         <UsersPreviewTable
+          onEdit={handleEditUser}
           uploadedUsers={uploadedUsers}
           validationErrors={validationErrors}
           duplicateUsers={duplicateUsers}

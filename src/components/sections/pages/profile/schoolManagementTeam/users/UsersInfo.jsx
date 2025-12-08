@@ -66,15 +66,15 @@ const UsersInfo = ({
   };
 
   const handleBulkImportClick = async () => {
+    
     // Check if roles are already cached for this organization
     if (cachedOrganization === organizationId && rolesData.length > 0) {
       setIsBulkImportModalOpen(true);
-      return;
+      return
     }
 
     setIsLoadingRoles(true);
     const headers = getHeaders(locale);
-
     try {
       const config = {
         method: "get",
@@ -85,6 +85,8 @@ const UsersInfo = ({
       };
 
       const response = await axios.request(config);
+
+      
       setRolesData(response.data || []);
       setCachedOrganization(organizationId);
       setIsBulkImportModalOpen(true);
@@ -207,7 +209,7 @@ const UsersInfo = ({
               : t("profile.schools_users.add_new_user")}
           </Button>
 
-          {/* <Button
+          <Button
             variant="outlined"
             onClick={handleBulkImportClick}
             disabled={isLoadingRoles}
@@ -225,7 +227,7 @@ const UsersInfo = ({
               : t("profile.schools_users.bulk_import_users", {
                   defaultValue: "Bulk Import Users",
                 })}
-          </Button> */}
+          </Button>
         </Box>
       )}
 

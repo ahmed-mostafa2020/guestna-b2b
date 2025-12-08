@@ -1907,7 +1907,47 @@ const visaCardIcon = (
   </svg>
 );
 
+const uploadFile = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="120"
+    height="120"
+    viewBox="0 0 120 120"
+    fill="none"
+  >
+    <path
+      d="M45 85V55L35 65"
+      stroke="#292D32"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M45 55L55 65"
+      stroke="#292D32"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M110 50V75C110 100 100 110 75 110H45C20 110 10 100 10 75V45C10 20 20 10 45 10H70"
+      stroke="#292D32"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M110 50H90C75 50 70 45 70 30V10L110 50Z"
+      stroke="#292D32"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+
 export {
+  uploadFile,
   bluelocationIcon,
   visaCardIcon,
   locationGrayIcon,

@@ -8,7 +8,7 @@ const ExportUsersExcel = ({ users }) => {
       name: user.name,
       email: user.email,
       phone: user.phone,
-      role: user.role,
+      role: user.role?.description,
     }));
     const worksheet = XLSX.utils.json_to_sheet(formattedUsers);
     const workbook = XLSX.utils.book_new();

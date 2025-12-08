@@ -35,7 +35,7 @@ const CustomizedModal = ({
       aria-labelledby="child-modal-title"
       aria-describedby="child-modal-description"
     >
-      <Box sx={style} className="overflow-auto">
+      <Box sx={style} className="overflow-auto ">
         {handleClose && !customizedCloseButton && closeButton ? (
           <div className="flex items-center w-full mb-3">
             <button onClick={handleClose} className="outline-none centered">

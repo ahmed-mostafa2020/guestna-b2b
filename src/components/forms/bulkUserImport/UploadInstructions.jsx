@@ -1,47 +1,177 @@
-import { CloudUpload, UploadFile } from "@mui/icons-material";
-import { Alert } from "@mui/material";
+import { uploadFile } from "@/src/assets/svg";
+import { Alert, Box, Button, List, ListItem, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
+import { download } from "@/hooks/useDownload";
+import ExcelJS from "exceljs";
+import { useState } from "react";
+
 
 const UploadInstructions = ({
-  t,
   fileError,
   duplicateCount,
   isSubmitting,
   onUpload,
+  roleOptions,
 }) => {
+  const t = useTranslations();
+  const [loading, setLoading] = useState(false);
+
+  const generateAndDownloadExcel = async () => {
+    setLoading(true);
+
+    try {
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("المستخدمين");
+
+      // إضافة العناوين
+      worksheet.columns = [
+        { header: "الاسم", key: "name", width: 20 },
+        { header: "البريد الإلكتروني", key: "email", width: 30 },
+        { header: "رقم الجوال", key: "phone", width: 15 },
+        { header: "الدور", key: "role", width: 20 },
+      ];
+
+      // تنسيق صف العناوين
+      worksheet.getRow(1).eachCell((cell) => {
+        cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FF1F4E79" },
+        };
+        cell.alignment = { horizontal: "center", vertical: "middle" };
+      });
+
+      // إضافة 300 صف فارغ
+      for (let i = 2; i <= 301; i++) {
+        worksheet.addRow(["", "", "", ""]);
+      }
+
+      // إضافة Data Validation لجميع الأعمدة
+      for (let i = 2; i <= 301; i++) {
+        // التحقق من عمود الاسم (A) - يجب أن يكون نص بطول معين
+        const nameCell = worksheet.getCell(`A${i}`);
+        nameCell.dataValidation = {
+          type: "textLength",
+          allowBlank: true,
+          operator: "between",
+          formulae: [2, 100],
+          showErrorMessage: true,
+          errorStyle: "error",
+          errorTitle: "خطأ في الاسم",
+          error: "يجب أن يكون الاسم بين 2 و 100 حرف",
+          showInputMessage: true,
+          promptTitle: "الاسم",
+          prompt: "أدخل الاسم الكامل (2-100 حرف)",
+        };
+
+        // التحقق من عمود البريد الإلكتروني (B) - يجب أن يحتوي على @ و .
+        const emailCell = worksheet.getCell(`B${i}`);
+        emailCell.dataValidation = {
+          type: "custom",
+          allowBlank: true,
+          formulae: [
+            `AND(ISNUMBER(FIND("@",B${i})),ISNUMBER(FIND(".",B${i})),LEN(B${i})>=5)`,
+          ],
+          showErrorMessage: true,
+          errorStyle: "error",
+          errorTitle: "خطأ في البريد الإلكتروني",
+          error: "يرجى إدخال بريد إلكتروني صحيح (مثال: example@domain.com)",
+          showInputMessage: true,
+          promptTitle: "البريد الإلكتروني",
+          prompt: "أدخل البريد الإلكتروني بالصيغة الصحيحة",
+        };
+
+        // التحقق من عمود رقم الجوال (C) - يجب أن يكون رقم بطول معين
+        const phoneCell = worksheet.getCell(`C${i}`);
+        phoneCell.dataValidation = {
+          type: "textLength",
+          allowBlank: true,
+          operator: "between",
+          formulae: [9, 15],
+          showErrorMessage: true,
+          errorStyle: "error",
+          errorTitle: "خطأ في رقم الجوال",
+          error: "يجب أن يكون رقم الجوال بين 9 و 15 رقم",
+          showInputMessage: true,
+          promptTitle: "رقم الجوال",
+          prompt: "أدخل رقم الجوال (9-15 رقم)",
+        };
+
+        // التحقق من عمود الدور (D) - قائمة منسدلة
+        const roleCell = worksheet.getCell(`D${i}`);
+        roleCell.dataValidation = {
+          type: "list",
+          allowBlank: true,
+          formulae: [`"${roleOptions.join(",")}"`],
+          showErrorMessage: true,
+          errorStyle: "error",
+          errorTitle: "قيمة غير صحيحة",
+          error: "يرجى اختيار دور من القائمة المنسدلة",
+          showInputMessage: true,
+          promptTitle: "الدور",
+          prompt: "اختر الدور من القائمة المنسدلة",
+        };
+      }
+
+      // تحويل الملف إلى Buffer
+      const buffer = await workbook.xlsx.writeBuffer();
+
+      // إنشاء Blob وتحميل الملف
+      const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      await download(blob, "بيانات_المستخدمين_مع_قائمة_دور.xlsx");
+    } catch (err) {
+      console.error(err);
+      alert("فشل في إنشاء الملف");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="p-6 border-b border-border flex flex-col gap-4">
-      <h3 className="text-xl font-somar flex items-center gap-2">
-        <CloudUpload className="text-mainColor" />
+    <Box className="p-6 border-b border-border flex flex-col gap-4 ">
+      <Typography className="!text-xl !font-somar flex items-center gap-2 text-titleColor">
         {t("profile.schools_users.bulkImport.title")}
-      </h3>
+      </Typography>
 
-      <ul className="text-sm text-textLight list-disc ml-5 space-y-1">
-        <li>Should include columns: Name, Email, Phone, Role.</li>
-        <li>File formats allowed: CSV, XLS, XLSX.</li>
-        <li>Max file size 10MB.</li>
-        <li>Empty rows will be ignored.</li>
-        <li>Existing emails will be overwritten.</li>
-      </ul>
+      <Box className="border-2 border-dashed border-border gap-8 rounded-lg flex flex-col items-center justify-center p-10 mb-4 ">
+        <Box className="flex flex-col items-center">
+          <span className="!text-7xl text-[#838383]">{uploadFile}</span>
+          <Typography className="mt-2 text-gray-600 !text-4xl !font-semibold !font-somar">
+            {t("profile.schools_users.bulkImport.uploadBox.placeholder")}
+          </Typography>
+        </Box>
+        <input
+          className="hidden"
+          type="file"
+          id="bulk-upload-file"
+          accept=".xlsx,.xls,.csv"
+          onChange={onUpload}
+          disabled={isSubmitting}
+          // onChange={onFileUpload}
+        />
 
-      <label
-        htmlFor="bulk-upload-file"
-        className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-mainColor"
-      >
-        <UploadFile className="text-mainColor text-4xl mb-2" />
-        <p className="text-sm">
-          <span className="font-semibold">Click to upload</span> or drag & drop
-        </p>
-        <p className="text-xs text-textLight">CSV, XLS, XLSX</p>
-      </label>
-
-      <input
-        id="bulk-upload-file"
-        type="file"
-        accept=".csv,.xls,.xlsx"
-        className="hidden"
-        onChange={onUpload}
-        disabled={isSubmitting}
-      />
+        <Box className="flex gap-4 justify-start">
+          <Button
+            onClick={generateAndDownloadExcel}
+            variant="contained"
+            className="!bg-mainColor !font-somar !text-white text-xl px-8 py-3"
+            // onClick={onDownloadTemplate}
+          >
+            {t("profile.schools_users.bulkImport.buttons.downloadTemplate")}
+          </Button>
+          <Button
+            variant="outlined"
+            className="!border-mainColor !font-somar !text-mainColor text-xl px-8 py-3"
+            onClick={() => document.getElementById("bulk-upload-file").click()}
+          >
+            {t("profile.schools_users.bulkImport.buttons.uploadFilled")}
+          </Button>
+        </Box>
+      </Box>
 
       {fileError && <Alert severity="error">{fileError}</Alert>}
 
@@ -50,7 +180,37 @@ const UploadInstructions = ({
           {duplicateCount} user(s) already exist and will be overwritten
         </Alert>
       )}
-    </div>
+
+      <List className="flex flex-col gap-2 p-0 m-0">
+        {Array.from({ length: 7 }, (_, index) => (
+          <ListItem
+            key={index}
+            className="
+        !p-0 
+        flex items-start 
+        rounded-lg 
+        px-3 py-2
+      "
+          >
+            {/* Number bubble */}
+            <div
+              className="
+          w-7 h-7 flex items-center justify-center 
+          rounded-full 
+          text-sm font-semibold
+        "
+            >
+              {index + 1}.
+            </div>
+
+            {/* Step text */}
+            <span className=" font-semibold leading-6 text-[15px]">
+              {t(`profile.schools_users.bulkImport.steps.${index + 1}`)}
+            </span>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
   );
 };
 

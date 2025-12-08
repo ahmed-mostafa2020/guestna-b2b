@@ -2,10 +2,8 @@ import { Grid } from "@material-ui/core";
 import { Box, Skeleton, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import React from "react";
-import { useSelector } from "react-redux";
 
 const StateCard = ({ label, value }) => {
-  console.log("label", label, value);
   return (
     <Box className="flex flex-col gap-2 bg-white border-2  justify-center items-center border-border rounded-lg px-2 py-4">
       <Typography
@@ -53,7 +51,6 @@ const SchoolStats = ({ details, isLoading }) => {
     }));
 
   
-  console.log("details", details, formattedStats);
   return (
     <Grid container gap={2} spacing={2} size={12}>
       {formattedStats?.map((item, index) => (
