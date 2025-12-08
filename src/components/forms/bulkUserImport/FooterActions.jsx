@@ -67,7 +67,7 @@ const FooterActions = ({
     <Box className="flex justify-end gap-4 px-8 py-4 border-t border-border">
       <Button
         variant="outlined"
-        className="!border-mainColor !text-mainColor  !font-somar"
+        className="!border-mainColor !text-mainColor    !font-somar"
         onClick={onClose}
       >
         Cancel
@@ -75,7 +75,7 @@ const FooterActions = ({
 
       <Button
         variant="contained"
-        className="!bg-mainColor !text-white !font-somar"
+        className="!bg-mainColor !text-white !font-somar disabled:!cursor-not-allowed"
         disabled={!hasValidUsers || isSubmitting}
         onClick={onSubmit}
       >
