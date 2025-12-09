@@ -25,11 +25,11 @@ const UsersPreviewTable = ({
   validationErrors,
   duplicateUsers,
   roleOptions,
-
   onRemove,
   onEdit,
 }) => {
   const t = useTranslations();
+  
   return (
     <Box className="px-8 py-6 overflow-auto">
       <Typography variant="h6" className="!font-somar mb-3">

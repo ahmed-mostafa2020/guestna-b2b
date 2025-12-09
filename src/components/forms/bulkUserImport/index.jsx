@@ -15,7 +15,8 @@ import getErrorMessage from "@utils/getErrorMessage";
 import UploadInstructions from "./UploadInstructions";
 import UsersPreviewTable from "./UsersPreviewTable";
 import FooterActions from "./FooterActions";
-import { USER_HEADERS } from "@/src/constants/excelHeaders";
+import { USER_HEADERS, usersHeaders } from "@/src/constants/excelHeaders";
+import { useExcel } from "@/src/hooks/useExcel";
 
 const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
@@ -101,10 +102,10 @@ const BulkUserImportForm = ({
   const [duplicateUsers, setDuplicateUsers] = useState(new Set());
   const [fileError, setFileError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const headers = getHeaders(locale);
   const roleOptions = rolesData.map((r) => r.description);
-
+  
+  const {parseFile } = useExcel({headers: usersHeaders(roleOptions)})
   const findRoleIdByName = useCallback(
     (description) =>
       rolesData.find((r) => r.description === description)?._id || description,
@@ -147,71 +148,13 @@ const BulkUserImportForm = ({
   // ------------------------
   // Parse Excel file
   // ------------------------
-  const parseFile = useCallback(
-    async (file) => {
-      try {
-        const workbook = new ExcelJS.Workbook();
-        const buffer = await file.arrayBuffer();
-        await workbook.xlsx.load(buffer);
 
-        const worksheet = workbook.getWorksheet(1);
-        if (!worksheet) throw new Error(t("forms.validation.noWorksheet"));
-
-        const columnIndexMap = {};
-        const headerRow = worksheet.getRow(1);
-        const excelHeaders = headerRow.values
-          .slice(1)
-          .map((h) => (h ? h.toString().trim() : ""));
-        USER_HEADERS.forEach((col) => {
-          const idx = excelHeaders.findIndex((h) =>
-            [col.label.ar, col.label.en].some(
-              (lbl) => lbl?.toLowerCase() === h.toLowerCase()
-            )
-          );
-          if (idx !== -1) columnIndexMap[col.key] = idx + 1;
-        });
-
-        const missingColumns = USER_HEADERS.filter(
-          (c) => !columnIndexMap[c.key]
-        );
-        if (missingColumns.length)
-          throw new Error(
-            t("forms.validation.missingColumns") +
-              missingColumns
-                .map((c) => `${c.label.ar}/${c.label.en}`)
-                .join(", ")
-          );
-
-        const validRows = [];
-
-        worksheet.eachRow((row, rowNumber) => {
-          if (rowNumber === 1) return;
-
-          const user = {
-            name: getCellValue(row.getCell(columnIndexMap.name)),
-            email: getCellValue(
-              row.getCell(columnIndexMap.email)
-            ).toLowerCase(),
-            phone: getCellValue(row.getCell(columnIndexMap.phone)),
-            role: getCellValue(row.getCell(columnIndexMap.role)),
-          };
-
-          if (!user.name && !user.email && !user.phone && !user.role) return;
-          validRows.push(user);
-        });
-
-        return { validRows };
-      } catch (err) {
-        throw new Error(handleError(err, t));
-      }
-    },
-    [t]
-  );
 
   // ------------------------
   // File upload handler
   // ------------------------
   const handleFileUpload = async (e) => {
+    
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -228,7 +171,8 @@ const BulkUserImportForm = ({
     }
 
     try {
-      const { validRows } = await parseFile(file);
+      const validRows = await parseFile(file);
+     
       if (!validRows.length) {
         setFileError(t("forms.validation.emptyFile"));
         return;

@@ -4,7 +4,8 @@ import { useLocale, useTranslations } from "next-intl";
 import ExcelJS from "exceljs";
 import { useState } from "react";
 import { download } from "@/src/hooks/useDownload";
-import { USER_HEADERS } from "@/src/constants/excelHeaders";
+import { usersHeaders } from "@/src/constants/excelHeaders";
+import { useExcel } from "@/src/hooks/useExcel";
 
 const UploadInstructions = ({
   fileError,
@@ -16,118 +17,11 @@ const UploadInstructions = ({
   const t = useTranslations();
   const [loading, setLoading] = useState(false);
   const locale = useLocale();
-
+  const { createTemplate } = useExcel({ headers: usersHeaders(roleOptions) });
   const generateAndDownloadExcel = async () => {
-    setLoading(true);
-
-    try {
-      const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet("المستخدمين");
-
-      worksheet.columns = USER_HEADERS.map((header) => ({
-        header: header.label[locale],
-        key: header.key,
-        width: header.width,
-      }));
-
-      // تنسيق صف العناوين
-      worksheet.getRow(1).eachCell((cell) => {
-        cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
-        cell.fill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: { argb: "FF1F4E79" },
-        };
-        cell.alignment = { horizontal: "center", vertical: "middle" };
-      });
-
-      // إضافة 300 صف فارغ
-      for (let i = 2; i <= 301; i++) {
-        worksheet.addRow(["", "", "", ""]);
-      }
-
-      // إضافة Data Validation لجميع الأعمدة
-      for (let i = 2; i <= 301; i++) {
-        // التحقق من عمود الاسم (A) - يجب أن يكون نص بطول معين
-        const nameCell = worksheet.getCell(`A${i}`);
-        nameCell.dataValidation = {
-          type: "textLength",
-          allowBlank: true,
-          operator: "between",
-          formulae: [2, 100],
-          showErrorMessage: true,
-          errorStyle: "error",
-          errorTitle: "خطأ في الاسم",
-          error: "يجب أن يكون الاسم بين 2 و 100 حرف",
-          showInputMessage: true,
-          promptTitle: "الاسم",
-          prompt: "أدخل الاسم الكامل (2-100 حرف)",
-        };
-
-        // التحقق من عمود البريد الإلكتروني (B) - يجب أن يحتوي على @ و .
-        const emailCell = worksheet.getCell(`B${i}`);
-        emailCell.dataValidation = {
-          type: "custom",
-          allowBlank: true,
-          formulae: [
-            `AND(ISNUMBER(FIND("@",B${i})),ISNUMBER(FIND(".",B${i})),LEN(B${i})>=5)`,
-          ],
-          showErrorMessage: true,
-          errorStyle: "error",
-          errorTitle: "خطأ في البريد الإلكتروني",
-          error: "يرجى إدخال بريد إلكتروني صحيح (مثال: example@domain.com)",
-          showInputMessage: true,
-          promptTitle: "البريد الإلكتروني",
-          prompt: "أدخل البريد الإلكتروني بالصيغة الصحيحة",
-        };
-
-        // التحقق من عمود رقم الجوال (C) - يجب أن يكون رقم بطول معين
-        const phoneCell = worksheet.getCell(`C${i}`);
-        phoneCell.dataValidation = {
-          type: "textLength",
-          allowBlank: true,
-          operator: "between",
-          formulae: [9, 15],
-          showErrorMessage: true,
-          errorStyle: "error",
-          errorTitle: "خطأ في رقم الجوال",
-          error: "يجب أن يكون رقم الجوال بين 9 و 15 رقم",
-          showInputMessage: true,
-          promptTitle: "رقم الجوال",
-          prompt: "أدخل رقم الجوال (9-15 رقم)",
-        };
-
-        // التحقق من عمود الدور (D) - قائمة منسدلة
-        const roleCell = worksheet.getCell(`D${i}`);
-        roleCell.dataValidation = {
-          type: "list",
-          allowBlank: true,
-          formulae: [`"${roleOptions.join(",")}"`],
-          showErrorMessage: true,
-          errorStyle: "error",
-          errorTitle: "قيمة غير صحيحة",
-          error: "يرجى اختيار دور من القائمة المنسدلة",
-          showInputMessage: true,
-          promptTitle: "الدور",
-          prompt: "اختر الدور من القائمة المنسدلة",
-        };
-      }
-
-      // تحويل الملف إلى Buffer
-      const buffer = await workbook.xlsx.writeBuffer();
-
-      // إنشاء Blob وتحميل الملف
-      const blob = new Blob([buffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      });
-
-      await download(blob, "بيانات_المستخدمين_مع_قائمة_دور.xlsx");
-    } catch (err) {
-      console.error(err);
-      alert("فشل في إنشاء الملف");
-    } finally {
-      setLoading(false);
-    }
+    return await createTemplate(
+      locale === "ar" ? "فالب_مستخدمين.xlsx" : "users_templates.xlsx"
+    );
   };
 
   return (
@@ -176,7 +70,6 @@ const UploadInstructions = ({
 
       {duplicateCount > 0 && (
         <Alert severity="info" className="!font-somar">
-          
           {t("profile.schools_users.bulkImport.duplicatesFound", {
             count: duplicateCount,
           })}

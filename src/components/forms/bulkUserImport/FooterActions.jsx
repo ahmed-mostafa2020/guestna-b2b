@@ -1,62 +1,70 @@
-import { USER_HEADERS } from "@/src/constants/excelHeaders";
-import { download } from "@/src/hooks/useDownload";
+import { usersHeaders } from "@/src/constants/excelHeaders";
+
+import { useExcel } from "@/src/hooks/useExcel";
 import { Box, Button } from "@mui/material";
 import ExcelJS from "exceljs";
 import { useLocale, useTranslations } from "next-intl";
 const ExportUsersExcel = ({ users }) => {
-
   const locale = useLocale();
-  const t=useTranslations()
+  const t = useTranslations();
+
+  const { exportRecords } = useExcel({ headers: usersHeaders() });
+  // const downloadExcelJS = async () => {
+  //   const workbook = new ExcelJS.Workbook();
+  //   const worksheet = workbook.addWorksheet("Users");
+
+  //   // 1. Set columns dynamically from USER_HEADERS
+  //   worksheet.columns = USER_HEADERS.map((header) => ({
+  //     header: header.label[locale] || header.label.en,
+  //     key: header.key,
+  //     width: header.width,
+  //   }));
+
+  //   // 2. Add rows
+  //   users.forEach((user) => {
+  //     worksheet.addRow({
+  //       name: user.name,
+  //       email: user.email,
+  //       phone: user.phone,
+  //       role: user.role?.description || user.role,
+  //     });
+  //   });
+
+  //   // 3. Style header row
+  //   worksheet.getRow(1).font = { bold: true };
+
+  //   // 4. Generate buffer
+  //   const buffer = await workbook.xlsx.writeBuffer();
+
+  //   // 5. Create Blob
+  //   const blob = new Blob([buffer], {
+  //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  //   });
+
+  //   await download(blob, "current-users.xlsx");
+  // };
 
   const downloadExcelJS = async () => {
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Users");
-
-    // 1. Set columns dynamically from USER_HEADERS
-    worksheet.columns = USER_HEADERS.map((header) => ({
-      header: header.label[locale] || header.label.en,
-      key: header.key,
-      width: header.width,
-    }));
-
-    // 2. Add rows
-    users.forEach((user) => {
-      worksheet.addRow({
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        role: user.role?.description || user.role,
-      });
-    });
-
-    // 3. Style header row
-    worksheet.getRow(1).font = { bold: true };
-
-    // 4. Generate buffer
-    const buffer = await workbook.xlsx.writeBuffer();
-
-    // 5. Create Blob
-    const blob = new Blob([buffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
-
     
-    await download(blob, "current-users.xlsx");
-  };
-
+    console.log(users);
+    
+    return await exportRecords(
+      users,
+      locale === "ar" ? "المستخدمين-الحاليين.xlsx" : "current-users.xlsx"
+    );
+  }
   return (
     <Button
       onClick={downloadExcelJS}
       variant="contained"
       className="!text-white !font-somar !bg-mainColor px-4 py-2 mb-3"
     >
-    {t("profile.schools_users.bulkImport.buttons.downloadCurrentUsers")}
+      {t("profile.schools_users.bulkImport.buttons.downloadCurrentUsers")}
     </Button>
   );
 };
 
 const FooterActions = ({
- 
   isSubmitting,
   onSubmit,
   onClose,
@@ -64,7 +72,7 @@ const FooterActions = ({
   hasValidUsers,
   existingUsers,
 }) => {
-  const t=useTranslations()
+  const t = useTranslations();
   return (
     <Box className="flex justify-end gap-4 px-8 py-4 border-t border-border">
       <Button
@@ -81,7 +89,9 @@ const FooterActions = ({
         disabled={!hasValidUsers || isSubmitting || !usersCount}
         onClick={onSubmit}
       >
-        {isSubmitting ? t("profile.schools_users.bulkImport.buttons.isSubmitting") : t("profile.schools_users.bulkImport.submit",{count:usersCount}) }
+        {isSubmitting
+          ? t("profile.schools_users.bulkImport.buttons.isSubmitting")
+          : t("profile.schools_users.bulkImport.submit", { count: usersCount })}
       </Button>
 
       {/* 📌 زر تحميل المستخدمين الحاليين */}
