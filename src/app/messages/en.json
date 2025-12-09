@@ -661,6 +661,9 @@
           "validationErrors": "Validation Errors:",
           "row": "Row {row}"
         }
+        ,"validation":{
+          "rowsHaveErrors": "{count} users contain data errors."
+        }
       }
     },
     "donutChart": {

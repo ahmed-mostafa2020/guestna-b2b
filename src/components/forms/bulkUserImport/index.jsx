@@ -200,7 +200,7 @@ const BulkUserImportForm = ({
 
       if (Object.keys(errors).length > 0) {
         enqueueSnackbar(
-          t("forms.validation.rowsHaveErrors", {
+          t("profile.schools_users.bulkImport.validation.rowsHaveErrors", {
             count: Object.keys(errors).length,
           }),
           { variant: "error" }

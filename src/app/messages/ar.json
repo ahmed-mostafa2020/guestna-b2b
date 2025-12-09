@@ -657,8 +657,10 @@
           "valid": "تم التحقق بنجاح",
           "validationErrors": "أخطاء التحقق:",
           "row": "الصف {row}"
-        }
-      }
+        },
+        "validation":{
+          "rowsHaveErrors": "يوجد {count} مستخدم يحتوي على أخطاء في البيانات."
+        }}
     },
     "donutChart": {
       "title": "الأنشطة الأكثر طلبا"
