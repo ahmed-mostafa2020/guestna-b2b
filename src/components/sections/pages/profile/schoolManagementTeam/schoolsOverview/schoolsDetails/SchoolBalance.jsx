@@ -8,27 +8,23 @@ import { useSelector } from "react-redux";
 
 const SchoolBalanceSkeleton = () => {
   return (
-    <Box className="bg-[#D4FAFF66] border-[#6EC1E366] border-2 rounded-lg p-4">
-      {/* Title skeleton */}
-      <Skeleton width={220} height={32} variant="text" />
+    <Box className="bg-[#D4FAFF66] border-[#6EC1E366] border-2 rounded-lg px-4 py-6">
+      {/* Title */}
+      <Box className="flex items-center gap-2">
+        <Skeleton variant="circular" width={32} height={32} />
+        <Skeleton variant="text" width={180} height={30} />
+      </Box>
 
-      <Grid className="!mt-7" container spacing={2}>
+      {/* Grid values */}
+      <Grid className="!mt-7" container size={12} spacing={2}>
         {[1, 2, 3].map((item) => (
           <Grid
             key={item}
             xs={4}
-            className="flex flex-col items-center justify-center gap-3"
+            className="flex flex-col items-center justify-center gap-2"
           >
-            {/* Label skeleton */}
-            <Skeleton width={110} height={22} variant="text" />
-
-            {/* Amount + SAR icon */}
-            <Skeleton
-              variant="rectangular"
-              width={90}
-              height={28}
-              className="rounded-md"
-            />
+            <Skeleton variant="text" width={120} height={24} />
+            <Skeleton variant="text" width={100} height={28} />
           </Grid>
         ))}
       </Grid>

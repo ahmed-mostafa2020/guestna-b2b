@@ -9,37 +9,37 @@ import React, { useEffect, useState } from "react";
 
 const SelectSchoolForDetailsSkeleton = () => {
   return (
-    <Box className="flex flex-col gap-4 bg-white rounded-lg p-4 shadow border-border border-2">
-      <Skeleton variant="text" width={200} height={30} />
-      <Skeleton variant="rectangular" height={40} className="rounded-md" />
+    <Box className="flex flex-col gap-4 bg-white rounded-lg p-4 shadow border-2 border-border">
+      {/* Title */}
+      <Skeleton variant="text" width={100} height={28} />
 
-      <Box className="bg-buttonsHover p-4 rounded-lg flex gap-4 border-borderColor border-2">
-        <Skeleton
-          variant="rectangular"
-          width={110}
-          height={110}
-          className="rounded-lg"
-        />
+      {/* Select Field */}
+      <Skeleton variant="rounded" height={40} className="w-full" />
+
+      {/* School Card */}
+      <Box className="bg-buttonsHover p-6 rounded-lg flex gap-4 border-borderColor border-2 mt-2">
+        {/* Image */}
+        <Skeleton variant="rounded" width={110} height={110} />
 
         <Box className="flex justify-between w-full items-start">
-          <Box className="flex flex-col gap-2 flex-1">
-            <Skeleton variant="text" width={"70%"} height={28} />
-            <Skeleton variant="text" width={"40%"} height={20} />
+          <Box className="flex flex-col gap-2 w-full">
+            {/* School Name */}
+            <Skeleton variant="text" width="70%" height={24} />
+
+            {/* City */}
+            <Skeleton variant="text" width="40%" height={20} />
+
+            {/* Phone */}
+            <Skeleton variant="text" width="50%" height={20} />
+
+            {/* Email */}
+            <Skeleton variant="text" width="60%" height={20} />
           </Box>
 
-          <Box className="flex flex-col gap-2 items-center">
-            <Skeleton
-              variant="rectangular"
-              width={70}
-              height={30}
-              className="rounded-full"
-            />
-            <Skeleton
-              variant="rectangular"
-              width={70}
-              height={30}
-              className="rounded-full"
-            />
+          {/* Stats */}
+          <Box className="flex flex-col gap-3 items-center">
+            <Skeleton variant="rounded" width={80} height={32} />
+            <Skeleton variant="rounded" width={80} height={32} />
           </Box>
         </Box>
       </Box>
