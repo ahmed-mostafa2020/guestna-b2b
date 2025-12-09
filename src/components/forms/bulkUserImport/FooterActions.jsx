@@ -2,10 +2,11 @@ import { USER_HEADERS } from "@/src/constants/excelHeaders";
 import { download } from "@/src/hooks/useDownload";
 import { Box, Button } from "@mui/material";
 import ExcelJS from "exceljs";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 const ExportUsersExcel = ({ users }) => {
 
   const locale = useLocale();
+  const t=useTranslations()
 
   const downloadExcelJS = async () => {
     const workbook = new ExcelJS.Workbook();
@@ -49,13 +50,13 @@ const ExportUsersExcel = ({ users }) => {
       variant="contained"
       className="!text-white !font-somar !bg-mainColor px-4 py-2 mb-3"
     >
-      تحميل المستخدمين الحاليين
+    {t("profile.schools_users.bulkImport.buttons.downloadCurrentUsers")}
     </Button>
   );
 };
 
 const FooterActions = ({
-  t,
+ 
   isSubmitting,
   onSubmit,
   onClose,
@@ -63,6 +64,7 @@ const FooterActions = ({
   hasValidUsers,
   existingUsers,
 }) => {
+  const t=useTranslations()
   return (
     <Box className="flex justify-end gap-4 px-8 py-4 border-t border-border">
       <Button
@@ -70,7 +72,7 @@ const FooterActions = ({
         className="!border-mainColor !text-mainColor    !font-somar"
         onClick={onClose}
       >
-        Cancel
+        {t("profile.schools_users.bulkImport.buttons.cancel")}
       </Button>
 
       <Button
@@ -79,7 +81,7 @@ const FooterActions = ({
         disabled={!hasValidUsers || isSubmitting || !usersCount}
         onClick={onSubmit}
       >
-        {isSubmitting ? "Submitting..." : `Import ${usersCount} Users`}
+        {isSubmitting ? t("profile.schools_users.bulkImport.buttons.isSubmitting") : t("profile.schools_users.bulkImport.submit",{count:usersCount}) }
       </Button>
 
       {/* 📌 زر تحميل المستخدمين الحاليين */}

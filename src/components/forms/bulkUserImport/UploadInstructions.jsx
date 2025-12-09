@@ -6,7 +6,6 @@ import { useState } from "react";
 import { download } from "@/src/hooks/useDownload";
 import { USER_HEADERS } from "@/src/constants/excelHeaders";
 
-
 const UploadInstructions = ({
   fileError,
   duplicateCount,
@@ -24,8 +23,6 @@ const UploadInstructions = ({
     try {
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("المستخدمين");
-
-    
 
       worksheet.columns = USER_HEADERS.map((header) => ({
         header: header.label[locale],
@@ -178,11 +175,17 @@ const UploadInstructions = ({
       {fileError && <Alert severity="error">{fileError}</Alert>}
 
       {duplicateCount > 0 && (
-        <Alert severity="info">
-          {duplicateCount} user(s) already exist and will be overwritten
+        <Alert severity="info" className="!font-somar">
+          
+          {t("profile.schools_users.bulkImport.duplicatesFound", {
+            count: duplicateCount,
+          })}
         </Alert>
       )}
 
+      <Typography className="!text-lg !font-somar flex items-center gap-2 text-titleColor">
+        {t("profile.schools_users.bulkImport.stepsTitle")}
+      </Typography>
       <List className="flex flex-col gap-2 p-0 m-0">
         {Array.from({ length: 7 }, (_, index) => (
           <ListItem
@@ -191,7 +194,7 @@ const UploadInstructions = ({
         !p-0 
         flex items-start 
         rounded-lg 
-        px-3 py-2
+        px-4 py-2
       "
           >
             {/* Number bubble */}
@@ -206,7 +209,7 @@ const UploadInstructions = ({
             </div>
 
             {/* Step text */}
-            <span className=" font-semibold leading-6 text-[15px]">
+            <span className=" font-semibold leading-4 text-sm">
               {t(`profile.schools_users.bulkImport.steps.${index + 1}`)}
             </span>
           </ListItem>

@@ -597,36 +597,70 @@
     },
 
     "schools_users": {
-      "schoolsUsers": "Schools And Users",
+      "schoolsUsers": "Schools & Users",
       "delete": "Delete",
       "copy": "Copy",
       "edit": "Edit",
       "add_new_user": "Add New User",
       "bulk_import_users": "Bulk Import Users",
       "search": "Search...",
-      "no_users": "No users found matching your search",
+      "no_users": "No users match your search",
       "users_count": "{count} users",
       "unknown_school": "Unknown School",
-      "userCreatedSuccessfully": "User has been created successfully",
+      "userCreatedSuccessfully": "User created successfully",
       "form": {
-        "title": "Add User Data",
-        "userTypePlaceholder": "Job grade",
+        "title": "Add User Information",
+        "userTypePlaceholder": "Job Title",
         "parsoneName": "Contact Person Name",
-        "phone": "Mobile number"
+        "phone": "Phone Number"
       },
       "bulkImport": {
         "title": "Bulk Import Users",
-        "description": "Upload a CSV or Excel file with columns: Name, Email, Phone, Role. Existing users with matching emails will be overwritten.",
-        "duplicatesFound": "{count} user(s) already exist and will be overwritten",
+        "description": "Upload a CSV or Excel file containing the columns: name, email, phone, role. Existing users with the same email will be replaced.",
+        "duplicatesFound": "{count} users already exist and will be updated",
         "preview": "Preview",
-        "users": "users",
+        "users": "Users",
         "status": "Status",
         "actions": "Actions",
         "hasErrors": "Errors",
-        "willOverwrite": "Will Overwrite",
+        "willOverwrite": "Will be overwritten",
         "valid": "Valid",
         "validationErrors": "Validation Errors:",
-        "submit": "Import {count} User(s)"
+        "submit": "Import {count} Users",
+        "uploadBox": {
+          "placeholder": "An Excel file must be uploaded"
+        },
+        "buttons": {
+          "downloadTemplate": "Download Template",
+          "uploadFilled": "Upload Filled Template",
+          "downloadCurrentUsers": "Download Current Users",
+          "isSubmitting": "Processing...",
+          "cancel": "Cancel"
+        },
+        "stepsTitle": "Steps to Follow",
+        "steps": {
+          "1": "Download the template.",
+          "2": "Click the download button to get the empty Excel file with the required columns.",
+          "3": "Fill in the data.",
+          "4": "Open the downloaded file and add users' data without modifying the column names.",
+          "5": "Save the file.",
+          "6": "Upload the file by clicking the 'Upload Filled Template' button.",
+          "7": "Do not change the column names (Headers)."
+        },
+        "userPreview": {
+          "title": "Preview {count} Users",
+          "name": "Name",
+          "email": "Email",
+          "phone": "Phone",
+          "role": "Job Title",
+          "status": "Status",
+          "actions": "Actions",
+          "error": "Validation Error",
+          "duplicate": "User Already Exists",
+          "valid": "Validated Successfully",
+          "validationErrors": "Validation Errors:",
+          "row": "Row {row}"
+        }
       }
     },
     "donutChart": {

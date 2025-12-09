@@ -439,11 +439,11 @@ const BulkUserImportForm = ({
           roleOptions={roleOptions}
           onEdit={handleEditUser}
           onRemove={handleRemoveUser}
-          t={t}
+          
         />
       )}
       <FooterActions
-        t={t}
+       
         isSubmitting={isSubmitting}
         onSubmit={handleBulkSubmit}
         onClose={handleClose}
