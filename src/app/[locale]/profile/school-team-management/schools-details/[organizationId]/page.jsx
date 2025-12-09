@@ -1,5 +1,6 @@
 "use client";
 
+import { backIcon, backIconColored } from "@/src/assets/svg";
 import SchoolBalance from "@/src/components/sections/pages/profile/schoolManagementTeam/schoolsOverview/schoolsDetails/SchoolBalance";
 import SchoolStats from "@/src/components/sections/pages/profile/schoolManagementTeam/schoolsOverview/schoolsDetails/SchoolStats";
 import SelectSchoolForDetails from "@/src/components/sections/pages/profile/schoolManagementTeam/schoolsOverview/schoolsDetails/SelectSchool";
@@ -10,12 +11,12 @@ import { useFetchData } from "@/src/hooks/useFetchData";
 import { Typography } from "@material-ui/core";
 import { Box } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import React from "react";
 
 const SchoolsDetailsPage = ({ params }) => {
   const locale = useLocale();
   const t = useTranslations();
-
 
   const { data, isLoading, error, refetch } = useFetchData(
     `${B2B_END_POINTS.PROFILE.ORGANIZATIONS.ORGANIZATION_DETAILS}/${params.organizationId}`,
@@ -29,16 +30,27 @@ const SchoolsDetailsPage = ({ params }) => {
     <>
       <main className="flex flex-col gap-6 min-h-screen">
         {/* title */}
-        <Box>
-          <Typography
-            variant="h3"
-            className="!text-titleColor !font-somar !text-xl "
+        <Box className="flex gap-2 items-start">
+          <Link
+            className="!bg-mainColor border-2 border-mainColor !text-white !w-5 !h-5 flex justify-center items-center !p-1 rounded-lg"
+            href={`/${locale}/profile/school-team-management/schools-overview`}
           >
-            {t("profile.schools_overview.schools_details.title")}{" "}
-          </Typography>
-          <Typography variant="caption" className="!text-textDark !font-somar ">
-            {t("profile.schools_overview.schools_details.caption")}{" "}
-          </Typography>
+            <span>{backIconColored}</span>
+          </Link>
+          <Box>
+            <Typography
+              variant="h3"
+              className="!text-titleColor !font-somar !text-xl "
+            >
+              {t("profile.schools_overview.schools_details.title")}{" "}
+            </Typography>
+            <Typography
+              variant="caption"
+              className="!text-textDark !font-somar "
+            >
+              {t("profile.schools_overview.schools_details.caption")}{" "}
+            </Typography>
+          </Box>
         </Box>
 
         {/* select school */}

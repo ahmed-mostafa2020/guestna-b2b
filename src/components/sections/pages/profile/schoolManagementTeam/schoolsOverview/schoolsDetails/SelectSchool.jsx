@@ -2,7 +2,7 @@ import { bluelocationIcon } from "@/src/assets/svg";
 import { Box } from "@material-ui/core";
 import { ArrowDropDown, Email, Phone } from "@mui/icons-material";
 import { MenuItem, Select, Skeleton, Typography } from "@mui/material";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -50,7 +50,7 @@ const SelectSchoolForDetailsSkeleton = () => {
 const SelectSchoolForDetails = ({ details, isLoading }) => {
   const router = useRouter();
   const t = useTranslations();
-
+  const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [selectedSchool, setSelectedSchool] = useState(details?._id ?? "");
 
@@ -63,7 +63,7 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
     const id = e.target.value;
     setSelectedSchool(id);
     router.push(
-      `/profile/school-team-management/schools-overview/schools-details/${id}`
+      `/${locale}/profile/school-team-management/schools-details/${id}`
     );
   };
 
@@ -130,13 +130,15 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
               variant="caption"
               className="!font-somar !text-titleColor flex items-center gap-1"
             >
-              <span className="!text-lg ">{bluelocationIcon}</span> {details.city}
+              <span className="!text-lg ">{bluelocationIcon}</span>{" "}
+              {details.city}
             </Typography>
             <Typography
               variant="caption"
               className="!font-somar !text-titleColor flex items-center gap-1"
             >
-              <Phone className="!text-lg" /> {details.phone}
+              <Phone className="!text-lg " />{" "}
+              <span style={{ direction: "ltr" }}> {details.phone}</span>
             </Typography>
             <Typography
               variant="caption"

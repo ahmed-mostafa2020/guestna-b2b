@@ -116,7 +116,9 @@ const SearchFilters = ({ searchTerms, onChange , isLoading }) => {
                   formattedCities.find((c) => c.value === searchTerms.city) ||
                   null
                 }
-                onChange={(_, v) => handleFieldChange("city", v?.value ?? "")}
+                onChange={(_, v) =>
+                  handleFieldChange("city", v?.value ?? undefined)
+                }
                 renderInput={(params) => (
                   <TextField
                     slotProps={{
@@ -150,7 +152,9 @@ const SearchFilters = ({ searchTerms, onChange , isLoading }) => {
                   formattedTracks.find((t) => t.value === searchTerms.track) ||
                   null
                 }
-                onChange={(_, v) => handleFieldChange("track", v?.value ?? "")}
+                onChange={(_, v) =>
+                  handleFieldChange("track", v?.value ?? undefined)
+                }
                 renderInput={(params) => (
                   <TextField
                     slotProps={{
@@ -186,7 +190,9 @@ const SearchFilters = ({ searchTerms, onChange , isLoading }) => {
                     (t) => t.value === searchTerms.sort
                   ) || null
                 }
-                onChange={(_, v) => handleFieldChange("sort", v?.value ?? "")}
+                onChange={(_, v) =>
+                  handleFieldChange("sort", v?.value ?? undefined)
+                }
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -256,7 +262,9 @@ const SearchFilters = ({ searchTerms, onChange , isLoading }) => {
                 formattedCities.find((c) => c.value === searchTerms.city) ||
                 null
               }
-              onChange={(_, v) => handleFieldChange("city", v?.value ?? "")}
+              onChange={(_, v) =>
+                handleFieldChange("city", v?.value ?? undefined)
+              }
               renderInput={(params) => (
                 <TextField
                   slotProps={{
@@ -288,7 +296,9 @@ const SearchFilters = ({ searchTerms, onChange , isLoading }) => {
                 formattedTracks.find((t) => t.value === searchTerms.track) ||
                 null
               }
-              onChange={(_, v) => handleFieldChange("track", v?.value ?? "")}
+              onChange={(_, v) =>
+                handleFieldChange("track", v?.value ?? undefined)
+              }
               renderInput={(params) => (
                 <TextField
                   slotProps={{
@@ -324,7 +334,9 @@ const SearchFilters = ({ searchTerms, onChange , isLoading }) => {
                   (t) => t.value === searchTerms.sort
                 ) || null
               }
-              onChange={(_, v) => handleFieldChange("sort", v?.value ?? "")}
+              onChange={(_, v) =>
+                handleFieldChange("sort", v?.value ?? undefined)
+              }
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -347,7 +359,6 @@ const SearchFilters = ({ searchTerms, onChange , isLoading }) => {
             />
           </>
         )}
-        
       </Box>
     </Box>
   );
