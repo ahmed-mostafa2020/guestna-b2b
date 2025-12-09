@@ -2,7 +2,6 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useState, useCallback } from "react";
-import ExcelJS from "exceljs";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useSnackbar } from "notistack";
 import axios from "axios";
@@ -15,7 +14,7 @@ import getErrorMessage from "@utils/getErrorMessage";
 import UploadInstructions from "./UploadInstructions";
 import UsersPreviewTable from "./UsersPreviewTable";
 import FooterActions from "./FooterActions";
-import { USER_HEADERS, usersHeaders } from "@/src/constants/excelHeaders";
+import { usersHeaders } from "@/src/constants/excelHeaders";
 import { useExcel } from "@/src/hooks/useExcel";
 
 const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
@@ -42,8 +41,13 @@ const createBulkUserRowSchema = (t, roleOptions = []) =>
         "unique-email",
         t("forms.validation.duplicateEmail"),
         function (value) {
-          const allEmails = this.options.context?.allValues?.map(u => u.email?.toLowerCase()) || [];
-          return allEmails.filter(e => e === value?.toLowerCase()).length <= 1;
+          const allEmails =
+            this.options.context?.allValues?.map((u) =>
+              u.email?.toLowerCase()
+            ) || [];
+          return (
+            allEmails.filter((e) => e === value?.toLowerCase()).length <= 1
+          );
         }
       ),
     phone: Yup.string()
@@ -60,18 +64,6 @@ const createBulkUserRowSchema = (t, roleOptions = []) =>
         roleOptions.includes(value)
       ),
   });
-
-// ------------------------
-// Helper: safe cell value
-// ------------------------
-const getCellValue = (cell) => {
-  if (!cell) return "";
-  if (cell?.text) return cell.text; // RichText
-  if (typeof cell === "object" && cell?.richText) {
-    return cell.richText.map((r) => r.text).join("");
-  }
-  return String(cell).trim();
-};
 
 // ------------------------
 // Helper: consistent error
@@ -104,8 +96,8 @@ const BulkUserImportForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const headers = getHeaders(locale);
   const roleOptions = rolesData.map((r) => r.description);
-  
-  const {parseFile } = useExcel({headers: usersHeaders(roleOptions)})
+
+  const { parseFile } = useExcel({ headers: usersHeaders(roleOptions) });
   const findRoleIdByName = useCallback(
     (description) =>
       rolesData.find((r) => r.description === description)?._id || description,
@@ -146,15 +138,9 @@ const BulkUserImportForm = ({
   );
 
   // ------------------------
-  // Parse Excel file
-  // ------------------------
-
-
-  // ------------------------
   // File upload handler
   // ------------------------
   const handleFileUpload = async (e) => {
-    
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -172,7 +158,7 @@ const BulkUserImportForm = ({
 
     try {
       const validRows = await parseFile(file);
-     
+
       if (!validRows.length) {
         setFileError(t("forms.validation.emptyFile"));
         return;
@@ -383,11 +369,9 @@ const BulkUserImportForm = ({
           roleOptions={roleOptions}
           onEdit={handleEditUser}
           onRemove={handleRemoveUser}
-          
         />
       )}
       <FooterActions
-       
         isSubmitting={isSubmitting}
         onSubmit={handleBulkSubmit}
         onClose={handleClose}

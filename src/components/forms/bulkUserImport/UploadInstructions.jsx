@@ -1,9 +1,6 @@
 import { uploadFile } from "@/src/assets/svg";
 import { Alert, Box, Button, List, ListItem, Typography } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
-import ExcelJS from "exceljs";
-import { useState } from "react";
-import { download } from "@/src/hooks/useDownload";
 import { usersHeaders } from "@/src/constants/excelHeaders";
 import { useExcel } from "@/src/hooks/useExcel";
 
@@ -15,7 +12,6 @@ const UploadInstructions = ({
   roleOptions,
 }) => {
   const t = useTranslations();
-  const [loading, setLoading] = useState(false);
   const locale = useLocale();
   const { createTemplate } = useExcel({ headers: usersHeaders(roleOptions) });
   const generateAndDownloadExcel = async () => {

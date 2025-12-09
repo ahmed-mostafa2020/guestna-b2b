@@ -9,50 +9,15 @@ const ExportUsersExcel = ({ users }) => {
   const t = useTranslations();
 
   const { exportRecords } = useExcel({ headers: usersHeaders() });
-  // const downloadExcelJS = async () => {
-  //   const workbook = new ExcelJS.Workbook();
-  //   const worksheet = workbook.addWorksheet("Users");
-
-  //   // 1. Set columns dynamically from USER_HEADERS
-  //   worksheet.columns = USER_HEADERS.map((header) => ({
-  //     header: header.label[locale] || header.label.en,
-  //     key: header.key,
-  //     width: header.width,
-  //   }));
-
-  //   // 2. Add rows
-  //   users.forEach((user) => {
-  //     worksheet.addRow({
-  //       name: user.name,
-  //       email: user.email,
-  //       phone: user.phone,
-  //       role: user.role?.description || user.role,
-  //     });
-  //   });
-
-  //   // 3. Style header row
-  //   worksheet.getRow(1).font = { bold: true };
-
-  //   // 4. Generate buffer
-  //   const buffer = await workbook.xlsx.writeBuffer();
-
-  //   // 5. Create Blob
-  //   const blob = new Blob([buffer], {
-  //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  //   });
-
-  //   await download(blob, "current-users.xlsx");
-  // };
 
   const downloadExcelJS = async () => {
-    
     console.log(users);
-    
+
     return await exportRecords(
       users,
       locale === "ar" ? "المستخدمين-الحاليين.xlsx" : "current-users.xlsx"
     );
-  }
+  };
   return (
     <Button
       onClick={downloadExcelJS}

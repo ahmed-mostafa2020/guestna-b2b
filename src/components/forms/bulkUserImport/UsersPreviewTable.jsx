@@ -29,7 +29,7 @@ const UsersPreviewTable = ({
   onEdit,
 }) => {
   const t = useTranslations();
-  
+
   return (
     <Box className="px-8 py-6 overflow-auto">
       <Typography variant="h6" className="!font-somar mb-3">
@@ -46,31 +46,41 @@ const UsersPreviewTable = ({
           <TableHead>
             <TableRow>
               <TableCell
-                className={"!border-e-2 !text-center !border-border !font-somar"}
+                className={
+                  "!border-e-2 !text-center !border-border !font-somar"
+                }
                 width="18%"
               >
                 {t("profile.schools_users.bulkImport.userPreview.name")}
               </TableCell>
               <TableCell
-                className={"!border-e-2 !text-center !border-border !font-somar"}
+                className={
+                  "!border-e-2 !text-center !border-border !font-somar"
+                }
                 width="20%"
               >
                 {t("profile.schools_users.bulkImport.userPreview.email")}
               </TableCell>
               <TableCell
-                className={"!border-e-2 !text-center !border-border !font-somar"}
+                className={
+                  "!border-e-2 !text-center !border-border !font-somar"
+                }
                 width="14%"
               >
                 {t("profile.schools_users.bulkImport.userPreview.phone")}
               </TableCell>
               <TableCell
-                className={"!border-e-2 !text-center !border-border !font-somar"}
+                className={
+                  "!border-e-2 !text-center !border-border !font-somar"
+                }
                 width="14%"
               >
                 {t("profile.schools_users.bulkImport.userPreview.role")}
               </TableCell>
               <TableCell
-                className={"!border-e-2 !text-center !border-border !font-somar"}
+                className={
+                  "!border-e-2 !text-center !border-border !font-somar"
+                }
                 width="12%"
               >
                 {t("profile.schools_users.bulkImport.userPreview.status")}

@@ -41,13 +41,13 @@ const SchoolStats = ({ details, isLoading }) => {
           .fill(<StateCardSkeleton />)
           .map((item, index) => (
             <Grid key={index} item xs={4}>
-              <StateCardSkeleton  />
+              <StateCardSkeleton />
             </Grid>
           ))}
       </Grid>
     );
 
-    if (!details) return null;
+  if (!details) return null;
   const formattedStats =
     details?.tripsStats &&
     Object.entries(details?.tripsStats).map(([key, value]) => ({
@@ -55,7 +55,6 @@ const SchoolStats = ({ details, isLoading }) => {
       value,
     }));
 
-  
   return (
     <Grid container gap={2} spacing={2} size={12}>
       {formattedStats?.map((item, index) => (

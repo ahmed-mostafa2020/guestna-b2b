@@ -33,7 +33,6 @@ const SchoolBalanceSkeleton = () => {
 };
 
 const SchoolBalance = ({ details, isLoading }) => {
-
   const t = useTranslations();
 
   if (isLoading) {
@@ -67,7 +66,7 @@ const SchoolBalance = ({ details, isLoading }) => {
               variant="h4"
               className=" !font-somar !text-sm text-[#008442] flex gap-2 items-center justify-center"
             >
-              {formatCurrency(details.balance.availableBalance)} 
+              {formatCurrency(details.balance.availableBalance)}
             </Typography>
           </Grid>
           <Grid
@@ -86,7 +85,7 @@ const SchoolBalance = ({ details, isLoading }) => {
               variant="h4"
               className=" !font-somar !text-sm text-[#B25B00] flex gap-2 items-center justify-center"
             >
-              { formatCurrency(details.balance.pendingBalance)} 
+              {formatCurrency(details.balance.pendingBalance)}
             </Typography>
           </Grid>
           <Grid
@@ -105,7 +104,7 @@ const SchoolBalance = ({ details, isLoading }) => {
               variant="h4"
               className=" !font-somar !text-sm text-[#1858A5] flex gap-2 items-center justify-center"
             >
-              { formatCurrency(details.balance.totalBalance)} 
+              {formatCurrency(details.balance.totalBalance)}
             </Typography>
           </Grid>
         </Grid>
