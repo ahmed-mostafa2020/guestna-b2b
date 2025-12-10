@@ -117,9 +117,12 @@ const OrganizationSelector = () => {
       {/* Selector Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full min-w-[250px] max-w-[350px] px-4 py-2.5 bg-white border-2 border-gray-200 rounded-lg hover:border-mainColor transition-colors focus:outline-none focus:border-mainColor"
+        className="flex items-center justify-between w-full min-w-[180px] max-w-[350px] px-4 py-2.5 bg-white border-2 border-gray-200 rounded-lg hover:border-mainColor transition-colors focus:outline-none focus:border-mainColor"
       >
-        <span className="text-sm font-medium text-textDark truncate">
+        <span
+          className="text-sm font-medium text-textDark truncate"
+          title={getDisplayText()}
+        >
           {isLoading ? (
             <Skeleton variant="text" width={150} />
           ) : (
@@ -135,7 +138,7 @@ const OrganizationSelector = () => {
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-50 w-full min-w-[300px] mt-2 bg-white border-2 border-mainColor rounded-xl shadow-lg overflow-hidden shadow-card">
+        <div className="absolute z-50 w-full min-w-[200px] lg:min-w-[350px] mt-2 bg-white border border-mainColor rounded-xl overflow-hidden shadow-card end-0">
           {/* Search Input */}
           <div className="p-3 border-b border-gray-100">
             <TextField
@@ -168,9 +171,11 @@ const OrganizationSelector = () => {
               }}
               sx={{
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: "0.5rem",
+                  borderRadius: "0.75rem",
                   "& fieldset": {
-                    borderColor: "var(--color-border)",
+                    border: "2px solid !important",
+                    borderColor: "var(--color-border) !important",
+                    borderRadius: "0.75rem !important",
                   },
                   "&:hover fieldset": {
                     borderColor: "var(--color-main)",
@@ -208,7 +213,10 @@ const OrganizationSelector = () => {
                       },
                     }}
                   />
-                  <span className="text-sm font-medium text-textDark">
+                  <span
+                    className="text-sm font-medium text-textDark truncate"
+                    title={t("profile.organizationSelector.allSchools")}
+                  >
                     {t("profile.organizationSelector.allSchools")}
                   </span>
                 </div>
