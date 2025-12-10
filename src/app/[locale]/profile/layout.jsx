@@ -60,6 +60,7 @@ const ProfileLayout = ({ children }) => {
       onLoading: setProfileLoading,
     }
   );
+
   useEffect(() => {
     if (data) {
       dispatch(setProfileImage(data?.image || ""));

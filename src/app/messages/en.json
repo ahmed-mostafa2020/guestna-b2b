@@ -575,6 +575,13 @@
       "logoutConfirm": "Do you really want to log out?"
     },
 
+    "organizationSelector": {
+      "allSchools": "All Schools",
+      "searchPlaceholder": "Search for schools...",
+      "noResults": "No schools found",
+      "selectedCount": "{count} schools selected"
+    },
+
     "infoCards": {
       "totalStudents": "Total Students",
       "totalSchools": "Total Schools",

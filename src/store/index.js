@@ -27,6 +27,7 @@ import signUpForm from "./forms/auth/signUp/signUpFormSlice";
 import loginForm from "./forms/auth/login/loginFormSlice";
 import parentLoginForm from "./forms/auth/parentLogin/parentLoginFormSlice";
 import profileData from "./profile/profileInfoSlice";
+import selectedOrganizations from "./profile/selectedOrganizationsSlice";
 import faqData from "./faq/faqSlice";
 
 import favorites from "./favorites/favoritesSlice";
@@ -58,6 +59,7 @@ const rootPersistConfig = {
     "users",
     "theme",
     "permissions",
+    "selectedOrganizations",
   ],
 };
 
@@ -77,6 +79,7 @@ const rootReducer = combineReducers({
   loginForm,
   parentLoginForm,
   profileData,
+  selectedOrganizations,
   faqData,
 
   favorites,

@@ -572,6 +572,14 @@
       "logout": "تسجيل خروج",
       "logoutConfirm": "هل تريد حقا تسجيل خروج؟"
     },
+
+    "organizationSelector": {
+      "allSchools": "كل المدارس",
+      "searchPlaceholder": "ابحث عن المدارس",
+      "noResults": "لا توجد مدارس",
+      "selectedCount": "{count} مدارس محددة"
+    },
+
     "infoCards": {
       "totalStudents": "إجمالي الطلاب",
       "totalSchools": "إجمالي المدارس",

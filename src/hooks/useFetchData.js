@@ -12,6 +12,9 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
+  const selectedOrganizations = Cookies.get(
+    CONSTANT_VALUES.SELECTED_ORGANIZATIONS
+  );
 
   // Axios fetch function
   const fetchData = useCallback(async () => {
@@ -26,6 +29,11 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
 
     if (token) {
       headers.authorization = `Bearer ${token}`;
+    }
+
+    // Add profile-organizations header unless skipOrgHeader option is set
+    if (selectedOrganizations && !options.skipOrgHeader) {
+      headers["profile-organizations"] = selectedOrganizations;
     }
 
     const response = await axios({
