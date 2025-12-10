@@ -21,9 +21,12 @@ const StateCard = ({ label, value }) => {
 
 const StateCardSkeleton = () => {
   return (
-    <Box className="flex flex-col gap-2 bg-white border   justify-center items-center border-border rounded-lg p-4">
-      <Skeleton variant="text" width={100} height={20} />
-      <Skeleton variant="text" width={100} height={20} />
+    <Box className="flex flex-col gap-2 bg-white border-2 justify-center items-center border-border rounded-lg px-2 py-4">
+      {/* Label */}
+      <Skeleton variant="text" width={90} height={22} />
+
+      {/* Value */}
+      <Skeleton variant="text" width={70} height={28} />
     </Box>
   );
 };
@@ -33,16 +36,18 @@ const SchoolStats = ({ details, isLoading }) => {
 
   if (isLoading)
     return (
-      <>
+      <Grid container gap={2} spacing={2} size={12}>
         {Array(6)
           .fill(<StateCardSkeleton />)
           .map((item, index) => (
-            <StateCardSkeleton key={index} />
+            <Grid key={index} item xs={4}>
+              <StateCardSkeleton />
+            </Grid>
           ))}
-      </>
+      </Grid>
     );
 
-    if (!details) return null;
+  if (!details) return null;
   const formattedStats =
     details?.tripsStats &&
     Object.entries(details?.tripsStats).map(([key, value]) => ({
@@ -50,7 +55,6 @@ const SchoolStats = ({ details, isLoading }) => {
       value,
     }));
 
-  
   return (
     <Grid container gap={2} spacing={2} size={12}>
       {formattedStats?.map((item, index) => (
