@@ -125,9 +125,9 @@ const TripsOrdersManagement = () => {
 
   return (
     <>
-      <div className=" rounded-2xl shadow-card p-4 lg:p-8 mb-4 lg:mb-8 bg-white">
-        <div className="flex flex-col gap-6 lg:gap-14">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
+      <div className=" rounded-2xl shadow-card p-4 mb-4 lg:mb-8 bg-white">
+        <div className="flex flex-col gap-4 lg:gap-8">
+          <div className="flex items-center justify-between gap-4 flex-wrap py-4">
             <div className="flex items-center gap-2">
               <span className="bg-mainColor rounded-[13px] p-2">
                 {activitiesOrdersManagementIcon}

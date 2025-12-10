@@ -82,32 +82,30 @@ const AllOrdersTable = ({
               <thead>
                 <tr className="bg-table-header border-b-2 border-tableRowBorder">
                   <th className="p-4 font-semibold text-start">
-                    {t("profile.tables.ordersInfo.orderDetails.orderId")}
+                    {t("profile.tables.orders.tableHeaders.orderNumber")}
                   </th>
                   <th className="p-4 font-semibold text-start">
-                    {t("profile.tables.bookings.header.tripName")}
+                    {t("profile.tables.orders.tableHeaders.school")}
                   </th>
                   <th className="p-4 font-semibold text-start">
-                    {t("profile.tables.ordersInfo.orderDetails.tripType")}
+                    {t("profile.tables.orders.tableHeaders.activity")}
                   </th>
                   <th className="p-4 font-semibold text-start">
-                    {t("profile.tables.ordersInfo.orderDetails.category")}
+                    {t("profile.tables.orders.tableHeaders.orderType")}
                   </th>
                   <th className="p-4 font-semibold text-start">
-                    {t("profile.tables.bookings.header.schoolName")}
+                    {t("profile.tables.orders.tableHeaders.orderDate")}
                   </th>
                   <th className="p-4 font-semibold text-start">
-                    {t("profile.tables.bookings.header.date")}
+                    {t("profile.tables.orders.tableHeaders.budget")}
                   </th>
+
                   <th className="p-4 font-semibold text-start">
-                    {t("profile.tables.ordersInfo.orderDetails.basePrice")}
-                  </th>
-                  <th className="p-4 font-semibold text-start">
-                    {t("profile.tables.bookings.header.status")}
+                    {t("profile.tables.orders.tableHeaders.status")}
                   </th>
                   {hasAnyActionPermission && (
                     <th className="p-4 font-semibold text-start">
-                      {t("profile.tables.bookings.header.actions")}
+                      {t("profile.tables.orders.tableHeaders.actions")}
                     </th>
                   )}
                 </tr>
@@ -122,11 +120,30 @@ const AllOrdersTable = ({
                     } transition-colors hover:bg-gray-50`}
                   >
                     <td className="p-4 text-sm font-medium text-foreground">
-                      {order.orderId}
+                      <span
+                        className="block max-w-[100px] truncate"
+                        title={order.orderId}
+                      >
+                        {order.orderId}
+                      </span>
+                    </td>
+
+                    <td className="p-4 text-sm text-muted-foreground">
+                      <span
+                        className="block max-w-[180px] truncate"
+                        title={order.organization}
+                      >
+                        {order.organization}
+                      </span>
                     </td>
 
                     <td className="p-4 text-sm font-medium text-foreground">
-                      {order.name}
+                      <span
+                        className="block max-w-[100px] truncate"
+                        title={order.name}
+                      >
+                        {order.name}
+                      </span>
                     </td>
 
                     <td className="p-4 text-sm">
@@ -139,14 +156,6 @@ const AllOrdersTable = ({
                           {t("profile.tables.orders.normal.title")}
                         </span>
                       )}
-                    </td>
-
-                    <td className="p-4 text-sm text-muted-foreground">
-                      {order.category}
-                    </td>
-
-                    <td className="p-4 text-sm text-muted-foreground">
-                      {order.organization}
                     </td>
 
                     <td className="p-4 text-sm text-muted-foreground">
@@ -200,69 +209,92 @@ const AllOrdersTable = ({
             key={order._id}
             className="transition-shadow shadow-md hover:shadow-lg"
           >
-            <CardContent className="p-4 space-y-3">
-              <div className="flex flex-col items-start justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-muted-foreground">
-                    {order.orderId}
-                  </span>
+            <CardContent className="p-4 flex flex-col gap-4">
+              {/* Order Number */}
+              <div className="flex justify-between items-center border-b pb-2 last:border-0 border-gray-100">
+                <span className="font-medium text-muted-foreground text-sm">
+                  {t("profile.tables.orders.tableHeaders.orderNumber")}
+                </span>
+                <span className="font-medium text-foreground text-sm">
+                  {order.orderId}
+                </span>
+              </div>
 
+              {/* School */}
+              <div className="flex justify-between items-center border-b pb-2 last:border-0 border-gray-100">
+                <span className="font-medium text-muted-foreground text-sm">
+                  {t("profile.tables.orders.tableHeaders.school")}
+                </span>
+                <span
+                  className="font-medium text-foreground text-sm text-end max-w-[60%] truncate"
+                  title={order.organization}
+                >
+                  {order.organization}
+                </span>
+              </div>
+
+              {/* Activity */}
+              <div className="flex justify-between items-center border-b pb-2 last:border-0 border-gray-100">
+                <span className="font-medium text-muted-foreground text-sm">
+                  {t("profile.tables.orders.tableHeaders.activity")}
+                </span>
+                <span
+                  className="font-medium text-foreground text-sm text-end max-w-[60%] truncate"
+                  title={order.name}
+                >
+                  {order.name}
+                </span>
+              </div>
+
+              {/* Order Type */}
+              <div className="flex justify-between items-center border-b pb-2 last:border-0 border-gray-100">
+                <span className="font-medium text-muted-foreground text-sm">
+                  {t("profile.tables.orders.tableHeaders.orderType")}
+                </span>
+                <div>
                   {order.askType === "CUSTOM_TRIP" ? (
-                    <span className="px-2 py-1 font-medium">
+                    <span className="px-2 py-1 text-xs font-medium text-purple-800 bg-purple-100 border border-purple-200 rounded-full">
                       {t("profile.tables.orders.customizable.title")}
                     </span>
                   ) : (
-                    <span className="px-2 py-1 font-medium">
+                    <span className="px-2 py-1 text-xs font-medium">
                       {t("profile.tables.orders.normal.title")}
                     </span>
                   )}
                 </div>
-                <h3 className="text-lg font-bold leading-relaxed text-foreground">
-                  {order.name}
-                </h3>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div className="flex flex-col gap-1">
-                  <span className="font-medium text-muted-foreground">
-                    {t("profile.tables.ordersInfo.orderDetails.category")}:
-                  </span>
-                  <span>{order.category}</span>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <span className="font-medium text-muted-foreground">
-                    {t("profile.tables.bookings.header.schoolName")}:
-                  </span>
-                  <span>{order.organization}</span>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <span className="font-medium text-muted-foreground">
-                    {t("profile.tables.bookings.header.date")}:
-                  </span>
-                  <span className="text-muted-foreground">
-                    {formatDate(order.day, locale, {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </span>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <span className="font-medium text-muted-foreground">
-                    {t("profile.tables.ordersInfo.orderDetails.basePrice")}:
-                  </span>
-                  <span className="font-semibold">
-                    {formatCurrency(order.basePrice)}
-                  </span>
-                </div>
+              {/* Order Date */}
+              <div className="flex justify-between items-center border-b pb-2 last:border-0 border-gray-100">
+                <span className="font-medium text-muted-foreground text-sm">
+                  {t("profile.tables.orders.tableHeaders.orderDate")}
+                </span>
+                <span className="font-medium text-foreground text-sm">
+                  {formatDate(order.day, locale, {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
               </div>
 
-              <div className="flex items-center gap-2">
+              {/* Budget */}
+              <div className="flex justify-between items-center border-b pb-2 last:border-0 border-gray-100">
+                <span className="font-medium text-muted-foreground text-sm">
+                  {t("profile.tables.orders.tableHeaders.budget")}
+                </span>
+                <span className="font-bold text-foreground text-sm">
+                  {formatCurrency(order.basePrice)}
+                </span>
+              </div>
+
+              {/* Status */}
+              <div className="flex justify-between items-center pt-2">
+                <span className="font-medium text-muted-foreground text-sm">
+                  {t("profile.tables.orders.tableHeaders.status")}
+                </span>
                 <span
-                  className={`px-3 py-1 rounded-full  font-medium ${getStatusStyles(
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusStyles(
                     order.status
                   )}`}
                 >
@@ -271,7 +303,11 @@ const AllOrdersTable = ({
               </div>
 
               {hasAnyActionPermission && (
-                <div className="space-y-2">
+                <div className="flex justify-between items-center pt-2 border-t border-gray-100">
+                  <span className="font-medium text-muted-foreground text-sm">
+                    {t("profile.tables.orders.tableHeaders.actions")}
+                  </span>
+
                   <ActionsDropdownMenu
                     bookingId={order._id}
                     bookingStatus={order.status}

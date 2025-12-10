@@ -752,7 +752,7 @@
 
         "features": {
           "privateGroups": "مجموعات خاصة",
-          "flexibleTimes": "اوقات مرنة",
+          "flexibleTimes": "أوقات مرنة",
           "uniqueDestinations": "وجهات فريدة",
           "customizedActivities": "أنشطة مخصصة"
         },
@@ -772,6 +772,16 @@
         },
         "customizable": {
           "title": "طلبات الأنشطة المخصصة"
+        },
+        "tableHeaders": {
+          "orderNumber": "رقم الطلب",
+          "school": "المدرسة",
+          "activity": "النشاط",
+          "orderType": "نوع الطلب",
+          "budget": "الميزانية",
+          "orderDate": "تاريخ الطلب",
+          "status": "الحالة",
+          "actions": "الإجراءات"
         },
         "bookingDetails": {
           "title": "تفاصيل رحلة:",

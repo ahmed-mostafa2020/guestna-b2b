@@ -50,7 +50,7 @@ const OrdersPage = () => {
         >
           <TripsOrdersManagement />
 
-          <div className="flex flex-col gap-4 w-full bg-white rounded-2xl p-4 lg:p-8 shadow-card">
+          <div className="flex flex-col gap-4 w-full bg-white rounded-2xl p-4 shadow-card">
             <h2 className="text-lg font-medium lg:text-3xl mb-4 lg:mb-8">
               {t("profile.tables.orders.followOrders")}
             </h2>

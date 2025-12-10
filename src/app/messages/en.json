@@ -777,6 +777,16 @@
         "customizable": {
           "title": "Customized Activities Orders"
         },
+        "tableHeaders": {
+          "orderNumber": "Order Number",
+          "school": "School",
+          "activity": "Activity",
+          "orderType": "Order Type",
+          "budget": "Budget",
+          "orderDate": "Order Date",
+          "status": "Status",
+          "actions": "Actions"
+        },
         "bookingDetails": {
           "title": "Trip Details:",
           "tripInfo": "Trip Information",
