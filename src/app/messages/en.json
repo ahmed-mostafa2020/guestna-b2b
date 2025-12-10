@@ -117,8 +117,13 @@
       "DONE": "Done",
       "PENDING": "Pending",
       "CANCLED": "Cancelled",
+      "CANCELLED": "Cancelled",
       "SCHEDULED": "Scheduled",
-      "ENDED": "Ended"
+      "ENDED": "Ended",
+      "PENDING_COMPANY_APPROVAL": "Pending Approval",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "ON_HOLD": "On Hold"
     },
     "usersType": {
       "VISITOR": "Visitor",

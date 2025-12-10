@@ -115,8 +115,13 @@
       "DONE": "مكتمل",
       "PENDING": "قيد المعالجة",
       "CANCLED": "ملغي",
+      "CANCELLED": "ملغي",
       "SCHEDULED": "مجدول",
-      "ENDED": "انتهت"
+      "ENDED": "انتهت",
+      "PENDING_COMPANY_APPROVAL": "في انتظار الموافقة",
+      "APPROVED": "موافق عليه",
+      "REJECTED": "مرفوض",
+      "ON_HOLD": "معلق"
     },
     "usersType": {
       "VISITOR": "الزائر",
