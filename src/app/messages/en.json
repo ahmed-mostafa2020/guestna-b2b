@@ -756,6 +756,10 @@
           "customizedActivities": "Customized Activities"
         },
         "followOrders": "Follow All Orders",
+        "tabs": {
+          "ordersManagement": "Activities Orders Management",
+          "settings": "Trips Settings"
+        },
         "counts": {
           "allAskTrip": "Total Requests",
           "scheduled": "Scheduled Requests",

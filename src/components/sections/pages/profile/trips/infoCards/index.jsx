@@ -10,9 +10,11 @@ const InfoCard = ({ item, textAlign = "start", showIcon = true }) => {
       {showIcon && item.icon && item.icon}
 
       <div className={`flex flex-col gap-3 ${alignmentClass} flex-1`}>
-        <p className="font-medium text-[#202224] opacity-70">{item.title}</p>
+        <p className="font-medium text-black opacity-60">{item.title}</p>
 
-        <p className="text-xl font-semibold text-[#202224]">{item.value}</p>
+        <p className="text-xl font-semibold text-black opacity-90">
+          {item.value}
+        </p>
       </div>
     </div>
   );

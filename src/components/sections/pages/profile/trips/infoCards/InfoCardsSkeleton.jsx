@@ -9,7 +9,7 @@ const InfoCardsSkeleton = ({ showIcon = true, textAlign = "start" }) => {
       {[1, 2, 3, 4].map((index) => (
         <div
           key={index}
-          className="flex gap-2 p-4 bg-white border rounded-xl border-border animate-pulse"
+          className="flex gap-2 p-4 bg-white border rounded-xl border-border animate-pulse min-h-[98px]"
         >
           {/* Icon skeleton - matches actual icon size */}
           {showIcon && (

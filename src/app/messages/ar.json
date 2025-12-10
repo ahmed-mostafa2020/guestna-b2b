@@ -752,6 +752,10 @@
           "customizedActivities": "أنشطة مخصصة"
         },
         "followOrders": "متابعة جميع الطلبات",
+        "tabs": {
+          "ordersManagement": "إدارة طلبات الأنشطة",
+          "settings": "إعدادات الرحلات"
+        },
         "counts": {
           "allAskTrip": "إجمالي الطلبات",
           "scheduled": "الطلبات المجدولة",

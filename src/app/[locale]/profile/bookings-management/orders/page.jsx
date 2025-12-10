@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
+import { useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
@@ -19,6 +20,7 @@ import CustomizedTripsTable from "@components/sections/pages/profile/boookings-m
 const OrdersPage = () => {
   const t = useTranslations();
   const locale = useLocale();
+  const [activeTab, setActiveTab] = useState("ordersManagement");
 
   // Fetch trip counts
   const {
@@ -58,6 +60,17 @@ const OrdersPage = () => {
     },
   ];
 
+  const tabs = [
+    {
+      key: "ordersManagement",
+      label: t("profile.tables.orders.tabs.ordersManagement"),
+    },
+    {
+      key: "settings",
+      label: t("profile.tables.orders.tabs.settings"),
+    },
+  ];
+
   return (
     <>
       {/* Info Cards Section */}
@@ -82,63 +95,101 @@ const OrdersPage = () => {
         )}
       </div>
 
-      <ProtectedProfilePage
-        requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_ORDER_MANAGEMENT_PAGE}
-      >
-        <TripsOrdersManagement />
+      {/* Tab Switcher */}
+      <div className="relative mb-5">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-50 via-blue-100 to-blue-50 rounded-lg opacity-30"></div>
 
+        <div className="relative flex flex-wrap gap-1 py-4 px-6 bg-[#E3F0F0] rounded-xl">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`
+                    relative flex-1 min-w-[140px] px-4 rounded-lg transition-all duration-300
+                    flex flex-col items-center justify-center
+                    ${activeTab === tab.key ? "bg-white scale-105" : ""}
+                  `}
+            >
+              <span className="font-semibold py-3 text-center leading-tight">
+                {tab.label}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === "ordersManagement" ? (
+        <ProtectedProfilePage
+          requiredPermission={
+            PERMISSIONS.PAGE.B2B_PROFILE_ORDER_MANAGEMENT_PAGE
+          }
+        >
+          <TripsOrdersManagement />
+
+          <div className="flex flex-col gap-4 w-full bg-white rounded-2xl p-4 lg:p-8 shadow-card">
+            <h2 className="text-lg font-medium lg:text-3xl mb-4 lg:mb-8">
+              {t("profile.tables.orders.followOrders")}
+            </h2>
+
+            <div className="flex flex-col gap-4 lg:gap-8">
+              <ProfilePageTemplate
+                title={t("profile.aside.bookingsManagement.ordersManagement")}
+                endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.NORMAL}`}
+                method="POST"
+                emptyStateComponent={<EmptyBookings />}
+                contentComponent={(
+                  data,
+                  currentPage,
+                  setCurrentPage,
+                  enablePagination
+                ) => (
+                  <NormalTripsTable
+                    tableTitle={t("profile.tables.orders.normal.title")}
+                    data={data}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    enablePagination={enablePagination}
+                  />
+                )}
+                enablePagination={true}
+              />
+
+              <ProfilePageTemplate
+                title={t("profile.aside.bookingsManagement.ordersManagement")}
+                endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.CUSTOMIZABLE}`}
+                method="POST"
+                emptyStateComponent={<EmptyBookings />}
+                contentComponent={(
+                  data,
+                  currentPage,
+                  setCurrentPage,
+                  enablePagination
+                ) => (
+                  <CustomizedTripsTable
+                    tableTitle={t("profile.tables.orders.customizable.title")}
+                    data={data}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    enablePagination={enablePagination}
+                  />
+                )}
+                enablePagination={true}
+              />
+            </div>
+          </div>
+        </ProtectedProfilePage>
+      ) : (
         <div className="flex flex-col gap-4 w-full bg-white rounded-2xl p-4 lg:p-8 shadow-card">
           <h2 className="text-lg font-medium lg:text-3xl mb-4 lg:mb-8">
-            {t("profile.tables.orders.followOrders")}
+            {t("profile.tables.orders.tabs.settings")}
           </h2>
 
-          <div className="flex flex-col gap-4 lg:gap-8">
-            <ProfilePageTemplate
-              title={t("profile.aside.bookingsManagement.ordersManagement")}
-              endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.NORMAL}`}
-              method="POST"
-              emptyStateComponent={<EmptyBookings />}
-              contentComponent={(
-                data,
-                currentPage,
-                setCurrentPage,
-                enablePagination
-              ) => (
-                <NormalTripsTable
-                  tableTitle={t("profile.tables.orders.normal.title")}
-                  data={data}
-                  currentPage={currentPage}
-                  setCurrentPage={setCurrentPage}
-                  enablePagination={enablePagination}
-                />
-              )}
-              enablePagination={true}
-            />
-
-            <ProfilePageTemplate
-              title={t("profile.aside.bookingsManagement.ordersManagement")}
-              endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.CUSTOMIZABLE}`}
-              method="POST"
-              emptyStateComponent={<EmptyBookings />}
-              contentComponent={(
-                data,
-                currentPage,
-                setCurrentPage,
-                enablePagination
-              ) => (
-                <CustomizedTripsTable
-                  tableTitle={t("profile.tables.orders.customizable.title")}
-                  data={data}
-                  currentPage={currentPage}
-                  setCurrentPage={setCurrentPage}
-                  enablePagination={enablePagination}
-                />
-              )}
-              enablePagination={true}
-            />
+          <div className="p-8 text-center">
+            <p className="text-gray-600">Settings content will be added here</p>
           </div>
         </div>
-      </ProtectedProfilePage>
+      )}
     </>
   );
 };
