@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Box,
   TextField,
@@ -36,30 +36,42 @@ const SearchFilters = ({ searchTerms, onChange , isLoading }) => {
 
   // Convert objects → autocomplete format
 
-  const formattedCities = cities.map((city) => {
-    return { label: city.name, value: city._id };
-  });
-  const formattedTracks = tracks.map((track) => {
-    return {
-      label: `${track.educationSystem} - ${t(
-        `schoolRegister.form.gender.options.${
-          track.gender == "MALE"
-            ? "boys"
-            : track.gender == "FEMALE"
-            ? "girls"
-            : "both"
-        }`
-      )} - (${track.academicStages
-        .map((item) => item.name)
-        .reduce((acc, curr) => `${acc},${curr}`)})  `,
-      value: track._id,
-    };
-  });
+  const formattedCities = useMemo(
+    () =>
+      cities.map((city) => ({
+        label: city.name,
+        value: city._id,
+      })),
+    [cities]
+  );
 
-  const formattedSortOptions = sortOptions.map((sort) => ({
-    label: t(`profile.schools_overview.searchFilters.sort_options.${sort}`),
-    value: sort,
-  }));
+  const formattedTracks = useMemo(
+    () =>
+      (tracks ?? []).map((track) => ({
+        label: `${track.educationSystem} - ${t(
+          `schoolRegister.form.gender.options.${
+            track.gender === "MALE"
+              ? "boys"
+              : track.gender === "FEMALE"
+              ? "girls"
+              : "both"
+          }`
+        )} - (${track.academicStages.map((x) => x.name).join(", ")})`,
+        value: track._id,
+      })),
+    [tracks, t]
+  );
+
+  const formattedSortOptions = useMemo(
+    () =>
+      sortOptions.map((sort) => ({
+        label: t(`profile.schools_overview.searchFilters.sort_options.${sort}`),
+        value: sort,
+      })),
+    [t]
+  );
+
+
 
   return (
     <Box className="w-full">
@@ -98,9 +110,9 @@ const SearchFilters = ({ searchTerms, onChange , isLoading }) => {
           {/* CITY */}
           {isLoading && staticsLoading ? (
             <>
-              <Skeleton variant="autocomplete" width={100} height={28} />
-              <Skeleton variant="autocomplete" width={100} height={28} />
-              <Skeleton variant="autocomplete" width={100} height={28} />
+              <Skeleton variant="rounded" width={100} height={28} />
+              <Skeleton variant="rounded" width={100} height={28} />
+              <Skeleton variant="rounded" width={100} height={28} />
             </>
           ) : (
             <>
@@ -242,11 +254,11 @@ const SearchFilters = ({ searchTerms, onChange , isLoading }) => {
           onChange={(e) => handleFieldChange("name", e.target.value)}
         />
 
-        {isLoading && staticsLoading ? (
+        {(isLoading && staticsLoading) ? (
           <>
-            <Skeleton variant="autocomplete" width={100} height={28} />
-            <Skeleton variant="autocomplete" width={100} height={28} />
-            <Skeleton variant="autocomplete" width={100} height={28} />
+            <Skeleton variant="rounded" width={300} height={55} />
+            <Skeleton variant="rounded" width={300} height={55} />
+            <Skeleton variant="rounded" width={300} height={55} />
           </>
         ) : (
           <>
