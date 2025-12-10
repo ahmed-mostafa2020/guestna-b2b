@@ -2,10 +2,6 @@
 
 import { useTranslations } from "next-intl";
 
-/**
- * Orders Settings Tab Content
- * This component displays the settings section for orders management
- */
 const OrdersSettings = () => {
   const t = useTranslations();
 
