@@ -756,6 +756,12 @@
           "customizedActivities": "Customized Activities"
         },
         "followOrders": "Follow All Orders",
+        "counts": {
+          "allAskTrip": "Total Requests",
+          "scheduled": "Scheduled Requests",
+          "pending": "Pending Requests",
+          "done": "Approved Requests"
+        },
         "normal": {
           "title": "Orders from Guestna Market"
         },

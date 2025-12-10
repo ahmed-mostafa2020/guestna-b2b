@@ -14,22 +14,22 @@ export default function FeatureCardListing() {
     {
       icon: <SuitcaseIcon />,
       title: t("customizedActivities"),
-      bgColor: "#007473",
+      bgColor: "var(--color-main)",
     },
     {
       icon: <LocationIcon />,
       title: t("uniqueDestinations"),
-      bgColor: "#F09814",
+      bgColor: "var(--color-secondary)",
     },
     {
       icon: <CalendarIcon />,
       title: t("flexibleTimes"),
-      bgColor: "#1858A5",
+      bgColor: "var(--color-badge)",
     },
     {
       icon: <GroupIcon />,
       title: t("privateGroups"),
-      bgColor: "#2C2C2C",
+      bgColor: "black",
     },
   ];
 

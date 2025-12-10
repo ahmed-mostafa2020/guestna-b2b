@@ -752,6 +752,12 @@
           "customizedActivities": "أنشطة مخصصة"
         },
         "followOrders": "متابعة جميع الطلبات",
+        "counts": {
+          "allAskTrip": "إجمالي الطلبات",
+          "scheduled": "الطلبات المجدولة",
+          "pending": "طلبات قيد المراجعة",
+          "done": "طلبات موافق عليها"
+        },
         "normal": {
           "title": "طلبات من سوق جستنا"
         },
