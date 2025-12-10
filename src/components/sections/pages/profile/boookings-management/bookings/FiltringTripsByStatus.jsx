@@ -44,9 +44,18 @@ const FiltringTripsByStatus = ({ onStatusChange, activeStatus = "ALL" }) => {
       {/* Status tabs with striped design */}
       <div className="relative">
         {/* Background striped pattern */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-50 via-blue-100 to-blue-50 rounded-lg opacity-30"></div>
+        <div
+          className="absolute inset-0 rounded-lg opacity-30"
+          style={{
+            background:
+              "linear-gradient(to right, var(--color-buttons-hover), var(--color-buttons-hover), var(--color-buttons-hover))",
+          }}
+        ></div>
 
-        <div className="relative flex flex-wrap gap-1 py-4 px-6 bg-[#E3F0F0] rounded-xl ">
+        <div
+          className="relative flex flex-wrap gap-1 py-4 px-6 rounded-xl"
+          style={{ backgroundColor: "var(--color-buttons-hover)" }}
+        >
           {statusTabs.map((tab, index) => (
             <button
               key={tab.key}
@@ -58,7 +67,11 @@ const FiltringTripsByStatus = ({ onStatusChange, activeStatus = "ALL" }) => {
               `}
             >
               {/* Status label */}
-              <span className="font-semibold py-3 text-center leading-tight">
+              <span
+                className={`font-medium py-3 text-center leading-tight ${
+                  selectedStatus === tab.key ? "text-black" : "text-white"
+                }`}
+              >
                 {tab.label}
               </span>
             </button>
