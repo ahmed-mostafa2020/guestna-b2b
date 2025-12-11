@@ -122,7 +122,7 @@ const EditTripSettingsForm = ({ item, onClose, onSuccess }) => {
       handleClose={onClose}
       bgcolor="rgba(0, 0, 0, 0.5)"
       customizedCloseButton={true}
-      closeButton={false}
+      closeButton={true}
       padding={false}
     >
       <div className="flex items-center justify-center min-h-screen p-4">

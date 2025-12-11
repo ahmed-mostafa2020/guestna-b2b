@@ -1890,6 +1890,7 @@
       "thanksMessage": "Thank You!",
       "willContactYou": "Your contact request has been sent, we will respond to you within 24 hours.",
       "svg": "SVG images are not allowed",
+      "integer": "Number must be an integer",
 
       "payment": {
         "success": "Processing payment now",

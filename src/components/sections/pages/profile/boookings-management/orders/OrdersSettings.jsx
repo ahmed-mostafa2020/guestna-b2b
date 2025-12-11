@@ -8,6 +8,7 @@ import { memo, useState, useCallback } from "react";
 import EditTripSettingsForm from "@components/forms/EditTripSettingsForm";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import { actionsIcon } from "@assets/svg";
+import formatNumbersUint from "@/src/utils/FormatNumbersUint";
 
 const getStatusInfo = (tripsCount, maximumNumberTrips, t) => {
   const remaining = maximumNumberTrips - tripsCount;
@@ -19,20 +20,21 @@ const getStatusInfo = (tripsCount, maximumNumberTrips, t) => {
     };
   }
 
-  const tripWord =
-    remaining === 1
-      ? t("profile.tables.orders.settingsTable.availableTrip")
-      : t("profile.tables.orders.settingsTable.availableTrips");
+  const tripWord = formatNumbersUint(
+    remaining,
+    t("profile.tables.orders.settingsTable.availableTrip"),
+    t("profile.tables.orders.settingsTable.availableTrips")
+  );
 
   return {
-    label: `${remaining} ${tripWord}`,
+    label: tripWord,
     className: "px-4 py-2 rounded-[45px] bg-yellow-100 text-yellow-800",
   };
 };
 
 const OrdersSettings = () => {
-  const t = useTranslations();
   const locale = useLocale();
+  const t = useTranslations();
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -276,7 +278,7 @@ const OrdersSettings = () => {
                     </div>
 
                     {/* Current Trips */}
-                    <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center justify-between gap-2">
                       <span className="font-medium text-gray-600 flex-shrink-0">
                         {t("profile.tables.orders.settingsTable.currentTrips")}:
                       </span>
@@ -286,13 +288,13 @@ const OrdersSettings = () => {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex justify-center pt-3 border-t border-gray-100">
-                      <button
-                        onClick={() => handleEditClick(item)}
-                        className="flex items-center gap-2 px-4 py-2 text-mainColor hover:bg-mainColor/10 rounded-lg transition-colors text-sm font-medium"
-                      >
-                        {actionsIcon}
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                      <span className="font-medium text-gray-600 flex-shrink-0">
                         {t("links.edit")}
+                      </span>
+
+                      <button onClick={() => handleEditClick(item)}>
+                        {actionsIcon}
                       </button>
                     </div>
                   </div>
