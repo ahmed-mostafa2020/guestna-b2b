@@ -49,8 +49,9 @@
     "PUBLIC": "Groups",
     "PRIVATE": "Private",
     "trip": "Trip",
-    "MALE": "Male",
-    "FEMALE": "Female",
+    "MALE": "Boys",
+    "FEMALE": "Girls",
+    "BOTH": "Boys and Girls",
     "guestna": "Guestna",
     "startsWith": "Starts with",
     "loading": "Loading",
@@ -785,7 +786,22 @@
           "availableTrip": "trip available",
           "completed": "Completed",
           "noData": "No trip settings data available",
-          "loading": "Loading trip settings..."
+          "loading": "Loading trip settings...",
+          "errorTitle": "Failed to Load Data",
+          "errorMessage": "An error occurred while loading trip settings. Please try again.",
+          "editModal": {
+            "title": "Edit Maximum Trips",
+            "subtitle": "Update the maximum number of allowed trips",
+            "trackLabel": "Track / Stage",
+            "currentTripsLabel": "Current Trips",
+            "newMaxTripsLabel": "New Maximum Trips",
+            "success": "Trip settings updated successfully",
+            "error": "Failed to update trip settings",
+            "validation": {
+              "minTrips": "Maximum trips cannot be less than current trips ({min})",
+              "maxTrips": "Maximum trips cannot exceed 10"
+            }
+          }
         },
         "counts": {
           "allAskTrip": "Total Requests",

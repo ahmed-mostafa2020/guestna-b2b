@@ -963,6 +963,26 @@ export const createSchoolRegisterSchema = (t) =>
       .max(1, "Maximum 1 additional users allowed"),
   });
 
+// Edit Trip Settings Schema
+export const createEditTripSettingsSchema = (t, minTrips = 0) =>
+  Yup.object({
+    trackInfo: Yup.string(),
+    currentTrips: Yup.number(),
+    maximumNumberTrips: Yup.number()
+      .required(t("forms.validation.require"))
+      .min(
+        minTrips,
+        t("profile.tables.orders.settingsTable.editModal.validation.minTrips", {
+          min: minTrips,
+        })
+      )
+      .max(
+        10,
+        t("profile.tables.orders.settingsTable.editModal.validation.maxTrips")
+      )
+      .integer(t("forms.validation.integer")),
+  });
+
 // Add Role Schema
 export const createAddRoleSchema = (t) =>
   Yup.object({

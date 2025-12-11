@@ -3,9 +3,10 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { Button, Card, CardContent, CircularProgress } from "@mui/material";
-import { Edit } from "@mui/icons-material";
-import { memo } from "react";
+import { Card, CardContent, CircularProgress } from "@mui/material";
+import { memo, useState, useCallback } from "react";
+import EditTripSettingsForm from "@components/forms/EditTripSettingsForm";
+import ErrorComponent from "@feedback/error/ErrorComponent";
 import { actionsIcon } from "@assets/svg";
 
 const getStatusInfo = (tripsCount, maximumNumberTrips, t) => {
@@ -14,7 +15,7 @@ const getStatusInfo = (tripsCount, maximumNumberTrips, t) => {
   if (remaining <= 0) {
     return {
       label: t("profile.tables.orders.settingsTable.completed"),
-      className: "bg-green-100 text-green-800 border border-green-200",
+      className: "px-4 py-2 rounded-[45px] bg-green-100 text-green-800",
     };
   }
 
@@ -25,16 +26,30 @@ const getStatusInfo = (tripsCount, maximumNumberTrips, t) => {
 
   return {
     label: `${remaining} ${tripWord}`,
-    className: "bg-yellow-100 text-yellow-800 border border-yellow-200",
+    className: "px-4 py-2 rounded-[45px] bg-yellow-100 text-yellow-800",
   };
 };
 
 const OrdersSettings = () => {
   const t = useTranslations();
   const locale = useLocale();
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  // Handle opening edit modal
+  const handleEditClick = useCallback((item) => {
+    setSelectedItem(item);
+    setEditModalOpen(true);
+  }, []);
+
+  // Handle closing edit modal
+  const handleCloseModal = useCallback(() => {
+    setEditModalOpen(false);
+    setSelectedItem(null);
+  }, []);
 
   // Fetch trip settings data
-  const { data, isLoading, error } = useFetchData(
+  const { data, isLoading, error, refetch } = useFetchData(
     B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.SETTINGS.ALL_TRIPS,
     {},
     {
@@ -45,6 +60,18 @@ const OrdersSettings = () => {
   );
 
   const settingsData = data?.nodes || [];
+
+  // Error state display
+  if (error) {
+    return (
+      <ErrorComponent
+        statusCode={error?.response?.data?.statusCode}
+        errorMessage={error?.response?.data?.message}
+        notFoundPage={false}
+        padding={false}
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4 w-full bg-white rounded-2xl p-4 lg:p-8 shadow-card">
@@ -153,21 +180,19 @@ const OrdersSettings = () => {
                         </td>
                         <td className="px-4 py-4">
                           <span
-                            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${statusInfo.className}`}
+                            className={`text-sm font-medium ${statusInfo.className}`}
                           >
                             {statusInfo.label}
                           </span>
                         </td>
                         <td className="px-4 py-4 text-sm">
-                          <Button
-                            id="basic-button"
-                            aria-controls={open ? "basic-menu" : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={open ? "true" : undefined}
-                            onClick={handleClick}
+                          <button
+                            onClick={() => handleEditClick(item)}
+                            className="p-2 text-mainColor hover:bg-mainColor/10 rounded-lg transition-colors"
+                            title={t("links.edit")}
                           >
                             {actionsIcon}
-                          </Button>
+                          </button>
                         </td>
                       </tr>
                     );
@@ -262,9 +287,12 @@ const OrdersSettings = () => {
 
                     {/* Actions */}
                     <div className="flex justify-center pt-3 border-t border-gray-100">
-                      <button className="flex items-center gap-2 px-4 py-2 text-mainColor hover:bg-mainColor/10 rounded-lg transition-colors text-sm font-medium">
-                        <Edit fontSize="small" />
-                        {t("common.edit")}
+                      <button
+                        onClick={() => handleEditClick(item)}
+                        className="flex items-center gap-2 px-4 py-2 text-mainColor hover:bg-mainColor/10 rounded-lg transition-colors text-sm font-medium"
+                      >
+                        {actionsIcon}
+                        {t("links.edit")}
                       </button>
                     </div>
                   </div>
@@ -274,6 +302,17 @@ const OrdersSettings = () => {
           })
         )}
       </div>
+
+      {/* Edit Modal */}
+      {editModalOpen && selectedItem && (
+        <EditTripSettingsForm
+          item={selectedItem}
+          onClose={handleCloseModal}
+          onSuccess={() => {
+            refetch();
+          }}
+        />
+      )}
     </div>
   );
 };
