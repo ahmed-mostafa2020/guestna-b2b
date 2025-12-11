@@ -9,9 +9,9 @@ import { TRIP_STATUS } from "@constants/tripStatus";
 import { PERMISSIONS } from "@constants/permissions";
 import Pagination from "@components/common/Pagination";
 import ActionsDropdownMenu from "./ActionsDropdownMenu";
+import formatCurrency from "@utils/FormatCurrency";
 
 import { CardContent, Card, CircularProgress } from "@mui/material";
-import formatCurrency from "@/src/utils/FormatCurrency";
 
 const AllOrdersTable = ({
   tableTitle,

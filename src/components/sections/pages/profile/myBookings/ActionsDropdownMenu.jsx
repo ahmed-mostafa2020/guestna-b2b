@@ -12,6 +12,7 @@ import AdministrativeCommentModal from "./AdministrativeCommentModal";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { TRIP_STATUS } from "@constants/tripStatus";
 import axios from "axios";
 
 const ActionsDropdownMenu = ({ booking }) => {
@@ -93,9 +94,11 @@ const ActionsDropdownMenu = ({ booking }) => {
             {t("links.showDetails")}
           </MenuItem>
 
-          <MenuItem onClick={showAdministrativeComment}>
-            {t("profile.tables.bookings.actions.administrativeComment")}
-          </MenuItem>
+          {booking.status !== TRIP_STATUS.CANCELLED && (
+            <MenuItem onClick={showAdministrativeComment}>
+              {t("profile.tables.bookings.actions.administrativeComment")}
+            </MenuItem>
+          )}
         </Menu>
       </div>
 

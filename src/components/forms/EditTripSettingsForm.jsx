@@ -9,10 +9,10 @@ import { createEditTripSettingsSchema } from "@utils/validationSchemas";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
+import { CONSTANT_VALUES } from "@constants/constantValues";
 import TextInputGroup from "./TextInputGroup";
 import CustomizedModal from "@components/common/customizedModal";
 import { CircularProgress } from "@mui/material";
-import { CONSTANT_VALUES } from "@/src/constants/constantValues";
 
 const EditTripSettingsForm = ({ item, onClose, onSuccess }) => {
   const locale = useLocale();
@@ -125,7 +125,7 @@ const EditTripSettingsForm = ({ item, onClose, onSuccess }) => {
       closeButton={true}
       padding={false}
     >
-      <div className="flex items-center justify-center min-h-screen p-4">
+      <div className="flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden">
           {/* Header */}
           <div className="px-4 py-6 border-b border-black">

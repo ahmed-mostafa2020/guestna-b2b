@@ -6,9 +6,11 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { Card, CardContent, CircularProgress } from "@mui/material";
 import { memo, useState, useCallback } from "react";
 import EditTripSettingsForm from "@components/forms/EditTripSettingsForm";
+import formatNumbersUint from "@utils/FormatNumbersUint";
 import ErrorComponent from "@feedback/error/ErrorComponent";
+import Pagination from "@components/common/Pagination";
 import { actionsIcon } from "@assets/svg";
-import formatNumbersUint from "@/src/utils/FormatNumbersUint";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 
 const getStatusInfo = (tripsCount, maximumNumberTrips, t) => {
   const remaining = maximumNumberTrips - tripsCount;
@@ -32,11 +34,12 @@ const getStatusInfo = (tripsCount, maximumNumberTrips, t) => {
   };
 };
 
-const OrdersSettings = () => {
+const OrdersSettingsTable = () => {
   const locale = useLocale();
   const t = useTranslations();
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Handle opening edit modal
   const handleEditClick = useCallback((item) => {
@@ -50,13 +53,18 @@ const OrdersSettings = () => {
     setSelectedItem(null);
   }, []);
 
+  // Handle page change
+  const handlePageChange = useCallback((page) => {
+    setCurrentPage(page);
+  }, []);
+
   // Fetch trip settings data
   const { data, isLoading, error, refetch } = useFetchData(
     B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.SETTINGS.ALL_TRIPS,
-    {},
+    { page: currentPage, perPage: CONSTANT_VALUES.TABLE_PER_PAGE },
     {
       method: "POST",
-      body: {},
+      body: { page: currentPage, perPage: CONSTANT_VALUES.TABLE_PER_PAGE },
       lang: locale,
     }
   );
@@ -76,10 +84,10 @@ const OrdersSettings = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4 w-full bg-white rounded-2xl p-4 lg:p-8 shadow-card">
+    <div className="flex flex-col gap-4 w-full bg-white rounded-2xl py-4 px-3 shadow-card">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4 lg:mb-8">
-        <h2 className="text-lg font-medium lg:text-xl text-mainColor">
+        <h2 className="text-lg font-medium lg:text-2xl text-mainColor">
           {t("profile.tables.orders.settingsTable.title")}
         </h2>
 
@@ -305,6 +313,16 @@ const OrdersSettings = () => {
         )}
       </div>
 
+      {/* Pagination */}
+      {data?.pageInfo && (
+        <Pagination
+          pageInfo={data.pageInfo}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+          className="mt-6"
+        />
+      )}
+
       {/* Edit Modal */}
       {editModalOpen && selectedItem && (
         <EditTripSettingsForm
@@ -319,4 +337,4 @@ const OrdersSettings = () => {
   );
 };
 
-export default memo(OrdersSettings);
+export default memo(OrdersSettingsTable);
