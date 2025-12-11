@@ -597,14 +597,17 @@
       "schoolsUsers": "المدارس والمستخدمون",
       "delete": "حذف",
       "copy": "نسخ",
-      "edit": "تعديل",
+      "edit": "تعديل البيانات",
+      "show_more": "اظهار المزيد",
+      "show_less": "اظهار اقل",
       "add_new_user": "إضافة مستخدم جديد",
-      "bulk_import_users": "استيراد مستخدمين متعددين",
+      "bulk_import_users": "رفع ملف مستخدمين (Excel/CSV)",
       "search": "البحث...",
       "no_users": "لا يوجد مستخدم يطابق البحث",
       "users_count": "عدد {count} من المستخدمين",
       "unknown_school": "مدرسة غير معروفة",
       "userCreatedSuccessfully": "تم إنشاء المستخدم بنجاح",
+      "deleteUser": "هل تريد حقا حذف المستخدم؟",
       "form": {
         "title": "اضافة بيانات المستخدم",
         "userTypePlaceholder": "المسمى الوظيفية",
@@ -658,9 +661,10 @@
           "validationErrors": "أخطاء التحقق:",
           "row": "الصف {row}"
         },
-        "validation":{
+        "validation": {
           "rowsHaveErrors": "يوجد {count} مستخدم يحتوي على أخطاء في البيانات."
-        }}
+        }
+      }
     },
     "donutChart": {
       "title": "الأنشطة الأكثر طلبا"

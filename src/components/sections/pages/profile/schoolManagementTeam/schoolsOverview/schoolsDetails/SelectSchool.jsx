@@ -109,7 +109,7 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
         {/* TODO: Replace with real organizations */}
       </Select>
 
-      <Box className="bg-[#E6F0F1] p-6 rounded-lg flex gap-4 border-[#6EC1E366] border-2">
+      <Box className="bg-[#E6F0F1] p-6 rounded-lg flex flex-col md:flex-row gap-4 border-[#6EC1E366] border-2">
         <Image
           src={details.image}
           alt={details.name}
@@ -117,7 +117,7 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
           height={110}
         />
 
-        <Box className="flex justify-between w-full items-start">
+        <Box className="flex flex-col md:flex-row gap-4 justify-between w-full items-start">
           <Box className="flex flex-col gap-2">
             <Typography
               variant="h3"
@@ -144,7 +144,7 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
               variant="body1"
               className="!font-somar !text-[#1E1E1C] !font-medium flex items-center gap-1"
             >
-              <Phone className="!text-lg text-mainColor " />{" "}
+              <Phone className="!text-lg text-mainColor !-rotate-90 " />{" "}
               <span style={{ direction: "ltr" }}> {details.phone}</span>
             </Typography>
           </Box>

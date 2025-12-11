@@ -6,7 +6,10 @@ import { useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import getErrorMessage from "@utils/getErrorMessage";
-import { createAddOrganizationUserSchema } from "@utils/validationSchemas";
+import {
+  createAddOrganizationUserSchema,
+  createUpdateOrganizationUserSchema,
+} from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
 import { cn } from "@utils/cn";
@@ -26,6 +29,7 @@ import "react-phone-number-input/style.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 const OrganizationUserForm = ({
+  user,
   organizationId,
   rolesData = [],
   handleClose,
@@ -37,12 +41,28 @@ const OrganizationUserForm = ({
   const locale = useLocale();
   const t = useTranslations();
 
+  const initialValues = user
+    ? {
+        ...user,
+        mobile: user.phone,
+        role: user.role.description,
+      }
+    : {
+        name: "",
+        email: "",
+        mobile: "",
+        role: "",
+        organizationId,
+      };
+  console.log(initialValues);
   // Use fetched roles data
   const roleOptions = rolesData.map((item) => item.description);
 
   const headers = getHeaders(locale);
 
-  const addOrganizationUserSchema = createAddOrganizationUserSchema(t);
+  const addOrganizationUserSchema = user
+    ? createUpdateOrganizationUserSchema(t)
+    : createAddOrganizationUserSchema(t);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -52,21 +72,25 @@ const OrganizationUserForm = ({
   };
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
     let data = {
-      email: values.email,
+      email: user ? undefined : values.email,
       phone: `${values.mobile}`,
       name: values.name,
       role: findIdByName(rolesData, values.role),
-      organization: organizationId,
+      organization: user ? undefined : organizationId,
     };
 
     let newUserData = JSON.stringify(data);
 
     let config = {
-      method: "post",
+      method: user ? "patch" : "post",
       maxBodyLength: Infinity,
-      url: getProxyUrl(
-        B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.NEW_USER
-      ),
+      url: user
+        ? getProxyUrl(
+            `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.EDIT_USER}/${user._id}`
+          )
+        : getProxyUrl(
+            B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.NEW_USER
+          ),
 
       headers,
       data: newUserData,
@@ -82,7 +106,7 @@ const OrganizationUserForm = ({
           enqueueSnackbar(t("profile.schools_users.userCreatedSuccessfully"), {
             variant: "success",
           });
-          
+
           // Refetch both info cards and table data
           if (refetchInfo) refetchInfo();
           if (refetchTable) refetchTable();
@@ -104,11 +128,7 @@ const OrganizationUserForm = ({
   return (
     <Formik
       initialValues={{
-        email: "",
-        mobile: "",
-        name: "",
-        role: "",
-        organization: organizationId,
+        ...initialValues,
       }}
       validationSchema={addOrganizationUserSchema}
       onSubmit={handleSubmit}
@@ -182,6 +202,7 @@ const OrganizationUserForm = ({
                 label={t("forms.email.name")}
                 type="email"
                 name="email"
+                readOnly={user?._id ? true : false}
                 value={values.email}
                 errors={errors.email}
                 touched={touched.email}

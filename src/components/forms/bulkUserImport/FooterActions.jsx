@@ -15,8 +15,8 @@ const ExportUsersExcel = ({ users }) => {
     }));
     console.log(exportedUsers);
     return await exportRecords(
-      users,
-      locale === "ar" ? "المستخدمين-الحاليين.xlsx" : "current-users.xlsx"
+      exportedUsers,
+      locale === "ar" ? "المستخدمين-الحاليين" : "current-users"
     );
   };
   return (
@@ -40,7 +40,7 @@ const FooterActions = ({
 }) => {
   const t = useTranslations();
   return (
-    <Box className="flex justify-end gap-4 px-8 py-4 border-t border-border">
+    <Box className="flex justify-end gap-4 px-8 py-4 ">
       <Button
         variant="outlined"
         className="!border-mainColor !text-mainColor    !font-somar"

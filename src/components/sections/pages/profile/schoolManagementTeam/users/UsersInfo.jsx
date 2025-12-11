@@ -1,19 +1,35 @@
-import { useLocale, useTranslations } from "next-intl";
-import { memo, useState } from "react";
+"use client";
 
-import { usePermissions } from "@hooks/usePermissions";
-import { PERMISSIONS } from "@constants/permissions";
-import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { getHeaders } from "@utils/getHeaders";
-import getProxyUrl from "@utils/getProxyUrl";
+import { memo, useRef, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
+
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Collapse,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+
+import { PersonAdd, CloudUpload } from "@mui/icons-material";
+
 import UserCard from "./UserCard";
 import CustomizedModal from "@components/common/customizedModal";
 import OrganizationUserForm from "@components/forms/newOrganizationUser";
 import BulkUserImportForm from "@components/forms/bulkUserImport";
-import { CircularProgress, Button, Box } from "@mui/material";
-import { CloudUpload, PersonAdd } from "@mui/icons-material";
+
+import { usePermissions } from "@hooks/usePermissions";
+import { PERMISSIONS } from "@constants/permissions";
+
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import getProxyUrl from "@utils/getProxyUrl";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { getHeaders } from "@utils/getHeaders";
+import ActionsDialog from "../../../customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
 
 const UsersInfo = ({
   users = [],
@@ -21,225 +37,188 @@ const UsersInfo = ({
   refetchInfo,
   refetchTable,
 }) => {
-  const { hasElement } = usePermissions();
   const t = useTranslations();
   const locale = useLocale();
   const { enqueueSnackbar } = useSnackbar();
+  const { hasElement } = usePermissions();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isBulkImportModalOpen, setIsBulkImportModalOpen] = useState(false);
-  const [isLoadingRoles, setIsLoadingRoles] = useState(false);
   const [rolesData, setRolesData] = useState([]);
   const [cachedOrganization, setCachedOrganization] = useState(null);
+  const [isLoadingRoles, setIsLoadingRoles] = useState(false);
 
-  const handleAddUserClick = async () => {
-    // Check if roles are already cached for this organization
-    if (cachedOrganization === organizationId && rolesData.length > 0) {
-      setIsModalOpen(true);
-      return;
-    }
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [bulkModalOpen, setBulkModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  // NEW collapsible state
+  const [expanded, setExpanded] = useState(false);
+  const contentRef = useRef(null);
+
+  const collapsedUsers = users.slice(0, 3);
+  const showToggle = users.length > 3;
+
+  // -----------------------------------------------------
+  // Load roles once per organization
+  // -----------------------------------------------------
+  const loadRoles = async () => {
+    if (cachedOrganization === organizationId && rolesData.length > 0) return;
 
     setIsLoadingRoles(true);
-    const headers = getHeaders(locale);
-
     try {
-      const config = {
-        method: "get",
-        url: getProxyUrl(
+      const response = await axios.get(
+        getProxyUrl(
           `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.ROLES}/${organizationId}`
         ),
-        headers,
-      };
-
-      const response = await axios.request(config);
+        { headers: getHeaders(locale) }
+      );
       setRolesData(response.data || []);
       setCachedOrganization(organizationId);
-      setIsModalOpen(true);
-    } catch (error) {
-      enqueueSnackbar(
-        error?.response?.data?.message || t("forms.validation.error"),
-        { variant: "error" }
-      );
+    } catch (e) {
+      enqueueSnackbar(t("forms.validation.error"), { variant: "error" });
     } finally {
       setIsLoadingRoles(false);
     }
   };
 
-  const handleBulkImportClick = async () => {
-    
-    // Check if roles are already cached for this organization
-    if (cachedOrganization === organizationId && rolesData.length > 0) {
-      setIsBulkImportModalOpen(true);
-      return
-    }
+  const openAddModal = async () => {
+    await loadRoles();
+    setAddModalOpen(true);
+  };
 
-    setIsLoadingRoles(true);
-    const headers = getHeaders(locale);
+  const openBulkModal = async () => {
+    await loadRoles();
+    setBulkModalOpen(true);
+  };
+
+  const openEditModal = async (user) => {
+    await loadRoles();
+    setSelectedUser(user);
+    setEditModalOpen(true);
+  };
+
+  const openDeleteModal = (user) => {
+    setSelectedUser(user);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
     try {
-      const config = {
-        method: "get",
-        url: getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.ROLES}/${organizationId}`
+      await axios.delete(
+        getProxyUrl(
+          `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.DELETE_USER}/${selectedUser._id}`
         ),
-        headers,
-      };
-
-      const response = await axios.request(config);
-
-      
-      setRolesData(response.data || []);
-      setCachedOrganization(organizationId);
-      setIsBulkImportModalOpen(true);
-    } catch (error) {
-      enqueueSnackbar(
-        error?.response?.data?.message || t("forms.validation.error"),
-        { variant: "error" }
+        { headers: getHeaders(locale) }
       );
-    } finally {
-      setIsLoadingRoles(false);
+
+      enqueueSnackbar(t("forms.validation.success"), { variant: "success" });
+      setDeleteModalOpen(false);
+      refetchInfo?.();
+      refetchTable?.();
+    } catch (e) {
+      enqueueSnackbar(t("forms.validation.error"), { variant: "error" });
     }
   };
 
-  if (!users.length) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full gap-6 p-6">
-        <p className="text-gray-500 text-lg">
-          {t("profile.schools_users.no_users")}
-        </p>
-        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_ADD_USER) && (
-          <Box className="flex flex-col sm:flex-row justify-center items-center gap-3">
-            <Button
-              variant="contained"
-              onClick={handleAddUserClick}
-              disabled={isLoadingRoles}
-              startIcon={
-                isLoadingRoles ? (
-                  <CircularProgress size={20} sx={{ color: "white" }} />
-                ) : (
-                  <PersonAdd />
-                )
-              }
-              className="!bg-mainColor hover:!bg-linksHover !text-white !font-somar !font-medium !px-8 !py-2 !rounded-lg !min-w-[180px] disabled:!opacity-50"
-            >
-              {isLoadingRoles
-                ? t("forms.validation.loading")
-                : t("profile.schools_users.add_new_user")}
-            </Button>
-
-            <Button
-              variant="outlined"
-              onClick={handleBulkImportClick}
-              disabled={isLoadingRoles}
-              startIcon={
-                isLoadingRoles ? (
-                  <CircularProgress size={20} />
-                ) : (
-                  <CloudUpload />
-                )
-              }
-              className="!border-mainColor !text-mainColor hover:!bg-mainColor/10 !font-somar !font-medium !px-8 !py-2 !rounded-lg !min-w-[180px] disabled:!opacity-50"
-            >
-              {isLoadingRoles
-                ? t("forms.validation.loading")
-                : t("profile.schools_users.bulk_import_users", {
-                    defaultValue: "Bulk Import Users",
-                  })}
-            </Button>
-          </Box>
-        )}
-        <CustomizedModal
-          open={isModalOpen}
-          handleClose={() => setIsModalOpen(false)}
-          bgcolor="rgba(0, 0, 0, 0.5)"
-          customizedCloseButton={true}
-          padding={false}
-        >
-          <OrganizationUserForm
-            handleClose={() => setIsModalOpen(false)}
-            organizationId={organizationId}
-            rolesData={rolesData}
-            refetchInfo={refetchInfo}
-            refetchTable={refetchTable}
-          />
-        </CustomizedModal>
-
-        <CustomizedModal
-          open={isBulkImportModalOpen}
-          handleClose={() => setIsBulkImportModalOpen(false)}
-          bgcolor="rgba(0, 0, 0, 0.5)"
-          customizedCloseButton={true}
-          padding={false}
-        >
-          <BulkUserImportForm
-            handleClose={() => setIsBulkImportModalOpen(false)}
-            organizationId={organizationId}
-            rolesData={rolesData}
-            existingUsers={users}
-            refetchInfo={refetchInfo}
-            refetchTable={refetchTable}
-          />
-        </CustomizedModal>
-      </div>
-    );
-  }
-
+  // -----------------------------------------------------
+  // COMPONENT RENDER
+  // -----------------------------------------------------
   return (
-    <div className="flex flex-col p-3 gap-4 rounded-lg bg-white">
-      {users.map((user) => (
-        <UserCard key={user._id} user={user} />
-      ))}
+    <Box className="flex flex-col p-4 gap-6 bg-white rounded-lg">
+      {/* COLLAPSED VIEW (shows only 3 users) */}
+      {!expanded && (
+        <Box className="space-y-4">
+          {collapsedUsers.map((user) => (
+            <UserCard
+              key={user._id}
+              user={user}
+              onEdit={() => openEditModal(user)}
+              onDelete={() => openDeleteModal(user)}
+            />
+          ))}
+        </Box>
+      )}
 
+      {/* EXPANDED VIEW — inside Collapse */}
+      <Collapse in={expanded} collapsedSize={0} timeout={400}>
+        <Box
+          ref={contentRef}
+          sx={{
+            maxHeight: 380,
+            overflowY: "auto",
+            pr: 1,
+          }}
+          className=" space-y-4 px-2 swiper-scrollbar"
+        >
+          {users.map((user) => (
+            <UserCard
+              key={user._id}
+              user={user}
+              onEdit={() => openEditModal(user)}
+              onDelete={() => openDeleteModal(user)}
+            />
+          ))}
+        </Box>
+      </Collapse>
+
+      {/* SHOW MORE / LESS BUTTON */}
+      {showToggle && (
+        <Button
+          variant="outlined"
+          onClick={() => setExpanded((p) => !p)}
+          className="!border-mainColor !border-2 !text-mainColor !font-somar  mx-auto !px-4 !py-2 !font-semibold rounded-lg"
+        >
+          {expanded
+            ? t("profile.schools_users.show_less")
+            : t("profile.schools_users.show_more")}
+        </Button>
+      )}
+
+      {/* ACTION BUTTONS */}
       {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_ADD_USER) && (
-        <Box className="flex flex-col sm:flex-row justify-center items-center gap-3 mt-4">
+        <Box className="flex flex-col sm:flex-row justify-center gap-3">
           <Button
+            fullWidth
             variant="contained"
-            onClick={handleAddUserClick}
+            onClick={openAddModal}
             disabled={isLoadingRoles}
             startIcon={
-              isLoadingRoles ? (
-                <CircularProgress size={20} sx={{ color: "white" }} />
-              ) : (
-                <PersonAdd className="me-2" />
+              isLoadingRoles && (
+                <CircularProgress className="me-2 !text-white" size={20} />
               )
             }
-            className="!bg-mainColor hover:!bg-linksHover !text-white !font-somar !font-medium !px-8 !py-2 !rounded-lg !min-w-[180px] disabled:!opacity-50"
+            className="!bg-mainColor !text-white !font-bold !leading-5 !font-somar !px-6 !py-4 rounded-lg"
           >
-            {isLoadingRoles
-              ? t("forms.validation.loading")
-              : t("profile.schools_users.add_new_user")}
+            {t("profile.schools_users.add_new_user")}
           </Button>
 
           <Button
+            fullWidth
             variant="outlined"
-            onClick={handleBulkImportClick}
+            onClick={openBulkModal}
             disabled={isLoadingRoles}
             startIcon={
-              isLoadingRoles ? (
-                <CircularProgress className="me-2" size={20} />
-              ) : (
-                <CloudUpload className="me-2" />
+              isLoadingRoles && (
+                <CircularProgress className="me-2 !text-mainColor" size={20} />
               )
             }
-            className="!border-mainColor !text-mainColor hover:!bg-mainColor/10 !font-somar !font-medium !px-8 !py-2 !rounded-lg !min-w-[180px] disabled:!opacity-50"
+            className="!border-mainColor !border-2 !text-mainColor !font-bold !leading-5 !font-somar !px-6 !py-4 rounded-lg"
           >
-            {isLoadingRoles
-              ? t("forms.validation.loading")
-              : t("profile.schools_users.bulk_import_users", {
-                  defaultValue: "Bulk Import Users",
-                })}
+            {t("profile.schools_users.bulk_import_users")}
           </Button>
         </Box>
       )}
 
+      {/* ADD USER MODAL */}
       <CustomizedModal
-        open={isModalOpen}
-        handleClose={() => setIsModalOpen(false)}
-        bgcolor="rgba(0, 0, 0, 0.5)"
-        customizedCloseButton={true}
+        open={addModalOpen}
+        handleClose={() => setAddModalOpen(false)}
         padding={false}
       >
         <OrganizationUserForm
-          handleClose={() => setIsModalOpen(false)}
+          handleClose={() => setAddModalOpen(false)}
           organizationId={organizationId}
           rolesData={rolesData}
           refetchInfo={refetchInfo}
@@ -247,15 +226,14 @@ const UsersInfo = ({
         />
       </CustomizedModal>
 
+      {/* BULK IMPORT MODAL */}
       <CustomizedModal
-        open={isBulkImportModalOpen}
-        handleClose={() => setIsBulkImportModalOpen(false)}
-        bgcolor="rgba(0, 0, 0, 0.5)"
-        customizedCloseButton={true}
+        open={bulkModalOpen}
+        handleClose={() => setBulkModalOpen(false)}
         padding={false}
       >
         <BulkUserImportForm
-          handleClose={() => setIsBulkImportModalOpen(false)}
+          handleClose={() => setBulkModalOpen(false)}
           organizationId={organizationId}
           rolesData={rolesData}
           existingUsers={users}
@@ -263,7 +241,36 @@ const UsersInfo = ({
           refetchTable={refetchTable}
         />
       </CustomizedModal>
-    </div>
+
+      {/* EDIT USER MODAL */}
+      <CustomizedModal
+        open={editModalOpen}
+        handleClose={() => setEditModalOpen(false)}
+        padding={false}
+      >
+        <OrganizationUserForm
+          handleClose={() => setEditModalOpen(false)}
+          organizationId={organizationId}
+          rolesData={rolesData}
+          user={selectedUser}
+          refetchInfo={refetchInfo}
+          refetchTable={refetchTable}
+        />
+      </CustomizedModal>
+
+      {/* DELETE CONFIRMATION */}
+      <ActionsDialog
+        open={deleteModalOpen}
+        handleClose={() => setDeleteModalOpen(false)}
+        closeButton={false}
+        bgcolor="rgba(0, 0, 0, 0.3)"
+        header={t("profile.schools_users.delete")}
+        content={t("profile.schools_users.deleteUser")}
+        cancelButton={t("links.cancel")}
+        confirmButton={t("profile.schools_users.delete")}
+        handleConfirm={confirmDelete}
+      />
+    </Box>
   );
 };
 

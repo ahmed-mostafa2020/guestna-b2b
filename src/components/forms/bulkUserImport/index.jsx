@@ -16,12 +16,13 @@ import UsersPreviewTable from "./UsersPreviewTable";
 import FooterActions from "./FooterActions";
 import { usersHeaders } from "@/src/constants/excelHeaders";
 import { useExcel } from "@/src/hooks/useExcel";
+import { Box } from "@material-ui/core";
+import { Typography } from "@mui/material";
 
 const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
-// ------------------------
 // Validation schema
-// ------------------------
+
 const createBulkUserRowSchema = (t, roleOptions = []) =>
   Yup.object().shape({
     name: Yup.string()
@@ -56,7 +57,7 @@ const createBulkUserRowSchema = (t, roleOptions = []) =>
       .test("phone-validation", t("forms.phone.error.invalid"), (value) => {
         if (!value) return false;
         const phoneString = value.replace(/\s/g, "");
-        return phoneString.length >= 13 && isValidPhoneNumber(phoneString);
+        return phoneString.length >= 13 && isValidPhoneNumber(phoneString ,"SA");
       }),
     role: Yup.string()
       .required(t("forms.validation.require"))
@@ -65,18 +66,16 @@ const createBulkUserRowSchema = (t, roleOptions = []) =>
       ),
   });
 
-// ------------------------
 // Helper: consistent error
-// ------------------------
+
 const handleError = (error, t) => {
   if (axios.isAxiosError(error)) return getErrorMessage(error, t);
   if (error instanceof Error) return error.message;
   return t("forms.validation.error", { defaultValue: "Something went wrong" });
 };
 
-// ------------------------
 // Component
-// ------------------------
+
 const BulkUserImportForm = ({
   organizationId,
   rolesData = [],
@@ -112,9 +111,8 @@ const BulkUserImportForm = ({
     [existingUsers]
   );
 
-  // ------------------------
   // Validate row
-  // ------------------------
+
   const validateUserRow = useCallback(
     async (user, index, allUsers) => {
       const schema = createBulkUserRowSchema(t, roleOptions);
@@ -136,8 +134,6 @@ const BulkUserImportForm = ({
     },
     [roleOptions, t]
   );
-
-
 
   const recomputeState = async (users) => {
     const updatedErrors = {};
@@ -178,10 +174,9 @@ const BulkUserImportForm = ({
 
     return { updatedErrors, newDuplicates, users };
   };
-  
-  // ------------------------
+
   // File upload handler
-  // ------------------------
+
   const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -242,9 +237,8 @@ const BulkUserImportForm = ({
     }
   };
 
-  // ------------------------
   // Remove user
-  // ------------------------
+
   const handleRemoveUser = async (index) => {
     const updatedUsers = uploadedUsers.filter((_, i) => i !== index);
 
@@ -256,10 +250,9 @@ const BulkUserImportForm = ({
     setValidationErrors(updatedErrors);
     setDuplicateUsers(newDuplicates);
   };
-  
-  // ------------------------
+
   // Edit user
-  // ------------------------
+
   const handleEditUser = async (index, field, value) => {
     const updatedUsers = [...uploadedUsers];
     updatedUsers[index] = {
@@ -275,11 +268,9 @@ const BulkUserImportForm = ({
     setValidationErrors(updatedErrors);
     setDuplicateUsers(newDuplicates);
   };
-  
 
-  // ------------------------
   // Bulk submit
-  // ------------------------
+
   const handleBulkSubmit = async () => {
     if (!uploadedUsers.length) {
       enqueueSnackbar(t("forms.validation.noUsersToImport"), {
@@ -375,24 +366,31 @@ const BulkUserImportForm = ({
     uploadedUsers.length > 0 && Object.keys(validationErrors).length === 0;
 
   return (
-    <div className="lg:w-[1200px] w-full max-w-full bg-white rounded-2xl mx-auto my-5 max-h-[90vh] overflow-auto">
-      <UploadInstructions
-        roleOptions={roleOptions}
-        fileError={fileError}
-        isSubmitting={isSubmitting}
-        duplicateCount={duplicateUsers.size}
-        onUpload={handleFileUpload}
-      />
-      {uploadedUsers.length > 0 && (
-        <UsersPreviewTable
-          uploadedUsers={uploadedUsers}
-          validationErrors={validationErrors}
-          duplicateUsers={duplicateUsers}
+    <Box className="lg:w-[1200px] w-full max-w-full bg-white rounded-2xl mx-auto my-5 max-h-[90vh] overflow-auto p-4 ">
+      <Typography className="!text-2xl  !font-semibold !font-somar text-titleColor">
+        {t("profile.schools_users.bulkImport.title")}
+      </Typography>
+
+      <Box className="border-2 border-dashed border-border mt-4 rounded-lg">
+        <UploadInstructions
           roleOptions={roleOptions}
-          onEdit={handleEditUser}
-          onRemove={handleRemoveUser}
+          fileError={fileError}
+          isSubmitting={isSubmitting}
+          duplicateCount={duplicateUsers.size}
+          onUpload={handleFileUpload}
         />
-      )}
+        {uploadedUsers.length > 0 && (
+          <UsersPreviewTable
+            uploadedUsers={uploadedUsers}
+            validationErrors={validationErrors}
+            duplicateUsers={duplicateUsers}
+            roleOptions={roleOptions}
+            onEdit={handleEditUser}
+            onRemove={handleRemoveUser}
+          />
+        )}
+      </Box>
+
       <FooterActions
         isSubmitting={isSubmitting}
         onSubmit={handleBulkSubmit}
@@ -401,7 +399,7 @@ const BulkUserImportForm = ({
         hasValidUsers={hasValidUsers}
         existingUsers={existingUsers}
       />
-    </div>
+    </Box>
   );
 };
 

@@ -16,17 +16,17 @@ const UploadInstructions = ({
   const { createTemplate } = useExcel({ headers: usersHeaders(roleOptions) });
   const generateAndDownloadExcel = async () => {
     return await createTemplate(
-      locale === "ar" ? "فالب_مستخدمين.xlsx" : "users_templates.xlsx"
+      locale === "ar" ? "قالب_رفع_مستخدمين" : "users_upload_templates"
     );
   };
 
   return (
-    <Box className="p-6 border-b border-border flex flex-col gap-4 ">
-      <Typography className="!text-xl !font-somar flex items-center gap-2 text-titleColor">
+    <Box className="p-6  flex flex-col gap-4 ">
+      {/* <Typography className="!text-xl !font-somar flex items-center gap-2 text-titleColor">
         {t("profile.schools_users.bulkImport.title")}
-      </Typography>
+      </Typography> */}
 
-      <Box className="border-2 border-dashed border-border gap-8 rounded-lg flex flex-col items-center justify-center p-10 mb-4 ">
+      <Box className=" gap-8 rounded-lg flex flex-col items-center justify-center p-10 mb-4 ">
         <Box className="flex flex-col items-center">
           <span className="!text-7xl text-[#838383]">{uploadFile}</span>
           <Typography className="mt-2 text-gray-600 !text-4xl !font-semibold !font-somar">

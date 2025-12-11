@@ -15,7 +15,7 @@ export const createPhoneValidation = (t, required = true) => {
       if (!value) return !required;
 
       const phoneString = String(value).replace(/\s/g, "");
-      return phoneString.length >= 13 && isValidPhoneNumber(phoneString);
+      return phoneString.length >= 13 && isValidPhoneNumber(phoneString ,"SA");
     });
 
   if (required) {
@@ -665,6 +665,31 @@ export const createAddOrganizationUserSchema = (t) =>
     role: Yup.string().required(t("forms.validation.require")),
   });
 
+export const createUpdateOrganizationUserSchema = (t) =>
+  Yup.object().shape({
+    mobile: createPhoneValidation(t),
+    name: Yup.string()
+      .trim()
+      .optional()
+      .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
+      .test(
+        "min-word-length",
+        t("forms.name.error.wordMinLength"),
+        function (value) {
+          if (!value) return true;
+
+          const words = value.trim().split(/\s+/);
+
+          // Must have at least 2 words
+          if (words.length < 2) return false;
+
+          // Each word must be at least 2 characters
+          return words.every((word) => word.length >= 2);
+        }
+      ),
+
+    role: Yup.string().required(t("forms.validation.require")),
+  });
 export const createWithdrawValidationSchema = (t, isBankTransfer) => {
   // Create a translation function that works with the form's context
   const getValidationMessage = (key) => {
