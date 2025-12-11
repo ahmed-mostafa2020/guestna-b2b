@@ -43,18 +43,20 @@ const UploadInstructions = ({
           // onChange={onFileUpload}
         />
 
-        <Box className="flex gap-4 justify-start">
+        <Box className="flex gap-4 min-w-full justify-start">
           <Button
+            fullWidth
             onClick={generateAndDownloadExcel}
             variant="contained"
-            className="!bg-mainColor !font-somar !text-white text-xl px-8 py-3"
+            className="!bg-mainColor !font-somar !text-white !text-nowrap text-xl px-8 py-3"
             // onClick={onDownloadTemplate}
           >
             {t("profile.schools_users.bulkImport.buttons.downloadTemplate")}
           </Button>
           <Button
+            fullWidth
             variant="outlined"
-            className="!border-mainColor !font-somar !text-mainColor text-xl px-8 py-3"
+            className="!border-mainColor !font-somar !text-mainColor !text-nowrap text-xl px-8 py-3"
             onClick={() => document.getElementById("bulk-upload-file").click()}
           >
             {t("profile.schools_users.bulkImport.buttons.uploadFilled")}

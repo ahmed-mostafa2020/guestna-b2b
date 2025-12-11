@@ -54,7 +54,7 @@ const SchoolsDetailsPage = ({ params }) => {
         </Box>
 
         {/* select school */}
-        <SelectSchoolForDetails details={data} isloading={isLoading} />
+        <SelectSchoolForDetails details={data} isLoading={isLoading} />
 
         <SchoolBalance details={data} isloading={isLoading} />
 

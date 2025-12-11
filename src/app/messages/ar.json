@@ -595,7 +595,12 @@
     },
     "schools_users": {
       "schoolsUsers": "المدارس والمستخدمون",
-      "delete": "حذف",
+      "delete": {
+        "title": "حذف",
+        "successMessage": "تم حذف المستخدم بنجاح",
+        "errorMessage": "حدث خطأ في حذف المستخدم",
+        "confirmMessage": "هل تريد حقا حذف المستخدم؟"
+      },
       "copy": "نسخ",
       "edit": "تعديل البيانات",
       "show_more": "اظهار المزيد",
@@ -607,7 +612,7 @@
       "users_count": "عدد {count} من المستخدمين",
       "unknown_school": "مدرسة غير معروفة",
       "userCreatedSuccessfully": "تم إنشاء المستخدم بنجاح",
-      "deleteUser": "هل تريد حقا حذف المستخدم؟",
+
       "form": {
         "title": "اضافة بيانات المستخدم",
         "userTypePlaceholder": "المسمى الوظيفية",

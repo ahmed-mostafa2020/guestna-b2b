@@ -598,7 +598,12 @@
 
     "schools_users": {
       "schoolsUsers": "Schools & Users",
-      "delete": "Delete",
+      "delete": {
+        "title": "Delete",
+        "successMessage": "user deleted successfully",
+        "errorMessage": "error occured while deleting user",
+        "confirmMessage": "Are You Sure To Delete This User?"
+      },
       "copy": "Copy",
       "edit": "Edit",
       "show_more": "Show more",
@@ -611,7 +616,6 @@
       "users_count": "{count} users",
       "unknown_school": "Unknown School",
       "userCreatedSuccessfully": "User created successfully",
-      "deleteUser": "Are You Sure To Delete This User?",
       "form": {
         "title": "Add User Information",
         "userTypePlaceholder": "Job Title",

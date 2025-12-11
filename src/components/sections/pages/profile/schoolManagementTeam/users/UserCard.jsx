@@ -6,13 +6,10 @@ import {
   Card,
   CardContent,
   Chip,
-  IconButton,
   Box,
   Typography,
   Button,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 
 import profilePlaceholderImage from "@assets/profilePlaceholderImage.jpg";
 import { usePermissions } from "@hooks/usePermissions";
@@ -69,7 +66,7 @@ const UserCard = ({ user, onEdit, onDelete }) => {
                 className="hover:!text-error !font-ibm !text-black !font-medium !leading-5 tracking-tight
                 "
               >
-                {t("profile.schools_users.delete")}
+                {t("profile.schools_users.delete.title")}
               </Button>
             )}
             {hasElement(
@@ -132,7 +129,7 @@ const UserCard = ({ user, onEdit, onDelete }) => {
                   className="hover:!text-error !font-ibm !text-black !font-medium !leading-5 tracking-tight
                   "
                 >
-                  {t("profile.schools_users.delete")}
+                  {t("profile.schools_users.delete.title")}
                 </Button>
               )}
             </Box>

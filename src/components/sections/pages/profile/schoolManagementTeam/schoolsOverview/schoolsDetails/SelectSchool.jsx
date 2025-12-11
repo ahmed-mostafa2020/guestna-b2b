@@ -17,7 +17,7 @@ const SelectSchoolForDetailsSkeleton = () => {
       <Skeleton variant="rounded" height={40} className="w-full" />
 
       {/* School Card */}
-      <Box className="bg-buttonsHover p-6 rounded-lg flex gap-4 border-borderColor border-2 mt-2">
+      <Box className="bg-[#E6F0F1] p-6 rounded-lg flex gap-4 border-borderColor border-2 mt-2">
         {/* Image */}
         <Skeleton variant="rounded" width={110} height={110} />
 

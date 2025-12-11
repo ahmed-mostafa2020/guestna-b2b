@@ -55,7 +55,7 @@ const SchoolOverviewCard = ({ item }) => {
             variant="body"
             className="text-[#1E1E1C] font-semibold !font-somar flex "
           >
-            {formatCurrency(item.totalRevenue)}
+            {formatCurrency(item.totalRevenue ?? 0) }
           </Typography>
         </Box>
 
@@ -71,7 +71,7 @@ const SchoolOverviewCard = ({ item }) => {
             variant="body"
             className="text-[#0B7F8F] font-bold !font-somar"
           >
-            {item.childsCount}
+            {item.childsCount ?? 0}
           </Typography>
         </Box>
       </Box>
@@ -84,7 +84,7 @@ const SchoolOverviewCard = ({ item }) => {
             variant="body"
             className="text-[#2991AA] font-bold !font-somar"
           >
-            {item.suspendedTrips}
+            {item.suspendedTrips ?? 0}
           </Typography>
           <Typography
             variant="body"
@@ -100,7 +100,7 @@ const SchoolOverviewCard = ({ item }) => {
             variant="body"
             className="text-[#76A133] font-bold !font-somar "
           >
-            {item.doneTrips}
+            {item.doneTrips ??0}
           </Typography>
           <Typography
             variant="body"
@@ -116,7 +116,7 @@ const SchoolOverviewCard = ({ item }) => {
             variant="body"
             className="text-[#EB0101] !font-bold !font-somar"
           >
-            {item.scheduledTrips}
+            {item.scheduledTrips ?? 0}
           </Typography>
           <Typography
             variant="body"

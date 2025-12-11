@@ -60,9 +60,8 @@ const UsersInfo = ({
   const collapsedUsers = users.slice(0, 3);
   const showToggle = users.length > 3;
 
-  // -----------------------------------------------------
   // Load roles once per organization
-  // -----------------------------------------------------
+
   const loadRoles = async () => {
     if (cachedOrganization === organizationId && rolesData.length > 0) return;
 
@@ -113,18 +112,21 @@ const UsersInfo = ({
         { headers: getHeaders(locale) }
       );
 
-      enqueueSnackbar(t("forms.validation.success"), { variant: "success" });
+      enqueueSnackbar(t("profile.schools_users.delete.successMessage"), {
+        variant: "success",
+      });
       setDeleteModalOpen(false);
       refetchInfo?.();
       refetchTable?.();
     } catch (e) {
-      enqueueSnackbar(t("forms.validation.error"), { variant: "error" });
+      enqueueSnackbar(t("profile.schools_users.delete.errorMessage"), {
+        variant: "error",
+      });
     }
   };
 
-  // -----------------------------------------------------
   // COMPONENT RENDER
-  // -----------------------------------------------------
+
   return (
     <Box className="flex flex-col p-4 gap-6 bg-white rounded-lg">
       {/* COLLAPSED VIEW (shows only 3 users) */}
@@ -216,6 +218,8 @@ const UsersInfo = ({
         open={addModalOpen}
         handleClose={() => setAddModalOpen(false)}
         padding={false}
+        bgcolor="rgba(0, 0, 0, 0.3)"
+        customizedCloseButton
       >
         <OrganizationUserForm
           handleClose={() => setAddModalOpen(false)}
@@ -231,6 +235,8 @@ const UsersInfo = ({
         open={bulkModalOpen}
         handleClose={() => setBulkModalOpen(false)}
         padding={false}
+        bgcolor="rgba(0, 0, 0, 0.3)"
+        customizedCloseButton
       >
         <BulkUserImportForm
           handleClose={() => setBulkModalOpen(false)}
@@ -247,6 +253,8 @@ const UsersInfo = ({
         open={editModalOpen}
         handleClose={() => setEditModalOpen(false)}
         padding={false}
+        bgcolor="rgba(0, 0, 0, 0.3)"
+        customizedCloseButton
       >
         <OrganizationUserForm
           handleClose={() => setEditModalOpen(false)}
@@ -264,10 +272,10 @@ const UsersInfo = ({
         handleClose={() => setDeleteModalOpen(false)}
         closeButton={false}
         bgcolor="rgba(0, 0, 0, 0.3)"
-        header={t("profile.schools_users.delete")}
-        content={t("profile.schools_users.deleteUser")}
+        header={t("profile.schools_users.delete.title")}
+        content={t("profile.schools_users.delete.confirmMessage")}
         cancelButton={t("links.cancel")}
-        confirmButton={t("profile.schools_users.delete")}
+        confirmButton={t("profile.schools_users.delete.title")}
         handleConfirm={confirmDelete}
       />
     </Box>

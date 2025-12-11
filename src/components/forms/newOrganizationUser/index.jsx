@@ -54,7 +54,7 @@ const OrganizationUserForm = ({
         role: "",
         organizationId,
       };
-  console.log(initialValues);
+
   // Use fetched roles data
   const roleOptions = rolesData.map((item) => item.description);
 
@@ -108,8 +108,8 @@ const OrganizationUserForm = ({
           });
 
           // Refetch both info cards and table data
-          if (refetchInfo) refetchInfo();
-          if (refetchTable) refetchTable();
+          refetchInfo?.();
+          refetchTable?.();
         }
         handleClose();
       })
