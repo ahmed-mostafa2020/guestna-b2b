@@ -1,8 +1,6 @@
 import { usersHeaders } from "@/src/constants/excelHeaders";
-
 import { useExcel } from "@/src/hooks/useExcel";
 import { Box, Button } from "@mui/material";
-import ExcelJS from "exceljs";
 import { useLocale, useTranslations } from "next-intl";
 const ExportUsersExcel = ({ users }) => {
   const locale = useLocale();
@@ -11,8 +9,11 @@ const ExportUsersExcel = ({ users }) => {
   const { exportRecords } = useExcel({ headers: usersHeaders() });
 
   const downloadExcelJS = async () => {
-    console.log(users);
-
+    const exportedUsers = users.map((user) => ({
+      ...user,
+      role: user.role.description,
+    }));
+    console.log(exportedUsers);
     return await exportRecords(
       users,
       locale === "ar" ? "المستخدمين-الحاليين.xlsx" : "current-users.xlsx"

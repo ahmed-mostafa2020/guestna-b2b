@@ -137,6 +137,48 @@ const BulkUserImportForm = ({
     [roleOptions, t]
   );
 
+
+
+  const recomputeState = async (users) => {
+    const updatedErrors = {};
+    const emailCounts = {};
+
+    // Count emails to detect duplicates inside the file
+    users.forEach((u) => {
+      const email = u.email?.toLowerCase();
+      if (email) emailCounts[email] = (emailCounts[email] || 0) + 1;
+    });
+
+    const newDuplicates = new Set();
+
+    // Validate each user
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+
+      // --- VALIDATION ---
+      const rowErrors = await validateUserRow(user, i, users);
+      if (rowErrors) {
+        updatedErrors[i] = rowErrors;
+        user._rowErrors = rowErrors;
+      } else {
+        delete user._rowErrors;
+      }
+
+      // --- DUPLICATES ---
+      const email = user.email?.toLowerCase();
+      const isDup = isExistingUser(email) || emailCounts[email] > 1;
+
+      if (isDup) {
+        newDuplicates.add(i);
+        user._isDuplicate = true;
+      } else {
+        delete user._isDuplicate;
+      }
+    }
+
+    return { updatedErrors, newDuplicates, users };
+  };
+  
   // ------------------------
   // File upload handler
   // ------------------------
@@ -203,57 +245,37 @@ const BulkUserImportForm = ({
   // ------------------------
   // Remove user
   // ------------------------
-  const handleRemoveUser = (index) => {
+  const handleRemoveUser = async (index) => {
     const updatedUsers = uploadedUsers.filter((_, i) => i !== index);
-    const updatedErrors = { ...validationErrors };
-    delete updatedErrors[index];
 
-    const emailCounts = {};
-    updatedUsers.forEach((u) => {
-      const email = u.email?.toLowerCase();
-      if (email) emailCounts[email] = (emailCounts[email] || 0) + 1;
-    });
+    const { updatedErrors, newDuplicates, users } = await recomputeState(
+      updatedUsers
+    );
 
-    const newDuplicates = new Set();
-    updatedUsers.forEach((u, i) => {
-      if (isExistingUser(u.email) || emailCounts[u.email?.toLowerCase()] > 1) {
-        newDuplicates.add(i);
-        u._isDuplicate = true;
-      }
-    });
-
-    setUploadedUsers(updatedUsers);
+    setUploadedUsers([...users]);
     setValidationErrors(updatedErrors);
     setDuplicateUsers(newDuplicates);
   };
-
+  
   // ------------------------
   // Edit user
   // ------------------------
   const handleEditUser = async (index, field, value) => {
-    const updated = [...uploadedUsers];
-    updated[index] = { ...updated[index], [field]: value };
+    const updatedUsers = [...uploadedUsers];
+    updatedUsers[index] = {
+      ...updatedUsers[index],
+      [field]: value,
+    };
 
-    const rowErrors = await validateUserRow(updated[index], index, updated);
-    const updatedErrors = { ...validationErrors };
-    rowErrors
-      ? (updatedErrors[index] = rowErrors)
-      : delete updatedErrors[index];
+    const { updatedErrors, newDuplicates, users } = await recomputeState(
+      updatedUsers
+    );
 
-    const newDuplicates = new Set(duplicateUsers);
-    if (field === "email") {
-      const email = value.toLowerCase();
-      const isDup =
-        isExistingUser(email) ||
-        updated.filter((u, i) => i !== index && u.email === email).length > 0;
-      updated[index]._isDuplicate = isDup;
-      isDup ? newDuplicates.add(index) : newDuplicates.delete(index);
-    }
-
-    setUploadedUsers(updated);
+    setUploadedUsers([...users]);
     setValidationErrors(updatedErrors);
     setDuplicateUsers(newDuplicates);
   };
+  
 
   // ------------------------
   // Bulk submit
