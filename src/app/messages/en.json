@@ -772,6 +772,21 @@
           "ordersManagement": "Activities Orders Management",
           "settings": "Trips Settings"
         },
+        "settingsTable": {
+          "title": "Number of Trips per Track",
+          "selectSchool": "Select the school you want to view its details",
+          "school": "School",
+          "track": "Track",
+          "maxTrips": "Maximum Trips",
+          "currentTrips": "Current Trips",
+          "status": "Status",
+          "actions": "Actions",
+          "availableTrips": "trips available",
+          "availableTrip": "trip available",
+          "completed": "Completed",
+          "noData": "No trip settings data available",
+          "loading": "Loading trip settings..."
+        },
         "counts": {
           "allAskTrip": "Total Requests",
           "scheduled": "Scheduled Requests",

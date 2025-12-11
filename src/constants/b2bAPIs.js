@@ -96,8 +96,6 @@ export const B2B_END_POINTS = {
       SURVEY: "surveys/new",
       ORDERS: {
         ALL: "profile/askTrips/all",
-        NORMAL: "profile/askTrips/normal/all",
-        CUSTOMIZABLE: "profile/askTrips/custom/all",
         COUNTS: "profile/askTrips/counts",
         ADD_NEW_ACTIVITY: {
           FORM_SELECTION: "profile/askTrips/form/selections",
@@ -111,6 +109,11 @@ export const B2B_END_POINTS = {
           GRADES_BY_STAGES: "grades/stages/askTrip", // Get grades for selected academic stages
         },
         REMIND: "profile/askTrips/reminder/admin",
+
+        SETTINGS: {
+          ALL_TRIPS: "profile/settingsTrips/all", //post
+          SUBMIT: "profile/settingsTrips/edit", // Item id - patch
+        },
       },
     },
 

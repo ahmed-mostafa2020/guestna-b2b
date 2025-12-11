@@ -769,6 +769,21 @@
           "ordersManagement": "إدارة طلبات الأنشطة",
           "settings": "إعدادات الرحلات"
         },
+        "settingsTable": {
+          "title": "عدد الرحلات لكل مسار",
+          "selectSchool": "اختر المدرسة التي تريد عرض تفاصيلها",
+          "school": "المدرسة",
+          "track": "المسار",
+          "maxTrips": "الحد الأقصى للرحلات",
+          "currentTrips": "الرحلات الحالية",
+          "status": "الحالة",
+          "actions": "الإجراءات",
+          "availableTrips": "رحلات متاحة",
+          "availableTrip": "رحلة متاحة",
+          "completed": "مكتمل",
+          "noData": "لا توجد بيانات إعدادات الرحلات",
+          "loading": "جاري تحميل إعدادات الرحلات..."
+        },
         "counts": {
           "allAskTrip": "إجمالي الطلبات",
           "scheduled": "الطلبات المجدولة",
