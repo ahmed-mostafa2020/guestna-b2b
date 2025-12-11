@@ -1418,7 +1418,7 @@
         "select_school": {
           "title": "اختر المدرسة التي تريد عرض تفاصيلها:",
           "performance": "الاداء",
-          "students": "الطلاب"
+          "students": "طالب"
         },
         "balance": {
           "title": "رصيد المدرسة",
