@@ -72,8 +72,8 @@ const ProfilePageTemplate = ({
   if (error)
     return (
       <ErrorComponent
-        statusCode={error.response?.data?.statusCode}
-        errorMessage={error.response?.data?.message}
+        statusCode={error?.response?.data?.statusCode}
+        errorMessage={error?.response?.data?.message}
       />
     );
 
