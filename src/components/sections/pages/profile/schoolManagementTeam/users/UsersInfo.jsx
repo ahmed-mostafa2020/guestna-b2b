@@ -181,28 +181,21 @@ const UsersInfo = ({
       {/* ACTION BUTTONS */}
       {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_ADD_USER) && (
         <Box className="flex flex-col sm:flex-row justify-center gap-3">
-          <Button
-            fullWidth
-            variant="contained"
+          <button
             onClick={openAddModal}
             disabled={isLoadingRoles}
-            startIcon={
-              isLoadingRoles && (
-                <CircularProgress className="me-2 !text-white" size={20} />
-              )
-            }
-            className="!bg-mainColor !text-white !font-bold !leading-5 !font-somar !px-6 !py-4 rounded-lg"
+            className={`flex items-center justify-center gap-2 w-full py-4 px-6 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out font-somar rounded-lg border-mainColor bg-mainColor  `}
           >
+            {isLoadingRoles && (
+              <CircularProgress className="me-2 !text-white" size={20} />
+            )}
             {t("profile.schools_users.add_new_user")}
-          </Button>
+          </button>
 
           <button
-           
-           
             onClick={openBulkModal}
             disabled={isLoadingRoles}
-            
-            className={`flex items-center justify-center gap-2 w-full py-4 px-6 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out font-somar rounded-lg border-mainColor bg-mainColor  disabled:cursor-not-allowed disabled:bg-mainColor/30 disabled:border-mainColor/30 `}
+            className={`flex items-center justify-center gap-2 w-full py-4 px-6 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out font-somar rounded-lg border-mainColor bg-mainColor  `}
           >
             {isLoadingRoles && (
               <CircularProgress className="me-2 !text-mainColor" size={20} />
