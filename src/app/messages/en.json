@@ -194,6 +194,7 @@
       "integratedBookingsManagement": "Integrated Bookings Management",
       "createTripLink": "Create Trip Link",
       "users": "Users",
+      "students": "Students",
       "contactUs": "Contact Us",
       "faq": "FAQ",
       "schoolRegister": "School Register",
@@ -552,7 +553,11 @@
       "schoolTeamManagement": {
         "title": "School Team Management",
         "users": "Users",
-        "students": "Students"
+        "students": "Students",
+        "studentsOverview": {
+          "title": "Schools overview",
+          "description": "Manage all company schools and stay on top of their performance."
+        }
       },
       "reportsAndAnalytics": {
         "title": "Reports and Analytics"

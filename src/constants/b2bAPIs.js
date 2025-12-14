@@ -125,6 +125,11 @@ export const B2B_END_POINTS = {
         NEW_USER: "profile/users/new",
         ROLES: "profile/users/roles",
       },
+      STUDENTS: {
+        ALL_STUDENTS: "profile/organizations/childs/info",
+        ACADEMIC_STAGE_STUDENTS: "profile/students", // orgId/aca.stageId
+        SSTUDENT_DETAILS: "profile/students/info", //studentId
+      },
     },
     CREATE_TRIP_LINK: "profile/organizationTrips/poster",
     UPDATE_TRIP_STATUS: "profile/organizationTrips/generate/url",

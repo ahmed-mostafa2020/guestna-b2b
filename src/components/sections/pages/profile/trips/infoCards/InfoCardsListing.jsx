@@ -13,17 +13,23 @@ import {
   totalActivitiesIcon,
 } from "@assets/svg";
 
-const InfoCardsListing = ({ infoData }) => {
+const InfoCardsListing = ({
+  infoData,
+  showIcon = true,
+  textAlign = "start",
+}) => {
   const t = useTranslations();
 
   const totalRevenue = infoData?.totalRevenue || 0;
+  const normalizedTextAlign = textAlign === "center" ? "center" : "start";
+  const shouldShowIcon = Boolean(showIcon);
 
   const infoCardsListing = useMemo(() => {
     return [
       {
         icon: totalStudentsIcon,
         title: t("profile.infoCards.totalStudents"),
-        value: infoData?.studentsCount,
+        value: infoData?.studentsCount || infoData?.childrenCount,
       },
       {
         icon: totalStudentsIcon,
@@ -50,7 +56,12 @@ const InfoCardsListing = ({ infoData }) => {
   ]);
 
   const renderedInfoCards = infoCardsListing.map((item) => (
-    <InfoCard key={item.title} item={item} />
+    <InfoCard
+      key={item.title}
+      item={item}
+      showIcon={shouldShowIcon}
+      textAlign={normalizedTextAlign}
+    />
   ));
 
   return (

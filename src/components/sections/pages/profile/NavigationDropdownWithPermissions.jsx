@@ -113,6 +113,11 @@ const NavigationDropdown = () => {
           path: `${profileBasePath}/school-team-management/users`,
           permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_USERS_TAB,
         },
+        {
+          title: t("profile.aside.schoolTeamManagement.students"),
+          path: `${profileBasePath}/school-team-management/students`,
+          permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_USERS_TAB,
+        },
       ],
     },
     {
