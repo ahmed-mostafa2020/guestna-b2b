@@ -58,21 +58,19 @@ const UserCard = ({ user, onEdit, onDelete }) => {
 
           <Box className="flex items-center gap-2 shrink-0">
             {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_DELETE) && (
-              <Button
-                sx={{
-                  fontSize: "16px",
-                }}
+              <button
+               
                 onClick={onDelete}
                 className="hover:!text-error !font-ibm !text-black !font-medium !leading-5 tracking-tight
                 "
               >
                 {t("profile.schools_users.delete.title")}
-              </Button>
+              </button>
             )}
             {hasElement(
               PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_EDIT_PERMISSIONS
             ) && (
-              <Button
+              <button
                 onClick={onEdit}
                 sx={{
                   fontSize: "16px",
@@ -81,7 +79,7 @@ const UserCard = ({ user, onEdit, onDelete }) => {
                 "
               >
                 {t("profile.schools_users.edit")}
-              </Button>
+              </button>
             )}
           </Box>
         </Box>
@@ -114,23 +112,23 @@ const UserCard = ({ user, onEdit, onDelete }) => {
               {hasElement(
                 PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_EDIT_PERMISSIONS
               ) && (
-                <Button
+                <button
                   onClick={onEdit}
                   className="hover:!text-mainColor !font-ibm !text-black !font-medium !leading-5 tracking-tight
                   "
                 >
                   {t("profile.schools_users.edit")}
-                </Button>
+                </button>
               )}
 
               {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_DELETE) && (
-                <Button
+                <button
                   onClick={onDelete}
                   className="hover:!text-error !font-ibm !text-black !font-medium !leading-5 tracking-tight
                   "
                 >
                   {t("profile.schools_users.delete.title")}
-                </Button>
+                </button>
               )}
             </Box>
           </Box>

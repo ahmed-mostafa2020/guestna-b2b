@@ -612,6 +612,7 @@
       "users_count": "عدد {count} من المستخدمين",
       "unknown_school": "مدرسة غير معروفة",
       "userCreatedSuccessfully": "تم إنشاء المستخدم بنجاح",
+      "userUpdatedSuccessfully": "تم تعديل بيانات المستخدم بنجاح",
 
       "form": {
         "title": "اضافة بيانات المستخدم",

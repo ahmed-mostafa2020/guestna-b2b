@@ -196,20 +196,19 @@ const UsersInfo = ({
             {t("profile.schools_users.add_new_user")}
           </Button>
 
-          <Button
-            fullWidth
-            variant="outlined"
+          <button
+           
+           
             onClick={openBulkModal}
             disabled={isLoadingRoles}
-            startIcon={
-              isLoadingRoles && (
-                <CircularProgress className="me-2 !text-mainColor" size={20} />
-              )
-            }
-            className="!border-mainColor !border-2 !text-mainColor !font-bold !leading-5 !font-somar !px-6 !py-4 rounded-lg"
+            
+            className={`flex items-center justify-center gap-2 w-full py-4 px-6 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out font-somar rounded-lg border-mainColor bg-mainColor  disabled:cursor-not-allowed disabled:bg-mainColor/30 disabled:border-mainColor/30 `}
           >
+            {isLoadingRoles && (
+              <CircularProgress className="me-2 !text-mainColor" size={20} />
+            )}
             {t("profile.schools_users.bulk_import_users")}
-          </Button>
+          </button>
         </Box>
       )}
 

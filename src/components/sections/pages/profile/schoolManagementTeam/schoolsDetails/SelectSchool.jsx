@@ -109,7 +109,7 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
         {/* TODO: Replace with real organizations */}
       </Select>
 
-      <Box className="bg-[#E6F0F1] p-6 rounded-lg flex flex-col md:flex-row gap-4 border-[#6EC1E366] border-2">
+      <Box className="bg-[#E6F0F1] p-6 rounded-xl flex flex-col md:flex-row gap-4 border-[#6EC1E366] border-2">
         <Image
           src={details.image}
           alt={details.name}

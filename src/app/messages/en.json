@@ -616,6 +616,8 @@
       "users_count": "{count} users",
       "unknown_school": "Unknown School",
       "userCreatedSuccessfully": "User created successfully",
+      "userUpdatedSuccessfully": "User updated successfully",
+
       "form": {
         "title": "Add User Information",
         "userTypePlaceholder": "Job Title",

@@ -86,11 +86,11 @@ const OrganizationUserForm = ({
       maxBodyLength: Infinity,
       url: user
         ? getProxyUrl(
-            `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.EDIT_USER}/${user._id}`
-          )
+          `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.EDIT_USER}/${user._id}`
+        )
         : getProxyUrl(
-            B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.NEW_USER
-          ),
+          B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.NEW_USER
+        ),
 
       headers,
       data: newUserData,
@@ -102,17 +102,21 @@ const OrganizationUserForm = ({
         setFormErrors([]);
         resetForm();
 
-        if (response.data === true) {
-          enqueueSnackbar(t("profile.schools_users.userCreatedSuccessfully"), {
+        if (response?.data) {
+          const successMessage = user
+            ? t("profile.schools_users.userUpdatedSuccessfully")
+            : t("profile.schools_users.userCreatedSuccessfully");
+          enqueueSnackbar(successMessage, {
             variant: "success",
           });
 
           // Refetch both info cards and table data
           refetchInfo?.();
           refetchTable?.();
+          handleClose();
         }
-        handleClose();
       })
+  
 
       .catch((error) => {
         setSubmitting(false);
@@ -122,6 +126,7 @@ const OrganizationUserForm = ({
         if (formErrors) {
           setFormErrors([errorMessage]);
         }
+      
       });
   };
 
