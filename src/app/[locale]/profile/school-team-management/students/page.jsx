@@ -12,6 +12,7 @@ import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 import { PERMISSIONS } from "@constants/permissions";
 import InfoCardsSkeleton from "@components/sections/pages/profile/trips/infoCards/InfoCardsSkeleton";
 import InfoCardsListing from "@components/sections/pages/profile/trips/infoCards/InfoCardsListing";
+import StudentsManagement from "@components/sections/pages/profile/schoolManagementTeam/students/StudentsManagement";
 import { usePermissions } from "@hooks/usePermissions";
 
 const page = () => {
@@ -65,6 +66,7 @@ const page = () => {
             )}
           </p>
         </section>
+
         {/* Info Cards Section */}
         {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS) &&
           (isLoading ? (
@@ -76,6 +78,12 @@ const page = () => {
               textAlign="center"
             />
           ))}
+
+        {!isLoading && data?.organizationsChildrenStages?.length > 0 && (
+          <StudentsManagement
+            organizationsChildrenStages={data.organizationsChildrenStages}
+          />
+        )}
       </main>
     </ProtectedProfilePage>
   );

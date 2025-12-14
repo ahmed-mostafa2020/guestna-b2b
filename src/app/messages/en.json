@@ -602,6 +602,18 @@
       "bookings": "Bookings"
     },
 
+    "schoolTeamStudents": {
+      "sectionTitle": "Schools & students",
+      "sectionDescription": "Review every school and track the number of students across academic stages.",
+      "studentsLabel": "{count} students",
+      "stagesTitle": "Stage distribution",
+      "statsTitle": "Students statistics",
+      "totalStudents": "Total students",
+      "emptyStages": "No academic stage data available yet.",
+      "emptySchools": "No schools found yet.",
+      "unknownStage": "Unknown stage"
+    },
+
     "filters": {
       "title": "Filter Trips",
       "status": {

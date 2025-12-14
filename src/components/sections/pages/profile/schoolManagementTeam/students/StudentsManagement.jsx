@@ -1,48 +1,58 @@
+"use client";
+
 import { memo, useState } from "react";
 import { useTranslations } from "next-intl";
-
-import UsersHeader from "./UsersHeader";
-import UsersInfo from "./UsersInfo";
 
 import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 
-const UsersManagement = ({
-  data,
-  setSearchTerm,
-  searchTerm,
-  refetchInfo,
-  refetchTable,
-}) => {
+import StudentsInfo from "./StudentsInfo";
+
+const StudentsManagement = ({ organizationsChildrenStages = [] }) => {
   const t = useTranslations();
-  // data is now an array of organizations with users
-  const organizations = Array.isArray(data) ? data : [];
+
+  const organizations = Array.isArray(organizationsChildrenStages)
+    ? organizationsChildrenStages
+    : [];
+
+  // Filter organizations that have childs with length > 0
+  const organizationsWithStudents = organizations.filter(
+    (org) => org.childs && org.childs.length > 0
+  );
 
   // Set first organization as expanded by default
   const [expanded, setExpanded] = useState(
-    organizations.length > 0 ? organizations[0]._id : null
+    organizationsWithStudents.length > 0
+      ? organizationsWithStudents[0]._id
+      : null
   );
 
   const handleAccordionChange = (organizationId) => (event, isExpanded) => {
     setExpanded(isExpanded ? organizationId : null);
   };
 
-  if (!organizations.length) {
+  if (!organizationsWithStudents.length) {
     return (
-      <div className="p-6">
-        <UsersHeader setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
-        <div className="flex items-center justify-center h-64">
-          <p className="text-gray-500">{t("profile.schools_users.no_users")}</p>
-        </div>
-      </div>
+      <section className="rounded-2xl border border-dashed border-border bg-white p-6 text-center shadow-card">
+        <h2 className="text-lg font-semibold text-titleColor">
+          {t("profile.schoolTeamStudents.sectionTitle")}
+        </h2>
+        <p className="mt-2 text-sm text-textLight">
+          {t("profile.schoolTeamStudents.emptySchools")}
+        </p>
+      </section>
     );
   }
 
   return (
-    <div className="space-y-4 bg-white rounded-2xl shadow-card p-4">
-      <UsersHeader setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
+    <section className="space-y-4 bg-white rounded-2xl shadow-card p-4">
+      <div className="flex flex-col gap-2 text-center md:text-start mb-6">
+        <p className="text-lg lg:text-2xl font-medium text-titleColor">
+          {t("profile.schoolTeamStudents.sectionTitle")}
+        </p>
+      </div>
 
-      {organizations.map((org) => (
+      {organizationsWithStudents.map((org) => (
         <Accordion
           key={org._id}
           expanded={expanded === org._id}
@@ -71,35 +81,29 @@ const UsersManagement = ({
               },
             }}
           >
-            <div className="flex flex-col gap-2 pe-4">
-              <p className="text-lg font-medium">
+            <div className="flex flex-col gap-2 pe-4 text-xl">
+              <p className="font-medium">
                 {org.organization?.name ||
                   t("profile.schools_users.unknown_school")}
               </p>
-              <p className="text-sm font-light">
-                {t("profile.schools_users.users_count", {
-                  count: org.users?.length || 0,
+              <p className="font-light">
+                {t("profile.schoolTeamStudents.studentsLabel", {
+                  count: org.count || 0,
                 })}
               </p>
             </div>
           </AccordionSummary>
 
           <AccordionDetails className="pt-0">
-            <UsersInfo
-              users={org.users || []}
-              organizationId={org.organization?._id}
-              organizationName={
-                org.organization?.name ||
-                t("profile.schools_users.unknown_school")
-              }
-              refetchInfo={refetchInfo}
-              refetchTable={refetchTable}
+            <StudentsInfo
+              totalStudents={org.count || 0}
+              stages={org.childs || []}
             />
           </AccordionDetails>
         </Accordion>
       ))}
-    </div>
+    </section>
   );
 };
 
-export default memo(UsersManagement);
+export default memo(StudentsManagement);

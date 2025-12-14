@@ -600,6 +600,18 @@
       "bookings": "عدد الحجوزات"
     },
 
+    "schoolTeamStudents": {
+      "sectionTitle": "المدارس والطلاب",
+      "sectionDescription": "استعرض جميع المدارس التابعة وتابع أعداد الطلاب لكل مرحلة دراسية.",
+      "studentsLabel": "{count} طالب",
+      "stagesTitle": "توزيع الصفوف",
+      "statsTitle": "إحصائيات الطلاب",
+      "totalStudents": "إجمالي الطلاب",
+      "emptyStages": "لا توجد بيانات مراحل دراسية حتى الآن.",
+      "emptySchools": "لا توجد مدارس حتى الآن.",
+      "unknownStage": "مرحلة غير معروفة"
+    },
+
     "filters": {
       "title": "قائمة الرحلات",
       "status": {
