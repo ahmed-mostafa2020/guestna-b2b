@@ -11,11 +11,9 @@ const AcademicStagesListing = ({ stages = [] }) => {
 
     return stages
       .map((stage, index) => ({
-        id:
-          stage?.academicStage?._id || `${stage?.academicStage?.name}-${index}`,
+        id: stage?.grade?._id || `${stage?.grade?.name}-${index}`,
         name:
-          stage?.academicStage?.name ||
-          t("profile.schoolTeamStudents.unknownStage"),
+          stage?.grade?.name || t("profile.schoolTeamStudents.unknownStage"),
         count: stage?.count || 0,
       }))
       .filter((stage) => stage.count > 0);
