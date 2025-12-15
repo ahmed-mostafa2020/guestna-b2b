@@ -184,7 +184,7 @@ const UsersInfo = ({
           <button
             onClick={openAddModal}
             disabled={isLoadingRoles}
-            className={`flex items-center justify-center gap-2 w-full py-4 px-6 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out font-somar rounded-lg border-mainColor bg-mainColor  `}
+            className="flex w-full items-center justify-center gap-2.5 py-4 px-6 text-base font-bold text-center text-white transition-all duration-200 ease-in-out rounded-lg  bg-mainColor "
           >
             {isLoadingRoles && (
               <CircularProgress className="me-2 !text-white" size={20} />
@@ -195,7 +195,7 @@ const UsersInfo = ({
           <button
             onClick={openBulkModal}
             disabled={isLoadingRoles}
-            className={`flex items-center justify-center gap-2 w-full py-4 px-6 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out font-somar rounded-lg border-mainColor bg-mainColor  `}
+            className="flex items-center justify-center gap-2.5 py-4 px-6 text-base font-bold text-center text-mainColor transition-all duration-200 ease-in-out rounded-lg w-full bg-white  border-2 border-mainColor"
           >
             {isLoadingRoles && (
               <CircularProgress className="me-2 !text-mainColor" size={20} />

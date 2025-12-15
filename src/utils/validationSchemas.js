@@ -660,7 +660,8 @@ export const createAddOrganizationUserSchema = (t) =>
           // Each word must be at least 2 characters
           return words.every((word) => word.length >= 2);
         }
-      ),
+      )
+      .required(t("forms.validation.require")),
 
     role: Yup.string().required(t("forms.validation.require")),
   });
@@ -686,7 +687,7 @@ export const createUpdateOrganizationUserSchema = (t) =>
           // Each word must be at least 2 characters
           return words.every((word) => word.length >= 2);
         }
-      ),
+      ).required(t("forms.validation.require")),
 
     role: Yup.string().required(t("forms.validation.require")),
   });
