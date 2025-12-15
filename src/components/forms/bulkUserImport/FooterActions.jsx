@@ -20,13 +20,12 @@ const ExportUsersExcel = ({ users }) => {
     );
   };
   return (
-    <Button
+    <button
       onClick={downloadExcelJS}
-      variant="contained"
-      className="!text-white !font-somar !bg-mainColor px-4 py-2 mb-3"
+      className="flex  items-center justify-center gap-2.5 py-4 px-6 font-bold text-white rounded-lg bg-mainColor hover:bg-linksHover"
     >
       {t("profile.schools_users.bulkImport.buttons.downloadCurrentUsers")}
-    </Button>
+    </button>
   );
 };
 
@@ -41,24 +40,22 @@ const FooterActions = ({
   const t = useTranslations();
   return (
     <Box className="flex justify-end gap-4 px-8 py-4 ">
-      <Button
-        variant="outlined"
-        className="!border-mainColor !text-mainColor    !font-somar"
+      <button
+        className="flex  items-center justify-center gap-2.5 py-4 px-6 font-bold text-mainColor rounded-lg border-2 border-mainColor hover:border-linksHover  hover:text-linksHover"
         onClick={onClose}
       >
         {t("profile.schools_users.bulkImport.buttons.cancel")}
-      </Button>
+      </button>
 
-      <Button
-        variant="contained"
-        className="!bg-mainColor !text-white !font-somar px-4 py-2 disabled:!bg-gray-400"
+      <button
+        className="flex items-center justify-center gap-2.5 py-4 px-6 font-bold text-white rounded-lg bg-mainColor hover:bg-linksHover disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={!hasValidUsers || isSubmitting || !usersCount}
         onClick={onSubmit}
       >
         {isSubmitting
           ? t("profile.schools_users.bulkImport.buttons.isSubmitting")
           : t("profile.schools_users.bulkImport.submit", { count: usersCount })}
-      </Button>
+      </button>
 
       {/* 📌 زر تحميل المستخدمين الحاليين */}
       <ExportUsersExcel users={existingUsers} />

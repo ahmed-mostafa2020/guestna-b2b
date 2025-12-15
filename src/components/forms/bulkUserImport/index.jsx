@@ -57,7 +57,9 @@ const createBulkUserRowSchema = (t, roleOptions = []) =>
       .test("phone-validation", t("forms.phone.error.invalid"), (value) => {
         if (!value) return false;
         const phoneString = value.replace(/\s/g, "");
-        return phoneString.length >= 13 && isValidPhoneNumber(phoneString ,"SA");
+        return (
+          phoneString.length >= 13 && isValidPhoneNumber(phoneString, "SA")
+        );
       }),
     role: Yup.string()
       .required(t("forms.validation.require"))
@@ -366,7 +368,7 @@ const BulkUserImportForm = ({
     uploadedUsers.length > 0 && Object.keys(validationErrors).length === 0;
 
   return (
-    <Box className="lg:w-[1200px] w-full max-w-full bg-white rounded-2xl mx-auto my-5 max-h-[90vh] overflow-auto p-4 ">
+    <Box className="lg:w-[1000px] w-full max-w-full bg-white rounded-2xl mx-auto my-5 max-h-[90vh] overflow-auto p-4 ">
       <Typography className="!text-2xl  !font-semibold !font-somar text-titleColor">
         {t("profile.schools_users.bulkImport.title")}
       </Typography>

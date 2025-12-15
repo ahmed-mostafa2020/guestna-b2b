@@ -44,7 +44,11 @@ const UsersInfo = ({
 
   const [rolesData, setRolesData] = useState([]);
   const [cachedOrganization, setCachedOrganization] = useState(null);
-  const [isLoadingRoles, setIsLoadingRoles] = useState(false);
+
+  // loading per modal
+  const [addLoading, setAddLoading] = useState(false);
+  const [bulkLoading, setBulkLoading] = useState(false);
+  const [editLoading, setEditLoading] = useState(false);
 
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [bulkModalOpen, setBulkModalOpen] = useState(false);
@@ -62,10 +66,10 @@ const UsersInfo = ({
 
   // Load roles once per organization
 
-  const loadRoles = async () => {
+  const loadRoles = async (setLoading) => {
     if (cachedOrganization === organizationId && rolesData.length > 0) return;
 
-    setIsLoadingRoles(true);
+    setLoading(true);
     try {
       const response = await axios.get(
         getProxyUrl(
@@ -73,27 +77,28 @@ const UsersInfo = ({
         ),
         { headers: getHeaders(locale) }
       );
+
       setRolesData(response.data || []);
       setCachedOrganization(organizationId);
-    } catch (e) {
+    } catch {
       enqueueSnackbar(t("forms.validation.error"), { variant: "error" });
     } finally {
-      setIsLoadingRoles(false);
+      setLoading(false);
     }
   };
 
   const openAddModal = async () => {
-    await loadRoles();
+    await loadRoles(setAddLoading);
     setAddModalOpen(true);
   };
 
   const openBulkModal = async () => {
-    await loadRoles();
+    await loadRoles(setBulkLoading);
     setBulkModalOpen(true);
   };
 
   const openEditModal = async (user) => {
-    await loadRoles();
+    await loadRoles(setEditLoading);
     setSelectedUser(user);
     setEditModalOpen(true);
   };
@@ -183,22 +188,22 @@ const UsersInfo = ({
         <Box className="flex flex-col sm:flex-row justify-center gap-3">
           <button
             onClick={openAddModal}
-            disabled={isLoadingRoles}
-            className="flex w-full items-center justify-center gap-2.5 py-4 px-6 text-base font-bold text-center text-white transition-all duration-200 ease-in-out rounded-lg  bg-mainColor "
+            disabled={addLoading}
+            className="flex w-full items-center justify-center gap-2.5 py-4 px-6 font-bold text-white rounded-lg bg-mainColor hover:bg-linksHover"
           >
-            {isLoadingRoles && (
-              <CircularProgress className="me-2 !text-white" size={20} />
+            {addLoading && (
+              <CircularProgress size={20} className="!text-white" />
             )}
             {t("profile.schools_users.add_new_user")}
           </button>
 
           <button
             onClick={openBulkModal}
-            disabled={isLoadingRoles}
-            className="flex items-center justify-center gap-2.5 py-4 px-6 text-base font-bold text-center text-mainColor transition-all duration-200 ease-in-out rounded-lg w-full bg-white  border-2 border-mainColor"
+            disabled={bulkLoading}
+            className="flex w-full items-center justify-center gap-2.5 py-4 px-6 font-bold text-mainColor rounded-lg border-2 border-mainColor hover:border-linksHover  hover:text-linksHover"
           >
-            {isLoadingRoles && (
-              <CircularProgress className="me-2 !text-mainColor" size={20} />
+            {bulkLoading && (
+              <CircularProgress size={20} className="!text-mainColor" />
             )}
             {t("profile.schools_users.bulk_import_users")}
           </button>
