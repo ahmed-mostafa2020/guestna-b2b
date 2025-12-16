@@ -214,7 +214,7 @@ const NavigationDropdown = () => {
                 {React.cloneElement(item.icon, {
                   sx: {
                     color:
-                      pathname === item.path ? "white" : "rgb(var(--color-title))",
+                      pathname === item.path ? "white" : "var(--color-title)",
                     transition: "color 0.2s",
                     fontSize: {
                       xs: "18px",
@@ -262,7 +262,7 @@ const NavigationDropdown = () => {
                       sx={{
                         color: isAccordionExpanded(item)
                           ? "white"
-                          : "rgb(var(--color-main))",
+                          : "var(--color-main)",
                         fontSize: { xs: "18px", sm: "20px", lg: "24px" },
                         flexShrink: 0,
                       }}
@@ -271,15 +271,15 @@ const NavigationDropdown = () => {
                   className="min-h-0 px-2 sm:px-4 py-2 sm:py-3"
                   sx={{
                     boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.02)",
-                    border: "1px solid rgb(var(--color-border))",
+                    border: "1px solid var(--color-border)",
                     borderRadius: "8px",
                     "&:hover:not(.Mui-expanded)": {
-                      color: "rgb(var(--color-main))",
+                      color: "var(--color-main)",
                     },
                     minHeight: { xs: "40px", sm: "48px" },
                     "&.Mui-expanded": {
                       minHeight: { xs: "40px", sm: "48px" },
-                      background: "rgb(var(--color-main))",
+                      background: "var(--color-main)",
                       color: "white",
                       boxShadow: "none",
                     },
@@ -301,7 +301,7 @@ const NavigationDropdown = () => {
                       sx: {
                         color: isAccordionExpanded(item)
                           ? "white"
-                          : "rgb(var(--color-title))",
+                          : "var(--color-title)",
                         transition: "color 0.2s",
                         fontSize: { xs: "18px", sm: "20px", lg: "24px" },
                         display: {
