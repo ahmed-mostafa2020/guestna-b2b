@@ -29,7 +29,6 @@ const UsersManagement = ({
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [showPermissions, setShowPermissions] = useState(false);
-  
 
   const handleSelectUser = (user) => {
     setSelectedUser(user);
@@ -93,7 +92,18 @@ const UsersManagement = ({
       </Box>
 
       {/* RIGHT SIDE (Animated Permissions) */}
-      <Slide direction="left" in={showPermissions} mountOnEnter unmountOnExit>
+      <Slide
+        direction="down"
+        in={showPermissions}
+        mountOnEnter
+        unmountOnExit
+        timeout={{ appear: 1000, enter: 1000, exit: 1000 }}
+        easing={{
+          enter: "cubic-bezier(0.4, 0, 0.2, 1)",
+          exit: "cubic-bezier(0.4, 0, 0.2, 1)",
+          appear: "cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
+      >
         <Box className="bg-white rounded-2xl shadow-card p-4" flex={0.35}>
           <UserPermissions
             user={selectedUser}

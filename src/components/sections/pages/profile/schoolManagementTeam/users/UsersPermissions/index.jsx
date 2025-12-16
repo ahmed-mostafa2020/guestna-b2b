@@ -13,7 +13,7 @@ import { useSnackbar } from "notistack";
 
 export default function UserPermissions({ user, onClose }) {
   const locale = useLocale();
-const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   // 1. Fetch ALL permissions (tree)
   const { data: permissions, isLoading: permissionsLoading } = useFetchData(
     B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.GET_PERMISSIONS,
@@ -68,7 +68,7 @@ const { enqueueSnackbar } = useSnackbar();
 
   const updatePermissions = async (permissions) => {
     try {
-     await axios.request({
+      await axios.request({
         url: getProxyUrl(
           `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.UPDATE_PERMISSIONS}/`
         ),
@@ -77,12 +77,9 @@ const { enqueueSnackbar } = useSnackbar();
         data: { permissions },
       });
 
-      enqueueSnackbar(
-        t("profile.rolesPermissions.messages.saveSuccess"),
-        {
-          variant: "success",
-        }
-      );
+      enqueueSnackbar(t("profile.rolesPermissions.messages.saveSuccess"), {
+        variant: "success",
+      });
       onClose();
     } catch {
       enqueueSnackbar(t("profile.rolesPermissions.messages.saveError"), {
@@ -98,8 +95,8 @@ const { enqueueSnackbar } = useSnackbar();
   if (permissionsLoading || userLoading) {
     return (
       <Box className="space-y-2">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <PermissionGroupSkeleton key={i} />
+        {Array.from({ length: 10 }).map((_, i) => (
+          <PermissionGroupSkeleton key={i} rows={2} />
         ))}
       </Box>
     );
@@ -112,7 +109,6 @@ const { enqueueSnackbar } = useSnackbar();
         <p className="font-semibold text-mainColor">
           {t("profile.rolesPermissions.permissionsFor")} ... {user.name}
         </p>
-        
       </Box>
 
       {/* Permissions */}
