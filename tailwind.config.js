@@ -62,6 +62,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // please revert this
         mainColor: "var(--color-main)",
         secColor: "var(--color-secondary)",
         titleColor: "var(--color-title)",
