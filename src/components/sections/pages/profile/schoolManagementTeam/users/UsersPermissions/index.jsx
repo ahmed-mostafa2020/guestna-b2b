@@ -103,7 +103,7 @@ export default function UserPermissions({ user, onClose }) {
   }
 
   return (
-    <Box className="flex flex-col h-full">
+    <Box className="flex flex-col h-full ">
       {/* Header */}
       <Box className="mb-4">
         <p className="font-semibold text-mainColor">

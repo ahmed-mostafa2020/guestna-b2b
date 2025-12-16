@@ -43,7 +43,7 @@ const UsersManagement = ({
   return (
     <Box display="flex" gap={2}>
       {/* LEFT SIDE */}
-      <Box flex={showPermissions ? 0.65 : 1} transition="flex 0.3s ease">
+      <Box flex={ 0.60 } transition="flex 0.3s ease">
         <Box className="space-y-4 bg-white rounded-2xl shadow-card p-4">
           <UsersHeader setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
 
@@ -103,8 +103,9 @@ const UsersManagement = ({
           exit: "cubic-bezier(0.4, 0, 0.2, 1)",
           appear: "cubic-bezier(0.4, 0, 0.2, 1)",
         }}
+        className="p-6 bg-white w-full rounded-2xl shadow-card"
       >
-        <Box className="bg-white rounded-2xl shadow-card p-4" flex={0.35}>
+        <Box className="bg-white rounded-2xl shadow-card p-4 " flex={0.30}>
           <UserPermissions
             user={selectedUser}
             onClose={() => setShowPermissions(false)}
