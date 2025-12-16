@@ -32,6 +32,8 @@ import { getHeaders } from "@utils/getHeaders";
 import ActionsDialog from "../../../customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
 
 const UsersInfo = ({
+  editPermission = false,
+  handleSelectUser,
   users = [],
   organizationId,
   refetchInfo,
@@ -139,9 +141,12 @@ const UsersInfo = ({
         <Box className="space-y-4">
           {collapsedUsers.map((user) => (
             <UserCard
+              editPermission={editPermission}
               key={user._id}
               user={user}
-              onEdit={() => openEditModal(user)}
+              onEdit={() =>
+                editPermission ? handleSelectUser(user) : openEditModal(user)
+              }
               onDelete={() => openDeleteModal(user)}
             />
           ))}
@@ -163,7 +168,9 @@ const UsersInfo = ({
             <UserCard
               key={user._id}
               user={user}
-              onEdit={() => openEditModal(user)}
+              onEdit={() =>
+                editPermission ? handleSelectUser(user) : openEditModal(user)
+              }
               onDelete={() => openDeleteModal(user)}
             />
           ))}

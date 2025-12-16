@@ -15,7 +15,7 @@ import profilePlaceholderImage from "@assets/profilePlaceholderImage.jpg";
 import { usePermissions } from "@hooks/usePermissions";
 import { PERMISSIONS } from "@constants/permissions";
 
-const UserCard = ({ user, onEdit, onDelete }) => {
+const UserCard = ({ user, onEdit, onDelete, editPermission=false }) => {
   const t = useTranslations();
   const { hasElement } = usePermissions();
 
@@ -59,7 +59,6 @@ const UserCard = ({ user, onEdit, onDelete }) => {
           <Box className="flex items-center gap-2 shrink-0">
             {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_DELETE) && (
               <button
-               
                 onClick={onDelete}
                 className="hover:!text-error !font-ibm !text-black !font-medium !leading-5 tracking-tight
                 "
@@ -78,7 +77,9 @@ const UserCard = ({ user, onEdit, onDelete }) => {
                 className="hover:!text-mainColor !font-ibm !text-black !font-medium !leading-5 tracking-tight
                 "
               >
-                {t("profile.schools_users.edit")}
+                {editPermission
+                  ? t("profile.rolesPermissions.actions.edit_permissions")
+                  : t("profile.schools_users.edit")}
               </button>
             )}
           </Box>
@@ -117,7 +118,9 @@ const UserCard = ({ user, onEdit, onDelete }) => {
                   className="hover:!text-mainColor !font-ibm !text-black !font-medium !leading-5 tracking-tight
                   "
                 >
-                  {t("profile.schools_users.edit")}
+                  {editPermission
+                    ? t("profile.rolesPermissions.actions.edit_permissions")
+                    : t("profile.schools_users.edit")}
                 </button>
               )}
 

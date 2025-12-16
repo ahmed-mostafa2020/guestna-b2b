@@ -1301,7 +1301,9 @@
       "actions": {
         "reset": "Reset",
         "save": "Save Changes",
-        "addRole": "Add New Role"
+        "addRole": "Add New Role",
+        "cancel":"Cancel",
+        "edit_permissions": "Edit Permissions"
       },
       "deleteRole": "Delete Role",
       "deleteConfirm": "Are you sure you want to delete this role? This action cannot be undone.",

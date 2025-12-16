@@ -47,7 +47,10 @@ const SchoolsDetailsPage = ({ params }) => {
           </Box>
 
           <Box className="ms-7">
-            <Typography variant="body1" className="!text-textDark !font-somar  ">
+            <Typography
+              variant="body1"
+              className="!text-textDark !font-somar  "
+            >
               {t("profile.schools_overview.schools_details.caption")}{" "}
             </Typography>
           </Box>

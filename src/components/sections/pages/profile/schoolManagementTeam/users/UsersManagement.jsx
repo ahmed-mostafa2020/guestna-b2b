@@ -1,103 +1,107 @@
 import { memo, useState } from "react";
 import { useTranslations } from "next-intl";
-
-import UsersHeader from "./UsersHeader";
-import UsersInfo from "./UsersInfo";
-
 import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Typography,
+  Box,
+  Slide,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 
-const UsersManagement = ({ data, setSearchTerm, searchTerm, refetchInfo, refetchTable }) => {
+import UsersHeader from "./UsersHeader";
+import UsersInfo from "./UsersInfo";
+import UserPermissions from "./UsersPermissions";
+
+const UsersManagement = ({
+  data,
+  setSearchTerm,
+  searchTerm,
+  refetchInfo,
+  refetchTable,
+}) => {
   const t = useTranslations();
-  // data is now an array of organizations with users
   const organizations = Array.isArray(data) ? data : [];
 
-  // Set first organization as expanded by default
   const [expanded, setExpanded] = useState(
     organizations.length > 0 ? organizations[0]._id : null
   );
 
-  const handleAccordionChange = (organizationId) => (event, isExpanded) => {
-    setExpanded(isExpanded ? organizationId : null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showPermissions, setShowPermissions] = useState(false);
+  
+
+  const handleSelectUser = (user) => {
+    setSelectedUser(user);
+    setShowPermissions(true);
   };
 
-  if (!organizations.length) {
-    return (
-      <div className="p-6">
-        <UsersHeader setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
-        <div className="flex items-center justify-center h-64">
-          <p className="text-gray-500">{t("profile.schools_users.no_users")}</p>
-        </div>
-      </div>
-    );
-  }
+  const handleAccordionChange = (organizationId) => (event, isExpanded) => {
+    setExpanded(isExpanded ? organizationId : null);
+    setShowPermissions(isExpanded); // show permissions when org expands
+  };
 
   return (
-    <div className="space-y-4 bg-white rounded-2xl shadow-card p-4">
-      <UsersHeader setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
+    <Box display="flex" gap={2}>
+      {/* LEFT SIDE */}
+      <Box flex={showPermissions ? 0.65 : 1} transition="flex 0.3s ease">
+        <Box className="space-y-4 bg-white rounded-2xl shadow-card p-4">
+          <UsersHeader setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
 
-      {organizations.map((org) => (
-        <Accordion
-          key={org._id}
-          expanded={expanded === org._id}
-          onChange={handleAccordionChange(org._id)}
-          className="!rounded-xl !shadow-sm border-2 border-border"
-          sx={{
-            "&:before": {
-              display: "none",
-            },
-            "&.Mui-expanded": {
-              margin: 0,
-            },
-          }}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMore />}
-            className="!rounded-xl border border-border"
-            sx={{
-              "& .MuiAccordionSummary-content": {
-                margin: "16px 0",
-              },
-              backgroundColor: expanded === org._id ? "#F3F3F3" : "transparent",
-              "&:hover": {
-                backgroundColor:
-                  expanded === org._id ? "#F3F3F3" : "rgba(0, 0, 0, 0.04)",
-              },
-            }}
-          >
-            <div className="flex flex-col gap-2 pe-4">
-              <p className="text-lg font-medium">
-                {org.organization?.name ||
-                  t("profile.schools_users.unknown_school")}
-              </p>
-              <p className="text-sm font-light">
-                {t("profile.schools_users.users_count", {
-                  count: org.users?.length || 0,
-                })}
-              </p>
-            </div>
-          </AccordionSummary>
+          {organizations.map((org) => (
+            <Accordion
+              key={org._id}
+              expanded={expanded === org._id}
+              onChange={handleAccordionChange(org._id)}
+              className="!rounded-xl !shadow-sm border-2 border-border"
+              sx={{
+                "&:before": { display: "none" },
+                "&.Mui-expanded": { margin: 0 },
+              }}
+            >
+              <AccordionSummary expandIcon={<ExpandMore />}>
+                <div className="flex flex-col gap-2 pe-4">
+                  <p className="text-lg font-medium">
+                    {org.organization?.name ||
+                      t("profile.schools_users.unknown_school")}
+                  </p>
+                  <p className="text-sm font-light">
+                    {t("profile.schools_users.users_count", {
+                      count: org.users?.length || 0,
+                    })}
+                  </p>
+                </div>
+              </AccordionSummary>
 
-          <AccordionDetails className="pt-0">
-            <UsersInfo
-              users={org.users || []}
-              organizationId={org.organization?._id}
-              organizationName={
-                org.organization?.name ||
-                t("profile.schools_users.unknown_school")
-              }
-              refetchInfo={refetchInfo}
-              refetchTable={refetchTable}
-            />
-          </AccordionDetails>
-        </Accordion>
-      ))}
-    </div>
+              <AccordionDetails>
+                <UsersInfo
+                  editPermission
+                  handleSelectUser={handleSelectUser}
+                  users={org.users || []}
+                  organizationId={org.organization?._id}
+                  organizationName={
+                    org.organization?.name ||
+                    t("profile.schools_users.unknown_school")
+                  }
+                  refetchInfo={refetchInfo}
+                  refetchTable={refetchTable}
+                />
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </Box>
+      </Box>
+
+      {/* RIGHT SIDE (Animated Permissions) */}
+      <Slide direction="left" in={showPermissions} mountOnEnter unmountOnExit>
+        <Box className="bg-white rounded-2xl shadow-card p-4" flex={0.35}>
+          <UserPermissions
+            user={selectedUser}
+            onClose={() => setShowPermissions(false)}
+          />
+        </Box>
+      </Slide>
+    </Box>
   );
 };
 
