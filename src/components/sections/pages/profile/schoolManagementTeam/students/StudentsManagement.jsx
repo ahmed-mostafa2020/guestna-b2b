@@ -74,11 +74,11 @@ const StudentsManagement = ({ organizationsChildrenStages = [] }) => {
               "& .MuiAccordionSummary-content": {
                 margin: "16px 0",
               },
-              backgroundColor: expanded === org._id ? "#F3F3F3" : "transparent",
-              "&:hover": {
-                backgroundColor:
-                  expanded === org._id ? "#F3F3F3" : "rgba(0, 0, 0, 0.04)",
-              },
+              //   backgroundColor: expanded === org._id ? "#F3F3F3" : "transparent",
+              //   "&:hover": {
+              //     backgroundColor:
+              //       expanded === org._id ? "#F3F3F3" : "rgba(0, 0, 0, 0.04)",
+              //   },
             }}
           >
             <div className="flex flex-col gap-2 pe-4 text-xl">
@@ -98,6 +98,7 @@ const StudentsManagement = ({ organizationsChildrenStages = [] }) => {
             <StudentsInfo
               totalStudents={org.count || 0}
               stages={org.childs || []}
+              organizationId={org.organization?._id}
             />
           </AccordionDetails>
         </Accordion>

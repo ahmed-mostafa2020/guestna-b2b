@@ -94,6 +94,7 @@
         "nationalId": "ID"
       }
     },
+    "close": "Close",
     "error": "Sorry, we couldn't find the page you were looking for.",
     "errorHappens": "An error occurred",
     "notAvailable": "This trip is not available for booking now",
@@ -611,7 +612,30 @@
       "totalStudents": "Total students",
       "emptyStages": "No academic stage data available yet.",
       "emptySchools": "No schools found yet.",
-      "unknownStage": "Unknown stage"
+      "unknownStage": "Unknown stage",
+      "viewStudents": "View students in {grade}",
+      "modal": {
+        "title": "Students List",
+        "loading": "Loading students...",
+        "noStudents": "No students found in this grade.",
+        "name": "Student Name",
+        "grade": "Grade",
+        "actions": "Actions",
+        "viewDetails": "View Details"
+      },
+      "details": {
+        "title": "Student Details",
+        "loading": "Loading student details...",
+        "noData": "No student data available.",
+        "name": "Name",
+        "academicStage": "Academic Stage",
+        "grade": "Grade",
+        "nationalId": "National ID",
+        "parentName": "Parent Name",
+        "parentPhone": "Parent Phone",
+        "parentEmail": "Parent Email",
+        "school": "School"
+      }
     },
 
     "filters": {

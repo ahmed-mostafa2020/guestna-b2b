@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 
 import AcademicStagesListing from "./AcademicStagesListing";
 
-const StudentsInfo = ({ totalStudents = 0, stages = [] }) => {
+const StudentsInfo = ({ totalStudents = 0, stages = [], organizationId }) => {
   const t = useTranslations();
 
   return (
@@ -15,7 +15,10 @@ const StudentsInfo = ({ totalStudents = 0, stages = [] }) => {
         <p className="pb-4 lg:text-xl text-base font-medium text-mainColor">
           {t("profile.schoolTeamStudents.stagesTitle")}
         </p>
-        <AcademicStagesListing stages={stages} />
+        <AcademicStagesListing
+          stages={stages}
+          organizationId={organizationId}
+        />
       </div>
 
       {/* Right side - Students statistics */}

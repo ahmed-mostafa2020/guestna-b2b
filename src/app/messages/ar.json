@@ -94,6 +94,7 @@
         "nationalId": "الهوية الوطنية"
       }
     },
+    "close": "إغلاق",
     "error": "عذراً، لم نستطع إيجاد الصفحة التي تبحث عنها",
     "errorHappens": "حدث خطأ",
     "notAvailable": "هذه الرحلة غير متاحة للحجز الان",
@@ -609,7 +610,30 @@
       "totalStudents": "إجمالي الطلاب",
       "emptyStages": "لا توجد بيانات مراحل دراسية حتى الآن.",
       "emptySchools": "لا توجد مدارس حتى الآن.",
-      "unknownStage": "مرحلة غير معروفة"
+      "unknownStage": "مرحلة غير معروفة",
+      "viewStudents": "عرض طلاب {grade}",
+      "modal": {
+        "title": "قائمة الطلاب",
+        "loading": "جاري تحميل الطلاب...",
+        "noStudents": "لا يوجد طلاب في هذا الصف.",
+        "name": "اسم الطالب",
+        "grade": "الصف",
+        "actions": "الإجراءات",
+        "viewDetails": "عرض التفاصيل"
+      },
+      "details": {
+        "title": "تفاصيل الطالب",
+        "loading": "جاري تحميل بيانات الطالب...",
+        "noData": "لا توجد بيانات للطالب.",
+        "name": "الاسم",
+        "academicStage": "المرحلة الدراسية",
+        "grade": "الصف",
+        "nationalId": "رقم الهوية",
+        "parentName": "اسم ولي الأمر",
+        "parentPhone": "هاتف ولي الأمر",
+        "parentEmail": "بريد ولي الأمر",
+        "school": "المدرسة"
+      }
     },
 
     "filters": {
