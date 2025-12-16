@@ -598,16 +598,26 @@
 
     "schools_users": {
       "schoolsUsers": "Schools & Users",
-      "delete": "Delete",
+      "delete": {
+        "title": "Delete",
+        "successMessage": "user deleted successfully",
+        "errorMessage": "error occured while deleting user",
+        "confirmMessage": "Are You Sure To Delete This User?"
+      },
       "copy": "Copy",
       "edit": "Edit",
+      "show_more": "Show more",
+      "show_less": "Show less",
+
       "add_new_user": "Add New User",
-      "bulk_import_users": "Bulk Import Users",
+      "bulk_import_users": "Upload User's File (Excel/CSV)",
       "search": "Search...",
       "no_users": "No users match your search",
       "users_count": "{count} users",
       "unknown_school": "Unknown School",
       "userCreatedSuccessfully": "User created successfully",
+      "userUpdatedSuccessfully": "User updated successfully",
+
       "form": {
         "title": "Add User Information",
         "userTypePlaceholder": "Job Title",
@@ -660,8 +670,8 @@
           "valid": "Validated Successfully",
           "validationErrors": "Validation Errors:",
           "row": "Row {row}"
-        }
-        ,"validation":{
+        },
+        "validation": {
           "rowsHaveErrors": "{count} users contain data errors."
         }
       }

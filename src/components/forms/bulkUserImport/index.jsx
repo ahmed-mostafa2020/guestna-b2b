@@ -16,12 +16,13 @@ import UsersPreviewTable from "./UsersPreviewTable";
 import FooterActions from "./FooterActions";
 import { usersHeaders } from "@/src/constants/excelHeaders";
 import { useExcel } from "@/src/hooks/useExcel";
+import { Box } from "@material-ui/core";
+import { Typography } from "@mui/material";
 
 const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
-// ------------------------
 // Validation schema
-// ------------------------
+
 const createBulkUserRowSchema = (t, roleOptions = []) =>
   Yup.object().shape({
     name: Yup.string()
@@ -56,7 +57,9 @@ const createBulkUserRowSchema = (t, roleOptions = []) =>
       .test("phone-validation", t("forms.phone.error.invalid"), (value) => {
         if (!value) return false;
         const phoneString = value.replace(/\s/g, "");
-        return phoneString.length >= 13 && isValidPhoneNumber(phoneString);
+        return (
+          phoneString.length >= 13 && isValidPhoneNumber(phoneString, "SA")
+        );
       }),
     role: Yup.string()
       .required(t("forms.validation.require"))
@@ -65,18 +68,16 @@ const createBulkUserRowSchema = (t, roleOptions = []) =>
       ),
   });
 
-// ------------------------
 // Helper: consistent error
-// ------------------------
+
 const handleError = (error, t) => {
   if (axios.isAxiosError(error)) return getErrorMessage(error, t);
   if (error instanceof Error) return error.message;
   return t("forms.validation.error", { defaultValue: "Something went wrong" });
 };
 
-// ------------------------
 // Component
-// ------------------------
+
 const BulkUserImportForm = ({
   organizationId,
   rolesData = [],
@@ -112,9 +113,8 @@ const BulkUserImportForm = ({
     [existingUsers]
   );
 
-  // ------------------------
   // Validate row
-  // ------------------------
+
   const validateUserRow = useCallback(
     async (user, index, allUsers) => {
       const schema = createBulkUserRowSchema(t, roleOptions);
@@ -137,9 +137,48 @@ const BulkUserImportForm = ({
     [roleOptions, t]
   );
 
-  // ------------------------
+  const recomputeState = async (users) => {
+    const updatedErrors = {};
+    const emailCounts = {};
+
+    // Count emails to detect duplicates inside the file
+    users.forEach((u) => {
+      const email = u.email?.toLowerCase();
+      if (email) emailCounts[email] = (emailCounts[email] || 0) + 1;
+    });
+
+    const newDuplicates = new Set();
+
+    // Validate each user
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+
+      // --- VALIDATION ---
+      const rowErrors = await validateUserRow(user, i, users);
+      if (rowErrors) {
+        updatedErrors[i] = rowErrors;
+        user._rowErrors = rowErrors;
+      } else {
+        delete user._rowErrors;
+      }
+
+      // --- DUPLICATES ---
+      const email = user.email?.toLowerCase();
+      const isDup = isExistingUser(email) || emailCounts[email] > 1;
+
+      if (isDup) {
+        newDuplicates.add(i);
+        user._isDuplicate = true;
+      } else {
+        delete user._isDuplicate;
+      }
+    }
+
+    return { updatedErrors, newDuplicates, users };
+  };
+
   // File upload handler
-  // ------------------------
+
   const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -200,64 +239,40 @@ const BulkUserImportForm = ({
     }
   };
 
-  // ------------------------
   // Remove user
-  // ------------------------
-  const handleRemoveUser = (index) => {
+
+  const handleRemoveUser = async (index) => {
     const updatedUsers = uploadedUsers.filter((_, i) => i !== index);
-    const updatedErrors = { ...validationErrors };
-    delete updatedErrors[index];
 
-    const emailCounts = {};
-    updatedUsers.forEach((u) => {
-      const email = u.email?.toLowerCase();
-      if (email) emailCounts[email] = (emailCounts[email] || 0) + 1;
-    });
+    const { updatedErrors, newDuplicates, users } = await recomputeState(
+      updatedUsers
+    );
 
-    const newDuplicates = new Set();
-    updatedUsers.forEach((u, i) => {
-      if (isExistingUser(u.email) || emailCounts[u.email?.toLowerCase()] > 1) {
-        newDuplicates.add(i);
-        u._isDuplicate = true;
-      }
-    });
-
-    setUploadedUsers(updatedUsers);
+    setUploadedUsers([...users]);
     setValidationErrors(updatedErrors);
     setDuplicateUsers(newDuplicates);
   };
 
-  // ------------------------
   // Edit user
-  // ------------------------
+
   const handleEditUser = async (index, field, value) => {
-    const updated = [...uploadedUsers];
-    updated[index] = { ...updated[index], [field]: value };
+    const updatedUsers = [...uploadedUsers];
+    updatedUsers[index] = {
+      ...updatedUsers[index],
+      [field]: value,
+    };
 
-    const rowErrors = await validateUserRow(updated[index], index, updated);
-    const updatedErrors = { ...validationErrors };
-    rowErrors
-      ? (updatedErrors[index] = rowErrors)
-      : delete updatedErrors[index];
+    const { updatedErrors, newDuplicates, users } = await recomputeState(
+      updatedUsers
+    );
 
-    const newDuplicates = new Set(duplicateUsers);
-    if (field === "email") {
-      const email = value.toLowerCase();
-      const isDup =
-        isExistingUser(email) ||
-        updated.filter((u, i) => i !== index && u.email === email).length > 0;
-      updated[index]._isDuplicate = isDup;
-      isDup ? newDuplicates.add(index) : newDuplicates.delete(index);
-    }
-
-    setUploadedUsers(updated);
+    setUploadedUsers([...users]);
     setValidationErrors(updatedErrors);
     setDuplicateUsers(newDuplicates);
   };
 
-  // ------------------------
   // Bulk submit
-  // ------------------------
+
   const handleBulkSubmit = async () => {
     if (!uploadedUsers.length) {
       enqueueSnackbar(t("forms.validation.noUsersToImport"), {
@@ -353,24 +368,31 @@ const BulkUserImportForm = ({
     uploadedUsers.length > 0 && Object.keys(validationErrors).length === 0;
 
   return (
-    <div className="lg:w-[1200px] w-full max-w-full bg-white rounded-2xl mx-auto my-5 max-h-[90vh] overflow-auto">
-      <UploadInstructions
-        roleOptions={roleOptions}
-        fileError={fileError}
-        isSubmitting={isSubmitting}
-        duplicateCount={duplicateUsers.size}
-        onUpload={handleFileUpload}
-      />
-      {uploadedUsers.length > 0 && (
-        <UsersPreviewTable
-          uploadedUsers={uploadedUsers}
-          validationErrors={validationErrors}
-          duplicateUsers={duplicateUsers}
+    <Box className="lg:w-[1000px] w-full max-w-full bg-white rounded-2xl mx-auto my-5 max-h-[90vh] overflow-auto p-4 ">
+      <Typography className="!text-2xl  !font-semibold !font-somar text-titleColor">
+        {t("profile.schools_users.bulkImport.title")}
+      </Typography>
+
+      <Box className="border-2 border-dashed border-border mt-4 rounded-lg">
+        <UploadInstructions
           roleOptions={roleOptions}
-          onEdit={handleEditUser}
-          onRemove={handleRemoveUser}
+          fileError={fileError}
+          isSubmitting={isSubmitting}
+          duplicateCount={duplicateUsers.size}
+          onUpload={handleFileUpload}
         />
-      )}
+        {uploadedUsers.length > 0 && (
+          <UsersPreviewTable
+            uploadedUsers={uploadedUsers}
+            validationErrors={validationErrors}
+            duplicateUsers={duplicateUsers}
+            roleOptions={roleOptions}
+            onEdit={handleEditUser}
+            onRemove={handleRemoveUser}
+          />
+        )}
+      </Box>
+
       <FooterActions
         isSubmitting={isSubmitting}
         onSubmit={handleBulkSubmit}
@@ -379,7 +401,7 @@ const BulkUserImportForm = ({
         hasValidUsers={hasValidUsers}
         existingUsers={existingUsers}
       />
-    </div>
+    </Box>
   );
 };
 

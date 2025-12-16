@@ -595,16 +595,25 @@
     },
     "schools_users": {
       "schoolsUsers": "المدارس والمستخدمون",
-      "delete": "حذف",
+      "delete": {
+        "title": "حذف",
+        "successMessage": "تم حذف المستخدم بنجاح",
+        "errorMessage": "حدث خطأ في حذف المستخدم",
+        "confirmMessage": "هل تريد حقا حذف المستخدم؟"
+      },
       "copy": "نسخ",
-      "edit": "تعديل",
+      "edit": "تعديل البيانات",
+      "show_more": "اظهار المزيد",
+      "show_less": "اظهار اقل",
       "add_new_user": "إضافة مستخدم جديد",
-      "bulk_import_users": "استيراد مستخدمين متعددين",
+      "bulk_import_users": "رفع ملف مستخدمين (Excel/CSV)",
       "search": "البحث...",
       "no_users": "لا يوجد مستخدم يطابق البحث",
       "users_count": "عدد {count} من المستخدمين",
       "unknown_school": "مدرسة غير معروفة",
       "userCreatedSuccessfully": "تم إنشاء المستخدم بنجاح",
+      "userUpdatedSuccessfully": "تم تعديل بيانات المستخدم بنجاح",
+
       "form": {
         "title": "اضافة بيانات المستخدم",
         "userTypePlaceholder": "المسمى الوظيفية",
@@ -612,7 +621,7 @@
         "phone": "رقم الجوال"
       },
       "bulkImport": {
-        "title": "استيراد مستخدمين متعددين",
+        "title": "اضافة مجموعة مستخدمين",
         "description": "قم برفع ملف CSV أو Excel يحتوي على الأعمدة: الاسم، البريد الإلكتروني، الهاتف، الدور. سيتم استبدال المستخدمين الموجودين الذين لديهم نفس البريد الإلكتروني.",
         "duplicatesFound": "{count} مستخدم موجود بالفعل وسيتم التحديث",
         "preview": "معاينة",
@@ -623,7 +632,7 @@
         "willOverwrite": "سيتم الاستبدال",
         "valid": "صالح",
         "validationErrors": "أخطاء التحقق:",
-        "submit": "استيراد {count} مستخدم",
+        "submit": "ادراج {count} مستخدم",
         "uploadBox": {
           "placeholder": "يجب تحميل ملف Excel"
         },
@@ -658,9 +667,10 @@
           "validationErrors": "أخطاء التحقق:",
           "row": "الصف {row}"
         },
-        "validation":{
+        "validation": {
           "rowsHaveErrors": "يوجد {count} مستخدم يحتوي على أخطاء في البيانات."
-        }}
+        }
+      }
     },
     "donutChart": {
       "title": "الأنشطة الأكثر طلبا"
@@ -1418,7 +1428,7 @@
         "select_school": {
           "title": "اختر المدرسة التي تريد عرض تفاصيلها:",
           "performance": "الاداء",
-          "students": "الطلاب"
+          "students": "طالب"
         },
         "balance": {
           "title": "رصيد المدرسة",
@@ -1890,10 +1900,10 @@
       "thanksMessage": "شكرًا لك!",
       "willContactYou": "تم إرسال طلب التواصل , سنرد عليك خلال 24 ساعة",
       "svg": "غير مسموح بالصور ذات الامتداد .svg",
-      "noUsersToImport": "لا يوجد مستخدمين للاستيراد",
+      "noUsersToImport": "لا يوجد مستخدمين للادراج",
       "fixErrorsBeforeSubmit": "يرجى إصلاح جميع الأخطاء قبل الإرسال",
-      "bulkImportSuccess": "تم استيراد {count} مستخدم بنجاح",
-      "bulkImportPartial": "تم استيراد {success} مستخدم، فشل {failed}",
+      "bulkImportSuccess": "تم ادراج {count} مستخدم بنجاح",
+      "bulkImportPartial": "تم ادراج {success} مستخدم، فشل {failed}",
       "unknownError": "خطأ غير معروف",
       "fileParseError": "فشل في تحليل الملف",
       "fileReadError": "فشل في قراءة الملف",

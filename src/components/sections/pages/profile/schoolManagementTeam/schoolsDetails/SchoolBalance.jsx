@@ -55,8 +55,8 @@ const SchoolBalance = ({ details, isLoading }) => {
             xs={4}
           >
             <Typography
-              variant="h4"
-              className=" !font-somar !text-sm text-[#202224]"
+              variant="body1"
+              className=" !font-somar  text-[#202224]"
             >
               {t(
                 "profile.schools_overview.schools_details.balance.available_balance"
@@ -64,7 +64,7 @@ const SchoolBalance = ({ details, isLoading }) => {
             </Typography>
             <Typography
               variant="h4"
-              className=" !font-somar !text-sm text-[#008442] flex gap-2 items-center justify-center"
+              className=" !font-somar !text-xl text-[#008442] flex gap-2 items-center justify-center"
             >
               {formatCurrency(details.balance.availableBalance)}
             </Typography>
@@ -74,8 +74,8 @@ const SchoolBalance = ({ details, isLoading }) => {
             xs={4}
           >
             <Typography
-              variant="h3"
-              className=" !font-somar !text-sm text-[#202224]"
+              variant="body1"
+              className=" !font-somar  text-[#202224]"
             >
               {t(
                 "profile.schools_overview.schools_details.balance.pending_balance"
@@ -83,7 +83,7 @@ const SchoolBalance = ({ details, isLoading }) => {
             </Typography>
             <Typography
               variant="h4"
-              className=" !font-somar !text-sm text-[#B25B00] flex gap-2 items-center justify-center"
+              className=" !font-somar !text-xl text-[#B25B00] flex gap-2 items-center justify-center"
             >
               {formatCurrency(details.balance.pendingBalance)}
             </Typography>
@@ -93,8 +93,8 @@ const SchoolBalance = ({ details, isLoading }) => {
             xs={4}
           >
             <Typography
-              variant="h3"
-              className=" !font-somar !text-sm text-[#202224]"
+              variant="body1"
+              className=" !font-somar  text-[#202224]"
             >
               {t(
                 "profile.schools_overview.schools_details.balance.total_balance"
@@ -102,7 +102,7 @@ const SchoolBalance = ({ details, isLoading }) => {
             </Typography>
             <Typography
               variant="h4"
-              className=" !font-somar !text-sm text-[#1858A5] flex gap-2 items-center justify-center"
+              className=" !font-somar !text-xl text-[#1858A5] flex gap-2 items-center justify-center"
             >
               {formatCurrency(details.balance.totalBalance)}
             </Typography>
