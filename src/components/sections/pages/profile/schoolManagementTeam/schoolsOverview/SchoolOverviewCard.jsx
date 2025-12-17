@@ -1,13 +1,14 @@
 "use client";
 
 import { Box, Typography } from "@mui/material";
-import { useTranslations } from "next-intl";
-import { uploadPaperIcon, locationGrayIcon } from "@/src/assets/svg";
+import { useLocale, useTranslations } from "next-intl";
+import { bankSmallIcon, locationGrayIcon } from "@/src/assets/svg";
 import Link from "next/link";
 import formatCurrency from "@/src/utils/FormatCurrency";
 
 const SchoolOverviewCard = ({ item }) => {
   const t = useTranslations();
+  const locale = useLocale();
 
   return (
     <Box className="rounded-xl border-2 border-border px-4  py-6 shadow-sm bg-white flex flex-col gap-8  ">
@@ -16,7 +17,7 @@ const SchoolOverviewCard = ({ item }) => {
         {/* Name + Icon */}
         <Box className="flex justify-between items-center gap-3   ">
           <Box className="flex items-center justify-center self-stretch bg-[#13A1C166]   px-3 py-1 rounded-lg  ">
-            <span className="block  ">{uploadPaperIcon}</span>
+            <span className="block  ">{bankSmallIcon}</span>
           </Box>
           <Box className=" flex flex-col flex-1  overflow-hidden">
             <Typography
@@ -131,7 +132,7 @@ const SchoolOverviewCard = ({ item }) => {
       {/* Button */}
       <Link
         className="!font-somar font-semibold !bg-mainColor px-8 py-4 block text-center w-full !text-white  rounded-lg"
-        href={`schools-details/${item._id}`}
+        href={`/${locale}/profile/school-team-management/schools-details/${item._id}`}
       >
         {t("profile.schools_overview.cards.show_details")}
       </Link>

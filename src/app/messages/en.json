@@ -1458,7 +1458,8 @@
           "total": "total students"
         },
         "users": {
-          "title": "Users"
+          "title": "Users",
+          "no_users": "No users found"
         }
       },
       "no_schools_found": "No schools found"

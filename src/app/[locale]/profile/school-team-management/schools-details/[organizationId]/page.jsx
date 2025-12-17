@@ -70,13 +70,17 @@ const SchoolsDetailsPage = ({ params }) => {
           <Typography className="!text-titleColor !font-somar !text-xl ">
             {t("profile.schools_overview.schools_details.users.title")}{" "}
           </Typography>
-          {data?.users.length > 0 && (
+          {data?.users.length > 0 ? (
             <UsersInfo
               users={data?.users}
               organizationId={data?._id}
               refetchInfo={refetch}
               organizationName={data?.name}
             />
+          ): (
+            <Typography className="!text-textDark !font-somar !text-lg">
+              {t("profile.schools_overview.schools_details.users.no_users")}{" "}
+            </Typography>
           )}
         </Box>
       </main>
