@@ -21,6 +21,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
 import { PERMISSIONS } from "@/src/constants/permissions";
 import { Grid } from "@material-ui/core";
+import { SORTING_TYPE } from "@/src/constants/sorting";
 
 const SchoolsOverViewPage = () => {
   const locale = useLocale();
@@ -36,7 +37,7 @@ const SchoolsOverViewPage = () => {
     name: "",
     city: null,
     track: "",
-    sort: "NEWEST",
+    sort: SORTING_TYPE.NEWEST,
   });
 
   const {

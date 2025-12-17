@@ -193,7 +193,8 @@
       "schoolRegister": "تسجيل المدرسة",
       "confirmingData": "تأكيد البيانات",
       "loginAs": "تسجيل الدخول كـ",
-      "error": "404 : لم يتم العثور على هذه الصفحة"
+      "error": "404 : لم يتم العثور على هذه الصفحة",
+      "organization_details": "تفاصيل {organizationName}"
     }
   },
   "links": {
