@@ -632,16 +632,27 @@
       },
       "details": {
         "title": "Student Details",
+        "basicInfo": "Basic Student Information",
+        "contactWithParent": "Contact with Parent",
+        "bookingDetails": "Booking Details",
         "loading": "Loading student details...",
         "noData": "No student data available.",
         "name": "Name",
         "academicStage": "Academic Stage",
         "grade": "Grade",
+        "track": "Track",
+        "age": "Age",
+        "studentNumber": "Student Number",
         "nationalId": "National ID",
+        "status": "Status",
         "parentName": "Parent Name",
         "parentPhone": "Parent Phone",
         "parentEmail": "Parent Email",
-        "school": "School"
+        "additionalPhone": "Additional Phone",
+        "activityName": "Activity Name",
+        "date": "Date",
+        "bookingMethod": "Booking Method",
+        "actions": "Actions"
       }
     },
 

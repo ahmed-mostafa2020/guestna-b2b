@@ -630,16 +630,27 @@
       },
       "details": {
         "title": "تفاصيل الطالب",
+        "basicInfo": "معلومات الطالب الأساسية",
+        "contactWithParent": "التواصل مع ولي الأمر",
+        "bookingDetails": "تفاصيل الحجز",
         "loading": "جاري تحميل بيانات الطالب...",
         "noData": "لا توجد بيانات للطالب.",
         "name": "الاسم",
         "academicStage": "المرحلة الدراسية",
         "grade": "الصف",
+        "track": "المسار",
+        "age": "العمر",
+        "studentNumber": "رقم الطالب",
         "nationalId": "رقم الهوية",
+        "status": "الحالة",
         "parentName": "اسم ولي الأمر",
-        "parentPhone": "هاتف ولي الأمر",
-        "parentEmail": "بريد ولي الأمر",
-        "school": "المدرسة"
+        "parentPhone": "رقم الهاتف",
+        "parentEmail": "البريد الإلكتروني",
+        "additionalPhone": "رقم هاتف إضافي",
+        "activityName": "اسم النشاط",
+        "date": "التاريخ",
+        "bookingMethod": "طريقة الحجز",
+        "actions": "الإجراءات"
       }
     },
 

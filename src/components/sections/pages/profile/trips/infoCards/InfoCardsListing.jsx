@@ -34,7 +34,7 @@ const InfoCardsListing = ({
       {
         icon: totalStudentsIcon,
         title: t("profile.infoCards.totalSchools"),
-        value: infoData?.organizationCount || 1,
+        value: infoData?.organizationsCount || 1,
       },
       {
         icon: totalRevenueIcon,

@@ -3,7 +3,7 @@
 import { memo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Card, CardContent } from "@mui/material";
 
 import CustomizedModal from "@components/common/customizedModal";
 import { useFetchData } from "@hooks/useFetchData";
@@ -35,16 +35,16 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
       padding={false}
     >
       <div className="centered min-h-screen p-4">
-        <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-xl w-full max-w-6xl max-h-[95vh] overflow-hidden flex flex-col">
           {/* Header */}
-          <div className="centered p-6">
-            <h2 className="lg:text-2xl text-xl font-semibold text-black">
+          <div className="centered p-6 border-b border-border">
+            <h2 className="lg:text-xl text-lg font-semibold text-black">
               {t("profile.schoolTeamStudents.details.title")}: {data?.name}
             </h2>
           </div>
 
           {/* Content */}
-          <div className="p-6 overflow-auto max-h-[calc(90vh-100px)]">
+          <div className="p-6 overflow-auto flex-1">
             {isLoading ? (
               <div className="flex flex-col items-center justify-center py-12">
                 <CircularProgress
@@ -56,76 +56,346 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
                 </p>
               </div>
             ) : data ? (
-              <div className="space-y-4">
-                {/* Student Name */}
-                <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-gray-50">
-                  <span className="font-medium text-textLight">
-                    {t("profile.schoolTeamStudents.details.name")}
-                  </span>
-                  <span className="font-semibold text-titleColor">
-                    {data.name || "-"}
-                  </span>
+              <div className="space-y-8">
+                {/* Top Section - 2 Columns */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Basic Student Info (Right in RTL) */}
+                  <div className="border border-border rounded-2xl p-6">
+                    <h3 className="text-lg font-bold text-black mb-6 pb-4 w-fit">
+                      {t("profile.schoolTeamStudents.details.basicInfo")}
+                    </h3>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <span className="text-textLight font-medium">
+                          {t("profile.schoolTeamStudents.details.name")}
+                        </span>
+                        <span className="text-black font-semibold">
+                          {data.name || "-"}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <span className="text-textLight font-medium">
+                          {t(
+                            "profile.schoolTeamStudents.details.academicStage"
+                          )}
+                        </span>
+                        <span className="text-black font-semibold">
+                          {data.academicStage?.name || "-"}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <span className="text-textLight font-medium">
+                          {t("profile.schoolTeamStudents.details.grade")}
+                        </span>
+                        <span className="text-black font-semibold">
+                          {data.grade?.name || "-"}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <span className="text-textLight font-medium">
+                          {t("profile.schoolTeamStudents.details.track")}
+                        </span>
+                        <span className="text-black font-semibold">
+                          {data.track?.educationSystem?.name || "-"}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <span className="text-textLight font-medium">
+                          {t("profile.schoolTeamStudents.details.age")}
+                        </span>
+                        <span className="text-black font-semibold">
+                          - {/* JSON doesn't have age */}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <span className="text-textLight font-medium">
+                          {t(
+                            "profile.schoolTeamStudents.details.studentNumber"
+                          )}
+                        </span>
+                        <span className="text-black font-semibold break-all">
+                          {data._id || "-"}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <span className="text-textLight font-medium">
+                          {t("profile.schoolTeamStudents.details.nationalId")}
+                        </span>
+                        <span className="text-black font-semibold">
+                          -{" "}
+                          {/* JSON doesn't have student nationalId explicitly in root */}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <span className="text-textLight font-medium">
+                          {t("profile.schoolTeamStudents.details.status")}
+                        </span>
+                        -
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Contact with Parent (Left in RTL) */}
+                  <div className="border border-border rounded-2xl p-6">
+                    <h3 className="text-lg font-bold text-black mb-6 pb-4 w-fit">
+                      {t(
+                        "profile.schoolTeamStudents.details.contactWithParent"
+                      )}
+                    </h3>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <span className="text-textLight font-medium">
+                          {t("profile.schoolTeamStudents.details.parentName")}
+                        </span>
+                        <span className="text-black font-semibold">
+                          {data.parent?.name || "-"}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <span className="text-textLight font-medium">
+                          {t("profile.schoolTeamStudents.details.parentPhone")}
+                        </span>
+                        <span
+                          className="text-black font-semibold text-end"
+                          dir="ltr"
+                        >
+                          {data.parent?.phone || "-"}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <span className="text-textLight font-medium">
+                          {t("profile.schoolTeamStudents.details.parentEmail")}
+                        </span>
+                        <span className="text-black font-semibold break-all">
+                          {data.parent?.email || "-"}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <span className="text-textLight font-medium">
+                          {t(
+                            "profile.schoolTeamStudents.details.additionalPhone"
+                          )}
+                        </span>
+                        <span
+                          className="text-black font-semibold text-end"
+                          dir="ltr"
+                        >
+                          - {/* Placeholder */}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <span className="text-textLight font-medium">
+                          {t("profile.schoolTeamStudents.details.nationalId")}
+                        </span>
+                        <span className="text-black font-semibold">
+                          {data.parent?.nationalId || "-"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Academic Stage */}
-                {data.academicStage?.name && (
-                  <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-gray-50">
-                    <span className="font-medium text-textLight">
-                      {t("profile.schoolTeamStudents.details.academicStage")}
-                    </span>
-                    <span className="font-semibold text-titleColor">
-                      {data.academicStage.name}
-                    </span>
-                  </div>
-                )}
+                {/* Booking Details Section */}
+                <div>
+                  <h3 className="text-lg font-bold text-black pb-4">
+                    {t("profile.schoolTeamStudents.details.bookingDetails")}
+                  </h3>
 
-                {/* Grade */}
-                {data.grade?.name && (
-                  <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-gray-50">
-                    <span className="font-medium text-textLight">
-                      {t("profile.schoolTeamStudents.details.grade")}
-                    </span>
-                    <span className="font-semibold text-titleColor">
-                      {data.grade.name}
-                    </span>
-                  </div>
-                )}
+                  <div className="space-y-4">
+                    {/* Desktop Table (Hidden on Mobile) */}
+                    <Card
+                      className="hidden md:block"
+                      sx={{
+                        borderRadius: "16px",
+                        boxShadow: "0 0 4px 0 rgba(0, 0, 0, 0.16)",
+                      }}
+                    >
+                      <CardContent className="p-0">
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b-2 border-tableRowBorder">
+                                <th className="p-4 font-semibold text-start">
+                                  {t(
+                                    "profile.schoolTeamStudents.details.activityName"
+                                  )}
+                                </th>
+                                <th className="p-4 font-semibold text-center">
+                                  {t("profile.schoolTeamStudents.details.date")}
+                                </th>
+                                <th className="p-4 font-semibold text-center">
+                                  {t(
+                                    "profile.schoolTeamStudents.details.bookingMethod"
+                                  )}
+                                </th>
+                                <th className="p-4 font-semibold text-center">
+                                  {t(
+                                    "profile.schoolTeamStudents.details.status"
+                                  )}
+                                </th>
+                                <th className="p-4 font-semibold text-center">
+                                  {t(
+                                    "profile.schoolTeamStudents.details.actions"
+                                  )}
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200">
+                              {data.bookings?.length > 0 ? (
+                                data.bookings.map((booking, index) => (
+                                  <tr
+                                    key={booking._id}
+                                    className={`${
+                                      index !== data.bookings.length - 1 &&
+                                      "border-b border-table-border"
+                                    } transition-colors hover:bg-gray-50`}
+                                  >
+                                    <td className="p-4 text-sm font-medium text-foreground">
+                                      {booking.tripName || "-"}
+                                    </td>
+                                    <td className="p-4 text-sm font-medium text-center text-foreground">
+                                      {booking.date
+                                        ? new Date(
+                                            booking.date
+                                          ).toLocaleDateString(
+                                            locale === "ar" ? "ar-EG" : "en-US"
+                                          )
+                                        : "-"}
+                                    </td>
+                                    <td className="p-4 text-sm font-medium text-center text-foreground">
+                                      {t(
+                                        "profile.schoolTeamStudents.details.parentName"
+                                      )}
+                                    </td>
+                                    <td className="p-4 text-sm font-medium text-center text-foreground">
+                                      {t(`booking.status.${booking.status}`) ||
+                                        booking.status}
+                                    </td>
+                                    <td className="p-4 text-center">
+                                      <button className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-mainColor border border-transparent hover:border-mainColor hover:border rounded-lg transition-colors">
+                                        <svg
+                                          width="20"
+                                          height="20"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          strokeWidth="2"
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                        >
+                                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                          <circle cx="12" cy="12" r="3" />
+                                        </svg>
+                                      </button>
+                                    </td>
+                                  </tr>
+                                ))
+                              ) : (
+                                <tr>
+                                  <td
+                                    colSpan="5"
+                                    className="p-8 text-center text-textLight"
+                                  >
+                                    {t(
+                                      "profile.schoolTeamStudents.details.noData"
+                                    )}
+                                  </td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                {/* Parent Name */}
-                {data.parent?.name && (
-                  <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-gray-50">
-                    <span className="font-medium text-textLight">
-                      {t("profile.schoolTeamStudents.details.parentName")}
-                    </span>
-                    <span className="font-semibold text-titleColor">
-                      {data.parent.name}
-                    </span>
+                    {/* Mobile Cards (Visible ONLY on Mobile) */}
+                    <div className="md:hidden space-y-4">
+                      {data.bookings?.length > 0 ? (
+                        data.bookings.map((booking) => (
+                          <Card key={booking._id} className="shadow-sm">
+                            <CardContent className="p-4">
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-semibold text-textLight">
+                                    {t(
+                                      "profile.schoolTeamStudents.details.activityName"
+                                    )}
+                                  </span>
+                                  <span className="text-sm font-medium text-foreground">
+                                    {booking.tripName || "-"}
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-semibold text-textLight">
+                                    {t(
+                                      "profile.schoolTeamStudents.details.date"
+                                    )}
+                                  </span>
+                                  <span className="text-sm font-medium text-foreground">
+                                    {booking.date
+                                      ? new Date(
+                                          booking.date
+                                        ).toLocaleDateString(
+                                          locale === "ar" ? "ar-EG" : "en-US"
+                                        )
+                                      : "-"}
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-semibold text-textLight">
+                                    {t(
+                                      "profile.schoolTeamStudents.details.bookingMethod"
+                                    )}
+                                  </span>
+                                  <span className="text-sm font-medium text-foreground">
+                                    {t(
+                                      "profile.schoolTeamStudents.details.parentName"
+                                    )}
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-semibold text-textLight">
+                                    {t(
+                                      "profile.schoolTeamStudents.details.status"
+                                    )}
+                                  </span>
+                                  <span className="text-sm font-medium text-foreground">
+                                    {t(`booking.status.${booking.status}`) ||
+                                      booking.status}
+                                  </span>
+                                </div>
+                                <div className="pt-2">
+                                  <button className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-mainColor border border-mainColor rounded-lg hover:bg-gray-50 transition-colors">
+                                    <svg
+                                      width="20"
+                                      height="20"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth="2"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    >
+                                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                      <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                    {t(
+                                      "profile.schoolTeamStudents.details.actions"
+                                    )}
+                                  </button>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))
+                      ) : (
+                        <div className="text-center py-8 text-textLight bg-gray-50 rounded-lg">
+                          {t("profile.schoolTeamStudents.details.noData")}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                )}
-
-                {/* Parent Email */}
-                {data.parent?.email && (
-                  <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-gray-50">
-                    <span className="font-medium text-textLight">
-                      {t("profile.schoolTeamStudents.details.parentEmail")}
-                    </span>
-                    <span className="font-semibold text-titleColor" dir="ltr">
-                      {data.parent.email}
-                    </span>
-                  </div>
-                )}
-
-                {/* Parent Phone */}
-                {data.parent?.phone && (
-                  <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-gray-50">
-                    <span className="font-medium text-textLight">
-                      {t("profile.schoolTeamStudents.details.parentPhone")}
-                    </span>
-                    <span className="font-semibold text-titleColor" dir="ltr">
-                      {data.parent.phone}
-                    </span>
-                  </div>
-                )}
+                </div>
               </div>
             ) : (
               <div className="text-center py-12">
@@ -134,16 +404,6 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
                 </p>
               </div>
             )}
-          </div>
-
-          {/* Footer */}
-          <div className="p-6 border-t border-border">
-            <button
-              onClick={handleClose}
-              className="w-full px-4 py-3 text-sm font-medium text-white bg-mainColor hover:bg-linksHover rounded-xl transition-colors"
-            >
-              {t("common.close")}
-            </button>
           </div>
         </div>
       </div>
