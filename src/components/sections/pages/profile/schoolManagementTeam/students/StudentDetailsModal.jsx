@@ -31,35 +31,16 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
       handleClose={handleClose}
       bgcolor="rgba(0, 0, 0, 0.5)"
       customizedCloseButton={true}
-      closeButton={false}
+      closeButton={true}
       padding={false}
     >
-      <div className="flex items-center justify-center min-h-screen p-4">
+      <div className="centered min-h-screen p-4">
         <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-border">
-            <h2 className="text-xl font-semibold text-titleColor">
-              {t("profile.schoolTeamStudents.details.title")}
+          <div className="centered p-6">
+            <h2 className="lg:text-2xl text-xl font-semibold text-black">
+              {t("profile.schoolTeamStudents.details.title")}: {data?.name}
             </h2>
-            <button
-              onClick={handleClose}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-              aria-label={t("common.close")}
-            >
-              <svg
-                className="w-6 h-6 text-gray-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
           </div>
 
           {/* Content */}

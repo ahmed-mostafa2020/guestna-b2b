@@ -69,38 +69,18 @@ const StudentsListModal = ({
         handleClose={handleClose}
         bgcolor="rgba(0, 0, 0, 0.5)"
         customizedCloseButton={true}
-        closeButton={false}
+        closeButton={true}
         padding={false}
       >
-        <div className="flex items-center justify-center min-h-screen p-4">
+        <div className="centered min-h-screen p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-border">
+            <div className="centered p-6">
               <div className="centered">
-                <h2 className="text-xl font-semibold text-titleColor">
-                  {t("profile.schoolTeamStudents.modal.title")}
+                <h2 className="lg:text-xl text-2xl font-semibold text-black">
+                  {t("profile.schoolTeamStudents.modal.title")} {gradeName}
                 </h2>
-                <p className="text-sm text-textLight mt-1">{gradeName}</p>
               </div>
-              <button
-                onClick={handleClose}
-                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                aria-label={t("common.close")}
-              >
-                <svg
-                  className="w-6 h-6 text-gray-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
             </div>
 
             {/* Content */}
@@ -130,13 +110,10 @@ const StudentsListModal = ({
                         <table className="w-full">
                           <thead>
                             <tr className="border-b-2 border-tableRowBorder">
-                              <th className="px-6 py-4 text-start text-sm font-medium text-gray-700">
+                              <th className="p-4 font-semibold text-start">
                                 {t("profile.schoolTeamStudents.modal.name")}
                               </th>
-                              <th className="px-6 py-4 text-start text-sm font-medium text-gray-700">
-                                {t("profile.schoolTeamStudents.modal.grade")}
-                              </th>
-                              <th className="px-6 py-4 text-center text-sm font-medium text-gray-700">
+                              <th className="p-4 font-semibold text-center">
                                 {t("profile.schoolTeamStudents.modal.actions")}
                               </th>
                             </tr>
@@ -150,28 +127,20 @@ const StudentsListModal = ({
                                   "border-b border-table-border"
                                 } transition-colors hover:bg-gray-50`}
                               >
-                                <td className="px-6 py-4 text-sm font-medium text-foreground">
+                                <td className="p-4 text-sm font-medium text-foreground">
                                   {student.name}
                                 </td>
-                                <td className="px-6 py-4 text-sm text-muted-foreground">
-                                  {student.grade?.name || gradeName}
-                                </td>
-                                <td className="px-6 py-4 text-center">
+                                <td className="p-4 text-center">
                                   <button
                                     onClick={() =>
                                       handleViewStudent(student._id)
                                     }
-                                    className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-mainColor hover:text-linksHover hover:bg-buttonsHover rounded-lg transition-colors"
+                                    className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-mainColor border border-transparent hover:border-mainColor hover:border rounded-lg transition-colors"
                                     aria-label={t(
                                       "profile.schoolTeamStudents.modal.viewDetails"
                                     )}
                                   >
                                     <Visibility fontSize="small" />
-                                    <span className="hidden sm:inline">
-                                      {t(
-                                        "profile.schoolTeamStudents.modal.viewDetails"
-                                      )}
-                                    </span>
                                   </button>
                                 </td>
                               </tr>
@@ -189,20 +158,11 @@ const StudentsListModal = ({
                         <CardContent className="p-4">
                           <div className="space-y-3">
                             <div className="flex items-center justify-between">
-                              <span className="text-sm font-medium text-muted-foreground">
+                              <span className="text-sm font-semibold text-foreground">
                                 {t("profile.schoolTeamStudents.modal.name")}
                               </span>
-                              <span className="text-sm font-semibold text-foreground">
+                              <span className="text-sm  text-foreground">
                                 {student.name}
-                              </span>
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-medium text-muted-foreground">
-                                {t("profile.schoolTeamStudents.modal.grade")}
-                              </span>
-                              <span className="text-sm text-muted-foreground">
-                                {student.grade?.name || gradeName}
                               </span>
                             </div>
 
