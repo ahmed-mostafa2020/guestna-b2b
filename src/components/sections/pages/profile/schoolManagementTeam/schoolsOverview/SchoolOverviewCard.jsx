@@ -1,15 +1,13 @@
 "use client";
 
 import { Box, Typography } from "@mui/material";
-import { useLocale, useTranslations } from "next-intl";
-import { bankSmall, locationGrayIcon, newSarSmall } from "@/src/assets/svg";
+import { useTranslations } from "next-intl";
+import { uploadPaperIcon, locationGrayIcon } from "@/src/assets/svg";
 import Link from "next/link";
 import formatCurrency from "@/src/utils/FormatCurrency";
-import { locale } from "dayjs";
 
 const SchoolOverviewCard = ({ item }) => {
   const t = useTranslations();
-  const locale = useLocale();
 
   return (
     <Box className="rounded-xl border-2 border-border px-4  py-6 shadow-sm bg-white flex flex-col gap-8  ">
@@ -18,7 +16,7 @@ const SchoolOverviewCard = ({ item }) => {
         {/* Name + Icon */}
         <Box className="flex justify-between items-center gap-3   ">
           <Box className="flex items-center justify-center self-stretch bg-[#13A1C166]   px-3 py-1 rounded-lg  ">
-            <span className="block  ">{bankSmall}</span>
+            <span className="block  ">{uploadPaperIcon}</span>
           </Box>
           <Box className=" flex flex-col flex-1  overflow-hidden">
             <Typography

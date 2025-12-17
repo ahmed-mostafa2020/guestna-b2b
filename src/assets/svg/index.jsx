@@ -1786,7 +1786,7 @@ const SuitcaseIcon = ({ className = "w-6 h-6" }) => (
   </svg>
 );
 
-const bankSmall = (
+const bankSmallIcon = (
   <svg
     width="28"
     height="28"
@@ -1907,7 +1907,7 @@ const visaCardIcon = (
   </svg>
 );
 
-const uploadFile = (
+const uploadPaperIcon = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="120"
@@ -1975,11 +1975,11 @@ const emailBlueIcon = (
 export {
   emailBlueIcon,
   backIconColored,
-  uploadFile,
+  uploadPaperIcon,
   bluelocationIcon,
   visaCardIcon,
   locationGrayIcon,
-  bankSmall,
+  bankSmallIcon,
   discoverIcon,
   schoolsIcon,
   companiesIcon,

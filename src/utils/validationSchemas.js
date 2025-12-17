@@ -644,7 +644,6 @@ export const createAddOrganizationUserSchema = (t) =>
     mobile: createPhoneValidation(t),
     name: Yup.string()
       .trim()
-      .optional()
       .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
       .test(
         "min-word-length",
@@ -671,7 +670,6 @@ export const createUpdateOrganizationUserSchema = (t) =>
     mobile: createPhoneValidation(t),
     name: Yup.string()
       .trim()
-      .optional()
       .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
       .test(
         "min-word-length",

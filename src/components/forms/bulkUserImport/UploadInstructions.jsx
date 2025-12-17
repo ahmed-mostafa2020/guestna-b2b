@@ -1,4 +1,4 @@
-import { uploadFile } from "@/src/assets/svg";
+import { uploadPaperIcon } from "@/src/assets/svg";
 import { Alert, Box, Button, List, ListItem, Typography } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 import { usersHeaders } from "@/src/constants/excelHeaders";
@@ -28,7 +28,7 @@ const UploadInstructions = ({
 
       <Box className=" gap-8 rounded-lg flex flex-col items-center justify-center p-10 mb-4 ">
         <Box className="flex flex-col items-center">
-          <span className="!text-7xl text-[#838383]">{uploadFile}</span>
+          <span className="!text-7xl text-[#838383]">{uploadPaperIcon}</span>
           <Typography className="mt-2 text-gray-600 !text-4xl !font-semibold !font-somar">
             {t("profile.schools_users.bulkImport.uploadBox.placeholder")}
           </Typography>
