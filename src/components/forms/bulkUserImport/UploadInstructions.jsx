@@ -16,7 +16,7 @@ const UploadInstructions = ({
   const { createTemplate } = useExcel({ headers: usersHeaders(roleOptions) });
   const generateAndDownloadExcel = async () => {
     return await createTemplate(
-      locale === "ar" ? "قالب_رفع_مستخدمين" : "users_upload_templates"
+      t("profile.schools_users.bulkImport.users_upload_templates")
     );
   };
 

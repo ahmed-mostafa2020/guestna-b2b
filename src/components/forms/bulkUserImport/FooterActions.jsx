@@ -16,7 +16,7 @@ const ExportUsersExcel = ({ users }) => {
     console.log(exportedUsers);
     return await exportRecords(
       exportedUsers,
-      locale === "ar" ? "المستخدمين-الحاليين" : "current-users"
+      t("profile.schools_users.bulkImport.current_users")
     );
   };
   return (
