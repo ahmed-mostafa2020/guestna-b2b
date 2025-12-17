@@ -1,0 +1,110 @@
+Thanks — I reviewed the diff you pasted. Below I list the issues I found (grouped by severity), possible problems/scenarios that can happen at runtime or UX-level, and suggested fixes. If you want, I can prepare the exact code patches for these fixes.
+
+High-priority / likely-to-cause-runtime errors
+- Grid usage (MUI)
+  - Multiple files import Grid from "@material-ui/core" while other components use "@mui/material". Mixing v4 (@material-ui/core) and v5 (@mui/material) is risky and likely to break layout or styles.
+  - Many Grid usages are incorrect:
+    - Using container size={12} (e.g. <Grid container size={12} spacing={2}>) — there is no size prop; use spacing and item/ xs props.
+    - Using xs without item (e.g. <Grid xs={4}>) — for MUI Grid you must use <Grid item xs={4}> when inside a container.
+  - Fix: standardize on @mui/material (v5) imports and update Grid usage to correct props: <Grid container spacing={2}> and <Grid item xs={4}>.
+
+- Wrong key / id usage between overview and card
+  - SchoolsOverViewPage maps organizations and uses key={organization.id} while SchoolOverviewCard (and other code) expect organization._id (or use item._id).
+  - Scenario: React keys become undefined, or Link uses item._id but parent key uses .id causing inconsistent assumptions — could break rendering or navigation.
+  - Fix: use organization._id consistently (or normalize to id everywhere).
+
+- Link href / routing issues
+  - SchoolOverviewCard uses Link href={`schools-details/${item._id}`} — this is a relative URL and doesn't include locale or full path. You also import locale with useLocale() but don't use it.
+  - Scenario: link may resolve incorrectly depending on current path; broken navigation for users on different route depths.
+  - Fix: use an absolute path including locale, e.g. `/${locale}/profile/school-team-management/schools-details/${item._id}` (and ensure you pass the locale into the card if necessary).
+
+- SVG attribute names in JSX
+  - New SVGs in src/assets/svg/index.jsx contain attributes like stroke-width, stroke-linecap, stroke-miterlimit, etc. In React JSX the svg attributes should be camelCase (strokeWidth, strokeLinecap, strokeMiterlimit).
+  - Scenario: attributes may not be applied as expected, leading to rendering differences or warnings in console.
+  - Fix: convert hyphenated attributes to camelCase across all new SVGs (or keep style consistent with existing icons if the codebase already uses camelCase).
+
+- Conflicting import (dayjs "locale")
+  - SchoolOverviewCard imports { locale } from "dayjs" and then declares const locale = useLocale(); — this shadows the variable and is incorrect.
+  - Scenario: lint error / unexpected behavior.
+  - Fix: remove the dayjs import (unused), or rename the variable.
+
+Medium-priority / likely functional or UX bugs
+- In OrganizationUserForm: conditional payload fields & API calls
+  - You changed the flow to use the same form for create/update. In handleSubmit you do:
+    - email: user ? undefined : values.email
+    - organization: user ? undefined : organizationId
+    - method: user ? "patch" : "post"
+    - url chooses edit endpoint when user present
+  - These are fine if backend expects partial payload on PATCH and does not allow changing email/org. Verify backend API expectations (does PATCH accept body without email etc?).
+  - Suggestion: if backend requires the field to be present (e.g. organization), avoid sending undefined; instead omit the key altogether. Your current code sets the key to undefined; JSON.stringify will drop undefined but confirm server behavior.
+
+- OrganizationUserForm: readOnly on email field
+  - You set readOnly={user?._id ? true : false} on the TextInputGroup. Verify that TextInputGroup passes readOnly down to the underlying input. If it doesn't, the field may still be editable.
+  - Fix: ensure TextInputGroup supports and forwards readOnly prop (or use disabled).
+
+- TextInputGroup changes
+  - You added labelFontFamily default and merged style: {...style}, but I didn't see 'style' declared in the component parameter list in the snippet. Ensure the style prop exists in the component signature and is passed to the input.
+  - Otherwise the spread ...style will reference undefined and may throw.
+
+- UsersInfo bulk / add / edit modal changes
+  - You introduced several modal states (addModalOpen, bulkModalOpen, editModalOpen, etc.) and async loadRoles(setLoading) — good.
+  - Confirm the roles caching logic is correct: you compare cachedOrganization === organizationId and rolesData.length > 0 — good, but if roles change you may still use stale data.
+  - In confirmDelete you call axios.delete and then call refetchInfo/refetchTable — good; ensure both refs are passed correctly from parent.
+
+- UsersInfo: importing ActionsDialog from a weird path
+  - import ActionsDialog from "../../../customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog"; — double-check that component path is correct and that ActionsDialog API matches usage (props: open, handleClose, handleConfirm etc). It looks like a generic dialog, but ensure consistent interface.
+
+- UsersPreviewTable:
+  - duplicateUsers.has(index) assumes duplicateUsers is a Set. Confirm callers pass a Set, not an array or Map.
+  - validationErrors used with Object.keys(...) — ensure the shape is { index: { field: message } }.
+
+- SearchFilters: use of t inside formattedTracks label
+  - You're referencing translation key `schoolRegister.form.gender.options.${...}` inside formattedTracks; confirm translations exist for those keys and that t is safe to use inside useMemo (you included t in dependency list, OK).
+
+Style / structure / consistency problems
+- Mixed import aliases and path styles
+  - Some files import with "@/src/..." while others use "@constants/..." or "@hooks/..." etc. This suggests inconsistent alias usage. It may be fine if both aliases are configured, but it's confusing. Standardize on one alias style across the repo (prefer consistent root alias).
+- Mixing @mui/material and @material-ui/core
+  - As noted above — standardize to @mui/material v5 if the project uses it.
+- Inconsistent use of MUI components vs raw HTML buttons
+  - Some new components use raw <button> with tailwind classes, others use MUI Button. That's fine if you're intentionally mixing, but it makes styling and accessibility inconsistent (e.g. MUI handles focus/ripple).
+- Many new components use className strings with Tailwind-like utility classes and also MUI. Ensure the project has Tailwind and MUI styles both configured without conflicts.
+
+Potential accessibility issues
+- Buttons using raw <button> have no type attribute (type="button" or type="submit") — could cause unwanted form submission if nested inside <form>. Suggest adding explicit type.
+- Some Icon-only buttons have no aria-label or tooltip — add aria-label for screen readers in icon-only actions, though you used Tooltip in many places.
+
+Other issues and improvements
+- SchoolBalance imports useSelector but doesn't use it — remove unused imports.
+- Several components use "use client" at the top. Verify whether they'd better be server components (to avoid shipping extra JS) — e.g., some components that only render static content could remain server components.
+- In assets/svg/index.jsx your new icons add many elements — run a linter/format step to ensure there are no duplicate exports and the export list includes all new names. Also convert attributes to camelCase consistently.
+- Check Next.js Image domain config for image URLs used in SelectSchoolForDetails and UserCard (details.image and user.image). If images are external, next.config.js must allow domains or use next/image loader.
+
+Edge cases / scenarios to test manually
+- Schools overview list empty state — the code handles schools.length === 0 but ensure pagination and pageInfo behave when totalPages is 0/undefined.
+- School details: users list conditional render: {data?.users.length > 0 && <UsersInfo .../>} — if data.users is undefined, length access is safe? data?.users.length will throw if users is undefined because optional chaining is only on users property, but data?.users.length becomes undefined.length? Actually data?.users.length is equivalent to (data?.users).length; when data?.users is undefined, accessing .length will raise. Use data?.users?.length > 0 to be safe.
+- Bulk import: ensure large files/invalid format are handled; UploadInstructions displays file input and fileError — test error paths (invalid columns, duplicated rows).
+- Editing user: OrganizationUserForm sets email readOnly — if the backend allows email change, you may be unintentionally preventing it.
+- PATCH behavior: if API responds with response.data === true previously, you changed to if(response?.data) — verify success detection logic matches API (sometimes API returns object, sometimes boolean).
+
+Linting / formatting / tests
+- Run eslint and TypeScript (if present) — many of the problems (hyphenated svg attributes, unused imports, missing prop types) will be caught.
+- Run unit / integration tests for profile pages, user modals, bulk import flow.
+
+Concrete fixes I recommend (I can prepare patches):
+1. Replace all "@material-ui/core" imports with "@mui/material" (Grid etc.) and fix Grid usage to container/item patterns.
+2. Fix key/id mismatch: use organization._id everywhere (or normalize in data mapping).
+3. Fix SchoolOverviewCard Link to include locale and full path.
+4. Remove unused import { locale } from "dayjs" in SchoolOverviewCard.
+5. Convert svg attributes to camelCase: strokeWidth, strokeLinecap, strokeMiterlimit, strokeLinejoin, etc.
+6. In UsersInfo and SchoolsDetails page, guard user list length accesses with optional chaining: data?.users?.length.
+7. Ensure TextInputGroup accepts and forwards style and readOnly props (and remove unused labelFontFamily if not used).
+8. Add explicit type attributes to raw <button> elements.
+9. Confirm OrganizationUserForm PATCH payload schema and response handling aligns with backend. Optionally change to omit keys instead of setting undefined.
+
+Would you like me to:
+- prepare a PR patch with the fixes above (I can update the files and call the repo write tool), or
+- produce a focused patch for the most critical issues (Grid fixes, id/key mismatch, link path, SVG attributes), or
+- run an automated code search to list all incorrect Grid usages and hyphenated SVG attributes so you can review them?
+
+Tell me which option you prefer and I’ll proceed.

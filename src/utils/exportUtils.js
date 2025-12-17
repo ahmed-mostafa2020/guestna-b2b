@@ -155,6 +155,67 @@ export const exportMyBookingToExcel = (booking, bookingDetails, t, locale) => {
 };
 
 /**
+ * Export student list to Excel
+ * @param {Array} students - List of students
+ * @param {string} gradeName - Grade name
+ * @param {Object} translatedLabels - Translated labels { reportTitle, studentName, filename }
+ */
+export const exportStudentsListToExcel = (
+  students,
+  gradeName,
+  translatedLabels
+) => {
+  try {
+    const workbook = XLSX.utils.book_new();
+
+    const labels = {
+      reportTitle: translatedLabels.reportTitle,
+      studentName: translatedLabels.studentName,
+      filename: translatedLabels.filename,
+    };
+
+    // Prepare data
+    const studentsData = [[labels.studentName]]; // Header row
+
+    students.forEach((student) => {
+      studentsData.push([student.name || ""]);
+    });
+
+    const studentsSheet = XLSX.utils.aoa_to_sheet(studentsData);
+
+    // Add title in the first row
+    const finalData = [
+      [labels.reportTitle],
+      [], // Empty row
+      ...studentsData,
+    ];
+
+    const sheetWithTitle = XLSX.utils.aoa_to_sheet(finalData);
+
+    // Auto-fit columns
+    const studentsColWidths = [{ wch: 40 }];
+    sheetWithTitle["!cols"] = studentsColWidths;
+
+    XLSX.utils.book_append_sheet(
+      workbook,
+      sheetWithTitle,
+      gradeName || "Students"
+    );
+
+    const filename = `${labels.filename}_${gradeName || "students"}_${
+      new Date().toISOString().split("T")[0]
+    }.xlsx`;
+
+    XLSX.writeFile(workbook, filename);
+
+    return { success: true, filename };
+  } catch (error) {
+    console.error("Error exporting students list to Excel:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
  * Export booking data to Excel format (for bookings-management)
  * @param {Object} booking - Booking data
  * @param {Object} bookingDetails - Students data
@@ -433,12 +494,15 @@ export const exportModalToPDF = async (modalElement, booking, locale, t) => {
           table.style.height = "auto";
         });
 
-        // Hide pagination controls
-        const paginationElements = clonedDoc.querySelectorAll(
+        // Hide pagination controls and footer actions
+        const nonPrintable = clonedDoc.querySelectorAll(
           '[class*="pagination"], .print\\:hidden'
         );
-        paginationElements.forEach((el) => {
-          el.style.display = "none";
+        nonPrintable.forEach((el) => {
+          // IMPORTANT: Mark with !important to override other styles
+          el.style.display = "none !important";
+          el.style.opacity = "0";
+          el.style.visibility = "hidden";
         });
 
         console.log("PDF Export - DOM cloning completed");

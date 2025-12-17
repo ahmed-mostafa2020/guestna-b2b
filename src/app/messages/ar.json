@@ -255,7 +255,10 @@
     "login": "تسجيل الدخول لحسابي",
     "continuaAsGuest": "المتابعة كزائر (تسجيل سريع)",
     "register": "التسجيل",
-    "sendStcOtp": "ارسل رمز التحقق OTP"
+    "sendStcOtp": "ارسل رمز التحقق OTP",
+    "printPDF": "طباعة PDF",
+    "exportExcel": "تصدير Excel",
+    "print": "طباعة"
   },
 
   "booking": {
@@ -620,6 +623,10 @@
         "grade": "الصف",
         "actions": "الإجراءات",
         "viewDetails": "عرض التفاصيل"
+      },
+      "report": {
+        "title": "تقرير الطلاب لـ ",
+        "filename": "تقرير_الطلاب"
       },
       "details": {
         "title": "تفاصيل الطالب",

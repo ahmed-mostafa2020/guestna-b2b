@@ -1,15 +1,16 @@
 "use client";
 
-import { memo, useState, useMemo, useCallback } from "react";
+import { memo, useState, useMemo, useCallback, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 
 import { Card, CardContent, CircularProgress } from "@mui/material";
-import { Visibility } from "@mui/icons-material";
+import { Visibility, Print } from "@mui/icons-material";
 
 import CustomizedModal from "@components/common/customizedModal";
 import Pagination from "@components/common/Pagination";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { exportModalToPDF } from "@utils/exportUtils";
 
 const StudentsListModal = ({
   open,
@@ -21,6 +22,8 @@ const StudentsListModal = ({
 }) => {
   const t = useTranslations();
   const locale = useLocale();
+  const modalRef = useRef(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -62,6 +65,38 @@ const StudentsListModal = ({
     [onViewStudent]
   );
 
+  const handlePrint = async (type) => {
+    setIsExporting(true);
+    try {
+      if (type === "excel") {
+        const { exportStudentsListToExcel } = await import(
+          "@utils/exportUtils"
+        );
+
+        const labels = {
+          reportTitle:
+            t("profile.schoolTeamStudents.report.title") + " " + gradeName,
+          studentName: t("profile.schoolTeamStudents.modal.name"),
+          filename: t("profile.schoolTeamStudents.report.filename"),
+        };
+
+        exportStudentsListToExcel(students, gradeName, labels);
+      } else {
+        if (!modalRef.current) return;
+        await exportModalToPDF(
+          modalRef.current,
+          { name: `${gradeName}_Students` },
+          locale,
+          t
+        );
+      }
+    } catch (error) {
+      console.error("Print error:", error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <>
       <CustomizedModal
@@ -73,10 +108,13 @@ const StudentsListModal = ({
         padding={false}
       >
         <div className="centered min-h-screen p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+          <div
+            ref={modalRef}
+            className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
+          >
             {/* Header */}
-            <div className="centered p-6">
-              <div className="centered">
+            <div className="centered p-6 border-b border-border">
+              <div className="flex items-center gap-3">
                 <h2 className="lg:text-xl text-2xl font-semibold text-black">
                   {t("profile.schoolTeamStudents.modal.title")} {gradeName}
                 </h2>
@@ -84,7 +122,7 @@ const StudentsListModal = ({
             </div>
 
             {/* Content */}
-            <div className="p-6 overflow-auto max-h-[calc(90vh-140px)]">
+            <div className="p-6 overflow-auto flex-1">
               {isLoading ? (
                 <div className="flex flex-col items-center justify-center py-12">
                   <CircularProgress
@@ -113,7 +151,7 @@ const StudentsListModal = ({
                               <th className="p-4 font-semibold text-start">
                                 {t("profile.schoolTeamStudents.modal.name")}
                               </th>
-                              <th className="p-4 font-semibold text-center">
+                              <th className="p-4 font-semibold text-center print:hidden">
                                 {t("profile.schoolTeamStudents.modal.actions")}
                               </th>
                             </tr>
@@ -130,7 +168,7 @@ const StudentsListModal = ({
                                 <td className="p-4 text-sm font-medium text-foreground">
                                   {student.name}
                                 </td>
-                                <td className="p-4 text-center">
+                                <td className="p-4 text-center print:hidden">
                                   <button
                                     onClick={() =>
                                       handleViewStudent(student._id)
@@ -152,7 +190,7 @@ const StudentsListModal = ({
                   </Card>
 
                   {/* Mobile Cards */}
-                  <div className="md:hidden space-y-4">
+                  <div className="md:hidden space-y-4 print:hidden">
                     {students.map((student) => (
                       <Card key={student._id} className="shadow-sm">
                         <CardContent className="p-4">
@@ -187,7 +225,7 @@ const StudentsListModal = ({
                       pageInfo={pageInfo}
                       currentPage={currentPage}
                       onPageChange={handlePageChange}
-                      className="mt-6"
+                      className="mt-6 print:hidden"
                     />
                   )}
                 </>
@@ -198,6 +236,22 @@ const StudentsListModal = ({
                   </p>
                 </div>
               )}
+            </div>
+
+            {/* Footer Actions */}
+            <div className="p-6 border-t border-border print:hidden">
+              <button
+                onClick={() => handlePrint("excel")}
+                disabled={isExporting || isLoading}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-mainColor hover:bg-linksHover rounded-xl transition-colors disabled:opacity-50"
+              >
+                {isExporting ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  <Print fontSize="small" />
+                )}
+                {t("links.print") || "Print Report"}
+              </button>
             </div>
           </div>
         </div>

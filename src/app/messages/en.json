@@ -256,7 +256,10 @@
     "login": "Login",
     "continuaAsGuest": "Continua as a guest (Quick login)",
     "register": "Register",
-    "sendStcOtp": "Send Stc Otp"
+    "sendStcOtp": "Send Stc Otp",
+    "printPDF": "Print PDF",
+    "exportExcel": "Export Excel",
+    "print": "Print"
   },
 
   "booking": {
@@ -622,6 +625,10 @@
         "grade": "Grade",
         "actions": "Actions",
         "viewDetails": "View Details"
+      },
+      "report": {
+        "title": "Students Report for",
+        "filename": "Students_Report"
       },
       "details": {
         "title": "Student Details",
