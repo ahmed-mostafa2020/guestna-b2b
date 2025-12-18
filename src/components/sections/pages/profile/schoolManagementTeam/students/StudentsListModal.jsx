@@ -30,7 +30,7 @@ const StudentsListModal = ({
   // Fetch students by grade
   const { data, isLoading } = useFetchData(
     open
-      ? `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.STUDENTS.ACADEMIC_STAGE_STUDENTS}/${organizationId}/${gradeId}/${currentPage}`
+      ? `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.STUDENTS.GRADE_STUDENTS}/${organizationId}/${gradeId}/${currentPage}`
       : null,
     {},
     {

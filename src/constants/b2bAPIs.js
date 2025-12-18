@@ -127,8 +127,8 @@ export const B2B_END_POINTS = {
       },
       STUDENTS: {
         ALL_STUDENTS: "profile/organizations/childs/info",
-        ACADEMIC_STAGE_STUDENTS: "profile/students", // orgId/aca.stageId
-        SSTUDENT_DETAILS: "profile/students/info", //studentId
+        GRADE_STUDENTS: "profile/students",
+        STUDENT_DETAILS: "profile/students/info",
       },
     },
     CREATE_TRIP_LINK: "profile/organizationTrips/poster",

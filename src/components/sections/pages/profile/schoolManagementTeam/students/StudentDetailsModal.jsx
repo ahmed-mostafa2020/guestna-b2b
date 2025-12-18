@@ -19,7 +19,7 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
   // Fetch student details
   const { data, isLoading } = useFetchData(
     open && studentId
-      ? `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.STUDENTS.SSTUDENT_DETAILS}/${studentId}`
+      ? `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.STUDENTS.STUDENT_DETAILS}/${studentId}`
       : null,
     {},
     {
