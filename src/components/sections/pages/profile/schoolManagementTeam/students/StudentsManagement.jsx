@@ -97,7 +97,7 @@ const StudentsManagement = ({ organizationsChildrenStages = [] }) => {
           <AccordionDetails className="pt-0">
             <StudentsInfo
               totalStudents={org.count || 0}
-              stages={org.childs || []}
+              grades={org.childs || []}
               organizationId={org.organization?._id}
             />
           </AccordionDetails>

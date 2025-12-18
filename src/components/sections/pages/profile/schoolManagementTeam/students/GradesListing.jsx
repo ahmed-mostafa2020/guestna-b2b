@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import StudentsListModal from "./StudentsListModal";
 import StudentDetailsModal from "./StudentDetailsModal";
 
-const AcademicStagesListing = ({ stages = [], organizationId }) => {
+const GradesListing = ({ grades = [], organizationId }) => {
   const t = useTranslations();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -36,20 +36,22 @@ const AcademicStagesListing = ({ stages = [], organizationId }) => {
     setSelectedStudentId(null);
   };
 
-  const parsedStages = useMemo(() => {
-    if (!Array.isArray(stages)) return [];
+  const parsedGrades = useMemo(() => {
+    if (!Array.isArray(grades)) return [];
 
-    return stages
-      .map((stage, index) => ({
-        id: stage?.grade?._id || `${stage?.grade?.name}-${index}`,
+    return grades
+      .map((grade, index) => ({
+        id: grade?._id || grade?.grade?._id || `${grade?.name}-${index}`,
         name:
-          stage?.grade?.name || t("profile.schoolTeamStudents.unknownStage"),
-        count: stage?.count || 0,
+          grade?.name ||
+          grade?.grade?.name ||
+          t("profile.schoolTeamStudents.unknownStage"),
+        count: grade?.count || 0,
       }))
-      .filter((stage) => stage.count > 0);
-  }, [stages, t]);
+      .filter((grade) => grade.count > 0);
+  }, [grades, t]);
 
-  if (!parsedStages.length) {
+  if (!parsedGrades.length) {
     return (
       <div className="rounded-xl border border-dashed border-border bg-gray-50 px-4 py-6 text-center text-sm text-textLight">
         {t("profile.schoolTeamStudents.emptyStages")}
@@ -60,18 +62,18 @@ const AcademicStagesListing = ({ stages = [], organizationId }) => {
   return (
     <>
       <div className="space-y-3 border border-border p-4 rounded-xl">
-        {parsedStages.map((stage) => (
+        {parsedGrades.map((grade) => (
           <button
-            key={stage.id}
-            onClick={() => handleOpenModal(stage)}
+            key={grade.id}
+            onClick={() => handleOpenModal(grade)}
             className="w-full flex items-center justify-between rounded-xl border border-border p-3 hover:bg-gray-50 hover:border-mainColor transition-colors cursor-pointer"
             aria-label={t("profile.schoolTeamStudents.viewStudents", {
-              grade: stage.name,
+              grade: grade.name,
             })}
           >
-            <span className="font-medium text-textLight">{stage.name}</span>
+            <span className="font-medium text-textLight">{grade.name}</span>
             <span className="flex items-center justify-center rounded-lg h-11 w-11 p-3 bg-[#DAE6E6] text-lg font-medium text-black font-ibm shadow-card">
-              {stage.count}
+              {grade.count}
             </span>
           </button>
         ))}
@@ -101,4 +103,4 @@ const AcademicStagesListing = ({ stages = [], organizationId }) => {
   );
 };
 
-export default memo(AcademicStagesListing);
+export default memo(GradesListing);

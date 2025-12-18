@@ -206,7 +206,7 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
 
                 {/* Booking Details Section */}
                 <div>
-                  <h3 className="text-lg font-bold text-black pb-4">
+                  <h3 className="text-lg font-medium text-black pb-4">
                     {t("profile.schoolTeamStudents.details.bookingDetails")}
                   </h3>
 

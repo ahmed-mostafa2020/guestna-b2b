@@ -3,10 +3,12 @@
 import { memo } from "react";
 import { useTranslations } from "next-intl";
 
-import AcademicStagesListing from "./AcademicStagesListing";
+import GradesListing from "./GradesListing";
 
-const StudentsInfo = ({ totalStudents = 0, stages = [], organizationId }) => {
+const StudentsInfo = ({ totalStudents = 0, grades = [], organizationId }) => {
   const t = useTranslations();
+
+  console.log(grades);
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 border border-border p-4 rounded-xl shadow-profile">
@@ -15,10 +17,7 @@ const StudentsInfo = ({ totalStudents = 0, stages = [], organizationId }) => {
         <p className="pb-4 lg:text-xl text-base font-medium text-mainColor">
           {t("profile.schoolTeamStudents.stagesTitle")}
         </p>
-        <AcademicStagesListing
-          stages={stages}
-          organizationId={organizationId}
-        />
+        <GradesListing grades={grades} organizationId={organizationId} />
       </div>
 
       {/* Right side - Students statistics */}
