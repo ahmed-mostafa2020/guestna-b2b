@@ -38,6 +38,7 @@ const UsersManagement = ({
 
   const handleAccordionChange = (organizationId) => (event, isExpanded) => {
     setExpanded(isExpanded ? organizationId : null);
+    setShowPermissions(!isExpanded && false);
   };
 
   return (
