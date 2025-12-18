@@ -18,6 +18,7 @@ import {
   phoneIcon,
   schoolIcon,
 } from "@assets/svg";
+import ExportButton from "@components/common/ExportButton";
 
 const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
   const locale = useLocale();
@@ -295,23 +296,12 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
       {/* Action Buttons */}
       <div className="space-y-3 print:hidden">
         {/* Excel Export Button */}
-        <button
+        <ExportButton
           onClick={handleExcelExport}
-          disabled={isExporting || loadingDetails}
-          className="bg-green-600 w-full hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-        >
-          {isExporting ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              {t("forms.validation.downloading")}
-            </>
-          ) : (
-            <>
-              <span className="text-lg">📊</span>
-              {t("profile.tables.orders.bookingDetails.exportExcel")}
-            </>
-          )}
-        </button>
+          loading={isExporting}
+          disabled={loadingDetails}
+          loadingText={t("forms.validation.downloading")}
+        />
       </div>
     </div>
   );

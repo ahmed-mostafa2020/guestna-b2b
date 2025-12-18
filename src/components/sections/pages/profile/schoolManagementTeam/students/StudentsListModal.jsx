@@ -11,6 +11,7 @@ import Pagination from "@components/common/Pagination";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { exportModalToPDF } from "@utils/exportUtils";
+import ExportButton from "@components/common/ExportButton";
 
 const StudentsListModal = ({
   open,
@@ -113,7 +114,7 @@ const StudentsListModal = ({
             className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
           >
             {/* Header */}
-            <div className="centered p-6 border-b border-border">
+            <div className="centered p-6">
               <div className="flex items-center gap-3">
                 <h2 className="lg:text-xl text-2xl font-semibold text-black">
                   {t("profile.schoolTeamStudents.modal.title")} {gradeName}
@@ -240,18 +241,12 @@ const StudentsListModal = ({
 
             {/* Footer Actions */}
             <div className="p-6 border-t border-border print:hidden">
-              <button
+              <ExportButton
                 onClick={() => handlePrint("excel")}
-                disabled={isExporting || isLoading}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-mainColor hover:bg-linksHover rounded-xl transition-colors disabled:opacity-50"
-              >
-                {isExporting ? (
-                  <CircularProgress size={20} color="inherit" />
-                ) : (
-                  <Print fontSize="small" />
-                )}
-                {t("links.print") || "Print Report"}
-              </button>
+                loading={isExporting}
+                disabled={isLoading}
+                loadingText={t("links.print") || "Print Report"}
+              />
             </div>
           </div>
         </div>

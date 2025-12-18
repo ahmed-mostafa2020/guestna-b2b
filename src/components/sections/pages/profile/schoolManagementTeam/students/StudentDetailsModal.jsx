@@ -11,6 +11,7 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { exportStudentDetailsToExcel } from "@utils/exportUtils";
 import BookingsTable from "./BookingsTable";
 import { Print } from "@mui/icons-material";
+import ExportButton from "@components/common/ExportButton";
 
 const StudentDetailsModal = ({ open, handleClose, studentId }) => {
   const t = useTranslations();
@@ -237,18 +238,11 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
           {/* Footer - Print Button */}
           {data && !isLoading && (
             <div className="p-6 border-t border-border flex bg-white">
-              <button
+              <ExportButton
                 onClick={handlePrint}
-                disabled={isExporting}
-                className="bg-mainColor text-center w-full text-white px-6 py-2.5 rounded-lg font-medium hover:bg-mainColor/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex centered gap-2 shadow-sm"
-              >
-                {isExporting ? (
-                  <CircularProgress size={20} color="inherit" />
-                ) : (
-                  <Print fontSize="small" />
-                )}
-                {t("links.print")}
-              </button>
+                loading={isExporting}
+                loadingText={t("links.print")}
+              />
             </div>
           )}
         </div>
