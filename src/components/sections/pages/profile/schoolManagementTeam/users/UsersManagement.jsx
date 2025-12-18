@@ -38,7 +38,6 @@ const UsersManagement = ({
 
   const handleAccordionChange = (organizationId) => (event, isExpanded) => {
     setExpanded(isExpanded ? organizationId : null);
-    setShowPermissions(isExpanded); // show permissions when org expands
   };
 
   return (
@@ -62,7 +61,7 @@ const UsersManagement = ({
             key={org._id}
             expanded={expanded === org._id}
             onChange={handleAccordionChange(org._id)}
-            className="!rounded-xl !shadow-sm border-2 border-border"
+            className="!rounded-xl !shadow-sm border-2 border-border my-2"
             sx={{
               "&:before": { display: "none" },
               "&.Mui-expanded": { margin: 0 },
