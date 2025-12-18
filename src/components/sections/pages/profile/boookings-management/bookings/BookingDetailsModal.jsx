@@ -130,7 +130,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Trip Information */}
-        <div className="space-y-6">
+        <div className="space-y-2">
           <h3 className="text-lg font-medium">
             {t("profile.tables.orders.bookingDetails.tripInfo")}
           </h3>
@@ -236,7 +236,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
         </div>
 
         {/* School Information */}
-        <div className="space-y-6">
+        <div className="space-y-2">
           <h3 className="text-lg font-medium">
             {t("profile.tables.orders.bookingDetails.schoolInfo")}
           </h3>
@@ -282,6 +282,14 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
                   minute: "numeric",
                 })}
               </p>
+            </div>
+
+            <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              {profileIcon}
+              <p className="text-sm text-gray-600">
+                {t("profile.tables.orders.bookingDetails.schoolEmail")}:
+              </p>
+              <p className="font-medium">{booking.organization?.email}</p>
             </div>
           </div>
         </div>

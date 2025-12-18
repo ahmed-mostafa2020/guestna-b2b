@@ -894,6 +894,7 @@
           "schoolName": "اسم المدرسة",
           "contactPerson": "جهة الاتصال",
           "phoneNumber": "رقم الهاتف",
+          "schoolEmail": "بريد المدرسة",
           "bookingDate": "تاريخ الحجز",
           "tripStartDate": "تاريخ بداية الرحلة",
           "tripEndDate": "تاريخ انتهاء الرحلة",

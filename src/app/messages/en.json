@@ -897,6 +897,7 @@
           "schoolName": "School Name",
           "contactPerson": "Contact Person",
           "phoneNumber": "Phone Number",
+          "schoolEmail": "School Email",
           "bookingDate": "Booking Date",
           "tripStartDate": "Trip Start Date",
           "tripEndDate": "Trip End Date",
