@@ -106,12 +106,5 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
     }
   }, [query.data, query.error, query.isLoading, dispatch, options]);
 
-  // Cleanup effect
-  useEffect(() => {
-    return () => {
-      queryClient.invalidateQueries(["fetchData", endpoint, options.method]);
-    };
-  }, [endpoint, options.method, queryClient]);
-
   return query;
 };
