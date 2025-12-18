@@ -646,6 +646,7 @@
         "nationalId": "National ID",
         "status": "Status",
         "parentName": "Parent Name",
+        "parent": "Parent",
         "parentPhone": "Parent Phone",
         "parentEmail": "Parent Email",
         "additionalPhone": "Additional Phone",

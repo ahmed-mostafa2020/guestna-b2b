@@ -644,6 +644,7 @@
         "nationalId": "رقم الهوية",
         "status": "الحالة",
         "parentName": "اسم ولي الأمر",
+        "parent": "ولي الأمر",
         "parentPhone": "رقم الهاتف",
         "parentEmail": "البريد الإلكتروني",
         "additionalPhone": "رقم هاتف إضافي",

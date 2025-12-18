@@ -8,6 +8,7 @@ import { CircularProgress, Card, CardContent } from "@mui/material";
 import CustomizedModal from "@components/common/customizedModal";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import formatDate from "@utils/FormateDate";
 
 const StudentDetailsModal = ({ open, handleClose, studentId }) => {
   const t = useTranslations();
@@ -37,7 +38,7 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
       <div className="centered min-h-screen p-4">
         <div className="bg-white rounded-2xl shadow-xl w-full max-w-6xl max-h-[95vh] overflow-hidden flex flex-col">
           {/* Header */}
-          <div className="centered p-6 border-b border-border">
+          <div className="centered p-6">
             <h2 className="lg:text-xl text-lg font-semibold text-black">
               {t("profile.schoolTeamStudents.details.title")}: {data?.name}
             </h2>
@@ -60,136 +61,144 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
                 {/* Top Section - 2 Columns */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Basic Student Info (Right in RTL) */}
-                  <div className="border border-border rounded-2xl p-6">
-                    <h3 className="text-lg font-bold text-black mb-6 pb-4 w-fit">
+                  <div>
+                    <h3 className="text-lg font-medium text-black pb-2 w-fit">
                       {t("profile.schoolTeamStudents.details.basicInfo")}
                     </h3>
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <span className="text-textLight font-medium">
-                          {t("profile.schoolTeamStudents.details.name")}
-                        </span>
-                        <span className="text-black font-semibold">
-                          {data.name || "-"}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <span className="text-textLight font-medium">
-                          {t(
-                            "profile.schoolTeamStudents.details.academicStage"
-                          )}
-                        </span>
-                        <span className="text-black font-semibold">
-                          {data.academicStage?.name || "-"}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <span className="text-textLight font-medium">
-                          {t("profile.schoolTeamStudents.details.grade")}
-                        </span>
-                        <span className="text-black font-semibold">
-                          {data.grade?.name || "-"}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <span className="text-textLight font-medium">
-                          {t("profile.schoolTeamStudents.details.track")}
-                        </span>
-                        <span className="text-black font-semibold">
-                          {data.track?.educationSystem?.name || "-"}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <span className="text-textLight font-medium">
-                          {t("profile.schoolTeamStudents.details.age")}
-                        </span>
-                        <span className="text-black font-semibold">
-                          - {/* JSON doesn't have age */}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <span className="text-textLight font-medium">
-                          {t(
-                            "profile.schoolTeamStudents.details.studentNumber"
-                          )}
-                        </span>
-                        <span className="text-black font-semibold break-all">
-                          {data._id || "-"}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <span className="text-textLight font-medium">
-                          {t("profile.schoolTeamStudents.details.nationalId")}
-                        </span>
-                        <span className="text-black font-semibold">
-                          -{" "}
-                          {/* JSON doesn't have student nationalId explicitly in root */}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <span className="text-textLight font-medium">
-                          {t("profile.schoolTeamStudents.details.status")}
-                        </span>
-                        -
+                    <div className="border border-border rounded-2xl p-6">
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          <span className="text-black font-medium">
+                            {t("profile.schoolTeamStudents.details.name")}
+                          </span>
+                          <span className="text-textLight font-medium">
+                            {data.name || "-"}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <span className="text-black font-medium">
+                            {t(
+                              "profile.schoolTeamStudents.details.academicStage"
+                            )}
+                          </span>
+                          <span className="text-textLight font-medium">
+                            {data.academicStage?.name || "-"}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <span className="text-black font-medium">
+                            {t("profile.schoolTeamStudents.details.grade")}
+                          </span>
+                          <span className="text-textLight font-medium">
+                            {data.grade?.name || "-"}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <span className="text-black font-medium">
+                            {t("profile.schoolTeamStudents.details.track")}
+                          </span>
+                          <span className="text-textLight font-medium">
+                            {data.track?.educationSystem?.name || "-"}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <span className="text-black font-medium">
+                            {t("profile.schoolTeamStudents.details.age")}
+                          </span>
+                          <span className="text-textLight font-medium">
+                            - {/* JSON doesn't have age */}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <span className="text-black font-medium">
+                            {t(
+                              "profile.schoolTeamStudents.details.studentNumber"
+                            )}
+                          </span>
+                          <span className="text-textLight font-medium break-all">
+                            {data._id || "-"}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <span className="text-black font-medium">
+                            {t("profile.schoolTeamStudents.details.nationalId")}
+                          </span>
+                          <span className="text-textLight font-medium">
+                            -{" "}
+                            {/* JSON doesn't have student nationalId explicitly in root */}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <span className="text-black font-medium">
+                            {t("profile.schoolTeamStudents.details.status")}
+                          </span>
+                          -
+                        </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Contact with Parent (Left in RTL) */}
-                  <div className="border border-border rounded-2xl p-6">
-                    <h3 className="text-lg font-bold text-black mb-6 pb-4 w-fit">
+                  <div>
+                    <h3 className="text-lg font-medium text-black pb-2 w-fit">
                       {t(
                         "profile.schoolTeamStudents.details.contactWithParent"
                       )}
                     </h3>
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <span className="text-textLight font-medium">
-                          {t("profile.schoolTeamStudents.details.parentName")}
-                        </span>
-                        <span className="text-black font-semibold">
-                          {data.parent?.name || "-"}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <span className="text-textLight font-medium">
-                          {t("profile.schoolTeamStudents.details.parentPhone")}
-                        </span>
-                        <span
-                          className="text-black font-semibold text-end"
-                          dir="ltr"
-                        >
-                          {data.parent?.phone || "-"}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <span className="text-textLight font-medium">
-                          {t("profile.schoolTeamStudents.details.parentEmail")}
-                        </span>
-                        <span className="text-black font-semibold break-all">
-                          {data.parent?.email || "-"}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <span className="text-textLight font-medium">
-                          {t(
-                            "profile.schoolTeamStudents.details.additionalPhone"
-                          )}
-                        </span>
-                        <span
-                          className="text-black font-semibold text-end"
-                          dir="ltr"
-                        >
-                          - {/* Placeholder */}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <span className="text-textLight font-medium">
-                          {t("profile.schoolTeamStudents.details.nationalId")}
-                        </span>
-                        <span className="text-black font-semibold">
-                          {data.parent?.nationalId || "-"}
-                        </span>
+                    <div className="border border-border rounded-2xl p-6">
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          <span className="text-black font-medium">
+                            {t("profile.schoolTeamStudents.details.parentName")}
+                          </span>
+                          <span className="text-textLight font-medium">
+                            {data.parent?.name || "-"}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <span className="text-black font-medium">
+                            {t(
+                              "profile.schoolTeamStudents.details.parentPhone"
+                            )}
+                          </span>
+                          <span
+                            className="text-textLight font-medium text-end"
+                            dir="ltr"
+                          >
+                            {data.parent?.phone || "-"}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <span className="text-black font-medium">
+                            {t(
+                              "profile.schoolTeamStudents.details.parentEmail"
+                            )}
+                          </span>
+                          <span className="text-textLight font-medium break-all">
+                            {data.parent?.email || "-"}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <span className="text-black font-medium">
+                            {t(
+                              "profile.schoolTeamStudents.details.additionalPhone"
+                            )}
+                          </span>
+                          <span
+                            className="text-textLight font-medium text-end"
+                            dir="ltr"
+                          >
+                            - {/* Placeholder */}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <span className="text-black font-medium">
+                            {t("profile.schoolTeamStudents.details.nationalId")}
+                          </span>
+                          <span className="text-textLight font-medium">
+                            {data.parent?.nationalId || "-"}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -255,21 +264,24 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
                                     </td>
                                     <td className="p-4 text-sm font-medium text-center text-foreground">
                                       {booking.date
-                                        ? new Date(
-                                            booking.date
-                                          ).toLocaleDateString(
-                                            locale === "ar" ? "ar-EG" : "en-US"
-                                          )
+                                        ? formatDate(booking.date, locale, {
+                                            year: "numeric",
+                                            month: "long",
+                                            day: "numeric",
+                                            hour: "numeric",
+                                            minute: "numeric",
+                                          })
                                         : "-"}
                                     </td>
                                     <td className="p-4 text-sm font-medium text-center text-foreground">
                                       {t(
-                                        "profile.schoolTeamStudents.details.parentName"
+                                        "profile.schoolTeamStudents.details.parent"
                                       )}
                                     </td>
                                     <td className="p-4 text-sm font-medium text-center text-foreground">
-                                      {t(`booking.status.${booking.status}`) ||
-                                        booking.status}
+                                      {t(
+                                        `common.bookingStatus.${booking.status}`
+                                      ) || booking.status}
                                     </td>
                                     <td className="p-4 text-center">
                                       <button className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-mainColor border border-transparent hover:border-mainColor hover:border rounded-lg transition-colors">
@@ -333,11 +345,13 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
                                   </span>
                                   <span className="text-sm font-medium text-foreground">
                                     {booking.date
-                                      ? new Date(
-                                          booking.date
-                                        ).toLocaleDateString(
-                                          locale === "ar" ? "ar-EG" : "en-US"
-                                        )
+                                      ? formatDate(booking.date, locale, {
+                                          year: "numeric",
+                                          month: "long",
+                                          day: "numeric",
+                                          hour: "numeric",
+                                          minute: "numeric",
+                                        })
                                       : "-"}
                                   </span>
                                 </div>
@@ -349,7 +363,7 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
                                   </span>
                                   <span className="text-sm font-medium text-foreground">
                                     {t(
-                                      "profile.schoolTeamStudents.details.parentName"
+                                      "profile.schoolTeamStudents.details.parent"
                                     )}
                                   </span>
                                 </div>
@@ -360,8 +374,9 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
                                     )}
                                   </span>
                                   <span className="text-sm font-medium text-foreground">
-                                    {t(`booking.status.${booking.status}`) ||
-                                      booking.status}
+                                    {t(
+                                      `common.bookingStatus.${booking.status}`
+                                    ) || booking.status}
                                   </span>
                                 </div>
                                 <div className="pt-2">
