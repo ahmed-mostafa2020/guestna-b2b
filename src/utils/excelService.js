@@ -26,6 +26,80 @@ const getCellValue = (cell) => {
   return String(cell).trim();
 };
 
+const createValidationRule = (header, colLetter, row, locale) => {
+  const { type, range, required, options, message, formula, errorTitle } =
+    header.validation;
+
+  const baseError = message?.[locale] || `Invalid ${header.key}`;
+  const baseTitle = errorTitle?.[locale] || `Invalid ${header.key}`;
+
+  switch (type) {
+    case "text":
+      return {
+        type: "textLength",
+        allowBlank: !required,
+        operator: "between",
+        formulae: range || [1, 255],
+        showErrorMessage: true,
+        errorStyle: "error",
+        errorTitle: baseTitle,
+        error: baseError,
+      };
+
+    case "number":
+      return {
+        type: "decimal",
+        allowBlank: !required,
+        operator: "between",
+        formulae: range || [0, 999999],
+        showErrorMessage: true,
+        errorStyle: "error",
+        errorTitle: baseTitle,
+        error: baseError,
+      };
+
+    case "email":
+      return {
+        type: "custom",
+        allowBlank: !required,
+        formulae: [
+          `AND(ISNUMBER(FIND("@",${colLetter}${row})),ISNUMBER(FIND(".",${colLetter}${row})))`,
+        ],
+        showErrorMessage: true,
+        errorStyle: "error",
+        errorTitle: baseTitle,
+        error: baseError,
+      };
+
+    case "dropdown":
+      if (!options?.length) return null;
+      return {
+        type: "list",
+        allowBlank: !required,
+        formulae: [`"${options.join(",")}"`],
+        showErrorMessage: true,
+        errorStyle: "error",
+        errorTitle: baseTitle,
+        error: baseError,
+      };
+
+    case "customFormula":
+      if (!formula) return null;
+      return {
+        type: "custom",
+        allowBlank: !required,
+        formulae: [formula(colLetter, row).trim()],
+        showErrorMessage: true,
+        errorStyle: "error",
+        errorTitle: baseTitle,
+        error: baseError,
+      };
+
+    default:
+      return null;
+  }
+};
+
 const applyValidation = (
   worksheet,
   headers,
@@ -38,83 +112,14 @@ const applyValidation = (
 
     for (let row = rowStart; row <= rowEnd; row++) {
       const cell = worksheet.getCell(`${colLetter}${row}`);
-
       if (header.validation) {
-        const { type, range, required, options, message, formula, errorTitle } =
-          header.validation;
-
-        if (type === "text") {
-          cell.dataValidation = {
-            type: "textLength",
-            allowBlank: !required,
-            operator: "between",
-            formulae: range || [1, 255],
-            showErrorMessage: true,
-            errorStyle: "error",
-            errorTitle: errorTitle || `Invalid ${header.key}`,
-            error: message?.[locale] || `Enter ${header.key} within range`,
-          };
-        }
-
-        if (type === "number") {
-          cell.dataValidation = {
-            type: "decimal",
-            allowBlank: !required,
-            operator: "between",
-            formulae: range || [0, 999999],
-            showErrorMessage: true,
-            errorStyle: "error",
-            errorTitle: errorTitle?.[locale] || `Invalid ${header.key}`,
-            error: message?.[locale] || `Enter ${header.key} within range`,
-          };
-        }
-
-        if (type === "email") {
-          cell.dataValidation = {
-            type: "custom",
-            allowBlank: !required,
-            formulae: [
-              `AND(ISNUMBER(FIND("@",${colLetter}${row})),ISNUMBER(FIND(".",${colLetter}${row})))`,
-            ],
-            showErrorMessage: true,
-            errorStyle: "error",
-            errorTitle: errorTitle?.[locale] || `Invalid ${header.key}`,
-            error: message?.[locale] || `Enter valid ${header.key}`,
-          };
-        }
-
-        if (type === "dropdown" && options?.length) {
-          cell.dataValidation = {
-            type: "list",
-            allowBlank: !required,
-            formulae: [`"${options.join(",")}"`],
-            showErrorMessage: true,
-            errorStyle: "error",
-            errorTitle: errorTitle?.[locale] || `Invalid ${header.key}`,
-            error: message?.[locale] || `Enter valid ${header.key}`,
-          };
-        }
-        if (type === "customFormula") {
-          cell.dataValidation = {
-            type: "custom",
-            allowBlank: !required,
-            formulae: [formula(colLetter, row)],
-            showErrorMessage: true,
-            showInputMessage: true,
-            promptTitle: locale === "ar" ? "تنبيه" : "Notice",
-            prompt:
-              locale === "ar"
-                ? "أدخل رقم الجوال كنص (مثال: +966 5x xxxx xxx)"
-                : "Enter phone number as text (example: +966 5x xxxx xxx)",
-            errorStyle: "error",
-            errorTitle: errorTitle?.[locale] || "Invalid phone",
-            error: message?.[locale],
-          };
-        }
+        const rule = createValidationRule(header, colLetter, row, locale);
+        if (rule) cell.dataValidation = rule;
       }
     }
   });
 };
+
 
 export const ExcelService = {
   // 1. Generate a dynamic, generic Excel template
