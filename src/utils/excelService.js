@@ -98,12 +98,17 @@ const applyValidation = (
           cell.dataValidation = {
             type: "custom",
             allowBlank: !required,
-            operator: "between",
-            formulae: [`${formula(colLetter, row)}`],
+            formulae: [formula(colLetter, row)],
             showErrorMessage: true,
+            showInputMessage: true,
+            promptTitle: locale === "ar" ? "تنبيه" : "Notice",
+            prompt:
+              locale === "ar"
+                ? "أدخل رقم الجوال كنص (مثال: +966 5x xxxx xxx)"
+                : "Enter phone number as text (example: +966 5x xxxx xxx)",
             errorStyle: "error",
-            errorTitle: errorTitle?.[locale] || `Invalid ${header.key}`,
-            error: message?.[locale] || `Enter valid ${header.key}`,
+            errorTitle: errorTitle?.[locale] || "Invalid phone",
+            error: message?.[locale],
           };
         }
       }
@@ -112,9 +117,8 @@ const applyValidation = (
 };
 
 export const ExcelService = {
-  //----------------------------------------------------------
   // 1. Generate a dynamic, generic Excel template
-  //----------------------------------------------------------
+
   generateTemplate: async ({ headers, locale = "en" }) => {
     const { workbook, worksheet } = createWorkbook("Template");
 
@@ -123,8 +127,9 @@ export const ExcelService = {
       header: col.label[locale] || col.label.en,
       key: col.key,
       width: col.width || 20,
+      style: col.style || {},
     }));
-
+    console.log(worksheet.columns);
     // Style header
     worksheet.getRow(1).eachCell((cell) => {
       cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
@@ -145,9 +150,8 @@ export const ExcelService = {
     return workbook.xlsx.writeBuffer();
   },
 
-  //----------------------------------------------------------
   // 2. Parse any Excel file into generic records
-  //----------------------------------------------------------
+
   parseExcelFile: async ({ file, headers, locale = "en" }) => {
     const workbook = new ExcelJS.Workbook();
     const buffer = await file.arrayBuffer();
@@ -157,27 +161,24 @@ export const ExcelService = {
     if (!worksheet) throw new Error("No worksheet found");
 
     // Extract real header names from Excel
-      const excelHeaderRow = worksheet.getRow(1);
-      
-     
+    const excelHeaderRow = worksheet.getRow(1);
+
     const excelHeaderValues = excelHeaderRow.values
       .slice(1)
       .map((v) => v?.toString().trim());
-   
-    
+
     // Match headers dynamically
     const columnMap = {};
-      headers.forEach((col, index) => {
-       
+    headers.forEach((col, index) => {
       const matchIndex = excelHeaderValues.findIndex(
         (h) =>
           h?.toLowerCase() === col.label[locale]?.toLowerCase() ||
           h?.toLowerCase() === col.label.en.toLowerCase()
-        );
-       
+      );
+
       if (matchIndex >= 0) columnMap[col.key] = matchIndex + 1;
     });
-   
+
     // Find missing
     const missing = headers.filter((col) => !columnMap[col.key]);
     if (missing.length)
@@ -192,9 +193,9 @@ export const ExcelService = {
       if (index === 1) return;
 
       const obj = {};
-        headers.forEach((col) => {
-            const value = getCellValue(row.getCell(columnMap[col.key]));
-      
+      headers.forEach((col) => {
+        const value = getCellValue(row.getCell(columnMap[col.key]));
+
         obj[col.key] = value ? value.toString() : "";
       });
 
@@ -205,9 +206,8 @@ export const ExcelService = {
     return records;
   },
 
-  //----------------------------------------------------------
   // 3. Export any records to Excel
-  //----------------------------------------------------------
+
   exportRecords: async ({ headers, records, locale = "en" }) => {
     const { workbook, worksheet } = createWorkbook("Records");
 

@@ -13,7 +13,9 @@ const UploadInstructions = ({
 }) => {
   const t = useTranslations();
   const locale = useLocale();
-  const { createTemplate } = useExcel({ headers: usersHeaders(roleOptions) });
+  const { createTemplate } = useExcel({
+    headers: usersHeaders({ roles: roleOptions, locale }),
+  });
   const generateAndDownloadExcel = async () => {
     return await createTemplate(
       t("profile.schools_users.bulkImport.users_upload_templates")

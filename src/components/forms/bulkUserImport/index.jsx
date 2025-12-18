@@ -52,7 +52,7 @@ const BulkUserImportForm = ({
   const headers = getHeaders(locale);
   const roleOptions = rolesData.map((r) => r.description);
 
-  const { parseFile } = useExcel({ headers: usersHeaders(roleOptions) });
+  const { parseFile } = useExcel({ headers: usersHeaders({roles: roleOptions , locale}) });
   const findRoleIdByName = useCallback(
     (description) =>
       rolesData.find((r) => r.description === description)?._id || description,
