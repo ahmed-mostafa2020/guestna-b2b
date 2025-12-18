@@ -1,6 +1,5 @@
 import { useTranslations } from "next-intl";
 import OrganizationsHeader from "./OrganizationsHeader";
-import OrganizationCard from "./OrganizationCard";
 
 import { Card, CircularProgress } from "@mui/material";
 import EmptyBookings from "./EmptyBookings";
@@ -14,25 +13,10 @@ const OrganizationsSection = ({
   const t = useTranslations();
   const schoolsData = organizationsData?.nodes;
 
-  const handleViewDetails = (id) => {
-    // Handle view details action
-    console.log("View details for organization:", id);
-  };
-
   const rendredSchools = schoolsData?.map((school) => {
     return (
-      <OrganizationCard
-        key={school._id}
-        id={school._id}
-        name={school.name}
-        city={school.city}
-        totalRevenue={school.totalRevenue}
-        childsCount={school.childsCount}
-        scheduledTrips={school.scheduledTrips}
-        doneTrips={school.doneTrips}
-        suspendedTrips={school.suspendedTrips}
-        onViewDetails={handleViewDetails}
-      />
+      // Add orgCard component
+      <span key={school._id}>{school.name}</span>
     );
   });
 
@@ -57,7 +41,9 @@ const OrganizationsSection = ({
       ) : organizationsData.nodes.length === 0 ? (
         <EmptyBookings />
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">{rendredSchools}</div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {rendredSchools}
+        </div>
       )}
     </Card>
   );

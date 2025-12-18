@@ -92,13 +92,7 @@ const OrdersSettingsTable = () => {
         </h2>
 
         {/* School Filter Dropdown */}
-        <div className="flex items-center gap-2">
-          <select className="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-mainColor/20 focus:border-mainColor min-w-[250px]">
-            <option value="">
-              {t("profile.tables.orders.settingsTable.selectSchool")}
-            </option>
-          </select>
-        </div>
+        {/* Add school filter dropdown */}
       </div>
 
       {/* Desktop Table */}
