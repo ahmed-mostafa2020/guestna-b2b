@@ -124,7 +124,7 @@ export const B2B_END_POINTS = {
         NEW_USER: "profile/users/new",
         EDIT_USER: "profile/users/edit",
         DELETE_USER: "profile/users/delete",
-        ROLES: "profile/users/roles",
+        ROLES: "profile/users/roles", //
       },
     },
     CREATE_TRIP_LINK: "profile/organizationTrips/poster",
