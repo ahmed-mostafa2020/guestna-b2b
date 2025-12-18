@@ -435,6 +435,126 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
 };
 
 /**
+ * Export student details to Excel
+ * @param {Object} data - Student data including bookings
+ * @param {Function} t - Translation function
+ * @param {string} locale - Current locale
+ */
+export const exportStudentDetailsToExcel = (data, t, locale) => {
+  try {
+    const workbook = XLSX.utils.book_new();
+
+    // --- Sheet 1: Student Profile ---
+    const profileLabels = {
+      basicInfo: t("profile.schoolTeamStudents.details.basicInfo"),
+      contactInfo: t("profile.schoolTeamStudents.details.contactWithParent"),
+      name: t("profile.schoolTeamStudents.details.name"),
+      academicStage: t("profile.schoolTeamStudents.details.academicStage"),
+      grade: t("profile.schoolTeamStudents.details.grade"),
+      track: t("profile.schoolTeamStudents.details.track"),
+      studentNumber: t("profile.schoolTeamStudents.details.studentNumber"),
+      nationalId: t("profile.schoolTeamStudents.details.nationalId"),
+      parentName: t("profile.schoolTeamStudents.details.parentName"),
+      parentPhone: t("profile.schoolTeamStudents.details.parentPhone"),
+      parentEmail: t("profile.schoolTeamStudents.details.parentEmail"),
+    };
+
+    const profileData = [
+      [profileLabels.basicInfo],
+      [""],
+      [profileLabels.name, data.name || "-"],
+      [profileLabels.academicStage, data.academicStage?.name || "-"],
+      [profileLabels.grade, data.grade?.name || "-"],
+      [profileLabels.track, data.track?.educationSystem?.name || "-"],
+      [profileLabels.studentNumber, data._id || "-"],
+      [profileLabels.nationalId, data.nationalId || "-"], // Assuming nationalId might be on data or separate
+      [""],
+      [profileLabels.contactInfo],
+      [""],
+      [profileLabels.parentName, data.parent?.name || "-"],
+      [profileLabels.parentPhone, data.parent?.phone || "-"],
+      [profileLabels.parentEmail, data.parent?.email || "-"],
+      [profileLabels.nationalId, data.parent?.nationalId || "-"],
+    ];
+
+    const profileSheet = XLSX.utils.aoa_to_sheet(profileData);
+    const profileColWidths = [{ wch: 25 }, { wch: 40 }];
+    profileSheet["!cols"] = profileColWidths;
+
+    XLSX.utils.book_append_sheet(
+      workbook,
+      profileSheet,
+      t("profile.schoolTeamStudents.details.basicInfo")
+    );
+
+    // --- Sheet 2: Bookings ---
+    if (data.bookings?.length > 0) {
+      const bookingLabels = {
+        activityName: t("profile.schoolTeamStudents.details.activityName"),
+        date: t("profile.schoolTeamStudents.details.date"),
+        parent: t("profile.schoolTeamStudents.details.parent"),
+        status: t("profile.schoolTeamStudents.details.status"),
+      };
+
+      const bookingHeaders = [
+        [
+          bookingLabels.activityName,
+          bookingLabels.date,
+          bookingLabels.parent,
+          bookingLabels.status,
+        ],
+      ];
+
+      const bookingRows = data.bookings.map((booking) => [
+        booking.tripName || "-",
+        booking.date
+          ? formatDate(booking.date, locale, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            })
+          : "-",
+        bookingLabels.parent, // As per UI hardcoded "Parent" or fetched if available
+        t(`common.bookingStatus.${booking.status}`) || booking.status,
+      ]);
+
+      const bookingsSheet = XLSX.utils.aoa_to_sheet([
+        ...bookingHeaders,
+        ...bookingRows,
+      ]);
+
+      const bookingColWidths = [
+        { wch: 30 },
+        { wch: 25 },
+        { wch: 20 },
+        { wch: 20 },
+      ];
+      bookingsSheet["!cols"] = bookingColWidths;
+
+      XLSX.utils.book_append_sheet(
+        workbook,
+        bookingsSheet,
+        t("profile.schoolTeamStudents.details.bookingDetails")
+      );
+    }
+
+    // Filename
+    const filenamePrefix = "Student_Details";
+    const filename = `${filenamePrefix}_${data.name || "student"}_${
+      new Date().toISOString().split("T")[0]
+    }.xlsx`;
+
+    XLSX.writeFile(workbook, filename);
+    return { success: true, filename };
+  } catch (error) {
+    console.error("Error exporting student details to Excel:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
  * Export modal screenshot to PDF format
  * @param {HTMLElement} modalElement - Modal DOM element to capture
  * @param {Object} booking - Booking data for filename

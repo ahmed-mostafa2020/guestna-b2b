@@ -1,14 +1,16 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 
-import { CircularProgress, Card, CardContent } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 
 import CustomizedModal from "@components/common/customizedModal";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import formatDate from "@utils/FormateDate";
+import { exportStudentDetailsToExcel } from "@utils/exportUtils";
+import BookingsTable from "./BookingsTable";
+import { Print } from "@mui/icons-material";
 
 const StudentDetailsModal = ({ open, handleClose, studentId }) => {
   const t = useTranslations();
@@ -25,6 +27,14 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
       lang: locale,
     }
   );
+
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handlePrint = async () => {
+    setIsExporting(true);
+    await exportStudentDetailsToExcel(data, t, locale);
+    setIsExporting(false);
+  };
 
   return (
     <CustomizedModal
@@ -211,204 +221,7 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
                   </h3>
 
                   <div className="space-y-4">
-                    {/* Desktop Table (Hidden on Mobile) */}
-                    <Card
-                      className="hidden md:block"
-                      sx={{
-                        borderRadius: "16px",
-                        boxShadow: "0 0 4px 0 rgba(0, 0, 0, 0.16)",
-                      }}
-                    >
-                      <CardContent className="p-0">
-                        <div className="overflow-x-auto">
-                          <table className="w-full text-sm">
-                            <thead>
-                              <tr className="border-b-2 border-tableRowBorder">
-                                <th className="p-4 font-semibold text-start">
-                                  {t(
-                                    "profile.schoolTeamStudents.details.activityName"
-                                  )}
-                                </th>
-                                <th className="p-4 font-semibold text-center">
-                                  {t("profile.schoolTeamStudents.details.date")}
-                                </th>
-                                <th className="p-4 font-semibold text-center">
-                                  {t(
-                                    "profile.schoolTeamStudents.details.bookingMethod"
-                                  )}
-                                </th>
-                                <th className="p-4 font-semibold text-center">
-                                  {t(
-                                    "profile.schoolTeamStudents.details.status"
-                                  )}
-                                </th>
-                                <th className="p-4 font-semibold text-center">
-                                  {t(
-                                    "profile.schoolTeamStudents.details.actions"
-                                  )}
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-200">
-                              {data.bookings?.length > 0 ? (
-                                data.bookings.map((booking, index) => (
-                                  <tr
-                                    key={booking._id}
-                                    className={`${
-                                      index !== data.bookings.length - 1 &&
-                                      "border-b border-table-border"
-                                    } transition-colors hover:bg-gray-50`}
-                                  >
-                                    <td className="p-4 text-sm font-medium text-foreground">
-                                      {booking.tripName || "-"}
-                                    </td>
-                                    <td className="p-4 text-sm font-medium text-center text-foreground">
-                                      {booking.date
-                                        ? formatDate(booking.date, locale, {
-                                            year: "numeric",
-                                            month: "long",
-                                            day: "numeric",
-                                            hour: "numeric",
-                                            minute: "numeric",
-                                          })
-                                        : "-"}
-                                    </td>
-                                    <td className="p-4 text-sm font-medium text-center text-foreground">
-                                      {t(
-                                        "profile.schoolTeamStudents.details.parent"
-                                      )}
-                                    </td>
-                                    <td className="p-4 text-sm font-medium text-center text-foreground">
-                                      {t(
-                                        `common.bookingStatus.${booking.status}`
-                                      ) || booking.status}
-                                    </td>
-                                    <td className="p-4 text-center">
-                                      <button className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-mainColor border border-transparent hover:border-mainColor hover:border rounded-lg transition-colors">
-                                        <svg
-                                          width="20"
-                                          height="20"
-                                          viewBox="0 0 24 24"
-                                          fill="none"
-                                          stroke="currentColor"
-                                          strokeWidth="2"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                        >
-                                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                          <circle cx="12" cy="12" r="3" />
-                                        </svg>
-                                      </button>
-                                    </td>
-                                  </tr>
-                                ))
-                              ) : (
-                                <tr>
-                                  <td
-                                    colSpan="5"
-                                    className="p-8 text-center text-textLight"
-                                  >
-                                    {t(
-                                      "profile.schoolTeamStudents.details.noData"
-                                    )}
-                                  </td>
-                                </tr>
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    {/* Mobile Cards (Visible ONLY on Mobile) */}
-                    <div className="md:hidden space-y-4">
-                      {data.bookings?.length > 0 ? (
-                        data.bookings.map((booking) => (
-                          <Card key={booking._id} className="shadow-sm">
-                            <CardContent className="p-4">
-                              <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                  <span className="text-sm font-semibold text-textLight">
-                                    {t(
-                                      "profile.schoolTeamStudents.details.activityName"
-                                    )}
-                                  </span>
-                                  <span className="text-sm font-medium text-foreground">
-                                    {booking.tripName || "-"}
-                                  </span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                  <span className="text-sm font-semibold text-textLight">
-                                    {t(
-                                      "profile.schoolTeamStudents.details.date"
-                                    )}
-                                  </span>
-                                  <span className="text-sm font-medium text-foreground">
-                                    {booking.date
-                                      ? formatDate(booking.date, locale, {
-                                          year: "numeric",
-                                          month: "long",
-                                          day: "numeric",
-                                          hour: "numeric",
-                                          minute: "numeric",
-                                        })
-                                      : "-"}
-                                  </span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                  <span className="text-sm font-semibold text-textLight">
-                                    {t(
-                                      "profile.schoolTeamStudents.details.bookingMethod"
-                                    )}
-                                  </span>
-                                  <span className="text-sm font-medium text-foreground">
-                                    {t(
-                                      "profile.schoolTeamStudents.details.parent"
-                                    )}
-                                  </span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                  <span className="text-sm font-semibold text-textLight">
-                                    {t(
-                                      "profile.schoolTeamStudents.details.status"
-                                    )}
-                                  </span>
-                                  <span className="text-sm font-medium text-foreground">
-                                    {t(
-                                      `common.bookingStatus.${booking.status}`
-                                    ) || booking.status}
-                                  </span>
-                                </div>
-                                <div className="pt-2">
-                                  <button className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-mainColor border border-mainColor rounded-lg hover:bg-gray-50 transition-colors">
-                                    <svg
-                                      width="20"
-                                      height="20"
-                                      viewBox="0 0 24 24"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      strokeWidth="2"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                    >
-                                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                      <circle cx="12" cy="12" r="3" />
-                                    </svg>
-                                    {t(
-                                      "profile.schoolTeamStudents.details.actions"
-                                    )}
-                                  </button>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))
-                      ) : (
-                        <div className="text-center py-8 text-textLight bg-gray-50 rounded-lg">
-                          {t("profile.schoolTeamStudents.details.noData")}
-                        </div>
-                      )}
-                    </div>
+                    <BookingsTable bookings={data.bookings} />
                   </div>
                 </div>
               </div>
@@ -420,6 +233,24 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
               </div>
             )}
           </div>
+
+          {/* Footer - Print Button */}
+          {data && !isLoading && (
+            <div className="p-6 border-t border-border flex bg-white">
+              <button
+                onClick={handlePrint}
+                disabled={isExporting}
+                className="bg-mainColor text-center w-full text-white px-6 py-2.5 rounded-lg font-medium hover:bg-mainColor/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex centered gap-2 shadow-sm"
+              >
+                {isExporting ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  <Print fontSize="small" />
+                )}
+                {t("links.print")}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </CustomizedModal>
