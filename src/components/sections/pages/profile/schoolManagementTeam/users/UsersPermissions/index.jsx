@@ -125,7 +125,7 @@ export default function UserPermissions({ user, onClose }) {
       </Box>
 
       {/* Actions */}
-      <Box className="flex gap-2 pt-4">
+      <Box className="flex gap-2 pt-4 md:flex-row flex-col ">
         <button
           className="flex w-full items-center justify-center gap-2.5 py-4 px-6 font-bold text-mainColor rounded-lg border-2 border-mainColor hover:border-linksHover  hover:text-linksHover"
           onClick={onClose}

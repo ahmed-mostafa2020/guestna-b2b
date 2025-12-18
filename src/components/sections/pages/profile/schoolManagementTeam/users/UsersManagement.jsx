@@ -6,13 +6,16 @@ import {
   AccordionDetails,
   Box,
   Slide,
-  Collapse,
+  Stack,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 
 import UsersHeader from "./UsersHeader";
 import UsersInfo from "./UsersInfo";
 import UserPermissions from "./UsersPermissions";
+import CustomizedModal from "@/src/components/common/customizedModal";
 
 const UsersManagement = ({
   data,
@@ -22,12 +25,14 @@ const UsersManagement = ({
   refetchTable,
 }) => {
   const t = useTranslations();
-  const organizations = Array.isArray(data) ? data : [];
   const locale = useLocale();
+  const theme = useTheme();
+  const isSmDown = useMediaQuery(theme.breakpoints.down("md"));
+
+  const organizations = Array.isArray(data) ? data : [];
   const [expanded, setExpanded] = useState(
     organizations.length > 0 ? organizations[0]._id : null
   );
-
   const [selectedUser, setSelectedUser] = useState(null);
   const [showPermissions, setShowPermissions] = useState(false);
 
@@ -42,17 +47,19 @@ const UsersManagement = ({
   };
 
   return (
-    <Box className="flex overflow-hidden" gap={2} width="100%">
+    <Stack
+      direction={{ xs: "column", md: "row" }}
+      spacing={2}
+      width="100%"
+      height="100%"
+    >
       {/* LEFT SIDE */}
       <Box
-        className={`
-    bg-white rounded-2xl shadow-card p-4
-    transition-[flex-basis] duration-1000
-    ease-[cubic-bezier(0.4, 0, 0.2, 1)]
-  `}
+        className="bg-white rounded-2xl shadow-card p-4"
         sx={{
-          flexBasis: showPermissions ? "65%" : "100%",
+          flexBasis: showPermissions && !isSmDown ? "65%" : "100%",
           minWidth: 0,
+          transition: "flex-basis 0.5s ease",
         }}
       >
         <UsersHeader setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
@@ -69,7 +76,7 @@ const UsersManagement = ({
             }}
           >
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <div className="flex flex-col gap-2 pe-4">
+              <Box className="flex flex-col gap-1">
                 <p className="text-lg font-medium">
                   {org.organization?.name ||
                     t("profile.schools_users.unknown_school")}
@@ -79,7 +86,7 @@ const UsersManagement = ({
                     count: org.users?.length || 0,
                   })}
                 </p>
-              </div>
+              </Box>
             </AccordionSummary>
 
             <AccordionDetails>
@@ -101,31 +108,41 @@ const UsersManagement = ({
       </Box>
 
       {/* RIGHT SIDE */}
-      <Slide
-        direction={locale === "en" ? "left" : "right"}
-        in={showPermissions}
-        mountOnEnter
-        unmountOnExit
-        timeout={1500}
-        easing={{
-          enter: "cubic-bezier(0.4, 0, 0.2, 1)",
-          exit: "cubic-bezier(0.4, 0, 0.2, 1)",
-        }}
-      >
-        <Box
-          sx={{
-            flexBasis: "35%",
-            minWidth: 360,
-          }}
-          className="bg-white rounded-2xl shadow-card p-4"
+      {!isSmDown && (
+        <Slide
+          direction={locale === "en" ? "left" : "right"}
+          in={showPermissions}
+          mountOnEnter
+          unmountOnExit
+          timeout={500}
         >
-          <UserPermissions
-            user={selectedUser}
-            onClose={() => setShowPermissions(false)}
-          />
-        </Box>
-      </Slide>
-    </Box>
+          <Box
+            sx={{
+              flexBasis: "35%",
+              minWidth: 300,
+            }}
+            className="bg-white rounded-2xl shadow-card p-4"
+          >
+            <UserPermissions
+              user={selectedUser}
+              onClose={() => setShowPermissions(false)}
+            />
+          </Box>
+        </Slide>
+      )}
+
+      {/* MOBILE MODAL STYLE */}
+      {isSmDown && showPermissions && selectedUser && (
+        <CustomizedModal open={showPermissions} handleClose={setShowPermissions} bgcolor="rgba(0, 0, 0, 0.3)" customizedCloseButton >
+          <Box className="bg-white rounded-2xl w-full max-w-md shadow-card p-4 relative">
+            <UserPermissions
+              user={selectedUser}
+              onClose={() => setShowPermissions(false)}
+            />
+          </Box>
+        </CustomizedModal>
+      )}
+    </Stack>
   );
 };
 
