@@ -1,5 +1,5 @@
-import { visaCardIcon } from "@/src/assets/svg";
-import formatCurrency from "@/src/utils/FormatCurrency";
+import { visaCardIcon } from "@assets/svg";
+import formatCurrency from "@utils/FormatCurrency";
 import { Grid } from "@material-ui/core";
 import { Box, Skeleton, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
@@ -53,10 +53,7 @@ const SchoolBalance = ({ details, isLoading }) => {
             className="flex flex-col items-center justify-center gap-2"
             xs={4}
           >
-            <Typography
-              variant="body1"
-              className=" !font-somar  text-[#202224]"
-            >
+            <Typography className=" !font-somar  text-[#202224]">
               {t(
                 "profile.schools_overview.schools_details.balance.available_balance"
               )}
@@ -72,10 +69,7 @@ const SchoolBalance = ({ details, isLoading }) => {
             className="flex flex-col items-center justify-center gap-2"
             xs={4}
           >
-            <Typography
-              variant="body1"
-              className=" !font-somar  text-[#202224]"
-            >
+            <Typography className=" !font-somar  text-[#202224]">
               {t(
                 "profile.schools_overview.schools_details.balance.pending_balance"
               )}
@@ -91,10 +85,7 @@ const SchoolBalance = ({ details, isLoading }) => {
             className="flex flex-col items-center justify-center gap-2"
             xs={4}
           >
-            <Typography
-              variant="body1"
-              className=" !font-somar  text-[#202224]"
-            >
+            <Typography className=" !font-somar  text-[#202224]">
               {t(
                 "profile.schools_overview.schools_details.balance.total_balance"
               )}

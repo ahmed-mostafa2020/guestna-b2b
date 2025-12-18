@@ -11,17 +11,21 @@ import {
   Skeleton,
 } from "@mui/material";
 import TuneIcon from "@mui/icons-material/Tune";
-import { useFetchData } from "@/src/hooks/useFetchData";
-import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
+import { useFetchData } from "@hooks/useFetchData";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { useLocale, useTranslations } from "next-intl";
 const sortOptions = ["HIGHEST_NAME", "LOWEST_NAME", "NEWEST", "OLDEST"];
 
-const SearchFilters = ({ searchTerms, onChange , isLoading }) => {
+const SearchFilters = ({ searchTerms, onChange, isLoading }) => {
   const [open, setOpen] = useState(false);
   const locale = useLocale();
   const t = useTranslations();
 
-  const { data , isLoading: staticsLoading , error } = useFetchData(
+  const {
+    data,
+    isLoading: staticsLoading,
+    error,
+  } = useFetchData(
     `${B2B_END_POINTS.PROFILE.ORGANIZATIONS.CITIES_TRACKS}`,
     {},
     { lang: locale }
@@ -70,8 +74,6 @@ const SearchFilters = ({ searchTerms, onChange , isLoading }) => {
       })),
     [t]
   );
-
-
 
   return (
     <Box className="w-full">
@@ -254,7 +256,7 @@ const SearchFilters = ({ searchTerms, onChange , isLoading }) => {
           onChange={(e) => handleFieldChange("name", e.target.value)}
         />
 
-        {(isLoading && staticsLoading) ? (
+        {isLoading && staticsLoading ? (
           <>
             <Skeleton variant="rounded" width={300} height={55} />
             <Skeleton variant="rounded" width={300} height={55} />

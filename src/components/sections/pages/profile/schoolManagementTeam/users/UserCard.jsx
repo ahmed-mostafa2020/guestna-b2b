@@ -35,16 +35,12 @@ const UserCard = ({ user, onEdit, onDelete }) => {
 
             <Box className="min-w-0 flex flex-col items-start gap-2">
               <Typography
-                variant="body1"
                 className=" !font-medium !font-somar !truncate !tracking-tight
 "
               >
                 {user.name}
               </Typography>
-              <Typography
-                variant="body2"
-                className="!text-sm !font-semibold !opacity-80 !text-[#202224] !truncate !leading-4"
-              >
+              <Typography className="!text-sm !font-semibold !opacity-80 !text-[#202224] !truncate !leading-4">
                 {user.email}
               </Typography>
 
@@ -59,7 +55,6 @@ const UserCard = ({ user, onEdit, onDelete }) => {
           <Box className="flex items-center gap-2 shrink-0">
             {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_DELETE) && (
               <button
-               
                 onClick={onDelete}
                 className="hover:!text-error !font-ibm !text-black !font-medium !leading-5 tracking-tight
                 "

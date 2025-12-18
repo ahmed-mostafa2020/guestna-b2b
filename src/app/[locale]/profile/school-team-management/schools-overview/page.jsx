@@ -4,24 +4,24 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 
 // Components
-import Pagination from "@/src/components/common/Pagination";
-import SchoolOverviewCard from "@/src/components/sections/pages/profile/schoolManagementTeam/schoolsOverview/SchoolOverviewCard";
-import SchoolOverviewCardSkeleton from "@/src/components/sections/pages/profile/schoolManagementTeam/schoolsOverview/SchoolOverviewCardSkeleton";
-import SearchFilters from "@/src/components/sections/pages/profile/schoolManagementTeam/schoolsOverview/SearchFilters";
-import InfoCardsListing from "@/src/components/sections/pages/profile/trips/infoCards/InfoCardsListing";
-import InfoCardsSkeleton from "@/src/components/sections/pages/profile/trips/infoCards/InfoCardsSkeleton";
-import ErrorComponent from "@/src/feedback/error/ErrorComponent";
+import Pagination from "@components/common/Pagination";
+import SchoolOverviewCard from "@components/sections/pages/profile/schoolManagementTeam/schoolsOverview/SchoolOverviewCard";
+import SchoolOverviewCardSkeleton from "@components/sections/pages/profile/schoolManagementTeam/schoolsOverview/SchoolOverviewCardSkeleton";
+import SearchFilters from "@components/sections/pages/profile/schoolManagementTeam/schoolsOverview/SearchFilters";
+import InfoCardsListing from "@components/sections/pages/profile/trips/infoCards/InfoCardsListing";
+import InfoCardsSkeleton from "@components/sections/pages/profile/trips/infoCards/InfoCardsSkeleton";
+import ErrorComponent from "@feedback/error/ErrorComponent";
 
 // Hooks
-import { useFetchData } from "@/src/hooks/useFetchData";
-import { usePermissions } from "@/src/hooks/usePermissions";
+import { useFetchData } from "@hooks/useFetchData";
+import { usePermissions } from "@hooks/usePermissions";
 import { useLocale, useTranslations } from "next-intl";
 
 // Constants
-import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
-import { PERMISSIONS } from "@/src/constants/permissions";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { PERMISSIONS } from "@constants/permissions";
 import { Grid } from "@material-ui/core";
-import { SORTING_TYPE } from "@/src/constants/sorting";
+import { SORTING_TYPE } from "@constants/sorting";
 
 const SchoolsOverViewPage = () => {
   const locale = useLocale();
@@ -130,7 +130,7 @@ const SchoolsOverViewPage = () => {
       </Box>
 
       {/* Listing Section */}
-      <Grid container  spacing={2}>
+      <Grid container spacing={2}>
         {/* Loading Skeletons */}
         {isLoading &&
           Array.from({ length: 6 }).map((_, index) => (

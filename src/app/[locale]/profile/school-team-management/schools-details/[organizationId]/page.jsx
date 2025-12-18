@@ -6,8 +6,8 @@ import SchoolStats from "@components/sections/pages/profile/schoolManagementTeam
 import SelectSchoolForDetails from "@components/sections/pages/profile/schoolManagementTeam/schoolsDetails/SelectSchool";
 import UsersInfo from "@components/sections/pages/profile/schoolManagementTeam/users/UsersInfo";
 
-import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
-import { useFetchData } from "@/src/hooks/useFetchData";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { useFetchData } from "@hooks/useFetchData";
 import { Typography } from "@material-ui/core";
 import { Box } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
@@ -52,8 +52,8 @@ const SchoolsDetailsPage = ({ params }) => {
 
           <Box className="ms-7">
             <Typography
-              variant="body1"
-              className="!text-textDark !font-somar  "
+             
+              className="!text-textDark !font-somar !text-base  "
             >
               {t("profile.schools_overview.schools_details.caption")}{" "}
             </Typography>
@@ -77,7 +77,7 @@ const SchoolsDetailsPage = ({ params }) => {
               refetchInfo={refetch}
               organizationName={data?.name}
             />
-          ): (
+          ) : (
             <Typography className="!text-textDark !font-somar !text-lg">
               {t("profile.schools_overview.schools_details.users.no_users")}{" "}
             </Typography>
