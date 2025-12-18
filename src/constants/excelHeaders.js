@@ -26,17 +26,23 @@ export const usersHeaders = (roles = []) => [
   },
   {
     key: "phone",
+    style: "@",
     label: { ar: "رقم الجوال", en: "Phone" },
     validation: {
       type: "customFormula",
       required: true,
       // Excel formula to allow Saudi numbers: 05XXXXXXXX, 5XXXXXXXX, +9665XXXXXXXX
       formula: (colLetter, row) =>
-        `OR(
-          AND(LEFT(${colLetter}${row},2)="05",LEN(${colLetter}${row})=10),
-          AND(LEFT(${colLetter}${row},1)="5",LEN(${colLetter}${row})=9),
-          AND(LEFT(${colLetter}${row},4)="+966",LEN(${colLetter}${row})=13)
-        )`,
+        `=LET(
+      n, SUBSTITUTE(${colLetter}${row}," ",""),
+      OR(
+        AND(LEFT(n,2)="05",LEN(n)=10),
+        AND(LEFT(n,1)="5",LEN(n)=9),
+        AND(LEFT(n,4)="+966",LEN(n)=13)
+      )
+    )
+    
+    `,
       errorTitle: { ar: "رقم الجوال غير صحيح", en: "Invalid phone number" },
       message: {
         ar: "رقم الجوال يجب أن يكون رقم سعودي صحيح",

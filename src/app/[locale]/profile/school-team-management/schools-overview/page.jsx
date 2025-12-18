@@ -30,9 +30,9 @@ const SchoolsOverViewPage = () => {
 
   const [page, setPage] = useState(1);
 
-  // ----------------------------------------------------
+
   // SEARCH / FILTER STATE
-  // ----------------------------------------------------
+
   const [searchTerms, setSearchTerms] = useState({
     name: "",
     city: null,
