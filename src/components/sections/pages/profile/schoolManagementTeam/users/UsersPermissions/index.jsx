@@ -70,7 +70,7 @@ export default function UserPermissions({ user, onClose }) {
     try {
       await axios.request({
         url: getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.UPDATE_PERMISSIONS}/`
+          `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.UPDATE_PERMISSIONS}/${user._id}`
         ),
         method: "patch",
         maxBodyLength: Infinity,
