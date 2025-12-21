@@ -1967,6 +1967,10 @@
         "description": "تم إرسال طلبك بنجاح. سيتواصل معك فريقنا خلال 24 ساعة."
       },
 
+      "organization": {
+        "placeholder": "اسم المدرسة"
+      },
+
       "tripInfo": {
         "title": "معلومات الرحلة",
         "description": "وصف الرحلة"

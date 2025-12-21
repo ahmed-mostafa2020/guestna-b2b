@@ -22,6 +22,8 @@ const OrganizationSelector = () => {
   const dispatch = useDispatch();
   const dropdownRef = useRef(null);
 
+  const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
+
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -31,12 +33,15 @@ const OrganizationSelector = () => {
   );
 
   // Fetch organizations from API (skip org header to avoid circular dependency)
+  const shouldFetch = Boolean(token);
+
   const { data, isLoading } = useFetchData(
     B2B_END_POINTS.PROFILE.HEADER_FILTER_BY_ORGANIZATION,
     {},
     {
       lang: locale,
       skipOrgHeader: true,
+      enabled: shouldFetch,
     }
   );
 
@@ -44,6 +49,8 @@ const OrganizationSelector = () => {
   useEffect(() => {
     if (data) {
       dispatch(setOrganizations(data));
+    } else {
+      dispatch(setOrganizations([]));
     }
   }, [data, dispatch]);
 
@@ -111,6 +118,13 @@ const OrganizationSelector = () => {
       count: selectedIds.length,
     });
   };
+
+  const hasOrganizations =
+    Array.isArray(organizations) && organizations.length > 0;
+
+  if (!token) {
+    return null;
+  }
 
   return (
     <div className="relative" ref={dropdownRef}>

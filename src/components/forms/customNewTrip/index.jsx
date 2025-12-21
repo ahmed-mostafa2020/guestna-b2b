@@ -1,4 +1,8 @@
+"use client";
+
 import { useLocale, useTranslations } from "next-intl";
+import { useSelector } from "react-redux";
+
 import { memo, useState } from "react";
 import { Formik } from "formik";
 import axios from "axios";
@@ -18,6 +22,10 @@ import FileUploadGroup from "../FileUploadGroup";
 const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
   const [formErrors, setFormErrors] = useState([]);
 
+  const selectedOrganization = useSelector(
+    (state) => state.selectedOrganizations.organizations
+  );
+
   const locale = useLocale();
   const t = useTranslations();
 
@@ -25,13 +33,8 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
   const customTripSchema = createCustomNewTripSchema(t);
   const { enqueueSnackbar } = useSnackbar();
 
-  console.log("CustomNewTripForm props:", {
-    hasFormSelectionData: !!formSelectionData,
-    hasOnClose: typeof onClose === "function",
-    hasOnSuccess: typeof onSuccess === "function",
-  });
-
   // Keep full objects for _id lookup
+  const organizationData = selectedOrganization || [];
   const categoryData = formSelectionData.categories;
   const tripTypeData = [
     {
@@ -52,6 +55,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
   const servicesData = formSelectionData.services;
 
   // Extract names for dropdown display
+  const organizationOptions = organizationData.map((item) => item.name);
   const categoryOptions = categoryData.map((item) => item.name);
   const tripTypeOptions = tripTypeData.map((item) => item.name);
   const cityOptions = cityData.map((item) => item.name);
@@ -93,6 +97,9 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
 
         // Convert names to _id for dropdown fields
         switch (key) {
+          case "organization":
+            valueToSend = findIdByName(organizationData, values[key]);
+            break;
           case "category":
             valueToSend = findIdByName(categoryData, values[key]);
             break;
@@ -136,6 +143,8 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
       }
     });
 
+    const organizationId = findIdByName(organizationData, values.organization);
+
     const config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -145,6 +154,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
       headers: {
         ...headers,
         "Content-Type": "multipart/form-data",
+        "profile-organizations": JSON.stringify([organizationId]),
       },
       data: formData,
     };
@@ -220,6 +230,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
         `}</style>
         <Formik
           initialValues={{
+            organization: "",
             category: "",
             tripType: "",
             city: "",
@@ -253,6 +264,20 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
             setFieldValue,
           }) => (
             <form onSubmit={handleSubmit}>
+              {selectedOrganization && selectedOrganization.length > 0 && (
+                <div className="somar-placeholder mb-6">
+                  <SelectionGroup
+                    name="organization"
+                    value={values.organization}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    touched={touched.organization}
+                    errors={errors.organization}
+                    placeholder={t("forms.customTrip.organization.placeholder")}
+                    list={organizationOptions}
+                  />
+                </div>
+              )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Selected Trip */}
                 <div className="somar-placeholder">

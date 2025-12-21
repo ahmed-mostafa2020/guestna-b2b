@@ -1976,6 +1976,10 @@
         "description": "Your request has been sent successfully. Our team will contact you within 24 hours."
       },
 
+      "organization": {
+        "placeholder": "School Name"
+      },
+
       "tripInfo": {
         "title": "Trip Information",
         "description": "Trip Description"
