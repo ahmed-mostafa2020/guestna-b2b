@@ -6,16 +6,10 @@ import React from "react";
 const StateCard = ({ label, value }) => {
   return (
     <Box className="flex flex-col gap-2 bg-white border-2 h-full min-h-28 justify-center items-center border-border rounded-lg px-2 py-4">
-      <Typography
-        variant="h4"
-        className=" !font-somar !text-center !text-sm !text-[#202224] !capitalize"
-      >
+      <Typography className="  !font-somar !text-center !text-sm !text-[#202224] !capitalize">
         {label}
       </Typography>
-      <Typography
-        variant="h4"
-        className=" !font-somar !text-center !text-xl text-[#1E1E1C]"
-      >
+      <Typography className=" !font-somar !text-center !text-xl text-[#1E1E1C]">
         {value}
       </Typography>
     </Box>

@@ -129,7 +129,7 @@ const SchoolsOverViewPage = () => {
       </Box>
 
       {/* Listing Section */}
-      <Grid container  spacing={2}>
+      <Grid container spacing={2}>
         {/* Loading Skeletons */}
         {isLoading &&
           Array.from({ length: 6 }).map((_, index) => (
@@ -150,10 +150,7 @@ const SchoolsOverViewPage = () => {
         {/* Empty State */}
         {!isLoading && schools.length === 0 && (
           <Box className="w-full py-10 flex justify-center items-center flex-col gap-4">
-            <Typography
-              variant="h4"
-              className="text-gray-600 font-medium text-center !font-somar"
-            >
+            <Typography className="text-gray-600 font-medium text-center !font-somar !text-lg">
               {t("profile.schools_overview.no_schools_found")}
             </Typography>
           </Box>

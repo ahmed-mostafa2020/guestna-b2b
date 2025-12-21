@@ -1,4 +1,4 @@
-import { uploadFile } from "@assets/svg";
+import { uploadPaperIcon } from "@assets/svg";
 import { Alert, Box, Button, List, ListItem, Typography } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 import { usersHeaders } from "@constants/excelHeaders";
@@ -13,10 +13,12 @@ const UploadInstructions = ({
 }) => {
   const t = useTranslations();
   const locale = useLocale();
-  const { createTemplate } = useExcel({ headers: usersHeaders(roleOptions) });
+  const { createTemplate } = useExcel({
+    headers: usersHeaders({ roles: roleOptions, locale }),
+  });
   const generateAndDownloadExcel = async () => {
     return await createTemplate(
-      locale === "ar" ? "قالب_رفع_مستخدمين" : "users_upload_templates"
+      t("profile.schools_users.bulkImport.users_upload_templates")
     );
   };
 
@@ -28,7 +30,7 @@ const UploadInstructions = ({
 
       <Box className=" gap-8 rounded-lg flex flex-col items-center justify-center p-10 mb-4 ">
         <Box className="flex flex-col items-center">
-          <span className="!text-7xl text-[#838383]">{uploadFile}</span>
+          <span className="!text-7xl text-[#838383]">{uploadPaperIcon}</span>
           <Typography className="mt-2 text-gray-600 !text-4xl !font-semibold !font-somar">
             {t("profile.schools_users.bulkImport.uploadBox.placeholder")}
           </Typography>
@@ -52,8 +54,6 @@ const UploadInstructions = ({
             {t("profile.schools_users.bulkImport.buttons.downloadTemplate")}
           </button>
           <button
-            fullWidth
-            variant="outlined"
             className="flex w-full items-center justify-center gap-2.5 py-4 px-6 font-bold text-mainColor rounded-lg border-2 border-mainColor hover:border-linksHover  hover:text-linksHover"
             onClick={() => document.getElementById("bulk-upload-file").click()}
           >

@@ -320,7 +320,7 @@ const smallHeartIcon = (
   </svg>
 );
 
-const locationIcon =   (
+const locationIcon = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="16"
@@ -1555,7 +1555,7 @@ const posterIcon = (
       d="M6.0995 4.10444C6.0995 4.30685 6.06988 4.50928 6.01558 4.69688C5.96127 4.89436 5.88228 5.07702 5.77861 5.24982C5.66012 5.44729 5.51201 5.62502 5.33922 5.77313C4.9492 6.11872 4.44069 6.32607 3.87788 6.32607C3.62609 6.32607 3.38912 6.28658 3.16696 6.20758C2.66339 6.03973 2.24374 5.69414 1.97715 5.24982C1.77473 4.9141 1.65625 4.51914 1.65625 4.10444C1.65625 3.40339 1.97715 2.7764 2.4906 2.37157C2.87074 2.06547 3.35456 1.88281 3.87788 1.88281C5.10718 1.88281 6.0995 2.87514 6.0995 4.10444Z"
       stroke="#008F8F"
       strokeWidth="0.740542"
-      stroke-miterlimit="10"
+      strokeMiterlimit="10"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -1563,7 +1563,7 @@ const posterIcon = (
       d="M4.46796 4.68672L3.29297 3.51172"
       stroke="#008F8F"
       strokeWidth="0.740542"
-      stroke-miterlimit="10"
+      strokeMiterlimit="10"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -1571,7 +1571,7 @@ const posterIcon = (
       d="M4.46014 3.52148L3.28516 4.69648"
       stroke="#008F8F"
       strokeWidth="0.740542"
-      stroke-miterlimit="10"
+      strokeMiterlimit="10"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -1786,7 +1786,7 @@ const SuitcaseIcon = ({ className = "w-6 h-6" }) => (
   </svg>
 );
 
-const bankSmall = (
+const bankSmallIcon = (
   <svg
     width="28"
     height="28"
@@ -1797,74 +1797,74 @@ const bankSmall = (
     <path
       d="M14.4317 2.5075L24.9317 6.70747C25.34 6.8708 25.6667 7.3608 25.6667 7.79246V11.6658C25.6667 12.3075 25.1417 12.8325 24.5 12.8325H3.50001C2.85834 12.8325 2.33334 12.3075 2.33334 11.6658V7.79246C2.33334 7.3608 2.66002 6.8708 3.06835 6.70747L13.5683 2.5075C13.8017 2.41417 14.1983 2.41417 14.4317 2.5075Z"
       stroke="#1E1E1C"
-      stroke-width="1.5"
-      stroke-miterlimit="10"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M25.6667 25.6667H2.33334V22.1667C2.33334 21.525 2.85834 21 3.50001 21H24.5C25.1417 21 25.6667 21.525 25.6667 22.1667V25.6667Z"
       stroke="#1E1E1C"
-      stroke-width="1.5"
-      stroke-miterlimit="10"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M4.66666 21.0026V12.8359"
       stroke="#1E1E1C"
-      stroke-width="1.5"
-      stroke-miterlimit="10"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M9.33334 21.0026V12.8359"
       stroke="#1E1E1C"
-      stroke-width="1.5"
-      stroke-miterlimit="10"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M14 21.0026V12.8359"
       stroke="#1E1E1C"
-      stroke-width="1.5"
-      stroke-miterlimit="10"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M18.6667 21.0026V12.8359"
       stroke="#1E1E1C"
-      stroke-width="1.5"
-      stroke-miterlimit="10"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M23.3333 21.0026V12.8359"
       stroke="#1E1E1C"
-      stroke-width="1.5"
-      stroke-miterlimit="10"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M1.16666 25.6641H26.8333"
       stroke="#1E1E1C"
-      stroke-width="1.5"
-      stroke-miterlimit="10"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M14 9.91406C14.9665 9.91406 15.75 9.13056 15.75 8.16406C15.75 7.19756 14.9665 6.41406 14 6.41406C13.0335 6.41406 12.25 7.19756 12.25 8.16406C12.25 9.13056 13.0335 9.91406 14 9.91406Z"
       stroke="#1E1E1C"
-      stroke-width="1.5"
-      stroke-miterlimit="10"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -1907,7 +1907,7 @@ const visaCardIcon = (
   </svg>
 );
 
-const uploadFile = (
+const uploadPaperIcon = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="120"
@@ -1918,30 +1918,30 @@ const uploadFile = (
     <path
       d="M45 85V55L35 65"
       stroke="#292D32"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M45 55L55 65"
       stroke="#292D32"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M110 50V75C110 100 100 110 75 110H45C20 110 10 100 10 75V45C10 20 20 10 45 10H70"
       stroke="#292D32"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M110 50H90C75 50 70 45 70 30V10L110 50Z"
       stroke="#292D32"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -1954,7 +1954,7 @@ const backIconColored = (
     viewBox="0 0 20 20"
     fill="none"
   >
-    <path d="M7.5 5L12.5 10L7.5 15" stroke="#E6F6F4" stroke-width="2" />
+    <path d="M7.5 5L12.5 10L7.5 15" stroke="#E6F6F4" strokeWidth="2" />
   </svg>
 );
 const emailBlueIcon = (
@@ -1975,11 +1975,11 @@ const emailBlueIcon = (
 export {
   emailBlueIcon,
   backIconColored,
-  uploadFile,
+  uploadPaperIcon,
   bluelocationIcon,
   visaCardIcon,
   locationGrayIcon,
-  bankSmall,
+  bankSmallIcon,
   discoverIcon,
   schoolsIcon,
   companiesIcon,

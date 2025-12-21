@@ -26,6 +26,80 @@ const getCellValue = (cell) => {
   return String(cell).trim();
 };
 
+const createValidationRule = (header, colLetter, row, locale) => {
+  const { type, range, required, options, message, formula, errorTitle } =
+    header.validation;
+
+  const baseError = message?.[locale] || `Invalid ${header.key}`;
+  const baseTitle = errorTitle?.[locale] || `Invalid ${header.key}`;
+
+  switch (type) {
+    case "text":
+      return {
+        type: "textLength",
+        allowBlank: !required,
+        operator: "between",
+        formulae: range || [1, 255],
+        showErrorMessage: true,
+        errorStyle: "error",
+        errorTitle: baseTitle,
+        error: baseError,
+      };
+
+    case "number":
+      return {
+        type: "decimal",
+        allowBlank: !required,
+        operator: "between",
+        formulae: range || [0, 999999],
+        showErrorMessage: true,
+        errorStyle: "error",
+        errorTitle: baseTitle,
+        error: baseError,
+      };
+
+    case "email":
+      return {
+        type: "custom",
+        allowBlank: !required,
+        formulae: [
+          `AND(ISNUMBER(FIND("@",${colLetter}${row})),ISNUMBER(FIND(".",${colLetter}${row})))`,
+        ],
+        showErrorMessage: true,
+        errorStyle: "error",
+        errorTitle: baseTitle,
+        error: baseError,
+      };
+
+    case "dropdown":
+      if (!options?.length) return null;
+      return {
+        type: "list",
+        allowBlank: !required,
+        formulae: [`"${options.join(",")}"`],
+        showErrorMessage: true,
+        errorStyle: "error",
+        errorTitle: baseTitle,
+        error: baseError,
+      };
+
+    case "customFormula":
+      if (!formula) return null;
+      return {
+        type: "custom",
+        allowBlank: !required,
+        formulae: [formula(colLetter, row).trim()],
+        showErrorMessage: true,
+        errorStyle: "error",
+        errorTitle: baseTitle,
+        error: baseError,
+      };
+
+    default:
+      return null;
+  }
+};
+
 const applyValidation = (
   worksheet,
   headers,
@@ -38,83 +112,17 @@ const applyValidation = (
 
     for (let row = rowStart; row <= rowEnd; row++) {
       const cell = worksheet.getCell(`${colLetter}${row}`);
-
       if (header.validation) {
-        const { type, range, required, options, message, formula, errorTitle } =
-          header.validation;
-
-        if (type === "text") {
-          cell.dataValidation = {
-            type: "textLength",
-            allowBlank: !required,
-            operator: "between",
-            formulae: range || [1, 255],
-            showErrorMessage: true,
-            errorStyle: "error",
-            errorTitle: errorTitle || `Invalid ${header.key}`,
-            error: message?.[locale] || `Enter ${header.key} within range`,
-          };
-        }
-
-        if (type === "number") {
-          cell.dataValidation = {
-            type: "decimal",
-            allowBlank: !required,
-            operator: "between",
-            formulae: range || [0, 999999],
-            showErrorMessage: true,
-            errorStyle: "error",
-            errorTitle: errorTitle?.[locale] || `Invalid ${header.key}`,
-            error: message?.[locale] || `Enter ${header.key} within range`,
-          };
-        }
-
-        if (type === "email") {
-          cell.dataValidation = {
-            type: "custom",
-            allowBlank: !required,
-            formulae: [
-              `AND(ISNUMBER(FIND("@",${colLetter}${row})),ISNUMBER(FIND(".",${colLetter}${row})))`,
-            ],
-            showErrorMessage: true,
-            errorStyle: "error",
-            errorTitle: errorTitle?.[locale] || `Invalid ${header.key}`,
-            error: message?.[locale] || `Enter valid ${header.key}`,
-          };
-        }
-
-        if (type === "dropdown" && options?.length) {
-          cell.dataValidation = {
-            type: "list",
-            allowBlank: !required,
-            formulae: [`"${options.join(",")}"`],
-            showErrorMessage: true,
-            errorStyle: "error",
-            errorTitle: errorTitle?.[locale] || `Invalid ${header.key}`,
-            error: message?.[locale] || `Enter valid ${header.key}`,
-          };
-        }
-        if (type === "customFormula") {
-          cell.dataValidation = {
-            type: "custom",
-            allowBlank: !required,
-            operator: "between",
-            formulae: [`${formula(colLetter, row)}`],
-            showErrorMessage: true,
-            errorStyle: "error",
-            errorTitle: errorTitle?.[locale] || `Invalid ${header.key}`,
-            error: message?.[locale] || `Enter valid ${header.key}`,
-          };
-        }
+        const rule = createValidationRule(header, colLetter, row, locale);
+        if (rule) cell.dataValidation = rule;
       }
     }
   });
 };
 
 export const ExcelService = {
-  //----------------------------------------------------------
   // 1. Generate a dynamic, generic Excel template
-  //----------------------------------------------------------
+
   generateTemplate: async ({ headers, locale = "en" }) => {
     const { workbook, worksheet } = createWorkbook("Template");
 
@@ -123,8 +131,9 @@ export const ExcelService = {
       header: col.label[locale] || col.label.en,
       key: col.key,
       width: col.width || 20,
+      style: col.style || {},
     }));
-
+    console.log(worksheet.columns);
     // Style header
     worksheet.getRow(1).eachCell((cell) => {
       cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
@@ -145,9 +154,8 @@ export const ExcelService = {
     return workbook.xlsx.writeBuffer();
   },
 
-  //----------------------------------------------------------
   // 2. Parse any Excel file into generic records
-  //----------------------------------------------------------
+
   parseExcelFile: async ({ file, headers, locale = "en" }) => {
     const workbook = new ExcelJS.Workbook();
     const buffer = await file.arrayBuffer();
@@ -157,27 +165,24 @@ export const ExcelService = {
     if (!worksheet) throw new Error("No worksheet found");
 
     // Extract real header names from Excel
-      const excelHeaderRow = worksheet.getRow(1);
-      
-     
+    const excelHeaderRow = worksheet.getRow(1);
+
     const excelHeaderValues = excelHeaderRow.values
       .slice(1)
       .map((v) => v?.toString().trim());
-   
-    
+
     // Match headers dynamically
     const columnMap = {};
-      headers.forEach((col, index) => {
-       
+    headers.forEach((col, index) => {
       const matchIndex = excelHeaderValues.findIndex(
         (h) =>
           h?.toLowerCase() === col.label[locale]?.toLowerCase() ||
           h?.toLowerCase() === col.label.en.toLowerCase()
-        );
-       
+      );
+
       if (matchIndex >= 0) columnMap[col.key] = matchIndex + 1;
     });
-   
+
     // Find missing
     const missing = headers.filter((col) => !columnMap[col.key]);
     if (missing.length)
@@ -192,9 +197,9 @@ export const ExcelService = {
       if (index === 1) return;
 
       const obj = {};
-        headers.forEach((col) => {
-            const value = getCellValue(row.getCell(columnMap[col.key]));
-      
+      headers.forEach((col) => {
+        const value = getCellValue(row.getCell(columnMap[col.key]));
+
         obj[col.key] = value ? value.toString() : "";
       });
 
@@ -205,9 +210,8 @@ export const ExcelService = {
     return records;
   },
 
-  //----------------------------------------------------------
   // 3. Export any records to Excel
-  //----------------------------------------------------------
+
   exportRecords: async ({ headers, records, locale = "en" }) => {
     const { workbook, worksheet } = createWorkbook("Records");
 

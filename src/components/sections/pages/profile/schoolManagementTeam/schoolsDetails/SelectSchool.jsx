@@ -73,7 +73,7 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
 
   return (
     <Box className="flex flex-col gap-4 bg-white rounded-lg p-4 shadow border-2 border-border">
-      <Typography variant="h3" className="!font-somar !text-xl">
+      <Typography className="!font-somar !text-xl">
         {t("profile.schools_overview.schools_details.select_school.title")}
       </Typography>
 
@@ -119,48 +119,33 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
 
         <Box className="flex flex-col md:flex-row gap-4 justify-between w-full items-start">
           <Box className="flex flex-col gap-2">
-            <Typography
-              variant="h3"
-              className="!font-somar !text-2xl !font-medium !text-[#1E1E1C]"
-            >
+            <Typography className="!font-somar !text-2xl !font-medium !text-[#1E1E1C]">
               {details.name} - {details.city}
             </Typography>
 
-            <Typography
-              variant="body1"
-              className="!font-somar !text-[#1E1E1C] !font-medium flex items-center gap-1"
-            >
+            <Typography className="!font-somar !text-[#1E1E1C] !font-medium flex items-center gap-1">
               <span>{bluelocationIcon}</span> {details.city}
             </Typography>
 
-            <Typography
-              variant="body1"
-              className="!font-somar !text-[#1E1E1C] !font-medium flex items-center gap-1"
-            >
+            <Typography className="!font-somar !text-[#1E1E1C] !font-medium flex items-center gap-1">
               <span>{emailBlueIcon}</span> {details.email}
             </Typography>
 
-            <Typography
-              variant="body1"
-              className="!font-somar !text-[#1E1E1C] !font-medium flex items-center gap-1"
-            >
+            <Typography className="!font-somar !text-[#1E1E1C] !font-medium flex items-center gap-1">
               <Phone className="!text-lg text-mainColor !-rotate-90 " />{" "}
               <span style={{ direction: "ltr" }}> {details.phone}</span>
             </Typography>
           </Box>
 
           <Box className="flex flex-col  items-center gap-2">
-            <Typography
-              variant="body1"
-              className="!font-somar bg-white p-2 rounded-xl shadow-lg flex flex-col items-end "
-            >
+            <Typography className="!font-somar bg-white p-2 rounded-xl shadow-lg flex flex-col items-end ">
               {t(
                 "profile.schools_overview.schools_details.select_school.performance"
               )}
               : 85%
             </Typography>
 
-            <Typography variant="body1" className="!font-somar ">
+            <Typography className="!font-somar ">
               <span>{details?.studentStats?.total} </span>
               {t(
                 "profile.schools_overview.schools_details.select_school.students"

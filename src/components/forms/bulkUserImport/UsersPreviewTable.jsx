@@ -32,7 +32,7 @@ const UsersPreviewTable = ({
 
   return (
     <Box className="px-8 py-6 overflow-auto">
-      <Typography variant="h6" className="!font-somar mb-3">
+      <Typography className="!font-somar mb-3 !text-base">
         {t("profile.schools_users.bulkImport.userPreview.title", {
           count: uploadedUsers.length,
         })}
