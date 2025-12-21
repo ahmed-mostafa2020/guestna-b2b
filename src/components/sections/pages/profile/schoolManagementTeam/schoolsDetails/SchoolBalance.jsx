@@ -43,7 +43,7 @@ const SchoolBalance = ({ details, isLoading }) => {
   return (
     <>
       <Box className="bg-[#D4FAFF66] border-[#6EC1E366] border-2 rounded-lg px-4 py-6">
-        <Typography variant="h3" className=" !font-somar !text-xl flex gap-2 ">
+        <Typography  className=" !font-somar !text-xl flex gap-2 ">
           {" "}
           <span> {visaCardIcon}</span>{" "}
           {t("profile.schools_overview.schools_details.balance.title")}
@@ -59,7 +59,7 @@ const SchoolBalance = ({ details, isLoading }) => {
               )}
             </Typography>
             <Typography
-              variant="h4"
+             
               className=" !font-somar !text-xl text-[#008442] flex gap-2 items-center justify-center"
             >
               {formatCurrency(details.balance.availableBalance)}
@@ -75,7 +75,7 @@ const SchoolBalance = ({ details, isLoading }) => {
               )}
             </Typography>
             <Typography
-              variant="h4"
+             
               className=" !font-somar !text-xl text-[#B25B00] flex gap-2 items-center justify-center"
             >
               {formatCurrency(details.balance.pendingBalance)}
@@ -91,7 +91,7 @@ const SchoolBalance = ({ details, isLoading }) => {
               )}
             </Typography>
             <Typography
-              variant="h4"
+              
               className=" !font-somar !text-xl text-[#1858A5] flex gap-2 items-center justify-center"
             >
               {formatCurrency(details.balance.totalBalance)}
