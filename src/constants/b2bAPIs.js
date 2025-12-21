@@ -62,7 +62,7 @@ export const B2B_END_POINTS = {
   FAVORITE: "favorite",
 
   PROFILE: {
-    INFORMATION: "auth/userInfo", //MAIN
+    INFORMATION: "auth/userInfo",
 
     INFO: "profile/users/management/info",
 
