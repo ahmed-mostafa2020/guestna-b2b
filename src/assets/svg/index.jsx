@@ -1800,7 +1800,7 @@ const bankSmallIcon = (
       strokeWidth="1.5"
       strokeMiterlimit="10"
       strokeLinecap="round"
-      stroke-linejoin="round"
+      strokeLinejoin="round"
     />
     <path
       d="M25.6667 25.6667H2.33334V22.1667C2.33334 21.525 2.85834 21 3.50001 21H24.5C25.1417 21 25.6667 21.525 25.6667 22.1667V25.6667Z"
@@ -1824,7 +1824,7 @@ const bankSmallIcon = (
       strokeWidth="1.5"
       strokeMiterlimit="10"
       strokeLinecap="round"
-      stroke-linejoin="round"
+      strokeLinejoin="round"
     />
     <path
       d="M14 21.0026V12.8359"
@@ -1832,7 +1832,7 @@ const bankSmallIcon = (
       strokeWidth="1.5"
       strokeMiterlimit="10"
       strokeLinecap="round"
-      stroke-linejoin="round"
+      strokeLinejoin="round"
     />
     <path
       d="M18.6667 21.0026V12.8359"
@@ -1840,7 +1840,7 @@ const bankSmallIcon = (
       strokeWidth="1.5"
       strokeMiterlimit="10"
       strokeLinecap="round"
-      stroke-linejoin="round"
+      strokeLinejoin="round"
     />
     <path
       d="M23.3333 21.0026V12.8359"
@@ -1848,7 +1848,7 @@ const bankSmallIcon = (
       strokeWidth="1.5"
       strokeMiterlimit="10"
       strokeLinecap="round"
-      stroke-linejoin="round"
+      strokeLinejoin="round"
     />
     <path
       d="M1.16666 25.6641H26.8333"
@@ -1856,7 +1856,7 @@ const bankSmallIcon = (
       strokeWidth="1.5"
       strokeMiterlimit="10"
       strokeLinecap="round"
-      stroke-linejoin="round"
+      strokeLinejoin="round"
     />
     <path
       d="M14 9.91406C14.9665 9.91406 15.75 9.13056 15.75 8.16406C15.75 7.19756 14.9665 6.41406 14 6.41406C13.0335 6.41406 12.25 7.19756 12.25 8.16406C12.25 9.13056 13.0335 9.91406 14 9.91406Z"
@@ -1864,7 +1864,7 @@ const bankSmallIcon = (
       strokeWidth="1.5"
       strokeMiterlimit="10"
       strokeLinecap="round"
-      stroke-linejoin="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -1920,28 +1920,28 @@ const uploadPaperIcon = (
       stroke="#292D32"
       strokeWidth="1.5"
       strokeLinecap="round"
-      stroke-linejoin="round"
+      strokeLinejoin="round"
     />
     <path
       d="M45 55L55 65"
       stroke="#292D32"
       strokeWidth="1.5"
       strokeLinecap="round"
-      stroke-linejoin="round"
+      strokeLinejoin="round"
     />
     <path
       d="M110 50V75C110 100 100 110 75 110H45C20 110 10 100 10 75V45C10 20 20 10 45 10H70"
       stroke="#292D32"
       strokeWidth="1.5"
       strokeLinecap="round"
-      stroke-linejoin="round"
+      strokeLinejoin="round"
     />
     <path
       d="M110 50H90C75 50 70 45 70 30V10L110 50Z"
       stroke="#292D32"
       strokeWidth="1.5"
       strokeLinecap="round"
-      stroke-linejoin="round"
+      strokeLinejoin="round"
     />
   </svg>
 );

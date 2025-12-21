@@ -152,8 +152,8 @@ const SchoolsOverViewPage = () => {
         {!isLoading && schools.length === 0 && (
           <Box className="w-full py-10 flex justify-center items-center flex-col gap-4">
             <Typography
-              variant="h4"
-              className="text-gray-600 font-medium text-center !font-somar"
+           
+              className="text-gray-600 font-medium text-center !font-somar !text-lg"
             >
               {t("profile.schools_overview.no_schools_found")}
             </Typography>
