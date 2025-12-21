@@ -89,8 +89,6 @@ export default function UserPermissions({ user, onClose }) {
     setIsDirty(true);
   };
 
-  
-
   const handleSubmit = async () => {
     try {
       await axios.patch(
