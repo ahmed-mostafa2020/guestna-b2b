@@ -10,7 +10,6 @@ import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { exportStudentDetailsToExcel } from "@utils/exportUtils";
 import BookingsTable from "./BookingsTable";
-import { Print } from "@mui/icons-material";
 import ExportButton from "@components/common/ExportButton";
 
 const StudentDetailsModal = ({ open, handleClose, studentId }) => {
@@ -127,7 +126,7 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
                             )}
                           </span>
                           <span className="text-textLight font-medium break-all">
-                            {data._id || "-"}
+                            {data.phone || "-"}
                           </span>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
@@ -135,8 +134,7 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
                             {t("profile.schoolTeamStudents.details.nationalId")}
                           </span>
                           <span className="text-textLight font-medium">
-                            -{" "}
-                            {/* JSON doesn't have student nationalId explicitly in root */}
+                            {data.nationalId || "-"}
                           </span>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
