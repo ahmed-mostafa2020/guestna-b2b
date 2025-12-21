@@ -50,6 +50,12 @@ const TripDetails = ({ params }) => {
     return null;
   });
 
+  useEffect(() => {
+    dispatch(setColorPreferences(null));
+    dispatch(setCustomLogo(null));
+    dispatch(setTheme("original"));
+  }, []);
+
   const dispatch = useDispatch();
   const { data, error, isLoading } = useFetchData(
     `${B2B_END_POINTS.PARENT_TRIPDETAILS}/${params.tripSlug}`,
@@ -91,16 +97,23 @@ const TripDetails = ({ params }) => {
   }, [t, tripData]);
 
   useEffect(() => {
+    if (!tripData) return;
+
     if (tripData?.company?.colorPreferences) {
       dispatch(setColorPreferences(tripData.company.colorPreferences));
       dispatch(setTheme("customized"));
+    } else {
+      dispatch(setColorPreferences(null));
+      dispatch(setTheme("original"));
     }
 
     if (tripData?.company?.logo) {
       // Set custom logo if available
       dispatch(setCustomLogo(tripData.company.logo));
+    } else {
+      dispatch(setCustomLogo(null));
     }
-  });
+  }, [dispatch, tripData]);
 
   // useEffect(() => {
   //   dispatch(setUser(USERS.B2B_PARENT));
