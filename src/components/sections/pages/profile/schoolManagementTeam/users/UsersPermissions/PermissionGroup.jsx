@@ -15,7 +15,16 @@ export default function PermissionGroup({
   onParentToggle,
   onChildToggle,
 }) {
-  const isParentChecked = group.child.some((c) => selected.has(c._id));
+  const isParentChecked = (group) =>
+    group.child.some((c) => selected.has(c._id));
+
+  const isChildChecked = (child, group) => {
+    if (child.defaultChecked) {
+      // Default-checked children follow parent state
+      return isParentChecked(group);
+    }
+    return selected.has(child._id);
+  };
 
   return (
     <Accordion>
@@ -26,7 +35,7 @@ export default function PermissionGroup({
           </Typography>
 
           <CustomSwitch
-            checked={isParentChecked}
+            checked={isParentChecked(group)}
             onChange={() => onParentToggle(group)}
           />
         </Box>
@@ -37,8 +46,8 @@ export default function PermissionGroup({
           <PermissionItem
             key={item._id}
             item={item}
-            disabled={item.permissionType === "MENU_ITEM"}
-            checked={selected.has(item._id)}
+            disabled={item.defaultChecked}
+            checked={isChildChecked(item, group)}
             onToggle={() => onChildToggle(item, group)}
           />
         ))}

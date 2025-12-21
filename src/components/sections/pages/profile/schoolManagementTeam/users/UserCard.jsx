@@ -56,16 +56,10 @@ const UserCard = ({ user, onEdit, onDelete, editPermission = false }) => {
             />
 
             <Stack direction="column" spacing={0.5} minWidth={0} flex={1}>
-              <Typography
-                variant="body1"
-                className="!font-medium !truncate !tracking-tight text-textDark"
-              >
+              <Typography className="!font-medium !font-somar !text-base !truncate !tracking-tight text-textDark">
                 {user.name}
               </Typography>
-              <Typography
-                variant="body2"
-                className="!text-sm !truncate !opacity-80 !text-textLight"
-              >
+              <Typography className="!text-sm !truncate !font-somar !opacity-80 !text-textLight">
                 {user.email}
               </Typography>
 

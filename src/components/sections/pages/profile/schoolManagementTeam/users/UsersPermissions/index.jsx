@@ -35,76 +35,62 @@ export default function UserPermissions({ user, onClose }) {
   const [isDirty, setIsDirty] = useState(false);
 
   // ======================= Initialize Selected Permissions ============================
-
   useEffect(() => {
     if (!userPermissions || !permissions) return;
 
+    // Start with userPermissions only
     const next = new Set(userPermissions);
-
-    permissions.forEach((group) => {
-      // 1️⃣ force defaultSelected
-      group.child.forEach((c) => {
-        if (c.defaultChecked === true) {
-          next.add(c._id);
-        }
-      });
-
-      // 2️⃣ MENU_ITEM sibling rule
-      const hasAnySelected = group.child.some((c) => next.has(c._id));
-
-      if (hasAnySelected) {
-        group.child
-          .filter((c) => c.permissionType === "MENU_ITEM")
-          .forEach((c) => next.add(c._id));
-      }
-    });
 
     setSelected(next);
     setIsDirty(false);
   }, [userPermissions, permissions]);
+  
 
-//  ======================= child Toggle ============================
+  //  ======================= child Toggle ============================
 
   const toggleChild = (item, group) => {
-    if (item.permissionType === "MENU_ITEM") return;
+    // Default-checked children cannot be toggled individually
+    if (item.defaultChecked) return;
 
     setSelected((prev) => {
       const next = new Set(prev);
 
-      next.has(item._id) ? next.delete(item._id) : next.add(item._id);
-
-      const hasAnySelected = group.child.some(
-        (c) => c.permissionType !== "MENU_ITEM" && next.has(c._id)
-      );
-
-      group.child
-        .filter((c) => c.permissionType === "MENU_ITEM")
-        .forEach((menu) => {
-          hasAnySelected ? next.add(menu._id) : next.delete(menu._id);
-        });
+      if (next.has(item._id)) {
+        next.delete(item._id);
+      } else {
+        next.add(item._id);
+      }
 
       return next;
     });
 
     setIsDirty(true);
   };
+  
 
   // =============================== Parent Toggle =========================
 
   const toggleParent = (group) => {
     setSelected((prev) => {
       const next = new Set(prev);
-      const hasAnySelected = group.child.some((c) => next.has(c._id));
 
-      group.child.forEach((c) => {
-        hasAnySelected ? next.delete(c._id) : next.add(c._id);
-      });
+      // Determine if any child is selected
+      const isParentSelected = group.child.some((c) => next.has(c._id));
+
+      if (isParentSelected) {
+        // Parent OFF → remove all children
+        group.child.forEach((c) => next.delete(c._id));
+      } else {
+        // Parent ON → add all children (including defaultChecked)
+        group.child.forEach((c) => next.add(c._id));
+      }
 
       return next;
     });
 
     setIsDirty(true);
   };
+  
 
   /* Submit                                                       */
 
