@@ -15,7 +15,7 @@ export const createPhoneValidation = (t, required = true) => {
       if (!value) return !required;
 
       const phoneString = String(value).replace(/\s/g, "");
-      return phoneString.length >= 13 && isValidPhoneNumber(phoneString ,"SA");
+      return phoneString.length >= 13 && isValidPhoneNumber(phoneString);
     });
 
   if (required) {
@@ -644,7 +644,6 @@ export const createAddOrganizationUserSchema = (t) =>
     mobile: createPhoneValidation(t),
     name: Yup.string()
       .trim()
-      .optional()
       .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
       .test(
         "min-word-length",
@@ -671,7 +670,6 @@ export const createUpdateOrganizationUserSchema = (t) =>
     mobile: createPhoneValidation(t),
     name: Yup.string()
       .trim()
-      .optional()
       .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
       .test(
         "min-word-length",
@@ -687,9 +685,54 @@ export const createUpdateOrganizationUserSchema = (t) =>
           // Each word must be at least 2 characters
           return words.every((word) => word.length >= 2);
         }
-      ).required(t("forms.validation.require")),
+      )
+      .required(t("forms.validation.require")),
 
     role: Yup.string().required(t("forms.validation.require")),
+  });
+
+//  bulk user validation
+export const createBulkUserRowSchema = (t, roleOptions = []) =>
+  Yup.object().shape({
+    name: Yup.string()
+      .trim()
+      .required(t("forms.validation.require"))
+      .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
+      .test("min-word-length", t("forms.name.error.wordMinLength"), (value) => {
+        if (!value) return false;
+        const words = value.trim().split(/\s+/);
+        return words.length >= 2 && words.every((w) => w.length >= 2);
+      }),
+    email: Yup.string()
+      .email(t("forms.email.error"))
+      .matches(emailRegex, t("forms.email.error_tld"))
+      .required(t("forms.validation.require"))
+      .test(
+        "unique-email",
+        t("forms.validation.duplicateEmail"),
+        function (value) {
+          const allEmails =
+            this.options.context?.allValues?.map((u) =>
+              u.email?.toLowerCase()
+            ) || [];
+          return (
+            allEmails.filter((e) => e === value?.toLowerCase()).length <= 1
+          );
+        }
+      ),
+    phone: Yup.string()
+      .transform((value) => (value ? String(value).replace(/\s/g, "") : value))
+      .required(t("forms.validation.require"))
+      .test("phone-validation", t("forms.phone.error.invalid"), (value) => {
+        if (!value) return false;
+        const phoneString = value.replace(/\s/g, "");
+        return phoneString.length >= 13 && isValidPhoneNumber(phoneString);
+      }),
+    role: Yup.string()
+      .required(t("forms.validation.require"))
+      .test("valid-role", t("forms.validation.invalidRole"), (value) =>
+        roleOptions.includes(value)
+      ),
   });
 export const createWithdrawValidationSchema = (t, isBankTransfer) => {
   // Create a translation function that works with the form's context

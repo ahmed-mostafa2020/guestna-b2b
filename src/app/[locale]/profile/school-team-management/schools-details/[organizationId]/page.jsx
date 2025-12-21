@@ -1,18 +1,18 @@
 "use client";
 
-import { backIcon, backIconColored } from "@/src/assets/svg";
-import SchoolBalance from "@/src/components/sections/pages/profile/schoolManagementTeam/schoolsDetails/SchoolBalance";
-import SchoolStats from "@/src/components/sections/pages/profile/schoolManagementTeam/schoolsDetails/SchoolStats";
-import SelectSchoolForDetails from "@/src/components/sections/pages/profile/schoolManagementTeam/schoolsDetails/SelectSchool";
-import UsersInfo from "@/src/components/sections/pages/profile/schoolManagementTeam/users/UsersInfo";
+import { backIconColored } from "@assets/svg";
+import SchoolBalance from "@components/sections/pages/profile/schoolManagementTeam/schoolsDetails/SchoolBalance";
+import SchoolStats from "@components/sections/pages/profile/schoolManagementTeam/schoolsDetails/SchoolStats";
+import SelectSchoolForDetails from "@components/sections/pages/profile/schoolManagementTeam/schoolsDetails/SelectSchool";
+import UsersInfo from "@components/sections/pages/profile/schoolManagementTeam/users/UsersInfo";
 
-import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
-import { useFetchData } from "@/src/hooks/useFetchData";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { useFetchData } from "@hooks/useFetchData";
 import { Typography } from "@material-ui/core";
 import { Box } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 
 const SchoolsDetailsPage = ({ params }) => {
   const locale = useLocale();
@@ -26,6 +26,13 @@ const SchoolsDetailsPage = ({ params }) => {
     }
   );
 
+  useEffect(() => {
+    document.title = `${t("pagesHead.appName")} | ${t(
+      "pagesHead.title.organization_details",
+      { organizationName: data?.name }
+    )}`;
+  }, [data, t]);
+
   return (
     <>
       <main className="flex flex-col gap-6 min-h-screen">
@@ -38,10 +45,7 @@ const SchoolsDetailsPage = ({ params }) => {
             >
               <span>{backIconColored}</span>
             </Link>
-            <Typography
-              variant="h3"
-              className="!text-titleColor !font-somar !text-2xl "
-            >
+            <Typography className="!text-titleColor !font-somar !text-2xl ">
               {t("profile.schools_overview.schools_details.title")}{" "}
             </Typography>
           </Box>
@@ -63,19 +67,20 @@ const SchoolsDetailsPage = ({ params }) => {
 
         <SchoolStats details={data} isLoading={isLoading} />
         <Box className="bg-white border-2 border-border  rounded-lg p-4">
-          <Typography
-            variant="h3"
-            className="!text-titleColor !font-somar !text-xl "
-          >
+          <Typography className="!text-titleColor !font-somar !text-xl ">
             {t("profile.schools_overview.schools_details.users.title")}{" "}
           </Typography>
-          {data?.users.length > 0 && (
+          {data?.users.length > 0 ? (
             <UsersInfo
               users={data?.users}
               organizationId={data?._id}
               refetchInfo={refetch}
               organizationName={data?.name}
             />
+          ) : (
+            <Typography className="!text-textDark !font-somar !text-lg">
+              {t("profile.schools_overview.schools_details.users.no_users")}{" "}
+            </Typography>
           )}
         </Box>
       </main>

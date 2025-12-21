@@ -35,16 +35,12 @@ const UserCard = ({ user, onEdit, onDelete, editPermission=false }) => {
 
             <Box className="min-w-0 flex flex-col items-start gap-2">
               <Typography
-                variant="body1"
                 className=" !font-medium !font-somar !truncate !tracking-tight
 "
               >
                 {user.name}
               </Typography>
-              <Typography
-                variant="body2"
-                className="!text-sm !font-semibold !opacity-80 !text-[#202224] !truncate !leading-4"
-              >
+              <Typography className="!text-sm !font-semibold !opacity-80 !text-[#202224] !truncate !leading-4">
                 {user.email}
               </Typography>
 

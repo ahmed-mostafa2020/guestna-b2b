@@ -1,4 +1,4 @@
-import { bluelocationIcon, emailBlueIcon } from "@/src/assets/svg";
+import { bluelocationIcon, emailBlueIcon } from "@assets/svg";
 import { Box } from "@material-ui/core";
 import { ArrowDropDown, Email, Phone } from "@mui/icons-material";
 import { MenuItem, Select, Skeleton, Typography } from "@mui/material";
@@ -127,21 +127,21 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
             </Typography>
 
             <Typography
-              variant="body1"
+             
               className="!font-somar !text-[#1E1E1C] !font-medium flex items-center gap-1"
             >
               <span>{bluelocationIcon}</span> {details.city}
             </Typography>
 
             <Typography
-              variant="body1"
+             
               className="!font-somar !text-[#1E1E1C] !font-medium flex items-center gap-1"
             >
               <span>{emailBlueIcon}</span> {details.email}
             </Typography>
 
             <Typography
-              variant="body1"
+             
               className="!font-somar !text-[#1E1E1C] !font-medium flex items-center gap-1"
             >
               <Phone className="!text-lg text-mainColor !-rotate-90 " />{" "}
@@ -151,7 +151,7 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
 
           <Box className="flex flex-col  items-center gap-2">
             <Typography
-              variant="body1"
+             
               className="!font-somar bg-white p-2 rounded-xl shadow-lg flex flex-col items-end "
             >
               {t(
@@ -160,7 +160,7 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
               : 85%
             </Typography>
 
-            <Typography variant="body1" className="!font-somar ">
+            <Typography className="!font-somar ">
               <span>{details?.studentStats?.total} </span>
               {t(
                 "profile.schools_overview.schools_details.select_school.students"

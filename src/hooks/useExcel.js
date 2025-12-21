@@ -1,7 +1,7 @@
 // hooks/useExcelManager.js
 import { useLocale } from "next-intl";
 import { ExcelService } from "../utils/excelService";
-import { download } from "@/src/hooks/useDownload";
+import { download } from "@hooks/useDownload";
 
 export const useExcel = ({ headers = [] }) => {
   const locale = useLocale();
@@ -35,12 +35,11 @@ export const useExcel = ({ headers = [] }) => {
       records,
       locale,
     });
-const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    console.log(blob ,fileName);
-    await download(
-      blob,
-      fileName
-    );
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    console.log(blob, fileName);
+    await download(blob, fileName);
   };
 
   return {

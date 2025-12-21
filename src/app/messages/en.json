@@ -193,7 +193,8 @@
       "schoolRegister": "School Register",
       "confirmingData": "Confirming Data",
       "loginAs": "Login As",
-      "error": "404: This page could not be found"
+      "error": "404: This page could not be found",
+      "organization_details": "{organizationName} Details"
     }
   },
   "links": {
@@ -628,6 +629,8 @@
         "title": "Bulk Import Users",
         "description": "Upload a CSV or Excel file containing the columns: name, email, phone, role. Existing users with the same email will be replaced.",
         "duplicatesFound": "{count} users already exist and will be updated",
+        "users_upload_templates": "Users Upload Templates",
+        "current_users": "Current Users",
         "preview": "Preview",
         "users": "Users",
         "status": "Status",
@@ -1457,7 +1460,8 @@
           "total": "total students"
         },
         "users": {
-          "title": "Users"
+          "title": "Users",
+          "no_users": "No users found"
         }
       },
       "no_schools_found": "No schools found"

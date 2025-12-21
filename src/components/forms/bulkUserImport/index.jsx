@@ -14,59 +14,13 @@ import getErrorMessage from "@utils/getErrorMessage";
 import UploadInstructions from "./UploadInstructions";
 import UsersPreviewTable from "./UsersPreviewTable";
 import FooterActions from "./FooterActions";
-import { usersHeaders } from "@/src/constants/excelHeaders";
-import { useExcel } from "@/src/hooks/useExcel";
+import { usersHeaders } from "@constants/excelHeaders";
+import { useExcel } from "@hooks/useExcel";
 import { Box } from "@material-ui/core";
 import { Typography } from "@mui/material";
+import { createBulkUserRowSchema } from "@utils/validationSchemas";
 
 const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-
-// Validation schema
-
-const createBulkUserRowSchema = (t, roleOptions = []) =>
-  Yup.object().shape({
-    name: Yup.string()
-      .trim()
-      .required(t("forms.validation.require"))
-      .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
-      .test("min-word-length", t("forms.name.error.wordMinLength"), (value) => {
-        if (!value) return false;
-        const words = value.trim().split(/\s+/);
-        return words.length >= 2 && words.every((w) => w.length >= 2);
-      }),
-    email: Yup.string()
-      .email(t("forms.email.error"))
-      .matches(emailRegex, t("forms.email.error_tld"))
-      .required(t("forms.validation.require"))
-      .test(
-        "unique-email",
-        t("forms.validation.duplicateEmail"),
-        function (value) {
-          const allEmails =
-            this.options.context?.allValues?.map((u) =>
-              u.email?.toLowerCase()
-            ) || [];
-          return (
-            allEmails.filter((e) => e === value?.toLowerCase()).length <= 1
-          );
-        }
-      ),
-    phone: Yup.string()
-      .transform((value) => (value ? String(value).replace(/\s/g, "") : value))
-      .required(t("forms.validation.require"))
-      .test("phone-validation", t("forms.phone.error.invalid"), (value) => {
-        if (!value) return false;
-        const phoneString = value.replace(/\s/g, "");
-        return (
-          phoneString.length >= 13 && isValidPhoneNumber(phoneString, "SA")
-        );
-      }),
-    role: Yup.string()
-      .required(t("forms.validation.require"))
-      .test("valid-role", t("forms.validation.invalidRole"), (value) =>
-        roleOptions.includes(value)
-      ),
-  });
 
 // Helper: consistent error
 
@@ -98,7 +52,7 @@ const BulkUserImportForm = ({
   const headers = getHeaders(locale);
   const roleOptions = rolesData.map((r) => r.description);
 
-  const { parseFile } = useExcel({ headers: usersHeaders(roleOptions) });
+  const { parseFile } = useExcel({ headers: usersHeaders({roles: roleOptions , locale}) });
   const findRoleIdByName = useCallback(
     (description) =>
       rolesData.find((r) => r.description === description)?._id || description,
