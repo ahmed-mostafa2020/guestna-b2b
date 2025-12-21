@@ -1419,7 +1419,7 @@
       "cards": {
         "total_revenue": "إجمالي الإيرادات",
         "active_students": "الطلاب النشطين",
-        "suspended_trips": "قيد التنفيذ",
+        "suggested_trips": "مقترحة ",
         "scheduled_trips": "مجدولة",
         "done_trips": "مكتملة",
         "show_details": "عرض التفاصيل"
@@ -1450,7 +1450,8 @@
           "total": "مجموع الطلاب"
         },
         "users": {
-          "title": "المستخدمين"
+          "title": "المستخدمين",
+          "no_users": "لا يوجد مستخدمين"
         }
       },
       "no_schools_found": "لم يتم العثور على مدارس"

@@ -1426,7 +1426,7 @@
       "cards": {
         "total_revenue": "Total Revenue",
         "active_students": "Active Students",
-        "suspended_trips": "Suspended",
+        "suggested_trips": "Suggested",
         "scheduled_trips": "Scheduled",
         "done_trips": "Done",
         "show_details": "Show Details"
@@ -1457,7 +1457,8 @@
           "total": "total students"
         },
         "users": {
-          "title": "Users"
+          "title": "Users",
+          "no_users": "No users found"
         }
       },
       "no_schools_found": "No schools found"
