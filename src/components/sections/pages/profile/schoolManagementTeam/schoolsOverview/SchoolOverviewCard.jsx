@@ -71,7 +71,7 @@ const SchoolOverviewCard = ({ item }) => {
             {item.suspendedTrips ?? 0}
           </Typography>
           <Typography className="!text-base text-[#2991AA] opacity-70  font-semibold  !font-somar">
-            {t("profile.schools_overview.cards.suspended_trips")}
+            {t("profile.schools_overview.cards.suggested_trips")}
           </Typography>
         </Box>
 

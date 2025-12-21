@@ -1422,7 +1422,7 @@
       "cards": {
         "total_revenue": "إجمالي الإيرادات",
         "active_students": "الطلاب النشطين",
-        "suspended_trips": "قيد التنفيذ",
+        "suggested_trips": "مقترحة ",
         "scheduled_trips": "مجدولة",
         "done_trips": "مكتملة",
         "show_details": "عرض التفاصيل"
