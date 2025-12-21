@@ -44,7 +44,6 @@ export default function UserPermissions({ user, onClose }) {
     setSelected(next);
     setIsDirty(false);
   }, [userPermissions, permissions]);
-  
 
   //  ======================= child Toggle ============================
 
@@ -66,7 +65,6 @@ export default function UserPermissions({ user, onClose }) {
 
     setIsDirty(true);
   };
-  
 
   // =============================== Parent Toggle =========================
 
@@ -90,9 +88,8 @@ export default function UserPermissions({ user, onClose }) {
 
     setIsDirty(true);
   };
-  
 
-  /* Submit                                                       */
+  
 
   const handleSubmit = async () => {
     try {
