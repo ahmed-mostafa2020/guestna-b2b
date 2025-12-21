@@ -1,7 +1,7 @@
 // hooks/useExcelManager.js
 import { useLocale } from "next-intl";
 import { ExcelService } from "../utils/excelService";
-import { download } from "@/src/hooks/useDownload";
+import { download } from "@hooks/useDownload";
 
 export const useExcel = ({ headers = [] }) => {
   const locale = useLocale();

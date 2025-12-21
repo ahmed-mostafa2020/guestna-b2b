@@ -1,10 +1,9 @@
-import { newSarSmall, visaCardIcon } from "@/src/assets/svg";
-import formatCurrency from "@/src/utils/FormatCurrency";
+import {  visaCardIcon } from "@assets/svg";
+import formatCurrency from "@utils/FormatCurrency";
 import { Grid } from "@material-ui/core";
 import { Box, Skeleton, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import React from "react";
-import { useSelector } from "react-redux";
 
 const SchoolBalanceSkeleton = () => {
   return (

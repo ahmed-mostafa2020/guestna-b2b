@@ -15,7 +15,7 @@ import { ExpandMore } from "@mui/icons-material";
 import UsersHeader from "./UsersHeader";
 import UsersInfo from "./UsersInfo";
 import UserPermissions from "./UsersPermissions";
-import CustomizedModal from "@/src/components/common/customizedModal";
+import CustomizedModal from "@components/common/customizedModal";
 
 const UsersManagement = ({
   data,

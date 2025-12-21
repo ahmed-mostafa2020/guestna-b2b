@@ -11,8 +11,8 @@ import {
   Skeleton,
 } from "@mui/material";
 import TuneIcon from "@mui/icons-material/Tune";
-import { useFetchData } from "@/src/hooks/useFetchData";
-import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
+import { useFetchData } from "@hooks/useFetchData";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { useLocale, useTranslations } from "next-intl";
 const sortOptions = ["HIGHEST_NAME", "LOWEST_NAME", "NEWEST", "OLDEST"];
 

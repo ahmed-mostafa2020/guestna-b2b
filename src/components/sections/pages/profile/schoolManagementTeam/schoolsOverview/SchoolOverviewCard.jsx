@@ -2,9 +2,9 @@
 
 import { Box, Typography } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
-import { bankSmall, locationGrayIcon, newSarSmall } from "@/src/assets/svg";
+import { bankSmall, locationGrayIcon } from "@assets/svg";
 import Link from "next/link";
-import formatCurrency from "@/src/utils/FormatCurrency";
+import formatCurrency from "@utils/FormatCurrency";
 import { locale } from "dayjs";
 
 const SchoolOverviewCard = ({ item }) => {

@@ -1,4 +1,4 @@
-import { bluelocationIcon, emailBlueIcon } from "@/src/assets/svg";
+import { bluelocationIcon, emailBlueIcon } from "@assets/svg";
 import { Box } from "@material-ui/core";
 import { ArrowDropDown, Email, Phone } from "@mui/icons-material";
 import { MenuItem, Select, Skeleton, Typography } from "@mui/material";

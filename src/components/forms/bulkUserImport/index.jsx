@@ -14,8 +14,8 @@ import getErrorMessage from "@utils/getErrorMessage";
 import UploadInstructions from "./UploadInstructions";
 import UsersPreviewTable from "./UsersPreviewTable";
 import FooterActions from "./FooterActions";
-import { usersHeaders } from "@/src/constants/excelHeaders";
-import { useExcel } from "@/src/hooks/useExcel";
+import { usersHeaders } from "@constants/excelHeaders";
+import { useExcel } from "@hooks/useExcel";
 import { Box } from "@material-ui/core";
 import { Typography } from "@mui/material";
 

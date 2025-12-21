@@ -1,8 +1,8 @@
-import { uploadFile } from "@/src/assets/svg";
+import { uploadFile } from "@assets/svg";
 import { Alert, Box, Button, List, ListItem, Typography } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
-import { usersHeaders } from "@/src/constants/excelHeaders";
-import { useExcel } from "@/src/hooks/useExcel";
+import { usersHeaders } from "@constants/excelHeaders";
+import { useExcel } from "@hooks/useExcel";
 
 const UploadInstructions = ({
   fileError,

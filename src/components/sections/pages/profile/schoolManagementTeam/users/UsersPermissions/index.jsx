@@ -1,27 +1,28 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Box, Button, CircularProgress } from "@mui/material";
+import { Box } from "@mui/material";
 import PermissionGroup from "./PermissionGroup";
+import PermissionGroupSkeleton from "./PermissionGroupSkeleton";
+
 import { useFetchData } from "@/src/hooks/useFetchData";
 import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
 import { useLocale, useTranslations } from "next-intl";
 import axios from "axios";
 import getProxyUrl from "@/src/utils/getProxyUrl";
-import PermissionGroupSkeleton from "./PermissionGroupSkeleton";
 import { useSnackbar } from "notistack";
 
 export default function UserPermissions({ user, onClose }) {
   const locale = useLocale();
+  const t = useTranslations();
   const { enqueueSnackbar } = useSnackbar();
-  // 1. Fetch ALL permissions (tree)
+
   const { data: permissions, isLoading: permissionsLoading } = useFetchData(
     B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.GET_PERMISSIONS,
     {},
     { lang: locale }
   );
 
-  // 2. Fetch USER permissions
   const { data: userPermissions, isLoading: userLoading } = useFetchData(
     user
       ? `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.GET_USER_PERMISSIONS}/${user._id}`
@@ -30,52 +31,91 @@ export default function UserPermissions({ user, onClose }) {
     { lang: locale }
   );
 
-  // 3. Selected permissions state
   const [selected, setSelected] = useState(new Set());
   const [isDirty, setIsDirty] = useState(false);
-  const t = useTranslations();
 
-  // Initialize from user permissions
+  // ======================= Initialize Selected Permissions ============================
+
   useEffect(() => {
-    if (!userPermissions) return;
+    if (!userPermissions || !permissions) return;
 
-    setSelected(new Set(userPermissions)); // array of permission IDs
+    const next = new Set(userPermissions);
+
+    permissions.forEach((group) => {
+      // 1️⃣ force defaultSelected
+      group.child.forEach((c) => {
+        if (c.defaultChecked === true) {
+          next.add(c._id);
+        }
+      });
+
+      // 2️⃣ MENU_ITEM sibling rule
+      const hasAnySelected = group.child.some((c) => next.has(c._id));
+
+      if (hasAnySelected) {
+        group.child
+          .filter((c) => c.permissionType === "MENU_ITEM")
+          .forEach((c) => next.add(c._id));
+      }
+    });
+
+    setSelected(next);
     setIsDirty(false);
-  }, [userPermissions]);
+  }, [userPermissions, permissions]);
 
-  const toggleParent = (parent) => {
+//  ======================= child Toggle ============================
+
+  const toggleChild = (item, group) => {
+    if (item.permissionType === "MENU_ITEM") return;
+
     setSelected((prev) => {
       const next = new Set(prev);
-      const hasAny = parent.child.some((c) => next.has(c._id));
 
-      parent.child.forEach((c) =>
-        hasAny ? next.delete(c._id) : next.add(c._id)
+      next.has(item._id) ? next.delete(item._id) : next.add(item._id);
+
+      const hasAnySelected = group.child.some(
+        (c) => c.permissionType !== "MENU_ITEM" && next.has(c._id)
       );
 
+      group.child
+        .filter((c) => c.permissionType === "MENU_ITEM")
+        .forEach((menu) => {
+          hasAnySelected ? next.add(menu._id) : next.delete(menu._id);
+        });
+
       return next;
     });
+
     setIsDirty(true);
   };
 
-  const toggleChild = (id) => {
+  // =============================== Parent Toggle =========================
+
+  const toggleParent = (group) => {
     setSelected((prev) => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      const hasAnySelected = group.child.some((c) => next.has(c._id));
+
+      group.child.forEach((c) => {
+        hasAnySelected ? next.delete(c._id) : next.add(c._id);
+      });
+
       return next;
     });
+
     setIsDirty(true);
   };
 
-  const updatePermissions = async (permissions) => {
+  /* Submit                                                       */
+
+  const handleSubmit = async () => {
     try {
-      await axios.request({
-        url: getProxyUrl(
+      await axios.patch(
+        getProxyUrl(
           `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.UPDATE_PERMISSIONS}/${user._id}`
         ),
-        method: "patch",
-        maxBodyLength: Infinity,
-        data: { permissions },
-      });
+        { permissions: Array.from(selected) }
+      );
 
       enqueueSnackbar(t("profile.rolesPermissions.messages.saveSuccess"), {
         variant: "success",
@@ -86,10 +126,6 @@ export default function UserPermissions({ user, onClose }) {
         variant: "error",
       });
     }
-  };
-
-  const handleSubmit = () => {
-    updatePermissions(Array.from(selected));
   };
 
   if (permissionsLoading || userLoading) {
@@ -103,15 +139,7 @@ export default function UserPermissions({ user, onClose }) {
   }
 
   return (
-    <Box className="flex flex-col h-full ">
-      {/* Header */}
-      <Box className="mb-4">
-        <p className="font-semibold text-mainColor">
-          {t("profile.rolesPermissions.permissionsFor")} ... {user.name}
-        </p>
-      </Box>
-
-      {/* Permissions */}
+    <Box className="flex flex-col h-full">
       <Box flex={1} overflow="auto">
         {permissions.map((group) => (
           <PermissionGroup
@@ -124,17 +152,16 @@ export default function UserPermissions({ user, onClose }) {
         ))}
       </Box>
 
-      {/* Actions */}
-      <Box className="flex gap-2 pt-4 md:flex-row flex-col ">
+      <Box className="flex gap-2 pt-4 md:flex-row flex-col">
         <button
-          className="flex w-full items-center justify-center gap-2.5 py-4 px-6 font-bold text-mainColor rounded-lg border-2 border-mainColor hover:border-linksHover  hover:text-linksHover"
+          className="flex w-full justify-center py-4 px-6 font-bold border-2 border-mainColor text-mainColor rounded-lg"
           onClick={onClose}
         >
           {t("profile.rolesPermissions.actions.cancel")}
         </button>
 
         <button
-          className="flex w-full items-center justify-center gap-2.5 py-4 px-6 font-bold text-white rounded-lg bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed hover:bg-linksHover"
+          className="flex w-full justify-center py-4 px-6 font-bold text-white bg-mainColor rounded-lg disabled:opacity-50"
           disabled={!isDirty}
           onClick={handleSubmit}
         >

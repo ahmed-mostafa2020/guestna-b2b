@@ -4,8 +4,6 @@ import {
   AccordionDetails,
   Typography,
   Box,
-  Switch,
-  styled,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import PermissionItem from "./PermissionItem";
@@ -20,13 +18,10 @@ export default function PermissionGroup({
   const isParentChecked = group.child.some((c) => selected.has(c._id));
 
   return (
-    <Accordion >
+    <Accordion>
       <AccordionSummary expandIcon={<ExpandMore />}>
-        <Box
-          className="flex gap-2 items-center justify-between w-full py-2"
-         
-        >
-          <Typography className="!font-somar !text-base !font-semibold !text-[#1E1E1C]">
+        <Box className="flex items-center justify-between w-full">
+          <Typography className="!font-somar !font-semibold">
             {group.title}
           </Typography>
 
@@ -37,13 +32,14 @@ export default function PermissionGroup({
         </Box>
       </AccordionSummary>
 
-      <AccordionDetails className="py-2">
+      <AccordionDetails className="flex flex-col gap-2">
         {group.child.map((item) => (
           <PermissionItem
             key={item._id}
             item={item}
+            disabled={item.permissionType === "MENU_ITEM"}
             checked={selected.has(item._id)}
-            onToggle={onChildToggle}
+            onToggle={() => onChildToggle(item, group)}
           />
         ))}
       </AccordionDetails>

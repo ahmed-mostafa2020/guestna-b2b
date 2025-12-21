@@ -1,7 +1,7 @@
 import { Box, Typography, Switch } from "@mui/material";
 import CustomSwitch from "./CustomSwitch";
 
-export default function PermissionItem({ item, checked, onToggle }) {
+export default function PermissionItem({ item, checked, onToggle , disabled}) {
   return (
     <Box
       className="flex items-center justify-between w-full py-2 indent-4"
@@ -12,6 +12,7 @@ export default function PermissionItem({ item, checked, onToggle }) {
       </Typography>
 
       <CustomSwitch
+        disabled={disabled}
         size="small"
         checked={checked}
         onChange={() => onToggle(item._id)}
