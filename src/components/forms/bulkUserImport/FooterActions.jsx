@@ -1,6 +1,6 @@
 import { usersHeaders } from "@constants/excelHeaders";
 import { useExcel } from "@hooks/useExcel";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 const ExportUsersExcel = ({ users }) => {
   const locale = useLocale();

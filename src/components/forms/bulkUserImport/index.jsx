@@ -2,10 +2,8 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useState, useCallback } from "react";
-import { isValidPhoneNumber } from "react-phone-number-input";
 import { useSnackbar } from "notistack";
 import axios from "axios";
-import * as Yup from "yup";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { getHeaders } from "@utils/getHeaders";

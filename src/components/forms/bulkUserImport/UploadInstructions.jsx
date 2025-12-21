@@ -54,8 +54,6 @@ const UploadInstructions = ({
             {t("profile.schools_users.bulkImport.buttons.downloadTemplate")}
           </button>
           <button
-            fullWidth
-            variant="outlined"
             className="flex w-full items-center justify-center gap-2.5 py-4 px-6 font-bold text-mainColor rounded-lg border-2 border-mainColor hover:border-linksHover  hover:text-linksHover"
             onClick={() => document.getElementById("bulk-upload-file").click()}
           >
