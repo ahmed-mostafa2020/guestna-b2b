@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import { useSelector } from "react-redux";
 
 import { memo, useState, useEffect } from "react";
 
@@ -33,6 +34,12 @@ const AuthenticatedRequestQuote = ({
   const [formErrors, setFormErrors] = useState([]);
   const [showThanksMessage, setShowThanksMessage] = useState(false);
   const [availableGrades, setAvailableGrades] = useState(gradesData || []);
+  const [tracksData, setTracksData] = useState([]);
+  const [isLoadingTracks, setIsLoadingTracks] = useState(false);
+
+  const selectedOrganization = useSelector(
+    (state) => state.selectedOrganizations.organizations
+  );
 
   const locale = useLocale();
   const t = useTranslations();
@@ -52,6 +59,7 @@ const AuthenticatedRequestQuote = ({
   const { enqueueSnackbar } = useSnackbar();
 
   // Keep full objects for _id lookup
+  const organizationData = selectedOrganization || [];
   const categoryData = formSelectionData?.categories || [];
   const tripTypeData = [
     {
@@ -77,9 +85,54 @@ const AuthenticatedRequestQuote = ({
   }, [gradesData]);
 
   // Extract names for dropdown display
+  const organizationOptions = organizationData.map((item) => item.name);
   const academicStageOptions = academicStageData.map((item) => item.name);
   const servicesOptions = servicesData.map((item) => item.name);
   const gradeOptions = availableGrades.map((item) => item.name);
+
+  // Format track options: educationSystem + gender + academicStages
+  const trackOptions = tracksData.map((track) => {
+    const stages =
+      track.academicStages?.map((stage) => stage.name).join(", ") || "";
+    return {
+      name: `${track.educationSystem} - ${t(
+        `common.${track.gender}`
+      )} - ${stages}`,
+      _id: track._id,
+    };
+  });
+  const trackDisplayOptions = trackOptions.map((item) => item.name);
+
+  // Helper function to find _id by name
+  const findIdByName = (options, name) => {
+    const option = options.find((opt) => opt.name === name);
+    return option ? option._id : name;
+  };
+
+  // Fetch tracks when organization is selected
+  const fetchTracksByOrganization = async (organizationId) => {
+    if (!organizationId) {
+      setTracksData([]);
+      return;
+    }
+
+    setIsLoadingTracks(true);
+    try {
+      const response = await axios({
+        method: "get",
+        url: getProxyUrl(
+          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.TRACKS}/${organizationId}`
+        ),
+        headers,
+      });
+      setTracksData(response.data || []);
+    } catch (error) {
+      console.error("Error fetching tracks:", error);
+      setTracksData([]);
+    } finally {
+      setIsLoadingTracks(false);
+    }
+  };
 
   // Helper function to find name by _id
   const findNameById = (options, id) => {
@@ -90,6 +143,8 @@ const AuthenticatedRequestQuote = ({
   // Store initial values for comparison
   const initialValues = tripData
     ? {
+        organization: "",
+        track: "",
         category: tripData.category?.name || "",
         tripType: findNameById(tripTypeData, tripData.tripsType) || "",
         city: tripData.city?.name || "",
@@ -110,6 +165,8 @@ const AuthenticatedRequestQuote = ({
   const getInitialValues = () => {
     if (!tripData) {
       return {
+        organization: "",
+        track: "",
         category: "",
         tripType: "",
         city: "",
@@ -127,6 +184,8 @@ const AuthenticatedRequestQuote = ({
     }
 
     return {
+      organization: "",
+      track: "",
       category: tripData.category?.name || "",
       tripType: findNameById(tripTypeData, tripData.tripsType) || "",
       city: tripData.city?.name || "",
@@ -160,12 +219,6 @@ const AuthenticatedRequestQuote = ({
   };
 
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
-    // Helper function to find _id by name
-    const findIdByName = (options, name) => {
-      const option = options.find((opt) => opt.name === name);
-      return option ? option._id : name;
-    };
-
     // Check if services have changed from initial values only
     const hasChanged =
       initialValues &&
@@ -205,6 +258,12 @@ const AuthenticatedRequestQuote = ({
 
           // Convert names to _id for dropdown fields
           switch (key) {
+            case "organization":
+              valueToSend = findIdByName(organizationData, values[key]);
+              break;
+            case "track":
+              valueToSend = findIdByName(trackOptions, values[key]);
+              break;
             case "category":
               valueToSend = findIdByName(categoryData, values[key]);
               break;
@@ -254,6 +313,11 @@ const AuthenticatedRequestQuote = ({
         }
       });
 
+      const organizationId = findIdByName(
+        organizationData,
+        values.organization
+      );
+
       config = {
         method: "post",
         maxBodyLength: Infinity,
@@ -263,6 +327,9 @@ const AuthenticatedRequestQuote = ({
         headers: {
           ...headers,
           "Content-Type": "multipart/form-data",
+          "profile-organizations": organizationId
+            ? JSON.stringify([organizationId])
+            : undefined,
         },
         data: formData,
       };
@@ -290,6 +357,12 @@ const AuthenticatedRequestQuote = ({
 
           // Convert names to _id for dropdown fields
           switch (key) {
+            case "organization":
+              valueToSend = findIdByName(organizationData, values[key]);
+              break;
+            case "track":
+              valueToSend = findIdByName(trackOptions, values[key]);
+              break;
             case "category":
               valueToSend = findIdByName(categoryData, values[key]);
               break;
@@ -332,6 +405,11 @@ const AuthenticatedRequestQuote = ({
         }
       });
 
+      const organizationId = findIdByName(
+        organizationData,
+        values.organization
+      );
+
       config = {
         method: "post",
         maxBodyLength: Infinity,
@@ -341,6 +419,9 @@ const AuthenticatedRequestQuote = ({
         headers: {
           ...headers,
           "Content-Type": "application/json",
+          "profile-organizations": organizationId
+            ? JSON.stringify([organizationId])
+            : undefined,
         },
         data: jsonData,
       };
@@ -429,6 +510,49 @@ const AuthenticatedRequestQuote = ({
                   <h2 className="text-xl font-medium text-black pb-3">
                     {t("forms.customTrip.bookingDetails")}
                   </h2>
+                  {selectedOrganization && selectedOrganization.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                      <div className="somar-placeholder">
+                        <SelectionGroup
+                          name="organization"
+                          value={values.organization}
+                          onChange={(e) => {
+                            handleChange(e);
+                            const orgId = findIdByName(
+                              organizationData,
+                              e.target.value
+                            );
+                            fetchTracksByOrganization(orgId);
+                            setFieldValue("track", "");
+                          }}
+                          onBlur={handleBlur}
+                          touched={touched.organization}
+                          errors={errors.organization}
+                          placeholder={t(
+                            "forms.customTrip.organization.placeholder"
+                          )}
+                          list={organizationOptions}
+                        />
+                      </div>
+                      <div className="somar-placeholder">
+                        <SelectionGroup
+                          name="track"
+                          value={values.track}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          touched={touched.track}
+                          errors={errors.track}
+                          placeholder={
+                            isLoadingTracks
+                              ? t("forms.validation.loading")
+                              : t("forms.customTrip.track.placeholder")
+                          }
+                          list={trackDisplayOptions}
+                          disabled={isLoadingTracks || !values.organization}
+                        />
+                      </div>
+                    </div>
+                  )}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Academic Stage */}
                     <div className="somar-placeholder">
