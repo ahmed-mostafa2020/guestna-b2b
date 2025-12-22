@@ -95,7 +95,7 @@ const ProfileLayout = ({ children }) => {
   if (error)
     return (
       <ErrorComponent
-        statusCode={error.response?.data?.statusCode}
+        statusCode={error?.response?.data?.statusCode}
         errorMessage={error.response?.data?.message}
       />
     );

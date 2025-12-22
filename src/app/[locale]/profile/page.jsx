@@ -71,7 +71,7 @@ const Profile = () => {
     isLoading: organizationsLoading,
     error: organizationsError,
   } = useFetchData(
-    `${B2B_END_POINTS.PROFILE.ORGANIZATIONS}${
+    `${B2B_END_POINTS.PROFILE.ALL_ORGANIZATIONS}${
       organizationsSearchTerm ? `?searchTerm=${organizationsSearchTerm}` : ""
     }`,
     {},
@@ -91,8 +91,8 @@ const Profile = () => {
         requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}
       >
         <ErrorComponent
-          statusCode={error.response?.data?.statusCode}
-          errorMessage={error.response?.data?.message}
+          statusCode={error?.response?.data?.statusCode}
+          errorMessage={error?.response?.data?.message}
         />
       </ProtectedProfilePage>
     );
