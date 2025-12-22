@@ -111,7 +111,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
 
       const allStudentsData = { nodes: studentsArray };
 
-      const result = exportToExcel(booking, allStudentsData, t, locale);
+      const result = await exportToExcel(booking, allStudentsData, t, locale);
 
       if (result.success) {
       } else {
