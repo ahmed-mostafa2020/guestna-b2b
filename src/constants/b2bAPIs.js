@@ -117,6 +117,7 @@ export const B2B_END_POINTS = {
     },
 
     SCHOOL_TEAM_MANAGEMENT: {
+      //
       USERS: {
         INFO: "profile/users/users/count/info",
         TABLE: "profile/users/company/all",
