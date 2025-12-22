@@ -23,7 +23,11 @@ export default function UserPermissions({ user, onClose }) {
     { lang: locale }
   );
 
-  const { data: userPermissions, isLoading: userLoading } = useFetchData(
+  const {
+    data: userPermissions,
+    isLoading: userLoading,
+    refetch: userRefetch,
+  } = useFetchData(
     user
       ? `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.GET_USER_PERMISSIONS}/${user._id}`
       : null,
@@ -45,8 +49,7 @@ export default function UserPermissions({ user, onClose }) {
     setIsDirty(false);
   }, [userPermissions, permissions]);
 
-  //  ======================= child Toggle ============================
-
+  // ======================= Child Toggle =========================
   const toggleChild = (item, group) => {
     // Default-checked children cannot be toggled individually
     if (item.defaultChecked) return;
@@ -60,27 +63,53 @@ export default function UserPermissions({ user, onClose }) {
         next.add(item._id);
       }
 
+      const childIds = group.child.map((c) => c._id);
+      const defaultChildIds = group.child
+        .filter((c) => c.defaultChecked)
+        .map((c) => c._id);
+
+      const nonDefaultChildIds = group.child
+        .filter((c) => !c.defaultChecked)
+        .map((c) => c._id);
+
+      const anyChildOn = nonDefaultChildIds.some((id) => next.has(id));
+
+      if (anyChildOn) {
+        // Add parent and defaultChecked children if any child is ON
+        next.add(group._id);
+        defaultChildIds.forEach((id) => next.add(id));
+      } else {
+        // Remove parent and defaultChecked children if all non-default are OFF
+        next.delete(group._id);
+        defaultChildIds.forEach((id) => next.delete(id));
+      }
+
       return next;
     });
 
     setIsDirty(true);
   };
 
-  // =============================== Parent Toggle =========================
-
+  // ======================= Parent Toggle =========================
   const toggleParent = (group) => {
     setSelected((prev) => {
       const next = new Set(prev);
 
-      // Determine if any child is selected
-      const isParentSelected = group.child.some((c) => next.has(c._id));
+      const childIds = group.child.map((c) => c._id);
+      const defaultChildIds = group.child
+        .filter((c) => c.defaultChecked)
+        .map((c) => c._id);
 
-      if (isParentSelected) {
-        // Parent OFF → remove all children
-        group.child.forEach((c) => next.delete(c._id));
+      const isParentOn = next.has(group._id);
+
+      if (isParentOn) {
+        // Parent OFF → remove parent and all children
+        next.delete(group._id);
+        childIds.forEach((id) => next.delete(id));
       } else {
-        // Parent ON → add all children (including defaultChecked)
-        group.child.forEach((c) => next.add(c._id));
+        // Parent ON → add parent and all children (including defaultChecked)
+        next.add(group._id);
+        childIds.forEach((id) => next.add(id));
       }
 
       return next;
@@ -124,6 +153,7 @@ export default function UserPermissions({ user, onClose }) {
       <Box flex={1} overflow="auto">
         {permissions.map((group) => (
           <PermissionGroup
+            setSelected={setSelected}
             key={group._id}
             group={group}
             selected={selected}
