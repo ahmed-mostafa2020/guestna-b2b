@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { useCallback, useEffect, useMemo } from "react";
 
@@ -12,6 +12,19 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
+  const selectedOrgIds = useSelector(
+    (state) => state.selectedOrganizations?.selectedIds
+  );
+  const selectedOrganizationsCookie = Cookies.get(
+    CONSTANT_VALUES.SELECTED_ORGANIZATIONS
+  );
+  const selectedOrganizationsHeader = useMemo(() => {
+    if (options.skipOrgHeader) return null;
+    if (selectedOrgIds?.length) {
+      return JSON.stringify(selectedOrgIds);
+    }
+    return selectedOrganizationsCookie || null;
+  }, [options.skipOrgHeader, selectedOrgIds, selectedOrganizationsCookie]);
 
   // Axios fetch function
   const fetchData = useCallback(async () => {
@@ -28,6 +41,11 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
       headers.authorization = `Bearer ${token}`;
     }
 
+    // Add profile-organizations header unless skipOrgHeader option is set
+    if (selectedOrganizationsHeader) {
+      headers["profile-organizations"] = selectedOrganizationsHeader;
+    }
+
     const response = await axios({
       method,
       url: `/api/proxy?path=${fullPath}`,
@@ -37,7 +55,7 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
     });
 
     return response.data;
-  }, [endpoint, token, params, options]);
+  }, [endpoint, token, params, options, selectedOrganizationsHeader]);
 
   // Serialized params for query key
   const serializedParams = useMemo(() => JSON.stringify(params), [params]);
@@ -56,6 +74,7 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
       serializedBody,
       options.devicespecificid,
       options.queryKeySuffix,
+      selectedOrganizationsHeader || "no-org-header",
     ],
     queryFn: fetchData,
     cacheTime: options.cacheTime || 300000,
@@ -86,13 +105,6 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
       dispatch(options.onLoading());
     }
   }, [query.data, query.error, query.isLoading, dispatch, options]);
-
-  // Cleanup effect
-  useEffect(() => {
-    return () => {
-      queryClient.invalidateQueries(["fetchData", endpoint, options.method]);
-    };
-  }, [endpoint, options.method, queryClient]);
 
   return query;
 };
