@@ -109,7 +109,7 @@ const NavigationDropdown = () => {
       permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_USERS_TAB,
       subItems: [
         {
-          title: t("profile.aside.schoolTeamManagement.schoolsOverView"),
+          title: t("profile.aside.schoolTeamManagement.schoolsOverView.title"),
           path: `${profileBasePath}/school-team-management/schools-overview`,
           permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_USERS_TAB,
         },
@@ -121,11 +121,6 @@ const NavigationDropdown = () => {
         {
           title: t("profile.aside.schoolTeamManagement.users"),
           path: `${profileBasePath}/school-team-management/users`,
-          permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_USERS_TAB,
-        },
-        {
-          title: t("profile.aside.schoolTeamManagement.students"),
-          path: `${profileBasePath}/school-team-management/students`,
           permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_USERS_TAB,
         },
       ],

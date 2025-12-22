@@ -91,7 +91,6 @@ const ProfileLayout = ({ children }) => {
         <FullScreenLoading status="pending" />
       </div>
     );
-
   if (error)
     return (
       <ErrorComponent

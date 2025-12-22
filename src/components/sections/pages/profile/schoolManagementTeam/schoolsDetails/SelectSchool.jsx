@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const SelectSchoolForDetailsSkeleton = () => {
   return (
@@ -53,11 +54,13 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
   const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [selectedSchool, setSelectedSchool] = useState(details?._id ?? "");
-
-  /** Sync when details changes */
+  const { organizations } = useSelector((state) => state.selectedOrganizations);
+  /* Sync when details changes */
   useEffect(() => {
-    if (details?._id) setSelectedSchool(details._id);
-  }, [details]);
+    if (details?._id && organizations?.some((org) => org._id === details._id)) {
+      setSelectedSchool(details._id);
+    }
+  }, [details, organizations]);
 
   const handleSchoolSelect = (e) => {
     const id = e.target.value;
@@ -98,13 +101,15 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
           transformOrigin: { vertical: "top", horizontal: "left" },
         }}
       >
-        <MenuItem
-          key={details._id}
-          value={details._id}
-          className="!font-somar p-2 !bg-white hover:!bg-buttonsHover"
-        >
-          {details.name} - {details.city}
-        </MenuItem>
+        {organizations.map((org) => (
+          <MenuItem
+            key={org._id}
+            value={org._id}
+            className="!font-somar p-2 !bg-white hover:!bg-buttonsHover"
+          >
+            {org.name}
+          </MenuItem>
+        ))}
 
         {/* TODO: Replace with real organizations */}
       </Select>

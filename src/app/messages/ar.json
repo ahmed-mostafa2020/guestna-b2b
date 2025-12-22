@@ -556,7 +556,11 @@
       "schoolTeamManagement": {
         "title": "إدارة فريق المدرسة",
         "users": "المستخدمون",
-        "students": "الطلاب"
+        "students": "الطلاب",
+        "schoolsOverView": {
+          "title": "نظرة عامة على المدارس",
+          "description": "إدارة جميع المدارس الخاصة بالشركة و رصد أداءها."
+        }
       },
       "reportsAndAnalytics": {
         "title": "التقارير والتحليلات"
@@ -676,7 +680,7 @@
       "show_less": "اظهار اقل",
       "add_new_user": "إضافة مستخدم جديد",
       "bulk_import_users": "رفع ملف مستخدمين (Excel/CSV)",
-      "search": "البحث...",
+      "search": "ابحث بالاسم او الايميل ...",
       "no_users": "لا يوجد مستخدم يطابق البحث",
       "users_count": "عدد {count} من المستخدمين",
       "unknown_school": "مدرسة غير معروفة",

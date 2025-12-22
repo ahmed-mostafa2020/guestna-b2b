@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl";
 import { memo, useState } from "react";
 
 import { TextField, InputAdornment, IconButton } from "@mui/material";
-import { Search } from "@mui/icons-material";
+import { searchBarIcon, wrongIcon } from "@/src/assets/svg";
 
 const UsersHeader = ({ setSearchTerm, searchTerm }) => {
   const t = useTranslations();
@@ -11,7 +11,10 @@ const UsersHeader = ({ setSearchTerm, searchTerm }) => {
   const handleSearch = () => {
     setSearchTerm(searchValue.trim());
   };
-
+  const handleClear = () => {
+    setSearchValue("");
+    setSearchTerm("");
+  };
   return (
     <div className="mb-6">
       <div className="flex flex-col md:flex-row gap-4 items-center md:items-center justify-between">
@@ -34,15 +37,18 @@ const UsersHeader = ({ setSearchTerm, searchTerm }) => {
             }}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
+              startAdornment: (
+                <InputAdornment position="start">
                   <IconButton onClick={handleSearch}>
-                    <Search className="text-textLight" fontSize="medium" />
+                    {searchBarIcon}
                   </IconButton>
                 </InputAdornment>
               ),
             }}
           />
+          {(searchValue || searchTerm) && (
+            <IconButton onClick={handleClear}>{wrongIcon}</IconButton>
+          )}
         </div>
       </div>
     </div>

@@ -685,7 +685,7 @@
 
       "add_new_user": "Add New User",
       "bulk_import_users": "Upload User's File (Excel/CSV)",
-      "search": "Search...",
+      "search": "search by name or email",
       "no_users": "No users match your search",
       "users_count": "{count} users",
       "unknown_school": "Unknown School",
