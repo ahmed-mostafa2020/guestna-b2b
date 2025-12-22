@@ -546,6 +546,7 @@ export const createAuthenticatedRequestQuoteSchema = (t) =>
 export const createCustomNewTripSchema = (t) =>
   Yup.object().shape({
     organization: Yup.string().required(t("forms.validation.require")),
+    track: Yup.string().optional(),
     category: Yup.string().required(t("forms.validation.require")),
     tripType: Yup.string().required(t("forms.validation.require")),
     city: Yup.string().required(t("forms.validation.require")),

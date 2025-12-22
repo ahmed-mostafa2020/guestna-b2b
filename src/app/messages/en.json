@@ -1980,6 +1980,10 @@
         "placeholder": "School Name"
       },
 
+      "track": {
+        "placeholder": "Educational Track"
+      },
+
       "tripInfo": {
         "title": "Trip Information",
         "description": "Trip Description"

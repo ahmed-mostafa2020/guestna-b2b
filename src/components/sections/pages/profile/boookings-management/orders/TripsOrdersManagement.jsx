@@ -30,60 +30,16 @@ const TripsOrdersManagement = () => {
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Function to refresh CustomizedTripsTable data with direct API call
-  const refreshCustomizedTripsTable = async () => {
-    console.log(
-      "Refreshing CustomizedTripsTable after new activity creation - making direct API request"
-    );
-
-    try {
-      const headers = getHeaders(locale);
-
-      // Make direct API request to fetch fresh table data
-      const response = await axios.post(
-        getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.CUSTOMIZABLE}`
-        ),
-        {
-          perPage: CONSTANT_VALUES.TABLE_PER_PAGE || 10,
-          page: 1,
-        },
-        { headers }
-      );
-
-      console.log("Fresh CustomizedTripsTable data fetched:", response.data);
-
-      // Update the cache with fresh data
-      queryClient.setQueryData(
-        [
-          "fetchData",
-          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.CUSTOMIZABLE}`,
-          "POST",
-          JSON.stringify({}),
-          JSON.stringify({
-            perPage: CONSTANT_VALUES.TABLE_PER_PAGE || 10,
-            page: 1,
-          }),
-        ],
-        response.data
-      );
-
-      // Also invalidate to trigger re-render
-      queryClient.invalidateQueries({
-        predicate: (query) => {
-          return (
-            query.queryKey[0] === "fetchData" &&
-            query.queryKey[1] ===
-              `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.CUSTOMIZABLE}`
-          );
-        },
-      });
-
-      console.log("CustomizedTripsTable data refreshed successfully");
-    } catch (error) {
-      console.error("Error refreshing CustomizedTripsTable data:", error);
-      enqueueSnackbar("Error refreshing table data", { variant: "error" });
-    }
+  const refreshCAllTripsTable = () => {
+    queryClient.invalidateQueries({
+      predicate: (query) => {
+        return (
+          query.queryKey[0] === "fetchData" &&
+          query.queryKey[1] ===
+            `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ALL}`
+        );
+      },
+    });
   };
 
   const handleRequestNewActivity = async () => {
@@ -118,8 +74,7 @@ const TripsOrdersManagement = () => {
   };
 
   const handleNewActivitySuccess = (responseData) => {
-    // Refresh the CustomizedTripsTable when new activity is created
-    refreshCustomizedTripsTable();
+    refreshCAllTripsTable();
     handleModalClose();
   };
 

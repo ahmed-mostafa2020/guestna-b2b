@@ -1971,6 +1971,10 @@
         "placeholder": "اسم المدرسة"
       },
 
+      "track": {
+        "placeholder": "المسار التعليمي"
+      },
+
       "tripInfo": {
         "title": "معلومات الرحلة",
         "description": "وصف الرحلة"

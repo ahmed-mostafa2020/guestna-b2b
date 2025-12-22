@@ -97,7 +97,7 @@ export const B2B_END_POINTS = {
       ORDERS: {
         ALL: "profile/askTrips/all",
         COUNTS: "profile/askTrips/counts",
-        TRACKS: "profile/settingsTrips/tracks", // ${org. _id}
+        TRACKS: "profile/settingsTrips/tracks",
         ADD_NEW_ACTIVITY: {
           FORM_SELECTION: "profile/askTrips/form/selections",
           CUSTOM_TRIP: "profile/askTrips/custom/new",
