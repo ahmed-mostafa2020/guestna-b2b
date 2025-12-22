@@ -1,4 +1,4 @@
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import html2canvas from "html2canvas";
 import formatDate from "./FormateDate";
 import formatCurrency from "./FormatCurrency";
@@ -10,10 +10,10 @@ import formatCurrency from "./FormatCurrency";
  * @param {Function} t - Translation function
  * @param {string} locale - Current locale
  */
-export const exportToExcel = (booking, bookingDetails, t, locale) => {
+export const exportToExcel = async (booking, bookingDetails, t, locale) => {
   try {
     // Create a new workbook
-    const workbook = XLSX.utils.book_new();
+    const workbook = new ExcelJS.Workbook();
 
     // Define text using translation function
     const labels = {
@@ -50,6 +50,8 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
     };
 
     // Trip Information Sheet
+    const tripSheet = workbook.addWorksheet(labels.tripInfo);
+
     const tripData = [
       [labels.tripInfo],
       [""],
@@ -108,16 +110,13 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
       ],
     ];
 
-    const tripSheet = XLSX.utils.aoa_to_sheet(tripData);
-    
+    tripData.forEach((row) => {
+      tripSheet.addRow(row);
+    });
+
     // Auto-fit columns for trip sheet
-    const tripColWidths = [
-      { wch: 20 }, // Label column
-      { wch: 50 }, // Value column
-    ];
-    tripSheet['!cols'] = tripColWidths;
-    
-    XLSX.utils.book_append_sheet(workbook, tripSheet, labels.tripInfo);
+    tripSheet.getColumn(1).width = 20; // Label column
+    tripSheet.getColumn(2).width = 50; // Value column
 
     // Students Information Sheet
     console.log(
@@ -126,36 +125,29 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
     );
 
     if (bookingDetails?.nodes?.length > 0) {
-      const studentsData = [
-        [
-          labels.orderId,
-          labels.studentName,
-          labels.academicStage,
-          labels.grade,
-          labels.size,
-          labels.childPhone,
-          labels.childNationalId,
-          labels.nationalIdImage,
-          labels.hasFoodAllergy,
-          labels.foodAllergyDetails,
-          labels.parentName,
-          labels.parentEmail,
-          labels.parentPhone,
-          labels.nationalId,
-          labels.note,
-        ],
-      ];
+      const studentsSheet = workbook.addWorksheet(labels.students);
+
+      // Add header row
+      const headerRow = studentsSheet.addRow([
+        labels.orderId,
+        labels.studentName,
+        labels.academicStage,
+        labels.grade,
+        labels.size,
+        labels.childPhone,
+        labels.childNationalId,
+        labels.nationalIdImage,
+        labels.hasFoodAllergy,
+        labels.foodAllergyDetails,
+        labels.parentName,
+        labels.parentEmail,
+        labels.parentPhone,
+        labels.nationalId,
+        labels.note,
+      ]);
 
       bookingDetails.nodes.forEach((student, index) => {
-        // Create hyperlink for national ID image if URL exists
-        const nationalIdImageCell = student.child?.nationalIdImage
-          ? {
-              f: `HYPERLINK("${student.child.nationalIdImage}", "View Image")`,
-              l: { Target: student.child.nationalIdImage },
-            }
-          : "";
-
-        studentsData.push([
+        const row = studentsSheet.addRow([
           student.orderId || "",
           student.child?.name || "",
           student.child?.academicStage?.name || "",
@@ -163,7 +155,7 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
           student.child?.size || "",
           student.child?.phone || "",
           student.child?.nationalId || "",
-          nationalIdImageCell,
+          "", // Placeholder for hyperlink
           student.child?.hasFoodAllergy ? "Yes" : "",
           student.child?.foodAllergy || "",
           student.parent?.name || "",
@@ -172,34 +164,38 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
           student.parent?.nationalId || student.child?.nationalId || "",
           student.child?.note || "",
         ]);
+
+        // Add hyperlink for national ID image if URL exists
+        if (student.child?.nationalIdImage) {
+          const cell = row.getCell(8);
+          cell.value = {
+            text: "View Image",
+            hyperlink: student.child.nationalIdImage,
+          };
+          cell.font = { color: { argb: "FF0000FF" }, underline: true };
+        }
       });
 
       console.log(
-        `Excel Export - Added ${studentsData.length - 1} students to sheet`
+        `Excel Export - Added ${bookingDetails.nodes.length} students to sheet`
       );
-      const studentsSheet = XLSX.utils.aoa_to_sheet(studentsData);
-      
+
       // Auto-fit columns for students sheet based on content
-      const studentsColWidths = [
-        { wch: 15 }, // Order ID
-        { wch: 25 }, // Student Name
-        { wch: 20 }, // Academic Stage
-        { wch: 15 }, // Grade
-        { wch: 10 }, // Size
-        { wch: 15 }, // Child Phone
-        { wch: 18 }, // Child National ID
-        { wch: 15 }, // National ID Image
-        { wch: 15 }, // Has Food Allergy
-        { wch: 30 }, // Food Allergy Details
-        { wch: 25 }, // Parent Name
-        { wch: 30 }, // Parent Email
-        { wch: 15 }, // Parent Phone
-        { wch: 18 }, // National ID
-        { wch: 30 }, // Note
-      ];
-      studentsSheet['!cols'] = studentsColWidths;
-      
-      XLSX.utils.book_append_sheet(workbook, studentsSheet, labels.students);
+      studentsSheet.getColumn(1).width = 15; // Order ID
+      studentsSheet.getColumn(2).width = 25; // Student Name
+      studentsSheet.getColumn(3).width = 20; // Academic Stage
+      studentsSheet.getColumn(4).width = 15; // Grade
+      studentsSheet.getColumn(5).width = 10; // Size
+      studentsSheet.getColumn(6).width = 15; // Child Phone
+      studentsSheet.getColumn(7).width = 18; // Child National ID
+      studentsSheet.getColumn(8).width = 15; // National ID Image
+      studentsSheet.getColumn(9).width = 15; // Has Food Allergy
+      studentsSheet.getColumn(10).width = 30; // Food Allergy Details
+      studentsSheet.getColumn(11).width = 25; // Parent Name
+      studentsSheet.getColumn(12).width = 30; // Parent Email
+      studentsSheet.getColumn(13).width = 15; // Parent Phone
+      studentsSheet.getColumn(14).width = 18; // National ID
+      studentsSheet.getColumn(15).width = 30; // Note
     } else {
       console.log("Excel Export - No students found or empty array");
     }
@@ -210,11 +206,125 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
     }.xlsx`;
 
     // Save the file
-    XLSX.writeFile(workbook, filename);
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.click();
+    window.URL.revokeObjectURL(url);
 
     return { success: true, filename };
   } catch (error) {
     console.error("Error exporting to Excel:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Export users data to Excel format
+ * @param {Array} organizationsData - Array of user objects
+ * @param {Function} t - Translation function
+ * @param {string} filename - Optional custom filename
+ */
+export const exportUsersToExcel = async (
+  organizationsData,
+  t,
+  filename = "Users"
+) => {
+  try {
+    // Create a new workbook
+    const workbook = new ExcelJS.Workbook();
+
+    // Check if data is array and has organizations
+    if (!Array.isArray(organizationsData) || organizationsData.length === 0) {
+      return { success: false, error: "No data to export" };
+    }
+
+    // Loop through each organization and create a separate worksheet
+    organizationsData.forEach((org, index) => {
+      if (!org.organization || !org.users || org.users.length === 0) {
+        return;
+      }
+
+      // Create worksheet name from organization name (max 31 chars for Excel)
+      let sheetName = org.organization.name || `Organization ${index + 1}`;
+      // Clean sheet name (remove invalid characters for Excel)
+      sheetName = sheetName.replace(/[:\\/?*\[\]]/g, "").substring(0, 31);
+
+      const worksheet = workbook.addWorksheet(sheetName);
+
+      // Add header row
+      const headerRow = worksheet.addRow([
+        t("profile.schools_users.report.name") || "Name",
+        t("profile.schools_users.report.email") || "Email",
+        t("profile.schools_users.report.jobGrade") || "Job Grade",
+      ]);
+
+      // Style header row
+      headerRow.font = { bold: true, size: 12 };
+      headerRow.alignment = { vertical: "middle", horizontal: "center" };
+      headerRow.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFE0E0E0" },
+      };
+
+      // Add user data for this organization
+      org.users.forEach((user) => {
+        worksheet.addRow([
+          user.name || "-",
+          user.email || "-",
+          user.role?.description || "-",
+        ]);
+      });
+
+      // Auto-fit columns
+      worksheet.getColumn(1).width = 30; // Name
+      worksheet.getColumn(2).width = 35; // Email
+      worksheet.getColumn(3).width = 25; // Job Grade
+      worksheet.getColumn(4).width = 30; // Role
+
+      // Add borders to all cells
+      worksheet.eachRow((row, rowNumber) => {
+        row.eachCell((cell) => {
+          cell.border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+        });
+      });
+    });
+
+    // Check if any worksheets were created
+    if (workbook.worksheets.length === 0) {
+      return { success: false, error: "No valid data to export" };
+    }
+
+    // Generate filename with date
+    const finalFilename = `${filename}_${
+      new Date().toISOString().split("T")[0]
+    }.xlsx`;
+
+    // Save the file
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = finalFilename;
+    link.click();
+    window.URL.revokeObjectURL(url);
+
+    return { success: true, filename: finalFilename };
+  } catch (error) {
     return { success: false, error: error.message };
   }
 };
