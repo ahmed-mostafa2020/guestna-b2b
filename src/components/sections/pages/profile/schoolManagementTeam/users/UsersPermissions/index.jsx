@@ -5,11 +5,11 @@ import { Box } from "@mui/material";
 import PermissionGroup from "./PermissionGroup";
 import PermissionGroupSkeleton from "./PermissionGroupSkeleton";
 
-import { useFetchData } from "@/src/hooks/useFetchData";
-import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
+import { useFetchData } from "@hooks/useFetchData";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { useLocale, useTranslations } from "next-intl";
 import axios from "axios";
-import getProxyUrl from "@/src/utils/getProxyUrl";
+import getProxyUrl from "@utils/getProxyUrl";
 import { useSnackbar } from "notistack";
 
 export default function UserPermissions({ user, onClose }) {
