@@ -4,13 +4,228 @@ import formatDate from "./FormateDate";
 import formatCurrency from "./FormatCurrency";
 
 /**
- * Export booking data to Excel format
+ * Export myBookings data to Excel format (for profile bookings page)
+ * @param {Object} booking - Booking data from myBookings API
+ * @param {Object} bookingDetails - Students data
+ * @param {Function} t - Translation function
+ * @param {string} locale - Current locale
+ */
+export const exportMyBookingToExcel = (booking, bookingDetails, t, locale) => {
+  try {
+    // Create a new workbook
+    const workbook = XLSX.utils.book_new();
+
+    // Define text using translation function
+    const labels = {
+      tripInfo: t("profile.tables.bookings.details.tripInfo"),
+      name: t("profile.tables.bookings.header.tripName"),
+      organization: t("profile.tables.bookings.header.schoolName"),
+      category: t("profile.tables.bookings.header.tripType"),
+      day: t("profile.tables.bookings.header.date"),
+      fromHour: t("profile.tables.bookings.details.time"),
+      status: t("profile.tables.bookings.header.status"),
+      bookingQuantity: t("profile.tables.bookings.header.quantity"),
+      baseAvailableSeates: t(
+        "profile.tables.orders.bookingDetails.availableSeats"
+      ),
+      revenueAmount: t("profile.tables.orders.bookingDetails.revenueAmount"),
+      comment: t("profile.tables.bookings.actions.administrativeComment"),
+      createdBy: t("profile.tables.orders.bookingDetails.createdBy"),
+      createdAt: t("profile.tables.orders.bookingDetails.createdAt"),
+      students: t("profile.tables.orders.bookingDetails.studentsList"),
+      studentName: t("profile.tables.orders.bookingDetails.studentName"),
+      nationalId: t("profile.tables.orders.bookingDetails.nationalId"),
+      grade: t("profile.tables.orders.bookingDetails.grade"),
+      filename: t("exportUtils.bookingReport.filename"),
+    };
+
+    // Trip Information Sheet - Only fields from API response
+    const tripData = [
+      [labels.tripInfo],
+      [""],
+      // Basic Info
+      [labels.name, booking.name || ""],
+      [labels.organization, booking.organization || ""],
+      [labels.category, booking.category || ""],
+      [
+        labels.day,
+        booking.day
+          ? formatDate(booking.day, locale, {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })
+          : "",
+      ],
+      [labels.fromHour, booking.fromHour || ""],
+      [
+        labels.status,
+        booking.status
+          ? t(`common.organizationTripStatus.${booking.status}`)
+          : "",
+      ],
+      [""],
+      // Booking Details
+      [labels.bookingQuantity, booking.bookingQuantity || 0],
+      [labels.baseAvailableSeates, booking.baseAvailableSeates || 0],
+      [
+        labels.revenueAmount,
+        booking.revenueAmount !== undefined
+          ? formatCurrency(booking.revenueAmount)
+          : "",
+      ],
+      [""],
+      // Comment Section (if exists)
+      ...(booking.comment?.comment
+        ? [
+            [labels.comment],
+            [labels.createdBy, booking.comment.createdBy || ""],
+            [
+              labels.createdAt,
+              booking.comment.createdAt
+                ? formatDate(booking.comment.createdAt, locale, {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : "",
+            ],
+            [""],
+            [booking.comment.comment.replace(/<[^>]*>/g, "")], // Strip HTML tags
+            [""],
+          ]
+        : []),
+    ];
+
+    const tripSheet = XLSX.utils.aoa_to_sheet(tripData);
+
+    // Auto-fit columns for trip sheet
+    const tripColWidths = [
+      { wch: 20 }, // Label column
+      { wch: 50 }, // Value column
+    ];
+    tripSheet["!cols"] = tripColWidths;
+
+    XLSX.utils.book_append_sheet(workbook, tripSheet, labels.tripInfo);
+
+    // Students Information Sheet
+    if (bookingDetails?.nodes?.length > 0) {
+      const studentsData = [
+        ["#", labels.studentName, labels.nationalId, labels.grade],
+      ];
+
+      bookingDetails.nodes.forEach((student, index) => {
+        studentsData.push([
+          index + 1,
+          student.name || "",
+          student.nationalId || "-",
+          student.grade?.name || "-",
+        ]);
+      });
+
+      const studentsSheet = XLSX.utils.aoa_to_sheet(studentsData);
+
+      // Auto-fit columns for students sheet
+      const studentsColWidths = [
+        { wch: 5 }, // #
+        { wch: 30 }, // Student Name
+        { wch: 20 }, // National ID
+        { wch: 20 }, // Grade
+      ];
+      studentsSheet["!cols"] = studentsColWidths;
+
+      XLSX.utils.book_append_sheet(workbook, studentsSheet, labels.students);
+    }
+
+    // Generate filename with booking name and date
+    const filename = `${labels.filename}_${booking.name || "booking"}_${
+      new Date().toISOString().split("T")[0]
+    }.xlsx`;
+
+    // Save the file
+    XLSX.writeFile(workbook, filename);
+
+    return { success: true, filename };
+  } catch (error) {
+    console.error("Error exporting myBooking to Excel:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Export student list to Excel
+ * @param {Array} students - List of students
+ * @param {string} gradeName - Grade name
+ * @param {Object} translatedLabels - Translated labels { reportTitle, studentName, filename }
+ */
+export const exportStudentsListToExcel = (
+  students,
+  gradeName,
+  translatedLabels
+) => {
+  try {
+    const workbook = XLSX.utils.book_new();
+
+    const labels = {
+      reportTitle: translatedLabels.reportTitle,
+      studentName: translatedLabels.studentName,
+      filename: translatedLabels.filename,
+    };
+
+    // Prepare data
+    const studentsData = [[labels.studentName]]; // Header row
+
+    students.forEach((student) => {
+      studentsData.push([student.name || ""]);
+    });
+
+    const studentsSheet = XLSX.utils.aoa_to_sheet(studentsData);
+
+    // Add title in the first row
+    const finalData = [
+      [labels.reportTitle],
+      [], // Empty row
+      ...studentsData,
+    ];
+
+    const sheetWithTitle = XLSX.utils.aoa_to_sheet(finalData);
+
+    // Auto-fit columns
+    const studentsColWidths = [{ wch: 40 }];
+    sheetWithTitle["!cols"] = studentsColWidths;
+
+    XLSX.utils.book_append_sheet(
+      workbook,
+      sheetWithTitle,
+      gradeName || "Students"
+    );
+
+    const filename = `${labels.filename}_${gradeName || "students"}_${
+      new Date().toISOString().split("T")[0]
+    }.xlsx`;
+
+    XLSX.writeFile(workbook, filename);
+
+    return { success: true, filename };
+  } catch (error) {
+    console.error("Error exporting students list to Excel:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Export booking data to Excel format (for bookings-management)
  * @param {Object} booking - Booking data
  * @param {Object} bookingDetails - Students data
  * @param {Function} t - Translation function
  * @param {string} locale - Current locale
  */
 export const exportToExcel = (booking, bookingDetails, t, locale) => {
+  console.log(
+    "🔴 OLD exportToExcel called - THIS SHOULD NOT BE CALLED FROM MYBOOKINGS!"
+  );
   try {
     // Create a new workbook
     const workbook = XLSX.utils.book_new();
@@ -109,14 +324,14 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
     ];
 
     const tripSheet = XLSX.utils.aoa_to_sheet(tripData);
-    
+
     // Auto-fit columns for trip sheet
     const tripColWidths = [
       { wch: 20 }, // Label column
       { wch: 50 }, // Value column
     ];
-    tripSheet['!cols'] = tripColWidths;
-    
+    tripSheet["!cols"] = tripColWidths;
+
     XLSX.utils.book_append_sheet(workbook, tripSheet, labels.tripInfo);
 
     // Students Information Sheet
@@ -178,7 +393,7 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
         `Excel Export - Added ${studentsData.length - 1} students to sheet`
       );
       const studentsSheet = XLSX.utils.aoa_to_sheet(studentsData);
-      
+
       // Auto-fit columns for students sheet based on content
       const studentsColWidths = [
         { wch: 15 }, // Order ID
@@ -197,8 +412,8 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
         { wch: 18 }, // National ID
         { wch: 30 }, // Note
       ];
-      studentsSheet['!cols'] = studentsColWidths;
-      
+      studentsSheet["!cols"] = studentsColWidths;
+
       XLSX.utils.book_append_sheet(workbook, studentsSheet, labels.students);
     } else {
       console.log("Excel Export - No students found or empty array");
@@ -215,6 +430,126 @@ export const exportToExcel = (booking, bookingDetails, t, locale) => {
     return { success: true, filename };
   } catch (error) {
     console.error("Error exporting to Excel:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Export student details to Excel
+ * @param {Object} data - Student data including bookings
+ * @param {Function} t - Translation function
+ * @param {string} locale - Current locale
+ */
+export const exportStudentDetailsToExcel = (data, t, locale) => {
+  try {
+    const workbook = XLSX.utils.book_new();
+
+    // --- Sheet 1: Student Profile ---
+    const profileLabels = {
+      basicInfo: t("profile.schoolTeamStudents.details.basicInfo"),
+      contactInfo: t("profile.schoolTeamStudents.details.contactWithParent"),
+      name: t("profile.schoolTeamStudents.details.name"),
+      academicStage: t("profile.schoolTeamStudents.details.academicStage"),
+      grade: t("profile.schoolTeamStudents.details.grade"),
+      track: t("profile.schoolTeamStudents.details.track"),
+      studentNumber: t("profile.schoolTeamStudents.details.studentNumber"),
+      nationalId: t("profile.schoolTeamStudents.details.nationalId"),
+      parentName: t("profile.schoolTeamStudents.details.parentName"),
+      parentPhone: t("profile.schoolTeamStudents.details.parentPhone"),
+      parentEmail: t("profile.schoolTeamStudents.details.parentEmail"),
+    };
+
+    const profileData = [
+      [profileLabels.basicInfo],
+      [""],
+      [profileLabels.name, data.name || "-"],
+      [profileLabels.academicStage, data.academicStage?.name || "-"],
+      [profileLabels.grade, data.grade?.name || "-"],
+      [profileLabels.track, data.track?.educationSystem?.name || "-"],
+      [profileLabels.studentNumber, data._id || "-"],
+      [profileLabels.nationalId, data.nationalId || "-"], // Assuming nationalId might be on data or separate
+      [""],
+      [profileLabels.contactInfo],
+      [""],
+      [profileLabels.parentName, data.parent?.name || "-"],
+      [profileLabels.parentPhone, data.parent?.phone || "-"],
+      [profileLabels.parentEmail, data.parent?.email || "-"],
+      [profileLabels.nationalId, data.parent?.nationalId || "-"],
+    ];
+
+    const profileSheet = XLSX.utils.aoa_to_sheet(profileData);
+    const profileColWidths = [{ wch: 25 }, { wch: 40 }];
+    profileSheet["!cols"] = profileColWidths;
+
+    XLSX.utils.book_append_sheet(
+      workbook,
+      profileSheet,
+      t("profile.schoolTeamStudents.details.basicInfo")
+    );
+
+    // --- Sheet 2: Bookings ---
+    if (data.bookings?.length > 0) {
+      const bookingLabels = {
+        activityName: t("profile.schoolTeamStudents.details.activityName"),
+        date: t("profile.schoolTeamStudents.details.date"),
+        parent: t("profile.schoolTeamStudents.details.parent"),
+        status: t("profile.schoolTeamStudents.details.status"),
+      };
+
+      const bookingHeaders = [
+        [
+          bookingLabels.activityName,
+          bookingLabels.date,
+          bookingLabels.parent,
+          bookingLabels.status,
+        ],
+      ];
+
+      const bookingRows = data.bookings.map((booking) => [
+        booking.tripName || "-",
+        booking.date
+          ? formatDate(booking.date, locale, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            })
+          : "-",
+        bookingLabels.parent, // As per UI hardcoded "Parent" or fetched if available
+        t(`common.bookingStatus.${booking.status}`) || booking.status,
+      ]);
+
+      const bookingsSheet = XLSX.utils.aoa_to_sheet([
+        ...bookingHeaders,
+        ...bookingRows,
+      ]);
+
+      const bookingColWidths = [
+        { wch: 30 },
+        { wch: 25 },
+        { wch: 20 },
+        { wch: 20 },
+      ];
+      bookingsSheet["!cols"] = bookingColWidths;
+
+      XLSX.utils.book_append_sheet(
+        workbook,
+        bookingsSheet,
+        t("profile.schoolTeamStudents.details.bookingDetails")
+      );
+    }
+
+    // Filename
+    const filenamePrefix = "Student_Details";
+    const filename = `${filenamePrefix}_${data.name || "student"}_${
+      new Date().toISOString().split("T")[0]
+    }.xlsx`;
+
+    XLSX.writeFile(workbook, filename);
+    return { success: true, filename };
+  } catch (error) {
+    console.error("Error exporting student details to Excel:", error);
     return { success: false, error: error.message };
   }
 };
@@ -279,12 +614,15 @@ export const exportModalToPDF = async (modalElement, booking, locale, t) => {
           table.style.height = "auto";
         });
 
-        // Hide pagination controls
-        const paginationElements = clonedDoc.querySelectorAll(
+        // Hide pagination controls and footer actions
+        const nonPrintable = clonedDoc.querySelectorAll(
           '[class*="pagination"], .print\\:hidden'
         );
-        paginationElements.forEach((el) => {
-          el.style.display = "none";
+        nonPrintable.forEach((el) => {
+          // IMPORTANT: Mark with !important to override other styles
+          el.style.display = "none !important";
+          el.style.opacity = "0";
+          el.style.visibility = "hidden";
         });
 
         console.log("PDF Export - DOM cloning completed");

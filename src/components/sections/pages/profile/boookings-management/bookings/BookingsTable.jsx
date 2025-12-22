@@ -46,7 +46,7 @@ const BookingsTable = ({
       // Fetch ALL students without pagination by setting a high perPage value
       const response = await axios.get(
         getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.BOOKING_DETAILS}/${bookingId}?perPage=10000`
+          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.BOOKING_DETAILS}/${bookingId}?perPage=1000`
         ),
         {
           headers,

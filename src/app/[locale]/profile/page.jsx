@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useFetchData } from "@hooks/useFetchData";
 import { usePermissions } from "@hooks/usePermissions";
@@ -15,16 +15,19 @@ import InfoCardsListing from "@components/sections/pages/profile/trips/infoCards
 import InfoCardsSkeleton from "@components/sections/pages/profile/trips/infoCards/InfoCardsSkeleton";
 import RevenueLineChart from "@components/sections/pages/profile/trips/charts/RevenueLineChart";
 import DonutChart from "@components/sections/pages/profile/trips/charts/DonutChart";
+import MostActiveOrganizations from "@components/sections/pages/profile/trips/charts/MostActiveOrganizations";
 import ChartsSkeleton from "@components/sections/pages/profile/trips/charts/ChartsSkeleton";
 
 import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageTemplate";
 import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBookings";
 import MyBookingsTrips from "@components/sections/pages/profile/myBookings";
+import OrganizationsSection from "@components/sections/pages/profile/myBookings/OrganizationsSection";
 
 const Profile = () => {
   const { hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
+  const [organizationsSearchTerm, setOrganizationsSearchTerm] = useState("");
 
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
@@ -34,23 +37,55 @@ const Profile = () => {
 
   const {
     data: infoData,
-    error,
     isLoading,
+    error,
   } = useFetchData(
     `${B2B_END_POINTS.PROFILE.INFO}`,
     {},
     {
       lang: locale,
-      enabled: hasElement(
-        PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS ||
-          PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS
-      ),
+      enabled:
+        hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS) ||
+        hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS),
     }
   );
 
-  // Removed full-screen loader - using skeleton loaders instead
+  const {
+    data: mostActiveOrganizationsData,
+    isLoading: mostActiveOrganizationsLoading,
+    error: mostActiveOrganizationsError,
+  } = useFetchData(
+    `${B2B_END_POINTS.PROFILE.MOST_ACTIVE_ORGANIZATIONS}`,
+    {},
+    {
+      lang: locale,
+      enabled: true, // Explicitly enable this request
+      // enabled: hasElement(
+      //   PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS
+      // ),
+    }
+  );
 
-  if (error)
+  const {
+    data: organizationsData,
+    isLoading: organizationsLoading,
+    error: organizationsError,
+  } = useFetchData(
+    `${B2B_END_POINTS.PROFILE.ORGANIZATIONS}${
+      organizationsSearchTerm ? `?searchTerm=${organizationsSearchTerm}` : ""
+    }`,
+    {},
+    {
+      lang: locale,
+      enabled: true, // Explicitly enable this request
+      // enabled: hasElement(
+      //   PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS
+      // ),
+    },
+    [organizationsSearchTerm]
+  );
+
+  if (error || mostActiveOrganizationsError || organizationsError)
     return (
       <ProtectedProfilePage
         requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}
@@ -77,14 +112,17 @@ const Profile = () => {
 
         {/* Charts Section */}
         {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS) &&
-          (isLoading ? (
+          (isLoading || mostActiveOrganizationsLoading ? (
             <ChartsSkeleton />
           ) : (
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-              <div className="lg:col-span-8">
+            <div className="flex flex-col gap-4">
+              <div className="w-full">
                 <RevenueLineChart infoData={infoData} />
               </div>
-              <div className="lg:col-span-4">
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <MostActiveOrganizations
+                  mostActiveOrganizationsData={mostActiveOrganizationsData}
+                />
                 <DonutChart infoData={infoData} />
               </div>
             </div>
@@ -96,12 +134,28 @@ const Profile = () => {
             endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS}`}
             method="POST"
             enablePagination={true}
-            emptyStateComponent={<EmptyBookings />}
+            enableSearch={true}
+            emptyStateComponent={(data, searchTerm, setSearchTerm) => (
+              <>
+                <MyBookingsTrips
+                  tableTitle={t("profile.tables.bookings.title")}
+                  data={data}
+                  currentPage={1}
+                  setCurrentPage={() => {}}
+                  enablePagination={false}
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                />
+                <EmptyBookings />
+              </>
+            )}
             contentComponent={(
               data,
               currentPage,
               setCurrentPage,
-              enablePagination
+              enablePagination,
+              searchTerm,
+              setSearchTerm
             ) => (
               <MyBookingsTrips
                 tableTitle={t("profile.tables.bookings.title")}
@@ -109,10 +163,19 @@ const Profile = () => {
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
                 enablePagination={enablePagination}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
               />
             )}
           />
         )}
+
+        <OrganizationsSection
+          organizationsData={organizationsData}
+          organizationsLoading={organizationsLoading}
+          searchTerm={organizationsSearchTerm}
+          setSearchTerm={setOrganizationsSearchTerm}
+        />
       </main>
     </ProtectedProfilePage>
   );

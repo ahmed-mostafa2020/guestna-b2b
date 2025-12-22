@@ -500,6 +500,8 @@ export const createRequestQuoteSchema = (t) =>
 
 export const createAuthenticatedRequestQuoteSchema = (t) =>
   Yup.object().shape({
+    organization: Yup.string().required(t("forms.validation.require")),
+    track: Yup.string().optional(),
     category: Yup.string().optional(), // readonly field
     tripType: Yup.string().optional(), // readonly field
     city: Yup.string().optional(), // readonly field
@@ -545,6 +547,8 @@ export const createAuthenticatedRequestQuoteSchema = (t) =>
 
 export const createCustomNewTripSchema = (t) =>
   Yup.object().shape({
+    organization: Yup.string().required(t("forms.validation.require")),
+    track: Yup.string().optional(),
     category: Yup.string().required(t("forms.validation.require")),
     tripType: Yup.string().required(t("forms.validation.require")),
     city: Yup.string().required(t("forms.validation.require")),
@@ -1030,6 +1034,26 @@ export const createSchoolRegisterSchema = (t) =>
         })
       )
       .max(1, "Maximum 1 additional users allowed"),
+  });
+
+// Edit Trip Settings Schema
+export const createEditTripSettingsSchema = (t, minTrips = 0) =>
+  Yup.object({
+    trackInfo: Yup.string(),
+    currentTrips: Yup.number(),
+    maximumNumberTrips: Yup.number()
+      .required(t("forms.validation.require"))
+      .min(
+        minTrips,
+        t("profile.tables.orders.settingsTable.editModal.validation.minTrips", {
+          min: minTrips,
+        })
+      )
+      .max(
+        10,
+        t("profile.tables.orders.settingsTable.editModal.validation.maxTrips")
+      )
+      .integer(t("forms.validation.integer")),
   });
 
 // Add Role Schema

@@ -49,8 +49,9 @@
     "PUBLIC": "Groups",
     "PRIVATE": "Private",
     "trip": "Trip",
-    "MALE": "Male",
-    "FEMALE": "Female",
+    "MALE": "Boys",
+    "FEMALE": "Girls",
+    "BOTH": "Boys and Girls",
     "guestna": "Guestna",
     "startsWith": "Starts with",
     "loading": "Loading",
@@ -93,6 +94,7 @@
         "nationalId": "ID"
       }
     },
+    "close": "Close",
     "error": "Sorry, we couldn't find the page you were looking for.",
     "errorHappens": "An error occurred",
     "notAvailable": "This trip is not available for booking now",
@@ -117,8 +119,13 @@
       "DONE": "Done",
       "PENDING": "Pending",
       "CANCLED": "Cancelled",
+      "CANCELLED": "Cancelled",
       "SCHEDULED": "Scheduled",
-      "ENDED": "Ended"
+      "ENDED": "Ended",
+      "PENDING_COMPANY_APPROVAL": "Pending Approval",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "ON_HOLD": "On Hold"
     },
     "usersType": {
       "VISITOR": "Visitor",
@@ -188,6 +195,7 @@
       "integratedBookingsManagement": "Integrated Bookings Management",
       "createTripLink": "Create Trip Link",
       "users": "Users",
+      "students": "Students",
       "contactUs": "Contact Us",
       "faq": "FAQ",
       "schoolRegister": "School Register",
@@ -203,6 +211,7 @@
     "showDetails": "Show Details",
     "search": "Search",
     "reset": "Reset",
+    "clear": "Clear",
     "clearAll": "Clear All",
     "more": "Learn more",
     "viewTripDetails": "Take a look at the trip",
@@ -248,7 +257,10 @@
     "login": "Login",
     "continuaAsGuest": "Continua as a guest (Quick login)",
     "register": "Register",
-    "sendStcOtp": "Send Stc Otp"
+    "sendStcOtp": "Send Stc Otp",
+    "printPDF": "Print PDF",
+    "exportExcel": "Export Excel",
+    "print": "Print"
   },
 
   "booking": {
@@ -547,7 +559,10 @@
         "title": "School Team Management",
         "users": "Users",
         "students": "Students",
-        "schoolsOverView": "Schools Overview"
+        "studentsOverview": {
+          "title": "Schools overview",
+          "description": "Manage all company schools and stay on top of their performance."
+        }
       },
       "reportsAndAnalytics": {
         "title": "Reports and Analytics"
@@ -571,6 +586,13 @@
       "logoutConfirm": "Do you really want to log out?"
     },
 
+    "organizationSelector": {
+      "allSchools": "All Schools",
+      "searchPlaceholder": "Search for schools...",
+      "noResults": "No schools found",
+      "selectedCount": "{count} schools selected"
+    },
+
     "infoCards": {
       "totalStudents": "Total Students",
       "totalSchools": "Total Schools",
@@ -583,6 +605,57 @@
       "students": "Total Students",
       "stuff": "Managers",
       "bookings": "Bookings"
+    },
+
+    "schoolTeamStudents": {
+      "sectionTitle": "Schools & students",
+      "sectionDescription": "Review every school and track the number of students across academic stages.",
+      "studentsLabel": "{count} students",
+      "stagesTitle": "Stage distribution",
+      "statsTitle": "Students statistics",
+      "totalStudents": "Total students",
+      "emptyStages": "No academic stage data available yet.",
+      "emptySchools": "No schools found yet.",
+      "unknownStage": "Unknown stage",
+      "viewStudents": "View students in {grade}",
+      "modal": {
+        "title": "Students List",
+        "loading": "Loading students...",
+        "noStudents": "No students found in this grade.",
+        "name": "Student Name",
+        "grade": "Grade",
+        "actions": "Actions",
+        "viewDetails": "View Details"
+      },
+      "report": {
+        "title": "Students Report for",
+        "filename": "Students_Report"
+      },
+      "details": {
+        "title": "Student Details",
+        "basicInfo": "Basic Student Information",
+        "contactWithParent": "Contact with Parent",
+        "bookingDetails": "Booking Details",
+        "loading": "Loading student details...",
+        "noData": "No student data available.",
+        "name": "Name",
+        "academicStage": "Academic Stage",
+        "grade": "Grade",
+        "track": "Track",
+        "age": "Age",
+        "studentNumber": "Student Number",
+        "nationalId": "National ID",
+        "status": "Status",
+        "parentName": "Parent Name",
+        "parent": "Parent",
+        "parentPhone": "Parent Phone",
+        "parentEmail": "Parent Email",
+        "additionalPhone": "Additional Phone",
+        "activityName": "Activity Name",
+        "date": "Date",
+        "bookingMethod": "Booking Method",
+        "actions": "Actions"
+      }
     },
 
     "filters": {
@@ -688,6 +761,11 @@
       "label": "Revenues"
     },
 
+    "barChart": {
+      "title": "The most active schools",
+      "label": "Percentage %"
+    },
+
     "createTripLink": {
       "poster": {
         "title": "Create trip poster",
@@ -778,8 +856,27 @@
           "price": "Revenue",
           "status": "Status",
           "actions": "Actions",
-          "participants": "Participants"
+          "participants": "Participants",
+          "searchTripName": "Search by trip name"
+        },
+        "actions": {
+          "administrativeComment": "Administrative Comment",
+          "commentPlaceholder": "Enter description",
+          "commentSuccess": "Comment submitted successfully"
+        },
+        "details": {
+          "title": "Booking Details -",
+          "tripInfo": "Trip Information",
+          "bookingInfo": "Booking Information",
+          "bookingId": "Booking ID",
+          "time": "Time",
+          "slug": "Slug",
+          "note": "Notes"
         }
+      },
+      "organizations": {
+        "title": "Schools",
+        "searchBySchoolName": "Search by school name"
       },
       "reports": {
         "title": "Trips Closure Reports",
@@ -797,11 +894,61 @@
           "customizedActivities": "Customized Activities"
         },
         "followOrders": "Follow All Orders",
+        "tabs": {
+          "ordersManagement": "Activities Orders Management",
+          "settings": "Trips Settings"
+        },
+        "settingsTable": {
+          "title": "Number of Trips per Track",
+          "selectSchool": "Select the school you want to view its details",
+          "school": "School",
+          "track": "Track",
+          "maxTrips": "Maximum Trips",
+          "currentTrips": "Current Trips",
+          "status": "Status",
+          "actions": "Actions",
+          "availableTrips": "trips available",
+          "availableTrip": "trip available",
+          "completed": "Completed",
+          "noData": "No trip settings data available",
+          "loading": "Loading trip settings...",
+          "errorTitle": "Failed to Load Data",
+          "errorMessage": "An error occurred while loading trip settings. Please try again.",
+          "editModal": {
+            "title": "Edit Maximum Trips",
+            "subtitle": "Update the maximum number of allowed trips",
+            "trackLabel": "Track / Stage",
+            "currentTripsLabel": "Current Trips",
+            "newMaxTripsLabel": "New Maximum Trips",
+            "success": "Trip settings updated successfully",
+            "error": "Failed to update trip settings",
+            "validation": {
+              "minTrips": "Maximum trips cannot be less than current trips ({min})",
+              "maxTrips": "Maximum trips cannot exceed 10"
+            }
+          }
+        },
+        "counts": {
+          "allAskTrip": "Total Requests",
+          "scheduled": "Scheduled Requests",
+          "pending": "Pending Requests",
+          "done": "Approved Requests"
+        },
         "normal": {
           "title": "Orders from Guestna Market"
         },
         "customizable": {
           "title": "Customized Activities Orders"
+        },
+        "tableHeaders": {
+          "orderNumber": "Order Number",
+          "school": "School",
+          "activity": "Activity",
+          "orderType": "Order Type",
+          "budget": "Budget",
+          "orderDate": "Order Date",
+          "status": "Status",
+          "actions": "Actions"
         },
         "bookingDetails": {
           "title": "Trip Details:",
@@ -815,15 +962,24 @@
           "schoolName": "School Name",
           "contactPerson": "Contact Person",
           "phoneNumber": "Phone Number",
+          "schoolEmail": "School Email",
           "bookingDate": "Booking Date",
           "tripStartDate": "Trip Start Date",
           "tripEndDate": "Trip End Date",
           "category": "Category",
+          "createdBy": "Created By",
+          "createdAt": "Created At",
           "participants": "Participants",
           "printReport": "Print Report",
           "exportReport": "Export Report",
           "exportExcel": "Export to Excel",
-          "sendDetails": "Send Details"
+          "sendDetails": "Send Details",
+          "studentsList": "Students List",
+          "studentName": "Student Name",
+          "nationalId": "National ID",
+          "grade": "Grade",
+          "availableSeats": "Available Seats",
+          "revenueAmount": "Revenue Amount"
         },
         "studentsTable": {
           "title": "Students List",
@@ -1931,6 +2087,7 @@
       "clickToUpload": "Click to upload",
       "orDragDrop": "or drag and drop",
       "supportedFormats": "CSV, XLS, XLSX (MAX. 10MB)",
+      "integer": "Number must be an integer",
 
       "payment": {
         "success": "Processing payment now",
@@ -1953,6 +2110,14 @@
       "thanksMessage": {
         "title": "Thank You!",
         "description": "Your request has been sent successfully. Our team will contact you within 24 hours."
+      },
+
+      "organization": {
+        "placeholder": "School Name"
+      },
+
+      "track": {
+        "placeholder": "Educational Track"
       },
 
       "tripInfo": {

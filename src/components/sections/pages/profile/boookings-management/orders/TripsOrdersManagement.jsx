@@ -30,60 +30,16 @@ const TripsOrdersManagement = () => {
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Function to refresh CustomizedTripsTable data with direct API call
-  const refreshCustomizedTripsTable = async () => {
-    console.log(
-      "Refreshing CustomizedTripsTable after new activity creation - making direct API request"
-    );
-
-    try {
-      const headers = getHeaders(locale);
-
-      // Make direct API request to fetch fresh table data
-      const response = await axios.post(
-        getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.CUSTOMIZABLE}`
-        ),
-        {
-          perPage: CONSTANT_VALUES.TABLE_PER_PAGE || 10,
-          page: 1,
-        },
-        { headers }
-      );
-
-      console.log("Fresh CustomizedTripsTable data fetched:", response.data);
-
-      // Update the cache with fresh data
-      queryClient.setQueryData(
-        [
-          "fetchData",
-          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.CUSTOMIZABLE}`,
-          "POST",
-          JSON.stringify({}),
-          JSON.stringify({
-            perPage: CONSTANT_VALUES.TABLE_PER_PAGE || 10,
-            page: 1,
-          }),
-        ],
-        response.data
-      );
-
-      // Also invalidate to trigger re-render
-      queryClient.invalidateQueries({
-        predicate: (query) => {
-          return (
-            query.queryKey[0] === "fetchData" &&
-            query.queryKey[1] ===
-              `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.CUSTOMIZABLE}`
-          );
-        },
-      });
-
-      console.log("CustomizedTripsTable data refreshed successfully");
-    } catch (error) {
-      console.error("Error refreshing CustomizedTripsTable data:", error);
-      enqueueSnackbar("Error refreshing table data", { variant: "error" });
-    }
+  const refreshAllTripsTable = () => {
+    queryClient.invalidateQueries({
+      predicate: (query) => {
+        return (
+          query.queryKey[0] === "fetchData" &&
+          query.queryKey[1] ===
+            `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ALL}`
+        );
+      },
+    });
   };
 
   const handleRequestNewActivity = async () => {
@@ -118,16 +74,15 @@ const TripsOrdersManagement = () => {
   };
 
   const handleNewActivitySuccess = (responseData) => {
-    // Refresh the CustomizedTripsTable when new activity is created
-    refreshCustomizedTripsTable();
+    refreshAllTripsTable();
     handleModalClose();
   };
 
   return (
     <>
-      <div className=" rounded-2xl shadow-card p-4 lg:p-8 mb-4 lg:mb-8 bg-white">
-        <div className="flex flex-col gap-6 lg:gap-14">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
+      <div className=" rounded-2xl shadow-card p-4 mb-4 lg:mb-8 bg-white">
+        <div className="flex flex-col gap-4 lg:gap-8">
+          <div className="flex items-center justify-between gap-4 flex-wrap py-4">
             <div className="flex items-center gap-2">
               <span className="bg-mainColor rounded-[13px] p-2">
                 {activitiesOrdersManagementIcon}
@@ -144,7 +99,7 @@ const TripsOrdersManagement = () => {
               <button
                 onClick={handleRequestNewActivity}
                 disabled={loading}
-                className="flex text-sm lg:text-base items-center gap-2 rounded-lg text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex font-medium text-sm lg:text-xl items-center gap-2 rounded-lg text-white bg-mainColor p-4 hover:bg-titleColor transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-white text-mainColor font-bold">
                   {loading ? <CircularProgress size={20} /> : "+"}

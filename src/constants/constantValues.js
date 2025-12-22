@@ -10,6 +10,7 @@ export const CONSTANT_VALUES = {
   USER_ID: "user_id",
   AUTH_TOKEN: "auth_token",
   PROFILE_IMAGE: "profile_image",
+  SELECTED_ORGANIZATIONS: "selected_organizations",
   LONG_TIME_SAVING_TOKEN: 30,
   SHORT_TIME_SAVING_TOKEN: 1,
 

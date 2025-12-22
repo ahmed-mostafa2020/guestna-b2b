@@ -5,6 +5,9 @@ export const getHeaders = (locale, isFormData = false) => {
   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
   // const reqKey = process.env.NEXT_PUBLIC_REQ_KEY;
   const userId = Cookies.get(CONSTANT_VALUES.USER_ID);
+  const selectedOrganizations = Cookies.get(
+    CONSTANT_VALUES.SELECTED_ORGANIZATIONS
+  );
 
   return {
     lang: locale || "ar",
@@ -12,5 +15,8 @@ export const getHeaders = (locale, isFormData = false) => {
     ...(!isFormData && { "Content-Type": "application/json" }),
     ...(token && { authorization: `Bearer ${token}` }),
     ...(userId && { devicespecificid: userId }),
+    ...(selectedOrganizations && {
+      "profile-organizations": selectedOrganizations,
+    }),
   };
 };

@@ -133,7 +133,12 @@ const UsersManagement = ({
 
       {/* MOBILE MODAL STYLE */}
       {isSmDown && showPermissions && selectedUser && (
-        <CustomizedModal open={showPermissions} handleClose={setShowPermissions} bgcolor="rgba(0, 0, 0, 0.3)" customizedCloseButton >
+        <CustomizedModal
+          open={showPermissions}
+          handleClose={setShowPermissions}
+          bgcolor="rgba(0, 0, 0, 0.3)"
+          customizedCloseButton
+        >
           <Box className="bg-white rounded-2xl w-full max-w-md shadow-card p-4 relative">
             <UserPermissions
               user={selectedUser}
