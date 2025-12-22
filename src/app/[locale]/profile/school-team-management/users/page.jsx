@@ -5,7 +5,6 @@ import { useTranslations, useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { useFetchData } from "@hooks/useFetchData";
-import { download } from "@hooks/useDownload";
 import { usePermissions } from "@hooks/usePermissions";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -15,7 +14,7 @@ import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import UsersInfoCardsListing from "@components/sections/pages/profile/schoolManagementTeam/users/UsersInfoCardsListing";
 import UsersManagement from "@components/sections/pages/profile/schoolManagementTeam/users/UsersManagement";
-import * as XLSX from "xlsx";
+import { exportUsersToExcel } from "@utils/exportUtils";
 
 const UsersPage = () => {
   const { hasElement } = usePermissions();
@@ -23,7 +22,12 @@ const UsersPage = () => {
   const t = useTranslations();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data, error, isLoading, refetch: refetchInfo } = useFetchData(
+  const {
+    data,
+    error,
+    isLoading,
+    refetch: refetchInfo,
+  } = useFetchData(
     `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.INFO}`,
     {},
     {
@@ -69,54 +73,42 @@ const UsersPage = () => {
       />
     );
 
-  const handleExportToExcel = () => {
-    const users = tableData?.users || [];
+  const handleExportToExcel = async () => {
+    const result = await exportUsersToExcel(tableData, t, "Users");
 
-    const exportUsers = users.map((user) => ({
-      Name: user.name || "-",
-      Email: user.email || "-",
-      "Job grade": t(`common.usersType.${user.userType}`),
-    }));
-    const worksheet = XLSX.utils.json_to_sheet(exportUsers || []);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet 1");
-
-    const blob = new Blob(
-      [XLSX.write(workbook, { bookType: "xlsx", type: "array" })],
-      {
-        type: "application/octet-stream",
-      }
-    );
-
-    download(blob, "Users");
+    if (!result.success) {
+      alert("Failed to export users:", result.error);
+    }
   };
 
   return (
-    <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_USERS_PAGE}>
+    <ProtectedProfilePage
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_USERS_PAGE}
+    >
       <main className="flex flex-col gap-6">
-      {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_CARDS) && (
-        <UsersInfoCardsListing data={data} />
-      )}
-
-      {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_PRINT_REPORT) &&
-        tableData?.users?.length > 0 && (
-          <div className="flex justify-end mt-2">
-            <button
-              onClick={() => handleExportToExcel()}
-              className="bg-mainColor rounded-lg text-white font-medium font-somar hover:bg-linksHover px-8 py-2"
-            >
-              {t("profile.tables.orders.bookingDetails.printReport")}
-            </button>
-          </div>
+        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_CARDS) && (
+          <UsersInfoCardsListing data={data} />
         )}
 
-      <UsersManagement
-        data={tableData}
-        setSearchTerm={setSearchTerm}
-        searchTerm={searchTerm}
-        refetchInfo={refetchInfo}
-        refetchTable={refetchTable}
-      />
+        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_PRINT_REPORT) &&
+          tableData?.length > 0 && (
+            <div className="flex justify-end mt-2">
+              <button
+                onClick={() => handleExportToExcel()}
+                className="bg-mainColor rounded-lg text-white font-medium font-somar hover:bg-linksHover px-8 py-2"
+              >
+                {t("profile.tables.orders.bookingDetails.printReport")}
+              </button>
+            </div>
+          )}
+
+        <UsersManagement
+          data={tableData}
+          setSearchTerm={setSearchTerm}
+          searchTerm={searchTerm}
+          refetchInfo={refetchInfo}
+          refetchTable={refetchTable}
+        />
       </main>
     </ProtectedProfilePage>
   );
