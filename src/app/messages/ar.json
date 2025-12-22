@@ -607,6 +607,12 @@
         "userTypePlaceholder": "المسمى الوظيفية",
         "parsoneName": "اسم مسؤول الاتصال ",
         "phone": "رقم الجوال"
+      },
+      "report": {
+        "name": "الاسم",
+        "email": "البريد الالكتروني",
+        "jobGrade": "المسمى الوظيفية",
+        "phone": "رقم الجوال"
       }
     },
     "donutChart": {

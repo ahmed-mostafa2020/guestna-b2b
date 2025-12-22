@@ -611,6 +611,12 @@
         "userTypePlaceholder": "Job grade",
         "parsoneName": "Contact Person Name",
         "phone": "Mobile number"
+      },
+      "report": {
+        "name": "Name",
+        "email": "Email",
+        "jobGrade": "Job Grade",
+        "phone": "Phone"
       }
     },
     "donutChart": {
