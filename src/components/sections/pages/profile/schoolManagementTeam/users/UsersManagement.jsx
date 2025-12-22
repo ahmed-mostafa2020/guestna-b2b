@@ -52,6 +52,7 @@ const UsersManagement = ({
       spacing={2}
       width="100%"
       height="100%"
+      gap={2}
     >
       {/* LEFT SIDE */}
       <Box
