@@ -5,7 +5,7 @@ import { MenuItem, Select, Skeleton, Typography } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
 const SelectSchoolForDetailsSkeleton = () => {
@@ -54,13 +54,23 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
   const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [selectedSchool, setSelectedSchool] = useState(details?._id ?? "");
-  const { organizations } = useSelector((state) => state.selectedOrganizations);
-  /* Sync when details changes */
-  useEffect(() => {
-    if (details?._id && organizations?.some((org) => org._id === details._id)) {
-      setSelectedSchool(details._id);
+  const { organizations, selectedIds } = useSelector(
+    (state) => state.selectedOrganizations
+  );
+  const orgOptions = useMemo(() => {
+    if (selectedIds) {
+      const selectedIdsSet = new Set(selectedIds);
+      return organizations.filter((org) => selectedIdsSet.has(org._id));
     }
-  }, [details, organizations]);
+    return organizations;
+  }, [organizations, selectedIds]);
+
+  useEffect(() => {
+    const detailId = details?._id;
+    if (detailId && orgOptions.some((org) => org._id === detailId)) {
+      setSelectedSchool(detailId);
+    }
+  }, [details?._id, orgOptions]);
 
   const handleSchoolSelect = (e) => {
     const id = e.target.value;
@@ -70,9 +80,8 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
     );
   };
 
-  if (isLoading) return <SelectSchoolForDetailsSkeleton />;
-
-  if (!details) return null;
+  if (isLoading || !details || !organizations?.length)
+    return <SelectSchoolForDetailsSkeleton />;
 
   return (
     <Box className="flex flex-col gap-4 bg-white rounded-lg p-4 shadow border-2 border-border">
@@ -101,7 +110,7 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
           transformOrigin: { vertical: "top", horizontal: "left" },
         }}
       >
-        {organizations.map((org) => (
+        {orgOptions.map((org) => (
           <MenuItem
             key={org._id}
             value={org._id}
