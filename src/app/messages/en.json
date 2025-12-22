@@ -193,7 +193,8 @@
       "schoolRegister": "School Register",
       "confirmingData": "Confirming Data",
       "loginAs": "Login As",
-      "error": "404: This page could not be found"
+      "error": "404: This page could not be found",
+      "organization_details": "{organizationName} Details"
     }
   },
   "links": {

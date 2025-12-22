@@ -35,12 +35,11 @@ export const useExcel = ({ headers = [] }) => {
       records,
       locale,
     });
-const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    console.log(blob ,fileName);
-    await download(
-      blob,
-      fileName
-    );
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    console.log(blob, fileName);
+    await download(blob, fileName);
   };
 
   return {

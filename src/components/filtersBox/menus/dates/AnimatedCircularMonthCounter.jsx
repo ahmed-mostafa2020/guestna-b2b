@@ -102,7 +102,7 @@ const AnimatedCircularMonthCounter = ({ onMonthSelect }) => {
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <Typography
             variant="h1"
-            className="mb-2 font-bold text-black text-7xl"
+            className="mb-2 !font-bold text-black !text-7xl"
           >
             {month}
           </Typography>
