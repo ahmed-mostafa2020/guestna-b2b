@@ -30,7 +30,7 @@ const TripsOrdersManagement = () => {
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const refreshCAllTripsTable = () => {
+  const refreshAllTripsTable = () => {
     queryClient.invalidateQueries({
       predicate: (query) => {
         return (
@@ -74,7 +74,7 @@ const TripsOrdersManagement = () => {
   };
 
   const handleNewActivitySuccess = (responseData) => {
-    refreshCAllTripsTable();
+    refreshAllTripsTable();
     handleModalClose();
   };
 
