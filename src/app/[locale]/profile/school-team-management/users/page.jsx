@@ -60,6 +60,7 @@ const UsersPage = () => {
     }
   );
 
+  console.log(tableData);
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
       "pagesHead.title.users"
@@ -115,7 +116,7 @@ const UsersPage = () => {
         )}
 
         {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_PRINT_REPORT) &&
-          tableData?.users?.length > 0 && (
+          tableData?.length > 0 && (
             <div className="flex justify-end mt-2">
               <button
                 onClick={() => handleExportToExcel()}

@@ -3,7 +3,7 @@ import { useSnackbar } from "notistack";
 import { ExcelService } from "../utils/excelService";
 import { download } from "@hooks/useDownload";
 
-export const useExcel = ({ headers = [], t, locale = "en" }) => {
+export const useExcel = ({ headers = [], t, locale = "ar" }) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const [isExporting, setIsExporting] = useState(false);
