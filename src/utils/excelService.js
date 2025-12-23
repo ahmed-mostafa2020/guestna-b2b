@@ -126,6 +126,45 @@ const applyValidation = (
   });
 };
 
+// --- Helpers ---
+
+const styleHeaderRow = (worksheet) => {
+  const headerRow = worksheet.getRow(1);
+  styleRow(headerRow);
+};
+
+const styleRow = (row) => {
+  row.eachCell((cell) => {
+    cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FF005577" },
+    };
+    cell.alignment = { horizontal: "center" };
+  });
+};
+
+const saveWorkbook = async (workbook, filename) => {
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  download(blob, filename);
+};
+
+function formatCurrencyString(amount, locale = "en-US") {
+  if (isNaN(amount) || amount === null) return "";
+
+  const formatter = new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: "SAR",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  return formatter.format(amount);
+}
 export const ExcelService = {
   // 1. Generate a dynamic, generic Excel template
   generateTemplate: async ({ headers, locale = "en" }) => {
@@ -224,10 +263,7 @@ export const ExcelService = {
 
   // 4. Export My Booking (Profile)
   exportMyBooking: async ({ booking, bookingDetails, t, locale = "en" }) => {
-    const { workbook } = createWorkbook();
-
-    // -- Sheet 1: Trip Information --
-    const tripSheet = workbook.addWorksheet(
+    const { workbook, worksheet: tripSheet } = createWorkbook(
       t("profile.tables.bookings.details.tripInfo")
     );
 
@@ -380,10 +416,7 @@ export const ExcelService = {
     t,
     locale = "en",
   }) => {
-    const { workbook } = createWorkbook();
-
-    // -- Sheet 1: Trip Info --
-    const tripSheet = workbook.addWorksheet(
+    const { workbook, worksheet: tripSheet } = createWorkbook(
       t("exportUtils.bookingReport.tripInfo")
     );
 
@@ -516,10 +549,7 @@ export const ExcelService = {
 
   // 7. Export Student Details (School Management)
   exportStudentDetails: async ({ data, t, locale = "en" }) => {
-    const { workbook } = createWorkbook();
-
-    // -- Sheet 1: Basic Info --
-    const profileSheet = workbook.addWorksheet(
+    const { workbook, worksheet: profileSheet } = createWorkbook(
       t("profile.schoolTeamStudents.details.basicInfo")
     );
 
@@ -622,43 +652,3 @@ export const ExcelService = {
     return { success: true, filename: filename + ".xlsx" };
   },
 };
-
-// --- Helpers ---
-
-const styleHeaderRow = (worksheet) => {
-  const headerRow = worksheet.getRow(1);
-  styleRow(headerRow);
-};
-
-const styleRow = (row) => {
-  row.eachCell((cell) => {
-    cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
-    cell.fill = {
-      type: "pattern",
-      pattern: "solid",
-      fgColor: { argb: "FF005577" },
-    };
-    cell.alignment = { horizontal: "center" };
-  });
-};
-
-const saveWorkbook = async (workbook, filename) => {
-  const buffer = await workbook.xlsx.writeBuffer();
-  const blob = new Blob([buffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  });
-  download(blob, filename);
-};
-
-function formatCurrencyString(amount, locale = "ar") {
-  if (isNaN(amount) || amount === null) return "";
-
-  const formatter = new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency: "SAR",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-
-  return formatter.format(amount);
-}
