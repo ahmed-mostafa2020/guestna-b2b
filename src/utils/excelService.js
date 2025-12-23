@@ -5,7 +5,6 @@ import { download } from "../hooks/useDownload";
 import {
   myBookingStudentsHeaders,
   bookingManagementStudentsHeaders,
-  studentDetailsBookingsHeaders,
 } from "../constants/excelHeaders";
 
 const createWorkbook = (name = "Sheet") => {
@@ -651,7 +650,7 @@ const saveWorkbook = async (workbook, filename) => {
   download(blob, filename);
 };
 
-function formatCurrencyString(amount, locale = "en-US") {
+function formatCurrencyString(amount, locale = "ar") {
   if (isNaN(amount) || amount === null) return "";
 
   const formatter = new Intl.NumberFormat(locale, {
