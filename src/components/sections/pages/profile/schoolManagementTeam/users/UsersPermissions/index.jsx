@@ -26,7 +26,7 @@ export default function UserPermissions({ user, onClose }) {
   const {
     data: userPermissions,
     isLoading: userLoading,
-    refetch: userRefetch,
+    refetch: userPermissionsRefetch,
   } = useFetchData(
     user
       ? `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.GET_USER_PERMISSIONS}/${user._id}`
@@ -125,11 +125,12 @@ export default function UserPermissions({ user, onClose }) {
           `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.UPDATE_PERMISSIONS}/${user._id}`
         ),
         { permissions: Array.from(selected) }
-      );
+      )
 
       enqueueSnackbar(t("profile.rolesPermissions.messages.saveSuccess"), {
         variant: "success",
       });
+      userPermissionsRefetch?.();
       onClose();
     } catch {
       enqueueSnackbar(t("profile.rolesPermissions.messages.saveError"), {
