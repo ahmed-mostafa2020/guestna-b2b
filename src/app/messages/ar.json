@@ -132,6 +132,14 @@
       "B2B_STAFF_MANAGER": "مدير المدرسة",
       "B2B_STAFF_FINANCE": "مسؤول المالية",
       "B2B_STAFF_STMS": "منسق أنشطة"
+    },
+    "excel_success": {
+      "export": "تم التصدير بنجاح"
+    },
+    "excel_error": {
+      "generic": "حدث خطأ أثناء التصدير",
+      "parse": "فشل في معالجة الملف",
+      "noPage": "عذراً، لم نستطع إيجاد الصفحة التي تبحث عنها"
     }
   },
 
@@ -560,6 +568,10 @@
         "schoolsOverView": {
           "title": "نظرة عامة على المدارس",
           "description": "إدارة جميع المدارس الخاصة بالشركة و رصد أداءها."
+        },
+        "studentsOverview": {
+          "title": "نظرة عامة على الطلاب",
+          "description": "إدارة جميع الطلاب الخاصة بالشركة و رصد أداءها."
         }
       },
       "reportsAndAnalytics": {
@@ -794,6 +806,11 @@
     },
 
     "tables": {
+      "users": {
+        "export": {
+          "file_name": "تقرير المستخدمين"
+        }
+      },
       "ordersInfo": {
         "orderDetails": {
           "title": "تفاصيل الطلب -",

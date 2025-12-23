@@ -8,7 +8,7 @@ import { CircularProgress } from "@mui/material";
 import CustomizedModal from "@components/common/customizedModal";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { exportStudentDetailsToExcel } from "@utils/exportUtils";
+import { useExcel } from "@hooks/useExcel";
 import BookingsTable from "./BookingsTable";
 import ExportButton from "@components/common/ExportButton";
 
@@ -28,12 +28,15 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
     }
   );
 
-  const [isExporting, setIsExporting] = useState(false);
+  console.log(data)
+  const { exportStudentDetails, isExporting } = useExcel({ t, locale });
 
   const handlePrint = async () => {
-    setIsExporting(true);
-    await exportStudentDetailsToExcel(data, t, locale);
-    setIsExporting(false);
+    await exportStudentDetails({
+      data,
+      t,
+      locale,
+    });
   };
 
   return (

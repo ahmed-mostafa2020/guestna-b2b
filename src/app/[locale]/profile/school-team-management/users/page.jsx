@@ -15,13 +15,20 @@ import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import UsersInfoCardsListing from "@components/sections/pages/profile/schoolManagementTeam/users/UsersInfoCardsListing";
 import UsersManagement from "@components/sections/pages/profile/schoolManagementTeam/users/UsersManagement";
-import * as XLSX from "xlsx";
+import { useExcel } from "@hooks/useExcel";
+import { usersListHeaders } from "@constants/excelHeaders";
 
 const UsersPage = () => {
   const { hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
   const [searchTerm, setSearchTerm] = useState("");
+
+  const { exportRecords } = useExcel({
+    headers: usersListHeaders({ locale }),
+    t,
+    locale,
+  });
 
   const {
     data,
@@ -74,26 +81,28 @@ const UsersPage = () => {
       />
     );
 
-  const handleExportToExcel = () => {
-    const users = tableData?.users || [];
+  const handleExportToExcel = async () => {
+    const allUsers = tableData?.reduce((acc, org) => {
+      const orgUsers =
+        org.users?.map((user) => ({
+          ...user,
+          role: user.role.description,
+          organizationName: org.organization?.name || "-",
+        })) || [];
+      return [...acc, ...orgUsers];
+    }, []);
 
-    const exportUsers = users.map((user) => ({
-      Name: user.name || "-",
-      Email: user.email || "-",
-      "Job grade": t(`common.usersType.${user.userType}`),
+    const exportUsers = allUsers.map((user) => ({
+      organization: user.organizationName,
+      name: user.name || "-",
+      email: user.email || "-",
+      role: user.role || "-",
     }));
-    const worksheet = XLSX.utils.json_to_sheet(exportUsers || []);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet 1");
 
-    const blob = new Blob(
-      [XLSX.write(workbook, { bookType: "xlsx", type: "array" })],
-      {
-        type: "application/octet-stream",
-      }
+    await exportRecords(
+      exportUsers,
+      t("profile.tables.users.export.file_name")
     );
-
-    download(blob, "Users");
   };
 
   return (

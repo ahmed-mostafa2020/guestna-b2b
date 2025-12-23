@@ -6,7 +6,7 @@ import { memo } from "react";
 
 import formatDate from "@utils/FormateDate";
 import formatCurrency from "@utils/FormatCurrency";
-import { exportToExcel } from "@utils/exportUtils";
+import { useExcel } from "@hooks/useExcel";
 import StudentsTable from "./StudentsTable";
 import {
   locationIcon,
@@ -23,7 +23,7 @@ import ExportButton from "@components/common/ExportButton";
 const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
   const locale = useLocale();
   const t = useTranslations();
-  const [isExporting, setIsExporting] = useState(false);
+  const { exportBookingManagement, isExporting } = useExcel({ t, locale });
 
   if (!booking) return null;
 
@@ -68,58 +68,52 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
   }, [bookingDetails]);
 
   const handleExcelExport = async () => {
-    setIsExporting(true);
+    // Ensure we're using all students data (not paginated)
 
-    try {
-      // Ensure we're using all students data (not paginated)
+    // Handle different possible data structures
+    let studentsArray = [];
 
-      // Handle different possible data structures
-      let studentsArray = [];
-
-      // Extract students array from various possible structures
-      if (Array.isArray(bookingDetails)) {
-        studentsArray = bookingDetails;
-      } else if (bookingDetails?.nodes && Array.isArray(bookingDetails.nodes)) {
-        studentsArray = bookingDetails.nodes;
-      } else if (
-        bookingDetails?.data?.nodes &&
-        Array.isArray(bookingDetails.data.nodes)
-      ) {
-        studentsArray = bookingDetails.data.nodes;
-      } else if (bookingDetails?.data && Array.isArray(bookingDetails.data)) {
-        studentsArray = bookingDetails.data;
-      } else if (bookingDetails && typeof bookingDetails === "object") {
-        // Look for arrays in the object that contain student-like data
-        const keys = Object.keys(bookingDetails);
-        for (const key of keys) {
+    // Extract students array from various possible structures
+    if (Array.isArray(bookingDetails)) {
+      studentsArray = bookingDetails;
+    } else if (bookingDetails?.nodes && Array.isArray(bookingDetails.nodes)) {
+      studentsArray = bookingDetails.nodes;
+    } else if (
+      bookingDetails?.data?.nodes &&
+      Array.isArray(bookingDetails.data.nodes)
+    ) {
+      studentsArray = bookingDetails.data.nodes;
+    } else if (bookingDetails?.data && Array.isArray(bookingDetails.data)) {
+      studentsArray = bookingDetails.data;
+    } else if (bookingDetails && typeof bookingDetails === "object") {
+      // Look for arrays in the object that contain student-like data
+      const keys = Object.keys(bookingDetails);
+      for (const key of keys) {
+        if (
+          Array.isArray(bookingDetails[key]) &&
+          bookingDetails[key].length > 0
+        ) {
+          const firstItem = bookingDetails[key][0];
           if (
-            Array.isArray(bookingDetails[key]) &&
-            bookingDetails[key].length > 0
+            firstItem &&
+            (firstItem.child || firstItem.parent || firstItem.student)
           ) {
-            const firstItem = bookingDetails[key][0];
-            if (
-              firstItem &&
-              (firstItem.child || firstItem.parent || firstItem.student)
-            ) {
-              studentsArray = bookingDetails[key];
+            studentsArray = bookingDetails[key];
 
-              break;
-            }
+            break;
           }
         }
       }
-
-      const allStudentsData = { nodes: studentsArray };
-
-      const result = exportToExcel(booking, allStudentsData, t, locale);
-
-      if (result.success) {
-      } else {
-      }
-    } catch (error) {
-    } finally {
-      setIsExporting(false);
     }
+
+    const allStudentsData = { nodes: studentsArray };
+
+    await exportBookingManagement({
+      booking,
+      bookingDetails: allStudentsData,
+      t,
+      locale,
+    });
   };
 
   return (

@@ -127,13 +127,13 @@
       "REJECTED": "Rejected",
       "ON_HOLD": "On Hold"
     },
-    "usersType": {
-      "VISITOR": "Visitor",
-      "B2B_PARENT": "Parent",
-      "B2B_ADMINISTRATION": "School Administration",
-      "B2B_STAFF_MANAGER": "Head Teacher",
-      "B2B_STAFF_FINANCE": "Finance Officer",
-      "B2B_STAFF_STMS": "Trips Coordinator"
+    "excel_success": {
+      "export": "Export successful successfully"
+    },
+    "excel_error": {
+      "generic": "An error occurred during export",
+      "parse": "Failed to parse file",
+      "noPage": "Sorry, we couldn't find the page you were looking for."
     }
   },
   "weekDays": {
@@ -559,9 +559,13 @@
         "title": "School Team Management",
         "users": "Users",
         "students": "Students",
-        "studentsOverview": {
+        "schoolsOverView": {
           "title": "Schools overview",
           "description": "Manage all company schools and stay on top of their performance."
+        },
+        "studentsOverview": {
+          "title": "Students overview",
+          "description": "Manage all company students and stay on top of their performance."
         }
       },
       "reportsAndAnalytics": {
@@ -799,6 +803,11 @@
     },
 
     "tables": {
+      "users": {
+        "export": {
+          "file_name": "Users Report"
+        }
+      },
       "ordersInfo": {
         "orderDetails": {
           "title": "Order Details -",

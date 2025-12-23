@@ -6,7 +6,11 @@ const ExportUsersExcel = ({ users }) => {
   const locale = useLocale();
   const t = useTranslations();
 
-  const { exportRecords } = useExcel({ headers: usersHeaders({ locale }) });
+  const { exportRecords } = useExcel({
+    headers: usersHeaders({ locale }),
+    t,
+    locale,
+  });
 
   const downloadExcelJS = async () => {
     const exportedUsers = users.map((user) => ({

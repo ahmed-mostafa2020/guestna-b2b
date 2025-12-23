@@ -11,6 +11,7 @@ import Pagination from "@components/common/Pagination";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { exportModalToPDF } from "@utils/exportUtils";
+import { useExcel } from "@hooks/useExcel";
 import ExportButton from "@components/common/ExportButton";
 
 const StudentsListModal = ({
@@ -24,7 +25,7 @@ const StudentsListModal = ({
   const t = useTranslations();
   const locale = useLocale();
   const modalRef = useRef(null);
-  const [isExporting, setIsExporting] = useState(false);
+  const { exportStudentsList, isExporting } = useExcel({ t, locale });
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -67,13 +68,8 @@ const StudentsListModal = ({
   );
 
   const handlePrint = async (type) => {
-    setIsExporting(true);
     try {
       if (type === "excel") {
-        const { exportStudentsListToExcel } = await import(
-          "@utils/exportUtils"
-        );
-
         const labels = {
           reportTitle:
             t("profile.schoolTeamStudents.report.title") + " " + gradeName,
@@ -81,7 +77,11 @@ const StudentsListModal = ({
           filename: t("profile.schoolTeamStudents.report.filename"),
         };
 
-        exportStudentsListToExcel(students, gradeName, labels);
+        await exportStudentsList({
+          students,
+          gradeName,
+          translatedLabels: labels,
+        });
       } else {
         if (!modalRef.current) return;
         await exportModalToPDF(
@@ -93,8 +93,6 @@ const StudentsListModal = ({
       }
     } catch (error) {
       console.error("Print error:", error);
-    } finally {
-      setIsExporting(false);
     }
   };
 

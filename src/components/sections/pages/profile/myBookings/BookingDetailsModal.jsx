@@ -4,10 +4,9 @@ import { memo } from "react";
 import formatDate from "@utils/FormateDate";
 import formatCurrency from "@utils/FormatCurrency";
 import formatNumbersUint from "@utils/FormatNumbersUint";
-import { exportMyBookingToExcel } from "@utils/exportUtils";
+import { useExcel } from "@hooks/useExcel";
 import StudentsTable from "../boookings-management/bookings/StudentsTable";
 import {
-  locationIcon,
   dateIcon,
   profileIcon,
   walletIcon,
@@ -36,7 +35,7 @@ const getStatusStyles = (status) => {
 const BookingDetailsModal = ({ booking, bookingDetails, loading }) => {
   const locale = useLocale();
   const t = useTranslations();
-  const [isExporting, setIsExporting] = useState(false);
+  const { exportMyBooking, isExporting } = useExcel({ t, locale });
 
   // Process bookingDetails to ensure StudentsTable gets the right structure
   // MUST be before conditional returns to avoid hook order issues
@@ -82,27 +81,13 @@ const BookingDetailsModal = ({ booking, bookingDetails, loading }) => {
   const handleExcelExport = async () => {
     if (!bookingDetails) return;
 
-    setIsExporting(true);
-
-    try {
-      // Use exportMyBookingToExcel for myBookings data structure
-      const result = exportMyBookingToExcel(
-        booking,
-        processedBookingDetails,
-        t,
-        locale
-      );
-
-      if (result.success) {
-        // Export successful
-      } else {
-        // Export failed
-      }
-    } catch (error) {
-      console.error("Export error:", error);
-    } finally {
-      setIsExporting(false);
-    }
+    // Use exportMyBooking hook
+    await exportMyBooking({
+      booking,
+      bookingDetails: processedBookingDetails,
+      t,
+      locale,
+    });
   };
 
   return (
