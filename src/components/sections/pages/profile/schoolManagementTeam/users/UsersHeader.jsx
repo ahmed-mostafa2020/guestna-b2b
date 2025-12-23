@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl";
 import { memo, useState } from "react";
 
 import { TextField, InputAdornment, IconButton } from "@mui/material";
-import { searchBarIcon, wrongIcon } from "@/src/assets/svg";
+import { searchBarIcon, wrongIcon } from "@assets/svg";
 
 const UsersHeader = ({ setSearchTerm, searchTerm }) => {
   const t = useTranslations();

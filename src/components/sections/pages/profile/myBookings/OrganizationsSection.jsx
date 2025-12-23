@@ -3,6 +3,8 @@ import OrganizationsHeader from "./OrganizationsHeader";
 
 import { Card, CircularProgress } from "@mui/material";
 import EmptyBookings from "./EmptyBookings";
+import SchoolOverviewCard from "../schoolManagementTeam/schoolsOverview/SchoolOverviewCard";
+import SchoolOverviewCardSkeleton from "../schoolManagementTeam/schoolsOverview/SchoolOverviewCardSkeleton";
 
 const OrganizationsSection = ({
   organizationsData,
@@ -14,10 +16,7 @@ const OrganizationsSection = ({
   const schoolsData = organizationsData?.nodes;
 
   const rendredSchools = schoolsData?.map((school) => {
-    return (
-      // Add orgCard component
-      <span key={school._id}>{school.name}</span>
-    );
+    return <SchoolOverviewCard key={school._id} item={school} />;
   });
 
   return (
@@ -32,16 +31,15 @@ const OrganizationsSection = ({
       />
       {/* Loading State */}
       {organizationsLoading ? (
-        <div className="w-full min-h-[400px] flex items-center justify-center">
-          <div className="flex flex-col items-center gap-3">
-            <CircularProgress size={50} sx={{ color: "var(--color-main)" }} />
-            <p className="text-sm text-gray-500">{t("common.loading")}</p>
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <SchoolOverviewCardSkeleton />
+          <SchoolOverviewCardSkeleton />
+          <SchoolOverviewCardSkeleton />
         </div>
       ) : organizationsData.nodes.length === 0 ? (
         <EmptyBookings />
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           {rendredSchools}
         </div>
       )}
