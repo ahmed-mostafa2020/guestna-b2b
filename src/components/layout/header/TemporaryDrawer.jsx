@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 
 import { useTranslations, useLocale } from "next-intl";
 
+import { useSelector } from "react-redux";
+
 import { useState } from "react";
 
 import SettingsButton from "./SettingsButton";
@@ -12,6 +14,8 @@ import SettingsButton from "./SettingsButton";
 import Logo from "../../common/Logo";
 import ServicesDropdown from "./ServicesDropdown";
 import AuthToggleButton from "./AuthToggleButton";
+import OrganizationSelector from "../../common/OrganizationSelector";
+import Notifications from "./Notifications";
 
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -26,6 +30,8 @@ import { aboutUsIcon, discoverIcon, greenPhoneIcon } from "@assets/svg";
 
 const TemporaryDrawer = () => {
   const [open, setOpen] = useState(false);
+  const userToken = useSelector((state) => state.users.userToken);
+
   const t = useTranslations();
 
   const pathname = usePathname();
@@ -125,6 +131,11 @@ const TemporaryDrawer = () => {
 
         <div className="flex flex-col gap-3 px-3">
           <SettingsButton />
+
+          {userToken && <Notifications />}
+
+          {/* Organization Selector Header */}
+          <OrganizationSelector />
 
           <AuthToggleButton />
         </div>

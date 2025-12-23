@@ -28,7 +28,7 @@ const LoginButton = () => {
     <>
       <Link
         href={`/${locale}/login`}
-        className="px-4 py-2 font-bold text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor hover:bg-linksHover hover:border-linksHover"
+        className="px-4 py-2 text-center font-bold text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor hover:bg-linksHover hover:border-linksHover"
       >
         {t("header.login")}
       </Link>

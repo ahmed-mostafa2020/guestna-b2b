@@ -334,6 +334,20 @@ const locationIcon = (
     />
   </svg>
 );
+const bluelocationIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="12"
+    height="14"
+    viewBox="0 0 12 14"
+    fill="none"
+  >
+    <path
+      d="M11.6667 4.46667C10.9667 1.38667 8.27999 0 5.91999 0C5.91999 0 5.91999 0 5.91332 0C3.55999 0 0.866652 1.38 0.166652 4.46C-0.613348 7.9 1.49332 10.8133 3.39999 12.6467C4.10665 13.3267 5.01332 13.6667 5.91999 13.6667C6.82665 13.6667 7.73332 13.3267 8.43332 12.6467C10.34 10.8133 12.4467 7.90667 11.6667 4.46667ZM5.91999 7.80667C4.75999 7.80667 3.81999 6.86667 3.81999 5.70667C3.81999 4.54667 4.75999 3.60667 5.91999 3.60667C7.07999 3.60667 8.01999 4.54667 8.01999 5.70667C8.01999 6.86667 7.07999 7.80667 5.91999 7.80667Z"
+      fill="#2991AA"
+    />
+  </svg>
+);
 
 const largeLocationIcon = (
   <svg
@@ -1541,7 +1555,7 @@ const posterIcon = (
       d="M6.0995 4.10444C6.0995 4.30685 6.06988 4.50928 6.01558 4.69688C5.96127 4.89436 5.88228 5.07702 5.77861 5.24982C5.66012 5.44729 5.51201 5.62502 5.33922 5.77313C4.9492 6.11872 4.44069 6.32607 3.87788 6.32607C3.62609 6.32607 3.38912 6.28658 3.16696 6.20758C2.66339 6.03973 2.24374 5.69414 1.97715 5.24982C1.77473 4.9141 1.65625 4.51914 1.65625 4.10444C1.65625 3.40339 1.97715 2.7764 2.4906 2.37157C2.87074 2.06547 3.35456 1.88281 3.87788 1.88281C5.10718 1.88281 6.0995 2.87514 6.0995 4.10444Z"
       stroke="#008F8F"
       strokeWidth="0.740542"
-      stroke-miterlimit="10"
+      strokeMiterlimit="10"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -1549,7 +1563,7 @@ const posterIcon = (
       d="M4.46796 4.68672L3.29297 3.51172"
       stroke="#008F8F"
       strokeWidth="0.740542"
-      stroke-miterlimit="10"
+      strokeMiterlimit="10"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -1557,7 +1571,7 @@ const posterIcon = (
       d="M4.46014 3.52148L3.28516 4.69648"
       stroke="#008F8F"
       strokeWidth="0.740542"
-      stroke-miterlimit="10"
+      strokeMiterlimit="10"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -1772,7 +1786,200 @@ const SuitcaseIcon = ({ className = "w-6 h-6" }) => (
   </svg>
 );
 
+const bankSmallIcon = (
+  <svg
+    width="28"
+    height="28"
+    viewBox="0 0 28 28"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M14.4317 2.5075L24.9317 6.70747C25.34 6.8708 25.6667 7.3608 25.6667 7.79246V11.6658C25.6667 12.3075 25.1417 12.8325 24.5 12.8325H3.50001C2.85834 12.8325 2.33334 12.3075 2.33334 11.6658V7.79246C2.33334 7.3608 2.66002 6.8708 3.06835 6.70747L13.5683 2.5075C13.8017 2.41417 14.1983 2.41417 14.4317 2.5075Z"
+      stroke="#1E1E1C"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M25.6667 25.6667H2.33334V22.1667C2.33334 21.525 2.85834 21 3.50001 21H24.5C25.1417 21 25.6667 21.525 25.6667 22.1667V25.6667Z"
+      stroke="#1E1E1C"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M4.66666 21.0026V12.8359"
+      stroke="#1E1E1C"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M9.33334 21.0026V12.8359"
+      stroke="#1E1E1C"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M14 21.0026V12.8359"
+      stroke="#1E1E1C"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M18.6667 21.0026V12.8359"
+      stroke="#1E1E1C"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M23.3333 21.0026V12.8359"
+      stroke="#1E1E1C"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M1.16666 25.6641H26.8333"
+      stroke="#1E1E1C"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M14 9.91406C14.9665 9.91406 15.75 9.13056 15.75 8.16406C15.75 7.19756 14.9665 6.41406 14 6.41406C13.0335 6.41406 12.25 7.19756 12.25 8.16406C12.25 9.13056 13.0335 9.91406 14 9.91406Z"
+      stroke="#1E1E1C"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const locationGrayIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+  >
+    <path
+      d="M7.99992 8.95688C9.14867 8.95688 10.0799 8.02563 10.0799 6.87688C10.0799 5.72812 9.14867 4.79688 7.99992 4.79688C6.85117 4.79688 5.91992 5.72812 5.91992 6.87688C5.91992 8.02563 6.85117 8.95688 7.99992 8.95688Z"
+      stroke="#6C7071"
+    />
+    <path
+      d="M2.41379 5.66261C3.72712 -0.110728 12.2805 -0.104061 13.5871 5.66927C14.3538 9.05594 12.2471 11.9226 10.4005 13.6959C9.06046 14.9893 6.94046 14.9893 5.59379 13.6959C3.75379 11.9226 1.64712 9.04927 2.41379 5.66261Z"
+      stroke="#6C7071"
+    />
+  </svg>
+);
+
+const visaCardIcon = (
+  <svg
+    width="32"
+    height="32"
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M29.3333 10.0646C29.3333 10.9446 28.6133 11.6646 27.7333 11.6646H4.26667C3.38667 11.6646 2.66667 10.9446 2.66667 10.0646V10.0512C2.66667 6.99792 5.13334 4.53125 8.18667 4.53125H23.8C26.8533 4.53125 29.3333 7.01125 29.3333 10.0646Z"
+      fill="#2991AA"
+    />
+    <path
+      d="M2.66667 15.2641V21.9441C2.66667 24.9974 5.13334 27.4641 8.18667 27.4641H23.8C26.8533 27.4641 29.3333 24.9841 29.3333 21.9307V15.2641C29.3333 14.3841 28.6133 13.6641 27.7333 13.6641H4.26667C3.38667 13.6641 2.66667 14.3841 2.66667 15.2641ZM10.6667 22.9974H8C7.45334 22.9974 7 22.5441 7 21.9974C7 21.4507 7.45334 20.9974 8 20.9974H10.6667C11.2133 20.9974 11.6667 21.4507 11.6667 21.9974C11.6667 22.5441 11.2133 22.9974 10.6667 22.9974ZM19.3333 22.9974H14C13.4533 22.9974 13 22.5441 13 21.9974C13 21.4507 13.4533 20.9974 14 20.9974H19.3333C19.88 20.9974 20.3333 21.4507 20.3333 21.9974C20.3333 22.5441 19.88 22.9974 19.3333 22.9974Z"
+      fill="#2991AA"
+    />
+  </svg>
+);
+
+const uploadPaperIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="120"
+    height="120"
+    viewBox="0 0 120 120"
+    fill="none"
+  >
+    <path
+      d="M45 85V55L35 65"
+      stroke="#292D32"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M45 55L55 65"
+      stroke="#292D32"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M110 50V75C110 100 100 110 75 110H45C20 110 10 100 10 75V45C10 20 20 10 45 10H70"
+      stroke="#292D32"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M110 50H90C75 50 70 45 70 30V10L110 50Z"
+      stroke="#292D32"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const backIconColored = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+  >
+    <path d="M7.5 5L12.5 10L7.5 15" stroke="#E6F6F4" strokeWidth="2" />
+  </svg>
+);
+const emailBlueIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="14"
+    height="12"
+    viewBox="0 0 14 12"
+    fill="none"
+  >
+    <path
+      d="M10 0H3.33333C1.33333 0 0 1 0 3.33333V8C0 10.3333 1.33333 11.3333 3.33333 11.3333H10C12 11.3333 13.3333 10.3333 13.3333 8V3.33333C13.3333 1 12 0 10 0ZM10.3133 4.06L8.22667 5.72667C7.78667 6.08 7.22667 6.25333 6.66667 6.25333C6.10667 6.25333 5.54 6.08 5.10667 5.72667L3.02 4.06C2.80667 3.88667 2.77333 3.56667 2.94 3.35333C3.11333 3.14 3.42667 3.1 3.64 3.27333L5.72667 4.94C6.23333 5.34667 7.09333 5.34667 7.6 4.94L9.68667 3.27333C9.9 3.1 10.22 3.13333 10.3867 3.35333C10.56 3.56667 10.5267 3.88667 10.3133 4.06Z"
+      fill="#2991AA"
+    />
+  </svg>
+);
+
 export {
+  emailBlueIcon,
+  backIconColored,
+  uploadPaperIcon,
+  bluelocationIcon,
+  visaCardIcon,
+  locationGrayIcon,
+  bankSmallIcon,
   discoverIcon,
   schoolsIcon,
   companiesIcon,

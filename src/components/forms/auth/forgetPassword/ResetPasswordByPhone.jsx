@@ -86,8 +86,8 @@ const ResetPasswordByPhone = () => {
 
         const errorMessage =
           !(
-            error.response?.data?.statusCode >= 200 &&
-            error.response?.data?.statusCode < 300
+            error?.response?.data?.statusCode >= 200 &&
+            error?.response?.data?.statusCode < 300
           ) && error.response?.data?.message;
         const defaultErrorMessage = t(
           "forms.validation.api_errors.other_error"

@@ -37,6 +37,7 @@ const TextInputGroup = memo(
     min,
     max,
     required = false,
+    
 
     labelFontFamily = "IBM Plex Sans Arabic, sans-serif",
   }) => {
@@ -101,7 +102,8 @@ const TextInputGroup = memo(
                   ? "border-error focus:border-error hover:border-error"
                   : "border-border focus:border-mainColor hover:border-mainColor",
                 type === "date" && "cursor-pointer"
-              )}
+                )}
+              
               style={{
                 fontFamily: "inherit",
                 ...style,

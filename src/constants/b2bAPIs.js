@@ -15,7 +15,6 @@ export const B2B_END_POINTS = {
   STUDENTS_GRADES: "grades/booking",
 
   ALL_MARKET_PLACE_SLUGS: "home/slugs",
-  
 
   SIDE_FILTERS: "filtratinDetails",
   ALL_TRIPS: "all",
@@ -63,11 +62,21 @@ export const B2B_END_POINTS = {
   FAVORITE: "favorite",
 
   PROFILE: {
-    INFORMATION: "auth/userInfo", //MAIN
-
+    INFORMATION: "auth/userInfo",
     INFO: "profile/users/management/info",
 
+    HEADER_FILTER_BY_ORGANIZATION: "profile/organizations/hover",
     BOOKINGS: "profile/organizationTrips/home/all",
+    MOST_ACTIVE_ORGANIZATIONS: "profile/organizations/most-active",
+    ADMINISTRATIVE_COMMENT: "profile/organizationTrips/administrative/comment",
+    ALL_ORGANIZATIONS: "profile/organizations/company",
+
+    // ORGANIZATIONS_CITIES_TRACKS: "profile/organizations/cities-tracks",
+    ORGANIZATIONS: {
+      ALL: "profile/organizations/all",
+      CITIES_TRACKS: "profile/organizations/cities-tracks",
+      ORGANIZATION_DETAILS: "profile/organizations/details",
+    },
 
     ALL_TRIPS: {
       ACTIVITIES: "profile/organizationTrips/activity/all",
@@ -93,8 +102,9 @@ export const B2B_END_POINTS = {
       RPORTS: "profile/organizationTrips/report/all",
       SURVEY: "surveys/new",
       ORDERS: {
-        NORMAL: "profile/askTrips/normal/all",
-        CUSTOMIZABLE: "profile/askTrips/custom/all",
+        ALL: "profile/askTrips/all",
+        COUNTS: "profile/askTrips/counts",
+        TRACKS: "profile/settingsTrips/tracks",
         ADD_NEW_ACTIVITY: {
           FORM_SELECTION: "profile/askTrips/form/selections",
           CUSTOM_TRIP: "profile/askTrips/custom/new",
@@ -107,16 +117,29 @@ export const B2B_END_POINTS = {
           GRADES_BY_STAGES: "grades/stages/askTrip", // Get grades for selected academic stages
         },
         REMIND: "profile/askTrips/reminder/admin",
+
+        SETTINGS: {
+          ALL_TRIPS: "profile/settingsTrips/all", //post
+          SUBMIT: "profile/settingsTrips/edit", // Item id - patch
+        },
       },
     },
 
     SCHOOL_TEAM_MANAGEMENT: {
+      //
       USERS: {
         INFO: "profile/users/users/count/info",
         TABLE: "profile/users/company/all",
         // TABLE: "profile/users/school/all",
         NEW_USER: "profile/users/new",
+        EDIT_USER: "profile/users/edit",
+        DELETE_USER: "profile/users/delete",
         ROLES: "profile/users/roles",
+      },
+      STUDENTS: {
+        ALL_STUDENTS: "profile/organizations/childs/info",
+        GRADE_STUDENTS: "profile/students",
+        STUDENT_DETAILS: "profile/students/info",
       },
     },
     CREATE_TRIP_LINK: "profile/organizationTrips/poster",
@@ -144,7 +167,8 @@ export const B2B_END_POINTS = {
       GET_PERMISSIONS: "profile/roles/permissions",
       GET_PERMISSIONS_BY_ROLE: "profile/roles/permision",
       ADD_ROLE: "profile/roles/new",
-      UPDATE_PERMISSIONS: "profile/roles/save",
+      UPDATE_PERMISSIONS: "profile/users/edit/permissions",
+      GET_USER_PERMISSIONS: "profile/users/permissions",
       DELETE_ROLE: "profile/roles/remove",
     },
   },

@@ -49,8 +49,9 @@
     "PUBLIC": "مجموعات",
     "PRIVATE": "رحلة خاصة",
     "trip": "رحلة",
-    "MALE": "ذكر",
-    "FEMALE": "أنثى",
+    "MALE": "بنين",
+    "FEMALE": "بنات",
+    "BOTH": "بنين وبنات",
     "guestna": "جستنا",
     "startsWith": "تبدأ من",
     "loading": "جاري التحميل",
@@ -93,6 +94,7 @@
         "nationalId": "الهوية الوطنية"
       }
     },
+    "close": "إغلاق",
     "error": "عذراً، لم نستطع إيجاد الصفحة التي تبحث عنها",
     "errorHappens": "حدث خطأ",
     "notAvailable": "هذه الرحلة غير متاحة للحجز الان",
@@ -114,9 +116,14 @@
     "organizationTripStatus": {
       "DONE": "مكتمل",
       "PENDING": "قيد المعالجة",
+      "CANCLED": "ملغي",
       "CANCELLED": "ملغي",
       "SCHEDULED": "مجدول",
-      "ENDED": "انتهت"
+      "ENDED": "انتهت",
+      "PENDING_COMPANY_APPROVAL": "في انتظار الموافقة",
+      "APPROVED": "موافق عليه",
+      "REJECTED": "مرفوض",
+      "ON_HOLD": "معلق"
     },
     "usersType": {
       "VISITOR": "الزائر",
@@ -125,6 +132,14 @@
       "B2B_STAFF_MANAGER": "مدير المدرسة",
       "B2B_STAFF_FINANCE": "مسؤول المالية",
       "B2B_STAFF_STMS": "منسق أنشطة"
+    },
+    "excel_success": {
+      "export": "تم التصدير بنجاح"
+    },
+    "excel_error": {
+      "generic": "حدث خطأ أثناء التصدير",
+      "parse": "فشل في معالجة الملف",
+      "noPage": "عذراً، لم نستطع إيجاد الصفحة التي تبحث عنها"
     }
   },
 
@@ -187,12 +202,14 @@
       "integratedBookingsManagement": "إدارة الحجوزات المتكاملة",
       "createTripLink": "إنشاء رابط لرحلة",
       "users": "المستخدمون",
+      "students": "الطلاب",
       "contactUs": "تواصل معنا",
       "faq": "الأسئلة الشائعة",
       "schoolRegister": "تسجيل المدرسة",
       "confirmingData": "تأكيد البيانات",
       "loginAs": "تسجيل الدخول كـ",
-      "error": "404 : لم يتم العثور على هذه الصفحة"
+      "error": "404 : لم يتم العثور على هذه الصفحة",
+      "organization_details": "تفاصيل {organizationName}"
     }
   },
   "links": {
@@ -201,6 +218,7 @@
     "showDetails": "عرض التفاصيل",
     "search": "ابحث",
     "reset": "إعادة ضبط",
+    "clear": "مسح",
     "clearAll": "مسح الكل",
     "more": "اعرف أكثر",
     "viewTripDetails": "تعرّف على تفاصيل الرحلة",
@@ -246,7 +264,10 @@
     "login": "تسجيل الدخول لحسابي",
     "continuaAsGuest": "المتابعة كزائر (تسجيل سريع)",
     "register": "التسجيل",
-    "sendStcOtp": "ارسل رمز التحقق OTP"
+    "sendStcOtp": "ارسل رمز التحقق OTP",
+    "printPDF": "طباعة PDF",
+    "exportExcel": "تصدير Excel",
+    "print": "طباعة"
   },
 
   "booking": {
@@ -544,7 +565,15 @@
       "schoolTeamManagement": {
         "title": "إدارة فريق المدرسة",
         "users": "المستخدمون",
-        "students": "الطلاب"
+        "students": "الطلاب",
+        "schoolsOverView": {
+          "title": "نظرة عامة على المدارس",
+          "description": "إدارة جميع المدارس الخاصة بالشركة و رصد أداءها."
+        },
+        "studentsOverview": {
+          "title": "نظرة عامة على الطلاب",
+          "description": "إدارة جميع الطلاب الخاصة بالشركة و رصد أداءها."
+        }
       },
       "reportsAndAnalytics": {
         "title": "التقارير والتحليلات"
@@ -566,6 +595,14 @@
       "logout": "تسجيل خروج",
       "logoutConfirm": "هل تريد حقا تسجيل خروج؟"
     },
+
+    "organizationSelector": {
+      "allSchools": "كل المدارس",
+      "searchPlaceholder": "ابحث عن المدارس",
+      "noResults": "لا توجد مدارس",
+      "selectedCount": "{count} مدارس محددة"
+    },
+
     "infoCards": {
       "totalStudents": "إجمالي الطلاب",
       "totalSchools": "إجمالي المدارس",
@@ -578,6 +615,57 @@
       "students": "إجمالي الطلاب",
       "stuff": "عدد المدراء",
       "bookings": "عدد الحجوزات"
+    },
+
+    "schoolTeamStudents": {
+      "sectionTitle": "المدارس والطلاب",
+      "sectionDescription": "استعرض جميع المدارس التابعة وتابع أعداد الطلاب لكل مرحلة دراسية.",
+      "studentsLabel": "{count} طالب",
+      "stagesTitle": "توزيع الصفوف",
+      "statsTitle": "إحصائيات الطلاب",
+      "totalStudents": "إجمالي الطلاب",
+      "emptyStages": "لا توجد بيانات مراحل دراسية حتى الآن.",
+      "emptySchools": "لا توجد مدارس حتى الآن.",
+      "unknownStage": "مرحلة غير معروفة",
+      "viewStudents": "عرض طلاب {grade}",
+      "modal": {
+        "title": "قائمة طلاب",
+        "loading": "جاري تحميل الطلاب...",
+        "noStudents": "لا يوجد طلاب في هذا الصف.",
+        "name": "اسم الطالب",
+        "grade": "الصف",
+        "actions": "الإجراءات",
+        "viewDetails": "عرض التفاصيل"
+      },
+      "report": {
+        "title": "تقرير الطلاب لـ ",
+        "filename": "تقرير_الطلاب"
+      },
+      "details": {
+        "title": "تفاصيل الطالب",
+        "basicInfo": "معلومات الطالب الأساسية",
+        "contactWithParent": "التواصل مع ولي الأمر",
+        "bookingDetails": "تفاصيل الحجز",
+        "loading": "جاري تحميل بيانات الطالب...",
+        "noData": "لا توجد بيانات للطالب.",
+        "name": "الاسم",
+        "academicStage": "المرحلة الدراسية",
+        "grade": "الصف",
+        "track": "المسار",
+        "age": "العمر",
+        "studentNumber": "رقم الطالب",
+        "nationalId": "رقم الهوية",
+        "status": "الحالة",
+        "parentName": "اسم ولي الأمر",
+        "parent": "ولي الأمر",
+        "parentPhone": "رقم الهاتف",
+        "parentEmail": "البريد الإلكتروني",
+        "additionalPhone": "رقم هاتف إضافي",
+        "activityName": "اسم النشاط",
+        "date": "التاريخ",
+        "bookingMethod": "طريقة الحجز",
+        "actions": "الإجراءات"
+      }
     },
 
     "filters": {
@@ -593,20 +681,83 @@
     },
     "schools_users": {
       "schoolsUsers": "المدارس والمستخدمون",
-      "delete": "حذف",
+      "delete": {
+        "title": "حذف",
+        "successMessage": "تم حذف المستخدم بنجاح",
+        "errorMessage": "حدث خطأ في حذف المستخدم",
+        "confirmMessage": "هل تريد حقا حذف المستخدم؟"
+      },
       "copy": "نسخ",
-      "edit": "تعديل",
+      "edit": "تعديل البيانات",
+      "show_more": "اظهار المزيد",
+      "show_less": "اظهار اقل",
       "add_new_user": "إضافة مستخدم جديد",
-      "search": "البحث...",
+      "bulk_import_users": "رفع ملف مستخدمين (Excel/CSV)",
+      "search": "ابحث بالاسم او الايميل ...",
       "no_users": "لا يوجد مستخدم يطابق البحث",
       "users_count": "عدد {count} من المستخدمين",
       "unknown_school": "مدرسة غير معروفة",
       "userCreatedSuccessfully": "تم إنشاء المستخدم بنجاح",
+      "userUpdatedSuccessfully": "تم تعديل بيانات المستخدم بنجاح",
+
       "form": {
         "title": "اضافة بيانات المستخدم",
         "userTypePlaceholder": "المسمى الوظيفية",
         "parsoneName": "اسم مسؤول الاتصال ",
         "phone": "رقم الجوال"
+      },
+      "bulkImport": {
+        "title": "اضافة مجموعة مستخدمين",
+        "description": "قم برفع ملف CSV أو Excel يحتوي على الأعمدة: الاسم، البريد الإلكتروني، الهاتف، الدور. سيتم استبدال المستخدمين الموجودين الذين لديهم نفس البريد الإلكتروني.",
+        "users_upload_templates": "قالب رفع المستخدمين",
+        "current_users": "المستخدمين الحاليين",
+        "duplicatesFound": "{count} مستخدم موجود بالفعل وسيتم التحديث",
+        "preview": "معاينة",
+        "users": "مستخدمين",
+        "status": "الحالة",
+        "actions": "الإجراءات",
+        "hasErrors": "أخطاء",
+        "willOverwrite": "سيتم الاستبدال",
+        "valid": "صالح",
+        "validationErrors": "أخطاء التحقق:",
+        "submit": "ادراج {count} مستخدم",
+        "uploadBox": {
+          "placeholder": "يجب تحميل ملف Excel"
+        },
+        "buttons": {
+          "downloadTemplate": "تنزيل القالب",
+          "uploadFilled": "رفع الملف بعد تعبئة القالب",
+          "downloadCurrentUsers": "تنزيل المستخدمين الحاليين",
+          "isSubmitting": "جاري التحميل",
+          "cancel": "الغاء"
+        },
+        "stepsTitle": "خطوات يجب اتباعها",
+        "steps": {
+          "1": "قم بتنزيل القالب.",
+          "2": "اضغط على زر تنزيل القالب لتحميل ملف Excel الفارغ الذي يحتوي على الأعمدة المطلوبة.",
+          "3": "قم بتعبئة البيانات.",
+          "4": "افتح الملف الذي تم تنزيله، وأضف بيانات المستخدمين في الصفوف المخصصة دون تعديل أسماء الأعمدة.",
+          "5": "قم بحفظ الملف.",
+          "6": "لرفع الملف إلى النظام، اضغط على زر رفع الملف بعد تعبئة القالب.",
+          "7": "يُرجى عدم تغيير أسماء الأعمدة (Headers)."
+        },
+        "userPreview": {
+          "title": "معاينة {count} مستخدم",
+          "name": "الاسم",
+          "email": "البريد الإلكتروني",
+          "phone": "الهاتف",
+          "role": "المسمى الوظيفي",
+          "status": "الحالة",
+          "actions": "الإجراءات",
+          "error": "خطأ في التحقق",
+          "duplicate": "مستخدم موجود بالفعل",
+          "valid": "تم التحقق بنجاح",
+          "validationErrors": "أخطاء التحقق:",
+          "row": "الصف {row}"
+        },
+        "validation": {
+          "rowsHaveErrors": "يوجد {count} مستخدم يحتوي على أخطاء في البيانات."
+        }
       }
     },
     "donutChart": {
@@ -616,6 +767,11 @@
     "revenueLineChart": {
       "title": "إجمالي الإيردات الشهرية",
       "label": "الإيردات"
+    },
+
+    "barChart": {
+      "title": "المدارس الأكثر نشاطا",
+      "label": "النسبة المئوية %"
     },
 
     "createTripLink": {
@@ -651,6 +807,11 @@
     },
 
     "tables": {
+      "users": {
+        "export": {
+          "file_name": "تقرير المستخدمين"
+        }
+      },
       "ordersInfo": {
         "orderDetails": {
           "title": "تفاصيل الطلب -",
@@ -708,8 +869,27 @@
           "price": "الإيرادات",
           "status": "الحالة",
           "actions": "الإجراءات",
-          "participants": "المشاركون"
+          "participants": "المشاركون",
+          "searchTripName": "ابحث باسم الرحلة"
+        },
+        "actions": {
+          "administrativeComment": "تعليق إداري",
+          "commentPlaceholder": "أدخل الوصف",
+          "commentSuccess": "تم إرسال التعليق بنجاح"
+        },
+        "details": {
+          "title": "تفاصيل الحجز -",
+          "tripInfo": "معلومات الرحلة",
+          "bookingInfo": "معلومات الحجز",
+          "bookingId": "رقم الحجز",
+          "time": "الوقت",
+          "slug": "المعرف",
+          "note": "ملاحظات"
         }
+      },
+      "organizations": {
+        "title": "المدارس",
+        "searchBySchoolName": "ابحث باسم المدرسة"
       },
       "reports": {
         "title": "تقارير إغلاق الرحلات",
@@ -722,16 +902,66 @@
 
         "features": {
           "privateGroups": "مجموعات خاصة",
-          "flexibleTimes": "اوقات مرنة",
+          "flexibleTimes": "أوقات مرنة",
           "uniqueDestinations": "وجهات فريدة",
           "customizedActivities": "أنشطة مخصصة"
         },
         "followOrders": "متابعة جميع الطلبات",
+        "tabs": {
+          "ordersManagement": "إدارة طلبات الأنشطة",
+          "settings": "إعدادات الرحلات"
+        },
+        "settingsTable": {
+          "title": "عدد الرحلات لكل مسار",
+          "selectSchool": "اختر المدرسة التي تريد عرض تفاصيلها",
+          "school": "المدرسة",
+          "track": "المسار",
+          "maxTrips": "الحد الأقصى للرحلات",
+          "currentTrips": "الرحلات الحالية",
+          "status": "الحالة",
+          "actions": "الإجراءات",
+          "availableTrips": "رحلات متاحة",
+          "availableTrip": "رحلة متاحة",
+          "completed": "مكتمل",
+          "noData": "لا توجد بيانات إعدادات الرحلات",
+          "loading": "جاري تحميل إعدادات الرحلات...",
+          "errorTitle": "فشل في تحميل البيانات",
+          "errorMessage": "حدث خطأ أثناء تحميل إعدادات الرحلات. يرجى المحاولة مرة أخرى.",
+          "editModal": {
+            "title": "تعديل الحد الأقصى للرحلات",
+            "subtitle": "قم بتحديث الحد الأقصى لعدد الرحلات المسموح بها",
+            "trackLabel": "المرحلة / المسار",
+            "currentTripsLabel": "الرحلات الحالية",
+            "newMaxTripsLabel": "الحد الأقصى الجديد",
+            "success": "تم تحديث إعدادات الرحلات بنجاح",
+            "error": "فشل في تحديث إعدادات الرحلات",
+            "validation": {
+              "minTrips": "الحد الأقصى للرحلات لا يمكن أن يكون أقل من الرحلات الحالية ({min})",
+              "maxTrips": "الحد الأقصى للرحلات لا يمكن أن يتجاوز 10"
+            }
+          }
+        },
+        "counts": {
+          "allAskTrip": "إجمالي الطلبات",
+          "scheduled": "الطلبات المجدولة",
+          "pending": "طلبات قيد المراجعة",
+          "done": "طلبات موافق عليها"
+        },
         "normal": {
           "title": "طلبات من سوق جستنا"
         },
         "customizable": {
           "title": "طلبات الأنشطة المخصصة"
+        },
+        "tableHeaders": {
+          "orderNumber": "رقم الطلب",
+          "school": "المدرسة",
+          "activity": "النشاط",
+          "orderType": "نوع الطلب",
+          "budget": "الميزانية",
+          "orderDate": "تاريخ الطلب",
+          "status": "الحالة",
+          "actions": "الإجراءات"
         },
         "bookingDetails": {
           "title": "تفاصيل رحلة:",
@@ -745,15 +975,24 @@
           "schoolName": "اسم المدرسة",
           "contactPerson": "جهة الاتصال",
           "phoneNumber": "رقم الهاتف",
+          "schoolEmail": "بريد المدرسة",
           "bookingDate": "تاريخ الحجز",
           "tripStartDate": "تاريخ بداية الرحلة",
           "tripEndDate": "تاريخ انتهاء الرحلة",
           "category": "الفئة",
+          "createdBy": "تم الإنشاء بواسطة",
+          "createdAt": "تاريخ الإنشاء",
           "participants": "عدد المشاركين",
           "printReport": "طباعة التقرير",
           "exportReport": "تصدير التقرير",
           "exportExcel": "تصدير إلى Excel",
-          "sendDetails": "إرسال التفاصيل"
+          "sendDetails": "إرسال التفاصيل",
+          "studentsList": "قائمة الطلاب",
+          "studentName": "اسم الطالب",
+          "nationalId": "رقم الهوية",
+          "grade": "الصف الدراسي",
+          "availableSeats": "المقاعد المتاحة",
+          "revenueAmount": "مبلغ الإيرادات"
         },
         "studentsTable": {
           "title": "قائمة الطلاب",
@@ -1232,7 +1471,9 @@
       "actions": {
         "reset": "إعادة تعيين",
         "save": "حفظ التغييرات",
-        "addRole": "إضافة دور جديد"
+        "addRole": "إضافة دور جديد",
+        "cancel": "إلغاء",
+        "edit_permissions": "تعديل الصلاحيات"
       },
       "deleteRole": "حذف الدور",
       "deleteConfirm": "هل أنت متأكد من حذف هذا الدور؟ لا يمكن التراجع عن هذا الإجراء.",
@@ -1336,6 +1577,60 @@
         "cancel": "إلغاء",
         "assignRoles": "تعيين الأدوار"
       }
+    },
+    "schools_overview": {
+      "searchFilters": {
+        "title": "البحث والتصفية",
+        "searchPlaceholder": " ابحث بالاسم...",
+        "sortingBy": "ترتيب حسب: ",
+        "track": "المسار",
+        "city": "المدينة",
+        "sort_options": {
+          "HIGHEST_NAME": "الاسم من أ إلى ي",
+          "LOWEST_NAME": "الاسم من ي إلى أ",
+          "NEWEST": "الأحدث",
+          "OLDEST": "الأقدم"
+        }
+      },
+      "cards": {
+        "total_revenue": "إجمالي الإيرادات",
+        "active_students": "الطلاب النشطين",
+        "suggested_trips": "مقترحة ",
+        "scheduled_trips": "مجدولة",
+        "done_trips": "مكتملة",
+        "show_details": "عرض التفاصيل"
+      },
+      "schools_details": {
+        "title": "اختر المدرسة التي تريد عرض تفاصيلها:",
+        "caption": "إدارة جميع المدارس التابعة للشركةومتابعة أدائها ",
+        "select_school": {
+          "title": "اختر المدرسة التي تريد عرض تفاصيلها:",
+          "performance": "الاداء",
+          "students": "طالب"
+        },
+        "balance": {
+          "title": "رصيد المدرسة",
+          "available_balance": " متاح",
+          "pending_balance": " معلق",
+          "total_balance": " الاجمالي"
+        },
+        "tripsStats": {
+          "canceled": "الرحلات الملغاة",
+          "done": "رحلات مكتملة",
+          "pending": "الرحلات قيد التنفيذ ",
+          "scheduled": "الرحلات مجدولة",
+          "total": "مجموع الرحلات"
+        },
+        "studentStats": {
+          "active": "الطلاب النشطين",
+          "total": "مجموع الطلاب"
+        },
+        "users": {
+          "title": "المستخدمين",
+          "no_users": "لا يوجد مستخدمين"
+        }
+      },
+      "no_schools_found": "لم يتم العثور على مدارس"
     }
   },
 
@@ -1784,6 +2079,21 @@
       "thanksMessage": "شكرًا لك!",
       "willContactYou": "تم إرسال طلب التواصل , سنرد عليك خلال 24 ساعة",
       "svg": "غير مسموح بالصور ذات الامتداد .svg",
+      "noUsersToImport": "لا يوجد مستخدمين للادراج",
+      "fixErrorsBeforeSubmit": "يرجى إصلاح جميع الأخطاء قبل الإرسال",
+      "bulkImportSuccess": "تم ادراج {count} مستخدم بنجاح",
+      "bulkImportPartial": "تم ادراج {success} مستخدم، فشل {failed}",
+      "unknownError": "خطأ غير معروف",
+      "fileParseError": "فشل في تحليل الملف",
+      "fileReadError": "فشل في قراءة الملف",
+      "invalidFileType": "يرجى رفع ملف Excel (.xlsx, .xls) أو CSV صالح",
+      "emptyFile": "يبدو أن الملف فارغ أو لا يحتوي على بيانات صالحة",
+      "duplicateEmail": "البريد الإلكتروني موجود بالفعل في الملف",
+      "invalidRole": "يجب أن يطابق الدور أحد الأدوار المتاحة",
+      "clickToUpload": "انقر للرفع",
+      "orDragDrop": "أو اسحب وأفلت",
+      "supportedFormats": "CSV, XLS, XLSX (الحد الأقصى 10 ميجابايت)",
+      "integer": "يجب أن يكون الرقم صحيحا",
 
       "payment": {
         "success": "تتم معالجة عملية الدفع الآن",
@@ -1806,6 +2116,14 @@
       "thanksMessage": {
         "title": "شكراً لك!",
         "description": "تم إرسال طلبك بنجاح. سيتواصل معك فريقنا خلال 24 ساعة."
+      },
+
+      "organization": {
+        "placeholder": "اسم المدرسة"
+      },
+
+      "track": {
+        "placeholder": "المسار التعليمي"
       },
 
       "tripInfo": {

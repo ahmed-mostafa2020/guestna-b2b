@@ -22,6 +22,7 @@ import Notifications from "./Notifications";
 import AuthToggleButton from "./AuthToggleButton";
 
 import { Container } from "@mui/material";
+import OrganizationSelector from "../../common/OrganizationSelector";
 
 const Header = () => {
   const userToken = useSelector((state) => state.users.userToken);
@@ -119,6 +120,9 @@ const Header = () => {
             <SettingsButton />
 
             {userToken && <Notifications />}
+
+            {/* Organization Selector Header */}
+            <OrganizationSelector />
 
             <AuthToggleButton />
           </div>

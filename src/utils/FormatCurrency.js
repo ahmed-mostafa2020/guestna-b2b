@@ -21,7 +21,7 @@ function formatCurrency(amount, locale = "en-US") {
 
   // return formattedAmount;
   return (
-    <span className="centered gap-0.5" dir="ltr">
+    <span className="centered gap-0.5 w-fit" dir="ltr">
       <span>{newSarSmall}</span>
       <span>{formattedAmount}</span>
     </span>

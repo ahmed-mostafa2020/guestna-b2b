@@ -15,7 +15,8 @@ import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import UsersInfoCardsListing from "@components/sections/pages/profile/schoolManagementTeam/users/UsersInfoCardsListing";
 import UsersManagement from "@components/sections/pages/profile/schoolManagementTeam/users/UsersManagement";
-import * as XLSX from "xlsx";
+import { useExcel } from "@hooks/useExcel";
+import { usersListHeaders } from "@constants/excelHeaders";
 
 const UsersPage = () => {
   const { hasElement } = usePermissions();
@@ -23,7 +24,18 @@ const UsersPage = () => {
   const t = useTranslations();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data, error, isLoading, refetch: refetchInfo } = useFetchData(
+  const { exportRecords } = useExcel({
+    headers: usersListHeaders({ locale }),
+    t,
+    locale,
+  });
+
+  const {
+    data,
+    error,
+    isLoading,
+    refetch: refetchInfo,
+  } = useFetchData(
     `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.INFO}`,
     {},
     {
@@ -48,6 +60,7 @@ const UsersPage = () => {
     }
   );
 
+  console.log(tableData);
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
       "pagesHead.title.users"
@@ -64,59 +77,63 @@ const UsersPage = () => {
   if (error || tableError)
     return (
       <ErrorComponent
-        statusCode={error.response?.data?.statusCode}
+        statusCode={error?.response?.data?.statusCode}
         errorMessage={error.response?.data?.message}
       />
     );
 
-  const handleExportToExcel = () => {
-    const users = tableData?.users || [];
+  const handleExportToExcel = async () => {
+    const allUsers = tableData?.reduce((acc, org) => {
+      const orgUsers =
+        org.users?.map((user) => ({
+          ...user,
+          role: user.role.description,
+          organizationName: org.organization?.name || "-",
+        })) || [];
+      return [...acc, ...orgUsers];
+    }, []);
 
-    const exportUsers = users.map((user) => ({
-      Name: user.name || "-",
-      Email: user.email || "-",
-      "Job grade": t(`common.usersType.${user.userType}`),
+    const exportUsers = allUsers.map((user) => ({
+      organization: user.organizationName,
+      name: user.name || "-",
+      email: user.email || "-",
+      role: user.role || "-",
     }));
-    const worksheet = XLSX.utils.json_to_sheet(exportUsers || []);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet 1");
 
-    const blob = new Blob(
-      [XLSX.write(workbook, { bookType: "xlsx", type: "array" })],
-      {
-        type: "application/octet-stream",
-      }
+    await exportRecords(
+      exportUsers,
+      t("profile.tables.users.export.file_name")
     );
-
-    download(blob, "Users");
   };
 
   return (
-    <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_USERS_PAGE}>
+    <ProtectedProfilePage
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_USERS_PAGE}
+    >
       <main className="flex flex-col gap-6">
-      {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_CARDS) && (
-        <UsersInfoCardsListing data={data} />
-      )}
-
-      {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_PRINT_REPORT) &&
-        tableData?.users?.length > 0 && (
-          <div className="flex justify-end mt-2">
-            <button
-              onClick={() => handleExportToExcel()}
-              className="bg-mainColor rounded-lg text-white font-medium font-somar hover:bg-linksHover px-8 py-2"
-            >
-              {t("profile.tables.orders.bookingDetails.printReport")}
-            </button>
-          </div>
+        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_CARDS) && (
+          <UsersInfoCardsListing data={data} />
         )}
 
-      <UsersManagement
-        data={tableData}
-        setSearchTerm={setSearchTerm}
-        searchTerm={searchTerm}
-        refetchInfo={refetchInfo}
-        refetchTable={refetchTable}
-      />
+        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_PRINT_REPORT) &&
+          tableData?.length > 0 && (
+            <div className="flex justify-end mt-2">
+              <button
+                onClick={() => handleExportToExcel()}
+                className="bg-mainColor rounded-lg text-white font-medium font-somar hover:bg-linksHover px-8 py-2"
+              >
+                {t("profile.tables.orders.bookingDetails.printReport")}
+              </button>
+            </div>
+          )}
+
+        <UsersManagement
+          data={tableData}
+          setSearchTerm={setSearchTerm}
+          searchTerm={searchTerm}
+          refetchInfo={refetchInfo}
+          refetchTable={refetchTable}
+        />
       </main>
     </ProtectedProfilePage>
   );

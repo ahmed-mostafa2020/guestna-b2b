@@ -2,6 +2,10 @@ export const TRIP_STATUS = {
   ALL: "ALL",
   SCHEDULED: "SCHEDULED",
   PENDING: "PENDING",
-  DONE: "DONE",
   CANCELLED: "CANCELLED",
+  ENDED: "ENDED",
+  PENDING_COMPANY_APPROVAL: "PENDING_COMPANY_APPROVAL", // Pending approval - Company
+  APPROVED: "APPROVED", // Approved - After approval by the Company
+  REJECTED: "REJECTED",
+  ON_HOLD: "ON_HOLD",
 };

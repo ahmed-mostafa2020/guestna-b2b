@@ -1,5 +1,9 @@
+"use client";
+
 import { useLocale, useTranslations } from "next-intl";
-import { memo, useState } from "react";
+import { useSelector } from "react-redux";
+
+import { memo, useState, useEffect } from "react";
 import { Formik } from "formik";
 import axios from "axios";
 import { useSnackbar } from "notistack";
@@ -17,6 +21,12 @@ import FileUploadGroup from "../FileUploadGroup";
 
 const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
   const [formErrors, setFormErrors] = useState([]);
+  const [tracksData, setTracksData] = useState([]);
+  const [isLoadingTracks, setIsLoadingTracks] = useState(false);
+
+  const selectedOrganization = useSelector(
+    (state) => state.selectedOrganizations.organizations
+  );
 
   const locale = useLocale();
   const t = useTranslations();
@@ -25,13 +35,8 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
   const customTripSchema = createCustomNewTripSchema(t);
   const { enqueueSnackbar } = useSnackbar();
 
-  console.log("CustomNewTripForm props:", {
-    hasFormSelectionData: !!formSelectionData,
-    hasOnClose: typeof onClose === "function",
-    hasOnSuccess: typeof onSuccess === "function",
-  });
-
   // Keep full objects for _id lookup
+  const organizationData = selectedOrganization || [];
   const categoryData = formSelectionData.categories;
   const tripTypeData = [
     {
@@ -52,11 +57,56 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
   const servicesData = formSelectionData.services;
 
   // Extract names for dropdown display
+  const organizationOptions = organizationData.map((item) => item.name);
   const categoryOptions = categoryData.map((item) => item.name);
   const tripTypeOptions = tripTypeData.map((item) => item.name);
   const cityOptions = cityData.map((item) => item.name);
   const academicStageOptions = academicStageData.map((item) => item.name);
   const servicesOptions = servicesData.map((item) => item.name);
+
+  // Format track options: educationSystem + gender + academicStages
+  const trackOptions = tracksData.map((track) => {
+    const stages =
+      track.academicStages?.map((stage) => stage.name).join(", ") || "";
+    return {
+      name: `${track.educationSystem} - ${t(
+        `common.${track.gender}`
+      )} - ${stages}`,
+      _id: track._id,
+    };
+  });
+  const trackDisplayOptions = trackOptions.map((item) => item.name);
+
+  // Helper function to find _id by name
+  const findIdByName = (options, name) => {
+    const option = options.find((opt) => opt.name === name);
+    return option ? option._id : name;
+  };
+
+  // Fetch tracks when organization is selected
+  const fetchTracksByOrganization = async (organizationId) => {
+    if (!organizationId) {
+      setTracksData([]);
+      return;
+    }
+
+    setIsLoadingTracks(true);
+    try {
+      const response = await axios({
+        method: "get",
+        url: getProxyUrl(
+          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.TRACKS}/${organizationId}`
+        ),
+        headers,
+      });
+      setTracksData(response.data || []);
+    } catch (error) {
+      console.error("Error fetching tracks:", error);
+      setTracksData([]);
+    } finally {
+      setIsLoadingTracks(false);
+    }
+  };
 
   // Prevent negative values in number inputs
   const handleKeyDown = (e) => {
@@ -77,12 +127,6 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
     const formData = new FormData();
 
-    // Helper function to find _id by name
-    const findIdByName = (options, name) => {
-      const option = options.find((opt) => opt.name === name);
-      return option ? option._id : name;
-    };
-
     // Add all form fields to FormData
     Object.keys(values).forEach((key) => {
       if (key === "file") {
@@ -93,6 +137,12 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
 
         // Convert names to _id for dropdown fields
         switch (key) {
+          case "organization":
+            valueToSend = findIdByName(organizationData, values[key]);
+            break;
+          case "track":
+            valueToSend = findIdByName(trackOptions, values[key]);
+            break;
           case "category":
             valueToSend = findIdByName(categoryData, values[key]);
             break;
@@ -136,6 +186,8 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
       }
     });
 
+    const organizationId = findIdByName(organizationData, values.organization);
+
     const config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -145,6 +197,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
       headers: {
         ...headers,
         "Content-Type": "multipart/form-data",
+        "profile-organizations": JSON.stringify([organizationId]),
       },
       data: formData,
     };
@@ -220,6 +273,8 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
         `}</style>
         <Formik
           initialValues={{
+            organization: "",
+            track: "",
             category: "",
             tripType: "",
             city: "",
@@ -253,6 +308,49 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
             setFieldValue,
           }) => (
             <form onSubmit={handleSubmit}>
+              {selectedOrganization && selectedOrganization.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div className="somar-placeholder">
+                    <SelectionGroup
+                      name="organization"
+                      value={values.organization}
+                      onChange={(e) => {
+                        handleChange(e);
+                        const orgId = findIdByName(
+                          organizationData,
+                          e.target.value
+                        );
+                        fetchTracksByOrganization(orgId);
+                        setFieldValue("track", "");
+                      }}
+                      onBlur={handleBlur}
+                      touched={touched.organization}
+                      errors={errors.organization}
+                      placeholder={t(
+                        "forms.customTrip.organization.placeholder"
+                      )}
+                      list={organizationOptions}
+                    />
+                  </div>
+                  <div className="somar-placeholder">
+                    <SelectionGroup
+                      name="track"
+                      value={values.track}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      touched={touched.track}
+                      errors={errors.track}
+                      placeholder={
+                        isLoadingTracks
+                          ? t("forms.validation.loading")
+                          : t("forms.customTrip.track.placeholder")
+                      }
+                      list={trackDisplayOptions}
+                      disabled={isLoadingTracks || !values.organization}
+                    />
+                  </div>
+                </div>
+              )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Selected Trip */}
                 <div className="somar-placeholder">

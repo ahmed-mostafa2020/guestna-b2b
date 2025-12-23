@@ -56,7 +56,7 @@ export const actGetCustomizedTrips = createAsyncThunk(
       return response.data;
     } catch (error) {
       // Check specifically for 409 status code
-      if (error.response?.data?.statusCode === 409 || 405 || 404 || 400) {
+      if (error?.response?.data?.statusCode === 409 || 405 || 404 || 400) {
         return rejectWithValue({
           ...error.response.data,
         });

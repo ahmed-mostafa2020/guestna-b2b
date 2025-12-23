@@ -14,6 +14,7 @@ export async function GET(request) {
 
   const token = request.headers.get("authorization");
   const devicespecificid = request.headers.get("devicespecificid");
+  const profileOrganizations = request.headers.get("profile-organizations");
 
   const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${path}`;
   const headers = {
@@ -22,6 +23,9 @@ export async function GET(request) {
     lang: request.headers.get("lang") || "ar",
     ...(token && { authorization: token }),
     ...(devicespecificid && { devicespecificid }),
+    ...(profileOrganizations && {
+      "profile-organizations": profileOrganizations,
+    }),
   };
 
   const authHeader = request.headers.get("authorization");
@@ -51,6 +55,7 @@ export async function POST(request) {
   const token = request.headers.get("authorization");
   const devicespecificid = request.headers.get("devicespecificid");
   const contentType = request.headers.get("content-type");
+  const profileOrganizations = request.headers.get("profile-organizations");
 
   const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${pathPost}`;
 
@@ -59,6 +64,9 @@ export async function POST(request) {
     lang: request.headers.get("lang") || "ar",
     ...(token && { authorization: token }),
     ...(devicespecificid && { devicespecificid }),
+    ...(profileOrganizations && {
+      "profile-organizations": profileOrganizations,
+    }),
   };
 
   let body = undefined;
@@ -99,6 +107,7 @@ export async function PUT(request) {
   const token = request.headers.get("authorization");
   const devicespecificid = request.headers.get("devicespecificid");
   const contentType = request.headers.get("content-type");
+  const profileOrganizations = request.headers.get("profile-organizations");
 
   const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${pathPut}`;
 
@@ -107,6 +116,9 @@ export async function PUT(request) {
     lang: request.headers.get("lang") || "ar",
     ...(token && { authorization: token }),
     ...(devicespecificid && { devicespecificid }),
+    ...(profileOrganizations && {
+      "profile-organizations": profileOrganizations,
+    }),
   };
 
   let body = undefined;
@@ -147,6 +159,7 @@ export async function PATCH(request) {
   const token = request.headers.get("authorization");
   const devicespecificid = request.headers.get("devicespecificid");
   const contentType = request.headers.get("content-type");
+  const profileOrganizations = request.headers.get("profile-organizations");
 
   const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${pathPatch}`;
 
@@ -155,6 +168,9 @@ export async function PATCH(request) {
     lang: request.headers.get("lang") || "ar",
     ...(token && { authorization: token }),
     ...(devicespecificid && { devicespecificid }),
+    ...(profileOrganizations && {
+      "profile-organizations": profileOrganizations,
+    }),
   };
 
   let body = undefined;
@@ -194,6 +210,7 @@ export async function DELETE(request) {
 
   const token = request.headers.get("authorization");
   const devicespecificid = request.headers.get("devicespecificid");
+  const profileOrganizations = request.headers.get("profile-organizations");
 
   const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${pathDelete}`;
 
@@ -203,6 +220,9 @@ export async function DELETE(request) {
     lang: request.headers.get("lang") || "ar",
     ...(token && { authorization: token }),
     ...(devicespecificid && { devicespecificid }),
+    ...(profileOrganizations && {
+      "profile-organizations": profileOrganizations,
+    }),
   };
 
   try {

@@ -4,7 +4,7 @@ const FeatureCard = ({ icon, title, bgColor }) => {
   return (
     <div className="flex flex-1 flex-col items-center gap-2 rounded-xl py-4 px-2 shadow-card">
       <div
-        className="flex items-center justify-center w-12 h-12 rounded-xl"
+        className="flex items-center justify-center w-8 h-8 rounded-md"
         style={{ backgroundColor: bgColor }}
       >
         {icon}

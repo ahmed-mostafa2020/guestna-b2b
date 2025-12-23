@@ -500,6 +500,8 @@ export const createRequestQuoteSchema = (t) =>
 
 export const createAuthenticatedRequestQuoteSchema = (t) =>
   Yup.object().shape({
+    organization: Yup.string().required(t("forms.validation.require")),
+    track: Yup.string().optional(),
     category: Yup.string().optional(), // readonly field
     tripType: Yup.string().optional(), // readonly field
     city: Yup.string().optional(), // readonly field
@@ -545,6 +547,8 @@ export const createAuthenticatedRequestQuoteSchema = (t) =>
 
 export const createCustomNewTripSchema = (t) =>
   Yup.object().shape({
+    organization: Yup.string().required(t("forms.validation.require")),
+    track: Yup.string().optional(),
     category: Yup.string().required(t("forms.validation.require")),
     tripType: Yup.string().required(t("forms.validation.require")),
     city: Yup.string().required(t("forms.validation.require")),
@@ -644,7 +648,6 @@ export const createAddOrganizationUserSchema = (t) =>
     mobile: createPhoneValidation(t),
     name: Yup.string()
       .trim()
-      .optional()
       .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
       .test(
         "min-word-length",
@@ -660,11 +663,81 @@ export const createAddOrganizationUserSchema = (t) =>
           // Each word must be at least 2 characters
           return words.every((word) => word.length >= 2);
         }
-      ),
+      )
+      .required(t("forms.validation.require")),
 
     role: Yup.string().required(t("forms.validation.require")),
   });
 
+export const createUpdateOrganizationUserSchema = (t) =>
+  Yup.object().shape({
+    mobile: createPhoneValidation(t),
+    name: Yup.string()
+      .trim()
+      .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
+      .test(
+        "min-word-length",
+        t("forms.name.error.wordMinLength"),
+        function (value) {
+          if (!value) return true;
+
+          const words = value.trim().split(/\s+/);
+
+          // Must have at least 2 words
+          if (words.length < 2) return false;
+
+          // Each word must be at least 2 characters
+          return words.every((word) => word.length >= 2);
+        }
+      )
+      .required(t("forms.validation.require")),
+
+    role: Yup.string().required(t("forms.validation.require")),
+  });
+
+//  bulk user validation
+export const createBulkUserRowSchema = (t, roleOptions = []) =>
+  Yup.object().shape({
+    name: Yup.string()
+      .trim()
+      .required(t("forms.validation.require"))
+      .matches(/^[\p{L}\s]+$/u, t("forms.name.error.invalid"))
+      .test("min-word-length", t("forms.name.error.wordMinLength"), (value) => {
+        if (!value) return false;
+        const words = value.trim().split(/\s+/);
+        return words.length >= 2 && words.every((w) => w.length >= 2);
+      }),
+    email: Yup.string()
+      .email(t("forms.email.error"))
+      .matches(emailRegex, t("forms.email.error_tld"))
+      .required(t("forms.validation.require"))
+      .test(
+        "unique-email",
+        t("forms.validation.duplicateEmail"),
+        function (value) {
+          const allEmails =
+            this.options.context?.allValues?.map((u) =>
+              u.email?.toLowerCase()
+            ) || [];
+          return (
+            allEmails.filter((e) => e === value?.toLowerCase()).length <= 1
+          );
+        }
+      ),
+    phone: Yup.string()
+      .transform((value) => (value ? String(value).replace(/\s/g, "") : value))
+      .required(t("forms.validation.require"))
+      .test("phone-validation", t("forms.phone.error.invalid"), (value) => {
+        if (!value) return false;
+        const phoneString = value.replace(/\s/g, "");
+        return phoneString.length >= 13 && isValidPhoneNumber(phoneString);
+      }),
+    role: Yup.string()
+      .required(t("forms.validation.require"))
+      .test("valid-role", t("forms.validation.invalidRole"), (value) =>
+        roleOptions.includes(value)
+      ),
+  });
 export const createWithdrawValidationSchema = (t, isBankTransfer) => {
   // Create a translation function that works with the form's context
   const getValidationMessage = (key) => {
@@ -961,6 +1034,26 @@ export const createSchoolRegisterSchema = (t) =>
         })
       )
       .max(1, "Maximum 1 additional users allowed"),
+  });
+
+// Edit Trip Settings Schema
+export const createEditTripSettingsSchema = (t, minTrips = 0) =>
+  Yup.object({
+    trackInfo: Yup.string(),
+    currentTrips: Yup.number(),
+    maximumNumberTrips: Yup.number()
+      .required(t("forms.validation.require"))
+      .min(
+        minTrips,
+        t("profile.tables.orders.settingsTable.editModal.validation.minTrips", {
+          min: minTrips,
+        })
+      )
+      .max(
+        10,
+        t("profile.tables.orders.settingsTable.editModal.validation.maxTrips")
+      )
+      .integer(t("forms.validation.integer")),
   });
 
 // Add Role Schema

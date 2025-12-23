@@ -60,6 +60,7 @@ const ProfileLayout = ({ children }) => {
       onLoading: setProfileLoading,
     }
   );
+
   useEffect(() => {
     if (data) {
       dispatch(setProfileImage(data?.image || ""));
@@ -90,11 +91,10 @@ const ProfileLayout = ({ children }) => {
         <FullScreenLoading status="pending" />
       </div>
     );
-
   if (error)
     return (
       <ErrorComponent
-        statusCode={error.response?.data?.statusCode}
+        statusCode={error?.response?.data?.statusCode}
         errorMessage={error.response?.data?.message}
       />
     );

@@ -1,105 +1,101 @@
 import Image from "next/image";
-import { useTranslations } from "next-intl";
 import { memo } from "react";
+import { useTranslations } from "next-intl";
 
+import {
+  Card,
+  CardContent,
+  Chip,
+  Box,
+  Typography,
+  Stack,
+  Button,
+} from "@mui/material";
+
+import profilePlaceholderImage from "@assets/profilePlaceholderImage.jpg";
 import { usePermissions } from "@hooks/usePermissions";
 import { PERMISSIONS } from "@constants/permissions";
 
-import profilePlaceholderImage from "@assets/profilePlaceholderImage.jpg";
-import { Card, CardContent, Chip } from "@mui/material";
-
-const UserCard = ({ user }) => {
-  const { hasElement } = usePermissions();
+const UserCard = ({ user, onEdit, onDelete, editPermission = false }) => {
   const t = useTranslations();
+  const { hasElement } = usePermissions();
+
+  const ActionButton = ({ onClick, label, colorClass }) => (
+    <button
+      onClick={onClick}
+      className={`  hover:!text-error !font-ibm !text-black !font-medium !leading-5 tracking-tight
+         ${colorClass}`}
+    >
+      {label}
+    </button>
+  );
 
   return (
     <Card className="border border-border !rounded-lg !shadow-none">
-      <CardContent className="p-2 sm:p-3">
-        {/* Desktop Layout */}
-        <div className="hidden md:flex items-center justify-between">
-          <div className="flex items-center gap-3">
+      <CardContent className="p-3">
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          spacing={{ xs: 1, md: 4 }}
+          alignItems={{ xs: "flex-start", md: "center" }}
+          justifyContent="space-between"
+        >
+          {/* User Info */}
+          <Stack
+            direction="row"
+            spacing={2}
+            alignItems="center"
+            flex={1}
+            minWidth={0}
+          >
             <Image
               src={user.image || profilePlaceholderImage}
-              alt="userImage"
-              height={72}
-              width={100}
-              priority={true}
-              className="w-20 h-15 rounded-md object-cover"
+              width={64}
+              height={64}
+              alt="user"
+              className="rounded-md object-cover w-16 h-16 md:w-20 md:h-20"
             />
-            <div className="flex flex-col flex-1 min-w-0 gap-2">
-              <h3 className="text-sm font-medium text-textDark truncate">
-                {user.name}
-              </h3>
-              <p className="text-xs text-textLight truncate">{user.email}</p>
-              <Chip
-                label={user.role.description}
-                size="small"
-                className="text-xs !bg-[#e9e1ff] !text-black w-fit !font-somar"
-              />
-            </div>
-          </div>
-          <div className="flex gap-3 text-sm font-ibm text-textDark flex-shrink-0">
-            {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_DELETE) && (
-              <button className="hover:text-error transition-colors duration-200">
-                {t("profile.schools_users.delete")}
-              </button>
-            )}
 
-            {hasElement(
-              PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_EDIT_PERMISSIONS
-            ) && (
-              <button className="hover:text-mainColor transition-colors duration-200">
-                {t("profile.schools_users.edit")}
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Mobile/Tablet Layout */}
-        <div className="md:hidden">
-          <div className="flex items-center gap-2 sm:gap-3 mb-3">
-            <div className="flex-shrink-0">
-              <Image
-                src={user.image || profilePlaceholderImage}
-                alt="userImage"
-                height={72}
-                width={100}
-                priority={true}
-                className="w-12 h-12 sm:w-16 sm:h-16 rounded-md object-cover"
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-xs sm:text-sm font-medium text-textDark truncate mb-1">
+            <Stack direction="column" spacing={0.5} minWidth={0} flex={1}>
+              <Typography className="!font-medium !font-somar !text-base !truncate !tracking-tight text-textDark">
                 {user.name}
-              </h3>
-              <p className="text-[10px] sm:text-xs text-textLight truncate mb-2">
+              </Typography>
+              <Typography className="!text-sm !truncate !font-somar !opacity-80 !text-textLight">
                 {user.email}
-              </p>
+              </Typography>
+
               <Chip
-                label={user.role.description}
                 size="small"
-                className="text-xs !bg-[#e9e1ff] !text-black !font-somar"
+                label={user.role?.description || user.role}
+                className="!bg-[#e9e1ff] !text-black !font-somar w-fit !text-xs mt-1"
               />
-            </div>
-          </div>
+            </Stack>
+          </Stack>
 
-          {/* Actions below user info on mobile */}
-          <div className="flex gap-2 sm:gap-4 text-xs font-ibm text-textDark justify-start flex-wrap">
-            {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_DELETE) && (
-              <button className="hover:text-error transition-colors duration-200">
-                {t("profile.schools_users.delete")}
-              </button>
-            )}
-
+          {/* Actions */}
+          <Stack className="items-center gap-4 !flex-row  justify-center">
             {hasElement(
               PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_EDIT_PERMISSIONS
             ) && (
-              <button className="hover:text-mainColor transition-colors duration-200">
-                {t("profile.schools_users.edit")}
-              </button>
+              <ActionButton
+                onClick={onEdit}
+                label={
+                  editPermission
+                    ? t("profile.rolesPermissions.actions.edit_permissions")
+                    : t("profile.schools_users.edit")
+                }
+                colorClass="hover:!text-mainColor text-black"
+              />
             )}
-          </div>
-        </div>
+
+            {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_DELETE) && (
+              <ActionButton
+                onClick={onDelete}
+                label={t("profile.schools_users.delete.title")}
+                colorClass="hover:!text-error text-black"
+              />
+            )}
+          </Stack>
+        </Stack>
       </CardContent>
     </Card>
   );

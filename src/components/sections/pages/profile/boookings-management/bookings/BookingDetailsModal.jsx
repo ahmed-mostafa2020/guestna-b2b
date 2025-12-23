@@ -6,7 +6,7 @@ import { memo } from "react";
 
 import formatDate from "@utils/FormateDate";
 import formatCurrency from "@utils/FormatCurrency";
-import { exportToExcel } from "@utils/exportUtils";
+import { useExcel } from "@hooks/useExcel";
 import StudentsTable from "./StudentsTable";
 import {
   locationIcon,
@@ -18,12 +18,12 @@ import {
   phoneIcon,
   schoolIcon,
 } from "@assets/svg";
+import ExportButton from "@components/common/ExportButton";
 
 const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
   const locale = useLocale();
   const t = useTranslations();
-  const [isExporting, setIsExporting] = useState(false);
-  console.log("bookingDetails", bookingDetails);
+  const { exportBookingManagement, isExporting } = useExcel({ t, locale });
 
   if (!booking) return null;
 
@@ -68,58 +68,52 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
   }, [bookingDetails]);
 
   const handleExcelExport = async () => {
-    setIsExporting(true);
+    // Ensure we're using all students data (not paginated)
 
-    try {
-      // Ensure we're using all students data (not paginated)
+    // Handle different possible data structures
+    let studentsArray = [];
 
-      // Handle different possible data structures
-      let studentsArray = [];
-
-      // Extract students array from various possible structures
-      if (Array.isArray(bookingDetails)) {
-        studentsArray = bookingDetails;
-      } else if (bookingDetails?.nodes && Array.isArray(bookingDetails.nodes)) {
-        studentsArray = bookingDetails.nodes;
-      } else if (
-        bookingDetails?.data?.nodes &&
-        Array.isArray(bookingDetails.data.nodes)
-      ) {
-        studentsArray = bookingDetails.data.nodes;
-      } else if (bookingDetails?.data && Array.isArray(bookingDetails.data)) {
-        studentsArray = bookingDetails.data;
-      } else if (bookingDetails && typeof bookingDetails === "object") {
-        // Look for arrays in the object that contain student-like data
-        const keys = Object.keys(bookingDetails);
-        for (const key of keys) {
+    // Extract students array from various possible structures
+    if (Array.isArray(bookingDetails)) {
+      studentsArray = bookingDetails;
+    } else if (bookingDetails?.nodes && Array.isArray(bookingDetails.nodes)) {
+      studentsArray = bookingDetails.nodes;
+    } else if (
+      bookingDetails?.data?.nodes &&
+      Array.isArray(bookingDetails.data.nodes)
+    ) {
+      studentsArray = bookingDetails.data.nodes;
+    } else if (bookingDetails?.data && Array.isArray(bookingDetails.data)) {
+      studentsArray = bookingDetails.data;
+    } else if (bookingDetails && typeof bookingDetails === "object") {
+      // Look for arrays in the object that contain student-like data
+      const keys = Object.keys(bookingDetails);
+      for (const key of keys) {
+        if (
+          Array.isArray(bookingDetails[key]) &&
+          bookingDetails[key].length > 0
+        ) {
+          const firstItem = bookingDetails[key][0];
           if (
-            Array.isArray(bookingDetails[key]) &&
-            bookingDetails[key].length > 0
+            firstItem &&
+            (firstItem.child || firstItem.parent || firstItem.student)
           ) {
-            const firstItem = bookingDetails[key][0];
-            if (
-              firstItem &&
-              (firstItem.child || firstItem.parent || firstItem.student)
-            ) {
-              studentsArray = bookingDetails[key];
+            studentsArray = bookingDetails[key];
 
-              break;
-            }
+            break;
           }
         }
       }
-
-      const allStudentsData = { nodes: studentsArray };
-
-      const result = exportToExcel(booking, allStudentsData, t, locale);
-
-      if (result.success) {
-      } else {
-      }
-    } catch (error) {
-    } finally {
-      setIsExporting(false);
     }
+
+    const allStudentsData = { nodes: studentsArray };
+
+    await exportBookingManagement({
+      booking,
+      bookingDetails: allStudentsData,
+      t,
+      locale,
+    });
   };
 
   return (
@@ -130,7 +124,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Trip Information */}
-        <div className="space-y-6">
+        <div className="space-y-2">
           <h3 className="text-lg font-medium">
             {t("profile.tables.orders.bookingDetails.tripInfo")}
           </h3>
@@ -236,7 +230,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
         </div>
 
         {/* School Information */}
-        <div className="space-y-6">
+        <div className="space-y-2">
           <h3 className="text-lg font-medium">
             {t("profile.tables.orders.bookingDetails.schoolInfo")}
           </h3>
@@ -283,6 +277,14 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
                 })}
               </p>
             </div>
+
+            <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              {profileIcon}
+              <p className="text-sm text-gray-600">
+                {t("profile.tables.orders.bookingDetails.schoolEmail")}:
+              </p>
+              <p className="font-medium">{booking.organization?.email}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -296,23 +298,12 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
       {/* Action Buttons */}
       <div className="space-y-3 print:hidden">
         {/* Excel Export Button */}
-        <button
+        <ExportButton
           onClick={handleExcelExport}
-          disabled={isExporting || loadingDetails}
-          className="bg-green-600 w-full hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-        >
-          {isExporting ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              {t("forms.validation.downloading")}
-            </>
-          ) : (
-            <>
-              <span className="text-lg">📊</span>
-              {t("profile.tables.orders.bookingDetails.exportExcel")}
-            </>
-          )}
-        </button>
+          loading={isExporting}
+          disabled={loadingDetails}
+          loadingText={t("forms.validation.downloading")}
+        />
       </div>
     </div>
   );
