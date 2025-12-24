@@ -21,7 +21,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
 import { Grid } from "@material-ui/core";
-import { SORTING_TYPE } from "@constants/sorting";
 
 const SchoolsOverViewPage = () => {
   const locale = useLocale();
@@ -33,10 +32,10 @@ const SchoolsOverViewPage = () => {
   // SEARCH / FILTER STATE
 
   const [searchTerms, setSearchTerms] = useState({
-    name: "",
-    city: null,
-    track: "",
-    sort: SORTING_TYPE.NEWEST,
+    name: undefined,
+    city: undefined,
+    track: undefined,
+    sort: undefined,
   });
 
   const {
