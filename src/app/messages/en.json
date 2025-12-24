@@ -1698,6 +1698,9 @@
   },
 
   "forms": {
+    "search": {
+      "title": "Search"
+    },
     "auth": {
       "signUp": {
         "title": "Welcome to GuestNa",
