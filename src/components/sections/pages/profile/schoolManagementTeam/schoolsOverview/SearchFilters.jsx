@@ -97,6 +97,7 @@ const SearchFilters = ({ searchTerms, onChange, isLoading }) => {
   ];
   return (
     <SearchAndFilters
+      showTitle
       search={search}
       isLoading={isLoading || staticsLoading}
       filters={filters}

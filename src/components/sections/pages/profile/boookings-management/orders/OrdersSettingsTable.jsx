@@ -11,6 +11,7 @@ import ErrorComponent from "@feedback/error/ErrorComponent";
 import Pagination from "@components/common/Pagination";
 import { actionsIcon } from "@assets/svg";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import OrdersTableFilter from "./OrdersTableFilter";
 
 const getStatusInfo = (tripsCount, maximumNumberTrips, t) => {
   const remaining = maximumNumberTrips - tripsCount;
@@ -40,6 +41,7 @@ const OrdersSettingsTable = () => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const[filter,setFilter]=useState({})
 
   // Handle opening edit modal
   const handleEditClick = useCallback((item) => {
@@ -64,7 +66,7 @@ const OrdersSettingsTable = () => {
     { page: currentPage, perPage: CONSTANT_VALUES.TABLE_PER_PAGE },
     {
       method: "POST",
-      body: { page: currentPage, perPage: CONSTANT_VALUES.TABLE_PER_PAGE },
+      body: { page: currentPage, perPage: CONSTANT_VALUES.TABLE_PER_PAGE ,filter},
       lang: locale,
     }
   );
@@ -87,9 +89,16 @@ const OrdersSettingsTable = () => {
     <div className="flex flex-col gap-4 w-full bg-white rounded-2xl py-4 px-3 shadow-card">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4 lg:mb-8">
-        <h2 className="text-lg font-medium lg:text-2xl text-mainColor">
-          {t("profile.tables.orders.settingsTable.title")}
-        </h2>
+        
+        <div className="flex justify-between items-center w-full">
+          <h2 className="text-lg font-medium lg:text-2xl !mb-4 !lg:mb-8 text-mainColor">
+            {t("profile.tables.orders.settingsTable.title")}
+          </h2>
+
+          <div className="self-end min-w-[350px]">
+            <OrdersTableFilter filter={filter} setFilter={setFilter} />
+          </div>
+        </div>
 
         {/* School Filter Dropdown */}
         {/* Add school filter dropdown */}

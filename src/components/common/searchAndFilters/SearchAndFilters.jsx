@@ -11,12 +11,14 @@ const SearchAndFilters = ({ showTitle, search, isLoading, filters }) => {
   const [open, setOpen] = useState(false);
   const t = useTranslations();
 
+  const inputsLength = Array.from({
+    length: search ? filters.length + 1 : filters.length,
+  });
+
   const renderFilters = (skeletonWidth, skeletonHeight) => (
     <>
       {isLoading
-        ? Array.from({
-            length: search ? filters.length + 1 : filters.length,
-          }).map((_, i) => (
+        ? filters.map((_, i) => (
             <Skeleton
               key={i}
               variant="rounded"
@@ -24,7 +26,7 @@ const SearchAndFilters = ({ showTitle, search, isLoading, filters }) => {
               height={skeletonHeight}
             />
           ))
-        : filters.map((filter , index) => (
+        : filters.map((filter, index) => (
             <FilterAutoComplete
               multiple={filter.multiple}
               key={index}
@@ -72,7 +74,7 @@ const SearchAndFilters = ({ showTitle, search, isLoading, filters }) => {
       {/* Desktop layout */}
       <Box className="hidden md:block">
         {showTitle && <Box className="mb-3">{title}</Box>}
-        <Box className={`grid grid-cols-${filters.length} gap-4`}>
+        <Box className={`grid grid-cols-${inputsLength.length} gap-4`}>
           {search && (
             <SearchInput
               key={search.key}
