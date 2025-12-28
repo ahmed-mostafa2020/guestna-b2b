@@ -493,6 +493,7 @@
     },
     "sideFilters": {
       "title": "التصنيفات",
+      "academicStages": "المرحلة الدراسية",
       "destinations": "الوجهات",
       "budget": "الميزانية",
       "typeOfTrips": "نوع الجولات",

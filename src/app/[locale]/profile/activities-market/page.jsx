@@ -15,9 +15,16 @@ import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 import { PERMISSIONS } from "@constants/permissions";
 import TripsGrid from "@components/sections/pages/discover/gridSection/tripsGrid";
 import { usePaginatedTrips } from "@hooks/usePaginatedTrips";
+import {
+  setDiscoverSideFiltersData,
+  setDiscoverSideFiltersDataError,
+  setDiscoverSideFiltersDataLoading,
+} from "@/src/store/searchFilter/discoverSideFiltersSlice";
+import { useFetchData } from "@/src/hooks/useFetchData";
+import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
 
 const ActivitiesMarketPage = () => {
-  const { currentPage } = useSelector((state) => state.discoverData);
+  const { currentPage, filter } = useSelector((state) => state.discoverData);
   const searchParams = useSearchParams();
   const router = useRouter();
   const isInitialMount = useRef(true);
@@ -26,6 +33,7 @@ const ActivitiesMarketPage = () => {
   const t = useTranslations();
 
   const dispatch = useDispatch();
+  const isFirstLoad = useRef(true);
 
   // Get page from URL or default to 1
   const pageFromUrl = parseInt(searchParams.get("page")) || 1;
@@ -34,6 +42,7 @@ const ActivitiesMarketPage = () => {
   const { data, isLoading, error, isFetching } = usePaginatedTrips({
     page: currentPage,
     locale,
+    filter: { ...filter },
   });
 
   useEffect(() => {
@@ -57,6 +66,8 @@ const ActivitiesMarketPage = () => {
       return;
     }
 
+   
+    
     // Skip if URL already matches current page
     if (currentPage === pageFromUrl) {
       return;
@@ -69,9 +80,16 @@ const ActivitiesMarketPage = () => {
       params.set("page", currentPage.toString());
     }
     const newUrl = params.toString() ? `?${params.toString()}` : "";
-    router.push(`/${locale}/profile/activities-market${newUrl}`, { scroll: false });
+    router.push(`/${locale}/profile/activities-market${newUrl}`, {
+      scroll: false,
+    });
   }, [currentPage, pageFromUrl, router, searchParams, locale]);
 
+  useEffect(() => {
+    if (data && isFirstLoad.current) {
+      isFirstLoad.current = false;
+    }
+  }, [data]);
   // Update Redux store when data changes (for TripsGrid component)
   useEffect(() => {
     if (data) {
@@ -92,12 +110,15 @@ const ActivitiesMarketPage = () => {
     );
   }
 
-  if (isLoading) {
+  if (isLoading && isFirstLoad.current) {
     return <FullScreenLoading status="pending" />;
   }
+  
 
   return (
-    <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_ACTIVITIES_MARKET_PAGE}>
+    <ProtectedProfilePage
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_ACTIVITIES_MARKET_PAGE}
+    >
       <section className="pt-8 pb-6 bg-gradient-to-br from-gray-100 to-gray-200 mb-4 lg:mb-8">
         <div className="centered gap-4 flex-col text-center ">
           <h1 className="text-4xl lg:text-6xl font-bold mb-4 text-foreground">
@@ -119,7 +140,7 @@ const ActivitiesMarketPage = () => {
         </div>
       </section>
 
-      <TripsGrid />
+      <TripsGrid  showFilters />
     </ProtectedProfilePage>
   );
 };

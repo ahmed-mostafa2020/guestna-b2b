@@ -486,6 +486,7 @@
     },
     "sideFilters": {
       "title": "Classifications",
+      "academicStages": "Academic stages",
       "destinations": "Destinations",
       "budget": "Budget",
       "typeOfTrips": "Type of trips",

@@ -23,7 +23,8 @@ const SearchAndFilters = ({ search, isLoading, filters }) => {
             />
           ))
         : filters.map((filter) => (
-            <FilterAutoComplete
+          <FilterAutoComplete
+            multiple={filter.multiple}
               key={filter.key}
               label={filter.label}
               options={filter.options}

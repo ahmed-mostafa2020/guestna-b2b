@@ -207,6 +207,7 @@ const FilterGrid = () => {
     academicStage,
   ]);
 
+
   const searchParams = useSearchParams();
 
   const handleSubmit = () => {

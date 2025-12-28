@@ -1,54 +1,92 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-
-import { useSelector } from "react-redux";
+import { useEffect, useMemo } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { useDispatch, useSelector } from "react-redux";
 
 import { SORTING_TYPE } from "@constants/sorting";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import SortingDropdown from "./SortingDropdown";
+import { CONSTANT_VALUES } from "@/src/constants/constantValues";
+import {
+  setDiscoverSideFiltersData,
+  setDiscoverSideFiltersDataError,
+  setDiscoverSideFiltersDataLoading,
+} from "@/src/store/searchFilter/discoverSideFiltersSlice";
+import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
+import { useFetchData } from "@/src/hooks/useFetchData";
 
 const Sorting = () => {
+  const dispatch = useDispatch();
   const { loading, searchTerm } = useSelector((state) => state.discoverData);
-
+  const locale = useLocale();
   const t = useTranslations();
 
-  const sortingList = [
+  const tripsTypeList = useMemo(
+    () => [
+      {
+        label: t("common.multiDaysTrip"),
+        value: CONSTANT_VALUES.PACKAGE,
+      },
+      {
+        label: t("common.oneDayTrip"),
+        value: CONSTANT_VALUES.ACTIVITY,
+      },
+      {
+        label: t("common.halfDayTrip"),
+        value: CONSTANT_VALUES.HALF_DAY,
+      },
+    ],
+    [t]
+  );
+
+  const { data: sideFiltersData } = useFetchData(
+    B2B_END_POINTS.DISCOVER_SIDE_FILTERS,
+    {},
     {
-      name: t("discover.sorting.mostPopular"),
-      value: SORTING_TYPE.HIGHEST_SELLING,
-    },
-    { name: t("discover.sorting.newest"), value: SORTING_TYPE.NEWEST },
-    { name: t("discover.sorting.oldest"), value: SORTING_TYPE.OLDEST },
-    // {
-    //   name: t("discover.sorting.lowestPrice"),
-    //   value: SORTING_TYPE.LOWEST_PRICE,
-    // },
-    // {
-    //   name: t("discover.sorting.highestPrice"),
-    //   value: SORTING_TYPE.HIGHEST_PRICE,
-    // },
-    {
-      name: t("discover.sorting.highestLover"),
-      value: SORTING_TYPE.HIGHEST_LOVER,
-    },
-    {
-      name: t("discover.sorting.highestRate"),
-      value: SORTING_TYPE.HIGHEST_RATE,
-    },
-  ];
+      method: "GET",
+      lang: locale,
+      cacheTime: 0,
+      staleTime: 0,
+      onSuccess: (data) =>
+        dispatch(
+          setDiscoverSideFiltersData({ ...data, tripsTypes: tripsTypeList })
+        ),
+      onError: (error) => dispatch(setDiscoverSideFiltersDataError(error)),
+      onLoading: (isLoading) =>
+        dispatch(setDiscoverSideFiltersDataLoading(isLoading)),
+    }
+  );
+
+  const sortingList = useMemo(
+    () => [
+      {
+        name: t("discover.sorting.mostPopular"),
+        value: SORTING_TYPE.HIGHEST_SELLING,
+      },
+      { name: t("discover.sorting.newest"), value: SORTING_TYPE.NEWEST },
+      { name: t("discover.sorting.oldest"), value: SORTING_TYPE.OLDEST },
+      {
+        name: t("discover.sorting.highestLover"),
+        value: SORTING_TYPE.HIGHEST_LOVER,
+      },
+      {
+        name: t("discover.sorting.highestRate"),
+        value: SORTING_TYPE.HIGHEST_RATE,
+      },
+    ],
+    [t]
+  );
 
   return (
     <>
-      <div className="flex items-center justify-end w-full">
+      <div className="w-full">
         <SortingDropdown
           title={t("discover.sorting.sortingBy")}
           sortingList={sortingList}
           searchTerm={searchTerm}
         />
       </div>
-
-      {loading === "loading" && <FullScreenLoading status="pending" />}
     </>
   );
 };

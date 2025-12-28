@@ -13,6 +13,7 @@ const initialState = {
   totalItems: 0,
   loading: "idle",
   error: null,
+  filter: {},
 };
 
 const discoverSlice = createSlice({
@@ -23,14 +24,18 @@ const discoverSlice = createSlice({
       state.loading = "succeeded";
       state.error = null;
       state.trips = action.payload;
-      
+
       // Handle both old and new pageInfo structures
       const pageInfo = action.payload.pageInfo || {};
       const total = pageInfo.total || 0;
       const perPage = pageInfo.perPage || CONSTANT_VALUES.PER_PAGE;
-      
+
       state.lastPage = Math.ceil(total / perPage);
       state.totalItems = total;
+    },
+
+    setDiscoverFilters: (state, action) => {
+      state.filter = action.payload;
     },
 
     setSortBy: (state, action) => {
@@ -58,12 +63,12 @@ const discoverSlice = createSlice({
       .addCase(actGetDiscoverTrips.fulfilled, (state, action) => {
         state.loading = "succeeded";
         state.trips = action.payload;
-        
+
         // Handle both old and new pageInfo structures
         const pageInfo = action.payload.pageInfo || {};
         const total = pageInfo.total || 0;
         const perPage = pageInfo.perPage || CONSTANT_VALUES.PER_PAGE;
-        
+
         state.lastPage = Math.ceil(total / perPage);
         state.totalItems = total;
         // state.currentPage = action.payload.pageInfo.currentPage;
@@ -76,6 +81,7 @@ const discoverSlice = createSlice({
 });
 
 export const {
+  setDiscoverFilters,
   setDiscoverData,
   setSearchTerm,
   setSortBy,

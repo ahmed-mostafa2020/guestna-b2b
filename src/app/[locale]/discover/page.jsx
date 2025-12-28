@@ -476,6 +476,7 @@ const Discover = () => {
     rate,
   } = useSelector((state) => state.searchFilter);
 
+  console.log()
   const { currentPage } = useSelector((state) => state.discoverData);
 
   const locale = useLocale();
@@ -827,6 +828,7 @@ const Discover = () => {
   // Side filters data request
   const {
     error: sideFiltersError,
+    data
     // isLoading: sideFiltersLoading,
   } = useFetchData(
     `${B2B_END_POINTS.DISCOVER_SIDE_FILTERS}`,
@@ -842,6 +844,7 @@ const Discover = () => {
     }
   );
 
+  console.log("sideFiltersData", data);
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
       "pagesHead.title.discover"

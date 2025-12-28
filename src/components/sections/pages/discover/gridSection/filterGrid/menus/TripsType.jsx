@@ -10,7 +10,7 @@ import FilterAccordion from "@components/filtersBox/FilterAccordion";
 
 const TripsType = ({ tripsTypeList, title }) => {
   const { allTripsTypes } = useSelector((state) => state.searchFilter);
-
+console.log(allTripsTypes,"allTripsTypes");
   const dispatch = useDispatch();
 
   const renderedTripsType = tripsTypeList.map((type, index) => (
