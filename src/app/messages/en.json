@@ -866,7 +866,12 @@
           "status": "Status",
           "actions": "Actions",
           "participants": "Participants",
-          "searchTripName": "Search by trip name"
+          "searchTripName": "Search by trip name",
+          "organization": "School",
+          "targetTrack": "Target Track",
+          "budget": "Budget",
+          "track": "Track",
+          "class": "Class"
         },
         "actions": {
           "administrativeComment": "Administrative Comment",

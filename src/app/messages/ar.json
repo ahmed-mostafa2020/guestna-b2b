@@ -870,7 +870,12 @@
           "status": "الحالة",
           "actions": "الإجراءات",
           "participants": "المشاركون",
-          "searchTripName": "ابحث باسم الرحلة"
+          "searchTripName": "ابحث باسم الرحلة",
+          "organization": "المدرسة",
+          "targetTrack": "الفئة المستهدفة",
+          "budget": "الميزانية",
+          "track": "المسار",
+          "class": "الصف"
         },
         "actions": {
           "administrativeComment": "تعليق إداري",
