@@ -896,7 +896,7 @@
       "orders": {
         "title": "Orders",
         "tripsOrdersManagement": "Activities Orders Management",
-
+        "filter_by_school":"Choose school to view its orders",
         "features": {
           "privateGroups": "Private Groups",
           "flexibleTimes": "Flexible Times",

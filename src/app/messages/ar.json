@@ -901,6 +901,8 @@
         "title": "الطلبات",
         "tripsOrdersManagement": "إدارة طلبات الأنشطة",
 
+        "filter_by_school":"اختر المدرسة التي تريد عرض طلباتها",
+
         "features": {
           "privateGroups": "مجموعات خاصة",
           "flexibleTimes": "أوقات مرنة",

@@ -7,14 +7,16 @@ import { useTranslations } from "next-intl";
 import FilterAutoComplete from "./FilterAutoComplete";
 import SearchInput from "./SearchInput";
 
-const SearchAndFilters = ({ search, isLoading, filters }) => {
+const SearchAndFilters = ({ showTitle, search, isLoading, filters }) => {
   const [open, setOpen] = useState(false);
   const t = useTranslations();
 
   const renderFilters = (skeletonWidth, skeletonHeight) => (
     <>
       {isLoading
-        ? Array.from({ length: 3 }).map((_, i) => (
+        ? Array.from({
+            length: search ? filters.length + 1 : filters.length,
+          }).map((_, i) => (
             <Skeleton
               key={i}
               variant="rounded"
@@ -22,10 +24,10 @@ const SearchAndFilters = ({ search, isLoading, filters }) => {
               height={skeletonHeight}
             />
           ))
-        : filters.map((filter) => (
-          <FilterAutoComplete
-            multiple={filter.multiple}
-              key={filter.key}
+        : filters.map((filter , index) => (
+            <FilterAutoComplete
+              multiple={filter.multiple}
+              key={index}
               label={filter.label}
               options={filter.options}
               value={filter.value}
@@ -46,7 +48,7 @@ const SearchAndFilters = ({ search, isLoading, filters }) => {
       {/* Mobile layout */}
       <Box className="md:hidden">
         <Box className="flex items-center justify-between mb-3">
-          {title}
+          {showTitle && title}
           <IconButton onClick={() => setOpen(!open)}>
             <TuneIcon />
           </IconButton>
@@ -69,8 +71,8 @@ const SearchAndFilters = ({ search, isLoading, filters }) => {
 
       {/* Desktop layout */}
       <Box className="hidden md:block">
-        <Box className="mb-3">{title}</Box>
-        <Box className="grid grid-cols-4 gap-4">
+        {showTitle && <Box className="mb-3">{title}</Box>}
+        <Box className={`grid grid-cols-${filters.length} gap-4`}>
           {search && (
             <SearchInput
               key={search.key}

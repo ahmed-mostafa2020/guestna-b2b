@@ -8,9 +8,12 @@ const FilterAutoComplete = ({
   onChange,
   multiple = false,
 }) => {
+  // Normalize value to always work with arrays internally
+  const normalizedValue = Array.isArray(value) ? value : [value];
+
   const resolvedValue = multiple
-    ? options.filter((o) => value.includes(o.value))
-    : options.find((o) => o.value === value?.[0]) || null;
+    ? options.filter((o) => normalizedValue.includes(o.value))
+    : options.find((o) => o.value === normalizedValue?.[0]) || null;
 
   return (
     <Autocomplete
@@ -29,7 +32,7 @@ const FilterAutoComplete = ({
         if (multiple) {
           onChange(selected.map((v) => v.value));
         } else {
-          onChange(selected ? [selected.value] : []);
+          onChange(selected ? selected.value : null);
         }
       }}
       /* ✅ CUSTOM SELECTED VALUES UI */
@@ -38,7 +41,6 @@ const FilterAutoComplete = ({
           {selected.map((option, index) => (
             <Chip
               {...getTagProps({ index })}
-              key={option.value}
               label={option.label}
               size="small"
               className="
@@ -51,18 +53,21 @@ const FilterAutoComplete = ({
           ))}
         </Box>
       )}
-      renderOption={(props, option, { selected }) => (
-        <li {...props}>
-          {multiple && (
-            <Checkbox
-              checked={selected}
-              className="!text-mainColor"
-              size="small"
-            />
-          )}
-          {option.label}
-        </li>
-      )}
+      renderOption={(props, option, { selected }) => {
+        const { key, ...rest } = props;
+        return (
+          <li key={option.value} {...rest}>
+            {multiple && (
+              <Checkbox
+                checked={selected}
+                className="!text-mainColor"
+                size="small"
+              />
+            )}
+            {option.label}
+          </li>
+        );
+      }}
       renderInput={(params) => (
         <TextField
           {...params}

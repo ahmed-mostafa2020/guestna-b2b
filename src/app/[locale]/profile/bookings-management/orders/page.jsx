@@ -13,11 +13,13 @@ import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBo
 import OrdersInfoCards from "@components/sections/pages/profile/boookings-management/orders/OrdersInfoCards";
 import OrdersSettingsTable from "@components/sections/pages/profile/boookings-management/orders/OrdersSettingsTable";
 import AllOrdersTable from "@components/sections/pages/profile/boookings-management/orders/AllOrdersTable";
+import OrdersTableFilter from "@/src/components/sections/pages/profile/boookings-management/orders/OrdersTableFilter";
 
 const OrdersPage = () => {
   const t = useTranslations();
   const [activeTab, setActiveTab] = useState("ordersManagement");
 
+  const [filter, setFilter] = useState({});
   const tabs = [
     {
       key: "ordersManagement",
@@ -51,15 +53,26 @@ const OrdersPage = () => {
           <TripsOrdersManagement />
 
           <div className="flex flex-col gap-4 w-full bg-white rounded-2xl p-4 shadow-card">
-            <h2 className="text-lg font-medium lg:text-2xl !mb-4 !lg:mb-8 text-mainColor">
-              {t("profile.tables.orders.followOrders")}
-            </h2>
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg font-medium lg:text-2xl !mb-4 !lg:mb-8 text-mainColor">
+                {t("profile.tables.orders.followOrders")}
+              </h2>
+
+              <div className="self-end min-w-[350px]">
+                <OrdersTableFilter filter={filter} setFilter={setFilter} />
+              </div>
+            </div>
 
             <div className="flex flex-col gap-4 lg:gap-8">
               <ProfilePageTemplate
                 title={t("profile.aside.bookingsManagement.ordersManagement")}
                 endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ALL}`}
                 method="POST"
+                bodyParameters={{
+                  filter: {
+                    ...filter,
+                  },
+                }}
                 emptyStateComponent={<EmptyBookings />}
                 contentComponent={(
                   data,
@@ -68,6 +81,8 @@ const OrdersPage = () => {
                   enablePagination
                 ) => (
                   <AllOrdersTable
+                    setFilter={setFilter}
+                    filter={filter}
                     data={data}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}

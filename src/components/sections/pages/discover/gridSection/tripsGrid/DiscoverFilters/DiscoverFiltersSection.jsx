@@ -87,8 +87,8 @@ const DiscoverFiltersSection = () => {
         label: t("discover.sideFilters.destinations"),
         key: "cities",
         options: mapOptions(cities),
-        value: filter?.cities ?? [],
-
+        value: filter?.cities ,
+        multiple: true,
         onChange: handleChange("cities"),
       },
       {
