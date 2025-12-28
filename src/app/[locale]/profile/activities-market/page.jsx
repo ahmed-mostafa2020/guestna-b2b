@@ -4,7 +4,10 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams, useRouter } from "next/navigation";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentPage } from "@store/discover/discoverSlice";
+import {
+  setCurrentPage,
+  setDiscoverDataLoading,
+} from "@store/discover/discoverSlice";
 import { setDiscoverData } from "@store/discover/discoverSlice";
 
 import { useEffect, useRef } from "react";
@@ -15,13 +18,9 @@ import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 import { PERMISSIONS } from "@constants/permissions";
 import TripsGrid from "@components/sections/pages/discover/gridSection/tripsGrid";
 import { usePaginatedTrips } from "@hooks/usePaginatedTrips";
-import {
-  setDiscoverSideFiltersData,
-  setDiscoverSideFiltersDataError,
-  setDiscoverSideFiltersDataLoading,
-} from "@/src/store/searchFilter/discoverSideFiltersSlice";
 import { useFetchData } from "@/src/hooks/useFetchData";
 import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
+import { setDiscoverSideFiltersDataLoading } from "@/src/store/searchFilter/discoverSideFiltersSlice";
 
 const ActivitiesMarketPage = () => {
   const { currentPage, filter } = useSelector((state) => state.discoverData);
@@ -58,6 +57,11 @@ const ActivitiesMarketPage = () => {
       isInitialMount.current = false;
     }
   }, [dispatch, pageFromUrl]);
+  useEffect(() => {
+    if (isLoading || isFetching) {
+      dispatch(setDiscoverDataLoading("loading"));
+    }
+  }, [isLoading, isFetching]);
 
   // Update URL when currentPage changes (skip on initial mount)
   useEffect(() => {
@@ -66,8 +70,6 @@ const ActivitiesMarketPage = () => {
       return;
     }
 
-   
-    
     // Skip if URL already matches current page
     if (currentPage === pageFromUrl) {
       return;
@@ -113,7 +115,6 @@ const ActivitiesMarketPage = () => {
   if (isLoading && isFirstLoad.current) {
     return <FullScreenLoading status="pending" />;
   }
-  
 
   return (
     <ProtectedProfilePage
@@ -140,7 +141,7 @@ const ActivitiesMarketPage = () => {
         </div>
       </section>
 
-      <TripsGrid  showFilters />
+      <TripsGrid showFilters />
     </ProtectedProfilePage>
   );
 };

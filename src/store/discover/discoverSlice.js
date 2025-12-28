@@ -20,6 +20,9 @@ const discoverSlice = createSlice({
   name: "discover",
   initialState,
   reducers: {
+    setDiscoverDataLoading: (state, action) => {
+      state.loading = action.payload;
+    },
     setDiscoverData: (state, action) => {
       state.loading = "succeeded";
       state.error = null;
@@ -81,6 +84,7 @@ const discoverSlice = createSlice({
 });
 
 export const {
+  setDiscoverDataLoading,
   setDiscoverFilters,
   setDiscoverData,
   setSearchTerm,

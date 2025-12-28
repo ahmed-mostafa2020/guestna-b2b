@@ -8,15 +8,16 @@ import { useMemo, useRef, useCallback } from "react";
 
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import TripsCard from "@components/common/trips/TripsCard";
-import Sorting from "./sorting";
+
 import Pagination from "@components/common/Pagination";
 import TripsCardSkeleton from "@components/common/trips/TripsCardSkeleton";
 
 import InfoIcon from "@mui/icons-material/Info";
+import DiscoverFilters from "./DiscoverFilters";
 
 const SKELETON_COUNT = 6;
 
-const TripsGrid = ({showFilters = false}) => {
+const TripsGrid = ({ showFilters = false }) => {
   const dispatch = useDispatch();
   const t = useTranslations();
 
@@ -26,14 +27,14 @@ const TripsGrid = ({showFilters = false}) => {
 
   const targetRef = useRef(null);
 
-  // ----------------------------- UI STATES ----------------------------- 
+  // ----------------------------- UI STATES -----------------------------
   const isLoading = loading === "loading";
   const hasNoResult = Boolean(trips?.noResult);
   const hasNoNodes = trips?.nodes?.length === 0;
   const showConvergentHint = Boolean(trips?.isConvergentData);
   const hasTrips = Boolean(trips?.nodes?.length);
 
-  // ---------------------------- SCROLL LOGIC ---------------------------- 
+  // ---------------------------- SCROLL LOGIC ----------------------------
   const scrollToTop = useCallback(() => {
     targetRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -41,7 +42,7 @@ const TripsGrid = ({showFilters = false}) => {
     });
   }, []);
 
-  // --------------------------- PAGINATION --------------------------- 
+  // --------------------------- PAGINATION ---------------------------
   const handlePageChange = useCallback(
     (page) => {
       dispatch(setCurrentPage(page));
@@ -50,7 +51,7 @@ const TripsGrid = ({showFilters = false}) => {
     [dispatch, scrollToTop]
   );
 
-  // ----------------------------- RENDERERS ----------------------------- 
+  // ----------------------------- RENDERERS -----------------------------
   const renderedTrips = useMemo(
     () =>
       trips?.nodes?.map((trip) => (
@@ -68,17 +69,16 @@ const TripsGrid = ({showFilters = false}) => {
   const renderedSkeletons = useMemo(
     () =>
       Array.from({ length: SKELETON_COUNT }).map((_, index) => (
-        <TripsCardSkeleton key={index} />
+        <TripsCardSkeleton imageWidth={500} key={index} />
       )),
     []
   );
 
-  /* ----------------------------- RENDER LOGIC ----------------------------- */
+  // ----------------------------- RENDER LOGIC -----------------------------
   const showNoResults = !isLoading && (hasNoResult || hasNoNodes);
-
   return (
     <div ref={targetRef} className="flex flex-col gap-4 lg:gap-8">
-    {showFilters && <Sorting />}
+      {showFilters && <DiscoverFilters />}
 
       <div className="relative">
         {/* Similar results hint */}

@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { SORTING_TYPE } from "@constants/sorting";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
-import SortingDropdown from "./SortingDropdown";
+import SortingDropdown from "./DiscoverFiltersSection";
 import { CONSTANT_VALUES } from "@/src/constants/constantValues";
 import {
   setDiscoverSideFiltersData,
@@ -15,8 +15,9 @@ import {
 } from "@/src/store/searchFilter/discoverSideFiltersSlice";
 import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
 import { useFetchData } from "@/src/hooks/useFetchData";
+import DiscoverFiltersSection from "./DiscoverFiltersSection";
 
-const Sorting = () => {
+const DiscoverFilters = () => {
   const dispatch = useDispatch();
   const { loading, searchTerm } = useSelector((state) => state.discoverData);
   const locale = useLocale();
@@ -81,14 +82,10 @@ const Sorting = () => {
   return (
     <>
       <div className="w-full">
-        <SortingDropdown
-          title={t("discover.sorting.sortingBy")}
-          sortingList={sortingList}
-          searchTerm={searchTerm}
-        />
+        <DiscoverFiltersSection />
       </div>
     </>
   );
 };
 
-export default Sorting;
+export default DiscoverFilters;

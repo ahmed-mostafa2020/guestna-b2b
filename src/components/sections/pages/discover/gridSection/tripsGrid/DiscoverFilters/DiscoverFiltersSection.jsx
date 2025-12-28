@@ -6,15 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { setDiscoverFilters } from "@store/discover/discoverSlice";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
-
-// import { agesIdsList } from "@constants/targetAudiencesIds";
-// import getSelectedTargetAudiences from "@utils/getSelectedTargetAudiences";
+import { memo, useCallback, useEffect, useMemo } from "react";
 
 import SearchAndFilters from "@/src/components/common/searchAndFilters/SearchAndFilters";
-import { Box } from "@material-ui/core";
+import { Box } from "@mui/material";
 
-const SortingDropdown = () => {
+const DiscoverFiltersSection = () => {
   // get as a prop searchTerm from the parent component
 
   const dispatch = useDispatch();
@@ -29,75 +26,6 @@ const SortingDropdown = () => {
   );
 
   const { filter } = useSelector((state) => state.discoverData);
-
-  // Target audience
-  // const selectedTargetAudiences = getSelectedTargetAudiences(
-  //   guests,
-  //   agesIdsList
-  // );
-
-  // Available Seats
-  // const availableSeats = Object.values(guests).reduce(
-  //   (sum, count) => sum + count,
-  //   0
-  // );
-
-  // const filter = useMemo(() => {
-  //   return buildFilter({
-  //     tripsType,
-  //     allTripsTypes,
-  //     // searchTerm,
-  //     checkInDate,
-  //     checkOutDate,
-  //     activityDayDate,
-  //     cities: selectedCities,
-  //     budgetRange,
-  //     categories: selectedCategories,
-  //     languages: selectedLanguages,
-  //     // targetAudiences: selectedTargetAudiences,
-  //     availableSeats,
-  //     rate,
-  //     tripType,
-  //     tripDuration,
-  //     academicStage,
-  //   });
-  // }, [
-  //   tripsType,
-  //   allTripsTypes,
-  //   // searchTerm,
-  //   checkInDate,
-  //   checkOutDate,
-  //   activityDayDate,
-  //   selectedCities,
-  //   selectedCategories,
-  //   // selectedTargetAudiences,
-  //   selectedLanguages,
-  //   budgetRange,
-  //   availableSeats,
-  //   rate,
-  //   tripType,
-  //   tripDuration,
-  //   academicStage,
-  // ]);
-
-  // const getNameByValue = (value) => {
-  //   const option = sortingList.find((opt) => opt.value === value);
-  //   return option ? option.name : "";
-  // };
-
-  // const handleSubmit = (chosenSortValue) => {
-  //   setIsOpen(false);
-
-  //   dispatch(setSortBy(chosenSortValue));
-  //   dispatch(setCurrentPage(1));
-
-  //   // Update the query parameter
-  //   updateQueryParams({ sorting: chosenSortValue });
-
-  //   dispatch(
-  //     actGetDiscoverTrips({ sortType: chosenSortValue, filter, locale })
-  //   );
-  // };
 
   useEffect(() => {
     if (!searchParams) return;
@@ -123,8 +51,12 @@ const SortingDropdown = () => {
     (key) => (value) => {
       const values = Array.isArray(value) ? value : [value];
 
-      // Redux update
-      dispatch(setDiscoverFilters({ [key]: values }));
+      // Redux update - delete key if empty array
+      if (values.length) {
+        dispatch(setDiscoverFilters({ [key]: values }));
+      } else {
+        dispatch(setDiscoverFilters({ [key]: undefined }));
+      }
 
       // URL update
       const params = new URLSearchParams(searchParams.toString());
@@ -167,14 +99,7 @@ const SortingDropdown = () => {
         multiple: true,
         onChange: handleChange("categories"),
       },
-      {
-        label: t("discover.sideFilters.academicStages"),
-        key: "academicStages",
-        options: mapOptions(stages),
-        value: filter?.academicStages ?? [],
-        multiple: true,
-        onChange: handleChange("academicStages"),
-      },
+
       {
         label: t("discover.sideFilters.typeOfTrips"),
         key: "tripsTypes",
@@ -183,14 +108,22 @@ const SortingDropdown = () => {
         multiple: true,
         onChange: handleChange("tripsTypes"),
       },
+      {
+        label: t("discover.sideFilters.academicStages"),
+        key: "academicStages",
+        options: mapOptions(stages),
+        value: filter?.academicStages ?? [],
+        multiple: true,
+        onChange: handleChange("academicStages"),
+      },
     ];
   }, [sideFilters, filter, t, handleChange]);
 
   return (
-    <Box className="bg-white rounded-xl p-4">
+    <Box className="bg-white rounded-xl p-4 shadow-[0_0_4px_0_rgba(0,0,0,0.16)]">
       <SearchAndFilters filters={filters} isLoading={loading === "loading"} />
     </Box>
   );
 };
 
-export default memo(SortingDropdown);
+export default memo(DiscoverFiltersSection);
