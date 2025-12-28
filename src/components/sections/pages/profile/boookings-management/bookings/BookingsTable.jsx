@@ -2,28 +2,15 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import { memo, useState } from "react";
+import { memo } from "react";
 
 import { usePermissions } from "@hooks/usePermissions";
 import formatDate from "@utils/FormateDate";
-import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
-import { getHeaders } from "@utils/getHeaders";
-import getProxyUrl from "@utils/getProxyUrl";
 import Pagination from "@components/common/Pagination";
+import ActionsDropdownMenu from "./ActionsDropdownMenu";
 
-import BookingDetailsModal from "./BookingDetailsModal";
-import CustomizedModal from "@components/common/customizedModal";
-
-import axios from "axios";
-import {
-  CardContent,
-  Card,
-  CircularProgress,
-  IconButton,
-  Tooltip,
-} from "@mui/material";
-import { MoreVert } from "@mui/icons-material";
+import { CardContent, Card, CircularProgress, Tooltip } from "@mui/material";
 import formatCurrency from "@utils/FormatCurrency";
 
 // Helper function to get full target track text (for tooltip)
@@ -60,55 +47,6 @@ const BookingsTable = ({
   const { hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
-
-  const headers = getHeaders(locale);
-
-  const [selectedBookingId, setSelectedBookingId] = useState(null);
-  const [bookingDetailsCache, setBookingDetailsCache] = useState({});
-  const [loadingDetails, setLoadingDetails] = useState(false);
-
-  const fetchBookingDetails = async (bookingId) => {
-    // Check if data is already cached
-    if (bookingDetailsCache[bookingId]) {
-      return bookingDetailsCache[bookingId];
-    }
-
-    setLoadingDetails(true);
-    try {
-      // Fetch ALL students without pagination by setting a high perPage value
-      const response = await axios.get(
-        getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.BOOKING_DETAILS}/${bookingId}?perPage=1000`
-        ),
-        {
-          headers,
-        }
-      );
-
-      // Cache the response
-      setBookingDetailsCache((prev) => ({
-        ...prev,
-        [bookingId]: response.data,
-      }));
-
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching booking details:", error);
-      console.error("Error details:", error.response?.data);
-      return null;
-    } finally {
-      setLoadingDetails(false);
-    }
-  };
-
-  const handleShowModal = async (bookingId) => {
-    setSelectedBookingId(bookingId);
-    const details = await fetchBookingDetails(bookingId);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedBookingId(null);
-  };
 
   if (!data || !data.nodes) {
     return (
@@ -180,7 +118,7 @@ const BookingsTable = ({
               <tbody>
                 {data?.nodes?.map((booking, index) => (
                   <tr
-                    key={booking._id}
+                    key={booking._id + "_" + index}
                     className={`${
                       index != data?.nodes?.length - 1 &&
                       "border-b border-table-border"
@@ -275,15 +213,7 @@ const BookingsTable = ({
                         .B2B_PROFILE_BOOKINGS_SHOW_TRIP_DETAILS_BUTTON
                     ) && (
                       <td className="px-4 py-4">
-                        <Tooltip title={t("links.showDetails")} arrow>
-                          <IconButton
-                            onClick={() => handleShowModal(booking._id)}
-                            size="small"
-                            className="text-muted-foreground hover:text-mainColor"
-                          >
-                            <MoreVert />
-                          </IconButton>
-                        </Tooltip>
+                        <ActionsDropdownMenu booking={booking} />
                       </td>
                     )}
                   </tr>
@@ -338,7 +268,7 @@ const BookingsTable = ({
               <tbody>
                 {data?.nodes?.map((booking, index) => (
                   <tr
-                    key={booking._id}
+                    key={booking._id + "_" + index + "web"}
                     className={`${
                       index != data?.nodes?.length - 1 &&
                       "border-b border-table-border"
@@ -367,12 +297,7 @@ const BookingsTable = ({
                         .B2B_PROFILE_BOOKINGS_SHOW_TRIP_DETAILS_BUTTON
                     ) && (
                       <td className="px-3 py-3">
-                        <IconButton
-                          onClick={() => handleShowModal(booking._id)}
-                          size="small"
-                        >
-                          <MoreVert />
-                        </IconButton>
+                        <ActionsDropdownMenu booking={booking} />
                       </td>
                     )}
                   </tr>
@@ -391,9 +316,9 @@ const BookingsTable = ({
           </h2>
         )}
 
-        {data?.nodes?.map((booking) => (
+        {data?.nodes?.map((booking, index) => (
           <Card
-            key={booking._id}
+            key={booking._id + "_" + index + "mobile"}
             className="transition-shadow shadow-md hover:shadow-lg"
           >
             <CardContent className="p-4 space-y-3">
@@ -405,14 +330,7 @@ const BookingsTable = ({
                 {hasElement(
                   PERMISSIONS.ELEMENT
                     .B2B_PROFILE_BOOKINGS_SHOW_TRIP_DETAILS_BUTTON
-                ) && (
-                  <IconButton
-                    onClick={() => handleShowModal(booking._id)}
-                    size="small"
-                  >
-                    <MoreVert />
-                  </IconButton>
-                )}
+                ) && <ActionsDropdownMenu booking={booking} />}
               </div>
 
               {/* Organization */}
@@ -518,25 +436,6 @@ const BookingsTable = ({
             />
           )}
         </div>
-      )}
-
-      {/* Single Modal Outside Loop */}
-      {selectedBookingId && (
-        <CustomizedModal
-          open={true}
-          handleClose={handleCloseModal}
-          bgcolor="rgba(0, 0, 0, 0.5)"
-          customizedCloseButton={true}
-          padding={false}
-        >
-          <BookingDetailsModal
-            booking={data?.nodes?.find(
-              (booking) => booking._id === selectedBookingId
-            )}
-            bookingDetails={bookingDetailsCache[selectedBookingId]}
-            loadingDetails={loadingDetails}
-          />
-        </CustomizedModal>
       )}
     </div>
   );

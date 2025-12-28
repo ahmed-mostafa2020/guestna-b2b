@@ -104,7 +104,9 @@ const AdministrativeCommentModal = ({ booking, onClose }) => {
           <span className="text-sm text-gray-600 font-medium">
             {t("profile.tables.bookings.header.schoolName")}:
           </span>
-          <span className="text-sm">{booking?.organization}</span>
+          <span className="text-sm">
+            {booking?.organization?.name || booking?.organization}
+          </span>
         </div>
       </div>
 

@@ -1005,7 +1005,13 @@
           "nationalId": "ID",
           "loading": "Loading students data...",
           "noData": "No students data available",
-          "actions": "Actions"
+          "actions": "Actions",
+          "printInvoice": "Print Invoice",
+          "resend": "Resend",
+          "printSuccess": "Invoice exported successfully",
+          "printError": "Failed to export invoice",
+          "resendSuccess": "Booking resent successfully",
+          "resendError": "Failed to resend booking"
         }
       }
     },

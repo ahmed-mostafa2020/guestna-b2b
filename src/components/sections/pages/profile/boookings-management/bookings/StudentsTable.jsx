@@ -1,17 +1,31 @@
-import { useTranslations } from "next-intl";
+"use client";
 
+import { useLocale, useTranslations } from "next-intl";
 import { memo, useState, useMemo } from "react";
+import { useSnackbar } from "notistack";
+import axios from "axios";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import { CardContent, Card, CircularProgress } from "@mui/material";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { getHeaders } from "@utils/getHeaders";
+import getProxyUrl from "@utils/getProxyUrl";
+import { ExcelService } from "@utils/excelService";
+import { CardContent, Card, CircularProgress, Button } from "@mui/material";
 import Pagination from "@components/common/Pagination";
 
-const StudentsTable = ({ bookingDetails, loadingDetails }) => {
+const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
+  const locale = useLocale();
   const t = useTranslations();
+  const { enqueueSnackbar } = useSnackbar();
+  const headers = getHeaders(locale);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = CONSTANT_VALUES.TABLE_PER_PAGE;
+
+  // Loading states for actions - use student._id as key
+  const [loadingPrint, setLoadingPrint] = useState({});
+  const [loadingResend, setLoadingResend] = useState({});
 
   // Calculate pagination data
   const paginatedData = useMemo(() => {
@@ -35,12 +49,92 @@ const StudentsTable = ({ bookingDetails, loadingDetails }) => {
       perPage: itemsPerPage,
     };
 
-    return { data, pageInfo };
+    return { data, pageInfo, allData: source };
   }, [bookingDetails, currentPage, itemsPerPage]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+
+  // Export student invoice to Excel using excelService
+  const handlePrintInvoice = async (student) => {
+    const studentId = student._id;
+    setLoadingPrint((prev) => ({ ...prev, [studentId]: true }));
+
+    try {
+      await ExcelService.exportStudentInvoice({
+        student,
+        booking,
+        t,
+        locale,
+      });
+
+      enqueueSnackbar(t("profile.tables.orders.studentsTable.printSuccess"), {
+        variant: "success",
+      });
+    } catch (error) {
+      console.error("Error exporting invoice:", error);
+      enqueueSnackbar(t("profile.tables.orders.studentsTable.printError"), {
+        variant: "error",
+      });
+    } finally {
+      setLoadingPrint((prev) => ({ ...prev, [studentId]: false }));
+    }
+  };
+
+  // Resend booking for student
+  const handleResend = async (student) => {
+    const studentId = student._id;
+    setLoadingResend((prev) => ({ ...prev, [studentId]: true }));
+
+    try {
+      await axios.get(
+        getProxyUrl(
+          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.RESEND_BOOKING}/${studentId}`
+        ),
+        { headers }
+      );
+
+      enqueueSnackbar(t("profile.tables.orders.studentsTable.resendSuccess"), {
+        variant: "success",
+      });
+    } catch (error) {
+      console.error("Error resending booking:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        t("profile.tables.orders.studentsTable.resendError");
+      enqueueSnackbar(errorMessage, { variant: "error" });
+    } finally {
+      setLoadingResend((prev) => ({ ...prev, [studentId]: false }));
+    }
+  };
+
+  // Action buttons component for reuse
+  const ActionButtons = ({ student }) => (
+    <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
+      <button
+        onClick={() => handlePrintInvoice(student)}
+        disabled={true}
+        className="centered min-w-[120px] bg-mainColor text-white px-4 py-1 rounded-md font-medium transition-all duration-200 hover:bg-linksHover border border-mainColor hover:border-linksHover disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {loadingPrint[student._id] ? (
+          <CircularProgress size={16} color="inherit" />
+        ) : (
+          t("profile.tables.orders.studentsTable.printInvoice")
+        )}
+      </button>
+      <button
+        onClick={() => handleResend(student)}
+        className="centered min-w-[120px] text-mainColor px-4 py-1 rounded-md font-medium transition-all border border-secColor duration-200 hover:bg-linksHover hover:border-linksHover hover:text-white"
+      >
+        {loadingResend[student._id] ? (
+          <CircularProgress size={16} color="inherit" />
+        ) : (
+          t("profile.tables.orders.studentsTable.resend")
+        )}
+      </button>
+    </div>
+  );
 
   return (
     <div className="w-full space-y-6 mt-8">
@@ -85,6 +179,9 @@ const StudentsTable = ({ bookingDetails, loadingDetails }) => {
                       <th className="px-6 py-4 text-start text-sm font-medium text-gray-700">
                         {t("profile.tables.orders.studentsTable.nationalId")}
                       </th>
+                      <th className="px-6 py-4 text-center text-sm font-medium text-gray-700">
+                        {t("profile.tables.orders.studentsTable.actions")}
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
@@ -113,6 +210,9 @@ const StudentsTable = ({ bookingDetails, loadingDetails }) => {
                         </td>
                         <td className="px-6 py-4 text-sm text-muted-foreground">
                           {student.child.nationalId}
+                        </td>
+                        <td className="px-6 py-4">
+                          <ActionButtons student={student} />
                         </td>
                       </tr>
                     ))}
@@ -177,6 +277,11 @@ const StudentsTable = ({ bookingDetails, loadingDetails }) => {
                       <span className="text-sm text-muted-foreground">
                         {student.child.nationalId}
                       </span>
+                    </div>
+
+                    {/* Actions for Mobile */}
+                    <div className="pt-3 border-t border-gray-100">
+                      <ActionButtons student={student} />
                     </div>
                   </div>
                 </CardContent>
