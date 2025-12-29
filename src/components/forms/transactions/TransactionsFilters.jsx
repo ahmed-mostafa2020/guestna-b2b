@@ -44,7 +44,7 @@ const TransactionsFilters = ({ filter, setFilter, data }) => {
     },
     [setFilter]
   );
-  const { organizations, selectedIds } = useSelector(
+  const { organizations, selectedIds, loading } = useSelector(
     (state) => state.selectedOrganizations
   );
 
@@ -131,6 +131,7 @@ const TransactionsFilters = ({ filter, setFilter, data }) => {
       <div className="space-y-4">
         <div className="flex flex-col lg:flex-row gap-4 items-center">
           <SearchAndFilters
+            isLoading={loading === "loading"}
             filters={filters}
             search={search}
             showTitle={false}
