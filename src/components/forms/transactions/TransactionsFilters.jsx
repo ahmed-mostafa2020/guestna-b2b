@@ -44,20 +44,31 @@ const TransactionsFilters = ({ filter, setFilter, data }) => {
     },
     [setFilter]
   );
-  const { organizations, selectedIds, loading } = useSelector(
+  const { selectedIds, organizations, allSelected ,loading } = useSelector(
     (state) => state.selectedOrganizations
   );
 
+  
   const organizationsOptions = useMemo(() => {
-    if (!organizations) return [];
-    const selectedSet = new Set(selectedIds);
-    return organizations
-      .filter((org) => selectedSet.has(org._id))
-      .map((org) => ({
-        value: org._id,
-        label: org.name,
-      }));
-  }, [organizations, selectedIds]);
+      if (allSelected) {
+        return organizations.map((item) => ({
+          label: item.name,
+          value: item._id,
+        }));
+      }
+  
+      if (selectedIds.length > 0 && !allSelected && organizations.length > 0) {
+        return selectedIds.map((id) => {
+          const org = organizations.find((org) => org._id === id);
+          return {
+            label: org.name,
+            value: org._id,
+          };
+        });
+      }
+  
+      return [];
+    }, [organizations, selectedIds, allSelected]);
 
   const search = {
     label: t("operationName.placeholder"),
@@ -99,8 +110,8 @@ const TransactionsFilters = ({ filter, setFilter, data }) => {
     ];
   }, [filter]);
 
-  // Extract unique values for filter options from server data (safe access)
-  const transactions = data?.nodes || [];
+
+
 
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
