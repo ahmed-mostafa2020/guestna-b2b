@@ -8,4 +8,5 @@ export const TRIP_STATUS = {
   APPROVED: "APPROVED", // Approved - After approval by the Company
   REJECTED: "REJECTED",
   ON_HOLD: "ON_HOLD",
+  DONE: "DONE",
 };

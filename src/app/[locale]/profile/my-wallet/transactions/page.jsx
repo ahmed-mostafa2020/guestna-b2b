@@ -19,8 +19,6 @@ import { TransactionsFilters } from "@components/forms/transactions";
 import {
   BalanceCards,
   TransactionsTable,
-  LoadingState,
-  ErrorState,
 } from "@components/sections/pages/myWallet/transactions";
 
 const TransactionsPage = () => {
@@ -37,19 +35,15 @@ const TransactionsPage = () => {
   });
 
   // Filter states (move above API call so we can include in request body)
-  const [filters, setFilters] = useState({
-    searchTerm: "",
-    day: "", // This will store the formatted date (YYYY-MM-DD) for API
-    displayDay: "", // This will store the display date for UI
-    status: "",
-  });
+  const [filter, setFilter] = useState({});
 
   // Build API filter with only non-empty values and proper date format
-  const apiFilter = {
-    ...(filters.searchTerm ? { searchTerm: filters.searchTerm } : {}),
-    ...(filters.day ? { day: filters.day } : {}), // Use createdAt field for API with formatted date
-    ...(filters.status ? { status: filters.status } : {}),
-  };
+  // const apiFilter = {
+  //   ...(filters.searchTerm ? { searchTerm: filters.searchTerm } : {}),
+  //   ...(filters.day ? { day: filters.day } : {}), // Use createdAt field for API with formatted date
+  //   ...(filters.status ? { status: filters.status } : {}),
+  //   ...(filters.organization ? { organization: filters.organization } : {}),
+  // };
 
   // API pagination info
   const [apiPageInfo, setApiPageInfo] = useState({
@@ -93,14 +87,14 @@ const TransactionsPage = () => {
 
       body: {
         sort: "NEWEST",
-        filter: apiFilter,
+        filter: filter,
         page: pagination.page,
         perPage: pagination.perPage,
       },
       cacheTime: 300000, // 5 minutes
       staleTime: 300000,
       // Include filters in query key to automatically refetch when filters change
-      queryKeySuffix: `transactions-page-${pagination.page}-perPage-${pagination.perPage}-filters-${filters.searchTerm}|${filters.day}|${filters.status}`,
+      queryKeySuffix: `transactions-page-${pagination.page}-perPage-${pagination.perPage}-filters-${filter.searchTerm}|${filter.day}|${filter.status}`,
       enabled: hasElement(
         PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS
       ), // Only fetch when user has permission
@@ -129,6 +123,7 @@ const TransactionsPage = () => {
           });
         }
 
+        console.log({ data }, "transactions data");
         if (Array.isArray(data)) {
           // Transform API data to match our component structure
           const processedTransactions = data.map((invoice, index) => ({
@@ -210,6 +205,7 @@ const TransactionsPage = () => {
             status: mapInvoiceStatus(
               invoice.status || invoice.paymentStatus || invoice.invoiceStatus
             ),
+            organizationName: invoice.organization.name || "",
           }));
 
           // Create processed data structure that matches your table pattern
@@ -256,81 +252,86 @@ const TransactionsPage = () => {
     const statusMap = {
       DONE: TRIP_STATUS.DONE,
       PENDING: TRIP_STATUS.PENDING,
-      CANCELLED: TRIP_STATUS.CANCELLED,
+      CANCLED: TRIP_STATUS.CANCELLED,
     };
 
     const normalizedStatus = apiStatus.toUpperCase().replace(/[_\s]/g, "");
+    console.log(
+      statusMap[normalizedStatus],
+      normalizedStatus,
+      "normalizedStatus"
+    );
     return statusMap[normalizedStatus] || "PENDING";
   };
 
   // Convert display date to API format (YYYY-MM-DD)
-  const convertDateToApiFormat = (displayDate) => {
-    if (!displayDate) return "";
+  // const convertDateToApiFormat = (displayDate) => {
+  //   if (!displayDate) return "";
 
-    try {
-      // Parse Arabic formatted date and convert to YYYY-MM-DD
-      // Assuming displayDate is in Arabic format like "سبتمبر ٢٠٢٥"
-      const arabicMonths = {
-        يناير: "01",
-        فبراير: "02",
-        مارس: "03",
-        أبريل: "04",
-        مايو: "05",
-        يونيو: "06",
-        يوليو: "07",
-        أغسطس: "08",
-        سبتمبر: "09",
-        أكتوبر: "10",
-        نوفمبر: "11",
-        ديسمبر: "12",
-      };
+  //   try {
+  //     // Parse Arabic formatted date and convert to YYYY-MM-DD
+  //     // Assuming displayDate is in Arabic format like "سبتمبر ٢٠٢٥"
+  //     const arabicMonths = {
+  //       يناير: "01",
+  //       فبراير: "02",
+  //       مارس: "03",
+  //       أبريل: "04",
+  //       مايو: "05",
+  //       يونيو: "06",
+  //       يوليو: "07",
+  //       أغسطس: "08",
+  //       سبتمبر: "09",
+  //       أكتوبر: "10",
+  //       نوفمبر: "11",
+  //       ديسمبر: "12",
+  //     };
 
-      // Extract month and year from Arabic date
-      const parts = displayDate.split(" ");
-      if (parts.length >= 2) {
-        const month = arabicMonths[parts[0]];
-        const year = parts[1].replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d)); // Convert Arabic numerals
+  //     // Extract month and year from Arabic date
+  //     const parts = displayDate.split(" ");
+  //     if (parts.length >= 2) {
+  //       const month = arabicMonths[parts[0]];
+  //       const year = parts[1].replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d)); // Convert Arabic numerals
 
-        if (month && year) {
-          return `${year}-${month}-01`; // Default to first day of month
-        }
-      }
+  //       if (month && year) {
+  //         return `${year}-${month}-01`; // Default to first day of month
+  //       }
+  //     }
 
-      // If it's already in YYYY-MM-DD format, return as is
-      if (/^\d{4}-\d{2}-\d{2}$/.test(displayDate)) {
-        return displayDate;
-      }
+  //     // If it's already in YYYY-MM-DD format, return as is
+  //     if (/^\d{4}-\d{2}-\d{2}$/.test(displayDate)) {
+  //       return displayDate;
+  //     }
 
-      // If it's an ISO date string, extract the date part
-      if (displayDate.includes("T")) {
-        return displayDate.split("T")[0];
-      }
+  //     // If it's an ISO date string, extract the date part
+  //     if (displayDate.includes("T")) {
+  //       return displayDate.split("T")[0];
+  //     }
 
-      return "";
-    } catch (error) {
-      console.error("Error converting date:", error);
-      return "";
-    }
-  };
+  //     return "";
+  //   } catch (error) {
+  //     console.error("Error converting date:", error);
+  //     return "";
+  //   }
+  // };
 
   // Handle filter changes and reset to first page
-  const handleFilterChange = (field, value) => {
-    if (field === "day") {
-      // Handle date field specially
-      const apiDate = convertDateToApiFormat(value);
-      setFilters((prev) => ({
-        ...prev,
-        day: apiDate, // Store API format
-        displayDay: value, // Store display format
-      }));
-    } else {
-      setFilters((prev) => ({
-        ...prev,
-        [field]: value,
-      }));
-    }
-    setPagination((prev) => ({ ...prev, page: 1 }));
-  };
+  // const handleFilterChange = (field, value) => {
+  //   if (field === "day") {
+  //     // Handle date field specially
+  //     const apiDate = convertDateToApiFormat(value);
+  //     setFilters((prev) => ({
+  //       ...prev,
+  //       day: apiDate, // Store API format
+  //       displayDay: value, // Store display format
+  //     }));
+  //   } else {
+  //     setFilters((prev) => ({
+  //       ...prev,
+  //       [field]: value,
+  //     }));
+  //   }
+  //   setPagination((prev) => ({ ...prev, page: 1 }));
+  // };
 
   // Status configuration
   const statusConfig = {
@@ -359,16 +360,14 @@ const TransactionsPage = () => {
   };
 
   // Clear filters and refetch data without filters
-  const clearFilters = () => {
-    setFilters({
-      searchTerm: "",
-      day: "",
-      displayDay: "",
-      status: "",
-    });
-    setPagination((prev) => ({ ...prev, page: 1 }));
-    // The API will automatically refetch due to the filter changes
-  };
+  // const clearFilters = () => {
+  //   setFilter({});
+  //   setPagination((prev) => ({ ...prev, page: 1 }));
+  //   // The API will automatically refetch due to the filter changes
+  //   });
+  //   setPagination((prev) => ({ ...prev, page: 1 }));
+  //   // The API will automatically refetch due to the filter changes
+  // };
 
   // Handle pagination changes
   const handlePageChange = (newPage) => {
@@ -420,10 +419,9 @@ const TransactionsPage = () => {
         ) : (
           <div className="space-y-6">
             <TransactionsFilters
-              filters={filters}
-              handleFilterChange={handleFilterChange}
+              setFilter={setFilter}
+              filter={filter}
               data={processedData}
-              clearFilters={clearFilters}
             />
 
             {/* Transactions Table Section */}

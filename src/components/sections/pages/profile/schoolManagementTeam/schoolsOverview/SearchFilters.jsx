@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { useLocale, useTranslations } from "next-intl";
 import SearchAndFilters from "@/src/components/common/searchAndFilters/SearchAndFilters";
 const sortOptions = ["HIGHEST_NAME", "LOWEST_NAME", "NEWEST", "OLDEST"];
 
-const SearchFilters = ({ searchTerms, onChange, isLoading }) => {
+const SearchFilters = ({ searchTerms, setSearchTerms, isLoading }) => {
   const locale = useLocale();
   const t = useTranslations();
 
@@ -24,9 +24,18 @@ const SearchFilters = ({ searchTerms, onChange, isLoading }) => {
   const cities = data?.cities || [];
   const tracks = data?.tracks || [];
 
-  const handleFieldChange = (key, value) => {
-    onChange({ ...searchTerms, [key]: value });
-  };
+  const handleFieldChange = useCallback(
+    (key) => (value) => {
+      setSearchTerms((prev) => {
+        const updated = { ...prev, [key]: value };
+        if (value === null || value === undefined || value === "") {
+          delete updated[key];
+        }
+        return updated;
+      });
+    },
+    [setSearchTerms]
+  );
 
   // Convert objects → autocomplete format
 
@@ -68,31 +77,31 @@ const SearchFilters = ({ searchTerms, onChange, isLoading }) => {
   const search = {
     label: t("profile.schools_overview.searchFilters.searchPlaceholder"),
     value: searchTerms.name,
-    onChange: (value) => handleFieldChange("name", value),
+    onChange: handleFieldChange("name"),
     key: "name",
   };
-
+  console.log(searchTerms);
   const filters = [
     {
       label: t("profile.schools_overview.searchFilters.city"),
       key: "city",
       options: formattedCities,
       value: searchTerms.city,
-      onChange: (value) => handleFieldChange("city", value),
+      onChange: handleFieldChange("city"),
     },
     {
       label: t("profile.schools_overview.searchFilters.track"),
       key: "track",
       options: formattedTracks,
       value: searchTerms.track,
-      onChange: (value) => handleFieldChange("track", value),
+      onChange: handleFieldChange("track"),
     },
     {
       label: t("profile.schools_overview.searchFilters.sortingBy"),
       key: "sort",
       options: formattedSortOptions,
       value: searchTerms.sort,
-      onChange: (value) => handleFieldChange("sort", value),
+      onChange: handleFieldChange("sort"),
     },
   ];
   return (

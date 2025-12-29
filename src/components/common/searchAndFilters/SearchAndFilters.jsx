@@ -6,14 +6,13 @@ import TuneIcon from "@mui/icons-material/Tune";
 import { useTranslations } from "next-intl";
 import FilterAutoComplete from "./FilterAutoComplete";
 import SearchInput from "./SearchInput";
+import DatePickUpInput from "./DatePickUpInput";
 
-const SearchAndFilters = ({ showTitle, search, isLoading, filters }) => {
+const SearchAndFilters = ({ showTitle, search, isLoading, filters, date }) => {
   const [open, setOpen] = useState(false);
   const t = useTranslations();
 
-  const inputsLength = Array.from({
-    length: search ? filters.length + 1 : filters.length,
-  });
+  const totalInputs = (search ? 1 : 0) + (date ? 1 : 0) + filters.length;
 
   const renderFilters = (skeletonWidth, skeletonHeight) => (
     <>
@@ -66,7 +65,15 @@ const SearchAndFilters = ({ showTitle, search, isLoading, filters }) => {
               />
             )}
 
-            {renderFilters(100, 28)}
+            {renderFilters("100%", 40)}
+            {date && (
+              <DatePickUpInput
+                key={date.key}
+                label={date.label}
+                value={date.value}
+                onChange={date.onChange}
+              />
+            )}
           </Box>
         </Collapse>
       </Box>
@@ -74,7 +81,12 @@ const SearchAndFilters = ({ showTitle, search, isLoading, filters }) => {
       {/* Desktop layout */}
       <Box className="hidden md:block">
         {showTitle && <Box className="mb-3">{title}</Box>}
-        <Box className={`grid grid-cols-${inputsLength.length} gap-4`}>
+        <Box
+          className="grid gap-4"
+          style={{
+            gridTemplateColumns: `repeat(${totalInputs}, minmax(0, 1fr))`,
+          }}
+        >
           {search && (
             <SearchInput
               key={search.key}
@@ -83,8 +95,15 @@ const SearchAndFilters = ({ showTitle, search, isLoading, filters }) => {
               onChange={search.onChange}
             />
           )}
-
-          {renderFilters(300, 55)}
+          {renderFilters("100%", 55)}
+          {date && (
+            <DatePickUpInput
+              key={date.key}
+              label={date.label}
+              value={date.value}
+              onChange={date.onChange}
+            />
+          )}
         </Box>
       </Box>
     </Box>

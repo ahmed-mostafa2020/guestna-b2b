@@ -31,12 +31,7 @@ const SchoolsOverViewPage = () => {
 
   // SEARCH / FILTER STATE
 
-  const [searchTerms, setSearchTerms] = useState({
-    name: undefined,
-    city: undefined,
-    track: undefined,
-    sort: undefined,
-  });
+  const [searchTerms, setSearchTerms] = useState({});
 
   const {
     data: staticsData,
@@ -81,6 +76,7 @@ const SchoolsOverViewPage = () => {
   // Refetch when filters change
   useEffect(() => {
     refetchOrganizations();
+    console.log(searchTerms);
   }, [searchTerms, page]);
 
   // Page Title
@@ -120,10 +116,7 @@ const SchoolsOverViewPage = () => {
         <SearchFilters
           isLoading={isLoading}
           searchTerms={searchTerms}
-          onChange={(updated) => {
-            setSearchTerms(updated);
-            setPage(1);
-          }}
+          setSearchTerms={setSearchTerms}
         />
       </Box>
 

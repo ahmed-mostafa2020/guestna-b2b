@@ -896,7 +896,7 @@
       "orders": {
         "title": "Orders",
         "tripsOrdersManagement": "Activities Orders Management",
-        "filter_by_school":"Choose school to view its orders",
+        "filter_by_school": "Choose school to view its orders",
         "features": {
           "privateGroups": "Private Groups",
           "flexibleTimes": "Flexible Times",
@@ -1242,6 +1242,9 @@
           "transactionDate": {
             "placeholder": "Transaction Date"
           },
+          "organization": {
+            "placeholder": "Organization"
+          },
           "status": {
             "placeholder": "Status",
             "completed": "Done",
@@ -1255,6 +1258,7 @@
           "headers": {
             "operationName": "Transaction Name",
             "transactionDate": "Transaction Date",
+            "organizationName": "Organization Name",
             "referenceNumber": "Ref. Number",
             "transactionAmount": "Amount",
             "transactionStatus": "Status"

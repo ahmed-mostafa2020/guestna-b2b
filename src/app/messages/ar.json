@@ -901,7 +901,7 @@
         "title": "الطلبات",
         "tripsOrdersManagement": "إدارة طلبات الأنشطة",
 
-        "filter_by_school":"اختر المدرسة التي تريد عرض طلباتها",
+        "filter_by_school": "اختر المدرسة التي تريد عرض طلباتها",
 
         "features": {
           "privateGroups": "مجموعات خاصة",
@@ -1232,11 +1232,14 @@
           "transactionDate": {
             "placeholder": "تاريخ المعاملة"
           },
+          "organization": {
+            "placeholder": "اسم المدرسة"
+          },
           "status": {
             "placeholder": "الحالة",
             "completed": "مكتمل",
             "pending": "قيد المعالجة",
-            "canceled": "ملغي"
+            "cancelled": "ملغي"
           },
           "clearFilters": "مسح الفلاتر"
         },
@@ -1245,6 +1248,7 @@
           "headers": {
             "operationName": "اسم العملية",
             "transactionDate": "تاريخ المعاملة",
+            "organizationName": "اسم المدرسة",
             "referenceNumber": "رقم المرجع",
             "transactionAmount": "المبلغ",
             "transactionStatus": "الحالة"
@@ -1705,7 +1709,6 @@
   "forms": {
     "search": {
       "title": "البحث"
-    
     },
     "auth": {
       "signUp": {

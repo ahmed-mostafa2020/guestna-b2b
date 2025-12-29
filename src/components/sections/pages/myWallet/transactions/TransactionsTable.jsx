@@ -17,6 +17,7 @@ const TransactionsTable = ({
   const t = useTranslations("profile.myWallet.transactionsPage.table");
   const tCommon = useTranslations();
 
+  console.log({ data }, "transactions table");
   if (!data) {
     return (
       <div className="w-full min-h-[400px] centered">
@@ -50,14 +51,18 @@ const TransactionsTable = ({
               <thead>
                 <tr className="bg-table-header border-b-2 border-tableRowBorder">
                   <th className="px-6 py-4 font-semibold text-start">
+                    {t("headers.referenceNumber")}
+                  </th>
+                  <th className="px-6 py-4 font-semibold text-start">
+                    {t("headers.organizationName")}
+                  </th>
+                  <th className="px-6 py-4 font-semibold text-start">
                     {t("headers.operationName")}
                   </th>
                   <th className="px-6 py-4 font-semibold text-start">
                     {t("headers.transactionDate")}
                   </th>
-                  <th className="px-6 py-4 font-semibold text-start">
-                    {t("headers.referenceNumber")}
-                  </th>
+
                   <th className="px-6 py-4 font-semibold text-start">
                     {t("headers.transactionAmount")}
                   </th>
@@ -87,6 +92,12 @@ const TransactionsTable = ({
                         "border-b border-table-border"
                       } transition-colors hover:bg-gray-50`}
                     >
+                      <td className="px-6 py-4 text-sm text-muted-foreground">
+                        {transaction.referenceNumber}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-muted-foreground">
+                        {transaction.organizationName}
+                      </td>
                       <td className="px-6 py-4 text-sm font-medium text-foreground">
                         {transaction.operationName ||
                           transaction.name ||
@@ -94,9 +105,6 @@ const TransactionsTable = ({
                       </td>
                       <td className="px-6 py-4 text-sm text-muted-foreground">
                         {transaction.day}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-muted-foreground">
-                        {transaction.referenceNumber}
                       </td>
                       <td className="px-6 py-4 text-sm font-medium">
                         <span

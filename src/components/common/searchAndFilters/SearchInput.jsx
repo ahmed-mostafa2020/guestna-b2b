@@ -16,8 +16,8 @@ const SearchInput = ({ label, value, onChange, key }) => {
       variant="outlined"
       name={key}
       size="small"
-      value={value}
-      onChange={onChange}
+      value={value ?? ""}
+      onChange={(e) => onChange(e.target.value)}
     />
   );
 };
