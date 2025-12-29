@@ -1247,6 +1247,7 @@
           "title": "سجل المعاملات",
           "headers": {
             "operationName": "اسم العملية",
+            "track": "المسار",
             "transactionDate": "تاريخ المعاملة",
             "organizationName": "اسم المدرسة",
             "referenceNumber": "رقم المرجع",
@@ -1263,7 +1264,8 @@
           },
           "defaultValues": {
             "trip": "رحلة",
-            "undefined": "غير محدد"
+            "undefined": "غير محدد",
+            "noTrack": "لا يوجد مسار"
           },
           "months": {
             "january": "يناير",

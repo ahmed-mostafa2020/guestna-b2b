@@ -12,7 +12,6 @@ import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 
 import formatCurrency from "@utils/FormatCurrency";
 import formatDate from "@utils/FormateDate";
-import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 
 import { TransactionsFilters } from "@components/forms/transactions";
@@ -206,6 +205,21 @@ const TransactionsPage = () => {
               invoice.status || invoice.paymentStatus || invoice.invoiceStatus
             ),
             organizationName: invoice.organization.name || "",
+            track: invoice.track?.educationSystem
+              ? `${invoice.track?.educationSystem?.name} - ${t(
+                  `schoolRegister.form.gender.options.${
+                    invoice.track?.gender === "MALE"
+                      ? "boys"
+                      : invoice.track?.gender === "FEMALE"
+                      ? "girls"
+                      : "both"
+                  }`
+                )} - (${invoice.track?.academicStages
+                  ?.map((x) => x.name)
+                  .join(", ")})`
+              : t(
+                  "profile.myWallet.transactionsPage.table.defaultValues.noTrack"
+                ),
           }));
 
           // Create processed data structure that matches your table pattern
@@ -264,7 +278,6 @@ const TransactionsPage = () => {
     return statusMap[normalizedStatus] || "PENDING";
   };
 
-  
   // Status configuration
   const statusConfig = {
     DONE: {
@@ -291,16 +304,6 @@ const TransactionsPage = () => {
     return formatCurrency(amount);
   };
 
-  // Clear filters and refetch data without filters
-  // const clearFilters = () => {
-  //   setFilter({});
-  //   setPagination((prev) => ({ ...prev, page: 1 }));
-  //   // The API will automatically refetch due to the filter changes
-  //   });
-  //   setPagination((prev) => ({ ...prev, page: 1 }));
-  //   // The API will automatically refetch due to the filter changes
-  // };
-
   // Handle pagination changes
   const handlePageChange = (newPage) => {
     setPagination((prev) => ({
@@ -308,15 +311,6 @@ const TransactionsPage = () => {
       page: newPage,
     }));
   };
-
-  // Server-side filtering is handled by the API call, no client-side filtering needed
-
-  // if (transactionsLoading || balanceLoading)
-  //   return (
-  //     <div className="w-full min-h-screen centered">
-  //       <FullScreenLoading status="pending" />
-  //     </div>
-  //   );
 
   if (error || balanceError)
     return (
@@ -346,27 +340,24 @@ const TransactionsPage = () => {
         )}
 
         {/* Actions and Filters Section */}
-        {transactionsLoading ? (
-          <FullScreenLoading status="pending" />
-        ) : (
-          <div className="space-y-6">
-            <TransactionsFilters
-              setFilter={setFilter}
-              filter={filter}
-              data={processedData}
-            />
+        <div className="space-y-6">
+          <TransactionsFilters
+            setFilter={setFilter}
+            filter={filter}
+            data={processedData}
+          />
 
-            {/* Transactions Table Section */}
-            <TransactionsTable
-              data={processedData}
-              currentPage={pagination.page}
-              setCurrentPage={handlePageChange}
-              enablePagination={true}
-              statusConfig={statusConfig}
-              formatCurrency={formatCurrencyAmount}
-            />
-          </div>
-        )}
+          {/* Transactions Table Section */}
+          <TransactionsTable
+            data={processedData}
+            currentPage={pagination.page}
+            setCurrentPage={handlePageChange}
+            enablePagination={true}
+            statusConfig={statusConfig}
+            formatCurrency={formatCurrencyAmount}
+            loading={transactionsLoading}
+          />
+        </div>
       </div>
     </ProtectedProfilePage>
   );

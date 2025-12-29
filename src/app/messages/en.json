@@ -1257,6 +1257,7 @@
           "title": "Transactions Log",
           "headers": {
             "operationName": "Transaction Name",
+            "track": "Track",
             "transactionDate": "Transaction Date",
             "organizationName": "Organization Name",
             "referenceNumber": "Ref. Number",
@@ -1271,9 +1272,11 @@
             "ended": "Ended",
             "processing": "Processing"
           },
+
           "defaultValues": {
             "trip": "Trip",
-            "undefined": "Not specified"
+            "undefined": "Not specified",
+            "noTrack": "No Track"
           },
           "loading": "Loading...",
           "balanceSummary": {

@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { memo } from "react";
 import Pagination from "@components/common/Pagination";
 import { CardContent, Card, CircularProgress } from "@mui/material";
+import TransactionsTableSkeleton from "./TransactionsTableSkeleton";
 
 const TransactionsTable = ({
   data,
@@ -12,12 +13,15 @@ const TransactionsTable = ({
   enablePagination,
   statusConfig,
   formatCurrency,
+  loading,
 }) => {
-  const locale = useLocale();
   const t = useTranslations("profile.myWallet.transactionsPage.table");
   const tCommon = useTranslations();
 
-  console.log({ data }, "transactions table");
+  if (loading) {
+    return <TransactionsTableSkeleton />;
+  }
+
   if (!data) {
     return (
       <div className="w-full min-h-[400px] centered">
@@ -40,7 +44,7 @@ const TransactionsTable = ({
         }}
       >
         <CardContent className="p-0">
-          <div className="px-6 py-4 ">
+          <div className="px-6 py-4">
             <h3 className="lg:text-2xl text-xl font-medium text-titleColor text-start">
               {t("title")}
             </h3>
@@ -55,6 +59,9 @@ const TransactionsTable = ({
                   </th>
                   <th className="px-6 py-4 font-semibold text-start">
                     {t("headers.organizationName")}
+                  </th>
+                  <th className="px-6 py-4 font-semibold text-start">
+                    {t("headers.track")}
                   </th>
                   <th className="px-6 py-4 font-semibold text-start">
                     {t("headers.operationName")}
@@ -97,8 +104,21 @@ const TransactionsTable = ({
                       </td>
                       <td className="px-6 py-4 text-sm text-muted-foreground">
                         {transaction.organizationName}
+                      </td>{" "}
+                      <td
+                        title={transaction.track}
+                        className="px-6 py-4 text-sm text-muted-foreground truncate max-w-[200px]"
+                      >
+                        {transaction.track}
                       </td>
-                      <td className="px-6 py-4 text-sm font-medium text-foreground">
+                      <td
+                        title={
+                          transaction.operationName ||
+                          transaction.name ||
+                          "رحلة"
+                        }
+                        className="px-6 py-4 text-sm text-muted-foreground truncate max-w-[200px]"
+                      >
                         {transaction.operationName ||
                           transaction.name ||
                           "رحلة"}
@@ -106,7 +126,7 @@ const TransactionsTable = ({
                       <td className="px-6 py-4 text-sm text-muted-foreground">
                         {transaction.day}
                       </td>
-                      <td className="px-6 py-4 text-sm font-medium">
+                      <td className="px-6 py-4 text-sm text-muted-foreground">
                         <span
                           className={`text-start ${
                             transaction.amount < 0
@@ -117,7 +137,7 @@ const TransactionsTable = ({
                           {formatCurrency(transaction.amount)}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-4 text-sm text-muted-foreground">
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-medium ${
                             statusConfig[transaction.status]?.className ||
@@ -165,11 +185,14 @@ const TransactionsTable = ({
                   <h3 className="text-lg font-bold leading-relaxed text-foreground">
                     {transaction.operationName || transaction.name || "رحلة"}
                   </h3>
+                  <span className="text-muted-foreground text-xs text-gray-400 ">
+                    {transaction.referenceNumber}
+                  </span>
                   <span className="text-muted-foreground text-sm">
                     {transaction.organizationName}
                   </span>
                   <span className="text-muted-foreground text-sm">
-                    {transaction.referenceNumber}
+                    {transaction.track}
                   </span>
                 </div>
 
