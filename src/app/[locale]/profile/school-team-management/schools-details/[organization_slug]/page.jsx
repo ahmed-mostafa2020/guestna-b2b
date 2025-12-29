@@ -19,7 +19,7 @@ const SchoolsDetailsPage = ({ params }) => {
   const t = useTranslations();
 
   const { data, isLoading, error, refetch } = useFetchData(
-    `${B2B_END_POINTS.PROFILE.ORGANIZATIONS.ORGANIZATION_DETAILS}/${params.organizationId}`,
+    `${B2B_END_POINTS.PROFILE.ORGANIZATIONS.ORGANIZATION_DETAILS}/${params.organization_slug}`,
     {},
     {
       lang: locale,

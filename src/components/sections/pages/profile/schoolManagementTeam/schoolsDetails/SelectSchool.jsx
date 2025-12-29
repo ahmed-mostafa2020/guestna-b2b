@@ -53,30 +53,51 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
   const t = useTranslations();
   const locale = useLocale();
   const [open, setOpen] = useState(false);
-  const [selectedSchool, setSelectedSchool] = useState(details?._id ?? "");
-  const { organizations, selectedIds } = useSelector(
+  const [selectedSchool, setSelectedSchool] = useState(details?.slug ?? "");
+  const { selectedIds, organizations, allSelected, loading } = useSelector(
     (state) => state.selectedOrganizations
   );
-  const orgOptions = useMemo(() => {
-    if (selectedIds) {
-      const selectedIdsSet = new Set(selectedIds);
-      return organizations.filter((org) => selectedIdsSet.has(org._id));
-    }
-    return organizations;
-  }, [organizations, selectedIds]);
 
+  const orgOptions = useMemo(() => {
+      if (allSelected) {
+        return organizations.map((item) => ({
+          label: item.name,
+          value: item.slug,
+        }));
+      }
+  
+      if (selectedIds.length > 0 && !allSelected && organizations.length > 0) {
+        return selectedIds.map((id) => {
+          const org = organizations.find((org) => org._id === id);
+          return {
+            label: org.name,
+            value: org.slug,
+          };
+        });
+      }
+  
+      return [];
+    }, [organizations, selectedIds, allSelected]);
+
+  
   useEffect(() => {
-    const detailId = details?._id;
-    if (detailId && orgOptions.some((org) => org._id === detailId)) {
-      setSelectedSchool(detailId);
+    const detailsSlug = details?.slug;
+    if (
+      detailsSlug &&
+      
+      orgOptions.some((org) => org.value === detailsSlug)
+    ) {
+ 
+      setSelectedSchool(detailsSlug);
     }
-  }, [details?._id, orgOptions]);
+  }, [details?.slug, orgOptions, selectedSchool]);
 
   const handleSchoolSelect = (e) => {
-    const id = e.target.value;
-    setSelectedSchool(id);
+    const slug = e.target.value;
+ 
+    setSelectedSchool(slug);
     router.push(
-      `/${locale}/profile/school-team-management/schools-details/${id}`
+      `/${locale}/profile/school-team-management/schools-details/${slug}`
     );
   };
 
@@ -112,15 +133,13 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
       >
         {orgOptions.map((org) => (
           <MenuItem
-            key={org._id}
-            value={org._id}
+            key={org.value}
+            value={org.value}
             className="!font-somar p-2 !bg-white hover:!bg-buttonsHover"
           >
-            {org.name}
+            {org.label}
           </MenuItem>
         ))}
-
-        {/* TODO: Replace with real organizations */}
       </Select>
 
       <Box className="bg-[#E6F0F1] p-6 rounded-xl flex flex-col md:flex-row gap-4 border-[#6EC1E366] border-2">

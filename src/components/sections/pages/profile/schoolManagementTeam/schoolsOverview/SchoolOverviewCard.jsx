@@ -98,7 +98,7 @@ const SchoolOverviewCard = ({ item }) => {
       {/* Button */}
       <Link
         className="!font-somar font-semibold !bg-mainColor px-8 py-4 block text-center w-full !text-white  rounded-lg"
-        href={`/${locale}/profile/school-team-management/schools-details/${item._id}`}
+        href={`/${locale}/profile/school-team-management/schools-details/${item.slug}`}
       >
         {t("profile.schools_overview.cards.show_details")}
       </Link>
