@@ -122,7 +122,6 @@ const TransactionsPage = () => {
           });
         }
 
-        console.log({ data }, "transactions data");
         if (Array.isArray(data)) {
           // Transform API data to match our component structure
           const processedTransactions = data.map((invoice, index) => ({
@@ -270,11 +269,7 @@ const TransactionsPage = () => {
     };
 
     const normalizedStatus = apiStatus.toUpperCase().replace(/[_\s]/g, "");
-    console.log(
-      statusMap[normalizedStatus],
-      normalizedStatus,
-      "normalizedStatus"
-    );
+
     return statusMap[normalizedStatus] || "PENDING";
   };
 

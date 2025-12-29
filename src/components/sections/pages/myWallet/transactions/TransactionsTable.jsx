@@ -104,7 +104,7 @@ const TransactionsTable = ({
                       </td>
                       <td className="px-6 py-4 text-sm text-muted-foreground">
                         {transaction.organizationName}
-                      </td>{" "}
+                      </td>
                       <td
                         title={transaction.track}
                         className="px-6 py-4 text-sm text-muted-foreground truncate max-w-[200px]"

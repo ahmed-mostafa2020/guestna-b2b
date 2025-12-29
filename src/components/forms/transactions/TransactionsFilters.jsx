@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { useCallback, useMemo } from "react";
 import SearchAndFilters from "../../common/searchAndFilters/SearchAndFilters";
 
-const TransactionsFilters = ({ filter, setFilter, data }) => {
+const TransactionsFilters = ({ filter, setFilter }) => {
   const { hasElement } = usePermissions();
   const t = useTranslations("profile.myWallet.transactionsPage.filters");
 
@@ -20,20 +20,6 @@ const TransactionsFilters = ({ filter, setFilter, data }) => {
   };
 
   // Convert API date string back to input format if needed
-  const formatDateForInput = (dateString) => {
-    if (!dateString) return "";
-    // If it's already in YYYY-MM-DD format, return as is
-    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-      return dateString;
-    }
-    // If it's in another format, try to parse and format
-    try {
-      const date = new Date(dateString);
-      return formatDateForAPI(date);
-    } catch {
-      return "";
-    }
-  };
 
   const handleFilterChange = useCallback(
     (key) => (value) => {
