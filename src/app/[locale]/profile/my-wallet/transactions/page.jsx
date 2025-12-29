@@ -264,75 +264,7 @@ const TransactionsPage = () => {
     return statusMap[normalizedStatus] || "PENDING";
   };
 
-  // Convert display date to API format (YYYY-MM-DD)
-  // const convertDateToApiFormat = (displayDate) => {
-  //   if (!displayDate) return "";
-
-  //   try {
-  //     // Parse Arabic formatted date and convert to YYYY-MM-DD
-  //     // Assuming displayDate is in Arabic format like "سبتمبر ٢٠٢٥"
-  //     const arabicMonths = {
-  //       يناير: "01",
-  //       فبراير: "02",
-  //       مارس: "03",
-  //       أبريل: "04",
-  //       مايو: "05",
-  //       يونيو: "06",
-  //       يوليو: "07",
-  //       أغسطس: "08",
-  //       سبتمبر: "09",
-  //       أكتوبر: "10",
-  //       نوفمبر: "11",
-  //       ديسمبر: "12",
-  //     };
-
-  //     // Extract month and year from Arabic date
-  //     const parts = displayDate.split(" ");
-  //     if (parts.length >= 2) {
-  //       const month = arabicMonths[parts[0]];
-  //       const year = parts[1].replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d)); // Convert Arabic numerals
-
-  //       if (month && year) {
-  //         return `${year}-${month}-01`; // Default to first day of month
-  //       }
-  //     }
-
-  //     // If it's already in YYYY-MM-DD format, return as is
-  //     if (/^\d{4}-\d{2}-\d{2}$/.test(displayDate)) {
-  //       return displayDate;
-  //     }
-
-  //     // If it's an ISO date string, extract the date part
-  //     if (displayDate.includes("T")) {
-  //       return displayDate.split("T")[0];
-  //     }
-
-  //     return "";
-  //   } catch (error) {
-  //     console.error("Error converting date:", error);
-  //     return "";
-  //   }
-  // };
-
-  // Handle filter changes and reset to first page
-  // const handleFilterChange = (field, value) => {
-  //   if (field === "day") {
-  //     // Handle date field specially
-  //     const apiDate = convertDateToApiFormat(value);
-  //     setFilters((prev) => ({
-  //       ...prev,
-  //       day: apiDate, // Store API format
-  //       displayDay: value, // Store display format
-  //     }));
-  //   } else {
-  //     setFilters((prev) => ({
-  //       ...prev,
-  //       [field]: value,
-  //     }));
-  //   }
-  //   setPagination((prev) => ({ ...prev, page: 1 }));
-  // };
-
+  
   // Status configuration
   const statusConfig = {
     DONE: {

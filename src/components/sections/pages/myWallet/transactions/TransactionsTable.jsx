@@ -40,7 +40,7 @@ const TransactionsTable = ({
         }}
       >
         <CardContent className="p-0">
-          <div className="px-6 py-4 border-b border-border">
+          <div className="px-6 py-4 ">
             <h3 className="lg:text-2xl text-xl font-medium text-titleColor text-start">
               {t("title")}
             </h3>
@@ -161,10 +161,13 @@ const TransactionsTable = ({
               className="transition-shadow shadow-md hover:shadow-lg"
             >
               <CardContent className="p-4 space-y-3">
-                <div className="flex flex-col items-start justify-between">
+                <div className="flex flex-col items-start justify-between gap-1">
                   <h3 className="text-lg font-bold leading-relaxed text-foreground">
                     {transaction.operationName || transaction.name || "رحلة"}
                   </h3>
+                  <span className="text-muted-foreground text-sm">
+                    {transaction.organizationName}
+                  </span>
                   <span className="text-muted-foreground text-sm">
                     {transaction.referenceNumber}
                   </span>
