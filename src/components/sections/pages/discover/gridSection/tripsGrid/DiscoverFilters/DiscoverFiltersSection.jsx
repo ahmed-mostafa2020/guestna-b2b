@@ -83,7 +83,7 @@ const DiscoverFiltersSection = () => {
     const {
       cities = [],
       categories = [],
-      stages = [],
+      // stages = [],
       tripsTypes = [],
     } = sideFilters || {};
 
@@ -113,14 +113,14 @@ const DiscoverFiltersSection = () => {
         multiple: true,
         onChange: handleChange("tripsTypes"),
       },
-      {
-        label: t("discover.sideFilters.academicStages"),
-        key: "academicStages",
-        options: mapOptions(stages),
-        value: filter?.academicStages ?? [],
-        multiple: true,
-        onChange: handleChange("academicStages"),
-      },
+      // {
+      //   label: t("discover.sideFilters.academicStages"),
+      //   key: "academicStages",
+      //   options: mapOptions(stages),
+      //   value: filter?.academicStages ?? [],
+      //   multiple: true,
+      //   onChange: handleChange("academicStages"),
+      // },
     ];
   }, [sideFilters, filter, t, handleChange]);
 
