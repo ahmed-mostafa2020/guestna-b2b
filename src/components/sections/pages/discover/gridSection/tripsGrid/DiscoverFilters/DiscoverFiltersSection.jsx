@@ -53,9 +53,9 @@ const DiscoverFiltersSection = () => {
 
       // Redux update - delete key if empty array
       if (values.length) {
-        dispatch(setDiscoverFilters({ [key]: values }));
+        dispatch(setDiscoverFilters({ ...filter, [key]: values }));
       } else {
-        dispatch(setDiscoverFilters({ [key]: undefined }));
+        dispatch(setDiscoverFilters({ ...filter, [key]: undefined }));
       }
 
       // URL update
@@ -73,7 +73,12 @@ const DiscoverFiltersSection = () => {
     },
     [dispatch, router, pathname, searchParams]
   );
-  console.log(filter);
+
+  const handleReset = useCallback(() => {
+    dispatch(setDiscoverFilters(()=>({})));
+    router.replace(pathname, { scroll: false });
+  }, [dispatch, pathname, router]);
+
   const filters = useMemo(() => {
     const {
       cities = [],
@@ -87,7 +92,7 @@ const DiscoverFiltersSection = () => {
         label: t("discover.sideFilters.destinations"),
         key: "cities",
         options: mapOptions(cities),
-        value: filter?.cities ,
+        value: filter?.cities,
         multiple: true,
         onChange: handleChange("cities"),
       },
@@ -121,7 +126,11 @@ const DiscoverFiltersSection = () => {
 
   return (
     <Box className="bg-white rounded-xl p-4 shadow-[0_0_4px_0_rgba(0,0,0,0.16)]">
-      <SearchAndFilters showResetButton filters={filters} isLoading={loading === "loading"} />
+      <SearchAndFilters
+        onReset={handleReset}
+        filters={filters}
+        isLoading={loading === "loading"}
+      />
     </Box>
   );
 };

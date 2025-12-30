@@ -21,20 +21,13 @@ const ResetButton = ({ onReset }) => {
   );
 };
 
-const SearchAndFilters = ({ showTitle, search, isLoading, filters, date , showResetButton}) => {
+const SearchAndFilters = ({ showTitle, search, isLoading, filters, date , onReset}) => {
   const [open, setOpen] = useState(false);
   const t = useTranslations();
 
   const totalInputs = (search ? 1 : 0) + (date ? 1 : 0)  + filters.length;
 
-  const handleReset = () => {
-    search?.onChange("");
-    date?.onChange("");
-    filters.forEach((filter) => {
-      filter.multiple ? filter.onChange([]) : filter.onChange("");
-    });
-    // Add any other state reset logic here
-  };
+ 
   const renderFilters = (skeletonWidth, skeletonHeight) => (
     <>
       {isLoading
@@ -96,7 +89,7 @@ const SearchAndFilters = ({ showTitle, search, isLoading, filters, date , showRe
                 onChange={date.onChange}
               />
             )}
-            {showResetButton && <ResetButton onReset={handleReset} />}
+            {onReset && <ResetButton onReset={onReset} />}
           </Box>
         </Collapse>
       </Box>
@@ -128,7 +121,9 @@ const SearchAndFilters = ({ showTitle, search, isLoading, filters, date , showRe
             />
           )}
         </Box>
-        <Box className="flex justify-end my-2">{showResetButton && <ResetButton onReset={handleReset} />}</Box>
+        <Box className="flex justify-end my-2">
+          {onReset && <ResetButton onReset={onReset} />}
+        </Box>
       </Box>
     </Box>
   );

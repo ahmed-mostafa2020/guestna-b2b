@@ -23,6 +23,7 @@ const DiscoverFilters = () => {
   const locale = useLocale();
   const t = useTranslations();
 
+  console.log({loading ,searchTerm})
   const tripsTypeList = useMemo(
     () => [
       {

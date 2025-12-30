@@ -30,31 +30,35 @@ const TransactionsFilters = ({ filter, setFilter }) => {
     },
     [setFilter]
   );
-  const { selectedIds, organizations, allSelected ,loading } = useSelector(
+  const { selectedIds, organizations, allSelected, loading } = useSelector(
     (state) => state.selectedOrganizations
   );
 
+  const handleResetFilters = useCallback(() => {
+    setFilter(() => ({}));
+  }, []);
   
+
   const organizationsOptions = useMemo(() => {
-      if (allSelected) {
-        return organizations.map((item) => ({
-          label: item.name,
-          value: item._id,
-        }));
-      }
-  
-      if (selectedIds.length > 0 && !allSelected && organizations.length > 0) {
-        return selectedIds.map((id) => {
-          const org = organizations.find((org) => org._id === id);
-          return {
-            label: org.name,
-            value: org._id,
-          };
-        });
-      }
-  
-      return [];
-    }, [organizations, selectedIds, allSelected]);
+    if (allSelected) {
+      return organizations.map((item) => ({
+        label: item.name,
+        value: item._id,
+      }));
+    }
+
+    if (selectedIds.length > 0 && !allSelected && organizations.length > 0) {
+      return selectedIds.map((id) => {
+        const org = organizations.find((org) => org._id === id);
+        return {
+          label: org.name,
+          value: org._id,
+        };
+      });
+    }
+
+    return [];
+  }, [organizations, selectedIds, allSelected]);
 
   const search = {
     label: t("operationName.placeholder"),
@@ -96,9 +100,6 @@ const TransactionsFilters = ({ filter, setFilter }) => {
     ];
   }, [filter]);
 
-
-
-
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
       {/* First Row: Title and Action Buttons */}
@@ -133,6 +134,7 @@ const TransactionsFilters = ({ filter, setFilter }) => {
             search={search}
             showTitle={false}
             date={dateFilter}
+            onReset={handleResetFilters}
           />
         </div>
 
