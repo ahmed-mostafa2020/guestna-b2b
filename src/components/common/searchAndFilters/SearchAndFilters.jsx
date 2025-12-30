@@ -7,13 +7,34 @@ import { useTranslations } from "next-intl";
 import FilterAutoComplete from "./FilterAutoComplete";
 import SearchInput from "./SearchInput";
 import DatePickUpInput from "./DatePickUpInput";
+const ResetButton = ({ onReset }) => {
+  const t = useTranslations();
+  return (
+    <button
+      type="button"
+      onClick={onReset}
+      className="text-sm text-white w-fit  bg-mainColor hover:bg-linksHover mb-2 rounded-md px-4 py-2 self-end"
+      disabled={!onReset}
+    >
+      {t("forms.reset.title")}
+    </button>
+  );
+};
 
-const SearchAndFilters = ({ showTitle, search, isLoading, filters, date }) => {
+const SearchAndFilters = ({ showTitle, search, isLoading, filters, date , showResetButton}) => {
   const [open, setOpen] = useState(false);
   const t = useTranslations();
 
-  const totalInputs = (search ? 1 : 0) + (date ? 1 : 0) + filters.length;
+  const totalInputs = (search ? 1 : 0) + (date ? 1 : 0)  + filters.length;
 
+  const handleReset = () => {
+    search?.onChange("");
+    date?.onChange("");
+    filters.forEach((filter) => {
+      filter.multiple ? filter.onChange([]) : filter.onChange("");
+    });
+    // Add any other state reset logic here
+  };
   const renderFilters = (skeletonWidth, skeletonHeight) => (
     <>
       {isLoading
@@ -50,6 +71,7 @@ const SearchAndFilters = ({ showTitle, search, isLoading, filters, date }) => {
       <Box className="md:hidden">
         <Box className="flex items-center justify-between mb-3">
           {showTitle && title}
+
           <IconButton onClick={() => setOpen(!open)}>
             <TuneIcon />
           </IconButton>
@@ -74,6 +96,7 @@ const SearchAndFilters = ({ showTitle, search, isLoading, filters, date }) => {
                 onChange={date.onChange}
               />
             )}
+            {showResetButton && <ResetButton onReset={handleReset} />}
           </Box>
         </Collapse>
       </Box>
@@ -105,6 +128,7 @@ const SearchAndFilters = ({ showTitle, search, isLoading, filters, date }) => {
             />
           )}
         </Box>
+        <Box className="flex justify-end my-2">{showResetButton && <ResetButton onReset={handleReset} />}</Box>
       </Box>
     </Box>
   );

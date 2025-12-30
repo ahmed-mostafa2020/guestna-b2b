@@ -121,7 +121,7 @@ const DiscoverFiltersSection = () => {
 
   return (
     <Box className="bg-white rounded-xl p-4 shadow-[0_0_4px_0_rgba(0,0,0,0.16)]">
-      <SearchAndFilters filters={filters} isLoading={loading === "loading"} />
+      <SearchAndFilters showResetButton filters={filters} isLoading={loading === "loading"} />
     </Box>
   );
 };

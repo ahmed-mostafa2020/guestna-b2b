@@ -53,12 +53,12 @@ const OrdersPage = () => {
           <TripsOrdersManagement />
 
           <div className="flex flex-col gap-4 w-full bg-white rounded-2xl p-4 shadow-card">
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-medium lg:text-2xl !mb-4 !lg:mb-8 text-mainColor">
+            <div className="flex justify-between flex-col md:flex-row items-center ">
+              <h2 className="text-lg font-medium lg:text-2xl  !lg:mb-8 text-mainColor text-center  md:text-left">
                 {t("profile.tables.orders.followOrders")}
               </h2>
 
-              <div className="self-end min-w-[350px]">
+              <div className="md:self-end min-w-[250px] max-w-[350px] self-start">
                 <OrdersTableFilter filter={filter} setFilter={setFilter} />
               </div>
             </div>

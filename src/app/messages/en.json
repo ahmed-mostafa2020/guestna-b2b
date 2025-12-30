@@ -1710,6 +1710,9 @@
     "search": {
       "title": "Search"
     },
+    "reset": {
+      "title": "Reset"
+    },
     "auth": {
       "signUp": {
         "title": "Welcome to GuestNa",
