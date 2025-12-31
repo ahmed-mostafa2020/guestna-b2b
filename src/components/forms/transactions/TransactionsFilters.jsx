@@ -6,18 +6,11 @@ import { useSelector } from "react-redux";
 import { useCallback, useMemo } from "react";
 import SearchAndFilters from "../../common/searchAndFilters/SearchAndFilters";
 import { TRIP_STATUS } from "@constants/tripStatus";
+import formatDateForAPI from "@utils/formatDateForAPI";
 
 const TransactionsFilters = ({ filter, setFilter }) => {
   const { hasElement } = usePermissions();
   const t = useTranslations("profile.myWallet.transactionsPage.filters");
-
-  // Helper function to format date for API (avoids timezone issues)
-  const formatDateForAPI = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
 
   // Convert API date string back to input format if needed
 

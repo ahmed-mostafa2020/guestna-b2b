@@ -19,6 +19,7 @@ import {
   BalanceCards,
   TransactionsTable,
 } from "@components/sections/pages/myWallet/transactions";
+import { SORTING_TYPE } from "@constants/sorting";
 
 const TransactionsPage = () => {
   const { hasElement } = usePermissions();
@@ -85,7 +86,7 @@ const TransactionsPage = () => {
       lang: locale,
 
       body: {
-        sort: "NEWEST",
+        sort: SORTING_TYPE.NEWEST,
         filter: filter,
         page: pagination.page,
         perPage: pagination.perPage,

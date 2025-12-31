@@ -4,21 +4,20 @@ import { useMemo } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useDispatch } from "react-redux";
 
-import { CONSTANT_VALUES } from "@/src/constants/constantValues";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 import {
   setDiscoverSideFiltersData,
   setDiscoverSideFiltersDataError,
   setDiscoverSideFiltersDataLoading,
-} from "@/src/store/searchFilter/discoverSideFiltersSlice";
-import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
-import { useFetchData } from "@/src/hooks/useFetchData";
+} from "@store/searchFilter/discoverSideFiltersSlice";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { useFetchData } from "@hooks/useFetchData";
 import DiscoverFiltersSection from "./DiscoverFiltersSection";
 
 const DiscoverFilters = () => {
   const dispatch = useDispatch();
   const locale = useLocale();
   const t = useTranslations();
-
 
   const tripsTypeList = useMemo(
     () => [
@@ -55,7 +54,6 @@ const DiscoverFilters = () => {
         dispatch(setDiscoverSideFiltersDataLoading(isLoading)),
     }
   );
-
 
   return (
     <>

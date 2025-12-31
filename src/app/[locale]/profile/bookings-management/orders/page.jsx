@@ -13,7 +13,7 @@ import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBo
 import OrdersInfoCards from "@components/sections/pages/profile/boookings-management/orders/OrdersInfoCards";
 import OrdersSettingsTable from "@components/sections/pages/profile/boookings-management/orders/OrdersSettingsTable";
 import AllOrdersTable from "@components/sections/pages/profile/boookings-management/orders/AllOrdersTable";
-import OrdersTableFilter from "@/src/components/sections/pages/profile/boookings-management/orders/OrdersTableFilter";
+import OrdersTableFilter from "@components/sections/pages/profile/boookings-management/orders/OrdersTableFilter";
 
 const OrdersPage = () => {
   const t = useTranslations();

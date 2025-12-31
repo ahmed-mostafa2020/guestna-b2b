@@ -8,7 +8,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 import { memo, useCallback, useEffect, useMemo } from "react";
 
-import SearchAndFilters from "@/src/components/common/searchAndFilters/SearchAndFilters";
+import SearchAndFilters from "@components/common/searchAndFilters/SearchAndFilters";
 import { Box } from "@mui/material";
 
 const DiscoverFiltersSection = () => {

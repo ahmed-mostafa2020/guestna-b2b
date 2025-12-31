@@ -5,6 +5,7 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
+import { SORTING_TYPE } from "../constants/sorting";
 
 /**
  * Custom hook for fetching paginated trips with caching
@@ -12,7 +13,7 @@ import getProxyUrl from "@utils/getProxyUrl";
  */
 export const usePaginatedTrips = ({
   page = 1,
-  sortType = "NEWEST",
+  sortType = SORTING_TYPE.NEWEST,
   filter = {},
   locale,
 }) => {

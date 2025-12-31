@@ -17,6 +17,7 @@ import ModalHeader from "@components/sections/pages/calendar/ModalHeader";
 import ModalFooter from "@components/sections/pages/calendar/ModalFooter";
 import formatDate from "@utils/FormateDate";
 import { getEventTypes, mapLabelToValue } from "@utils/eventTypeUtils";
+import formatDateForAPI from "@utils/formatDateForAPI";
 
 const AddEventForm = ({
   selectedDate,
@@ -27,14 +28,6 @@ const AddEventForm = ({
   const locale = useLocale();
   const t = useTranslations();
   const { enqueueSnackbar } = useSnackbar();
-
-  // Helper function to format date for API (avoids timezone issues)
-  const formatDateForAPI = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
 
   // Initial form values
   const getInitialValues = () => ({
@@ -151,203 +144,207 @@ const AddEventForm = ({
               // Mark day field as touched to show validation errors immediately
               useEffect(() => {
                 if (values.day && errors.day) {
-                  setFieldTouched('day', true, false);
+                  setFieldTouched("day", true, false);
                 }
               }, [values.day, errors.day, setFieldTouched]);
 
               return (
-              <Form>
-                <ModalHeader
-                  title={
-                    eventToEdit
-                      ? t("profile.calendar.modal.addEvent.editEvent")
-                      : t("profile.calendar.modal.addEvent.title")
-                  }
-                  onClose={onClose}
-                  subtitle={
-                    selectedDate
-                      ? `${t(
-                          "profile.calendar.modal.addEvent.fields.date"
-                        )}: ${formatDate(selectedDate, locale, {
-                          weekday: "long",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}`
-                      : null
-                  }
-                />
-
-                <div className="p-6 space-y-6">
-                  {/* General Error */}
-                  {status && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                      {status}
-                    </div>
-                  )}
-
-                  {/* Event Name */}
-                  <TextInputGroup
-                    label={t(
-                      "profile.calendar.modal.addEvent.fields.eventName"
-                    )}
-                    type="text"
-                    name="name"
-                    id="event-name"
-                    value={values.name}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder={t(
-                      "profile.calendar.modal.addEvent.fields.eventNamePlaceholder"
-                    )}
-                    errors={errors.name}
-                    touched={touched.name}
-                    maxLength={100}
+                <Form>
+                  <ModalHeader
+                    title={
+                      eventToEdit
+                        ? t("profile.calendar.modal.addEvent.editEvent")
+                        : t("profile.calendar.modal.addEvent.title")
+                    }
+                    onClose={onClose}
+                    subtitle={
+                      selectedDate
+                        ? `${t(
+                            "profile.calendar.modal.addEvent.fields.date"
+                          )}: ${formatDate(selectedDate, locale, {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}`
+                        : null
+                    }
                   />
 
-                  {/* Event Description */}
-                  <TextInputGroup
-                    label={t(
-                      "profile.calendar.modal.addEvent.fields.description"
+                  <div className="p-6 space-y-6">
+                    {/* General Error */}
+                    {status && (
+                      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                        {status}
+                      </div>
                     )}
-                    type="text"
-                    name="about"
-                    id="event-description"
-                    value={values.about}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder={t(
-                      "profile.calendar.modal.addEvent.fields.descriptionPlaceholder"
-                    )}
-                    errors={errors.about}
-                    touched={touched.about}
-                    textarea={true}
-                    rows={4}
-                    maxLength={500}
-                  />
 
-                  {/* Event Type */}
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="event-type"
-                      className="pb-2 font-medium capitalize font-ibm"
-                    >
-                      {t("profile.calendar.modal.addEvent.fields.eventType")}
-                    </label>
-                    <SelectionGroup
-                      name="happeningType"
-                      id="event-type"
-                      value={
-                        eventTypes.find(
-                          (type) => type.value === values.happeningType
-                        )?.label ||
-                        values.happeningType ||
-                        ""
-                      }
-                      onChange={(e) => {
-                        const selectedLabel = e.target.value;
-                        setFieldValue("happeningType", selectedLabel);
-                      }}
-                      placeholder={t(
-                        "profile.calendar.modal.addEvent.fields.selectEventType"
+                    {/* Event Name */}
+                    <TextInputGroup
+                      label={t(
+                        "profile.calendar.modal.addEvent.fields.eventName"
                       )}
-                      list={eventTypes.map((type) => type.label)}
-                      errors={errors.happeningType}
-                      touched={touched.happeningType}
-                    />
-                  </div>
-
-                  {/* Location */}
-                  <TextInputGroup
-                    label={t("profile.calendar.modal.addEvent.fields.location")}
-                    type="text"
-                    name="place"
-                    id="event-location"
-                    value={values.place}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder={t(
-                      "profile.calendar.modal.addEvent.fields.locationPlaceholder"
-                    )}
-                    errors={errors.place}
-                    touched={touched.place}
-                    maxLength={200}
-                  />
-
-                  {/* Participants Count */}
-                  <TextInputGroup
-                    label={t(
-                      "profile.calendar.modal.addEvent.fields.participants"
-                    )}
-                    type="number"
-                    name="participantsCount"
-                    id="event-participants"
-                    value={values.participantsCount}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder={t(
-                      "profile.calendar.modal.addEvent.fields.participantsPlaceholder"
-                    )}
-                    errors={errors.participantsCount}
-                    touched={touched.participantsCount}
-                    min={1}
-                    max={1000}
-                  />
-
-                  {/* Date and Time Row */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Date */}
-                    <TextInputGroup
-                      label={t("profile.calendar.modal.addEvent.fields.date")}
-                      type="date"
-                      name="day"
-                      id="event-date"
-                      value={values.day}
+                      type="text"
+                      name="name"
+                      id="event-name"
+                      value={values.name}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      errors={errors.day}
-                      touched={touched.day}
-                      min={formatDateForAPI(new Date())}
+                      placeholder={t(
+                        "profile.calendar.modal.addEvent.fields.eventNamePlaceholder"
+                      )}
+                      errors={errors.name}
+                      touched={touched.name}
+                      maxLength={100}
                     />
 
-                    {/* Time */}
+                    {/* Event Description */}
                     <TextInputGroup
-                      label={t("profile.calendar.modal.addEvent.fields.time")}
-                      type="time"
-                      name="time"
-                      id="event-time"
-                      value={values.time}
+                      label={t(
+                        "profile.calendar.modal.addEvent.fields.description"
+                      )}
+                      type="text"
+                      name="about"
+                      id="event-description"
+                      value={values.about}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      errors={errors.time}
-                      touched={touched.time}
+                      placeholder={t(
+                        "profile.calendar.modal.addEvent.fields.descriptionPlaceholder"
+                      )}
+                      errors={errors.about}
+                      touched={touched.about}
+                      textarea={true}
+                      rows={4}
+                      maxLength={500}
                     />
-                  </div>
 
-                  {/* Edit mode helper text */}
-                  {eventToEdit && !dirty && (
-                    <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg text-sm">
-                      {t("profile.calendar.modal.addEvent.errors.noChangesMessage")}
+                    {/* Event Type */}
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="event-type"
+                        className="pb-2 font-medium capitalize font-ibm"
+                      >
+                        {t("profile.calendar.modal.addEvent.fields.eventType")}
+                      </label>
+                      <SelectionGroup
+                        name="happeningType"
+                        id="event-type"
+                        value={
+                          eventTypes.find(
+                            (type) => type.value === values.happeningType
+                          )?.label ||
+                          values.happeningType ||
+                          ""
+                        }
+                        onChange={(e) => {
+                          const selectedLabel = e.target.value;
+                          setFieldValue("happeningType", selectedLabel);
+                        }}
+                        placeholder={t(
+                          "profile.calendar.modal.addEvent.fields.selectEventType"
+                        )}
+                        list={eventTypes.map((type) => type.label)}
+                        errors={errors.happeningType}
+                        touched={touched.happeningType}
+                      />
                     </div>
-                  )}
-                </div>
 
-                <ModalFooter
-                  onCancel={onClose}
-                  onConfirm={() => {}} // Formik handles submit
-                  cancelText={t(
-                    "profile.calendar.modal.addEvent.actions.cancel"
-                  )}
-                  confirmText={
-                    eventToEdit
-                      ? t("profile.calendar.modal.addEvent.actions.edit")
-                      : t("profile.calendar.modal.addEvent.actions.save")
-                  }
-                  isLoading={isSubmitting}
-                  confirmDisabled={!isValid || isSubmitting}
-                  isForm={true}
-                />
-              </Form>
+                    {/* Location */}
+                    <TextInputGroup
+                      label={t(
+                        "profile.calendar.modal.addEvent.fields.location"
+                      )}
+                      type="text"
+                      name="place"
+                      id="event-location"
+                      value={values.place}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder={t(
+                        "profile.calendar.modal.addEvent.fields.locationPlaceholder"
+                      )}
+                      errors={errors.place}
+                      touched={touched.place}
+                      maxLength={200}
+                    />
+
+                    {/* Participants Count */}
+                    <TextInputGroup
+                      label={t(
+                        "profile.calendar.modal.addEvent.fields.participants"
+                      )}
+                      type="number"
+                      name="participantsCount"
+                      id="event-participants"
+                      value={values.participantsCount}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder={t(
+                        "profile.calendar.modal.addEvent.fields.participantsPlaceholder"
+                      )}
+                      errors={errors.participantsCount}
+                      touched={touched.participantsCount}
+                      min={1}
+                      max={1000}
+                    />
+
+                    {/* Date and Time Row */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Date */}
+                      <TextInputGroup
+                        label={t("profile.calendar.modal.addEvent.fields.date")}
+                        type="date"
+                        name="day"
+                        id="event-date"
+                        value={values.day}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        errors={errors.day}
+                        touched={touched.day}
+                        min={formatDateForAPI(new Date())}
+                      />
+
+                      {/* Time */}
+                      <TextInputGroup
+                        label={t("profile.calendar.modal.addEvent.fields.time")}
+                        type="time"
+                        name="time"
+                        id="event-time"
+                        value={values.time}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        errors={errors.time}
+                        touched={touched.time}
+                      />
+                    </div>
+
+                    {/* Edit mode helper text */}
+                    {eventToEdit && !dirty && (
+                      <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg text-sm">
+                        {t(
+                          "profile.calendar.modal.addEvent.errors.noChangesMessage"
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  <ModalFooter
+                    onCancel={onClose}
+                    onConfirm={() => {}} // Formik handles submit
+                    cancelText={t(
+                      "profile.calendar.modal.addEvent.actions.cancel"
+                    )}
+                    confirmText={
+                      eventToEdit
+                        ? t("profile.calendar.modal.addEvent.actions.edit")
+                        : t("profile.calendar.modal.addEvent.actions.save")
+                    }
+                    isLoading={isSubmitting}
+                    confirmDisabled={!isValid || isSubmitting}
+                    isForm={true}
+                  />
+                </Form>
               );
             }}
           </Formik>

@@ -1,4 +1,4 @@
-import SearchAndFilters from "@/src/components/common/searchAndFilters/SearchAndFilters";
+import SearchAndFilters from "@components/common/searchAndFilters/SearchAndFilters";
 import { useTranslations } from "next-intl";
 import React, { useMemo, useCallback } from "react";
 import { useSelector } from "react-redux";
@@ -6,10 +6,9 @@ import { useSelector } from "react-redux";
 const OrdersTableFilter = ({ filter, setFilter }) => {
   const t = useTranslations();
 
-  const { selectedIds, organizations, allSelected ,loading } = useSelector(
+  const { selectedIds, organizations, allSelected, loading } = useSelector(
     (state) => state.selectedOrganizations
   );
-
 
   const filterOptions = useMemo(() => {
     if (allSelected) {
@@ -31,7 +30,6 @@ const OrdersTableFilter = ({ filter, setFilter }) => {
 
     return [];
   }, [organizations, selectedIds, allSelected]);
-
 
   const handleOrganizationChange = useCallback(
     (value) => {
@@ -55,7 +53,13 @@ const OrdersTableFilter = ({ filter, setFilter }) => {
     [filterOptions, handleOrganizationChange, filter?.organization]
   );
 
-  return <SearchAndFilters showTitle={false} filters={filters} isLoading={loading==='loading'} />;
+  return (
+    <SearchAndFilters
+      showTitle={false}
+      filters={filters}
+      isLoading={loading === "loading"}
+    />
+  );
 };
 
 export default OrdersTableFilter;

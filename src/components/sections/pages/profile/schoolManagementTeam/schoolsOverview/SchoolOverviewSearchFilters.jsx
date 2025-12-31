@@ -5,7 +5,13 @@ import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { useLocale, useTranslations } from "next-intl";
 import SearchAndFilters from "@/src/components/common/searchAndFilters/SearchAndFilters";
-const sortOptions = ["HIGHEST_NAME", "LOWEST_NAME", "NEWEST", "OLDEST"];
+import { SORTING_TYPE } from "@constants/sorting";
+const sortOptions = [
+  SORTING_TYPE.HIGHEST_NAME,
+  SORTING_TYPE.LOWEST_NAME,
+  SORTING_TYPE.NEWEST,
+  SORTING_TYPE.OLDEST,
+];
 
 const SchoolOverviewSearchFilters = ({ searchTerms, setSearchTerms }) => {
   const locale = useLocale();
@@ -77,12 +83,14 @@ const SchoolOverviewSearchFilters = ({ searchTerms, setSearchTerms }) => {
   );
 
   const search = {
-    label: t("profile.schools_overview.SchoolOverviewSearchFilters.searchPlaceholder"),
+    label: t(
+      "profile.schools_overview.SchoolOverviewSearchFilters.searchPlaceholder"
+    ),
     value: searchTerms.name,
     onChange: handleFieldChange("name"),
     key: "name",
   };
- 
+
   const filters = [
     {
       label: t("profile.schools_overview.SchoolOverviewSearchFilters.city"),
@@ -99,7 +107,9 @@ const SchoolOverviewSearchFilters = ({ searchTerms, setSearchTerms }) => {
       onChange: handleFieldChange("track"),
     },
     {
-      label: t("profile.schools_overview.SchoolOverviewSearchFilters.sortingBy"),
+      label: t(
+        "profile.schools_overview.SchoolOverviewSearchFilters.sortingBy"
+      ),
       key: "sort",
       options: formattedSortOptions,
       value: searchTerms.sort,
