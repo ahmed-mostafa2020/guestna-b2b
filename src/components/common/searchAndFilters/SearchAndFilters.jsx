@@ -22,7 +22,7 @@ const ResetButton = ({ onReset }) => {
 };
 
 const SearchAndFilters = ({ showTitle, search, isLoading, filters, date , onReset}) => {
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
   const t = useTranslations();
 
   const totalInputs = (search ? 1 : 0) + (date ? 1 : 0)  + filters.length;
@@ -65,11 +65,11 @@ const SearchAndFilters = ({ showTitle, search, isLoading, filters, date , onRese
         <Box className="flex items-center justify-between mb-3">
           {showTitle && title}
 
-          <IconButton onClick={() => setOpen(!open)}>
+          {/* <IconButton onClick={() => setOpen(!open)}>
             <TuneIcon />
-          </IconButton>
+          </IconButton> */}
         </Box>
-        <Collapse in={open}>
+        <Collapse in={true}>
           <Box className="flex flex-col gap-3 mb-4">
             {search && (
               <SearchInput

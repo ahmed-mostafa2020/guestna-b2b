@@ -1,7 +1,6 @@
 import { useTranslations } from "next-intl";
 import { usePermissions } from "@hooks/usePermissions";
 import { PERMISSIONS } from "@constants/permissions";
-import { KeyboardArrowDown, CalendarToday } from "@mui/icons-material";
 import { printIcon } from "@assets/svg";
 import { useSelector } from "react-redux";
 import { useCallback, useMemo } from "react";

@@ -7,7 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import SearchAndFilters from "@/src/components/common/searchAndFilters/SearchAndFilters";
 const sortOptions = ["HIGHEST_NAME", "LOWEST_NAME", "NEWEST", "OLDEST"];
 
-const SearchFilters = ({ searchTerms, setSearchTerms, isLoading }) => {
+const SchoolOverviewSearchFilters = ({ searchTerms, setSearchTerms }) => {
   const locale = useLocale();
   const t = useTranslations();
 
@@ -68,14 +68,16 @@ const SearchFilters = ({ searchTerms, setSearchTerms, isLoading }) => {
   const formattedSortOptions = useMemo(
     () =>
       sortOptions.map((sort) => ({
-        label: t(`profile.schools_overview.searchFilters.sort_options.${sort}`),
+        label: t(
+          `profile.schools_overview.SchoolOverviewSearchFilters.sort_options.${sort}`
+        ),
         value: sort,
       })),
     [t]
   );
 
   const search = {
-    label: t("profile.schools_overview.searchFilters.searchPlaceholder"),
+    label: t("profile.schools_overview.SchoolOverviewSearchFilters.searchPlaceholder"),
     value: searchTerms.name,
     onChange: handleFieldChange("name"),
     key: "name",
@@ -83,21 +85,21 @@ const SearchFilters = ({ searchTerms, setSearchTerms, isLoading }) => {
   console.log(searchTerms);
   const filters = [
     {
-      label: t("profile.schools_overview.searchFilters.city"),
+      label: t("profile.schools_overview.SchoolOverviewSearchFilters.city"),
       key: "city",
       options: formattedCities,
       value: searchTerms.city,
       onChange: handleFieldChange("city"),
     },
     {
-      label: t("profile.schools_overview.searchFilters.track"),
+      label: t("profile.schools_overview.SchoolOverviewSearchFilters.track"),
       key: "track",
       options: formattedTracks,
       value: searchTerms.track,
       onChange: handleFieldChange("track"),
     },
     {
-      label: t("profile.schools_overview.searchFilters.sortingBy"),
+      label: t("profile.schools_overview.SchoolOverviewSearchFilters.sortingBy"),
       key: "sort",
       options: formattedSortOptions,
       value: searchTerms.sort,
@@ -108,10 +110,10 @@ const SearchFilters = ({ searchTerms, setSearchTerms, isLoading }) => {
     <SearchAndFilters
       showTitle
       search={search}
-      isLoading={isLoading || staticsLoading}
+      isLoading={staticsLoading}
       filters={filters}
     />
   );
 };
 
-export default SearchFilters;
+export default SchoolOverviewSearchFilters;

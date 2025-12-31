@@ -1589,7 +1589,7 @@
       }
     },
     "schools_overview": {
-      "searchFilters": {
+      "SchoolOverviewSearchFilters": {
         "title": "البحث والتصفية",
         "searchPlaceholder": " ابحث بالاسم...",
         "sortingBy": "ترتيب حسب: ",

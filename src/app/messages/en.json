@@ -1587,7 +1587,7 @@
     },
 
     "schools_overview": {
-      "searchFilters": {
+      "SchoolOverviewSearchFilters": {
         "title": "Search & Filters",
         "searchPlaceholder": "search by school name",
         "sortingBy": "Sort By: ",
