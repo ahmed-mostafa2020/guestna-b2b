@@ -4,7 +4,7 @@ import React, { useCallback, useMemo } from "react";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { useLocale, useTranslations } from "next-intl";
-import SearchAndFilters from "@/src/components/common/searchAndFilters/SearchAndFilters";
+import SearchAndFilters from "@components/common/searchAndFilters/SearchAndFilters";
 import { SORTING_TYPE } from "@constants/sorting";
 const sortOptions = [
   SORTING_TYPE.HIGHEST_NAME,
