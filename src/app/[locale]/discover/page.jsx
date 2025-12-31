@@ -476,7 +476,7 @@ const Discover = () => {
     rate,
   } = useSelector((state) => state.searchFilter);
 
-  console.log()
+
   const { currentPage } = useSelector((state) => state.discoverData);
 
   const locale = useLocale();
@@ -813,7 +813,7 @@ const Discover = () => {
 
     const sortingType = searchParams.get("sorting") || SORTING_TYPE.NEWEST;
 
-    console.log("Pagination triggered - Fetching page:", currentPage);
+    
 
     dispatch(
       actGetDiscoverTrips({
@@ -844,7 +844,7 @@ const Discover = () => {
     }
   );
 
-  console.log("sideFiltersData", data);
+
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
       "pagesHead.title.discover"

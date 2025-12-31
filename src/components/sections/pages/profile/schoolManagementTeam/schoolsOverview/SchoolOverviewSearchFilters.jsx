@@ -82,7 +82,7 @@ const SchoolOverviewSearchFilters = ({ searchTerms, setSearchTerms }) => {
     onChange: handleFieldChange("name"),
     key: "name",
   };
-  console.log(searchTerms);
+ 
   const filters = [
     {
       label: t("profile.schools_overview.SchoolOverviewSearchFilters.city"),

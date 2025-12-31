@@ -5,6 +5,7 @@ import { printIcon } from "@assets/svg";
 import { useSelector } from "react-redux";
 import { useCallback, useMemo } from "react";
 import SearchAndFilters from "../../common/searchAndFilters/SearchAndFilters";
+import { TRIP_STATUS } from "@constants/tripStatus";
 
 const TransactionsFilters = ({ filter, setFilter }) => {
   const { hasElement } = usePermissions();
@@ -34,9 +35,8 @@ const TransactionsFilters = ({ filter, setFilter }) => {
   );
 
   const handleResetFilters = useCallback(() => {
-    setFilter(() => ({}));
+    setFilter({});
   }, []);
-  
 
   const organizationsOptions = useMemo(() => {
     if (allSelected) {
@@ -91,9 +91,9 @@ const TransactionsFilters = ({ filter, setFilter }) => {
         value: filter.status,
         onChange: handleFilterChange("status"),
         options: [
-          { value: "PENDING", label: t("status.pending") },
-          { value: "DONE", label: t("status.completed") },
-          { value: "CANCLED", label: t("status.cancelled") },
+          { value: TRIP_STATUS.PENDING, label: t("status.pending") },
+          { value: TRIP_STATUS.DONE, label: t("status.completed") },
+          { value: TRIP_STATUS.CANCLED, label: t("status.cancelled") },
         ],
       },
     ];

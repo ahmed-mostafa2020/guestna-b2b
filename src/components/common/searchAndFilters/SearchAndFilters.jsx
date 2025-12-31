@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Box, IconButton, Collapse, Skeleton } from "@mui/material";
-import TuneIcon from "@mui/icons-material/Tune";
+import React from "react";
+import { Box, Collapse, Skeleton } from "@mui/material";
 import { useTranslations } from "next-intl";
 import FilterAutoComplete from "./FilterAutoComplete";
 import SearchInput from "./SearchInput";

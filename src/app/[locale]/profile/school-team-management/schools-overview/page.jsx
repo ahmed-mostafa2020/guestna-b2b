@@ -76,7 +76,7 @@ const SchoolsOverViewPage = () => {
   // Refetch when filters change
   useEffect(() => {
     refetchOrganizations();
-    console.log(searchTerms);
+
   }, [searchTerms, page]);
 
   // Page Title

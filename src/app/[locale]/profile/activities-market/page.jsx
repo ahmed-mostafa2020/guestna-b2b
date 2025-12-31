@@ -18,9 +18,6 @@ import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 import { PERMISSIONS } from "@constants/permissions";
 import TripsGrid from "@components/sections/pages/discover/gridSection/tripsGrid";
 import { usePaginatedTrips } from "@hooks/usePaginatedTrips";
-import { useFetchData } from "@/src/hooks/useFetchData";
-import { B2B_END_POINTS } from "@/src/constants/b2bAPIs";
-import { setDiscoverSideFiltersDataLoading } from "@/src/store/searchFilter/discoverSideFiltersSlice";
 
 const ActivitiesMarketPage = () => {
   const { currentPage, filter } = useSelector((state) => state.discoverData);

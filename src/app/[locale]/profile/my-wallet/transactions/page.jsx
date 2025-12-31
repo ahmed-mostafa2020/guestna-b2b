@@ -203,7 +203,7 @@ const TransactionsPage = () => {
             status: mapInvoiceStatus(
               invoice.status || invoice.paymentStatus || invoice.invoiceStatus
             ),
-            organizationName: invoice.organization.name || "",
+            organizationName: invoice.organization?.name || "",
             track: invoice.track?.educationSystem
               ? `${invoice.track?.educationSystem?.name} - ${t(
                   `schoolRegister.form.gender.options.${
@@ -259,18 +259,18 @@ const TransactionsPage = () => {
 
   // Map API status to component status
   const mapInvoiceStatus = (apiStatus) => {
-    if (!apiStatus) return "PENDING";
+    if (!apiStatus) return TRIP_STATUS.PENDING;
 
     // Handle the new status enum values
     const statusMap = {
       DONE: TRIP_STATUS.DONE,
       PENDING: TRIP_STATUS.PENDING,
-      CANCLED: TRIP_STATUS.CANCELLED,
+      CANCLED: TRIP_STATUS.CANCLED,
     };
 
     const normalizedStatus = apiStatus.toUpperCase().replace(/[_\s]/g, "");
 
-    return statusMap[normalizedStatus] || "PENDING";
+    return statusMap[normalizedStatus] || TRIP_STATUS.PENDING;
   };
 
   // Status configuration
@@ -283,7 +283,7 @@ const TransactionsPage = () => {
       label: t("profile.myWallet.transactionsPage.table.status.pending"),
       className: "bg-yellow-100 text-yellow-800 border-yellow-200",
     },
-    CANCELLED: {
+    CANCLED: {
       label: t("profile.myWallet.transactionsPage.table.status.cancelled"),
       className: "bg-red-100 text-red-800 border-red-200",
     },

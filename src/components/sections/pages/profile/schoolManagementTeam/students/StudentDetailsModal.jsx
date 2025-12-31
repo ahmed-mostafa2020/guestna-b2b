@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useState } from "react";
+import { memo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 
 import { CircularProgress } from "@mui/material";
@@ -28,7 +28,7 @@ const StudentDetailsModal = ({ open, handleClose, studentId }) => {
     }
   );
 
-  console.log(data)
+
   const { exportStudentDetails, isExporting } = useExcel({ t, locale });
 
   const handlePrint = async () => {

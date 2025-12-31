@@ -8,7 +8,7 @@ import GradesListing from "./GradesListing";
 const StudentsInfo = ({ totalStudents = 0, grades = [], organizationId }) => {
   const t = useTranslations();
 
-  console.log(grades);
+
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 border border-border p-4 rounded-xl shadow-profile">

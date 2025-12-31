@@ -75,7 +75,7 @@ const DiscoverFiltersSection = () => {
   );
 
   const handleReset = useCallback(() => {
-    dispatch(setDiscoverFilters(()=>({})));
+    dispatch(setDiscoverFilters({}));
     router.replace(pathname, { scroll: false });
   }, [dispatch, pathname, router]);
 

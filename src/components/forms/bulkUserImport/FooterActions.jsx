@@ -17,7 +17,7 @@ const ExportUsersExcel = ({ users }) => {
       ...user,
       role: user.role.description,
     }));
-    console.log(exportedUsers);
+
     return await exportRecords(
       exportedUsers,
       t("profile.schools_users.bulkImport.current_users")
