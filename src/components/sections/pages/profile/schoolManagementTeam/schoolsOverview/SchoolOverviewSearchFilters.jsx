@@ -106,6 +106,7 @@ const SchoolOverviewSearchFilters = ({ searchTerms, setSearchTerms }) => {
       value: searchTerms.track,
       onChange: handleFieldChange("track"),
     },
+
     {
       label: t(
         "profile.schools_overview.SchoolOverviewSearchFilters.sortingBy"
