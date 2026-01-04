@@ -23,6 +23,7 @@ import {
   setCustomLogo,
   setTheme,
 } from "@store/theme/themeSlice";
+import { clearSelectedOrganizations } from "@store/profile/selectedOrganizationsSlice";
 
 const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -52,6 +53,8 @@ const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
 
       dispatch(setTheme("original"));
       dispatch(setCustomLogo(null));
+
+      dispatch(clearSelectedOrganizations());
 
       setIsOpen(false);
 

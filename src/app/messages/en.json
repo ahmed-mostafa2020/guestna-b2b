@@ -182,7 +182,7 @@
       "addActivity": "Add Activity",
       "checkout": "Checkout",
       "booking": "Booking",
-      "schoolsOverView":"Schools Overview",
+      "schoolsOverView": "Schools Overview",
       "bookingStatus": "Booking Status",
       "termsAndConditions": "Terms and conditions",
       "privacyPolicy": "Privacy policy",
@@ -1250,7 +1250,7 @@
             "placeholder": "Status",
             "completed": "Done",
             "pending": "Pending",
-            "canceled": "Canceled"
+            "cancelled": "Cancelled"
           },
           "clearFilters": "Clear Filters"
         },
