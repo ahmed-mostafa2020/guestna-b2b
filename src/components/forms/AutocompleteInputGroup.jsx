@@ -1,5 +1,6 @@
 import React from "react";
 import { Autocomplete, TextField, CircularProgress } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 const AutocompleteInputGroup = ({
   label,
@@ -19,9 +20,10 @@ const AutocompleteInputGroup = ({
   required = false,
   errors,
   touched,
-  noOptionsText = "No options",
-  loadingText = "Loading...",
+  noOptionsText,
+  loadingText,
 }) => {
+  const t = useTranslations("common.autocomplete");
   const hasError = touched && !!errors;
 
   return (
@@ -127,8 +129,10 @@ const AutocompleteInputGroup = ({
           />
         )}
         renderOption={renderOption}
-        noOptionsText={noOptionsText}
-        loadingText={loading ? <CircularProgress size={20} /> : loadingText}
+        noOptionsText={noOptionsText || t("noOptions")}
+        loadingText={
+          loading ? <CircularProgress size={20} /> : loadingText || t("loading")
+        }
       />
 
       {/* Error Message */}

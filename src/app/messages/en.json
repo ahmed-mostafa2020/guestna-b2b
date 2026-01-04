@@ -1,5 +1,9 @@
 {
   "common": {
+    "autocomplete": {
+      "noOptions": "No options",
+      "loading": "Loading..."
+    },
     "oneDayTrip": "One day trip",
     "multiDaysTrip": "Multi days trip",
     "halfDayTrip": "Half day trip",
@@ -554,7 +558,24 @@
       "bookingsManagement": {
         "title": "Bookings Management",
         "ordersManagement": "Orders Management",
-        "bookings": "Bookings",
+        "bookings": {
+          "title": "Bookings",
+          "filters": {
+            "title": "Search",
+            "school": {
+              "placeholder": "Search by school name"
+            },
+            "track": {
+              "placeholder": "All Tracks"
+            },
+            "academicStage": {
+              "placeholder": "Academic Stage"
+            },
+            "date": {
+              "placeholder": "Booking Date"
+            }
+          }
+        },
         "integratedBookingsManagement": "Integrated Bookings Management"
       },
       "schoolTeamManagement": {

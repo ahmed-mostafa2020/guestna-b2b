@@ -1,5 +1,9 @@
 {
   "common": {
+    "autocomplete": {
+      "noOptions": "لا توجد خيارات",
+      "loading": "جاري التحميل..."
+    },
     "oneDayTrip": "رحلات يوم كامل",
     "multiDaysTrip": "رحلات متعددة الأيام",
     "halfDayTrip": "رحلات نصف يوم",
@@ -189,7 +193,7 @@
       "addActivity": "اضف نشاطا",
       "checkout": "الدفع",
       "booking": "الحجز",
-      "schoolsOverView":"نظرة عامة على المدارس",
+      "schoolsOverView": "نظرة عامة على المدارس",
       "bookingStatus": "حالة الحجز",
       "termsAndConditions": "الأحكام و الشروط",
       "privacyPolicy": "سياسة الخصوصية",
@@ -561,7 +565,24 @@
       "bookingsManagement": {
         "title": "إدارة الحجوزات",
         "ordersManagement": "إدارة الطلبات",
-        "bookings": "الحجوزات",
+        "bookings": {
+          "title": "الحجوزات",
+          "filters": {
+            "title": "البحث",
+            "school": {
+              "placeholder": "البحث باسم المدرسه"
+            },
+            "track": {
+              "placeholder": "جميع المسارات"
+            },
+            "academicStage": {
+              "placeholder": "المرحلة الدراسيه"
+            },
+            "date": {
+              "placeholder": "تاريخ الطلب"
+            }
+          }
+        },
         "integratedBookingsManagement": "إدارة الحجوزات المتكاملة"
       },
       "schoolTeamManagement": {

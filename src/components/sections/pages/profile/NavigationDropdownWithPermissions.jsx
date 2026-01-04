@@ -95,7 +95,7 @@ const NavigationDropdown = () => {
           permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_ORDER_MANAGEMENT_TAB,
         },
         {
-          title: t("profile.aside.bookingsManagement.bookings"),
+          title: t("profile.aside.bookingsManagement.bookings.title"),
           path: `${profileBasePath}/bookings-management/bookings`,
           permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_BOOKINGS_TAB,
         },

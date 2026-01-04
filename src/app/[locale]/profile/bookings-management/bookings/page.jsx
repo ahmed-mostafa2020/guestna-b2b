@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 
 import { usePermissions } from "@hooks/usePermissions";
@@ -11,24 +11,49 @@ import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageT
 import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBookings";
 import BookingsTable from "@components/sections/pages/profile/boookings-management/bookings/BookingsTable";
 import FiltringTripsByStatus from "@components/sections/pages/profile/boookings-management/bookings/FiltringTripsByStatus";
+import BookingsFilters from "@components/forms/bookings/BookingsFilters";
 
 const BookingsPage = () => {
   const { hasElement } = usePermissions();
   const t = useTranslations();
   const [selectedStatus, setSelectedStatus] = useState(null);
+  const [filter, setFilter] = useState({});
 
   const handleStatusChange = (status) => {
     setSelectedStatus(status);
   };
 
-  // Prepare the request body with status filter
-  const requestBody = selectedStatus
-    ? {
-        filter: {
-          status: selectedStatus,
-        },
-      }
-    : {};
+  // Prepare the request body with status and other filters
+  const requestBody = useMemo(() => {
+    const body = { filter: {} };
+
+    // Add status filter
+    if (selectedStatus) {
+      body.filter.status = selectedStatus;
+    }
+
+    // Add organization filter
+    if (filter.organization) {
+      body.filter.organizations = [filter.organization];
+    }
+
+    // Add track filter
+    if (filter.track) {
+      body.filter.tracks = [filter.track];
+    }
+
+    // Add date filter
+    if (filter.day) {
+      body.filter.day = filter.day;
+    }
+
+    // Add search term
+    if (filter.searchTerm) {
+      body.filter.searchTerm = filter.searchTerm;
+    }
+
+    return Object.keys(body.filter).length > 0 ? body : {};
+  }, [selectedStatus, filter]);
 
   return (
     <ProtectedProfilePage
@@ -44,8 +69,11 @@ const BookingsPage = () => {
           />
         )}
 
+        {/* Filters Section */}
+        <BookingsFilters filter={filter} setFilter={setFilter} />
+
         <ProfilePageTemplate
-          title={t("profile.aside.bookings")}
+          title={t("profile.aside.bookingsManagement.bookings.title")}
           endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.BOOKINGS}`}
           method="POST"
           bodyParameters={requestBody}
@@ -65,7 +93,7 @@ const BookingsPage = () => {
             />
           )}
           enablePagination={true}
-          key={selectedStatus} // Force re-render when status changes
+          key={`${selectedStatus}-${JSON.stringify(filter)}`} // Force re-render when status or filters change
         />
       </div>
     </ProtectedProfilePage>
