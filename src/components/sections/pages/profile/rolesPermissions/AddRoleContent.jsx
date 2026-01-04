@@ -10,7 +10,7 @@ const AddRoleContent = ({ permissionsData, permissionsLoading }) => {
   const t = useTranslations();
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8">
+    <div className="mx-auto space-y-8">
       {/* Header */}
       <header className="space-y-4">
         <Link

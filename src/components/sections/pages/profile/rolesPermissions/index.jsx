@@ -405,7 +405,7 @@ const RolesPermissionsContent = ({
   // ============================================================================
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8">
+    <div className="mx-auto space-y-8">
       {/* Header */}
       <header className="space-y-4">
         <h1 className="text-3xl lg:text-4xl font-semibold text-titleColor">

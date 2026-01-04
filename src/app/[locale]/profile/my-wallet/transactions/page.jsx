@@ -326,7 +326,7 @@ const TransactionsPage = () => {
     <ProtectedProfilePage
       requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_TRANSACTIONS_LOG_PAGE}
     >
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="mx-auto space-y-6">
         {/* Balance Cards Section */}
         {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS) && (
           <BalanceCards
