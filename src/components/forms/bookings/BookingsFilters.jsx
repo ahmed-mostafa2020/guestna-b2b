@@ -4,17 +4,18 @@ import { useTranslations, useLocale } from "next-intl";
 import { useSelector } from "react-redux";
 import { useCallback, useMemo, useState, useEffect } from "react";
 import axios from "axios";
-import Cookies from "js-cookie";
 import SearchAndFilters from "../../common/searchAndFilters/SearchAndFilters";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { CONSTANT_VALUES } from "@constants/constantValues";
 import formatDateForAPI from "@utils/formatDateForAPI";
+import getProxyUrl from "@utils/getProxyUrl";
+import { getHeaders } from "@utils/getHeaders";
 
 const BookingsFilters = ({ filter, setFilter }) => {
   const t = useTranslations(
     "profile.aside.bookingsManagement.bookings.filters"
   );
   const locale = useLocale();
+  const headers = getHeaders(locale);
 
   const [tracksData, setTracksData] = useState([]); // Store full tracks data
   const [tracksLoading, setTracksLoading] = useState(false);
@@ -70,17 +71,13 @@ const BookingsFilters = ({ filter, setFilter }) => {
 
       setTracksLoading(true);
       try {
-        const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
-        const response = await axios.get(
-          `/api/proxy?path=${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.TRACKS_BY_ORG}/${orgId}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              lang: locale,
-              ...(token && { authorization: `Bearer ${token}` }),
-            },
-          }
-        );
+        const response = await axios({
+          method: "get",
+          url: getProxyUrl(
+            `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.TRACKS}/${orgId}`
+          ),
+          headers,
+        });
 
         if (response.data && Array.isArray(response.data)) {
           setTracksData(response.data);
