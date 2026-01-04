@@ -872,7 +872,12 @@
           "status": "الحالة",
           "actions": "الإجراءات",
           "participants": "المشاركون",
-          "searchTripName": "ابحث باسم الرحلة"
+          "searchTripName": "ابحث باسم الرحلة",
+          "organization": "المدرسة",
+          "targetTrack": "الفئة المستهدفة",
+          "budget": "الميزانية",
+          "track": "المسار",
+          "class": "الصف"
         },
         "actions": {
           "administrativeComment": "تعليق إداري",
@@ -1007,7 +1012,13 @@
           "nationalId": "رقم الهوية",
           "loading": "جاري تحميل بيانات الطلاب...",
           "noData": "لا توجد بيانات طلاب متاحة",
-          "actions": "الإجراءات"
+          "actions": "الإجراءات",
+          "printInvoice": "طباعة فاتورة",
+          "resend": "اعادة ارسال",
+          "printSuccess": "تم تصدير الفاتورة بنجاح",
+          "printError": "فشل في تصدير الفاتورة",
+          "resendSuccess": "تم اعادة ارسال الحجز بنجاح",
+          "resendError": "فشل في اعادة ارسال الحجز"
         }
       }
     },

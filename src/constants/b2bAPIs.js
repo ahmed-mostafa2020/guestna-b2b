@@ -98,6 +98,7 @@ export const B2B_END_POINTS = {
       BOOKING_DETAILS: "profile/bookings/info",
       CHILD_INFO: "profile/bookings/reClintinfo",
       CHILD_IMAGE_UPLOAD: "profile/bookings/image",
+      RESEND_BOOKING: "profile/bookings/resend",
 
       RPORTS: "profile/organizationTrips/report/all",
       SURVEY: "surveys/new",
@@ -126,11 +127,9 @@ export const B2B_END_POINTS = {
     },
 
     SCHOOL_TEAM_MANAGEMENT: {
-      //
       USERS: {
         INFO: "profile/users/users/count/info",
         TABLE: "profile/users/company/all",
-        // TABLE: "profile/users/school/all",
         NEW_USER: "profile/users/new",
         EDIT_USER: "profile/users/edit",
         DELETE_USER: "profile/users/delete",

@@ -409,6 +409,122 @@ export const ExcelService = {
     return { success: true, filename: filename + ".xlsx" };
   },
 
+  // 5b. Export Student Invoice (Single Student with Booking Info)
+  exportStudentInvoice: async ({ student, booking, t, locale = "en" }) => {
+    const { workbook, worksheet } = createWorkbook(
+      t("profile.tables.orders.studentsTable.title")
+    );
+
+    // Set RTL for Arabic
+    if (locale === "ar") {
+      worksheet.views = [{ rightToLeft: true }];
+    }
+
+    // Add title
+    worksheet.mergeCells("A1:F1");
+    const titleCell = worksheet.getCell("A1");
+    titleCell.value = `${t("profile.tables.orders.studentsTable.title")} - ${
+      booking?.name || ""
+    }`;
+    titleCell.font = { bold: true, size: 16 };
+    titleCell.alignment = { horizontal: "center", vertical: "middle" };
+    worksheet.getRow(1).height = 30;
+
+    // Add booking info
+    worksheet.mergeCells("A2:F2");
+    const infoCell = worksheet.getCell("A2");
+    infoCell.value = `${t("profile.tables.bookings.header.schoolName")}: ${
+      booking?.organization?.name || booking?.organization || ""
+    } | ${t("profile.tables.bookings.header.date")}: ${formatDate(
+      booking?.day,
+      locale,
+      { year: "numeric", month: "long", day: "numeric" }
+    )}`;
+    infoCell.alignment = { horizontal: "center", vertical: "middle" };
+    worksheet.getRow(2).height = 25;
+
+    // Add headers in row 4
+    const headers = [
+      "#",
+      t("profile.tables.orders.studentsTable.studentName"),
+      t("profile.tables.orders.studentsTable.parentName"),
+      t("profile.tables.orders.studentsTable.grade"),
+      t("profile.tables.orders.studentsTable.parentPhone"),
+      t("profile.tables.orders.studentsTable.nationalId"),
+    ];
+
+    worksheet.addRow([]);
+    const headerRow = worksheet.addRow(headers);
+    headerRow.eachCell((cell) => {
+      cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF0097A7" },
+      };
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
+    worksheet.getRow(4).height = 25;
+
+    // Set column widths
+    worksheet.columns = [
+      { width: 8 },
+      { width: 25 },
+      { width: 25 },
+      { width: 20 },
+      { width: 20 },
+      { width: 20 },
+    ];
+
+    // Add student data
+    const dataRow = worksheet.addRow([
+      1,
+      student.child?.name || "-",
+      student.parent?.name || "-",
+      student.child?.grade?.name || "-",
+      student.parent?.phone || "-",
+      student.child?.nationalId || "-",
+    ]);
+    dataRow.eachCell((cell) => {
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
+
+    // Add price info if available
+    if (booking?.price) {
+      worksheet.addRow([]);
+      const priceRow = worksheet.addRow([
+        "",
+        "",
+        "",
+        "",
+        t("profile.tables.bookings.header.budget"),
+        formatCurrencyString(booking.price, locale),
+      ]);
+      priceRow.getCell(5).font = { bold: true };
+      priceRow.getCell(6).font = { bold: true };
+    }
+
+    // Generate filename
+    const filename = `${t("profile.tables.orders.studentsTable.title")}_${
+      student.child?.name || "student"
+    }_${new Date().toISOString().split("T")[0]}`;
+
+    await saveWorkbook(workbook, filename);
+    return { success: true, filename: filename + ".xlsx" };
+  },
+
   // 6. Export Booking Management (Complete Report)
   exportBookingManagement: async ({
     booking,

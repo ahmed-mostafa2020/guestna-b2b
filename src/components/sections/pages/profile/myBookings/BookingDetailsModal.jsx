@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { memo } from "react";
 import formatDate from "@utils/FormateDate";
@@ -282,6 +284,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loading }) => {
           <StudentsTable
             bookingDetails={processedBookingDetails}
             loadingDetails={loading}
+            booking={booking}
           />
           {/* Action Buttons */}
           <div className="space-y-3 print:hidden">

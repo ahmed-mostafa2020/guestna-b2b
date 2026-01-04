@@ -150,9 +150,9 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
             </div>
 
             {booking.fromHour && booking.toHour && (
-              <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
                 {timeIcon}
-                <p className="text-sm text-gray-600">
+                <p className="text-gray-600">
                   {t("profile.tables.orders.bookingDetails.time")}:
                 </p>
                 <p className="font-medium">
@@ -161,10 +161,10 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
               </div>
             )}
 
-            <div className="flex items-center gap-3 flex-wrap">
+            <div className="text-sm flex items-center gap-3 flex-wrap">
               <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
                 {dateIcon}
-                <p className="text-sm text-gray-600">
+                <p className="text-gray-600">
                   {t("profile.tables.orders.bookingDetails.tripStartDate")}:
                 </p>
                 <p className="font-medium">
@@ -177,9 +177,9 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
                 </p>
               </div>
 
-              <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
                 {dateIcon}
-                <p className="text-sm text-gray-600">
+                <p className="text-gray-600">
                   {t("profile.tables.orders.bookingDetails.tripEndDate")}:
                 </p>
                 <p className="font-medium">
@@ -205,10 +205,10 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 flex-wrap">
+            <div className="text-sm flex items-center gap-3 flex-wrap">
               <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
                 {ticketsIcon}
-                <p className="text-sm text-gray-600">
+                <p className="text-gray-600">
                   {t("profile.tables.orders.bookingDetails.bookingStatus")}:
                 </p>
                 <p className="font-medium">
@@ -216,9 +216,9 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
                 </p>
               </div>
 
-              <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
                 {walletIcon}
-                <p className="text-sm text-gray-600">
+                <p className="text-gray-600">
                   {t("profile.tables.orders.bookingDetails.fees")}:
                 </p>
                 <p className="font-medium">
@@ -236,25 +236,25 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
           </h3>
 
           <div className="space-y-4 border-2 border-border rounded-lg p-3">
-            <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+            <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
               {schoolIcon}
-              <p className="text-sm text-gray-600">
+              <p className="text-gray-600">
                 {t("profile.tables.orders.bookingDetails.schoolName")}:
               </p>
               <p className="font-medium">{booking.organization?.name}</p>
             </div>
 
-            <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+            <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
               {profileIcon}
-              <p className="text-sm text-gray-600">
+              <p className="text-gray-600">
                 {t("profile.tables.orders.bookingDetails.contactPerson")}:
               </p>
               <p className="font-medium">{booking.organization?.name}</p>
             </div>
 
-            <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+            <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
               {phoneIcon}
-              <p className="text-sm text-gray-600">
+              <p className="text-gray-600">
                 {t("profile.tables.orders.bookingDetails.phoneNumber")}:
               </p>
               <p className="font-medium text-end" dir="ltr">
@@ -262,9 +262,9 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
               </p>
             </div>
 
-            <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+            <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
               {dateIcon}
-              <p className="text-sm text-gray-600">
+              <p className="text-gray-600">
                 {t("profile.tables.orders.bookingDetails.bookingDate")}:
               </p>
               <p className="font-medium">
@@ -278,9 +278,9 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
               </p>
             </div>
 
-            <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+            <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
               {profileIcon}
-              <p className="text-sm text-gray-600">
+              <p className="text-gray-600">
                 {t("profile.tables.orders.bookingDetails.schoolEmail")}:
               </p>
               <p className="font-medium">{booking.organization?.email}</p>
@@ -293,6 +293,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
       <StudentsTable
         bookingDetails={processedBookingDetails}
         loadingDetails={loadingDetails}
+        booking={booking}
       />
 
       {/* Action Buttons */}
