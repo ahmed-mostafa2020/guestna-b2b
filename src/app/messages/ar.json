@@ -4,6 +4,7 @@
       "noOptions": "لا توجد خيارات",
       "loading": "جاري التحميل..."
     },
+    "characters": "حرف",
     "oneDayTrip": "رحلات يوم كامل",
     "multiDaysTrip": "رحلات متعددة الأيام",
     "halfDayTrip": "رحلات نصف يوم",
@@ -902,7 +903,8 @@
         },
         "actions": {
           "administrativeComment": "تعليق إداري",
-          "commentPlaceholder": "أدخل الوصف",
+          "comment": "تعليق",
+          "commentPlaceholder": "أدخل التعليق",
           "commentSuccess": "تم إرسال التعليق بنجاح"
         },
         "details": {

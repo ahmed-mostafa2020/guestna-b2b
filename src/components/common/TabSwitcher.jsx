@@ -35,11 +35,7 @@ const TabSwitcher = ({ tabs, activeTab, onTabChange }) => {
               ${activeTab === tab.key ? "bg-white scale-105" : ""}
             `}
           >
-            <span
-              className={`lg:px-28 px-4 font-medium py-2 text-center leading-tight ${
-                activeTab === tab.key ? "text-black" : "text-white"
-              }`}
-            >
+            <span className="lg:px-28 px-4 font-medium py-2 text-center leading-tight text-black">
               {tab.label}
             </span>
           </button>

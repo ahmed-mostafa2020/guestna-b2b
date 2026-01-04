@@ -4,6 +4,7 @@
       "noOptions": "No options",
       "loading": "Loading..."
     },
+    "characters": "characters",
     "oneDayTrip": "One day trip",
     "multiDaysTrip": "Multi days trip",
     "halfDayTrip": "Half day trip",
@@ -898,7 +899,8 @@
         },
         "actions": {
           "administrativeComment": "Administrative Comment",
-          "commentPlaceholder": "Enter description",
+          "comment": "Comment",
+          "commentPlaceholder": "Enter comment",
           "commentSuccess": "Comment submitted successfully"
         },
         "details": {

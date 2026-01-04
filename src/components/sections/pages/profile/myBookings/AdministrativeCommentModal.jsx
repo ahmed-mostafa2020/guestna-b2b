@@ -3,23 +3,12 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useSnackbar } from "notistack";
-import dynamic from "next/dynamic";
 import { CircularProgress } from "@mui/material";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import axios from "axios";
-
-// Dynamically import ReactQuill to avoid SSR issues
-const ReactQuill = dynamic(
-  () => {
-    return import("react-quill").then((mod) => {
-      import("react-quill/dist/quill.snow.css");
-      return mod.default;
-    });
-  },
-  { ssr: false }
-);
+import TextInputGroup from "@components/forms/TextInputGroup";
 
 const AdministrativeCommentModal = ({ booking, onClose }) => {
   const locale = useLocale();
@@ -31,7 +20,7 @@ const AdministrativeCommentModal = ({ booking, onClose }) => {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (!comment.trim() || comment === "<p><br></p>") {
+    if (!comment.trim()) {
       enqueueSnackbar(t("forms.validation.require"), { variant: "warning" });
       return;
     }
@@ -60,32 +49,6 @@ const AdministrativeCommentModal = ({ booking, onClose }) => {
     }
   };
 
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, 3, false] }],
-      ["bold", "italic", "underline", "strike"],
-      [{ color: [] }, { background: [] }],
-      [{ list: "ordered" }, { list: "bullet" }],
-      [{ align: [] }],
-      ["link"],
-      ["clean"],
-    ],
-  };
-
-  const formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "color",
-    "background",
-    "list",
-    "bullet",
-    "align",
-    "link",
-  ];
-
   return (
     <div className="bg-white rounded-xl mx-auto w-[95%] md:w-[700px] p-6 space-y-6">
       <h2 className="text-center text-xl md:text-2xl font-semibold">
@@ -110,26 +73,24 @@ const AdministrativeCommentModal = ({ booking, onClose }) => {
         </div>
       </div>
 
-      {/* Rich Text Editor */}
+      {/* Textarea Editor */}
       <div className="space-y-2">
-        <div className="border border-gray-300 rounded-lg overflow-hidden">
-          <ReactQuill
-            theme="snow"
-            value={comment}
-            onChange={setComment}
-            modules={modules}
-            formats={formats}
-            placeholder={t(
-              "profile.tables.bookings.actions.commentPlaceholder"
-            )}
-            className="bg-white"
-            style={{ minHeight: "200px" }}
-          />
-        </div>
+        <TextInputGroup
+          name="comment"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder={t("profile.tables.bookings.actions.commentPlaceholder")}
+          textarea={true}
+          rows={8}
+          style={{ minHeight: "200px" }}
+        />
+        <p className="text-xs text-gray-500 text-right">
+          {comment.length} {t("common.characters")}
+        </p>
       </div>
 
       {/* Action Buttons */}
-      <div className="centered gap-4 pt-4">
+      <div className="flex gap-4 pt-4">
         <button
           onClick={onClose}
           disabled={loading}
@@ -140,7 +101,7 @@ const AdministrativeCommentModal = ({ booking, onClose }) => {
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className="flex-1 font-ibm text-center px-6 py-2.5 bg-mainColor text-white rounded-lg font-medium hover:bg-linksHover transition-colors disabled:opacity-50 disabled:cursor-not-allowed centered gap-2"
+          className="flex-1 font-ibm text-center px-6 py-2.5 bg-mainColor text-white rounded-lg font-medium hover:bg-linksHover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {loading && <CircularProgress size={16} color="inherit" />}
           {t("links.send")}
