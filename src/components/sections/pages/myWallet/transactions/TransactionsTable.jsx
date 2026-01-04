@@ -81,7 +81,7 @@ const TransactionsTable = ({
               <tbody>
                 {hasNoData ? (
                   <tr>
-                    <td colSpan="5" className="px-6 py-12 text-center">
+                    <td colSpan="12" className="px-6 py-12 text-center">
                       <div className="text-muted-foreground">
                         <p className="text-lg font-medium mb-2 text-foreground">
                           {t("noResults.title")}

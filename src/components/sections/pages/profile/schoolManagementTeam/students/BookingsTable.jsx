@@ -92,7 +92,7 @@ const BookingsTable = ({ bookings = [] }) => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="5" className="p-8 text-center text-textLight">
+                    <td colSpan="12" className="p-8 text-center text-textLight">
                       {t("profile.schoolTeamStudents.details.noData")}
                     </td>
                   </tr>
