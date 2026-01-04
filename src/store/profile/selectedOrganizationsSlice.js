@@ -54,6 +54,7 @@ export const selectedOrganizationsSlice = createSlice({
     },
     clearSelectedOrganizations: (state) => {
       state.selectedIds = [];
+      state.organizations = [];
     },
     setOrganizationsLoading: (state) => {
       state.loading = "loading";
