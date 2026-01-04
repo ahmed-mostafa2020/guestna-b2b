@@ -22,8 +22,9 @@ const OrganizationSelector = () => {
   const dispatch = useDispatch();
   const dropdownRef = useRef(null);
 
-  const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
-
+  const [token, setToken] = useState(() =>
+    Cookies.get(CONSTANT_VALUES.AUTH_TOKEN)
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -35,7 +36,7 @@ const OrganizationSelector = () => {
   // Fetch organizations from API (skip org header to avoid circular dependency)
   const shouldFetch = Boolean(token);
 
-  const { data, isLoading } = useFetchData(
+  const { data, isLoading, refetch } = useFetchData(
     B2B_END_POINTS.PROFILE.HEADER_FILTER_BY_ORGANIZATION,
     {},
     {
@@ -44,6 +45,31 @@ const OrganizationSelector = () => {
       enabled: shouldFetch,
     }
   );
+
+  // Monitor token changes and refetch when token becomes available
+  useEffect(() => {
+    const checkToken = () => {
+      const currentToken = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
+      if (currentToken && currentToken !== token) {
+        setToken(currentToken);
+        // Trigger refetch when token becomes available
+        if (refetch) {
+          refetch();
+        }
+      } else if (!currentToken && token) {
+        // Token was removed (logout)
+        setToken(null);
+      }
+    };
+
+    // Check immediately
+    checkToken();
+
+    // Set up interval to check for token changes (useful after login)
+    const interval = setInterval(checkToken, 500);
+
+    return () => clearInterval(interval);
+  }, [token, refetch]);
 
   // Update organizations in Redux when data changes
   useEffect(() => {
