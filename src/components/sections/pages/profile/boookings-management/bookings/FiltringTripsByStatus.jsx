@@ -67,11 +67,7 @@ const FiltringTripsByStatus = ({ onStatusChange, activeStatus = "ALL" }) => {
               `}
             >
               {/* Status label */}
-              <span
-                className={`font-medium py-3 text-center leading-tight ${
-                  selectedStatus === tab.key ? "text-black" : "text-white"
-                }`}
-              >
+              <span className="font-medium py-3 text-center leading-tight text-black">
                 {tab.label}
               </span>
             </button>
