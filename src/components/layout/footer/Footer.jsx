@@ -14,7 +14,7 @@ import visaLogo from "@assets/paymentLogos/visa.svg";
 import masterCardLogo from "@assets/paymentLogos/master-card.svg";
 import applePayLogo from "@assets/paymentLogos/apple-pay.svg";
 import amExpressLogo from "@assets/paymentLogos/amExpress.png";
-import tamaraLogo from "@assets/paymentLogos/tamara.svg";
+import tamaraLogo from "@assets/paymentLogos/tamaraEnglish.webp";
 
 const Footer = () => {
   const locale = useLocale();

@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import EmptyProfileResponse from "../EmptyProfileResponse";
 
-import emptyMessages from "@assets/gif/emptyMessages.gif";
+import emptyMessages from "@assets/gif/emptyMessages.webp";
 
 const EmptyMessages = () => {
   const t = useTranslations();
