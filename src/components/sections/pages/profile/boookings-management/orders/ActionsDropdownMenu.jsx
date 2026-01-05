@@ -162,7 +162,7 @@ const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
           )}
 
           {canUpdateTrip && bookingStatus !== TRIP_STATUS.DONE && (
-            <MenuItem onClick={showEditOrderForm} disabled={loadingEditDetails}>
+            <MenuItem onClick={showEditOrderForm} disabled={true}>
               {loadingEditDetails ? (
                 <CircularProgress size={17} color="primary" />
               ) : (

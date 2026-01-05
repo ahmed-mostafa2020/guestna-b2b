@@ -20,13 +20,19 @@ const ResetButton = ({ onReset }) => {
   );
 };
 
-const SearchAndFilters = ({ showTitle, search, isLoading, filters, date , onReset}) => {
+const SearchAndFilters = ({
+  showTitle,
+  search,
+  isLoading,
+  filters,
+  date,
+  onReset,
+}) => {
   // const [open, setOpen] = useState(false);
   const t = useTranslations();
 
-  const totalInputs = (search ? 1 : 0) + (date ? 1 : 0)  + filters.length;
+  const totalInputs = (search ? 1 : 0) + (date ? 1 : 0) + filters.length;
 
- 
   const renderFilters = (skeletonWidth, skeletonHeight) => (
     <>
       {isLoading
@@ -120,9 +126,11 @@ const SearchAndFilters = ({ showTitle, search, isLoading, filters, date , onRese
             />
           )}
         </Box>
-        <Box className="flex justify-end my-2">
-          {onReset && <ResetButton onReset={onReset} />}
-        </Box>
+        {onReset && (
+          <Box className="flex justify-end my-2">
+            <ResetButton onReset={onReset} />
+          </Box>
+        )}
       </Box>
     </Box>
   );

@@ -42,6 +42,11 @@ const BookingsPage = () => {
       body.filter.tracks = [filter.track];
     }
 
+    // Add academicStage filter
+    if (filter.academicStage) {
+      body.filter.academicStages = [filter.academicStage];
+    }
+
     // Add date filter
     if (filter.day) {
       body.filter.day = filter.day;
