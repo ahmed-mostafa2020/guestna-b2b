@@ -5,6 +5,8 @@ import Image from "next/image";
 
 import { useLocale, useTranslations } from "next-intl";
 
+import { getGtmTag } from "@utils/gtmUtils";
+
 import { Container } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 
@@ -101,6 +103,12 @@ const Footer = () => {
         key={index}
         target="_blank"
         className="font-normal leading-7 capitalize transition-all duration-200 ease-in-out border-b border-transparent w-fit text-footerLink hover:border-footerLink"
+        {...getGtmTag(
+          `footer_company_${companyLink.name
+            .toLowerCase()
+            .replace(/\s+/g, "_")}`,
+          "footer"
+        )}
       >
         {companyLink.name}
       </Link>
@@ -113,6 +121,12 @@ const Footer = () => {
         href={supportLink.url}
         key={index}
         className="font-normal leading-7 capitalize transition-all duration-200 ease-in-out border-b border-transparent w-fit text-footerLink hover:border-footerLink"
+        {...getGtmTag(
+          `footer_support_${supportLink.name
+            .toLowerCase()
+            .replace(/\s+/g, "_")}`,
+          "footer"
+        )}
       >
         {supportLink.name}
       </Link>
@@ -124,6 +138,10 @@ const Footer = () => {
       href={legalLink.url}
       key={index}
       className="font-normal leading-7 capitalize transition-all duration-200 ease-in-out border-b border-transparent w-fit text-footerLink hover:border-footerLink"
+      {...getGtmTag(
+        `footer_legal_${legalLink.name.toLowerCase().replace(/\s+/g, "_")}`,
+        "footer"
+      )}
     >
       {legalLink.name}
     </Link>

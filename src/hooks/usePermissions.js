@@ -72,6 +72,40 @@ export const usePermissions = () => {
     return pageList.some((page) => pages.includes(page));
   };
 
+  /**
+   * Get GTM (Google Tag Manager) data attributes for an element
+   * Use by spreading the returned object onto an interactive element
+   * @param {string} permissionName - Permission name to use as GTM tag (e.g., "b2b_profile_users_add_user")
+   * @param {string} category - Optional category for grouping (defaults to extracting from permission name)
+   * @returns {Object} Object with data-gtm and data-gtm-category attributes
+   * @example
+   * <button {...getGtmProps(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_ADD_USER)}>Add User</button>
+   */
+  const getGtmProps = (permissionName, category = null) => {
+    if (!permissionName) return {};
+
+    // Extract category from permission name if not provided
+    // e.g., "b2b_profile_users_add_user" -> "users"
+    const extractedCategory =
+      category || permissionName.split("_").slice(2, 3).join("_") || "general";
+
+    return {
+      "data-gtm": permissionName,
+      "data-gtm-category": extractedCategory,
+    };
+  };
+
+  /**
+   * Get GTM props only if user has the element permission
+   * Combines permission check with GTM tracking
+   * @param {string} element - Element permission to check
+   * @returns {Object|null} GTM props if has permission, null otherwise
+   */
+  const getGtmPropsIfAllowed = (element) => {
+    if (!hasElement(element)) return null;
+    return getGtmProps(element);
+  };
+
   return {
     hasElement,
     hasAnyElement,
@@ -80,6 +114,10 @@ export const usePermissions = () => {
     hasAnyMenuItem,
     hasPage,
     hasAnyPage,
+    // GTM tracking utilities
+    getGtmProps,
+    getGtmPropsIfAllowed,
+    // Raw permission arrays
     elements,
     menuItems,
     pages,

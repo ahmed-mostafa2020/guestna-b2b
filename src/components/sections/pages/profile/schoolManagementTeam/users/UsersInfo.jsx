@@ -42,7 +42,7 @@ const UsersInfo = ({
   const t = useTranslations();
   const locale = useLocale();
   const { enqueueSnackbar } = useSnackbar();
-  const { hasElement } = usePermissions();
+  const { hasElement, getGtmProps } = usePermissions();
 
   const [rolesData, setRolesData] = useState([]);
   const [cachedOrganization, setCachedOrganization] = useState(null);
@@ -197,6 +197,7 @@ const UsersInfo = ({
             onClick={openAddModal}
             disabled={addLoading}
             className="flex w-full items-center justify-center gap-2.5 py-4 px-6 font-bold text-white rounded-lg bg-mainColor hover:bg-linksHover"
+            {...getGtmProps(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_ADD_USER)}
           >
             {addLoading && (
               <CircularProgress size={20} className="!text-white" />
@@ -208,6 +209,10 @@ const UsersInfo = ({
             onClick={openBulkModal}
             disabled={bulkLoading}
             className="flex w-full items-center justify-center gap-2.5 py-4 px-6 font-bold text-mainColor rounded-lg border-2 border-mainColor hover:border-linksHover  hover:text-linksHover"
+            {...getGtmProps(
+              PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_ADD_USER,
+              "users_bulk"
+            )}
           >
             {bulkLoading && (
               <CircularProgress size={20} className="!text-mainColor" />

@@ -41,7 +41,7 @@ const RoleCard = ({
   const t = useTranslations();
   const locale = useLocale();
   const { enqueueSnackbar } = useSnackbar();
-  const { hasElement } = usePermissions();
+  const { hasElement, getGtmProps } = usePermissions();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [showUsersModal, setShowUsersModal] = useState(false);
@@ -121,6 +121,7 @@ const RoleCard = ({
               disabled={isDeleting}
               className="absolute -top-2 -end-2 p-1.5 bg-white rounded-full shadow-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed z-10"
               title={t("profile.rolesPermissions.deleteRole")}
+              {...getGtmProps(PERMISSIONS.ELEMENT.B2B_PROFILE_DELETE_ROLE_BTN)}
             >
               {isDeleting ? (
                 <CircularProgress size={16} color="error" />
@@ -313,6 +314,7 @@ const RoleCard = ({
             disabled={isDeleting}
             className="absolute -top-1 -end-1 p-2 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             title={t("profile.rolesPermissions.deleteRole")}
+            {...getGtmProps(PERMISSIONS.ELEMENT.B2B_PROFILE_DELETE_ROLE_BTN)}
           >
             {isDeleting ? (
               <CircularProgress size={20} color="error" />

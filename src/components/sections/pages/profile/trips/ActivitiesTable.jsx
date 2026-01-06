@@ -21,7 +21,7 @@ const ActivitiesTable = ({
   setCurrentPage,
   enablePagination,
 }) => {
-  const { hasElement } = usePermissions();
+  const { hasElement, getGtmProps } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
 
@@ -109,6 +109,10 @@ const ActivitiesTable = ({
                           <Link
                             href={`/${locale}/profile/create-trip-link/${trip.slug}`}
                             className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-linksHover"
+                            {...getGtmProps(
+                              PERMISSIONS.ELEMENT
+                                .B2B_PROFILE_TRIPS_MANAGEMENT_BUTTON
+                            )}
                           >
                             {t("links.tripManagement")}
                           </Link>
@@ -176,6 +180,9 @@ const ActivitiesTable = ({
                     <Link
                       href={`/${locale}/profile/create-trip-link/${trip.slug}`}
                       className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-linksHover"
+                      {...getGtmProps(
+                        PERMISSIONS.ELEMENT.B2B_PROFILE_TRIPS_MANAGEMENT_BUTTON
+                      )}
                     >
                       {t("links.tripManagement")}
                     </Link>

@@ -13,7 +13,7 @@ const InteractiveCalendar = ({
   onMonthChange,
   onAddEvent,
 }) => {
-  const { hasElement } = usePermissions();
+  const { hasElement, getGtmProps } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
 
@@ -69,6 +69,7 @@ const InteractiveCalendar = ({
             <button
               onClick={onAddEvent}
               className="border-2 border-mainColor bg-mainColor text-white px-4 md:px-6 lg:px-8 py-2 rounded-lg hover:bg-mainColor/80 hover:border-mainColor/80 hover:text-white transition-all duration-200 font-medium text-sm md:text-base w-full sm:w-auto"
+              {...getGtmProps(PERMISSIONS.ELEMENT.B2B_PROFILE_ADD_EVENT)}
             >
               {t("profile.calendar.calendar.addEvent")}
             </button>

@@ -8,6 +8,8 @@ import {
   removeFromFavorites,
 } from "@store/favorites/favoritesSlice";
 
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
+
 import { useState, useEffect } from "react";
 
 import { END_POINTS } from "@constants/APIs";
@@ -145,6 +147,12 @@ const FavoriteButton = ({
           disabled={loading || disabledButton}
           onClick={toggleFavorite}
           className="flex items-center gap-1"
+          {...getGtmTag(
+            localFavoriteState
+              ? "trips_remove_from_favorites"
+              : GTM_TAGS.TRIPS.ADD_TO_FAVORITES,
+            "trips"
+          )}
         >
           {loading ? (
             <CircularProgress size={20} sx={{ color: "red" }} />
@@ -163,6 +171,12 @@ const FavoriteButton = ({
           className={`gap-1 centered bg-[#04040473] h-11 w-11  rounded-full end-4 disabled:cursor-not-allowed ${
             isAbsolute && "absolute top-[-60px]"
           }`}
+          {...getGtmTag(
+            localFavoriteState
+              ? "trips_remove_from_favorites"
+              : GTM_TAGS.TRIPS.ADD_TO_FAVORITES,
+            "trips"
+          )}
         >
           {loading ? (
             <CircularProgress size={20} sx={{ color: "red" }} />

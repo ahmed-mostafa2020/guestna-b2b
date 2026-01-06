@@ -2,14 +2,8 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-// import { useState } from "react";
-
-// import RolesMenu from "./RolesMenu";
-
-// import { Box } from "@mui/material";
-// import Menu from "@mui/material/Menu";
-// import CloseIcon from "@mui/icons-material/Close";
 import Link from "next/link";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const LoginButton = () => {
   // const [anchorEl, setAnchorEl] = useState(null);
@@ -29,6 +23,7 @@ const LoginButton = () => {
       <Link
         href={`/${locale}/login`}
         className="px-4 py-2 text-center font-bold text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor hover:bg-linksHover hover:border-linksHover"
+        {...getGtmTag(GTM_TAGS.AUTH.LOGIN_BUTTON, "auth")}
       >
         {t("header.login")}
       </Link>

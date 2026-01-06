@@ -29,7 +29,7 @@ import OrderDetailsModal from "./OrderDetailsModal";
 import EditOrderForm from "@components/forms/editOrder";
 
 const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
-  const { hasElement } = usePermissions();
+  const { hasElement, getGtmProps } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
   const { enqueueSnackbar } = useSnackbar();
@@ -142,6 +142,9 @@ const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
                 openModal(bookingId);
               }}
               disabled={loadingDetails}
+              {...getGtmProps(
+                PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOW_DETAILS
+              )}
             >
               {loadingDetails ? (
                 <CircularProgress size={17} color="primary" />
@@ -152,7 +155,14 @@ const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
           )}
 
           {canRemindGuestna && bookingStatus !== TRIP_STATUS.DONE && (
-            <MenuItem onClick={sendRemind} disabled={loading}>
+            <MenuItem
+              onClick={sendRemind}
+              disabled={loading}
+              {...getGtmProps(
+                PERMISSIONS.ELEMENT
+                  .B2B_PROFILE_ORDER_MANAGEMENT_REMINDER_GUESTNA
+              )}
+            >
               {loading ? (
                 <CircularProgress size={17} color="primary" />
               ) : (
@@ -162,7 +172,13 @@ const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
           )}
 
           {canUpdateTrip && bookingStatus !== TRIP_STATUS.DONE && (
-            <MenuItem onClick={showEditOrderForm} disabled={true}>
+            <MenuItem
+              onClick={showEditOrderForm}
+              disabled={true}
+              {...getGtmProps(
+                PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_UPDATE_TRIP
+              )}
+            >
               {loadingEditDetails ? (
                 <CircularProgress size={17} color="primary" />
               ) : (

@@ -18,7 +18,7 @@ import { PERMISSIONS } from "@constants/permissions";
 
 const UserCard = ({ user, onEdit, onDelete, editPermission = false }) => {
   const t = useTranslations();
-  const { hasElement } = usePermissions();
+  const { hasElement, getGtmProps } = usePermissions();
 
   const ActionButton = ({ onClick, label, colorClass }) => (
     <button
@@ -84,6 +84,9 @@ const UserCard = ({ user, onEdit, onDelete, editPermission = false }) => {
                     : t("profile.schools_users.edit")
                 }
                 colorClass="hover:!text-mainColor text-black"
+                {...getGtmProps(
+                  PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_EDIT_PERMISSIONS
+                )}
               />
             )}
 
@@ -92,6 +95,7 @@ const UserCard = ({ user, onEdit, onDelete, editPermission = false }) => {
                 onClick={onDelete}
                 label={t("profile.schools_users.delete.title")}
                 colorClass="hover:!text-error text-black"
+                {...getGtmProps(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_DELETE)}
               />
             )}
           </Stack>

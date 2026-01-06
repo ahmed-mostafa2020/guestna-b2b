@@ -21,7 +21,7 @@ const ReportTable = ({
   enablePagination,
   tableTitle,
 }) => {
-  const { hasAnyElement, hasElement } = usePermissions();
+  const { hasAnyElement, hasElement, getGtmProps } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
   const [showSurveyForm, setShowSurveyForm] = useState(false);
@@ -141,6 +141,10 @@ const ReportTable = ({
                                 }
                                 onClick={() => handleSurveyFormOpen(booking)}
                                 className="disabled:opacity-70 disabled:cursor-not-allowed flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
+                                {...getGtmProps(
+                                  PERMISSIONS.ELEMENT
+                                    .B2B_PROFILE_ACHIENVEMENT_CONFIRMATION
+                                )}
                               >
                                 {t("links.ConfirmationOfAchievement")}
                               </button>
@@ -157,6 +161,9 @@ const ReportTable = ({
                                     ? "opacity-70 cursor-not-allowed text-gray-700 border-gray-300"
                                     : "hover:text-mainColor hover:border-mainColor"
                                 }`}
+                                {...getGtmProps(
+                                  PERMISSIONS.ELEMENT.B2B_PROFILE_FINAL_REPORT
+                                )}
                               >
                                 {t("links.finalReport")}
                               </button>
@@ -227,6 +234,10 @@ const ReportTable = ({
                           }
                           onClick={() => handleSurveyFormOpen(booking)}
                           className="disabled:opacity-70 disabled:cursor-not-allowed flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
+                          {...getGtmProps(
+                            PERMISSIONS.ELEMENT
+                              .B2B_PROFILE_ACHIENVEMENT_CONFIRMATION
+                          )}
                         >
                           {t("links.ConfirmationOfAchievement")}
                         </button>
@@ -243,6 +254,9 @@ const ReportTable = ({
                               ? "opacity-70 cursor-not-allowed text-gray-700 border-gray-300"
                               : "hover:text-mainColor hover:border-mainColor"
                           }`}
+                          {...getGtmProps(
+                            PERMISSIONS.ELEMENT.B2B_PROFILE_FINAL_REPORT
+                          )}
                         >
                           {t("links.finalReport")}
                         </button>
