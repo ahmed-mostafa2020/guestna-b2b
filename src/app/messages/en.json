@@ -2170,6 +2170,14 @@
         "description": "Your request has been sent successfully. Our team will contact you within 24 hours."
       },
 
+      "steps": {
+        "school_info": "School Information",
+        "trip_info": "Trip Information",
+        "trip_date": "Trip Date",
+        "pricing": "Pricing",
+        "additional": "Additional Information"
+      },
+
       "organization": {
         "placeholder": "School Name"
       },

@@ -549,6 +549,8 @@ export const createCustomNewTripSchema = (t) =>
   Yup.object().shape({
     organization: Yup.string().required(t("forms.validation.require")),
     track: Yup.string().optional(),
+    tripNameEn: Yup.string().required(t("forms.validation.require")),
+    tripNameAr: Yup.string().required(t("forms.validation.require")),
     category: Yup.string().required(t("forms.validation.require")),
     tripType: Yup.string().required(t("forms.validation.require")),
     city: Yup.string().required(t("forms.validation.require")),
@@ -557,6 +559,9 @@ export const createCustomNewTripSchema = (t) =>
       .required(t("forms.validation.require"))
       .min(1, t("forms.customTrip.expectedParticipants.error.min"))
       .max(1000, t("forms.customTrip.expectedParticipants.error.max")),
+    bookingDeadline: Yup.number()
+      .required(t("forms.validation.require"))
+      .min(0, t("forms.customTrip.bookingDeadline.error.min")),
     day: Yup.date()
       .required(t("forms.validation.require"))
       .min(new Date(), t("forms.customTrip.proposedTripDate.error.pastDate"))
@@ -581,6 +586,8 @@ export const createCustomNewTripSchema = (t) =>
           return new Date(value) >= new Date(day);
         }
       ),
+    startTime: Yup.string().required(t("forms.validation.require")),
+    endTime: Yup.string().required(t("forms.validation.require")),
     services: Yup.array().min(1, t("forms.validation.require")),
     basePrice: Yup.number()
       .required(t("forms.validation.require"))
