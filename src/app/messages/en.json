@@ -1,5 +1,7 @@
 {
   "common": {
+    "back":"Back",
+    "next":"Next",
     "autocomplete": {
       "noOptions": "No options",
       "loading": "Loading..."
@@ -2210,6 +2212,28 @@
 
       "targetedTrip": {
         "placeholder": "Target Stage"
+      },
+      "academicStages": {
+        "placeholder": "Academic Stage"
+      },
+      "tripNameEn": {
+        "placeholder": "Trip Name in English"
+      },
+      "tripNameAr": {
+        "placeholder": "Trip Name in Arabic"
+      },
+
+      "time_range":{
+        "from_hour":"From Hour",
+        "to_hour":"To Hour"
+      },
+
+      "bookingBefore":{
+        "placeholder":"Booking Before",
+        "error":{
+          "min":"At least 1 day before trip date",
+          "max":"No more than 30 days before trip date"
+        }
       },
 
       "expectedParticipants": {

@@ -1,5 +1,5 @@
 import React from "react";
-import SelectionGroup from "../../SelectionGroup";
+import SelectionGroup from "@components/forms/SelectionGroup";
 
 const StepSchoolInfo = ({
   values,
@@ -61,7 +61,7 @@ const StepSchoolInfo = ({
           onBlur={handleBlur}
           touched={touched.academicStages}
           errors={errors.academicStages}
-          placeholder={t("forms.customTrip.academicStage.placeholder")}
+          placeholder={t("forms.customTrip.academicStages.placeholder")}
           list={academicStagesOptions}
           multiple={true}
         />

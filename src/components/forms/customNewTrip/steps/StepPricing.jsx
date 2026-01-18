@@ -1,5 +1,5 @@
 import React from "react";
-import TextInputGroup from "../../TextInputGroup";
+import TextInputGroup from "@components/forms/TextInputGroup";
 
 const StepPricing = ({
   values,
@@ -15,7 +15,7 @@ const StepPricing = ({
       {/* Price */}
       <div className="somar-placeholder">
         <label className="block mb-2 text-sm font-medium text-gray-700">
-          {t("forms.customTrip.price.label") || "السعر"}
+          {t("forms.customTrip.price.placeholder") }
         </label>
         <TextInputGroup
           type="number"
@@ -36,8 +36,7 @@ const StepPricing = ({
       {/* Expected Participants / Available Seats */}
       <div className="somar-placeholder">
         <label className="block mb-2 text-sm font-medium text-gray-700">
-          {t("forms.customTrip.expectedParticipants.label") ||
-            "عدد المقاعد المتاحة للحجز"}
+          {t("forms.customTrip.expectedParticipants.placeholder") }
         </label>
         <TextInputGroup
           type="number"

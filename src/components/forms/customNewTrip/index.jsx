@@ -7,7 +7,7 @@ import { memo, useState, useEffect, useRef } from "react";
 import { Formik } from "formik";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { CircularProgress, Stepper, Step, StepLabel } from "@mui/material";
+import { CircularProgress, Stepper, Step, StepLabel, Box } from "@mui/material";
 
 import { createCustomNewTripSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
@@ -112,11 +112,11 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
   };
 
   const steps = [
-    t("forms.customTrip.steps.schoolInfo") || "معلومات عن المدرسة", // Fallback if key missing
-    t("forms.customTrip.steps.tripInfo") || "معلومات الرحلة",
-    t("forms.customTrip.steps.tripDate") || "تاريخ الرحلة",
-    t("forms.customTrip.steps.pricing") || "التسعير",
-    t("forms.customTrip.steps.additionalInfo") || "معلومات إضافية",
+    t("forms.customTrip.steps.school_info"),
+    t("forms.customTrip.steps.trip_info"),
+    t("forms.customTrip.steps.trip_date"),
+    t("forms.customTrip.steps.pricing"),
+    t("forms.customTrip.steps.additional_info"),
   ];
 
   const handleNext = async (formik) => {
@@ -162,11 +162,11 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
           "tripNameAr",
         ];
       case 2: // Date
-        return ["day", "endDay", "bookingDeadline", "startTime", "endTime"];
+        return ["day", "endDay", "bookingBefore", "fromHour", "toHour"];
       case 3: // Pricing
         return ["basePrice", "availableSeats"];
       case 4: // Additional
-        return ["description", "specialRequirements", "file"];
+        return [ "specialRequirements", "file"];
       default:
         return [];
     }
@@ -288,7 +288,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
         {t("forms.customTrip.title")}
       </h3>
 
-      <div className="mb-8 px-4" dir={locale === "ar" ? "rtl" : "ltr"}>
+      <Box className="mb-10 w-full" dir={locale === "ar" ? "rtl" : "ltr"}>
         <Stepper
           activeStep={activeStep}
           alternativeLabel
@@ -307,18 +307,26 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
               color: "var(--color-main)",
               fontWeight: 600,
             },
-            "& .MuiStepConnector-line": {
-              borderColor: "#e0e0e0",
-              borderTopWidth: 2,
+            "& .MuiStepConnector-root": {
+              top: "1.5rem", 
+              left: "calc(50% + 25px)",
+              right: "calc(-50% + 25px)",
+              "& .MuiStepConnector-line": {
+                borderColor: "#e0e0e0",
+                borderTopWidth: 2,
+              },
+              "&.Mui-completed .MuiStepConnector-line": {
+                borderColor: "var(--color-success)",
+              },
+              "&.Mui-active .MuiStepConnector-line": {
+                borderColor: "var(--color-main)",
+              },
             },
-            "& .MuiStepConnector-root.Mui-completed .MuiStepConnector-line": {
-              borderColor: "var(--color-success)",
-            },
-            "& .MuiStepConnector-root.Mui-active .MuiStepConnector-line": {
-              borderColor: "var(--color-main)",
+            "& .MuiStep-root:first-of-type .MuiStepConnector-root": {
+              display: "none",
             },
             "& .MuiStepIcon-root": {
-              fontSize: "2rem",
+              fontSize: "3rem",
               "&.Mui-completed": {
                 color: "var(--color-success)",
               },
@@ -331,7 +339,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
             },
             "& .MuiStepLabel-label": {
               marginTop: "8px",
-              fontSize: "0.875rem",
+              fontSize: "1rem",
               fontFamily: "somar, sans-serif",
             },
           }}
@@ -339,39 +347,43 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
           {steps.map((label, index) => (
             <Step key={label}>
               <StepLabel
-                StepIconProps={{
-                  sx: {
-                    width: 40,
-                    height: 40,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: "50%",
-                    border: "2px solid",
-                    borderColor:
-                      index === activeStep
-                        ? "var(--color-main)"
-                        : index < activeStep
-                        ? "var(--color-success)"
-                        : "#bdbdbd",
-                    backgroundColor:
-                      index === activeStep
-                        ? "var(--color-main)"
-                        : index < activeStep
-                        ? "var(--color-success)"
-                        : "white",
-                    color: index <= activeStep ? "white" : "#bdbdbd",
-                    fontWeight: "bold",
-                    fontSize: "1rem",
+                slotProps={{
+                  stepIcon: {
+                    sx: {
+                      width: 50,
+                      height: 50,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: "50%",
+                      border: "4px solid",
+                      borderColor:
+                        index === activeStep
+                          ? "var(--color-main)"
+                          : index < activeStep
+                          ? "var(--color-success)"
+                          : "#bdbdbd",
+                      backgroundColor:
+                        index === activeStep
+                          ? "var(--color-main)"
+                          : index < activeStep
+                          ? "var(--color-success)"
+                          : "white",
+                      color: index <= activeStep ? "white" : "#bdbdbd",
+                      fontWeight: "bold",
+                      fontSize: "2rem",
+                      zIndex: 1, // Ensure icon is above the line
+                    },
                   },
                 }}
+               
               >
                 {label}
               </StepLabel>
             </Step>
           ))}
         </Stepper>
-      </div>
+      </Box>
 
       <div className="p-4">
         <style jsx>{`
@@ -400,14 +412,14 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
             day: "",
             endDay: "",
             services: [],
-            description: "",
+          
             specialRequirements: "",
             file: null,
             tripNameEn: "",
             tripNameAr: "",
-            bookingDeadline: "",
-            startTime: "",
-            endTime: "",
+            bookingBefore: "",
+            fromHour: "",
+            toHour: "",
           }}
           validationSchema={customTripSchema}
           onSubmit={handleSubmit}

@@ -1,5 +1,7 @@
 {
   "common": {
+    "back": "رجوع",
+    "next": "التالي",
     "autocomplete": {
       "noOptions": "لا توجد خيارات",
       "loading": "جاري التحميل..."
@@ -2173,7 +2175,7 @@
         "trip_info": "معلومات الرحلة",
         "trip_date": "تاريخ الرحلة",
         "pricing": "التسعير",
-        "additional": "معلومات إضافية"
+        "additional_info": "معلومات إضافية"
       },
 
       "organization": {
@@ -2209,6 +2211,22 @@
       "targetedTrip": {
         "placeholder": "المرحلة المستهدفة"
       },
+      "academicStages": {
+        "placeholder": "المرحلة الدراسية"
+      },
+      "tripNameEn": {
+        "placeholder": "اسم الرحلة باللغة الانجليزية"
+      },
+      "tripNameAr": {
+        "placeholder": "اسم الرحلة باللغة العربية"
+      },
+
+      "time_range": {
+        "from_hour": "من ساعة",
+        "to_hour": "إلى ساعة"
+      },
+
+    
 
       "expectedParticipants": {
         "placeholder": "العدد المتوقع",
@@ -2225,6 +2243,13 @@
           "pastDate": "لا يمكن أن يكون تاريخ الرحلة في الماضي",
           "startAfterEnd": "تاريخ البداية يجب أن يكون قبل تاريخ النهاية",
           "endBeforeStart": "تاريخ النهاية يجب أن يكون بعد تاريخ البداية (يمكن أن يكون نفس التاريخ لرحلة يوم واحد)"
+        },
+        "bookingBefore": {
+          "placeholder": "انتهاء الحجز",
+          "error": {
+            "min": "علي الاقل قبل ميعاد الرحلة بيوم واحد",
+            "max": "لا يمكن أن يتجاوز الحجز 30 يوما"
+          }
         }
       },
 

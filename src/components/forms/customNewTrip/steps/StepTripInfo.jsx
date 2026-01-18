@@ -1,6 +1,6 @@
 import React from "react";
-import SelectionGroup from "../../SelectionGroup";
-import TextInputGroup from "../../TextInputGroup";
+import SelectionGroup from "@components/forms/SelectionGroup";
+import TextInputGroup from "@components/forms/TextInputGroup";
 
 const StepTripInfo = ({
   values,
@@ -18,10 +18,9 @@ const StepTripInfo = ({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Trip Name English */}
-      <div className="somar-placeholder">
+      <div>
         <label className="block mb-2 text-sm font-medium text-gray-700">
-          {t("forms.customTrip.tripNameEn.label") ||
-            "The name of the trip in English"}
+          {t("forms.customTrip.tripNameEn.placeholder")}
         </label>
         <TextInputGroup
           type="text"
@@ -31,17 +30,14 @@ const StepTripInfo = ({
           touched={touched.tripNameEn}
           onChange={handleChange}
           onBlur={handleBlur}
-          placeholder={
-            t("forms.customTrip.tripNameEn.placeholder") ||
-            "Write the name of the trip in English"
-          }
+          placeholder={t("forms.customTrip.tripNameEn.placeholder")}
         />
       </div>
 
       {/* Trip Name Arabic */}
-      <div className="somar-placeholder">
+      <div>
         <label className="block mb-2 text-sm font-medium text-gray-700">
-          {t("forms.customTrip.tripNameAr.label") || "اسم الرحلة بالعربي"}
+          {t("forms.customTrip.tripNameAr.placeholder")}
         </label>
         <TextInputGroup
           type="text"
@@ -59,9 +55,9 @@ const StepTripInfo = ({
       </div>
 
       {/* Selected Trip (Category) */}
-      <div className="somar-placeholder">
+      <div>
         <label className="block mb-2 text-sm font-medium text-gray-700">
-          {t("forms.customTrip.selectedTrip.label") || "نوع الرحلة"}
+          {t("forms.customTrip.selectedTrip.placeholder")}
         </label>
         <SelectionGroup
           name="category"
@@ -76,9 +72,9 @@ const StepTripInfo = ({
       </div>
 
       {/* Trip Type */}
-      <div className="somar-placeholder">
+      <div>
         <label className="block mb-2 text-sm font-medium text-gray-700">
-          {t("forms.customTrip.tripType.label") || "مدة الرحلة"}
+          {t("forms.customTrip.tripType.placeholder")}
         </label>
         <SelectionGroup
           name="tripType"
@@ -93,9 +89,9 @@ const StepTripInfo = ({
       </div>
 
       {/* City */}
-      <div className="somar-placeholder">
+      <div>
         <label className="block mb-2 text-sm font-medium text-gray-700">
-          {t("forms.customTrip.city.label") || "المدينة"}
+          {t("forms.customTrip.city.placeholder")}
         </label>
         <SelectionGroup
           name="city"
@@ -109,12 +105,10 @@ const StepTripInfo = ({
         />
       </div>
 
-     
-
       {/* Services */}
-      <div className="somar-placeholder col-span-1 md:col-span-2">
+      <div >
         <label className="block mb-2 text-sm font-medium text-gray-700">
-          {t("forms.customTrip.services.label") || "الخدمات"}
+          {t("forms.customTrip.services.placeholder")}
         </label>
         <SelectionGroup
           name="services"
