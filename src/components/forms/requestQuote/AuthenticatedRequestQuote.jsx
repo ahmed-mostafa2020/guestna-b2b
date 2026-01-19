@@ -156,7 +156,6 @@ const AuthenticatedRequestQuote = ({
         day: tripData.fromDay ? tripData.fromDay.split("T")[0] : "",
         endDay: tripData.toDay ? tripData.toDay.split("T")[0] : "",
         services: tripData.services?.map((service) => service.name) || [],
-        description: tripData.description || "",
         specialRequirements: tripData.specialRequirements || "",
       }
     : null;
@@ -177,7 +176,6 @@ const AuthenticatedRequestQuote = ({
         day: "",
         endDay: "",
         services: [],
-        description: "",
         specialRequirements: "",
         file: "",
       };
@@ -196,7 +194,6 @@ const AuthenticatedRequestQuote = ({
       day: tripData.fromDay ? tripData.fromDay.split("T")[0] : "",
       endDay: tripData.toDay ? tripData.toDay.split("T")[0] : "",
       services: tripData.services?.map((service) => service.name) || [],
-      description: tripData.description || "",
       specialRequirements: tripData.specialRequirements || "",
       file: "",
     };

@@ -534,7 +534,8 @@ export const createAuthenticatedRequestQuoteSchema = (t) =>
       ),
     services: Yup.array().optional(),
     basePrice: Yup.number()
-      .required(t("forms.validation.require"))
+      // .required(t("forms.validation.require"))
+      .optional()
       .min(1, t("forms.customTrip.price.error.min")),
     description: Yup.string()
       .optional()
