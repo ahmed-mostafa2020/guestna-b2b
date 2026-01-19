@@ -16,7 +16,7 @@ const StepTripDate = ({
       {/* Booking Before */}
       <div>
         <label className="block mb-2 text-sm font-medium text-gray-700">
-          {t("forms.customTrip.proposedTripDate.bookingBefore.placeholder")}
+          {t("forms.customTrip.bookingBefore.placeholder")}
         </label>
         <TextInputGroup
           type="number"
