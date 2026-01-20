@@ -33,6 +33,7 @@ const DiscoverFiltersSection = () => {
     const urlFilters = {};
 
     searchParams.forEach((value, key) => {
+      if (key === "page") return;
       urlFilters[key] = value.split(",");
     });
 
@@ -62,6 +63,7 @@ const DiscoverFiltersSection = () => {
       const params = new URLSearchParams(searchParams.toString());
 
       if (values.length) {
+        if (key === "page") return;
         params.set(key, values.join(","));
       } else {
         params.delete(key);
@@ -76,8 +78,10 @@ const DiscoverFiltersSection = () => {
 
   const handleReset = useCallback(() => {
     dispatch(setDiscoverFilters({}));
-    router.replace(pathname, { scroll: false });
-  }, [dispatch, pathname, router]);
+    const params = new URLSearchParams(searchParams.toString());
+    const page = params.get("page");
+    router.replace(`${pathname}${page ? `?page=${page}` : ""}`, { scroll: false });
+  }, [dispatch, pathname, router, searchParams]);
 
   const filters = useMemo(() => {
     const {
