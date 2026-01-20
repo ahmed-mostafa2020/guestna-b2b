@@ -667,7 +667,7 @@ const AuthenticatedRequestQuote = ({
                     </div>
                   </div>
 
-                  {/* Row 3: Start Date and End Date */}
+                  {/* Row 3: Start Date and End Date  */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                     {/* Proposed Trip Date */}
                     <div className="somar-placeholder">
