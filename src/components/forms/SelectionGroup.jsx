@@ -21,9 +21,17 @@ const SelectionGroup = ({
   multiple = false,
   disabled = false,
   showCheckbox = true, // Always show checkbox by default
+  label = "", // Label text for the field
+  required = false, // Show asterisk for required fields
 }) => {
   return (
     <FormControl error={touched && Boolean(errors)} className="relative w-full">
+      {label && (
+        <label className="block pb-2 font-medium text-textDark">
+          {label}
+          {required && <span className="text-error ml-1">*</span>}
+        </label>
+      )}
       <Select
         labelId={`${name}-label`}
         id={name}

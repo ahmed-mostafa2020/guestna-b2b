@@ -512,6 +512,7 @@ const AuthenticatedRequestQuote = ({
                       <div className="somar-placeholder">
                         <SelectionGroup
                           name="organization"
+                          label={t("forms.customTrip.organization.label")}
                           value={values.organization}
                           onChange={(e) => {
                             handleChange(e);
@@ -529,6 +530,7 @@ const AuthenticatedRequestQuote = ({
                             "forms.customTrip.organization.placeholder"
                           )}
                           list={organizationOptions}
+                          required={true}
                         />
                       </div>
                       <div className="somar-placeholder">
@@ -546,6 +548,8 @@ const AuthenticatedRequestQuote = ({
                           }
                           list={trackDisplayOptions}
                           disabled={isLoadingTracks || !values.organization}
+                          label={t("forms.customTrip.track.label")}
+                          required={true}
                         />
                       </div>
                     </div>
@@ -553,10 +557,6 @@ const AuthenticatedRequestQuote = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Academic Stage */}
                     <div className="somar-placeholder">
-                      <h4 className="font-medium pb-2">
-                        {t("forms.customTrip.targetedTrip.placeholder")}
-                      </h4>
-
                       <SelectionGroup
                         name="academicStages"
                         value={values.academicStages}
@@ -597,6 +597,7 @@ const AuthenticatedRequestQuote = ({
                         )}
                         list={academicStageOptions}
                         multiple={true}
+                        label={t("forms.customTrip.targetedTrip.label")}
                       />
                     </div>
 
@@ -604,10 +605,6 @@ const AuthenticatedRequestQuote = ({
                     {values.academicStages &&
                       values.academicStages.length > 0 && (
                         <div className="somar-placeholder">
-                          <h4 className="font-medium pb-2">
-                            {t("forms.registerForm.grade.label")}
-                          </h4>
-
                           <SelectionGroup
                             name="grades"
                             value={values.grades}
@@ -620,6 +617,7 @@ const AuthenticatedRequestQuote = ({
                             )}
                             list={gradeOptions}
                             multiple={true}
+                            label={t("forms.registerForm.grade.label")}
                           />
                         </div>
                       )}
@@ -645,14 +643,12 @@ const AuthenticatedRequestQuote = ({
                           "forms.customTrip.expectedParticipants.placeholder"
                         )}
                         min="0"
+                        required={true}
                       />
                     </div>
 
                     {/* Services */}
                     <div className="somar-placeholder">
-                      <label className="block pb-2 font-medium">
-                        {t("forms.customTrip.services.placeholder")}
-                      </label>
                       <SelectionGroup
                         name="services"
                         value={values.services}
@@ -663,6 +659,7 @@ const AuthenticatedRequestQuote = ({
                         placeholder={t("forms.customTrip.services.placeholder")}
                         list={servicesOptions}
                         multiple={true}
+                        label={t("forms.customTrip.services.label")}
                       />
                     </div>
                   </div>
@@ -708,6 +705,7 @@ const AuthenticatedRequestQuote = ({
                           e.target.showPicker && e.target.showPicker()
                         }
                         labelFontFamily="var(--font-somar-sans), sans-serif"
+                        required={true}
                       />
                     </div>
                     {/* End Date - Only show for multi-day trips */}

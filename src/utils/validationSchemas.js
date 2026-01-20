@@ -501,7 +501,7 @@ export const createRequestQuoteSchema = (t) =>
 export const createAuthenticatedRequestQuoteSchema = (t) =>
   Yup.object().shape({
     organization: Yup.string().required(t("forms.validation.require")),
-    track: Yup.string().optional(),
+    track: Yup.string().required(t("forms.customTrip.track.error.required")),
     category: Yup.string().optional(), // readonly field
     tripType: Yup.string().optional(), // readonly field
     city: Yup.string().optional(), // readonly field
