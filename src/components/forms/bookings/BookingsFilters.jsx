@@ -94,6 +94,16 @@ const BookingsFilters = ({ filter, setFilter }) => {
     [locale]
   );
 
+  // Auto-select organization if only one is available
+  useEffect(() => {
+    if (organizationsOptions.length === 1 && !filter.organization) {
+      setFilter((prev) => ({
+        ...prev,
+        organization: organizationsOptions[0].value,
+      }));
+    }
+  }, [organizationsOptions, filter.organization]);
+
   // Fetch tracks when organization changes
   useEffect(() => {
     if (filter.organization) {
