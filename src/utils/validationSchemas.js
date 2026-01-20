@@ -537,9 +537,6 @@ export const createAuthenticatedRequestQuoteSchema = (t) =>
       // .required(t("forms.validation.require"))
       .optional()
       .min(1, t("forms.customTrip.price.error.min")),
-    description: Yup.string()
-      .optional()
-      .max(500, t("forms.customTrip.tripDescription.error.max")),
     specialRequirements: Yup.string()
       .optional()
       .max(300, t("forms.customTrip.specialRequirements.error.max")),
