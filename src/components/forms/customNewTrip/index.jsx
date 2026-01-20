@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 
-import { memo, useState, useEffect, useRef } from "react";
+import { memo, useState, useEffect, useRef, useMemo } from "react";
 import { Formik } from "formik";
 import axios from "axios";
 import { useSnackbar } from "notistack";
@@ -22,13 +22,12 @@ import StepPricing from "./steps/StepPricing";
 import StepAdditionalInfo from "./steps/StepAdditionalInfo";
 
 const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
+  console.log("formSelectionData", formSelectionData);
   const [activeStep, setActiveStep] = useState(0);
   const [formErrors, setFormErrors] = useState([]);
-  const [tracksData, setTracksData] = useState([]);
-  const [isLoadingTracks, setIsLoadingTracks] = useState(false);
 
-  const selectedOrganization = useSelector(
-    (state) => state.selectedOrganizations.organizations
+  const { selectedIds, organizations, allSelected, loading } = useSelector(
+    (state) => state.selectedOrganizations
   );
 
   const locale = useLocale();
@@ -39,7 +38,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
   const { enqueueSnackbar } = useSnackbar();
 
   // Keep full objects for _id lookup
-  const organizationData = selectedOrganization || [];
+
   const categoryData = formSelectionData.categories;
   const tripTypeData = [
     {
@@ -55,61 +54,32 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
       _id: CONSTANT_VALUES.PACKAGE,
     },
   ];
-  const cityData = formSelectionData.cities;
-  const academicStagesData = formSelectionData.academicStages;
-  const servicesData = formSelectionData.services;
+  const cityData = formSelectionData.cities || [];
+  const academicStagesData = formSelectionData.academicStages || [];
+  const servicesData = formSelectionData.services || [];
+  const supCategoryData = formSelectionData.supCategory || [];
 
-  // Extract names for dropdown display
-  const organizationOptions = organizationData.map((item) => item.name);
-  const categoryOptions = categoryData.map((item) => item.name);
-  const tripTypeOptions = tripTypeData.map((item) => item.name);
-  const cityOptions = cityData.map((item) => item.name);
-  const academicStagesOptions = academicStagesData.map((item) => item.name);
-  const servicesOptions = servicesData.map((item) => item.name);
-
-  // Format track options: educationSystem + gender + academicStages
-  const trackOptions = tracksData.map((track) => {
-    const stages =
-      track.academicStages?.map((stage) => stage.name).join(", ") || "";
-    return {
-      name: `${track.educationSystem} - ${t(
-        `common.${track.gender}`
-      )} - ${stages}`,
-      _id: track._id,
-    };
-  });
-  const trackDisplayOptions = trackOptions.map((item) => item.name);
-
-  // Helper function to find _id by name
-  const findIdByName = (options, name) => {
-    const option = options.find((opt) => opt.name === name);
-    return option ? option._id : name;
-  };
-
-  // Fetch tracks when organization is selected
-  const fetchTracksByOrganization = async (organizationId) => {
-    if (!organizationId) {
-      setTracksData([]);
-      return;
-    }
-
-    setIsLoadingTracks(true);
-    try {
-      const response = await axios({
-        method: "get",
-        url: getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.TRACKS}/${organizationId}`
-        ),
-        headers,
-      });
-      setTracksData(response.data || []);
-    } catch (error) {
-      console.error("Error fetching tracks:", error);
-      setTracksData([]);
-    } finally {
-      setIsLoadingTracks(false);
-    }
-  };
+  // Use full data objects for dropdowns (id/name pair)
+   const organizationsOptions = useMemo(() => {
+     if (allSelected) {
+       return organizations
+     }
+ 
+     if (selectedIds.length > 0 && !allSelected && organizations.length > 0) {
+       return selectedIds.map((id) => {
+         const org = organizations.find((org) => org._id === id);
+         return org
+       });
+     }
+ 
+     return [];
+   }, [organizations, selectedIds, allSelected]);
+  const categoryOptions = categoryData;
+  const tripTypeOptions = tripTypeData;
+  const cityOptions = cityData;
+  const academicStagesOptions = academicStagesData;
+  const servicesOptions = servicesData;
+  const supCategoryOptions = supCategoryData;
 
   const steps = [
     t("forms.customTrip.steps.school_info"),
@@ -151,22 +121,22 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
   const getFieldsForStep = (step) => {
     switch (step) {
       case 0: // School Info
-        return ["organization", "track", "academicStages"];
+        return ["schoolsInfo"];
       case 1: // Trip Info
         return [
           "category",
+          "supCategory",
           "tripType",
           "city",
           "services",
-          "tripNameEn",
-          "tripNameAr",
+          "name",
         ];
       case 2: // Date
-        return ["day", "endDay", "bookingBefore", "fromHour", "toHour"];
+        return ["day", "endDay", "fromHour", "toHour"];
       case 3: // Pricing
-        return ["basePrice", "availableSeats"];
+        return ["priceRange", "availableSeats"];
       case 4: // Additional
-        return [ "specialRequirements", "file"];
+        return ["specialRequirements", "file"];
       default:
         return [];
     }
@@ -179,61 +149,53 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
     Object.keys(values).forEach((key) => {
       if (key === "file") {
         formData.append(key, values[key] || "");
-      } else if (key === "tripNameEn") {
-        formData.append("name[en]", values[key]);
-      } else if (key === "tripNameAr") {
-        formData.append("name[ar]", values[key]);
+      } else if (key === "schoolsInfo") {
+        // Process schoolsInfo array
+        values.schoolsInfo.forEach((school, index) => {
+          formData.append(
+            `schoolsInfo[${index}][organization]`,
+            school.organization
+          );
+
+          if (Array.isArray(school.tracks)) {
+            school.tracks.forEach((trackId, tIndex) => {
+              formData.append(
+                `schoolsInfo[${index}][tracks][${tIndex}]`,
+                trackId
+              );
+            });
+          }
+
+          if (Array.isArray(school.academicStages)) {
+            school.academicStages.forEach((stageId, sIndex) => {
+              formData.append(
+                `schoolsInfo[${index}][academicStages][${sIndex}]`,
+                stageId
+              );
+            });
+          }
+        });
       } else if (values[key] !== null && values[key] !== undefined) {
-        let valueToSend = values[key];
-
-        // Convert names to _id for dropdown fields
-        switch (key) {
-          case "organization":
-            valueToSend = findIdByName(organizationData, values[key]);
-            break;
-          case "track":
-            valueToSend = findIdByName(trackOptions, values[key]);
-            break;
-          case "category":
-            valueToSend = findIdByName(categoryData, values[key]);
-            break;
-          case "tripType":
-            valueToSend = findIdByName(tripTypeData, values[key]);
-            break;
-          case "city":
-            valueToSend = findIdByName(cityData, values[key]);
-            break;
-          case "academicStages":
-            if (Array.isArray(values[key])) {
-              valueToSend = values[key].map((name) =>
-                findIdByName(academicStagesData, name)
-              );
-            } else {
-              valueToSend = findIdByName(academicStagesData, values[key]);
-            }
-            break;
-          case "services":
-            if (Array.isArray(values[key])) {
-              valueToSend = values[key].map((name) =>
-                findIdByName(servicesData, name)
-              );
-            } else {
-              valueToSend = findIdByName(servicesData, values[key]);
-            }
-            break;
-        }
-
-        if (Array.isArray(valueToSend)) {
-          valueToSend.forEach((item, index) => {
+        if (Array.isArray(values[key])) {
+          values[key].forEach((item, index) => {
             formData.append(`${key}[${index}]`, item);
           });
+        } else if (
+          typeof values[key] === "object" &&
+          !(values[key] instanceof File)
+        ) {
+          Object.keys(values[key]).forEach((subKey) => {
+            formData.append(`${key}[${subKey}]`, values[key][subKey]);
+          });
         } else {
-          formData.append(key, valueToSend);
+          formData.append(key, values[key]);
         }
       }
     });
 
-    const organizationId = findIdByName(organizationData, values.organization);
+    const organizationIds = values.schoolsInfo.map(
+      (school) => school.organization
+    );
 
     const config = {
       method: "post",
@@ -244,7 +206,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
       headers: {
         ...headers,
         "Content-Type": "multipart/form-data",
-        "profile-organizations": JSON.stringify([organizationId]),
+        "profile-organizations": JSON.stringify(organizationIds),
       },
       data: formData,
     };
@@ -308,7 +270,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
               fontWeight: 600,
             },
             "& .MuiStepConnector-root": {
-              top: "1.5rem", 
+              top: "1.5rem",
               left: "calc(50% + 25px)",
               right: "calc(-50% + 25px)",
               "& .MuiStepConnector-line": {
@@ -361,14 +323,14 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
                         index === activeStep
                           ? "var(--color-main)"
                           : index < activeStep
-                          ? "var(--color-success)"
-                          : "#bdbdbd",
+                            ? "var(--color-success)"
+                            : "#bdbdbd",
                       backgroundColor:
                         index === activeStep
                           ? "var(--color-main)"
                           : index < activeStep
-                          ? "var(--color-success)"
-                          : "white",
+                            ? "var(--color-success)"
+                            : "white",
                       color: index <= activeStep ? "white" : "#bdbdbd",
                       fontWeight: "bold",
                       fontSize: "2rem",
@@ -376,7 +338,6 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
                     },
                   },
                 }}
-               
               >
                 {label}
               </StepLabel>
@@ -401,25 +362,28 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
         `}</style>
         <Formik
           initialValues={{
-            organization: "",
-            track: "",
-            category: "",
-            tripType: "",
-            city: "",
-            academicStages: [],
-            availableSeats: "",
-            basePrice: "",
+            schoolsInfo: [
+              {
+                organization: "",
+                tracks: [],
+                academicStages: [],
+              },
+            ],
             day: "",
             endDay: "",
-            services: [],
-          
-            specialRequirements: "",
-            file: null,
-            tripNameEn: "",
-            tripNameAr: "",
-            bookingBefore: "",
+            availableSeats: 0,
+            category: "",
+            supCategory: "",
+            name: { en: "", ar: "" },
+            tripType: "",
+            city: "",
             fromHour: "",
             toHour: "",
+            priceRange: { min: 0, max: 100 },
+            specialRequirements: "",
+            services: [],
+            file: "",
+            note: "",
           }}
           validationSchema={customTripSchema}
           onSubmit={handleSubmit}
@@ -431,12 +395,6 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
         >
           {(formik) => {
             const {
-              values,
-              errors,
-              touched,
-              handleBlur,
-              handleChange,
-              setFieldValue,
               isSubmitting,
             } = formik;
 
@@ -446,96 +404,26 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
                 case 0:
                   return (
                     <StepSchoolInfo
-                      values={values}
-                      errors={errors}
-                      touched={touched}
-                      handleBlur={handleBlur}
-                      handleChange={(e) => {
-                        handleChange(e);
-                        if (e.target.name === "organization") {
-                          const orgId = findIdByName(
-                            organizationData,
-                            e.target.value
-                          );
-                          fetchTracksByOrganization(orgId);
-                          setFieldValue("track", "");
-                        }
-                      }}
-                      organizationOptions={organizationOptions}
-                      trackDisplayOptions={trackDisplayOptions}
-                      isLoadingTracks={isLoadingTracks}
+                      organizationOptions={organizationsOptions}
                       academicStagesOptions={academicStagesOptions}
-                      t={t}
                     />
                   );
                 case 1:
                   return (
                     <StepTripInfo
-                      values={values}
-                      errors={errors}
-                      touched={touched}
-                      handleBlur={handleBlur}
-                      handleChange={handleChange}
                       categoryOptions={categoryOptions}
+                      supCategoryOptions={supCategoryOptions}
                       tripTypeOptions={tripTypeOptions}
                       cityOptions={cityOptions}
                       servicesOptions={servicesOptions}
-                      t={t}
                     />
                   );
                 case 2:
-                  return (
-                    <StepTripDate
-                      values={values}
-                      errors={errors}
-                      touched={touched}
-                      handleBlur={handleBlur}
-                      handleChange={handleChange}
-                      t={t}
-                      CONSTANT_VALUES={CONSTANT_VALUES}
-                      tripTypeData={tripTypeData}
-                    />
-                  );
+                  return <StepTripDate tripTypeData={tripTypeData} />;
                 case 3:
-                  return (
-                    <StepPricing
-                      values={values}
-                      errors={errors}
-                      touched={touched}
-                      handleBlur={handleBlur}
-                      handleChange={(e) => {
-                        // Handle negative input logic
-                        const value = e.target.value;
-                        if (e.target.type === "number" && value < 1) {
-                          e.target.value = 1;
-                        }
-                        handleChange(e);
-                      }}
-                      onKeyDown={(e) => {
-                        if (
-                          e.key === "-" ||
-                          e.key === "e" ||
-                          e.key === "E" ||
-                          e.key === "+"
-                        ) {
-                          e.preventDefault();
-                        }
-                      }}
-                      t={t}
-                    />
-                  );
+                  return <StepPricing />;
                 case 4:
-                  return (
-                    <StepAdditionalInfo
-                      values={values}
-                      errors={errors}
-                      touched={touched}
-                      handleBlur={handleBlur}
-                      handleChange={handleChange}
-                      setFieldValue={setFieldValue}
-                      t={t}
-                    />
-                  );
+                  return <StepAdditionalInfo />;
                 default:
                   return <div>Unknown Step</div>;
               }

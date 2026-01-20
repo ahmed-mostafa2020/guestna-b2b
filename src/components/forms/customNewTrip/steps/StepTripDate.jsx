@@ -1,36 +1,17 @@
 import React from "react";
 import TextInputGroup from "@components/forms/TextInputGroup";
 
-const StepTripDate = ({
-  values,
-  errors,
-  touched,
-  handleBlur,
-  handleChange,
-  t,
-  CONSTANT_VALUES,
-  tripTypeData,
-}) => {
+import { useFormikContext } from "formik";
+import { useTranslations } from "next-intl";
+import { CONSTANT_VALUES } from "@constants/constantValues";
+
+const StepTripDate = () => {
+  const t = useTranslations();
+  const { values, errors, touched, handleBlur, handleChange } =
+    useFormikContext();
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {/* Booking Before */}
-      <div>
-        <label className="block mb-2 text-sm font-medium text-gray-700">
-          {t("forms.customTrip.bookingBefore.placeholder")}
-        </label>
-        <TextInputGroup
-          type="number"
-          name="bookingBefore"
-          value={values.bookingBefore}
-          errors={errors.bookingBefore}
-          touched={touched.bookingBefore}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          min={1}
-          max={30}
-          style={{ cursor: "pointer" }}
-        />
-      </div>
+    
       {/* Start Date */}
       <div>
         <label className="block mb-2 text-sm font-medium text-gray-700">
@@ -52,12 +33,7 @@ const StepTripDate = ({
       </div>
 
       {/* End Date - Only show for multi-day trips */}
-      {(() => {
-        const selectedTripType = tripTypeData.find(
-          (item) => item.name === values.tripType
-        );
-        return selectedTripType?._id === CONSTANT_VALUES.PACKAGE;
-      })() && (
+      {values.tripType === CONSTANT_VALUES.PACKAGE && (
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-700">
             {t("forms.customTrip.proposedTripDate.endLabel")}
