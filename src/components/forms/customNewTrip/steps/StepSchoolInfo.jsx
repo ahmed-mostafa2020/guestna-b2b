@@ -42,8 +42,9 @@ const SchoolInfoCard = ({
   onRemove,
   isRemovable,
 }) => {
+  const t = useTranslations("forms.customTrip.steps.school_info");
 
-  const t = useTranslations();
+  const t2 = useTranslations();
   const locale = useLocale();
   const headers = useMemo(() => getHeaders(locale), [locale]);
 
@@ -75,8 +76,7 @@ const SchoolInfoCard = ({
       } catch (error) {
         console.error("Error fetching tracks:", error);
         setTrackError(
-          t("forms.validation.fetchError") || "Failed to load tracks"
-        );
+          t("fields.track.fetchError") );
         setTracksData([]);
       } finally {
         setIsLoadingTracks(false);
@@ -99,7 +99,7 @@ const SchoolInfoCard = ({
       const stages =
         track.academicStages?.map((stage) => stage.name).join(", ") || "";
       return {
-        name: `${track.educationSystem} - ${t(
+        name: `${track.educationSystem} - ${t2(
           `common.${track.gender}`
         )} - ${stages}`,
         _id: track._id,
@@ -141,8 +141,6 @@ const SchoolInfoCard = ({
     [trackList, setFieldValue, index]
   );
 
-  console.log(organizationOptions)
-
   // Handle academic stages change
   const handleAcademicStagesChange = useCallback(
     (e) => {
@@ -158,17 +156,11 @@ const SchoolInfoCard = ({
   return (
     <Fade in timeout={300}>
       <Card
-        className={`mb-6 overflow-visible rounded-2xl transition-all duration-300 ${
-          isComplete
-            ? "border-2 border-green-500 shadow-lg shadow-green-100"
-            : "border border-gray-200 shadow-md hover:shadow-lg"
-        }`}
+        className={`mb-6 overflow-visible !rounded-2xl transition-all duration-300 shadow-lg `}
         variant="outlined"
       >
         <CardActions
-          className={`flex justify-between items-center px-4 py-3 ${
-            isComplete ? "bg-green-50" : "bg-gray-50"
-          }`}
+          className={`flex justify-between items-center px-4 py-3  ${isExpanded ? "!border-b" : ""}`}
         >
           <div className="flex items-center gap-3">
             <IconButton
@@ -180,31 +172,26 @@ const SchoolInfoCard = ({
             >
               <ExpandMore />
             </IconButton>
-            <SchoolIcon
-              className={isComplete ? "text-green-600" : "text-gray-600"}
-            />
-            <Typography variant="subtitle1" className="font-bold text-blue-600">
-              {t("forms.customTrip.steps.school_info")} #{index + 1}
+
+            <Typography className="font-bold !text-textDark !font-somar !text-lg  ">
+              {t("school_card", {
+                count: index + 1,
+              })}
             </Typography>
             {isComplete && (
               <Chip
-                icon={<CheckCircle />}
-                label={t("common.complete") || "Complete"}
-                className="bg-green-100 text-green-700"
+                icon={<CheckCircle className="!text-success" />}
+                label={t("status.complete")}
+                className="bg-homeBg text-success !p-2"
                 size="small"
               />
             )}
           </div>
           {isRemovable && (
-            <Button
+            <Delete
+              className="text-error !text-3xl cursor-pointer hover:scale-105 "
               onClick={onRemove}
-              color="error"
-              size="small"
-              startIcon={<Delete />}
-              className="normal-case hover:bg-red-50"
-            >
-              {t("common.delete") || "Delete"}
-            </Button>
+            />
           )}
         </CardActions>
         <Divider />
@@ -214,9 +201,9 @@ const SchoolInfoCard = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Organization Selection */}
               <div>
-                <label className="block mb-2 text-sm font-semibold text-gray-700">
-                  {t("forms.customTrip.organization.placeholder")}
-                  <span className="text-red-500 ml-1">*</span>
+                <label className="block mb-2 text-sm  text-textDark">
+                  {t("fields.organization.label")}
+                  <span className="text-error ml-1">*</span>
                 </label>
                 <SelectionGroup
                   name={`schoolsInfo[${index}].organization`}
@@ -229,16 +216,16 @@ const SchoolInfoCard = ({
                   onBlur={handleBlur}
                   touched={touched?.organization}
                   errors={errors?.organization}
-                  placeholder={t("forms.customTrip.organization.placeholder")}
+                  placeholder={t("fields.organization.placeholder")}
                   list={organizationOptions.map((org) => org.name)}
                 />
               </div>
 
               {/* Tracks Selection */}
               <div>
-                <label className="block mb-2 text-sm font-semibold text-gray-700">
-                  {t("forms.customTrip.track.placeholder")}
-                  <span className="text-red-500 ml-1">*</span>
+                <label className="block mb-2 text-sm  text-textDark">
+                  {t("fields.track.label")}
+                  <span className="text-error ml-1">*</span>
                 </label>
                 {isLoadingTracks ? (
                   <Skeleton
@@ -256,34 +243,27 @@ const SchoolInfoCard = ({
                     onBlur={handleBlur}
                     touched={touched?.tracks}
                     errors={errors?.tracks}
-                    placeholder={t("forms.customTrip.track.placeholder")}
+                    placeholder={t("fields.track.placeholder")}
                     list={trackList.map((tr) => tr.name)}
                     disabled={!school.organization}
                     multiple={true}
                   />
                 )}
                 {trackError && (
-                  <Alert
-                    severity="error"
-                    className="mt-2"
-                    onClose={() => setTrackError(null)}
-                  >
-                    {trackError}
-                  </Alert>
+                  <p className="!mt-2 ps-1 text-xs text-error">{trackError}</p>
                 )}
                 {!school.organization && (
-                  <p className="mt-1 text-xs text-gray-500">
-                    {t("forms.customTrip.selectOrganizationFirst") ||
-                      "Please select an organization first"}
+                  <p className="!mt-2 ps-1 text-xs text-textLight">
+                    {t("fields.track.helper_text")}
                   </p>
                 )}
               </div>
 
               {/* Academic Stages Selection */}
               <div className="md:col-span-2">
-                <label className="block mb-2 text-sm font-semibold text-gray-700">
-                  {t("forms.customTrip.academicStages.placeholder")}
-                  <span className="text-red-500 ml-1">*</span>
+                <label className="block mb-2 text-sm  text-textDark">
+                  {t("fields.academicStages.label")}
+                  <span className="text-error ml-1">*</span>
                 </label>
                 <SelectionGroup
                   name={`schoolsInfo[${index}].academicStages`}
@@ -297,7 +277,7 @@ const SchoolInfoCard = ({
                   onBlur={handleBlur}
                   touched={touched?.academicStages}
                   errors={errors?.academicStages}
-                  placeholder={t("forms.customTrip.academicStages.placeholder")}
+                  placeholder={t("fields.academicStages.placeholder")}
                   list={academicStagesOptions.map((s) => s.name)}
                   multiple={true}
                 />
@@ -311,19 +291,19 @@ const SchoolInfoCard = ({
 };
 
 const StepSchoolInfo = ({ organizationOptions, academicStagesOptions }) => {
-  const t = useTranslations();
+  const t = useTranslations("forms.customTrip.steps.school_info");
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
-    console.log({organizationOptions});
+  console.log({ organizationOptions });
   const handleAddSchool = useCallback((push) => {
     push({ organization: "", tracks: [], academicStages: [] });
   }, []);
 
   return (
     <Box>
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        {t("forms.customTrip.schoolInformation") || "School Information"}
-      </h2>
+      <h2 className="text-2xl font-bold  text-textDark">{t("title")}</h2>
+
+      <p className="text-base !my-4"> {t("description")}</p>
 
       <FieldArray name="schoolsInfo">
         {({ push, remove }) => (
@@ -348,10 +328,10 @@ const StepSchoolInfo = ({ organizationOptions, academicStagesOptions }) => {
             <Button
               variant="contained"
               color="primary"
-              startIcon={<Add />}
+              startIcon={<Add className="!text-2xl !me-2" />}
               onClick={() => handleAddSchool(push)}
               fullWidth
-              className="rounded-xl py-3 normal-case text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 mb-4"
+              className="rounded-xl py-3 normal-case text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 mb-4 !font-somar"
               sx={{
                 backgroundColor: "var(--color-main)",
                 "&:hover": {
@@ -360,7 +340,7 @@ const StepSchoolInfo = ({ organizationOptions, academicStagesOptions }) => {
                 },
               }}
             >
-              {t("forms.customTrip.addAnotherSchool") || "Add Another School"}
+              {t("add_school")}
             </Button>
           </>
         )}

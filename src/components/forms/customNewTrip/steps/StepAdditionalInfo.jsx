@@ -5,23 +5,15 @@ import {
   Box,
   Card,
   CardContent,
-  Typography,
-  Divider,
   Alert,
 } from "@mui/material";
-import {
-  Description,
-  AttachFile,
-  NoteAlt,
-} from "@mui/icons-material";
-import TextInputGroup from "@components/forms/TextInputGroup";
 import FileUploadGroup from "@components/forms/FileUploadGroup";
 import LexicalEditor from "@components/common/LexicalEditor";
 
 const StepAdditionalInfo = () => {
-  const t = useTranslations();
+  const t = useTranslations('forms.customTrip.steps.additional_info');
   const locale = useLocale();
-  const { values, errors, touched, handleBlur, handleChange, setFieldValue } =
+  const { values, errors, touched, handleBlur, setFieldValue } =
     useFormikContext();
 
   const handleSpecialRequirementsChange = useCallback(
@@ -56,19 +48,11 @@ const StepAdditionalInfo = () => {
 
   return (
     <Box>
-      <Typography variant="h5" className="font-bold mb-6 text-gray-800">
-        {t("forms.customTrip.additionalInformation") ||
-          "Additional Information"}
-      </Typography>
-
-      <Alert severity="info" className="mb-6">
-        {t("forms.customTrip.additionalInfoHelper") ||
-          "All fields in this section are optional but can help us better understand your requirements."}
-      </Alert>
+      <h2 className="text-2xl font-bold  text-textDark">{t("title")}</h2>
 
       {/* Special Requirements Card */}
       <Card
-        className={`mb-6 rounded-2xl border transition-all duration-300 ${
+        className={`mb-6 !rounded-2xl border transition-all duration-300 ${
           hasSpecialRequirements
             ? "border-green-200 bg-green-50"
             : "border-gray-200"
@@ -77,18 +61,16 @@ const StepAdditionalInfo = () => {
       >
         <CardContent className="p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Description className="text-blue-600" />
-            <Typography variant="h6" className="font-semibold text-gray-700">
-              {t("forms.customTrip.specialRequirements.placeholder")}
-            </Typography>
+            <p className="font-semibold font-somar text-gray-700">
+              {t("fields.special_requirements.label")}
+            </p>
           </div>
-          <Divider className="mb-6" />
 
           <div className="somar-placeholder">
             <LexicalEditor
               value={values.specialRequirements || ""}
               onChange={handleSpecialRequirementsChange}
-              placeholder={t("forms.customTrip.specialRequirements.placeholder")}
+              placeholder={t("fields.special_requirements.placeholder")}
               error={
                 touched.specialRequirements &&
                 Boolean(errors.specialRequirements)
@@ -102,57 +84,23 @@ const StepAdditionalInfo = () => {
         </CardContent>
       </Card>
 
-      {/* Note Card */}
-      <Card
-        className={`mb-6 rounded-2xl border transition-all duration-300 ${
-          hasNote ? "border-green-200 bg-green-50" : "border-gray-200"
-        }`}
-        variant="outlined"
-      >
-        <CardContent className="p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <NoteAlt className="text-blue-600" />
-            <Typography variant="h6" className="font-semibold text-gray-700">
-              {t("forms.customTrip.note.placeholder") || "Note"}
-            </Typography>
-          </div>
-          <Divider className="mb-6" />
-
-          <div className="somar-placeholder">
-            <TextInputGroup
-              textarea={true}
-              rows={4}
-              name="note"
-              value={values.note || ""}
-              errors={errors.note}
-              touched={touched.note}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              placeholder={t("forms.customTrip.note.placeholder") || "Note"}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
       {/* File Upload Card */}
       <Card
-        className={`rounded-2xl border transition-all duration-300 ${
+        className={`!rounded-2xl border transition-all duration-300 ${
           hasFile ? "border-green-200 bg-green-50" : "border-gray-200"
         }`}
         variant="outlined"
       >
         <CardContent className="p-6">
           <div className="flex items-center gap-2 mb-4">
-            <AttachFile className="text-blue-600" />
-            <Typography variant="h6" className="font-semibold text-gray-700">
-              {t("forms.customTrip.attachFile.label") || "Attach File"}
-            </Typography>
+            <p className="font-semibold font-somar text-gray-700">
+              {t("fields.attach_file.label")}
+            </p>
           </div>
-          <Divider className="mb-6" />
 
           <FileUploadGroup
             name="file"
-            placeholder={t("forms.customTrip.attachFile.label")}
+            placeholder={t("fields.attach_file.placeholder")}
             errors={errors.file}
             touched={touched.file}
             onBlur={handleBlur}
@@ -174,7 +122,13 @@ const StepAdditionalInfo = () => {
 
           {hasFile && (
             <Alert severity="success" className="mt-4">
-              {t("forms.customTrip.fileAttached") || "File attached successfully"}
+              {t("fields.attach_file.success")}
+            </Alert>
+          )}
+
+          {touched.file && errors.file && (
+            <Alert severity="error" className="mt-4">
+              {t("fields.attach_file.error")}
             </Alert>
           )}
         </CardContent>

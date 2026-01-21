@@ -1,7 +1,7 @@
 {
   "common": {
-    "back":"Back",
-    "next":"Next",
+    "back": "Back",
+    "next": "Next",
     "autocomplete": {
       "noOptions": "No options",
       "loading": "Loading..."
@@ -2162,130 +2162,159 @@
     },
 
     "customTrip": {
-      "title": "Request to Create a New Trip",
-      "edit": "Request to Edit a Trip",
+      "title": "Request to Create New Trip",
+      "edit": "Request to Edit Trip",
       "bookingDetails": "Booking Details",
-      "submit": "Send Request to Guestna Team",
-      "success": "Your request has been sent successfully",
+      "submit": "Submit Request to Justna Team",
+      "success": "Your request has been submitted successfully",
       "thanksMessage": {
-        "title": "Thank You!",
-        "description": "Your request has been sent successfully. Our team will contact you within 24 hours."
+        "title": "Thank you!",
+        "description": "Your request has been submitted successfully. Our team will contact you within 24 hours."
       },
-
       "steps": {
-        "school_info": "School Information",
-        "trip_info": "Trip Information",
-        "trip_date": "Trip Date",
-        "pricing": "Pricing",
-        "additional": "Additional Information"
-      },
-
-      "organization": {
-        "placeholder": "School Name"
-      },
-
-      "track": {
-        "placeholder": "Educational Track"
-      },
-
-      "tripInfo": {
-        "title": "Trip Information",
-        "description": "Trip Description"
-      },
-
-      "selectedTrip": {
-        "placeholder": "Category type"
-      },
-
-      "tripType": {
-        "placeholder": "Trip Duration",
-        "options": {
-          "oneDay": "One Day Trip",
-          "multiDay": "Multi-Day Trip",
-          "halfDay": "Half Day Trip"
+        "school_info": {
+          "step_title": "School Information",
+          "title": "Basic School Information",
+          "school_card": "School #{count} Information",
+          "description": "Please enter the basic information to create the trip and link it to the school.",
+          "status": {
+            "complete": "Information Complete"
+          },
+          "add_school": "Add Another School",
+          "fields": {
+            "organization": {
+              "label": "School Name",
+              "placeholder": "Select school name"
+            },
+            "track": {
+              "label": "Educational Track",
+              "placeholder": "Select educational tracks",
+              "helper_text": "Please select the school first",
+              "fetchError": "An error occurred while fetching educational tracks"
+            },
+            "academicStages": {
+              "label": "Academic Stage",
+              "placeholder": "Select academic stages"
+            }
+          }
+        },
+        "trip_info": {
+          "step_title": "Trip Information",
+          "title": "Target Trip Information",
+          "description": "Please enter the basic information to create the trip and link it to the organization.",
+          "fields": {
+            "name": {
+              "ar": {
+                "label": "Trip Name in Arabic",
+                "placeholder": "Enter trip name in Arabic"
+              },
+              "en": {
+                "label": "Trip Name in English",
+                "placeholder": "Enter trip name in English"
+              }
+            },
+            "trip_supCategory": {
+              "label": "Trip Pattern",
+              "placeholder": "Select trip pattern"
+            },
+            "trip_category": {
+              "label": "Trip Type",
+              "placeholder": "Select trip type"
+            },
+            "trip_type": {
+              "label": "Trip Duration",
+              "placeholder": "Select trip duration",
+              "options": {
+                "oneDay": "One Day Trip",
+                "multiDay": "Multi-Day Trip",
+                "halfDay": "Half Day Trip"
+              }
+            },
+            "city": {
+              "label": "City",
+              "placeholder": "Select city"
+            },
+            "services": {
+              "label": "Services",
+              "placeholder": "Select services"
+            }
+          }
+        },
+        "trip_date": {
+          "step_title": "Trip Date",
+          "title": "Trip Schedule and Booking",
+          "description": "Select the trip date, start and end time, and the last allowed booking deadline.",
+          "fields": {
+            "start_date": {
+              "label": "Start Date",
+              "placeholder": "Select start date",
+              "error": {
+                "start_before_end": "Start date must be before end date",
+                "past_date": "Trip date cannot be in the past"
+              }
+            },
+            "end_date": {
+              "label": "End Date",
+              "placeholder": "Select end date",
+              "error": {
+                "end_before_start": "Start date must be before end date",
+                "past_date": "Trip date cannot be in the past"
+              }
+            },
+            "from_hour": {
+              "label": "From Hour",
+              "placeholder": "Select hour"
+            },
+            "to_hour": {
+              "label": "To Hour",
+              "placeholder": "Select hour"
+            }
+          }
+        },
+        "pricing": {
+          "step_title": "Pricing",
+          "title": "Pricing & Number of Seats",
+          "description": "Set the trip price and number of available seats",
+          "fields": {
+            "avaliable_seats": {
+              "label": "Number of Required Seats",
+              "placeholder": "Number of seats available for booking",
+              "error": {
+                "min": "Number must be at least one person",
+                "max": "Number cannot exceed 1000 people"
+              }
+            },
+            "price": {
+              "label": "Budget",
+              "placeholder": "Last allowed booking deadline before the trip date",
+              "min": "Minimum",
+              "max": "Maximum",
+              "error": {
+                "min": "Price must not be less than 1 Saudi Riyal"
+              }
+            }
+          }
+        },
+        "additional_info": {
+          "step_title": "Additional Information",
+          "title": "",
+          "description": "",
+          "fields": {
+            "special_requirements": {
+              "label": "Special Requirements",
+              "placeholder": "Do you have any details or notes you'd like to add? Write them here",
+              "error": {
+                "max": "Special requirements cannot exceed 10000 characters"
+              }
+            },
+            "attach_file": {
+              "label": "Attach File",
+              "placeholder": "Add a File",
+              "success": "File uploaded successfully",
+              "error": "File upload failed"
+            }
+          }
         }
-      },
-
-      "location": {
-        "placeholder": "Location"
-      },
-
-      "targetedTrip": {
-        "placeholder": "Target Stage"
-      },
-      "academicStages": {
-        "placeholder": "Academic Stage"
-      },
-      "tripNameEn": {
-        "placeholder": "Trip Name in English"
-      },
-      "tripNameAr": {
-        "placeholder": "Trip Name in Arabic"
-      },
-
-      "time_range":{
-        "from_hour":"From Hour",
-        "to_hour":"To Hour"
-      },
-
-      "bookingBefore":{
-        "placeholder":"Booking Before",
-        "error":{
-          "min":"At least 1 day before trip date",
-          "max":"No more than 30 days before trip date"
-        }
-      },
-
-      "expectedParticipants": {
-        "placeholder": "Expected Number",
-        "error": {
-          "min": "Number must be at least 1 person",
-          "max": "Number cannot exceed 1000 people"
-        }
-      },
-
-      "proposedTripDate": {
-        "startLabel": "Proposed Trip Date",
-        "endLabel": "Proposed Trip Date",
-        "error": {
-          "pastDate": "Trip date cannot be in the past",
-          "startAfterEnd": "Start date must be before end date",
-          "endBeforeStart": "End date must be after start date (can be same for 1-day trip)"
-        }
-      },
-
-      "city": {
-        "placeholder": "City"
-      },
-
-      "price": {
-        "placeholder": "Proposed Price (SAR)",
-        "error": {
-          "min": "Proposed price must be at least 1 SAR"
-        }
-      },
-
-      "services": {
-        "placeholder": "Services"
-      },
-
-      "tripDescription": {
-        "placeholder": "Trip Description",
-        "error": {
-          "min": "Description must be at least 10 characters",
-          "max": "Description cannot exceed 500 characters"
-        }
-      },
-
-      "specialRequirements": {
-        "placeholder": "Any Special Requirements",
-        "error": {
-          "max": "Special requirements cannot exceed 300 characters"
-        }
-      },
-
-      "attachFile": {
-        "label": "Attach File"
       }
     }
   },

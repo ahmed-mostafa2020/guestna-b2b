@@ -554,7 +554,7 @@ export const createCustomNewTripSchema = (t) =>
           organization: Yup.string().required(t("forms.validation.require")),
           tracks: Yup.array()
             .of(Yup.string())
-            .required(t("forms.validation.require")),
+            .min(1, t("forms.validation.require")),
           academicStages: Yup.array()
             .of(Yup.string())
             .min(1, t("forms.validation.require")),
@@ -563,10 +563,15 @@ export const createCustomNewTripSchema = (t) =>
       .required(),
     day: Yup.date()
       .required(t("forms.validation.require"))
-      .min(new Date(), t("forms.customTrip.proposedTripDate.error.pastDate"))
+      .min(
+        new Date(),
+        t("forms.customTrip.steps.trip_date.fields.start_date.error.past_date")
+      )
       .test(
         "start-before-end",
-        t("forms.customTrip.proposedTripDate.error.startAfterEnd"),
+        t(
+          "forms.customTrip.steps.trip_date.fields.start_date.error.start_before_end"
+        ),
         function (value) {
           const { endDay } = this.parent;
           if (!endDay || !value) return true;
@@ -575,10 +580,15 @@ export const createCustomNewTripSchema = (t) =>
       ),
     endDay: Yup.date()
       .optional()
-      .min(new Date(), t("forms.customTrip.proposedTripDate.error.pastDate"))
+      .min(
+        new Date(),
+        t("forms.customTrip.steps.trip_date.fields.end_date.error.past_date")
+      )
       .test(
         "end-after-start",
-        t("forms.customTrip.proposedTripDate.error.endBeforeStart"),
+        t(
+          "forms.customTrip.steps.trip_date.fields.end_date.error.end_before_start"
+        ),
         function (value) {
           const { day } = this.parent;
           if (!day || !value) return true;
@@ -587,8 +597,14 @@ export const createCustomNewTripSchema = (t) =>
       ),
     availableSeats: Yup.number()
       .required(t("forms.validation.require"))
-      .min(1, t("forms.customTrip.expectedParticipants.error.min"))
-      .max(1000, t("forms.customTrip.expectedParticipants.error.max")),
+      .min(
+        1,
+        t("forms.customTrip.steps.pricing.fields.avaliable_seats.error.min")
+      )
+      .max(
+        1000,
+        t("forms.customTrip.steps.pricing.fields.avaliable_seats.error.max")
+      ),
 
     category: Yup.string().required(t("forms.validation.require")),
     supCategory: Yup.string().required(t("forms.validation.require")),
@@ -601,8 +617,8 @@ export const createCustomNewTripSchema = (t) =>
       .optional(),
     tripType: Yup.string().required(t("forms.validation.require")),
     city: Yup.string().required(t("forms.validation.require")),
-    fromHour: Yup.string().required(t("forms.validation.require")),
-    toHour: Yup.string().required(t("forms.validation.require")),
+    fromHour: Yup.string().optional(),
+    toHour: Yup.string().optional(),
     priceRange: Yup.object()
       .shape({
         min: Yup.number().required(t("forms.validation.require")),
@@ -612,7 +628,12 @@ export const createCustomNewTripSchema = (t) =>
 
     specialRequirements: Yup.string()
       .optional()
-      .max(10000, t("forms.customTrip.specialRequirements.error.max")),
+      .max(
+        10000,
+        t(
+          "fforms.customTrip.steps.additional_info.fields.special_requirements.error.max"
+        )
+      ),
 
     services: Yup.array().min(1, t("forms.validation.require")),
 

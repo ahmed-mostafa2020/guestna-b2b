@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 
-import { memo, useState, useEffect, useRef, useMemo } from "react";
+import { memo, useState, useRef, useMemo } from "react";
 import { Formik } from "formik";
 import axios from "axios";
 import { useSnackbar } from "notistack";
@@ -22,16 +22,17 @@ import StepPricing from "./steps/StepPricing";
 import StepAdditionalInfo from "./steps/StepAdditionalInfo";
 
 const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
-  console.log("formSelectionData", formSelectionData);
+
   const [activeStep, setActiveStep] = useState(0);
   const [formErrors, setFormErrors] = useState([]);
 
-  const { selectedIds, organizations, allSelected, loading } = useSelector(
+  const { selectedIds, organizations, allSelected } = useSelector(
     (state) => state.selectedOrganizations
   );
 
   const locale = useLocale();
-  const t = useTranslations();
+  const t = useTranslations("forms.customTrip");
+  const t2 = useTranslations();
   const formRef = useRef(null);
 
   const headers = getHeaders(locale);
@@ -42,15 +43,15 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
   const categoryData = formSelectionData.categories;
   const tripTypeData = [
     {
-      name: t("forms.customTrip.tripType.options.halfDay"),
+      name: t("steps.trip_info.fields.trip_type.options.halfDay"),
       _id: CONSTANT_VALUES.HALF_DAY,
     },
     {
-      name: t("forms.customTrip.tripType.options.oneDay"),
+      name: t("steps.trip_info.fields.trip_type.options.oneDay"),
       _id: CONSTANT_VALUES.ACTIVITY,
     },
     {
-      name: t("forms.customTrip.tripType.options.multiDay"),
+      name: t("steps.trip_info.fields.trip_type.options.multiDay"),
       _id: CONSTANT_VALUES.PACKAGE,
     },
   ];
@@ -82,11 +83,11 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
   const supCategoryOptions = supCategoryData;
 
   const steps = [
-    t("forms.customTrip.steps.school_info"),
-    t("forms.customTrip.steps.trip_info"),
-    t("forms.customTrip.steps.trip_date"),
-    t("forms.customTrip.steps.pricing"),
-    t("forms.customTrip.steps.additional_info"),
+    t("steps.school_info.step_title"),
+    t("steps.trip_info.step_title"),
+    t("steps.trip_date.step_title"),
+    t("steps.pricing.step_title"),
+    t("steps.additional_info.step_title"),
   ];
 
   const handleNext = async (formik) => {
@@ -220,7 +221,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
 
         const res = response.data;
         if (res) {
-          enqueueSnackbar(t("forms.customTrip.success"), {
+          enqueueSnackbar(t("success"), {
             variant: "success",
           });
 
@@ -234,7 +235,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
       .catch((error) => {
         setSubmitting(false);
         console.log("Error details:", error + formErrors);
-        const errorMessage = getErrorMessage(error, t);
+        const errorMessage = getErrorMessage(error, t2);
         enqueueSnackbar(errorMessage, {
           variant: "error",
         });
@@ -242,12 +243,12 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
       });
   };
 
-  const customTripSchema = createCustomNewTripSchema(t);
+  const customTripSchema = createCustomNewTripSchema(t2);
 
   return (
     <div className="px-4 py-8 bg-white rounded-2xl w-[90%] mx-auto">
       <h3 className="pb-4 text-center text-lg font-medium text-black lg:text-2xl lg:pb-8">
-        {t("forms.customTrip.title")}
+        {t("title")}
       </h3>
 
       <Box className="mb-10 w-full" dir={locale === "ar" ? "rtl" : "ltr"}>
@@ -310,6 +311,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
             <Step key={label}>
               <StepLabel
                 slotProps={{
+                  
                   stepIcon: {
                     sx: {
                       width: 50,
@@ -449,7 +451,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
                         : "border-mainColor text-mainColor hover:bg-mainColor hover:text-white"
                     }`}
                   >
-                    {t("common.back") || "السابق"}
+                    {t2("common.back") }
                   </button>
 
                   <button
@@ -461,12 +463,12 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
                     {isSubmitting ? (
                       <div className="flex items-center gap-2">
                         <CircularProgress color="inherit" size={20} />
-                        {t("forms.validation.sending")}
+                        {t2("forms.validation.sending")}
                       </div>
                     ) : activeStep === steps.length - 1 ? (
-                      t("forms.customTrip.submit")
+                      t2("submit")
                     ) : (
-                      t("common.next") || "التالي"
+                      t2("common.next") 
                     )}
                   </button>
                 </div>
