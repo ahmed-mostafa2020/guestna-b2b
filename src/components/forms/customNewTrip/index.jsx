@@ -303,7 +303,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
             "& .MuiStepLabel-label": {
               marginTop: "8px",
               fontSize: "1rem",
-              fontFamily: "somar, sans-serif",
+              fontFamily:"var(--font-somar), sans-serif",
             },
           }}
         >

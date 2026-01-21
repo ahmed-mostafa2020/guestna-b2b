@@ -611,8 +611,18 @@ export const createCustomNewTripSchema = (t) =>
 
     name: Yup.object()
       .shape({
-        en: Yup.string().required(t("forms.validation.require")),
-        ar: Yup.string().required(t("forms.validation.require")),
+        en: Yup.string()
+          .required(t("forms.validation.require"))
+          .matches(
+            /^[a-zA-Z0-9\s.,!?'-]+$/,
+            t("forms.customTrip.steps.trip_info.fields.name.en.error")
+          ),
+        ar: Yup.string()
+          .required(t("forms.validation.require"))
+          .matches(
+            /^[\u0600-\u06FF0-9\s.,!?'-]+$/,
+            t("forms.customTrip.steps.trip_info.fields.name.ar.error")
+          ),
       })
       .optional(),
     tripType: Yup.string().required(t("forms.validation.require")),
@@ -631,7 +641,7 @@ export const createCustomNewTripSchema = (t) =>
       .max(
         10000,
         t(
-          "fforms.customTrip.steps.additional_info.fields.special_requirements.error.max"
+          "forms.customTrip.steps.additional_info.fields.special_requirements.error.max"
         )
       ),
 

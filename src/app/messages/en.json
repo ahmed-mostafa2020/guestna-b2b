@@ -2206,11 +2206,13 @@
             "name": {
               "ar": {
                 "label": "Trip Name in Arabic",
-                "placeholder": "Enter trip name in Arabic"
+                "placeholder": "Enter trip name in Arabic",
+                "error": "Please use Arabic characters only"
               },
               "en": {
                 "label": "Trip Name in English",
-                "placeholder": "Enter trip name in English"
+                "placeholder": "Enter trip name in English",
+                "error": "Please use English characters only"
               }
             },
             "trip_supCategory": {
