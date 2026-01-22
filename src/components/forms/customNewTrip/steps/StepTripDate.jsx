@@ -7,7 +7,7 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import { Box } from "@mui/material";
 
 const StepTripDate = () => {
-  const t = useTranslations("forms.customTrip.steps.trip_date.fields");
+  const t = useTranslations("forms.customTrip.steps.trip_date");
   const { values, errors, touched, handleBlur, handleChange } =
     useFormikContext();
   return (
@@ -19,7 +19,7 @@ const StepTripDate = () => {
         {/* Start Date */}
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-700">
-            {t("start_date.label")}
+            {t("fields.start_date.label")}
             <span className="text-error ml-1">*</span>
           </label>
           <TextInputGroup
@@ -41,7 +41,7 @@ const StepTripDate = () => {
         {values.tripType === CONSTANT_VALUES.PACKAGE ? (
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-700">
-              {t("end_date.label")}
+              {t("fields.end_date.label")}
               <span className="text-error ml-1">*</span>
             </label>
             <TextInputGroup
@@ -62,8 +62,7 @@ const StepTripDate = () => {
             {/* Time Range - From */}
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-700">
-                {t("from_hour.label")}
-                <span className="text-error ml-1">*</span>
+                {t("fields.from_hour.label")}
               </label>
               <TextInputGroup
                 type="time"
@@ -81,8 +80,7 @@ const StepTripDate = () => {
             {/* Time Range - To */}
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-700">
-                {t("to_hour.label")}
-                <span className="text-error ml-1">*</span>
+                {t("fields.to_hour.label")}
               </label>
               <TextInputGroup
                 type="time"

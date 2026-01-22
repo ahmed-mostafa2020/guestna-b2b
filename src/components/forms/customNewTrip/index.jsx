@@ -22,7 +22,6 @@ import StepPricing from "./steps/StepPricing";
 import StepAdditionalInfo from "./steps/StepAdditionalInfo";
 
 const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
-
   const [activeStep, setActiveStep] = useState(0);
   const [formErrors, setFormErrors] = useState([]);
 
@@ -61,20 +60,20 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
   const supCategoryData = formSelectionData.supCategory || [];
 
   // Use full data objects for dropdowns (id/name pair)
-   const organizationsOptions = useMemo(() => {
-     if (allSelected) {
-       return organizations
-     }
- 
-     if (selectedIds.length > 0 && !allSelected && organizations.length > 0) {
-       return selectedIds.map((id) => {
-         const org = organizations.find((org) => org._id === id);
-         return org
-       });
-     }
- 
-     return [];
-   }, [organizations, selectedIds, allSelected]);
+  const organizationsOptions = useMemo(() => {
+    if (allSelected) {
+      return organizations;
+    }
+
+    if (selectedIds.length > 0 && !allSelected && organizations.length > 0) {
+      return selectedIds.map((id) => {
+        const org = organizations.find((org) => org._id === id);
+        return org;
+      });
+    }
+
+    return [];
+  }, [organizations, selectedIds, allSelected]);
   const categoryOptions = categoryData;
   const tripTypeOptions = tripTypeData;
   const cityOptions = cityData;
@@ -254,7 +253,6 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
       <Box className="mb-10 w-full" dir={locale === "ar" ? "rtl" : "ltr"}>
         <Stepper
           activeStep={activeStep}
-          alternativeLabel
           sx={{
             "& .MuiStepLabel-root .Mui-completed": {
               color: "var(--color-success)",
@@ -264,16 +262,15 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
             },
             "& .MuiStepLabel-label.Mui-completed": {
               color: "var(--color-success)",
-              fontWeight: 600,
+              fontWeight: 400,
             },
             "& .MuiStepLabel-label.Mui-active": {
               color: "var(--color-main)",
-              fontWeight: 600,
+              fontWeight: 400,
             },
             "& .MuiStepConnector-root": {
-              top: "1.5rem",
-              left: "calc(50% + 25px)",
-              right: "calc(-50% + 25px)",
+              left: "calc(-50% + 16px)",
+              right: "calc(50% + 16px )",
               "& .MuiStepConnector-line": {
                 borderColor: "#e0e0e0",
                 borderTopWidth: 2,
@@ -289,9 +286,12 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
               display: "none",
             },
             "& .MuiStepIcon-root": {
-              fontSize: "3rem",
+              fontSize: "2.5rem",
+              border: "2px solid ",
+             
               "&.Mui-completed": {
-                color: "var(--color-success)",
+                color: "white",
+                borderColor: "var(--color-success)",
               },
               "&.Mui-active": {
                 color: "var(--color-main)",
@@ -301,26 +301,26 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
               },
             },
             "& .MuiStepLabel-label": {
-              marginTop: "8px",
+              marginInlineStart: "5px",
               fontSize: "1rem",
-              fontFamily:"var(--font-somar), sans-serif",
+              fontFamily: "var(--font-somar), sans-serif",
             },
           }}
         >
           {steps.map((label, index) => (
             <Step key={label}>
               <StepLabel
+                icon={index + 1}
                 slotProps={{
-                  
                   stepIcon: {
                     sx: {
-                      width: 50,
-                      height: 50,
+                      width: 36,
+                      height: 36,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       borderRadius: "50%",
-                      border: "4px solid",
+                      border: "2px solid",
                       borderColor:
                         index === activeStep
                           ? "var(--color-main)"
@@ -335,7 +335,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
                             : "white",
                       color: index <= activeStep ? "white" : "#bdbdbd",
                       fontWeight: "bold",
-                      fontSize: "2rem",
+                      fontSize: "3rem",
                       zIndex: 1, // Ensure icon is above the line
                     },
                   },
@@ -396,9 +396,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
           innerRef={formRef}
         >
           {(formik) => {
-            const {
-              isSubmitting,
-            } = formik;
+            const { isSubmitting } = formik;
 
             // Render active step
             const renderStepContent = (step) => {
@@ -451,7 +449,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
                         : "border-mainColor text-mainColor hover:bg-mainColor hover:text-white"
                     }`}
                   >
-                    {t2("common.back") }
+                    {t2("common.back")}
                   </button>
 
                   <button
@@ -466,9 +464,9 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
                         {t2("forms.validation.sending")}
                       </div>
                     ) : activeStep === steps.length - 1 ? (
-                      t2("submit")
+                      t2("common.submit")
                     ) : (
-                      t2("common.next") 
+                      t2("common.next")
                     )}
                   </button>
                 </div>

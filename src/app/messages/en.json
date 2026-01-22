@@ -2,6 +2,7 @@
   "common": {
     "back": "Back",
     "next": "Next",
+    "submit":"Submit",
     "autocomplete": {
       "noOptions": "No options",
       "loading": "Loading..."
@@ -2292,7 +2293,8 @@
               "min": "Minimum",
               "max": "Maximum",
               "error": {
-                "min": "Price must not be less than 1 Saudi Riyal"
+                "min": "Price must not be less than 1 Saudi Riyal",
+                "min_exceed_max": "Minimum value shouldn't exceed the Maximum value"
               }
             }
           }

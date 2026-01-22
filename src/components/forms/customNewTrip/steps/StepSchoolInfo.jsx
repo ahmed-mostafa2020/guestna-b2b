@@ -41,6 +41,7 @@ const SchoolInfoCard = ({
   academicStagesOptions,
   onRemove,
   isRemovable,
+  selectedOrganizations,
 }) => {
   const t = useTranslations("forms.customTrip.steps.school_info");
 
@@ -52,6 +53,14 @@ const SchoolInfoCard = ({
   const [isLoadingTracks, setIsLoadingTracks] = useState(false);
   const [trackError, setTrackError] = useState(null);
   const [isExpanded, setIsExpanded] = useState(true);
+
+  // Auto-select organization if only one option exists
+  useEffect(() => {
+    if (organizationOptions.length === 1 && !school.organization) {
+      const singleOrg = organizationOptions[0];
+      setFieldValue(`schoolsInfo[${index}].organization`, singleOrg._id);
+    }
+  }, [organizationOptions, school.organization, setFieldValue, index]);
 
   // Fetch tracks with improved error handling and caching
   const fetchTracks = useCallback(
@@ -75,8 +84,7 @@ const SchoolInfoCard = ({
         setTracksData(response.data || []);
       } catch (error) {
         console.error("Error fetching tracks:", error);
-        setTrackError(
-          t("fields.track.fetchError") );
+        setTrackError(t("fields.track.fetchError"));
         setTracksData([]);
       } finally {
         setIsLoadingTracks(false);
@@ -105,7 +113,16 @@ const SchoolInfoCard = ({
         _id: track._id,
       };
     });
-  }, [tracksData, t]);
+  }, [tracksData, t2]);
+
+  // Filter out already selected organizations (excluding current card)
+  const availableOrganizations = useMemo(() => {
+    return organizationOptions.filter(
+      (org) =>
+        !selectedOrganizations.includes(org._id) ||
+        org._id === school.organization
+    );
+  }, [organizationOptions, selectedOrganizations, school.organization]);
 
   // Check if card is complete
   const isComplete = useMemo(() => {
@@ -217,7 +234,8 @@ const SchoolInfoCard = ({
                   touched={touched?.organization}
                   errors={errors?.organization}
                   placeholder={t("fields.organization.placeholder")}
-                  list={organizationOptions.map((org) => org.name)}
+                  list={availableOrganizations.map((org) => org.name)}
+                  disabled={organizationOptions.length === 1}
                 />
               </div>
 
@@ -294,10 +312,22 @@ const StepSchoolInfo = ({ organizationOptions, academicStagesOptions }) => {
   const t = useTranslations("forms.customTrip.steps.school_info");
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
-  console.log({ organizationOptions });
+
+  // Track selected organizations across all cards
+  const selectedOrganizations = useMemo(() => {
+    return values.schoolsInfo
+      .map((school) => school.organization)
+      .filter(Boolean);
+  }, [values.schoolsInfo]);
+
   const handleAddSchool = useCallback((push) => {
     push({ organization: "", tracks: [], academicStages: [] });
   }, []);
+
+  // Check if there are available organizations to add
+  const canAddMore = useMemo(() => {
+    return selectedOrganizations.length < organizationOptions.length;
+  }, [selectedOrganizations.length, organizationOptions.length]);
 
   return (
     <Box>
@@ -322,26 +352,28 @@ const StepSchoolInfo = ({ organizationOptions, academicStagesOptions }) => {
                 academicStagesOptions={academicStagesOptions}
                 onRemove={() => remove(index)}
                 isRemovable={values.schoolsInfo.length > 1}
+                selectedOrganizations={selectedOrganizations}
               />
             ))}
-
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<Add className="!text-2xl !me-2" />}
-              onClick={() => handleAddSchool(push)}
-              fullWidth
-              className="rounded-xl py-3 normal-case text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 mb-4 !font-somar"
-              sx={{
-                backgroundColor: "var(--color-main)",
-                "&:hover": {
-                  backgroundColor: "var(--color-title)",
-                  transform: "translateY(-2px)",
-                },
-              }}
-            >
-              {t("add_school")}
-            </Button>
+            {organizationOptions.length > 1 && canAddMore && (
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<Add className="!text-2xl !me-2" />}
+                onClick={() => handleAddSchool(push)}
+                fullWidth
+                className="rounded-xl py-3 normal-case text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 mb-4 !font-somar"
+                sx={{
+                  backgroundColor: "var(--color-main)",
+                  "&:hover": {
+                    backgroundColor: "var(--color-title)",
+                    transform: "translateY(-2px)",
+                  },
+                }}
+              >
+                {t("add_school")}
+              </Button>
+            )}
           </>
         )}
       </FieldArray>

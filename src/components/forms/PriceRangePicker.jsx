@@ -315,7 +315,7 @@ const PriceRangePicker = ({
               },
             }}
           >
-            Minimum price cannot be greater than maximum price
+            {t("forms.customTrip.steps.pricing.fields.price.error.min_exceed_max")}
           </Alert>
         )}
 
