@@ -50,6 +50,10 @@ const ThemeProvider = () => {
         colorPreferences.color_buttons_hover || "#E1F5F5"
       );
       root.style.setProperty(
+        "--color-links-hover",
+        colorPreferences.color_links_hover || "#009883"
+      );
+      root.style.setProperty(
         "--color-badge",
         colorPreferences.color_badge || "#1858A5"
       );
@@ -62,9 +66,17 @@ const ThemeProvider = () => {
         colorPreferences.color_success || "#5cb85c"
       );
       root.style.setProperty(
+        "--color-warning",
+        colorPreferences.color_warning || "#FFA500"
+      );
+      root.style.setProperty(
         "--color-border",
         colorPreferences.color_border || "#ECECEC"
       );
+      root.style.setProperty(
+        "--color-border-secondary",
+        colorPreferences.color_border_secondary || "#ECECEC"
+      ); // Set a default value for "--color-border_secondary"
       root.style.setProperty(
         "--color-footer-link",
         colorPreferences.color_footer_link || "#00000099"

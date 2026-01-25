@@ -65,7 +65,6 @@ const LoginAs = () => {
           enqueueSnackbar(t("forms.auth.confirmAccount.loginSuccessMessage"), {
             variant: "success",
           });
-
           // Set token and user data
           setToken(response.data.token);
           dispatch(setUserToken(response.data.token));
