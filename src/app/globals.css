@@ -30,10 +30,12 @@
   /* Status Colors */
   --color-error: #bf0000;
   --color-success: #5cb85c;
+  --color-warning: #FFA500;
   --color-disabled: #d9d9d9;
 
   /* Border Colors */
   --color-border: #ececec;
+  --color-border-secondary: #ECECEC;
   --color-border-table-row: #1c1c1c20;
   --color-border-accordion: #c3c3c3;
   --color-border-pagination: #bebebe;
