@@ -103,6 +103,7 @@ export const GTM_TAGS = {
     VIEW_EVENT: "calendar_view_event",
     PREV_MONTH: "calendar_prev_month",
     NEXT_MONTH: "calendar_next_month",
+    UPLOAD_CALENDAR: "calendar_upload_calendar",
   },
   // Forms
   FORMS: {
@@ -135,6 +136,31 @@ export const GTM_TAGS = {
     PROCEED: "payment_proceed",
     APPLY_COUPON: "payment_apply_coupon",
     SELECT_METHOD: "payment_select_method",
+  },
+  // Trip Details
+  TRIP_DETAILS: {
+    SHARE: "trip_details_share",
+    DOWNLOAD_FILE: "trip_details_download_file",
+    REQUEST_QUOTE: "trip_details_request_quote",
+    CONTACT_WHATSAPP: "trip_details_contact_whatsapp",
+    REGISTER: "trip_details_register",
+    CUSTOMIZE_PACKAGE: "trip_details_customize_package",
+    LOGIN_POPUP: "trip_details_login_popup",
+    CONTINUE_GUEST: "trip_details_continue_guest",
+  },
+  // Customization
+  CUSTOMIZATION: {
+    ADD_ACTIVITY: "customization_add_activity",
+    MORE_SERVICES: "customization_more_services",
+    ADD_DAY: "customization_add_day",
+    EDIT_EVENT: "customization_edit_event",
+    DELETE_EVENT: "customization_delete_event",
+  },
+  // Header
+  HEADER: {
+    MENU_TOGGLE: "header_menu_toggle",
+    SETTINGS: "header_settings",
+    COUNTRY_SELECT: "header_country_select",
   },
 };
 

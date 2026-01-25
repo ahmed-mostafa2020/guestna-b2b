@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { usePermissions } from "@hooks/usePermissions";
 import formatDate from "@utils/FormateDate";
 import { PERMISSIONS } from "@constants/permissions";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const InteractiveCalendar = ({
   currentMonth,
@@ -62,7 +63,10 @@ const InteractiveCalendar = ({
           {t("profile.calendar.calendar.interactiveCalendar")}
         </h3>
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-          <button className="border-2 border-secColor text-mainColor px-4 md:px-6 lg:px-8 py-2 rounded-lg hover:bg-secColor hover:border-secColor hover:text-white transition-all duration-200 font-medium text-sm md:text-base w-full sm:w-auto">
+          <button
+            className="border-2 border-secColor text-mainColor px-4 md:px-6 lg:px-8 py-2 rounded-lg hover:bg-secColor hover:border-secColor hover:text-white transition-all duration-200 font-medium text-sm md:text-base w-full sm:w-auto"
+            {...getGtmTag(GTM_TAGS.CALENDAR.UPLOAD_CALENDAR, "calendar")}
+          >
             {t("profile.calendar.calendar.uploadCalendar")}
           </button>
           {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ADD_EVENT) && (
@@ -83,6 +87,7 @@ const InteractiveCalendar = ({
           onClick={() => onMonthChange("prev")}
           className="p-2 md:p-3 hover:bg-gray-100 rounded-lg md:rounded-xl transition-all duration-200 hover:shadow-md text-gray-600 hover:text-gray-800 font-bold text-lg md:text-xl flex-shrink-0"
           aria-label="Previous month"
+          {...getGtmTag(GTM_TAGS.CALENDAR.PREV_MONTH, "calendar")}
         >
           &lt;
         </button>
@@ -96,6 +101,7 @@ const InteractiveCalendar = ({
           onClick={() => onMonthChange("next")}
           className="p-2 md:p-3 hover:bg-gray-100 rounded-lg md:rounded-xl transition-all duration-200 hover:shadow-md text-gray-600 hover:text-gray-800 font-bold text-lg md:text-xl flex-shrink-0"
           aria-label="Next month"
+          {...getGtmTag(GTM_TAGS.CALENDAR.NEXT_MONTH, "calendar")}
         >
           &gt;
         </button>
@@ -135,12 +141,12 @@ const InteractiveCalendar = ({
                 day === null
                   ? "text-gray-300"
                   : isPastDate
-                  ? "text-gray-400 bg-gray-50 cursor-not-allowed opacity-50 rounded-md sm:rounded-lg"
-                  : isSameDay(day, selectedDate)
-                  ? "bg-black text-white rounded-lg sm:rounded-xl shadow-lg transform scale-105 cursor-pointer"
-                  : isToday(day)
-                  ? "bg-mainColor/80 text-white rounded-lg sm:rounded-xl border-2 border-mainColor/80 cursor-pointer hover:bg-mainColor hover:border-mainColor"
-                  : "hover:bg-gray-100 hover:shadow-md rounded-lg sm:rounded-xl cursor-pointer"
+                    ? "text-gray-400 bg-gray-50 cursor-not-allowed opacity-50 rounded-md sm:rounded-lg"
+                    : isSameDay(day, selectedDate)
+                      ? "bg-black text-white rounded-lg sm:rounded-xl shadow-lg transform scale-105 cursor-pointer"
+                      : isToday(day)
+                        ? "bg-mainColor/80 text-white rounded-lg sm:rounded-xl border-2 border-mainColor/80 cursor-pointer hover:bg-mainColor hover:border-mainColor"
+                        : "hover:bg-gray-100 hover:shadow-md rounded-lg sm:rounded-xl cursor-pointer"
               }`}
               onClick={() => !isDisabled && day && setSelectedDateSafe(day)}
             >

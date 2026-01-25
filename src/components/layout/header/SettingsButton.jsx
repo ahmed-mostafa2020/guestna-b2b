@@ -6,7 +6,6 @@ import { useState } from "react";
 import LanguagesDropdown from "./LanguagesDropdown";
 import CountriesDropdown from "./CountriesDropdown";
 
-
 import { Box } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -16,6 +15,7 @@ import Menu from "@mui/material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { globalDarkIcon, globalLightIcon, newSarLarge } from "@assets/svg";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const SettingsButton = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -40,6 +40,7 @@ const SettingsButton = () => {
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
         className="text-black transition-all duration-200 ease-in-out rounded-lg centered hover:bg-buttonsHover"
+        {...getGtmTag(GTM_TAGS.HEADER.SETTINGS, "header")}
         sx={{
           padding: "9px 4px",
           backgroundColor: open ? "var(--color-title)" : "transparent",
@@ -104,9 +105,6 @@ const SettingsButton = () => {
             <div className="flex flex-col gap-3">
               <LanguagesDropdown />
 
-           
-              
-
               <CountriesDropdown />
             </div>
           </Box>
@@ -158,8 +156,6 @@ const SettingsButton = () => {
 
             <div className="flex flex-col gap-3">
               <LanguagesDropdown />
-
-           
 
               <CountriesDropdown />
             </div>

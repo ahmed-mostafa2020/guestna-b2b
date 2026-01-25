@@ -10,6 +10,7 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import FrameWithImagedHeader from "@components/common/frameWithImagedHeader/FrameWithImagedHeader";
 import CustomizedModal from "@components/common/customizedModal";
 import RequestQuoteForm from "@components/forms/requestQuote";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const RequestQuote = () => {
   const [isRequestQuoteFormOpen, setIsRequestQuoteFormOpen] = useState(false);
@@ -30,6 +31,7 @@ const RequestQuote = () => {
           <button
             onClick={handleRequestQuoteFormOpen}
             className="flex-1 py-3 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor"
+            {...getGtmTag(GTM_TAGS.TRIP_DETAILS.REQUEST_QUOTE, "trip_details")}
           >
             {t("links.requestQuote")}
           </button>
@@ -38,6 +40,10 @@ const RequestQuote = () => {
             target="_blank"
             href={CONSTANT_VALUES.WHATSAPP_CONTACT}
             className="flex-1 py-3 text-base font-semibold text-center transition-all duration-200 ease-in-out bg-white border-2 rounded-lg border-secColor text-mainColor hover:text-white hover:bg-secColor "
+            {...getGtmTag(
+              GTM_TAGS.TRIP_DETAILS.CONTACT_WHATSAPP,
+              "trip_details"
+            )}
           >
             {t("links.contactUs")}
           </Link>

@@ -27,6 +27,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import { aboutUsIcon, discoverIcon, greenPhoneIcon } from "@assets/svg";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const TemporaryDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -123,6 +124,7 @@ const TemporaryDrawer = () => {
         onClick={toggleDrawer(true)}
         className="hover:text-white hover:bg-linksHover"
         sx={{ color: "black" }}
+        {...getGtmTag(GTM_TAGS.HEADER.MENU_TOGGLE, "header")}
       >
         <MenuIcon />
       </Button>

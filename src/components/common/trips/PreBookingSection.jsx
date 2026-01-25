@@ -16,6 +16,7 @@ import FrameWithImagedHeader from "../frameWithImagedHeader/FrameWithImagedHeade
 import ActionsDialog from "../../sections/pages/customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
 import CustomizedModal from "../customizedModal";
 import ParentLoginForm from "../../forms/auth/parentLogin";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 import Cookies from "js-cookie";
 
@@ -91,53 +92,56 @@ const PreBookingSection = ({ tripData }) => {
   // Determine booking status and get appropriate message
   const getBookingStatus = () => {
     // Priority 1: Check available seats (only if trip is PENDING)
-    if (tripData?.status === TRIP_STATUS.PENDING && tripData?.availableSeats <= 0) {
+    if (
+      tripData?.status === TRIP_STATUS.PENDING &&
+      tripData?.availableSeats <= 0
+    ) {
       return {
         canBook: false,
-        messageKey: 'noSeats'
+        messageKey: "noSeats",
       };
     }
-    
+
     // Priority 2: Check if booking period has expired (only if trip is PENDING)
     if (tripData?.status === TRIP_STATUS.PENDING && !isBookingAvailable) {
       return {
         canBook: false,
-        messageKey: 'expired'
+        messageKey: "expired",
       };
     }
-    
+
     // Priority 3: Check specific trip status
     switch (tripData?.status) {
       case TRIP_STATUS.PENDING:
         // Trip is pending and has seats and booking period is valid
         return {
           canBook: true,
-          messageKey: null
+          messageKey: null,
         };
-      
+
       case TRIP_STATUS.SCHEDULED:
         return {
           canBook: false,
-          messageKey: 'scheduled'
+          messageKey: "scheduled",
         };
-      
+
       case TRIP_STATUS.DONE:
         return {
           canBook: false,
-          messageKey: 'done'
+          messageKey: "done",
         };
-      
+
       case TRIP_STATUS.CANCELLED:
         return {
           canBook: false,
-          messageKey: 'cancelled'
+          messageKey: "cancelled",
         };
-      
+
       default:
         // Unknown status or no status
         return {
           canBook: false,
-          messageKey: 'unknown'
+          messageKey: "unknown",
         };
     }
   };
@@ -161,6 +165,7 @@ const PreBookingSection = ({ tripData }) => {
           <button
             onClick={handleOpen}
             className="w-full px-8 py-3 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor"
+            {...getGtmTag(GTM_TAGS.TRIP_DETAILS.REGISTER, "trip_details")}
           >
             {t("links.register")}
           </button>
@@ -183,6 +188,10 @@ const PreBookingSection = ({ tripData }) => {
             <Link
               href={`/${locale}/customization/${tripData?.slug}`}
               className="w-full px-8 py-3 text-base font-semibold text-center transition-all duration-200 ease-in-out bg-white border-2 rounded-lg border-secColor text-mainColor hover:text-white hover:bg-secColor"
+              {...getGtmTag(
+                GTM_TAGS.TRIP_DETAILS.CUSTOMIZE_PACKAGE,
+                "trip_details"
+              )}
             >
               {t("links.customizeYourPackage")}
             </Link>
@@ -203,6 +212,10 @@ const PreBookingSection = ({ tripData }) => {
               <button
                 onClick={handleLoginForm}
                 className="w-full p-3 text-base font-semibold text-center text-white capitalize transition-all duration-200 ease-in-out border-2 rounded-lg bg-mainColor border-mainColor hover:bg-linksHover hover:border-linksHover"
+                {...getGtmTag(
+                  GTM_TAGS.TRIP_DETAILS.LOGIN_POPUP,
+                  "trip_details"
+                )}
               >
                 {t("links.login")}
               </button>
@@ -224,6 +237,10 @@ const PreBookingSection = ({ tripData }) => {
               <button
                 onClick={handleClick}
                 className="w-full p-3 text-base font-semibold text-center transition-all duration-200 ease-in-out bg-white border-2 rounded-lg text-secColor border-secColor hover:bg-secColor hover:border-secColor hover:text-white"
+                {...getGtmTag(
+                  GTM_TAGS.TRIP_DETAILS.CONTINUE_GUEST,
+                  "trip_details"
+                )}
               >
                 {t("links.continuaAsGuest")}
               </button>
