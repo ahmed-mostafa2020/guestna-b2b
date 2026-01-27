@@ -3,7 +3,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 
 import { usePermissions } from "@hooks/usePermissions";
 import { getHeaders } from "@utils/getHeaders";
@@ -18,65 +18,68 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { CircularProgress } from "@mui/material";
-
-import { useOrderDetailsModal } from "@hooks/useOrderDetailsModal";
-import { useEditOrderModal } from "@hooks/useEditOrderModal";
+import { CircularProgress, Divider } from "@mui/material";
 
 import { TRIP_STATUS } from "@constants/tripStatus";
-import CustomizedModal from "@components/common/customizedModal";
-import OrderDetailsModal from "./OrderDetailsModal";
-import EditOrderForm from "@components/forms/editOrder";
 
-const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
+const ActionsDropdownMenu = ({
+  bookingId,
+  bookingStatus,
+  onActionComplete,
+  openDetailsModal, // Passed from parent
+  openEditModal, // Passed from parent
+}) => {
   const { hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
   const { enqueueSnackbar } = useSnackbar();
-  const headers = getHeaders(locale);
+  const headers = useMemo(() => getHeaders(locale), [locale]);
 
   // Check individual action permissions
-  const canShowDetails = hasElement(
-    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOW_DETAILS
+  const canShowDetails = useMemo(
+    () =>
+      hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOW_DETAILS),
+    [hasElement]
   );
-  const canRemindGuestna = hasElement(
-    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REMINDER_GUESTNA
+  const canRemindGuestna = useMemo(
+    () =>
+      hasElement(
+        PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REMINDER_GUESTNA
+      ),
+    [hasElement]
   );
-  const canUpdateTrip = hasElement(
-    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_UPDATE_TRIP
+  const canUpdateTrip = useMemo(
+    () =>
+      hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_UPDATE_TRIP),
+    [hasElement]
+  );
+
+  // Check if booking is editable (not done)
+  const isEditable = useMemo(
+    () => bookingStatus !== TRIP_STATUS.DONE,
+    [bookingStatus]
   );
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const [loading, setLoading] = useState(false);
+  const [sendingReminder, setSendingReminder] = useState(false);
 
-  // Use the custom hook to handle modal logic
-  const {
-    selectedOrderId,
-    currentOrderDetails,
-    loadingDetails,
-    openModal,
-    closeModal,
-  } = useOrderDetailsModal(locale);
+  // Menu handlers
+  const handleClick = useCallback((event) => {
+    setAnchorEl(event.currentTarget);
+  }, []);
 
-  // Use the edit order modal hook
-  const {
-    selectedEditOrderId,
-    currentEditOrderDetails,
-    loadingEditDetails,
-    formSelectionData,
-    loadingFormSelection,
-    openEditModal,
-    closeEditModal,
-    refreshCustomizedTripsTable,
-  } = useEditOrderModal(locale);
-
-  const handleClick = (event) => setAnchorEl(event.currentTarget);
-  const handleClose = () => setAnchorEl(null);
+  const handleClose = useCallback(() => {
+    setAnchorEl(null);
+  }, []);
 
   // Send reminder logic
-  const sendRemind = async () => {
-    setLoading(true);
+  const sendRemind = useCallback(async () => {
+    if (!bookingId) return;
+
+    setSendingReminder(true);
+    handleClose();
+
     try {
       await axios.get(
         getProxyUrl(
@@ -87,6 +90,11 @@ const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
       enqueueSnackbar(t("forms.validation.reminderSentSuccessfully"), {
         variant: "success",
       });
+
+      // Notify parent component if callback provided
+      if (onActionComplete) {
+        onActionComplete("remind", bookingId);
+      }
     } catch (error) {
       console.error("Error sending reminder:", error);
       const errorMessage =
@@ -94,129 +102,101 @@ const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
         t("forms.validation.api_errors.other_error");
       enqueueSnackbar(errorMessage, { variant: "error" });
     } finally {
-      setLoading(false);
-      handleClose();
+      setSendingReminder(false);
     }
-  };
+  }, [bookingId, headers, enqueueSnackbar, t, handleClose, onActionComplete]);
 
-  const showOrderDetails = () => {
-    openModal(bookingId);
+  // Show order details using shared modal
+  const showOrderDetails = useCallback(() => {
+    if (!bookingId || !openDetailsModal) return;
     handleClose();
-  };
+    openDetailsModal(bookingId);
+  }, [bookingId, openDetailsModal, handleClose]);
 
-  const showEditOrderForm = () => {
+  // Show edit order form using shared modal
+  const showEditOrderForm = useCallback(() => {
+    if (!bookingId || !openEditModal) return;
+    handleClose();
     openEditModal(bookingId);
-    handleClose();
-  };
+  }, [bookingId, openEditModal, handleClose]);
+
+  // Check if any action is available
+  const hasActions = useMemo(() => {
+    return (
+      canShowDetails ||
+      (canRemindGuestna && isEditable) ||
+      (canUpdateTrip && isEditable)
+    );
+  }, [canShowDetails, canRemindGuestna, canUpdateTrip, isEditable]);
+
+  // Don't render if no actions available
+  if (!hasActions) {
+    return null;
+  }
 
   return (
-    <>
-      <div>
-        <Button
-          id="basic-button"
-          aria-controls={open ? "basic-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? "true" : undefined}
-          onClick={handleClick}
-        >
-          {actionsIcon}
-        </Button>
-        <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          slotProps={{ list: { "aria-labelledby": "basic-button" } }}
-          PaperProps={{
-            sx: {
-              minWidth: "200px",
-              boxShadow: "0 0 4px 0 rgba(0, 0, 0, 0.16)",
-              textAlign: "center",
-            },
-          }}
-        >
-          {canShowDetails && (
-            <MenuItem
-              onClick={() => {
-                handleClose();
-                openModal(bookingId);
-              }}
-              disabled={loadingDetails}
-            >
-              {loadingDetails ? (
-                <CircularProgress size={17} color="primary" />
-              ) : (
-                t("links.showDetails")
-              )}
-            </MenuItem>
-          )}
-
-          {canRemindGuestna && bookingStatus !== TRIP_STATUS.DONE && (
-            <MenuItem onClick={sendRemind} disabled={loading}>
-              {loading ? (
-                <CircularProgress size={17} color="primary" />
-              ) : (
-                t("links.remindGuestna")
-              )}
-            </MenuItem>
-          )}
-
-          {canUpdateTrip && bookingStatus !== TRIP_STATUS.DONE && (
-            <MenuItem onClick={showEditOrderForm} disabled={true}>
-              {loadingEditDetails ? (
-                <CircularProgress size={17} color="primary" />
-              ) : (
-                t("links.edit")
-              )}
-            </MenuItem>
-          )}
-        </Menu>
-      </div>
-
-      {/* Order Details Modal */}
-      <CustomizedModal
-        open={Boolean(selectedOrderId)}
-        handleClose={closeModal}
-        bgcolor="rgba(0, 0, 0, 0.5)"
-        customizedCloseButton={true}
-        padding={false}
+    <div>
+      <Button
+        id={`actions-button-${bookingId}`}
+        aria-controls={open ? `actions-menu-${bookingId}` : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
+        onClick={handleClick}
+        disabled={sendingReminder}
       >
-        {selectedOrderId && (
-          <OrderDetailsModal
-            orderId={selectedOrderId}
-            orderDetails={currentOrderDetails}
-            loading={loadingDetails}
-          />
+        {sendingReminder ? (
+          <CircularProgress size={20} color="primary" />
+        ) : (
+          actionsIcon
         )}
-      </CustomizedModal>
-
-      {/* Edit Order Modal */}
-      <CustomizedModal
-        open={Boolean(selectedEditOrderId)}
-        handleClose={closeEditModal}
-        bgcolor="rgba(0, 0, 0, 0.5)"
-        customizedCloseButton={true}
-        padding={false}
+      </Button>
+      <Menu
+        id={`actions-menu-${bookingId}`}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        slotProps={{
+          list: { "aria-labelledby": `actions-button-${bookingId}` },
+        }}
+        PaperProps={{
+          sx: {
+            minWidth: "200px",
+            boxShadow: "0 0 4px 0 rgba(0, 0, 0, 0.16)",
+            textAlign: "center",
+          },
+        }}
       >
-        {selectedEditOrderId && (
-          <EditOrderForm
-            orderDetails={currentEditOrderDetails}
-            loading={loadingEditDetails}
-            onClose={closeEditModal}
-            orderId={selectedEditOrderId}
-            formSelectionData={
-              formSelectionData || {
-                categories: [],
-                cities: [],
-                academicStages: [],
-                services: [],
-              }
-            }
-            onOrderUpdate={refreshCustomizedTripsTable}
-          />
+        {canShowDetails && (
+          <MenuItem className="!font-somar" onClick={showOrderDetails}>
+            {t("links.showDetails")}
+          </MenuItem>
         )}
-      </CustomizedModal>
-    </>
+
+        {canShowDetails &&
+          (canRemindGuestna || canUpdateTrip) &&
+          isEditable && <Divider />}
+
+        {canRemindGuestna && isEditable && (
+          <MenuItem
+            onClick={sendRemind}
+            disabled={sendingReminder}
+            className="!font-somar"
+          >
+            {sendingReminder ? (
+              <CircularProgress size={17} color="primary" />
+            ) : (
+              t("links.remindGuestna")
+            )}
+          </MenuItem>
+        )}
+
+        {canUpdateTrip && isEditable && (
+          <MenuItem onClick={showEditOrderForm} className="!font-somar">
+            {t("links.edit")}
+          </MenuItem>
+        )}
+      </Menu>
+    </div>
   );
 };
 

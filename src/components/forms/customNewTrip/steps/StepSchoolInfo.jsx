@@ -32,11 +32,6 @@ import axios from "axios";
 const SchoolInfoCard = ({
   index,
   school,
-  errors,
-  touched,
-  handleChange,
-  handleBlur,
-  setFieldValue,
   organizationOptions,
   academicStagesOptions,
   onRemove,
@@ -44,6 +39,9 @@ const SchoolInfoCard = ({
   selectedOrganizations,
 }) => {
   const t = useTranslations("forms.customTrip.steps.school_info");
+
+  const { errors, touched, values, handleBlur, setFieldValue } =
+    useFormikContext();
 
   const t2 = useTranslations();
   const locale = useLocale();
@@ -93,9 +91,12 @@ const SchoolInfoCard = ({
     [headers, t]
   );
 
+  console.log(values.schoolsInfo.tracks)
+
   useEffect(() => {
     if (school.organization) {
       fetchTracks(school.organization);
+
     } else {
       setTracksData([]);
     }

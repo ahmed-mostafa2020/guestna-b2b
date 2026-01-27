@@ -3,6 +3,7 @@
     "back": "Back",
     "next": "Next",
     "submit":"Submit",
+    "edit":"Edit",
     "autocomplete": {
       "noOptions": "No options",
       "loading": "Loading..."

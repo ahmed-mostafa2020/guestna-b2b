@@ -5,6 +5,7 @@ import { useFormikContext } from "formik";
 import { useTranslations } from "next-intl";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { Box } from "@mui/material";
+import formatDateForInput from "@/src/utils/FormateDateForInput";
 
 const StepTripDate = () => {
   const t = useTranslations("forms.customTrip.steps.trip_date");
@@ -25,7 +26,7 @@ const StepTripDate = () => {
           <TextInputGroup
             type="date"
             name="day"
-            value={values.day}
+            value={formatDateForInput(values.day)}
             errors={errors.day}
             touched={touched.day}
             onChange={handleChange}
@@ -47,7 +48,7 @@ const StepTripDate = () => {
             <TextInputGroup
               type="date"
               name="endDay"
-              value={values.endDay}
+              value={formatDateForInput(values.endDay)}
               errors={errors.endDay}
               touched={touched.endDay}
               onChange={handleChange}

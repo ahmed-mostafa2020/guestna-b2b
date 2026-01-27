@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 
-import { memo, useState, useRef, useMemo } from "react";
+import { memo, useState, useRef, useMemo, useEffect } from "react";
 import { Formik } from "formik";
 import axios from "axios";
 import { useSnackbar } from "notistack";
@@ -21,7 +21,14 @@ import StepTripDate from "./steps/StepTripDate";
 import StepPricing from "./steps/StepPricing";
 import StepAdditionalInfo from "./steps/StepAdditionalInfo";
 
-const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
+const CustomNewTripForm = ({
+  formSelectionData,
+  onClose,
+  onSuccess,
+  mode = "create", // 'create' or 'edit'
+  editData = null, // Existing order data for edit mode
+  orderId = null, // Order ID for edit mode
+}) => {
   const [activeStep, setActiveStep] = useState(0);
   const [formErrors, setFormErrors] = useState([]);
 
@@ -34,12 +41,23 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
   const t2 = useTranslations();
   const formRef = useRef(null);
 
-  const headers = getHeaders(locale);
+  const headers = useMemo(() => getHeaders(locale), [locale]);
   const { enqueueSnackbar } = useSnackbar();
 
-  // Keep full objects for _id lookup
+  const isEditMode = mode === "edit";
 
-  const categoryData = formSelectionData.categories;
+  // Validation for edit mode
+  useEffect(() => {
+    if (isEditMode && !orderId) {
+      console.error("Edit mode requires orderId");
+    }
+    if (isEditMode && !editData) {
+      console.warn("Edit mode: No edit data provided");
+    }
+  }, [isEditMode, orderId, editData]);
+
+  // Keep full objects for _id lookup
+  const categoryData = formSelectionData?.categories || [];
   const tripTypeData = [
     {
       name: t("steps.trip_info.fields.trip_type.options.halfDay"),
@@ -54,26 +72,32 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
       _id: CONSTANT_VALUES.PACKAGE,
     },
   ];
-  const cityData = formSelectionData.cities || [];
-  const academicStagesData = formSelectionData.academicStages || [];
-  const servicesData = formSelectionData.services || [];
-  const supCategoryData = formSelectionData.supCategory || [];
+  const cityData = formSelectionData?.cities || [];
+  const academicStagesData = formSelectionData?.academicStages || [];
+  const servicesData = formSelectionData?.services || [];
+  const supCategoryData = formSelectionData?.supCategory || [];
 
   // Use full data objects for dropdowns (id/name pair)
   const organizationsOptions = useMemo(() => {
+    // In edit mode, use organizations from editData if available
+    if (isEditMode && editData?.organizations) {
+      return editData.organizations;
+    }
+
+    // In create mode, use selected organizations
     if (allSelected) {
       return organizations;
     }
 
     if (selectedIds.length > 0 && !allSelected && organizations.length > 0) {
-      return selectedIds.map((id) => {
-        const org = organizations.find((org) => org._id === id);
-        return org;
-      });
+      return selectedIds
+        .map((id) => organizations.find((org) => org._id === id))
+        .filter(Boolean);
     }
 
     return [];
-  }, [organizations, selectedIds, allSelected]);
+  }, [organizations, selectedIds, allSelected, isEditMode, editData]);
+
   const categoryOptions = categoryData;
   const tripTypeOptions = tripTypeData;
   const cityOptions = cityData;
@@ -89,6 +113,89 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
     t("steps.additional_info.step_title"),
   ];
 
+  // Helper function to safely extract _id from object or return value
+  const extractId = (value) => {
+    if (!value) return "";
+    return typeof value === "object" && value._id ? value._id : value;
+  };
+
+  // Helper function to extract array of IDs
+  const extractIds = (array) => {
+    if (!Array.isArray(array)) return [];
+    return array.map((item) => extractId(item)).filter(Boolean);
+  };
+
+  // Transform edit data to form initial values
+  const getInitialValues = useMemo(() => {
+    if (isEditMode && editData) {
+      // Extract price range from editData
+      const priceRange = {
+        min: editData.priceRange?.min ?? editData.minPrice ?? 0,
+        max: editData.priceRange?.max ?? editData.maxPrice ?? 100,
+      };
+
+      return {
+        // School Info - map from editData structure
+        schoolsInfo: editData.schoolsInfo || [
+          {
+            organization: extractId(editData.organization),
+            tracks: [extractId(editData.track)],
+            academicStages: extractIds(editData.academicStages),
+          },
+        ],
+
+        // Trip Info
+        category: extractId(editData.category),
+        supCategory: extractId(editData.supCategory),
+        tripType: extractId(editData.tripType),
+        city: extractId(editData.city),
+        services: extractIds(editData.services),
+        name: editData.name || { en: "", ar: "" },
+
+        // Trip Date
+        day: editData.day || "",
+        endDay: editData.endDay || "",
+        fromHour: editData.fromHour || "",
+        toHour: editData.toHour || "",
+
+        // Pricing
+        priceRange: priceRange,
+        availableSeats: editData.availableSeats || 0,
+
+        // Additional Info
+        specialRequirements: editData.specialRequirements || "",
+        file: editData.file || "",
+        note: editData.note || "",
+      };
+    }
+
+    // Default values for create mode
+    return {
+      schoolsInfo: [
+        {
+          organization: "",
+          tracks: [],
+          academicStages: [],
+        },
+      ],
+      day: "",
+      endDay: "",
+      availableSeats: 0,
+      category: "",
+      supCategory: "",
+      name: { en: "", ar: "" },
+      tripType: "",
+      city: "",
+      fromHour: "",
+      toHour: "",
+      priceRange: { min: 0, max: 100 },
+      specialRequirements: "",
+      services: [],
+      file: "",
+      note: "",
+    };
+  }, [isEditMode, editData]);
+
   const handleNext = async (formik) => {
     const { validateForm, setTouched } = formik;
 
@@ -100,8 +207,6 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
     });
     setTouched({ ...formik.touched, ...fieldsToTouch });
 
-    // Validate only specific fields for the current step?
-    // Formik's validateForm validates everything. We can check if errors keys intersect with stepFields.
     const errors = await validateForm();
     const stepErrors = stepFields.filter((field) => errors[field]);
 
@@ -142,13 +247,19 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
     }
   };
 
-  const handleSubmit = (values, { setSubmitting, resetForm }) => {
+  const prepareFormData = (values) => {
     const formData = new FormData();
 
     // Add all form fields to FormData
     Object.keys(values).forEach((key) => {
       if (key === "file") {
-        formData.append(key, values[key] || "");
+        // Only append file if it's a new File object
+        if (values[key] instanceof File) {
+          formData.append(key, values[key]);
+        } else if (isEditMode && !values[key]) {
+          // In edit mode, if file is removed, send empty string
+          formData.append(key, "");
+        }
       } else if (key === "schoolsInfo") {
         // Process schoolsInfo array
         values.schoolsInfo.forEach((school, index) => {
@@ -193,61 +304,70 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
       }
     });
 
-    const organizationIds = values.schoolsInfo.map(
-      (school) => school.organization
-    );
+    return formData;
+  };
 
-    const config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: getProxyUrl(
-        `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ADD_NEW_ACTIVITY.CUSTOM_TRIP}`
-      ),
-      headers: {
-        ...headers,
-        "Content-Type": "multipart/form-data",
-        "profile-organizations": JSON.stringify(organizationIds),
-      },
-      data: formData,
-    };
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    try {
+      const formData = prepareFormData(values);
+      const organizationIds = values.schoolsInfo.map(
+        (school) => school.organization
+      );
 
-    axios
-      .request(config)
-      .then((response) => {
-        setSubmitting(false);
-        setFormErrors([]);
-        resetForm();
+      const config = {
+        method: isEditMode ? "patch" : "post",
+        maxBodyLength: Infinity,
+        url: getProxyUrl(
+          isEditMode
+            ? `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.CUSTOM_TRIP_SUBMIT}/${orderId}`
+            : `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ADD_NEW_ACTIVITY.CUSTOM_TRIP}`
+        ),
+        headers: {
+          ...headers,
+          "Content-Type": "multipart/form-data",
+        },
+        data: formData,
+      };
 
-        const res = response.data;
-        if (res) {
-          enqueueSnackbar(t("success"), {
-            variant: "success",
-          });
+      const response = await axios.request(config);
+      setSubmitting(false);
+      setFormErrors([]);
 
-          if (onSuccess && typeof onSuccess === "function") {
-            onSuccess(res);
-          } else if (onClose && typeof onClose === "function") {
-            onClose();
-          }
-        }
-      })
-      .catch((error) => {
-        setSubmitting(false);
-        console.log("Error details:", error + formErrors);
-        const errorMessage = getErrorMessage(error, t2);
-        enqueueSnackbar(errorMessage, {
-          variant: "error",
+      const res = response.data;
+      if (res) {
+        enqueueSnackbar(isEditMode ? t("edit_success") : t("success"), {
+          variant: "success",
         });
-        setFormErrors([errorMessage || "An unknown error occurred."]);
+
+        // Reset form only in create mode
+        if (!isEditMode) {
+          resetForm();
+        }
+
+        if (onSuccess && typeof onSuccess === "function") {
+          onSuccess(res);
+        } else if (onClose && typeof onClose === "function") {
+          onClose();
+        }
+      }
+    } catch (error) {
+      setSubmitting(false);
+      console.error("Error submitting form:", error);
+      const errorMessage = getErrorMessage(error, t2);
+      enqueueSnackbar(errorMessage, {
+        variant: "error",
       });
+      setFormErrors([errorMessage || "An unknown error occurred."]);
+    }
   };
 
   const customTripSchema = createCustomNewTripSchema(t2);
 
+ 
   return (
     <div className="px-4 py-8 bg-white rounded-2xl w-[90%] mx-auto">
       <h3 className="pb-4 text-center text-lg font-medium text-black lg:text-2xl lg:pb-8">
-        {t("title")}
+        {isEditMode ? t("edit") : t("title")}
       </h3>
 
       <Box className="mb-10 w-full" dir={locale === "ar" ? "rtl" : "ltr"}>
@@ -288,7 +408,6 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
             "& .MuiStepIcon-root": {
               fontSize: "2.5rem",
               border: "2px solid ",
-             
               "&.Mui-completed": {
                 color: "white",
                 borderColor: "var(--color-success)",
@@ -336,7 +455,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
                       color: index <= activeStep ? "white" : "#bdbdbd",
                       fontWeight: "bold",
                       fontSize: "3rem",
-                      zIndex: 1, // Ensure icon is above the line
+                      zIndex: 1,
                     },
                   },
                 }}
@@ -363,30 +482,7 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
           }
         `}</style>
         <Formik
-          initialValues={{
-            schoolsInfo: [
-              {
-                organization: "",
-                tracks: [],
-                academicStages: [],
-              },
-            ],
-            day: "",
-            endDay: "",
-            availableSeats: 0,
-            category: "",
-            supCategory: "",
-            name: { en: "", ar: "" },
-            tripType: "",
-            city: "",
-            fromHour: "",
-            toHour: "",
-            priceRange: { min: 0, max: 100 },
-            specialRequirements: "",
-            services: [],
-            file: "",
-            note: "",
-          }}
+          initialValues={getInitialValues}
           validationSchema={customTripSchema}
           onSubmit={handleSubmit}
           enableReinitialize
@@ -456,15 +552,19 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
                     type="button"
                     onClick={() => handleNext(formik)}
                     disabled={isSubmitting}
-                    className="px-6 py-2 bg-mainColor text-white rounded-lg hover:bg-titleColor"
+                    className="px-6 py-2 bg-mainColor text-white rounded-lg hover:bg-titleColor disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? (
                       <div className="flex items-center gap-2">
                         <CircularProgress color="inherit" size={20} />
-                        {t2("forms.validation.sending")}
+                        { t2("forms.validation.sending")}
                       </div>
                     ) : activeStep === steps.length - 1 ? (
-                      t2("common.submit")
+                      isEditMode ? (
+                        t2("common.edit")
+                      ) : (
+                        t2("common.submit")
+                      )
                     ) : (
                       t2("common.next")
                     )}
