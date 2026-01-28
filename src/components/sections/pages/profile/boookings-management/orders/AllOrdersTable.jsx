@@ -60,21 +60,30 @@ const AllOrdersTable = ({
   ]);
 
   const getStatusStyles = (status) => {
+   
+
     switch (status) {
       case TRIP_STATUS.APPROVED:
+      case TRIP_STATUS.DONE:
         return "bg-green-100 text-green-800 border border-green-200";
+
       case TRIP_STATUS.PENDING:
       case TRIP_STATUS.PENDING_COMPANY_APPROVAL:
         return "bg-yellow-100 text-yellow-800 border border-yellow-200";
+
+      case TRIP_STATUS.SCHEDULED:
+        return "bg-blue-100 text-blue-800 border border-blue-200";
+
+      case TRIP_STATUS.ON_HOLD:
+        return "bg-orange-100 text-orange-800 border border-orange-200";
+
       case TRIP_STATUS.CANCELLED:
       case TRIP_STATUS.REJECTED:
         return "bg-red-100 text-red-800 border border-red-200";
-      case TRIP_STATUS.SCHEDULED:
-        return "bg-blue-100 text-blue-800 border border-blue-200";
+
       case TRIP_STATUS.ENDED:
         return "bg-gray-100 text-gray-800 border border-gray-200";
-      case TRIP_STATUS.ON_HOLD:
-        return "bg-orange-100 text-orange-800 border border-orange-200";
+
       default:
         return "bg-gray-100 text-gray-800 border border-gray-200";
     }
@@ -106,10 +115,7 @@ const AllOrdersTable = ({
   // Handle action completion from ActionsDropdownMenu
   const handleActionComplete = useCallback(
     (action, bookingId, result) => {
-      // Refresh table data if needed
-      if (action === "edit" || action === "remind") {
-        // You can add additional logic here
-      }
+     
 
       // Notify parent component
       if (onActionComplete) {
@@ -118,6 +124,8 @@ const AllOrdersTable = ({
     },
     [onActionComplete]
   );
+
+  
 
   if (!data || !data.nodes) {
     return (
@@ -251,7 +259,7 @@ const AllOrdersTable = ({
                       {hasAnyActionPermission && (
                         <td className="p-4">
                           <ActionsDropdownMenu
-                            bookingId={order._id}
+                            bookingId={order.orderId}
                             bookingStatus={order.status}
                             onActionComplete={handleActionComplete}
                             openDetailsModal={openDetailsModal}
@@ -380,7 +388,7 @@ const AllOrdersTable = ({
                     </span>
 
                     <ActionsDropdownMenu
-                      bookingId={order._id}
+                      bookingId={order.orderId}
                       bookingStatus={order.status}
                       onActionComplete={handleActionComplete}
                       openDetailsModal={openDetailsModal}

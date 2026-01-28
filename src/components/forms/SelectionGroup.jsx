@@ -88,6 +88,7 @@ const SelectionGroup = ({
           },
           "& .MuiSelect-icon": {
             right: "10px !important",
+            left: "auto !important",
             color: "var(--color-text)",
           },
           "& .MuiOutlinedInput-notchedOutline": {

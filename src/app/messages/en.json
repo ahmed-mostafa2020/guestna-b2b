@@ -2,8 +2,8 @@
   "common": {
     "back": "Back",
     "next": "Next",
-    "submit":"Submit",
-    "edit":"Edit",
+    "submit": "Submit",
+    "edit": "Edit",
     "autocomplete": {
       "noOptions": "No options",
       "loading": "Loading..."
@@ -2196,8 +2196,8 @@
             },
             "academicStages": {
               "label": "Academic Stage",
-              "placeholder": "Select academic stages"
-              ,"helper_text": "Please select the educational track first"
+              "placeholder": "Select academic stages",
+              "helper_text": "Please select the educational track first"
             }
           }
         },

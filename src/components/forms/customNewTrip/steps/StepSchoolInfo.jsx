@@ -159,17 +159,19 @@ const SchoolInfoCard = ({
         school.tracks.includes(t._id)
       );
 
+    
+
       if (selectedTracks.length === 0) return academicStagesOptions;
 
-      // Find intersection of academic stages across all selected tracks
-      const stageIdSets = selectedTracks.map(
-        (track) => new Set(track.academicStages.map((s) => s._id))
-      );
-
+     
+   
+     
       // Get common stages (intersection)
-      const commonStageIds = [...stageIdSets[0]].filter((stageId) =>
-        stageIdSets.every((set) => set.has(stageId))
-      );
+      const commonStageIds =[... new Set(
+        selectedTracks.flatMap((track) =>
+          track.academicStages.map((stage) => stage._id)
+        )
+      )]
 
       // Return stages that are common to all selected tracks
       return academicStagesOptions.filter((stage) =>
@@ -318,7 +320,7 @@ const SchoolInfoCard = ({
 
             <Typography className="font-bold !text-textDark !font-somar !text-lg  ">
               {isEditMode
-                ? t("school_info")
+                ? t("title")
                 : t("school_card", {
                     count: index + 1,
                   })}
