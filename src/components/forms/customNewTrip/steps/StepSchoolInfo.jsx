@@ -30,6 +30,7 @@ import { FieldArray, useFormikContext } from "formik";
 import axios from "axios";
 
 const SchoolInfoCard = ({
+  isEditMode,
   index,
   school,
   organizationOptions,
@@ -37,6 +38,7 @@ const SchoolInfoCard = ({
   onRemove,
   isRemovable,
   selectedOrganizations,
+  fieldPath, // New prop to handle dynamic field path
 }) => {
   const t = useTranslations("forms.customTrip.steps.school_info");
 
@@ -51,14 +53,15 @@ const SchoolInfoCard = ({
   const [isLoadingTracks, setIsLoadingTracks] = useState(false);
   const [trackError, setTrackError] = useState(null);
   const [isExpanded, setIsExpanded] = useState(true);
+  const [tracksConvertedWarning, setTracksConvertedWarning] = useState(false);
 
   // Auto-select organization if only one option exists
   useEffect(() => {
     if (organizationOptions.length === 1 && !school.organization) {
       const singleOrg = organizationOptions[0];
-      setFieldValue(`schoolsInfo[${index}].organization`, singleOrg._id);
+      setFieldValue(`${fieldPath}.organization`, singleOrg._id);
     }
-  }, [organizationOptions, school.organization, setFieldValue, index]);
+  }, [organizationOptions, school.organization, setFieldValue, fieldPath]);
 
   // Fetch tracks with improved error handling and caching
   const fetchTracks = useCallback(
@@ -91,16 +94,28 @@ const SchoolInfoCard = ({
     [headers, t]
   );
 
-  console.log(values.schoolsInfo.tracks)
-
   useEffect(() => {
     if (school.organization) {
       fetchTracks(school.organization);
-
     } else {
       setTracksData([]);
     }
   }, [school.organization, fetchTracks]);
+
+  // Detect if tracks array was converted to single track in edit mode
+  useEffect(() => {
+    if (isEditMode && values.schoolsInfo) {
+      const formikValue = values.schoolsInfo;
+      // Check if there's a tracks array in the initial data (before conversion)
+      if (
+        formikValue.tracks &&
+        Array.isArray(formikValue.tracks) &&
+        formikValue.tracks.length > 1
+      ) {
+        setTracksConvertedWarning(true);
+      }
+    }
+  }, [isEditMode, values.schoolsInfo]);
 
   // Format track options with memoization
   const trackList = useMemo(() => {
@@ -112,9 +127,62 @@ const SchoolInfoCard = ({
           `common.${track.gender}`
         )} - ${stages}`,
         _id: track._id,
+        academicStages: track.academicStages || [], // Keep academic stages data
       };
     });
   }, [tracksData, t2]);
+
+  // Filter academic stages based on selected track(s)
+  const availableAcademicStages = useMemo(() => {
+    if (isEditMode) {
+      // Edit mode: Single track
+      if (!school.track) return academicStagesOptions;
+
+      const selectedTrack = trackList.find((t) => t._id === school.track);
+      if (!selectedTrack || !selectedTrack.academicStages) {
+        return academicStagesOptions;
+      }
+
+      // Return only stages available in the selected track
+      const trackStageIds = selectedTrack.academicStages.map((s) => s._id);
+      return academicStagesOptions.filter((stage) =>
+        trackStageIds.includes(stage._id)
+      );
+    } else {
+      // Create mode: Multiple tracks
+      if (!school.tracks || school.tracks.length === 0) {
+        return academicStagesOptions;
+      }
+
+      // Get all selected tracks
+      const selectedTracks = trackList.filter((t) =>
+        school.tracks.includes(t._id)
+      );
+
+      if (selectedTracks.length === 0) return academicStagesOptions;
+
+      // Find intersection of academic stages across all selected tracks
+      const stageIdSets = selectedTracks.map(
+        (track) => new Set(track.academicStages.map((s) => s._id))
+      );
+
+      // Get common stages (intersection)
+      const commonStageIds = [...stageIdSets[0]].filter((stageId) =>
+        stageIdSets.every((set) => set.has(stageId))
+      );
+
+      // Return stages that are common to all selected tracks
+      return academicStagesOptions.filter((stage) =>
+        commonStageIds.includes(stage._id)
+      );
+    }
+  }, [
+    school.track,
+    school.tracks,
+    trackList,
+    academicStagesOptions,
+    isEditMode,
+  ]);
 
   // Filter out already selected organizations (excluding current card)
   const availableOrganizations = useMemo(() => {
@@ -127,12 +195,17 @@ const SchoolInfoCard = ({
 
   // Check if card is complete
   const isComplete = useMemo(() => {
+    if (isEditMode) {
+      return (
+        school.organization && school.track && school.academicStages?.length > 0
+      );
+    }
     return (
       school.organization &&
       school.tracks?.length > 0 &&
       school.academicStages?.length > 0
     );
-  }, [school]);
+  }, [school, isEditMode]);
 
   // Handle organization change with cleanup
   const handleOrganizationChange = useCallback(
@@ -141,22 +214,74 @@ const SchoolInfoCard = ({
       const selectedId =
         organizationOptions.find((org) => org.name === selectedName)?._id ||
         selectedName;
-      setFieldValue(`schoolsInfo[${index}].organization`, selectedId);
-      setFieldValue(`schoolsInfo[${index}].tracks`, []);
+      setFieldValue(`${fieldPath}.organization`, selectedId);
+
+      // Clear track/tracks based on mode
+      if (isEditMode) {
+        setFieldValue(`${fieldPath}.track`, "");
+      } else {
+        setFieldValue(`${fieldPath}.tracks`, []);
+      }
     },
-    [organizationOptions, setFieldValue, index]
+    [organizationOptions, setFieldValue, fieldPath, isEditMode]
   );
 
-  // Handle tracks change
-  const handleTracksChange = useCallback(
+  // Handle track change (singular in edit mode, array in create mode)
+  const handleTrackChange = useCallback(
     (e) => {
-      const selectedNames = e.target.value;
-      const selectedIds = selectedNames
-        .map((name) => trackList.find((tr) => tr.name === name)?._id)
-        .filter(Boolean);
-      setFieldValue(`schoolsInfo[${index}].tracks`, selectedIds);
+      if (isEditMode) {
+        // In edit mode, track is a single value (string)
+        const selectedName = e.target.value;
+        const selectedId =
+          trackList.find((tr) => tr.name === selectedName)?._id || "";
+        setFieldValue(`${fieldPath}.track`, selectedId);
+
+        // Clear academic stages that are not available in the new track
+        if (selectedId) {
+          const selectedTrack = trackList.find((t) => t._id === selectedId);
+          if (selectedTrack && selectedTrack.academicStages) {
+            const trackStageIds = selectedTrack.academicStages.map(
+              (s) => s._id
+            );
+            const currentStages = school.academicStages || [];
+            const validStages = currentStages.filter((stageId) =>
+              trackStageIds.includes(stageId)
+            );
+            setFieldValue(`${fieldPath}.academicStages`, validStages);
+          }
+        } else {
+          setFieldValue(`${fieldPath}.academicStages`, []);
+        }
+      } else {
+        // In create mode, tracks is an array
+        const selectedNames = e.target.value;
+        const selectedIds = selectedNames
+          .map((name) => trackList.find((tr) => tr.name === name)?._id)
+          .filter(Boolean);
+        setFieldValue(`${fieldPath}.tracks`, selectedIds);
+
+        // Clear academic stages that are not available in all selected tracks
+        if (selectedIds.length > 0) {
+          const selectedTracks = trackList.filter((t) =>
+            selectedIds.includes(t._id)
+          );
+          const stageIdSets = selectedTracks.map(
+            (track) => new Set(track.academicStages.map((s) => s._id))
+          );
+          const commonStageIds = [...stageIdSets[0]].filter((stageId) =>
+            stageIdSets.every((set) => set.has(stageId))
+          );
+          const currentStages = school.academicStages || [];
+          const validStages = currentStages.filter((stageId) =>
+            commonStageIds.includes(stageId)
+          );
+          setFieldValue(`${fieldPath}.academicStages`, validStages);
+        } else {
+          setFieldValue(`${fieldPath}.academicStages`, []);
+        }
+      }
     },
-    [trackList, setFieldValue, index]
+    [trackList, setFieldValue, fieldPath, isEditMode, school.academicStages]
   );
 
   // Handle academic stages change
@@ -166,9 +291,9 @@ const SchoolInfoCard = ({
       const selectedIds = selectedNames
         .map((name) => academicStagesOptions.find((s) => s.name === name)?._id)
         .filter(Boolean);
-      setFieldValue(`schoolsInfo[${index}].academicStages`, selectedIds);
+      setFieldValue(`${fieldPath}.academicStages`, selectedIds);
     },
-    [academicStagesOptions, setFieldValue, index]
+    [academicStagesOptions, setFieldValue, fieldPath]
   );
 
   return (
@@ -192,9 +317,11 @@ const SchoolInfoCard = ({
             </IconButton>
 
             <Typography className="font-bold !text-textDark !font-somar !text-lg  ">
-              {t("school_card", {
-                count: index + 1,
-              })}
+              {isEditMode
+                ? t("school_info")
+                : t("school_card", {
+                    count: index + 1,
+                  })}
             </Typography>
             {isComplete && (
               <Chip
@@ -205,7 +332,7 @@ const SchoolInfoCard = ({
               />
             )}
           </div>
-          {isRemovable && (
+          {isRemovable && !isEditMode && (
             <Delete
               className="text-error !text-3xl cursor-pointer hover:scale-105 "
               onClick={onRemove}
@@ -216,6 +343,13 @@ const SchoolInfoCard = ({
 
         <Collapse in={isExpanded} timeout={300}>
           <CardContent className="p-6">
+            {/* Warning about tracks conversion in edit mode */}
+            {isEditMode && tracksConvertedWarning && (
+              <Alert severity="info" className="mb-4">
+                {t("fields.track.conversion_notice")}
+              </Alert>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Organization Selection */}
               <div>
@@ -224,7 +358,7 @@ const SchoolInfoCard = ({
                   <span className="text-error ml-1">*</span>
                 </label>
                 <SelectionGroup
-                  name={`schoolsInfo[${index}].organization`}
+                  name={`${fieldPath}.organization`}
                   value={
                     organizationOptions.find(
                       (org) => org._id === school.organization
@@ -236,11 +370,11 @@ const SchoolInfoCard = ({
                   errors={errors?.organization}
                   placeholder={t("fields.organization.placeholder")}
                   list={availableOrganizations.map((org) => org.name)}
-                  disabled={organizationOptions.length === 1}
+                  disabled={organizationOptions.length === 1 || isEditMode}
                 />
               </div>
 
-              {/* Tracks Selection */}
+              {/* Track/Tracks Selection */}
               <div>
                 <label className="block mb-2 text-sm  text-textDark">
                   {t("fields.track.label")}
@@ -254,18 +388,27 @@ const SchoolInfoCard = ({
                   />
                 ) : (
                   <SelectionGroup
-                    name={`schoolsInfo[${index}].tracks`}
-                    value={(school.tracks || [])
-                      .map((id) => trackList.find((t) => t._id === id)?.name)
-                      .filter(Boolean)}
-                    onChange={handleTracksChange}
+                    name={
+                      isEditMode ? `${fieldPath}.track` : `${fieldPath}.tracks`
+                    }
+                    value={
+                      isEditMode
+                        ? trackList.find((t) => t._id === school.track)?.name ||
+                          ""
+                        : (school.tracks || [])
+                            .map(
+                              (id) => trackList.find((t) => t._id === id)?.name
+                            )
+                            .filter(Boolean)
+                    }
+                    onChange={handleTrackChange}
                     onBlur={handleBlur}
-                    touched={touched?.tracks}
-                    errors={errors?.tracks}
+                    touched={isEditMode ? touched?.track : touched?.tracks}
+                    errors={isEditMode ? errors?.track : errors?.tracks}
                     placeholder={t("fields.track.placeholder")}
                     list={trackList.map((tr) => tr.name)}
                     disabled={!school.organization}
-                    multiple={true}
+                    multiple={!isEditMode}
                   />
                 )}
                 {trackError && (
@@ -285,11 +428,11 @@ const SchoolInfoCard = ({
                   <span className="text-error ml-1">*</span>
                 </label>
                 <SelectionGroup
-                  name={`schoolsInfo[${index}].academicStages`}
+                  name={`${fieldPath}.academicStages`}
                   value={(school.academicStages || [])
                     .map(
                       (id) =>
-                        academicStagesOptions.find((s) => s._id === id)?.name
+                        availableAcademicStages.find((s) => s._id === id)?.name
                     )
                     .filter(Boolean)}
                   onChange={handleAcademicStagesChange}
@@ -297,9 +440,28 @@ const SchoolInfoCard = ({
                   touched={touched?.academicStages}
                   errors={errors?.academicStages}
                   placeholder={t("fields.academicStages.placeholder")}
-                  list={academicStagesOptions.map((s) => s.name)}
+                  list={availableAcademicStages.map((s) => s.name)}
                   multiple={true}
+                  disabled={
+                    isEditMode
+                      ? !school.track
+                      : !school.tracks || school.tracks.length === 0
+                  }
                 />
+                {((isEditMode && !school.track) ||
+                  (!isEditMode &&
+                    (!school.tracks || school.tracks.length === 0))) && (
+                  <p className="!mt-2 ps-1 text-xs text-textLight">
+                    {t("fields.academicStages.helper_text")}
+                  </p>
+                )}
+                {((isEditMode && school.track) ||
+                  (!isEditMode && school.tracks && school.tracks.length > 0)) &&
+                  availableAcademicStages.length === 0 && (
+                    <p className="!mt-2 ps-1 text-xs text-warning">
+                      {t("fields.academicStages.no_common_stages")}
+                    </p>
+                  )}
               </div>
             </div>
           </CardContent>
@@ -309,17 +471,36 @@ const SchoolInfoCard = ({
   );
 };
 
-const StepSchoolInfo = ({ organizationOptions, academicStagesOptions }) => {
+const StepSchoolInfo = ({
+  organizationOptions,
+  academicStagesOptions,
+  isEditMode,
+}) => {
   const t = useTranslations("forms.customTrip.steps.school_info");
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
 
+  // Get schoolsInfo based on mode
+  const schoolsInfoData = useMemo(() => {
+    if (isEditMode) {
+      // In edit mode, schoolsInfo is an object, wrap it in array for rendering
+      return values.schoolsInfo ? [values.schoolsInfo] : [];
+    }
+    // In create mode, schoolsInfo is already an array
+    return values.schoolsInfo || [];
+  }, [values.schoolsInfo, isEditMode]);
+
   // Track selected organizations across all cards
   const selectedOrganizations = useMemo(() => {
+    if (isEditMode) {
+      return values.schoolsInfo?.organization
+        ? [values.schoolsInfo.organization]
+        : [];
+    }
     return values.schoolsInfo
       .map((school) => school.organization)
       .filter(Boolean);
-  }, [values.schoolsInfo]);
+  }, [values.schoolsInfo, isEditMode]);
 
   const handleAddSchool = useCallback((push) => {
     push({ organization: "", tracks: [], academicStages: [] });
@@ -327,13 +508,45 @@ const StepSchoolInfo = ({ organizationOptions, academicStagesOptions }) => {
 
   // Check if there are available organizations to add
   const canAddMore = useMemo(() => {
-    return selectedOrganizations.length < organizationOptions.length;
-  }, [selectedOrganizations.length, organizationOptions.length]);
+    return (
+      selectedOrganizations.length < organizationOptions.length && !isEditMode
+    );
+  }, [selectedOrganizations.length, organizationOptions.length, isEditMode]);
 
+  // Render for edit mode (single object)
+  if (isEditMode) {
+    return (
+      <Box>
+        <h2 className="text-2xl font-bold  text-textDark">{t("title")}</h2>
+        <p className="text-base !my-4"> {t("description")}</p>
+
+        {schoolsInfoData.map((school, index) => (
+          <SchoolInfoCard
+            key="edit-mode-school"
+            isEditMode={isEditMode}
+            index={index}
+            school={school}
+            errors={errors.schoolsInfo}
+            touched={touched.schoolsInfo}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            setFieldValue={setFieldValue}
+            organizationOptions={organizationOptions}
+            academicStagesOptions={academicStagesOptions}
+            onRemove={() => {}}
+            isRemovable={false}
+            selectedOrganizations={selectedOrganizations}
+            fieldPath="schoolsInfo"
+          />
+        ))}
+      </Box>
+    );
+  }
+
+  // Render for create mode (array of objects)
   return (
     <Box>
       <h2 className="text-2xl font-bold  text-textDark">{t("title")}</h2>
-
       <p className="text-base !my-4"> {t("description")}</p>
 
       <FieldArray name="schoolsInfo">
@@ -341,6 +554,7 @@ const StepSchoolInfo = ({ organizationOptions, academicStagesOptions }) => {
           <>
             {values.schoolsInfo.map((school, index) => (
               <SchoolInfoCard
+                isEditMode={isEditMode}
                 key={index}
                 index={index}
                 school={school}
@@ -354,12 +568,11 @@ const StepSchoolInfo = ({ organizationOptions, academicStagesOptions }) => {
                 onRemove={() => remove(index)}
                 isRemovable={values.schoolsInfo.length > 1}
                 selectedOrganizations={selectedOrganizations}
+                fieldPath={`schoolsInfo[${index}]`}
               />
             ))}
             {organizationOptions.length > 1 && canAddMore && (
               <Button
-                variant="contained"
-                color="primary"
                 startIcon={<Add className="!text-2xl !me-2" />}
                 onClick={() => handleAddSchool(push)}
                 fullWidth

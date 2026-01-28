@@ -9,7 +9,10 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import { CircularProgress, Stepper, Step, StepLabel, Box } from "@mui/material";
 
-import { createCustomNewTripSchema } from "@utils/validationSchemas";
+import {
+  createCustomNewTripSchema,
+  editCustomTripSchema,
+} from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import getErrorMessage from "@utils/getErrorMessage";
 import getProxyUrl from "@utils/getProxyUrl";
@@ -134,15 +137,66 @@ const CustomNewTripForm = ({
         max: editData.priceRange?.max ?? editData.maxPrice ?? 100,
       };
 
+      // Helper to get track from editData (handles both track and tracks)
+      const getTrackFromEditData = () => {
+        // Priority 1: Check schoolsInfo.track
+        if (editData.schoolsInfo?.track) {
+          console.log("Edit mode: Using schoolsInfo.track");
+          return extractId(editData.schoolsInfo.track);
+        }
+
+        // Priority 2: Check top-level track
+        if (editData.track) {
+          console.log("Edit mode: Using editData.track");
+          return extractId(editData.track);
+        }
+
+        // Priority 3: Check schoolsInfo.tracks array (convert to single)
+        if (
+          editData.schoolsInfo?.tracks &&
+          Array.isArray(editData.schoolsInfo.tracks)
+        ) {
+          const tracks = editData.schoolsInfo.tracks;
+          if (tracks.length > 1) {
+            console.warn(
+              `Edit mode: Converting ${tracks.length} tracks to single track. Using first track only.`
+            );
+          } else if (tracks.length === 1) {
+            console.log("Edit mode: Converting tracks array to single track");
+          }
+          return tracks.length > 0 ? extractId(tracks[0]) : "";
+        }
+
+        // Priority 4: Check top-level tracks array
+        if (editData.tracks && Array.isArray(editData.tracks)) {
+          const tracks = editData.tracks;
+          if (tracks.length > 1) {
+            console.warn(
+              `Edit mode: Converting ${tracks.length} tracks to single track. Using first track only.`
+            );
+          } else if (tracks.length === 1) {
+            console.log("Edit mode: Converting tracks array to single track");
+          }
+          return tracks.length > 0 ? extractId(tracks[0]) : "";
+        }
+
+        console.log("Edit mode: No track found in editData");
+        return "";
+      };
+
+      const trackValue = getTrackFromEditData();
+
       return {
-        // School Info - map from editData structure
-        schoolsInfo: editData.schoolsInfo || [
-          {
-            organization: extractId(editData.organization),
-            tracks: [extractId(editData.track)],
-            academicStages: extractIds(editData.academicStages),
-          },
-        ],
+        // School Info - In edit mode, schoolsInfo is an OBJECT with track (singular)
+        schoolsInfo: {
+          organization: extractId(
+            editData.schoolsInfo?.organization || editData.organization
+          ),
+          track: trackValue,
+          academicStages: extractIds(
+            editData.schoolsInfo?.academicStages || editData.academicStages
+          ),
+        },
 
         // Trip Info
         category: extractId(editData.category),
@@ -169,7 +223,7 @@ const CustomNewTripForm = ({
       };
     }
 
-    // Default values for create mode
+    // Default values for create mode - schoolsInfo is an ARRAY
     return {
       schoolsInfo: [
         {
@@ -261,31 +315,52 @@ const CustomNewTripForm = ({
           formData.append(key, "");
         }
       } else if (key === "schoolsInfo") {
-        // Process schoolsInfo array
-        values.schoolsInfo.forEach((school, index) => {
-          formData.append(
-            `schoolsInfo[${index}][organization]`,
-            school.organization
-          );
+        if (isEditMode) {
+          // In edit mode, schoolsInfo is an OBJECT with track (singular)
+          const school = values.schoolsInfo;
 
-          if (Array.isArray(school.tracks)) {
-            school.tracks.forEach((trackId, tIndex) => {
-              formData.append(
-                `schoolsInfo[${index}][tracks][${tIndex}]`,
-                trackId
-              );
-            });
+          formData.append("schoolsInfo[organization]", school.organization);
+
+          // Handle track (singular) in edit mode
+          if (school.track) {
+            formData.append("schoolsInfo[track]", school.track);
           }
 
           if (Array.isArray(school.academicStages)) {
             school.academicStages.forEach((stageId, sIndex) => {
               formData.append(
-                `schoolsInfo[${index}][academicStages][${sIndex}]`,
+                `schoolsInfo[academicStages][${sIndex}]`,
                 stageId
               );
             });
           }
-        });
+        } else {
+          // In create mode, schoolsInfo is an ARRAY with tracks (plural)
+          values.schoolsInfo.forEach((school, index) => {
+            formData.append(
+              `schoolsInfo[${index}][organization]`,
+              school.organization
+            );
+
+            if (Array.isArray(school.tracks)) {
+              school.tracks.forEach((trackId, tIndex) => {
+                formData.append(
+                  `schoolsInfo[${index}][tracks][${tIndex}]`,
+                  trackId
+                );
+              });
+            }
+
+            if (Array.isArray(school.academicStages)) {
+              school.academicStages.forEach((stageId, sIndex) => {
+                formData.append(
+                  `schoolsInfo[${index}][academicStages][${sIndex}]`,
+                  stageId
+                );
+              });
+            }
+          });
+        }
       } else if (values[key] !== null && values[key] !== undefined) {
         if (Array.isArray(values[key])) {
           values[key].forEach((item, index) => {
@@ -310,9 +385,14 @@ const CustomNewTripForm = ({
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       const formData = prepareFormData(values);
-      const organizationIds = values.schoolsInfo.map(
-        (school) => school.organization
-      );
+
+      console.log("Submitting form with values:", values);
+
+      // In create mode, get organization IDs from array
+      // In edit mode, get organization ID from object
+      const organizationIds = isEditMode
+        ? [values.schoolsInfo.organization]
+        : values.schoolsInfo.map((school) => school.organization);
 
       const config = {
         method: isEditMode ? "patch" : "post",
@@ -361,9 +441,10 @@ const CustomNewTripForm = ({
     }
   };
 
-  const customTripSchema = createCustomNewTripSchema(t2);
+  const customTripSchema = isEditMode
+    ? editCustomTripSchema(t2)
+    : createCustomNewTripSchema(t2);
 
- 
   return (
     <div className="px-4 py-8 bg-white rounded-2xl w-[90%] mx-auto">
       <h3 className="pb-4 text-center text-lg font-medium text-black lg:text-2xl lg:pb-8">
@@ -500,6 +581,7 @@ const CustomNewTripForm = ({
                 case 0:
                   return (
                     <StepSchoolInfo
+                      isEditMode={isEditMode}
                       organizationOptions={organizationsOptions}
                       academicStagesOptions={academicStagesOptions}
                     />
@@ -557,7 +639,7 @@ const CustomNewTripForm = ({
                     {isSubmitting ? (
                       <div className="flex items-center gap-2">
                         <CircularProgress color="inherit" size={20} />
-                        { t2("forms.validation.sending")}
+                        {t2("forms.validation.sending")}
                       </div>
                     ) : activeStep === steps.length - 1 ? (
                       isEditMode ? (

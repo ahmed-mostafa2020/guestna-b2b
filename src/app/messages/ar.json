@@ -129,7 +129,7 @@
       "CANCELLED": "ملغي",
       "SCHEDULED": "مجدول",
       "ENDED": "انتهت",
-      "PENDING_COMPANY_APPROVAL": "في انتظار الموافقة",
+      "PENDING_COMPANY_APPROVAL": "قيد الاعتماد",
       "APPROVED": "موافق عليه",
       "REJECTED": "مرفوض",
       "ON_HOLD": "معلق"
@@ -2195,7 +2195,8 @@
             },
             "academicStages": {
               "label": "المرحلة الدراسية",
-              "placeholder": "اختر المراحل الدراسية"
+              "placeholder": "اختر المراحل الدراسية",
+              "helper_text":"قم باختيار المسار التعليمي اولا"
             }
           }
         },

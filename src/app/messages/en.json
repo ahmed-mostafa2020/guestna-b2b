@@ -2197,6 +2197,7 @@
             "academicStages": {
               "label": "Academic Stage",
               "placeholder": "Select academic stages"
+              ,"helper_text": "Please select the educational track first"
             }
           }
         },
