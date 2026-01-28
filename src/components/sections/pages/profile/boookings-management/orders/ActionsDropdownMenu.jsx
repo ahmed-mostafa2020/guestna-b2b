@@ -60,6 +60,16 @@ const ActionsDropdownMenu = ({
     [bookingStatus]
   );
 
+  // check if order can be accepted or rejected
+  const hasApproval = useMemo(
+    () =>
+    ![TRIP_STATUS.SCHEDULED, TRIP_STATUS.DONE, TRIP_STATUS.REJECTED].includes(
+        bookingStatus
+      ),
+    [bookingStatus]
+  );
+  
+
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [sendingReminder, setSendingReminder] = useState(false);
@@ -120,6 +130,9 @@ const ActionsDropdownMenu = ({
     openEditModal(bookingId);
   }, [bookingId, openEditModal, handleClose]);
 
+  const handleTripApproval = useCallback(() => {
+    // Implement approve/reject logic here
+  }, []);
   // Check if any action is available
   const hasActions = useMemo(() => {
     return (
@@ -194,6 +207,18 @@ const ActionsDropdownMenu = ({
           <MenuItem onClick={showEditOrderForm} className="!font-somar">
             {t("links.edit")}
           </MenuItem>
+        )}
+
+        {hasApproval && (
+          <>
+            <Divider />
+            <MenuItem disabled onClick={handleTripApproval} className="!font-somar">
+              {t("links.confirm")}
+            </MenuItem>{" "}
+            <MenuItem disabled onClick={handleTripApproval} className="!font-somar">
+              {t("links.reject")}
+            </MenuItem>
+          </>
         )}
       </Menu>
     </div>

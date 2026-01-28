@@ -238,6 +238,8 @@
     "sendRequest": "Send Request",
     "confirmRequest": "Confirm request",
     "confirm": "Confirm",
+    "reject": "Reject",
+
     "tripManagement": "Trip Management",
     "remindGuestna": "Remind Guestna",
     "sendToManager": "Send to Manager",

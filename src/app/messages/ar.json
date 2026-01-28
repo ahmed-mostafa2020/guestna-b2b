@@ -245,6 +245,7 @@
     "sendRequest": "إرسال الطلب",
     "confirmRequest": "تأكيد الطلب",
     "confirm": "أوافق",
+    "reject":"أرفض",
     "tripManagement": "إدارة الرحلات",
     "remindGuestna": "تذكير لجستنا",
     "sendToManager": "إرسال للمدير",
