@@ -444,7 +444,7 @@ const AllOrdersTable = ({
         {selectedEditOrderId && isDataReady ? (
           <CustomNewTripForm
             mode="edit"
-            orderId={selectedEditOrderId}
+            orderId={currentEditOrderDetails._id}
             editData={currentEditOrderDetails}
             formSelectionData={formSelectionData}
             onClose={closeEditModal}
