@@ -2194,12 +2194,14 @@
               "label": "Educational Track",
               "placeholder": "Select educational tracks",
               "helper_text": "Please select the school first",
-              "fetchError": "An error occurred while fetching educational tracks"
+              "fetchError": "An error occurred while fetching educational tracks",
+              "conversion_notice": "Educational track converted"
             },
             "academicStages": {
               "label": "Academic Stage",
               "placeholder": "Select academic stages",
-              "helper_text": "Please select the educational track first"
+              "helper_text": "Please select the educational track first",
+              "no_common_stages": "There no common stages between selected tracks"
             }
           }
         },

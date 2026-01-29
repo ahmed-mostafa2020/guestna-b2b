@@ -318,7 +318,7 @@ const SchoolInfoCard = ({
               <ExpandMore />
             </IconButton>
 
-            <Typography className="font-bold !text-textDark !font-somar !text-lg  ">
+            <Typography className="font-bold !text-textDark !font-somar text-sm md:!text-lg  ">
               {isEditMode
                 ? t("title")
                 : t("school_card", {
@@ -329,8 +329,9 @@ const SchoolInfoCard = ({
               <Chip
                 icon={<CheckCircle className="!text-success" />}
                 label={t("status.complete")}
-                className="bg-homeBg text-success !p-2"
+                className="!text-success !p-2 !font-semibold !font-somar !text-sm !border-success "
                 size="small"
+                variant="outlined"
               />
             )}
           </div>
@@ -519,8 +520,8 @@ const StepSchoolInfo = ({
   if (isEditMode) {
     return (
       <Box>
-        <h2 className="text-2xl font-bold  text-textDark">{t("title")}</h2>
-        <p className="text-base !my-4"> {t("description")}</p>
+        <h2 className="text-base md:text-2xl font-bold  text-textDark">{t("title")}</h2>
+        <p className=" text-sm md:text-base  !my-4"> {t("description")}</p>
 
         {schoolsInfoData.map((school, index) => (
           <SchoolInfoCard

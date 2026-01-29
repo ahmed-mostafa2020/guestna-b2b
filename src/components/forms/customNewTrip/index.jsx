@@ -446,15 +446,46 @@ const CustomNewTripForm = ({
     : createCustomNewTripSchema(t2);
 
   return (
-    <div className="px-4 py-8 bg-white rounded-2xl w-[90%] mx-auto">
-      <h3 className="pb-4 text-center text-lg font-medium text-black lg:text-2xl lg:pb-8">
+    <div className="px-4 py-4 sm:px-6 sm:py-8 bg-white rounded-2xl w-full mx-auto max-h-[90vh] overflow-y-auto">
+      <h3 className="pb-4 text-center text-lg font-medium text-black lg:text-2xl sm:pb-6 lg:pb-8">
         {isEditMode ? t("edit") : t("title")}
       </h3>
 
-      <Box className="mb-10 w-full" dir={locale === "ar" ? "rtl" : "ltr"}>
+      {/* Responsive Stepper */}
+      <Box
+        className="mb-6 sm:mb-8 lg:mb-10 w-full"
+        dir={locale === "ar" ? "rtl" : "ltr"}
+      >
         <Stepper
           activeStep={activeStep}
+          orientation="horizontal"
+          alternativeLabel={false}
           sx={{
+            // Mobile: vertical-like compact layout
+            "@media (max-width: 640px)": {
+              flexDirection: "column",
+              alignItems: "stretch",
+              gap: "0.1rem",
+            },
+            // Tablet and up: horizontal layout
+            "@media (min-width: 641px)": {
+              flexDirection: "row",
+            },
+
+            "& .MuiStep-root": {
+              "@media (max-width: 640px)": {
+                padding: "0.2rem 0",
+              },
+            },
+
+            "& .MuiStepLabel-root": {
+              "@media (max-width: 640px)": {
+                flexDirection: "row",
+                alignItems: "center",
+                padding: "0.1rem",
+              },
+            },
+
             "& .MuiStepLabel-root .Mui-completed": {
               color: "var(--color-success)",
             },
@@ -467,11 +498,16 @@ const CustomNewTripForm = ({
             },
             "& .MuiStepLabel-label.Mui-active": {
               color: "var(--color-main)",
-              fontWeight: 400,
+              fontWeight: 600,
             },
             "& .MuiStepConnector-root": {
-              left: "calc(-50% + 16px)",
-              right: "calc(50% + 16px )",
+              "@media (min-width: 641px)": {
+                left: "calc(-50% + 16px)",
+                right: "calc(50% + 16px)",
+              },
+              "@media (max-width: 640px)": {
+                display: "none",
+              },
               "& .MuiStepConnector-line": {
                 borderColor: "#e0e0e0",
                 borderTopWidth: 2,
@@ -487,8 +523,11 @@ const CustomNewTripForm = ({
               display: "none",
             },
             "& .MuiStepIcon-root": {
-              fontSize: "2.5rem",
-              border: "2px solid ",
+              fontSize: "2rem",
+              "@media (min-width: 641px)": {
+                fontSize: "2.5rem",
+              },
+              border: "2px solid",
               "&.Mui-completed": {
                 color: "white",
                 borderColor: "var(--color-success)",
@@ -501,8 +540,12 @@ const CustomNewTripForm = ({
               },
             },
             "& .MuiStepLabel-label": {
-              marginInlineStart: "5px",
-              fontSize: "1rem",
+              marginInlineStart: "8px",
+              fontSize: "0.875rem",
+              "@media (min-width: 641px)": {
+                fontSize: "1rem",
+                marginInlineStart: "5px",
+              },
               fontFamily: "var(--font-somar), sans-serif",
             },
           }}
@@ -514,8 +557,8 @@ const CustomNewTripForm = ({
                 slotProps={{
                   stepIcon: {
                     sx: {
-                      width: 36,
-                      height: 36,
+                      width: { xs: 32, sm: 36 },
+                      height: { xs: 32, sm: 36 },
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -535,7 +578,7 @@ const CustomNewTripForm = ({
                             : "white",
                       color: index <= activeStep ? "white" : "#bdbdbd",
                       fontWeight: "bold",
-                      fontSize: "3rem",
+                      fontSize: { xs: "1rem", sm: "1.125rem" },
                       zIndex: 1,
                     },
                   },
@@ -548,7 +591,7 @@ const CustomNewTripForm = ({
         </Stepper>
       </Box>
 
-      <div className="p-4">
+      <div className="p-2 sm:p-4">
         <style jsx>{`
           .somar-placeholder input::placeholder,
           .somar-placeholder textarea::placeholder {
@@ -616,15 +659,16 @@ const CustomNewTripForm = ({
               >
                 {renderStepContent(activeStep)}
 
-                <div className="flex justify-between mt-8">
+                {/* Responsive Button Layout */}
+                <div className="flex flex-col-reverse sm:flex-row justify-between gap-3 sm:gap-0 mt-6 sm:mt-8">
                   <button
                     type="button"
                     onClick={handleBack}
                     disabled={activeStep === 0 || isSubmitting}
-                    className={`px-6 py-2 rounded-lg border ${
+                    className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg border text-sm sm:text-base ${
                       activeStep === 0
                         ? "opacity-50 cursor-not-allowed bg-gray-100 text-gray-400"
-                        : "border-mainColor text-mainColor hover:bg-mainColor hover:text-white"
+                        : "border-mainColor text-mainColor hover:bg-mainColor hover:text-white transition-colors"
                     }`}
                   >
                     {t2("common.back")}
@@ -634,12 +678,12 @@ const CustomNewTripForm = ({
                     type="button"
                     onClick={() => handleNext(formik)}
                     disabled={isSubmitting}
-                    className="px-6 py-2 bg-mainColor text-white rounded-lg hover:bg-titleColor disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 sm:px-6 py-2 sm:py-2.5 bg-mainColor text-white rounded-lg hover:bg-titleColor disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
                   >
                     {isSubmitting ? (
-                      <div className="flex items-center gap-2">
-                        <CircularProgress color="inherit" size={20} />
-                        {t2("forms.validation.sending")}
+                      <div className="flex items-center justify-center gap-2">
+                        <CircularProgress color="inherit" size={18} />
+                        <span>{t2("forms.validation.sending")}</span>
                       </div>
                     ) : activeStep === steps.length - 1 ? (
                       isEditMode ? (
