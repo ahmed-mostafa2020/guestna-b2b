@@ -2328,6 +2328,10 @@
       }
     }
   },
+  "order_details": {
+    "title": "Show Order Details",
+    "no_order_found": "Order Not Found"
+  },
   "schoolRegister": {
     "pageHeader": {
       "title": "Register your school now and enjoy an easy and unique school trip planning experience.",

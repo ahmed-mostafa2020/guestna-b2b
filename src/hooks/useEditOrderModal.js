@@ -104,56 +104,15 @@ export const useEditOrderModal = (locale) => {
     [editOrderDetailsCache, enqueueSnackbar, headers]
   );
 
-  // // Submit order update with optimistic updates
-  // const submitOrderUpdate = useCallback(
-  //   async (orderId, orderData) => {
-  //     if (!orderId) {
-  //       throw new Error("Order ID is required");
-  //     }
+  // Fetch order details for viewing (sets current details without opening modal)
+  const fetchOrderDetailsForView = useCallback(
+    async (orderId, forceRefresh = false) => {
+      return await fetchEditOrderDetails(orderId, forceRefresh);
+    },
+    [fetchEditOrderDetails]
+  );
 
-  //     setSubmittingOrder(true);
-  //     setError(null);
-
-  //     try {
-  //       const response = await axios.put(
-  //         getProxyUrl(
-  //           `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.SUBMIT}/${orderId}`
-  //         ),
-  //         orderData,
-  //         { headers }
-  //       );
-
-  //       enqueueSnackbar("Order updated successfully!", {
-  //         variant: "success",
-  //       });
-
-  //       // Clear specific order from cache to force refresh on next fetch
-  //       setEditOrderDetailsCache((prev) => {
-  //         const newCache = { ...prev };
-  //         delete newCache[orderId];
-  //         return newCache;
-  //       });
-
-  //       // Refresh the table data
-  //       await refreshCustomizedTripsTable();
-
-  //       return response.data;
-  //     } catch (error) {
-  //       console.error("Error updating order:", error);
-  //       const errorMessage =
-  //         error.response?.data?.message ||
-  //         "Error updating order. Please try again.";
-  //       setError(errorMessage);
-  //       enqueueSnackbar(errorMessage, { variant: "error" });
-  //       throw error;
-  //     } finally {
-  //       setSubmittingOrder(false);
-  //     }
-  //   },
-  //   [enqueueSnackbar, headers]
-  // );
-
-  // Open edit modal with parallel data fetching
+  // Open edit modal - reuses cached data if available
   const openEditModal = useCallback(
     async (orderId) => {
       if (!orderId) {
@@ -164,24 +123,35 @@ export const useEditOrderModal = (locale) => {
       setSelectedEditOrderId(orderId);
       setError(null);
 
-      // Fetch both order details and form selection data in parallel
+      // Check if we already have the order details cached
+      const hasCachedDetails = editOrderDetailsCache[orderId];
+
+      // Only fetch order details if not cached
+      const fetchPromises = [fetchFormSelectionData()];
+
+      if (!hasCachedDetails) {
+        console.log(`Fetching fresh data for order ${orderId}`);
+        fetchPromises.push(fetchEditOrderDetails(orderId, false));
+      } else {
+        console.log(`Using cached data for order ${orderId}`);
+        // Use cached details
+        setCurrentEditOrderDetails(editOrderDetailsCache[orderId]);
+      }
+
       try {
-        await Promise.all([
-          fetchEditOrderDetails(orderId, true), // Always force refresh when opening edit modal
-          fetchFormSelectionData(),
-        ]);
+        await Promise.all(fetchPromises);
       } catch (error) {
         console.error("Error opening edit modal:", error);
         // Errors are already handled in individual fetch functions
       }
     },
-    [fetchEditOrderDetails, fetchFormSelectionData]
+    [fetchEditOrderDetails, fetchFormSelectionData, editOrderDetailsCache]
   );
 
   // Close edit modal and cleanup
   const closeEditModal = useCallback(() => {
     setSelectedEditOrderId(null);
-    setCurrentEditOrderDetails(null);
+    // Don't clear currentEditOrderDetails to keep it available for the page
     setError(null);
   }, []);
 
@@ -235,6 +205,23 @@ export const useEditOrderModal = (locale) => {
     }
   }, [queryClient, headers, enqueueSnackbar]);
 
+  // Refresh current order details (useful after successful edit)
+  const refreshCurrentOrder = useCallback(
+    async (orderId) => {
+      if (!orderId) return;
+
+      // Clear from cache and refetch
+      setEditOrderDetailsCache((prev) => {
+        const newCache = { ...prev };
+        delete newCache[orderId];
+        return newCache;
+      });
+
+      await fetchEditOrderDetails(orderId, true);
+    },
+    [fetchEditOrderDetails]
+  );
+
   // Clear entire cache (useful for cleanup or manual refresh)
   const clearCache = useCallback(() => {
     setEditOrderDetailsCache({});
@@ -272,6 +259,14 @@ export const useEditOrderModal = (locale) => {
     loadingFormSelection,
   ]);
 
+  // Check if we have cached data for a specific order
+  const hasCachedData = useCallback(
+    (orderId) => {
+      return editOrderDetailsCache[orderId] !== undefined;
+    },
+    [editOrderDetailsCache]
+  );
+
   return {
     // State
     selectedEditOrderId,
@@ -289,13 +284,15 @@ export const useEditOrderModal = (locale) => {
     // Actions
     openEditModal,
     closeEditModal,
-    // submitOrderUpdate,
     refreshCustomizedTripsTable,
+    refreshCurrentOrder,
     clearCache,
     clearOrderFromCache,
+    hasCachedData,
 
     // Manual fetch functions (if needed)
     fetchEditOrderDetails,
+    fetchOrderDetailsForView,
     fetchFormSelectionData,
   };
 };

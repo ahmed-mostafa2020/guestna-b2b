@@ -21,6 +21,7 @@ import { useSnackbar } from "notistack";
 import { CircularProgress, Divider } from "@mui/material";
 
 import { TRIP_STATUS } from "@constants/tripStatus";
+import Link from "next/link";
 
 const ActionsDropdownMenu = ({
   bookingId,
@@ -180,8 +181,12 @@ const ActionsDropdownMenu = ({
         }}
       >
         {canShowDetails && (
-          <MenuItem className="!font-somar" onClick={showOrderDetails}>
-            {t("links.showDetails")}
+          <MenuItem className="!font-somar">
+            <Link
+              href={`/${locale}/profile/bookings-management/orders/${bookingId}`}
+            >
+              {t("links.showDetails")}
+            </Link>
           </MenuItem>
         )}
 
@@ -212,10 +217,18 @@ const ActionsDropdownMenu = ({
         {hasApproval && (
           <>
             <Divider />
-            <MenuItem disabled onClick={handleTripApproval} className="!font-somar">
+            <MenuItem
+              disabled
+              onClick={handleTripApproval}
+              className="!font-somar"
+            >
               {t("links.confirm")}
             </MenuItem>{" "}
-            <MenuItem disabled onClick={handleTripApproval} className="!font-somar">
+            <MenuItem
+              disabled
+              onClick={handleTripApproval}
+              className="!font-somar"
+            >
               {t("links.reject")}
             </MenuItem>
           </>
