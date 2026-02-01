@@ -14,38 +14,29 @@ import OrderDataLabel from "./OrderDataLabel";
 import OrderDataField from "./OrderDataField";
 
 const SchoolMainInfoCard = ({ orderData }) => {
-  const t = useTranslations();
+  const t = useTranslations("forms.customTrip.steps.school_info");
+  const t2 = useTranslations();
 
   return (
     <>
-      <OrderDataCard title={t("forms.customTrip.steps.school_info.title")}>
+      <OrderDataCard title={t("title")} subtitle={t("description")}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
-            <OrderDataLabel
-              label={t(
-                "forms.customTrip.steps.school_info.fields.organization.label"
-              )}
-            />
+            <OrderDataLabel label={t("fields.organization.label")} />
             <OrderDataField data={orderData.organization.name} />
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <OrderDataLabel
-              label={t("forms.customTrip.steps.school_info.fields.track.label")}
-            />
+            <OrderDataLabel label={t("fields.track.label")} />
             <OrderDataField
-              data={`${orderData.track.educationSystem.name} - ${t(
+              data={`${orderData.track.educationSystem.name} - ${t2(
                 `common.${orderData.track.gender}`
               )} - ${orderData.academicStages?.map((stage) => stage.name).join(". ") || ""} `}
             />
           </Grid>
 
           <Grid item xs={12}>
-            <OrderDataLabel
-              label={t(
-                "forms.customTrip.steps.school_info.fields.academicStages.label"
-              )}
-            />
+            <OrderDataLabel label={t("fields.academicStages.label")} />
             <OrderDataField
               data={orderData.academicStages
                 ?.map((stage) => stage.name)

@@ -4,9 +4,9 @@ import OrderDataCard from "./OrderDataCard";
 import OrderDataField from "./OrderDataField";
 import OrderDataLabel from "./OrderDataLabel";
 import { Grid } from "@material-ui/core";
-import formatDateForInput from "@/src/utils/FormateDateForInput";
+import formatDateForInput from "@utils/FormateDateForInput";
 
-const TripDateCard = ({orderData}) => {
+const TripDateCard = ({ orderData }) => {
   const t = useTranslations("forms.customTrip.steps.trip_date");
   return (
     <OrderDataCard title={t("title")}>
@@ -14,7 +14,6 @@ const TripDateCard = ({orderData}) => {
         <Grid item xs={12} md={6}>
           <OrderDataLabel label={t("fields.start_date.label")} />
           <OrderDataField data={formatDateForInput(orderData.day)} />
-          
         </Grid>
         {orderData.endDay && (
           <Grid item xs={12} md={6}>

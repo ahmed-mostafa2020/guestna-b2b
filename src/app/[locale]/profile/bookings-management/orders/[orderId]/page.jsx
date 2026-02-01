@@ -19,10 +19,12 @@ import CustomNewTripForm from "@components/forms/customNewTrip";
 import CustomizedModal from "@components/common/customizedModal";
 import { backIconColored } from "@assets/svg";
 import Link from "next/link";
-import TripInfoCard from "@/src/components/sections/pages/profile/boookings-management/orders/order-details/TripInfoCard";
-import SchoolMainInfoCard from "@/src/components/sections/pages/profile/boookings-management/orders/order-details/SchoolMainInfoCard";
-import TripDateCard from "@/src/components/sections/pages/profile/boookings-management/orders/order-details/TripDateCard";
-import PricingInfoCard from "@/src/components/sections/pages/profile/boookings-management/orders/order-details/PricingInfoCard";
+import TripInfoCard from "@components/sections/pages/profile/boookings-management/orders/order-details/TripInfoCard";
+import SchoolMainInfoCard from "@components/sections/pages/profile/boookings-management/orders/order-details/SchoolMainInfoCard";
+import TripDateCard from "@components/sections/pages/profile/boookings-management/orders/order-details/TripDateCard";
+import PricingInfoCard from "@components/sections/pages/profile/boookings-management/orders/order-details/PricingInfoCard";
+import OrderPageLoadingSkeleton from "@components/sections/pages/profile/boookings-management/orders/order-details/OrderPageLoadingSkeleton";
+import FullScreenLoading from "@/src/feedback/loading/FullScreenLoading";
 
 const OrderDetailsPage = ({ params }) => {
   const locale = useLocale();
@@ -124,70 +126,15 @@ const OrderDetailsPage = ({ params }) => {
   // Loading state for params resolution
   if (paramsLoading) {
     return (
-      <Box className="!font-somar">
-        <Stack spacing={2}>
-          <Paper
-            sx={{
-              height: 60,
-              bgcolor: "grey.200",
-              borderRadius: 2,
-              animation: "pulse 1.5s ease-in-out infinite",
-            }}
-          />
-          <Paper
-            sx={{
-              height: 200,
-              bgcolor: "grey.200",
-              borderRadius: 3,
-              animation: "pulse 1.5s ease-in-out infinite",
-            }}
-          />
-        </Stack>
-      </Box>
+     <FullScreenLoading status={paramsLoading}/>
     );
   }
 
-  // No orderId state
-  if (!orderId) {
-    return (
-      <Box sx={{ p: 3, fontFamily: "somar" }}>
-        <Alert severity="error">Invalid order ID</Alert>
-      </Box>
-    );
-  }
+
 
   // Loading state for order details
   if (loadingEditDetails && !currentEditOrderDetails) {
-    return (
-      <Box className="!font-somar">
-        <Stack spacing={2}>
-          <Paper
-            sx={{
-              height: 60,
-              bgcolor: "grey.200",
-              borderRadius: 2,
-              animation: "pulse 1.5s ease-in-out infinite",
-            }}
-          />
-          <Paper
-            sx={{
-              height: 200,
-              bgcolor: "grey.200",
-              borderRadius: 3,
-              animation: "pulse 1.5s ease-in-out infinite",
-            }}
-          />
-          <Paper
-            sx={{
-              height: 300,
-              bgcolor: "grey.200",
-              borderRadius: 3,
-              animation: "pulse 1.5s ease-in-out infinite",
-            }}
-          />
-        </Stack>
-      </Box>
-    );
+    return <OrderPageLoadingSkeleton />;
   }
 
   // Error state

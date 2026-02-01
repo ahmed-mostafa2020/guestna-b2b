@@ -4,15 +4,15 @@ import { Grid } from "@material-ui/core";
 import OrderDataLabel from "./OrderDataLabel";
 import OrderDataField from "./OrderDataField";
 import { useTranslations } from "next-intl";
-import formatCurrency from "@/src/utils/FormatCurrency";
-import { newSarSmall } from "@/src/assets/svg";
+import formatCurrency from "@utils/FormatCurrency";
+import { newSarSmall } from "@assets/svg";
 
 const PricingInfoCard = ({ orderData }) => {
   const t = useTranslations("forms.customTrip.steps.pricing");
   return (
     <OrderDataCard title={t("title")}>
       <Grid container spacing={3}>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <OrderDataLabel label={t("fields.price.label")} />
           <OrderDataField>
             <div className="flex gap-2 items-center">
@@ -25,7 +25,7 @@ const PricingInfoCard = ({ orderData }) => {
           </OrderDataField>
           {}
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <OrderDataLabel label={t("fields.avaliable_seats.label")} />
           <OrderDataField data={orderData.availableSeats || 0} />
         </Grid>

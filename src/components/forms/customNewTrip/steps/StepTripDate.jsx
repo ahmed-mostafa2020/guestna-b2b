@@ -5,7 +5,7 @@ import { useFormikContext } from "formik";
 import { useTranslations } from "next-intl";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { Box } from "@mui/material";
-import formatDateForInput from "@/src/utils/FormateDateForInput";
+import formatDateForInput from "@utils/FormateDateForInput";
 
 const StepTripDate = () => {
   const t = useTranslations("forms.customTrip.steps.trip_date");

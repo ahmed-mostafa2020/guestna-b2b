@@ -27,26 +27,26 @@ const TripInfoCard = ({ orderData }) => {
   return (
     <OrderDataCard title={t("title")}>
       <Grid container spacing={3}>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <OrderDataLabel label={t("fields.name.en.label")} />
           <OrderDataField data={`${orderData.name?.en}`} />
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <OrderDataLabel label={t("fields.name.ar.label")} />
           <OrderDataField data={`${orderData.name?.ar}`} />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <OrderDataLabel label={t("fields.trip_supCategory.label")} />
           <OrderDataField data={`${orderData.supCategory?.name || ""}`} />
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <OrderDataLabel label={t("fields.trip_category.label")} />
           <OrderDataField data={`${orderData.category?.name || ""}`} />
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <OrderDataLabel label={t("fields.trip_type.label")} />
           <OrderDataField
             data={`${
@@ -56,11 +56,11 @@ const TripInfoCard = ({ orderData }) => {
           />
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <OrderDataLabel label={t("fields.city.label")} />
           <OrderDataField data={`${orderData.city?.name || ""}`} />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <OrderDataLabel label={t("fields.services.label")} />
           <OrderDataField
             data={orderData.services?.map((s) => (
