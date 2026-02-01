@@ -17,7 +17,7 @@ import { useOrderDetailsModal } from "@hooks/useOrderDetailsModal";
 import { useEditOrderModal } from "@hooks/useEditOrderModal";
 import CustomizedModal from "@components/common/customizedModal";
 import OrderDetailsModal from "./OrderDetailsModal";
-import  CustomNewTripForm from "@components/forms/customNewTrip"; 
+import CustomNewTripForm from "@components/forms/customNewTrip";
 
 const AllOrdersTable = ({
   tableTitle,
@@ -60,8 +60,6 @@ const AllOrdersTable = ({
   ]);
 
   const getStatusStyles = (status) => {
-   
-
     switch (status) {
       case TRIP_STATUS.APPROVED:
       case TRIP_STATUS.DONE:
@@ -115,8 +113,6 @@ const AllOrdersTable = ({
   // Handle action completion from ActionsDropdownMenu
   const handleActionComplete = useCallback(
     (action, bookingId, result) => {
-     
-
       // Notify parent component
       if (onActionComplete) {
         onActionComplete(action, bookingId, result);
@@ -124,8 +120,6 @@ const AllOrdersTable = ({
     },
     [onActionComplete]
   );
-
-  
 
   if (!data || !data.nodes) {
     return (
@@ -243,7 +237,11 @@ const AllOrdersTable = ({
                       </td>
 
                       <td className="p-4 text-sm font-medium text-foreground">
-                        {formatCurrency(order.basePrice)}
+                        {formatCurrency(
+                          order.basePrice
+                            ? order.basePrice
+                            : order.priceRange.max
+                        )}
                       </td>
 
                       <td className="p-4">
@@ -363,7 +361,9 @@ const AllOrdersTable = ({
                     {t("profile.tables.orders.tableHeaders.budget")}
                   </span>
                   <span className="font-bold text-foreground text-sm">
-                    {formatCurrency(order.basePrice)}
+                    {formatCurrency(
+                      order.basePrice ? order.basePrice : order.priceRange.max
+                    )}
                   </span>
                 </div>
 

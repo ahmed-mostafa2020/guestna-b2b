@@ -53,8 +53,8 @@ const OrdersPage = () => {
           <TripsOrdersManagement />
 
           <div className="flex flex-col gap-4 w-full bg-white rounded-2xl p-4 shadow-card">
-            <div className="flex justify-between flex-col md:flex-row items-center ">
-              <h2 className="text-lg font-medium lg:text-2xl  !lg:mb-8 text-mainColor text-center  md:text-left">
+            <div className="flex justify-between flex-col md:flex-row items-center">
+              <h2 className="text-lg font-medium lg:text-2xl !lg:mb-8 text-mainColor text-center md:text-start">
                 {t("profile.tables.orders.followOrders")}
               </h2>
 
