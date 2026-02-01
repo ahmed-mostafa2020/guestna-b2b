@@ -9,7 +9,7 @@ import formatDateForInput from "@utils/FormateDateForInput";
 const TripDateCard = ({ orderData }) => {
   const t = useTranslations("forms.customTrip.steps.trip_date");
   return (
-    <OrderDataCard title={t("title")}>
+    <OrderDataCard title={t("title")} subtitle={t("description")}>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <OrderDataLabel label={t("fields.start_date.label")} />

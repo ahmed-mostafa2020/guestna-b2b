@@ -25,7 +25,7 @@ const TripInfoCard = ({ orderData }) => {
     },
   ];
   return (
-    <OrderDataCard title={t("title")}>
+    <OrderDataCard title={t("title")} subtitle={t("description")}>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <OrderDataLabel label={t("fields.name.en.label")} />

@@ -24,7 +24,8 @@ import SchoolMainInfoCard from "@components/sections/pages/profile/boookings-man
 import TripDateCard from "@components/sections/pages/profile/boookings-management/orders/order-details/TripDateCard";
 import PricingInfoCard from "@components/sections/pages/profile/boookings-management/orders/order-details/PricingInfoCard";
 import OrderPageLoadingSkeleton from "@components/sections/pages/profile/boookings-management/orders/order-details/OrderPageLoadingSkeleton";
-import FullScreenLoading from "@/src/feedback/loading/FullScreenLoading";
+import FullScreenLoading from "@feedback/loading/FullScreenLoading";
+import AdditionalInfoCard from "@components/sections/pages/profile/boookings-management/orders/order-details/AdditionalInfoCard";
 
 const OrderDetailsPage = ({ params }) => {
   const locale = useLocale();
@@ -125,12 +126,8 @@ const OrderDetailsPage = ({ params }) => {
 
   // Loading state for params resolution
   if (paramsLoading) {
-    return (
-     <FullScreenLoading status={paramsLoading}/>
-    );
+    return <FullScreenLoading status={paramsLoading} />;
   }
-
-
 
   // Loading state for order details
   if (loadingEditDetails && !currentEditOrderDetails) {
@@ -193,108 +190,7 @@ const OrderDetailsPage = ({ params }) => {
         <PricingInfoCard orderData={orderData} />
 
         {/* Additional Info Section */}
-        {(orderData.specialRequirements ||
-          orderData.note ||
-          orderData.file) && (
-          <Card sx={{ borderRadius: 3, boxShadow: 3 }}>
-            <CardContent sx={{ p: 3 }}>
-              <Typography
-                variant="h6"
-                sx={{ fontWeight: 700, fontFamily: "somar", mb: 2 }}
-              >
-                {t("forms.customTrip.steps.additional_info.title")}
-              </Typography>
-
-              <Divider sx={{ mb: 3 }} />
-
-              <Stack spacing={3}>
-                {orderData.specialRequirements && (
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "grey.600",
-                        fontFamily: "somar",
-                        fontWeight: 500,
-                        mb: 1,
-                      }}
-                    >
-                      {t(
-                        "forms.customTrip.steps.additional_info.fields.specialRequirements.label"
-                      )}
-                    </Typography>
-                    <Paper sx={{ p: 2, bgcolor: "grey.50", borderRadius: 2 }}>
-                      <Typography sx={{ fontFamily: "somar" }}>
-                        {orderData.specialRequirements}
-                      </Typography>
-                    </Paper>
-                  </Box>
-                )}
-
-                {orderData.note && (
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "grey.600",
-                        fontFamily: "somar",
-                        fontWeight: 500,
-                        mb: 1,
-                      }}
-                    >
-                      {t(
-                        "forms.customTrip.steps.additional_info.fields.note.label"
-                      )}
-                    </Typography>
-                    <Paper sx={{ p: 2, bgcolor: "grey.50", borderRadius: 2 }}>
-                      <Typography sx={{ fontFamily: "somar" }}>
-                        {orderData.note}
-                      </Typography>
-                    </Paper>
-                  </Box>
-                )}
-
-                {orderData.file && (
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "grey.600",
-                        fontFamily: "somar",
-                        fontWeight: 500,
-                        mb: 1,
-                      }}
-                    >
-                      {t(
-                        "forms.customTrip.steps.additional_info.fields.file.label"
-                      )}
-                    </Typography>
-                    <Button
-                      variant="outlined"
-                      href={orderData.file}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      sx={{
-                        borderColor: "var(--main-color)",
-                        color: "var(--main-color)",
-                        fontFamily: "somar",
-                        textTransform: "none",
-                        fontSize: 16,
-                        "&:hover": {
-                          borderColor: "var(--main-color)",
-                          bgcolor: "var(--main-color)",
-                          color: "white",
-                        },
-                      }}
-                    >
-                      {t("common.view_file")}
-                    </Button>
-                  </Box>
-                )}
-              </Stack>
-            </CardContent>
-          </Card>
-        )}
+        <AdditionalInfoCard orderData={orderData} />
       </Stack>
 
       {/* Edit Button */}
