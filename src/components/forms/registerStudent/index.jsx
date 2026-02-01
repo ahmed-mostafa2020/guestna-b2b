@@ -22,10 +22,17 @@ import axios from "axios";
 
 import { useSnackbar } from "notistack";
 
-import { CircularProgress, Container } from "@mui/material";
+import {
+  CircularProgress,
+  Container,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
 import ParentFormFields from "./ParentFormFields";
 import ChildForm from "./childForms/ChildForm";
 import CustomizedRiyadhForm from "./childForms/CustomizedRiyadhForm";
+import TermsConfirmationModal from "./TermsConfirmationModal";
+import { infoIcon } from "@assets/svg";
 
 const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
   const [_, setNationalityError] = useState("");
@@ -43,6 +50,10 @@ const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
   const [childrenNationalIdImages, setChildrenNationalIdImages] = useState([]); // array of files
   const [childrenNationalIdImagesError, setChildrenNationalIdImagesError] =
     useState([]);
+
+  // Terms confirmation state
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [termsModalOpen, setTermsModalOpen] = useState(false);
 
   const parentEmail = useSelector(
     (state) => state.parentLoginForm.parentData?.email
@@ -67,7 +78,9 @@ const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
     return createRegisterChildSchema(t, childrenNumber, tripMainCategory);
   }, [childrenNumber, t, tripMainCategory]);
 
-  const { nationalities } = useSelector((state) => state.tripDetailsData.data);
+  const { nationalities, trip } = useSelector(
+    (state) => state.tripDetailsData.data
+  );
 
   const academicStages = useSelector(
     (state) => state.tripDetailsData.data?.trip?.academicStages
@@ -210,6 +223,7 @@ const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
     formData.append("trip", tripId);
     // formData.append("formsType", formsType);
     if (values.promoCode) formData.append("promoCode", values.promoCode);
+    formData.append("termsAccepted", termsAccepted ? "true" : "false");
 
     // Append each child as a nested object
     values.children.forEach((child, idx) => {
@@ -588,18 +602,94 @@ const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
                 )}
               </FieldArray>
 
+              {/* Terms Confirmation Checkbox */}
+              <div className="mt-6 p-4 bg-[#FFF1764D] rounded-xl">
+                <FormControlLabel
+                  sx={{
+                    alignItems: "flex-start",
+                    margin: 0,
+                    width: "100%",
+                    "& .MuiFormControlLabel-label": {
+                      color: "#1F2626",
+                      fontSize: "14px",
+                      lineHeight: 1.6,
+                      fontFamily: "var(--font-somar-sans), sans-serif",
+                    },
+                  }}
+                  control={
+                    <Checkbox
+                      checked={termsAccepted}
+                      onChange={(e) => setTermsAccepted(e.target.checked)}
+                      sx={{
+                        padding: "4px",
+                        marginTop: "-4px",
+                        color: "var(--color-text-dark)",
+                        "& .MuiSvgIcon-root": { fontSize: 24 },
+                        "&.Mui-checked": {
+                          color: "var(--color-title)",
+                        },
+                      }}
+                    />
+                  }
+                  label={
+                    <span className="font-semibold">
+                      {t("forms.termsConfirmation.checkboxLabel")}{" "}
+                      <button
+                        type="button"
+                        onClick={() => setTermsModalOpen(true)}
+                        className="text-mainColor underline hover:text-linksHover font-semibold transition-colors"
+                      >
+                        {t("forms.termsConfirmation.termsLinkText")}
+                      </button>
+                    </span>
+                  }
+                />
+
+                <div className="flex items-center gap-2 mt-4">
+                  {infoIcon}
+                  <p className="text-sm text-textLight">
+                    {t("forms.termsConfirmation.infoText")}
+                  </p>
+                </div>
+              </div>
+
+              {/* Terms Confirmation Modal */}
+              <TermsConfirmationModal
+                open={termsModalOpen}
+                onClose={() => setTermsModalOpen(false)}
+                students={values.children.map((child, idx) => ({
+                  name: child.studentName,
+                  academicStage:
+                    academicStages?.find(
+                      (stage) => stage._id === childrenStages[idx]
+                    )?.name || "",
+                  grade:
+                    gradesList[idx]?.find((g) => g._id === child.grade)?.name ||
+                    "",
+                }))}
+                schoolName={trip?.organization?.name}
+                isChecked={termsAccepted}
+                onCheckChange={(checked) => {
+                  setTermsAccepted(checked);
+                  if (checked) setTermsModalOpen(false);
+                }}
+                t={t}
+              />
+
               <button
                 type="submit"
                 disabled={
                   !isValid ||
                   isSubmitting ||
                   !nationality ||
+                  !termsAccepted ||
                   Object.values(childrenStages).some((v) => !v) ||
                   values.children.some((child) => !child.grade)
                 }
                 className={`mx-auto px-20 lg:px-40 w-fit centered gap-2 mt-4 lg:mt-8 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                   isValid &&
                   nationality &&
+                  termsAccepted &&
                   !Object.values(childrenStages).some((v) => !v) &&
                   !values.children.some((child) => !child.grade) &&
                   "hover:bg-linksHover hover:border-linksHover"
