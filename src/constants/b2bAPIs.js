@@ -122,7 +122,7 @@ export const B2B_END_POINTS = {
 
         SETTINGS: {
           ALL_TRIPS: "profile/settingsTrips/all", //post
-          SUBMIT: "profile/settingsTrips/edit", // Item id - patch
+          SUBMIT: "profile/settingsTrips/edit", // Item id -patch
         },
       },
     },
