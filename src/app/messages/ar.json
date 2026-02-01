@@ -2326,6 +2326,29 @@
             }
           }
         }
+      },
+      "rejection": {
+        "title": "تأكيد رفض عرض السعر",
+        "description": "قبل المتابعة، يُفضّل تحديد سبب رفض عرض السعر، سيساعدنا ذلك على تحسين العروض المقدمة مستقبلاً (اختياري).",
+        "reasons": {
+          "inappropriate_price": "السعر غير مناسب",
+          "inappropriate_details": "تفاصيل البرنامج غير مناسبة",
+          "inappropriate_timing": "التوقيت غير مناسب",
+          "other": "سبب آخر"
+        },
+        "customMessagePlaceholder": "يرجى تحديد السبب...",
+        "confirmButton": "تأكيد الرفض",
+        "submitting": "جاري الرفض...",
+        "validation": {
+          "pleaseSelectReason": "يرجى اختيار سبب الرفض",
+          "pleaseProvideCustomReason": "يرجى كتابة السبب",
+          "customReasonMinLength": "يجب أن يكون السبب 10 أحرف على الأقل",
+          "minimumCharacters": "الحد الأدنى {{count}} حرف",
+          "reminderSentSuccessfully": "تم إرسال التذكير بنجاح",
+          "api_errors": {
+            "other_error": "حدث خطأ. يرجى المحاولة مرة أخرى."
+          }
+        }
       }
     }
   },

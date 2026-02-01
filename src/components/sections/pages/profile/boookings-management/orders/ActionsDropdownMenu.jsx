@@ -25,10 +25,13 @@ import Link from "next/link";
 
 const ActionsDropdownMenu = ({
   bookingId,
+  _id,
   bookingStatus,
   onActionComplete,
   openDetailsModal, // Passed from parent
   openEditModal, // Passed from parent
+  openRejectModal, // Passed from parent - NEW
+  // openApproveModal, // Passed from parent - NEW (optional for future use)
 }) => {
   const { hasElement } = usePermissions();
   const locale = useLocale();
@@ -55,6 +58,19 @@ const ActionsDropdownMenu = ({
     [hasElement]
   );
 
+  // NEW: Check approval/rejection permissions
+  // const canApproveTrip = useMemo(
+  //   () =>
+  //     hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_APPROVE_TRIP),
+  //   [hasElement]
+  // );
+
+  // const canRejectTrip = useMemo(
+  //   () =>
+  //     hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REJECT_TRIP),
+  //   [hasElement]
+  // );
+
   // Check if booking is editable (not done)
   const isEditable = useMemo(
     () =>
@@ -68,7 +84,7 @@ const ActionsDropdownMenu = ({
     [bookingStatus]
   );
 
-  // check if order can be accepted or rejected
+  // Check if order can be accepted or rejected
   const hasApproval = useMemo(
     () =>
       ![TRIP_STATUS.SCHEDULED, TRIP_STATUS.DONE, TRIP_STATUS.REJECTED].includes(
@@ -92,7 +108,7 @@ const ActionsDropdownMenu = ({
 
   // Send reminder logic
   const sendRemind = useCallback(async () => {
-    if (!bookingId) return;
+    if (!_id) return;
 
     setSendingReminder(true);
     handleClose();
@@ -100,7 +116,7 @@ const ActionsDropdownMenu = ({
     try {
       await axios.get(
         getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.REMIND}/${bookingId}`
+          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.REMIND}/${_id}`
         ),
         { headers }
       );
@@ -110,7 +126,7 @@ const ActionsDropdownMenu = ({
 
       // Notify parent component if callback provided
       if (onActionComplete) {
-        onActionComplete("remind", bookingId);
+        onActionComplete("remind", _id);
       }
     } catch (error) {
       console.error("Error sending reminder:", error);
@@ -121,7 +137,7 @@ const ActionsDropdownMenu = ({
     } finally {
       setSendingReminder(false);
     }
-  }, [bookingId, headers, enqueueSnackbar, t, handleClose, onActionComplete]);
+  }, [_id, headers, enqueueSnackbar, t, handleClose, onActionComplete]);
 
   // Show order details using shared modal
   const showOrderDetails = useCallback(() => {
@@ -137,17 +153,43 @@ const ActionsDropdownMenu = ({
     openEditModal(bookingId);
   }, [bookingId, openEditModal, handleClose]);
 
-  const handleTripApproval = useCallback(() => {
-    // Implement approve/reject logic here
-  }, []);
+  // NEW: Handle trip approval
+  // const handleTripApproval = useCallback(() => {
+  //   if (!bookingId || !openApproveModal) {
+  //     console.warn("Approve modal handler not provided");
+  //     handleClose();
+  //     return;
+  //   }
+  //   handleClose();
+  //   openApproveModal(bookingId);
+  // }, [bookingId, openApproveModal, handleClose]);
+
+  // NEW: Handle trip rejection
+  const handleTripRejection = useCallback(() => {
+    if (!_id || !openRejectModal) {
+      console.warn("Reject modal handler not provided");
+      handleClose();
+      return;
+    }
+    handleClose();
+    openRejectModal(_id);
+  }, [_id, openRejectModal, handleClose]);
+
   // Check if any action is available
   const hasActions = useMemo(() => {
     return (
       canShowDetails ||
       (canRemindGuestna && isEditable) ||
-      (canUpdateTrip && isEditable)
+      (canUpdateTrip && isEditable) ||
+      hasApproval
     );
-  }, [canShowDetails, canRemindGuestna, canUpdateTrip, isEditable]);
+  }, [
+    canShowDetails,
+    canRemindGuestna,
+    canUpdateTrip,
+    isEditable,
+    hasApproval,
+  ]);
 
   // Don't render if no actions available
   if (!hasActions) {
@@ -220,23 +262,33 @@ const ActionsDropdownMenu = ({
           </MenuItem>
         )}
 
+        {/* UPDATED: Approval/Rejection section with proper permissions */}
         {hasApproval && (
           <>
             <Divider />
-            <MenuItem
-              disabled
-              onClick={handleTripApproval}
-              className="!font-somar"
-            >
-              {t("links.confirm")}
-            </MenuItem>{" "}
-            <MenuItem
-              disabled
-              onClick={handleTripApproval}
-              className="!font-somar"
-            >
-              {t("links.reject")}
-            </MenuItem>
+            { (
+              <MenuItem
+                // onClick={handleTripApproval}
+                className="!font-somar"
+                // disabled={!openApproveModal}
+              >
+                {t("links.confirm")}
+              </MenuItem>
+            )}
+            { (
+              <MenuItem
+                onClick={handleTripRejection}
+                className="!font-somar"
+                sx={{
+                  color: "error.main",
+                  "&:hover": {
+                    backgroundColor: "error.lighter",
+                  },
+                }}
+              >
+                {t("links.reject")}
+              </MenuItem>
+            )}
           </>
         )}
       </Menu>

@@ -2326,6 +2326,29 @@
             }
           }
         }
+      },
+      "rejection": {
+        "title": "Confirm Quotation Rejection",
+        "description": "Before proceeding, it is recommended to specify the reason for rejecting the quotation. This will help us improve future offers (optional).",
+        "reasons": {
+          "inappropriate_price": "The price is not suitable",
+          "inappropriate_details": "The program details are not suitable",
+          "inappropriate_timing": "The timing is not suitable",
+          "other": "Other reason"
+        },
+        "customMessagePlaceholder": "Please specify the reason...",
+        "confirmButton": "Confirm Rejection",
+        "submitting": "Rejecting...",
+        "validation": {
+          "pleaseSelectReason": "Please select a reason for rejection",
+          "pleaseProvideCustomReason": "Please provide the reason",
+          "customReasonMinLength": "The reason must be at least 10 characters long",
+          "minimumCharacters": "Minimum {{count}} characters",
+          "reminderSentSuccessfully": "Reminder sent successfully",
+          "api_errors": {
+            "other_error": "An error occurred. Please try again."
+          }
+        }
       }
     }
   },

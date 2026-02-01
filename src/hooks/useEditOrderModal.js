@@ -21,6 +21,11 @@ export const useEditOrderModal = (locale) => {
   const [loadingFormSelection, setLoadingFormSelection] = useState(false);
   const [error, setError] = useState(null);
 
+  // Rejection modal states
+  const [selectedRejectOrderId, setSelectedRejectOrderId] = useState(null);
+  const [rejectingOrder, setRejectingOrder] = useState(false);
+  const [rejectionError, setRejectionError] = useState(null);
+
   // Fetch form selection data with caching
   const fetchFormSelectionData = useCallback(async () => {
     if (formSelectionData) {
@@ -199,6 +204,85 @@ export const useEditOrderModal = (locale) => {
     setError(null);
   }, []);
 
+  // ==================== REJECTION FUNCTIONALITY ====================
+
+  // Open rejection modal
+  const openRejectModal = useCallback((orderId) => {
+    if (!orderId) {
+      console.warn("No orderId provided to openRejectModal");
+      return;
+    }
+    setSelectedRejectOrderId(orderId);
+    setRejectionError(null);
+  }, []);
+
+  // Close rejection modal
+  const closeRejectModal = useCallback(() => {
+    setSelectedRejectOrderId(null);
+    setRejectionError(null);
+  }, []);
+
+  // Reject order API call
+  const rejectOrder = useCallback(
+    async (orderId, rejectionData = {}) => {
+      if (!orderId) {
+        console.warn("No orderId provided to rejectOrder");
+        return { success: false, error: "Order ID is required" };
+      }
+
+      setRejectingOrder(true);
+      setRejectionError(null);
+
+      try {
+        console.log(`Rejecting order ${orderId}`, rejectionData);
+
+        // TODO: Update this endpoint to match your actual API endpoint
+        const response = await axios.patch(
+          getProxyUrl(
+            `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.REJECT}/${orderId}`
+          ),
+          rejectionData,
+          { headers }
+        );
+
+        console.log("Order rejected successfully:", response.data);
+
+        // Show success message
+        enqueueSnackbar(
+          response.data?.message || "Order rejected successfully",
+          {
+            variant: "success",
+          }
+        );
+
+        // Close rejection modal
+        closeRejectModal();
+
+        // Clear the rejected order from cache
+        clearOrderFromCache(orderId);
+
+        // Refresh the customized trips table
+        await refreshCustomizedTripsTable();
+
+        return { success: true, data: response.data };
+      } catch (error) {
+        console.error("Error rejecting order:", error);
+        const errorMessage =
+          error.response?.data?.message || "Error rejecting order";
+        setRejectionError(errorMessage);
+        enqueueSnackbar(errorMessage, {
+          variant: "error",
+        });
+        return { success: false, error: errorMessage };
+      } finally {
+        setRejectingOrder(false);
+      }
+    },
+    [headers, enqueueSnackbar, closeRejectModal]
+  );
+
+  // ==================== END REJECTION FUNCTIONALITY ====================
+
   // Refresh CustomizedTripsTable after successful order update
   const refreshCustomizedTripsTable = useCallback(async () => {
     console.log("Refreshing customized trips table...");
@@ -290,6 +374,12 @@ export const useEditOrderModal = (locale) => {
     [selectedEditOrderId]
   );
 
+  // Check if rejection modal is open
+  const isRejectModalOpen = useMemo(
+    () => selectedRejectOrderId !== null,
+    [selectedRejectOrderId]
+  );
+
   // Check if data is ready
   const isDataReady = useMemo(() => {
     return (
@@ -327,7 +417,7 @@ export const useEditOrderModal = (locale) => {
     isModalOpen,
     isDataReady,
 
-    // Actions
+    // Edit modal actions
     openEditModal,
     closeEditModal,
     refreshCustomizedTripsTable,
@@ -340,5 +430,14 @@ export const useEditOrderModal = (locale) => {
     fetchEditOrderDetails,
     fetchOrderDetailsForView,
     fetchFormSelectionData,
+
+    // Rejection functionality
+    selectedRejectOrderId,
+    isRejectModalOpen,
+    rejectingOrder,
+    rejectionError,
+    openRejectModal,
+    closeRejectModal,
+    rejectOrder,
   };
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback } from "react";
 
 import { usePermissions } from "@hooks/usePermissions";
 import formatDate from "@utils/FormateDate";
@@ -18,6 +18,8 @@ import { useEditOrderModal } from "@hooks/useEditOrderModal";
 import CustomizedModal from "@components/common/customizedModal";
 import OrderDetailsModal from "./OrderDetailsModal";
 import CustomNewTripForm from "@components/forms/customNewTrip";
+import RejectOrderForm from "@components/forms/customNewTrip/RejectOrderForm";
+
 
 const AllOrdersTable = ({
   tableTitle,
@@ -41,6 +43,7 @@ const AllOrdersTable = ({
   } = useOrderDetailsModal(locale);
 
   const {
+    // Edit modal functionality
     selectedEditOrderId,
     currentEditOrderDetails,
     formSelectionData,
@@ -50,6 +53,15 @@ const AllOrdersTable = ({
     openEditModal,
     closeEditModal,
     refreshCustomizedTripsTable,
+
+    // Rejection functionality
+    selectedRejectOrderId,
+    isRejectModalOpen,
+    rejectingOrder,
+    rejectionError,
+    openRejectModal,
+    closeRejectModal,
+    rejectOrder,
   } = useEditOrderModal(locale);
 
   // Check if user has any order management action permissions
@@ -57,6 +69,8 @@ const AllOrdersTable = ({
     PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOW_DETAILS,
     PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REMINDER_GUESTNA,
     PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_UPDATE_TRIP,
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REJECT_TRIP,
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_APPROVE_TRIP,
   ]);
 
   const getStatusStyles = (status) => {
@@ -108,6 +122,22 @@ const AllOrdersTable = ({
       onActionComplete,
       selectedEditOrderId,
     ]
+  );
+
+  // Handle successful rejection with table refresh
+  const handleRejectSuccess = useCallback(
+    async (result) => {
+      try {
+        // Table refresh is already handled in the rejectOrder function
+        // Just notify parent component if callback provided
+        if (onActionComplete) {
+          onActionComplete("reject", selectedRejectOrderId, result);
+        }
+      } catch (error) {
+        console.error("Error after reject success:", error);
+      }
+    },
+    [onActionComplete, selectedRejectOrderId]
   );
 
   // Handle action completion from ActionsDropdownMenu
@@ -257,11 +287,13 @@ const AllOrdersTable = ({
                       {hasAnyActionPermission && (
                         <td className="p-4">
                           <ActionsDropdownMenu
+                            _id={order._id}
                             bookingId={order.orderId}
                             bookingStatus={order.status}
                             onActionComplete={handleActionComplete}
                             openDetailsModal={openDetailsModal}
                             openEditModal={openEditModal}
+                            openRejectModal={openRejectModal}
                           />
                         </td>
                       )}
@@ -388,11 +420,13 @@ const AllOrdersTable = ({
                     </span>
 
                     <ActionsDropdownMenu
+                      _id={order._id}
                       bookingId={order.orderId}
                       bookingStatus={order.status}
                       onActionComplete={handleActionComplete}
                       openDetailsModal={openDetailsModal}
                       openEditModal={openEditModal}
+                      openRejectModal={openRejectModal}
                     />
                   </div>
                 )}
@@ -455,6 +489,26 @@ const AllOrdersTable = ({
             <CircularProgress size={40} />
           </div>
         ) : null}
+      </CustomizedModal>
+
+      {/* Reject Order Modal */}
+      <CustomizedModal
+        open={isRejectModalOpen}
+        handleClose={closeRejectModal}
+        bgcolor="rgba(0, 0, 0, 0.5)"
+        customizedCloseButton={true}
+        padding={false}
+      >
+        {selectedRejectOrderId && (
+          <RejectOrderForm
+            orderId={selectedRejectOrderId}
+            onClose={closeRejectModal}
+            onSuccess={handleRejectSuccess}
+            rejectOrder={rejectOrder}
+            rejectingOrder={rejectingOrder}
+            rejectionError={rejectionError}
+          />
+        )}
       </CustomizedModal>
     </>
   );
