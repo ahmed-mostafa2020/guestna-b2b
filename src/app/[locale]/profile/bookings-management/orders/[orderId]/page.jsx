@@ -164,7 +164,7 @@ const OrderDetailsPage = ({ params }) => {
     <Box className="!font-somar py-3 mx-auto">
       {/* Header Section */}
       <Box className="flex gap-2 flex-col">
-        <Box className="flex gap-2 items-center flex-wrap mb-2">
+        <Box className="flex gap-2 items-center flex-wrap mb-4">
           <Link
             className="border-2 border-mainColor !text-mainColor !w-8 !h-8 flex justify-center items-center !p-2 rounded-lg"
             href={`/${locale}/profile/bookings-management/orders`}
