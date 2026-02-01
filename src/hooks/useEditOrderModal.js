@@ -23,7 +23,10 @@ export const useEditOrderModal = (locale) => {
 
   // Fetch form selection data with caching
   const fetchFormSelectionData = useCallback(async () => {
-    if (formSelectionData) return formSelectionData;
+    if (formSelectionData) {
+      console.log("Using cached form selection data");
+      return formSelectionData;
+    }
 
     setLoadingFormSelection(true);
     setError(null);
@@ -61,6 +64,7 @@ export const useEditOrderModal = (locale) => {
 
       // Return cached data if available and not forcing refresh
       if (editOrderDetailsCache[orderId] && !forceRefresh) {
+        console.log(`Using cached order details for ${orderId}`);
         setCurrentEditOrderDetails(editOrderDetailsCache[orderId]);
         return editOrderDetailsCache[orderId];
       }
@@ -69,6 +73,7 @@ export const useEditOrderModal = (locale) => {
       setError(null);
 
       try {
+        console.log(`Fetching order details for ${orderId}`);
         const response = await axios.get(
           getProxyUrl(
             `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.EDIT_CUSTOM_INFO}/${orderId}`
@@ -112,9 +117,9 @@ export const useEditOrderModal = (locale) => {
     [fetchEditOrderDetails]
   );
 
-  // Open edit modal - reuses cached data if available
+  // Open edit modal - optimized to use existing data when available
   const openEditModal = useCallback(
-    async (orderId) => {
+    async (orderId, existingOrderData = null) => {
       if (!orderId) {
         console.warn("No orderId provided to openEditModal");
         return;
@@ -123,19 +128,53 @@ export const useEditOrderModal = (locale) => {
       setSelectedEditOrderId(orderId);
       setError(null);
 
+      // If order data is passed directly (from the page), use it
+      if (existingOrderData) {
+        console.log(
+          `Using provided order data for ${orderId} (no fetch needed)`
+        );
+        setCurrentEditOrderDetails(existingOrderData);
+
+        // Also cache it for future use
+        setEditOrderDetailsCache((prev) => ({
+          ...prev,
+          [orderId]: existingOrderData,
+        }));
+
+        // Only fetch form selection data
+        try {
+          await fetchFormSelectionData();
+        } catch (error) {
+          console.error("Error fetching form selection data:", error);
+        }
+        return;
+      }
+
       // Check if we already have the order details cached
-      const hasCachedDetails = editOrderDetailsCache[orderId];
+      const hasCachedDetails =
+        editOrderDetailsCache[orderId] ||
+        currentEditOrderDetails?._id === orderId;
 
-      // Only fetch order details if not cached
-      const fetchPromises = [fetchFormSelectionData()];
+      // Only fetch what we don't have
+      const fetchPromises = [];
 
+      // Always fetch form selection data if not available
+      fetchPromises.push(fetchFormSelectionData());
+
+      // Only fetch order details if not cached and not current
       if (!hasCachedDetails) {
         console.log(`Fetching fresh data for order ${orderId}`);
         fetchPromises.push(fetchEditOrderDetails(orderId, false));
       } else {
-        console.log(`Using cached data for order ${orderId}`);
-        // Use cached details
-        setCurrentEditOrderDetails(editOrderDetailsCache[orderId]);
+        console.log(
+          `Using existing data for order ${orderId} (no fetch needed)`
+        );
+        // Use cached or current details
+        if (currentEditOrderDetails?._id === orderId) {
+          // Already set, no need to do anything
+        } else if (editOrderDetailsCache[orderId]) {
+          setCurrentEditOrderDetails(editOrderDetailsCache[orderId]);
+        }
       }
 
       try {
@@ -145,7 +184,12 @@ export const useEditOrderModal = (locale) => {
         // Errors are already handled in individual fetch functions
       }
     },
-    [fetchEditOrderDetails, fetchFormSelectionData, editOrderDetailsCache]
+    [
+      fetchEditOrderDetails,
+      fetchFormSelectionData,
+      editOrderDetailsCache,
+      currentEditOrderDetails,
+    ]
   );
 
   // Close edit modal and cleanup
@@ -209,6 +253,8 @@ export const useEditOrderModal = (locale) => {
   const refreshCurrentOrder = useCallback(
     async (orderId) => {
       if (!orderId) return;
+
+      console.log(`Refreshing order ${orderId} with fresh data from server`);
 
       // Clear from cache and refetch
       setEditOrderDetailsCache((prev) => {

@@ -2171,6 +2171,7 @@
       "bookingDetails": "Booking Details",
       "submit": "Submit Request to Justna Team",
       "success": "Your request has been submitted successfully",
+      "edit_success": "Your request has been updated successfully",
       "thanksMessage": {
         "title": "Thank you!",
         "description": "Your request has been submitted successfully. Our team will contact you within 24 hours."

@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import FileUploadGroup from "@components/forms/FileUploadGroup";
 import LexicalEditor from "@components/common/LexicalEditor";
+import TextInputGroup from "../../TextInputGroup";
 
 const StepAdditionalInfo = () => {
   const t = useTranslations('forms.customTrip.steps.additional_info');
@@ -67,18 +68,16 @@ const StepAdditionalInfo = () => {
           </div>
 
           <div className="somar-placeholder">
-            <LexicalEditor
-              value={values.specialRequirements || ""}
-              onChange={handleSpecialRequirementsChange}
+            <TextInputGroup
+              textarea
+              
+              name="specialRequirements"
               placeholder={t("fields.special_requirements.placeholder")}
-              error={
-                touched.specialRequirements &&
-                Boolean(errors.specialRequirements)
-              }
-              helperText={
-                touched.specialRequirements && errors.specialRequirements
-              }
-              dir={locale === "ar" ? "rtl" : "ltr"}
+              errors={errors.specialRequirements} 
+              touched={touched.specialRequirements}
+              onBlur={handleBlur}
+              value={values.specialRequirements}
+              onChange={(e) => handleSpecialRequirementsChange(e.target.value)}
             />
           </div>
         </CardContent>

@@ -1,0 +1,8 @@
+import { Typography } from "@mui/material";
+import React from "react";
+
+const OrderDataLabel = ({ label }) => {
+  return <Typography className="!font-somar ">{label}</Typography>;
+};
+
+export default OrderDataLabel;

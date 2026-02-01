@@ -57,19 +57,25 @@ const ActionsDropdownMenu = ({
 
   // Check if booking is editable (not done)
   const isEditable = useMemo(
-    () => bookingStatus !== TRIP_STATUS.DONE,
+    () =>
+      ![
+        TRIP_STATUS.DONE,
+        TRIP_STATUS.CANCLED,
+        TRIP_STATUS.CANCELLED,
+        TRIP_STATUS.REJECTED,
+        TRIP_STATUS.ENDED,
+      ].includes(bookingStatus),
     [bookingStatus]
   );
 
   // check if order can be accepted or rejected
   const hasApproval = useMemo(
     () =>
-    ![TRIP_STATUS.SCHEDULED, TRIP_STATUS.DONE, TRIP_STATUS.REJECTED].includes(
+      ![TRIP_STATUS.SCHEDULED, TRIP_STATUS.DONE, TRIP_STATUS.REJECTED].includes(
         bookingStatus
       ),
     [bookingStatus]
   );
-  
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
