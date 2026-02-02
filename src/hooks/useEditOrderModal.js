@@ -236,7 +236,7 @@ export const useEditOrderModal = (locale) => {
       try {
         console.log(`Rejecting order ${orderId}`, rejectionData);
 
-        // TODO: Update this endpoint to match your actual API endpoint
+        
         const response = await axios.patch(
           getProxyUrl(
             `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.REJECT}/${orderId}`

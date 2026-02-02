@@ -37,7 +37,7 @@ const ProfilePageTemplate = ({
       }
     : {};
 
-  const { data, error, isLoading } = useFetchData(
+  const { data, error, isLoading, refetch } = useFetchData(
     endpoint,
     {},
     {
@@ -121,18 +121,20 @@ const ProfilePageTemplate = ({
                 setCurrentPage,
                 enablePagination,
                 searchTerm,
-                setSearchTerm
+                setSearchTerm,
+                refetch
               )
             : React.isValidElement(contentComponent)
-            ? React.cloneElement(contentComponent, {
-                data,
-                currentPage,
-                setCurrentPage,
-                enablePagination,
-                searchTerm,
-                setSearchTerm,
-              })
-            : contentComponent}
+              ? React.cloneElement(contentComponent, {
+                  data,
+                  currentPage,
+                  setCurrentPage,
+                  enablePagination,
+                  searchTerm,
+                  setSearchTerm,
+                  refetch,
+                })
+              : contentComponent}
         </>
       )}
     </main>

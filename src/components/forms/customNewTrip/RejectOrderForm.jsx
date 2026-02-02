@@ -226,7 +226,7 @@ const RejectOrderForm = ({
         <Button
           onClick={handleSubmit}
           disabled={rejectingOrder || !selectedReason}
-          className="!bg-error px-8 py-3 !border-2 !font-somar !text-white w-full rounded-lg"
+          className="!bg-error px-8 py-3 !border-2 !font-somar !text-white w-full rounded-lg disabled:!bg-gray-300 disabled:!text-gray-600 disabled:cursor-not-allowed"
         >
           {rejectingOrder ? (
             <Box className="flex items-center gap-2">

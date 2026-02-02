@@ -20,7 +20,6 @@ import OrderDetailsModal from "./OrderDetailsModal";
 import CustomNewTripForm from "@components/forms/customNewTrip";
 import RejectOrderForm from "@components/forms/customNewTrip/RejectOrderForm";
 
-
 const AllOrdersTable = ({
   tableTitle,
   data,
@@ -28,6 +27,7 @@ const AllOrdersTable = ({
   setCurrentPage,
   enablePagination,
   onActionComplete,
+  refetch,
 }) => {
   const { hasAnyElement } = usePermissions();
   const locale = useLocale();
@@ -105,8 +105,8 @@ const AllOrdersTable = ({
   const handleEditSuccess = useCallback(
     async (result) => {
       try {
-        await refreshCustomizedTripsTable();
         closeEditModal();
+        await refetch();
 
         // Notify parent component if callback provided
         if (onActionComplete) {
@@ -117,7 +117,7 @@ const AllOrdersTable = ({
       }
     },
     [
-      refreshCustomizedTripsTable,
+      refetch,
       closeEditModal,
       onActionComplete,
       selectedEditOrderId,
@@ -129,6 +129,8 @@ const AllOrdersTable = ({
     async (result) => {
       try {
         // Table refresh is already handled in the rejectOrder function
+        closeRejectModal();
+        await refetch?.();
         // Just notify parent component if callback provided
         if (onActionComplete) {
           onActionComplete("reject", selectedRejectOrderId, result);
@@ -137,7 +139,7 @@ const AllOrdersTable = ({
         console.error("Error after reject success:", error);
       }
     },
-    [onActionComplete, selectedRejectOrderId]
+    [onActionComplete, selectedRejectOrderId, refetch]
   );
 
   // Handle action completion from ActionsDropdownMenu
