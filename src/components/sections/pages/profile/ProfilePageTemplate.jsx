@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 
 import { useFetchData } from "@hooks/useFetchData";
 import ErrorComponent from "@feedback/error/ErrorComponent";
@@ -48,6 +48,11 @@ const ProfilePageTemplate = ({
     }
   );
 
+  const handleRefetch = useCallback(() => {
+    refetch();
+  }, [refetch]);
+
+  // Set document title
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${title}`;
   }, [t, title]);
@@ -122,7 +127,7 @@ const ProfilePageTemplate = ({
                 enablePagination,
                 searchTerm,
                 setSearchTerm,
-                refetch
+                handleRefetch
               )
             : React.isValidElement(contentComponent)
               ? React.cloneElement(contentComponent, {
@@ -132,7 +137,7 @@ const ProfilePageTemplate = ({
                   enablePagination,
                   searchTerm,
                   setSearchTerm,
-                  refetch,
+                  handleRefetch,
                 })
               : contentComponent}
         </>

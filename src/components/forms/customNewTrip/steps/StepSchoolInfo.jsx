@@ -63,7 +63,13 @@ const useTracks = (organizationId, headers, locale) => {
   );
 
   useEffect(() => {
-    fetchTracks(organizationId);
+    if (!organizationId) {
+      setTracksData([]);
+      return;
+    }
+    if (!tracksData) {
+      fetchTracks(organizationId);
+    }
   }, [organizationId, fetchTracks]);
 
   return { tracksData, isLoading, error, refetch: fetchTracks };

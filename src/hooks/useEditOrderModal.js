@@ -261,8 +261,7 @@ export const useEditOrderModal = (locale) => {
         // Clear the rejected order from cache
         clearOrderFromCache(orderId);
 
-        // Refresh the customized trips table
-        await refreshCustomizedTripsTable();
+       
 
         return { success: true, data: response.data };
       } catch (error) {

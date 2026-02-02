@@ -446,7 +446,7 @@ const CustomNewTripForm = ({
     : createCustomNewTripSchema(t2);
 
   return (
-    <div className="px-4 py-4 sm:px-6 sm:py-8 bg-white rounded-2xl w-full mx-auto max-h-[90vh] overflow-y-auto">
+    <div className="px-4 py-4 sm:px-6 sm:py-8 bg-white rounded-2xl  mx-auto max-h-[90vh] overflow-y-auto sm:max-w-lg lg:max-w-6xl">
       <h3 className="pb-4 text-center text-lg font-medium text-black lg:text-2xl sm:pb-6 lg:pb-8">
         {isEditMode ? t("edit") : t("title")}
       </h3>

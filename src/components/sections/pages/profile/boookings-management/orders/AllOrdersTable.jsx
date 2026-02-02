@@ -106,7 +106,7 @@ const AllOrdersTable = ({
     async (result) => {
       try {
         closeEditModal();
-        await refetch();
+         refetch?.();
 
         // Notify parent component if callback provided
         if (onActionComplete) {
@@ -130,7 +130,7 @@ const AllOrdersTable = ({
       try {
         // Table refresh is already handled in the rejectOrder function
         closeRejectModal();
-        await refetch?.();
+         refetch?.();
         // Just notify parent component if callback provided
         if (onActionComplete) {
           onActionComplete("reject", selectedRejectOrderId, result);
