@@ -65,11 +65,11 @@ const TermsModal = ({ open, handleClose }) => {
       width="600px"
       bgcolor="rgba(0, 0, 0, 0.6)"
     >
-      <div className="p-6 space-y-6">
+      <div className="space-y-6">
         {/* Content to Capture */}
         <div
           ref={contentRef}
-          className="bg-white rounded-xl p-6 shadow-sm border border-gray-100"
+          className="bg-white rounded-xl p-4 shadow-sm border border-gray-100"
           dir={isRTL ? "rtl" : "ltr"}
         >
           <div className="border-b-2 border-mainColor pb-4 mb-6">
@@ -99,7 +99,7 @@ const TermsModal = ({ open, handleClose }) => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-3 pt-2">
+        <div className="flex justify-end gap-3">
           <button
             onClick={handleClose}
             disabled={isDownloading}

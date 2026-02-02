@@ -95,6 +95,9 @@ const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
   );
 
   const tripId = useSelector((state) => state.tripDetailsData.data?.trip?._id);
+  const tripName = useSelector(
+    (state) => state.tripDetailsData.data?.trip?.name
+  );
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -674,6 +677,7 @@ const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
                   if (checked) setTermsModalOpen(false);
                 }}
                 parentName={values.parentName}
+                tripName={tripName}
                 t={t}
               />
 

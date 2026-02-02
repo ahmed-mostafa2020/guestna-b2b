@@ -13,6 +13,7 @@ const TermsConfirmationModal = ({
   isChecked,
   onCheckChange,
   parentName,
+  tripName,
   t,
 }) => {
   const terms = ["participation", "safety", "health", "emergency", "media"];
@@ -43,14 +44,15 @@ const TermsConfirmationModal = ({
 
             <p className="font-medium text-textDark">
               {t("forms.termsConfirmation.modal.studentInfo.label")}{" "}
-              {parentName}
+              <span className="font-semibold">{parentName}</span>{" "}
+              {t("forms.termsConfirmation.modal.studentInfo.parent")}
             </p>
 
             {/* Students List */}
-            <div className="space-y-2 max-h-[150px] overflow-y-scroll">
+            <div className="space-y-2 max-h-[150px] min-h-8 overflow-y-auto">
               {students.map((student, index) => (
                 <div key={index} className="text-textDark">
-                  <span className="font-medium">
+                  <span className="font-semibold">
                     {index + 1}.{" "}
                     {student.name ||
                       t(
@@ -84,6 +86,15 @@ const TermsConfirmationModal = ({
                   {t("forms.termsConfirmation.modal.studentInfo.school")}
                 </span>{" "}
                 {schoolName}
+              </p>
+            )}
+
+            {tripName && (
+              <p className="text-textDark pt-2">
+                <span className="font-medium">
+                  {t("forms.termsConfirmation.modal.studentInfo.tripName")}
+                </span>{" "}
+                {tripName}
               </p>
             )}
           </Box>

@@ -1870,10 +1870,12 @@
         "title": "Parent Consent for Student Participation in the Trip",
         "subtitle": "Please read the following terms before proceeding",
         "studentInfo": {
-          "label": "I am the parent/guardian of:",
+          "label": "I am",
+          "parent": "the parent/guardian of:",
           "academicStage": "Academic Stage:",
           "grade": "Grade:",
-          "school": "School Name:"
+          "school": "School Name:",
+          "tripName": "Trip Name:"
         },
         "termsTitle": "Terms and Conditions:",
         "terms": {
