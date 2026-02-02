@@ -2368,9 +2368,17 @@
             "label": "Gathering Location"
           },
           "validation": {
-            "please_select_gathering_location": "Please select a gathering location",
-            "please_enter_school_amount": "Please enter the school percentage",
-            "invalid_school_amount": "Invalid school percentage"
+            "latitudeRequired": "Latitude is required",
+            "latitudeRange": "Latitude must be between -90 and 90",
+            "latitudeInvalid": "Latitude must be a valid number",
+            "longitudeRequired": "Longitude is required",
+            "longitudeRange": "Longitude must be between -180 and 180",
+            "longitudeInvalid": "Longitude must be a valid number",
+            "schoolAmountRequired": "School amount is required",
+            "schoolAmountPositive": "School amount must be a positive number",
+            "schoolAmountInteger": "School amount must be a whole number",
+            "schoolAmountMinimum": "School amount must be at least 1",
+            "schoolAmountInvalid": "School amount must be a valid number"
           }
         }
       

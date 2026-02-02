@@ -2367,9 +2367,17 @@
           "label": "مكان اللقاء"
         },
         "validation": {
-          "please_select_gathering_location": "قم بتحديد مكان اللقاء",
-          "please_enter_school_amount": "قم بادخال نسبة المدرسة",
-          "invalid_school_amount": "نسبة المدرسة غير صحيحة"
+          "latitudeRequired": "خط العرض مطلوب",
+          "latitudeRange": "يجب أن يكون خط العرض بين -90 و 90",
+          "latitudeInvalid": "يجب أن يكون خط العرض رقمًا صالحًا",
+          "longitudeRequired": "خط الطول مطلوب",
+          "longitudeRange": "يجب أن يكون خط الطول بين -180 و 180",
+          "longitudeInvalid": "يجب أن يكون خط الطول رقمًا صالحًا",
+          "schoolAmountRequired": "نسبة المدرسة مطلوبة",
+          "schoolAmountPositive": "يجب أن تكون نسبة المدرسة رقمًا موجبًا",
+          "schoolAmountInteger": "يجب أن تكون نسبة المدرسة عددًا صحيحًا",
+          "schoolAmountMinimum": "يجب ألا تقل نسبة المدرسة عن 1",
+          "schoolAmountInvalid": "يجب أن تكون نسبة المدرسة رقمًا صالحًا"
         }
       }
     }

@@ -650,110 +650,106 @@ export const createCustomNewTripSchema = (t) =>
     file: Yup.mixed().optional(),
     note: Yup.string().optional(),
   });
-  export const editCustomTripSchema = (t) =>
-    Yup.object().shape({
-      schoolsInfo: 
-          Yup.object().shape({
-            organization: Yup.string().required(t("forms.validation.require")),
-            track: Yup.string()
-              .required(t("forms.validation.require")),
-            academicStages: Yup.array()
-              .of(Yup.string())
-              .min(1, t("forms.validation.require")),
-          }
-        )
-        .required(),
-      day: Yup.date()
-        .required(t("forms.validation.require"))
-        .min(
-          new Date(),
-          t(
-            "forms.customTrip.steps.trip_date.fields.start_date.error.past_date"
-          )
-        )
-        .test(
-          "start-before-end",
-          t(
-            "forms.customTrip.steps.trip_date.fields.start_date.error.start_before_end"
+export const editCustomTripSchema = (t) =>
+  Yup.object().shape({
+    schoolsInfo: Yup.object()
+      .shape({
+        organization: Yup.string().required(t("forms.validation.require")),
+        track: Yup.string().required(t("forms.validation.require")),
+        academicStages: Yup.array()
+          .of(Yup.string())
+          .min(1, t("forms.validation.require")),
+      })
+      .required(),
+    day: Yup.date()
+      .required(t("forms.validation.require"))
+      .min(
+        new Date(),
+        t("forms.customTrip.steps.trip_date.fields.start_date.error.past_date")
+      )
+      .test(
+        "start-before-end",
+        t(
+          "forms.customTrip.steps.trip_date.fields.start_date.error.start_before_end"
+        ),
+        function (value) {
+          const { endDay } = this.parent;
+          if (!endDay || !value) return true;
+          return new Date(value) <= new Date(endDay);
+        }
+      ),
+    endDay: Yup.date()
+      .optional()
+      .min(
+        new Date(),
+        t("forms.customTrip.steps.trip_date.fields.end_date.error.past_date")
+      )
+      .test(
+        "end-after-start",
+        t(
+          "forms.customTrip.steps.trip_date.fields.end_date.error.end_before_start"
+        ),
+        function (value) {
+          const { day } = this.parent;
+          if (!day || !value) return true;
+          return new Date(value) >= new Date(day);
+        }
+      ),
+    availableSeats: Yup.number()
+      .required(t("forms.validation.require"))
+      .min(
+        1,
+        t("forms.customTrip.steps.pricing.fields.avaliable_seats.error.min")
+      )
+      .max(
+        1000,
+        t("forms.customTrip.steps.pricing.fields.avaliable_seats.error.max")
+      ),
+
+    category: Yup.string().required(t("forms.validation.require")),
+    supCategory: Yup.string().required(t("forms.validation.require")),
+
+    name: Yup.object()
+      .shape({
+        en: Yup.string()
+          .required(t("forms.validation.require"))
+          .matches(
+            /^[a-zA-Z0-9\s.,!?'-]+$/,
+            t("forms.customTrip.steps.trip_info.fields.name.en.error")
           ),
-          function (value) {
-            const { endDay } = this.parent;
-            if (!endDay || !value) return true;
-            return new Date(value) <= new Date(endDay);
-          }
-        ),
-      endDay: Yup.date()
-        .optional()
-        .min(
-          new Date(),
-          t("forms.customTrip.steps.trip_date.fields.end_date.error.past_date")
-        )
-        .test(
-          "end-after-start",
-          t(
-            "forms.customTrip.steps.trip_date.fields.end_date.error.end_before_start"
+        ar: Yup.string()
+          .required(t("forms.validation.require"))
+          .matches(
+            /^[\u0600-\u06FF0-9\s.,!?'-]+$/,
+            t("forms.customTrip.steps.trip_info.fields.name.ar.error")
           ),
-          function (value) {
-            const { day } = this.parent;
-            if (!day || !value) return true;
-            return new Date(value) >= new Date(day);
-          }
-        ),
-      availableSeats: Yup.number()
-        .required(t("forms.validation.require"))
-        .min(
-          1,
-          t("forms.customTrip.steps.pricing.fields.avaliable_seats.error.min")
+      })
+      .optional(),
+    tripType: Yup.string().required(t("forms.validation.require")),
+    city: Yup.string().required(t("forms.validation.require")),
+    fromHour: Yup.string().optional(),
+    toHour: Yup.string().optional(),
+    priceRange: Yup.object()
+      .shape({
+        min: Yup.number().required(t("forms.validation.require")),
+        max: Yup.number().required(t("forms.validation.require")),
+      })
+      .required(t("forms.validation.require")),
+
+    specialRequirements: Yup.string()
+      .optional()
+      .max(
+        10000,
+        t(
+          "forms.customTrip.steps.additional_info.fields.special_requirements.error.max"
         )
-        .max(
-          1000,
-          t("forms.customTrip.steps.pricing.fields.avaliable_seats.error.max")
-        ),
+      ),
 
-      category: Yup.string().required(t("forms.validation.require")),
-      supCategory: Yup.string().required(t("forms.validation.require")),
+    services: Yup.array().min(1, t("forms.validation.require")),
 
-      name: Yup.object()
-        .shape({
-          en: Yup.string()
-            .required(t("forms.validation.require"))
-            .matches(
-              /^[a-zA-Z0-9\s.,!?'-]+$/,
-              t("forms.customTrip.steps.trip_info.fields.name.en.error")
-            ),
-          ar: Yup.string()
-            .required(t("forms.validation.require"))
-            .matches(
-              /^[\u0600-\u06FF0-9\s.,!?'-]+$/,
-              t("forms.customTrip.steps.trip_info.fields.name.ar.error")
-            ),
-        })
-        .optional(),
-      tripType: Yup.string().required(t("forms.validation.require")),
-      city: Yup.string().required(t("forms.validation.require")),
-      fromHour: Yup.string().optional(),
-      toHour: Yup.string().optional(),
-      priceRange: Yup.object()
-        .shape({
-          min: Yup.number().required(t("forms.validation.require")),
-          max: Yup.number().required(t("forms.validation.require")),
-        })
-        .required(t("forms.validation.require")),
-
-      specialRequirements: Yup.string()
-        .optional()
-        .max(
-          10000,
-          t(
-            "forms.customTrip.steps.additional_info.fields.special_requirements.error.max"
-          )
-        ),
-
-      services: Yup.array().min(1, t("forms.validation.require")),
-
-      file: Yup.mixed().optional(),
-      note: Yup.string().optional(),
-    });
+    file: Yup.mixed().optional(),
+    note: Yup.string().optional(),
+  });
 export const createUpdateTripSchema = (t) =>
   Yup.object().shape({
     category: Yup.string().required(t("forms.validation.require")),
@@ -1243,3 +1239,87 @@ export const createAddRoleSchema = (t) =>
         t("profile.rolesPermissions.addRole.form.validation.summaryAr.min")
       ),
   });
+
+// =====================
+export const getApproveOrderValidationSchema = (t) => {
+  return Yup.object().shape({
+    gatheringLocation: Yup.object().shape({
+      lat: Yup
+        .number()
+        .required(
+          t("validation.latitudeRequired", {
+            defaultValue: "Latitude is required",
+          })
+        )
+        .min(
+          -90,
+          t("validation.latitudeRange", {
+            defaultValue: "Latitude must be between -90 and 90",
+          })
+        )
+        .max(
+          90,
+          t("validation.latitudeRange", {
+            defaultValue: "Latitude must be between -90 and 90",
+          })
+        )
+        .typeError(
+          t("validation.latitudeInvalid", {
+            defaultValue: "Latitude must be a valid number",
+          })
+        ),
+      lng: Yup
+        .number()
+        .required(
+          t("validation.longitudeRequired", {
+            defaultValue: "Longitude is required",
+          })
+        )
+        .min(
+          -180,
+          t("validation.longitudeRange", {
+            defaultValue: "Longitude must be between -180 and 180",
+          })
+        )
+        .max(
+          180,
+          t("validation.longitudeRange", {
+            defaultValue: "Longitude must be between -180 and 180",
+          })
+        )
+        .typeError(
+          t("validation.longitudeInvalid", {
+            defaultValue: "Longitude must be a valid number",
+          })
+        ),
+    }),
+    schoolAmount: Yup
+      .number()
+      .required(
+        t("validation.schoolAmountRequired", {
+          defaultValue: "School amount is required",
+        })
+      )
+      .positive(
+        t("validation.schoolAmountPositive", {
+          defaultValue: "School amount must be a positive number",
+        })
+      )
+      .integer(
+        t("validation.schoolAmountInteger", {
+          defaultValue: "School amount must be a whole number",
+        })
+      )
+      .min(
+        1,
+        t("validation.schoolAmountMinimum", {
+          defaultValue: "School amount must be at least 1",
+        })
+      )
+      .typeError(
+        t("validation.schoolAmountInvalid", {
+          defaultValue: "School amount must be a valid number",
+        })
+      ),
+  });
+};
