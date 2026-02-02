@@ -137,6 +137,7 @@ export async function generateMetadata({ params: { locale } }) {
       "geo.placename": "Riyadh",
       "geo.position": "24.7136;46.6753",
       ICBM: "24.7136, 46.6753",
+      google: "notranslate",
     },
   };
 }
@@ -219,7 +220,10 @@ export default async function RootLayout({ children, params: { locale } }) {
         />
       </head>
 
-      <body className={` ${somarSans.variable} text-textDark`}>
+      <body
+        className={` ${somarSans.variable} text-textDark notranslate`}
+        translate="no"
+      >
         {/* Tamara pay */}
         <Script
           strategy="beforeInteractive"
