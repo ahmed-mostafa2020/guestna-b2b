@@ -106,7 +106,8 @@ const AllOrdersTable = ({
     async (result) => {
       try {
         closeEditModal();
-         refetch?.();
+        refetch?.();
+       await refreshCustomizedTripsTable();
 
         // Notify parent component if callback provided
         if (onActionComplete) {
@@ -116,21 +117,17 @@ const AllOrdersTable = ({
         console.error("Error after edit success:", error);
       }
     },
-    [
-      refetch,
-      closeEditModal,
-      onActionComplete,
-      selectedEditOrderId,
-    ]
+    [refetch, closeEditModal, onActionComplete, selectedEditOrderId]
   );
 
   // Handle successful rejection with table refresh
   const handleRejectSuccess = useCallback(
     async (result) => {
       try {
-        // Table refresh is already handled in the rejectOrder function
+        // Table refresh 
         closeRejectModal();
-         refetch?.();
+        refetch?.();
+        await refreshCustomizedTripsTable();
         // Just notify parent component if callback provided
         if (onActionComplete) {
           onActionComplete("reject", selectedRejectOrderId, result);

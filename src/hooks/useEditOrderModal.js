@@ -68,7 +68,10 @@ export const useEditOrderModal = (locale) => {
       }
 
       // Return cached data if available and not forcing refresh
-      if (editOrderDetailsCache[orderId] && !forceRefresh) {
+      if (
+        editOrderDetailsCache[orderId] &&
+        !forceRefresh 
+      ) {
         console.log(`Using cached order details for ${orderId}`);
         setCurrentEditOrderDetails(editOrderDetailsCache[orderId]);
         return editOrderDetailsCache[orderId];
@@ -117,6 +120,7 @@ export const useEditOrderModal = (locale) => {
   // Fetch order details for viewing (sets current details without opening modal)
   const fetchOrderDetailsForView = useCallback(
     async (orderId, forceRefresh = false) => {
+   
       return await fetchEditOrderDetails(orderId, forceRefresh);
     },
     [fetchEditOrderDetails]
