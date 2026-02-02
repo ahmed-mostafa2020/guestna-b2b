@@ -23,7 +23,7 @@ const TermsConfirmationModal = ({
       handleClose={onClose}
       bgcolor="rgba(0, 0, 0, 0.4)"
       width="100%"
-      closeButton={false}
+      closeButton={true}
     >
       <Box className="max-w-4xl mx-auto px-4 py-6 md:px-8 md:py-8 bg-white rounded-xl text-textDark">
         {/* Modal Header */}
