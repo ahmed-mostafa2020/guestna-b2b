@@ -142,7 +142,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
             </div>
 
             {booking.cities && (
-              <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
                 {locationIcon}
                 <p className="text-sm text-gray-600">
                   {t("profile.tables.orders.bookingDetails.location")}:
@@ -152,7 +152,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
             )}
 
             {booking.fromHour && booking.toHour && (
-              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
                 {timeIcon}
                 <p className="text-gray-600">
                   {t("profile.tables.orders.bookingDetails.time")}:
@@ -165,7 +165,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
 
             {booking.day && (
               <div className="text-sm flex items-center gap-3 flex-wrap">
-                <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+                <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
                   {dateIcon}
                   <p className="text-gray-600">
                     {t("profile.tables.orders.bookingDetails.tripStartDate")}:
@@ -180,7 +180,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
                   </p>
                 </div>
 
-                <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+                <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
                   {dateIcon}
                   <p className="text-gray-600">
                     {t("profile.tables.orders.bookingDetails.tripEndDate")}:
@@ -224,7 +224,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
                 )}
 
                 {booking.price && (
-                  <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+                  <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
                     {walletIcon}
                     <p className="text-gray-600">
                       {t("profile.tables.orders.bookingDetails.fees")}:
@@ -257,7 +257,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
             )}
 
             {booking.organization?.name && (
-              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
                 {profileIcon}
                 <p className="text-gray-600">
                   {t("profile.tables.orders.bookingDetails.contactPerson")}:
@@ -267,7 +267,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
             )}
 
             {booking.organization?.pone && (
-              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
                 {phoneIcon}
                 <p className="text-gray-600">
                   {t("profile.tables.orders.bookingDetails.phoneNumber")}:
@@ -279,7 +279,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
             )}
 
             {booking.createdAt && (
-              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
                 {dateIcon}
                 <p className="text-gray-600">
                   {t("profile.tables.orders.bookingDetails.bookingDate")}:
@@ -297,7 +297,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
             )}
 
             {booking.organization?.email && (
-              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
                 {profileIcon}
                 <p className="text-gray-600">
                   {t("profile.tables.orders.bookingDetails.schoolEmail")}:

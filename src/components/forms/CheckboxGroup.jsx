@@ -8,21 +8,23 @@ const CheckboxGroup = ({
   onChangeFunction,
   fontSize = "15px",
   hoveringAction = true,
+  disabled = false,
 }) => {
   return (
     <div
       className={`transition-all duration-200 ease-in-out ${
-        hoveringAction && "hover:bg-buttonsHover"
+        hoveringAction && !disabled && "hover:bg-buttonsHover"
       } `}
     >
       <FormControlLabel
+        disabled={disabled}
         sx={{
           marginInlineStart: 0,
           // width: "100%",
           padding: "6px",
           textTransform: "capitalize",
           "& .MuiFormControlLabel-label": {
-            color: "1F2626",
+            color: disabled ? "text.disabled" : "1F2626",
             fontWeight: "medium",
             fontSize: fontSize,
             fontFamily: "var(--font-somar-sans), sans-serif",
@@ -32,11 +34,16 @@ const CheckboxGroup = ({
           <Checkbox
             checked={isChecked}
             onChange={onChangeFunction}
+            disabled={disabled}
             sx={{
-              color: "var(--color-text-dark)",
+              color: disabled
+                ? "var(--color-gray-400)"
+                : "var(--color-text-dark)",
               "& .MuiSvgIcon-root": { fontSize: 28 },
               "&.Mui-checked": {
-                color: "var(--color-title)",
+                color: disabled
+                  ? "var(--color-gray-500)"
+                  : "var(--color-title)",
               },
             }}
           />

@@ -96,6 +96,7 @@
         "parentName": "Parent Name",
         "grade": "Grade",
         "parentPhone": "Parent Phone",
+        "parentConfirmation": "Parent Confirmation",
         "nationalId": "ID"
       }
     },
@@ -1027,6 +1028,7 @@
           "parentName": "Parent Name",
           "grade": "Grade",
           "parentPhone": "Parent Phone",
+          "parentConfirmation": "Parent Confirmation",
           "nationalId": "ID",
           "loading": "Loading students data...",
           "noData": "No students data available",

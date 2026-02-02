@@ -96,6 +96,7 @@
         "parentName": "اسم ولي الأمر",
         "grade": "الصف",
         "parentPhone": "هاتف ولي الأمر",
+        "parentConfirmation": "موافقة ولي الأمر",
         "nationalId": "الهوية الوطنية"
       }
     },
@@ -1032,6 +1033,7 @@
           "parentName": "اسم ولي الأمر",
           "grade": "الصف",
           "parentPhone": "رقم ولي الأمر",
+          "parentConfirmation": "موافقة ولي الأمر",
           "nationalId": "رقم الهوية",
           "loading": "جاري تحميل بيانات الطلاب...",
           "noData": "لا توجد بيانات طلاب متاحة",
