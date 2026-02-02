@@ -93,6 +93,8 @@ const ActionsDropdownMenu = ({
     [bookingStatus]
   );
 
+  const hasDetails = useMemo(() => [TRIP_STATUS.PENDING,TRIP_STATUS.PENDING_COMPANY_APPROVAL,TRIP_STATUS.ON_HOLD].includes(bookingStatus))
+
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [sendingReminder, setSendingReminder] = useState(false);
@@ -228,7 +230,7 @@ const ActionsDropdownMenu = ({
           },
         }}
       >
-        {canShowDetails && (
+        {canShowDetails && hasDetails && (
           <MenuItem className="!font-somar">
             <Link
               href={`/${locale}/profile/bookings-management/orders/${bookingId}`}

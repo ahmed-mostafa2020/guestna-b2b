@@ -79,13 +79,15 @@ const OrdersPage = () => {
                   currentPage,
                   setCurrentPage,
                   enablePagination,
-                  handleRefetch
+                  searchTerm,
+                  setSearchTerm,
+                  refetch // This is the 7th parameter!
                 ) => (
                   <AllOrdersTable
                     setFilter={setFilter}
                     filter={filter}
                     data={data}
-                    refetch={handleRefetch}
+                    refetch={refetch}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
                     enablePagination={enablePagination}

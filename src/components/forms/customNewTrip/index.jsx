@@ -386,7 +386,7 @@ const CustomNewTripForm = ({
     try {
       const formData = prepareFormData(values);
 
-      console.log("Submitting form with values:", values);
+   
 
       // In create mode, get organization IDs from array
       // In edit mode, get organization ID from object

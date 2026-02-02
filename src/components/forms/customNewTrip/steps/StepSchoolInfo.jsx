@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+} from "react";
+
 import SelectionGroup from "@components/forms/SelectionGroup";
 import { useLocale, useTranslations } from "next-intl";
 import { getHeaders } from "@utils/getHeaders";
@@ -23,59 +30,116 @@ import { Delete, Add, ExpandMore, CheckCircle } from "@mui/icons-material";
 import { FieldArray, useFormikContext } from "formik";
 import axios from "axios";
 
-// Custom hook for fetching tracks with better state management
-const useTracks = (organizationId, headers, locale) => {
+// ============================================================================
+// Custom Hook: useTracks - Manages track fetching with caching
+// ============================================================================
+const useTracks = (organizationId, headers) => {
   const t = useTranslations("forms.customTrip.steps.school_info");
+
+  // State management
   const [tracksData, setTracksData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Cache to prevent duplicate fetches across component instances
+  const cacheRef = useRef(new Map());
+  const abortControllerRef = useRef(null);
 
   const fetchTracks = useCallback(
     async (orgId) => {
       if (!orgId) {
         setTracksData([]);
-        setIsLoading(false);
         setError(null);
         return;
       }
+
+      // Check cache first
+      if (cacheRef.current.has(orgId)) {
+        const cachedData = cacheRef.current.get(orgId);
+        setTracksData(cachedData);
+        setError(null);
+        return;
+      }
+
+      // Cancel any ongoing request
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+
+      // Create new abort controller for this request
+      abortControllerRef.current = new AbortController();
 
       setIsLoading(true);
       setError(null);
 
       try {
-        const response = await axios({
-          method: "get",
-          url: getProxyUrl(
+        const response = await axios.get(
+          getProxyUrl(
             `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.TRACKS}/${orgId}`
           ),
-          headers,
-        });
-        setTracksData(response.data || []);
+          {
+            headers,
+            signal: abortControllerRef.current.signal,
+          }
+        );
+
+        const data = response.data ?? [];
+
+        // Cache the result
+        cacheRef.current.set(orgId, data);
+
+        setTracksData(data);
+        setError(null);
       } catch (err) {
+        // Ignore abort errors
+        if (axios.isCancel(err)) {
+          return;
+        }
+
         console.error("Error fetching tracks:", err);
         setError(t("fields.track.fetchError"));
         setTracksData([]);
       } finally {
         setIsLoading(false);
+        abortControllerRef.current = null;
       }
     },
     [headers, t]
   );
 
+  // Fetch tracks when organization changes
   useEffect(() => {
-    if (!organizationId) {
-      setTracksData([]);
-      return;
-    }
-    if (!tracksData) {
-      fetchTracks(organizationId);
-    }
+    fetchTracks(organizationId);
+
+    // Cleanup function
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [organizationId, fetchTracks]);
 
-  return { tracksData, isLoading, error, refetch: fetchTracks };
+  // Manual refetch function that bypasses cache
+  const refetch = useCallback(() => {
+    if (organizationId) {
+      cacheRef.current.delete(organizationId);
+      fetchTracks(organizationId);
+    }
+  }, [fetchTracks, organizationId]);
+
+  // Clear cache function
+  const clearCache = useCallback(() => {
+    cacheRef.current.clear();
+  }, []);
+
+  return { tracksData, isLoading, error, refetch, clearCache };
 };
 
-// Helper function to format track options
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+// Format track options with proper display names
 const formatTrackList = (tracksData, t2) => {
   return tracksData.map((track) => {
     const stages =
@@ -83,12 +147,14 @@ const formatTrackList = (tracksData, t2) => {
     return {
       name: `${track.educationSystem} - ${t2(`common.${track.gender}`)} - ${stages}`,
       _id: track._id,
+      educationSystem: track.educationSystem,
+      gender: track.gender,
       academicStages: track.academicStages || [],
     };
   });
 };
 
-// Helper function to get available academic stages based on selected tracks
+// Get available academic stages based on selected tracks
 const getAvailableAcademicStages = (
   isEditMode,
   selectedTrack,
@@ -101,7 +167,7 @@ const getAvailableAcademicStages = (
     if (!selectedTrack) return academicStagesOptions;
 
     const track = trackList.find((t) => t._id === selectedTrack);
-    if (!track || !track.academicStages) return academicStagesOptions;
+    if (!track?.academicStages) return academicStagesOptions;
 
     const trackStageIds = track.academicStages.map((s) => s._id);
     return academicStagesOptions.filter((stage) =>
@@ -125,6 +191,38 @@ const getAvailableAcademicStages = (
   }
 };
 
+// Filter academic stages to keep only valid ones
+const filterValidAcademicStages = (
+  currentStages,
+  availableStages,
+  trackList,
+  selectedTrackId,
+  selectedTrackIds
+) => {
+  if (!currentStages || currentStages.length === 0) return [];
+
+  let validStageIds;
+
+  if (selectedTrackId) {
+    // Single track mode
+    const track = trackList.find((t) => t._id === selectedTrackId);
+    validStageIds = new Set(track?.academicStages?.map((s) => s._id) || []);
+  } else if (selectedTrackIds && selectedTrackIds.length > 0) {
+    // Multiple tracks mode - union of all stages
+    const tracks = trackList.filter((t) => selectedTrackIds.includes(t._id));
+    validStageIds = new Set(
+      tracks.flatMap((track) => track.academicStages?.map((s) => s._id) || [])
+    );
+  } else {
+    return [];
+  }
+
+  return currentStages.filter((stageId) => validStageIds.has(stageId));
+};
+
+// ============================================================================
+// SchoolInfoCard Component
+// ============================================================================
 const SchoolInfoCard = ({
   isEditMode,
   index,
@@ -146,22 +244,32 @@ const SchoolInfoCard = ({
   const headers = useMemo(() => getHeaders(locale), [locale]);
   const [isExpanded, setIsExpanded] = useState(true);
   const [tracksConvertedWarning, setTracksConvertedWarning] = useState(false);
-  const [removedStages, setRemovedStages] = useState([]);
+  const [stageValidationWarning, setStageValidationWarning] = useState("");
 
   // Use custom hook for tracks data
   const {
     tracksData,
     isLoading: isLoadingTracks,
     error: trackError,
-  } = useTracks(school.organization, headers, locale);
+  } = useTracks(school.organization, headers);
 
   // Auto-select organization if only one option exists
   useEffect(() => {
-    if (organizationOptions.length === 1 && !school.organization) {
+    if (
+      organizationOptions.length === 1 &&
+      !school.organization &&
+      !isEditMode
+    ) {
       const singleOrg = organizationOptions[0];
       setFieldValue(`${fieldPath}.organization`, singleOrg._id);
     }
-  }, [organizationOptions, school.organization, setFieldValue, fieldPath]);
+  }, [
+    organizationOptions,
+    school.organization,
+    setFieldValue,
+    fieldPath,
+    isEditMode,
+  ]);
 
   // Detect if tracks array was converted to single track in edit mode
   useEffect(() => {
@@ -182,64 +290,6 @@ const SchoolInfoCard = ({
     return formatTrackList(tracksData, t2);
   }, [tracksData, t2]);
 
-  // Validate and cleanup academic stages in edit mode when track changes or loads
-  useEffect(() => {
-    if (
-      !isEditMode ||
-      !school.track ||
-      isLoadingTracks ||
-      trackList.length === 0
-    ) {
-      return;
-    }
-
-    const selectedTrack = trackList.find((t) => t._id === school.track);
-    if (!selectedTrack?.academicStages) {
-      return;
-    }
-
-    const validStageIds = new Set(
-      selectedTrack.academicStages.map((s) => s._id)
-    );
-    const currentStages = school.academicStages || [];
-
-    // Filter out invalid stages
-    const validStages = currentStages.filter((stageId) =>
-      validStageIds.has(stageId)
-    );
-
-    // Find removed stages for user feedback
-    const invalidStageIds = currentStages.filter(
-      (stageId) => !validStageIds.has(stageId)
-    );
-
-    // Only update if there are invalid stages to remove
-    if (validStages.length !== currentStages.length) {
-      // Get names of removed stages for display
-      const removedStageNames = invalidStageIds
-        .map(
-          (stageId) =>
-            academicStagesOptions.find((s) => s._id === stageId)?.name
-        )
-        .filter(Boolean);
-
-      setRemovedStages(removedStageNames);
-      setFieldValue(`${fieldPath}.academicStages`, validStages);
-
-      // Clear the warning after 5 seconds
-      setTimeout(() => setRemovedStages([]), 5000);
-    }
-  }, [
-    isEditMode,
-    school.track,
-    school.academicStages,
-    trackList,
-    isLoadingTracks,
-    setFieldValue,
-    fieldPath,
-    academicStagesOptions,
-  ]);
-
   // Calculate available academic stages based on selected track(s)
   const availableAcademicStages = useMemo(() => {
     return getAvailableAcademicStages(
@@ -257,7 +307,67 @@ const SchoolInfoCard = ({
     academicStagesOptions,
   ]);
 
-  // Determine if academic stages field should be in loading state
+  // Validate and cleanup academic stages when tracks change
+  useEffect(() => {
+    // Don't run if tracks are loading or no tracks data yet
+    if (isLoadingTracks || trackList.length === 0) {
+      return;
+    }
+
+    const hasSelectedTracks = isEditMode
+      ? !!school.track
+      : school.tracks && school.tracks.length > 0;
+
+    if (!hasSelectedTracks) {
+      return;
+    }
+
+    const currentStages = school.academicStages || [];
+    if (currentStages.length === 0) {
+      return;
+    }
+
+    // Filter to keep only valid stages
+    const validStages = filterValidAcademicStages(
+      currentStages,
+      availableAcademicStages,
+      trackList,
+      school.track,
+      school.tracks
+    );
+
+    // Only update if there are invalid stages to remove
+    if (validStages.length !== currentStages.length) {
+      const removedCount = currentStages.length - validStages.length;
+
+      setFieldValue(`${fieldPath}.academicStages`, validStages);
+
+      // Show temporary warning
+      setStageValidationWarning(
+        t("fields.academicStages.auto_removed_warning", {
+          count: removedCount,
+          defaultValue: `${removedCount} academic stage(s) were automatically removed because they are not available in the selected track(s).`,
+        })
+      );
+
+      // Clear the warning after 5 seconds
+      const timeout = setTimeout(() => setStageValidationWarning(""), 5000);
+      return () => clearTimeout(timeout);
+    }
+  }, [
+    isEditMode,
+    school.track,
+    school.tracks,
+    school.academicStages,
+    trackList,
+    isLoadingTracks,
+    availableAcademicStages,
+    setFieldValue,
+    fieldPath,
+    t,
+  ]);
+
+  // Determine loading states
   const isAcademicStagesLoading = useMemo(() => {
     // Loading if tracks are loading AND an organization is selected
     if (isLoadingTracks && school.organization) return true;
@@ -300,6 +410,10 @@ const SchoolInfoCard = ({
     );
   }, [school, isEditMode]);
 
+  // ============================================================================
+  // Event Handlers
+  // ============================================================================
+
   // Handle organization change with cleanup
   const handleOrganizationChange = useCallback(
     (e) => {
@@ -310,7 +424,7 @@ const SchoolInfoCard = ({
 
       setFieldValue(`${fieldPath}.organization`, selectedId);
 
-      // Clear dependent fields
+      // Clear dependent fields when organization changes
       if (isEditMode) {
         setFieldValue(`${fieldPath}.track`, "");
       } else {
@@ -329,23 +443,19 @@ const SchoolInfoCard = ({
         const selectedName = e.target.value;
         const selectedId =
           trackList.find((tr) => tr.name === selectedName)?._id || "";
+
         setFieldValue(`${fieldPath}.track`, selectedId);
 
         // Filter academic stages to keep only valid ones
-        if (selectedId) {
-          const selectedTrack = trackList.find((t) => t._id === selectedId);
-          if (selectedTrack?.academicStages) {
-            const validStageIds = new Set(
-              selectedTrack.academicStages.map((s) => s._id)
-            );
-            const currentStages = school.academicStages || [];
-            const filteredStages = currentStages.filter((stageId) =>
-              validStageIds.has(stageId)
-            );
-            setFieldValue(`${fieldPath}.academicStages`, filteredStages);
-          }
-        } else {
-          setFieldValue(`${fieldPath}.academicStages`, []);
+        if (selectedId && school.academicStages?.length > 0) {
+          const validStages = filterValidAcademicStages(
+            school.academicStages,
+            availableAcademicStages,
+            trackList,
+            selectedId,
+            null
+          );
+          setFieldValue(`${fieldPath}.academicStages`, validStages);
         }
       } else {
         // Multiple tracks mode
@@ -353,29 +463,32 @@ const SchoolInfoCard = ({
         const selectedIds = selectedNames
           .map((name) => trackList.find((tr) => tr.name === name)?._id)
           .filter(Boolean);
+
         setFieldValue(`${fieldPath}.tracks`, selectedIds);
 
-        // Filter academic stages to keep only those available in all selected tracks
-        if (selectedIds.length > 0) {
-          const selectedTracks = trackList.filter((t) =>
-            selectedIds.includes(t._id)
+        // Filter academic stages to keep only those available in selected tracks
+        if (selectedIds.length > 0 && school.academicStages?.length > 0) {
+          const validStages = filterValidAcademicStages(
+            school.academicStages,
+            availableAcademicStages,
+            trackList,
+            null,
+            selectedIds
           );
-          const allStageIds = new Set(
-            selectedTracks.flatMap((track) =>
-              track.academicStages.map((s) => s._id)
-            )
-          );
-          const currentStages = school.academicStages || [];
-          const filteredStages = currentStages.filter((stageId) =>
-            allStageIds.has(stageId)
-          );
-          setFieldValue(`${fieldPath}.academicStages`, filteredStages);
-        } else {
+          setFieldValue(`${fieldPath}.academicStages`, validStages);
+        } else if (selectedIds.length === 0) {
           setFieldValue(`${fieldPath}.academicStages`, []);
         }
       }
     },
-    [trackList, setFieldValue, fieldPath, isEditMode, school.academicStages]
+    [
+      trackList,
+      setFieldValue,
+      fieldPath,
+      isEditMode,
+      school.academicStages,
+      availableAcademicStages,
+    ]
   );
 
   // Handle academic stages change
@@ -383,23 +496,27 @@ const SchoolInfoCard = ({
     (e) => {
       const selectedNames = e.target.value;
       const selectedIds = selectedNames
-        .map((name) => academicStagesOptions.find((s) => s.name === name)?._id)
+        .map(
+          (name) => availableAcademicStages.find((s) => s.name === name)?._id
+        )
         .filter(Boolean);
       setFieldValue(`${fieldPath}.academicStages`, selectedIds);
     },
-    [academicStagesOptions, setFieldValue, fieldPath]
+    [availableAcademicStages, setFieldValue, fieldPath]
   );
 
-  // Determine if tracks field is disabled
-  const isTracksDisabled = !school.organization;
-
-  // Determine if academic stages field is disabled
+  // Determine if fields are disabled
+  const isTracksDisabled = !school.organization || isLoadingTracks;
   const isAcademicStagesDisabled = useMemo(() => {
     if (isEditMode) {
       return !school.track;
     }
     return !school.tracks || school.tracks.length === 0;
   }, [isEditMode, school.track, school.tracks]);
+
+  // ============================================================================
+  // Render
+  // ============================================================================
 
   return (
     <Fade in timeout={300}>
@@ -419,6 +536,7 @@ const SchoolInfoCard = ({
               className={`transition-transform duration-300 ${
                 isExpanded ? "rotate-180" : "rotate-0"
               }`}
+              aria-label={isExpanded ? "Collapse" : "Expand"}
             >
               <ExpandMore />
             </IconButton>
@@ -430,6 +548,7 @@ const SchoolInfoCard = ({
                     count: index + 1,
                   })}
             </Typography>
+
             {isComplete && (
               <Chip
                 icon={<CheckCircle className="!text-success" />}
@@ -440,13 +559,18 @@ const SchoolInfoCard = ({
               />
             )}
           </div>
+
           {isRemovable && !isEditMode && (
-            <Delete
-              className="text-error !text-3xl cursor-pointer hover:scale-105"
+            <IconButton
               onClick={onRemove}
-            />
+              className="text-error hover:bg-red-50"
+              aria-label="Remove school"
+            >
+              <Delete className="!text-2xl" />
+            </IconButton>
           )}
         </CardActions>
+
         <Divider />
 
         <Collapse in={isExpanded} timeout={300}>
@@ -458,15 +582,16 @@ const SchoolInfoCard = ({
               </Alert>
             )}
 
-            {/* Warning about removed academic stages in edit mode */}
-            {/* {isEditMode && removedStages.length > 0 && (
-              <Alert severity="warning" className="mb-4">
-                {t("fields.academicStages.removed_stages_warning", {
-                  stages: removedStages.join(", "),
-                  defaultValue: `The following academic stages were removed because they are not available in the selected track: ${removedStages.join(", ")}`,
-                })}
+            {/* Warning about auto-removed academic stages */}
+            {stageValidationWarning && (
+              <Alert
+                severity="warning"
+                className="mb-4"
+                onClose={() => setStageValidationWarning("")}
+              >
+                {stageValidationWarning}
               </Alert>
-            )} */}
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Organization Selection */}
@@ -490,6 +615,13 @@ const SchoolInfoCard = ({
                   list={availableOrganizations.map((org) => org.name)}
                   disabled={organizationOptions.length === 1 || isEditMode}
                 />
+                {organizationOptions.length === 1 && (
+                  <p className="!mt-2 ps-1 text-xs text-textLight">
+                    {t("fields.organization.single_option_notice", {
+                      defaultValue: "Only one organization available",
+                    })}
+                  </p>
+                )}
               </div>
 
               {/* Track/Tracks Selection */}
@@ -532,11 +664,21 @@ const SchoolInfoCard = ({
                 {trackError && (
                   <p className="!mt-2 ps-1 text-xs text-error">{trackError}</p>
                 )}
-                {isTracksDisabled && (
+                {isTracksDisabled && !isLoadingTracks && (
                   <p className="!mt-2 ps-1 text-xs text-textLight">
                     {t("fields.track.helper_text")}
                   </p>
                 )}
+                {!isTracksDisabled &&
+                  !isLoadingTracks &&
+                  trackList.length === 0 && (
+                    <p className="!mt-2 ps-1 text-xs text-warning">
+                      {t("fields.track.no_tracks_available", {
+                        defaultValue:
+                          "No tracks available for this organization",
+                      })}
+                    </p>
+                  )}
               </div>
 
               {/* Academic Stages Selection */}
@@ -592,6 +734,9 @@ const SchoolInfoCard = ({
   );
 };
 
+// ============================================================================
+// Main Component: StepSchoolInfo
+// ============================================================================
 const StepSchoolInfo = ({
   organizationOptions,
   academicStagesOptions,
@@ -621,6 +766,7 @@ const StepSchoolInfo = ({
       .filter(Boolean);
   }, [values.schoolsInfo, isEditMode]);
 
+  // Handler for adding new school
   const handleAddSchool = useCallback((push) => {
     push({ organization: "", tracks: [], academicStages: [] });
   }, []);

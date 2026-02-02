@@ -64,6 +64,7 @@ const AllOrdersTable = ({
     rejectOrder,
   } = useEditOrderModal(locale);
 
+
   // Check if user has any order management action permissions
   const hasAnyActionPermission = hasAnyElement([
     PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOW_DETAILS,
@@ -105,9 +106,10 @@ const AllOrdersTable = ({
   const handleEditSuccess = useCallback(
     async (result) => {
       try {
+      
         closeEditModal();
         refetch?.();
-       await refreshCustomizedTripsTable();
+      
 
         // Notify parent component if callback provided
         if (onActionComplete) {
@@ -127,7 +129,7 @@ const AllOrdersTable = ({
         // Table refresh 
         closeRejectModal();
         refetch?.();
-        await refreshCustomizedTripsTable();
+       
         // Just notify parent component if callback provided
         if (onActionComplete) {
           onActionComplete("reject", selectedRejectOrderId, result);

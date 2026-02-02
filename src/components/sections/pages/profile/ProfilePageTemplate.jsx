@@ -121,13 +121,13 @@ const ProfilePageTemplate = ({
 
           {typeof contentComponent === "function"
             ? contentComponent(
-                data,
-                currentPage,
-                setCurrentPage,
-                enablePagination,
-                searchTerm,
-                setSearchTerm,
-                handleRefetch
+                data, // 1st param: data from API
+                currentPage, // 2nd param: current page number
+                setCurrentPage, // 3rd param: function to update page
+                enablePagination, // 4th param: boolean flag
+                searchTerm, // 5th param: search term string
+                setSearchTerm, // 6th param: function to update search
+                handleRefetch // 7th param: refetch function
               )
             : React.isValidElement(contentComponent)
               ? React.cloneElement(contentComponent, {
@@ -137,7 +137,7 @@ const ProfilePageTemplate = ({
                   enablePagination,
                   searchTerm,
                   setSearchTerm,
-                  handleRefetch,
+                  refetch: handleRefetch,
                 })
               : contentComponent}
         </>

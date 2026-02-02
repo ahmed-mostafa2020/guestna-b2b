@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useQueryClient } from "@tanstack/react-query";
@@ -21,6 +21,9 @@ export const useEditOrderModal = (locale) => {
   const [loadingFormSelection, setLoadingFormSelection] = useState(false);
   const [error, setError] = useState(null);
 
+  const formSelectionInFlightRef = useRef(false);
+  const editOrderInFlightRef = useRef({});
+
   // Rejection modal states
   const [selectedRejectOrderId, setSelectedRejectOrderId] = useState(null);
   const [rejectingOrder, setRejectingOrder] = useState(false);
@@ -29,69 +32,72 @@ export const useEditOrderModal = (locale) => {
   // Fetch form selection data with caching
   const fetchFormSelectionData = useCallback(async () => {
     if (formSelectionData) {
-      console.log("Using cached form selection data");
       return formSelectionData;
     }
 
+    if (formSelectionInFlightRef.current) {
+      return;
+    }
+
+    formSelectionInFlightRef.current = true;
     setLoadingFormSelection(true);
     setError(null);
 
     try {
       const response = await axios.get(
         getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ADD_NEW_ACTIVITY.FORM_SELECTION}`
+          B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ADD_NEW_ACTIVITY
+            .FORM_SELECTION
         ),
         { headers }
       );
+
       setFormSelectionData(response.data);
       return response.data;
     } catch (error) {
-      console.error("Error fetching form selection data:", error);
       const errorMessage =
         error.response?.data?.message || "Error fetching form data.";
       setError(errorMessage);
-      enqueueSnackbar(errorMessage, {
-        variant: "error",
-      });
+      enqueueSnackbar(errorMessage, { variant: "error" });
       throw error;
     } finally {
       setLoadingFormSelection(false);
+      formSelectionInFlightRef.current = false;
     }
   }, [formSelectionData, enqueueSnackbar, headers]);
+  
 
   // Fetch edit order details with improved caching
   const fetchEditOrderDetails = useCallback(
     async (orderId, forceRefresh = false) => {
-      if (!orderId) {
-        console.warn("No orderId provided to fetchEditOrderDetails");
-        return null;
-      }
+      if (!orderId) return null;
 
-      // Return cached data if available and not forcing refresh
-      if (
-        editOrderDetailsCache[orderId] &&
-        !forceRefresh 
-      ) {
-        console.log(`Using cached order details for ${orderId}`);
+      if (editOrderDetailsCache[orderId] && !forceRefresh) {
         setCurrentEditOrderDetails(editOrderDetailsCache[orderId]);
         return editOrderDetailsCache[orderId];
       }
 
+      if (editOrderInFlightRef.current[orderId]) {
+        return;
+      }
+
+      editOrderInFlightRef.current[orderId] = true;
       setLoadingEditDetails(true);
       setError(null);
 
       try {
-        console.log(`Fetching order details for ${orderId}`);
         const response = await axios.get(
           getProxyUrl(
-            `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.EDIT_CUSTOM_INFO}/${orderId}`
+            `${
+              B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER
+                .EDIT_CUSTOM_INFO
+            }/${orderId}`
           ),
           { headers }
         );
 
         const details = response.data;
 
-        // Update cache
         setEditOrderDetailsCache((prev) => ({
           ...prev,
           [orderId]: details,
@@ -100,22 +106,21 @@ export const useEditOrderModal = (locale) => {
         setCurrentEditOrderDetails(details);
         return details;
       } catch (error) {
-        console.error("Error fetching edit order details:", error);
         const errorMessage =
           error.response?.data?.message ||
           "Error fetching order details for editing.";
         setError(errorMessage);
-        enqueueSnackbar(errorMessage, {
-          variant: "error",
-        });
+        enqueueSnackbar(errorMessage, { variant: "error" });
         setCurrentEditOrderDetails(null);
         throw error;
       } finally {
         setLoadingEditDetails(false);
+        delete editOrderInFlightRef.current[orderId];
       }
     },
     [editOrderDetailsCache, enqueueSnackbar, headers]
   );
+  
 
   // Fetch order details for viewing (sets current details without opening modal)
   const fetchOrderDetailsForView = useCallback(
