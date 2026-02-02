@@ -8,6 +8,7 @@ import formatDate from "@utils/FormateDate";
 import formatCurrency from "@utils/FormatCurrency";
 import { useExcel } from "@hooks/useExcel";
 import StudentsTable from "./StudentsTable";
+import TermsModal from "./TermsModal";
 import {
   locationIcon,
   timeIcon,
@@ -18,12 +19,14 @@ import {
   phoneIcon,
   schoolIcon,
 } from "@assets/svg";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import ExportButton from "@components/common/ExportButton";
 
 const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
   const locale = useLocale();
   const t = useTranslations();
   const { exportBookingManagement, isExporting } = useExcel({ t, locale });
+  const [openTerms, setOpenTerms] = useState(false);
 
   if (!booking) return null;
 
@@ -305,9 +308,28 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
                 <p className="font-medium">{booking.organization?.email}</p>
               </div>
             )}
+
+            <button
+              onClick={() => setOpenTerms(true)}
+              className="text-sm flex items-center justify-between gap-1 rounded-lg p-2 border border-border shadow-card hover:bg-gray-50 transition-colors text-start w-fit cursor-pointer"
+            >
+              <div className="flex items-center gap-1">
+                <DescriptionOutlinedIcon
+                  sx={{ fontSize: "1.2rem", color: "var(--secondary-main)" }}
+                />
+                <p className="text-gray-600 font-medium">
+                  {t("profile.tables.orders.bookingDetails.showTerms")}
+                </p>
+              </div>
+              <span className="text-mainColor text-xs px-2 py-0.5 bg-blue-50 rounded-full">
+                PDF
+              </span>
+            </button>
           </div>
         </div>
       </div>
+
+      <TermsModal open={openTerms} handleClose={() => setOpenTerms(false)} />
 
       {/* Students Table */}
       <StudentsTable

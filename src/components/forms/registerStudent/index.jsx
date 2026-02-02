@@ -673,6 +673,7 @@ const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
                   setTermsAccepted(checked);
                   if (checked) setTermsModalOpen(false);
                 }}
+                parentName={values.parentName}
                 t={t}
               />
 

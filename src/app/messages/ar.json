@@ -1025,7 +1025,8 @@
           "nationalId": "رقم الهوية",
           "grade": "الصف الدراسي",
           "availableSeats": "المقاعد المتاحة",
-          "revenueAmount": "مبلغ الإيرادات"
+          "revenueAmount": "مبلغ الإيرادات",
+          "showTerms": "عرض الشروط والأحكام"
         },
         "studentsTable": {
           "title": "قائمة الطلاب",

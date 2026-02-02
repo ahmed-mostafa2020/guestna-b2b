@@ -12,10 +12,11 @@ const TermsConfirmationModal = ({
   schoolName = "",
   isChecked,
   onCheckChange,
+  parentName,
   t,
 }) => {
   const terms = ["participation", "safety", "health", "emergency", "media"];
-  console.log(students);
+
   return (
     <CustomizedModal
       open={open}
@@ -39,8 +40,10 @@ const TermsConfirmationModal = ({
         {students.length > 0 && students[0].name !== "" && (
           <Box className="border border-gray-200 rounded-2xl p-4 mb-6 space-y-3">
             {/* Parent Label */}
+
             <p className="font-medium text-textDark">
-              {t("forms.termsConfirmation.modal.studentInfo.label")}
+              {t("forms.termsConfirmation.modal.studentInfo.label")}{" "}
+              {parentName}
             </p>
 
             {/* Students List */}

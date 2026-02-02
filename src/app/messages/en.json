@@ -440,14 +440,6 @@
     },
     "activityLocation": "Activity location"
   },
-  "registerChild": {
-    "popup": {
-      "header": "Complete your student's registration",
-      "toComplete": "To quickly complete registration using your students's saved data | ",
-      "haveNoAccount": "I have not created an account yet",
-      "quickRegister": "Complete registration now without creating an account"
-    }
-  },
   "finalDetails": {
     "stepper": {
       "selectYourActivity": "Select Your Activity",
@@ -1019,7 +1011,8 @@
           "nationalId": "National ID",
           "grade": "Grade",
           "availableSeats": "Available Seats",
-          "revenueAmount": "Revenue Amount"
+          "revenueAmount": "Revenue Amount",
+          "showTerms": "Show Terms & Conditions"
         },
         "studentsTable": {
           "title": "Students List",
