@@ -518,11 +518,12 @@ export const ExcelService = {
         "",
         "",
         "",
+        "",
         t("profile.tables.bookings.header.budget"),
         formatCurrencyString(booking.price, locale),
       ]);
-      priceRow.getCell(5).font = { bold: true };
       priceRow.getCell(6).font = { bold: true };
+      priceRow.getCell(7).font = { bold: true };
     }
 
     // Generate filename
@@ -643,6 +644,13 @@ export const ExcelService = {
           parentPhone: student.parent?.phone || "",
           nationalId:
             student.parent?.nationalId || student.child?.nationalId || "",
+          parentConfirmation: student.parent?.termsAccepted
+            ? locale === "ar"
+              ? "نعم"
+              : "Yes"
+            : locale === "ar"
+              ? "لا"
+              : "No",
           note: student.child?.note || "",
         };
 

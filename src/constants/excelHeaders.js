@@ -174,6 +174,11 @@ export const bookingManagementStudentsHeaders = ({ t }) => [
     key: "nationalId",
     width: 18,
   },
+  {
+    header: t("profile.tables.orders.studentsTable.parentConfirmation"),
+    key: "parentConfirmation",
+    width: 20,
+  },
   { header: t("exportUtils.bookingReport.note"), key: "note", width: 30 },
 ];
 

@@ -226,7 +226,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
                   </div>
                 )}
 
-                {booking.price && (
+                {booking.price && booking.price > 0 && (
                   <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
                     {walletIcon}
                     <p className="text-gray-600">
@@ -315,7 +315,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
             >
               <div className="flex items-center gap-1">
                 <DescriptionOutlinedIcon
-                  sx={{ fontSize: "1.2rem", color: "var(--secondary-main)" }}
+                  sx={{ fontSize: "1.2rem", color: "#F09814" }}
                 />
                 <p className="text-gray-600 font-medium">
                   {t("profile.tables.orders.bookingDetails.showTerms")}
