@@ -278,7 +278,9 @@
     "sendStcOtp": "ارسل رمز التحقق OTP",
     "printPDF": "طباعة PDF",
     "exportExcel": "تصدير Excel",
-    "print": "طباعة"
+    "print": "طباعة",
+    "viewSelectedLocation": "عرض الموقع المحدد",
+    "clickToSelectLocation": "انقر لتحديد الموقع"
   },
 
   "booking": {
@@ -2348,6 +2350,26 @@
           "api_errors": {
             "other_error": "حدث خطأ. يرجى المحاولة مرة أخرى."
           }
+        }
+      },
+      "approval": {
+        "title": "تأكيد قبول عرض السعر",
+        "description": "من خلال قبول عرض السعر، فإنك توافق على الشروط والأحكام الخاصة بنا. يرجى التأكد من قراءة وفهم هذه الشروط قبل المتابعة.",
+        "confirmButton": "تأكيد القبول",
+        "view_selected_location": "مشاهدة الموقع المحدد",
+        "submitting": "جاري القبول...",
+        "school_amount": {
+          "placeholder": "ادخل نسبة المدرسة",
+          "label": "نسبة المدرسة"
+        },
+        "gathering_location": {
+          "placeholder": "حدد مكان اللقاء",
+          "label": "مكان اللقاء"
+        },
+        "validation": {
+          "please_select_gathering_location": "قم بتحديد مكان اللقاء",
+          "please_enter_school_amount": "قم بادخال نسبة المدرسة",
+          "invalid_school_amount": "نسبة المدرسة غير صحيحة"
         }
       }
     }

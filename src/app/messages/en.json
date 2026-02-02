@@ -272,7 +272,9 @@
     "sendStcOtp": "Send Stc Otp",
     "printPDF": "Print PDF",
     "exportExcel": "Export Excel",
-    "print": "Print"
+    "print": "Print",
+    "viewSelectedLocation": "View Selected Location",
+    "clickToSelectLocation": "Click to select location"
   },
 
   "booking": {
@@ -2327,29 +2329,52 @@
           }
         }
       },
-      "rejection": {
-        "title": "Confirm Quotation Rejection",
-        "description": "Before proceeding, it is recommended to specify the reason for rejecting the quotation. This will help us improve future offers (optional).",
-        "reasons": {
-          "inappropriate_price": "The price is not suitable",
-          "inappropriate_details": "The program details are not suitable",
-          "inappropriate_timing": "The timing is not suitable",
-          "other": "Other reason"
+      
+        "rejection": {
+          "title": "Confirm Quotation Rejection",
+          "description": "Before proceeding, it is recommended to specify the reason for rejecting the quotation. This will help us improve future offers (optional).",
+          "reasons": {
+            "inappropriate_price": "Price is not suitable",
+            "inappropriate_details": "Program details are not suitable",
+            "inappropriate_timing": "Timing is not suitable",
+            "other": "Other reason"
+          },
+          "customMessagePlaceholder": "Please specify the reason...",
+          "confirmButton": "Confirm Rejection",
+          "submitting": "Rejecting...",
+          "validation": {
+            "pleaseSelectReason": "Please select a rejection reason",
+            "pleaseProvideCustomReason": "Please provide the reason",
+            "customReasonMinLength": "The reason must be at least 10 characters",
+            "minimumCharacters": "Minimum {{count}} characters",
+            "reminderSentSuccessfully": "Reminder sent successfully",
+            "api_errors": {
+              "other_error": "An error occurred. Please try again."
+            }
+          }
         },
-        "customMessagePlaceholder": "Please specify the reason...",
-        "confirmButton": "Confirm Rejection",
-        "submitting": "Rejecting...",
-        "validation": {
-          "pleaseSelectReason": "Please select a reason for rejection",
-          "pleaseProvideCustomReason": "Please provide the reason",
-          "customReasonMinLength": "The reason must be at least 10 characters long",
-          "minimumCharacters": "Minimum {{count}} characters",
-          "reminderSentSuccessfully": "Reminder sent successfully",
-          "api_errors": {
-            "other_error": "An error occurred. Please try again."
+        "approval": {
+          "title": "Confirm Quotation Approval",
+          "description": "By approving the quotation, you agree to our terms and conditions. Please ensure that you have read and understood them before proceeding.",
+          "confirmButton": "Confirm Approval",
+          "view_selected_location": "View Selected Location",
+          "submitting": "Approving...",
+          "school_amount": {
+            "placeholder": "Enter school percentage",
+            "label": "School Percentage"
+          },
+          "gathering_location": {
+            "placeholder": "Select gathering location",
+            "label": "Gathering Location"
+          },
+          "validation": {
+            "please_select_gathering_location": "Please select a gathering location",
+            "please_enter_school_amount": "Please enter the school percentage",
+            "invalid_school_amount": "Invalid school percentage"
           }
         }
-      }
+      
+      
     }
   },
   "order_details": {

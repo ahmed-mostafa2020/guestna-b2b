@@ -30,8 +30,8 @@ const ActionsDropdownMenu = ({
   onActionComplete,
   openDetailsModal, // Passed from parent
   openEditModal, // Passed from parent
-  openRejectModal, // Passed from parent - NEW
-  // openApproveModal, // Passed from parent - NEW (optional for future use)
+  openRejectModal, // Passed from parent
+  openApproveModal, // Passed from parent
 }) => {
   const { hasElement } = usePermissions();
   const locale = useLocale();
@@ -58,7 +58,7 @@ const ActionsDropdownMenu = ({
     [hasElement]
   );
 
-  // NEW: Check approval/rejection permissions
+  // Check approval/rejection permissions
   // const canApproveTrip = useMemo(
   //   () =>
   //     hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_APPROVE_TRIP),
@@ -93,7 +93,15 @@ const ActionsDropdownMenu = ({
     [bookingStatus]
   );
 
-  const hasDetails = useMemo(() => [TRIP_STATUS.PENDING,TRIP_STATUS.PENDING_COMPANY_APPROVAL,TRIP_STATUS.ON_HOLD].includes(bookingStatus))
+  const hasDetails = useMemo(
+    () =>
+      [
+        TRIP_STATUS.PENDING,
+        TRIP_STATUS.PENDING_COMPANY_APPROVAL,
+        TRIP_STATUS.ON_HOLD,
+      ].includes(bookingStatus),
+    [bookingStatus]
+  );
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -155,18 +163,18 @@ const ActionsDropdownMenu = ({
     openEditModal(bookingId);
   }, [bookingId, openEditModal, handleClose]);
 
-  // NEW: Handle trip approval
-  // const handleTripApproval = useCallback(() => {
-  //   if (!bookingId || !openApproveModal) {
-  //     console.warn("Approve modal handler not provided");
-  //     handleClose();
-  //     return;
-  //   }
-  //   handleClose();
-  //   openApproveModal(bookingId);
-  // }, [bookingId, openApproveModal, handleClose]);
+  // Handle trip approval
+  const handleTripApproval = useCallback(() => {
+    if (!_id || !openApproveModal) {
+      console.warn("Approve modal handler not provided");
+      handleClose();
+      return;
+    }
+    handleClose();
+    openApproveModal(_id);
+  }, [_id, openApproveModal, handleClose]);
 
-  // NEW: Handle trip rejection
+  // Handle trip rejection
   const handleTripRejection = useCallback(() => {
     if (!_id || !openRejectModal) {
       console.warn("Reject modal handler not provided");
@@ -184,6 +192,7 @@ const ActionsDropdownMenu = ({
       (canRemindGuestna && isEditable) ||
       (canUpdateTrip && isEditable) ||
       hasApproval
+      // (hasApproval && (canApproveTrip || canRejectTrip))
     );
   }, [
     canShowDetails,
@@ -191,6 +200,8 @@ const ActionsDropdownMenu = ({
     canUpdateTrip,
     isEditable,
     hasApproval,
+    // canApproveTrip,
+    // canRejectTrip,
   ]);
 
   // Don't render if no actions available
@@ -264,15 +275,21 @@ const ActionsDropdownMenu = ({
           </MenuItem>
         )}
 
-        {/* UPDATED: Approval/Rejection section with proper permissions */}
+        {/* Approval/Rejection section with proper permissions */}
         {hasApproval && (
           <>
             <Divider />
             { (
               <MenuItem
-                // onClick={handleTripApproval}
+                onClick={handleTripApproval}
                 className="!font-somar"
-                // disabled={!openApproveModal}
+                disabled={!openApproveModal}
+                sx={{
+                  color: "success.main",
+                  "&:hover": {
+                    backgroundColor: "success.lighter",
+                  },
+                }}
               >
                 {t("links.confirm")}
               </MenuItem>
@@ -281,6 +298,7 @@ const ActionsDropdownMenu = ({
               <MenuItem
                 onClick={handleTripRejection}
                 className="!font-somar"
+                disabled={!openRejectModal}
                 sx={{
                   color: "error.main",
                   "&:hover": {

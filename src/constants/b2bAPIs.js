@@ -118,6 +118,7 @@ export const B2B_END_POINTS = {
           GRADES_BY_STAGES: "grades/stages/askTrip", // Get grades for selected academic stages,
           EDIT_CUSTOM_INFO: "profile/askTrips/edit/custom/info", // Get existing custom trip info
           REJECT: "profile/askTrips/custom/reject",
+          APPROVE: "profile/askTrips/accept/askTrip",
         },
         REMIND: "profile/askTrips/reminder/admin",
 

@@ -29,6 +29,11 @@ export const useEditOrderModal = (locale) => {
   const [rejectingOrder, setRejectingOrder] = useState(false);
   const [rejectionError, setRejectionError] = useState(null);
 
+  // Approval modal states
+  const [selectedApproveOrderId, setSelectedApproveOrderId] = useState(null);
+  const [approvingOrder, setApprovingOrder] = useState(false);
+  const [approvalError, setApprovalError] = useState(null);
+
   // Fetch form selection data with caching
   const fetchFormSelectionData = useCallback(async () => {
     if (formSelectionData) {
@@ -65,7 +70,6 @@ export const useEditOrderModal = (locale) => {
       formSelectionInFlightRef.current = false;
     }
   }, [formSelectionData, enqueueSnackbar, headers]);
-  
 
   // Fetch edit order details with improved caching
   const fetchEditOrderDetails = useCallback(
@@ -120,12 +124,10 @@ export const useEditOrderModal = (locale) => {
     },
     [editOrderDetailsCache, enqueueSnackbar, headers]
   );
-  
 
   // Fetch order details for viewing (sets current details without opening modal)
   const fetchOrderDetailsForView = useCallback(
     async (orderId, forceRefresh = false) => {
-   
       return await fetchEditOrderDetails(orderId, forceRefresh);
     },
     [fetchEditOrderDetails]
@@ -245,7 +247,6 @@ export const useEditOrderModal = (locale) => {
       try {
         console.log(`Rejecting order ${orderId}`, rejectionData);
 
-        
         const response = await axios.patch(
           getProxyUrl(
             `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.REJECT}/${orderId}`
@@ -270,8 +271,6 @@ export const useEditOrderModal = (locale) => {
         // Clear the rejected order from cache
         clearOrderFromCache(orderId);
 
-       
-
         return { success: true, data: response.data };
       } catch (error) {
         console.error("Error rejecting order:", error);
@@ -290,6 +289,81 @@ export const useEditOrderModal = (locale) => {
   );
 
   // ==================== END REJECTION FUNCTIONALITY ====================
+
+  // ==================== APPROVAL FUNCTIONALITY ====================
+
+  // Open approval modal
+  const openApproveModal = useCallback((orderId) => {
+    if (!orderId) {
+      console.warn("No orderId provided to openApproveModal");
+      return;
+    }
+    setSelectedApproveOrderId(orderId);
+    setApprovalError(null);
+  }, []);
+
+  // Close approval modal
+  const closeApproveModal = useCallback(() => {
+    setSelectedApproveOrderId(null);
+    setApprovalError(null);
+  }, []);
+
+  // Approve order API call
+  const approveOrder = useCallback(
+    async (orderId, approvalData = {}) => {
+      if (!orderId) {
+        console.warn("No orderId provided to approveOrder");
+        return { success: false, error: "Order ID is required" };
+      }
+
+      setApprovingOrder(true);
+      setApprovalError(null);
+
+      try {
+        console.log(`Approving order ${orderId}`, approvalData);
+
+        const response = await axios.post(
+          getProxyUrl(
+            `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.APPROVE}/${orderId}`
+          ),
+          approvalData,
+          { headers }
+        );
+
+        console.log("Order approved successfully:", response.data);
+
+        // Show success message
+        enqueueSnackbar(
+          response.data?.message || "Order approved successfully",
+          {
+            variant: "success",
+          }
+        );
+
+        // Close approval modal
+        closeApproveModal();
+
+        // Clear the approved order from cache
+        clearOrderFromCache(orderId);
+
+        return { success: true, data: response.data };
+      } catch (error) {
+        console.error("Error approving order:", error);
+        const errorMessage =
+          error.response?.data?.message || "Error approving order";
+        setApprovalError(errorMessage);
+        enqueueSnackbar(errorMessage, {
+          variant: "error",
+        });
+        return { success: false, error: errorMessage };
+      } finally {
+        setApprovingOrder(false);
+      }
+    },
+    [headers, enqueueSnackbar, closeApproveModal]
+  );
+
+  // ==================== END APPROVAL FUNCTIONALITY ====================
 
   // Refresh CustomizedTripsTable after successful order update
   const refreshCustomizedTripsTable = useCallback(async () => {
@@ -388,6 +462,12 @@ export const useEditOrderModal = (locale) => {
     [selectedRejectOrderId]
   );
 
+  // Check if approval modal is open
+  const isApproveModalOpen = useMemo(
+    () => selectedApproveOrderId !== null,
+    [selectedApproveOrderId]
+  );
+
   // Check if data is ready
   const isDataReady = useMemo(() => {
     return (
@@ -447,5 +527,14 @@ export const useEditOrderModal = (locale) => {
     openRejectModal,
     closeRejectModal,
     rejectOrder,
+
+    // Approval functionality
+    selectedApproveOrderId,
+    isApproveModalOpen,
+    approvingOrder,
+    approvalError,
+    openApproveModal,
+    closeApproveModal,
+    approveOrder,
   };
 };

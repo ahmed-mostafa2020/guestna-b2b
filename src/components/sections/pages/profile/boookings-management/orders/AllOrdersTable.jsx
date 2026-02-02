@@ -19,6 +19,7 @@ import CustomizedModal from "@components/common/customizedModal";
 import OrderDetailsModal from "./OrderDetailsModal";
 import CustomNewTripForm from "@components/forms/customNewTrip";
 import RejectOrderForm from "@components/forms/customNewTrip/RejectOrderForm";
+import ApproveOrderForm from "@components/forms/customNewTrip/ApproveOrderForm";
 
 const AllOrdersTable = ({
   tableTitle,
@@ -62,8 +63,16 @@ const AllOrdersTable = ({
     openRejectModal,
     closeRejectModal,
     rejectOrder,
-  } = useEditOrderModal(locale);
 
+    // Approval functionality
+    selectedApproveOrderId,
+    isApproveModalOpen,
+    approvingOrder,
+    approvalError,
+    openApproveModal,
+    closeApproveModal,
+    approveOrder,
+  } = useEditOrderModal(locale);
 
   // Check if user has any order management action permissions
   const hasAnyActionPermission = hasAnyElement([
@@ -106,10 +115,8 @@ const AllOrdersTable = ({
   const handleEditSuccess = useCallback(
     async (result) => {
       try {
-      
         closeEditModal();
         refetch?.();
-      
 
         // Notify parent component if callback provided
         if (onActionComplete) {
@@ -126,10 +133,10 @@ const AllOrdersTable = ({
   const handleRejectSuccess = useCallback(
     async (result) => {
       try {
-        // Table refresh 
+        // Table refresh
         closeRejectModal();
         refetch?.();
-       
+
         // Just notify parent component if callback provided
         if (onActionComplete) {
           onActionComplete("reject", selectedRejectOrderId, result);
@@ -138,7 +145,26 @@ const AllOrdersTable = ({
         console.error("Error after reject success:", error);
       }
     },
-    [onActionComplete, selectedRejectOrderId, refetch]
+    [onActionComplete, selectedRejectOrderId, refetch, closeRejectModal]
+  );
+
+  // Handle successful approval with table refresh
+  const handleApproveSuccess = useCallback(
+    async (result) => {
+      try {
+        // Table refresh
+        closeApproveModal();
+        refetch?.();
+
+        // Just notify parent component if callback provided
+        if (onActionComplete) {
+          onActionComplete("approve", selectedApproveOrderId, result);
+        }
+      } catch (error) {
+        console.error("Error after approve success:", error);
+      }
+    },
+    [onActionComplete, selectedApproveOrderId, refetch, closeApproveModal]
   );
 
   // Handle action completion from ActionsDropdownMenu
@@ -295,6 +321,7 @@ const AllOrdersTable = ({
                             openDetailsModal={openDetailsModal}
                             openEditModal={openEditModal}
                             openRejectModal={openRejectModal}
+                            openApproveModal={openApproveModal}
                           />
                         </td>
                       )}
@@ -428,6 +455,7 @@ const AllOrdersTable = ({
                       openDetailsModal={openDetailsModal}
                       openEditModal={openEditModal}
                       openRejectModal={openRejectModal}
+                      openApproveModal={openApproveModal}
                     />
                   </div>
                 )}
@@ -508,6 +536,27 @@ const AllOrdersTable = ({
             rejectOrder={rejectOrder}
             rejectingOrder={rejectingOrder}
             rejectionError={rejectionError}
+          />
+        )}
+      </CustomizedModal>
+
+      {/* Approve Order Modal */}
+      <CustomizedModal
+        open={isApproveModalOpen}
+        handleClose={closeApproveModal}
+        bgcolor="rgba(0, 0, 0, 0.5)"
+        customizedCloseButton={true}
+        padding={false}
+      >
+        {selectedApproveOrderId && (
+          <ApproveOrderForm
+            orderId={selectedApproveOrderId}
+            orderDetails={currentEditOrderDetails}
+            onClose={closeApproveModal}
+            onSuccess={handleApproveSuccess}
+            approveOrder={approveOrder}
+            approvingOrder={approvingOrder}
+            approvalError={approvalError}
           />
         )}
       </CustomizedModal>
