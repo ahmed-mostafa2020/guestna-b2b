@@ -2191,7 +2191,7 @@
           "fields": {
             "organization": {
               "label": "School Name",
-              "placeholder": "Select school name"
+              "placeholder": "Select school name","single_option_notice": "there is only one school selected automatically"
             },
             "track": {
               "label": "Educational Track",
@@ -2204,7 +2204,8 @@
               "label": "Academic Stage",
               "placeholder": "Select academic stages",
               "helper_text": "Please select the educational track first",
-              "no_common_stages": "There no common stages between selected tracks"
+              "no_common_stages": "There no common stages between selected tracks",
+              "auto_removed_warning": "The following stages will be removed automatically"
             }
           }
         },
