@@ -65,10 +65,19 @@ const ApproveOrderForm = ({
   // Handle location selection from map
   const handleLocationSelect = useCallback(
     (location) => {
-      formik.setFieldValue("gatheringLocation.lat", location.lat);
-      formik.setFieldValue("gatheringLocation.lng", location.lng);
-      formik.setFieldTouched("gatheringLocation.lat", true);
-      formik.setFieldTouched("gatheringLocation.lng", true);
+      // Set both values together as a single object update
+      formik.setFieldValue(
+        "gatheringLocation",
+        {
+          lat: location.lat,
+          lng: location.lng,
+        },
+        true
+      ); // validateOnChange is true
+
+      // Mark both fields as touched
+      formik.setFieldTouched("gatheringLocation.lat", true, false);
+      formik.setFieldTouched("gatheringLocation.lng", true, false);
     },
     [formik]
   );
@@ -80,10 +89,20 @@ const ApproveOrderForm = ({
 
       // Allow numbers, negative sign, and decimal point
       if (value === "" || value === "-" || /^-?\d*\.?\d*$/.test(value)) {
+        const numValue =
+          value === "" || value === "-" ? null : parseFloat(value);
+
+        // Update the entire gatheringLocation object to trigger proper validation
         formik.setFieldValue(
-          "gatheringLocation.lat",
-          value === "" || value === "-" ? null : parseFloat(value)
+          "gatheringLocation",
+          {
+            lat: numValue,
+            lng: formik.values.gatheringLocation.lng,
+          },
+          true
         );
+
+        formik.setFieldTouched("gatheringLocation.lat", true, false);
       }
     },
     [formik]
@@ -96,10 +115,20 @@ const ApproveOrderForm = ({
 
       // Allow numbers, negative sign, and decimal point
       if (value === "" || value === "-" || /^-?\d*\.?\d*$/.test(value)) {
+        const numValue =
+          value === "" || value === "-" ? null : parseFloat(value);
+
+        // Update the entire gatheringLocation object to trigger proper validation
         formik.setFieldValue(
-          "gatheringLocation.lng",
-          value === "" || value === "-" ? null : parseFloat(value)
+          "gatheringLocation",
+          {
+            lat: formik.values.gatheringLocation.lat,
+            lng: numValue,
+          },
+          true
         );
+
+        formik.setFieldTouched("gatheringLocation.lng", true, false);
       }
     },
     [formik]
@@ -129,19 +158,49 @@ const ApproveOrderForm = ({
     }
   }, [approvingOrder, onClose, formik]);
 
-  // Get error message helper
+  // Get error message helper - Enhanced version
   const getErrorMessage = (fieldPath) => {
     const keys = fieldPath.split(".");
     let error = formik.errors;
     let touched = formik.touched;
 
     for (const key of keys) {
-      if (!error || !touched) return null;
+      if (!error) return null;
       error = error[key];
-      touched = touched[key];
+
+      // Only check touched for leaf nodes
+      if (touched) {
+        touched = touched[key];
+      }
     }
 
-    return touched && error ? error : null;
+    // For nested fields, check if parent is touched OR if the field itself is touched
+    const isFieldTouched = keys.reduce((acc, key, index) => {
+      if (index === 0) return formik.touched[key];
+      return acc && acc[key];
+    }, true);
+
+    return isFieldTouched && error ? error : null;
+  };
+
+  // Check if gathering location has any errors
+  const hasGatheringLocationError = () => {
+    const latError = getErrorMessage("gatheringLocation.lat");
+    const lngError = getErrorMessage("gatheringLocation.lng");
+    return latError || lngError;
+  };
+
+  // Get gathering location error message
+  const getGatheringLocationError = () => {
+    const latError = getErrorMessage("gatheringLocation.lat");
+    const lngError = getErrorMessage("gatheringLocation.lng");
+
+    if (latError && lngError) {
+      return t("gathering_location.both_required", {
+        defaultValue: "Both latitude and longitude are required",
+      });
+    }
+    return latError || lngError;
   };
 
   return (
@@ -241,9 +300,20 @@ const ApproveOrderForm = ({
                       : ""
                   }
                   onChange={handleLatitudeChange}
-                  onBlur={formik.handleBlur}
+                  onBlur={(e) => {
+                    formik.handleBlur(e);
+                    formik.setFieldTouched("gatheringLocation.lat", true, true);
+                  }}
                   disabled={approvingOrder}
                   variant="outlined"
+                  error={
+                    formik.touched.gatheringLocation?.lat &&
+                    Boolean(formik.errors.gatheringLocation?.lat)
+                  }
+                  helperText={
+                    formik.touched.gatheringLocation?.lat &&
+                    formik.errors.gatheringLocation?.lat
+                  }
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       borderRadius: "8px",
@@ -273,9 +343,20 @@ const ApproveOrderForm = ({
                       : ""
                   }
                   onChange={handleLongitudeChange}
-                  onBlur={formik.handleBlur}
+                  onBlur={(e) => {
+                    formik.handleBlur(e);
+                    formik.setFieldTouched("gatheringLocation.lng", true, true);
+                  }}
                   disabled={approvingOrder}
                   variant="outlined"
+                  error={
+                    formik.touched.gatheringLocation?.lng &&
+                    Boolean(formik.errors.gatheringLocation?.lng)
+                  }
+                  helperText={
+                    formik.touched.gatheringLocation?.lng &&
+                    formik.errors.gatheringLocation?.lng
+                  }
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       borderRadius: "8px",
@@ -321,8 +402,8 @@ const ApproveOrderForm = ({
           </div>
 
           {/* Selected Location Display */}
-          {formik.values.gatheringLocation.lat &&
-            formik.values.gatheringLocation.lng && (
+          {formik.values.gatheringLocation.lat !== null &&
+            formik.values.gatheringLocation.lng !== null && (
               <Box className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
                 <Typography className="!font-somar text-sm text-green-800">
                   ✓{" "}
@@ -338,14 +419,14 @@ const ApproveOrderForm = ({
               </Box>
             )}
 
-          {/* Location validation error */}
-          {(getErrorMessage("gatheringLocation.lat") ||
-            getErrorMessage("gatheringLocation.lng")) && (
-            <Alert severity="error" sx={{ mt: 2 }}>
-              {getErrorMessage("gatheringLocation.lat") ||
-                getErrorMessage("gatheringLocation.lng")}
-            </Alert>
-          )}
+          {/* Location validation error - Only show when both fields are touched */}
+          {formik.touched.gatheringLocation?.lat &&
+            formik.touched.gatheringLocation?.lng &&
+            hasGatheringLocationError() && (
+              <Alert severity="error" sx={{ mt: 2 }}>
+                {getGatheringLocationError()}
+              </Alert>
+            )}
         </Box>
 
         {/* Action Buttons */}
@@ -385,4 +466,3 @@ const ApproveOrderForm = ({
 };
 
 export default ApproveOrderForm;
-
