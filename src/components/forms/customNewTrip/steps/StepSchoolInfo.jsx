@@ -194,7 +194,6 @@ const getAvailableAcademicStages = (
 // Filter academic stages to keep only valid ones
 const filterValidAcademicStages = (
   currentStages,
-  availableStages,
   trackList,
   selectedTrackId,
   selectedTrackIds
@@ -233,6 +232,7 @@ const SchoolInfoCard = ({
   isRemovable,
   selectedOrganizations,
   fieldPath,
+  cardKey, // Add unique key prop
 }) => {
   const t = useTranslations("forms.customTrip.steps.school_info");
   const t2 = useTranslations();
@@ -244,7 +244,6 @@ const SchoolInfoCard = ({
   const headers = useMemo(() => getHeaders(locale), [locale]);
   const [isExpanded, setIsExpanded] = useState(true);
   const [tracksConvertedWarning, setTracksConvertedWarning] = useState(false);
-  const [stageValidationWarning, setStageValidationWarning] = useState("");
 
   // Use custom hook for tracks data
   const {
@@ -252,6 +251,21 @@ const SchoolInfoCard = ({
     isLoading: isLoadingTracks,
     error: trackError,
   } = useTracks(school.organization, headers);
+
+  // Track previous values using organization ID as stable key instead of index
+  const prevValuesRef = useRef({});
+
+  // Create a stable key based on organization ID
+  const stableKey = school.organization || `temp-${index}`;
+
+  // Initialize ref for this card if it doesn't exist
+  if (!prevValuesRef.current[stableKey]) {
+    prevValuesRef.current[stableKey] = {
+      track: school.track,
+      tracks: school.tracks,
+      academicStages: school.academicStages,
+    };
+  }
 
   // Auto-select organization if only one option exists
   useEffect(() => {
@@ -307,7 +321,12 @@ const SchoolInfoCard = ({
     academicStagesOptions,
   ]);
 
+  // Track the fieldPath in a ref to use it without triggering re-renders
+  const fieldPathRef = useRef(fieldPath);
+  fieldPathRef.current = fieldPath;
+
   // Validate and cleanup academic stages when tracks change
+  // FIXED: Use stable organization-based key to prevent false triggers on card deletion
   useEffect(() => {
     // Don't run if tracks are loading or no tracks data yet
     if (isLoadingTracks || trackList.length === 0) {
@@ -327,44 +346,48 @@ const SchoolInfoCard = ({
       return;
     }
 
+    // Get previous values for this specific card using stable key
+    const prevValues = prevValuesRef.current[stableKey] || {};
+
+    // Check if tracks actually changed (user-initiated change)
+    const tracksChanged = isEditMode
+      ? prevValues.track !== school.track
+      : JSON.stringify(prevValues.tracks) !== JSON.stringify(school.tracks);
+
+    // Only proceed if tracks actually changed
+    if (!tracksChanged) {
+      return;
+    }
+
     // Filter to keep only valid stages
     const validStages = filterValidAcademicStages(
       currentStages,
-      availableAcademicStages,
       trackList,
       school.track,
       school.tracks
     );
 
+    // Update ref for next comparison
+    prevValuesRef.current[stableKey] = {
+      track: school.track,
+      tracks: school.tracks,
+      academicStages: validStages,
+    };
+
     // Only update if there are invalid stages to remove
     if (validStages.length !== currentStages.length) {
-      const removedCount = currentStages.length - validStages.length;
-
-      setFieldValue(`${fieldPath}.academicStages`, validStages);
-
-      // Show temporary warning
-      setStageValidationWarning(
-        t("fields.academicStages.auto_removed_warning", {
-          count: removedCount,
-          defaultValue: `${removedCount} academic stage(s) were automatically removed because they are not available in the selected track(s).`,
-        })
-      );
-
-      // Clear the warning after 5 seconds
-      const timeout = setTimeout(() => setStageValidationWarning(""), 5000);
-      return () => clearTimeout(timeout);
+      setFieldValue(fieldPathRef.current + ".academicStages", validStages);
     }
   }, [
+    // REMOVED fieldPath from dependencies - this was causing the issue!
     isEditMode,
     school.track,
     school.tracks,
     school.academicStages,
     trackList,
     isLoadingTracks,
-    availableAcademicStages,
     setFieldValue,
-    fieldPath,
-    t,
+    stableKey,
   ]);
 
   // Determine loading states
@@ -431,8 +454,16 @@ const SchoolInfoCard = ({
         setFieldValue(`${fieldPath}.tracks`, []);
       }
       setFieldValue(`${fieldPath}.academicStages`, []);
+
+      // Update ref with new organization key
+      const newKey = selectedId || `temp-${index}`;
+      prevValuesRef.current[newKey] = {
+        track: "",
+        tracks: [],
+        academicStages: [],
+      };
     },
-    [organizationOptions, setFieldValue, fieldPath, isEditMode]
+    [organizationOptions, setFieldValue, fieldPath, isEditMode, index]
   );
 
   // Handle track change with dependent academic stages cleanup
@@ -450,12 +481,25 @@ const SchoolInfoCard = ({
         if (selectedId && school.academicStages?.length > 0) {
           const validStages = filterValidAcademicStages(
             school.academicStages,
-            availableAcademicStages,
             trackList,
             selectedId,
             null
           );
           setFieldValue(`${fieldPath}.academicStages`, validStages);
+
+          // Update ref
+          prevValuesRef.current[stableKey] = {
+            track: selectedId,
+            tracks: school.tracks,
+            academicStages: validStages,
+          };
+        } else {
+          // Update ref
+          prevValuesRef.current[stableKey] = {
+            track: selectedId,
+            tracks: school.tracks,
+            academicStages: school.academicStages,
+          };
         }
       } else {
         // Multiple tracks mode
@@ -470,14 +514,34 @@ const SchoolInfoCard = ({
         if (selectedIds.length > 0 && school.academicStages?.length > 0) {
           const validStages = filterValidAcademicStages(
             school.academicStages,
-            availableAcademicStages,
             trackList,
             null,
             selectedIds
           );
           setFieldValue(`${fieldPath}.academicStages`, validStages);
+
+          // Update ref
+          prevValuesRef.current[stableKey] = {
+            track: school.track,
+            tracks: selectedIds,
+            academicStages: validStages,
+          };
         } else if (selectedIds.length === 0) {
           setFieldValue(`${fieldPath}.academicStages`, []);
+
+          // Update ref
+          prevValuesRef.current[stableKey] = {
+            track: school.track,
+            tracks: selectedIds,
+            academicStages: [],
+          };
+        } else {
+          // Update ref
+          prevValuesRef.current[stableKey] = {
+            track: school.track,
+            tracks: selectedIds,
+            academicStages: school.academicStages,
+          };
         }
       }
     },
@@ -487,7 +551,9 @@ const SchoolInfoCard = ({
       fieldPath,
       isEditMode,
       school.academicStages,
-      availableAcademicStages,
+      school.track,
+      school.tracks,
+      stableKey,
     ]
   );
 
@@ -501,8 +567,13 @@ const SchoolInfoCard = ({
         )
         .filter(Boolean);
       setFieldValue(`${fieldPath}.academicStages`, selectedIds);
+
+      // Update ref
+      if (prevValuesRef.current[stableKey]) {
+        prevValuesRef.current[stableKey].academicStages = selectedIds;
+      }
     },
-    [availableAcademicStages, setFieldValue, fieldPath]
+    [availableAcademicStages, setFieldValue, fieldPath, stableKey]
   );
 
   // Determine if fields are disabled
@@ -579,17 +650,6 @@ const SchoolInfoCard = ({
             {isEditMode && tracksConvertedWarning && (
               <Alert severity="info" className="mb-4">
                 {t("fields.track.conversion_notice")}
-              </Alert>
-            )}
-
-            {/* Warning about auto-removed academic stages */}
-            {stageValidationWarning && (
-              <Alert
-                severity="warning"
-                className="mb-4"
-                onClose={() => setStageValidationWarning("")}
-              >
-                {stageValidationWarning}
               </Alert>
             )}
 
@@ -746,6 +806,10 @@ const StepSchoolInfo = ({
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
 
+  // Generate stable keys for each card to prevent re-mounting on deletion
+  const cardKeysRef = useRef([]);
+  const nextKeyRef = useRef(0);
+
   // Get schoolsInfo based on mode
   const schoolsInfoData = useMemo(() => {
     if (isEditMode) {
@@ -753,6 +817,23 @@ const StepSchoolInfo = ({
     }
     return values.schoolsInfo || [];
   }, [values.schoolsInfo, isEditMode]);
+
+  // Ensure we have stable keys for each card
+  useEffect(() => {
+    if (!isEditMode) {
+      const currentLength = schoolsInfoData.length;
+
+      // Add keys for new cards
+      while (cardKeysRef.current.length < currentLength) {
+        cardKeysRef.current.push(`school-card-${nextKeyRef.current++}`);
+      }
+
+      // Remove keys for deleted cards
+      if (cardKeysRef.current.length > currentLength) {
+        cardKeysRef.current = cardKeysRef.current.slice(0, currentLength);
+      }
+    }
+  }, [schoolsInfoData.length, isEditMode]);
 
   // Track selected organizations across all cards
   const selectedOrganizations = useMemo(() => {
@@ -790,6 +871,7 @@ const StepSchoolInfo = ({
         {schoolsInfoData.map((school, index) => (
           <SchoolInfoCard
             key="edit-mode-school"
+            cardKey="edit-mode-school"
             isEditMode={isEditMode}
             index={index}
             school={school}
@@ -822,7 +904,8 @@ const StepSchoolInfo = ({
             {values.schoolsInfo.map((school, index) => (
               <SchoolInfoCard
                 isEditMode={isEditMode}
-                key={index}
+                key={cardKeysRef.current[index] || `school-${index}`}
+                cardKey={cardKeysRef.current[index] || `school-${index}`}
                 index={index}
                 school={school}
                 errors={errors.schoolsInfo?.[index]}
