@@ -87,9 +87,14 @@ const ActionsDropdownMenu = ({
   // Check if order can be accepted or rejected
   const hasApproval = useMemo(
     () =>
-      ![TRIP_STATUS.SCHEDULED, TRIP_STATUS.DONE, TRIP_STATUS.REJECTED].includes(
+      [TRIP_STATUS.ON_HOLD].includes(
         bookingStatus
       ),
+    [bookingStatus]
+  );
+
+  const hasRejection = useMemo(
+    () => ![TRIP_STATUS.DONE, TRIP_STATUS.REJECTED , TRIP_STATUS.ENDED , TRIP_STATUS.CANCELLED].includes(bookingStatus),
     [bookingStatus]
   );
 
@@ -276,10 +281,10 @@ const ActionsDropdownMenu = ({
         )}
 
         {/* Approval/Rejection section with proper permissions */}
-        {hasApproval && (
+       
           <>
             <Divider />
-            { (
+             {hasApproval && (
               <MenuItem
                 onClick={handleTripApproval}
                 className="!font-somar"
@@ -293,8 +298,8 @@ const ActionsDropdownMenu = ({
               >
                 {t("links.confirm")}
               </MenuItem>
-            )}
-            { (
+           ) }
+            {hasRejection && (
               <MenuItem
                 onClick={handleTripRejection}
                 className="!font-somar"
@@ -310,7 +315,7 @@ const ActionsDropdownMenu = ({
               </MenuItem>
             )}
           </>
-        )}
+        
       </Menu>
     </div>
   );

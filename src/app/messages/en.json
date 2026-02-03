@@ -2365,7 +2365,20 @@
           },
           "gathering_location": {
             "placeholder": "Select gathering location",
-            "label": "Gathering Location"
+            "label": "Gathering Location",
+            "location_selected": "Location selected",
+            "text_helper": "Click on the map to select the gathering point. The coordinates will be automatically filled in the fields above.",
+            "manual_coordinates_helper":"You can either enter coordinates manually or select a location on the map below",
+            "manual_coordinates_label": "Enter Coordinates Manually (Optional)",
+
+            "lat": {
+              "label": "Latitude",
+              "placeholder": "enter  latitude of gathering location"
+            },
+            "lng": {
+              "label": "Longitude",
+              "placeholder": "enter  longitude of gathering location"
+            }
           },
           "validation": {
             "latitudeRequired": "Latitude is required",

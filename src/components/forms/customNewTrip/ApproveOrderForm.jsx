@@ -167,116 +167,132 @@ const ApproveOrderForm = ({
           </Alert>
         )}
 
-        {/* Manual Coordinate Input Section */}
+        {/* School Amount Input */}
         <Box className="mb-6">
-          <Typography className="!font-somar text-base !font-semibold mb-3">
-            {t("manualCoordinatesLabel", {
-              defaultValue: "Enter Coordinates Manually (Optional)",
+          <label className="block mb-2 text-sm text-textDark !font-somar !font-semibold">
+            {t("school_amount.label", { defaultValue: "School Amount" })}
+            <span className="text-error ml-1">*</span>
+          </label>
+          <TextInputGroup
+            fullWidth
+            type="number"
+            name="schoolAmount"
+            placeholder={t("school_amount.placeholder", {
+              defaultValue: "Enter school amount",
             })}
-          </Typography>
-          <Typography className="!font-somar text-sm text-gray-500 mb-3">
-            {t("manualCoordinatesHelper", {
-              defaultValue:
-                "You can either enter coordinates manually or select a location on the map below",
-            })}
-          </Typography>
-
-          <Box className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Latitude Input */}
-            <Box>
-              <label className="block mb-2 text-sm text-textDark !font-somar !font-medium">
-                {t("latitudeLabel", { defaultValue: "Latitude" })}
-                <span className="text-error ml-1">*</span>
-              </label>
-              <TextInputGroup
-                fullWidth
-                type="text"
-                name="gatheringLocation.lat"
-                placeholder={t("latitudePlaceholder", {
-                  defaultValue: "e.g., 30.0444",
-                })}
-                value={
-                  formik.values.gatheringLocation.lat !== null
-                    ? formik.values.gatheringLocation.lat
-                    : ""
-                }
-                onChange={handleLatitudeChange}
-                onBlur={formik.handleBlur}
-                disabled={approvingOrder}
-                variant="outlined"
-                error={Boolean(getErrorMessage("gatheringLocation.lat"))}
-                helperText={
-                  getErrorMessage("gatheringLocation.lat") ||
-                  t("latitudeHelper", {
-                    defaultValue: "Range: -90 to 90",
-                  })
-                }
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "8px",
-                  },
-                }}
-              />
-            </Box>
-
-            {/* Longitude Input */}
-            <Box>
-              <label className="block mb-2 text-sm text-textDark !font-somar !font-medium">
-                {t("longitudeLabel", { defaultValue: "Longitude" })}
-                <span className="text-error ml-1">*</span>
-              </label>
-              <TextInputGroup
-                fullWidth
-                type="text"
-                name="gatheringLocation.lng"
-                placeholder={t("longitudePlaceholder", {
-                  defaultValue: "e.g., 31.2357",
-                })}
-                value={
-                  formik.values.gatheringLocation.lng !== null
-                    ? formik.values.gatheringLocation.lng
-                    : ""
-                }
-                onChange={handleLongitudeChange}
-                onBlur={formik.handleBlur}
-                disabled={approvingOrder}
-                variant="outlined"
-                error={Boolean(getErrorMessage("gatheringLocation.lng"))}
-                helperText={
-                  getErrorMessage("gatheringLocation.lng") ||
-                  t("longitudeHelper", {
-                    defaultValue: "Range: -180 to 180",
-                  })
-                }
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "8px",
-                  },
-                }}
-              />
-            </Box>
-          </Box>
+            value={formik.values.schoolAmount}
+            onChange={handleSchoolAmountChange}
+            onBlur={formik.handleBlur}
+            disabled={approvingOrder}
+            variant="outlined"
+            error={
+              formik.touched.schoolAmount && Boolean(formik.errors.schoolAmount)
+            }
+            helperText={
+              (formik.touched.schoolAmount && formik.errors.schoolAmount) ||
+              t("schoolAmountHelper", {
+                defaultValue: "Enter the amount to be paid by the school",
+              })
+            }
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "8px",
+              },
+            }}
+          />
         </Box>
 
-        {/* Divider */}
-        <Box className="flex items-center gap-4 mb-6">
-          <Box className="flex-1 h-px bg-gray-300"></Box>
-          <Typography className="!font-somar text-sm text-gray-500 uppercase">
-            {t("orDivider", { defaultValue: "OR" })}
-          </Typography>
-          <Box className="flex-1 h-px bg-gray-300"></Box>
-        </Box>
+        {/* Manual Coordinate Input Section */}
 
         {/* Map Section */}
         <Box className="mb-6">
+          <Box className="mb-6">
+            <Typography className="!font-somar text-base !font-semibold mb-3">
+              {t("gathering_location.manual_coordinates_label", {
+                defaultValue: "Enter Coordinates Manually (Optional)",
+              })}
+            </Typography>
+            <Typography className="!font-somar text-sm text-gray-500 mb-3">
+              {t("gathering_location.manual_coordinates_helper", {
+                defaultValue:
+                  "You can either enter coordinates manually or select a location on the map below",
+              })}
+            </Typography>
+
+            <Box className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Latitude Input */}
+              <Box>
+                <label className="block mb-2 text-sm text-textDark !font-somar !font-medium">
+                  {t("gathering_location.lat.label", {
+                    defaultValue: "Latitude",
+                  })}
+                  <span className="text-error ml-1">*</span>
+                </label>
+                <TextInputGroup
+                  fullWidth
+                  type="text"
+                  name="gatheringLocation.lat"
+                  placeholder={t("gathering_location.lat.placeholder", {
+                    defaultValue: "e.g., 30.0444",
+                  })}
+                  value={
+                    formik.values.gatheringLocation.lat !== null
+                      ? formik.values.gatheringLocation.lat
+                      : ""
+                  }
+                  onChange={handleLatitudeChange}
+                  onBlur={formik.handleBlur}
+                  disabled={approvingOrder}
+                  variant="outlined"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "8px",
+                    },
+                  }}
+                />
+              </Box>
+
+              {/* Longitude Input */}
+              <Box>
+                <label className="block mb-2 text-sm text-textDark !font-somar !font-medium">
+                  {t("gathering_location.lng.label", {
+                    defaultValue: "Longitude",
+                  })}
+                  <span className="text-error ml-1">*</span>
+                </label>
+                <TextInputGroup
+                  fullWidth
+                  type="text"
+                  name="gatheringLocation.lng"
+                  placeholder={t("gathering_location.lng.placeholder", {
+                    defaultValue: "e.g., 31.2357",
+                  })}
+                  value={
+                    formik.values.gatheringLocation.lng !== null
+                      ? formik.values.gatheringLocation.lng
+                      : ""
+                  }
+                  onChange={handleLongitudeChange}
+                  onBlur={formik.handleBlur}
+                  disabled={approvingOrder}
+                  variant="outlined"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "8px",
+                    },
+                  }}
+                />
+              </Box>
+            </Box>
+          </Box>
           <Typography className="!font-somar text-base !font-semibold mb-2">
-            {t("gatheringLocationLabel", {
+            {t("gathering_location.label", {
               defaultValue: "Select Gathering Location on Map",
             })}
             <span className="text-error ml-1">*</span>
           </Typography>
           <Typography className="!font-somar text-sm text-gray-500 mb-3">
-            {t("gatheringLocationHelper", {
+            {t("gathering_location.text_helper", {
               defaultValue:
                 "Click on the map to select the gathering point. The coordinates will be automatically filled in the fields above.",
             })}
@@ -310,7 +326,9 @@ const ApproveOrderForm = ({
               <Box className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
                 <Typography className="!font-somar text-sm text-green-800">
                   ✓{" "}
-                  {t("locationSelected", { defaultValue: "Location Selected" })}
+                  {t("gathering_location.location_selected", {
+                    defaultValue: "Location Selected",
+                  })}
                   :{" "}
                   <span className="font-mono">
                     {formik.values.gatheringLocation.lat.toFixed(6)},{" "}
@@ -328,48 +346,6 @@ const ApproveOrderForm = ({
                 getErrorMessage("gatheringLocation.lng")}
             </Alert>
           )}
-        </Box>
-
-        {/* School Amount Input */}
-        <Box className="mb-6">
-          <label className="block mb-2 text-sm text-textDark !font-somar !font-semibold">
-            {t("schoolAmountLabel", { defaultValue: "School Amount" })}
-            <span className="text-error ml-1">*</span>
-          </label>
-          <TextInputGroup
-            fullWidth
-            type="text"
-            name="schoolAmount"
-            placeholder={t("schoolAmountPlaceholder", {
-              defaultValue: "Enter school amount",
-            })}
-            value={formik.values.schoolAmount}
-            onChange={handleSchoolAmountChange}
-            onBlur={formik.handleBlur}
-            disabled={approvingOrder}
-            variant="outlined"
-            error={
-              formik.touched.schoolAmount && Boolean(formik.errors.schoolAmount)
-            }
-            helperText={
-              (formik.touched.schoolAmount && formik.errors.schoolAmount) ||
-              t("schoolAmountHelper", {
-                defaultValue: "Enter the amount to be paid by the school",
-              })
-            }
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <span className="text-gray-500 font-semibold">EGP</span>
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "8px",
-              },
-            }}
-          />
         </Box>
 
         {/* Action Buttons */}
