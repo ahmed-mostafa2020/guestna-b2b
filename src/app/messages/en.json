@@ -2357,6 +2357,7 @@
         "approval": {
           "title": "Confirm Quotation Approval",
           "description": "By approving the quotation, you agree to our terms and conditions. Please ensure that you have read and understood them before proceeding.",
+
           "confirmButton": "Confirm Approval",
           "view_selected_location": "View Selected Location",
           "submitting": "Approving...",
@@ -2368,6 +2369,7 @@
             "placeholder": "Select gathering location",
             "label": "Gathering Location",
             "location_selected": "Location selected",
+            "both_required":"lat and lng are required",
             "text_helper": "Click on the map to select the gathering point. The coordinates will be automatically filled in the fields above.",
             "manual_coordinates_helper":"You can either enter coordinates manually or select a location on the map below",
             "manual_coordinates_label": "Enter Coordinates Manually (Optional)",
