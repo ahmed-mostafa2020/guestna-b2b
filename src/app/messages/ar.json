@@ -2343,6 +2343,7 @@
         "customMessagePlaceholder": "يرجى تحديد السبب...",
         "confirmButton": "تأكيد الرفض",
         "submitting": "جاري الرفض...",
+        "order_rejected_successfully":"تم الرفض بنجاح",
         "validation": {
           "pleaseSelectReason": "يرجى اختيار سبب الرفض",
           "pleaseProvideCustomReason": "يرجى كتابة السبب",
@@ -2360,6 +2361,7 @@
         "confirmButton": "تأكيد القبول",
         "view_selected_location": "مشاهدة الموقع المحدد",
         "submitting": "جاري القبول...",
+        "order_approved_successfully":"تمت الموافقة بنجاح",
         "school_amount": {
           "placeholder": "ادخل نسبة المدرسة",
           "label": "نسبة المدرسة"

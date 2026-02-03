@@ -6,9 +6,11 @@ import getProxyUrl from "@utils/getProxyUrl";
 import { getHeaders } from "@utils/getHeaders";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "../constants/constantValues";
+import { useTranslations } from "next-intl";
 
 export const useEditOrderModal = (locale) => {
   const { enqueueSnackbar } = useSnackbar();
+  const t = useTranslations()
   const queryClient = useQueryClient();
   const headers = useMemo(() => getHeaders(locale), [locale]);
 
@@ -259,7 +261,8 @@ export const useEditOrderModal = (locale) => {
 
         // Show success message
         enqueueSnackbar(
-          response.data?.message || "Order rejected successfully",
+          t("forms.customTrip.rejection.order_rejected_successfully") ||
+            "Order rejected successfully",
           {
             variant: "success",
           }
@@ -334,7 +337,8 @@ export const useEditOrderModal = (locale) => {
 
         // Show success message
         enqueueSnackbar(
-          response.data?.message || "Order approved successfully",
+          t("forms.customTrip.approval.order_approved_successfully") ||
+            "Order approved successfully",
           {
             variant: "success",
           }

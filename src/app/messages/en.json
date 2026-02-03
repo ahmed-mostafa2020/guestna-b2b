@@ -2343,6 +2343,7 @@
           "customMessagePlaceholder": "Please specify the reason...",
           "confirmButton": "Confirm Rejection",
           "submitting": "Rejecting...",
+          "order_rejected_successfully":"Order rejected successfully",
           "validation": {
             "pleaseSelectReason": "Please select a rejection reason",
             "pleaseProvideCustomReason": "Please provide the reason",
@@ -2361,6 +2362,7 @@
           "confirmButton": "Confirm Approval",
           "view_selected_location": "View Selected Location",
           "submitting": "Approving...",
+          "order_approved_successfully":"Order approved successfully",
           "school_amount": {
             "placeholder": "Enter school percentage",
             "label": "School Percentage"
@@ -2370,6 +2372,7 @@
             "label": "Gathering Location",
             "location_selected": "Location selected",
             "both_required":"lat and lng are required",
+            
             "text_helper": "Click on the map to select the gathering point. The coordinates will be automatically filled in the fields above.",
             "manual_coordinates_helper":"You can either enter coordinates manually or select a location on the map below",
             "manual_coordinates_label": "Enter Coordinates Manually (Optional)",
