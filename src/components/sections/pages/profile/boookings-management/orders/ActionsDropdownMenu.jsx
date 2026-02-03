@@ -25,6 +25,7 @@ import Link from "next/link";
 
 const ActionsDropdownMenu = ({
   bookingId,
+  bookingType,
   _id,
   bookingStatus,
   onActionComplete,
@@ -71,6 +72,10 @@ const ActionsDropdownMenu = ({
   //   [hasElement]
   // );
 
+  const isCustomType = useMemo(
+    () => bookingType === "CUSTOM",
+    [bookingType]
+  )
   // Check if booking is editable (not done)
   const isEditable = useMemo(
     () =>
@@ -80,21 +85,26 @@ const ActionsDropdownMenu = ({
         TRIP_STATUS.CANCELLED,
         TRIP_STATUS.REJECTED,
         TRIP_STATUS.ENDED,
-      ].includes(bookingStatus),
+      ].includes(bookingStatus) && isCustomType,
     [bookingStatus]
   );
 
   // Check if order can be accepted or rejected
   const hasApproval = useMemo(
-    () =>
-      [TRIP_STATUS.ON_HOLD].includes(
-        bookingStatus
-      ),
+    () => [TRIP_STATUS.ON_HOLD].includes(bookingStatus),
     [bookingStatus]
   );
 
   const hasRejection = useMemo(
-    () => ![TRIP_STATUS.DONE, TRIP_STATUS.REJECTED , TRIP_STATUS.ENDED , TRIP_STATUS.CANCELLED].includes(bookingStatus),
+    () =>
+      ![
+        TRIP_STATUS.DONE,
+        TRIP_STATUS.REJECTED,
+        TRIP_STATUS.ENDED,
+        TRIP_STATUS.SCHEDULED,
+        TRIP_STATUS.CANCELLED,
+        TRIP_STATUS.CANCLED,
+      ].includes(bookingStatus),
     [bookingStatus]
   );
 
@@ -104,7 +114,7 @@ const ActionsDropdownMenu = ({
         TRIP_STATUS.PENDING,
         TRIP_STATUS.PENDING_COMPANY_APPROVAL,
         TRIP_STATUS.ON_HOLD,
-      ].includes(bookingStatus),
+      ].includes(bookingStatus) && isCustomType,
     [bookingStatus]
   );
 
@@ -281,41 +291,40 @@ const ActionsDropdownMenu = ({
         )}
 
         {/* Approval/Rejection section with proper permissions */}
-       
-          <>
-            <Divider />
-             {hasApproval && (
-              <MenuItem
-                onClick={handleTripApproval}
-                className="!font-somar"
-                disabled={!openApproveModal}
-                sx={{
-                  color: "success.main",
-                  "&:hover": {
-                    backgroundColor: "success.lighter",
-                  },
-                }}
-              >
-                {t("links.confirm")}
-              </MenuItem>
-           ) }
-            {hasRejection && (
-              <MenuItem
-                onClick={handleTripRejection}
-                className="!font-somar"
-                disabled={!openRejectModal}
-                sx={{
-                  color: "error.main",
-                  "&:hover": {
-                    backgroundColor: "error.lighter",
-                  },
-                }}
-              >
-                {t("links.reject")}
-              </MenuItem>
-            )}
-          </>
-        
+
+        <>
+          <Divider />
+          {hasApproval && (
+            <MenuItem
+              onClick={handleTripApproval}
+              className="!font-somar"
+              disabled={!openApproveModal}
+              sx={{
+                color: "success.main",
+                "&:hover": {
+                  backgroundColor: "success.lighter",
+                },
+              }}
+            >
+              {t("links.confirm")}
+            </MenuItem>
+          )}
+          {hasRejection && (
+            <MenuItem
+              onClick={handleTripRejection}
+              className="!font-somar"
+              disabled={!openRejectModal}
+              sx={{
+                color: "error.main",
+                "&:hover": {
+                  backgroundColor: "error.lighter",
+                },
+              }}
+            >
+              {t("links.reject")}
+            </MenuItem>
+          )}
+        </>
       </Menu>
     </div>
   );
