@@ -85,6 +85,7 @@ const ActionsDropdownMenu = ({
         TRIP_STATUS.CANCELLED,
         TRIP_STATUS.REJECTED,
         TRIP_STATUS.ENDED,
+        TRIP_STATUS.SCHEDULED,
       ].includes(bookingStatus) && isCustomType,
     [bookingStatus]
   );
