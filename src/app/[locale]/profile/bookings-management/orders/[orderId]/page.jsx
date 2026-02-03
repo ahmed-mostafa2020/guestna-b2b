@@ -105,11 +105,6 @@ const OrderDetailsPage = ({ params }) => {
   // Handle edit button click - pass existing data to avoid refetching
   const handleEditClick = async () => {
     if (orderId && currentEditOrderDetails) {
-      console.log("Opening modal with existing data:", {
-        orderId,
-        hasOrderData: !!currentEditOrderDetails,
-        hasFormData: !!formSelectionData,
-      });
 
       // Pass the existing order data to the modal
       await openEditModal(orderId, currentEditOrderDetails);
