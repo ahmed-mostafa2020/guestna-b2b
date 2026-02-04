@@ -143,6 +143,7 @@ const ApproveOrderForm = ({
 
   /* ---------------- render ---------------- */
 
+
   return (
     <Box className="bg-white rounded-2xl max-w-[700px] w-full mx-auto p-6">
       <form onSubmit={handleSubmit}>
@@ -166,7 +167,7 @@ const ApproveOrderForm = ({
         )}
 
         {/* School Amount */}
-        <Box className="mb-6">
+        <Box className="my-6">
           <label className="block mb-2 text-sm text-textDark !font-somar !font-semibold">
             {t("school_amount.label", { defaultValue: "School Amount" })}{" "}
             <span className="text-error ml-1">*</span>
@@ -185,19 +186,18 @@ const ApproveOrderForm = ({
             disabled={approvingOrder}
             errors={errors.schoolAmount}
             touched={touched.schoolAmount}
-          
           />
         </Box>
 
         {/* Manual Coordinates */}
-        <Box className="mb-6">
-          <Typography className="!font-somar text-base !font-semibold mb-2">
+        <Box className="my-2">
+          <Typography className="!font-somar !text-base !font-semibold !mb-2">
             {t("gathering_location.manual_coordinates_label", {
               defaultValue: "Enter Coordinates Manually (Optional)",
             })}
           </Typography>
 
-          <Typography className="!font-somar text-sm text-textLight mb-4">
+          <Typography className="!font-somar !text-sm text-textLight mb-4">
             {t("gathering_location.manual_coordinates_helper", {
               defaultValue:
                 "You can either enter coordinates manually or select a location on the map below",
@@ -207,7 +207,7 @@ const ApproveOrderForm = ({
           <Box className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Latitude */}
             <Box>
-              <label className="block mb-2 text-sm text-textDark !font-somar !font-medium">
+              <label className="block mb-2 !text-sm text-textDark !font-somar !font-medium">
                 {t("gathering_location.lat.label", {
                   defaultValue: "Latitude",
                 })}
@@ -228,13 +228,13 @@ const ApproveOrderForm = ({
                 }}
                 disabled={approvingOrder}
                 errors={latError}
-                touched={touched.gatheringLocation.lat}
+                touched={touched.gatheringLocation?.lat}
               />
             </Box>
 
             {/* Longitude */}
             <Box>
-              <label className="block mb-2 text-sm text-textDark !font-somar !font-medium">
+              <label className="block mb-2 !text-sm text-textDark !font-somar !font-medium">
                 {t("gathering_location.lng.label", {
                   defaultValue: "Longitude",
                 })}
@@ -255,9 +255,7 @@ const ApproveOrderForm = ({
                 }}
                 disabled={approvingOrder}
                 errors={lngError}
-                touched={touched.gatheringLocation.lng}
-               
-               
+                touched={touched.gatheringLocation?.lng}
               />
             </Box>
           </Box>
@@ -265,14 +263,14 @@ const ApproveOrderForm = ({
 
         {/* Map Section */}
         <Box className="mb-6">
-          <Typography className="!font-somar text-base !font-semibold mb-2">
+          <Typography className="!font-somar !text-base !font-semibold !mb-2">
             {t("gathering_location.label", {
               defaultValue: "Select Gathering Location on Map",
             })}
             <span className="text-error ml-1">*</span>
           </Typography>
 
-          <Typography className="!font-somar text-sm text-gray-500 mb-3">
+          <Typography className="!font-somar !text-sm text-textLight !mb-3">
             {t("gathering_location.text_helper", {
               defaultValue:
                 "Click on the map to select the gathering point. The coordinates will be automatically filled in the fields above.",
@@ -341,19 +339,13 @@ const ApproveOrderForm = ({
         {/* Actions */}
         <Box className="flex gap-3 mt-6">
           <Button
-            type="button"
-            variant="outlined"
-            className="!font-somar !border-mainColor px-8 py-3 !border-2 !text-mainColor w-full rounded-lg hover:!border-linksHover hover:!text-linksHover hover:!bg-white"
-            onClick={handleCancel}
-            disabled={approvingOrder}
-            fullWidth
-          >
-            {t2("links.cancel")}
-          </Button>
-
-          <Button
             type="submit"
-            disabled={approvingOrder || !isValid || !dirty ||errors}
+            disabled={
+              approvingOrder ||
+              !isValid ||
+              !dirty ||
+              Object.keys(errors).length > 0
+            }
             className="!bg-mainColor px-8 py-3 !font-somar !text-white w-full rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:!bg-linksHover"
             fullWidth
           >
@@ -367,6 +359,16 @@ const ApproveOrderForm = ({
             ) : (
               t2("links.confirm", { defaultValue: "Approve" })
             )}
+          </Button>
+          <Button
+            type="button"
+            variant="outlined"
+            className="!font-somar !border-mainColor px-8 py-3 !border-2 !text-mainColor w-full rounded-lg hover:!border-linksHover hover:!text-linksHover hover:!bg-white"
+            onClick={handleCancel}
+            disabled={approvingOrder}
+            fullWidth
+          >
+            {t2("links.cancel")}
           </Button>
         </Box>
       </form>
