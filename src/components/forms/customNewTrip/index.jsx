@@ -7,7 +7,14 @@ import { memo, useState, useRef, useMemo, useEffect } from "react";
 import { Formik } from "formik";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { CircularProgress, Stepper, Step, StepLabel, Box } from "@mui/material";
+import {
+  CircularProgress,
+  Stepper,
+  Step,
+  StepLabel,
+  Box,
+  Alert,
+} from "@mui/material";
 
 import {
   createCustomNewTripSchema,
@@ -24,16 +31,154 @@ import StepTripDate from "./steps/StepTripDate";
 import StepPricing from "./steps/StepPricing";
 import StepAdditionalInfo from "./steps/StepAdditionalInfo";
 
+// ============================================================================
+// Deep Validation Helper Functions
+// ============================================================================
+
+/**
+ * Get all error paths from nested error object (up to 3 levels deep)
+ */
+const getDeepErrorPaths = (errors, prefix = "", depth = 0) => {
+  if (depth >= 3 || !errors || typeof errors !== "object") {
+    return [];
+  }
+
+  const errorPaths = [];
+
+  Object.keys(errors).forEach((key) => {
+    const currentPath = prefix ? `${prefix}.${key}` : key;
+    const value = errors[key];
+
+    if (typeof value === "string") {
+      errorPaths.push(currentPath);
+    } else if (Array.isArray(value)) {
+      value.forEach((item, index) => {
+        if (typeof item === "object" && item !== null) {
+          const arrayPath = `${currentPath}[${index}]`;
+          errorPaths.push(...getDeepErrorPaths(item, arrayPath, depth + 1));
+        }
+      });
+    } else if (typeof value === "object" && value !== null) {
+      errorPaths.push(...getDeepErrorPaths(value, currentPath, depth + 1));
+    }
+  });
+
+  return errorPaths;
+};
+
+/**
+ * Get human-readable field label from path
+ */
+const getFieldLabel = (path, t) => {
+  const translations = {
+    schoolsInfo: t("steps.school_info.title"),
+    organization: t("steps.school_info.fields.organization.label"),
+    track: t("steps.school_info.fields.track.label"),
+    tracks: t("steps.school_info.fields.track.label"),
+    academicStages: t("steps.school_info.fields.academicStages.label"),
+    category: t("steps.trip_info.fields.trip_category.label"),
+    supCategory: t("steps.trip_info.fields.trip_supCategory.label"),
+    tripType: t("steps.trip_info.fields.trip_type.label"),
+    city: t("steps.trip_info.fields.city.label"),
+    services: t("steps.trip_info.fields.services.label"),
+    name: t("steps.trip_info.fields.name.en.label"),
+    "name.en": t("steps.trip_info.fields.name.en.label"),
+    "name.ar": t("steps.trip_info.fields.name.ar.label"),
+    day: t("steps.trip_date.fields.start_date.label"),
+    endDay: t("steps.trip_date.fields.end_date.label"),
+    fromHour: t("steps.trip_date.fields.from_hour.label"),
+    toHour: t("steps.trip_date.fields.to_hour.label"),
+    priceRange: t("steps.pricing.fields.price.label"),
+    "priceRange.min": t("steps.pricing.fields.price.min"),
+    "priceRange.max": t("steps.pricing.fields.price.max"),
+    availableSeats: t("steps.pricing.fields.avaliable_seats.label"),
+    specialRequirements: t(
+      "steps.additional_info.fields.specialRequirements.label"
+    ),
+    file: t("steps.additional_info.fields.file.label"),
+  };
+
+  const cleanPath = path.replace(/\[\d+\]/g, "");
+
+  if (translations[cleanPath]) {
+    return translations[cleanPath];
+  }
+
+  const pathParts = cleanPath.split(".");
+  for (let i = pathParts.length; i > 0; i--) {
+    const partialPath = pathParts.slice(0, i).join(".");
+    if (translations[partialPath]) {
+      return translations[partialPath];
+    }
+  }
+
+  const lastPart = pathParts[pathParts.length - 1];
+  return lastPart.charAt(0).toUpperCase() + lastPart.slice(1);
+};
+
+/**
+ * Format error paths into user-friendly messages
+ */
+const formatErrorMessages = (errorPaths, t) => {
+  return errorPaths.map((path) => {
+    const label = getFieldLabel(path, t);
+
+    const arrayMatch = path.match(/\[(\d+)\]/);
+    if (arrayMatch) {
+      const index = parseInt(arrayMatch[1]) + 1;
+      return `${t("steps.school_info.school_card", { count: index })} - ${label}`;
+    }
+
+    return label;
+  });
+};
+
+/**
+ * Deep touch all fields in an object (up to 3 levels)
+ */
+const deepTouchFields = (obj, depth = 0) => {
+  if (depth >= 3 || !obj || typeof obj !== "object") {
+    return true;
+  }
+
+  const touched = {};
+
+  Object.keys(obj).forEach((key) => {
+    const value = obj[key];
+
+    if (Array.isArray(value)) {
+      touched[key] = value.map((item) => {
+        if (typeof item === "object" && item !== null) {
+          return deepTouchFields(item, depth + 1);
+        }
+        return true;
+      });
+    } else if (
+      typeof value === "object" &&
+      value !== null &&
+      !(value instanceof File)
+    ) {
+      touched[key] = deepTouchFields(value, depth + 1);
+    } else {
+      touched[key] = true;
+    }
+  });
+
+  return touched;
+};
+
 const CustomNewTripForm = ({
   formSelectionData,
   onClose,
   onSuccess,
-  mode = "create", // 'create' or 'edit'
-  editData = null, // Existing order data for edit mode
-  orderId = null, // Order ID for edit mode
+  mode = "create",
+  editData = null,
+  orderId = null,
 }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [formErrors, setFormErrors] = useState([]);
+  const [showValidationErrors, setShowValidationErrors] = useState(false);
+  const [attemptedNext, setAttemptedNext] = useState(false);
 
   const { selectedIds, organizations, allSelected } = useSelector(
     (state) => state.selectedOrganizations
@@ -49,7 +194,6 @@ const CustomNewTripForm = ({
 
   const isEditMode = mode === "edit";
 
-  // Validation for edit mode
   useEffect(() => {
     if (isEditMode && !orderId) {
       console.error("Edit mode requires orderId");
@@ -59,7 +203,6 @@ const CustomNewTripForm = ({
     }
   }, [isEditMode, orderId, editData]);
 
-  // Keep full objects for _id lookup
   const categoryData = formSelectionData?.categories || [];
   const tripTypeData = [
     {
@@ -80,14 +223,11 @@ const CustomNewTripForm = ({
   const servicesData = formSelectionData?.services || [];
   const supCategoryData = formSelectionData?.supCategory || [];
 
-  // Use full data objects for dropdowns (id/name pair)
   const organizationsOptions = useMemo(() => {
-    // In edit mode, use organizations from editData if available
     if (isEditMode && editData?.organizations) {
       return editData.organizations;
     }
 
-    // In create mode, use selected organizations
     if (allSelected) {
       return organizations;
     }
@@ -116,78 +256,47 @@ const CustomNewTripForm = ({
     t("steps.additional_info.step_title"),
   ];
 
-  // Helper function to safely extract _id from object or return value
   const extractId = (value) => {
     if (!value) return "";
     return typeof value === "object" && value._id ? value._id : value;
   };
 
-  // Helper function to extract array of IDs
   const extractIds = (array) => {
     if (!Array.isArray(array)) return [];
     return array.map((item) => extractId(item)).filter(Boolean);
   };
 
-  // Transform edit data to form initial values
   const getInitialValues = useMemo(() => {
     if (isEditMode && editData) {
-      // Extract price range from editData
       const priceRange = {
         min: editData.priceRange?.min ?? editData.minPrice ?? 0,
         max: editData.priceRange?.max ?? editData.maxPrice ?? 100,
       };
 
-      // Helper to get track from editData (handles both track and tracks)
       const getTrackFromEditData = () => {
-        // Priority 1: Check schoolsInfo.track
         if (editData.schoolsInfo?.track) {
-          console.log("Edit mode: Using schoolsInfo.track");
           return extractId(editData.schoolsInfo.track);
         }
-
-        // Priority 2: Check top-level track
         if (editData.track) {
-          console.log("Edit mode: Using editData.track");
           return extractId(editData.track);
         }
-
-        // Priority 3: Check schoolsInfo.tracks array (convert to single)
         if (
           editData.schoolsInfo?.tracks &&
           Array.isArray(editData.schoolsInfo.tracks)
         ) {
           const tracks = editData.schoolsInfo.tracks;
-          if (tracks.length > 1) {
-            console.warn(
-              `Edit mode: Converting ${tracks.length} tracks to single track. Using first track only.`
-            );
-          } else if (tracks.length === 1) {
-            console.log("Edit mode: Converting tracks array to single track");
-          }
           return tracks.length > 0 ? extractId(tracks[0]) : "";
         }
-
-        // Priority 4: Check top-level tracks array
         if (editData.tracks && Array.isArray(editData.tracks)) {
           const tracks = editData.tracks;
-          if (tracks.length > 1) {
-            console.warn(
-              `Edit mode: Converting ${tracks.length} tracks to single track. Using first track only.`
-            );
-          } else if (tracks.length === 1) {
-            console.log("Edit mode: Converting tracks array to single track");
-          }
           return tracks.length > 0 ? extractId(tracks[0]) : "";
         }
-
-        console.log("Edit mode: No track found in editData");
         return "";
       };
 
       const trackValue = getTrackFromEditData();
 
       return {
-        // School Info - In edit mode, schoolsInfo is an OBJECT with track (singular)
         schoolsInfo: {
           organization: extractId(
             editData.schoolsInfo?.organization || editData.organization
@@ -197,33 +306,24 @@ const CustomNewTripForm = ({
             editData.schoolsInfo?.academicStages || editData.academicStages
           ),
         },
-
-        // Trip Info
         category: extractId(editData.category),
         supCategory: extractId(editData.supCategory),
         tripType: extractId(editData.tripType),
         city: extractId(editData.city),
         services: extractIds(editData.services),
         name: editData.name || { en: "", ar: "" },
-
-        // Trip Date
         day: editData.day || "",
         endDay: editData.endDay || "",
         fromHour: editData.fromHour || "",
         toHour: editData.toHour || "",
-
-        // Pricing
         priceRange: priceRange,
         availableSeats: editData.availableSeats || 0,
-
-        // Additional Info
         specialRequirements: editData.specialRequirements || "",
         file: editData.file || "",
         note: editData.note || "",
       };
     }
 
-    // Default values for create mode - schoolsInfo is an ARRAY
     return {
       schoolsInfo: [
         {
@@ -242,7 +342,7 @@ const CustomNewTripForm = ({
       city: "",
       fromHour: "",
       toHour: "",
-      priceRange: { min: 0, max: 100 },
+      priceRange: { min: "", max: "" },
       specialRequirements: "",
       services: [],
       file: "",
@@ -250,38 +350,11 @@ const CustomNewTripForm = ({
     };
   }, [isEditMode, editData]);
 
-  const handleNext = async (formik) => {
-    const { validateForm, setTouched } = formik;
-
-    // Mark all fields in current step as touched to trigger validation visualization
-    const fieldsToTouch = {};
-    const stepFields = getFieldsForStep(activeStep);
-    stepFields.forEach((field) => {
-      fieldsToTouch[field] = true;
-    });
-    setTouched({ ...formik.touched, ...fieldsToTouch });
-
-    const errors = await validateForm();
-    const stepErrors = stepFields.filter((field) => errors[field]);
-
-    if (stepErrors.length === 0) {
-      if (activeStep === steps.length - 1) {
-        formik.submitForm();
-      } else {
-        setActiveStep((prev) => prev + 1);
-      }
-    }
-  };
-
-  const handleBack = () => {
-    setActiveStep((prev) => prev - 1);
-  };
-
   const getFieldsForStep = (step) => {
     switch (step) {
-      case 0: // School Info
+      case 0:
         return ["schoolsInfo"];
-      case 1: // Trip Info
+      case 1:
         return [
           "category",
           "supCategory",
@@ -290,42 +363,137 @@ const CustomNewTripForm = ({
           "services",
           "name",
         ];
-      case 2: // Date
+      case 2:
         return ["day", "endDay", "fromHour", "toHour"];
-      case 3: // Pricing
+      case 3:
         return ["priceRange", "availableSeats"];
-      case 4: // Additional
+      case 4:
         return ["specialRequirements", "file"];
       default:
         return [];
     }
   };
 
+  const hasStepErrors = (errors, step) => {
+    const stepFields = getFieldsForStep(step);
+
+    for (const field of stepFields) {
+      const fieldError = errors[field];
+
+      if (!fieldError) continue;
+
+      const errorPaths = getDeepErrorPaths({ [field]: fieldError }, "", 0);
+
+      if (errorPaths.length > 0) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  const getStepErrorMessages = (errors, step) => {
+    const stepFields = getFieldsForStep(step);
+    const allErrorPaths = [];
+
+    stepFields.forEach((field) => {
+      const fieldError = errors[field];
+      if (fieldError) {
+        const errorPaths = getDeepErrorPaths({ [field]: fieldError }, "", 0);
+        allErrorPaths.push(...errorPaths);
+      }
+    });
+
+    return formatErrorMessages(allErrorPaths, t);
+  };
+
+  const touchStepFields = (formik, step) => {
+    const stepFields = getFieldsForStep(step);
+    const fieldsToTouch = {};
+
+    stepFields.forEach((field) => {
+      const fieldValue = formik.values[field];
+
+      if (field === "schoolsInfo") {
+        if (isEditMode) {
+          fieldsToTouch.schoolsInfo = {
+            organization: true,
+            track: true,
+            academicStages: true,
+          };
+        } else {
+          fieldsToTouch.schoolsInfo = formik.values.schoolsInfo.map(() => ({
+            organization: true,
+            tracks: true,
+            academicStages: true,
+          }));
+        }
+      } else if (field === "name") {
+        fieldsToTouch.name = { en: true, ar: true };
+      } else if (field === "priceRange") {
+        fieldsToTouch.priceRange = { min: true, max: true };
+      } else if (
+        typeof fieldValue === "object" &&
+        fieldValue !== null &&
+        !(fieldValue instanceof File)
+      ) {
+        fieldsToTouch[field] = deepTouchFields(fieldValue);
+      } else {
+        fieldsToTouch[field] = true;
+      }
+    });
+
+    formik.setTouched({ ...formik.touched, ...fieldsToTouch }, true);
+  };
+
+  const handleNext = async (formik) => {
+    const { validateForm } = formik;
+
+    setAttemptedNext(true);
+
+    const errors = await validateForm();
+    console.log(errors);
+    const currentStepHasErrors = hasStepErrors(errors, activeStep);
+
+    if (currentStepHasErrors) {
+      touchStepFields(formik, activeStep);
+      setShowValidationErrors(true);
+      return;
+    }
+
+    setShowValidationErrors(false);
+    setAttemptedNext(false);
+
+    if (activeStep === steps.length - 1) {
+      formik.submitForm();
+    } else {
+      setActiveStep((prev) => prev + 1);
+    }
+  };
+
+  const handleBack = () => {
+    setShowValidationErrors(false);
+    setAttemptedNext(false);
+    setActiveStep((prev) => prev - 1);
+  };
+
   const prepareFormData = (values) => {
     const formData = new FormData();
 
-    // Add all form fields to FormData
     Object.keys(values).forEach((key) => {
       if (key === "file") {
-        // Only append file if it's a new File object
         if (values[key] instanceof File) {
           formData.append(key, values[key]);
         } else if (isEditMode && !values[key]) {
-          // In edit mode, if file is removed, send empty string
           formData.append(key, "");
         }
       } else if (key === "schoolsInfo") {
         if (isEditMode) {
-          // In edit mode, schoolsInfo is an OBJECT with track (singular)
           const school = values.schoolsInfo;
-
           formData.append("schoolsInfo[organization]", school.organization);
-
-          // Handle track (singular) in edit mode
           if (school.track) {
             formData.append("schoolsInfo[track]", school.track);
           }
-
           if (Array.isArray(school.academicStages)) {
             school.academicStages.forEach((stageId, sIndex) => {
               formData.append(
@@ -335,13 +503,11 @@ const CustomNewTripForm = ({
             });
           }
         } else {
-          // In create mode, schoolsInfo is an ARRAY with tracks (plural)
           values.schoolsInfo.forEach((school, index) => {
             formData.append(
               `schoolsInfo[${index}][organization]`,
               school.organization
             );
-
             if (Array.isArray(school.tracks)) {
               school.tracks.forEach((trackId, tIndex) => {
                 formData.append(
@@ -350,7 +516,6 @@ const CustomNewTripForm = ({
                 );
               });
             }
-
             if (Array.isArray(school.academicStages)) {
               school.academicStages.forEach((stageId, sIndex) => {
                 formData.append(
@@ -386,14 +551,6 @@ const CustomNewTripForm = ({
     try {
       const formData = prepareFormData(values);
 
-   
-
-      // In create mode, get organization IDs from array
-      // In edit mode, get organization ID from object
-      const organizationIds = isEditMode
-        ? [values.schoolsInfo.organization]
-        : values.schoolsInfo.map((school) => school.organization);
-
       const config = {
         method: isEditMode ? "patch" : "post",
         maxBodyLength: Infinity,
@@ -419,7 +576,6 @@ const CustomNewTripForm = ({
           variant: "success",
         });
 
-        // Reset form only in create mode
         if (!isEditMode) {
           resetForm();
         }
@@ -446,12 +602,11 @@ const CustomNewTripForm = ({
     : createCustomNewTripSchema(t2);
 
   return (
-    <div className="px-4 py-4 sm:px-6 sm:py-8 bg-white rounded-2xl  mx-auto max-h-[90vh] overflow-y-auto sm:max-w-lg lg:max-w-6xl">
+    <div className="px-4 py-4 sm:px-6 sm:py-8 bg-white rounded-2xl mx-auto max-h-[90vh] overflow-y-auto sm:max-w-lg lg:max-w-6xl">
       <h3 className="pb-4 text-center text-lg font-medium text-black lg:text-2xl sm:pb-6 lg:pb-8">
         {isEditMode ? t("edit") : t("title")}
       </h3>
 
-      {/* Responsive Stepper */}
       <Box
         className="mb-6 sm:mb-8 lg:mb-10 w-full"
         dir={locale === "ar" ? "rtl" : "ltr"}
@@ -461,23 +616,19 @@ const CustomNewTripForm = ({
           orientation="horizontal"
           alternativeLabel={false}
           sx={{
-            // Mobile: vertical-like compact layout
             "@media (max-width: 640px)": {
               flexDirection: "column",
               alignItems: "stretch",
               gap: "0.1rem",
             },
-            // Tablet and up: horizontal layout
             "@media (min-width: 641px)": {
               flexDirection: "row",
             },
-
             "& .MuiStep-root": {
               "@media (max-width: 640px)": {
                 padding: "0.2rem 0",
               },
             },
-
             "& .MuiStepLabel-root": {
               "@media (max-width: 640px)": {
                 flexDirection: "row",
@@ -485,7 +636,6 @@ const CustomNewTripForm = ({
                 padding: "0.1rem",
               },
             },
-
             "& .MuiStepLabel-root .Mui-completed": {
               color: "var(--color-main)",
             },
@@ -619,9 +769,22 @@ const CustomNewTripForm = ({
           innerRef={formRef}
         >
           {(formik) => {
-            const { isSubmitting } = formik;
+            const { isSubmitting, errors, isValid } = formik;
 
-            // Render active step
+            const currentStepHasErrors = hasStepErrors(errors, activeStep);
+
+            const stepErrorMessages =
+              showValidationErrors && currentStepHasErrors
+                ? getStepErrorMessages(errors, activeStep)
+                : [];
+
+            // Auto-touch fields when button would be disabled and user attempted to proceed
+            useEffect(() => {
+              if (attemptedNext && currentStepHasErrors) {
+                touchStepFields(formik, activeStep);
+              }
+            }, [attemptedNext, currentStepHasErrors, activeStep]);
+
             const renderStepContent = (step) => {
               switch (step) {
                 case 0:
@@ -660,9 +823,30 @@ const CustomNewTripForm = ({
                   handleNext(formik);
                 }}
               >
+                {showValidationErrors && stepErrorMessages.length > 0 && (
+                  <Alert
+                    severity="error"
+                    className="mb-4"
+                    onClose={() => setShowValidationErrors(false)}
+                  >
+                    <div className="font-semibold mb-2">
+                      {t2("forms.validation.please_fill_required_fields", {
+                        defaultValue:
+                          "Please fill in the following required fields:",
+                      })}
+                    </div>
+                    <ul className="list-disc list-inside space-y-1">
+                      {stepErrorMessages.map((msg, index) => (
+                        <li key={index} className="text-sm">
+                          {msg}
+                        </li>
+                      ))}
+                    </ul>
+                  </Alert>
+                )}
+
                 {renderStepContent(activeStep)}
 
-                {/* Responsive Button Layout */}
                 <div className="flex flex-col-reverse sm:flex-row justify-between gap-3 sm:gap-0 mt-6 sm:mt-8">
                   <button
                     type="button"
@@ -680,7 +864,7 @@ const CustomNewTripForm = ({
                   <button
                     type="button"
                     onClick={() => handleNext(formik)}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || currentStepHasErrors}
                     className="px-4 sm:px-6 py-2 sm:py-2.5 bg-mainColor text-white rounded-lg hover:bg-titleColor disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
                   >
                     {isSubmitting ? (

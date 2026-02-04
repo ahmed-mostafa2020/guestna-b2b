@@ -2123,6 +2123,8 @@
       }
     },
     "validation": {
+      "please_fill_required_fields": "من فضلك قم بملء جميع الحقول المطلوبة",
+
       "require": "هذا الحقل مطلوب",
       "sending": "يتم الارسال ...",
       "downloading": "يتم التحميل ...",

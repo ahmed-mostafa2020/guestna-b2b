@@ -23,6 +23,7 @@ const StepPricing = () => {
       e.preventDefault();
     }
   };
+  console.log(values)
   return (
     <Box>
       <h2 className="text-2xl font-bold  text-textDark">{t("title")}</h2>
@@ -38,6 +39,9 @@ const StepPricing = () => {
           <PriceRangePicker
             minValue={values.priceRange?.min}
             maxValue={values.priceRange?.max}
+            name="priceRange"
+            errors={errors}
+            touched={touched}
             onApply={(min, max) => {
               setFieldValue("priceRange.min", min);
               setFieldValue("priceRange.max", max);

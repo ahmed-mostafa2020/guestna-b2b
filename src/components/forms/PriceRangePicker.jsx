@@ -15,6 +15,7 @@ import { useTranslations } from "next-intl";
 
 const PriceRangePicker = ({
   minValue = "",
+  name,
   maxValue = "",
   onApply = () => {},
   minLabel = "Minimum",
@@ -22,6 +23,7 @@ const PriceRangePicker = ({
   placeholder = "Select price range",
   touched = false,
   errors = null,
+  onBlur = () => {},
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [tempMin, setTempMin] = useState("");
@@ -29,13 +31,11 @@ const PriceRangePicker = ({
   const t = useTranslations();
   const open = Boolean(anchorEl);
 
-  // Sync temp values when popup opens
+  // Sync temp values when popup opens OR when external values change
   useEffect(() => {
-    if (open) {
-      setTempMin(minValue || "");
-      setTempMax(maxValue || "");
-    }
-  }, [open, minValue, maxValue]);
+    setTempMin(minValue || "");
+    setTempMax(maxValue || "");
+  }, [minValue, maxValue]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -43,37 +43,48 @@ const PriceRangePicker = ({
 
   const handleClose = () => {
     setAnchorEl(null);
+    // Trigger blur to mark field as touched
+    onBlur();
   };
 
   const handleApply = () => {
-    if (!tempMin && !tempMax) {
-      return;
-    }
-    // Only apply if at least one value is set
-    onApply(tempMin, tempMax);
+    // Ensure at least one value is set
+    const finalMin = tempMin || minValue || "";
+    const finalMax = tempMax || maxValue || "";
+
+    onApply(finalMin, finalMax);
     handleClose();
   };
 
   const handleClear = () => {
     setTempMin("");
     setTempMax("");
+    onApply("", "");
   };
 
   const displayValue = () => {
-    return `${minValue} - ${maxValue}`;
+    if (!minValue && !maxValue) {
+      return "";
+    }
+    return `${minValue || 0} - ${maxValue || 0}`;
   };
 
   const hasError = tempMin && tempMax && Number(tempMin) > Number(tempMax);
+
+  // Check if there's a validation error from Formik
+  const hasValidationError = touched[name] && Boolean(errors[name]);
 
   return (
     <Box sx={{ width: "100%", position: "relative" }}>
       {/* Main Input Field */}
       <TextField
         fullWidth
+        name={name}
         value={displayValue()}
         onClick={handleClick}
         placeholder={placeholder}
-        error={touched && Boolean(errors)}
+        error={hasValidationError}
+        errors={errors}
         InputProps={{
           readOnly: true,
           endAdornment: (
@@ -134,20 +145,24 @@ const PriceRangePicker = ({
         }}
       />
 
-      {/* Error Message */}
-      {touched && errors && (
+      {/* Error Message from Formik Validation */}
+      {hasValidationError && (
         <Typography
           sx={{
-            position: "absolute",
-            bottom: "-16px",
-            left: 0,
             color: "#ef4444",
             fontSize: "12px",
             fontFamily: "var(--font-somar), sans-serif",
             marginTop: "4px",
+            marginLeft: "14px",
           }}
         >
-          {errors}
+          {typeof errors === "object"
+            ? errors[name].min ||
+              errors[name].max ||
+              t("forms.validation.require", {
+                defaultValue: "Price range is required",
+              })
+            : errors}
         </Typography>
       )}
 
@@ -195,7 +210,6 @@ const PriceRangePicker = ({
               onChange={(e) => setTempMin(e.target.value)}
               placeholder="0"
               inputProps={{
-                min: 0,
                 step: 50,
               }}
               InputProps={{
@@ -259,7 +273,6 @@ const PriceRangePicker = ({
               onChange={(e) => setTempMax(e.target.value)}
               placeholder="1000"
               inputProps={{
-                min: 0,
                 step: 50,
               }}
               InputProps={{
@@ -306,7 +319,7 @@ const PriceRangePicker = ({
           </Stack>
         </Stack>
 
-        {/* Error Message */}
+        {/* Error Message for min > max */}
         {hasError && (
           <Alert
             severity="error"
@@ -319,7 +332,8 @@ const PriceRangePicker = ({
             }}
           >
             {t(
-              "forms.customTrip.steps.pricing.fields.price.error.min_exceed_max"
+              "forms.customTrip.steps.pricing.fields.price.error.min_exceed_max",
+              { defaultValue: "Minimum price cannot exceed maximum price" }
             )}
           </Alert>
         )}
@@ -350,7 +364,7 @@ const PriceRangePicker = ({
             fullWidth
             variant="contained"
             onClick={handleApply}
-            disabled={hasError}
+            disabled={hasError || (!tempMin && !tempMax)}
             sx={{
               fontFamily: "var(--font-somar), sans-serif",
               fontWeight: 600,
