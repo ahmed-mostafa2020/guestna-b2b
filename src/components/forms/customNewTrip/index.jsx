@@ -772,8 +772,15 @@ const CustomNewTripForm = ({
             const { isSubmitting, errors, touched, values } = formik;
 
             const currentStepHasErrors = hasStepErrors(errors, activeStep);
+            // check if next button disabled
+            const isNextDisabled = isEditMode
+              ? isSubmitting ||
+                currentStepHasErrors ||
+                !values.schoolsInfo.organization
+              : isSubmitting ||
+                currentStepHasErrors ||
+                !Object.keys(touched).length;
 
-            // Auto-touch fields when button would be disabled and user attempted to proceed
             useEffect(() => {
               if (attemptedNext && currentStepHasErrors) {
                 touchStepFields(formik, activeStep);
@@ -837,12 +844,7 @@ const CustomNewTripForm = ({
                   <button
                     type="button"
                     onClick={() => handleNext(formik)}
-                    disabled={
-                      isSubmitting ||
-                      currentStepHasErrors ||
-                      (Object.keys(touched).length === 0 &&
-                        values.schoolsInfo.organization !== "")
-                    }
+                    disabled={isNextDisabled}
                     className="px-4 sm:px-6 py-2 sm:py-2.5 bg-mainColor text-white rounded-lg hover:bg-titleColor disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
                   >
                     {isSubmitting ? (
