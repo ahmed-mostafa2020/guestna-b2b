@@ -2191,14 +2191,16 @@
           "fields": {
             "organization": {
               "label": "School Name",
-              "placeholder": "Select school name","single_option_notice": "there is only one school selected automatically"
+              "placeholder": "Select school name",
+              "single_option_notice": "there is only one school selected automatically"
             },
             "track": {
               "label": "Educational Track",
               "placeholder": "Select educational tracks",
               "helper_text": "Please select the school first",
               "fetchError": "An error occurred while fetching educational tracks",
-              "conversion_notice": "Educational track converted"
+              "conversion_notice": "Educational track converted",
+              "no_tracks_available" :"No educational tracks available for selected school"
             },
             "academicStages": {
               "label": "Academic Stage",
@@ -2330,78 +2332,76 @@
           }
         }
       },
-      
-        "rejection": {
-          "title": "Confirm Quotation Rejection",
-          "description": "Before proceeding, it is recommended to specify the reason for rejecting the quotation. This will help us improve future offers (optional).",
-          "reasons": {
-            "inappropriate_price": "Price is not suitable",
-            "inappropriate_details": "Program details are not suitable",
-            "inappropriate_timing": "Timing is not suitable",
-            "other": "Other reason"
-          },
-          "customMessagePlaceholder": "Please specify the reason...",
-          "confirmButton": "Confirm Rejection",
-          "submitting": "Rejecting...",
-          "order_rejected_successfully":"Order rejected successfully",
-          "validation": {
-            "pleaseSelectReason": "Please select a rejection reason",
-            "pleaseProvideCustomReason": "Please provide the reason",
-            "customReasonMinLength": "The reason must be at least 10 characters",
-            "minimumCharacters": "Minimum {{count}} characters",
-            "reminderSentSuccessfully": "Reminder sent successfully",
-            "api_errors": {
-              "other_error": "An error occurred. Please try again."
-            }
-          }
+
+      "rejection": {
+        "title": "Confirm Quotation Rejection",
+        "description": "Before proceeding, it is recommended to specify the reason for rejecting the quotation. This will help us improve future offers (optional).",
+        "reasons": {
+          "inappropriate_price": "Price is not suitable",
+          "inappropriate_details": "Program details are not suitable",
+          "inappropriate_timing": "Timing is not suitable",
+          "other": "Other reason"
         },
-        "approval": {
-          "title": "Confirm Quotation Approval",
-          "description": "By approving the quotation, you agree to our terms and conditions. Please ensure that you have read and understood them before proceeding.",
-
-          "confirmButton": "Confirm Approval",
-          "view_selected_location": "View Selected Location",
-          "submitting": "Approving...",
-          "order_approved_successfully":"Order approved successfully",
-          "school_amount": {
-            "placeholder": "Enter school percentage",
-            "label": "School Percentage"
-          },
-          "gathering_location": {
-            "placeholder": "Select gathering location",
-            "label": "Gathering Location",
-            "location_selected": "Location selected",
-            "both_required":"lat and lng are required",
-            
-            "text_helper": "Click on the map to select the gathering point. The coordinates will be automatically filled in the fields above.",
-            "manual_coordinates_helper":"You can either enter coordinates manually or select a location on the map below",
-            "manual_coordinates_label": "Enter Coordinates Manually (Optional)",
-
-            "lat": {
-              "label": "Latitude",
-              "placeholder": "enter  latitude of gathering location"
-            },
-            "lng": {
-              "label": "Longitude",
-              "placeholder": "enter  longitude of gathering location"
-            }
-          },
-          "validation": {
-            "latitudeRequired": "Latitude is required",
-            "latitudeRange": "Latitude must be between -90 and 90",
-            "latitudeInvalid": "Latitude must be a valid number",
-            "longitudeRequired": "Longitude is required",
-            "longitudeRange": "Longitude must be between -180 and 180",
-            "longitudeInvalid": "Longitude must be a valid number",
-            "schoolAmountRequired": "School amount is required",
-            "schoolAmountPositive": "School amount must be a positive number",
-            "schoolAmountInteger": "School amount must be a whole number",
-            "schoolAmountMinimum": "School amount must be at least 1",
-            "schoolAmountInvalid": "School amount must be a valid number"
+        "customMessagePlaceholder": "Please specify the reason...",
+        "confirmButton": "Confirm Rejection",
+        "submitting": "Rejecting...",
+        "order_rejected_successfully": "Order rejected successfully",
+        "validation": {
+          "pleaseSelectReason": "Please select a rejection reason",
+          "pleaseProvideCustomReason": "Please provide the reason",
+          "customReasonMinLength": "The reason must be at least 10 characters",
+          "minimumCharacters": "Minimum {{count}} characters",
+          "reminderSentSuccessfully": "Reminder sent successfully",
+          "api_errors": {
+            "other_error": "An error occurred. Please try again."
           }
         }
-      
-      
+      },
+      "approval": {
+        "title": "Confirm Quotation Approval",
+        "description": "By approving the quotation, you agree to our terms and conditions. Please ensure that you have read and understood them before proceeding.",
+
+        "confirmButton": "Confirm Approval",
+        "view_selected_location": "View Selected Location",
+        "submitting": "Approving...",
+        "order_approved_successfully": "Order approved successfully",
+        "school_amount": {
+          "placeholder": "Enter school percentage",
+          "label": "School Percentage"
+        },
+        "gathering_location": {
+          "placeholder": "Select gathering location",
+          "label": "Gathering Location",
+          "location_selected": "Location selected",
+          "both_required": "lat and lng are required",
+
+          "text_helper": "Click on the map to select the gathering point. The coordinates will be automatically filled in the fields above.",
+          "manual_coordinates_helper": "You can either enter coordinates manually or select a location on the map below",
+          "manual_coordinates_label": "Enter Coordinates Manually (Optional)",
+
+          "lat": {
+            "label": "Latitude",
+            "placeholder": "enter  latitude of gathering location"
+          },
+          "lng": {
+            "label": "Longitude",
+            "placeholder": "enter  longitude of gathering location"
+          }
+        },
+        "validation": {
+          "latitudeRequired": "Latitude is required",
+          "latitudeRange": "Latitude must be between -90 and 90",
+          "latitudeInvalid": "Latitude must be a valid number",
+          "longitudeRequired": "Longitude is required",
+          "longitudeRange": "Longitude must be between -180 and 180",
+          "longitudeInvalid": "Longitude must be a valid number",
+          "schoolAmountRequired": "School amount is required",
+          "schoolAmountPositive": "School amount must be a positive number",
+          "schoolAmountInteger": "School amount must be a whole number",
+          "schoolAmountMinimum": "School amount must be at least 1",
+          "schoolAmountInvalid": "School amount must be a valid number"
+        }
+      }
     }
   },
   "order_details": {

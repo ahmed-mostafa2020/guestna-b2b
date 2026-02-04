@@ -42,26 +42,15 @@ const AdditionalInfoCard = ({ orderData }) => {
 
         {orderData.file && (
           <Grid item xs={12}>
-            <OrderDataLabel label={t("fields.attach_file.label")} />
+            {/* <OrderDataLabel label={t("fields.attach_file.label")} /> */}
             <Button
               variant="outlined"
               href={orderData.file}
               target="_blank"
               rel="noopener noreferrer"
-              sx={{
-                borderColor: "var(--main-color)",
-                color: "var(--main-color)",
-                fontFamily: "somar",
-                textTransform: "none",
-                fontSize: 16,
-                "&:hover": {
-                  borderColor: "var(--main-color)",
-                  bgcolor: "var(--main-color)",
-                  color: "white",
-                },
-              }}
+              className="!bg-mainColor !text-white !font-somar !text-sm !px-4 !py-2 !rounded-lg !border-2 !border-mainColor !hover:bg-linksHover !hover:text-mainColor !hover:border-mainColor"
             >
-              {t2("common.view_file")}
+              {t2("links.downloadFile")}
             </Button>
           </Grid>
         )}

@@ -387,7 +387,7 @@ const ApproveOrderForm = ({
               isAuth={true}
               zoom={12}
               height="h-[400px]"
-              locationLink={true}
+              
               interactive={true}
               onLocationSelect={handleLocationSelect}
               selectedLocation={formik.values.gatheringLocation}

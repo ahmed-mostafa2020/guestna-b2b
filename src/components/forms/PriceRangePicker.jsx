@@ -46,8 +46,11 @@ const PriceRangePicker = ({
   };
 
   const handleApply = () => {
+    if (!tempMin && !tempMax) {
+      return;
+    }
     // Only apply if at least one value is set
-    onApply(tempMin || "", tempMax || "");
+    onApply(tempMin, tempMax);
     handleClose();
   };
 
@@ -315,7 +318,9 @@ const PriceRangePicker = ({
               },
             }}
           >
-            {t("forms.customTrip.steps.pricing.fields.price.error.min_exceed_max")}
+            {t(
+              "forms.customTrip.steps.pricing.fields.price.error.min_exceed_max"
+            )}
           </Alert>
         )}
 

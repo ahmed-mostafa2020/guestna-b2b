@@ -487,13 +487,13 @@ const CustomNewTripForm = ({
             },
 
             "& .MuiStepLabel-root .Mui-completed": {
-              color: "var(--color-success)",
+              color: "var(--color-main)",
             },
             "& .MuiStepLabel-root .Mui-active": {
               color: "var(--color-main)",
             },
             "& .MuiStepLabel-label.Mui-completed": {
-              color: "var(--color-success)",
+              color: "var(--color-main)",
               fontWeight: 400,
             },
             "& .MuiStepLabel-label.Mui-active": {
@@ -527,10 +527,13 @@ const CustomNewTripForm = ({
               "@media (min-width: 641px)": {
                 fontSize: "2.5rem",
               },
-              border: "2px solid",
+              border: "1px solid",
               "&.Mui-completed": {
-                color: "white",
-                borderColor: "var(--color-success)",
+                color: "var(--color-main)",
+                borderColor: "var(--color-main)",
+                backgroundColor: "white",
+                padding: "0px",
+                boxShadow: "none",
               },
               "&.Mui-active": {
                 color: "var(--color-main)",

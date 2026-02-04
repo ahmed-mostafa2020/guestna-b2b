@@ -2197,7 +2197,8 @@
               "placeholder": "اختر المسارات التعليمية",
               "helper_text": "قم باختيار المدرسة اولا",
               "fetchError": "حدث خطأ في جلب المسارات التعليمية",
-              "conversion_notice": "تم تغيير المسار التعليمي "
+              "conversion_notice": "تم تغيير المسار التعليمي ",
+              "no_tracks_available": "لا يوجد مسارات تعليمية متاحة للمدرسة المحددة"
             },
             "academicStages": {
               "label": "المرحلة الدراسية",
@@ -2333,7 +2334,7 @@
       },
       "rejection": {
         "title": "تأكيد رفض عرض السعر",
-        "description": "قبل المتابعة، يُفضّل تحديد سبب رفض عرض السعر، سيساعدنا ذلك على تحسين العروض المقدمة مستقبلاً (اختياري).",
+        "description": "قبل المتابعة، يُفضّل تحديد سبب رفض عرض السعر. سيساعدنا ذلك على تحسين العروض المقدمة مستقبلًا (اختياري).",
         "reasons": {
           "inappropriate_price": "السعر غير مناسب",
           "inappropriate_details": "تفاصيل البرنامج غير مناسبة",
@@ -2342,13 +2343,13 @@
         },
         "customMessagePlaceholder": "يرجى تحديد السبب...",
         "confirmButton": "تأكيد الرفض",
-        "submitting": "جاري الرفض...",
-        "order_rejected_successfully":"تم الرفض بنجاح",
+        "submitting": "جارٍ الرفض...",
+        "order_rejected_successfully": "تم رفض الطلب بنجاح",
         "validation": {
           "pleaseSelectReason": "يرجى اختيار سبب الرفض",
-          "pleaseProvideCustomReason": "يرجى كتابة السبب",
-          "customReasonMinLength": "يجب أن يكون السبب 10 أحرف على الأقل",
-          "minimumCharacters": "الحد الأدنى {{count}} حرف",
+          "pleaseProvideCustomReason": "يرجى توضيح السبب",
+          "customReasonMinLength": "يجب ألا يقل السبب عن 10 أحرف",
+          "minimumCharacters": "الحد الأدنى {{count}} أحرف",
           "reminderSentSuccessfully": "تم إرسال التذكير بنجاح",
           "api_errors": {
             "other_error": "حدث خطأ. يرجى المحاولة مرة أخرى."
@@ -2356,31 +2357,31 @@
         }
       },
       "approval": {
-        "title": "تأكيد قبول عرض السعر",
-        "description": "من خلال قبول عرض السعر، فإنك توافق على الشروط والأحكام الخاصة بنا. يرجى التأكد من قراءة وفهم هذه الشروط قبل المتابعة.",
-        "confirmButton": "تأكيد القبول",
-        "view_selected_location": "مشاهدة الموقع المحدد",
-        "submitting": "جاري القبول...",
-        "order_approved_successfully":"تمت الموافقة بنجاح",
+        "title": "تأكيد الموافقة على عرض السعر",
+        "description": "بالموافقة على عرض السعر، فإنك توافق على الشروط والأحكام الخاصة بنا. يرجى التأكد من قراءتها وفهمها قبل المتابعة.",
+        "confirmButton": "تأكيد الموافقة",
+        "view_selected_location": "عرض الموقع المحدد",
+        "submitting": "جارٍ الموافقة...",
+        "order_approved_successfully": "تمت الموافقة على الطلب بنجاح",
         "school_amount": {
-          "placeholder": "ادخل نسبة المدرسة",
+          "placeholder": "أدخل نسبة المدرسة",
           "label": "نسبة المدرسة"
         },
         "gathering_location": {
-          "placeholder": "اختر موقع التجمّع",
-          "label": "موقع التجمّع",
+          "placeholder": "اختر موقع التجمع",
+          "label": "موقع التجمع",
           "location_selected": "تم اختيار الموقع",
-          "both_required": "خطوط الطول والعرض مطلوبة",
-          "text_helper": "اضغط على الخريطة لاختيار نقطة التجمّع. سيتم تعبئة الإحداثيات تلقائيًا في الحقول أعلاه.",
-          "manual_coordinates_helper": "يمكنك إدخال الإحداثيات يدويًا أو اختيار الموقع من الخريطة أدناه",
+          "both_required": "خط العرض وخط الطول مطلوبان",
+          "text_helper": "انقر على الخريطة لاختيار نقطة التجمع. سيتم تعبئة الإحداثيات تلقائيًا في الحقول أعلاه.",
+          "manual_coordinates_helper": "يمكنك إدخال الإحداثيات يدويًا أو اختيار موقع من الخريطة أدناه",
           "manual_coordinates_label": "إدخال الإحداثيات يدويًا (اختياري)",
           "lat": {
             "label": "خط العرض",
-            "placeholder": "أدخل خط العرض لموقع التجمّع"
+            "placeholder": "أدخل خط عرض موقع التجمع"
           },
           "lng": {
             "label": "خط الطول",
-            "placeholder": "أدخل خط الطول لموقع التجمّع"
+            "placeholder": "أدخل خط طول موقع التجمع"
           }
         },
         "validation": {
@@ -2392,7 +2393,7 @@
           "longitudeInvalid": "يجب أن يكون خط الطول رقمًا صالحًا",
           "schoolAmountRequired": "نسبة المدرسة مطلوبة",
           "schoolAmountPositive": "يجب أن تكون نسبة المدرسة رقمًا موجبًا",
-          "schoolAmountInteger": "يجب أن تكون نسبة المدرسة عددًا صحيحًا",
+          "schoolAmountInteger": "يجب أن تكون نسبة المدرسة رقمًا صحيحًا",
           "schoolAmountMinimum": "يجب ألا تقل نسبة المدرسة عن 1",
           "schoolAmountInvalid": "يجب أن تكون نسبة المدرسة رقمًا صالحًا"
         }

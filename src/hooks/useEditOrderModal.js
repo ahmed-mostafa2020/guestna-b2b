@@ -36,6 +36,15 @@ export const useEditOrderModal = (locale) => {
   const [approvingOrder, setApprovingOrder] = useState(false);
   const [approvalError, setApprovalError] = useState(null);
 
+  // Clear specific order from cache
+  const clearOrderFromCache = useCallback((orderId) => {
+    setEditOrderDetailsCache((prev) => {
+      const newCache = { ...prev };
+      delete newCache[orderId];
+      return newCache;
+    });
+  }, []);
+
   // Fetch form selection data with caching
   const fetchFormSelectionData = useCallback(async () => {
     if (formSelectionData) {
@@ -321,8 +330,6 @@ export const useEditOrderModal = (locale) => {
       setApprovalError(null);
 
       try {
-        console.log(`Approving order ${orderId}`, approvalData);
-
         const response = await axios.post(
           getProxyUrl(
             `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.APPROVE}/${orderId}`
@@ -330,8 +337,6 @@ export const useEditOrderModal = (locale) => {
           approvalData,
           { headers }
         );
-
-        console.log("Order approved successfully:", response.data);
 
         // Show success message
         enqueueSnackbar(
@@ -362,7 +367,7 @@ export const useEditOrderModal = (locale) => {
         setApprovingOrder(false);
       }
     },
-    [headers, enqueueSnackbar, closeApproveModal]
+    [headers, enqueueSnackbar, closeApproveModal, clearOrderFromCache]
   );
 
   // ==================== END APPROVAL FUNCTIONALITY ====================
@@ -441,15 +446,6 @@ export const useEditOrderModal = (locale) => {
     setEditOrderDetailsCache({});
     setFormSelectionData(null);
     console.log("Edit order cache cleared");
-  }, []);
-
-  // Clear specific order from cache
-  const clearOrderFromCache = useCallback((orderId) => {
-    setEditOrderDetailsCache((prev) => {
-      const newCache = { ...prev };
-      delete newCache[orderId];
-      return newCache;
-    });
   }, []);
 
   // Check if modal is open

@@ -4,7 +4,6 @@ import { Grid } from "@material-ui/core";
 import OrderDataLabel from "./OrderDataLabel";
 import OrderDataField from "./OrderDataField";
 import { useTranslations } from "next-intl";
-import formatCurrency from "@utils/FormatCurrency";
 import { newSarSmall } from "@assets/svg";
 
 const PricingInfoCard = ({ orderData }) => {
@@ -17,7 +16,7 @@ const PricingInfoCard = ({ orderData }) => {
           <OrderDataField>
             <div className="flex gap-2 items-center">
               <span className="inline-block">
-                {orderData.priceRange.min} - {orderData.priceRange.max}
+               {orderData?.priceRange?.min} - {orderData?.priceRange?.max}
               </span>
 
               <span>{newSarSmall}</span>

@@ -31,7 +31,12 @@ import { FieldArray, useFormikContext } from "formik";
 import axios from "axios";
 
 // ============================================================================
-// Custom Hook: useTracks - Manages track fetching with caching
+// Global cache for tracks data - persists across component mounts
+// ============================================================================
+const tracksCache = new Map();
+
+// ============================================================================
+// Custom Hook: useTracks - Manages track fetching with persistent caching
 // ============================================================================
 const useTracks = (organizationId, headers) => {
   const t = useTranslations("forms.customTrip.steps.school_info");
@@ -41,9 +46,24 @@ const useTracks = (organizationId, headers) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Cache to prevent duplicate fetches across component instances
-  const cacheRef = useRef(new Map());
   const abortControllerRef = useRef(null);
+  const isMountedRef = useRef(true);
+
+  // Track if we've already initialized from cache
+  const initializedRef = useRef(false);
+
+  // Initialize from cache immediately on mount
+  useEffect(() => {
+    if (
+      !initializedRef.current &&
+      organizationId &&
+      tracksCache.has(organizationId)
+    ) {
+      const cachedData = tracksCache.get(organizationId);
+      setTracksData(cachedData);
+      initializedRef.current = true;
+    }
+  }, [organizationId]);
 
   const fetchTracks = useCallback(
     async (orgId) => {
@@ -53,11 +73,13 @@ const useTracks = (organizationId, headers) => {
         return;
       }
 
-      // Check cache first
-      if (cacheRef.current.has(orgId)) {
-        const cachedData = cacheRef.current.get(orgId);
-        setTracksData(cachedData);
-        setError(null);
+      // Check global cache first
+      if (tracksCache.has(orgId)) {
+        const cachedData = tracksCache.get(orgId);
+        if (isMountedRef.current) {
+          setTracksData(cachedData);
+          setError(null);
+        }
         return;
       }
 
@@ -69,8 +91,10 @@ const useTracks = (organizationId, headers) => {
       // Create new abort controller for this request
       abortControllerRef.current = new AbortController();
 
-      setIsLoading(true);
-      setError(null);
+      if (isMountedRef.current) {
+        setIsLoading(true);
+        setError(null);
+      }
 
       try {
         const response = await axios.get(
@@ -85,11 +109,13 @@ const useTracks = (organizationId, headers) => {
 
         const data = response.data ?? [];
 
-        // Cache the result
-        cacheRef.current.set(orgId, data);
+        // Cache the result in global cache
+        tracksCache.set(orgId, data);
 
-        setTracksData(data);
-        setError(null);
+        if (isMountedRef.current) {
+          setTracksData(data);
+          setError(null);
+        }
       } catch (err) {
         // Ignore abort errors
         if (axios.isCancel(err)) {
@@ -97,39 +123,57 @@ const useTracks = (organizationId, headers) => {
         }
 
         console.error("Error fetching tracks:", err);
-        setError(t("fields.track.fetchError"));
-        setTracksData([]);
+        if (isMountedRef.current) {
+          setError(t("fields.track.fetchError"));
+          setTracksData([]);
+        }
       } finally {
-        setIsLoading(false);
+        if (isMountedRef.current) {
+          setIsLoading(false);
+        }
         abortControllerRef.current = null;
       }
     },
     [headers, t]
   );
 
-  // Fetch tracks when organization changes
+  // Only fetch when organization changes and not in cache
   useEffect(() => {
-    fetchTracks(organizationId);
+    isMountedRef.current = true;
+
+    if (organizationId && !tracksCache.has(organizationId)) {
+      fetchTracks(organizationId);
+    } else if (organizationId && tracksCache.has(organizationId)) {
+      // Ensure state is synced with cache
+      const cachedData = tracksCache.get(organizationId);
+      if (JSON.stringify(tracksData) !== JSON.stringify(cachedData)) {
+        setTracksData(cachedData);
+      }
+    } else if (!organizationId) {
+      setTracksData([]);
+      setError(null);
+    }
 
     // Cleanup function
     return () => {
+      isMountedRef.current = false;
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
     };
-  }, [organizationId, fetchTracks]);
+  }, [organizationId]); // Only depend on organizationId
 
   // Manual refetch function that bypasses cache
   const refetch = useCallback(() => {
     if (organizationId) {
-      cacheRef.current.delete(organizationId);
+      tracksCache.delete(organizationId);
       fetchTracks(organizationId);
     }
   }, [fetchTracks, organizationId]);
 
-  // Clear cache function
+  // Clear entire cache function
   const clearCache = useCallback(() => {
-    cacheRef.current.clear();
+    tracksCache.clear();
   }, []);
 
   return { tracksData, isLoading, error, refetch, clearCache };
@@ -232,7 +276,7 @@ const SchoolInfoCard = ({
   isRemovable,
   selectedOrganizations,
   fieldPath,
-  cardKey, // Add unique key prop
+  cardKey,
 }) => {
   const t = useTranslations("forms.customTrip.steps.school_info");
   const t2 = useTranslations();
@@ -299,12 +343,13 @@ const SchoolInfoCard = ({
     }
   }, [isEditMode, values.schoolsInfo]);
 
-  // Format track options with memoization
+  // Format track options with memoization - only re-compute when tracksData changes
   const trackList = useMemo(() => {
     return formatTrackList(tracksData, t2);
   }, [tracksData, t2]);
 
   // Calculate available academic stages based on selected track(s)
+  // Memoized to prevent recalculation unless dependencies actually change
   const availableAcademicStages = useMemo(() => {
     return getAvailableAcademicStages(
       isEditMode,
@@ -326,7 +371,6 @@ const SchoolInfoCard = ({
   fieldPathRef.current = fieldPath;
 
   // Validate and cleanup academic stages when tracks change
-  // FIXED: Use stable organization-based key to prevent false triggers on card deletion
   useEffect(() => {
     // Don't run if tracks are loading or no tracks data yet
     if (isLoadingTracks || trackList.length === 0) {
@@ -379,7 +423,6 @@ const SchoolInfoCard = ({
       setFieldValue(fieldPathRef.current + ".academicStages", validStages);
     }
   }, [
-    // REMOVED fieldPath from dependencies - this was causing the issue!
     isEditMode,
     school.track,
     school.tracks,

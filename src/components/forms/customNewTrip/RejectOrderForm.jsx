@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import {
   Box,
@@ -27,7 +27,7 @@ const RejectOrderForm = ({
   const t2 = useTranslations();
 
   // Rejection reason options
-  const rejectionReasons = [
+  const rejectionReasons = useMemo(()=> [
     {
       value: "inappropriate_price",
       label: t("reasons.inappropriate_price"),
@@ -41,7 +41,7 @@ const RejectOrderForm = ({
       label: t("reasons.inappropriate_timing"),
     },
     { value: "other", label: t("reasons.other") },
-  ];
+  ] ,[t]);
 
   const [selectedReason, setSelectedReason] = useState("");
   const [customMessage, setCustomMessage] = useState("");
@@ -148,7 +148,7 @@ const RejectOrderForm = ({
       sx={{ p: 4 }}
     >
       {/* Title */}
-      <Typography className="!font-somar text-2xl text-center !font-semibold border-b py-6  px-4">
+      <Typography className="!font-somar text-2xl text-center !font-semibold border-b pb-6  px-4">
         {t("title")}
       </Typography>
 
