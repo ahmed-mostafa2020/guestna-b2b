@@ -207,6 +207,7 @@ const OrderDetailsPage = ({ params }) => {
               padding: "0.2rem 0",
               color: "var(--color-main)",
               fontWeight: 400,
+              cursor: "pointer",
             },
           },
           "& .MuiStepLabel-root": {
@@ -222,10 +223,12 @@ const OrderDetailsPage = ({ params }) => {
           "& .MuiStepLabel-root .Mui-completed": {
             color: "var(--color-main)",
             fontWeight: 400,
+            cursor: "pointer",
           },
           "& .MuiStepLabel-root .Mui-active": {
             color: "var(--color-main)",
             fontWeight: 400,
+            cursor: "pointer",
           },
           "& .MuiStepLabel-label.Mui-completed": {
             color: "var(--color-main)",
@@ -265,7 +268,7 @@ const OrderDetailsPage = ({ params }) => {
 
             "&.Mui-completed": {
               color: "var(--color-main)",
-
+              cursor: "pointer",
               backgroundColor: "white",
               padding: "0px",
               boxShadow: "none",
@@ -279,7 +282,7 @@ const OrderDetailsPage = ({ params }) => {
             },
             "&:not(.Mui-active):not(.Mui-completed)": {
               color: "var(--color-main)",
-
+              cursor: "pointer",
               backgroundColor: "white",
               padding: "0px",
               boxShadow: "none",
