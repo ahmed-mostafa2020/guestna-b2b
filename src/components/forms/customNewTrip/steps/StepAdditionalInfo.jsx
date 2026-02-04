@@ -1,19 +1,12 @@
 import React, { useCallback, useMemo } from "react";
 import { useFormikContext } from "formik";
-import { useTranslations, useLocale } from "next-intl";
-import {
-  Box,
-  Card,
-  CardContent,
-  Alert,
-} from "@mui/material";
+import { useTranslations } from "next-intl";
+import { Box, Card, CardContent, Alert } from "@mui/material";
 import FileUploadGroup from "@components/forms/FileUploadGroup";
-import LexicalEditor from "@components/common/LexicalEditor";
 import TextInputGroup from "../../TextInputGroup";
 
 const StepAdditionalInfo = () => {
-  const t = useTranslations('forms.customTrip.steps.additional_info');
-  const locale = useLocale();
+  const t = useTranslations("forms.customTrip.steps.additional_info");
   const { values, errors, touched, handleBlur, setFieldValue } =
     useFormikContext();
 
@@ -37,15 +30,9 @@ const StepAdditionalInfo = () => {
     [values.specialRequirements]
   );
 
-  const hasNote = useMemo(
-    () => values.note?.trim().length > 0,
-    [values.note]
-  );
+  const hasNote = useMemo(() => values.note?.trim().length > 0, [values.note]);
 
-  const hasFile = useMemo(
-    () => Boolean(values.file),
-    [values.file]
-  );
+  const hasFile = useMemo(() => Boolean(values.file), [values.file]);
 
   return (
     <Box>
@@ -70,10 +57,9 @@ const StepAdditionalInfo = () => {
           <div className="somar-placeholder">
             <TextInputGroup
               textarea
-              
               name="specialRequirements"
               placeholder={t("fields.special_requirements.placeholder")}
-              errors={errors.specialRequirements} 
+              errors={errors.specialRequirements}
               touched={touched.specialRequirements}
               onBlur={handleBlur}
               value={values.specialRequirements}
