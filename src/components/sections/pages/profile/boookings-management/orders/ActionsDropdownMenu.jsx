@@ -1,9 +1,7 @@
-// src/components/ActionsDropdownMenu.js
-
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 
 import { usePermissions } from "@hooks/usePermissions";
 import { getHeaders } from "@utils/getHeaders";
@@ -20,73 +18,137 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
 
-import { useOrderDetailsModal } from "@hooks/useOrderDetailsModal";
-import { useEditOrderModal } from "@hooks/useEditOrderModal";
-
 import { TRIP_STATUS } from "@constants/tripStatus";
-import CustomizedModal from "@components/common/customizedModal";
-import OrderDetailsModal from "./OrderDetailsModal";
-import EditOrderForm from "@components/forms/editOrder";
+import Link from "next/link";
 
-const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
+const ActionsDropdownMenu = ({
+  bookingId,
+  bookingType,
+  _id,
+  bookingStatus,
+  onActionComplete,
+  openDetailsModal, // Passed from parent
+  openEditModal, // Passed from parent
+  openRejectModal, // Passed from parent
+  openApproveModal, // Passed from parent
+}) => {
   const { hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
   const { enqueueSnackbar } = useSnackbar();
-  const headers = getHeaders(locale);
+  const headers = useMemo(() => getHeaders(locale), [locale]);
 
   // Check individual action permissions
-  const canShowDetails = hasElement(
-    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOW_DETAILS
+  const canShowDetails = useMemo(
+    () =>
+      hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOW_DETAILS),
+    [hasElement]
   );
-  const canRemindGuestna = hasElement(
-    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REMINDER_GUESTNA
+  const canRemindGuestna = useMemo(
+    () =>
+      hasElement(
+        PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REMINDER_GUESTNA
+      ),
+    [hasElement]
   );
-  const canUpdateTrip = hasElement(
-    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_UPDATE_TRIP
+  const canUpdateTrip = useMemo(
+    () =>
+      hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_UPDATE_TRIP),
+    [hasElement]
+  );
+
+  // Check approval/rejection permissions
+  // const canApproveTrip = useMemo(
+  //   () =>
+  //     hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_APPROVE_TRIP),
+  //   [hasElement]
+  // );
+
+  // const canRejectTrip = useMemo(
+  //   () =>
+  //     hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REJECT_TRIP),
+  //   [hasElement]
+  // );
+
+  const isCustomType = useMemo(() => bookingType === "CUSTOM", [bookingType]);
+  // Check if booking is editable (not done)
+  const isEditable = useMemo(
+    () =>
+      ![
+        TRIP_STATUS.DONE,
+        TRIP_STATUS.CANCLED,
+        TRIP_STATUS.CANCELLED,
+        TRIP_STATUS.REJECTED,
+        TRIP_STATUS.ENDED,
+        TRIP_STATUS.SCHEDULED,
+      ].includes(bookingStatus) && isCustomType,
+    [bookingStatus, isCustomType]
+  );
+
+  // Check if order can be accepted or rejected
+  const hasApproval = useMemo(
+    () => [TRIP_STATUS.ON_HOLD].includes(bookingStatus),
+    [bookingStatus]
+  );
+
+  const hasRejection = useMemo(
+    () =>
+      ![
+        TRIP_STATUS.DONE,
+        TRIP_STATUS.REJECTED,
+        TRIP_STATUS.ENDED,
+        TRIP_STATUS.SCHEDULED,
+        TRIP_STATUS.CANCELLED,
+        TRIP_STATUS.CANCLED,
+      ].includes(bookingStatus),
+    [bookingStatus]
+  );
+
+  const hasDetails = useMemo(
+    () =>
+      [
+        TRIP_STATUS.PENDING,
+        TRIP_STATUS.PENDING_COMPANY_APPROVAL,
+        TRIP_STATUS.ON_HOLD,
+      ].includes(bookingStatus) && isCustomType,
+    [bookingStatus, isCustomType]
   );
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const [loading, setLoading] = useState(false);
+  const [sendingReminder, setSendingReminder] = useState(false);
 
-  // Use the custom hook to handle modal logic
-  const {
-    selectedOrderId,
-    currentOrderDetails,
-    loadingDetails,
-    openModal,
-    closeModal,
-  } = useOrderDetailsModal(locale);
+  // Menu handlers
+  const handleClick = useCallback((event) => {
+    setAnchorEl(event.currentTarget);
+  }, []);
 
-  // Use the edit order modal hook
-  const {
-    selectedEditOrderId,
-    currentEditOrderDetails,
-    loadingEditDetails,
-    formSelectionData,
-    loadingFormSelection,
-    openEditModal,
-    closeEditModal,
-    refreshCustomizedTripsTable,
-  } = useEditOrderModal(locale);
-
-  const handleClick = (event) => setAnchorEl(event.currentTarget);
-  const handleClose = () => setAnchorEl(null);
+  const handleClose = useCallback(() => {
+    setAnchorEl(null);
+  }, []);
 
   // Send reminder logic
-  const sendRemind = async () => {
-    setLoading(true);
+  const sendRemind = useCallback(async () => {
+    if (!_id) return;
+
+    setSendingReminder(true);
+    handleClose();
+
     try {
       await axios.get(
         getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.REMIND}/${bookingId}`
+          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.REMIND}/${_id}`
         ),
         { headers }
       );
       enqueueSnackbar(t("forms.validation.reminderSentSuccessfully"), {
         variant: "success",
       });
+
+      // Notify parent component if callback provided
+      if (onActionComplete) {
+        onActionComplete("remind", _id);
+      }
     } catch (error) {
       console.error("Error sending reminder:", error);
       const errorMessage =
@@ -94,129 +156,189 @@ const ActionsDropdownMenu = ({ bookingId, bookingStatus }) => {
         t("forms.validation.api_errors.other_error");
       enqueueSnackbar(errorMessage, { variant: "error" });
     } finally {
-      setLoading(false);
-      handleClose();
+      setSendingReminder(false);
     }
-  };
+  }, [_id, headers, enqueueSnackbar, t, handleClose, onActionComplete]);
 
-  const showOrderDetails = () => {
-    openModal(bookingId);
+  // Show order details using shared modal
+  const showOrderDetails = useCallback(() => {
+    if (!bookingId || !openDetailsModal) return;
     handleClose();
-  };
+    openDetailsModal(bookingId);
+  }, [bookingId, openDetailsModal, handleClose]);
 
-  const showEditOrderForm = () => {
+  // Show edit order form using shared modal
+  const showEditOrderForm = useCallback(() => {
+    if (!bookingId || !openEditModal) return;
+    handleClose();
     openEditModal(bookingId);
+  }, [bookingId, openEditModal, handleClose]);
+
+  // Handle trip approval
+  const handleTripApproval = useCallback(() => {
+    if (!_id || !openApproveModal) {
+      console.warn("Approve modal handler not provided");
+      handleClose();
+      return;
+    }
     handleClose();
-  };
+    openApproveModal(_id);
+  }, [_id, openApproveModal, handleClose]);
+
+  // Handle trip rejection
+  const handleTripRejection = useCallback(() => {
+    if (!_id || !openRejectModal) {
+      console.warn("Reject modal handler not provided");
+      handleClose();
+      return;
+    }
+    handleClose();
+    openRejectModal(_id);
+  }, [_id, openRejectModal, handleClose]);
+
+  // Check if any action is available
+  const hasAnyMenuItems = useMemo(() => {
+    const hasDetailsItem = canShowDetails && hasDetails;
+    const hasRemindItem = canRemindGuestna && isEditable;
+    const hasEditItem = canUpdateTrip && isEditable;
+    const hasApprovalItem = hasApproval && openApproveModal;
+    const hasRejectionItem = hasRejection && openRejectModal;
+
+    return (
+      hasDetailsItem ||
+      hasRemindItem ||
+      hasEditItem ||
+      hasApprovalItem ||
+      hasRejectionItem
+    );
+  }, [
+    canShowDetails,
+    hasDetails,
+    canRemindGuestna,
+    isEditable,
+    canUpdateTrip,
+    hasApproval,
+    openApproveModal,
+    hasRejection,
+    openRejectModal,
+  ]);
+
+  // Check if any action is available (legacy - kept for backward compatibility)
+  const hasActions = useMemo(() => {
+    return (
+      canShowDetails ||
+      (canRemindGuestna && isEditable) ||
+      (canUpdateTrip && isEditable) ||
+      hasApproval
+    );
+  }, [
+    canShowDetails,
+    canRemindGuestna,
+    canUpdateTrip,
+    isEditable,
+    hasApproval,
+  ]);
+
+  // Don't render if no actions available
+  if (!hasActions) {
+    return null;
+  }
 
   return (
-    <>
-      <div>
-        <Button
-          id="basic-button"
-          aria-controls={open ? "basic-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? "true" : undefined}
-          onClick={handleClick}
-        >
-          {actionsIcon}
-        </Button>
-        <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          slotProps={{ list: { "aria-labelledby": "basic-button" } }}
-          PaperProps={{
-            sx: {
-              minWidth: "200px",
-              boxShadow: "0 0 4px 0 rgba(0, 0, 0, 0.16)",
-              textAlign: "center",
-            },
-          }}
-        >
-          {canShowDetails && (
-            <MenuItem
-              onClick={() => {
-                handleClose();
-                openModal(bookingId);
-              }}
-              disabled={loadingDetails}
+    <div>
+      <Button
+        id={`actions-button-${bookingId}`}
+        aria-controls={open ? `actions-menu-${bookingId}` : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
+        onClick={handleClick}
+        disabled={sendingReminder || !hasAnyMenuItems}
+      >
+        {sendingReminder ? (
+          <CircularProgress size={20} color="primary" />
+        ) : (
+          actionsIcon
+        )}
+      </Button>
+      <Menu
+        id={`actions-menu-${bookingId}`}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        slotProps={{
+          list: { "aria-labelledby": `actions-button-${bookingId}` },
+        }}
+        PaperProps={{
+          sx: {
+            minWidth: "200px",
+            boxShadow: "0 0 4px 0 rgba(0, 0, 0, 0.16)",
+            textAlign: "center",
+          },
+        }}
+      >
+        {canShowDetails && hasDetails && (
+          <MenuItem className="!font-somar">
+            <Link
+              href={`/${locale}/profile/bookings-management/orders/${bookingId}`}
             >
-              {loadingDetails ? (
-                <CircularProgress size={17} color="primary" />
-              ) : (
-                t("links.showDetails")
-              )}
-            </MenuItem>
-          )}
-
-          {canRemindGuestna && bookingStatus !== TRIP_STATUS.DONE && (
-            <MenuItem onClick={sendRemind} disabled={loading}>
-              {loading ? (
-                <CircularProgress size={17} color="primary" />
-              ) : (
-                t("links.remindGuestna")
-              )}
-            </MenuItem>
-          )}
-
-          {canUpdateTrip && bookingStatus !== TRIP_STATUS.DONE && (
-            <MenuItem onClick={showEditOrderForm} disabled={true}>
-              {loadingEditDetails ? (
-                <CircularProgress size={17} color="primary" />
-              ) : (
-                t("links.edit")
-              )}
-            </MenuItem>
-          )}
-        </Menu>
-      </div>
-
-      {/* Order Details Modal */}
-      <CustomizedModal
-        open={Boolean(selectedOrderId)}
-        handleClose={closeModal}
-        bgcolor="rgba(0, 0, 0, 0.5)"
-        customizedCloseButton={true}
-        padding={false}
-      >
-        {selectedOrderId && (
-          <OrderDetailsModal
-            orderId={selectedOrderId}
-            orderDetails={currentOrderDetails}
-            loading={loadingDetails}
-          />
+              {t("links.showDetails")}
+            </Link>
+          </MenuItem>
         )}
-      </CustomizedModal>
 
-      {/* Edit Order Modal */}
-      <CustomizedModal
-        open={Boolean(selectedEditOrderId)}
-        handleClose={closeEditModal}
-        bgcolor="rgba(0, 0, 0, 0.5)"
-        customizedCloseButton={true}
-        padding={false}
-      >
-        {selectedEditOrderId && (
-          <EditOrderForm
-            orderDetails={currentEditOrderDetails}
-            loading={loadingEditDetails}
-            onClose={closeEditModal}
-            orderId={selectedEditOrderId}
-            formSelectionData={
-              formSelectionData || {
-                categories: [],
-                cities: [],
-                academicStages: [],
-                services: [],
-              }
-            }
-            onOrderUpdate={refreshCustomizedTripsTable}
-          />
+        {canRemindGuestna && isEditable && (
+          <MenuItem
+            onClick={sendRemind}
+            disabled={sendingReminder}
+            className="!font-somar"
+          >
+            {sendingReminder ? (
+              <CircularProgress size={17} color="primary" />
+            ) : (
+              t("links.remindGuestna")
+            )}
+          </MenuItem>
         )}
-      </CustomizedModal>
-    </>
+
+        {canUpdateTrip && isEditable && (
+          <MenuItem onClick={showEditOrderForm} className="!font-somar">
+            {t("links.edit")}
+          </MenuItem>
+        )}
+
+        {/* Approval/Rejection section with proper permissions */}
+        {hasApproval && (
+          <MenuItem
+            onClick={handleTripApproval}
+            className="!font-somar"
+            disabled={!openApproveModal}
+            sx={{
+              color: "success.main",
+              "&:hover": {
+                backgroundColor: "success.lighter",
+              },
+            }}
+          >
+            {t("links.confirm")}
+          </MenuItem>
+        )}
+        {hasRejection && (
+          <MenuItem
+            onClick={handleTripRejection}
+            className="!font-somar"
+            disabled={!openRejectModal}
+            sx={{
+              color: "error.main",
+              "&:hover": {
+                backgroundColor: "error.lighter",
+              },
+            }}
+          >
+            {t("links.reject")}
+          </MenuItem>
+        )}
+      </Menu>
+    </div>
   );
 };
 

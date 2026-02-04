@@ -1,5 +1,9 @@
 {
   "common": {
+    "back": "رجوع",
+    "next": "التالي",
+    "submit": "ارسال",
+    "edit": "تعديل",
     "autocomplete": {
       "noOptions": "لا توجد خيارات",
       "loading": "جاري التحميل..."
@@ -103,7 +107,7 @@
     "close": "إغلاق",
     "error": "عذراً، لم نستطع إيجاد الصفحة التي تبحث عنها",
     "errorHappens": "حدث خطأ",
-    "notAvailable": "هذه الرحلة غير متاحة للحجز الان",
+    "notAvailable": "هذه الرحلة غير متاحة للحجز الان ",
     "expand": "توسيع",
     "collapse": "طي",
     "bookingStatus": {
@@ -126,7 +130,7 @@
       "CANCELLED": "ملغي",
       "SCHEDULED": "مجدول",
       "ENDED": "انتهت",
-      "PENDING_COMPANY_APPROVAL": "في انتظار الموافقة",
+      "PENDING_COMPANY_APPROVAL": "قيد الاعتماد",
       "APPROVED": "موافق عليه",
       "REJECTED": "مرفوض",
       "ON_HOLD": "معلق"
@@ -242,6 +246,7 @@
     "sendRequest": "إرسال الطلب",
     "confirmRequest": "تأكيد الطلب",
     "confirm": "أوافق",
+    "reject": "أرفض",
     "tripManagement": "إدارة الرحلات",
     "remindGuestna": "تذكير لجستنا",
     "sendToManager": "إرسال للمدير",
@@ -274,7 +279,9 @@
     "sendStcOtp": "ارسل رمز التحقق OTP",
     "printPDF": "طباعة PDF",
     "exportExcel": "تصدير Excel",
-    "print": "طباعة"
+    "print": "طباعة",
+    "viewSelectedLocation": "عرض الموقع المحدد",
+    "clickToSelectLocation": "انقر لتحديد الموقع"
   },
 
   "booking": {
@@ -1924,7 +1931,7 @@
 
     "email": {
       "name": "البريد الإلكتروني",
-      "error_tld": "الرجاء إدخال عنوان بريد إلكتروني صالح، يتضمن نطاقًا (مثل .com)",
+      "error_tld": "الرجاء إدخال عنوان بريد إلكتروني صالح، يتضمن نطاقًا (مثل .com).",
       "parentEmail": "البريد الإلكتروني لولي الأمر",
       "studentEmail": "البريد الإلكتروني للطالب (غير إلزامي)",
       "error": "من فضلك قم بإدخال بريد إلكتروني صحيح",
@@ -2162,6 +2169,8 @@
       }
     },
     "validation": {
+      "please_fill_required_fields": "من فضلك قم بملء جميع الحقول المطلوبة",
+
       "require": "هذا الحقل مطلوب",
       "sending": "يتم الارسال ...",
       "downloading": "يتم التحميل ...",
@@ -2209,39 +2218,199 @@
       "bookingDetails": "تفاصيل الحجز",
       "submit": "إرسال الطلب إلى فريق جستنا",
       "success": "تم إرسال طلبك بنجاح",
+      "edit_success": "تم التعديل بنجاح",
       "thanksMessage": {
         "title": "شكراً لك!",
         "description": "تم إرسال طلبك بنجاح. سيتواصل معك فريقنا خلال 24 ساعة."
       },
-
-      "organization": {
-        "label": "المدرسة",
-        "placeholder": "اسم المدرسة"
+      "city": {
+        "placeholder": "المدينة"
       },
 
-      "track": {
-        "label": "المسار التعليمي",
-        "placeholder": "المسار التعليمي",
+      "price": {
+        "placeholder": "الميزانية المقترحة بالريال السعودي",
         "error": {
-          "required": "المسار التعليمي مطلوب"
+          "min": "يجب أن لا يقل السعر عن 1 ريال سعودي"
         }
       },
-
-      "tripInfo": {
-        "title": "معلومات الرحلة",
-        "description": "وصف الرحلة"
+      "services": {
+        "label": "الخدمات",
+        "placeholder": "الخدمات"
+      },
+      "tripDescription": {
+        "placeholder": "وصف الرحلة",
+        "error": {
+          "min": "يجب أن يكون الوصف 10 أحرف على الأقل",
+          "max": "لا يمكن أن يتجاوز الوصف 500 حرف"
+        }
+      },
+      "specialRequirements": {
+        "placeholder": "أي متطلبات خاصة",
+        "error": {
+          "max": "لا يمكن أن تتجاوز المتطلبات الخاصة 300 حرف"
+        }
+      },
+      "attachFile": {
+        "label": "إرفاق ملف"
       },
 
-      "selectedTrip": {
-        "placeholder": "نوع الرحلة"
-      },
+      "steps": {
+        "school_info": {
+          "step_title": "بيانات المدرسة",
+          "title": "بيانات المدرسة الاساسية",
+          "school_card": "بيانات المدرسة رقم {count}",
+          "description": "من فضلك أدخل البيانات الأساسية لإنشاء الرحلة وربطها بالمدرسة.",
+          "status": {
+            "complete": "البيانات مكتملة"
+          },
+          "add_school": "إضافة مدرسة أخرى",
+          "fields": {
+            "organization": {
+              "label": "اسم المدرسة",
+              "placeholder": "اختر اسم المدرسة",
+              "single_option_notice": "توجد مدرسة واحدة فقط تم تحديدها  تلقائياً"
+            },
+            "track": {
+              "label": "المسار التعليمي",
+              "placeholder": "اختر المسارات التعليمية",
+              "helper_text": "قم باختيار المدرسة اولا",
+              "fetchError": "حدث خطأ في جلب المسارات التعليمية",
+              "conversion_notice": "تم تغيير المسار التعليمي ",
+              "no_tracks_available": "لا يوجد مسارات تعليمية متاحة للمدرسة المحددة",
+              "error": {
+                "required": "المسار التعليمي مطلوب"
+              }
+            },
+            "academicStages": {
+              "label": "المرحلة الدراسية",
+              "placeholder": "اختر المراحل الدراسية",
+              "helper_text": "قم باختيار المسار التعليمي اولا",
+              "no_common_stages": "لا يوجد مراحل  دراسية مشتركة",
+              "auto_removed_warning": "سيتم حذف المراحل التالية بنجاح"
+            }
+          }
+        },
+        "trip_info": {
+          "step_title": "معلومات الرحلة",
+          "title": "بيانات الرحلة المستهدفة",
+          "description": "من فضلك أدخل البيانات الأساسية لإنشاء الرحلة وربطها بالمؤسسة.",
+          "fields": {
+            "name": {
+              "ar": {
+                "label": "اسم الرحلة باللغة العربية",
+                "placeholder": "اكتب اسم الرحلة باللغة العربية",
+                "error": "من فضلك استخدم الحروف العربية"
+              },
+              "en": {
+                "label": " اسم الرحلة باللغه الانجليزية",
+                "placeholder": "اكتب اسم الرحلة باللغة الانجليزية",
+                "error": "من فضلك استخدم الحروف الانجليزية"
+              }
+            },
+            "trip_supCategory": {
+              "label": " نمط الرحلة",
+              "placeholder": "اختر نمط الرحلة"
+            },
+            "trip_category": {
+              "label": "نوع الرحلة",
+              "placeholder": "اختر نوع الرحلة"
+            },
 
-      "tripType": {
-        "placeholder": "مدة الرحلة",
-        "options": {
-          "oneDay": "رحلة يوم واحد",
-          "multiDay": "رحلة متعددة الأيام",
-          "halfDay": "رحلة نصف يوم "
+            "trip_type": {
+              "label": "مدة الرحلة",
+              "placeholder": "اختر مدة الرحلة",
+              "options": {
+                "oneDay": "رحلة يوم واحد",
+                "multiDay": "رحلة متعددة الأيام",
+                "halfDay": "رحلة نصف يوم "
+              }
+            },
+            "city": {
+              "label": "المدينة",
+              "placeholder": "اختر المدينة"
+            },
+            "services": {
+              "label": "الخدمات",
+              "placeholder": "اختر الخدمات"
+            }
+          }
+        },
+        "trip_date": {
+          "step_title": "تاريخ الرحلة",
+          "title": "موعد الرحلة والحجز",
+          "description": "حدد تاريخ الرحلة ووقت بدايتها ونهايتها، وآخر موعد مسموح للحجز.",
+          "fields": {
+            "start_date": {
+              "label": "تاريخ البدء",
+              "placeholder": "اختر تاريخ البدء",
+              "error": {
+                "start_before_end": "تاريخ البداية يجب أن يكون قبل تاريخ النهاية",
+                "past_date": "لا يمكن أن يكون تاريخ الرحلة في الماضي"
+              }
+            },
+            "end_date": {
+              "label": "تاريخ الانتهاء",
+              "placeholder": "اختر تاريخ الانتهاء",
+              "error": {
+                "end_before_start": "تاريخ البداية يجب أن يكون قبل تاريخ النهاية",
+                "past_date": "لا يمكن أن يكون تاريخ الرحلة في الماضي"
+              }
+            },
+            "from_hour": {
+              "label": "ابتداءً من الساعة",
+              "placeholder": "اختر الساعة"
+            },
+
+            "to_hour": {
+              "label": "حتى الساعة ",
+              "placeholder": "اختر الساعة"
+            }
+          }
+        },
+        "pricing": {
+          "step_title": "التسعير",
+          "title": "التسعير و عدد المقاعد ",
+          "description": "تحديد سعر الرحلة و عدد المقاعد المتاحة",
+          "fields": {
+            "avaliable_seats": {
+              "label": "عدد المقاعد المطلوبة",
+              "placeholder": "عدد المقاعد المتاحة للحجز",
+              "error": {
+                "min": "يجب أن يكون العدد شخص واحد على الأقل",
+                "max": "لا يمكن أن يتجاوز العدد 1000 شخص"
+              }
+            },
+            "price": {
+              "label": "الميزانية",
+              "placeholder": "ادخل الميزانية المقترحة",
+              "min": "الحد الأدني",
+              "max": "الحد الآقصي",
+              "error": {
+                "min": "يجب أن لا يقل السعر عن 1 ريال سعودي",
+                "min_exceed_max": "يجب ان لا يزيد الحد الادني عن الحد الاقصي"
+              }
+            }
+          }
+        },
+        "additional_info": {
+          "step_title": "معلومات إضافية",
+          "title": "",
+          "description": "",
+          "fields": {
+            "special_requirements": {
+              "label": "متطلبات خاصة",
+              "placeholder": "هل في أي تفاصيل أو ملاحظات حابب تضيفها؟ اكتبها هنا",
+              "error": {
+                "max": "لا يمكن أن تتجاوز المتطلبات الخاصة 10000 حرف"
+              }
+            },
+            "attach_file": {
+              "label": "إرفاق ملف",
+              "placeholder": "أضف ملف",
+              "success": "تم ارفاق الملف بنجاح",
+              "error": "حدث خطأ أثناء ارفاق الملف"
+            }
+          }
         }
       },
 
@@ -2261,52 +2430,78 @@
           "max": "لا يمكن أن يتجاوز العدد 1000 شخص"
         }
       },
-
-      "proposedTripDate": {
-        "startLabel": "تاريخ بداية الرحلة",
-        "endLabel": "تاريخ نهاية الرحلة",
-        "error": {
-          "pastDate": "لا يمكن أن يكون تاريخ الرحلة في الماضي",
-          "startAfterEnd": "تاريخ البداية يجب أن يكون قبل تاريخ النهاية",
-          "endBeforeStart": "تاريخ النهاية يجب أن يكون بعد تاريخ البداية (يمكن أن يكون نفس التاريخ لرحلة يوم واحد)"
+      "rejection": {
+        "title": "تأكيد رفض عرض السعر",
+        "description": "قبل المتابعة، يُفضّل تحديد سبب رفض عرض السعر. سيساعدنا ذلك على تحسين العروض المقدمة مستقبلًا (اختياري).",
+        "reasons": {
+          "inappropriate_price": "السعر غير مناسب",
+          "inappropriate_details": "تفاصيل البرنامج غير مناسبة",
+          "inappropriate_timing": "التوقيت غير مناسب",
+          "other": "سبب آخر"
+        },
+        "customMessagePlaceholder": "يرجى تحديد السبب...",
+        "confirmButton": "تأكيد الرفض",
+        "submitting": "جارٍ الرفض...",
+        "order_rejected_successfully": "تم رفض الطلب بنجاح",
+        "validation": {
+          "pleaseSelectReason": "يرجى اختيار سبب الرفض",
+          "pleaseProvideCustomReason": "يرجى توضيح السبب",
+          "customReasonMinLength": "يجب ألا يقل السبب عن 10 أحرف",
+          "minimumCharacters": "الحد الأدنى {{count}} أحرف",
+          "reminderSentSuccessfully": "تم إرسال التذكير بنجاح",
+          "api_errors": {
+            "other_error": "حدث خطأ. يرجى المحاولة مرة أخرى."
+          }
         }
       },
-
-      "city": {
-        "placeholder": "المدينة"
-      },
-
-      "price": {
-        "placeholder": "الميزانية المقترحة بالريال السعودي",
-        "error": {
-          "min": "يجب أن لا يقل السعر عن 1 ريال سعودي"
+      "approval": {
+        "title": "تأكيد الموافقة على عرض السعر",
+        "description": "بالموافقة على عرض السعر، فإنك توافق على الشروط والأحكام الخاصة بنا. يرجى التأكد من قراءتها وفهمها قبل المتابعة.",
+        "confirmButton": "تأكيد الموافقة",
+        "view_selected_location": "عرض الموقع المحدد",
+        "submitting": "جارٍ الموافقة...",
+        "order_approved_successfully": "تمت الموافقة على الطلب بنجاح",
+        "school_amount": {
+          "placeholder": "أدخل نسبة المدرسة",
+          "label": "نسبة المدرسة"
+        },
+        "gathering_location": {
+          "placeholder": "اختر موقع التجمع",
+          "label": "موقع التجمع",
+          "location_selected": "تم اختيار الموقع",
+          "both_required": "خط العرض وخط الطول مطلوبان",
+          "text_helper": "انقر على الخريطة لاختيار نقطة التجمع. سيتم تعبئة الإحداثيات تلقائيًا في الحقول أعلاه.",
+          "manual_coordinates_helper": "يمكنك إدخال الإحداثيات يدويًا أو اختيار موقع من الخريطة أدناه",
+          "manual_coordinates_label": "إدخال الإحداثيات يدويًا (اختياري)",
+          "lat": {
+            "label": "خط العرض",
+            "placeholder": "أدخل خط عرض موقع التجمع"
+          },
+          "lng": {
+            "label": "خط الطول",
+            "placeholder": "أدخل خط طول موقع التجمع"
+          }
+        },
+        "validation": {
+          "latitudeRequired": "خط العرض مطلوب",
+          "latitudeRange": "يجب أن يكون خط العرض بين -90 و 90",
+          "latitudeInvalid": "يجب أن يكون خط العرض رقمًا صالحًا",
+          "longitudeRequired": "خط الطول مطلوب",
+          "longitudeRange": "يجب أن يكون خط الطول بين -180 و 180",
+          "longitudeInvalid": "يجب أن يكون خط الطول رقمًا صالحًا",
+          "schoolAmountRequired": "نسبة المدرسة مطلوبة",
+          "schoolAmountPositive": "يجب أن تكون نسبة المدرسة رقمًا موجبًا",
+          "schoolAmountInteger": "يجب أن تكون نسبة المدرسة رقمًا صحيحًا",
+          "schoolAmountMinimum": "يجب ألا تقل نسبة المدرسة عن 1",
+          "schoolAmountInvalid": "يجب أن تكون نسبة المدرسة رقمًا صالحًا"
         }
-      },
-
-      "services": {
-        "label": "الخدمات",
-        "placeholder": "الخدمات"
-      },
-
-      "tripDescription": {
-        "placeholder": "وصف الرحلة",
-        "error": {
-          "min": "يجب أن يكون الوصف 10 أحرف على الأقل",
-          "max": "لا يمكن أن يتجاوز الوصف 500 حرف"
-        }
-      },
-
-      "specialRequirements": {
-        "placeholder": "أي متطلبات خاصة",
-        "error": {
-          "max": "لا يمكن أن تتجاوز المتطلبات الخاصة 300 حرف"
-        }
-      },
-
-      "attachFile": {
-        "label": "إرفاق ملف"
       }
     }
+  },
+
+  "order_details": {
+    "title": "مشاهدة تفاصيل الطلب",
+    "no_order_found": "لم يتم العثور على طلبات"
   },
 
   "schoolRegister": {

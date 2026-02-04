@@ -3,261 +3,748 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 
-import { memo, useState, useEffect } from "react";
+import { memo, useState, useRef, useMemo, useEffect } from "react";
 import { Formik } from "formik";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { CircularProgress } from "@mui/material";
+import {
+  CircularProgress,
+  Stepper,
+  Step,
+  StepLabel,
+  Box,
+  Alert,
+} from "@mui/material";
 
-import { createCustomNewTripSchema } from "@utils/validationSchemas";
+import {
+  createCustomNewTripSchema,
+  editCustomTripSchema,
+} from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import getErrorMessage from "@utils/getErrorMessage";
 import getProxyUrl from "@utils/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import TextInputGroup from "../TextInputGroup";
-import SelectionGroup from "../SelectionGroup";
-import FileUploadGroup from "../FileUploadGroup";
+import StepSchoolInfo from "./steps/StepSchoolInfo";
+import StepTripInfo from "./steps/StepTripInfo";
+import StepTripDate from "./steps/StepTripDate";
+import StepPricing from "./steps/StepPricing";
+import StepAdditionalInfo from "./steps/StepAdditionalInfo";
 
-const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
+// ============================================================================
+// Deep Validation Helper Functions
+// ============================================================================
+
+/**
+ * Get all error paths from nested error object (up to 3 levels deep)
+ */
+const getDeepErrorPaths = (errors, prefix = "", depth = 0) => {
+  if (depth >= 3 || !errors || typeof errors !== "object") {
+    return [];
+  }
+
+  const errorPaths = [];
+
+  Object.keys(errors).forEach((key) => {
+    const currentPath = prefix ? `${prefix}.${key}` : key;
+    const value = errors[key];
+
+    if (typeof value === "string") {
+      errorPaths.push(currentPath);
+    } else if (Array.isArray(value)) {
+      value.forEach((item, index) => {
+        if (typeof item === "object" && item !== null) {
+          const arrayPath = `${currentPath}[${index}]`;
+          errorPaths.push(...getDeepErrorPaths(item, arrayPath, depth + 1));
+        }
+      });
+    } else if (typeof value === "object" && value !== null) {
+      errorPaths.push(...getDeepErrorPaths(value, currentPath, depth + 1));
+    }
+  });
+
+  return errorPaths;
+};
+
+/**
+ * Get human-readable field label from path
+ */
+const getFieldLabel = (path, t) => {
+  const translations = {
+    schoolsInfo: t("steps.school_info.title"),
+    organization: t("steps.school_info.fields.organization.label"),
+    track: t("steps.school_info.fields.track.label"),
+    tracks: t("steps.school_info.fields.track.label"),
+    academicStages: t("steps.school_info.fields.academicStages.label"),
+    category: t("steps.trip_info.fields.trip_category.label"),
+    supCategory: t("steps.trip_info.fields.trip_supCategory.label"),
+    tripType: t("steps.trip_info.fields.trip_type.label"),
+    city: t("steps.trip_info.fields.city.label"),
+    services: t("steps.trip_info.fields.services.label"),
+    name: t("steps.trip_info.fields.name.en.label"),
+    "name.en": t("steps.trip_info.fields.name.en.label"),
+    "name.ar": t("steps.trip_info.fields.name.ar.label"),
+    day: t("steps.trip_date.fields.start_date.label"),
+    endDay: t("steps.trip_date.fields.end_date.label"),
+    fromHour: t("steps.trip_date.fields.from_hour.label"),
+    toHour: t("steps.trip_date.fields.to_hour.label"),
+    priceRange: t("steps.pricing.fields.price.label"),
+    "priceRange.min": t("steps.pricing.fields.price.min"),
+    "priceRange.max": t("steps.pricing.fields.price.max"),
+    availableSeats: t("steps.pricing.fields.avaliable_seats.label"),
+    specialRequirements: t(
+      "steps.additional_info.fields.specialRequirements.label"
+    ),
+    file: t("steps.additional_info.fields.file.label"),
+  };
+
+  const cleanPath = path.replace(/\[\d+\]/g, "");
+
+  if (translations[cleanPath]) {
+    return translations[cleanPath];
+  }
+
+  const pathParts = cleanPath.split(".");
+  for (let i = pathParts.length; i > 0; i--) {
+    const partialPath = pathParts.slice(0, i).join(".");
+    if (translations[partialPath]) {
+      return translations[partialPath];
+    }
+  }
+
+  const lastPart = pathParts[pathParts.length - 1];
+  return lastPart.charAt(0).toUpperCase() + lastPart.slice(1);
+};
+
+/**
+ * Format error paths into user-friendly messages
+ */
+const formatErrorMessages = (errorPaths, t) => {
+  return errorPaths.map((path) => {
+    const label = getFieldLabel(path, t);
+
+    const arrayMatch = path.match(/\[(\d+)\]/);
+    if (arrayMatch) {
+      const index = parseInt(arrayMatch[1]) + 1;
+      return `${t("steps.school_info.school_card", { count: index })} - ${label}`;
+    }
+
+    return label;
+  });
+};
+
+/**
+ * Deep touch all fields in an object (up to 3 levels)
+ */
+const deepTouchFields = (obj, depth = 0) => {
+  if (depth >= 3 || !obj || typeof obj !== "object") {
+    return true;
+  }
+
+  const touched = {};
+
+  Object.keys(obj).forEach((key) => {
+    const value = obj[key];
+
+    if (Array.isArray(value)) {
+      touched[key] = value.map((item) => {
+        if (typeof item === "object" && item !== null) {
+          return deepTouchFields(item, depth + 1);
+        }
+        return true;
+      });
+    } else if (
+      typeof value === "object" &&
+      value !== null &&
+      !(value instanceof File)
+    ) {
+      touched[key] = deepTouchFields(value, depth + 1);
+    } else {
+      touched[key] = true;
+    }
+  });
+
+  return touched;
+};
+
+const CustomNewTripForm = ({
+  formSelectionData,
+  onClose,
+  onSuccess,
+  mode = "create",
+  editData = null,
+  orderId = null,
+}) => {
+  const [activeStep, setActiveStep] = useState(0);
   const [formErrors, setFormErrors] = useState([]);
-  const [tracksData, setTracksData] = useState([]);
-  const [isLoadingTracks, setIsLoadingTracks] = useState(false);
+  const [showValidationErrors, setShowValidationErrors] = useState(false);
+  const [attemptedNext, setAttemptedNext] = useState(false);
 
-  const selectedOrganization = useSelector(
-    (state) => state.selectedOrganizations.organizations
+  const { selectedIds, organizations, allSelected } = useSelector(
+    (state) => state.selectedOrganizations
   );
 
   const locale = useLocale();
-  const t = useTranslations();
+  const t = useTranslations("forms.customTrip");
+  const t2 = useTranslations();
+  const formRef = useRef(null);
 
-  const headers = getHeaders(locale);
-  const customTripSchema = createCustomNewTripSchema(t);
+  const headers = useMemo(() => getHeaders(locale), [locale]);
   const { enqueueSnackbar } = useSnackbar();
 
-  // Keep full objects for _id lookup
-  const organizationData = selectedOrganization || [];
-  const categoryData = formSelectionData.categories;
+  const isEditMode = mode === "edit";
+
+  useEffect(() => {
+    if (isEditMode && !orderId) {
+      console.error("Edit mode requires orderId");
+    }
+    if (isEditMode && !editData) {
+      console.warn("Edit mode: No edit data provided");
+    }
+  }, [isEditMode, orderId, editData]);
+
+  const categoryData = formSelectionData?.categories || [];
   const tripTypeData = [
     {
-      name: t("forms.customTrip.tripType.options.halfDay"),
+      name: t("steps.trip_info.fields.trip_type.options.halfDay"),
       _id: CONSTANT_VALUES.HALF_DAY,
     },
     {
-      name: t("forms.customTrip.tripType.options.oneDay"),
+      name: t("steps.trip_info.fields.trip_type.options.oneDay"),
       _id: CONSTANT_VALUES.ACTIVITY,
     },
     {
-      name: t("forms.customTrip.tripType.options.multiDay"),
+      name: t("steps.trip_info.fields.trip_type.options.multiDay"),
       _id: CONSTANT_VALUES.PACKAGE,
     },
   ];
-  const cityData = formSelectionData.cities;
-  const academicStageData = formSelectionData.academicStages;
-  const servicesData = formSelectionData.services;
+  const cityData = formSelectionData?.cities || [];
+  const academicStagesData = formSelectionData?.academicStages || [];
+  const servicesData = formSelectionData?.services || [];
+  const supCategoryData = formSelectionData?.supCategory || [];
 
-  // Extract names for dropdown display
-  const organizationOptions = organizationData.map((item) => item.name);
-  const categoryOptions = categoryData.map((item) => item.name);
-  const tripTypeOptions = tripTypeData.map((item) => item.name);
-  const cityOptions = cityData.map((item) => item.name);
-  const academicStageOptions = academicStageData.map((item) => item.name);
-  const servicesOptions = servicesData.map((item) => item.name);
+  const organizationsOptions = useMemo(() => {
+    if (isEditMode && editData?.organizations) {
+      return editData.organizations;
+    }
 
-  // Format track options: educationSystem + gender + academicStages
-  const trackOptions = tracksData.map((track) => {
-    const stages =
-      track.academicStages?.map((stage) => stage.name).join(", ") || "";
-    return {
-      name: `${track.educationSystem} - ${t(
-        `common.${track.gender}`
-      )} - ${stages}`,
-      _id: track._id,
-    };
-  });
-  const trackDisplayOptions = trackOptions.map((item) => item.name);
+    if (allSelected) {
+      return organizations;
+    }
 
-  // Helper function to find _id by name
-  const findIdByName = (options, name) => {
-    const option = options.find((opt) => opt.name === name);
-    return option ? option._id : name;
+    if (selectedIds.length > 0 && !allSelected && organizations.length > 0) {
+      return selectedIds
+        .map((id) => organizations.find((org) => org._id === id))
+        .filter(Boolean);
+    }
+
+    return [];
+  }, [organizations, selectedIds, allSelected, isEditMode, editData]);
+
+  const categoryOptions = categoryData;
+  const tripTypeOptions = tripTypeData;
+  const cityOptions = cityData;
+  const academicStagesOptions = academicStagesData;
+  const servicesOptions = servicesData;
+  const supCategoryOptions = supCategoryData;
+
+  const steps = [
+    t("steps.school_info.step_title"),
+    t("steps.trip_info.step_title"),
+    t("steps.trip_date.step_title"),
+    t("steps.pricing.step_title"),
+    t("steps.additional_info.step_title"),
+  ];
+
+  const extractId = (value) => {
+    if (!value) return "";
+    return typeof value === "object" && value._id ? value._id : value;
   };
 
-  // Fetch tracks when organization is selected
-  const fetchTracksByOrganization = async (organizationId) => {
-    if (!organizationId) {
-      setTracksData([]);
+  const extractIds = (array) => {
+    if (!Array.isArray(array)) return [];
+    return array.map((item) => extractId(item)).filter(Boolean);
+  };
+
+  const getInitialValues = useMemo(() => {
+    if (isEditMode && editData) {
+      const priceRange = {
+        min: editData.priceRange?.min ?? editData.minPrice ?? 0,
+        max: editData.priceRange?.max ?? editData.maxPrice ?? 100,
+      };
+
+      const getTrackFromEditData = () => {
+        if (editData.schoolsInfo?.track) {
+          return extractId(editData.schoolsInfo.track);
+        }
+        if (editData.track) {
+          return extractId(editData.track);
+        }
+        if (
+          editData.schoolsInfo?.tracks &&
+          Array.isArray(editData.schoolsInfo.tracks)
+        ) {
+          const tracks = editData.schoolsInfo.tracks;
+          return tracks.length > 0 ? extractId(tracks[0]) : "";
+        }
+        if (editData.tracks && Array.isArray(editData.tracks)) {
+          const tracks = editData.tracks;
+          return tracks.length > 0 ? extractId(tracks[0]) : "";
+        }
+        return "";
+      };
+
+      const trackValue = getTrackFromEditData();
+
+      return {
+        schoolsInfo: {
+          organization: extractId(
+            editData.schoolsInfo?.organization || editData.organization
+          ),
+          track: trackValue,
+          academicStages: extractIds(
+            editData.schoolsInfo?.academicStages || editData.academicStages
+          ),
+        },
+        category: extractId(editData.category),
+        supCategory: extractId(editData.supCategory),
+        tripType: extractId(editData.tripType),
+        city: extractId(editData.city),
+        services: extractIds(editData.services),
+        name: editData.name || { en: "", ar: "" },
+        day: editData.day || "",
+        endDay: editData.endDay || "",
+        fromHour: editData.fromHour || "",
+        toHour: editData.toHour || "",
+        priceRange: priceRange,
+        availableSeats: editData.availableSeats || 0,
+        specialRequirements: editData.specialRequirements || "",
+        file: editData.file || "",
+        note: editData.note || "",
+      };
+    }
+
+    return {
+      schoolsInfo: [
+        {
+          organization: "",
+          tracks: [],
+          academicStages: [],
+        },
+      ],
+      day: "",
+      endDay: "",
+      availableSeats: 0,
+      category: "",
+      supCategory: "",
+      name: { en: "", ar: "" },
+      tripType: "",
+      city: "",
+      fromHour: "",
+      toHour: "",
+      priceRange: { min: "", max: "" },
+      specialRequirements: "",
+      services: [],
+      file: "",
+      note: "",
+    };
+  }, [isEditMode, editData]);
+
+  const getFieldsForStep = (step) => {
+    switch (step) {
+      case 0:
+        return ["schoolsInfo"];
+      case 1:
+        return [
+          "category",
+          "supCategory",
+          "tripType",
+          "city",
+          "services",
+          "name",
+        ];
+      case 2:
+        return ["day", "endDay", "fromHour", "toHour"];
+      case 3:
+        return ["priceRange", "availableSeats"];
+      case 4:
+        return ["specialRequirements", "file"];
+      default:
+        return [];
+    }
+  };
+
+  const hasStepErrors = (errors, step) => {
+    const stepFields = getFieldsForStep(step);
+
+    for (const field of stepFields) {
+      const fieldError = errors[field];
+
+      if (!fieldError) continue;
+
+      const errorPaths = getDeepErrorPaths({ [field]: fieldError }, "", 0);
+
+      if (errorPaths.length > 0) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  const getStepErrorMessages = (errors, step) => {
+    const stepFields = getFieldsForStep(step);
+    const allErrorPaths = [];
+
+    stepFields.forEach((field) => {
+      const fieldError = errors[field];
+      if (fieldError) {
+        const errorPaths = getDeepErrorPaths({ [field]: fieldError }, "", 0);
+        allErrorPaths.push(...errorPaths);
+      }
+    });
+
+    return formatErrorMessages(allErrorPaths, t);
+  };
+
+  const touchStepFields = (formik, step) => {
+    const stepFields = getFieldsForStep(step);
+    const fieldsToTouch = {};
+
+    stepFields.forEach((field) => {
+      const fieldValue = formik.values[field];
+
+      if (field === "schoolsInfo") {
+        if (isEditMode) {
+          fieldsToTouch.schoolsInfo = {
+            organization: true,
+            track: true,
+            academicStages: true,
+          };
+        } else {
+          fieldsToTouch.schoolsInfo = formik.values.schoolsInfo.map(() => ({
+            organization: true,
+            tracks: true,
+            academicStages: true,
+          }));
+        }
+      } else if (field === "name") {
+        fieldsToTouch.name = { en: true, ar: true };
+      } else if (field === "priceRange") {
+        fieldsToTouch.priceRange = { min: true, max: true };
+      } else if (
+        typeof fieldValue === "object" &&
+        fieldValue !== null &&
+        !(fieldValue instanceof File)
+      ) {
+        fieldsToTouch[field] = deepTouchFields(fieldValue);
+      } else {
+        fieldsToTouch[field] = true;
+      }
+    });
+
+    formik.setTouched({ ...formik.touched, ...fieldsToTouch }, true);
+  };
+
+  const handleNext = async (formik) => {
+    const { validateForm } = formik;
+
+    setAttemptedNext(true);
+
+    const errors = await validateForm();
+
+    const currentStepHasErrors = hasStepErrors(errors, activeStep);
+
+    if (currentStepHasErrors) {
+      touchStepFields(formik, activeStep);
+      setShowValidationErrors(true);
       return;
     }
 
-    setIsLoadingTracks(true);
-    try {
-      const response = await axios({
-        method: "get",
-        url: getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.TRACKS}/${organizationId}`
-        ),
-        headers,
-      });
-      setTracksData(response.data || []);
-    } catch (error) {
-      console.error("Error fetching tracks:", error);
-      setTracksData([]);
-    } finally {
-      setIsLoadingTracks(false);
+    setShowValidationErrors(false);
+    setAttemptedNext(false);
+
+    if (activeStep === steps.length - 1) {
+      formik.submitForm();
+    } else {
+      setActiveStep((prev) => prev + 1);
     }
   };
 
-  // Prevent negative values in number inputs
-  const handleKeyDown = (e) => {
-    if (e.key === "-" || e.key === "e" || e.key === "E" || e.key === "+") {
-      e.preventDefault();
-    }
+  const handleBack = () => {
+    setShowValidationErrors(false);
+    setAttemptedNext(false);
+    setActiveStep((prev) => prev - 1);
   };
 
-  // Handle input change to prevent negative values
-  const handleNumberChange = (formikHandleChange) => (e) => {
-    const value = e.target.value;
-    if (value < 1) {
-      e.target.value = 1;
-    }
-    formikHandleChange(e);
-  };
-
-  const handleSubmit = (values, { setSubmitting, resetForm }) => {
+  const prepareFormData = (values) => {
     const formData = new FormData();
 
-    // Add all form fields to FormData
     Object.keys(values).forEach((key) => {
       if (key === "file") {
-        // Always append file field, even if null/undefined
-        formData.append(key, values[key] || "");
-      } else if (values[key] !== null && values[key] !== undefined) {
-        let valueToSend = values[key];
-
-        // Convert names to _id for dropdown fields
-        switch (key) {
-          case "organization":
-            valueToSend = findIdByName(organizationData, values[key]);
-            break;
-          case "track":
-            valueToSend = findIdByName(trackOptions, values[key]);
-            break;
-          case "category":
-            valueToSend = findIdByName(categoryData, values[key]);
-            break;
-          case "tripType":
-            valueToSend = findIdByName(tripTypeData, values[key]);
-            break;
-          case "city":
-            valueToSend = findIdByName(cityData, values[key]);
-            break;
-          case "academicStages":
-            // Handle array for multi-select
-            if (Array.isArray(values[key])) {
-              valueToSend = values[key].map((name) =>
-                findIdByName(academicStageData, name)
-              );
-            } else {
-              valueToSend = findIdByName(academicStageData, values[key]);
-            }
-            break;
-          case "services":
-            // Handle array for multi-select
-            if (Array.isArray(values[key])) {
-              valueToSend = values[key].map((name) =>
-                findIdByName(servicesData, name)
-              );
-            } else {
-              valueToSend = findIdByName(servicesData, values[key]);
-            }
-            break;
+        if (values[key] instanceof File) {
+          formData.append(key, values[key]);
+        } else if (isEditMode && !values[key]) {
+          formData.append(key, "");
         }
-
-        // Handle arrays differently for FormData
-        if (Array.isArray(valueToSend)) {
-          // Append each array item individually with indexed keys
-          valueToSend.forEach((item, index) => {
+      } else if (key === "schoolsInfo") {
+        if (isEditMode) {
+          const school = values.schoolsInfo;
+          formData.append("schoolsInfo[organization]", school.organization);
+          if (school.track) {
+            formData.append("schoolsInfo[track]", school.track);
+          }
+          if (Array.isArray(school.academicStages)) {
+            school.academicStages.forEach((stageId, sIndex) => {
+              formData.append(
+                `schoolsInfo[academicStages][${sIndex}]`,
+                stageId
+              );
+            });
+          }
+        } else {
+          values.schoolsInfo.forEach((school, index) => {
+            formData.append(
+              `schoolsInfo[${index}][organization]`,
+              school.organization
+            );
+            if (Array.isArray(school.tracks)) {
+              school.tracks.forEach((trackId, tIndex) => {
+                formData.append(
+                  `schoolsInfo[${index}][tracks][${tIndex}]`,
+                  trackId
+                );
+              });
+            }
+            if (Array.isArray(school.academicStages)) {
+              school.academicStages.forEach((stageId, sIndex) => {
+                formData.append(
+                  `schoolsInfo[${index}][academicStages][${sIndex}]`,
+                  stageId
+                );
+              });
+            }
+          });
+        }
+      } else if (values[key] !== null && values[key] !== undefined) {
+        if (Array.isArray(values[key])) {
+          values[key].forEach((item, index) => {
             formData.append(`${key}[${index}]`, item);
           });
+        } else if (
+          typeof values[key] === "object" &&
+          !(values[key] instanceof File)
+        ) {
+          Object.keys(values[key]).forEach((subKey) => {
+            formData.append(`${key}[${subKey}]`, values[key][subKey]);
+          });
         } else {
-          formData.append(key, valueToSend);
+          formData.append(key, values[key]);
         }
       }
     });
 
-    const organizationId = findIdByName(organizationData, values.organization);
-
-    const config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: getProxyUrl(
-        `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ADD_NEW_ACTIVITY.CUSTOM_TRIP}`
-      ),
-      headers: {
-        ...headers,
-        "Content-Type": "multipart/form-data",
-        "profile-organizations": JSON.stringify([organizationId]),
-      },
-      data: formData,
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        setSubmitting(false);
-        setFormErrors([]);
-        resetForm();
-
-        const res = response.data;
-        if (res) {
-          console.log("Response data exists, showing success message");
-          enqueueSnackbar(t("forms.customTrip.success"), {
-            variant: "success",
-          });
-
-          // Call the success callback to refresh table data
-          if (onSuccess && typeof onSuccess === "function") {
-            console.log(
-              "Calling onSuccess callback from CustomNewTripForm with data:",
-              res
-            );
-            onSuccess(res);
-          } else {
-            console.log(
-              "onSuccess callback not available or not a function, type:",
-              typeof onSuccess
-            );
-            // Fallback: close modal if onClose is available
-            if (onClose && typeof onClose === "function") {
-              console.log("Calling onClose as fallback");
-              onClose();
-            }
-          }
-        } else {
-          console.log("No response data received");
-        }
-      })
-      .catch((error) => {
-        setSubmitting(false);
-        console.log("Error details:", error + formErrors);
-
-        const errorMessage = getErrorMessage(error, t);
-        enqueueSnackbar(errorMessage, {
-          variant: "error",
-        });
-
-        setFormErrors([errorMessage || "An unknown error occurred."]);
-      });
+    return formData;
   };
 
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    try {
+      const formData = prepareFormData(values);
+
+      const config = {
+        method: isEditMode ? "patch" : "post",
+        maxBodyLength: Infinity,
+        url: getProxyUrl(
+          isEditMode
+            ? `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.CUSTOM_TRIP_SUBMIT}/${orderId}`
+            : `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ADD_NEW_ACTIVITY.CUSTOM_TRIP}`
+        ),
+        headers: {
+          ...headers,
+          "Content-Type": "multipart/form-data",
+        },
+        data: formData,
+      };
+
+      const response = await axios.request(config);
+      setSubmitting(false);
+      setFormErrors([]);
+
+      const res = response.data;
+      if (res) {
+        enqueueSnackbar(isEditMode ? t("edit_success") : t("success"), {
+          variant: "success",
+        });
+
+        if (!isEditMode) {
+          resetForm();
+        }
+
+        if (onSuccess && typeof onSuccess === "function") {
+          onSuccess(res);
+        } else if (onClose && typeof onClose === "function") {
+          onClose();
+        }
+      }
+    } catch (error) {
+      setSubmitting(false);
+      console.error("Error submitting form:", error);
+      const errorMessage = getErrorMessage(error, t2);
+      enqueueSnackbar(errorMessage, {
+        variant: "error",
+      });
+      setFormErrors([errorMessage || "An unknown error occurred."]);
+    }
+  };
+
+  const customTripSchema = isEditMode
+    ? editCustomTripSchema(t2)
+    : createCustomNewTripSchema(t2);
+
   return (
-    <div className="px-4 py-8 bg-white rounded-2xl w-[90%] mx-auto">
-      <h3 className="pb-4 text-center text-lg font-medium text-black lg:text-2xl lg:pb-8">
-        {t("forms.customTrip.title")}
+    <div className="px-4 py-4 sm:px-6 sm:py-8 bg-white rounded-2xl mx-auto max-h-[90vh] overflow-y-auto sm:max-w-lg lg:max-w-6xl">
+      <h3 className="pb-4 text-center text-lg font-medium text-black lg:text-2xl sm:pb-6 lg:pb-8">
+        {isEditMode ? t("edit") : t("title")}
       </h3>
 
-      <div className="p-4">
+      <Box
+        className="mb-6 sm:mb-8 lg:mb-10 w-full"
+        dir={locale === "ar" ? "rtl" : "ltr"}
+      >
+        <Stepper
+          activeStep={activeStep}
+          orientation="horizontal"
+          alternativeLabel={false}
+          sx={{
+            "@media (max-width: 640px)": {
+              flexDirection: "column",
+              alignItems: "stretch",
+              gap: "0.1rem",
+            },
+            "@media (min-width: 641px)": {
+              flexDirection: "row",
+            },
+            "& .MuiStep-root": {
+              "@media (max-width: 640px)": {
+                padding: "0.2rem 0",
+              },
+            },
+            "& .MuiStepLabel-root": {
+              "@media (max-width: 640px)": {
+                flexDirection: "row",
+                alignItems: "center",
+                padding: "0.1rem",
+              },
+            },
+            "& .MuiStepLabel-root .Mui-completed": {
+              color: "var(--color-main)",
+            },
+            "& .MuiStepLabel-root .Mui-active": {
+              color: "var(--color-main)",
+            },
+            "& .MuiStepLabel-label.Mui-completed": {
+              color: "var(--color-main)",
+              fontWeight: 400,
+            },
+            "& .MuiStepLabel-label.Mui-active": {
+              color: "var(--color-main)",
+              fontWeight: 600,
+            },
+            "& .MuiStepConnector-root": {
+              "@media (min-width: 641px)": {
+                left: "calc(-50% + 16px)",
+                right: "calc(50% + 16px)",
+              },
+              "@media (max-width: 640px)": {
+                display: "none",
+              },
+              "& .MuiStepConnector-line": {
+                borderColor: "#e0e0e0",
+                borderTopWidth: 2,
+              },
+              "&.Mui-completed .MuiStepConnector-line": {
+                borderColor: "var(--color-success)",
+              },
+              "&.Mui-active .MuiStepConnector-line": {
+                borderColor: "var(--color-main)",
+              },
+            },
+            "& .MuiStep-root:first-of-type .MuiStepConnector-root": {
+              display: "none",
+            },
+            "& .MuiStepIcon-root": {
+              fontSize: "2rem",
+              "@media (min-width: 641px)": {
+                fontSize: "2.5rem",
+              },
+              border: "1px solid",
+              "&.Mui-completed": {
+                color: "var(--color-main)",
+                borderColor: "var(--color-main)",
+                backgroundColor: "white",
+                padding: "0px",
+                boxShadow: "none",
+              },
+              "&.Mui-active": {
+                color: "var(--color-main)",
+              },
+              "&:not(.Mui-active):not(.Mui-completed)": {
+                color: "#bdbdbd",
+              },
+            },
+            "& .MuiStepLabel-label": {
+              marginInlineStart: "8px",
+              fontSize: "0.875rem",
+              "@media (min-width: 641px)": {
+                fontSize: "1rem",
+                marginInlineStart: "5px",
+              },
+              fontFamily: "var(--font-somar), sans-serif",
+            },
+          }}
+        >
+          {steps.map((label, index) => (
+            <Step key={label}>
+              <StepLabel
+                icon={index + 1}
+                slotProps={{
+                  stepIcon: {
+                    sx: {
+                      width: { xs: 32, sm: 36 },
+                      height: { xs: 32, sm: 36 },
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: "50%",
+                      border: "2px solid",
+                      borderColor:
+                        index === activeStep
+                          ? "var(--color-main)"
+                          : index < activeStep
+                            ? "var(--color-success)"
+                            : "#bdbdbd",
+                      backgroundColor:
+                        index === activeStep
+                          ? "var(--color-main)"
+                          : index < activeStep
+                            ? "var(--color-success)"
+                            : "white",
+                      color: index <= activeStep ? "white" : "#bdbdbd",
+                      fontWeight: "bold",
+                      fontSize: { xs: "1rem", sm: "1.125rem" },
+                      zIndex: 1,
+                    },
+                  },
+                }}
+              >
+                {label}
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </Box>
+
+      <div className="p-2 sm:p-4">
         <style jsx>{`
           .somar-placeholder input::placeholder,
           .somar-placeholder textarea::placeholder {
@@ -272,327 +759,112 @@ const CustomNewTripForm = ({ formSelectionData, onClose, onSuccess }) => {
           }
         `}</style>
         <Formik
-          initialValues={{
-            organization: "",
-            track: "",
-            category: "",
-            tripType: "",
-            city: "",
-            academicStages: [],
-            availableSeats: "",
-            basePrice: "",
-            day: "",
-            endDay: "",
-            services: [],
-            description: "",
-            specialRequirements: "",
-            file: null,
-          }}
+          initialValues={getInitialValues}
           validationSchema={customTripSchema}
           onSubmit={handleSubmit}
           enableReinitialize
           validateOnBlur={true}
           validateOnChange={true}
-          validateOnMount={true}
+          validateOnMount={false}
+          innerRef={formRef}
         >
-          {({
-            values,
-            errors,
-            touched,
-            isValid,
-            dirty,
-            handleBlur,
-            handleChange,
-            handleSubmit,
-            isSubmitting,
-            setFieldValue,
-          }) => (
-            <form onSubmit={handleSubmit}>
-              {selectedOrganization && selectedOrganization.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div className="somar-placeholder">
-                    <SelectionGroup
-                      name="organization"
-                      value={values.organization}
-                      onChange={(e) => {
-                        handleChange(e);
-                        const orgId = findIdByName(
-                          organizationData,
-                          e.target.value
-                        );
-                        fetchTracksByOrganization(orgId);
-                        setFieldValue("track", "");
-                      }}
-                      onBlur={handleBlur}
-                      touched={touched.organization}
-                      errors={errors.organization}
-                      placeholder={t(
-                        "forms.customTrip.organization.placeholder"
-                      )}
-                      list={organizationOptions}
+          {(formik) => {
+            const { isSubmitting, errors, touched } = formik;
+
+            const currentStepHasErrors = hasStepErrors(errors, activeStep);
+
+
+            // Auto-touch fields when button would be disabled and user attempted to proceed
+            useEffect(() => {
+              if (attemptedNext && currentStepHasErrors) {
+                touchStepFields(formik, activeStep);
+              }
+            }, [attemptedNext, currentStepHasErrors, activeStep]);
+
+            const renderStepContent = (step) => {
+              switch (step) {
+                case 0:
+                  return (
+                    <StepSchoolInfo
+                      isEditMode={isEditMode}
+                      organizationOptions={organizationsOptions}
+                      academicStagesOptions={academicStagesOptions}
                     />
-                  </div>
-                  <div className="somar-placeholder">
-                    <SelectionGroup
-                      name="track"
-                      value={values.track}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      touched={touched.track}
-                      errors={errors.track}
-                      placeholder={
-                        isLoadingTracks
-                          ? t("forms.validation.loading")
-                          : t("forms.customTrip.track.placeholder")
-                      }
-                      list={trackDisplayOptions}
-                      disabled={isLoadingTracks || !values.organization}
-                    />
-                  </div>
-                </div>
-              )}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Selected Trip */}
-                <div className="somar-placeholder">
-                  <SelectionGroup
-                    name="category"
-                    value={values.category}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    touched={touched.category}
-                    errors={errors.category}
-                    placeholder={t("forms.customTrip.selectedTrip.placeholder")}
-                    list={categoryOptions}
-                  />
-                </div>
-
-                {/* Trip Type */}
-                <div className="somar-placeholder">
-                  <SelectionGroup
-                    name="tripType"
-                    value={values.tripType}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    touched={touched.tripType}
-                    errors={errors.tripType}
-                    placeholder={t("forms.customTrip.tripType.placeholder")}
-                    list={tripTypeOptions}
-                  />
-                </div>
-
-                {/* City */}
-                <div className="somar-placeholder">
-                  <SelectionGroup
-                    name="city"
-                    value={values.city}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    touched={touched.city}
-                    errors={errors.city}
-                    placeholder={t("forms.customTrip.city.placeholder")}
-                    list={cityOptions}
-                  />
-                </div>
-
-                {/* Academic Stage */}
-                <div className="somar-placeholder">
-                  <SelectionGroup
-                    name="academicStages"
-                    value={values.academicStages}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    touched={touched.academicStages}
-                    errors={errors.academicStages}
-                    placeholder={t("forms.customTrip.targetedTrip.placeholder")}
-                    list={academicStageOptions}
-                    multiple={true}
-                  />
-                </div>
-
-                {/* Services */}
-                <div className="somar-placeholder">
-                  <SelectionGroup
-                    name="services"
-                    value={values.services}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    touched={touched.services}
-                    errors={errors.services}
-                    placeholder={t("forms.customTrip.services.placeholder")}
-                    list={servicesOptions}
-                    multiple={true}
-                  />
-                </div>
-
-                {/* Expected Participants */}
-                <div className="somar-placeholder">
-                  <TextInputGroup
-                    type="number"
-                    name="availableSeats"
-                    value={values.availableSeats}
-                    errors={errors.availableSeats}
-                    touched={touched.availableSeats}
-                    onChange={handleNumberChange(handleChange)}
-                    onBlur={handleBlur}
-                    onKeyDown={handleKeyDown}
-                    placeholder={t(
-                      "forms.customTrip.expectedParticipants.placeholder"
-                    )}
-                    min="0"
-                  />
-                </div>
-
-                {/* Proposed Trip Date */}
-                <div className="somar-placeholder">
-                  <TextInputGroup
-                    label={t("forms.customTrip.proposedTripDate.startLabel")}
-                    type="date"
-                    name="day"
-                    value={values.day}
-                    errors={errors.day}
-                    touched={touched.day}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    min={new Date().toISOString().split("T")[0]}
-                    max={values.endDay || undefined}
-                    style={{ cursor: "pointer" }}
-                    onClick={(e) =>
-                      e.target.showPicker && e.target.showPicker()
-                    }
-                  />
-                </div>
-
-                {/* End Date - Only show for multi-day trips */}
-                {(() => {
-                  const selectedTripType = tripTypeData.find(
-                    (item) => item.name === values.tripType
                   );
-                  return selectedTripType?._id === CONSTANT_VALUES.PACKAGE;
-                })() && (
-                  <div className="somar-placeholder">
-                    <TextInputGroup
-                      label={t("forms.customTrip.proposedTripDate.endLabel")}
-                      type="date"
-                      name="endDay"
-                      value={values.endDay}
-                      errors={errors.endDay}
-                      touched={touched.endDay}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      min={values.day || new Date().toISOString().split("T")[0]}
-                      style={{ cursor: "pointer" }}
-                      onClick={(e) =>
-                        e.target.showPicker && e.target.showPicker()
-                      }
+                case 1:
+                  return (
+                    <StepTripInfo
+                      categoryOptions={categoryOptions}
+                      supCategoryOptions={supCategoryOptions}
+                      tripTypeOptions={tripTypeOptions}
+                      cityOptions={cityOptions}
+                      servicesOptions={servicesOptions}
                     />
-                  </div>
-                )}
+                  );
+                case 2:
+                  return <StepTripDate tripTypeData={tripTypeData} />;
+                case 3:
+                  return <StepPricing />;
+                case 4:
+                  return <StepAdditionalInfo />;
+                default:
+                  return <div>Unknown Step</div>;
+              }
+            };
 
-                {/* Price */}
-                <div className="somar-placeholder">
-                  <TextInputGroup
-                    label={t("forms.customTrip.price.placeholder")}
-                    type="number"
-                    name="basePrice"
-                    value={values.basePrice}
-                    errors={errors.basePrice}
-                    touched={touched.basePrice}
-                    onChange={handleNumberChange(handleChange)}
-                    onBlur={handleBlur}
-                    onKeyDown={handleKeyDown}
-                    placeholder={t("forms.customTrip.price.placeholder")}
-                    min="0"
-                    minLength={1}
-                    maxLength={8}
-                  />
-                </div>
-              </div>
+            return (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleNext(formik);
+                }}
+              >
 
-              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Trip Description */}
-                <div className="somar-placeholder">
-                  <TextInputGroup
-                    type="text"
-                    name="description"
-                    value={values.description}
-                    errors={errors.description}
-                    touched={touched.description}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder={t(
-                      "forms.customTrip.tripDescription.placeholder"
+                {renderStepContent(activeStep)}
+
+                <div className="flex flex-col-reverse sm:flex-row justify-between gap-3 sm:gap-0 mt-6 sm:mt-8">
+                  <button
+                    type="button"
+                    onClick={handleBack}
+                    disabled={activeStep === 0 || isSubmitting}
+                    className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg border text-sm sm:text-base ${
+                      activeStep === 0
+                        ? "opacity-50 cursor-not-allowed bg-gray-100 text-gray-400"
+                        : "border-mainColor text-mainColor hover:bg-mainColor hover:text-white transition-colors"
+                    }`}
+                  >
+                    {t2("common.back")}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleNext(formik)}
+                    disabled={
+                      isSubmitting ||
+                      currentStepHasErrors ||
+                      Object.keys(touched).length === 0
+                    }
+                    className="px-4 sm:px-6 py-2 sm:py-2.5 bg-mainColor text-white rounded-lg hover:bg-titleColor disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <CircularProgress color="inherit" size={18} />
+                        <span>{t2("forms.validation.sending")}</span>
+                      </div>
+                    ) : activeStep === steps.length - 1 ? (
+                      isEditMode ? (
+                        t2("common.edit")
+                      ) : (
+                        t2("common.submit")
+                      )
+                    ) : (
+                      t2("common.next")
                     )}
-                    textarea={true}
-                    rows={3}
-                  />
+                  </button>
                 </div>
-
-                {/* Special Requirements */}
-                <div className="somar-placeholder">
-                  <TextInputGroup
-                    type="text"
-                    name="specialRequirements"
-                    value={values.specialRequirements}
-                    errors={errors.specialRequirements}
-                    touched={touched.specialRequirements}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder={t(
-                      "forms.customTrip.specialRequirements.placeholder"
-                    )}
-                    textarea={true}
-                    rows={3}
-                  />
-                </div>
-              </div>
-
-              {/* File Upload */}
-              <div className="mt-6">
-                <FileUploadGroup
-                  name="file"
-                  placeholder={t("forms.customTrip.attachFile.label")}
-                  errors={errors.file}
-                  touched={touched.file}
-                  onBlur={handleBlur}
-                  value={values.file}
-                  onFileChange={(e) => {
-                    const file = e.target.files && e.target.files[0];
-                    setFieldValue("file", file);
-                  }}
-                  accept="image/*,application/pdf,.doc,.docx"
-                  maxSizeInMB={5}
-                  allowedTypes={[
-                    "image/jpeg",
-                    "image/png",
-                    "image/jpg",
-                    "image/webp",
-                    "application/pdf",
-                    "application/msword",
-                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                  ]}
-                  disallowedTypes={["image/svg+xml"]}
-                />
-              </div>
-
-              {/* Submit Button */}
-              <div className="w-full pt-4 lg:pt-8 centered">
-                <button
-                  type="submit"
-                  disabled={isSubmitting || !isValid || !dirty}
-                  className=" centered w-full py-3 text-white bg-mainColor rounded-lg hover:bg-titleColor disabled:opacity-50"
-                >
-                  {isSubmitting ? (
-                    <div className="flex items-center gap-2">
-                      <CircularProgress color="inherit" size={20} />
-                      {t("forms.validation.sending")}
-                    </div>
-                  ) : (
-                    t("forms.customTrip.submit")
-                  )}
-                </button>
-              </div>
-            </form>
-          )}
+              </form>
+            );
+          }}
         </Formik>
       </div>
     </div>

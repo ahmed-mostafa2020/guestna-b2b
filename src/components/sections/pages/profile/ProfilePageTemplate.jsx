@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 
 import { useFetchData } from "@hooks/useFetchData";
 import ErrorComponent from "@feedback/error/ErrorComponent";
@@ -37,7 +37,7 @@ const ProfilePageTemplate = ({
       }
     : {};
 
-  const { data, error, isLoading } = useFetchData(
+  const { data, error, isLoading, refetch } = useFetchData(
     endpoint,
     {},
     {
@@ -48,6 +48,11 @@ const ProfilePageTemplate = ({
     }
   );
 
+  const handleRefetch = useCallback(() => {
+    refetch();
+  }, [refetch]);
+
+  // Set document title
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${title}`;
   }, [t, title]);
@@ -116,23 +121,25 @@ const ProfilePageTemplate = ({
 
           {typeof contentComponent === "function"
             ? contentComponent(
-                data,
-                currentPage,
-                setCurrentPage,
-                enablePagination,
-                searchTerm,
-                setSearchTerm
+                data, // 1st param: data from API
+                currentPage, // 2nd param: current page number
+                setCurrentPage, // 3rd param: function to update page
+                enablePagination, // 4th param: boolean flag
+                searchTerm, // 5th param: search term string
+                setSearchTerm, // 6th param: function to update search
+                handleRefetch // 7th param: refetch function
               )
             : React.isValidElement(contentComponent)
-            ? React.cloneElement(contentComponent, {
-                data,
-                currentPage,
-                setCurrentPage,
-                enablePagination,
-                searchTerm,
-                setSearchTerm,
-              })
-            : contentComponent}
+              ? React.cloneElement(contentComponent, {
+                  data,
+                  currentPage,
+                  setCurrentPage,
+                  enablePagination,
+                  searchTerm,
+                  setSearchTerm,
+                  refetch: handleRefetch,
+                })
+              : contentComponent}
         </>
       )}
     </main>

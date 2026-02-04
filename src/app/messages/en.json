@@ -1,5 +1,9 @@
 {
   "common": {
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "edit": "Edit",
     "autocomplete": {
       "noOptions": "No options",
       "loading": "Loading..."
@@ -235,6 +239,8 @@
     "sendRequest": "Send Request",
     "confirmRequest": "Confirm request",
     "confirm": "Confirm",
+    "reject": "Reject",
+
     "tripManagement": "Trip Management",
     "remindGuestna": "Remind Guestna",
     "sendToManager": "Send to Manager",
@@ -267,7 +273,9 @@
     "sendStcOtp": "Send Stc Otp",
     "printPDF": "Print PDF",
     "exportExcel": "Export Excel",
-    "print": "Print"
+    "print": "Print",
+    "viewSelectedLocation": "View Selected Location",
+    "clickToSelectLocation": "Click to select location"
   },
 
   "booking": {
@@ -2155,6 +2163,7 @@
     },
 
     "validation": {
+      "please_fill_required_fields": "Please fill all required fields",
       "require": "This field is required",
       "sending": "Sending Now ...",
       "downloading": "Downloading...",
@@ -2198,27 +2207,15 @@
     },
 
     "customTrip": {
-      "title": "Request to Create a New Trip",
-      "edit": "Request to Edit a Trip",
+      "title": "Request to Create New Trip",
+      "edit": "Request to Edit Trip",
       "bookingDetails": "Booking Details",
-      "submit": "Send Request to Guestna Team",
-      "success": "Your request has been sent successfully",
+      "submit": "Submit Request to Justna Team",
+      "success": "Your request has been submitted successfully",
+      "edit_success": "Your request has been updated successfully",
       "thanksMessage": {
-        "title": "Thank You!",
-        "description": "Your request has been sent successfully. Our team will contact you within 24 hours."
-      },
-
-      "organization": {
-        "label": "School",
-        "placeholder": "School Name"
-      },
-
-      "track": {
-        "label": "Educational Track",
-        "placeholder": "Educational Track",
-        "error": {
-          "required": "Educational track is required"
-        }
+        "title": "Thank you!",
+        "description": "Your request has been submitted successfully. Our team will contact you within 24 hours."
       },
 
       "tripInfo": {
@@ -2255,17 +2252,6 @@
           "max": "Number cannot exceed 1000 people"
         }
       },
-
-      "proposedTripDate": {
-        "startLabel": "Proposed Trip Date",
-        "endLabel": "Proposed Trip Date",
-        "error": {
-          "pastDate": "Trip date cannot be in the past",
-          "startAfterEnd": "Start date must be before end date",
-          "endBeforeStart": "End date must be after start date (can be same for 1-day trip)"
-        }
-      },
-
       "city": {
         "placeholder": "City"
       },
@@ -2299,8 +2285,240 @@
 
       "attachFile": {
         "label": "Attach File"
+      },
+
+      "steps": {
+        "school_info": {
+          "step_title": "School Information",
+          "title": "Basic School Information",
+          "school_card": "School #{count} Information",
+          "description": "Please enter the basic information to create the trip and link it to the school.",
+          "status": {
+            "complete": "Information Complete"
+          },
+          "add_school": "Add Another School",
+          "fields": {
+            "organization": {
+              "label": "School Name",
+              "placeholder": "Select school name",
+              "single_option_notice": "there is only one school selected automatically"
+            },
+            "track": {
+              "label": "Educational Track",
+              "placeholder": "Select educational tracks",
+              "helper_text": "Please select the school first",
+              "fetchError": "An error occurred while fetching educational tracks",
+              "conversion_notice": "Educational track converted",
+              "no_tracks_available": "No educational tracks available for selected school",
+              "error": {
+                "required": "Educational track is required"
+              }
+            },
+            "academicStages": {
+              "label": "Academic Stage",
+              "placeholder": "Select academic stages",
+              "helper_text": "Please select the educational track first",
+              "no_common_stages": "There no common stages between selected tracks",
+              "auto_removed_warning": "The following stages will be removed automatically"
+            }
+          }
+        },
+        "trip_info": {
+          "step_title": "Trip Information",
+          "title": "Target Trip Information",
+          "description": "Please enter the basic information to create the trip and link it to the organization.",
+          "fields": {
+            "name": {
+              "ar": {
+                "label": "Trip Name in Arabic",
+                "placeholder": "Enter trip name in Arabic",
+                "error": "Please use Arabic characters only"
+              },
+              "en": {
+                "label": "Trip Name in English",
+                "placeholder": "Enter trip name in English",
+                "error": "Please use English characters only"
+              }
+            },
+            "trip_supCategory": {
+              "label": "Trip Pattern",
+              "placeholder": "Select trip pattern"
+            },
+            "trip_category": {
+              "label": "Trip Type",
+              "placeholder": "Select trip type"
+            },
+            "trip_type": {
+              "label": "Trip Duration",
+              "placeholder": "Select trip duration",
+              "options": {
+                "oneDay": "One Day Trip",
+                "multiDay": "Multi-Day Trip",
+                "halfDay": "Half Day Trip"
+              }
+            },
+            "city": {
+              "label": "City",
+              "placeholder": "Select city"
+            },
+            "services": {
+              "label": "Services",
+              "placeholder": "Select services"
+            }
+          }
+        },
+        "trip_date": {
+          "step_title": "Trip Date",
+          "title": "Trip Schedule and Booking",
+          "description": "Select the trip date, start and end time, and the last allowed booking deadline.",
+          "fields": {
+            "start_date": {
+              "label": "Start Date",
+              "placeholder": "Select start date",
+              "error": {
+                "start_before_end": "Start date must be before end date",
+                "past_date": "Trip date cannot be in the past"
+              }
+            },
+            "end_date": {
+              "label": "End Date",
+              "placeholder": "Select end date",
+              "error": {
+                "end_before_start": "Start date must be before end date",
+                "past_date": "Trip date cannot be in the past"
+              }
+            },
+            "from_hour": {
+              "label": "From Hour",
+              "placeholder": "Select hour"
+            },
+            "to_hour": {
+              "label": "To Hour",
+              "placeholder": "Select hour"
+            }
+          }
+        },
+        "pricing": {
+          "step_title": "Pricing",
+          "title": "Pricing & Number of Seats",
+          "description": "Set the trip price and number of available seats",
+          "fields": {
+            "avaliable_seats": {
+              "label": "Number of Required Seats",
+              "placeholder": "Number of seats available for booking",
+              "error": {
+                "min": "Number must be at least one person",
+                "max": "Number cannot exceed 1000 people"
+              }
+            },
+            "price": {
+              "label": "Budget",
+              "placeholder": "Last allowed booking deadline before the trip date",
+              "min": "Minimum",
+              "max": "Maximum",
+              "error": {
+                "min": "Price must not be less than 1 Saudi Riyal",
+                "min_exceed_max": "Minimum value shouldn't exceed the Maximum value"
+              }
+            }
+          }
+        },
+        "additional_info": {
+          "step_title": "Additional Information",
+          "title": "",
+          "description": "",
+          "fields": {
+            "special_requirements": {
+              "label": "Special Requirements",
+              "placeholder": "Do you have any details or notes you'd like to add? Write them here",
+              "error": {
+                "max": "Special requirements cannot exceed 10000 characters"
+              }
+            },
+            "attach_file": {
+              "label": "Attach File",
+              "placeholder": "Add a File",
+              "success": "File uploaded successfully",
+              "error": "File upload failed"
+            }
+          }
+        }
+      },
+
+      "rejection": {
+        "title": "Confirm Quotation Rejection",
+        "description": "Before proceeding, it is recommended to specify the reason for rejecting the quotation. This will help us improve future offers (optional).",
+        "reasons": {
+          "inappropriate_price": "Price is not suitable",
+          "inappropriate_details": "Program details are not suitable",
+          "inappropriate_timing": "Timing is not suitable",
+          "other": "Other reason"
+        },
+        "customMessagePlaceholder": "Please specify the reason...",
+        "confirmButton": "Confirm Rejection",
+        "submitting": "Rejecting...",
+        "order_rejected_successfully": "Order rejected successfully",
+        "validation": {
+          "pleaseSelectReason": "Please select a rejection reason",
+          "pleaseProvideCustomReason": "Please provide the reason",
+          "customReasonMinLength": "The reason must be at least 10 characters",
+          "minimumCharacters": "Minimum {{count}} characters",
+          "reminderSentSuccessfully": "Reminder sent successfully",
+          "api_errors": {
+            "other_error": "An error occurred. Please try again."
+          }
+        }
+      },
+      "approval": {
+        "title": "Confirm Quotation Approval",
+        "description": "By approving the quotation, you agree to our terms and conditions. Please ensure that you have read and understood them before proceeding.",
+
+        "confirmButton": "Confirm Approval",
+        "view_selected_location": "View Selected Location",
+        "submitting": "Approving...",
+        "order_approved_successfully": "Order approved successfully",
+        "school_amount": {
+          "placeholder": "Enter school percentage",
+          "label": "School Percentage"
+        },
+        "gathering_location": {
+          "placeholder": "Select gathering location",
+          "label": "Gathering Location",
+          "location_selected": "Location selected",
+          "both_required": "lat and lng are required",
+
+          "text_helper": "Click on the map to select the gathering point. The coordinates will be automatically filled in the fields above.",
+          "manual_coordinates_helper": "You can either enter coordinates manually or select a location on the map below",
+          "manual_coordinates_label": "Enter Coordinates Manually (Optional)",
+
+          "lat": {
+            "label": "Latitude",
+            "placeholder": "enter  latitude of gathering location"
+          },
+          "lng": {
+            "label": "Longitude",
+            "placeholder": "enter  longitude of gathering location"
+          }
+        },
+        "validation": {
+          "latitudeRequired": "Latitude is required",
+          "latitudeRange": "Latitude must be between -90 and 90",
+          "latitudeInvalid": "Latitude must be a valid number",
+          "longitudeRequired": "Longitude is required",
+          "longitudeRange": "Longitude must be between -180 and 180",
+          "longitudeInvalid": "Longitude must be a valid number",
+          "schoolAmountRequired": "School amount is required",
+          "schoolAmountPositive": "School amount must be a positive number",
+          "schoolAmountInteger": "School amount must be a whole number",
+          "schoolAmountMinimum": "School amount must be at least 1",
+          "schoolAmountInvalid": "School amount must be a valid number"
+        }
       }
     }
+  },
+  "order_details": {
+    "title": "Show Order Details",
+    "no_order_found": "Order Not Found"
   },
   "schoolRegister": {
     "pageHeader": {

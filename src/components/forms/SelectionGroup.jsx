@@ -49,40 +49,54 @@ const SelectionGroup = ({
             (!selected || !Array.isArray(selected) || selected.length === 0)
           ) {
             return (
-              <span className="text-light opacity-60 text-sm">
+              <span className="text-light opacity-60 text-sm font-somar">
                 {placeholder}
               </span>
             );
           }
           if (!multiple && (!selected || selected === "")) {
             return (
-              <span className="text-light opacity-60 text-sm">
+              <span className="text-light opacity-60 text-sm font-somar">
                 {placeholder}
               </span>
             );
           }
           return multiple ? selected.join(", ") : selected;
         }}
+        MenuProps={{
+          PaperProps: {
+            sx: {
+              fontFamily: "var(--font-somar), sans-serif",
+              "& .MuiMenuItem-root": {
+                fontFamily: "var(--font-somar), sans-serif",
+              },
+              "& .MuiListItemText-primary": {
+                fontFamily: "var(--font-somar), sans-serif",
+              },
+            },
+          },
+        }}
         sx={{
           width: "100%",
+          fontFamily: "var(--font-somar), sans-serif",
 
           "& .MuiSelect-select": {
             paddingRight: "40px !important",
             border: "2px solid var(--color-border)",
             borderRadius: "8px",
             width: "100%",
+            fontFamily: "var(--font-somar), sans-serif",
 
             "&:hover": {
               border: "2px solid var(--color-main)",
-              // boxShadow: "0 0 0 1px #ED8A22",
             },
             "&:focus": {
               border: "2px solid var(--color-main)",
-              // boxShadow: "0 0 0 1px #ED8A22",
             },
           },
           "& .MuiSelect-icon": {
             right: "10px !important",
+            left: "auto !important",
             color: "var(--color-text)",
           },
           "& .MuiOutlinedInput-notchedOutline": {
@@ -100,7 +114,7 @@ const SelectionGroup = ({
         }}
       >
         {!multiple && (
-          <MenuItem value="" disabled>
+          <MenuItem className="!font-somar" value="" disabled>
             {placeholder}
           </MenuItem>
         )}
@@ -112,7 +126,11 @@ const SelectionGroup = ({
             : value === itemValue;
 
           return (
-            <MenuItem key={item} value={itemValue}>
+            <MenuItem
+              className="!font-somar !font-semibold"
+              key={item}
+              value={itemValue}
+            >
               {showCheckbox && (
                 <Checkbox
                   checked={isSelected}
@@ -124,13 +142,16 @@ const SelectionGroup = ({
                   }}
                 />
               )}
-              <ListItemText primary={item} />
+              <ListItemText
+                primary={item}
+                className="!font-somar !font-semibold"
+              />
             </MenuItem>
           );
         })}
       </Select>
       {touched && errors && (
-        <p className="absolute text-xs -bottom-4 text-error mt-1 font-ibm">
+        <p className="absolute text-xs -bottom-4 text-error mt-1 font-somar">
           {errors}
         </p>
       )}

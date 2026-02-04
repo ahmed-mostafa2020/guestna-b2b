@@ -512,7 +512,9 @@ const AuthenticatedRequestQuote = ({
                       <div className="somar-placeholder">
                         <SelectionGroup
                           name="organization"
-                          label={t("forms.customTrip.organization.label")}
+                          label={t(
+                            "forms.customTrip.steps.school_info.fields.organization.label"
+                          )}
                           value={values.organization}
                           onChange={(e) => {
                             handleChange(e);
@@ -527,7 +529,7 @@ const AuthenticatedRequestQuote = ({
                           touched={touched.organization}
                           errors={errors.organization}
                           placeholder={t(
-                            "forms.customTrip.organization.placeholder"
+                            "forms.customTrip.steps.school_info.fields.organization.placeholder"
                           )}
                           list={organizationOptions}
                           required={true}
@@ -544,11 +546,15 @@ const AuthenticatedRequestQuote = ({
                           placeholder={
                             isLoadingTracks
                               ? t("forms.validation.loading")
-                              : t("forms.customTrip.track.placeholder")
+                              : t(
+                                  "forms.customTrip.steps.school_info.fields.track.placeholder"
+                                )
                           }
                           list={trackDisplayOptions}
                           disabled={isLoadingTracks || !values.organization}
-                          label={t("forms.customTrip.track.label")}
+                          label={t(
+                            "forms.customTrip.steps.school_info.fields.track.label"
+                          )}
                           required={true}
                         />
                       </div>
