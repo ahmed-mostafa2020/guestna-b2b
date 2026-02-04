@@ -64,7 +64,11 @@ const TripInfoCard = ({ orderData }) => {
           <OrderDataLabel label={t("fields.services.label")} />
           <OrderDataField
             data={orderData.services?.map((s) => (
-              <Chip className=" !font-somar !bg-homeBg" key={s._id} label={s.name} />
+              <Chip
+                className=" !font-somar !bg-homeBg"
+                key={s._id}
+                label={s.name}
+              />
             ))}
           />
         </Grid>

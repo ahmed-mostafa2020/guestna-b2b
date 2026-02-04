@@ -207,7 +207,6 @@ const OrderDetailsPage = ({ params }) => {
               padding: "0.2rem 0",
               color: "var(--color-main)",
               fontWeight: 400,
-              
             },
           },
           "& .MuiStepLabel-root": {
@@ -217,6 +216,7 @@ const OrderDetailsPage = ({ params }) => {
               padding: "0.1rem",
               color: "var(--color-main)",
               fontWeight: 400,
+              cursor: "pointer",
             },
           },
           "& .MuiStepLabel-root .Mui-completed": {
@@ -248,7 +248,7 @@ const OrderDetailsPage = ({ params }) => {
               borderTopWidth: 3,
             },
             "&.Mui-completed .MuiStepConnector-line": {
-              borderColor: "var(--color-success)",
+              borderColor: "var(--color-main)",
             },
             "&.Mui-active .MuiStepConnector-line": {
               borderColor: "var(--color-main)",
@@ -340,7 +340,7 @@ const OrderDetailsPage = ({ params }) => {
 
       {/* Edit Button */}
       <Button
-        className="!w-full !bg-mainColor !text-white !mt-6"
+        className="!w-full !bg-mainColor !font-somar !text-white !mt-6"
         onClick={handleEditClick}
         disabled={!formSelectionData || loadingFormSelection}
         startIcon={loadingFormSelection && <CircularProgress size={20} />}
@@ -355,6 +355,7 @@ const OrderDetailsPage = ({ params }) => {
         open={isModalOpen}
         handleClose={closeEditModal}
         padding={false}
+        bgcolor="rgba(0, 0, 0, 0.5)"
       >
         {formSelectionData && (
           <CustomNewTripForm

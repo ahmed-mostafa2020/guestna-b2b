@@ -663,7 +663,7 @@ const CustomNewTripForm = ({
                 borderTopWidth: 2,
               },
               "&.Mui-completed .MuiStepConnector-line": {
-                borderColor: "var(--color-success)",
+                borderColor: "var(--color-main)",
               },
               "&.Mui-active .MuiStepConnector-line": {
                 borderColor: "var(--color-main)",
@@ -769,10 +769,9 @@ const CustomNewTripForm = ({
           innerRef={formRef}
         >
           {(formik) => {
-            const { isSubmitting, errors, touched } = formik;
+            const { isSubmitting, errors, touched, values } = formik;
 
             const currentStepHasErrors = hasStepErrors(errors, activeStep);
-
 
             // Auto-touch fields when button would be disabled and user attempted to proceed
             useEffect(() => {
@@ -819,7 +818,6 @@ const CustomNewTripForm = ({
                   handleNext(formik);
                 }}
               >
-
                 {renderStepContent(activeStep)}
 
                 <div className="flex flex-col-reverse sm:flex-row justify-between gap-3 sm:gap-0 mt-6 sm:mt-8">
@@ -842,7 +840,8 @@ const CustomNewTripForm = ({
                     disabled={
                       isSubmitting ||
                       currentStepHasErrors ||
-                      Object.keys(touched).length === 0
+                      (Object.keys(touched).length === 0 &&
+                        values.schoolsInfo.organization !== "")
                     }
                     className="px-4 sm:px-6 py-2 sm:py-2.5 bg-mainColor text-white rounded-lg hover:bg-titleColor disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
                   >
