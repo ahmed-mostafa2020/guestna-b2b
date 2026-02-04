@@ -680,7 +680,7 @@ const CustomNewTripForm = ({
               border: "1px solid",
               "&.Mui-completed": {
                 color: "var(--color-main)",
-                borderColor: "var(--color-main)",
+                border: "none",
                 backgroundColor: "white",
                 padding: "0px",
                 boxShadow: "none",
