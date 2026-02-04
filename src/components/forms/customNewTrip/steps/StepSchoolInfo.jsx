@@ -634,7 +634,7 @@ const SchoolInfoCard = ({
           {isRemovable && !isEditMode && (
             <IconButton
               onClick={onRemove}
-              className="text-error hover:bg-red-50"
+              className="!text-error hover:bg-red-50"
               aria-label="Remove school"
             >
               <Delete className="!text-2xl" />
@@ -925,8 +925,7 @@ const StepSchoolInfo = ({
               <Button
                 startIcon={<Add className="!text-2xl !me-2" />}
                 onClick={() => handleAddSchool(push)}
-                fullWidth
-                className="rounded-xl py-3 normal-case text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 mb-4 !font-somar !bg-mainColor !text-white hover:!bg-linksHover"
+                className="rounded-xl w-full py-3 normal-case text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 mb-4 !font-somar !bg-mainColor !text-white hover:!bg-linksHover"
               >
                 {t("add_school")}
               </Button>

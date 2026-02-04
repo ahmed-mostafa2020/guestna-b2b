@@ -1,5 +1,3 @@
-// src/components/ActionsDropdownMenu.js
-
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
@@ -18,7 +16,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { CircularProgress, Divider } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 
 import { TRIP_STATUS } from "@constants/tripStatus";
 import Link from "next/link";
@@ -72,10 +70,7 @@ const ActionsDropdownMenu = ({
   //   [hasElement]
   // );
 
-  const isCustomType = useMemo(
-    () => bookingType === "CUSTOM",
-    [bookingType]
-  )
+  const isCustomType = useMemo(() => bookingType === "CUSTOM", [bookingType]);
   // Check if booking is editable (not done)
   const isEditable = useMemo(
     () =>
@@ -87,7 +82,7 @@ const ActionsDropdownMenu = ({
         TRIP_STATUS.ENDED,
         TRIP_STATUS.SCHEDULED,
       ].includes(bookingStatus) && isCustomType,
-    [bookingStatus]
+    [bookingStatus, isCustomType]
   );
 
   // Check if order can be accepted or rejected
@@ -116,7 +111,7 @@ const ActionsDropdownMenu = ({
         TRIP_STATUS.PENDING_COMPANY_APPROVAL,
         TRIP_STATUS.ON_HOLD,
       ].includes(bookingStatus) && isCustomType,
-    [bookingStatus]
+    [bookingStatus, isCustomType]
   );
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -202,13 +197,39 @@ const ActionsDropdownMenu = ({
   }, [_id, openRejectModal, handleClose]);
 
   // Check if any action is available
+  const hasAnyMenuItems = useMemo(() => {
+    const hasDetailsItem = canShowDetails && hasDetails;
+    const hasRemindItem = canRemindGuestna && isEditable;
+    const hasEditItem = canUpdateTrip && isEditable;
+    const hasApprovalItem = hasApproval && openApproveModal;
+    const hasRejectionItem = hasRejection && openRejectModal;
+
+    return (
+      hasDetailsItem ||
+      hasRemindItem ||
+      hasEditItem ||
+      hasApprovalItem ||
+      hasRejectionItem
+    );
+  }, [
+    canShowDetails,
+    hasDetails,
+    canRemindGuestna,
+    isEditable,
+    canUpdateTrip,
+    hasApproval,
+    openApproveModal,
+    hasRejection,
+    openRejectModal,
+  ]);
+
+  // Check if any action is available (legacy - kept for backward compatibility)
   const hasActions = useMemo(() => {
     return (
       canShowDetails ||
       (canRemindGuestna && isEditable) ||
       (canUpdateTrip && isEditable) ||
       hasApproval
-      // (hasApproval && (canApproveTrip || canRejectTrip))
     );
   }, [
     canShowDetails,
@@ -216,8 +237,6 @@ const ActionsDropdownMenu = ({
     canUpdateTrip,
     isEditable,
     hasApproval,
-    // canApproveTrip,
-    // canRejectTrip,
   ]);
 
   // Don't render if no actions available
@@ -233,7 +252,7 @@ const ActionsDropdownMenu = ({
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
-        disabled={sendingReminder}
+        disabled={sendingReminder || !hasAnyMenuItems}
       >
         {sendingReminder ? (
           <CircularProgress size={20} color="primary" />
@@ -267,10 +286,6 @@ const ActionsDropdownMenu = ({
           </MenuItem>
         )}
 
-        {canShowDetails &&
-          (canRemindGuestna || canUpdateTrip) &&
-          isEditable && <Divider />}
-
         {canRemindGuestna && isEditable && (
           <MenuItem
             onClick={sendRemind}
@@ -292,40 +307,36 @@ const ActionsDropdownMenu = ({
         )}
 
         {/* Approval/Rejection section with proper permissions */}
-
-        <>
-          <Divider />
-          {hasApproval && (
-            <MenuItem
-              onClick={handleTripApproval}
-              className="!font-somar"
-              disabled={!openApproveModal}
-              sx={{
-                color: "success.main",
-                "&:hover": {
-                  backgroundColor: "success.lighter",
-                },
-              }}
-            >
-              {t("links.confirm")}
-            </MenuItem>
-          )}
-          {hasRejection && (
-            <MenuItem
-              onClick={handleTripRejection}
-              className="!font-somar"
-              disabled={!openRejectModal}
-              sx={{
-                color: "error.main",
-                "&:hover": {
-                  backgroundColor: "error.lighter",
-                },
-              }}
-            >
-              {t("links.reject")}
-            </MenuItem>
-          )}
-        </>
+        {hasApproval && (
+          <MenuItem
+            onClick={handleTripApproval}
+            className="!font-somar"
+            disabled={!openApproveModal}
+            sx={{
+              color: "success.main",
+              "&:hover": {
+                backgroundColor: "success.lighter",
+              },
+            }}
+          >
+            {t("links.confirm")}
+          </MenuItem>
+        )}
+        {hasRejection && (
+          <MenuItem
+            onClick={handleTripRejection}
+            className="!font-somar"
+            disabled={!openRejectModal}
+            sx={{
+              color: "error.main",
+              "&:hover": {
+                backgroundColor: "error.lighter",
+              },
+            }}
+          >
+            {t("links.reject")}
+          </MenuItem>
+        )}
       </Menu>
     </div>
   );

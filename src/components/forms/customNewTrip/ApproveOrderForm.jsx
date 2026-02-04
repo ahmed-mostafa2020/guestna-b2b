@@ -264,14 +264,14 @@ const ApproveOrderForm = ({
         {/* Manual Coordinate Input Section */}
 
         {/* Map Section */}
-        <Box className="mb-6">
-          <Box className="mb-6">
+        <Box >
+          <Box className="mb-6 flex flex-col gap-2">
             <Typography className="!font-somar text-base !font-semibold mb-3">
               {t("gathering_location.manual_coordinates_label", {
                 defaultValue: "Enter Coordinates Manually (Optional)",
               })}
             </Typography>
-            <Typography className="!font-somar text-sm text-gray-500 mb-3">
+            <Typography className="!font-somar !text-sm text-textLight mb-3">
               {t("gathering_location.manual_coordinates_helper", {
                 defaultValue:
                   "You can either enter coordinates manually or select a location on the map below",
@@ -382,8 +382,8 @@ const ApproveOrderForm = ({
           {/* Using the new Map component */}
           <div className="border-2 border-gray-200 rounded-lg overflow-hidden">
             <Map
-              lat={orderDetails?.location?.lat || 30.0444}
-              lng={orderDetails?.location?.lng || 31.2357}
+              lat={orderDetails?.location?.lat || 24.6333}
+              lng={orderDetails?.location?.lng || 46.7167}
               isAuth={true}
               zoom={12}
               height="h-[400px]"

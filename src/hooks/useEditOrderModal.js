@@ -10,7 +10,7 @@ import { useTranslations } from "next-intl";
 
 export const useEditOrderModal = (locale) => {
   const { enqueueSnackbar } = useSnackbar();
-  const t = useTranslations()
+  const t = useTranslations();
   const queryClient = useQueryClient();
   const headers = useMemo(() => getHeaders(locale), [locale]);
 
@@ -256,8 +256,6 @@ export const useEditOrderModal = (locale) => {
           rejectionData,
           { headers }
         );
-
-        console.log("Order rejected successfully:", response.data);
 
         // Show success message
         enqueueSnackbar(

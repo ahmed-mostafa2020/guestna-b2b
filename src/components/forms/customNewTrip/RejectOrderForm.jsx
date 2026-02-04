@@ -184,7 +184,6 @@ const RejectOrderForm = ({
                 {reason.label}
               </Typography>
             }
-            
           />
         ))}
       </RadioGroup>
@@ -212,16 +211,6 @@ const RejectOrderForm = ({
 
       {/* Action Buttons */}
       <Box className="flex gap-3 mt-6">
-        {/* Cancel Button */}
-        <Button
-          variant="outlined"
-          className="!border-border px-8 py-3 !border-2 !font-somar !text-textDark w-full rounded-lg"
-          onClick={handleCancel}
-          disabled={rejectingOrder}
-        >
-          {t2("links.cancel")}
-        </Button>
-
         {/* Confirm Rejection Button */}
         <Button
           onClick={handleSubmit}
@@ -236,6 +225,15 @@ const RejectOrderForm = ({
           ) : (
             t2("links.confirm")
           )}
+        </Button>
+        {/* Cancel Button */}
+        <Button
+          variant="outlined"
+          className="!border-border px-8 py-3 !border-2 !font-somar !text-textDark w-full rounded-lg"
+          onClick={handleCancel}
+          disabled={rejectingOrder}
+        >
+          {t2("links.cancel")}
         </Button>
       </Box>
     </Box>
