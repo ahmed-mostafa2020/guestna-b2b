@@ -317,7 +317,7 @@ export const useEditOrderModal = (locale) => {
   // Approve order API call
   const approveOrder = useCallback(
     async (orderId, approvalData = {}) => {
-      console.log({orderId ,approvalData})
+
       if (!orderId) {
         console.warn("No orderId provided to approveOrder");
         return { success: false, error: "Order ID is required" };

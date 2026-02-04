@@ -452,7 +452,7 @@ const CustomNewTripForm = ({
     setAttemptedNext(true);
 
     const errors = await validateForm();
-    console.log(errors);
+
     const currentStepHasErrors = hasStepErrors(errors, activeStep);
 
     if (currentStepHasErrors) {
@@ -769,14 +769,10 @@ const CustomNewTripForm = ({
           innerRef={formRef}
         >
           {(formik) => {
-            const { isSubmitting, errors, isValid } = formik;
+            const { isSubmitting, errors, touched } = formik;
 
             const currentStepHasErrors = hasStepErrors(errors, activeStep);
 
-            const stepErrorMessages =
-              showValidationErrors && currentStepHasErrors
-                ? getStepErrorMessages(errors, activeStep)
-                : [];
 
             // Auto-touch fields when button would be disabled and user attempted to proceed
             useEffect(() => {
@@ -823,27 +819,6 @@ const CustomNewTripForm = ({
                   handleNext(formik);
                 }}
               >
-                {showValidationErrors && stepErrorMessages.length > 0 && (
-                  <Alert
-                    severity="error"
-                    className="mb-4"
-                    onClose={() => setShowValidationErrors(false)}
-                  >
-                    <div className="font-semibold mb-2">
-                      {t2("forms.validation.please_fill_required_fields", {
-                        defaultValue:
-                          "Please fill in the following required fields:",
-                      })}
-                    </div>
-                    <ul className="list-disc list-inside space-y-1">
-                      {stepErrorMessages.map((msg, index) => (
-                        <li key={index} className="text-sm">
-                          {msg}
-                        </li>
-                      ))}
-                    </ul>
-                  </Alert>
-                )}
 
                 {renderStepContent(activeStep)}
 
@@ -864,7 +839,11 @@ const CustomNewTripForm = ({
                   <button
                     type="button"
                     onClick={() => handleNext(formik)}
-                    disabled={isSubmitting || currentStepHasErrors}
+                    disabled={
+                      isSubmitting ||
+                      currentStepHasErrors ||
+                      Object.keys(touched).length === 0
+                    }
                     className="px-4 sm:px-6 py-2 sm:py-2.5 bg-mainColor text-white rounded-lg hover:bg-titleColor disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
                   >
                     {isSubmitting ? (

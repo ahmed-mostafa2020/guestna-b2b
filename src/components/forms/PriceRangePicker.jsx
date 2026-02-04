@@ -39,6 +39,7 @@ const PriceRangePicker = ({
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+   
   };
 
   const handleClose = () => {
@@ -47,6 +48,7 @@ const PriceRangePicker = ({
     onBlur();
   };
 
+  console.log(touched, errors, minValue, maxValue);
   const handleApply = () => {
     // Ensure at least one value is set
     const finalMin = tempMin || minValue || "";
@@ -69,7 +71,7 @@ const PriceRangePicker = ({
     return `${minValue || 0} - ${maxValue || 0}`;
   };
 
-  const hasError = tempMin && tempMax && Number(tempMin) > Number(tempMax);
+  const excceedError = tempMin && tempMax && Number(tempMin) > Number(tempMax);
 
   // Check if there's a validation error from Formik
   const hasValidationError = touched[name] && Boolean(errors[name]);
@@ -84,7 +86,8 @@ const PriceRangePicker = ({
         onClick={handleClick}
         placeholder={placeholder}
         error={hasValidationError}
-        errors={errors}
+        errors={errors[name]}
+        touched={touched[name]}
         InputProps={{
           readOnly: true,
           endAdornment: (
@@ -157,12 +160,12 @@ const PriceRangePicker = ({
           }}
         >
           {typeof errors === "object"
-            ? errors[name].min ||
-              errors[name].max ||
+            ? (errors[name].min && errors[name].max) ||
               t("forms.validation.require", {
                 defaultValue: "Price range is required",
               })
-            : errors}
+            : (errors[name].min && errors[name].min) ||
+              (errors[name].max && errors[name].max)}
         </Typography>
       )}
 
@@ -320,7 +323,7 @@ const PriceRangePicker = ({
         </Stack>
 
         {/* Error Message for min > max */}
-        {hasError && (
+        {excceedError ||errors[name]?.min || errors[name]?.max &&
           <Alert
             severity="error"
             sx={{
@@ -334,9 +337,12 @@ const PriceRangePicker = ({
             {t(
               "forms.customTrip.steps.pricing.fields.price.error.min_exceed_max",
               { defaultValue: "Minimum price cannot exceed maximum price" }
-            )}
+            )} 
+            {(errors[name].min && errors[name].min) ||
+              (errors[name].max && errors[name].max)}
+
           </Alert>
-        )}
+        }
 
         {/* Action Buttons */}
         <Stack direction="row" gap={2}>
@@ -364,7 +370,7 @@ const PriceRangePicker = ({
             fullWidth
             variant="contained"
             onClick={handleApply}
-            disabled={hasError || (!tempMin && !tempMax)}
+            disabled={excceedError || (!tempMin && !tempMax)}
             sx={{
               fontFamily: "var(--font-somar), sans-serif",
               fontWeight: 600,
