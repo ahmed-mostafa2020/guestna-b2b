@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useFormik } from "formik";
 import {
@@ -9,8 +8,8 @@ import {
   Button,
   CircularProgress,
   Alert,
-  InputAdornment,
 } from "@mui/material";
+
 import TextInputGroup from "../TextInputGroup";
 import Map from "../../sections/pages/tripDetails/gridSection/largeSizeGrid/accordionsGroupSection/accordionsDetails/Map";
 import { getApproveOrderValidationSchema } from "@utils/validationSchemas";
@@ -27,17 +26,18 @@ const ApproveOrderForm = ({
   const t = useTranslations("forms.customTrip.approval");
   const t2 = useTranslations();
 
-  // Initialize Formik with translation-aware validation schema
   const {
     values,
     errors,
     touched,
     setFieldValue,
     setFieldTouched,
+    setTouched,
     handleBlur,
     handleSubmit,
     resetForm,
     isValid,
+    dirty,
   } = useFormik({
     initialValues: {
       gatheringLocation: {
@@ -49,167 +49,99 @@ const ApproveOrderForm = ({
     validationSchema: getApproveOrderValidationSchema(t),
     validateOnChange: true,
     validateOnBlur: true,
-    onSubmit: async (values) => {
-      // Call the approve API
+    onSubmit: async (formValues) => {
       const result = await approveOrder(orderId, {
-        gatheringLocation: {
-          lat: values.gatheringLocation.lat,
-          lng: values.gatheringLocation.lng,
-        },
-        schoolAmount: parseInt(values.schoolAmount),
+        gatheringLocation: formValues.gatheringLocation,
+        schoolAmount: Number(formValues.schoolAmount),
       });
 
-      // If successful, call onSuccess callback
-      if (result.success) {
-        // Reset form
+      if (result?.success) {
         resetForm();
-
-        // Call success callback if provided
-        if (onSuccess) {
-          onSuccess(result);
-        }
+        onSuccess?.(result);
       }
     },
   });
 
-  // Handle location selection from map
-  const handleLocationSelect = useCallback(
-    (location) => {
-      setFieldValue(
-        "gatheringLocation",
+  /* ---------------- handlers ---------------- */
+
+  const handleSchoolAmountChange = (e) => {
+    const value = e.target.value;
+    if (value === "" || /^\d+$/.test(value)) {
+      setFieldValue("schoolAmount", value);
+    }
+  };
+
+  const handleLatitudeChange = (e) => {
+    const value = e.target.value;
+
+    if (value === "" || value === "-" || /^-?\d*\.?\d*$/.test(value)) {
+      const numValue = value === "" || value === "-" ? null : Number(value);
+      setFieldValue("gatheringLocation.lat", numValue);
+    }
+  };
+
+  const handleLongitudeChange = (e) => {
+    const value = e.target.value;
+
+    if (value === "" || value === "-" || /^-?\d*\.?\d*$/.test(value)) {
+      const numValue = value === "" || value === "-" ? null : Number(value);
+      setFieldValue("gatheringLocation.lng", numValue);
+    }
+  };
+
+  const handleLocationSelect = ({ lat, lng }) => {
+    // Set both values together
+    setFieldValue("gatheringLocation", { lat, lng }, false);
+
+    // Mark fields as touched but don't validate immediately
+    // This prevents showing errors when user selects from map
+    setTimeout(() => {
+      setTouched(
         {
-          lat: location.lat,
-          lng: location.lng,
+          ...touched,
+          gatheringLocation: {
+            lat: true,
+            lng: true,
+          },
         },
-        true
-      );
+        false
+      ); // false = don't validate immediately
+    }, 0);
+  };
 
-      setFieldTouched("gatheringLocation.lat", true, false);
-      setFieldTouched("gatheringLocation.lng", true, false);
-    },
-    [setFieldValue, setFieldTouched]
-  );
-  
-
-  // Handle manual latitude input
-  const handleLatitudeChange = useCallback(
-    (event) => {
-      const value = event.target.value;
-
-      if (value === "" || value === "-" || /^-?\d*\.?\d*$/.test(value)) {
-        const numValue =
-          value === "" || value === "-" ? null : parseFloat(value);
-
-        setFieldValue(
-          "gatheringLocation",
-          {
-            lat: numValue,
-            lng: values.gatheringLocation.lng,
-          },
-          true
-        );
-
-        setFieldTouched("gatheringLocation.lat", true, false);
-      }
-    },
-    [setFieldValue, setFieldTouched, values.gatheringLocation.lng]
-  );
-  
-
-  // Handle manual longitude input
-  const handleLongitudeChange = useCallback(
-    (event) => {
-      const value = event.target.value;
-
-      if (value === "" || value === "-" || /^-?\d*\.?\d*$/.test(value)) {
-        const numValue =
-          value === "" || value === "-" ? null : parseFloat(value);
-
-        setFieldValue(
-          "gatheringLocation",
-          {
-            lat: values.gatheringLocation.lat,
-            lng: numValue,
-          },
-          true
-        );
-
-        setFieldTouched("gatheringLocation.lng", true, false);
-      }
-    },
-    [setFieldValue, setFieldTouched, values.gatheringLocation.lat]
-  );
-  
-
-  // Handle school amount change
-  const handleSchoolAmountChange = useCallback(
-    (event) => {
-      const value = event.target.value;
-
-      // Allow only numbers
-      if (value === "" || /^\d+$/.test(value)) {
-        setFieldValue("schoolAmount", value);
-      }
-    },
-    [setFieldValue]
-  );
-  
-
-  // Handle cancel
-  const handleCancel = useCallback(() => {
-    if (approvingOrder) return; // Prevent closing while submitting
-
+  const handleCancel = () => {
+    if (approvingOrder) return;
     resetForm();
-
-    if (onClose) {
-      onClose();
-    }
-  }, [approvingOrder, onClose, formik]);
-
-  // Get error message helper - Enhanced version
-  const getErrorMessage = (fieldPath) => {
-    const keys = fieldPath.split(".");
-    let error = errors;
-    let touched = touched;
-
-    for (const key of keys) {
-      if (!error) return null;
-      error = error[key];
-
-      // Only check touched for leaf nodes
-      if (touched) {
-        touched = touched[key];
-      }
-    }
-
-    // For nested fields, check if parent is touched OR if the field itself is touched
-    const isFieldTouched = keys.reduce((acc, key, index) => {
-      if (index === 0) return touched[key];
-      return acc && acc[key];
-    }, true);
-
-    return isFieldTouched && error ? error : null;
+    onClose?.();
   };
 
-  // Check if gathering location has any errors
-  const hasGatheringLocationError = () => {
-    const latError = getErrorMessage("gatheringLocation.lat");
-    const lngError = getErrorMessage("gatheringLocation.lng");
-    return latError || lngError;
+  /* ---------------- derived values ---------------- */
+
+  const latError =
+    touched.gatheringLocation?.lat && errors.gatheringLocation?.lat;
+
+  const lngError =
+    touched.gatheringLocation?.lng && errors.gatheringLocation?.lng;
+
+  const hasLocationError = latError || lngError;
+
+  // Check if location is selected and valid
+  const hasValidLocation =
+    values.gatheringLocation.lat !== null &&
+    values.gatheringLocation.lng !== null &&
+    !isNaN(values.gatheringLocation.lat) &&
+    !isNaN(values.gatheringLocation.lng) &&
+    !hasLocationError;
+
+  /* ---------------- display helpers ---------------- */
+
+  const getDisplayValue = (value) => {
+    if (value === null || value === undefined) return "";
+    if (isNaN(value)) return "";
+    return value.toString();
   };
 
-  // Get gathering location error message
-  const getGatheringLocationError = () => {
-    const latError = getErrorMessage("gatheringLocation.lat");
-    const lngError = getErrorMessage("gatheringLocation.lng");
-
-    if (latError && lngError) {
-      return t("gathering_location.both_required", {
-        defaultValue: "Both latitude and longitude are required",
-      });
-    }
-    return latError || lngError;
-  };
+  /* ---------------- render ---------------- */
 
   return (
     <Box className="bg-white rounded-2xl max-w-[700px] w-full mx-auto p-6">
@@ -220,166 +152,126 @@ const ApproveOrderForm = ({
         </Typography>
 
         {/* Description */}
-        <Typography className="!font-somar text-base !mb-4 text-gray-600">
+        <Typography className="!font-somar text-base text-gray-600 mb-4">
           {t("description", {
             defaultValue:
               "Please select the gathering location on the map and enter the school amount to approve this order.",
           })}
         </Typography>
 
-        {/* Error Alerts */}
         {approvalError && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {approvalError}
           </Alert>
         )}
 
-        {/* School Amount Input */}
+        {/* School Amount */}
         <Box className="mb-6">
           <label className="block mb-2 text-sm text-textDark !font-somar !font-semibold">
-            {t("school_amount.label", { defaultValue: "School Amount" })}
+            {t("school_amount.label", { defaultValue: "School Amount" })}{" "}
             <span className="text-error ml-1">*</span>
           </label>
+
           <TextInputGroup
             fullWidth
-            type="number"
+            type="text"
+            value={values.schoolAmount}
             name="schoolAmount"
             placeholder={t("school_amount.placeholder", {
               defaultValue: "Enter school amount",
             })}
-            value={values.schoolAmount}
             onChange={handleSchoolAmountChange}
             onBlur={handleBlur}
             disabled={approvingOrder}
-            variant="outlined"
-            error={
-              touched.schoolAmount && Boolean(errors.schoolAmount)
-            }
-            helperText={
-              (touched.schoolAmount && errors.schoolAmount) ||
-              t("schoolAmountHelper", {
-                defaultValue: "Enter the amount to be paid by the school",
-              })
-            }
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "8px",
-              },
-            }}
+            errors={errors.schoolAmount}
+            touched={touched.schoolAmount}
+          
           />
         </Box>
 
-        {/* Manual Coordinate Input Section */}
+        {/* Manual Coordinates */}
+        <Box className="mb-6">
+          <Typography className="!font-somar text-base !font-semibold mb-2">
+            {t("gathering_location.manual_coordinates_label", {
+              defaultValue: "Enter Coordinates Manually (Optional)",
+            })}
+          </Typography>
 
-        {/* Map Section */}
-        <Box >
-          <Box className="mb-6 flex flex-col gap-2">
-            <Typography className="!font-somar text-base !font-semibold mb-3">
-              {t("gathering_location.manual_coordinates_label", {
-                defaultValue: "Enter Coordinates Manually (Optional)",
-              })}
-            </Typography>
-            <Typography className="!font-somar !text-sm text-textLight mb-3">
-              {t("gathering_location.manual_coordinates_helper", {
-                defaultValue:
-                  "You can either enter coordinates manually or select a location on the map below",
-              })}
-            </Typography>
+          <Typography className="!font-somar text-sm text-textLight mb-4">
+            {t("gathering_location.manual_coordinates_helper", {
+              defaultValue:
+                "You can either enter coordinates manually or select a location on the map below",
+            })}
+          </Typography>
 
-            <Box className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Latitude Input */}
-              <Box>
-                <label className="block mb-2 text-sm text-textDark !font-somar !font-medium">
-                  {t("gathering_location.lat.label", {
-                    defaultValue: "Latitude",
-                  })}
-                  <span className="text-error ml-1">*</span>
-                </label>
-                <TextInputGroup
-                  fullWidth
-                  type="text"
-                  name="gatheringLocation.lat"
-                  placeholder={t("gathering_location.lat.placeholder", {
-                    defaultValue: "e.g., 30.0444",
-                  })}
-                  value={
-                    values.gatheringLocation.lat !== null
-                      ? values.gatheringLocation.lat
-                      : ""
-                  }
-                  onChange={handleLatitudeChange}
-                  onBlur={(e) => {
-                    handleBlur(e);
-                    setFieldTouched("gatheringLocation.lat", true, true);
-                  }}
-                  disabled={approvingOrder}
-                  variant="outlined"
-                  error={
-                    touched.gatheringLocation?.lat &&
-                    Boolean(errors.gatheringLocation?.lat)
-                  }
-                  helperText={
-                    touched.gatheringLocation?.lat &&
-                    errors.gatheringLocation?.lat
-                  }
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "8px",
-                    },
-                  }}
-                />
-              </Box>
+          <Box className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Latitude */}
+            <Box>
+              <label className="block mb-2 text-sm text-textDark !font-somar !font-medium">
+                {t("gathering_location.lat.label", {
+                  defaultValue: "Latitude",
+                })}
+                <span className="text-error ml-1">*</span>
+              </label>
+              <TextInputGroup
+                fullWidth
+                type="text"
+                name="gatheringLocation.lat"
+                placeholder={t("gathering_location.lat.placeholder", {
+                  defaultValue: "e.g., 30.0444",
+                })}
+                value={getDisplayValue(values.gatheringLocation.lat)}
+                onChange={handleLatitudeChange}
+                onBlur={(e) => {
+                  handleBlur(e);
+                  setFieldTouched("gatheringLocation.lat", true, true);
+                }}
+                disabled={approvingOrder}
+                errors={latError}
+                touched={touched.gatheringLocation.lat}
+              />
+            </Box>
 
-              {/* Longitude Input */}
-              <Box>
-                <label className="block mb-2 text-sm text-textDark !font-somar !font-medium">
-                  {t("gathering_location.lng.label", {
-                    defaultValue: "Longitude",
-                  })}
-                  <span className="text-error ml-1">*</span>
-                </label>
-                <TextInputGroup
-                  fullWidth
-                  type="text"
-                  name="gatheringLocation.lng"
-                  placeholder={t("gathering_location.lng.placeholder", {
-                    defaultValue: "e.g., 31.2357",
-                  })}
-                  value={
-                    values.gatheringLocation.lng !== null
-                      ? values.gatheringLocation.lng
-                      : ""
-                  }
-                  onChange={handleLongitudeChange}
-                  onBlur={(e) => {
-                    handleBlur(e);
-                    setFieldTouched("gatheringLocation.lng", true, true);
-                  }}
-                  disabled={approvingOrder}
-                  variant="outlined"
-                  error={
-                    touched.gatheringLocation?.lng &&
-                    Boolean(errors.gatheringLocation?.lng)
-                  }
-                  helperText={
-                    touched.gatheringLocation?.lng &&
-                    errors.gatheringLocation?.lng
-                  }
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "8px",
-                    },
-                  }}
-                />
-              </Box>
+            {/* Longitude */}
+            <Box>
+              <label className="block mb-2 text-sm text-textDark !font-somar !font-medium">
+                {t("gathering_location.lng.label", {
+                  defaultValue: "Longitude",
+                })}
+                <span className="text-error ml-1">*</span>
+              </label>
+              <TextInputGroup
+                fullWidth
+                type="text"
+                name="gatheringLocation.lng"
+                placeholder={t("gathering_location.lng.placeholder", {
+                  defaultValue: "e.g., 31.2357",
+                })}
+                value={getDisplayValue(values.gatheringLocation.lng)}
+                onChange={handleLongitudeChange}
+                onBlur={(e) => {
+                  handleBlur(e);
+                  setFieldTouched("gatheringLocation.lng", true, true);
+                }}
+                disabled={approvingOrder}
+                errors={lngError}
+                touched={touched.gatheringLocation.lng}
+               
+               
+              />
             </Box>
           </Box>
+        </Box>
+
+        {/* Map Section */}
+        <Box className="mb-6">
           <Typography className="!font-somar text-base !font-semibold mb-2">
             {t("gathering_location.label", {
               defaultValue: "Select Gathering Location on Map",
             })}
             <span className="text-error ml-1">*</span>
           </Typography>
+
           <Typography className="!font-somar text-sm text-gray-500 mb-3">
             {t("gathering_location.text_helper", {
               defaultValue:
@@ -387,18 +279,24 @@ const ApproveOrderForm = ({
             })}
           </Typography>
 
-          {/* Using the new Map component */}
           <div className="border-2 border-gray-200 rounded-lg overflow-hidden">
             <Map
-              lat={orderDetails?.location?.lat || 24.6333}
-              lng={orderDetails?.location?.lng || 46.7167}
               isAuth={true}
+              lat={orderDetails?.location?.lat ?? 24.6333}
+              lng={orderDetails?.location?.lng ?? 46.7167}
               zoom={12}
               height="h-[400px]"
-              
+              locationLink={true}
               interactive={true}
               onLocationSelect={handleLocationSelect}
-              selectedLocation={values.gatheringLocation}
+              selectedLocation={
+                hasValidLocation
+                  ? {
+                      lat: values.gatheringLocation.lat,
+                      lng: values.gatheringLocation.lng,
+                    }
+                  : null
+              }
               showOriginalMarker={true}
               controls={{
                 zoom: true,
@@ -409,52 +307,55 @@ const ApproveOrderForm = ({
             />
           </div>
 
-          {/* Selected Location Display */}
-          {values.gatheringLocation.lat !== null &&
-            values.gatheringLocation.lng !== null && (
-              <Box className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-                <Typography className="!font-somar text-sm text-green-800">
-                  ✓{" "}
-                  {t("gathering_location.location_selected", {
-                    defaultValue: "Location Selected",
-                  })}
-                  :{" "}
-                  <span className="font-mono">
-                    {values.gatheringLocation.lat.toFixed(6)},{" "}
-                    {values.gatheringLocation.lng.toFixed(6)}
-                  </span>
-                </Typography>
-              </Box>
-            )}
+          {/* Location Selected Indicator */}
+          {hasValidLocation && (
+            <Box className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <Typography className="!font-somar text-sm text-green-800">
+                ✓{" "}
+                {t("gathering_location.location_selected", {
+                  defaultValue: "Location Selected",
+                })}
+                :{" "}
+                <span className="font-mono">
+                  {values.gatheringLocation.lat.toFixed(6)},{" "}
+                  {values.gatheringLocation.lng.toFixed(6)}
+                </span>
+              </Typography>
+            </Box>
+          )}
 
-          {/* Location validation error - Only show when both fields are touched */}
+          {/* Location Error - Only show when both fields are touched and have errors */}
           {touched.gatheringLocation?.lat &&
             touched.gatheringLocation?.lng &&
-            hasGatheringLocationError() && (
+            hasLocationError && (
               <Alert severity="error" sx={{ mt: 2 }}>
-                {getGatheringLocationError()}
+                {latError && lngError
+                  ? t("gathering_location.both_required", {
+                      defaultValue: "Both latitude and longitude are required",
+                    })
+                  : latError || lngError}
               </Alert>
             )}
         </Box>
 
-        {/* Action Buttons */}
+        {/* Actions */}
         <Box className="flex gap-3 mt-6">
-          {/* Cancel Button */}
           <Button
             type="button"
             variant="outlined"
-            className="!border-border px-8 py-3 !border-2 !font-somar !text-textDark w-full rounded-lg hover:!bg-gray-50"
+            className="!font-somar !border-mainColor px-8 py-3 !border-2 !text-mainColor w-full rounded-lg hover:!border-linksHover hover:!text-linksHover hover:!bg-white"
             onClick={handleCancel}
             disabled={approvingOrder}
+            fullWidth
           >
             {t2("links.cancel")}
           </Button>
 
-          {/* Approve Button */}
           <Button
             type="submit"
-            disabled={approvingOrder || !isValid}
-            className="!bg-success px-8 py-3 !font-somar !text-white w-full rounded-lg disabled:!bg-gray-300 disabled:!text-gray-600 disabled:cursor-not-allowed hover:!bg-green-700"
+            disabled={approvingOrder || !isValid || !dirty ||errors}
+            className="!bg-mainColor px-8 py-3 !font-somar !text-white w-full rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:!bg-linksHover"
+            fullWidth
           >
             {approvingOrder ? (
               <Box className="flex items-center gap-2">
