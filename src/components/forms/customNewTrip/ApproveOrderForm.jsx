@@ -28,7 +28,17 @@ const ApproveOrderForm = ({
   const t2 = useTranslations();
 
   // Initialize Formik with translation-aware validation schema
-  const formik = useFormik({
+  const {
+    values,
+    errors,
+    touched,
+    setFieldValue,
+    setFieldTouched,
+    handleBlur,
+    handleSubmit,
+    resetForm,
+    isValid,
+  } = useFormik({
     initialValues: {
       gatheringLocation: {
         lat: null,
@@ -52,7 +62,7 @@ const ApproveOrderForm = ({
       // If successful, call onSuccess callback
       if (result.success) {
         // Reset form
-        formik.resetForm();
+        resetForm();
 
         // Call success callback if provided
         if (onSuccess) {
@@ -65,74 +75,71 @@ const ApproveOrderForm = ({
   // Handle location selection from map
   const handleLocationSelect = useCallback(
     (location) => {
-      // Set both values together as a single object update
-      formik.setFieldValue(
+      setFieldValue(
         "gatheringLocation",
         {
           lat: location.lat,
           lng: location.lng,
         },
         true
-      ); // validateOnChange is true
+      );
 
-      // Mark both fields as touched
-      formik.setFieldTouched("gatheringLocation.lat", true, false);
-      formik.setFieldTouched("gatheringLocation.lng", true, false);
+      setFieldTouched("gatheringLocation.lat", true, false);
+      setFieldTouched("gatheringLocation.lng", true, false);
     },
-    [formik]
+    [setFieldValue, setFieldTouched]
   );
+  
 
   // Handle manual latitude input
   const handleLatitudeChange = useCallback(
     (event) => {
       const value = event.target.value;
 
-      // Allow numbers, negative sign, and decimal point
       if (value === "" || value === "-" || /^-?\d*\.?\d*$/.test(value)) {
         const numValue =
           value === "" || value === "-" ? null : parseFloat(value);
 
-        // Update the entire gatheringLocation object to trigger proper validation
-        formik.setFieldValue(
+        setFieldValue(
           "gatheringLocation",
           {
             lat: numValue,
-            lng: formik.values.gatheringLocation.lng,
+            lng: values.gatheringLocation.lng,
           },
           true
         );
 
-        formik.setFieldTouched("gatheringLocation.lat", true, false);
+        setFieldTouched("gatheringLocation.lat", true, false);
       }
     },
-    [formik]
+    [setFieldValue, setFieldTouched, values.gatheringLocation.lng]
   );
+  
 
   // Handle manual longitude input
   const handleLongitudeChange = useCallback(
     (event) => {
       const value = event.target.value;
 
-      // Allow numbers, negative sign, and decimal point
       if (value === "" || value === "-" || /^-?\d*\.?\d*$/.test(value)) {
         const numValue =
           value === "" || value === "-" ? null : parseFloat(value);
 
-        // Update the entire gatheringLocation object to trigger proper validation
-        formik.setFieldValue(
+        setFieldValue(
           "gatheringLocation",
           {
-            lat: formik.values.gatheringLocation.lat,
+            lat: values.gatheringLocation.lat,
             lng: numValue,
           },
           true
         );
 
-        formik.setFieldTouched("gatheringLocation.lng", true, false);
+        setFieldTouched("gatheringLocation.lng", true, false);
       }
     },
-    [formik]
+    [setFieldValue, setFieldTouched, values.gatheringLocation.lat]
   );
+  
 
   // Handle school amount change
   const handleSchoolAmountChange = useCallback(
@@ -141,17 +148,18 @@ const ApproveOrderForm = ({
 
       // Allow only numbers
       if (value === "" || /^\d+$/.test(value)) {
-        formik.setFieldValue("schoolAmount", value);
+        setFieldValue("schoolAmount", value);
       }
     },
-    [formik]
+    [setFieldValue]
   );
+  
 
   // Handle cancel
   const handleCancel = useCallback(() => {
     if (approvingOrder) return; // Prevent closing while submitting
 
-    formik.resetForm();
+    resetForm();
 
     if (onClose) {
       onClose();
@@ -161,8 +169,8 @@ const ApproveOrderForm = ({
   // Get error message helper - Enhanced version
   const getErrorMessage = (fieldPath) => {
     const keys = fieldPath.split(".");
-    let error = formik.errors;
-    let touched = formik.touched;
+    let error = errors;
+    let touched = touched;
 
     for (const key of keys) {
       if (!error) return null;
@@ -176,7 +184,7 @@ const ApproveOrderForm = ({
 
     // For nested fields, check if parent is touched OR if the field itself is touched
     const isFieldTouched = keys.reduce((acc, key, index) => {
-      if (index === 0) return formik.touched[key];
+      if (index === 0) return touched[key];
       return acc && acc[key];
     }, true);
 
@@ -205,7 +213,7 @@ const ApproveOrderForm = ({
 
   return (
     <Box className="bg-white rounded-2xl max-w-[700px] w-full mx-auto p-6">
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={handleSubmit}>
         {/* Title */}
         <Typography className="!font-somar text-2xl text-center !font-semibold border-b pb-4 mb-4">
           {t("title", { defaultValue: "Approve Order" })}
@@ -239,16 +247,16 @@ const ApproveOrderForm = ({
             placeholder={t("school_amount.placeholder", {
               defaultValue: "Enter school amount",
             })}
-            value={formik.values.schoolAmount}
+            value={values.schoolAmount}
             onChange={handleSchoolAmountChange}
-            onBlur={formik.handleBlur}
+            onBlur={handleBlur}
             disabled={approvingOrder}
             variant="outlined"
             error={
-              formik.touched.schoolAmount && Boolean(formik.errors.schoolAmount)
+              touched.schoolAmount && Boolean(errors.schoolAmount)
             }
             helperText={
-              (formik.touched.schoolAmount && formik.errors.schoolAmount) ||
+              (touched.schoolAmount && errors.schoolAmount) ||
               t("schoolAmountHelper", {
                 defaultValue: "Enter the amount to be paid by the school",
               })
@@ -295,24 +303,24 @@ const ApproveOrderForm = ({
                     defaultValue: "e.g., 30.0444",
                   })}
                   value={
-                    formik.values.gatheringLocation.lat !== null
-                      ? formik.values.gatheringLocation.lat
+                    values.gatheringLocation.lat !== null
+                      ? values.gatheringLocation.lat
                       : ""
                   }
                   onChange={handleLatitudeChange}
                   onBlur={(e) => {
-                    formik.handleBlur(e);
-                    formik.setFieldTouched("gatheringLocation.lat", true, true);
+                    handleBlur(e);
+                    setFieldTouched("gatheringLocation.lat", true, true);
                   }}
                   disabled={approvingOrder}
                   variant="outlined"
                   error={
-                    formik.touched.gatheringLocation?.lat &&
-                    Boolean(formik.errors.gatheringLocation?.lat)
+                    touched.gatheringLocation?.lat &&
+                    Boolean(errors.gatheringLocation?.lat)
                   }
                   helperText={
-                    formik.touched.gatheringLocation?.lat &&
-                    formik.errors.gatheringLocation?.lat
+                    touched.gatheringLocation?.lat &&
+                    errors.gatheringLocation?.lat
                   }
                   sx={{
                     "& .MuiOutlinedInput-root": {
@@ -338,24 +346,24 @@ const ApproveOrderForm = ({
                     defaultValue: "e.g., 31.2357",
                   })}
                   value={
-                    formik.values.gatheringLocation.lng !== null
-                      ? formik.values.gatheringLocation.lng
+                    values.gatheringLocation.lng !== null
+                      ? values.gatheringLocation.lng
                       : ""
                   }
                   onChange={handleLongitudeChange}
                   onBlur={(e) => {
-                    formik.handleBlur(e);
-                    formik.setFieldTouched("gatheringLocation.lng", true, true);
+                    handleBlur(e);
+                    setFieldTouched("gatheringLocation.lng", true, true);
                   }}
                   disabled={approvingOrder}
                   variant="outlined"
                   error={
-                    formik.touched.gatheringLocation?.lng &&
-                    Boolean(formik.errors.gatheringLocation?.lng)
+                    touched.gatheringLocation?.lng &&
+                    Boolean(errors.gatheringLocation?.lng)
                   }
                   helperText={
-                    formik.touched.gatheringLocation?.lng &&
-                    formik.errors.gatheringLocation?.lng
+                    touched.gatheringLocation?.lng &&
+                    errors.gatheringLocation?.lng
                   }
                   sx={{
                     "& .MuiOutlinedInput-root": {
@@ -390,7 +398,7 @@ const ApproveOrderForm = ({
               
               interactive={true}
               onLocationSelect={handleLocationSelect}
-              selectedLocation={formik.values.gatheringLocation}
+              selectedLocation={values.gatheringLocation}
               showOriginalMarker={true}
               controls={{
                 zoom: true,
@@ -402,8 +410,8 @@ const ApproveOrderForm = ({
           </div>
 
           {/* Selected Location Display */}
-          {formik.values.gatheringLocation.lat !== null &&
-            formik.values.gatheringLocation.lng !== null && (
+          {values.gatheringLocation.lat !== null &&
+            values.gatheringLocation.lng !== null && (
               <Box className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
                 <Typography className="!font-somar text-sm text-green-800">
                   ✓{" "}
@@ -412,16 +420,16 @@ const ApproveOrderForm = ({
                   })}
                   :{" "}
                   <span className="font-mono">
-                    {formik.values.gatheringLocation.lat.toFixed(6)},{" "}
-                    {formik.values.gatheringLocation.lng.toFixed(6)}
+                    {values.gatheringLocation.lat.toFixed(6)},{" "}
+                    {values.gatheringLocation.lng.toFixed(6)}
                   </span>
                 </Typography>
               </Box>
             )}
 
           {/* Location validation error - Only show when both fields are touched */}
-          {formik.touched.gatheringLocation?.lat &&
-            formik.touched.gatheringLocation?.lng &&
+          {touched.gatheringLocation?.lat &&
+            touched.gatheringLocation?.lng &&
             hasGatheringLocationError() && (
               <Alert severity="error" sx={{ mt: 2 }}>
                 {getGatheringLocationError()}
@@ -445,7 +453,7 @@ const ApproveOrderForm = ({
           {/* Approve Button */}
           <Button
             type="submit"
-            disabled={approvingOrder || !formik.isValid}
+            disabled={approvingOrder || !isValid}
             className="!bg-success px-8 py-3 !font-somar !text-white w-full rounded-lg disabled:!bg-gray-300 disabled:!text-gray-600 disabled:cursor-not-allowed hover:!bg-green-700"
           >
             {approvingOrder ? (

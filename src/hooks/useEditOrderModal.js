@@ -157,9 +157,7 @@ export const useEditOrderModal = (locale) => {
 
       // If order data is passed directly (from the page), use it
       if (existingOrderData) {
-        console.log(
-          `Using provided order data for ${orderId} (no fetch needed)`
-        );
+    
         setCurrentEditOrderDetails(existingOrderData);
 
         // Also cache it for future use
@@ -190,12 +188,10 @@ export const useEditOrderModal = (locale) => {
 
       // Only fetch order details if not cached and not current
       if (!hasCachedDetails) {
-        console.log(`Fetching fresh data for order ${orderId}`);
+     
         fetchPromises.push(fetchEditOrderDetails(orderId, false));
       } else {
-        console.log(
-          `Using existing data for order ${orderId} (no fetch needed)`
-        );
+      
         // Use cached or current details
         if (currentEditOrderDetails?._id === orderId) {
           // Already set, no need to do anything
@@ -256,7 +252,7 @@ export const useEditOrderModal = (locale) => {
       setRejectionError(null);
 
       try {
-        console.log(`Rejecting order ${orderId}`, rejectionData);
+      
 
         const response = await axios.patch(
           getProxyUrl(
@@ -374,7 +370,7 @@ export const useEditOrderModal = (locale) => {
 
   // Refresh CustomizedTripsTable after successful order update
   const refreshCustomizedTripsTable = useCallback(async () => {
-    console.log("Refreshing customized trips table...");
+
 
     try {
       // Make direct API request to fetch fresh table data
@@ -387,7 +383,6 @@ export const useEditOrderModal = (locale) => {
         { headers }
       );
 
-      console.log("Fresh data fetched:", response.data);
 
       // Update the cache with fresh data
       queryClient.setQueryData(
@@ -412,7 +407,7 @@ export const useEditOrderModal = (locale) => {
         },
       });
 
-      console.log("Table data refreshed successfully");
+     
     } catch (error) {
       console.error("Error refreshing table data:", error);
       const errorMessage =
@@ -427,7 +422,7 @@ export const useEditOrderModal = (locale) => {
     async (orderId) => {
       if (!orderId) return;
 
-      console.log(`Refreshing order ${orderId} with fresh data from server`);
+ 
 
       // Clear from cache and refetch
       setEditOrderDetailsCache((prev) => {
@@ -445,7 +440,7 @@ export const useEditOrderModal = (locale) => {
   const clearCache = useCallback(() => {
     setEditOrderDetailsCache({});
     setFormSelectionData(null);
-    console.log("Edit order cache cleared");
+
   }, []);
 
   // Check if modal is open
