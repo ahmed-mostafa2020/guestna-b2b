@@ -23,7 +23,7 @@ const StepPricing = () => {
       e.preventDefault();
     }
   };
-  console.log(values)
+ 
   return (
     <Box>
       <h2 className="text-2xl font-bold  text-textDark">{t("title")}</h2>

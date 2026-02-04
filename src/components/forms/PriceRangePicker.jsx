@@ -48,7 +48,7 @@ const PriceRangePicker = ({
     onBlur();
   };
 
-  console.log(touched, errors, minValue, maxValue);
+
   const handleApply = () => {
     // Ensure at least one value is set
     const finalMin = tempMin || minValue || "";

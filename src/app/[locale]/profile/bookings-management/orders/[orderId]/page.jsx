@@ -2,39 +2,83 @@
 
 import { useEditOrderModal } from "@hooks/useEditOrderModal";
 import { useLocale, useTranslations } from "next-intl";
-import React, { useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   Box,
   Button,
-  Card,
-  CardContent,
   Typography,
-  Divider,
   Alert,
   Stack,
-  Paper,
   CircularProgress,
+  Step,
+  StepLabel,
+  Stepper,
 } from "@mui/material";
+import Link from "next/link";
+
 import CustomNewTripForm from "@components/forms/customNewTrip";
 import CustomizedModal from "@components/common/customizedModal";
 import { backIconColored } from "@assets/svg";
-import Link from "next/link";
+
 import TripInfoCard from "@components/sections/pages/profile/boookings-management/orders/order-details/TripInfoCard";
 import SchoolMainInfoCard from "@components/sections/pages/profile/boookings-management/orders/order-details/SchoolMainInfoCard";
 import TripDateCard from "@components/sections/pages/profile/boookings-management/orders/order-details/TripDateCard";
 import PricingInfoCard from "@components/sections/pages/profile/boookings-management/orders/order-details/PricingInfoCard";
+import AdditionalInfoCard from "@components/sections/pages/profile/boookings-management/orders/order-details/AdditionalInfoCard";
+
 import OrderPageLoadingSkeleton from "@components/sections/pages/profile/boookings-management/orders/order-details/OrderPageLoadingSkeleton";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
-import AdditionalInfoCard from "@components/sections/pages/profile/boookings-management/orders/order-details/AdditionalInfoCard";
 
 const OrderDetailsPage = ({ params }) => {
   const locale = useLocale();
   const t = useTranslations();
   const t2 = useTranslations("order_details");
 
-  // State to store the resolved orderId
   const [orderId, setOrderId] = useState(null);
   const [paramsLoading, setParamsLoading] = useState(true);
+
+  /* =========================
+     Section Refs
+  ========================= */
+  const schoolRef = useRef(null);
+  const tripRef = useRef(null);
+  const dateRef = useRef(null);
+  const pricingRef = useRef(null);
+  const additionalRef = useRef(null);
+
+  const steps = useMemo(
+    () => [
+      {
+        label: t("forms.customTrip.steps.school_info.step_title"),
+        ref: schoolRef,
+      },
+      { label: t("forms.customTrip.steps.trip_info.step_title"), ref: tripRef },
+      { label: t("forms.customTrip.steps.trip_date.step_title"), ref: dateRef },
+      {
+        label: t("forms.customTrip.steps.pricing.step_title"),
+        ref: pricingRef,
+      },
+      {
+        label: t("forms.customTrip.steps.additional_info.step_title"),
+        ref: additionalRef,
+      },
+    ],
+    [t]
+  );
+
+  const scrollToSection = useCallback((ref) => {
+    if (!ref?.current) return;
+    ref.current.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, []);
 
   const {
     loadingEditDetails,
@@ -50,50 +94,35 @@ const OrderDetailsPage = ({ params }) => {
     fetchFormSelectionData,
   } = useEditOrderModal(locale);
 
-  // Resolve params (Next.js App Router async params)
+  /* =========================
+     Resolve Params
+  ========================= */
   useEffect(() => {
     const resolveParams = async () => {
       try {
-        setParamsLoading(true);
         const resolvedParams =
           params instanceof Promise ? await params : params;
-        const id = resolvedParams?.orderId;
-
-        if (id) {
-          setOrderId(id);
-        } else {
-          console.error("No orderId found in params");
-        }
-      } catch (error) {
-        console.error("Error resolving params:", error);
+        setOrderId(resolvedParams?.orderId || null);
+      } catch (e) {
+        console.error(e);
       } finally {
         setParamsLoading(false);
       }
     };
-
     resolveParams();
   }, [params]);
 
-  // Fetch order details AND form selection data on mount
+  /* =========================
+     Fetch Data
+  ========================= */
   useEffect(() => {
-    if (orderId && !paramsLoading) {
-      // Fetch both order details and form selection data immediately
-      const loadData = async () => {
-        await Promise.all([
-          fetchOrderDetailsForView(orderId),
-          fetchFormSelectionData(), // Pre-load form selection data
-        ]);
-      };
-      loadData();
-    }
-  }, [
-    orderId,
-    paramsLoading,
-    fetchOrderDetailsForView,
-    fetchFormSelectionData,
-  ]);
+    if (!orderId || paramsLoading) return;
+    Promise.all([fetchOrderDetailsForView(orderId), fetchFormSelectionData()]);
+  }, [orderId, paramsLoading]);
 
-  // Update document title
+  /* =========================
+     Page Title
+  ========================= */
   useEffect(() => {
     if (currentEditOrderDetails?.name?.[locale]) {
       document.title = `${t("pagesHead.appName")} | ${t(
@@ -102,97 +131,218 @@ const OrderDetailsPage = ({ params }) => {
     }
   }, [currentEditOrderDetails, locale, t]);
 
-  // Handle edit button click - pass existing data to avoid refetching
-  const handleEditClick = async () => {
+  /* =========================
+     Edit Handlers
+  ========================= */
+  const handleEditClick = useCallback(async () => {
     if (orderId && currentEditOrderDetails) {
-
-      // Pass the existing order data to the modal
       await openEditModal(orderId, currentEditOrderDetails);
     }
-  };
+  }, [orderId, currentEditOrderDetails]);
 
-  // Handle successful edit
-  const handleEditSuccess = async () => {
+  const handleEditSuccess = useCallback(async () => {
     closeEditModal();
     if (orderId) {
       await refreshCurrentOrder(orderId);
     }
-  };
+  }, [orderId]);
 
-  // Loading state for params resolution
-  if (paramsLoading) {
-    return <FullScreenLoading status={paramsLoading} />;
-  }
+  /* =========================
+     Loading / Error States
+  ========================= */
+  if (paramsLoading) return <FullScreenLoading status />;
 
-  // Loading state for order details
-  if (loadingEditDetails && !currentEditOrderDetails) {
+  if (loadingEditDetails && !currentEditOrderDetails)
     return <OrderPageLoadingSkeleton />;
-  }
 
-  // Error state
-  if (error && !currentEditOrderDetails) {
+  if (error && !currentEditOrderDetails)
     return (
-      <Box sx={{ p: 3, fontFamily: "somar" }}>
+      <Box p={3}>
         <Alert severity="error">{error}</Alert>
       </Box>
     );
-  }
 
-  // No data state
-  if (!currentEditOrderDetails) {
+  if (!currentEditOrderDetails)
     return (
-      <Box sx={{ p: 3, fontFamily: "somar" }}>
+      <Box p={3}>
         <Alert severity="info">{t2("orders.no_order_found")}</Alert>
       </Box>
     );
-  }
 
   const orderData = currentEditOrderDetails;
 
-  // Check if all data is ready for the modal
-  const isFormDataReady = currentEditOrderDetails && formSelectionData;
-
+  /* =========================
+     Render
+  ========================= */
   return (
     <Box className="!font-somar py-3 mx-auto">
-      {/* Header Section */}
-      <Box className="flex gap-2 flex-col">
-        <Box className="flex gap-2 items-center flex-wrap mb-4">
-          <Link
-            className="border-2 border-mainColor !text-mainColor !w-8 !h-8 flex justify-center items-center !p-2 rounded-lg"
-            href={`/${locale}/profile/bookings-management/orders`}
-          >
-            <span className="!text-mainColor">
-              {backIconColored("var(--color-main)")}
-            </span>
-          </Link>
-          <Typography className="!text-textDark !font-somar !text-2xl">
-            {t2("title")}
-          </Typography>
-        </Box>
+      {/* Header */}
+      <Box className="flex gap-2 items-center mb-4">
+        <Link
+          href={`/${locale}/profile/bookings-management/orders`}
+          className="border-2 border-mainColor w-8 h-8 flex items-center justify-center rounded-lg"
+        >
+          {backIconColored("var(--color-main)")}
+        </Link>
+        <Typography className="!text-2xl !font-somar">{t2("title")}</Typography>
       </Box>
 
-      <Stack spacing={3}>
-        {/* School Info Section */}
-        <SchoolMainInfoCard orderData={orderData} />
+      {/* Stepper (Static, Clickable) */}
+      <Stepper
+        orientation="horizontal"
+        alternativeLabel={false}
+        dir={locale === "ar" ? "rtl" : "ltr"}
+        className="mb-4"
+        sx={{
+          "@media (max-width: 640px)": {
+            flexDirection: "column",
+            alignItems: "stretch",
+            gap: "0.1rem",
+          },
+          "@media (min-width: 641px)": {
+            flexDirection: "row",
+          },
+          "& .MuiStep-root": {
+            "@media (max-width: 640px)": {
+              padding: "0.2rem 0",
+              color: "var(--color-main)",
+              fontWeight: 400,
+              
+            },
+          },
+          "& .MuiStepLabel-root": {
+            "@media (max-width: 640px)": {
+              flexDirection: "row",
+              alignItems: "center",
+              padding: "0.1rem",
+              color: "var(--color-main)",
+              fontWeight: 400,
+            },
+          },
+          "& .MuiStepLabel-root .Mui-completed": {
+            color: "var(--color-main)",
+            fontWeight: 400,
+          },
+          "& .MuiStepLabel-root .Mui-active": {
+            color: "var(--color-main)",
+            fontWeight: 400,
+          },
+          "& .MuiStepLabel-label.Mui-completed": {
+            color: "var(--color-main)",
+            fontWeight: 400,
+          },
+          "& .MuiStepLabel-label.Mui-active": {
+            color: "var(--color-main)",
+            fontWeight: 400,
+          },
+          "& .MuiStepConnector-root": {
+            "@media (min-width: 641px)": {
+              left: "calc(-50% + 16px)",
+              right: "calc(50% + 16px)",
+            },
+            "@media (max-width: 640px)": {
+              display: "none",
+            },
+            "& .MuiStepConnector-line": {
+              borderColor: "#e0e0e0",
+              borderTopWidth: 3,
+            },
+            "&.Mui-completed .MuiStepConnector-line": {
+              borderColor: "var(--color-success)",
+            },
+            "&.Mui-active .MuiStepConnector-line": {
+              borderColor: "var(--color-main)",
+            },
+          },
+          "& .MuiStep-root:first-of-type .MuiStepConnector-root": {
+            display: "none",
+          },
+          "& .MuiStepIcon-root": {
+            fontSize: "2rem",
+            "@media (min-width: 641px)": {
+              fontSize: "2.5rem",
+            },
 
-        {/* Trip Info Section */}
-        <TripInfoCard orderData={orderData} />
+            "&.Mui-completed": {
+              color: "var(--color-main)",
 
-        {/* Trip Date Section */}
-        <TripDateCard orderData={orderData} />
+              backgroundColor: "white",
+              padding: "0px",
+              boxShadow: "none",
+            },
+            "&.Mui-active": {
+              color: "var(--color-main)",
 
-        {/* Pricing Section */}
-        <PricingInfoCard orderData={orderData} />
+              backgroundColor: "white",
+              padding: "0px",
+              boxShadow: "none",
+            },
+            "&:not(.Mui-active):not(.Mui-completed)": {
+              color: "var(--color-main)",
 
-        {/* Additional Info Section */}
-        <AdditionalInfoCard orderData={orderData} />
+              backgroundColor: "white",
+              padding: "0px",
+              boxShadow: "none",
+            },
+          },
+          "& .MuiStepLabel-label": {
+            marginInlineStart: "8px",
+            color: "var(--color-main)",
+            fontWeight: 400,
+            fontSize: "0.875rem",
+            "@media (min-width: 641px)": {
+              fontSize: "1rem",
+              marginInlineStart: "5px",
+            },
+            fontFamily: "var(--font-somar), sans-serif",
+          },
+        }}
+      >
+        {steps.map((step, index) => (
+          <Step key={index} onClick={() => scrollToSection(step.ref)}>
+            <StepLabel
+              icon={index + 1}
+              sx={{
+                cursor: "pointer",
+                "& .MuiStepIcon-root": {
+                  color: "var(--color-main)",
+                },
+              }}
+            >
+              {step.label}
+            </StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+
+      {/* Sections */}
+      <Stack spacing={4}>
+        <div ref={schoolRef}>
+          <SchoolMainInfoCard orderData={orderData} />
+        </div>
+
+        <div ref={tripRef}>
+          <TripInfoCard orderData={orderData} />
+        </div>
+
+        <div ref={dateRef}>
+          <TripDateCard orderData={orderData} />
+        </div>
+
+        <div ref={pricingRef}>
+          <PricingInfoCard orderData={orderData} />
+        </div>
+
+        <div ref={additionalRef}>
+          <AdditionalInfoCard orderData={orderData} />
+        </div>
       </Stack>
 
       {/* Edit Button */}
       <Button
-        className="!w-full !bg-mainColor !font-somar !text-white hover:bg-linksHover !mt-4"
+        className="!w-full !bg-mainColor !text-white !mt-6"
         onClick={handleEditClick}
-        disabled={!isFormDataReady || loadingFormSelection}
+        disabled={!formSelectionData || loadingFormSelection}
         startIcon={loadingFormSelection && <CircularProgress size={20} />}
       >
         {loadingFormSelection
@@ -204,42 +354,17 @@ const OrderDetailsPage = ({ params }) => {
       <CustomizedModal
         open={isModalOpen}
         handleClose={closeEditModal}
-        bgcolor="rgba(0, 0, 0, 0.5)"
-        customizedCloseButton={true}
         padding={false}
       >
-        {/* Show loading state while waiting for form selection data */}
-        {isModalOpen && (!orderData || !formSelectionData) ? (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              minHeight: 400,
-              bgcolor: "white",
-              borderRadius: 2,
-            }}
-          >
-            <Stack spacing={2} alignItems="center">
-              <CircularProgress />
-              <Typography sx={{ fontFamily: "somar" }}>
-                {t("common.loading")}
-              </Typography>
-            </Stack>
-          </Box>
-        ) : (
-          isModalOpen &&
-          orderData &&
-          formSelectionData && (
-            <CustomNewTripForm
-              mode="edit"
-              orderId={orderData._id}
-              editData={orderData}
-              formSelectionData={formSelectionData}
-              onClose={closeEditModal}
-              onSuccess={handleEditSuccess}
-            />
-          )
+        {formSelectionData && (
+          <CustomNewTripForm
+            mode="edit"
+            orderId={orderData._id}
+            editData={orderData}
+            formSelectionData={formSelectionData}
+            onClose={closeEditModal}
+            onSuccess={handleEditSuccess}
+          />
         )}
       </CustomizedModal>
     </Box>
