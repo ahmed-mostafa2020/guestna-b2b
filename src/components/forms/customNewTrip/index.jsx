@@ -546,7 +546,6 @@ const CustomNewTripForm = ({
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       const formData = prepareFormData(values);
-
       const config = {
         method: isEditMode ? "patch" : "post",
         maxBodyLength: Infinity,
