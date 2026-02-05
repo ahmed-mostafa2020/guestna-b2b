@@ -116,9 +116,7 @@ const getFieldLabel = (path, t) => {
   return lastPart.charAt(0).toUpperCase() + lastPart.slice(1);
 };
 
-/**
- * Format error paths into user-friendly messages
- */
+// Format error paths into user-friendly messages
 const formatErrorMessages = (errorPaths, t) => {
   return errorPaths.map((path) => {
     const label = getFieldLabel(path, t);
