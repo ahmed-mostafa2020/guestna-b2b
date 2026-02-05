@@ -450,6 +450,7 @@ const AllOrdersTable = ({
 
                     <ActionsDropdownMenu
                       _id={order._id}
+                      bookingType={order.askType}
                       bookingId={order.orderId}
                       bookingStatus={order.status}
                       onActionComplete={handleActionComplete}

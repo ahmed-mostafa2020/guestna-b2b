@@ -190,7 +190,7 @@ const ApproveOrderForm = ({
             })}
           </Typography>
 
-          <Box className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+          <Box className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
             {/* Latitude */}
             <Box>
               <label className="block mb-2 !text-sm text-textDark !font-somar !font-medium">
