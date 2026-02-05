@@ -190,7 +190,7 @@ const ApproveOrderForm = ({
             })}
           </Typography>
 
-          <Box className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Box className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
             {/* Latitude */}
             <Box>
               <label className="block mb-2 !text-sm text-textDark !font-somar !font-medium">
@@ -219,7 +219,7 @@ const ApproveOrderForm = ({
             </Box>
 
             {/* Longitude */}
-            <Box>
+            <Box >
               <label className="block mb-2 !text-sm text-textDark !font-somar !font-medium">
                 {t("gathering_location.lng.label", {
                   defaultValue: "Longitude",
