@@ -175,45 +175,45 @@ const Map = ({
       />
 
       {interactive && (
-        <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-800 font-medium">
+        <div className=" border rounded-lg">
+          <p className="text-sm p-3  text-title font-medium">
             💡{" "}
             {t("links.clickToSelectLocation", {
               defaultValue:
                 "Click anywhere on the map to select the gathering location",
             })}
           </p>
-        </div>
-      )}
-
-      {locationLink && !interactive && (
-        <div className="flex items-center justify-end">
-          <Link
-            target="_blank"
-            href={`https://www.google.com/maps?q=${lat},${lng}`}
-            className="px-8 py-2 mt-4 text-base font-bold text-white transition-all duration-200 ease-in-out rounded-lg font-ibm bg-mainColor hover:bg-linksHover"
-          >
-            {t("links.goToLocation")}
-          </Link>
-        </div>
-      )}
-
-      {locationLink &&
-        interactive &&
-        selectedLocation?.lat &&
-        selectedLocation?.lng && (
-          <div className="flex items-center justify-end">
-            <Link
-              target="_blank"
-              href={`https://www.google.com/maps?q=${selectedLocation.lat},${selectedLocation.lng}`}
-              className="px-8 py-2 mt-4 text-base font-bold text-white transition-all duration-200 ease-in-out rounded-lg font-ibm bg-mainColor hover:bg-linksHover"
-            >
-              {t("links.viewSelectedLocation", {
-                defaultValue: "View Selected Location in Google Maps",
-              })}
-            </Link>
+          <div className="my-2 p-2 flex justify-between items-center ">
+            {locationLink && !interactive && (
+              <div>
+                <Link
+                  target="_blank"
+                  href={`https://www.google.com/maps?q=${lat},${lng}`}
+                  className="px-8 py-2 mt-4 text-base font-bold text-white transition-all duration-200 ease-in-out rounded-lg font-ibm bg-mainColor hover:bg-linksHover"
+                >
+                  {t("links.goToLocation")}
+                </Link>
+              </div>
+            )}
+            {locationLink &&
+              interactive &&
+              selectedLocation?.lat &&
+              selectedLocation?.lng && (
+                <div>
+                  <Link
+                    target="_blank"
+                    href={`https://www.google.com/maps?q=${selectedLocation.lat},${selectedLocation.lng}`}
+                    className="px-8 py-2 mt-4 text-base font-bold text-white transition-all duration-200 ease-in-out rounded-lg font-ibm bg-mainColor hover:bg-linksHover"
+                  >
+                    {t("links.viewSelectedLocation", {
+                      defaultValue: "View Selected Location in Google Maps",
+                    })}
+                  </Link>
+                </div>
+              )}
           </div>
-        )}
+        </div>
+      )}
     </>
   );
 };
