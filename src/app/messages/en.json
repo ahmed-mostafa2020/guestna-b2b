@@ -2218,6 +2218,19 @@
         "description": "Your request has been submitted successfully. Our team will contact you within 24 hours."
       },
 
+      "organization": {
+        "label": "School",
+        "placeholder": "School Name"
+      },
+
+      "track": {
+        "label": "Educational Track",
+        "placeholder": "Educational Track",
+        "error": {
+          "required": "Educational track is required"
+        }
+      },
+
       "tripInfo": {
         "title": "Trip Information",
         "description": "Trip Description"
@@ -2252,6 +2265,17 @@
           "max": "Number cannot exceed 1000 people"
         }
       },
+
+      "proposedTripDate": {
+        "startLabel": "Proposed Trip Date",
+        "endLabel": "Proposed Trip Date",
+        "error": {
+          "pastDate": "Trip date cannot be in the past",
+          "startAfterEnd": "Start date must be before end date",
+          "endBeforeStart": "End date must be after start date (can be same for 1-day trip)"
+        }
+      },
+
       "city": {
         "placeholder": "City"
       },
@@ -2286,7 +2310,6 @@
       "attachFile": {
         "label": "Attach File"
       },
-
       "steps": {
         "school_info": {
           "step_title": "School Information",
