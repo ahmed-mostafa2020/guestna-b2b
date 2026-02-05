@@ -173,17 +173,7 @@ const ActionsDropdownMenu = ({
 
   if (!hasAnyMenuItems) return null;
 
-  console.log(
-    "hasAnyMenuItems",
-    bookingId,
-    canShowDetails,
-    hasDetails,
-    canRemindGuestna,
-    isEditable,
-    canUpdateTrip,
-    hasApproval,
-    hasRejection
-  );
+  
   return (
     <>
       <Button
