@@ -131,9 +131,7 @@ const formatErrorMessages = (errorPaths, t) => {
   });
 };
 
-/**
- * Deep touch all fields in an object (up to 3 levels)
- */
+// Deep touch all fields in an object (up to 3 levels)
 const deepTouchFields = (obj, depth = 0) => {
   if (depth >= 3 || !obj || typeof obj !== "object") {
     return true;
