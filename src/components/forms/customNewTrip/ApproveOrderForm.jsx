@@ -92,21 +92,8 @@ const ApproveOrderForm = ({
   const handleLocationSelect = ({ lat, lng }) => {
     // Set both values together
     setFieldValue("gatheringLocation", { lat, lng }, false);
-
-    // Mark fields as touched but don't validate immediately
-    // This prevents showing errors when user selects from map
-    setTimeout(() => {
-      setTouched(
-        {
-          ...touched,
-          gatheringLocation: {
-            lat: true,
-            lng: true,
-          },
-        },
-        false
-      ); // false = don't validate immediately
-    }, 0);
+    setFieldTouched("gatheringLocation.lat", true, false);
+    setFieldTouched("gatheringLocation.lng", true, false);
   };
 
   const handleCancel = () => {
@@ -142,7 +129,6 @@ const ApproveOrderForm = ({
   };
 
   /* ---------------- render ---------------- */
-
 
   return (
     <Box className="bg-white rounded-2xl max-w-[700px] w-full mx-auto p-6">
