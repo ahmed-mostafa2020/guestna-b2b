@@ -90,10 +90,8 @@ const ApproveOrderForm = ({
   };
 
   const handleLocationSelect = ({ lat, lng }) => {
-    // Set both values together
-    setFieldValue("gatheringLocation", { lat, lng }, false);
-    setFieldTouched("gatheringLocation.lat", true, false);
-    setFieldTouched("gatheringLocation.lng", true, false);
+
+    setFieldValue("gatheringLocation", { lat, lng }, true);
   };
 
   const handleCancel = () => {
@@ -219,7 +217,7 @@ const ApproveOrderForm = ({
             </Box>
 
             {/* Longitude */}
-            <Box >
+            <Box>
               <label className="block mb-2 !text-sm text-textDark !font-somar !font-medium">
                 {t("gathering_location.lng.label", {
                   defaultValue: "Longitude",
