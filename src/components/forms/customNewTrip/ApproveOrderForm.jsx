@@ -90,11 +90,11 @@ const ApproveOrderForm = ({
   };
 
   const handleLocationSelect = ({ lat, lng }) => {
-    // Set both values together
-    setFieldValue("gatheringLocation", { lat, lng }, false);
-    setFieldTouched("gatheringLocation.lat", true, false);
-    setFieldTouched("gatheringLocation.lng", true, false);
+    // 1️⃣ Set both values together WITHOUT validation
+    setFieldValue("gatheringLocation", { lat, lng }, true);
+
   };
+  
 
   const handleCancel = () => {
     if (approvingOrder) return;
