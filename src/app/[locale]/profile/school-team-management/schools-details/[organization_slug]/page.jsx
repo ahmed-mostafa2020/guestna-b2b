@@ -40,10 +40,10 @@ const SchoolsDetailsPage = ({ params }) => {
         <Box className="flex gap-2  flex-col ">
           <Box className="flex gap-2 items-center flex-wrap">
             <Link
-              className="!bg-mainColor border-2 border-mainColor !text-white !w-5 !h-5 flex justify-center items-center !p-1 rounded-lg  "
+              className="border-2 border-mainColor w-6 h-6 flex items-center justify-center rounded-lg !bg-mainColor"
               href={`/${locale}/profile/school-team-management/schools-overview`}
             >
-              <span>{backIconColored}</span>
+              <span>{backIconColored("white")}</span>
             </Link>
             <Typography className="!text-titleColor !font-somar !text-2xl ">
               {t("profile.schools_overview.schools_details.title")}{" "}
@@ -76,7 +76,9 @@ const SchoolsDetailsPage = ({ params }) => {
             />
           ) : (
             <Typography className="!text-textDark !font-somar !text-lg">
-              {t("profile.schools_overview.schools_details.users.no_users")}{" "}
+              {t(
+                "profile.schools_overview.schools_details.users.no_users"
+              )}{" "}
             </Typography>
           )}
         </Box>

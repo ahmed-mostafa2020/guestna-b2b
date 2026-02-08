@@ -180,7 +180,7 @@ const OrderDetailsPage = ({ params }) => {
       <Box className="flex gap-2 items-center mb-4">
         <Link
           href={`/${locale}/profile/bookings-management/orders`}
-          className="border-2 border-mainColor w-8 h-8 flex items-center justify-center rounded-lg"
+          className="border-2 border-mainColor w-6 h-6 flex items-center justify-center rounded-lg"
         >
           {backIconColored("var(--color-main)")}
         </Link>

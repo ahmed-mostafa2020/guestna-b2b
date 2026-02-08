@@ -60,10 +60,28 @@ const ActionsDropdownMenu = ({
     [hasElement]
   );
 
-  /* ================= Status Logic ================= */
+  const canRejectTrip = useMemo(
+    () =>
+      hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REJECT_TRIP),
+    [hasElement]
+  );
+
+  const canApproveTrip = useMemo(
+    () =>
+      hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_APPROVE_TRIP),
+    [hasElement]
+  );
+
+  /* ================= Type Logic ================= */
   const isCustomType = useMemo(() => bookingType === "CUSTOM", [bookingType]);
 
-  const isEditable = useMemo(
+  const isCustomTripType = useMemo(
+    () => bookingType === "CUSTOM_TRIP",
+    [bookingType]
+  );
+
+  /* ================= Status Logic for CUSTOM ================= */
+  const isCustomEditable = useMemo(
     () =>
       isCustomType &&
       ![
@@ -72,29 +90,74 @@ const ActionsDropdownMenu = ({
         TRIP_STATUS.CANCELLED,
         TRIP_STATUS.REJECTED,
         TRIP_STATUS.ENDED,
+        TRIP_STATUS.ON_HOLD,
         TRIP_STATUS.SCHEDULED,
       ].includes(bookingStatus),
     [bookingStatus, isCustomType]
   );
 
-  const hasDetails = useMemo(
+  const hasCustomDetails = useMemo(
     () =>
       isCustomType &&
+      [TRIP_STATUS.PENDING, TRIP_STATUS.PENDING_COMPANY_APPROVAL].includes(
+        bookingStatus
+      ),
+    [bookingStatus, isCustomType]
+  );
+
+  const hasCustomApproval = useMemo(
+    () => isCustomType && bookingStatus === TRIP_STATUS.ON_HOLD,
+    [bookingStatus, isCustomType]
+  );
+
+  const hasCustomRejection = useMemo(
+    () =>
+      isCustomType &&
+      ![
+        TRIP_STATUS.DONE,
+        TRIP_STATUS.REJECTED,
+        TRIP_STATUS.ENDED,
+        TRIP_STATUS.SCHEDULED,
+        TRIP_STATUS.CANCELLED,
+        TRIP_STATUS.CANCLED,
+      ].includes(bookingStatus),
+    [bookingStatus, isCustomType]
+  );
+
+  /* ================= Status Logic for CUSTOM_TRIP ================= */
+  const isCustomTripEditable = useMemo(
+    () =>
+      isCustomTripType &&
+      ![
+        TRIP_STATUS.DONE,
+        TRIP_STATUS.CANCLED,
+        TRIP_STATUS.CANCELLED,
+        TRIP_STATUS.REJECTED,
+        TRIP_STATUS.ENDED,
+        TRIP_STATUS.SCHEDULED,
+      ].includes(bookingStatus),
+    [bookingStatus, isCustomTripType]
+  );
+
+  const hasCustomTripDetails = useMemo(
+    () => isCustomTripType, // CUSTOM_TRIP can always show details in modal
+    [isCustomTripType]
+  );
+
+  const hasCustomTripApproval = useMemo(
+    () =>
+      isCustomTripType &&
       [
         TRIP_STATUS.PENDING,
         TRIP_STATUS.PENDING_COMPANY_APPROVAL,
         TRIP_STATUS.ON_HOLD,
       ].includes(bookingStatus),
-    [bookingStatus, isCustomType]
+    [bookingStatus, isCustomTripType]
   );
 
-  const hasApproval = useMemo(
-    () => bookingStatus === TRIP_STATUS.ON_HOLD,
-    [bookingStatus]
-  );
-
-  const hasRejection = useMemo(
+  const hasCustomTripRejection = useMemo(
     () =>
+      isCustomTripType &&
       ![
         TRIP_STATUS.DONE,
         TRIP_STATUS.REJECTED,
@@ -103,26 +166,41 @@ const ActionsDropdownMenu = ({
         TRIP_STATUS.CANCELLED,
         TRIP_STATUS.CANCLED,
       ].includes(bookingStatus),
-    [bookingStatus]
+    [bookingStatus, isCustomTripType]
   );
 
+  /* ================= Combined Menu Items Logic ================= */
   const hasAnyMenuItems = useMemo(
     () =>
-      (canShowDetails && hasDetails) ||
-      (canRemindGuestna && isEditable) ||
-      (canUpdateTrip && isEditable) ||
-      (hasApproval && openApproveModal) ||
-      (hasRejection && openRejectModal),
+      // CUSTOM menu items
+      (canShowDetails && hasCustomDetails) ||
+      (canRemindGuestna && isCustomEditable) ||
+      (canUpdateTrip && isCustomEditable) ||
+      (hasCustomApproval && openApproveModal) ||
+      (canRejectTrip && hasCustomRejection && openRejectModal) ||
+      // CUSTOM_TRIP menu items
+      (canShowDetails && hasCustomTripDetails && openDetailsModal) ||
+      (canUpdateTrip && isCustomTripEditable && openEditModal) ||
+      (canApproveTrip && hasCustomTripApproval && openApproveModal) ||
+      (canRejectTrip && hasCustomTripRejection && openRejectModal),
     [
       canShowDetails,
-      hasDetails,
+      hasCustomDetails,
       canRemindGuestna,
-      isEditable,
+      isCustomEditable,
       canUpdateTrip,
-      hasApproval,
+      canApproveTrip,
+      hasCustomApproval,
       openApproveModal,
-      hasRejection,
+      canRejectTrip,
+      hasCustomRejection,
       openRejectModal,
+      hasCustomTripDetails,
+      openDetailsModal,
+      isCustomTripEditable,
+      openEditModal,
+      hasCustomTripApproval,
+      hasCustomTripRejection,
     ]
   );
 
@@ -171,9 +249,42 @@ const ActionsDropdownMenu = ({
     }
   }, [_id, headers, enqueueSnackbar, t, handleClose, onActionComplete]);
 
+  const handleShowDetails = useCallback(() => {
+    handleClose();
+    if (isCustomTripType && openDetailsModal) {
+      // For CUSTOM_TRIP type, open modal
+      openDetailsModal(_id);
+    }
+    // For CUSTOM, the Link component will handle navigation
+  }, [isCustomTripType, openDetailsModal, _id, handleClose]);
+
+  const handleEdit = useCallback(() => {
+    handleClose();
+    if (openEditModal) {
+      if (bookingType === "CUSTOM") {
+        openEditModal(bookingId, null, bookingType);
+      } else {
+        openEditModal(_id, null, bookingType);
+      }
+    }
+  }, [openEditModal, _id, bookingType, handleClose]);
+
+  const handleApprove = useCallback(() => {
+    handleClose();
+    if (openApproveModal) {
+      openApproveModal(_id, bookingType);
+    }
+  }, [openApproveModal, _id, bookingType, handleClose]);
+
+  const handleReject = useCallback(() => {
+    handleClose();
+    if (openRejectModal) {
+      openRejectModal(_id);
+    }
+  }, [openRejectModal, _id, handleClose]);
+
   if (!hasAnyMenuItems) return null;
 
-  
   return (
     <>
       <Button
@@ -195,7 +306,8 @@ const ActionsDropdownMenu = ({
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        {canShowDetails && hasDetails && (
+        {/* Show Details - CUSTOM goes to page, CUSTOM_TRIP opens modal */}
+        {canShowDetails && hasCustomDetails && (
           <MenuItem
             component={Link}
             href={`/${locale}/profile/bookings-management/orders/${bookingId}`}
@@ -206,7 +318,14 @@ const ActionsDropdownMenu = ({
           </MenuItem>
         )}
 
-        {canRemindGuestna && isEditable && (
+        {canShowDetails && hasCustomTripDetails && openDetailsModal && (
+          <MenuItem onClick={handleShowDetails} className="!font-somar">
+            {t("links.showDetails")}
+          </MenuItem>
+        )}
+
+        {/* Remind Guestna - Only for CUSTOM */}
+        {canRemindGuestna && isCustomEditable && (
           <MenuItem
             onClick={sendRemind}
             disabled={sendingReminder}
@@ -220,24 +339,17 @@ const ActionsDropdownMenu = ({
           </MenuItem>
         )}
 
-        {canUpdateTrip && isEditable && (
-          <MenuItem
-            onClick={() => {
-              handleClose();
-              openEditModal?.(bookingId);
-            }}
-            className="!font-somar"
-          >
+        {/* Edit - Both CUSTOM and CUSTOM_TRIP (with different forms) */}
+        {canUpdateTrip && (isCustomEditable || isCustomTripEditable) && (
+          <MenuItem onClick={handleEdit} className="!font-somar">
             {t("links.edit")}
           </MenuItem>
         )}
 
-        {hasApproval && openApproveModal && (
+        {/* Approve - Both CUSTOM and CUSTOM_TRIP (shared form) */}
+        {(hasCustomApproval || hasCustomTripApproval) && openApproveModal && (
           <MenuItem
-            onClick={() => {
-              handleClose();
-              openApproveModal(_id);
-            }}
+            onClick={handleApprove}
             sx={{ color: "success.main" }}
             className="!font-somar"
           >
@@ -245,12 +357,10 @@ const ActionsDropdownMenu = ({
           </MenuItem>
         )}
 
-        {hasRejection && openRejectModal && (
+        {/* Reject - Both CUSTOM and CUSTOM_TRIP (shared form) */}
+        {(hasCustomRejection || hasCustomTripRejection) && openRejectModal && (
           <MenuItem
-            onClick={() => {
-              handleClose();
-              openRejectModal(_id);
-            }}
+            onClick={handleReject}
             sx={{ color: "error.main" }}
             className="!font-somar"
           >

@@ -36,7 +36,6 @@ const EditOrderForm = ({
   const cityData = formSelectionData?.cities || [];
   const academicStageData = formSelectionData?.academicStages || [];
   const servicesData = formSelectionData?.services || [];
-
   // Extract names for dropdown display
   const categoryOptions = categoryData.map((item) => item.name);
   const cityOptions = cityData.map((item) => item.name);
@@ -163,7 +162,7 @@ const EditOrderForm = ({
         services: [],
         description: "",
         specialRequirements: "",
-        file: null,
+        file:undefined,
       };
     }
 
@@ -185,7 +184,7 @@ const EditOrderForm = ({
       services: orderDetails.services?.map((service) => service._id) || [],
       description: orderDetails.description || "",
       specialRequirements: orderDetails.specialRequirements || "",
-      file: null, // File uploads are not pre-populated
+      file: undefined, // File uploads are not pre-populated
     };
   };
 
@@ -255,6 +254,8 @@ const EditOrderForm = ({
                     JSON.stringify(initialValues[key].sort())
                   );
                 }
+
+                console.log(errors)
                 return values[key] !== initialValues[key];
               });
 
