@@ -14,7 +14,7 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { useFetchData } from "@hooks/useFetchData";
 import DiscoverFiltersSection from "./DiscoverFiltersSection";
 
-const DiscoverFilters = ({ showFilters, showSearch }) => {
+const DiscoverFilters = () => {
   const dispatch = useDispatch();
   const locale = useLocale();
   const t = useTranslations();
@@ -37,7 +37,7 @@ const DiscoverFilters = ({ showFilters, showSearch }) => {
     [t]
   );
 
-  const {  } = useFetchData(
+  const { data: sideFiltersData } = useFetchData(
     B2B_END_POINTS.DISCOVER_SIDE_FILTERS,
     {},
     {
@@ -54,7 +54,6 @@ const DiscoverFilters = ({ showFilters, showSearch }) => {
         dispatch(setDiscoverSideFiltersDataLoading(isLoading)),
     }
   );
-  if(!showFilters && !showSearch) return null
 
   return (
     <>

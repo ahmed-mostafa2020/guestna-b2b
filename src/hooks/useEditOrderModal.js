@@ -7,7 +7,6 @@ import { getHeaders } from "@utils/getHeaders";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "../constants/constantValues";
 import { useTranslations } from "next-intl";
-import{askType as askTypeConstants} from "@constants/askType"
 
 export const useEditOrderModal = (locale) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -36,9 +35,6 @@ export const useEditOrderModal = (locale) => {
   const [selectedApproveOrderId, setSelectedApproveOrderId] = useState(null);
   const [approvingOrder, setApprovingOrder] = useState(false);
   const [approvalError, setApprovalError] = useState(null);
-
-  // Store askType for current order
-  const [currentOrderAskType, setCurrentOrderAskType] = useState(null);
 
   // Clear specific order from cache
   const clearOrderFromCache = useCallback((orderId) => {
@@ -86,9 +82,9 @@ export const useEditOrderModal = (locale) => {
     }
   }, [formSelectionData, enqueueSnackbar, headers]);
 
-  // Fetch edit order details with improved caching and askType handling
+  // Fetch edit order details with improved caching
   const fetchEditOrderDetails = useCallback(
-    async (orderId, forceRefresh = false, askType = null) => {
+    async (orderId, forceRefresh = false) => {
       if (!orderId) return null;
 
       if (editOrderDetailsCache[orderId] && !forceRefresh) {
@@ -105,17 +101,15 @@ export const useEditOrderModal = (locale) => {
       setError(null);
 
       try {
-        // Determine the endpoint based on askType
-        let endpoint;
-        if (askType === askTypeConstants.CUSTOM) {
-          // CUSTOM uses EDIT_CUSTOM_INFO endpoint (for CustomNewTripForm)
-          endpoint = `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.EDIT_CUSTOM_INFO}/${orderId}`;
-        } else {
-          // CUSTOM_TRIP & TRIP uses INFO endpoint (for EditOrderForm)
-          endpoint = `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.INFO}/${orderId}`;
-        }
-
-        const response = await axios.get(getProxyUrl(endpoint), { headers });
+        const response = await axios.get(
+          getProxyUrl(
+            `${
+              B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER
+                .EDIT_CUSTOM_INFO
+            }/${orderId}`
+          ),
+          { headers }
+        );
 
         const details = response.data;
 
@@ -144,25 +138,22 @@ export const useEditOrderModal = (locale) => {
 
   // Fetch order details for viewing (sets current details without opening modal)
   const fetchOrderDetailsForView = useCallback(
-    async (orderId, forceRefresh = false, askType = null) => {
-      return await fetchEditOrderDetails(orderId, forceRefresh, askType);
+    async (orderId, forceRefresh = false) => {
+      return await fetchEditOrderDetails(orderId, forceRefresh);
     },
     [fetchEditOrderDetails]
   );
 
   // Open edit modal - optimized to use existing data when available
   const openEditModal = useCallback(
-    async (orderId, existingOrderData = null, askType = null) => {
+    async (orderId, existingOrderData = null) => {
       if (!orderId) {
         console.warn("No orderId provided to openEditModal");
         return;
       }
 
       setSelectedEditOrderId(orderId);
-      setCurrentOrderAskType(askType);
       setError(null);
-
-      
 
       // If order data is passed directly (from the page), use it
       if (existingOrderData) {
@@ -174,6 +165,12 @@ export const useEditOrderModal = (locale) => {
           [orderId]: existingOrderData,
         }));
 
+        // Only fetch form selection data
+        try {
+          await fetchFormSelectionData();
+        } catch (error) {
+          console.error("Error fetching form selection data:", error);
+        }
         return;
       }
 
@@ -185,14 +182,12 @@ export const useEditOrderModal = (locale) => {
       // Only fetch what we don't have
       const fetchPromises = [];
 
-      // Only fetch form selection data if askType is CUSTOM (needs dropdowns)
-      if (!formSelectionData) {
-        fetchPromises.push(fetchFormSelectionData());
-      }
+      // Always fetch form selection data if not available
+      fetchPromises.push(fetchFormSelectionData());
 
       // Only fetch order details if not cached and not current
       if (!hasCachedDetails) {
-        fetchPromises.push(fetchEditOrderDetails(orderId, false, askType));
+        fetchPromises.push(fetchEditOrderDetails(orderId, false));
       } else {
         // Use cached or current details
         if (currentEditOrderDetails?._id === orderId) {
@@ -220,7 +215,6 @@ export const useEditOrderModal = (locale) => {
   // Close edit modal and cleanup
   const closeEditModal = useCallback(() => {
     setSelectedEditOrderId(null);
-    setCurrentOrderAskType(null);
     // Don't clear currentEditOrderDetails to keep it available for the page
     setError(null);
   }, []);
@@ -292,7 +286,7 @@ export const useEditOrderModal = (locale) => {
         setRejectingOrder(false);
       }
     },
-    [headers, enqueueSnackbar, closeRejectModal, clearOrderFromCache, t]
+    [headers, enqueueSnackbar, closeRejectModal, clearOrderFromCache]
   );
 
   // ==================== END REJECTION FUNCTIONALITY ====================
@@ -300,26 +294,24 @@ export const useEditOrderModal = (locale) => {
   // ==================== APPROVAL FUNCTIONALITY ====================
 
   // Open approval modal
-  const openApproveModal = useCallback((orderId, askType = null) => {
+  const openApproveModal = useCallback((orderId) => {
     if (!orderId) {
       console.warn("No orderId provided to openApproveModal");
       return;
     }
     setSelectedApproveOrderId(orderId);
-    setCurrentOrderAskType(askType);
     setApprovalError(null);
   }, []);
 
   // Close approval modal
   const closeApproveModal = useCallback(() => {
     setSelectedApproveOrderId(null);
-    setCurrentOrderAskType(null);
     setApprovalError(null);
   }, []);
 
   // Approve order API call
   const approveOrder = useCallback(
-    async (orderId, approvalData = {}, askType = null) => {
+    async (orderId, approvalData = {}) => {
       if (!orderId) {
         console.warn("No orderId provided to approveOrder");
         return { success: false, error: "Order ID is required" };
@@ -352,7 +344,7 @@ export const useEditOrderModal = (locale) => {
         // Clear the approved order from cache
         clearOrderFromCache(orderId);
 
-        return { success: true, data: response.data, askType };
+        return { success: true, data: response.data };
       } catch (error) {
         console.error("Error approving order:", error);
         const errorMessage =
@@ -366,7 +358,7 @@ export const useEditOrderModal = (locale) => {
         setApprovingOrder(false);
       }
     },
-    [headers, enqueueSnackbar, closeApproveModal, clearOrderFromCache, t]
+    [headers, enqueueSnackbar, closeApproveModal, clearOrderFromCache]
   );
 
   // ==================== END APPROVAL FUNCTIONALITY ====================
@@ -417,7 +409,7 @@ export const useEditOrderModal = (locale) => {
 
   // Refresh current order details (useful after successful edit)
   const refreshCurrentOrder = useCallback(
-    async (orderId, askType = null) => {
+    async (orderId) => {
       if (!orderId) return;
 
       // Clear from cache and refetch
@@ -427,7 +419,7 @@ export const useEditOrderModal = (locale) => {
         return newCache;
       });
 
-      await fetchEditOrderDetails(orderId, true, askType);
+      await fetchEditOrderDetails(orderId, true);
     },
     [fetchEditOrderDetails]
   );
@@ -458,7 +450,6 @@ export const useEditOrderModal = (locale) => {
 
   // Check if data is ready
   const isDataReady = useMemo(() => {
-    // For CUSTOM, we need both (uses CustomNewTripForm with dropdowns)
     return (
       currentEditOrderDetails !== null &&
       formSelectionData !== null &&
@@ -486,7 +477,6 @@ export const useEditOrderModal = (locale) => {
     currentEditOrderDetails,
     formSelectionData,
     error,
-    currentOrderAskType,
 
     // Loading states
     loadingEditDetails,

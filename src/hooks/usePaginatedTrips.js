@@ -17,7 +17,6 @@ export const usePaginatedTrips = ({
   filter = {},
   locale,
 }) => {
- 
   const fetchTrips = async () => {
     const body = {
       perPage: CONSTANT_VALUES.PER_PAGE,

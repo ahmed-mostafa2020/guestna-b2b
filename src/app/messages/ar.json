@@ -887,6 +887,16 @@
           "actions": "الإجراءات"
         }
       },
+      "management": {
+        "title": "متابعة جميع الطلبات",
+        "header": {
+          "organization": "المدرسة",
+          "targetStudents": "الفئة المستهدفة",
+          "tripName": "اسم الرحلة",
+          "tripDate": "تاريخ الرحلة",
+          "actions": "الإجراءات"
+        }
+      },
       "bookings": {
         "title": "قائمة الرحلات",
         "header": {

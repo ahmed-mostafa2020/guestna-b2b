@@ -31,6 +31,6 @@ export const config = {
     // Match all paths except those that:
     // - Start with /api, /_next, /static
     // - End with a file extension (e.g., .jpg, .png)
-    "/((?!api|_next|static|git-dashboard|.*\\..*).*)",
+    "/((?!api|_next|static|.*\\..*).*)",
   ],
 };
