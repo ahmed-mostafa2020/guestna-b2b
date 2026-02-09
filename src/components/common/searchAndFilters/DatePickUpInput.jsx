@@ -19,13 +19,17 @@ const DatePickUpInput = ({ label, value, onChange }) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
+        
         value={dayjsValue || null}
         onChange={onChange}
         enableAccessibleFieldDOMStructure={false}
         slots={{
           textField: TextField,
           openPickerIcon: () => (
-            <CalendarToday fontSize="small" className="text-gray-400" />
+            <CalendarToday
+              fontSize="small"
+              className="text-gray-400"
+            />
           ),
         }}
         slotProps={{

@@ -195,7 +195,7 @@ const BookingsFilters = ({ filter, setFilter }) => {
   ]);
 
   return (
-    <div className="bg-white rounded-lg lg:rounded-2xl p-6 shadow-sm border border-gray-200">
+    <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
       {/* Title */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 mb-6">
         <h3 className="lg:text-2xl text-xl font-medium text-titleColor">

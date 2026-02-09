@@ -356,11 +356,6 @@ input[type="number"]::-webkit-outer-spin-button {
   background-color: var(--color-main) !important;
 }
 
-/* Fix DatePicker arrow direction in RTL mode */
-.MuiPickersArrowSwitcher-root {
-  direction: ltr !important;
-}
-
 /* videos list (slides & arrows)  */
 .slick-slide {
   display: flex !important;

@@ -23,11 +23,6 @@ const TripsManagementTable = ({
   const locale = useLocale();
   const t = useTranslations();
 
-  const getTripTypeLabel = (type) => {
-    if (!type) return "-";
-    return t(`profile.tables.management.tripTypes.${type}`) || type;
-  };
-
   const getAcademicStagesText = (stages) => {
     if (!stages || !Array.isArray(stages) || stages.length === 0) return "-";
     return stages
@@ -64,9 +59,6 @@ const TripsManagementTable = ({
                   </th>
                   <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.tables.management.header.tripName")}
-                  </th>
-                  <th className="px-6 py-4 font-semibold text-start">
-                    {t("profile.tables.management.header.tripType")}
                   </th>
                   <th className="px-6 py-4 font-semibold text-start">
                     {t("profile.tables.management.header.tripDate")}
@@ -128,11 +120,6 @@ const TripsManagementTable = ({
                           </span>
                         )}
                       </div>
-                    </td>
-
-                    {/* Trip Type */}
-                    <td className="px-6 py-4 text-sm text-muted-foreground whitespace-nowrap">
-                      {getTripTypeLabel(trip.tripsType)}
                     </td>
 
                     {/* Trip Date */}
@@ -228,16 +215,6 @@ const TripsManagementTable = ({
                       {getAcademicStagesText(trip.track?.academicStages)}
                     </span>
                   </div>
-                </div>
-
-                {/* Trip Type */}
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-textLight flex-shrink-0">
-                    {t("profile.tables.management.header.tripType")}:
-                  </span>
-                  <span className="text-muted-foreground">
-                    {getTripTypeLabel(trip.tripsType)}
-                  </span>
                 </div>
 
                 {/* Trip Date */}
