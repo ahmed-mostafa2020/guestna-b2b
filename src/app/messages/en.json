@@ -876,16 +876,6 @@
           "actions": "Actions"
         }
       },
-      "management": {
-        "title": "Follow All Orders",
-        "header": {
-          "organization": "School",
-          "targetStudents": "Target Students",
-          "tripName": "Trip Name",
-          "tripDate": "Trip Date",
-          "actions": "Actions"
-        }
-      },
       "bookings": {
         "title": "Trips List",
         "header": {

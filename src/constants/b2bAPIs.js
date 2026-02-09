@@ -79,7 +79,8 @@ export const B2B_END_POINTS = {
     },
 
     ALL_TRIPS: {
-      MANAGEMENT: "profile/organizationTrips/management/all",
+      ACTIVITIES: "profile/organizationTrips/activity/all",
+      PACKAGES: "profile/organizationTrips/package/all",
     },
 
     ACTIVITIES_MARKET: "profile/trips/all",

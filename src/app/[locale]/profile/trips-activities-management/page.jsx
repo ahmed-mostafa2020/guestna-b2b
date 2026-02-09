@@ -6,19 +6,19 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
 import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageTemplate";
-import TripsManagementTable from "@components/sections/pages/profile/trips/TripsManagementTable";
+import PackagesTable from "@components/sections/pages/profile/trips/PackagesTable";
+import ActivitiesTable from "@components/sections/pages/profile/trips/ActivitiesTable";
 import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBookings";
 
 const TripsPage = () => {
   const t = useTranslations();
 
   return (
-    <ProtectedProfilePage
-      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_TRIPS_MANAGEMENT_PAGE}
-    >
+    <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_TRIPS_MANAGEMENT_PAGE}>
+      <div className="flex flex-col gap-4 lg:gap:8">
       <ProfilePageTemplate
         title={t("profile.aside.tripsManagement.title")}
-        endpoint={`${B2B_END_POINTS.PROFILE.ALL_TRIPS.MANAGEMENT}`}
+        endpoint={`${B2B_END_POINTS.PROFILE.ALL_TRIPS.ACTIVITIES}`}
         method="POST"
         emptyStateComponent={<EmptyBookings />}
         contentComponent={(
@@ -27,8 +27,8 @@ const TripsPage = () => {
           setCurrentPage,
           enablePagination
         ) => (
-          <TripsManagementTable
-            tableTitle={t("profile.tables.management.title")}
+          <ActivitiesTable
+            tableTitle={t("common.activities")}
             data={data}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
@@ -37,6 +37,29 @@ const TripsPage = () => {
         )}
         enablePagination={true}
       />
+
+      <ProfilePageTemplate
+        title={t("profile.aside.tripsManagement.title")}
+        endpoint={`${B2B_END_POINTS.PROFILE.ALL_TRIPS.PACKAGES}`}
+        method="POST"
+        emptyStateComponent={<EmptyBookings />}
+        contentComponent={(
+          data,
+          currentPage,
+          setCurrentPage,
+          enablePagination
+        ) => (
+          <PackagesTable
+            tableTitle={t("common.packages")}
+            data={data}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            enablePagination={enablePagination}
+          />
+        )}
+        enablePagination={true}
+      />
+      </div>
     </ProtectedProfilePage>
   );
 };
