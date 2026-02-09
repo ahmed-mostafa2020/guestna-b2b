@@ -1,56 +1,43 @@
 import { NextResponse } from "next/server";
-import { exec } from "child_process";
-import { promisify } from "util";
-
-const execAsync = promisify(exec);
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_OWNER = process.env.GITHUB_OWNER;
 const GITHUB_REPO = process.env.GITHUB_REPO;
-const PROJECT_PATH = process.env.PROJECT_PATH;
 
-// Helper: stash local changes, returns whether stash was created
-async function stashChanges(steps) {
-  let hasStash = false;
-  try {
-    const stashResult = await execAsync("git stash --include-untracked", {
-      cwd: PROJECT_PATH,
-      timeout: 15000,
-    });
-    hasStash = !stashResult.stdout.includes("No local changes to save");
-    steps.push(
-      hasStash ? "Stash: saved local changes" : "Stash: nothing to stash"
-    );
-  } catch {
-    steps.push("Stash: skipped");
-  }
-  return hasStash;
+const API_BASE = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}`;
+const HEADERS = {
+  Authorization: `Bearer ${GITHUB_TOKEN}`,
+  Accept: "application/vnd.github.v3+json",
+  "Content-Type": "application/json",
+};
+
+// Helper: GitHub API request
+async function ghFetch(path, options = {}) {
+  const url = path.startsWith("http") ? path : `${API_BASE}${path}`;
+  const res = await fetch(url, {
+    ...options,
+    headers: { ...HEADERS, ...options.headers },
+    cache: "no-store",
+  });
+  const data = res.status === 204 ? null : await res.json();
+  return { ok: res.ok, status: res.status, data };
 }
 
-// Helper: pop stash if it was created
-async function popStash(hasStash, steps) {
-  if (!hasStash) return;
-  try {
-    await execAsync("git stash pop", { cwd: PROJECT_PATH, timeout: 15000 });
-    steps.push("Stash pop: restored local changes");
-  } catch {
-    steps.push("Stash pop: conflict — run 'git stash pop' manually");
-  }
+// Helper: get time ago string from ISO date
+function timeAgo(dateStr) {
+  const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
+  if (seconds < 60) return `${seconds} seconds ago`;
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days} day${days > 1 ? "s" : ""} ago`;
+  const months = Math.floor(days / 30);
+  return `${months} month${months > 1 ? "s" : ""} ago`;
 }
 
-// Helper: get current branch name
-async function getCurrentBranch() {
-  try {
-    const result = await execAsync("git rev-parse --abbrev-ref HEAD", {
-      cwd: PROJECT_PATH,
-    });
-    return result.stdout.trim();
-  } catch {
-    return "";
-  }
-}
-
-// GET: Fetch branches + last merge info on main
+// GET: Fetch branches + last merge info on main (all via GitHub API)
 export async function GET() {
   if (!GITHUB_TOKEN || !GITHUB_OWNER || !GITHUB_REPO) {
     return NextResponse.json(
@@ -65,59 +52,52 @@ export async function GET() {
     let hasMore = true;
 
     while (hasMore) {
-      const response = await fetch(
-        `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/branches?per_page=100&page=${page}`,
-        {
-          headers: {
-            Authorization: `Bearer ${GITHUB_TOKEN}`,
-            Accept: "application/vnd.github.v3+json",
-          },
-          cache: "no-store",
-        }
+      const { ok, data, status } = await ghFetch(
+        `/branches?per_page=100&page=${page}`
       );
 
-      if (!response.ok) {
-        const errorData = await response.json();
+      if (!ok) {
         return NextResponse.json(
-          { error: errorData.message || "Failed to fetch branches" },
-          { status: response.status }
+          { error: data?.message || "Failed to fetch branches" },
+          { status }
         );
       }
 
-      const data = await response.json();
       branches.push(...data);
-
       hasMore = data.length === 100;
       page++;
     }
 
-    const currentBranch = PROJECT_PATH ? await getCurrentBranch() : "";
-
-    // Get last merge commit on main
+    // Get last merge commit on main via GitHub API
     let lastMergeInfo = null;
-    if (PROJECT_PATH) {
-      try {
-        await execAsync("git fetch --all --prune", {
-          cwd: PROJECT_PATH,
-          timeout: 30000,
-        });
-        const { stdout: mergeLog } = await execAsync(
-          'git log origin/main --merges --oneline -1 --format="%H|%s|%ar"',
-          { cwd: PROJECT_PATH }
+    try {
+      const { ok, data } = await ghFetch(`/commits?sha=main&per_page=20`);
+      if (ok && data?.length) {
+        // Find the first merge commit (has 2 parents)
+        const mergeCommit = data.find(
+          (c) => c.parents && c.parents.length === 2
         );
-        if (mergeLog.trim()) {
-          const [hash, message, timeAgo] = mergeLog.trim().split("|");
+        if (mergeCommit) {
+          const message = mergeCommit.commit?.message || "";
           const branchMatch = message.match(
             /Merge branch '([^']+)'|Merge remote-tracking branch '([^']+)'|Merge (\S+) into/
           );
           const mergedBranch = branchMatch
             ? branchMatch[1] || branchMatch[2] || branchMatch[3]
             : null;
-          lastMergeInfo = { hash, message, timeAgo, branch: mergedBranch };
+          lastMergeInfo = {
+            hash: mergeCommit.sha,
+            message,
+            timeAgo: timeAgo(
+              mergeCommit.commit?.committer?.date ||
+                mergeCommit.commit?.author?.date
+            ),
+            branch: mergedBranch,
+          };
         }
-      } catch {
-        // ignore
       }
+    } catch {
+      // ignore
     }
 
     return NextResponse.json({
@@ -126,7 +106,7 @@ export async function GET() {
         sha: b.commit.sha,
         protected: b.protected,
       })),
-      currentBranch,
+      currentBranch: "",
       lastMergeInfo,
     });
   } catch (error) {
@@ -138,11 +118,11 @@ export async function GET() {
   }
 }
 
-// POST: merge_to_main or unmerge
+// POST: merge_to_main or unmerge (all via GitHub API — works on Vercel + localhost)
 export async function POST(request) {
-  if (!PROJECT_PATH) {
+  if (!GITHUB_TOKEN || !GITHUB_OWNER || !GITHUB_REPO) {
     return NextResponse.json(
-      { error: "Missing PROJECT_PATH in environment variables" },
+      { error: "Missing GitHub configuration in environment variables" },
       { status: 500 }
     );
   }
@@ -151,7 +131,7 @@ export async function POST(request) {
     const { action, branchName } = await request.json();
     const steps = [];
 
-    // ─── MERGE TO MAIN: merge a branch into main and push ───
+    // ─── MERGE TO MAIN: merge a branch into main via GitHub API ───
     if (action === "merge_to_main") {
       if (!branchName) {
         return NextResponse.json(
@@ -168,225 +148,192 @@ export async function POST(request) {
         );
       }
 
-      // Step 1: Fetch
-      await execAsync("git fetch --all --prune", {
-        cwd: PROJECT_PATH,
-        timeout: 30000,
+      // Use GitHub Merge API: POST /repos/{owner}/{repo}/merges
+      const { ok, status, data } = await ghFetch("/merges", {
+        method: "POST",
+        body: JSON.stringify({
+          base: "main",
+          head: safeBranch,
+          commit_message: `Merge branch '${safeBranch}' into main`,
+        }),
       });
-      steps.push("Fetch: OK");
 
-      // Step 2: Stash
-      const hasStash = await stashChanges(steps);
-
-      // Step 3: Checkout main
-      try {
-        await execAsync("git checkout main", {
-          cwd: PROJECT_PATH,
-          timeout: 30000,
+      if (status === 204) {
+        // Already merged — nothing to do
+        steps.push(`Branch ${safeBranch} is already up to date with main`);
+        return NextResponse.json({
+          success: true,
+          action: "merge_to_main",
+          branch: safeBranch,
+          stdout: steps.join("\n"),
+          currentBranch: "",
         });
-        steps.push("Checkout main: OK");
-      } catch (e) {
-        await popStash(hasStash, steps);
+      }
+
+      if (status === 409) {
         return NextResponse.json(
           {
             success: false,
-            error:
-              "Failed to checkout main: " + (e.stderr?.trim() || e.message),
-            steps,
-          },
-          { status: 500 }
-        );
-      }
-
-      // Step 4: Pull latest main
-      try {
-        await execAsync("git pull origin main", {
-          cwd: PROJECT_PATH,
-          timeout: 60000,
-        });
-        steps.push("Pull main: OK");
-      } catch (pullErr) {
-        steps.push(
-          `Pull main warning: ${pullErr.stderr?.trim() || pullErr.message}`
-        );
-      }
-
-      // Step 5: Merge the feature branch INTO main
-      try {
-        const mergeResult = await execAsync(
-          `git merge origin/${safeBranch} --no-edit`,
-          { cwd: PROJECT_PATH, timeout: 60000 }
-        );
-        steps.push(
-          `Merge ${safeBranch} into main: ${mergeResult.stdout.trim() || "OK"}`
-        );
-      } catch (mergeError) {
-        try {
-          await execAsync("git merge --abort", { cwd: PROJECT_PATH });
-        } catch {
-          // ignore
-        }
-        await popStash(hasStash, steps);
-        return NextResponse.json(
-          {
-            success: false,
-            error: `Merge conflict merging ${safeBranch} into main. Merge was aborted.`,
-            stderr: mergeError.stderr?.trim() || mergeError.message,
-            steps,
+            error: `Merge conflict merging ${safeBranch} into main. Resolve conflicts and try again.`,
+            steps: ["Merge: CONFLICT"],
           },
           { status: 409 }
         );
       }
 
-      // Step 6: Push main to trigger Vercel deployment
-      try {
-        await execAsync("git push origin main", {
-          cwd: PROJECT_PATH,
-          timeout: 60000,
-        });
-        steps.push("Push main: OK — Vercel deployment triggered");
-      } catch (pushErr) {
-        steps.push(
-          `Push warning: ${pushErr.stderr?.trim() || pushErr.message}`
+      if (status === 404) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Branch "${safeBranch}" or "main" not found.`,
+          },
+          { status: 404 }
         );
       }
 
-      // Step 7: Restore stash
-      await popStash(hasStash, steps);
+      if (!ok) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: data?.message || "Merge failed",
+          },
+          { status: status || 500 }
+        );
+      }
+
+      steps.push(`Merge ${safeBranch} into main: OK`);
+      steps.push(`Commit: ${data?.sha?.slice(0, 8)}`);
+      steps.push("Pushed to main — Vercel deployment triggered");
 
       return NextResponse.json({
         success: true,
         action: "merge_to_main",
         branch: safeBranch,
         stdout: steps.join("\n"),
-        currentBranch: await getCurrentBranch(),
+        currentBranch: "",
+        sha: data?.sha,
       });
     }
 
-    // ─── UNMERGE: revert the last merge commit on main ───
+    // ─── UNMERGE: revert the last merge commit on main via GitHub API ───
     if (action === "unmerge") {
-      // Step 1: Fetch
-      await execAsync("git fetch --all --prune", {
-        cwd: PROJECT_PATH,
-        timeout: 30000,
-      });
-      steps.push("Fetch: OK");
+      // Step 1: Get recent commits on main to find last merge
+      const { ok: commitsOk, data: commits } = await ghFetch(
+        `/commits?sha=main&per_page=20`
+      );
 
-      // Step 2: Stash
-      const hasStash = await stashChanges(steps);
-
-      // Step 3: Checkout main
-      try {
-        await execAsync("git checkout main", {
-          cwd: PROJECT_PATH,
-          timeout: 30000,
-        });
-        steps.push("Checkout main: OK");
-      } catch (e) {
-        await popStash(hasStash, steps);
+      if (!commitsOk || !commits?.length) {
         return NextResponse.json(
-          {
-            success: false,
-            error:
-              "Failed to checkout main: " + (e.stderr?.trim() || e.message),
-            steps,
-          },
+          { success: false, error: "Failed to fetch commits on main." },
           { status: 500 }
         );
       }
 
-      // Step 4: Pull latest main
-      try {
-        await execAsync("git pull origin main", {
-          cwd: PROJECT_PATH,
-          timeout: 60000,
-        });
-        steps.push("Pull main: OK");
-      } catch (pullErr) {
-        steps.push(
-          `Pull main warning: ${pullErr.stderr?.trim() || pullErr.message}`
-        );
-      }
+      // Find the first merge commit (has 2 parents)
+      const mergeCommit = commits.find(
+        (c) => c.parents && c.parents.length === 2
+      );
 
-      // Step 5: Find last merge commit
-      let lastMergeHash = "";
-      let lastMergeMessage = "";
-      try {
-        const { stdout: mergeLog } = await execAsync(
-          'git log HEAD --merges --oneline -1 --format="%H|%s"',
-          { cwd: PROJECT_PATH }
-        );
-        if (mergeLog.trim()) {
-          const parts = mergeLog.trim().split("|");
-          lastMergeHash = parts[0];
-          lastMergeMessage = parts.slice(1).join("|");
-        }
-      } catch {
-        // ignore
-      }
-
-      if (!lastMergeHash) {
-        await popStash(hasStash, steps);
+      if (!mergeCommit) {
         return NextResponse.json(
           {
             success: false,
             error: "No merge commit found on main to revert.",
-            steps,
           },
           { status: 400 }
         );
       }
 
-      // Step 6: Revert the merge
-      try {
-        const revertResult = await execAsync(
-          `git revert -m 1 ${lastMergeHash} --no-edit`,
-          { cwd: PROJECT_PATH, timeout: 60000 }
+      const mergeMessage = mergeCommit.commit?.message || "";
+      steps.push(
+        `Found merge: ${mergeCommit.sha.slice(0, 8)} — ${mergeMessage}`
+      );
+
+      // Step 2: To revert a merge, we need the tree of the first parent (main before merge)
+      // Get the first parent commit (the main branch side)
+      const firstParentSha = mergeCommit.parents[0].sha;
+      const { ok: parentOk, data: parentCommit } = await ghFetch(
+        `/git/commits/${firstParentSha}`
+      );
+
+      if (!parentOk) {
+        return NextResponse.json(
+          { success: false, error: "Failed to fetch parent commit." },
+          { status: 500 }
         );
-        steps.push(
-          `Revert merge: ${revertResult.stdout.trim() || "OK"} (${lastMergeMessage})`
+      }
+
+      const parentTreeSha = parentCommit.tree.sha;
+      steps.push(`Parent tree: ${parentTreeSha.slice(0, 8)}`);
+
+      // Step 3: Get current main HEAD sha
+      const { ok: refOk, data: refData } = await ghFetch(`/git/ref/heads/main`);
+
+      if (!refOk) {
+        return NextResponse.json(
+          { success: false, error: "Failed to get main branch ref." },
+          { status: 500 }
         );
-      } catch (revertErr) {
-        try {
-          await execAsync("git revert --abort", { cwd: PROJECT_PATH });
-        } catch {
-          // ignore
-        }
-        await popStash(hasStash, steps);
+      }
+
+      const currentMainSha = refData.object.sha;
+
+      // Step 4: Create a new commit that reverts the merge (uses parent tree, points to current HEAD)
+      const { ok: commitOk, data: newCommit } = await ghFetch(`/git/commits`, {
+        method: "POST",
+        body: JSON.stringify({
+          message: `Revert "${mergeMessage}"`,
+          tree: parentTreeSha,
+          parents: [currentMainSha],
+        }),
+      });
+
+      if (!commitOk) {
         return NextResponse.json(
           {
             success: false,
-            error: "Revert failed due to conflicts. Revert was aborted.",
-            stderr: revertErr.stderr?.trim() || revertErr.message,
-            steps,
+            error: newCommit?.message || "Failed to create revert commit.",
           },
-          { status: 409 }
+          { status: 500 }
         );
       }
 
-      // Step 7: Push the revert
-      try {
-        await execAsync("git push origin main", {
-          cwd: PROJECT_PATH,
-          timeout: 60000,
-        });
-        steps.push("Push main: OK — Vercel will redeploy");
-      } catch (pushErr) {
-        steps.push(
-          `Push warning: ${pushErr.stderr?.trim() || pushErr.message}`
+      steps.push(`Revert commit created: ${newCommit.sha.slice(0, 8)}`);
+
+      // Step 5: Update main ref to point to the new revert commit
+      const { ok: updateOk, data: updateData } = await ghFetch(
+        `/git/refs/heads/main`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            sha: newCommit.sha,
+            force: false,
+          }),
+        }
+      );
+
+      if (!updateOk) {
+        return NextResponse.json(
+          {
+            success: false,
+            error:
+              updateData?.message ||
+              "Failed to update main branch. The revert commit was created but not applied.",
+          },
+          { status: 500 }
         );
       }
 
-      // Step 8: Restore stash
-      await popStash(hasStash, steps);
+      steps.push("Main branch updated — Vercel will redeploy");
 
       return NextResponse.json({
         success: true,
         action: "unmerge",
         branch: "main",
         stdout: steps.join("\n"),
-        currentBranch: await getCurrentBranch(),
-        revertedMerge: lastMergeMessage,
+        currentBranch: "",
+        revertedMerge: mergeMessage,
+        sha: newCommit.sha,
       });
     }
 
@@ -399,8 +346,7 @@ export async function POST(request) {
     return NextResponse.json(
       {
         success: false,
-        error: error.message || "Command execution failed",
-        stderr: error.stderr?.trim() || "",
+        error: error.message || "Request failed",
       },
       { status: 500 }
     );

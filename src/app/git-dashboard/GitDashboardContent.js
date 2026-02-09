@@ -77,7 +77,7 @@ const GitDashboardContent = () => {
         if (data.stdout) {
           enqueueSnackbar(data.stdout, {
             variant: "info",
-            autoHideDuration: 5000,
+            autoHideDuration: 3000,
           });
         }
 
@@ -124,7 +124,7 @@ const GitDashboardContent = () => {
         );
 
         if (data.stdout) {
-          enqueueSnackbar(data.stdout, {
+          enqueueSnackbar(data.stdout.slice(0, 50), {
             variant: "info",
             autoHideDuration: 5000,
           });
