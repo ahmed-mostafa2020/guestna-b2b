@@ -87,6 +87,10 @@ module.exports = {
         headerBg: "var(--color-bg-header)",
         figure: "var(--color-bg-figure)",
       },
+      backgroundImage: {
+        "activities-market-gradient":
+          "linear-gradient(to bottom, rgba(120, 223, 255, 0.60) 9.28%, rgba(0, 129, 169, 0.60) 55.56%)",
+      },
       boxShadow: {
         card: "0px 0px 4px 0px rgba(0, 0, 0, 0.16)",
         tag: "0px 0px 8px 0px rgba(0, 0, 0, 0.08)",

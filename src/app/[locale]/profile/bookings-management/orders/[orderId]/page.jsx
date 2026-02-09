@@ -34,6 +34,7 @@ import AdditionalInfoCard from "@components/sections/pages/profile/boookings-man
 
 import OrderPageLoadingSkeleton from "@components/sections/pages/profile/boookings-management/orders/order-details/OrderPageLoadingSkeleton";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
+import { askType } from "@constants/askType";
 
 const OrderDetailsPage = ({ params }) => {
   const locale = useLocale();
@@ -117,7 +118,10 @@ const OrderDetailsPage = ({ params }) => {
   ========================= */
   useEffect(() => {
     if (!orderId || paramsLoading) return;
-    Promise.all([fetchOrderDetailsForView(orderId), fetchFormSelectionData()]);
+    Promise.all([
+      fetchOrderDetailsForView(orderId, true, askType.CUSTOM),
+      fetchFormSelectionData(),
+    ]);
   }, [orderId, paramsLoading]);
 
   /* =========================
@@ -180,7 +184,7 @@ const OrderDetailsPage = ({ params }) => {
       <Box className="flex gap-2 items-center mb-4">
         <Link
           href={`/${locale}/profile/bookings-management/orders`}
-          className="border-2 border-mainColor w-8 h-8 flex items-center justify-center rounded-lg"
+          className="border-2 border-mainColor w-6 h-6 flex items-center justify-center rounded-lg"
         >
           {backIconColored("var(--color-main)")}
         </Link>
