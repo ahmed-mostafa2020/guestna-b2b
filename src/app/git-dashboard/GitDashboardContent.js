@@ -12,6 +12,8 @@ const GitDashboardContent = () => {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
+  const [lastMergeInfo, setLastMergeInfo] = useState(null);
+  const [unmergeLoading, setUnmergeLoading] = useState(false);
 
   const fetchBranches = useCallback(async () => {
     setLoading(true);
@@ -28,6 +30,7 @@ const GitDashboardContent = () => {
 
       setBranches(data.branches || []);
       setCurrentBranch(data.currentBranch || "");
+      setLastMergeInfo(data.lastMergeInfo || null);
     } catch (error) {
       enqueueSnackbar("Network error while fetching branches", {
         variant: "error",
@@ -41,21 +44,29 @@ const GitDashboardContent = () => {
     fetchBranches();
   }, [fetchBranches]);
 
-  const handleCheckout = async (branchName) => {
+  const handleMergeToMain = async (branchName) => {
+    if (
+      !confirm(
+        `Merge "${branchName}" into main and push? This will trigger a Vercel deployment.`
+      )
+    ) {
+      return;
+    }
+
     setActionLoading((prev) => ({ ...prev, [branchName]: true }));
 
     try {
       const res = await fetch("/api/git-control", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ branchName }),
+        body: JSON.stringify({ action: "merge_to_main", branchName }),
       });
 
       const data = await res.json();
 
       if (data.success) {
         enqueueSnackbar(
-          `Checked out, pulled & merged main into: ${branchName}`,
+          `Merged ${branchName} into main & pushed — Vercel deploying!`,
           { variant: "success" }
         );
 
@@ -72,13 +83,13 @@ const GitDashboardContent = () => {
 
         fetchBranches();
       } else {
-        enqueueSnackbar(data.error || data.stderr || "Action failed", {
+        enqueueSnackbar(data.error || data.stderr || "Merge failed", {
           variant: "error",
           autoHideDuration: 6000,
         });
       }
     } catch (error) {
-      enqueueSnackbar("Network error while executing action", {
+      enqueueSnackbar("Network error while merging", {
         variant: "error",
       });
     } finally {
@@ -86,9 +97,65 @@ const GitDashboardContent = () => {
     }
   };
 
+  const handleUnmerge = async () => {
+    if (
+      !confirm(
+        "Revert the last merge on main and push? This will trigger a Vercel redeployment."
+      )
+    ) {
+      return;
+    }
+
+    setUnmergeLoading(true);
+
+    try {
+      const res = await fetch("/api/git-control", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "unmerge" }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        enqueueSnackbar(
+          `Unmerged: ${data.revertedMerge || "last merge reverted"} — Vercel redeploying!`,
+          { variant: "success" }
+        );
+
+        if (data.stdout) {
+          enqueueSnackbar(data.stdout, {
+            variant: "info",
+            autoHideDuration: 5000,
+          });
+        }
+
+        fetchBranches();
+      } else {
+        enqueueSnackbar(data.error || "Unmerge failed", {
+          variant: "error",
+          autoHideDuration: 6000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("Network error while unmerging", {
+        variant: "error",
+      });
+    } finally {
+      setUnmergeLoading(false);
+    }
+  };
+
   const filteredBranches = branches.filter((b) =>
     b.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Sort: main first, then alphabetical
+  const sortedBranches = [...filteredBranches].sort((a, b) => {
+    if (a.name === "main") return -1;
+    if (b.name === "main") return 1;
+    return a.name.localeCompare(b.name);
+  });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -173,6 +240,50 @@ const GitDashboardContent = () => {
 
       {/* Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Last Merge Info Banner */}
+        {lastMergeInfo && (
+          <div className="mb-6 bg-white rounded-xl border border-gray-200 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                <svg
+                  className="w-5 h-5 text-purple-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-900">
+                  Last Merge on Main
+                </p>
+                <p className="text-sm text-gray-600 break-all">
+                  {lastMergeInfo.branch ? (
+                    <>
+                      Branch{" "}
+                      <span className="font-semibold text-purple-600">
+                        {lastMergeInfo.branch}
+                      </span>{" "}
+                      was merged into main
+                    </>
+                  ) : (
+                    <span className="italic">{lastMergeInfo.message}</span>
+                  )}
+                </p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {lastMergeInfo.timeAgo} · {lastMergeInfo.hash?.slice(0, 8)}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
           <div className="bg-white rounded-xl border border-gray-200 p-4">
@@ -201,7 +312,7 @@ const GitDashboardContent = () => {
             <div className="w-10 h-10 border-4 border-mainColor border-t-transparent rounded-full animate-spin mb-4" />
             <p className="text-gray-500">Loading branches...</p>
           </div>
-        ) : filteredBranches.length === 0 ? (
+        ) : sortedBranches.length === 0 ? (
           <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
             <p className="text-gray-500 text-lg">No branches found</p>
             {searchTerm && (
@@ -229,15 +340,20 @@ const GitDashboardContent = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredBranches.map((branch, index) => {
+                  {sortedBranches.map((branch, index) => {
                     const isCurrent = branch.name === currentBranch;
+                    const isMain = branch.name === "main";
                     const isLoading = actionLoading[branch.name];
 
                     return (
                       <tr
                         key={`${branch.name}-${index}`}
                         className={`border-b border-gray-100 last:border-b-0 transition-colors ${
-                          isCurrent ? "bg-emerald-50/50" : "hover:bg-gray-50"
+                          isCurrent
+                            ? "bg-emerald-50/50"
+                            : isMain
+                              ? "bg-blue-50/30"
+                              : "hover:bg-gray-50"
                         }`}
                       >
                         <td className="px-6 py-4">
@@ -248,6 +364,11 @@ const GitDashboardContent = () => {
                             {branch.protected && (
                               <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs rounded-full font-medium">
                                 Protected
+                              </span>
+                            )}
+                            {isMain && (
+                              <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">
+                                Default
                               </span>
                             )}
                           </div>
@@ -263,35 +384,58 @@ const GitDashboardContent = () => {
                           )}
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex items-center justify-end">
-                            <button
-                              onClick={() => handleCheckout(branch.name)}
-                              disabled={isLoading || isCurrent}
-                              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
-                                isCurrent
-                                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                  : "bg-mainColor text-white hover:opacity-90 disabled:opacity-50"
-                              }`}
-                            >
-                              {isLoading ? (
-                                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                              ) : (
-                                <svg
-                                  className="w-4 h-4"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
-                                  />
-                                </svg>
-                              )}
-                              Checkout & Merge
-                            </button>
+                          <div className="flex items-center justify-end gap-2">
+                            {isMain ? (
+                              <button
+                                onClick={handleUnmerge}
+                                disabled={unmergeLoading}
+                                className="px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+                              >
+                                {unmergeLoading ? (
+                                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                ) : (
+                                  <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
+                                    />
+                                  </svg>
+                                )}
+                                Unmerge Last
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => handleMergeToMain(branch.name)}
+                                disabled={isLoading}
+                                className="px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 bg-mainColor text-white hover:opacity-90 disabled:opacity-50"
+                              >
+                                {isLoading ? (
+                                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                ) : (
+                                  <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                                    />
+                                  </svg>
+                                )}
+                                Merge to Main
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -303,8 +447,9 @@ const GitDashboardContent = () => {
 
             {/* Mobile Cards */}
             <div className="md:hidden flex flex-col gap-3">
-              {filteredBranches.map((branch, index) => {
+              {sortedBranches.map((branch, index) => {
                 const isCurrent = branch.name === currentBranch;
+                const isMain = branch.name === "main";
                 const isLoading = actionLoading[branch.name];
 
                 return (
@@ -313,7 +458,9 @@ const GitDashboardContent = () => {
                     className={`bg-white rounded-xl border p-4 ${
                       isCurrent
                         ? "border-emerald-300 bg-emerald-50/30"
-                        : "border-gray-200"
+                        : isMain
+                          ? "border-blue-200 bg-blue-50/20"
+                          : "border-gray-200"
                     }`}
                   >
                     <div className="flex items-start justify-between mb-3">
@@ -321,7 +468,7 @@ const GitDashboardContent = () => {
                         <p className="font-medium text-gray-900 text-sm truncate">
                           {branch.name}
                         </p>
-                        <div className="flex items-center gap-2 mt-1">
+                        <div className="flex items-center gap-2 mt-1 flex-wrap">
                           {isCurrent && (
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs rounded-full font-medium">
                               <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
@@ -333,24 +480,38 @@ const GitDashboardContent = () => {
                               Protected
                             </span>
                           )}
+                          {isMain && (
+                            <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">
+                              Default
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
 
-                    <button
-                      onClick={() => handleCheckout(branch.name)}
-                      disabled={isLoading || isCurrent}
-                      className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
-                        isCurrent
-                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                          : "bg-mainColor text-white hover:opacity-90 disabled:opacity-50"
-                      }`}
-                    >
-                      {isLoading ? (
-                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      ) : null}
-                      Checkout & Merge
-                    </button>
+                    {isMain ? (
+                      <button
+                        onClick={handleUnmerge}
+                        disabled={unmergeLoading}
+                        className="w-full px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+                      >
+                        {unmergeLoading ? (
+                          <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        ) : null}
+                        Unmerge Last
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleMergeToMain(branch.name)}
+                        disabled={isLoading}
+                        className="w-full px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 bg-mainColor text-white hover:opacity-90 disabled:opacity-50"
+                      >
+                        {isLoading ? (
+                          <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        ) : null}
+                        Merge to Main
+                      </button>
+                    )}
                   </div>
                 );
               })}
