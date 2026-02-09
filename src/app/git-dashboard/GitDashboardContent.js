@@ -82,6 +82,14 @@ const GitDashboardContent = () => {
         }
 
         fetchBranches();
+      } else if (res.status === 409) {
+        alert(
+          `⚠️ Merge Conflict\n\nCannot merge "${branchName}" into main due to conflicts.\n\nPlease inform the developer to:\n1. Pull the latest main branch\n2. Merge main into "${branchName}" locally\n3. Resolve all conflicts\n4. Push the resolved branch\n5. Then try merging again from this dashboard`
+        );
+        enqueueSnackbar(
+          `Conflict: "${branchName}" has conflicts with main. Developer must resolve them first.`,
+          { variant: "error", autoHideDuration: 8000 }
+        );
       } else {
         enqueueSnackbar(data.error || data.stderr || "Merge failed", {
           variant: "error",
@@ -361,47 +369,6 @@ const GitDashboardContent = () => {
                     </p>
                   </div>
                 </div>
-
-                {/* Show last merge info if latest commit is not a merge */}
-                {!lastMergeInfo.isMerge && lastMergeInfo.lastMerge && (
-                  <div className="mt-3 pt-3 border-t border-gray-100 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center flex-shrink-0">
-                      <svg
-                        className="w-4 h-4 text-purple-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"
-                        />
-                      </svg>
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium text-gray-500">
-                        Last Merge
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {lastMergeInfo.lastMerge.branch ? (
-                          <>
-                            <span className="font-medium text-purple-500">
-                              {lastMergeInfo.lastMerge.branch}
-                            </span>{" "}
-                            merged into main
-                          </>
-                        ) : (
-                          lastMergeInfo.lastMerge.message
-                        )}
-                        {" · "}
-                        {lastMergeInfo.lastMerge.timeAgo} ·{" "}
-                        {lastMergeInfo.lastMerge.hash?.slice(0, 8)}
-                      </p>
-                    </div>
-                  </div>
-                )}
               </div>
             )}
 

@@ -107,25 +107,6 @@ export async function GET() {
           branch: isMerge ? extractBranchFromMessage(latestMessage) : null,
           isMerge,
         };
-
-        // If latest is not a merge, also find the last merge for context
-        if (!isMerge) {
-          const mergeCommit = data.find(
-            (c) => c.parents && c.parents.length === 2
-          );
-          if (mergeCommit) {
-            const mergeMsg = mergeCommit.commit?.message || "";
-            const mergeDate =
-              mergeCommit.commit?.committer?.date ||
-              mergeCommit.commit?.author?.date;
-            lastMergeInfo.lastMerge = {
-              hash: mergeCommit.sha,
-              message: mergeMsg,
-              timeAgo: timeAgo(mergeDate),
-              branch: extractBranchFromMessage(mergeMsg),
-            };
-          }
-        }
       }
     } catch {
       // ignore
