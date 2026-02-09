@@ -170,132 +170,110 @@ export async function POST(request) {
       });
 
       if (status === 204) {
-        // Check if there's a revert of this branch's merge on main.
-        // After an unmerge, Git sees the commits as already in history,
-        // so we need to "revert the revert" to re-apply the branch code.
-        const { ok: commitsOk, data: commits } = await ghFetch(
-          `/commits?sha=main&per_page=30`
-        );
+        // 204 means Git thinks the branch is already merged, but this can
+        // happen after an unmerge (revert). Check if the branch tree differs
+        // from main's tree — if so, force-create a merge commit.
 
-        let revertCommitSha = null;
-        if (commitsOk && commits?.length) {
-          const revertCommit = commits.find((c) => {
-            const msg = c.commit?.message || "";
-            return (
-              msg.startsWith("Revert ") &&
-              msg.includes(safeBranch) &&
-              c.parents?.length === 1
-            );
-          });
-          if (revertCommit) {
-            revertCommitSha = revertCommit.sha;
-            steps.push(
-              `Found revert of ${safeBranch}: ${revertCommitSha.slice(0, 8)} — reverting it to re-apply`
-            );
-          }
-        }
+        // Get the HEAD SHAs for main and the branch
+        const [mainRef, branchRef] = await Promise.all([
+          ghFetch(`/git/ref/heads/main`),
+          ghFetch(`/git/ref/heads/${safeBranch}`),
+        ]);
 
-        if (revertCommitSha) {
-          // Revert the revert using Git Data API
-          // Step 1: Get the revert commit to find its parent tree
-          const { ok: rcOk, data: rcData } = await ghFetch(
-            `/git/commits/${revertCommitSha}`
-          );
-          if (!rcOk) {
-            return NextResponse.json(
-              { success: false, error: "Failed to read revert commit." },
-              { status: 500 }
-            );
-          }
-
-          // Step 2: Get the parent of the revert (which has the merged code)
-          const parentSha = rcData.parents?.[0]?.sha;
-          if (!parentSha) {
-            return NextResponse.json(
-              { success: false, error: "Revert commit has no parent." },
-              { status: 500 }
-            );
-          }
-
-          const { ok: parentOk, data: parentData } = await ghFetch(
-            `/git/commits/${parentSha}`
-          );
-          if (!parentOk) {
-            return NextResponse.json(
-              { success: false, error: "Failed to read parent commit." },
-              { status: 500 }
-            );
-          }
-
-          // Step 3: Get current main HEAD
-          const { ok: refOk, data: refData } =
-            await ghFetch(`/git/ref/heads/main`);
-          if (!refOk) {
-            return NextResponse.json(
-              { success: false, error: "Failed to get main ref." },
-              { status: 500 }
-            );
-          }
-          const currentMainSha = refData.object.sha;
-
-          // Step 4: Create a new commit that restores the pre-revert tree
-          const { ok: newCommitOk, data: newCommit } = await ghFetch(
-            `/git/commits`,
-            {
-              method: "POST",
-              body: JSON.stringify({
-                message: `Revert "Revert" — re-merge branch '${safeBranch}' into main`,
-                tree: parentData.tree.sha,
-                parents: [currentMainSha],
-              }),
-            }
-          );
-          if (!newCommitOk) {
-            return NextResponse.json(
-              {
-                success: false,
-                error:
-                  newCommit?.message || "Failed to create re-merge commit.",
-              },
-              { status: 500 }
-            );
-          }
-
-          // Step 5: Update main ref
-          const { ok: updateOk } = await ghFetch(`/git/refs/heads/main`, {
-            method: "PATCH",
-            body: JSON.stringify({ sha: newCommit.sha, force: false }),
-          });
-          if (!updateOk) {
-            return NextResponse.json(
-              {
-                success: false,
-                error: "Failed to update main branch after re-merge.",
-              },
-              { status: 500 }
-            );
-          }
-
-          steps.push(`Re-merged ${safeBranch} into main: OK`);
-          steps.push(`Commit: ${newCommit.sha.slice(0, 8)}`);
-          steps.push("Pushed to main — Vercel deployment triggered");
-
+        if (!mainRef.ok || !branchRef.ok) {
+          steps.push(`Branch ${safeBranch} is already up to date with main`);
           return NextResponse.json({
             success: true,
             action: "merge_to_main",
             branch: safeBranch,
             stdout: steps.join("\n"),
-            sha: newCommit.sha,
           });
         }
 
-        // No revert found — genuinely up to date
-        steps.push(`Branch ${safeBranch} is already up to date with main`);
+        const mainSha = mainRef.data.object.sha;
+        const branchSha = branchRef.data.object.sha;
+
+        // Get the tree SHAs for both commits
+        const [mainCommit, branchCommit] = await Promise.all([
+          ghFetch(`/git/commits/${mainSha}`),
+          ghFetch(`/git/commits/${branchSha}`),
+        ]);
+
+        if (!mainCommit.ok || !branchCommit.ok) {
+          steps.push(`Branch ${safeBranch} is already up to date with main`);
+          return NextResponse.json({
+            success: true,
+            action: "merge_to_main",
+            branch: safeBranch,
+            stdout: steps.join("\n"),
+          });
+        }
+
+        const mainTree = mainCommit.data.tree.sha;
+        const branchTree = branchCommit.data.tree.sha;
+
+        if (mainTree === branchTree) {
+          // Trees are identical — truly up to date
+          steps.push(`Branch ${safeBranch} is already up to date with main`);
+          return NextResponse.json({
+            success: true,
+            action: "merge_to_main",
+            branch: safeBranch,
+            stdout: steps.join("\n"),
+          });
+        }
+
+        // Trees differ — branch has code that main doesn't (due to a revert).
+        // Create a merge commit using the branch's tree on top of main.
+        steps.push(
+          `Branch was previously reverted — force re-merging ${safeBranch}`
+        );
+
+        const { ok: newCommitOk, data: newCommit } = await ghFetch(
+          `/git/commits`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              message: `Merge branch '${safeBranch}' into main`,
+              tree: branchTree,
+              parents: [mainSha, branchSha],
+            }),
+          }
+        );
+        if (!newCommitOk) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: newCommit?.message || "Failed to create re-merge commit.",
+            },
+            { status: 500 }
+          );
+        }
+
+        const { ok: updateOk } = await ghFetch(`/git/refs/heads/main`, {
+          method: "PATCH",
+          body: JSON.stringify({ sha: newCommit.sha, force: false }),
+        });
+        if (!updateOk) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: "Failed to update main branch after re-merge.",
+            },
+            { status: 500 }
+          );
+        }
+
+        steps.push(`Re-merged ${safeBranch} into main: OK`);
+        steps.push(`Commit: ${newCommit.sha.slice(0, 8)}`);
+        steps.push("Pushed to main — Vercel deployment triggered");
+
         return NextResponse.json({
           success: true,
           action: "merge_to_main",
           branch: safeBranch,
           stdout: steps.join("\n"),
+          sha: newCommit.sha,
         });
       }
 
