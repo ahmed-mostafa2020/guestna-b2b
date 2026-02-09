@@ -20,7 +20,7 @@ import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import Link from "next/link";
-import { askType } from "@/src/constants/askType";
+import { askType } from "@constants/askType";
 
 const ActionsDropdownMenu = ({
   bookingId,

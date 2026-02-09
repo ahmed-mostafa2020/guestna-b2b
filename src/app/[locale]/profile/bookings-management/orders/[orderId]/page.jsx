@@ -34,7 +34,7 @@ import AdditionalInfoCard from "@components/sections/pages/profile/boookings-man
 
 import OrderPageLoadingSkeleton from "@components/sections/pages/profile/boookings-management/orders/order-details/OrderPageLoadingSkeleton";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
-import { askType } from "@/src/constants/askType";
+import { askType } from "@constants/askType";
 
 const OrderDetailsPage = ({ params }) => {
   const locale = useLocale();
