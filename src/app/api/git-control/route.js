@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 
+// Force dynamic rendering — never cache this route
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_OWNER = process.env.GITHUB_OWNER;
 const GITHUB_REPO = process.env.GITHUB_REPO;
@@ -37,6 +41,22 @@ function timeAgo(dateStr) {
   return `${months} month${months > 1 ? "s" : ""} ago`;
 }
 
+// Helper: extract branch name from merge commit message
+function extractBranchFromMessage(message) {
+  if (!message) return null;
+  const patterns = [
+    /Merge pull request #\d+ from [^/]+\/(\S+)/,
+    /Merge branch '([^']+)'/,
+    /Merge remote-tracking branch '(?:origin\/)?([^']+)'/,
+    /Merge (\S+) into/,
+  ];
+  for (const pattern of patterns) {
+    const match = message.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
+}
+
 // GET: Fetch branches + last merge info on main (all via GitHub API)
 export async function GET() {
   if (!GITHUB_TOKEN || !GITHUB_OWNER || !GITHUB_REPO) {
@@ -68,32 +88,43 @@ export async function GET() {
       page++;
     }
 
-    // Get last merge commit on main via GitHub API
+    // Get latest commit on main + last merge commit via GitHub API
     let lastMergeInfo = null;
     try {
       const { ok, data } = await ghFetch(`/commits?sha=main&per_page=20`);
       if (ok && data?.length) {
-        // Find the first merge commit (has 2 parents)
-        const mergeCommit = data.find(
-          (c) => c.parents && c.parents.length === 2
-        );
-        if (mergeCommit) {
-          const message = mergeCommit.commit?.message || "";
-          const branchMatch = message.match(
-            /Merge branch '([^']+)'|Merge remote-tracking branch '([^']+)'|Merge (\S+) into/
+        // Latest commit on main (first in the list)
+        const latest = data[0];
+        const latestMessage = latest.commit?.message || "";
+        const latestDate =
+          latest.commit?.committer?.date || latest.commit?.author?.date;
+        const isMerge = latest.parents && latest.parents.length === 2;
+
+        lastMergeInfo = {
+          hash: latest.sha,
+          message: latestMessage,
+          timeAgo: timeAgo(latestDate),
+          branch: isMerge ? extractBranchFromMessage(latestMessage) : null,
+          isMerge,
+        };
+
+        // If latest is not a merge, also find the last merge for context
+        if (!isMerge) {
+          const mergeCommit = data.find(
+            (c) => c.parents && c.parents.length === 2
           );
-          const mergedBranch = branchMatch
-            ? branchMatch[1] || branchMatch[2] || branchMatch[3]
-            : null;
-          lastMergeInfo = {
-            hash: mergeCommit.sha,
-            message,
-            timeAgo: timeAgo(
+          if (mergeCommit) {
+            const mergeMsg = mergeCommit.commit?.message || "";
+            const mergeDate =
               mergeCommit.commit?.committer?.date ||
-                mergeCommit.commit?.author?.date
-            ),
-            branch: mergedBranch,
-          };
+              mergeCommit.commit?.author?.date;
+            lastMergeInfo.lastMerge = {
+              hash: mergeCommit.sha,
+              message: mergeMsg,
+              timeAgo: timeAgo(mergeDate),
+              branch: extractBranchFromMessage(mergeMsg),
+            };
+          }
         }
       }
     } catch {
@@ -106,7 +137,6 @@ export async function GET() {
         sha: b.commit.sha,
         protected: b.protected,
       })),
-      currentBranch: "",
       lastMergeInfo,
     });
   } catch (error) {
@@ -159,14 +189,12 @@ export async function POST(request) {
       });
 
       if (status === 204) {
-        // Already merged — nothing to do
         steps.push(`Branch ${safeBranch} is already up to date with main`);
         return NextResponse.json({
           success: true,
           action: "merge_to_main",
           branch: safeBranch,
           stdout: steps.join("\n"),
-          currentBranch: "",
         });
       }
 
@@ -210,7 +238,6 @@ export async function POST(request) {
         action: "merge_to_main",
         branch: safeBranch,
         stdout: steps.join("\n"),
-        currentBranch: "",
         sha: data?.sha,
       });
     }
@@ -249,8 +276,7 @@ export async function POST(request) {
         `Found merge: ${mergeCommit.sha.slice(0, 8)} — ${mergeMessage}`
       );
 
-      // Step 2: To revert a merge, we need the tree of the first parent (main before merge)
-      // Get the first parent commit (the main branch side)
+      // Step 2: Get the first parent commit (main before merge) to get its tree
       const firstParentSha = mergeCommit.parents[0].sha;
       const { ok: parentOk, data: parentCommit } = await ghFetch(
         `/git/commits/${firstParentSha}`
@@ -278,7 +304,7 @@ export async function POST(request) {
 
       const currentMainSha = refData.object.sha;
 
-      // Step 4: Create a new commit that reverts the merge (uses parent tree, points to current HEAD)
+      // Step 4: Create a new commit that reverts the merge
       const { ok: commitOk, data: newCommit } = await ghFetch(`/git/commits`, {
         method: "POST",
         body: JSON.stringify({
@@ -331,7 +357,6 @@ export async function POST(request) {
         action: "unmerge",
         branch: "main",
         stdout: steps.join("\n"),
-        currentBranch: "",
         revertedMerge: mergeMessage,
         sha: newCommit.sha,
       });
