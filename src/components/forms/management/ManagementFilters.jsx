@@ -2,7 +2,7 @@
 
 import { useTranslations, useLocale } from "next-intl";
 import { useSelector } from "react-redux";
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { useCallback, useMemo, useState, useEffect, memo } from "react";
 import axios from "axios";
 import SearchAndFilters from "../../common/searchAndFilters/SearchAndFilters";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -10,14 +10,12 @@ import formatDateForAPI from "@utils/formatDateForAPI";
 import getProxyUrl from "@utils/getProxyUrl";
 import { getHeaders } from "@utils/getHeaders";
 
-const BookingsFilters = ({ filter, setFilter }) => {
-  const t = useTranslations(
-    "profile.aside.bookingsManagement.bookings.filters"
-  );
+const ManagementFilters = ({ filter, setFilter }) => {
+  const t = useTranslations("profile.aside.tripsManagement.filters");
   const locale = useLocale();
   const headers = getHeaders(locale);
 
-  const [tracksData, setTracksData] = useState([]); // Store full tracks data
+  const [tracksData, setTracksData] = useState([]);
   const [tracksLoading, setTracksLoading] = useState(false);
 
   const { selectedIds, organizations, allSelected, loading } = useSelector(
@@ -219,4 +217,4 @@ const BookingsFilters = ({ filter, setFilter }) => {
   );
 };
 
-export default BookingsFilters;
+export default memo(ManagementFilters);

@@ -555,7 +555,22 @@
       "main": "Main",
 
       "tripsManagement": {
-        "title": "Trips and activities Management"
+        "title": "Trips and activities Management",
+        "filters": {
+          "title": "Search",
+          "school": {
+            "placeholder": "Search by school name"
+          },
+          "track": {
+            "placeholder": "All Tracks"
+          },
+          "academicStage": {
+            "placeholder": "Academic Stage"
+          },
+          "date": {
+            "placeholder": "Order Date"
+          }
+        }
       },
       "bookingsManagement": {
         "title": "Bookings Management",
@@ -882,8 +897,14 @@
           "organization": "School",
           "targetStudents": "Target Students",
           "tripName": "Trip Name",
+          "tripType": "Trip Type",
           "tripDate": "Trip Date",
           "actions": "Actions"
+        },
+        "tripTypes": {
+          "PACKAGE": "Package",
+          "ACTIVITY": "Activity",
+          "HALF_DAY": "Half Day Trip"
         }
       },
       "bookings": {
