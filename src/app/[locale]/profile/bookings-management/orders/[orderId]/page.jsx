@@ -34,6 +34,7 @@ import AdditionalInfoCard from "@components/sections/pages/profile/boookings-man
 
 import OrderPageLoadingSkeleton from "@components/sections/pages/profile/boookings-management/orders/order-details/OrderPageLoadingSkeleton";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
+import { askType } from "@/src/constants/askType";
 
 const OrderDetailsPage = ({ params }) => {
   const locale = useLocale();
@@ -117,7 +118,10 @@ const OrderDetailsPage = ({ params }) => {
   ========================= */
   useEffect(() => {
     if (!orderId || paramsLoading) return;
-    Promise.all([fetchOrderDetailsForView(orderId), fetchFormSelectionData()]);
+    Promise.all([
+      fetchOrderDetailsForView(orderId, true, askType.CUSTOM),
+      fetchFormSelectionData(),
+    ]);
   }, [orderId, paramsLoading]);
 
   /* =========================

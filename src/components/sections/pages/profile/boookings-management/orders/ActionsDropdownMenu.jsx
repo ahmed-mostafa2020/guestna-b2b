@@ -20,6 +20,7 @@ import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import Link from "next/link";
+import { askType } from "@/src/constants/askType";
 
 const ActionsDropdownMenu = ({
   bookingId,
@@ -73,10 +74,13 @@ const ActionsDropdownMenu = ({
   );
 
   /* ================= Type Logic ================= */
-  const isCustomType = useMemo(() => bookingType === "CUSTOM", [bookingType]);
+  const isCustomType = useMemo(
+    () => bookingType === askType.CUSTOM,
+    [bookingType]
+  );
 
   const isCustomTripType = useMemo(
-    () => bookingType === "CUSTOM_TRIP",
+    () => [askType.CUSTOM_TRIP, askType.TRIP].includes(bookingType),
     [bookingType]
   );
 
@@ -261,7 +265,7 @@ const ActionsDropdownMenu = ({
   const handleEdit = useCallback(() => {
     handleClose();
     if (openEditModal) {
-      if (bookingType === "CUSTOM") {
+      if (bookingType === askType.CUSTOM) {
         openEditModal(bookingId, null, bookingType);
       } else {
         openEditModal(_id, null, bookingType);

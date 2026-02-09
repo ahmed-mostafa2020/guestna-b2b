@@ -7,6 +7,7 @@ import { getHeaders } from "@utils/getHeaders";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "../constants/constantValues";
 import { useTranslations } from "next-intl";
+import{askType as askTypeConstants} from "@constants/askType"
 
 export const useEditOrderModal = (locale) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -106,15 +107,12 @@ export const useEditOrderModal = (locale) => {
       try {
         // Determine the endpoint based on askType
         let endpoint;
-        if (askType === "CUSTOM") {
+        if (askType === askTypeConstants.CUSTOM) {
           // CUSTOM uses EDIT_CUSTOM_INFO endpoint (for CustomNewTripForm)
           endpoint = `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.EDIT_CUSTOM_INFO}/${orderId}`;
-        } else if (askType === "CUSTOM_TRIP") {
-          // CUSTOM_TRIP uses INFO endpoint (for EditOrderForm)
-          endpoint = `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.INFO}/${orderId}`;
         } else {
-          // Fallback to CUSTOM if askType is not provided
-          endpoint = `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.EDIT_CUSTOM_INFO}/${orderId}`;
+          // CUSTOM_TRIP & TRIP uses INFO endpoint (for EditOrderForm)
+          endpoint = `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.INFO}/${orderId}`;
         }
 
         const response = await axios.get(getProxyUrl(endpoint), { headers });
@@ -164,9 +162,7 @@ export const useEditOrderModal = (locale) => {
       setCurrentOrderAskType(askType);
       setError(null);
 
-      if (!formSelectionData) {
-        await fetchFormSelectionData();
-      }
+      
 
       // If order data is passed directly (from the page), use it
       if (existingOrderData) {
@@ -190,7 +186,7 @@ export const useEditOrderModal = (locale) => {
       const fetchPromises = [];
 
       // Only fetch form selection data if askType is CUSTOM (needs dropdowns)
-      if (askType === "CUSTOM") {
+      if (!formSelectionData) {
         fetchPromises.push(fetchFormSelectionData());
       }
 
