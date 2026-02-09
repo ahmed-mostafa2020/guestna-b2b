@@ -179,8 +179,8 @@ const GitDashboardContent = () => {
       </div>
 
       {/* Stats Skeleton */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        {[1, 2].map((i) => (
+      <div className="grid grid-cols-1 mb-6">
+        {[1].map((i) => (
           <div
             key={i}
             className="bg-white rounded-xl border border-gray-200 p-4 space-y-2"
@@ -373,17 +373,11 @@ const GitDashboardContent = () => {
             )}
 
             {/* Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 gap-4 mb-6">
               <div className="bg-white rounded-xl border border-gray-200 p-4">
                 <p className="text-sm text-gray-500">Total Branches</p>
                 <p className="text-2xl font-bold text-gray-900">
                   {branches.length}
-                </p>
-              </div>
-              <div className="bg-white rounded-xl border border-gray-200 p-4">
-                <p className="text-sm text-gray-500">Filtered Results</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {filteredBranches.length}
                 </p>
               </div>
             </div>
