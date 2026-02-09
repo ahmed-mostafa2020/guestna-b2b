@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams, useRouter } from "next/navigation";
-
+import banner from "@assets/sectionBackground/discover.webp";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setCurrentPage,
@@ -117,9 +117,14 @@ const ActivitiesMarketPage = () => {
     <ProtectedProfilePage
       requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_ACTIVITIES_MARKET_PAGE}
     >
-      <section className="pt-8 pb-6 bg-gradient-to-br from-gray-100 to-gray-200 mb-4 lg:mb-8">
-        <div className="centered gap-4 flex-col text-center ">
-          <h1 className="text-4xl lg:text-6xl font-bold mb-4 text-foreground">
+      <section
+        style={{
+          backgroundImage: `url(${banner.src})`,
+        }}
+        className="  bg-cover bg-center mb-4 lg:mb-8"
+      >
+        <div className=" pt-8 pb-6 bg-activities-market-gradient centered gap-4 flex-col text-center  bg-cover text-white font-ibm ">
+          <h1 className="text-xl lg:text-6xl font-medium mb-4 text-foreground">
             {t("profile.aside.activitiesMarketTitle")}
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
