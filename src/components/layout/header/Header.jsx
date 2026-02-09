@@ -101,38 +101,30 @@ const Header = () => {
   // }, [dispatch, headers]);
 
   return (
-    <>
-      <div className="text-sm bg-yellow-100 centered">
-        <span>GuestNa B2B beta version</span>
-        <span className="m-2">|</span>
-        <span>جستنا للمدارس نسخة تجريبية</span>
-      </div>
+    <header className="py-2">
+      <Container maxWidth="lg" className="flex items-center justify-between">
+        <Logo />
 
-      <header className="py-2">
-        <Container maxWidth="lg" className="flex items-center justify-between">
-          <Logo />
+        <nav className="items-center hidden gap-4 lg:flex">
+          {renderedNavLinks}
+        </nav>
 
-          <nav className="items-center hidden gap-4 lg:flex">
-            {renderedNavLinks}
-          </nav>
+        <div className="hidden gap-4 centered lg:flex">
+          <SettingsButton />
 
-          <div className="hidden gap-4 centered lg:flex">
-            <SettingsButton />
+          {userToken && <Notifications />}
 
-            {userToken && <Notifications />}
+          {/* Organization Selector Header */}
+          <OrganizationSelector />
 
-            {/* Organization Selector Header */}
-            <OrganizationSelector />
+          <AuthToggleButton />
+        </div>
 
-            <AuthToggleButton />
-          </div>
-
-          <div className="lg:hidden">
-            <TemporaryDrawer />
-          </div>
-        </Container>
-      </header>
-    </>
+        <div className="lg:hidden">
+          <TemporaryDrawer />
+        </div>
+      </Container>
+    </header>
   );
 };
 

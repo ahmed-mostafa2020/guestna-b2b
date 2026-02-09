@@ -274,7 +274,7 @@ const AllOrdersTable = ({
                       </td>
 
                       <td className="p-4 text-sm">
-                        {order.askType === "CUSTOM_TRIP" ? (
+                        {order.askType === "CUSTOM" ? (
                           <span className="px-2 py-1 font-medium">
                             {t("profile.tables.orders.customizable.title")}
                           </span>
@@ -390,7 +390,7 @@ const AllOrdersTable = ({
                     {t("profile.tables.orders.tableHeaders.orderType")}
                   </span>
                   <div>
-                    {order.askType === "CUSTOM_TRIP" ? (
+                    {order.askType === "CUSTOM" ? (
                       <span className="px-2 py-1 text-xs font-medium text-purple-800 bg-purple-100 border border-purple-200 rounded-full">
                         {t("profile.tables.orders.customizable.title")}
                       </span>
