@@ -569,7 +569,22 @@
     "aside": {
       "main": "الرئيسية",
       "tripsManagement": {
-        "title": "إدارة الرحلات والأنشطة"
+        "title": "إدارة الرحلات والأنشطة",
+        "filters": {
+          "title": "البحث",
+          "school": {
+            "placeholder": "البحث باسم المدرسة"
+          },
+          "track": {
+            "placeholder": "جميع المسارات"
+          },
+          "academicStage": {
+            "placeholder": "المرحلة الدراسيه"
+          },
+          "date": {
+            "placeholder": "تاريخ الطلب"
+          }
+        }
       },
       "bookingsManagement": {
         "title": "إدارة الحجوزات",
@@ -579,7 +594,7 @@
           "filters": {
             "title": "البحث",
             "school": {
-              "placeholder": "البحث باسم المدرسه"
+              "placeholder": "البحث باسم المدرسة"
             },
             "track": {
               "placeholder": "جميع المسارات"
@@ -893,8 +908,14 @@
           "organization": "المدرسة",
           "targetStudents": "الفئة المستهدفة",
           "tripName": "اسم الرحلة",
+          "tripType": "نوع الرحلة",
           "tripDate": "تاريخ الرحلة",
           "actions": "الإجراءات"
+        },
+        "tripTypes": {
+          "PACKAGE": "باقة",
+          "ACTIVITY": "نشاط",
+          "HALF_DAY": "رحلة نصف يوم"
         }
       },
       "bookings": {
