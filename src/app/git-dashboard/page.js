@@ -12,7 +12,7 @@ const GitDashboardPage = () => {
     <SnackbarProvider
       maxSnack={3}
       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      autoHideDuration={500}
+      autoHideDuration={3000}
     >
       <GitDashboardContent />
     </SnackbarProvider>
