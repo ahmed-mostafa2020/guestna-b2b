@@ -17,7 +17,7 @@ import DiscoverFilters from "./DiscoverFilters";
 
 const SKELETON_COUNT = 6;
 
-const TripsGrid = ({ showFilters = false ,showSearch = false }) => {
+const TripsGrid = ({ showFilters = false }) => {
   const dispatch = useDispatch();
   const t = useTranslations();
 
@@ -78,7 +78,7 @@ const TripsGrid = ({ showFilters = false ,showSearch = false }) => {
   const showNoResults = !isLoading && (hasNoResult || hasNoNodes);
   return (
     <div ref={targetRef} className="flex flex-col gap-4 lg:gap-8">
-      { <DiscoverFilters showFilters={showFilters} showSearch={showSearch} />}
+      {showFilters && <DiscoverFilters />}
 
       <div className="relative">
         {/* Similar results hint */}

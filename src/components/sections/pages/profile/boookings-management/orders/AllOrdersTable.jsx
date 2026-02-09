@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback } from "react";
 
 import { usePermissions } from "@hooks/usePermissions";
 import formatDate from "@utils/FormateDate";
@@ -20,7 +20,6 @@ import OrderDetailsModal from "./OrderDetailsModal";
 import CustomNewTripForm from "@components/forms/customNewTrip";
 import RejectOrderForm from "@components/forms/customNewTrip/RejectOrderForm";
 import ApproveOrderForm from "@components/forms/customNewTrip/ApproveOrderForm";
-import EditOrderForm from "@components/forms/editOrder";
 
 const AllOrdersTable = ({
   tableTitle,
@@ -34,11 +33,6 @@ const AllOrdersTable = ({
   const { hasAnyElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
-
-  // Track if we should show details modal after approval
-  const [showDetailsAfterApproval, setShowDetailsAfterApproval] =
-    useState(false);
-  const [approvedOrderId, setApprovedOrderId] = useState(null);
 
   // Shared modal hooks
   const {
@@ -60,8 +54,6 @@ const AllOrdersTable = ({
     openEditModal,
     closeEditModal,
     refreshCustomizedTripsTable,
-    currentOrderAskType,
-    fetchEditOrderDetails,
 
     // Rejection functionality
     selectedRejectOrderId,
@@ -156,32 +148,15 @@ const AllOrdersTable = ({
     [onActionComplete, selectedRejectOrderId, refetch, closeRejectModal]
   );
 
-  // Handle successful approval with table refresh and details modal for CUSTOM_TRIP type
+  // Handle successful approval with table refresh
   const handleApproveSuccess = useCallback(
     async (result) => {
       try {
-        // Close approval modal first
+        // Table refresh
         closeApproveModal();
-
-        // Refresh table
         refetch?.();
 
-        // If it's a CUSTOM_TRIP type order, fetch details and show details modal
-        if (result.askType === "CUSTOM_TRIP" && selectedApproveOrderId) {
-          // Fetch the order details
-          await fetchEditOrderDetails(
-            selectedApproveOrderId,
-            true,
-            "CUSTOM_TRIP"
-          );
-
-          // Open details modal
-          setApprovedOrderId(selectedApproveOrderId);
-          setShowDetailsAfterApproval(true);
-          openDetailsModal(selectedApproveOrderId);
-        }
-
-        // Notify parent component if callback provided
+        // Just notify parent component if callback provided
         if (onActionComplete) {
           onActionComplete("approve", selectedApproveOrderId, result);
         }
@@ -189,22 +164,8 @@ const AllOrdersTable = ({
         console.error("Error after approve success:", error);
       }
     },
-    [
-      onActionComplete,
-      selectedApproveOrderId,
-      refetch,
-      closeApproveModal,
-      fetchEditOrderDetails,
-      openDetailsModal,
-    ]
+    [onActionComplete, selectedApproveOrderId, refetch, closeApproveModal]
   );
-
-  // Handle closing details modal after approval
-  const handleCloseDetailsAfterApproval = useCallback(() => {
-    setShowDetailsAfterApproval(false);
-    setApprovedOrderId(null);
-    closeDetailsModal();
-  }, [closeDetailsModal]);
 
   // Handle action completion from ActionsDropdownMenu
   const handleActionComplete = useCallback(
@@ -215,22 +176,6 @@ const AllOrdersTable = ({
       }
     },
     [onActionComplete]
-  );
-
-  // Enhanced openEditModal that passes askType
-  const handleOpenEditModal = useCallback(
-    (orderId, existingOrderData, askType) => {
-      openEditModal(orderId, existingOrderData, askType);
-    },
-    [openEditModal]
-  );
-
-  // Enhanced openApproveModal that passes askType
-  const handleOpenApproveModal = useCallback(
-    (orderId, askType) => {
-      openApproveModal(orderId, askType);
-    },
-    [openApproveModal]
   );
 
   if (!data || !data.nodes) {
@@ -329,7 +274,7 @@ const AllOrdersTable = ({
                       </td>
 
                       <td className="p-4 text-sm">
-                        {order.askType === "CUSTOM" ? (
+                        {order.askType === "CUSTOM_TRIP" ? (
                           <span className="px-2 py-1 font-medium">
                             {t("profile.tables.orders.customizable.title")}
                           </span>
@@ -375,9 +320,9 @@ const AllOrdersTable = ({
                             bookingStatus={order.status}
                             onActionComplete={handleActionComplete}
                             openDetailsModal={openDetailsModal}
-                            openEditModal={handleOpenEditModal}
+                            openEditModal={openEditModal}
                             openRejectModal={openRejectModal}
-                            openApproveModal={handleOpenApproveModal}
+                            openApproveModal={openApproveModal}
                           />
                         </td>
                       )}
@@ -445,7 +390,7 @@ const AllOrdersTable = ({
                     {t("profile.tables.orders.tableHeaders.orderType")}
                   </span>
                   <div>
-                    {order.askType === "CUSTOM" ? (
+                    {order.askType === "CUSTOM_TRIP" ? (
                       <span className="px-2 py-1 text-xs font-medium text-purple-800 bg-purple-100 border border-purple-200 rounded-full">
                         {t("profile.tables.orders.customizable.title")}
                       </span>
@@ -510,9 +455,9 @@ const AllOrdersTable = ({
                       bookingStatus={order.status}
                       onActionComplete={handleActionComplete}
                       openDetailsModal={openDetailsModal}
-                      openEditModal={handleOpenEditModal}
+                      openEditModal={openEditModal}
                       openRejectModal={openRejectModal}
-                      openApproveModal={handleOpenApproveModal}
+                      openApproveModal={openApproveModal}
                     />
                   </div>
                 )}
@@ -538,23 +483,17 @@ const AllOrdersTable = ({
 
       {/* Shared Order Details Modal */}
       <CustomizedModal
-        open={Boolean(selectedOrderId) || showDetailsAfterApproval}
-        handleClose={
-          showDetailsAfterApproval
-            ? handleCloseDetailsAfterApproval
-            : closeDetailsModal
-        }
+        open={Boolean(selectedOrderId)}
+        handleClose={closeDetailsModal}
         bgcolor="rgba(0, 0, 0, 0.5)"
         customizedCloseButton={true}
         padding={false}
       >
-        {(selectedOrderId || approvedOrderId) && (
+        {selectedOrderId && (
           <OrderDetailsModal
-            orderId={
-              showDetailsAfterApproval ? approvedOrderId : selectedOrderId
-            }
-            orderDetails={currentOrderDetails || currentEditOrderDetails}
-            loading={loadingDetails || loadingEditDetails}
+            orderId={selectedOrderId}
+            orderDetails={currentOrderDetails}
+            loading={loadingDetails}
           />
         )}
       </CustomizedModal>
@@ -568,25 +507,14 @@ const AllOrdersTable = ({
         padding={false}
       >
         {selectedEditOrderId && isDataReady ? (
-          currentOrderAskType === "CUSTOM" ? (
-            <CustomNewTripForm
-              mode="edit"
-              orderId={currentEditOrderDetails._id}
-              editData={currentEditOrderDetails}
-              formSelectionData={formSelectionData}
-              onClose={closeEditModal}
-              onSuccess={handleEditSuccess}
-            />
-          ) : currentOrderAskType === "CUSTOM_TRIP" ? (
-            <EditOrderForm
-              orderDetails={currentEditOrderDetails}
-              loading={loadingEditDetails}
-              onClose={closeEditModal}
-              formSelectionData={formSelectionData}
-              orderId={currentEditOrderDetails._id}
-              onOrderUpdate={handleEditSuccess}
-            />
-          ) : null
+          <CustomNewTripForm
+            mode="edit"
+            orderId={currentEditOrderDetails._id}
+            editData={currentEditOrderDetails}
+            formSelectionData={formSelectionData}
+            onClose={closeEditModal}
+            onSuccess={handleEditSuccess}
+          />
         ) : selectedEditOrderId ? (
           <div className="flex items-center justify-center p-20 bg-white rounded-2xl">
             <CircularProgress size={40} />
@@ -631,7 +559,6 @@ const AllOrdersTable = ({
             approveOrder={approveOrder}
             approvingOrder={approvingOrder}
             approvalError={approvalError}
-            askType={currentOrderAskType}
           />
         )}
       </CustomizedModal>

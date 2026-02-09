@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-
 import { memo } from "react";
 
 import { usePermissions } from "@hooks/usePermissions";
@@ -12,9 +11,8 @@ import { PERMISSIONS } from "@constants/permissions";
 import Pagination from "@components/common/Pagination";
 
 import { CardContent, Card } from "@mui/material";
-import Badge from "@mui/material/Badge";
 
-const ActivitiesTable = ({
+const TripsManagementTable = ({
   tableTitle,
   data,
   currentPage,
@@ -24,6 +22,14 @@ const ActivitiesTable = ({
   const { hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
+
+  const getAcademicStagesText = (stages) => {
+    if (!stages || !Array.isArray(stages) || stages.length === 0) return "-";
+    return stages
+      .map((stage) => stage?.name)
+      .filter(Boolean)
+      .join(", ");
+  };
 
   return (
     <div className="w-full space-y-6">
@@ -44,26 +50,24 @@ const ActivitiesTable = ({
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className=" bg-table-header border-b-2 border-tableRowBorder">
+                <tr className="bg-table-header border-b-2 border-tableRowBorder">
                   <th className="px-6 py-4 font-semibold text-start">
-                    {t("profile.tables.activities.header.tripName")}
+                    {t("profile.tables.management.header.organization")}
                   </th>
                   <th className="px-6 py-4 font-semibold text-start">
-                    {t("profile.tables.activities.header.date")}
-                  </th>
-
-                  <th className="px-6 py-4 font-semibold text-start">
-                    {t("profile.tables.activities.header.location")}
+                    {t("profile.tables.management.header.targetStudents")}
                   </th>
                   <th className="px-6 py-4 font-semibold text-start">
-                    {t("profile.tables.activities.header.category")}
+                    {t("profile.tables.management.header.tripName")}
                   </th>
-
+                  <th className="px-6 py-4 font-semibold text-start">
+                    {t("profile.tables.management.header.tripDate")}
+                  </th>
                   {hasElement(
                     PERMISSIONS.ELEMENT.B2B_PROFILE_TRIPS_MANAGEMENT_BUTTON
                   ) && (
                     <th className="px-6 py-4 font-semibold text-start">
-                      {t("profile.tables.orders.studentsTable.actions")}
+                      {t("profile.tables.management.header.actions")}
                     </th>
                   )}
                 </tr>
@@ -71,17 +75,55 @@ const ActivitiesTable = ({
               <tbody>
                 {data?.nodes?.map((trip, index) => (
                   <tr
-                    key={trip._id}
+                    key={`${trip._id}-${index}`}
                     className={`${
-                      index != data?.nodes?.length - 1 &&
+                      index !== data?.nodes?.length - 1 &&
                       "border-b border-table-border"
                     } transition-colors hover:bg-gray-50`}
                   >
+                    {/* Organization / School Name */}
                     <td className="px-6 py-4 text-sm font-medium text-foreground">
-                      {trip.name}
+                      {trip.organization?.name || "-"}
                     </td>
 
-                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                    {/* Target Students: educationSystem + academicStages */}
+                    <td className="px-6 py-4 text-sm text-muted-foreground max-w-[200px]">
+                      <div className="flex flex-col gap-1">
+                        {trip.track?.educationSystem?.name && (
+                          <span className="font-medium truncate">
+                            {trip.track.educationSystem.name}
+                          </span>
+                        )}
+                        <span
+                          className="text-sm text-textLight truncate"
+                          title={getAcademicStagesText(
+                            trip.track?.academicStages
+                          )}
+                        >
+                          {getAcademicStagesText(trip.track?.academicStages)}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* Trip Name + Order ID */}
+                    <td className="px-6 py-4 text-sm text-foreground max-w-[250px]">
+                      <div className="flex flex-col gap-1">
+                        <span
+                          className="font-medium truncate"
+                          title={trip.name}
+                        >
+                          {trip.name || "-"}
+                        </span>
+                        {trip.orderId && (
+                          <span className="text-sm text-textLight">
+                            {trip.orderId}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* Trip Date */}
+                    <td className="px-6 py-4 text-sm text-muted-foreground whitespace-nowrap">
                       {formatDate(trip.day, locale, {
                         year: "numeric",
                         month: "long",
@@ -91,15 +133,7 @@ const ActivitiesTable = ({
                       })}
                     </td>
 
-                    <td className="px-6 py-4 text-sm text-muted-foreground">
-                      {trip.cities}
-                    </td>
-                    <td className="px-6 py-4">
-                      <Badge variant="outline" className="text-sm">
-                        {trip.categories}
-                      </Badge>
-                    </td>
-
+                    {/* Actions */}
                     {hasElement(
                       PERMISSIONS.ELEMENT.B2B_PROFILE_TRIPS_MANAGEMENT_BUTTON
                     ) && (
@@ -135,20 +169,59 @@ const ActivitiesTable = ({
           </h2>
         )}
 
-        {data?.nodes?.map((trip) => (
+        {data?.nodes?.map((trip, index) => (
           <Card
-            key={trip._id}
+            key={`${trip._id}-${index}`}
             className="transition-shadow shadow-md hover:shadow-lg"
           >
             <CardContent className="p-4 space-y-3">
-              <div className="flex items-start justify-between">
-                <h3 className="text-lg font-bold leading-relaxed text-foreground">
-                  {trip.name}
-                </h3>
+              {/* Trip Name + Order ID */}
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-base font-bold leading-relaxed text-foreground truncate">
+                    {trip.name || "-"}
+                  </h3>
+                  {trip.orderId && (
+                    <span className="text-sm text-textLight">
+                      {trip.orderId}
+                    </span>
+                  )}
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-3 text-sm">
+              <div className="grid grid-cols-1 gap-2 text-sm">
+                {/* Organization */}
                 <div className="flex items-center gap-2">
+                  <span className="font-semibold text-textLight flex-shrink-0">
+                    {t("profile.tables.management.header.organization")}:
+                  </span>
+                  <span className="text-foreground truncate">
+                    {trip.organization?.name || "-"}
+                  </span>
+                </div>
+
+                {/* Target Students */}
+                <div className="flex items-start gap-2">
+                  <span className="font-semibold text-textLight flex-shrink-0">
+                    {t("profile.tables.management.header.targetStudents")}:
+                  </span>
+                  <div className="flex flex-col min-w-0">
+                    {trip.track?.educationSystem?.name && (
+                      <span className="text-foreground truncate">
+                        {trip.track.educationSystem.name}
+                      </span>
+                    )}
+                    <span className="text-sm text-textLight truncate">
+                      {getAcademicStagesText(trip.track?.academicStages)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Trip Date */}
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-textLight flex-shrink-0">
+                    {t("profile.tables.management.header.tripDate")}:
+                  </span>
                   <span className="text-muted-foreground">
                     {formatDate(trip.day, locale, {
                       year: "numeric",
@@ -159,28 +232,23 @@ const ActivitiesTable = ({
                     })}
                   </span>
                 </div>
-
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-muted-foreground">{trip.cities}</span>
-
-                  <Badge variant="outline">{trip.categories}</Badge>
-                </div>
               </div>
 
+              {/* Actions */}
               {hasElement(
                 PERMISSIONS.ELEMENT.B2B_PROFILE_TRIPS_MANAGEMENT_BUTTON
               ) && (
-                <div className="space-y-2">
+                <div className="pt-2 border-t border-gray-100">
                   {trip.status === TRIP_STATUS.SCHEDULED ||
                   trip.status === TRIP_STATUS.PENDING ? (
                     <Link
                       href={`/${locale}/profile/create-trip-link/${trip.slug}`}
-                      className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-linksHover"
+                      className="inline-block text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-linksHover"
                     >
                       {t("links.tripManagement")}
                     </Link>
                   ) : (
-                    <span className="text-sm px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
+                    <span className="inline-block text-sm px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
                       {t("links.tripManagement")}
                     </span>
                   )}
@@ -204,4 +272,4 @@ const ActivitiesTable = ({
   );
 };
 
-export default memo(ActivitiesTable);
+export default memo(TripsManagementTable);
