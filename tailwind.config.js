@@ -7,6 +7,7 @@ module.exports = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/feedback/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/assets/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   safelist: [
     // Event type colors - solid variants (unique colors, no red)
@@ -85,6 +86,10 @@ module.exports = {
         upperBarBg: "var(--color-bg-upper-bar)",
         headerBg: "var(--color-bg-header)",
         figure: "var(--color-bg-figure)",
+      },
+      backgroundImage: {
+        "activities-market-gradient":
+          "linear-gradient(to bottom, rgba(120, 223, 255, 0.60) 9.28%, rgba(0, 129, 169, 0.60) 55.56%)",
       },
       boxShadow: {
         card: "0px 0px 4px 0px rgba(0, 0, 0, 0.16)",
