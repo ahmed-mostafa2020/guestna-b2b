@@ -321,75 +321,81 @@ export async function POST(request) {
       });
     }
 
-    // ─── UNMERGE: revert the last merge commit on main via GitHub API ───
+    // ─── UNMERGE: revert the last merge/deploy commit on main ───
     if (action === "unmerge") {
-      // Step 1: Get recent commits on main to find last merge
-      const { ok: commitsOk, data: commits } = await ghFetch(
-        `/commits?sha=main&per_page=20`
-      );
+      // Step 1: Get current main ref
+      const { ok: umRefOk, data: umRefData } =
+        await ghFetch(`/git/ref/heads/main`);
 
-      if (!commitsOk || !commits?.length) {
+      if (!umRefOk) {
         return NextResponse.json(
-          { success: false, error: "Failed to fetch commits on main." },
+          {
+            success: false,
+            error: "Failed to get main branch ref.",
+            details: umRefData?.message,
+          },
           { status: 500 }
         );
       }
 
-      // Find the first merge commit (has 2 parents)
-      const mergeCommit = commits.find(
-        (c) => c.parents && c.parents.length === 2
+      const umMainSha = umRefData.object.sha;
+
+      // Step 2: Get the current HEAD commit to find its parent
+      const { ok: headOk, data: headCommit } = await ghFetch(
+        `/git/commits/${umMainSha}`
       );
 
-      if (!mergeCommit) {
+      if (!headOk) {
         return NextResponse.json(
           {
             success: false,
-            error: "No merge commit found on main to revert.",
+            error: "Failed to read HEAD commit on main.",
+            details: headCommit?.message,
+          },
+          { status: 500 }
+        );
+      }
+
+      const headMessage = headCommit.message || "";
+      steps.push(`Current HEAD: ${umMainSha.slice(0, 8)} — ${headMessage}`);
+
+      // Step 3: Get the first parent (the state of main before the merge)
+      const firstParentSha = headCommit.parents?.[0]?.sha;
+      if (!firstParentSha) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "HEAD commit has no parent — cannot revert.",
           },
           { status: 400 }
         );
       }
 
-      const mergeMessage = mergeCommit.commit?.message || "";
-      steps.push(
-        `Found merge: ${mergeCommit.sha.slice(0, 8)} — ${mergeMessage}`
-      );
-
-      // Step 2: Get the first parent commit (main before merge) to get its tree
-      const firstParentSha = mergeCommit.parents[0].sha;
       const { ok: parentOk, data: parentCommit } = await ghFetch(
         `/git/commits/${firstParentSha}`
       );
 
       if (!parentOk) {
         return NextResponse.json(
-          { success: false, error: "Failed to fetch parent commit." },
+          {
+            success: false,
+            error: "Failed to fetch parent commit.",
+            details: parentCommit?.message,
+          },
           { status: 500 }
         );
       }
 
       const parentTreeSha = parentCommit.tree.sha;
-      steps.push(`Parent tree: ${parentTreeSha.slice(0, 8)}`);
+      steps.push(`Reverting to parent: ${firstParentSha.slice(0, 8)}`);
 
-      // Step 3: Get current main HEAD sha
-      const { ok: refOk, data: refData } = await ghFetch(`/git/ref/heads/main`);
-
-      if (!refOk) {
-        return NextResponse.json(
-          { success: false, error: "Failed to get main branch ref." },
-          { status: 500 }
-        );
-      }
-
-      const currentMainSha = refData.object.sha;
-
-      // Step 4: Create a new commit that reverts the merge
+      // Step 4: Create a new commit that reverts to the parent tree
       const { ok: commitOk, data: newCommit } = await ghFetch(`/git/commits`, {
         method: "POST",
         body: JSON.stringify({
-          message: `Revert "${mergeMessage}"`,
+          message: `Revert "${headMessage}"`,
           tree: parentTreeSha,
-          parents: [currentMainSha],
+          parents: [umMainSha],
         }),
       });
 
@@ -436,7 +442,7 @@ export async function POST(request) {
         action: "unmerge",
         branch: "main",
         stdout: steps.join("\n"),
-        revertedMerge: mergeMessage,
+        revertedMerge: headMessage,
         sha: newCommit.sha,
       });
     }
