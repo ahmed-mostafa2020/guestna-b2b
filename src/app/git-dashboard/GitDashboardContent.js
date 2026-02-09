@@ -18,6 +18,7 @@ const GitDashboardContent = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [lastMergeInfo, setLastMergeInfo] = useState(null);
   const [unmergeLoading, setUnmergeLoading] = useState(false);
+  const [mergedBranch, setMergedBranch] = useState(null);
 
   const fetchBranches = useCallback(async () => {
     setLoading(true);
@@ -35,6 +36,13 @@ const GitDashboardContent = () => {
 
       setBranches(data.branches || []);
       setLastMergeInfo(data.lastMergeInfo || null);
+
+      // If the latest commit on main is a merge, track which branch is merged
+      if (data.lastMergeInfo?.isMerge && data.lastMergeInfo?.branch) {
+        setMergedBranch(data.lastMergeInfo.branch);
+      } else {
+        setMergedBranch(null);
+      }
     } catch (error) {
       enqueueSnackbar("Network error while fetching branches", {
         variant: "error",
@@ -81,6 +89,7 @@ const GitDashboardContent = () => {
           });
         }
 
+        setMergedBranch(branchName);
         fetchBranches();
       } else if (res.status === 409) {
         alert(
@@ -138,6 +147,7 @@ const GitDashboardContent = () => {
           });
         }
 
+        setMergedBranch(null);
         fetchBranches();
       } else {
         enqueueSnackbar(data.error || "Unmerge failed", {
@@ -410,12 +420,18 @@ const GitDashboardContent = () => {
                       {sortedBranches.map((branch, index) => {
                         const isMain = branch.name === "main";
                         const isLoading = actionLoading[branch.name];
+                        const isMerged = mergedBranch === branch.name;
+                        const mergeDisabled = isLoading || !!mergedBranch;
 
                         return (
                           <tr
                             key={`${branch.name}-${index}`}
                             className={`border-b border-gray-100 last:border-b-0 transition-colors ${
-                              isMain ? "bg-blue-50/30" : "hover:bg-gray-50"
+                              isMain
+                                ? "bg-blue-50/30"
+                                : isMerged
+                                  ? "bg-green-50/40"
+                                  : "hover:bg-gray-50"
                             }`}
                           >
                             <td className="px-6 py-4">
@@ -433,6 +449,11 @@ const GitDashboardContent = () => {
                                     Default
                                   </span>
                                 )}
+                                {isMerged && (
+                                  <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">
+                                    Merged
+                                  </span>
+                                )}
                               </div>
                             </td>
                             <td className="px-6 py-4">
@@ -440,7 +461,7 @@ const GitDashboardContent = () => {
                                 {isMain ? (
                                   <button
                                     onClick={handleUnmerge}
-                                    disabled={unmergeLoading}
+                                    disabled={unmergeLoading || !mergedBranch}
                                     className="px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
                                   >
                                     {unmergeLoading ? (
@@ -467,8 +488,12 @@ const GitDashboardContent = () => {
                                     onClick={() =>
                                       handleMergeToMain(branch.name)
                                     }
-                                    disabled={isLoading}
-                                    className="px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 bg-mainColor text-white hover:opacity-90 disabled:opacity-50"
+                                    disabled={mergeDisabled}
+                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 disabled:opacity-50 ${
+                                      isMerged
+                                        ? "bg-green-600 text-white cursor-not-allowed"
+                                        : "bg-mainColor text-white hover:opacity-90"
+                                    }`}
                                   >
                                     {isLoading ? (
                                       <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -487,7 +512,7 @@ const GitDashboardContent = () => {
                                         />
                                       </svg>
                                     )}
-                                    Merge to Main
+                                    {isMerged ? "Merged" : "Merge to Main"}
                                   </button>
                                 )}
                               </div>
@@ -504,6 +529,8 @@ const GitDashboardContent = () => {
                   {sortedBranches.map((branch, index) => {
                     const isMain = branch.name === "main";
                     const isLoading = actionLoading[branch.name];
+                    const isMerged = mergedBranch === branch.name;
+                    const mergeDisabled = isLoading || !!mergedBranch;
 
                     return (
                       <div
@@ -511,7 +538,9 @@ const GitDashboardContent = () => {
                         className={`bg-white rounded-xl border p-4 ${
                           isMain
                             ? "border-blue-200 bg-blue-50/20"
-                            : "border-gray-200"
+                            : isMerged
+                              ? "border-green-200 bg-green-50/20"
+                              : "border-gray-200"
                         }`}
                       >
                         <div className="flex items-start justify-between mb-3">
@@ -530,6 +559,11 @@ const GitDashboardContent = () => {
                                   Default
                                 </span>
                               )}
+                              {isMerged && (
+                                <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">
+                                  Merged
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -537,7 +571,7 @@ const GitDashboardContent = () => {
                         {isMain ? (
                           <button
                             onClick={handleUnmerge}
-                            disabled={unmergeLoading}
+                            disabled={unmergeLoading || !mergedBranch}
                             className="w-full px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
                           >
                             {unmergeLoading ? (
@@ -548,13 +582,17 @@ const GitDashboardContent = () => {
                         ) : (
                           <button
                             onClick={() => handleMergeToMain(branch.name)}
-                            disabled={isLoading}
-                            className="w-full px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 bg-mainColor text-white hover:opacity-90 disabled:opacity-50"
+                            disabled={mergeDisabled}
+                            className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 disabled:opacity-50 ${
+                              isMerged
+                                ? "bg-green-600 text-white cursor-not-allowed"
+                                : "bg-mainColor text-white hover:opacity-90"
+                            }`}
                           >
                             {isLoading ? (
                               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                             ) : null}
-                            Merge to Main
+                            {isMerged ? "Merged" : "Merge to Main"}
                           </button>
                         )}
                       </div>
