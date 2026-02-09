@@ -68,6 +68,101 @@ function extractBranchFromMessage(message) {
   return null;
 }
 
+// Protected files: these must never be deleted by a merge
+const PROTECTED_PATHS = [
+  "src/app/git-dashboard/GitDashboardContent.js",
+  "src/app/git-dashboard/page.js",
+  "src/app/git-dashboard/layout.js",
+  "src/app/api/git-control/route.js",
+  "middleware.js",
+];
+
+// Helper: after a merge, check if protected files were deleted and restore them
+// preMergeSha = the SHA of main BEFORE the merge happened
+// Returns { restored: boolean, newSha: string|null, steps: string[] }
+async function restoreProtectedFiles(preMergeSha, steps) {
+  // Get current main ref (post-merge)
+  const { ok: postRefOk, data: postRef } = await ghFetch(`/git/ref/heads/main`);
+  if (!postRefOk) return { restored: false, newSha: null };
+
+  const postMergeSha = postRef.object.sha;
+
+  // Check each protected file in the post-merge tree
+  const missing = [];
+  for (const filePath of PROTECTED_PATHS) {
+    const { ok } = await ghFetch(`/contents/${filePath}?ref=${postMergeSha}`);
+    if (!ok) missing.push(filePath);
+  }
+
+  if (missing.length === 0) return { restored: false, newSha: null };
+
+  steps.push(`⚠️ Protected files missing after merge: ${missing.join(", ")}`);
+
+  // Get the pre-merge tree to find the original file blobs
+  const { ok: preCommitOk, data: preCommit } = await ghFetch(
+    `/git/commits/${preMergeSha}`
+  );
+  if (!preCommitOk) return { restored: false, newSha: null };
+
+  // Get the post-merge commit's tree
+  const { ok: postCommitOk, data: postCommit } = await ghFetch(
+    `/git/commits/${postMergeSha}`
+  );
+  if (!postCommitOk) return { restored: false, newSha: null };
+
+  // For each missing file, get its blob SHA from the pre-merge tree
+  const treeItems = [];
+  for (const filePath of missing) {
+    const { ok: fileOk, data: fileData } = await ghFetch(
+      `/contents/${filePath}?ref=${preMergeSha}`
+    );
+    if (fileOk && fileData?.sha) {
+      treeItems.push({
+        path: filePath,
+        mode: "100644",
+        type: "blob",
+        sha: fileData.sha,
+      });
+    }
+  }
+
+  if (treeItems.length === 0) return { restored: false, newSha: null };
+
+  // Create a new tree based on the post-merge tree + restored files
+  const { ok: treeOk, data: newTree } = await ghFetch(`/git/trees`, {
+    method: "POST",
+    body: JSON.stringify({
+      base_tree: postCommit.tree.sha,
+      tree: treeItems,
+    }),
+  });
+
+  if (!treeOk) return { restored: false, newSha: null };
+
+  // Create a commit with the restored files
+  const { ok: commitOk, data: fixCommit } = await ghFetch(`/git/commits`, {
+    method: "POST",
+    body: JSON.stringify({
+      message: `fix: restore protected files deleted by merge`,
+      tree: newTree.sha,
+      parents: [postMergeSha],
+    }),
+  });
+
+  if (!commitOk) return { restored: false, newSha: null };
+
+  // Update main ref
+  const { ok: updateOk } = await ghFetch(`/git/refs/heads/main`, {
+    method: "PATCH",
+    body: JSON.stringify({ sha: fixCommit.sha, force: false }),
+  });
+
+  if (!updateOk) return { restored: false, newSha: null };
+
+  steps.push(`✅ Restored ${treeItems.length} protected file(s)`);
+  return { restored: true, newSha: fixCommit.sha };
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // GET: Fetch branches + latest commit info on main
 // API calls: 1 (branches) + 1 (latest commit) = 2 total
@@ -162,6 +257,10 @@ export async function POST(request) {
         );
       }
 
+      // Get current main SHA before merge (for protected file restoration)
+      const { data: preMergeRef } = await ghFetch(`/git/ref/heads/main`);
+      const preMergeSha = preMergeRef?.object?.sha;
+
       // Try normal merge first (1 API call)
       const mergeRes = await ghFetch("/merges", {
         method: "POST",
@@ -176,6 +275,12 @@ export async function POST(request) {
       if (mergeRes.ok && mergeRes.status === 201) {
         steps.push(`Merge ${safeBranch} into main: OK`);
         steps.push(`Commit: ${mergeRes.data?.sha?.slice(0, 8)}`);
+
+        // Auto-protect: restore any protected files deleted by the merge
+        if (preMergeSha) {
+          await restoreProtectedFiles(preMergeSha, steps);
+        }
+
         steps.push("Pushed to main — Vercel deployment triggered");
         return NextResponse.json({
           success: true,
@@ -271,6 +376,12 @@ export async function POST(request) {
 
         steps.push(`Re-merged ${safeBranch} into main: OK`);
         steps.push(`Commit: ${createRes.data.sha.slice(0, 8)}`);
+
+        // Auto-protect: restore any protected files deleted by the re-merge
+        if (preMergeSha) {
+          await restoreProtectedFiles(preMergeSha, steps);
+        }
+
         steps.push("Pushed to main — Vercel deployment triggered");
 
         return NextResponse.json({
