@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useSnackbar } from "notistack";
+import Image from "next/image";
+import Link from "next/link";
 
 const GitDashboardContent = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -39,26 +41,23 @@ const GitDashboardContent = () => {
     fetchBranches();
   }, [fetchBranches]);
 
-  const handleAction = async (action, branchName) => {
-    const key = `${action}-${branchName}`;
-    setActionLoading((prev) => ({ ...prev, [key]: true }));
+  const handleCheckout = async (branchName) => {
+    setActionLoading((prev) => ({ ...prev, [branchName]: true }));
 
     try {
       const res = await fetch("/api/git-control", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action, branchName }),
+        body: JSON.stringify({ branchName }),
       });
 
       const data = await res.json();
 
       if (data.success) {
-        const message =
-          action === "checkout"
-            ? `Switched to branch: ${branchName}`
-            : `Pulled latest from: ${branchName}`;
-
-        enqueueSnackbar(message, { variant: "success" });
+        enqueueSnackbar(
+          `Checked out, pulled & merged main into: ${branchName}`,
+          { variant: "success" }
+        );
 
         if (data.currentBranch) {
           setCurrentBranch(data.currentBranch);
@@ -70,6 +69,8 @@ const GitDashboardContent = () => {
             autoHideDuration: 5000,
           });
         }
+
+        fetchBranches();
       } else {
         enqueueSnackbar(data.error || data.stderr || "Action failed", {
           variant: "error",
@@ -81,7 +82,7 @@ const GitDashboardContent = () => {
         variant: "error",
       });
     } finally {
-      setActionLoading((prev) => ({ ...prev, [key]: false }));
+      setActionLoading((prev) => ({ ...prev, [branchName]: false }));
     }
   };
 
@@ -96,21 +97,16 @@ const GitDashboardContent = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-mainColor rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-                  />
-                </svg>
-              </div>
+              <Link href="/" aria-label="Go to homepage">
+                <Image
+                  src="/logo.png"
+                  alt="Guestna Logo"
+                  width={120}
+                  height={40}
+                  className="h-10 w-auto object-contain"
+                  priority
+                />
+              </Link>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">
                   Git Dashboard
@@ -235,9 +231,7 @@ const GitDashboardContent = () => {
                 <tbody>
                   {filteredBranches.map((branch, index) => {
                     const isCurrent = branch.name === currentBranch;
-                    const checkoutLoading =
-                      actionLoading[`checkout-${branch.name}`];
-                    const pullLoading = actionLoading[`pull-${branch.name}`];
+                    const isLoading = actionLoading[branch.name];
 
                     return (
                       <tr
@@ -269,19 +263,17 @@ const GitDashboardContent = () => {
                           )}
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex items-center justify-end gap-2">
+                          <div className="flex items-center justify-end">
                             <button
-                              onClick={() =>
-                                handleAction("checkout", branch.name)
-                              }
-                              disabled={checkoutLoading || isCurrent}
+                              onClick={() => handleCheckout(branch.name)}
+                              disabled={isLoading || isCurrent}
                               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
                                 isCurrent
                                   ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                                   : "bg-mainColor text-white hover:opacity-90 disabled:opacity-50"
                               }`}
                             >
-                              {checkoutLoading ? (
+                              {isLoading ? (
                                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                               ) : (
                                 <svg
@@ -298,32 +290,7 @@ const GitDashboardContent = () => {
                                   />
                                 </svg>
                               )}
-                              Checkout
-                            </button>
-
-                            <button
-                              onClick={() => handleAction("pull", branch.name)}
-                              disabled={pullLoading}
-                              className="px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-                            >
-                              {pullLoading ? (
-                                <span className="w-4 h-4 border-2 border-gray-500 border-t-transparent rounded-full animate-spin" />
-                              ) : (
-                                <svg
-                                  className="w-4 h-4"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                                  />
-                                </svg>
-                              )}
-                              Pull
+                              Checkout & Merge
                             </button>
                           </div>
                         </td>
@@ -338,9 +305,7 @@ const GitDashboardContent = () => {
             <div className="md:hidden flex flex-col gap-3">
               {filteredBranches.map((branch, index) => {
                 const isCurrent = branch.name === currentBranch;
-                const checkoutLoading =
-                  actionLoading[`checkout-${branch.name}`];
-                const pullLoading = actionLoading[`pull-${branch.name}`];
+                const isLoading = actionLoading[branch.name];
 
                 return (
                   <div
@@ -372,33 +337,20 @@ const GitDashboardContent = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleAction("checkout", branch.name)}
-                        disabled={checkoutLoading || isCurrent}
-                        className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
-                          isCurrent
-                            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                            : "bg-mainColor text-white hover:opacity-90 disabled:opacity-50"
-                        }`}
-                      >
-                        {checkoutLoading ? (
-                          <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        ) : null}
-                        Checkout
-                      </button>
-
-                      <button
-                        onClick={() => handleAction("pull", branch.name)}
-                        disabled={pullLoading}
-                        className="flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-                      >
-                        {pullLoading ? (
-                          <span className="w-4 h-4 border-2 border-gray-500 border-t-transparent rounded-full animate-spin" />
-                        ) : null}
-                        Pull
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => handleCheckout(branch.name)}
+                      disabled={isLoading || isCurrent}
+                      className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
+                        isCurrent
+                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                          : "bg-mainColor text-white hover:opacity-90 disabled:opacity-50"
+                      }`}
+                    >
+                      {isLoading ? (
+                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : null}
+                      Checkout & Merge
+                    </button>
                   </div>
                 );
               })}

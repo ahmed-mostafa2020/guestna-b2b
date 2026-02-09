@@ -80,7 +80,7 @@ export async function GET() {
   }
 }
 
-// POST: Execute git checkout or git pull
+// POST: Checkout branch, pull, and merge with main
 export async function POST(request) {
   if (!PROJECT_PATH) {
     return NextResponse.json(
@@ -90,18 +90,11 @@ export async function POST(request) {
   }
 
   try {
-    const { action, branchName } = await request.json();
+    const { branchName } = await request.json();
 
-    if (!action || !branchName) {
+    if (!branchName) {
       return NextResponse.json(
-        { error: "Missing action or branchName" },
-        { status: 400 }
-      );
-    }
-
-    if (!["checkout", "pull"].includes(action)) {
-      return NextResponse.json(
-        { error: "Invalid action. Use 'checkout' or 'pull'" },
+        { error: "Missing branchName" },
         { status: 400 }
       );
     }
@@ -115,43 +108,110 @@ export async function POST(request) {
       );
     }
 
-    // Always fetch latest refs first
+    const steps = [];
+
+    // Step 1: Fetch latest refs
     await execAsync("git fetch --all --prune", {
       cwd: PROJECT_PATH,
       timeout: 30000,
     });
+    steps.push("Fetch: OK");
 
-    let stdout = "";
-    let stderr = "";
+    // Step 2: Stash local changes so checkout doesn't fail
+    let hasStash = false;
+    try {
+      const stashResult = await execAsync("git stash --include-untracked", {
+        cwd: PROJECT_PATH,
+        timeout: 15000,
+      });
+      hasStash = !stashResult.stdout.includes("No local changes to save");
+      steps.push(
+        hasStash ? "Stash: saved local changes" : "Stash: nothing to stash"
+      );
+    } catch {
+      steps.push("Stash: skipped");
+    }
 
-    if (action === "checkout") {
-      try {
-        // Try normal checkout (local branch exists)
-        const result = await execAsync(`git checkout ${safeBranch}`, {
-          cwd: PROJECT_PATH,
-          timeout: 30000,
-        });
-        stdout = result.stdout;
-        stderr = result.stderr;
-      } catch {
-        // Branch doesn't exist locally, create from remote
-        const result = await execAsync(
-          `git checkout -b ${safeBranch} origin/${safeBranch}`,
-          { cwd: PROJECT_PATH, timeout: 30000 }
-        );
-        stdout = result.stdout;
-        stderr = result.stderr;
-      }
-    } else if (action === "pull") {
-      const result = await execAsync(`git pull origin ${safeBranch}`, {
+    // Step 3: Checkout the branch
+    try {
+      const checkoutResult = await execAsync(`git checkout ${safeBranch}`, {
+        cwd: PROJECT_PATH,
+        timeout: 30000,
+      });
+      steps.push(
+        `Checkout: ${checkoutResult.stdout.trim() || checkoutResult.stderr.trim() || "OK"}`
+      );
+    } catch {
+      // Branch doesn't exist locally, create from remote
+      const checkoutResult = await execAsync(
+        `git checkout -b ${safeBranch} origin/${safeBranch}`,
+        { cwd: PROJECT_PATH, timeout: 30000 }
+      );
+      steps.push(
+        `Checkout (new): ${checkoutResult.stdout.trim() || checkoutResult.stderr.trim() || "OK"}`
+      );
+    }
+
+    // Step 4: Pull latest for this branch
+    try {
+      const pullResult = await execAsync(`git pull origin ${safeBranch}`, {
         cwd: PROJECT_PATH,
         timeout: 60000,
       });
-      stdout = result.stdout;
-      stderr = result.stderr;
+      steps.push(`Pull: ${pullResult.stdout.trim() || "OK"}`);
+    } catch (pullError) {
+      steps.push(
+        `Pull warning: ${pullError.stderr?.trim() || pullError.message}`
+      );
     }
 
-    // Get updated current branch after action
+    // Step 5: Merge main into this branch
+    try {
+      const mergeResult = await execAsync("git merge origin/main --no-edit", {
+        cwd: PROJECT_PATH,
+        timeout: 60000,
+      });
+      steps.push(`Merge main: ${mergeResult.stdout.trim() || "OK"}`);
+    } catch (mergeError) {
+      // Abort merge on conflict so the repo isn't left in a broken state
+      try {
+        await execAsync("git merge --abort", { cwd: PROJECT_PATH });
+      } catch {
+        // ignore abort errors
+      }
+      // Re-apply stash even on merge failure
+      if (hasStash) {
+        try {
+          await execAsync("git stash pop", {
+            cwd: PROJECT_PATH,
+            timeout: 15000,
+          });
+        } catch {
+          steps.push("Stash pop: failed — run 'git stash pop' manually");
+        }
+      }
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Merge conflict with main. Merge was aborted.",
+          stderr: mergeError.stderr?.trim() || mergeError.message,
+          steps,
+        },
+        { status: 409 }
+      );
+    }
+
+    // Step 6: Re-apply stashed changes
+    if (hasStash) {
+      try {
+        await execAsync("git stash pop", { cwd: PROJECT_PATH, timeout: 15000 });
+        steps.push("Stash pop: restored local changes");
+      } catch {
+        steps.push("Stash pop: conflict — run 'git stash pop' manually");
+      }
+    }
+
+    // Get updated current branch
     let currentBranch = "";
     try {
       const result = await execAsync("git rev-parse --abbrev-ref HEAD", {
@@ -164,10 +224,8 @@ export async function POST(request) {
 
     return NextResponse.json({
       success: true,
-      action,
       branch: safeBranch,
-      stdout: stdout.trim(),
-      stderr: stderr.trim(),
+      stdout: steps.join("\n"),
       currentBranch,
     });
   } catch (error) {
