@@ -58,8 +58,11 @@ const ActionsDropdownMenu = ({
     [hasElement]
   );
 
-  /* ================= Status Logic ================= */
- 
+  const canRejectTrip = useMemo(
+    () =>
+      hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REJECT_TRIP),
+    [hasElement]
+  );
 
   const canApproveTrip = useMemo(
     () =>
@@ -88,12 +91,13 @@ const ActionsDropdownMenu = ({
         TRIP_STATUS.CANCELLED,
         TRIP_STATUS.REJECTED,
         TRIP_STATUS.ENDED,
+        TRIP_STATUS.ON_HOLD,
         TRIP_STATUS.SCHEDULED,
       ].includes(booking.status),
     [booking.status, isCustomType]
   );
 
-  const hasDetails = useMemo(
+  const hasCustomDetails = useMemo(
     () =>
       isCustomType &&
       [TRIP_STATUS.PENDING, TRIP_STATUS.PENDING_COMPANY_APPROVAL].includes(
@@ -157,13 +161,9 @@ const ActionsDropdownMenu = ({
     [booking]
   );
 
-  const hasApproval = useMemo(
-    () => bookingStatus === TRIP_STATUS.ON_HOLD,
-    [bookingStatus]
-  );
-
-  const hasRejection = useMemo(
+  const hasCustomTripRejection = useMemo(
     () =>
+      isCustomTripType &&
       ![
         TRIP_STATUS.DONE,
         TRIP_STATUS.REJECTED,
@@ -175,6 +175,7 @@ const ActionsDropdownMenu = ({
     [booking.status, isCustomTripType]
   );
 
+  /* ================= Combined Menu Items Logic ================= */
   const hasAnyMenuItems = useMemo(
     () =>
       // CUSTOM menu items
@@ -191,14 +192,22 @@ const ActionsDropdownMenu = ({
       (canRejectTrip && hasCustomTripRejection && openRejectModal),
     [
       canShowDetails,
-      hasDetails,
+      hasCustomDetails,
       canRemindGuestna,
-      isEditable,
+      isCustomEditable,
       canUpdateTrip,
-      hasApproval,
+      canApproveTrip,
+      hasCustomApproval,
       openApproveModal,
-      hasRejection,
+      canRejectTrip,
+      hasCustomRejection,
       openRejectModal,
+      hasCustomTripDetails,
+      openDetailsModal,
+      isCustomTripEditable,
+      openEditModal,
+      hasCustomTripApproval,
+      hasCustomTripRejection,
     ]
   );
 
@@ -283,7 +292,6 @@ const ActionsDropdownMenu = ({
 
   if (!hasAnyMenuItems) return null;
 
-  
   return (
     <>
       <Button
@@ -305,7 +313,8 @@ const ActionsDropdownMenu = ({
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        {canShowDetails && hasDetails && (
+        {/* Show Details - CUSTOM goes to page, CUSTOM_TRIP opens modal */}
+        {canShowDetails && hasCustomDetails && (
           <MenuItem
             component={Link}
             href={`/${locale}/profile/bookings-management/orders/${booking.orderId}`}
@@ -347,24 +356,17 @@ const ActionsDropdownMenu = ({
           </MenuItem>
         )}
 
-        {canUpdateTrip && isEditable && (
-          <MenuItem
-            onClick={() => {
-              handleClose();
-              openEditModal?.(bookingId);
-            }}
-            className="!font-somar"
-          >
+        {/* Edit - Both CUSTOM and CUSTOM_TRIP (with different forms) */}
+        {canUpdateTrip && (isCustomEditable || isCustomTripEditable) && (
+          <MenuItem onClick={handleEdit} className="!font-somar">
             {t("links.edit")}
           </MenuItem>
         )}
 
-        {hasApproval && openApproveModal && (
+        {/* Approve - Both CUSTOM and CUSTOM_TRIP (shared form) */}
+        {(hasCustomApproval || hasCustomTripApproval) && openApproveModal && (
           <MenuItem
-            onClick={() => {
-              handleClose();
-              openApproveModal(_id);
-            }}
+            onClick={handleApprove}
             sx={{ color: "success.main" }}
             className="!font-somar"
           >
@@ -372,12 +374,10 @@ const ActionsDropdownMenu = ({
           </MenuItem>
         )}
 
-        {hasRejection && openRejectModal && (
+        {/* Reject - Both CUSTOM and CUSTOM_TRIP (shared form) */}
+        {(hasCustomRejection || hasCustomTripRejection) && openRejectModal && (
           <MenuItem
-            onClick={() => {
-              handleClose();
-              openRejectModal(_id);
-            }}
+            onClick={handleReject}
             sx={{ color: "error.main" }}
             className="!font-somar"
           >
