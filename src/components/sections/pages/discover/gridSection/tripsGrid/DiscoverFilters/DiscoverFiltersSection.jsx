@@ -209,14 +209,15 @@ const DiscoverFiltersSection = () => {
             size="small"
             className="w-full md:w-72"
             value={searchTerm || ""}
-            onChange={(e) => handleSearchChange(e.target.value)}
             onKeyDown={(e) =>
-              e.key === "Enter" && handleSearchChange(searchTerm)
+              e.key === "Enter" && handleSearchChange(e.target.value)
             }
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <IconButton onClick={() => handleSearchChange(searchTerm)}>
+                  <IconButton
+                    onClick={(e) => handleSearchChange(e.target.value)}
+                  >
                     {searchBarIcon}
                   </IconButton>
                 </InputAdornment>
@@ -225,9 +226,7 @@ const DiscoverFiltersSection = () => {
           />
 
           {!!searchTerm && (
-            <IconButton onClick={handleClear}>
-              {wrongIcon}
-            </IconButton>
+            <IconButton onClick={handleClear}>{wrongIcon}</IconButton>
           )}
         </Grid>
 
