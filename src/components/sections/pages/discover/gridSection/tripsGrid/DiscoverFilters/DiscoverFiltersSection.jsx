@@ -230,7 +230,6 @@ const DiscoverFiltersSection = () => {
             onChange={handleSearchChange}
             onKeyDown={handleSearchKeyDown}
             placeholder={t("links.search")}
-           
             slotProps={{
               input: {
                 startAdornment: (
