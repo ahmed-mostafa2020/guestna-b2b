@@ -37,6 +37,7 @@ import {
   setCustomLogo,
   setTheme,
 } from "@store/theme/themeSlice";
+import { useSearchParams } from "next/navigation";
 
 const TripDetails = ({ params }) => {
   const locale = useLocale();
@@ -49,7 +50,9 @@ const TripDetails = ({ params }) => {
     }
     return null;
   });
-
+  const searchParams = useSearchParams();
+  const onlyDetails = Boolean(searchParams.get("onlyDetails"));
+  console.log(onlyDetails, "onlyDetails");
   useEffect(() => {
     dispatch(setColorPreferences(null));
     dispatch(setCustomLogo(null));
@@ -191,7 +194,8 @@ const TripDetails = ({ params }) => {
         </>
       )}
 
-      {tripData?.availableSeats > 0 &&
+      {!onlyDetails &&
+        tripData?.availableSeats > 0 &&
         tripData?.status === TRIP_STATUS.PENDING &&
         isBookingAvailable && (
           <RegisterStudentForm
