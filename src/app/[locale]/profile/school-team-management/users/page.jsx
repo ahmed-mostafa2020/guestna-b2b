@@ -115,7 +115,7 @@ const UsersPage = () => {
           <UsersInfoCardsListing data={data} />
         )}
 
-        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_PRINT_REPORT) &&
+        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_PRINTREPORT) &&
           tableData?.length > 0 && (
             <div className="flex justify-end mt-2">
               <button

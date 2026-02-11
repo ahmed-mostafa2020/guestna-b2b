@@ -3,7 +3,6 @@
 import React, { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 
-import { usePermissions } from "@hooks/usePermissions";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
 import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
@@ -14,7 +13,6 @@ import FiltringTripsByStatus from "@components/sections/pages/profile/boookings-
 import BookingsFilters from "@components/forms/bookings/BookingsFilters";
 
 const BookingsPage = () => {
-  const { hasElement } = usePermissions();
   const t = useTranslations();
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [filter, setFilter] = useState({});
@@ -65,14 +63,10 @@ const BookingsPage = () => {
       requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_BOOKINGS_PAGE}
     >
       <div className="flex flex-col gap-4 lg:gap-6">
-        {hasElement(
-          PERMISSIONS.ELEMENT.B2B_PROFILE_BOOKINGS_TRIPS_STATUS_TABS
-        ) && (
-          <FiltringTripsByStatus
-            onStatusChange={handleStatusChange}
-            activeStatus={selectedStatus || "ALL"}
-          />
-        )}
+        <FiltringTripsByStatus
+          onStatusChange={handleStatusChange}
+          activeStatus={selectedStatus || "ALL"}
+        />
 
         {/* Filters Section */}
         <BookingsFilters filter={filter} setFilter={setFilter} />

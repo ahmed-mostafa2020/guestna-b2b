@@ -103,7 +103,7 @@ const TransactionsFilters = ({ filter, setFilter }) => {
 
         {/* Action Buttons */}
         {hasElement(
-          PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_PRINT_REPORT
+          PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_PRINTREPORT
         ) && (
           <div className="flex gap-3">
             <button

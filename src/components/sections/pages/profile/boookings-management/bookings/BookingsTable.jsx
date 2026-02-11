@@ -107,7 +107,7 @@ const BookingsTable = ({
 
                   {hasElement(
                     PERMISSIONS.ELEMENT
-                      .B2B_PROFILE_BOOKINGS_SHOW_TRIP_DETAILS_BUTTON
+                      .B2B_PROFILE_BOOKINGS_SHOWTRIPDETAILS_BUTTON
                   ) && (
                     <th className="px-4 py-4 font-semibold text-start whitespace-nowrap">
                       {t("profile.tables.bookings.header.actions")}
@@ -210,7 +210,7 @@ const BookingsTable = ({
                     {/* Actions */}
                     {hasElement(
                       PERMISSIONS.ELEMENT
-                        .B2B_PROFILE_BOOKINGS_SHOW_TRIP_DETAILS_BUTTON
+                        .B2B_PROFILE_BOOKINGS_SHOWTRIPDETAILS_BUTTON
                     ) && (
                       <td className="px-4 py-4">
                         <ActionsDropdownMenu booking={booking} />
@@ -257,7 +257,7 @@ const BookingsTable = ({
                   </th>
                   {hasElement(
                     PERMISSIONS.ELEMENT
-                      .B2B_PROFILE_BOOKINGS_SHOW_TRIP_DETAILS_BUTTON
+                      .B2B_PROFILE_BOOKINGS_SHOWTRIPDETAILS_BUTTON
                   ) && (
                     <th className="px-3 py-3 font-semibold text-start text-sm">
                       {t("profile.tables.bookings.header.actions")}
@@ -294,7 +294,7 @@ const BookingsTable = ({
                     </td>
                     {hasElement(
                       PERMISSIONS.ELEMENT
-                        .B2B_PROFILE_BOOKINGS_SHOW_TRIP_DETAILS_BUTTON
+                        .B2B_PROFILE_BOOKINGS_SHOWTRIPDETAILS_BUTTON
                     ) && (
                       <td className="px-3 py-3">
                         <ActionsDropdownMenu booking={booking} />
@@ -329,7 +329,7 @@ const BookingsTable = ({
                 </span>
                 {hasElement(
                   PERMISSIONS.ELEMENT
-                    .B2B_PROFILE_BOOKINGS_SHOW_TRIP_DETAILS_BUTTON
+                    .B2B_PROFILE_BOOKINGS_SHOWTRIPDETAILS_BUTTON
                 ) && <ActionsDropdownMenu booking={booking} />}
               </div>
 

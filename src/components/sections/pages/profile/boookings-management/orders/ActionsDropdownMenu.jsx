@@ -42,7 +42,7 @@ const ActionsDropdownMenu = ({
   /* ================= Permissions ================= */
   const canShowDetails = useMemo(
     () =>
-      hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOW_DETAILS),
+      hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOWDETAILS),
     [hasElement]
   );
 
@@ -56,7 +56,7 @@ const ActionsDropdownMenu = ({
 
   const canUpdateTrip = useMemo(
     () =>
-      hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_UPDATE_TRIP),
+      hasElement(PERMISSIONS.ELEMENT.B2B_PROFIEL_ORDER_MANAGEMENT_UPDATE_TRIP),
     [hasElement]
   );
 
