@@ -141,18 +141,16 @@ const ActionsDropdownMenu = ({
   );
 
   const hasCustomTripDetails = useMemo(
-    () => isCustomTripType, // CUSTOM_TRIP can always show details in modal
-    [isCustomTripType]
+    () =>
+      isCustomTripType &&
+      [TRIP_STATUS.PENDING, TRIP_STATUS.PENDING_COMPANY_APPROVAL].includes(
+        booking.status
+      ), // CUSTOM_TRIP can always show details in modal
+    [isCustomTripType, booking]
   );
 
   const hasCustomTripApproval = useMemo(
-    () =>
-      isCustomTripType &&
-      [
-        TRIP_STATUS.PENDING,
-        TRIP_STATUS.PENDING_COMPANY_APPROVAL,
-        TRIP_STATUS.ON_HOLD,
-      ].includes(booking.status),
+    () => isCustomTripType && [TRIP_STATUS.ON_HOLD].includes(booking.status),
     [booking.status, isCustomTripType]
   );
 
