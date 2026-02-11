@@ -92,7 +92,10 @@ module.exports = {
         profile: "4px 4px 16px 0 rgba(0, 0, 0, 0.08)",
         navigationDropdown: "0 4px 4px 0 rgba(0, 0, 0, 0.02)",
       },
-     
+      backgroundImage: {
+        "activities-market-gradient":
+          "linear-gradient(to bottom, rgba(120, 223, 255, 0.60) 9.28%, rgba(0, 129, 169, 0.60) 55.56%)",
+      },
       fontFamily: {
         somar: ["var(--font-somar-sans)", "sans-serif"],
         ibm: ["IBM Plex Sans Arabic", "sans-serif"],

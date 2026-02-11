@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback, useEffect, useMemo } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import {
@@ -17,8 +17,6 @@ import { searchBarIcon, wrongIcon } from "@/src/assets/svg";
 const EXCLUDED_URL_PARAMS = ["page"];
 
 const DiscoverFiltersSection = () => {
-  // get as a prop searchTerm from the parent component
-
   const dispatch = useDispatch();
   const t = useTranslations();
   const router = useRouter();
@@ -37,6 +35,13 @@ const DiscoverFiltersSection = () => {
     (state) => state.discoverData,
     shallowEqual
   );
+
+  const [searchValue, setSearchValue] = useState(searchTerm);
+
+  // Sync local search value with Redux state
+  useEffect(() => {
+    setSearchValue(searchTerm);
+  }, [searchTerm]);
 
   // ======================
   // URL → Redux Sync
@@ -88,7 +93,7 @@ const DiscoverFiltersSection = () => {
         scroll: false,
       });
     },
-    [dispatch, router, pathname, searchParams]
+    [router, pathname, searchParams]
   );
 
   const mapOptions = useCallback(
@@ -124,15 +129,28 @@ const DiscoverFiltersSection = () => {
     [dispatch, filter, updateUrl]
   );
 
-  const handleSearchChange = useCallback(
-    (value) => {
-      dispatch(setSearchTerm(value));
-      updateUrl("searchTerm", value ? [value] : []);
+  const handleSearchSubmit = useCallback(() => {
+    const trimmedValue = searchValue.trim();
+    dispatch(setSearchTerm(trimmedValue));
+    updateUrl("searchTerm", trimmedValue ? [trimmedValue] : []);
+  }, [searchValue, dispatch, updateUrl]);
+
+  const handleSearchChange = useCallback((e) => {
+    setSearchValue(e.target.value);
+  }, []);
+
+  const handleSearchKeyDown = useCallback(
+    (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleSearchSubmit();
+      }
     },
-    [dispatch, updateUrl]
+    [handleSearchSubmit]
   );
 
   const handleClear = useCallback(() => {
+    setSearchValue("");
     dispatch(setSearchTerm(""));
     updateUrl("searchTerm", []);
   }, [dispatch, updateUrl]);
@@ -204,29 +222,35 @@ const DiscoverFiltersSection = () => {
           </span>
         </Grid>
 
-        <Grid item md={3} xs={12}>
+        <Grid item md={3} xs={12} className="flex items-center justify-between">
           <TextField
             size="small"
             className="w-full md:w-72"
-            value={searchTerm || ""}
-            onKeyDown={(e) =>
-              e.key === "Enter" && handleSearchChange(e.target.value)
-            }
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconButton
-                    onClick={(e) => handleSearchChange(e.target.value)}
-                  >
-                    {searchBarIcon}
-                  </IconButton>
-                </InputAdornment>
-              ),
+            value={searchValue || ""}
+            onChange={handleSearchChange}
+            onKeyDown={handleSearchKeyDown}
+            placeholder={t("links.search")}
+           
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <IconButton
+                      className="!me-2"
+                      onClick={handleSearchSubmit}
+                      edge="start"
+                    >
+                      {searchBarIcon}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
             }}
           />
-
-          {!!searchTerm && (
-            <IconButton onClick={handleClear}>{wrongIcon}</IconButton>
+          {searchTerm && (
+            <IconButton onClick={handleClear} edge="end" size="small">
+              {wrongIcon}
+            </IconButton>
           )}
         </Grid>
 
