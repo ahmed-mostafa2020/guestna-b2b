@@ -51,6 +51,7 @@ import {
 import { useSnackbar } from "notistack";
 
 import axios from "axios";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 import hello from "@assets/gif/hello.gif";
 
@@ -265,6 +266,7 @@ const RolesLoginForm = () => {
                   <Link
                     href={`/${locale}/forget-password`}
                     className="text-sm transition-all duration-200 ease-in-out border-b text-titleColor font-ibm border-titleColor hover:border-linksHover hover:text-linksHover w-fit"
+                    {...getGtmTag(GTM_TAGS.AUTH.FORGOT_PASSWORD, "auth")}
                   >
                     {t("forms.auth.forgetPassword.name")}
                   </Link>
@@ -279,6 +281,7 @@ const RolesLoginForm = () => {
                   className={`centered gap-2 w-full py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                     isValid && "hover:bg-linksHover hover:border-linksHover"
                   }`}
+                  {...getGtmTag(GTM_TAGS.AUTH.LOGIN_BUTTON, "auth")}
                 >
                   {isSubmitting ? (
                     <>

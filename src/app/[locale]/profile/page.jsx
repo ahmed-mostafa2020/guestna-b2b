@@ -170,12 +170,14 @@ const Profile = () => {
           />
         )}
 
-        <OrganizationsSection
-          organizationsData={organizationsData}
-          organizationsLoading={organizationsLoading}
-          searchTerm={organizationsSearchTerm}
-          setSearchTerm={setOrganizationsSearchTerm}
-        />
+        {hasElement(PERMISSIONS.PAGE.B2B_PROFILE_SCHOOLS_PAGE) && (
+          <OrganizationsSection
+            organizationsData={organizationsData}
+            organizationsLoading={organizationsLoading}
+            searchTerm={organizationsSearchTerm}
+            setSearchTerm={setOrganizationsSearchTerm}
+          />
+        )}
       </main>
     </ProtectedProfilePage>
   );

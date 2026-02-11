@@ -19,7 +19,7 @@ import { useExcel } from "@hooks/useExcel";
 import { usersListHeaders } from "@constants/excelHeaders";
 
 const UsersPage = () => {
-  const { hasElement } = usePermissions();
+  const { hasElement, getGtmProps } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
   const [searchTerm, setSearchTerm] = useState("");
@@ -121,6 +121,9 @@ const UsersPage = () => {
               <button
                 onClick={() => handleExportToExcel()}
                 className="bg-mainColor rounded-lg text-white font-medium font-somar hover:bg-linksHover px-8 py-2"
+                {...getGtmProps(
+                  PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_PRINTREPORT
+                )}
               >
                 {t("profile.tables.orders.bookingDetails.printReport")}
               </button>

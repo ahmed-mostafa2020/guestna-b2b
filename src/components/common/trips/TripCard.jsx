@@ -71,8 +71,8 @@ const TripCard = ({ activityCard, imageWidth = 300 }) => {
         {activityCard.tripsType === CONSTANT_VALUES.PACKAGE
           ? t("common.multiDaysTrip")
           : activityCard.tripsType === CONSTANT_VALUES.ACTIVITY
-          ? t("common.oneDayTrip")
-          : t("common.halfDayTrip")}
+            ? t("common.oneDayTrip")
+            : t("common.halfDayTrip")}
       </p>
 
       <ImageWithPlaceholder
@@ -157,7 +157,11 @@ const TripCard = ({ activityCard, imageWidth = 300 }) => {
           <Link
             href={`/${locale}/discover/${activityCard.slug}`}
             className="px-6 text-center py-3 capitalize rounded-[10px] text-white bg-mainColor border-2 border-mainColor font-medium text-base transition-all ease-in-out duration-200 hover:bg-linksHover hover:border-linksHover mx-auto "
-            {...getGtmTag(GTM_TAGS.TRIPS.VIEW_DETAILS, "trips")}
+            {...getGtmTag(
+              GTM_TAGS.TRIPS.VIEW_DETAILS,
+              "trips",
+              activityCard.slug
+            )}
           >
             {t("links.viewTripDetails")}
           </Link>

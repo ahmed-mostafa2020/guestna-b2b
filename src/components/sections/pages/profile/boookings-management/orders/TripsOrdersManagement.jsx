@@ -20,7 +20,7 @@ import { CircularProgress } from "@mui/material";
 import { activitiesOrdersManagementIcon } from "@assets/svg";
 
 const TripsOrdersManagement = () => {
-  const { hasElement } = usePermissions();
+  const { hasElement, getGtmProps } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
   const queryClient = useQueryClient();
@@ -100,6 +100,10 @@ const TripsOrdersManagement = () => {
                 onClick={handleRequestNewActivity}
                 disabled={loading}
                 className="flex font-medium text-sm lg:text-xl items-center gap-2 rounded-lg text-white bg-mainColor p-4 hover:bg-titleColor transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+                {...getGtmProps(
+                  PERMISSIONS.ELEMENT
+                    .B2B_PROFIEL_ORDER_MANAGEMENT_CREATE_NEWTRIP
+                )}
               >
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-white text-mainColor font-bold">
                   {loading ? <CircularProgress size={20} /> : "+"}

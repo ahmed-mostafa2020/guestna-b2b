@@ -7,6 +7,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
 import CustomizedModal from "@components/common/customizedModal";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const TermsModal = ({ open, handleClose }) => {
   const t = useTranslations();
@@ -104,6 +105,7 @@ const TermsModal = ({ open, handleClose }) => {
             onClick={handleClose}
             disabled={isDownloading}
             className="px-6 py-3 text-base font-semibold text-mainColor bg-white border-2 border-mainColor rounded-lg hover:bg-gray-50 transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+            {...getGtmTag(GTM_TAGS.MODAL.CANCEL, "modal")}
           >
             {t("links.cancel")}
           </button>
@@ -111,6 +113,7 @@ const TermsModal = ({ open, handleClose }) => {
             onClick={handleDownloadPdf}
             disabled={isDownloading}
             className="px-6 py-3 text-base font-semibold text-white bg-mainColor border-2 border-mainColor rounded-lg hover:bg-linksHover hover:border-linksHover transition-all duration-200 ease-in-out disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
+            {...getGtmTag(GTM_TAGS.BOOKINGS.DOWNLOAD_TERMS, "bookings")}
           >
             {isDownloading && (
               <CircularProgress size={18} className="!text-white" />

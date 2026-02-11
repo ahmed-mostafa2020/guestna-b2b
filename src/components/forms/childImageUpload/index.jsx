@@ -16,6 +16,7 @@ import FileUploadGroup from "../FileUploadGroup";
 import SelectionGroup from "../SelectionGroup";
 import TextInputGroup from "../TextInputGroup";
 import { CircularProgress } from "@mui/material";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const ChildImageUploadForm = ({ clientId, childId }) => {
   const locale = useLocale();
@@ -350,6 +351,7 @@ const ChildImageUploadForm = ({ clientId, childId }) => {
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                       : "bg-mainColor text-white hover:bg-linksHover focus:ring-2 focus:ring-mainColor focus:ring-offset-2"
                   }`}
+                  {...getGtmTag(GTM_TAGS.FORMS.SUBMIT, "forms")}
                 >
                   {isSubmitting ? (
                     <div className="flex items-center gap-2">

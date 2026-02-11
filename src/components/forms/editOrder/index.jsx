@@ -13,6 +13,7 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
 import FileUploadGroup from "../FileUploadGroup";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const EditOrderForm = ({
   orderDetails,
@@ -521,6 +522,7 @@ const EditOrderForm = ({
                       type="submit"
                       disabled={isSubmitting || !isValid || !hasChanges}
                       className="px-6 py-3 text-white bg-mainColor rounded-lg hover:bg-titleColor disabled:opacity-50"
+                      {...getGtmTag(GTM_TAGS.ORDERS.UPDATE, "orders")}
                     >
                       {isSubmitting ? (
                         <div className="flex items-center gap-2">
@@ -536,6 +538,7 @@ const EditOrderForm = ({
                       onClick={onClose}
                       disabled={isSubmitting}
                       className="px-6 py-3 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+                      {...getGtmTag(GTM_TAGS.FORMS.CANCEL, "forms")}
                     >
                       {t("links.cancel")}
                     </button>

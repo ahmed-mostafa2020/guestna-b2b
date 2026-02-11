@@ -151,7 +151,8 @@ const FavoriteButton = ({
             localFavoriteState
               ? "trips_remove_from_favorites"
               : GTM_TAGS.TRIPS.ADD_TO_FAVORITES,
-            "trips"
+            "trips",
+            tripId
           )}
         >
           {loading ? (
@@ -175,7 +176,8 @@ const FavoriteButton = ({
             localFavoriteState
               ? "trips_remove_from_favorites"
               : GTM_TAGS.TRIPS.ADD_TO_FAVORITES,
-            "trips"
+            "trips",
+            tripId
           )}
         >
           {loading ? (

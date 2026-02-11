@@ -11,6 +11,7 @@ import ErrorComponent from "@feedback/error/ErrorComponent";
 import Pagination from "@components/common/Pagination";
 import { actionsIcon } from "@assets/svg";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 import OrdersTableFilter from "./OrdersTableFilter";
 
 const getStatusInfo = (tripsCount, maximumNumberTrips, t) => {
@@ -41,7 +42,7 @@ const OrdersSettingsTable = () => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const[filter,setFilter]=useState({})
+  const [filter, setFilter] = useState({});
 
   // Handle opening edit modal
   const handleEditClick = useCallback((item) => {
@@ -66,7 +67,11 @@ const OrdersSettingsTable = () => {
     { page: currentPage, perPage: CONSTANT_VALUES.TABLE_PER_PAGE },
     {
       method: "POST",
-      body: { page: currentPage, perPage: CONSTANT_VALUES.TABLE_PER_PAGE ,filter},
+      body: {
+        page: currentPage,
+        perPage: CONSTANT_VALUES.TABLE_PER_PAGE,
+        filter,
+      },
       lang: locale,
     }
   );
@@ -89,7 +94,6 @@ const OrdersSettingsTable = () => {
     <div className="flex flex-col gap-4 w-full bg-white rounded-2xl py-4 px-3 shadow-card">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4 lg:mb-8">
-        
         <div className="flex justify-between items-center w-full">
           <h2 className="text-lg font-medium lg:text-2xl !mb-4 !lg:mb-8 text-mainColor">
             {t("profile.tables.orders.settingsTable.title")}
@@ -203,6 +207,11 @@ const OrdersSettingsTable = () => {
                             onClick={() => handleEditClick(item)}
                             className="p-2 text-mainColor hover:bg-mainColor/10 rounded-lg transition-colors"
                             title={t("links.edit")}
+                            {...getGtmTag(
+                              GTM_TAGS.ORDERS.EDIT_SETTINGS,
+                              "orders",
+                              item._id
+                            )}
                           >
                             {actionsIcon}
                           </button>
@@ -304,7 +313,14 @@ const OrdersSettingsTable = () => {
                         {t("links.edit")}
                       </span>
 
-                      <button onClick={() => handleEditClick(item)}>
+                      <button
+                        onClick={() => handleEditClick(item)}
+                        {...getGtmTag(
+                          GTM_TAGS.ORDERS.EDIT_SETTINGS,
+                          "orders",
+                          item._id
+                        )}
+                      >
                         {actionsIcon}
                       </button>
                     </div>

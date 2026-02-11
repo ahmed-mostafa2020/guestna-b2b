@@ -191,8 +191,8 @@ const UsersInfo = ({
       )}
 
       {/* ACTION BUTTONS */}
-      {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_ADD_USER) && (
-        <Box className="flex flex-col sm:flex-row justify-center gap-3">
+      <Box className="flex flex-col sm:flex-row justify-center gap-3">
+        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_ADD_USER) && (
           <button
             onClick={openAddModal}
             disabled={addLoading}
@@ -204,23 +204,22 @@ const UsersInfo = ({
             )}
             {t("profile.schools_users.add_new_user")}
           </button>
+        )}
 
+        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_UPLOAD_USER) && (
           <button
             onClick={openBulkModal}
             disabled={bulkLoading}
             className="flex w-full items-center justify-center gap-2.5 py-4 px-6 font-bold text-mainColor rounded-lg border-2 border-mainColor hover:border-linksHover  hover:text-linksHover"
-            {...getGtmProps(
-              PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_ADD_USER,
-              "users_bulk"
-            )}
+            {...getGtmProps(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_UPLOAD_USER)}
           >
             {bulkLoading && (
               <CircularProgress size={20} className="!text-mainColor" />
             )}
             {t("profile.schools_users.bulk_import_users")}
           </button>
-        </Box>
-      )}
+        )}
+      </Box>
 
       {/* ADD USER MODAL */}
       <CustomizedModal

@@ -8,18 +8,27 @@
  * Use by spreading the returned object onto any interactive element
  * @param {string} tagName - Tag name for GTM tracking (e.g., "login_button", "add_to_cart")
  * @param {string} category - Optional category for grouping (e.g., "auth", "cart", "profile")
- * @returns {Object} Object with data-gtm and data-gtm-category attributes
+ * @param {string} uniqueId - Optional unique identifier for list items (e.g., slug, id, name)
+ * @returns {Object} Object with data-gtm, data-gtm-category, and optionally data-gtm-id attributes
  * @example
  * <button {...getGtmTag("login_button", "auth")}>Login</button>
  * // Output: <button data-gtm="login_button" data-gtm-category="auth">Login</button>
+ * <Link {...getGtmTag("schools_view_details", "schools", school.slug)}>View</Link>
+ * // Output: <a data-gtm="schools_view_details" data-gtm-category="schools" data-gtm-id="school-slug">View</a>
  */
-export const getGtmTag = (tagName, category = "general") => {
+export const getGtmTag = (tagName, category = "general", uniqueId) => {
   if (!tagName) return {};
 
-  return {
+  const attrs = {
     "data-gtm": tagName,
     "data-gtm-category": category,
   };
+
+  if (uniqueId) {
+    attrs["data-gtm-id"] = uniqueId;
+  }
+
+  return attrs;
 };
 
 /**
@@ -66,6 +75,8 @@ export const GTM_TAGS = {
     BOOK_NOW: "trips_book_now",
     SHARE: "trips_share",
     DOWNLOAD_GALLERY: "trips_download_gallery",
+    MANAGEMENT: "trips_management",
+    SHOW_ALL_IMAGES: "trips_show_all_images",
   },
   // Bookings
   BOOKINGS: {
@@ -74,6 +85,8 @@ export const GTM_TAGS = {
     RESEND_BOOKING: "bookings_resend_booking",
     CANCEL: "bookings_cancel",
     EXPORT_STUDENTS: "bookings_export_students",
+    ADMINISTRATIVE_COMMENT: "bookings_administrative_comment",
+    DOWNLOAD_TERMS: "bookings_download_terms",
   },
   // Orders
   ORDERS: {
@@ -81,6 +94,9 @@ export const GTM_TAGS = {
     VIEW_DETAILS: "orders_view_details",
     UPDATE: "orders_update",
     REMIND_GUESTNA: "orders_remind_guestna",
+    APPROVE: "orders_approve",
+    REJECT: "orders_reject",
+    EDIT_SETTINGS: "orders_edit_settings",
   },
   // Users/Roles
   USERS: {
@@ -89,6 +105,7 @@ export const GTM_TAGS = {
     EDIT: "users_edit",
     DELETE: "users_delete",
     EDIT_PERMISSIONS: "users_edit_permissions",
+    SHOW_MORE: "users_show_more",
   },
   ROLES: {
     ADD_ROLE: "roles_add_role",
@@ -148,6 +165,15 @@ export const GTM_TAGS = {
     LOGIN_POPUP: "trip_details_login_popup",
     CONTINUE_GUEST: "trip_details_continue_guest",
   },
+  // Schools
+  SCHOOLS: {
+    VIEW_DETAILS: "schools_view_details",
+  },
+  // Students
+  STUDENTS: {
+    PRINT_INVOICE: "students_print_invoice",
+    RESEND_BOOKING: "students_resend_booking",
+  },
   // Customization
   CUSTOMIZATION: {
     ADD_ACTIVITY: "customization_add_activity",
@@ -165,3 +191,16 @@ export const GTM_TAGS = {
 };
 
 export default getGtmTag;
+
+// onClick={() => {
+//   sendGTMEvent({
+//     event: "buttonClicked",
+//     value: "xyz",
+//     page: "home",
+//     product_id: "12345",
+//     product_name: "Premium Package",
+//     price: 99.99,
+//     currency: "USD",
+//     userInfo: token,
+//     });
+// }}

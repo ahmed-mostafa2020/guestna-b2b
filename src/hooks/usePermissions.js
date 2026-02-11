@@ -81,7 +81,7 @@ export const usePermissions = () => {
    * @example
    * <button {...getGtmProps(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_ADD_USER)}>Add User</button>
    */
-  const getGtmProps = (permissionName, category = null) => {
+  const getGtmProps = (permissionName, category = null, uniqueId) => {
     if (!permissionName) return {};
 
     // Extract category from permission name if not provided
@@ -89,10 +89,16 @@ export const usePermissions = () => {
     const extractedCategory =
       category || permissionName.split("_").slice(2, 3).join("_") || "general";
 
-    return {
+    const attrs = {
       "data-gtm": permissionName,
       "data-gtm-category": extractedCategory,
     };
+
+    if (uniqueId) {
+      attrs["data-gtm-id"] = uniqueId;
+    }
+
+    return attrs;
   };
 
   /**

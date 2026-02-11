@@ -48,7 +48,6 @@ export const PERMISSIONS = {
       "b2b_profile_users_edit_user_permissions",
     B2B_PROFILE_USERS_UPLOAD_USER: "b2b_profile_users_upload_user",
     B2B_PROFILE_USERS_EDIT_INFO: "b2b_profile_users_edit_info",
-    B2B_PROFILE_USERS_EDIT_PERMISSIONS: "b2b_profile_users_edit_permissions",
     B2B_PROFILE_TRANSACTIONS_LOG_CARDS: "b2b_profile_transactions_log_cards",
     B2B_PROFILE_TRANSACTIONS_LOG_PRINTREPORT:
       "b2b_profile_transactions_log_printReport",

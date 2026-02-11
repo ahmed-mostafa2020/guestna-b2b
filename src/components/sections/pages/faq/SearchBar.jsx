@@ -24,6 +24,7 @@ import { Container } from "@mui/system";
 import { searchBarIcon } from "@assets/svg";
 
 import axios from "axios";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const SearchBar = () => {
   const { loading } = useSelector((state) => state.faqData);
@@ -128,6 +129,7 @@ const SearchBar = () => {
                   className={`py-3 text-base w-full lg:w-[140px] font-semibold text-center text-white capitalize transition-all duration-200 ease-in-out border-2 rounded-lg px-9 bg-mainColor border-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                     isValid && "hover:bg-linksHover hover:border-linksHover"
                   }`}
+                  {...getGtmTag(GTM_TAGS.FILTERS.SEARCH, "search")}
                 >
                   {t("links.search")}
                 </button>

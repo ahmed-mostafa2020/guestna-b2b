@@ -18,6 +18,7 @@ import SelectionGroup from "../SelectionGroup";
 import InteractiveRating from "@components/common/InteractiveRating";
 
 import { CircularProgress } from "@mui/material";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const SurveyForm = ({ tripId, organizationId, onClose, onSuccess }) => {
   const locale = useLocale();
@@ -189,6 +190,7 @@ const SurveyForm = ({ tripId, organizationId, onClose, onSuccess }) => {
                   className={`centered gap-2 flex-1 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                     isValid && "hover:bg-linksHover hover:border-linksHover"
                   }`}
+                  {...getGtmTag(GTM_TAGS.FORMS.SUBMIT, "forms")}
                 >
                   {isSubmitting ? (
                     <>
@@ -203,6 +205,7 @@ const SurveyForm = ({ tripId, organizationId, onClose, onSuccess }) => {
                   type="button"
                   onClick={onClose}
                   className="px-6 py-3 text-base font-medium text-gray-600 transition-all duration-200 ease-in-out border-2 border-gray-300 rounded-lg hover:bg-gray-50"
+                  {...getGtmTag(GTM_TAGS.FORMS.CANCEL, "forms")}
                 >
                   {t("links.cancel")}
                 </button>

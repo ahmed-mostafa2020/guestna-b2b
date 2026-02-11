@@ -143,7 +143,9 @@ const ReportTable = ({
                                 className="disabled:opacity-70 disabled:cursor-not-allowed flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
                                 {...getGtmProps(
                                   PERMISSIONS.ELEMENT
-                                    .B2B_PROFILE_ACHIENVEMENT_CONFIRMATION
+                                    .B2B_PROFILE_ACHIENVEMENT_CONFIRMATION,
+                                  null,
+                                  booking._id
                                 )}
                               >
                                 {t("links.ConfirmationOfAchievement")}
@@ -162,7 +164,9 @@ const ReportTable = ({
                                     : "hover:text-mainColor hover:border-mainColor"
                                 }`}
                                 {...getGtmProps(
-                                  PERMISSIONS.ELEMENT.B2B_PROFILE_FINAL_REPORT
+                                  PERMISSIONS.ELEMENT.B2B_PROFILE_FINAL_REPORT,
+                                  null,
+                                  booking._id
                                 )}
                               >
                                 {t("links.finalReport")}
@@ -236,7 +240,9 @@ const ReportTable = ({
                           className="disabled:opacity-70 disabled:cursor-not-allowed flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
                           {...getGtmProps(
                             PERMISSIONS.ELEMENT
-                              .B2B_PROFILE_ACHIENVEMENT_CONFIRMATION
+                              .B2B_PROFILE_ACHIENVEMENT_CONFIRMATION,
+                            null,
+                            booking._id
                           )}
                         >
                           {t("links.ConfirmationOfAchievement")}
@@ -255,7 +261,9 @@ const ReportTable = ({
                               : "hover:text-mainColor hover:border-mainColor"
                           }`}
                           {...getGtmProps(
-                            PERMISSIONS.ELEMENT.B2B_PROFILE_FINAL_REPORT
+                            PERMISSIONS.ELEMENT.B2B_PROFILE_FINAL_REPORT,
+                            null,
+                            booking._id
                           )}
                         >
                           {t("links.finalReport")}
