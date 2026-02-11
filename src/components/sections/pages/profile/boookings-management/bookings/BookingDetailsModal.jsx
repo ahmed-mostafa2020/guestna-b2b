@@ -8,6 +8,7 @@ import formatDate from "@utils/FormateDate";
 import formatCurrency from "@utils/FormatCurrency";
 import { useExcel } from "@hooks/useExcel";
 import StudentsTable from "./StudentsTable";
+import TermsModal from "./TermsModal";
 import {
   locationIcon,
   timeIcon,
@@ -18,12 +19,14 @@ import {
   phoneIcon,
   schoolIcon,
 } from "@assets/svg";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import ExportButton from "@components/common/ExportButton";
 
 const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
   const locale = useLocale();
   const t = useTranslations();
   const { exportBookingManagement, isExporting } = useExcel({ t, locale });
+  const [openTerms, setOpenTerms] = useState(false);
 
   if (!booking) return null;
 
@@ -141,16 +144,18 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
               </p>
             </div>
 
-            <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
-              {locationIcon}
-              <p className="text-sm text-gray-600">
-                {t("profile.tables.orders.bookingDetails.location")}:
-              </p>
-              <p className="font-medium">{booking.cities}</p>
-            </div>
+            {booking.cities && (
+              <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
+                {locationIcon}
+                <p className="text-sm text-gray-600">
+                  {t("profile.tables.orders.bookingDetails.location")}:
+                </p>
+                <p className="font-medium">{booking.cities}</p>
+              </div>
+            )}
 
             {booking.fromHour && booking.toHour && (
-              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
                 {timeIcon}
                 <p className="text-gray-600">
                   {t("profile.tables.orders.bookingDetails.time")}:
@@ -161,71 +166,79 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
               </div>
             )}
 
-            <div className="text-sm flex items-center gap-3 flex-wrap">
-              <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
-                {dateIcon}
-                <p className="text-gray-600">
-                  {t("profile.tables.orders.bookingDetails.tripStartDate")}:
-                </p>
-                <p className="font-medium">
-                  {booking.day &&
-                    formatDate(booking.day, locale, {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                </p>
-              </div>
-
-              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
-                {dateIcon}
-                <p className="text-gray-600">
-                  {t("profile.tables.orders.bookingDetails.tripEndDate")}:
-                </p>
-                <p className="font-medium">
-                  {booking.day && booking.duration > 1
-                    ? formatDate(
-                        new Date(
-                          new Date(booking.day).getTime() +
-                            booking.duration * 24 * 60 * 60 * 1000
-                        ),
-                        locale,
-                        {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        }
-                      )
-                    : formatDate(booking.day, locale, {
+            {booking.day && (
+              <div className="text-sm flex items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
+                  {dateIcon}
+                  <p className="text-gray-600">
+                    {t("profile.tables.orders.bookingDetails.tripStartDate")}:
+                  </p>
+                  <p className="font-medium">
+                    {booking.day &&
+                      formatDate(booking.day, locale, {
                         year: "numeric",
                         month: "short",
                         day: "numeric",
                       })}
-                </p>
-              </div>
-            </div>
+                  </p>
+                </div>
 
-            <div className="text-sm flex items-center gap-3 flex-wrap">
-              <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
-                {ticketsIcon}
-                <p className="text-gray-600">
-                  {t("profile.tables.orders.bookingDetails.bookingStatus")}:
-                </p>
-                <p className="font-medium">
-                  {t(`common.organizationTripStatus.${booking.status}`)}
-                </p>
+                <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
+                  {dateIcon}
+                  <p className="text-gray-600">
+                    {t("profile.tables.orders.bookingDetails.tripEndDate")}:
+                  </p>
+                  <p className="font-medium">
+                    {booking.day && booking.duration > 1
+                      ? formatDate(
+                          new Date(
+                            new Date(booking.day).getTime() +
+                              booking.duration * 24 * 60 * 60 * 1000
+                          ),
+                          locale,
+                          {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          }
+                        )
+                      : formatDate(booking.day, locale, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                  </p>
+                </div>
               </div>
+            )}
 
-              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
-                {walletIcon}
-                <p className="text-gray-600">
-                  {t("profile.tables.orders.bookingDetails.fees")}:
-                </p>
-                <p className="font-medium">
-                  {booking.price ? formatCurrency(booking.price) : ""}
-                </p>
+            {booking.status && (
+              <div className="text-sm flex items-center gap-3 flex-wrap">
+                {booking.status && (
+                  <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+                    {ticketsIcon}
+                    <p className="text-gray-600">
+                      {t("profile.tables.orders.bookingDetails.bookingStatus")}:
+                    </p>
+                    <p className="font-medium">
+                      {t(`common.organizationTripStatus.${booking.status}`)}
+                    </p>
+                  </div>
+                )}
+
+                {booking.price && booking.price > 0 && (
+                  <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
+                    {walletIcon}
+                    <p className="text-gray-600">
+                      {t("profile.tables.orders.bookingDetails.fees")}:
+                    </p>
+                    <p className="font-medium">
+                      {booking.price ? formatCurrency(booking.price) : ""}
+                    </p>
+                  </div>
+                )}
               </div>
-            </div>
+            )}
           </div>
         </div>
 
@@ -236,58 +249,87 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
           </h3>
 
           <div className="space-y-4 border-2 border-border rounded-lg p-3">
-            <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
-              {schoolIcon}
-              <p className="text-gray-600">
-                {t("profile.tables.orders.bookingDetails.schoolName")}:
-              </p>
-              <p className="font-medium">{booking.organization?.name}</p>
-            </div>
+            {booking.organization?.name && (
+              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+                {schoolIcon}
+                <p className="text-gray-600">
+                  {t("profile.tables.orders.bookingDetails.schoolName")}:
+                </p>
+                <p className="font-medium">{booking.organization?.name}</p>
+              </div>
+            )}
 
-            <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
-              {profileIcon}
-              <p className="text-gray-600">
-                {t("profile.tables.orders.bookingDetails.contactPerson")}:
-              </p>
-              <p className="font-medium">{booking.organization?.name}</p>
-            </div>
+            {booking.organization?.name && (
+              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
+                {profileIcon}
+                <p className="text-gray-600">
+                  {t("profile.tables.orders.bookingDetails.contactPerson")}:
+                </p>
+                <p className="font-medium">{booking.organization?.name}</p>
+              </div>
+            )}
 
-            <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
-              {phoneIcon}
-              <p className="text-gray-600">
-                {t("profile.tables.orders.bookingDetails.phoneNumber")}:
-              </p>
-              <p className="font-medium text-end" dir="ltr">
-                {booking.organization?.pone}
-              </p>
-            </div>
+            {booking.organization?.pone && (
+              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
+                {phoneIcon}
+                <p className="text-gray-600">
+                  {t("profile.tables.orders.bookingDetails.phoneNumber")}:
+                </p>
+                <p className="font-medium text-end" dir="ltr">
+                  {booking.organization?.pone}
+                </p>
+              </div>
+            )}
 
-            <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
-              {dateIcon}
-              <p className="text-gray-600">
-                {t("profile.tables.orders.bookingDetails.bookingDate")}:
-              </p>
-              <p className="font-medium">
-                {formatDate(booking.createdAt, locale, {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                  hour: "numeric",
-                  minute: "numeric",
-                })}
-              </p>
-            </div>
+            {booking.createdAt && (
+              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
+                {dateIcon}
+                <p className="text-gray-600">
+                  {t("profile.tables.orders.bookingDetails.bookingDate")}:
+                </p>
+                <p className="font-medium">
+                  {formatDate(booking.createdAt, locale, {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                  })}
+                </p>
+              </div>
+            )}
 
-            <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
-              {profileIcon}
-              <p className="text-gray-600">
-                {t("profile.tables.orders.bookingDetails.schoolEmail")}:
-              </p>
-              <p className="font-medium">{booking.organization?.email}</p>
-            </div>
+            {booking.organization?.email && (
+              <div className="text-sm flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit flex-wrap">
+                {profileIcon}
+                <p className="text-gray-600">
+                  {t("profile.tables.orders.bookingDetails.schoolEmail")}:
+                </p>
+                <p className="font-medium">{booking.organization?.email}</p>
+              </div>
+            )}
+
+            <button
+              onClick={() => setOpenTerms(true)}
+              className="text-sm flex items-center justify-between gap-1 rounded-lg p-2 border border-border shadow-card hover:bg-gray-50 transition-colors text-start w-fit cursor-pointer"
+            >
+              <div className="flex items-center gap-1">
+                <DescriptionOutlinedIcon
+                  sx={{ fontSize: "1.2rem", color: "#F09814" }}
+                />
+                <p className="text-gray-600 font-medium">
+                  {t("profile.tables.orders.bookingDetails.showTerms")}
+                </p>
+              </div>
+              <span className="text-mainColor text-xs px-2 py-0.5 bg-blue-50 rounded-full">
+                PDF
+              </span>
+            </button>
           </div>
         </div>
       </div>
+
+      <TermsModal open={openTerms} handleClose={() => setOpenTerms(false)} />
 
       {/* Students Table */}
       <StudentsTable

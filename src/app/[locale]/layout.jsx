@@ -137,6 +137,7 @@ export async function generateMetadata({ params: { locale } }) {
       "geo.placename": "Riyadh",
       "geo.position": "24.7136;46.6753",
       ICBM: "24.7136, 46.6753",
+      google: "notranslate",
     },
   };
 }
@@ -219,17 +220,17 @@ export default async function RootLayout({ children, params: { locale } }) {
         />
       </head>
 
-      <body className={` ${somarSans.variable} text-textDark`}>
+      <body
+        className={` ${somarSans.variable} text-textDark notranslate`}
+        translate="no"
+      >
         {/* Tamara pay */}
         <Script
           strategy="beforeInteractive"
           src="https://cdn.tamara.co/widget-v1/tamara-widget.js"
         />
 
-        <GoogleTagManager
-          //  gtmId={GTM_ID}
-          gtmId="GTM-PLN2P4N6"
-        />
+        <GoogleTagManager gtmId="GTM-PLN2P4N6" />
 
         <Suspense fallback={<div className="centered">Loading...</div>}>
           <ReduxProvider locale={locale}>

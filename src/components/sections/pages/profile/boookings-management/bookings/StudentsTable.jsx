@@ -12,6 +12,7 @@ import getProxyUrl from "@utils/getProxyUrl";
 import { ExcelService } from "@utils/excelService";
 import { CardContent, Card, CircularProgress, Button } from "@mui/material";
 import Pagination from "@components/common/Pagination";
+import CheckboxGroup from "@components/forms/CheckboxGroup";
 
 const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
   const locale = useLocale();
@@ -33,8 +34,8 @@ const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
     const source = Array.isArray(bookingDetails)
       ? bookingDetails
       : bookingDetails?.nodes && Array.isArray(bookingDetails.nodes)
-      ? bookingDetails.nodes
-      : [];
+        ? bookingDetails.nodes
+        : [];
 
     // Normal pagination mode
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -179,6 +180,11 @@ const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
                       <th className="px-6 py-4 text-start text-sm font-medium text-gray-700">
                         {t("profile.tables.orders.studentsTable.nationalId")}
                       </th>
+                      <th className="px-6 py-4 text-start text-sm font-medium text-gray-700">
+                        {t(
+                          "profile.tables.orders.studentsTable.parentConfirmation"
+                        )}
+                      </th>
                       <th className="px-6 py-4 text-center text-sm font-medium text-gray-700">
                         {t("profile.tables.orders.studentsTable.actions")}
                       </th>
@@ -210,6 +216,14 @@ const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
                         </td>
                         <td className="px-6 py-4 text-sm text-muted-foreground">
                           {student.child.nationalId}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-muted-foreground">
+                          <CheckboxGroup
+                            isChecked={student.parent.termsAccepted}
+                            disabled={true}
+                            fontSize="14px"
+                            hoveringAction={false}
+                          />
                         </td>
                         <td className="px-6 py-4">
                           <ActionButtons student={student} />
@@ -277,6 +291,20 @@ const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
                       <span className="text-sm text-muted-foreground">
                         {student.child.nationalId}
                       </span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-muted-foreground">
+                        {t(
+                          "profile.tables.orders.studentsTable.parentConfirmation"
+                        )}
+                      </span>
+                      <CheckboxGroup
+                        isChecked={student.parent.termsAccepted}
+                        disabled={true}
+                        fontSize="14px"
+                        hoveringAction={false}
+                      />
                     </div>
 
                     {/* Actions for Mobile */}

@@ -72,7 +72,7 @@ const UserCard = ({ user, onEdit, onDelete, editPermission = false }) => {
           </Stack>
 
           {/* Actions */}
-          <Stack className="items-center gap-4 !flex-row  justify-center">
+          <Stack className="items-center gap-4 !flex-row justify-center !m-0">
             {hasElement(
               PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_EDIT_PERMISSIONS
             ) && (

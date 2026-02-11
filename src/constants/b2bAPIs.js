@@ -79,8 +79,7 @@ export const B2B_END_POINTS = {
     },
 
     ALL_TRIPS: {
-      ACTIVITIES: "profile/organizationTrips/activity/all",
-      PACKAGES: "profile/organizationTrips/package/all",
+      MANAGEMENT: "profile/organizationTrips/management/all",
     },
 
     ACTIVITIES_MARKET: "profile/trips/all",
@@ -114,14 +113,17 @@ export const B2B_END_POINTS = {
           INFO: "profile/askTrips/info",
           SUBMIT: "profile/askTrips/edit", // UpdateOrder
           CUSTOM_TRIP: "profile/trips/info", // Discover details info
-          CUSTOM_TRIP_SUBMIT: "profile/askTrips/custom/edit", // AuthenticatedRequestQuote
-          GRADES_BY_STAGES: "grades/stages/askTrip", // Get grades for selected academic stages
+          CUSTOM_TRIP_SUBMIT: "profile/askTrips/custom/Edit",
+          GRADES_BY_STAGES: "grades/stages/askTrip", // Get grades for selected academic stages,
+          EDIT_CUSTOM_INFO: "profile/askTrips/edit/custom/info", // Get existing custom trip info
+          REJECT: "profile/askTrips/custom/reject",
+          APPROVE: "profile/askTrips/accept/askTrip",
         },
         REMIND: "profile/askTrips/reminder/admin",
 
         SETTINGS: {
           ALL_TRIPS: "profile/settingsTrips/all", //post
-          SUBMIT: "profile/settingsTrips/edit", // Item id - patch
+          SUBMIT: "profile/settingsTrips/edit", // Item id -patch
         },
       },
     },

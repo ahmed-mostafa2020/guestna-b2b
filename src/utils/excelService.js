@@ -421,7 +421,7 @@ export const ExcelService = {
     }
 
     // Add title
-    worksheet.mergeCells("A1:F1");
+    worksheet.mergeCells("A1:G1");
     const titleCell = worksheet.getCell("A1");
     titleCell.value = `${t("profile.tables.orders.studentsTable.title")} - ${
       booking?.name || ""
@@ -431,7 +431,7 @@ export const ExcelService = {
     worksheet.getRow(1).height = 30;
 
     // Add booking info
-    worksheet.mergeCells("A2:F2");
+    worksheet.mergeCells("A2:G2");
     const infoCell = worksheet.getCell("A2");
     infoCell.value = `${t("profile.tables.bookings.header.schoolName")}: ${
       booking?.organization?.name || booking?.organization || ""
@@ -451,6 +451,7 @@ export const ExcelService = {
       t("profile.tables.orders.studentsTable.grade"),
       t("profile.tables.orders.studentsTable.parentPhone"),
       t("profile.tables.orders.studentsTable.nationalId"),
+      t("profile.tables.orders.studentsTable.parentConfirmation"),
     ];
 
     worksheet.addRow([]);
@@ -480,6 +481,7 @@ export const ExcelService = {
       { width: 20 },
       { width: 20 },
       { width: 20 },
+      { width: 20 },
     ];
 
     // Add student data
@@ -490,6 +492,13 @@ export const ExcelService = {
       student.child?.grade?.name || "-",
       student.parent?.phone || "-",
       student.child?.nationalId || "-",
+      student.parent?.termsAccepted
+        ? locale === "ar"
+          ? "نعم"
+          : "Yes"
+        : locale === "ar"
+          ? "لا"
+          : "No",
     ]);
     dataRow.eachCell((cell) => {
       cell.alignment = { horizontal: "center", vertical: "middle" };
@@ -509,11 +518,12 @@ export const ExcelService = {
         "",
         "",
         "",
+        "",
         t("profile.tables.bookings.header.budget"),
         formatCurrencyString(booking.price, locale),
       ]);
-      priceRow.getCell(5).font = { bold: true };
       priceRow.getCell(6).font = { bold: true };
+      priceRow.getCell(7).font = { bold: true };
     }
 
     // Generate filename
@@ -634,6 +644,13 @@ export const ExcelService = {
           parentPhone: student.parent?.phone || "",
           nationalId:
             student.parent?.nationalId || student.child?.nationalId || "",
+          parentConfirmation: student.parent?.termsAccepted
+            ? locale === "ar"
+              ? "نعم"
+              : "Yes"
+            : locale === "ar"
+              ? "لا"
+              : "No",
           note: student.child?.note || "",
         };
 

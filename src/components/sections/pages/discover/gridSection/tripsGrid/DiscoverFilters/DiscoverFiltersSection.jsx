@@ -33,6 +33,7 @@ const DiscoverFiltersSection = () => {
     const urlFilters = {};
 
     searchParams.forEach((value, key) => {
+      if (key === "page") return;
       urlFilters[key] = value.split(",");
     });
 
@@ -62,6 +63,7 @@ const DiscoverFiltersSection = () => {
       const params = new URLSearchParams(searchParams.toString());
 
       if (values.length) {
+        if (key === "page") return;
         params.set(key, values.join(","));
       } else {
         params.delete(key);

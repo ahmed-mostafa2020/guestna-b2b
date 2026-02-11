@@ -52,3 +52,6 @@ next-env.d.ts
 .kiro/steering/byterover-rules.md
 .qoder/rules/byterover-rules.md
 .augment/rules/byterover-rules.md
+
+# Auto Claude data directory
+.auto-claude/
