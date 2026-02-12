@@ -6,9 +6,10 @@ import { usePermissions } from "@hooks/usePermissions";
 import formatDate from "@utils/FormateDate";
 import { getEventTypeLabel, getEventTypeColor } from "@utils/eventTypeUtils";
 import { PERMISSIONS } from "@constants/permissions";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const EventCard = ({ event, onView, onEdit }) => {
-  const { hasElement } = usePermissions();
+  const { hasElement, getGtmProps } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
 
@@ -52,6 +53,7 @@ const EventCard = ({ event, onView, onEdit }) => {
           <button
             onClick={() => onView(event)}
             className="flex-1 text-center py-2 text-black hover:text-mainColor text-sm font-medium border border-gray-200 rounded-lg hover:border-mainColor transition-colors"
+            {...getGtmTag(GTM_TAGS.CALENDAR.VIEW_EVENT, "calendar", event._id)}
           >
             {t("profile.calendar.actions.view")}
           </button>
@@ -59,6 +61,11 @@ const EventCard = ({ event, onView, onEdit }) => {
             <button
               onClick={() => onEdit(event)}
               className="flex-1 text-center py-2 text-black hover:text-mainColor text-sm font-medium border border-gray-200 rounded-lg hover:border-mainColor transition-colors"
+              {...getGtmProps(
+                PERMISSIONS.ELEMENT.B2B_PROFILE_EDIT_EVENT,
+                null,
+                event._id
+              )}
             >
               {t("profile.calendar.actions.edit")}
             </button>
@@ -103,6 +110,7 @@ const EventCard = ({ event, onView, onEdit }) => {
           <button
             onClick={() => onView(event)}
             className="text-black hover:text-mainColor text-sm font-medium transition-colors"
+            {...getGtmTag(GTM_TAGS.CALENDAR.VIEW_EVENT, "calendar", event._id)}
           >
             {t("profile.calendar.actions.view")}
           </button>
@@ -110,6 +118,11 @@ const EventCard = ({ event, onView, onEdit }) => {
             <button
               onClick={() => onEdit(event)}
               className="text-black hover:text-mainColor text-sm font-medium transition-colors"
+              {...getGtmProps(
+                PERMISSIONS.ELEMENT.B2B_PROFILE_EDIT_EVENT,
+                null,
+                event._id
+              )}
             >
               {t("profile.calendar.actions.edit")}
             </button>

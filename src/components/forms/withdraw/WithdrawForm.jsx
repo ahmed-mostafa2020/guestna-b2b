@@ -17,6 +17,7 @@ import { createWithdrawValidationSchema } from "@utils/validationSchemas";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   const locale = useLocale();
@@ -263,6 +264,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
                   ? "bg-mainColor cursor-not-allowed"
                   : "bg-mainColor hover:from-mainColor hover:to-mainColor focus:ring-mainColor shadow-lg hover:shadow-xl"
               }`}
+              {...getGtmTag(GTM_TAGS.FORMS.SUBMIT, "forms")}
             >
               {isSubmitting ? (
                 <div className="flex items-center justify-center gap-2">

@@ -26,6 +26,7 @@ import { CircularProgress } from "@mui/material";
 import { useSnackbar } from "notistack";
 
 import axios from "axios";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 import hello from "@assets/gif/hello.gif";
 
@@ -163,6 +164,7 @@ const ParentLoginForm = () => {
                 className={`centered gap-2 w-full mt-4 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                   isValid && "hover:bg-linksHover hover:border-linksHover"
                 }`}
+                {...getGtmTag(GTM_TAGS.AUTH.LOGIN_BUTTON, "auth")}
               >
                 {isSubmitting ? (
                   <>

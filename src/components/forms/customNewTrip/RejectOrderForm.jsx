@@ -14,6 +14,7 @@ import {
   Alert,
 } from "@mui/material";
 import TextInputGroup from "../TextInputGroup";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const RejectOrderForm = ({
   orderId,
@@ -27,21 +28,24 @@ const RejectOrderForm = ({
   const t2 = useTranslations();
 
   // Rejection reason options
-  const rejectionReasons = useMemo(()=> [
-    {
-      value: "inappropriate_price",
-      label: t("reasons.inappropriate_price"),
-    },
-    {
-      value: "inappropriate_details",
-      label: t("reasons.inappropriate_details"),
-    },
-    {
-      value: "inappropriate_timing",
-      label: t("reasons.inappropriate_timing"),
-    },
-    { value: "other", label: t("reasons.other") },
-  ] ,[t]);
+  const rejectionReasons = useMemo(
+    () => [
+      {
+        value: "inappropriate_price",
+        label: t("reasons.inappropriate_price"),
+      },
+      {
+        value: "inappropriate_details",
+        label: t("reasons.inappropriate_details"),
+      },
+      {
+        value: "inappropriate_timing",
+        label: t("reasons.inappropriate_timing"),
+      },
+      { value: "other", label: t("reasons.other") },
+    ],
+    [t]
+  );
 
   const [selectedReason, setSelectedReason] = useState("");
   const [customMessage, setCustomMessage] = useState("");
@@ -216,6 +220,7 @@ const RejectOrderForm = ({
           onClick={handleSubmit}
           disabled={rejectingOrder || !selectedReason}
           className="!bg-error px-8 py-3 !border-2 !font-somar !text-white w-full rounded-lg disabled:!bg-gray-300 disabled:!text-gray-600 disabled:cursor-not-allowed"
+          {...getGtmTag(GTM_TAGS.ORDERS.REJECT, "orders")}
         >
           {rejectingOrder ? (
             <Box className="flex items-center gap-2">
@@ -232,6 +237,7 @@ const RejectOrderForm = ({
           className="!border-border px-8 py-3 !border-2 !font-somar !text-textDark w-full rounded-lg"
           onClick={handleCancel}
           disabled={rejectingOrder}
+          {...getGtmTag(GTM_TAGS.FORMS.CANCEL, "forms")}
         >
           {t2("links.cancel")}
         </Button>

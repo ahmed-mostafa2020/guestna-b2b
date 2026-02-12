@@ -219,7 +219,7 @@ const CalendarPage = () => {
 
   return (
     <ProtectedProfilePage
-      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_CALENDAR_PAGE}
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_CALENDER_PAGE}
     >
       <div className="min-h-screen bg-gray-50 p-6">
         {/* Summary Cards */}

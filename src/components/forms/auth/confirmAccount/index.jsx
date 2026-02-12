@@ -29,6 +29,7 @@ import { Formik } from "formik";
 import axios from "axios";
 
 import { CircularProgress } from "@mui/material";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const VerificationCodeForm = ({ redirect = true }) => {
   const [formErrors, setFormErrors] = useState([]);
@@ -195,6 +196,7 @@ const VerificationCodeForm = ({ redirect = true }) => {
                 className={`centered gap-2 py-3 px-5 lg:px-10 text-sm lg:text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                   isValid && "hover:bg-linksHover hover:border-linksHover"
                 }`}
+                {...getGtmTag(GTM_TAGS.AUTH.VERIFY_EMAIL, "auth")}
               >
                 {isSubmitting ? (
                   <>

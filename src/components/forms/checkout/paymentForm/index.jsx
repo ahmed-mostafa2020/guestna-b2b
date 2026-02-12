@@ -50,6 +50,7 @@ import applePay from "@assets/paymentLogos/apple-pay.svg";
 import tamaraEnglish from "@assets/paymentLogos/tamaraEnglish.svg";
 import getProxyUrl from "@utils/getProxyUrl";
 import AppleWidgetTest from "./AppleWidgetTest";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const PaymentForm = () => {
   const [formErrors, setFormErrors] = useState([]);
@@ -99,8 +100,8 @@ const PaymentForm = () => {
     currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD
       ? creditSchema
       : currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.STC
-      ? stcSchema
-      : tamaraSchema;
+        ? stcSchema
+        : tamaraSchema;
 
   const handlePaymentMethodChange = (event) => {
     setCurrentPaymentMethod(event.target.value);
@@ -589,6 +590,7 @@ const PaymentForm = () => {
                 className={`centered gap-5 lg:w-[540px] mt-8 lg:mt-12 lg:py-4 py-2 px-4 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor  bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                   isValid && "hover:bg-linksHover hover:border-linksHover"
                 }`}
+                {...getGtmTag(GTM_TAGS.PAYMENT.PROCEED, "payment")}
               >
                 {isSubmitting ? (
                   <>

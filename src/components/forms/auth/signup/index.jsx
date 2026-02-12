@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 
 import { useLocale, useTranslations } from "next-intl";
 
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
+
 import { useDispatch, useSelector } from "react-redux";
 import {
   toggleCheckbox,
@@ -321,6 +323,7 @@ const SignupForm = ({ redirect = true }) => {
                   <Link
                     href={`/${locale}/terms-and-conditions`}
                     className="border-b text-mainColor border-mainColor"
+                    {...getGtmTag("nav_terms_and_conditions", "navigation")}
                   >
                     {t("pagesHead.title.termsAndConditions")}
                   </Link>
@@ -371,6 +374,7 @@ const SignupForm = ({ redirect = true }) => {
                   className={`centered gap-2 w-full mt-8 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                     isValid && "hover:bg-linksHover hover:border-linksHover"
                   }`}
+                  {...getGtmTag(GTM_TAGS.AUTH.SIGNUP_BUTTON, "auth")}
                 >
                   {isSubmitting ? (
                     <>

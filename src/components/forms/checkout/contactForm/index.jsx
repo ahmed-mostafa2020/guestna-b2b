@@ -22,6 +22,7 @@ import "react-phone-number-input/style.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import { Checkbox, FormControlLabel } from "@mui/material";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const ContactForm = () => {
   const dispatch = useDispatch();
@@ -197,6 +198,7 @@ const ContactForm = () => {
                 className={`w-full lg:w-fit lg:px-[200px] mt-8 px-8 py-4 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                   isValid && "hover:bg-linksHover hover:border-linksHover"
                 }`}
+                {...getGtmTag(GTM_TAGS.PAYMENT.PROCEED, "payment")}
               >
                 {t("links.continuePayment")}
               </button>

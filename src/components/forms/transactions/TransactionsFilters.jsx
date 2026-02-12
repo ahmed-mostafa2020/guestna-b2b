@@ -9,7 +9,7 @@ import { TRIP_STATUS } from "@constants/tripStatus";
 import formatDateForAPI from "@utils/formatDateForAPI";
 
 const TransactionsFilters = ({ filter, setFilter }) => {
-  const { hasElement } = usePermissions();
+  const { hasElement, getGtmProps } = usePermissions();
   const t = useTranslations("profile.myWallet.transactionsPage.filters");
 
   // Convert API date string back to input format if needed
@@ -103,12 +103,15 @@ const TransactionsFilters = ({ filter, setFilter }) => {
 
         {/* Action Buttons */}
         {hasElement(
-          PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_PRINT_REPORT
+          PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_PRINTREPORT
         ) && (
           <div className="flex gap-3">
             <button
               onClick={() => window.print()}
               className="bg-mainColor hover:bg-mainColor/90 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2"
+              {...getGtmProps(
+                PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_PRINTREPORT
+              )}
             >
               {printIcon}
               {t("printReport")}
