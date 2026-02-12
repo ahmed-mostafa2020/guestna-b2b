@@ -1050,8 +1050,7 @@
           "nationalId": "National ID",
           "grade": "Grade",
           "availableSeats": "Available Seats",
-          "revenueAmount": "Revenue Amount",
-          "showTerms": "Show Terms & Conditions"
+          "revenueAmount": "Revenue Amount"
         },
         "studentsTable": {
           "title": "Students List",
@@ -1070,7 +1069,22 @@
           "printSuccess": "Invoice exported successfully",
           "printError": "Failed to export invoice",
           "resendSuccess": "Booking resent successfully",
-          "resendError": "Failed to resend booking"
+          "resendError": "Failed to resend booking",
+          "agreed": "Agreed",
+          "downloadConsent": "Download Consent",
+          "downloadSuccess": "Consent PDF downloaded successfully",
+          "downloadError": "Failed to download consent PDF",
+          "consentPdf": {
+            "title": "Parent Consent Form",
+            "studentName": "Student Name",
+            "nationalId": "National ID",
+            "parentName": "Parent Name",
+            "tripName": "Trip Name",
+            "schoolName": "School Name",
+            "termsTitle": "Terms & Conditions",
+            "parentSignature": "Parent Confirmation",
+            "confirmed": "Confirmed and Agreed"
+          }
         }
       }
     },
@@ -1917,28 +1931,6 @@
           "tripName": "Trip Name:"
         },
         "termsTitle": "Terms and Conditions:",
-        "terms": {
-          "participation": {
-            "title": "Consent to Participate:",
-            "content": "I agree to my child joining the school trip and traveling with the school group under the supervision of the designated supervisors."
-          },
-          "safety": {
-            "title": "Compliance with Instructions and Safety:",
-            "content": "I commit to ensuring my child follows safety and conduct instructions, and acknowledge that any violation may require appropriate action. "
-          },
-          "health": {
-            "title": "Health Condition and Allergies:",
-            "content": "I confirm that I have disclosed any important health information about my child, and I take full responsibility for the accuracy of this information."
-          },
-          "emergency": {
-            "title": "First Aid and Emergency Situations:",
-            "content": "I authorize the school or organizing body to take necessary measures in emergency situations, with an attempt to contact me."
-          },
-          "media": {
-            "title": "Photography and Use of Documentation Materials:",
-            "content": "I agree to my child being photographed (photos and/or video) during the trip for documentation and non-commercial school activities."
-          }
-        },
         "confirmLabel": "I confirm that I have reviewed the trip details shown on the trip page (including destination, program, date, time, and transportation), and I agree to my child's participation in the trip according to these terms."
       }
     },
