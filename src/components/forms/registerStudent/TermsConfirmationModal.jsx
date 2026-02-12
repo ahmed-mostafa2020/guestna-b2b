@@ -14,9 +14,10 @@ const TermsConfirmationModal = ({
   onCheckChange,
   parentName,
   tripName,
+  termsData,
   t,
 }) => {
-  const terms = ["participation", "safety", "health", "emergency", "media"];
+  const termsContents = termsData?.contents || [];
 
   return (
     <CustomizedModal
@@ -106,14 +107,13 @@ const TermsConfirmationModal = ({
             {t("forms.termsConfirmation.modal.termsTitle")}
           </h3>
           <div className="space-y-4">
-            {terms.map((term, index) => (
-              <div key={term}>
+            {termsContents.map((term, index) => (
+              <div key={index}>
                 <h4 className="font-semibold text-textDark mb-1">
-                  {index + 1}.
-                  {t(`forms.termsConfirmation.modal.terms.${term}.title`)}
+                  {index + 1}. {term.title}
                 </h4>
                 <p className="text-gray-600 text-sm leading-relaxed">
-                  {t(`forms.termsConfirmation.modal.terms.${term}.content`)}
+                  {term.content}
                 </p>
               </div>
             ))}

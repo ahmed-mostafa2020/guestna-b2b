@@ -197,6 +197,7 @@ const TripDetails = ({ params }) => {
           <RegisterStudentForm
             tripMainCategory={tripData?.categories?.formsType}
             availableSeats={availableSeats}
+            termsData={data?.terms}
           />
         )}
     </main>

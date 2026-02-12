@@ -35,7 +35,11 @@ import TermsConfirmationModal from "./TermsConfirmationModal";
 import { infoIcon } from "@assets/svg";
 import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
-const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
+const RegisterStudentForm = ({
+  tripMainCategory,
+  availableSeats,
+  termsData,
+}) => {
   const [_, setNationalityError] = useState("");
   const [__, setStageError] = useState("");
   const [___, setGradeError] = useState("");
@@ -228,6 +232,9 @@ const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
     // formData.append("formsType", formsType);
     if (values.promoCode) formData.append("promoCode", values.promoCode);
     formData.append("termsAccepted", termsAccepted ? "true" : "false");
+    if (termsData?._id) {
+      formData.append("termsAndCondition", termsData._id);
+    }
 
     // Append each child as a nested object
     values.children.forEach((child, idx) => {
@@ -679,6 +686,7 @@ const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
                 }}
                 parentName={values.parentName}
                 tripName={tripName}
+                termsData={termsData}
                 t={t}
               />
 
