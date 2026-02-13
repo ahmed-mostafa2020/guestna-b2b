@@ -2,8 +2,6 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
-
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentPage, setSortBy } from "@store/discover/discoverSlice";
 import { resetFilters } from "@store/searchFilter/searchFilterSlice";
@@ -73,7 +71,6 @@ const ResetButton = ({ targetRef }) => {
       <button
         onClick={handleReset}
         className="py-3 text-white rounded-lg font-bold flex-1 border-2 border-[#A21E21] bg-[#A21E21] transition-all ease-in-out duration-200 hover:bg-[#c61114] hover:border-[#c61114]"
-        {...getGtmTag(GTM_TAGS.FILTERS.RESET, "filters")}
       >
         {t("links.reset")}
       </button>

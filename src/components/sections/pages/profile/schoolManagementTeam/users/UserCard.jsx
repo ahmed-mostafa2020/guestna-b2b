@@ -2,7 +2,15 @@ import Image from "next/image";
 import { memo } from "react";
 import { useTranslations } from "next-intl";
 
-import { Card, CardContent, Chip, Typography, Stack } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Chip,
+  Box,
+  Typography,
+  Stack,
+  Button,
+} from "@mui/material";
 
 import profilePlaceholderImage from "@assets/profilePlaceholderImage.jpg";
 import { usePermissions } from "@hooks/usePermissions";
@@ -10,7 +18,7 @@ import { PERMISSIONS } from "@constants/permissions";
 
 const UserCard = ({ user, onEdit, onDelete, editPermission = false }) => {
   const t = useTranslations();
-  const { hasElement, getGtmProps } = usePermissions();
+  const { hasElement } = usePermissions();
 
   const ActionButton = ({ onClick, label, colorClass }) => (
     <button
@@ -65,47 +73,25 @@ const UserCard = ({ user, onEdit, onDelete, editPermission = false }) => {
 
           {/* Actions */}
           <Stack className="items-center gap-4 !flex-row justify-center !m-0">
-            {editPermission
-              ? hasElement(
-                  PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_EDIT_USER_PERMISSIONS
-                ) && (
-                  <ActionButton
-                    onClick={onEdit}
-                    label={t(
-                      "profile.rolesPermissions.actions.edit_permissions"
-                    )}
-                    colorClass="hover:!text-mainColor text-black"
-                    {...getGtmProps(
-                      PERMISSIONS.ELEMENT
-                        .B2B_PROFILE_USERS_EDIT_USER_PERMISSIONS,
-                      null,
-                      user._id
-                    )}
-                  />
-                )
-              : hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_EDIT_INFO) && (
-                  <ActionButton
-                    onClick={onEdit}
-                    label={t("profile.schools_users.edit")}
-                    colorClass="hover:!text-mainColor text-black"
-                    {...getGtmProps(
-                      PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_EDIT_INFO,
-                      null,
-                      user._id
-                    )}
-                  />
-                )}
+            {hasElement(
+              PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_EDIT_PERMISSIONS
+            ) && (
+              <ActionButton
+                onClick={onEdit}
+                label={
+                  editPermission
+                    ? t("profile.rolesPermissions.actions.edit_permissions")
+                    : t("profile.schools_users.edit")
+                }
+                colorClass="hover:!text-mainColor text-black"
+              />
+            )}
 
             {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_DELETE) && (
               <ActionButton
                 onClick={onDelete}
                 label={t("profile.schools_users.delete.title")}
                 colorClass="hover:!text-error text-black"
-                {...getGtmProps(
-                  PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_DELETE,
-                  null,
-                  user._id
-                )}
               />
             )}
           </Stack>

@@ -16,8 +16,6 @@ import UsersHeader from "./UsersHeader";
 import UsersInfo from "./UsersInfo";
 import UserPermissions from "./UsersPermissions";
 import CustomizedModal from "@components/common/customizedModal";
-import { usePermissions } from "@hooks/usePermissions";
-import { PERMISSIONS } from "@constants/permissions";
 
 const UsersManagement = ({
   data,
@@ -28,7 +26,6 @@ const UsersManagement = ({
 }) => {
   const t = useTranslations();
   const locale = useLocale();
-  const { hasElement } = usePermissions();
   const theme = useTheme();
   const isSmDown = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -112,50 +109,44 @@ const UsersManagement = ({
       </Box>
 
       {/* RIGHT SIDE */}
-      {hasElement(
-        PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_EDIT_USER_PERMISSIONS
-      ) && (
-        <>
-          {!isSmDown && (
-            <Slide
-              direction={locale === "en" ? "left" : "right"}
-              in={showPermissions}
-              mountOnEnter
-              unmountOnExit
-              timeout={500}
-            >
-              <Box
-                sx={{
-                  flexBasis: "35%",
-                  minWidth: 300,
-                }}
-                className="bg-white rounded-2xl shadow-card p-4"
-              >
-                <UserPermissions
-                  user={selectedUser}
-                  onClose={() => setShowPermissions(false)}
-                />
-              </Box>
-            </Slide>
-          )}
+      {!isSmDown && (
+        <Slide
+          direction={locale === "en" ? "left" : "right"}
+          in={showPermissions}
+          mountOnEnter
+          unmountOnExit
+          timeout={500}
+        >
+          <Box
+            sx={{
+              flexBasis: "35%",
+              minWidth: 300,
+            }}
+            className="bg-white rounded-2xl shadow-card p-4"
+          >
+            <UserPermissions
+              user={selectedUser}
+              onClose={() => setShowPermissions(false)}
+            />
+          </Box>
+        </Slide>
+      )}
 
-          {/* MOBILE MODAL STYLE */}
-          {isSmDown && showPermissions && selectedUser && (
-            <CustomizedModal
-              open={showPermissions}
-              handleClose={setShowPermissions}
-              bgcolor="rgba(0, 0, 0, 0.3)"
-              customizedCloseButton
-            >
-              <Box className="bg-white rounded-2xl w-full max-w-md shadow-card p-4 relative">
-                <UserPermissions
-                  user={selectedUser}
-                  onClose={() => setShowPermissions(false)}
-                />
-              </Box>
-            </CustomizedModal>
-          )}
-        </>
+      {/* MOBILE MODAL STYLE */}
+      {isSmDown && showPermissions && selectedUser && (
+        <CustomizedModal
+          open={showPermissions}
+          handleClose={setShowPermissions}
+          bgcolor="rgba(0, 0, 0, 0.3)"
+          customizedCloseButton
+        >
+          <Box className="bg-white rounded-2xl w-full max-w-md shadow-card p-4 relative">
+            <UserPermissions
+              user={selectedUser}
+              onClose={() => setShowPermissions(false)}
+            />
+          </Box>
+        </CustomizedModal>
       )}
     </Stack>
   );

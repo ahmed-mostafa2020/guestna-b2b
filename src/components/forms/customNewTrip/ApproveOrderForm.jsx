@@ -13,7 +13,6 @@ import {
 import TextInputGroup from "../TextInputGroup";
 import Map from "../../sections/pages/tripDetails/gridSection/largeSizeGrid/accordionsGroupSection/accordionsDetails/Map";
 import { getApproveOrderValidationSchema } from "@utils/validationSchemas";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const ApproveOrderForm = ({
   orderId,
@@ -91,6 +90,7 @@ const ApproveOrderForm = ({
   };
 
   const handleLocationSelect = ({ lat, lng }) => {
+
     setFieldValue("gatheringLocation", { lat, lng }, true);
   };
 
@@ -332,7 +332,6 @@ const ApproveOrderForm = ({
             }
             className="!bg-mainColor px-8 py-3 !font-somar !text-white w-full rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:!bg-linksHover"
             fullWidth
-            {...getGtmTag(GTM_TAGS.ORDERS.APPROVE, "orders")}
           >
             {approvingOrder ? (
               <Box className="flex items-center gap-2">
@@ -352,7 +351,6 @@ const ApproveOrderForm = ({
             onClick={handleCancel}
             disabled={approvingOrder}
             fullWidth
-            {...getGtmTag(GTM_TAGS.FORMS.CANCEL, "forms")}
           >
             {t2("links.cancel")}
           </Button>

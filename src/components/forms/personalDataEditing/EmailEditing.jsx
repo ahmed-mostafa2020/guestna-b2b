@@ -20,7 +20,6 @@ import { CircularProgress } from "@mui/material";
 import { useSnackbar } from "notistack";
 
 import axios from "axios";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const EmailEditing = ({ handleClose }) => {
   const [_, setFormErrors] = useState([]);
@@ -129,7 +128,6 @@ const EmailEditing = ({ handleClose }) => {
                 onClick={handleClose}
                 type="button"
                 className="px-8 py-3 text-black transition-all duration-200 ease-in-out hover:text-mainColor"
-                {...getGtmTag(GTM_TAGS.FORMS.CANCEL, "forms")}
               >
                 {t("links.cancel")}
               </button>
@@ -145,7 +143,6 @@ const EmailEditing = ({ handleClose }) => {
                 className={`centered gap-2 py-3 px-8 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                   isValid && "hover:bg-linksHover hover:border-linksHover"
                 }`}
-                {...getGtmTag(GTM_TAGS.PROFILE.EDIT_EMAIL, "profile")}
               >
                 {isSubmitting ? (
                   <>

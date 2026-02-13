@@ -5,7 +5,6 @@ import { useLocale } from "next-intl";
 import { useSelector } from "react-redux";
 
 import ImageWithPlaceholder from "./imagesPlaceholder/ImageWithPlaceholder";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 import logo from "@assets/logo.png";
 
@@ -19,11 +18,7 @@ const Logo = () => {
   const currentLogo = customLogo || logo;
 
   return (
-    <Link
-      href={`/${locale}`}
-      className="outline-none w-fit"
-      {...getGtmTag(GTM_TAGS.NAV.LOGO, "navigation")}
-    >
+    <Link href={`/${locale}`} className="outline-none w-fit">
       <ImageWithPlaceholder
         src={currentLogo}
         alt="logo"

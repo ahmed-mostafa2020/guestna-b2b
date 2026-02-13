@@ -22,7 +22,6 @@ import "react-phone-number-input/style.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import { Close } from "@mui/icons-material";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const SchoolRegisterForm = ({
   cities = [],
@@ -760,7 +759,6 @@ const SchoolRegisterForm = ({
                     type="submit"
                     disabled={isSubmitting || !isValid}
                     className="lg:flex-1 w-full centered font-semibold text-center border-2 border-mainColor py-3 bg-mainColor text-white rounded-lg hover:bg-linksHover hover:border-linksHover transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                    {...getGtmTag(GTM_TAGS.FORMS.SUBMIT, "forms")}
                   >
                     {isSubmitting ? (
                       <>

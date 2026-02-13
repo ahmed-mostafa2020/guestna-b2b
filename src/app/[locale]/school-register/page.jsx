@@ -42,7 +42,7 @@ const SchoolRegisterPage = () => {
 
   return (
     <ProtectedProfilePage
-      requiredPermission={PERMISSIONS.PAGE.B2B_INVITE_ORGANIZATION_SALES_PAGE}
+      requiredPermission={PERMISSIONS.PAGE.B2B_INVITE_SCHOOL_PAGE}
     >
       <>
         <PageHeader />

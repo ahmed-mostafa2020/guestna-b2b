@@ -30,7 +30,6 @@ import StepTripInfo from "./steps/StepTripInfo";
 import StepTripDate from "./steps/StepTripDate";
 import StepPricing from "./steps/StepPricing";
 import StepAdditionalInfo from "./steps/StepAdditionalInfo";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 // ============================================================================
 // Deep Validation Helper Functions
@@ -833,7 +832,6 @@ const CustomNewTripForm = ({
                         ? "opacity-50 cursor-not-allowed bg-gray-100 text-gray-400"
                         : "border-mainColor text-mainColor hover:bg-mainColor hover:text-white transition-colors"
                     }`}
-                    {...getGtmTag(GTM_TAGS.FORMS.PREV_STEP, "forms")}
                   >
                     {t2("common.back")}
                   </button>
@@ -843,12 +841,6 @@ const CustomNewTripForm = ({
                     onClick={() => handleNext(formik)}
                     disabled={isNextDisabled}
                     className="px-4 sm:px-6 py-2 sm:py-2.5 bg-mainColor text-white rounded-lg hover:bg-titleColor disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
-                    {...getGtmTag(
-                      activeStep === steps.length - 1
-                        ? GTM_TAGS.FORMS.SUBMIT
-                        : GTM_TAGS.FORMS.NEXT_STEP,
-                      "forms"
-                    )}
                   >
                     {isSubmitting ? (
                       <div className="flex items-center justify-center gap-2">

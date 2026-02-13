@@ -5,8 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
-
 import { useDispatch } from "react-redux";
 import {
   setLoggedEmail,
@@ -175,7 +173,6 @@ const EmailMethodForm = ({ redirect = true }) => {
                 onClick={() => dispatch(setResetPasswordBy("email"))}
                 href={`/${locale}/forget-password`}
                 className="text-sm transition-all duration-200 ease-in-out border-b text-titleColor font-ibm border-titleColor hover:border-linksHover hover:text-linksHover"
-                {...getGtmTag(GTM_TAGS.AUTH.FORGOT_PASSWORD, "auth")}
               >
                 {t("forms.auth.forgetPassword.name")}
               </Link>
@@ -187,7 +184,6 @@ const EmailMethodForm = ({ redirect = true }) => {
               className={`centered gap-2 w-full mt-4 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                 isValid && "hover:bg-linksHover hover:border-linksHover"
               }`}
-              {...getGtmTag(GTM_TAGS.AUTH.LOGIN_BUTTON, "auth")}
             >
               {isSubmitting ? (
                 <>

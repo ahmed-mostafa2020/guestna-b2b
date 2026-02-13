@@ -3,7 +3,6 @@ import { memo, useState } from "react";
 
 import { TextField, InputAdornment, IconButton } from "@mui/material";
 import { searchBarIcon, wrongIcon } from "@assets/svg";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const UsersHeader = ({ setSearchTerm, searchTerm }) => {
   const t = useTranslations();
@@ -40,10 +39,7 @@ const UsersHeader = ({ setSearchTerm, searchTerm }) => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <IconButton
-                    onClick={handleSearch}
-                    {...getGtmTag(GTM_TAGS.FILTERS.SEARCH, "filters")}
-                  >
+                  <IconButton onClick={handleSearch}>
                     {searchBarIcon}
                   </IconButton>
                 </InputAdornment>
@@ -51,12 +47,7 @@ const UsersHeader = ({ setSearchTerm, searchTerm }) => {
             }}
           />
           {(searchValue || searchTerm) && (
-            <IconButton
-              onClick={handleClear}
-              {...getGtmTag(GTM_TAGS.FILTERS.RESET, "filters")}
-            >
-              {wrongIcon}
-            </IconButton>
+            <IconButton onClick={handleClear}>{wrongIcon}</IconButton>
           )}
         </div>
       </div>

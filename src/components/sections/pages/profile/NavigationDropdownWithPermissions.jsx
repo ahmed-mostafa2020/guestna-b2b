@@ -111,12 +111,12 @@ const NavigationDropdown = () => {
         {
           title: t("profile.aside.schoolTeamManagement.schoolsOverView.title"),
           path: `${profileBasePath}/school-team-management/schools-overview`,
-          permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_SCHOOLS_TAB,
+          permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_USERS_TAB,
         },
         {
           title: t("profile.aside.schoolTeamManagement.students"),
           path: `${profileBasePath}/school-team-management/students`,
-          permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_STUDENTS_TAB,
+          permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_USERS_TAB,
         },
         {
           title: t("profile.aside.schoolTeamManagement.users"),
@@ -150,7 +150,7 @@ const NavigationDropdown = () => {
       icon: <CalendarIcon />,
       path: `${profileBasePath}/calendar`,
       hasDropdown: false,
-      permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_CALENDER_TAB,
+      permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_CALENDAR_TAB,
     },
     {
       id: "reports-and-analytics",

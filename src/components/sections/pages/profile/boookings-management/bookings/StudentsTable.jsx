@@ -4,8 +4,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { memo, useState, useMemo, useRef, useCallback } from "react";
 import { useSnackbar } from "notistack";
 import axios from "axios";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -21,8 +19,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import Pagination from "@components/common/Pagination";
-import { actionsIcon } from "@assets/svg";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
+import CheckboxGroup from "@components/forms/CheckboxGroup";
 
 const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
   const locale = useLocale();
@@ -120,69 +117,31 @@ const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
     }
   };
 
-  // PDF consent download
-  const consentRef = useRef(null);
-  const [pdfStudent, setPdfStudent] = useState(null);
-  const [loadingPdf, setLoadingPdf] = useState({});
-
-  const handleDownloadConsent = useCallback(
-    async (student) => {
-      const studentId = student._id;
-      setLoadingPdf((prev) => ({ ...prev, [studentId]: true }));
-      setPdfStudent(student);
-
-      // Wait for the hidden element to render
-      await new Promise((resolve) => setTimeout(resolve, 300));
-
-      try {
-        const element = consentRef.current;
-        if (!element) throw new Error("Consent element not found");
-
-        const canvas = await html2canvas(element, {
-          scale: 2,
-          useCORS: true,
-          logging: false,
-          backgroundColor: "#ffffff",
-        });
-
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("p", "mm", "a4");
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-        let yPosition = 0;
-        const pageHeight = pdf.internal.pageSize.getHeight();
-
-        if (pdfHeight > pageHeight) {
-          while (yPosition < pdfHeight) {
-            pdf.addImage(imgData, "PNG", 0, -yPosition, pdfWidth, pdfHeight);
-            yPosition += pageHeight;
-            if (yPosition < pdfHeight) {
-              pdf.addPage();
-            }
-          }
-        } else {
-          pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-        }
-
-        pdf.save(`consent-${student.child?.name || "student"}-${locale}.pdf`);
-
-        enqueueSnackbar(
-          t("profile.tables.orders.studentsTable.downloadSuccess"),
-          { variant: "success" }
-        );
-      } catch (error) {
-        console.error("Error generating consent PDF:", error);
-        enqueueSnackbar(
-          t("profile.tables.orders.studentsTable.downloadError"),
-          { variant: "error" }
-        );
-      } finally {
-        setLoadingPdf((prev) => ({ ...prev, [studentId]: false }));
-        setPdfStudent(null);
-      }
-    },
-    [locale, t, enqueueSnackbar]
+  // Action buttons component for reuse
+  const ActionButtons = ({ student }) => (
+    <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
+      <button
+        onClick={() => handlePrintInvoice(student)}
+        disabled={true}
+        className="centered min-w-[120px] bg-mainColor text-white px-4 py-1 rounded-md font-medium transition-all duration-200 hover:bg-linksHover border border-mainColor hover:border-linksHover disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {loadingPrint[student._id] ? (
+          <CircularProgress size={16} color="inherit" />
+        ) : (
+          t("profile.tables.orders.studentsTable.printInvoice")
+        )}
+      </button>
+      <button
+        onClick={() => handleResend(student)}
+        className="centered min-w-[120px] text-mainColor px-4 py-1 rounded-md font-medium transition-all border border-secColor duration-200 hover:bg-linksHover hover:border-linksHover hover:text-white"
+      >
+        {loadingResend[student._id] ? (
+          <CircularProgress size={16} color="inherit" />
+        ) : (
+          t("profile.tables.orders.studentsTable.resend")
+        )}
+      </button>
+    </div>
   );
 
   // 3-dot actions menu component

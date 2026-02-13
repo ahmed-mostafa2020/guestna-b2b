@@ -5,7 +5,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { bankSmallIcon, locationGrayIcon } from "@assets/svg";
 import Link from "next/link";
 import formatCurrency from "@utils/FormatCurrency";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const SchoolOverviewCard = ({ item }) => {
   const t = useTranslations();
@@ -96,11 +95,10 @@ const SchoolOverviewCard = ({ item }) => {
           </Typography>
         </Box>
       </Box>
-
+      {/* Button */}
       <Link
         className="!font-somar font-semibold !bg-mainColor px-8 py-4 block text-center w-full !text-white  rounded-lg"
         href={`/${locale}/profile/school-team-management/schools-details/${item.slug}`}
-        {...getGtmTag(GTM_TAGS.SCHOOLS.VIEW_DETAILS, "schools", item.slug)}
       >
         {t("profile.schools_overview.cards.show_details")}
       </Link>

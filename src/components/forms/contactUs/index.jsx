@@ -1,7 +1,5 @@
 import { useLocale, useTranslations } from "next-intl";
 
-import { getGtmTag } from "@utils/gtmUtils";
-
 import { useState } from "react";
 
 import { createContactUsSchema } from "@utils/validationSchemas";
@@ -162,7 +160,6 @@ const ContactUsForm = () => {
                   className={`centered gap-2 w-full mt-8 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                     isValid && "hover:bg-linksHover hover:border-linksHover"
                   }`}
-                  {...getGtmTag("contact_us_submit", "forms")}
                 >
                   {isSubmitting ? (
                     <>

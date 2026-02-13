@@ -4,8 +4,6 @@ import Link from "next/link";
 
 import { useTranslations } from "next-intl";
 
-import { getGtmTag } from "@utils/gtmUtils";
-
 import { memo } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
@@ -34,7 +32,6 @@ const FeatureTripCard = ({ featureTrip }) => {
           target="_blank"
           href={CONSTANT_VALUES.WHATSAPP_CONTACT}
           className="px-4 py-3 text-sm text-white transition-all duration-200 ease-in-out rounded-lg lg:px-8 lg:text-base centered bg-mainColor hover:bg-linksHover"
-          {...getGtmTag("feature_trip_contact", "trips")}
         >
           {t("links.contactUs")}
         </Link>

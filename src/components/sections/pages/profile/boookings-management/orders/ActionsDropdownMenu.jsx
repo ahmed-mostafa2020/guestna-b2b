@@ -35,14 +35,14 @@ const ActionsDropdownMenu = ({
   const locale = useLocale();
   const t = useTranslations();
   const { enqueueSnackbar } = useSnackbar();
-  const { hasElement, getGtmProps } = usePermissions();
+  const { hasElement } = usePermissions();
 
   const headers = useMemo(() => getHeaders(locale), [locale]);
 
   /* ================= Permissions ================= */
   const canShowDetails = useMemo(
     () =>
-      hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOWDETAILS),
+      hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOW_DETAILS),
     [hasElement]
   );
 
@@ -56,7 +56,7 @@ const ActionsDropdownMenu = ({
 
   const canUpdateTrip = useMemo(
     () =>
-      hasElement(PERMISSIONS.ELEMENT.B2B_PROFIEL_ORDER_MANAGEMENT_UPDATE_TRIP),
+      hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_UPDATE_TRIP),
     [hasElement]
   );
 
@@ -173,6 +173,7 @@ const ActionsDropdownMenu = ({
 
   if (!hasAnyMenuItems) return null;
 
+  
   return (
     <>
       <Button
@@ -200,11 +201,6 @@ const ActionsDropdownMenu = ({
             href={`/${locale}/profile/bookings-management/orders/${bookingId}`}
             onClick={handleClose}
             className="!font-somar"
-            {...getGtmProps(
-              PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOWDETAILS,
-              null,
-              bookingId
-            )}
           >
             {t("links.showDetails")}
           </MenuItem>
@@ -215,11 +211,6 @@ const ActionsDropdownMenu = ({
             onClick={sendRemind}
             disabled={sendingReminder}
             className="!font-somar"
-            {...getGtmProps(
-              PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REMINDER_GUESTNA,
-              null,
-              bookingId
-            )}
           >
             {sendingReminder ? (
               <CircularProgress size={16} />
@@ -236,11 +227,6 @@ const ActionsDropdownMenu = ({
               openEditModal?.(bookingId);
             }}
             className="!font-somar"
-            {...getGtmProps(
-              PERMISSIONS.ELEMENT.B2B_PROFIEL_ORDER_MANAGEMENT_UPDATE_TRIP,
-              null,
-              bookingId
-            )}
           >
             {t("links.edit")}
           </MenuItem>
@@ -254,11 +240,6 @@ const ActionsDropdownMenu = ({
             }}
             sx={{ color: "success.main" }}
             className="!font-somar"
-            {...getGtmProps(
-              PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_ACCEPT,
-              null,
-              bookingId
-            )}
           >
             {t("links.confirm")}
           </MenuItem>
@@ -272,11 +253,6 @@ const ActionsDropdownMenu = ({
             }}
             sx={{ color: "error.main" }}
             className="!font-somar"
-            {...getGtmProps(
-              PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REJECT,
-              null,
-              bookingId
-            )}
           >
             {t("links.reject")}
           </MenuItem>

@@ -9,7 +9,6 @@ import { useState } from "react";
 import SystemUpdateAltIcon from "@mui/icons-material/SystemUpdateAlt";
 import { CircularProgress } from "@mui/material";
 import { isIOS } from "@utils/deviceDetection";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const DownloadButton = () => {
   const [isDownloading, setIsDownloading] = useState(false);
@@ -116,15 +115,11 @@ const DownloadButton = () => {
         className={`gap-1 px-4 py-3 font-semibold transition-all duration-200 ease-in-out bg-transparent border-2 rounded-lg centered border-mainColor hover:text-mainColor ${
           !fileUrl || isDownloading ? "opacity-70 cursor-not-allowed" : ""
         }`}
-        {...getGtmTag(GTM_TAGS.TRIP_DETAILS.DOWNLOAD_FILE, "trip_details")}
       >
         {isDownloading ? (
           <>
             {t("forms.validation.downloading")}
-            <CircularProgress
-              size={14}
-              sx={{ color: "var(--color-secondary)" }}
-            />
+            <CircularProgress size={14} sx={{ color: "#ED8A22" }} />
           </>
         ) : (
           <>

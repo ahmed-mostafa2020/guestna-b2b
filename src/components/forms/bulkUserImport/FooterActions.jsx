@@ -2,7 +2,6 @@ import { usersHeaders } from "@constants/excelHeaders";
 import { useExcel } from "@hooks/useExcel";
 import { Box } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 const ExportUsersExcel = ({ users }) => {
   const locale = useLocale();
   const t = useTranslations();
@@ -28,7 +27,6 @@ const ExportUsersExcel = ({ users }) => {
     <button
       onClick={downloadExcelJS}
       className="flex  items-center justify-center gap-2.5 py-4 px-6 font-bold text-white rounded-lg bg-mainColor hover:bg-linksHover"
-      {...getGtmTag(GTM_TAGS.USERS.BULK_IMPORT, "users")}
     >
       {t("profile.schools_users.bulkImport.buttons.downloadCurrentUsers")}
     </button>
@@ -49,7 +47,6 @@ const FooterActions = ({
       <button
         className="flex  items-center justify-center gap-2.5 py-4 px-6 font-bold text-mainColor rounded-lg border-2 border-mainColor hover:border-linksHover  hover:text-linksHover"
         onClick={onClose}
-        {...getGtmTag(GTM_TAGS.FORMS.CANCEL, "forms")}
       >
         {t("profile.schools_users.bulkImport.buttons.cancel")}
       </button>
@@ -58,13 +55,13 @@ const FooterActions = ({
         className="flex items-center justify-center gap-2.5 py-4 px-6 font-bold text-white rounded-lg bg-mainColor hover:bg-linksHover disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={!hasValidUsers || isSubmitting || !usersCount}
         onClick={onSubmit}
-        {...getGtmTag(GTM_TAGS.FORMS.SUBMIT, "forms")}
       >
         {isSubmitting
           ? t("profile.schools_users.bulkImport.buttons.isSubmitting")
           : t("profile.schools_users.bulkImport.submit", { count: usersCount })}
       </button>
 
+      {/* 📌 زر تحميل المستخدمين الحاليين */}
       <ExportUsersExcel users={existingUsers} />
     </Box>
   );

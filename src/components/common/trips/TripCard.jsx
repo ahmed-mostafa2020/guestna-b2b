@@ -6,8 +6,6 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
-
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import calculateHours from "@utils/CalculateHours";
 import formatNumbersUint from "@utils/FormatNumbersUint";
@@ -34,11 +32,11 @@ const TripCard = ({ activityCard, imageWidth = 300 }) => {
   }, [activityCard.name]);
 
   const numCities = activityCard.cities.length;
-
+ 
   const renderCities = useMemo(() => {
     if (numCities === 1) {
       return (
-        <h4 className="gap-1 font-medium capitalize centered">
+        <h4  className="gap-1 font-medium capitalize centered">
           {locationIcon}
           {activityCard.cities[0].name}
         </h4>
@@ -71,8 +69,8 @@ const TripCard = ({ activityCard, imageWidth = 300 }) => {
         {activityCard.tripsType === CONSTANT_VALUES.PACKAGE
           ? t("common.multiDaysTrip")
           : activityCard.tripsType === CONSTANT_VALUES.ACTIVITY
-            ? t("common.oneDayTrip")
-            : t("common.halfDayTrip")}
+          ? t("common.oneDayTrip")
+          : t("common.halfDayTrip")}
       </p>
 
       <ImageWithPlaceholder
@@ -157,11 +155,6 @@ const TripCard = ({ activityCard, imageWidth = 300 }) => {
           <Link
             href={`/${locale}/discover/${activityCard.slug}`}
             className="px-6 text-center py-3 capitalize rounded-[10px] text-white bg-mainColor border-2 border-mainColor font-medium text-base transition-all ease-in-out duration-200 hover:bg-linksHover hover:border-linksHover mx-auto "
-            {...getGtmTag(
-              GTM_TAGS.TRIPS.VIEW_DETAILS,
-              "trips",
-              activityCard.slug
-            )}
           >
             {t("links.viewTripDetails")}
           </Link>

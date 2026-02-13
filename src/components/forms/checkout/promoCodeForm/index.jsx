@@ -20,7 +20,6 @@ import getProxyUrl from "@utils/getProxyUrl";
 import axios from "axios";
 
 import { CircularProgress } from "@mui/material";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const PromoCodeForm = () => {
   const [promoValue, setPromoValue] = useState("");
@@ -85,13 +84,10 @@ const PromoCodeForm = () => {
           }
 
           // Set 30-minute timeout to clear promo code data
-          timeoutRef.current = setTimeout(
-            () => {
-              console.log("30 minutes elapsed - Clearing promo code data");
-              dispatch(resetPromoCode());
-            },
-            30 * 60 * 1000
-          ); // 30 minutes in milliseconds
+          timeoutRef.current = setTimeout(() => {
+            console.log("30 minutes elapsed - Clearing promo code data");
+            dispatch(resetPromoCode());
+          }, 30 * 60 * 1000); // 30 minutes in milliseconds
 
           // Check if trip is free after promo code applied
           const isFreeTrip =
@@ -154,7 +150,6 @@ const PromoCodeForm = () => {
             disabled={!promoValue || isSubmitting}
             onClick={handleSubmit}
             className="centered border border-[#E3EBF5] bg-[#E3EBF5] rounded-lg py-4 px-8 font-semibold transition-all duration-200 ease-in-out disabled:opacity-60 disabled:cursor-not-allowed"
-            {...getGtmTag(GTM_TAGS.PAYMENT.APPLY_COUPON, "payment")}
           >
             {isSubmitting ? (
               <>

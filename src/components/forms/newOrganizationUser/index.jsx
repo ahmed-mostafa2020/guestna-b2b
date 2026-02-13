@@ -23,7 +23,6 @@ import { CircularProgress } from "@mui/material";
 import { useSnackbar } from "notistack";
 
 import axios from "axios";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 import PhoneInputWithCountrySelect from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -87,11 +86,11 @@ const OrganizationUserForm = ({
       maxBodyLength: Infinity,
       url: user
         ? getProxyUrl(
-            `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.EDIT_USER}/${user._id}`
-          )
+          `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.EDIT_USER}/${user._id}`
+        )
         : getProxyUrl(
-            B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.NEW_USER
-          ),
+          B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.NEW_USER
+        ),
 
       headers,
       data: newUserData,
@@ -117,6 +116,7 @@ const OrganizationUserForm = ({
           handleClose();
         }
       })
+  
 
       .catch((error) => {
         setSubmitting(false);
@@ -126,6 +126,7 @@ const OrganizationUserForm = ({
         if (formErrors) {
           setFormErrors([errorMessage]);
         }
+      
       });
   };
 
@@ -267,7 +268,6 @@ const OrganizationUserForm = ({
                 className={`centered gap-2 w-full mt-4 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                   isValid && "hover:bg-linksHover hover:border-linksHover"
                 }`}
-                {...getGtmTag(GTM_TAGS.USERS.ADD_USER, "users")}
               >
                 {isSubmitting ? (
                   <>
@@ -287,7 +287,6 @@ const OrganizationUserForm = ({
                   isValid &&
                   "hover:bg-secColor hover:border-secColor hover:text-white"
                 }`}
-                {...getGtmTag(GTM_TAGS.FORMS.CANCEL, "forms")}
               >
                 {t("links.cancel")}
               </button>

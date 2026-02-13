@@ -24,7 +24,6 @@ import { Formik } from "formik";
 import axios from "axios";
 
 import { CircularProgress } from "@mui/material";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const ResetNewPassword = () => {
   const [formErrors, setFormErrors] = useState([]);
@@ -171,7 +170,6 @@ const ResetNewPassword = () => {
                   className={`centered gap-2 w-full mt-8 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                     isValid && "hover:bg-linksHover hover:border-linksHover"
                   }`}
-                  {...getGtmTag(GTM_TAGS.AUTH.FORGOT_PASSWORD, "auth")}
                 >
                   {isSubmitting ? (
                     <>
