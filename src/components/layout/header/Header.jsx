@@ -7,8 +7,6 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useSelector } from "react-redux";
 
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
-
 // import { useDispatch } from "react-redux";
 // import actGetNavbarData from "@store/navbarData/act/actGetNavbarData";
 
@@ -87,10 +85,6 @@ const Header = () => {
                   ? "border-mainColor text-mainColor"
                   : "border-transparent"
               }`}
-              {...getGtmTag(
-                `nav_${navLink.name.toLowerCase().replace(/\s+/g, "_")}`,
-                "navigation"
-              )}
             >
               {navLink.name}
             </Link>

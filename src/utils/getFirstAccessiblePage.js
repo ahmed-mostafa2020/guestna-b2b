@@ -25,7 +25,7 @@ export const getFirstAccessiblePage = (userPages, locale) => {
       route: `/${locale}/profile/bookings-management/orders`,
     },
     {
-      permission: PERMISSIONS.PAGE.B2B_INVITE_ORGANIZATION_SALES_PAGE,
+      permission: PERMISSIONS.PAGE.B2B_INVITE_SCHOOL_PAGE,
       route: `/${locale}/school-register`,
     },
     {
@@ -41,7 +41,7 @@ export const getFirstAccessiblePage = (userPages, locale) => {
       route: `/${locale}/profile/reports-and-analytics/integrated-bookings`,
     },
     {
-      permission: PERMISSIONS.PAGE.B2B_PROFILE_CALENDER_PAGE,
+      permission: PERMISSIONS.PAGE.B2B_PROFILE_CALENDAR_PAGE,
       route: `/${locale}/profile/calendar`,
     },
     {
@@ -55,14 +55,6 @@ export const getFirstAccessiblePage = (userPages, locale) => {
     {
       permission: PERMISSIONS.PAGE.B2B_PROFILE_WITHDRAW_PAGE,
       route: `/${locale}/profile/my-wallet/withdraw`,
-    },
-    {
-      permission: PERMISSIONS.PAGE.B2B_PROFILE_STUDENTS_PAGE,
-      route: `/${locale}/profile/school-team-management/students`,
-    },
-    {
-      permission: PERMISSIONS.PAGE.B2B_PROFILE_SCHOOLS_PAGE,
-      route: `/${locale}/profile/school-team-management/schools-overview`,
     },
   ];
 

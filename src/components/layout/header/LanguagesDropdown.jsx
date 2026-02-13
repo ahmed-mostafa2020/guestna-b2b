@@ -4,8 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
-
 import { useState } from "react";
 
 import { doneIcon } from "@assets/svg";
@@ -47,7 +45,6 @@ const LanguagesDropdown = () => {
       key={index}
       className="flex items-center justify-between px-4 py-4 text-sm transition-all duration-200 ease-in-out border-b cursor-pointer border-border hover:bg-buttonsHover"
       onClick={() => selectLanguage(language.name)}
-      {...getGtmTag(`nav_language_${language.url}`, "navigation")}
     >
       <span>{language.name}</span>
       {selectedLanguage === language.name && <span>{doneIcon}</span>}
@@ -59,7 +56,6 @@ const LanguagesDropdown = () => {
       <button
         className="flex items-center justify-between w-full p-3 text-base font-medium border-2 rounded-md border-border"
         onClick={toggleDropdown}
-        {...getGtmTag(GTM_TAGS.NAV.LANGUAGE_SWITCH, "navigation")}
       >
         <div>
           <h4 className="text-xs font-light text-start">

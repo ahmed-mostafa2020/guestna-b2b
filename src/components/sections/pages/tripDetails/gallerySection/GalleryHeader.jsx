@@ -7,7 +7,6 @@ import { memo, useMemo } from "react";
 
 import IosShareIcon from "@mui/icons-material/IosShare";
 import DownloadButton from "./DownloadButton";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const GalleryHeader = ({ tripData }) => {
   const t = useTranslations();
@@ -67,18 +66,12 @@ const GalleryHeader = ({ tripData }) => {
 
       <div className="flex flex-wrap items-center justify-end">
         <div className="flex items-center gap-3">
-          <button
-            onClick={handleShare}
-            className="flex items-center gap-1"
-            {...getGtmTag(GTM_TAGS.TRIP_DETAILS.SHARE, "trip_details")}
-          >
+          <button onClick={handleShare} className="flex items-center gap-1">
             <IosShareIcon fontSize="small" />
             {t("links.share")}
           </button>
 
-          {detailsFile && (isDiscoverPage ? isAuth : true) && (
-            <DownloadButton />
-          )}
+          {detailsFile && (isDiscoverPage ? isAuth : true) && <DownloadButton />}
         </div>
       </div>
     </>

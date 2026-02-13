@@ -3,8 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
-
 import { useDispatch } from "react-redux";
 import { resetSignUpData } from "@store/forms/auth/signUp/signUpFormSlice";
 import { resetLoginData } from "@store/forms/auth/login/loginFormSlice";
@@ -99,7 +97,6 @@ const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
         onClick={handleOpen}
         aria-label={t("profile.aside.logout")}
         className="px-4 py-2 text-base font-medium transition-all duration-200 ease-in-out hover:text-error"
-        {...getGtmTag(GTM_TAGS.AUTH.LOGOUT_BUTTON, "auth")}
       >
         {t("profile.aside.logout")}
       </button>

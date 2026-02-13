@@ -14,7 +14,6 @@ import getProxyUrl from "@utils/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { TRIP_STATUS } from "@constants/tripStatus";
 import axios from "axios";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const ActionsDropdownMenu = ({ booking }) => {
   const locale = useLocale();
@@ -91,26 +90,12 @@ const ActionsDropdownMenu = ({ booking }) => {
             },
           }}
         >
-          <MenuItem
-            onClick={showBookingDetails}
-            {...getGtmTag(
-              GTM_TAGS.BOOKINGS.VIEW_DETAILS,
-              "bookings",
-              booking._id
-            )}
-          >
+          <MenuItem onClick={showBookingDetails}>
             {t("links.showDetails")}
           </MenuItem>
 
           {booking.status !== TRIP_STATUS.CANCELLED && (
-            <MenuItem
-              onClick={showAdministrativeComment}
-              {...getGtmTag(
-                GTM_TAGS.BOOKINGS.ADMINISTRATIVE_COMMENT,
-                "bookings",
-                booking._id
-              )}
-            >
+            <MenuItem onClick={showAdministrativeComment}>
               {t("profile.tables.bookings.actions.administrativeComment")}
             </MenuItem>
           )}

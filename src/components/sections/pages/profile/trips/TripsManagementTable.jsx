@@ -19,7 +19,7 @@ const TripsManagementTable = ({
   setCurrentPage,
   enablePagination,
 }) => {
-  const { hasElement, getGtmProps } = usePermissions();
+  const { hasElement } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
 
@@ -156,12 +156,6 @@ const TripsManagementTable = ({
                           <Link
                             href={`/${locale}/profile/create-trip-link/${trip.slug}`}
                             className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-linksHover"
-                            {...getGtmProps(
-                              PERMISSIONS.ELEMENT
-                                .B2B_PROFILE_TRIPS_MANAGEMENT_BUTTON,
-                              null,
-                              trip.slug
-                            )}
                           >
                             {t("links.tripManagement")}
                           </Link>
@@ -273,11 +267,6 @@ const TripsManagementTable = ({
                     <Link
                       href={`/${locale}/profile/create-trip-link/${trip.slug}`}
                       className="inline-block text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-linksHover"
-                      {...getGtmProps(
-                        PERMISSIONS.ELEMENT.B2B_PROFILE_TRIPS_MANAGEMENT_BUTTON,
-                        null,
-                        trip.slug
-                      )}
                     >
                       {t("links.tripManagement")}
                     </Link>

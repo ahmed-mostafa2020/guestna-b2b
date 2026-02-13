@@ -131,7 +131,7 @@ const RolesPermissionsContent = ({
   const t = useTranslations();
   const locale = useLocale();
   const { enqueueSnackbar } = useSnackbar();
-  const { hasElement, getGtmProps } = usePermissions();
+  const { hasElement } = usePermissions();
 
   // ============================================================================
   // STATE MANAGEMENT
@@ -427,7 +427,6 @@ const RolesPermissionsContent = ({
             <Link
               href={`/${locale}/profile/roles-permissions/add-role`}
               className="bg-mainColor text-white border-2 border-mainColor px-6 py-2 rounded-lg hover:bg-linksHover hover:border-linksHover transition-all font-medium"
-              {...getGtmProps(PERMISSIONS.ELEMENT.B2B_PROFILE_ADD_ROLE_BTN)}
             >
               {t("profile.rolesPermissions.actions.addRole")}
             </Link>
@@ -484,10 +483,6 @@ const RolesPermissionsContent = ({
                 <button
                   onClick={handleSave}
                   className="flex items-center gap-2 px-4 py-2 bg-mainColor text-white rounded-lg hover:bg-linksHover transition-colors  font-medium"
-                  {...getGtmProps(
-                    PERMISSIONS.ELEMENT.B2B_PROFILE_CHANGE_PERMISSIONS_ROLE_BTN,
-                    "save"
-                  )}
                 >
                   <SaveIcon className="w-4 h-4" />
                   {t("profile.rolesPermissions.actions.save")}
@@ -495,10 +490,6 @@ const RolesPermissionsContent = ({
                 <button
                   onClick={handleReset}
                   className="flex items-center gap-2 px-4 py-2 border border-border bg-white rounded-lg transition-colors font-medium hover:border-error"
-                  {...getGtmProps(
-                    PERMISSIONS.ELEMENT.B2B_PROFILE_CHANGE_PERMISSIONS_ROLE_BTN,
-                    "reset"
-                  )}
                 >
                   <RefreshIcon className="w-4 h-4" />
                   {t("profile.rolesPermissions.actions.reset")}

@@ -33,7 +33,6 @@ import ChildForm from "./childForms/ChildForm";
 import CustomizedRiyadhForm from "./childForms/CustomizedRiyadhForm";
 import TermsConfirmationModal from "./TermsConfirmationModal";
 import { infoIcon } from "@assets/svg";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
   const [_, setNationalityError] = useState("");
@@ -700,7 +699,6 @@ const RegisterStudentForm = ({ tripMainCategory, availableSeats }) => {
                   !values.children.some((child) => !child.grade) &&
                   "hover:bg-linksHover hover:border-linksHover"
                 }`}
-                {...getGtmTag(GTM_TAGS.PAYMENT.PROCEED, "payment")}
               >
                 {isSubmitting ? (
                   <>

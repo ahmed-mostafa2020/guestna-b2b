@@ -4,8 +4,6 @@ import { useSearchParams } from "next/navigation";
 
 import { useLocale, useTranslations } from "next-intl";
 
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
-
 import { useDispatch, useSelector } from "react-redux";
 import { actGetDiscoverTrips } from "@store/discover/act/actGetDiscoverTrips";
 
@@ -209,6 +207,7 @@ const FilterGrid = () => {
     academicStage,
   ]);
 
+
   const searchParams = useSearchParams();
 
   const handleSubmit = () => {
@@ -311,7 +310,6 @@ const FilterGrid = () => {
             <button
               onClick={handleSubmit}
               className="flex-1 py-3 font-bold text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor hover:bg-linksHover hover:border-linksHover"
-              {...getGtmTag(GTM_TAGS.FILTERS.SEARCH, "filters")}
             >
               {t("links.search")}
             </button>

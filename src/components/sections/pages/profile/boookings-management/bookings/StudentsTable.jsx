@@ -13,7 +13,6 @@ import { ExcelService } from "@utils/excelService";
 import { CardContent, Card, CircularProgress, Button } from "@mui/material";
 import Pagination from "@components/common/Pagination";
 import CheckboxGroup from "@components/forms/CheckboxGroup";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
   const locale = useLocale();
@@ -118,7 +117,6 @@ const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
         onClick={() => handlePrintInvoice(student)}
         disabled={true}
         className="centered min-w-[120px] bg-mainColor text-white px-4 py-1 rounded-md font-medium transition-all duration-200 hover:bg-linksHover border border-mainColor hover:border-linksHover disabled:opacity-50 disabled:cursor-not-allowed"
-        {...getGtmTag(GTM_TAGS.STUDENTS.PRINT_INVOICE, "students", student._id)}
       >
         {loadingPrint[student._id] ? (
           <CircularProgress size={16} color="inherit" />
@@ -129,11 +127,6 @@ const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
       <button
         onClick={() => handleResend(student)}
         className="centered min-w-[120px] text-mainColor px-4 py-1 rounded-md font-medium transition-all border border-secColor duration-200 hover:bg-linksHover hover:border-linksHover hover:text-white"
-        {...getGtmTag(
-          GTM_TAGS.STUDENTS.RESEND_BOOKING,
-          "students",
-          student._id
-        )}
       >
         {loadingResend[student._id] ? (
           <CircularProgress size={16} color="inherit" />

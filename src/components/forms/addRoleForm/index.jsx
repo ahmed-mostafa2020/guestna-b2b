@@ -14,7 +14,6 @@ import { createAddRoleSchema } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
 import { CircularProgress } from "@mui/material";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const AddRoleForm = ({ permissionsData }) => {
   const locale = useLocale();
@@ -261,7 +260,6 @@ const AddRoleForm = ({ permissionsData }) => {
             <Link
               href={`/${locale}/profile/roles-permissions`}
               className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
-              {...getGtmTag(GTM_TAGS.FORMS.CANCEL, "forms")}
             >
               {t("profile.rolesPermissions.addRole.form.cancel")}
             </Link>
@@ -269,7 +267,6 @@ const AddRoleForm = ({ permissionsData }) => {
               type="submit"
               disabled={!isValid || isSubmitting}
               className="px-6 py-3 bg-mainColor text-white rounded-lg hover:bg-linksHover transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-              {...getGtmTag(GTM_TAGS.ROLES.ADD_ROLE, "roles")}
             >
               {isSubmitting ? (
                 <div className="flex items-center gap-2">

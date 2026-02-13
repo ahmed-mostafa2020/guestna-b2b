@@ -9,7 +9,6 @@ import getProxyUrl from "@utils/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import axios from "axios";
 import TextInputGroup from "@components/forms/TextInputGroup";
-import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const AdministrativeCommentModal = ({ booking, onClose }) => {
   const locale = useLocale();
@@ -96,7 +95,6 @@ const AdministrativeCommentModal = ({ booking, onClose }) => {
           onClick={onClose}
           disabled={loading}
           className="flex-1 font-ibm text-center px-6 py-2.5 border border-gray-300 rounded-lg text-black font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          {...getGtmTag(GTM_TAGS.MODAL.CANCEL, "modal")}
         >
           {t("links.cancel")}
         </button>
@@ -104,7 +102,6 @@ const AdministrativeCommentModal = ({ booking, onClose }) => {
           onClick={handleSubmit}
           disabled={loading}
           className="flex-1 font-ibm text-center px-6 py-2.5 bg-mainColor text-white rounded-lg font-medium hover:bg-linksHover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          {...getGtmTag(GTM_TAGS.FORMS.SUBMIT, "forms")}
         >
           {loading && <CircularProgress size={16} color="inherit" />}
           {t("links.send")}

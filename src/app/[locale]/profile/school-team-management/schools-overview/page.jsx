@@ -11,7 +11,6 @@ import SchoolOverviewSearchFilters from "@components/sections/pages/profile/scho
 import InfoCardsListing from "@components/sections/pages/profile/trips/infoCards/InfoCardsListing";
 import InfoCardsSkeleton from "@components/sections/pages/profile/trips/infoCards/InfoCardsSkeleton";
 import ErrorComponent from "@feedback/error/ErrorComponent";
-import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 
 // Hooks
 import { useFetchData } from "@hooks/useFetchData";
@@ -77,6 +76,7 @@ const SchoolsOverViewPage = () => {
   // Refetch when filters change
   useEffect(() => {
     refetchOrganizations();
+
   }, [searchTerms, page]);
 
   // Page Title
@@ -99,69 +99,66 @@ const SchoolsOverViewPage = () => {
   const schools = data?.nodes ?? [];
 
   return (
-    <ProtectedProfilePage
-      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_SCHOOLS_PAGE}
-    >
-      <main className="flex flex-col gap-6 min-h-screen">
-        {/* Summary Info Cards */}
-        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS) && (
-          <>
-            {staticsLoading ? (
-              <InfoCardsSkeleton />
-            ) : (
-              <InfoCardsListing infoData={staticsData} />
-            )}
-          </>
-        )}
-
-        {/* Search and Filters */}
-        <Box className="bg-white p-4 rounded-md shadow-md">
-          <SchoolOverviewSearchFilters
-            searchTerms={searchTerms}
-            setSearchTerms={setSearchTerms}
-          />
-        </Box>
-
-        {/* Listing Section */}
-        <Grid container spacing={2}>
-          {/* Loading Skeletons */}
-          {isLoading &&
-            Array.from({ length: 6 }).map((_, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <SchoolOverviewCardSkeleton />
-              </Grid>
-            ))}
-
-          {/* School Cards */}
-          {!isLoading &&
-            schools.length > 0 &&
-            schools.map((organization) => (
-              <Grid item xs={12} sm={6} md={4} key={organization._id}>
-                <SchoolOverviewCard item={organization} />
-              </Grid>
-            ))}
-
-          {/* Empty State */}
-          {!isLoading && schools.length === 0 && (
-            <Box className="w-full py-10 flex justify-center items-center flex-col gap-4">
-              <Typography className="text-gray-600 font-medium text-center !font-somar !text-lg">
-                {t("profile.schools_overview.no_schools_found")}
-              </Typography>
-            </Box>
+    <main className="flex flex-col gap-6 min-h-screen">
+      {/* Summary Info Cards */}
+      {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS) && (
+        <>
+          {staticsLoading ? (
+            <InfoCardsSkeleton />
+          ) : (
+            <InfoCardsListing infoData={staticsData} />
           )}
-        </Grid>
+        </>
+      )}
 
-        {/* Pagination */}
-        {!isLoading && schools.length > 0 && (
-          <Pagination
-            totalPages={data?.totalPages}
-            currentPage={page}
-            onPageChange={(newPage) => setPage(newPage)}
-            pageInfo={data?.pageInfo}
-          />
+      {/* Search and Filters */}
+      <Box className="bg-white p-4 rounded-md shadow-md">
+        <SchoolOverviewSearchFilters
+          
+          searchTerms={searchTerms}
+          setSearchTerms={setSearchTerms}
+        />
+      </Box>
+
+      {/* Listing Section */}
+      <Grid container spacing={2}>
+        {/* Loading Skeletons */}
+        {isLoading &&
+          Array.from({ length: 6 }).map((_, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <SchoolOverviewCardSkeleton />
+            </Grid>
+          ))}
+
+        {/* School Cards */}
+        {!isLoading &&
+          schools.length > 0 &&
+          schools.map((organization) => (
+            <Grid item xs={12} sm={6} md={4} key={organization._id}>
+              <SchoolOverviewCard item={organization} />
+            </Grid>
+          ))}
+
+        {/* Empty State */}
+        {!isLoading && schools.length === 0 && (
+          <Box className="w-full py-10 flex justify-center items-center flex-col gap-4">
+            <Typography className="text-gray-600 font-medium text-center !font-somar !text-lg">
+              {t("profile.schools_overview.no_schools_found")}
+            </Typography>
+          </Box>
         )}
-      </main>
-    </ProtectedProfilePage>
+      </Grid>
+
+      {/* Pagination */}
+      {!isLoading && schools.length > 0 && (
+        <Pagination
+          totalPages={data?.totalPages}
+          currentPage={page}
+          onPageChange={(newPage) => setPage(newPage)}
+          pageInfo={data?.pageInfo}
+        />
+      )}
+    </main>
   );
 };
 

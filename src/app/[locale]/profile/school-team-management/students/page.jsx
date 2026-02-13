@@ -53,7 +53,7 @@ const page = () => {
 
   return (
     <ProtectedProfilePage
-      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_STUDENTS_PAGE}
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}
     >
       <main className="flex flex-col gap-6 min-h-screen">
         <section className="flex flex-col gap-2">
