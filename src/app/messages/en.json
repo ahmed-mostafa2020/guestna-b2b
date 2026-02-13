@@ -1228,32 +1228,38 @@
         },
         "bankTransfer": {
           "trips": {
-            "label": "Select Trip",
-            "placeholder": "Choose a completed trip",
+            "label": "Select Trips",
+            "placeholder": "Choose completed trips",
             "loading": "Loading trips...",
             "noTrips": "No completed trips available",
-            "error": "Error loading trips"
+            "error": "Error loading trips",
+            "selectedTrips": "Selected Trips"
           },
           "amount": {
             "label": "Withdrawal Amount",
             "placeholder": "Amount will be auto-filled",
-            "autoFilled": "Amount auto-filled from selected trip",
-            "selectTripFirst": "Please select a trip first"
+            "autoFilled": "Amount auto-filled from selected trips",
+            "selectTripFirst": "Please select a trip first",
+            "currency": "SAR",
+            "total": "Total"
           },
           "bankName": {
             "label": "Bank Name",
             "placeholder": "Enter your bank name",
-            "hint": "Example: Saudi National Bank, Al Rajhi Bank"
+            "hint": "Example: Saudi National Bank, Al Rajhi Bank",
+            "loading": "Loading bank info..."
           },
           "clientName": {
             "label": "Account Holder Name",
             "placeholder": "Enter account holder full name",
-            "hint": "Full name as it appears on your bank account"
+            "hint": "Full name as it appears on your bank account",
+            "loading": "Loading account info..."
           },
           "iban": {
             "label": "IBAN Number",
             "placeholder": "SA00 0000 0000 0000 0000 0000",
-            "hint": "Valid Saudi IBAN number"
+            "hint": "Valid Saudi IBAN number",
+            "loading": "Loading IBAN info..."
           },
           "notes": {
             "label": "Notes (Optional)",
@@ -1276,17 +1282,20 @@
         },
         "stcPay": {
           "trips": {
-            "label": "Select Trip",
-            "placeholder": "Choose a completed trip",
+            "label": "Select Trips",
+            "placeholder": "Choose completed trips",
             "loading": "Loading trips...",
             "noTrips": "No completed trips available",
-            "error": "Error loading trips"
+            "error": "Error loading trips",
+            "selectedTrips": "Selected Trips"
           },
           "amount": {
             "label": "Withdrawal Amount",
             "placeholder": "Amount will be auto-filled",
-            "autoFilled": "Amount auto-filled from selected trip",
-            "selectTripFirst": "Please select a trip first"
+            "autoFilled": "Amount auto-filled from selected trips",
+            "selectTripFirst": "Please select a trip first",
+            "currency": "SAR",
+            "total": "Total"
           },
           "phone": {
             "label": "STC Pay Phone Number",

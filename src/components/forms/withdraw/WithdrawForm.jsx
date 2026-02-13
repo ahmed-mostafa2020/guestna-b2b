@@ -25,7 +25,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   const queryClient = useQueryClient();
 
   const [transferMethod, setTransferMethod] = useState("bank");
-  const [selectedTrip, setSelectedTrip] = useState(null);
+  const [selectedTrips, setSelectedTrips] = useState([]);
 
   const {
     data: invoicesData,
@@ -33,6 +33,15 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
     error: tripsError,
   } = useFetchData(
     B2B_END_POINTS.PROFILE.TRIPS,
+    {},
+    {
+      method: "GET",
+    }
+  );
+
+  // Fetch default bank transfer account
+  const { data: defaultBankData, isLoading: defaultBankLoading } = useFetchData(
+    B2B_END_POINTS.PROFILE.BANK_TRANSFER_DEFAULT,
     {},
     {
       method: "GET",
@@ -54,19 +63,30 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
         name: trip.name,
         orderId: trip.orderId,
         amount: parseFloat(trip.amount || 0),
+        schoolName:
+          trip.organizationName ||
+          trip.schoolName ||
+          trip.organization?.name ||
+          "",
       }));
     }
 
     return [];
   }, [invoicesData]);
 
+  const hasDefaultBank = !!(
+    defaultBankData?.bankName ||
+    defaultBankData?.iban ||
+    defaultBankData?.clientName
+  );
+
   const initialValues = {
-    selectedTripId: "",
+    selectedTripIds: [],
     withdrawAmount: "",
     phoneNumber: "",
-    bankName: "",
-    clientName: "",
-    ibanNumber: "",
+    bankName: defaultBankData?.bankName || "",
+    clientName: defaultBankData?.clientName || "",
+    ibanNumber: defaultBankData?.iban || "",
     withdrawNotes: "",
   };
 
@@ -79,24 +99,26 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  // Handle trip selection
-  const handleTripSelection = (tripId, setFieldValue) => {
-    setFieldValue("selectedTripId", tripId);
+  // Handle multi-trip selection
+  const handleTripSelection = (tripIds, setFieldValue) => {
+    setFieldValue("selectedTripIds", tripIds);
 
-    // Find the selected trip to get its details
-    const trip = completedTrips.find((t) => t._id === tripId);
+    // Find all selected trips
+    const trips = completedTrips.filter((t) => tripIds.includes(t._id));
+    setSelectedTrips(trips);
 
-    if (trip) {
-      setSelectedTrip(trip);
-      // Auto-fill the withdrawal amount with the trip's amount
-      setFieldValue("withdrawAmount", trip.amount.toString());
-    }
+    // Auto-fill the withdrawal amount with the sum of selected trips' amounts
+    const totalAmount = trips.reduce((sum, trip) => sum + trip.amount, 0);
+    setFieldValue(
+      "withdrawAmount",
+      totalAmount > 0 ? totalAmount.toString() : ""
+    );
   };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       const requestBody = {
-        trip: selectedTrip._id,
+        trips: selectedTrips.map((trip) => trip._id),
         amount: parseFloat(values.withdrawAmount),
         type: transferMethod === "stc" ? "STC_PAY" : "BANK_TRANSFER",
         note: values.withdrawNotes || "",
@@ -130,12 +152,12 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
           variant: "success",
         });
         resetForm();
+        setSelectedTrips([]);
         refetchBalance();
         // Refetch trips list to update available trips for withdrawal
-        queryClient.invalidateQueries([
-          "fetchData",
-          B2B_END_POINTS.PROFILE.TRIPS,
-        ]);
+        queryClient.invalidateQueries({
+          queryKey: ["fetchData", B2B_END_POINTS.PROFILE.TRIPS],
+        });
       } else {
         // Handle API error response
         const apiErrorMessage =
@@ -198,6 +220,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
         handleBlur,
         isSubmitting,
         isValid,
+        dirty,
       }) => (
         <Form className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           <h3 className="text-2xl font-medium pb-6 text-titleColor">
@@ -209,9 +232,10 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
             transferMethod={transferMethod}
             setTransferMethod={(method) => {
               setTransferMethod(method);
-              // Reset selected trip when switching methods
-              setSelectedTrip(null);
-              setFieldValue("selectedTripId", "");
+              // Reset selected trips when switching methods
+              setSelectedTrips([]);
+              setFieldValue("selectedTripIds", []);
+              setFieldValue("withdrawAmount", "");
             }}
           />
 
@@ -228,7 +252,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
               completedTrips={completedTrips}
               tripsLoading={tripsLoading}
               tripsError={tripsError}
-              selectedTrip={selectedTrip}
+              selectedTrips={selectedTrips}
               onTripSelection={handleTripSelection}
             />
           )}
@@ -247,8 +271,10 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
               completedTrips={completedTrips}
               tripsLoading={tripsLoading}
               tripsError={tripsError}
-              selectedTrip={selectedTrip}
+              selectedTrips={selectedTrips}
               onTripSelection={handleTripSelection}
+              hasDefaultBank={hasDefaultBank}
+              defaultBankLoading={defaultBankLoading}
             />
           )}
 
@@ -257,10 +283,18 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
             <button
               type="submit"
               disabled={
-                isSubmitting || balanceLoading || !selectedTrip || !isValid
+                isSubmitting ||
+                balanceLoading ||
+                selectedTrips.length === 0 ||
+                !isValid ||
+                !dirty
               }
               className={`w-full py-4 px-6 rounded-lg font-bold text-white text-base transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-4 transform ${
-                isSubmitting || balanceLoading || !selectedTrip || !isValid
+                isSubmitting ||
+                balanceLoading ||
+                selectedTrips.length === 0 ||
+                !isValid ||
+                !dirty
                   ? "bg-mainColor cursor-not-allowed"
                   : "bg-mainColor hover:from-mainColor hover:to-mainColor focus:ring-mainColor shadow-lg hover:shadow-xl"
               }`}
@@ -284,12 +318,12 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
             )}
 
             {/* Debug info - remove in production */}
-            {!selectedTrip && (
+            {selectedTrips.length === 0 && (
               <p className="text-center text-secColor pt-2 text-sm">
                 {t("debug.selectTrip")}
               </p>
             )}
-            {selectedTrip && !isValid && (
+            {selectedTrips.length > 0 && !isValid && (
               <div className="text-center pt-2">
                 <p className="text-error text-sm mb-2">
                   {t("debug.fillRequiredFields")}

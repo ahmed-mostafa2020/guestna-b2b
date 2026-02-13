@@ -904,7 +904,10 @@ export const createWithdrawValidationSchema = (t, isBankTransfer) => {
   };
 
   return Yup.object().shape({
-    selectedTripId: Yup.string().required(getValidationMessage("tripRequired")),
+    selectedTripIds: Yup.array()
+      .of(Yup.string())
+      .min(1, getValidationMessage("tripRequired"))
+      .required(getValidationMessage("tripRequired")),
 
     withdrawAmount: Yup.number()
       // .required(getValidationMessage("amountRequired"))

@@ -156,6 +156,7 @@ export const B2B_END_POINTS = {
     ORGANIZATIONS_INVOICES: "profile/organizations/invoices",
     TRIPS: "profile/organizationTrips/invoices/trips/all",
     WITHDRAWALS: "profile/askWithdrawals/new",
+    BANK_TRANSFER_DEFAULT: "companies/bankTransfer",
 
     UPLOAD_PHOTO: "users/avatar", //MAIN
     VERIFIED_EMAIL: "users/sendConfirmed", //MAIN
