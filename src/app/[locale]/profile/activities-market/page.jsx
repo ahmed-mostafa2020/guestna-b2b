@@ -21,7 +21,9 @@ import { usePaginatedTrips } from "@hooks/usePaginatedTrips";
 
 
 const ActivitiesMarketPage = () => {
-  const { currentPage, filter } = useSelector((state) => state.discoverData);
+  const { currentPage, filter, searchTerm } = useSelector(
+    (state) => state.discoverData
+  );
   const searchParams = useSearchParams();
   const router = useRouter();
   const isInitialMount = useRef(true);
@@ -39,7 +41,7 @@ const ActivitiesMarketPage = () => {
   const { data, isLoading, error, isFetching } = usePaginatedTrips({
     page: currentPage,
     locale,
-    filter: { ...filter },
+    filter: { ...filter, searchTerm },
   });
 
   useEffect(() => {
