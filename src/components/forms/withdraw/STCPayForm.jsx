@@ -22,12 +22,13 @@ const STCPayForm = ({
   tripsError,
   selectedTrips,
   onTripSelection,
+  validateForm,
 }) => {
   const t = useTranslations("profile.myWallet.withdrawPage.stcPay");
 
   const handleTripsChange = (event) => {
     const selectedIds = event.target.value;
-    onTripSelection(selectedIds, setFieldValue);
+    onTripSelection(selectedIds, setFieldValue, validateForm);
   };
 
   const renderSelectedTrips = (selected) => {

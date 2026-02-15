@@ -40,6 +40,7 @@ const UsersPage = () => {
     {},
     {
       lang: locale,
+      enabled: hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_CARDS),
     }
   );
 
@@ -60,7 +61,6 @@ const UsersPage = () => {
     }
   );
 
-  console.log(tableData);
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
       "pagesHead.title.users"

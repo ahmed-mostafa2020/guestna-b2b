@@ -150,17 +150,17 @@ const TripsManagementTable = ({
                     {hasElement(
                       PERMISSIONS.ELEMENT.B2B_PROFILE_TRIPS_MANAGEMENT_BUTTON
                     ) && (
-                      <td className="px-6 py-4">
+                      <td className="px-2 py-4">
                         {trip.status === TRIP_STATUS.SCHEDULED ||
                         trip.status === TRIP_STATUS.PENDING ? (
                           <Link
                             href={`/${locale}/profile/create-trip-link/${trip.slug}`}
-                            className="text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-linksHover"
+                            className="lg:text-sm md:text-xs text-xs transition-all lg:px-2 px-2 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-linksHover"
                           >
                             {t("links.tripManagement")}
                           </Link>
                         ) : (
-                          <span className="text-sm px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
+                          <span className="lg:text-sm md:text-xs text-xs lg:px-2 px-2 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
                             {t("links.tripManagement")}
                           </span>
                         )}
@@ -266,12 +266,12 @@ const TripsManagementTable = ({
                   trip.status === TRIP_STATUS.PENDING ? (
                     <Link
                       href={`/${locale}/profile/create-trip-link/${trip.slug}`}
-                      className="inline-block text-sm transition-all px-6 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-linksHover"
+                      className="inline-block lg:text-sm text-xs transition-all lg:px-6 px-2 py-1 duration-150 ease-in-out bg-titleColor rounded-md text-white border-mainColor hover:bg-linksHover"
                     >
                       {t("links.tripManagement")}
                     </Link>
                   ) : (
-                    <span className="inline-block text-sm px-6 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
+                    <span className="inline-block lg:text-sm text-xs lg:px-6 px-2 py-1 rounded-md text-white bg-titleColor opacity-50 cursor-not-allowed">
                       {t("links.tripManagement")}
                     </span>
                   )}

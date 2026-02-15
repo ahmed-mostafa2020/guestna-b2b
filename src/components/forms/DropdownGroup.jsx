@@ -43,8 +43,8 @@ const DropdownGroup = ({
         {typeof item.name === "string"
           ? item.name
           : locale === "ar"
-          ? item.name?.ar
-          : item.name?.en}
+            ? item.name?.ar
+            : item.name?.en}
       </MenuItem>
     )) || [];
 
@@ -79,7 +79,7 @@ const DropdownGroup = ({
         className="border-2 border-[#eaeaea] rounded-lg font-ibm "
       >
         <MenuItem value="" disabled>
-          <em>{placeholder}</em>
+          <em className="text-textLight">{placeholder}</em>
         </MenuItem>
 
         {menuItemsList?.length > 0 && renderedMenuItems}

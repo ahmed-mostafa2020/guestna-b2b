@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import { useSelector } from "react-redux";
 
 import { useEffect } from "react";
 
@@ -14,6 +15,8 @@ import SchoolRegisterForm from "@components/forms/schoolRegisterForm";
 import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
 
 const SchoolRegisterPage = () => {
+  const userType = useSelector((state) => state.loginForm.loginData?.userType);
+
   const locale = useLocale();
   const t = useTranslations();
 
@@ -33,8 +36,6 @@ const SchoolRegisterPage = () => {
     }
   );
 
-  // Use fetched data or fallback to static data
-
   // Log error but continue with fallback data
   if (error) {
     console.error("Error fetching page data:", error);
@@ -42,7 +43,9 @@ const SchoolRegisterPage = () => {
 
   return (
     <ProtectedProfilePage
-      requiredPermission={PERMISSIONS.PAGE.B2B_INVITE_SCHOOL_PAGE}
+      requiredPermission={
+        PERMISSIONS.PAGE.B2B_INVITE_SCHOOL_PAGE && userType === "SALES"
+      }
     >
       <>
         <PageHeader />

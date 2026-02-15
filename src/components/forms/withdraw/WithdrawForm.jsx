@@ -79,15 +79,22 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
     defaultBankData?.clientName
   );
 
-  const initialValues = {
-    selectedTripIds: [],
-    withdrawAmount: "",
-    phoneNumber: "",
-    bankName: defaultBankData?.bankName || "",
-    clientName: defaultBankData?.clientName || "",
-    ibanNumber: defaultBankData?.iban || "",
-    withdrawNotes: "",
-  };
+  const initialValues = useMemo(
+    () => ({
+      selectedTripIds: [],
+      withdrawAmount: "",
+      phoneNumber: "",
+      bankName: defaultBankData?.bankName || "",
+      clientName: defaultBankData?.clientName || "",
+      ibanNumber: defaultBankData?.iban || "",
+      withdrawNotes: "",
+    }),
+    [
+      defaultBankData?.bankName,
+      defaultBankData?.clientName,
+      defaultBankData?.iban,
+    ]
+  );
 
   const isBankTransfer = transferMethod === "bank";
 
@@ -99,7 +106,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   const { enqueueSnackbar } = useSnackbar();
 
   // Handle multi-trip selection
-  const handleTripSelection = (tripIds, setFieldValue) => {
+  const handleTripSelection = (tripIds, setFieldValue, validateForm) => {
     setFieldValue("selectedTripIds", tripIds);
 
     // Find all selected trips
@@ -112,6 +119,9 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
       "withdrawAmount",
       totalAmount > 0 ? totalAmount.toString() : ""
     );
+
+    // Force validation to run after setting values
+    setTimeout(() => validateForm(), 0);
   };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
@@ -208,6 +218,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
       validationSchema={withdrawalValidationSchema}
       onSubmit={handleSubmit}
       enableReinitialize
+      validateOnMount={true}
       validateOnBlur={true}
       validateOnChange={true}
     >
@@ -219,7 +230,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
         handleBlur,
         isSubmitting,
         isValid,
-        dirty,
+        validateForm,
       }) => (
         <Form className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           <h3 className="text-2xl font-medium pb-6 text-titleColor">
@@ -253,6 +264,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
               tripsError={tripsError}
               selectedTrips={selectedTrips}
               onTripSelection={handleTripSelection}
+              validateForm={validateForm}
             />
           )}
 
@@ -274,6 +286,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
               onTripSelection={handleTripSelection}
               hasDefaultBank={hasDefaultBank}
               defaultBankLoading={defaultBankLoading}
+              validateForm={validateForm}
             />
           )}
 
@@ -285,15 +298,13 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
                 isSubmitting ||
                 balanceLoading ||
                 selectedTrips.length === 0 ||
-                !isValid ||
-                !dirty
+                Object.keys(errors).length > 0
               }
               className={`w-full py-4 px-6 rounded-lg font-bold text-white text-base transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-4 transform ${
                 isSubmitting ||
                 balanceLoading ||
                 selectedTrips.length === 0 ||
-                !isValid ||
-                !dirty
+                Object.keys(errors).length > 0
                   ? "bg-mainColor cursor-not-allowed"
                   : "bg-mainColor hover:from-mainColor hover:to-mainColor focus:ring-mainColor shadow-lg hover:shadow-xl"
               }`}

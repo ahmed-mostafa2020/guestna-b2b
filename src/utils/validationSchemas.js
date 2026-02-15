@@ -910,9 +910,15 @@ export const createWithdrawValidationSchema = (t, isBankTransfer) => {
       .required(getValidationMessage("tripRequired")),
 
     withdrawAmount: Yup.number()
-      // .required(getValidationMessage("amountRequired"))
-      // .min(50, getValidationMessage("minAmount"))
-      .positive(getValidationMessage("amountRequired")),
+      .transform((value, originalValue) =>
+        originalValue === "" ? null : value
+      )
+      .nullable()
+      .test(
+        "is-positive",
+        getValidationMessage("amountRequired"),
+        (value) => value === null || value > 0
+      ),
 
     phoneNumber: isBankTransfer
       ? Yup.string().notRequired() // No phone validation for bank transfer
@@ -967,7 +973,7 @@ export const createWithdrawValidationSchema = (t, isBankTransfer) => {
           )
       : Yup.string().notRequired(),
 
-    withdrawNotes: Yup.string(),
+    withdrawNotes: Yup.string().optional(),
   });
 };
 

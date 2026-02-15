@@ -27,12 +27,13 @@ const BankTransferForm = ({
   onTripSelection,
   hasDefaultBank,
   defaultBankLoading,
+  validateForm,
 }) => {
   const t = useTranslations("profile.myWallet.withdrawPage.bankTransfer");
 
   const handleTripsChange = (event) => {
     const selectedIds = event.target.value;
-    onTripSelection(selectedIds, setFieldValue);
+    onTripSelection(selectedIds, setFieldValue, validateForm);
   };
 
   const renderSelectedTrips = (selected) => {
