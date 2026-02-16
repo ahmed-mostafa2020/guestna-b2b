@@ -7,6 +7,8 @@ import { memo, useState, useMemo, useRef, useCallback } from "react";
 import { useSnackbar } from "notistack";
 
 import axios from "axios";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 
@@ -30,6 +32,8 @@ import {
 import Pagination from "@components/common/Pagination";
 
 import CheckboxGroup from "@components/forms/CheckboxGroup";
+import { actionsIcon } from "@assets/svg";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
   const locale = useLocale();
@@ -51,6 +55,11 @@ const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
   const [loadingPrint, setLoadingPrint] = useState({});
 
   const [loadingResend, setLoadingResend] = useState({});
+
+  // PDF consent download state
+  const consentRef = useRef(null);
+  const [pdfStudent, setPdfStudent] = useState(null);
+  const [loadingPdf, setLoadingPdf] = useState({});
 
   // Calculate pagination data
 
@@ -121,6 +130,67 @@ const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
       setLoadingPrint((prev) => ({ ...prev, [studentId]: false }));
     }
   };
+
+  // Download consent PDF
+  const handleDownloadConsent = useCallback(
+    async (student) => {
+      const studentId = student._id;
+      setLoadingPdf((prev) => ({ ...prev, [studentId]: true }));
+      setPdfStudent(student);
+
+      // Wait for the hidden element to render
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      try {
+        const element = consentRef.current;
+        if (!element) throw new Error("Consent element not found");
+
+        const canvas = await html2canvas(element, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          backgroundColor: "#ffffff",
+        });
+
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        let yPosition = 0;
+        const pageHeight = pdf.internal.pageSize.getHeight();
+
+        if (pdfHeight > pageHeight) {
+          while (yPosition < pdfHeight) {
+            pdf.addImage(imgData, "PNG", 0, -yPosition, pdfWidth, pdfHeight);
+            yPosition += pageHeight;
+            if (yPosition < pdfHeight) {
+              pdf.addPage();
+            }
+          }
+        } else {
+          pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+        }
+
+        pdf.save(`consent-${student.child?.name || "student"}-${locale}.pdf`);
+
+        enqueueSnackbar(
+          t("profile.tables.orders.studentsTable.downloadSuccess"),
+          { variant: "success" }
+        );
+      } catch (error) {
+        console.error("Error generating consent PDF:", error);
+        enqueueSnackbar(
+          t("profile.tables.orders.studentsTable.downloadError"),
+          { variant: "error" }
+        );
+      } finally {
+        setLoadingPdf((prev) => ({ ...prev, [studentId]: false }));
+        setPdfStudent(null);
+      }
+    },
+    [locale, t, enqueueSnackbar]
+  );
 
   // Resend booking for student
 
@@ -284,6 +354,11 @@ const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
             }}
             disabled={loadingPdf[student._id]}
             className="!font-somar"
+            {...getGtmTag(
+              GTM_TAGS.STUDENTS.DOWNLOAD_CONSENT,
+              "students",
+              student._id
+            )}
           >
             {loadingPdf[student._id] ? (
               <CircularProgress size={16} />
