@@ -134,7 +134,7 @@ const RamadanNightsForm = () => {
           t("ramadanNights.form.previousParticipation.yes"),
       price: BOOTH_FEE,
       quantity: parseInt(regValues.numberOfHelpers) || 1,
-      redirectUrl: `${vercelUrl}/${locale}/events/ramadan-nights`,
+      redirectUrl: `${vercelUrl}/${locale}/bookingStatus`,
     };
 
     if (
