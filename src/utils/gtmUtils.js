@@ -65,6 +65,7 @@ export const GTM_TAGS = {
     VIEW_TRANSACTIONS: "profile_view_transactions",
     VIEW_FAVORITES: "profile_view_favorites",
     EXPORT_REPORT: "profile_export_report",
+    NAVIGATE: "profile_navigate",
   },
   // Trips/Activities
   TRIPS: {

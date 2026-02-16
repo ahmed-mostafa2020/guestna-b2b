@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { useLocale, useTranslations } from "next-intl";
 import { usePermissions } from "@hooks/usePermissions";
+import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
 
 import React, { useState, useMemo } from "react";
 
@@ -210,6 +211,11 @@ const NavigationDropdown = () => {
                     ? "text-white bg-mainColor"
                     : "text-textDark hover:text-mainColor"
                 }`}
+                {...getGtmTag(
+                  GTM_TAGS.PROFILE.NAVIGATE,
+                  "profile_navigation",
+                  item.id
+                )}
               >
                 {React.cloneElement(item.icon, {
                   sx: {
@@ -351,6 +357,11 @@ const NavigationDropdown = () => {
                                 ? "text-mainColor"
                                 : "text-textDark"
                             }`}
+                            {...getGtmTag(
+                              GTM_TAGS.PROFILE.NAVIGATE,
+                              "profile_navigation",
+                              `${item.id}_${subItem.title.toLowerCase().replace(/\s+/g, "_")}`
+                            )}
                           >
                             {subItem.title}
                           </Link>
