@@ -82,7 +82,7 @@ const RamadanNightsForm = () => {
       if (Object.keys(errors).length === 0) {
         registrationValuesRef.current = values;
         setCurrentStep(1);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({ top: 400, behavior: "smooth" });
       } else {
         const touchedFields = {};
         Object.keys(registrationInitialValues).forEach((key) => {
@@ -99,7 +99,7 @@ const RamadanNightsForm = () => {
 
   const handleBack = useCallback(() => {
     setCurrentStep(0);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 400, behavior: "smooth" });
   }, []);
 
   const handlePaymentMethodChange = useCallback((event) => {
@@ -125,7 +125,6 @@ const RamadanNightsForm = () => {
       },
       stationName: regValues.stationName || regValues.fullName,
       socialHandle: regValues.socialLink ? [regValues.socialLink] : [],
-      website: regValues.socialLink || "",
       serviceType:
         regValues.vendorType?.map((v) => vendorTypeMap[v] || v) || [],
       participatedBefore:
