@@ -16,7 +16,6 @@ import { Grid } from "@material-ui/core";
 import { searchBarIcon, wrongIcon } from "@/src/assets/svg";
 
 const EXCLUDED_URL_PARAMS = ["page"];
-const DEBOUNCE_DELAY = 300;
 
 const DiscoverFiltersSection = () => {
   const dispatch = useDispatch();
@@ -27,7 +26,7 @@ const DiscoverFiltersSection = () => {
 
   // Refs
   const isInitialMount = useRef(true);
-  const debounceTimer = useRef(null);
+  const skipNextUrlSync = useRef(false); // NEW: Skip URL sync after manual update
 
   // ======================
   // Selectors (optimized)
@@ -47,41 +46,50 @@ const DiscoverFiltersSection = () => {
   // ======================
   // URL Utilities
   // ======================
-  const updateUrlParams = useCallback(
-    (updates) => {
-      const params = new URLSearchParams(searchParams.toString());
+  const buildUrlFromFilters = useCallback(
+    (filters, search) => {
+      const params = new URLSearchParams();
 
-      // Always remove page parameter when filters/search change
-      params.delete("page");
-
-      // Apply updates
-      Object.entries(updates).forEach(([key, value]) => {
-        if (value === null || value === undefined || value === "") {
-          params.delete(key);
-        } else if (Array.isArray(value)) {
-          if (value.length > 0) {
-            params.set(key, value.join(","));
-          } else {
-            params.delete(key);
-          }
-        } else {
-          params.set(key, value);
+      // Add filter params
+      Object.entries(filters).forEach(([key, value]) => {
+        if (Array.isArray(value) && value.length > 0) {
+          params.set(key, value.join(","));
         }
       });
+
+      // Add search term
+      if (search && search.trim()) {
+        params.set("searchTerm", search.trim());
+      }
 
       const newUrl = params.toString()
         ? `${pathname}?${params.toString()}`
         : pathname;
 
+      return newUrl;
+    },
+    [pathname]
+  );
+
+  const updateUrl = useCallback(
+    (filters, search) => {
+      skipNextUrlSync.current = true; // Skip the next URL sync
+      const newUrl = buildUrlFromFilters(filters, search);
       router.replace(newUrl, { scroll: false });
     },
-    [router, pathname, searchParams]
+    [router, buildUrlFromFilters]
   );
 
   // ======================
-  // URL → Redux Sync
+  // URL → Redux Sync (ONLY on initial load or browser back/forward)
   // ======================
   useEffect(() => {
+    // Skip if this update was triggered by us
+    if (skipNextUrlSync.current) {
+      skipNextUrlSync.current = false;
+      return;
+    }
+
     if (!searchParams) return;
 
     const urlFilters = {};
@@ -93,28 +101,27 @@ const DiscoverFiltersSection = () => {
       urlFilters[key] = value.split(",").filter(Boolean);
     });
 
-    // Compare and update Redux if needed
-    const filtersChanged =
-      JSON.stringify(urlFilters) !== JSON.stringify(filter);
-    const searchChanged = urlSearchTerm !== searchTerm;
-
-    if (filtersChanged) {
+    // Only sync if this is initial mount or genuine external change
+    if (isInitialMount.current) {
       dispatch(setDiscoverFilters(urlFilters));
-    }
-
-    if (searchChanged) {
       dispatch(setSearchTerm(urlSearchTerm));
       setSearchValue(urlSearchTerm);
-    }
-  }, [searchParams, dispatch]);
+      isInitialMount.current = false;
+    } else {
+      // For browser back/forward, check if actually different
+      const filtersChanged =
+        JSON.stringify(urlFilters) !== JSON.stringify(filter);
+      const searchChanged = urlSearchTerm !== searchTerm;
 
-  // Sync local search value with Redux state
-  useEffect(() => {
-    // Only update if searchTerm changed from outside (e.g., URL change)
-    if (searchTerm !== searchValue) {
-      setSearchValue(searchTerm || "");
+      if (filtersChanged) {
+        dispatch(setDiscoverFilters(urlFilters));
+      }
+      if (searchChanged) {
+        dispatch(setSearchTerm(urlSearchTerm));
+        setSearchValue(urlSearchTerm);
+      }
     }
-  }, [searchTerm]);
+  }, [searchParams?.toString()]); // Only trigger on actual URL change
 
   // ======================
   // Helpers
@@ -144,32 +151,18 @@ const DiscoverFiltersSection = () => {
         delete newFilters[key];
       }
 
-      // Update Redux
+      // Update Redux first
       dispatch(setDiscoverFilters(newFilters));
       dispatch(setCurrentPage(1));
 
-      // Update URL
-      updateUrlParams({ [key]: values });
+      // Then update URL
+      updateUrl(newFilters, searchTerm);
     },
-    [dispatch, filter, updateUrlParams]
+    [filter, searchTerm, dispatch, updateUrl]
   );
 
   const handleSearchChange = useCallback((e) => {
-    const value = e.target.value;
-    setSearchValue(value);
-
-    // Optional: Debounced search
-    if (debounceTimer.current) {
-      clearTimeout(debounceTimer.current);
-    }
-
-    // Uncomment for auto-search as you type
-    // debounceTimer.current = setTimeout(() => {
-    //   const trimmedValue = value.trim();
-    //   dispatch(setSearchTerm(trimmedValue));
-    //   dispatch(setCurrentPage(1));
-    //   updateUrlParams({ searchTerm: trimmedValue || null });
-    // }, DEBOUNCE_DELAY);
+    setSearchValue(e.target.value);
   }, []);
 
   const handleSearchSubmit = useCallback(() => {
@@ -180,8 +173,8 @@ const DiscoverFiltersSection = () => {
     dispatch(setCurrentPage(1));
 
     // Update URL
-    updateUrlParams({ searchTerm: trimmedValue || null });
-  }, [searchValue, dispatch, updateUrlParams]);
+    updateUrl(filter, trimmedValue);
+  }, [searchValue, filter, dispatch, updateUrl]);
 
   const handleSearchKeyDown = useCallback(
     (e) => {
@@ -197,25 +190,18 @@ const DiscoverFiltersSection = () => {
     setSearchValue("");
     dispatch(setSearchTerm(""));
     dispatch(setCurrentPage(1));
-    updateUrlParams({ searchTerm: null });
-  }, [dispatch, updateUrlParams]);
+    updateUrl(filter, "");
+  }, [filter, dispatch, updateUrl]);
 
   const handleReset = useCallback(() => {
     setSearchValue("");
     dispatch(setDiscoverFilters({}));
     dispatch(setSearchTerm(""));
     dispatch(setCurrentPage(1));
+
+    skipNextUrlSync.current = true;
     router.replace(pathname, { scroll: false });
   }, [dispatch, pathname, router]);
-
-  // Cleanup debounce timer
-  useEffect(() => {
-    return () => {
-      if (debounceTimer.current) {
-        clearTimeout(debounceTimer.current);
-      }
-    };
-  }, []);
 
   // ======================
   // Memoized Config
@@ -261,7 +247,7 @@ const DiscoverFiltersSection = () => {
         multiple: true,
         onChange: handleFilterChange("academicStages"),
       },
-    ].filter((f) => f.options.length > 0); // Only show filters with options
+    ].filter((f) => f.options.length > 0);
   }, [sideFilters, filter, t, mapOptions, handleFilterChange]);
 
   // Check if any filters are active
