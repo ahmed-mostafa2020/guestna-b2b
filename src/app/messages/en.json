@@ -3,6 +3,7 @@
     "back": "Back",
     "next": "Next",
     "submit": "Submit",
+    "confirm": "Confirm",
     "edit": "Edit",
     "autocomplete": {
       "noOptions": "No options",
@@ -2832,6 +2833,219 @@
     "return": "Return Policy",
     "advertising": "Advertising on Guestna",
     "paymentMethods": "Payment Methods"
+  },
+  "ramadanNights": {
+    "pageTitle": "Ramadan Nights",
+    "pageDescription": "Register as a vendor for Ramadan Nights event at Knowledge Towers Schools",
+    "eventInfo": {
+      "title": "Ramadan Nights",
+      "date": "Friday, February 27th, 2026",
+      "time": "8:30 PM - 1:00 AM",
+      "venue": "Knowledge Towers Schools",
+      "boothFee": "Booth participation fee",
+      "currency": "SAR",
+      "feeAmount": "50"
+    },
+    "stepper": {
+      "step1": "Vendor Registration",
+      "step2": "Payment"
+    },
+    "form": {
+      "title": "Vendor Registration",
+      "subtitle": "Please fill out the form below to register as a vendor for the Ramadan Nights event.",
+      "fullName": {
+        "label": "Full Name",
+        "placeholder": "Enter your full name"
+      },
+      "phone": {
+        "label": "Phone Number",
+        "placeholder": "Enter phone number"
+      },
+      "email": {
+        "label": "Email Address",
+        "placeholder": "Enter your email"
+      },
+      "idNumber": {
+        "label": "ID / Iqama No.",
+        "placeholder": "Enter your ID or Iqama number"
+      },
+      "stationName": {
+        "label": "Booth / Station Name",
+        "placeholder": "Enter your booth or station name"
+      },
+      "socialLink": {
+        "label": "Online Store / Social Media Link (Optional)",
+        "placeholder": "Enter link"
+      },
+      "vendorType": {
+        "label": "Type of Vendor/Product/Service",
+        "options": {
+          "food": "Food",
+          "beverages": "Beverages",
+          "handmade": "Handmade",
+          "fashion": "Fashion",
+          "art": "Art",
+          "other": "Other"
+        }
+      },
+      "previousParticipation": {
+        "label": "Have you participated in our previous events?",
+        "yes": "Yes",
+        "no": "No"
+      },
+      "numberOfHelpers": {
+        "label": "Number of Helpers",
+        "placeholder": "Select number of helpers",
+        "options": {
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4+"
+        }
+      },
+      "specialRequirements": {
+        "label": "Special Requirements (Optional)",
+        "placeholder": "List any special needs (electricity, etc.)"
+      },
+      "agreeToRules": "I agree to the Vendor Rules & Regulations"
+    },
+    "payment": {
+      "title": "Payment Details",
+      "subtitle": "Complete your registration by paying the booth fee",
+      "orderSummary": "Order Summary",
+      "boothRegistration": "Booth Registration Fee",
+      "viewRules": "View Rules & Regulations",
+      "total": "Total",
+      "includingVat": "Including VAT"
+    },
+    "terms": {
+      "title": "Terms and Conditions",
+      "items": {
+        "fee": "Booth participation fee of 50 SAR is required for each approved vendor.",
+        "deadline": "The application deadline for vendors is 12 February 4pm. Applications submitted after this date may not be considered.",
+        "approval": "Once approved by the School Event Committee, further details will be communicated via the contact number and/or email provided in the application form.",
+        "cancellation": "Vendors who fail to cancel 72 hours prior to event, the fee shall not be refunded.",
+        "access": "Vendor access to the venue will begin at 3:00 PM.",
+        "setup": "All booths must be fully set up and ready at least (1hr and 30 mins) before the event begins.",
+        "eventTime": "The event will open to the public at 8:30 PM. and End at 1:00am"
+      }
+    },
+    "rules": {
+      "title": "Ramadan Nights Vendor Rules & Regulations",
+      "intro": "Knowledge Towers Schools requires the following:",
+      "sections": [
+        {
+          "title": "1. General Requirements",
+          "items": [
+            "All vendors must be approved in advance by the school’s Event Committee.",
+            "Only products and/or services listed and approved in the application form may be sold or promoted.",
+            "The school reserves the right to decline any vendor whose products or services do not align with the school’s values."
+          ]
+        },
+        {
+          "title": "2. Child Safety & Conduct",
+          "items": [
+            "All vendors must strictly adhere to the school’s safeguarding and child protection policies at all times."
+          ]
+        },
+        {
+          "title": "3. Logistics & Setup",
+          "items": [
+            "Booths/stalls must be set up during the allocated setup time and be fully ready before the event begins.",
+            "Vendors are responsible for bringing their own equipment, signage, and supplies unless otherwise agreed.",
+            "Any special requirements (electricity, water, Wi-Fi, space size, etc.) must be communicated and approved in advance."
+          ]
+        },
+        {
+          "title": "4. Food & Beverage Vendors",
+          "items": [
+            "All food items must be prepared in a hygienic environment.",
+            "Food must be clearly labeled, including allergen information.",
+            "Vendors must comply with all school and municipality food safety guidelines."
+          ]
+        },
+        {
+          "title": "5. Sales & Payments",
+          "items": [
+            "Vendors are responsible for collecting their own payments (cash, card, QR code, etc.).",
+            "Prices must be transparent and clearly displayed."
+          ]
+        },
+        {
+          "title": "6. Clean-Up & Waste Management",
+          "items": [
+            "Vendors must keep their area clean throughout the event.",
+            "All waste must be disposed properly.",
+            "Any damage to school property caused by the vendor will be charged to the vendor."
+          ]
+        },
+        {
+          "title": "7. Restricted Items",
+          "items": [
+            "The following items may not be sold, distributed, or displayed: Culturally inappropriate products or materials."
+          ]
+        },
+        {
+          "title": "8. Emergency & Safety",
+          "items": [
+            "Vendors must follow instructions from school staff in the event of an emergency.",
+            "No open flames, hazardous chemicals, or unsafe equipment are permitted without prior approval.",
+            "First aid will be available on-site; however, vendors are encouraged to carry their own basic first aid kits."
+          ]
+        },
+        {
+          "title": "9. Right of Refusal & Removal",
+          "items": [
+            "The school reserves the right to remove any vendor who violates these rules and regulations, without refund of fees.",
+            "All final decisions rest with the School Event Committee."
+          ]
+        },
+        {
+          "title": "10. Vendor Fee, Application Deadline, Attendance & Setup Policy",
+          "items": [
+            "Booth participation fee of 50 SAR is required for each approved vendor.",
+            "The application deadline for vendors is 12 February 4pm. Applications submitted after this date may not be considered.",
+            "Once approved by the School Event Committee, further details will be communicated via the contact number and/or email provided in the application form."
+          ]
+        },
+        {
+          "title": "11. Cancellation, Refund & Penalization Policy",
+          "items": [
+            "Vendors who fail to cancel 72 hours prior to event, the fee shall not be refunded."
+          ]
+        },
+        {
+          "title": "12. Vendor Access & Setup Times",
+          "items": [
+            "Vendor access to the venue will begin at 3:00 PM.",
+            "All booths must be fully set up and ready at least (1hr and 30 mins) before the event begins.",
+            "The event will open to the public at 8:30 PM. and End at 1:00am"
+          ]
+        }
+      ]
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required",
+      "fullNameMin": "Name must be at least 3 characters",
+      "fullNameMax": "Name must not exceed 50 characters",
+      "phoneRequired": "Phone number is required",
+      "phoneInvalid": "Please enter a valid phone number",
+      "emailRequired": "Email address is required",
+      "emailInvalid": "Please enter a valid email address",
+      "idNumberRequired": "ID / Iqama No. is required",
+      "idNumberMin": "ID number must be at least 10 digits",
+      "idNumberMax": "ID number must not exceed 20 digits",
+      "stationNameRequired": "Booth / Station name is required",
+      "stationNameMin": "Booth name must be at least 2 characters",
+      "stationNameMax": "Booth name must not exceed 50 characters",
+      "socialLinkInvalid": "Please enter a valid URL",
+      "vendorTypeRequired": "Please select at least one vendor type",
+      "previousParticipationRequired": "Please indicate your previous participation",
+      "numberOfHelpersRequired": "Please select the number of helpers",
+      "agreeToRulesRequired": "You must agree to the rules to continue",
+      "success": "Your registration has been submitted successfully!",
+      "error": "An error occurred. Please try again."
+    }
   },
   "pagination": {
     "previous": "Previous",

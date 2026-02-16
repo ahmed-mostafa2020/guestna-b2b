@@ -189,6 +189,13 @@ export const B2B_END_POINTS = {
     SUBMIT: "organization-invitation",
   },
 
+  RAMADAN_NIGHTS: {
+    INITIATION: "ramadan-nights/initiation",
+    APPLE_INITIATE: "ramadan-nights/initiation/apple",
+    APPLE_CONFIRM: "ramadan-nights/confermed/apple",
+    APPLE_CALLBACK: "ramadan-nights/confermed/event/apple",
+  },
+
   CONTACT_US: "supportMessage/massage",
   FAQ: "faqs/all",
 };

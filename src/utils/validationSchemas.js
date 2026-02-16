@@ -1329,3 +1329,57 @@ export const getApproveOrderValidationSchema = (t) => {
       ),
   });
 };
+
+// Ramadan Nights Vendor Registration Schema
+export const createRamadanNightsSchema = (t) =>
+  Yup.object().shape({
+    fullName: Yup.string()
+      .trim()
+      .required(t("ramadanNights.validation.fullNameRequired"))
+      .min(3, t("ramadanNights.validation.fullNameMin"))
+      .max(50, t("ramadanNights.validation.fullNameMax")),
+    phone: Yup.string()
+      .required(t("ramadanNights.validation.phoneRequired"))
+      .test(
+        "phone-validation",
+        t("ramadanNights.validation.phoneInvalid"),
+        (value) => {
+          if (!value) return false;
+          return isValidPhoneNumber(value);
+        }
+      ),
+    email: Yup.string()
+      .email(t("ramadanNights.validation.emailInvalid"))
+      .matches(emailRegex, t("ramadanNights.validation.emailInvalid"))
+      .required(t("ramadanNights.validation.emailRequired")),
+    idNumber: Yup.string()
+      .trim()
+      .required(t("ramadanNights.validation.idNumberRequired"))
+      .min(10, t("ramadanNights.validation.idNumberMin"))
+      .max(20, t("ramadanNights.validation.idNumberMax")),
+    stationName: Yup.string()
+      .trim()
+      .required(t("ramadanNights.validation.stationNameRequired"))
+      .min(2, t("ramadanNights.validation.stationNameMin"))
+      .max(50, t("ramadanNights.validation.stationNameMax")),
+    socialLink: Yup.string()
+      .trim()
+      .transform((value) => (value === "" ? null : value))
+      .url(t("ramadanNights.validation.socialLinkInvalid"))
+      .nullable()
+      .notRequired(),
+    vendorType: Yup.array()
+      .of(Yup.string())
+      .min(1, t("ramadanNights.validation.vendorTypeRequired"))
+      .required(t("ramadanNights.validation.vendorTypeRequired")),
+    previousParticipation: Yup.string().required(
+      t("ramadanNights.validation.previousParticipationRequired")
+    ),
+    numberOfHelpers: Yup.string().required(
+      t("ramadanNights.validation.numberOfHelpersRequired")
+    ),
+    agreeToRules: Yup.boolean()
+      .oneOf([true], t("ramadanNights.validation.agreeToRulesRequired"))
+      .required(t("ramadanNights.validation.agreeToRulesRequired")),
+    specialRequirements: Yup.string().optional(),
+  });

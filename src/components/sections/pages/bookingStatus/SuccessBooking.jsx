@@ -62,28 +62,37 @@ const SuccessBooking = ({ data }) => {
       </h3>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
-        <BookingDataCard
-          title={t("bookingStatus.success.data.senderName")}
-          subTitle={data.bookingInfo.childs[0].name}
-        />
-        <BookingDataCard
-          title={t("bookingStatus.success.data.bookingId")}
-          subTitle={data.bookingInfo.orderId}
-        />
-        <BookingDataCard
-          title={t("bookingStatus.success.data.paymentTime")}
-          subTitle={formatDate(data.bookingInfo.paymentTime, locale, {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        />
-        <BookingDataCard
-          title={t("bookingStatus.success.data.paymentMethod")}
-          subTitle={data.bookingInfo.paymentType}
-        />
+        {data.bookingInfo.childs[0].name && (
+          <BookingDataCard
+            title={t("bookingStatus.success.data.senderName")}
+            subTitle={data.bookingInfo.childs[0].name}
+          />
+        )}
+
+        {data.bookingInfo.orderId && (
+          <BookingDataCard
+            title={t("bookingStatus.success.data.bookingId")}
+            subTitle={data.bookingInfo.orderId}
+          />
+        )}
+        {data.bookingInfo.paymentTime && (
+          <BookingDataCard
+            title={t("bookingStatus.success.data.paymentTime")}
+            subTitle={formatDate(data.bookingInfo.paymentTime, locale, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          />
+        )}
+        {data.bookingInfo.paymentType && (
+          <BookingDataCard
+            title={t("bookingStatus.success.data.paymentMethod")}
+            subTitle={data.bookingInfo.paymentType}
+          />
+        )}
 
         <button
           onClick={handleShare}
