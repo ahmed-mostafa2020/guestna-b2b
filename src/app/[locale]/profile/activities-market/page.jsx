@@ -19,7 +19,6 @@ import { PERMISSIONS } from "@constants/permissions";
 import TripsGrid from "@components/sections/pages/discover/gridSection/tripsGrid";
 import { usePaginatedTrips } from "@hooks/usePaginatedTrips";
 
-
 const ActivitiesMarketPage = () => {
   const { currentPage, filter, searchTerm } = useSelector(
     (state) => state.discoverData
@@ -120,8 +119,11 @@ const ActivitiesMarketPage = () => {
     <ProtectedProfilePage
       requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_ACTIVITIES_MARKET_PAGE}
     >
-      <section style={{backgroundImage:`url(${banner.src})`}} className=" font-ibm text-white mb-4 lg:mb-8">
-        <div className="centered gap-4 flex-col text-center p-4 bg-activities-market-gradient  ">
+      <section
+        style={{ backgroundImage: `url(${banner.src})` }}
+        className=" font-ibm text-white mb-4 lg:mb-8 bg-cover bg-center rounded-xl !overflow-hidden"
+      >
+        <div className="centered gap-4 flex-col text-center  bg-activities-market-gradient md:!px-20 md:!py-12  px-12 py-8  ">
           <h1 className="text-4xl lg:text-6xl font-bold mb-4 text-foreground">
             {t("profile.aside.activitiesMarketTitle")}
           </h1>
