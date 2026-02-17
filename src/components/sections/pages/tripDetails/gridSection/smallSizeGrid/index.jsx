@@ -22,6 +22,7 @@ const SmallSizeGrid = () => {
 
   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
 
+  console.log({token})
   const pathname = usePathname();
 
   const t = useTranslations();

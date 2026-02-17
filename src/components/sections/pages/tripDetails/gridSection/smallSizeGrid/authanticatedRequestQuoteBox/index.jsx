@@ -33,8 +33,7 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
   const [formSelectionData, setFormSelectionData] = useState(null);
   const [gradesData, setGradesData] = useState([]);
   const [lastFetchedGradesKey, setLastFetchedGradesKey] = useState(null);
-  const searchParams = useSearchParams();
-  const onlyDetails = Boolean(searchParams.get("onlyDetails"));
+
   const fetchTripDetails = async () => {
     if (!tripId) return null;
 
@@ -164,20 +163,19 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
         <div className="grid grid-cols-2 gap-2">
           {hasElement(
             PERMISSIONS.ELEMENT.B2B_PROFIEL_ORDER_MANAGEMENT_CREATE_NEWTRIP
-          ) &&
-            !onlyDetails && (
-              <button
-                disabled={loading}
-                onClick={showUpdateTripForm}
-                className="lg:flex-1 disabled:opacity-50 disabled:cursor-not-allowed centered w-full py-3 px-4 text-white font-medium rounded-lg bg-mainColor hover:bg-mainColor/80 transition-all duration-200 ease-in-out"
-              >
-                {loading ? (
-                  <CircularProgress size={24} color="white" />
-                ) : (
-                  t("links.requestQuote")
-                )}
-              </button>
-            )}
+          ) && (
+            <button
+              disabled={loading}
+              onClick={showUpdateTripForm}
+              className="lg:flex-1 disabled:opacity-50 disabled:cursor-not-allowed centered w-full py-3 px-4 text-white font-medium rounded-lg bg-mainColor hover:bg-mainColor/80 transition-all duration-200 ease-in-out"
+            >
+              {loading ? (
+                <CircularProgress size={24} color="white" />
+              ) : (
+                t("links.requestQuote")
+              )}
+            </button>
+          )}
 
           <Link
             target="_blank"

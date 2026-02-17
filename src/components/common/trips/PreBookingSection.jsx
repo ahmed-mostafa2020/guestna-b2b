@@ -18,12 +18,15 @@ import CustomizedModal from "../customizedModal";
 import ParentLoginForm from "../../forms/auth/parentLogin";
 
 import Cookies from "js-cookie";
+import { useSearchParams } from "next/navigation";
+import { Details } from "@mui/icons-material";
 
 const PreBookingSection = ({ tripData }) => {
   const isSubmitted = useSelector((state) => state.parentLoginForm.isSubmitted);
   const [isOpen, setIsOpen] = useState(false);
   const [isParentLoginFormOpen, setIsParentLoginFormOpen] = useState(false);
-
+  const searchParams = useSearchParams();
+  const onlyDetails = Boolean(searchParams.get("onlyDetails"));
   const handleClick = () => {
     handleClose();
 
@@ -91,53 +94,56 @@ const PreBookingSection = ({ tripData }) => {
   // Determine booking status and get appropriate message
   const getBookingStatus = () => {
     // Priority 1: Check available seats (only if trip is PENDING)
-    if (tripData?.status === TRIP_STATUS.PENDING && tripData?.availableSeats <= 0) {
+    if (
+      tripData?.status === TRIP_STATUS.PENDING &&
+      tripData?.availableSeats <= 0
+    ) {
       return {
         canBook: false,
-        messageKey: 'noSeats'
+        messageKey: "noSeats",
       };
     }
-    
+
     // Priority 2: Check if booking period has expired (only if trip is PENDING)
     if (tripData?.status === TRIP_STATUS.PENDING && !isBookingAvailable) {
       return {
         canBook: false,
-        messageKey: 'expired'
+        messageKey: "expired",
       };
     }
-    
+
     // Priority 3: Check specific trip status
     switch (tripData?.status) {
       case TRIP_STATUS.PENDING:
         // Trip is pending and has seats and booking period is valid
         return {
           canBook: true,
-          messageKey: null
+          messageKey: null,
         };
-      
+
       case TRIP_STATUS.SCHEDULED:
         return {
           canBook: false,
-          messageKey: 'scheduled'
+          messageKey: "scheduled",
         };
-      
+
       case TRIP_STATUS.DONE:
         return {
           canBook: false,
-          messageKey: 'done'
+          messageKey: "done",
         };
-      
+
       case TRIP_STATUS.CANCELLED:
         return {
           canBook: false,
-          messageKey: 'cancelled'
+          messageKey: "cancelled",
         };
-      
+
       default:
         // Unknown status or no status
         return {
           canBook: false,
-          messageKey: 'unknown'
+          messageKey: "unknown",
         };
     }
   };
@@ -157,13 +163,17 @@ const PreBookingSection = ({ tripData }) => {
           </span>
         </h3>
 
-        {bookingStatus.canBook ? (
-          <button
-            onClick={handleOpen}
-            className="w-full px-8 py-3 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor"
-          >
-            {t("links.register")}
-          </button>
+        {bookingStatus.canBook   ? (
+          <>
+            {!onlyDetails && (
+              <button
+                onClick={handleOpen}
+                className="w-full px-8 py-3 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor"
+              >
+                {t("links.register")}
+              </button>
+            )}
+          </>
         ) : (
           <div className="w-full p-6 text-center bg-gray-50 border-2 border-gray-200 rounded-lg">
             <div className="mb-2">
