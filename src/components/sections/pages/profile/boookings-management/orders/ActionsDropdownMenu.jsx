@@ -20,20 +20,6 @@ import Link from "next/link";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
-// Statuses that represent a "terminal" or locked state
-const CLOSED_STATUSES = [
-  TRIP_STATUS.DONE,
-  TRIP_STATUS.REJECTED,
-  TRIP_STATUS.ENDED,
-  TRIP_STATUS.CANCELLED,
-  TRIP_STATUS.CANCLED,
-];
-
-const PENDING_STATUSES = [
-  TRIP_STATUS.PENDING,
-  TRIP_STATUS.PENDING_COMPANY_APPROVAL,
-];
-
 const ActionsDropdownMenu = ({
   booking,
   onActionComplete,
@@ -56,26 +42,61 @@ const ActionsDropdownMenu = ({
 
   const headers = useMemo(() => getHeaders(locale), [locale]);
 
-  // ======================
-  // Derived booking state
-  // ======================
-  const { status, askType: bookingAskType, _id, orderId, slug } = booking;
+  // ── Derived booking state ─────────────────────────────────────
+  // All moved into one useMemo so they're always consistent with
+  // each other and with the booking prop
+  const {
+    isCustom,
+    isCustomTrip,
+    isClosed,
+    isPending,
+    isOnHold,
+    isScheduled,
+    isEditable,
+    status,
+    _id,
+    orderId,
+    slug,
+    bookingAskType,
+  } = useMemo(() => {
+    const { status, askType: bookingAskType, _id, orderId, slug } = booking;
 
-  const isCustom = bookingAskType === askType.CUSTOM;
-  const isCustomTrip = [askType.CUSTOM_TRIP, askType.TRIP].includes(
-    bookingAskType
-  );
+    const isCustom = bookingAskType === askType.CUSTOM;
+    const isCustomTrip =
+      bookingAskType === askType.CUSTOM_TRIP || bookingAskType === askType.TRIP;
 
-  const isClosed = CLOSED_STATUSES.includes(status);
-  const isPending = PENDING_STATUSES.includes(status);
-  const isOnHold = status === TRIP_STATUS.ON_HOLD;
-  const isScheduled = status === TRIP_STATUS.SCHEDULED;
+    const isClosed =
+      status === TRIP_STATUS.DONE ||
+      status === TRIP_STATUS.REJECTED ||
+      status === TRIP_STATUS.ENDED ||
+      status === TRIP_STATUS.CANCELLED ||
+      status === TRIP_STATUS.CANCLED;
 
-  const isEditable = !isClosed && !isOnHold && !isScheduled;
+    const isPending =
+      status === TRIP_STATUS.PENDING ||
+      status === TRIP_STATUS.PENDING_COMPANY_APPROVAL;
 
-  // ======================
-  // Permissions
-  // ======================
+    const isOnHold = status === TRIP_STATUS.ON_HOLD;
+    const isScheduled = status === TRIP_STATUS.SCHEDULED;
+    const isEditable = !isClosed && !isOnHold && !isScheduled;
+
+    return {
+      isCustom,
+      isCustomTrip,
+      isClosed,
+      isPending,
+      isOnHold,
+      isScheduled,
+      isEditable,
+      status,
+      _id,
+      orderId,
+      slug,
+      bookingAskType,
+    };
+  }, [booking]);
+
+  // ── Permissions ───────────────────────────────────────────────
   const can = useMemo(
     () => ({
       showDetails: hasElement(
@@ -97,9 +118,7 @@ const ActionsDropdownMenu = ({
     [hasElement]
   );
 
-  // ======================
-  // Actions
-  // ======================
+  // ── Actions ───────────────────────────────────────────────────
   const sendRemind = useCallback(async () => {
     if (!_id) return;
     setSendingReminder(true);
@@ -146,13 +165,9 @@ const ActionsDropdownMenu = ({
     openDetailsModal?.(_id);
   }, [handleClose, openDetailsModal, _id]);
 
-  // ======================
-  // Menu items config
-  // Each item: { visible, label, onClick/href, sx? }
-  // ======================
-  const menuItems = useMemo(
-    () => [
-      // CUSTOM: Show details → navigates to page
+  // ── Menu items ────────────────────────────────────────────────
+  const visibleItems = useMemo(() => {
+    const items = [
       {
         key: "custom-details",
         visible: can.showDetails && isCustom && isPending,
@@ -160,7 +175,6 @@ const ActionsDropdownMenu = ({
         href: `/${locale}/profile/bookings-management/orders/${orderId}`,
         onClick: handleClose,
       },
-      // DONE trip with slug → navigates to parents page
       {
         key: "slug-details",
         visible: Boolean(slug) && status === TRIP_STATUS.DONE,
@@ -168,7 +182,6 @@ const ActionsDropdownMenu = ({
         href: `/${locale}/parents/${slug}?onlyDetails=true`,
         onClick: handleClose,
       },
-      // CUSTOM_TRIP: Show details → opens modal
       {
         key: "custom-trip-details",
         visible:
@@ -179,7 +192,6 @@ const ActionsDropdownMenu = ({
         label: t("links.showDetails"),
         onClick: handleShowDetails,
       },
-      // Remind Guestna (CUSTOM only)
       {
         key: "remind",
         visible: can.remindGuestna && isCustom && isEditable,
@@ -191,7 +203,6 @@ const ActionsDropdownMenu = ({
         onClick: sendRemind,
         disabled: sendingReminder,
       },
-      // Edit (CUSTOM or CUSTOM_TRIP)
       {
         key: "edit",
         visible:
@@ -202,7 +213,6 @@ const ActionsDropdownMenu = ({
         label: t("links.edit"),
         onClick: handleEdit,
       },
-      // Approve (CUSTOM or CUSTOM_TRIP, only when ON_HOLD)
       {
         key: "approve",
         visible:
@@ -211,7 +221,6 @@ const ActionsDropdownMenu = ({
         onClick: handleApprove,
         sx: { color: "success.main" },
       },
-      // Reject (CUSTOM or CUSTOM_TRIP, not in closed/scheduled states)
       {
         key: "reject",
         visible:
@@ -223,39 +232,39 @@ const ActionsDropdownMenu = ({
         onClick: handleReject,
         sx: { color: "error.main" },
       },
-    ],
-    [
-      can,
-      isCustom,
-      isCustomTrip,
-      isPending,
-      isOnHold,
-      isEditable,
-      isClosed,
-      isScheduled,
-      slug,
-      status,
-      orderId,
-      locale,
-      sendingReminder,
-      openDetailsModal,
-      openEditModal,
-      openApproveModal,
-      openRejectModal,
-      t,
-      handleClose,
-      handleShowDetails,
-      sendRemind,
-      handleEdit,
-      handleApprove,
-      handleReject,
-    ]
-  );
+    ];
 
-  const visibleItems = menuItems.filter((item) => item.visible);
+    return items.filter((item) => item.visible);
+  }, [
+    can,
+    isCustom,
+    isCustomTrip,
+    isPending,
+    isOnHold,
+    isEditable,
+    isClosed,
+    isScheduled,
+    slug,
+    status,
+    orderId,
+    locale,
+    sendingReminder,
+    openDetailsModal,
+    openEditModal,
+    openApproveModal,
+    openRejectModal,
+    t,
+    handleClose,
+    handleShowDetails,
+    sendRemind,
+    handleEdit,
+    handleApprove,
+    handleReject,
+  ]);
 
   if (visibleItems.length === 0) return null;
 
+  // ── Render ────────────────────────────────────────────────────
   return (
     <>
       <Button
