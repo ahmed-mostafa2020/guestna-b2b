@@ -30,7 +30,7 @@ const registrationInitialValues = {
   email: "",
   idNumber: "",
   stationName: "",
-  socialLink: "",
+  socialLink: [""],
   vendorType: [],
   previousParticipation: "",
   numberOfHelpers: "",
@@ -124,7 +124,9 @@ const RamadanNightsForm = () => {
         idNumber: regValues.idNumber,
       },
       stationName: regValues.stationName || regValues.fullName,
-      socialHandle: regValues.socialLink ? [regValues.socialLink] : [],
+      socialHandle: Array.isArray(regValues.socialLink)
+        ? regValues.socialLink.filter((link) => link && link.trim() !== "")
+        : [],
       serviceType:
         regValues.vendorType?.map((v) => vendorTypeMap[v] || v) || [],
       participatedBefore:

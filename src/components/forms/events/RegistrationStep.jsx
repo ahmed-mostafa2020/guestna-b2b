@@ -164,18 +164,49 @@ const RegistrationStep = ({
           required={true}
         />
 
-        <TextInputGroup
-          label={t("ramadanNights.form.socialLink.label")}
-          labelFontFamily="var(--font-somar-sans), sans-serif"
-          name="socialLink"
-          value={values.socialLink}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          touched={touched.socialLink}
-          errors={errors.socialLink}
-          placeholder={t("ramadanNights.form.socialLink.placeholder")}
-          required={false}
-        />
+        <div className="flex flex-col gap-2">
+          <label className="font-medium capitalize font-somar">
+            {t("ramadanNights.form.socialLink.label")}
+          </label>
+          {values.socialLink?.map((link, index) => (
+            <div key={index} className="flex gap-2 items-start">
+              <TextInputGroup
+                labelFontFamily="var(--font-somar-sans), sans-serif"
+                name={`socialLink.${index}`}
+                value={link}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                touched={touched.socialLink?.[index]}
+                errors={errors.socialLink?.[index]}
+                placeholder={t("ramadanNights.form.socialLink.placeholder")}
+                required={false}
+              />
+              {values.socialLink.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newLinks = values.socialLink.filter(
+                      (_, i) => i !== index
+                    );
+                    setFieldValue("socialLink", newLinks);
+                  }}
+                  className="px-3 py-2 text-error hover:bg-error/10 rounded-lg transition-colors"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => {
+              setFieldValue("socialLink", [...values.socialLink, ""]);
+            }}
+            className="self-start px-4 py-2 text-sm font-somar text-mainColor hover:bg-mainColor/10 rounded-lg transition-colors border border-mainColor/30"
+          >
+            + {t("ramadanNights.form.socialLink.addAnother")}
+          </button>
+        </div>
 
         <div>
           <label className="block font-medium font-somar mb-3">

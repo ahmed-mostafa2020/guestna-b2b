@@ -48,6 +48,7 @@ export const createCreditSchema = (t) =>
   Yup.object().shape({
     cardholderName: Yup.string()
       .required(t("forms.validation.require"))
+      .matches(/^[a-zA-Z\s]+$/, t("forms.cardholderName.error.englishOnly"))
       .test(
         "is-full-name",
         t("forms.cardholderName.error.validation"),
@@ -1362,10 +1363,10 @@ export const createRamadanNightsSchema = (t) =>
       .required(t("ramadanNights.validation.stationNameRequired"))
       .min(2, t("ramadanNights.validation.stationNameMin"))
       .max(50, t("ramadanNights.validation.stationNameMax")),
-    socialLink: Yup.string()
-      .trim()
-      .transform((value) => (value === "" ? null : value))
-      .url(t("ramadanNights.validation.socialLinkInvalid"))
+    socialLink: Yup.array()
+      .of(
+        Yup.string().trim().url(t("ramadanNights.validation.socialLinkInvalid"))
+      )
       .nullable()
       .notRequired(),
     vendorType: Yup.array()

@@ -1983,7 +1983,8 @@
       "name": "Cardholder Name",
       "error": {
         "validation": "First and last name are required",
-        "minAndMax": "Each name must be between 2 and 20 characters"
+        "minAndMax": "Each name must be between 2 and 20 characters",
+        "englishOnly": "Cardholder name must contain only English letters"
       }
     },
 
@@ -2875,7 +2876,8 @@
       },
       "socialLink": {
         "label": "Online Store / Social Media Link (Optional)",
-        "placeholder": "Enter link"
+        "placeholder": "Enter link",
+        "addAnother": "Add Another Link"
       },
       "vendorType": {
         "label": "Type of Vendor/Product/Service",

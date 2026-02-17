@@ -62,20 +62,20 @@ const SuccessBooking = ({ data }) => {
       </h3>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
-        {data.bookingInfo.childs[0].name && (
+        {data.bookingInfo?.childs && (
           <BookingDataCard
             title={t("bookingStatus.success.data.senderName")}
             subTitle={data.bookingInfo.childs[0].name}
           />
         )}
 
-        {data.bookingInfo.orderId && (
+        {data.bookingInfo?.orderId && (
           <BookingDataCard
             title={t("bookingStatus.success.data.bookingId")}
             subTitle={data.bookingInfo.orderId}
           />
         )}
-        {data.bookingInfo.paymentTime && (
+        {data.bookingInfo?.paymentTime && (
           <BookingDataCard
             title={t("bookingStatus.success.data.paymentTime")}
             subTitle={formatDate(data.bookingInfo.paymentTime, locale, {
@@ -87,7 +87,7 @@ const SuccessBooking = ({ data }) => {
             })}
           />
         )}
-        {data.bookingInfo.paymentType && (
+        {data.bookingInfo?.paymentType && (
           <BookingDataCard
             title={t("bookingStatus.success.data.paymentMethod")}
             subTitle={data.bookingInfo.paymentType}
