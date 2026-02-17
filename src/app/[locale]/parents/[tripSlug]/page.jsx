@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -41,6 +42,8 @@ import {
 const TripDetails = ({ params }) => {
   const locale = useLocale();
   const t = useTranslations();
+  const searchParams = useSearchParams();
+  const onlyDetails = Boolean(searchParams.get("onlyDetails"));
 
   const firstAvailableDate = useSelector((state) => {
     const bookingDays = state.tripDetailsData.data?.trip?.bookingDay;
@@ -193,7 +196,8 @@ const TripDetails = ({ params }) => {
 
       {tripData?.availableSeats > 0 &&
         tripData?.status === TRIP_STATUS.PENDING &&
-        isBookingAvailable && (
+        isBookingAvailable &&
+        !onlyDetails && (
           <RegisterStudentForm
             tripMainCategory={tripData?.categories?.formsType}
             availableSeats={availableSeats}
