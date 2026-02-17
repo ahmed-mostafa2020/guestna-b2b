@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo, useRef, useEffect } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Formik } from "formik";
@@ -13,10 +13,8 @@ import {
 } from "@utils/validationSchemas";
 import { getHeaders } from "@utils/getHeaders";
 import getProxyUrl from "@utils/getProxyUrl";
-import formatCurrency from "@utils/FormatCurrency";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { useMutationData } from "@hooks/useMutationData";
 import RegistrationStep from "./RegistrationStep";
 import PaymentStep from "./PaymentStep";
 import ramadanBg from "@assets/sectionBackground/ramadan-nights.png";
@@ -56,7 +54,6 @@ const RamadanNightsForm = () => {
     CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD
   );
   const [isPaymentSubmitting, setIsPaymentSubmitting] = useState(false);
-  const [appleBookingId, setAppleBookingId] = useState(null);
   const registrationValuesRef = useRef(null);
 
   const registrationSchema = useMemo(() => createRamadanNightsSchema(t), [t]);
@@ -64,17 +61,6 @@ const RamadanNightsForm = () => {
 
   const headers = getHeaders(locale);
   const vercelUrl = CONSTANT_VALUES?.URLS?.B2B_VERCEL_URL;
-  const appleWidgetKey = process.env.NEXT_PUBLIC_APPLE_WIDGET_KEY;
-
-  const { mutate: mutateAppleInitiate } = useMutationData(
-    B2B_END_POINTS.RAMADAN_NIGHTS.APPLE_INITIATE,
-    { method: "POST" }
-  );
-
-  const { mutate: mutateAppleConfirm } = useMutationData(
-    B2B_END_POINTS.RAMADAN_NIGHTS.APPLE_CONFIRM,
-    { method: "POST" }
-  );
 
   const handleNext = useCallback(
     async (validateForm, setTouched, values) => {
@@ -135,13 +121,13 @@ const RamadanNightsForm = () => {
           t("ramadanNights.form.previousParticipation.yes"),
       price: BOOTH_FEE,
       quantity: parseInt(regValues.numberOfHelpers) || 1,
-      redirectUrl: `${vercelUrl}/${locale}/bookingStatus`,
     };
 
     if (
       currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD &&
       paymentValues
     ) {
+      body.redirectUrl = `${vercelUrl}/${locale}/bookingStatus`;
       body.paymentCridetInfo = {
         creditCardName: String(paymentValues.cardholderName),
         creditCardNumber: String(paymentValues.cardNumber),
@@ -286,21 +272,6 @@ const RamadanNightsForm = () => {
       </div>
 
       <div className="px-6 md:px-10 py-8">
-        {/* Apple Pay Moyasar Init */}
-        <ApplePayInit
-          currentStep={currentStep}
-          currentPaymentMethod={currentPaymentMethod}
-          registrationValuesRef={registrationValuesRef}
-          buildApiBody={buildApiBody}
-          locale={locale}
-          appleWidgetKey={appleWidgetKey}
-          vercelUrl={vercelUrl}
-          mutateAppleInitiate={mutateAppleInitiate}
-          mutateAppleConfirm={mutateAppleConfirm}
-          appleBookingId={appleBookingId}
-          setAppleBookingId={setAppleBookingId}
-        />
-
         {/* Step 1: Registration */}
         {currentStep === 0 && (
           <Formik
@@ -383,6 +354,10 @@ const RamadanNightsForm = () => {
                   handlePaymentBlur={handlePaymentBlur}
                   currentPaymentMethod={currentPaymentMethod}
                   onPaymentMethodChange={handlePaymentMethodChange}
+                  applePayBaseData={buildApiBody(
+                    registrationValuesRef.current,
+                    null
+                  )}
                 />
 
                 <div className="flex flex-col sm:flex-row gap-3 mt-8">
@@ -422,119 +397,6 @@ const RamadanNightsForm = () => {
       </div>
     </div>
   );
-};
-
-const ApplePayInit = ({
-  currentStep,
-  currentPaymentMethod,
-  registrationValuesRef,
-  buildApiBody,
-  locale,
-  appleWidgetKey,
-  vercelUrl,
-  mutateAppleInitiate,
-  mutateAppleConfirm,
-  appleBookingId,
-  setAppleBookingId,
-}) => {
-  useEffect(() => {
-    if (
-      currentStep !== 1 ||
-      currentPaymentMethod !== CONSTANT_VALUES.PAYMENT_METHODS.APPLE ||
-      !registrationValuesRef.current ||
-      typeof window === "undefined" ||
-      !window.Moyasar
-    ) {
-      return;
-    }
-
-    const regValues = registrationValuesRef.current;
-    const baseData = buildApiBody(regValues, null);
-
-    Moyasar.init({
-      element: ".mysr-form",
-      amount: BOOTH_FEE * 100,
-      language: locale,
-      currency: "SAR",
-      description: "Ramadan Nights Vendor Registration",
-      publishable_api_key: appleWidgetKey,
-      callback_url: `${B2B_END_POINTS.PAYMENTS}${B2B_END_POINTS.RAMADAN_NIGHTS.APPLE_CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
-      methods: ["applepay"],
-      apple_pay: {
-        country: "SA",
-        label: "Guestna",
-        merchant_capabilities: [
-          "supports3DS",
-          "supportsCredit",
-          "supportsDebit",
-        ],
-        supported_countries: ["SA", "US"],
-        validation_url:
-          "https://apple-pay-gateway.apple.com/paymentservices/paymentSession",
-        validate_merchant_url: "https://api.moyasar.com/v1/applepay/initiate",
-      },
-      on_initiating: function () {
-        return new Promise(function (resolve, reject) {
-          try {
-            mutateAppleInitiate(baseData, {
-              onSuccess: (data) => {
-                if (!data?.bookingId) {
-                  reject();
-                  return;
-                }
-                setAppleBookingId(data.bookingId);
-                resolve({});
-              },
-              onError: () => {
-                reject();
-              },
-            });
-          } catch {
-            reject();
-          }
-        });
-      },
-      on_completed: function (payment) {
-        return new Promise(function (resolve, reject) {
-          try {
-            if (payment && payment.id) {
-              const confirmationData = {
-                bookingId: appleBookingId,
-                paymentId: payment.id,
-              };
-              mutateAppleConfirm(confirmationData, {
-                onSuccess: () => {
-                  setAppleBookingId(null);
-                  resolve({});
-                },
-                onError: () => {
-                  reject();
-                },
-              });
-            } else {
-              reject();
-            }
-          } catch {
-            reject();
-          }
-        });
-      },
-    });
-  }, [
-    currentStep,
-    currentPaymentMethod,
-    registrationValuesRef,
-    buildApiBody,
-    locale,
-    appleWidgetKey,
-    vercelUrl,
-    mutateAppleInitiate,
-    mutateAppleConfirm,
-    appleBookingId,
-    setAppleBookingId,
-  ]);
-
-  return null;
 };
 
 export default RamadanNightsForm;

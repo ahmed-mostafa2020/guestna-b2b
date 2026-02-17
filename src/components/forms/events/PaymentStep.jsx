@@ -7,6 +7,7 @@ import formatCurrency from "@utils/FormatCurrency";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import SelectionGroup from "@components/forms/SelectionGroup";
 import PaymentMethod from "@components/forms/checkout/paymentForm/PaymentMethod";
+import RamadanAppleWidget from "./RamadanAppleWidget";
 
 import madaLogo from "@assets/paymentLogos/mada.svg";
 import visaLogo from "@assets/paymentLogos/visa.svg";
@@ -25,6 +26,7 @@ const PaymentStep = ({
   handlePaymentBlur,
   currentPaymentMethod,
   onPaymentMethodChange,
+  applePayBaseData,
 }) => {
   const t = useTranslations();
 
@@ -202,9 +204,7 @@ const PaymentStep = ({
 
             {currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.APPLE && (
               <div className="flex flex-col gap-4 px-4 py-6 bg-[#FAF9F9] rounded-b-xl transition-all duration-200 ease-in-out">
-                <div className="flex">
-                  <div className="mysr-form w-full"></div>
-                </div>
+                <RamadanAppleWidget baseData={applePayBaseData} />
               </div>
             )}
           </div>
