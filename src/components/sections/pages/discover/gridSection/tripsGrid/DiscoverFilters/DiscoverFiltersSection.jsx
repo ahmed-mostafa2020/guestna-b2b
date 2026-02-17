@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback, useEffect, useMemo, useState, useRef } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import {
@@ -24,13 +24,13 @@ const DiscoverFiltersSection = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Refs
   const isInitialMount = useRef(true);
-  const skipNextUrlSync = useRef(false); // NEW: Skip URL sync after manual update
+  const skipNextUrlSync = useRef(false);
 
-  // ======================
-  // Selectors (optimized)
-  // ======================
+  // Keep a ref to latest filter/searchTerm to avoid stale closures
+  const filterRef = useRef({});
+  const searchTermRef = useRef("");
+
   const { sideFilters, loading } = useSelector(
     (state) => state.discoverSideFilters,
     shallowEqual
@@ -41,50 +41,42 @@ const DiscoverFiltersSection = () => {
     shallowEqual
   );
 
+  // Keep refs in sync with Redux state
+  filterRef.current = filter || {};
+  searchTermRef.current = searchTerm || "";
+
   const [searchValue, setSearchValue] = useState(searchTerm || "");
 
-  // ======================
-  // URL Utilities
-  // ======================
-  const buildUrlFromFilters = useCallback(
+  // ── URL Utilities ─────────────────────────────────────────────
+  const buildUrl = useCallback(
     (filters, search) => {
       const params = new URLSearchParams();
 
-      // Add filter params
       Object.entries(filters).forEach(([key, value]) => {
         if (Array.isArray(value) && value.length > 0) {
           params.set(key, value.join(","));
         }
       });
 
-      // Add search term
-      if (search && search.trim()) {
+      if (search?.trim()) {
         params.set("searchTerm", search.trim());
       }
 
-      const newUrl = params.toString()
-        ? `${pathname}?${params.toString()}`
-        : pathname;
-
-      return newUrl;
+      return params.toString() ? `${pathname}?${params.toString()}` : pathname;
     },
     [pathname]
   );
 
   const updateUrl = useCallback(
     (filters, search) => {
-      skipNextUrlSync.current = true; // Skip the next URL sync
-      const newUrl = buildUrlFromFilters(filters, search);
-      router.replace(newUrl, { scroll: false });
+      skipNextUrlSync.current = true;
+      router.replace(buildUrl(filters, search), { scroll: false });
     },
-    [router, buildUrlFromFilters]
+    [router, buildUrl]
   );
 
-  // ======================
-  // URL → Redux Sync (ONLY on initial load or browser back/forward)
-  // ======================
+  // ── URL → Redux Sync ──────────────────────────────────────────
   useEffect(() => {
-    // Skip if this update was triggered by us
     if (skipNextUrlSync.current) {
       skipNextUrlSync.current = false;
       return;
@@ -95,37 +87,32 @@ const DiscoverFiltersSection = () => {
     const urlFilters = {};
     const urlSearchTerm = searchParams.get("searchTerm") || "";
 
-    // Parse URL params into filters object
     searchParams.forEach((value, key) => {
       if (EXCLUDED_URL_PARAMS.includes(key) || key === "searchTerm") return;
       urlFilters[key] = value.split(",").filter(Boolean);
     });
 
-    // Only sync if this is initial mount or genuine external change
     if (isInitialMount.current) {
       dispatch(setDiscoverFilters(urlFilters));
       dispatch(setSearchTerm(urlSearchTerm));
       setSearchValue(urlSearchTerm);
       isInitialMount.current = false;
-    } else {
-      // For browser back/forward, check if actually different
-      const filtersChanged =
-        JSON.stringify(urlFilters) !== JSON.stringify(filter);
-      const searchChanged = urlSearchTerm !== searchTerm;
-
-      if (filtersChanged) {
-        dispatch(setDiscoverFilters(urlFilters));
-      }
-      if (searchChanged) {
-        dispatch(setSearchTerm(urlSearchTerm));
-        setSearchValue(urlSearchTerm);
-      }
+      return;
     }
-  }, [searchParams?.toString()]); // Only trigger on actual URL change
 
-  // ======================
-  // Helpers
-  // ======================
+    // Browser back/forward only
+    const filtersChanged =
+      JSON.stringify(urlFilters) !== JSON.stringify(filterRef.current);
+    const searchChanged = urlSearchTerm !== searchTermRef.current;
+
+    if (filtersChanged) dispatch(setDiscoverFilters(urlFilters));
+    if (searchChanged) {
+      dispatch(setSearchTerm(urlSearchTerm));
+      setSearchValue(urlSearchTerm);
+    }
+  }, [searchParams?.toString()]);
+
+  // ── Helpers ───────────────────────────────────────────────────
   const mapOptions = useCallback(
     (items = [], labelKey = "name", valueKey = "_id") =>
       items.map((item) => ({
@@ -135,15 +122,15 @@ const DiscoverFiltersSection = () => {
     []
   );
 
-  // ======================
-  // Handlers
-  // ======================
+  // ── Handlers ──────────────────────────────────────────────────
+
+  // Uses refs so it never goes stale — no need to recreate on every filter change
   const handleFilterChange = useCallback(
     (key) => (value) => {
-      const values = Array.isArray(value) ? value : [value];
+      const values = Array.isArray(value) ? value : value ? [value] : [];
 
-      // Build new filters object
-      const newFilters = { ...filter };
+      // Read latest state from ref — avoids stale closure
+      const newFilters = { ...filterRef.current };
 
       if (values.length > 0) {
         newFilters[key] = values;
@@ -151,14 +138,11 @@ const DiscoverFiltersSection = () => {
         delete newFilters[key];
       }
 
-      // Update Redux first
       dispatch(setDiscoverFilters(newFilters));
       dispatch(setCurrentPage(1));
-
-      // Then update URL
-      updateUrl(newFilters, searchTerm);
+      updateUrl(newFilters, searchTermRef.current);
     },
-    [filter, searchTerm, dispatch, updateUrl]
+    [dispatch, updateUrl] // No filter/searchTerm dep — uses refs instead
   );
 
   const handleSearchChange = useCallback((e) => {
@@ -166,15 +150,11 @@ const DiscoverFiltersSection = () => {
   }, []);
 
   const handleSearchSubmit = useCallback(() => {
-    const trimmedValue = searchValue.trim();
-
-    // Update Redux
-    dispatch(setSearchTerm(trimmedValue));
+    const trimmed = searchValue.trim();
+    dispatch(setSearchTerm(trimmed));
     dispatch(setCurrentPage(1));
-
-    // Update URL
-    updateUrl(filter, trimmedValue);
-  }, [searchValue, filter, dispatch, updateUrl]);
+    updateUrl(filterRef.current, trimmed);
+  }, [searchValue, dispatch, updateUrl]);
 
   const handleSearchKeyDown = useCallback(
     (e) => {
@@ -190,22 +170,21 @@ const DiscoverFiltersSection = () => {
     setSearchValue("");
     dispatch(setSearchTerm(""));
     dispatch(setCurrentPage(1));
-    updateUrl(filter, "");
-  }, [filter, dispatch, updateUrl]);
+    updateUrl(filterRef.current, "");
+  }, [dispatch, updateUrl]);
 
   const handleReset = useCallback(() => {
     setSearchValue("");
     dispatch(setDiscoverFilters({}));
     dispatch(setSearchTerm(""));
     dispatch(setCurrentPage(1));
-
     skipNextUrlSync.current = true;
     router.replace(pathname, { scroll: false });
   }, [dispatch, pathname, router]);
 
-  // ======================
-  // Memoized Config
-  // ======================
+  // ── Filter Config ─────────────────────────────────────────────
+  // handleFilterChange is now stable (no filter dep), so this only
+  // re-runs when sideFilters/filter/t actually change
   const filters = useMemo(() => {
     const {
       cities = [],
@@ -250,14 +229,10 @@ const DiscoverFiltersSection = () => {
     ].filter((f) => f.options.length > 0);
   }, [sideFilters, filter, t, mapOptions, handleFilterChange]);
 
-  // Check if any filters are active
-  const hasActiveFilters = useMemo(() => {
-    return Object.keys(filter || {}).length > 0 || searchTerm;
-  }, [filter, searchTerm]);
+  const activeFilterCount =
+    Object.values(filter || {}).flat().length + (searchTerm ? 1 : 0);
 
-  // ======================
-  // Render
-  // ======================
+  // ── Render ────────────────────────────────────────────────────
   return (
     <Box className="bg-white rounded-xl p-4 shadow-[0_0_4px_0_rgba(0,0,0,0.16)]">
       <Grid container alignItems="center" spacing={2}>
@@ -265,11 +240,9 @@ const DiscoverFiltersSection = () => {
           <span className="font-medium !text-titleColor text-lg">
             {t("forms.search.title")}
           </span>
-          {hasActiveFilters && (
+          {activeFilterCount > 0 && (
             <span className="ml-2 text-sm text-gray-500">
-              (
-              {Object.values(filter || {}).flat().length + (searchTerm ? 1 : 0)}{" "}
-              active)
+              ({activeFilterCount} active)
             </span>
           )}
         </Grid>

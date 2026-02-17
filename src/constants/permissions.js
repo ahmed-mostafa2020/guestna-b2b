@@ -46,6 +46,8 @@ export const PERMISSIONS = {
       "b2b_profile_change_permissions_role_btn",
     B2B_PROFILE_DELETE_ROLE_BTN: "b2b_profile_delete_role_btn",
     B2B_PROFILE_ADD_ROLE_BTN: "b2b_profile_add_role_btn",
+    B2B_PROFILE_ORDER_MANAGEMENT_ACCEPT: "b2b_profile_order_management_accept",
+    B2B_PROFILE_ORDER_MANAGEMENT_REJECT: "b2b_profile_order_management_reject",
   },
   PAGE: {
     B2B_PROFILE_MAIN_PAGE: "b2b_profile_main_page",

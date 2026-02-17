@@ -42,9 +42,7 @@ const ActionsDropdownMenu = ({
 
   const headers = useMemo(() => getHeaders(locale), [locale]);
 
-  // ── Derived booking state ─────────────────────────────────────
-  // All moved into one useMemo so they're always consistent with
-  // each other and with the booking prop
+  // ── Derived booking state (all atomic, no stale values) ───────
   const {
     isCustom,
     isCustomTrip,
@@ -109,10 +107,10 @@ const ActionsDropdownMenu = ({
         PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_UPDATE_TRIP
       ),
       rejectTrip: hasElement(
-        PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REJECT_TRIP
+        PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REJECT
       ),
       approveTrip: hasElement(
-        PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_APPROVE_TRIP
+        PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_ACCEPT
       ),
     }),
     [hasElement]
@@ -165,102 +163,107 @@ const ActionsDropdownMenu = ({
     openDetailsModal?.(_id);
   }, [handleClose, openDetailsModal, _id]);
 
-  // ── Menu items ────────────────────────────────────────────────
-  const visibleItems = useMemo(() => {
-    const items = [
-      {
-        key: "custom-details",
-        visible: can.showDetails && isCustom && isPending,
-        label: t("links.showDetails"),
-        href: `/${locale}/profile/bookings-management/orders/${orderId}`,
-        onClick: handleClose,
-      },
-      {
-        key: "slug-details",
-        visible: Boolean(slug) && status === TRIP_STATUS.DONE,
-        label: t("links.showDetails"),
-        href: `/${locale}/parents/${slug}?onlyDetails=true`,
-        onClick: handleClose,
-      },
-      {
-        key: "custom-trip-details",
-        visible:
-          can.showDetails &&
-          isCustomTrip &&
-          isPending &&
-          Boolean(openDetailsModal),
-        label: t("links.showDetails"),
-        onClick: handleShowDetails,
-      },
-      {
-        key: "remind",
-        visible: can.remindGuestna && isCustom && isEditable,
-        label: sendingReminder ? (
-          <CircularProgress size={16} />
-        ) : (
-          t("links.remindGuestna")
-        ),
-        onClick: sendRemind,
-        disabled: sendingReminder,
-      },
-      {
-        key: "edit",
-        visible:
-          can.updateTrip &&
-          isEditable &&
-          (isCustom || isCustomTrip) &&
-          Boolean(openEditModal),
-        label: t("links.edit"),
-        onClick: handleEdit,
-      },
-      {
-        key: "approve",
-        visible:
-          isOnHold && (isCustom || isCustomTrip) && Boolean(openApproveModal),
-        label: t("links.confirm"),
-        onClick: handleApprove,
-        sx: { color: "success.main" },
-      },
-      {
-        key: "reject",
-        visible:
-          (isCustom || isCustomTrip) &&
-          !isClosed &&
-          !isScheduled &&
-          Boolean(openRejectModal),
-        label: t("links.reject"),
-        onClick: handleReject,
-        sx: { color: "error.main" },
-      },
-    ];
 
-    return items.filter((item) => item.visible);
-  }, [
-    can,
-    isCustom,
-    isCustomTrip,
-    isPending,
-    isOnHold,
-    isEditable,
-    isClosed,
-    isScheduled,
-    slug,
-    status,
-    orderId,
-    locale,
-    sendingReminder,
-    openDetailsModal,
-    openEditModal,
-    openApproveModal,
-    openRejectModal,
-    t,
-    handleClose,
-    handleShowDetails,
-    sendRemind,
-    handleEdit,
-    handleApprove,
-    handleReject,
-  ]);
+  // ── Visible menu items ────────────────────────────────────────
+  const visibleItems = useMemo(
+    () =>
+      [
+        {
+          key: "custom-details",
+          visible: can.showDetails && isCustom && isPending,
+          label: t("links.showDetails"),
+          href: `/${locale}/profile/bookings-management/orders/${orderId}`,
+          onClick: handleClose,
+        },
+        {
+          key: "slug-details",
+          visible: Boolean(slug) && status === TRIP_STATUS.DONE,
+          label: t("links.showDetails"),
+          href: `/${locale}/parents/${slug}?onlyDetails=true`,
+          onClick: handleClose,
+        },
+        {
+          key: "custom-trip-details",
+          visible:
+            can.showDetails &&
+            isCustomTrip &&
+            isPending &&
+            Boolean(openDetailsModal),
+          label: t("links.showDetails"),
+          onClick: handleShowDetails,
+        },
+        {
+          key: "remind",
+          visible: can.remindGuestna && isCustom && isEditable,
+          label: sendingReminder ? (
+            <CircularProgress size={16} />
+          ) : (
+            t("links.remindGuestna")
+          ),
+          onClick: sendRemind,
+          disabled: sendingReminder,
+        },
+        {
+          key: "edit",
+          visible:
+            can.updateTrip &&
+            isEditable &&
+            (isCustom || isCustomTrip) &&
+            Boolean(openEditModal),
+          label: t("links.edit"),
+          onClick: handleEdit,
+        },
+        {
+          key: "approve",
+          visible:
+            can.approveTrip &&
+            isOnHold &&
+            (isCustom || isCustomTrip) &&
+            Boolean(openApproveModal),
+          label: t("links.confirm"),
+          onClick: handleApprove,
+          sx: { color: "success.main" },
+        },
+        {
+          key: "reject",
+          visible:
+            can.rejectTrip &&
+            (isCustom || isCustomTrip) &&
+            !isClosed &&
+            !isScheduled && 
+            Boolean(openRejectModal),
+          label: t("links.reject"),
+          onClick: handleReject,
+          sx: { color: "error.main" },
+        },
+      ].filter((item) => item.visible),
+    [
+      can,
+      isCustom,
+      isCustomTrip,
+      isPending,
+      isOnHold,
+      isEditable,
+      isClosed,
+      isScheduled,
+      slug,
+      status,
+      orderId,
+      locale,
+      sendingReminder,
+      openDetailsModal,
+      openEditModal,
+      openApproveModal,
+      openRejectModal,
+      t,
+      handleClose,
+      handleShowDetails,
+      sendRemind,
+      handleEdit,
+      handleApprove,
+      handleReject,
+    ]
+  );
 
   if (visibleItems.length === 0) return null;
 
