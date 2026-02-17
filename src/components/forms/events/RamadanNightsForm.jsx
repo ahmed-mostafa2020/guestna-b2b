@@ -17,7 +17,7 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import RegistrationStep from "./RegistrationStep";
 import PaymentStep from "./PaymentStep";
-import ramadanBg from "@assets/sectionBackground/ramadan-nights.png";
+import ramadanBg from "@assets/sectionBackground/ramadan-nights.webp";
 
 const STEPS = ["step1", "step2"];
 const BOOTH_FEE = 50;

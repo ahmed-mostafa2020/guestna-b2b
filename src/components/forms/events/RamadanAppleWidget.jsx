@@ -34,7 +34,7 @@ const RamadanAppleWidget = ({ baseData }) => {
       currency: "SAR",
       description: "Ramadan Nights Vendor Registration",
       publishable_api_key: appleWidgetKey,
-      callback_url: `${B2B_END_POINTS.PAYMENTS}${B2B_END_POINTS.RAMADAN_NIGHTS.APPLE_CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
+      callback_url: `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.RAMADAN_NIGHTS.APPLE_CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
       methods: ["applepay"],
       apple_pay: {
         country: "SA",

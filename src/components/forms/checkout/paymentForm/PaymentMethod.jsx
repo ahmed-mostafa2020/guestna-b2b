@@ -52,7 +52,7 @@ const PaymentMethod = ({ value, label, imagesList, currentPaymentMethod }) => {
         }
         label={label}
       />
-      <div className="flex gap-1">{renderedImages}</div>
+      <div className="flex gap-1 flex-wrap">{renderedImages}</div>
     </div>
   );
 };
