@@ -297,7 +297,7 @@ const AllOrdersTable = ({
                         {formatCurrency(
                           order.basePrice
                             ? order.basePrice
-                            : order.priceRange.max
+                            : order.priceRange?.max || 0
                         )}
                       </td>
 
@@ -420,7 +420,9 @@ const AllOrdersTable = ({
                   </span>
                   <span className="font-bold text-foreground text-sm">
                     {formatCurrency(
-                      order.basePrice ? order.basePrice : order.priceRange.max
+                      order.basePrice
+                        ? order.basePrice
+                        : order.priceRange?.max || 0
                     )}
                   </span>
                 </div>
