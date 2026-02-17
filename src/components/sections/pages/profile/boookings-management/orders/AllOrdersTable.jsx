@@ -314,10 +314,7 @@ const AllOrdersTable = ({
                       {hasAnyActionPermission && (
                         <td className="p-4">
                           <ActionsDropdownMenu
-                            _id={order._id}
-                            bookingType={order.askType}
-                            bookingId={order.orderId}
-                            bookingStatus={order.status}
+                            booking={order}
                             onActionComplete={handleActionComplete}
                             openDetailsModal={openDetailsModal}
                             openEditModal={openEditModal}
@@ -449,10 +446,7 @@ const AllOrdersTable = ({
                     </span>
 
                     <ActionsDropdownMenu
-                      _id={order._id}
-                      bookingType={order.askType}
-                      bookingId={order.orderId}
-                      bookingStatus={order.status}
+                      booking={order}
                       onActionComplete={handleActionComplete}
                       openDetailsModal={openDetailsModal}
                       openEditModal={openEditModal}
