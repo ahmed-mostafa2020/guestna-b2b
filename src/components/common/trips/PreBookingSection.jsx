@@ -19,7 +19,6 @@ import ParentLoginForm from "../../forms/auth/parentLogin";
 
 import Cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";
-import { Details } from "@mui/icons-material";
 
 const PreBookingSection = ({ tripData }) => {
   const isSubmitted = useSelector((state) => state.parentLoginForm.isSubmitted);
@@ -163,7 +162,7 @@ const PreBookingSection = ({ tripData }) => {
           </span>
         </h3>
 
-        {bookingStatus.canBook   ? (
+        {bookingStatus.canBook ? (
           <>
             {!onlyDetails && (
               <button
@@ -216,18 +215,6 @@ const PreBookingSection = ({ tripData }) => {
               >
                 {t("links.login")}
               </button>
-
-              {/* <div className="flex flex-wrap items-center">
-                <p className="text-sm font-medium text-textLight pe-2 opacity-70">
-                  {t("registerChild.popup.toComplete")}
-                </p>
-                <Link
-                  href={`/${locale}/login`}
-                  className="text-sm font-semibold border-b text-mainColor border-mainColor"
-                >
-                  {t("registerChild.popup.haveNoAccount")}
-                </Link>
-              </div> */}
             </div>
 
             <div className="flex-col w-full gap-2 centered">
@@ -248,7 +235,6 @@ const PreBookingSection = ({ tripData }) => {
 
       {/* Parent login form */}
       {isParentLoginFormOpen && !isSubmitted && (
-        // && parentLogin || token
         <div className="bg-white centered">
           <CustomizedModal
             open={isParentLoginFormOpen}

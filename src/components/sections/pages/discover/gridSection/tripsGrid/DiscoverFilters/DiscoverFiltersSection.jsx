@@ -13,7 +13,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import SearchAndFilters from "@components/common/searchAndFilters/SearchAndFilters";
 import { Box, IconButton, InputAdornment, TextField } from "@mui/material";
 import { Grid } from "@material-ui/core";
-import { searchBarIcon, wrongIcon } from "@/src/assets/svg";
+import { searchBarIcon, wrongIcon } from "@assets/svg";
 
 const EXCLUDED_URL_PARAMS = ["page"];
 
