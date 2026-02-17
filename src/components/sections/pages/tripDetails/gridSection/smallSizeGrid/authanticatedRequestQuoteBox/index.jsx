@@ -14,6 +14,7 @@ import AuthenticatedRequestQuote from "@components/forms/requestQuote/Authentica
 
 import { CircularProgress } from "@mui/material";
 import axios from "axios";
+import { useSearchParams } from "next/navigation";
 
 const AuthanticatedRequestQuoteBox = ({ tripId }) => {
   const locale = useLocale();

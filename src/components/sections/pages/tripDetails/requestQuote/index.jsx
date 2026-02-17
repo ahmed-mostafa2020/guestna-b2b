@@ -10,10 +10,12 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import FrameWithImagedHeader from "@components/common/frameWithImagedHeader/FrameWithImagedHeader";
 import CustomizedModal from "@components/common/customizedModal";
 import RequestQuoteForm from "@components/forms/requestQuote";
+import { useSearchParams } from "next/navigation";
 
 const RequestQuote = () => {
   const [isRequestQuoteFormOpen, setIsRequestQuoteFormOpen] = useState(false);
-
+  const searchParams = useSearchParams();
+  const onlyDetails = Boolean(searchParams.get("onlyDetails"));
   const handleRequestQuoteFormOpen = () => {
     setIsRequestQuoteFormOpen(true);
   };
@@ -27,12 +29,14 @@ const RequestQuote = () => {
     <>
       <FrameWithImagedHeader withBorder={true}>
         <div className="flex items-center justify-between gap-2">
-          <button
-            onClick={handleRequestQuoteFormOpen}
-            className="flex-1 py-3 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor"
-          >
-            {t("links.requestQuote")}
-          </button>
+          {!onlyDetails && (
+            <button
+              onClick={handleRequestQuoteFormOpen}
+              className="flex-1 py-3 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor"
+            >
+              {t("links.requestQuote")}
+            </button>
+          )}
 
           <Link
             target="_blank"

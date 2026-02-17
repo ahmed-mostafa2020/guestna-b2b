@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 import { useTranslations } from "next-intl";
 
@@ -22,6 +22,7 @@ const SmallSizeGrid = () => {
 
   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
 
+  console.log({token})
   const pathname = usePathname();
 
   const t = useTranslations();
