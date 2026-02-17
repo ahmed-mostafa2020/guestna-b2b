@@ -200,7 +200,7 @@ const PreBookingSection = ({ tripData }) => {
 
       {isOpen && (
         <ActionsDialog
-          open={open}
+          open={isOpen}
           handleClose={handleClose}
           closeButton={true}
           bgcolor="rgba(0, 0, 0, 0.3)"

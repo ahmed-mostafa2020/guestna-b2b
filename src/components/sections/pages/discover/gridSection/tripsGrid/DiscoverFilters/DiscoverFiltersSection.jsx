@@ -121,7 +121,7 @@ const DiscoverFiltersSection = () => {
         setSearchValue(urlSearchTerm);
       }
     }
-  }, [searchParams?.toString()]); // Only trigger on actual URL change
+  }, [searchParams, dispatch, filter, searchTerm]);
 
   // ======================
   // Helpers

@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setCurrentPage,
   setDiscoverDataLoading,
+  setDiscoverData,
 } from "@store/discover/discoverSlice";
-import { setDiscoverData } from "@store/discover/discoverSlice";
 
 import { useEffect, useRef } from "react";
 
@@ -60,7 +60,7 @@ const ActivitiesMarketPage = () => {
     if (isLoading || isFetching) {
       dispatch(setDiscoverDataLoading("loading"));
     }
-  }, [isLoading, isFetching]);
+  }, [isLoading, isFetching, dispatch]);
 
   // Update URL when currentPage changes (skip on initial mount)
   useEffect(() => {
