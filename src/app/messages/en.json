@@ -3075,6 +3075,10 @@
         "label": "Student Name",
         "placeholder": "Enter student full name"
       },
+      "phone": {
+        "label": "Parent Phone Number",
+        "placeholder": "Enter parent phone number"
+      },
       "gender": {
         "label": "Gender",
         "male": "Boys",
@@ -3112,6 +3116,8 @@
       "nameRequired": "Student name is required",
       "nameMin": "Name must be at least 2 characters",
       "nameMax": "Name must not exceed 50 characters",
+      "phoneRequired": "Parent phone number is required",
+      "phoneInvalid": "Please enter a valid phone number",
       "genderRequired": "Please select a gender",
       "schoolNameRequired": "Please select a school",
       "success": "Your registration has been submitted successfully!",

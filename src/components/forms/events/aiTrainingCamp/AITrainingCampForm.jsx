@@ -25,6 +25,7 @@ const CAMP_FEE = 250;
 const registrationInitialValues = {
   name: "",
   gender: "",
+  phone: "",
   schoolName: "",
 };
 
@@ -119,6 +120,7 @@ const AITrainingCampForm = () => {
       client: {
         name: regValues.name,
         gender: regValues.gender,
+        phone: regValues.phone,
       },
       price: CAMP_FEE,
       quantity: 1,

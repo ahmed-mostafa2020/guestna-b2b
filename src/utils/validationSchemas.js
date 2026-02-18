@@ -1339,6 +1339,16 @@ export const createAITrainingCampSchema = (t) =>
       .required(t("aiTrainingCamp.validation.nameRequired"))
       .min(2, t("aiTrainingCamp.validation.nameMin"))
       .max(50, t("aiTrainingCamp.validation.nameMax")),
+    phone: Yup.string()
+      .required(t("aiTrainingCamp.validation.phoneRequired"))
+      .test(
+        "phone-validation",
+        t("aiTrainingCamp.validation.phoneInvalid"),
+        (value) => {
+          if (!value) return false;
+          return isValidPhoneNumber(value);
+        }
+      ),
     gender: Yup.string()
       .required(t("aiTrainingCamp.validation.genderRequired"))
       .oneOf(["MALE", "FEMALE"], t("aiTrainingCamp.validation.genderRequired")),
