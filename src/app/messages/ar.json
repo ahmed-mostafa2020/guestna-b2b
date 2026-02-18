@@ -629,6 +629,9 @@
       "rolesPermissions": {
         "title": "إدارة الأدوار والصلاحيات"
       },
+      "sales": {
+        "title": "تسجيل مدرسة"
+      },
       "information": "بياناتي",
       "activities": "الأنشطة",
       "packages": "الباقات",

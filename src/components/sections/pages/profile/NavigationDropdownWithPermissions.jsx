@@ -177,6 +177,14 @@ const NavigationDropdown = () => {
       hasDropdown: false,
       permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_ROLES_PERMISSIONS_TAB,
     },
+    {
+      id: "sales",
+      title: t("profile.aside.sales.title"),
+      icon: <TravelIcon />,
+      path: `/${locale}/school-register`,
+      hasDropdown: false,
+      permission: PERMISSIONS.PAGE.B2B_INVITE_SCHOOL_PAGE,
+    },
   ];
 
   // Filter navigation items based on user permissions

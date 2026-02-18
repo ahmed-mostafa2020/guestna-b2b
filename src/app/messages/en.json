@@ -615,6 +615,9 @@
       "rolesPermissions": {
         "title": "Roles and Permissions"
       },
+      "sales": {
+        "title": "School Register"
+      },
 
       "information": "My information",
       "activities": "Activities",
