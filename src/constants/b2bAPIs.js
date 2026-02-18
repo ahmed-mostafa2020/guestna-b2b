@@ -198,10 +198,6 @@ export const B2B_END_POINTS = {
 
   AI_TRAINING_CAMP: {
     ORGANIZATIONS: "organizations/manhal",
-    INITIATION: "ai-training-camp/initiation",
-    APPLE_INITIATE: "ai-training-camp/initiation/apple",
-    APPLE_CONFIRM: "ai-training-camp/confermed/apple",
-    APPLE_CALLBACK: "ai-training-camp/confermed/event/apple",
   },
 
   CONTACT_US: "supportMessage/massage",
