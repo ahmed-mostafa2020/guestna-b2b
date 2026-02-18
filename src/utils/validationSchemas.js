@@ -1331,6 +1331,22 @@ export const getApproveOrderValidationSchema = (t) => {
   });
 };
 
+// AI Training Camp Registration Schema
+export const createAITrainingCampSchema = (t) =>
+  Yup.object().shape({
+    name: Yup.string()
+      .trim()
+      .required(t("aiTrainingCamp.validation.nameRequired"))
+      .min(3, t("aiTrainingCamp.validation.nameMin"))
+      .max(50, t("aiTrainingCamp.validation.nameMax")),
+    gender: Yup.string()
+      .required(t("aiTrainingCamp.validation.genderRequired"))
+      .oneOf(["MALE", "FEMALE"], t("aiTrainingCamp.validation.genderRequired")),
+    schoolName: Yup.string().required(
+      t("aiTrainingCamp.validation.schoolNameRequired")
+    ),
+  });
+
 // Ramadan Nights Vendor Registration Schema
 export const createRamadanNightsSchema = (t) =>
   Yup.object().shape({

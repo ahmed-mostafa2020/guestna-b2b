@@ -3049,6 +3049,72 @@
       "error": "An error occurred. Please try again."
     }
   },
+  "aiTrainingCamp": {
+    "pageTitle": "Ramadan AI Training Camp",
+    "pageDescription": "Register for the Ramadan AI Training Camp at Al Manhal Schools",
+    "eventInfo": {
+      "title": "Ramadan AI Training Camp",
+      "subtitle": "An intensive Ramadan program to develop skills, designed with an advanced training approach to help you invest your time in Ramadan with maximum benefit.",
+      "date": "Boys: 7-9 Ramadan | Girls: 11-13 Ramadan",
+      "time": "Daily 9 AM - 12 PM (Online)",
+      "duration": "15 training hours",
+      "fee": "250",
+      "currency": "SAR"
+    },
+    "stepper": {
+      "step1": "Registration",
+      "step2": "Payment"
+    },
+    "form": {
+      "title": "Student Registration",
+      "subtitle": "Please fill out the form below to register for the Ramadan AI Training Camp.",
+      "name": {
+        "label": "Student Name",
+        "placeholder": "Enter student full name"
+      },
+      "gender": {
+        "label": "Gender",
+        "male": "Boys",
+        "female": "Girls"
+      },
+      "schoolName": {
+        "label": "School Name",
+        "placeholder": "Select school name",
+        "loading": "Loading schools..."
+      }
+    },
+    "payment": {
+      "title": "Payment Details",
+      "subtitle": "Complete your registration by paying the training camp fee",
+      "orderSummary": "Order Summary",
+      "registrationFee": "Training Camp Registration Fee",
+      "total": "Total",
+      "includingVat": "Including VAT"
+    },
+    "whatStudentsLearn": {
+      "title": "What will students learn?",
+      "items": {
+        "item1": "Deep understanding of modern technologies",
+        "item2": "Advanced practical applications",
+        "item3": "Developing critical thinking",
+        "item4": "Building creative projects",
+        "item5": "21st century skills",
+        "item6": "Creating professional digital content",
+        "item7": "Website and application development",
+        "item8": "Cybersecurity",
+        "item9": "Responsible use of technology"
+      }
+    },
+    "validation": {
+      "nameRequired": "Student name is required",
+      "nameMin": "Name must be at least 3 characters",
+      "nameMax": "Name must not exceed 50 characters",
+      "genderRequired": "Please select a gender",
+      "schoolNameRequired": "Please select a school",
+      "success": "Your registration has been submitted successfully!",
+      "error": "An error occurred. Please try again."
+    }
+  },
   "pagination": {
     "previous": "Previous",
     "next": "Next",

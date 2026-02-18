@@ -69,6 +69,13 @@ const SuccessBooking = ({ data }) => {
           />
         )}
 
+        {data.bookingInfo?.client && (
+          <BookingDataCard
+            title={t("bookingStatus.success.data.senderName")}
+            subTitle={data.bookingInfo.client.name}
+          />
+        )}
+
         {data.bookingInfo?.orderId && (
           <BookingDataCard
             title={t("bookingStatus.success.data.bookingId")}
@@ -93,7 +100,9 @@ const SuccessBooking = ({ data }) => {
             subTitle={data.bookingInfo.paymentType}
           />
         )}
+      </div>
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
         <button
           onClick={handleShare}
           className="gap-1 px-4 py-3 mt-2 font-medium text-center transition-all duration-200 ease-in-out border-2 rounded-lg centered lg:px-9 border-secColor text-mainColor hover:border-mainColor"
