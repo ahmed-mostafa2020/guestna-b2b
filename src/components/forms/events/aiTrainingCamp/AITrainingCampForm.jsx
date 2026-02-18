@@ -197,7 +197,7 @@ const AITrainingCampForm = () => {
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
       {/* Header with AI Training Camp theme */}
-      <div className="relative min-h-[280px] md:min-h-[340px] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#112137] via-[#1a3a5c] to-[#012F47]">
+      <div className="relative min-h-[280px] md:min-h-[340px] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#5B1A1A] via-[#7d2828] to-[#4a1515]">
         {/* Decorative AI circuit pattern */}
         <div className="absolute inset-0 z-0 opacity-10">
           <svg
@@ -319,16 +319,10 @@ const AITrainingCampForm = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30 z-10" />
 
         <div className="relative z-20 text-center px-6 py-10">
-          {/* AI Badge */}
-          <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md text-white text-sm px-4 py-1.5 rounded-full font-somar border border-white/20 mb-4">
-            <span className="text-lg">🤖</span>
-            <span>AI</span>
-          </div>
-
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white font-somar pb-3 drop-shadow-lg">
             {t("aiTrainingCamp.eventInfo.title")}
           </h1>
-          <p className="text-white/90 font-somar text-sm md:text-base lg:text-lg font-medium drop-shadow-md max-w-2xl mx-auto leading-relaxed">
+          <p className="text-white/95 font-somar text-sm md:text-base lg:text-lg font-medium drop-shadow-md max-w-2xl mx-auto leading-relaxed">
             {t("aiTrainingCamp.eventInfo.subtitle")}
           </p>
 
@@ -345,8 +339,24 @@ const AITrainingCampForm = () => {
           </div>
 
           {/* Fee Badge */}
-          <div className="mt-5 inline-flex items-center gap-2 bg-secColor/90 backdrop-blur-md text-white text-base md:text-lg px-6 py-2.5 rounded-full font-somar font-bold shadow-xl border border-secColor">
+          <div className="mt-5 inline-flex items-center gap-2 bg-[#1B75BB] text-white text-base md:text-lg px-6 py-2.5 rounded-full font-somar font-bold shadow-xl border border-[#1B75BB]/50">
             {formatCurrency(CAMP_FEE)}
+          </div>
+
+          {/* Trainer Info */}
+          <div className="mt-4 flex flex-col items-center gap-1">
+            <p className="text-white/80 text-xs md:text-sm font-somar">
+              {locale === "ar" ? "مع المدرب: " : "With Trainer: "}
+              <span className="font-medium text-white">
+                {locale === "ar" ? "عبدالعزيز الخنين" : "Abdulaziz Al-Khunain"}
+              </span>
+            </p>
+            <a
+              href="mailto:almobde.com@gmail.com"
+              className="text-white/70 hover:text-white text-xs font-somar transition-colors"
+            >
+              almobde.com@gmail.com
+            </a>
           </div>
         </div>
       </div>

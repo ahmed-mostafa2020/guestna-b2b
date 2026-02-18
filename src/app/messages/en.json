@@ -3107,7 +3107,7 @@
     },
     "validation": {
       "nameRequired": "Student name is required",
-      "nameMin": "Name must be at least 3 characters",
+      "nameMin": "Name must be at least 2 characters",
       "nameMax": "Name must not exceed 50 characters",
       "genderRequired": "Please select a gender",
       "schoolNameRequired": "Please select a school",

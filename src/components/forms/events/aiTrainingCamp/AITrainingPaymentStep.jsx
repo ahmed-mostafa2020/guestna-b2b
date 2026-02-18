@@ -7,7 +7,7 @@ import formatCurrency from "@utils/FormatCurrency";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import SelectionGroup from "@components/forms/SelectionGroup";
 import PaymentMethod from "@components/forms/checkout/paymentForm/PaymentMethod";
-import RamadanAppleWidget from "@components/forms/events/RamadanAppleWidget";
+import AITrainingAppleWidget from "./AITrainingAppleWidget";
 
 import madaLogo from "@assets/paymentLogos/mada.svg";
 import visaLogo from "@assets/paymentLogos/visa.svg";
@@ -68,7 +68,7 @@ const AITrainingPaymentStep = ({
           <div className="flex justify-between items-center text-sm font-somar">
             <span className="text-textLight">{values.name}</span>
             <span className="text-textLight capitalize">
-              {values.gender === "MALE"
+              {values.gender === CONSTANT_VALUES.GENDERS.MALE
                 ? t("aiTrainingCamp.form.gender.male")
                 : t("aiTrainingCamp.form.gender.female")}
             </span>
@@ -216,7 +216,7 @@ const AITrainingPaymentStep = ({
 
             {currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.APPLE && (
               <div className="flex flex-col gap-4 px-4 py-6 bg-[#FAF9F9] rounded-b-xl transition-all duration-200 ease-in-out">
-                <RamadanAppleWidget baseData={applePayBaseData} />
+                <AITrainingAppleWidget baseData={applePayBaseData} />
               </div>
             )}
           </div>

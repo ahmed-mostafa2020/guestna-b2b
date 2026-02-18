@@ -1337,7 +1337,7 @@ export const createAITrainingCampSchema = (t) =>
     name: Yup.string()
       .trim()
       .required(t("aiTrainingCamp.validation.nameRequired"))
-      .min(3, t("aiTrainingCamp.validation.nameMin"))
+      .min(2, t("aiTrainingCamp.validation.nameMin"))
       .max(50, t("aiTrainingCamp.validation.nameMax")),
     gender: Yup.string()
       .required(t("aiTrainingCamp.validation.genderRequired"))

@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import SelectionGroup from "@components/forms/SelectionGroup";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 
 const AITrainingRegistrationStep = ({
   values,
@@ -65,7 +66,7 @@ const AITrainingRegistrationStep = ({
             className="gap-4"
           >
             <FormControlLabel
-              value="MALE"
+              value={CONSTANT_VALUES.GENDERS.MALE}
               control={
                 <Radio
                   sx={{
@@ -84,17 +85,17 @@ const AITrainingRegistrationStep = ({
               className="!m-0 px-4 py-2 rounded-lg border-2 border-border hover:border-mainColor/30 transition-all duration-200 flex-1 min-w-[120px]"
               sx={{
                 border:
-                  values.gender === "MALE"
+                  values.gender === CONSTANT_VALUES.GENDERS.MALE
                     ? "2px solid var(--color-main)"
                     : undefined,
                 backgroundColor:
-                  values.gender === "MALE"
+                  values.gender === CONSTANT_VALUES.GENDERS.MALE
                     ? "var(--color-buttons-hover)"
                     : undefined,
               }}
             />
             <FormControlLabel
-              value="FEMALE"
+              value={CONSTANT_VALUES.GENDERS.FEMALE}
               control={
                 <Radio
                   sx={{
@@ -113,11 +114,11 @@ const AITrainingRegistrationStep = ({
               className="!m-0 px-4 py-2 rounded-lg border-2 border-border hover:border-mainColor/30 transition-all duration-200 flex-1 min-w-[120px]"
               sx={{
                 border:
-                  values.gender === "FEMALE"
+                  values.gender === CONSTANT_VALUES.GENDERS.FEMALE
                     ? "2px solid var(--color-main)"
                     : undefined,
                 backgroundColor:
-                  values.gender === "FEMALE"
+                  values.gender === CONSTANT_VALUES.GENDERS.FEMALE
                     ? "var(--color-buttons-hover)"
                     : undefined,
               }}
