@@ -318,7 +318,7 @@ const AITrainingCampForm = () => {
           </svg>
         </div>
 
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30 z-[2]" />
 
         <div className="relative z-20 text-center px-6 py-10">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white font-somar pb-3 drop-shadow-lg">

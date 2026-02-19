@@ -44,7 +44,7 @@ const SchoolRegisterPage = () => {
   return (
     <ProtectedProfilePage
       requiredPermission={
-        PERMISSIONS.PAGE.B2B_INVITE_SCHOOL_PAGE && userType === "SALES"
+        userType === "SALES" ? PERMISSIONS.PAGE.B2B_INVITE_SCHOOL_PAGE : null
       }
     >
       <>

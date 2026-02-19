@@ -40,7 +40,7 @@ const NavigationDropdown = () => {
 
   const locale = useLocale();
   const t = useTranslations();
-  const { hasMenuItem } = usePermissions();
+  const { hasMenuItem, hasPage } = usePermissions();
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -200,10 +200,15 @@ const NavigationDropdown = () => {
         return item.subItems.length > 0;
       }
 
+      // Sales page permission is in pages array, not menuItems
+      if (item.id === "sales") {
+        return hasPage(item.permission);
+      }
+
       // For non-dropdown items, check parent permission
       return hasMenuItem(item.permission);
     });
-  }, [hasMenuItem]);
+  }, [hasMenuItem, hasPage]);
 
   return (
     <Box className="w-full max-w-md overflow-hidden">
