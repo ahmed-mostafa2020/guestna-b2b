@@ -197,6 +197,8 @@ const TripDetails = ({ params }) => {
       {tripData?.availableSeats > 0 &&
         tripData?.status === TRIP_STATUS.PENDING &&
         isBookingAvailable &&
+        tripData?.slug !==
+          "king-fahd-public-library-in-jeddah-suez-school-st-246" &&
         !onlyDetails && (
           <RegisterStudentForm
             tripMainCategory={tripData?.categories?.formsType}
