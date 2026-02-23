@@ -169,7 +169,9 @@ const TripDetails = ({ params }) => {
   const endDate = new Date(tripData?.endAvailableBookingDay);
   const currentDate = new Date();
 
-  const isBookingAvailable = endDate > currentDate;
+  const isBookingAvailable =
+    endDate > currentDate ||
+    tripData?.slug === "king-fahd-public-library-in-jeddah-suez-school-st-246";
 
   return (
     <main
@@ -197,8 +199,6 @@ const TripDetails = ({ params }) => {
       {tripData?.availableSeats > 0 &&
         tripData?.status === TRIP_STATUS.PENDING &&
         isBookingAvailable &&
-        tripData?.slug !==
-          "king-fahd-public-library-in-jeddah-suez-school-st-246" &&
         !onlyDetails && (
           <RegisterStudentForm
             tripMainCategory={tripData?.categories?.formsType}
