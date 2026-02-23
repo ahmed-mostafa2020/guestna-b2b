@@ -157,6 +157,7 @@ const SchoolRegisterForm = ({
             ar: values.schoolNameArabic || "N/A",
             en: values.schoolNameEnglish || "N/A",
           },
+          city: findIdByName(cities, values.city),
           track: {
             educationSystem: findIdByName(
               availableEducationSystems,
