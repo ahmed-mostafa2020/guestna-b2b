@@ -69,6 +69,10 @@ const ThemeProvider = () => {
         "--color-footer-link",
         colorPreferences.color_footer_link || "#00000099"
       );
+      root.style.setProperty(
+        "--color-links-hover",
+        colorPreferences.color_links_hover || "#009883"
+      );
     } else {
       // Apply original theme colors
       root.style.setProperty("--color-main", "#007473");

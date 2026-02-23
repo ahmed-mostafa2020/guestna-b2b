@@ -199,7 +199,7 @@ const AITrainingCampForm = () => {
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
       {/* Header with AI Training Camp theme */}
-      <div className="relative min-h-[280px] md:min-h-[340px] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#5B1A1A] via-[#7d2828] to-[#4a1515]">
+      <div className="relative min-h-[280px] md:min-h-[340px] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#11327e] via-[#3295e2] to-[#4a1515]">
         {/* Decorative AI circuit pattern */}
         <div className="absolute inset-0 z-0 opacity-10">
           <svg
