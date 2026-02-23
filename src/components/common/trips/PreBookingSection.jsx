@@ -104,7 +104,11 @@ const PreBookingSection = ({ tripData }) => {
     }
 
     // Priority 2: Check if booking period has expired (only if trip is PENDING)
-    if (tripData?.status === TRIP_STATUS.PENDING && !isBookingAvailable) {
+    if (
+      tripData?.status === TRIP_STATUS.PENDING &&
+      !isBookingAvailable &&
+      tripData?.slug !== "king-fahd-public-library-in-jeddah-suez-school-st-246"
+    ) {
       return {
         canBook: false,
         messageKey: "expired",
