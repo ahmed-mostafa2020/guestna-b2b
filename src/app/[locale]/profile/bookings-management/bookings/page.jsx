@@ -12,13 +12,14 @@ import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBo
 import BookingsTable from "@components/sections/pages/profile/boookings-management/bookings/BookingsTable";
 import FiltringTripsByStatus from "@components/sections/pages/profile/boookings-management/bookings/FiltringTripsByStatus";
 import BookingsFilters from "@components/forms/bookings/BookingsFilters";
+import CustomEventBooking from "@/src/components/sections/pages/profile/boookings-management/bookings/CutsomEventBooking";
 
 const BookingsPage = () => {
   const { hasElement } = usePermissions();
   const t = useTranslations();
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [filter, setFilter] = useState({});
-
+  const [isEmpty, setIsEmpty] = useState(false);
   const handleStatusChange = (status) => {
     setSelectedStatus(status);
   };
@@ -82,7 +83,7 @@ const BookingsPage = () => {
           endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.BOOKINGS}`}
           method="POST"
           bodyParameters={requestBody}
-          emptyStateComponent={<EmptyBookings />}
+          emptyStateComponent={()=>isEmpty && <EmptyBookings />}
           contentComponent={(
             data,
             currentPage,
@@ -101,6 +102,7 @@ const BookingsPage = () => {
           key={`${selectedStatus}-${JSON.stringify(filter)}`} // Force re-render when status or filters change
         />
       </div>
+      <CustomEventBooking setIsEmpty={setIsEmpty}/>
     </ProtectedProfilePage>
   );
 };

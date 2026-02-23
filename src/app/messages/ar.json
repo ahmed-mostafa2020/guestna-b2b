@@ -960,6 +960,31 @@
           "note": "ملاحظات"
         }
       },
+      "customEventBooking": {
+        "titles": {
+          "RAMADAN_NIGHTS": "ليالي رمضان",
+          "RAMADAN_CAMP": "مخيم رمضان"
+        },
+        "header": {
+          "orderId": "رقم الطلب",
+          "bookingDay": "تاريخ الحجز",
+          "price": "السعر",
+          "quantity": "عدد الاشخاص",
+          "client": "العميل",
+          "stationName": "اسم المحطة",
+          "socialHandle": "حساب التواصل الاجتماعي",
+          "serviceType": "نوع الخدمة",
+          "participatedBefore": "شارك سابقاً",
+          "organization": "المدرسة",
+          "name": "الاسم",
+          "email": "البريد الإلكتروني",
+          "phone": "رقم الهاتف",
+          "idNumber": "رقم الهوية",
+          "gender": "الجنس",
+          "yes": "نعم",
+          "no": "لا"
+        }
+      },
       "organizations": {
         "title": "المدارس",
         "searchBySchoolName": "ابحث باسم المدرسة"

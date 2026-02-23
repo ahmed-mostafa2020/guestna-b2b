@@ -949,6 +949,31 @@
           "note": "Notes"
         }
       },
+      "customEventBooking": {
+        "titles": {
+          "RAMADAN_NIGHTS": "Ramadan Nights",
+          "RAMADAN_CAMP": "Ramadan Camp"
+        },
+        "header": {
+          "orderId": "Order ID",
+          "bookingDay": "Booking Date",
+          "price": "Price",
+          "quantity": "Quantity",
+          "client": "Client",
+          "stationName": "Station Name",
+          "socialHandle": "Social Handle",
+          "serviceType": "Service Type",
+          "participatedBefore": "Participated Before",
+          "organization": "Organization",
+          "name": "Name",
+          "email": "Email",
+          "phone": "Phone",
+          "idNumber": "ID Number",
+          "gender": "Gender",
+          "yes": "Yes",
+          "no": "No"
+        }
+      },
       "organizations": {
         "title": "Schools",
         "searchBySchoolName": "Search by school name"

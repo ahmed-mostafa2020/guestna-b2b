@@ -83,7 +83,7 @@ const ProfilePageTemplate = ({
     );
 
   // Determine if we should show empty state based on data
-  const isEmpty = !data || data.nodes?.length <= 0;
+  const isEmpty = !data || data.nodes?.length < 0;
 
   return (
     <main>
@@ -93,7 +93,7 @@ const ProfilePageTemplate = ({
         </h2>
       )} */}
 
-      {isEmpty ? (
+      {isEmpty && emptyStateComponent ? (
         typeof emptyStateComponent === "function" ? (
           emptyStateComponent(data, searchTerm, setSearchTerm)
         ) : (
