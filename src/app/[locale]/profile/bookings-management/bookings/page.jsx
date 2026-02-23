@@ -12,7 +12,7 @@ import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBo
 import BookingsTable from "@components/sections/pages/profile/boookings-management/bookings/BookingsTable";
 import FiltringTripsByStatus from "@components/sections/pages/profile/boookings-management/bookings/FiltringTripsByStatus";
 import BookingsFilters from "@components/forms/bookings/BookingsFilters";
-import CustomEventBooking from "@/src/components/sections/pages/profile/boookings-management/bookings/CutsomEventBooking";
+import CustomEventBooking from "@components/sections/pages/profile/boookings-management/bookings/CutsomEventBooking";
 
 const BookingsPage = () => {
   const { hasElement } = usePermissions();

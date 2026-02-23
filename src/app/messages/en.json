@@ -959,17 +959,24 @@
           "bookingDay": "Booking Date",
           "price": "Price",
           "quantity": "Quantity",
-          "client": "Client",
+          "client": {
+            "name": "Name",
+            "studentName": "Student Name",
+            "email": "Email",
+            "phone": "Phone Number",
+            "parentPhone": "Parent Phone Number",
+            "idNumber": "ID Number",
+            "gender": "Gender"
+          },
           "stationName": "Station Name",
           "socialHandle": "Social Handle",
           "serviceType": "Service Type",
           "participatedBefore": "Participated Before",
-          "organization": "Organization",
-          "name": "Name",
-          "email": "Email",
-          "phone": "Phone",
-          "idNumber": "ID Number",
-          "gender": "Gender",
+          "organization": {
+            "name": "Organization Name",
+            "email": "Organization Email",
+            "phone": "Organization Phone"
+          },
           "yes": "Yes",
           "no": "No"
         }

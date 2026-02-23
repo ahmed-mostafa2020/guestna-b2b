@@ -970,19 +970,27 @@
           "bookingDay": "تاريخ الحجز",
           "price": "السعر",
           "quantity": "عدد الاشخاص",
-          "client": "العميل",
+          "client": {
+            "name": "الاسم",
+            "studentName": "اسم الطالب",
+            "email": "البريد الإلكتروني",
+            "phone": "رقم الهاتف",
+            "parentPhone": "رقم هاتف ولي الامر",  
+            "gender": "النوع",
+            "idNumber": "رقم الهوية"
+          },
           "stationName": "اسم المحطة",
           "socialHandle": "حساب التواصل الاجتماعي",
           "serviceType": "نوع الخدمة",
           "participatedBefore": "شارك سابقاً",
-          "organization": "المدرسة",
-          "name": "الاسم",
-          "email": "البريد الإلكتروني",
-          "phone": "رقم الهاتف",
-          "idNumber": "رقم الهوية",
-          "gender": "الجنس",
+          "organization": {
+            "name": "اسم المدرسة",
+            "email": "البريد الإلكتروني للمدرسة",
+            "phone": "رقم هاتف المدرسة"
+          },
           "yes": "نعم",
           "no": "لا"
+         
         }
       },
       "organizations": {
