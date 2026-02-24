@@ -247,7 +247,6 @@ const RamadanCampTable = ({
   if (!rows || rows.length === 0) {
     return (
       <div className="w-full mt-6">
-        
         <Card
           sx={{ borderRadius: "16px", boxShadow: "0 0 4px 0 rgba(0,0,0,0.16)" }}
         >
