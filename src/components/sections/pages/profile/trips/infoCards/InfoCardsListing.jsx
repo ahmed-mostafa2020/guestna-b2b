@@ -29,7 +29,7 @@ const InfoCardsListing = ({
       {
         icon: totalStudentsIcon,
         title: t("profile.infoCards.totalStudents"),
-        value: infoData?.studentsCount || infoData?.childrenCount,
+        value: infoData?.studentsCount || infoData?.childrenCount || 0,
       },
       {
         icon: totalStudentsIcon,
@@ -39,12 +39,12 @@ const InfoCardsListing = ({
       {
         icon: totalRevenueIcon,
         title: t("profile.infoCards.totalRevenue"),
-        value: formatCurrency(totalRevenue),
+        value: formatCurrency(totalRevenue) || formatCurrency(0),
       },
       {
         icon: totalActivitiesIcon,
         title: t("profile.infoCards.totalActivities"),
-        value: infoData?.tripsCount,
+        value: infoData?.tripsCount || 0,
       },
     ].filter(Boolean); // Filter out any null/undefined items
   }, [
