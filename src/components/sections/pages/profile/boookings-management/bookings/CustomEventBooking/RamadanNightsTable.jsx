@@ -96,12 +96,12 @@ const buildColumns = (t, locale) => [
       return { display, title: display };
     },
   },
-  {
-    key: "organization",
-    header: t("profile.tables.customEventBooking.header.organization.name"),
-    getValue: (row) => row.organization?.name,
-    render: (v) => ({ display: v ?? "-", title: String(v ?? "") }),
-  },
+  // {
+  //   key: "organization",
+  //   header: t("profile.tables.customEventBooking.header.organization.name"),
+  //   getValue: (row) => row.organization?.name,
+  //   render: (v) => ({ display: v ?? "-", title: String(v ?? "") }),
+  // },
   {
     key: "quantity",
     header: t("profile.tables.customEventBooking.header.quantity"),
