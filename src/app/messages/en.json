@@ -961,7 +961,7 @@
           "quantity": "Quantity",
           "client": {
             "name": "Name",
-            "studentName": "Student Name",
+            "studentName": "Student",
             "email": "Email",
             "phone": "Phone Number",
             "parentPhone": "Parent Phone Number",

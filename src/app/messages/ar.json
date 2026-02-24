@@ -972,10 +972,10 @@
           "quantity": "عدد الاشخاص",
           "client": {
             "name": "الاسم",
-            "studentName": "اسم الطالب",
+            "studentName": " الطالب",
             "email": "البريد الإلكتروني",
             "phone": "رقم الهاتف",
-            "parentPhone": "رقم هاتف ولي الامر",  
+            "parentPhone": "رقم هاتف ولي الامر",
             "gender": "النوع",
             "idNumber": "رقم الهوية"
           },
@@ -990,7 +990,6 @@
           },
           "yes": "نعم",
           "no": "لا"
-         
         }
       },
       "organizations": {

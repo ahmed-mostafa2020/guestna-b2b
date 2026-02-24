@@ -93,7 +93,7 @@ const ProfilePageTemplate = ({
         </h2>
       )} */}
 
-      {isEmpty && emptyStateComponent ? (
+      {isEmpty ? (
         typeof emptyStateComponent === "function" ? (
           emptyStateComponent(data, searchTerm, setSearchTerm)
         ) : (
