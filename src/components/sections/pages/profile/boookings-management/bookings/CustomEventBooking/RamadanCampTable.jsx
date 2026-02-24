@@ -261,7 +261,7 @@ const RamadanCampTable = ({
   }
 
   return (
-    <div className="w-full space-y-6 mt-6">
+    <div className="w-full space-y-6 mt-10">
       {/* Desktop View */}
       <TableCard title={title} className="hidden lg:block">
         <TableHead columns={columns} />
