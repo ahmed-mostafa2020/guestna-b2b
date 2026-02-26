@@ -963,7 +963,7 @@
       "customEventBooking": {
         "titles": {
           "RAMADAN_NIGHTS": "ليالي رمضان",
-          "RAMADAN_CAMP": "مخيم رمضان"
+          "RAMADAN_CAMP": "معسكر التدريب الرمضاني AI"
         },
         "header": {
           "orderId": "رقم الطلب",
