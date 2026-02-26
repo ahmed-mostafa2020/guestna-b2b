@@ -3081,7 +3081,8 @@
       "numberOfHelpersRequired": "Please select the number of helpers",
       "agreeToRulesRequired": "You must agree to the rules to continue",
       "success": "Your registration has been submitted successfully!",
-      "error": "An error occurred. Please try again."
+      "error": "An error occurred. Please try again.",
+      "limitReached": "Sorry, the maximum limit of available booths for this event has been reached. Thank you for your interest."
     }
   },
   "aiTrainingCamp": {
@@ -3090,7 +3091,7 @@
     "eventInfo": {
       "title": "Ramadan AI Training Camp",
       "subtitle": "An intensive Ramadan program to develop skills, designed with an advanced training approach to help you invest your time in Ramadan with maximum benefit.",
-      "date": "Boys: 7-9 Ramadan | Girls: 11-13 Ramadan",
+      "date": "From 1 March to 3 March",
       "time": "Daily 9 AM - 12 PM (Online)",
       "duration": "15 training hours",
       "fee": "250",

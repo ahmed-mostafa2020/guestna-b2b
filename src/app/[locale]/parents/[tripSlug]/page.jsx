@@ -171,7 +171,10 @@ const TripDetails = ({ params }) => {
 
   const isBookingAvailable =
     endDate > currentDate ||
-    tripData?.slug === "king-fahd-public-library-in-jeddah-suez-school-st-246";
+    [
+      "ramadan-club-rayan-al-manhal-schools-al-rayan-campus-st-378",
+      "ramadan-club-almanhal-school-al-tawun-st-377",
+    ].includes(tripData?.slug);
 
   return (
     <main
