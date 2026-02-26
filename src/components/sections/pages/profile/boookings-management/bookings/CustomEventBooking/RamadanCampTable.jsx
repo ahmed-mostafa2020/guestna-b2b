@@ -179,7 +179,7 @@ const MobileCard = memo(({ columns, row, index }) => (
 MobileCard.displayName = "MobileCard";
 
 const MobileCards = memo(({ title, columns, rows }) => (
-  <div className="space-y-4 md:hidden">
+  <div className="space-y-4 md:hidden border-t border-border pt-4">
     <h2 className="text-xl font-medium text-titleColor">{title}</h2>
     {rows.map((row, index) => (
       <MobileCard
