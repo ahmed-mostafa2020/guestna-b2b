@@ -178,8 +178,9 @@ const MobileCard = memo(({ columns, row, index }) => (
 ));
 MobileCard.displayName = "MobileCard";
 
-const MobileCards = memo(({ columns, rows }) => (
+const MobileCards = memo(({ title, columns, rows }) => (
   <div className="space-y-4 md:hidden">
+    <h2 className="text-xl font-medium text-titleColor">{title}</h2>
     {rows.map((row, index) => (
       <MobileCard
         key={row._id || index}
@@ -275,7 +276,8 @@ const RamadanCampTable = ({
       </TableCard>
 
       {/* Mobile View */}
-      <MobileCards columns={columns} rows={rows} />
+      
+      <MobileCards title={title} columns={columns} rows={rows} />
 
       {/* Pagination */}
       {pageInfo && (
