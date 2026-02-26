@@ -21,6 +21,7 @@ import ramadanBg from "@assets/sectionBackground/ramadan-nights.webp";
 
 const STEPS = ["step1", "step2"];
 const BOOTH_FEE = 50;
+const IS_LIMIT_REACHED = true;
 
 const registrationInitialValues = {
   fullName: "",
@@ -220,179 +221,215 @@ const RamadanNightsForm = () => {
         </div>
       </div>
 
-      {/* Stepper */}
-      <div className="px-6 md:px-10 pt-6">
-        <div className="flex items-center justify-center gap-0">
-          {STEPS.map((step, index) => (
-            <div key={step} className="flex items-center">
-              <div className="flex items-center gap-2">
-                <div
-                  className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-sm md:text-base font-bold font-somar transition-all duration-300 ${
-                    index <= currentStep
-                      ? "bg-mainColor text-white shadow-md"
-                      : "bg-gray-200 text-gray-500"
-                  }`}
-                >
-                  {index < currentStep ? (
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2.5}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  ) : (
-                    index + 1
-                  )}
-                </div>
-                <span
-                  className={`text-xs md:text-sm font-somar font-medium whitespace-nowrap transition-colors duration-300 ${
-                    index <= currentStep ? "text-mainColor" : "text-gray-400"
-                  }`}
-                >
-                  {t(`ramadanNights.stepper.${step}`)}
-                </span>
-              </div>
-              {index < STEPS.length - 1 && (
-                <div
-                  className={`w-12 md:w-20 h-0.5 mx-2 md:mx-4 transition-colors duration-300 ${
-                    index < currentStep ? "bg-mainColor" : "bg-gray-200"
-                  }`}
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
+      {/* Stepper & Form Content */}
       <div className="px-6 md:px-10 py-8">
-        {/* Step 1: Registration */}
-        {currentStep === 0 && (
-          <Formik
-            initialValues={
-              registrationValuesRef.current || registrationInitialValues
-            }
-            validationSchema={registrationSchema}
-            enableReinitialize={false}
-            onSubmit={() => {}}
-            validateOnChange={false}
-            validateOnBlur={true}
-          >
-            {({
-              values,
-              errors,
-              touched,
-              handleChange,
-              handleBlur,
-              setFieldValue,
-              validateForm,
-              setTouched,
-            }) => (
-              <div>
-                <RegistrationStep
-                  values={values}
-                  errors={errors}
-                  touched={touched}
-                  handleChange={handleChange}
-                  handleBlur={handleBlur}
-                  setFieldValue={setFieldValue}
+        {IS_LIMIT_REACHED ? (
+          <div className="flex flex-col items-center justify-center text-center py-12 md:py-20 px-4">
+            <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mb-6 shadow-sm">
+              <svg
+                className="w-10 h-10 text-amber-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
                 />
-
-                <div className="flex flex-col sm:flex-row gap-3 mt-8">
-                  <button
-                    type="button"
-                    onClick={() => handleNext(validateForm, setTouched, values)}
-                    className="w-full py-3.5 px-6 bg-mainColor text-white rounded-xl font-somar font-semibold text-lg hover:bg-linksHover transition-all duration-200 ease-in-out shadow-md hover:shadow-lg"
-                  >
-                    {t("pagination.next")}
-                  </button>
-                </div>
+              </svg>
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 font-somar mb-4">
+              {t("ramadanNights.validation.limitReached")}
+            </h2>
+            <p className="text-gray-600 font-somar text-lg max-w-lg">
+              {t("ramadanNights.eventInfo.venue")}
+            </p>
+          </div>
+        ) : (
+          <>
+            {/* Stepper */}
+            <div className="mb-10">
+              <div className="flex items-center justify-center gap-0">
+                {STEPS.map((step, index) => (
+                  <div key={step} className="flex items-center">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-sm md:text-base font-bold font-somar transition-all duration-300 ${
+                          index <= currentStep
+                            ? "bg-mainColor text-white shadow-md"
+                            : "bg-gray-200 text-gray-500"
+                        }`}
+                      >
+                        {index < currentStep ? (
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2.5}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        ) : (
+                          index + 1
+                        )}
+                      </div>
+                      <span
+                        className={`text-xs md:text-sm font-somar font-medium whitespace-nowrap transition-colors duration-300 ${
+                          index <= currentStep
+                            ? "text-mainColor"
+                            : "text-gray-400"
+                        }`}
+                      >
+                        {t(`ramadanNights.stepper.${step}`)}
+                      </span>
+                    </div>
+                    {index < STEPS.length - 1 && (
+                      <div
+                        className={`w-12 md:w-20 h-0.5 mx-2 md:mx-4 transition-colors duration-300 ${
+                          index < currentStep ? "bg-mainColor" : "bg-gray-200"
+                        }`}
+                      />
+                    )}
+                  </div>
+                ))}
               </div>
+            </div>
+
+            {/* Step 1: Registration */}
+            {currentStep === 0 && (
+              <Formik
+                initialValues={
+                  registrationValuesRef.current || registrationInitialValues
+                }
+                validationSchema={registrationSchema}
+                enableReinitialize={false}
+                onSubmit={() => {}}
+                validateOnChange={false}
+                validateOnBlur={true}
+              >
+                {({
+                  values,
+                  errors,
+                  touched,
+                  handleChange,
+                  handleBlur,
+                  setFieldValue,
+                  validateForm,
+                  setTouched,
+                }) => (
+                  <div>
+                    <RegistrationStep
+                      values={values}
+                      errors={errors}
+                      touched={touched}
+                      handleChange={handleChange}
+                      handleBlur={handleBlur}
+                      setFieldValue={setFieldValue}
+                    />
+
+                    <div className="flex flex-col sm:flex-row gap-3 mt-8">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleNext(validateForm, setTouched, values)
+                        }
+                        className="w-full py-3.5 px-6 bg-mainColor text-white rounded-xl font-somar font-semibold text-lg hover:bg-linksHover transition-all duration-200 ease-in-out shadow-md hover:shadow-lg"
+                      >
+                        {t("pagination.next")}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </Formik>
             )}
-          </Formik>
-        )}
 
-        {/* Step 2: Payment */}
-        {currentStep === 1 && (
-          <Formik
-            initialValues={paymentInitialValues}
-            validationSchema={
-              currentPaymentMethod ===
-              CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD
-                ? creditSchema
-                : undefined
-            }
-            onSubmit={handlePaymentSubmit}
-            validateOnChange={true}
-            validateOnBlur={true}
-          >
-            {({
-              values: paymentValues,
-              errors: paymentErrors,
-              touched: paymentTouched,
-              handleChange: handlePaymentChange,
-              handleBlur: handlePaymentBlur,
-              isSubmitting,
-              isValid,
-              submitForm,
-            }) => (
-              <div>
-                <PaymentStep
-                  values={
-                    registrationValuesRef.current || registrationInitialValues
-                  }
-                  paymentValues={paymentValues}
-                  paymentErrors={paymentErrors}
-                  paymentTouched={paymentTouched}
-                  handlePaymentChange={handlePaymentChange}
-                  handlePaymentBlur={handlePaymentBlur}
-                  currentPaymentMethod={currentPaymentMethod}
-                  onPaymentMethodChange={handlePaymentMethodChange}
-                  applePayBaseData={buildApiBody(
-                    registrationValuesRef.current,
-                    null
-                  )}
-                />
-
-                <div className="flex flex-col sm:flex-row gap-3 mt-8">
-                  <button
-                    type="button"
-                    onClick={handleBack}
-                    className="sm:flex-1 py-3 px-6 border-2 border-gray-300 text-gray-700 rounded-xl font-somar font-semibold hover:bg-gray-50 transition-all duration-200 ease-in-out"
-                  >
-                    {t("pagination.previous")}
-                  </button>
-
-                  {currentPaymentMethod ===
-                  CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD ? (
-                    <button
-                      type="button"
-                      disabled={isSubmitting || isPaymentSubmitting || !isValid}
-                      onClick={submitForm}
-                      className="sm:flex-1 py-3.5 px-6 bg-mainColor text-white rounded-xl font-somar font-semibold text-lg hover:bg-linksHover transition-all duration-200 ease-in-out shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                    >
-                      {isSubmitting || isPaymentSubmitting ? (
-                        <>
-                          <CircularProgress size={20} color="inherit" />
-                          <span>{t("forms.validation.sending")}</span>
-                        </>
-                      ) : (
-                        <span className="flex items-center gap-1">
-                          {t("links.confirmPayment")}
-                        </span>
+            {/* Step 2: Payment */}
+            {currentStep === 1 && (
+              <Formik
+                initialValues={paymentInitialValues}
+                validationSchema={
+                  currentPaymentMethod ===
+                  CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD
+                    ? creditSchema
+                    : undefined
+                }
+                onSubmit={handlePaymentSubmit}
+                validateOnChange={true}
+                validateOnBlur={true}
+              >
+                {({
+                  values: paymentValues,
+                  errors: paymentErrors,
+                  touched: paymentTouched,
+                  handleChange: handlePaymentChange,
+                  handleBlur: handlePaymentBlur,
+                  isSubmitting,
+                  isValid,
+                  submitForm,
+                }) => (
+                  <div>
+                    <PaymentStep
+                      values={
+                        registrationValuesRef.current ||
+                        registrationInitialValues
+                      }
+                      paymentValues={paymentValues}
+                      paymentErrors={paymentErrors}
+                      paymentTouched={paymentTouched}
+                      handlePaymentChange={handlePaymentChange}
+                      handlePaymentBlur={handlePaymentBlur}
+                      currentPaymentMethod={currentPaymentMethod}
+                      onPaymentMethodChange={handlePaymentMethodChange}
+                      applePayBaseData={buildApiBody(
+                        registrationValuesRef.current,
+                        null
                       )}
-                    </button>
-                  ) : null}
-                </div>
-              </div>
+                    />
+
+                    <div className="flex flex-col sm:flex-row gap-3 mt-8">
+                      <button
+                        type="button"
+                        onClick={handleBack}
+                        className="sm:flex-1 py-3 px-6 border-2 border-gray-300 text-gray-700 rounded-xl font-somar font-semibold hover:bg-gray-50 transition-all duration-200 ease-in-out"
+                      >
+                        {t("pagination.previous")}
+                      </button>
+
+                      {currentPaymentMethod ===
+                      CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD ? (
+                        <button
+                          type="button"
+                          disabled={
+                            isSubmitting || isPaymentSubmitting || !isValid
+                          }
+                          onClick={submitForm}
+                          className="sm:flex-1 py-3.5 px-6 bg-mainColor text-white rounded-xl font-somar font-semibold text-lg hover:bg-linksHover transition-all duration-200 ease-in-out shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        >
+                          {isSubmitting || isPaymentSubmitting ? (
+                            <>
+                              <CircularProgress size={20} color="inherit" />
+                              <span>{t("forms.validation.sending")}</span>
+                            </>
+                          ) : (
+                            <span className="flex items-center gap-1">
+                              {t("links.confirmPayment")}
+                            </span>
+                          )}
+                        </button>
+                      ) : null}
+                    </div>
+                  </div>
+                )}
+              </Formik>
             )}
-          </Formik>
+          </>
         )}
       </div>
     </div>

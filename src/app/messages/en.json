@@ -3081,7 +3081,8 @@
       "numberOfHelpersRequired": "Please select the number of helpers",
       "agreeToRulesRequired": "You must agree to the rules to continue",
       "success": "Your registration has been submitted successfully!",
-      "error": "An error occurred. Please try again."
+      "error": "An error occurred. Please try again.",
+      "limitReached": "Sorry, the maximum limit of available booths for this event has been reached. Thank you for your interest."
     }
   },
   "aiTrainingCamp": {
