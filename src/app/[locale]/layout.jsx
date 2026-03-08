@@ -164,19 +164,7 @@ export default async function RootLayout({ children, params: { locale } }) {
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <head>
-        {/* GA4 */}
-        <Script
-          strategy="afterInteractive"
-          src={`https://www.googletagmanager.com/gtag/js?id=G-ZNZYTE1FF4`}
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-ZNZYTE1FF4');
-          `}
-        </Script>
+        {/* GA4 tag is now handled cleanly by @components/libraries/GoogleAnalytics inside the body */}
 
         {/* Fonts */}
         <link
@@ -230,7 +218,8 @@ export default async function RootLayout({ children, params: { locale } }) {
           src="https://cdn.tamara.co/widget-v1/tamara-widget.js"
         />
 
-        <GoogleTagManager gtmId="GTM-PLN2P4N6" />
+        {/* <GoogleTagManager gtmId="GTM-PLN2P4N6" /> */}
+        <GoogleTagManager gtmId="GTM-TKRK9CL6" />
 
         <Suspense fallback={<div className="centered">Loading...</div>}>
           <ReduxProvider locale={locale}>

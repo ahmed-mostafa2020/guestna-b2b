@@ -46,8 +46,8 @@ const Header = () => {
       name: t("header.aboutUs"),
       link: `${
         locale === "ar"
-          ? "https://about.guestna.app"
-          : "https://about.guestna.app/en"
+          ? "https://about.guestna-edu.com"
+          : "https://about.guestna-edu.com/en"
       }`,
       isDisabled: false,
       isBlank: true,

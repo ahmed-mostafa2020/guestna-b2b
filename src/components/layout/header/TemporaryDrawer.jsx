@@ -54,7 +54,9 @@ const TemporaryDrawer = () => {
     {
       name: t("header.aboutUs"),
       link: `${
-        locale === "ar" ? "https://guestna.app" : "https://guestna.app/en"
+        locale === "ar"
+          ? "https://about.guestna-edu.com"
+          : "https://about.guestna-edu.com/en"
       }`,
       isDisabled: false,
       isBlank: true,

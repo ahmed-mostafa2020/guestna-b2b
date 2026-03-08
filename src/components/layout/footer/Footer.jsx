@@ -26,7 +26,7 @@ const Footer = () => {
       links: [
         {
           name: t("footer.aboutUs"),
-          url: "https://about.guestna.app",
+          url: "https://about.guestna-edu.com",
         },
         // {
         //   name: t("footer.articles"),
