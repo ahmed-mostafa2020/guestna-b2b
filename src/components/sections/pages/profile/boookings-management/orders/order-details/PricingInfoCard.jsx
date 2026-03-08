@@ -1,9 +1,9 @@
 import React from "react";
 import OrderDataCard from "./OrderDataCard";
-import { Grid } from "@material-ui/core";
 import OrderDataLabel from "./OrderDataLabel";
 import OrderDataField from "./OrderDataField";
 import { useTranslations } from "next-intl";
+import { Grid2 as Grid } from "@mui/material";
 import { newSarSmall } from "@assets/svg";
 
 const PricingInfoCard = ({ orderData }) => {

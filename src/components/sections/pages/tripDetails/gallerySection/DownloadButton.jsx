@@ -29,7 +29,7 @@ const DownloadButton = () => {
 
     try {
       // Force download using fetch + blob approach for better control
-      console.log("Starting file download...");
+
 
       const response = await fetch(fileUrl, {
         method: "GET",
@@ -44,7 +44,7 @@ const DownloadButton = () => {
 
       // Get the file as a blob
       const blob = await response.blob();
-      console.log("File blob created, size:", blob.size);
+
 
       // Create a blob URL
       const blobUrl = window.URL.createObjectURL(blob);
@@ -61,7 +61,7 @@ const DownloadButton = () => {
         fileName += ".pdf";
       }
 
-      console.log("Downloading file as:", fileName);
+
 
       // Create download link and force download
       const downloadLink = document.createElement("a");
@@ -77,16 +77,16 @@ const DownloadButton = () => {
       // Clean up the blob URL after a short delay
       setTimeout(() => {
         window.URL.revokeObjectURL(blobUrl);
-        console.log("Blob URL cleaned up");
+
       }, 1000);
 
-      console.log("Download initiated successfully");
+
     } catch (error) {
       console.error("Download failed:", error);
 
       // Fallback: Try direct link approach
       try {
-        console.log("Trying fallback download method...");
+
         const fallbackLink = document.createElement("a");
         fallbackLink.href = fileUrl;
         fallbackLink.download = fileUrl.split("/").pop() || "trip-details.pdf";
@@ -95,11 +95,11 @@ const DownloadButton = () => {
         document.body.appendChild(fallbackLink);
         fallbackLink.click();
         document.body.removeChild(fallbackLink);
-        console.log("Fallback download attempted");
+
       } catch (fallbackError) {
         console.error("Fallback download failed:", fallbackError);
         // Last resort: open in new tab
-        console.log("Opening file in new tab as last resort");
+
         window.open(fileUrl, "_blank");
       }
     } finally {

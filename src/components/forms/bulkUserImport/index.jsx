@@ -14,8 +14,7 @@ import UsersPreviewTable from "./UsersPreviewTable";
 import FooterActions from "./FooterActions";
 import { usersHeaders } from "@constants/excelHeaders";
 import { useExcel } from "@hooks/useExcel";
-import { Box } from "@material-ui/core";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { createBulkUserRowSchema } from "@utils/validationSchemas";
 
 const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;

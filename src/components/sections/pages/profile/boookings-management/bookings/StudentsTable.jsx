@@ -7,8 +7,7 @@ import { memo, useState, useMemo, useRef, useCallback } from "react";
 import { useSnackbar } from "notistack";
 
 import axios from "axios";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 
@@ -29,11 +28,9 @@ import {
   MenuItem,
 } from "@mui/material";
 
-import Pagination from "@components/common/Pagination";
-
-import CheckboxGroup from "@components/forms/CheckboxGroup";
 import { actionsIcon } from "@assets/svg";
 import { getGtmTag, GTM_TAGS } from "@utils/gtmUtils";
+import DataTable from "@components/common/DataTable";
 
 const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
   const locale = useLocale();
@@ -145,6 +142,8 @@ const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
         const element = consentRef.current;
         if (!element) throw new Error("Consent element not found");
 
+        const html2canvasModule = await import("html2canvas");
+        const html2canvas = html2canvasModule.default;
         const canvas = await html2canvas(element, {
           scale: 2,
           useCORS: true,
@@ -153,6 +152,7 @@ const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
         });
 
         const imgData = canvas.toDataURL("image/png");
+        const { default: jsPDF } = await import("jspdf");
         const pdf = new jsPDF("p", "mm", "a4");
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
@@ -373,236 +373,62 @@ const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
 
   return (
     <div className="w-full space-y-6 mt-8">
-      {loadingDetails ? (
-        <div className="text-center py-3">
-          <CircularProgress size={20} color="primary" />
-
-          <p className="mt-2 text-gray-600">
-            {t("profile.tables.orders.studentsTable.loading")}
-          </p>
-        </div>
-      ) : paginatedData.data.length > 0 ? (
-        <>
-          {/* Desktop Table */}
-
-          <Card
-            className="hidden md:block"
-            sx={{
-              borderRadius: "16px",
-
-              boxShadow: "0 0 4px 0 rgba(0, 0, 0, 0.16)",
-            }}
-          >
-            <h2 className="text-xl font-medium lg:text-2xl text-titleColor pt-4 px-4">
-              {t("profile.tables.orders.studentsTable.title")}
-            </h2>
-
-            <CardContent className="p-0">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b-2 border-tableRowBorder">
-                      <th className="px-6 py-4 text-start text-sm font-medium text-gray-700">
-                        {t("profile.tables.orders.studentsTable.studentName")}
-                      </th>
-
-                      <th className="px-6 py-4 text-start text-sm font-medium text-gray-700">
-                        {t("profile.tables.orders.studentsTable.parentName")}
-                      </th>
-
-                      <th className="px-6 py-4 text-start text-sm font-medium text-gray-700">
-                        {t("profile.tables.orders.studentsTable.grade")}
-                      </th>
-
-                      <th className="px-6 py-4 text-start text-sm font-medium text-gray-700">
-                        {t("profile.tables.orders.studentsTable.parentPhone")}
-                      </th>
-
-                      <th className="px-6 py-4 text-start text-sm font-medium text-gray-700">
-                        {t("profile.tables.orders.studentsTable.nationalId")}
-                      </th>
-
-                      <th className="px-6 py-4 text-start text-sm font-medium text-gray-700">
-                        {t(
-                          "profile.tables.orders.studentsTable.parentConfirmation"
-                        )}
-                      </th>
-
-                      <th className="px-6 py-4 text-center text-sm font-medium text-gray-700">
-                        {t("profile.tables.orders.studentsTable.actions")}
-                      </th>
-                    </tr>
-                  </thead>
-
-                  <tbody className="divide-y divide-gray-200">
-                    {paginatedData.data.map((student, index) => (
-                      <tr
-                        key={`desktop-${student._id}-${currentPage}-${index}`}
-                        className={`${
-                          index != paginatedData.data.length - 1 &&
-                          "border-b border-table-border"
-                        } transition-colors hover:bg-gray-50`}
-                      >
-                        <td className="px-6 py-4 text-sm font-medium text-foreground">
-                          {student.child.name}
-                        </td>
-
-                        <td className="px-6 py-4 text-sm text-muted-foreground">
-                          {student.parent.name}
-                        </td>
-
-                        <td className="px-6 py-4 text-sm text-muted-foreground">
-                          {student.child.grade.name}
-                        </td>
-
-                        <td
-                          className="px-6 py-4 text-sm text-muted-foreground text-end"
-                          dir="ltr"
-                        >
-                          {student.parent.phone}
-                        </td>
-
-                        <td className="px-6 py-4 text-sm text-muted-foreground">
-                          {student.child.nationalId}
-                        </td>
-
-                        <td className="px-6 py-4 text-sm">
-                          {student.parent?.termsAccepted && (
-                            <span
-                              className="px-3 py-1 rounded-full text-xs font-medium 
-
-                                text-success bg-green-100"
-                            >
-                              {t("profile.tables.orders.studentsTable.agreed")}
-                            </span>
-                          )}
-                        </td>
-
-                        <td className="px-6 py-4 text-center">
-                          <StudentActionsMenu student={student} />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Mobile Cards */}
-
-          <div className="md:hidden space-y-4">
-            {paginatedData.data.map((student, index) => (
-              <Card
-                key={`mobile-${student._id}-${currentPage}-${index}`}
-                className="shadow-sm"
-              >
-                <CardContent className="p-4">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-muted-foreground">
-                        {t("profile.tables.orders.studentsTable.studentName")}
-                      </span>
-
-                      <span className="text-sm font-semibold text-foreground">
-                        {student.child.name}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-muted-foreground">
-                        {t("profile.tables.orders.studentsTable.parentName")}
-                      </span>
-
-                      <span className="text-sm text-muted-foreground">
-                        {student.parent.name}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-muted-foreground">
-                        {t("profile.tables.orders.studentsTable.grade")}
-                      </span>
-
-                      <span className="text-sm text-muted-foreground">
-                        {student.child.grade.name}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-muted-foreground">
-                        {t("profile.tables.orders.studentsTable.parentPhone")}
-                      </span>
-
-                      <span
-                        className="text-sm text-muted-foreground text-end"
-                        dir="ltr"
-                      >
-                        {student.parent.phone}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-muted-foreground">
-                        {t("profile.tables.orders.studentsTable.nationalId")}
-                      </span>
-
-                      <span className="text-sm text-muted-foreground">
-                        {student.child.nationalId}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-muted-foreground">
-                        {t(
-                          "profile.tables.orders.studentsTable.parentConfirmation"
-                        )}
-                      </span>
-
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          student.parent?.termsAccepted
-                            ? "text-green-800 bg-green-100"
-                            : ""
-                        }`}
-                      >
-                        {student.parent?.termsAccepted
-                          ? t("profile.tables.orders.studentsTable.agreed")
-                          : ""}
-                      </span>
-                    </div>
-
-                    {/* Actions for Mobile */}
-
-                    <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                      <span className="text-sm font-medium text-muted-foreground">
-                        {t("profile.tables.orders.studentsTable.actions")}
-                      </span>
-
-                      <StudentActionsMenu student={student} />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+      <DataTable
+        title={t("profile.tables.orders.studentsTable.title")}
+        columns={[
+          {
+            key: "studentName",
+            label: t("profile.tables.orders.studentsTable.studentName"),
+            className: "font-medium text-foreground",
+            render: (row) => row.child?.name || "-",
+          },
+          {
+            key: "parentName",
+            label: t("profile.tables.orders.studentsTable.parentName"),
+            render: (row) => row.parent?.name || "-",
+          },
+          {
+            key: "grade",
+            label: t("profile.tables.orders.studentsTable.grade"),
+            render: (row) => row.child?.grade?.name || "-",
+          },
+          {
+            key: "parentPhone",
+            label: t("profile.tables.orders.studentsTable.parentPhone"),
+            className: "text-end",
+            render: (row) => (
+              <span dir="ltr">{row.parent?.phone || "-"}</span>
+            ),
+          },
+          {
+            key: "nationalId",
+            label: t("profile.tables.orders.studentsTable.nationalId"),
+            render: (row) => row.child?.nationalId || "-",
+          },
+          {
+            key: "confirmation",
+            label: t("profile.tables.orders.studentsTable.parentConfirmation"),
+            render: (row) => row.parent?.termsAccepted && (
+              <span className="px-3 py-1 rounded-full text-xs font-medium text-success bg-green-100">
+                {t("profile.tables.orders.studentsTable.agreed")}
+              </span>
+            ),
+          }
+        ]}
+        data={paginatedData.data}
+        loading={loadingDetails}
+        actionsLabel={t("profile.tables.orders.studentsTable.actions")}
+        rowActions={(row) => (
+          <div className="centered w-full">
+            <StudentActionsMenu student={row} />
           </div>
-
-          {/* Pagination Controls */}
-
-          {paginatedData.pageInfo && (
-            <Pagination
-              pageInfo={paginatedData.pageInfo}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
-              className="mt-6"
-            />
-          )}
-        </>
-      ) : (
-        <p className="p-4 text-center text-gray-500">
-          {t("profile.tables.orders.studentsTable.noData")}
-        </p>
-      )}
+        )}
+        pagination={{
+            currentPage,
+            pageInfo: paginatedData.pageInfo,
+            onPageChange: handlePageChange,
+        }}
+      />
 
       {/* Hidden PDF Consent Template */}
 

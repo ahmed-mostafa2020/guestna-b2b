@@ -8,10 +8,11 @@ import formatDate from "@utils/FormateDate";
 import { TRIP_STATUS } from "@constants/tripStatus";
 import { PERMISSIONS } from "@constants/permissions";
 import Pagination from "@components/common/Pagination";
+import DataTable from "@components/common/DataTable";
 import ActionsDropdownMenu from "./ActionsDropdownMenu";
 import formatCurrency from "@utils/FormatCurrency";
 
-import { CardContent, Card, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 
 import { useOrderDetailsModal } from "@hooks/useOrderDetailsModal";
 import { useEditOrderModal } from "@hooks/useEditOrderModal";
@@ -188,294 +189,121 @@ const AllOrdersTable = ({
 
   return (
     <>
-      <div className="w-full space-y-6">
-        {/* Desktop Table */}
-        <Card
-          className="hidden md:block"
-          sx={{
-            borderRadius: "16px",
-            boxShadow: "0 0 4px 0 rgba(0, 0, 0, 0.16)",
-          }}
-        >
-          {tableTitle && (
-            <h2 className="text-xl font-medium lg:text-2xl text-titleColor pt-4 px-4">
-              {tableTitle}
-            </h2>
-          )}
-
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-table-header border-b-2 border-tableRowBorder">
-                    <th className="p-4 font-semibold text-start">
-                      {t("profile.tables.orders.tableHeaders.orderNumber")}
-                    </th>
-                    <th className="p-4 font-semibold text-start">
-                      {t("profile.tables.orders.tableHeaders.school")}
-                    </th>
-                    <th className="p-4 font-semibold text-start">
-                      {t("profile.tables.orders.tableHeaders.activity")}
-                    </th>
-                    <th className="p-4 font-semibold text-start">
-                      {t("profile.tables.orders.tableHeaders.orderType")}
-                    </th>
-                    <th className="p-4 font-semibold text-start">
-                      {t("profile.tables.orders.tableHeaders.orderDate")}
-                    </th>
-                    <th className="p-4 font-semibold text-start">
-                      {t("profile.tables.orders.tableHeaders.budget")}
-                    </th>
-
-                    <th className="p-4 font-semibold text-start">
-                      {t("profile.tables.orders.tableHeaders.status")}
-                    </th>
-                    {hasAnyActionPermission && (
-                      <th className="p-4 font-semibold text-start">
-                        {t("profile.tables.orders.tableHeaders.actions")}
-                      </th>
-                    )}
-                  </tr>
-                </thead>
-                <tbody>
-                  {data?.nodes?.map((order, index) => (
-                    <tr
-                      key={order._id}
-                      className={`${
-                        index != data?.nodes?.length - 1 &&
-                        "border-b border-table-border"
-                      } transition-colors hover:bg-gray-50`}
-                    >
-                      <td className="p-4 text-sm font-medium text-foreground">
-                        <span
-                          className="block max-w-[100px] truncate"
-                          title={order.orderId}
-                        >
-                          {order.orderId}
-                        </span>
-                      </td>
-
-                      <td className="p-4 text-sm text-muted-foreground">
-                        <span
-                          className="block max-w-[180px] truncate"
-                          title={order.organization}
-                        >
-                          {order.organization}
-                        </span>
-                      </td>
-
-                      <td className="p-4 text-sm font-medium text-foreground">
-                        <span
-                          className="block max-w-[100px] truncate"
-                          title={order.name}
-                        >
-                          {order.name}
-                        </span>
-                      </td>
-
-                      <td className="p-4 text-sm">
-                        {order.askType === "CUSTOM" ? (
-                          <span className="px-2 py-1 font-medium">
-                            {t("profile.tables.orders.customizable.title")}
-                          </span>
-                        ) : (
-                          <span className="px-2 py-1 font-medium">
-                            {t("profile.tables.orders.normal.title")}
-                          </span>
-                        )}
-                      </td>
-
-                      <td className="p-4 text-sm text-muted-foreground">
-                        {formatDate(order.day, locale, {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </td>
-
-                      <td className="p-4 text-sm font-medium text-foreground">
-                        {formatCurrency(
-                          order.basePrice
-                            ? order.basePrice
-                            : order.priceRange?.max || 0
-                        )}
-                      </td>
-
-                      <td className="p-4">
-                        <span
-                          className={`px-1 lg:px-3 py-1 rounded-full lg:text-sm text-[10px] font-medium ${getStatusStyles(
-                            order.status
-                          )}`}
-                        >
-                          {t(`common.organizationTripStatus.${order.status}`)}
-                        </span>
-                      </td>
-
-                      {hasAnyActionPermission && (
-                        <td className="p-4">
-                          <ActionsDropdownMenu
-                            booking={order}
-                            onActionComplete={handleActionComplete}
-                            openDetailsModal={openDetailsModal}
-                            openEditModal={openEditModal}
-                            openRejectModal={openRejectModal}
-                            openApproveModal={openApproveModal}
-                          />
-                        </td>
-                      )}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Mobile Cards */}
-        <div className="space-y-4 md:hidden">
-          {tableTitle && (
-            <h2 className="text-xl font-medium lg:text-2xl text-titleColor pt-4 px-4">
-              {tableTitle}
-            </h2>
-          )}
-
-          {data?.nodes?.map((order) => (
-            <Card
-              key={order._id}
-              className="transition-shadow shadow-md hover:shadow-lg"
-            >
-              <CardContent className="p-4 flex flex-col gap-4">
-                {/* Order Number */}
-                <div className="flex justify-between items-center border-b pb-2 last:border-0 border-gray-100">
-                  <span className="font-medium text-muted-foreground text-sm">
-                    {t("profile.tables.orders.tableHeaders.orderNumber")}
-                  </span>
-                  <span className="font-medium text-foreground text-sm">
-                    {order.orderId}
-                  </span>
-                </div>
-
-                {/* School */}
-                <div className="flex justify-between items-center border-b pb-2 last:border-0 border-gray-100">
-                  <span className="font-medium text-muted-foreground text-sm">
-                    {t("profile.tables.orders.tableHeaders.school")}
-                  </span>
-                  <span
-                    className="font-medium text-foreground text-sm text-end max-w-[60%] truncate"
-                    title={order.organization}
-                  >
-                    {order.organization}
-                  </span>
-                </div>
-
-                {/* Activity */}
-                <div className="flex justify-between items-center border-b pb-2 last:border-0 border-gray-100">
-                  <span className="font-medium text-muted-foreground text-sm">
-                    {t("profile.tables.orders.tableHeaders.activity")}
-                  </span>
-                  <span
-                    className="font-medium text-foreground text-sm text-end max-w-[60%] truncate"
-                    title={order.name}
-                  >
-                    {order.name}
-                  </span>
-                </div>
-
-                {/* Order Type */}
-                <div className="flex justify-between items-center border-b pb-2 last:border-0 border-gray-100">
-                  <span className="font-medium text-muted-foreground text-sm">
-                    {t("profile.tables.orders.tableHeaders.orderType")}
-                  </span>
-                  <div>
-                    {order.askType === "CUSTOM" ? (
-                      <span className="px-2 py-1 text-xs font-medium text-purple-800 bg-purple-100 border border-purple-200 rounded-full">
-                        {t("profile.tables.orders.customizable.title")}
-                      </span>
-                    ) : (
-                      <span className="px-2 py-1 text-xs font-medium">
-                        {t("profile.tables.orders.normal.title")}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Order Date */}
-                <div className="flex justify-between items-center border-b pb-2 last:border-0 border-gray-100">
-                  <span className="font-medium text-muted-foreground text-sm">
-                    {t("profile.tables.orders.tableHeaders.orderDate")}
-                  </span>
-                  <span className="font-medium text-foreground text-sm">
-                    {formatDate(order.day, locale, {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </span>
-                </div>
-
-                {/* Budget */}
-                <div className="flex justify-between items-center border-b pb-2 last:border-0 border-gray-100">
-                  <span className="font-medium text-muted-foreground text-sm">
-                    {t("profile.tables.orders.tableHeaders.budget")}
-                  </span>
-                  <span className="font-bold text-foreground text-sm">
-                    {formatCurrency(
-                      order.basePrice
-                        ? order.basePrice
-                        : order.priceRange?.max || 0
-                    )}
-                  </span>
-                </div>
-
-                {/* Status */}
-                <div className="flex justify-between items-center pt-2">
-                  <span className="font-medium text-muted-foreground text-sm">
-                    {t("profile.tables.orders.tableHeaders.status")}
-                  </span>
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusStyles(
-                      order.status
-                    )}`}
-                  >
-                    {t(`common.organizationTripStatus.${order.status}`)}
-                  </span>
-                </div>
-
-                {hasAnyActionPermission && (
-                  <div className="flex justify-between items-center pt-2 border-t border-gray-100">
-                    <span className="font-medium text-muted-foreground text-sm">
-                      {t("profile.tables.orders.tableHeaders.actions")}
-                    </span>
-
-                    <ActionsDropdownMenu
-                      booking={order}
-                      onActionComplete={handleActionComplete}
-                      openDetailsModal={openDetailsModal}
-                      openEditModal={openEditModal}
-                      openRejectModal={openRejectModal}
-                      openApproveModal={openApproveModal}
-                    />
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Pagination */}
-        {enablePagination && (
-          <div>
-            {data?.pageInfo && (
-              <Pagination
-                pageInfo={data.pageInfo}
-                currentPage={currentPage}
-                onPageChange={setCurrentPage}
-                className="mt-6"
-              />
-            )}
-          </div>
-        )}
-      </div>
+      <DataTable
+        title={tableTitle}
+        columns={[
+          {
+            key: "orderId",
+            label: t("profile.tables.orders.tableHeaders.orderNumber"),
+            className: "font-medium text-foreground",
+            render: (row) => (
+              <span
+                className="block max-w-[100px] truncate"
+                title={row.orderId}
+              >
+                {row.orderId}
+              </span>
+            ),
+          },
+          {
+            key: "organization",
+            label: t("profile.tables.orders.tableHeaders.school"),
+            className: "text-muted-foreground",
+            render: (row) => (
+              <span
+                className="block max-w-[180px] truncate"
+                title={row.organization}
+              >
+                {row.organization}
+              </span>
+            ),
+          },
+          {
+            key: "name",
+            label: t("profile.tables.orders.tableHeaders.activity"),
+            className: "font-medium text-foreground",
+            render: (row) => (
+              <span className="block max-w-[100px] truncate" title={row.name}>
+                {row.name}
+              </span>
+            ),
+          },
+          {
+            key: "askType",
+            label: t("profile.tables.orders.tableHeaders.orderType"),
+            render: (row) =>
+              row.askType === "CUSTOM" ? (
+                <span className="px-2 py-1 text-xs font-medium">
+                  {t("profile.tables.orders.customizable.title")}
+                </span>
+              ) : (
+                <span className="px-2 py-1 text-xs font-medium">
+                  {t("profile.tables.orders.normal.title")}
+                </span>
+              ),
+          },
+          {
+            key: "day",
+            label: t("profile.tables.orders.tableHeaders.orderDate"),
+            className: "text-muted-foreground",
+            render: (row) =>
+              formatDate(row.day, locale, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }),
+          },
+          {
+            key: "budget",
+            label: t("profile.tables.orders.tableHeaders.budget"),
+            className: "font-medium text-foreground",
+            render: (row) =>
+              formatCurrency(
+                row.basePrice ? row.basePrice : row.priceRange?.max || 0
+              ),
+          },
+          {
+            key: "status",
+            label: t("profile.tables.orders.tableHeaders.status"),
+            render: (row) => (
+              <span
+                className={`px-1 lg:px-3 py-1 rounded-full lg:text-sm text-[10px] font-medium ${getStatusStyles(row.status)}`}
+              >
+                {t(`common.organizationTripStatus.${row.status}`)}
+              </span>
+            ),
+          },
+        ]}
+        data={data?.nodes || []}
+        actionsLabel={
+          hasAnyActionPermission
+            ? t("profile.tables.orders.tableHeaders.actions")
+            : ""
+        }
+        rowActions={
+          hasAnyActionPermission
+            ? (row) => (
+                <ActionsDropdownMenu
+                  booking={row}
+                  onActionComplete={handleActionComplete}
+                  openDetailsModal={openDetailsModal}
+                  openEditModal={openEditModal}
+                  openRejectModal={openRejectModal}
+                  openApproveModal={openApproveModal}
+                />
+              )
+            : undefined
+        }
+        pagination={
+          enablePagination && data?.pageInfo
+            ? {
+                currentPage,
+                pageInfo: data.pageInfo,
+                onPageChange: setCurrentPage,
+              }
+            : undefined
+        }
+      />
 
       {/* Shared Order Details Modal */}
       <CustomizedModal

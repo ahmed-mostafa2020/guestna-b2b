@@ -1,5 +1,13 @@
 // services/ExcelService.js
-import ExcelJS from "exceljs";
+// ExcelJS is lazy-loaded to reduce initial bundle size (~4MB)
+let _ExcelJS = null;
+const getExcelJS = async () => {
+  if (!_ExcelJS) {
+    const mod = await import("exceljs");
+    _ExcelJS = mod.default || mod;
+  }
+  return _ExcelJS;
+};
 import formatDate from "./FormateDate";
 import { download } from "../hooks/useDownload";
 import {
@@ -7,7 +15,8 @@ import {
   bookingManagementStudentsHeaders,
 } from "../constants/excelHeaders";
 
-const createWorkbook = (name = "Sheet") => {
+const createWorkbook = async (name = "Sheet") => {
+  const ExcelJS = await getExcelJS();
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet(name);
   return { workbook, worksheet };
@@ -191,6 +200,7 @@ export const ExcelService = {
 
   // 2. Parse any Excel file into generic records
   parseExcelFile: async ({ file, headers, locale = "en" }) => {
+    const ExcelJS = await getExcelJS();
     const workbook = new ExcelJS.Workbook();
     const buffer = await file.arrayBuffer();
     await workbook.xlsx.load(buffer);

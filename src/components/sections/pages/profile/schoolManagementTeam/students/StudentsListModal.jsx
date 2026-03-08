@@ -7,12 +7,12 @@ import { Card, CardContent, CircularProgress } from "@mui/material";
 import { Visibility, Print } from "@mui/icons-material";
 
 import CustomizedModal from "@components/common/customizedModal";
-import Pagination from "@components/common/Pagination";
 import { useFetchData } from "@hooks/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { exportModalToPDF } from "@utils/exportUtils";
 import { useExcel } from "@hooks/useExcel";
 import ExportButton from "@components/common/ExportButton";
+import DataTable from "@components/common/DataTable";
 
 const StudentsListModal = ({
   open,
@@ -134,99 +134,32 @@ const StudentsListModal = ({
                 </div>
               ) : students.length > 0 ? (
                 <>
-                  {/* Desktop Table */}
-                  <Card
-                    className="hidden md:block"
-                    sx={{
-                      borderRadius: "16px",
-                      boxShadow: "0 0 4px 0 rgba(0, 0, 0, 0.16)",
+                  <DataTable
+                    columns={[
+                      {
+                        key: "name",
+                        label: t("profile.schoolTeamStudents.modal.name"),
+                        className: "font-medium text-foreground",
+                      }
+                    ]}
+                    data={students}
+                    loading={isLoading}
+                    actionsLabel={t("profile.schoolTeamStudents.modal.actions")}
+                    rowActions={(student) => (
+                      <button
+                        onClick={() => handleViewStudent(student._id)}
+                        className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-mainColor border border-transparent hover:border-mainColor hover:border rounded-lg transition-colors"
+                        aria-label={t("profile.schoolTeamStudents.modal.viewDetails")}
+                      >
+                        <Visibility fontSize="small" />
+                      </button>
+                    )}
+                    pagination={{
+                      currentPage,
+                      pageInfo,
+                      onPageChange: handlePageChange
                     }}
-                  >
-                    <CardContent className="p-0">
-                      <div className="overflow-x-auto">
-                        <table className="w-full">
-                          <thead>
-                            <tr className="border-b-2 border-tableRowBorder">
-                              <th className="p-4 font-semibold text-start">
-                                {t("profile.schoolTeamStudents.modal.name")}
-                              </th>
-                              <th className="p-4 font-semibold text-center print:hidden">
-                                {t("profile.schoolTeamStudents.modal.actions")}
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-gray-200">
-                            {students.map((student, index) => (
-                              <tr
-                                key={student._id}
-                                className={`${
-                                  index !== students.length - 1 &&
-                                  "border-b border-table-border"
-                                } transition-colors hover:bg-gray-50`}
-                              >
-                                <td className="p-4 text-sm font-medium text-foreground">
-                                  {student.name}
-                                </td>
-                                <td className="p-4 text-center print:hidden">
-                                  <button
-                                    onClick={() =>
-                                      handleViewStudent(student._id)
-                                    }
-                                    className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-mainColor border border-transparent hover:border-mainColor hover:border rounded-lg transition-colors"
-                                    aria-label={t(
-                                      "profile.schoolTeamStudents.modal.viewDetails"
-                                    )}
-                                  >
-                                    <Visibility fontSize="small" />
-                                  </button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Mobile Cards */}
-                  <div className="md:hidden space-y-4 print:hidden">
-                    {students.map((student) => (
-                      <Card key={student._id} className="shadow-sm">
-                        <CardContent className="p-4">
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-semibold text-foreground">
-                                {t("profile.schoolTeamStudents.modal.name")}
-                              </span>
-                              <span className="text-sm  text-foreground">
-                                {student.name}
-                              </span>
-                            </div>
-
-                            <button
-                              onClick={() => handleViewStudent(student._id)}
-                              className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-mainColor hover:bg-linksHover rounded-lg transition-colors"
-                            >
-                              <Visibility fontSize="small" />
-                              {t(
-                                "profile.schoolTeamStudents.modal.viewDetails"
-                              )}
-                            </button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-
-                  {/* Pagination */}
-                  {pageInfo.totalPages > 1 && (
-                    <Pagination
-                      pageInfo={pageInfo}
-                      currentPage={currentPage}
-                      onPageChange={handlePageChange}
-                      className="mt-6 print:hidden"
-                    />
-                  )}
+                  />
                 </>
               ) : (
                 <div className="text-center py-12">

@@ -1,7 +1,6 @@
 import { visaCardIcon } from "@assets/svg";
 import formatCurrency from "@utils/FormatCurrency";
-import { Grid } from "@material-ui/core";
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Grid2 as Grid, Skeleton, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import React from "react";
 

@@ -8,8 +8,7 @@ import UsersInfo from "@components/sections/pages/profile/schoolManagementTeam/u
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { useFetchData } from "@hooks/useFetchData";
-import { Typography } from "@material-ui/core";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import React, { useEffect } from "react";

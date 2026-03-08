@@ -1,4 +1,4 @@
-import html2canvas from "html2canvas";
+// html2canvas is dynamically imported in exportModalToPDF
 import formatDate from "./FormateDate";
 import formatCurrency from "./FormatCurrency";
 
@@ -11,8 +11,9 @@ import formatCurrency from "./FormatCurrency";
  */
 export const exportModalToPDF = async (modalElement, booking, locale, t) => {
   try {
-    // Dynamic import for jsPDF to avoid SSR issues
+    // Dynamic imports for heavy dependencies to avoid SSR issues and reduce bundle
     const { jsPDF } = await import("jspdf");
+    const { default: html2canvas } = await import("html2canvas");
 
     // Wait for any dynamic content to load
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -32,7 +33,7 @@ export const exportModalToPDF = async (modalElement, booking, locale, t) => {
       removeContainer: false,
       imageTimeout: 30000, // Increased timeout for large tables
       onclone: (clonedDoc, element) => {
-        console.log("PDF Export - Cloning DOM for screenshot...");
+
 
         // Force all elements to be visible
         const allElements = clonedDoc.querySelectorAll("*");
@@ -73,7 +74,7 @@ export const exportModalToPDF = async (modalElement, booking, locale, t) => {
           el.style.visibility = "hidden";
         });
 
-        console.log("PDF Export - DOM cloning completed");
+
       },
     });
 
@@ -91,8 +92,8 @@ export const exportModalToPDF = async (modalElement, booking, locale, t) => {
     const imgWidth = canvas.width;
     const imgHeight = canvas.height;
 
-    console.log(`PDF Export - Canvas size: ${imgWidth}x${imgHeight}`);
-    console.log(`PDF Export - PDF page size: ${pdfWidth}x${pdfHeight}mm`);
+
+
 
     // Convert pixels to mm (1 pixel = 0.264583 mm at 96 DPI)
     const imgWidthMM = imgWidth * 0.264583;
@@ -103,14 +104,14 @@ export const exportModalToPDF = async (modalElement, booking, locale, t) => {
     const scaledWidth = pdfWidth;
     const scaledHeight = imgHeightMM * scale;
 
-    console.log(`PDF Export - Scaled size: ${scaledWidth}x${scaledHeight}mm`);
+
 
     // If content is taller than one page, split into multiple pages
     if (scaledHeight > pdfHeight) {
-      console.log("PDF Export - Content requires multiple pages");
+
 
       const pagesNeeded = Math.ceil(scaledHeight / pdfHeight);
-      console.log(`PDF Export - Creating ${pagesNeeded} pages`);
+
 
       for (let i = 0; i < pagesNeeded; i++) {
         if (i > 0) {

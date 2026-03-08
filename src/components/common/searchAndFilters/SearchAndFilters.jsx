@@ -102,35 +102,38 @@ const SearchAndFilters = ({
       {/* Desktop layout */}
       <Box className="hidden md:block">
         {showTitle && <Box className="mb-3">{title}</Box>}
-        <Box
-          className="grid gap-4"
-          style={{
-            gridTemplateColumns: `repeat(${totalInputs}, minmax(0, 1fr))`,
-          }}
-        >
-          {search && (
-            <SearchInput
-              key={search.key}
-              label={search.label}
-              value={search.value}
-              onChange={search.onChange}
-            />
-          )}
-          {renderFilters("100%", 55)}
-          {date && (
-            <DatePickUpInput
-              key={date.key}
-              label={date.label}
-              value={date.value}
-              onChange={date.onChange}
-            />
+        <Box className="flex flex-wrap items-center gap-4">
+          <Box className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {search && (
+              <SearchInput
+                key={search.key}
+                label={search.label}
+                value={search.value}
+                onChange={search.onChange}
+              />
+            )}
+            {renderFilters("100%", 55)}
+            {date && (
+              <DatePickUpInput
+                key={date.key}
+                label={date.label}
+                value={date.value}
+                onChange={date.onChange}
+              />
+            )}
+          </Box>
+          {onReset && (
+            <Box className="shrink-0 flex items-center pt-2">
+              <button
+                type="button"
+                onClick={onReset}
+                className="text-sm font-medium text-red-600 hover:text-white border border-red-600 hover:bg-red-600 transition-all rounded-md px-4 py-2 flex items-center gap-2"
+              >
+                <span>{t("forms.reset.title")}</span>
+              </button>
+            </Box>
           )}
         </Box>
-        {onReset && (
-          <Box className="flex justify-end my-2">
-            <ResetButton onReset={onReset} />
-          </Box>
-        )}
       </Box>
     </Box>
   );

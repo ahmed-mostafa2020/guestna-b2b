@@ -1,4 +1,3 @@
-import { Grid } from "@material-ui/core";
 import {
   Card,
   CardContent,
@@ -6,6 +5,7 @@ import {
   Typography,
   Stack,
   Chip,
+  Grid2 as Grid,
 } from "@mui/material";
 import { useTranslations } from "next-intl";
 import React from "react";

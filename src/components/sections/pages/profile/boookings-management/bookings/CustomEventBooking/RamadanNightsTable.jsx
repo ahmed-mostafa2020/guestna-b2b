@@ -1,252 +1,10 @@
 "use client";
 
-import React, { memo, useMemo } from "react";
+import React, { memo } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Card, CardContent } from "@mui/material";
-import Pagination from "@components/common/Pagination";
 import formatDate from "@utils/FormateDate";
 import formatCurrency from "@utils/FormatCurrency";
-
-// ── Column Configuration ──────────────────────────────────────────────────────
-
-const buildColumns = (t, locale) => [
-  {
-    key: "orderId",
-    header: t("profile.tables.customEventBooking.header.orderId"),
-    getValue: (row) => row.orderId,
-    render: (v) => {
-      const full = String(v ?? "");
-      const display = full.toUpperCase();
-      return { display, title: full.toUpperCase() };
-    },
-  },
-  {
-    key: "bookingDay",
-    header: t("profile.tables.customEventBooking.header.bookingDay"),
-    getValue: (row) => row.bookingDay,
-    render: (v) => ({
-      display: v
-        ? formatDate(v, locale, {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })
-        : "-",
-      title: v ? String(v) : "-",
-    }),
-  },
-  {
-    key: "price",
-    header: t("profile.tables.customEventBooking.header.price"),
-    getValue: (row) => row.price,
-    render: (v) => ({
-      display: v != null ? formatCurrency(v) : "-",
-      title: v != null ? String(v) : "-",
-    }),
-  },
-  {
-    key: "client.name",
-    header: t("profile.tables.customEventBooking.header.client.name"),
-    getValue: (row) => row.client?.name,
-    render: (v) => ({ display: v ?? "-", title: v ?? "-" }),
-  },
-  {
-    key: "client.email",
-    header: t("profile.tables.customEventBooking.header.client.email"),
-    getValue: (row) => row.client?.email,
-    render: (v) => ({ display: v ?? "-", title: v ?? "-" }),
-  },
-  {
-    key: "client.phone",
-    header: t("profile.tables.customEventBooking.header.client.phone"),
-    isPhone: true,
-    getValue: (row) => row.client?.phone,
-    render: (v) => ({ display: v ?? "-", title: v ?? "-" }),
-  },
-  {
-    key: "client.idNumber",
-    header: t("profile.tables.customEventBooking.header.client.idNumber"),
-    getValue: (row) => row.client?.idNumber,
-    render: (v) => ({ display: v ?? "-", title: v ?? "-" }),
-  },
-  {
-    key: "stationName",
-    header: t("profile.tables.customEventBooking.header.stationName"),
-    getValue: (row) => row.stationName,
-    render: (v) => ({ display: v ?? "-", title: v ?? "-" }),
-  },
-  {
-    key: "serviceType",
-    header: t("profile.tables.customEventBooking.header.serviceType"),
-    getValue: (row) => row.serviceType,
-    render: (v) => {
-      const display = Array.isArray(v) && v.length > 0 ? v.join(", ") : "-";
-      return { display, title: display };
-    },
-  },
-  {
-    key: "participatedBefore",
-    header: t("profile.tables.customEventBooking.header.participatedBefore"),
-    getValue: (row) => row.participatedBefore,
-    render: (v) => {
-      const display = v
-        ? t("profile.tables.customEventBooking.header.yes")
-        : t("profile.tables.customEventBooking.header.no");
-      return { display, title: display };
-    },
-  },
-  {
-    key: "quantity",
-    header: t("profile.tables.customEventBooking.header.quantity"),
-    getValue: (row) => row.quantity,
-    render: (v) => ({
-      display: v != null ? String(v) : "-",
-      title: v != null ? String(v) : "-",
-    }),
-  },
-];
-
-// ── Table Components ──────────────────────────────────────────────────────────
-
-const TableHead = memo(({ columns }) => (
-  <thead>
-    <tr className="bg-table-header border-b-2 border-tableRowBorder">
-      {columns.map((col) => (
-        <th
-          key={col.key}
-          className="px-4 py-4 text-sm font-semibold text-start whitespace-nowrap"
-        >
-          {col.header}
-        </th>
-      ))}
-    </tr>
-  </thead>
-));
-TableHead.displayName = "TableHead";
-
-const TableBody = memo(({ columns, rows, keyPrefix = "" }) => (
-  <tbody>
-    {rows.map((row, index) => (
-      <tr
-        key={`${row._id || index}${keyPrefix}`}
-        className="border-b border-table-border last:border-b-0 hover:bg-gray-50 transition-colors"
-      >
-        {columns.map((col) => {
-          const { display, title } = col.render(col.getValue(row));
-          return (
-            <td
-              key={col.key}
-              title={title}
-              dir={col.isPhone ? "ltr" : undefined}
-              className={`px-4 py-4 text-sm font-medium text-foreground max-w-[120px] ${
-                col.isPhone ? "text-end" : ""
-              }`}
-            >
-              <div className="truncate max-w-[200px]">{display}</div>
-            </td>
-          );
-        })}
-      </tr>
-    ))}
-  </tbody>
-));
-TableBody.displayName = "TableBody";
-
-// ── Mobile Components ─────────────────────────────────────────────────────────
-
-const MobileCard = memo(({ columns, row, index }) => (
-  <Card
-    key={`${row._id || index}_mobile`}
-    className="shadow-md hover:shadow-lg transition-shadow"
-  >
-    <CardContent className="p-4 space-y-3">
-      {/* First Column - Featured */}
-      {(() => {
-        const col = columns[0];
-        const { display, title } = col.render(col.getValue(row));
-        return (
-          <div className="flex items-center justify-between pb-2 border-b border-gray-100">
-            <span className="text-xs text-muted-foreground font-medium shrink-0">
-              {col.header}
-            </span>
-            <div
-              title={title}
-              dir={col.isPhone ? "ltr" : undefined}
-              className="text-base font-semibold max-w-[60%]"
-            >
-              <div className="truncate">{display}</div>
-            </div>
-          </div>
-        );
-      })()}
-
-      {/* Remaining Columns */}
-      {columns.slice(1).map((col) => {
-        const { display, title } = col.render(col.getValue(row));
-        return (
-          <div
-            key={col.key}
-            className="flex items-center justify-between text-sm"
-          >
-            <span className="text-xs text-muted-foreground font-medium shrink-0">
-              {col.header}
-            </span>
-            <div
-              title={title}
-              dir={col.isPhone ? "ltr" : undefined}
-              className={`font-medium text-foreground max-w-[60%] ${
-                col.isPhone ? "text-end" : ""
-              }`}
-            >
-              <div className="truncate">{display}</div>
-            </div>
-          </div>
-        );
-      })}
-    </CardContent>
-  </Card>
-));
-MobileCard.displayName = "MobileCard";
-
-const MobileCards = memo(({ title, columns, rows }) => (
-  <div className="space-y-4 md:hidden border-t border-border pt-4">
-    <h2 className="text-xl font-medium text-titleColor">{title}</h2>
-    {rows.map((row, index) => (
-      <MobileCard
-        key={row._id || index}
-        columns={columns}
-        row={row}
-        index={index}
-      />
-    ))}
-  </div>
-));
-MobileCards.displayName = "MobileCards";
-
-// ── Table Card Wrapper ────────────────────────────────────────────────────────
-
-const TableCard = memo(({ title, className, children }) => (
-  <Card
-    className={className}
-    sx={{ borderRadius: "16px", boxShadow: "0 0 4px 0 rgba(0,0,0,0.16)" }}
-  >
-    {title && (
-      <div className="pt-4 px-4">
-        <h2 className="text-xl lg:text-2xl font-medium text-titleColor">
-          {title}
-        </h2>
-      </div>
-    )}
-    <CardContent className="p-0">
-      <div className="overflow-x-auto">
-        <table className="w-full">{children}</table>
-      </div>
-    </CardContent>
-  </Card>
-));
-TableCard.displayName = "TableCard";
-
-// ── Main Component ────────────────────────────────────────────────────────────
+import DataTable from "@components/common/DataTable";
 
 const RamadanNightsTable = ({
   rows = [],
@@ -257,55 +15,92 @@ const RamadanNightsTable = ({
   const t = useTranslations();
   const locale = useLocale();
 
-  const columns = useMemo(() => buildColumns(t, locale), [t, locale]);
-
-  const title = useMemo(
-    () => t("profile.tables.customEventBooking.titles.RAMADAN_NIGHTS"),
-    [t]
-  );
-
-  if (!rows || rows.length === 0) {
-    return (
-      <div className="w-full mt-6">
-        <Card
-          sx={{ borderRadius: "16px", boxShadow: "0 0 4px 0 rgba(0,0,0,0.16)" }}
-        >
-          <CardContent className="p-8 text-center">
-            <p className="text-muted-foreground">
-              {t("profile.tables.noData") || "No data available"}
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const title = t("profile.tables.customEventBooking.titles.RAMADAN_NIGHTS");
 
   return (
     <div className="w-full space-y-6 mt-10">
-      {/* Desktop View */}
-      <TableCard title={title} className="hidden lg:block">
-        <TableHead columns={columns} />
-        <TableBody columns={columns} rows={rows} />
-      </TableCard>
-
-      {/* Tablet View */}
-      <TableCard title={title} className="hidden md:block lg:hidden">
-        <TableHead columns={columns} />
-        <TableBody columns={columns} rows={rows} keyPrefix="_tablet" />
-      </TableCard>
-
-      {/* Mobile View */}
-      <MobileCards title={title} columns={columns} rows={rows} />
-
-      {/* Pagination */}
-      {pageInfo && (
-        <Pagination
-          pageInfo={pageInfo}
-          currentPage={currentPage}
-          onPageChange={onPageChange}
-          className="mt-6"
-        />
-      )}
+      <DataTable
+        title={title}
+        columns={[
+          {
+            key: "orderId",
+            label: t("profile.tables.customEventBooking.header.orderId"),
+            render: (row) => String(row.orderId ?? "").toUpperCase(),
+            className: "font-medium text-foreground",
+          },
+          {
+            key: "bookingDay",
+            label: t("profile.tables.customEventBooking.header.bookingDay"),
+            render: (row) => row.bookingDay ? formatDate(row.bookingDay, locale, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }) : "-",
+          },
+          {
+            key: "price",
+            label: t("profile.tables.customEventBooking.header.price"),
+            render: (row) => row.price != null ? formatCurrency(row.price) : "-",
+          },
+          {
+            key: "clientName",
+            label: t("profile.tables.customEventBooking.header.client.name"),
+            render: (row) => row.client?.name ?? "-",
+          },
+          {
+            key: "clientEmail",
+            label: t("profile.tables.customEventBooking.header.client.email"),
+            render: (row) => row.client?.email ?? "-",
+          },
+          {
+            key: "clientPhone",
+            label: t("profile.tables.customEventBooking.header.client.phone"),
+            render: (row) => (
+              <div dir="ltr" className="text-end">
+                {row.client?.phone ?? "-"}
+              </div>
+            ),
+          },
+          {
+            key: "clientId",
+            label: t("profile.tables.customEventBooking.header.client.idNumber"),
+            render: (row) => row.client?.idNumber ?? "-",
+          },
+          {
+            key: "stationName",
+            label: t("profile.tables.customEventBooking.header.stationName"),
+            render: (row) => row.stationName ?? "-",
+          },
+          {
+            key: "serviceType",
+            label: t("profile.tables.customEventBooking.header.serviceType"),
+            render: (row) => Array.isArray(row.serviceType) && row.serviceType.length > 0 ? row.serviceType.join(", ") : "-",
+          },
+          {
+            key: "participatedBefore",
+            label: t("profile.tables.customEventBooking.header.participatedBefore"),
+            render: (row) => row.participatedBefore
+              ? t("profile.tables.customEventBooking.header.yes")
+              : t("profile.tables.customEventBooking.header.no"),
+          },
+          {
+            key: "quantity",
+            label: t("profile.tables.customEventBooking.header.quantity"),
+            render: (row) => row.quantity != null ? String(row.quantity) : "-",
+          }
+        ]}
+        data={rows}
+        pagination={pageInfo && {
+          currentPage,
+          pageInfo,
+          onPageChange
+        }}
+        emptyState={
+          <p className="text-muted-foreground p-8 text-center">
+            {t("profile.tables.noData") || "No data available"}
+          </p>
+        }
+      />
     </div>
   );
 };

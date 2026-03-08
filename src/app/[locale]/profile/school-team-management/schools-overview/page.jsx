@@ -20,7 +20,7 @@ import { useLocale, useTranslations } from "next-intl";
 // Constants
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
-import { Grid } from "@material-ui/core";
+import { Grid2 as Grid } from "@mui/material";
 
 const SchoolsOverViewPage = () => {
   const locale = useLocale();

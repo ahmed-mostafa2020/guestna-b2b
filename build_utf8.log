@@ -1,0 +1,56 @@
+yarn run v1.22.22
+$ next build
+[@sentry/nextjs] DEPRECATION WARNING: disableLogger is deprecated and will be removed in a future version. Use webpack.treeshake.removeDebugLogging instead.
+[@sentry/nextjs] DEPRECATION WARNING: automaticVercelMonitors is deprecated and will be removed in a future version. Use webpack.automaticVercelMonitors instead.
+  ▲ Next.js 14.2.15
+  - Environments: .env.local
+  - Experiments (use with caution):
+    · instrumentationHook
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./node_modules/notistack/dist/notistack.esm.js:4:1
+Module not found: Can't resolve '@material-ui/core/Slide'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/app/git-dashboard/page.js
+
+./node_modules/notistack/dist/notistack.esm.js:5:1
+Module not found: Can't resolve '@material-ui/core/styles'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/app/git-dashboard/page.js
+
+./node_modules/notistack/dist/notistack.esm.js:6:1
+Module not found: Can't resolve '@material-ui/core/Collapse'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/app/git-dashboard/page.js
+
+./node_modules/notistack/dist/notistack.esm.js:7:1
+Module not found: Can't resolve '@material-ui/core/SvgIcon'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/app/git-dashboard/page.js
+
+./node_modules/notistack/dist/notistack.esm.js:8:1
+Module not found: Can't resolve '@material-ui/core/ClickAwayListener'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/app/git-dashboard/page.js
+
+
+> Build failed because of webpack errors
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.

@@ -1,10 +1,9 @@
-import { Grid } from "@material-ui/core";
+import { Grid2 as Grid, Chip } from "@mui/material";
 import React from "react";
 import OrderDataLabel from "./OrderDataLabel";
 import OrderDataField from "./OrderDataField";
 import OrderDataCard from "./OrderDataCard";
 import { useTranslations } from "next-intl";
-import { Chip } from "@mui/material";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 
 const TripInfoCard = ({ orderData }) => {

@@ -1,7 +1,6 @@
 import { bluelocationIcon, emailBlueIcon } from "@assets/svg";
-import { Box } from "@material-ui/core";
 import { ArrowDropDown, Email, Phone } from "@mui/icons-material";
-import { MenuItem, Select, Skeleton, Typography } from "@mui/material";
+import { Box, MenuItem, Select, Skeleton, Typography } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";

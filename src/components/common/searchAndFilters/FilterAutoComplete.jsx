@@ -22,7 +22,7 @@ const FilterAutoComplete = ({
       disableClearable={multiple}
       options={options}
       value={resolvedValue}
-      className="!border-2 rounded-md !border-solid !border-gray-200 py-2"
+      className="!border-2 rounded-md !border-solid !border-gray-200 w-full min-w-[140px]"
       slotProps={{
         listbox: {
           className: "!font-somar",

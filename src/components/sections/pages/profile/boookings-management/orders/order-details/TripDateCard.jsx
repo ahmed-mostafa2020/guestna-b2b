@@ -3,7 +3,7 @@ import React from "react";
 import OrderDataCard from "./OrderDataCard";
 import OrderDataField from "./OrderDataField";
 import OrderDataLabel from "./OrderDataLabel";
-import { Grid } from "@material-ui/core";
+import { Grid2 as Grid } from "@mui/material";
 import formatDateForInput from "@utils/FormateDateForInput";
 
 const TripDateCard = ({ orderData }) => {

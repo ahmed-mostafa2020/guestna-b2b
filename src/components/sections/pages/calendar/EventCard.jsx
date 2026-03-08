@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 
 import { usePermissions } from "@hooks/usePermissions";
@@ -120,4 +121,13 @@ const EventCard = ({ event, onView, onEdit }) => {
   );
 };
 
-export default EventCard;
+export default memo(EventCard, (prevProps, nextProps) => {
+  return (
+    prevProps.event._id === nextProps.event._id &&
+    prevProps.event.updatedAt === nextProps.event.updatedAt &&
+    prevProps.event.name === nextProps.event.name &&
+    prevProps.event.day === nextProps.event.day &&
+    prevProps.event.happeningType === nextProps.event.happeningType
+  );
+});
+

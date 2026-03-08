@@ -11,8 +11,7 @@ import {
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 import SearchAndFilters from "@components/common/searchAndFilters/SearchAndFilters";
-import { Box, IconButton, InputAdornment, TextField } from "@mui/material";
-import { Grid } from "@material-ui/core";
+import { Box, Grid2 as Grid, IconButton, InputAdornment, TextField } from "@mui/material";
 import { searchBarIcon, wrongIcon } from "@assets/svg";
 
 const EXCLUDED_URL_PARAMS = ["page"];
@@ -234,33 +233,39 @@ const DiscoverFiltersSection = () => {
 
   // ── Render ────────────────────────────────────────────────────
   return (
-    <Box className="bg-white rounded-xl p-4 shadow-[0_0_4px_0_rgba(0,0,0,0.16)]">
-      <Grid container alignItems="center" spacing={2}>
-        <Grid item md={9} xs={12}>
-          <span className="font-medium !text-titleColor text-lg">
-            {t("forms.search.title")}
-          </span>
-          {activeFilterCount > 0 && (
-            <span className="ml-2 text-sm text-gray-500">
-              ({activeFilterCount} active)
-            </span>
-          )}
+    <Box className="bg-white rounded-xl p-6 shadow-[0_0_10px_0_rgba(0,0,0,0.08)] mb-6 transition-all">
+      <Grid container spacing={3} alignItems="flex-end">
+        {/* Title & Active Count */}
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Box className="flex items-center gap-3">
+            <h3 className="font-semibold text-titleColor text-xl">
+              {t("forms.search.title")}
+            </h3>
+            {activeFilterCount > 0 && (
+              <span className="px-2 py-0.5 rounded-full bg-mainColor/10 text-mainColor text-xs font-bold">
+                {activeFilterCount} {t("common.active", { count: activeFilterCount })}
+              </span>
+            )}
+          </Box>
         </Grid>
 
-        <Grid item md={3} xs={12} className="flex items-center gap-2">
+        {/* Search Bar */}
+        <Grid size={{ xs: 12, md: 6 }} className="flex justify-end">
           <TextField
             size="small"
-            className="flex-1"
+            fullWidth
+            className="md:max-w-xs"
             value={searchValue}
             onChange={handleSearchChange}
             onKeyDown={handleSearchKeyDown}
             placeholder={t("links.search")}
             slotProps={{
               input: {
+                className: "!rounded-lg !bg-gray-50/50",
                 startAdornment: (
                   <InputAdornment position="start">
                     <IconButton
-                      className="!me-2"
+                      className="!p-1"
                       onClick={handleSearchSubmit}
                       edge="start"
                       aria-label="search"
@@ -286,12 +291,15 @@ const DiscoverFiltersSection = () => {
           />
         </Grid>
 
-        <Grid item xs={12}>
-          <SearchAndFilters
-            onReset={handleReset}
-            filters={filters}
-            isLoading={loading === "loading"}
-          />
+        {/* Filters & Reset */}
+        <Grid size={{ xs: 12 }}>
+          <Box className="pt-4 border-t border-gray-100">
+            <SearchAndFilters
+              onReset={handleReset}
+              filters={filters}
+              isLoading={loading === "loading"}
+            />
+          </Box>
         </Grid>
       </Grid>
     </Box>

@@ -26,6 +26,8 @@ const nextConfig = {
   },
 
   images: {
+    formats: ['image/webp', 'image/avif'],
+    minimumCacheTTL: 60,
     domains: [
       "res.cloudinary.com",
       "ik.imagekit.io",
