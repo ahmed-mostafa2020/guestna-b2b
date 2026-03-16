@@ -25,8 +25,6 @@ export const PERMISSIONS = {
       "b2b_profile_order_management_reminder_guestna",
     B2B_PROFILE_ORDER_MANAGEMENT_UPDATE_TRIP:
       "b2b_profiel_order_management_update_trip",
-    B2B_PROFILE_BOOKINGS_TRIPS_STATUS_TABS:
-      "b2b_profile_bookings_tripsStatus_tabs",
     B2B_PROFILE_BOOKINGS_SHOW_TRIP_DETAILS_BUTTON:
       "b2b_profile_bookings_showTripDetails_button",
     B2B_PROFILE_USERS_CARDS: "b2b_profile_users_cards",

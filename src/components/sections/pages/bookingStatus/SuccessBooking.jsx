@@ -62,13 +62,6 @@ const SuccessBooking = ({ data }) => {
       </h3>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
-        {data.bookingInfo?.childs && (
-          <BookingDataCard
-            title={t("bookingStatus.success.data.senderName")}
-            subTitle={data.bookingInfo.childs[0].name}
-          />
-        )}
-
         {data.bookingInfo?.client && (
           <BookingDataCard
             title={t("bookingStatus.success.data.senderName")}
