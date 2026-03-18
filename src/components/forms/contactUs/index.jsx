@@ -2,9 +2,9 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useState } from "react";
 
-import { createContactUsSchema } from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage";
+import { createContactUsSchema } from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
 import { END_POINTS } from "@constants/APIs";
 import TextInputGroup from "../TextInputGroup";
 

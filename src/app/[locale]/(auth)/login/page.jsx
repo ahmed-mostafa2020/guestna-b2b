@@ -7,7 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import AuthFormsFrame from "@components/common/AuthFormsFrame";
+import AuthFormsFrame from "@components/ui/AuthFormsFrame";
 import RolesLoginForm from "@components/forms/auth/rolesLogin";
 
 import { Container } from "@mui/material";

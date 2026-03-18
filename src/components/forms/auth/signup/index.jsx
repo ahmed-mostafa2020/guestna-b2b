@@ -22,10 +22,10 @@ import { useState } from "react";
 import { useSnackbar } from "notistack";
 
 import { END_POINTS } from "@constants/APIs";
-import { createSignUpSchema } from "@utils/validationSchemas";
-import { cn } from "@utils/cn";
-import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage";
+import { createSignUpSchema } from "@utils/validators/validationSchemas";
+import { cn } from "@utils/helpers/cn";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
 import TextInputGroup from "../../TextInputGroup";
 
 import { Field, Formik } from "formik";

@@ -7,13 +7,13 @@ import { useEffect } from "react";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
-import { useFetchData } from "@hooks/useFetchData";
-import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
+import { useFetchData } from "@hooks/data/useFetchData";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 import { PERMISSIONS } from "@constants/permissions";
-import InfoCardsSkeleton from "@components/sections/pages/profile/trips/infoCards/InfoCardsSkeleton";
-import InfoCardsListing from "@components/sections/pages/profile/trips/infoCards/InfoCardsListing";
-import StudentsManagement from "@components/sections/pages/profile/schoolManagementTeam/students/StudentsManagement";
-import { usePermissions } from "@hooks/usePermissions";
+import InfoCardsSkeleton from "@components/features/profile/trips/infoCards/InfoCardsSkeleton";
+import InfoCardsListing from "@components/features/profile/trips/infoCards/InfoCardsListing";
+import StudentsManagement from "@components/features/profile/schoolManagementTeam/students/StudentsManagement";
+import { usePermissions } from "@hooks/utils/usePermissions";
 
 const page = () => {
   const { hasElement } = usePermissions();

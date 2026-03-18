@@ -13,7 +13,7 @@ import { Fragment, useEffect, useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { SORTING_TYPE } from "@constants/sorting";
-// import formatCurrency from "@utils/FormatCurrency";
+// import formatCurrency from "@utils/formatters/FormatCurrency";
 import FilterButton from "./FilterButton";
 import PlaceButtonMenu from "./menus/places/PlaceButtonMenu";
 import TripDurationButtonMenu from "./menus/tripDuration";

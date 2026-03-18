@@ -7,13 +7,13 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { useFetchData } from "@hooks/useFetchData";
+import { useFetchData } from "@hooks/data/useFetchData";
 
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 
-import SuccessBooking from "@components/sections/pages/bookingStatus/SuccessBooking";
-import FailedBooking from "@components/sections/pages/bookingStatus/FailedBooking";
+import SuccessBooking from "@components/features/bookingStatus/SuccessBooking";
+import FailedBooking from "@components/features/bookingStatus/FailedBooking";
 
 import ringTop from "@assets/sectionBackground/ringTop.png";
 import ringBottom from "@assets/sectionBackground/ringBottom.png";

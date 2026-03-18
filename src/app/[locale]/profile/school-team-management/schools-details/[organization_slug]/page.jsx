@@ -1,13 +1,13 @@
 "use client";
 
 import { backIconColored } from "@assets/svg";
-import SchoolBalance from "@components/sections/pages/profile/schoolManagementTeam/schoolsDetails/SchoolBalance";
-import SchoolStats from "@components/sections/pages/profile/schoolManagementTeam/schoolsDetails/SchoolStats";
-import SelectSchoolForDetails from "@components/sections/pages/profile/schoolManagementTeam/schoolsDetails/SelectSchool";
-import UsersInfo from "@components/sections/pages/profile/schoolManagementTeam/users/UsersInfo";
+import SchoolBalance from "@components/features/profile/schoolManagementTeam/schoolsDetails/SchoolBalance";
+import SchoolStats from "@components/features/profile/schoolManagementTeam/schoolsDetails/SchoolStats";
+import SelectSchoolForDetails from "@components/features/profile/schoolManagementTeam/schoolsDetails/SelectSchool";
+import UsersInfo from "@components/features/profile/schoolManagementTeam/users/UsersInfo";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { useFetchData } from "@hooks/useFetchData";
+import { useFetchData } from "@hooks/data/useFetchData";
 import { Box, Typography } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";

@@ -9,12 +9,12 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import getErrorMessage from "@utils/getErrorMessage";
-import { createRequestQuoteSchema } from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
-import getProxyUrl from "@utils/getProxyUrl";
-import { cn } from "@utils/cn";
-import Logo from "@components/common/Logo";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
+import { createRequestQuoteSchema } from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getProxyUrl from "@utils/api/getProxyUrl";
+import { cn } from "@utils/helpers/cn";
+import Logo from "@components/ui/Logo";
 import TextInputGroup from "../TextInputGroup";
 import ThanksMessage from "./ThanksMessage";
 

@@ -4,8 +4,8 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { memo } from "react";
 
-import formatCurrency from "@utils/FormatCurrency";
-import formatDate from "@utils/FormateDate";
+import formatCurrency from "@utils/formatters/FormatCurrency";
+import formatDate from "@utils/formatters/FormateDate";
 import { calenderIcon, timeIcon, locationIcon } from "@assets/svg";
 
 const TripInformation = ({ tripData }) => {

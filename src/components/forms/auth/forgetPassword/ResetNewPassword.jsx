@@ -12,11 +12,11 @@ import { useState } from "react";
 import { useSnackbar } from "notistack";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { createResetNewPasswordSchema } from "@utils/validationSchemas";
-import setToken from "@utils/setToken";
-import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage";
-import getProxyUrl from "@utils/getProxyUrl";
+import { createResetNewPasswordSchema } from "@utils/validators/validationSchemas";
+import setToken from "@utils/api/setToken";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
+import getProxyUrl from "@utils/api/getProxyUrl";
 import TextInputGroup from "../../TextInputGroup";
 
 import { Formik } from "formik";

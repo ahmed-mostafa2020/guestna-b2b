@@ -10,9 +10,9 @@ import { setPhone } from "@store/forms/auth/login/loginFormSlice";
 import { useState } from "react";
 
 import { END_POINTS } from "@constants/APIs";
-import { cn } from "@utils/cn";
-import { createResetPasswordByPhoneSchema } from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
+import { cn } from "@utils/helpers/cn";
+import { createResetPasswordByPhoneSchema } from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
 
 import { Field, Formik } from "formik";
 

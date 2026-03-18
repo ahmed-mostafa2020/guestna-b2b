@@ -8,11 +8,11 @@ import { useSnackbar } from "notistack";
 import Link from "next/link";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import PermissionsSection from "@components/sections/pages/profile/rolesPermissions/PermissionsSection";
+import PermissionsSection from "@components/features/profile/rolesPermissions/PermissionsSection";
 import axios from "axios";
-import { createAddRoleSchema } from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
-import getProxyUrl from "@utils/getProxyUrl";
+import { createAddRoleSchema } from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getProxyUrl from "@utils/api/getProxyUrl";
 import { CircularProgress } from "@mui/material";
 
 const AddRoleForm = ({ permissionsData }) => {

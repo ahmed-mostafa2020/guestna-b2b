@@ -5,14 +5,14 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import getErrorMessage from "@utils/getErrorMessage";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
 import {
   createAddOrganizationUserSchema,
   createUpdateOrganizationUserSchema,
-} from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
-import getProxyUrl from "@utils/getProxyUrl";
-import { cn } from "@utils/cn";
+} from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getProxyUrl from "@utils/api/getProxyUrl";
+import { cn } from "@utils/helpers/cn";
 import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
 

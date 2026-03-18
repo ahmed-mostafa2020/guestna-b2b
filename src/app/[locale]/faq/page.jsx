@@ -6,13 +6,13 @@ import { setFaq, setFaqError, setFaqLoading } from "@store/faq/faqSlice";
 
 import { useEffect } from "react";
 
-import { useFetchData } from "@hooks/useFetchData";
+import { useFetchData } from "@hooks/data/useFetchData";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import { END_POINTS } from "@constants/APIs";
-import SubHeaderSection from "@components/sections/pages/faq/SubHeaderSection";
-import CustomizedBreadcrumbs from "@components/common/breadcrumbs/CustomizedBreadcrumbs";
-import AccordionsListing from "@components/sections/pages/faq/AccordionsListing";
+import SubHeaderSection from "@components/features/faq/SubHeaderSection";
+import CustomizedBreadcrumbs from "@components/ui/breadcrumbs/CustomizedBreadcrumbs";
+import AccordionsListing from "@components/features/faq/AccordionsListing";
 import { Container } from "@mui/material";
 
 const FAQPage = () => {

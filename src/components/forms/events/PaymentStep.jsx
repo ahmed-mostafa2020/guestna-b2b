@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { RadioGroup } from "@mui/material";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import formatCurrency from "@utils/FormatCurrency";
+import formatCurrency from "@utils/formatters/FormatCurrency";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import SelectionGroup from "@components/forms/SelectionGroup";
 import PaymentMethod from "@components/forms/checkout/paymentForm/PaymentMethod";

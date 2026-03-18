@@ -4,7 +4,7 @@ import Image from "next/image";
 
 import { memo } from "react";
 
-import { cn } from "@utils/cn";
+import { cn } from "@utils/helpers/cn";
 
 import { FormControlLabel, Radio } from "@mui/material";
 

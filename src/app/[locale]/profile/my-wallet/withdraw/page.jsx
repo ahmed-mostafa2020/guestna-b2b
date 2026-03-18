@@ -4,13 +4,13 @@ import { useTranslations } from "next-intl";
 
 import { useEffect } from "react";
 
-import { useFetchData } from "@hooks/useFetchData";
-import { usePermissions } from "@hooks/usePermissions";
+import { useFetchData } from "@hooks/data/useFetchData";
+import { usePermissions } from "@hooks/utils/usePermissions";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
-import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 import { WithdrawForm } from "@components/forms/withdraw";
-import { BalanceCards } from "@components/sections/pages/myWallet/withdraw";
+import { BalanceCards } from "@components/features/myWallet/withdraw";
 
 const WithdrawPage = () => {
   const t = useTranslations();

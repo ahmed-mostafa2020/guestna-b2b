@@ -11,13 +11,13 @@ import { setUser, setUserToken } from "@store/users/usersSlice";
 import { useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import getErrorMessage from "@utils/getErrorMessage";
-import { createLoginEmailMethodSchema } from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
-import setToken from "@utils/setToken";
-import getProxyUrl from "@utils/getProxyUrl";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
+import { createLoginEmailMethodSchema } from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import setToken from "@utils/api/setToken";
+import getProxyUrl from "@utils/api/getProxyUrl";
 import TextInputGroup from "../../TextInputGroup";
-import Logo from "@components/common/Logo";
+import Logo from "@components/ui/Logo";
 
 import { Formik } from "formik";
 

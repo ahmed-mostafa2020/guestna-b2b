@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 
 import ContactUsForm from "@components/forms/contactUs";
-import ContactUsData from "@components/sections/pages/contactUs";
+import ContactUsData from "@components/features/contactUs";
 
 import { Container } from "@mui/material";
 import Grid from "@mui/material/Grid2";

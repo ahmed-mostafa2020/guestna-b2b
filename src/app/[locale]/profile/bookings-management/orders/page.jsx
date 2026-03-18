@@ -5,15 +5,15 @@ import { useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
-import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
-import TabSwitcher from "@components/common/TabSwitcher";
-import TripsOrdersManagement from "@components/sections/pages/profile/boookings-management/orders/TripsOrdersManagement";
-import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageTemplate";
-import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBookings";
-import OrdersInfoCards from "@components/sections/pages/profile/boookings-management/orders/OrdersInfoCards";
-import OrdersSettingsTable from "@components/sections/pages/profile/boookings-management/orders/OrdersSettingsTable";
-import AllOrdersTable from "@components/sections/pages/profile/boookings-management/orders/AllOrdersTable";
-import OrdersTableFilter from "@components/sections/pages/profile/boookings-management/orders/OrdersTableFilter";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
+import TabSwitcher from "@components/ui/TabSwitcher";
+import TripsOrdersManagement from "@components/features/profile/bookings-management/orders/TripsOrdersManagement";
+import ProfilePageTemplate from "@components/features/profile/ProfilePageTemplate";
+import EmptyBookings from "@components/features/profile/myBookings/EmptyBookings";
+import OrdersInfoCards from "@components/features/profile/bookings-management/orders/OrdersInfoCards";
+import OrdersSettingsTable from "@components/features/profile/bookings-management/orders/OrdersSettingsTable";
+import AllOrdersTable from "@components/features/profile/bookings-management/orders/AllOrdersTable";
+import OrdersTableFilter from "@components/features/profile/bookings-management/orders/OrdersTableFilter";
 
 const OrdersPage = () => {
   const t = useTranslations();

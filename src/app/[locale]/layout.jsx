@@ -17,7 +17,7 @@ import ThemeProvider from "@components/providers/ThemeProvider";
 
 import Header from "@components/layout/header/Header";
 import Footer from "@components/layout/footer/Footer";
-import { getStructuredDataScript } from "@utils/structuredData";
+import { getStructuredDataScript } from "@utils/tracking/structuredData";
 
 const SITE_URL = (
   process.env.NEXT_PUBLIC_B2B_VERCEL || "https://guestna-b2b.vercel.app"

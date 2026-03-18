@@ -2,7 +2,7 @@
 
 import { memo } from "react";
 import { Box } from "@mui/material";
-import CustomizedModal from "@components/common/customizedModal";
+import CustomizedModal from "@components/ui/customizedModal";
 import CheckboxGroup from "@components/forms/CheckboxGroup";
 
 const TermsConfirmationModal = ({

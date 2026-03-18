@@ -20,18 +20,18 @@ import { setUser } from "@store/users/usersSlice";
 
 import { useEffect } from "react";
 
-import { useFetchData } from "@hooks/useFetchData";
+import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { USERS } from "@constants/users";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
-import GallerySection from "@components/sections/pages/tripDetails/gallerySection";
-import CustomizedBreadcrumbs from "@components/common/breadcrumbs/CustomizedBreadcrumbs";
-import SmallSeparator from "@components/common/separators/SmallSeparator";
-import GridSection from "@components/sections/pages/tripDetails/gridSection";
+import GallerySection from "@components/features/tripDetails/gallerySection";
+import CustomizedBreadcrumbs from "@components/ui/breadcrumbs/CustomizedBreadcrumbs";
+import SmallSeparator from "@components/ui/separators/SmallSeparator";
+import GridSection from "@components/features/tripDetails/gridSection";
 
-import ReviewsSection from "@components/sections/pages/tripDetails/reviewsSection";
+import ReviewsSection from "@components/features/tripDetails/reviewsSection";
 
 const TripDetails = ({ params }) => {
   const locale = useLocale();

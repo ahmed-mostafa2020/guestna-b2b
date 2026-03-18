@@ -3,17 +3,17 @@
 import { useTranslations, useLocale } from "next-intl";
 
 import { useMemo, useState } from "react";
-import { useFetchData } from "@hooks/useFetchData";
+import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { getHeaders } from "@utils/getHeaders";
-import getProxyUrl from "@utils/getProxyUrl";
-import getErrorMessage from "@utils/getErrorMessage";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getProxyUrl from "@utils/api/getProxyUrl";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
 import TransferMethodSelector from "./TransferMethodSelector";
 import STCPayForm from "./STCPayForm";
 import BankTransferForm from "./BankTransferForm";
 
 import { Formik, Form } from "formik";
-import { createWithdrawValidationSchema } from "@utils/validationSchemas";
+import { createWithdrawValidationSchema } from "@utils/validators/validationSchemas";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";

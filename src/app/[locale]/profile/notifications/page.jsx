@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 import { useEffect } from "react";
 
-import EmptyNotifications from "@components/sections/pages/profile/notifications/EmptyNotifications";
+import EmptyNotifications from "@components/features/profile/notifications/EmptyNotifications";
 
 const NotificationsPage = () => {
   const t = useTranslations();

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { useLocale, useTranslations } from "next-intl";
 
-import ResetButton from "@components/sections/pages/discover/gridSection/filterGrid/resetButton";
+import ResetButton from "@components/features/discover/gridSection/filterGrid/resetButton";
 
 import { Container } from "@mui/material";
 

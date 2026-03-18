@@ -1,10 +1,10 @@
 "use client";
 import { useTranslations, useLocale } from "next-intl";
-import CustomizedModal from "@components/common/customizedModal";
-import ModalHeader from "@components/sections/pages/calendar/ModalHeader";
-import ModalFooter from "@components/sections/pages/calendar/ModalFooter";
-import formatDate from "@utils/FormateDate";
-import { getEventTypeLabel, getEventTypeColor } from "@utils/eventTypeUtils";
+import CustomizedModal from "@components/ui/customizedModal";
+import ModalHeader from "@components/features/calendar/ModalHeader";
+import ModalFooter from "@components/features/calendar/ModalFooter";
+import formatDate from "@utils/formatters/FormateDate";
+import { getEventTypeLabel, getEventTypeColor } from "@utils/helpers/eventTypeUtils";
 
 const EventDetailsModal = ({ event, onClose }) => {
   const t = useTranslations();

@@ -28,15 +28,15 @@ import {
   setColorPreferences,
   setCustomLogo,
 } from "@store/theme/themeSlice";
-import { getFirstAccessiblePage } from "@utils/getFirstAccessiblePage";
+import { getFirstAccessiblePage } from "@utils/helpers/getFirstAccessiblePage";
 import { useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import getErrorMessage from "@utils/getErrorMessage";
-import { createLoginEmailMethodSchema } from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
-import setToken from "@utils/setToken";
-import getProxyUrl from "@utils/getProxyUrl";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
+import { createLoginEmailMethodSchema } from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import setToken from "@utils/api/setToken";
+import getProxyUrl from "@utils/api/getProxyUrl";
 import TextInputGroup from "../../TextInputGroup";
 // import TermsAndConditions from "./TermsAndConditions";
 

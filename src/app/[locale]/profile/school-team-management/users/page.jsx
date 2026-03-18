@@ -4,18 +4,18 @@ import { useTranslations, useLocale } from "next-intl";
 
 import { useEffect, useState } from "react";
 
-import { useFetchData } from "@hooks/useFetchData";
-import { download } from "@hooks/useDownload";
-import { usePermissions } from "@hooks/usePermissions";
+import { useFetchData } from "@hooks/data/useFetchData";
+import { download } from "@hooks/utils/useDownload";
+import { usePermissions } from "@hooks/utils/usePermissions";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
-import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
-import UsersInfoCardsListing from "@components/sections/pages/profile/schoolManagementTeam/users/UsersInfoCardsListing";
-import UsersManagement from "@components/sections/pages/profile/schoolManagementTeam/users/UsersManagement";
-import { useExcel } from "@hooks/useExcel";
+import UsersInfoCardsListing from "@components/features/profile/schoolManagementTeam/users/UsersInfoCardsListing";
+import UsersManagement from "@components/features/profile/schoolManagementTeam/users/UsersManagement";
+import { useExcel } from "@hooks/utils/useExcel";
 import { usersListHeaders } from "@constants/excelHeaders";
 
 const UsersPage = () => {

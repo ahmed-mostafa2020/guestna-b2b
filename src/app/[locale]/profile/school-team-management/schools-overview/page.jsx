@@ -4,17 +4,17 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 
 // Components
-import Pagination from "@components/common/Pagination";
-import SchoolOverviewCard from "@components/sections/pages/profile/schoolManagementTeam/schoolsOverview/SchoolOverviewCard";
-import SchoolOverviewCardSkeleton from "@components/sections/pages/profile/schoolManagementTeam/schoolsOverview/SchoolOverviewCardSkeleton";
-import SchoolOverviewSearchFilters from "@components/sections/pages/profile/schoolManagementTeam/schoolsOverview/SchoolOverviewSearchFilters";
-import InfoCardsListing from "@components/sections/pages/profile/trips/infoCards/InfoCardsListing";
-import InfoCardsSkeleton from "@components/sections/pages/profile/trips/infoCards/InfoCardsSkeleton";
+import Pagination from "@components/ui/Pagination";
+import SchoolOverviewCard from "@components/features/profile/schoolManagementTeam/schoolsOverview/SchoolOverviewCard";
+import SchoolOverviewCardSkeleton from "@components/features/profile/schoolManagementTeam/schoolsOverview/SchoolOverviewCardSkeleton";
+import SchoolOverviewSearchFilters from "@components/features/profile/schoolManagementTeam/schoolsOverview/SchoolOverviewSearchFilters";
+import InfoCardsListing from "@components/features/profile/trips/infoCards/InfoCardsListing";
+import InfoCardsSkeleton from "@components/features/profile/trips/infoCards/InfoCardsSkeleton";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 
 // Hooks
-import { useFetchData } from "@hooks/useFetchData";
-import { usePermissions } from "@hooks/usePermissions";
+import { useFetchData } from "@hooks/data/useFetchData";
+import { usePermissions } from "@hooks/utils/usePermissions";
 import { useLocale, useTranslations } from "next-intl";
 
 // Constants

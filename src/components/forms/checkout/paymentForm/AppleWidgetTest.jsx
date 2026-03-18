@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 import { memo, useEffect, useState, useRef } from "react";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import { useMutationDataTest } from "@hooks/useMutationDataTest";
+import { useMutationDataTest } from "@hooks/data/useMutationDataTest";
 import { useSnackbar } from "notistack";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 

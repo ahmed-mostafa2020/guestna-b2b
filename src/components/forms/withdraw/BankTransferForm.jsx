@@ -9,7 +9,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { KeyboardArrowDown } from "@mui/icons-material";
-import formatCurrency from "@utils/FormatCurrency";
+import formatCurrency from "@utils/formatters/FormatCurrency";
 
 const BankTransferForm = ({
   values,

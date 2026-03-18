@@ -6,9 +6,9 @@ import { useCallback, useMemo, useState, useEffect, memo } from "react";
 import axios from "axios";
 import SearchAndFilters from "../../common/searchAndFilters/SearchAndFilters";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import formatDateForAPI from "@utils/formatDateForAPI";
-import getProxyUrl from "@utils/getProxyUrl";
-import { getHeaders } from "@utils/getHeaders";
+import formatDateForAPI from "@utils/formatters/formatDateForAPI";
+import getProxyUrl from "@utils/api/getProxyUrl";
+import { getHeaders } from "@utils/helpers/getHeaders";
 
 const ManagementFilters = ({ filter, setFilter }) => {
   const t = useTranslations("profile.aside.tripsManagement.filters");

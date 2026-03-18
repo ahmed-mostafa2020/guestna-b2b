@@ -1,5 +1,5 @@
 import { usersHeaders } from "@constants/excelHeaders";
-import { useExcel } from "@hooks/useExcel";
+import { useExcel } from "@hooks/utils/useExcel";
 import { Box } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 const ExportUsersExcel = ({ users }) => {

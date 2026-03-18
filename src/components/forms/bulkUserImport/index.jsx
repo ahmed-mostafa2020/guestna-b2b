@@ -6,16 +6,16 @@ import { useSnackbar } from "notistack";
 import axios from "axios";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { getHeaders } from "@utils/getHeaders";
-import getProxyUrl from "@utils/getProxyUrl";
-import getErrorMessage from "@utils/getErrorMessage";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getProxyUrl from "@utils/api/getProxyUrl";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
 import UploadInstructions from "./UploadInstructions";
 import UsersPreviewTable from "./UsersPreviewTable";
 import FooterActions from "./FooterActions";
 import { usersHeaders } from "@constants/excelHeaders";
-import { useExcel } from "@hooks/useExcel";
+import { useExcel } from "@hooks/utils/useExcel";
 import { Box, Typography } from "@mui/material";
-import { createBulkUserRowSchema } from "@utils/validationSchemas";
+import { createBulkUserRowSchema } from "@utils/validators/validationSchemas";
 
 const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 

@@ -9,10 +9,10 @@ import { setEmail } from "@store/forms/auth/login/loginFormSlice";
 
 import { useState } from "react";
 
-import { createResetPasswordByEmailSchema } from "@utils/validationSchemas";
+import { createResetPasswordByEmailSchema } from "@utils/validators/validationSchemas";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { getHeaders } from "@utils/getHeaders";
-import getProxyUrl from "@utils/getProxyUrl";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getProxyUrl from "@utils/api/getProxyUrl";
 import TextInputGroup from "../../TextInputGroup";
 
 import { Formik } from "formik";

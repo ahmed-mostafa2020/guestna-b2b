@@ -5,10 +5,10 @@ import { useTranslations } from "next-intl";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
-import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
-import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageTemplate";
-import TripsManagementTable from "@components/sections/pages/profile/trips/TripsManagementTable";
-import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBookings";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
+import ProfilePageTemplate from "@components/features/profile/ProfilePageTemplate";
+import TripsManagementTable from "@components/features/profile/trips/TripsManagementTable";
+import EmptyBookings from "@components/features/profile/myBookings/EmptyBookings";
 import ManagementFilters from "@components/forms/management/ManagementFilters";
 
 const TripsPage = () => {

@@ -19,14 +19,14 @@ import { setPermissions } from "@store/permissions/permissionsSlice";
 
 import { useEffect } from "react";
 
-import { useFetchData } from "@hooks/useFetchData";
+import { useFetchData } from "@hooks/data/useFetchData";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { USERS } from "@constants/users";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
-import ProfileTabs from "@components/sections/pages/profile/ProfileTabs";
-// import ResponsiveGridLayout from "@components/common/responsiveGridLayout";
+import ProfileTabs from "@components/features/profile/ProfileTabs";
+// import ResponsiveGridLayout from "@components/ui/responsiveGridLayout";
 
 import Grid from "@mui/material/Grid2";
 

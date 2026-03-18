@@ -15,14 +15,14 @@ import { useState } from "react";
 import { useSnackbar } from "notistack";
 
 import { END_POINTS } from "@constants/APIs";
-import { createVerificationCodeSchema } from "@utils/validationSchemas";
-import setToken from "@utils/setToken";
-import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage";
+import { createVerificationCodeSchema } from "@utils/validators/validationSchemas";
+import setToken from "@utils/api/setToken";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
 import TextInputGroup from "../../TextInputGroup";
 import MoreOptions from "./moreOptions";
 import ResendOtpVerification from "./resendOtp/ResendOtpVerification";
-import CustomizedModal from "@components/common/customizedModal";
+import CustomizedModal from "@components/ui/customizedModal";
 
 import { Formik } from "formik";
 

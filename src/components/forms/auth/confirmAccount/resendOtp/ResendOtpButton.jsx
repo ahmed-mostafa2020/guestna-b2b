@@ -5,8 +5,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 
-import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
 import { END_POINTS } from "@constants/APIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 

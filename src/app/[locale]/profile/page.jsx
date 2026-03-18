@@ -4,24 +4,24 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useEffect, useState } from "react";
 
-import { useFetchData } from "@hooks/useFetchData";
-import { usePermissions } from "@hooks/usePermissions";
+import { useFetchData } from "@hooks/data/useFetchData";
+import { usePermissions } from "@hooks/utils/usePermissions";
 import ErrorComponent from "@feedback/error/ErrorComponent";
-import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
 
-import InfoCardsListing from "@components/sections/pages/profile/trips/infoCards/InfoCardsListing";
-import InfoCardsSkeleton from "@components/sections/pages/profile/trips/infoCards/InfoCardsSkeleton";
-import RevenueLineChart from "@components/sections/pages/profile/trips/charts/RevenueLineChart";
-import DonutChart from "@components/sections/pages/profile/trips/charts/DonutChart";
-import MostActiveOrganizations from "@components/sections/pages/profile/trips/charts/MostActiveOrganizations";
-import ChartsSkeleton from "@components/sections/pages/profile/trips/charts/ChartsSkeleton";
+import InfoCardsListing from "@components/features/profile/trips/infoCards/InfoCardsListing";
+import InfoCardsSkeleton from "@components/features/profile/trips/infoCards/InfoCardsSkeleton";
+import RevenueLineChart from "@components/features/profile/trips/charts/RevenueLineChart";
+import DonutChart from "@components/features/profile/trips/charts/DonutChart";
+import MostActiveOrganizations from "@components/features/profile/trips/charts/MostActiveOrganizations";
+import ChartsSkeleton from "@components/features/profile/trips/charts/ChartsSkeleton";
 
-import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageTemplate";
-import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBookings";
-import MyBookingsTrips from "@components/sections/pages/profile/myBookings";
-import OrganizationsSection from "@components/sections/pages/profile/myBookings/OrganizationsSection";
+import ProfilePageTemplate from "@components/features/profile/ProfilePageTemplate";
+import EmptyBookings from "@components/features/profile/myBookings/EmptyBookings";
+import MyBookingsTrips from "@components/features/profile/myBookings";
+import OrganizationsSection from "@components/features/profile/myBookings/OrganizationsSection";
 
 const Profile = () => {
   const { hasElement } = usePermissions();

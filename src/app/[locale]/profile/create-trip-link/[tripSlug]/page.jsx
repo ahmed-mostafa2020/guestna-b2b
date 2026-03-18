@@ -4,12 +4,12 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useEffect } from "react";
 
-import { useFetchData } from "@hooks/useFetchData";
+import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
-import TripsInfoCardsListing from "@components/sections/pages/profile/createTripLink/TripsInfoCardsListing";
-import CreateTripLink from "@components/sections/pages/profile/createTripLink";
+import TripsInfoCardsListing from "@components/features/profile/createTripLink/TripsInfoCardsListing";
+import CreateTripLink from "@components/features/profile/createTripLink";
 
 const CreateTripLinkPage = ({ params }) => {
   const locale = useLocale();

@@ -8,11 +8,11 @@ import { useSnackbar } from "notistack";
 import axios from "axios";
 import { useState, useCallback } from "react";
 
-import { createSchoolRegisterSchema } from "@utils/validationSchemas";
+import { createSchoolRegisterSchema } from "@utils/validators/validationSchemas";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import getProxyUrl from "@utils/getProxyUrl";
-import { getHeaders } from "@utils/getHeaders";
+import getProxyUrl from "@utils/api/getProxyUrl";
+import { getHeaders } from "@utils/helpers/getHeaders";
 import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
 import AutocompleteInputGroup from "../AutocompleteInputGroup";

@@ -5,7 +5,7 @@ import { setConfirmTermsAndConditions } from "@store/forms/auth/login/loginFormS
 
 import { memo } from "react";
 
-import ActionsDialog from "@components/sections/pages/customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
+import ActionsDialog from "@components/features/customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
 
 const TermsAndConditions = ({ handleClose }) => {
   const t = useTranslations();

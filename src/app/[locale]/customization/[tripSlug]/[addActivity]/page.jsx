@@ -6,13 +6,13 @@ import { useSelector } from "react-redux";
 
 import { Fragment, useEffect } from "react";
 
-import { useFetchData } from "@hooks/useFetchData";
+import { useFetchData } from "@hooks/data/useFetchData";
 import { END_POINTS } from "@constants/APIs";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
-import CustomizedBreadcrumbs from "@components/common/breadcrumbs/CustomizedBreadcrumbs";
-import ActivityTemplate from "@components/common/trips/sectionsTemplates/ActivityTemplate";
-import TripsConflict from "@components/sections/pages/customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog/TripsConflict";
+import CustomizedBreadcrumbs from "@components/ui/breadcrumbs/CustomizedBreadcrumbs";
+import ActivityTemplate from "@components/ui/trips/sectionsTemplates/ActivityTemplate";
+import TripsConflict from "@components/features/customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog/TripsConflict";
 
 import { Container } from "@mui/material";
 

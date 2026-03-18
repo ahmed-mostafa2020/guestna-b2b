@@ -11,20 +11,20 @@ import {
   setHomeDataError,
 } from "@store/home/homeDataSlice";
 
-import { useFetchData } from "@hooks/useFetchData";
+import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 
-import HeroSection from "@components/sections/pages/home/heroSection";
-import Plans from "@components/sections/pages/home/plans";
-import MainCategoriesSection from "@components/sections/pages/home/mainCategories";
-import MarketingSection from "@components/sections/pages/home/marketing";
-import Benefits from "@components/sections/pages/home/benefits";
-import Trips from "@components/sections/pages/home/trips/Trips";
-import SmallSeparator from "@components/common/separators/SmallSeparator";
-import ResponsiveSeparator from "@components/common/separators/ResponsiveSeparator";
-import FeatureTrips from "@components/sections/pages/home/featureTrips";
+import HeroSection from "@components/features/home/heroSection";
+import Plans from "@components/features/home/plans";
+import MainCategoriesSection from "@components/features/home/mainCategories";
+import MarketingSection from "@components/features/home/marketing";
+import Benefits from "@components/features/home/benefits";
+import Trips from "@components/features/home/trips/Trips";
+import SmallSeparator from "@components/ui/separators/SmallSeparator";
+import ResponsiveSeparator from "@components/ui/separators/ResponsiveSeparator";
+import FeatureTrips from "@components/features/home/featureTrips";
 
 export default function Home() {
   // useReportWebVitals((metric) => {

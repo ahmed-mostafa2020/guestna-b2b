@@ -5,14 +5,14 @@ import { useSelector } from "react-redux";
 
 import { useEffect } from "react";
 
-import { useFetchData } from "@hooks/useFetchData";
+import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
 
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
-import PageHeader from "@components/sections/pages/schoolRegister/PageHeader";
+import PageHeader from "@components/features/schoolRegister/PageHeader";
 import SchoolRegisterForm from "@components/forms/schoolRegisterForm";
-import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 
 const SchoolRegisterPage = () => {
   const userType = useSelector((state) => state.loginForm.loginData?.userType);

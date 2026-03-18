@@ -5,9 +5,9 @@ import { useLocale } from "next-intl";
 
 import { useEffect, useState, useRef } from "react";
 
-import setToken from "@utils/setToken";
+import setToken from "@utils/api/setToken";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
-import { getHeaders } from "@utils/getHeaders";
+import { getHeaders } from "@utils/helpers/getHeaders";
 
 import axios from "axios";
 

@@ -4,20 +4,20 @@ import { useTranslations, useLocale } from "next-intl";
 import { Formik, Form } from "formik";
 import { useEffect } from "react";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { getHeaders } from "@utils/getHeaders";
-import getProxyUrl from "@utils/getProxyUrl";
-import { createAddEventSchema } from "@utils/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getProxyUrl from "@utils/api/getProxyUrl";
+import { createAddEventSchema } from "@utils/validators/validationSchemas";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
 import TextInputGroup from "./TextInputGroup";
 import SelectionGroup from "./SelectionGroup";
-import CustomizedModal from "@components/common/customizedModal";
-import ModalHeader from "@components/sections/pages/calendar/ModalHeader";
-import ModalFooter from "@components/sections/pages/calendar/ModalFooter";
-import formatDate from "@utils/FormateDate";
-import { getEventTypes, mapLabelToValue } from "@utils/eventTypeUtils";
-import formatDateForAPI from "@utils/formatDateForAPI";
+import CustomizedModal from "@components/ui/customizedModal";
+import ModalHeader from "@components/features/calendar/ModalHeader";
+import ModalFooter from "@components/features/calendar/ModalFooter";
+import formatDate from "@utils/formatters/FormateDate";
+import { getEventTypes, mapLabelToValue } from "@utils/helpers/eventTypeUtils";
+import formatDateForAPI from "@utils/formatters/formatDateForAPI";
 
 const AddEventForm = ({
   selectedDate,

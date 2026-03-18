@@ -10,7 +10,7 @@ import { resetPromoCode } from "@store/forms/promoCode/promoCodeSlice";
 
 import ErrorComponent from "@feedback/error/ErrorComponent";
 
-import GridSection from "@components/sections/pages/checkout/gridSection";
+import GridSection from "@components/features/checkout/gridSection";
 
 import { Container, CircularProgress } from "@mui/material";
 

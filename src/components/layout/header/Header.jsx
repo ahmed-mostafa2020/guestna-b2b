@@ -12,11 +12,11 @@ import { useSelector } from "react-redux";
 
 import { Fragment } from "react";
 
-// import { getHeaders } from "@utils/getHeaders";
+// import { getHeaders } from "@utils/helpers/getHeaders";
 import Logo from "../../common/Logo";
 import TemporaryDrawer from "./TemporaryDrawer";
 import SettingsButton from "./SettingsButton";
-// import ProfileImage from "../../sections/pages/profile/ProfileImage";
+// import ProfileImage from "../../features/profile/ProfileImage";
 import ServicesDropdown from "./ServicesDropdown";
 import Notifications from "./Notifications";
 import AuthToggleButton from "./AuthToggleButton";

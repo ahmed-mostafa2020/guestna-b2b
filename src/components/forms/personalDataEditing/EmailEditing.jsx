@@ -8,9 +8,9 @@ import { updateEmail } from "@store/profile/profileInfoSlice";
 import { memo, useState } from "react";
 
 import { END_POINTS } from "@constants/APIs";
-import { createResetPasswordByEmailSchema } from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage";
+import { createResetPasswordByEmailSchema } from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
 import TextInputGroup from "../TextInputGroup";
 
 import { Formik } from "formik";

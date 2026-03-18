@@ -5,17 +5,17 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import { Formik } from "formik";
-import { createSurveySchema } from "@utils/validationSchemas";
+import { createSurveySchema } from "@utils/validators/validationSchemas";
 import axios from "axios";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import getErrorMessage from "@utils/getErrorMessage";
-import { getHeaders } from "@utils/getHeaders";
-import getProxyUrl from "@utils/getProxyUrl";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getProxyUrl from "@utils/api/getProxyUrl";
 
 import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
-import InteractiveRating from "@components/common/InteractiveRating";
+import InteractiveRating from "@components/ui/InteractiveRating";
 
 import FormSubmitButton from "@components/shared/FormSubmitButton";
 

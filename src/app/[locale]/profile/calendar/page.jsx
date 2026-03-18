@@ -2,10 +2,10 @@
 
 import { useTranslations, useLocale } from "next-intl";
 import { useState, useEffect } from "react";
-import { useFetchData } from "@hooks/useFetchData";
+import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
-import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 import AddEventForm from "@components/forms/AddEventForm";
 import EventDetailsModal from "@components/forms/EventDetailsModal";
 import {
@@ -13,15 +13,15 @@ import {
   TabNavigation,
   InteractiveCalendar,
   EventsList,
-} from "@components/sections/pages/calendar";
+} from "@components/features/calendar";
 
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
-import formatDate from "@utils/FormateDate";
-import { getEventTypeColor } from "@utils/eventTypeUtils";
-import { getEventTypeLabel } from "@utils/eventTypeUtils";
+import formatDate from "@utils/formatters/FormateDate";
+import { getEventTypeColor } from "@utils/helpers/eventTypeUtils";
+import { getEventTypeLabel } from "@utils/helpers/eventTypeUtils";
 import { CircularProgress } from "@mui/material";
 import { SORTING_TYPE } from "@constants/sorting";
-import formatDateForAPI from "@utils/formatDateForAPI";
+import formatDateForAPI from "@utils/formatters/formatDateForAPI";
 
 const CalendarPage = () => {
   const locale = useLocale();

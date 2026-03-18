@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { memo } from "react";
 
-import ImageWithPlaceholder from "@components/common/imagesPlaceholder/ImageWithPlaceholder";
+import ImageWithPlaceholder from "@components/ui/imagesPlaceholder/ImageWithPlaceholder";
 const Place = ({ id, src, name }) => {
   const dispatch = useDispatch();
   const selectedCities = useSelector((state) => state.searchFilter.cities);

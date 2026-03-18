@@ -16,8 +16,8 @@ import { resetSignUpData } from "@store/forms/auth/signUp/signUpFormSlice";
 import { useState } from "react";
 
 import { END_POINTS } from "@constants/APIs";
-import { createLoginEmailMethodSchema } from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
+import { createLoginEmailMethodSchema } from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
 import TextInputGroup from "../../TextInputGroup";
 import RememberMe from "./RememberMe";
 

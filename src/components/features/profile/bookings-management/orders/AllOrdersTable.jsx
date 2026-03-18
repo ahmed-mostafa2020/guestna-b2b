@@ -1,0 +1,393 @@
+"use client";
+
+import { useLocale, useTranslations } from "next-intl";
+import { memo, useCallback } from "react";
+
+import { usePermissions } from "@hooks/utils/usePermissions";
+import formatDate from "@utils/formatters/FormateDate";
+import { TRIP_STATUS } from "@constants/tripStatus";
+import { PERMISSIONS } from "@constants/permissions";
+import Pagination from "@components/ui/Pagination";
+import DataTable from "@components/ui/DataTable";
+import ActionsDropdownMenu from "./ActionsDropdownMenu";
+import formatCurrency from "@utils/formatters/FormatCurrency";
+
+import { CircularProgress } from "@mui/material";
+
+import { useOrderDetailsModal } from "@hooks/ui/useOrderDetailsModal";
+import { useEditOrderModal } from "@hooks/ui/useEditOrderModal";
+import CustomizedModal from "@components/ui/customizedModal";
+import OrderDetailsModal from "./OrderDetailsModal";
+import CustomNewTripForm from "@components/forms/customNewTrip";
+import RejectOrderForm from "@components/forms/customNewTrip/RejectOrderForm";
+import ApproveOrderForm from "@components/forms/customNewTrip/ApproveOrderForm";
+
+const AllOrdersTable = ({
+  tableTitle,
+  data,
+  currentPage,
+  setCurrentPage,
+  enablePagination,
+  onActionComplete,
+  refetch,
+}) => {
+  const { hasAnyElement } = usePermissions();
+  const locale = useLocale();
+  const t = useTranslations();
+
+  // Shared modal hooks
+  const {
+    selectedOrderId,
+    currentOrderDetails,
+    loadingDetails,
+    openModal: openDetailsModal,
+    closeModal: closeDetailsModal,
+  } = useOrderDetailsModal(locale);
+
+  const {
+    // Edit modal functionality
+    selectedEditOrderId,
+    currentEditOrderDetails,
+    formSelectionData,
+    loadingEditDetails,
+    loadingFormSelection,
+    isDataReady,
+    openEditModal,
+    closeEditModal,
+    refreshCustomizedTripsTable,
+
+    // Rejection functionality
+    selectedRejectOrderId,
+    isRejectModalOpen,
+    rejectingOrder,
+    rejectionError,
+    openRejectModal,
+    closeRejectModal,
+    rejectOrder,
+
+    // Approval functionality
+    selectedApproveOrderId,
+    isApproveModalOpen,
+    approvingOrder,
+    approvalError,
+    openApproveModal,
+    closeApproveModal,
+    approveOrder,
+  } = useEditOrderModal(locale);
+
+  // Check if user has any order management action permissions
+  const hasAnyActionPermission = hasAnyElement([
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOW_DETAILS,
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REMINDER_GUESTNA,
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_UPDATE_TRIP,
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REJECT_TRIP,
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_APPROVE_TRIP,
+  ]);
+
+  const getStatusStyles = (status) => {
+    switch (status) {
+      case TRIP_STATUS.APPROVED:
+      case TRIP_STATUS.DONE:
+        return "bg-green-100 text-green-800 border border-green-200";
+
+      case TRIP_STATUS.PENDING:
+      case TRIP_STATUS.PENDING_COMPANY_APPROVAL:
+        return "bg-yellow-100 text-yellow-800 border border-yellow-200";
+
+      case TRIP_STATUS.SCHEDULED:
+        return "bg-blue-100 text-blue-800 border border-blue-200";
+
+      case TRIP_STATUS.ON_HOLD:
+        return "bg-orange-100 text-orange-800 border border-orange-200";
+
+      case TRIP_STATUS.CANCELLED:
+      case TRIP_STATUS.REJECTED:
+        return "bg-red-100 text-red-800 border border-red-200";
+
+      case TRIP_STATUS.ENDED:
+        return "bg-gray-100 text-gray-800 border border-gray-200";
+
+      default:
+        return "bg-gray-100 text-gray-800 border border-gray-200";
+    }
+  };
+
+  // Handle successful edit with table refresh
+  const handleEditSuccess = useCallback(
+    async (result) => {
+      try {
+        closeEditModal();
+        refetch?.();
+
+        // Notify parent component if callback provided
+        if (onActionComplete) {
+          onActionComplete("edit", selectedEditOrderId, result);
+        }
+      } catch (error) {
+        console.error("Error after edit success:", error);
+      }
+    },
+    [refetch, closeEditModal, onActionComplete, selectedEditOrderId]
+  );
+
+  // Handle successful rejection with table refresh
+  const handleRejectSuccess = useCallback(
+    async (result) => {
+      try {
+        // Table refresh
+        closeRejectModal();
+        refetch?.();
+
+        // Just notify parent component if callback provided
+        if (onActionComplete) {
+          onActionComplete("reject", selectedRejectOrderId, result);
+        }
+      } catch (error) {
+        console.error("Error after reject success:", error);
+      }
+    },
+    [onActionComplete, selectedRejectOrderId, refetch, closeRejectModal]
+  );
+
+  // Handle successful approval with table refresh
+  const handleApproveSuccess = useCallback(
+    async (result) => {
+      try {
+        // Table refresh
+        closeApproveModal();
+        refetch?.();
+
+        // Just notify parent component if callback provided
+        if (onActionComplete) {
+          onActionComplete("approve", selectedApproveOrderId, result);
+        }
+      } catch (error) {
+        console.error("Error after approve success:", error);
+      }
+    },
+    [onActionComplete, selectedApproveOrderId, refetch, closeApproveModal]
+  );
+
+  // Handle action completion from ActionsDropdownMenu
+  const handleActionComplete = useCallback(
+    (action, bookingId, result) => {
+      // Notify parent component
+      if (onActionComplete) {
+        onActionComplete(action, bookingId, result);
+      }
+    },
+    [onActionComplete]
+  );
+
+  if (!data || !data.nodes) {
+    return (
+      <div className="w-full min-h-[400px] centered">
+        <CircularProgress size={50} color="primary" />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <DataTable
+        title={tableTitle}
+        columns={[
+          {
+            key: "orderId",
+            label: t("profile.tables.orders.tableHeaders.orderNumber"),
+            className: "font-medium text-foreground",
+            render: (row) => (
+              <span
+                className="block max-w-[100px] truncate"
+                title={row.orderId}
+              >
+                {row.orderId}
+              </span>
+            ),
+          },
+          {
+            key: "organization",
+            label: t("profile.tables.orders.tableHeaders.school"),
+            className: "text-muted-foreground",
+            render: (row) => (
+              <span
+                className="block max-w-[180px] truncate"
+                title={row.organization}
+              >
+                {row.organization}
+              </span>
+            ),
+          },
+          {
+            key: "name",
+            label: t("profile.tables.orders.tableHeaders.activity"),
+            className: "font-medium text-foreground",
+            render: (row) => (
+              <span className="block max-w-[100px] truncate" title={row.name}>
+                {row.name}
+              </span>
+            ),
+          },
+          {
+            key: "askType",
+            label: t("profile.tables.orders.tableHeaders.orderType"),
+            render: (row) =>
+              row.askType === "CUSTOM" ? (
+                <span className="px-2 py-1 text-xs font-medium">
+                  {t("profile.tables.orders.customizable.title")}
+                </span>
+              ) : (
+                <span className="px-2 py-1 text-xs font-medium">
+                  {t("profile.tables.orders.normal.title")}
+                </span>
+              ),
+          },
+          {
+            key: "day",
+            label: t("profile.tables.orders.tableHeaders.orderDate"),
+            className: "text-muted-foreground",
+            render: (row) =>
+              formatDate(row.day, locale, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }),
+          },
+          {
+            key: "budget",
+            label: t("profile.tables.orders.tableHeaders.budget"),
+            className: "font-medium text-foreground",
+            render: (row) =>
+              formatCurrency(
+                row.basePrice ? row.basePrice : row.priceRange?.max || 0
+              ),
+          },
+          {
+            key: "status",
+            label: t("profile.tables.orders.tableHeaders.status"),
+            render: (row) => (
+              <span
+                className={`px-1 lg:px-3 py-1 rounded-full lg:text-sm text-[10px] font-medium ${getStatusStyles(row.status)}`}
+              >
+                {t(`common.organizationTripStatus.${row.status}`)}
+              </span>
+            ),
+          },
+        ]}
+        data={data?.nodes || []}
+        actionsLabel={
+          hasAnyActionPermission
+            ? t("profile.tables.orders.tableHeaders.actions")
+            : ""
+        }
+        rowActions={
+          hasAnyActionPermission
+            ? (row) => (
+                <ActionsDropdownMenu
+                  booking={row}
+                  onActionComplete={handleActionComplete}
+                  openDetailsModal={openDetailsModal}
+                  openEditModal={openEditModal}
+                  openRejectModal={openRejectModal}
+                  openApproveModal={openApproveModal}
+                />
+              )
+            : undefined
+        }
+        pagination={
+          enablePagination && data?.pageInfo
+            ? {
+                currentPage,
+                pageInfo: data.pageInfo,
+                onPageChange: setCurrentPage,
+              }
+            : undefined
+        }
+      />
+
+      {/* Shared Order Details Modal */}
+      <CustomizedModal
+        open={Boolean(selectedOrderId)}
+        handleClose={closeDetailsModal}
+        bgcolor="rgba(0, 0, 0, 0.5)"
+        customizedCloseButton={true}
+        padding={false}
+      >
+        {selectedOrderId && (
+          <OrderDetailsModal
+            orderId={selectedOrderId}
+            orderDetails={currentOrderDetails}
+            loading={loadingDetails}
+          />
+        )}
+      </CustomizedModal>
+
+      {/* Shared Edit Order Modal */}
+      <CustomizedModal
+        open={Boolean(selectedEditOrderId)}
+        handleClose={closeEditModal}
+        bgcolor="rgba(0, 0, 0, 0.5)"
+        customizedCloseButton={true}
+        padding={false}
+      >
+        {selectedEditOrderId && isDataReady ? (
+          <CustomNewTripForm
+            mode="edit"
+            orderId={currentEditOrderDetails._id}
+            editData={currentEditOrderDetails}
+            formSelectionData={formSelectionData}
+            onClose={closeEditModal}
+            onSuccess={handleEditSuccess}
+          />
+        ) : selectedEditOrderId ? (
+          <div className="flex items-center justify-center p-20 bg-white rounded-2xl">
+            <CircularProgress size={40} />
+          </div>
+        ) : null}
+      </CustomizedModal>
+
+      {/* Reject Order Modal */}
+      <CustomizedModal
+        open={isRejectModalOpen}
+        handleClose={closeRejectModal}
+        bgcolor="rgba(0, 0, 0, 0.5)"
+        customizedCloseButton={true}
+        padding={false}
+      >
+        {selectedRejectOrderId && (
+          <RejectOrderForm
+            orderId={selectedRejectOrderId}
+            onClose={closeRejectModal}
+            onSuccess={handleRejectSuccess}
+            rejectOrder={rejectOrder}
+            rejectingOrder={rejectingOrder}
+            rejectionError={rejectionError}
+          />
+        )}
+      </CustomizedModal>
+
+      {/* Approve Order Modal */}
+      <CustomizedModal
+        open={isApproveModalOpen}
+        handleClose={closeApproveModal}
+        bgcolor="rgba(0, 0, 0, 0.5)"
+        customizedCloseButton={true}
+        padding={false}
+      >
+        {selectedApproveOrderId && (
+          <ApproveOrderForm
+            orderId={selectedApproveOrderId}
+            orderDetails={currentEditOrderDetails}
+            onClose={closeApproveModal}
+            onSuccess={handleApproveSuccess}
+            approveOrder={approveOrder}
+            approvingOrder={approvingOrder}
+            approvalError={approvalError}
+          />
+        )}
+      </CustomizedModal>
+    </>
+  );
+};
+
+export default memo(AllOrdersTable);

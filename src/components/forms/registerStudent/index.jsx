@@ -10,11 +10,11 @@ import { memo, useMemo, useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import { createRegisterChildSchema } from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
-import { cn } from "@utils/cn";
-import getErrorMessage from "@utils/getErrorMessage";
-import getProxyUrl from "@utils/getProxyUrl";
+import { createRegisterChildSchema } from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import { cn } from "@utils/helpers/cn";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
+import getProxyUrl from "@utils/api/getProxyUrl";
 
 import { FieldArray, Formik } from "formik";
 

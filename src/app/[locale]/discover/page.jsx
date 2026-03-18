@@ -36,18 +36,18 @@
 
 // import { END_POINTS } from "@constants/APIs";
 
-// import { useFetchData } from "@hooks/useFetchData";
+// import { useFetchData } from "@hooks/data/useFetchData";
 // import { SORTING_TYPE } from "@constants/sorting";
 // import { agesIdsList } from "@constants/targetAudiencesIds";
 // import { CONSTANT_VALUES } from "@constants/constantValues";
 // import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 // import ErrorComponent from "@feedback/error/ErrorComponent";
-// import buildFilter from "@utils/BuildFilter";
-// import getSelectedTargetAudiences from "@utils/getSelectedTargetAudiences";
-// import SubHeaderSection from "@components/sections/pages/discover/subHeaderSection";
-// import LargeSeparator from "@components/common/separators/LargeSeparator";
-// import GridSection from "@components/sections/pages/discover/gridSection";
-// import SmallSeparator from "@components/common/separators/SmallSeparator";
+// import buildFilter from "@utils/helpers/BuildFilter";
+// import getSelectedTargetAudiences from "@utils/helpers/getSelectedTargetAudiences";
+// import SubHeaderSection from "@components/features/discover/subHeaderSection";
+// import LargeSeparator from "@components/ui/separators/LargeSeparator";
+// import GridSection from "@components/features/discover/gridSection";
+// import SmallSeparator from "@components/ui/separators/SmallSeparator";
 
 // const Discover = () => {
 //   const [isFiltersInitialized, setIsFiltersInitialized] = useState(false);
@@ -440,18 +440,18 @@ import { useEffect, useMemo, useState, useRef } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 // import { END_POINTS } from "@constants/APIs";
-import { useFetchData } from "@hooks/useFetchData";
+import { useFetchData } from "@hooks/data/useFetchData";
 import { SORTING_TYPE } from "@constants/sorting";
 import { agesIdsList } from "@constants/targetAudiencesIds";
 // import { CONSTANT_VALUES } from "@constants/constantValues";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
-import buildFilter from "@utils/BuildFilter";
-// import getSelectedTargetAudiences from "@utils/getSelectedTargetAudiences";
-import SubHeaderSection from "@components/sections/pages/discover/subHeaderSection";
-import LargeSeparator from "@components/common/separators/LargeSeparator";
-import GridSection from "@components/sections/pages/discover/gridSection";
-import SmallSeparator from "@components/common/separators/SmallSeparator";
+import buildFilter from "@utils/helpers/BuildFilter";
+// import getSelectedTargetAudiences from "@utils/helpers/getSelectedTargetAudiences";
+import SubHeaderSection from "@components/features/discover/subHeaderSection";
+import LargeSeparator from "@components/ui/separators/LargeSeparator";
+import GridSection from "@components/features/discover/gridSection";
+import SmallSeparator from "@components/ui/separators/SmallSeparator";
 
 const Discover = () => {
   const [isFiltersInitialized, setIsFiltersInitialized] = useState(false);
