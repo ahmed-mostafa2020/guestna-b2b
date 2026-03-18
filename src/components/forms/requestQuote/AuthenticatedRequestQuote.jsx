@@ -444,7 +444,7 @@ const AuthenticatedRequestQuote = ({
       })
       .catch((error) => {
         setSubmitting(false);
-        console.log("Error details:", error + formErrors);
+
 
         const errorMessage = getErrorMessage(error, t);
         enqueueSnackbar(errorMessage, {

@@ -85,7 +85,7 @@ const PromoCodeForm = () => {
 
           // Set 30-minute timeout to clear promo code data
           timeoutRef.current = setTimeout(() => {
-            console.log("30 minutes elapsed - Clearing promo code data");
+
             dispatch(resetPromoCode());
           }, 30 * 60 * 1000); // 30 minutes in milliseconds
 

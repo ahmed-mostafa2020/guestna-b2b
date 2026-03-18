@@ -14,34 +14,18 @@ import { Container } from "@mui/material";
 
 import { shareIcon } from "@assets/svg";
 import successBooking from "@assets/successBooking.png";
+import useShare from "@hooks/useShare";
 
 const SuccessBooking = ({ data }) => {
   const locale = useLocale();
   const t = useTranslations();
   const dispatch = useDispatch();
+  const { handleShare } = useShare();
 
   // Clear finalTripDetailsData on successful payment
   useEffect(() => {
-    console.log("Payment successful - Clearing checkout data");
     dispatch(clearFinalTripDetailsData());
   }, [dispatch]);
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: document.title,
-          url: window.location.href,
-        });
-        console.log("Share successful");
-      } catch (error) {
-        console.error("Error sharing:", error);
-      }
-    } else {
-      // Fallback for browsers that don't support the Web Share API
-      alert("Your browser does not support sharing.");
-    }
-  };
 
   return (
     <Container maxWidth="lg" className="flex-col gap-4 centered">

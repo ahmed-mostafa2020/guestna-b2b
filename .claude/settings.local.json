@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "+ Learning new patterns, APIs, or architectural decisions from the codebase\n+ Encountering error solutions or debugging techniques\n+ Finding reusable code patterns or utility functions\n+ Completing any significant task or plan implementation",
+      "Bash(claude:*)",
+      "Bash(find:*)"
+    ]
+  }
+}

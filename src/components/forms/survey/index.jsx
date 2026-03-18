@@ -17,7 +17,7 @@ import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
 import InteractiveRating from "@components/common/InteractiveRating";
 
-import { CircularProgress } from "@mui/material";
+import FormSubmitButton from "@components/shared/FormSubmitButton";
 
 const SurveyForm = ({ tripId, organizationId, onClose, onSuccess }) => {
   const locale = useLocale();
@@ -183,22 +183,13 @@ const SurveyForm = ({ tripId, organizationId, onClose, onSuccess }) => {
 
               {/* Submit Button */}
               <div className="flex gap-2 pt-4">
-                <button
-                  type="submit"
-                  disabled={!isValid || isSubmitting}
-                  className={`centered gap-2 flex-1 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
-                    isValid && "hover:bg-linksHover hover:border-linksHover"
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <>
-                      {t("forms.validation.sending")}
-                      <CircularProgress size={24} sx={{ color: "#ED8A22" }} />
-                    </>
-                  ) : (
-                    t("forms.survey.submit")
-                  )}
-                </button>
+                <FormSubmitButton
+                  loading={isSubmitting}
+                  disabled={!isValid}
+                  label={t("forms.survey.submit")}
+                  isValid={isValid}
+                  className="flex-1 py-3 text-base"
+                />
                 <button
                   type="button"
                   onClick={onClose}

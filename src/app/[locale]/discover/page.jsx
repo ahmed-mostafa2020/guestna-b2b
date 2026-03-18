@@ -245,7 +245,7 @@
 //     agesIdsList
 //   );
 
-//   // console.log(chosenTargetAudiences);
+
 
 //   const filter = useMemo(
 //     () => {

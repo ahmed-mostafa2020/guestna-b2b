@@ -125,12 +125,7 @@ const EditOrderForm = ({
 
           // Call the update callback to refresh the table data
           if (onOrderUpdate && typeof onOrderUpdate === "function") {
-            console.log("Calling onOrderUpdate callback from EditOrderForm");
             onOrderUpdate(res);
-          } else {
-            console.log(
-              "onOrderUpdate callback not available or not a function"
-            );
           }
 
           onClose(); // Close the modal after successful update
@@ -138,7 +133,6 @@ const EditOrderForm = ({
       })
       .catch((error) => {
         setSubmitting(false);
-        console.log("Error details:", error + formErrors);
 
         const errorMessage = getErrorMessage(error, t);
         enqueueSnackbar(errorMessage, {

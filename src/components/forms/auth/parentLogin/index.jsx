@@ -21,7 +21,7 @@ import Logo from "@components/common/Logo";
 
 import { Formik } from "formik";
 
-import { CircularProgress } from "@mui/material";
+import FormSubmitButton from "@components/shared/FormSubmitButton";
 
 import { useSnackbar } from "notistack";
 
@@ -157,23 +157,13 @@ const ParentLoginForm = () => {
                 onBlur={handleBlur}
               />
 
-              <button
-                type="submit"
-                disabled={!isValid || isSubmitting}
-                className={`centered gap-2 w-full mt-4 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
-                  isValid && "hover:bg-linksHover hover:border-linksHover"
-                }`}
-              >
-                {isSubmitting ? (
-                  <>
-                    {t("forms.validation.sending")}
-
-                    <CircularProgress size={24} sx={{ color: "#ED8A22" }} />
-                  </>
-                ) : (
-                  t("forms.auth.login.name")
-                )}
-              </button>
+              <FormSubmitButton
+                loading={isSubmitting}
+                disabled={!isValid}
+                label={t("forms.auth.login.name")}
+                isValid={isValid}
+                className="w-full mt-4 py-3 text-base"
+              />
             </form>
           </div>
         </div>

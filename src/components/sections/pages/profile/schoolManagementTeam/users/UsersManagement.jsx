@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 
-import UsersHeader from "./UsersHeader";
+import SearchHeader from "@components/common/SearchHeader";
 import UsersInfo from "./UsersInfo";
 import UserPermissions from "./UsersPermissions";
 import CustomizedModal from "@components/common/customizedModal";
@@ -63,7 +63,13 @@ const UsersManagement = ({
           transition: "flex-basis 0.5s ease",
         }}
       >
-        <UsersHeader setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
+        <SearchHeader
+          setSearchTerm={setSearchTerm}
+          searchTerm={searchTerm}
+          title={t("profile.schools_users.schoolsUsers")}
+          placeholder={t("profile.schools_users.search")}
+          className="mb-6"
+        />
 
         {organizations.map((org) => (
           <Accordion

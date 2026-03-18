@@ -119,7 +119,7 @@ const FavoriteButton = ({
         setLoading(false);
         setHasInteracted(false); // Reset interaction state on error
 
-        console.log("Error details:", error);
+
 
         // Extract error message
         const errorMessage =

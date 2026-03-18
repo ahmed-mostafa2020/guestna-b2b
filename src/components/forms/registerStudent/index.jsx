@@ -22,8 +22,8 @@ import axios from "axios";
 
 import { useSnackbar } from "notistack";
 
+import FormSubmitButton from "@components/shared/FormSubmitButton";
 import {
-  CircularProgress,
   Container,
   Checkbox,
   FormControlLabel,
@@ -689,34 +689,25 @@ const RegisterStudentForm = ({
                 t={t}
               />
 
-              <button
-                type="submit"
+              <FormSubmitButton
+                loading={isSubmitting}
                 disabled={
                   !isValid ||
-                  isSubmitting ||
                   !nationality ||
                   !termsAccepted ||
                   Object.values(childrenStages).some((v) => !v) ||
                   values.children.some((child) => !child.grade)
                 }
-                className={`mx-auto px-20 lg:px-40 w-fit centered gap-2 mt-4 lg:mt-8 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
+                label={t("links.continuePayment")}
+                isValid={
                   isValid &&
-                  nationality &&
-                  termsAccepted &&
+                  !!nationality &&
+                  !!termsAccepted &&
                   !Object.values(childrenStages).some((v) => !v) &&
-                  !values.children.some((child) => !child.grade) &&
-                  "hover:bg-linksHover hover:border-linksHover"
-                }`}
-              >
-                {isSubmitting ? (
-                  <>
-                    {t("forms.validation.sending")}
-                    <CircularProgress size={24} sx={{ color: "#ED8A22" }} />
-                  </>
-                ) : (
-                  t("links.continuePayment")
-                )}
-              </button>
+                  !values.children.some((child) => !child.grade)
+                }
+                className="mx-auto px-20 lg:px-40 w-fit mt-4 lg:mt-8 py-3 text-base"
+              />
             </form>
           );
         }}

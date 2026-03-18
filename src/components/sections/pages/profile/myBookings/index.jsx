@@ -9,7 +9,7 @@ import formatDate from "@utils/FormateDate";
 import { TRIP_STATUS } from "@constants/tripStatus";
 import { Badge, CircularProgress } from "@mui/material";
 import ActionsDropdownMenu from "./ActionsDropdownMenu";
-import BookingsHeader from "./BookingsHeader";
+import SearchHeader from "@components/common/SearchHeader";
 import DataTable from "@components/common/DataTable";
 
 const getStatusStyles = (status) => {
@@ -46,10 +46,11 @@ const BookingsTable = ({
       {/* Desktop Table */}
       <DataTable
         title={
-          <BookingsHeader
+          <SearchHeader
             setSearchTerm={setSearchTerm}
             searchTerm={searchTerm}
-            tableTitle={tableTitle}
+            title={tableTitle}
+            placeholder={t("profile.tables.bookings.header.searchTripName")}
           />
         }
         columns={[

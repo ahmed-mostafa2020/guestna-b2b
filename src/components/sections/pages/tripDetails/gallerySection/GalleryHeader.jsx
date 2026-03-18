@@ -3,60 +3,20 @@
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 
-import { memo, useMemo } from "react";
+import { memo } from "react";
 
 import IosShareIcon from "@mui/icons-material/IosShare";
 import DownloadButton from "./DownloadButton";
+import useShare from "@hooks/useShare";
 
 const GalleryHeader = ({ tripData }) => {
   const t = useTranslations();
   const pathname = usePathname();
+  const { handleShare } = useShare();
 
   const isDiscoverPage = pathname?.includes("discover");
   const isAuth = tripData?.isAuth;
   const detailsFile = tripData?.detailsFile;
-
-  // const numCity = tripData?.cities?.length;
-  // const renderCity = useMemo(() => {
-  //   if (numCity === 1) {
-  //     return (
-  //       <h4 className="gap-1 text-sm font-medium capitalize centered">
-  //         {locationIcon}
-  //         {tripData.cities[0].name}
-  //       </h4>
-  //     );
-  //   } else {
-  //     return (
-  //       <div className="flex items-center gap-1">
-  //         {locationIcon}
-
-  //         {tripData?.cities?.map((city, index) => (
-  //           <h4 key={city._id} className="text-sm font-medium capitalize">
-  //             {city.name}
-  //             {index != tripData?.cities.length - 1 && <span>-</span>}
-  //           </h4>
-  //         ))}
-  //       </div>
-  //     );
-  //   }
-  // }, [numCities, tripData?.cities]);
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: document.title,
-          url: window.location.href,
-        });
-        console.log("Share successful");
-      } catch (error) {
-        console.error("Error sharing:", error);
-      }
-    } else {
-      // Fallback for browsers that don't support the Web Share API
-      alert("Your browser does not support sharing.");
-    }
-  };
 
   return (
     <>

@@ -42,9 +42,7 @@ const Video = ({
   useEffect(() => {
     if (videoRef.current) {
       if (isHovering || index === activeIndex) {
-        videoRef.current.play().catch((error) => {
-          console.log("Autoplay failed:", error);
-        });
+        videoRef.current.play().catch(() => {});
       } else {
         videoRef.current.pause();
         videoRef.current.currentTime = 0;

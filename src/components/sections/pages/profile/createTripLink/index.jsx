@@ -93,7 +93,7 @@ const CreateTripLink = ({ data }) => {
   //       }
   //     } catch (error) {
   //       console.error("Error updating trip status:", error);
-  //       console.log("Error details:", error);
+
 
   //       const errorMessage = getErrorMessage(error, t);
   //       enqueueSnackbar(errorMessage, {

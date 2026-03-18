@@ -10,27 +10,12 @@ import { chevronLeftIcon, chevronRightIcon, smallHeartIcon } from "@assets/svg";
 
 import { Container } from "@mui/material";
 import IosShareIcon from "@mui/icons-material/IosShare";
+import useShare from "@hooks/useShare";
 
 const HeaderSection = ({ tripSlug }) => {
   const locale = useLocale();
   const t = useTranslations();
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: document.title,
-          url: window.location.href,
-        });
-        console.log("Share successful");
-      } catch (error) {
-        console.error("Error sharing:", error);
-      }
-    } else {
-      // Fallback for browsers that don't support the Web Share API
-      alert("Your browser does not support sharing.");
-    }
-  };
+  const { handleShare } = useShare();
 
   return (
     <section className="py-5 bg-white">

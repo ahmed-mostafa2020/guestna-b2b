@@ -55,7 +55,7 @@ export default function CallbackPage() {
         router.push(`/${locale}`);
       } catch (error) {
         router.push("/login?error=google_auth_failed");
-        console.log(error);
+
       } finally {
         // Reset processing flag
         isProcessingRef.current = false;

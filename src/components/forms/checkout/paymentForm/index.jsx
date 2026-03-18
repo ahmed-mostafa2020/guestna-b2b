@@ -239,7 +239,7 @@ const PaymentForm = () => {
         setStatus(false);
 
         // Log the full error for debugging
-        console.log("Error details:", error + formErrors);
+
 
         // Extract error message
         const errorMessage = error.response?.data?.message;

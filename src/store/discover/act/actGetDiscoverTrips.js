@@ -29,7 +29,6 @@ export const actGetDiscoverTrips = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      console.log(error);
       return rejectWithValue(error.response.data);
     }
   }

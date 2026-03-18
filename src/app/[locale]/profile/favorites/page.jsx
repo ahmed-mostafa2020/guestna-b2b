@@ -11,15 +11,15 @@ const FavoritesPage = () => {
   const t = useTranslations();
 
   const getAllFavorites = () => {
-    console.log("getAllFavorites");
+
   };
 
   const getPackagesFavorites = () => {
-    console.log("getPackagesFavorites");
+
   };
 
   const getActivitiesFavorites = () => {
-    console.log("getActivitiesFavorites");
+
   };
 
   const filterButtons = [

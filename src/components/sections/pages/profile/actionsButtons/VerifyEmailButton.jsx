@@ -38,7 +38,6 @@ const VerifyEmailButton = () => {
       let errorMessage = t("forms.validation.api_errors");
 
       if (error.response) {
-        console.log("Error response:", error.response);
         errorMessage = error.response.data?.message || errorMessage;
       } else if (error.request) {
         errorMessage = t("forms.validation.no_response");

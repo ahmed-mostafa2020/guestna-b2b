@@ -124,7 +124,7 @@ export default async function sitemap() {
           });
         }
       });
-      console.log(`✅ Added ${trips.length} trips to sitemap`);
+
     } else {
       console.warn("⚠️ No trips found for sitemap");
     }

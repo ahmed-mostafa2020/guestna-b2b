@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import OrganizationsHeader from "./OrganizationsHeader";
+import SearchHeader from "@components/common/SearchHeader";
 
 import { Card, CircularProgress } from "@mui/material";
 import EmptyBookings from "./EmptyBookings";
@@ -24,10 +24,12 @@ const OrganizationsSection = ({
       className="p-4 !rounded-2xl"
       sx={{ boxShadow: "0 0 4px 0 rgba(0, 0, 0, 0.16)" }}
     >
-      <OrganizationsHeader
+      <SearchHeader
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
-        tableTitle={t("profile.tables.organizations.title")}
+        title={t("profile.tables.organizations.title")}
+        placeholder={t("profile.tables.organizations.searchBySchoolName")}
+        className="mb-4"
       />
       {/* Loading State */}
       {organizationsLoading ? (
