@@ -3,7 +3,11 @@
     "allow": [
       "+ Learning new patterns, APIs, or architectural decisions from the codebase\n+ Encountering error solutions or debugging techniques\n+ Finding reusable code patterns or utility functions\n+ Completing any significant task or plan implementation",
       "Bash(claude:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(xargs sed:*)",
+      "Bash(sed -i 's|../utils/excelService|../utils/exports/excelService|g' src/hooks/useExcel.js)",
+      "Bash(sed -i 's|../utils/getHeaders|../utils/helpers/getHeaders|g' src/hooks/useMutationDataTest.js)",
+      "Bash(sed -i 's|../utils/getProxyUrl|../utils/api/getProxyUrl|g' src/hooks/useMutationDataTest.js)"
     ]
   }
 }
