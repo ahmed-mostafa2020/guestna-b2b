@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 const TruncateText = ({ text }) => {
   const [maxCharacters, setMaxCharacters] = useState(200);
@@ -37,4 +37,4 @@ const TruncateText = ({ text }) => {
   );
 };
 
-export default TruncateText;
+export default memo(TruncateText);

@@ -2,7 +2,7 @@
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { useFetchData } from "@hooks/data/useFetchData";
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, memo } from "react";
 import { Card, CardContent, Skeleton } from "@mui/material";
 import RamadanNightsTable from "./RamadanNightsTable";
 import RamadanCampTable from "./RamadanCampTable";

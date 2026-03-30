@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useCallback, useEffect, useMemo } from "react";
 
-import { CONSTANT_VALUES } from "../constants/constantValues";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 
 import axios from "axios";
 import { useQuery, useQueryClient } from "@tanstack/react-query";

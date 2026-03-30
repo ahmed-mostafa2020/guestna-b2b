@@ -1,9 +1,8 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { memo } from "react";
 import Pagination from "@components/ui/Pagination";
-import { CardContent, Card, CircularProgress } from "@mui/material";
 import DataTable from "@components/ui/DataTable";
 
 const TransactionsTable = ({

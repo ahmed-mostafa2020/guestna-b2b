@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import { useTranslations } from "next-intl";
 import { CircularProgress } from "@mui/material";
 import Print from "@mui/icons-material/Print";
@@ -36,4 +37,4 @@ const ExportButton = ({
   );
 };
 
-export default ExportButton;
+export default memo(ExportButton);

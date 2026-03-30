@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   LabelList,
 } from "recharts";
-import EmptyBookings from "../../myBookings/EmptyBookings";
+import EmptyBookings from "@components/features/profile/myBookings/EmptyBookings";
 
 const MostActiveOrganizations = ({ mostActiveOrganizationsData }) => {
   const locale = useLocale();

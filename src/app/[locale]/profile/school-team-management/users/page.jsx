@@ -5,7 +5,6 @@ import { useTranslations, useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { useFetchData } from "@hooks/data/useFetchData";
-import { download } from "@hooks/utils/useDownload";
 import { usePermissions } from "@hooks/utils/usePermissions";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";

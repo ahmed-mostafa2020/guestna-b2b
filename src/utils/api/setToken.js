@@ -1,6 +1,6 @@
 "use client";
 
-import { CONSTANT_VALUES } from "../constants/constantValues";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 
 import Cookies from "js-cookie";
 

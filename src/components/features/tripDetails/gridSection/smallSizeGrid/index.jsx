@@ -11,7 +11,7 @@ import PreBookingSection from "@components/ui/trips/PreBookingSection";
 import BookWithConfidenceSection from "@components/ui/trips/BookWithConfidenceSection";
 import Map from "../largeSizeGrid/accordionsGroupSection/accordionsDetails/Map";
 import AuthanticatedRequestQuoteBox from "./authanticatedRequestQuoteBox";
-import RequestQuote from "../../requestQuote";
+import RequestQuote from "@components/features/tripDetails/requestQuote";
 
 import Cookies from "js-cookie";
 

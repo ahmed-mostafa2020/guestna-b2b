@@ -1,6 +1,6 @@
 // html2canvas is dynamically imported in exportModalToPDF
-import formatDate from "./FormateDate";
-import formatCurrency from "./FormatCurrency";
+import formatDate from "@utils/formatters/FormateDate";
+import formatCurrency from "@utils/formatters/FormatCurrency";
 
 /**
  * Export modal screenshot to PDF format

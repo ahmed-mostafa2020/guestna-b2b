@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { CONSTANT_VALUES } from "../constants/constantValues";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 
 export const useMutationData = (endpoint, options = {}) => {
   const dispatch = useDispatch();

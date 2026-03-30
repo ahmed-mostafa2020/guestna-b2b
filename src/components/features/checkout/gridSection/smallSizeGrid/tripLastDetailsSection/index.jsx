@@ -6,7 +6,7 @@ import ImageWithPlaceholder from "@components/ui/imagesPlaceholder/ImageWithPlac
 import headerImage from "@assets/sectionBackground/checkoutHeader.png";
 import NotCustomizableTripsItinerary from "./tripsItinerary/NotCustomizableTripsItinerary";
 import CustomizableTripsActivities from "./tripsItinerary/CustomizableTripsActivities";
-import TripTagsListing from "../../../../tripDetails/gridSection/largeSizeGrid/tripTags/TripTagsListing";
+import TripTagsListing from "@components/features/tripDetails/gridSection/largeSizeGrid/tripTags/TripTagsListing";
 
 const TripLastDetailsSection = ({ finalTripDetails }) => {
   const t = useTranslations();

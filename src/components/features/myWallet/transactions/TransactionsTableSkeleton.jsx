@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Card, CardContent, Skeleton } from "@mui/material";
+import { Card, CardContent, Skeleton } from "@mui/material";
 
 const TransactionsTableSkeleton = () => {
   return (

@@ -3,7 +3,7 @@
 import { memo, useEffect, useState } from "react";
 
 import { cn } from "@utils/helpers/cn";
-import ReviewsCard from "../../features/tripDetails/reviewsSection/ReviewsCard";
+import ReviewsCard from "@components/features/tripDetails/reviewsSection/ReviewsCard";
 
 import { chevronLeftIcon, chevronRightIcon, largeStarIcon } from "@assets/svg";
 

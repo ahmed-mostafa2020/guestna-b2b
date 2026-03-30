@@ -1,4 +1,4 @@
-import formatNumbersUint from "./FormatNumbersUint";
+import formatNumbersUint from "@utils/formatters/FormatNumbersUint";
 
 function calculateHours(fromHour, toHour, t) {
   // Function to convert 12-hour format to 24-hour format

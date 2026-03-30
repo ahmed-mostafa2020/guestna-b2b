@@ -331,7 +331,7 @@ const TransactionsPage = () => {
         {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS) && (
           <BalanceCards
             balanceData={balanceData}
-            balanceLoading={balanceLoading}
+            isLoading={balanceLoading}
           />
         )}
 

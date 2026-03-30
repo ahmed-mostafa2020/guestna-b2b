@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { useSnackbar } from "notistack";
-import { ExcelService } from "../utils/exports/excelService";
+import { ExcelService } from "@utils/exports/excelService";
 import { download } from "@hooks/utils/useDownload";
 
 export const useExcel = ({ headers = [], t, locale = "ar" }) => {

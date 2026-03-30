@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import React, { memo, useEffect, useRef, useState, useCallback } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import ValidationMessage from "./ValidationMessage";
 

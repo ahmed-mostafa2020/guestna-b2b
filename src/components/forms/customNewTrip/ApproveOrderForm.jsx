@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 
 import TextInputGroup from "../TextInputGroup";
-import Map from "../../features/tripDetails/gridSection/largeSizeGrid/accordionsGroupSection/accordionsDetails/Map";
+import Map from "@components/features/tripDetails/gridSection/largeSizeGrid/accordionsGroupSection/accordionsDetails/Map";
 import { getApproveOrderValidationSchema } from "@utils/validators/validationSchemas";
 
 const ApproveOrderForm = ({

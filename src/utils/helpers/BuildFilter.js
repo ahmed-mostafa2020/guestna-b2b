@@ -1,5 +1,5 @@
-import { CONSTANT_VALUES } from "../constants/constantValues";
-import formateTripSelectedDate from "./FormateTripSelectedDate";
+import { CONSTANT_VALUES } from "@constants/constantValues";
+import formateTripSelectedDate from "@utils/formatters/FormateTripSelectedDate";
 
 const buildFilter = ({
   tripsType,

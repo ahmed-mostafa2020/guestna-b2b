@@ -1,4 +1,4 @@
-import formatCurrency from "./FormatCurrency";
+import formatCurrency from "@utils/formatters/FormatCurrency";
 
 const calculateDiscountedPrice = (
   price,

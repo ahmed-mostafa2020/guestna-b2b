@@ -23,7 +23,7 @@ import { Formik } from "formik";
 
 import axios from "axios";
 
-import FormSubmitButton from "@components/shared/FormSubmitButton";
+import FormSubmitButton from "@components/ui/FormSubmitButton";
 
 const ResetNewPassword = () => {
   const [formErrors, setFormErrors] = useState([]);

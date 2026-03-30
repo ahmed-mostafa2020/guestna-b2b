@@ -1,4 +1,4 @@
-import { Box, Typography, Switch } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import CustomSwitch from "./CustomSwitch";
 
 export default function PermissionItem({ item, checked, onToggle, disabled }) {

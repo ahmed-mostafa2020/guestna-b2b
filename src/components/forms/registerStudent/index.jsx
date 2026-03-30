@@ -22,7 +22,7 @@ import axios from "axios";
 
 import { useSnackbar } from "notistack";
 
-import FormSubmitButton from "@components/shared/FormSubmitButton";
+import FormSubmitButton from "@components/ui/FormSubmitButton";
 import {
   Container,
   Checkbox,

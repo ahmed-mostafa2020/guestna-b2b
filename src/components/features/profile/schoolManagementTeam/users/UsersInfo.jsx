@@ -14,7 +14,6 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-import { PersonAdd, CloudUpload } from "@mui/icons-material";
 
 import UserCard from "./UserCard";
 import CustomizedModal from "@components/ui/customizedModal";
@@ -29,7 +28,7 @@ import { useSnackbar } from "notistack";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { getHeaders } from "@utils/helpers/getHeaders";
-import ActionsDialog from "../../../customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
+import ActionsDialog from "@components/features/customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
 
 const UsersInfo = ({
   editPermission = false,

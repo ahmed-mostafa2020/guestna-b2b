@@ -5,7 +5,7 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import getProxyUrl from "@utils/api/getProxyUrl";
-import { SORTING_TYPE } from "../constants/sorting";
+import { SORTING_TYPE } from "@constants/sorting";
 
 /**
  * Custom hook for fetching paginated trips with caching

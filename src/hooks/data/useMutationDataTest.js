@@ -4,8 +4,8 @@ import { useDispatch } from "react-redux";
 
 import { useEffect, useState } from "react";
 
-import { getHeaders } from "../utils/helpers/getHeaders";
-import getProxyUrl from "../utils/api/getProxyUrl";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getProxyUrl from "@utils/api/getProxyUrl";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 

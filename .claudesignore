@@ -1,0 +1,30 @@
+# Dependencies
+
+node_modules/
+
+# Next.js Build Output
+
+.next/
+out/
+build/
+
+# IDE & OS files
+
+.vscode/
+.idea/
+.DS_Store
+\*.log
+
+# Static Assets (Images/Videos consume a lot of tokens)
+
+public/assets/
+public/images/
+_.png
+_.jpg
+_.jpeg
+_.svg
+\*.mp4
+
+# Environment Secrets
+
+.env\*

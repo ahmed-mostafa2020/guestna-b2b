@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useTranslations } from "next-intl";
 
 const PerPageSelector = ({
@@ -27,4 +28,4 @@ const PerPageSelector = ({
   );
 };
 
-export default PerPageSelector;
+export default memo(PerPageSelector);

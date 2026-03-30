@@ -29,7 +29,7 @@ import dates from "@assets/gif/dates.webp";
 // import budgetGif from "@assets/gif/budget.webp";
 
 import { searchIconBlack, searchIconWhite } from "@assets/svg";
-import CustomizedModal from "../common/customizedModal";
+import CustomizedModal from "@components/ui/customizedModal";
 import { Container } from "@mui/material";
 
 const FiltersBox = () => {

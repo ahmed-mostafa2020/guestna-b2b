@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import SearchHeader from "@components/ui/SearchHeader";
 
-import { Card, CircularProgress } from "@mui/material";
+import { Card } from "@mui/material";
 import EmptyBookings from "./EmptyBookings";
 import SchoolOverviewCard from "../schoolManagementTeam/schoolsOverview/SchoolOverviewCard";
 import SchoolOverviewCardSkeleton from "../schoolManagementTeam/schoolsOverview/SchoolOverviewCardSkeleton";

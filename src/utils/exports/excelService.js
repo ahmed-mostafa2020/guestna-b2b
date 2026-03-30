@@ -8,12 +8,12 @@ const getExcelJS = async () => {
   }
   return _ExcelJS;
 };
-import formatDate from "./FormateDate";
-import { download } from "../hooks/useDownload";
+import formatDate from "@utils/formatters/FormateDate";
+import { download } from "@hooks/utils/useDownload";
 import {
   myBookingStudentsHeaders,
   bookingManagementStudentsHeaders,
-} from "../constants/excelHeaders";
+} from "@constants/excelHeaders";
 
 const createWorkbook = async (name = "Sheet") => {
   const ExcelJS = await getExcelJS();

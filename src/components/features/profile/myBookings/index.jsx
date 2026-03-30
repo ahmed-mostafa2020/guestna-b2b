@@ -6,28 +6,11 @@ import { memo } from "react";
 
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import formatDate from "@utils/formatters/FormateDate";
-import { TRIP_STATUS } from "@constants/tripStatus";
-import { Badge, CircularProgress } from "@mui/material";
+import { Badge } from "@mui/material";
 import ActionsDropdownMenu from "./ActionsDropdownMenu";
 import SearchHeader from "@components/ui/SearchHeader";
 import DataTable from "@components/ui/DataTable";
-
-const getStatusStyles = (status) => {
-  switch (status) {
-    case TRIP_STATUS.DONE:
-      return "bg-green-100 text-green-800 border border-green-200";
-    case TRIP_STATUS.PENDING:
-      return "bg-yellow-100 text-yellow-800 border border-yellow-200";
-    case TRIP_STATUS.CANCELLED:
-      return "bg-red-100 text-red-800 border border-red-200";
-    case TRIP_STATUS.SCHEDULED:
-      return "bg-blue-100 text-blue-800 border border-blue-200";
-    case "ENDED":
-      return "bg-gray-100 text-gray-800 border border-gray-200";
-    default:
-      return "bg-gray-100 text-gray-800 border border-gray-200";
-  }
-};
+import { getStatusStyles } from "@utils/formatters/getStatusStyles";
 
 const BookingsTable = ({
   tableTitle,

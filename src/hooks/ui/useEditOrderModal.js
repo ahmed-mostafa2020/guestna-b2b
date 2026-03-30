@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { CONSTANT_VALUES } from "../constants/constantValues";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 import { useTranslations } from "next-intl";
 
 export const useEditOrderModal = (locale) => {

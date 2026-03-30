@@ -1,4 +1,4 @@
-import { agesIdsList } from "../constants/targetAudiencesIds";
+import { agesIdsList } from "@constants/targetAudiencesIds";
 
 const calculateGuestPrices = (tripGuestsState, tripData, defaultPrice) => {
   const nonZeroGuests = Object.entries(tripGuestsState).filter(

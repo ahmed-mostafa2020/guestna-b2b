@@ -3,7 +3,7 @@
 import { memo, useState, useMemo, useCallback, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 
-import { Card, CardContent, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { Visibility, Print } from "@mui/icons-material";
 
 import CustomizedModal from "@components/ui/customizedModal";

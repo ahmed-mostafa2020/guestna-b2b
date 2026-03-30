@@ -17,7 +17,7 @@ import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
 import InteractiveRating from "@components/ui/InteractiveRating";
 
-import FormSubmitButton from "@components/shared/FormSubmitButton";
+import FormSubmitButton from "@components/ui/FormSubmitButton";
 
 const SurveyForm = ({ tripId, organizationId, onClose, onSuccess }) => {
   const locale = useLocale();

@@ -1,4 +1,4 @@
-import { newSarSmall } from "../assets/svg";
+import { newSarSmall } from "@assets/svg";
 
 function formatCurrency(amount, locale = "en-US") {
   // locale = "ar"

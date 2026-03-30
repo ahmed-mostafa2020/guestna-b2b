@@ -5,7 +5,7 @@ import { memo } from "react";
 import formatDate from "@utils/formatters/FormateDate";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 
-import EmptyBookings from "../../myBookings/EmptyBookings";
+import EmptyBookings from "@components/features/profile/myBookings/EmptyBookings";
 
 import {
   ResponsiveContainer,

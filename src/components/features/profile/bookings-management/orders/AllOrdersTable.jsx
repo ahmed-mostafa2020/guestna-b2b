@@ -11,6 +11,7 @@ import Pagination from "@components/ui/Pagination";
 import DataTable from "@components/ui/DataTable";
 import ActionsDropdownMenu from "./ActionsDropdownMenu";
 import formatCurrency from "@utils/formatters/FormatCurrency";
+import { getStatusStyles } from "@utils/formatters/getStatusStyles";
 
 import { CircularProgress } from "@mui/material";
 
@@ -83,34 +84,6 @@ const AllOrdersTable = ({
     PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REJECT_TRIP,
     PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_APPROVE_TRIP,
   ]);
-
-  const getStatusStyles = (status) => {
-    switch (status) {
-      case TRIP_STATUS.APPROVED:
-      case TRIP_STATUS.DONE:
-        return "bg-green-100 text-green-800 border border-green-200";
-
-      case TRIP_STATUS.PENDING:
-      case TRIP_STATUS.PENDING_COMPANY_APPROVAL:
-        return "bg-yellow-100 text-yellow-800 border border-yellow-200";
-
-      case TRIP_STATUS.SCHEDULED:
-        return "bg-blue-100 text-blue-800 border border-blue-200";
-
-      case TRIP_STATUS.ON_HOLD:
-        return "bg-orange-100 text-orange-800 border border-orange-200";
-
-      case TRIP_STATUS.CANCELLED:
-      case TRIP_STATUS.REJECTED:
-        return "bg-red-100 text-red-800 border border-red-200";
-
-      case TRIP_STATUS.ENDED:
-        return "bg-gray-100 text-gray-800 border border-gray-200";
-
-      default:
-        return "bg-gray-100 text-gray-800 border border-gray-200";
-    }
-  };
 
   // Handle successful edit with table refresh
   const handleEditSuccess = useCallback(

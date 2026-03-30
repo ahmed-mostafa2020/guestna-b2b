@@ -4,7 +4,7 @@ import { PERMISSIONS } from "@constants/permissions";
 import { printIcon } from "@assets/svg";
 import { useSelector } from "react-redux";
 import { useCallback, useMemo } from "react";
-import SearchAndFilters from "../../common/searchAndFilters/SearchAndFilters";
+import SearchAndFilters from "../../ui/searchAndFilters/SearchAndFilters";
 import { TRIP_STATUS } from "@constants/tripStatus";
 import formatDateForAPI from "@utils/formatters/formatDateForAPI";
 

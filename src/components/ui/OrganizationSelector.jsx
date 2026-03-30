@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { memo, useState, useEffect, useRef, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -296,4 +296,4 @@ const OrganizationSelector = () => {
   );
 };
 
-export default OrganizationSelector;
+export default memo(OrganizationSelector);

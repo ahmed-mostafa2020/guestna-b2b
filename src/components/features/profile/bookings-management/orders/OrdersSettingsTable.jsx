@@ -3,7 +3,6 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { Card, CardContent, CircularProgress } from "@mui/material";
 import { memo, useState, useCallback } from "react";
 import EditTripSettingsForm from "@components/forms/EditTripSettingsForm";
 import formatNumbersUint from "@utils/formatters/FormatNumbersUint";

@@ -14,7 +14,7 @@ import { useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { USERS } from "@constants/users";
-import ActionsDialog from "../customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
+import ActionsDialog from "@components/features/customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
 
 import { useSnackbar } from "notistack";
 import Cookies from "js-cookie";

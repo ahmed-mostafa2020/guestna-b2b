@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl";
 
 import { memo } from "react";
 
-import InfoCards from "../../trips/infoCards";
+import InfoCards from "@components/features/profile/trips/infoCards";
 import {
   totalActivitiesIcon,
   totalRevenueIcon,

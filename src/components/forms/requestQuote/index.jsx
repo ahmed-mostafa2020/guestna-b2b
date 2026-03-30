@@ -20,7 +20,7 @@ import ThanksMessage from "./ThanksMessage";
 
 import { Field, Formik } from "formik";
 
-import FormSubmitButton from "@components/shared/FormSubmitButton";
+import FormSubmitButton from "@components/ui/FormSubmitButton";
 
 import { useSnackbar } from "notistack";
 

@@ -13,9 +13,9 @@ import formatCurrency from "@utils/formatters/FormatCurrency";
 import calculateDiscountedPrice from "@utils/calculations/CalculateDiscountedPrice";
 
 import FrameWithImagedHeader from "../frameWithImagedHeader/FrameWithImagedHeader";
-import ActionsDialog from "../../features/customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
+import ActionsDialog from "@components/features/customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
 import CustomizedModal from "../customizedModal";
-import ParentLoginForm from "../../forms/auth/parentLogin";
+import ParentLoginForm from "@components/forms/auth/parentLogin";
 
 import Cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";

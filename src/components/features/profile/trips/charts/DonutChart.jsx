@@ -7,7 +7,7 @@ import { memo } from "react";
 import { CHART_COLORS } from "@constants/chartColors";
 
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import EmptyBookings from "../../myBookings/EmptyBookings";
+import EmptyBookings from "@components/features/profile/myBookings/EmptyBookings";
 
 const DonutChart = ({ infoData }) => {
   const t = useTranslations();

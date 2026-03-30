@@ -37,7 +37,7 @@ import getUnicodeFlagIcon from "country-flag-icons/unicode";
 import axios from "axios";
 
 import { Checkbox, FormControlLabel } from "@mui/material";
-import FormSubmitButton from "@components/shared/FormSubmitButton";
+import FormSubmitButton from "@components/ui/FormSubmitButton";
 
 const SignupForm = ({ redirect = true }) => {
   const { confirmTermsAndConditions, isMarketingEmails } = useSelector(

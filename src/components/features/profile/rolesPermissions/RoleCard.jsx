@@ -26,7 +26,7 @@ import {
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import getProxyUrl from "@utils/api/getProxyUrl";
-import ActionsDialog from "../../customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
+import ActionsDialog from "@components/features/customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
 import formatNumbersUint from "@utils/formatters/FormatNumbersUint";
 import "@mui/material/styles";
 
