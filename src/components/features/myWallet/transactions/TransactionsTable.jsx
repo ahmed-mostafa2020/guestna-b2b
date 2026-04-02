@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import Pagination from "@components/ui/Pagination";
 import DataTable from "@components/ui/DataTable";
 
@@ -17,7 +17,7 @@ const TransactionsTable = ({
   const t = useTranslations("profile.myWallet.transactionsPage.table");
   const tCommon = useTranslations();
 
-  const columns = [
+  const columns = useMemo(() => [
     {
       key: "referenceNumber",
       label: t("headers.referenceNumber"),
@@ -57,7 +57,7 @@ const TransactionsTable = ({
         <span
           className={`px-3 py-1 rounded-full text-xs font-medium ${
             statusConfig[row.status]?.className ||
-            "bg-gray-100 text-gray-800 border border-gray-200"
+            "bg-status-neutral-bg text-status-neutral-fg border border-status-neutral-border"
           }`}
         >
           {tCommon("common.organizationTripStatus." + row.status) ||
@@ -66,7 +66,7 @@ const TransactionsTable = ({
         </span>
       ),
     },
-  ];
+  ], [t, tCommon, statusConfig, formatCurrency]);
 
   const emptyState = (
     <div className="text-muted-foreground">

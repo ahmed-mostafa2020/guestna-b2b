@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const locales = ["en", "ar", "fr"];
+const locales = ["en", "ar"];
 const defaultLocale = "ar";
 
 export function middleware(request) {

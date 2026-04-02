@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { usePermissions } from "@hooks/utils/usePermissions";
 import formatDate from "@utils/formatters/FormateDate";
 import { PERMISSIONS } from "@constants/permissions";
@@ -34,7 +34,7 @@ const BookingsTable = ({
   const locale = useLocale();
   const t = useTranslations();
 
-  const columns = [
+  const columns = useMemo(() => [
     {
       key: "orderId",
       label: t("profile.tables.bookings.header.orderId"),
@@ -104,7 +104,7 @@ const BookingsTable = ({
       className: "font-medium text-foreground whitespace-nowrap",
       render: (row) => formatCurrency(row.price),
     },
-  ];
+  ], [t, locale]);
 
   const hasActions = hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_BOOKINGS_SHOW_TRIP_DETAILS_BUTTON);
 

@@ -1,8 +1,9 @@
 "use client";
 
 import { memo, useMemo, useState, useCallback } from "react";
-import { Card, CardContent, CircularProgress, Checkbox, IconButton, Tooltip } from "@mui/material";
+import { Card, CardContent, Checkbox, IconButton, Tooltip } from "@mui/material";
 import Pagination from "@components/ui/Pagination";
+import TableSkeleton from "@components/ui/TableSkeleton";
 
 /**
  * Reusable DataTable component that consolidates table patterns across the app.
@@ -70,11 +71,7 @@ const DataTable = ({
 
   // Loading state
   if (loading) {
-    return (
-      <div className="w-full min-h-[400px] centered">
-        <CircularProgress size={50} color="primary" />
-      </div>
-    );
+    return <TableSkeleton columns={columns.length || 6} />;
   }
 
   const isEmpty = !data || data.length === 0;

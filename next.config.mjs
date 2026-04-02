@@ -39,6 +39,7 @@ const nextConfig = {
   },
   async headers() {
     const isDevelopment = process.env.NODE_ENV === "development";
+    const isProduction = process.env.VERCEL_ENV === "production";
 
     // No cache in development to prevent stale styles during development
     const staticAssetsCacheHeaders = [
@@ -88,6 +89,10 @@ const nextConfig = {
             value: "frame-ancestors 'self' https://api.moyasar.com",
           },
           ...securityHeaders,
+          // Block indexing on all non-production deployments (preview, branch, local)
+          ...(!isProduction
+            ? [{ key: "X-Robots-Tag", value: "noindex, nofollow" }]
+            : []),
           // Preconnect to external domains for faster loading
           {
             key: "Link",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { memo, useCallback } from "react";
+import { memo, useCallback, useMemo } from "react";
 
 import { usePermissions } from "@hooks/utils/usePermissions";
 import formatDate from "@utils/formatters/FormateDate";
@@ -14,6 +14,7 @@ import formatCurrency from "@utils/formatters/FormatCurrency";
 import { getStatusStyles } from "@utils/formatters/getStatusStyles";
 
 import { CircularProgress } from "@mui/material";
+import TableSkeleton from "@components/ui/TableSkeleton";
 
 import { useOrderDetailsModal } from "@hooks/ui/useOrderDetailsModal";
 import { useEditOrderModal } from "@hooks/ui/useEditOrderModal";
@@ -153,100 +154,90 @@ const AllOrdersTable = ({
   );
 
   if (!data || !data.nodes) {
-    return (
-      <div className="w-full min-h-[400px] centered">
-        <CircularProgress size={50} color="primary" />
-      </div>
-    );
+    return <TableSkeleton columns={8} />;
   }
+
+  const columns = useMemo(() => [
+    {
+      key: "orderId",
+      label: t("profile.tables.orders.tableHeaders.orderNumber"),
+      className: "font-medium text-foreground",
+      render: (row) => (
+        <span className="block max-w-[100px] truncate" title={row.orderId}>
+          {row.orderId}
+        </span>
+      ),
+    },
+    {
+      key: "organization",
+      label: t("profile.tables.orders.tableHeaders.school"),
+      className: "text-muted-foreground",
+      render: (row) => (
+        <span className="block max-w-[180px] truncate" title={row.organization}>
+          {row.organization}
+        </span>
+      ),
+    },
+    {
+      key: "name",
+      label: t("profile.tables.orders.tableHeaders.activity"),
+      className: "font-medium text-foreground",
+      render: (row) => (
+        <span className="block max-w-[100px] truncate" title={row.name}>
+          {row.name}
+        </span>
+      ),
+    },
+    {
+      key: "askType",
+      label: t("profile.tables.orders.tableHeaders.orderType"),
+      render: (row) =>
+        row.askType === "CUSTOM" ? (
+          <span className="px-2 py-1 text-xs font-medium">
+            {t("profile.tables.orders.customizable.title")}
+          </span>
+        ) : (
+          <span className="px-2 py-1 text-xs font-medium">
+            {t("profile.tables.orders.normal.title")}
+          </span>
+        ),
+    },
+    {
+      key: "day",
+      label: t("profile.tables.orders.tableHeaders.orderDate"),
+      className: "text-muted-foreground",
+      render: (row) =>
+        formatDate(row.day, locale, {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+    },
+    {
+      key: "budget",
+      label: t("profile.tables.orders.tableHeaders.budget"),
+      className: "font-medium text-foreground",
+      render: (row) =>
+        formatCurrency(row.basePrice ? row.basePrice : row.priceRange?.max || 0),
+    },
+    {
+      key: "status",
+      label: t("profile.tables.orders.tableHeaders.status"),
+      render: (row) => (
+        <span
+          className={`px-1 lg:px-3 py-1 rounded-full lg:text-sm text-[10px] font-medium ${getStatusStyles(row.status)}`}
+        >
+          {t(`common.organizationTripStatus.${row.status}`)}
+        </span>
+      ),
+    },
+  ], [t, locale]);
 
   return (
     <>
       <DataTable
         title={tableTitle}
-        columns={[
-          {
-            key: "orderId",
-            label: t("profile.tables.orders.tableHeaders.orderNumber"),
-            className: "font-medium text-foreground",
-            render: (row) => (
-              <span
-                className="block max-w-[100px] truncate"
-                title={row.orderId}
-              >
-                {row.orderId}
-              </span>
-            ),
-          },
-          {
-            key: "organization",
-            label: t("profile.tables.orders.tableHeaders.school"),
-            className: "text-muted-foreground",
-            render: (row) => (
-              <span
-                className="block max-w-[180px] truncate"
-                title={row.organization}
-              >
-                {row.organization}
-              </span>
-            ),
-          },
-          {
-            key: "name",
-            label: t("profile.tables.orders.tableHeaders.activity"),
-            className: "font-medium text-foreground",
-            render: (row) => (
-              <span className="block max-w-[100px] truncate" title={row.name}>
-                {row.name}
-              </span>
-            ),
-          },
-          {
-            key: "askType",
-            label: t("profile.tables.orders.tableHeaders.orderType"),
-            render: (row) =>
-              row.askType === "CUSTOM" ? (
-                <span className="px-2 py-1 text-xs font-medium">
-                  {t("profile.tables.orders.customizable.title")}
-                </span>
-              ) : (
-                <span className="px-2 py-1 text-xs font-medium">
-                  {t("profile.tables.orders.normal.title")}
-                </span>
-              ),
-          },
-          {
-            key: "day",
-            label: t("profile.tables.orders.tableHeaders.orderDate"),
-            className: "text-muted-foreground",
-            render: (row) =>
-              formatDate(row.day, locale, {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              }),
-          },
-          {
-            key: "budget",
-            label: t("profile.tables.orders.tableHeaders.budget"),
-            className: "font-medium text-foreground",
-            render: (row) =>
-              formatCurrency(
-                row.basePrice ? row.basePrice : row.priceRange?.max || 0
-              ),
-          },
-          {
-            key: "status",
-            label: t("profile.tables.orders.tableHeaders.status"),
-            render: (row) => (
-              <span
-                className={`px-1 lg:px-3 py-1 rounded-full lg:text-sm text-[10px] font-medium ${getStatusStyles(row.status)}`}
-              >
-                {t(`common.organizationTripStatus.${row.status}`)}
-              </span>
-            ),
-          },
-        ]}
+        columns={columns}
         data={data?.nodes || []}
         actionsLabel={
           hasAnyActionPermission

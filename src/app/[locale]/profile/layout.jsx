@@ -25,6 +25,7 @@ import { USERS } from "@constants/users";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
+import ErrorBoundary from "@components/ui/ErrorBoundary";
 import ProfileTabs from "@components/features/profile/ProfileTabs";
 // import ResponsiveGridLayout from "@components/ui/responsiveGridLayout";
 
@@ -108,7 +109,9 @@ const ProfileLayout = ({ children }) => {
           </div>
         </Grid>
         <Grid size={{ xs: 12, sm: 9, lg: 9.5 }}>
-          <div className="p-4 lg:p-7">{children}</div>
+          <ErrorBoundary>
+            <div className="p-4 lg:p-7">{children}</div>
+          </ErrorBoundary>
         </Grid>
       </Grid>
       {/* <ResponsiveGridLayout

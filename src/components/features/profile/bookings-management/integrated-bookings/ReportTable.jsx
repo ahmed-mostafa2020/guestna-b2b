@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import { memo, useState } from "react";
+import { memo, useState, useMemo } from "react";
 
 import { usePermissions } from "@hooks/utils/usePermissions";
 import formatDate from "@utils/formatters/FormateDate";
@@ -11,8 +11,7 @@ import { PERMISSIONS } from "@constants/permissions";
 import SurveyForm from "@components/forms/survey";
 import CustomizedModal from "@components/ui/customizedModal";
 import DataTable from "@components/ui/DataTable";
-
-import { CircularProgress } from "@mui/material";
+import TableSkeleton from "@components/ui/TableSkeleton";
 
 const ReportTable = ({
   data,
@@ -52,41 +51,39 @@ const ReportTable = ({
   };
 
   if (!data || !data.nodes) {
-    return (
-      <div className="w-full min-h-[400px] centered">
-        <CircularProgress size={50} color="primary" />
-      </div>
-    );
+    return <TableSkeleton columns={4} />;
   }
+
+  const columns = useMemo(() => [
+    {
+      key: "organization",
+      label: t("profile.tables.bookings.header.schoolName"),
+      render: (row) => row.organization?.name || "-",
+      className: "font-medium text-foreground",
+    },
+    {
+      key: "name",
+      label: t("profile.tables.bookings.header.tripName"),
+      className: "font-medium text-foreground",
+    },
+    {
+      key: "date",
+      label: t("profile.tables.bookings.header.date"),
+      render: (row) => formatDate(row.day, locale, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    },
+  ], [t, locale]);
 
   return (
     <>
         <DataTable
           title={tableTitle}
-          columns={[
-            {
-              key: "organization",
-              label: t("profile.tables.bookings.header.schoolName"),
-              render: (row) => row.organization?.name || "-",
-              className: "font-medium text-foreground",
-            },
-            {
-              key: "name",
-              label: t("profile.tables.bookings.header.tripName"),
-              className: "font-medium text-foreground",
-            },
-            {
-              key: "date",
-              label: t("profile.tables.bookings.header.date"),
-              render: (row) => formatDate(row.day, locale, {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              }),
-            }
-          ]}
+          columns={columns}
           data={data?.nodes || []}
           actionsLabel={hasAnyReportPermission ? t("profile.tables.bookings.header.actions") : null}
           rowActions={hasAnyReportPermission ? (booking) => (

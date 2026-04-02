@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations, useLocale } from "next-intl";
+import { useMemo } from "react";
 import formatDate from "@utils/formatters/FormateDate";
 import DataTable from "@components/ui/DataTable";
 
@@ -8,39 +9,44 @@ const BookingsTable = ({ bookings = [] }) => {
   const t = useTranslations();
   const locale = useLocale();
 
-  return (
-      <DataTable
-        columns={[
-          {
-            key: "tripName",
-            label: t("profile.schoolTeamStudents.details.activityName"),
-            className: "font-medium text-foreground",
-          },
-          {
-            key: "date",
-            label: t("profile.schoolTeamStudents.details.date"),
-            className: "text-center",
-            render: (row) => row.date ? formatDate(row.date, locale, {
+  const columns = useMemo(() => [
+    {
+      key: "tripName",
+      label: t("profile.schoolTeamStudents.details.activityName"),
+      className: "font-medium text-foreground",
+    },
+    {
+      key: "date",
+      label: t("profile.schoolTeamStudents.details.date"),
+      className: "text-center",
+      render: (row) =>
+        row.date
+          ? formatDate(row.date, locale, {
               year: "numeric",
               month: "long",
               day: "numeric",
               hour: "numeric",
               minute: "numeric",
-            }) : "-",
-          },
-          {
-            key: "method",
-            label: t("profile.schoolTeamStudents.details.bookingMethod"),
-            className: "text-center",
-            render: () => t("profile.schoolTeamStudents.details.parent"),
-          },
-          {
-            key: "status",
-            label: t("profile.schoolTeamStudents.details.status"),
-            className: "text-center",
-            render: (row) => t(`common.bookingStatus.${row.status}`) || row.status,
-          }
-        ]}
+            })
+          : "-",
+    },
+    {
+      key: "method",
+      label: t("profile.schoolTeamStudents.details.bookingMethod"),
+      className: "text-center",
+      render: () => t("profile.schoolTeamStudents.details.parent"),
+    },
+    {
+      key: "status",
+      label: t("profile.schoolTeamStudents.details.status"),
+      className: "text-center",
+      render: (row) => t(`common.bookingStatus.${row.status}`) || row.status,
+    },
+  ], [t, locale]);
+
+  return (
+      <DataTable
+        columns={columns}
         data={bookings}
         actionsLabel={t("profile.schoolTeamStudents.details.actions")}
         rowActions={() => (

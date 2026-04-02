@@ -7,27 +7,22 @@ import { useLocale, useTranslations } from "next-intl";
 // import { useDispatch, useSelector } from "react-redux";
 // import { submitForm } from "@store/forms/auth/login/loginFormSlice";
 
-import { useState } from "react";
-
 import { useSnackbar } from "notistack";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { createResetNewPasswordSchema } from "@utils/validators/validationSchemas";
 import setToken from "@utils/api/setToken";
 import { getHeaders } from "@utils/helpers/getHeaders";
-import getErrorMessage from "@utils/helpers/getErrorMessage";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import TextInputGroup from "../../TextInputGroup";
 
 import { Formik } from "formik";
 
-import axios from "axios";
-
 import FormSubmitButton from "@components/ui/FormSubmitButton";
+import useAxiosForm from "@hooks/forms/useAxiosForm";
 
 const ResetNewPassword = () => {
-  const [formErrors, setFormErrors] = useState([]);
-  const [disabledButton, setDisabledButton] = useState(false);
+  const { makeRequest, isDisabled, setIsDisabled } = useAxiosForm();
 
   // const { email, phone, forgetPasswordId, rememberMe } = useSelector(
   //   (state) => state.loginForm
@@ -70,32 +65,22 @@ const ResetNewPassword = () => {
       headers,
       data: resetNewPasswordData,
     };
-    axios
-      .request(config)
-      .then((response) => {
-        setSubmitting(false);
-        setFormErrors([]);
-        resetForm();
 
+    makeRequest(config, {
+      setSubmitting,
+      resetForm,
+      onSuccess: (response) => {
         const token = response.data.token;
         if ((response.status === 201 || response.status === 200) && token) {
           enqueueSnackbar(t("forms.validation.success"), {
             variant: "success",
           });
           setToken(token, true);
-          setDisabledButton(true);
+          setIsDisabled(true);
           router.push(`/${locale}`);
         }
-      })
-
-      .catch((error) => {
-        setDisabledButton(false);
-        setSubmitting(false);
-
-        const errorMessage = getErrorMessage(error, t);
-        enqueueSnackbar(errorMessage || formErrors, { variant: "error" });
-        setFormErrors([errorMessage || "An unknown error occurred."]);
-      });
+      },
+    });
   };
 
   return (
@@ -166,7 +151,7 @@ const ResetNewPassword = () => {
               <div className="w-full centered">
                 <FormSubmitButton
                   loading={isSubmitting}
-                  disabled={!isValid || disabledButton}
+                  disabled={!isValid || isDisabled}
                   label={t("forms.auth.resetPassword.resetPassword")}
                   isValid={isValid}
                   className="w-full mt-8 py-3 text-base"

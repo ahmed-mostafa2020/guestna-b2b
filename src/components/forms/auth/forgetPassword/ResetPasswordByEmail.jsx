@@ -7,8 +7,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { useDispatch } from "react-redux";
 import { setEmail } from "@store/forms/auth/login/loginFormSlice";
 
-import { useState } from "react";
-
 import { createResetPasswordByEmailSchema } from "@utils/validators/validationSchemas";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { getHeaders } from "@utils/helpers/getHeaders";
@@ -20,11 +18,10 @@ import { Formik } from "formik";
 import FormSubmitButton from "@components/ui/FormSubmitButton";
 
 import { useSnackbar } from "notistack";
-import axios from "axios";
+import useAxiosForm from "@hooks/forms/useAxiosForm";
 
 const ResetPasswordByEmail = () => {
-  const [formErrors, setFormErrors] = useState([]);
-  const [disabledButton, setDisabledButton] = useState(false);
+  const { makeRequest, isDisabled } = useAxiosForm();
 
   const locale = useLocale();
   const t = useTranslations();
@@ -54,13 +51,11 @@ const ResetPasswordByEmail = () => {
       headers,
       data: resetPasswordByEmailData,
     };
-    axios
-      .request(config)
-      .then((response) => {
-        setSubmitting(false);
-        setFormErrors([]);
-        resetForm();
 
+    makeRequest(config, {
+      setSubmitting,
+      resetForm,
+      onSuccess: (response) => {
         // const { email } = response.data;
 
         if (response.data === true) {
@@ -69,30 +64,11 @@ const ResetPasswordByEmail = () => {
           });
 
           dispatch(setEmail(values.email));
-          // setDisabledButton(true);
+          // setIsDisabled(true);
           // router.push(`/${locale}/confirm-account`);
         }
-      })
-
-      .catch((error) => {
-        setDisabledButton(false);
-        setSubmitting(false);
-
-        const errorMessage =
-          !(
-            error?.response?.data?.statusCode >= 200 &&
-            error?.response?.data?.statusCode < 300
-          ) && error.response?.data?.message;
-        const defaultErrorMessage = t(
-          "forms.validation.api_errors.other_error"
-        );
-
-        enqueueSnackbar(errorMessage || defaultErrorMessage, {
-          variant: "error",
-        });
-
-        setFormErrors([errorMessage || "An unknown error occurred."]);
-      });
+      },
+    });
   };
 
   return (
@@ -139,7 +115,7 @@ const ResetPasswordByEmail = () => {
 
               <FormSubmitButton
                 loading={isSubmitting}
-                disabled={!isValid || disabledButton}
+                disabled={!isValid || isDisabled}
                 label={t("forms.auth.forgetPassword.send")}
                 isValid={isValid}
                 className="w-full mt-4 py-3 text-base"

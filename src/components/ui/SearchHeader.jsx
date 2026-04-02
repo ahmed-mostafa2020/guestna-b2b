@@ -3,6 +3,17 @@ import { memo, useState } from "react";
 import { TextField, InputAdornment, IconButton } from "@mui/material";
 import { searchBarIcon, wrongIcon } from "@assets/svg";
 
+/**
+ * Page-level search bar with an optional title.
+ * Fires `setSearchTerm` on Enter or clicking the search icon; clears on the X button.
+ *
+ * @param {Object} props
+ * @param {Function} props.setSearchTerm - Callback receiving the committed search string
+ * @param {string} [props.searchTerm] - Controlled value (used to show the clear button)
+ * @param {string} [props.title] - Optional heading rendered to the left of the input
+ * @param {string} [props.placeholder] - Input placeholder text (appended with "…")
+ * @param {string} [props.className] - Extra wrapper className
+ */
 const SearchHeader = ({
   setSearchTerm,
   searchTerm,

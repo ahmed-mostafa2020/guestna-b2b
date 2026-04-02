@@ -14,6 +14,8 @@ const FeatureTrips = () => {
     (state) => state.homeData.items.featureTrips
   );
 
+  if (!featureTrips || featureTrips.length === 0) return null;
+
   const renderedFeatureTrips = featureTrips?.map((featureTrip) => (
     <SwiperSlide key={featureTrip._id}>
       <FeatureTripCard featureTrip={featureTrip} />

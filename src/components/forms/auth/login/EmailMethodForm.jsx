@@ -13,8 +13,6 @@ import {
 } from "@store/forms/auth/login/loginFormSlice";
 import { resetSignUpData } from "@store/forms/auth/signUp/signUpFormSlice";
 
-import { useState } from "react";
-
 import { END_POINTS } from "@constants/APIs";
 import { createLoginEmailMethodSchema } from "@utils/validators/validationSchemas";
 import { getHeaders } from "@utils/helpers/getHeaders";
@@ -26,12 +24,10 @@ import { Formik } from "formik";
 import FormSubmitButton from "@components/ui/FormSubmitButton";
 
 import { useSnackbar } from "notistack";
-
-import axios from "axios";
+import useAxiosForm from "@hooks/forms/useAxiosForm";
 
 const EmailMethodForm = ({ redirect = true }) => {
-  const [formErrors, setFormErrors] = useState([]);
-  const [disabledButton, setDisabledButton] = useState(false);
+  const { makeRequest, isDisabled, setIsDisabled } = useAxiosForm();
 
   const locale = useLocale();
   const t = useTranslations();
@@ -59,13 +55,11 @@ const EmailMethodForm = ({ redirect = true }) => {
       headers,
       data: loginFormData,
     };
-    axios
-      .request(config)
-      .then((response) => {
-        setSubmitting(false);
-        setFormErrors([]);
-        resetForm();
 
+    makeRequest(config, {
+      setSubmitting,
+      resetForm,
+      onSuccess: (response) => {
         dispatch(resetSignUpData());
 
         if (response.data === true) {
@@ -75,46 +69,21 @@ const EmailMethodForm = ({ redirect = true }) => {
           });
 
           dispatch(submitForm());
-          setDisabledButton(true);
+          setIsDisabled(true);
 
           if (redirect) {
             router.push(`/${locale}/confirm-account`);
           }
         }
-      })
-
-      .catch((error) => {
-        // Reset form states
-        setDisabledButton(false);
-        setSubmitting(false);
-
+      },
+      onError: (error) => {
         if (error.response.data.statusCode === 409) {
           dispatch(submitForm());
 
           router.push(`/${locale}/confirm-account`);
         }
-
-        // Log the full error for debugging
-
-
-        // Extract error message
-        const errorMessage =
-          !(
-            error?.response?.data?.statusCode >= 200 &&
-            error?.response?.data?.statusCode < 300
-          ) && error.response?.data?.message;
-        const defaultErrorMessage = t(
-          "forms.validation.api_errors.other_error"
-        );
-
-        // Show error notification
-        enqueueSnackbar(errorMessage || defaultErrorMessage, {
-          variant: "error",
-        });
-
-        // Set form errors
-        setFormErrors([errorMessage || "An unknown error occurred."]);
-      });
+      },
+    });
   };
 
   return (
@@ -180,7 +149,7 @@ const EmailMethodForm = ({ redirect = true }) => {
 
             <FormSubmitButton
               loading={isSubmitting}
-              disabled={!isValid || disabledButton}
+              disabled={!isValid || isDisabled}
               label={t("forms.auth.login.name")}
               isValid={isValid}
               className="w-full mt-4 py-3 text-base"

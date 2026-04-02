@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { memo } from "react";
+import { memo, useMemo } from "react";
 
 import { usePermissions } from "@hooks/utils/usePermissions";
 import formatDate from "@utils/formatters/FormateDate";
@@ -36,7 +36,7 @@ const TripsManagementTable = ({
 
   const hasActions = hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_TRIPS_MANAGEMENT_BUTTON);
 
-  const columns = [
+  const columns = useMemo(() => [
     {
       key: "organization",
       label: t("profile.tables.management.header.organization"),
@@ -88,7 +88,7 @@ const TripsManagementTable = ({
           minute: "2-digit",
         }),
     },
-  ];
+  ], [t, locale]);
 
   return (
     <DataTable
