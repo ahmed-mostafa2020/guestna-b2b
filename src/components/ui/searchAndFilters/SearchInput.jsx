@@ -4,7 +4,11 @@ import React from "react";
 const SearchInput = ({ label, value, onChange, key }) => {
   return (
     <TextField
-      className="!border-2 rounded-md !border-solid !border-gray-200 !py-2"
+      sx={{
+        mb: 0,
+        "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+      }}
+      className="!border-2 rounded-md !border-solid !border-gray-200"
       placeholder={label}
       slotProps={{
         input: {

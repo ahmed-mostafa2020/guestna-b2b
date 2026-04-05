@@ -117,6 +117,12 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
         className="w-full !border-5 !border-borderColor"
+        sx={{
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#e5e7eb",
+            borderWidth: "2px",
+          },
+        }}
         IconComponent={() => (
           <ArrowDropDown
             className={`${open ? "rotate-180" : ""} left-0 me-2`}

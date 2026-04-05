@@ -32,8 +32,12 @@ const DatePickUpInput = ({ label, value, onChange }) => {
           textField: {
             size: "small",
             fullWidth: true,
+            sx: {
+              mb: 0,
+              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+            },
             className:
-              "!border-2 !border-solid !border-gray-200 !rounded-md !py-2 !font-somar",
+              "!border-2 !border-solid !border-gray-200 !rounded-md !font-somar",
             InputProps: {
               classes: {
                 input: "!font-somar ",

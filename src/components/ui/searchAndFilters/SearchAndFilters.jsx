@@ -42,6 +42,7 @@ const SearchAndFilters = ({
               variant="rounded"
               width={skeletonWidth}
               height={skeletonHeight}
+              className="!h-10"
             />
           ))
         : filters.map((filter, index) => (
@@ -85,7 +86,7 @@ const SearchAndFilters = ({
               />
             )}
 
-            {renderFilters("100%", 40)}
+            {renderFilters("100%", 55)}
             {date && (
               <DatePickUpInput
                 key={date.key}
@@ -102,8 +103,14 @@ const SearchAndFilters = ({
       {/* Desktop layout */}
       <Box className="hidden md:block">
         {showTitle && <Box className="mb-3">{title}</Box>}
-        <Box className="flex flex-wrap items-center gap-4">
-          <Box className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <Box className="flex flex-col gap-3">
+          <Box
+            className={
+              totalInputs === 1
+                ? "flex gap-4 w-full"
+                : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+            }
+          >
             {search && (
               <SearchInput
                 key={search.key}
@@ -123,11 +130,11 @@ const SearchAndFilters = ({
             )}
           </Box>
           {onReset && (
-            <Box className="shrink-0 flex items-center pt-2">
+            <Box className="flex justify-end">
               <button
                 type="button"
                 onClick={onReset}
-                className="text-sm font-medium text-red-600 hover:text-white border border-red-600 hover:bg-red-600 transition-all rounded-md px-4 py-2 flex items-center gap-2"
+                className="text-sm font-medium text-error hover:text-white border border-error hover:bg-error transition-all rounded-md px-4 py-2 flex items-center gap-2"
               >
                 <span>{t("forms.reset.title")}</span>
               </button>

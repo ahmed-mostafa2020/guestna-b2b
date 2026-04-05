@@ -46,7 +46,11 @@ const SearchHeader = ({
         <TextField
           placeholder={placeholder ? `${placeholder}...` : ""}
           size="small"
-          className="w-full md:w-72"
+          className="w-full md:w-72 !border-2 !border-solid !border-gray-200 !rounded-md"
+          sx={{
+            mb: 0,
+            "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+          }}
           value={searchValue || searchTerm}
           onChange={(e) => {
             const value = e.target.value;

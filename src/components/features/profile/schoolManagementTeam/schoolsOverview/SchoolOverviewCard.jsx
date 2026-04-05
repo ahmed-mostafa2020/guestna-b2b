@@ -16,13 +16,13 @@ const SchoolOverviewCard = ({ item }) => {
       <Box className="flex justify-between mb-2">
         {/* Name + Icon */}
         <Box className="flex justify-between items-center gap-3   ">
-          <Box className="flex items-center justify-center self-stretch bg-[#13A1C166]   px-3 py-1 rounded-lg  ">
+          <Box className="flex items-center justify-center self-stretch bg-[#13A1C166] px-3 py-1 rounded-lg">
             <span className="block  ">{bankSmallIcon}</span>
           </Box>
-          <Box className=" flex flex-col flex-1  overflow-hidden">
+          <Box className=" flex flex-col flex-1  overflow-hidden me-2">
             <Typography
               title={item.name + " - " + item.city}
-              className="font-semibold !text-base !font-somar w-full  line-clamp-1 "
+              className="font-semibold !text-base !font-somar w-full line-clamp-1"
             >
               {item.name} - {item.city}
             </Typography>

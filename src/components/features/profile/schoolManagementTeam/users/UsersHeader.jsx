@@ -26,7 +26,11 @@ const UsersHeader = ({ setSearchTerm, searchTerm }) => {
           <TextField
             placeholder={t("profile.schools_users.search")}
             size="small"
-            className="w-full md:w-64"
+            className="w-full md:w-64 !border-2 !border-solid !border-gray-200 !rounded-md"
+            sx={{
+              mb: 0,
+              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+            }}
             value={searchValue || searchTerm}
             onChange={(e) => {
               const value = e.target.value;

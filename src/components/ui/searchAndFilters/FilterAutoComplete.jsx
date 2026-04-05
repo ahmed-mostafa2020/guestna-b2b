@@ -73,6 +73,10 @@ const FilterAutoComplete = ({
           {...params}
           size="small"
           placeholder={label}
+          sx={{
+            mb: 0,
+            "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+          }}
           slotProps={{
             input: {
               ...params.InputProps,

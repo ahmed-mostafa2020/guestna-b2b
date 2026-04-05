@@ -18,7 +18,7 @@ const SchoolBalanceSkeleton = () => {
         {[1, 2, 3].map((item) => (
           <Grid
             key={item}
-            xs={4}
+            size={4}
             className="flex flex-col items-center justify-center gap-2"
           >
             <Skeleton variant="text" width={120} height={24} />
@@ -50,7 +50,7 @@ const SchoolBalance = ({ details, isLoading }) => {
         <Grid className="!mt-7 " container size={12} spacing={2}>
           <Grid
             className="flex flex-col items-center justify-center gap-2"
-            xs={4}
+            size={4}
           >
             <Typography className=" !font-somar  text-[#202224]">
               {t(
@@ -63,7 +63,7 @@ const SchoolBalance = ({ details, isLoading }) => {
           </Grid>
           <Grid
             className="flex flex-col items-center justify-center gap-2"
-            xs={4}
+            size={4}
           >
             <Typography className=" !font-somar  text-[#202224]">
               {t(
@@ -76,7 +76,7 @@ const SchoolBalance = ({ details, isLoading }) => {
           </Grid>
           <Grid
             className="flex flex-col items-center justify-center gap-2"
-            xs={4}
+            size={4}
           >
             <Typography className=" !font-somar  text-[#202224]">
               {t(

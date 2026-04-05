@@ -274,7 +274,7 @@ const TripsCard = ({
 
           <Link
             href={`/${locale}/discover/${activityCard.slug}`}
-            className={`px-4 text-center py-2 capitalize rounded-[10px] text-white bg-mainColor border-2 border-mainColor font-medium text-base transition-all ease-in-out duration-200 hover:bg-linksHover hover:border-linksHover mx-auto
+            className={`px-4 text-center py-2 capitalize rounded-[10px] text-white bg-mainColor border-2 border-mainColor font-medium text-base transition-all ease-in-out duration-200 hover:bg-linksHover hover:border-linksHover
                
             `}
           >

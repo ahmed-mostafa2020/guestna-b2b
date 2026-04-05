@@ -36,7 +36,7 @@ const SchoolStats = ({ details, isLoading }) => {
         {Array(6)
           .fill(<StateCardSkeleton />)
           .map((item, index) => (
-            <Grid key={index} item xs={4}>
+            <Grid key={index} size={2}>
               <StateCardSkeleton />
             </Grid>
           ))}
@@ -54,11 +54,11 @@ const SchoolStats = ({ details, isLoading }) => {
   return (
     <Grid container gap={2} spacing={2} size={12}>
       {formattedStats?.map((item, index) => (
-        <Grid key={index} item xs={4}>
+        <Grid key={index} size={2}>
           <StateCard label={item.label} value={item.value} />
         </Grid>
       ))}
-      <Grid item xs={4}>
+      <Grid size={2}>
         <StateCard
           value={details?.studentStats?.total}
           label={t(
