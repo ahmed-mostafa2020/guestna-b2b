@@ -111,12 +111,12 @@ const ProfileImage = ({ hasUploadButton = false }) => {
           alt="profile"
           width={48}
           height={48}
-          className="object-cover w-12 h-12 rounded-full"
+          className="object-contain w-12 h-12 rounded-full"
         />
       </figure>
 
       {error && (
-        <div className="absolute left-0 p-2 mt-1 text-xs text-white bg-red-500 rounded-md -bottom-10">
+        <div className="absolute left-0 p-2 mt-1 text-xs text-white bg-error rounded-md -bottom-10">
           {error}
         </div>
       )}

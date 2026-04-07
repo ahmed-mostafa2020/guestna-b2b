@@ -3,10 +3,10 @@
 import { useTranslations, useLocale } from "next-intl";
 import { useSelector } from "react-redux";
 import { Formik, Field } from "formik";
-import { CircularProgress, Container } from "@mui/material";
+import { CircularProgress, Container, Skeleton } from "@mui/material";
 import { useSnackbar } from "notistack";
 import axios from "axios";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 
 import { createSchoolRegisterSchema } from "@utils/validators/validationSchemas";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -43,6 +43,13 @@ const SchoolRegisterForm = ({
   const [organizationEducationSystems, setOrganizationEducationSystems] =
     useState([]);
   const [organizationStages, setOrganizationStages] = useState([]);
+
+  // State for grades
+  const [grades, setGrades] = useState([]);
+  const [loadingGrades, setLoadingGrades] = useState(false);
+
+  // Ref to capture the latest stages selection synchronously before onClose fires
+  const latestStagesRef = useRef([]);
 
   // Extract names from data for dropdowns
   const cityNames = cities.map((city) => city.name);
@@ -114,6 +121,7 @@ const SchoolRegisterForm = ({
     gender: [], // Multi-select array
     educationalTrack: "",
     stages: [], // Multi-select array
+    grades: [], // Multi-select array, populated after stages selection
     functionalDegree: "",
     contactPersonName: "",
     email: "",
@@ -165,7 +173,16 @@ const SchoolRegisterForm = ({
             ),
             gender: mapGenderToAPI(values.gender),
             academicStages: values.stages
-              .map((stageName) => findIdByName(availableStages, stageName))
+              .map((stageName) => {
+                const stage = availableStages.find((s) => s.name === stageName);
+                return stage?._id || stage?.id || null;
+              })
+              .filter(Boolean),
+            grades: values.grades
+              .map((gradeName) => {
+                const grade = grades.find((g) => g.name === gradeName);
+                return grade?._id || grade?.id || null;
+              })
               .filter(Boolean),
           },
         },
@@ -206,6 +223,8 @@ const SchoolRegisterForm = ({
         setOrganizationRoles([]);
         setOrganizationEducationSystems([]);
         setOrganizationStages([]);
+        setGrades([]);
+        latestStagesRef.current = [];
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -338,6 +357,39 @@ const SchoolRegisterForm = ({
     [locale]
   );
 
+  // Fetch grades for the selected stage IDs
+  const fetchGrades = useCallback(
+    async (stageIds) => {
+      if (!stageIds || stageIds.length === 0) {
+        setGrades([]);
+        return;
+      }
+
+      setLoadingGrades(true);
+      try {
+        const queryString = stageIds
+          .map((id, i) => `stages[${i}]=${encodeURIComponent(id)}`)
+          .join("&");
+        const response = await axios({
+          method: "GET",
+          url: getProxyUrl(
+            `${B2B_END_POINTS.SCHOOL_REGISTER.GRADES_BY_STAGES}?${queryString}`
+          ),
+          headers: getHeaders(locale),
+        });
+
+        const data = response.data?.data || response.data;
+        setGrades(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Error fetching grades:", error);
+        setGrades([]);
+      } finally {
+        setLoadingGrades(false);
+      }
+    },
+    [locale]
+  );
+
   return (
     <main className="py-8 lg:py-12 bg-packageDetailsBg">
       <Container maxWidth="lg">
@@ -428,8 +480,11 @@ const SchoolRegisterForm = ({
                         setFieldValue("schoolNameEnglish", "");
                         setFieldValue("organizationPhone", "");
                         setFieldValue("organizationEmail", "");
+                        setFieldValue("grades", []);
                         setOrganizationRoles([]);
                         setOrganizationEducationSystems([]);
+                        setGrades([]);
+                        latestStagesRef.current = [];
                       }
                     }}
                     onInputChange={(event, newInputValue) => {
@@ -483,8 +538,11 @@ const SchoolRegisterForm = ({
                         setFieldValue("schoolNameEnglish", "");
                         setFieldValue("organizationPhone", "");
                         setFieldValue("organizationEmail", "");
+                        setFieldValue("grades", []);
                         setOrganizationRoles([]);
                         setOrganizationEducationSystems([]);
+                        setGrades([]);
+                        latestStagesRef.current = [];
                       }
                     }}
                     onInputChange={(event, newInputValue) => {
@@ -625,24 +683,80 @@ const SchoolRegisterForm = ({
                   </div>
                 </div>
 
-                {/* Stages */}
+                {/* Stages and Grades */}
                 {stageNames.length > 0 && (
-                  <div className="w-1/2 pe-[10px]">
-                    <label className="block pb-2 font-medium">
-                      {t("schoolRegister.form.stages.label")}
-                      <span className="text-error ml-1">*</span>
-                    </label>
-                    <SelectionGroup
-                      name="stages"
-                      value={values.stages}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      touched={touched.stages}
-                      errors={errors.stages}
-                      placeholder={t("schoolRegister.form.stages.placeholder")}
-                      list={stageNames}
-                      multiple={true}
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
+                    <div>
+                      <label className="block pb-2 font-medium">
+                        {t("schoolRegister.form.stages.label")}
+                        <span className="text-error ml-1">*</span>
+                      </label>
+                      <SelectionGroup
+                        name="stages"
+                        value={values.stages}
+                        onChange={(e) => {
+                          const selectedNames = Array.isArray(e.target.value)
+                            ? e.target.value
+                            : [];
+                          // Resolve IDs immediately while availableStages is in scope
+                          latestStagesRef.current = selectedNames
+                            .map((name) => {
+                              const stage = availableStages.find(
+                                (s) => s.name === name
+                              );
+                              return stage?._id || stage?.id || null;
+                            })
+                            .filter(Boolean);
+                          handleChange(e);
+                        }}
+                        onBlur={handleBlur}
+                        onClose={() => {
+                          setFieldValue("grades", []);
+                          fetchGrades(latestStagesRef.current);
+                        }}
+                        touched={touched.stages}
+                        errors={errors.stages}
+                        placeholder={t(
+                          "schoolRegister.form.stages.placeholder"
+                        )}
+                        list={stageNames}
+                        multiple={true}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block pb-2 font-medium">
+                        {t("schoolRegister.form.grades.label")}
+                        <span className="text-error ml-1">*</span>
+                      </label>
+
+                      {values.stages.length === 0 ? (
+                        <div className="h-[55px] flex items-center px-4 border-2 border-border rounded-lg text-sm text-light opacity-60 font-somar">
+                          {t("schoolRegister.form.grades.selectStagesFirst")}
+                        </div>
+                      ) : loadingGrades ? (
+                        <Skeleton
+                          variant="rectangular"
+                          height={55}
+                          sx={{ borderRadius: "8px" }}
+                        />
+                      ) : (
+                        <SelectionGroup
+                          name="grades"
+                          value={values.grades}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          touched={touched.grades}
+                          errors={errors.grades}
+                          placeholder={t(
+                            "schoolRegister.form.grades.placeholder"
+                          )}
+                          list={grades.map((g) => g.name)}
+                          multiple={true}
+                          required={true}
+                        />
+                      )}
+                    </div>
                   </div>
                 )}
 

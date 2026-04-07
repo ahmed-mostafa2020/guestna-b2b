@@ -14,6 +14,7 @@ const SelectionGroup = ({
   value,
   onChange,
   onBlur,
+  onClose,
   touched,
   errors,
   placeholder,
@@ -39,6 +40,7 @@ const SelectionGroup = ({
         value={value}
         onChange={onChange}
         onBlur={onBlur}
+        onClose={onClose}
         displayEmpty
         multiple={multiple}
         disabled={disabled}

@@ -732,6 +732,10 @@ export const createSchoolRegisterSchema = (t) =>
       .of(Yup.string())
       .min(1, t("schoolRegister.validation.stages.required")),
 
+    grades: Yup.array()
+      .of(Yup.string())
+      .min(1, t("schoolRegister.validation.grades.required")),
+
     functionalDegree: Yup.string()
       .trim()
       .required(t("schoolRegister.validation.functionalDegree.required"))

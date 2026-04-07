@@ -2662,6 +2662,11 @@
         "label": "Educational Stages",
         "placeholder": "Select educational stages"
       },
+      "grades": {
+        "label": "Grades",
+        "placeholder": "Select grades",
+        "selectStagesFirst": "Please select stages first"
+      },
       "category": {
         "label": "Category",
         "placeholder": "Select the category that the school falls under (Boys, Girls, Both)"
@@ -2726,6 +2731,9 @@
       },
       "stages": {
         "required": "At least one educational stage is required"
+      },
+      "grades": {
+        "required": "At least one educational grade is required"
       },
       "category": {
         "required": "Category is required"
