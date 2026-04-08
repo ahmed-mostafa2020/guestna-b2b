@@ -436,10 +436,6 @@ const SchoolRegisterForm = ({
                   />
 
                   <div>
-                    <label className="block pb-2 font-medium">
-                      {t("schoolRegister.form.city.label")}
-                      <span className="text-error ml-1">*</span>
-                    </label>
                     <SelectionGroup
                       name="city"
                       value={values.city}
@@ -449,6 +445,8 @@ const SchoolRegisterForm = ({
                       errors={errors.city}
                       placeholder={t("schoolRegister.form.city.placeholder")}
                       list={cityNames}
+                      label={t("schoolRegister.form.city.label")}
+                      required={true}
                     />
                   </div>
                 </div>
@@ -646,10 +644,6 @@ const SchoolRegisterForm = ({
                 {/* Gender and Educational Track */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
                   <div>
-                    <label className="block pb-2 font-medium">
-                      {t("schoolRegister.form.educationalTrack.label")}
-                      <span className="text-error ml-1">*</span>
-                    </label>
                     <SelectionGroup
                       name="educationalTrack"
                       value={values.educationalTrack}
@@ -661,14 +655,12 @@ const SchoolRegisterForm = ({
                         "schoolRegister.form.educationalTrack.placeholder"
                       )}
                       list={educationSystemNames}
+                      label={t("schoolRegister.form.educationalTrack.label")}
+                      required={true}
                     />
                   </div>
 
                   <div>
-                    <label className="block pb-2 font-medium">
-                      {t("schoolRegister.form.gender.label")}
-                      <span className="text-error ml-1">*</span>
-                    </label>
                     <SelectionGroup
                       name="gender"
                       value={values.gender}
@@ -679,6 +671,8 @@ const SchoolRegisterForm = ({
                       placeholder={t("schoolRegister.form.gender.placeholder")}
                       list={genderOptions}
                       multiple={true}
+                      label={t("schoolRegister.form.gender.label")}
+                      required={true}
                     />
                   </div>
                 </div>
@@ -687,10 +681,6 @@ const SchoolRegisterForm = ({
                 {stageNames.length > 0 && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
                     <div>
-                      <label className="block pb-2 font-medium">
-                        {t("schoolRegister.form.stages.label")}
-                        <span className="text-error ml-1">*</span>
-                      </label>
                       <SelectionGroup
                         name="stages"
                         value={values.stages}
@@ -721,25 +711,34 @@ const SchoolRegisterForm = ({
                         )}
                         list={stageNames}
                         multiple={true}
+                        label={t("schoolRegister.form.stages.label")}
+                        required={true}
                       />
                     </div>
 
                     <div>
-                      <label className="block pb-2 font-medium">
-                        {t("schoolRegister.form.grades.label")}
-                        <span className="text-error ml-1">*</span>
-                      </label>
-
                       {values.stages.length === 0 ? (
-                        <div className="h-[55px] flex items-center px-4 border-2 border-border rounded-lg text-sm text-light opacity-60 font-somar">
-                          {t("schoolRegister.form.grades.selectStagesFirst")}
-                        </div>
+                        <>
+                          <label className="block pb-2 font-medium">
+                            {t("schoolRegister.form.grades.label")}
+                            <span className="text-error ml-1">*</span>
+                          </label>
+                          <div className="h-[55px] flex items-center px-4 border-2 border-border rounded-lg text-sm text-light opacity-60 font-somar">
+                            {t("schoolRegister.form.grades.selectStagesFirst")}
+                          </div>
+                        </>
                       ) : loadingGrades ? (
-                        <Skeleton
-                          variant="rectangular"
-                          height={55}
-                          sx={{ borderRadius: "8px" }}
-                        />
+                        <>
+                          <label className="block pb-2 font-medium">
+                            {t("schoolRegister.form.grades.label")}
+                            <span className="text-error ml-1">*</span>
+                          </label>
+                          <Skeleton
+                            variant="rectangular"
+                            height={55}
+                            sx={{ borderRadius: "8px" }}
+                          />
+                        </>
                       ) : (
                         <SelectionGroup
                           name="grades"
@@ -753,6 +752,7 @@ const SchoolRegisterForm = ({
                           )}
                           list={grades.map((g) => g.name)}
                           multiple={true}
+                          label={t("schoolRegister.form.grades.label")}
                           required={true}
                         />
                       )}
@@ -778,10 +778,6 @@ const SchoolRegisterForm = ({
                   />
 
                   <div>
-                    <label className="block pb-2 font-medium">
-                      {t("schoolRegister.form.functionalDegree.label")}
-                      <span className="text-error ml-1">*</span>
-                    </label>
                     <SelectionGroup
                       name="functionalDegree"
                       value={values.functionalDegree}
@@ -794,6 +790,8 @@ const SchoolRegisterForm = ({
                       )}
                       list={roleNames}
                       multiple={false}
+                      label={t("schoolRegister.form.functionalDegree.label")}
+                      required={true}
                     />
                   </div>
                 </div>
@@ -946,10 +944,6 @@ const SchoolRegisterForm = ({
                           />
 
                           <div>
-                            <label className="block pb-2 font-medium">
-                              {t("schoolRegister.form.functionalDegree.label")}
-                              <span className="text-error ml-1">*</span>
-                            </label>
                             <SelectionGroup
                               name={`additionalUsers.${index}.role`}
                               value={user.role}
@@ -962,6 +956,8 @@ const SchoolRegisterForm = ({
                               )}
                               list={roleNames}
                               multiple={false}
+                              label={t("schoolRegister.form.functionalDegree.label")}
+                              required={true}
                             />
                           </div>
 
