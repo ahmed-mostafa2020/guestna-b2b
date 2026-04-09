@@ -11,7 +11,13 @@ import {
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 import SearchAndFilters from "@components/ui/searchAndFilters/SearchAndFilters";
-import { Box, Grid2 as Grid, IconButton, InputAdornment, TextField } from "@mui/material";
+import {
+  Box,
+  Grid2 as Grid,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from "@mui/material";
 import { searchBarIcon, wrongIcon } from "@assets/svg";
 
 const EXCLUDED_URL_PARAMS = ["page"];
@@ -228,9 +234,6 @@ const DiscoverFiltersSection = () => {
     ].filter((f) => f.options.length > 0);
   }, [sideFilters, filter, t, mapOptions, handleFilterChange]);
 
-  const activeFilterCount =
-    Object.values(filter || {}).flat().length + (searchTerm ? 1 : 0);
-
   // ── Render ────────────────────────────────────────────────────
   return (
     <Box className="bg-white rounded-xl p-6 shadow-[0_0_10px_0_rgba(0,0,0,0.08)] mb-6 transition-all">
@@ -241,11 +244,6 @@ const DiscoverFiltersSection = () => {
             <h3 className="font-semibold text-titleColor text-xl">
               {t("forms.search.title")}
             </h3>
-            {activeFilterCount > 0 && (
-              <span className="px-2 py-0.5 rounded-full bg-mainColor/10 text-mainColor text-xs font-bold">
-                {activeFilterCount} {t("common.active", { count: activeFilterCount })}
-              </span>
-            )}
           </Box>
         </Grid>
 

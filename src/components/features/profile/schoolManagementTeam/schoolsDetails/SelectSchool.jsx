@@ -58,42 +58,36 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
   );
 
   const orgOptions = useMemo(() => {
-      if (allSelected) {
-        return organizations.map((item) => ({
-          label: item.name,
-          value: item.slug,
-        }));
-      }
-  
-      if (selectedIds.length > 0 && !allSelected && organizations.length > 0) {
-        return selectedIds.map((id) => {
-          const org = organizations.find((org) => org._id === id);
-          return {
-            label: org.name,
-            value: org.slug,
-          };
-        });
-      }
-  
-      return [];
-    }, [organizations, selectedIds, allSelected]);
+    if (allSelected) {
+      return organizations.map((item) => ({
+        label: item.name,
+        value: item.slug,
+      }));
+    }
 
-  
+    if (selectedIds.length > 0 && !allSelected && organizations.length > 0) {
+      return selectedIds.map((id) => {
+        const org = organizations.find((org) => org._id === id);
+        return {
+          label: org.name,
+          value: org.slug,
+        };
+      });
+    }
+
+    return [];
+  }, [organizations, selectedIds, allSelected]);
+
   useEffect(() => {
     const detailsSlug = details?.slug;
-    if (
-      detailsSlug &&
-      
-      orgOptions.some((org) => org.value === detailsSlug)
-    ) {
- 
+    if (detailsSlug && orgOptions.some((org) => org.value === detailsSlug)) {
       setSelectedSchool(detailsSlug);
     }
   }, [details?.slug, orgOptions, selectedSchool]);
 
   const handleSchoolSelect = (e) => {
     const slug = e.target.value;
- 
+
     setSelectedSchool(slug);
     router.push(
       `/${locale}/profile/school-team-management/schools-details/${slug}`
@@ -116,10 +110,9 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
         onChange={handleSchoolSelect}
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
-        className="w-full !border-5 !border-borderColor"
+        className="w-full !border-2 !border-border"
         sx={{
           "& .MuiOutlinedInput-notchedOutline": {
-            borderColor: "#e5e7eb",
             borderWidth: "2px",
           },
         }}
@@ -149,7 +142,7 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
 
       <Box className="bg-[#E6F0F1] p-6 rounded-xl flex flex-col md:flex-row gap-4 border-[#6EC1E366] border-2">
         <Image
-          src={details.image}
+          src={details.image || details.url}
           alt={details.name}
           width={110}
           height={110}

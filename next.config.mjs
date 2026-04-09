@@ -26,7 +26,7 @@ const nextConfig = {
   },
 
   images: {
-    formats: ['image/webp', 'image/avif'],
+    formats: ["image/webp", "image/avif"],
     minimumCacheTTL: 60,
     domains: [
       "res.cloudinary.com",
@@ -34,6 +34,7 @@ const nextConfig = {
       "storage.googleapis.com",
       "drive.google.com",
       "cultural-enrika-guestna-43d7043d.koyeb.app",
+      "guestna-revamp-dashboard.vercel.app",
       "localhost",
     ],
   },

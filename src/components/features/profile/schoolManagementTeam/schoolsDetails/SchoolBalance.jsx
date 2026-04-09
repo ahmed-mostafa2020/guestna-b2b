@@ -42,7 +42,7 @@ const SchoolBalance = ({ details, isLoading }) => {
   return (
     <>
       <Box className="bg-[#D4FAFF66] border-[#6EC1E366] border-2 rounded-lg px-4 py-6">
-        <Typography className=" !font-somar !text-xl flex gap-2 ">
+        <Typography className="!font-somar !text-xl flex gap-2">
           {" "}
           <span> {visaCardIcon}</span>{" "}
           {t("profile.schools_overview.schools_details.balance.title")}
@@ -52,12 +52,12 @@ const SchoolBalance = ({ details, isLoading }) => {
             className="flex flex-col items-center justify-center gap-2"
             size={4}
           >
-            <Typography className=" !font-somar  text-[#202224]">
+            <Typography className="!font-somar text-[#202224]">
               {t(
                 "profile.schools_overview.schools_details.balance.available_balance"
               )}
             </Typography>
-            <Typography className=" !font-somar !text-xl text-[#008442] flex gap-2 items-center justify-center">
+            <Typography className="!font-somar !text-xl text-[#008442] flex gap-2 items-center justify-center">
               {formatCurrency(details.balance.availableBalance)}
             </Typography>
           </Grid>
@@ -65,12 +65,12 @@ const SchoolBalance = ({ details, isLoading }) => {
             className="flex flex-col items-center justify-center gap-2"
             size={4}
           >
-            <Typography className=" !font-somar  text-[#202224]">
+            <Typography className="!font-somar text-[#202224]">
               {t(
                 "profile.schools_overview.schools_details.balance.pending_balance"
               )}
             </Typography>
-            <Typography className=" !font-somar !text-xl text-[#B25B00] flex gap-2 items-center justify-center">
+            <Typography className="!font-somar !text-xl text-[#B25B00] flex gap-2 items-center justify-center">
               {formatCurrency(details.balance.pendingBalance)}
             </Typography>
           </Grid>
@@ -78,12 +78,12 @@ const SchoolBalance = ({ details, isLoading }) => {
             className="flex flex-col items-center justify-center gap-2"
             size={4}
           >
-            <Typography className=" !font-somar  text-[#202224]">
+            <Typography className="!font-somar text-[#202224]">
               {t(
                 "profile.schools_overview.schools_details.balance.total_balance"
               )}
             </Typography>
-            <Typography className=" !font-somar !text-xl text-[#1858A5] flex gap-2 items-center justify-center">
+            <Typography className="!font-somar !text-xl text-[#1858A5] flex gap-2 items-center justify-center">
               {formatCurrency(details.balance.totalBalance)}
             </Typography>
           </Grid>

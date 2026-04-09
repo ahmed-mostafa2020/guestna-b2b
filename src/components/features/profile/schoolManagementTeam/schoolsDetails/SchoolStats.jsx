@@ -5,10 +5,10 @@ import React from "react";
 const StateCard = ({ label, value }) => {
   return (
     <Box className="flex flex-col gap-2 bg-white border-2 h-full min-h-28 justify-center items-center border-border rounded-lg px-2 py-4">
-      <Typography className="  !font-somar !text-center !text-sm !text-[#202224] !capitalize">
+      <Typography className="!font-somar !text-center !text-sm !text-[#202224] !capitalize">
         {label}
       </Typography>
-      <Typography className=" !font-somar !text-center !text-xl text-[#1E1E1C]">
+      <Typography className="!font-somar !text-center !text-xl text-[#1E1E1C]">
         {value}
       </Typography>
     </Box>
@@ -35,8 +35,8 @@ const SchoolStats = ({ details, isLoading }) => {
       <Grid container gap={2} spacing={2} size={12}>
         {Array(6)
           .fill(<StateCardSkeleton />)
-          .map((item, index) => (
-            <Grid key={index} size={2}>
+          .map((_, index) => (
+            <Grid key={index} size={{ xs: 6, sm: 4, md: 2 }}>
               <StateCardSkeleton />
             </Grid>
           ))}
@@ -54,11 +54,11 @@ const SchoolStats = ({ details, isLoading }) => {
   return (
     <Grid container gap={2} spacing={2} size={12}>
       {formattedStats?.map((item, index) => (
-        <Grid key={index} size={2}>
+        <Grid key={index} size={{ xs: 6, sm: 4, md: 2 }}>
           <StateCard label={item.label} value={item.value} />
         </Grid>
       ))}
-      <Grid size={2}>
+      <Grid size={{ xs: 6, sm: 4, md: 2 }}>
         <StateCard
           value={details?.studentStats?.total}
           label={t(
