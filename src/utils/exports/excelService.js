@@ -177,7 +177,7 @@ function formatCurrencyString(amount, locale = "en-US") {
 export const ExcelService = {
   // 1. Generate a dynamic, generic Excel template
   generateTemplate: async ({ headers, locale = "en" }) => {
-    const { workbook, worksheet } = createWorkbook("Template");
+    const { workbook, worksheet } = await createWorkbook("Template");
 
     // Set headers
     worksheet.columns = headers.map((col) => ({
@@ -256,7 +256,7 @@ export const ExcelService = {
 
   // 3. Export any records to Excel
   exportRecords: async ({ headers, records, locale = "en" }) => {
-    const { workbook, worksheet } = createWorkbook("Records");
+    const { workbook, worksheet } = await createWorkbook("Records");
 
     worksheet.columns = headers.map((col) => ({
       header: col.label[locale] || col.label.en,
@@ -273,7 +273,7 @@ export const ExcelService = {
 
   // 4. Export My Booking (Profile)
   exportMyBooking: async ({ booking, bookingDetails, t, locale = "en" }) => {
-    const { workbook, worksheet: tripSheet } = createWorkbook(
+    const { workbook, worksheet: tripSheet } = await createWorkbook(
       t("profile.tables.bookings.details.tripInfo")
     );
 
@@ -389,7 +389,7 @@ export const ExcelService = {
   // 5. Export Student List (Simple)
   exportStudentsList: async ({ students, gradeName, translatedLabels }) => {
     // translatedLabels: { reportTitle, studentName, filename }
-    const { workbook, worksheet } = createWorkbook(gradeName || "Students");
+    const { workbook, worksheet } = await createWorkbook(gradeName || "Students");
 
     // Add Title Row
     worksheet.addRow([translatedLabels.reportTitle]);
@@ -421,7 +421,7 @@ export const ExcelService = {
 
   // 5b. Export Student Invoice (Single Student with Booking Info)
   exportStudentInvoice: async ({ student, booking, t, locale = "en" }) => {
-    const { workbook, worksheet } = createWorkbook(
+    const { workbook, worksheet } = await createWorkbook(
       t("profile.tables.orders.studentsTable.title")
     );
 
@@ -552,7 +552,7 @@ export const ExcelService = {
     t,
     locale = "en",
   }) => {
-    const { workbook, worksheet: tripSheet } = createWorkbook(
+    const { workbook, worksheet: tripSheet } = await createWorkbook(
       t("exportUtils.bookingReport.tripInfo")
     );
 
@@ -692,7 +692,7 @@ export const ExcelService = {
 
   // 7. Export Student Details (School Management)
   exportStudentDetails: async ({ data, t, locale = "en" }) => {
-    const { workbook, worksheet: profileSheet } = createWorkbook(
+    const { workbook, worksheet: profileSheet } = await createWorkbook(
       t("profile.schoolTeamStudents.details.basicInfo")
     );
 

@@ -23,11 +23,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 
 import FormSubmitButton from "@components/ui/FormSubmitButton";
-import {
-  Container,
-  Checkbox,
-  FormControlLabel,
-} from "@mui/material";
+import { Container, Checkbox, FormControlLabel } from "@mui/material";
 import ParentFormFields from "./ParentFormFields";
 import ChildForm from "./childForms/ChildForm";
 import CustomizedRiyadhForm from "./childForms/CustomizedRiyadhForm";
@@ -44,7 +40,7 @@ const RegisterStudentForm = ({
   const [___, setGradeError] = useState("");
 
   const [childrenNumber, setChildrenNumber] = useState(1);
-  const [nationality, setNationality] = useState("68052bdd38ea31c8cf95dc04");
+  const [nationality, setNationality] = useState("a7568f9b909fa74e02403a29");
   const [nationalIdImage, setNationalIdImage] = useState(null);
   const [nationalIdImageError, setNationalIdImageError] = useState("");
 
@@ -352,7 +348,7 @@ const RegisterStudentForm = ({
           mobile: parentPhone || "",
           backupMobile: "",
           email: parentEmail || "",
-          nationality: "68052bdd38ea31c8cf95dc04",
+          nationality: "a7568f9b909fa74e02403a29",
           nationalId: "",
           promoCode: "",
           children: generateInitialChildren(childrenNumber),

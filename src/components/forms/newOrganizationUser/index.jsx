@@ -86,11 +86,11 @@ const OrganizationUserForm = ({
       maxBodyLength: Infinity,
       url: user
         ? getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.EDIT_USER}/${user._id}`
-        )
+            `${B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.EDIT_USER}/${user._id}`
+          )
         : getProxyUrl(
-          B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.NEW_USER
-        ),
+            B2B_END_POINTS.PROFILE.SCHOOL_TEAM_MANAGEMENT.USERS.NEW_USER
+          ),
 
       headers,
       data: newUserData,
@@ -116,7 +116,6 @@ const OrganizationUserForm = ({
           handleClose();
         }
       })
-  
 
       .catch((error) => {
         setSubmitting(false);
@@ -126,7 +125,6 @@ const OrganizationUserForm = ({
         if (formErrors) {
           setFormErrors([errorMessage]);
         }
-      
       });
   };
 
@@ -153,7 +151,7 @@ const OrganizationUserForm = ({
         setFieldValue,
         isSubmitting,
       }) => (
-        <div className="lg:w-[750px] w-[650px] bg-white rounded-2xl mx-auto my-5">
+        <div className="lg:w-[750px] bg-white rounded-2xl mx-auto my-5">
           <div className="p-6 border-b border-black centered">
             <div className="flex items-center gap-1">
               <h3 className="text-xl lg:text-2xl">

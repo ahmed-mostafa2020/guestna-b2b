@@ -167,7 +167,7 @@ const ParentFormFields = ({
           placeholder={t("profile.information.personalInformation.nationality")}
           value={
             values.nationality ||
-            nationalities?.find((n) => n._id === "68052bdd38ea31c8cf95dc04")
+            nationalities?.find((n) => n._id === "a7568f9b909fa74e02403a29")
               ?._id
           }
           onChange={handleChangeNationality}
