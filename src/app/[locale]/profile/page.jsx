@@ -24,7 +24,7 @@ import MyBookingsTrips from "@components/features/profile/myBookings";
 import OrganizationsSection from "@components/features/profile/myBookings/OrganizationsSection";
 
 const Profile = () => {
-  const { hasElement } = usePermissions();
+  const { hasElement, hasPage } = usePermissions();
   const locale = useLocale();
   const t = useTranslations();
   const [organizationsSearchTerm, setOrganizationsSearchTerm] = useState("");
@@ -170,12 +170,14 @@ const Profile = () => {
           />
         )}
 
-        <OrganizationsSection
-          organizationsData={organizationsData}
-          organizationsLoading={organizationsLoading}
-          searchTerm={organizationsSearchTerm}
-          setSearchTerm={setOrganizationsSearchTerm}
-        />
+        {hasPage(PERMISSIONS.PAGE.B2B_PROFILE_SCHOOLS_PAGE) && (
+          <OrganizationsSection
+            organizationsData={organizationsData}
+            organizationsLoading={organizationsLoading}
+            searchTerm={organizationsSearchTerm}
+            setSearchTerm={setOrganizationsSearchTerm}
+          />
+        )}
       </main>
     </ProtectedProfilePage>
   );

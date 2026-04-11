@@ -5,9 +5,12 @@ import { useTranslations } from "next-intl";
 
 import StudentsListModal from "./StudentsListModal";
 import StudentDetailsModal from "./StudentDetailsModal";
+import { usePermissions } from "@hooks/utils/usePermissions";
+import { PERMISSIONS } from "@constants/permissions";
 
 const GradesListing = ({ grades = [], organizationId }) => {
   const t = useTranslations();
+  const { hasElement } = usePermissions();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedGrade, setSelectedGrade] = useState(null);
@@ -65,8 +68,13 @@ const GradesListing = ({ grades = [], organizationId }) => {
         {parsedGrades.map((grade) => (
           <button
             key={grade.id}
-            onClick={() => handleOpenModal(grade)}
-            className="w-full flex items-center justify-between rounded-xl border border-border p-3 hover:bg-gray-50 hover:border-mainColor transition-colors cursor-pointer"
+            onClick={() =>
+              hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_STUDENTS_GRADES_DETAILS)
+                ? handleOpenModal(grade)
+                : undefined
+            }
+            disabled={!hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_STUDENTS_GRADES_DETAILS)}
+            className="w-full flex items-center justify-between rounded-xl border border-border p-3 hover:bg-gray-50 hover:border-mainColor transition-colors cursor-pointer disabled:cursor-default disabled:opacity-70"
             aria-label={t("profile.schoolTeamStudents.viewStudents", {
               grade: grade.name,
             })}
@@ -87,18 +95,24 @@ const GradesListing = ({ grades = [], organizationId }) => {
           organizationId={organizationId}
           gradeId={selectedGrade.id}
           gradeName={selectedGrade.name}
-          onViewStudent={handleViewStudent}
+          onViewStudent={
+            hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_STUDENTS_STUDENT_DETAILS)
+              ? handleViewStudent
+              : undefined
+          }
         />
       )}
 
       {/* Student Details Modal */}
-      {showDetailsModal && selectedStudentId && (
-        <StudentDetailsModal
-          open={showDetailsModal}
-          handleClose={handleCloseDetails}
-          studentId={selectedStudentId}
-        />
-      )}
+      {showDetailsModal &&
+        selectedStudentId &&
+        hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_STUDENTS_STUDENT_DETAILS) && (
+          <StudentDetailsModal
+            open={showDetailsModal}
+            handleClose={handleCloseDetails}
+            studentId={selectedStudentId}
+          />
+        )}
     </>
   );
 };

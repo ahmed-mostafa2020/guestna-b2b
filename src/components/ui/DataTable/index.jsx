@@ -1,7 +1,13 @@
 "use client";
 
 import { memo, useMemo, useState, useCallback } from "react";
-import { Card, CardContent, Checkbox, IconButton, Tooltip } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Checkbox,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
 import Pagination from "@components/ui/Pagination";
 import TableSkeleton from "@components/ui/TableSkeleton";
 
@@ -45,29 +51,37 @@ const DataTable = ({
   bulkActions = [],
 }) => {
   const selectedSet = useMemo(() => new Set(selectedRows), [selectedRows]);
-  const isAllSelected = data.length > 0 && data.every(row => selectedSet.has(rowKey(row)));
-  const isSomeSelected = data.some(row => selectedSet.has(rowKey(row))) && !isAllSelected;
+  const isAllSelected =
+    data.length > 0 && data.every((row) => selectedSet.has(rowKey(row)));
+  const isSomeSelected =
+    data.some((row) => selectedSet.has(rowKey(row))) && !isAllSelected;
 
-  const handleSelectAll = useCallback((event) => {
-    if (!onSelectionChange) return;
-    if (event.target.checked) {
-      const allIds = data.map(row => rowKey(row));
-      onSelectionChange(allIds);
-    } else {
-      onSelectionChange([]);
-    }
-  }, [data, onSelectionChange, rowKey]);
+  const handleSelectAll = useCallback(
+    (event) => {
+      if (!onSelectionChange) return;
+      if (event.target.checked) {
+        const allIds = data.map((row) => rowKey(row));
+        onSelectionChange(allIds);
+      } else {
+        onSelectionChange([]);
+      }
+    },
+    [data, onSelectionChange, rowKey]
+  );
 
-  const handleSelectRow = useCallback((rowId) => {
-    if (!onSelectionChange) return;
-    const newSelected = new Set(selectedSet);
-    if (newSelected.has(rowId)) {
-      newSelected.delete(rowId);
-    } else {
-      newSelected.add(rowId);
-    }
-    onSelectionChange(Array.from(newSelected));
-  }, [selectedSet, onSelectionChange]);
+  const handleSelectRow = useCallback(
+    (rowId) => {
+      if (!onSelectionChange) return;
+      const newSelected = new Set(selectedSet);
+      if (newSelected.has(rowId)) {
+        newSelected.delete(rowId);
+      } else {
+        newSelected.add(rowId);
+      }
+      onSelectionChange(Array.from(newSelected));
+    },
+    [selectedSet, onSelectionChange]
+  );
 
   // Loading state
   if (loading) {
@@ -80,13 +94,13 @@ const DataTable = ({
   return (
     <div className={`w-full space-y-6 ${className}`}>
       {/* Header with Title and Bulk Actions */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-1">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-1 w-full">
         {title && (
           <h2 className="text-xl font-medium lg:text-2xl text-titleColor">
             {title}
           </h2>
         )}
-        
+
         {hasBulkActions && (
           <div className="flex items-center gap-3 bg-mainColor/5 px-4 py-2 rounded-xl border border-mainColor/10 animate-in fade-in slide-in-from-top-2">
             <span className="text-sm font-semibold text-mainColor">
@@ -96,10 +110,10 @@ const DataTable = ({
             <div className="flex items-center gap-1">
               {bulkActions.map((action, idx) => (
                 <Tooltip key={idx} title={action.label}>
-                  <IconButton 
-                    size="small" 
+                  <IconButton
+                    size="small"
                     onClick={() => action.onClick(Array.from(selectedSet))}
-                    sx={{ color: action.color || 'var(--color-main)' }}
+                    sx={{ color: action.color || "var(--color-main)" }}
                   >
                     {action.icon || action.label[0]}
                   </IconButton>
@@ -130,7 +144,10 @@ const DataTable = ({
                         indeterminate={isSomeSelected}
                         checked={isAllSelected}
                         onChange={handleSelectAll}
-                        sx={{ color: 'var(--color-main)', '&.Mui-checked': { color: 'var(--color-main)' } }}
+                        sx={{
+                          color: "var(--color-main)",
+                          "&.Mui-checked": { color: "var(--color-main)" },
+                        }}
                       />
                     </th>
                   )}
@@ -155,7 +172,11 @@ const DataTable = ({
                 {isEmpty ? (
                   <tr>
                     <td
-                      colSpan={columns.length + (rowActions ? 1 : 0) + (selectable ? 1 : 0)}
+                      colSpan={
+                        columns.length +
+                        (rowActions ? 1 : 0) +
+                        (selectable ? 1 : 0)
+                      }
                       className="px-6 py-12 text-center"
                     >
                       {emptyState || (
@@ -178,16 +199,22 @@ const DataTable = ({
                             : ""
                         } transition-colors hover:bg-gray-50 ${
                           onRowClick ? "cursor-pointer" : ""
-                        } ${isSelected ? 'bg-mainColor/5' : ''}`}
+                        } ${isSelected ? "bg-mainColor/5" : ""}`}
                         onClick={() => onRowClick?.(row, index)}
                       >
                         {selectable && (
-                          <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
+                          <td
+                            className="px-4 py-4"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <Checkbox
                               size="small"
                               checked={isSelected}
                               onChange={() => handleSelectRow(id)}
-                              sx={{ color: 'var(--color-main)', '&.Mui-checked': { color: 'var(--color-main)' } }}
+                              sx={{
+                                color: "var(--color-main)",
+                                "&.Mui-checked": { color: "var(--color-main)" },
+                              }}
                             />
                           </td>
                         )}
@@ -204,7 +231,9 @@ const DataTable = ({
                           </td>
                         ))}
                         {rowActions && (
-                          <td className="px-4 py-4">{rowActions(row, index)}</td>
+                          <td className="px-4 py-4">
+                            {rowActions(row, index)}
+                          </td>
                         )}
                       </tr>
                     );
@@ -237,16 +266,19 @@ const DataTable = ({
             return (
               <Card
                 key={id || index}
-                className={`transition-shadow shadow-md hover:shadow-lg ${isSelected ? 'border-2 border-mainColor/30' : ''}`}
+                className={`transition-shadow shadow-md hover:shadow-lg ${isSelected ? "border-2 border-mainColor/30" : ""}`}
               >
                 <CardContent className="p-4 space-y-3 relative">
                   {selectable && (
                     <div className="absolute top-2 right-2">
-                       <Checkbox
+                      <Checkbox
                         size="small"
                         checked={isSelected}
                         onChange={() => handleSelectRow(id)}
-                        sx={{ color: 'var(--color-main)', '&.Mui-checked': { color: 'var(--color-main)' } }}
+                        sx={{
+                          color: "var(--color-main)",
+                          "&.Mui-checked": { color: "var(--color-main)" },
+                        }}
                       />
                     </div>
                   )}

@@ -5,10 +5,13 @@ import { useLocale, useTranslations } from "next-intl";
 import { bankSmallIcon, locationGrayIcon } from "@assets/svg";
 import Link from "next/link";
 import formatCurrency from "@utils/formatters/FormatCurrency";
+import { usePermissions } from "@hooks/utils/usePermissions";
+import { PERMISSIONS } from "@constants/permissions";
 
 const SchoolOverviewCard = ({ item }) => {
   const t = useTranslations();
   const locale = useLocale();
+  const { hasElement } = usePermissions();
 
   return (
     <Box className="rounded-xl border-2 border-border px-4  py-6 shadow-sm bg-white flex flex-col gap-8  ">
@@ -96,12 +99,14 @@ const SchoolOverviewCard = ({ item }) => {
         </Box>
       </Box>
       {/* Button */}
-      <Link
-        className="!font-somar font-semibold !bg-mainColor px-8 py-4 block text-center w-full !text-white  rounded-lg"
-        href={`/${locale}/profile/school-team-management/schools-details/${item.slug}`}
-      >
-        {t("profile.schools_overview.cards.show_details")}
-      </Link>
+      {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_SCHOOLS_CARDS_DETAILS) && (
+        <Link
+          className="!font-somar font-semibold !bg-mainColor px-8 py-4 block text-center w-full !text-white  rounded-lg"
+          href={`/${locale}/profile/school-team-management/schools-details/${item.slug}`}
+        >
+          {t("profile.schools_overview.cards.show_details")}
+        </Link>
+      )}
     </Box>
   );
 };

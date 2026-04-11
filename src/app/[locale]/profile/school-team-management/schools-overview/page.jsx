@@ -16,6 +16,7 @@ import ErrorComponent from "@feedback/error/ErrorComponent";
 import { useFetchData } from "@hooks/data/useFetchData";
 import { usePermissions } from "@hooks/utils/usePermissions";
 import { useLocale, useTranslations } from "next-intl";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 
 // Constants
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -99,6 +100,9 @@ const SchoolsOverViewPage = () => {
   const schools = data?.nodes ?? [];
 
   return (
+    <ProtectedProfilePage
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_SCHOOLS_PAGE}
+    >
     <main className="flex flex-col gap-6 min-h-screen">
       {/* Summary Info Cards */}
       {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS) && (
@@ -159,6 +163,7 @@ const SchoolsOverViewPage = () => {
         />
       )}
     </main>
+    </ProtectedProfilePage>
   );
 };
 

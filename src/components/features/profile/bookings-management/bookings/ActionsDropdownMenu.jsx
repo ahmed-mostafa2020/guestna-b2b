@@ -13,12 +13,15 @@ import { getHeaders } from "@utils/helpers/getHeaders";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { TRIP_STATUS } from "@constants/tripStatus";
+import { PERMISSIONS } from "@constants/permissions";
+import { usePermissions } from "@hooks/utils/usePermissions";
 import axios from "axios";
 
 const ActionsDropdownMenu = ({ booking }) => {
   const locale = useLocale();
   const t = useTranslations();
   const headers = getHeaders(locale);
+  const { hasElement } = usePermissions();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -95,7 +98,8 @@ const ActionsDropdownMenu = ({ booking }) => {
             {t("links.showDetails")}
           </MenuItem>
 
-          {booking.status !== TRIP_STATUS.CANCELLED && (
+          {booking.status !== TRIP_STATUS.CANCELLED &&
+            hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_BOOKINGS_COMMENT_BUTTON) && (
             <MenuItem onClick={showAdministrativeComment} className="!font-ibm">
               {t("profile.tables.bookings.actions.administrativeComment")}
             </MenuItem>

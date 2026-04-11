@@ -190,8 +190,8 @@ const UsersInfo = ({
       )}
 
       {/* ACTION BUTTONS */}
-      {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_ADD_USER) && (
-        <Box className="flex flex-col sm:flex-row justify-center gap-3">
+      <Box className="flex flex-col sm:flex-row justify-center gap-3">
+        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_ADD_USER) && (
           <button
             onClick={openAddModal}
             disabled={addLoading}
@@ -202,7 +202,9 @@ const UsersInfo = ({
             )}
             {t("profile.schools_users.add_new_user")}
           </button>
+        )}
 
+        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_UPLOAD_USER) && (
           <button
             onClick={openBulkModal}
             disabled={bulkLoading}
@@ -213,8 +215,8 @@ const UsersInfo = ({
             )}
             {t("profile.schools_users.bulk_import_users")}
           </button>
-        </Box>
-      )}
+        )}
+      </Box>
 
       {/* ADD USER MODAL */}
       <CustomizedModal
