@@ -79,7 +79,7 @@ const AllOrdersTable = ({
 
   // Check if user has any order management action permissions
   const hasAnyActionPermission = hasAnyElement([
-    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOW_DETAILS,
+    PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOWDETAILS,
     PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REMINDER_GUESTNA,
     PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_UPDATE_TRIP,
     PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REJECT_TRIP,
@@ -157,81 +157,89 @@ const AllOrdersTable = ({
     return <TableSkeleton columns={8} />;
   }
 
-  const columns = useMemo(() => [
-    {
-      key: "orderId",
-      label: t("profile.tables.orders.tableHeaders.orderNumber"),
-      className: "font-medium text-foreground",
-      render: (row) => (
-        <span className="block max-w-[100px] truncate" title={row.orderId}>
-          {row.orderId}
-        </span>
-      ),
-    },
-    {
-      key: "organization",
-      label: t("profile.tables.orders.tableHeaders.school"),
-      className: "text-muted-foreground",
-      render: (row) => (
-        <span className="block max-w-[180px] truncate" title={row.organization}>
-          {row.organization}
-        </span>
-      ),
-    },
-    {
-      key: "name",
-      label: t("profile.tables.orders.tableHeaders.activity"),
-      className: "font-medium text-foreground",
-      render: (row) => (
-        <span className="block max-w-[100px] truncate" title={row.name}>
-          {row.name}
-        </span>
-      ),
-    },
-    {
-      key: "askType",
-      label: t("profile.tables.orders.tableHeaders.orderType"),
-      render: (row) =>
-        row.askType === "CUSTOM" ? (
-          <span className="px-2 py-1 text-xs font-medium">
-            {t("profile.tables.orders.customizable.title")}
-          </span>
-        ) : (
-          <span className="px-2 py-1 text-xs font-medium">
-            {t("profile.tables.orders.normal.title")}
+  const columns = useMemo(
+    () => [
+      {
+        key: "orderId",
+        label: t("profile.tables.orders.tableHeaders.orderNumber"),
+        className: "font-medium text-foreground",
+        render: (row) => (
+          <span className="block max-w-[100px] truncate" title={row.orderId}>
+            {row.orderId}
           </span>
         ),
-    },
-    {
-      key: "day",
-      label: t("profile.tables.orders.tableHeaders.orderDate"),
-      className: "text-muted-foreground",
-      render: (row) =>
-        formatDate(row.day, locale, {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }),
-    },
-    {
-      key: "budget",
-      label: t("profile.tables.orders.tableHeaders.budget"),
-      className: "font-medium text-foreground",
-      render: (row) =>
-        formatCurrency(row.basePrice ? row.basePrice : row.priceRange?.max || 0),
-    },
-    {
-      key: "status",
-      label: t("profile.tables.orders.tableHeaders.status"),
-      render: (row) => (
-        <span
-          className={`px-1 lg:px-3 py-1 rounded-full lg:text-sm text-[10px] font-medium ${getStatusStyles(row.status)}`}
-        >
-          {t(`common.organizationTripStatus.${row.status}`)}
-        </span>
-      ),
-    },
-  ], [t, locale]);
+      },
+      {
+        key: "organization",
+        label: t("profile.tables.orders.tableHeaders.school"),
+        className: "text-muted-foreground",
+        render: (row) => (
+          <span
+            className="block max-w-[180px] truncate"
+            title={row.organization}
+          >
+            {row.organization}
+          </span>
+        ),
+      },
+      {
+        key: "name",
+        label: t("profile.tables.orders.tableHeaders.activity"),
+        className: "font-medium text-foreground",
+        render: (row) => (
+          <span className="block max-w-[100px] truncate" title={row.name}>
+            {row.name}
+          </span>
+        ),
+      },
+      {
+        key: "askType",
+        label: t("profile.tables.orders.tableHeaders.orderType"),
+        render: (row) =>
+          row.askType === "CUSTOM" ? (
+            <span className="px-2 py-1 text-xs font-medium">
+              {t("profile.tables.orders.customizable.title")}
+            </span>
+          ) : (
+            <span className="px-2 py-1 text-xs font-medium">
+              {t("profile.tables.orders.normal.title")}
+            </span>
+          ),
+      },
+      {
+        key: "day",
+        label: t("profile.tables.orders.tableHeaders.orderDate"),
+        className: "text-muted-foreground",
+        render: (row) =>
+          formatDate(row.day, locale, {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }),
+      },
+      {
+        key: "budget",
+        label: t("profile.tables.orders.tableHeaders.budget"),
+        className: "font-medium text-foreground",
+        render: (row) =>
+          formatCurrency(
+            row.basePrice ? row.basePrice : row.priceRange?.max || 0
+          ),
+      },
+      {
+        key: "status",
+        label: t("profile.tables.orders.tableHeaders.status"),
+        render: (row) => (
+          <span
+            className={`px-1 lg:px-3 py-1 rounded-full lg:text-sm text-[10px] font-medium ${getStatusStyles(row.status)}`}
+          >
+            {t(`common.organizationTripStatus.${row.status}`)}
+          </span>
+        ),
+      },
+    ],
+    [t, locale]
+  );
 
   return (
     <>

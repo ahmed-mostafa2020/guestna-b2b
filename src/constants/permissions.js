@@ -25,20 +25,18 @@ export const PERMISSIONS = {
     B2B_PROFILE_TRIPS_MANAGEMENT_BUTTON: "b2b_profile_trips_management_button",
     B2B_PROFIEL_ORDER_MANAGEMENT_CREATE_NEWTRIP:
       "b2b_profiel_order_management_create_newTrip",
-    B2B_PROFILE_ORDER_MANAGEMENT_SHOW_DETAILS:
+    B2B_PROFILE_ORDER_MANAGEMENT_SHOWDETAILS:
       "b2b_profile_order_management_showDetails",
     B2B_PROFILE_ORDER_MANAGEMENT_REMINDER_GUESTNA:
       "b2b_profile_order_management_reminder_guestna",
     B2B_PROFILE_ORDER_MANAGEMENT_UPDATE_TRIP:
       "b2b_profiel_order_management_update_trip",
-    B2B_PROFILE_BOOKINGS_TRIPS_STATUS_TABS:
-      "b2b_profile_bookings_tripsStatus_tabs",
-    B2B_PROFILE_BOOKINGS_SHOW_TRIP_DETAILS_BUTTON:
+    B2B_PROFILE_BOOKINGS_SHOWTRIPDETAILS_BUTTON:
       "b2b_profile_bookings_showTripDetails_button",
     B2B_PROFILE_USERS_CARDS: "b2b_profile_users_cards",
     B2B_PROFILE_USERS_PRINT_REPORT: "b2b_profile_users_printReport",
     B2B_PROFILE_USERS_DELETE: "b2b_profile_users_delete",
-    B2B_PROFILE_USERS_EDIT_PERMISSIONS: "b2b_profile_users_editPermissions",
+    B2B_PROFILE_USERS_EDIT_PERMISSIONS: "b2b_profile_users_edit_permissions",
     B2B_PROFILE_USERS_ADD_USER: "b2b_profile_users_add_user",
     B2B_PROFILE_TRANSACTIONS_LOG_CARDS: "b2b_profile_transactions_log_cards",
     B2B_PROFILE_TRANSACTIONS_LOG_PRINT_REPORT:

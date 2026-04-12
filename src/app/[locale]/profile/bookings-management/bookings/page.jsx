@@ -3,7 +3,6 @@
 import React, { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 
-import { usePermissions } from "@hooks/utils/usePermissions";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
 import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
@@ -15,7 +14,6 @@ import BookingsFilters from "@components/forms/bookings/BookingsFilters";
 import CustomEventBooking from "@components/features/profile/bookings-management/bookings/CustomEventBooking";
 
 const BookingsPage = () => {
-  const { hasElement } = usePermissions();
   const t = useTranslations();
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [filter, setFilter] = useState({});
@@ -65,14 +63,10 @@ const BookingsPage = () => {
       requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_BOOKINGS_PAGE}
     >
       <div className="flex flex-col gap-4 lg:gap-6">
-        {hasElement(
-          PERMISSIONS.ELEMENT.B2B_PROFILE_BOOKINGS_TRIPS_STATUS_TABS
-        ) && (
-          <FiltringTripsByStatus
-            onStatusChange={handleStatusChange}
-            activeStatus={selectedStatus || "ALL"}
-          />
-        )}
+        <FiltringTripsByStatus
+          onStatusChange={handleStatusChange}
+          activeStatus={selectedStatus || "ALL"}
+        />
 
         {/* Filters Section */}
         <BookingsFilters filter={filter} setFilter={setFilter} />
@@ -82,7 +76,7 @@ const BookingsPage = () => {
           endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.BOOKINGS}`}
           method="POST"
           bodyParameters={requestBody}
-          emptyStateComponent={ <EmptyBookings />}
+          emptyStateComponent={<EmptyBookings />}
           contentComponent={(
             data,
             currentPage,

@@ -8,6 +8,7 @@ export const usePermissions = () => {
   const elements = useSelector((state) => state.permissions?.elements || []);
   const menuItems = useSelector((state) => state.permissions?.menuItems || []);
   const pages = useSelector((state) => state.permissions?.pages || []);
+  const isLoaded = useSelector((state) => state.permissions?.isLoaded || false);
 
   /**
    * Check if user has a specific action permission
@@ -83,5 +84,6 @@ export const usePermissions = () => {
     elements,
     menuItems,
     pages,
+    isLoaded,
   };
 };

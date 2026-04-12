@@ -98,7 +98,7 @@ const ActionsDropdownMenu = ({
   const can = useMemo(
     () => ({
       showDetails: hasElement(
-        PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOW_DETAILS
+        PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_SHOWDETAILS
       ),
       remindGuestna: hasElement(
         PERMISSIONS.ELEMENT.B2B_PROFILE_ORDER_MANAGEMENT_REMINDER_GUESTNA
@@ -162,7 +162,6 @@ const ActionsDropdownMenu = ({
     handleClose();
     openDetailsModal?.(_id);
   }, [handleClose, openDetailsModal, _id]);
-
 
   // ── Visible menu items ────────────────────────────────────────
   const visibleItems = useMemo(
@@ -230,7 +229,7 @@ const ActionsDropdownMenu = ({
             can.rejectTrip &&
             (isCustom || isCustomTrip) &&
             !isClosed &&
-            !isScheduled && 
+            !isScheduled &&
             Boolean(openRejectModal),
           label: t("links.reject"),
           onClick: handleReject,

@@ -24,21 +24,21 @@ const ProtectedProfilePage = ({
 }) => {
   const router = useRouter();
   const locale = useLocale();
-  const { hasPage, pages } = usePermissions();
+  const { hasPage, pages, isLoaded } = usePermissions();
 
   useEffect(() => {
     // Check if user has the required page permission
     // Only redirect if permissions are loaded and user doesn't have access
-    if (pages.length > 0 && !hasPage(requiredPermission)) {
+    if (isLoaded && !hasPage(requiredPermission)) {
       // Redirect to first accessible page or custom redirect path
       const redirectPath = redirectTo || getFirstAccessiblePage(pages, locale);
       router.replace(redirectPath);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requiredPermission, redirectTo, pages.length]);
+  }, [requiredPermission, redirectTo, isLoaded]);
 
   // If permissions are loaded and user doesn't have access, show nothing (redirecting)
-  if (pages.length > 0 && !hasPage(requiredPermission)) {
+  if (isLoaded && !hasPage(requiredPermission)) {
     return null;
   }
 
