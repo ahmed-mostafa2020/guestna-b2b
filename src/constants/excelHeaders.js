@@ -4,6 +4,19 @@ export const usersHeaders = ({ roles = [], locale = "en" }) => {
       key: "name",
       label: { ar: "الاسم", en: "Name" },
       width: 20,
+      // Form rule: letters+spaces only, ≥2 words, each word ≥2 chars
+      // Excel: enforce ≥4 chars total and at least one space (2-word proxy)
+      validation: {
+        type: "customFormula",
+        required: true,
+        formula: (col, row) =>
+          `AND(LEN(TRIM(${col}${row}))>=4,ISNUMBER(FIND(" ",TRIM(${col}${row}))))`,
+        errorTitle: { ar: "الاسم غير صحيح", en: "Invalid name" },
+        message: {
+          ar: "يرجى إدخال الاسم الكامل (كلمتان على الأقل، كل كلمة حرفان فأكثر)",
+          en: "Please enter full name (at least 2 words, each 2+ chars)",
+        },
+      },
     },
     {
       key: "email",
@@ -22,6 +35,26 @@ export const usersHeaders = ({ roles = [], locale = "en" }) => {
       key: "phone",
       label: { ar: "رقم الجوال", en: "Phone" },
       style: { numFmt: "@" }, // Force text
+      validation: {
+        type: "customFormula",
+        required: true,
+        formula: (colLetter, row) => `
+          AND(
+            ISTEXT(${colLetter}${row}),
+            LEN(SUBSTITUTE(${colLetter}${row}," ",""))>=8,
+            ISNUMBER(VALUE(SUBSTITUTE(${colLetter}${row},"+",""))),
+            OR(
+              LEFT(SUBSTITUTE(${colLetter}${row}," ",""),1)="+",
+              LEFT(SUBSTITUTE(${colLetter}${row}," ",""),1)="0"
+            )
+          )
+        `,
+        errorTitle: { ar: "رقم الجوال غير صحيح", en: "Invalid phone number" },
+        message: {
+          ar: "رقم الجوال يجب أن يكون رقم صحيح",
+          en: "Phone number must be valid",
+        },
+      },
     },
     {
       key: "role",
