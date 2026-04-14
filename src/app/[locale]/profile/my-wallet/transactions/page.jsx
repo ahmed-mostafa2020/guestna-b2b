@@ -150,43 +150,43 @@ const TransactionsPage = () => {
                   minute: "2-digit",
                 })
               : invoice.day
-              ? formatDate(invoice.day, locale, {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
-              : invoice.date
-              ? formatDate(invoice.date, locale, {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
-              : invoice.issueDate
-              ? formatDate(invoice.issueDate, locale, {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
-              : t(
-                  "profile.myWallet.transactionsPage.table.defaultValues.undefined"
-                ),
+                ? formatDate(invoice.day, locale, {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : invoice.date
+                  ? formatDate(invoice.date, locale, {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : invoice.issueDate
+                    ? formatDate(invoice.issueDate, locale, {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : t(
+                        "profile.myWallet.transactionsPage.table.defaultValues.undefined"
+                      ),
             createdAt: invoice.createdAt
               ? formatDate(invoice.createdAt, locale)
               : invoice.day
-              ? formatDate(invoice.day, locale)
-              : invoice.date
-              ? formatDate(invoice.date, locale)
-              : invoice.issueDate
-              ? formatDate(invoice.issueDate, locale)
-              : t(
-                  "profile.myWallet.transactionsPage.table.defaultValues.undefined"
-                ),
+                ? formatDate(invoice.day, locale)
+                : invoice.date
+                  ? formatDate(invoice.date, locale)
+                  : invoice.issueDate
+                    ? formatDate(invoice.issueDate, locale)
+                    : t(
+                        "profile.myWallet.transactionsPage.table.defaultValues.undefined"
+                      ),
             referenceNumber:
               invoice.orderId ||
               invoice.referenceNumber ||
@@ -211,8 +211,8 @@ const TransactionsPage = () => {
                     invoice.track?.gender === "MALE"
                       ? "boys"
                       : invoice.track?.gender === "FEMALE"
-                      ? "girls"
-                      : "both"
+                        ? "girls"
+                        : "both"
                   }`
                 )} - (${invoice.track?.academicStages
                   ?.map((x) => x.name)
@@ -267,6 +267,8 @@ const TransactionsPage = () => {
       DONE: TRIP_STATUS.DONE,
       PENDING: TRIP_STATUS.PENDING,
       CANCLED: TRIP_STATUS.CANCLED,
+      PARTIALLYPAID: TRIP_STATUS.PARTIALLY_PAID,
+      REFUNDED: TRIP_STATUS.REFUNDED,
     };
 
     const normalizedStatus = apiStatus.toUpperCase().replace(/[_\s]/g, "");
@@ -292,6 +294,14 @@ const TransactionsPage = () => {
     ENDED: {
       label: t("profile.myWallet.transactionsPage.table.status.ended"),
       className: "bg-gray-100 text-gray-800 border-gray-200",
+    },
+    PARTIALLY_PAID: {
+      label: t("profile.myWallet.transactionsPage.table.status.partiallyPaid"),
+      className: "bg-blue-100 text-blue-800 border-blue-200",
+    },
+    REFUNDED: {
+      label: t("profile.myWallet.transactionsPage.table.status.refunded"),
+      className: "bg-purple-100 text-purple-800 border-purple-200",
     },
   };
 
@@ -329,10 +339,7 @@ const TransactionsPage = () => {
       <div className="mx-auto space-y-6">
         {/* Balance Cards Section */}
         {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS) && (
-          <BalanceCards
-            balanceData={balanceData}
-            isLoading={balanceLoading}
-          />
+          <BalanceCards balanceData={balanceData} isLoading={balanceLoading} />
         )}
 
         {/* Actions and Filters Section */}

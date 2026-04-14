@@ -1395,7 +1395,9 @@
             "pending": "قيد المراجعة",
             "cancelled": "ملغي",
             "ended": "انتهت",
-            "processing": "قيد المعالجة"
+            "processing": "قيد المعالجة",
+            "partiallyPaid": "مدفوع جزئياً",
+            "refunded": "مسترد"
           },
           "defaultValues": {
             "trip": "رحلة",

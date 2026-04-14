@@ -1398,7 +1398,9 @@
             "pending": "Under Review",
             "cancelled": "Cancelled",
             "ended": "Ended",
-            "processing": "Processing"
+            "processing": "Processing",
+            "partiallyPaid": "Partially Paid",
+            "refunded": "Refunded"
           },
 
           "defaultValues": {
