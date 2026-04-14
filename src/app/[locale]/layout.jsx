@@ -12,7 +12,6 @@ import { ProgressBar } from "@feedback/loading/ProgressBar";
 import ReduxProvider from "@components/libraries/ReduxProvider";
 import QueryProvider from "@components/libraries/QueryProvider";
 import GoogleTagManager from "@components/libraries/GoogleTagManager";
-import GoogleAnalytics from "@components/libraries/GoogleAnalytics";
 import ThemeProvider from "@components/providers/ThemeProvider";
 
 import Header from "@components/layout/header/Header";
@@ -24,7 +23,9 @@ const PRODUCTION_URL = "https://guestna-edu.com";
 const isProduction = process.env.VERCEL_ENV === "production";
 const SITE_URL = isProduction
   ? PRODUCTION_URL
-  : (process.env.NEXT_PUBLIC_B2B_VERCEL || "https://guestna-b2b.vercel.app").replace(/\/$/, "");
+  : (
+      process.env.NEXT_PUBLIC_B2B_VERCEL || "https://guestna-b2b.vercel.app"
+    ).replace(/\/$/, "");
 const defaultLocale = "ar";
 const locales = ["en", "ar"];
 
@@ -168,13 +169,29 @@ export default async function RootLayout({ children, params: { locale } }) {
     notFound();
   }
 
-  // const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
-  // const GTM_ID = process.env.NEXT_PUBLIC_GA_TAG_MANAGER_ID;
+  const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+  const GTM_ID = process.env.NEXT_PUBLIC_GA_TAG_MANAGER_ID;
 
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <head>
-        {/* GA4 tag is now handled cleanly by @components/libraries/GoogleAnalytics inside the body */}
+        {/* GA4 — direct gtag.js in <head> ensures data fires on every page load */}
+        {GA_MEASUREMENT_ID && (
+          <>
+            <Script
+              strategy="afterInteractive"
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${GA_MEASUREMENT_ID}');
+              `}
+            </Script>
+          </>
+        )}
 
         {/* Fonts */}
         <link
@@ -197,14 +214,6 @@ export default async function RootLayout({ children, params: { locale } }) {
           async
         ></Script>
 
-        {/* Initialize dataLayer */}
-        {/* <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-            `,
-          }}
-        /> */}
         <meta
           name="google-site-verification"
           content="Dy0yQBQm8XuB6racQHLnnd7zVz2jFPaIMVKzUWq9gwE"
@@ -228,8 +237,7 @@ export default async function RootLayout({ children, params: { locale } }) {
           src="https://cdn.tamara.co/widget-v1/tamara-widget.js"
         />
 
-        <GoogleTagManager gtmId="GTM-PLN2P4N6" />
-        {/* <GoogleTagManager gtmId="GTM-TKRK9CL6" /> */}
+        <GoogleTagManager gtmId={GTM_ID} />
 
         <Suspense fallback={<div className="centered">Loading...</div>}>
           <ReduxProvider locale={locale}>
@@ -245,10 +253,6 @@ export default async function RootLayout({ children, params: { locale } }) {
           </ReduxProvider>
         </Suspense>
 
-        <GoogleAnalytics
-          // measurementId={GA_MEASUREMENT_ID}
-          measurementId="G-ZNZYTE1FF4"
-        />
       </body>
     </html>
   );
