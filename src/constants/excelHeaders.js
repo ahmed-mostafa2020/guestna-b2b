@@ -4,12 +4,21 @@ export const usersHeaders = ({ roles = [], locale = "en" }) => {
       key: "name",
       label: { ar: "الاسم", en: "Name" },
       width: 20,
+      // Form rule: letters+spaces only, ≥2 words, each word ≥2 chars
+      // Excel: enforce ≥4 chars total and at least one space (2-word proxy)
       validation: {
         type: "text",
         range: [2, 100],
+        type: "customFormula",
         required: true,
         message: { ar: "يرجى التحقق من الاسم", en: "Please check your name" },
+        formula: (col, row) =>
+          `AND(LEN(TRIM(${col}${row}))>=4,ISNUMBER(FIND(" ",TRIM(${col}${row}))))`,
         errorTitle: { ar: "الاسم غير صحيح", en: "Invalid name" },
+        message: {
+          ar: "يرجى إدخال الاسم الكامل (كلمتان على الأقل، كل كلمة حرفان فأكثر)",
+          en: "Please enter full name (at least 2 words, each 2+ chars)",
+        },
       },
     },
     {

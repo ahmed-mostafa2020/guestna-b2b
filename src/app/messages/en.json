@@ -136,7 +136,9 @@
       "PENDING_COMPANY_APPROVAL": "Pending Approval",
       "APPROVED": "Approved",
       "REJECTED": "Rejected",
-      "ON_HOLD": "On Hold"
+      "ON_HOLD": "On Hold",
+      "PARTIALLY_PAID": "Partially Paid",
+      "REFUNDED": "Refunded"
     },
     "excel_success": {
       "export": "Export successful successfully"
@@ -1399,8 +1401,8 @@
             "cancelled": "Cancelled",
             "ended": "Ended",
             "processing": "Processing",
-            "partiallyPaid": "Partially Paid",
-            "refunded": "Refunded"
+            "PARTIALLY_PAID": "Partially Paid",
+            "REFUNDED": "Refunded"
           },
 
           "defaultValues": {

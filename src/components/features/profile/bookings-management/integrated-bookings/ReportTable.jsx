@@ -119,7 +119,7 @@ const ReportTable = ({
           ) : null}
           pagination={enablePagination && {
             currentPage,
-            pageInfo: data,
+            pageInfo: data?.pageInfo,
             onPageChange: setCurrentPage
           }}
         />

@@ -267,11 +267,11 @@ const TransactionsPage = () => {
       DONE: TRIP_STATUS.DONE,
       PENDING: TRIP_STATUS.PENDING,
       CANCLED: TRIP_STATUS.CANCLED,
-      PARTIALLYPAID: TRIP_STATUS.PARTIALLY_PAID,
+      PARTIALLY_PAID: TRIP_STATUS.PARTIALLY_PAID,
       REFUNDED: TRIP_STATUS.REFUNDED,
     };
 
-    const normalizedStatus = apiStatus.toUpperCase().replace(/[_\s]/g, "");
+    const normalizedStatus = apiStatus.toUpperCase();
 
     return statusMap[normalizedStatus] || TRIP_STATUS.PENDING;
   };
@@ -296,11 +296,11 @@ const TransactionsPage = () => {
       className: "bg-gray-100 text-gray-800 border-gray-200",
     },
     PARTIALLY_PAID: {
-      label: t("profile.myWallet.transactionsPage.table.status.partiallyPaid"),
+      label: t("profile.myWallet.transactionsPage.table.status.PARTIALLY_PAID"),
       className: "bg-blue-100 text-blue-800 border-blue-200",
     },
     REFUNDED: {
-      label: t("profile.myWallet.transactionsPage.table.status.refunded"),
+      label: t("profile.myWallet.transactionsPage.table.status.REFUNDED"),
       className: "bg-purple-100 text-purple-800 border-purple-200",
     },
   };

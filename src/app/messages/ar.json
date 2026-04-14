@@ -134,7 +134,9 @@
       "PENDING_COMPANY_APPROVAL": "قيد الاعتماد",
       "APPROVED": "موافق عليه",
       "REJECTED": "مرفوض",
-      "ON_HOLD": "معلق"
+      "ON_HOLD": "معلق",
+      "PARTIALLY_PAID": "مدفوع جزئياً",
+      "REFUNDED": "مسترد"
     },
     "usersType": {
       "VISITOR": "الزائر",
@@ -1396,8 +1398,8 @@
             "cancelled": "ملغي",
             "ended": "انتهت",
             "processing": "قيد المعالجة",
-            "partiallyPaid": "مدفوع جزئياً",
-            "refunded": "مسترد"
+            "PARTIALLY_PAID": "مدفوع جزئياً",
+            "REFUNDED": "مسترد"
           },
           "defaultValues": {
             "trip": "رحلة",

@@ -118,7 +118,7 @@ const TripsManagementTable = ({
         enablePagination && data
           ? {
               currentPage,
-              pageInfo: data.pageInfo || data,
+              pageInfo: data.pageInfo,
               onPageChange: setCurrentPage,
             }
           : undefined
