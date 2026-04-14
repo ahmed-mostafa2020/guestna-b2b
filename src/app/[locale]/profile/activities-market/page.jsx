@@ -14,10 +14,10 @@ import { useEffect, useRef } from "react";
 
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
-import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 import { PERMISSIONS } from "@constants/permissions";
-import TripsGrid from "@components/sections/pages/discover/gridSection/tripsGrid";
-import { usePaginatedTrips } from "@hooks/usePaginatedTrips";
+import TripsGrid from "@components/features/discover/gridSection/tripsGrid";
+import { usePaginatedTrips } from "@hooks/data/usePaginatedTrips";
 
 const ActivitiesMarketPage = () => {
   const { currentPage, filter, searchTerm } = useSelector(

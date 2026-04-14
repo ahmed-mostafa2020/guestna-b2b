@@ -2,8 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import { getHeaders } from "@utils/getHeaders";
-import getProxyUrl from "@utils/getProxyUrl";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getProxyUrl from "@utils/api/getProxyUrl";
 
 import axios from "axios";
 
@@ -29,7 +29,6 @@ export const actGetDiscoverTrips = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      console.log(error);
       return rejectWithValue(error.response.data);
     }
   }

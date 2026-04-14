@@ -10,7 +10,7 @@ import { resetPromoCode } from "@store/forms/promoCode/promoCodeSlice";
 
 import ErrorComponent from "@feedback/error/ErrorComponent";
 
-import GridSection from "@components/sections/pages/checkout/gridSection";
+import GridSection from "@components/features/checkout/gridSection";
 
 import { Container, CircularProgress } from "@mui/material";
 
@@ -62,7 +62,7 @@ const Checkout = () => {
   useEffect(() => {
     // Set timeout for 30 minutes (1800000 ms)
     timeoutRef.current = setTimeout(() => {
-      console.log("30 minutes elapsed - Clearing checkout data");
+
       dispatch(clearFinalTripDetailsData());
     }, 30 * 60 * 1000);
 

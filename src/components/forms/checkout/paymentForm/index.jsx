@@ -16,9 +16,9 @@ import {
   createStcSchema,
   createStcOtpSchema,
   createTamaraSchema,
-} from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
-import { cn } from "@utils/cn";
+} from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import { cn } from "@utils/helpers/cn";
 
 import TextInputGroup from "../../TextInputGroup";
 import SelectionGroup from "../../SelectionGroup";
@@ -48,7 +48,7 @@ import tamaraArabic from "@assets/paymentLogos/tamaraArabic.jpg";
 import applePay from "@assets/paymentLogos/apple-pay.svg";
 
 import tamaraEnglish from "@assets/paymentLogos/tamaraEnglish.svg";
-import getProxyUrl from "@utils/getProxyUrl";
+import getProxyUrl from "@utils/api/getProxyUrl";
 import AppleWidgetTest from "./AppleWidgetTest";
 
 const PaymentForm = () => {
@@ -239,7 +239,7 @@ const PaymentForm = () => {
         setStatus(false);
 
         // Log the full error for debugging
-        console.log("Error details:", error + formErrors);
+
 
         // Extract error message
         const errorMessage = error.response?.data?.message;

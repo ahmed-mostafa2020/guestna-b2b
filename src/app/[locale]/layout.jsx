@@ -17,11 +17,14 @@ import ThemeProvider from "@components/providers/ThemeProvider";
 
 import Header from "@components/layout/header/Header";
 import Footer from "@components/layout/footer/Footer";
-import { getStructuredDataScript } from "@utils/structuredData";
+import { getStructuredDataScript } from "@utils/tracking/structuredData";
 
-const SITE_URL = (
-  process.env.NEXT_PUBLIC_B2B_VERCEL || "https://guestna-b2b.vercel.app"
-).replace(/\/$/, "");
+// Canonical URL always points to the production domain for SEO
+const PRODUCTION_URL = "https://guestna-edu.com";
+const isProduction = process.env.VERCEL_ENV === "production";
+const SITE_URL = isProduction
+  ? PRODUCTION_URL
+  : (process.env.NEXT_PUBLIC_B2B_VERCEL || "https://guestna-b2b.vercel.app").replace(/\/$/, "");
 const defaultLocale = "ar";
 const locales = ["en", "ar"];
 
@@ -63,11 +66,15 @@ export async function generateMetadata({ params: { locale } }) {
   const localized = metadataByLocale[normalizedLocale] || metadataByLocale.ar;
   const localeSegment =
     normalizedLocale === defaultLocale ? "ar" : normalizedLocale;
+  // Canonical always resolves to production domain regardless of deployment URL
+  const canonicalBase = PRODUCTION_URL;
   const localeUrl =
-    localeSegment === "ar" ? `${SITE_URL}/ar` : `${SITE_URL}/${localeSegment}`;
+    localeSegment === "ar"
+      ? `${canonicalBase}/ar`
+      : `${canonicalBase}/${localeSegment}`;
 
   return {
-    metadataBase: new URL(SITE_URL),
+    metadataBase: new URL(PRODUCTION_URL),
     title: localized.title,
     description: localized.description,
     // Note: keywords meta tag is deprecated and ignored by Google
@@ -84,8 +91,8 @@ export async function generateMetadata({ params: { locale } }) {
     alternates: {
       canonical: localeUrl,
       languages: {
-        "ar-SA": `${SITE_URL}/ar`,
-        "en-US": `${SITE_URL}/en`,
+        "ar-SA": `${canonicalBase}/ar`,
+        "en-US": `${canonicalBase}/en`,
       },
     },
     openGraph: {
@@ -114,17 +121,22 @@ export async function generateMetadata({ params: { locale } }) {
       description: localized.description,
       images: [`${SITE_URL}/logo.png`],
     },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-      },
-    },
+    robots: isProduction
+      ? {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            "max-video-preview": -1,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+          },
+        }
+      : {
+          index: false,
+          follow: false,
+        },
     verification: {
       google: "Dy0yQBQm8XuB6racQHLnnd7zVz2jFPaIMVKzUWq9gwE",
       // Add other verifications as needed:
@@ -153,8 +165,6 @@ export default async function RootLayout({ children, params: { locale } }) {
   try {
     messages = (await import(`../messages/${locale}.json`)).default;
   } catch (error) {
-    console.log(error);
-
     notFound();
   }
 

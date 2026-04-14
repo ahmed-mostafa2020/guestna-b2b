@@ -15,11 +15,11 @@ import {
   setColorPreferences,
   setCustomLogo,
 } from "@store/theme/themeSlice";
-import { getFirstAccessiblePage } from "@utils/getFirstAccessiblePage";
-import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage";
-import setToken from "@utils/setToken";
-import getProxyUrl from "@utils/getProxyUrl";
+import { getFirstAccessiblePage } from "@utils/helpers/getFirstAccessiblePage";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
+import setToken from "@utils/api/setToken";
+import getProxyUrl from "@utils/api/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 

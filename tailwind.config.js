@@ -82,6 +82,38 @@ module.exports = {
         paginationBorder: "var(--color-border-pagination)",
         footerLink: "var(--color-footer-link)",
         sidePageBg: "var(--color-bg-side-page)",
+        status: {
+          success: {
+            bg: "var(--color-status-success-bg)",
+            fg: "var(--color-status-success-fg)",
+            border: "var(--color-status-success-border)",
+          },
+          warning: {
+            bg: "var(--color-status-warning-bg)",
+            fg: "var(--color-status-warning-fg)",
+            border: "var(--color-status-warning-border)",
+          },
+          info: {
+            bg: "var(--color-status-info-bg)",
+            fg: "var(--color-status-info-fg)",
+            border: "var(--color-status-info-border)",
+          },
+          hold: {
+            bg: "var(--color-status-hold-bg)",
+            fg: "var(--color-status-hold-fg)",
+            border: "var(--color-status-hold-border)",
+          },
+          danger: {
+            bg: "var(--color-status-danger-bg)",
+            fg: "var(--color-status-danger-fg)",
+            border: "var(--color-status-danger-border)",
+          },
+          neutral: {
+            bg: "var(--color-status-neutral-bg)",
+            fg: "var(--color-status-neutral-fg)",
+            border: "var(--color-status-neutral-border)",
+          },
+        },
         upperBarBg: "var(--color-bg-upper-bar)",
         headerBg: "var(--color-bg-header)",
         figure: "var(--color-bg-figure)",

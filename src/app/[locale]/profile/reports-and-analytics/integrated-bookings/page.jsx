@@ -4,10 +4,10 @@ import { useTranslations } from "next-intl";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
-import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
-import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageTemplate";
-import EmptyBookings from "@components/sections/pages/profile/myBookings/EmptyBookings";
-import ReportTable from "@components/sections/pages/profile/boookings-management/integrated-bookings/ReportTable";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
+import ProfilePageTemplate from "@components/features/profile/ProfilePageTemplate";
+import EmptyBookings from "@components/features/profile/myBookings/EmptyBookings";
+import ReportTable from "@components/features/profile/bookings-management/integrated-bookings/ReportTable";
 
 const IntegratedBookingsManagementPage = () => {
   const t = useTranslations();

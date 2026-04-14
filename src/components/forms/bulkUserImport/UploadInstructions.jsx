@@ -1,8 +1,8 @@
 import { uploadPaperIcon } from "@assets/svg";
-import { Alert, Box, Button, List, ListItem, Typography } from "@mui/material";
+import { Alert, Box, List, ListItem, Typography } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 import { usersHeaders } from "@constants/excelHeaders";
-import { useExcel } from "@hooks/useExcel";
+import { useExcel } from "@hooks/utils/useExcel";
 
 const UploadInstructions = ({
   fileError,
@@ -17,9 +17,13 @@ const UploadInstructions = ({
     headers: usersHeaders({ roles: roleOptions, locale }),
   });
   const generateAndDownloadExcel = async () => {
-    return await createTemplate(
-      t("profile.schools_users.bulkImport.users_upload_templates")
-    );
+    try {
+      return await createTemplate(
+        t("profile.schools_users.bulkImport.users_upload_templates")
+      );
+    } catch (error) {
+      console.error("Failed to generate and download Excel template:", error);
+    }
   };
 
   return (

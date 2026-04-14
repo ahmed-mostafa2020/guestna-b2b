@@ -51,7 +51,7 @@ const DropdownGroup = ({
   return (
     <FormControl
       sx={{
-        m: 1,
+        m: 0,
         minWidth: 120,
         width: "100%",
         opacity: disabled ? 0.7 : 1,

@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 import { useState } from "react";
 
-import OtpCounter from "../../../checkout/paymentForm/OtpCounter";
+import OtpCounter from "@components/forms/checkout/paymentForm/OtpCounter";
 import ResendOtpButton from "./ResendOtpButton";
 
 const ResendOtpVerification = () => {

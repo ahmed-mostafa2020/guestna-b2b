@@ -13,25 +13,21 @@ import {
 } from "@store/forms/auth/login/loginFormSlice";
 import { resetSignUpData } from "@store/forms/auth/signUp/signUpFormSlice";
 
-import { useState } from "react";
-
 import { END_POINTS } from "@constants/APIs";
-import { createLoginEmailMethodSchema } from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
+import { createLoginEmailMethodSchema } from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
 import TextInputGroup from "../../TextInputGroup";
 import RememberMe from "./RememberMe";
 
 import { Formik } from "formik";
 
-import { CircularProgress } from "@mui/material";
+import FormSubmitButton from "@components/ui/FormSubmitButton";
 
 import { useSnackbar } from "notistack";
-
-import axios from "axios";
+import useAxiosForm from "@hooks/forms/useAxiosForm";
 
 const EmailMethodForm = ({ redirect = true }) => {
-  const [formErrors, setFormErrors] = useState([]);
-  const [disabledButton, setDisabledButton] = useState(false);
+  const { makeRequest, isDisabled, setIsDisabled } = useAxiosForm();
 
   const locale = useLocale();
   const t = useTranslations();
@@ -59,13 +55,11 @@ const EmailMethodForm = ({ redirect = true }) => {
       headers,
       data: loginFormData,
     };
-    axios
-      .request(config)
-      .then((response) => {
-        setSubmitting(false);
-        setFormErrors([]);
-        resetForm();
 
+    makeRequest(config, {
+      setSubmitting,
+      resetForm,
+      onSuccess: (response) => {
         dispatch(resetSignUpData());
 
         if (response.data === true) {
@@ -75,46 +69,21 @@ const EmailMethodForm = ({ redirect = true }) => {
           });
 
           dispatch(submitForm());
-          setDisabledButton(true);
+          setIsDisabled(true);
 
           if (redirect) {
             router.push(`/${locale}/confirm-account`);
           }
         }
-      })
-
-      .catch((error) => {
-        // Reset form states
-        setDisabledButton(false);
-        setSubmitting(false);
-
+      },
+      onError: (error) => {
         if (error.response.data.statusCode === 409) {
           dispatch(submitForm());
 
           router.push(`/${locale}/confirm-account`);
         }
-
-        // Log the full error for debugging
-        console.log("Error details:", error + formErrors);
-
-        // Extract error message
-        const errorMessage =
-          !(
-            error?.response?.data?.statusCode >= 200 &&
-            error?.response?.data?.statusCode < 300
-          ) && error.response?.data?.message;
-        const defaultErrorMessage = t(
-          "forms.validation.api_errors.other_error"
-        );
-
-        // Show error notification
-        enqueueSnackbar(errorMessage || defaultErrorMessage, {
-          variant: "error",
-        });
-
-        // Set form errors
-        setFormErrors([errorMessage || "An unknown error occurred."]);
-      });
+      },
+    });
   };
 
   return (
@@ -178,23 +147,13 @@ const EmailMethodForm = ({ redirect = true }) => {
               </Link>
             </div>
 
-            <button
-              type="submit"
-              disabled={!isValid || isSubmitting || disabledButton}
-              className={`centered gap-2 w-full mt-4 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
-                isValid && "hover:bg-linksHover hover:border-linksHover"
-              }`}
-            >
-              {isSubmitting ? (
-                <>
-                  {t("forms.validation.sending")}
-
-                  <CircularProgress size={24} sx={{ color: "#ED8A22" }} />
-                </>
-              ) : (
-                t("forms.auth.login.name")
-              )}
-            </button>
+            <FormSubmitButton
+              loading={isSubmitting}
+              disabled={!isValid || isDisabled}
+              label={t("forms.auth.login.name")}
+              isValid={isValid}
+              className="w-full mt-4 py-3 text-base"
+            />
           </div>
         </form>
       )}

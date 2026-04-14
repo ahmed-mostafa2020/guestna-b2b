@@ -5,19 +5,19 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import { Formik } from "formik";
-import { createSurveySchema } from "@utils/validationSchemas";
+import { createSurveySchema } from "@utils/validators/validationSchemas";
 import axios from "axios";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import getErrorMessage from "@utils/getErrorMessage";
-import { getHeaders } from "@utils/getHeaders";
-import getProxyUrl from "@utils/getProxyUrl";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getProxyUrl from "@utils/api/getProxyUrl";
 
 import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
-import InteractiveRating from "@components/common/InteractiveRating";
+import InteractiveRating from "@components/ui/InteractiveRating";
 
-import { CircularProgress } from "@mui/material";
+import FormSubmitButton from "@components/ui/FormSubmitButton";
 
 const SurveyForm = ({ tripId, organizationId, onClose, onSuccess }) => {
   const locale = useLocale();
@@ -183,22 +183,13 @@ const SurveyForm = ({ tripId, organizationId, onClose, onSuccess }) => {
 
               {/* Submit Button */}
               <div className="flex gap-2 pt-4">
-                <button
-                  type="submit"
-                  disabled={!isValid || isSubmitting}
-                  className={`centered gap-2 flex-1 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
-                    isValid && "hover:bg-linksHover hover:border-linksHover"
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <>
-                      {t("forms.validation.sending")}
-                      <CircularProgress size={24} sx={{ color: "#ED8A22" }} />
-                    </>
-                  ) : (
-                    t("forms.survey.submit")
-                  )}
-                </button>
+                <FormSubmitButton
+                  loading={isSubmitting}
+                  disabled={!isValid}
+                  label={t("forms.survey.submit")}
+                  isValid={isValid}
+                  className="flex-1 py-3 text-base"
+                />
                 <button
                   type="button"
                   onClick={onClose}

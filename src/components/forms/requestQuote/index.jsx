@@ -9,18 +9,18 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import getErrorMessage from "@utils/getErrorMessage";
-import { createRequestQuoteSchema } from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
-import getProxyUrl from "@utils/getProxyUrl";
-import { cn } from "@utils/cn";
-import Logo from "@components/common/Logo";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
+import { createRequestQuoteSchema } from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getProxyUrl from "@utils/api/getProxyUrl";
+import { cn } from "@utils/helpers/cn";
+import Logo from "@components/ui/Logo";
 import TextInputGroup from "../TextInputGroup";
 import ThanksMessage from "./ThanksMessage";
 
 import { Field, Formik } from "formik";
 
-import { CircularProgress } from "@mui/material";
+import FormSubmitButton from "@components/ui/FormSubmitButton";
 
 import { useSnackbar } from "notistack";
 
@@ -238,23 +238,13 @@ const RequestQuoteForm = () => {
                   maxLength="50"
                 />
 
-                <button
-                  type="submit"
-                  disabled={!isValid || isSubmitting}
-                  className={`centered gap-2 w-full mt-4 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
-                    isValid && "hover:bg-linksHover hover:border-linksHover"
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <>
-                      {t("forms.validation.sending")}
-
-                      <CircularProgress size={24} sx={{ color: "#ED8A22" }} />
-                    </>
-                  ) : (
-                    t("links.sendRequest")
-                  )}
-                </button>
+                <FormSubmitButton
+                  loading={isSubmitting}
+                  disabled={!isValid}
+                  label={t("links.sendRequest")}
+                  isValid={isValid}
+                  className="w-full mt-4 py-3 text-base"
+                />
               </form>
             </div>
           )}

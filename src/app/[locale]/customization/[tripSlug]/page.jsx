@@ -17,14 +17,14 @@ import {
 
 import { useEffect } from "react";
 
-import { useFetchData } from "@hooks/useFetchData";
+import { useFetchData } from "@hooks/data/useFetchData";
 import { END_POINTS } from "@constants/APIs";
 import { CUSTOMIZATION_ACTIONS } from "@constants/customizationActions";
-import { ensureUserId } from "@utils/userIdManager";
+import { ensureUserId } from "@utils/helpers/userIdManager";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
-import CustomizedBreadcrumbs from "@components/common/breadcrumbs/CustomizedBreadcrumbs";
-import GridSection from "@components/sections/pages/customization/gridSection";
+import CustomizedBreadcrumbs from "@components/ui/breadcrumbs/CustomizedBreadcrumbs";
+import GridSection from "@components/features/customization/gridSection";
 
 import { Container } from "@mui/material";
 

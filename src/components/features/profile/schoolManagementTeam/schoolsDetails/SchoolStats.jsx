@@ -1,0 +1,73 @@
+import { Box, Grid2 as Grid, Skeleton, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
+import React from "react";
+
+const StateCard = ({ label, value }) => {
+  return (
+    <Box className="flex flex-col gap-2 bg-white border-2 h-full min-h-28 justify-center items-center border-border rounded-lg px-2 py-4">
+      <Typography className="!font-somar !text-center !text-sm !text-[#202224] !capitalize">
+        {label}
+      </Typography>
+      <Typography className="!font-somar !text-center !text-xl text-[#1E1E1C]">
+        {value}
+      </Typography>
+    </Box>
+  );
+};
+
+const StateCardSkeleton = () => {
+  return (
+    <Box className="flex flex-col gap-2 bg-white border-2 justify-center items-center border-border rounded-lg px-2 py-4">
+      {/* Label */}
+      <Skeleton variant="text" width={90} height={22} />
+
+      {/* Value */}
+      <Skeleton variant="text" width={70} height={28} />
+    </Box>
+  );
+};
+
+const SchoolStats = ({ details, isLoading }) => {
+  const t = useTranslations();
+
+  if (isLoading)
+    return (
+      <Grid container gap={2} spacing={2} size={12}>
+        {Array(6)
+          .fill(<StateCardSkeleton />)
+          .map((_, index) => (
+            <Grid key={index} size={{ xs: 6, sm: 4, md: 2 }}>
+              <StateCardSkeleton />
+            </Grid>
+          ))}
+      </Grid>
+    );
+
+  if (!details) return null;
+  const formattedStats =
+    details?.tripsStats &&
+    Object.entries(details?.tripsStats).map(([key, value]) => ({
+      label: t(`profile.schools_overview.schools_details.tripsStats.${key}`),
+      value,
+    }));
+
+  return (
+    <Grid container gap={2} spacing={2} size={12}>
+      {formattedStats?.map((item, index) => (
+        <Grid key={index} size={{ xs: 6, sm: 4, md: 2 }}>
+          <StateCard label={item.label} value={item.value} />
+        </Grid>
+      ))}
+      <Grid size={{ xs: 6, sm: 4, md: 2 }}>
+        <StateCard
+          value={details?.studentStats?.total}
+          label={t(
+            `profile.schools_overview.schools_details.studentStats.total`
+          )}
+        />
+      </Grid>
+    </Grid>
+  );
+};
+
+export default SchoolStats;

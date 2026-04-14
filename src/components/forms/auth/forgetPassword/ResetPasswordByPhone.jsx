@@ -7,12 +7,10 @@ import { useLocale, useTranslations } from "next-intl";
 import { useDispatch } from "react-redux";
 import { setPhone } from "@store/forms/auth/login/loginFormSlice";
 
-import { useState } from "react";
-
 import { END_POINTS } from "@constants/APIs";
-import { cn } from "@utils/cn";
-import { createResetPasswordByPhoneSchema } from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
+import { cn } from "@utils/helpers/cn";
+import { createResetPasswordByPhoneSchema } from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
 
 import { Field, Formik } from "formik";
 
@@ -20,15 +18,13 @@ import PhoneInputWithCountrySelect from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
-import { CircularProgress } from "@mui/material";
+import FormSubmitButton from "@components/ui/FormSubmitButton";
 
 import { useSnackbar } from "notistack";
-
-import axios from "axios";
+import useAxiosForm from "@hooks/forms/useAxiosForm";
 
 const ResetPasswordByPhone = () => {
-  const [formErrors, setFormErrors] = useState([]);
-  const [disabledButton, setDisabledButton] = useState(false);
+  const { makeRequest, isDisabled, setIsDisabled } = useAxiosForm();
 
   const locale = useLocale();
   const t = useTranslations();
@@ -58,13 +54,11 @@ const ResetPasswordByPhone = () => {
       headers,
       data: resetPasswordByPhoneData,
     };
-    axios
-      .request(config)
-      .then((response) => {
-        setSubmitting(false);
-        setFormErrors([]);
-        resetForm();
 
+    makeRequest(config, {
+      setSubmitting,
+      resetForm,
+      onSuccess: (response) => {
         const { phone } = response.data;
 
         if (phone) {
@@ -73,32 +67,11 @@ const ResetPasswordByPhone = () => {
           });
 
           dispatch(setPhone(phone));
-          setDisabledButton(true);
+          setIsDisabled(true);
           router.push(`/${locale}/confirm-account`);
         }
-      })
-
-      .catch((error) => {
-        setDisabledButton(false);
-        setSubmitting(false);
-
-        console.log("Error details:", error + formErrors);
-
-        const errorMessage =
-          !(
-            error?.response?.data?.statusCode >= 200 &&
-            error?.response?.data?.statusCode < 300
-          ) && error.response?.data?.message;
-        const defaultErrorMessage = t(
-          "forms.validation.api_errors.other_error"
-        );
-
-        enqueueSnackbar(errorMessage || defaultErrorMessage, {
-          variant: "error",
-        });
-
-        setFormErrors([errorMessage || "An unknown error occurred."]);
-      });
+      },
+    });
   };
 
   return (
@@ -172,23 +145,13 @@ const ResetPasswordByPhone = () => {
                 )}
               </div>
 
-              <button
-                type="submit"
-                disabled={!isValid || isSubmitting || disabledButton}
-                className={`centered gap-2 w-full mt-4 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
-                  isValid && "hover:bg-linksHover hover:border-linksHover"
-                }`}
-              >
-                {isSubmitting ? (
-                  <>
-                    {t("forms.validation.sending")}
-
-                    <CircularProgress size={24} sx={{ color: "#ED8A22" }} />
-                  </>
-                ) : (
-                  t("forms.auth.forgetPassword.sendOtp")
-                )}
-              </button>
+              <FormSubmitButton
+                loading={isSubmitting}
+                disabled={!isValid || isDisabled}
+                label={t("forms.auth.forgetPassword.sendOtp")}
+                isValid={isValid}
+                className="w-full mt-4 py-3 text-base"
+              />
             </div>
           </form>
         )}

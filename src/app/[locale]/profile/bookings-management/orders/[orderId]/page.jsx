@@ -1,6 +1,6 @@
 "use client";
 
-import { useEditOrderModal } from "@hooks/useEditOrderModal";
+import { useEditOrderModal } from "@hooks/ui/useEditOrderModal";
 import { useLocale, useTranslations } from "next-intl";
 import React, {
   useCallback,
@@ -23,16 +23,16 @@ import {
 import Link from "next/link";
 
 import CustomNewTripForm from "@components/forms/customNewTrip";
-import CustomizedModal from "@components/common/customizedModal";
+import CustomizedModal from "@components/ui/customizedModal";
 import { backIconColored } from "@assets/svg";
 
-import TripInfoCard from "@components/sections/pages/profile/boookings-management/orders/order-details/TripInfoCard";
-import SchoolMainInfoCard from "@components/sections/pages/profile/boookings-management/orders/order-details/SchoolMainInfoCard";
-import TripDateCard from "@components/sections/pages/profile/boookings-management/orders/order-details/TripDateCard";
-import PricingInfoCard from "@components/sections/pages/profile/boookings-management/orders/order-details/PricingInfoCard";
-import AdditionalInfoCard from "@components/sections/pages/profile/boookings-management/orders/order-details/AdditionalInfoCard";
+import TripInfoCard from "@components/features/profile/bookings-management/orders/order-details/TripInfoCard";
+import SchoolMainInfoCard from "@components/features/profile/bookings-management/orders/order-details/SchoolMainInfoCard";
+import TripDateCard from "@components/features/profile/bookings-management/orders/order-details/TripDateCard";
+import PricingInfoCard from "@components/features/profile/bookings-management/orders/order-details/PricingInfoCard";
+import AdditionalInfoCard from "@components/features/profile/bookings-management/orders/order-details/AdditionalInfoCard";
 
-import OrderPageLoadingSkeleton from "@components/sections/pages/profile/boookings-management/orders/order-details/OrderPageLoadingSkeleton";
+import OrderPageLoadingSkeleton from "@components/features/profile/bookings-management/orders/order-details/OrderPageLoadingSkeleton";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 
 const OrderDetailsPage = ({ params }) => {

@@ -10,11 +10,11 @@ import { memo, useMemo, useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import { createRegisterChildSchema } from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
-import { cn } from "@utils/cn";
-import getErrorMessage from "@utils/getErrorMessage";
-import getProxyUrl from "@utils/getProxyUrl";
+import { createRegisterChildSchema } from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import { cn } from "@utils/helpers/cn";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
+import getProxyUrl from "@utils/api/getProxyUrl";
 
 import { FieldArray, Formik } from "formik";
 
@@ -22,12 +22,8 @@ import axios from "axios";
 
 import { useSnackbar } from "notistack";
 
-import {
-  CircularProgress,
-  Container,
-  Checkbox,
-  FormControlLabel,
-} from "@mui/material";
+import FormSubmitButton from "@components/ui/FormSubmitButton";
+import { Container, Checkbox, FormControlLabel } from "@mui/material";
 import ParentFormFields from "./ParentFormFields";
 import ChildForm from "./childForms/ChildForm";
 import CustomizedRiyadhForm from "./childForms/CustomizedRiyadhForm";
@@ -44,7 +40,7 @@ const RegisterStudentForm = ({
   const [___, setGradeError] = useState("");
 
   const [childrenNumber, setChildrenNumber] = useState(1);
-  const [nationality, setNationality] = useState("68052bdd38ea31c8cf95dc04");
+  const [nationality, setNationality] = useState("a7568f9b909fa74e02403a29");
   const [nationalIdImage, setNationalIdImage] = useState(null);
   const [nationalIdImageError, setNationalIdImageError] = useState("");
 
@@ -352,7 +348,7 @@ const RegisterStudentForm = ({
           mobile: parentPhone || "",
           backupMobile: "",
           email: parentEmail || "",
-          nationality: "68052bdd38ea31c8cf95dc04",
+          nationality: "a7568f9b909fa74e02403a29",
           nationalId: "",
           promoCode: "",
           children: generateInitialChildren(childrenNumber),
@@ -689,34 +685,25 @@ const RegisterStudentForm = ({
                 t={t}
               />
 
-              <button
-                type="submit"
+              <FormSubmitButton
+                loading={isSubmitting}
                 disabled={
                   !isValid ||
-                  isSubmitting ||
                   !nationality ||
                   !termsAccepted ||
                   Object.values(childrenStages).some((v) => !v) ||
                   values.children.some((child) => !child.grade)
                 }
-                className={`mx-auto px-20 lg:px-40 w-fit centered gap-2 mt-4 lg:mt-8 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
+                label={t("links.continuePayment")}
+                isValid={
                   isValid &&
-                  nationality &&
-                  termsAccepted &&
+                  !!nationality &&
+                  !!termsAccepted &&
                   !Object.values(childrenStages).some((v) => !v) &&
-                  !values.children.some((child) => !child.grade) &&
-                  "hover:bg-linksHover hover:border-linksHover"
-                }`}
-              >
-                {isSubmitting ? (
-                  <>
-                    {t("forms.validation.sending")}
-                    <CircularProgress size={24} sx={{ color: "#ED8A22" }} />
-                  </>
-                ) : (
-                  t("links.continuePayment")
-                )}
-              </button>
+                  !values.children.some((child) => !child.grade)
+                }
+                className="mx-auto px-20 lg:px-40 w-fit mt-4 lg:mt-8 py-3 text-base"
+              />
             </form>
           );
         }}

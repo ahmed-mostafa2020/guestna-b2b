@@ -3,8 +3,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 
 import { useEffect, useRef, useState } from "react";
-import LogoutButton from "../../sections/pages/profile/LogoutButton";
-import ProfileImage from "../../sections/pages/profile/ProfileImage";
+import LogoutButton from "../../features/profile/LogoutButton";
+import ProfileImage from "../../features/profile/ProfileImage";
 
 const ProfileDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);

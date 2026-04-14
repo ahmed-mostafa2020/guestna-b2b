@@ -7,10 +7,10 @@ import { END_POINTS } from "@constants/APIs";
 
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
-import { useFetchData } from "@hooks/useFetchData";
-import HeaderSection from "@components/sections/pages/packageInfo/headerSection";
-import SmallSeparator from "@components/common/separators/SmallSeparator";
-import ListingDaysSection from "@components/sections/pages/packageInfo/listingDaysSection";
+import { useFetchData } from "@hooks/data/useFetchData";
+import HeaderSection from "@components/features/packageInfo/headerSection";
+import SmallSeparator from "@components/ui/separators/SmallSeparator";
+import ListingDaysSection from "@components/features/packageInfo/listingDaysSection";
 
 const PackageInfo = ({ params }) => {
   const locale = useLocale();

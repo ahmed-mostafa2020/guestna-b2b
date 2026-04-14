@@ -6,7 +6,7 @@ import { updateBudgetRange } from "@store/searchFilter/searchFilterSlice";
 
 import { useEffect, useMemo, useState } from "react";
 
-import formatCurrency from "@utils/FormatCurrency";
+import formatCurrency from "@utils/formatters/FormatCurrency";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 
 import Box from "@mui/material/Box";

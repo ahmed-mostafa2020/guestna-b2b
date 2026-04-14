@@ -40,6 +40,26 @@
 
   /* Footer */
   --color-footer-link: #00000099;
+
+  /* Status badge colors */
+  --color-status-success-bg: #dcfce7;
+  --color-status-success-fg: #166534;
+  --color-status-success-border: #bbf7d0;
+  --color-status-warning-bg: #fef9c3;
+  --color-status-warning-fg: #854d0e;
+  --color-status-warning-border: #fef08a;
+  --color-status-info-bg: #dbeafe;
+  --color-status-info-fg: #1e40af;
+  --color-status-info-border: #bfdbfe;
+  --color-status-hold-bg: #ffedd5;
+  --color-status-hold-fg: #9a3412;
+  --color-status-hold-border: #fed7aa;
+  --color-status-danger-bg: #fee2e2;
+  --color-status-danger-fg: #991b1b;
+  --color-status-danger-border: #fecaca;
+  --color-status-neutral-bg: #f3f4f6;
+  --color-status-neutral-fg: #1f2937;
+  --color-status-neutral-border: #e5e7eb;
 }
 
 @media (prefers-color-scheme: dark) {

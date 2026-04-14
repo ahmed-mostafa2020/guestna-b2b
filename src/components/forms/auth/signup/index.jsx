@@ -22,10 +22,10 @@ import { useState } from "react";
 import { useSnackbar } from "notistack";
 
 import { END_POINTS } from "@constants/APIs";
-import { createSignUpSchema } from "@utils/validationSchemas";
-import { cn } from "@utils/cn";
-import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage";
+import { createSignUpSchema } from "@utils/validators/validationSchemas";
+import { cn } from "@utils/helpers/cn";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
 import TextInputGroup from "../../TextInputGroup";
 
 import { Field, Formik } from "formik";
@@ -36,7 +36,8 @@ import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import axios from "axios";
 
-import { Checkbox, CircularProgress, FormControlLabel } from "@mui/material";
+import { Checkbox, FormControlLabel } from "@mui/material";
+import FormSubmitButton from "@components/ui/FormSubmitButton";
 
 const SignupForm = ({ redirect = true }) => {
   const { confirmTermsAndConditions, isMarketingEmails } = useSelector(
@@ -115,7 +116,7 @@ const SignupForm = ({ redirect = true }) => {
         setSubmitting(false);
 
         // Log the full error for debugging
-        console.log("Error details:", error + formErrors);
+
 
         // Extract error message
         const errorMessage = getErrorMessage(error, t);
@@ -361,27 +362,13 @@ const SignupForm = ({ redirect = true }) => {
               </div>
 
               <div className="w-full centered">
-                <button
-                  type="submit"
-                  disabled={
-                    !isValid ||
-                    isSubmitting ||
-                    !values.confirmTermsAndConditions
-                  }
-                  className={`centered gap-2 w-full mt-8 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
-                    isValid && "hover:bg-linksHover hover:border-linksHover"
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <>
-                      {t("forms.validation.sending")}
-
-                      <CircularProgress size={24} sx={{ color: "#ED8A22" }} />
-                    </>
-                  ) : (
-                    t("forms.auth.signUp.name")
-                  )}
-                </button>
+                <FormSubmitButton
+                  loading={isSubmitting}
+                  disabled={!isValid || !values.confirmTermsAndConditions}
+                  label={t("forms.auth.signUp.name")}
+                  isValid={isValid}
+                  className="w-full mt-8 py-3 text-base"
+                />
               </div>
             </form>
           )}

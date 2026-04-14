@@ -11,8 +11,8 @@ import {
 } from "@store/forms/checkoutForm/checkoutFormSlice";
 
 import { useSnackbar } from "notistack";
-import { createCheckoutSchema } from "@utils/validationSchemas";
-import { cn } from "@utils/cn";
+import { createCheckoutSchema } from "@utils/validators/validationSchemas";
+import { cn } from "@utils/helpers/cn";
 import TextInputGroup from "../../TextInputGroup";
 
 import { Field, Formik } from "formik";

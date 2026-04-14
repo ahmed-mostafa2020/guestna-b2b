@@ -5,10 +5,10 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
 
-import { createUpdateTripSchema } from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage";
-import getProxyUrl from "@utils/getProxyUrl";
+import { createUpdateTripSchema } from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
+import getProxyUrl from "@utils/api/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
@@ -125,12 +125,7 @@ const EditOrderForm = ({
 
           // Call the update callback to refresh the table data
           if (onOrderUpdate && typeof onOrderUpdate === "function") {
-            console.log("Calling onOrderUpdate callback from EditOrderForm");
             onOrderUpdate(res);
-          } else {
-            console.log(
-              "onOrderUpdate callback not available or not a function"
-            );
           }
 
           onClose(); // Close the modal after successful update
@@ -138,7 +133,6 @@ const EditOrderForm = ({
       })
       .catch((error) => {
         setSubmitting(false);
-        console.log("Error details:", error + formErrors);
 
         const errorMessage = getErrorMessage(error, t);
         enqueueSnackbar(errorMessage, {

@@ -12,10 +12,10 @@ import { useState, useEffect, useRef } from "react";
 
 import { useSnackbar } from "notistack";
 
-import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import getProxyUrl from "@utils/getProxyUrl";
+import getProxyUrl from "@utils/api/getProxyUrl";
 
 import axios from "axios";
 
@@ -85,7 +85,7 @@ const PromoCodeForm = () => {
 
           // Set 30-minute timeout to clear promo code data
           timeoutRef.current = setTimeout(() => {
-            console.log("30 minutes elapsed - Clearing promo code data");
+
             dispatch(resetPromoCode());
           }, 30 * 60 * 1000); // 30 minutes in milliseconds
 

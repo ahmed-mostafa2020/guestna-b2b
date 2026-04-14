@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import AuthFormsFrame from "@components/common/AuthFormsFrame";
+import AuthFormsFrame from "@components/ui/AuthFormsFrame";
 import ResetPasswordByEmail from "@components/forms/auth/forgetPassword/ResetPasswordByEmail";
 import ResetPasswordByPhone from "@components/forms/auth/forgetPassword/ResetPasswordByPhone";
 

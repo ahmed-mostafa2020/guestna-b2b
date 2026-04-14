@@ -10,11 +10,11 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 
 import SettingsButton from "./SettingsButton";
-// import ProfileImage from "../../sections/pages/profile/ProfileImage";
-import Logo from "../../common/Logo";
+// import ProfileImage from "../../features/profile/ProfileImage";
+import Logo from "@components/ui/Logo";
 import ServicesDropdown from "./ServicesDropdown";
 import AuthToggleButton from "./AuthToggleButton";
-import OrganizationSelector from "../../common/OrganizationSelector";
+import OrganizationSelector from "@components/ui/OrganizationSelector";
 import Notifications from "./Notifications";
 
 import Box from "@mui/material/Box";

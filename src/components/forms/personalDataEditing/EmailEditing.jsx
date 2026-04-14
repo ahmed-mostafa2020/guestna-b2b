@@ -8,14 +8,14 @@ import { updateEmail } from "@store/profile/profileInfoSlice";
 import { memo, useState } from "react";
 
 import { END_POINTS } from "@constants/APIs";
-import { createResetPasswordByEmailSchema } from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage";
+import { createResetPasswordByEmailSchema } from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
 import TextInputGroup from "../TextInputGroup";
 
 import { Formik } from "formik";
 
-import { CircularProgress } from "@mui/material";
+import FormSubmitButton from "@components/ui/FormSubmitButton";
 
 import { useSnackbar } from "notistack";
 
@@ -132,28 +132,13 @@ const EmailEditing = ({ handleClose }) => {
                 {t("links.cancel")}
               </button>
 
-              <button
-                type="submit"
-                disabled={
-                  !isValid ||
-                  isSubmitting ||
-                  disabledButton ||
-                  values.email == oldEmail
-                }
-                className={`centered gap-2 py-3 px-8 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
-                  isValid && "hover:bg-linksHover hover:border-linksHover"
-                }`}
-              >
-                {isSubmitting ? (
-                  <>
-                    {t("forms.validation.sending")}
-
-                    <CircularProgress size={24} sx={{ color: "#ED8A22" }} />
-                  </>
-                ) : (
-                  t("links.saveChange")
-                )}
-              </button>
+              <FormSubmitButton
+                loading={isSubmitting}
+                disabled={!isValid || disabledButton || values.email == oldEmail}
+                label={t("links.saveChange")}
+                isValid={isValid}
+                className="py-3 px-8 text-base"
+              />
             </div>
           </div>
         </form>

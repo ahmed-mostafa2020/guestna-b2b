@@ -1,6 +1,6 @@
 import { memo, useState } from "react";
 
-import { cn } from "@utils/cn";
+import { cn } from "@utils/helpers/cn";
 
 import { uploadFileIcon } from "@assets/svg";
 

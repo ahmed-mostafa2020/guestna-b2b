@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 import { memo, useEffect, useState, useRef } from "react";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import { useMutationDataTest } from "@hooks/useMutationDataTest";
+import { useMutationDataTest } from "@hooks/data/useMutationDataTest";
 import { useSnackbar } from "notistack";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 
@@ -195,56 +195,9 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
     };
   }, []);
 
-  // const testInitiation = () => {
-  //   console.log("🧪 Testing Apple Pay Initiation...");
-  //   console.log("Base Data:", baseData);
-
-  //   mutate(baseData, {
-  //     onSuccess: (data) => {
-  //       console.log("✅ Initiation Success:", data);
-  //       enqueueSnackbar("Test Initiation Success: " + JSON.stringify(data), {
-  //         variant: "success",
-  //       });
-  //       if (data?.bookingId) {
-  //         setCurrentBookingId(data.bookingId);
-  //       }
-  //     },
-  //     onError: (error) => {
-  //       console.error("❌ Initiation Error:", error);
-  //       enqueueSnackbar(
-  //         "Test Initiation Error: " + (error?.message || JSON.stringify(error)),
-  //         {
-  //           variant: "error",
-  //         }
-  //       );
-  //     },
-  //   });
-  // };
-
   return (
     <div className="flex" ref={widgetContainerRef}>
       <div className="mysr-form"></div>
-
-      {/* {process.env.NODE_ENV === "development" && (
-        <div className="flex flex-col gap-2 p-4 bg-gray-100 rounded-lg">
-          <h4 className="font-semibold text-sm">Apple Pay Debug Tools</h4>
-          <div className="flex gap-2">
-            <button
-              onClick={testInitiation}
-              className="px-4 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
-            >
-              Test Initiation API
-            </button>
-          </div>
-          <div className="text-xs text-gray-600">
-            <p>Current Booking ID: {currentBookingId || "None"}</p>
-            <p>
-              Price: {price} {currency}
-            </p>
-            <p>Trip Name: {tripName}</p>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 };

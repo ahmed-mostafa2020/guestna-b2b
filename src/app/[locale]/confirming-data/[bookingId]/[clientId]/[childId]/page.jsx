@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useEffect } from "react";
 
-import { useFetchData } from "@hooks/useFetchData";
+import { useFetchData } from "@hooks/data/useFetchData";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";

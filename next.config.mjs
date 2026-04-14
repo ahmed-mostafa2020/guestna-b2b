@@ -26,17 +26,21 @@ const nextConfig = {
   },
 
   images: {
+    formats: ["image/webp", "image/avif"],
+    minimumCacheTTL: 60,
     domains: [
       "res.cloudinary.com",
       "ik.imagekit.io",
       "storage.googleapis.com",
       "drive.google.com",
       "cultural-enrika-guestna-43d7043d.koyeb.app",
+      "guestna-revamp-dashboard.vercel.app",
       "localhost",
     ],
   },
   async headers() {
     const isDevelopment = process.env.NODE_ENV === "development";
+    const isProduction = process.env.VERCEL_ENV === "production";
 
     // No cache in development to prevent stale styles during development
     const staticAssetsCacheHeaders = [
@@ -86,6 +90,10 @@ const nextConfig = {
             value: "frame-ancestors 'self' https://api.moyasar.com",
           },
           ...securityHeaders,
+          // Block indexing on all non-production deployments (preview, branch, local)
+          ...(!isProduction
+            ? [{ key: "X-Robots-Tag", value: "noindex, nofollow" }]
+            : []),
           // Preconnect to external domains for faster loading
           {
             key: "Link",

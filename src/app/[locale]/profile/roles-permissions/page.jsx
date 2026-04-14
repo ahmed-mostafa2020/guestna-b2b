@@ -3,9 +3,9 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { PERMISSIONS } from "@constants/permissions";
-import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
-import RolesPermissionsContent from "@components/sections/pages/profile/rolesPermissions";
-import { useFetchData } from "@hooks/useFetchData";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
+import RolesPermissionsContent from "@components/features/profile/rolesPermissions";
+import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";

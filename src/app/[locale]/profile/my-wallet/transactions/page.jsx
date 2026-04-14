@@ -3,22 +3,22 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 
-import { useFetchData } from "@hooks/useFetchData";
-import { usePermissions } from "@hooks/usePermissions";
+import { useFetchData } from "@hooks/data/useFetchData";
+import { usePermissions } from "@hooks/utils/usePermissions";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { TRIP_STATUS } from "@constants/tripStatus";
 import { PERMISSIONS } from "@constants/permissions";
-import ProtectedProfilePage from "@components/common/ProtectedProfilePage";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 
-import formatCurrency from "@utils/FormatCurrency";
-import formatDate from "@utils/FormateDate";
+import formatCurrency from "@utils/formatters/FormatCurrency";
+import formatDate from "@utils/formatters/FormateDate";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 
 import { TransactionsFilters } from "@components/forms/transactions";
 import {
   BalanceCards,
   TransactionsTable,
-} from "@components/sections/pages/myWallet/transactions";
+} from "@components/features/myWallet/transactions";
 import { SORTING_TYPE } from "@constants/sorting";
 
 const TransactionsPage = () => {
@@ -331,7 +331,7 @@ const TransactionsPage = () => {
         {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS) && (
           <BalanceCards
             balanceData={balanceData}
-            balanceLoading={balanceLoading}
+            isLoading={balanceLoading}
           />
         )}
 

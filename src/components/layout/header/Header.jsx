@@ -12,17 +12,17 @@ import { useSelector } from "react-redux";
 
 import { Fragment } from "react";
 
-// import { getHeaders } from "@utils/getHeaders";
-import Logo from "../../common/Logo";
+// import { getHeaders } from "@utils/helpers/getHeaders";
+import Logo from "@components/ui/Logo";
 import TemporaryDrawer from "./TemporaryDrawer";
 import SettingsButton from "./SettingsButton";
-// import ProfileImage from "../../sections/pages/profile/ProfileImage";
+// import ProfileImage from "../../features/profile/ProfileImage";
 import ServicesDropdown from "./ServicesDropdown";
 import Notifications from "./Notifications";
 import AuthToggleButton from "./AuthToggleButton";
 
 import { Container } from "@mui/material";
-import OrganizationSelector from "../../common/OrganizationSelector";
+import OrganizationSelector from "@components/ui/OrganizationSelector";
 
 const Header = () => {
   const userToken = useSelector((state) => state.users.userToken);

@@ -2,9 +2,9 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useState } from "react";
 
-import { createContactUsSchema } from "@utils/validationSchemas";
-import { getHeaders } from "@utils/getHeaders";
-import getErrorMessage from "@utils/getErrorMessage";
+import { createContactUsSchema } from "@utils/validators/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
 import { END_POINTS } from "@constants/APIs";
 import TextInputGroup from "../TextInputGroup";
 
@@ -14,7 +14,7 @@ import axios from "axios";
 
 import { useSnackbar } from "notistack";
 
-import { CircularProgress } from "@mui/material";
+import FormSubmitButton from "@components/ui/FormSubmitButton";
 
 const ContactUsForm = () => {
   const [formErrors, setFormErrors] = useState([]);
@@ -63,7 +63,7 @@ const ContactUsForm = () => {
       .catch((error) => {
         setSubmitting(false);
 
-        console.log("Error details:", error + formErrors);
+
 
         const errorMessage = getErrorMessage(error, t);
 
@@ -154,23 +154,13 @@ const ContactUsForm = () => {
               </div>
 
               <div className="w-full pt-2 centered">
-                <button
-                  type="submit"
-                  disabled={!isValid || isSubmitting}
-                  className={`centered gap-2 w-full mt-8 py-3 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
-                    isValid && "hover:bg-linksHover hover:border-linksHover"
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <>
-                      {t("forms.validation.sending")}
-
-                      <CircularProgress size={24} sx={{ color: "#ED8A22" }} />
-                    </>
-                  ) : (
-                    t("links.send")
-                  )}
-                </button>
+                <FormSubmitButton
+                  loading={isSubmitting}
+                  disabled={!isValid}
+                  label={t("links.send")}
+                  isValid={isValid}
+                  className="w-full mt-8 py-3 text-base"
+                />
               </div>
             </form>
           )}

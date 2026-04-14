@@ -13,7 +13,7 @@ import { Fragment, useEffect, useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { SORTING_TYPE } from "@constants/sorting";
-// import formatCurrency from "@utils/FormatCurrency";
+// import formatCurrency from "@utils/formatters/FormatCurrency";
 import FilterButton from "./FilterButton";
 import PlaceButtonMenu from "./menus/places/PlaceButtonMenu";
 import TripDurationButtonMenu from "./menus/tripDuration";
@@ -29,7 +29,7 @@ import dates from "@assets/gif/dates.webp";
 // import budgetGif from "@assets/gif/budget.webp";
 
 import { searchIconBlack, searchIconWhite } from "@assets/svg";
-import CustomizedModal from "../common/customizedModal";
+import CustomizedModal from "@components/ui/customizedModal";
 import { Container } from "@mui/material";
 
 const FiltersBox = () => {

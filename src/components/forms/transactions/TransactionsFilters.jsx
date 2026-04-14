@@ -1,12 +1,12 @@
 import { useTranslations } from "next-intl";
-import { usePermissions } from "@hooks/usePermissions";
+import { usePermissions } from "@hooks/utils/usePermissions";
 import { PERMISSIONS } from "@constants/permissions";
 import { printIcon } from "@assets/svg";
 import { useSelector } from "react-redux";
 import { useCallback, useMemo } from "react";
-import SearchAndFilters from "../../common/searchAndFilters/SearchAndFilters";
+import SearchAndFilters from "../../ui/searchAndFilters/SearchAndFilters";
 import { TRIP_STATUS } from "@constants/tripStatus";
-import formatDateForAPI from "@utils/formatDateForAPI";
+import formatDateForAPI from "@utils/formatters/formatDateForAPI";
 
 const TransactionsFilters = ({ filter, setFilter }) => {
   const { hasElement } = usePermissions();

@@ -4,7 +4,7 @@ import { useLocale } from "next-intl";
 import { useSelector } from "react-redux";
 import { memo, useEffect, useState } from "react";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import { useMutationData } from "@hooks/useMutationData";
+import { useMutationData } from "@hooks/data/useMutationData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 
 const AppleWidget = ({ baseData, currency = "SAR" }) => {

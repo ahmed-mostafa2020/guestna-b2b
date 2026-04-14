@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useEffect } from "react";
 
-import AuthFormsFrame from "@components/common/AuthFormsFrame";
+import AuthFormsFrame from "@components/ui/AuthFormsFrame";
 import VerificationCodeForm from "@components/forms/auth/confirmAccount";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 

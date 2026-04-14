@@ -1,22 +1,25 @@
 "use client";
 
 import { backIconColored } from "@assets/svg";
-import SchoolBalance from "@components/sections/pages/profile/schoolManagementTeam/schoolsDetails/SchoolBalance";
-import SchoolStats from "@components/sections/pages/profile/schoolManagementTeam/schoolsDetails/SchoolStats";
-import SelectSchoolForDetails from "@components/sections/pages/profile/schoolManagementTeam/schoolsDetails/SelectSchool";
-import UsersInfo from "@components/sections/pages/profile/schoolManagementTeam/users/UsersInfo";
+import SchoolBalance from "@components/features/profile/schoolManagementTeam/schoolsDetails/SchoolBalance";
+import SchoolStats from "@components/features/profile/schoolManagementTeam/schoolsDetails/SchoolStats";
+import SelectSchoolForDetails from "@components/features/profile/schoolManagementTeam/schoolsDetails/SelectSchool";
+import UsersInfo from "@components/features/profile/schoolManagementTeam/users/UsersInfo";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { useFetchData } from "@hooks/useFetchData";
-import { Typography } from "@material-ui/core";
-import { Box } from "@mui/material";
+import { PERMISSIONS } from "@constants/permissions";
+import { useFetchData } from "@hooks/data/useFetchData";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
+import { Box, Typography } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import React, { useEffect } from "react";
+import { usePermissions } from "@hooks/utils/usePermissions";
 
 const SchoolsDetailsPage = ({ params }) => {
   const locale = useLocale();
   const t = useTranslations();
+  const { hasElement } = usePermissions();
 
   const { data, isLoading, error, refetch } = useFetchData(
     `${B2B_END_POINTS.PROFILE.ORGANIZATIONS.ORGANIZATION_DETAILS}/${params.organization_slug}`,
@@ -34,7 +37,9 @@ const SchoolsDetailsPage = ({ params }) => {
   }, [data, t]);
 
   return (
-    <>
+    <ProtectedProfilePage
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_SCHOOLS_PAGE}
+    >
       <main className="flex flex-col gap-6 min-h-screen">
         {/* title */}
         <Box className="flex gap-2  flex-col ">
@@ -63,27 +68,29 @@ const SchoolsDetailsPage = ({ params }) => {
         <SchoolBalance details={data} isloading={isLoading} />
 
         <SchoolStats details={data} isLoading={isLoading} />
-        <Box className="bg-white border-2 border-border  rounded-lg p-4">
-          <Typography className="!text-titleColor !font-somar !text-xl ">
-            {t("profile.schools_overview.schools_details.users.title")}{" "}
-          </Typography>
-          {data?.users.length > 0 ? (
-            <UsersInfo
-              users={data?.users}
-              organizationId={data?._id}
-              refetchInfo={refetch}
-              organizationName={data?.name}
-            />
-          ) : (
-            <Typography className="!text-textDark !font-somar !text-lg">
-              {t(
-                "profile.schools_overview.schools_details.users.no_users"
-              )}{" "}
+        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_SCHOOLS_USERS) && (
+          <Box className="bg-white border-2 border-border  rounded-lg p-4">
+            <Typography className="!text-titleColor !font-somar !text-xl ">
+              {t("profile.schools_overview.schools_details.users.title")}{" "}
             </Typography>
-          )}
-        </Box>
+            {data?.users.length > 0 ? (
+              <UsersInfo
+                users={data?.users}
+                organizationId={data?._id}
+                refetchInfo={refetch}
+                organizationName={data?.name}
+              />
+            ) : (
+              <Typography className="!text-textDark !font-somar !text-lg">
+                {t(
+                  "profile.schools_overview.schools_details.users.no_users"
+                )}{" "}
+              </Typography>
+            )}
+          </Box>
+        )}
       </main>
-    </>
+    </ProtectedProfilePage>
   );
 };
 

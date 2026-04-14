@@ -8,9 +8,9 @@ import React, {
 
 import SelectionGroup from "@components/forms/SelectionGroup";
 import { useLocale, useTranslations } from "next-intl";
-import { getHeaders } from "@utils/getHeaders";
+import { getHeaders } from "@utils/helpers/getHeaders";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import getProxyUrl from "@utils/getProxyUrl";
+import getProxyUrl from "@utils/api/getProxyUrl";
 import {
   Box,
   Button,

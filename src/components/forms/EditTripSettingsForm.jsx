@@ -3,15 +3,15 @@
 import { useTranslations, useLocale } from "next-intl";
 import { Formik, Form } from "formik";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { getHeaders } from "@utils/getHeaders";
-import getProxyUrl from "@utils/getProxyUrl";
-import { createEditTripSettingsSchema } from "@utils/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getProxyUrl from "@utils/api/getProxyUrl";
+import { createEditTripSettingsSchema } from "@utils/validators/validationSchemas";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import TextInputGroup from "./TextInputGroup";
-import CustomizedModal from "@components/common/customizedModal";
+import CustomizedModal from "@components/ui/customizedModal";
 import { CircularProgress } from "@mui/material";
 
 const EditTripSettingsForm = ({ item, onClose, onSuccess }) => {

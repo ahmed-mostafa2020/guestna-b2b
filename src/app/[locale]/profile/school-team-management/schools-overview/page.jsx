@@ -4,23 +4,24 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 
 // Components
-import Pagination from "@components/common/Pagination";
-import SchoolOverviewCard from "@components/sections/pages/profile/schoolManagementTeam/schoolsOverview/SchoolOverviewCard";
-import SchoolOverviewCardSkeleton from "@components/sections/pages/profile/schoolManagementTeam/schoolsOverview/SchoolOverviewCardSkeleton";
-import SchoolOverviewSearchFilters from "@components/sections/pages/profile/schoolManagementTeam/schoolsOverview/SchoolOverviewSearchFilters";
-import InfoCardsListing from "@components/sections/pages/profile/trips/infoCards/InfoCardsListing";
-import InfoCardsSkeleton from "@components/sections/pages/profile/trips/infoCards/InfoCardsSkeleton";
+import Pagination from "@components/ui/Pagination";
+import SchoolOverviewCard from "@components/features/profile/schoolManagementTeam/schoolsOverview/SchoolOverviewCard";
+import SchoolOverviewCardSkeleton from "@components/features/profile/schoolManagementTeam/schoolsOverview/SchoolOverviewCardSkeleton";
+import SchoolOverviewSearchFilters from "@components/features/profile/schoolManagementTeam/schoolsOverview/SchoolOverviewSearchFilters";
+import InfoCardsListing from "@components/features/profile/trips/infoCards/InfoCardsListing";
+import InfoCardsSkeleton from "@components/features/profile/trips/infoCards/InfoCardsSkeleton";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 
 // Hooks
-import { useFetchData } from "@hooks/useFetchData";
-import { usePermissions } from "@hooks/usePermissions";
+import { useFetchData } from "@hooks/data/useFetchData";
+import { usePermissions } from "@hooks/utils/usePermissions";
 import { useLocale, useTranslations } from "next-intl";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 
 // Constants
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
-import { Grid } from "@material-ui/core";
+import { Grid2 as Grid } from "@mui/material";
 
 const SchoolsOverViewPage = () => {
   const locale = useLocale();
@@ -99,6 +100,9 @@ const SchoolsOverViewPage = () => {
   const schools = data?.nodes ?? [];
 
   return (
+    <ProtectedProfilePage
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_SCHOOLS_PAGE}
+    >
     <main className="flex flex-col gap-6 min-h-screen">
       {/* Summary Info Cards */}
       {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS) && (
@@ -159,6 +163,7 @@ const SchoolsOverViewPage = () => {
         />
       )}
     </main>
+    </ProtectedProfilePage>
   );
 };
 

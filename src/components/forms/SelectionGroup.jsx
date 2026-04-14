@@ -14,6 +14,7 @@ const SelectionGroup = ({
   value,
   onChange,
   onBlur,
+  onClose,
   touched,
   errors,
   placeholder,
@@ -27,7 +28,7 @@ const SelectionGroup = ({
   return (
     <FormControl error={touched && Boolean(errors)} className="relative w-full">
       {label && (
-        <label className="block pb-2 font-medium text-textDark">
+        <label className="block pb-2 font-medium">
           {label}
           {required && <span className="text-error ml-1">*</span>}
         </label>
@@ -39,6 +40,7 @@ const SelectionGroup = ({
         value={value}
         onChange={onChange}
         onBlur={onBlur}
+        onClose={onClose}
         displayEmpty
         multiple={multiple}
         disabled={disabled}
@@ -151,7 +153,7 @@ const SelectionGroup = ({
         })}
       </Select>
       {touched && errors && (
-        <p className="absolute text-xs -bottom-4 text-error mt-1 font-somar">
+        <p className="absolute text-xs -bottom-4 text-error mt-1 font-ibm">
           {errors}
         </p>
       )}

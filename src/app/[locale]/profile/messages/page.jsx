@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 import { useEffect } from "react";
 
-import EmptyMessages from "@components/sections/pages/profile/messages/EmptyMessages";
+import EmptyMessages from "@components/features/profile/messages/EmptyMessages";
 
 const MessagesPage = () => {
   const t = useTranslations();

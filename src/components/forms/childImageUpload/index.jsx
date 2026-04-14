@@ -8,9 +8,9 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { getHeaders } from "@utils/getHeaders";
-import getProxyUrl from "@utils/getProxyUrl";
-import { createChildImageUploadSchema } from "@utils/validationSchemas";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import getProxyUrl from "@utils/api/getProxyUrl";
+import { createChildImageUploadSchema } from "@utils/validators/validationSchemas";
 
 import FileUploadGroup from "../FileUploadGroup";
 import SelectionGroup from "../SelectionGroup";

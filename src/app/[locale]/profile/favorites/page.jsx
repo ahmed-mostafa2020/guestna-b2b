@@ -3,23 +3,23 @@
 import { useTranslations } from "next-intl";
 
 import { END_POINTS } from "@constants/APIs";
-import ProfilePageTemplate from "@components/sections/pages/profile/ProfilePageTemplate";
-import EmptyFavorites from "@components/sections/pages/profile/myFavorites/EmptyFavorites";
-import MyFavoritesTrips from "@components/sections/pages/profile/myFavorites";
+import ProfilePageTemplate from "@components/features/profile/ProfilePageTemplate";
+import EmptyFavorites from "@components/features/profile/myFavorites/EmptyFavorites";
+import MyFavoritesTrips from "@components/features/profile/myFavorites";
 
 const FavoritesPage = () => {
   const t = useTranslations();
 
   const getAllFavorites = () => {
-    console.log("getAllFavorites");
+
   };
 
   const getPackagesFavorites = () => {
-    console.log("getPackagesFavorites");
+
   };
 
   const getActivitiesFavorites = () => {
-    console.log("getActivitiesFavorites");
+
   };
 
   const filterButtons = [

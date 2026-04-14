@@ -1,5 +1,5 @@
 import axios from "axios";
-import { B2B_END_POINTS } from "../constants/b2bAPIs";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
 
 const SITE_URL = (
   process.env.NEXT_PUBLIC_B2B_VERCEL || "https://guestna-b2b.vercel.app"
@@ -124,7 +124,7 @@ export default async function sitemap() {
           });
         }
       });
-      console.log(`✅ Added ${trips.length} trips to sitemap`);
+
     } else {
       console.warn("⚠️ No trips found for sitemap");
     }

@@ -188,6 +188,7 @@ export const B2B_END_POINTS = {
     ORGANIZATIONS_NAME: "organizations/search-by-name",
     ORGANIZATION_INFO: "organizations",
     SUBMIT: "organization-invitation",
+    GRADES_BY_STAGES: "grades/stages",
   },
 
   RAMADAN_NIGHTS: {

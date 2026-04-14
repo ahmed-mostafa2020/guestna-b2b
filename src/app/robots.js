@@ -1,6 +1,8 @@
-const SITE_URL = (
-  process.env.NEXT_PUBLIC_B2B_VERCEL || "https://guestna-b2b.vercel.app"
-).replace(/\/$/, "");
+const PRODUCTION_URL = "https://guestna-edu.com";
+const isProduction = process.env.VERCEL_ENV === "production";
+const SITE_URL = isProduction
+  ? PRODUCTION_URL
+  : (process.env.NEXT_PUBLIC_B2B_VERCEL || "https://guestna-b2b.vercel.app").replace(/\/$/, "");
 
 // Disallowed paths
 const disallowedPaths = [
@@ -25,6 +27,12 @@ const disallowedPaths = [
 ];
 
 export default function robots() {
+  if (!isProduction) {
+    return {
+      rules: [{ userAgent: "*", disallow: "/" }],
+    };
+  }
+
   return {
     host: SITE_URL,
     sitemap: `${SITE_URL}/sitemap.xml`,
