@@ -96,7 +96,7 @@ const DataTable = ({
       {/* Header with Title and Bulk Actions */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-1 w-full">
         {title && (
-          <h2 className="text-xl font-medium lg:text-2xl text-titleColor">
+          <h2 className="text-xl font-medium lg:text-2xl text-titleColor w-full">
             {title}
           </h2>
         )}
