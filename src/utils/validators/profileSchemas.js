@@ -204,9 +204,9 @@ export const getApproveOrderValidationSchema = (t) => {
         })
       )
       .min(
-        1,
+        0,
         t("validation.schoolAmountMinimum", {
-          defaultValue: "School amount must be at least 1",
+          defaultValue: "School amount must be at least 0",
         })
       )
       .typeError(

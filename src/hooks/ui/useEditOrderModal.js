@@ -6,6 +6,7 @@ import getProxyUrl from "@utils/api/getProxyUrl";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { askType } from "@constants/askType";
 import { useTranslations } from "next-intl";
 
 export const useEditOrderModal = (locale) => {
@@ -84,7 +85,7 @@ export const useEditOrderModal = (locale) => {
 
   // Fetch edit order details with improved caching
   const fetchEditOrderDetails = useCallback(
-    async (orderId, forceRefresh = false) => {
+    async (orderId, forceRefresh = false, isCustom = true) => {
       if (!orderId) return null;
 
       if (editOrderDetailsCache[orderId] && !forceRefresh) {
@@ -100,14 +101,15 @@ export const useEditOrderModal = (locale) => {
       setLoadingEditDetails(true);
       setError(null);
 
+      const endpoint = isCustom
+        ? B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER
+            .EDIT_CUSTOM_INFO
+        : B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER
+            .EDIT_NORMAL_INFO;
+
       try {
         const response = await axios.get(
-          getProxyUrl(
-            `${
-              B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER
-                .EDIT_CUSTOM_INFO
-            }/${orderId}`
-          ),
+          getProxyUrl(`${endpoint}/${orderId}`),
           { headers }
         );
 
@@ -146,7 +148,7 @@ export const useEditOrderModal = (locale) => {
 
   // Open edit modal - optimized to use existing data when available
   const openEditModal = useCallback(
-    async (orderId, existingOrderData = null) => {
+    async (orderId, existingOrderData = null, bookingAskType = null) => {
       if (!orderId) {
         console.warn("No orderId provided to openEditModal");
         return;
@@ -187,7 +189,8 @@ export const useEditOrderModal = (locale) => {
 
       // Only fetch order details if not cached and not current
       if (!hasCachedDetails) {
-        fetchPromises.push(fetchEditOrderDetails(orderId, false));
+        const isCustom = bookingAskType === askType.CUSTOM;
+        fetchPromises.push(fetchEditOrderDetails(orderId, false, isCustom));
       } else {
         // Use cached or current details
         if (currentEditOrderDetails?._id === orderId) {

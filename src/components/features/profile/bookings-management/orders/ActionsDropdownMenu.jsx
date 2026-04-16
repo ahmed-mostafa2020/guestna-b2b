@@ -145,8 +145,8 @@ const ActionsDropdownMenu = ({
 
   const handleEdit = useCallback(() => {
     handleClose();
-    openEditModal?.(isCustom ? orderId : _id, null, bookingAskType);
-  }, [handleClose, openEditModal, isCustom, orderId, _id, bookingAskType]);
+    openEditModal?.(orderId, null, bookingAskType);
+  }, [handleClose, openEditModal, orderId, bookingAskType]);
 
   const handleApprove = useCallback(() => {
     handleClose();
