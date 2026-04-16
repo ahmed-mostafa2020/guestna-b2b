@@ -2214,11 +2214,15 @@
       },
       "availableSeats": {
         "label": "عدد المشاركين",
-        "secondaryLabel": "عدد الطلاب",
+        "secondaryLabel": "عدد الطلاب المتوقع",
         "error": {
           "min": "يجب أن يكون العدد أكبر من 0",
           "max": "العدد كبير جداً"
         }
+      },
+      "totalAvailableSeats": {
+        "label": "إجمالي عدد الطلاب",
+        "placeholder": "أدخل إجمالي عدد الطلاب"
       },
       "note": {
         "label": "ملاحظات إضافية (اختياري)",

@@ -242,10 +242,15 @@ export const createAuthenticatedRequestQuoteSchema = (t) =>
     tripType: Yup.string().optional(), // readonly field
     city: Yup.string().optional(), // readonly field
     academicStages: Yup.array().min(1, t("forms.validation.require")),
+    grades: Yup.array().min(1, t("forms.validation.require")),
     availableSeats: Yup.number()
       .required(t("forms.validation.require"))
       .min(1, t("forms.customTrip.expectedParticipants.error.min"))
       .max(1000, t("forms.customTrip.expectedParticipants.error.max")),
+    totalAvailableSeats: Yup.number()
+      .required(t("forms.validation.require"))
+      .min(1, t("forms.customTrip.expectedParticipants.error.min"))
+      .max(10000, t("forms.customTrip.expectedParticipants.error.max")),
     day: Yup.date()
       .required(t("forms.validation.require"))
       .test(

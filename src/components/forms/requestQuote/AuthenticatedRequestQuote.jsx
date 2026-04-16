@@ -152,6 +152,7 @@ const AuthenticatedRequestQuote = ({
           tripData.academicStages?.map((stage) => stage.name) || [],
         grades: tripData.grades?.map((grade) => grade.name) || [],
         availableSeats: `${tripData.availableSeats?.min}` || "",
+        totalAvailableSeats: "",
         basePrice: `${tripData.price}` || "",
         day: tripData.fromDay ? tripData.fromDay.split("T")[0] : "",
         endDay: tripData.toDay ? tripData.toDay.split("T")[0] : "",
@@ -172,6 +173,7 @@ const AuthenticatedRequestQuote = ({
         academicStages: [],
         grades: [],
         availableSeats: "",
+        totalAvailableSeats: "",
         basePrice: "",
         day: "",
         endDay: "",
@@ -190,6 +192,7 @@ const AuthenticatedRequestQuote = ({
       academicStages: tripData.academicStages?.map((stage) => stage.name) || [],
       grades: tripData.grades?.map((grade) => grade.name) || [],
       availableSeats: `${tripData.availableSeats?.min}` || "",
+      totalAvailableSeats: "",
       basePrice: `${tripData.price}` || "",
       day: tripData.fromDay ? tripData.fromDay.split("T")[0] : "",
       endDay: tripData.toDay ? tripData.toDay.split("T")[0] : "",
@@ -237,6 +240,7 @@ const AuthenticatedRequestQuote = ({
 
       // Add number fields separately as strings
       formData.append("availableSeats", `${values.availableSeats}`);
+      formData.append("totalAvailableSeats", `${values.totalAvailableSeats}`);
       formData.append("basePrice", `${values.basePrice}`);
 
       // Add all other form fields to FormData
@@ -247,6 +251,7 @@ const AuthenticatedRequestQuote = ({
           }
         } else if (
           key !== "availableSeats" &&
+          key !== "totalAvailableSeats" &&
           key !== "basePrice" &&
           values[key] !== null &&
           values[key] !== undefined
@@ -339,6 +344,7 @@ const AuthenticatedRequestQuote = ({
 
       // Add number fields separately as strings
       jsonData.availableSeats = `${values.availableSeats}`;
+      jsonData.totalAvailableSeats = `${values.totalAvailableSeats}`;
       jsonData.basePrice = `${values.basePrice}`;
 
       // Add all other form fields to JSON data
@@ -346,6 +352,7 @@ const AuthenticatedRequestQuote = ({
         if (
           key !== "file" &&
           key !== "availableSeats" &&
+          key !== "totalAvailableSeats" &&
           key !== "basePrice" &&
           values[key] !== null &&
           values[key] !== undefined
@@ -607,31 +614,31 @@ const AuthenticatedRequestQuote = ({
                       />
                     </div>
 
-                    {/* Grades - Show only when academic stages are selected */}
-                    {values.academicStages &&
-                      values.academicStages.length > 0 && (
-                        <div className="somar-placeholder">
-                          <SelectionGroup
-                            name="grades"
-                            value={values.grades}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            touched={touched.grades}
-                            errors={errors.grades}
-                            placeholder={t(
-                              "forms.registerForm.grade.placeholder"
-                            )}
-                            list={gradeOptions}
-                            multiple={true}
-                            label={t("forms.registerForm.grade.label")}
-                          />
-                        </div>
-                      )}
+                    {/* Grades */}
+                    <div className="somar-placeholder">
+                      <SelectionGroup
+                        name="grades"
+                        value={values.grades}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        touched={touched.grades}
+                        errors={errors.grades}
+                        placeholder={t("forms.registerForm.grade.placeholder")}
+                        list={gradeOptions}
+                        multiple={true}
+                        label={t("forms.registerForm.grade.label")}
+                        disabled={
+                          !values.academicStages ||
+                          values.academicStages.length === 0
+                        }
+                        required={true}
+                      />
+                    </div>
                   </div>
 
                   {/* Row 2: Expected Participants and Services */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                    {/* Expected Participants */}
+                    {/* Number of students (min) */}
                     <div className="somar-placeholder">
                       <TextInputGroup
                         type="number"
@@ -647,6 +654,28 @@ const AuthenticatedRequestQuote = ({
                         onKeyDown={handleKeyDown}
                         placeholder={t(
                           "forms.customTrip.expectedParticipants.placeholder"
+                        )}
+                        min="0"
+                        required={true}
+                      />
+                    </div>
+
+                    {/* Total number of students */}
+                    <div className="somar-placeholder">
+                      <TextInputGroup
+                        type="number"
+                        name="totalAvailableSeats"
+                        label={t(
+                          "forms.confirmRequest.totalAvailableSeats.label"
+                        )}
+                        value={values.totalAvailableSeats}
+                        errors={errors.totalAvailableSeats}
+                        touched={touched.totalAvailableSeats}
+                        onChange={handleNumberChange(handleChange)}
+                        onBlur={handleBlur}
+                        onKeyDown={handleKeyDown}
+                        placeholder={t(
+                          "forms.confirmRequest.totalAvailableSeats.placeholder"
                         )}
                         min="0"
                         required={true}

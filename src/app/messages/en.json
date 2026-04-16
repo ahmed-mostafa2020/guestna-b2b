@@ -2207,11 +2207,15 @@
       },
       "availableSeats": {
         "label": "Number of participants",
-        "secondaryLabel": "Number of students",
+        "secondaryLabel": "Expected number of students",
         "error": {
           "min": "Number must be greater than 0",
           "max": "Number is too large"
         }
+      },
+      "totalAvailableSeats": {
+        "label": "Total number of students",
+        "placeholder": "Enter total number of students"
       },
       "note": {
         "label": "Additional Notes (Optional)",
