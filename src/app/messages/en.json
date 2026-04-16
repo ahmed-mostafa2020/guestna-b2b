@@ -2426,13 +2426,13 @@
           "fields": {
             "name": {
               "ar": {
-                "label": "Trip Name in Arabic",
-                "placeholder": "Enter trip name in Arabic",
+                "label": "Suggested trip Name in Arabic",
+                "placeholder": "Enter a suggested trip name in Arabic",
                 "error": "Please use Arabic characters only"
               },
               "en": {
-                "label": "Trip Name in English",
-                "placeholder": "Enter trip name in English",
+                "label": "Suggested trip Name in English",
+                "placeholder": "Enter a suggested trip name in English",
                 "error": "Please use English characters only"
               }
             },
@@ -2500,8 +2500,16 @@
           "description": "Set the trip price and number of available seats",
           "fields": {
             "avaliable_seats": {
-              "label": "Number of Required Seats",
+              "label": "Expected Seats",
               "placeholder": "Number of seats available for booking",
+              "error": {
+                "min": "Number must be at least one person",
+                "max": "Number cannot exceed 1000 people"
+              }
+            },
+            "total_available_seats": {
+              "label": "Total Available Seats",
+              "placeholder": "Enter total available seats",
               "error": {
                 "min": "Number must be at least one person",
                 "max": "Number cannot exceed 1000 people"

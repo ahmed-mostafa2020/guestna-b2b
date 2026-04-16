@@ -71,6 +71,26 @@ const StepPricing = () => {
             min="0"
           />
         </div>
+
+        {/* Total Available Seats */}
+        <div className="somar-placeholder">
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            {t("fields.total_available_seats.label")}
+            <span className="text-error ml-1">*</span>
+          </label>
+          <TextInputGroup
+            type="number"
+            name="totalAvailableSeats"
+            value={values.totalAvailableSeats}
+            errors={errors.totalAvailableSeats}
+            touched={touched.totalAvailableSeats}
+            onChange={handlePriceChange}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            placeholder={t("fields.total_available_seats.placeholder")}
+            min="0"
+          />
+        </div>
       </div>
     </Box>
   );
