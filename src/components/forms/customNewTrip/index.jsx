@@ -301,6 +301,7 @@ const CustomNewTripForm = ({
           academicStages: extractIds(
             editData.schoolsInfo?.academicStages || editData.academicStages
           ),
+          grades: extractIds(editData.schoolsInfo?.grades || []),
         },
         category: extractId(editData.category),
         supCategory: extractId(editData.supCategory),
@@ -326,6 +327,7 @@ const CustomNewTripForm = ({
           organization: "",
           tracks: [],
           academicStages: [],
+          grades: [],
         },
       ],
       day: "",
@@ -498,6 +500,11 @@ const CustomNewTripForm = ({
               );
             });
           }
+          if (Array.isArray(school.grades)) {
+            school.grades.forEach((gradeId, gIndex) => {
+              formData.append(`schoolsInfo[grades][${gIndex}]`, gradeId);
+            });
+          }
         } else {
           values.schoolsInfo.forEach((school, index) => {
             formData.append(
@@ -517,6 +524,14 @@ const CustomNewTripForm = ({
                 formData.append(
                   `schoolsInfo[${index}][academicStages][${sIndex}]`,
                   stageId
+                );
+              });
+            }
+            if (Array.isArray(school.grades)) {
+              school.grades.forEach((gradeId, gIndex) => {
+                formData.append(
+                  `schoolsInfo[${index}][grades][${gIndex}]`,
+                  gradeId
                 );
               });
             }

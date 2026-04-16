@@ -2416,6 +2416,11 @@
               "helper_text": "Please select the educational track first",
               "no_common_stages": "There no common stages between selected tracks",
               "auto_removed_warning": "The following stages will be removed automatically"
+            },
+            "grades": {
+              "label": "Grades",
+              "placeholder": "Select grades",
+              "helper_text": "Please select the academic stage first"
             }
           }
         },

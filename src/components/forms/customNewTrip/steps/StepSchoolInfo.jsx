@@ -235,6 +235,38 @@ const getAvailableAcademicStages = (
   }
 };
 
+// Get available grades based on selected academic stages and tracks
+const getAvailableGrades = (
+  tracksData,
+  selectedTrackId,
+  selectedTrackIds,
+  selectedAcademicStages,
+  isEditMode
+) => {
+  if (!selectedAcademicStages || selectedAcademicStages.length === 0) return [];
+
+  let relevantTracks;
+  if (isEditMode) {
+    relevantTracks = tracksData.filter((t) => t._id === selectedTrackId);
+  } else {
+    relevantTracks = tracksData.filter((t) =>
+      selectedTrackIds?.includes(t._id)
+    );
+  }
+
+  const allGrades = relevantTracks.flatMap((track) => track.grades || []);
+  return allGrades.filter((grade) =>
+    selectedAcademicStages.includes(grade.academicStage)
+  );
+};
+
+// Filter grades to keep only valid ones when academic stages change
+const filterValidGrades = (currentGrades, availableGrades) => {
+  if (!currentGrades || currentGrades.length === 0) return [];
+  const validGradeIds = new Set(availableGrades.map((g) => g._id));
+  return currentGrades.filter((gradeId) => validGradeIds.has(gradeId));
+};
+
 // Filter academic stages to keep only valid ones
 const filterValidAcademicStages = (
   currentStages,
@@ -308,6 +340,7 @@ const SchoolInfoCard = ({
       track: school.track,
       tracks: school.tracks,
       academicStages: school.academicStages,
+      grades: school.grades,
     };
   }
 
@@ -365,6 +398,17 @@ const SchoolInfoCard = ({
     trackList,
     academicStagesOptions,
   ]);
+
+  // Calculate available grades based on selected academic stages
+  const availableGrades = useMemo(() => {
+    return getAvailableGrades(
+      tracksData,
+      school.track,
+      school.tracks,
+      school.academicStages,
+      isEditMode
+    );
+  }, [tracksData, school.track, school.tracks, school.academicStages, isEditMode]);
 
   // Track the fieldPath in a ref to use it without triggering re-renders
   const fieldPathRef = useRef(fieldPath);
@@ -432,6 +476,31 @@ const SchoolInfoCard = ({
     setFieldValue,
     stableKey,
   ]);
+
+  // Validate and cleanup grades when academic stages change
+  useEffect(() => {
+    const currentGrades = school.grades || [];
+    if (currentGrades.length === 0) return;
+
+    const prevValues = prevValuesRef.current[stableKey] || {};
+    const stagesChanged =
+      JSON.stringify(prevValues.academicStages) !==
+      JSON.stringify(school.academicStages);
+
+    if (!stagesChanged) return;
+
+    const validGrades = filterValidGrades(currentGrades, availableGrades);
+
+    prevValuesRef.current[stableKey] = {
+      ...prevValuesRef.current[stableKey],
+      academicStages: school.academicStages,
+      grades: validGrades,
+    };
+
+    if (validGrades.length !== currentGrades.length) {
+      setFieldValue(fieldPathRef.current + ".grades", validGrades);
+    }
+  }, [school.academicStages, school.grades, availableGrades, stableKey, setFieldValue]);
 
   // Determine loading states
   const isAcademicStagesLoading = useMemo(() => {
@@ -619,6 +688,22 @@ const SchoolInfoCard = ({
     [availableAcademicStages, setFieldValue, fieldPath, stableKey]
   );
 
+  // Handle grades change
+  const handleGradesChange = useCallback(
+    (e) => {
+      const selectedNames = e.target.value;
+      const selectedIds = selectedNames
+        .map((name) => availableGrades.find((g) => g.name === name)?._id)
+        .filter(Boolean);
+      setFieldValue(`${fieldPath}.grades`, selectedIds);
+
+      if (prevValuesRef.current[stableKey]) {
+        prevValuesRef.current[stableKey].grades = selectedIds;
+      }
+    },
+    [availableGrades, setFieldValue, fieldPath, stableKey]
+  );
+
   // Determine if fields are disabled
   const isTracksDisabled = !school.organization || isLoadingTracks;
   const isAcademicStagesDisabled = useMemo(() => {
@@ -627,6 +712,8 @@ const SchoolInfoCard = ({
     }
     return !school.tracks || school.tracks.length === 0;
   }, [isEditMode, school.track, school.tracks]);
+
+  const isGradesDisabled = !school.academicStages || school.academicStages.length === 0;
 
   // ============================================================================
   // Render
@@ -785,7 +872,7 @@ const SchoolInfoCard = ({
               </div>
 
               {/* Academic Stages Selection */}
-              <div className="md:col-span-2">
+              <div>
                 <label className="block mb-2 text-sm text-textDark">
                   {t("fields.academicStages.label")}
                   <span className="text-error ml-1">*</span>
@@ -828,6 +915,30 @@ const SchoolInfoCard = ({
                       {t("fields.academicStages.no_common_stages")}
                     </p>
                   )}
+              </div>
+
+              {/* Grades Selection */}
+              <div>
+                <label className="block mb-2 text-sm text-textDark">
+                  {t("fields.grades.label")}
+                </label>
+                <SelectionGroup
+                  name={`${fieldPath}.grades`}
+                  value={(school.grades || [])
+                    .map((id) => availableGrades.find((g) => g._id === id)?.name)
+                    .filter(Boolean)}
+                  onChange={handleGradesChange}
+                  onBlur={handleBlur}
+                  placeholder={t("fields.grades.placeholder")}
+                  list={availableGrades.map((g) => g.name)}
+                  multiple={true}
+                  disabled={isGradesDisabled}
+                />
+                {isGradesDisabled && (
+                  <p className="!mt-2 ps-1 text-xs text-textLight">
+                    {t("fields.grades.helper_text")}
+                  </p>
+                )}
               </div>
             </div>
           </CardContent>
@@ -892,7 +1003,7 @@ const StepSchoolInfo = ({
 
   // Handler for adding new school
   const handleAddSchool = useCallback((push) => {
-    push({ organization: "", tracks: [], academicStages: [] });
+    push({ organization: "", tracks: [], academicStages: [], grades: [] });
   }, []);
 
   // Check if there are available organizations to add
