@@ -2517,8 +2517,11 @@
         },
         "pricing": {
           "step_title": "Pricing",
+          "step_title_seats_only": "Seats",
           "title": "Pricing & Number of Seats",
+          "title_seats_only": "Number of Seats",
           "description": "Set the trip price and number of available seats",
+          "description_seats_only": "Set the number of available seats",
           "fields": {
             "avaliable_seats": {
               "label": "Expected Seats",

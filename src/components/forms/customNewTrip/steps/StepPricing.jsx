@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { Box } from "@mui/material";
 import PriceRangePicker from "@components/forms/PriceRangePicker";
 
-const StepPricing = () => {
+const StepPricing = ({ isNormalTrip }) => {
   const t = useTranslations("forms.customTrip.steps.pricing");
   const { values, errors, touched, handleBlur, handleChange ,setFieldValue } =
     useFormikContext();
@@ -26,31 +26,37 @@ const StepPricing = () => {
  
   return (
     <Box>
-      <h2 className="text-2xl font-bold  text-textDark">{t("title")}</h2>
+      <h2 className="text-2xl font-bold  text-textDark">
+        {isNormalTrip ? t("title_seats_only") : t("title")}
+      </h2>
 
-      <p className="text-base !my-4"> {t("description")}</p>
+      <p className="text-base !my-4">
+        {isNormalTrip ? t("description_seats_only") : t("description")}
+      </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Min Price */}
-        <div className="somar-placeholder">
-          <label className="block mb-2 text-sm font-medium text-gray-700">
-            {t("fields.price.label")}
-            <span className="text-error ml-1">*</span>
-          </label>
-          <PriceRangePicker
-            minValue={values.priceRange?.min}
-            maxValue={values.priceRange?.max}
-            name="priceRange"
-            errors={errors}
-            touched={touched}
-            onApply={(min, max) => {
-              setFieldValue("priceRange.min", min);
-              setFieldValue("priceRange.max", max);
-            }}
-            minLabel={t("fields.price.min")}
-            maxLabel={t("fields.price.max")}
-            placeholder={t("fields.price.placeholder")}
-          />
-        </div>
+        {/* Min Price (Hidden for Normal Trips) */}
+        {!isNormalTrip && (
+          <div className="somar-placeholder">
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              {t("fields.price.label")}
+              <span className="text-error ml-1">*</span>
+            </label>
+            <PriceRangePicker
+              minValue={values.priceRange?.min}
+              maxValue={values.priceRange?.max}
+              name="priceRange"
+              errors={errors}
+              touched={touched}
+              onApply={(min, max) => {
+                setFieldValue("priceRange.min", min);
+                setFieldValue("priceRange.max", max);
+              }}
+              minLabel={t("fields.price.min")}
+              maxLabel={t("fields.price.max")}
+              placeholder={t("fields.price.placeholder")}
+            />
+          </div>
+        )}
 
         {/* Expected Participants / Available Seats */}
         <div className="somar-placeholder">

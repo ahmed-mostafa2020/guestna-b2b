@@ -251,7 +251,7 @@ const CustomNewTripForm = ({
     ? [
         t("steps.school_info.step_title"),
         t("steps.trip_date.step_title"),
-        t("steps.pricing.step_title"),
+        t("steps.pricing.step_title_seats_only"),
         t("steps.additional_info.step_title"),
       ]
     : [
@@ -368,7 +368,7 @@ const CustomNewTripForm = ({
         case 1:
           return ["day", "endDay", "fromHour", "toHour"];
         case 2:
-          return ["priceRange", "availableSeats", "totalAvailableSeats"];
+          return ["availableSeats", "totalAvailableSeats"];
         case 3:
           return ["specialRequirements", "file"];
         default:
@@ -504,19 +504,11 @@ const CustomNewTripForm = ({
   const prepareNormalTripFormData = (values) => {
     const formData = new FormData();
 
-    // orderId goes in body as "askTrip" for normal trip SUBMIT endpoint
-    formData.append("askTrip", orderId);
-
-    // Fields accepted by normal trip SUBMIT endpoint
-    formData.append("availableSeats", String(values.availableSeats ?? ""));
-    formData.append(
-      "totalAvailableSeats",
-      String(values.totalAvailableSeats ?? "")
-    );
-
-    // basePrice from priceRange.min (min=max=basePrice for normal trips)
-    if (values.priceRange?.min !== undefined && values.priceRange?.min !== "") {
-      formData.append("basePrice", String(values.priceRange.min));
+    if (values.availableSeats !== undefined && values.availableSeats !== "") {
+      formData.append("availableSeats", String(values.availableSeats));
+    }
+    if (values.totalAvailableSeats !== undefined && values.totalAvailableSeats !== "") {
+      formData.append("totalAvailableSeats", String(values.totalAvailableSeats));
     }
 
     if (values.day) formData.append("day", values.day);
@@ -527,6 +519,12 @@ const CustomNewTripForm = ({
     }
 
     const school = values.schoolsInfo;
+    if (school?.organization) {
+      formData.append("organization", school.organization);
+    }
+    if (school?.track) {
+      formData.append("track", school.track);
+    }
     if (Array.isArray(school?.academicStages)) {
       school.academicStages.forEach((id, i) =>
         formData.append(`academicStages[${i}]`, id)
@@ -542,9 +540,13 @@ const CustomNewTripForm = ({
       formData.append("specialRequirements", values.specialRequirements);
     }
 
+    if (values.note) {
+      formData.append("note", values.note);
+    }
+
     if (values.file instanceof File) {
       formData.append("file", values.file);
-    } else {
+    } else if (isEditMode && !values.file) {
       formData.append("file", "");
     }
 
@@ -647,8 +649,8 @@ const CustomNewTripForm = ({
         url: getProxyUrl(
           isEditMode
             ? isNormalTrip
-              ? `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.SUBMIT}`
-              : `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.CUSTOM_TRIP_SUBMIT}/${orderId}`
+              ? `/profile/askTrips/normal/edit/${orderId}`
+              : `/profile/askTrips/custom/edit/${orderId}`
             : `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ADD_NEW_ACTIVITY.CUSTOM_TRIP}`
         ),
         headers: {
@@ -893,7 +895,7 @@ const CustomNewTripForm = ({
                   case 1:
                     return <StepTripDate tripTypeData={tripTypeData} />;
                   case 2:
-                    return <StepPricing />;
+                    return <StepPricing isNormalTrip={isNormalTrip} />;
                   case 3:
                     return <StepAdditionalInfo />;
                   default:
@@ -922,7 +924,7 @@ const CustomNewTripForm = ({
                 case 2:
                   return <StepTripDate tripTypeData={tripTypeData} />;
                 case 3:
-                  return <StepPricing />;
+                  return <StepPricing isNormalTrip={isNormalTrip} />;
                 case 4:
                   return <StepAdditionalInfo />;
                 default:

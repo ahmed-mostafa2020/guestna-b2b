@@ -2526,8 +2526,11 @@
         },
         "pricing": {
           "step_title": "التسعير",
+          "step_title_seats_only": "المقاعد",
           "title": "التسعير و عدد المقاعد ",
+          "title_seats_only": "عدد المقاعد",
           "description": "تحديد سعر الرحلة و عدد المقاعد المتاحة",
+          "description_seats_only": "تحديد عدد المقاعد المتاحة",
           "fields": {
             "avaliable_seats": {
               "label": "المقاعد المتوقعة",
