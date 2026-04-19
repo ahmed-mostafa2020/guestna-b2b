@@ -3,273 +3,269 @@ export const tripRequestHTML = `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>طلب رحلة مدرسية - جستنا</title>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap");
+    body { font-family: "Tajawal", Arial, Tahoma, sans-serif !important; direction: rtl; }
+    @media only screen and (max-width: 600px) {
+      .main-table { width: 100% !important; border-radius: 0 !important; }
+      .content-pad { padding: 20px !important; }
+    }
+  </style>
 </head>
-<body style="margin:0;padding:0;background-color:#f0f4f4;font-family:'IBM Plex Sans Arabic',Arial,sans-serif;direction:rtl;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+<body style="margin:0;padding:0;background-color:#EEF2F7;color:#1E293B;font-family:'Tajawal',Arial,Tahoma,sans-serif;direction:rtl;width:100%;min-width:100%;">
 
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f0f4f4;padding:48px 16px;">
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#EEF2F7;">
     <tr>
-      <td align="center">
+      <td align="center" style="padding:32px 16px;">
 
-        <!-- ─── Email Card ─── -->
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,143,143,0.10);">
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" class="main-table" style="max-width:600px;background-color:#ffffff;border-radius:20px;overflow:hidden;margin:0 auto;box-shadow:0 8px 40px rgba(10,37,64,0.12);">
 
-          <!-- ─── Header ─── -->
+          <!-- Header -->
           <tr>
-            <td style="background:linear-gradient(135deg,#008F8F 0%,#006e6e 100%);padding:36px 40px;text-align:center;">
-              <img src="https://guestna-edu.com/logo.png" alt="جستنا" width="110" style="display:block;margin:0 auto 12px;" />
-              <p style="margin:0;color:rgba(255,255,255,0.75);font-size:13px;letter-spacing:0.5px;">منصة الرحلات التعليمية للمدارس</p>
-            </td>
-          </tr>
-
-          <!-- ─── Receipt Banner ─── -->
-          <tr>
-            <td style="background-color:#e6f5f5;padding:28px 40px;text-align:center;border-bottom:1px solid #d0eaea;">
-              <div style="display:inline-block;width:56px;height:56px;background-color:#008F8F;border-radius:50%;line-height:56px;text-align:center;margin-bottom:14px;">
-                <span style="color:#ffffff;font-size:24px;line-height:56px;display:block;">📋</span>
+            <td style="background:linear-gradient(150deg,#0A2540 0%,#006e6e 60%,#008F8F 100%);padding:36px 36px 32px;text-align:center;">
+              <img
+                src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
+                alt="GuestNa Logo"
+                width="130"
+                style="display:block;margin:0 auto 20px;filter:brightness(0) invert(1);border:0;"
+              />
+              <div style="display:inline-block;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:50px;padding:5px 18px;font-size:11px;color:#ffffff;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;">
+                إشعار داخلي — فريق جستنا
               </div>
-              <h1 style="margin:0 0 6px;color:#008F8F;font-size:22px;font-weight:700;">تم استلام طلب الرحلة</h1>
-              <p style="margin:0;color:#555;font-size:14px;">رقم الطلب: <strong style="color:#008F8F;">#REQ-2025-0211</strong></p>
+              <div style="font-size:24px;font-weight:700;color:#ffffff;margin-bottom:8px;line-height:1.3;">
+                📋 طلب رحلة مدرسية جديد
+              </div>
+              <div style="font-size:14px;color:rgba(255,255,255,0.6);">
+                تم استلام طلب رحلة مخصص - يُرجى المراجعة والمتابعة
+              </div>
             </td>
           </tr>
 
-          <!-- ─── Internal Note (to Guestna team) ─── -->
+          <!-- Accent Line -->
           <tr>
-            <td style="padding:24px 40px;background-color:#fff8f0;border-bottom:1px solid #f0ddc0;">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+            <td style="height:4px;background:linear-gradient(90deg,#008F8F,#ED8A22,#008F8F);"></td>
+          </tr>
+
+          <!-- Content -->
+          <tr>
+            <td class="content-pad" style="padding:32px 36px;">
+
+              <!-- Request Reference -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom:24px;">
                 <tr>
-                  <td width="4" style="background-color:#ED8A22;border-radius:2px;"></td>
-                  <td style="padding-right:14px;">
-                    <p style="margin:0 0 4px;color:#ED8A22;font-size:12px;font-weight:700;letter-spacing:0.3px;">إشعار داخلي — فريق عمليات جستنا</p>
-                    <p style="margin:0;color:#555;font-size:13px;line-height:1.7;">تم تسجيل طلب رحلة مخصصة جديد. يُرجى المراجعة والتواصل مع المدرسة خلال يومي عمل لتأكيد التفاصيل وإرسال العرض.</p>
+                  <td style="background:#F0FDFA;border-right:4px solid #008F8F;border-radius:10px 0 0 10px;padding:16px 20px;text-align:right;">
+                    <div style="font-size:12px;color:#008F8F;font-weight:700;margin-bottom:4px;">رقم الطلب</div>
+                    <div style="font-size:20px;font-weight:700;color:#0A2540;">#REQ-2025-0211</div>
+                    <div style="font-size:13px;color:#64748B;margin-top:4px;">تاريخ الطلب: السبت، 12 أبريل 2025</div>
+                  </td>
+                  <td style="padding:16px 20px;text-align:left;">
+                    <span style="display:inline-block;background:#F59E0B;color:#fff;font-size:12px;font-weight:700;padding:6px 16px;border-radius:50px;">⏳ قيد المراجعة</span>
                   </td>
                 </tr>
               </table>
-            </td>
-          </tr>
 
-          <!-- ─── School Info ─── -->
-          <tr>
-            <td style="padding:28px 40px 0;">
-              <p style="margin:0 0 16px;color:#1a1a1a;font-size:15px;font-weight:700;">بيانات المدرسة الطالبة</p>
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f8fbfb;border:1px solid #d0eaea;border-radius:12px;overflow:hidden;">
+              <!-- Alert -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom:24px;">
                 <tr>
-                  <td style="padding:0;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-
-                      <tr style="border-bottom:1px solid #e8f0f0;">
-                        <td style="padding:13px 20px;width:42%;background-color:#fafcfc;">
-                          <p style="margin:0;color:#888;font-size:12px;font-weight:500;">اسم المدرسة</p>
-                        </td>
-                        <td style="padding:13px 20px;background-color:#fafcfc;">
-                          <p style="margin:0;color:#1a1a1a;font-size:14px;font-weight:600;">مدرسة الأفق العلمي — جدة</p>
-                        </td>
-                      </tr>
-
-                      <tr style="border-bottom:1px solid #e8f0f0;">
-                        <td style="padding:13px 20px;">
-                          <p style="margin:0;color:#888;font-size:12px;font-weight:500;">المسؤول عن الطلب</p>
-                        </td>
-                        <td style="padding:13px 20px;">
-                          <p style="margin:0;color:#1a1a1a;font-size:14px;font-weight:600;">م. خالد العتيبي — منسق الأنشطة</p>
-                        </td>
-                      </tr>
-
-                      <tr style="border-bottom:1px solid #e8f0f0;">
-                        <td style="padding:13px 20px;background-color:#fafcfc;">
-                          <p style="margin:0;color:#888;font-size:12px;font-weight:500;">البريد الإلكتروني</p>
-                        </td>
-                        <td style="padding:13px 20px;background-color:#fafcfc;">
-                          <p style="margin:0;color:#008F8F;font-size:14px;font-weight:500;">k.alateebi@ufuq-school.edu.sa</p>
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td style="padding:13px 20px;">
-                          <p style="margin:0;color:#888;font-size:12px;font-weight:500;">رقم الجوال</p>
-                        </td>
-                        <td style="padding:13px 20px;">
-                          <p style="margin:0;color:#1a1a1a;font-size:14px;font-weight:600;">+966 55 234 5678</p>
-                        </td>
-                      </tr>
-
-                    </table>
+                  <td style="background:#FFF8F0;border-right:4px solid #ED8A22;border-radius:10px 0 0 10px;padding:16px 20px;text-align:right;">
+                    <div style="font-size:13px;color:#92400E;font-weight:600;line-height:1.6;">
+                      تم تسجيل طلب رحلة مخصصة جديد. يُرجى المراجعة والتواصل مع المدرسة خلال <strong>يومي عمل</strong> لتأكيد التفاصيل وإرسال العرض.
+                    </div>
                   </td>
                 </tr>
               </table>
-            </td>
-          </tr>
 
-          <!-- ─── Trip Requirements ─── -->
-          <tr>
-            <td style="padding:24px 40px 0;">
-              <p style="margin:0 0 16px;color:#1a1a1a;font-size:15px;font-weight:700;">متطلبات الرحلة المطلوبة</p>
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid #e0e0e0;border-radius:12px;overflow:hidden;">
+              <!-- School Info Card -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;margin-bottom:24px;">
                 <tr>
-                  <td style="padding:0;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-
-                      <tr style="border-bottom:1px solid #f0f0f0;background-color:#f8f8f8;">
-                        <td style="padding:13px 20px;width:42%;">
-                          <p style="margin:0;color:#888;font-size:12px;font-weight:500;">نوع الرحلة</p>
-                        </td>
-                        <td style="padding:13px 20px;">
-                          <p style="margin:0;color:#1a1a1a;font-size:14px;font-weight:600;">رحلة علمية — مختبر الفضاء والتكنولوجيا</p>
-                        </td>
-                      </tr>
-
-                      <tr style="border-bottom:1px solid #f0f0f0;">
-                        <td style="padding:13px 20px;">
-                          <p style="margin:0;color:#888;font-size:12px;font-weight:500;">عدد الطلاب</p>
-                        </td>
-                        <td style="padding:13px 20px;">
-                          <p style="margin:0;color:#1a1a1a;font-size:14px;font-weight:600;">60 طالب</p>
-                        </td>
-                      </tr>
-
-                      <tr style="border-bottom:1px solid #f0f0f0;background-color:#f8f8f8;">
-                        <td style="padding:13px 20px;">
-                          <p style="margin:0;color:#888;font-size:12px;font-weight:500;">الفئة العمرية / المرحلة</p>
-                        </td>
-                        <td style="padding:13px 20px;">
-                          <p style="margin:0;color:#1a1a1a;font-size:14px;font-weight:600;">المرحلة المتوسطة (12–15 سنة)</p>
-                        </td>
-                      </tr>
-
-                      <tr style="border-bottom:1px solid #f0f0f0;">
-                        <td style="padding:13px 20px;">
-                          <p style="margin:0;color:#888;font-size:12px;font-weight:500;">التاريخ المقترح</p>
-                        </td>
-                        <td style="padding:13px 20px;">
-                          <p style="margin:0;color:#1a1a1a;font-size:14px;font-weight:600;">الفترة: 1–15 يونيو 2025</p>
-                        </td>
-                      </tr>
-
-                      <tr style="border-bottom:1px solid #f0f0f0;background-color:#f8f8f8;">
-                        <td style="padding:13px 20px;">
-                          <p style="margin:0;color:#888;font-size:12px;font-weight:500;">المدة</p>
-                        </td>
-                        <td style="padding:13px 20px;">
-                          <p style="margin:0;color:#1a1a1a;font-size:14px;font-weight:600;">يوم كامل (6–8 ساعات)</p>
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td style="padding:13px 20px;">
-                          <p style="margin:0;color:#888;font-size:12px;font-weight:500;">الميزانية التقريبية</p>
-                        </td>
-                        <td style="padding:13px 20px;">
-                          <p style="margin:0;color:#1a1a1a;font-size:14px;font-weight:600;">80–120 ر.س / طالب</p>
-                        </td>
-                      </tr>
-
-                    </table>
+                  <td colspan="2" style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:12px 20px;text-align:right;">
+                    <span style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;">بيانات المدرسة الطالبة</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:14px 20px 6px;width:42%;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">اسم المدرسة</div>
+                  </td>
+                  <td style="padding:14px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:15px;color:#1E293B;font-weight:600;">مدرسة الأفق العلمي — جدة</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">المسؤول عن الطلب</div>
+                  </td>
+                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:15px;color:#1E293B;font-weight:600;">م. خالد العتيبي — منسق الأنشطة</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">البريد الإلكتروني</div>
+                  </td>
+                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:15px;color:#008F8F;font-weight:500;">k.alateebi@ufuq-school.edu.sa</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 20px 14px;text-align:right;">
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">رقم الجوال</div>
+                  </td>
+                  <td style="padding:10px 20px 14px;text-align:right;">
+                    <div style="font-size:15px;color:#1E293B;font-weight:600;">+966 55 234 5678</div>
                   </td>
                 </tr>
               </table>
-            </td>
-          </tr>
 
-          <!-- ─── Special Requirements ─── -->
-          <tr>
-            <td style="padding:24px 40px;">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f8fbfb;border:1px solid #d0eaea;border-radius:12px;padding:20px;">
+              <!-- Trip Requirements -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;margin-bottom:24px;">
                 <tr>
-                  <td style="padding:20px;">
-                    <p style="margin:0 0 10px;color:#008F8F;font-size:13px;font-weight:700;">💬 متطلبات خاصة</p>
-                    <p style="margin:0;color:#444;font-size:14px;line-height:1.8;">
+                  <td colspan="2" style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:12px 20px;text-align:right;">
+                    <span style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;">متطلبات الرحلة المطلوبة</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:14px 20px 6px;width:42%;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">نوع الرحلة</div>
+                  </td>
+                  <td style="padding:14px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:15px;color:#008F8F;font-weight:700;">رحلة علمية — مختبر الفضاء والتكنولوجيا</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">عدد الطلاب</div>
+                  </td>
+                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:15px;color:#1E293B;font-weight:600;">60 طالب</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">الفئة العمرية / المرحلة</div>
+                  </td>
+                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:15px;color:#1E293B;font-weight:600;">المرحلة المتوسطة (12–15 سنة)</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">التاريخ المقترح</div>
+                  </td>
+                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:15px;color:#1E293B;font-weight:600;">الفترة: 1–15 يونيو 2025</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">المدة</div>
+                  </td>
+                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:15px;color:#1E293B;font-weight:600;">يوم كامل (6–8 ساعات)</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 20px 14px;text-align:right;">
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">الميزانية التقريبية</div>
+                  </td>
+                  <td style="padding:10px 20px 14px;text-align:right;">
+                    <div style="font-size:15px;color:#1E293B;font-weight:600;">80–120 ر.س / طالب</div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Special Requirements -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom:24px;">
+                <tr>
+                  <td style="background:#EFF6FF;border-right:4px solid #3B82F6;border-radius:10px 0 0 10px;padding:16px 20px;text-align:right;">
+                    <div style="font-size:12px;font-weight:700;color:#3B82F6;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;">💬 متطلبات خاصة</div>
+                    <div style="font-size:14px;color:#1E40AF;line-height:1.7;">
                       يُفضل أن يكون البرنامج مرتبطاً بمناهج العلوم للصف الأول متوسط. كما يُطلب توفير ورش عمل تفاعلية لا تتجاوز 20 طالباً في كل مجموعة، مع توفير وجبة خفيفة خلال الرحلة.
-                    </p>
+                    </div>
                   </td>
                 </tr>
               </table>
-            </td>
-          </tr>
 
-          <!-- ─── Next Steps ─── -->
-          <tr>
-            <td style="padding:0 40px 32px;">
-              <p style="margin:0 0 16px;color:#1a1a1a;font-size:15px;font-weight:700;">الخطوات التالية</p>
-
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+              <!-- Next Steps -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom:24px;">
                 <tr>
-                  <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-                      <tr>
-                        <td width="36" valign="top">
-                          <div style="width:28px;height:28px;background-color:#008F8F;border-radius:50%;text-align:center;line-height:28px;">
-                            <span style="color:#fff;font-size:13px;font-weight:700;">1</span>
-                          </div>
-                        </td>
-                        <td style="padding-right:12px;padding-top:4px;">
-                          <p style="margin:0;color:#1a1a1a;font-size:14px;font-weight:600;">مراجعة متطلبات الرحلة</p>
-                          <p style="margin:2px 0 0;color:#888;font-size:12px;">يقوم فريق جستنا بمراجعة الطلب واختيار أفضل الموردين المتاحين</p>
-                        </td>
-                      </tr>
-                    </table>
+                  <td style="text-align:right;padding-bottom:12px;">
+                    <div style="font-size:14px;font-weight:700;color:#1E293B;">الخطوات التالية</div>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-                      <tr>
-                        <td width="36" valign="top">
-                          <div style="width:28px;height:28px;background-color:#ED8A22;border-radius:50%;text-align:center;line-height:28px;">
-                            <span style="color:#fff;font-size:13px;font-weight:700;">2</span>
-                          </div>
-                        </td>
-                        <td style="padding-right:12px;padding-top:4px;">
-                          <p style="margin:0;color:#1a1a1a;font-size:14px;font-weight:600;">إرسال العرض المخصص</p>
-                          <p style="margin:2px 0 0;color:#888;font-size:12px;">ستصلكم مقترحات مع تفاصيل البرامج والأسعار خلال يومي عمل</p>
-                        </td>
-                      </tr>
-                    </table>
+                  <td style="padding:8px 0;border-bottom:1px solid #F1F5F9;">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"><tr>
+                      <td width="40" style="text-align:right;padding-left:12px;"><div style="width:28px;height:28px;background:#008F8F;border-radius:50%;text-align:center;line-height:28px;"><span style="color:#fff;font-size:13px;font-weight:700;">1</span></div></td>
+                      <td style="text-align:right;">
+                        <p style="margin:0;color:#1E293B;font-size:14px;font-weight:600;">مراجعة متطلبات الرحلة</p>
+                        <p style="margin:2px 0 0;color:#94A3B8;font-size:12px;">يقوم فريق جستنا بمراجعة الطلب واختيار أفضل الموردين المتاحين</p>
+                      </td>
+                    </tr></table>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:10px 0;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-                      <tr>
-                        <td width="36" valign="top">
-                          <div style="width:28px;height:28px;background-color:#e0e0e0;border-radius:50%;text-align:center;line-height:28px;">
-                            <span style="color:#666;font-size:13px;font-weight:700;">3</span>
-                          </div>
-                        </td>
-                        <td style="padding-right:12px;padding-top:4px;">
-                          <p style="margin:0;color:#666;font-size:14px;font-weight:600;">تأكيد الحجز ومعالجة الدفع</p>
-                          <p style="margin:2px 0 0;color:#aaa;font-size:12px;">بعد موافقتكم يتم الحجز الرسمي وإصدار الفاتورة</p>
-                        </td>
-                      </tr>
-                    </table>
+                  <td style="padding:8px 0;border-bottom:1px solid #F1F5F9;">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"><tr>
+                      <td width="40" style="text-align:right;padding-left:12px;"><div style="width:28px;height:28px;background:#ED8A22;border-radius:50%;text-align:center;line-height:28px;"><span style="color:#fff;font-size:13px;font-weight:700;">2</span></div></td>
+                      <td style="text-align:right;">
+                        <p style="margin:0;color:#1E293B;font-size:14px;font-weight:600;">إرسال العرض المخصص</p>
+                        <p style="margin:2px 0 0;color:#94A3B8;font-size:12px;">ستصلكم مقترحات مع تفاصيل البرامج والأسعار خلال يومي عمل</p>
+                      </td>
+                    </tr></table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0;">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"><tr>
+                      <td width="40" style="text-align:right;padding-left:12px;"><div style="width:28px;height:28px;background:#CBD5E1;border-radius:50%;text-align:center;line-height:28px;"><span style="color:#64748B;font-size:13px;font-weight:700;">3</span></div></td>
+                      <td style="text-align:right;">
+                        <p style="margin:0;color:#64748B;font-size:14px;font-weight:600;">تأكيد الحجز ومعالجة الدفع</p>
+                        <p style="margin:2px 0 0;color:#94A3B8;font-size:12px;">بعد موافقتكم يتم الحجز الرسمي وإصدار الفاتورة</p>
+                      </td>
+                    </tr></table>
                   </td>
                 </tr>
               </table>
+
+              <!-- CTA -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                <tr>
+                  <td align="center" style="padding-top:8px;">
+                    <a href="#"
+                       target="_blank"
+                       style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:15px 44px;border-radius:10px;box-shadow:0 4px 20px rgba(0,143,143,0.3);letter-spacing:0.3px;">
+                      متابعة الطلب من لوحة التحكم ←
+                    </a>
+                    <p style="margin:12px 0 0;color:#94A3B8;font-size:12px;text-align:center;">سيتم التواصل مع المدرسة مباشرةً عبر البريد أو الجوال</p>
+                  </td>
+                </tr>
+              </table>
+
             </td>
           </tr>
 
-          <!-- ─── CTA ─── -->
+          <!-- Footer -->
           <tr>
-            <td style="padding:0 40px 32px;text-align:center;">
-              <a href="#" style="display:inline-block;background-color:#ED8A22;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:14px 40px;border-radius:8px;letter-spacing:0.3px;">
-                متابعة الطلب من لوحة التحكم
-              </a>
-              <p style="margin:12px 0 0;color:#888;font-size:12px;">سيتم التواصل معكم مباشرةً عبر البريد أو الجوال</p>
-            </td>
-          </tr>
-
-          <!-- ─── Footer ─── -->
-          <tr>
-            <td style="background-color:#006e6e;padding:24px 40px;text-align:center;">
-              <p style="margin:0 0 6px;color:rgba(255,255,255,0.9);font-size:13px;font-weight:600;">منصة جستنا للرحلات التعليمية</p>
-              <p style="margin:0;color:rgba(255,255,255,0.55);font-size:12px;">© 2025 Guestna. جميع الحقوق محفوظة.</p>
-              <p style="margin:12px 0 0;color:rgba(255,255,255,0.45);font-size:11px;">تلقيت هذا البريد لأنك مسجل كمسؤول مدرسة على منصة جستنا. لإلغاء الاشتراك <a href="#" style="color:rgba(255,255,255,0.6);text-decoration:underline;">اضغط هنا</a></p>
+            <td style="background:#0A2540;padding:24px 36px;text-align:center;">
+              <img
+                src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
+                alt="GuestNa"
+                width="90"
+                style="display:block;margin:0 auto 12px;filter:brightness(0) invert(1);opacity:0.85;border:0;"
+              />
+              <p style="margin:0 0 6px;font-size:13px;color:rgba(255,255,255,0.7);font-weight:600;">منصة جستنا للرحلات التعليمية</p>
+              <p style="margin:0 0 8px;font-size:12px;color:rgba(255,255,255,0.35);">© 2025 GuestNa. جميع الحقوق محفوظة.</p>
+              <p style="margin:0;font-size:12px;">
+                <a href="#" style="color:rgba(255,255,255,0.45);text-decoration:none;">إلغاء الاشتراك</a>
+                <span style="color:rgba(255,255,255,0.2);margin:0 6px;">&middot;</span>
+                <a href="#" style="color:rgba(255,255,255,0.45);text-decoration:none;">سياسة الخصوصية</a>
+              </p>
             </td>
           </tr>
 
         </table>
-
       </td>
     </tr>
   </table>
