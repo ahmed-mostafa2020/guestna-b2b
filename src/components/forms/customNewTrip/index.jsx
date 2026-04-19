@@ -20,6 +20,7 @@ import {
   createCustomNewTripSchema,
   editCustomTripSchema,
 } from "@utils/validators/validationSchemas";
+import { askType as askTypeConstants } from "@constants/askType";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import getErrorMessage from "@utils/helpers/getErrorMessage";
 import getProxyUrl from "@utils/api/getProxyUrl";
@@ -189,6 +190,8 @@ const CustomNewTripForm = ({
   const { enqueueSnackbar } = useSnackbar();
 
   const isEditMode = mode === "edit";
+  const isNormalTrip =
+    isEditMode && editData?.askType === askTypeConstants.CUSTOM_TRIP;
 
   useEffect(() => {
     if (isEditMode && !orderId) {
@@ -244,13 +247,20 @@ const CustomNewTripForm = ({
   const servicesOptions = servicesData;
   const supCategoryOptions = supCategoryData;
 
-  const steps = [
-    t("steps.school_info.step_title"),
-    t("steps.trip_info.step_title"),
-    t("steps.trip_date.step_title"),
-    t("steps.pricing.step_title"),
-    t("steps.additional_info.step_title"),
-  ];
+  const steps = isNormalTrip
+    ? [
+        t("steps.school_info.step_title"),
+        t("steps.trip_date.step_title"),
+        t("steps.pricing.step_title"),
+        t("steps.additional_info.step_title"),
+      ]
+    : [
+        t("steps.school_info.step_title"),
+        t("steps.trip_info.step_title"),
+        t("steps.trip_date.step_title"),
+        t("steps.pricing.step_title"),
+        t("steps.additional_info.step_title"),
+      ];
 
   const extractId = (value) => {
     if (!value) return "";
@@ -265,8 +275,8 @@ const CustomNewTripForm = ({
   const getInitialValues = useMemo(() => {
     if (isEditMode && editData) {
       const priceRange = {
-        min: editData.priceRange?.min ?? editData.minPrice ?? 0,
-        max: editData.priceRange?.max ?? editData.maxPrice ?? 100,
+        min: editData.priceRange?.min ?? editData.minPrice ?? editData.basePrice ?? 0,
+        max: editData.priceRange?.max ?? editData.maxPrice ?? editData.basePrice ?? 0,
       };
 
       const getTrackFromEditData = () => {
@@ -301,7 +311,7 @@ const CustomNewTripForm = ({
           academicStages: extractIds(
             editData.schoolsInfo?.academicStages || editData.academicStages
           ),
-          grades: extractIds(editData.schoolsInfo?.grades || []),
+          grades: extractIds(editData.schoolsInfo?.grades || editData.grades || []),
         },
         category: extractId(editData.category),
         supCategory: extractId(editData.supCategory),
@@ -315,6 +325,7 @@ const CustomNewTripForm = ({
         toHour: editData.toHour || "",
         priceRange: priceRange,
         availableSeats: editData.availableSeats || 0,
+        totalAvailableSeats: editData.totalAvailableSeats || 0,
         specialRequirements: editData.specialRequirements || "",
         file: editData.file || "",
         note: editData.note || "",
@@ -349,6 +360,21 @@ const CustomNewTripForm = ({
   }, [isEditMode, editData]);
 
   const getFieldsForStep = (step) => {
+    if (isNormalTrip) {
+      // Normal trips skip step 2 (TripInfo)
+      switch (step) {
+        case 0:
+          return ["schoolsInfo"];
+        case 1:
+          return ["day", "endDay", "fromHour", "toHour"];
+        case 2:
+          return ["priceRange", "availableSeats", "totalAvailableSeats"];
+        case 3:
+          return ["specialRequirements", "file"];
+        default:
+          return [];
+      }
+    }
     switch (step) {
       case 0:
         return ["schoolsInfo"];
@@ -475,7 +501,61 @@ const CustomNewTripForm = ({
     setActiveStep((prev) => prev - 1);
   };
 
+  const prepareNormalTripFormData = (values) => {
+    const formData = new FormData();
+
+    // orderId goes in body as "askTrip" for normal trip SUBMIT endpoint
+    formData.append("askTrip", orderId);
+
+    // Fields accepted by normal trip SUBMIT endpoint
+    formData.append("availableSeats", String(values.availableSeats ?? ""));
+    formData.append(
+      "totalAvailableSeats",
+      String(values.totalAvailableSeats ?? "")
+    );
+
+    // basePrice from priceRange.min (min=max=basePrice for normal trips)
+    if (values.priceRange?.min !== undefined && values.priceRange?.min !== "") {
+      formData.append("basePrice", String(values.priceRange.min));
+    }
+
+    if (values.day) formData.append("day", values.day);
+    if (values.endDay) formData.append("endDay", values.endDay);
+
+    if (Array.isArray(values.services)) {
+      values.services.forEach((id, i) => formData.append(`services[${i}]`, id));
+    }
+
+    const school = values.schoolsInfo;
+    if (Array.isArray(school?.academicStages)) {
+      school.academicStages.forEach((id, i) =>
+        formData.append(`academicStages[${i}]`, id)
+      );
+    }
+    if (Array.isArray(school?.grades)) {
+      school.grades.forEach((id, i) =>
+        formData.append(`grades[${i}]`, id)
+      );
+    }
+
+    if (values.specialRequirements) {
+      formData.append("specialRequirements", values.specialRequirements);
+    }
+
+    if (values.file instanceof File) {
+      formData.append("file", values.file);
+    } else {
+      formData.append("file", "");
+    }
+
+    return formData;
+  };
+
   const prepareFormData = (values) => {
+    if (isNormalTrip) {
+      return prepareNormalTripFormData(values);
+    }
+
     const formData = new FormData();
 
     Object.keys(values).forEach((key) => {
@@ -566,7 +646,9 @@ const CustomNewTripForm = ({
         maxBodyLength: Infinity,
         url: getProxyUrl(
           isEditMode
-            ? `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.CUSTOM_TRIP_SUBMIT}/${orderId}`
+            ? isNormalTrip
+              ? `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.SUBMIT}`
+              : `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.CUSTOM_TRIP_SUBMIT}/${orderId}`
             : `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ADD_NEW_ACTIVITY.CUSTOM_TRIP}`
         ),
         headers: {
@@ -608,7 +690,7 @@ const CustomNewTripForm = ({
   };
 
   const customTripSchema = isEditMode
-    ? editCustomTripSchema(t2)
+    ? editCustomTripSchema(t2, isNormalTrip)
     : createCustomNewTripSchema(t2);
 
   return (
@@ -798,6 +880,26 @@ const CustomNewTripForm = ({
             }, [attemptedNext, currentStepHasErrors, activeStep]);
 
             const renderStepContent = (step) => {
+              if (isNormalTrip) {
+                switch (step) {
+                  case 0:
+                    return (
+                      <StepSchoolInfo
+                        isEditMode={isEditMode}
+                        organizationOptions={organizationsOptions}
+                        academicStagesOptions={academicStagesOptions}
+                      />
+                    );
+                  case 1:
+                    return <StepTripDate tripTypeData={tripTypeData} />;
+                  case 2:
+                    return <StepPricing />;
+                  case 3:
+                    return <StepAdditionalInfo />;
+                  default:
+                    return <div>Unknown Step</div>;
+                }
+              }
               switch (step) {
                 case 0:
                   return (

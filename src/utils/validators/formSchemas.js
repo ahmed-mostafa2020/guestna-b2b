@@ -390,7 +390,7 @@ export const createCustomNewTripSchema = (t) =>
     note: Yup.string().optional(),
   });
 
-export const editCustomTripSchema = (t) =>
+export const editCustomTripSchema = (t, isNormalTrip = false) =>
   Yup.object().shape({
     schoolsInfo: Yup.object()
       .shape({
@@ -446,27 +446,39 @@ export const editCustomTripSchema = (t) =>
         t("forms.customTrip.steps.pricing.fields.avaliable_seats.error.max")
       ),
 
-    category: Yup.string().required(t("forms.validation.require")),
-    supCategory: Yup.string().required(t("forms.validation.require")),
+    category: isNormalTrip
+      ? Yup.string().optional()
+      : Yup.string().required(t("forms.validation.require")),
+    supCategory: isNormalTrip
+      ? Yup.string().optional()
+      : Yup.string().required(t("forms.validation.require")),
 
     name: Yup.object()
       .shape({
-        en: Yup.string()
-          .required(t("forms.validation.require"))
-          .matches(
-            /^[a-zA-Z0-9\s.,!?'-]+$/,
-            t("forms.customTrip.steps.trip_info.fields.name.en.error")
-          ),
-        ar: Yup.string()
-          .required(t("forms.validation.require"))
-          .matches(
-            /^[\u0600-\u06FF0-9\s.,!?'-]+$/,
-            t("forms.customTrip.steps.trip_info.fields.name.ar.error")
-          ),
+        en: isNormalTrip
+          ? Yup.string().optional()
+          : Yup.string()
+              .required(t("forms.validation.require"))
+              .matches(
+                /^[a-zA-Z0-9\s.,!?'-]+$/,
+                t("forms.customTrip.steps.trip_info.fields.name.en.error")
+              ),
+        ar: isNormalTrip
+          ? Yup.string().optional()
+          : Yup.string()
+              .required(t("forms.validation.require"))
+              .matches(
+                /^[\u0600-\u06FF0-9\s.,!?'-]+$/,
+                t("forms.customTrip.steps.trip_info.fields.name.ar.error")
+              ),
       })
       .optional(),
-    tripType: Yup.string().required(t("forms.validation.require")),
-    city: Yup.string().required(t("forms.validation.require")),
+    tripType: isNormalTrip
+      ? Yup.string().optional()
+      : Yup.string().required(t("forms.validation.require")),
+    city: isNormalTrip
+      ? Yup.string().optional()
+      : Yup.string().required(t("forms.validation.require")),
     fromHour: Yup.string().optional(),
     toHour: Yup.string().optional(),
     priceRange: Yup.object()
@@ -485,7 +497,9 @@ export const editCustomTripSchema = (t) =>
         )
       ),
 
-    services: Yup.array().min(1, t("forms.validation.require")),
+    services: isNormalTrip
+      ? Yup.array().optional()
+      : Yup.array().min(1, t("forms.validation.require")),
 
     file: Yup.mixed().optional(),
     note: Yup.string().optional(),

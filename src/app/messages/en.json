@@ -869,8 +869,20 @@
           "availableSeats": "Available Seats",
           "note": "Notes",
           "academicStages": "Academic Stages",
+          "grades": "Grades",
           "services": "Services",
-          "status": "Status"
+          "status": "Status",
+          "organization": "School",
+          "gender": "Gender",
+          "educationSystem": "Education System",
+          "supCategory": "Sub Category",
+          "tripEndDate": "Trip End Date",
+          "fromHour": "From Hour",
+          "toHour": "To Hour",
+          "priceRange": "Price Range",
+          "specialRequirements": "Special Requirements",
+          "totalAvailableSeats": "Total Seats",
+          "duration": "Duration (days)"
         }
       },
       "activities": {

@@ -231,7 +231,7 @@ const AllOrdersTable = ({
         label: t("profile.tables.orders.tableHeaders.status"),
         render: (row) => (
           <span
-            className={`px-1 lg:px-3 py-1 rounded-full lg:text-sm text-[10px] font-medium ${getStatusStyles(row.status)}`}
+            className={`px-1 lg:px-3 py-1 rounded-full lg:text-sm text-[10px] font-medium whitespace-nowrap ${getStatusStyles(row.status)}`}
           >
             {t(`common.organizationTripStatus.${row.status}`)}
           </span>

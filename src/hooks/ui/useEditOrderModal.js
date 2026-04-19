@@ -138,12 +138,23 @@ export const useEditOrderModal = (locale) => {
     [editOrderDetailsCache, enqueueSnackbar, headers]
   );
 
-  // Fetch order details for viewing (sets current details without opening modal)
+  // Fetch order details for viewing — auto-detects CUSTOM vs CUSTOM_TRIP via INFO endpoint
   const fetchOrderDetailsForView = useCallback(
     async (orderId, forceRefresh = false) => {
-      return await fetchEditOrderDetails(orderId, forceRefresh);
+      try {
+        const infoResponse = await axios.get(
+          getProxyUrl(
+            `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.INFO}/${orderId}`
+          ),
+          { headers }
+        );
+        const isCustom = infoResponse.data?.askType === askType.CUSTOM;
+        return await fetchEditOrderDetails(orderId, forceRefresh, isCustom);
+      } catch {
+        return await fetchEditOrderDetails(orderId, forceRefresh, true);
+      }
     },
-    [fetchEditOrderDetails]
+    [fetchEditOrderDetails, headers]
   );
 
   // Open edit modal - optimized to use existing data when available

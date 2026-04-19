@@ -880,8 +880,20 @@
           "availableSeats": "المقاعد المتاحة",
           "note": "ملاحظات",
           "academicStages": "المراحل الأكاديمية",
+          "grades": "الصفوف",
           "services": "الخدمات",
-          "status": "الحالة"
+          "status": "الحالة",
+          "organization": "المدرسة",
+          "gender": "الجنس",
+          "educationSystem": "النظام التعليمي",
+          "supCategory": "التصنيف الفرعي",
+          "tripEndDate": "تاريخ انتهاء الرحلة",
+          "fromHour": "من الساعة",
+          "toHour": "إلى الساعة",
+          "priceRange": "نطاق السعر",
+          "specialRequirements": "المتطلبات الخاصة",
+          "totalAvailableSeats": "إجمالي المقاعد",
+          "duration": "المدة (أيام)"
         }
       },
       "activities": {

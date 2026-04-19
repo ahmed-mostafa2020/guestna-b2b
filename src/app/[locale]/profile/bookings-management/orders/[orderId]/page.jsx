@@ -89,7 +89,7 @@ const OrderDetailsPage = ({ params }) => {
     loadingFormSelection,
     openEditModal,
     closeEditModal,
-    fetchOrderDetailsForView,
+    fetchEditOrderDetails,
     refreshCurrentOrder,
     fetchFormSelectionData,
   } = useEditOrderModal(locale);
@@ -117,7 +117,7 @@ const OrderDetailsPage = ({ params }) => {
   ========================= */
   useEffect(() => {
     if (!orderId || paramsLoading) return;
-    Promise.all([fetchOrderDetailsForView(orderId), fetchFormSelectionData()]);
+    Promise.all([fetchEditOrderDetails(orderId, false, true), fetchFormSelectionData()]);
   }, [orderId, paramsLoading]);
 
   /* =========================

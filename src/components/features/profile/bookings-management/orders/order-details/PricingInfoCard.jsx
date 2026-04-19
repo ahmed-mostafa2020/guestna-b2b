@@ -28,6 +28,11 @@ const PricingInfoCard = ({ orderData }) => {
           <OrderDataLabel label={t("fields.avaliable_seats.label")} />
           <OrderDataField data={orderData.availableSeats || 0} />
         </Grid>
+
+        <Grid item xs={12} md={6}>
+          <OrderDataLabel label={t("fields.total_available_seats.label")} />
+          <OrderDataField data={orderData.totalAvailableSeats ?? 0} />
+        </Grid>
       </Grid>
     </OrderDataCard>
   );
