@@ -520,19 +520,19 @@ const CustomNewTripForm = ({
 
     const school = values.schoolsInfo;
     if (school?.organization) {
-      formData.append("organization", school.organization);
+      formData.append("schoolsInfo[organization]", school.organization);
     }
     if (school?.track) {
-      formData.append("track", school.track);
+      formData.append("schoolsInfo[track]", school.track);
     }
     if (Array.isArray(school?.academicStages)) {
       school.academicStages.forEach((id, i) =>
-        formData.append(`academicStages[${i}]`, id)
+        formData.append(`schoolsInfo[academicStages][${i}]`, id)
       );
     }
     if (Array.isArray(school?.grades)) {
       school.grades.forEach((id, i) =>
-        formData.append(`grades[${i}]`, id)
+        formData.append(`schoolsInfo[grades][${i}]`, id)
       );
     }
 
