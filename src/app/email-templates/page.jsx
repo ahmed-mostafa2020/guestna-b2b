@@ -7,6 +7,15 @@ import { tripRequestHTML } from "./templates/trip-request";
 import { invoiceHTML } from "./templates/invoice";
 import { tripReminderHTML } from "./templates/trip-reminder";
 import { quoteProposalHTML } from "./templates/quote-proposal";
+import { tripLimitHTML } from "./templates/trip-limit";
+import { tripRejectHTML } from "./templates/trip-reject";
+import { withdrawalAmountEditedHTML } from "./templates/withdrawal-amount-edited";
+import { withdrawalConfirmingHTML } from "./templates/withdrawal-confirming";
+import { withdrawalInvoiceHTML } from "./templates/withdrawal-invoice";
+import { clientTripActionHTML } from "./templates/client-trip-action";
+import { tripProcessingHTML } from "./templates/trip-processing";
+import { quoteRequestHTML } from "./templates/quote-request";
+import { addB2bUserHTML } from "./templates/add-b2b-user";
 
 const TEMPLATES = [
   {
@@ -69,6 +78,96 @@ const TEMPLATES = [
     from: "finance@guestna-edu.com",
     html: walletWithdrawalHTML,
   },
+  {
+    id: "trip-limit",
+    label: "تجاوز الحد",
+    labelEn: "Trip Limit",
+    icon: "🚨",
+    subject: "طلب زيادة حد الرحلات — م. خالد العتيبي",
+    to: "تنبيه النظام",
+    from: "system@guestna.app",
+    html: tripLimitHTML,
+  },
+  {
+    id: "trip-reject",
+    label: "رفض الطلب",
+    labelEn: "Trip Reject",
+    icon: "❌",
+    subject: "تحديث طلب الرحلة: تم رفض الطلب #REQ-2025-0211",
+    to: "م. خالد العتيبي",
+    from: "support@guestna.app",
+    html: tripRejectHTML,
+  },
+  {
+    id: "withdrawal-edit",
+    label: "تعديل سحب",
+    labelEn: "Withdrawal Edited",
+    icon: "✏️",
+    subject: "تم وتحديث مبلغ السحب لطلبك",
+    to: "المحاسب المالي المدرسة",
+    from: "finance@guestna.app",
+    html: withdrawalAmountEditedHTML,
+  },
+  {
+    id: "withdrawal-confirm",
+    label: "تأكيد التحويل",
+    labelEn: "Transfer Confirmed",
+    icon: "✅",
+    subject: "تم تأكيد ومعالجة طلب السحب #WD-8842",
+    to: "مدرسة النور الدولية",
+    from: "finance@guestna.app",
+    html: withdrawalConfirmingHTML,
+  },
+  {
+    id: "withdrawal-invoice",
+    label: "فاتورة السحب",
+    labelEn: "Withdrawal Invoice",
+    icon: "💸",
+    subject: "فاتورة سحب للمستفيد: مدرسة النور الدولية",
+    to: "billing@alnour.edu.sa",
+    from: "finance@guestna.app",
+    html: withdrawalInvoiceHTML,
+  },
+  {
+    id: "client-action",
+    label: "موافقة العميل",
+    labelEn: "Client Approved",
+    icon: "💚",
+    subject: "رد العميل: تمت الموافقة على الرحلة #ORD-5541",
+    to: "عمليات جستنا",
+    from: "system@guestna.app",
+    html: clientTripActionHTML,
+  },
+  {
+    id: "trip-processing",
+    label: "قيد المراجعة",
+    labelEn: "Processing",
+    icon: "⏳",
+    subject: "طلب الرحلة قيد المراجعة والمعالجة",
+    to: "مدرسة الأفق العلمي",
+    from: "system@guestna.app",
+    html: tripProcessingHTML,
+  },
+  {
+    id: "quote-request",
+    label: "طلب تسعيرة",
+    labelEn: "Quote Request",
+    icon: "📨",
+    subject: "طلب تسعيرة لرحلة: مختبر الفضاء",
+    to: "فريق الإدارة",
+    from: "system@guestna.app",
+    html: quoteRequestHTML,
+  },
+  {
+    id: "add-user",
+    label: "حساب العميل",
+    labelEn: "Add Account",
+    icon: "🎉",
+    subject: "مرحباً! تم إنشاء حسابك في جستنا",
+    to: "أ. أحمد مصطفى",
+    from: "noreply@guestna.app",
+    html: addB2bUserHTML,
+  }
 ];
 
 const FLOW_ORDER = [
@@ -125,6 +224,12 @@ export default function EmailTemplatesPage() {
           border-bottom: 2px solid #e0e8e8;
           padding: 0 32px;
           display: flex;
+          overflow-x: auto;
+          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none; /* IE/Edge */
+        }
+        .et-tabs::-webkit-scrollbar {
+          display: none; /* Chrome, Safari, Opera */
         }
         .et-tab-btn {
           padding: 14px 22px;
@@ -249,28 +354,7 @@ export default function EmailTemplatesPage() {
           </div>
         </div>
 
-        {/* ── Tabs ── */}
-        <div className="et-tabs">
-          {TEMPLATES.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setActive(t.id)}
-              className="et-tab-btn"
-              style={{
-                color: active === t.id ? "#008F8F" : "#666",
-                borderBottom: active === t.id ? "3px solid #008F8F" : "3px solid transparent",
-                marginBottom: "-2px",
-              }}
-            >
-              <span style={{ display: "block", fontSize: "13px", fontWeight: active === t.id ? 700 : 400 }}>
-                {t.icon} {t.label}
-              </span>
-              <span style={{ display: "block", fontSize: "10px", color: "#aaa", fontFamily: "sans-serif" }}>
-                {t.labelEn}
-              </span>
-            </button>
-          ))}
-        </div>
+
 
         {/* ── Body ── */}
         <div className="et-body">
@@ -367,88 +451,50 @@ export default function EmailTemplatesPage() {
             className="et-sidebar-toggle"
             onClick={() => setSidebarOpen((v) => !v)}
           >
-            <span>بيانات الإرسال والخيارات</span>
+            <span>عرض القوالب</span>
             <span style={{ fontSize: "16px" }}>{sidebarOpen ? "▲" : "▼"}</span>
           </button>
 
           {/* ── Sidebar ── */}
           <div className={`et-sidebar${sidebarOpen ? " open" : ""}`}>
 
-            {/* Email Meta */}
-            <div style={{ backgroundColor: "#fff", borderRadius: "10px", border: "1px solid #e0e8e8", overflow: "hidden" }}>
-              <div style={{ backgroundColor: "#008F8F", padding: "10px 14px" }}>
-                <p style={{ margin: 0, color: "#fff", fontSize: "12px", fontWeight: 700 }}>بيانات الإرسال</p>
+            {/* Template List */}
+            <div style={{ backgroundColor: "#fff", borderRadius: "10px", border: "1px solid #e0e8e8", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+              <div style={{ padding: "16px 18px", borderBottom: "1px solid #f0f0f0", backgroundColor: "#f8fdfd" }}>
+                <p style={{ margin: 0, color: "#008F8F", fontSize: "15px", fontWeight: 700 }}>قوالب البريد الإلكتروني</p>
+                <p style={{ margin: "4px 0 0", color: "#666", fontSize: "12px" }}>اختر القالب للمعاينة والتعديل</p>
               </div>
-              <div style={{ padding: "14px" }}>
-                {[
-                  { label: "من", value: current?.from },
-                  { label: "إلى", value: current?.to },
-                  { label: "الموضوع", value: current?.subject },
-                ].map((row) => (
-                  <div key={row.label} style={{ marginBottom: "10px" }}>
-                    <p style={{ margin: "0 0 2px", color: "#aaa", fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                      {row.label}
-                    </p>
-                    <p style={{ margin: 0, color: "#1a1a1a", fontSize: "12px", lineHeight: 1.5, wordBreak: "break-word" }}>
-                      {row.value}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Brand Colors */}
-            <div style={{ backgroundColor: "#fff", borderRadius: "10px", border: "1px solid #e0e8e8", padding: "14px" }}>
-              <p style={{ margin: "0 0 10px", color: "#333", fontSize: "12px", fontWeight: 700 }}>Brand Colors</p>
-              {[
-                { hex: "#008F8F", label: "Primary", sub: "Trust / Headers" },
-                { hex: "#ED8A22", label: "Secondary", sub: "CTAs / Alerts" },
-                { hex: "#006e6e", label: "Dark Teal", sub: "Footer" },
-              ].map((c) => (
-                <div key={c.hex} style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-                  <div style={{ width: "28px", height: "28px", backgroundColor: c.hex, borderRadius: "6px", flexShrink: 0 }} />
-                  <div>
-                    <p style={{ margin: 0, color: "#1a1a1a", fontSize: "11px", fontWeight: 700, fontFamily: "monospace" }}>{c.hex}</p>
-                    <p style={{ margin: 0, color: "#999", fontSize: "10px" }}>{c.label} — {c.sub}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Template Flow */}
-            <div style={{ backgroundColor: "#fff", borderRadius: "10px", border: "1px solid #e0e8e8", overflow: "hidden" }}>
-              <div style={{ padding: "10px 14px", borderBottom: "1px solid #f0f0f0" }}>
-                <p style={{ margin: 0, color: "#333", fontSize: "12px", fontWeight: 700 }}>مسار الرحلة</p>
-              </div>
-              <div style={{ padding: "10px 0" }}>
-                {FLOW_ORDER.map((id, index) => {
-                  const t = TEMPLATES.find((x) => x.id === id);
-                  if (!t) return null;
-                  return (
-                    <button
-                      key={id}
-                      onClick={() => { setActive(id); setSidebarOpen(false); }}
-                      style={{
-                        width: "100%",
-                        padding: "8px 14px",
-                        border: "none",
-                        background: active === id ? "#e6f5f5" : "none",
-                        cursor: "pointer",
-                        textAlign: "right",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                        fontFamily: "inherit",
-                      }}
-                    >
-                      <span style={{ color: "#ccc", fontSize: "10px", minWidth: "14px", fontFamily: "monospace" }}>{index + 1}</span>
-                      <span style={{ fontSize: "13px" }}>{t.icon}</span>
-                      <span style={{ color: active === id ? "#008F8F" : "#444", fontSize: "12px", fontWeight: active === id ? 700 : 400 }}>
+              <div style={{ padding: "8px 0", maxHeight: "calc(100vh - 200px)", overflowY: "auto" }}>
+                {TEMPLATES.map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => { setActive(t.id); setSidebarOpen(false); }}
+                    style={{
+                      width: "100%",
+                      padding: "12px 18px",
+                      border: "none",
+                      borderLeft: active === t.id ? "3px solid #008F8F" : "3px solid transparent",
+                      background: active === t.id ? "#f4fafa" : "none",
+                      cursor: "pointer",
+                      textAlign: "right",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "14px",
+                      fontFamily: "inherit",
+                      transition: "all 0.2s"
+                    }}
+                  >
+                    <span style={{ fontSize: "20px", display: "flex", alignItems: "center", justifyContent: "center", width: "24px" }}>{t.icon}</span>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                      <span style={{ color: active === t.id ? "#008F8F" : "#333", fontSize: "14px", fontWeight: active === t.id ? 700 : 500 }}>
                         {t.label}
                       </span>
-                    </button>
-                  );
-                })}
+                      <span style={{ color: "#999", fontSize: "11px", fontFamily: "sans-serif" }}>
+                        {t.labelEn}
+                      </span>
+                    </div>
+                  </button>
+                ))}
               </div>
             </div>
 
