@@ -24,9 +24,10 @@ const SelectionGroup = ({
   showCheckbox = true, // Always show checkbox by default
   label = "", // Label text for the field
   required = false, // Show asterisk for required fields
+  errorBorder = false, // Show red border only, without error message
 }) => {
   return (
-    <FormControl error={touched && Boolean(errors)} className="relative w-full">
+    <FormControl error={errorBorder || (touched && Boolean(errors))} className="relative w-full">
       {label && (
         <label className="block pb-2 font-medium">
           {label}
@@ -110,8 +111,8 @@ const SelectionGroup = ({
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
             border: "none",
           },
-          "& .MuiSelect-select.Mui-error": {
-            borderColor: "#ef4444",
+          "&.Mui-error .MuiSelect-select": {
+            border: "2px solid #ef4444",
           },
         }}
       >

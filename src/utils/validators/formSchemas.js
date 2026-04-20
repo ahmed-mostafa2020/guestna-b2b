@@ -399,6 +399,9 @@ export const editCustomTripSchema = (t, isNormalTrip = false) =>
         academicStages: Yup.array()
           .of(Yup.string())
           .min(1, t("forms.validation.require")),
+        grades: Yup.array()
+          .of(Yup.string())
+          .min(1, t("forms.validation.require")),
       })
       .required(),
     day: Yup.date()

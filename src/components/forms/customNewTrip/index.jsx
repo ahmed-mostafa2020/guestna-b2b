@@ -191,7 +191,7 @@ const CustomNewTripForm = ({
 
   const isEditMode = mode === "edit";
   const isNormalTrip =
-    isEditMode && editData?.askType === askTypeConstants.CUSTOM_TRIP;
+    isEditMode && editData?.askType !== askTypeConstants.CUSTOM;
 
   useEffect(() => {
     if (isEditMode && !orderId) {
@@ -275,8 +275,16 @@ const CustomNewTripForm = ({
   const getInitialValues = useMemo(() => {
     if (isEditMode && editData) {
       const priceRange = {
-        min: editData.priceRange?.min ?? editData.minPrice ?? editData.basePrice ?? 0,
-        max: editData.priceRange?.max ?? editData.maxPrice ?? editData.basePrice ?? 0,
+        min:
+          editData.priceRange?.min ??
+          editData.minPrice ??
+          editData.basePrice ??
+          0,
+        max:
+          editData.priceRange?.max ??
+          editData.maxPrice ??
+          editData.basePrice ??
+          0,
       };
 
       const getTrackFromEditData = () => {
@@ -311,7 +319,9 @@ const CustomNewTripForm = ({
           academicStages: extractIds(
             editData.schoolsInfo?.academicStages || editData.academicStages
           ),
-          grades: extractIds(editData.schoolsInfo?.grades || editData.grades || []),
+          grades: extractIds(
+            editData.schoolsInfo?.grades || editData.grades || []
+          ),
         },
         category: extractId(editData.category),
         supCategory: extractId(editData.supCategory),
@@ -444,6 +454,7 @@ const CustomNewTripForm = ({
             organization: true,
             track: true,
             academicStages: true,
+            grades: true,
           };
         } else {
           fieldsToTouch.schoolsInfo = formik.values.schoolsInfo.map(() => ({
@@ -507,8 +518,14 @@ const CustomNewTripForm = ({
     if (values.availableSeats !== undefined && values.availableSeats !== "") {
       formData.append("availableSeats", String(values.availableSeats));
     }
-    if (values.totalAvailableSeats !== undefined && values.totalAvailableSeats !== "") {
-      formData.append("totalAvailableSeats", String(values.totalAvailableSeats));
+    if (
+      values.totalAvailableSeats !== undefined &&
+      values.totalAvailableSeats !== ""
+    ) {
+      formData.append(
+        "totalAvailableSeats",
+        String(values.totalAvailableSeats)
+      );
     }
 
     if (values.day) formData.append("day", values.day);
@@ -853,10 +870,10 @@ const CustomNewTripForm = ({
           }
         `}</style>
         <Formik
+          enableReinitialize
           initialValues={getInitialValues}
           validationSchema={customTripSchema}
           onSubmit={handleSubmit}
-          enableReinitialize
           validateOnBlur={true}
           validateOnChange={true}
           validateOnMount={false}
@@ -866,6 +883,7 @@ const CustomNewTripForm = ({
             const { isSubmitting, errors, touched, values } = formik;
 
             const currentStepHasErrors = hasStepErrors(errors, activeStep);
+
             // check if next button disabled
             const isNextDisabled = isEditMode
               ? isSubmitting ||
@@ -890,6 +908,7 @@ const CustomNewTripForm = ({
                         isEditMode={isEditMode}
                         organizationOptions={organizationsOptions}
                         academicStagesOptions={academicStagesOptions}
+                        editGrades={editData?.grades || []}
                       />
                     );
                   case 1:
@@ -909,6 +928,7 @@ const CustomNewTripForm = ({
                       isEditMode={isEditMode}
                       organizationOptions={organizationsOptions}
                       academicStagesOptions={academicStagesOptions}
+                      editGrades={editData?.grades || []}
                     />
                   );
                 case 1:

@@ -27,7 +27,7 @@ import {
   Chip,
 } from "@mui/material";
 import { Delete, Add, ExpandMore, CheckCircle } from "@mui/icons-material";
-import { FieldArray, useFormikContext } from "formik";
+import { FieldArray, useFormikContext, getIn } from "formik";
 import axios from "axios";
 
 // ============================================================================
@@ -304,6 +304,7 @@ const SchoolInfoCard = ({
   school,
   organizationOptions,
   academicStagesOptions,
+  editGrades,
   onRemove,
   isRemovable,
   selectedOrganizations,
@@ -314,8 +315,11 @@ const SchoolInfoCard = ({
   const t2 = useTranslations();
   const locale = useLocale();
 
-  const { errors, touched, values, handleBlur, setFieldValue } =
+  const { errors: allErrors, touched: allTouched, values, handleBlur, setFieldValue } =
     useFormikContext();
+
+  const errors = getIn(allErrors, fieldPath) || {};
+  const touched = getIn(allTouched, fieldPath) || {};
 
   const headers = useMemo(() => getHeaders(locale), [locale]);
   const [isExpanded, setIsExpanded] = useState(true);
@@ -401,14 +405,32 @@ const SchoolInfoCard = ({
 
   // Calculate available grades based on selected academic stages
   const availableGrades = useMemo(() => {
-    return getAvailableGrades(
+    const gradesFromTracks = getAvailableGrades(
       tracksData,
       school.track,
       school.tracks,
       school.academicStages,
       isEditMode
     );
-  }, [tracksData, school.track, school.tracks, school.academicStages, isEditMode]);
+
+    // In edit mode, supplement with editGrades when tracks don't provide them
+    if (isEditMode && editGrades?.length > 0) {
+      const filteredEditGrades = editGrades.filter((g) => {
+        const stageId =
+          typeof g.academicStage === "object"
+            ? g.academicStage?._id
+            : g.academicStage;
+        return school.academicStages?.includes(stageId);
+      });
+      const existingIds = new Set(gradesFromTracks.map((g) => g._id));
+      const additional = filteredEditGrades.filter(
+        (g) => !existingIds.has(g._id)
+      );
+      return [...gradesFromTracks, ...additional];
+    }
+
+    return gradesFromTracks;
+  }, [tracksData, school.track, school.tracks, school.academicStages, isEditMode, editGrades]);
 
   // Track the fieldPath in a ref to use it without triggering re-renders
   const fieldPathRef = useRef(fieldPath);
@@ -921,6 +943,7 @@ const SchoolInfoCard = ({
               <div>
                 <label className="block mb-2 text-sm text-textDark">
                   {t("fields.grades.label")}
+                  {isEditMode && <span className="text-error ml-1">*</span>}
                 </label>
                 <SelectionGroup
                   name={`${fieldPath}.grades`}
@@ -933,6 +956,8 @@ const SchoolInfoCard = ({
                   list={availableGrades.map((g) => g.name)}
                   multiple={true}
                   disabled={isGradesDisabled}
+                  touched={touched?.grades}
+                  errors={errors?.grades}
                 />
                 {isGradesDisabled && (
                   <p className="!mt-2 ps-1 text-xs text-textLight">
@@ -955,6 +980,7 @@ const StepSchoolInfo = ({
   organizationOptions,
   academicStagesOptions,
   isEditMode,
+  editGrades = [],
 }) => {
   const t = useTranslations("forms.customTrip.steps.school_info");
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
@@ -1036,6 +1062,7 @@ const StepSchoolInfo = ({
             setFieldValue={setFieldValue}
             organizationOptions={organizationOptions}
             academicStagesOptions={academicStagesOptions}
+            editGrades={editGrades}
             onRemove={() => {}}
             isRemovable={false}
             selectedOrganizations={selectedOrganizations}

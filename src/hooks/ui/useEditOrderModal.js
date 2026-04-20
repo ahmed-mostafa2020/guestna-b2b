@@ -200,6 +200,8 @@ export const useEditOrderModal = (locale) => {
 
       // Only fetch order details if not cached and not current
       if (!hasCachedDetails) {
+        // Clear stale data immediately so isDataReady stays false until the new fetch completes
+        setCurrentEditOrderDetails(null);
         const isCustom = bookingAskType === askType.CUSTOM;
         fetchPromises.push(fetchEditOrderDetails(orderId, false, isCustom));
       } else {
