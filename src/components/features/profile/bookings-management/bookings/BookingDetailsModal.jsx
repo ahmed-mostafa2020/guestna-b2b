@@ -130,6 +130,16 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
           </h3>
 
           <div className="space-y-4 border-2 border-border rounded-lg p-3">
+            {booking.orderId && (
+              <div className="flex items-center gap-1 rounded-lg p-2 border border-border shadow-card w-fit">
+                {ticketsIcon}
+                <p className="text-sm text-gray-600">
+                  {t("profile.tables.bookings.header.orderId")}:
+                </p>
+                <p className="font-medium font-mono">{booking.orderId}</p>
+              </div>
+            )}
+
             <div className="flex flex-col gap-1 rounded-lg p-2 w-fit text-sm text-gray-600">
               <p className="">
                 {t("profile.tables.orders.bookingDetails.tripDescription")}:

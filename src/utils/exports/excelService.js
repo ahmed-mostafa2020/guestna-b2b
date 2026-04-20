@@ -559,6 +559,7 @@ export const ExcelService = {
     const tripData = [
       [t("exportUtils.bookingReport.tripInfo")],
       [],
+      [t("exportUtils.bookingReport.orderId"), booking.orderId || ""],
       [t("exportUtils.bookingReport.description"), booking.description || ""],
       [t("exportUtils.bookingReport.location"), booking.cities || ""],
       [
@@ -682,9 +683,10 @@ export const ExcelService = {
       styleHeaderRow(studentsSheet);
     }
 
+    const orderIdPart = booking.orderId ? `_${booking.orderId}` : "";
     const filename = `${t("exportUtils.bookingReport.filename")}_${
       booking.name || "booking"
-    }_${new Date().toISOString().split("T")[0]}`;
+    }${orderIdPart}_${new Date().toISOString().split("T")[0]}`;
 
     await saveWorkbook(workbook, filename);
     return { success: true, filename: filename + ".xlsx" };
