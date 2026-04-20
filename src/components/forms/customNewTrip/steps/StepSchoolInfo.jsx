@@ -345,6 +345,7 @@ const SchoolInfoCard = ({
       tracks: school.tracks,
       academicStages: school.academicStages,
       grades: school.grades,
+      availableGradeIds: "",
     };
   }
 
@@ -499,7 +500,8 @@ const SchoolInfoCard = ({
     stableKey,
   ]);
 
-  // Validate and cleanup grades when academic stages change
+  // Grades are cleared by handleAcademicStagesChange when the user changes stages.
+  // This effect only handles the edge case where stages are auto-filtered by a track change.
   useEffect(() => {
     const currentGrades = school.grades || [];
     if (currentGrades.length === 0) return;
@@ -511,18 +513,15 @@ const SchoolInfoCard = ({
 
     if (!stagesChanged) return;
 
-    const validGrades = filterValidGrades(currentGrades, availableGrades);
+    // Stages changed outside the handler (e.g. track cleanup) — clear grades
+    setFieldValue(fieldPathRef.current + ".grades", []);
 
     prevValuesRef.current[stableKey] = {
       ...prevValuesRef.current[stableKey],
       academicStages: school.academicStages,
-      grades: validGrades,
+      grades: [],
     };
-
-    if (validGrades.length !== currentGrades.length) {
-      setFieldValue(fieldPathRef.current + ".grades", validGrades);
-    }
-  }, [school.academicStages, school.grades, availableGrades, stableKey, setFieldValue]);
+  }, [school.academicStages, school.grades, stableKey, setFieldValue]);
 
   // Determine loading states
   const isAcademicStagesLoading = useMemo(() => {
@@ -691,7 +690,7 @@ const SchoolInfoCard = ({
     ]
   );
 
-  // Handle academic stages change
+  // Handle academic stages change — clear grades so user re-selects from scratch
   const handleAcademicStagesChange = useCallback(
     (e) => {
       const selectedNames = e.target.value;
@@ -701,10 +700,12 @@ const SchoolInfoCard = ({
         )
         .filter(Boolean);
       setFieldValue(`${fieldPath}.academicStages`, selectedIds);
+      setFieldValue(`${fieldPath}.grades`, []);
 
       // Update ref
       if (prevValuesRef.current[stableKey]) {
         prevValuesRef.current[stableKey].academicStages = selectedIds;
+        prevValuesRef.current[stableKey].grades = [];
       }
     },
     [availableAcademicStages, setFieldValue, fieldPath, stableKey]
