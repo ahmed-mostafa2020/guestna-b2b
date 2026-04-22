@@ -48,9 +48,14 @@ const BookingsTable = ({
         key: "organization",
         label: t("profile.tables.bookings.header.organization"),
         className: "font-medium text-foreground",
-        render: (row) => (
-          <span className="line-clamp-2">{row.organization?.name || "-"}</span>
-        ),
+        render: (row) => {
+          const name = row.organization?.name || "-";
+          return (
+            <span title={name}>
+              {name.length > 30 ? `${name.slice(0, 30)}...` : name}
+            </span>
+          );
+        },
       },
       {
         key: "name",

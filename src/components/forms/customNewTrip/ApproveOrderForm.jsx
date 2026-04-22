@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useFormik } from "formik";
 import {
@@ -25,6 +26,9 @@ const ApproveOrderForm = ({
 }) => {
   const t = useTranslations("forms.customTrip.approval");
   const t2 = useTranslations();
+
+  const [locationLink, setLocationLink] = useState("");
+  const [linkParseError, setLinkParseError] = useState("");
 
   const {
     values,
@@ -57,6 +61,8 @@ const ApproveOrderForm = ({
 
       if (result?.success) {
         resetForm();
+        setLocationLink("");
+        setLinkParseError("");
         onSuccess?.(result);
       }
     },
@@ -71,44 +77,75 @@ const ApproveOrderForm = ({
     }
   };
 
-  const handleLatitudeChange = (e) => {
-    const value = e.target.value;
+  const extractCoordsFromLink = (url) => {
+    try {
+      // Pattern: @lat,lng or @lat,lng,zoom
+      const atMatch = url.match(/@(-?\d+\.?\d*),(-?\d+\.?\d*)/);
+      if (atMatch) return { lat: parseFloat(atMatch[1]), lng: parseFloat(atMatch[2]) };
 
-    if (value === "" || value === "-" || /^-?\d*\.?\d*$/.test(value)) {
-      const numValue = value === "" || value === "-" ? null : Number(value);
-      setFieldValue("gatheringLocation.lat", numValue);
+      // Pattern: q=lat,lng or ll=lat,lng or center=lat,lng
+      const paramMatch = url.match(/[?&](?:q|ll|center)=(-?\d+\.?\d*),(-?\d+\.?\d*)/);
+      if (paramMatch) return { lat: parseFloat(paramMatch[1]), lng: parseFloat(paramMatch[2]) };
+
+      // Pattern: /place/name/lat,lng (some short formats)
+      const placeMatch = url.match(/\/place\/[^/]+\/(-?\d+\.?\d*),(-?\d+\.?\d*)/);
+      if (placeMatch) return { lat: parseFloat(placeMatch[1]), lng: parseFloat(placeMatch[2]) };
+
+      return null;
+    } catch {
+      return null;
     }
   };
 
-  const handleLongitudeChange = (e) => {
+  const handleLocationLinkChange = (e) => {
     const value = e.target.value;
+    setLocationLink(value);
+    setLinkParseError("");
 
-    if (value === "" || value === "-" || /^-?\d*\.?\d*$/.test(value)) {
-      const numValue = value === "" || value === "-" ? null : Number(value);
-      setFieldValue("gatheringLocation.lng", numValue);
+    if (!value) {
+      setFieldValue("gatheringLocation.lat", null);
+      setFieldValue("gatheringLocation.lng", null);
+      return;
+    }
+
+    const coords = extractCoordsFromLink(value);
+    if (coords) {
+      setFieldValue("gatheringLocation", coords, true);
+      setFieldTouched("gatheringLocation.lat", true, true);
+      setFieldTouched("gatheringLocation.lng", true, true);
+    } else {
+      setLinkParseError(
+        t("gathering_location.link_parse_error", {
+          defaultValue: "Could not extract coordinates from this link. Please use a Google Maps link.",
+        })
+      );
+      setFieldValue("gatheringLocation.lat", null);
+      setFieldValue("gatheringLocation.lng", null);
     }
   };
 
   const handleLocationSelect = ({ lat, lng }) => {
-
     setFieldValue("gatheringLocation", { lat, lng }, true);
+    setFieldTouched("gatheringLocation.lat", true, true);
+    setFieldTouched("gatheringLocation.lng", true, true);
+    setLocationLink("");
+    setLinkParseError("");
   };
 
   const handleCancel = () => {
     if (approvingOrder) return;
     resetForm();
+    setLocationLink("");
+    setLinkParseError("");
     onClose?.();
   };
 
   /* ---------------- derived values ---------------- */
 
-  const latError =
-    touched.gatheringLocation?.lat && errors.gatheringLocation?.lat;
-
-  const lngError =
-    touched.gatheringLocation?.lng && errors.gatheringLocation?.lng;
-
-  const hasLocationError = latError || lngError;
+  const hasLocationError =
+    (touched.gatheringLocation?.lat && errors.gatheringLocation?.lat) ||
+    (touched.gatheringLocation?.lng && errors.gatheringLocation?.lng) ||
+    linkParseError;
 
   // Check if location is selected and valid
   const hasValidLocation =
@@ -117,14 +154,6 @@ const ApproveOrderForm = ({
     !isNaN(values.gatheringLocation.lat) &&
     !isNaN(values.gatheringLocation.lng) &&
     !hasLocationError;
-
-  /* ---------------- display helpers ---------------- */
-
-  const getDisplayValue = (value) => {
-    if (value === null || value === undefined) return "";
-    if (isNaN(value)) return "";
-    return value.toString();
-  };
 
   /* ---------------- render ---------------- */
 
@@ -173,75 +202,36 @@ const ApproveOrderForm = ({
           />
         </Box>
 
-        {/* Manual Coordinates */}
+        {/* Location Link */}
         <Box className="my-2">
           <Typography className="!font-somar !text-base !font-semibold !mb-2">
-            {t("gathering_location.manual_coordinates_label", {
-              defaultValue: "Enter Coordinates Manually (Optional)",
+            {t("gathering_location.link_label", {
+              defaultValue: "Gathering Location Link",
             })}
+            <span className="text-error ml-1">*</span>
           </Typography>
 
           <Typography className="!font-somar !text-sm text-textLight mb-4">
-            {t("gathering_location.manual_coordinates_helper", {
+            {t("gathering_location.link_helper", {
               defaultValue:
-                "You can either enter coordinates manually or select a location on the map below",
+                "Paste a Google Maps link to automatically extract the coordinates, or select a location on the map below.",
             })}
           </Typography>
 
-          <Box className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
-            {/* Latitude */}
-            <Box>
-              <label className="block mb-2 !text-sm text-textDark !font-somar !font-medium">
-                {t("gathering_location.lat.label", {
-                  defaultValue: "Latitude",
-                })}
-                <span className="text-error ml-1">*</span>
-              </label>
-              <TextInputGroup
-                fullWidth
-                type="text"
-                name="gatheringLocation.lat"
-                placeholder={t("gathering_location.lat.placeholder", {
-                  defaultValue: "e.g., 30.0444",
-                })}
-                value={getDisplayValue(values.gatheringLocation.lat)}
-                onChange={handleLatitudeChange}
-                onBlur={(e) => {
-                  handleBlur(e);
-                  setFieldTouched("gatheringLocation.lat", true, true);
-                }}
-                disabled={approvingOrder}
-                errors={latError}
-                touched={touched.gatheringLocation?.lat}
-              />
-            </Box>
-
-            {/* Longitude */}
-            <Box>
-              <label className="block mb-2 !text-sm text-textDark !font-somar !font-medium">
-                {t("gathering_location.lng.label", {
-                  defaultValue: "Longitude",
-                })}
-                <span className="text-error ml-1">*</span>
-              </label>
-              <TextInputGroup
-                fullWidth
-                type="text"
-                name="gatheringLocation.lng"
-                placeholder={t("gathering_location.lng.placeholder", {
-                  defaultValue: "e.g., 31.2357",
-                })}
-                value={getDisplayValue(values.gatheringLocation.lng)}
-                onChange={handleLongitudeChange}
-                onBlur={(e) => {
-                  handleBlur(e);
-                  setFieldTouched("gatheringLocation.lng", true, true);
-                }}
-                disabled={approvingOrder}
-                errors={lngError}
-                touched={touched.gatheringLocation?.lng}
-              />
-            </Box>
+          <Box className="mb-5">
+            <TextInputGroup
+              fullWidth
+              type="text"
+              name="locationLink"
+              placeholder={t("gathering_location.link_placeholder", {
+                defaultValue: "e.g., https://maps.google.com/?q=30.0444,31.2357",
+              })}
+              value={locationLink}
+              onChange={handleLocationLinkChange}
+              disabled={approvingOrder}
+              errors={linkParseError}
+              touched={!!locationLink}
+            />
           </Box>
         </Box>
 
@@ -306,18 +296,14 @@ const ApproveOrderForm = ({
             </Box>
           )}
 
-          {/* Location Error - Only show when both fields are touched and have errors */}
-          {touched.gatheringLocation?.lat &&
-            touched.gatheringLocation?.lng &&
-            hasLocationError && (
-              <Alert severity="error" sx={{ mt: 2 }}>
-                {latError && lngError
-                  ? t("gathering_location.both_required", {
-                      defaultValue: "Both latitude and longitude are required",
-                    })
-                  : latError || lngError}
-              </Alert>
-            )}
+          {/* Location Error */}
+          {hasLocationError && !linkParseError && locationLink === "" && (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {t("gathering_location.both_required", {
+                defaultValue: "Gathering location is required",
+              })}
+            </Alert>
+          )}
         </Box>
 
         {/* Actions */}
