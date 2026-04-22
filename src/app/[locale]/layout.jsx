@@ -145,7 +145,7 @@ export async function generateMetadata({ params: { locale } }) {
       // yandex: "your-yandex-verification-code",
       // bing: "your-bing-verification-code",
     },
-    // manifest: "/manifest.json", // Uncomment when PWA manifest is added
+    manifest: "/manifest.json",
     other: {
       "geo.region": "SA",
       "geo.placename": "Riyadh",
@@ -187,7 +187,11 @@ export default async function RootLayout({ children, params: { locale } }) {
               strategy="afterInteractive"
               src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
             />
-            <Script nonce={nonce} id="google-analytics" strategy="afterInteractive">
+            <Script
+              nonce={nonce}
+              id="google-analytics"
+              strategy="afterInteractive"
+            >
               {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
@@ -215,7 +219,33 @@ export default async function RootLayout({ children, params: { locale } }) {
           defer
         ></Script>
 
-<meta
+        <Script
+          src="https://polyfill.io/v3/polyfill.min.js?features=fetch"
+          async
+        ></Script>
+
+        {/* PWA - iOS support */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Guestna" />
+        <link rel="apple-touch-icon" href="/icons/icon-152x152.png" />
+        <link
+          rel="apple-touch-icon"
+          sizes="192x192"
+          href="/icons/icon-192x192.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="384x384"
+          href="/icons/icon-384x384.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="512x512"
+          href="/icons/icon-512x512.png"
+        />
+
+        <meta
           name="google-site-verification"
           content="Dy0yQBQm8XuB6racQHLnnd7zVz2jFPaIMVKzUWq9gwE"
         />
@@ -255,7 +285,6 @@ export default async function RootLayout({ children, params: { locale } }) {
             </QueryProvider>
           </ReduxProvider>
         </Suspense>
-
       </body>
     </html>
   );
