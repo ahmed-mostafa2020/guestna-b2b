@@ -28,6 +28,7 @@ import {
   setColorPreferences,
   setCustomLogo,
 } from "@store/theme/themeSlice";
+import { setOrganizations } from "@store/profile/selectedOrganizationsSlice";
 import { getFirstAccessiblePage } from "@utils/helpers/getFirstAccessiblePage";
 import { useState } from "react";
 
@@ -92,7 +93,7 @@ const RolesLoginForm = () => {
     };
     axios
       .request(config)
-      .then((response) => {
+      .then(async (response) => {
         setSubmitting(false);
         setFormErrors([]);
         resetForm();
@@ -115,6 +116,25 @@ const RolesLoginForm = () => {
           if (response.data.user.colorPreferences) {
             dispatch(setTheme("customized"));
             dispatch(setColorPreferences(response.data.user.colorPreferences));
+          }
+
+          // Fetch organizations right after login
+          try {
+            const orgsResponse = await axios.get(
+              getProxyUrl(B2B_END_POINTS.PROFILE.HEADER_FILTER_BY_ORGANIZATION),
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  lang: locale,
+                  authorization: `Bearer ${response.data.token}`,
+                },
+              }
+            );
+            if (orgsResponse.data) {
+              dispatch(setOrganizations(orgsResponse.data));
+            }
+          } catch {
+            // Non-blocking — OrganizationSelector will retry on its own
           }
 
           // Get first accessible page based on user permissions

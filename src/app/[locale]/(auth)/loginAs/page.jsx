@@ -21,6 +21,7 @@ import getErrorMessage from "@utils/helpers/getErrorMessage";
 import setToken from "@utils/api/setToken";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { setOrganizations } from "@store/profile/selectedOrganizationsSlice";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 
 const LoginAs = () => {
@@ -88,6 +89,25 @@ const LoginAs = () => {
 
           // Submit form with user data
           dispatch(submitForm(response.data.user));
+
+          // Fetch organizations right after login
+          try {
+            const orgsResponse = await axios.get(
+              getProxyUrl(B2B_END_POINTS.PROFILE.HEADER_FILTER_BY_ORGANIZATION),
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  lang: locale,
+                  authorization: `Bearer ${response.data.token}`,
+                },
+              }
+            );
+            if (orgsResponse.data) {
+              dispatch(setOrganizations(orgsResponse.data));
+            }
+          } catch {
+            // Non-blocking
+          }
 
           // Get first accessible page based on user permissions
           const userPages = response.data.user.permissions?.PAGE || [];

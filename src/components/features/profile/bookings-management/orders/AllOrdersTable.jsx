@@ -5,9 +5,7 @@ import { memo, useCallback, useMemo } from "react";
 
 import { usePermissions } from "@hooks/utils/usePermissions";
 import formatDate from "@utils/formatters/FormateDate";
-import { TRIP_STATUS } from "@constants/tripStatus";
 import { PERMISSIONS } from "@constants/permissions";
-import Pagination from "@components/ui/Pagination";
 import DataTable from "@components/ui/DataTable";
 import ActionsDropdownMenu from "./ActionsDropdownMenu";
 import formatCurrency from "@utils/formatters/FormatCurrency";

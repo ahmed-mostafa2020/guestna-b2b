@@ -168,29 +168,31 @@ const ActionsDropdownMenu = ({
     () =>
       [
         {
+          key: "modal-details",
+          visible:
+            can.showDetails &&
+            !isCustom &&
+            status !== TRIP_STATUS.DONE &&
+            Boolean(openDetailsModal),
+          label: t("links.showDetails"),
+          onClick: handleShowDetails,
+        },
+        {
           key: "custom-details",
-          visible: can.showDetails && isCustom && isPending,
+          visible: can.showDetails && isCustom,
           label: t("links.showDetails"),
           href: `/${locale}/profile/bookings-management/orders/${orderId}`,
           onClick: handleClose,
         },
         {
           key: "slug-details",
-          visible: Boolean(slug) && status === TRIP_STATUS.DONE,
+          visible:
+            can.showDetails && Boolean(slug) && status === TRIP_STATUS.DONE,
           label: t("links.showDetails"),
           href: `/${locale}/parents/${slug}?onlyDetails=true`,
           onClick: handleClose,
         },
-        {
-          key: "custom-trip-details",
-          visible:
-            can.showDetails &&
-            isCustomTrip &&
-            isPending &&
-            Boolean(openDetailsModal),
-          label: t("links.showDetails"),
-          onClick: handleShowDetails,
-        },
+
         {
           key: "remind",
           visible: can.remindGuestna && isCustom && isEditable,

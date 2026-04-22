@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
-
 // Components
 import Pagination from "@components/ui/Pagination";
 import SchoolOverviewCard from "@components/features/profile/schoolManagementTeam/schoolsOverview/SchoolOverviewCard";
@@ -21,7 +20,7 @@ import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 // Constants
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
-import { Grid2 as Grid } from "@mui/material";
+
 
 const SchoolsOverViewPage = () => {
   const locale = useLocale();
@@ -125,33 +124,25 @@ const SchoolsOverViewPage = () => {
       </Box>
 
       {/* Listing Section */}
-      <Grid container spacing={2}>
-        {/* Loading Skeletons */}
-        {isLoading &&
-          Array.from({ length: 6 }).map((_, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <SchoolOverviewCardSkeleton />
-            </Grid>
+      {isLoading ? (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <SchoolOverviewCardSkeleton key={index} />
           ))}
-
-        {/* School Cards */}
-        {!isLoading &&
-          schools.length > 0 &&
-          schools.map((organization) => (
-            <Grid item xs={12} sm={6} md={4} key={organization._id}>
-              <SchoolOverviewCard item={organization} />
-            </Grid>
+        </div>
+      ) : schools.length > 0 ? (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          {schools.map((organization) => (
+            <SchoolOverviewCard key={organization._id} item={organization} />
           ))}
-
-        {/* Empty State */}
-        {!isLoading && schools.length === 0 && (
-          <Box className="w-full py-10 flex justify-center items-center flex-col gap-4">
-            <Typography className="text-gray-600 font-medium text-center !font-somar !text-lg">
-              {t("profile.schools_overview.no_schools_found")}
-            </Typography>
-          </Box>
-        )}
-      </Grid>
+        </div>
+      ) : (
+        <Box className="w-full py-10 flex justify-center items-center flex-col gap-4">
+          <Typography className="text-gray-600 font-medium text-center !font-somar !text-lg">
+            {t("profile.schools_overview.no_schools_found")}
+          </Typography>
+        </Box>
+      )}
 
       {/* Pagination */}
       {!isLoading && schools.length > 0 && (

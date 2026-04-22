@@ -67,7 +67,6 @@ const OrderDetailsModal = ({ orderId, orderDetails, loading }) => {
     );
   }
 
-  const isCustom = orderDetails?.askType === "CUSTOM";
   const tripName =
     orderDetails?.name?.[locale] ||
     orderDetails?.name?.ar ||
@@ -76,8 +75,7 @@ const OrderDetailsModal = ({ orderId, orderDetails, loading }) => {
   return (
     <div className="space-y-6 p-6 bg-white mx-auto w-[75%] rounded-xl mb-5 max-h-[90vh] overflow-y-auto">
       <h2 className="text-center text-2xl font-semibold">
-        {t(`${k}.title`)}{" "}
-        {tripName || orderId}
+        {t(`${k}.title`)} {tripName || orderId}
       </h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -270,7 +268,9 @@ const OrderDetailsModal = ({ orderId, orderDetails, loading }) => {
                 <p className="text-sm text-gray-600">
                   {t(`${k}.specialRequirements`)}:
                 </p>
-                <p className="font-medium">{orderDetails.specialRequirements}</p>
+                <p className="font-medium">
+                  {orderDetails.specialRequirements}
+                </p>
               </div>
             )}
 

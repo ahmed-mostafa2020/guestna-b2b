@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useState, useEffect, useRef, useMemo } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setOrganizations,
@@ -11,7 +11,6 @@ import {
 import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import { useLocale } from "next-intl";
 import Cookies from "js-cookie";
 import { Skeleton, Checkbox, TextField, InputAdornment } from "@mui/material";
 import { Search, KeyboardArrowDown, Close } from "@mui/icons-material";
@@ -22,61 +21,31 @@ const OrganizationSelector = () => {
   const dispatch = useDispatch();
   const dropdownRef = useRef(null);
 
-  const [token, setToken] = useState(() =>
-    Cookies.get(CONSTANT_VALUES.AUTH_TOKEN)
-  );
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Use Redux auth token — reacts immediately to login/logout
+  const userToken = useSelector((state) => state.users.userToken);
 
   // Get organizations from Redux
   const { selectedIds, organizations, allSelected } = useSelector(
     (state) => state.selectedOrganizations
   );
 
-  // Fetch organizations from API (skip org header to avoid circular dependency)
-  const shouldFetch = Boolean(token);
-
-  const { data, isLoading, refetch } = useFetchData(
+  const { data, isLoading } = useFetchData(
     B2B_END_POINTS.PROFILE.HEADER_FILTER_BY_ORGANIZATION,
     {},
     {
       lang: locale,
       skipOrgHeader: true,
-      enabled: shouldFetch,
+      enabled: Boolean(userToken),
     }
   );
-
-  // Monitor token changes and refetch when token becomes available
-  useEffect(() => {
-    const checkToken = () => {
-      const currentToken = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
-      if (currentToken && currentToken !== token) {
-        setToken(currentToken);
-        // Trigger refetch when token becomes available
-        if (refetch) {
-          refetch();
-        }
-      } else if (!currentToken && token) {
-        // Token was removed (logout)
-        setToken(null);
-      }
-    };
-
-    // Check immediately
-    checkToken();
-
-    // Set up interval to check for token changes (useful after login)
-    const interval = setInterval(checkToken, 500);
-
-    return () => clearInterval(interval);
-  }, [token, refetch]);
 
   // Update organizations in Redux when data changes
   useEffect(() => {
     if (data) {
       dispatch(setOrganizations(data));
-    } else {
-      dispatch(setOrganizations([]));
     }
   }, [data, dispatch]);
 
@@ -148,7 +117,7 @@ const OrganizationSelector = () => {
   const hasOrganizations =
     Array.isArray(organizations) && organizations.length > 0;
 
-  if (!token) {
+  if (!userToken) {
     return null;
   }
 
