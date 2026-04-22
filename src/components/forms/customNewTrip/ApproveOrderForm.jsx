@@ -128,7 +128,7 @@ const ApproveOrderForm = ({
     setFieldValue("gatheringLocation", { lat, lng }, true);
     setFieldTouched("gatheringLocation.lat", true, true);
     setFieldTouched("gatheringLocation.lng", true, true);
-    setLocationLink("");
+    setLocationLink(`https://www.google.com/maps?q=${lat},${lng}`);
     setLinkParseError("");
   };
 
