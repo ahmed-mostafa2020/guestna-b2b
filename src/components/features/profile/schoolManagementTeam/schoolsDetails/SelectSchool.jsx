@@ -143,7 +143,7 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
       <Box className="bg-[#E6F0F1] p-6 rounded-xl flex flex-col md:flex-row gap-4 border-[#6EC1E366] border-2">
         <Image
           src={details.image || details.url}
-          alt={details.name}
+          alt={details.name?.slice(0, 20)}
           width={110}
           height={110}
         />
