@@ -49,6 +49,12 @@
     "tailwind-merge": "^2.5.5",
     "yup": "^1.5.0"
   },
+  "resolutions": {
+    "serialize-javascript": "^7.0.5"
+  },
+  "overrides": {
+    "serialize-javascript": "^7.0.5"
+  },
   "devDependencies": {
     "@types/node": "^22.15.21",
     "eslint": "^8",
