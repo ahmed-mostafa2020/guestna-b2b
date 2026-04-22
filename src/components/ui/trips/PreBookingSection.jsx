@@ -90,6 +90,8 @@ const PreBookingSection = ({ tripData }) => {
 
   const isBookingAvailable = endDate > currentDate;
 
+  const isStopBooking = tripData?.isStopBooking;
+
   // Determine booking status and get appropriate message
   const getBookingStatus = () => {
     // Priority 1: Check available seats (only if trip is PENDING)
@@ -97,6 +99,13 @@ const PreBookingSection = ({ tripData }) => {
       tripData?.status === TRIP_STATUS.PENDING &&
       tripData?.availableSeats <= 0
     ) {
+      return {
+        canBook: false,
+        messageKey: "noSeats",
+      };
+    }
+
+    if (isStopBooking) {
       return {
         canBook: false,
         messageKey: "noSeats",

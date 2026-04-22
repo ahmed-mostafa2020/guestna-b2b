@@ -27,7 +27,10 @@ const SelectionGroup = ({
   errorBorder = false, // Show red border only, without error message
 }) => {
   return (
-    <FormControl error={errorBorder || (touched && Boolean(errors))} className="relative w-full">
+    <FormControl
+      error={errorBorder || (touched && Boolean(errors))}
+      className="relative w-full"
+    >
       {label && (
         <label className="block pb-2 font-medium">
           {label}
@@ -133,6 +136,7 @@ const SelectionGroup = ({
               className="!font-somar !font-semibold"
               key={item}
               value={itemValue}
+              title={typeof item === "string" ? item : undefined}
             >
               {showCheckbox && (
                 <Checkbox
@@ -146,8 +150,9 @@ const SelectionGroup = ({
                 />
               )}
               <ListItemText
-                primary={item}
+                primary={typeof item === "string" ? item.slice(0, 50) : item}
                 className="!font-somar !font-semibold"
+                title={typeof item === "string" ? item : undefined}
               />
             </MenuItem>
           );

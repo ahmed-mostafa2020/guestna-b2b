@@ -176,6 +176,8 @@ const TripDetails = ({ params }) => {
       "ramadan-club-almanhal-school-al-tawun-st-377",
     ].includes(tripData?.slug);
 
+  const isStopBooking = tripData?.isStopBooking;
+
   return (
     <main
       className={`py-5 overflow-hidden ${
@@ -202,7 +204,8 @@ const TripDetails = ({ params }) => {
       {tripData?.availableSeats > 0 &&
         tripData?.status === TRIP_STATUS.PENDING &&
         isBookingAvailable &&
-        !onlyDetails && (
+        !onlyDetails &&
+        !isStopBooking && (
           <RegisterStudentForm
             tripMainCategory={tripData?.categories?.formsType}
             availableSeats={availableSeats}

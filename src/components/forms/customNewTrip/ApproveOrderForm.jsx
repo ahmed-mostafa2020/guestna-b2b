@@ -111,8 +111,8 @@ const ApproveOrderForm = ({
     const coords = extractCoordsFromLink(value);
     if (coords) {
       setFieldValue("gatheringLocation", coords, true);
-      setFieldTouched("gatheringLocation.lat", true, true);
-      setFieldTouched("gatheringLocation.lng", true, true);
+      setFieldTouched("gatheringLocation.lat", true, false);
+      setFieldTouched("gatheringLocation.lng", true, false);
     } else {
       setLinkParseError(
         t("gathering_location.link_parse_error", {
@@ -126,8 +126,8 @@ const ApproveOrderForm = ({
 
   const handleLocationSelect = ({ lat, lng }) => {
     setFieldValue("gatheringLocation", { lat, lng }, true);
-    setFieldTouched("gatheringLocation.lat", true, true);
-    setFieldTouched("gatheringLocation.lng", true, true);
+    setFieldTouched("gatheringLocation.lat", true, false);
+    setFieldTouched("gatheringLocation.lng", true, false);
     setLocationLink(`https://www.google.com/maps?q=${lat},${lng}`);
     setLinkParseError("");
   };
