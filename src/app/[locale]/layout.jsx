@@ -2,6 +2,7 @@ import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import Script from "next/script";
 import { Suspense } from "react";
+import { headers } from "next/headers";
 
 import { NextIntlClientProvider } from "next-intl";
 
@@ -169,6 +170,9 @@ export default async function RootLayout({ children, params: { locale } }) {
     notFound();
   }
 
+  // Read the per-request nonce injected by middleware — required for CSP
+  const nonce = headers().get("x-nonce") ?? "";
+
   const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
   const GTM_ID = process.env.NEXT_PUBLIC_GA_TAG_MANAGER_ID;
 
@@ -179,10 +183,11 @@ export default async function RootLayout({ children, params: { locale } }) {
         {GA_MEASUREMENT_ID && (
           <>
             <Script
+              nonce={nonce}
               strategy="afterInteractive"
               src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
             />
-            <Script id="google-analytics" strategy="afterInteractive">
+            <Script nonce={nonce} id="google-analytics" strategy="afterInteractive">
               {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
@@ -205,19 +210,16 @@ export default async function RootLayout({ children, params: { locale } }) {
           href="https://cdn.moyasar.com/mpf/1.13.0/moyasar.css"
         />
         <Script
+          nonce={nonce}
           src="https://cdn.moyasar.com/mpf/1.13.0/moyasar.js"
           defer
         ></Script>
 
-        <Script
-          src="https://polyfill.io/v3/polyfill.min.js?features=fetch"
-          async
-        ></Script>
-
-        <meta
+<meta
           name="google-site-verification"
           content="Dy0yQBQm8XuB6racQHLnnd7zVz2jFPaIMVKzUWq9gwE"
         />
+        {/* JSON-LD is data, not executable JS — exempt from script-src CSP */}
         <Script
           id={`structured-data-${locale}`}
           type="application/ld+json"
@@ -233,6 +235,7 @@ export default async function RootLayout({ children, params: { locale } }) {
       >
         {/* Tamara pay */}
         <Script
+          nonce={nonce}
           strategy="beforeInteractive"
           src="https://cdn.tamara.co/widget-v1/tamara-widget.js"
         />
