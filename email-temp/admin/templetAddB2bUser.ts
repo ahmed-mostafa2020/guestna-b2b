@@ -4,28 +4,28 @@ export const templetAddB2bUser = (
   name: string,
   phone: string,
   password: string,
-  language: 'en' | 'ar' = 'en',
+  language: "en" | "ar" = "en"
 ): string => {
-  const isArabic = language === 'ar';
-  const dir = isArabic ? 'rtl' : 'ltr';
+  const isArabic = language === "ar";
+  const dir = isArabic ? "rtl" : "ltr";
 
   const translations = {
     en: {
-      accountReady: 'Your Account is Ready!',
-      welcome: 'Welcome',
-      congratulations: '🎊 Congratulations on Your New Account!',
+      accountReady: "Your Account is Ready!",
+      welcome: "Welcome",
+      congratulations: "🎊 Congratulations on Your New Account!",
       welcomeMessage:
         "We're excited to have you on board! Your account has been successfully created on GuestNa. You can now access all our features and start exploring.",
-      accountDetails: '📋 Your Account Details',
-      fullName: 'Full Name',
-      emailAddress: 'Email Address',
-      phoneNumber: 'Phone Number',
-      loginPassword: '🔑 Your Login Password',
-      savePassword: '⚠️ Please save this password in a secure location',
+      accountDetails: "📋 Your Account Details",
+      fullName: "Full Name",
+      emailAddress: "Email Address",
+      phoneNumber: "Phone Number",
+      loginPassword: "🔑 Your Login Password",
+      savePassword: "⚠️ Please save this password in a secure location",
       securityMessage:
-        'For security reasons, we strongly recommend changing your password after your first login. You can easily do this from your account settings.',
-      changePasswordBtn: '🔐 Change Your Password',
-      securityTitle: '🛡️ Security Recommendations',
+        "For security reasons, we strongly recommend changing your password after your first login. You can easily do this from your account settings.",
+      changePasswordBtn: "🔐 Change Your Password",
+      securityTitle: "🛡️ Security Recommendations",
       securityPoints: `• Use a unique password that you don't use on other websites<br>
           • Create a strong password with at least 8 characters<br>
           • Include uppercase, lowercase letters, numbers, and symbols<br>
@@ -34,39 +34,39 @@ export const templetAddB2bUser = (
       accountQuestion:
         "If you didn't create this account or have any questions, please contact our support team immediately.",
       needHelp:
-        'Need help? Reply to this email and our support team will assist you.',
-      copyright: '© 2024 GuestNa. All rights reserved.',
+        "Need help? Reply to this email and our support team will assist you.",
+      copyright: "© 2024 GuestNa. All rights reserved.",
       automated:
-        'This is an automated message, please do not reply directly to this email.',
+        "This is an automated message, please do not reply directly to this email.",
     },
     ar: {
-      accountReady: 'حسابك جاهز!',
-      welcome: 'مرحباً',
-      congratulations: '🎊 تهانينا على حسابك الجديد!',
+      accountReady: "حسابك جاهز!",
+      welcome: "مرحباً",
+      congratulations: "🎊 تهانينا على حسابك الجديد!",
       welcomeMessage:
-        'يسعدنا انضمامك إلينا! تم إنشاء حسابك بنجاح على GuestNa. يمكنك الآن الوصول إلى جميع ميزاتنا والبدء في الاستكشاف.',
-      accountDetails: '📋 تفاصيل حسابك',
-      fullName: 'الاسم الكامل',
-      emailAddress: 'البريد الإلكتروني',
-      phoneNumber: 'رقم الهاتف',
-      loginPassword: '🔑 كلمة المرور الخاصة بك',
-      savePassword: '⚠️ يرجى حفظ كلمة المرور هذه في مكان آمن',
+        "يسعدنا انضمامك إلينا! تم إنشاء حسابك بنجاح على GuestNa. يمكنك الآن الوصول إلى جميع ميزاتنا والبدء في الاستكشاف.",
+      accountDetails: "📋 تفاصيل حسابك",
+      fullName: "الاسم الكامل",
+      emailAddress: "البريد الإلكتروني",
+      phoneNumber: "رقم الهاتف",
+      loginPassword: "🔑 كلمة المرور الخاصة بك",
+      savePassword: "⚠️ يرجى حفظ كلمة المرور هذه في مكان آمن",
       securityMessage:
-        'لأسباب أمنية، نوصي بشدة بتغيير كلمة المرور بعد تسجيل الدخول الأول. يمكنك القيام بذلك بسهولة من إعدادات حسابك.',
-      changePasswordBtn: '🔐 تغيير كلمة المرور',
-      securityTitle: '🛡️ توصيات الأمان',
+        "لأسباب أمنية، نوصي بشدة بتغيير كلمة المرور بعد تسجيل الدخول الأول. يمكنك القيام بذلك بسهولة من إعدادات حسابك.",
+      changePasswordBtn: "🔐 تغيير كلمة المرور",
+      securityTitle: "🛡️ توصيات الأمان",
       securityPoints: `• استخدم كلمة مرور فريدة لا تستخدمها في مواقع أخرى<br>
           • أنشئ كلمة مرور قوية تتكون من 8 أحرف على الأقل<br>
           • قم بتضمين أحرف كبيرة وصغيرة وأرقام ورموز<br>
           • لا تشارك كلمة المرور الخاصة بك مع أي شخص<br>
           • قم بتفعيل المصادقة الثنائية إذا كانت متاحة`,
       accountQuestion:
-        'إذا لم تقم بإنشاء هذا الحساب أو لديك أي أسئلة، يرجى الاتصال بفريق الدعم لدينا على الفور.',
+        "إذا لم تقم بإنشاء هذا الحساب أو لديك أي أسئلة، يرجى الاتصال بفريق الدعم لدينا على الفور.",
       needHelp:
-        'هل تحتاج مساعدة؟ قم بالرد على هذا البريد الإلكتروني وسيساعدك فريق الدعم لدينا.',
-      copyright: '© 2024 GuestNa. جميع الحقوق محفوظة.',
+        "هل تحتاج مساعدة؟ قم بالرد على هذا البريد الإلكتروني وسيساعدك فريق الدعم لدينا.",
+      copyright: "© 2024 GuestNa. جميع الحقوق محفوظة.",
       automated:
-        'هذه رسالة آلية، يرجى عدم الرد مباشرة على هذا البريد الإلكتروني.',
+        "هذه رسالة آلية، يرجى عدم الرد مباشرة على هذا البريد الإلكتروني.",
     },
   };
 
@@ -124,7 +124,7 @@ export const templetAddB2bUser = (
     }
     .content {
       padding: 40px 30px;
-      text-align: ${isArabic ? 'right' : 'left'};
+      text-align: ${isArabic ? "right" : "left"};
     }
     .welcome-title {
       color: #333333;
@@ -168,7 +168,7 @@ export const templetAddB2bUser = (
       direction: ${dir};
     }
     .user-detail-icon {
-      ${isArabic ? 'margin-left' : 'margin-right'}: 10px;
+      ${isArabic ? "margin-left" : "margin-right"}: 10px;
       font-size: 20px;
     }
     .user-detail-content {
@@ -184,7 +184,7 @@ export const templetAddB2bUser = (
       color: #666666;
       font-size: 15px;
       direction: ltr;
-      text-align: ${isArabic ? 'right' : 'left'};
+      text-align: ${isArabic ? "right" : "left"};
     }
     .password-box {
       background-color: #fff9e6;
@@ -216,7 +216,7 @@ export const templetAddB2bUser = (
     }
     .password-warning {
       color: #ff6b6b;
-      font-size: 13px;
+      font-size: 15px;
       margin-top: 10px;
       font-weight: 600;
     }
@@ -242,10 +242,10 @@ export const templetAddB2bUser = (
     }
     .security-info {
       background-color: #f8f9fa;
-      border-${isArabic ? 'right' : 'left'}: 4px solid #0b9297;
+      border-${isArabic ? "right" : "left"}: 4px solid #0b9297;
       padding: 20px;
       margin: 30px 0;
-      border-radius: ${isArabic ? '8px 0 0 8px' : '0 8px 8px 0'};
+      border-radius: ${isArabic ? "8px 0 0 8px" : "0 8px 8px 0"};
     }
     .security-title {
       color: #333333;
@@ -263,7 +263,7 @@ export const templetAddB2bUser = (
       padding: 25px 30px;
       text-align: center;
       color: #999999;
-      font-size: 13px;
+      font-size: 15px;
       border-top: 1px solid #e0e0e0;
     }
 
@@ -296,7 +296,7 @@ export const templetAddB2bUser = (
       }
     }
   </style>
-  ${isArabic ? '<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">' : ''}
+  ${isArabic ? '<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">' : ""}
 </head>
 <body>
   <div class="email-container">

@@ -1,0 +1,174 @@
+// Ref: accounts/templet new B2b User_ar — تنبيه الإدارة بانضمام مدرسة/مستخدم B2B جديد
+export const adminNewUserHTML = `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>مستخدم B2B جديد - لوحة الإدارة</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap");
+    body { font-family: "Tajawal", Arial, Tahoma, sans-serif !important; direction: rtl; }
+    @media only screen and (max-width: 600px) {
+      .main-table { width: 100% !important; border-radius: 0 !important; }
+      .content-pad { padding: 20px !important; }
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background-color:#EEF2F7;color:#1E293B;font-family:'Tajawal',Arial,Tahoma,sans-serif;direction:rtl;width:100%;min-width:100%;">
+
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#EEF2F7;">
+    <tr>
+      <td align="center" style="padding:32px 16px;">
+
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" class="main-table"
+               style="max-width:600px;background-color:#ffffff;border-radius:20px;overflow:hidden;margin:0 auto;box-shadow:0 8px 40px rgba(10,37,64,0.12);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(150deg,#0A2540 0%,#006e6e 60%,#008F8F 100%);padding:40px 36px 36px;text-align:center;">
+              <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
+                   alt="GuestNa Logo" width="120"
+                   style="display:block;margin:0 auto 20px;filter:brightness(0) invert(1);border:0;" />
+              <div style="font-size:44px;margin-bottom:12px;">🏫</div>
+              <div style="font-size:24px;font-weight:700;color:#ffffff;margin-bottom:8px;line-height:1.3;">انضمام مؤسسة تعليمية جديدة</div>
+              <div style="font-size:13px;color:rgba(255,255,255,0.75);">تنبيه لفريق الإدارة — يتطلب مراجعة وتفعيل</div>
+            </td>
+          </tr>
+
+          <!-- Accent Line -->
+          <tr>
+            <td style="height:4px;background:linear-gradient(90deg,#008F8F,#ED8A22,#008F8F);"></td>
+          </tr>
+
+          <!-- Alert Bar -->
+          <tr>
+            <td style="background:#F0FDFA;border-bottom:1px solid #D0EAEA;padding:14px 36px;text-align:center;">
+              <span style="display:inline-block;background:#008F8F;color:#fff;font-size:12px;font-weight:700;padding:6px 20px;border-radius:50px;">🆕 طلب تسجيل جديد يحتاج مراجعة</span>
+            </td>
+          </tr>
+
+          <!-- School Details -->
+          <tr>
+            <td class="content-pad" style="padding:28px 36px 24px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;">
+                <tr>
+                  <td colspan="2" style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:12px 20px;text-align:center;">
+                    <span style="font-size:13px;font-weight:700;color:#008F8F;">🏫 بيانات المؤسسة التعليمية</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 20px;width:38%;border-bottom:1px solid #F1F5F9;background:#FAFAFA;">
+                    <p style="margin:0;font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">اسم المؤسسة</p>
+                  </td>
+                  <td style="padding:12px 20px;border-bottom:1px solid #F1F5F9;">
+                    <p style="margin:0;font-size:14px;color:#1E293B;font-weight:700;">مدرسة النور الدولية</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;">
+                    <p style="margin:0;font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">المدير المسؤول</p>
+                  </td>
+                  <td style="padding:12px 20px;border-bottom:1px solid #F1F5F9;">
+                    <p style="margin:0;font-size:14px;color:#1E293B;font-weight:600;">أ. أحمد مصطفى</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;">
+                    <p style="margin:0;font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">البريد الإلكتروني</p>
+                  </td>
+                  <td style="padding:12px 20px;border-bottom:1px solid #F1F5F9;">
+                    <a href="mailto:ahmad.m@school.edu.sa" style="font-size:14px;color:#008F8F;font-weight:500;text-decoration:none;">ahmad.m@school.edu.sa</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;">
+                    <p style="margin:0;font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">رقم الهاتف</p>
+                  </td>
+                  <td style="padding:12px 20px;border-bottom:1px solid #F1F5F9;">
+                    <a href="tel:+966501234567" style="font-size:14px;color:#1E293B;font-weight:600;text-decoration:none;">+966 50 123 4567</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;">
+                    <p style="margin:0;font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">الموقع</p>
+                  </td>
+                  <td style="padding:12px 20px;border-bottom:1px solid #F1F5F9;">
+                    <a href="https://maps.google.com/?q=جدة،+المملكة+العربية+السعودية"
+                       style="font-size:14px;color:#008F8F;font-weight:500;text-decoration:none;">📍 جدة، المملكة العربية السعودية</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 20px;background:#FAFAFA;">
+                    <p style="margin:0;font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">تاريخ التسجيل</p>
+                  </td>
+                  <td style="padding:12px 20px;">
+                    <p style="margin:0;font-size:14px;color:#1E293B;font-weight:600;">١٧ مارس ٢٠٢٦، ١٢:٥١ م</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Status -->
+          <tr>
+            <td class="content-pad" style="padding:0 36px 24px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background:#FFFBEB;border:1.5px solid #FCD34D;border-radius:12px;">
+                <tr>
+                  <td style="padding:16px 20px;text-align:center;">
+                    <span style="display:inline-block;background:#FEF3C7;color:#92400E;font-size:13px;font-weight:700;padding:6px 20px;border-radius:50px;margin-bottom:8px;">⏳ الحساب بانتظار المراجعة والتفعيل</span>
+                    <p style="margin:6px 0 0;font-size:13px;color:#92400E;line-height:1.7;">
+                      يُرجى مراجعة بيانات المؤسسة وإجراء التحقق اللازم قبل تفعيل الحساب
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Action Buttons -->
+          <tr>
+            <td align="center" style="padding:0 36px 32px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td style="padding-left:8px;">
+                    <a href="https://guestna.app/admin/users/approve"
+                       style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;padding:13px 28px;border-radius:10px;box-shadow:0 4px 16px rgba(0,143,143,0.3);">
+                      ✅ تفعيل الحساب
+                    </a>
+                  </td>
+                  <td style="padding-right:8px;">
+                    <a href="https://guestna.app/admin/users"
+                       style="display:inline-block;background:#F8FAFC;color:#475569;text-decoration:none;font-size:14px;font-weight:600;padding:13px 28px;border-radius:10px;border:1.5px solid #E2E8F0;">
+                      👁️ عرض في لوحة التحكم
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#0A2540;padding:28px 36px;text-align:center;">
+              <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
+                   alt="GuestNa" width="90"
+                   style="display:block;margin:0 auto 14px;filter:brightness(0) invert(1);opacity:0.85;border:0;" />
+              <p style="margin:0 0 6px;font-size:13px;color:rgba(255,255,255,0.7);font-weight:600;">
+                <a href="https://guestna.app" style="color:rgba(255,255,255,0.7);text-decoration:none;">منصة جستنا للرحلات التعليمية</a>
+              </p>
+              <p style="margin:0 0 6px;font-size:12px;color:rgba(255,255,255,0.45);">
+                <a href="mailto:support@guestna.app" style="color:rgba(255,255,255,0.45);text-decoration:none;">support@guestna.app</a>
+                <span style="color:rgba(255,255,255,0.2);margin:0 8px;">|</span>
+                <a href="tel:+966547534666" style="color:rgba(255,255,255,0.45);text-decoration:none;">+966 55 234 5678</a>
+              </p>
+              <p style="margin:0 0 8px;font-size:12px;color:rgba(255,255,255,0.3);">© 2025 GuestNa. جميع الحقوق محفوظة.</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;

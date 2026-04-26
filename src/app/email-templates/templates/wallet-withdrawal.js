@@ -181,19 +181,23 @@ export const walletWithdrawalHTML = `<!DOCTYPE html>
 
           <!-- Footer -->
           <tr>
-            <td style="background:#0A2540;padding:24px 36px;text-align:center;">
-              <img
-                src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
-                alt="GuestNa"
-                width="90"
-                style="display:block;margin:0 auto 12px;filter:brightness(0) invert(1);opacity:0.85;border:0;"
-              />
-              <p style="margin:0 0 6px;font-size:13px;color:rgba(255,255,255,0.7);font-weight:600;">منصة جستنا للرحلات التعليمية</p>
-              <p style="margin:0 0 8px;font-size:12px;color:rgba(255,255,255,0.35);">هذا البريد تلقائي — للتواصل: <a href="mailto:finance@guestna-edu.com" style="color:rgba(255,255,255,0.55);text-decoration:none;">finance@guestna-edu.com</a></p>
-              <p style="margin:0;font-size:12px;">
-                <a href="#" style="color:rgba(255,255,255,0.45);text-decoration:none;">إلغاء الاشتراك</a>
-                <span style="color:rgba(255,255,255,0.2);margin:0 6px;">&middot;</span>
-                <a href="#" style="color:rgba(255,255,255,0.45);text-decoration:none;">سياسة الخصوصية</a>
+            <td style="background:#0A2540;padding:28px 36px;text-align:center;">
+              <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
+                   alt="GuestNa" width="90"
+                   style="display:block;margin:0 auto 14px;filter:brightness(0) invert(1);opacity:0.85;border:0;" />
+              <p style="margin:0 0 6px;font-size:13px;color:rgba(255,255,255,0.7);font-weight:600;">
+                <a href="https://guestna.app" style="color:rgba(255,255,255,0.7);text-decoration:none;">منصة جستنا للرحلات التعليمية</a>
+              </p>
+              <p style="margin:0 0 6px;font-size:12px;color:rgba(255,255,255,0.45);">
+                <a href="mailto:finance@guestna.app" style="color:rgba(255,255,255,0.45);text-decoration:none;">finance@guestna.app</a>
+                <span style="color:rgba(255,255,255,0.2);margin:0 8px;">|</span>
+                <span style="direction:ltr;unicode-bidi:isolate;display:inline-block;"><a href="tel:+966552345678" style="color:rgba(255,255,255,0.45);text-decoration:none;">&lrm;+966 55 234 5678&lrm;</a></span>
+              </p>
+              <p style="margin:0 0 8px;font-size:12px;color:rgba(255,255,255,0.3);">© 2025 GuestNa. جميع الحقوق محفوظة.</p>
+              <p style="margin:0;font-size:11px;">
+                <a href="#" style="color:rgba(255,255,255,0.4);text-decoration:none;">إلغاء الاشتراك</a>
+                <span style="color:rgba(255,255,255,0.15);margin:0 6px;">&middot;</span>
+                <a href="#" style="color:rgba(255,255,255,0.4);text-decoration:none;">سياسة الخصوصية</a>
               </p>
             </td>
           </tr>

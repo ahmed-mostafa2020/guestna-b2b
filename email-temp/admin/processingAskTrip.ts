@@ -1,4 +1,4 @@
-import { B2bAskTripsStatus } from '@src/modules/b2b/askTrips/dto/askTrip.dto';
+import { B2bAskTripsStatus } from "@src/modules/b2b/askTrips/dto/askTrip.dto";
 
 interface StatusConfig {
   color: string;
@@ -10,76 +10,76 @@ interface StatusConfig {
 
 const statusConfigs: Record<B2bAskTripsStatus, StatusConfig> = {
   [B2bAskTripsStatus.PENDING]: {
-    color: '#F59E0B',
-    bgColor: '#FFFBEB',
-    icon: '⏳',
-    title: 'Request Under Review',
+    color: "#F59E0B",
+    bgColor: "#FFFBEB",
+    icon: "⏳",
+    title: "Request Under Review",
     message:
-      'Your trip request is currently being reviewed by our team. We will get back to you shortly with confirmation.',
+      "Your trip request is currently being reviewed by our team. We will get back to you shortly with confirmation.",
   },
   [B2bAskTripsStatus.PENDING_COMPANY_APPROVAL]: {
-    color: '#3B82F6',
-    bgColor: '#EFF6FF',
-    icon: '📋',
-    title: 'Awaiting Company Approval',
+    color: "#3B82F6",
+    bgColor: "#EFF6FF",
+    icon: "📋",
+    title: "Awaiting Company Approval",
     message:
-      'Your trip request has been processed and is now pending final approval from our management team.',
+      "Your trip request has been processed and is now pending final approval from our management team.",
   },
   [B2bAskTripsStatus.APPROVED]: {
-    color: '#22C55E',
-    bgColor: '#F0FDF4',
-    icon: '✅',
-    title: 'Request Approved!',
+    color: "#22C55E",
+    bgColor: "#F0FDF4",
+    icon: "✅",
+    title: "Request Approved!",
     message:
-      'Great news! Your school trip request has been approved. Please review the details below.',
+      "Great news! Your school trip request has been approved. Please review the details below.",
   },
   [B2bAskTripsStatus.SCHEDULED]: {
-    color: '#0B9A9A',
-    bgColor: '#F0FDFA',
-    icon: '📅',
-    title: 'Trip Scheduled',
+    color: "#0B9A9A",
+    bgColor: "#F0FDFA",
+    icon: "📅",
+    title: "Trip Scheduled",
     message:
-      'Your school trip has been scheduled and confirmed. All arrangements are in place for your educational adventure!',
+      "Your school trip has been scheduled and confirmed. All arrangements are in place for your educational adventure!",
   },
   [B2bAskTripsStatus.DONE]: {
-    color: '#8B5CF6',
-    bgColor: '#F5F3FF',
-    icon: '🎉',
-    title: 'Trip Completed',
+    color: "#8B5CF6",
+    bgColor: "#F5F3FF",
+    icon: "🎉",
+    title: "Trip Completed",
     message:
-      'Your school trip has been completed successfully. We hope you had a wonderful educational experience!',
+      "Your school trip has been completed successfully. We hope you had a wonderful educational experience!",
   },
   [B2bAskTripsStatus.ENDED]: {
-    color: '#64748B',
-    bgColor: '#F1F5F9',
-    icon: '🏁',
-    title: 'Trip Ended',
+    color: "#64748B",
+    bgColor: "#F1F5F9",
+    icon: "🏁",
+    title: "Trip Ended",
     message:
-      'This school trip has concluded. Thank you for choosing GuestNa for your educational journey.',
+      "This school trip has concluded. Thank you for choosing GuestNa for your educational journey.",
   },
   [B2bAskTripsStatus.REJECTED]: {
-    color: '#EF4444',
-    bgColor: '#FEF2F2',
-    icon: '❌',
-    title: 'Request Not Approved',
+    color: "#EF4444",
+    bgColor: "#FEF2F2",
+    icon: "❌",
+    title: "Request Not Approved",
     message:
-      'Unfortunately, we are unable to accommodate your trip request at this time. Please see the details below.',
+      "Unfortunately, we are unable to accommodate your trip request at this time. Please see the details below.",
   },
   [B2bAskTripsStatus.CANCLED]: {
-    color: '#EF4444',
-    bgColor: '#FEF2F2',
-    icon: '🚫',
-    title: 'Trip Cancelled',
+    color: "#EF4444",
+    bgColor: "#FEF2F2",
+    icon: "🚫",
+    title: "Trip Cancelled",
     message:
-      'This trip request has been cancelled. If you have any questions, please contact our support team.',
+      "This trip request has been cancelled. If you have any questions, please contact our support team.",
   },
   [B2bAskTripsStatus.ON_HOLD]: {
-    color: '#F97316',
-    bgColor: '#FFF7ED',
-    icon: '⏸️',
-    title: 'Request On Hold',
+    color: "#F97316",
+    bgColor: "#FFF7ED",
+    icon: "⏸️",
+    title: "Request On Hold",
     message:
-      'Your trip request is temporarily on hold. We will update you as soon as we have more information.',
+      "Your trip request is temporarily on hold. We will update you as soon as we have more information.",
   },
 };
 
@@ -91,7 +91,7 @@ export const askTripProcessingTemplate = (
   status: B2bAskTripsStatus,
   url: string,
   note?: string,
-  newPrice?: number,
+  newPrice?: number
 ): string => {
   const config = statusConfigs[status];
 
@@ -121,7 +121,7 @@ export const askTripProcessingTemplate = (
                   width="130"
                   style="display: block; margin: 0 auto 20px; filter: brightness(0) invert(1); border: 0;"
                 />
-                <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 5px 18px; font-size: 11px; color: #ffffff; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px;">
+                <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 5px 18px; font-size: 15px; color: #ffffff; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px;">
                   Trip Update
                 </div>
                 <div style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 8px; line-height: 1.3;">
@@ -154,8 +154,8 @@ export const askTripProcessingTemplate = (
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 24px;">
                   <tr>
                     <td align="center">
-                      <span style="display: inline-block; background: ${config.color}; color: #ffffff; font-size: 13px; font-weight: 700; padding: 8px 24px; border-radius: 50px; letter-spacing: 0.5px;">
-                        ${config.icon} STATUS: ${status.replace(/_/g, ' ')}
+                      <span style="display: inline-block; background: ${config.color}; color: #ffffff; font-size: 15px; font-weight: 700; padding: 8px 24px; border-radius: 50px; letter-spacing: 0.5px;">
+                        ${config.icon} STATUS: ${status.replace(/_/g, " ")}
                       </span>
                     </td>
                   </tr>
@@ -170,7 +170,7 @@ export const askTripProcessingTemplate = (
                   </tr>
                   <tr>
                     <td style="padding: 14px 20px 6px; width: 42%; border-bottom: 1px solid #F1F5F9;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Order ID</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Order ID</div>
                     </td>
                     <td style="padding: 14px 20px 6px; border-bottom: 1px solid #F1F5F9;">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${orderId}</div>
@@ -178,7 +178,7 @@ export const askTripProcessingTemplate = (
                   </tr>
                   <tr>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">School Name</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">School Name</div>
                     </td>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${schoolName}</div>
@@ -186,19 +186,19 @@ export const askTripProcessingTemplate = (
                   </tr>
                   <tr>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Trip Date</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Trip Date</div>
                     </td>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${tripDate}</div>
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding: 10px 20px ${newPrice ? '6px' : '14px'}; border-bottom: ${newPrice ? '1px solid #F1F5F9' : 'none'};">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Status</div>
+                    <td style="padding: 10px 20px ${newPrice ? "6px" : "14px"}; border-bottom: ${newPrice ? "1px solid #F1F5F9" : "none"};">
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Status</div>
                     </td>
-                    <td style="padding: 10px 20px ${newPrice ? '6px' : '14px'}; border-bottom: ${newPrice ? '1px solid #F1F5F9' : 'none'};">
-                      <span style="display: inline-block; background: ${config.bgColor}; color: ${config.color}; font-size: 13px; font-weight: 700; padding: 4px 14px; border-radius: 50px; border: 1px solid ${config.color}40;">
-                        ${config.icon} ${status.replace(/_/g, ' ')}
+                    <td style="padding: 10px 20px ${newPrice ? "6px" : "14px"}; border-bottom: ${newPrice ? "1px solid #F1F5F9" : "none"};">
+                      <span style="display: inline-block; background: ${config.bgColor}; color: ${config.color}; font-size: 15px; font-weight: 700; padding: 4px 14px; border-radius: 50px; border: 1px solid ${config.color}40;">
+                        ${config.icon} ${status.replace(/_/g, " ")}
                       </span>
                     </td>
                   </tr>
@@ -207,14 +207,14 @@ export const askTripProcessingTemplate = (
                       ? `
                   <tr>
                     <td style="padding: 10px 20px 14px;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Price</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Price</div>
                     </td>
                     <td style="padding: 10px 20px 14px;">
                       <div style="font-size: 26px; font-weight: 700; color: #22C55E;">${newPrice.toLocaleString()} EGP</div>
                     </td>
                   </tr>
                   `
-                      : ''
+                      : ""
                   }
                 </table>
 
@@ -230,14 +230,14 @@ export const askTripProcessingTemplate = (
                   </tr>
                 </table>
                 `
-                    : ''
+                    : ""
                 }
 
                 <!-- Help Box -->
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 24px;">
                   <tr>
                     <td style="background: #EFF6FF; border-left: 4px solid #3B82F6; border-radius: 0 10px 10px 0; padding: 16px 20px;">
-                      <div style="font-size: 13px; color: #1E40AF; font-weight: 600; line-height: 1.6;">
+                      <div style="font-size: 15px; color: #1E40AF; font-weight: 600; line-height: 1.6;">
                         <strong>Need assistance?</strong> Our team is here to help! Contact us for any questions about your school trip.
                       </div>
                     </td>
@@ -257,7 +257,7 @@ export const askTripProcessingTemplate = (
                   </tr>
                 </table>
 
-                <p style="font-size: 13px; color: #94A3B8; margin-top: 20px; line-height: 1.6; text-align: center;">
+                <p style="font-size: 15px; color: #94A3B8; margin-top: 20px; line-height: 1.6; text-align: center;">
                   Thank you for choosing GuestNa for your educational trips!<br/>
                   We look forward to providing an excellent experience for your students.
                 </p>

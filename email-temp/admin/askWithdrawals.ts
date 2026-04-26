@@ -1,7 +1,7 @@
 import {
   B2bAskWithdrawalsStatus,
   B2bAskWithdrawalsType,
-} from '@src/modules/b2b/askWithdrawal/dto/askWithdrawal.dto';
+} from "@src/modules/b2b/askWithdrawal/dto/askWithdrawal.dto";
 
 export const askWithdrawalTemplate = (
   orderId: number,
@@ -15,23 +15,23 @@ export const askWithdrawalTemplate = (
   clientName?: string,
   iban?: string,
   requestDate?: string,
-  adminUrl?: string,
+  adminUrl?: string
 ): string => {
   const statusColors = {
-    DONE: { bg: '#d4edda', border: '#28a745', text: '#155724' },
-    PENDING: { bg: '#fff3cd', border: '#ffc107', text: '#856404' },
-    CANCLED: { bg: '#f8d7da', border: '#dc3545', text: '#721c24' },
+    DONE: { bg: "#d4edda", border: "#28a745", text: "#155724" },
+    PENDING: { bg: "#fff3cd", border: "#ffc107", text: "#856404" },
+    CANCLED: { bg: "#f8d7da", border: "#dc3545", text: "#721c24" },
   };
 
   const statusEmojis = {
-    DONE: '✅',
-    PENDING: '⏳',
-    CANCLED: '❌',
+    DONE: "✅",
+    PENDING: "⏳",
+    CANCLED: "❌",
   };
 
   const typeEmojis = {
-    STC_PAY: '📱',
-    BANK_TRANSFER: '🏦',
+    STC_PAY: "📱",
+    BANK_TRANSFER: "🏦",
   };
 
   void statusColors[status]; // retained for potential future use
@@ -39,11 +39,11 @@ export const askWithdrawalTemplate = (
   const typeEmoji = typeEmojis[type];
 
   const statusBadgeColors: Record<string, string> = {
-    DONE: '#22C55E',
-    PENDING: '#F59E0B',
-    CANCLED: '#EF4444',
+    DONE: "#22C55E",
+    PENDING: "#F59E0B",
+    CANCLED: "#EF4444",
   };
-  const statusBadgeColor = statusBadgeColors[status] || '#6C48EF';
+  const statusBadgeColor = statusBadgeColors[status] || "#6C48EF";
 
   const htmlTemp = `
 <!DOCTYPE html>
@@ -71,7 +71,7 @@ export const askWithdrawalTemplate = (
                   width="130"
                   style="display: block; margin: 0 auto 20px; filter: brightness(0) invert(1); border: 0;"
                 />
-                <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 5px 18px; font-size: 11px; color: #ffffff; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px;">
+                <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 5px 18px; font-size: 15px; color: #ffffff; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px;">
                   Finance
                 </div>
                 <div style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 8px; line-height: 1.3;">
@@ -97,11 +97,11 @@ export const askWithdrawalTemplate = (
                   <tr>
                     <td align="center">
                       <div style="display: inline-block; background: linear-gradient(135deg, #6C48EF15, #6C48EF08); border: 2px solid #6C48EF30; border-radius: 14px; padding: 20px 40px; text-align: center;">
-                        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #6C48EF; font-weight: 700; margin-bottom: 6px;">Withdrawal Amount</div>
+                        <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 1px; color: #6C48EF; font-weight: 700; margin-bottom: 6px;">Withdrawal Amount</div>
                         <div style="font-size: 26px; font-weight: 700; color: #6C48EF;">${amount.toLocaleString()} SAR</div>
                         <div style="margin-top: 8px;">
                           <span style="display: inline-block; background: ${statusBadgeColor}; color: #fff; font-size: 12px; font-weight: 700; padding: 4px 14px; border-radius: 50px;">
-                            ${statusEmoji} ${status.replace('_', ' ')}
+                            ${statusEmoji} ${status.replace("_", " ")}
                           </span>
                         </div>
                       </div>
@@ -118,7 +118,7 @@ export const askWithdrawalTemplate = (
                   </tr>
                   <tr>
                     <td style="padding: 14px 20px 6px; width: 42%; border-bottom: 1px solid #F1F5F9;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Order ID</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Order ID</div>
                     </td>
                     <td style="padding: 14px 20px 6px; border-bottom: 1px solid #F1F5F9;">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">#${orderId}</div>
@@ -126,7 +126,7 @@ export const askWithdrawalTemplate = (
                   </tr>
                   <tr>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Organization</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Organization</div>
                     </td>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${organizationName}</div>
@@ -134,10 +134,10 @@ export const askWithdrawalTemplate = (
                   </tr>
                   <tr>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Payment Method</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Payment Method</div>
                     </td>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
-                      <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${typeEmoji} ${type.replace('_', ' ')}</div>
+                      <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${typeEmoji} ${type.replace("_", " ")}</div>
                     </td>
                   </tr>
                   ${
@@ -145,21 +145,21 @@ export const askWithdrawalTemplate = (
                       ? `
                   <tr>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Request Date</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Request Date</div>
                     </td>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${requestDate}</div>
                     </td>
                   </tr>`
-                      : ''
+                      : ""
                   }
                   <tr>
                     <td style="padding: 10px 20px 14px;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Status</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Status</div>
                     </td>
                     <td style="padding: 10px 20px 14px;">
-                      <span style="display: inline-block; background: ${statusBadgeColor}18; color: ${statusBadgeColor}; font-size: 13px; font-weight: 700; padding: 4px 14px; border-radius: 50px; border: 1px solid ${statusBadgeColor}40;">
-                        ${statusEmoji} ${status.replace('_', ' ')}
+                      <span style="display: inline-block; background: ${statusBadgeColor}18; color: ${statusBadgeColor}; font-size: 15px; font-weight: 700; padding: 4px 14px; border-radius: 50px; border: 1px solid ${statusBadgeColor}40;">
+                        ${statusEmoji} ${status.replace("_", " ")}
                       </span>
                     </td>
                   </tr>
@@ -167,7 +167,7 @@ export const askWithdrawalTemplate = (
 
                 <!-- Payment Details - STC -->
                 ${
-                  type === 'STC_PAY' && stcPayPhone
+                  type === "STC_PAY" && stcPayPhone
                     ? `
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border: 1px solid #E2E8F0; border-radius: 14px; overflow: hidden; margin-bottom: 24px;">
                   <tr>
@@ -177,18 +177,18 @@ export const askWithdrawalTemplate = (
                   </tr>
                   <tr>
                     <td style="padding: 14px 20px;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Phone Number</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Phone Number</div>
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600; margin-top: 4px;">${stcPayPhone}</div>
                     </td>
                   </tr>
                 </table>
                 `
-                    : ''
+                    : ""
                 }
 
                 <!-- Payment Details - Bank -->
                 ${
-                  type === 'BANK_TRANSFER' && (bankName || clientName || iban)
+                  type === "BANK_TRANSFER" && (bankName || clientName || iban)
                     ? `
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border: 1px solid #E2E8F0; border-radius: 14px; overflow: hidden; margin-bottom: 24px;">
                   <tr>
@@ -196,36 +196,48 @@ export const askWithdrawalTemplate = (
                       <span style="font-size: 12px; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.8px;">Bank Transfer Details</span>
                     </td>
                   </tr>
-                  ${bankName ? `
+                  ${
+                    bankName
+                      ? `
                   <tr>
                     <td style="padding: 14px 20px 6px; width: 42%; border-bottom: 1px solid #F1F5F9;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Bank Name</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Bank Name</div>
                     </td>
                     <td style="padding: 14px 20px 6px; border-bottom: 1px solid #F1F5F9;">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${bankName}</div>
                     </td>
-                  </tr>` : ''}
-                  ${clientName ? `
+                  </tr>`
+                      : ""
+                  }
+                  ${
+                    clientName
+                      ? `
                   <tr>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Client Name</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Client Name</div>
                     </td>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${clientName}</div>
                     </td>
-                  </tr>` : ''}
-                  ${iban ? `
+                  </tr>`
+                      : ""
+                  }
+                  ${
+                    iban
+                      ? `
                   <tr>
                     <td style="padding: 10px 20px 14px;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">IBAN</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">IBAN</div>
                     </td>
                     <td style="padding: 10px 20px 14px;">
                       <div style="font-size: 14px; color: #1E293B; font-weight: 700; font-family: monospace; letter-spacing: 1px;">${iban}</div>
                     </td>
-                  </tr>` : ''}
+                  </tr>`
+                      : ""
+                  }
                 </table>
                 `
-                    : ''
+                    : ""
                 }
 
                 <!-- Note -->
@@ -241,14 +253,14 @@ export const askWithdrawalTemplate = (
                   </tr>
                 </table>
                 `
-                    : ''
+                    : ""
                 }
 
                 <!-- Warning -->
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 24px;">
                   <tr>
                     <td style="background: #FFFBEB; border-left: 4px solid #F59E0B; border-radius: 0 10px 10px 0; padding: 16px 20px;">
-                      <div style="font-size: 13px; color: #92400E; font-weight: 600; line-height: 1.6;">
+                      <div style="font-size: 15px; color: #92400E; font-weight: 600; line-height: 1.6;">
                         Please verify all payment details carefully before processing. Contact the organization if any information appears incorrect or incomplete.
                       </div>
                     </td>
@@ -271,7 +283,7 @@ export const askWithdrawalTemplate = (
                   </tr>
                 </table>
                 `
-                    : ''
+                    : ""
                 }
 
               </td>

@@ -1,81 +1,81 @@
-import { LocalizationLanguages } from '@src/common/dto';
-import { AskWithdrawalOneInfo } from '@src/modules/_dashboard/b2b/askWithDrawals/interfaces/askWithdrawalsResponse';
-import { B2bAskWithdrawalsType } from '@src/modules/b2b/askWithdrawal/dto/askWithdrawal.dto';
-import { Types } from 'mongoose';
+import { LocalizationLanguages } from "@src/common/dto";
+import { AskWithdrawalOneInfo } from "@src/modules/_dashboard/b2b/askWithDrawals/interfaces/askWithdrawalsResponse";
+import { B2bAskWithdrawalsType } from "@src/modules/b2b/askWithdrawal/dto/askWithdrawal.dto";
+import { Types } from "mongoose";
 
 export const customerWithdrawalConfirmationTemplate = (
   withdrawal: AskWithdrawalOneInfo,
   processedDate: string,
-  lang: 'ar' | 'en' = 'ar',
+  lang: "ar" | "en" = "ar",
   selectedGradesData?: {
     _id: Types.ObjectId;
     name: LocalizationLanguages;
     quantity: number;
     isPayed: boolean;
   }[],
-  selectedGradesAmount?: number,
+  selectedGradesAmount?: number
 ): string => {
-  const guestnaEmail = process.env.GUESTNA_EMAIL || 'info@guestna.app';
-  const guestnaNumber = process.env.GUESTNA_NUMBER || '';
+  const guestnaEmail = process.env.GUESTNA_EMAIL || "info@guestna.app";
+  const guestnaNumber = process.env.GUESTNA_NUMBER || "";
 
-  const isAr = lang === 'ar';
-  const dir = isAr ? 'rtl' : 'ltr';
+  const isAr = lang === "ar";
+  const dir = isAr ? "rtl" : "ltr";
 
   const translations = {
-    title: isAr ? 'تم تأكيد السحب - GuestNa' : 'Withdrawal Confirmed - GuestNa',
-    headerBadge: isAr ? '✅ تم تأكيد السحب' : '✅ Withdrawal Confirmed',
-    headerTitle: isAr ? 'دفعتك في طريقها إليك!' : 'Your Payment is On Its Way!',
+    title: isAr ? "تم تأكيد السحب - GuestNa" : "Withdrawal Confirmed - GuestNa",
+    headerBadge: isAr ? "✅ تم تأكيد السحب" : "✅ Withdrawal Confirmed",
+    headerTitle: isAr ? "دفعتك في طريقها إليك!" : "Your Payment is On Its Way!",
     paymentApprovedBadge: isAr
-      ? '✅ تمت الموافقة على الدفع'
-      : '✅ PAYMENT APPROVED',
+      ? "✅ تمت الموافقة على الدفع"
+      : "✅ PAYMENT APPROVED",
     successNotice: isAr
-      ? 'أخبار رائعة! تم تأكيد طلب السحب الخاص بك ومعالجته من قبل فريق الإدارة لدينا.'
-      : 'Great news! Your withdrawal request has been confirmed and processed by our admin team.',
+      ? "أخبار رائعة! تم تأكيد طلب السحب الخاص بك ومعالجته من قبل فريق الإدارة لدينا."
+      : "Great news! Your withdrawal request has been confirmed and processed by our admin team.",
     dearUser: isAr
       ? `عزيزي ${withdrawal.createdBy.name}، تمت معالجة عملية السحب بنجاح. يرجى الاطلاع على التفاصيل أدناه.`
       : `Dear ${withdrawal.createdBy.name}, your withdrawal has been successfully processed. Please find the details below.`,
-    orderIdLabel: isAr ? '🔢 رقم الطلب' : '🔢 Order ID',
-    amountLabel: isAr ? '💰 المبلغ' : '💰 Amount',
-    tripNameLabel: isAr ? '🚌 اسم الرحلة' : '🚌 Trip Name',
-    schoolNameLabel: isAr ? '🏫 اسم المدرسة' : '🏫 School Name',
-    processedDateLabel: isAr ? '✅ تاريخ المعالجة' : '✅ Processed Date',
-    sarUnit: isAr ? 'ريال سعودي' : 'SAR',
-    paymentSentToMobile: isAr ? '📱 تم إرسال الدفعة إلى' : '📱 PAYMENT SENT TO',
-    paymentSentToBank: isAr ? '🏦 تم إرسال الدفعة إلى' : '🏦 PAYMENT SENT TO',
-    stcPayPhoneLabel: isAr ? '📱 رقم الهاتف (STC Pay)' : '📱 STC Pay Phone',
+    orderIdLabel: isAr ? "🔢 رقم الطلب" : "🔢 Order ID",
+    amountLabel: isAr ? "💰 المبلغ" : "💰 Amount",
+    tripNameLabel: isAr ? "🚌 اسم الرحلة" : "🚌 Trip Name",
+    schoolNameLabel: isAr ? "🏫 اسم المدرسة" : "🏫 School Name",
+    processedDateLabel: isAr ? "✅ تاريخ المعالجة" : "✅ Processed Date",
+    sarUnit: isAr ? "ريال سعودي" : "SAR",
+    paymentSentToMobile: isAr ? "📱 تم إرسال الدفعة إلى" : "📱 PAYMENT SENT TO",
+    paymentSentToBank: isAr ? "🏦 تم إرسال الدفعة إلى" : "🏦 PAYMENT SENT TO",
+    stcPayPhoneLabel: isAr ? "📱 رقم الهاتف (STC Pay)" : "📱 STC Pay Phone",
     stcPayNotice: isAr
-      ? '💡 يجب أن تستلم الأموال في محفظة STC Pay الخاصة بك في غضون دقائق قليلة.'
-      : '💡 You should receive the funds in your STC Pay wallet within a few minutes.',
-    bankNameLabel: isAr ? '🏦 اسم البنك' : '🏦 Bank Name',
-    accountNameLabel: isAr ? '👤 اسم الحساب' : '👤 Account Name',
-    ibanLabel: isAr ? '🏧 الآيبان (IBAN)' : '🏧 IBAN',
+      ? "💡 يجب أن تستلم الأموال في محفظة STC Pay الخاصة بك في غضون دقائق قليلة."
+      : "💡 You should receive the funds in your STC Pay wallet within a few minutes.",
+    bankNameLabel: isAr ? "🏦 اسم البنك" : "🏦 Bank Name",
+    accountNameLabel: isAr ? "👤 اسم الحساب" : "👤 Account Name",
+    ibanLabel: isAr ? "🏧 الآيبان (IBAN)" : "🏧 IBAN",
     bankNotice: isAr
-      ? '💡 تستغرق التحويلات البنكية عادةً من 1 إلى 3 أيام عمل للمعالجة.'
-      : '💡 Bank transfers typically take 1-3 business days to process.',
-    importantInfoLabel: isAr ? 'ℹ️ معلومات هامة' : 'ℹ️ IMPORTANT INFORMATION',
+      ? "💡 تستغرق التحويلات البنكية عادةً من 1 إلى 3 أيام عمل للمعالجة."
+      : "💡 Bank transfers typically take 1-3 business days to process.",
+    importantInfoLabel: isAr ? "ℹ️ معلومات هامة" : "ℹ️ IMPORTANT INFORMATION",
     importantInfoList: isAr
       ? [
-          'يرجى الانتظار الوقت المقدر لظهور الأموال في حسابك',
-          'احتفظ برقم الطلب الخاص بك لأي استفسارات مستقبلية',
-          'تحقق من حسابك أو محفظتك للتأكد من وصول الدفعة',
-          'اتصل بفريق الدعم لدينا إذا لم تستلم الأموال في غضون الإطار الزمني المتوقع',
+          "يرجى الانتظار الوقت المقدر لظهور الأموال في حسابك",
+          "احتفظ برقم الطلب الخاص بك لأي استفسارات مستقبلية",
+          "تحقق من حسابك أو محفظتك للتأكد من وصول الدفعة",
+          "اتصل بفريق الدعم لدينا إذا لم تستلم الأموال في غضون الإطار الزمني المتوقع",
         ]
       : [
-          'Please allow the estimated time for the funds to reflect in your account',
-          'Keep your order Id number for any future inquiries',
-          'Check your account or wallet for the incoming payment',
+          "Please allow the estimated time for the funds to reflect in your account",
+          "Keep your order Id number for any future inquiries",
+          "Check your account or wallet for the incoming payment",
           "Contact our support team if you don't receive the funds within the expected timeframe",
         ],
-    needHelpLabel: isAr ? 'هل تحتاج إلى مساعدة؟' : 'NEED HELP?',
+    needHelpLabel: isAr ? "هل تحتاج إلى مساعدة؟" : "NEED HELP?",
     needHelpText: isAr
-      ? 'إذا كان لديك أي أسئلة أو استفسارات حول هذا التحديث، فريق الدعم لدينا هنا لمساعدتك على مدار الساعة طوال أيام الأسبوع.'
-      : 'If you have any questions or concerns about this update, our support team is here to assist you 24/7.',
+      ? "إذا كان لديك أي أسئلة أو استفسارات حول هذا التحديث، فريق الدعم لدينا هنا لمساعدتك على مدار الساعة طوال أيام الأسبوع."
+      : "If you have any questions or concerns about this update, our support team is here to assist you 24/7.",
     thankYou: isAr
-      ? 'شكراً لكونك شريكاً قيماً! 🙏'
-      : 'Thank you for being a valued partner! 🙏',
+      ? "شكراً لكونك شريكاً قيماً! 🙏"
+      : "Thank you for being a valued partner! 🙏",
     appreciation: isAr
-      ? 'نحن نقدر عملك ونتطلع إلى استمرار شراكتنا.'
-      : 'We appreciate your business and look forward to continuing our partnership.',
+      ? "نحن نقدر عملك ونتطلع إلى استمرار شراكتنا."
+      : "We appreciate your business and look forward to continuing our partnership.",
   };
 
   const tripName = isAr
@@ -194,14 +194,14 @@ export const customerWithdrawalConfirmationTemplate = (
                         <tr><td colspan="2" style="height: 5px;"></td></tr>
                         <tr>
                           <td width="140" style="padding: 8px 15px; vertical-align: top; font-weight: 600; color: #003c4e; font-size: 14px;">
-                            ${isAr ? 'الصفوف المدفوعة' : 'Paid Grades'}
+                            ${isAr ? "الصفوف المدفوعة" : "Paid Grades"}
                           </td>
                           <td style="padding: 8px 0; color: #6c5ce7; font-size: 15px; background-color: #e8f4f8; padding: 10px 15px; border-radius: 8px; border: 1px solid #6c5ce7; font-weight: 500;">
-                            ${selectedGradesData.map((g) => (isAr ? g?.name?.ar || g?.name?.en : g?.name?.en)).join(', ')}
+                            ${selectedGradesData.map((g) => (isAr ? g?.name?.ar || g?.name?.en : g?.name?.en)).join(", ")}
                           </td>
                         </tr>
                         `
-                            : ''
+                            : ""
                         }
                         <tr><td colspan="2" style="height: 5px;"></td></tr>
                         <tr>
@@ -248,14 +248,14 @@ export const customerWithdrawalConfirmationTemplate = (
                           </td>
                         </tr>
                       </table>
-                      <p style="color: #f57c00; font-size: 13px; margin: 15px 0 0 0; line-height: 1.5;">
+                      <p style="color: #f57c00; font-size: 15px; margin: 15px 0 0 0; line-height: 1.5;">
                         ${translations.stcPayNotice}
                       </p>
                     </td>
                   </tr>
                 </table>
                 `
-                    : ''
+                    : ""
                 }
 
                 ${
@@ -282,7 +282,7 @@ export const customerWithdrawalConfirmationTemplate = (
                         </tr>
                         <tr><td colspan="2" style="height: 5px;"></td></tr>
                         `
-                            : ''
+                            : ""
                         }
                         ${
                           withdrawal.bankTransfer.clientName
@@ -297,7 +297,7 @@ export const customerWithdrawalConfirmationTemplate = (
                         </tr>
                         <tr><td colspan="2" style="height: 5px;"></td></tr>
                         `
-                            : ''
+                            : ""
                         }
                         ${
                           withdrawal.bankTransfer.iban
@@ -311,17 +311,17 @@ export const customerWithdrawalConfirmationTemplate = (
                           </td>
                         </tr>
                         `
-                            : ''
+                            : ""
                         }
                       </table>
-                      <p style="color: #2e7d32; font-size: 13px; margin: 15px 0 0 0; line-height: 1.5;">
+                      <p style="color: #2e7d32; font-size: 15px; margin: 15px 0 0 0; line-height: 1.5;">
                         ${translations.bankNotice}
                       </p>
                     </td>
                   </tr>
                 </table>
                 `
-                    : ''
+                    : ""
                 }
 
                 <!-- Important Information -->
@@ -331,8 +331,8 @@ export const customerWithdrawalConfirmationTemplate = (
                       <div style="background-color: #2196f3; color: #ffffff; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; display: inline-block; margin-bottom: 15px;">
                         ${translations.importantInfoLabel}
                       </div>
-                      <ul style="color: #1565c0; font-size: 14px; line-height: 1.8; margin: 0; padding-${isAr ? 'right' : 'left'}: 20px;">
-                        ${translations.importantInfoList.map((item) => `<li>${item}</li>`).join('')}
+                      <ul style="color: #1565c0; font-size: 14px; line-height: 1.8; margin: 0; padding-${isAr ? "right" : "left"}: 20px;">
+                        ${translations.importantInfoList.map((item) => `<li>${item}</li>`).join("")}
                       </ul>
                     </td>
                   </tr>
@@ -364,7 +364,7 @@ export const customerWithdrawalConfirmationTemplate = (
                           </td>
                         </tr>
                         `
-                            : ''
+                            : ""
                         }
                       </table>
                     </td>

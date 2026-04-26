@@ -5,81 +5,81 @@ export const maxTripsLimitRequestTemplate = (
   currentMaxTrips: number,
   currentTripsCount: number,
   url: string,
-  language: 'en' | 'ar' = 'en',
-  track?: string,
+  language: "en" | "ar" = "en",
+  track?: string
 ): string => {
   const content = {
     en: {
-      title: 'Trip Limit Increase Request - GuestNa',
-      header: '⚠️ Trip Limit Reached',
-      mainTitle: 'Increase Trip Limit Request',
-      alertBadge: '🚨 MAXIMUM TRIPS LIMIT REACHED',
+      title: "Trip Limit Increase Request - GuestNa",
+      header: "⚠️ Trip Limit Reached",
+      mainTitle: "Increase Trip Limit Request",
+      alertBadge: "🚨 MAXIMUM TRIPS LIMIT REACHED",
       alertText:
-        'A team member has attempted to request a new trip but has reached their limit',
-      greeting: 'Dear School Manager,',
+        "A team member has attempted to request a new trip but has reached their limit",
+      greeting: "Dear School Manager,",
       intro:
-        'One of your team members has reached the maximum trip limit and needs approval to request additional trips. Please review the details below and decide whether to increase their trip allowance.',
-      statusTitle: '📊 Current Trip Status',
-      statusLabel: 'Trips Used / Maximum Allowed',
-      clientNameLabel: '👤 Client Name',
-      emailLabel: '📧 Email Address',
-      organizationLabel: '🏫 Organization',
-      trackLabel: '🎯 Track',
-      currentLimitLabel: '📈 Current Limit',
-      tripsUsedLabel: '🎒 Trips Used',
-      trips: 'Trips',
-      whatMeansTitle: '💡 What This Means:',
+        "One of your team members has reached the maximum trip limit and needs approval to request additional trips. Please review the details below and decide whether to increase their trip allowance.",
+      statusTitle: "📊 Current Trip Status",
+      statusLabel: "Trips Used / Maximum Allowed",
+      clientNameLabel: "👤 Client Name",
+      emailLabel: "📧 Email Address",
+      organizationLabel: "🏫 Organization",
+      trackLabel: "🎯 Track",
+      currentLimitLabel: "📈 Current Limit",
+      tripsUsedLabel: "🎒 Trips Used",
+      trips: "Trips",
+      whatMeansTitle: "💡 What This Means:",
       whatMeansText: (name: string, max: number) => `
         • <strong>${name}</strong> has used all ${max} available trip slots<br/>
         • They need more trips to continue booking educational experiences<br/>
         • You can increase their limit to allow additional trip requests<br/>
         • This change will take effect immediately after approval
       `,
-      actionTitle: '⚡ Action Required',
+      actionTitle: "⚡ Action Required",
       actionText: (name: string) =>
         `Please click the button below to review and increase the trip limit for <strong>${name}</strong>. Once approved, they will be able to request additional trips immediately.`,
-      buttonText: '📈 Increase Trip Limit',
+      buttonText: "📈 Increase Trip Limit",
       footerText:
-        'If you have any questions or need assistance, please contact our support team.<br/>This limit increase will help your team organize more educational experiences.',
-      dir: 'ltr',
-      textAlign: 'left' as const,
-      buttonAlign: 'center' as const,
+        "If you have any questions or need assistance, please contact our support team.<br/>This limit increase will help your team organize more educational experiences.",
+      dir: "ltr",
+      textAlign: "left" as const,
+      buttonAlign: "center" as const,
     },
     ar: {
-      title: 'طلب زيادة حد الرحلات - GuestNa',
-      header: '⚠️ تم الوصول لحد الرحلات',
-      mainTitle: 'طلب زيادة حد الرحلات',
-      alertBadge: '🚨 تم الوصول للحد الأقصى للرحلات',
+      title: "طلب زيادة حد الرحلات - GuestNa",
+      header: "⚠️ تم الوصول لحد الرحلات",
+      mainTitle: "طلب زيادة حد الرحلات",
+      alertBadge: "🚨 تم الوصول للحد الأقصى للرحلات",
       alertText:
-        'حاول أحد أعضاء الفريق طلب رحلة جديدة ولكنه وصل إلى الحد الأقصى',
-      greeting: 'عزيزي مدير المدرسة،',
+        "حاول أحد أعضاء الفريق طلب رحلة جديدة ولكنه وصل إلى الحد الأقصى",
+      greeting: "عزيزي مدير المدرسة،",
       intro:
-        'وصل أحد أعضاء فريقك إلى الحد الأقصى للرحلات ويحتاج إلى موافقة لطلب رحلات إضافية. يرجى مراجعة التفاصيل أدناه وتقرير ما إذا كنت تريد زيادة حصة الرحلات الخاصة بهم.',
-      statusTitle: '📊 حالة الرحلات الحالية',
-      statusLabel: 'الرحلات المستخدمة / الحد الأقصى المسموح',
-      clientNameLabel: '👤 اسم العميل',
-      emailLabel: '📧 البريد الإلكتروني',
-      organizationLabel: '🏫 المؤسسة',
-      trackLabel: '🎯 المسار',
-      currentLimitLabel: '📈 الحد الحالي',
-      tripsUsedLabel: '🎒 الرحلات المستخدمة',
-      trips: 'رحلات',
-      whatMeansTitle: '💡 ماذا يعني هذا:',
+        "وصل أحد أعضاء فريقك إلى الحد الأقصى للرحلات ويحتاج إلى موافقة لطلب رحلات إضافية. يرجى مراجعة التفاصيل أدناه وتقرير ما إذا كنت تريد زيادة حصة الرحلات الخاصة بهم.",
+      statusTitle: "📊 حالة الرحلات الحالية",
+      statusLabel: "الرحلات المستخدمة / الحد الأقصى المسموح",
+      clientNameLabel: "👤 اسم العميل",
+      emailLabel: "📧 البريد الإلكتروني",
+      organizationLabel: "🏫 المؤسسة",
+      trackLabel: "🎯 المسار",
+      currentLimitLabel: "📈 الحد الحالي",
+      tripsUsedLabel: "🎒 الرحلات المستخدمة",
+      trips: "رحلات",
+      whatMeansTitle: "💡 ماذا يعني هذا:",
       whatMeansText: (name: string, max: number) => `
         • <strong>${name}</strong> استخدم جميع الـ ${max} فرص الرحلات المتاحة<br/>
         • يحتاج إلى المزيد من الرحلات لمواصلة حجز التجارب التعليمية<br/>
         • يمكنك زيادة الحد الخاص به للسماح بطلبات رحلات إضافية<br/>
         • سيسري هذا التغيير فورًا بعد الموافقة
       `,
-      actionTitle: '⚡ مطلوب إجراء',
+      actionTitle: "⚡ مطلوب إجراء",
       actionText: (name: string) =>
         `يرجى النقر على الزر أدناه لمراجعة وزيادة حد الرحلات لـ <strong>${name}</strong>. بمجرد الموافقة، سيتمكن من طلب رحلات إضافية على الفور.`,
-      buttonText: '📈 زيادة حد الرحلات',
+      buttonText: "📈 زيادة حد الرحلات",
       footerText:
-        'إذا كان لديك أي أسئلة أو تحتاج إلى مساعدة، يرجى الاتصال بفريق الدعم لدينا.<br/>ستساعد زيادة الحد هذه فريقك على تنظيم المزيد من التجارب التعليمية.',
-      dir: 'rtl',
-      textAlign: 'right' as const,
-      buttonAlign: 'center' as const,
+        "إذا كان لديك أي أسئلة أو تحتاج إلى مساعدة، يرجى الاتصال بفريق الدعم لدينا.<br/>ستساعد زيادة الحد هذه فريقك على تنظيم المزيد من التجارب التعليمية.",
+      dir: "rtl",
+      textAlign: "right" as const,
+      buttonAlign: "center" as const,
     },
   };
 
@@ -94,7 +94,7 @@ export const maxTripsLimitRequestTemplate = (
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>${t.title}</title>
   </head>
-  <body style="margin: 0; padding: 0; background-color: #EEF2F7; color: #1E293B; font-family: ${language === 'ar' ? 'Arial, Tahoma, sans-serif' : 'Arial, Helvetica, sans-serif'}; width: 100%; min-width: 100%; direction: ${t.dir};">
+  <body style="margin: 0; padding: 0; background-color: #EEF2F7; color: #1E293B; font-family: ${language === "ar" ? "Arial, Tahoma, sans-serif" : "Arial, Helvetica, sans-serif"}; width: 100%; min-width: 100%; direction: ${t.dir};">
 
     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #EEF2F7;">
       <tr>
@@ -111,7 +111,7 @@ export const maxTripsLimitRequestTemplate = (
                   width="130"
                   style="display: block; margin: 0 auto 20px; filter: brightness(0) invert(1); border: 0;"
                 />
-                <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 5px 18px; font-size: 11px; color: #ffffff; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px;">
+                <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 5px 18px; font-size: 15px; color: #ffffff; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px;">
                   Alert
                 </div>
                 <div style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 8px; line-height: 1.3;">
@@ -141,9 +141,9 @@ export const maxTripsLimitRequestTemplate = (
                   <tr>
                     <td align="center">
                       <div style="display: inline-block; background: linear-gradient(135deg, #FEF3C715, #FEF3C708); border: 2px solid #F59E0B40; border-radius: 14px; padding: 20px 40px; text-align: center;">
-                        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #F59E0B; font-weight: 700; margin-bottom: 8px;">${t.statusTitle}</div>
+                        <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 1px; color: #F59E0B; font-weight: 700; margin-bottom: 8px;">${t.statusTitle}</div>
                         <div style="font-size: 36px; font-weight: 700; color: #EF4444;">${currentTripsCount} / ${currentMaxTrips}</div>
-                        <div style="font-size: 13px; color: #94A3B8; margin-top: 6px;">${t.statusLabel}</div>
+                        <div style="font-size: 15px; color: #94A3B8; margin-top: 6px;">${t.statusLabel}</div>
                       </div>
                     </td>
                   </tr>
@@ -153,7 +153,7 @@ export const maxTripsLimitRequestTemplate = (
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 24px;">
                   <tr>
                     <td style="background: #FFFBEB; border-left: 4px solid #F59E0B; border-radius: 0 10px 10px 0; padding: 16px 20px;">
-                      <div style="font-size: 13px; color: #92400E; font-weight: 600; line-height: 1.7;">${t.whatMeansText(clientName, currentMaxTrips)}</div>
+                      <div style="font-size: 15px; color: #92400E; font-weight: 600; line-height: 1.7;">${t.whatMeansText(clientName, currentMaxTrips)}</div>
                     </td>
                   </tr>
                 </table>
@@ -167,7 +167,7 @@ export const maxTripsLimitRequestTemplate = (
                   </tr>
                   <tr>
                     <td style="padding: 14px 20px 6px; width: 42%; border-bottom: 1px solid #F1F5F9; text-align: ${t.textAlign};">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">${t.clientNameLabel}</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">${t.clientNameLabel}</div>
                     </td>
                     <td style="padding: 14px 20px 6px; border-bottom: 1px solid #F1F5F9; text-align: ${t.textAlign};">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${clientName}</div>
@@ -175,7 +175,7 @@ export const maxTripsLimitRequestTemplate = (
                   </tr>
                   <tr>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9; text-align: ${t.textAlign};">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">${t.emailLabel}</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">${t.emailLabel}</div>
                     </td>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9; text-align: ${t.textAlign};">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${clientEmail}</div>
@@ -183,7 +183,7 @@ export const maxTripsLimitRequestTemplate = (
                   </tr>
                   <tr>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9; text-align: ${t.textAlign};">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">${t.organizationLabel}</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">${t.organizationLabel}</div>
                     </td>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9; text-align: ${t.textAlign};">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${organizationName}</div>
@@ -194,29 +194,29 @@ export const maxTripsLimitRequestTemplate = (
                       ? `
                   <tr>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9; text-align: ${t.textAlign};">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">${t.trackLabel}</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">${t.trackLabel}</div>
                     </td>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9; text-align: ${t.textAlign};">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${track}</div>
                     </td>
                   </tr>
                   `
-                      : ''
+                      : ""
                   }
                   <tr>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9; text-align: ${t.textAlign};">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">${t.currentLimitLabel}</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">${t.currentLimitLabel}</div>
                     </td>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9; text-align: ${t.textAlign};">
-                      <span style="display: inline-block; background: #FEF2F2; color: #EF4444; font-size: 13px; font-weight: 700; padding: 4px 14px; border-radius: 50px; border: 1px solid #FECACA;">${currentMaxTrips} ${t.trips}</span>
+                      <span style="display: inline-block; background: #FEF2F2; color: #EF4444; font-size: 15px; font-weight: 700; padding: 4px 14px; border-radius: 50px; border: 1px solid #FECACA;">${currentMaxTrips} ${t.trips}</span>
                     </td>
                   </tr>
                   <tr>
                     <td style="padding: 10px 20px 14px; text-align: ${t.textAlign};">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">${t.tripsUsedLabel}</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">${t.tripsUsedLabel}</div>
                     </td>
                     <td style="padding: 10px 20px 14px; text-align: ${t.textAlign};">
-                      <span style="display: inline-block; background: #FFFBEB; color: #F59E0B; font-size: 13px; font-weight: 700; padding: 4px 14px; border-radius: 50px; border: 1px solid #FDE68A;">${currentTripsCount} ${t.trips}</span>
+                      <span style="display: inline-block; background: #FFFBEB; color: #F59E0B; font-size: 15px; font-weight: 700; padding: 4px 14px; border-radius: 50px; border: 1px solid #FDE68A;">${currentTripsCount} ${t.trips}</span>
                     </td>
                   </tr>
                 </table>
@@ -225,8 +225,8 @@ export const maxTripsLimitRequestTemplate = (
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 24px;">
                   <tr>
                     <td style="background: #EFF6FF; border-left: 4px solid #3B82F6; border-radius: 0 10px 10px 0; padding: 16px 20px;">
-                      <div style="font-size: 13px; font-weight: 700; color: #1D4ED8; margin-bottom: 6px;">${t.actionTitle}</div>
-                      <div style="font-size: 13px; color: #1E40AF; line-height: 1.6;">${t.actionText(clientName)}</div>
+                      <div style="font-size: 15px; font-weight: 700; color: #1D4ED8; margin-bottom: 6px;">${t.actionTitle}</div>
+                      <div style="font-size: 15px; color: #1E40AF; line-height: 1.6;">${t.actionText(clientName)}</div>
                     </td>
                   </tr>
                 </table>
@@ -244,7 +244,7 @@ export const maxTripsLimitRequestTemplate = (
                   </tr>
                 </table>
 
-                <p style="font-size: 13px; color: #94A3B8; margin-top: 20px; line-height: 1.6; text-align: ${t.textAlign};">
+                <p style="font-size: 15px; color: #94A3B8; margin-top: 20px; line-height: 1.6; text-align: ${t.textAlign};">
                   ${t.footerText}
                 </p>
 

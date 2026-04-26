@@ -1,7 +1,7 @@
 export enum ClientActionStatus {
-  CANCLED = 'CANCLED',
-  APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED',
+  CANCLED = "CANCLED",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
 }
 
 interface ClientActionConfig {
@@ -10,36 +10,36 @@ interface ClientActionConfig {
   icon: string;
   title: string;
   adminMessage: string;
-  urgency: 'high' | 'medium' | 'low';
+  urgency: "high" | "medium" | "low";
 }
 
 const clientActionConfigs: Record<ClientActionStatus, ClientActionConfig> = {
   [ClientActionStatus.APPROVED]: {
-    color: '#22C55E',
-    bgColor: '#F0FDF4',
-    icon: '✅',
-    title: 'Client Approved Trip',
+    color: "#22C55E",
+    bgColor: "#F0FDF4",
+    icon: "✅",
+    title: "Client Approved Trip",
     adminMessage:
-      'The client has reviewed and approved their trip request. Please proceed with the booking arrangements.',
-    urgency: 'high',
+      "The client has reviewed and approved their trip request. Please proceed with the booking arrangements.",
+    urgency: "high",
   },
   [ClientActionStatus.REJECTED]: {
-    color: '#EF4444',
-    bgColor: '#FEF2F2',
-    icon: '❌',
-    title: 'Client Rejected Trip',
+    color: "#EF4444",
+    bgColor: "#FEF2F2",
+    icon: "❌",
+    title: "Client Rejected Trip",
     adminMessage:
-      'The client has declined this trip request. No further action is required for this booking.',
-    urgency: 'medium',
+      "The client has declined this trip request. No further action is required for this booking.",
+    urgency: "medium",
   },
   [ClientActionStatus.CANCLED]: {
-    color: '#EF4444',
-    bgColor: '#FEF2F2',
-    icon: '🚫',
-    title: 'Client Cancelled Trip',
+    color: "#EF4444",
+    bgColor: "#FEF2F2",
+    icon: "🚫",
+    title: "Client Cancelled Trip",
     adminMessage:
-      'The client has cancelled their trip request. Please update the booking status and handle any refund if applicable.',
-    urgency: 'high',
+      "The client has cancelled their trip request. Please update the booking status and handle any refund if applicable.",
+    urgency: "high",
   },
 };
 
@@ -52,14 +52,14 @@ export const clientActionTemplate = (
   url: string,
   tripName?: string,
   clientNote?: string,
-  actionDate?: string,
+  actionDate?: string
 ): string => {
   const config = clientActionConfigs[action];
   const currentDate =
     actionDate ||
-    new Date().toLocaleString('en-US', {
-      dateStyle: 'full',
-      timeStyle: 'short',
+    new Date().toLocaleString("en-US", {
+      dateStyle: "full",
+      timeStyle: "short",
     });
 
   const htmlTemp = `
@@ -88,7 +88,7 @@ export const clientActionTemplate = (
                   width="130"
                   style="display: block; margin: 0 auto 20px; filter: brightness(0) invert(1); border: 0;"
                 />
-                <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 5px 18px; font-size: 11px; color: #ffffff; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px;">
+                <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 5px 18px; font-size: 15px; color: #ffffff; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px;">
                   Admin Notification
                 </div>
                 <div style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 8px; line-height: 1.3;">
@@ -110,25 +110,25 @@ export const clientActionTemplate = (
               <td style="padding: 32px 36px;">
 
                 ${
-                  config.urgency === 'high'
+                  config.urgency === "high"
                     ? `
                 <!-- Urgent Banner -->
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 20px;">
                   <tr>
                     <td style="background: #FFFBEB; border-left: 4px solid #F59E0B; border-radius: 0 10px 10px 0; padding: 12px 20px;">
-                      <div style="font-size: 13px; font-weight: 700; color: #92400E;">⚡ URGENT ACTION REQUIRED</div>
+                      <div style="font-size: 15px; font-weight: 700; color: #92400E;">⚡ URGENT ACTION REQUIRED</div>
                     </td>
                   </tr>
                 </table>
                 `
-                    : ''
+                    : ""
                 }
 
                 <!-- Action Badge -->
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 24px;">
                   <tr>
                     <td align="center">
-                      <span style="display: inline-block; background: ${config.color}; color: #ffffff; font-size: 13px; font-weight: 700; padding: 8px 24px; border-radius: 50px; letter-spacing: 0.5px;">
+                      <span style="display: inline-block; background: ${config.color}; color: #ffffff; font-size: 15px; font-weight: 700; padding: 8px 24px; border-radius: 50px; letter-spacing: 0.5px;">
                         ${config.icon} CLIENT ACTION: ${action}
                       </span>
                     </td>
@@ -139,7 +139,7 @@ export const clientActionTemplate = (
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 24px;">
                   <tr>
                     <td style="background: ${config.bgColor}; border-left: 4px solid ${config.color}; border-radius: 0 10px 10px 0; padding: 16px 20px;">
-                      <div style="font-size: 13px; color: #1E293B; font-weight: 600; line-height: 1.6;">
+                      <div style="font-size: 15px; color: #1E293B; font-weight: 600; line-height: 1.6;">
                         <strong>${schoolName}</strong> has taken action on their trip request. ${config.adminMessage}
                       </div>
                     </td>
@@ -155,7 +155,7 @@ export const clientActionTemplate = (
                   </tr>
                   <tr>
                     <td style="padding: 14px 20px 6px; width: 42%; border-bottom: 1px solid #F1F5F9;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Order ID</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Order ID</div>
                     </td>
                     <td style="padding: 14px 20px 6px; border-bottom: 1px solid #F1F5F9;">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${orderId}</div>
@@ -163,7 +163,7 @@ export const clientActionTemplate = (
                   </tr>
                   <tr>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Client Name</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Client Name</div>
                     </td>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${clientName}</div>
@@ -171,7 +171,7 @@ export const clientActionTemplate = (
                   </tr>
                   <tr>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">School Name</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">School Name</div>
                     </td>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${schoolName}</div>
@@ -182,18 +182,18 @@ export const clientActionTemplate = (
                       ? `
                   <tr>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Trip Name</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Trip Name</div>
                     </td>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${tripName}</div>
                     </td>
                   </tr>
                   `
-                      : ''
+                      : ""
                   }
                   <tr>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Trip Date</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Trip Date</div>
                     </td>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${tripDate}</div>
@@ -201,17 +201,17 @@ export const clientActionTemplate = (
                   </tr>
                   <tr>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Client Action</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Client Action</div>
                     </td>
                     <td style="padding: 10px 20px 6px; border-bottom: 1px solid #F1F5F9;">
-                      <span style="display: inline-block; background: ${config.bgColor}; color: ${config.color}; font-size: 13px; font-weight: 700; padding: 4px 14px; border-radius: 50px; border: 1px solid ${config.color}40;">
+                      <span style="display: inline-block; background: ${config.bgColor}; color: ${config.color}; font-size: 15px; font-weight: 700; padding: 4px 14px; border-radius: 50px; border: 1px solid ${config.color}40;">
                         ${config.icon} ${action}
                       </span>
                     </td>
                   </tr>
                   <tr>
                     <td style="padding: 10px 20px 14px;">
-                      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Action Date</div>
+                      <div style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.6px; color: #94A3B8; font-weight: 600;">Action Date</div>
                     </td>
                     <td style="padding: 10px 20px 14px;">
                       <div style="font-size: 15px; color: #1E293B; font-weight: 600;">${currentDate}</div>
@@ -231,7 +231,7 @@ export const clientActionTemplate = (
                   </tr>
                 </table>
                 `
-                    : ''
+                    : ""
                 }
 
                 <!-- Next Steps -->
@@ -239,13 +239,13 @@ export const clientActionTemplate = (
                   <tr>
                     <td style="background: #EFF6FF; border-left: 4px solid #3B82F6; border-radius: 0 10px 10px 0; padding: 16px 20px;">
                       <div style="font-size: 12px; font-weight: 700; color: #3B82F6; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px;">Next Steps</div>
-                      <div style="font-size: 13px; color: #1E40AF; line-height: 1.8;">
+                      <div style="font-size: 15px; color: #1E40AF; line-height: 1.8;">
                         ${
                           action === ClientActionStatus.APPROVED
-                            ? '• Update booking status to SCHEDULED<br/>• Send confirmation email to client<br/>• Arrange trip logistics and transportation<br/>• Prepare necessary documentation'
+                            ? "• Update booking status to SCHEDULED<br/>• Send confirmation email to client<br/>• Arrange trip logistics and transportation<br/>• Prepare necessary documentation"
                             : action === ClientActionStatus.CANCLED
-                              ? '• Update booking status to CANCELLED<br/>• Process refund if applicable<br/>• Send cancellation confirmation<br/>• Update availability for the date'
-                              : '• Update booking status to REJECTED<br/>• Archive the request<br/>• Send acknowledgment to client<br/>• Update availability records'
+                              ? "• Update booking status to CANCELLED<br/>• Process refund if applicable<br/>• Send cancellation confirmation<br/>• Update availability for the date"
+                              : "• Update booking status to REJECTED<br/>• Archive the request<br/>• Send acknowledgment to client<br/>• Update availability records"
                         }
                       </div>
                     </td>
