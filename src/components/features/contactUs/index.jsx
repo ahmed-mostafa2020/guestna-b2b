@@ -4,8 +4,10 @@ import { useTranslations } from "next-intl";
 
 import {
   greenWhatsAppIcon,
-  largeFacebookIcon,
-  largeGoogleIcon,
+  largeInstagramIcon,
+  largeTikTokIcon,
+  largeXIcon,
+  largeYouTubeIcon,
   whiteWhatsAppIcon,
 } from "@assets/svg";
 
@@ -13,12 +15,20 @@ const ContactUsData = () => {
   const t = useTranslations();
 
   const socialMedia = [
-    { logo: largeFacebookIcon, link: "#" },
-    { logo: largeGoogleIcon, link: "#" },
+    {
+      logo: largeInstagramIcon,
+      link: "https://www.instagram.com/guestnaapp",
+    },
+    {
+      logo: largeTikTokIcon,
+      link: "https://www.tiktok.com/@guestnaapp?_r=1&_t=ZS-95q5ol2OXjh",
+    },
+    { logo: largeXIcon, link: "https://x.com/guestnaapp" },
+    { logo: largeYouTubeIcon, link: "https://youtube.com/@guestnaapp" },
   ];
 
   const renderedSocialMediaLinks = socialMedia.map((item, index) => (
-    <Link key={index} href={item.link}>
+    <Link key={index} href={item.link} target="_blank">
       {item.logo}
     </Link>
   ));
