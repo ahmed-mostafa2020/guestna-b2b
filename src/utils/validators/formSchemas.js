@@ -823,6 +823,60 @@ export const createSchoolRegisterSchema = (t) =>
       .max(1, "Maximum 1 additional users allowed"),
   });
 
+// Graduation Event Registration Schema
+export const createGraduationSchema = (t, branch) =>
+  Yup.object().shape({
+    name: Yup.string()
+      .trim()
+      .required(t("graduation.validation.nameRequired"))
+      .min(2, t("graduation.validation.nameMin"))
+      .max(50, t("graduation.validation.nameMax")),
+    phone: Yup.string()
+      .required(t("graduation.validation.phoneRequired"))
+      .test(
+        "phone-validation",
+        t("graduation.validation.phoneInvalid"),
+        (value) => {
+          if (!value) return false;
+          if (!isValidPhoneNumber(value)) return false;
+          // SA numbers must start with 5 after country code (+9665...)
+          if (value.startsWith("+966")) {
+            return value.charAt(4) === "5";
+          }
+          return true;
+        }
+      ),
+    email: Yup.string()
+      .email(t("graduation.validation.emailInvalid"))
+      .matches(emailRegex, t("graduation.validation.emailInvalid"))
+      .required(t("graduation.validation.emailRequired")),
+    academicStage: Yup.string().required(
+      t("graduation.validation.stageRequired")
+    ),
+    grade: Yup.string().required(t("graduation.validation.gradeRequired")),
+    classNumber:
+      branch === "AL_ATEEQ"
+        ? Yup.string().required(t("graduation.validation.classRequired"))
+        : Yup.string().optional(),
+    clothesSize: Yup.string().test(
+      "size-required",
+      t("graduation.validation.sizeRequired"),
+      function (value) {
+        const { academicStage, classNumber } = this.parent;
+        let needsSize = false;
+        if (branch === "AL_ARID" && academicStage === "متوسط") {
+          needsSize = true;
+        }
+        if (branch === "AL_ATEEQ") {
+          const cls = parseInt(classNumber);
+          if (cls === 1 || cls === 4) needsSize = true;
+        }
+        if (needsSize) return !!value;
+        return true;
+      }
+    ),
+  });
+
 // AI Training Camp Registration Schema
 export const createAITrainingCampSchema = (t) =>
   Yup.object().shape({

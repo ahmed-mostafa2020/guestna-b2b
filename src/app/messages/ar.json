@@ -3201,6 +3201,101 @@
       "error": "حدث خطأ. يرجى المحاولة مرة أخرى."
     }
   },
+  "graduation": {
+    "pageTitle": "تسجيل بدلة التخرج",
+    "eventInfo": {
+      "title": "رحلة نجاح تستحق بدلة تخرج مميزة",
+      "subtitle": "تخرجك لحظة لا تتكرر – اختر بدلتك التي تليق بسنوات تعبك ونجاحك، بتصميم أنيق وجودة عالية.",
+      "badge": "دفعة 2026 – احتفل بإنجازاتك",
+      "feature1": "تصميم احترافي",
+      "feature2": "جودة عالية",
+      "feature3": "مقاسات متعددة"
+    },
+    "branches": {
+      "arid": "العارض",
+      "atiq": "العتيق"
+    },
+    "stepper": {
+      "step1": "التسجيل",
+      "step2": "الدفع"
+    },
+    "form": {
+      "title": "رسوم فقرة التخرج",
+      "subtitle": "اختر القسم المناسب وأكمل بياناتك",
+      "name": {
+        "label": "الاسم",
+        "placeholder": "ادخل اسم الطالب الكامل"
+      },
+      "stage": {
+        "label": "المرحلة",
+        "placeholder": "اختر المرحلة"
+      },
+      "grade": {
+        "label": "الصف",
+        "placeholder": "اختر الصف"
+      },
+      "classNumber": {
+        "label": "الفصل",
+        "placeholder": "اختر الفصل"
+      },
+      "phone": {
+        "label": "رقم الهاتف",
+        "placeholder": "05xxxxxxxx"
+      },
+      "email": {
+        "label": "البريد الإلكتروني",
+        "placeholder": "name@example.com"
+      },
+      "clothesSize": {
+        "label": "المقاس",
+        "placeholder": "اختر المقاس"
+      }
+    },
+    "suit": {
+      "title": "البدلة المخصصة لمرحلتك",
+      "suitLabel": "بدلة التخرج",
+      "purple": "بنفسجي",
+      "white": "أبيض",
+      "maroon": "عنابي",
+      "navy": "كحلي"
+    },
+    "sizeChart": {
+      "title": "جدول المقاسات",
+      "size": "المقاس إنش",
+      "chest": "الصدر",
+      "waist": "الخصر",
+      "length": "الطول",
+      "s": "S",
+      "m": "M",
+      "l": "L",
+      "xl": "XL",
+      "xxl": "2XL"
+    },
+    "payment": {
+      "title": "تفاصيل الدفع",
+      "subtitle": "أكمل تسجيلك بدفع رسوم البدلة",
+      "orderSummary": "ملخص الطلب",
+      "suitFee": "رسوم بدلة التخرج",
+      "total": "الإجمالي",
+      "includingVat": "شامل ضريبة القيمة المضافة",
+      "confirm": "تأكيد الطلب"
+    },
+    "validation": {
+      "nameRequired": "الاسم مطلوب",
+      "nameMin": "يجب أن يكون الاسم حرفين على الأقل",
+      "nameMax": "يجب ألا يتجاوز الاسم 50 حرفاً",
+      "phoneRequired": "رقم الهاتف مطلوب",
+      "phoneInvalid": "يرجى إدخال رقم هاتف صحيح",
+      "emailRequired": "البريد الإلكتروني مطلوب",
+      "emailInvalid": "يرجى إدخال بريد إلكتروني صحيح",
+      "stageRequired": "يرجى اختيار المرحلة",
+      "gradeRequired": "يرجى اختيار الصف",
+      "classRequired": "يرجى اختيار الفصل",
+      "sizeRequired": "يرجى اختيار المقاس",
+      "success": "تم إرسال طلب التسجيل بنجاح!",
+      "error": "حدث خطأ. يرجى المحاولة مرة أخرى."
+    }
+  },
   "pagination": {
     "previous": "السابق",
     "next": "التالي",

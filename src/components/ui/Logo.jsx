@@ -12,13 +12,15 @@ const Logo = () => {
   const locale = useLocale();
   const currentTheme = useSelector((state) => state.theme.currentTheme);
   const customLogo = useSelector((state) => state.theme.customLogo);
+  const logoSubtext = useSelector((state) => state.theme.logoSubtext);
 
-  // Use custom logo if available, otherwise use default logo
-  // Custom logo can exist independently of theme customization
   const currentLogo = customLogo || logo;
 
   return (
-    <Link href={`/${locale}`} className="outline-none w-fit">
+    <Link
+      href={`/${locale}`}
+      className="outline-none w-fit flex flex-col items-center gap-0.5"
+    >
       <ImageWithPlaceholder
         src={currentLogo}
         alt="logo"
@@ -27,6 +29,11 @@ const Logo = () => {
         priority={true}
         className="object-contain h-[72px]"
       />
+      {logoSubtext && (
+        <span className="text-[10px] tracking-widest font-somar text-textLight font-medium leading-none">
+          {logoSubtext}
+        </span>
+      )}
     </Link>
   );
 };
