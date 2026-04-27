@@ -176,12 +176,12 @@ export const tripReminderHTML = `<!DOCTYPE html>
                         <td style="padding-left:16px;text-align:right;">
                           <p style="margin:0 0 2px;color:#475569;font-size:12px;">المشرفة المسؤولة</p>
                           <p style="margin:0;color:#1E293B;font-size:14px;font-weight:600;">أ. سارة الأحمدي</p>
-                          <p style="margin:2px 0 0;"><span style="direction:ltr;unicode-bidi:isolate;display:inline-block;"><a href="tel:+966501234567" style="color:#ED8A22;font-size:13px;font-weight:600;text-decoration:none;">&lrm;+966 50 123 4567&lrm;</a></span></p>
+                          <p style="margin:2px 0 0;"><a href="tel:+966501234567" dir="ltr" style="color:#ED8A22;font-size:13px;font-weight:600;text-decoration:none;;display:inline-block;">&#8206;+966 50 123 4567&#8206;</a></p>
                         </td>
                         <td style="text-align:right;">
                           <p style="margin:0 0 2px;color:#475569;font-size:12px;">دعم منصة جستنا</p>
                           <p style="margin:0;color:#1E293B;font-size:14px;font-weight:600;">فريق الدعم</p>
-                          <p style="margin:2px 0 0;"><span style="direction:ltr;unicode-bidi:isolate;display:inline-block;"><a href="tel:+966500000000" style="color:#ED8A22;font-size:13px;font-weight:600;text-decoration:none;">&lrm;+966 50 000 0000&lrm;</a></span></p>
+                          <p style="margin:2px 0 0;"><a href="tel:+966500000000" dir="ltr" style="color:#ED8A22;font-size:13px;font-weight:600;text-decoration:none;;display:inline-block;">&#8206;+966 50 000 0000&#8206;</a></p>
                         </td>
                       </tr>
                     </table>
@@ -218,7 +218,7 @@ export const tripReminderHTML = `<!DOCTYPE html>
               <p style="margin:0 0 6px;font-size:12px;color:rgba(255,255,255,0.45);">
                 <a href="mailto:support@guestna.app" style="color:rgba(255,255,255,0.45);text-decoration:none;">support@guestna.app</a>
                 <span style="color:rgba(255,255,255,0.2);margin:0 8px;">|</span>
-                <span style="direction:ltr;unicode-bidi:isolate;display:inline-block;"><a href="tel:+966552345678" style="color:rgba(255,255,255,0.45);text-decoration:none;">&lrm;+966 55 234 5678&lrm;</a></span>
+                <a href="tel:+966552345678" dir="ltr" style="color:rgba(255,255,255,0.45);text-decoration:none;;display:inline-block;">&#8206;+966 55 234 5678&#8206;</a>
               </p>
               <p style="margin:0 0 8px;font-size:12px;color:rgba(255,255,255,0.3);">© 2025 GuestNa. جميع الحقوق محفوظة.</p>
               <p style="margin:0;font-size:11px;">

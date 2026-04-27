@@ -113,7 +113,7 @@ export const tripProcessingHTML = `<!DOCTYPE html>
               <p style="margin:0 0 6px;font-size:12px;color:rgba(255,255,255,0.45);">
                 <a href="mailto:support@guestna.app" style="color:rgba(255,255,255,0.45);text-decoration:none;">support@guestna.app</a>
                 <span style="color:rgba(255,255,255,0.2);margin:0 8px;">|</span>
-                <span style="direction:ltr;unicode-bidi:isolate;display:inline-block;"><a href="tel:+966552345678" style="color:rgba(255,255,255,0.45);text-decoration:none;">&lrm;+966 55 234 5678&lrm;</a></span>
+                <a href="tel:+966552345678" dir="ltr" style="color:rgba(255,255,255,0.45);text-decoration:none;;display:inline-block;">&#8206;+966 55 234 5678&#8206;</a>
               </p>
               <p style="margin:0 0 8px;font-size:12px;color:rgba(255,255,255,0.3);">© 2025 GuestNa. جميع الحقوق محفوظة.</p>
               <p style="margin:0;font-size:11px;">
