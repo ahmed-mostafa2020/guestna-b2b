@@ -21,7 +21,6 @@ import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { PERMISSIONS } from "@constants/permissions";
 
-
 const SchoolsOverViewPage = () => {
   const locale = useLocale();
   const t = useTranslations();
@@ -76,7 +75,6 @@ const SchoolsOverViewPage = () => {
   // Refetch when filters change
   useEffect(() => {
     refetchOrganizations();
-
   }, [searchTerms, page]);
 
   // Page Title
@@ -102,58 +100,57 @@ const SchoolsOverViewPage = () => {
     <ProtectedProfilePage
       requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_SCHOOLS_PAGE}
     >
-    <main className="flex flex-col gap-6 min-h-screen">
-      {/* Summary Info Cards */}
-      {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS) && (
-        <>
-          {staticsLoading ? (
-            <InfoCardsSkeleton />
-          ) : (
-            <InfoCardsListing infoData={staticsData} />
-          )}
-        </>
-      )}
+      <main className="flex flex-col gap-6 min-h-screen">
+        {/* Summary Info Cards */}
+        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS) && (
+          <>
+            {staticsLoading ? (
+              <InfoCardsSkeleton />
+            ) : (
+              <InfoCardsListing infoData={staticsData} />
+            )}
+          </>
+        )}
 
-      {/* Search and Filters */}
-      <Box className="bg-white p-4 rounded-md shadow-md">
-        <SchoolOverviewSearchFilters
-          
-          searchTerms={searchTerms}
-          setSearchTerms={setSearchTerms}
-        />
-      </Box>
-
-      {/* Listing Section */}
-      {isLoading ? (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <SchoolOverviewCardSkeleton key={index} />
-          ))}
-        </div>
-      ) : schools.length > 0 ? (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          {schools.map((organization) => (
-            <SchoolOverviewCard key={organization._id} item={organization} />
-          ))}
-        </div>
-      ) : (
-        <Box className="w-full py-10 flex justify-center items-center flex-col gap-4">
-          <Typography className="text-gray-600 font-medium text-center !font-somar !text-lg">
-            {t("profile.schools_overview.no_schools_found")}
-          </Typography>
+        {/* Search and Filters */}
+        <Box className="bg-white p-4 rounded-md shadow-md">
+          <SchoolOverviewSearchFilters
+            searchTerms={searchTerms}
+            setSearchTerms={setSearchTerms}
+          />
         </Box>
-      )}
 
-      {/* Pagination */}
-      {!isLoading && schools.length > 0 && (
-        <Pagination
-          totalPages={data?.totalPages}
-          currentPage={page}
-          onPageChange={(newPage) => setPage(newPage)}
-          pageInfo={data?.pageInfo}
-        />
-      )}
-    </main>
+        {/* Listing Section */}
+        {isLoading ? (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <SchoolOverviewCardSkeleton key={index} />
+            ))}
+          </div>
+        ) : schools.length > 0 ? (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            {schools.map((organization) => (
+              <SchoolOverviewCard key={organization._id} item={organization} />
+            ))}
+          </div>
+        ) : (
+          <Box className="w-full py-10 flex justify-center items-center flex-col gap-4">
+            <Typography className="text-gray-600 font-medium text-center !font-somar !text-lg">
+              {t("profile.schools_overview.no_schools_found")}
+            </Typography>
+          </Box>
+        )}
+
+        {/* Pagination */}
+        {!isLoading && schools.length > 0 && (
+          <Pagination
+            totalPages={data?.totalPages}
+            currentPage={page}
+            onPageChange={(newPage) => setPage(newPage)}
+            pageInfo={data?.pageInfo}
+          />
+        )}
+      </main>
     </ProtectedProfilePage>
   );
 };

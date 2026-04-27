@@ -5,12 +5,15 @@ import { Card } from "@mui/material";
 import EmptyBookings from "./EmptyBookings";
 import SchoolOverviewCard from "../schoolManagementTeam/schoolsOverview/SchoolOverviewCard";
 import SchoolOverviewCardSkeleton from "../schoolManagementTeam/schoolsOverview/SchoolOverviewCardSkeleton";
+import Pagination from "@components/ui/Pagination";
 
 const OrganizationsSection = ({
   organizationsData,
   organizationsLoading,
   searchTerm,
   setSearchTerm,
+  page,
+  setPage,
 }) => {
   const t = useTranslations();
   const schoolsData = organizationsData?.nodes;
@@ -44,6 +47,16 @@ const OrganizationsSection = ({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           {rendredSchools}
         </div>
+      )}
+      
+      {/* Pagination */}
+      {!organizationsLoading && schoolsData?.length > 0 && (
+        <Pagination
+          totalPages={organizationsData?.totalPages}
+          currentPage={page}
+          onPageChange={(newPage) => setPage(newPage)}
+          pageInfo={organizationsData?.pageInfo}
+        />
       )}
     </Card>
   );

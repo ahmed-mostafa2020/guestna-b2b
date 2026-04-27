@@ -28,6 +28,7 @@ const Profile = () => {
   const locale = useLocale();
   const t = useTranslations();
   const [organizationsSearchTerm, setOrganizationsSearchTerm] = useState("");
+  const [organizationsPage, setOrganizationsPage] = useState(1);
 
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
@@ -71,18 +72,21 @@ const Profile = () => {
     isLoading: organizationsLoading,
     error: organizationsError,
   } = useFetchData(
-    `${B2B_END_POINTS.PROFILE.ALL_ORGANIZATIONS}${
-      organizationsSearchTerm ? `?searchTerm=${organizationsSearchTerm}` : ""
-    }`,
+    `${B2B_END_POINTS.PROFILE.ORGANIZATIONS.ALL}`,
     {},
     {
+      method: "POST",
+      body: {
+        page: organizationsPage,
+        perPage: 10,
+        filter: {
+          searchTerm: organizationsSearchTerm || undefined,
+        },
+      },
       lang: locale,
       enabled: true, // Explicitly enable this request
-      // enabled: hasElement(
-      //   PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS
-      // ),
     },
-    [organizationsSearchTerm]
+    [organizationsSearchTerm, organizationsPage]
   );
 
   if (error || mostActiveOrganizationsError || organizationsError)
@@ -176,6 +180,8 @@ const Profile = () => {
             organizationsLoading={organizationsLoading}
             searchTerm={organizationsSearchTerm}
             setSearchTerm={setOrganizationsSearchTerm}
+            page={organizationsPage}
+            setPage={setOrganizationsPage}
           />
         )}
       </main>
