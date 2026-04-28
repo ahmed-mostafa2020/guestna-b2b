@@ -18,7 +18,7 @@ const RamadanNightsTable = ({
   const title = t("profile.tables.customEventBooking.titles.RAMADAN_NIGHTS");
 
   return (
-    <div className="w-full space-y-6 mt-10">
+    <div className="w-full space-y-4 mt-10">
       <DataTable
         title={title}
         columns={[
@@ -31,16 +31,20 @@ const RamadanNightsTable = ({
           {
             key: "bookingDay",
             label: t("profile.tables.customEventBooking.header.bookingDay"),
-            render: (row) => row.bookingDay ? formatDate(row.bookingDay, locale, {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }) : "-",
+            render: (row) =>
+              row.bookingDay
+                ? formatDate(row.bookingDay, locale, {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })
+                : "-",
           },
           {
             key: "price",
             label: t("profile.tables.customEventBooking.header.price"),
-            render: (row) => row.price != null ? formatCurrency(row.price) : "-",
+            render: (row) =>
+              row.price != null ? formatCurrency(row.price) : "-",
           },
           {
             key: "clientName",
@@ -63,7 +67,9 @@ const RamadanNightsTable = ({
           },
           {
             key: "clientId",
-            label: t("profile.tables.customEventBooking.header.client.idNumber"),
+            label: t(
+              "profile.tables.customEventBooking.header.client.idNumber"
+            ),
             render: (row) => row.client?.idNumber ?? "-",
           },
           {
@@ -74,27 +80,36 @@ const RamadanNightsTable = ({
           {
             key: "serviceType",
             label: t("profile.tables.customEventBooking.header.serviceType"),
-            render: (row) => Array.isArray(row.serviceType) && row.serviceType.length > 0 ? row.serviceType.join(", ") : "-",
+            render: (row) =>
+              Array.isArray(row.serviceType) && row.serviceType.length > 0
+                ? row.serviceType.join(", ")
+                : "-",
           },
           {
             key: "participatedBefore",
-            label: t("profile.tables.customEventBooking.header.participatedBefore"),
-            render: (row) => row.participatedBefore
-              ? t("profile.tables.customEventBooking.header.yes")
-              : t("profile.tables.customEventBooking.header.no"),
+            label: t(
+              "profile.tables.customEventBooking.header.participatedBefore"
+            ),
+            render: (row) =>
+              row.participatedBefore
+                ? t("profile.tables.customEventBooking.header.yes")
+                : t("profile.tables.customEventBooking.header.no"),
           },
           {
             key: "quantity",
             label: t("profile.tables.customEventBooking.header.quantity"),
-            render: (row) => row.quantity != null ? String(row.quantity) : "-",
-          }
+            render: (row) =>
+              row.quantity != null ? String(row.quantity) : "-",
+          },
         ]}
         data={rows}
-        pagination={pageInfo && {
-          currentPage,
-          pageInfo,
-          onPageChange
-        }}
+        pagination={
+          pageInfo && {
+            currentPage,
+            pageInfo,
+            onPageChange,
+          }
+        }
         emptyState={
           <p className="text-muted-foreground p-8 text-center">
             {t("profile.tables.noData") || "No data available"}

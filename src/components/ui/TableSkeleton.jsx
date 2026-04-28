@@ -46,11 +46,16 @@ const TableSkeleton = ({
               {Array.from({ length: rows }).map((_, rowIdx) => (
                 <tr
                   key={rowIdx}
-                  className={rowIdx !== rows - 1 ? "border-b border-table-border" : ""}
+                  className={
+                    rowIdx !== rows - 1 ? "border-b border-table-border" : ""
+                  }
                 >
                   {Array.from({ length: columns }).map((_, colIdx) => (
                     <td key={colIdx} className="px-6 py-4">
-                      <Skeleton variant="text" width={colIdx === 0 ? "75%" : "80%"} />
+                      <Skeleton
+                        variant="text"
+                        width={colIdx === 0 ? "75%" : "80%"}
+                      />
                     </td>
                   ))}
                 </tr>
@@ -63,7 +68,7 @@ const TableSkeleton = ({
 
     {/* Mobile Cards Skeleton */}
     {showMobile && (
-      <div className="space-y-4 md:hidden">
+      <div className="space-y-2 md:hidden">
         {Array.from({ length: mobileRows }).map((_, i) => (
           <Card key={i} className="shadow-md">
             <CardContent className="p-4 space-y-3">

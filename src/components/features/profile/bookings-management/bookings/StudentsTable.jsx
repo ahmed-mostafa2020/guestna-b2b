@@ -8,7 +8,6 @@ import { useSnackbar } from "notistack";
 
 import axios from "axios";
 
-
 import { CONSTANT_VALUES } from "@constants/constantValues";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -372,48 +371,51 @@ const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
     );
   };
 
-  const columns = useMemo(() => [
-    {
-      key: "studentName",
-      label: t("profile.tables.orders.studentsTable.studentName"),
-      className: "font-medium text-foreground",
-      render: (row) => row.child?.name || "-",
-    },
-    {
-      key: "parentName",
-      label: t("profile.tables.orders.studentsTable.parentName"),
-      render: (row) => row.parent?.name || "-",
-    },
-    {
-      key: "grade",
-      label: t("profile.tables.orders.studentsTable.grade"),
-      render: (row) => row.child?.grade?.name || "-",
-    },
-    {
-      key: "parentPhone",
-      label: t("profile.tables.orders.studentsTable.parentPhone"),
-      className: "text-end",
-      render: (row) => <span dir="ltr">{row.parent?.phone || "-"}</span>,
-    },
-    {
-      key: "nationalId",
-      label: t("profile.tables.orders.studentsTable.nationalId"),
-      render: (row) => row.child?.nationalId || "-",
-    },
-    {
-      key: "confirmation",
-      label: t("profile.tables.orders.studentsTable.parentConfirmation"),
-      render: (row) =>
-        row.parent?.termsAccepted && (
-          <span className="px-3 py-1 rounded-full text-xs font-medium text-success bg-status-success-bg">
-            {t("profile.tables.orders.studentsTable.agreed")}
-          </span>
-        ),
-    },
-  ], [t]);
+  const columns = useMemo(
+    () => [
+      {
+        key: "studentName",
+        label: t("profile.tables.orders.studentsTable.studentName"),
+        className: "font-medium text-foreground",
+        render: (row) => row.child?.name || "-",
+      },
+      {
+        key: "parentName",
+        label: t("profile.tables.orders.studentsTable.parentName"),
+        render: (row) => row.parent?.name || "-",
+      },
+      {
+        key: "grade",
+        label: t("profile.tables.orders.studentsTable.grade"),
+        render: (row) => row.child?.grade?.name || "-",
+      },
+      {
+        key: "parentPhone",
+        label: t("profile.tables.orders.studentsTable.parentPhone"),
+        className: "text-end",
+        render: (row) => <span dir="ltr">{row.parent?.phone || "-"}</span>,
+      },
+      {
+        key: "nationalId",
+        label: t("profile.tables.orders.studentsTable.nationalId"),
+        render: (row) => row.child?.nationalId || "-",
+      },
+      {
+        key: "confirmation",
+        label: t("profile.tables.orders.studentsTable.parentConfirmation"),
+        render: (row) =>
+          row.parent?.termsAccepted && (
+            <span className="px-3 py-1 rounded-full text-xs font-medium text-success bg-status-success-bg">
+              {t("profile.tables.orders.studentsTable.agreed")}
+            </span>
+          ),
+      },
+    ],
+    [t]
+  );
 
   return (
-    <div className="w-full space-y-6 mt-8">
+    <div className="w-full space-y-4 mt-8">
       <DataTable
         title={t("profile.tables.orders.studentsTable.title")}
         columns={columns}
@@ -426,9 +428,9 @@ const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
           </div>
         )}
         pagination={{
-            currentPage,
-            pageInfo: paginatedData.pageInfo,
-            onPageChange: handlePageChange,
+          currentPage,
+          pageInfo: paginatedData.pageInfo,
+          onPageChange: handlePageChange,
         }}
       />
 

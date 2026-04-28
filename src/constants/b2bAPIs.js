@@ -99,6 +99,7 @@ export const B2B_END_POINTS = {
       CHILD_IMAGE_UPLOAD: "profile/bookings/image",
       RESEND_BOOKING: "profile/bookings/resend",
       CUSTOM_EVENT_BOOKING: "profile/ramadan/all",
+      GRADUATION_EVENT_BOOKING: "profile/ramadan/graduation",
 
       RPORTS: "profile/organizationTrips/report/all",
       SURVEY: "surveys/new",

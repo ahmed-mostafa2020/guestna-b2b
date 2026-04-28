@@ -5,7 +5,6 @@ import { useFetchData } from "@hooks/data/useFetchData";
 import React, { useState, memo } from "react";
 import RamadanNightsTable from "./RamadanNightsTable";
 import RamadanCampTable from "./RamadanCampTable";
-import GraduationCeremonyTable from "./GraduationCeremonyTable";
 import TableSkeleton from "@components/ui/TableSkeleton";
 
 // ── Orchestrator ──────────────────────────────────────────────────────────────
@@ -20,7 +19,8 @@ const CustomEventBooking = () => {
 
   const hasData = !error && data?.nodes?.length > 0;
 
-  if (isLoading) return <TableSkeleton columns={6} rows={5} showTitle showMobile={false} />;
+  if (isLoading)
+    return <TableSkeleton columns={6} rows={5} showTitle showMobile={false} />;
   if (!hasData) return null;
 
   const commonProps = {
@@ -36,8 +36,6 @@ const CustomEventBooking = () => {
       return <RamadanNightsTable {...commonProps} />;
     case "RAMADAN_CAMP":
       return <RamadanCampTable {...commonProps} />;
-    case "GRADUATION_CEREMONY":
-      return <GraduationCeremonyTable {...commonProps} />;
     default:
       return null;
   }

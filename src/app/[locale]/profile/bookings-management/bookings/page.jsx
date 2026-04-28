@@ -12,6 +12,7 @@ import BookingsTable from "@components/features/profile/bookings-management/book
 import FiltringTripsByStatus from "@components/features/profile/bookings-management/bookings/FiltringTripsByStatus";
 import BookingsFilters from "@components/forms/bookings/BookingsFilters";
 import CustomEventBooking from "@components/features/profile/bookings-management/bookings/CustomEventBooking";
+import GraduationEventBooking from "@components/features/profile/bookings-management/bookings/GraduationEventBooking";
 
 const BookingsPage = () => {
   const t = useTranslations();
@@ -95,6 +96,13 @@ const BookingsPage = () => {
           key={`${selectedStatus}-${JSON.stringify(filter)}`} // Force re-render when status or filters change
         />
       </div>
+
+      <hr className="my-6 border-gray-200" />
+
+      <GraduationEventBooking />
+
+      <hr className="my-6 border-gray-200" />
+
       <CustomEventBooking />
     </ProtectedProfilePage>
   );

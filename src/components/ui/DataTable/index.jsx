@@ -92,7 +92,7 @@ const DataTable = ({
   const hasBulkActions = bulkActions.length > 0 && selectedSet.size > 0;
 
   return (
-    <div className={`w-full space-y-6 ${className}`}>
+    <div className={`w-full space-y-4 ${className}`}>
       {/* Header with Title and Bulk Actions */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-1 w-full">
         {title && (
@@ -246,7 +246,7 @@ const DataTable = ({
       </Card>
 
       {/* Mobile Cards */}
-      <div className="space-y-4 md:hidden">
+      <div className="space-y-2 md:hidden">
         {isEmpty ? (
           <Card className="transition-shadow shadow-md">
             <CardContent className="p-8 text-center">

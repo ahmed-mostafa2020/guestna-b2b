@@ -5,6 +5,31 @@ import { useTranslations, useLocale } from "next-intl";
 import formatDate from "@utils/formatters/FormateDate";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import DataTable from "@components/ui/DataTable";
+import ExportButton from "@components/ui/ExportButton";
+import { useExcel } from "@hooks/utils/useExcel";
+
+const GRADUATION_EXCEL_HEADERS = [
+  { key: "orderId", label: { ar: "رقم الطلب", en: "Order ID" }, width: 18 },
+  { key: "price", label: { ar: "السعر", en: "Price" }, width: 15 },
+  {
+    key: "studentName",
+    label: { ar: "اسم الطالب", en: "Student Name" },
+    width: 25,
+  },
+  { key: "phone", label: { ar: "رقم الجوال", en: "Phone" }, width: 18 },
+  {
+    key: "academicStage",
+    label: { ar: "المرحلة الدراسية", en: "Academic Stage" },
+    width: 20,
+  },
+  { key: "grade", label: { ar: "الصف", en: "Grade" }, width: 15 },
+  {
+    key: "clothesSize",
+    label: { ar: "مقاس الملابس", en: "Clothes Size" },
+    width: 15,
+  },
+  { key: "organization", label: { ar: "المدرسة", en: "School" }, width: 25 },
+];
 
 const GraduationCeremonyTable = ({
   rows = [],
@@ -15,12 +40,47 @@ const GraduationCeremonyTable = ({
   const t = useTranslations();
   const locale = useLocale();
 
-  const title = t("profile.tables.customEventBooking.titles.GRADUATION_CEREMONY");
+  const { exportRecords, isExporting } = useExcel({
+    headers: GRADUATION_EXCEL_HEADERS,
+    t,
+    locale,
+  });
+
+  const handleExport = () => {
+    const records = rows.map((row) => ({
+      orderId: String(row.orderId ?? "").toUpperCase(),
+      price: row.price != null ? formatCurrency(row.price) : "-",
+      studentName: row.client?.name ?? "-",
+      phone: row.client?.phone ?? "-",
+      academicStage: row.client?.academicStage ?? "-",
+      grade: row.client?.grade ?? "-",
+      clothesSize: row.client?.clothesSize ?? "-",
+      organization: row.organization?.name ?? "-",
+    }));
+    exportRecords(
+      records,
+      `graduation_ceremony_${new Date().toISOString().split("T")[0]}`
+    );
+  };
+
+  const title = t(
+    "profile.tables.customEventBooking.titles.GRADUATION_CEREMONY"
+  );
 
   return (
-    <div className="w-full space-y-6 mt-10">
+    <div className="w-full space-y-4 mt-10">
+      <div className="flex items-center justify-between gap-4 px-1">
+        <h2 className="text-xl font-medium lg:text-2xl text-titleColor">
+          {title}
+        </h2>
+        <ExportButton
+          onClick={handleExport}
+          loading={isExporting}
+          loadingText={t("common.loading")}
+          className="!w-auto shrink-0 px-3 py-2"
+        />
+      </div>
       <DataTable
-        title={title}
         columns={[
           {
             key: "orderId",
@@ -29,25 +89,16 @@ const GraduationCeremonyTable = ({
             className: "font-medium text-foreground",
           },
           {
-            key: "bookingDay",
-            label: t("profile.tables.customEventBooking.header.bookingDay"),
-            render: (row) =>
-              row.bookingDay
-                ? formatDate(row.bookingDay, locale, {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })
-                : "-",
-          },
-          {
             key: "price",
             label: t("profile.tables.customEventBooking.header.price"),
-            render: (row) => (row.price != null ? formatCurrency(row.price) : "-"),
+            render: (row) =>
+              row.price != null ? formatCurrency(row.price) : "-",
           },
           {
             key: "studentName",
-            label: t("profile.tables.customEventBooking.header.client.studentName"),
+            label: t(
+              "profile.tables.customEventBooking.header.client.studentName"
+            ),
             render: (row) => row.client?.name ?? "-",
           },
           {
@@ -61,7 +112,9 @@ const GraduationCeremonyTable = ({
           },
           {
             key: "academicStage",
-            label: t("profile.tables.customEventBooking.header.client.academicStage"),
+            label: t(
+              "profile.tables.customEventBooking.header.client.academicStage"
+            ),
             render: (row) => row.client?.academicStage ?? "-",
           },
           {
@@ -71,12 +124,16 @@ const GraduationCeremonyTable = ({
           },
           {
             key: "clothesSize",
-            label: t("profile.tables.customEventBooking.header.client.clothesSize"),
+            label: t(
+              "profile.tables.customEventBooking.header.client.clothesSize"
+            ),
             render: (row) => row.client?.clothesSize ?? "-",
           },
           {
             key: "organization",
-            label: t("profile.tables.customEventBooking.header.organization.name"),
+            label: t(
+              "profile.tables.customEventBooking.header.organization.name"
+            ),
             render: (row) => row.organization?.name ?? "-",
           },
         ]}
