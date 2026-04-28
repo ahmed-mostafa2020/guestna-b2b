@@ -60,7 +60,7 @@ const NotFound = () => {
             replace={true}
             style={{
               padding: "12px 32px",
-              backgroundColor: "#1a56db",
+              backgroundColor: "#007473",
               color: "white",
               borderRadius: "8px",
               textDecoration: "none",
