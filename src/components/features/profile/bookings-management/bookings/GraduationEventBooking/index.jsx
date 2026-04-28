@@ -2,9 +2,11 @@
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { useFetchData } from "@hooks/data/useFetchData";
-import React, { useState, memo } from "react";
+import React, { useState, memo, useCallback } from "react";
 import GraduationCeremonyTable from "../CustomEventBooking/GraduationCeremonyTable";
 import TableSkeleton from "@components/ui/TableSkeleton";
+import axios from "axios";
+import { getHeaders } from "@utils/helpers/getHeaders";
 
 const GraduationEventBooking = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -14,6 +16,18 @@ const GraduationEventBooking = () => {
     {},
     { method: "POST", body: { page: currentPage } }
   );
+
+  const fetchAllForExport = useCallback(async () => {
+    const endpoint =
+      B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.GRADUATION_EVENT_BOOKING;
+    const response = await axios({
+      method: "POST",
+      url: `/api/proxy?path=${endpoint}`,
+      headers: getHeaders("ar"),
+      data: { page: 1, perPage: 5000 },
+    });
+    return response.data?.nodes ?? [];
+  }, []);
 
   const hasData = !error && data?.nodes?.length > 0;
 
@@ -26,6 +40,7 @@ const GraduationEventBooking = () => {
     pageInfo: data.pageInfo,
     currentPage,
     onPageChange: setCurrentPage,
+    fetchAllForExport,
   };
 
   return <GraduationCeremonyTable {...commonProps} />;

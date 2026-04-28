@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import formatDate from "@utils/formatters/FormateDate";
 import formatCurrency from "@utils/formatters/FormatCurrency";
@@ -36,9 +36,12 @@ const GraduationCeremonyTable = ({
   pageInfo,
   currentPage,
   onPageChange,
+  fetchAllForExport,
 }) => {
   const t = useTranslations();
   const locale = useLocale();
+
+  const [isFetching, setIsFetching] = useState(false);
 
   const { exportRecords, isExporting } = useExcel({
     headers: GRADUATION_EXCEL_HEADERS,
@@ -46,10 +49,10 @@ const GraduationCeremonyTable = ({
     locale,
   });
 
-  const handleExport = () => {
-    const records = rows.map((row) => ({
+  const mapToRecords = (nodes) =>
+    nodes.map((row) => ({
       orderId: String(row.orderId ?? "").toUpperCase(),
-      price: row.price != null ? formatCurrency(row.price) : "-",
+      price: row.price != null ? row.price : "-",
       studentName: row.client?.name ?? "-",
       phone: row.client?.phone ?? "-",
       academicStage: row.client?.academicStage ?? "-",
@@ -57,10 +60,18 @@ const GraduationCeremonyTable = ({
       clothesSize: row.client?.clothesSize ?? "-",
       organization: row.organization?.name ?? "-",
     }));
-    exportRecords(
-      records,
-      `graduation_ceremony_${new Date().toISOString().split("T")[0]}`
-    );
+
+  const handleExport = async () => {
+    setIsFetching(true);
+    try {
+      const nodes = fetchAllForExport ? await fetchAllForExport() : rows;
+      await exportRecords(
+        mapToRecords(nodes),
+        `graduation_ceremony_${new Date().toISOString().split("T")[0]}`
+      );
+    } finally {
+      setIsFetching(false);
+    }
   };
 
   const title = t(
@@ -75,7 +86,7 @@ const GraduationCeremonyTable = ({
         </h2>
         <ExportButton
           onClick={handleExport}
-          loading={isExporting}
+          loading={isFetching || isExporting}
           loadingText={t("common.loading")}
           className="!w-auto shrink-0 px-3 py-2"
         />
