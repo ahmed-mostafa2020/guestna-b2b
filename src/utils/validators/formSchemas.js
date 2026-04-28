@@ -1,8 +1,8 @@
 import * as Yup from "yup";
 
-import { isValidPhoneNumber } from "react-phone-number-input";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { createPhoneValidation, emailRegex } from "./authSchemas";
+import { isValidPhoneByPattern } from "../phonePatterns";
 
 // Search
 export const createSearchBarSchema = (t) =>
@@ -586,8 +586,7 @@ export const createBulkUserRowSchema = (t, roleOptions = []) =>
       .required(t("forms.validation.require"))
       .test("phone-validation", t("forms.phone.error.invalid"), (value) => {
         if (!value) return false;
-        const phoneString = value.replace(/\s/g, "");
-        return phoneString.length >= 13 && isValidPhoneNumber(phoneString);
+        return isValidPhoneByPattern(value);
       }),
     role: Yup.string()
       .required(t("forms.validation.require"))
@@ -839,7 +838,7 @@ export const createGraduationSchema = (t, branch, isIntermediateStage) =>
         t("graduation.validation.phoneInvalid"),
         (value) => {
           if (!value) return false;
-          if (!isValidPhoneNumber(value)) return false;
+          if (!isValidPhoneByPattern(value)) return false;
           // SA numbers must start with 5 after country code (+9665...)
           if (value.startsWith("+966")) {
             return value.charAt(4) === "5";
@@ -893,7 +892,7 @@ export const createAITrainingCampSchema = (t) =>
         t("aiTrainingCamp.validation.phoneInvalid"),
         (value) => {
           if (!value) return false;
-          return isValidPhoneNumber(value);
+          return isValidPhoneByPattern(value);
         }
       ),
     gender: Yup.string()
@@ -919,7 +918,7 @@ export const createRamadanNightsSchema = (t) =>
         t("ramadanNights.validation.phoneInvalid"),
         (value) => {
           if (!value) return false;
-          return isValidPhoneNumber(value);
+          return isValidPhoneByPattern(value);
         }
       ),
     email: Yup.string()
