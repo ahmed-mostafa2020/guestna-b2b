@@ -138,7 +138,8 @@
       "REJECTED": "Rejected",
       "ON_HOLD": "On Hold",
       "PARTIALLY_PAID": "Partially Paid",
-      "REFUNDED": "Refunded"
+      "REFUNDED": "Refunded",
+      "PENDING_CLIENT_REVIEW": "Pending Client Review"
     },
     "excel_success": {
       "export": "Export successful successfully"
@@ -966,7 +967,8 @@
       "customEventBooking": {
         "titles": {
           "RAMADAN_NIGHTS": "Ramadan Nights",
-          "RAMADAN_CAMP": "Ramadan AI Training Camp"
+          "RAMADAN_CAMP": "Ramadan AI Training Camp",
+          "GRADUATION_CEREMONY": "Graduation Ceremony"
         },
         "header": {
           "orderId": "Order ID",
@@ -980,7 +982,10 @@
             "phone": "Phone Number",
             "parentPhone": "Parent Phone Number",
             "idNumber": "ID Number",
-            "gender": "Gender"
+            "gender": "Gender",
+            "academicStage": "Academic Stage",
+            "grade": "Grade",
+            "clothesSize": "Clothes Size"
           },
           "stationName": "Station Name",
           "socialHandle": "Social Handle",

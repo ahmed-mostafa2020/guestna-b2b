@@ -136,7 +136,8 @@
       "REJECTED": "مرفوض",
       "ON_HOLD": "معلق",
       "PARTIALLY_PAID": "مدفوع جزئياً",
-      "REFUNDED": "مسترد"
+      "REFUNDED": "مسترد",
+      "PENDING_CLIENT_REVIEW": "قيد مراجعة العميل"
     },
     "usersType": {
       "VISITOR": "الزائر",
@@ -977,7 +978,8 @@
       "customEventBooking": {
         "titles": {
           "RAMADAN_NIGHTS": "ليالي رمضان",
-          "RAMADAN_CAMP": "معسكر التدريب الرمضاني AI"
+          "RAMADAN_CAMP": "معسكر التدريب الرمضاني AI",
+          "GRADUATION_CEREMONY": "حفل التخرج"
         },
         "header": {
           "orderId": "رقم الطلب",
@@ -991,7 +993,10 @@
             "phone": "رقم الهاتف",
             "parentPhone": "رقم هاتف ولي الامر",
             "gender": "النوع",
-            "idNumber": "رقم الهوية"
+            "idNumber": "رقم الهوية",
+            "academicStage": "المرحلة الدراسية",
+            "grade": "الصف",
+            "clothesSize": "مقاس الملابس"
           },
           "stationName": "اسم المحطة",
           "socialHandle": "حساب التواصل الاجتماعي",
