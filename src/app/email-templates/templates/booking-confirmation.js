@@ -1,4 +1,4 @@
-export const bookingConfirmationHTML = `<!DOCTYPE html>
+﻿export const bookingConfirmationHTML = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
@@ -6,10 +6,10 @@ export const bookingConfirmationHTML = `<!DOCTYPE html>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>تأكيد الحجز - جستنا</title>
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap");
+    @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap");
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: "Tajawal", Arial, Tahoma, sans-serif !important;
+      font-family: "IBM Plex Sans Arabic", Arial, Tahoma, sans-serif !important;
       background-color: #EEF2F7 !important;
       color: #1E293B !important;
       direction: rtl;
@@ -17,7 +17,7 @@ export const bookingConfirmationHTML = `<!DOCTYPE html>
     }
   </style>
 </head>
-<body style="margin:0;padding:0;background-color:#EEF2F7;font-family:'Tajawal',Arial,Tahoma,sans-serif;direction:rtl;width:100%;min-width:100%;">
+<body style="margin:0;padding:0;background-color:#EEF2F7;font-family:'IBM Plex Sans Arabic',Arial,Tahoma,sans-serif;direction:rtl;width:100%;min-width:100%;">
 
   <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#EEF2F7;">
     <tr>

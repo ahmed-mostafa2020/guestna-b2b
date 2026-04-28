@@ -1,4 +1,4 @@
-// Ref: withdrawal/ask Withdrawals Invoice Confirming_ar — فاتورة/إيصال السحب (تصميم إيصال)
+﻿// Ref: withdrawal/ask Withdrawals Invoice Confirming_ar — فاتورة/إيصال السحب (تصميم إيصال)
 export const withdrawalInvoiceHTML = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -7,15 +7,15 @@ export const withdrawalInvoiceHTML = `<!DOCTYPE html>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>إيصال سحب الأرباح - جستنا</title>
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap");
-    body { font-family: "Tajawal", Arial, Tahoma, sans-serif !important; direction: rtl; }
+    @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap");
+    body { font-family: "IBM Plex Sans Arabic", Arial, Tahoma, sans-serif !important; direction: rtl; }
     @media only screen and (max-width: 600px) {
       .main-table { width: 100% !important; border-radius: 0 !important; }
       .content-pad { padding: 16px !important; }
     }
   </style>
 </head>
-<body style="margin:0;padding:0;background-color:#D1D9E0;color:#1E293B;font-family:'Tajawal',Arial,Tahoma,sans-serif;direction:rtl;width:100%;min-width:100%;">
+<body style="margin:0;padding:0;background-color:#D1D9E0;color:#1E293B;font-family:'IBM Plex Sans Arabic',Arial,Tahoma,sans-serif;direction:rtl;width:100%;min-width:100%;">
 
   <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#D1D9E0;">
     <tr>
