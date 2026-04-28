@@ -864,7 +864,11 @@ export const createGraduationSchema = (t, branch) =>
       function (value) {
         const { academicStage, classNumber } = this.parent;
         let needsSize = false;
-        if (branch === "AL_ARID" && academicStage === "متوسط") {
+        if (
+          branch === "AL_ARID" &&
+          (academicStage === "متوسط" ||
+            academicStage?.toLowerCase() === "intermediate")
+        ) {
           needsSize = true;
         }
         if (branch === "AL_ATEEQ") {

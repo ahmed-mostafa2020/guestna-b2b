@@ -65,17 +65,57 @@ const GraduationRegistrationStep = ({
   const isArid = branch === "AL_ARID";
   const isAtiq = branch === "AL_ATEEQ";
 
-  // Auto-set stage and grade for AL_ATEEQ
-  if (isAtiq && !values.academicStage) {
-    setFieldValue("academicStage", "ثانوي");
+  // Auto-set stage and grade for AL_ATEEQ using API-returned names (locale-aware)
+  if (isAtiq && !values.academicStage && stages.length > 0) {
+    const secondaryStage = stages.find(
+      (s) => s.name === "ثانوي" || s.name?.toLowerCase() === "secondary"
+    );
+    if (secondaryStage) setFieldValue("academicStage", secondaryStage.name);
   }
-  if (isAtiq && !values.grade) {
-    setFieldValue("grade", "ثالث ثانوي");
+  if (isAtiq && !values.grade && grades.length > 0) {
+    const thirdSecondaryGrade = grades.find(
+      (g) =>
+        g.name === "ثالث ثانوي" ||
+        g.name?.toLowerCase().includes("twelfth") ||
+        g.name?.toLowerCase().includes("12th")
+    );
+    if (thirdSecondaryGrade) setFieldValue("grade", thirdSecondaryGrade.name);
   }
 
   const getGradeNameForStage = (stageName) => {
-    if (stageName === "ثانوي") return "ثالث ثانوي";
-    if (stageName === "متوسط") return "ثالث متوسط";
+    if (!stageName) return "";
+    const lower = stageName.toLowerCase();
+    const isSecondary =
+      stageName === "ثانوي" ||
+      lower === "secondary" ||
+      lower.includes("high school");
+    const isIntermediate =
+      stageName === "متوسط" ||
+      lower === "intermediate" ||
+      lower.includes("middle school");
+
+    if (isSecondary) {
+      // AR: "ثالث ثانوي" | EN: "Twelfth Grade" (12th grade = 3rd year of secondary)
+      return (
+        grades.find(
+          (g) =>
+            g.name === "ثالث ثانوي" ||
+            g.name?.toLowerCase().includes("twelfth") ||
+            g.name?.toLowerCase().includes("12th")
+        )?.name || ""
+      );
+    }
+    if (isIntermediate) {
+      // AR: "ثالث متوسط" | EN: "Ninth Grade" (9th grade = 3rd year of middle school)
+      return (
+        grades.find(
+          (g) =>
+            g.name === "ثالث متوسط" ||
+            g.name?.toLowerCase().includes("ninth") ||
+            g.name?.toLowerCase().includes("9th")
+        )?.name || ""
+      );
+    }
     return "";
   };
 
@@ -160,7 +200,7 @@ const GraduationRegistrationStep = ({
               </div>
               <input
                 type="text"
-                value="ثانوي"
+                value={values.academicStage || ""}
                 readOnly
                 className="bg-gray-100 w-full p-4 font-normal border-2 rounded-lg h-[55px] border-gray-200 font-somar text-lg text-gray-500 cursor-not-allowed"
               />
@@ -178,12 +218,7 @@ const GraduationRegistrationStep = ({
             </div>
             <input
               type="text"
-              value={
-                isArid
-                  ? getGradeNameForStage(values.academicStage) ||
-                    t("graduation.form.grade.placeholder")
-                  : "ثالث ثانوي"
-              }
+              value={values.grade || t("graduation.form.grade.placeholder")}
               readOnly
               className="bg-gray-100 w-full p-4 font-normal border-2 rounded-lg h-[55px] border-gray-200 font-somar text-lg text-gray-500 cursor-not-allowed"
             />

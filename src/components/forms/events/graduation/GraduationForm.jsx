@@ -27,14 +27,20 @@ const BRANCHES = {
   AL_ATEEQ: "AL_ATEEQ",
 };
 
+// Locale-agnostic stage name checks
+const isSecondaryStage = (name) =>
+  name === "ثانوي" || name?.toLowerCase() === "secondary";
+const isIntermediateStage = (name) =>
+  name === "متوسط" || name?.toLowerCase() === "intermediate";
+
 // Pricing logic
 const getPriceAndSuit = (branch, stageId, classNumber, stages) => {
   if (branch === BRANCHES.AL_ARID) {
     const selectedStage = stages.find((s) => s._id === stageId);
-    if (selectedStage?.name === "ثانوي") {
+    if (isSecondaryStage(selectedStage?.name)) {
       return { price: 350, suitColor: "purple", needsSize: false };
     }
-    if (selectedStage?.name === "متوسط") {
+    if (isIntermediateStage(selectedStage?.name)) {
       return { price: 250, suitColor: "white", needsSize: true };
     }
     return { price: 0, suitColor: "", needsSize: false };
