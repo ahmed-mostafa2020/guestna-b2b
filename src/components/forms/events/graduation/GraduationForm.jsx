@@ -191,7 +191,7 @@ const GraduationForm = () => {
       if (Object.keys(errors).length === 0) {
         registrationValuesRef.current = values;
         setCurrentStep(1);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({ top: 300, behavior: "smooth" });
       } else {
         const touchedFields = {};
         Object.keys(getRegistrationInitialValues(currentBranch)).forEach(
@@ -210,7 +210,7 @@ const GraduationForm = () => {
 
   const handleBack = useCallback(() => {
     setCurrentStep(0);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 300, behavior: "smooth" });
   }, []);
 
   const handlePaymentMethodChange = useCallback((event) => {
