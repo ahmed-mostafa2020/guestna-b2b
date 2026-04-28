@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 import { useEffect } from "react";
 
@@ -14,6 +14,7 @@ import { BalanceCards } from "@components/features/myWallet/withdraw";
 
 const WithdrawPage = () => {
   const t = useTranslations();
+  const locale = useLocale();
   const { hasElement } = usePermissions();
 
   const {
@@ -26,6 +27,7 @@ const WithdrawPage = () => {
     {},
     {
       method: "GET",
+      lang: locale,
       enabled: hasElement(
         PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS
       ), // Only fetch when user has permission

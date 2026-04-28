@@ -7,14 +7,16 @@ import GraduationCeremonyTable from "../CustomEventBooking/GraduationCeremonyTab
 import TableSkeleton from "@components/ui/TableSkeleton";
 import axios from "axios";
 import { getHeaders } from "@utils/helpers/getHeaders";
+import { useLocale } from "next-intl";
 
 const GraduationEventBooking = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const locale = useLocale();
 
   const { data, isLoading, error } = useFetchData(
     B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.GRADUATION_EVENT_BOOKING,
     {},
-    { method: "POST", body: { page: currentPage } }
+    { method: "POST", body: { page: currentPage }, lang: locale }
   );
 
   const fetchAllForExport = useCallback(async () => {
@@ -23,11 +25,11 @@ const GraduationEventBooking = () => {
     const response = await axios({
       method: "POST",
       url: `/api/proxy?path=${endpoint}`,
-      headers: getHeaders("ar"),
+      headers: getHeaders(locale),
       data: { page: 1, perPage: 5000 },
     });
     return response.data?.nodes ?? [];
-  }, []);
+  }, [locale]);
 
   const hasData = !error && data?.nodes?.length > 0;
 

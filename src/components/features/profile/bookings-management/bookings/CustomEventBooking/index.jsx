@@ -6,15 +6,17 @@ import React, { useState, memo } from "react";
 import RamadanNightsTable from "./RamadanNightsTable";
 import RamadanCampTable from "./RamadanCampTable";
 import TableSkeleton from "@components/ui/TableSkeleton";
+import { useLocale } from "next-intl";
 
 // ── Orchestrator ──────────────────────────────────────────────────────────────
 const CustomEventBooking = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const locale = useLocale();
 
   const { data, isLoading, error } = useFetchData(
     B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.CUSTOM_EVENT_BOOKING,
     {},
-    { method: "POST", body: { page: currentPage } }
+    { method: "POST", body: { page: currentPage }, lang: locale }
   );
 
   const hasData = !error && data?.nodes?.length > 0;

@@ -35,6 +35,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
     {},
     {
       method: "GET",
+      lang: locale,
     }
   );
 
@@ -44,6 +45,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
     {},
     {
       method: "GET",
+      lang: locale,
     }
   );
 

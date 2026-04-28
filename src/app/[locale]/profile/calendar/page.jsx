@@ -109,6 +109,7 @@ const CalendarPage = () => {
     {},
     {
       method: "POST",
+      lang: locale,
       body: {
         sort: SORTING_TYPE.NEWEST,
         ...(Object.keys(buildEventsFilter()).length > 0 && {
