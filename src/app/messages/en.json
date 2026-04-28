@@ -3198,10 +3198,10 @@
     }
   },
   "graduation": {
-    "pageTitle": "Graduation Suit Registration",
+    "pageTitle": "Graduation Uniform Registration",
     "eventInfo": {
-      "title": "A success journey deserves a special graduation suit",
-      "subtitle": "Your graduation is a once-in-a-lifetime moment – choose the suit that honors your years of hard work and success, with elegant design and high quality.",
+      "title": "Success fees deserve a special graduation uniform",
+      "subtitle": "Your graduation is a once-in-a-lifetime moment – choose the uniform that honors your years of hard work and success, with elegant design and high quality.",
       "badge": "Class of 2026 – Celebrate your achievements",
       "feature1": "Professional design",
       "feature2": "High quality",
@@ -3209,14 +3209,14 @@
     },
     "branches": {
       "arid": "Al-Arid",
-      "atiq": "Al-Atiq"
+      "atiq": "Al-Aqiq"
     },
     "stepper": {
       "step1": "Registration",
       "step2": "Payment"
     },
     "form": {
-      "title": "Graduation Fee",
+      "title": "Graduation Uniform Fee",
       "subtitle": "Choose the appropriate section and complete your details",
       "name": {
         "label": "Name",
@@ -3248,8 +3248,8 @@
       }
     },
     "suit": {
-      "title": "The suit for your stage",
-      "suitLabel": "Graduation Suit",
+      "title": "The uniform for your stage",
+      "suitLabel": "Graduation Uniform",
       "purple": "Purple",
       "white": "White",
       "maroon": "Maroon",
@@ -3269,9 +3269,9 @@
     },
     "payment": {
       "title": "Payment Details",
-      "subtitle": "Complete your registration by paying the suit fee",
+      "subtitle": "Complete your registration by paying the uniform fee",
       "orderSummary": "Order Summary",
-      "suitFee": "Graduation Suit Fee",
+      "suitFee": "Graduation Uniform Fee",
       "total": "Total",
       "includingVat": "Including VAT",
       "confirm": "Confirm Order"

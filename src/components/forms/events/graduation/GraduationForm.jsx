@@ -37,7 +37,7 @@ const AR_STAGE_GRADE_MAP = {
 const getPriceAndSuit = (branch, stageId, classNumber, stageIds) => {
   if (branch === BRANCHES.AL_ARID) {
     if (stageId === stageIds?.secondary) {
-      return { price: 350, suitColor: "purple", needsSize: false };
+      return { price: 370, suitColor: "purple", needsSize: false };
     }
     if (stageId === stageIds?.intermediate) {
       return { price: 250, suitColor: "white", needsSize: true };
@@ -48,10 +48,10 @@ const getPriceAndSuit = (branch, stageId, classNumber, stageIds) => {
   if (branch === BRANCHES.AL_ATEEQ) {
     const cls = parseInt(classNumber);
     if (cls === 2 || cls === 5) {
-      return { price: 350, suitColor: "maroon", needsSize: false };
+      return { price: 370, suitColor: "maroon", needsSize: false };
     }
     if (cls === 3 || cls === 6) {
-      return { price: 350, suitColor: "navy", needsSize: false };
+      return { price: 370, suitColor: "navy", needsSize: false };
     }
     if (cls === 1 || cls === 4) {
       return { price: 300, suitColor: "white", needsSize: true };
@@ -480,7 +480,7 @@ const GraduationForm = () => {
                   )
                 )}
             </h2>
-            <p className="text-gray-500 text-sm mt-1 font-somar">
+            <p className="text-gray-500 text-sm pt-2 font-somar">
               {t("graduation.form.subtitle")}
             </p>
           </div>

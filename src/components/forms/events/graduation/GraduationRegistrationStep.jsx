@@ -315,7 +315,7 @@ const GraduationRegistrationStep = ({
             {/* Size Chart + Size Dropdown - Only for white suit */}
             {suitInfo.needsSize && (
               <div className="mt-6">
-                <h4 className="text-sm font-semibold font-somar text-center mb-3">
+                <h4 className="text-sm font-semibold font-somar text-center pb-3">
                   {t("graduation.sizeChart.title")}
                 </h4>
 
