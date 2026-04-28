@@ -56,73 +56,33 @@ const GraduationRegistrationStep = ({
   setFieldValue,
   branch,
   stages,
-  grades,
   isLoadingData,
   getPriceAndSuit,
+  stageIds,
+  getGradeForStage,
 }) => {
   const t = useTranslations();
 
   const isArid = branch === "AL_ARID";
   const isAtiq = branch === "AL_ATEEQ";
 
-  // Auto-set stage and grade for AL_ATEEQ using API-returned names (locale-aware)
-  if (isAtiq && !values.academicStage && stages.length > 0) {
-    const secondaryStage = stages.find(
-      (s) => s.name === "ثانوي" || s.name?.toLowerCase() === "secondary"
-    );
+  // Auto-set stage and grade for AL_ATEEQ using API IDs (locale-agnostic)
+  if (isAtiq && !values.academicStage && stageIds?.secondary) {
+    const secondaryStage = stages.find((s) => s._id === stageIds.secondary);
     if (secondaryStage) setFieldValue("academicStage", secondaryStage.name);
   }
-  if (isAtiq && !values.grade && grades.length > 0) {
-    const thirdSecondaryGrade = grades.find(
-      (g) =>
-        g.name === "ثالث ثانوي" ||
-        g.name?.toLowerCase().includes("twelfth") ||
-        g.name?.toLowerCase().includes("12th")
-    );
-    if (thirdSecondaryGrade) setFieldValue("grade", thirdSecondaryGrade.name);
+  if (isAtiq && !values.grade && stageIds?.secondary) {
+    const secondaryStage = stages.find((s) => s._id === stageIds.secondary);
+    if (secondaryStage) {
+      const gradeName = getGradeForStage(secondaryStage.name);
+      if (gradeName) setFieldValue("grade", gradeName);
+    }
   }
-
-  const getGradeNameForStage = (stageName) => {
-    if (!stageName) return "";
-    const lower = stageName.toLowerCase();
-    const isSecondary =
-      stageName === "ثانوي" ||
-      lower === "secondary" ||
-      lower.includes("high school");
-    const isIntermediate =
-      stageName === "متوسط" ||
-      lower === "intermediate" ||
-      lower.includes("middle school");
-
-    if (isSecondary) {
-      // AR: "ثالث ثانوي" | EN: "Twelfth Grade" (12th grade = 3rd year of secondary)
-      return (
-        grades.find(
-          (g) =>
-            g.name === "ثالث ثانوي" ||
-            g.name?.toLowerCase().includes("twelfth") ||
-            g.name?.toLowerCase().includes("12th")
-        )?.name || ""
-      );
-    }
-    if (isIntermediate) {
-      // AR: "ثالث متوسط" | EN: "Ninth Grade" (9th grade = 3rd year of middle school)
-      return (
-        grades.find(
-          (g) =>
-            g.name === "ثالث متوسط" ||
-            g.name?.toLowerCase().includes("ninth") ||
-            g.name?.toLowerCase().includes("9th")
-        )?.name || ""
-      );
-    }
-    return "";
-  };
 
   const handleStageChange = (e) => {
     handleChange(e);
     const stageName = e.target.value;
-    const gradeName = getGradeNameForStage(stageName);
+    const gradeName = getGradeForStage(stageName);
     if (gradeName) {
       setFieldValue("grade", gradeName);
     }
@@ -134,7 +94,7 @@ const GraduationRegistrationStep = ({
     branch,
     currentStage?._id || "",
     values.classNumber,
-    stages
+    stageIds
   );
 
   const suitConfig = suitInfo.suitColor

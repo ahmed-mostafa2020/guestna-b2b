@@ -824,7 +824,8 @@ export const createSchoolRegisterSchema = (t) =>
   });
 
 // Graduation Event Registration Schema
-export const createGraduationSchema = (t, branch) =>
+// isIntermediateStage: (stageName) => boolean — locale-agnostic check via API IDs
+export const createGraduationSchema = (t, branch, isIntermediateStage) =>
   Yup.object().shape({
     name: Yup.string()
       .trim()
@@ -864,11 +865,7 @@ export const createGraduationSchema = (t, branch) =>
       function (value) {
         const { academicStage, classNumber } = this.parent;
         let needsSize = false;
-        if (
-          branch === "AL_ARID" &&
-          (academicStage === "متوسط" ||
-            academicStage?.toLowerCase() === "intermediate")
-        ) {
+        if (branch === "AL_ARID" && isIntermediateStage?.(academicStage)) {
           needsSize = true;
         }
         if (branch === "AL_ATEEQ") {

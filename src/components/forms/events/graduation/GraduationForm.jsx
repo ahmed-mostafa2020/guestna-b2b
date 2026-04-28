@@ -27,20 +27,19 @@ const BRANCHES = {
   AL_ATEEQ: "AL_ATEEQ",
 };
 
-// Locale-agnostic stage name checks
-const isSecondaryStage = (name) =>
-  name === "ثانوي" || name?.toLowerCase() === "secondary";
-const isIntermediateStage = (name) =>
-  name === "متوسط" || name?.toLowerCase() === "intermediate";
+// Arabic stage names are the canonical backend keys used to build the ID-based map
+const AR_STAGE_GRADE_MAP = {
+  ثانوي: "ثالث ثانوي",
+  متوسط: "ثالث متوسط",
+};
 
-// Pricing logic
-const getPriceAndSuit = (branch, stageId, classNumber, stages) => {
+// Pricing logic — uses stage IDs (locale-agnostic) passed via stageIds config
+const getPriceAndSuit = (branch, stageId, classNumber, stageIds) => {
   if (branch === BRANCHES.AL_ARID) {
-    const selectedStage = stages.find((s) => s._id === stageId);
-    if (isSecondaryStage(selectedStage?.name)) {
+    if (stageId === stageIds?.secondary) {
       return { price: 350, suitColor: "purple", needsSize: false };
     }
-    if (isIntermediateStage(selectedStage?.name)) {
+    if (stageId === stageIds?.intermediate) {
       return { price: 250, suitColor: "white", needsSize: true };
     }
     return { price: 0, suitColor: "", needsSize: false };
@@ -94,31 +93,71 @@ const GraduationForm = () => {
   const [isPaymentSubmitting, setIsPaymentSubmitting] = useState(false);
   const registrationValuesRef = useRef(null);
 
-  // Stages & Grades from API
+  // Stages & Grades from API (locale-specific, for display)
   const [stages, setStages] = useState([]);
   const [grades, setGrades] = useState([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
 
-  const registrationSchema = useMemo(
-    () => createGraduationSchema(t, currentBranch),
-    [t, currentBranch]
-  );
-  const creditSchema = useMemo(() => createCreditSchema(t), [t]);
+  // ID-based maps built from AR locale (locale-agnostic reference)
+  // stageGradeMap: { [stageId]: gradeId } — graduation grade for each stage
+  // stageIds: { secondary: id, intermediate: id }
+  const [stageGradeMap, setStageGradeMap] = useState({});
+  const [stageIds, setStageIds] = useState({
+    secondary: null,
+    intermediate: null,
+  });
 
   const headers = getHeaders(locale);
+  const arHeaders = getHeaders("ar");
   const vercelUrl = CONSTANT_VALUES?.URLS?.B2B_VERCEL_URL;
 
   // Fetch stages & grades on mount
+  // Also fetches AR locale as stable reference to build ID maps
   useEffect(() => {
     const fetchStagesGrades = async () => {
       setIsLoadingData(true);
       try {
-        const response = await axios.get(
+        const localePromise = axios.get(
           getProxyUrl(B2B_END_POINTS.GRADUATION.STAGES_GRADES),
           { headers }
         );
-        setStages(response.data?.stages || []);
-        setGrades(response.data?.grades || []);
+        // Reuse the same request if already in AR to avoid a duplicate call
+        const arPromise =
+          locale === "ar"
+            ? localePromise
+            : axios.get(getProxyUrl(B2B_END_POINTS.GRADUATION.STAGES_GRADES), {
+                headers: arHeaders,
+              });
+
+        const [localeRes, arRes] = await Promise.all([
+          localePromise,
+          arPromise,
+        ]);
+
+        const localeStages = localeRes.data?.stages || [];
+        const localeGrades = localeRes.data?.grades || [];
+        setStages(localeStages);
+        setGrades(localeGrades);
+
+        // Build ID maps using Arabic names as canonical keys
+        const arStages = arRes.data?.stages || [];
+        const arGrades = arRes.data?.grades || [];
+
+        const map = {};
+        const ids = { secondary: null, intermediate: null };
+
+        arStages.forEach((arStage) => {
+          const arGradeName = AR_STAGE_GRADE_MAP[arStage.name];
+          const arGrade = arGrades.find((g) => g.name === arGradeName);
+          if (arGrade) {
+            map[arStage._id] = arGrade._id;
+          }
+          if (arStage.name === "ثانوي") ids.secondary = arStage._id;
+          if (arStage.name === "متوسط") ids.intermediate = arStage._id;
+        });
+
+        setStageGradeMap(map);
+        setStageIds(ids);
       } catch (error) {
         console.error("Error fetching stages/grades:", error);
         setStages([]);
@@ -130,6 +169,16 @@ const GraduationForm = () => {
 
     fetchStagesGrades();
   }, []);
+
+  const registrationSchema = useMemo(
+    () =>
+      createGraduationSchema(t, currentBranch, (stageName) => {
+        const stage = stages.find((s) => s.name === stageName);
+        return stage?._id === stageIds.intermediate;
+      }),
+    [t, currentBranch, stages, stageIds]
+  );
+  const creditSchema = useMemo(() => createCreditSchema(t), [t]);
 
   const handleBranchChange = useCallback((branch) => {
     setCurrentBranch(branch);
@@ -168,7 +217,7 @@ const GraduationForm = () => {
     setCurrentPaymentMethod(event.target.value);
   }, []);
 
-  // Map stage/grade names to IDs
+  // Map stage/grade names to IDs (for API submission)
   const getStageId = useCallback(
     (stageName) => stages.find((s) => s.name === stageName)?._id || stageName,
     [stages]
@@ -176,6 +225,19 @@ const GraduationForm = () => {
   const getGradeId = useCallback(
     (gradeName) => grades.find((g) => g.name === gradeName)?._id || gradeName,
     [grades]
+  );
+
+  // Returns the locale-specific graduation grade name for the given stage name
+  // Driven entirely by API IDs — no hardcoded locale strings
+  const getGradeForStage = useCallback(
+    (stageName) => {
+      const stage = stages.find((s) => s.name === stageName);
+      if (!stage) return "";
+      const gradeId = stageGradeMap[stage._id];
+      if (!gradeId) return "";
+      return grades.find((g) => g._id === gradeId)?.name || "";
+    },
+    [stages, grades, stageGradeMap]
   );
 
   const getCurrentPrice = useCallback(
@@ -186,11 +248,11 @@ const GraduationForm = () => {
         currentBranch,
         stageId,
         values.classNumber,
-        stages
+        stageIds
       );
       return price;
     },
-    [currentBranch, stages, getStageId]
+    [currentBranch, stageIds, getStageId]
   );
 
   const buildApiBody = (regValues, paymentValues) => {
@@ -293,7 +355,7 @@ const GraduationForm = () => {
         currentBranch,
         getStageId(currentRegValues.academicStage),
         currentRegValues.classNumber,
-        stages
+        stageIds
       )
     : null;
 
@@ -337,7 +399,7 @@ const GraduationForm = () => {
                 )
               )}
           </h1>
-          <p className="text-white font-somar text-sm md:text-base lg:text-lg font-medium drop-shadow-md max-w-2xl mx-auto leading-relaxed mt-2">
+          <p className="text-white font-somar text-sm md:text-base lg:text-lg font-medium drop-shadow-md max-w-2xl !mx-auto leading-relaxed mt-2">
             {t("graduation.eventInfo.subtitle")}
           </p>
 
@@ -540,6 +602,8 @@ const GraduationForm = () => {
                       grades={grades}
                       isLoadingData={isLoadingData}
                       getPriceAndSuit={getPriceAndSuit}
+                      stageIds={stageIds}
+                      getGradeForStage={getGradeForStage}
                     />
 
                     <div className="flex flex-col sm:flex-row gap-3 mt-8">
@@ -556,7 +620,7 @@ const GraduationForm = () => {
                             currentBranch,
                             stageId,
                             values.classNumber,
-                            stages
+                            stageIds
                           );
                           return (
                             <>
