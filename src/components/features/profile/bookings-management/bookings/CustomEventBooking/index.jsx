@@ -5,6 +5,7 @@ import { useFetchData } from "@hooks/data/useFetchData";
 import React, { useState, memo } from "react";
 import RamadanNightsTable from "./RamadanNightsTable";
 import RamadanCampTable from "./RamadanCampTable";
+import GraduationCeremonyTable from "./GraduationCeremonyTable";
 import TableSkeleton from "@components/ui/TableSkeleton";
 
 // ── Orchestrator ──────────────────────────────────────────────────────────────
@@ -35,6 +36,8 @@ const CustomEventBooking = () => {
       return <RamadanNightsTable {...commonProps} />;
     case "RAMADAN_CAMP":
       return <RamadanCampTable {...commonProps} />;
+    case "GRADUATION_CEREMONY":
+      return <GraduationCeremonyTable {...commonProps} />;
     default:
       return null;
   }

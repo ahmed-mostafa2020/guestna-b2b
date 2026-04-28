@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-import { isValidPhoneNumber } from "react-phone-number-input";
+import { isValidPhoneByPattern } from "../phonePatterns";
 
 // Email RGX
 const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
@@ -12,8 +12,7 @@ export const createPhoneValidation = (t, required = true) => {
     .test("phone-validation", t("forms.phone.error.invalid"), (value) => {
       if (!value) return !required;
 
-      const phoneString = String(value).replace(/\s/g, "");
-      return phoneString.length >= 13 && isValidPhoneNumber(phoneString);
+      return isValidPhoneByPattern(value);
     });
 
   if (required) {

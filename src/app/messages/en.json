@@ -138,7 +138,8 @@
       "REJECTED": "Rejected",
       "ON_HOLD": "On Hold",
       "PARTIALLY_PAID": "Partially Paid",
-      "REFUNDED": "Refunded"
+      "REFUNDED": "Refunded",
+      "PENDING_CLIENT_REVIEW": "Pending Client Review"
     },
     "excel_success": {
       "export": "Export successful successfully"
@@ -966,7 +967,8 @@
       "customEventBooking": {
         "titles": {
           "RAMADAN_NIGHTS": "Ramadan Nights",
-          "RAMADAN_CAMP": "Ramadan AI Training Camp"
+          "RAMADAN_CAMP": "Ramadan AI Training Camp",
+          "GRADUATION_CEREMONY": "Graduation Ceremony"
         },
         "header": {
           "orderId": "Order ID",
@@ -980,7 +982,10 @@
             "phone": "Phone Number",
             "parentPhone": "Parent Phone Number",
             "idNumber": "ID Number",
-            "gender": "Gender"
+            "gender": "Gender",
+            "academicStage": "Academic Stage",
+            "grade": "Grade",
+            "clothesSize": "Clothes Size"
           },
           "stationName": "Station Name",
           "socialHandle": "Social Handle",
@@ -3188,6 +3193,101 @@
       "phoneInvalid": "Please enter a valid phone number",
       "genderRequired": "Please select a gender",
       "schoolNameRequired": "Please select a school",
+      "success": "Your registration has been submitted successfully!",
+      "error": "An error occurred. Please try again."
+    }
+  },
+  "graduation": {
+    "pageTitle": "Graduation Suit Registration",
+    "eventInfo": {
+      "title": "A success journey deserves a special graduation suit",
+      "subtitle": "Your graduation is a once-in-a-lifetime moment – choose the suit that honors your years of hard work and success, with elegant design and high quality.",
+      "badge": "Class of 2026 – Celebrate your achievements",
+      "feature1": "Professional design",
+      "feature2": "High quality",
+      "feature3": "Multiple sizes"
+    },
+    "branches": {
+      "arid": "Al-Arid",
+      "atiq": "Al-Atiq"
+    },
+    "stepper": {
+      "step1": "Registration",
+      "step2": "Payment"
+    },
+    "form": {
+      "title": "Graduation Fee",
+      "subtitle": "Choose the appropriate section and complete your details",
+      "name": {
+        "label": "Name",
+        "placeholder": "Enter student full name"
+      },
+      "stage": {
+        "label": "Stage",
+        "placeholder": "Select stage"
+      },
+      "grade": {
+        "label": "Grade",
+        "placeholder": "Select grade"
+      },
+      "classNumber": {
+        "label": "Class",
+        "placeholder": "Select class"
+      },
+      "phone": {
+        "label": "Phone Number",
+        "placeholder": "05xxxxxxxx"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "name@example.com"
+      },
+      "clothesSize": {
+        "label": "Size",
+        "placeholder": "Select size"
+      }
+    },
+    "suit": {
+      "title": "The suit for your stage",
+      "suitLabel": "Graduation Suit",
+      "purple": "Purple",
+      "white": "White",
+      "maroon": "Maroon",
+      "navy": "Navy"
+    },
+    "sizeChart": {
+      "title": "Size Chart",
+      "size": "Size (inch)",
+      "chest": "Chest",
+      "waist": "Waist",
+      "length": "Length",
+      "s": "S",
+      "m": "M",
+      "l": "L",
+      "xl": "XL",
+      "xxl": "2XL"
+    },
+    "payment": {
+      "title": "Payment Details",
+      "subtitle": "Complete your registration by paying the suit fee",
+      "orderSummary": "Order Summary",
+      "suitFee": "Graduation Suit Fee",
+      "total": "Total",
+      "includingVat": "Including VAT",
+      "confirm": "Confirm Order"
+    },
+    "validation": {
+      "nameRequired": "Name is required",
+      "nameMin": "Name must be at least 2 characters",
+      "nameMax": "Name must not exceed 50 characters",
+      "phoneRequired": "Phone number is required",
+      "phoneInvalid": "Please enter a valid phone number",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email address",
+      "stageRequired": "Please select a stage",
+      "gradeRequired": "Please select a grade",
+      "classRequired": "Please select a class",
+      "sizeRequired": "Please select a size",
       "success": "Your registration has been submitted successfully!",
       "error": "An error occurred. Please try again."
     }

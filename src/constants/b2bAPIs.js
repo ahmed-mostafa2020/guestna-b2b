@@ -203,6 +203,14 @@ export const B2B_END_POINTS = {
     ORGANIZATIONS: "organizations/manhal",
   },
 
+  GRADUATION: {
+    STAGES_GRADES: "graduation/stages/grades",
+    INITIATION: "graduation/initiation",
+    APPLE_INITIATE: "graduation/initiation/apple",
+    APPLE_CONFIRM: "graduation/confermed/apple",
+    APPLE_CALLBACK: "graduation/confermed/event/apple",
+  },
+
   CONTACT_US: "supportMessage/massage",
   FAQ: "faqs/all",
 };
