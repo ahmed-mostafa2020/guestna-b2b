@@ -1,6 +1,40 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
 
+/** Remove the /b2b/ segment (and any trailing path) from the base URL */
+function getBaseURL(withB2b = true) {
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? "";
+  if (withB2b) return base;
+  // Strip everything from /b2b/ onward so we get the root origin
+  return base.replace(/\/b2b\/.*$/, "/").replace(/\/b2b$/, "/");
+}
+
+/** Shared headers sent to the backend on every request */
+function buildHeaders(request, extra = {}) {
+  const token = request.headers.get("authorization");
+  const devicespecificid = request.headers.get("devicespecificid");
+  const profileOrganizations = request.headers.get("profile-organizations");
+
+  return {
+    "Content-Type": "application/json",
+    reqKey: process.env.SECURE_REQ_KEY,
+    lang: request.headers.get("lang") || "ar",
+    ...(token && { authorization: token }),
+    ...(devicespecificid && { devicespecificid }),
+    ...(profileOrganizations && {
+      "profile-organizations": profileOrganizations,
+    }),
+    ...extra,
+  };
+}
+
+/** Build the backend URL, appending siteType as a query param when provided */
+function buildBackendURL(basePath, siteType) {
+  if (!siteType) return basePath;
+  const separator = basePath.includes("?") ? "&" : "?";
+  return `${basePath}${separator}siteType=${siteType}`;
+}
+
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const path = searchParams.get("path");
@@ -12,24 +46,11 @@ export async function GET(request) {
     );
   }
 
-  const token = request.headers.get("authorization");
-  const devicespecificid = request.headers.get("devicespecificid");
-  const profileOrganizations = request.headers.get("profile-organizations");
+  const withB2b = searchParams.get("b2b") !== "false";
+  const siteType = searchParams.get("siteType");
 
-  const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${path}`;
-  const headers = {
-    "Content-Type": "application/json",
-    reqKey: process.env.SECURE_REQ_KEY,
-    lang: request.headers.get("lang") || "ar",
-    ...(token && { authorization: token }),
-    ...(devicespecificid && { devicespecificid }),
-    ...(profileOrganizations && {
-      "profile-organizations": profileOrganizations,
-    }),
-  };
-
-  const authHeader = request.headers.get("authorization");
-  if (authHeader) headers.authorization = authHeader;
+  const backendURL = buildBackendURL(`${getBaseURL(withB2b)}${path}`, siteType);
+  const headers = buildHeaders(request);
 
   try {
     const response = await axios.get(backendURL, { headers });
@@ -52,22 +73,12 @@ export async function POST(request) {
     );
   }
 
-  const token = request.headers.get("authorization");
-  const devicespecificid = request.headers.get("devicespecificid");
+  const withB2b = searchParams.get("b2b") !== "false";
+  const siteType = searchParams.get("siteType");
   const contentType = request.headers.get("content-type");
-  const profileOrganizations = request.headers.get("profile-organizations");
 
-  const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${pathPost}`;
-
-  const headers = {
-    reqKey: process.env.SECURE_REQ_KEY,
-    lang: request.headers.get("lang") || "ar",
-    ...(token && { authorization: token }),
-    ...(devicespecificid && { devicespecificid }),
-    ...(profileOrganizations && {
-      "profile-organizations": profileOrganizations,
-    }),
-  };
+  const backendURL = buildBackendURL(`${getBaseURL(withB2b)}${pathPost}`, siteType);
+  const headers = buildHeaders(request);
 
   let body = undefined;
   if (contentType?.includes("application/json")) {
@@ -104,22 +115,12 @@ export async function PUT(request) {
     );
   }
 
-  const token = request.headers.get("authorization");
-  const devicespecificid = request.headers.get("devicespecificid");
+  const withB2b = searchParams.get("b2b") !== "false";
+  const siteType = searchParams.get("siteType");
   const contentType = request.headers.get("content-type");
-  const profileOrganizations = request.headers.get("profile-organizations");
 
-  const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${pathPut}`;
-
-  const headers = {
-    reqKey: process.env.SECURE_REQ_KEY,
-    lang: request.headers.get("lang") || "ar",
-    ...(token && { authorization: token }),
-    ...(devicespecificid && { devicespecificid }),
-    ...(profileOrganizations && {
-      "profile-organizations": profileOrganizations,
-    }),
-  };
+  const backendURL = buildBackendURL(`${getBaseURL(withB2b)}${pathPut}`, siteType);
+  const headers = buildHeaders(request);
 
   let body = undefined;
   if (contentType?.includes("application/json")) {
@@ -156,22 +157,12 @@ export async function PATCH(request) {
     );
   }
 
-  const token = request.headers.get("authorization");
-  const devicespecificid = request.headers.get("devicespecificid");
+  const withB2b = searchParams.get("b2b") !== "false";
+  const siteType = searchParams.get("siteType");
   const contentType = request.headers.get("content-type");
-  const profileOrganizations = request.headers.get("profile-organizations");
 
-  const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${pathPatch}`;
-
-  const headers = {
-    reqKey: process.env.SECURE_REQ_KEY,
-    lang: request.headers.get("lang") || "ar",
-    ...(token && { authorization: token }),
-    ...(devicespecificid && { devicespecificid }),
-    ...(profileOrganizations && {
-      "profile-organizations": profileOrganizations,
-    }),
-  };
+  const backendURL = buildBackendURL(`${getBaseURL(withB2b)}${pathPatch}`, siteType);
+  const headers = buildHeaders(request);
 
   let body = undefined;
   if (contentType?.includes("application/json")) {
@@ -208,22 +199,11 @@ export async function DELETE(request) {
     );
   }
 
-  const token = request.headers.get("authorization");
-  const devicespecificid = request.headers.get("devicespecificid");
-  const profileOrganizations = request.headers.get("profile-organizations");
+  const withB2b = searchParams.get("b2b") !== "false";
+  const siteType = searchParams.get("siteType");
 
-  const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${pathDelete}`;
-
-  const headers = {
-    "Content-Type": "application/json",
-    reqKey: process.env.SECURE_REQ_KEY,
-    lang: request.headers.get("lang") || "ar",
-    ...(token && { authorization: token }),
-    ...(devicespecificid && { devicespecificid }),
-    ...(profileOrganizations && {
-      "profile-organizations": profileOrganizations,
-    }),
-  };
+  const backendURL = buildBackendURL(`${getBaseURL(withB2b)}${pathDelete}`, siteType);
+  const headers = buildHeaders(request);
 
   try {
     const response = await axios.delete(backendURL, { headers });

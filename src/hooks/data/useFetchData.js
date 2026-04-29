@@ -46,9 +46,11 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
       headers["profile-organizations"] = selectedOrganizationsHeader;
     }
 
+    const b2bParam = options.b2b === false ? "&b2b=false" : "";
+    const siteTypeParam = options.siteType ? `&siteType=${options.siteType}` : "";
     const response = await axios({
       method,
-      url: `/api/proxy?path=${fullPath}`,
+      url: `/api/proxy?path=${fullPath}${b2bParam}${siteTypeParam}`,
       headers,
       ...queryParams,
       data: method !== "get" ? options.body : undefined,

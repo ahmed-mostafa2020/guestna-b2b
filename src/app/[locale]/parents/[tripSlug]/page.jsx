@@ -25,6 +25,7 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
+import MaintenancePage from "@components/layout/MaintenancePage";
 import { TRIP_STATUS } from "@constants/tripStatus";
 import GallerySection from "@components/features/tripDetails/gallerySection";
 import CustomizedBreadcrumbs from "@components/ui/breadcrumbs/CustomizedBreadcrumbs";
@@ -43,6 +44,16 @@ const TripDetails = ({ params }) => {
   const locale = useLocale();
   const t = useTranslations();
   const searchParams = useSearchParams();
+
+  const { data: activeData, isLoading: isActiveLoading } = useFetchData(
+    B2B_END_POINTS.IS_ACTIVE,
+    {},
+    { b2b: false, siteType: "b2b", skipOrgHeader: true }
+  );
+
+  // null while loading → show spinner; false only when backend says so → maintenance
+  const isActive = isActiveLoading ? null : activeData?.isActive !== false;
+
   const onlyDetails = Boolean(searchParams.get("onlyDetails"));
 
   const firstAvailableDate = useSelector((state) => {
@@ -121,6 +132,15 @@ const TripDetails = ({ params }) => {
   // useEffect(() => {
   //   dispatch(setUser(USERS.B2B_PARENT));
   // }, [dispatch]);
+
+  if (isActive === null)
+    return (
+      <div className="w-full min-h-screen centered">
+        <FullScreenLoading status="pending" />
+      </div>
+    );
+
+  if (isActive === false) return <MaintenancePage locale={locale} />;
 
   if (isLoading)
     return (
