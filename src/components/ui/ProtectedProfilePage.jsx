@@ -3,47 +3,75 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
+import { useSelector } from "react-redux";
 import { usePermissions } from "@hooks/utils/usePermissions";
-import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import { getFirstAccessiblePage } from "@utils/helpers/getFirstAccessiblePage";
+import { USERS } from "@constants/users";
+import LoginAccessModal from "./LoginAccessModal";
 
 /**
- * Protected Profile Page Component
- * Checks if user has permission to access a specific profile page
- * Redirects to first accessible page if permission is denied
- * 
- * @param {Object} props
- * @param {string} props.requiredPermission - The page permission required (e.g., PERMISSIONS.PAGE.B2B_PROFILE_BOOKINGS_PAGE)
- * @param {React.ReactNode} props.children - The page content to render if authorized
- * @param {string} [props.redirectTo] - Optional custom redirect path (defaults to first accessible page based on user permissions)
+ * ProtectedProfilePage
+ *
+ * Gate-keeps every profile sub-page with the following logic:
+ *
+ * 1. VISITOR (not logged in)
+ *    → Render a LoginAccessModal overlay; page content is NOT rendered.
+ *      After a successful login the modal disappears automatically because
+ *      userType changes in Redux, triggering a re-render that falls through
+ *      to the normal permission check below.
+ *
+ * 2. Authenticated but permissions still loading
+ *    → Render nothing (the parent ProfileLayout already shows a full-screen
+ *      loader while the profile API call is in-flight).
+ *
+ * 3. Authenticated, permissions loaded, required page permission present
+ *    → Render children.
+ *
+ * 4. Authenticated, permissions loaded, required page permission ABSENT
+ *    a. User has at least one accessible page → redirect to it.
+ *    b. User has no accessible pages at all   → redirect to home (/${locale}).
+ *
+ * @param {string}          props.requiredPermission  Page permission key (e.g. PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE)
+ * @param {React.ReactNode} props.children            Page content shown when authorised
+ * @param {string}          [props.redirectTo]        Optional explicit redirect path (overrides the auto-detected one)
  */
-const ProtectedProfilePage = ({ 
-  requiredPermission, 
-  children, 
-  redirectTo 
-}) => {
+const ProtectedProfilePage = ({ requiredPermission, children, redirectTo }) => {
   const router = useRouter();
   const locale = useLocale();
-  const { hasPage, pages, isLoaded } = usePermissions();
 
+  const { hasPage, pages, isLoaded } = usePermissions();
+  const userType = useSelector((state) => state.users.userType);
+
+  const isVisitor = userType === USERS.VISITOR;
+  const hasPermission = hasPage(requiredPermission);
+
+  // Redirect authenticated users who lack the required permission.
+  // This runs ONLY when we know for certain (isLoaded) that the user is
+  // logged-in but still cannot access the page.
   useEffect(() => {
-    // Check if user has the required page permission
-    // Only redirect if permissions are loaded and user doesn't have access
-    if (isLoaded && !hasPage(requiredPermission)) {
-      // Redirect to first accessible page or custom redirect path
-      const redirectPath = redirectTo || getFirstAccessiblePage(pages, locale);
-      router.replace(redirectPath);
+    if (isVisitor || !isLoaded) return;
+
+    if (!hasPermission) {
+      const fallback =
+        redirectTo ||
+        (pages.length === 0 ? `/${locale}` : getFirstAccessiblePage(pages, locale));
+      router.replace(fallback);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requiredPermission, redirectTo, isLoaded]);
+  }, [isVisitor, isLoaded, hasPermission, redirectTo, locale]);
 
-  // If permissions are loaded and user doesn't have access, show nothing (redirecting)
-  if (isLoaded && !hasPage(requiredPermission)) {
+  // ── Case 1: VISITOR ──────────────────────────────────────────────────────
+  // Show the login modal; never render the protected page content.
+  if (isVisitor) {
+    return <LoginAccessModal open={true} />;
+  }
+
+  // ── Case 2/4: Permissions not yet loaded OR redirect pending ─────────────
+  if (!isLoaded || !hasPermission) {
     return null;
   }
 
-  // User has permission or permissions still loading, render the page
-  // (Let the parent page handle its own loading state)
+  // ── Case 3: Authorised ───────────────────────────────────────────────────
   return <>{children}</>;
 };
 
