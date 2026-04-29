@@ -251,6 +251,7 @@ export default async function RootLayout({ children, params: { locale } }) {
         />
         {/* JSON-LD is data, not executable JS — exempt from script-src CSP */}
         <Script
+          nonce={nonce}
           id={`structured-data-${locale}`}
           type="application/ld+json"
           dangerouslySetInnerHTML={{
