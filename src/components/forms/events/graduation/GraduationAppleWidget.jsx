@@ -60,8 +60,13 @@ const GraduationAppleWidget = ({ baseData, price }) => {
                 setCurrentBookingId(data.bookingId);
                 resolve({});
               },
-              onError: () => {
-                alert("on error generate Id");
+              onError: (error) => {
+                const backendMessage =
+                  error?.response?.data?.message ||
+                  error?.response?.data?.error ||
+                  error?.message;
+                console.error("Graduation Apple initiation failed:", error);
+                alert(backendMessage || "on error generate Id");
                 reject();
               },
             });
@@ -84,8 +89,13 @@ const GraduationAppleWidget = ({ baseData, price }) => {
                   setCurrentBookingId("");
                   resolve({});
                 },
-                onError: () => {
-                  alert("error to confirmed");
+                onError: (error) => {
+                  const backendMessage =
+                    error?.response?.data?.message ||
+                    error?.response?.data?.error ||
+                    error?.message;
+                  console.error("Graduation Apple confirmation failed:", error);
+                  alert(backendMessage || "error to confirmed");
                   reject();
                 },
               });
