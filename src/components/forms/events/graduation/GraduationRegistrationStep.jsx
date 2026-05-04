@@ -281,7 +281,7 @@ const GraduationRegistrationStep = ({
           <div
             className={`border-2 rounded-2xl p-5 ${suitConfig.border} ${suitConfig.bg}`}
           >
-            <h3 className="text-base font-semibold font-somar text-center mb-4 flex items-center justify-center gap-2">
+            <h3 className="text-base font-semibold font-somar text-center pb-4 flex items-center justify-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#d4a853]" />
               {t("graduation.suit.title")}
             </h3>

@@ -11,6 +11,7 @@ import axios from "axios";
 import {
   createGraduationSchema,
   createCreditSchema,
+  createTamaraSchema,
 } from "@utils/validators/validationSchemas";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import getProxyUrl from "@utils/api/getProxyUrl";
@@ -87,6 +88,8 @@ const paymentInitialValues = {
   cvc: "",
   expiryMonth: "",
   expiryYear: "",
+  tamaraMobile: "",
+  selectedCountry: "SA",
 };
 
 const GraduationForm = () => {
@@ -189,6 +192,7 @@ const GraduationForm = () => {
     [t, currentBranch, stages, stageIds]
   );
   const creditSchema = useMemo(() => createCreditSchema(t), [t]);
+  const tamaraSchema = useMemo(() => createTamaraSchema(t), [t]);
 
   const handleBranchChange = useCallback((branch) => {
     setCurrentBranch(branch);
@@ -340,6 +344,15 @@ const GraduationForm = () => {
         expiryYear: String(paymentValues.expiryYear),
         cvc: String(paymentValues.cvc),
       };
+    } else if (
+      currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.TAMARA &&
+      paymentValues
+    ) {
+      body.redirectUrl = `${vercelUrl}/${locale}/bookingStatus`;
+      body.tamaraUserInfo = {
+        phone: String(paymentValues.tamaraMobile || ""),
+        country: String(paymentValues.selectedCountry || "SA"),
+      };
     }
 
     return body;
@@ -363,10 +376,15 @@ const GraduationForm = () => {
     try {
       const data = buildApiBody(regValues, paymentValues);
 
+      const endpoint =
+        currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.TAMARA
+          ? B2B_END_POINTS.GRADUATION.TAMARA_INITIATION
+          : B2B_END_POINTS.GRADUATION.INITIATION;
+
       const config = {
         method: "post",
         maxBodyLength: Infinity,
-        url: getProxyUrl(B2B_END_POINTS.GRADUATION.INITIATION),
+        url: getProxyUrl(endpoint),
         headers,
         data: JSON.stringify(data),
       };
@@ -705,6 +723,9 @@ const GraduationForm = () => {
                   currentPaymentMethod ===
                   CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD
                     ? creditSchema
+                    : currentPaymentMethod ===
+                      CONSTANT_VALUES.PAYMENT_METHODS.TAMARA
+                    ? tamaraSchema
                     : undefined
                 }
                 onSubmit={handlePaymentSubmit}
@@ -717,6 +738,7 @@ const GraduationForm = () => {
                   touched: paymentTouched,
                   handleChange: handlePaymentChange,
                   handleBlur: handlePaymentBlur,
+                  setFieldValue,
                   isSubmitting,
                   isValid,
                   submitForm,
@@ -732,6 +754,7 @@ const GraduationForm = () => {
                       paymentTouched={paymentTouched}
                       handlePaymentChange={handlePaymentChange}
                       handlePaymentBlur={handlePaymentBlur}
+                      setFieldValue={setFieldValue}
                       currentPaymentMethod={currentPaymentMethod}
                       onPaymentMethodChange={handlePaymentMethodChange}
                       applePayBaseData={buildApiBody(
@@ -753,8 +776,10 @@ const GraduationForm = () => {
                         {t("pagination.previous")}
                       </button>
 
-                      {currentPaymentMethod ===
-                      CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD ? (
+                      {(currentPaymentMethod ===
+                        CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD ||
+                        currentPaymentMethod ===
+                          CONSTANT_VALUES.PAYMENT_METHODS.TAMARA) && (
                         <button
                           type="button"
                           disabled={
@@ -774,7 +799,7 @@ const GraduationForm = () => {
                             </span>
                           )}
                         </button>
-                      ) : null}
+                      )}
                     </div>
                   </div>
                 )}

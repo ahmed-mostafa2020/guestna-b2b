@@ -262,12 +262,25 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 /* Tamara widget */
+.tamara-product-widget-container,
+.tamara-product-widget {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
 .tamara-product-widget {
   margin: 1rem 0;
   padding: 1rem;
   border: 1px solid #eee;
   border-radius: 8px;
   min-height: 80px;
+}
+
+/* Constrain any element injected by the Tamara script */
+.tamara-product-widget-container * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 /* OverRiding MUI*/
