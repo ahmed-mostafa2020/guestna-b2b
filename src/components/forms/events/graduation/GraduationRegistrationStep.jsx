@@ -106,7 +106,7 @@ const GraduationRegistrationStep = ({
       {/* Form Fields */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7 mb-6 lg:mb-10">
         {/* Name */}
-        <div className="md:col-span-2">
+        <div className="md:col-span-2" id="grad-field-name">
           <TextInputGroup
             label={t("graduation.form.name.label")}
             labelFontFamily="var(--font-somar-sans), sans-serif"
@@ -123,7 +123,7 @@ const GraduationRegistrationStep = ({
 
         {/* Stage */}
         {isArid ? (
-          <div>
+          <div id="grad-field-academicStage">
             {isLoadingData ? (
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-0.5">
@@ -162,7 +162,7 @@ const GraduationRegistrationStep = ({
                 type="text"
                 value={values.academicStage || ""}
                 readOnly
-                className="bg-gray-100 w-full p-4 font-normal border-2 rounded-lg h-[55px] border-gray-200 font-somar text-lg text-gray-500 cursor-not-allowed"
+                className="bg-gray-100 w-full p-4 font-normal border-2 rounded-lg h-[55px] border-gray-200 font-somar text-gray-500 cursor-not-allowed"
               />
             </div>
           </div>
@@ -180,14 +180,14 @@ const GraduationRegistrationStep = ({
               type="text"
               value={values.grade || t("graduation.form.grade.placeholder")}
               readOnly
-              className="bg-gray-100 w-full p-4 font-normal border-2 rounded-lg h-[55px] border-gray-200 font-somar text-lg text-gray-500 cursor-not-allowed"
+              className="bg-gray-100 w-full p-4 font-normal border-2 rounded-lg h-[55px] border-gray-200 font-somar text-gray-500 cursor-not-allowed"
             />
           </div>
         </div>
 
         {/* Class Number - Only for AL_ATEEQ */}
         {isAtiq && (
-          <div>
+          <div id="grad-field-classNumber">
             <SelectionGroup
               label={t("graduation.form.classNumber.label")}
               name="classNumber"
@@ -208,7 +208,7 @@ const GraduationRegistrationStep = ({
         )}
 
         {/* Phone */}
-        <div className="relative flex flex-col gap-2">
+        <div id="grad-field-phone" className="relative flex flex-col gap-2">
           <div className="flex items-center gap-0.5">
             <label className="font-medium capitalize font-somar">
               {t("graduation.form.phone.label")}
@@ -258,19 +258,21 @@ const GraduationRegistrationStep = ({
         </div>
 
         {/* Email */}
-        <TextInputGroup
-          label={t("graduation.form.email.label")}
-          labelFontFamily="var(--font-somar-sans), sans-serif"
-          name="email"
-          type="email"
-          value={values.email}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          touched={touched.email}
-          errors={errors.email}
-          placeholder={t("graduation.form.email.placeholder")}
-          required={true}
-        />
+        <div id="grad-field-email">
+          <TextInputGroup
+            label={t("graduation.form.email.label")}
+            labelFontFamily="var(--font-somar-sans), sans-serif"
+            name="email"
+            type="email"
+            value={values.email}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            touched={touched.email}
+            errors={errors.email}
+            placeholder={t("graduation.form.email.placeholder")}
+            required={true}
+          />
+        </div>
       </div>
 
       {/* Suit Preview Card */}
@@ -333,7 +335,10 @@ const GraduationRegistrationStep = ({
                   </div>
 
                   {/* Size Dropdown */}
-                  <div className="flex flex-col justify-center">
+                  <div
+                    id="grad-field-clothesSize"
+                    className="flex flex-col justify-center"
+                  >
                     <SelectionGroup
                       label={t("graduation.form.clothesSize.label")}
                       name="clothesSize"
