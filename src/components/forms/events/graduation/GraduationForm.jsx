@@ -11,6 +11,7 @@ import axios from "axios";
 import {
   createGraduationSchema,
   createCreditSchema,
+  createTamaraSchema,
 } from "@utils/validators/validationSchemas";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import getProxyUrl from "@utils/api/getProxyUrl";
@@ -19,6 +20,15 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import GraduationRegistrationStep from "./GraduationRegistrationStep";
 import GraduationPaymentStep from "./GraduationPaymentStep";
+
+const extractBackendError = (error, fallback) => {
+  const data = error?.response?.data;
+  if (!data) return fallback;
+  if (Array.isArray(data.info) && data.info.length > 0) {
+    return data.info.map((i) => i.message).filter(Boolean).join(" | ");
+  }
+  return data.message || fallback;
+};
 
 const STEPS = ["step1", "step2"];
 
@@ -78,6 +88,8 @@ const paymentInitialValues = {
   cvc: "",
   expiryMonth: "",
   expiryYear: "",
+  tamaraMobile: "",
+  selectedCountry: "SA",
 };
 
 const GraduationForm = () => {
@@ -91,6 +103,7 @@ const GraduationForm = () => {
     CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD
   );
   const [isPaymentSubmitting, setIsPaymentSubmitting] = useState(false);
+  const [isStep1Submitting, setIsStep1Submitting] = useState(false);
   const registrationValuesRef = useRef(null);
 
   // Stages & Grades from API (locale-specific, for display)
@@ -179,34 +192,12 @@ const GraduationForm = () => {
     [t, currentBranch, stages, stageIds]
   );
   const creditSchema = useMemo(() => createCreditSchema(t), [t]);
+  const tamaraSchema = useMemo(() => createTamaraSchema(t), [t]);
 
   const handleBranchChange = useCallback((branch) => {
     setCurrentBranch(branch);
     registrationValuesRef.current = null;
   }, []);
-
-  const handleNext = useCallback(
-    async (validateForm, setTouched, values) => {
-      const errors = await validateForm();
-      if (Object.keys(errors).length === 0) {
-        registrationValuesRef.current = values;
-        setCurrentStep(1);
-        window.scrollTo({ top: 300, behavior: "smooth" });
-      } else {
-        const touchedFields = {};
-        Object.keys(getRegistrationInitialValues(currentBranch)).forEach(
-          (key) => {
-            touchedFields[key] = true;
-          }
-        );
-        setTouched(touchedFields);
-        enqueueSnackbar(t("graduation.validation.error"), {
-          variant: "error",
-        });
-      }
-    },
-    [t, enqueueSnackbar, currentBranch]
-  );
 
   const handleBack = useCallback(() => {
     setCurrentStep(0);
@@ -255,30 +246,91 @@ const GraduationForm = () => {
     [currentBranch, stageIds, getStageId]
   );
 
+  const REGISTRATION_FIELD_ORDER = [
+    "name",
+    "academicStage",
+    "classNumber",
+    "phone",
+    "email",
+    "clothesSize",
+  ];
+
+  const handleNext = useCallback(
+    async (validateForm, setTouched, values) => {
+      const errors = await validateForm();
+      if (Object.keys(errors).length > 0) {
+        const touchedFields = {};
+        Object.keys(getRegistrationInitialValues(currentBranch)).forEach(
+          (key) => {
+            touchedFields[key] = true;
+          }
+        );
+        setTouched(touchedFields);
+        const firstErrorField = REGISTRATION_FIELD_ORDER.find(
+          (f) => errors[f]
+        );
+        if (firstErrorField) {
+          const el = document.getElementById(`grad-field-${firstErrorField}`);
+          el?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        enqueueSnackbar(t("graduation.validation.error"), {
+          variant: "error",
+        });
+        return;
+      }
+
+      setIsStep1Submitting(true);
+      try {
+        const price = getCurrentPrice(values);
+        const clientBody = {
+          name: values.name,
+          branch: currentBranch,
+          academicStage: getStageId(values.academicStage),
+          grade: getGradeId(values.grade),
+          price,
+        };
+        if (values.email) clientBody.email = values.email;
+        if (values.phone) clientBody.phone = values.phone;
+        if (currentBranch === BRANCHES.AL_ATEEQ && values.classNumber) {
+          clientBody.classNumber = parseInt(values.classNumber);
+        }
+        if (values.clothesSize) clientBody.clothesSize = values.clothesSize;
+
+        const config = {
+          method: "post",
+          url: getProxyUrl(B2B_END_POINTS.GRADUATION.CLIENT),
+          headers: getHeaders(locale),
+          data: JSON.stringify(clientBody),
+        };
+        const response = await axios.request(config);
+        registrationValuesRef.current = {
+          ...values,
+          _clientId: response.data?._id,
+        };
+        setCurrentStep(1);
+        window.scrollTo({ top: 300, behavior: "smooth" });
+      } catch (error) {
+        const errorMessage = extractBackendError(
+          error,
+          t("graduation.validation.error")
+        );
+        enqueueSnackbar(errorMessage, { variant: "error" });
+      } finally {
+        setIsStep1Submitting(false);
+      }
+    },
+    [t, enqueueSnackbar, currentBranch, getStageId, getGradeId, getCurrentPrice, locale]
+  );
+
   const buildApiBody = (regValues, paymentValues) => {
     if (!regValues) return {};
     const price = getCurrentPrice(regValues);
 
     const body = {
-      client: {
-        name: regValues.name,
-        email: regValues.email,
-        phone: regValues.phone,
-        branch: currentBranch,
-        academicStage: getStageId(regValues.academicStage),
-        grade: getGradeId(regValues.grade),
-      },
+      client: regValues._clientId,
       price,
       quantity: 1,
     };
-
-    if (currentBranch === BRANCHES.AL_ATEEQ && regValues.classNumber) {
-      body.client.classNumber = parseInt(regValues.classNumber);
-    }
-
-    if (regValues.clothesSize) {
-      body.client.clothesSize = regValues.clothesSize;
-    }
 
     if (
       currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD &&
@@ -291,6 +343,15 @@ const GraduationForm = () => {
         expiryMonth: String(paymentValues.expiryMonth),
         expiryYear: String(paymentValues.expiryYear),
         cvc: String(paymentValues.cvc),
+      };
+    } else if (
+      currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.TAMARA &&
+      paymentValues
+    ) {
+      body.redirectUrl = `${vercelUrl}/${locale}/bookingStatus`;
+      body.tamaraUserInfo = {
+        phone: String(paymentValues.tamaraMobile || ""),
+        country: String(paymentValues.selectedCountry || "SA"),
       };
     }
 
@@ -315,10 +376,15 @@ const GraduationForm = () => {
     try {
       const data = buildApiBody(regValues, paymentValues);
 
+      const endpoint =
+        currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.TAMARA
+          ? B2B_END_POINTS.GRADUATION.TAMARA_INITIATION
+          : B2B_END_POINTS.GRADUATION.INITIATION;
+
       const config = {
         method: "post",
         maxBodyLength: Infinity,
-        url: getProxyUrl(B2B_END_POINTS.GRADUATION.INITIATION),
+        url: getProxyUrl(endpoint),
         headers,
         data: JSON.stringify(data),
       };
@@ -338,9 +404,10 @@ const GraduationForm = () => {
         registrationValuesRef.current = null;
       }
     } catch (error) {
-      console.error("Error submitting graduation registration:", error);
-      const errorMessage =
-        error.response?.data?.message || t("graduation.validation.error");
+      const errorMessage = extractBackendError(
+        error,
+        t("graduation.validation.error")
+      );
       enqueueSnackbar(errorMessage, { variant: "error" });
     } finally {
       setSubmitting(false);
@@ -612,27 +679,35 @@ const GraduationForm = () => {
                         onClick={() =>
                           handleNext(validateForm, setTouched, values)
                         }
-                        className="w-full py-3.5 px-6 bg-[#d4a853] text-white rounded-xl font-somar font-semibold text-lg hover:bg-[#c9973f] transition-all duration-200 ease-in-out shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                        disabled={isStep1Submitting}
+                        className="w-full py-3.5 px-6 bg-[#d4a853] text-white rounded-xl font-somar font-semibold text-lg hover:bg-[#c9973f] transition-all duration-200 ease-in-out shadow-md hover:shadow-lg flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                       >
-                        {(() => {
-                          const stageId = getStageId(values.academicStage);
-                          const info = getPriceAndSuit(
-                            currentBranch,
-                            stageId,
-                            values.classNumber,
-                            stageIds
-                          );
-                          return (
-                            <>
-                              <span>{t("graduation.payment.confirm")}</span>
-                              {info.price > 0 && (
-                                <span className="bg-white/20 px-3 py-1 rounded-lg text-sm">
-                                  {formatCurrency(info.price)}
-                                </span>
-                              )}
-                            </>
-                          );
-                        })()}
+                        {isStep1Submitting ? (
+                          <>
+                            <CircularProgress size={20} color="inherit" />
+                            <span>{t("forms.validation.sending")}</span>
+                          </>
+                        ) : (
+                          (() => {
+                            const stageId = getStageId(values.academicStage);
+                            const info = getPriceAndSuit(
+                              currentBranch,
+                              stageId,
+                              values.classNumber,
+                              stageIds
+                            );
+                            return (
+                              <>
+                                <span>{t("graduation.payment.confirm")}</span>
+                                {info.price > 0 && (
+                                  <span className="bg-white/20 px-3 py-1 rounded-lg text-sm">
+                                    {formatCurrency(info.price)}
+                                  </span>
+                                )}
+                              </>
+                            );
+                          })()
+                        )}
                       </button>
                     </div>
                   </div>
@@ -648,6 +723,9 @@ const GraduationForm = () => {
                   currentPaymentMethod ===
                   CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD
                     ? creditSchema
+                    : currentPaymentMethod ===
+                      CONSTANT_VALUES.PAYMENT_METHODS.TAMARA
+                    ? tamaraSchema
                     : undefined
                 }
                 onSubmit={handlePaymentSubmit}
@@ -660,6 +738,7 @@ const GraduationForm = () => {
                   touched: paymentTouched,
                   handleChange: handlePaymentChange,
                   handleBlur: handlePaymentBlur,
+                  setFieldValue,
                   isSubmitting,
                   isValid,
                   submitForm,
@@ -675,6 +754,7 @@ const GraduationForm = () => {
                       paymentTouched={paymentTouched}
                       handlePaymentChange={handlePaymentChange}
                       handlePaymentBlur={handlePaymentBlur}
+                      setFieldValue={setFieldValue}
                       currentPaymentMethod={currentPaymentMethod}
                       onPaymentMethodChange={handlePaymentMethodChange}
                       applePayBaseData={buildApiBody(
@@ -696,8 +776,10 @@ const GraduationForm = () => {
                         {t("pagination.previous")}
                       </button>
 
-                      {currentPaymentMethod ===
-                      CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD ? (
+                      {(currentPaymentMethod ===
+                        CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD ||
+                        currentPaymentMethod ===
+                          CONSTANT_VALUES.PAYMENT_METHODS.TAMARA) && (
                         <button
                           type="button"
                           disabled={
@@ -717,7 +799,7 @@ const GraduationForm = () => {
                             </span>
                           )}
                         </button>
-                      ) : null}
+                      )}
                     </div>
                   </div>
                 )}

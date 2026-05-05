@@ -232,7 +232,7 @@ const TamaraWidget = ({
     <div
       ref={widgetRef}
       className="tamara-product-widget-container"
-      style={{ minHeight: "100px", width: "100%" }}
+      style={{ minHeight: "100px", width: "100%", maxWidth: "100%", overflow: "hidden" }}
     >
       <div
         className="tamara-product-widget"

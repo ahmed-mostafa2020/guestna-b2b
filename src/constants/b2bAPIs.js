@@ -207,7 +207,9 @@ export const B2B_END_POINTS = {
 
   GRADUATION: {
     STAGES_GRADES: "graduation/stages/grades",
+    CLIENT: "graduation/client",
     INITIATION: "graduation/initiation",
+    TAMARA_INITIATION: "graduation/initiation/tamara",
     APPLE_INITIATE: "graduation/initiation/apple",
     APPLE_CONFIRM: "graduation/confermed/apple",
     APPLE_CALLBACK: "graduation/confermed/event/apple",
