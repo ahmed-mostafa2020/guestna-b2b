@@ -32,11 +32,11 @@ const TripCard = ({ activityCard, imageWidth = 300 }) => {
   }, [activityCard.name]);
 
   const numCities = activityCard.cities.length;
- 
+
   const renderCities = useMemo(() => {
     if (numCities === 1) {
       return (
-        <h4  className="gap-1 font-medium capitalize centered">
+        <h4 className="gap-1 font-medium capitalize centered">
           {locationIcon}
           {activityCard.cities[0].name}
         </h4>
@@ -69,8 +69,8 @@ const TripCard = ({ activityCard, imageWidth = 300 }) => {
         {activityCard.tripsType === CONSTANT_VALUES.PACKAGE
           ? t("common.multiDaysTrip")
           : activityCard.tripsType === CONSTANT_VALUES.ACTIVITY
-          ? t("common.oneDayTrip")
-          : t("common.halfDayTrip")}
+            ? t("common.oneDayTrip")
+            : t("common.halfDayTrip")}
       </p>
 
       <ImageWithPlaceholder
@@ -83,11 +83,11 @@ const TripCard = ({ activityCard, imageWidth = 300 }) => {
 
       <div className="mt-[-30px] relative bg-white z-[1] rounded-tr-[32px] p-4 flex flex-col gap-2">
         <div className="flex items-center gap-3">
-          <FavoriteButton
+          {/* <FavoriteButton
             tripId={activityCard._id}
             favoriteState={activityCard.isFavorite}
             isAbsolute={true}
-          />
+          /> */}
 
           {renderCities}
 
@@ -154,7 +154,7 @@ const TripCard = ({ activityCard, imageWidth = 300 }) => {
 
           <Link
             href={`/${locale}/discover/${activityCard.slug}`}
-            className="px-6 text-center py-3 capitalize rounded-[10px] text-white bg-mainColor border-2 border-mainColor font-medium text-base transition-all ease-in-out duration-200 hover:bg-linksHover hover:border-linksHover mx-auto "
+            className="px-6 text-center py-3 capitalize rounded-[10px] text-white bg-mainColor border-2 border-mainColor font-medium text-base transition-all ease-in-out duration-200 hover:bg-linksHover hover:border-linksHover ms-auto "
           >
             {t("links.viewTripDetails")}
           </Link>

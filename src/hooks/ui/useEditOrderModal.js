@@ -187,31 +187,15 @@ export const useEditOrderModal = (locale) => {
         return;
       }
 
-      // Check if we already have the order details cached
-      const hasCachedDetails =
-        editOrderDetailsCache[orderId] ||
-        currentEditOrderDetails?._id === orderId;
-
-      // Only fetch what we don't have
       const fetchPromises = [];
 
       // Always fetch form selection data if not available
       fetchPromises.push(fetchFormSelectionData());
 
-      // Only fetch order details if not cached and not current
-      if (!hasCachedDetails) {
-        // Clear stale data immediately so isDataReady stays false until the new fetch completes
-        setCurrentEditOrderDetails(null);
-        const isCustom = bookingAskType === askType.CUSTOM;
-        fetchPromises.push(fetchEditOrderDetails(orderId, false, isCustom));
-      } else {
-        // Use cached or current details
-        if (currentEditOrderDetails?._id === orderId) {
-          // Already set, no need to do anything
-        } else if (editOrderDetailsCache[orderId]) {
-          setCurrentEditOrderDetails(editOrderDetailsCache[orderId]);
-        }
-      }
+      // Always fetch fresh order details — bypass cache so every edit click hits the API
+      setCurrentEditOrderDetails(null);
+      const isCustom = bookingAskType === askType.CUSTOM;
+      fetchPromises.push(fetchEditOrderDetails(orderId, true, isCustom));
 
       try {
         await Promise.all(fetchPromises);
@@ -220,12 +204,7 @@ export const useEditOrderModal = (locale) => {
         // Errors are already handled in individual fetch functions
       }
     },
-    [
-      fetchEditOrderDetails,
-      fetchFormSelectionData,
-      editOrderDetailsCache,
-      currentEditOrderDetails,
-    ]
+    [fetchEditOrderDetails, fetchFormSelectionData]
   );
 
   // Close edit modal and cleanup

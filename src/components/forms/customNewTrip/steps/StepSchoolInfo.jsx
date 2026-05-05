@@ -315,8 +315,13 @@ const SchoolInfoCard = ({
   const t2 = useTranslations();
   const locale = useLocale();
 
-  const { errors: allErrors, touched: allTouched, values, handleBlur, setFieldValue } =
-    useFormikContext();
+  const {
+    errors: allErrors,
+    touched: allTouched,
+    values,
+    handleBlur,
+    setFieldValue,
+  } = useFormikContext();
 
   const errors = getIn(allErrors, fieldPath) || {};
   const touched = getIn(allTouched, fieldPath) || {};
@@ -431,7 +436,14 @@ const SchoolInfoCard = ({
     }
 
     return gradesFromTracks;
-  }, [tracksData, school.track, school.tracks, school.academicStages, isEditMode, editGrades]);
+  }, [
+    tracksData,
+    school.track,
+    school.tracks,
+    school.academicStages,
+    isEditMode,
+    editGrades,
+  ]);
 
   // Track the fieldPath in a ref to use it without triggering re-renders
   const fieldPathRef = useRef(fieldPath);
@@ -736,7 +748,8 @@ const SchoolInfoCard = ({
     return !school.tracks || school.tracks.length === 0;
   }, [isEditMode, school.track, school.tracks]);
 
-  const isGradesDisabled = !school.academicStages || school.academicStages.length === 0;
+  const isGradesDisabled =
+    !school.academicStages || school.academicStages.length === 0;
 
   // ============================================================================
   // Render
@@ -949,7 +962,9 @@ const SchoolInfoCard = ({
                 <SelectionGroup
                   name={`${fieldPath}.grades`}
                   value={(school.grades || [])
-                    .map((id) => availableGrades.find((g) => g._id === id)?.name)
+                    .map(
+                      (id) => availableGrades.find((g) => g._id === id)?.name
+                    )
                     .filter(Boolean)}
                   onChange={handleGradesChange}
                   onBlur={handleBlur}
