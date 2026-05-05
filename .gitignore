@@ -53,6 +53,13 @@ next-env.d.ts
 .qoder/rules/byterover-rules.md
 .augment/rules/byterover-rules.md
 
+# PWA - auto-generated service worker files
+public/sw.js
+public/sw.js.map
+public/workbox-*.js
+public/workbox-*.js.map
+public/swe-worker-*.js
+
 # Auto Claude data directory
 .auto-claude/
 
