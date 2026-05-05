@@ -27,6 +27,7 @@ import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import ErrorBoundary from "@components/ui/ErrorBoundary";
 import ProfileTabs from "@components/features/profile/ProfileTabs";
+import ProfilePageSkeleton from "@components/ui/ProfilePageSkeleton";
 // import ResponsiveGridLayout from "@components/ui/responsiveGridLayout";
 
 import Grid from "@mui/material/Grid2";
@@ -43,19 +44,28 @@ const ProfileLayout = ({ children }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Check for user token
+    // B2B_PARENT users are redirected to home; VISITOR users are handled by
+    // ProtectedProfilePage which shows a LoginAccessModal overlay instead.
     const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
 
-    if (userType === USERS.VISITOR || userType === USERS.B2B_PARENT || !token) {
+    if (userType === USERS.B2B_PARENT || (!token && userType !== USERS.VISITOR)) {
       router.push(`/${locale}`);
     }
   }, [locale, router, userType]);
+
+  // Only fetch profile data for authenticated, non-parent users.
+  // For VISITOR users the fetch is skipped; ProtectedProfilePage renders the
+  // LoginAccessModal and the layout stays mounted.  After the user logs in,
+  // userType changes and the fetch becomes enabled automatically.
+  const isAuthenticated =
+    userType !== USERS.VISITOR && userType !== USERS.B2B_PARENT;
 
   const { data, error, isLoading } = useFetchData(
     `${B2B_END_POINTS.PROFILE.INFORMATION}`,
     {},
     {
       lang: locale,
+      enabled: isAuthenticated,
       onSuccess: setProfile,
       onError: setProfileError,
       onLoading: setProfileLoading,
@@ -85,6 +95,19 @@ const ProfileLayout = ({ children }) => {
       Cookies.set(CONSTANT_VALUES.PROFILE_IMAGE, data?.image || "");
     }
   }, [data, dispatch]);
+
+  // For VISITOR/PARENT users, skip the live layout shell.
+  // Render a shimmer skeleton of the page so users understand which page they
+  // are on, then let ProtectedProfilePage mount the LoginAccessModal on top
+  // via MUI Portal (which appends to document.body above the skeleton).
+  if (!isAuthenticated) {
+    return (
+      <>
+        <ProfilePageSkeleton />
+        {children}
+      </>
+    );
+  }
 
   if (isLoading)
     return (
