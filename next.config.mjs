@@ -1,10 +1,21 @@
 import { withSentryConfig } from "@sentry/nextjs";
 import createNextIntlPlugin from "next-intl/plugin";
+import withPWAInit from "@ducanh2912/next-pwa";
 
 const withNextIntl = createNextIntlPlugin("./i18n.config.js");
 
+const withPWA = withPWAInit({
+  dest: "public",
+  disable: process.env.NODE_ENV === "development",
+  register: true,
+  skipWaiting: true,
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Hide Next.js version from response headers (prevents server fingerprinting)
+  poweredByHeader: false,
+
   rewrites: async () => {
     return [
       {
@@ -63,21 +74,35 @@ const nextConfig = {
     ];
 
     const securityHeaders = [
+      // Prevent MIME type sniffing attacks
       {
         key: "X-Content-Type-Options",
         value: "nosniff",
       },
+      // Prevent clickjacking attacks
       {
         key: "X-Frame-Options",
         value: "SAMEORIGIN",
       },
+      // Control referrer information sent with requests
       {
         key: "Referrer-Policy",
         value: "strict-origin-when-cross-origin",
       },
+      // Restrict access to browser features
       {
         key: "Permissions-Policy",
         value: "camera=(), microphone=(), geolocation=(self)",
+      },
+      // Force HTTPS for 2 years, include subdomains, allow preload list submission
+      {
+        key: "Strict-Transport-Security",
+        value: "max-age=63072000; includeSubDomains; preload",
+      },
+      // Basic XSS protection for older browsers
+      {
+        key: "X-XSS-Protection",
+        value: "1; mode=block",
       },
     ];
 
@@ -85,11 +110,10 @@ const nextConfig = {
       {
         source: "/:path*",
         headers: [
-          {
-            key: "Content-Security-Policy",
-            value: "frame-ancestors 'self' https://api.moyasar.com",
-          },
-          ...securityHeaders,
+          // NOTE: Content-Security-Policy is set dynamically in middleware.js
+          // with a per-request nonce — do not add a static CSP here or it
+          // will override the nonce-based one and break inline scripts.
+...securityHeaders,
           // Block indexing on all non-production deployments (preview, branch, local)
           ...(!isProduction
             ? [{ key: "X-Robots-Tag", value: "noindex, nofollow" }]
@@ -98,6 +122,8 @@ const nextConfig = {
           {
             key: "Link",
             value:
+              "</sitemap.xml>; rel=\"sitemap\", " +
+              "</llms.txt>; rel=\"describedby\", " +
               "<https://fonts.googleapis.com>; rel=preconnect, " +
               "<https://fonts.gstatic.com>; rel=preconnect; crossorigin, " +
               "<https://www.googletagmanager.com>; rel=preconnect, " +
@@ -159,7 +185,7 @@ const nextConfig = {
 };
 
 export default withSentryConfig(
-  withNextIntl(nextConfig),
+  withPWA(withNextIntl(nextConfig)),
   {
     // For all available options, see:
     // https://www.npmjs.com/package/@sentry/webpack-plugin#options
