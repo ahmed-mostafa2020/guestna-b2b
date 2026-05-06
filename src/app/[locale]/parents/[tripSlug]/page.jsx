@@ -20,6 +20,7 @@ import {
 import { useEffect } from "react";
 
 import { useFetchData } from "@hooks/data/useFetchData";
+import { useSiteStatus } from "@hooks/data/useSiteStatus";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 
@@ -33,6 +34,7 @@ import GridSection from "@components/features/tripDetails/gridSection";
 
 import ReviewsSection from "@components/features/tripDetails/reviewsSection";
 import RegisterStudentForm from "@components/forms/registerStudent";
+import MaintenancePage from "@components/features/maintenance/MaintenancePage";
 import {
   setColorPreferences,
   setCustomLogo,
@@ -60,6 +62,16 @@ const TripDetails = ({ params }) => {
   }, []);
 
   const dispatch = useDispatch();
+
+  const {
+    isActive: siteIsActive,
+    message: maintenanceMessage,
+    endsAt: maintenanceEndsAt,
+    isLoading: siteStatusLoading,
+    isFetching: siteStatusFetching,
+    refetch: refetchSiteStatus,
+  } = useSiteStatus({ locale, siteType: "b2b" });
+
   const { data, error, isLoading } = useFetchData(
     `${B2B_END_POINTS.PARENT_TRIPDETAILS}/${params.tripSlug}`,
     {},
@@ -69,6 +81,7 @@ const TripDetails = ({ params }) => {
       onSuccess: setTripDetailsData,
       onError: setTripDetailsDataError,
       onLoading: setTripDetailsDataLoading,
+      enabled: siteIsActive,
     }
   );
 
@@ -121,6 +134,23 @@ const TripDetails = ({ params }) => {
   // useEffect(() => {
   //   dispatch(setUser(USERS.B2B_PARENT));
   // }, [dispatch]);
+
+  if (siteStatusLoading)
+    return (
+      <div className="w-full min-h-screen centered">
+        <FullScreenLoading status="pending" />
+      </div>
+    );
+
+  if (!siteIsActive)
+    return (
+      <MaintenancePage
+        message={maintenanceMessage}
+        endsAt={maintenanceEndsAt}
+        onRetry={refetchSiteStatus}
+        isRetrying={siteStatusFetching}
+      />
+    );
 
   if (isLoading)
     return (

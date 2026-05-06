@@ -3299,5 +3299,13 @@
     "allResults": "All Results",
     "to": "to",
     "of": "of"
+  },
+  "maintenance": {
+    "badge": "Scheduled Maintenance",
+    "title": "We'll be back shortly",
+    "description": "Booking is temporarily unavailable while we deploy improvements to the platform. Please check back in a 30 minutes.",
+    "expectedBack": "Expected to be back by {date}",
+    "apology": "Thank you for your patience.",
+    "imageAlt": "Site under maintenance"
   }
 }
