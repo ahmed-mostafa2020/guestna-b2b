@@ -16,6 +16,20 @@ const nextConfig = {
   // Hide Next.js version from response headers (prevents server fingerprinting)
   poweredByHeader: false,
 
+  redirects: async () => {
+    if (process.env.REDIRECT_DOMAIN) {
+      return [
+        {
+          source: "/:path*",
+          destination: `${process.env.REDIRECT_DOMAIN}/:path*`,
+          permanent: false,
+          basePath: false,
+        },
+      ];
+    }
+    return [];
+  },
+
   rewrites: async () => {
     return [
       {
