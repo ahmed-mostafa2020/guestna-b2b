@@ -52,6 +52,20 @@ const nextConfig = {
     NEXT_PUBLIC_SENTRY_ENVIRONMENT: isProductionDeploy ? "production" : "test",
   },
 
+  redirects: async () => {
+    if (process.env.REDIRECT_DOMAIN) {
+      return [
+        {
+          source: "/:path*",
+          destination: `${process.env.REDIRECT_DOMAIN}/:path*`,
+          permanent: false,
+          basePath: false,
+        },
+      ];
+    }
+    return [];
+  },
+
   rewrites: async () => {
     return [
       {
