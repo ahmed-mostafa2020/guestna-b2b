@@ -18,7 +18,6 @@ import { Container } from "@mui/material";
 const FAQPage = () => {
   const locale = useLocale();
   const t = useTranslations();
-  //
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t("pagesHead.title.faq")}`;
   }, [t]);
