@@ -31,6 +31,7 @@ const extractBackendError = (error, fallback) => {
 };
 
 const STEPS = ["step1", "step2"];
+const IS_REGISTRATION_ENDED = true;
 
 const BRANCHES = {
   AL_ARID: "AL_ARID",
@@ -532,6 +533,32 @@ const GraduationForm = () => {
       {/* Form Section */}
       <Container maxWidth="md" className="py-8 lg:py-12">
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          {IS_REGISTRATION_ENDED ? (
+            <div className="flex flex-col items-center justify-center text-center py-12 md:py-20 px-6">
+              <div className="w-20 h-20 bg-[#d4a853]/10 rounded-full flex items-center justify-center mb-6 shadow-sm">
+                <svg
+                  className="w-10 h-10 text-[#d4a853]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-800 font-somar mb-4">
+                {t("graduation.validation.registrationEnded")}
+              </h2>
+              <p className="text-gray-600 font-somar text-base md:text-lg max-w-lg leading-relaxed">
+                {t("graduation.validation.registrationEndedMessage")}
+              </p>
+            </div>
+          ) : (
+            <>
           {/* Form Title */}
           <div className="text-center pt-8 pb-4 px-6">
             <h2 className="text-2xl md:text-3xl font-bold font-somar">
@@ -806,6 +833,8 @@ const GraduationForm = () => {
               </Formik>
             )}
           </div>
+            </>
+          )}
         </div>
       </Container>
     </div>

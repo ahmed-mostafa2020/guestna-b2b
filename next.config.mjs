@@ -11,10 +11,46 @@ const withPWA = withPWAInit({
   skipWaiting: true,
 });
 
+// Sentry routing per environment:
+// - "Production" is ONLY the real production domains (guestna-edu.com,
+//   shop.guestna-edu.com). The build pipeline for those domains must set
+//   SENTRY_ENV=production. Errors go to the "guestna" org / "guestna-edu"
+//   project and source maps upload with SENTRY_PRODUCTION_AUTH_TOKEN.
+// - Everything else — Vercel (preview AND production deploys), Netlify
+//   (all contexts), local dev, local builds — is treated as test. Errors
+//   go to the "any-2y" org / "httpsshopguestna-educom" project and source
+//   maps upload with SENTRY_AUTH_TOKEN.
+const TEST_SENTRY = {
+  dsn: "https://47dd633ac91bb97e9ceefca2a80344c0@o4505710840709120.ingest.us.sentry.io/4510176638599168",
+  org: "any-2y",
+  project: "httpsshopguestna-educom",
+};
+
+const PRODUCTION_SENTRY = {
+  dsn: "https://be251a860c8f04870429cf1952005354@o4511376548495360.ingest.de.sentry.io/4511376656236624",
+  org: "guestna",
+  project: "guestna-edu",
+};
+
+const isProductionDeploy = process.env.SENTRY_ENV === "production";
+
+const sentryTarget = isProductionDeploy ? PRODUCTION_SENTRY : TEST_SENTRY;
+const sentryAuthToken = isProductionDeploy
+  ? process.env.SENTRY_PRODUCTION_AUTH_TOKEN
+  : process.env.SENTRY_AUTH_TOKEN;
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Hide Next.js version from response headers (prevents server fingerprinting)
   poweredByHeader: false,
+
+  // Expose the resolved Sentry DSN + environment label to client + server
+  // bundles so the Sentry.init() calls in sentry.*.config.js /
+  // instrumentation-client.js can pick them up at runtime.
+  env: {
+    NEXT_PUBLIC_SENTRY_DSN: sentryTarget.dsn,
+    NEXT_PUBLIC_SENTRY_ENVIRONMENT: isProductionDeploy ? "production" : "test",
+  },
 
   rewrites: async () => {
     return [
@@ -190,9 +226,11 @@ export default withSentryConfig(
     // For all available options, see:
     // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
-    org: "any-2y",
+    org: sentryTarget.org,
 
-    project: "httpsshopguestna-educom",
+    project: sentryTarget.project,
+
+    authToken: sentryAuthToken,
 
     // Only print logs for uploading source maps in CI
     silent: !process.env.CI,

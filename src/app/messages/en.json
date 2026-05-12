@@ -3289,7 +3289,9 @@
       "classRequired": "Please select a class",
       "sizeRequired": "Please select a size",
       "success": "Your registration has been submitted successfully!",
-      "error": "An error occurred. Please try again."
+      "error": "An error occurred. Please try again.",
+      "registrationEnded": "Registration Has Ended",
+      "registrationEndedMessage": "Thank you for your interest in the graduation ceremony. Registration is now closed — we look forward to welcoming you at our upcoming events."
     }
   },
   "pagination": {
