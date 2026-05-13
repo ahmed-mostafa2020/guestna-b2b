@@ -2,13 +2,36 @@
 
 import { useLocale } from "next-intl";
 import { useSelector } from "react-redux";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
+import { useSnackbar } from "notistack";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { useMutationData } from "@hooks/data/useMutationData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 
+const extractBackendError = (error, fallback) => {
+  const data = error?.response?.data;
+  if (!data) return fallback;
+  if (Array.isArray(data.info) && data.info.length > 0) {
+    return data.info.map((i) => i.message).filter(Boolean).join(" | ");
+  }
+  return data.message || fallback;
+};
+
+const isTestEnvironment = () => {
+  if (typeof window === "undefined") return false;
+  const host = window.location.hostname;
+  return (
+    host === "localhost" ||
+    host === "127.0.0.1" ||
+    host.endsWith(".vercel.app") ||
+    host.endsWith(".netlify.app")
+  );
+};
+
 const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const [currentBookingId, setCurrentBookingId] = useState(null);
+  const { enqueueSnackbar } = useSnackbar();
+  const showDebugInitiate = useMemo(() => isTestEnvironment(), []);
 
   const price = useSelector(
     (state) => state.finalTripDetailsData.data.basePriceTotalWithVat
@@ -26,9 +49,37 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const vercelUrl = CONSTANT_VALUES.URLS.B2B_VERCEL_URL;
   const appleWidgetKey = process.env.NEXT_PUBLIC_APPLE_WIDGET_KEY;
 
-  const { mutate } = useMutationData(B2B_END_POINTS.APPLE_BOOKING.INITIATE, {
-    method: "POST", // Specify POST
-  });
+  const { mutate, isLoading: isInitiating } = useMutationData(
+    B2B_END_POINTS.APPLE_BOOKING.INITIATE,
+    {
+      method: "POST", // Specify POST
+    }
+  );
+
+  const handleDebugInitiate = () => {
+    try {
+      mutate(baseData, {
+        onSuccess: (data) => {
+          if (!data?.bookingId) {
+            enqueueSnackbar("issue at generate Id", { variant: "error" });
+            return;
+          }
+          setCurrentBookingId(data.bookingId);
+          enqueueSnackbar(`Initiation success: ${data.bookingId}`, {
+            variant: "success",
+          });
+        },
+        onError: (error) => {
+          enqueueSnackbar(
+            extractBackendError(error, "on error generate Id"),
+            { variant: "error" }
+          );
+        },
+      });
+    } catch (error) {
+      enqueueSnackbar("on error Initiation", { variant: "error" });
+    }
+  };
 
   const { mutate: mutateComferm } = useMutationData(
     B2B_END_POINTS.APPLE_BOOKING.CONFIRM,
@@ -130,8 +181,18 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   ]);
 
   return (
-    <div className="flex">
+    <div className="flex flex-col gap-4">
       <div className="mysr-form"></div>
+      {showDebugInitiate && (
+        <button
+          type="button"
+          onClick={handleDebugInitiate}
+          disabled={isInitiating}
+          className="w-full py-3 px-6 border-2 border-amber-400 text-amber-700 bg-amber-50 rounded-xl font-somar font-semibold hover:bg-amber-100 transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isInitiating ? "Initiating..." : "Test Initiate (debug)"}
+        </button>
+      )}
     </div>
   );
 };
