@@ -4,9 +4,11 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const ROOT_HOST =
+const ROOT_HOST = (
   process.env.NEXT_PUBLIC_API_URL ||
-  (process.env.NEXT_PUBLIC_BASE_URL || "").replace(/\/b2b\/?$/, "");
+  process.env.NEXT_PUBLIC_BASE_URL ||
+  ""
+).replace(/\/b2b\/?$/, "");
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
