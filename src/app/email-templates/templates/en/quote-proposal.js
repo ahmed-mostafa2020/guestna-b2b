@@ -19,6 +19,15 @@ export const quoteProposalHTML = `<!DOCTYPE html>
       .cta-stack { display: block !important; padding: 6px 0 !important; }
       .mobile-btn { display:inline-block !important; padding: 13px 24px !important; font-size: 14px !important; margin: 0 !important; }
       .mobile-grand { font-size: 22px !important; }
+      td[style*="width:42%"], td[style*="width:38%"], td[style*="width:45%"], td[style*="width:55%"] {
+        display: block !important; width: 100% !important;
+        padding: 10px 18px 2px !important; text-align: left !important;
+      }
+      td[style*="width:42%"] + td, td[style*="width:38%"] + td, td[style*="width:45%"] + td, td[style*="width:55%"] + td {
+        display: block !important; width: 100% !important;
+        padding: 0 18px 12px !important; text-align: left !important;
+      }
+      a[href^="mailto"], a[href^="tel"] { word-break: break-all !important; }
     }
   </style>
 </head>

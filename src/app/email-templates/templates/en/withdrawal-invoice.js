@@ -18,6 +18,7 @@ export const withdrawalInvoiceHTML = `<!DOCTYPE html>
       .items-row td { padding-left: 6px !important; padding-right: 6px !important; font-size: 12px !important; }
       .total-num { font-size: 20px !important; }
       .pay-cell { display:block !important; width:100% !important; padding:8px 0 !important; text-align:left !important; }
+      a[href^="mailto"], a[href^="tel"] { word-break: break-all !important; }
     }
   </style>
 </head>

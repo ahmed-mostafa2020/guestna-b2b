@@ -20,6 +20,7 @@ export const invoiceHTML = `<!DOCTYPE html>
       .pay-cell { display:block !important; width:100% !important; padding:8px 0 !important; text-align:left !important; }
       .cta-btn-stack { display:block !important; padding: 6px 0 !important; }
       .mobile-btn { display:block !important; padding: 12px 18px !important; font-size: 13px !important; }
+      a[href^="mailto"], a[href^="tel"] { word-break: break-all !important; }
     }
   </style>
 </head>

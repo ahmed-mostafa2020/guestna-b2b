@@ -15,6 +15,15 @@ export const withdrawalConfirmingHTML = `<!DOCTYPE html>
       .footer-pad { padding: 24px 20px !important; }
       .mobile-h1 { font-size: 20px !important; line-height:1.3 !important; }
       .mobile-amount { font-size: 26px !important; }
+      td[style*="width:42%"], td[style*="width:38%"], td[style*="width:45%"], td[style*="width:55%"] {
+        display: block !important; width: 100% !important;
+        padding: 10px 18px 2px !important; text-align: left !important;
+      }
+      td[style*="width:42%"] + td, td[style*="width:38%"] + td, td[style*="width:45%"] + td, td[style*="width:55%"] + td {
+        display: block !important; width: 100% !important;
+        padding: 0 18px 12px !important; text-align: left !important;
+      }
+      a[href^="mailto"], a[href^="tel"] { word-break: break-all !important; }
     }
   </style>
 </head>

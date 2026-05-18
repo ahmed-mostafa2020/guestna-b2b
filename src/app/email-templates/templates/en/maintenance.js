@@ -17,6 +17,15 @@ export const maintenanceHTML = `<!DOCTYPE html>
       .mobile-emoji { font-size: 36px !important; }
       .mobile-cell-label { padding: 12px 16px !important; }
       .mobile-cell-value { padding: 12px 16px !important; }
+      td[style*="width:42%"], td[style*="width:38%"], td[style*="width:45%"], td[style*="width:55%"] {
+        display: block !important; width: 100% !important;
+        padding: 10px 18px 2px !important; text-align: left !important;
+      }
+      td[style*="width:42%"] + td, td[style*="width:38%"] + td, td[style*="width:45%"] + td, td[style*="width:55%"] + td {
+        display: block !important; width: 100% !important;
+        padding: 0 18px 12px !important; text-align: left !important;
+      }
+      a[href^="mailto"], a[href^="tel"] { word-break: break-all !important; }
     }
   </style>
 </head>

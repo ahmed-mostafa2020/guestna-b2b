@@ -404,8 +404,10 @@ export default function EmailTemplatesPage() {
     });
   }
 
-  function toggleLang() {
-    setLang((l) => (l === "ar" ? "en" : "ar"));
+  function selectLang(next) {
+    console.log("[email-templates] selectLang called:", { next, current: lang });
+    if (next === lang) return;
+    setLang(next);
     setIframeHeight(900);
   }
 
@@ -433,20 +435,33 @@ export default function EmailTemplatesPage() {
           border-radius: 8px;
           padding: 6px 14px;
         }
-        .et-lang-toggle {
-          background-color: rgba(255,255,255,0.18);
-          color: #ffffff;
-          border: 1px solid rgba(255,255,255,0.35);
-          border-radius: 8px;
-          padding: 7px 14px;
+        .et-lang-switch {
+          display: inline-flex;
+          background-color: rgba(255,255,255,0.12);
+          border: 1px solid rgba(255,255,255,0.30);
+          border-radius: 999px;
+          padding: 3px;
+          gap: 2px;
+        }
+        .et-lang-btn {
+          background: transparent;
+          color: rgba(255,255,255,0.75);
+          border: none;
+          border-radius: 999px;
+          padding: 6px 14px;
           font-size: 12px;
           font-weight: 700;
           cursor: pointer;
           font-family: inherit;
           letter-spacing: 0.5px;
-          transition: background 0.15s;
+          transition: background 0.15s, color 0.15s;
+          min-width: 36px;
         }
-        .et-lang-toggle:hover { background-color: rgba(255,255,255,0.28); }
+        .et-lang-btn:hover { color: #ffffff; }
+        .et-lang-btn.active {
+          background-color: #ffffff;
+          color: #008F8F;
+        }
 
         /* ── Body ── */
         .et-body {
@@ -572,9 +587,24 @@ export default function EmailTemplatesPage() {
                 {t.lifecycle}
               </span>
             </div>
-            <button className="et-lang-toggle" onClick={toggleLang} title="Toggle language">
-              🌐 {t.langToggle}
-            </button>
+            <div className="et-lang-switch" role="group" aria-label="Language">
+              <button
+                type="button"
+                className={`et-lang-btn${lang === "en" ? " active" : ""}`}
+                onClick={() => selectLang("en")}
+                aria-pressed={lang === "en"}
+              >
+                EN
+              </button>
+              <button
+                type="button"
+                className={`et-lang-btn${lang === "ar" ? " active" : ""}`}
+                onClick={() => selectLang("ar")}
+                aria-pressed={lang === "ar"}
+              >
+                AR
+              </button>
+            </div>
           </div>
         </div>
 
