@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>تأكيد الحجز - جستنا</title>
-  <style>
-    @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap");
+  <style>@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap");
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: "IBM Plex Sans Arabic", Arial, Tahoma, sans-serif !important;
@@ -14,6 +13,27 @@
       color: #1E293B !important;
       direction: rtl;
       width: 100%; min-width: 100%;
+    }
+    @media only screen and (max-width: 600px) {
+      .main-table { width: 100% !important; border-radius: 0 !important; }
+      .content-pad { padding: 0 18px !important; }
+      .content-pad-y { padding: 24px 18px !important; }
+      .header-pad { padding: 28px 20px 24px !important; }
+      .footer-pad { padding: 24px 20px !important; }
+      .mobile-h1 { font-size: 20px !important; line-height:1.3 !important; }
+      .ref-stack { display: block !important; width: 100% !important; padding: 14px 18px !important; text-align: right !important; }
+      .support-stack { display: block !important; width: 100% !important; padding: 6px 0 !important; }
+      .mobile-btn { padding: 14px 28px !important; font-size: 14px !important; }
+      /* Stack 2-column detail rows on mobile */
+      td[style*="width:42%"], td[style*="width:38%"], td[style*="width:45%"], td[style*="width:55%"] {
+        display: block !important; width: 100% !important;
+        padding: 10px 18px 2px !important; text-align: right !important;
+      }
+      td[style*="width:42%"] + td, td[style*="width:38%"] + td, td[style*="width:45%"] + td, td[style*="width:55%"] + td {
+        display: block !important; width: 100% !important;
+        padding: 0 18px 12px !important; text-align: right !important;
+      }
+      a[href^="mailto"], a[href^="tel"] { word-break: break-all !important; }
     }
   </style>
 </head>
@@ -23,11 +43,11 @@
     <tr>
       <td align="center" style="padding:32px 16px;">
 
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" style="max-width:600px;background-color:#ffffff;border-radius:20px;overflow:hidden;margin:0 auto;box-shadow:0 8px 40px rgba(10,37,64,0.12);">
+        <table class="main-table" role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" style="max-width:600px;background-color:#ffffff;border-radius:20px;overflow:hidden;margin:0 auto;box-shadow:0 8px 40px rgba(10,37,64,0.12);">
 
           <!-- Header -->
           <tr>
-            <td style="background:linear-gradient(150deg,#0A2540 0%,#006e6e 60%,#008F8F 100%);padding:36px 36px 32px;text-align:center;">
+            <td class="header-pad" style="background:linear-gradient(150deg,#0A2540 0%,#006e6e 60%,#008F8F 100%);padding:36px 36px 32px;text-align:center;">
               <img
                 src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
                 alt="GuestNa Logo"
@@ -37,7 +57,7 @@
               <div style="display:inline-block;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:50px;padding:5px 18px;font-size:11px;color:#ffffff;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;">
                 تأكيد الحجز
               </div>
-              <div style="font-size:24px;font-weight:700;color:#ffffff;margin-bottom:8px;line-height:1.3;">
+              <div class="mobile-h1" style="font-size:24px;font-weight:700;color:#ffffff;margin-bottom:8px;line-height:1.3;">
                 ✅ تم تأكيد حجزكم بنجاح
               </div>
               <div style="font-size:14px;color:rgba(255,255,255,0.6);">
@@ -53,15 +73,15 @@
 
           <!-- Booking Reference Banner -->
           <tr>
-            <td style="padding:24px 36px 0;">
+            <td class="content-pad" style="padding:24px 36px 0;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background:#F0FDFA;border-left:4px solid #008F8F;border-radius:0 10px 10px 0;margin-bottom:24px;">
                 <tr>
-                  <td style="padding:16px 20px;">
+                  <td class="ref-stack" style="padding:16px 20px;">
                     <div style="font-size:12px;font-weight:700;color:#008F8F;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px;">رقم الحجز</div>
                     <div style="font-size:20px;font-weight:700;color:#0A2540;">#GN-2025-4521</div>
                     <div style="font-size:13px;color:#64748B;margin-top:4px;">تاريخ التأكيد: الثلاثاء، 12 أبريل 2025</div>
                   </td>
-                  <td style="padding:16px 20px;text-align:left;">
+                  <td class="ref-stack" style="padding:16px 20px;text-align:left;">
                     <span style="display:inline-block;background:#008F8F;color:#fff;font-size:12px;font-weight:700;padding:6px 16px;border-radius:50px;letter-spacing:0.5px;">✓ مؤكد</span>
                   </td>
                 </tr>
@@ -71,7 +91,7 @@
 
           <!-- Greeting -->
           <tr>
-            <td style="padding:0 36px 16px;">
+            <td class="content-pad" style="padding:0 36px 16px;">
               <p style="font-size:16px;color:#1E293B;font-weight:600;margin:0 0 6px;text-align:right;">السيد / ولي الأمر</p>
               <p style="font-size:14px;color:#475569;line-height:1.8;margin:0;text-align:right;">
                 يسعدنا إبلاغكم بأنه تم تأكيد حجز رحلتكم المدرسية عبر منصة <strong style="color:#008F8F;">جستنا</strong>.
@@ -81,10 +101,10 @@
 
           <!-- Trip Details Card -->
           <tr>
-            <td style="padding:0 36px 24px;">
+            <td class="content-pad" style="padding:0 36px 24px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;">
                 <tr>
-                  <td colspan="2" style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:12px 20px;">
+                  <td colspan="2" style="width:42%;background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:12px 20px;">
                     <span style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;">تفاصيل الرحلة</span>
                   </td>
                 </tr>
@@ -99,7 +119,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                  <td style="width:42%;padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">التاريخ</div>
                   </td>
                   <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
@@ -107,7 +127,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                  <td style="width:42%;padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">وقت الانطلاق</div>
                   </td>
                   <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
@@ -115,7 +135,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                  <td style="width:42%;padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">عدد الطلاب</div>
                   </td>
                   <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
@@ -123,7 +143,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                  <td style="width:42%;padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">اسم الطلاب</div>
                   </td>
                   <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
@@ -131,7 +151,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:10px 20px 14px;text-align:right;">
+                  <td style="width:42%;padding:10px 20px 14px;text-align:right;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">المشرف المسؤول</div>
                   </td>
                   <td style="padding:10px 20px 14px;text-align:right;">
@@ -144,10 +164,10 @@
 
           <!-- Price Details Card -->
           <tr>
-            <td style="padding:0 36px 24px;">
+            <td class="content-pad" style="padding:0 36px 24px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;">
                 <tr>
-                  <td colspan="2" style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:12px 20px;text-align:right;">
+                  <td colspan="2" style="width:42%;background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:12px 20px;text-align:right;">
                     <span style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;">تفاصيل السعر</span>
                   </td>
                 </tr>
@@ -160,7 +180,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:12px 20px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                  <td style="width:42%;padding:12px 20px;border-bottom:1px solid #F1F5F9;text-align:right;">
                     <div style="font-size:13px;color:#475569;font-weight:600;">ضريبة القيمة المضافة (15%)</div>
                   </td>
                   <td style="padding:12px 20px;border-bottom:1px solid #F1F5F9;text-align:left;">
@@ -168,7 +188,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:12px 20px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                  <td style="width:42%;padding:12px 20px;border-bottom:1px solid #F1F5F9;text-align:right;">
                     <div style="font-size:13px;color:#475569;font-weight:600;">العدد</div>
                   </td>
                   <td style="padding:12px 20px;border-bottom:1px solid #F1F5F9;text-align:left;">
@@ -176,7 +196,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:14px 20px;background:#F0FDFA;text-align:right;">
+                  <td style="width:42%;padding:14px 20px;background:#F0FDFA;text-align:right;">
                     <div style="font-size:14px;color:#0A2540;font-weight:700;">الإجمالي الكلي</div>
                   </td>
                   <td style="padding:14px 20px;background:#F0FDFA;text-align:left;">
@@ -189,7 +209,7 @@
 
           <!-- Meeting Point -->
           <tr>
-            <td style="padding:0 36px 24px;">
+            <td class="content-pad" style="padding:0 36px 24px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background:#FFF8F0;border-left:4px solid #ED8A22;border-radius:0 10px 10px 0;">
                 <tr>
                   <td style="padding:16px 20px;text-align:right;">
@@ -204,7 +224,7 @@
 
           <!-- Program Highlights -->
           <tr>
-            <td style="padding:0 36px 24px;">
+            <td class="content-pad" style="padding:0 36px 24px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;">
                 <tr>
                   <td style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:12px 20px;text-align:right;">
@@ -255,8 +275,8 @@
 
           <!-- CTA -->
           <tr>
-            <td align="center" style="padding:0 36px 24px;">
-              <a href="#"
+            <td class="content-pad" align="center" style="padding:0 36px 24px;">
+              <a class="mobile-btn" href="#"
                  target="_blank"
                  style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:15px 44px;border-radius:10px;box-shadow:0 4px 20px rgba(0,143,143,0.3);letter-spacing:0.3px;">
                 عرض الفاتورة وتفاصيل الدفع ←
@@ -270,10 +290,10 @@
               <div style="font-size:13px;font-weight:700;color:#1E293B;margin-bottom:10px;">هل تحتاج إلى مساعدة؟</div>
               <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr>
-                  <td style="padding-left:20px;">
+                  <td class="support-stack" style="padding-left:20px;">
                     <p style="margin:0;color:#475569;font-size:13px;direction:ltr;">📞 <a href="tel:+966500000000" style="color:#008F8F;text-decoration:none;font-weight:500;">+966 50 000 0000</a></p>
                   </td>
-                  <td style="padding-left:20px;">
+                  <td class="support-stack" style="padding-left:20px;">
                     <p style="margin:0;color:#475569;font-size:13px;direction:ltr;">✉️ <a href="mailto:support@guestna-edu.com" style="color:#008F8F;text-decoration:none;font-weight:500;">support@guestna-edu.com</a></p>
                   </td>
                 </tr>
@@ -283,7 +303,7 @@
 
           <!-- Footer -->
           <tr>
-            <td style="background:#0A2540;padding:28px 36px;text-align:center;">
+            <td class="footer-pad" style="background:#0A2540;padding:28px 36px;text-align:center;">
               <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
                    alt="GuestNa" width="90"
                    style="display:block;margin:0 auto 14px;filter:brightness(0) invert(1);opacity:0.85;border:0;" />

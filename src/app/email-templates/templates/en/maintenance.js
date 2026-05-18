@@ -79,7 +79,7 @@ export const maintenanceHTML = `<!DOCTYPE html>
             <td class="content-pad" style="padding:0 36px 24px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;">
                 <tr>
-                  <td colspan="2" style="background:#0f3460;padding:14px 20px;text-align:center;">
+                  <td colspan="2" style="width:45%;background:#0f3460;padding:14px 20px;text-align:center;">
                     <p style="margin:0;color:#ffffff;font-size:13px;font-weight:700;">🗓️ Maintenance Window</p>
                   </td>
                 </tr>

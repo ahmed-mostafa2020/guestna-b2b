@@ -62,7 +62,7 @@ export const tripRejectHTML = `<!DOCTYPE html>
               <!-- Info Card -->
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;margin-bottom:24px;">
                 <tr>
-                  <td colspan="2" style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:12px 20px;text-align:left;">
+                  <td colspan="2" style="width:42%;background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:12px 20px;text-align:left;">
                     <span style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;">Request Details</span>
                   </td>
                 </tr>
@@ -75,7 +75,7 @@ export const tripRejectHTML = `<!DOCTYPE html>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:left;">
+                  <td style="width:42%;padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:left;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">🏢 Institution</div>
                   </td>
                   <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:left;">
@@ -83,7 +83,7 @@ export const tripRejectHTML = `<!DOCTYPE html>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:left;">
+                  <td style="width:42%;padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:left;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">📧 Email</div>
                   </td>
                   <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:left;">
@@ -91,7 +91,7 @@ export const tripRejectHTML = `<!DOCTYPE html>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:10px 20px 14px;text-align:left;">
+                  <td style="width:42%;padding:10px 20px 14px;text-align:left;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">📱 Phone Number</div>
                   </td>
                   <td style="padding:10px 20px 14px;text-align:left;">

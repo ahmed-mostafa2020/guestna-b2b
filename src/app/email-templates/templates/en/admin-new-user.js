@@ -67,7 +67,7 @@ export const adminNewUserHTML = `<!DOCTYPE html>
             <td class="content-pad" style="padding:28px 36px 24px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;">
                 <tr>
-                  <td colspan="2" style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:12px 20px;text-align:center;">
+                  <td colspan="2" style="width:38%;background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:12px 20px;text-align:center;">
                     <span style="font-size:13px;font-weight:700;color:#008F8F;">🏫 Institution Details</span>
                   </td>
                 </tr>
@@ -80,7 +80,7 @@ export const adminNewUserHTML = `<!DOCTYPE html>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;text-align:left;">
+                  <td style="width:38%;padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;text-align:left;">
                     <p style="margin:0;font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">Responsible Manager</p>
                   </td>
                   <td style="padding:12px 20px;border-bottom:1px solid #F1F5F9;text-align:left;">
@@ -88,7 +88,7 @@ export const adminNewUserHTML = `<!DOCTYPE html>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;text-align:left;">
+                  <td style="width:38%;padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;text-align:left;">
                     <p style="margin:0;font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">Email</p>
                   </td>
                   <td style="padding:12px 20px;border-bottom:1px solid #F1F5F9;text-align:left;">
@@ -96,7 +96,7 @@ export const adminNewUserHTML = `<!DOCTYPE html>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;text-align:left;">
+                  <td style="width:38%;padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;text-align:left;">
                     <p style="margin:0;font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">Phone Number</p>
                   </td>
                   <td style="padding:12px 20px;border-bottom:1px solid #F1F5F9;text-align:left;">
@@ -104,7 +104,7 @@ export const adminNewUserHTML = `<!DOCTYPE html>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;text-align:left;">
+                  <td style="width:38%;padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;text-align:left;">
                     <p style="margin:0;font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">Location</p>
                   </td>
                   <td style="padding:12px 20px;border-bottom:1px solid #F1F5F9;text-align:left;">
@@ -113,7 +113,7 @@ export const adminNewUserHTML = `<!DOCTYPE html>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:12px 20px;background:#FAFAFA;text-align:left;">
+                  <td style="width:38%;padding:12px 20px;background:#FAFAFA;text-align:left;">
                     <p style="margin:0;font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">Registration Date</p>
                   </td>
                   <td style="padding:12px 20px;text-align:left;">

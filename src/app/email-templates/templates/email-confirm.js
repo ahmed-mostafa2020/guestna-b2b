@@ -11,7 +11,23 @@ export const emailConfirmHTML = `<!DOCTYPE html>
     body { font-family: "IBM Plex Sans Arabic", Arial, Tahoma, sans-serif !important; direction: rtl; }
     @media only screen and (max-width: 600px) {
       .main-table { width: 100% !important; border-radius: 0 !important; }
-      .content-pad { padding: 20px !important; }
+      .content-pad { padding: 24px 18px !important; }
+      .header-pad { padding: 30px 20px 26px !important; }
+      .footer-pad { padding: 24px 20px !important; }
+      .mobile-h1 { font-size: 20px !important; line-height:1.3 !important; }
+      .mobile-h2 { font-size: 18px !important; }
+      .mobile-emoji { font-size: 36px !important; }
+      .mobile-btn { padding: 14px 32px !important; font-size: 15px !important; }
+      .mobile-email { font-size: 14px !important; }
+      td[style*="width:42%"], td[style*="width:38%"], td[style*="width:45%"], td[style*="width:55%"] {
+        display: block !important; width: 100% !important;
+        padding: 10px 18px 2px !important; text-align: right !important;
+      }
+      td[style*="width:42%"] + td, td[style*="width:38%"] + td, td[style*="width:45%"] + td, td[style*="width:55%"] + td {
+        display: block !important; width: 100% !important;
+        padding: 0 18px 12px !important; text-align: right !important;
+      }
+      a[href^="mailto"], a[href^="tel"] { word-break: break-all !important; }
     }
   </style>
 </head>
@@ -26,12 +42,12 @@ export const emailConfirmHTML = `<!DOCTYPE html>
 
           <!-- Header -->
           <tr>
-            <td style="background:linear-gradient(150deg,#0A2540 0%,#006e6e 60%,#008F8F 100%);padding:40px 36px 36px;text-align:center;">
+            <td class="header-pad" style="background:linear-gradient(150deg,#0A2540 0%,#006e6e 60%,#008F8F 100%);padding:40px 36px 36px;text-align:center;">
               <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
                    alt="GuestNa Logo" width="120"
                    style="display:block;margin:0 auto 20px;filter:brightness(0) invert(1);border:0;" />
-              <div style="font-size:44px;margin-bottom:12px;">✉️</div>
-              <div style="font-size:24px;font-weight:700;color:#ffffff;margin-bottom:8px;line-height:1.3;">تأكيد بريدك الإلكتروني</div>
+              <div class="mobile-emoji" style="font-size:44px;margin-bottom:12px;">✉️</div>
+              <div class="mobile-h1" style="font-size:24px;font-weight:700;color:#ffffff;margin-bottom:8px;line-height:1.3;">تأكيد بريدك الإلكتروني</div>
               <div style="font-size:13px;color:rgba(255,255,255,0.75);">خطوة واحدة فقط لتفعيل حسابك</div>
             </td>
           </tr>
@@ -44,7 +60,7 @@ export const emailConfirmHTML = `<!DOCTYPE html>
           <!-- Body -->
           <tr>
             <td class="content-pad" style="padding:36px 36px 24px;text-align:center;">
-              <p style="margin:0 0 10px;font-size:20px;font-weight:700;color:#008F8F;">مرحباً، أ. أحمد مصطفى!</p>
+              <p class="mobile-h2" style="margin:0 0 10px;font-size:20px;font-weight:700;color:#008F8F;">مرحباً، أ. أحمد مصطفى!</p>
               <p style="margin:0 0 28px;font-size:15px;color:#475569;line-height:1.8;">
                 شكراً لتسجيلك في منصة جستنا. نحتاج إلى التحقق من بريدك الإلكتروني
                 لضمان أمان حسابك. اضغط على الزر أدناه لإتمام التحقق.
@@ -55,14 +71,14 @@ export const emailConfirmHTML = `<!DOCTYPE html>
                 <tr>
                   <td align="center" style="padding:18px 20px;">
                     <p style="margin:0 0 4px;font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">البريد المراد تأكيده</p>
-                    <a href="mailto:ahmad.m@school.edu.sa"
+                    <a class="mobile-email" href="mailto:ahmad.m@school.edu.sa"
                        style="font-size:17px;font-weight:700;color:#008F8F;text-decoration:none;">ahmad.m@school.edu.sa</a>
                   </td>
                 </tr>
               </table>
 
               <!-- CTA -->
-              <a href="https://guestna.app/verify-email"
+              <a class="mobile-btn" href="https://guestna.app/verify-email"
                  style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:16px;font-weight:700;padding:16px 52px;border-radius:12px;box-shadow:0 4px 20px rgba(0,143,143,0.35);">
                 ✅ تأكيد البريد الإلكتروني
               </a>
@@ -88,7 +104,7 @@ export const emailConfirmHTML = `<!DOCTYPE html>
 
           <!-- Footer -->
           <tr>
-            <td style="background:#0A2540;padding:28px 36px;text-align:center;">
+            <td class="footer-pad" style="background:#0A2540;padding:28px 36px;text-align:center;">
               <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
                    alt="GuestNa" width="90"
                    style="display:block;margin:0 auto 14px;filter:brightness(0) invert(1);opacity:0.85;border:0;" />

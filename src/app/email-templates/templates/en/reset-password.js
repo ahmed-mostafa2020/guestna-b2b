@@ -72,7 +72,7 @@ export const resetPasswordHTML = `<!DOCTYPE html>
             <td class="content-pad" style="padding:0 36px 24px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;">
                 <tr>
-                  <td colspan="2" style="background:#F0FDFA;border-bottom:1px solid #D0EAEA;padding:12px 20px;">
+                  <td colspan="2" style="width:45%;background:#F0FDFA;border-bottom:1px solid #D0EAEA;padding:12px 20px;">
                     <p style="margin:0;font-size:13px;font-weight:700;color:#008F8F;">🔍 Request Details</p>
                   </td>
                 </tr>

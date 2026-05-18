@@ -11,7 +11,17 @@ export const invoiceHTML = `<!DOCTYPE html>
     body { font-family: "IBM Plex Sans Arabic", Arial, Tahoma, sans-serif !important; direction: rtl; }
     @media only screen and (max-width: 600px) {
       .main-table { width: 100% !important; border-radius: 0 !important; }
-      .content-pad { padding: 16px !important; }
+      .content-pad { padding: 14px 16px !important; }
+      .header-pad { padding: 24px 16px !important; }
+      .title-row td { display:block !important; width:100% !important; text-align: right !important; padding:6px 0 !important; }
+      .fromto-cell { display:block !important; width:100% !important; padding:10px 0 !important; border-right:none !important; border-bottom:1px solid #E2E8F0; }
+      .fromto-cell:last-child { border-bottom: none !important; }
+      .items-row td { padding-right: 6px !important; padding-left: 6px !important; font-size: 12px !important; }
+      .total-num { font-size: 20px !important; }
+      .pay-cell { display:block !important; width:100% !important; padding:8px 0 !important; text-align: right !important; }
+      .cta-btn-stack { display:block !important; padding: 6px 0 !important; }
+      .mobile-btn { display:block !important; padding: 12px 18px !important; font-size: 13px !important; }
+      a[href^="mailto"], a[href^="tel"] { word-break: break-all !important; }
     }
   </style>
 </head>
@@ -29,7 +39,7 @@ export const invoiceHTML = `<!DOCTYPE html>
 
           <!-- Header Strip -->
           <tr>
-            <td style="background:linear-gradient(150deg,#0A2540 0%,#006e6e 60%,#008F8F 100%);padding:28px 32px;text-align:center;border-radius:4px 4px 0 0;">
+            <td class="header-pad" style="background:linear-gradient(150deg,#0A2540 0%,#006e6e 60%,#008F8F 100%);padding:28px 32px;text-align:center;border-radius:4px 4px 0 0;">
               <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
                    alt="GuestNa Logo" width="100"
                    style="display:block;margin:0 auto 10px;filter:brightness(0) invert(1);border:0;" />
@@ -45,7 +55,7 @@ export const invoiceHTML = `<!DOCTYPE html>
           <!-- Invoice Title & Number -->
           <tr>
             <td style="padding:20px 32px 16px;background:#ffffff;border-bottom:1px dashed #CBD5E1;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+              <table class="title-row" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                 <tr>
                   <td style="text-align:right;">
                     <div style="font-size:22px;font-weight:900;color:#0A2540;letter-spacing:1px;">فاتورة ضريبية</div>
@@ -68,7 +78,7 @@ export const invoiceHTML = `<!DOCTYPE html>
             <td class="content-pad" style="padding:16px 32px;background:#ffffff;border-bottom:1px dashed #CBD5E1;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                 <tr>
-                  <td style="width:50%;vertical-align:top;padding-left:12px;border-left:2px solid #E2E8F0;">
+                  <td class="fromto-cell" style="width:50%;vertical-align:top;padding-left:12px;border-left:2px solid #E2E8F0;">
                     <p style="margin:0 0 6px;font-size:10px;font-weight:700;color:#008F8F;text-transform:uppercase;letter-spacing:1px;">صادرة من</p>
                     <p style="margin:0;font-size:14px;font-weight:700;color:#1E293B;">منصة جستنا التعليمية</p>
                     <p style="margin:4px 0 0;font-size:12px;color:#64748B;line-height:1.7;">
@@ -77,7 +87,7 @@ export const invoiceHTML = `<!DOCTYPE html>
                       <a href="mailto:finance@guestna-edu.com" style="color:#008F8F;text-decoration:none;">finance@guestna-edu.com</a>
                     </p>
                   </td>
-                  <td style="width:50%;vertical-align:top;">
+                  <td class="fromto-cell" style="width:50%;vertical-align:top;">
                     <p style="margin:0 0 6px;font-size:10px;font-weight:700;color:#008F8F;text-transform:uppercase;letter-spacing:1px;">فُوتر إلى</p>
                     <p style="margin:0;font-size:14px;font-weight:700;color:#1E293B;">مدرسة النور الدولية</p>
                     <p style="margin:4px 0 0;font-size:12px;color:#64748B;line-height:1.7;">
@@ -93,8 +103,8 @@ export const invoiceHTML = `<!DOCTYPE html>
 
           <!-- Items Header -->
           <tr>
-            <td style="background:#F1F5F9;padding:10px 32px;border-bottom:1px solid #E2E8F0;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+            <td class="content-pad" style="background:#F1F5F9;padding:10px 32px;border-bottom:1px solid #E2E8F0;">
+              <table class="items-row" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                 <tr>
                   <td style="text-align:right;"><p style="margin:0;font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;">البيان</p></td>
                   <td style="width:60px;text-align:center;"><p style="margin:0;font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;">الكمية</p></td>
@@ -107,8 +117,8 @@ export const invoiceHTML = `<!DOCTYPE html>
 
           <!-- Item 1 -->
           <tr>
-            <td style="background:#ffffff;padding:14px 32px;border-bottom:1px dashed #E2E8F0;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+            <td class="content-pad" style="background:#ffffff;padding:14px 32px;border-bottom:1px dashed #E2E8F0;">
+              <table class="items-row" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                 <tr>
                   <td style="vertical-align:top;text-align:right;">
                     <p style="margin:0;font-size:13px;font-weight:600;color:#1E293B;">رحلة المزرعة التعليمية</p>
@@ -127,8 +137,8 @@ export const invoiceHTML = `<!DOCTYPE html>
 
           <!-- Item 2 -->
           <tr>
-            <td style="background:#F8FAFC;padding:14px 32px;border-bottom:1px dashed #E2E8F0;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+            <td class="content-pad" style="background:#F8FAFC;padding:14px 32px;border-bottom:1px dashed #E2E8F0;">
+              <table class="items-row" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                 <tr>
                   <td style="vertical-align:top;text-align:right;">
                     <p style="margin:0;font-size:13px;font-weight:600;color:#1E293B;">رسوم إدارة المنصة</p>
@@ -144,7 +154,7 @@ export const invoiceHTML = `<!DOCTYPE html>
 
           <!-- Subtotals -->
           <tr>
-            <td style="background:#ffffff;padding:0 32px;">
+            <td class="content-pad" style="background:#ffffff;padding:0 32px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                 <tr>
                   <td style="padding:10px 0;border-bottom:1px solid #F1F5F9;">
@@ -172,7 +182,7 @@ export const invoiceHTML = `<!DOCTYPE html>
 
           <!-- Grand Total -->
           <tr>
-            <td style="background:#0A2540;padding:18px 32px;">
+            <td class="content-pad" style="background:#0A2540;padding:18px 32px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                 <tr>
                   <td>
@@ -180,7 +190,7 @@ export const invoiceHTML = `<!DOCTYPE html>
                     <p style="margin:2px 0 0;font-size:11px;color:rgba(255,255,255,0.5);">شامل ضريبة القيمة المضافة</p>
                   </td>
                   <td style="text-align:left;">
-                    <p style="margin:0;font-size:24px;font-weight:900;color:#ffffff;font-family:monospace;">5,162.06</p>
+                    <p class="total-num" style="margin:0;font-size:24px;font-weight:900;color:#ffffff;font-family:monospace;">5,162.06</p>
                     <p style="margin:2px 0 0;font-size:12px;color:rgba(255,255,255,0.6);text-align:center;">ر.س</p>
                   </td>
                 </tr>
@@ -190,19 +200,19 @@ export const invoiceHTML = `<!DOCTYPE html>
 
           <!-- Payment Details -->
           <tr>
-            <td style="background:#ffffff;padding:16px 32px;border-top:4px solid #ED8A22;border-bottom:1px dashed #CBD5E1;">
+            <td class="content-pad" style="background:#ffffff;padding:16px 32px;border-top:4px solid #ED8A22;border-bottom:1px dashed #CBD5E1;">
               <p style="margin:0 0 10px;font-size:11px;font-weight:700;color:#ED8A22;text-transform:uppercase;letter-spacing:1px;">معلومات الدفع</p>
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                 <tr>
-                  <td style="padding:4px 0;width:33%;">
+                  <td class="pay-cell" style="padding:4px 0;width:33%;">
                     <p style="margin:0;font-size:10px;color:#94A3B8;font-weight:600;">طريقة الدفع</p>
                     <p style="margin:2px 0 0;font-size:13px;color:#1E293B;font-weight:600;">محفظة جستنا + مدى</p>
                   </td>
-                  <td style="padding:4px 0;width:33%;text-align:center;">
+                  <td class="pay-cell" style="padding:4px 0;width:33%;text-align:center;">
                     <p style="margin:0;font-size:10px;color:#94A3B8;font-weight:600;">تاريخ الدفع</p>
                     <p style="margin:2px 0 0;font-size:13px;color:#1E293B;font-weight:600;">١١ أبريل ٢٠٢٥</p>
                   </td>
-                  <td style="padding:4px 0;width:33%;text-align:left;">
+                  <td class="pay-cell" style="padding:4px 0;width:33%;text-align:left;">
                     <p style="margin:0;font-size:10px;color:#94A3B8;font-weight:600;">رقم المرجع</p>
                     <p style="margin:2px 0 0;font-size:12px;color:#1E293B;font-weight:600;font-family:monospace;">TXN-9934-XKPL</p>
                   </td>
@@ -213,7 +223,7 @@ export const invoiceHTML = `<!DOCTYPE html>
 
           <!-- Barcode Visual -->
           <tr>
-            <td style="background:#F8FAFC;padding:16px 32px;border-bottom:1px dashed #CBD5E1;text-align:center;">
+            <td class="content-pad" style="background:#F8FAFC;padding:16px 32px;border-bottom:1px dashed #CBD5E1;text-align:center;">
               <!-- Barcode simulation with divs -->
               <div style="display:inline-block;margin-bottom:6px;">
                 <div style="font-size:9px;color:#94A3B8;letter-spacing:4px;margin-bottom:4px;font-family:monospace;">INV2025074200142SCH</div>
@@ -227,17 +237,17 @@ export const invoiceHTML = `<!DOCTYPE html>
 
           <!-- CTA -->
           <tr>
-            <td align="center" style="background:#ffffff;padding:20px 32px;">
+            <td class="content-pad" align="center" style="background:#ffffff;padding:20px 32px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr>
-                  <td style="padding-left:8px;">
-                    <a href="https://guestna.app/invoice/INV-2025-0742/pdf"
+                  <td class="cta-btn-stack" style="padding-left:8px;">
+                    <a class="mobile-btn" href="https://guestna.app/invoice/INV-2025-0742/pdf"
                        style="display:inline-block;background:linear-gradient(135deg,#ED8A22,#d4701a);color:#ffffff;text-decoration:none;font-size:13px;font-weight:700;padding:11px 24px;border-radius:8px;box-shadow:0 4px 16px rgba(237,138,34,0.3);">
                       ⬇️ تنزيل PDF
                     </a>
                   </td>
-                  <td style="padding-right:8px;">
-                    <a href="https://guestna.app/dashboard"
+                  <td class="cta-btn-stack" style="padding-right:8px;">
+                    <a class="mobile-btn" href="https://guestna.app/dashboard"
                        style="display:inline-block;background:#F8FAFC;color:#008F8F;text-decoration:none;font-size:13px;font-weight:600;padding:11px 24px;border-radius:8px;border:1.5px solid #D0EAEA;">
                       📊 لوحة التحكم
                     </a>
@@ -249,7 +259,7 @@ export const invoiceHTML = `<!DOCTYPE html>
 
           <!-- Legal Note -->
           <tr>
-            <td style="background:#F8FAFC;padding:12px 32px;text-align:center;border-top:1px dashed #CBD5E1;">
+            <td class="content-pad" style="background:#F8FAFC;padding:12px 32px;text-align:center;border-top:1px dashed #CBD5E1;">
               <p style="margin:0;font-size:11px;color:#94A3B8;line-height:1.6;">
                 هذه الفاتورة صادرة إلكترونياً ولا تحتاج إلى ختم أو توقيع.<br/>
                 محفوظة وقابلة للتحميل من خلال <a href="https://guestna.app/dashboard" style="color:#008F8F;text-decoration:none;">لوحة تحكم جستنا</a>
@@ -266,7 +276,7 @@ export const invoiceHTML = `<!DOCTYPE html>
 
           <!-- Footer Stub -->
           <tr>
-            <td style="background:#0A2540;padding:20px 32px;text-align:center;">
+            <td class="content-pad" style="background:#0A2540;padding:20px 32px;text-align:center;">
               <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
                    alt="GuestNa" width="80"
                    style="display:block;margin:0 auto 10px;filter:brightness(0) invert(1);opacity:0.85;border:0;" />

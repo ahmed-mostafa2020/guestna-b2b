@@ -11,7 +11,22 @@ export const adminNewUserHTML = `<!DOCTYPE html>
     body { font-family: "IBM Plex Sans Arabic", Arial, Tahoma, sans-serif !important; direction: rtl; }
     @media only screen and (max-width: 600px) {
       .main-table { width: 100% !important; border-radius: 0 !important; }
-      .content-pad { padding: 20px !important; }
+      .content-pad { padding: 24px 18px !important; }
+      .header-pad { padding: 30px 20px 26px !important; }
+      .footer-pad { padding: 24px 20px !important; }
+      .mobile-h1 { font-size: 20px !important; line-height:1.3 !important; }
+      .mobile-emoji { font-size: 36px !important; }
+      .mobile-btn-stack { display: block !important; padding: 0 !important; margin-bottom: 10px !important; }
+      .mobile-btn { display: block !important; padding: 13px 20px !important; font-size: 14px !important; }
+      td[style*="width:42%"], td[style*="width:38%"], td[style*="width:45%"], td[style*="width:55%"] {
+        display: block !important; width: 100% !important;
+        padding: 10px 18px 2px !important; text-align: right !important;
+      }
+      td[style*="width:42%"] + td, td[style*="width:38%"] + td, td[style*="width:45%"] + td, td[style*="width:55%"] + td {
+        display: block !important; width: 100% !important;
+        padding: 0 18px 12px !important; text-align: right !important;
+      }
+      a[href^="mailto"], a[href^="tel"] { word-break: break-all !important; }
     }
   </style>
 </head>
@@ -26,12 +41,12 @@ export const adminNewUserHTML = `<!DOCTYPE html>
 
           <!-- Header -->
           <tr>
-            <td style="background:linear-gradient(150deg,#0A2540 0%,#006e6e 60%,#008F8F 100%);padding:40px 36px 36px;text-align:center;">
+            <td class="header-pad" style="background:linear-gradient(150deg,#0A2540 0%,#006e6e 60%,#008F8F 100%);padding:40px 36px 36px;text-align:center;">
               <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
                    alt="GuestNa Logo" width="120"
                    style="display:block;margin:0 auto 20px;filter:brightness(0) invert(1);border:0;" />
-              <div style="font-size:44px;margin-bottom:12px;">🏫</div>
-              <div style="font-size:24px;font-weight:700;color:#ffffff;margin-bottom:8px;line-height:1.3;">انضمام مؤسسة تعليمية جديدة</div>
+              <div class="mobile-emoji" style="font-size:44px;margin-bottom:12px;">🏫</div>
+              <div class="mobile-h1" style="font-size:24px;font-weight:700;color:#ffffff;margin-bottom:8px;line-height:1.3;">انضمام مؤسسة تعليمية جديدة</div>
               <div style="font-size:13px;color:rgba(255,255,255,0.75);">تنبيه لفريق الإدارة — يتطلب مراجعة وتفعيل</div>
             </td>
           </tr>
@@ -53,7 +68,7 @@ export const adminNewUserHTML = `<!DOCTYPE html>
             <td class="content-pad" style="padding:28px 36px 24px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;">
                 <tr>
-                  <td colspan="2" style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:12px 20px;text-align:center;">
+                  <td colspan="2" style="width:38%;background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:12px 20px;text-align:center;">
                     <span style="font-size:13px;font-weight:700;color:#008F8F;">🏫 بيانات المؤسسة التعليمية</span>
                   </td>
                 </tr>
@@ -66,7 +81,7 @@ export const adminNewUserHTML = `<!DOCTYPE html>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;">
+                  <td style="width:38%;padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;">
                     <p style="margin:0;font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">المدير المسؤول</p>
                   </td>
                   <td style="padding:12px 20px;border-bottom:1px solid #F1F5F9;">
@@ -74,7 +89,7 @@ export const adminNewUserHTML = `<!DOCTYPE html>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;">
+                  <td style="width:38%;padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;">
                     <p style="margin:0;font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">البريد الإلكتروني</p>
                   </td>
                   <td style="padding:12px 20px;border-bottom:1px solid #F1F5F9;">
@@ -82,7 +97,7 @@ export const adminNewUserHTML = `<!DOCTYPE html>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;">
+                  <td style="width:38%;padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;">
                     <p style="margin:0;font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">رقم الهاتف</p>
                   </td>
                   <td style="padding:12px 20px;border-bottom:1px solid #F1F5F9;">
@@ -90,7 +105,7 @@ export const adminNewUserHTML = `<!DOCTYPE html>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;">
+                  <td style="width:38%;padding:12px 20px;background:#FAFAFA;border-bottom:1px solid #F1F5F9;">
                     <p style="margin:0;font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">الموقع</p>
                   </td>
                   <td style="padding:12px 20px;border-bottom:1px solid #F1F5F9;">
@@ -99,7 +114,7 @@ export const adminNewUserHTML = `<!DOCTYPE html>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:12px 20px;background:#FAFAFA;">
+                  <td style="width:38%;padding:12px 20px;background:#FAFAFA;">
                     <p style="margin:0;font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">تاريخ التسجيل</p>
                   </td>
                   <td style="padding:12px 20px;">
@@ -131,14 +146,14 @@ export const adminNewUserHTML = `<!DOCTYPE html>
             <td align="center" style="padding:0 36px 32px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr>
-                  <td style="padding-left:8px;">
-                    <a href="https://guestna.app/admin/users/approve"
+                  <td class="mobile-btn-stack" style="padding-left:8px;">
+                    <a class="mobile-btn" href="https://guestna.app/admin/users/approve"
                        style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;padding:13px 28px;border-radius:10px;box-shadow:0 4px 16px rgba(0,143,143,0.3);">
                       ✅ تفعيل الحساب
                     </a>
                   </td>
-                  <td style="padding-right:8px;">
-                    <a href="https://guestna.app/admin/users"
+                  <td class="mobile-btn-stack" style="padding-right:8px;">
+                    <a class="mobile-btn" href="https://guestna.app/admin/users"
                        style="display:inline-block;background:#F8FAFC;color:#475569;text-decoration:none;font-size:14px;font-weight:600;padding:13px 28px;border-radius:10px;border:1.5px solid #E2E8F0;">
                       👁️ عرض في لوحة التحكم
                     </a>
@@ -150,7 +165,7 @@ export const adminNewUserHTML = `<!DOCTYPE html>
 
           <!-- Footer -->
           <tr>
-            <td style="background:#0A2540;padding:28px 36px;text-align:center;">
+            <td class="footer-pad" style="background:#0A2540;padding:28px 36px;text-align:center;">
               <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
                    alt="GuestNa" width="90"
                    style="display:block;margin:0 auto 14px;filter:brightness(0) invert(1);opacity:0.85;border:0;" />

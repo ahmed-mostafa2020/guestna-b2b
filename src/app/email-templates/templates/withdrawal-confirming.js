@@ -11,7 +11,20 @@ export const withdrawalConfirmingHTML = `<!DOCTYPE html>
     body { font-family: "IBM Plex Sans Arabic", Arial, sans-serif !important; direction: rtl; }
     @media only screen and (max-width: 600px) {
       .main-table { width: 100% !important; border-radius: 0 !important; }
-      .content-pad { padding: 20px !important; }
+      .content-pad { padding: 24px 18px !important; }
+      .header-pad { padding: 28px 20px 24px !important; }
+      .footer-pad { padding: 24px 20px !important; }
+      .mobile-h1 { font-size: 20px !important; line-height:1.3 !important; }
+      .mobile-amount { font-size: 26px !important; }
+      td[style*="width:42%"], td[style*="width:38%"], td[style*="width:45%"], td[style*="width:55%"] {
+        display: block !important; width: 100% !important;
+        padding: 10px 18px 2px !important; text-align: right !important;
+      }
+      td[style*="width:42%"] + td, td[style*="width:38%"] + td, td[style*="width:45%"] + td, td[style*="width:55%"] + td {
+        display: block !important; width: 100% !important;
+        padding: 0 18px 12px !important; text-align: right !important;
+      }
+      a[href^="mailto"], a[href^="tel"] { word-break: break-all !important; }
     }
   </style>
 </head>
@@ -25,10 +38,10 @@ export const withdrawalConfirmingHTML = `<!DOCTYPE html>
 
           <!-- Header -->
           <tr>
-            <td style="background:linear-gradient(150deg,#0A2540 0%,#006e6e 60%,#008F8F 100%);padding:36px 36px 32px;text-align:center;">
+            <td class="header-pad" style="background:linear-gradient(150deg,#0A2540 0%,#006e6e 60%,#008F8F 100%);padding:36px 36px 32px;text-align:center;">
               <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507" alt="GuestNa Logo" width="130" style="display:block;margin:0 auto 20px;filter:brightness(0) invert(1);border:0;" />
               <div style="display:inline-block;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:50px;padding:5px 18px;font-size:11px;color:#fff;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;">Finance Alert</div>
-              <div style="font-size:24px;font-weight:700;color:#ffffff;margin-bottom:8px;line-height:1.3;">✅ تم تأكيد ومعالجة طلب السحب</div>
+              <div class="mobile-h1" style="font-size:24px;font-weight:700;color:#ffffff;margin-bottom:8px;line-height:1.3;">✅ تم تأكيد ومعالجة طلب السحب</div>
               <div style="font-size:14px;color:rgba(255,255,255,0.6);">تم تحويل المبلغ الخاص بك بنجاح</div>
             </td>
           </tr>
@@ -59,7 +72,7 @@ export const withdrawalConfirmingHTML = `<!DOCTYPE html>
                 <tr>
                   <td align="center" style="padding:24px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:14px;">
                     <div style="font-size:13px;color:#64748B;font-weight:600;margin-bottom:8px;text-transform:uppercase;">المبلغ المُحول</div>
-                    <div style="font-size:32px;color:#1E293B;font-weight:700;margin-bottom:4px;">1,200.00 ر.س</div>
+                    <div class="mobile-amount" style="font-size:32px;color:#1E293B;font-weight:700;margin-bottom:4px;">1,200.00 ر.س</div>
                     <div style="font-size:12px;color:#10B981;font-weight:700;background:#D1FAE5;display:inline-block;padding:4px 12px;border-radius:50px;">تم التحويل ✓</div>
                   </td>
                 </tr>
@@ -68,7 +81,7 @@ export const withdrawalConfirmingHTML = `<!DOCTYPE html>
               <!-- Transfer Info -->
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;margin-bottom:24px;">
                 <tr>
-                  <td colspan="2" style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:12px 20px;text-align:right;">
+                  <td colspan="2" style="width:42%;background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:12px 20px;text-align:right;">
                     <span style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;">معلومات التحويل</span>
                   </td>
                 </tr>
@@ -81,7 +94,7 @@ export const withdrawalConfirmingHTML = `<!DOCTYPE html>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                  <td style="width:42%;padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">طريقة السحب</div>
                   </td>
                   <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
@@ -89,7 +102,7 @@ export const withdrawalConfirmingHTML = `<!DOCTYPE html>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                  <td style="width:42%;padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">البنك المحول إليه</div>
                   </td>
                   <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
@@ -97,7 +110,7 @@ export const withdrawalConfirmingHTML = `<!DOCTYPE html>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                  <td style="width:42%;padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">اسم الحساب</div>
                   </td>
                   <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
@@ -105,7 +118,7 @@ export const withdrawalConfirmingHTML = `<!DOCTYPE html>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:10px 20px 14px;text-align:right;">
+                  <td style="width:42%;padding:10px 20px 14px;text-align:right;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">رقم الحساب (IBAN)</div>
                   </td>
                   <td style="padding:10px 20px 14px;text-align:right;">
@@ -136,7 +149,7 @@ export const withdrawalConfirmingHTML = `<!DOCTYPE html>
 
           <!-- Footer -->
           <tr>
-            <td style="background:#0A2540;padding:28px 36px;text-align:center;">
+            <td class="footer-pad" style="background:#0A2540;padding:28px 36px;text-align:center;">
               <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
                    alt="GuestNa" width="90"
                    style="display:block;margin:0 auto 14px;filter:brightness(0) invert(1);opacity:0.85;border:0;" />
