@@ -244,10 +244,7 @@
                 <a href="tel:+966552345678" dir="ltr" style="color:rgba(255,255,255,0.45);text-decoration:none;;display:inline-block;">&#8206;+966 55 234 5678&#8206;</a>
               </p>
               <p style="margin:0 0 8px;font-size:12px;color:rgba(255,255,255,0.3);">© 2025 GuestNa. جميع الحقوق محفوظة.</p>
-              <p style="margin:0;font-size:11px;">
-                <a href="#" style="color:rgba(255,255,255,0.4);text-decoration:none;">إلغاء الاشتراك</a>
-                <span style="color:rgba(255,255,255,0.15);margin:0 6px;">&middot;</span>
-                <a href="#" style="color:rgba(255,255,255,0.4);text-decoration:none;">سياسة الخصوصية</a>
+          
               </p>
             </td>
           </tr>
