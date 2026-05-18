@@ -13,6 +13,25 @@ Sentry.init({
     Sentry.replayIntegration(),
   ],
 
+  // Suppress noise we cannot fix from our codebase:
+  // - SW register failures: still happen in private mode / locked storage / extensions
+  // - sw.js script load: transient during deploys; auto-recovers on next load
+  // - "onion": injected by some browser extensions (Brave, wallet plugins)
+  // - HTMLDialogElement: Google Maps internals on very old Safari/iOS
+  ignoreErrors: [
+    /Service ?Worker.*register/i,
+    /Failed to register a ServiceWorker/i,
+    /sw\.js.*load failed/i,
+    /Script.*sw\.js/i,
+    /Could not load ["']?onion["']?/i,
+    /Can't find variable: HTMLDialogElement/i,
+    /HTMLDialogElement is not defined/i,
+    // Common third-party / browser noise — not actionable from app code
+    /Non-Error promise rejection captured/i,
+    /ResizeObserver loop limit exceeded/i,
+    /ResizeObserver loop completed with undelivered notifications/i,
+  ],
+
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   // Reduced from 1.0 to 0.1 (10%) to improve performance - only sample 10% of transactions
   tracesSampleRate: 0.1,
