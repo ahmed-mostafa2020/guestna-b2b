@@ -4,6 +4,7 @@ export const tripLimitHTML = `<!DOCTYPE html>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <base target="_blank" />
   <title>Trip Limit Increase Request - GuestNa</title>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
@@ -182,7 +183,7 @@ export const tripLimitHTML = `<!DOCTYPE html>
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                 <tr>
                   <td align="center">
-                    <a href="#" class="mobile-btn" style="display:inline-block;background:linear-gradient(135deg,#F59E0B,#D97706);color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:15px 44px;border-radius:10px;box-shadow:0 4px 20px rgba(245,158,11,0.4);">
+                    <a href="https://guestna-b2b.vercel.app/en/profile/bookings-management/orders" class="mobile-btn" style="display:inline-block;background:linear-gradient(135deg,#F59E0B,#D97706);color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:15px 44px;border-radius:10px;box-shadow:0 4px 20px rgba(245,158,11,0.4);">
                       📈 Increase Trip Limit →
                     </a>
                     <p style="margin:10px 0 0;font-size:12px;color:#94A3B8;text-align:center;">Increasing this limit will help your team organize more educational experiences.</p>

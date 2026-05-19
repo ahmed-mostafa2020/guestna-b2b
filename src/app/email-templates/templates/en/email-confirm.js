@@ -4,6 +4,7 @@ export const emailConfirmHTML = `<!DOCTYPE html>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <base target="_blank" />
   <title>Confirm Your Email - GuestNa</title>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
@@ -77,7 +78,7 @@ export const emailConfirmHTML = `<!DOCTYPE html>
               </table>
 
               <!-- CTA -->
-              <a href="https://guestna.app/verify-email" class="mobile-btn"
+              <a href="https://guestna.vercel.app/ar/profile" class="mobile-btn"
                  style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:16px;font-weight:700;padding:16px 52px;border-radius:12px;box-shadow:0 4px 20px rgba(0,143,143,0.35);">
                 ✅ Confirm Email
               </a>
@@ -93,7 +94,7 @@ export const emailConfirmHTML = `<!DOCTYPE html>
                     <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#92400E;">⚠️ Security Notice</p>
                     <p style="margin:0;font-size:13px;color:#92400E;line-height:1.7;">
                       If you didn't create this account, please ignore this email.
-                      This link is valid for <strong>24 hours</strong> only.
+                      This link is valid for <strong>30 minutes</strong> only.
                     </p>
                   </td>
                 </tr>

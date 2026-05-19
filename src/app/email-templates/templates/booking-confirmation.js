@@ -1,9 +1,10 @@
-﻿export const bookingConfirmationHTML = `<!DOCTYPE html>
+export const bookingConfirmationHTML = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <base target="_blank" />
   <title>تأكيد الحجز - جستنا</title>
   <style>@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap");
     * { margin: 0; padding: 0; box-sizing: border-box; }

@@ -1,10 +1,11 @@
-﻿// Ref: withdrawal/ask Withdrawals Invoice Confirming_ar — فاتورة/إيصال السحب (تصميم إيصال)
+// Ref: withdrawal/ask Withdrawals Invoice Confirming_ar — فاتورة/إيصال السحب (تصميم إيصال)
 export const withdrawalInvoiceHTML = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <base target="_blank" />
   <title>إيصال سحب الأرباح - جستنا</title>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap");

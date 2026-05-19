@@ -4,6 +4,7 @@ export const tripReminderHTML = `<!DOCTYPE html>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <base target="_blank" />
   <title>Reminder: Your Trip is Tomorrow - GuestNa</title>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
@@ -99,7 +100,7 @@ export const tripReminderHTML = `<!DOCTYPE html>
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background:#FFF8F0;border:1.5px solid #ED8A22;border-radius:12px;text-align:center;">
                       <tr><td style="padding:16px 12px;">
                         <p style="margin:0 0 6px;font-size:22px;">📍</p>
-                        <p style="margin:0 0 2px;color:#ED8A22;font-size:11px;font-weight:700;">MEETING POINT</p>
+                        <a href="#" style="margin:0 0 2px;color:#ED8A22;font-size:11px;font-weight:700;">MEETING POINT</a>
                         <p style="margin:0;color:#1E293B;font-size:13px;font-weight:600;">Main School<br />Gate #2</p>
                       </td></tr>
                     </table>
@@ -203,7 +204,7 @@ export const tripReminderHTML = `<!DOCTYPE html>
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                 <tr>
                   <td align="center" style="padding-top:8px;">
-                    <a href="#" target="_blank" class="mobile-btn"
+                    <a href="https://guestna-b2b.vercel.app/en/parents/camping-adventure-girls-sdfsdf-st-186" target="_blank" class="mobile-btn"
                        style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:15px 44px;border-radius:10px;box-shadow:0 4px 20px rgba(0,143,143,0.3);letter-spacing:0.3px;">
                       View Full Trip Details →
                     </a>

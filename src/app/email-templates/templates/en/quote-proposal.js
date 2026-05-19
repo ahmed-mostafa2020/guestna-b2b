@@ -4,6 +4,7 @@ export const quoteProposalHTML = `<!DOCTYPE html>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <base target="_blank" />
   <title>Quote Proposal - GuestNa</title>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
@@ -229,13 +230,8 @@ export const quoteProposalHTML = `<!DOCTYPE html>
                 <tr>
                   <td align="center">
                     <span class="cta-stack" style="display:inline-block;">
-                      <a href="#" class="mobile-btn" style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;padding:14px 28px;border-radius:10px;box-shadow:0 4px 20px rgba(0,143,143,0.3);margin-right:10px;">
-                        ✓ Accept Quote & Confirm
-                      </a>
-                    </span>
-                    <span class="cta-stack" style="display:inline-block;">
-                      <a href="#" class="mobile-btn" style="display:inline-block;background:#ffffff;color:#64748B;text-decoration:none;font-size:14px;font-weight:500;padding:14px 24px;border-radius:10px;border:1px solid #E2E8F0;">
-                        Request Changes
+                      <a href="https://guestna-b2b.vercel.app/en/profile/bookings-management/orders" class="mobile-btn" style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;padding:14px 40px;border-radius:10px;box-shadow:0 4px 20px rgba(0,143,143,0.3);margin-right:10px;">
+                        ✓ Accept Quote & Confirm or Request Changes
                       </a>
                     </span>
                   </td>

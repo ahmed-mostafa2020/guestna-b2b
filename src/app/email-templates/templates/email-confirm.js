@@ -1,10 +1,11 @@
-﻿// Ref: accounts/confirmed Email_ar — تأكيد البريد الإلكتروني
+// Ref: accounts/confirmed Email_ar — تأكيد البريد الإلكتروني
 export const emailConfirmHTML = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <base target="_blank" />
   <title>تأكيد بريدك الإلكتروني - جستنا</title>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap");
@@ -78,7 +79,7 @@ export const emailConfirmHTML = `<!DOCTYPE html>
               </table>
 
               <!-- CTA -->
-              <a class="mobile-btn" href="https://guestna.app/verify-email"
+              <a class="mobile-btn" href="https://guestna.vercel.app/ar/profile"
                  style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:16px;font-weight:700;padding:16px 52px;border-radius:12px;box-shadow:0 4px 20px rgba(0,143,143,0.35);">
                 ✅ تأكيد البريد الإلكتروني
               </a>

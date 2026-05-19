@@ -4,6 +4,7 @@ export const maintenanceHTML = `<!DOCTYPE html>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <base target="_blank" />
   <title>Scheduled Maintenance Notice - GuestNa</title>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
@@ -104,7 +105,7 @@ export const maintenanceHTML = `<!DOCTYPE html>
                     <p style="margin:0;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;">Expected Duration</p>
                   </td>
                   <td class="mobile-cell-value" style="padding:16px 20px;text-align:left;">
-                    <span style="display:inline-block;background:#FEF3C7;color:#92400E;font-size:13px;font-weight:700;padding:4px 14px;border-radius:50px;">~2 hours</span>
+                    <span style="display:inline-block;background:#FEF3C7;color:#92400E;font-size:13px;font-weight:700;padding:4px 14px;border-radius:50px;">~1 hour</span>
                   </td>
                 </tr>
               </table>

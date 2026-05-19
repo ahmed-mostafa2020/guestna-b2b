@@ -1,10 +1,11 @@
-﻿// Ref: accounts/templet new B2b User_ar — تنبيه الإدارة بانضمام مدرسة/مستخدم B2B جديد
+// Ref: accounts/templet new B2b User_ar — تنبيه الإدارة بانضمام مدرسة/مستخدم B2B جديد
 export const adminNewUserHTML = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <base target="_blank" />
   <title>مستخدم B2B جديد - لوحة الإدارة</title>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap");

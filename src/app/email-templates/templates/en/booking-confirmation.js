@@ -4,6 +4,7 @@ export const bookingConfirmationHTML = `<!DOCTYPE html>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <base target="_blank" />
   <title>Booking Confirmation - GuestNa</title>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
@@ -277,7 +278,7 @@ export const bookingConfirmationHTML = `<!DOCTYPE html>
           <!-- CTA -->
           <tr>
             <td align="center" class="content-pad" style="padding:0 36px 24px;">
-              <a href="#" target="_blank" class="mobile-btn"
+              <a href="https://guestna-b2b.vercel.app/en/bookingStatus/6a0c5243579ed794ec135291" target="_blank" class="mobile-btn"
                  style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:15px 44px;border-radius:10px;box-shadow:0 4px 20px rgba(0,143,143,0.3);letter-spacing:0.3px;">
                 View Invoice & Payment Details →
               </a>

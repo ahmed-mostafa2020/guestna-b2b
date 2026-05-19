@@ -4,6 +4,7 @@ export const newAccountHTML = `<!DOCTYPE html>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <base target="_blank" />
   <title>Complete Your Account - GuestNa</title>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
@@ -149,7 +150,7 @@ export const newAccountHTML = `<!DOCTYPE html>
           <!-- CTA -->
           <tr>
             <td align="center" style="padding:0 36px 12px;">
-              <a href="https://guestna.app/set-password" class="mobile-btn"
+              <a href="https://guestna-b2b.vercel.app/en/reset-password" class="mobile-btn"
                  style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:16px;font-weight:700;padding:16px 48px;border-radius:12px;box-shadow:0 4px 20px rgba(0,143,143,0.35);">
                 🔐 Set Password
               </a>
@@ -160,7 +161,7 @@ export const newAccountHTML = `<!DOCTYPE html>
           <tr>
             <td align="center" style="padding:12px 36px 32px;">
               <p style="margin:0;font-size:12px;color:#94A3B8;line-height:1.7;">
-                ⏰ This link is valid for <strong style="color:#ED8A22;">24 hours</strong> from the time of sending.<br/>
+                ⏰ This link is valid for <strong style="color:#ED8A22;">30 minutes</strong> from the time of sending.<br/>
                 If it expires, contact our support team at
                 <a href="mailto:info@guestna.app" style="color:#008F8F;text-decoration:none;">info@guestna.app</a>
               </p>
