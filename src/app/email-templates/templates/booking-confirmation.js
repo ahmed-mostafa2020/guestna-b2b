@@ -115,7 +115,7 @@ export const bookingConfirmationHTML = `<!DOCTYPE html>
                   </td>
                   <td style="padding:14px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
                     <div style="font-size:15px;font-weight:700;">
-                      <a href="#" style="color:#008F8F;text-decoration:none;border-bottom:1px dashed #008F8F;">رحلة المزرعة التعليمية — الرياض ↗</a>
+                      <a href="https://guestna-b2b.vercel.app/ar/parents/camping-adventure-girls-sdfsdf-st-186" style="color:#008F8F;text-decoration:none;border-bottom:1px dashed #008F8F;">رحلة المزرعة التعليمية — الرياض ↗</a>
                     </div>
                   </td>
                 </tr>

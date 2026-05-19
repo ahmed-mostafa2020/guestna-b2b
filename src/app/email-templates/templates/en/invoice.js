@@ -7,109 +7,94 @@ export const invoiceHTML = `<!DOCTYPE html>
   <base target="_blank" />
   <title>Tax Invoice - GuestNa</title>
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
     body { font-family: "Inter", Arial, Helvetica, sans-serif !important; direction: ltr; }
+    .mono { font-family: "Courier New", Consolas, monospace; }
     @media only screen and (max-width: 600px) {
-      .main-table { width: 100% !important; border-radius: 0 !important; }
-      .content-pad { padding: 14px 16px !important; }
-      .header-pad { padding: 24px 16px !important; }
-      .title-row td { display:block !important; width:100% !important; text-align:left !important; padding:6px 0 !important; }
-      .fromto-cell { display:block !important; width:100% !important; padding:10px 0 !important; border-left:none !important; border-bottom:1px solid #E2E8F0; }
-      .fromto-cell:last-child { border-bottom: none !important; }
-      .items-row td { padding-left: 6px !important; padding-right: 6px !important; font-size: 12px !important; }
-      .total-num { font-size: 20px !important; }
-      .pay-cell { display:block !important; width:100% !important; padding:8px 0 !important; text-align:left !important; }
-      .cta-btn-stack { display:block !important; padding: 6px 0 !important; }
-      .mobile-btn { display:block !important; padding: 12px 18px !important; font-size: 13px !important; }
-      a[href^="mailto"], a[href^="tel"] { word-break: break-all !important; }
+      .main-table { width: 100% !important; }
+      .content-pad { padding: 10px 16px !important; }
     }
   </style>
 </head>
-<body style="margin:0;padding:0;background-color:#D1D9E0;color:#1E293B;font-family:'Inter',Arial,Helvetica,sans-serif;direction:ltr;width:100%;min-width:100%;">
+<body style="margin:0;padding:0;background-color:#EEEEEE;color:#111111;font-family:'Inter',Arial,Helvetica,sans-serif;direction:ltr;width:100%;min-width:100%;">
 
-  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#D1D9E0;">
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#EEEEEE;">
     <tr>
-      <td align="center" style="padding:32px 16px;">
+      <td align="center" style="padding:24px 12px;">
 
-        <!-- Receipt Paper Card -->
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="560" class="main-table"
-               style="max-width:560px;background-color:#FAFAFA;margin:0 auto;
-                      box-shadow:0 4px 6px rgba(0,0,0,0.07),0 10px 40px rgba(0,0,0,0.12);
-                      border-radius:4px 4px 0 0;">
+        <!-- Receipt Paper -->
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="420" class="main-table"
+               style="max-width:420px;background-color:#FFFFFF;margin:0 auto;border:1px solid #D9D9D9;">
 
-          <!-- Header Strip -->
+          <!-- Logo / Store -->
           <tr>
-            <td class="header-pad" style="background:linear-gradient(150deg,#0A2540 0%,#006e6e 60%,#008F8F 100%);padding:28px 32px;text-align:center;border-radius:4px 4px 0 0;">
+            <td class="content-pad" style="padding:18px 20px 6px;text-align:center;">
               <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
-                   alt="GuestNa Logo" width="100"
-                   style="display:block;margin:0 auto 10px;filter:brightness(0) invert(1);border:0;" />
-              <p style="margin:0;color:rgba(255,255,255,0.7);font-size:11px;letter-spacing:2px;text-transform:uppercase;">Educational Trips Platform</p>
+                   alt="GuestNa" width="70"
+                   style="display:block;margin:0 auto 6px;border:0;" />
+              <p style="margin:0;font-size:14px;font-weight:700;color:#111111;">GuestNa Educational Platform</p>
+              <p style="margin:2px 0 0;font-size:11px;color:#666666;">Riyadh, Saudi Arabia</p>
+              <p style="margin:2px 0 0;font-size:11px;color:#666666;">VAT No.: 1234567890</p>
+              <p style="margin:2px 0 0;font-size:11px;color:#666666;">+966 54 753 4666 &nbsp;|&nbsp; finance@guestna-edu.com</p>
             </td>
           </tr>
 
-          <!-- Accent Line -->
+          <!-- Divider -->
+          <tr><td style="padding:8px 20px 0;"><div style="border-top:1px dashed #999999;"></div></td></tr>
+
+          <!-- Title -->
           <tr>
-            <td style="height:4px;background:linear-gradient(90deg,#008F8F,#ED8A22,#008F8F);"></td>
+            <td class="content-pad" style="padding:10px 20px 6px;text-align:center;">
+              <p style="margin:0;font-size:15px;font-weight:700;letter-spacing:3px;color:#111111;">SIMPLIFIED TAX INVOICE</p>
+              <p style="margin:2px 0 0;font-size:10px;color:#666666;letter-spacing:2px;">VAT INCLUSIVE</p>
+            </td>
           </tr>
 
-          <!-- Invoice Title & Number -->
+          <!-- Meta -->
           <tr>
-            <td style="padding:20px 32px 16px;background:#ffffff;border-bottom:1px dashed #CBD5E1;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" class="title-row">
+            <td class="content-pad" style="padding:8px 20px 10px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size:12px;color:#222222;">
                 <tr>
-                  <td style="text-align:left;">
-                    <div style="font-size:22px;font-weight:900;color:#0A2540;letter-spacing:1px;">TAX INVOICE</div>
-                    <div style="font-size:12px;color:#94A3B8;margin-top:2px;">Tax Registration: 1234567890</div>
-                  </td>
-                  <td style="text-align:right;">
-                    <div style="background:#0A2540;color:#ffffff;font-size:14px;font-weight:700;padding:8px 16px;border-radius:8px;display:inline-block;font-family:monospace;">#INV-2025-0742</div>
-                    <div style="font-size:11px;color:#94A3B8;margin-top:4px;">
-                      Issued: April 12, 2025<br/>
-                      <span style="color:#008F8F;font-weight:600;">✓ Paid</span>
-                    </div>
-                  </td>
+                  <td style="padding:2px 0;">Invoice No.</td>
+                  <td class="mono" style="padding:2px 0;text-align:right;">INV-2025-0742</td>
+                </tr>
+                <tr>
+                  <td style="padding:2px 0;">Issued</td>
+                  <td class="mono" style="padding:2px 0;text-align:right;">2025/04/12</td>
+                </tr>
+                <tr>
+                  <td style="padding:2px 0;">Status</td>
+                  <td style="padding:2px 0;text-align:right;font-weight:700;">Paid ✓</td>
                 </tr>
               </table>
             </td>
           </tr>
 
-          <!-- From / To -->
+          <!-- Divider -->
+          <tr><td style="padding:0 20px;"><div style="border-top:1px dashed #999999;"></div></td></tr>
+
+          <!-- Billed To -->
           <tr>
-            <td class="content-pad" style="padding:16px 32px;background:#ffffff;border-bottom:1px dashed #CBD5E1;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-                <tr>
-                  <td class="fromto-cell" style="width:50%;vertical-align:top;padding-right:12px;border-right:2px solid #E2E8F0;">
-                    <p style="margin:0 0 6px;font-size:10px;font-weight:700;color:#008F8F;text-transform:uppercase;letter-spacing:1px;">From</p>
-                    <p style="margin:0;font-size:14px;font-weight:700;color:#1E293B;">GuestNa Educational Platform</p>
-                    <p style="margin:4px 0 0;font-size:12px;color:#64748B;line-height:1.7;">
-                      <a href="https://maps.google.com/?q=Riyadh,Saudi+Arabia" style="color:#64748B;text-decoration:none;">📍 Riyadh, Saudi Arabia</a><br/>
-                      VAT #: 1234567890<br/>
-                      <a href="mailto:finance@guestna-edu.com" style="color:#008F8F;text-decoration:none;word-break:break-all;">finance@guestna-edu.com</a>
-                    </p>
-                  </td>
-                  <td class="fromto-cell" style="width:50%;vertical-align:top;padding-left:12px;">
-                    <p style="margin:0 0 6px;font-size:10px;font-weight:700;color:#008F8F;text-transform:uppercase;letter-spacing:1px;">Billed To</p>
-                    <p style="margin:0;font-size:14px;font-weight:700;color:#1E293B;">Al-Noor International School</p>
-                    <p style="margin:4px 0 0;font-size:12px;color:#64748B;line-height:1.7;">
-                      <a href="https://maps.google.com/?q=Jeddah,Saudi+Arabia" style="color:#64748B;text-decoration:none;">📍 Jeddah, Saudi Arabia</a><br/>
-                      Customer ID: SCH-00142<br/>
-                      <a href="mailto:billing@alnour-school.edu.sa" style="color:#008F8F;text-decoration:none;word-break:break-all;">billing@alnour-school.edu.sa</a>
-                    </p>
-                  </td>
-                </tr>
-              </table>
+            <td class="content-pad" style="padding:10px 20px;font-size:12px;color:#222222;">
+              <p style="margin:0 0 4px;font-size:11px;color:#666666;">BILLED TO</p>
+              <p style="margin:0;font-weight:700;">Al-Noor International School</p>
+              <p style="margin:2px 0 0;color:#555555;">Jeddah — Customer ID: SCH-00142</p>
+              <p style="margin:2px 0 0;color:#555555;">billing@alnour-school.edu.sa</p>
             </td>
           </tr>
 
-          <!-- Items Header -->
+          <!-- Divider -->
+          <tr><td style="padding:0 20px;"><div style="border-top:1px dashed #999999;"></div></td></tr>
+
+          <!-- Items header -->
           <tr>
-            <td style="background:#F1F5F9;padding:10px 32px;border-bottom:1px solid #E2E8F0;" class="content-pad">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" class="items-row">
+            <td class="content-pad" style="padding:8px 20px 4px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size:11px;color:#666666;">
                 <tr>
-                  <td style="text-align:left;"><p style="margin:0;font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;">Description</p></td>
-                  <td style="width:50px;text-align:center;"><p style="margin:0;font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;">Qty</p></td>
-                  <td style="width:70px;text-align:center;"><p style="margin:0;font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;">Unit</p></td>
-                  <td style="width:80px;text-align:right;"><p style="margin:0;font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;">Total</p></td>
+                  <td style="text-align:left;">Description</td>
+                  <td style="width:40px;text-align:center;">Qty</td>
+                  <td style="width:60px;text-align:center;">Unit</td>
+                  <td style="width:70px;text-align:right;">Total</td>
                 </tr>
               </table>
             </td>
@@ -117,19 +102,16 @@ export const invoiceHTML = `<!DOCTYPE html>
 
           <!-- Item 1 -->
           <tr>
-            <td style="background:#ffffff;padding:14px 32px;border-bottom:1px dashed #E2E8F0;" class="content-pad">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" class="items-row">
+            <td class="content-pad" style="padding:4px 20px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size:12px;color:#222222;">
                 <tr>
-                  <td style="vertical-align:top;text-align:left;">
-                    <p style="margin:0;font-size:13px;font-weight:600;color:#1E293B;">Educational Farm Trip</p>
-                    <p style="margin:3px 0 0;font-size:11px;color:#94A3B8;">
-                      <a href="https://maps.google.com/?q=Riyadh" style="color:#94A3B8;text-decoration:none;">📍 Riyadh</a>
-                      &nbsp;|&nbsp; May 20, 2025, 8:00 AM – 2:00 PM
-                    </p>
+                  <td style="text-align:left;vertical-align:top;">
+                    Educational Farm Trip
+                    <div style="font-size:10px;color:#666666;margin-top:2px;">2025/05/20 — 8:00 AM</div>
                   </td>
-                  <td style="width:50px;text-align:center;vertical-align:top;"><p style="margin:0;font-size:13px;color:#475569;">45</p></td>
-                  <td style="width:70px;text-align:center;vertical-align:top;"><p style="margin:0;font-size:13px;color:#475569;font-family:monospace;">95.00</p></td>
-                  <td style="width:80px;text-align:right;vertical-align:top;"><p style="margin:0;font-size:13px;font-weight:600;color:#1E293B;font-family:monospace;">4,275.00</p></td>
+                  <td class="mono" style="width:40px;text-align:center;vertical-align:top;">45</td>
+                  <td class="mono" style="width:60px;text-align:center;vertical-align:top;">95.00</td>
+                  <td class="mono" style="width:70px;text-align:right;vertical-align:top;">4,275.00</td>
                 </tr>
               </table>
             </td>
@@ -137,157 +119,103 @@ export const invoiceHTML = `<!DOCTYPE html>
 
           <!-- Item 2 -->
           <tr>
-            <td style="background:#F8FAFC;padding:14px 32px;border-bottom:1px dashed #E2E8F0;" class="content-pad">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" class="items-row">
+            <td class="content-pad" style="padding:4px 20px 8px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size:12px;color:#222222;">
                 <tr>
-                  <td style="vertical-align:top;text-align:left;">
-                    <p style="margin:0;font-size:13px;font-weight:600;color:#1E293B;">Platform Management Fee</p>
-                    <p style="margin:3px 0 0;font-size:11px;color:#94A3B8;">5% of total trip value</p>
+                  <td style="text-align:left;vertical-align:top;">
+                    Platform Management Fee
+                    <div style="font-size:10px;color:#666666;margin-top:2px;">5% of trip value</div>
                   </td>
-                  <td style="width:50px;text-align:center;vertical-align:top;"><p style="margin:0;font-size:13px;color:#475569;">—</p></td>
-                  <td style="width:70px;text-align:center;vertical-align:top;"><p style="margin:0;font-size:13px;color:#475569;">—</p></td>
-                  <td style="width:80px;text-align:right;vertical-align:top;"><p style="margin:0;font-size:13px;font-weight:600;color:#1E293B;font-family:monospace;">213.75</p></td>
+                  <td class="mono" style="width:40px;text-align:center;vertical-align:top;">—</td>
+                  <td class="mono" style="width:60px;text-align:center;vertical-align:top;">—</td>
+                  <td class="mono" style="width:70px;text-align:right;vertical-align:top;">213.75</td>
                 </tr>
               </table>
             </td>
           </tr>
+
+          <!-- Divider -->
+          <tr><td style="padding:0 20px;"><div style="border-top:1px dashed #999999;"></div></td></tr>
 
           <!-- Subtotals -->
           <tr>
-            <td style="background:#ffffff;padding:0 32px;" class="content-pad">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+            <td class="content-pad" style="padding:8px 20px 4px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size:12px;color:#222222;">
                 <tr>
-                  <td style="padding:10px 0;border-bottom:1px solid #F1F5F9;">
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-                      <tr>
-                        <td><p style="margin:0;font-size:12px;color:#64748B;">Subtotal (before VAT)</p></td>
-                        <td style="text-align:right;"><p style="margin:0;font-size:12px;color:#1E293B;font-family:monospace;">SAR 4,488.75</p></td>
-                      </tr>
-                    </table>
-                  </td>
+                  <td style="padding:2px 0;">Subtotal</td>
+                  <td class="mono" style="padding:2px 0;text-align:right;">4,488.75</td>
                 </tr>
                 <tr>
-                  <td style="padding:10px 0;border-bottom:2px solid #0A2540;">
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-                      <tr>
-                        <td><p style="margin:0;font-size:12px;color:#64748B;">VAT (15%)</p></td>
-                        <td style="text-align:right;"><p style="margin:0;font-size:12px;color:#1E293B;font-family:monospace;">SAR 673.31</p></td>
-                      </tr>
-                    </table>
-                  </td>
+                  <td style="padding:2px 0;">VAT 15%</td>
+                  <td class="mono" style="padding:2px 0;text-align:right;">673.31</td>
                 </tr>
               </table>
             </td>
           </tr>
 
-          <!-- Grand Total -->
+          <!-- Divider -->
+          <tr><td style="padding:0 20px;"><div style="border-top:1px dashed #999999;"></div></td></tr>
+
+          <!-- Total -->
           <tr>
-            <td style="background:#0A2540;padding:18px 32px;" class="content-pad">
+            <td class="content-pad" style="padding:10px 20px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                 <tr>
-                  <td>
-                    <p style="margin:0;font-size:16px;font-weight:700;color:#ffffff;">Total Amount Paid</p>
-                    <p style="margin:2px 0 0;font-size:11px;color:rgba(255,255,255,0.5);">Includes VAT</p>
-                  </td>
+                  <td style="font-size:14px;font-weight:700;color:#111111;">Total Due</td>
                   <td style="text-align:right;">
-                    <p class="total-num" style="margin:0;font-size:24px;font-weight:900;color:#ffffff;font-family:monospace;">5,162.06</p>
-                    <p style="margin:2px 0 0;font-size:12px;color:rgba(255,255,255,0.6);text-align:right;">SAR</p>
+                    <span class="mono" style="font-size:18px;font-weight:700;color:#111111;">5,162.06</span>
+                    <span style="font-size:11px;color:#666666;">&nbsp;SAR</span>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
 
-          <!-- Payment Details -->
+          <!-- Divider double -->
+          <tr><td style="padding:0 20px;"><div style="border-top:1px solid #111111;"></div></td></tr>
+          <tr><td style="padding:1px 20px 0;"><div style="border-top:1px solid #111111;"></div></td></tr>
+
+          <!-- Payment -->
           <tr>
-            <td style="background:#ffffff;padding:16px 32px;border-top:4px solid #ED8A22;border-bottom:1px dashed #CBD5E1;" class="content-pad">
-              <p style="margin:0 0 10px;font-size:11px;font-weight:700;color:#ED8A22;text-transform:uppercase;letter-spacing:1px;">Payment Details</p>
+            <td class="content-pad" style="padding:10px 20px;font-size:12px;color:#222222;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                 <tr>
-                  <td class="pay-cell" style="padding:4px 0;width:33%;">
-                    <p style="margin:0;font-size:10px;color:#94A3B8;font-weight:600;">PAYMENT METHOD</p>
-                    <p style="margin:2px 0 0;font-size:13px;color:#1E293B;font-weight:600;">GuestNa Wallet + Mada</p>
-                  </td>
-                  <td class="pay-cell" style="padding:4px 0;width:33%;text-align:center;">
-                    <p style="margin:0;font-size:10px;color:#94A3B8;font-weight:600;">PAYMENT DATE</p>
-                    <p style="margin:2px 0 0;font-size:13px;color:#1E293B;font-weight:600;">April 11, 2025</p>
-                  </td>
-                  <td class="pay-cell" style="padding:4px 0;width:33%;text-align:right;">
-                    <p style="margin:0;font-size:10px;color:#94A3B8;font-weight:600;">REFERENCE #</p>
-                    <p style="margin:2px 0 0;font-size:12px;color:#1E293B;font-weight:600;font-family:monospace;">TXN-9934-XKPL</p>
-                  </td>
+                  <td style="padding:2px 0;">Method</td>
+                  <td style="padding:2px 0;text-align:right;">GuestNa Wallet + Mada</td>
                 </tr>
-              </table>
-            </td>
-          </tr>
-
-          <!-- Barcode Visual -->
-          <tr>
-            <td style="background:#F8FAFC;padding:16px 32px;border-bottom:1px dashed #CBD5E1;text-align:center;" class="content-pad">
-              <div style="display:inline-block;margin-bottom:6px;">
-                <div style="font-size:9px;color:#94A3B8;letter-spacing:4px;margin-bottom:4px;font-family:monospace;">INV2025074200142SCH</div>
-                <div style="height:36px;background:repeating-linear-gradient(90deg,#1E293B 0,#1E293B 2px,transparent 2px,transparent 4px,#1E293B 4px,#1E293B 5px,transparent 5px,transparent 8px,#1E293B 8px,#1E293B 11px,transparent 11px,transparent 13px,#1E293B 13px,#1E293B 14px,transparent 14px,transparent 17px,#1E293B 17px,#1E293B 19px,transparent 19px,transparent 22px);width:200px;max-width:100%;opacity:0.8;"></div>
-              </div>
-              <p style="margin:6px 0 0;font-size:11px;color:#94A3B8;">
-                <a href="https://guestna.app/invoice/INV-2025-0742" style="color:#008F8F;text-decoration:none;font-weight:600;">🔗 View Electronic Invoice</a>
-              </p>
-            </td>
-          </tr>
-
-          <!-- CTA -->
-          <tr>
-            <td align="center" style="background:#ffffff;padding:20px 32px;" class="content-pad">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr>
-                  <td class="cta-btn-stack" style="padding-right:8px;">
-                    <a href="https://guestna.app/invoice/INV-2025-0742/pdf" class="mobile-btn"
-                       style="display:inline-block;background:linear-gradient(135deg,#ED8A22,#d4701a);color:#ffffff;text-decoration:none;font-size:13px;font-weight:700;padding:11px 24px;border-radius:8px;box-shadow:0 4px 16px rgba(237,138,34,0.3);">
-                      ⬇️ Download PDF
-                    </a>
-                  </td>
-                  <td class="cta-btn-stack" style="padding-left:8px;">
-                    <a href="https://guestna.app/dashboard" class="mobile-btn"
-                       style="display:inline-block;background:#F8FAFC;color:#008F8F;text-decoration:none;font-size:13px;font-weight:600;padding:11px 24px;border-radius:8px;border:1.5px solid #D0EAEA;">
-                      📊 Dashboard
-                    </a>
-                  </td>
+                  <td style="padding:2px 0;">Paid On</td>
+                  <td class="mono" style="padding:2px 0;text-align:right;">2025/04/11</td>
+                </tr>
+                <tr>
+                  <td style="padding:2px 0;">Reference</td>
+                  <td class="mono" style="padding:2px 0;text-align:right;">TXN-9934-XKPL</td>
                 </tr>
               </table>
             </td>
           </tr>
 
-          <!-- Legal Note -->
+          <!-- Divider -->
+          <tr><td style="padding:0 20px;"><div style="border-top:1px dashed #999999;"></div></td></tr>
+
+          <!-- Barcode -->
           <tr>
-            <td style="background:#F8FAFC;padding:12px 32px;text-align:center;border-top:1px dashed #CBD5E1;" class="content-pad">
-              <p style="margin:0;font-size:11px;color:#94A3B8;line-height:1.6;">
-                This invoice was issued electronically and requires no stamp or signature.<br/>
-                Saved and downloadable from the <a href="https://guestna.app/dashboard" style="color:#008F8F;text-decoration:none;">GuestNa Dashboard</a>
-              </p>
+            <td class="content-pad" style="padding:12px 20px;text-align:center;">
+              <div style="height:34px;background:repeating-linear-gradient(90deg,#111111 0,#111111 2px,transparent 2px,transparent 4px,#111111 4px,#111111 5px,transparent 5px,transparent 8px,#111111 8px,#111111 11px,transparent 11px,transparent 13px,#111111 13px,#111111 14px,transparent 14px,transparent 17px,#111111 17px,#111111 19px,transparent 19px,transparent 22px);width:180px;max-width:100%;margin:0 auto;"></div>
+              <p class="mono" style="margin:6px 0 0;font-size:10px;color:#444444;letter-spacing:3px;">INV2025074200142SCH</p>
             </td>
           </tr>
 
-          <!-- Tear Line -->
+          <!-- Thank you -->
           <tr>
-            <td style="padding:0;background:#D1D9E0;">
-              <div style="border-top:2px dashed #94A3B8;margin:0 12px;position:relative;"></div>
-            </td>
-          </tr>
-
-          <!-- Footer Stub -->
-          <tr>
-            <td style="background:#0A2540;padding:20px 32px;text-align:center;" class="content-pad">
-              <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
-                   alt="GuestNa" width="80"
-                   style="display:block;margin:0 auto 10px;filter:brightness(0) invert(1);opacity:0.85;border:0;" />
-              <p style="margin:0 0 4px;font-size:12px;color:rgba(255,255,255,0.7);font-weight:600;">
-                
+            <td class="content-pad" style="padding:6px 20px 16px;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#222222;">Thank you for your business</p>
+              <p style="margin:4px 0 0;font-size:10px;color:#666666;line-height:1.6;">
+                Electronic invoice — no stamp or signature required.<br/>
+                <a href="https://guestna.app/invoice/INV-2025-0742/pdf" style="color:#111111;text-decoration:underline;">Download PDF</a>
+                &nbsp;|&nbsp;
+                <a href="mailto:finance@guestna-edu.com" style="color:#111111;text-decoration:none;">finance@guestna-edu.com</a>
               </p>
-              <p style="margin:0 0 4px;font-size:11px;color:rgba(255,255,255,0.45);">
-                <a href="mailto:finance@guestna-edu.com" style="color:rgba(255,255,255,0.45);text-decoration:none;">finance@guestna-edu.com</a>
-                <span style="color:rgba(255,255,255,0.2);margin:0 6px;">|</span>
-                <a href="tel:+966552345678" style="color:rgba(255,255,255,0.45);text-decoration:none;display:inline-block;">+966547534666</a>
-              </p>
-              <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.3);">© 2025 GuestNa. All rights reserved.</p>
             </td>
           </tr>
 
