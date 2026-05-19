@@ -94,7 +94,7 @@ export const emailConfirmHTML = `<!DOCTYPE html>
                     <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#92400E;">⚠️ ملاحظة أمنية</p>
                     <p style="margin:0;font-size:13px;color:#92400E;line-height:1.7;">
                       إذا لم تقم بإنشاء هذا الحساب، يرجى تجاهل هذا البريد الإلكتروني.
-                      هذا الرابط صالح لمدة <strong>٢٤ ساعة</strong> فقط.
+                      هذا الرابط صالح لمدة <strong>30 دقيقة</strong> فقط.
                     </p>
                   </td>
                 </tr>

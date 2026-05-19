@@ -276,7 +276,7 @@
           <!-- CTA -->
           <tr>
             <td class="content-pad" align="center" style="padding:0 36px 24px;">
-              <a class="mobile-btn" href="#"
+              <a class="mobile-btn" href="https://guestna-b2b.vercel.app/ar/bookingStatus/6a0c5243579ed794ec135291"
                  target="_blank"
                  style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:15px 44px;border-radius:10px;box-shadow:0 4px 20px rgba(0,143,143,0.3);letter-spacing:0.3px;">
                 عرض الفاتورة وتفاصيل الدفع ←

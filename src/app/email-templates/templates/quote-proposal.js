@@ -234,15 +234,11 @@
                 <tr>
                   <td align="center">
                     <span class="cta-stack" style="display:inline-block;">
-                      <a class="mobile-btn" href="#" style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;padding:14px 40px;border-radius:10px;box-shadow:0 4px 20px rgba(0,143,143,0.3);margin-left:10px;">
-                        ✓ قبول العرض وتأكيد الحجز
+                      <a class="mobile-btn" href="https://guestna-b2b.vercel.app/ar/profile/bookings-management/orders" style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;padding:14px 40px;border-radius:10px;box-shadow:0 4px 20px rgba(0,143,143,0.3);margin-left:10px;">
+                        ✓ قبول العرض وتأكيد الحجز أو طلب تعديل
                       </a>
                     </span>
-                    <span class="cta-stack" style="display:inline-block;">
-                      <a class="mobile-btn" href="#" style="display:inline-block;background:#ffffff;color:#64748B;text-decoration:none;font-size:14px;font-weight:500;padding:14px 24px;border-radius:10px;border:1px solid #E2E8F0;">
-                        طلب تعديل
-                      </a>
-                    </span>
+                 
                   </td>
                 </tr>
               </table>

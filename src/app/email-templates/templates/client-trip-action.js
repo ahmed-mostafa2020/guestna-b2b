@@ -42,7 +42,7 @@ export const clientTripActionHTML = `<!DOCTYPE html>
               <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507" alt="GuestNa Logo" width="130" style="display:block;margin:0 auto 20px;filter:brightness(0) invert(1);border:0;" />
               <div style="display:inline-block;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:50px;padding:5px 18px;font-size:11px;color:#fff;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;">Admin Alert</div>
               <div class="mobile-h1" style="font-size:24px;font-weight:700;color:#ffffff;margin-bottom:8px;line-height:1.3;">✅ قرار العميل: الموافقة</div>
-              <div style="font-size:14px;color:rgba(255,255,255,0.6);">العاميل قام بالرد على طلب الرحلة</div>
+              <div style="font-size:14px;color:rgba(255,255,255,0.6);">العميل قام بالرد على طلب الرحلة</div>
             </td>
           </tr>
 
@@ -112,7 +112,7 @@ export const clientTripActionHTML = `<!DOCTYPE html>
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                 <tr>
                   <td align="center">
-                    <a class="mobile-btn" href="#" style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:15px 44px;border-radius:10px;box-shadow:0 4px 20px rgba(0,143,143,0.3);">
+                    <a class="mobile-btn" href="https://guestna-revamp-dashboard.vercel.app/b2b/askTrips" style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:15px 44px;border-radius:10px;box-shadow:0 4px 20px rgba(0,143,143,0.3);">
                       الانتقال إلى لوحة التحكم ←
                     </a>
                   </td>

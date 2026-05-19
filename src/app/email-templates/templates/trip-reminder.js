@@ -104,7 +104,7 @@
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background:#FFF8F0;border:1.5px solid #ED8A22;border-radius:12px;text-align:center;">
                       <tr><td style="padding:16px 12px;">
                         <p style="margin:0 0 6px;font-size:22px;">📍</p>
-                        <p style="margin:0 0 2px;color:#ED8A22;font-size:11px;font-weight:700;">نقطة التجمع</p>
+                        <a href="#" style="margin:0 0 2px;color:#ED8A22;font-size:11px;font-weight:700;">نقطة التجمع</a>
                         <p style="margin:0;color:#1E293B;font-size:13px;font-weight:600;">بوابة المدرسة<br />الرئيسية رقم 2</p>
                       </td></tr>
                     </table>
@@ -208,7 +208,7 @@
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                 <tr>
                   <td align="center" style="padding-top:8px;">
-                    <a class="mobile-btn" href="#"
+                    <a class="mobile-btn" href="https://guestna-b2b.vercel.app/ar/parents/camping-adventure-girls-sdfsdf-st-186"
                        target="_blank"
                        style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:15px 44px;border-radius:10px;box-shadow:0 4px 20px rgba(0,143,143,0.3);letter-spacing:0.3px;">
                       عرض تفاصيل الرحلة كاملة ←

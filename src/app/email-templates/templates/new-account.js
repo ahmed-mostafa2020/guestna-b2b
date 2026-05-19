@@ -150,7 +150,7 @@ export const newAccountHTML = `<!DOCTYPE html>
           <!-- CTA -->
           <tr>
             <td align="center" style="padding:0 36px 12px;">
-              <a class="mobile-btn" href="https://guestna.app/set-password"
+              <a class="mobile-btn" href="https://guestna-b2b.vercel.app/ar/reset-password"
                  style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#ffffff;text-decoration:none;font-size:16px;font-weight:700;padding:16px 48px;border-radius:12px;box-shadow:0 4px 20px rgba(0,143,143,0.35);">
                 🔐 إنشاء كلمة المرور
               </a>
@@ -161,7 +161,7 @@ export const newAccountHTML = `<!DOCTYPE html>
           <tr>
             <td align="center" style="padding:12px 36px 32px;">
               <p style="margin:0;font-size:12px;color:#94A3B8;line-height:1.7;">
-                ⏰ هذا الرابط صالح لمدة <strong style="color:#ED8A22;">٢٤ ساعة</strong> من وقت الإرسال.<br/>
+                ⏰ هذا الرابط صالح لمدة <strong style="color:#ED8A22;">30 دقيقة</strong> من وقت الإرسال.<br/>
                 إذا انتهت صلاحيته، تواصل مع فريق الدعم على
                 <a href="mailto:info@guestna.app" style="color:#008F8F;text-decoration:none;">info@guestna.app</a>
               </p>

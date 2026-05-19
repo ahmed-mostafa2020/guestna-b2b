@@ -184,7 +184,7 @@ export const tripLimitHTML = `<!DOCTYPE html>
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                 <tr>
                   <td align="center">
-                    <a class="mobile-btn" href="#" style="display:inline-block;background:linear-gradient(135deg,#F59E0B,#D97706);color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:15px 44px;border-radius:10px;box-shadow:0 4px 20px rgba(245,158,11,0.4);">
+                    <a class="mobile-btn" href="https://guestna-b2b.vercel.app/ar/profile/bookings-management/orders" style="display:inline-block;background:linear-gradient(135deg,#F59E0B,#D97706);color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:15px 44px;border-radius:10px;box-shadow:0 4px 20px rgba(245,158,11,0.4);">
                       📈 زيادة حد الرحلات ←
                     </a>
                     <p style="margin:10px 0 0;font-size:12px;color:#94A3B8;text-align:center;">ستساعد زيادة الحد هذه فريقك على تنظيم المزيد من التجارب التعليمية.</p>

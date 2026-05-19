@@ -90,7 +90,7 @@ export const resetPasswordHTML = `<!DOCTYPE html>
                     <p style="margin:0;font-size:12px;color:#94A3B8;font-weight:600;">صلاحية الرابط</p>
                   </td>
                   <td style="padding:14px 20px;">
-                    <span style="display:inline-block;background:#FEF3C7;color:#92400E;font-size:12px;font-weight:700;padding:4px 12px;border-radius:50px;">⏰ ١٥ دقيقة فقط</span>
+                    <span style="display:inline-block;background:#FEF3C7;color:#92400E;font-size:12px;font-weight:700;padding:4px 12px;border-radius:50px;">⏰ 30 دقيقة فقط</span>
                   </td>
                 </tr>
               </table>
@@ -100,7 +100,7 @@ export const resetPasswordHTML = `<!DOCTYPE html>
           <!-- CTA -->
           <tr>
             <td align="center" style="padding:0 36px 16px;">
-              <a class="mobile-btn" href="https://guestna.app/reset-password"
+              <a class="mobile-btn" href="https://guestna-b2b.vercel.app/ar/reset-password"
                  style="display:inline-block;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#ffffff;text-decoration:none;font-size:16px;font-weight:700;padding:16px 48px;border-radius:12px;box-shadow:0 4px 20px rgba(220,38,38,0.3);">
                 🔐 إعادة تعيين كلمة المرور
               </a>
@@ -112,8 +112,8 @@ export const resetPasswordHTML = `<!DOCTYPE html>
             <td align="center" style="padding:0 36px 24px;">
               <p style="margin:0;font-size:12px;color:#94A3B8;line-height:1.7;">
                 أو انسخ هذا الرابط في متصفحك:<br/>
-                <a href="https://guestna.app/reset-password"
-                   style="color:#008F8F;text-decoration:none;word-break:break-all;font-size:12px;">https://guestna.app/reset-password</a>
+                <a href="https://guestna-b2b.vercel.app/ar/reset-password"
+                   style="color:#008F8F;text-decoration:none;word-break:break-all;font-size:12px;">https://guestna-b2b.vercel.app/ar/reset-password</a>
               </p>
             </td>
           </tr>
@@ -128,7 +128,7 @@ export const resetPasswordHTML = `<!DOCTYPE html>
                     <p style="margin:0;font-size:13px;color:#9F1239;line-height:1.7;">
                       إذا لم تطلب إعادة تعيين كلمة المرور، يُرجى تجاهل هذا البريد. حسابك آمن ولن يتم إجراء أي تغيير.
                       للإبلاغ عن نشاط مشبوه، تواصل معنا على
-                      <a href="mailto:security@guestna.app" style="color:#9F1239;font-weight:600;">security@guestna.app</a>
+                      <a href="mailto:ifon@guestna.app" style="color:#9F1239;font-weight:600;">info@guestna.app</a>
                     </p>
                   </td>
                 </tr>

@@ -105,7 +105,7 @@ export const maintenanceHTML = `<!DOCTYPE html>
                     <p style="margin:0;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;">المدة المتوقعة</p>
                   </td>
                   <td class="mobile-cell-value" style="padding:16px 20px;">
-                    <span style="display:inline-block;background:#FEF3C7;color:#92400E;font-size:13px;font-weight:700;padding:4px 14px;border-radius:50px;">ساعتان تقريباً</span>
+                    <span style="display:inline-block;background:#FEF3C7;color:#92400E;font-size:13px;font-weight:700;padding:4px 14px;border-radius:50px;">ساعة تقريباً</span>
                   </td>
                 </tr>
               </table>
