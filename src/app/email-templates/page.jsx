@@ -48,10 +48,25 @@ import { adminNewUserHTML as adminNewUserEnHTML } from "./templates/en/admin-new
 
 // ── Categories ──
 const CATEGORIES = [
-  { id: "accounts", labelAr: "الحسابات والمستخدمين", labelEn: "Accounts & Users", icon: "👤" },
+  {
+    id: "accounts",
+    labelAr: "الحسابات والمستخدمين",
+    labelEn: "Accounts & Users",
+    icon: "👤",
+  },
   { id: "trips", labelAr: "الرحلات", labelEn: "Trips", icon: "🗺️" },
-  { id: "bookings", labelAr: "الحجوزات والعروض", labelEn: "Bookings & Quotes", icon: "📅" },
-  { id: "withdrawals", labelAr: "المالية والسحوبات", labelEn: "Finance & Withdrawals", icon: "💰" },
+  {
+    id: "bookings",
+    labelAr: "الحجوزات والعروض",
+    labelEn: "Bookings & Quotes",
+    icon: "📅",
+  },
+  {
+    id: "withdrawals",
+    labelAr: "المالية والسحوبات",
+    labelEn: "Finance & Withdrawals",
+    icon: "💰",
+  },
 ];
 
 const TEMPLATES = [
@@ -194,7 +209,7 @@ const TEMPLATES = [
     subjectEn: "Trip request update: Request #REQ-2025-0211 declined",
     to: "م. خالد العتيبي",
     toEn: "Mr. Khalid Al-Otaibi",
-    from: "support@guestna.app",
+    from: "info@guestna.app",
     html: tripRejectHTML,
     htmlEn: tripRejectEnHTML,
   },
@@ -235,7 +250,8 @@ const TEMPLATES = [
     labelEn: "Booking Confirmation",
     icon: "✅",
     subject: "تأكيد حجز رحلة المزرعة التعليمية — مدرسة النور الدولية",
-    subjectEn: "Booking confirmed: Educational Farm Trip — Al-Noor International School",
+    subjectEn:
+      "Booking confirmed: Educational Farm Trip — Al-Noor International School",
     to: "منسق الأنشطة — مدرسة النور الدولية",
     toEn: "Activities Coordinator — Al-Noor International School",
     from: "noreply@guestna-edu.com",
@@ -293,7 +309,8 @@ const TEMPLATES = [
     labelEn: "Wallet Withdrawal",
     icon: "💰",
     subject: "طلب سحب رصيد #WD-2025-0893 — مدرسة النور الدولية",
-    subjectEn: "Wallet withdrawal request #WD-2025-0893 — Al-Noor International School",
+    subjectEn:
+      "Wallet withdrawal request #WD-2025-0893 — Al-Noor International School",
     to: "فريق العمليات المالية — جستنا",
     toEn: "Finance Operations — GuestNa",
     from: "finance@guestna-edu.com",
@@ -310,7 +327,7 @@ const TEMPLATES = [
     subjectEn: "Your withdrawal amount has been updated",
     to: "المحاسب المالي المدرسة",
     toEn: "School Finance Officer",
-    from: "finance@guestna.app",
+    from: "info@guestna.app",
     html: withdrawalAmountEditedHTML,
     htmlEn: withdrawalAmountEditedEnHTML,
   },
@@ -324,7 +341,7 @@ const TEMPLATES = [
     subjectEn: "Withdrawal #WD-8842 confirmed and processed",
     to: "مدرسة النور الدولية",
     toEn: "Al-Noor International School",
-    from: "finance@guestna.app",
+    from: "info@guestna.app",
     html: withdrawalConfirmingHTML,
     htmlEn: withdrawalConfirmingEnHTML,
   },
@@ -338,7 +355,7 @@ const TEMPLATES = [
     subjectEn: "Earnings withdrawal receipt — Al-Noor International School",
     to: "billing@alnour.edu.sa",
     toEn: "billing@alnour.edu.sa",
-    from: "finance@guestna.app",
+    from: "info@guestna.app",
     html: withdrawalInvoiceHTML,
     htmlEn: withdrawalInvoiceEnHTML,
   },
@@ -405,7 +422,10 @@ export default function EmailTemplatesPage() {
   }
 
   function selectLang(next) {
-    console.log("[email-templates] selectLang called:", { next, current: lang });
+    console.log("[email-templates] selectLang called:", {
+      next,
+      current: lang,
+    });
     if (next === lang) return;
     setLang(next);
     setIframeHeight(900);
@@ -811,7 +831,9 @@ export default function EmailTemplatesPage() {
                   const bgColors = ["#E0F5F5", "#FFF7ED", "#EFF6FF", "#F5F3FF"];
                   const c = catColors[catIdx];
                   const isExpanded = expandedCat === cat.id;
-                  const hasActive = catTemplates.some((tpl) => tpl.id === active);
+                  const hasActive = catTemplates.some(
+                    (tpl) => tpl.id === active
+                  );
                   return (
                     <div key={cat.id}>
                       {/* Category Header - Clickable */}

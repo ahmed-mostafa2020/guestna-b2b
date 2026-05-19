@@ -205,7 +205,7 @@ export const withdrawalInvoiceHTML = `<!DOCTYPE html>
               <p style="margin:0;font-size:11px;color:#94A3B8;line-height:1.6;">
                 هذا الإيصال بمثابة مستند إثبات إلكتروني لعملية سحب أرباح المدرسة المعتمدة.<br/>
                 لأي استفسار، تواصل مع
-                <a href="mailto:finance@guestna.app" style="color:#008F8F;text-decoration:none;">finance@guestna.app</a>
+                <a href="mailto:info@guestna.app" style="color:#008F8F;text-decoration:none;">info@guestna.app</a>
               </p>
             </td>
           </tr>
@@ -224,12 +224,11 @@ export const withdrawalInvoiceHTML = `<!DOCTYPE html>
                    alt="GuestNa" width="80"
                    style="display:block;margin:0 auto 10px;filter:brightness(0) invert(1);opacity:0.85;border:0;" />
               <p style="margin:0 0 4px;font-size:12px;color:rgba(255,255,255,0.7);font-weight:600;">
-                <a href="https://guestna.app" style="color:rgba(255,255,255,0.7);text-decoration:none;">منصة جستنا للرحلات التعليمية</a>
-              </p>
+</p>
               <p style="margin:0 0 4px;font-size:11px;color:rgba(255,255,255,0.45);">
-                <a href="mailto:finance@guestna.app" style="color:rgba(255,255,255,0.45);text-decoration:none;">finance@guestna.app</a>
+                <a href="mailto:info@guestna.app" style="color:rgba(255,255,255,0.45);text-decoration:none;">info@guestna.app</a>
                 <span style="color:rgba(255,255,255,0.2);margin:0 6px;">|</span>
-                <a href="tel:+966547534666" dir="ltr" style="color:rgba(255,255,255,0.45);text-decoration:none;;display:inline-block;">&#8206;+966 55 234 5678&#8206;</a>
+                <a href="tel:+966547534666" dir="ltr" style="color:rgba(255,255,255,0.45);text-decoration:none;;display:inline-block;">&#8206;+966547534666&#8206;</a>
               </p>
               <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.3);">© 2025 GuestNa. جميع الحقوق محفوظة.</p>
             </td>

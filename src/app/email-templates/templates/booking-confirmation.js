@@ -284,23 +284,6 @@
             </td>
           </tr>
 
-          <!-- Support -->
-          <tr>
-            <td style="padding:20px 36px;background:#F8FAFC;border-top:1px solid #E2E8F0;text-align:right;">
-              <div style="font-size:13px;font-weight:700;color:#1E293B;margin-bottom:10px;">هل تحتاج إلى مساعدة؟</div>
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                <tr>
-                  <td class="support-stack" style="padding-left:20px;">
-                    <p style="margin:0;color:#475569;font-size:13px;direction:ltr;">📞 <a href="tel:+966500000000" style="color:#008F8F;text-decoration:none;font-weight:500;">+966 50 000 0000</a></p>
-                  </td>
-                  <td class="support-stack" style="padding-left:20px;">
-                    <p style="margin:0;color:#475569;font-size:13px;direction:ltr;">✉️ <a href="mailto:support@guestna-edu.com" style="color:#008F8F;text-decoration:none;font-weight:500;">support@guestna-edu.com</a></p>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
           <!-- Footer -->
           <tr>
             <td class="footer-pad" style="background:#0A2540;padding:28px 36px;text-align:center;">
@@ -308,12 +291,11 @@
                    alt="GuestNa" width="90"
                    style="display:block;margin:0 auto 14px;filter:brightness(0) invert(1);opacity:0.85;border:0;" />
               <p style="margin:0 0 6px;font-size:13px;color:rgba(255,255,255,0.7);font-weight:600;">
-                <a href="https://guestna.app" style="color:rgba(255,255,255,0.7);text-decoration:none;">منصة جستنا للرحلات التعليمية</a>
-              </p>
+</p>
               <p style="margin:0 0 6px;font-size:12px;color:rgba(255,255,255,0.45);">
-                <a href="mailto:support@guestna.app" style="color:rgba(255,255,255,0.45);text-decoration:none;">support@guestna.app</a>
+                <a href="mailto:info@guestna.app" style="color:rgba(255,255,255,0.45);text-decoration:none;">info@guestna.app</a>
                 <span style="color:rgba(255,255,255,0.2);margin:0 8px;">|</span>
-                <a href="tel:+966552345678" dir="ltr" style="color:rgba(255,255,255,0.45);text-decoration:none;;display:inline-block;">&#8206;+966 55 234 5678&#8206;</a>
+                <a href="tel:+966552345678" dir="ltr" style="color:rgba(255,255,255,0.45);text-decoration:none;;display:inline-block;">&#8206;+966547534666&#8206;</a>
               </p>
               <p style="margin:0 0 8px;font-size:12px;color:rgba(255,255,255,0.3);">© 2025 GuestNa. جميع الحقوق محفوظة.</p>
               </p>

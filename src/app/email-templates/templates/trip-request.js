@@ -127,7 +127,7 @@
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">رقم الجوال</div>
                   </td>
                   <td style="padding:10px 20px 14px;text-align:right;">
-                    <div dir="ltr" style="font-size:15px;color:#1E293B;font-weight:600;display:inline-block;">+966 55 234 5678&#8206;</div>
+                    <div dir="ltr" style="font-size:15px;color:#1E293B;font-weight:600;display:inline-block;">+966547534666&#8206;</div>
                   </td>
                 </tr>
               </table>
@@ -267,12 +267,11 @@
                    alt="GuestNa" width="90"
                    style="display:block;margin:0 auto 14px;filter:brightness(0) invert(1);opacity:0.85;border:0;" />
               <p style="margin:0 0 6px;font-size:13px;color:rgba(255,255,255,0.7);font-weight:600;">
-                <a href="https://guestna.app" style="color:rgba(255,255,255,0.7);text-decoration:none;">منصة جستنا للرحلات التعليمية</a>
-              </p>
+</p>
               <p style="margin:0 0 6px;font-size:12px;color:rgba(255,255,255,0.45);">
-                <a href="mailto:support@guestna.app" style="color:rgba(255,255,255,0.45);text-decoration:none;">support@guestna.app</a>
+                <a href="mailto:info@guestna.app" style="color:rgba(255,255,255,0.45);text-decoration:none;">info@guestna.app</a>
                 <span style="color:rgba(255,255,255,0.2);margin:0 8px;">|</span>
-                <a href="tel:+966552345678" dir="ltr" style="color:rgba(255,255,255,0.45);text-decoration:none;;display:inline-block;">&#8206;+966 55 234 5678&#8206;</a>
+                <a href="tel:+966552345678" dir="ltr" style="color:rgba(255,255,255,0.45);text-decoration:none;;display:inline-block;">&#8206;+966547534666&#8206;</a>
               </p>
               <p style="margin:0 0 8px;font-size:12px;color:rgba(255,255,255,0.3);">© 2025 GuestNa. جميع الحقوق محفوظة.</p>
           
