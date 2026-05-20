@@ -1,8 +1,9 @@
 "use client";
 
 import { useLocale } from "next-intl";
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useSnackbar } from "notistack";
+import { CircularProgress } from "@mui/material";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { useMutationData } from "@hooks/data/useMutationData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -28,9 +29,15 @@ const isTestEnvironment = () => {
 };
 
 const GraduationAppleWidget = ({ baseData, price }) => {
-  const [currentBookingId, setCurrentBookingId] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
   const showDebugInitiate = useMemo(() => isTestEnvironment(), []);
+
+  const bookingIdRef = useRef(null);
+  const isInitializedRef = useRef(false);
+  const widgetContainerRef = useRef(null);
+  const baseDataRef = useRef(baseData);
+  const priceRef = useRef(price);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const locale = useLocale();
 
@@ -47,15 +54,20 @@ const GraduationAppleWidget = ({ baseData, price }) => {
     { method: "POST" }
   );
 
+  useEffect(() => {
+    baseDataRef.current = baseData;
+    priceRef.current = price;
+  }, [baseData, price]);
+
   const handleDebugInitiate = () => {
     try {
-      mutate(baseData, {
+      mutate(baseDataRef.current, {
         onSuccess: (data) => {
           if (!data?.bookingId) {
             enqueueSnackbar("issue at generate Id", { variant: "error" });
             return;
           }
-          setCurrentBookingId(data.bookingId);
+          bookingIdRef.current = data.bookingId;
           enqueueSnackbar(`Initiation success: ${data.bookingId}`, {
             variant: "success",
           });
@@ -73,103 +85,135 @@ const GraduationAppleWidget = ({ baseData, price }) => {
   };
 
   useEffect(() => {
-    Moyasar.init({
-      element: ".graduation-mysr-form",
-      amount: price * 100,
-      language: locale,
-      currency: "SAR",
-      description: "Graduation Suit Registration",
-      publishable_api_key: appleWidgetKey,
-      callback_url: `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.GRADUATION.APPLE_CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
-      methods: ["applepay"],
-      apple_pay: {
-        country: "SA",
-        label: "Guestna",
-        merchant_capabilities: [
-          "supports3DS",
-          "supportsCredit",
-          "supportsDebit",
-        ],
-        supported_countries: ["SA", "US"],
-        validation_url:
-          "https://apple-pay-gateway.apple.com/paymentservices/paymentSession",
-        validate_merchant_url: "https://api.moyasar.com/v1/applepay/initiate",
-      },
-      on_initiating: function () {
-        return new Promise(function (resolve, reject) {
-          try {
-            mutate(baseData, {
-              onSuccess: (data) => {
-                if (!data?.bookingId) {
-                  enqueueSnackbar("issue at generate Id", { variant: "error" });
-                  reject();
-                  return;
-                }
-                setCurrentBookingId(data.bookingId);
-                resolve({});
-              },
-              onError: (error) => {
-                enqueueSnackbar(
-                  extractBackendError(error, "on error generate Id"),
-                  { variant: "error" }
-                );
-                reject();
-              },
-            });
-          } catch (error) {
-            enqueueSnackbar(
-              extractBackendError(error, "on error Initiation"),
-              { variant: "error" }
-            );
-            reject();
-          }
-        });
-      },
-      on_completed: function (payment) {
-        return new Promise(function (resolve, reject) {
-          try {
-            if (payment && payment.id) {
-              const confirmationData = {
-                bookingId: currentBookingId,
-                paymentId: payment.id,
-              };
-              mutateConfirm(confirmationData, {
-                onSuccess: () => {
-                  setCurrentBookingId("");
+    if (isInitializedRef.current) return;
+    if (typeof window === "undefined" || !window.Moyasar) return;
+
+    isInitializedRef.current = true;
+
+    try {
+      Moyasar.init({
+        element: ".graduation-mysr-form",
+        amount: priceRef.current * 100,
+        language: locale,
+        currency: "SAR",
+        description: "Graduation Suit Registration",
+        publishable_api_key: appleWidgetKey,
+        callback_url: `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.GRADUATION.APPLE_CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
+        methods: ["applepay"],
+        apple_pay: {
+          country: "SA",
+          label: "Guestna",
+          merchant_capabilities: [
+            "supports3DS",
+            "supportsCredit",
+            "supportsDebit",
+          ],
+          supported_countries: ["SA", "US"],
+          validation_url:
+            "https://apple-pay-gateway.apple.com/paymentservices/paymentSession",
+          validate_merchant_url: "https://api.moyasar.com/v1/applepay/initiate",
+        },
+        on_initiating: function () {
+          setIsProcessing(true);
+          return new Promise(function (resolve, reject) {
+            try {
+              mutate(baseDataRef.current, {
+                onSuccess: (data) => {
+                  if (!data?.bookingId) {
+                    enqueueSnackbar("issue at generate Id", { variant: "error" });
+                    setIsProcessing(false);
+                    reject();
+                    return;
+                  }
+                  bookingIdRef.current = data.bookingId;
                   resolve({});
                 },
                 onError: (error) => {
                   enqueueSnackbar(
-                    extractBackendError(error, "error to confirmed"),
+                    extractBackendError(error, "on error generate Id"),
                     { variant: "error" }
                   );
+                  setIsProcessing(false);
                   reject();
                 },
               });
-            } else {
-              enqueueSnackbar("failed generate paymentId", { variant: "error" });
+            } catch (error) {
+              enqueueSnackbar(
+                extractBackendError(error, "on error Initiation"),
+                { variant: "error" }
+              );
+              setIsProcessing(false);
               reject();
             }
-          } catch (error) {
-            enqueueSnackbar("failed on complete", { variant: "error" });
-            reject();
-          }
-        });
-      },
-    });
-  }, [
-    currentBookingId,
-    setCurrentBookingId,
-    locale,
-    baseData,
-    appleWidgetKey,
-    vercelUrl,
-    price,
-  ]);
+          });
+        },
+        on_completed: function (payment) {
+          return new Promise(function (resolve, reject) {
+            try {
+              if (payment && payment.id) {
+                const confirmationData = {
+                  bookingId: bookingIdRef.current,
+                  paymentId: payment.id,
+                };
+                mutateConfirm(confirmationData, {
+                  onSuccess: () => {
+                    bookingIdRef.current = null;
+                    resolve({});
+                  },
+                  onError: (error) => {
+                    enqueueSnackbar(
+                      extractBackendError(error, "error to confirmed"),
+                      { variant: "error" }
+                    );
+                    setIsProcessing(false);
+                    reject();
+                  },
+                });
+              } else {
+                enqueueSnackbar("failed generate paymentId", { variant: "error" });
+                setIsProcessing(false);
+                reject();
+              }
+            } catch (error) {
+              enqueueSnackbar("failed on complete", { variant: "error" });
+              setIsProcessing(false);
+              reject();
+            }
+          });
+        },
+      });
+    } catch (error) {
+      console.error("Error initializing Moyasar:", error);
+      isInitializedRef.current = false;
+    }
+
+    return () => {
+      if (widgetContainerRef.current) {
+        try {
+          widgetContainerRef.current.innerHTML = "";
+        } catch (error) {
+          console.error("Error cleaning up widget:", error);
+        }
+      }
+      isInitializedRef.current = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="graduation-mysr-form" />
+      <div className="relative" ref={widgetContainerRef}>
+        <div className="graduation-mysr-form" />
+        {isProcessing && (
+          <div
+            className="absolute inset-0 flex items-center justify-center bg-white/70 rounded-xl cursor-not-allowed"
+            style={{ pointerEvents: "all" }}
+            aria-busy="true"
+          >
+            <CircularProgress size={32} sx={{ color: "#ED8A22" }} />
+          </div>
+        )}
+      </div>
       {showDebugInitiate && (
         <button
           type="button"
