@@ -17,6 +17,7 @@ import {
 } from "@assets/svg";
 import { CircularProgress, Badge } from "@mui/material";
 import ExportButton from "@components/ui/ExportButton";
+import SafeHtml from "@components/common/SafeHtml";
 import { getStatusStyles } from "@utils/formatters/getStatusStyles";
 
 const BookingDetailsModal = ({ booking, bookingDetails, loading }) => {
@@ -214,11 +215,9 @@ const BookingDetailsModal = ({ booking, bookingDetails, loading }) => {
                     </div>
                   </div>
                 </div>
-                <div
+                <SafeHtml
                   className="prose prose-sm max-w-none text-gray-800 mt-2"
-                  dangerouslySetInnerHTML={{
-                    __html: booking.comment.comment,
-                  }}
+                  html={booking.comment.comment}
                 />
               </div>
             )}

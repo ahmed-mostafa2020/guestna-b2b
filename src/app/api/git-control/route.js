@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { timingSafeEqual } from "crypto";
 
 // Force dynamic rendering — never cache this route
 export const dynamic = "force-dynamic";
@@ -7,6 +8,28 @@ export const revalidate = 0;
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_OWNER = process.env.GITHUB_OWNER;
 const GITHUB_REPO = process.env.GITHUB_REPO;
+
+// Shared-secret gate. This route can merge to main / revert main, so it MUST
+// reject any request without the secret. If the env var is missing the route
+// fails closed — never accept an empty secret.
+const DASHBOARD_SECRET = process.env.GIT_DASHBOARD_SECRET;
+
+function verifyDashboardSecret(request) {
+  if (!DASHBOARD_SECRET) {
+    return NextResponse.json(
+      { error: "Dashboard secret not configured on server" },
+      { status: 503 }
+    );
+  }
+  const supplied = request.headers.get("x-dashboard-secret") || "";
+  const a = Buffer.from(supplied);
+  const b = Buffer.from(DASHBOARD_SECRET);
+  const ok = a.length === b.length && timingSafeEqual(a, b);
+  if (!ok) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  return null;
+}
 
 const API_BASE = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}`;
 const HEADERS = {
@@ -167,7 +190,10 @@ async function restoreProtectedFiles(preMergeSha, steps) {
 // GET: Fetch branches + latest commit info on main
 // API calls: 1 (branches) + 1 (latest commit) = 2 total
 // ─────────────────────────────────────────────────────────────────────────────
-export async function GET() {
+export async function GET(request) {
+  const unauthorized = verifyDashboardSecret(request);
+  if (unauthorized) return unauthorized;
+
   if (!GITHUB_TOKEN || !GITHUB_OWNER || !GITHUB_REPO) {
     return NextResponse.json(
       { error: "Missing GitHub configuration in environment variables" },
@@ -227,6 +253,9 @@ export async function GET() {
 // POST: merge_to_main or unmerge
 // ─────────────────────────────────────────────────────────────────────────────
 export async function POST(request) {
+  const unauthorized = verifyDashboardSecret(request);
+  if (unauthorized) return unauthorized;
+
   if (!GITHUB_TOKEN || !GITHUB_OWNER || !GITHUB_REPO) {
     return NextResponse.json(
       { error: "Missing GitHub configuration in environment variables" },
