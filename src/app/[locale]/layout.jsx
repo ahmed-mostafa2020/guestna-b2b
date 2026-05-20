@@ -179,6 +179,16 @@ export default async function RootLayout({ children, params: { locale } }) {
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <head>
+        {/* Preconnect / dns-prefetch hints — inline so we don't expose third-party
+            host list in the Link response header */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://cdn.moyasar.com" />
+        <link rel="preconnect" href="https://cdn.tamara.co" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href="https://ik.imagekit.io" />
+
         {/* GA4 — direct gtag.js in <head> ensures data fires on every page load */}
         {GA_MEASUREMENT_ID && (
           <>

@@ -20,16 +20,25 @@ const withPWA = withPWAInit({
 //   (all contexts), local dev, local builds — is treated as test. Errors
 //   go to the "any-2y" org / "httpsshopguestna-educom" project and source
 //   maps upload with SENTRY_AUTH_TOKEN.
+//
+// DSNs read from env vars with hardcoded fallbacks so local/preview builds
+// still work without env config. A Sentry DSN is a public client key
+// (embedded in the browser bundle by design) — moving it to env is repo
+// hygiene, not a security boundary.
 const TEST_SENTRY = {
-  dsn: "https://47dd633ac91bb97e9ceefca2a80344c0@o4505710840709120.ingest.us.sentry.io/4510176638599168",
-  org: "any-2y",
-  project: "httpsshopguestna-educom",
+  dsn:
+    process.env.SENTRY_TEST_DSN ||
+    "https://47dd633ac91bb97e9ceefca2a80344c0@o4505710840709120.ingest.us.sentry.io/4510176638599168",
+  org: process.env.SENTRY_TEST_ORG || "any-2y",
+  project: process.env.SENTRY_TEST_PROJECT || "httpsshopguestna-educom",
 };
 
 const PRODUCTION_SENTRY = {
-  dsn: "https://be251a860c8f04870429cf1952005354@o4511376548495360.ingest.de.sentry.io/4511376656236624",
-  org: "guestna",
-  project: "guestna-edu",
+  dsn:
+    process.env.SENTRY_PRODUCTION_DSN ||
+    "https://be251a860c8f04870429cf1952005354@o4511376548495360.ingest.de.sentry.io/4511376656236624",
+  org: process.env.SENTRY_PRODUCTION_ORG || "guestna",
+  project: process.env.SENTRY_PRODUCTION_PROJECT || "guestna-edu",
 };
 
 const isProductionDeploy = process.env.SENTRY_ENV === "production";
@@ -168,19 +177,14 @@ const nextConfig = {
           ...(!isProduction
             ? [{ key: "X-Robots-Tag", value: "noindex, nofollow" }]
             : []),
-          // Preconnect to external domains for faster loading
+          // Only expose semantic Link relations in headers — preconnect / dns-prefetch
+          // hints are emitted as inline <link> tags in [locale]/layout.jsx so the
+          // third-party host list does not leak via response headers.
           {
             key: "Link",
             value:
               "</sitemap.xml>; rel=\"sitemap\", " +
-              "</llms.txt>; rel=\"describedby\", " +
-              "<https://fonts.googleapis.com>; rel=preconnect, " +
-              "<https://fonts.gstatic.com>; rel=preconnect; crossorigin, " +
-              "<https://www.googletagmanager.com>; rel=preconnect, " +
-              "<https://cdn.moyasar.com>; rel=preconnect, " +
-              "<https://cdn.tamara.co>; rel=preconnect, " +
-              "<https://res.cloudinary.com>; rel=dns-prefetch, " +
-              "<https://ik.imagekit.io>; rel=dns-prefetch",
+              "</llms.txt>; rel=\"describedby\"",
           },
         ],
       },
@@ -257,6 +261,11 @@ export default withSentryConfig(
 
     // Hides source files from uploaded source maps (increases privacy)
     hideSourceMaps: true,
+
+    // Tunnel Sentry requests through our own domain so the DSN host does not
+    // appear in browser network panels or 3rd-party blocklists. Sentry rewrites
+    // /monitoring/* to its ingest endpoint at build time.
+    tunnelRoute: "/monitoring",
 
     // Automatically tree-shake Sentry logger statements to reduce bundle size
     disableLogger: true,

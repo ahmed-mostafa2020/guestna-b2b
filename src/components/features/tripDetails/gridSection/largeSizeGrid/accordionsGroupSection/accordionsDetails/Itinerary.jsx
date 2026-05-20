@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { memo } from "react";
 
 import FilterAccordion from "@components/filtersBox/FilterAccordion";
+import SafeHtml from "@components/common/SafeHtml";
 import ValidationMessage from "./ValidationMessage";
 
 const Itinerary = ({ data, isAuth }) => {
@@ -19,7 +20,7 @@ const Itinerary = ({ data, isAuth }) => {
         title={`${t(`daysNumber.${item.day}`)}`}
         subAccordion={true}
       >
-        <div dangerouslySetInnerHTML={{ __html: item.toDo }} />
+        <SafeHtml html={item.toDo} />
       </FilterAccordion>
     </li>
   ));

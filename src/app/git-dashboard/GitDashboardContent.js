@@ -5,6 +5,8 @@ import { useSnackbar } from "notistack";
 import Image from "next/image";
 import Link from "next/link";
 
+const SECRET_KEY = "gd_secret";
+
 // Skeleton pulse block
 const Skeleton = ({ className = "" }) => (
   <div className={`animate-pulse bg-gray-200 rounded ${className}`} />
@@ -20,11 +22,48 @@ const GitDashboardContent = () => {
   const [unmergeLoading, setUnmergeLoading] = useState(false);
   const [mergedBranch, setMergedBranch] = useState(null);
 
+  // Auth gate state
+  const [secret, setSecret] = useState(null);
+  const [secretInput, setSecretInput] = useState("");
+  const [authReady, setAuthReady] = useState(false);
+
+  // Load secret from sessionStorage on mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const stored = sessionStorage.getItem(SECRET_KEY);
+    if (stored) setSecret(stored);
+    setAuthReady(true);
+  }, []);
+
+  // Centralized fetch wrapper that injects the secret header and clears it
+  // on 401 so the user is sent back to the login screen.
+  const authedFetch = useCallback(
+    async (url, options = {}) => {
+      const headers = {
+        ...(options.headers || {}),
+        "x-dashboard-secret": secret || "",
+      };
+      const res = await fetch(url, { ...options, headers });
+      if (res.status === 401) {
+        if (typeof window !== "undefined") {
+          sessionStorage.removeItem(SECRET_KEY);
+        }
+        setSecret(null);
+        enqueueSnackbar("Session expired — please re-enter the dashboard secret", {
+          variant: "warning",
+        });
+      }
+      return res;
+    },
+    [secret, enqueueSnackbar]
+  );
+
   const fetchBranches = useCallback(async () => {
+    if (!secret) return;
     setLoading(true);
     try {
       // Cache-bust: append timestamp so browser + Next.js never serve stale data
-      const res = await fetch(`/api/git-control?t=${Date.now()}`);
+      const res = await authedFetch(`/api/git-control?t=${Date.now()}`);
       const data = await res.json();
 
       if (!res.ok) {
@@ -50,11 +89,27 @@ const GitDashboardContent = () => {
     } finally {
       setLoading(false);
     }
-  }, [enqueueSnackbar]);
+  }, [authedFetch, secret, enqueueSnackbar]);
 
   useEffect(() => {
-    fetchBranches();
-  }, [fetchBranches]);
+    if (secret) fetchBranches();
+  }, [fetchBranches, secret]);
+
+  const handleSecretSubmit = (e) => {
+    e.preventDefault();
+    const trimmed = secretInput.trim();
+    if (!trimmed) return;
+    sessionStorage.setItem(SECRET_KEY, trimmed);
+    setSecret(trimmed);
+    setSecretInput("");
+  };
+
+  const handleLock = () => {
+    sessionStorage.removeItem(SECRET_KEY);
+    setSecret(null);
+    setBranches([]);
+    setLastMergeInfo(null);
+  };
 
   const handleMergeToMain = async (branchName) => {
     if (
@@ -68,7 +123,7 @@ const GitDashboardContent = () => {
     setActionLoading((prev) => ({ ...prev, [branchName]: true }));
 
     try {
-      const res = await fetch("/api/git-control", {
+      const res = await authedFetch("/api/git-control", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "merge_to_main", branchName }),
@@ -126,7 +181,7 @@ const GitDashboardContent = () => {
     setUnmergeLoading(true);
 
     try {
-      const res = await fetch("/api/git-control", {
+      const res = await authedFetch("/api/git-control", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "unmerge" }),
@@ -239,6 +294,62 @@ const GitDashboardContent = () => {
     </>
   );
 
+  // Render nothing until we know whether sessionStorage has a stored secret
+  if (!authReady) {
+    return <div className="min-h-screen bg-gray-50" />;
+  }
+
+  // Auth gate — block all dashboard content until secret is supplied
+  if (!secret) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="bg-white rounded-xl border border-gray-200 p-8 w-full max-w-md shadow-sm">
+          <div className="flex items-center gap-3 mb-6">
+            <Image
+              src="/logo.png"
+              alt="Guestna Logo"
+              width={48}
+              height={48}
+              className="h-12 w-auto object-contain"
+              priority
+            />
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">Git Dashboard</h1>
+              <p className="text-sm text-gray-500">Restricted area</p>
+            </div>
+          </div>
+          <form onSubmit={handleSecretSubmit} className="space-y-4">
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700">
+                Dashboard secret
+              </span>
+              <input
+                type="password"
+                value={secretInput}
+                onChange={(e) => setSecretInput(e.target.value)}
+                autoFocus
+                autoComplete="off"
+                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mainColor focus:border-transparent"
+                placeholder="Enter secret"
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={!secretInput.trim()}
+              className="w-full px-4 py-2 bg-mainColor text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
+              Unlock
+            </button>
+          </form>
+          <p className="text-xs text-gray-400 mt-4">
+            The secret is stored in this tab&apos;s session only. Closing the
+            tab will require re-entry.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -309,6 +420,27 @@ const GitDashboardContent = () => {
                   />
                 </svg>
                 Refresh
+              </button>
+
+              <button
+                onClick={handleLock}
+                title="Lock dashboard — clears the stored secret"
+                className="flex items-center gap-2 px-3 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 11c.83 0 1.5.67 1.5 1.5S12.83 14 12 14s-1.5-.67-1.5-1.5S11.17 11 12 11zm6-3h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6z"
+                  />
+                </svg>
+                Lock
               </button>
             </div>
           </div>

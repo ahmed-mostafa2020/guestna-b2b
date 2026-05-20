@@ -6,6 +6,7 @@ const SITE_URL = isProduction
 
 const disallowedPaths = [
   "/api",
+  "/git-dashboard",
   "/*/checkout",
   "/*/profile",
   "/*/confirming-data",
