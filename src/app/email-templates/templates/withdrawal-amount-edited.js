@@ -120,6 +120,14 @@ export const withdrawalAmountEditedHTML = `<!DOCTYPE html>
                 </tr>
                 <tr>
                   <td style="width:42%;padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">🔗 مرجع الرحلة (Trip ID)</div>
+                  </td>
+                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
+                    <div style="font-size:15px;color:#1E293B;font-weight:600;">#GN-2025-4521</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width:42%;padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">🏫 اسم المدرسة</div>
                   </td>
                   <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:right;">
@@ -144,7 +152,7 @@ export const withdrawalAmountEditedHTML = `<!DOCTYPE html>
                 </tr>
                 <tr>
                   <td style="width:42%;padding:10px 20px 14px;text-align:right;">
-                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">🏫 ربح المدرسة</div>
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">🏫 ايرادات المدرسة</div>
                   </td>
                   <td style="padding:10px 20px 14px;text-align:right;">
                     <div style="font-size:15px;color:#1E293B;font-weight:700;">1,200.00 ر.س</div>

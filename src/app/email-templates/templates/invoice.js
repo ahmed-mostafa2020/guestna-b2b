@@ -33,10 +33,10 @@ export const invoiceHTML = `<!DOCTYPE html>
               <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
                    alt="GuestNa" width="70"
                    style="display:block;margin:0 auto 6px;border:0;" />
-              <p style="margin:0;font-size:14px;font-weight:700;color:#111111;">منصة جستنا التعليمية</p>
+              <p style="margin:0;font-size:14px;font-weight:700;color:#111111;">منصة جستنا</p>
               <p style="margin:2px 0 0;font-size:11px;color:#666666;">الرياض، المملكة العربية السعودية</p>
               <p style="margin:2px 0 0;font-size:11px;color:#666666;">الرقم الضريبي: 1234567890</p>
-              <p style="margin:2px 0 0;font-size:11px;color:#666666;" dir="ltr">+966 54 753 4666 &nbsp;|&nbsp; finance@guestna-edu.com</p>
+              <p style="margin:2px 0 0;font-size:11px;color:#666666;" dir="ltr">+966 54 753 4666 &nbsp;|&nbsp; info@guestna.app</p>
             </td>
           </tr>
 
@@ -46,8 +46,8 @@ export const invoiceHTML = `<!DOCTYPE html>
           <!-- Title -->
           <tr>
             <td class="content-pad" style="padding:10px 20px 6px;text-align:center;">
-              <p style="margin:0;font-size:15px;font-weight:700;letter-spacing:3px;color:#111111;">فاتورة ضريبية مبسطة</p>
-              <p style="margin:2px 0 0;font-size:10px;color:#666666;letter-spacing:2px;">SIMPLIFIED TAX INVOICE</p>
+              <p style="margin:0;font-size:15px;font-weight:700;letter-spacing:3px;color:#111111;">فاتورة مبسطة</p>
+              <p style="margin:2px 0 0;font-size:10px;color:#666666;letter-spacing:2px;">SIMPLIFIED INVOICE</p>
             </td>
           </tr>
 
@@ -67,6 +67,10 @@ export const invoiceHTML = `<!DOCTYPE html>
                   <td style="padding:2px 0;">الحالة</td>
                   <td style="padding:2px 0;text-align:left;font-weight:700;">مسددة ✓</td>
                 </tr>
+                <tr>
+                  <td style="padding:2px 0;">مرجع الرحلة (Trip ID)</td>
+                  <td class="mono" style="padding:2px 0;text-align:left;">#GN-2025-4521</td>
+                </tr>
               </table>
             </td>
           </tr>
@@ -77,10 +81,10 @@ export const invoiceHTML = `<!DOCTYPE html>
           <!-- Billed To -->
           <tr>
             <td class="content-pad" style="padding:10px 20px;font-size:12px;color:#222222;">
-              <p style="margin:0 0 4px;font-size:11px;color:#666666;">العميل</p>
-              <p style="margin:0;font-weight:700;">مدرسة النور الدولية</p>
-              <p style="margin:2px 0 0;color:#555555;">جدة — رقم العميل: SCH-00142</p>
-              <p style="margin:2px 0 0;color:#555555;">billing@alnour-school.edu.sa</p>
+              <p style="margin:0 0 4px;font-size:11px;color:#666666;">العميل (ولي الأمر)</p>
+              <p style="margin:0;font-weight:700;">أحمد محمد الأحمدي</p>
+              <p style="margin:2px 0 0;color:#555555;">الرياض — رقم الحجز: BKG-00142</p>
+              <p style="margin:2px 0 0;color:#555555;">parent@example.com</p>
             </td>
           </tr>
 
@@ -103,7 +107,7 @@ export const invoiceHTML = `<!DOCTYPE html>
 
           <!-- Item 1 -->
           <tr>
-            <td class="content-pad" style="padding:4px 20px;">
+            <td class="content-pad" style="padding:4px 20px 8px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size:12px;color:#222222;">
                 <tr>
                   <td style="text-align:right;vertical-align:top;">
@@ -118,23 +122,6 @@ export const invoiceHTML = `<!DOCTYPE html>
             </td>
           </tr>
 
-          <!-- Item 2 -->
-          <tr>
-            <td class="content-pad" style="padding:4px 20px 8px;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size:12px;color:#222222;">
-                <tr>
-                  <td style="text-align:right;vertical-align:top;">
-                    رسوم إدارة المنصة
-                    <div style="font-size:10px;color:#666666;margin-top:2px;">٥٪ من قيمة الرحلة</div>
-                  </td>
-                  <td class="mono" style="width:40px;text-align:center;vertical-align:top;">—</td>
-                  <td class="mono" style="width:60px;text-align:center;vertical-align:top;">—</td>
-                  <td class="mono" style="width:70px;text-align:left;vertical-align:top;">213.75</td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
           <!-- Divider -->
           <tr><td style="padding:0 20px;"><div style="border-top:1px dashed #999999;"></div></td></tr>
 
@@ -144,11 +131,11 @@ export const invoiceHTML = `<!DOCTYPE html>
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size:12px;color:#222222;">
                 <tr>
                   <td style="padding:2px 0;">المجموع قبل الضريبة</td>
-                  <td class="mono" style="padding:2px 0;text-align:left;">4,488.75</td>
+                  <td class="mono" style="padding:2px 0;text-align:left;">4,275.00</td>
                 </tr>
                 <tr>
                   <td style="padding:2px 0;">ضريبة القيمة المضافة ١٥٪</td>
-                  <td class="mono" style="padding:2px 0;text-align:left;">673.31</td>
+                  <td class="mono" style="padding:2px 0;text-align:left;">641.25</td>
                 </tr>
               </table>
             </td>
@@ -164,7 +151,7 @@ export const invoiceHTML = `<!DOCTYPE html>
                 <tr>
                   <td style="font-size:14px;font-weight:700;color:#111111;">الإجمالي المستحق</td>
                   <td style="text-align:left;">
-                    <span class="mono" style="font-size:18px;font-weight:700;color:#111111;">5,162.06</span>
+                    <span class="mono" style="font-size:18px;font-weight:700;color:#111111;">4,916.25</span>
                     <span style="font-size:11px;color:#666666;">&nbsp;ر.س</span>
                   </td>
                 </tr>
@@ -215,7 +202,7 @@ export const invoiceHTML = `<!DOCTYPE html>
                 فاتورة إلكترونية معتمدة، لا تحتاج إلى ختم أو توقيع.<br/>
                 <a href="https://guestna.app/invoice/INV-2025-0742/pdf" style="color:#111111;text-decoration:underline;">تحميل PDF</a>
                 &nbsp;|&nbsp;
-                <a href="mailto:finance@guestna-edu.com" style="color:#111111;text-decoration:none;">finance@guestna-edu.com</a>
+                <a href="mailto:info@guestna.app" style="color:#111111;text-decoration:none;">info@guestna.app</a>
               </p>
             </td>
           </tr>

@@ -119,6 +119,14 @@ export const withdrawalAmountEditedHTML = `<!DOCTYPE html>
                 </tr>
                 <tr>
                   <td style="width:42%;padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:left;">
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">🔗 Trip ID</div>
+                  </td>
+                  <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:left;">
+                    <div style="font-size:15px;color:#1E293B;font-weight:600;">#GN-2025-4521</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width:42%;padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:left;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">🏫 School Name</div>
                   </td>
                   <td style="padding:10px 20px 6px;border-bottom:1px solid #F1F5F9;text-align:left;">
@@ -143,7 +151,7 @@ export const withdrawalAmountEditedHTML = `<!DOCTYPE html>
                 </tr>
                 <tr>
                   <td style="width:42%;padding:10px 20px 14px;text-align:left;">
-                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">🏫 School Earnings</div>
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#94A3B8;font-weight:600;">🏫 School Revenue</div>
                   </td>
                   <td style="padding:10px 20px 14px;text-align:left;">
                     <div style="font-size:15px;color:#1E293B;font-weight:700;">SAR 1,200.00</div>

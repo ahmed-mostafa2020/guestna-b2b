@@ -32,10 +32,10 @@ export const invoiceHTML = `<!DOCTYPE html>
               <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
                    alt="GuestNa" width="70"
                    style="display:block;margin:0 auto 6px;border:0;" />
-              <p style="margin:0;font-size:14px;font-weight:700;color:#111111;">GuestNa Educational Platform</p>
+              <p style="margin:0;font-size:14px;font-weight:700;color:#111111;">GuestNa Platform</p>
               <p style="margin:2px 0 0;font-size:11px;color:#666666;">Riyadh, Saudi Arabia</p>
               <p style="margin:2px 0 0;font-size:11px;color:#666666;">VAT No.: 1234567890</p>
-              <p style="margin:2px 0 0;font-size:11px;color:#666666;">+966 54 753 4666 &nbsp;|&nbsp; finance@guestna-edu.com</p>
+              <p style="margin:2px 0 0;font-size:11px;color:#666666;">+966 54 753 4666 &nbsp;|&nbsp; info@guestna.app</p>
             </td>
           </tr>
 
@@ -45,7 +45,7 @@ export const invoiceHTML = `<!DOCTYPE html>
           <!-- Title -->
           <tr>
             <td class="content-pad" style="padding:10px 20px 6px;text-align:center;">
-              <p style="margin:0;font-size:15px;font-weight:700;letter-spacing:3px;color:#111111;">SIMPLIFIED TAX INVOICE</p>
+              <p style="margin:0;font-size:15px;font-weight:700;letter-spacing:3px;color:#111111;">SIMPLIFIED INVOICE</p>
               <p style="margin:2px 0 0;font-size:10px;color:#666666;letter-spacing:2px;">VAT INCLUSIVE</p>
             </td>
           </tr>
@@ -66,6 +66,10 @@ export const invoiceHTML = `<!DOCTYPE html>
                   <td style="padding:2px 0;">Status</td>
                   <td style="padding:2px 0;text-align:right;font-weight:700;">Paid ✓</td>
                 </tr>
+                <tr>
+                  <td style="padding:2px 0;">Trip ID</td>
+                  <td class="mono" style="padding:2px 0;text-align:right;">#GN-2025-4521</td>
+                </tr>
               </table>
             </td>
           </tr>
@@ -76,10 +80,10 @@ export const invoiceHTML = `<!DOCTYPE html>
           <!-- Billed To -->
           <tr>
             <td class="content-pad" style="padding:10px 20px;font-size:12px;color:#222222;">
-              <p style="margin:0 0 4px;font-size:11px;color:#666666;">BILLED TO</p>
-              <p style="margin:0;font-weight:700;">Al-Noor International School</p>
-              <p style="margin:2px 0 0;color:#555555;">Jeddah — Customer ID: SCH-00142</p>
-              <p style="margin:2px 0 0;color:#555555;">billing@alnour-school.edu.sa</p>
+              <p style="margin:0 0 4px;font-size:11px;color:#666666;">BILLED TO (PARENT / GUARDIAN)</p>
+              <p style="margin:0;font-weight:700;">Ahmed Mohammed Al-Ahmadi</p>
+              <p style="margin:2px 0 0;color:#555555;">Riyadh — Booking ID: BKG-00142</p>
+              <p style="margin:2px 0 0;color:#555555;">parent@example.com</p>
             </td>
           </tr>
 
@@ -102,7 +106,7 @@ export const invoiceHTML = `<!DOCTYPE html>
 
           <!-- Item 1 -->
           <tr>
-            <td class="content-pad" style="padding:4px 20px;">
+            <td class="content-pad" style="padding:4px 20px 8px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size:12px;color:#222222;">
                 <tr>
                   <td style="text-align:left;vertical-align:top;">
@@ -117,23 +121,6 @@ export const invoiceHTML = `<!DOCTYPE html>
             </td>
           </tr>
 
-          <!-- Item 2 -->
-          <tr>
-            <td class="content-pad" style="padding:4px 20px 8px;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size:12px;color:#222222;">
-                <tr>
-                  <td style="text-align:left;vertical-align:top;">
-                    Platform Management Fee
-                    <div style="font-size:10px;color:#666666;margin-top:2px;">5% of trip value</div>
-                  </td>
-                  <td class="mono" style="width:40px;text-align:center;vertical-align:top;">—</td>
-                  <td class="mono" style="width:60px;text-align:center;vertical-align:top;">—</td>
-                  <td class="mono" style="width:70px;text-align:right;vertical-align:top;">213.75</td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
           <!-- Divider -->
           <tr><td style="padding:0 20px;"><div style="border-top:1px dashed #999999;"></div></td></tr>
 
@@ -143,11 +130,11 @@ export const invoiceHTML = `<!DOCTYPE html>
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size:12px;color:#222222;">
                 <tr>
                   <td style="padding:2px 0;">Subtotal</td>
-                  <td class="mono" style="padding:2px 0;text-align:right;">4,488.75</td>
+                  <td class="mono" style="padding:2px 0;text-align:right;">4,275.00</td>
                 </tr>
                 <tr>
                   <td style="padding:2px 0;">VAT 15%</td>
-                  <td class="mono" style="padding:2px 0;text-align:right;">673.31</td>
+                  <td class="mono" style="padding:2px 0;text-align:right;">641.25</td>
                 </tr>
               </table>
             </td>
@@ -163,7 +150,7 @@ export const invoiceHTML = `<!DOCTYPE html>
                 <tr>
                   <td style="font-size:14px;font-weight:700;color:#111111;">Total Due</td>
                   <td style="text-align:right;">
-                    <span class="mono" style="font-size:18px;font-weight:700;color:#111111;">5,162.06</span>
+                    <span class="mono" style="font-size:18px;font-weight:700;color:#111111;">4,916.25</span>
                     <span style="font-size:11px;color:#666666;">&nbsp;SAR</span>
                   </td>
                 </tr>
@@ -214,7 +201,7 @@ export const invoiceHTML = `<!DOCTYPE html>
                 Electronic invoice — no stamp or signature required.<br/>
                 <a href="https://guestna.app/invoice/INV-2025-0742/pdf" style="color:#111111;text-decoration:underline;">Download PDF</a>
                 &nbsp;|&nbsp;
-                <a href="mailto:finance@guestna-edu.com" style="color:#111111;text-decoration:none;">finance@guestna-edu.com</a>
+                <a href="mailto:info@guestna.app" style="color:#111111;text-decoration:none;">info@guestna.app</a>
               </p>
             </td>
           </tr>

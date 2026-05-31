@@ -33,7 +33,7 @@ export const withdrawalInvoiceHTML = `<!DOCTYPE html>
               <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507"
                    alt="GuestNa" width="70"
                    style="display:block;margin:0 auto 6px;border:0;" />
-              <p style="margin:0;font-size:14px;font-weight:700;color:#111111;">منصة جستنا التعليمية</p>
+              <p style="margin:0;font-size:14px;font-weight:700;color:#111111;">منصة جستنا</p>
               <p style="margin:2px 0 0;font-size:11px;color:#666666;">الرياض، المملكة العربية السعودية</p>
               <p style="margin:2px 0 0;font-size:11px;color:#666666;" dir="ltr">+966 54 753 4666 &nbsp;|&nbsp; info@guestna.app</p>
             </td>

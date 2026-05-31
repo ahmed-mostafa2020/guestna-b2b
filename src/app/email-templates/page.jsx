@@ -23,6 +23,7 @@ import { emailConfirmHTML } from "./templates/email-confirm";
 import { resetPasswordHTML } from "./templates/reset-password";
 import { maintenanceHTML } from "./templates/maintenance";
 import { adminNewUserHTML } from "./templates/admin-new-user";
+import { tripRecommendationsHTML } from "./templates/trip-recommendations";
 
 // ── English Templates (mobile-responsive) ──
 import { bookingConfirmationHTML as bookingConfirmationEnHTML } from "./templates/en/booking-confirmation";
@@ -45,6 +46,7 @@ import { emailConfirmHTML as emailConfirmEnHTML } from "./templates/en/email-con
 import { resetPasswordHTML as resetPasswordEnHTML } from "./templates/en/reset-password";
 import { maintenanceHTML as maintenanceEnHTML } from "./templates/en/maintenance";
 import { adminNewUserHTML as adminNewUserEnHTML } from "./templates/en/admin-new-user";
+import { tripRecommendationsHTML as tripRecommendationsEnHTML } from "./templates/en/trip-recommendations";
 
 // ── Categories ──
 const CATEGORIES = [
@@ -157,6 +159,20 @@ const TEMPLATES = [
   // },
 
   // ── Trips ──
+  {
+    id: "trip-recommendations",
+    category: "trips",
+    label: "توصيات الرحلات",
+    labelEn: "Trip Recommendations",
+    icon: "✨",
+    subject: "رحلاتك المقترحة — اخترنا لك الأفضل",
+    subjectEn: "Your recommended trips — we picked the best for you",
+    to: "منسق الأنشطة — مدرسة النور الدولية",
+    toEn: "Activities Coordinator — Al-Noor International School",
+    from: "noreply@guestna.app",
+    html: tripRecommendationsHTML,
+    htmlEn: tripRecommendationsEnHTML,
+  },
   {
     id: "trip-request",
     category: "trips",
@@ -296,7 +312,7 @@ const TEMPLATES = [
     subjectEn: "Invoice #INV-2025-0742 — Educational Farm Trip",
     to: "billing@alnour-school.edu.sa",
     toEn: "billing@alnour-school.edu.sa",
-    from: "finance@guestna-edu.com",
+    from: "info@guestna.app",
     html: invoiceHTML,
     htmlEn: invoiceEnHTML,
   },
@@ -313,7 +329,7 @@ const TEMPLATES = [
       "Wallet withdrawal request #WD-2025-0893 — Al-Noor International School",
     to: "فريق العمليات المالية — جستنا",
     toEn: "Finance Operations — GuestNa",
-    from: "finance@guestna-edu.com",
+    from: "info@guestna.app",
     html: walletWithdrawalHTML,
     htmlEn: walletWithdrawalEnHTML,
   },
