@@ -285,30 +285,19 @@ export const bookingConfirmationHTML = `<!DOCTYPE html>
             </td>
           </tr>
 
-          <!-- QR Code & Barcode -->
+          <!-- QR Code -->
           <tr>
             <td class="content-pad" style="padding:0 36px 24px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;">
                 <tr>
                   <td style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:12px 20px;text-align:right;">
-                    <span style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;">رموز التحقق من الحجز</span>
+                    <span style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;">رمز التحقق من الحجز</span>
                   </td>
                 </tr>
                 <tr>
                   <td style="padding:20px;text-align:center;">
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto;">
-                      <tr>
-                        <td style="padding:0 20px;vertical-align:top;text-align:center;">
-                          <div style="width:80px;height:80px;margin:0 auto;border:2px solid #111111;background-color:#ffffff;background-image:linear-gradient(#111111,#111111),linear-gradient(#ffffff,#ffffff),linear-gradient(#111111,#111111),linear-gradient(#111111,#111111),linear-gradient(#ffffff,#ffffff),linear-gradient(#111111,#111111),linear-gradient(#111111,#111111),linear-gradient(#ffffff,#ffffff),linear-gradient(#111111,#111111),repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(17,17,17,0.4) 3px,rgba(17,17,17,0.4) 4px),repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(17,17,17,0.4) 3px,rgba(17,17,17,0.4) 4px);background-size:16px 16px,12px 12px,6px 6px,16px 16px,12px 12px,6px 6px,16px 16px,12px 12px,6px 6px,76px 76px,76px 76px;background-position:2px 2px,4px 4px,7px 7px,58px 2px,60px 4px,63px 7px,2px 58px,4px 60px,7px 63px,0 0,0 0;background-repeat:no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,repeat,repeat;"></div>
-                          <p style="margin:6px 0 0;font-size:10px;color:#444444;font-family:'Courier New',monospace;letter-spacing:1px;">رمز QR</p>
-                        </td>
-                        <td style="width:1px;background:#E2E8F0;"></td>
-                        <td style="padding:0 20px;vertical-align:top;text-align:center;">
-                          <div style="height:40px;background:repeating-linear-gradient(90deg,#111111 0,#111111 2px,transparent 2px,transparent 4px,#111111 4px,#111111 5px,transparent 5px,transparent 8px,#111111 8px,#111111 11px,transparent 11px,transparent 13px,#111111 13px,#111111 14px,transparent 14px,transparent 17px,#111111 17px,#111111 19px,transparent 19px,transparent 22px);width:140px;max-width:100%;margin:0 auto;"></div>
-                          <p style="margin:6px 0 0;font-size:10px;color:#444444;font-family:'Courier New',monospace;letter-spacing:2px;">GN20254521001</p>
-                        </td>
-                      </tr>
-                    </table>
+                    <div style="width:80px;height:80px;margin:0 auto;border:2px solid #111111;background-color:#ffffff;background-image:linear-gradient(#111111,#111111),linear-gradient(#ffffff,#ffffff),linear-gradient(#111111,#111111),linear-gradient(#111111,#111111),linear-gradient(#ffffff,#ffffff),linear-gradient(#111111,#111111),linear-gradient(#111111,#111111),linear-gradient(#ffffff,#ffffff),linear-gradient(#111111,#111111),repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(17,17,17,0.4) 3px,rgba(17,17,17,0.4) 4px),repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(17,17,17,0.4) 3px,rgba(17,17,17,0.4) 4px);background-size:16px 16px,12px 12px,6px 6px,16px 16px,12px 12px,6px 6px,16px 16px,12px 12px,6px 6px,76px 76px,76px 76px;background-position:2px 2px,4px 4px,7px 7px,58px 2px,60px 4px,63px 7px,2px 58px,4px 60px,7px 63px,0 0,0 0;background-repeat:no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,repeat,repeat;"></div>
+                    <p style="margin:8px 0 0;font-size:10px;color:#444444;font-family:'Courier New',monospace;letter-spacing:1px;">رمز QR</p>
                   </td>
                 </tr>
               </table>

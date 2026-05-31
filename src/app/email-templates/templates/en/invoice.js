@@ -185,14 +185,6 @@ export const invoiceHTML = `<!DOCTYPE html>
           <!-- Divider -->
           <tr><td style="padding:0 20px;"><div style="border-top:1px dashed #999999;"></div></td></tr>
 
-          <!-- Barcode -->
-          <tr>
-            <td class="content-pad" style="padding:12px 20px;text-align:center;">
-              <div style="height:34px;background:repeating-linear-gradient(90deg,#111111 0,#111111 2px,transparent 2px,transparent 4px,#111111 4px,#111111 5px,transparent 5px,transparent 8px,#111111 8px,#111111 11px,transparent 11px,transparent 13px,#111111 13px,#111111 14px,transparent 14px,transparent 17px,#111111 17px,#111111 19px,transparent 19px,transparent 22px);width:180px;max-width:100%;margin:0 auto;"></div>
-              <p class="mono" style="margin:6px 0 0;font-size:10px;color:#444444;letter-spacing:3px;">INV2025074200142SCH</p>
-            </td>
-          </tr>
-
           <!-- Thank you -->
           <tr>
             <td class="content-pad" style="padding:6px 20px 16px;text-align:center;">
