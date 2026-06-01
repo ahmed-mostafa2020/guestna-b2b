@@ -182,7 +182,11 @@ export default async function RootLayout({ children, params: { locale } }) {
         {/* Preconnect / dns-prefetch hints — inline so we don't expose third-party
             host list in the Link response header */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://cdn.moyasar.com" />
         <link rel="preconnect" href="https://cdn.tamara.co" />
@@ -227,11 +231,6 @@ export default async function RootLayout({ children, params: { locale } }) {
           nonce={nonce}
           src="https://cdn.moyasar.com/mpf/1.13.0/moyasar.js"
           defer
-        ></Script>
-
-        <Script
-          src="https://polyfill.io/v3/polyfill.min.js?features=fetch"
-          async
         ></Script>
 
         {/* PWA - iOS support */}
