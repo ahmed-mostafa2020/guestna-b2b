@@ -152,8 +152,16 @@ const AllOrdersTable = ({
   );
 
   if (!data || !data.nodes) {
-    return <TableSkeleton columns={8} />;
+    return <TableSkeleton columns={9} />;
   }
+
+  // TEMP: force hasRecommendation=true on every row until backend merges the field.
+  // To revert: remove this block and use `data` directly in the DataTable below.
+  const tableData = {
+    ...data,
+    nodes: data.nodes.map((row) => ({ ...row, hasRecommendation: true })),
+  };
+  // END TEMP
 
   const columns = useMemo(
     () => [
@@ -235,6 +243,20 @@ const AllOrdersTable = ({
           </span>
         ),
       },
+      {
+        key: "hasRecommendation",
+        label: t("profile.tables.orders.tableHeaders.hasRecommendation"),
+        render: (row) =>
+          row.hasRecommendation ? (
+            <span className="px-2 py-1 rounded-full text-[10px] lg:text-xs font-medium bg-teal-50 text-teal-700 whitespace-nowrap">
+              {t("profile.tables.orders.tableHeaders.hasRecommendationYes")}
+            </span>
+          ) : (
+            <span className="px-2 py-1 rounded-full text-[10px] lg:text-xs font-medium bg-gray-100 text-gray-500 whitespace-nowrap">
+              {t("profile.tables.orders.tableHeaders.hasRecommendationNo")}
+            </span>
+          ),
+      },
     ],
     [t, locale]
   );
@@ -244,7 +266,7 @@ const AllOrdersTable = ({
       <DataTable
         title={tableTitle}
         columns={columns}
-        data={data?.nodes || []}
+        data={tableData?.nodes || []}
         actionsLabel={
           hasAnyActionPermission
             ? t("profile.tables.orders.tableHeaders.actions")

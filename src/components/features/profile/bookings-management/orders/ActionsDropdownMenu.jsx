@@ -51,13 +51,21 @@ const ActionsDropdownMenu = ({
     isOnHold,
     isScheduled,
     isEditable,
+    hasRecommendationReview,
     status,
     _id,
     orderId,
     slug,
     bookingAskType,
   } = useMemo(() => {
-    const { status, askType: bookingAskType, _id, orderId, slug } = booking;
+    const {
+      status,
+      askType: bookingAskType,
+      _id,
+      orderId,
+      slug,
+      hasRecommendation,
+    } = booking;
 
     const isCustom = bookingAskType === askType.CUSTOM;
     const isCustomTrip =
@@ -78,6 +86,10 @@ const ActionsDropdownMenu = ({
     const isScheduled = status === TRIP_STATUS.SCHEDULED;
     const isEditable = !isClosed && !isOnHold && !isScheduled;
 
+    const hasRecommendationReview =
+      hasRecommendation === true &&
+      status === TRIP_STATUS.PENDING_CLIENT_REVIEW;
+
     return {
       isCustom,
       isCustomTrip,
@@ -86,6 +98,7 @@ const ActionsDropdownMenu = ({
       isOnHold,
       isScheduled,
       isEditable,
+      hasRecommendationReview,
       status,
       _id,
       orderId,
@@ -168,10 +181,18 @@ const ActionsDropdownMenu = ({
     () =>
       [
         {
+          key: "recommendations",
+          visible: can.showDetails && hasRecommendationReview,
+          label: t("links.showDetails"),
+          href: `/${locale}/profile/bookings-management/orders/${orderId}/recommendations`,
+          onClick: handleClose,
+        },
+        {
           key: "modal-details",
           visible:
             can.showDetails &&
             !isCustom &&
+            !hasRecommendationReview &&
             status !== TRIP_STATUS.DONE &&
             Boolean(openDetailsModal),
           label: t("links.showDetails"),
@@ -179,7 +200,7 @@ const ActionsDropdownMenu = ({
         },
         {
           key: "custom-details",
-          visible: can.showDetails && isCustom,
+          visible: can.showDetails && isCustom && !hasRecommendationReview,
           label: t("links.showDetails"),
           href: `/${locale}/profile/bookings-management/orders/${orderId}`,
           onClick: handleClose,
@@ -247,6 +268,7 @@ const ActionsDropdownMenu = ({
       isEditable,
       isClosed,
       isScheduled,
+      hasRecommendationReview,
       slug,
       status,
       orderId,

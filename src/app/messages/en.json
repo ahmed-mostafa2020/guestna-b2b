@@ -282,6 +282,65 @@
     "clickToSelectLocation": "Click to select location"
   },
 
+  "recommendations": {
+    "title": "Choose the Right Trip for Your Students",
+    "subtitle": "We reviewed your request and prepared {count} recommended trips that match your needs",
+    "reviewedBadge": "Reviewed",
+    "tripsCount": "available trips",
+    "noTrips": "No recommended trips available at the moment",
+    "editRequest": "Edit Request",
+    "impact": {
+      "PARTIAL_MATCH": "Partial Match",
+      "FULL_MATCH": "Full Match"
+    },
+    "why": {
+      "title": "Why these recommendations?",
+      "body": "Based on your budget and educational stage, we refined these options to ensure the highest levels of educational quality and student safety."
+    },
+    "how": {
+      "title": "How were these trips selected?",
+      "body": "Your request was analyzed based on <b>budget, academic stage, trip type, and preferred city</b>. The trips below are ranked by match percentage with your needs."
+    },
+    "tripsSection": "Suggested Trips",
+    "summary": {
+      "title": "Request Summary",
+      "school": "School",
+      "grade": "Grade",
+      "city": "City",
+      "budget": "Budget",
+      "seats": "Students",
+      "date": "Date",
+      "tripType": "Trip Type"
+    },
+    "card": {
+      "match": "match",
+      "reason": "Recommendation reason:",
+      "availableSeats": "Available seats",
+      "pricePerStudent": "Per student",
+      "totalPrice": "Total price",
+      "viewDetails": "Details",
+      "selectTrip": "Select this trip",
+      "selectSuccess": "Trip selected successfully",
+      "selectError": "Something went wrong while selecting the trip, please try again"
+    },
+    "unavailable": {
+      "fullyBooked": "Fully Booked",
+      "label": "Unavailable",
+      "pricePerStudent": "Per student"
+    },
+    "help": {
+      "title": "Need Help?",
+      "body": "Our trip experts are available to help you customize your trip schedule.",
+      "cta": "Talk to us"
+    },
+    "tripTypes": {
+      "ACTIVITY": "Educational & Recreational",
+      "TRIP": "Field Trip",
+      "CUSTOM_TRIP": "Custom",
+      "HALF_DAY": "Half Day"
+    }
+  },
+
   "booking": {
     "unavailable": {
       "noSeats": {
@@ -1074,6 +1133,9 @@
           "budget": "Budget",
           "orderDate": "Order Date",
           "status": "Status",
+          "hasRecommendation": "Recommendations",
+          "hasRecommendationYes": "Has Recommendations",
+          "hasRecommendationNo": "No Recommendations",
           "actions": "Actions"
         },
         "bookingDetails": {

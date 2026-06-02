@@ -1,5 +1,8 @@
 {
   "permissions": {
-    "allow": ["Bash(*)"]
+    "allow": [
+      "Bash(*)",
+      "mcp__claude_ai_Figma__get_design_context"
+    ]
   }
 }
