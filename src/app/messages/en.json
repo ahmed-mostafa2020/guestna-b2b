@@ -295,7 +295,7 @@
     },
     "why": {
       "title": "Why these recommendations?",
-      "body": "Based on your budget and educational stage, we refined these options to ensure the highest levels of educational quality and student safety."
+      "body": "Based on your specified budget ({budget} SAR) and the {stage} educational stage, we refined these options to ensure the highest levels of educational benefit and student safety, while considering geographic proximity to {city}."
     },
     "how": {
       "title": "How were these trips selected?",
@@ -337,7 +337,8 @@
       "ACTIVITY": "Educational & Recreational",
       "TRIP": "Field Trip",
       "CUSTOM_TRIP": "Custom",
-      "HALF_DAY": "Half Day"
+      "HALF_DAY": "Half Day",
+      "PACKAGE": "Package"
     }
   },
 

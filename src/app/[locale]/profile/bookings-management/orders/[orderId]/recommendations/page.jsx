@@ -119,8 +119,14 @@ const RecommendationsPage = ({ params }) => {
             <div className="flex-1 min-w-0 flex flex-col gap-6">
               {/* Info cards */}
               <div className="flex flex-col gap-4">
-                <WhyCard note={data.recommendation?.note} />
-                <HowCard />
+                <WhyCard
+                  budget={data.priceRange?.min}
+                  stage={data.academicStages?.map((s) => s.name).join("، ")}
+                  city={data.city?.name}
+                />
+                {data.recommendation?.note && (
+                  <HowCard note={data.recommendation.note} />
+                )}
               </div>
 
               {/* Trips section */}

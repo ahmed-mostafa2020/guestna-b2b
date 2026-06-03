@@ -155,14 +155,6 @@ const AllOrdersTable = ({
     return <TableSkeleton columns={9} />;
   }
 
-  // TEMP: force hasRecommendation=true on every row until backend merges the field.
-  // To revert: remove this block and use `data` directly in the DataTable below.
-  const tableData = {
-    ...data,
-    nodes: data.nodes.map((row) => ({ ...row, hasRecommendation: true })),
-  };
-  // END TEMP
-
   const columns = useMemo(
     () => [
       {
@@ -266,7 +258,7 @@ const AllOrdersTable = ({
       <DataTable
         title={tableTitle}
         columns={columns}
-        data={tableData?.nodes || []}
+        data={data?.nodes || []}
         actionsLabel={
           hasAnyActionPermission
             ? t("profile.tables.orders.tableHeaders.actions")

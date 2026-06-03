@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-export const WhyCard = ({ note }) => {
+export const WhyCard = ({ budget, stage, city }) => {
   const t = useTranslations("recommendations.why");
 
   return (
@@ -24,7 +24,7 @@ export const WhyCard = ({ note }) => {
             {t("title")}
           </h3>
           <p className="text-[16px] text-[#44474e] font-somar leading-[26px] text-right">
-            {note || t("body")}
+            {t("body", { budget, stage, city })}
           </p>
         </div>
       </div>
@@ -32,7 +32,7 @@ export const WhyCard = ({ note }) => {
   );
 };
 
-export const HowCard = () => {
+export const HowCard = ({ note }) => {
   const t = useTranslations("recommendations.how");
 
   return (
@@ -52,9 +52,7 @@ export const HowCard = () => {
             {t("title")}
           </h3>
           <p className="text-[16px] text-[rgba(0,60,78,0.8)] font-somar leading-6 text-right">
-            {t.rich("body", {
-              b: (chunks) => <strong className="font-bold">{chunks}</strong>,
-            })}
+            {note}
           </p>
         </div>
       </div>
