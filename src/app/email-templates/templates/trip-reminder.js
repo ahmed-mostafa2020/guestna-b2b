@@ -128,8 +128,9 @@ export const tripReminderHTML = `<!DOCTYPE html>
                           <div style="font-size:14px;font-weight:600;color:#008F8F;margin-top:2px;">رحلة المزرعة التعليمية</div>
                         </td>
                         <td class="booking-stack" style="text-align:left;">
-                          <span style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;">عدد الطلاب</span>
-                          <div style="font-size:16px;font-weight:700;color:#1E293B;margin-top:2px;">45 طالب</div>
+                          <span style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;">الطلاب المسجلون</span>
+                          <div style="font-size:13px;font-weight:600;color:#1E293B;margin-top:2px;">أحمد محمد السعيد</div>
+                          <div style="font-size:13px;font-weight:600;color:#1E293B;">سارة عبدالله الزهراني</div>
                         </td>
                       </tr>
                     </table>

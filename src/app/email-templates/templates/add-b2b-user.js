@@ -46,7 +46,7 @@ export const addB2bUserHTML = `<!DOCTYPE html>
               <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/Layer_1%20(4).png?updatedAt=1751797506507" alt="GuestNa Logo" width="130" style="display:block;margin:0 auto 20px;filter:brightness(0) invert(1);border:0;" />
               <div class="mobile-emoji" style="font-size:48px;margin-bottom:10px;">🎉</div>
               <div class="mobile-h1" style="font-size:24px;font-weight:700;color:#ffffff;margin-bottom:8px;line-height:1.3;">حسابك جاهز!</div>
-              <div style="font-size:14px;color:rgba(255,255,255,0.8);">مرحباً بك في منصة جستنا للرحلات التعليمية</div>
+              <div style="font-size:14px;color:rgba(255,255,255,0.8);">مرحباً بك في منصة جستنا</div>
             </td>
           </tr>
 

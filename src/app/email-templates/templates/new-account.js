@@ -62,7 +62,7 @@ export const newAccountHTML = `<!DOCTYPE html>
             <td class="content-pad" style="padding:36px 36px 0;">
               <p class="mobile-h2" style="margin:0 0 10px;font-size:20px;font-weight:700;color:#008F8F;text-align:center;">مرحباً، أ. أحمد مصطفى!</p>
               <p style="margin:0 0 24px;font-size:15px;color:#475569;line-height:1.8;text-align:center;">
-                يسعدنا أن نُخبرك أن حسابك في منصة جستنا للرحلات التعليمية قد تم إنشاؤه بنجاح.<br/>
+                يسعدنا أن نُخبرك أن حسابك في منصة جستنا قد تم إنشاؤه بنجاح.<br/>
                 لتفعيل حسابك والبدء في استخدام المنصة، يرجى إنشاء كلمة مرور خاصة بك.
               </p>
             </td>

@@ -24,6 +24,7 @@ import { resetPasswordHTML } from "./templates/reset-password";
 import { maintenanceHTML } from "./templates/maintenance";
 import { adminNewUserHTML } from "./templates/admin-new-user";
 import { tripRecommendationsHTML } from "./templates/trip-recommendations";
+import { tripReportHTML } from "./templates/trip-report";
 
 // ── English Templates (mobile-responsive) ──
 import { bookingConfirmationHTML as bookingConfirmationEnHTML } from "./templates/en/booking-confirmation";
@@ -47,6 +48,7 @@ import { resetPasswordHTML as resetPasswordEnHTML } from "./templates/en/reset-p
 import { maintenanceHTML as maintenanceEnHTML } from "./templates/en/maintenance";
 import { adminNewUserHTML as adminNewUserEnHTML } from "./templates/en/admin-new-user";
 import { tripRecommendationsHTML as tripRecommendationsEnHTML } from "./templates/en/trip-recommendations";
+import { tripReportHTML as tripReportEnHTML } from "./templates/en/trip-report";
 
 // ── Categories ──
 const CATEGORIES = [
@@ -172,6 +174,20 @@ const TEMPLATES = [
     from: "noreply@guestna.app",
     html: tripRecommendationsHTML,
     htmlEn: tripRecommendationsEnHTML,
+  },
+  {
+    id: "trip-report",
+    category: "trips",
+    label: "تقرير يومي",
+    labelEn: "Daily Trip Report",
+    icon: "📊",
+    subject: "تقرير الرحلة اليومي — ORD-2024-001 — رحلة متحف القاهرة للعلوم",
+    subjectEn: "Daily Trip Report — ORD-2024-001 — Cairo Science Museum Trip",
+    to: "منسق الأنشطة — المؤسسة",
+    toEn: "Activities Coordinator — Organisation",
+    from: "noreply@guestna.app",
+    html: tripReportHTML,
+    htmlEn: tripReportEnHTML,
   },
   {
     id: "trip-request",

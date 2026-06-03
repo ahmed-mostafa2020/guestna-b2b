@@ -60,221 +60,30 @@ export const tripRecommendationsHTML = `<!DOCTYPE html>
             <td style="height:3px;background:linear-gradient(90deg,#008F8F,#ED8A22,#008F8F);"></td>
           </tr>
 
-          <!-- Section Label -->
+          <!-- Polite Apology Banner -->
           <tr>
-            <td class="content-pad" style="padding:18px 28px 10px;">
-              <p style="margin:0;font-size:11px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:1.2px;">الرحلات المقترحة</p>
-            </td>
-          </tr>
-
-          <!-- ══════════════ TRIP 1 ══════════════ -->
-          <tr>
-            <td class="content-pad" style="padding:0 28px 12px;">
+            <td class="content-pad" style="padding:24px 28px 0;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"
-                     style="border:1px solid #E2E8F0;border-radius:12px;overflow:hidden;background:#FAFCFF;">
+                     style="background:linear-gradient(135deg,#FFF8F0,#FFF3E0);border:1.5px solid #ED8A22;border-radius:14px;overflow:hidden;">
                 <tr>
-                  <!-- Thumbnail -->
-                  <td class="card-thumb" width="110" style="width:110px;padding:0;vertical-align:top;">
-                    <div style="width:110px;min-height:140px;background:linear-gradient(160deg,#8B7355,#C4A882);position:relative;overflow:hidden;">
-                      <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/trip-alula.jpg"
-                           alt="رؤية العلا" width="110"
-                           style="display:block;width:110px;height:100%;min-height:140px;object-fit:cover;border:0;"
-                           onerror="this.style.display='none'" />
-                      <!-- Match Badge -->
-                      <div style="position:absolute;top:8px;right:6px;background:#008F8F;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;">
-                        98% ✓
-                      </div>
+                  <td style="padding:20px 22px;text-align:right;">
+                    <div style="font-size:22px;margin-bottom:8px;">🙏</div>
+                    <div style="font-size:15px;font-weight:700;color:#0A2540;margin-bottom:8px;line-height:1.4;">
+                      نعتذر منكم — الرحلة المطلوبة غير متاحة حالياً
                     </div>
-                  </td>
-                  <!-- Body -->
-                  <td class="card-body" style="padding:12px 14px;vertical-align:top;">
-                    <!-- Title row -->
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-                      <tr>
-                        <td>
-                          <div style="font-size:15px;font-weight:700;color:#0A2540;line-height:1.3;margin-bottom:3px;">رؤية العلا الاستكشافية</div>
-                          <div style="font-size:11px;color:#64748B;">📍 الرياض &nbsp;·&nbsp; 🕐 6 ساعات</div>
-                        </td>
-                      </tr>
-                    </table>
-                    <!-- Reason -->
-                    <div style="margin:8px 0;background:#F0FDF4;border-radius:6px;padding:5px 10px;font-size:11px;color:#166534;">
-                      ✦ تطابق ممتاز مع الميزانية والمرحلة التعليمية
+                    <div style="font-size:13px;color:#475569;line-height:1.7;">
+                      نقدّر ثقتكم بنا ونأسف لعدم توفّر الرحلة التي طلبتموها في الوقت الراهن.
+                      لكننا لم نتركم بدون خيارات — اخترنا لكم بعناية أفضل الرحلات المتاحة التي تتناسب مع احتياجاتكم.
                     </div>
-                    <!-- Stats inline -->
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom:8px;">
-                      <tr>
-                        <td style="font-size:11px;color:#64748B;padding-left:12px;">
-                          <span style="font-weight:700;color:#0A2540;font-size:13px;">250</span> <span style="color:#94A3B8;">ر.س</span> / طالب
-                        </td>
-                        <td style="font-size:11px;color:#64748B;padding-left:12px;">
-                          <span style="font-weight:700;color:#008F8F;font-size:13px;">12,500</span> <span style="color:#94A3B8;">ر.س</span> إجمالي
-                        </td>
-                        <td style="font-size:11px;color:#64748B;">
-                          <span style="font-weight:600;color:#0A2540;">50</span> مقعد
-                        </td>
-                      </tr>
-                    </table>
-                    <!-- Tags -->
-                    <div style="margin-bottom:10px;">
-                      <span style="display:inline-block;background:#F0F9FF;color:#0369A1;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;margin-left:4px;">مرشد تعليمي</span>
-                      <span style="display:inline-block;background:#FFF7ED;color:#C2410C;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;">مواقع أثرية</span>
+                    <div style="margin-top:14px;">
+                      <a href="https://guestna-b2b.vercel.app/ar/discover" target="_blank"
+                         style="display:inline-block;background:linear-gradient(135deg,#ED8A22,#F59E0B);color:#ffffff;text-decoration:none;font-size:13px;font-weight:700;padding:10px 24px;border-radius:8px;box-shadow:0 3px 12px rgba(237,138,34,0.3);">
+                        استعرض الرحلات المقترحة ←
+                      </a>
                     </div>
-                    <!-- Buttons -->
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                      <tr>
-                        <td style="padding-left:6px;">
-                          <a href="https://guestna-b2b.vercel.app/ar/discover/trip-alula" target="_blank"
-                             style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#fff;text-decoration:none;font-size:12px;font-weight:700;padding:8px 16px;border-radius:7px;">
-                            اختر الرحلة ←
-                          </a>
-                        </td>
-                        <td>
-                          <a href="https://guestna-b2b.vercel.app/ar/packageInfo/trip-alula" target="_blank"
-                             style="display:inline-block;background:#fff;color:#008F8F;text-decoration:none;font-size:12px;font-weight:700;padding:7px 14px;border-radius:7px;border:1.5px solid #008F8F;">
-                            التفاصيل
-                          </a>
-                        </td>
-                      </tr>
-                    </table>
                   </td>
                 </tr>
               </table>
-            </td>
-          </tr>
-
-          <!-- ══════════════ TRIP 2 ══════════════ -->
-          <tr>
-            <td class="content-pad" style="padding:0 28px 12px;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"
-                     style="border:1px solid #E2E8F0;border-radius:12px;overflow:hidden;background:#FAFCFF;">
-                <tr>
-                  <td class="card-thumb" width="110" style="width:110px;padding:0;vertical-align:top;">
-                    <div style="width:110px;min-height:140px;background:linear-gradient(160deg,#1E3A5F,#2E5FA3);position:relative;overflow:hidden;">
-                      <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/trip-innovation.jpg"
-                           alt="مركز إثراء" width="110"
-                           style="display:block;width:110px;height:100%;min-height:140px;object-fit:cover;border:0;"
-                           onerror="this.style.display='none'" />
-                      <div style="position:absolute;top:8px;right:6px;background:#008F8F;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;">
-                        95% ✓
-                      </div>
-                    </div>
-                  </td>
-                  <td class="card-body" style="padding:12px 14px;vertical-align:top;">
-                    <div style="font-size:15px;font-weight:700;color:#0A2540;line-height:1.3;margin-bottom:3px;">الابتكار في مركز إثراء المعرفي</div>
-                    <div style="font-size:11px;color:#64748B;">📍 الظهران &nbsp;·&nbsp; 🕐 يوم كامل</div>
-                    <div style="margin:8px 0;background:#F0FDF4;border-radius:6px;padding:5px 10px;font-size:11px;color:#166534;">
-                      ✦ تطابق ممتاز مع الميزانية والمرحلة التعليمية
-                    </div>
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom:8px;">
-                      <tr>
-                        <td style="font-size:11px;color:#64748B;padding-left:12px;">
-                          <span style="font-weight:700;color:#0A2540;font-size:13px;">320</span> <span style="color:#94A3B8;">ر.س</span> / طالب
-                        </td>
-                        <td style="font-size:11px;color:#64748B;padding-left:12px;">
-                          <span style="font-weight:700;color:#008F8F;font-size:13px;">14,400</span> <span style="color:#94A3B8;">ر.س</span> إجمالي
-                        </td>
-                        <td style="font-size:11px;color:#64748B;">
-                          <span style="font-weight:600;color:#0A2540;">40</span> مقعد
-                        </td>
-                      </tr>
-                    </table>
-                    <div style="margin-bottom:10px;">
-                      <span style="display:inline-block;background:#F5F3FF;color:#7C3AED;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;margin-left:4px;">ورش ابتكار</span>
-                      <span style="display:inline-block;background:#FFF7ED;color:#C2410C;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;margin-left:4px;">علوم وتقنية</span>
-                      <span style="display:inline-block;background:#F0F9FF;color:#0369A1;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;">متحف تفاعلي</span>
-                    </div>
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                      <tr>
-                        <td style="padding-left:6px;">
-                          <a href="https://guestna-b2b.vercel.app/ar/discover/trip-ithra" target="_blank"
-                             style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#fff;text-decoration:none;font-size:12px;font-weight:700;padding:8px 16px;border-radius:7px;">
-                            اختر الرحلة ←
-                          </a>
-                        </td>
-                        <td>
-                          <a href="https://guestna-b2b.vercel.app/ar/packageInfo/trip-ithra" target="_blank"
-                             style="display:inline-block;background:#fff;color:#008F8F;text-decoration:none;font-size:12px;font-weight:700;padding:7px 14px;border-radius:7px;border:1.5px solid #008F8F;">
-                            التفاصيل
-                          </a>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <!-- ══════════════ TRIP 3 ══════════════ -->
-          <tr>
-            <td class="content-pad" style="padding:0 28px 20px;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"
-                     style="border:1px solid #E2E8F0;border-radius:12px;overflow:hidden;background:#FAFCFF;">
-                <tr>
-                  <td class="card-thumb" width="110" style="width:110px;padding:0;vertical-align:top;">
-                    <div style="width:110px;min-height:140px;background:linear-gradient(160deg,#2D5016,#4A7C59);position:relative;overflow:hidden;">
-                      <img src="https://ik.imagekit.io/v51ywmzjoGuestna/uploads/trip-farm.jpg"
-                           alt="المزرعة التعليمية" width="110"
-                           style="display:block;width:110px;height:100%;min-height:140px;object-fit:cover;border:0;"
-                           onerror="this.style.display='none'" />
-                      <div style="position:absolute;top:8px;right:6px;background:#ED8A22;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;">
-                        90% ✓
-                      </div>
-                    </div>
-                  </td>
-                  <td class="card-body" style="padding:12px 14px;vertical-align:top;">
-                    <div style="font-size:15px;font-weight:700;color:#0A2540;line-height:1.3;margin-bottom:3px;">رحلة المزرعة التعليمية</div>
-                    <div style="font-size:11px;color:#64748B;">📍 الرياض &nbsp;·&nbsp; 🕐 نصف يوم</div>
-                    <div style="margin:8px 0;background:#F0FDF4;border-radius:6px;padding:5px 10px;font-size:11px;color:#166534;">
-                      ✦ مثالية للمرحلة الابتدائية، ميزانية مناسبة
-                    </div>
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom:8px;">
-                      <tr>
-                        <td style="font-size:11px;color:#64748B;padding-left:12px;">
-                          <span style="font-weight:700;color:#0A2540;font-size:13px;">95</span> <span style="color:#94A3B8;">ر.س</span> / طالب
-                        </td>
-                        <td style="font-size:11px;color:#64748B;padding-left:12px;">
-                          <span style="font-weight:700;color:#008F8F;font-size:13px;">4,275</span> <span style="color:#94A3B8;">ر.س</span> إجمالي
-                        </td>
-                        <td style="font-size:11px;color:#64748B;">
-                          <span style="font-weight:600;color:#0A2540;">60</span> مقعد
-                        </td>
-                      </tr>
-                    </table>
-                    <div style="margin-bottom:10px;">
-                      <span style="display:inline-block;background:#F0FDF4;color:#166534;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;margin-left:4px;">بيئة وزراعة</span>
-                      <span style="display:inline-block;background:#FFF7ED;color:#C2410C;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;">مشرفون متخصصون</span>
-                    </div>
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                      <tr>
-                        <td style="padding-left:6px;">
-                          <a href="https://guestna-b2b.vercel.app/ar/discover/trip-farm" target="_blank"
-                             style="display:inline-block;background:linear-gradient(135deg,#008F8F,#006e6e);color:#fff;text-decoration:none;font-size:12px;font-weight:700;padding:8px 16px;border-radius:7px;">
-                            اختر الرحلة ←
-                          </a>
-                        </td>
-                        <td>
-                          <a href="https://guestna-b2b.vercel.app/ar/packageInfo/trip-farm" target="_blank"
-                             style="display:inline-block;background:#fff;color:#008F8F;text-decoration:none;font-size:12px;font-weight:700;padding:7px 14px;border-radius:7px;border:1.5px solid #008F8F;">
-                            التفاصيل
-                          </a>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <!-- View All CTA -->
-          <tr>
-            <td class="content-pad" align="center" style="padding:0 28px 20px;">
-              <a href="https://guestna-b2b.vercel.app/ar/discover" target="_blank"
-                 style="display:inline-block;background:transparent;color:#008F8F;text-decoration:none;font-size:13px;font-weight:700;padding:10px 28px;border-radius:8px;border:1.5px solid #008F8F;">
-                استعرض جميع الرحلات المتاحة →
-              </a>
             </td>
           </tr>
 

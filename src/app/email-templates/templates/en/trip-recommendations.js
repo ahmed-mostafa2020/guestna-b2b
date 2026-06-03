@@ -256,16 +256,6 @@ export const tripRecommendationsHTML = `<!DOCTYPE html>
             </td>
           </tr>
 
-          <!-- View All CTA -->
-          <tr>
-            <td class="content-pad" align="center" style="padding:0 28px 20px;">
-              <a href="https://guestna-b2b.vercel.app/en/discover" target="_blank"
-                 style="display:inline-block;background:transparent;color:#008F8F;text-decoration:none;font-size:13px;font-weight:700;padding:10px 28px;border-radius:8px;border:1.5px solid #008F8F;">
-                Browse All Available Trips →
-              </a>
-            </td>
-          </tr>
-
           <!-- Support Banner -->
           <tr>
             <td class="content-pad" style="padding:0 28px 22px;">
