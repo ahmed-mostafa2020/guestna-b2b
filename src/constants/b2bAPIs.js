@@ -123,6 +123,8 @@ export const B2B_END_POINTS = {
           APPROVE: "profile/askTrips/accept/askTrip",
         },
         REMIND: "profile/askTrips/reminder/admin",
+        RECOMMENDATIONS: "profile/askTrips/recommendations",
+        ACCEPT_RECOMMENDED: "profile/askTrips/accept/recommended",
 
         SETTINGS: {
           ALL_TRIPS: "profile/settingsTrips/all", //post
