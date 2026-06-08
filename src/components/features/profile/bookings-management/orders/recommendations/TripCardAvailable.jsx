@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { CircularProgress } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
+import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 import formatCurrency from "@utils/formatters/FormatCurrency";
@@ -93,6 +94,7 @@ const TripCardAvailable = ({ trip, seats, locale, recommendationId }) => {
   const t = useTranslations("recommendations");
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const [selecting, setSelecting] = useState(false);
   const [selected, setSelected] = useState(false);
@@ -109,6 +111,8 @@ const TripCardAvailable = ({ trip, seats, locale, recommendationId }) => {
       );
       setSelected(true);
       enqueueSnackbar(t("card.selectSuccess"), { variant: "success" });
+      queryClient.invalidateQueries({ queryKey: ["fetchData", "profile/askTrips/all"] });
+      queryClient.invalidateQueries({ queryKey: ["fetchData", "profile/askTrips/counts"] });
       router.push(`/${locale}/profile/bookings-management/orders`);
     } catch (err) {
       enqueueSnackbar(
