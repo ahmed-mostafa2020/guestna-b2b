@@ -9,6 +9,13 @@ const withPWA = withPWAInit({
   disable: process.env.NODE_ENV === "development",
   register: true,
   skipWaiting: true,
+  workboxOptions: {
+    // Avoids workbox-build's separate-chunk path, which sets a Rollup
+    // `manualChunks` input option that Rollup 4 (pinned via the
+    // package.json `overrides`/`resolutions` for security) rejects with
+    // "Unknown input options: manualChunks".
+    inlineWorkboxRuntime: true,
+  },
 });
 
 // Sentry routing per environment:
