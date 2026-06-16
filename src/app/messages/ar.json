@@ -733,6 +733,29 @@
         "oneDay": "يوم واحد",
         "actions": "الإجراءات",
         "viewDetails": "عرض التفاصيل"
+      },
+      "details": {
+        "title": "تفاصيل الفعالية",
+        "orderId": "الرقم المرجعي",
+        "tripType": "نوع الرحلة",
+        "duration": "المدة",
+        "availableSeats": "المقاعد المتاحة",
+        "price": "السعر للفرد",
+        "date": "التاريخ",
+        "time": "الوقت",
+        "description": "وصف الفعالية",
+        "targetAudience": "الفئة المستهدفة (المسارات)",
+        "invitedSchools": "المدارس المدعوة",
+        "noSchools": "لا توجد مدارس مدعوة",
+        "noTracks": "لا توجد مسارات محددة",
+        "video": "فيديو تعريفي",
+        "academicStages": "المراحل الدراسية",
+        "grades": "الصفوف",
+        "gender": "الجنس",
+        "educationSystem": "النظام التعليمي",
+        "trackNumber": "مسار رقم {number}",
+        "searchSchool": "البحث عن مدرسة...",
+        "schoolName": "اسم المدرسة"
       }
     },
 

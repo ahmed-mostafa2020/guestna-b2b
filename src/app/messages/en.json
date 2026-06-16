@@ -720,6 +720,29 @@
         "oneDay": "One Day",
         "actions": "Actions",
         "viewDetails": "View Details"
+      },
+      "details": {
+        "title": "Event Details",
+        "orderId": "Reference ID",
+        "tripType": "Trip Type",
+        "duration": "Duration",
+        "availableSeats": "Available Seats",
+        "price": "Price per person",
+        "date": "Date",
+        "time": "Time",
+        "description": "Event Description",
+        "targetAudience": "Target Audience (Tracks)",
+        "invitedSchools": "Invited Schools",
+        "noSchools": "No invited schools",
+        "noTracks": "No tracks specified",
+        "video": "Introductory Video",
+        "academicStages": "Academic Stages",
+        "grades": "Grades",
+        "gender": "Gender",
+        "educationSystem": "Education System",
+        "trackNumber": "Track #{number}",
+        "searchSchool": "Search school name...",
+        "schoolName": "School Name"
       }
     },
 
