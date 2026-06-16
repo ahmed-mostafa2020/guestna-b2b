@@ -690,11 +690,36 @@
       "bookings": "Bookings Details",
       "favorites": "Favorites",
       "activitiesMarket": "Activities Market",
+      "events": "Events",
       "activitiesMarketTitle": "Educational Activities Market",
       "activitiesMarketDescription": "Discover the best educational activities and school trips",
       "myBookings": "My Bookings",
       "logout": "Logout",
       "logoutConfirm": "Do you really want to log out?"
+    },
+
+    "events": {
+      "title": "Events",
+      "searchPlaceholder": "Search by ID or name",
+      "noEvents": "No events found",
+      "sort": {
+        "label": "Sort by",
+        "new": "Newest",
+        "old": "Oldest"
+      },
+      "table": {
+        "orderId": "Order ID",
+        "name": "Trip Name",
+        "day": "Date",
+        "duration": "Duration",
+        "seats": "Available Seats",
+        "price": "Price",
+        "status": "Status",
+        "days": "{count} Days",
+        "oneDay": "One Day",
+        "actions": "Actions",
+        "viewDetails": "View Details"
+      }
     },
 
     "organizationSelector": {

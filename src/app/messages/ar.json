@@ -703,11 +703,36 @@
       "bookings": "تفاصيل الحجوزات",
       "favorites": "المفضلة والإهتمامات",
       "activitiesMarket": "سوق الأنشطة",
+      "events": "الفعاليات",
       "activitiesMarketTitle": "سوق الأنشطة التعليمية",
       "activitiesMarketDescription": "اكتشف أفضل الأنشطة التعليمية والرحلات المدرسية",
       "myBookings": "حجوزاتي",
       "logout": "تسجيل خروج",
       "logoutConfirm": "هل تريد حقا تسجيل خروج؟"
+    },
+
+    "events": {
+      "title": "الفعاليات",
+      "searchPlaceholder": "البحث بالرقم المرجعي أو الاسم",
+      "noEvents": "لم يتم العثور على فعاليات",
+      "sort": {
+        "label": "ترتيب حسب",
+        "new": "الأحدث",
+        "old": "الأقدم"
+      },
+      "table": {
+        "orderId": "الرقم المرجعي",
+        "name": "اسم الرحلة",
+        "day": "التاريخ",
+        "duration": "المدة",
+        "seats": "المقاعد المتاحة",
+        "price": "السعر",
+        "status": "الحالة",
+        "days": "{count} أيام",
+        "oneDay": "يوم واحد",
+        "actions": "الإجراءات",
+        "viewDetails": "عرض التفاصيل"
+      }
     },
 
     "organizationSelector": {

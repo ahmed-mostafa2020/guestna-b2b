@@ -178,6 +178,14 @@ const NavigationDropdown = () => {
       permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_ROLES_PERMISSIONS_TAB,
     },
     {
+      id: "events",
+      title: t("profile.aside.events"),
+      icon: <TravelIcon />,
+      path: `${profileBasePath}/events`,
+      hasDropdown: false,
+      permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_MAIN_TAB,
+    },
+    {
       id: "sales",
       title: t("profile.aside.sales.title"),
       icon: <TravelIcon />,

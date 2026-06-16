@@ -83,6 +83,7 @@ export const B2B_END_POINTS = {
     },
 
     ACTIVITIES_MARKET: "profile/trips/all",
+    EVENTS: "profile/eventTrips/all",
 
     HAPPENINGS: {
       NEW: "profile/happenings/new",
