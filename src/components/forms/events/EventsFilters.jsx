@@ -1,11 +1,21 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import SearchAndFilters from "../../ui/searchAndFilters/SearchAndFilters";
+import { SORTING_TYPE } from "@constants/sorting";
 
 const EventsFilters = ({ filter, setFilter }) => {
   const t = useTranslations("profile.events");
+
+  const [localSearchTerm, setLocalSearchTerm] = useState(
+    filter.searchTerm || ""
+  );
+
+  // Synchronize local search state with parent filter.searchTerm when it changes (e.g. on reset)
+  useEffect(() => {
+    setLocalSearchTerm(filter.searchTerm || "");
+  }, [filter.searchTerm]);
 
   const handleFilterChange = useCallback(
     (key) => (value) => {
@@ -20,25 +30,34 @@ const EventsFilters = ({ filter, setFilter }) => {
   const handleResetFilters = useCallback(() => {
     setFilter({
       searchTerm: "",
-      sort: "NEW",
+      sort: SORTING_TYPE.NEWEST,
     });
   }, [setFilter]);
 
+  const handleSearchSubmit = useCallback(() => {
+    setFilter((prev) => ({
+      ...prev,
+      searchTerm: localSearchTerm,
+    }));
+  }, [localSearchTerm, setFilter]);
+
   const search = {
     label: t("searchPlaceholder"),
-    value: filter.searchTerm || "",
-    onChange: handleFilterChange("searchTerm"),
+    value: localSearchTerm,
+    onChange: setLocalSearchTerm,
+    onSearch: handleSearchSubmit,
+    searchButtonText: t("searchButton"),
   };
 
   const filters = useMemo(() => {
     return [
       {
         label: t("sort.label"),
-        value: filter.sort || "NEW",
+        value: filter.sort || SORTING_TYPE.NEWEST,
         onChange: handleFilterChange("sort"),
         options: [
-          { value: "NEW", label: t("sort.new") },
-          { value: "OLD", label: t("sort.old") },
+          { value: SORTING_TYPE.NEWEST, label: t("sort.new") },
+          { value: SORTING_TYPE.OLDEST, label: t("sort.old") },
         ],
         multiple: false,
       },
@@ -56,13 +75,14 @@ const EventsFilters = ({ filter, setFilter }) => {
 
       {/* Filter Dropdowns */}
       <div className="space-y-4">
-        <div className="flex flex-col lg:flex-row gap-4 items-center">
+        <div className="w-full">
           <SearchAndFilters
             isLoading={false}
             filters={filters}
             search={search}
             showTitle={false}
             onReset={handleResetFilters}
+            layout="flex"
           />
         </div>
       </div>

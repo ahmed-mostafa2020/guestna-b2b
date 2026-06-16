@@ -714,6 +714,7 @@
     "events": {
       "title": "الفعاليات",
       "searchPlaceholder": "البحث بالرقم المرجعي أو الاسم",
+      "searchButton": "بحث",
       "noEvents": "لم يتم العثور على فعاليات",
       "sort": {
         "label": "ترتيب حسب",

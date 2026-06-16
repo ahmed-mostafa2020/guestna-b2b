@@ -12,6 +12,7 @@ import ErrorComponent from "@feedback/error/ErrorComponent";
 import EventsFilters from "@components/forms/events/EventsFilters";
 import EventsTable from "@components/features/profile/events/EventsTable";
 import EmptyBookings from "@components/features/profile/myBookings/EmptyBookings";
+import { SORTING_TYPE } from "@constants/sorting";
 
 const EventsPage = () => {
   const locale = useLocale();
@@ -20,7 +21,7 @@ const EventsPage = () => {
   // State for filters
   const [filter, setFilter] = useState({
     searchTerm: "",
-    sort: "NEW",
+    sort: SORTING_TYPE.NEWEST,
   });
 
   // State for pagination
@@ -41,23 +42,12 @@ const EventsPage = () => {
     const body = {
       page: currentPage,
       perPage: 10,
-      sort: filter.sort || "NEW",
-      filtra: {},
+      sort: filter.sort || SORTING_TYPE.NEWEST,
+      filter: {},
     };
 
     if (filter.searchTerm) {
-      const cleanSearch = filter.searchTerm.trim();
-      // Simple heuristic: if it starts with 'ET-' or consists of digits/dashes, treat as order ID
-      const isOrderId =
-        cleanSearch.toUpperCase().startsWith("ET-") ||
-        /^\d+$/.test(cleanSearch) ||
-        (cleanSearch.includes("-") && cleanSearch.match(/\d/));
-
-      if (isOrderId) {
-        body.filtra.order_id = cleanSearch;
-      } else {
-        body.filtra.name = cleanSearch;
-      }
+      body.filter.searchTerm = filter.searchTerm.trim();
     }
 
     return body;
@@ -66,11 +56,10 @@ const EventsPage = () => {
   // Fetch Event Trips
   const { data, error, isLoading } = useFetchData(
     B2B_END_POINTS.PROFILE.EVENTS,
-    {},
+    requestBody,
     {
       method: "GET",
       lang: locale,
-      body: requestBody,
       // Include page and filter values in query key to auto-refetch
       queryKeySuffix: `events-page-${currentPage}-sort-${filter.sort}-search-${filter.searchTerm || "none"}`,
       enabled: true,

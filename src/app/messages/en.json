@@ -701,6 +701,7 @@
     "events": {
       "title": "Events",
       "searchPlaceholder": "Search by ID or name",
+      "searchButton": "Search",
       "noEvents": "No events found",
       "sort": {
         "label": "Sort by",

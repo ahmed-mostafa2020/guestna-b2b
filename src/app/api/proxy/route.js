@@ -16,7 +16,14 @@ export async function GET(request) {
   const devicespecificid = request.headers.get("devicespecificid");
   const profileOrganizations = request.headers.get("profile-organizations");
 
-  const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${path}`;
+  const urlObj = new URL(`${process.env.NEXT_PUBLIC_BASE_URL}${path}`);
+  searchParams.forEach((value, key) => {
+    if (key !== "path") {
+      urlObj.searchParams.append(key, value);
+    }
+  });
+  const backendURL = urlObj.toString();
+
   const headers = {
     "Content-Type": "application/json",
     reqKey: process.env.SECURE_REQ_KEY,
