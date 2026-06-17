@@ -1,6 +1,7 @@
 {
   "common": {
     "back": "رجوع",
+    "select": "اختر",
     "next": "التالي",
     "submit": "ارسال",
     "confirm": "تأكيد",
@@ -2405,6 +2406,9 @@
       "orDragDrop": "أو اسحب وأفلت",
       "supportedFormats": "CSV, XLS, XLSX (الحد الأقصى 10 ميجابايت)",
       "integer": "يجب أن يكون الرقم صحيحا",
+      "date": "الرجاء إدخال تاريخ صحيح",
+      "number": "الرجاء إدخال رقم صحيح",
+      "invalid": "صيغة غير صحيحة",
 
       "payment": {
         "success": "تتم معالجة عملية الدفع الآن",
@@ -3422,6 +3426,38 @@
     "allResults": "جميع النتائج",
     "to": "إلى",
     "of": "من"
+  },
+  "eventTrips": {
+    "pageTitle": "تفاصيل الفعالية",
+    "viewInvitation": "دعوة الفعالية",
+    "selectOrganization": "المدرسة / الجهة",
+    "selectTrack": "المسار",
+    "selectGrade": "الصف",
+    "selectTrackFirst": "يرجى اختيار المسار أولاً",
+    "placeholderOrganization": "اختر المدرسة أو الجهة التعليمية",
+    "placeholderTrack": "اختر المسار",
+    "placeholderGrade": "اختر الصف الدراسي",
+    "stepper": {
+      "step1": "بيانات التسجيل",
+      "step2": "الدفع"
+    },
+    "form": {
+      "title": "نموذج التسجيل",
+      "subtitle": "يرجى ملء النموذج أدناه لإكمال طلب التسجيل في الفعالية."
+    },
+    "payment": {
+      "title": "تفاصيل الدفع",
+      "subtitle": "أكمل عملية التسجيل عن طريق دفع رسوم الفعالية",
+      "orderSummary": "ملخص الطلب",
+      "registrationFee": "رسوم التسجيل في الفعالية",
+      "total": "المجموع الكلي",
+      "includingVat": "شامل ضريبة القيمة المضافة",
+      "confirm": "تأكيد الدفع"
+    },
+    "validation": {
+      "error": "يرجى ملء جميع الحقول المطلوبة بشكل صحيح",
+      "success": "تم التسجيل بنجاح!"
+    }
   },
   "maintenance": {
     "badge": "صيانة مجدولة",

@@ -99,7 +99,7 @@ const EventDetailsPage = ({ params }) => {
         <CustomizedBreadcrumbs breadcrumbsList={breadcrumbsList} />
 
         {/* Header (Back + Title + Share) */}
-        <EventDetailsHeader name={event.name} orderId={event.orderId} />
+        <EventDetailsHeader name={event.name} orderId={event.orderId} slug={params.slug} />
 
         {/* Media (Banner / Video Player) */}
         <EventDetailsMedia
@@ -142,6 +142,7 @@ const EventDetailsPage = ({ params }) => {
               toHour={event.toHour}
               duration={event.duration}
               tripType={event.tripType}
+              slug={params.slug}
             />
           </div>
         </div>

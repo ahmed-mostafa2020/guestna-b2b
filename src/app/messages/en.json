@@ -1,6 +1,7 @@
 {
   "common": {
     "back": "Back",
+    "select": "Select",
     "next": "Next",
     "submit": "Submit",
     "confirm": "Confirm",
@@ -2399,6 +2400,9 @@
       "orDragDrop": "or drag and drop",
       "supportedFormats": "CSV, XLS, XLSX (MAX. 10MB)",
       "integer": "Number must be an integer",
+      "date": "Please enter a valid date",
+      "number": "Please enter a valid number",
+      "invalid": "Invalid format",
 
       "payment": {
         "success": "Processing payment now",
@@ -3413,6 +3417,38 @@
     "allResults": "All Results",
     "to": "to",
     "of": "of"
+  },
+  "eventTrips": {
+    "pageTitle": "Event Details",
+    "viewInvitation": "Event Invitation",
+    "selectOrganization": "School / Organization",
+    "selectTrack": "Track",
+    "selectGrade": "Grade",
+    "selectTrackFirst": "Please select a track first",
+    "placeholderOrganization": "Select school or organization",
+    "placeholderTrack": "Select track",
+    "placeholderGrade": "Select grade",
+    "stepper": {
+      "step1": "Registration Info",
+      "step2": "Payment"
+    },
+    "form": {
+      "title": "Registration Form",
+      "subtitle": "Please complete the registration form below."
+    },
+    "payment": {
+      "title": "Payment Details",
+      "subtitle": "Complete your registration by paying the event fee",
+      "orderSummary": "Order Summary",
+      "registrationFee": "Event Registration Fee",
+      "total": "Total",
+      "includingVat": "Including VAT",
+      "confirm": "Confirm Payment"
+    },
+    "validation": {
+      "error": "Please fill out all required fields",
+      "success": "Registration completed successfully!"
+    }
   },
   "maintenance": {
     "badge": "Scheduled Maintenance",

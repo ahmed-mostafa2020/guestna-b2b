@@ -19,6 +19,7 @@ const EventDetailsInfoCard = ({
   toHour,
   duration,
   tripType,
+  slug,
 }) => {
   const locale = useLocale();
   const t = useTranslations("profile.events.details");
@@ -149,6 +150,18 @@ const EventDetailsInfoCard = ({
           </div>
           <span className="text-lg font-extrabold font-ibm">{availableSeats}</span>
         </div>
+      )}
+
+      {/* Invitation Link Button */}
+      {slug && (
+        <a
+          href={`/${locale}/event-invitation/${slug}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 flex items-center justify-center p-3.5 rounded-xl border-2 border-mainColor text-mainColor hover:text-white hover:bg-mainColor font-bold font-somar transition-all duration-200 text-center shadow-sm"
+        >
+          {useTranslations()("eventTrips.viewInvitation") || "Event Invitation"}
+        </a>
       )}
     </div>
   );

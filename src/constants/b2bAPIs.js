@@ -60,6 +60,7 @@ export const B2B_END_POINTS = {
   },
 
   FAVORITE: "favorite",
+  EVENT_INVITATION: "eventTrips",
 
   PROFILE: {
     INFORMATION: "auth/userInfo",
@@ -220,4 +221,12 @@ export const B2B_END_POINTS = {
 
   CONTACT_US: "supportMessage/massage",
   FAQ: "faqs/all",
+
+  EVENT_BOOKING: {
+    INITIATION: "eventTrips/booking/initiation",
+    APPLE_INITIATE: "eventTrips/booking/initiation/apple",
+    APPLE_CONFIRM: "eventTrips/booking/confermed/apple",
+    APPLE_CALLBACK: "eventTrips/booking/confermed/event/apple",
+    CLIENT_INFO: "clientInfoBooking/event-trip",
+  },
 };
