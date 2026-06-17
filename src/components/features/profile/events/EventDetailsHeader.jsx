@@ -6,11 +6,30 @@ import { memo } from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import LinkIcon from "@mui/icons-material/Link";
+import { useSnackbar } from "notistack";
 
 const EventDetailsHeader = ({ name, orderId, slug }) => {
   const t = useTranslations("profile.events");
   const locale = useLocale();
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleCopyLink = async () => {
+    if (!slug) return;
+    const eventLink = `${window.location.origin}/${locale}/event-invitation/${slug}`;
+
+    try {
+      await navigator.clipboard.writeText(eventLink);
+      enqueueSnackbar(t("details.copySuccess") || "Event link copied successfully", {
+        variant: "success",
+      });
+    } catch (error) {
+      console.error("Failed to copy link:", error);
+      enqueueSnackbar(t("details.copyFailed") || "Failed to copy event link", {
+        variant: "error",
+      });
+    }
+  };
 
   const handleBack = () => {
     router.push(`/${locale}/profile/events`);
@@ -46,15 +65,14 @@ const EventDetailsHeader = ({ name, orderId, slug }) => {
 
       <div className="flex items-center gap-3">
         {slug && (
-          <a
-            href={`/${locale}/event-invitation/${slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50 shadow-sm transition-all font-somar"
+          <button
+            onClick={handleCopyLink}
+            type="button"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50 shadow-sm transition-all font-somar cursor-pointer"
           >
             <LinkIcon fontSize="small" />
-            {useTranslations()("eventTrips.viewInvitation") || "Event Invitation"}
-          </a>
+            {t("details.copyEventLink") || "Copy Event Link"}
+          </button>
         )}
       </div>
     </div>

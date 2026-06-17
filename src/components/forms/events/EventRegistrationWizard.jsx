@@ -1032,7 +1032,7 @@ const EventRegistrationWizard = ({ event }) => {
 
                   <RadioGroup
                     value={currentPaymentMethod}
-                    onChange={onPaymentMethodChange}
+                    onChange={handlePaymentMethodChange}
                     name="payment-method"
                     className="flex flex-col w-full gap-4"
                   >

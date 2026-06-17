@@ -756,7 +756,10 @@
         "educationSystem": "النظام التعليمي",
         "trackNumber": "مسار رقم {number}",
         "searchSchool": "البحث عن مدرسة...",
-        "schoolName": "اسم المدرسة"
+        "schoolName": "اسم المدرسة",
+        "copyEventLink": "نسخ رابط الفعالية",
+        "copySuccess": "تم نسخ رابط الفعالية بنجاح",
+        "copyFailed": "فشل نسخ رابط الفعالية"
       }
     },
 
@@ -3429,7 +3432,7 @@
   },
   "eventTrips": {
     "pageTitle": "تفاصيل الفعالية",
-    "viewInvitation": "دعوة الفعالية",
+    "viewInvitation": "رابط الفعالية",
     "selectOrganization": "المدرسة / الجهة",
     "selectTrack": "المسار",
     "selectGrade": "الصف",

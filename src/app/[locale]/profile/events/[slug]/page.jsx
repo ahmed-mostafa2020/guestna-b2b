@@ -45,7 +45,9 @@ const EventDetailsPage = ({ params }) => {
 
   if (isLoading) {
     return (
-      <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}>
+      <ProtectedProfilePage
+        requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}
+      >
         <div className="w-full min-h-[400px] centered py-20">
           <FullScreenLoading status="pending" />
         </div>
@@ -55,7 +57,9 @@ const EventDetailsPage = ({ params }) => {
 
   if (error) {
     return (
-      <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}>
+      <ProtectedProfilePage
+        requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}
+      >
         <div className="py-10">
           <ErrorComponent
             statusCode={error?.response?.data?.statusCode}
@@ -71,35 +75,35 @@ const EventDetailsPage = ({ params }) => {
       id: 1,
       type: "link",
       name: t("pagesHead.title.home"),
-      link: "",
-    },
-    {
-      id: 2,
-      type: "link",
-      name: t("pagesHead.title.profile"),
       link: "profile",
     },
     {
-      id: 3,
+      id: 2,
       type: "link",
       name: t("profile.events.title"),
       link: "profile/events",
     },
     {
-      id: 4,
+      id: 3,
       type: "text",
       name: event.name || t("profile.events.details.title"),
     },
   ];
 
   return (
-    <ProtectedProfilePage requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}>
+    <ProtectedProfilePage
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}
+    >
       <div className="py-2 flex flex-col gap-6">
         {/* Breadcrumbs */}
         <CustomizedBreadcrumbs breadcrumbsList={breadcrumbsList} />
 
         {/* Header (Back + Title + Share) */}
-        <EventDetailsHeader name={event.name} orderId={event.orderId} slug={params.slug} />
+        <EventDetailsHeader
+          name={event.name}
+          orderId={event.orderId}
+          slug={params.slug}
+        />
 
         {/* Media (Banner / Video Player) */}
         <EventDetailsMedia

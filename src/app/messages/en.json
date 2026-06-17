@@ -743,7 +743,10 @@
         "educationSystem": "Education System",
         "trackNumber": "Track #{number}",
         "searchSchool": "Search school name...",
-        "schoolName": "School Name"
+        "schoolName": "School Name",
+        "copyEventLink": "Copy Event Link",
+        "copySuccess": "Event link copied successfully",
+        "copyFailed": "Failed to copy event link"
       }
     },
 
@@ -3420,7 +3423,7 @@
   },
   "eventTrips": {
     "pageTitle": "Event Details",
-    "viewInvitation": "Event Invitation",
+    "viewInvitation": "Event Link",
     "selectOrganization": "School / Organization",
     "selectTrack": "Track",
     "selectGrade": "Grade",

@@ -2,7 +2,6 @@
 
 import { memo } from "react";
 import ImageWithPlaceholder from "@components/ui/imagesPlaceholder/ImageWithPlaceholder";
-import Video from "@components/ui/trips/Video";
 
 const EventDetailsMedia = ({ thumbnail, video, name }) => {
   const imageUrl = thumbnail?.web || thumbnail?.app || "";
@@ -10,9 +9,9 @@ const EventDetailsMedia = ({ thumbnail, video, name }) => {
   return (
     <section className="w-full">
       {video ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
           {/* Image Thumbnail Container */}
-          <div className="relative w-full h-[250px] md:h-[400px] lg:h-[450px] rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex-shrink-0">
+          <div className="relative w-full h-[250px] md:h-[300px] lg:h-[350px] rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex-shrink-0">
             {imageUrl ? (
               <ImageWithPlaceholder
                 src={imageUrl}
@@ -29,17 +28,16 @@ const EventDetailsMedia = ({ thumbnail, video, name }) => {
           </div>
 
           {/* Video Container */}
-          <div className="relative w-full h-[250px] md:h-[400px] lg:h-[450px] rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-            <Video
+          <div className="relative w-full h-[250px] md:h-[300px] lg:h-[350px] rounded-2xl overflow-hidden shadow-sm border border-gray-100 lg:col-span-2">
+            <video
               src={video}
               poster={imageUrl}
-              height={450}
-              width={800}
-              showTitleLink={false}
-              cornerVideo={false}
-              activeIndex={0}
-              index={0}
-            />
+              controls
+              playsInline
+              className="w-full h-full object-cover bg-black"
+            >
+              Your browser does not support the video tag.
+            </video>
           </div>
         </div>
       ) : (
