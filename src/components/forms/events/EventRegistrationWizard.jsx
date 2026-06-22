@@ -65,7 +65,8 @@ const EventRegistrationWizard = ({ event }) => {
     CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD
   );
   const [isPaymentSubmitting, setIsPaymentSubmitting] = useState(false);
-  const [isRegistrationSubmitting, setIsRegistrationSubmitting] = useState(false);
+  const [isRegistrationSubmitting, setIsRegistrationSubmitting] =
+    useState(false);
   const [clientBookingId, setClientBookingId] = useState(null);
   const registrationValuesRef = useRef(null);
 
@@ -162,9 +163,10 @@ const EventRegistrationWizard = ({ event }) => {
 
           const response = await axios.request(config);
           const resData = response.data;
-          
+
           // Save the booking ID from the response (e.g., _id or clientInfoBookingId or similar)
-          const returnedId = resData?._id || resData?.id || resData?.clientInfoBookingId;
+          const returnedId =
+            resData?._id || resData?.id || resData?.clientInfoBookingId;
           if (returnedId) {
             setClientBookingId(returnedId);
           }
@@ -173,7 +175,10 @@ const EventRegistrationWizard = ({ event }) => {
           setCurrentStep(1);
           window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (error) {
-          console.error("Error submitting client info for event registration:", error);
+          console.error(
+            "Error submitting client info for event registration:",
+            error
+          );
           const errorMessage =
             error.response?.data?.message || t("eventTrips.validation.error");
           enqueueSnackbar(errorMessage, { variant: "error" });
@@ -308,7 +313,9 @@ const EventRegistrationWizard = ({ event }) => {
   const backgroundUrl =
     event.thumbnail?.web ||
     event.thumbnail?.app ||
-    (typeof event.image === "string" ? event.image : event.image?.web || event.image?.app) ||
+    (typeof event.image === "string"
+      ? event.image
+      : event.image?.web || event.image?.app) ||
     "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=80";
 
   return (
@@ -339,7 +346,10 @@ const EventRegistrationWizard = ({ event }) => {
             )}
             {event.price !== undefined && (
               <span className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md text-white text-sm md:text-base px-5 py-2 rounded-full font-somar border border-white/30 shadow-xl font-ibm">
-                💰 {event.price > 0 ? formatCurrency(event.price) : (t("common.free") || "Free")}
+                💰{" "}
+                {event.price > 0
+                  ? formatCurrency(event.price)
+                  : t("common.free") || "Free"}
               </span>
             )}
             {event.fromHour && (
@@ -422,224 +432,529 @@ const EventRegistrationWizard = ({ event }) => {
               setFieldValue,
               validateForm,
               setTouched,
-            }) => (
-              <div className="flex flex-col gap-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-start">
-                  {/* school / organization selection dropdown */}
-                  <div className="flex flex-col gap-2 relative">
-                    <label
-                      htmlFor="selectedOrganization"
-                      className="font-semibold text-gray-700 font-somar"
-                    >
-                      {t("eventTrips.selectOrganization")}
-                      <span className="text-error ml-1">*</span>
-                    </label>
-                    <Select
-                      id="selectedOrganization"
-                      name="selectedOrganization"
-                      value={values.selectedOrganization}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      displayEmpty
-                      renderValue={(selected) => {
-                        if (!selected) {
-                          return (
-                            <span className="text-gray-400 font-somar text-sm">
-                              {t("eventTrips.placeholderOrganization")}
-                            </span>
-                          );
-                        }
-                        return (
-                          event.organizations?.find((o) => o._id === selected)
-                            ?.name || selected
-                        );
-                      }}
-                      sx={{
-                        border:
-                          touched.selectedOrganization &&
-                          errors.selectedOrganization
-                            ? "2px solid #ef4444"
-                            : "2px solid var(--color-border)",
-                        borderRadius: "8px",
-                        "& .MuiOutlinedInput-notchedOutline": {
-                          border: "none",
-                        },
-                        "& .MuiSelect-select": { padding: "12px 16px" },
-                      }}
-                    >
-                      <MenuItem value="" disabled>
-                        {t("eventTrips.placeholderOrganization")}
-                      </MenuItem>
-                      {event.organizations?.map((org) => (
-                        <MenuItem key={org._id} value={org._id}>
-                          <ListItemText primary={org.name} />
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {touched.selectedOrganization &&
-                      errors.selectedOrganization && (
-                        <span className="text-xs text-error font-somar mt-1 absolute -bottom-5 start-0">
-                          {errors.selectedOrganization}
-                        </span>
-                      )}
-                  </div>
+            }) => {
+              const availableTracks = values.selectedOrganization
+                ? event.organizations?.find(
+                    (o) => o._id === values.selectedOrganization
+                  )?.tracks || []
+                : event.organizations?.flatMap((o) => o.tracks || []) ||
+                  event.tracks ||
+                  [];
 
-                  {/* tracks selection dropdown */}
-                  <div className="flex flex-col gap-2 relative">
-                    <label
-                      htmlFor="selectedTrack"
-                      className="font-semibold text-gray-700 font-somar"
-                    >
-                      {t("eventTrips.selectTrack")}
-                      <span className="text-error ml-1">*</span>
-                    </label>
-                    <Select
-                      id="selectedTrack"
-                      name="selectedTrack"
-                      value={values.selectedTrack}
-                      onChange={(e) => {
-                        handleChange(e);
-                        setFieldValue("selectedGrade", ""); // Reset grade selection when track changes
-                      }}
-                      onBlur={handleBlur}
-                      displayEmpty
-                      renderValue={(selected) => {
-                        if (!selected) {
+              return (
+                <div className="flex flex-col gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-start">
+                    {/* school / organization selection dropdown */}
+                    <div className="flex flex-col gap-2 relative">
+                      <label
+                        htmlFor="selectedOrganization"
+                        className="font-semibold text-gray-700 font-somar"
+                      >
+                        {t("eventTrips.selectOrganization")}
+                        <span className="text-error ml-1">*</span>
+                      </label>
+                      <Select
+                        id="selectedOrganization"
+                        name="selectedOrganization"
+                        value={values.selectedOrganization}
+                        onChange={(e) => {
+                          handleChange(e);
+                          setFieldValue("selectedTrack", ""); // Reset track selection when organization changes
+                          setFieldValue("selectedGrade", ""); // Reset grade selection when organization changes
+                        }}
+                        onBlur={handleBlur}
+                        displayEmpty
+                        renderValue={(selected) => {
+                          if (!selected) {
+                            return (
+                              <span className="text-gray-400 font-somar text-sm">
+                                {t("eventTrips.placeholderOrganization")}
+                              </span>
+                            );
+                          }
                           return (
-                            <span className="text-gray-400 font-somar text-sm">
-                              {t("eventTrips.placeholderTrack")}
-                            </span>
+                            event.organizations?.find((o) => o._id === selected)
+                              ?.name || selected
                           );
-                        }
-                        const track = event.tracks?.find(
-                          (t) => t._id === selected
-                        );
-                        if (track) {
+                        }}
+                        sx={{
+                          border:
+                            touched.selectedOrganization &&
+                            errors.selectedOrganization
+                              ? "2px solid #ef4444"
+                              : "2px solid var(--color-border)",
+                          borderRadius: "8px",
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                          },
+                          "& .MuiSelect-select": { padding: "12px 16px" },
+                        }}
+                      >
+                        <MenuItem value="" disabled>
+                          {t("eventTrips.placeholderOrganization")}
+                        </MenuItem>
+                        {event.organizations?.map((org) => (
+                          <MenuItem key={org._id} value={org._id}>
+                            <ListItemText primary={org.name} />
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      {touched.selectedOrganization &&
+                        errors.selectedOrganization && (
+                          <span className="text-xs text-error font-somar mt-1 absolute -bottom-5 start-0">
+                            {errors.selectedOrganization}
+                          </span>
+                        )}
+                    </div>
+
+                    {/* tracks selection dropdown */}
+                    <div className="flex flex-col gap-2 relative">
+                      <label
+                        htmlFor="selectedTrack"
+                        className="font-semibold text-gray-700 font-somar"
+                      >
+                        {t("eventTrips.selectTrack")}
+                        <span className="text-error ml-1">*</span>
+                      </label>
+                      <Select
+                        id="selectedTrack"
+                        name="selectedTrack"
+                        value={values.selectedTrack}
+                        onChange={(e) => {
+                          handleChange(e);
+                          setFieldValue("selectedGrade", ""); // Reset grade selection when track changes
+                        }}
+                        onBlur={handleBlur}
+                        displayEmpty
+                        renderValue={(selected) => {
+                          if (!selected) {
+                            return (
+                              <span className="text-gray-400 font-somar text-sm">
+                                {t("eventTrips.placeholderTrack")}
+                              </span>
+                            );
+                          }
+                          const track = availableTracks?.find(
+                            (t) => t._id === selected
+                          );
+                          if (track) {
+                            const sysName = track.educationSystem?.name || "";
+                            const genderLabel =
+                              t(`common.${track.gender?.toUpperCase()}`) ||
+                              track.gender;
+                            return `${sysName} - ${genderLabel}`;
+                          }
+                          return selected;
+                        }}
+                        sx={{
+                          border:
+                            touched.selectedTrack && errors.selectedTrack
+                              ? "2px solid #ef4444"
+                              : "2px solid var(--color-border)",
+                          borderRadius: "8px",
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                          },
+                          "& .MuiSelect-select": { padding: "12px 16px" },
+                        }}
+                      >
+                        <MenuItem value="" disabled>
+                          {t("eventTrips.placeholderTrack")}
+                        </MenuItem>
+                        {availableTracks?.map((track) => {
                           const sysName = track.educationSystem?.name || "";
                           const genderLabel =
                             t(`common.${track.gender?.toUpperCase()}`) ||
                             track.gender;
-                          return `${sysName} - ${genderLabel}`;
-                        }
-                        return selected;
-                      }}
-                      sx={{
-                        border:
-                          touched.selectedTrack && errors.selectedTrack
-                            ? "2px solid #ef4444"
-                            : "2px solid var(--color-border)",
-                        borderRadius: "8px",
-                        "& .MuiOutlinedInput-notchedOutline": {
-                          border: "none",
-                        },
-                        "& .MuiSelect-select": { padding: "12px 16px" },
-                      }}
-                    >
-                      <MenuItem value="" disabled>
-                        {t("eventTrips.placeholderTrack")}
-                      </MenuItem>
-                      {event.tracks?.map((track) => {
-                        const sysName = track.educationSystem?.name || "";
-                        const genderLabel =
-                          t(`common.${track.gender?.toUpperCase()}`) ||
-                          track.gender;
-                        return (
-                          <MenuItem key={track._id} value={track._id}>
-                            <ListItemText
-                              primary={`${sysName} - ${genderLabel}`}
-                            />
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
-                    {touched.selectedTrack && errors.selectedTrack && (
-                      <span className="text-xs text-error font-somar mt-1 absolute -bottom-5 start-0">
-                        {errors.selectedTrack}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* grades selection dropdown */}
-                  <div className="flex flex-col gap-2 relative">
-                    <label
-                      htmlFor="selectedGrade"
-                      className="font-semibold text-gray-700 font-somar"
-                    >
-                      {t("eventTrips.selectGrade")}
-                      <span className="text-error ml-1">*</span>
-                    </label>
-                    <Select
-                      id="selectedGrade"
-                      name="selectedGrade"
-                      value={values.selectedGrade}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      displayEmpty
-                      disabled={!values.selectedTrack}
-                      renderValue={(selected) => {
-                        if (!selected) {
                           return (
-                            <span className="text-gray-400 font-somar text-sm">
-                              {values.selectedTrack
-                                ? t("eventTrips.placeholderGrade")
-                                : t("eventTrips.selectTrackFirst")}
-                            </span>
+                            <MenuItem key={track._id} value={track._id}>
+                              <ListItemText
+                                primary={`${sysName} - ${genderLabel}`}
+                              />
+                            </MenuItem>
                           );
-                        }
-                        const track = event.tracks?.find(
-                          (t) => t._id === values.selectedTrack
-                        );
-                        const grade = track?.grades?.find(
-                          (g) => g._id === selected
-                        );
-                        return grade?.name || selected;
-                      }}
-                      sx={{
-                        border:
-                          touched.selectedGrade && errors.selectedGrade
-                            ? "2px solid #ef4444"
-                            : "2px solid var(--color-border)",
-                        borderRadius: "8px",
-                        "& .MuiOutlinedInput-notchedOutline": {
-                          border: "none",
-                        },
-                        "& .MuiSelect-select": { padding: "12px 16px" },
-                        opacity: !values.selectedTrack ? 0.6 : 1,
-                      }}
-                    >
-                      <MenuItem value="" disabled>
-                        {t("eventTrips.placeholderGrade")}
-                      </MenuItem>
-                      {(() => {
-                        const track = event.tracks?.find(
-                          (t) => t._id === values.selectedTrack
-                        );
-                        const gradesList = track?.grades || [];
-                        return gradesList.map((grade) => (
-                          <MenuItem key={grade._id} value={grade._id}>
-                            <ListItemText primary={grade.name} />
-                          </MenuItem>
-                        ));
-                      })()}
-                    </Select>
-                    {touched.selectedGrade && errors.selectedGrade && (
-                      <span className="text-xs text-error font-somar mt-1 absolute -bottom-5 start-0">
-                        {errors.selectedGrade}
-                      </span>
-                    )}
-                  </div>
+                        })}
+                      </Select>
+                      {touched.selectedTrack && errors.selectedTrack && (
+                        <span className="text-xs text-error font-somar mt-1 absolute -bottom-5 start-0">
+                          {errors.selectedTrack}
+                        </span>
+                      )}
+                    </div>
 
-                  {/* Dynamic fields mapped below */}
-                  {inputs.map((input) => {
-                    const inputId = `dynamic-field-${input.key}`;
+                    {/* grades selection dropdown */}
+                    <div className="flex flex-col gap-2 relative">
+                      <label
+                        htmlFor="selectedGrade"
+                        className="font-semibold text-gray-700 font-somar"
+                      >
+                        {t("eventTrips.selectGrade")}
+                        <span className="text-error ml-1">*</span>
+                      </label>
+                      <Select
+                        id="selectedGrade"
+                        name="selectedGrade"
+                        value={values.selectedGrade}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        displayEmpty
+                        disabled={!values.selectedTrack}
+                        renderValue={(selected) => {
+                          if (!selected) {
+                            return (
+                              <span className="text-gray-400 font-somar text-sm">
+                                {values.selectedTrack
+                                  ? t("eventTrips.placeholderGrade")
+                                  : t("eventTrips.selectTrackFirst")}
+                              </span>
+                            );
+                          }
+                          const track = availableTracks?.find(
+                            (t) => t._id === values.selectedTrack
+                          );
+                          const grade = track?.grades?.find(
+                            (g) => g._id === selected
+                          );
+                          return grade?.name || selected;
+                        }}
+                        sx={{
+                          border:
+                            touched.selectedGrade && errors.selectedGrade
+                              ? "2px solid #ef4444"
+                              : "2px solid var(--color-border)",
+                          borderRadius: "8px",
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                          },
+                          "& .MuiSelect-select": { padding: "12px 16px" },
+                          opacity: !values.selectedTrack ? 0.6 : 1,
+                        }}
+                      >
+                        <MenuItem value="" disabled>
+                          {t("eventTrips.placeholderGrade")}
+                        </MenuItem>
+                        {(() => {
+                          const track = availableTracks?.find(
+                            (t) => t._id === values.selectedTrack
+                          );
+                          const gradesList = track?.grades || [];
+                          return gradesList.map((grade) => (
+                            <MenuItem key={grade._id} value={grade._id}>
+                              <ListItemText primary={grade.name} />
+                            </MenuItem>
+                          ));
+                        })()}
+                      </Select>
+                      {touched.selectedGrade && errors.selectedGrade && (
+                        <span className="text-xs text-error font-somar mt-1 absolute -bottom-5 start-0">
+                          {errors.selectedGrade}
+                        </span>
+                      )}
+                    </div>
 
-                    // 1. Textarea
-                    if (input.type === "textarea") {
+                    {/* Dynamic fields mapped below */}
+                    {inputs.map((input) => {
+                      const inputId = `dynamic-field-${input.key}`;
+
+                      // 1. Textarea
+                      if (input.type === "textarea") {
+                        return (
+                          <div key={input._id} className="md:col-span-2">
+                            <TextInputGroup
+                              label={input.title}
+                              textarea={true}
+                              name={input.key}
+                              value={values[input.key]}
+                              errors={errors[input.key]}
+                              touched={touched[input.key]}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              placeholder={input.placeholder}
+                              required={input.required}
+                              id={inputId}
+                            />
+                          </div>
+                        );
+                      }
+
+                      // 2. Select
+                      if (input.type === "select") {
+                        return (
+                          <div
+                            key={input._id}
+                            className="flex flex-col gap-2 relative"
+                          >
+                            <label
+                              htmlFor={inputId}
+                              className="font-medium font-somar"
+                            >
+                              {input.title}
+                              {input.required && (
+                                <span className="text-error ml-1">*</span>
+                              )}
+                            </label>
+                            <Select
+                              id={inputId}
+                              name={input.key}
+                              value={values[input.key]}
+                              multiple={input.isMultiple}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              displayEmpty
+                              renderValue={(selected) => {
+                                if (
+                                  !selected ||
+                                  (Array.isArray(selected) &&
+                                    selected.length === 0)
+                                ) {
+                                  return (
+                                    <span className="text-gray-400 font-somar text-sm">
+                                      {input.placeholder || t("common.select")}
+                                    </span>
+                                  );
+                                }
+                                if (Array.isArray(selected)) {
+                                  return selected
+                                    .map(
+                                      (val) =>
+                                        input.options.find(
+                                          (o) => o.value === val
+                                        )?.label || val
+                                    )
+                                    .join(", ");
+                                }
+                                return (
+                                  input.options.find(
+                                    (o) => o.value === selected
+                                  )?.label || selected
+                                );
+                              }}
+                              sx={{
+                                border:
+                                  touched[input.key] && errors[input.key]
+                                    ? "2px solid #ef4444"
+                                    : "2px solid var(--color-border)",
+                                borderRadius: "8px",
+                                "& .MuiOutlinedInput-notchedOutline": {
+                                  border: "none",
+                                },
+                                "& .MuiSelect-select": { padding: "12px 16px" },
+                              }}
+                            >
+                              {!input.isMultiple && (
+                                <MenuItem value="" disabled>
+                                  {input.placeholder || t("common.select")}
+                                </MenuItem>
+                              )}
+                              {input.options.map((opt) => (
+                                <MenuItem key={opt._id} value={opt.value}>
+                                  {input.isMultiple && (
+                                    <Checkbox
+                                      checked={
+                                        (values[input.key] || []).indexOf(
+                                          opt.value
+                                        ) > -1
+                                      }
+                                    />
+                                  )}
+                                  <ListItemText primary={opt.label} />
+                                </MenuItem>
+                              ))}
+                            </Select>
+                            {touched[input.key] && errors[input.key] && (
+                              <span className="text-xs text-error font-somar mt-1 absolute -bottom-5 start-0">
+                                {errors[input.key]}
+                              </span>
+                            )}
+                          </div>
+                        );
+                      }
+
+                      // 3. Radio Buttons
+                      if (input.type === "radio") {
+                        return (
+                          <div
+                            key={input._id}
+                            className="flex flex-col gap-2 md:col-span-2"
+                          >
+                            <label className="font-medium font-somar">
+                              {input.title}
+                              {input.required && (
+                                <span className="text-error ml-1">*</span>
+                              )}
+                            </label>
+                            <RadioGroup
+                              row
+                              id={inputId}
+                              name={input.key}
+                              value={values[input.key]}
+                              onChange={handleChange}
+                            >
+                              {input.options.map((opt) => (
+                                <FormControlLabel
+                                  key={opt._id}
+                                  value={opt.value}
+                                  control={
+                                    <Radio
+                                      sx={{
+                                        "&.Mui-checked": {
+                                          color: "var(--color-main)",
+                                        },
+                                      }}
+                                    />
+                                  }
+                                  label={opt.label}
+                                />
+                              ))}
+                            </RadioGroup>
+                            {touched[input.key] && errors[input.key] && (
+                              <span className="text-xs text-error font-somar">
+                                {errors[input.key]}
+                              </span>
+                            )}
+                          </div>
+                        );
+                      }
+
+                      // 4. Checkbox
+                      if (input.type === "checkbox") {
+                        const hasOptions =
+                          input.options && input.options.length > 0;
+                        return (
+                          <div
+                            key={input._id}
+                            className="flex flex-col gap-2 md:col-span-2"
+                          >
+                            <label className="font-medium font-somar">
+                              {input.title}
+                              {input.required && (
+                                <span className="text-error ml-1">*</span>
+                              )}
+                            </label>
+                            {hasOptions ? (
+                              <div className="flex flex-wrap gap-4">
+                                {input.options.map((opt) => {
+                                  const isChecked =
+                                    Array.isArray(values[input.key]) &&
+                                    values[input.key].includes(opt.value);
+                                  return (
+                                    <FormControlLabel
+                                      key={opt._id}
+                                      control={
+                                        <Checkbox
+                                          checked={isChecked}
+                                          onChange={(e) => {
+                                            const nextVal = e.target.checked
+                                              ? [
+                                                  ...(values[input.key] || []),
+                                                  opt.value,
+                                                ]
+                                              : (
+                                                  values[input.key] || []
+                                                ).filter(
+                                                  (v) => v !== opt.value
+                                                );
+                                            setFieldValue(input.key, nextVal);
+                                          }}
+                                          sx={{
+                                            "&.Mui-checked": {
+                                              color: "var(--color-main)",
+                                            },
+                                          }}
+                                        />
+                                      }
+                                      label={opt.label}
+                                    />
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    checked={!!values[input.key]}
+                                    onChange={(e) =>
+                                      setFieldValue(input.key, e.target.checked)
+                                    }
+                                    sx={{
+                                      "&.Mui-checked": {
+                                        color: "var(--color-main)",
+                                      },
+                                    }}
+                                  />
+                                }
+                                label={input.title}
+                              />
+                            )}
+                            {touched[input.key] && errors[input.key] && (
+                              <span className="text-xs text-error font-somar">
+                                {errors[input.key]}
+                              </span>
+                            )}
+                          </div>
+                        );
+                      }
+
+                      // 5. Phone Input
+                      if (input.type === "phone") {
+                        return (
+                          <div
+                            key={input._id}
+                            className="relative flex flex-col gap-2 mb-2 text-start"
+                          >
+                            <label
+                              htmlFor={inputId}
+                              className="font-semibold text-gray-700 font-somar"
+                            >
+                              {input.title}
+                              {input.required && (
+                                <span className="text-error ml-1">*</span>
+                              )}
+                            </label>
+                            <PhoneInputWithCountrySelect
+                              international
+                              defaultCountry="SA"
+                              value={values[input.key]}
+                              onChange={(val) => {
+                                setFieldValue(input.key, val);
+                              }}
+                              onBlur={handleBlur}
+                              id={inputId}
+                              name={input.key}
+                              addInternationalOption={false}
+                              style={{ direction: "ltr" }}
+                              flagComponent={({ country }) => (
+                                <span
+                                  style={{
+                                    fontSize: "1.2em",
+                                    marginRight: "0.5em",
+                                  }}
+                                >
+                                  {getUnicodeFlagIcon(country)}
+                                </span>
+                              )}
+                              className={cn(
+                                "flex bg-white w-full gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out",
+                                errors[input.key] && touched[input.key]
+                                  ? "border-error PhoneInputInput-focus:border-error hover:border-error"
+                                  : "border-border PhoneInputInput-focus:border-textDark hover:border-textDark"
+                              )}
+                            />
+                            {errors[input.key] && touched[input.key] && (
+                              <span className="text-xs text-error font-somar mt-1 absolute -bottom-5 start-0">
+                                {errors[input.key]}
+                              </span>
+                            )}
+                          </div>
+                        );
+                      }
+
+                      // 6. Text, Email, Number, Date
                       return (
-                        <div key={input._id} className="md:col-span-2">
+                        <div key={input._id} className="relative">
                           <TextInputGroup
                             label={input.title}
-                            textarea={true}
+                            type={input.type}
                             name={input.key}
                             value={values[input.key]}
                             errors={errors[input.key]}
@@ -652,303 +967,31 @@ const EventRegistrationWizard = ({ event }) => {
                           />
                         </div>
                       );
-                    }
+                    })}
+                  </div>
 
-                    // 2. Select
-                    if (input.type === "select") {
-                      return (
-                        <div
-                          key={input._id}
-                          className="flex flex-col gap-2 relative"
-                        >
-                          <label
-                            htmlFor={inputId}
-                            className="font-medium font-somar"
-                          >
-                            {input.title}
-                            {input.required && (
-                              <span className="text-error ml-1">*</span>
-                            )}
-                          </label>
-                          <Select
-                            id={inputId}
-                            name={input.key}
-                            value={values[input.key]}
-                            multiple={input.isMultiple}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            displayEmpty
-                            renderValue={(selected) => {
-                              if (
-                                !selected ||
-                                (Array.isArray(selected) &&
-                                  selected.length === 0)
-                              ) {
-                                return (
-                                  <span className="text-gray-400 font-somar text-sm">
-                                    {input.placeholder || t("common.select")}
-                                  </span>
-                                );
-                              }
-                              if (Array.isArray(selected)) {
-                                return selected
-                                  .map(
-                                    (val) =>
-                                      input.options.find((o) => o.value === val)
-                                        ?.label || val
-                                  )
-                                  .join(", ");
-                              }
-                              return (
-                                input.options.find((o) => o.value === selected)
-                                  ?.label || selected
-                              );
-                            }}
-                            sx={{
-                              border:
-                                touched[input.key] && errors[input.key]
-                                  ? "2px solid #ef4444"
-                                  : "2px solid var(--color-border)",
-                              borderRadius: "8px",
-                              "& .MuiOutlinedInput-notchedOutline": {
-                                border: "none",
-                              },
-                              "& .MuiSelect-select": { padding: "12px 16px" },
-                            }}
-                          >
-                            {!input.isMultiple && (
-                              <MenuItem value="" disabled>
-                                {input.placeholder || t("common.select")}
-                              </MenuItem>
-                            )}
-                            {input.options.map((opt) => (
-                              <MenuItem key={opt._id} value={opt.value}>
-                                {input.isMultiple && (
-                                  <Checkbox
-                                    checked={
-                                      (values[input.key] || []).indexOf(
-                                        opt.value
-                                      ) > -1
-                                    }
-                                  />
-                                )}
-                                <ListItemText primary={opt.label} />
-                              </MenuItem>
-                            ))}
-                          </Select>
-                          {touched[input.key] && errors[input.key] && (
-                            <span className="text-xs text-error font-somar mt-1 absolute -bottom-5 start-0">
-                              {errors[input.key]}
-                            </span>
-                          )}
-                        </div>
-                      );
-                    }
-
-                    // 3. Radio Buttons
-                    if (input.type === "radio") {
-                      return (
-                        <div
-                          key={input._id}
-                          className="flex flex-col gap-2 md:col-span-2"
-                        >
-                          <label className="font-medium font-somar">
-                            {input.title}
-                            {input.required && (
-                              <span className="text-error ml-1">*</span>
-                            )}
-                          </label>
-                          <RadioGroup
-                            row
-                            id={inputId}
-                            name={input.key}
-                            value={values[input.key]}
-                            onChange={handleChange}
-                          >
-                            {input.options.map((opt) => (
-                              <FormControlLabel
-                                key={opt._id}
-                                value={opt.value}
-                                control={
-                                  <Radio
-                                    sx={{
-                                      "&.Mui-checked": {
-                                        color: "var(--color-main)",
-                                      },
-                                    }}
-                                  />
-                                }
-                                label={opt.label}
-                              />
-                            ))}
-                          </RadioGroup>
-                          {touched[input.key] && errors[input.key] && (
-                            <span className="text-xs text-error font-somar">
-                              {errors[input.key]}
-                            </span>
-                          )}
-                        </div>
-                      );
-                    }
-
-                    // 4. Checkbox
-                    if (input.type === "checkbox") {
-                      const hasOptions =
-                        input.options && input.options.length > 0;
-                      return (
-                        <div
-                          key={input._id}
-                          className="flex flex-col gap-2 md:col-span-2"
-                        >
-                          <label className="font-medium font-somar">
-                            {input.title}
-                            {input.required && (
-                              <span className="text-error ml-1">*</span>
-                            )}
-                          </label>
-                          {hasOptions ? (
-                            <div className="flex flex-wrap gap-4">
-                              {input.options.map((opt) => {
-                                const isChecked =
-                                  Array.isArray(values[input.key]) &&
-                                  values[input.key].includes(opt.value);
-                                return (
-                                  <FormControlLabel
-                                    key={opt._id}
-                                    control={
-                                      <Checkbox
-                                        checked={isChecked}
-                                        onChange={(e) => {
-                                          const nextVal = e.target.checked
-                                            ? [
-                                                ...(values[input.key] || []),
-                                                opt.value,
-                                              ]
-                                            : (values[input.key] || []).filter(
-                                                (v) => v !== opt.value
-                                              );
-                                          setFieldValue(input.key, nextVal);
-                                        }}
-                                        sx={{
-                                          "&.Mui-checked": {
-                                            color: "var(--color-main)",
-                                          },
-                                        }}
-                                      />
-                                    }
-                                    label={opt.label}
-                                  />
-                                );
-                              })}
-                            </div>
-                          ) : (
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  checked={!!values[input.key]}
-                                  onChange={(e) =>
-                                    setFieldValue(input.key, e.target.checked)
-                                  }
-                                  sx={{
-                                    "&.Mui-checked": {
-                                      color: "var(--color-main)",
-                                    },
-                                  }}
-                                />
-                              }
-                              label={input.title}
-                            />
-                          )}
-                          {touched[input.key] && errors[input.key] && (
-                            <span className="text-xs text-error font-somar">
-                              {errors[input.key]}
-                            </span>
-                          )}
-                        </div>
-                      );
-                    }
-
-                    // 5. Phone Input
-                    if (input.type === "phone") {
-                      return (
-                        <div key={input._id} className="relative flex flex-col gap-2 mb-2 text-start">
-                          <label htmlFor={inputId} className="font-semibold text-gray-700 font-somar">
-                            {input.title}
-                            {input.required && <span className="text-error ml-1">*</span>}
-                          </label>
-                          <PhoneInputWithCountrySelect
-                            international
-                            defaultCountry="SA"
-                            value={values[input.key]}
-                            onChange={(val) => {
-                              setFieldValue(input.key, val);
-                            }}
-                            onBlur={handleBlur}
-                            id={inputId}
-                            name={input.key}
-                            addInternationalOption={false}
-                            style={{ direction: "ltr" }}
-                            flagComponent={({ country }) => (
-                              <span style={{ fontSize: "1.2em", marginRight: "0.5em" }}>
-                                {getUnicodeFlagIcon(country)}
-                              </span>
-                            )}
-                            className={cn(
-                              "flex bg-white w-full gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out",
-                              errors[input.key] && touched[input.key]
-                                ? "border-error PhoneInputInput-focus:border-error hover:border-error"
-                                : "border-border PhoneInputInput-focus:border-textDark hover:border-textDark"
-                            )}
-                          />
-                          {errors[input.key] && touched[input.key] && (
-                            <span className="text-xs text-error font-somar mt-1 absolute -bottom-5 start-0">
-                              {errors[input.key]}
-                            </span>
-                          )}
-                        </div>
-                      );
-                    }
-
-                    // 6. Text, Email, Number, Date
-                    return (
-                      <div key={input._id} className="relative">
-                        <TextInputGroup
-                          label={input.title}
-                          type={input.type}
-                          name={input.key}
-                          value={values[input.key]}
-                          errors={errors[input.key]}
-                          touched={touched[input.key]}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          placeholder={input.placeholder}
-                          required={input.required}
-                          id={inputId}
-                        />
-                      </div>
-                    );
-                  })}
+                  <div className="flex flex-col sm:flex-row gap-3 mt-8">
+                    <button
+                      type="button"
+                      disabled={isRegistrationSubmitting}
+                      onClick={() =>
+                        handleNext(validateForm, setTouched, values)
+                      }
+                      className="w-full py-3.5 px-6 bg-mainColor text-white rounded-xl font-somar font-semibold text-lg hover:bg-linksHover transition-all duration-200 ease-in-out shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      {isRegistrationSubmitting ? (
+                        <>
+                          <CircularProgress size={20} color="inherit" />
+                          <span>{t("forms.validation.sending")}</span>
+                        </>
+                      ) : (
+                        t("pagination.next")
+                      )}
+                    </button>
+                  </div>
                 </div>
-
-                <div className="flex flex-col sm:flex-row gap-3 mt-8">
-                  <button
-                    type="button"
-                    disabled={isRegistrationSubmitting}
-                    onClick={() => handleNext(validateForm, setTouched, values)}
-                    className="w-full py-3.5 px-6 bg-mainColor text-white rounded-xl font-somar font-semibold text-lg hover:bg-linksHover transition-all duration-200 ease-in-out shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                    {isRegistrationSubmitting ? (
-                      <>
-                        <CircularProgress size={20} color="inherit" />
-                        <span>{t("forms.validation.sending")}</span>
-                      </>
-                    ) : (
-                      t("pagination.next")
-                    )}
-                  </button>
-                </div>
-              </div>
-            )}
+              );
+            }}
           </Formik>
         )}
 

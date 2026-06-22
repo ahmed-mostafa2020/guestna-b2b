@@ -129,7 +129,7 @@ const EventDetailsPage = ({ params }) => {
             )}
 
             {/* Target Audience Tracks */}
-            <EventDetailsTracks tracks={event.tracks} />
+            <EventDetailsTracks organizations={event.organizations} tracks={event.tracks} />
 
             {/* Invited Schools */}
             <EventDetailsSchools organizations={event.organizations} />
