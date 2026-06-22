@@ -66,6 +66,8 @@
     "guestna": "Guestna",
     "startsWith": "Starts with",
     "loading": "Loading",
+    "testInitiate": "Test Initiate (debug)",
+    "initiating": "Initiating...",
     "export": {
       "filename": "Booking_Report",
       "pdf": {
@@ -3437,7 +3439,11 @@
     },
     "form": {
       "title": "Registration Form",
-      "subtitle": "Please complete the registration form below."
+      "subtitle": "Please complete the registration form below.",
+      "name": {
+        "label": "Full Name",
+        "placeholder": "Enter your full name"
+      }
     },
     "payment": {
       "title": "Payment Details",
@@ -3450,7 +3456,8 @@
     },
     "validation": {
       "error": "Please fill out all required fields",
-      "success": "Registration completed successfully!"
+      "success": "Registration completed successfully!",
+      "nameRequired": "Full name is required"
     }
   },
   "maintenance": {

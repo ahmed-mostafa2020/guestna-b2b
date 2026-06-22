@@ -229,4 +229,12 @@ export const B2B_END_POINTS = {
     APPLE_CALLBACK: "eventTrips/booking/confermed/event/apple",
     CLIENT_INFO: "clientInfoBooking/event-trip",
   },
+
+  BOOKING_EVENT_TRIP: {
+    INITIATION: "booking-event-trip/initiation",
+    APPLE_INITIATE: "booking-event-trip/initiation/apple",
+    APPLE_CONFIRM: "booking-event-trip/confermed/apple",
+    APPLE_CALLBACK: "booking-event-trip/confermed/event/apple",
+    TAMARA_INITIATION: "booking-event-trip/initiation",
+  },
 };

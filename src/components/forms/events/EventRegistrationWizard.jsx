@@ -17,7 +17,10 @@ import {
   ListItemText,
 } from "@mui/material";
 import axios from "axios";
-import { createCreditSchema } from "@utils/validators/validationSchemas";
+import {
+  createCreditSchema,
+  createTamaraSchema,
+} from "@utils/validators/validationSchemas";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { CONSTANT_VALUES } from "@constants/constantValues";
@@ -27,7 +30,7 @@ import formatDate from "@utils/formatters/FormateDate";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import PaymentMethod from "@components/forms/checkout/paymentForm/PaymentMethod";
 import EventAppleWidget from "./EventAppleWidget";
-import EventDetailsMedia from "@components/features/profile/events/EventDetailsMedia";
+import TamaraWidget from "@components/forms/checkout/paymentForm/TamaraWidget";
 import PhoneInputWithCountrySelect from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
@@ -43,6 +46,8 @@ import visaLogo from "@assets/paymentLogos/visa.svg";
 import mastercardLogo from "@assets/paymentLogos/master-card.svg";
 import amExpressLogo from "@assets/paymentLogos/amExpress.png";
 import applePayLogo from "@assets/paymentLogos/apple-pay.svg";
+import tamaraArabic from "@assets/paymentLogos/tamaraArabic.jpg";
+import tamaraEnglish from "@assets/paymentLogos/tamaraEnglish.svg";
 
 const STEPS = ["step1", "step2"];
 
@@ -52,6 +57,8 @@ const paymentInitialValues = {
   cvc: "",
   expiryMonth: "",
   expiryYear: "",
+  tamaraMobile: "",
+  selectedCountry: "SA",
 };
 
 const EventRegistrationWizard = ({ event }) => {
@@ -79,14 +86,20 @@ const EventRegistrationWizard = ({ event }) => {
   const formTitle = event?.dynamicForm?.title || t("eventTrips.form.title");
 
   const registrationInitialValues = useMemo(() => {
-    return getDynamicFormInitialValues(inputs);
+    return { name: "", ...getDynamicFormInitialValues(inputs) };
   }, [inputs]);
 
   const registrationSchema = useMemo(() => {
-    return createDynamicFormSchema(inputs, t);
+    const dynamicSchema = createDynamicFormSchema(inputs, t);
+    return dynamicSchema.shape({
+      name: dynamicSchema.fields?.name
+        ? dynamicSchema.fields.name
+        : Yup.string().trim().min(2).required(t("eventTrips.validation.nameRequired")),
+    });
   }, [inputs, t]);
 
   const creditSchema = useMemo(() => createCreditSchema(t), [t]);
+  const tamaraSchema = useMemo(() => createTamaraSchema(t), [t]);
 
   const headers = getHeaders(locale);
   const vercelUrl = CONSTANT_VALUES?.URLS?.B2B_VERCEL_URL;
@@ -106,6 +119,10 @@ const EventRegistrationWizard = ({ event }) => {
 
   const appleImage = [{ image: applePayLogo, name: "apple pay" }];
 
+  const tamaraImage = [
+    { image: locale === "ar" ? tamaraArabic : tamaraEnglish, name: "tamara" },
+  ];
+
   const handleNext = useCallback(
     async (validateForm, setTouched, values) => {
       const errors = await validateForm();
@@ -113,21 +130,10 @@ const EventRegistrationWizard = ({ event }) => {
         try {
           setIsRegistrationSubmitting(true);
 
-          // Extract name
-          let name = values.name || values.fullName || values.studentName || "";
-          if (!name) {
-            const nameKey = Object.keys(values).find((key) =>
-              key.toLowerCase().includes("name")
-            );
-            if (nameKey) {
-              name = values[nameKey];
-            }
-          }
-          if (!name) {
-            name = "Guest";
-          }
+          // Use the dedicated static name field
+          const name = (values.name || "").trim() || "Guest";
 
-          // Build dynamicFormInfo array
+          // Build dynamicFormInfo array (exclude the static 'name' field)
           const dynamicFormInfo = inputs.map((input) => ({
             key: input.key,
             value: values[input.key],
@@ -150,12 +156,14 @@ const EventRegistrationWizard = ({ event }) => {
           const response = await axios.request(config);
           const resData = response.data;
 
-          // Save the booking ID from the response (e.g., _id or clientInfoBookingId or similar)
+          // Save the booking ID from the response
           const returnedId =
             resData?._id || resData?.id || resData?.clientInfoBookingId;
           if (returnedId) {
             setClientBookingId(returnedId);
           }
+
+          enqueueSnackbar(t("eventTrips.validation.success"), { variant: "success" });
 
           registrationValuesRef.current = values;
           setCurrentStep(1);
@@ -172,7 +180,7 @@ const EventRegistrationWizard = ({ event }) => {
           setIsRegistrationSubmitting(false);
         }
       } else {
-        const touchedFields = {};
+        const touchedFields = { name: true };
         inputs.forEach((input) => {
           touchedFields[input.key] = true;
         });
@@ -199,39 +207,44 @@ const EventRegistrationWizard = ({ event }) => {
 
     const body = {
       eventTrip: event._id,
-      clientInfoBooking: clientBookingId,
-      price: event.price,
+      client: clientBookingId,
       quantity: 1,
-      // Dynamic responses mappings for backend flexibility
-      ...regValues,
-      answers: regValues,
-      responses: regValues,
-      client: {
-        name:
-          regValues.name ||
-          regValues.fullName ||
-          regValues.studentName ||
-          "Guest",
-        email: regValues.email || "",
-        phone: regValues.phone || "",
-      },
+      paymentMethod: currentPaymentMethod,
+      redirectUrl: `${vercelUrl}/${locale}/bookingStatus`,
     };
 
     if (
       currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD &&
       paymentValues
     ) {
-      body.redirectUrl = `${vercelUrl}/${locale}/bookingStatus`;
-      body.paymentCridetInfo = {
+      body.paymentCreditInfo = {
         creditCardName: String(paymentValues.cardholderName),
         creditCardNumber: String(paymentValues.cardNumber),
         expiryMonth: String(paymentValues.expiryMonth),
         expiryYear: String(paymentValues.expiryYear),
         cvc: String(paymentValues.cvc),
       };
+    } else if (
+      currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.TAMARA &&
+      paymentValues
+    ) {
+      body.tamaraUserInfo = {
+        phone: String(paymentValues.tamaraMobile || ""),
+        country: String(paymentValues.selectedCountry || "SA"),
+      };
     }
 
     return body;
+  };
+
+  // Apple Pay base data (no payment details needed – Apple Pay handles payment client-side)
+  const buildAppleApiBody = (regValues) => {
+    if (!regValues) return {};
+    return {
+      eventTrip: event._id,
+      client: clientBookingId,
+      quantity: 1,
+    };
   };
 
   const handlePaymentSubmit = async (
@@ -252,10 +265,15 @@ const EventRegistrationWizard = ({ event }) => {
     try {
       const data = buildApiBody(regValues, paymentValues);
 
+      const endpoint =
+        currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.TAMARA
+          ? B2B_END_POINTS.BOOKING_EVENT_TRIP.TAMARA_INITIATION
+          : B2B_END_POINTS.BOOKING_EVENT_TRIP.INITIATION;
+
       const config = {
         method: "post",
         maxBodyLength: Infinity,
-        url: getProxyUrl(B2B_END_POINTS.EVENT_BOOKING.INITIATION),
+        url: getProxyUrl(endpoint),
         headers,
         data: JSON.stringify(data),
       };
@@ -414,6 +432,24 @@ const EventRegistrationWizard = ({ event }) => {
               return (
                 <div className="flex flex-col gap-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-start">
+                    {/* Static Name field – always shown for every event */}
+                    <div className="relative">
+                      <TextInputGroup
+                        label={t("eventTrips.form.name.label")}
+                        type="text"
+                        name="name"
+                        value={values.name}
+                        errors={errors.name}
+                        touched={touched.name}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        placeholder={t("eventTrips.form.name.placeholder")}
+                        required={true}
+                        id="static-field-name"
+                        labelFontFamily="Somar, sans-serif"
+                      />
+                    </div>
+
                     {/* Dynamic fields mapped below */}
                     {inputs.map((input) => {
                       const inputId = `dynamic-field-${input.key}`;
@@ -765,6 +801,9 @@ const EventRegistrationWizard = ({ event }) => {
               currentPaymentMethod ===
               CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD
                 ? creditSchema
+                : currentPaymentMethod ===
+                  CONSTANT_VALUES.PAYMENT_METHODS.TAMARA
+                ? tamaraSchema
                 : undefined
             }
             onSubmit={handlePaymentSubmit}
@@ -777,6 +816,7 @@ const EventRegistrationWizard = ({ event }) => {
               touched: paymentTouched,
               handleChange: handlePaymentChange,
               handleBlur: handlePaymentBlur,
+              setFieldValue,
               isSubmitting,
               isValid,
               submitForm,
@@ -940,12 +980,69 @@ const EventRegistrationWizard = ({ event }) => {
                         CONSTANT_VALUES.PAYMENT_METHODS.APPLE && (
                         <div className="flex flex-col gap-4 px-4 py-6 bg-[#FAF9F9] rounded-b-xl transition-all duration-200 ease-in-out">
                           <EventAppleWidget
-                            baseData={buildApiBody(
-                              registrationValuesRef.current,
-                              null
+                            baseData={buildAppleApiBody(
+                              registrationValuesRef.current
                             )}
                             price={event.price}
                           />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Tamara */}
+                    <div className="flex flex-col transition-all duration-200 ease-in-out max-w-[300px] lg:max-w-full">
+                      <PaymentMethod
+                        value={CONSTANT_VALUES.PAYMENT_METHODS.TAMARA}
+                        currentPaymentMethod={currentPaymentMethod}
+                        label={t("forms.methods.tamara")}
+                        imagesList={tamaraImage}
+                      />
+
+                      {currentPaymentMethod ===
+                        CONSTANT_VALUES.PAYMENT_METHODS.TAMARA && (
+                        <div className="flex flex-col gap-4 px-4 py-8 bg-[#FAF9F9] rounded-b-xl overflow-hidden transition-all duration-200 ease-in-out">
+                          <div className="w-full max-w-full overflow-hidden">
+                            <TamaraWidget
+                              price={event.price}
+                              publicKey={process.env.NEXT_PUBLIC_TAMARA_WIDGET_KEY}
+                              currency="SAR"
+                              paymentType="installment"
+                            />
+                          </div>
+
+                          <div className="relative">
+                            <label className="block font-medium font-somar mb-2">
+                              {t("forms.phone.name")}
+                            </label>
+                            <PhoneInputWithCountrySelect
+                              countries={["SA", "AE", "BH", "KW", "OM"]}
+                              defaultCountry="SA"
+                              onCountryChange={(country) => {
+                                setFieldValue("selectedCountry", country);
+                              }}
+                              value={paymentValues.tamaraMobile}
+                              onChange={(value) => {
+                                setFieldValue("tamaraMobile", value || "");
+                              }}
+                              onBlur={handlePaymentBlur}
+                              id="tamaraMobile"
+                              addInternationalOption={false}
+                              style={{ direction: "ltr" }}
+                              className={cn(
+                                "flex w-full bg-white gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background font-somar text-lg placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed transition-all duration-200 ease-in-out",
+                                paymentErrors.tamaraMobile &&
+                                  paymentTouched.tamaraMobile
+                                  ? "border-error"
+                                  : "border-border hover:border-textDark"
+                              )}
+                            />
+                            {paymentErrors.tamaraMobile &&
+                              paymentTouched.tamaraMobile && (
+                                <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+                                  {paymentErrors.tamaraMobile}
+                                </div>
+                              )}
+                          </div>
                         </div>
                       )}
                     </div>
@@ -962,8 +1059,10 @@ const EventRegistrationWizard = ({ event }) => {
                     {t("pagination.previous")}
                   </button>
 
-                  {currentPaymentMethod ===
-                  CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD ? (
+                  {(currentPaymentMethod ===
+                    CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD ||
+                    currentPaymentMethod ===
+                      CONSTANT_VALUES.PAYMENT_METHODS.TAMARA) ? (
                     <button
                       type="button"
                       disabled={isSubmitting || isPaymentSubmitting || !isValid}

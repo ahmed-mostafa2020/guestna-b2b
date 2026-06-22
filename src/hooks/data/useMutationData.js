@@ -22,6 +22,7 @@ export const useMutationData = (endpoint, options = {}) => {
       headers: {
         lang: options.lang || locale || "ar",
         ...(token && { authorization: `Bearer ${token}` }), // Add Authorization header if token exists
+        ...options.headers,
       },
       data: variables,
     };
