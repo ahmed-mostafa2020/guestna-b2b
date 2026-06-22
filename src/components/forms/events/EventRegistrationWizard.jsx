@@ -60,6 +60,11 @@ const EventRegistrationWizard = ({ event }) => {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
 
+  // Always neglect organization details for all events
+  if (event?.organizations) {
+    delete event.organizations;
+  }
+
   const [currentStep, setCurrentStep] = useState(0);
   const [currentPaymentMethod, setCurrentPaymentMethod] = useState(
     CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD
@@ -74,30 +79,11 @@ const EventRegistrationWizard = ({ event }) => {
   const formTitle = event?.dynamicForm?.title || t("eventTrips.form.title");
 
   const registrationInitialValues = useMemo(() => {
-    const vals = getDynamicFormInitialValues(inputs);
-    return {
-      ...vals,
-      selectedOrganization: "",
-      selectedTrack: "",
-      selectedGrade: "",
-    };
+    return getDynamicFormInitialValues(inputs);
   }, [inputs]);
 
   const registrationSchema = useMemo(() => {
-    const baseSchema = createDynamicFormSchema(inputs, t);
-    return baseSchema.concat(
-      Yup.object().shape({
-        selectedOrganization: Yup.string().required(
-          t("forms.validation.require") || "Required field"
-        ),
-        selectedTrack: Yup.string().required(
-          t("forms.validation.require") || "Required field"
-        ),
-        selectedGrade: Yup.string().required(
-          t("forms.validation.require") || "Required field"
-        ),
-      })
-    );
+    return createDynamicFormSchema(inputs, t);
   }, [inputs, t]);
 
   const creditSchema = useMemo(() => createCreditSchema(t), [t]);
@@ -186,11 +172,7 @@ const EventRegistrationWizard = ({ event }) => {
           setIsRegistrationSubmitting(false);
         }
       } else {
-        const touchedFields = {
-          selectedOrganization: true,
-          selectedTrack: true,
-          selectedGrade: true,
-        };
+        const touchedFields = {};
         inputs.forEach((input) => {
           touchedFields[input.key] = true;
         });
@@ -220,10 +202,6 @@ const EventRegistrationWizard = ({ event }) => {
       clientInfoBooking: clientBookingId,
       price: event.price,
       quantity: 1,
-      // Dynamic selections mapping for organization, track, and grade
-      organization: regValues.selectedOrganization,
-      track: regValues.selectedTrack,
-      grade: regValues.selectedGrade,
       // Dynamic responses mappings for backend flexibility
       ...regValues,
       answers: regValues,
@@ -398,7 +376,7 @@ const EventRegistrationWizard = ({ event }) => {
                       index <= currentStep ? "text-mainColor" : "text-gray-400"
                     }`}
                   >
-                    {t(`eventTrips.stepper.${step}`)}
+                    {index === 0 ? formTitle : t(`eventTrips.stepper.${step}`)}
                   </span>
                 </div>
                 {index < STEPS.length - 1 && (
@@ -433,225 +411,9 @@ const EventRegistrationWizard = ({ event }) => {
               validateForm,
               setTouched,
             }) => {
-              const availableTracks = values.selectedOrganization
-                ? event.organizations?.find(
-                    (o) => o._id === values.selectedOrganization
-                  )?.tracks || []
-                : event.organizations?.flatMap((o) => o.tracks || []) ||
-                  event.tracks ||
-                  [];
-
               return (
                 <div className="flex flex-col gap-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-start">
-                    {/* school / organization selection dropdown */}
-                    <div className="flex flex-col gap-2 relative">
-                      <label
-                        htmlFor="selectedOrganization"
-                        className="font-semibold text-gray-700 font-somar"
-                      >
-                        {t("eventTrips.selectOrganization")}
-                        <span className="text-error ml-1">*</span>
-                      </label>
-                      <Select
-                        id="selectedOrganization"
-                        name="selectedOrganization"
-                        value={values.selectedOrganization}
-                        onChange={(e) => {
-                          handleChange(e);
-                          setFieldValue("selectedTrack", ""); // Reset track selection when organization changes
-                          setFieldValue("selectedGrade", ""); // Reset grade selection when organization changes
-                        }}
-                        onBlur={handleBlur}
-                        displayEmpty
-                        renderValue={(selected) => {
-                          if (!selected) {
-                            return (
-                              <span className="text-gray-400 font-somar text-sm">
-                                {t("eventTrips.placeholderOrganization")}
-                              </span>
-                            );
-                          }
-                          return (
-                            event.organizations?.find((o) => o._id === selected)
-                              ?.name || selected
-                          );
-                        }}
-                        sx={{
-                          border:
-                            touched.selectedOrganization &&
-                            errors.selectedOrganization
-                              ? "2px solid #ef4444"
-                              : "2px solid var(--color-border)",
-                          borderRadius: "8px",
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            border: "none",
-                          },
-                          "& .MuiSelect-select": { padding: "12px 16px" },
-                        }}
-                      >
-                        <MenuItem value="" disabled>
-                          {t("eventTrips.placeholderOrganization")}
-                        </MenuItem>
-                        {event.organizations?.map((org) => (
-                          <MenuItem key={org._id} value={org._id}>
-                            <ListItemText primary={org.name} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      {touched.selectedOrganization &&
-                        errors.selectedOrganization && (
-                          <span className="text-xs text-error font-somar mt-1 absolute -bottom-5 start-0">
-                            {errors.selectedOrganization}
-                          </span>
-                        )}
-                    </div>
-
-                    {/* tracks selection dropdown */}
-                    <div className="flex flex-col gap-2 relative">
-                      <label
-                        htmlFor="selectedTrack"
-                        className="font-semibold text-gray-700 font-somar"
-                      >
-                        {t("eventTrips.selectTrack")}
-                        <span className="text-error ml-1">*</span>
-                      </label>
-                      <Select
-                        id="selectedTrack"
-                        name="selectedTrack"
-                        value={values.selectedTrack}
-                        onChange={(e) => {
-                          handleChange(e);
-                          setFieldValue("selectedGrade", ""); // Reset grade selection when track changes
-                        }}
-                        onBlur={handleBlur}
-                        displayEmpty
-                        renderValue={(selected) => {
-                          if (!selected) {
-                            return (
-                              <span className="text-gray-400 font-somar text-sm">
-                                {t("eventTrips.placeholderTrack")}
-                              </span>
-                            );
-                          }
-                          const track = availableTracks?.find(
-                            (t) => t._id === selected
-                          );
-                          if (track) {
-                            const sysName = track.educationSystem?.name || "";
-                            const genderLabel =
-                              t(`common.${track.gender?.toUpperCase()}`) ||
-                              track.gender;
-                            return `${sysName} - ${genderLabel}`;
-                          }
-                          return selected;
-                        }}
-                        sx={{
-                          border:
-                            touched.selectedTrack && errors.selectedTrack
-                              ? "2px solid #ef4444"
-                              : "2px solid var(--color-border)",
-                          borderRadius: "8px",
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            border: "none",
-                          },
-                          "& .MuiSelect-select": { padding: "12px 16px" },
-                        }}
-                      >
-                        <MenuItem value="" disabled>
-                          {t("eventTrips.placeholderTrack")}
-                        </MenuItem>
-                        {availableTracks?.map((track) => {
-                          const sysName = track.educationSystem?.name || "";
-                          const genderLabel =
-                            t(`common.${track.gender?.toUpperCase()}`) ||
-                            track.gender;
-                          return (
-                            <MenuItem key={track._id} value={track._id}>
-                              <ListItemText
-                                primary={`${sysName} - ${genderLabel}`}
-                              />
-                            </MenuItem>
-                          );
-                        })}
-                      </Select>
-                      {touched.selectedTrack && errors.selectedTrack && (
-                        <span className="text-xs text-error font-somar mt-1 absolute -bottom-5 start-0">
-                          {errors.selectedTrack}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* grades selection dropdown */}
-                    <div className="flex flex-col gap-2 relative">
-                      <label
-                        htmlFor="selectedGrade"
-                        className="font-semibold text-gray-700 font-somar"
-                      >
-                        {t("eventTrips.selectGrade")}
-                        <span className="text-error ml-1">*</span>
-                      </label>
-                      <Select
-                        id="selectedGrade"
-                        name="selectedGrade"
-                        value={values.selectedGrade}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        displayEmpty
-                        disabled={!values.selectedTrack}
-                        renderValue={(selected) => {
-                          if (!selected) {
-                            return (
-                              <span className="text-gray-400 font-somar text-sm">
-                                {values.selectedTrack
-                                  ? t("eventTrips.placeholderGrade")
-                                  : t("eventTrips.selectTrackFirst")}
-                              </span>
-                            );
-                          }
-                          const track = availableTracks?.find(
-                            (t) => t._id === values.selectedTrack
-                          );
-                          const grade = track?.grades?.find(
-                            (g) => g._id === selected
-                          );
-                          return grade?.name || selected;
-                        }}
-                        sx={{
-                          border:
-                            touched.selectedGrade && errors.selectedGrade
-                              ? "2px solid #ef4444"
-                              : "2px solid var(--color-border)",
-                          borderRadius: "8px",
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            border: "none",
-                          },
-                          "& .MuiSelect-select": { padding: "12px 16px" },
-                          opacity: !values.selectedTrack ? 0.6 : 1,
-                        }}
-                      >
-                        <MenuItem value="" disabled>
-                          {t("eventTrips.placeholderGrade")}
-                        </MenuItem>
-                        {(() => {
-                          const track = availableTracks?.find(
-                            (t) => t._id === values.selectedTrack
-                          );
-                          const gradesList = track?.grades || [];
-                          return gradesList.map((grade) => (
-                            <MenuItem key={grade._id} value={grade._id}>
-                              <ListItemText primary={grade.name} />
-                            </MenuItem>
-                          ));
-                        })()}
-                      </Select>
-                      {touched.selectedGrade && errors.selectedGrade && (
-                        <span className="text-xs text-error font-somar mt-1 absolute -bottom-5 start-0">
-                          {errors.selectedGrade}
-                        </span>
-                      )}
-                    </div>
-
                     {/* Dynamic fields mapped below */}
                     {inputs.map((input) => {
                       const inputId = `dynamic-field-${input.key}`;
