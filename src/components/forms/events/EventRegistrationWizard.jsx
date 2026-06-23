@@ -446,7 +446,7 @@ const EventRegistrationWizard = ({ event }) => {
                         placeholder={t("eventTrips.form.name.placeholder")}
                         required={true}
                         id="static-field-name"
-                        labelFontFamily="Somar, sans-serif"
+                        labelFontFamily="var(--font-somar-sans), sans-serif"
                       />
                     </div>
 
@@ -470,6 +470,7 @@ const EventRegistrationWizard = ({ event }) => {
                               placeholder={input.placeholder}
                               required={input.required}
                               id={inputId}
+                              labelFontFamily="var(--font-somar-sans), sans-serif"
                             />
                           </div>
                         );
@@ -485,6 +486,7 @@ const EventRegistrationWizard = ({ event }) => {
                             <label
                               htmlFor={inputId}
                               className="font-medium font-somar"
+                              style={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
                             >
                               {input.title}
                               {input.required && (
@@ -575,7 +577,10 @@ const EventRegistrationWizard = ({ event }) => {
                             key={input._id}
                             className="flex flex-col gap-2 md:col-span-2"
                           >
-                            <label className="font-medium font-somar">
+                            <label
+                              className="font-medium font-somar"
+                              style={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
+                            >
                               {input.title}
                               {input.required && (
                                 <span className="text-error ml-1">*</span>
@@ -601,7 +606,12 @@ const EventRegistrationWizard = ({ event }) => {
                                       }}
                                     />
                                   }
-                                  label={opt.label}
+                                  label={<span className="font-somar text-sm md:text-base">{opt.label}</span>}
+                                  sx={{
+                                    "& .MuiFormControlLabel-label": {
+                                      fontFamily: "var(--font-somar-sans), sans-serif",
+                                    },
+                                  }}
                                 />
                               ))}
                             </RadioGroup>
@@ -623,7 +633,10 @@ const EventRegistrationWizard = ({ event }) => {
                             key={input._id}
                             className="flex flex-col gap-2 md:col-span-2"
                           >
-                            <label className="font-medium font-somar">
+                            <label
+                              className="font-medium font-somar"
+                              style={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
+                            >
                               {input.title}
                               {input.required && (
                                 <span className="text-error ml-1">*</span>
@@ -661,7 +674,12 @@ const EventRegistrationWizard = ({ event }) => {
                                           }}
                                         />
                                       }
-                                      label={opt.label}
+                                      label={<span className="font-somar text-sm md:text-base">{opt.label}</span>}
+                                      sx={{
+                                        "& .MuiFormControlLabel-label": {
+                                          fontFamily: "var(--font-somar-sans), sans-serif",
+                                        },
+                                      }}
                                     />
                                   );
                                 })}
@@ -681,7 +699,12 @@ const EventRegistrationWizard = ({ event }) => {
                                     }}
                                   />
                                 }
-                                label={input.title}
+                                label={<span className="font-somar font-medium text-sm md:text-base">{input.title}</span>}
+                                sx={{
+                                  "& .MuiFormControlLabel-label": {
+                                    fontFamily: "var(--font-somar-sans), sans-serif",
+                                  },
+                                }}
                               />
                             )}
                             {touched[input.key] && errors[input.key] && (
@@ -703,6 +726,7 @@ const EventRegistrationWizard = ({ event }) => {
                             <label
                               htmlFor={inputId}
                               className="font-semibold text-gray-700 font-somar"
+                              style={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
                             >
                               {input.title}
                               {input.required && (
@@ -762,6 +786,7 @@ const EventRegistrationWizard = ({ event }) => {
                             placeholder={input.placeholder}
                             required={input.required}
                             id={inputId}
+                            labelFontFamily="var(--font-somar-sans), sans-serif"
                           />
                         </div>
                       );
@@ -903,6 +928,7 @@ const EventRegistrationWizard = ({ event }) => {
                               touched={paymentTouched.cardholderName}
                               onChange={handlePaymentChange}
                               onBlur={handlePaymentBlur}
+                              labelFontFamily="var(--font-somar-sans), sans-serif"
                             />
 
                             <TextInputGroup
@@ -917,11 +943,15 @@ const EventRegistrationWizard = ({ event }) => {
                               onBlur={handlePaymentBlur}
                               minLength="15"
                               maxLength="16"
+                              labelFontFamily="var(--font-somar-sans), sans-serif"
                             />
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                               <div className="flex flex-col justify-between gap-2">
-                                <label className="font-medium font-somar">
+                                <label
+                                  className="font-medium font-somar"
+                                  style={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
+                                >
                                   {t("forms.expirationDate.title")}
                                 </label>
                                 <div className="flex gap-3">
@@ -960,6 +990,7 @@ const EventRegistrationWizard = ({ event }) => {
                                 onBlur={handlePaymentBlur}
                                 minLength="3"
                                 maxLength="4"
+                                labelFontFamily="var(--font-somar-sans), sans-serif"
                               />
                             </div>
                           </div>
@@ -1011,7 +1042,10 @@ const EventRegistrationWizard = ({ event }) => {
                           </div>
 
                           <div className="relative">
-                            <label className="block font-medium font-somar mb-2">
+                            <label
+                              className="block font-medium font-somar mb-2"
+                              style={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
+                            >
                               {t("forms.phone.name")}
                             </label>
                             <PhoneInputWithCountrySelect
