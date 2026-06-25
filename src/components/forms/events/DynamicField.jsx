@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import {
   RadioGroup,
   Radio,
@@ -105,10 +105,10 @@ const PriceBadge = ({ price }) => {
 };
 
 // ─── Main Component ───────────────────────────────────────────────────────────
-const DynamicField = ({
+const DynamicField = memo(({
   input,
-  values,
-  errors,
+  value,
+  error,
   touched,
   handleChange,
   handleBlur,
@@ -126,9 +126,9 @@ const DynamicField = ({
           label={input.title}
           textarea={true}
           name={input.key}
-          value={values[input.key]}
-          errors={errors[input.key]}
-          touched={touched[input.key]}
+          value={value}
+          errors={error}
+          touched={touched}
           onChange={handleChange}
           onBlur={handleBlur}
           placeholder={input.placeholder}
@@ -157,7 +157,7 @@ const DynamicField = ({
         <Select
           id={inputId}
           name={input.key}
-          value={values[input.key]}
+          value={value}
           multiple={input.isMultiple}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -187,7 +187,7 @@ const DynamicField = ({
           }}
           sx={{
             border:
-              touched[input.key] && errors[input.key]
+              touched && error
                 ? "2px solid #ef4444"
                 : "2px solid var(--color-border)",
             borderRadius: "8px",
@@ -209,7 +209,7 @@ const DynamicField = ({
                   {input.isMultiple && (
                     <Checkbox
                       checked={
-                        (values[input.key] || []).indexOf(opt.value) > -1
+                        (value || []).indexOf(opt.value) > -1
                       }
                       sx={{
                         "&.Mui-checked": {
@@ -236,9 +236,9 @@ const DynamicField = ({
             </MenuItem>
           ))}
         </Select>
-        {touched[input.key] && errors[input.key] && (
+        {touched && error && (
           <span className="text-xs text-error font-somar mt-1 absolute -bottom-5 start-0">
-            {errors[input.key]}
+            {error}
           </span>
         )}
       </div>
@@ -262,7 +262,7 @@ const DynamicField = ({
           row
           id={inputId}
           name={input.key}
-          value={values[input.key]}
+          value={value}
           onChange={handleChange}
         >
           {input.options?.map((opt) => (
@@ -293,9 +293,9 @@ const DynamicField = ({
             />
           ))}
         </RadioGroup>
-        {touched[input.key] && errors[input.key] && (
+        {touched && error && (
           <span className="text-xs text-error font-somar">
-            {errors[input.key]}
+            {error}
           </span>
         )}
       </div>
@@ -320,8 +320,8 @@ const DynamicField = ({
           <div className="flex flex-wrap gap-4">
             {input.options.map((opt) => {
               const isChecked =
-                Array.isArray(values[input.key]) &&
-                values[input.key].includes(opt.value);
+                Array.isArray(value) &&
+                value.includes(opt.value);
               return (
                 <FormControlLabel
                   key={opt._id}
@@ -330,8 +330,8 @@ const DynamicField = ({
                       checked={isChecked}
                       onChange={(e) => {
                         const nextVal = e.target.checked
-                          ? [...(values[input.key] || []), opt.value]
-                          : (values[input.key] || []).filter(
+                          ? [...(value || []), opt.value]
+                          : (value || []).filter(
                               (v) => v !== opt.value
                             );
                         setFieldValue(input.key, nextVal);
@@ -363,7 +363,7 @@ const DynamicField = ({
           <FormControlLabel
             control={
               <Checkbox
-                checked={!!values[input.key]}
+                checked={!!value}
                 onChange={(e) => setFieldValue(input.key, e.target.checked)}
                 sx={{
                   "&.Mui-checked": {
@@ -384,9 +384,9 @@ const DynamicField = ({
             }}
           />
         )}
-        {touched[input.key] && errors[input.key] && (
+        {touched && error && (
           <span className="text-xs text-error font-somar">
-            {errors[input.key]}
+            {error}
           </span>
         )}
       </div>
@@ -410,7 +410,7 @@ const DynamicField = ({
         <PhoneInputWithCountrySelect
           international
           defaultCountry="SA"
-          value={values[input.key]}
+          value={value}
           onChange={(val) => {
             setFieldValue(input.key, val);
           }}
@@ -431,14 +431,14 @@ const DynamicField = ({
           )}
           className={cn(
             "flex bg-white w-full gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out",
-            errors[input.key] && touched[input.key]
+            error && touched
               ? "border-error PhoneInputInput-focus:border-error hover:border-error"
               : "border-border PhoneInputInput-focus:border-textDark hover:border-textDark"
           )}
         />
-        {errors[input.key] && touched[input.key] && (
+        {error && touched && (
           <span className="text-xs text-error font-somar mt-1 absolute -bottom-5 start-0">
-            {errors[input.key]}
+            {error}
           </span>
         )}
       </div>
@@ -463,9 +463,9 @@ const DynamicField = ({
           maxSizeMB={input.maxSizeMB}
           maxCount={input.maxCount}
           minCount={input.minCount}
-          value={values[input.key]}
-          errors={errors[input.key]}
-          touched={touched[input.key]}
+          value={value}
+          errors={error}
+          touched={touched}
           onBlur={handleBlur}
           setFieldValue={setFieldValue}
         />
@@ -480,9 +480,9 @@ const DynamicField = ({
         label={input.title}
         type={input.type}
         name={input.key}
-        value={values[input.key]}
-        errors={errors[input.key]}
-        touched={touched[input.key]}
+        value={value}
+        errors={error}
+        touched={touched}
         onChange={handleChange}
         onBlur={handleBlur}
         placeholder={input.placeholder}
@@ -492,6 +492,8 @@ const DynamicField = ({
       />
     </div>
   );
-};
+});
+
+DynamicField.displayName = "DynamicField";
 
 export default DynamicField;

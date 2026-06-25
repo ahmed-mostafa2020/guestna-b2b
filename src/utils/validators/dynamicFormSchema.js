@@ -4,27 +4,24 @@ import { isValidPhoneByPattern } from "../phonePatterns";
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 /**
- * Returns Formik initial values based on dynamic form input definitions.
+ * Maps dynamic form input definitions to their initial values for Formik.
+ *
+ * @param {Array} inputs - Dynamic form input configuration objects.
+ * @returns {Object} A key-value map of form field initial values.
  */
 export const getDynamicFormInitialValues = (inputs) => {
   if (!inputs || !Array.isArray(inputs)) return {};
   const initialValues = {};
   inputs.forEach((input) => {
-    if (input.type === "checkbox") {
-      if (input.isMultiple || (input.options && input.options.length > 0)) {
-        initialValues[input.key] = [];
-      } else {
-        initialValues[input.key] = false;
-      }
-    } else if (input.type === "select" && input.isMultiple) {
+    const isMultiple = input.isMultiple || (input.type === "checkbox" && input.options && input.options.length > 0);
+    const isMedia = ["image", "audio", "video"].includes(input.type);
+
+    if (isMultiple) {
       initialValues[input.key] = [];
-    } else if (
-      (input.type === "image" || input.type === "audio" || input.type === "video") &&
-      input.isMultiple
-    ) {
-      initialValues[input.key] = [];
-    } else if (input.type === "image" || input.type === "audio" || input.type === "video") {
+    } else if (isMedia) {
       initialValues[input.key] = null;
+    } else if (input.type === "checkbox") {
+      initialValues[input.key] = false;
     } else {
       initialValues[input.key] = "";
     }
@@ -33,7 +30,12 @@ export const getDynamicFormInitialValues = (inputs) => {
 };
 
 /**
- * Generates Yup validation schema based on dynamic form input definitions.
+ * Dynamically builds a Yup validation schema based on the input configuration.
+ * Supports email, phone, number, date, checkbox, select, and media uploads.
+ *
+ * @param {Array} inputs - Dynamic form input configuration objects.
+ * @param {Function} t - Translate translation function.
+ * @returns {Yup.ObjectSchema} The compiled Yup validation schema shape.
  */
 export const createDynamicFormSchema = (inputs, t) => {
   if (!inputs || !Array.isArray(inputs)) return Yup.object().shape({});

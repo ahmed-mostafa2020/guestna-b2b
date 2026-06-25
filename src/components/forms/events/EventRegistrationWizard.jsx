@@ -61,31 +61,13 @@ const paymentInitialValues = {
   selectedCountry: "SA",
 };
 
-const computeDynamicPrice = (values, inputs, basePrice) => {
-  let extra = 0;
-  if (!values || !inputs) return basePrice;
-  inputs.forEach((input) => {
-    const val = values[input.key];
-    if (val === undefined || val === null) return;
-
-    if (input.type === "select" || input.type === "checkbox") {
-      if (Array.isArray(val)) {
-        val.forEach((v) => {
-          const opt = input.options?.find((o) => o.value === v);
-          if (opt?.price) extra += Number(opt.price);
-        });
-      } else {
-        const opt = input.options?.find((o) => o.value === val);
-        if (opt?.price) extra += Number(opt.price);
-      }
-    } else if (input.type === "radio") {
-      const opt = input.options?.find((o) => o.value === val);
-      if (opt?.price) extra += Number(opt.price);
-    }
-  });
-  return basePrice + extra;
-};
-
+/**
+ * Retrieves a list of selected options that have associated prices.
+ *
+ * @param {Object} values - Current Formik values.
+ * @param {Array} inputs - Dynamic form input definitions.
+ * @returns {Array} Selected option objects with label, price, and field title.
+ */
 const getSelectedOptionsWithPrices = (values, inputs) => {
   const selected = [];
   if (!values || !inputs) return selected;
@@ -129,10 +111,49 @@ const getSelectedOptionsWithPrices = (values, inputs) => {
   return selected;
 };
 
-const FormikValueListener = ({ values, onChange }) => {
+/**
+ * Computes the total price including base price and dynamic options.
+ *
+ * @param {Object} values - Current Formik values.
+ * @param {Array} inputs - Dynamic form input definitions.
+ * @param {number} basePrice - The base price of the event trip.
+ * @returns {number} The calculated dynamic total price.
+ */
+const computeDynamicPrice = (values, inputs, basePrice) => {
+  const selectedOptions = getSelectedOptionsWithPrices(values, inputs);
+  const extra = selectedOptions.reduce((sum, opt) => sum + opt.price, 0);
+  return basePrice + extra;
+};
+
+/**
+ * Listener to notify parent component when pricing-related values change.
+ * Prevents unnecessary re-renders of the wizard when typing name/email/phone.
+ */
+const FormikValueListener = ({ values, pricingKeys, onChange }) => {
+  const prevValuesRef = useRef({});
+
   useEffect(() => {
-    onChange(values);
-  }, [values, onChange]);
+    const hasChanged = pricingKeys.some((key) => {
+      const prev = prevValuesRef.current[key];
+      const curr = values[key];
+      if (Array.isArray(prev) && Array.isArray(curr)) {
+        return prev.length !== curr.length || prev.some((v, i) => v !== curr[i]);
+      }
+      return prev !== curr;
+    });
+
+    const isFirstRender = Object.keys(prevValuesRef.current).length === 0;
+
+    if (hasChanged || isFirstRender) {
+      const newRefValues = {};
+      pricingKeys.forEach((key) => {
+        newRefValues[key] = Array.isArray(values[key]) ? [...values[key]] : values[key];
+      });
+      prevValuesRef.current = newRefValues;
+      onChange(values);
+    }
+  }, [values, pricingKeys, onChange]);
+
   return null;
 };
 
@@ -143,9 +164,6 @@ const EventRegistrationWizard = ({ event }) => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
-  if (event?.organizations) {
-    delete event.organizations;
-  }
 
   useEffect(() => {
     if (event?.company?.colorPreferences) {
@@ -177,6 +195,9 @@ const EventRegistrationWizard = ({ event }) => {
   const [isRegistrationSubmitting, setIsRegistrationSubmitting] =
     useState(false);
   const [clientBookingId, setClientBookingId] = useState(null);
+  const [bookingBaseTotalPrice, setBookingBaseTotalPrice] = useState(null);
+  const [bookingDiscountedTotalPrice, setBookingDiscountedTotalPrice] =
+    useState(null);
   const registrationValuesRef = useRef(null);
 
   // Promo code state
@@ -186,6 +207,12 @@ const EventRegistrationWizard = ({ event }) => {
 
   const inputs = event?.dynamicForm?.inputs || [];
   const formTitle = event?.dynamicForm?.title || t("eventTrips.form.title");
+
+  const pricingKeys = useMemo(() => {
+    return inputs
+      .filter((input) => ["select", "checkbox", "radio"].includes(input.type))
+      .map((input) => input.key);
+  }, [inputs]);
 
   const registrationInitialValues = useMemo(() => {
     return { name: "", ...getDynamicFormInitialValues(inputs) };
@@ -208,25 +235,47 @@ const EventRegistrationWizard = ({ event }) => {
       : Number(price);
   }, [event.price, event.discountedPrice, appliedPromoCode]);
 
-  const dynamicPrice = useMemo(() => {
-    const rawPrice = computeDynamicPrice(
-      currentStep === 0 ? step1Values : registrationValuesRef.current || {},
-      inputs,
-      basePrice
-    );
-    if (appliedPromoCode?.discountAmount) {
-      return Math.max(0, rawPrice - appliedPromoCode.discountAmount);
+  const promoDiscountAmount = useMemo(() => {
+    if (!appliedPromoCode) return 0;
+    const discountVal = Number(appliedPromoCode.discount || 0);
+    if (appliedPromoCode.discountType === "AMOUNT") {
+      return discountVal;
     }
-    return rawPrice;
-  }, [currentStep, step1Values, inputs, basePrice, appliedPromoCode]);
+    const targetPrice =
+      bookingBaseTotalPrice !== null
+        ? bookingBaseTotalPrice
+        : Number(event.price || 0);
+    return (targetPrice * discountVal) / 100;
+  }, [appliedPromoCode, bookingBaseTotalPrice, event.price]);
 
   const rawDynamicPrice = useMemo(() => {
-    return computeDynamicPrice(
-      currentStep === 0 ? step1Values : registrationValuesRef.current || {},
-      inputs,
-      basePrice
-    );
-  }, [currentStep, step1Values, inputs, basePrice]);
+    if (currentStep === 1) {
+      if (appliedPromoCode) {
+        return bookingBaseTotalPrice !== null
+          ? bookingBaseTotalPrice
+          : computeDynamicPrice(registrationValuesRef.current || {}, inputs, basePrice);
+      } else {
+        return bookingDiscountedTotalPrice !== null
+          ? bookingDiscountedTotalPrice
+          : bookingBaseTotalPrice !== null
+          ? bookingBaseTotalPrice
+          : computeDynamicPrice(registrationValuesRef.current || {}, inputs, basePrice);
+      }
+    }
+    return computeDynamicPrice(step1Values, inputs, basePrice);
+  }, [
+    currentStep,
+    step1Values,
+    inputs,
+    basePrice,
+    bookingBaseTotalPrice,
+    bookingDiscountedTotalPrice,
+    appliedPromoCode,
+  ]);
+
+  const dynamicPrice = useMemo(() => {
+    return Math.max(0, rawDynamicPrice - promoDiscountAmount);
+  }, [rawDynamicPrice, promoDiscountAmount]);
 
   const selectedOptionsBreakdown = useMemo(() => {
     return getSelectedOptionsWithPrices(
@@ -391,6 +440,12 @@ const EventRegistrationWizard = ({ event }) => {
           const returnedId =
             resData?._id || resData?.id || resData?.clientInfoBookingId;
           if (returnedId) setClientBookingId(returnedId);
+          if (resData?.baseTotalPrice !== undefined) {
+            setBookingBaseTotalPrice(Number(resData.baseTotalPrice));
+          }
+          if (resData?.discountedTotalPrice !== undefined) {
+            setBookingDiscountedTotalPrice(Number(resData.discountedTotalPrice));
+          }
 
           enqueueSnackbar(t("eventTrips.validation.success"), {
             variant: "success",
@@ -419,6 +474,8 @@ const EventRegistrationWizard = ({ event }) => {
 
   const handleBack = useCallback(() => {
     setCurrentStep(0);
+    setBookingBaseTotalPrice(null);
+    setBookingDiscountedTotalPrice(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
@@ -430,13 +487,20 @@ const EventRegistrationWizard = ({ event }) => {
       const endpoint = `${B2B_END_POINTS.EVENT_BOOKING.VALID_CODE}/${code}/${event._id}`;
       const response = await axios.get(getProxyUrl(endpoint), { headers });
       const data = response.data;
-      // The discount is applied on the base price (original event.price, not discounted)
-      const originalPrice = Number(event.price || 0);
-      const discountPercent = data?.discount || 0;
-      const discountAmount = (originalPrice * discountPercent) / 100;
+      
+      const discountVal = Number(data?.discount || 0);
+      const discountType = data?.discountType || "PERCENTAGE";
+      const targetPrice =
+        bookingBaseTotalPrice !== null ? bookingBaseTotalPrice : Number(event.price || 0);
+      const discountAmount =
+        discountType === "AMOUNT"
+          ? discountVal
+          : (targetPrice * discountVal) / 100;
+
       setAppliedPromoCode({
         code,
-        discount: discountPercent,
+        discount: discountVal,
+        discountType: discountType,
         discountAmount,
         data,
       });
@@ -452,7 +516,15 @@ const EventRegistrationWizard = ({ event }) => {
     } finally {
       setIsPromoSubmitting(false);
     }
-  }, [promoCodeInput, event._id, event.price, headers, t, enqueueSnackbar]);
+  }, [
+    promoCodeInput,
+    event._id,
+    event.price,
+    headers,
+    t,
+    enqueueSnackbar,
+    bookingBaseTotalPrice,
+  ]);
 
   const handleRemovePromoCode = useCallback(() => {
     setAppliedPromoCode(null);
@@ -597,6 +669,7 @@ const EventRegistrationWizard = ({ event }) => {
               <div className="flex flex-col gap-6">
                 <FormikValueListener
                   values={values}
+                  pricingKeys={pricingKeys}
                   onChange={handleStep1ValuesChange}
                 />
 
@@ -631,9 +704,9 @@ const EventRegistrationWizard = ({ event }) => {
                     <DynamicField
                       key={input._id}
                       input={input}
-                      values={values}
-                      errors={errors}
-                      touched={touched}
+                      value={values[input.key]}
+                      error={errors[input.key]}
+                      touched={touched[input.key]}
                       handleChange={handleChange}
                       handleBlur={handleBlur}
                       setFieldValue={setFieldValue}
@@ -760,7 +833,9 @@ const EventRegistrationWizard = ({ event }) => {
                               {appliedPromoCode.code}
                             </span>
                             <span className="text-green-600 text-xs font-somar">
-                              ({appliedPromoCode.discount}%{" "}
+                              ({appliedPromoCode.discountType === "AMOUNT"
+                                ? formatCurrency(appliedPromoCode.discount)
+                                : `${appliedPromoCode.discount}%`}{" "}
                               {t("eventTrips.payment.promoCode.applied")})
                             </span>
                           </div>
@@ -809,10 +884,13 @@ const EventRegistrationWizard = ({ event }) => {
                       <div className="flex justify-between items-center font-somar text-sm">
                         <span className="text-green-600 font-medium">
                           {t("eventTrips.payment.promoCode.discount")} (
-                          {appliedPromoCode.discount}%)
+                          {appliedPromoCode.discountType === "AMOUNT"
+                            ? formatCurrency(appliedPromoCode.discount)
+                            : `${appliedPromoCode.discount}%`}
+                          )
                         </span>
                         <span className="text-green-600 font-semibold font-ibm flex">
-                          - {formatCurrency(appliedPromoCode.discountAmount)}
+                          - {formatCurrency(promoDiscountAmount)}
                         </span>
                       </div>
                     )}

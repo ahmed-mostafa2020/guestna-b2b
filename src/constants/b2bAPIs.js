@@ -228,7 +228,7 @@ export const B2B_END_POINTS = {
     APPLE_CONFIRM: "eventTrips/booking/confermed/apple",
     APPLE_CALLBACK: "eventTrips/booking/confermed/event/apple",
     CLIENT_INFO: "clientInfoBooking/event-trip",
-    VALID_CODE: "validCode/eventTrip",
+    VALID_CODE: "promoCodeDiscounts/validCode/eventTrip",
   },
 
   BOOKING_EVENT_TRIP: {
