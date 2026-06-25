@@ -27,7 +27,7 @@ import TextInputGroup from "@components/forms/TextInputGroup";
 import PaymentMethod from "@components/forms/checkout/paymentForm/PaymentMethod";
 import EventAppleWidget from "./EventAppleWidget";
 import TamaraWidget from "@components/forms/checkout/paymentForm/TamaraWidget";
-import PhoneInputWithCountrySelect from "react-phone-number-input";
+import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { cn } from "@utils/helpers/cn";
 
@@ -438,7 +438,15 @@ const EventRegistrationWizard = ({ event }) => {
 
           const resData = response.data;
           const returnedId =
-            resData?._id || resData?.id || resData?.clientInfoBookingId;
+            resData?.client ||
+            resData?._id ||
+            resData?.id ||
+            resData?.clientInfoBookingId ||
+            resData?.data?._id ||
+            resData?.data?.id ||
+            resData?.data?.clientInfoBookingId ||
+            resData?.clientInfoBooking?._id ||
+            resData?.clientInfoBooking?.id;
           if (returnedId) setClientBookingId(returnedId);
           if (resData?.baseTotalPrice !== undefined) {
             setBookingBaseTotalPrice(Number(resData.baseTotalPrice));
@@ -450,7 +458,10 @@ const EventRegistrationWizard = ({ event }) => {
           enqueueSnackbar(t("eventTrips.validation.success"), {
             variant: "success",
           });
-          registrationValuesRef.current = values;
+          registrationValuesRef.current = {
+            ...values,
+            _clientId: returnedId,
+          };
           setCurrentStep(1);
           window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (error) {
@@ -537,15 +548,19 @@ const EventRegistrationWizard = ({ event }) => {
 
   const buildApiBody = (regValues, paymentValues) => {
     if (!regValues) return {};
+    const clientId = clientBookingId || regValues?._clientId;
     const body = {
       eventTrip: event._id,
-      client: clientBookingId,
+      client: clientId,
       quantity: 1,
       paymentMethod: currentPaymentMethod,
       redirectUrl: `${vercelUrl}/${locale}/bookingStatus`,
     };
-    if (appliedPromoCode?.code) {
-      body.promoCode = appliedPromoCode.code;
+    if (currentPaymentMethod !== CONSTANT_VALUES.PAYMENT_METHODS.TAMARA) {
+      body.price = dynamicPrice;
+    }
+    if (appliedPromoCode?.data?._id || appliedPromoCode?.data?.id) {
+      body.promoCode = appliedPromoCode.data?._id || appliedPromoCode.data?.id;
     }
     if (
       currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD &&
@@ -572,9 +587,15 @@ const EventRegistrationWizard = ({ event }) => {
 
   const buildAppleApiBody = (regValues) => {
     if (!regValues) return {};
-    const body = { eventTrip: event._id, client: clientBookingId, quantity: 1 };
-    if (appliedPromoCode?.code) {
-      body.promoCode = appliedPromoCode.code;
+    const clientId = clientBookingId || regValues?._clientId;
+    const body = {
+      eventTrip: event._id,
+      client: clientId,
+      quantity: 1,
+      price: dynamicPrice,
+    };
+    if (appliedPromoCode?.data?._id || appliedPromoCode?.data?.id) {
+      body.promoCode = appliedPromoCode.data?._id || appliedPromoCode.data?.id;
     }
     return body;
   };
@@ -1043,22 +1064,33 @@ const EventRegistrationWizard = ({ event }) => {
                           currency="SAR"
                           paymentType="installment"
                         />
-                        <PhoneInputWithCountrySelect
-                          countries={["SA", "AE", "BH", "KW", "OM"]}
-                          defaultCountry="SA"
-                          value={paymentValues.tamaraMobile}
-                          onChange={(val) =>
-                            setFieldValue("tamaraMobile", val || "")
-                          }
-                          onBlur={handlePaymentBlur}
-                          className={cn(
-                            "flex w-full bg-white p-4 border-2 rounded-lg",
-                            paymentErrors.tamaraMobile &&
-                              paymentTouched.tamaraMobile
-                              ? "border-error"
-                              : "border-border"
-                          )}
-                        />
+                        <div className="relative w-full">
+                          <label className="block font-medium font-somar mb-2">
+                            {t("forms.phone.name")}
+                          </label>
+                          <PhoneInput
+                            countries={["SA", "AE", "BH", "KW", "OM"]}
+                            defaultCountry="SA"
+                            onCountryChange={(country) => {
+                              setFieldValue("selectedCountry", country);
+                            }}
+                            value={paymentValues.tamaraMobile}
+                            onChange={(val) =>
+                              setFieldValue("tamaraMobile", val || "")
+                            }
+                            onBlur={handlePaymentBlur}
+                            id="tamaraMobile"
+                            addInternationalOption={false}
+                            style={{ direction: "ltr" }}
+                            className={cn(
+                              "flex w-full bg-white gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background font-somar text-lg placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed transition-all duration-200 ease-in-out",
+                              paymentErrors.tamaraMobile &&
+                                paymentTouched.tamaraMobile
+                                ? "border-error"
+                                : "border-border"
+                            )}
+                          />
+                        </div>
                       </div>
                     )}
                   </div>
