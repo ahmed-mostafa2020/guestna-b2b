@@ -3458,6 +3458,22 @@
       "error": "Please fill out all required fields",
       "success": "Registration completed successfully!",
       "nameRequired": "Full name is required"
+    },
+    "description": "Description",
+    "upload": {
+      "image": "Upload Image",
+      "multipleImages": "Upload Images",
+      "audio": "Upload Audio",
+      "video": "Upload Video",
+      "maxSize": "Maximum file size: {size}MB",
+      "typeError": "File type not allowed",
+      "sizeError": "File exceeds maximum size of {size}MB",
+      "clickToUpload": "Drag & drop or click to upload"
+    },
+    "price": {
+      "basePrice": "Base Price",
+      "additionalOptions": "Additional Options",
+      "dynamicTotal": "Total (including options)"
     }
   },
   "maintenance": {

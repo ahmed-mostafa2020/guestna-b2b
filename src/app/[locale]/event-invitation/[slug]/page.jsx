@@ -1,68 +1,71 @@
-"use client";
-
-import { useLocale, useTranslations } from "next-intl";
-import { useEffect } from "react";
-import { useFetchData } from "@hooks/data/useFetchData";
+import axios from "axios";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import FullScreenLoading from "@feedback/loading/FullScreenLoading";
-import ErrorComponent from "@feedback/error/ErrorComponent";
+import EventInvitationClient from "./EventInvitationClient";
 
-// Reused Feature Components
-import EventRegistrationWizard from "@components/forms/events/EventRegistrationWizard";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
-const EventClientLandingPage = ({ params }) => {
-  const locale = useLocale();
-  const t = useTranslations();
+// Fetch helper on server
+async function fetchEventDetails(slug, locale) {
+  try {
+    const url = `${BASE_URL}${B2B_END_POINTS.EVENT_INVITATION}/${slug}`;
+    const response = await axios.get(url, {
+      headers: {
+        "Accept-Language": locale || "ar",
+      },
+      timeout: 8000,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching event details on server:", error?.message);
+    return null;
+  }
+}
 
-  // Fetch event details using public slug
-  const { data, error, isLoading } = useFetchData(
-    `${B2B_END_POINTS.EVENT_INVITATION}/${params.slug}`,
-    {},
-    {
-      lang: locale,
-      enabled: !!params.slug,
-      queryKeySuffix: `client-event-details-${params.slug}`,
-    }
-  );
+// Generate Metadata for SEO & Social Share (OG/Twitter)
+export async function generateMetadata({ params }) {
+  const event = await fetchEventDetails(params.slug, params.locale);
 
-  const event = data || {};
-
-  // Update tab document title
-  useEffect(() => {
-    if (event?.name) {
-      document.title = `${t("pagesHead.appName")} | ${event.name}`;
-    } else {
-      document.title = `${t("pagesHead.appName")} | ${t("profile.events.details.title")}`;
-    }
-  }, [t, event]);
-
-  if (isLoading) {
-    return (
-      <div className="w-full min-h-screen centered bg-packageDetailsBg py-20">
-        <FullScreenLoading status="pending" />
-      </div>
-    );
+  if (!event) {
+    return {
+      title: "Guestna Event",
+    };
   }
 
-  if (error) {
-    return (
-      <div className="w-full min-h-screen centered bg-packageDetailsBg py-10">
-        <ErrorComponent
-          statusCode={error?.response?.data?.statusCode}
-          errorMessage={error?.response?.data?.message}
-        />
-      </div>
-    );
-  }
+  const title = event.name || "Guestna Event";
+  const description = event.description || "Join us for this special guestna event invitation.";
+  
+  const thumbnail = event.thumbnail?.web ||
+    event.thumbnail?.app ||
+    (typeof event.image === "string"
+      ? event.image
+      : event.image?.web || event.image?.app) ||
+    "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=80";
 
-  return (
-    <main className="min-h-screen bg-packageDetailsBg py-8 lg:py-12 flex items-center justify-center">
-      <div className="w-full max-w-3xl px-4">
-        {/* Dynamic Registration Wizard Component with integrated Poster Header */}
-        <EventRegistrationWizard event={event} />
-      </div>
-    </main>
-  );
-};
+  return {
+    title: `Guestna | ${title}`,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [
+        {
+          url: thumbnail,
+          width: 800,
+          height: 600,
+          alt: title,
+        },
+      ],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [thumbnail],
+    },
+  };
+}
 
-export default EventClientLandingPage;
+export default function Page({ params }) {
+  return <EventInvitationClient params={params} />;
+}

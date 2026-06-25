@@ -18,6 +18,13 @@ export const getDynamicFormInitialValues = (inputs) => {
       }
     } else if (input.type === "select" && input.isMultiple) {
       initialValues[input.key] = [];
+    } else if (
+      (input.type === "image" || input.type === "audio" || input.type === "video") &&
+      input.isMultiple
+    ) {
+      initialValues[input.key] = [];
+    } else if (input.type === "image" || input.type === "audio" || input.type === "video") {
+      initialValues[input.key] = null;
     } else {
       initialValues[input.key] = "";
     }
@@ -83,6 +90,57 @@ export const createDynamicFormSchema = (inputs, t) => {
           }
         } else {
           fieldSchema = Yup.string();
+        }
+        break;
+
+      case "image":
+        if (input.isMultiple) {
+          fieldSchema = Yup.array().of(Yup.mixed());
+          if (input.required) {
+            fieldSchema = fieldSchema.min(1, t("forms.validation.require") || "Required field");
+          }
+          if (input.minCount && input.minCount > 1) {
+            fieldSchema = fieldSchema.min(
+              input.minCount,
+              t("eventTrips.upload.minCountHint", { count: input.minCount }) ||
+                `Please upload at least ${input.minCount} file(s)`
+            );
+          }
+          if (input.maxCount) {
+            fieldSchema = fieldSchema.max(
+              input.maxCount,
+              t("eventTrips.upload.maxCountError", { count: input.maxCount }) ||
+                `Maximum ${input.maxCount} file(s) allowed`
+            );
+          }
+        } else {
+          fieldSchema = Yup.mixed().nullable();
+        }
+        break;
+
+      case "audio":
+      case "video":
+        if (input.isMultiple) {
+          fieldSchema = Yup.array().of(Yup.mixed());
+          if (input.required) {
+            fieldSchema = fieldSchema.min(1, t("forms.validation.require") || "Required field");
+          }
+          if (input.minCount && input.minCount > 1) {
+            fieldSchema = fieldSchema.min(
+              input.minCount,
+              t("eventTrips.upload.minCountHint", { count: input.minCount }) ||
+                `Please upload at least ${input.minCount} file(s)`
+            );
+          }
+          if (input.maxCount) {
+            fieldSchema = fieldSchema.max(
+              input.maxCount,
+              t("eventTrips.upload.maxCountError", { count: input.maxCount }) ||
+                `Maximum ${input.maxCount} file(s) allowed`
+            );
+          }
+        } else {
+          fieldSchema = Yup.mixed().nullable();
         }
         break;
 
