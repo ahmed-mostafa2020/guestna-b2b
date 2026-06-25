@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   RadioGroup,
   Radio,
@@ -15,6 +16,95 @@ import formatCurrency from "@utils/formatters/FormatCurrency";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import DynamicFileUpload from "@components/forms/DynamicFileUpload";
 
+// ─── Image Lightbox ──────────────────────────────────────────────────────────
+const ImageLightbox = ({ src, alt, onClose }) => {
+  if (!src) return null;
+  return (
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="relative max-w-2xl w-full max-h-[85vh] flex flex-col items-center"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          aria-label="Close image preview"
+          className="absolute -top-10 right-0 text-white text-3xl leading-none hover:text-gray-300 transition-colors"
+        >
+          ✕
+        </button>
+        <img
+          src={src}
+          alt={alt}
+          className="max-w-full max-h-[75vh] rounded-2xl shadow-2xl object-contain border-2 border-white/20"
+        />
+        {alt && (
+          <p className="mt-3 text-white/80 text-sm font-somar text-center">{alt}</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// ─── Small clickable image thumbnail ─────────────────────────────────────────
+const OptionImage = ({ src, alt }) => {
+  const [lightbox, setLightbox] = useState(null);
+
+  if (!src) return null;
+  return (
+    <>
+      <div className="relative group flex-shrink-0">
+        <img
+          src={src}
+          alt={alt}
+          className="w-9 h-9 rounded-lg object-cover border border-gray-200 transition-transform duration-150 group-hover:scale-105"
+        />
+        <button
+          type="button"
+          onClick={() => setLightbox({ src, alt })}
+          aria-label="View larger image"
+          className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 rounded-lg transition-opacity duration-150"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-4 h-4 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"
+            />
+          </svg>
+        </button>
+      </div>
+      {lightbox && (
+        <ImageLightbox
+          src={lightbox.src}
+          alt={lightbox.alt}
+          onClose={() => setLightbox(null)}
+        />
+      )}
+    </>
+  );
+};
+
+// ─── Price Badge ──────────────────────────────────────────────────────────────
+const PriceBadge = ({ price }) => {
+  if (!price) return null;
+  return (
+    <span className="flex items-center bg-mainColor/10 text-mainColor border border-mainColor/20 text-xs px-2 py-0.5 rounded-full font-ibm font-semibold whitespace-nowrap">
+      + {formatCurrency(price)}
+    </span>
+  );
+};
+
+// ─── Main Component ───────────────────────────────────────────────────────────
 const DynamicField = ({
   input,
   values,
@@ -130,13 +220,7 @@ const DynamicField = ({
                       }}
                     />
                   )}
-                  {opt.src && (
-                    <img
-                      src={opt.src}
-                      alt={opt.label}
-                      className="w-8 h-8 rounded object-cover flex-shrink-0 border border-gray-100"
-                    />
-                  )}
+                  <OptionImage src={opt.src} alt={opt.label} />
                   <ListItemText
                     primary={opt.label}
                     primaryTypographyProps={{
@@ -147,11 +231,7 @@ const DynamicField = ({
                     }}
                   />
                 </div>
-                {opt.price && (
-                  <span className="flex items-center  bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded font-ibm font-semibold whitespace-nowrap">
-                    + {formatCurrency(opt.price)}
-                  </span>
-                )}
+                <PriceBadge price={opt.price} />
               </div>
             </MenuItem>
           ))}
@@ -200,12 +280,9 @@ const DynamicField = ({
               }
               label={
                 <span className="font-somar text-sm md:text-base flex items-center gap-2">
+                  <OptionImage src={opt.src} alt={opt.label} />
                   {opt.label}
-                  {opt.price && (
-                    <span className="flex items-center bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded font-ibm font-semibold whitespace-nowrap">
-                      + {formatCurrency(opt.price)}
-                    </span>
-                  )}
+                  <PriceBadge price={opt.price} />
                 </span>
               }
               sx={{
@@ -268,12 +345,9 @@ const DynamicField = ({
                   }
                   label={
                     <span className="font-somar text-sm md:text-base flex items-center gap-2">
+                      <OptionImage src={opt.src} alt={opt.label} />
                       {opt.label}
-                      {opt.price && (
-                        <span className="flex items-center bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded font-ibm font-semibold whitespace-nowrap">
-                          + {formatCurrency(opt.price)}
-                        </span>
-                      )}
+                      <PriceBadge price={opt.price} />
                     </span>
                   }
                   sx={{

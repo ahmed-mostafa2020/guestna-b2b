@@ -494,7 +494,10 @@ const EventRegistrationWizard = ({ event }) => {
                       <div className="flex flex-col items-end gap-0.5">
                         {event.discountedPrice && Number(event.discountedPrice) < Number(event.price) ? (
                           <>
-                            <span className="line-through text-gray-400 font-ibm text-xs">
+                            <span 
+                              className="line-through text-gray-400 font-ibm text-xs"
+                              style={{ textDecorationColor: "#ef4444", textDecorationThickness: "1.5px" }}
+                            >
                               {formatCurrency(event.price)}
                             </span>
                             <span className="font-semibold font-ibm text-mainColor">

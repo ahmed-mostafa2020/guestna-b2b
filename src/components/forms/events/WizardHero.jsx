@@ -42,19 +42,29 @@ const WizardHero = ({ event, dynamicPrice, locale, t }) => {
           )}
 
           {dynamicPrice !== undefined && (
-            <span className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md text-white text-xs md:text-sm px-4 py-2 rounded-full font-somar border border-white/20 shadow-lg font-ibm">
-              💰{" "}
+            <span className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 backdrop-blur-md text-white text-xs md:text-sm px-4 py-2 rounded-full font-somar border border-white/20 shadow-lg font-ibm transition-all duration-300">
+              <span>💰</span>{" "}
               {dynamicPrice > 0 ? (
                 event.discountedPrice && Number(event.discountedPrice) < Number(event.price) ? (
-                  <>
-                    <span className="line-through opacity-60 text-xs">{formatCurrency(event.price)}</span>
-                    {formatCurrency(event.discountedPrice)}
-                  </>
+                  <span className="flex items-center gap-2">
+                    <span
+                      className="line-through text-white/50 text-xs font-normal"
+                      style={{ textDecorationColor: "#ef4444", textDecorationThickness: "2px" }}
+                    >
+                      {formatCurrency(event.price)}
+                    </span>
+                    <span className="font-bold text-secColor text-sm md:text-base">
+                      {formatCurrency(dynamicPrice)}
+                    </span>
+                    <span className="bg-red-500 text-white font-bold text-[9px] md:text-[10px] px-1.5 py-0.5 rounded-full flex items-center justify-center shrink-0 shadow-sm leading-none animate-pulse">
+                      -{Math.round(((event.price - event.discountedPrice) / event.price) * 100)}%
+                    </span>
+                  </span>
                 ) : (
-                  formatCurrency(dynamicPrice)
+                  <span className="font-bold">{formatCurrency(dynamicPrice)}</span>
                 )
               ) : (
-                t("common.free") || "Free"
+                <span className="font-bold">{t("common.free") || "Free"}</span>
               )}
             </span>
           )}
