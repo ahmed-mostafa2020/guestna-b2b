@@ -35,6 +35,7 @@ import {
 import WizardHero from "./WizardHero";
 import WizardStepper from "./WizardStepper";
 import DynamicField from "./DynamicField";
+import ExtraInformation from "@components/features/tripDetails/gridSection/largeSizeGrid/accordionsGroupSection/accordionsDetails/ExtraInformation";
 
 import madaLogo from "@assets/paymentLogos/mada.svg";
 import visaLogo from "@assets/paymentLogos/visa.svg";
@@ -419,6 +420,17 @@ const EventRegistrationWizard = ({ event }) => {
             {({ values, errors, touched, handleChange, handleBlur, setFieldValue, validateForm, setTouched }) => (
               <div className="flex flex-col gap-6">
                 <FormikValueListener values={values} onChange={handleStep1ValuesChange} />
+                
+                {event.attributes && event.attributes.length > 0 && (
+                  <div className="flex flex-col gap-3 text-start mb-2">
+                    <h3 className="text-lg font-bold text-titleColor font-somar">
+                      {t("tripDetails.accordionsGroup.extraInfo")}
+                    </h3>
+                    <ExtraInformation data={event.attributes} isAuth={true} />
+                    <hr className="border-border mt-3 mb-1" />
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-start">
                   <div className="relative">
                     <TextInputGroup
@@ -494,11 +506,12 @@ const EventRegistrationWizard = ({ event }) => {
                       <div className="flex flex-col items-end gap-0.5">
                         {event.discountedPrice && Number(event.discountedPrice) < Number(event.price) ? (
                           <>
-                            <span 
-                              className="line-through text-gray-400 font-ibm text-xs"
-                              style={{ textDecorationColor: "#ef4444", textDecorationThickness: "1.5px" }}
-                            >
+                            <span className="relative inline-block text-gray-400 font-ibm text-xs">
                               {formatCurrency(event.price)}
+                              <span 
+                                className="absolute left-0 right-0 top-1/2 h-[1.5px] bg-[#ef4444] transform -rotate-[15deg] pointer-events-none" 
+                                style={{ transformOrigin: 'center' }}
+                              />
                             </span>
                             <span className="font-semibold font-ibm text-mainColor">
                               {formatCurrency(event.discountedPrice)}

@@ -47,11 +47,12 @@ const WizardHero = ({ event, dynamicPrice, locale, t }) => {
               {dynamicPrice > 0 ? (
                 event.discountedPrice && Number(event.discountedPrice) < Number(event.price) ? (
                   <span className="flex items-center gap-2">
-                    <span
-                      className="line-through text-white/50 text-xs font-normal"
-                      style={{ textDecorationColor: "#ef4444", textDecorationThickness: "2px" }}
-                    >
+                    <span className="relative inline-block text-white/50 text-xs font-normal">
                       {formatCurrency(event.price)}
+                      <span 
+                        className="absolute left-0 right-0 top-1/2 h-[2px] bg-red-500 transform -rotate-[15deg] pointer-events-none" 
+                        style={{ transformOrigin: 'center' }}
+                      />
                     </span>
                     <span className="font-bold text-secColor text-sm md:text-base">
                       {formatCurrency(dynamicPrice)}
