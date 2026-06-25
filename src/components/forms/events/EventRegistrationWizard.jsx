@@ -179,6 +179,11 @@ const EventRegistrationWizard = ({ event }) => {
   const [clientBookingId, setClientBookingId] = useState(null);
   const registrationValuesRef = useRef(null);
 
+  // Promo code state
+  const [promoCodeInput, setPromoCodeInput] = useState("");
+  const [appliedPromoCode, setAppliedPromoCode] = useState(null); // { code, discount, discountAmount }
+  const [isPromoSubmitting, setIsPromoSubmitting] = useState(false);
+
   const inputs = event?.dynamicForm?.inputs || [];
   const formTitle = event?.dynamicForm?.title || t("eventTrips.form.title");
 
@@ -195,12 +200,27 @@ const EventRegistrationWizard = ({ event }) => {
   const basePrice = useMemo(() => {
     const price = event.price || 0;
     const discounted = event.discountedPrice;
+    if (appliedPromoCode) {
+      return Number(price);
+    }
     return discounted && Number(discounted) < Number(price)
       ? Number(discounted)
       : Number(price);
-  }, [event.price, event.discountedPrice]);
+  }, [event.price, event.discountedPrice, appliedPromoCode]);
 
   const dynamicPrice = useMemo(() => {
+    const rawPrice = computeDynamicPrice(
+      currentStep === 0 ? step1Values : registrationValuesRef.current || {},
+      inputs,
+      basePrice
+    );
+    if (appliedPromoCode?.discountAmount) {
+      return Math.max(0, rawPrice - appliedPromoCode.discountAmount);
+    }
+    return rawPrice;
+  }, [currentStep, step1Values, inputs, basePrice, appliedPromoCode]);
+
+  const rawDynamicPrice = useMemo(() => {
     return computeDynamicPrice(
       currentStep === 0 ? step1Values : registrationValuesRef.current || {},
       inputs,
@@ -402,6 +422,43 @@ const EventRegistrationWizard = ({ event }) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
+  const handleApplyPromoCode = useCallback(async () => {
+    const code = promoCodeInput.trim();
+    if (!code) return;
+    setIsPromoSubmitting(true);
+    try {
+      const endpoint = `${B2B_END_POINTS.EVENT_BOOKING.VALID_CODE}/${code}/${event._id}`;
+      const response = await axios.get(getProxyUrl(endpoint), { headers });
+      const data = response.data;
+      // The discount is applied on the base price (original event.price, not discounted)
+      const originalPrice = Number(event.price || 0);
+      const discountPercent = data?.discount || 0;
+      const discountAmount = (originalPrice * discountPercent) / 100;
+      setAppliedPromoCode({
+        code,
+        discount: discountPercent,
+        discountAmount,
+        data,
+      });
+      setPromoCodeInput("");
+      enqueueSnackbar(t("eventTrips.payment.promoCode.success"), {
+        variant: "success",
+      });
+    } catch (error) {
+      enqueueSnackbar(
+        error.response?.data?.message || t("eventTrips.validation.error"),
+        { variant: "error" }
+      );
+    } finally {
+      setIsPromoSubmitting(false);
+    }
+  }, [promoCodeInput, event._id, event.price, headers, t, enqueueSnackbar]);
+
+  const handleRemovePromoCode = useCallback(() => {
+    setAppliedPromoCode(null);
+    setPromoCodeInput("");
+  }, []);
+
   const handlePaymentMethodChange = useCallback((event) => {
     setCurrentPaymentMethod(event.target.value);
   }, []);
@@ -415,6 +472,9 @@ const EventRegistrationWizard = ({ event }) => {
       paymentMethod: currentPaymentMethod,
       redirectUrl: `${vercelUrl}/${locale}/bookingStatus`,
     };
+    if (appliedPromoCode?.code) {
+      body.promoCode = appliedPromoCode.code;
+    }
     if (
       currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD &&
       paymentValues
@@ -440,7 +500,11 @@ const EventRegistrationWizard = ({ event }) => {
 
   const buildAppleApiBody = (regValues) => {
     if (!regValues) return {};
-    return { eventTrip: event._id, client: clientBookingId, quantity: 1 };
+    const body = { eventTrip: event._id, client: clientBookingId, quantity: 1 };
+    if (appliedPromoCode?.code) {
+      body.promoCode = appliedPromoCode.code;
+    }
+    return body;
   };
 
   const handlePaymentSubmit = async (
@@ -644,7 +708,8 @@ const EventRegistrationWizard = ({ event }) => {
                       </span>
                       <div className="flex flex-col items-end gap-0.5">
                         {event.discountedPrice &&
-                        Number(event.discountedPrice) < Number(event.price) ? (
+                        Number(event.discountedPrice) < Number(event.price) &&
+                        !appliedPromoCode ? (
                           <>
                             <span className="relative inline-block text-gray-400 font-ibm text-xs">
                               {formatCurrency(event.price)}
@@ -681,11 +746,92 @@ const EventRegistrationWizard = ({ event }) => {
                       </div>
                     ))}
                     <hr className="border-border" />
+
+                    {/* ── Promo Code Input ── */}
+                    <div className="flex flex-col gap-2">
+                      <label className="text-sm font-semibold text-titleColor font-somar">
+                        {t("eventTrips.payment.promoCode.label")}
+                      </label>
+                      {appliedPromoCode ? (
+                        <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-green-600 text-lg">✓</span>
+                            <span className="font-semibold font-ibm text-green-700 text-sm">
+                              {appliedPromoCode.code}
+                            </span>
+                            <span className="text-green-600 text-xs font-somar">
+                              ({appliedPromoCode.discount}%{" "}
+                              {t("eventTrips.payment.promoCode.applied")})
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={handleRemovePromoCode}
+                            className="text-red-500 hover:text-red-700 text-xs font-semibold font-somar transition-colors duration-150"
+                          >
+                            {t("eventTrips.payment.promoCode.remove")}
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={promoCodeInput}
+                            onChange={(e) => setPromoCodeInput(e.target.value)}
+                            onKeyDown={(e) =>
+                              e.key === "Enter" && handleApplyPromoCode()
+                            }
+                            placeholder={t(
+                              "eventTrips.payment.promoCode.placeholder"
+                            )}
+                            className="flex-1 p-3 text-sm border-2 border-border rounded-xl outline-none font-ibm placeholder:text-textLight focus:border-mainColor hover:border-mainColor transition-colors duration-200 bg-white"
+                          />
+                          <button
+                            type="button"
+                            disabled={
+                              !promoCodeInput.trim() || isPromoSubmitting
+                            }
+                            onClick={handleApplyPromoCode}
+                            className="px-5 py-3 bg-mainColor text-white rounded-xl font-semibold font-somar text-sm hover:bg-linksHover transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
+                          >
+                            {isPromoSubmitting ? (
+                              <CircularProgress size={16} color="inherit" />
+                            ) : (
+                              t("eventTrips.payment.promoCode.apply")
+                            )}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* ── Promo Discount Line ── */}
+                    {appliedPromoCode && (
+                      <div className="flex justify-between items-center font-somar text-sm">
+                        <span className="text-green-600 font-medium">
+                          {t("eventTrips.payment.promoCode.discount")} (
+                          {appliedPromoCode.discount}%)
+                        </span>
+                        <span className="text-green-600 font-semibold font-ibm flex">
+                          - {formatCurrency(appliedPromoCode.discountAmount)}
+                        </span>
+                      </div>
+                    )}
+
+                    <hr className="border-border" />
                     <div className="flex justify-between items-center">
                       <span className="text-lg font-bold text-titleColor font-somar">
                         {t("eventTrips.payment.total")}
                       </span>
                       <div className="text-end">
+                        {appliedPromoCode && (
+                          <span className="relative inline-block text-gray-400 font-ibm text-sm me-1">
+                            {formatCurrency(rawDynamicPrice)}
+                            <span
+                              className="absolute left-0 right-0 top-1/2 h-[1.5px] bg-[#ef4444] transform -rotate-[10deg] pointer-events-none"
+                              style={{ transformOrigin: "center" }}
+                            />
+                          </span>
+                        )}
                         <span className="text-lg font-bold text-mainColor font-somar flex justify-end">
                           {formatCurrency(dynamicPrice)}
                         </span>
@@ -794,6 +940,7 @@ const EventRegistrationWizard = ({ event }) => {
                       CONSTANT_VALUES.PAYMENT_METHODS.APPLE && (
                       <div className="px-4 py-6 bg-[#FAF9F9] rounded-b-xl">
                         <EventAppleWidget
+                          key={dynamicPrice}
                           baseData={buildAppleApiBody(
                             registrationValuesRef.current
                           )}

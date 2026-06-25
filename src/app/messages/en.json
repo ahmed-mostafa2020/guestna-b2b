@@ -3452,7 +3452,16 @@
       "registrationFee": "Event Registration Fee",
       "total": "Total",
       "includingVat": "Including VAT",
-      "confirm": "Confirm Payment"
+      "confirm": "Confirm Payment",
+      "promoCode": {
+        "label": "Promo Code",
+        "placeholder": "Enter promo code",
+        "apply": "Apply",
+        "applied": "Applied",
+        "remove": "Remove",
+        "success": "Promo code applied successfully!",
+        "discount": "Promo Discount"
+      }
     },
     "validation": {
       "error": "Please fill out all required fields",

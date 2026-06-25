@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 const getBackendUrl = (path) => {
   let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
-  if (path && path.startsWith("clientInfoBooking/")) {
+  if (path && (path.startsWith("clientInfoBooking/") || path.startsWith("promoCodeDiscounts/"))) {
     baseUrl = baseUrl.replace(/\/b2b\/?$/, "/");
   }
   const cleanBase = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
