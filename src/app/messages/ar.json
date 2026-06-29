@@ -2,6 +2,8 @@
   "common": {
     "back": "رجوع",
     "select": "اختر",
+    "viewLargerImage": "عرض الصورة بحجم أكبر",
+    "closeImagePreview": "إغلاق معاينة الصورة",
     "next": "التالي",
     "submit": "ارسال",
     "confirm": "تأكيد",

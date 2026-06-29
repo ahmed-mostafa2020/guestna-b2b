@@ -2,6 +2,8 @@
   "common": {
     "back": "Back",
     "select": "Select",
+    "viewLargerImage": "View larger image",
+    "closeImagePreview": "Close image preview",
     "next": "Next",
     "submit": "Submit",
     "confirm": "Confirm",
