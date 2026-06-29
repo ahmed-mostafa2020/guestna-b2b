@@ -72,7 +72,10 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
 
   const handleDebugInitiate = () => {
     try {
-      mutate(baseDataRef.current, {
+      mutate({
+        ...baseDataRef.current,
+        price: +finalPrice
+      }, {
         onSuccess: (data) => {
           if (!data?.bookingId) {
             enqueueSnackbar("issue at generate Id", { variant: "error" });
@@ -128,7 +131,10 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
           setIsProcessing(true);
           return new Promise(function (resolve, reject) {
             try {
-              mutate(baseDataRef.current, {
+              mutate({
+                ...baseDataRef.current,
+                price: +finalPrice
+              }, {
                 onSuccess: (data) => {
                   if (!data?.bookingId) {
                     enqueueSnackbar("issue at generate Id", { variant: "error" });

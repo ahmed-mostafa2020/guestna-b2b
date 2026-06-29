@@ -119,7 +119,7 @@ const PaymentForm = () => {
   //   (state) => state.checkoutData.isCustomizable
   // );
 
-  const { client, quantity, basePriceTotalWithVat } = useSelector(
+  const { client, quantity, basePriceTotalWithVat, duration } = useSelector(
     (state) => state.finalTripDetailsData.data
   );
 
@@ -136,6 +136,7 @@ const PaymentForm = () => {
     quantity: quantity,
     client: client,
     ...(promoCode && { promoCode: promoCode }),
+    ...(duration !== undefined && duration !== null && { duration: duration }),
     // isCustom: isCustomizable || false,
   };
 

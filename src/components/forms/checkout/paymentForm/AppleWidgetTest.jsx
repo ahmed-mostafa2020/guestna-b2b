@@ -89,7 +89,10 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
           return new Promise(function (resolve, reject) {
             try {
               // Call the initiation endpoint
-              mutate(baseData, {
+              mutate({
+                ...baseData,
+                price: +finalPrice
+              }, {
                 onSuccess: (data) => {
                   if (!data?.bookingId) {
                     enqueueSnackbar(t("forms.validation.error"), {

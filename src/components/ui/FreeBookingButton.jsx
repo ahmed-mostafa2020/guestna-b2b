@@ -56,6 +56,7 @@ const FreeBookingButton = () => {
         client: finalTripData?.client,
         quantity: finalTripData?.quantity || 1,
         promoCode: promoCode || null,
+        ...(finalTripData?.duration !== undefined && finalTripData?.duration !== null && { duration: finalTripData.duration }),
       };
 
       // Remove null/undefined values
