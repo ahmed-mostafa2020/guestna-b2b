@@ -1361,6 +1361,7 @@
         },
         "transferMethod": {
           "title": "Transfer Method",
+          "soon": "Soon",
           "stcPay": {
             "title": "STC Pay",
             "description": "Instant withdrawal to phone number"
@@ -3492,5 +3493,85 @@
     "expectedBack": "Expected to be back by {date}",
     "apology": "Thank you for your patience.",
     "imageAlt": "Site under maintenance"
+  },
+  "termsPage": {
+    "title": "Terms and Conditions of Guestna Services",
+    "definitions": {
+      "title": "First: Definitions",
+      "subtitle": "For the purposes of these Terms and Conditions, the following words and phrases shall have the meanings assigned to each of them unless the context requires otherwise:",
+      "guestna": {
+        "term": "Guestna",
+        "desc": "A Saudi tech company specialized in organizing and managing educational and entertainment trips and programs within the Kingdom of Saudi Arabia, providing its services through its electronic platform and smart application."
+      },
+      "client": {
+        "term": "Client / Guest",
+        "desc": "The educational entity, institution, or individual who books or purchases any of Guestna's services or programs via the platform or application, including the student and their legal guardian in the case of educational programs or school trips."
+      },
+      "activities": {
+        "term": "Activities or Programs",
+        "desc": "All trips, experiences, events, and educational/recreational activities organized by Guestna or one of its authorized partners."
+      },
+      "serviceProvider": {
+        "term": "Service Provider",
+        "desc": "Every natural or legal person approved by Guestna to provide services or execute field activities, including guides, organizers, coaches, entertainment or educational centers, and host entities collaborated with to implement the programs."
+      },
+      "package": {
+        "term": "Package",
+        "desc": "A group of pre-booked activities or visits within a specified period or program."
+      },
+      "day": {
+        "term": "Day",
+        "desc": "Calendar day according to the local time of the Kingdom of Saudi Arabia."
+      },
+      "officialChannels": {
+        "term": "Official Channels",
+        "desc": "Guestna website, smart application, and the official Guestna WhatsApp account at: +966547534666."
+      }
+    },
+    "terms": {
+      "title": "Second: Terms and Conditions",
+      "compliance": {
+        "title": "1. Compliance with Regulations and Values",
+        "p1": "Guestna and all Service Providers commit to the regulations in force in the Kingdom of Saudi Arabia, and in compliance with Islamic values and relevant regulations governing tourism, educational, and entertainment activities.",
+        "p2": "The Client (Guest) and all participants—including students—are also committed to the regulations and instructions issued by the official authorities during the execution of the activity."
+      },
+      "reception": {
+        "title": "2. Reception at the Activity Site",
+        "p1": "The Client (Guest) or their authorized representative must receive the Service Provider or the executive team at the designated location for executing the activity at the agreed time.",
+        "p2": "In the event that there is no representative authorized to receive or organize at the specified time, the activity is considered executed, and the client has no right to claim compensation or rescheduling."
+      },
+      "property": {
+        "title": "3. Liability for Property",
+        "p1": "The Client (Guest) assumes full responsibility for their personal property and the property of the participants—including students—during the execution of the activity.",
+        "p2": "Neither Guestna nor the Service Providers bear any responsibility for lost or damaged property, and any case is handled in accordance with the regulatory procedures in force in the Kingdom."
+      },
+      "cancellation": {
+        "title": "4. Cancellation of Activities or Contracts",
+        "item0": "The Client (Guest) can cancel the activity up to 72 hours before the scheduled time free of charge.",
+        "item1": "After this period, the activity value is fully due, and the client is not entitled to a refund or rescheduling.",
+        "item2": "In the case of booking a multi-activity package or program and utilizing the first activity, the full package amount is deemed due and non-refundable.",
+        "item3": "Guestna reserves the right to review any exceptional cancellation requests based on operational circumstances, client interest, and service quality.",
+        "item4": "Guestna reserves the right to cancel the activity or contract for any operational, organizational, or security reason, with a refund of paid amounts after deducting the value of executed activities only.",
+        "item5": "In the event of changing the location of the activity from one neighborhood to another or from one city to another without prior notice, Guestna reserves the right to cancel the activity and charge full cancellation fees."
+      },
+      "supervision": {
+        "title": "5. Responsibility of Supervision During the Activity",
+        "p1": "Participants—including students—are under the supervision and responsibility of the Client (Guest) or the educational institution throughout the duration of the activity.",
+        "p2": "Guestna does not exercise any direct supervision or field control over participants during the activity; its role is limited to coordinating and organizing programs with host entities and approved Service Providers.",
+        "p3": "The Client (Guest) and the educational institution assume full responsibility for the safety and behavior of participants during the activity, including compliance with safety instructions and field regulations approved by the Service Provider.",
+        "p4": "In the event of any emergency or violation, contact must be made immediately via Guestna's official WhatsApp at: +966547534666."
+      },
+      "behavior": {
+        "title": "6. General Conduct and Discipline",
+        "p1": "All parties commit to professionalism and mutual respect during the execution of activities.",
+        "p2": "In the event of any verbal or physical assault or inappropriate behavior by the Client (Guest) or participants—including students—towards the Service Provider or Guestna's team, Guestna reserves the right to cancel the contract immediately without refunding any financial amounts, while retaining the right to take regulatory action against the violator."
+      },
+      "guardian": {
+        "title": "7. Student Guardian Consent",
+        "p1": "Any person booking or confirming participation in an activity for a student via the Guestna platform or application is considered a legally authorized representative of the student's guardian.",
+        "p2": "This person bears full legal and administrative responsibility for consenting to the student's participation in the activity, for the accuracy of the provided data, and for compliance with all rules and instructions organizing trips and activities.",
+        "p3": "Guestna bears no responsibility in the event of a student's participation based on registration or consent from someone other than their legal guardian."
+      }
+    }
   }
 }

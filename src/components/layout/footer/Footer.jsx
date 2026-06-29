@@ -49,10 +49,10 @@ const Footer = () => {
           name: t("footer.callUs"),
           url: `/${locale}/contact-us`,
         },
-        {
-          name: t("footer.faq"),
-          url: `/${locale}/faq`,
-        },
+        // {
+        //   name: t("footer.faq"),
+        //   url: `/${locale}/faq`,
+        // },
         // {
         //   name: t("footer.map"),
         //   url: "/map",
@@ -66,14 +66,14 @@ const Footer = () => {
           name: t("footer.terms"),
           url: `/${locale}/terms-and-conditions`,
         },
-        {
-          name: t("footer.privacy"),
-          url: `/${locale}/privacy-policy`,
-        },
-        {
-          name: t("footer.return"),
-          url: "/return-policy",
-        },
+        // {
+        //   name: t("footer.privacy"),
+        //   url: `/${locale}/privacy-policy`,
+        // },
+        // {
+        //   name: t("footer.return"),
+        //   url: "/return-policy",
+        // },
         // {
         //   name: t("footer.advertising"),
         //   url: "/advertising",
