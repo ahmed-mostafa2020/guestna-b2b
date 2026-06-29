@@ -2047,6 +2047,17 @@
         "7": "الطالب السابع",
         "8": "الطالب الثامن",
         "9": "الطالب التاسع"
+      },
+
+      "dayBlockPricing": {
+        "label": "اختر عدد الأيام",
+        "placeholder": "اختر عدد الأيام",
+        "weekLabel": "أسبوع",
+        "dayLabel": "يوم",
+        "daysLabel": "أيام",
+        "priceLabel": "ريال",
+        "firstDayDateLabel": "تاريخ اليوم الأول",
+        "firstDayDatePlaceholder": "اختر تاريخ البداية"
       }
     },
 

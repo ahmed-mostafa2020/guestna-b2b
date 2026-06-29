@@ -5,6 +5,8 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setFinalTripDetailsData } from "@store/checkout/finalTripDetailsSlice";
+import { setFirstDayDate, setTripDate } from "@store/checkout/checkoutSlice";
+import * as Yup from "yup";
 
 import { memo, useMemo, useState } from "react";
 
@@ -74,10 +76,6 @@ const RegisterStudentForm = ({
   const headers = getHeaders(locale, true);
   const headersGetMethod = getHeaders(locale);
 
-  const registerChildSchema = useMemo(() => {
-    return createRegisterChildSchema(t, childrenNumber, tripMainCategory);
-  }, [childrenNumber, t, tripMainCategory]);
-
   const { nationalities, trip } = useSelector(
     (state) => state.tripDetailsData.data
   );
@@ -98,6 +96,46 @@ const RegisterStudentForm = ({
   const tripName = useSelector(
     (state) => state.tripDetailsData.data?.trip?.name
   );
+  const dayBlockPricing = useSelector(
+    (state) => state.tripDetailsData.data?.trip?.dayBlockPricing
+  );
+  const tripDuration = useSelector(
+    (state) => state.tripDetailsData.data?.trip?.duration
+  );
+  const tripPrice = useSelector(
+    (state) => state.tripDetailsData.data?.trip?.price
+  );
+  const firstAvailableDate = useSelector((state) => {
+    const trip = state.tripDetailsData.data?.trip;
+    if (trip?.day) return trip.day;
+    const bookingDays = trip?.bookingDay;
+    if (bookingDays && bookingDays.length > 0) {
+      return bookingDays[0]?.bookingDay;
+    }
+    return null;
+  });
+
+  const registerChildSchema = useMemo(() => {
+    let schema = createRegisterChildSchema(t, childrenNumber, tripMainCategory);
+    if (dayBlockPricing?.enabled && firstAvailableDate) {
+      const datePart = firstAvailableDate.split("T")[0];
+      const parts = datePart.split("-");
+      const minLimit = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+      const maxLimit = new Date(minLimit.getTime() + (tripDuration * 24 * 60 * 60 * 1000));
+
+      schema = schema.concat(
+        Yup.object().shape({
+          bookingDay: Yup.date()
+            .required(t("forms.validation.required") || t("forms.validation.require"))
+            .typeError(t("forms.validation.invalidDate") || "Invalid date")
+            .min(minLimit, t("forms.validation.minDate") || "Date is before available start")
+            .max(maxLimit, t("forms.validation.maxDate") || "Date is after available end"),
+          duration: Yup.number().required(t("forms.validation.required") || t("forms.validation.require")),
+        })
+      );
+    }
+    return schema;
+  }, [childrenNumber, t, tripMainCategory, dayBlockPricing, firstAvailableDate, tripDuration]);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -226,6 +264,14 @@ const RegisterStudentForm = ({
     formData.append("trip", tripId);
     // formData.append("formsType", formsType);
     if (values.promoCode) formData.append("promoCode", values.promoCode);
+    if (values.duration) {
+      formData.append("duration", values.duration);
+    }
+    if (values.bookingDay) {
+      formData.append("bookingDay", values.bookingDay);
+      dispatch(setFirstDayDate(values.bookingDay));
+      dispatch(setTripDate(values.bookingDay));
+    }
     formData.append("termsAccepted", termsAccepted ? "true" : "false");
     if (termsData?._id) {
       formData.append("termsAndCondition", termsData._id);
@@ -351,6 +397,8 @@ const RegisterStudentForm = ({
           nationality: "a7568f9b909fa74e02403a29",
           nationalId: "",
           promoCode: "",
+          duration: null,
+          bookingDay: "",
           children: generateInitialChildren(childrenNumber),
         }}
         validationSchema={registerChildSchema}
@@ -495,6 +543,10 @@ const RegisterStudentForm = ({
                 setNationalIdImageError={setNationalIdImageError}
                 childrenNumberList={childrenNumberList}
                 nationalities={nationalities}
+                dayBlockPricing={dayBlockPricing}
+                tripDuration={tripDuration}
+                tripPrice={tripPrice}
+                firstAvailableDate={firstAvailableDate}
                 t={t}
                 cn={cn}
               />

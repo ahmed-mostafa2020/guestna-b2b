@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 const AutocompleteInputGroup = ({
   label,
-  labelFontFamily = "var(--font-somar-sans), sans-serif",
+  labelFontFamily = "IBM Plex Sans Arabic, sans-serif",
   name,
   value,
   inputValue,
@@ -13,6 +13,7 @@ const AutocompleteInputGroup = ({
   options = [],
   getOptionLabel,
   renderOption,
+  filterOptions,
   loading = false,
   disabled = false,
   freeSolo = false,
@@ -31,7 +32,7 @@ const AutocompleteInputGroup = ({
       {/* Label */}
       <div className="flex items-center gap-0.5">
         <label
-          className="font-medium capitalize"
+          className="font-medium capitalize font-ibm"
           style={{ fontFamily: labelFontFamily }}
         >
           {label}
@@ -50,6 +51,7 @@ const AutocompleteInputGroup = ({
         onInputChange={onInputChange}
         freeSolo={freeSolo}
         disabled={disabled}
+        {...(filterOptions ? { filterOptions } : {})}
         renderInput={(params) => (
           <TextField
             {...params}

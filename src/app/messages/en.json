@@ -2040,6 +2040,17 @@
         "7": "The seventh student",
         "8": "The eighth student",
         "9": "The ninth student"
+      },
+
+      "dayBlockPricing": {
+        "label": "Select Number of Days",
+        "placeholder": "Choose number of days",
+        "weekLabel": "Week",
+        "dayLabel": "Day",
+        "daysLabel": "days",
+        "priceLabel": "SAR",
+        "firstDayDateLabel": "First Day Date",
+        "firstDayDatePlaceholder": "Select starting date"
       }
     },
 
