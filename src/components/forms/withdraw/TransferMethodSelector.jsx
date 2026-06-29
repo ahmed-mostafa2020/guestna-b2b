@@ -10,12 +10,13 @@ const TransferMethodSelector = ({ transferMethod, setTransferMethod }) => {
   const t = useTranslations("profile.myWallet.withdrawPage.transferMethod");
 
   const transferOptions = [
+    { value: "bank", label: t("bankTransfer.title") },
+    ,
     {
       value: "stc",
       label: `${t("stcPay.title")} (${t("soon")})`,
       disabled: true,
     },
-    { value: "bank", label: t("bankTransfer.title") },
   ];
 
   return (
@@ -38,7 +39,9 @@ const TransferMethodSelector = ({ transferMethod, setTransferMethod }) => {
                 textTransform: "capitalize",
                 margin: "0",
                 "& .MuiFormControlLabel-label": {
-                  color: option.disabled ? "var(--color-disabled)" : "var(--color-text-dark)",
+                  color: option.disabled
+                    ? "var(--color-disabled)"
+                    : "var(--color-text-dark)",
                   fontWeight: "medium",
                   fontSize: "15px",
                   fontFamily: "var(--font-somar-sans), sans-serif",
@@ -48,7 +51,9 @@ const TransferMethodSelector = ({ transferMethod, setTransferMethod }) => {
               control={
                 <Radio
                   sx={{
-                    color: option.disabled ? "var(--color-disabled)" : "var(--color-text-dark)",
+                    color: option.disabled
+                      ? "var(--color-disabled)"
+                      : "var(--color-text-dark)",
                     "&.Mui-checked": {
                       color: "var(--color-title)",
                     },
