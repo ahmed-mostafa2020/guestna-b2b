@@ -554,7 +554,7 @@ const PaymentForm = () => {
                         {tripId !== "69244a8f58e326a69aee7080" ? (
                           <div className="flex lg:w-[510px]">
                             <AppleWidget
-                              key="apple-widget-main"
+                              key={`apple-widget-main-${finalPrice}`}
                               baseData={baseData}
                             />
                           </div>
@@ -565,7 +565,7 @@ const PaymentForm = () => {
                               <div className="lg:w-[510px]">
                                 <div className="flex lg:w-[510px]">
                                   <AppleWidgetTest
-                                    key="apple-widget-test"
+                                    key={`apple-widget-test-${finalPrice}`}
                                     baseData={baseData}
                                   />
                                 </div>

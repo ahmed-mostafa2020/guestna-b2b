@@ -249,6 +249,7 @@ const GraduationPaymentStep = ({
             {currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.APPLE && (
               <div className="flex flex-col gap-4 px-4 py-6 bg-[#FAF9F9] rounded-b-xl transition-all duration-200 ease-in-out">
                 <GraduationAppleWidget
+                  key={`graduation-apple-widget-${price}`}
                   baseData={applePayBaseData}
                   price={price}
                 />
