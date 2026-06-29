@@ -123,8 +123,9 @@ const ParentFormFields = ({
 
       const weekNumber = Math.ceil(day / blockSize);
       const isBlockStart = day === 1 || (day - 1) % blockSize === 0;
+      const isBlockEnd = day % blockSize === 0 || day === tripDuration;
 
-      options.push({ day, price, weekNumber, isBlockStart });
+      options.push({ day, price, weekNumber, isBlockStart, isBlockEnd });
     }
 
     return options;
@@ -138,6 +139,18 @@ const ParentFormFields = ({
 
   const weekLabel = t("forms.registerForm.dayBlockPricing.weekLabel");
   const daysLabel = t("forms.registerForm.dayBlockPricing.daysLabel");
+
+  const getWeekText = (weekNum) => {
+    try {
+      const key = `forms.registerForm.dayBlockPricing.weeks.${weekNum}`;
+      const translated = t(key);
+      if (translated && translated !== key) {
+        return translated;
+      }
+    } catch (e) {}
+    if (isAr) return `الأسبوع ${weekNum}`;
+    return `week ${weekNum}`;
+  };
 
   /** Plain-text label for the selected value shown in the input box */
   const getOptionLabelText = (option) => {
@@ -321,22 +334,6 @@ const ParentFormFields = ({
                             gap: 0,
                           }}
                         >
-                          {/* Week group header on first day of each block */}
-                          {option.isBlockStart && (
-                            <span
-                              style={{
-                                fontSize: "10px",
-                                fontWeight: 700,
-                                color: "var(--color-main)",
-                                textTransform: "uppercase",
-                                letterSpacing: "0.05em",
-                                marginBottom: "2px",
-                                lineHeight: 1,
-                              }}
-                            >
-                              {weekLabel} {option.weekNumber}
-                            </span>
-                          )}
                           <div
                             style={{
                               display: "flex",
@@ -348,12 +345,12 @@ const ParentFormFields = ({
                           >
                             <span
                               style={{
-                                fontWeight: isLastDay ? 700 : 400,
+                                fontWeight: option.isBlockEnd ? 600 : 400,
                                 fontSize: "14px",
                               }}
                             >
                               {dayText}
-                              {isLastDay && (
+                              {option.isBlockEnd && (
                                 <span
                                   style={{
                                     fontSize: "10px",
@@ -362,7 +359,7 @@ const ParentFormFields = ({
                                     fontWeight: 600,
                                   }}
                                 >
-                                  ({weekLabel} {option.weekNumber})
+                                  ({getWeekText(option.weekNumber)})
                                 </span>
                               )}
                             </span>

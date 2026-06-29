@@ -2052,7 +2052,19 @@
         "firstDayDateLabel": "Start Date",
         "firstDayDatePlaceholder": "Select starting date",
         "fullDurationLabel": "Full duration",
-        "sectionTitle": "Subscription Duration Details"
+        "sectionTitle": "Subscription Duration Details",
+        "weeks": {
+          "1": "the first week",
+          "2": "the second week",
+          "3": "the third week",
+          "4": "the fourth week",
+          "5": "the fifth week",
+          "6": "the sixth week",
+          "7": "the seventh week",
+          "8": "the eighth week",
+          "9": "the ninth week",
+          "10": "the tenth week"
+        }
       }
     },
 
