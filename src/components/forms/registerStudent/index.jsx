@@ -397,7 +397,8 @@ const RegisterStudentForm = ({
           nationality: "a7568f9b909fa74e02403a29",
           nationalId: "",
           promoCode: "",
-          duration: null,
+          duration: dayBlockPricing?.enabled ? tripDuration : null,
+          fullDuration: dayBlockPricing?.enabled ? true : false,
           bookingDay: "",
           children: generateInitialChildren(childrenNumber),
         }}

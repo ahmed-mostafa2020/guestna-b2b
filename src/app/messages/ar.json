@@ -2056,8 +2056,10 @@
         "dayLabel": "يوم",
         "daysLabel": "أيام",
         "priceLabel": "ريال",
-        "firstDayDateLabel": "تاريخ اليوم الأول",
-        "firstDayDatePlaceholder": "اختر تاريخ البداية"
+        "firstDayDateLabel": "تاريخ بداية التسجيل",
+        "firstDayDatePlaceholder": "اختر تاريخ البداية",
+        "fullDurationLabel": "مدة الاشتراك كاملة",
+        "sectionTitle": "تفاصيل مدة الاشتراك"
       }
     },
 

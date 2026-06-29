@@ -2049,8 +2049,10 @@
         "dayLabel": "Day",
         "daysLabel": "days",
         "priceLabel": "SAR",
-        "firstDayDateLabel": "First Day Date",
-        "firstDayDatePlaceholder": "Select starting date"
+        "firstDayDateLabel": "Start Date",
+        "firstDayDatePlaceholder": "Select starting date",
+        "fullDurationLabel": "Full duration",
+        "sectionTitle": "Subscription Duration Details"
       }
     },
 

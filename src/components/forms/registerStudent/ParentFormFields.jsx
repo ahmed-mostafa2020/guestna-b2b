@@ -4,6 +4,7 @@ import { useLocale } from "next-intl";
 import TextInputGroup from "../TextInputGroup";
 import DropdownGroup from "../DropdownGroup";
 import AutocompleteInputGroup from "../AutocompleteInputGroup";
+import CheckboxGroup from "../CheckboxGroup";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 
 import PhoneInputWithCountrySelect from "react-phone-number-input";
@@ -80,7 +81,11 @@ const ParentFormFields = ({
 
     const datePart = firstAvailableDate.split("T")[0];
     const parts = datePart.split("-");
-    const start = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    const start = new Date(
+      parseInt(parts[0], 10),
+      parseInt(parts[1], 10) - 1,
+      parseInt(parts[2], 10)
+    );
     if (isNaN(start.getTime())) return { minDate: "", maxDate: "" };
 
     const formatDateString = (dateObj) => {
@@ -160,15 +165,6 @@ const ParentFormFields = ({
           required={true}
         />
 
-        <DropdownGroup
-          label={t("forms.registerForm.numberOfChildren")}
-          placeholder={childrenNumber}
-          value={values.childrenNumber}
-          onChange={handleChangeChildrenNumber}
-          menuItemsList={childrenNumberList}
-          required={true}
-        />
-
         <TextInputGroup
           label={t("forms.email.parentEmail")}
           type="email"
@@ -227,6 +223,15 @@ const ParentFormFields = ({
           )}
         </div>
 
+        <DropdownGroup
+          label={t("forms.registerForm.numberOfChildren")}
+          placeholder={childrenNumber}
+          value={values.childrenNumber}
+          onChange={handleChangeChildrenNumber}
+          menuItemsList={childrenNumberList}
+          required={true}
+        />
+
         <div className="relative flex flex-col gap-2">
           <DropdownGroup
             label={t("profile.information.personalInformation.nationality")}
@@ -249,133 +254,159 @@ const ParentFormFields = ({
           )}
         </div>
 
-        {/* Day Block Pricing selector — same column width as other inputs */}
+        {/* Day Block Pricing inputs wrapped in a nice responsive UI sub-grid */}
         {isDayBlockEnabled && (
-          <div className="relative flex flex-col gap-2">
-            <AutocompleteInputGroup
-              label={t("forms.registerForm.dayBlockPricing.label")}
-              placeholder={t("forms.registerForm.dayBlockPricing.placeholder")}
-              name="duration"
-              value={selectedDayOption}
-              options={dayOptions}
-              required={true}
-              errors={errors.duration}
-              touched={touched.duration}
-              /* ── 1. Shown in the text box: days only, no price ── */
-              getOptionLabel={getOptionLabelText}
-              /* ── 3. Filter by day count when user types ── */
-              filterOptions={(options, { inputValue }) => {
-                if (!inputValue) return options;
-                return options.filter((o) =>
-                  String(o.day).startsWith(inputValue.trim())
-                );
-              }}
-              /* ── 2 & 4. Rich dropdown rows with formatted price ── */
-              renderOption={(props, option) => {
-                const { blockSize } = dayBlockPricing;
-                const isLastDay = option.day === tripDuration;
+          <div className="col-span-full border border-border/60 bg-gray-50/30 rounded-xl p-5 mt-2">
+            <h4 className="text-sm font-semibold text-titleColor mb-4 font-ibm">
+              {t("forms.registerForm.dayBlockPricing.sectionTitle")}
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-6 items-end">
+              {/* Checkbox Group */}
+              <div className="flex items-center h-[55px] px-2 bg-white border-2 border-border rounded-lg hover:border-mainColor transition-all duration-200">
+                <CheckboxGroup
+                  label={t("forms.registerForm.dayBlockPricing.fullDurationLabel")}
+                  isChecked={values.fullDuration ?? true}
+                  hoveringAction={false}
+                  onChangeFunction={(e) => {
+                    const checked = e.target.checked;
+                    setFieldValue("fullDuration", checked);
+                    if (checked) {
+                      setFieldValue("duration", tripDuration);
+                    } else {
+                      setFieldValue("duration", null);
+                    }
+                  }}
+                />
+              </div>
 
-                const dayText = isAr
-                  ? formatDaysAr(option.day)
-                  : `${option.day} ${daysLabel}`;
-
-                return (
-                  <li
-                    {...props}
-                    key={option.day}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "flex-start",
-                      padding: "6px 16px",
-                      gap: 0,
+              {/* Day Block Pricing selector — shown when NOT full duration */}
+              {!(values.fullDuration ?? true) && (
+                <div className="relative flex flex-col gap-2">
+                  <AutocompleteInputGroup
+                    label={t("forms.registerForm.dayBlockPricing.label")}
+                    placeholder={t("forms.registerForm.dayBlockPricing.placeholder")}
+                    name="duration"
+                    value={selectedDayOption}
+                    options={dayOptions}
+                    required={true}
+                    errors={errors.duration}
+                    touched={touched.duration}
+                    /* ── 1. Shown in the text box: days only, no price ── */
+                    getOptionLabel={getOptionLabelText}
+                    /* ── 3. Filter by day count when user types ── */
+                    filterOptions={(options, { inputValue }) => {
+                      if (!inputValue) return options;
+                      return options.filter((o) =>
+                        String(o.day).startsWith(inputValue.trim())
+                      );
                     }}
-                  >
-                    {/* Week group header on first day of each block */}
-                    {option.isBlockStart && (
-                      <span
-                        style={{
-                          fontSize: "10px",
-                          fontWeight: 700,
-                          color: "var(--color-main)",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.05em",
-                          marginBottom: "2px",
-                          lineHeight: 1,
-                        }}
-                      >
-                        {weekLabel} {option.weekNumber}
-                      </span>
-                    )}
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        width: "100%",
-                        alignItems: "center",
-                        gap: "12px",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontWeight: isLastDay ? 700 : 400,
-                          fontSize: "14px",
-                        }}
-                      >
-                        {dayText}
-                        {isLastDay && (
-                          <span
+                    /* ── 2 & 4. Rich dropdown rows with formatted price ── */
+                    renderOption={(props, option) => {
+                      const { blockSize } = dayBlockPricing;
+                      const isLastDay = option.day === tripDuration;
+
+                      const dayText = isAr
+                        ? formatDaysAr(option.day)
+                        : `${option.day} ${daysLabel}`;
+
+                      return (
+                        <li
+                          {...props}
+                          key={option.day}
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "flex-start",
+                            padding: "6px 16px",
+                            gap: 0,
+                          }}
+                        >
+                          {/* Week group header on first day of each block */}
+                          {option.isBlockStart && (
+                            <span
+                              style={{
+                                fontSize: "10px",
+                                fontWeight: 700,
+                                color: "var(--color-main)",
+                                textTransform: "uppercase",
+                                letterSpacing: "0.05em",
+                                marginBottom: "2px",
+                                lineHeight: 1,
+                              }}
+                            >
+                              {weekLabel} {option.weekNumber}
+                            </span>
+                          )}
+                          <div
                             style={{
-                              fontSize: "10px",
-                              marginInlineStart: "6px",
-                              color: "var(--color-main)",
-                              fontWeight: 600,
+                              display: "flex",
+                              justifyContent: "space-between",
+                              width: "100%",
+                              alignItems: "center",
+                              gap: "12px",
                             }}
                           >
-                            ({weekLabel} {option.weekNumber})
-                          </span>
-                        )}
-                      </span>
-                      {/* ── 1. formatCurrency for the price ── */}
-                      <span
-                        style={{
-                          fontWeight: 700,
-                          color: "var(--color-title)",
-                          fontSize: "14px",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {formatCurrency(option.price)}
-                      </span>
-                    </div>
-                  </li>
-                );
-              }}
-              onChange={(_, newValue) => {
-                setFieldValue("duration", newValue ? newValue.day : null);
-              }}
-            />
-          </div>
-        )}
+                            <span
+                              style={{
+                                fontWeight: isLastDay ? 700 : 400,
+                                fontSize: "14px",
+                              }}
+                            >
+                              {dayText}
+                              {isLastDay && (
+                                <span
+                                  style={{
+                                    fontSize: "10px",
+                                    marginInlineStart: "6px",
+                                    color: "var(--color-main)",
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  ({weekLabel} {option.weekNumber})
+                                </span>
+                              )}
+                            </span>
+                            {/* ── 1. formatCurrency for the price ── */}
+                            <span
+                              style={{
+                                fontWeight: 700,
+                                color: "var(--color-title)",
+                                fontSize: "14px",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {formatCurrency(option.price)}
+                            </span>
+                          </div>
+                        </li>
+                      );
+                    }}
+                    onChange={(_, newValue) => {
+                      setFieldValue("duration", newValue ? newValue.day : null);
+                    }}
+                  />
+                </div>
+              )}
 
-        {/* Date Input for Day Block Pricing */}
-        {isDayBlockEnabled && (
-          <TextInputGroup
-            label={t("forms.registerForm.dayBlockPricing.firstDayDateLabel")}
-            placeholder={t(
-              "forms.registerForm.dayBlockPricing.firstDayDatePlaceholder"
-            )}
-            type="date"
-            name="bookingDay"
-            value={values.bookingDay || ""}
-            errors={errors.bookingDay}
-            touched={touched.bookingDay}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            required={true}
-            min={minDate}
-            max={maxDate}
-          />
+              {/* Date Input for Day Block Pricing */}
+              <TextInputGroup
+                label={t("forms.registerForm.dayBlockPricing.firstDayDateLabel")}
+                placeholder={t(
+                  "forms.registerForm.dayBlockPricing.firstDayDatePlaceholder"
+                )}
+                type="date"
+                name="bookingDay"
+                value={values.bookingDay || ""}
+                errors={errors.bookingDay}
+                touched={touched.bookingDay}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                required={true}
+                min={minDate}
+                max={maxDate}
+              />
+            </div>
+          </div>
         )}
       </div>
     </>
