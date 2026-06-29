@@ -47,8 +47,8 @@ const AutocompleteInputGroup = ({
         loading={loading}
         value={value}
         onChange={onChange}
-        inputValue={inputValue}
-        onInputChange={onInputChange}
+        {...(inputValue !== undefined ? { inputValue } : {})}
+        {...(onInputChange !== undefined ? { onInputChange } : {})}
         freeSolo={freeSolo}
         disabled={disabled}
         {...(filterOptions ? { filterOptions } : {})}

@@ -309,8 +309,12 @@ const ParentFormFields = ({
                     /* ── 3. Filter by day count when user types ── */
                     filterOptions={(options, { inputValue }) => {
                       if (!inputValue) return options;
+                      const cleanInput = inputValue
+                        .trim()
+                        .replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+                      if (!cleanInput) return options;
                       return options.filter((o) =>
-                        String(o.day).startsWith(inputValue.trim())
+                        String(o.day).includes(cleanInput)
                       );
                     }}
                     /* ── 2 & 4. Rich dropdown rows with formatted price ── */
