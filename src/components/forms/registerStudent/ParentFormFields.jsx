@@ -6,6 +6,7 @@ import DropdownGroup from "../DropdownGroup";
 import AutocompleteInputGroup from "../AutocompleteInputGroup";
 import CheckboxGroup from "../CheckboxGroup";
 import formatCurrency from "@utils/formatters/FormatCurrency";
+import formatDateForInput from "@utils/formatters/FormateDateForInput";
 
 import PhoneInputWithCountrySelect from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -270,14 +271,16 @@ const ParentFormFields = ({
         {/* Day Block Pricing inputs wrapped in a nice responsive UI sub-grid */}
         {isDayBlockEnabled && (
           <div className="col-span-full border border-border/60 bg-gray-50/30 rounded-xl p-5 mt-2">
-            <h4 className="text-sm font-semibold text-titleColor mb-4 font-ibm">
+            <h4 className="text-sm font-semibold text-titleColor pb-4 font-ibm">
               {t("forms.registerForm.dayBlockPricing.sectionTitle")}
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-6 items-end">
               {/* Checkbox Group */}
               <div className="flex items-center h-[55px] px-2 bg-white border-2 border-border rounded-lg hover:border-mainColor transition-all duration-200">
                 <CheckboxGroup
-                  label={t("forms.registerForm.dayBlockPricing.fullDurationLabel")}
+                  label={t(
+                    "forms.registerForm.dayBlockPricing.fullDurationLabel"
+                  )}
                   isChecked={values.fullDuration ?? true}
                   hoveringAction={false}
                   onChangeFunction={(e) => {
@@ -297,7 +300,9 @@ const ParentFormFields = ({
                 <div className="relative flex flex-col gap-2">
                   <AutocompleteInputGroup
                     label={t("forms.registerForm.dayBlockPricing.label")}
-                    placeholder={t("forms.registerForm.dayBlockPricing.placeholder")}
+                    placeholder={t(
+                      "forms.registerForm.dayBlockPricing.placeholder"
+                    )}
                     name="duration"
                     value={selectedDayOption}
                     options={dayOptions}
@@ -391,13 +396,15 @@ const ParentFormFields = ({
 
               {/* Date Input for Day Block Pricing */}
               <TextInputGroup
-                label={t("forms.registerForm.dayBlockPricing.firstDayDateLabel")}
+                label={t(
+                  "forms.registerForm.dayBlockPricing.firstDayDateLabel"
+                )}
                 placeholder={t(
                   "forms.registerForm.dayBlockPricing.firstDayDatePlaceholder"
                 )}
                 type="date"
                 name="bookingDay"
-                value={values.bookingDay || ""}
+                value={formatDateForInput(values.bookingDay)}
                 errors={errors.bookingDay}
                 touched={touched.bookingDay}
                 onChange={handleChange}

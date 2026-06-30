@@ -126,11 +126,11 @@ const RegisterStudentForm = ({
       schema = schema.concat(
         Yup.object().shape({
           bookingDay: Yup.date()
-            .required(t("forms.validation.required") || t("forms.validation.require"))
+            .required(t("forms.validation.require"))
             .typeError(t("forms.validation.invalidDate") || "Invalid date")
             .min(minLimit, t("forms.validation.minDate") || "Date is before available start")
             .max(maxLimit, t("forms.validation.maxDate") || "Date is after available end"),
-          duration: Yup.number().required(t("forms.validation.required") || t("forms.validation.require")),
+          duration: Yup.number().required(t("forms.validation.require")),
         })
       );
     }
@@ -193,7 +193,7 @@ const RegisterStudentForm = ({
 
     // Validate stages
     if (!childrenStages || Object.values(childrenStages).some((v) => !v)) {
-      setStageError(t("forms.validation.required"));
+      setStageError(t("forms.validation.require"));
       isValid = false;
     } else {
       setStageError("");
@@ -201,7 +201,7 @@ const RegisterStudentForm = ({
 
     // Validate grades
     if (values.children.some((child) => !child.grade)) {
-      setGradeError(t("forms.validation.required"));
+      setGradeError(t("forms.validation.require"));
       isValid = false;
     } else {
       setGradeError("");
@@ -209,7 +209,7 @@ const RegisterStudentForm = ({
 
     // Validate nationality
     if (!nationality) {
-      setNationalityError(t("forms.validation.required"));
+      setNationalityError(t("forms.validation.require"));
       isValid = false;
     } else {
       setNationalityError("");

@@ -6,6 +6,7 @@ import { uploadFileIcon } from "@assets/svg";
 
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
 const TextInputGroup = memo(
   ({
@@ -100,7 +101,7 @@ const TextInputGroup = memo(
                 touched && errors && border
                   ? "border-error focus:border-error hover:border-error"
                   : "border-border focus:border-mainColor hover:border-mainColor",
-                type === "date" && "cursor-pointer"
+                type === "date" && "cursor-pointer pe-12"
               )}
               style={{
                 fontFamily: "inherit",
@@ -108,10 +109,11 @@ const TextInputGroup = memo(
               }}
               type={type === "password" && showPassword ? "text" : type}
               inputMode={
-                inputMode ? inputMode : type
-                // name !== ("name" || "email" || "cardholderName" || "searchBar")
-                //   ? "numeric"
-                //   : type
+                inputMode
+                  ? inputMode
+                  : type === "date" || type === "time"
+                  ? undefined
+                  : type
               }
               name={name}
               value={value}
@@ -120,7 +122,16 @@ const TextInputGroup = memo(
               onChange={onChange}
               onBlur={onBlur}
               onKeyDown={onKeyDown}
-              onClick={onClick}
+              onClick={(e) => {
+                if (type === "date" && e.target.showPicker) {
+                  try {
+                    e.target.showPicker();
+                  } catch (err) {
+                    console.error("Failed to show picker:", err);
+                  }
+                }
+                if (onClick) onClick(e);
+              }}
               placeholder={placeholder}
               autoComplete={
                 name === "cardholderName" ? "new-password" : "false"
@@ -135,6 +146,12 @@ const TextInputGroup = memo(
               max={max}
               readOnly={readOnly}
             />
+          )}
+
+          {type === "date" && (
+            <div className="absolute inset-y-0 flex items-center pointer-events-none end-0 pe-4">
+              <CalendarTodayIcon className="text-textLight" style={{ fontSize: "20px" }} />
+            </div>
           )}
 
           {type === "password" && (

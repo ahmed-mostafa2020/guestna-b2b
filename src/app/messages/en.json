@@ -2347,6 +2347,10 @@
     "validation": {
       "please_fill_required_fields": "Please fill all required fields",
       "require": "This field is required",
+      "required": "This field is required",
+      "invalidDate": "Invalid date",
+      "minDate": "Date is before available start",
+      "maxDate": "Date is after available end",
       "sending": "Sending Now ...",
       "downloading": "Downloading...",
       "loading": "Loading...",
