@@ -2,7 +2,15 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { Formik } from "formik";
-import { RadioGroup, Select, MenuItem, CircularProgress, Card, CardContent, Box } from "@mui/material";
+import {
+  RadioGroup,
+  Select,
+  MenuItem,
+  CircularProgress,
+  Card,
+  CardContent,
+  Box,
+} from "@mui/material";
 import { CelebrationOutlined } from "@mui/icons-material";
 import Image from "next/image";
 import thanksMessage from "@assets/sectionBackground/thanksMessage.png";
@@ -395,6 +403,13 @@ const EventPaymentForm = ({
       <div className="flex flex-col sm:flex-row gap-3 mt-8">
         <button
           type="button"
+          onClick={handleBack}
+          className="sm:flex-1 py-3 px-6 border-2 border-gray-300 rounded-xl font-semibold hover:bg-gray-50 font-somar"
+        >
+          {t("pagination.previous")}
+        </button>
+        <button
+          type="button"
           disabled={isSubmitting || isPaymentSubmitting || !isValid}
           onClick={submitForm}
           className="sm:flex-1 py-3.5 px-6 bg-mainColor text-white rounded-xl font-semibold text-lg flex items-center justify-center gap-2 font-somar shadow-md hover:shadow-lg hover:bg-linksHover transition-all duration-200"
@@ -404,13 +419,6 @@ const EventPaymentForm = ({
           ) : (
             t("eventTrips.payment.confirm")
           )}
-        </button>
-        <button
-          type="button"
-          onClick={handleBack}
-          className="sm:flex-1 py-3 px-6 border-2 border-gray-300 rounded-xl font-semibold hover:bg-gray-50 font-somar"
-        >
-          {t("pagination.previous")}
         </button>
       </div>
     </div>
@@ -451,17 +459,20 @@ const EventFreeBookingForm = ({
 
         {/* Title */}
         <h4 className="text-2xl font-bold text-mainColor pb-2 font-somar">
-          {t("forms.freeBooking.title") || "Congratulations! This Event is Free"}
+          {t("forms.freeBooking.title") ||
+            "Congratulations! This Event is Free"}
         </h4>
 
         {/* Subtitle */}
         <h6 className="text-xl font-bold text-mainColor pb-4 font-somar">
-          {t("forms.freeBooking.subtitle") || "You're all set! This amazing event is completely free of charge."}
+          {t("forms.freeBooking.subtitle") ||
+            "You're all set! This amazing event is completely free of charge."}
         </h6>
 
         {/* Description */}
         <p className="text-lg text-mainColor pb-6 leading-relaxed font-somar">
-          {t("forms.freeBooking.description") || "Click the button below to confirm your free booking and secure your spot."}
+          {t("forms.freeBooking.description") ||
+            "Click the button below to confirm your free booking and secure your spot."}
         </p>
 
         {/* Confirm & Previous Buttons */}
@@ -481,7 +492,7 @@ const EventFreeBookingForm = ({
               t("forms.freeBooking.confirmButton") || "Confirm Free Booking"
             )}
           </button>
-          
+
           <button
             type="button"
             onClick={handleBack}
