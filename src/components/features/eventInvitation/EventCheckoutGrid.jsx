@@ -2,7 +2,10 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { Formik } from "formik";
-import { RadioGroup, Select, MenuItem, CircularProgress } from "@mui/material";
+import { RadioGroup, Select, MenuItem, CircularProgress, Card, CardContent, Box } from "@mui/material";
+import { CelebrationOutlined } from "@mui/icons-material";
+import Image from "next/image";
+import thanksMessage from "@assets/sectionBackground/thanksMessage.png";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { cn } from "@utils/helpers/cn";
@@ -414,6 +417,84 @@ const EventPaymentForm = ({
   );
 };
 
+// ── Free Booking Form ──
+const EventFreeBookingForm = ({
+  handleFreeBooking,
+  handleBack,
+  isPaymentSubmitting,
+  t,
+}) => {
+  return (
+    <Card className="w-full mx-auto bg-gradient-to-br from-green-50 to-blue-50 border-green-200 !rounded-2xl shadow-lg border p-2 md:p-6 text-center relative">
+      <CardContent className="text-center py-8 relative">
+        <Image
+          src={thanksMessage}
+          alt="success request quote"
+          width={172}
+          height={182}
+          className="absolute top-0 start-0 hidden lg:block"
+        />
+
+        <Image
+          src={thanksMessage}
+          alt="success request quote"
+          width={172}
+          height={182}
+          className="absolute top-0 end-0 hidden lg:block"
+        />
+
+        {/* Celebration Icon */}
+        <CelebrationOutlined
+          className="text-secColor mb-4 mx-auto"
+          sx={{ fontSize: 64 }}
+        />
+
+        {/* Title */}
+        <h4 className="text-2xl font-bold text-mainColor pb-2 font-somar">
+          {t("forms.freeBooking.title") || "Congratulations! This Event is Free"}
+        </h4>
+
+        {/* Subtitle */}
+        <h6 className="text-xl font-bold text-mainColor pb-4 font-somar">
+          {t("forms.freeBooking.subtitle") || "You're all set! This amazing event is completely free of charge."}
+        </h6>
+
+        {/* Description */}
+        <p className="text-lg text-mainColor pb-6 leading-relaxed font-somar">
+          {t("forms.freeBooking.description") || "Click the button below to confirm your free booking and secure your spot."}
+        </p>
+
+        {/* Confirm & Previous Buttons */}
+        <div className="flex flex-col sm:flex-row gap-3 mt-8">
+          <button
+            type="button"
+            onClick={handleFreeBooking}
+            disabled={isPaymentSubmitting}
+            className="sm:flex-1 py-3.5 px-6 bg-mainColor hover:bg-linksHover text-white rounded-xl font-semibold text-lg flex items-center justify-center gap-2 font-somar shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isPaymentSubmitting ? (
+              <Box className="flex items-center justify-center gap-2">
+                <CircularProgress size={20} color="inherit" />
+                <span>{t("forms.validation.sending")}</span>
+              </Box>
+            ) : (
+              t("forms.freeBooking.confirmButton") || "Confirm Free Booking"
+            )}
+          </button>
+          
+          <button
+            type="button"
+            onClick={handleBack}
+            className="sm:flex-1 py-3 px-6 border-2 border-gray-300 rounded-xl font-semibold hover:bg-gray-50 font-somar"
+          >
+            {t("pagination.previous")}
+          </button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
 // ── Main Page Layout Component ──
 const EventCheckoutGrid = ({
   event,
@@ -441,10 +522,44 @@ const EventCheckoutGrid = ({
   registrationValuesRef,
   isPaymentSubmitting,
   handlePaymentSubmit,
+  handleFreeBooking,
   handleBack,
 }) => {
   const locale = useLocale();
   const t = useTranslations();
+
+  const isFree = dynamicPrice === 0;
+
+  if (isFree) {
+    return (
+      <ResponsiveGridLayout
+        LargeSizeGrid={EventPaymentSummary}
+        SmallSizeGrid={EventFreeBookingForm}
+        largeGridPercent={4.75}
+        smallGridPercent={7.25}
+        largeSizeProps={{
+          event,
+          dynamicPrice,
+          selectedOptionsBreakdown,
+          rawDynamicPrice,
+          promoDiscountAmount,
+          appliedPromoCode,
+          promoCodeInput,
+          setPromoCodeInput,
+          handleApplyPromoCode,
+          handleRemovePromoCode,
+          isPromoSubmitting,
+          t,
+        }}
+        smallSizeProps={{
+          handleFreeBooking,
+          handleBack,
+          isPaymentSubmitting,
+          t,
+        }}
+      />
+    );
+  }
 
   return (
     <Formik

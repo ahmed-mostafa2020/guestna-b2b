@@ -41,7 +41,6 @@ import EventDetailsGrid from "@components/features/eventInvitation/EventDetailsG
 import EventDynamicForm from "@components/features/eventInvitation/EventDynamicForm";
 import EventCheckoutGrid from "@components/features/eventInvitation/EventCheckoutGrid";
 import SmallSeparator from "@components/ui/separators/SmallSeparator";
-import CustomizedBreadcrumbs from "@components/ui/breadcrumbs/CustomizedBreadcrumbs";
 import { Container } from "@mui/material";
 
 import madaLogo from "@assets/paymentLogos/mada.svg";
@@ -644,6 +643,52 @@ const EventRegistrationWizard = ({ event }) => {
     }
   };
 
+  const handleFreeBooking = async () => {
+    const regValues = registrationValuesRef.current;
+    if (!regValues) {
+      enqueueSnackbar(t("eventTrips.validation.error"), { variant: "error" });
+      return;
+    }
+    setIsPaymentSubmitting(true);
+    try {
+      const clientId = clientBookingId || regValues?._clientId;
+      const requestBody = {
+        eventTrip: event._id,
+        client: clientId,
+        quantity: 1,
+      };
+      if (appliedPromoCode?.data?._id || appliedPromoCode?.data?.id) {
+        requestBody.promoCode = appliedPromoCode.data?._id || appliedPromoCode.data?.id;
+      }
+
+      const response = await axios.post(
+        getProxyUrl(B2B_END_POINTS.BOOKING_EVENT_TRIP.FREE_INITIATION),
+        requestBody,
+        {
+          headers,
+        }
+      );
+
+      if (response.data) {
+        enqueueSnackbar(
+          t("forms.freeBooking.successMessage") ||
+            "Your confirmation has been done successfully!",
+          { variant: "success" }
+        );
+        router.push(`/bookingStatus/${response.data}`);
+      }
+    } catch (error) {
+      console.error("Free booking error:", error);
+      let errorMsg =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        t("common.errorHappens");
+      enqueueSnackbar(errorMsg, { variant: "error" });
+    } finally {
+      setIsPaymentSubmitting(false);
+    }
+  };
+
   // Check if there's a discounted price for the event
   const hasDiscount =
     event?.discountedPrice &&
@@ -652,36 +697,9 @@ const EventRegistrationWizard = ({ event }) => {
     ? Number(event.discountedPrice)
     : Number(event.price || 0);
 
-  const breadcrumbsList = useMemo(() => {
-    const list = [
-      {
-        id: 1,
-        type: "link",
-        name: t("pagesHead.title.home"),
-        link: "",
-      },
-    ];
-    if (event?.categories?.name) {
-      list.push({
-        id: 2,
-        type: "link",
-        name: event.categories.name,
-        link: `discover?categories=${event.categories._id}`,
-      });
-    }
-    list.push({
-      id: list.length + 1,
-      type: "text",
-      name: event?.name,
-    });
-    return list;
-  }, [event, t]);
-
   if (currentStep === 0) {
     return (
       <main className="py-5 overflow-hidden bg-activityDetailsBg lg:py-10">
-        <CustomizedBreadcrumbs breadcrumbsList={breadcrumbsList} />
-
         <EventGallerySection event={event} />
         <SmallSeparator />
 
@@ -738,6 +756,7 @@ const EventRegistrationWizard = ({ event }) => {
         registrationValuesRef={registrationValuesRef}
         isPaymentSubmitting={isPaymentSubmitting}
         handlePaymentSubmit={handlePaymentSubmit}
+        handleFreeBooking={handleFreeBooking}
         handleBack={handleBack}
       />
     </main>
