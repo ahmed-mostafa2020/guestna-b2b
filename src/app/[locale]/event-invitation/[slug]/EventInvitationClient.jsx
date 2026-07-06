@@ -55,14 +55,7 @@ const EventInvitationClient = ({ params }) => {
     );
   }
 
-  return (
-    <main className="min-h-screen bg-packageDetailsBg py-8 lg:py-12 flex items-center justify-center">
-      <div className="w-full max-w-3xl px-4">
-        {/* Dynamic Registration Wizard Component with integrated Poster Header */}
-        <EventRegistrationWizard event={event} />
-      </div>
-    </main>
-  );
+  return <EventRegistrationWizard event={event} />;
 };
 
 export default EventInvitationClient;

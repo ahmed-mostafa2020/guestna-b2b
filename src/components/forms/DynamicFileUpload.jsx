@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { useSnackbar } from "notistack";
 import { memo, useState, useRef, useEffect } from "react";
 import { cn } from "@utils/helpers/cn";
 
@@ -123,6 +124,7 @@ const DynamicFileUpload = memo(
     setFieldValue,
   }) => {
     const t = useTranslations();
+    const { enqueueSnackbar } = useSnackbar();
     const fileInputRef = useRef(null);
     const [dragActive, setDragActive] = useState(false);
     const [localError, setLocalError] = useState("");
@@ -174,13 +176,24 @@ const DynamicFileUpload = memo(
           previewStreamRef.current.getTracks().forEach((track) => track.stop());
         }
 
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         previewStreamRef.current = stream;
         if (videoPreviewRef.current) {
           videoPreviewRef.current.srcObject = stream;
         }
       } catch (err) {
         console.error("Error starting camera preview:", err);
+        let errorMsg = t("eventTrips.upload.cameraPermissionError") || "Camera or microphone permission denied. Please allow access in browser settings.";
+        
+        if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
+          errorMsg = t("eventTrips.upload.cameraNotFoundError") || "No camera device found. Please verify your camera is connected.";
+        } else if (err.name === "NotReadableError" || err.name === "TrackStartError") {
+          errorMsg = t("eventTrips.upload.cameraInUseError") || "Camera device is currently in use by another application.";
+        } else if (err.name === "SecurityError") {
+          errorMsg = t("eventTrips.upload.cameraSecurityError") || "Access to camera is blocked due to insecure connection (HTTPS is required).";
+        }
+        
+        setLocalError(errorMsg);
       }
     };
 
@@ -194,10 +207,25 @@ const DynamicFileUpload = memo(
       }
     };
 
-    // Live video preview effect
+    // Live media preview and permission warming effect
     useEffect(() => {
-      if (type === "video" && activeTab === "record" && !hasValue && recordingStatus === "idle") {
-        startCameraPreview();
+      if (activeTab === "record" && !hasValue && recordingStatus === "idle") {
+        if (type === "video") {
+          startCameraPreview();
+        } else if (type === "audio") {
+          // Warm up microphone permission to trigger browser prompt immediately
+          const warmUpMic = async () => {
+            try {
+              if (typeof navigator !== "undefined" && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach((track) => track.stop());
+              }
+            } catch (err) {
+              console.error("Error warming up mic permission:", err);
+            }
+          };
+          warmUpMic();
+        }
       } else {
         stopCameraPreview();
       }
@@ -269,11 +297,27 @@ const DynamicFileUpload = memo(
     const startRecording = async () => {
       try {
         setLocalError("");
-        setInfoMessage(
-          type === "video"
-            ? t("eventTrips.upload.cameraPermissionPrompt") || "Camera and Microphone access are required. Please click 'Allow' when prompted by your browser."
-            : t("eventTrips.upload.micPermissionPrompt") || "Microphone access is required. Please click 'Allow' when prompted by your browser."
-        );
+        
+        let needsPrompt = true;
+        if (typeof navigator !== "undefined" && navigator.permissions && navigator.permissions.query) {
+          try {
+            const permissionName = type === "video" ? "camera" : "microphone";
+            const status = await navigator.permissions.query({ name: permissionName });
+            if (status.state === "granted") {
+              needsPrompt = false;
+            }
+          } catch (e) {
+            // Permissions query failed/unsupported for camera/mic
+          }
+        }
+
+        if (needsPrompt) {
+          setInfoMessage(
+            type === "video"
+              ? t("eventTrips.upload.cameraPermissionPrompt") || "Camera and Microphone access are required. Please click 'Allow' when prompted by your browser."
+              : t("eventTrips.upload.micPermissionPrompt") || "Microphone access is required. Please click 'Allow' when prompted by your browser."
+          );
+        }
 
         // Check if mediaDevices is supported (required for HTTPS / secure context check)
         if (typeof navigator === "undefined" || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -566,7 +610,7 @@ const DynamicFileUpload = memo(
     return (
       <div className="flex flex-col gap-3 relative w-full text-start">
         {label && (
-          <label className="font-semibold text-gray-700 font-somar text-sm md:text-base flex items-center gap-1">
+          <label className="font-medium text-gray-700 font-somar text-sm md:text-base flex items-center gap-1">
             {label}
             {required && <span className="text-error font-ibm">*</span>}
           </label>
@@ -574,7 +618,7 @@ const DynamicFileUpload = memo(
 
         {/* Browser Permission Prompt Banner */}
         {infoMessage && (
-          <div className="flex items-center gap-2.5 bg-blue-50 border border-blue-200 text-blue-800 rounded-xl p-3.5 text-sm font-somar animate-pulse">
+          <div className="flex items-center gap-2.5 bg-blue-50 border border-blue-200 text-blue-800 rounded-xl p-3.5 text-sm font-somar">
             <svg className="w-5 h-5 flex-shrink-0 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -742,7 +786,7 @@ const DynamicFileUpload = memo(
                   "cursor-pointer group flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-xl transition-all duration-200 ease-in-out bg-white select-none min-h-[140px]",
                   dragActive 
                     ? "border-mainColor bg-mainColor/5 shadow-md scale-[0.99]" 
-                    : touched && (errors || localError)
+                    : localError || (touched && errors)
                     ? "border-error hover:border-error bg-red-50/10"
                     : "border-gray-300 hover:border-mainColor hover:bg-gray-50/50"
                 )}
@@ -784,7 +828,7 @@ const DynamicFileUpload = memo(
                 "cursor-pointer group flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-xl transition-all duration-200 ease-in-out bg-white select-none min-h-[140px]",
                 dragActive 
                   ? "border-mainColor bg-mainColor/5 shadow-md scale-[0.99]" 
-                  : touched && (errors || localError)
+                  : localError || (touched && errors)
                   ? "border-error hover:border-error bg-red-50/10"
                   : "border-gray-300 hover:border-mainColor hover:bg-gray-50/50"
               )}
@@ -845,9 +889,9 @@ const DynamicFileUpload = memo(
         )}
 
         {/* Errors */}
-        {(touched && errors) || localError ? (
+        {localError || (touched && errors) ? (
           <span className="text-xs text-error font-medium font-somar mt-1">
-            {errors || localError}
+            {localError || errors}
           </span>
         ) : null}
       </div>

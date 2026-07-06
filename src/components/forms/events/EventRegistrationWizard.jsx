@@ -36,10 +36,13 @@ import {
   createDynamicFormSchema,
 } from "@utils/validators/dynamicFormSchema";
 
-import WizardHero from "./WizardHero";
-import WizardStepper from "./WizardStepper";
-import DynamicField from "./DynamicField";
-import ExtraInformation from "@components/features/tripDetails/gridSection/largeSizeGrid/accordionsGroupSection/accordionsDetails/ExtraInformation";
+import EventGallerySection from "@components/features/eventInvitation/EventGallerySection";
+import EventDetailsGrid from "@components/features/eventInvitation/EventDetailsGrid";
+import EventDynamicForm from "@components/features/eventInvitation/EventDynamicForm";
+import EventCheckoutGrid from "@components/features/eventInvitation/EventCheckoutGrid";
+import SmallSeparator from "@components/ui/separators/SmallSeparator";
+import CustomizedBreadcrumbs from "@components/ui/breadcrumbs/CustomizedBreadcrumbs";
+import { Container } from "@mui/material";
 
 import madaLogo from "@assets/paymentLogos/mada.svg";
 import visaLogo from "@assets/paymentLogos/visa.svg";
@@ -649,515 +652,96 @@ const EventRegistrationWizard = ({ event }) => {
     ? Number(event.discountedPrice)
     : Number(event.price || 0);
 
+  const breadcrumbsList = useMemo(() => {
+    const list = [
+      {
+        id: 1,
+        type: "link",
+        name: t("pagesHead.title.home"),
+        link: "",
+      },
+    ];
+    if (event?.categories?.name) {
+      list.push({
+        id: 2,
+        type: "link",
+        name: event.categories.name,
+        link: `discover?categories=${event.categories._id}`,
+      });
+    }
+    list.push({
+      id: list.length + 1,
+      type: "text",
+      name: event?.name,
+    });
+    return list;
+  }, [event, t]);
+
+  if (currentStep === 0) {
+    return (
+      <main className="py-5 overflow-hidden bg-activityDetailsBg lg:py-10">
+        <CustomizedBreadcrumbs breadcrumbsList={breadcrumbsList} />
+
+        <EventGallerySection event={event} />
+        <SmallSeparator />
+
+        <EventDetailsGrid event={event} />
+
+        <EventDynamicForm
+          event={event}
+          inputs={inputs}
+          registrationInitialValues={registrationInitialValues}
+          registrationSchema={registrationSchema}
+          registrationValuesRef={registrationValuesRef}
+          isRegistrationSubmitting={isRegistrationSubmitting}
+          handleNext={handleNext}
+          pricingKeys={pricingKeys}
+          handleStep1ValuesChange={handleStep1ValuesChange}
+          dynamicPrice={dynamicPrice}
+          formTitle={formTitle}
+        />
+      </main>
+    );
+  }
+
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-      <WizardHero
+    <main className="py-5 lg:py-10 bg-activityDetailsBg min-h-screen">
+      <Container maxWidth="lg">
+        <h2 className="text-lg font-semibold lg:text-[28px] lg:pb-12 pb-6">
+          {t("forms.paymentMethodsForm.title") || "Payment Methods"}
+        </h2>
+      </Container>
+
+      <EventCheckoutGrid
         event={event}
         dynamicPrice={dynamicPrice}
-        locale={locale}
-        t={t}
+        selectedOptionsBreakdown={selectedOptionsBreakdown}
+        rawDynamicPrice={rawDynamicPrice}
+        promoDiscountAmount={promoDiscountAmount}
+        appliedPromoCode={appliedPromoCode}
+        promoCodeInput={promoCodeInput}
+        setPromoCodeInput={setPromoCodeInput}
+        handleApplyPromoCode={handleApplyPromoCode}
+        handleRemovePromoCode={handleRemovePromoCode}
+        isPromoSubmitting={isPromoSubmitting}
+        currentPaymentMethod={currentPaymentMethod}
+        handlePaymentMethodChange={handlePaymentMethodChange}
+        creditSchema={creditSchema}
+        tamaraSchema={tamaraSchema}
+        paymentInitialValues={paymentInitialValues}
+        creditImages={creditImages}
+        appleImage={appleImage}
+        tamaraImage={tamaraImage}
+        months={months}
+        years={years}
+        buildAppleApiBody={buildAppleApiBody}
+        registrationValuesRef={registrationValuesRef}
+        isPaymentSubmitting={isPaymentSubmitting}
+        handlePaymentSubmit={handlePaymentSubmit}
+        handleBack={handleBack}
       />
-
-      <div className="px-6 md:px-10 py-8">
-        <WizardStepper
-          steps={STEPS}
-          currentStep={currentStep}
-          formTitle={formTitle}
-          t={t}
-        />
-
-        {currentStep === 0 && (
-          <Formik
-            initialValues={
-              registrationValuesRef.current || registrationInitialValues
-            }
-            validationSchema={registrationSchema}
-            enableReinitialize={true}
-            onSubmit={() => {}}
-            validateOnChange={false}
-            validateOnBlur={true}
-          >
-            {({
-              values,
-              errors,
-              touched,
-              handleChange,
-              handleBlur,
-              setFieldValue,
-              validateForm,
-              setTouched,
-            }) => (
-              <div className="flex flex-col gap-6">
-                <FormikValueListener
-                  values={values}
-                  pricingKeys={pricingKeys}
-                  onChange={handleStep1ValuesChange}
-                />
-
-                {event.attributes && event.attributes.length > 0 && (
-                  <div className="flex flex-col gap-3 text-start mb-2">
-                    <h3 className="text-lg font-bold text-titleColor font-somar">
-                      {t("tripDetails.accordionsGroup.extraInfo")}
-                    </h3>
-                    <ExtraInformation data={event.attributes} isAuth={true} />
-                    <hr className="border-border mt-3 mb-1" />
-                  </div>
-                )}
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-start">
-                  <div className="relative">
-                    <TextInputGroup
-                      label={t("eventTrips.form.name.label")}
-                      type="text"
-                      name="name"
-                      value={values.name}
-                      errors={errors.name}
-                      touched={touched.name}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      placeholder={t("eventTrips.form.name.placeholder")}
-                      required={true}
-                      id="static-field-name"
-                      labelFontFamily="var(--font-somar-sans), sans-serif"
-                    />
-                  </div>
-                  {inputs.map((input) => (
-                    <DynamicField
-                      key={input._id}
-                      input={input}
-                      value={values[input.key]}
-                      error={errors[input.key]}
-                      touched={touched[input.key]}
-                      handleChange={handleChange}
-                      handleBlur={handleBlur}
-                      setFieldValue={setFieldValue}
-                      t={t}
-                      locale={locale}
-                    />
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  disabled={isRegistrationSubmitting}
-                  onClick={() => handleNext(validateForm, setTouched, values)}
-                  className="w-full py-3.5 px-6 bg-mainColor text-white rounded-xl font-somar font-semibold text-lg hover:bg-linksHover transition-all duration-200 ease-in-out shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {isRegistrationSubmitting ? (
-                    <>
-                      <CircularProgress size={20} color="inherit" />
-                      <span>{t("forms.validation.sending")}</span>
-                    </>
-                  ) : (
-                    t("pagination.next")
-                  )}
-                </button>
-              </div>
-            )}
-          </Formik>
-        )}
-
-        {currentStep === 1 && (
-          <Formik
-            initialValues={paymentInitialValues}
-            validationSchema={
-              currentPaymentMethod ===
-              CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD
-                ? creditSchema
-                : currentPaymentMethod ===
-                    CONSTANT_VALUES.PAYMENT_METHODS.TAMARA
-                  ? tamaraSchema
-                  : undefined
-            }
-            onSubmit={handlePaymentSubmit}
-            validateOnChange={true}
-            validateOnBlur={true}
-          >
-            {({
-              values: paymentValues,
-              errors: paymentErrors,
-              touched: paymentTouched,
-              handleChange: handlePaymentChange,
-              handleBlur: handlePaymentBlur,
-              setFieldValue,
-              isSubmitting,
-              isValid,
-              submitForm,
-            }) => (
-              <div className="space-y-6 text-start">
-                <div className="bg-activityDetailsBg rounded-xl p-5 md:p-6 border border-border">
-                  <h3 className="text-base font-semibold text-titleColor font-somar mb-3">
-                    {t("eventTrips.payment.orderSummary")}
-                  </h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center text-sm font-somar">
-                      <span className="text-textLight">{event.name}</span>
-                      <span className="text-textLight font-ibm">
-                        ET-{event.orderId}
-                      </span>
-                    </div>
-                    <hr className="border-border" />
-                    <div className="flex justify-between items-center font-somar text-sm text-textLight">
-                      <span>
-                        {t("eventTrips.price.basePrice") || "Base Price"}
-                      </span>
-                      <div className="flex flex-col items-end gap-0.5">
-                        {event.discountedPrice &&
-                        Number(event.discountedPrice) < Number(event.price) &&
-                        !appliedPromoCode ? (
-                          <>
-                            <span className="relative inline-block text-gray-400 font-ibm text-xs">
-                              {formatCurrency(event.price)}
-                              <span
-                                className="absolute left-0 right-0 top-1/2 h-[1.5px] bg-[#ef4444] transform -rotate-[15deg] pointer-events-none"
-                                style={{ transformOrigin: "center" }}
-                              />
-                            </span>
-                            <span className="font-semibold font-ibm text-mainColor">
-                              {formatCurrency(event.discountedPrice)}
-                            </span>
-                          </>
-                        ) : (
-                          <span className="font-semibold font-ibm">
-                            {formatCurrency(event.price)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    {selectedOptionsBreakdown.map((opt, idx) => (
-                      <div
-                        key={idx}
-                        className="flex justify-between items-center font-somar text-sm text-textLight"
-                      >
-                        <span>
-                          {opt.fieldTitle}:{" "}
-                          <strong className="text-textDark font-medium">
-                            {opt.label}
-                          </strong>
-                        </span>
-                        <span className="font-semibold font-ibm flex">
-                          + {formatCurrency(opt.price)}
-                        </span>
-                      </div>
-                    ))}
-                    <hr className="border-border" />
-
-                    {/* ── Promo Code Input ── */}
-                    <div className="flex flex-col gap-2">
-                      <label className="text-sm font-semibold text-titleColor font-somar">
-                        {t("eventTrips.payment.promoCode.label")}
-                      </label>
-                      {appliedPromoCode ? (
-                        <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-4 py-3">
-                          <div className="flex items-center gap-2">
-                            <span className="text-green-600 text-lg">✓</span>
-                            <span className="font-semibold font-ibm text-green-700 text-sm">
-                              {appliedPromoCode.code}
-                            </span>
-                            <span className="text-green-600 text-xs font-somar">
-                              ({appliedPromoCode.discountType === "AMOUNT"
-                                ? formatCurrency(appliedPromoCode.discount)
-                                : `${appliedPromoCode.discount}%`}{" "}
-                              {t("eventTrips.payment.promoCode.applied")})
-                            </span>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={handleRemovePromoCode}
-                            className="text-red-500 hover:text-red-700 text-xs font-semibold font-somar transition-colors duration-150"
-                          >
-                            {t("eventTrips.payment.promoCode.remove")}
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex gap-2">
-                          <input
-                            type="text"
-                            value={promoCodeInput}
-                            onChange={(e) => setPromoCodeInput(e.target.value)}
-                            onKeyDown={(e) =>
-                              e.key === "Enter" && handleApplyPromoCode()
-                            }
-                            placeholder={t(
-                              "eventTrips.payment.promoCode.placeholder"
-                            )}
-                            className="flex-1 p-3 text-sm border-2 border-border rounded-xl outline-none font-ibm placeholder:text-textLight focus:border-mainColor hover:border-mainColor transition-colors duration-200 bg-white"
-                          />
-                          <button
-                            type="button"
-                            disabled={
-                              !promoCodeInput.trim() || isPromoSubmitting
-                            }
-                            onClick={handleApplyPromoCode}
-                            className="px-5 py-3 bg-mainColor text-white rounded-xl font-semibold font-somar text-sm hover:bg-linksHover transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
-                          >
-                            {isPromoSubmitting ? (
-                              <CircularProgress size={16} color="inherit" />
-                            ) : (
-                              t("eventTrips.payment.promoCode.apply")
-                            )}
-                          </button>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* ── Promo Discount Line ── */}
-                    {appliedPromoCode && (
-                      <div className="flex justify-between items-center font-somar text-sm">
-                        <span className="text-green-600 font-medium">
-                          {t("eventTrips.payment.promoCode.discount")} (
-                          {appliedPromoCode.discountType === "AMOUNT"
-                            ? formatCurrency(appliedPromoCode.discount)
-                            : `${appliedPromoCode.discount}%`}
-                          )
-                        </span>
-                        <span className="text-green-600 font-semibold font-ibm flex">
-                          - {formatCurrency(promoDiscountAmount)}
-                        </span>
-                      </div>
-                    )}
-
-                    <hr className="border-border" />
-                    <div className="flex justify-between items-center">
-                      <span className="text-lg font-bold text-titleColor font-somar">
-                        {t("eventTrips.payment.total")}
-                      </span>
-                      <div className="text-end">
-                        {appliedPromoCode && (
-                          <span className="relative inline-block text-gray-400 font-ibm text-sm me-1">
-                            {formatCurrency(rawDynamicPrice)}
-                            <span
-                              className="absolute left-0 right-0 top-1/2 h-[1.5px] bg-[#ef4444] transform -rotate-[10deg] pointer-events-none"
-                              style={{ transformOrigin: "center" }}
-                            />
-                          </span>
-                        )}
-                        <span className="text-lg font-bold text-mainColor font-somar flex justify-end">
-                          {formatCurrency(dynamicPrice)}
-                        </span>
-                        <p className="text-xs text-textLight font-somar">
-                          {t("eventTrips.payment.includingVat")}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <RadioGroup
-                  value={currentPaymentMethod}
-                  onChange={handlePaymentMethodChange}
-                  className="flex flex-col w-full gap-4"
-                >
-                  <div className="flex flex-col">
-                    <PaymentMethod
-                      value={CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD}
-                      currentPaymentMethod={currentPaymentMethod}
-                      label={t("forms.methods.credit")}
-                      imagesList={creditImages}
-                    />
-                    {currentPaymentMethod ===
-                      CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD && (
-                      <div className="px-4 py-6 bg-[#FAF9F9] rounded-b-xl flex flex-col gap-6">
-                        <TextInputGroup
-                          label={t("forms.cardholderName.name")}
-                          type="text"
-                          name="cardholderName"
-                          value={paymentValues.cardholderName}
-                          errors={paymentErrors.cardholderName}
-                          touched={paymentTouched.cardholderName}
-                          onChange={handlePaymentChange}
-                          onBlur={handlePaymentBlur}
-                          labelFontFamily="var(--font-somar-sans), sans-serif"
-                        />
-                        <TextInputGroup
-                          label={t("forms.cardNumber.name")}
-                          type="text"
-                          name="cardNumber"
-                          inputMode="numeric"
-                          value={paymentValues.cardNumber}
-                          errors={paymentErrors.cardNumber}
-                          touched={paymentTouched.cardNumber}
-                          onChange={handlePaymentChange}
-                          onBlur={handlePaymentBlur}
-                          minLength="15"
-                          maxLength="16"
-                          labelFontFamily="var(--font-somar-sans), sans-serif"
-                        />
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                          <div className="flex flex-col gap-2">
-                            <label className="font-medium font-somar">
-                              {t("forms.expirationDate.title")}
-                            </label>
-                            <div className="flex gap-3">
-                              <SelectionGroupWrapper
-                                name="expiryMonth"
-                                value={paymentValues.expiryMonth}
-                                onChange={handlePaymentChange}
-                                onBlur={handlePaymentBlur}
-                                touched={paymentTouched.expiryMonth}
-                                errors={paymentErrors.expiryMonth}
-                                placeholder={t("common.allMonths")}
-                                list={months}
-                              />
-                              <SelectionGroupWrapper
-                                name="expiryYear"
-                                value={paymentValues.expiryYear}
-                                onChange={handlePaymentChange}
-                                onBlur={handlePaymentBlur}
-                                touched={paymentTouched.expiryYear}
-                                errors={paymentErrors.expiryYear}
-                                placeholder={t("common.years")}
-                                list={years}
-                              />
-                            </div>
-                          </div>
-                          <TextInputGroup
-                            label={t("forms.cvc.name")}
-                            type="text"
-                            name="cvc"
-                            inputMode="numeric"
-                            value={paymentValues.cvc}
-                            errors={paymentErrors.cvc}
-                            touched={paymentTouched.cvc}
-                            onChange={handlePaymentChange}
-                            onBlur={handlePaymentBlur}
-                            minLength="3"
-                            maxLength="4"
-                            labelFontFamily="var(--font-somar-sans), sans-serif"
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex flex-col">
-                    <PaymentMethod
-                      value={CONSTANT_VALUES.PAYMENT_METHODS.APPLE}
-                      currentPaymentMethod={currentPaymentMethod}
-                      label={t("forms.methods.applePay")}
-                      imagesList={appleImage}
-                    />
-                    {currentPaymentMethod ===
-                      CONSTANT_VALUES.PAYMENT_METHODS.APPLE && (
-                      <div className="px-4 py-6 bg-[#FAF9F9] rounded-b-xl">
-                        <EventAppleWidget
-                          key={dynamicPrice}
-                          baseData={buildAppleApiBody(
-                            registrationValuesRef.current
-                          )}
-                          price={dynamicPrice}
-                        />
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex flex-col">
-                    <PaymentMethod
-                      value={CONSTANT_VALUES.PAYMENT_METHODS.TAMARA}
-                      currentPaymentMethod={currentPaymentMethod}
-                      label={t("forms.methods.tamara")}
-                      imagesList={tamaraImage}
-                    />
-                    {currentPaymentMethod ===
-                      CONSTANT_VALUES.PAYMENT_METHODS.TAMARA && (
-                      <div className="px-4 py-8 bg-[#FAF9F9] rounded-b-xl flex flex-col gap-4">
-                        <TamaraWidget
-                          price={dynamicPrice}
-                          publicKey={process.env.NEXT_PUBLIC_TAMARA_WIDGET_KEY}
-                          currency="SAR"
-                          paymentType="installment"
-                        />
-                        <div className="relative w-full">
-                          <label className="block font-medium font-somar mb-2">
-                            {t("forms.phone.name")}
-                          </label>
-                          <PhoneInput
-                            countries={["SA", "AE", "BH", "KW", "OM"]}
-                            defaultCountry="SA"
-                            onCountryChange={(country) => {
-                              setFieldValue("selectedCountry", country);
-                            }}
-                            value={paymentValues.tamaraMobile}
-                            onChange={(val) =>
-                              setFieldValue("tamaraMobile", val || "")
-                            }
-                            onBlur={handlePaymentBlur}
-                            id="tamaraMobile"
-                            addInternationalOption={false}
-                            style={{ direction: "ltr" }}
-                            className={cn(
-                              "flex w-full bg-white gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background font-somar text-lg placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed transition-all duration-200 ease-in-out",
-                              paymentErrors.tamaraMobile &&
-                                paymentTouched.tamaraMobile
-                                ? "border-error"
-                                : "border-border"
-                            )}
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </RadioGroup>
-
-                <div className="flex flex-col sm:flex-row gap-3 mt-8">
-                  <button
-                    type="button"
-                    onClick={handleBack}
-                    className="sm:flex-1 py-3 px-6 border-2 border-gray-300 rounded-xl font-semibold hover:bg-gray-50"
-                  >
-                    {t("pagination.previous")}
-                  </button>
-                  <button
-                    type="button"
-                    disabled={isSubmitting || isPaymentSubmitting || !isValid}
-                    onClick={submitForm}
-                    className="sm:flex-1 py-3.5 px-6 bg-mainColor text-white rounded-xl font-semibold text-lg flex items-center justify-center gap-2"
-                  >
-                    {isSubmitting || isPaymentSubmitting ? (
-                      <CircularProgress size={20} color="inherit" />
-                    ) : (
-                      t("eventTrips.payment.confirm")
-                    )}
-                  </button>
-                </div>
-              </div>
-            )}
-          </Formik>
-        )}
-      </div>
-    </div>
+    </main>
   );
 };
-
-const SelectionGroupWrapper = ({
-  name,
-  value,
-  onChange,
-  onBlur,
-  touched,
-  errors,
-  placeholder,
-  list,
-}) => (
-  <div className="flex-1">
-    <Select
-      name={name}
-      value={value}
-      onChange={onChange}
-      onBlur={onBlur}
-      displayEmpty
-      sx={{ width: "100%", borderRadius: "8px" }}
-    >
-      <MenuItem value="" disabled>
-        {placeholder}
-      </MenuItem>
-      {list.map((item) => (
-        <MenuItem
-          key={item}
-          value={name === "expiryYear" ? item.toString().slice(-2) : item}
-        >
-          {item}
-        </MenuItem>
-      ))}
-    </Select>
-  </div>
-);
 
 export default EventRegistrationWizard;
