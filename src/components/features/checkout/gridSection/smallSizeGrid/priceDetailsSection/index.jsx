@@ -15,37 +15,40 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
 
   const t = useTranslations();
 
+  const data = promoCodeData || finalTripDetails;
+
   // Safe access with fallback values to prevent crashes
-  const priceExclTax = formatCurrency(
-    promoCodeData?.tripBasePriceWithoutVat ||
-      finalTripDetails?.tripBasePriceWithoutVat ||
-      0
-  );
+  const priceExclTax = formatCurrency(data?.tripBasePriceWithoutVat || 0);
 
   const numberOfStudents = formatNumbersUint(
-    promoCodeData?.quantity || finalTripDetails?.quantity || 0,
+    data?.quantity || 0,
     t("common.student"),
     t("common.students")
   );
 
-  const priceWithTax = formatCurrency(
-    promoCodeData?.basePriceTotalWithVat ||
-      finalTripDetails?.basePriceTotalWithVat ||
-      0
-  );
+  const priceWithTax = formatCurrency(data?.basePriceTotalWithVat || 0);
   const discountedPriceWithTax = formatCurrency(
-    promoCodeData?.discountedTotalPriceWithVat ||
-      finalTripDetails?.discountedTotalPriceWithVat ||
-      0
+    data?.discountedTotalPriceWithVat || 0
   );
+
+  const tripDiscount = data?.tripDiscount || 0;
+  const quantityDiscount = data?.quantityDiscount || 0;
+  const promoCodeDiscount = data?.promoCodeDiscount || 0;
+  const totalDiscount = data?.totalDiscount || 0;
+  const hasAnyDiscount = totalDiscount > 0;
 
   return (
     <FrameWithImagedHeader>
       <h3 className="text-xl font-semibold">{t("finalDetails.finalPrice")}</h3>
 
       <div className="flex flex-col gap-2 pb-5 font-light border-b border-textDark">
-        <div className="flex items-center justify-between gap-2">
-          <p>{t("finalDetails.tripPrice")}</p>
+        <div className="flex justify-between gap-2 items-start">
+          <div className="flex flex-col gap-0.5">
+            <p>{t("finalDetails.tripPrice")}</p>
+            <span className="text-xs text-textDark/60">
+              {`(${t("finalDetails.excludingVAT")})`}
+            </span>
+          </div>
           {priceExclTax}
         </div>
 
@@ -53,6 +56,53 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
           <p>{t("finalDetails.studentsNumber")}</p>
           {numberOfStudents}
         </div>
+
+        {hasAnyDiscount && (
+          <div className="flex justify-between gap-2 pt-2 mt-2 border-t border-dashed border-textDark/30 items-start">
+            <div className="flex flex-col gap-0.5">
+              <p>{t("finalDetails.subtotal")}</p>
+              <span className="text-xs text-textDark">
+                {`(${t("finalDetails.includingVAT")})`}
+              </span>
+            </div>
+
+            <span
+              className={` font-medium text-end ${hasAnyDiscount && "line-through text-error"}`}
+            >
+              {priceWithTax}
+            </span>
+          </div>
+        )}
+
+        {tripDiscount > 0 && (
+          <div className="flex items-center justify-between gap-2  font-medium leading-5 text-error">
+            <p>{t("finalDetails.tripDiscount")}</p>
+            <span className="flex items-center gap-0.5">
+              <span>-</span>
+              {formatCurrency(tripDiscount)}
+            </span>
+          </div>
+        )}
+
+        {quantityDiscount > 0 && (
+          <div className="flex items-center justify-between gap-2  font-medium leading-5 text-error">
+            <p>{t("finalDetails.quantityDiscount")}</p>
+            <span className="flex items-center gap-0.5 ">
+              <span>-</span>
+              {formatCurrency(quantityDiscount)}
+            </span>
+          </div>
+        )}
+
+        {promoCodeDiscount > 0 && (
+          <div className="flex items-center justify-between gap-2  font-medium leading-5 text-error">
+            <p>{t("finalDetails.promoCodeDiscount")}</p>
+            <span className="flex items-center gap-0.5">
+              <span>-</span>
+              {formatCurrency(promoCodeDiscount)}
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="flex justify-between w-full gap-2 pt-2 pb-7">
@@ -64,14 +114,8 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
         </div>
 
         <div className="flex flex-col">
-          {promoCodeData?.promoCode && (
-            <del className="text-end text-[#EB0101] text-sm  font-medium font-ibm">
-              {priceWithTax}
-            </del>
-          )}
-
-          <h4 className="text-xl leading-5 transition-all duration-200 ease-in-out font-ibm">
-            {promoCodeData?.promoCode ? discountedPriceWithTax : priceWithTax}
+          <h4 className="text-xl leading-5 transition-all duration-200 ease-in-out ">
+            {hasAnyDiscount ? discountedPriceWithTax : priceWithTax}
           </h4>
         </div>
       </div>

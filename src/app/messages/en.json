@@ -529,8 +529,14 @@
     "studentsNumber": "Students Number",
     "tripPrice": "Trip price per student",
     "mealsNumber": "Meals Number",
-    "total": "Total",
-    "includingVAT": "Including VAT"
+    "total": "Total Paid",
+    "includingVAT": "Including VAT",
+    "excludingVAT": "Excluding VAT",
+    "subtotal": "total",
+    "tripDiscount": "Trip Discount",
+    "quantityDiscount": "Quantity Discount",
+    "promoCodeDiscount": "Promo Code Discount",
+    "totalDiscount": "Total Discount"
   },
 
   "bookingStatus": {

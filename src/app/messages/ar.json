@@ -543,8 +543,14 @@
     "studentsNumber": "عدد الطلاب",
     "tripPrice": "سعر الرحلة للطالب الواحد",
     "mealsNumber": "عدد الوجبات",
-    "total": "المجموع",
-    "includingVAT": "يشمل ضريبة القيمة المضافة"
+    "total": "إجمالي المدفوعات",
+    "includingVAT": "يشمل ضريبة القيمة المضافة",
+    "excludingVAT": "غير شامل ضريبة القيمة المضافة",
+    "subtotal": "المجموع ",
+    "tripDiscount": "خصم الرحلة",
+    "quantityDiscount": "خصم الكمية",
+    "promoCodeDiscount": "خصم كوبون الترويج",
+    "totalDiscount": "إجمالي الخصم"
   },
 
   "bookingStatus": {
