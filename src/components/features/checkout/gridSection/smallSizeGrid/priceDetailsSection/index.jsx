@@ -57,50 +57,62 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
           {numberOfStudents}
         </div>
 
+        <div className="flex justify-between gap-2 pt-2 mt-2 border-t border-dashed border-textDark/30 items-start">
+          <div className="flex flex-col gap-0.5">
+            <p>{t("finalDetails.subtotal")}</p>
+            <span className="text-xs text-textDark">
+              {`(${t("finalDetails.includingVAT")})`}
+            </span>
+          </div>
+
+          <span
+            className={` font-medium text-end ${hasAnyDiscount && "line-through text-error"}`}
+          >
+            {priceWithTax}
+          </span>
+        </div>
+
         {hasAnyDiscount && (
-          <div className="flex justify-between gap-2 pt-2 mt-2 border-t border-dashed border-textDark/30 items-start">
-            <div className="flex flex-col gap-0.5">
-              <p>{t("finalDetails.subtotal")}</p>
-              <span className="text-xs text-textDark">
-                {`(${t("finalDetails.includingVAT")})`}
-              </span>
-            </div>
+          <div className="flex flex-col w-full gap-2 pt-2 mt-2 border-t border-dashed border-textDark/30 ">
+            {tripDiscount > 0 && (
+              <div className="flex items-center justify-between gap-2 font-medium leading-5 text-error w-full text-sm">
+                <p>{t("finalDetails.tripDiscount")}</p>
+                <span className="flex items-center gap-0.5">
+                  <span>-</span>
+                  {formatCurrency(tripDiscount)}
+                </span>
+              </div>
+            )}
 
-            <span
-              className={` font-medium text-end ${hasAnyDiscount && "line-through text-error"}`}
-            >
-              {priceWithTax}
-            </span>
-          </div>
-        )}
+            {quantityDiscount > 0 && (
+              <div className="flex items-center justify-between gap-2 font-medium leading-5 text-error w-full text-sm">
+                <p>{t("finalDetails.quantityDiscount")}</p>
+                <span className="flex items-center gap-0.5">
+                  <span>-</span>
+                  {formatCurrency(quantityDiscount)}
+                </span>
+              </div>
+            )}
 
-        {tripDiscount > 0 && (
-          <div className="flex items-center justify-between gap-2  font-medium leading-5 text-error">
-            <p>{t("finalDetails.tripDiscount")}</p>
-            <span className="flex items-center gap-0.5">
-              <span>-</span>
-              {formatCurrency(tripDiscount)}
-            </span>
-          </div>
-        )}
+            {promoCodeDiscount > 0 && (
+              <div className="flex items-center justify-between gap-2 font-medium leading-5 text-error w-full text-sm">
+                <p>{t("finalDetails.promoCodeDiscount")}</p>
+                <span className="flex items-center gap-0.5">
+                  <span>-</span>
+                  {formatCurrency(promoCodeDiscount)}
+                </span>
+              </div>
+            )}
 
-        {quantityDiscount > 0 && (
-          <div className="flex items-center justify-between gap-2  font-medium leading-5 text-error">
-            <p>{t("finalDetails.quantityDiscount")}</p>
-            <span className="flex items-center gap-0.5 ">
-              <span>-</span>
-              {formatCurrency(quantityDiscount)}
-            </span>
-          </div>
-        )}
-
-        {promoCodeDiscount > 0 && (
-          <div className="flex items-center justify-between gap-2  font-medium leading-5 text-error">
-            <p>{t("finalDetails.promoCodeDiscount")}</p>
-            <span className="flex items-center gap-0.5">
-              <span>-</span>
-              {formatCurrency(promoCodeDiscount)}
-            </span>
+            {totalDiscount > 0 && (
+              <div className="flex items-center justify-between gap-2 font-medium leading-5 text-error w-full mt-2">
+                <p>{t("finalDetails.totalDiscount")}</p>
+                <span className="flex items-center gap-0.5">
+                  <span>-</span>
+                  {formatCurrency(totalDiscount)}
+                </span>
+              </div>
+            )}
           </div>
         )}
       </div>
