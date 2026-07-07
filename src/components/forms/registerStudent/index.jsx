@@ -120,22 +120,41 @@ const RegisterStudentForm = ({
     if (dayBlockPricing?.enabled && firstAvailableDate) {
       const datePart = firstAvailableDate.split("T")[0];
       const parts = datePart.split("-");
-      const minLimit = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-      const maxLimit = new Date(minLimit.getTime() + (tripDuration * 24 * 60 * 60 * 1000));
+      const minLimit = new Date(
+        parseInt(parts[0], 10),
+        parseInt(parts[1], 10) - 1,
+        parseInt(parts[2], 10)
+      );
+      const maxLimit = new Date(
+        minLimit.getTime() + tripDuration * 24 * 60 * 60 * 1000
+      );
 
       schema = schema.concat(
         Yup.object().shape({
           bookingDay: Yup.date()
             .required(t("forms.validation.require"))
             .typeError(t("forms.validation.invalidDate") || "Invalid date")
-            .min(minLimit, t("forms.validation.minDate") || "Date is before available start")
-            .max(maxLimit, t("forms.validation.maxDate") || "Date is after available end"),
+            .min(
+              minLimit,
+              t("forms.validation.minDate") || "Date is before available start"
+            )
+            .max(
+              maxLimit,
+              t("forms.validation.maxDate") || "Date is after available end"
+            ),
           duration: Yup.number().required(t("forms.validation.require")),
         })
       );
     }
     return schema;
-  }, [childrenNumber, t, tripMainCategory, dayBlockPricing, firstAvailableDate, tripDuration]);
+  }, [
+    childrenNumber,
+    t,
+    tripMainCategory,
+    dayBlockPricing,
+    firstAvailableDate,
+    tripDuration,
+  ]);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -243,7 +262,7 @@ const RegisterStudentForm = ({
 
     // Create FormData
     const formData = new FormData();
-    formData.append("formsType", tripMainCategory);
+    tripMainCategory && formData.append("formsType", tripMainCategory);
     formData.append("name", values.parentName);
     formData.append("quantity", values.childrenNumber);
     if (values.relationship) {
@@ -293,8 +312,7 @@ const RegisterStudentForm = ({
 
       formData.append(`childs[${idx}].academicStage`, child.academicStage);
       formData.append(`childs[${idx}].grade`, child.grade);
-
-      formData.append(`childs[${idx}].formsType`, formsType);
+      formsType && formData.append(`childs[${idx}].formsType`, formsType);
 
       if (child.studentMobile)
         formData.append(`childs[${idx}].phone`, child.studentMobile);
