@@ -111,21 +111,23 @@ const PaymentForm = () => {
   const promoCode = useSelector(
     (state) => state.promoCode?.promoCodeData?.trip?.promoCode
   );
-  const discountedTotalPriceWithVat = useSelector(
-    (state) => state.promoCode?.promoCodeData?.trip?.discountedTotalPriceWithVat
+  const promoCodeData = useSelector(
+    (state) => state.promoCode?.promoCodeData?.trip
   );
 
   // const isCustomizable = useSelector(
   //   (state) => state.checkoutData.isCustomizable
   // );
 
-  const { client, quantity, basePriceTotalWithVat, duration } = useSelector(
+  const finalTripDetails = useSelector(
     (state) => state.finalTripDetailsData.data
   );
 
-  const finalPrice = promoCode
-    ? discountedTotalPriceWithVat
-    : basePriceTotalWithVat;
+  const { client, quantity, duration } = finalTripDetails;
+
+  const data = promoCodeData || finalTripDetails;
+
+  const finalPrice = data?.discountedTotalPriceWithVat ?? data?.basePriceTotalWithVat ?? 0;
 
   const { enqueueSnackbar } = useSnackbar();
 
