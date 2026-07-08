@@ -35,7 +35,15 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
   const quantityDiscount = data?.quantityDiscount || 0;
   const promoCodeDiscount = data?.promoCodeDiscount || 0;
   const totalDiscount = data?.totalDiscount || 0;
-  const hasAnyDiscount = totalDiscount > 0;
+  const basePriceTotalWithVat = data?.basePriceTotalWithVat || 0;
+  const subtotalExclVat = basePriceTotalWithVat / 1.15;
+  const vatAmount = basePriceTotalWithVat - subtotalExclVat;
+  const activeDiscountCounts = [
+    tripDiscount,
+    quantityDiscount,
+    promoCodeDiscount,
+  ].filter((discount) => discount > 0).length;
+  const hasAnyDiscount = activeDiscountCounts > 0;
 
   return (
     <FrameWithImagedHeader>
@@ -60,15 +68,21 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
         <div className="flex justify-between gap-2 pt-2 mt-2 border-t border-dashed border-textDark/30 items-start">
           <div className="flex flex-col gap-0.5">
             <p>{t("finalDetails.subtotal")}</p>
-            <span className="text-xs text-textDark">
-              {`(${t("finalDetails.includingVAT")})`}
+            <span className="text-xs text-textDark/60">
+              {`(${t("finalDetails.excludingVAT")})`}
             </span>
           </div>
+          <span className="font-medium">
+            {formatCurrency(subtotalExclVat)}
+          </span>
+        </div>
 
-          <span
-            className={` font-medium text-end ${hasAnyDiscount && "line-through text-error"}`}
-          >
-            {priceWithTax}
+        <div className="flex justify-between gap-2 items-start">
+          <div className="flex flex-col gap-0.5">
+            <p>{t("finalDetails.vat")}</p>
+          </div>
+          <span className="font-medium">
+            {formatCurrency(vatAmount)}
           </span>
         </div>
 
@@ -104,7 +118,7 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
               </div>
             )}
 
-            {totalDiscount > 0 && (
+            {totalDiscount > 0 &&  (
               <div className="flex items-center justify-between gap-2 font-medium leading-5 text-error w-full mt-2">
                 <p>{t("finalDetails.totalDiscount")}</p>
                 <span className="flex items-center gap-0.5">
@@ -117,19 +131,15 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
         )}
       </div>
 
-      <div className="flex justify-between w-full gap-2 pt-2 pb-7">
-        <div className="flex flex-col gap-1">
-          <h4 className="font-medium leading-5">{t("finalDetails.total")}</h4>
-          <h4 className="font-medium leading-5">{`(${t(
-            "finalDetails.includingVAT"
-          )})`}</h4>
+      <div className="flex justify-between w-full gap-2 pt-4 pb-7 items-center">
+        <div className="flex flex-col gap-0.5">
+          <h4 className="font-semibold text-lg leading-5">{t("finalDetails.total")}</h4>
+          <span className="text-xs text-textDark/60">{`(${t("finalDetails.includingVAT")})`}</span>
         </div>
 
-        <div className="flex flex-col">
-          <h4 className="text-xl leading-5 transition-all duration-200 ease-in-out ">
-            {hasAnyDiscount ? discountedPriceWithTax : priceWithTax}
-          </h4>
-        </div>
+        <h4 className="text-xl font-bold text-primary">
+          {hasAnyDiscount ? discountedPriceWithTax : priceWithTax}
+        </h4>
       </div>
     </FrameWithImagedHeader>
   );
