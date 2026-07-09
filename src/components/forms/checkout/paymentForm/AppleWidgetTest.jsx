@@ -23,7 +23,7 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
 
   const data = promoCodeData || finalTripDetails;
 
-  const finalPrice = data?.discountedTotalPriceWithVat ?? data?.basePriceTotalWithVat ?? 0;
+  const finalPrice = data?.total ?? 0;
 
   const tripName = useSelector((state) => state.finalTripDetailsData.data.name);
 
@@ -90,30 +90,33 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
           return new Promise(function (resolve, reject) {
             try {
               // Call the initiation endpoint
-              mutate({
-                ...baseData,
-                price: +finalPrice
-              }, {
-                onSuccess: (data) => {
-                  if (!data?.bookingId) {
+              mutate(
+                {
+                  ...baseData,
+                  price: +finalPrice,
+                },
+                {
+                  onSuccess: (data) => {
+                    if (!data?.bookingId) {
+                      enqueueSnackbar(t("forms.validation.error"), {
+                        variant: "error",
+                      });
+                      reject();
+                      return; // Stop execution here
+                    }
+                    // Store in both state and ref for immediate access
+                    bookingIdRef.current = data.bookingId;
+                    setCurrentBookingId(data.bookingId);
+                    resolve({});
+                  },
+                  onError: (error) => {
                     enqueueSnackbar(t("forms.validation.error"), {
                       variant: "error",
                     });
                     reject();
-                    return; // Stop execution here
-                  }
-                  // Store in both state and ref for immediate access
-                  bookingIdRef.current = data.bookingId;
-                  setCurrentBookingId(data.bookingId);
-                  resolve({});
-                },
-                onError: (error) => {
-                  enqueueSnackbar(t("forms.validation.error"), {
-                    variant: "error",
-                  });
-                  reject();
-                },
-              });
+                  },
+                }
+              );
             } catch (error) {
               enqueueSnackbar(
                 error?.message ||

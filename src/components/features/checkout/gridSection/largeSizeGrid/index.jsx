@@ -6,8 +6,8 @@ import PaymentForm from "@components/forms/checkout/paymentForm";
 import FreeBookingButton from "@components/ui/FreeBookingButton";
 
 const LargeSizeGrid = () => {
-  const tripBasePrice = useSelector(
-    (state) => state.finalTripDetailsData?.data?.basePriceTotalWithVat
+  const total = useSelector(
+    (state) => state.finalTripDetailsData?.data?.total
   );
 
   const promoCodeData = useSelector(
@@ -15,9 +15,8 @@ const LargeSizeGrid = () => {
   );
 
   const isFreeTrip =
-    tripBasePrice === 0 ||
-    promoCodeData?.discountedTotalPriceWithVat === 0 ||
-    promoCodeData?.basePriceTotalWithVat === 0;
+    total === 0 ||
+    promoCodeData?.total === 0;
   if (isFreeTrip) {
     return <FreeBookingButton />;
   }

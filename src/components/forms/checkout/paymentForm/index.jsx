@@ -127,7 +127,7 @@ const PaymentForm = () => {
 
   const data = promoCodeData || finalTripDetails;
 
-  const finalPrice = data?.discountedTotalPriceWithVat ?? data?.basePriceTotalWithVat ?? 0;
+  const finalPrice = data?.total ?? 0;
 
   const { enqueueSnackbar } = useSnackbar();
 
