@@ -16,13 +16,14 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
   const t = useTranslations();
 
   const data = promoCodeData || finalTripDetails;
+  const priceInfo = data?.calculatedPriceInfo;
 
-  const pricePerGuest = data?.pricePerGuest || 0;
-  const quantity = data?.quantity || 0;
-  const quantityDiscount = data?.quantityDiscount || 0;
-  const promoCodeDiscount = data?.promoCodeDiscount || 0;
-  const vatAmount = data?.vat || 0;
-  const total = data?.total || 0;
+  const pricePerGuest = priceInfo?.pricePerGuest || 0;
+  const quantity = priceInfo?.quantity || 0;
+  const quantityDiscount = priceInfo?.quantityDiscount || 0;
+  const promoCodeDiscount = priceInfo?.promoCodeDiscount || 0;
+  const vatAmount = priceInfo?.vat || 0;
+  const total = priceInfo?.total || 0;
 
   const numberOfStudents = formatNumbersUint(
     quantity,

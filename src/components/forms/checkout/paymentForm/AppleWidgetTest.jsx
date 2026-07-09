@@ -23,7 +23,7 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
 
   const data = promoCodeData || finalTripDetails;
 
-  const finalPrice = data?.total ?? 0;
+  const finalPrice = data?.calculatedPriceInfo?.total ?? 0;
 
   const tripName = useSelector((state) => state.finalTripDetailsData.data.name);
 

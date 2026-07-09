@@ -7,7 +7,7 @@ import FreeBookingButton from "@components/ui/FreeBookingButton";
 
 const LargeSizeGrid = () => {
   const total = useSelector(
-    (state) => state.finalTripDetailsData?.data?.total
+    (state) => state.finalTripDetailsData?.data?.calculatedPriceInfo?.total
   );
 
   const promoCodeData = useSelector(
@@ -16,7 +16,7 @@ const LargeSizeGrid = () => {
 
   const isFreeTrip =
     total === 0 ||
-    promoCodeData?.total === 0;
+    promoCodeData?.calculatedPriceInfo?.total === 0;
   if (isFreeTrip) {
     return <FreeBookingButton />;
   }
