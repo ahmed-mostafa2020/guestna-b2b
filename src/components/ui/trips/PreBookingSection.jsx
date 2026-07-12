@@ -17,6 +17,7 @@ import ParentLoginForm from "@components/forms/auth/parentLogin";
 
 import Cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";
+import formatCurrency from "@/src/utils/formatters/FormatCurrency";
 
 const PreBookingSection = ({ tripData }) => {
   const isSubmitted = useSelector((state) => state.parentLoginForm.isSubmitted);
@@ -62,7 +63,7 @@ const PreBookingSection = ({ tripData }) => {
   const t = useTranslations();
 
   const defaultPriceWithFormatting = formatCurrency(
-    tripData?.discountedPrice || tripData.price
+    tripData?.discountedPrice || tripData?.price
   );
 
   const handleLoginForm = () => {
