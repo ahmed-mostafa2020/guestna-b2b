@@ -12,6 +12,10 @@ const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 export const getDynamicFormInitialValues = (inputs) => {
   if (!inputs || !Array.isArray(inputs)) return {};
   const initialValues = {};
+
+  // Pre-compute once: does this input set contain an array-type field?
+  const hasArrayField = inputs.some((x) => x.type === "array");
+
   inputs.forEach((input) => {
     const isMultiple = input.isMultiple || (input.type === "checkbox" && input.options && input.options.length > 0);
     const isMedia = ["image", "audio", "video"].includes(input.type);
@@ -24,13 +28,11 @@ export const getDynamicFormInitialValues = (inputs) => {
       initialValues[input.key] = false;
     } else if (input.type === "array") {
       initialValues[input.key] = [getDynamicFormInitialValues(input.inputs || [])];
+    } else if (input.key === "quantity" && hasArrayField) {
+      // Default quantity to "1" when the form contains child-array rows
+      initialValues[input.key] = "1";
     } else {
-      const hasArray = inputs.some((x) => x.type === "array");
-      if (input.key === "quantity" && hasArray) {
-        initialValues[input.key] = "1";
-      } else {
-        initialValues[input.key] = "";
-      }
+      initialValues[input.key] = "";
     }
   });
   return initialValues;

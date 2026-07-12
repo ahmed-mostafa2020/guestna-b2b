@@ -181,11 +181,13 @@ const DynamicField = memo(
     const inputId = id || `dynamic-field-${fieldName.replace(/[\[\]\.]/g, "-")}`;
 
     useEffect(() => {
-      if (input.type === "array" && (!value || !Array.isArray(value) || value.length === 0)) {
+      if (input.type !== "array") return;
+      if (!value || !Array.isArray(value) || value.length === 0) {
         setFieldValue(fieldName, [getDynamicFormInitialValues(input.inputs || [])]);
         setFieldValue("quantity", "1");
       }
-    }, [value, fieldName, setFieldValue, input.inputs, input.type]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [input.type, fieldName]);
 
     // 1. Textarea
     if (input.type === "textarea") {
@@ -804,8 +806,7 @@ const DynamicField = memo(
       );
     }
 
-    // 7. Array Inputs (Recursive Cards Layout)
-    // 7. Array Inputs (Inline Grid Elements Layout)
+    // 7. Array Inputs – inline grid layout (quantity dropdown + sub-inputs)
     if (input.type === "array") {
       const arrayVal = Array.isArray(value) ? value : [];
 

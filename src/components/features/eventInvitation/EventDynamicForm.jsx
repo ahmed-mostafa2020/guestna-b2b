@@ -37,9 +37,7 @@ const FormikValueListener = ({ values, pricingKeys, onChange }) => {
 
 // Component to dynamically resize arrays inside Formik based on the quantity value
 const ArrayFieldsManager = ({ values, inputs, setFieldValue }) => {
-  const arrayLengths = JSON.stringify(
-    inputs.filter((input) => input.type === "array").map((input) => values[input.key]?.length || 0)
-  );
+  const prevQtyRef = useRef(null);
 
   useEffect(() => {
     const arrayInputs = inputs.filter((input) => input.type === "array");
@@ -47,22 +45,26 @@ const ArrayFieldsManager = ({ values, inputs, setFieldValue }) => {
 
     const qty = parseInt(values.quantity, 10);
     if (isNaN(qty) || qty <= 0) return;
+    // Skip if quantity hasn't changed since last run
+    if (prevQtyRef.current === qty) return;
+    prevQtyRef.current = qty;
 
     arrayInputs.forEach((input) => {
       const currentArray = values[input.key] || [];
-      if (currentArray.length !== qty) {
-        let newArray = [...currentArray];
-        if (qty > currentArray.length) {
-          for (let i = currentArray.length; i < qty; i++) {
-            newArray.push(getDynamicFormInitialValues(input.inputs || []));
-          }
-        } else if (qty < currentArray.length) {
-          newArray = newArray.slice(0, qty);
+      if (currentArray.length === qty) return;
+
+      let newArray = [...currentArray];
+      if (qty > currentArray.length) {
+        for (let i = currentArray.length; i < qty; i++) {
+          newArray.push(getDynamicFormInitialValues(input.inputs || []));
         }
-        setFieldValue(input.key, newArray);
+      } else {
+        newArray = newArray.slice(0, qty);
       }
+      setFieldValue(input.key, newArray);
     });
-  }, [values.quantity, inputs, setFieldValue, arrayLengths]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.quantity]);
 
   return null;
 };

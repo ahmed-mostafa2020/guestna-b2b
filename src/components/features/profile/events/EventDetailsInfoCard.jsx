@@ -7,6 +7,8 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import PersonIcon from "@mui/icons-material/Person";
 import LocalActivityIcon from "@mui/icons-material/LocalActivity";
+import LinkIcon from "@mui/icons-material/Link";
+import { useSnackbar } from "notistack";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import formatDate from "@utils/formatters/FormateDate";
 
@@ -25,6 +27,23 @@ const EventDetailsInfoCard = ({
   const t = useTranslations("profile.events.details");
   const tCommon = useTranslations("common");
   const tEvents = useTranslations("profile.events");
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleCopyLink = async () => {
+    if (!slug) return;
+    const eventLink = `${window.location.origin}/${locale}/event-invitation/${slug}`;
+    try {
+      await navigator.clipboard.writeText(eventLink);
+      enqueueSnackbar(t("copySuccess") || "Event link copied successfully", {
+        variant: "success",
+      });
+    } catch (error) {
+      console.error("Failed to copy link:", error);
+      enqueueSnackbar(t("copyFailed") || "Failed to copy event link", {
+        variant: "error",
+      });
+    }
+  };
 
   // Format dates
   const formattedStartDay = day
@@ -154,14 +173,24 @@ const EventDetailsInfoCard = ({
 
       {/* Invitation Link Button */}
       {slug && (
-        <a
-          href={`/${locale}/event-invitation/${slug}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-4 flex items-center justify-center p-3.5 rounded-xl border-2 border-mainColor text-mainColor hover:text-white hover:bg-mainColor font-bold font-somar transition-all duration-200 text-center shadow-sm"
-        >
-          {useTranslations()("eventTrips.viewInvitation") || "Event Invitation"}
-        </a>
+        <div className="flex flex-col gap-3 mt-4">
+          <a
+            href={`/${locale}/event-invitation/${slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center h-12 px-4 rounded-xl border-2 border-mainColor text-mainColor hover:text-white hover:bg-mainColor font-bold font-somar transition-all duration-200 text-center shadow-sm text-sm"
+          >
+            {useTranslations()("eventTrips.viewInvitation") || "Event Invitation"}
+          </a>
+          <button
+            onClick={handleCopyLink}
+            type="button"
+            className="inline-flex items-center justify-center gap-2 h-12 px-4 bg-white border border-gray-200 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50 shadow-sm transition-all font-somar cursor-pointer w-full"
+          >
+            <LinkIcon fontSize="small" />
+            {t("copyEventLink") || "Copy Event Link"}
+          </button>
+        </div>
       )}
     </div>
   );
