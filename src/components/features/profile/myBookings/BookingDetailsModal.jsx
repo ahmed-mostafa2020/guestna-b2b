@@ -238,11 +238,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loading }) => {
                 {t("profile.tables.bookings.header.quantity")}:
               </p>
               <p className="font-medium">
-                {formatNumbersUint(
-                  booking?.bookingQuantity,
-                  t("common.student"),
-                  t("common.students")
-                )}
+                {t("common.peopleCount", { count: booking?.bookingQuantity })}
               </p>
             </div>
 

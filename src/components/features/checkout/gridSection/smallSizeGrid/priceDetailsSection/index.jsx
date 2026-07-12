@@ -25,11 +25,7 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
   const vatAmount = priceInfo?.vat || 0;
   const total = priceInfo?.total || 0;
 
-  const numberOfStudents = formatNumbersUint(
-    quantity,
-    t("common.student"),
-    t("common.students")
-  );
+  const numberOfPeople = t("common.peopleCount", { count: quantity });
 
   const hasAnyDiscount = quantityDiscount > 0 || promoCodeDiscount > 0;
 
@@ -47,7 +43,7 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
         {/* Number of Guests */}
         <div className="flex items-center justify-between gap-2">
           <p>{t("finalDetails.studentsNumber")}</p>
-          {numberOfStudents}
+          {numberOfPeople}
         </div>
 
         {/* Discounts (Groups / Promocode) */}
