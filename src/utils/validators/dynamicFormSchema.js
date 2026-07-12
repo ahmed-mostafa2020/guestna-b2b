@@ -22,8 +22,15 @@ export const getDynamicFormInitialValues = (inputs) => {
       initialValues[input.key] = null;
     } else if (input.type === "checkbox") {
       initialValues[input.key] = false;
+    } else if (input.type === "array") {
+      initialValues[input.key] = [getDynamicFormInitialValues(input.inputs || [])];
     } else {
-      initialValues[input.key] = "";
+      const hasArray = inputs.some((x) => x.type === "array");
+      if (input.key === "quantity" && hasArray) {
+        initialValues[input.key] = "1";
+      } else {
+        initialValues[input.key] = "";
+      }
     }
   });
   return initialValues;
@@ -143,6 +150,13 @@ export const createDynamicFormSchema = (inputs, t) => {
           }
         } else {
           fieldSchema = Yup.mixed().nullable();
+        }
+        break;
+
+      case "array":
+        fieldSchema = Yup.array().of(createDynamicFormSchema(input.inputs || [], t));
+        if (input.required) {
+          fieldSchema = fieldSchema.min(1, t("forms.validation.require") || "Required field");
         }
         break;
 

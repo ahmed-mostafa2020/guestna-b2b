@@ -7,6 +7,7 @@ import { Container, CircularProgress } from "@mui/material";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import DynamicField from "@components/forms/events/DynamicField";
 import formatCurrency from "@utils/formatters/FormatCurrency";
+import { getDynamicFormInitialValues } from "@utils/validators/dynamicFormSchema";
 
 // Formik listener to update pricing keys state in parent wizard
 const FormikValueListener = ({ values, pricingKeys, onChange }) => {
@@ -16,12 +17,7 @@ const FormikValueListener = ({ values, pricingKeys, onChange }) => {
     const hasChanged = pricingKeys.some((key) => {
       const prev = prevValuesRef.current[key];
       const curr = values[key];
-      if (Array.isArray(prev) && Array.isArray(curr)) {
-        return (
-          prev.length !== curr.length || prev.some((v, i) => v !== curr[i])
-        );
-      }
-      return prev !== curr;
+      return JSON.stringify(prev) !== JSON.stringify(curr);
     });
 
     const isFirstRender = Object.keys(prevValuesRef.current).length === 0;
@@ -29,14 +25,44 @@ const FormikValueListener = ({ values, pricingKeys, onChange }) => {
     if (hasChanged || isFirstRender) {
       const newRefValues = {};
       pricingKeys.forEach((key) => {
-        newRefValues[key] = Array.isArray(values[key])
-          ? [...values[key]]
-          : values[key];
+        newRefValues[key] = values[key] !== undefined ? JSON.parse(JSON.stringify(values[key])) : undefined;
       });
       prevValuesRef.current = newRefValues;
       onChange(values);
     }
   }, [values, pricingKeys, onChange]);
+
+  return null;
+};
+
+// Component to dynamically resize arrays inside Formik based on the quantity value
+const ArrayFieldsManager = ({ values, inputs, setFieldValue }) => {
+  const arrayLengths = JSON.stringify(
+    inputs.filter((input) => input.type === "array").map((input) => values[input.key]?.length || 0)
+  );
+
+  useEffect(() => {
+    const arrayInputs = inputs.filter((input) => input.type === "array");
+    if (arrayInputs.length === 0) return;
+
+    const qty = parseInt(values.quantity, 10);
+    if (isNaN(qty) || qty <= 0) return;
+
+    arrayInputs.forEach((input) => {
+      const currentArray = values[input.key] || [];
+      if (currentArray.length !== qty) {
+        let newArray = [...currentArray];
+        if (qty > currentArray.length) {
+          for (let i = currentArray.length; i < qty; i++) {
+            newArray.push(getDynamicFormInitialValues(input.inputs || []));
+          }
+        } else if (qty < currentArray.length) {
+          newArray = newArray.slice(0, qty);
+        }
+        setFieldValue(input.key, newArray);
+      }
+    });
+  }, [values.quantity, inputs, setFieldValue, arrayLengths]);
 
   return null;
 };
@@ -111,6 +137,11 @@ const EventDynamicForm = ({
                   values={values}
                   pricingKeys={pricingKeys}
                   onChange={handleStep1ValuesChange}
+                />
+                <ArrayFieldsManager
+                  values={values}
+                  inputs={inputs}
+                  setFieldValue={setFieldValue}
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-start">

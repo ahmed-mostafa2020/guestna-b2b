@@ -15,6 +15,8 @@ import { cn } from "@utils/helpers/cn";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import DynamicFileUpload from "@components/forms/DynamicFileUpload";
+import { getDynamicFormInitialValues } from "@utils/validators/dynamicFormSchema";
+import DropdownGroup from "@components/forms/DropdownGroup";
 
 // ─── Image Lightbox ──────────────────────────────────────────────────────────
 const ImageLightbox = ({ src, alt, onClose, t }) => {
@@ -171,9 +173,19 @@ const DynamicField = memo(
     setFieldValue,
     t,
     locale,
+    name,
+    id,
   }) => {
     const [cardLightbox, setCardLightbox] = useState(null);
-    const inputId = `dynamic-field-${input.key}`;
+    const fieldName = name || input.key;
+    const inputId = id || `dynamic-field-${fieldName.replace(/[\[\]\.]/g, "-")}`;
+
+    useEffect(() => {
+      if (input.type === "array" && (!value || !Array.isArray(value) || value.length === 0)) {
+        setFieldValue(fieldName, [getDynamicFormInitialValues(input.inputs || [])]);
+        setFieldValue("quantity", "1");
+      }
+    }, [value, fieldName, setFieldValue, input.inputs, input.type]);
 
     // 1. Textarea
     if (input.type === "textarea") {
@@ -182,7 +194,7 @@ const DynamicField = memo(
           <TextInputGroup
             label={input.title}
             textarea={true}
-            name={input.key}
+            name={fieldName}
             value={value}
             errors={error}
             touched={touched}
@@ -213,7 +225,7 @@ const DynamicField = memo(
           </label>
           <Select
             id={inputId}
-            name={input.key}
+            name={fieldName}
             value={value}
             multiple={input.isMultiple}
             onChange={handleChange}
@@ -324,7 +336,7 @@ const DynamicField = memo(
                   <div
                     key={opt._id}
                     onClick={() => {
-                      setFieldValue(input.key, opt.value);
+                      setFieldValue(fieldName, opt.value);
                     }}
                     className={cn(
                       "group relative flex flex-col rounded-2xl border-2 p-3 bg-white cursor-pointer transition-all duration-300 ease-in-out select-none shadow-sm hover:shadow-md",
@@ -450,7 +462,7 @@ const DynamicField = memo(
           <RadioGroup
             row
             id={inputId}
-            name={input.key}
+            name={fieldName}
             value={value}
             onChange={handleChange}
           >
@@ -517,7 +529,7 @@ const DynamicField = memo(
                       const nextVal = isChecked
                         ? (value || []).filter((v) => v !== opt.value)
                         : [...(value || []), opt.value];
-                      setFieldValue(input.key, nextVal);
+                      setFieldValue(fieldName, nextVal);
                     }}
                     className={cn(
                       "group relative flex flex-col rounded-2xl border-2 p-3 bg-white cursor-pointer transition-all duration-300 ease-in-out select-none shadow-sm hover:shadow-md",
@@ -655,7 +667,7 @@ const DynamicField = memo(
                           const nextVal = e.target.checked
                             ? [...(value || []), opt.value]
                             : (value || []).filter((v) => v !== opt.value);
-                          setFieldValue(input.key, nextVal);
+                          setFieldValue(fieldName, nextVal);
                         }}
                         sx={{
                           "&.Mui-checked": {
@@ -685,7 +697,7 @@ const DynamicField = memo(
               control={
                 <Checkbox
                   checked={!!value}
-                  onChange={(e) => setFieldValue(input.key, e.target.checked)}
+                  onChange={(e) => setFieldValue(fieldName, e.target.checked)}
                   sx={{
                     "&.Mui-checked": {
                       color: "var(--color-main)",
@@ -731,11 +743,11 @@ const DynamicField = memo(
             defaultCountry="SA"
             value={value}
             onChange={(val) => {
-              setFieldValue(input.key, val);
+              setFieldValue(fieldName, val);
             }}
             onBlur={handleBlur}
             id={inputId}
-            name={input.key}
+            name={fieldName}
             addInternationalOption={false}
             style={{ direction: "ltr" }}
             flagComponent={({ country }) => (
@@ -774,7 +786,7 @@ const DynamicField = memo(
         <div className="md:col-span-2">
           <DynamicFileUpload
             type={input.type}
-            name={input.key}
+            name={fieldName}
             label={input.title}
             required={input.required}
             isMultiple={input.isMultiple}
@@ -792,13 +804,82 @@ const DynamicField = memo(
       );
     }
 
-    // 7. General Inputs: text, number, date, email
+    // 7. Array Inputs (Recursive Cards Layout)
+    // 7. Array Inputs (Inline Grid Elements Layout)
+    if (input.type === "array") {
+      const arrayVal = Array.isArray(value) ? value : [];
+
+      return (
+        <>
+          <div className="relative [&_label]:font-somar">
+            <DropdownGroup
+              label={t("forms.registerForm.numberOfChildren") || "Number of students"}
+              placeholder={String(arrayVal.length || 1)}
+              value={arrayVal.length || 1}
+              onChange={(e) => {
+                const n = parseInt(e.target.value, 10);
+                let newArray = [...arrayVal];
+                if (n > arrayVal.length) {
+                  for (let i = arrayVal.length; i < n; i++) {
+                    newArray.push(getDynamicFormInitialValues(input.inputs || []));
+                  }
+                } else if (n < arrayVal.length) {
+                  newArray = newArray.slice(0, n);
+                }
+                setFieldValue(fieldName, newArray);
+                setFieldValue("quantity", String(n));
+              }}
+              menuItemsList={[1, 2, 3, 4, 5, 6, 7, 8].map((num) => ({
+                id: num,
+                name: String(num),
+              }))}
+              required={true}
+            />
+          </div>
+
+          {arrayVal.map((childValues, index) => {
+            const childErrors = error?.[index] || {};
+            const childTouched = touched?.[index] || {};
+
+            return (input.inputs || []).map((subInput) => {
+              const subFieldName = `${fieldName}[${index}].${subInput.key}`;
+              const subFieldId = `${inputId}-${index}-${subInput.key}`;
+
+              // Customize title to append number, e.g. "اسم الطالب (1)"
+              const customSubInput = {
+                ...subInput,
+                title: `${subInput.title} (${index + 1})`,
+              };
+
+              return (
+                <DynamicField
+                  key={`${index}-${subInput._id}`}
+                  input={customSubInput}
+                  value={childValues[subInput.key]}
+                  error={childErrors[subInput.key]}
+                  touched={childTouched[subInput.key]}
+                  handleChange={handleChange}
+                  handleBlur={handleBlur}
+                  setFieldValue={setFieldValue}
+                  t={t}
+                  locale={locale}
+                  name={subFieldName}
+                  id={subFieldId}
+                />
+              );
+            });
+          })}
+        </>
+      );
+    }
+
+    // 8. General Inputs: text, number, date, email
     return (
       <div className="relative">
         <TextInputGroup
           label={input.title}
           type={input.type}
-          name={input.key}
+          name={fieldName}
           value={value}
           errors={error}
           touched={touched}

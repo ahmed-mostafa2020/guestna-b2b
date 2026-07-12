@@ -108,6 +108,49 @@ const getSelectedOptionsWithPrices = (values, inputs) => {
           fieldTitle: input.title,
         });
       }
+    } else if (input.type === "array") {
+      if (Array.isArray(val)) {
+        val.forEach((childVal, index) => {
+          if (!childVal) return;
+          (input.inputs || []).forEach((subInput) => {
+            const subVal = childVal[subInput.key];
+            if (subVal === undefined || subVal === null) return;
+
+            if (subInput.type === "select" || subInput.type === "checkbox") {
+              if (Array.isArray(subVal)) {
+                subVal.forEach((v) => {
+                  const opt = subInput.options?.find((o) => o.value === v);
+                  if (opt?.price) {
+                    selected.push({
+                      label: `${opt.label} (${index + 1})`,
+                      price: Number(opt.price),
+                      fieldTitle: `${input.title} - ${subInput.title}`,
+                    });
+                  }
+                });
+              } else {
+                const opt = subInput.options?.find((o) => o.value === subVal);
+                if (opt?.price) {
+                  selected.push({
+                    label: `${opt.label} (${index + 1})`,
+                    price: Number(opt.price),
+                    fieldTitle: `${input.title} - ${subInput.title}`,
+                  });
+                }
+              }
+            } else if (subInput.type === "radio") {
+              const opt = subInput.options?.find((o) => o.value === subVal);
+              if (opt?.price) {
+                selected.push({
+                  label: `${opt.label} (${index + 1})`,
+                  price: Number(opt.price),
+                  fieldTitle: `${input.title} - ${subInput.title}`,
+                });
+              }
+            }
+          });
+        });
+      }
     }
   });
   return selected;
@@ -138,10 +181,7 @@ const FormikValueListener = ({ values, pricingKeys, onChange }) => {
     const hasChanged = pricingKeys.some((key) => {
       const prev = prevValuesRef.current[key];
       const curr = values[key];
-      if (Array.isArray(prev) && Array.isArray(curr)) {
-        return prev.length !== curr.length || prev.some((v, i) => v !== curr[i]);
-      }
-      return prev !== curr;
+      return JSON.stringify(prev) !== JSON.stringify(curr);
     });
 
     const isFirstRender = Object.keys(prevValuesRef.current).length === 0;
@@ -149,7 +189,7 @@ const FormikValueListener = ({ values, pricingKeys, onChange }) => {
     if (hasChanged || isFirstRender) {
       const newRefValues = {};
       pricingKeys.forEach((key) => {
-        newRefValues[key] = Array.isArray(values[key]) ? [...values[key]] : values[key];
+        newRefValues[key] = values[key] !== undefined ? JSON.parse(JSON.stringify(values[key])) : undefined;
       });
       prevValuesRef.current = newRefValues;
       onChange(values);
@@ -211,9 +251,21 @@ const EventRegistrationWizard = ({ event }) => {
   const formTitle = event?.dynamicForm?.title || t("eventTrips.form.title");
 
   const pricingKeys = useMemo(() => {
-    return inputs
+    const keys = inputs
       .filter((input) => ["select", "checkbox", "radio"].includes(input.type))
       .map((input) => input.key);
+
+    inputs.forEach((input) => {
+      if (input.type === "array") {
+        const hasPricing = input.inputs?.some((sub) =>
+          ["select", "checkbox", "radio"].includes(sub.type)
+        );
+        if (hasPricing) {
+          keys.push(input.key);
+        }
+      }
+    });
+    return keys;
   }, [inputs]);
 
   const registrationInitialValues = useMemo(() => {
@@ -369,6 +421,22 @@ const EventRegistrationWizard = ({ event }) => {
                   isFile: false,
                 });
               }
+            } else if (input.type === "array") {
+              const formattedArray = (val || []).map((childObj) => {
+                return (input.inputs || []).map((subInput) => {
+                  const subVal = childObj[subInput.key];
+                  return {
+                    key: subInput.key,
+                    value: subVal !== undefined && subVal !== null ? String(subVal) : "",
+                  };
+                });
+              });
+              dynamicFormInfo.push({
+                key: input.key,
+                value: formattedArray,
+                isFile: false,
+                isArrayType: true,
+              });
             } else if (Array.isArray(val)) {
               // multi-select / multi-checkbox → join as comma-separated string
               dynamicFormInfo.push({
@@ -408,6 +476,21 @@ const EventRegistrationWizard = ({ event }) => {
                   );
                   appendIdx++;
                 });
+              } else if (info.isArrayType) {
+                formData.append(`dynamicFormInfo[${appendIdx}][key]`, info.key);
+                info.value.forEach((row, rowIndex) => {
+                  row.forEach((field, fieldIndex) => {
+                    formData.append(
+                      `dynamicFormInfo[${appendIdx}][value][${rowIndex}][${fieldIndex}][key]`,
+                      field.key
+                    );
+                    formData.append(
+                      `dynamicFormInfo[${appendIdx}][value][${rowIndex}][${fieldIndex}][value]`,
+                      field.value
+                    );
+                  });
+                });
+                appendIdx++;
               } else {
                 formData.append(`dynamicFormInfo[${appendIdx}][key]`, info.key);
                 formData.append(

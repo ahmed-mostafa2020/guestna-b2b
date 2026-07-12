@@ -3446,7 +3446,9 @@
       "name": {
         "label": "Full Name",
         "placeholder": "Enter your full name"
-      }
+      },
+      "noChildren": "Please select quantity to fill in details.",
+      "studentNum": "Student ({index})"
     },
     "payment": {
       "title": "Payment Details",
