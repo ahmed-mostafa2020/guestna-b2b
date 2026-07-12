@@ -231,7 +231,7 @@ const DataTable = ({
                           </td>
                         ))}
                         {rowActions && (
-                          <td className="px-4 py-4">
+                          <td className="px-4 py-4 text-start">
                             {rowActions(row, index)}
                           </td>
                         )}

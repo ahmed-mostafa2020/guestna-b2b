@@ -7,8 +7,10 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import axios from "axios";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Cookies from "js-cookie";
+import { useLocale } from "next-intl";
 
 export const useFetchData = (endpoint, params = {}, options = {}) => {
+  const locale = useLocale();
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
@@ -34,7 +36,7 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
 
     const headers = {
       "Content-Type": "application/json",
-      lang: options.lang || "ar",
+      lang: options.lang || locale || "ar",
     };
 
     if (token) {

@@ -489,7 +489,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .MuiSelect-icon {
-  inset-inline-start: 85% !important;
+  inset-inline-end: 12px !important;
+  inset-inline-start: auto !important;
 }
 
 .MuiFormControl-root {

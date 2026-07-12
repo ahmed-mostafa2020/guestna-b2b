@@ -1,6 +1,16 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
 
+const getBackendUrl = (path) => {
+  let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+  if (path && (path.startsWith("clientInfoBooking/") || path.startsWith("promoCodeDiscounts/"))) {
+    baseUrl = baseUrl.replace(/\/b2b\/?$/, "/");
+  }
+  const cleanBase = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
+  const cleanPath = path.startsWith("/") ? path.slice(1) : path;
+  return `${cleanBase}${cleanPath}`;
+};
+
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const path = searchParams.get("path");
@@ -16,7 +26,14 @@ export async function GET(request) {
   const devicespecificid = request.headers.get("devicespecificid");
   const profileOrganizations = request.headers.get("profile-organizations");
 
-  const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${path}`;
+  const urlObj = new URL(getBackendUrl(path));
+  searchParams.forEach((value, key) => {
+    if (key !== "path") {
+      urlObj.searchParams.append(key, value);
+    }
+  });
+  const backendURL = urlObj.toString();
+
   const headers = {
     "Content-Type": "application/json",
     reqKey: process.env.SECURE_REQ_KEY,
@@ -57,7 +74,7 @@ export async function POST(request) {
   const contentType = request.headers.get("content-type");
   const profileOrganizations = request.headers.get("profile-organizations");
 
-  const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${pathPost}`;
+  const backendURL = getBackendUrl(pathPost);
 
   const headers = {
     reqKey: process.env.SECURE_REQ_KEY,
@@ -109,7 +126,7 @@ export async function PUT(request) {
   const contentType = request.headers.get("content-type");
   const profileOrganizations = request.headers.get("profile-organizations");
 
-  const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${pathPut}`;
+  const backendURL = getBackendUrl(pathPut);
 
   const headers = {
     reqKey: process.env.SECURE_REQ_KEY,
@@ -161,7 +178,7 @@ export async function PATCH(request) {
   const contentType = request.headers.get("content-type");
   const profileOrganizations = request.headers.get("profile-organizations");
 
-  const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${pathPatch}`;
+  const backendURL = getBackendUrl(pathPatch);
 
   const headers = {
     reqKey: process.env.SECURE_REQ_KEY,
@@ -212,7 +229,7 @@ export async function DELETE(request) {
   const devicespecificid = request.headers.get("devicespecificid");
   const profileOrganizations = request.headers.get("profile-organizations");
 
-  const backendURL = `${process.env.NEXT_PUBLIC_BASE_URL}${pathDelete}`;
+  const backendURL = getBackendUrl(pathDelete);
 
   const headers = {
     "Content-Type": "application/json",

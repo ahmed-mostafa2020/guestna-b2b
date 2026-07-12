@@ -88,6 +88,7 @@ const ThemeProvider = () => {
       root.style.setProperty("--color-success", "#5cb85c");
       root.style.setProperty("--color-border", "#ECECEC");
       root.style.setProperty("--color-footer-link", "#00000099");
+      root.style.setProperty("--color-links-hover", "#009883");
     }
   }, [currentTheme, colorPreferences]);
 

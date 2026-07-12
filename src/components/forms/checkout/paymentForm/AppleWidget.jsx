@@ -21,12 +21,7 @@ const extractBackendError = (error, fallback) => {
 const isTestEnvironment = () => {
   if (typeof window === "undefined") return false;
   const host = window.location.hostname;
-  return (
-    host === "localhost" ||
-    host === "127.0.0.1" ||
-    host.endsWith(".vercel.app") ||
-    host.endsWith(".netlify.app")
-  );
+  return host !== "guestna-edu.com" && host !== "www.guestna-edu.com";
 };
 
 const AppleWidget = ({ baseData, currency = "SAR" }) => {

@@ -60,6 +60,7 @@ export const B2B_END_POINTS = {
   },
 
   FAVORITE: "favorite",
+  EVENT_INVITATION: "eventTrips",
 
   PROFILE: {
     INFORMATION: "auth/userInfo",
@@ -83,6 +84,8 @@ export const B2B_END_POINTS = {
     },
 
     ACTIVITIES_MARKET: "profile/trips/all",
+    EVENTS: "profile/eventTrips/all",
+    EVENT_DETAILS: "profile/eventTrips",
 
     HAPPENINGS: {
       NEW: "profile/happenings/new",
@@ -218,4 +221,22 @@ export const B2B_END_POINTS = {
 
   CONTACT_US: "supportMessage/massage",
   FAQ: "faqs/all",
+
+  EVENT_BOOKING: {
+    INITIATION: "eventTrips/booking/initiation",
+    APPLE_INITIATE: "eventTrips/booking/initiation/apple",
+    APPLE_CONFIRM: "eventTrips/booking/confermed/apple",
+    APPLE_CALLBACK: "eventTrips/booking/confermed/event/apple",
+    CLIENT_INFO: "clientInfoBooking/event-trip",
+    VALID_CODE: "promoCodeDiscounts/validCode/eventTrip",
+  },
+
+  BOOKING_EVENT_TRIP: {
+    INITIATION: "booking-event-trip/initiation",
+    APPLE_INITIATE: "booking-event-trip/initiation/apple",
+    APPLE_CONFIRM: "booking-event-trip/confermed/apple",
+    APPLE_CALLBACK: "booking-event-trip/confermed/event/apple",
+    TAMARA_INITIATION: "booking-event-trip/initiation",
+    FREE_INITIATION: "booking-event-trip/free/initiation",
+  },
 };

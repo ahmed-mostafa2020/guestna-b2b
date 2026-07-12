@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
@@ -23,9 +23,10 @@ const isTestEnvironment = () => {
   return host !== "guestna-edu.com" && host !== "www.guestna-edu.com";
 };
 
-const GraduationAppleWidget = ({ baseData, price }) => {
+const EventAppleWidget = ({ baseData, price = 0 }) => {
   const { enqueueSnackbar } = useSnackbar();
   const showDebugInitiate = useMemo(() => isTestEnvironment(), []);
+  const t = useTranslations("common");
 
   const bookingIdRef = useRef(null);
   const isInitializedRef = useRef(false);
@@ -39,27 +40,34 @@ const GraduationAppleWidget = ({ baseData, price }) => {
   const vercelUrl = CONSTANT_VALUES.URLS.B2B_VERCEL_URL;
   const appleWidgetKey = process.env.NEXT_PUBLIC_APPLE_WIDGET_KEY;
 
+  const reqKey = process.env.NEXT_PUBLIC_REQ_KEY;
+
   const { mutate, isLoading: isInitiating } = useMutationData(
-    B2B_END_POINTS.GRADUATION.APPLE_INITIATE,
-    { method: "POST" }
+    B2B_END_POINTS.BOOKING_EVENT_TRIP.APPLE_INITIATE,
+    {
+      method: "POST",
+      headers: {
+        reqKey,
+      },
+    }
   );
 
   const { mutate: mutateConfirm } = useMutationData(
-    B2B_END_POINTS.GRADUATION.APPLE_CONFIRM,
-    { method: "POST" }
+    B2B_END_POINTS.BOOKING_EVENT_TRIP.APPLE_CONFIRM,
+    {
+      method: "POST",
+      headers: {
+        reqKey,
+      },
+    }
   );
-
-  useEffect(() => {
-    baseDataRef.current = baseData;
-    priceRef.current = price;
-  }, [baseData, price]);
 
   const handleDebugInitiate = () => {
     try {
       mutate(baseDataRef.current, {
         onSuccess: (data) => {
           if (!data?.bookingId) {
-            enqueueSnackbar("issue at generate Id", { variant: "error" });
+            enqueueSnackbar("Issue generating booking ID", { variant: "error" });
             return;
           }
           bookingIdRef.current = data.bookingId;
@@ -69,15 +77,23 @@ const GraduationAppleWidget = ({ baseData, price }) => {
         },
         onError: (error) => {
           enqueueSnackbar(
-            extractBackendError(error, "on error generate Id"),
+            extractBackendError(error, "Error initiating payment ID"),
             { variant: "error" }
           );
         },
       });
     } catch (error) {
-      enqueueSnackbar("on error Initiation", { variant: "error" });
+      enqueueSnackbar("Error initiating payment", { variant: "error" });
     }
   };
+
+  useEffect(() => {
+    baseDataRef.current = baseData;
+  }, [baseData]);
+
+  useEffect(() => {
+    priceRef.current = price;
+  }, [price]);
 
   useEffect(() => {
     if (isInitializedRef.current) return;
@@ -87,13 +103,13 @@ const GraduationAppleWidget = ({ baseData, price }) => {
 
     try {
       Moyasar.init({
-        element: ".graduation-mysr-form",
+        element: ".mysr-form",
         amount: priceRef.current * 100,
         language: locale,
         currency: "SAR",
-        description: "Graduation Suit Registration",
+        description: "Event Registration & Booking Fee",
         publishable_api_key: appleWidgetKey,
-        callback_url: `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.GRADUATION.APPLE_CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
+        callback_url: `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.BOOKING_EVENT_TRIP.APPLE_CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
         methods: ["applepay"],
         apple_pay: {
           country: "SA",
@@ -115,7 +131,7 @@ const GraduationAppleWidget = ({ baseData, price }) => {
               mutate(baseDataRef.current, {
                 onSuccess: (data) => {
                   if (!data?.bookingId) {
-                    enqueueSnackbar("issue at generate Id", { variant: "error" });
+                    enqueueSnackbar("Issue generating booking ID", { variant: "error" });
                     setIsProcessing(false);
                     reject();
                     return;
@@ -125,7 +141,7 @@ const GraduationAppleWidget = ({ baseData, price }) => {
                 },
                 onError: (error) => {
                   enqueueSnackbar(
-                    extractBackendError(error, "on error generate Id"),
+                    extractBackendError(error, "Error initiating payment ID"),
                     { variant: "error" }
                   );
                   setIsProcessing(false);
@@ -133,10 +149,7 @@ const GraduationAppleWidget = ({ baseData, price }) => {
                 },
               });
             } catch (error) {
-              enqueueSnackbar(
-                extractBackendError(error, "on error Initiation"),
-                { variant: "error" }
-              );
+              enqueueSnackbar("Error initiating payment", { variant: "error" });
               setIsProcessing(false);
               reject();
             }
@@ -147,6 +160,7 @@ const GraduationAppleWidget = ({ baseData, price }) => {
             try {
               if (payment && payment.id) {
                 const confirmationData = {
+                  eventTrip: baseDataRef.current?.eventTrip,
                   bookingId: bookingIdRef.current,
                   paymentId: payment.id,
                 };
@@ -157,7 +171,7 @@ const GraduationAppleWidget = ({ baseData, price }) => {
                   },
                   onError: (error) => {
                     enqueueSnackbar(
-                      extractBackendError(error, "error to confirmed"),
+                      extractBackendError(error, "Error confirming payment"),
                       { variant: "error" }
                     );
                     setIsProcessing(false);
@@ -165,12 +179,12 @@ const GraduationAppleWidget = ({ baseData, price }) => {
                   },
                 });
               } else {
-                enqueueSnackbar("failed generate paymentId", { variant: "error" });
+                enqueueSnackbar("Failed to generate payment ID", { variant: "error" });
                 setIsProcessing(false);
                 reject();
               }
             } catch (error) {
-              enqueueSnackbar("failed on complete", { variant: "error" });
+              enqueueSnackbar("Failed on complete", { variant: "error" });
               setIsProcessing(false);
               reject();
             }
@@ -198,7 +212,7 @@ const GraduationAppleWidget = ({ baseData, price }) => {
   return (
     <div className="flex flex-col gap-4">
       <div className="relative" ref={widgetContainerRef}>
-        <div className="graduation-mysr-form" />
+        <div className="mysr-form"></div>
         {isProcessing && (
           <div
             className="absolute inset-0 flex items-center justify-center bg-white/70 rounded-xl cursor-not-allowed"
@@ -216,11 +230,11 @@ const GraduationAppleWidget = ({ baseData, price }) => {
           disabled={isInitiating}
           className="w-full py-3 px-6 border-2 border-amber-400 text-amber-700 bg-amber-50 rounded-xl font-somar font-semibold hover:bg-amber-100 transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isInitiating ? "Initiating..." : "Test Initiate (debug)"}
+          {isInitiating ? t("initiating") : t("testInitiate")}
         </button>
       )}
     </div>
   );
 };
 
-export default memo(GraduationAppleWidget);
+export default memo(EventAppleWidget);

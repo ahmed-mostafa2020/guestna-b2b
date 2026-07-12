@@ -89,7 +89,8 @@ const BankTransferForm = ({
               width: "100%",
               fontFamily: "var(--font-somar-sans), sans-serif",
               "& .MuiSelect-select": {
-                paddingRight: "40px !important",
+                paddingInlineEnd: "40px !important",
+                paddingInlineStart: "14px !important",
                 border: "2px solid var(--color-border)",
                 borderRadius: "8px",
                 width: "100%",
@@ -102,8 +103,8 @@ const BankTransferForm = ({
                 },
               },
               "& .MuiSelect-icon": {
-                right: "10px !important",
-                left: "auto !important",
+                insetInlineEnd: "10px !important",
+                insetInlineStart: "auto !important",
                 color: "var(--color-text)",
               },
               "& .MuiOutlinedInput-notchedOutline": {

@@ -19,9 +19,8 @@ function formatCurrency(amount, locale = "en-US") {
   // Remove trailing zeros
   formattedAmount = formattedAmount.replace(/\.00$/, "");
 
-  // return formattedAmount;
   return (
-    <span className="centered gap-0.5 w-fit" dir="ltr">
+    <span className="inline-flex items-center justify-center gap-0.5 w-fit" dir="ltr">
       <span>{newSarSmall}</span>
       <span>{formattedAmount}</span>
     </span>

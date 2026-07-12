@@ -4,8 +4,10 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { useLocale } from "next-intl";
 
 export const useMutationData = (endpoint, options = {}) => {
+  const locale = useLocale();
   const dispatch = useDispatch();
   const [customLoading, setCustomLoading] = useState(false);
   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
@@ -18,8 +20,9 @@ export const useMutationData = (endpoint, options = {}) => {
       method,
       url: `${process.env.NEXT_PUBLIC_BASE_URL}${endpoint}`,
       headers: {
-        lang: options.lang || "ar",
+        lang: options.lang || locale || "ar",
         ...(token && { authorization: `Bearer ${token}` }), // Add Authorization header if token exists
+        ...options.headers,
       },
       data: variables,
     };

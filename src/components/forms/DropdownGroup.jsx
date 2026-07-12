@@ -71,8 +71,7 @@ const DropdownGroup = ({
         inputProps={{ "aria-label": "Without label" }}
         sx={{
           "& .MuiSelect-icon": {
-            right: isRTL ? "8px" : "auto",
-            left: isRTL ? "auto" : "8px",
+            insetInlineEnd: "8px",
             insetInlineStart: insetInlineStart || "auto",
           },
         }}
