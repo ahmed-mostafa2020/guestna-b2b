@@ -36,6 +36,7 @@
     "onePersonOnly": "Person",
     "person": "Person",
     "people": "People",
+    "personDual": "People",
     "peopleCount": "{count, plural, one {1 Person} other {# People}}",
     "student": "student",
     "students": "students",

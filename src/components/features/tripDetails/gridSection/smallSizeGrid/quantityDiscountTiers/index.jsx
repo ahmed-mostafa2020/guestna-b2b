@@ -42,7 +42,9 @@ const QuantityDiscountTiers = ({ tiers }) => {
 
           const count = tier.minQuantity;
           const peopleText =
-            count >= 2 && count <= 10
+            count === 2
+              ? tCommon("personDual")
+              : count >= 3 && count <= 10
               ? tCommon("people")
               : tCommon("person");
 

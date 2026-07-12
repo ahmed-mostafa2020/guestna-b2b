@@ -36,6 +36,7 @@
     "onePersonOnly": "للشخص",
     "person": "شخص",
     "people": "أشخاص",
+    "personDual": "شخصان",
     "peopleCount": "{count, plural, one {شخص واحد} two {شخصان} few {# أشخاص} many {# شخصًا} other {# شخص}}",
     "student": "طالبا",
     "students": "طلبة",
