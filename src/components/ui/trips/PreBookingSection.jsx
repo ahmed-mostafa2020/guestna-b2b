@@ -9,8 +9,6 @@ import { memo, useEffect, useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { TRIP_STATUS } from "@constants/tripStatus";
-import formatCurrency from "@utils/formatters/FormatCurrency";
-import calculateDiscountedPrice from "@utils/calculations/CalculateDiscountedPrice";
 
 import FrameWithImagedHeader from "../frameWithImagedHeader/FrameWithImagedHeader";
 import ActionsDialog from "@components/features/customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
@@ -63,9 +61,9 @@ const PreBookingSection = ({ tripData }) => {
   const locale = useLocale();
   const t = useTranslations();
 
-  const defaultPriceWithFormatting = tripData?.discountedPrice
-    ? calculateDiscountedPrice(tripData?.price, tripData?.discountedPrice)
-    : formatCurrency(tripData?.price);
+  const defaultPriceWithFormatting = formatCurrency(
+    tripData?.discountedPrice || tripData.price
+  );
 
   const handleLoginForm = () => {
     handleClose();

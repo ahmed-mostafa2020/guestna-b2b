@@ -14,6 +14,7 @@ import AuthanticatedRequestQuoteBox from "./authanticatedRequestQuoteBox";
 import RequestQuote from "@components/features/tripDetails/requestQuote";
 
 import Cookies from "js-cookie";
+import QuantityDiscountTiers from "./quantityDiscountTiers";
 
 const SmallSizeGrid = () => {
   const data = useSelector((state) => state.tripDetailsData?.data?.trip);
@@ -36,6 +37,10 @@ const SmallSizeGrid = () => {
 
       {pathname?.includes("/discover/") && isAuth && token && (
         <AuthanticatedRequestQuoteBox tripId={data?._id} />
+      )}
+
+      {data?.quantityDiscountTiers?.length > 0 && (
+        <QuantityDiscountTiers tiers={data.quantityDiscountTiers} />
       )}
 
       <BookWithConfidenceSection />

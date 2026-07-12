@@ -490,6 +490,11 @@
     "validationMessage": "يتطلب تسجيل دخول",
     "revsionTime": "سيتم مراجعة طلبك خلال 24 ساعة"
   },
+  "quantityDiscountTiers": {
+    "title": "خصومات الحجز الجماعي",
+    "subTitle": "احجز لعدد أكبر من الطلاب واحصل على أسعار خاصة",
+    "discountPrefix": "وفر"
+  },
 
   "bookWithConfidence": {
     "why": "ليش جستنا",

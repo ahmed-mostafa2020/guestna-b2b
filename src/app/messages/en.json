@@ -484,6 +484,11 @@
     "validationMessage": "Login is required",
     "revsionTime": "Your request will be reviewed within 24 hours"
   },
+  "quantityDiscountTiers": {
+    "title": "Group Discounts",
+    "subTitle": "Book for more students and unlock special rates",
+    "discountPrefix": "Save"
+  },
 
   "bookWithConfidence": {
     "why": "why GuestNa",
