@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { memo } from "react";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import FrameWithImagedHeader from "@components/ui/frameWithImagedHeader/FrameWithImagedHeader";
-import { Loyalty } from "@mui/icons-material";
+import { Loyalty, Group } from "@mui/icons-material";
 
 const QuantityDiscountTiers = ({ tiers }) => {
   const t = useTranslations("quantityDiscountTiers");
@@ -41,12 +41,6 @@ const QuantityDiscountTiers = ({ tiers }) => {
             );
 
           const count = tier.minQuantity;
-          const peopleText =
-            count === 2
-              ? tCommon("personDual")
-              : count >= 3 && count <= 10
-              ? tCommon("people")
-              : tCommon("person");
 
           return (
             <div
@@ -54,11 +48,11 @@ const QuantityDiscountTiers = ({ tiers }) => {
               className="flex items-center justify-between p-3 rounded-xl border border-gray-150 bg-white  hover:shadow-md transition-all duration-300 ease-in-out  "
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl  text-mainColor centered font-bold text-base  transition-all duration-300">
-                  {count}+
+                <div className="w-9 h-9 rounded-xl bg-mainColor/10 text-mainColor centered transition-all duration-300">
+                  <Group className="text-base" />
                 </div>
                 <span className="text-sm font-semibold text-textDark">
-                  {peopleText}
+                  {tCommon("discountTierLabel", { count })}
                 </span>
               </div>
               <div className="flex items-center gap-1.5  text-success px-3.5 py-1.5 rounded-full text-xs font-bold shadow-sm border    transition-all duration-300">

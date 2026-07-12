@@ -38,6 +38,7 @@
     "people": "People",
     "personDual": "People",
     "peopleCount": "{count, plural, one {1 Person} other {# People}}",
+    "discountTierLabel": "{count}+ {count, plural, one {Person} other {People}}",
     "student": "student",
     "students": "students",
     "stars": "Stars",

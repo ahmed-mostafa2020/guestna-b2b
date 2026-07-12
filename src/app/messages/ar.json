@@ -38,6 +38,7 @@
     "people": "أشخاص",
     "personDual": "شخصان",
     "peopleCount": "{count, plural, one {شخص واحد} two {شخصان} few {# أشخاص} many {# شخصًا} other {# شخص}}",
+    "discountTierLabel": "{count, plural, =2 {شخصين فأكثر} few {# أشخاص فأكثر} many {# شخصًا فأكثر} other {# شخص فأكثر}}",
     "student": "طالبا",
     "students": "طلبة",
     "stars": "نجوم",
