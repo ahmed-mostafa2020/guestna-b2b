@@ -41,10 +41,10 @@ const QuantityDiscountTiers = ({ tiers }) => {
             );
 
           const count = tier.minQuantity;
-          const studentText =
+          const peopleText =
             count >= 2 && count <= 10
-              ? tCommon("students")
-              : tCommon("student");
+              ? tCommon("people")
+              : tCommon("person");
 
           return (
             <div
@@ -56,7 +56,7 @@ const QuantityDiscountTiers = ({ tiers }) => {
                   {count}+
                 </div>
                 <span className="text-sm font-semibold text-textDark">
-                  {studentText}
+                  {peopleText}
                 </span>
               </div>
               <div className="flex items-center gap-1.5  text-success px-3.5 py-1.5 rounded-full text-xs font-bold shadow-sm border    transition-all duration-300">
