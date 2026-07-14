@@ -438,11 +438,12 @@ const EventRegistrationWizard = ({ event }) => {
                 isArrayType: true,
               });
             } else if (Array.isArray(val)) {
-              // multi-select / multi-checkbox → join as comma-separated string
+              // multi-select / multi-checkbox → keep as array of strings
               dynamicFormInfo.push({
                 key: input.key,
-                value: val.join(", "),
+                value: val,
                 isFile: false,
+                isArrayOfStrings: true,
               });
             } else if (typeof val === "boolean") {
               dynamicFormInfo.push({
@@ -489,6 +490,15 @@ const EventRegistrationWizard = ({ event }) => {
                       field.value
                     );
                   });
+                });
+                appendIdx++;
+              } else if (info.isArrayOfStrings) {
+                formData.append(`dynamicFormInfo[${appendIdx}][key]`, info.key);
+                info.value.forEach((v, vIdx) => {
+                  formData.append(
+                    `dynamicFormInfo[${appendIdx}][value][${vIdx}]`,
+                    String(v)
+                  );
                 });
                 appendIdx++;
               } else {
