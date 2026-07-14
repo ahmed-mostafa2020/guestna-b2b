@@ -63,7 +63,7 @@ const PreBookingSection = ({ tripData }) => {
   const t = useTranslations();
 
   const defaultPriceWithFormatting = formatCurrency(
-    tripData?.discountedPrice || tripData?.price
+    tripData?.discountedPrice ?? tripData?.price
   );
 
   const handleLoginForm = () => {
@@ -175,7 +175,7 @@ const PreBookingSection = ({ tripData }) => {
           <span className="text-xl font-normal text-textLight">
             {t("common.onePerson")}
           </span>
-          <span className="text-xs text-textDark self-start">{`(${t("finalDetails.includingVAT")})`}</span>
+          <span className="text-xs text-textDark ">{`(${t("finalDetails.includingVAT")})`}</span>
         </h3>
 
         {bookingStatus.canBook ? (
