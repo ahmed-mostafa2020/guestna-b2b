@@ -167,7 +167,7 @@ const PreBookingSection = ({ tripData }) => {
   return (
     <>
       <FrameWithImagedHeader withBorder={true}>
-        <h3 className="flex items-center gap-1 transition-all duration-200 ease-in-out">
+        <h3 className="flex flex-wrap items-center gap-1 transition-all duration-200 ease-in-out">
           <span className="text-2xl font-medium">
             {defaultPriceWithFormatting}
           </span>
@@ -175,6 +175,7 @@ const PreBookingSection = ({ tripData }) => {
           <span className="text-xl font-normal text-textLight">
             {t("common.onePerson")}
           </span>
+          <span className="text-xs text-textDark self-start">{`(${t("finalDetails.includingVAT")})`}</span>
         </h3>
 
         {bookingStatus.canBook ? (

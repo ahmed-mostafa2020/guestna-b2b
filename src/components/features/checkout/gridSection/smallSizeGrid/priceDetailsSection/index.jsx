@@ -48,7 +48,7 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
 
         {/* Discounts (Groups / Promocode) */}
         {hasAnyDiscount && (
-          <div className="flex flex-col w-full gap-2 pt-2 mt-2 border-t border-dashed border-textDark/30">
+          <div className="flex flex-col w-full gap-2 pt-2 mt-2 border-t border-dashed border-textDark">
             {quantityDiscount > 0 && (
               <div className="flex items-center justify-between gap-2 font-medium leading-5 text-error w-full text-sm">
                 <p>{t("finalDetails.quantityDiscount")}</p>
@@ -72,7 +72,7 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
         )}
 
         {/* VAT (15%) */}
-        <div className="flex justify-between gap-2 pt-2 mt-2 border-t border-dashed border-textDark/30 items-start">
+        <div className="flex justify-between gap-2 pt-2 mt-2 border-t border-dashed border-textDark items-start">
           <p>{t("finalDetails.vat")}</p>
           <span className="font-medium">{formatCurrency(vatAmount)}</span>
         </div>
@@ -81,8 +81,10 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
       {/* Total (VAT inclusive) */}
       <div className="flex justify-between w-full gap-2 pt-4 pb-7 items-center">
         <div className="flex flex-col gap-0.5">
-          <h4 className="font-semibold text-lg leading-5">{t("finalDetails.total")}</h4>
-          <span className="text-xs text-textDark/60">{`(${t("finalDetails.includingVAT")})`}</span>
+          <h4 className="font-semibold text-lg leading-5">
+            {t("finalDetails.total")}
+          </h4>
+          <span className="text-xs text-textDark">{`(${t("finalDetails.includingVAT")})`}</span>
         </div>
 
         <h4 className="text-xl font-bold text-primary">
