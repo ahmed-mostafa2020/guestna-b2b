@@ -11,12 +11,8 @@ const EventDetailsSchools = ({ organizations }) => {
   const tSelector = useTranslations("profile.organizationSelector");
   const [searchQuery, setSearchQuery] = useState("");
 
-  if (!organizations || organizations.length === 0) {
-    return (
-      <div className="bg-gray-50 rounded-xl p-6 border border-gray-100 text-center text-gray-500 font-somar">
-        {t("noSchools")}
-      </div>
-    );
+  if (!organizations || organizations.length <= 1) {
+    return null;
   }
 
   // Filter organizations by search query

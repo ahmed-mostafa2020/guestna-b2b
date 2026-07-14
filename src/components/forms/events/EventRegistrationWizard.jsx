@@ -510,12 +510,13 @@ const EventRegistrationWizard = ({ event }) => {
               }
             );
           } else {
+            const cleanDynamicFormInfo = dynamicFormInfo.map(({ key, value }) => ({ key, value }));
             response = await axios.post(
               getProxyUrl(B2B_END_POINTS.EVENT_BOOKING.CLIENT_INFO),
               {
                 name,
                 eventTrip: event._id,
-                dynamicFormInfo,
+                dynamicFormInfo: cleanDynamicFormInfo,
               },
               { headers }
             );
