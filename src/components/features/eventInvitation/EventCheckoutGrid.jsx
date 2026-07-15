@@ -81,7 +81,6 @@ const EventPaymentSummary = ({
   bookingDiscountedTotalPrice,
 }) => {
   const hasEventDiscount =
-    !appliedPromoCode &&
     bookingDiscountedTotalPrice !== null &&
     bookingBaseTotalPrice !== null &&
     bookingDiscountedTotalPrice < bookingBaseTotalPrice;
@@ -229,7 +228,7 @@ const EventPaymentSummary = ({
             <div className="flex flex-col items-end gap-0.5">
               {(appliedPromoCode || hasEventDiscount) && (
                 <span className="relative inline-block text-gray-400 font-ibm text-xs">
-                  {formatCurrency(appliedPromoCode ? rawDynamicPrice : bookingBaseTotalPrice)}
+                  {formatCurrency(bookingBaseTotalPrice !== null ? bookingBaseTotalPrice : event.price)}
                   <span
                     className="absolute left-0 right-0 top-1/2 h-[1px] bg-[#ef4444] transform -rotate-[10deg] pointer-events-none"
                     style={{ transformOrigin: "center" }}

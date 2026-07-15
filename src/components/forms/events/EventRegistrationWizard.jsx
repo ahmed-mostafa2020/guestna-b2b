@@ -281,13 +281,10 @@ const EventRegistrationWizard = ({ event }) => {
   const basePrice = useMemo(() => {
     const price = event.price || 0;
     const discounted = event.discountedPrice;
-    if (appliedPromoCode) {
-      return Number(price);
-    }
     return discounted && Number(discounted) < Number(price)
       ? Number(discounted)
       : Number(price);
-  }, [event.price, event.discountedPrice, appliedPromoCode]);
+  }, [event.price, event.discountedPrice]);
 
   const promoDiscountAmount = useMemo(() => {
     if (!appliedPromoCode) return 0;
@@ -296,25 +293,21 @@ const EventRegistrationWizard = ({ event }) => {
       return discountVal;
     }
     const targetPrice =
-      bookingBaseTotalPrice !== null
+      bookingDiscountedTotalPrice !== null
+        ? bookingDiscountedTotalPrice
+        : bookingBaseTotalPrice !== null
         ? bookingBaseTotalPrice
-        : Number(event.price || 0);
+        : Number(basePrice || 0);
     return (targetPrice * discountVal) / 100;
-  }, [appliedPromoCode, bookingBaseTotalPrice, event.price]);
+  }, [appliedPromoCode, bookingBaseTotalPrice, bookingDiscountedTotalPrice, basePrice]);
 
   const rawDynamicPrice = useMemo(() => {
     if (currentStep === 1) {
-      if (appliedPromoCode) {
-        return bookingBaseTotalPrice !== null
-          ? bookingBaseTotalPrice
-          : computeDynamicPrice(registrationValuesRef.current || {}, inputs, basePrice);
-      } else {
-        return bookingDiscountedTotalPrice !== null
-          ? bookingDiscountedTotalPrice
-          : bookingBaseTotalPrice !== null
-          ? bookingBaseTotalPrice
-          : computeDynamicPrice(registrationValuesRef.current || {}, inputs, basePrice);
-      }
+      return bookingDiscountedTotalPrice !== null
+        ? bookingDiscountedTotalPrice
+        : bookingBaseTotalPrice !== null
+        ? bookingBaseTotalPrice
+        : computeDynamicPrice(registrationValuesRef.current || {}, inputs, basePrice);
     }
     return computeDynamicPrice(step1Values, inputs, basePrice);
   }, [
@@ -324,7 +317,6 @@ const EventRegistrationWizard = ({ event }) => {
     basePrice,
     bookingBaseTotalPrice,
     bookingDiscountedTotalPrice,
-    appliedPromoCode,
   ]);
 
   const dynamicPrice = useMemo(() => {
@@ -598,7 +590,11 @@ const EventRegistrationWizard = ({ event }) => {
       const discountVal = Number(data?.discount || 0);
       const discountType = data?.discountType || "PERCENTAGE";
       const targetPrice =
-        bookingBaseTotalPrice !== null ? bookingBaseTotalPrice : Number(event.price || 0);
+        bookingDiscountedTotalPrice !== null
+          ? bookingDiscountedTotalPrice
+          : bookingBaseTotalPrice !== null 
+          ? bookingBaseTotalPrice 
+          : Number(basePrice || 0);
       const discountAmount =
         discountType === "AMOUNT"
           ? discountVal
@@ -648,7 +644,7 @@ const EventRegistrationWizard = ({ event }) => {
     const body = {
       eventTrip: event._id,
       client: clientId,
-      quantity: 1,
+      quantity: regValues?.quantity ? parseInt(regValues.quantity) || 1 : 1,
       paymentMethod: currentPaymentMethod,
       redirectUrl: `${vercelUrl}/${locale}/bookingStatus`,
     };
@@ -690,7 +686,7 @@ const EventRegistrationWizard = ({ event }) => {
     const body = {
       eventTrip: event._id,
       client: clientId,
-      quantity: 1,
+      quantity: regValues?.quantity ? parseInt(regValues.quantity) || 1 : 1,
       price: dynamicPrice,
     };
     if (appliedPromoCode?.data?._id || appliedPromoCode?.data?.id) {
@@ -752,7 +748,7 @@ const EventRegistrationWizard = ({ event }) => {
       const requestBody = {
         eventTrip: event._id,
         client: clientId,
-        quantity: 1,
+        quantity: regValues?.quantity ? parseInt(regValues.quantity) || 1 : 1,
       };
       if (appliedPromoCode?.data?._id || appliedPromoCode?.data?.id) {
         requestBody.promoCode = appliedPromoCode.data?._id || appliedPromoCode.data?.id;
