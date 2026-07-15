@@ -22,7 +22,7 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
   const quantity = priceInfo?.quantity || 0;
   const quantityDiscount = priceInfo?.quantityDiscount || 0;
   const promoCodeDiscount = priceInfo?.promoCodeDiscount || 0;
-  const vatAmount = priceInfo?.vat || 0;
+
   const total = priceInfo?.total || 0;
 
   const numberOfPeople = t("common.peopleCount", { count: quantity });
@@ -70,12 +70,6 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
             )}
           </div>
         )}
-
-        {/* VAT (15%) */}
-        <div className="flex justify-between gap-2 pt-2 mt-2 border-t border-dashed border-textDark items-start">
-          <p>{t("finalDetails.vat")}</p>
-          <span className="font-medium">{formatCurrency(vatAmount)}</span>
-        </div>
       </div>
 
       {/* Total (VAT inclusive) */}
