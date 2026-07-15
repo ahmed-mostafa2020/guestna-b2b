@@ -16,7 +16,6 @@ import formatCurrency from "@utils/formatters/FormatCurrency";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import DynamicFileUpload from "@components/forms/DynamicFileUpload";
 import { getDynamicFormInitialValues } from "@utils/validators/dynamicFormSchema";
-import DropdownGroup from "@components/forms/DropdownGroup";
 
 // ─── Image Lightbox ──────────────────────────────────────────────────────────
 const ImageLightbox = ({ src, alt, onClose, t }) => {
@@ -178,12 +177,15 @@ const DynamicField = memo(
   }) => {
     const [cardLightbox, setCardLightbox] = useState(null);
     const fieldName = name || input.key;
-    const inputId = id || `dynamic-field-${fieldName.replace(/[\[\]\.]/g, "-")}`;
+    const inputId =
+      id || `dynamic-field-${fieldName.replace(/[\[\]\.]/g, "-")}`;
 
     useEffect(() => {
       if (input.type !== "array") return;
       if (!value || !Array.isArray(value) || value.length === 0) {
-        setFieldValue(fieldName, [getDynamicFormInitialValues(input.inputs || [])]);
+        setFieldValue(fieldName, [
+          getDynamicFormInitialValues(input.inputs || []),
+        ]);
         setFieldValue("quantity", "1");
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -812,32 +814,6 @@ const DynamicField = memo(
 
       return (
         <>
-          <div className="relative [&_label]:font-somar">
-            <DropdownGroup
-              label={t("forms.registerForm.numberOfChildren") || "Number of students"}
-              placeholder={String(arrayVal.length || 1)}
-              value={arrayVal.length || 1}
-              onChange={(e) => {
-                const n = parseInt(e.target.value, 10);
-                let newArray = [...arrayVal];
-                if (n > arrayVal.length) {
-                  for (let i = arrayVal.length; i < n; i++) {
-                    newArray.push(getDynamicFormInitialValues(input.inputs || []));
-                  }
-                } else if (n < arrayVal.length) {
-                  newArray = newArray.slice(0, n);
-                }
-                setFieldValue(fieldName, newArray);
-                setFieldValue("quantity", String(n));
-              }}
-              menuItemsList={[1, 2, 3, 4, 5, 6, 7, 8].map((num) => ({
-                id: num,
-                name: String(num),
-              }))}
-              required={true}
-            />
-          </div>
-
           {arrayVal.map((childValues, index) => {
             const childErrors = error?.[index] || {};
             const childTouched = touched?.[index] || {};
