@@ -3496,6 +3496,8 @@
       "total": "المجموع الكلي",
       "includingVat": "شامل ضريبة القيمة المضافة",
       "confirm": "تأكيد الدفع",
+      "ticketPrice": "سعر التذكرة",
+      "eventDiscount": "الخصم",
       "promoCode": {
         "label": "كود الخصم",
         "placeholder": "أدخل كود الخصم",

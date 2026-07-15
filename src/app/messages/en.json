@@ -3487,6 +3487,8 @@
       "total": "Total",
       "includingVat": "Including VAT",
       "confirm": "Confirm Payment",
+      "ticketPrice": "Ticket Price",
+      "eventDiscount": "Discount",
       "promoCode": {
         "label": "Promo Code",
         "placeholder": "Enter promo code",

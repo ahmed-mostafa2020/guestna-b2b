@@ -77,7 +77,19 @@ const EventPaymentSummary = ({
   handleRemovePromoCode,
   isPromoSubmitting,
   t,
+  bookingBaseTotalPrice,
+  bookingDiscountedTotalPrice,
 }) => {
+  const hasEventDiscount =
+    !appliedPromoCode &&
+    bookingDiscountedTotalPrice !== null &&
+    bookingBaseTotalPrice !== null &&
+    bookingDiscountedTotalPrice < bookingBaseTotalPrice;
+
+  const eventDiscountAmount = hasEventDiscount
+    ? bookingBaseTotalPrice - bookingDiscountedTotalPrice
+    : 0;
+
   return (
     <>
       <FrameWithImagedHeader withBorder={true}>
@@ -86,31 +98,42 @@ const EventPaymentSummary = ({
         </h3>
 
         <div className="space-y-4">
-          <div className="flex justify-between items-center text-sm font-somar">
-            <span className="text-textLight font-medium">{event?.name}</span>
-            <span className="text-textLight font-ibm">{event?.orderId}</span>
-          </div>
-
-          <hr className="border-border" />
-
-          {selectedOptionsBreakdown.map((opt, idx) => (
-            <div
-              key={idx}
-              className="flex justify-between items-center font-somar text-sm text-textLight"
-            >
+            <div className="flex justify-between items-center text-sm font-somar">
+              <span className="text-textLight font-medium">{event?.name}</span>
+              <span className="text-textLight font-ibm">{event?.orderId}</span>
+            </div>
+  
+            <hr className="border-border" />
+  
+            <div className="flex justify-between items-center font-somar text-sm text-textLight">
               <span>
-                {opt.fieldTitle}:{" "}
-                <strong className="text-textDark font-medium">
-                  {opt.label}
-                </strong>
+                {t("eventTrips.payment.ticketPrice") || "Ticket Price"}
               </span>
-              <span className="font-semibold font-ibm flex text-mainColor">
-                + {formatCurrency(opt.price)}
+              <span className="font-semibold font-ibm text-mainColor">
+                {formatCurrency(event?.price || 0)}
               </span>
             </div>
-          ))}
 
-          <hr className="border-border" />
+            {selectedOptionsBreakdown.length > 0 && <hr className="border-border" />}
+  
+            {selectedOptionsBreakdown.map((opt, idx) => (
+              <div
+                key={idx}
+                className="flex justify-between items-center font-somar text-sm text-textLight"
+              >
+                <span>
+                  {opt.fieldTitle}:{" "}
+                  <strong className="text-textDark font-medium">
+                    {opt.label}
+                  </strong>
+                </span>
+                <span className="font-semibold font-ibm flex text-mainColor">
+                  + {formatCurrency(opt.price)}
+                </span>
+              </div>
+            ))}
+  
+            <hr className="border-border" />
 
           {/* ── Promo Code Input ── */}
           <div className="flex flex-col gap-2">
@@ -184,6 +207,18 @@ const EventPaymentSummary = ({
               </span>
             </div>
           )}
+          
+          {/* ── Event Discount Line ── */}
+          {hasEventDiscount && (
+            <div className="flex justify-between items-center font-somar text-sm">
+              <span className="flex text-green-600 font-medium">
+                {t("eventTrips.payment.eventDiscount") || "Discount"}
+              </span>
+              <span className="text-green-600 font-semibold font-ibm flex">
+                - {formatCurrency(eventDiscountAmount)}
+              </span>
+            </div>
+          )}
 
           <hr className="border-border" />
 
@@ -192,9 +227,9 @@ const EventPaymentSummary = ({
               {t("eventTrips.payment.total") || "Total"}
             </span>
             <div className="flex flex-col items-end gap-0.5">
-              {appliedPromoCode && (
+              {(appliedPromoCode || hasEventDiscount) && (
                 <span className="relative inline-block text-gray-400 font-ibm text-xs">
-                  {formatCurrency(rawDynamicPrice)}
+                  {formatCurrency(appliedPromoCode ? rawDynamicPrice : bookingBaseTotalPrice)}
                   <span
                     className="absolute left-0 right-0 top-1/2 h-[1px] bg-[#ef4444] transform -rotate-[10deg] pointer-events-none"
                     style={{ transformOrigin: "center" }}
@@ -535,6 +570,8 @@ const EventCheckoutGrid = ({
   handlePaymentSubmit,
   handleFreeBooking,
   handleBack,
+  bookingBaseTotalPrice,
+  bookingDiscountedTotalPrice,
 }) => {
   const locale = useLocale();
   const t = useTranslations();
@@ -561,6 +598,8 @@ const EventCheckoutGrid = ({
           handleRemovePromoCode,
           isPromoSubmitting,
           t,
+          bookingBaseTotalPrice,
+          bookingDiscountedTotalPrice,
         }}
         smallSizeProps={{
           handleFreeBooking,
@@ -605,6 +644,8 @@ const EventCheckoutGrid = ({
             handleRemovePromoCode,
             isPromoSubmitting,
             t,
+            bookingBaseTotalPrice,
+            bookingDiscountedTotalPrice,
           }}
           smallSizeProps={{
             paymentFormProps: formikProps,

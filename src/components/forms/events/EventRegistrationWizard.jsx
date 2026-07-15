@@ -855,6 +855,8 @@ const EventRegistrationWizard = ({ event }) => {
         handlePaymentSubmit={handlePaymentSubmit}
         handleFreeBooking={handleFreeBooking}
         handleBack={handleBack}
+        bookingBaseTotalPrice={bookingBaseTotalPrice}
+        bookingDiscountedTotalPrice={bookingDiscountedTotalPrice}
       />
     </main>
   );
