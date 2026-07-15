@@ -79,6 +79,7 @@ const EventPaymentSummary = ({
   t,
   bookingBaseTotalPrice,
   bookingDiscountedTotalPrice,
+  quantity,
 }) => {
   const hasEventDiscount =
     bookingDiscountedTotalPrice !== null &&
@@ -107,9 +108,10 @@ const EventPaymentSummary = ({
             <div className="flex justify-between items-center font-somar text-sm text-textLight">
               <span>
                 {t("eventTrips.payment.ticketPrice") || "Ticket Price"}
+                {quantity > 1 && ` (${quantity} ${t("eventTrips.payment.persons") || "Persons"})`}
               </span>
               <span className="font-semibold font-ibm text-mainColor">
-                {formatCurrency(event?.price || 0)}
+                {formatCurrency((event?.price || 0) * quantity)}
               </span>
             </div>
 
@@ -571,6 +573,7 @@ const EventCheckoutGrid = ({
   handleBack,
   bookingBaseTotalPrice,
   bookingDiscountedTotalPrice,
+  quantity,
 }) => {
   const locale = useLocale();
   const t = useTranslations();
@@ -599,6 +602,7 @@ const EventCheckoutGrid = ({
           t,
           bookingBaseTotalPrice,
           bookingDiscountedTotalPrice,
+          quantity,
         }}
         smallSizeProps={{
           handleFreeBooking,
@@ -645,6 +649,7 @@ const EventCheckoutGrid = ({
             t,
             bookingBaseTotalPrice,
             bookingDiscountedTotalPrice,
+            quantity,
           }}
           smallSizeProps={{
             paymentFormProps: formikProps,

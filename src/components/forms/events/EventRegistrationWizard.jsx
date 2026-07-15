@@ -638,13 +638,15 @@ const EventRegistrationWizard = ({ event }) => {
     setCurrentPaymentMethod(event.target.value);
   }, []);
 
+  const quantity = registrationValuesRef.current?.quantity ? parseInt(registrationValuesRef.current.quantity) || 1 : 1;
+
   const buildApiBody = (regValues, paymentValues) => {
     if (!regValues) return {};
     const clientId = clientBookingId || regValues?._clientId;
     const body = {
       eventTrip: event._id,
       client: clientId,
-      quantity: regValues?.quantity ? parseInt(regValues.quantity) || 1 : 1,
+      quantity,
       paymentMethod: currentPaymentMethod,
       redirectUrl: `${vercelUrl}/${locale}/bookingStatus`,
     };
@@ -686,7 +688,7 @@ const EventRegistrationWizard = ({ event }) => {
     const body = {
       eventTrip: event._id,
       client: clientId,
-      quantity: regValues?.quantity ? parseInt(regValues.quantity) || 1 : 1,
+      quantity,
       price: dynamicPrice,
     };
     if (appliedPromoCode?.data?._id || appliedPromoCode?.data?.id) {
@@ -748,7 +750,7 @@ const EventRegistrationWizard = ({ event }) => {
       const requestBody = {
         eventTrip: event._id,
         client: clientId,
-        quantity: regValues?.quantity ? parseInt(regValues.quantity) || 1 : 1,
+        quantity,
       };
       if (appliedPromoCode?.data?._id || appliedPromoCode?.data?.id) {
         requestBody.promoCode = appliedPromoCode.data?._id || appliedPromoCode.data?.id;
@@ -853,6 +855,7 @@ const EventRegistrationWizard = ({ event }) => {
         handleBack={handleBack}
         bookingBaseTotalPrice={bookingBaseTotalPrice}
         bookingDiscountedTotalPrice={bookingDiscountedTotalPrice}
+        quantity={quantity}
       />
     </main>
   );

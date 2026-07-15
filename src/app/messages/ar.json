@@ -3498,6 +3498,7 @@
       "confirm": "تأكيد الدفع",
       "ticketPrice": "سعر التذكرة",
       "eventDiscount": "الخصم",
+      "persons": "أشخاص",
       "promoCode": {
         "label": "كود الخصم",
         "placeholder": "أدخل كود الخصم",

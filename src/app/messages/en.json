@@ -3489,6 +3489,7 @@
       "confirm": "Confirm Payment",
       "ticketPrice": "Ticket Price",
       "eventDiscount": "Discount",
+      "persons": "Persons",
       "promoCode": {
         "label": "Promo Code",
         "placeholder": "Enter promo code",
