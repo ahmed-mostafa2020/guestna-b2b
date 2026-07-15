@@ -939,6 +939,7 @@
           "tripType": "Trip Type",
           "category": "Category",
           "basePrice": "Price",
+          "discountedPrice": "Discounted Price",
           "location": "Location",
           "tripDate": "Trip Date",
           "orderId": "Order ID",

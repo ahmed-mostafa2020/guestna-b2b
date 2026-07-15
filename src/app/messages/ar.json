@@ -950,6 +950,7 @@
           "tripType": "نوع الرحلة",
           "category": "الفئة",
           "basePrice": "السعر",
+          "discountedPrice": "السعر المخفض",
           "location": "الموقع",
           "tripDate": "تاريخ الرحلة",
           "orderId": "رقم الطلب",

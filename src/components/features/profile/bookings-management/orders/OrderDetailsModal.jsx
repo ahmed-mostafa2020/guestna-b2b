@@ -198,6 +198,15 @@ const OrderDetailsModal = ({ orderId, orderDetails, loading }) => {
               />
             )}
 
+            {/* Discounted price */}
+            {(!!orderDetails?.discountedPrice || orderDetails?.discountedPrice === 0 || !!orderDetails?.trip?.discountedPrice || orderDetails?.trip?.discountedPrice === 0) && (
+              <InfoItem
+                icon={walletIcon}
+                label={t(`${k}.discountedPrice`)}
+                value={formatCurrency(orderDetails?.discountedPrice ?? orderDetails?.trip?.discountedPrice)}
+              />
+            )}
+
             {/* Status */}
             <InfoItem
               icon={ticketsIcon}

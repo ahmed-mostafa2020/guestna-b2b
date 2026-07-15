@@ -18,25 +18,49 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 
 // ── Tiny inline icons ──────────────────────────────────────────────────────────
 const ClockIcon = () => (
-  <svg width="11" height="12" viewBox="0 0 24 24" fill="#44474e" className="shrink-0">
+  <svg
+    width="11"
+    height="12"
+    viewBox="0 0 24 24"
+    fill="#44474e"
+    className="shrink-0"
+  >
     <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z" />
   </svg>
 );
 
 const CalendarIcon = () => (
-  <svg width="11" height="12" viewBox="0 0 24 24" fill="#44474e" className="shrink-0">
+  <svg
+    width="11"
+    height="12"
+    viewBox="0 0 24 24"
+    fill="#44474e"
+    className="shrink-0"
+  >
     <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
   </svg>
 );
 
 const PinIcon = () => (
-  <svg width="9" height="12" viewBox="0 0 24 24" fill="#44474e" className="shrink-0">
+  <svg
+    width="9"
+    height="12"
+    viewBox="0 0 24 24"
+    fill="#44474e"
+    className="shrink-0"
+  >
     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
   </svg>
 );
 
 const PeopleIcon = () => (
-  <svg width="24" height="12" viewBox="0 0 24 24" fill="#44474e" className="shrink-0">
+  <svg
+    width="24"
+    height="12"
+    viewBox="0 0 24 24"
+    fill="#44474e"
+    className="shrink-0"
+  >
     <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
   </svg>
 );
@@ -49,12 +73,16 @@ const StatCol = ({ label, value, valueClass = "text-[#031635]", icon }) => (
     {icon ? (
       <div className="flex items-center gap-1.5 justify-start">
         {icon}
-        <span className={`text-[20px] font-bold leading-7 font-somar ${valueClass}`}>
+        <span
+          className={`text-[20px] font-bold leading-7 font-somar ${valueClass}`}
+        >
           {value}
         </span>
       </div>
     ) : (
-      <div className={`text-[20px] font-bold leading-7 font-somar text-right ${valueClass}`}>
+      <div
+        className={`text-[20px] font-bold leading-7 font-somar text-right ${valueClass}`}
+      >
         {value}
       </div>
     )}
@@ -76,7 +104,11 @@ const TripTimeRange = ({ trip, locale }) => {
 
   if (trip.fromDay && trip.toDay) {
     const fmt = (d) =>
-      formatDate(d, locale, { year: "numeric", month: "numeric", day: "numeric" });
+      formatDate(d, locale, {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+      });
     return (
       <div className="flex gap-1 items-center">
         <CalendarIcon />
@@ -99,26 +131,33 @@ const TripCardAvailable = ({ trip, seats, locale, recommendationId }) => {
   const [selecting, setSelecting] = useState(false);
   const [selected, setSelected] = useState(false);
 
-  const totalPrice = trip.price * (seats || 1);
-
+  const hasDiscount = !!trip.discountedPrice || trip.discountedPrice === 0;
+  const totalPrice =
+    (hasDiscount ? trip.discountedPrice : trip.price) * (seats || 1);
+  const baseTotalPrice = trip.price * (seats || 1);
   const handleSelect = async () => {
     setSelecting(true);
     try {
       await axios.patch(
-        getProxyUrl(B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ACCEPT_RECOMMENDED),
+        getProxyUrl(
+          B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ACCEPT_RECOMMENDED
+        ),
         { b2bTrip: trip._id, askTrip: recommendationId },
         { headers: getHeaders(locale) }
       );
       setSelected(true);
       enqueueSnackbar(t("card.selectSuccess"), { variant: "success" });
-      queryClient.invalidateQueries({ queryKey: ["fetchData", "profile/askTrips/all"] });
-      queryClient.invalidateQueries({ queryKey: ["fetchData", "profile/askTrips/counts"] });
+      queryClient.invalidateQueries({
+        queryKey: ["fetchData", "profile/askTrips/all"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["fetchData", "profile/askTrips/counts"],
+      });
       router.push(`/${locale}/profile/bookings-management/orders`);
     } catch (err) {
-      enqueueSnackbar(
-        err?.response?.data?.message || t("card.selectError"),
-        { variant: "error" }
-      );
+      enqueueSnackbar(err?.response?.data?.message || t("card.selectError"), {
+        variant: "error",
+      });
     } finally {
       setSelecting(false);
     }
@@ -186,12 +225,34 @@ const TripCardAvailable = ({ trip, seats, locale, recommendationId }) => {
             />
             <StatCol
               label={t("card.pricePerStudent")}
-              value={formatCurrency(trip.price)}
+              value={
+                hasDiscount ? (
+                  <div className="flex flex-col w-fit items-center  justify-center gap-0.5">
+                    <span className="line-through text-xs text-[#44474e] font-normal leading-tight">
+                      {formatCurrency(trip.price)}
+                    </span>
+                    <span>{formatCurrency(trip.discountedPrice)}</span>
+                  </div>
+                ) : (
+                  formatCurrency(trip.price)
+                )
+              }
               valueClass="text-[#031635]"
             />
             <StatCol
               label={t("card.totalPrice")}
-              value={formatCurrency(totalPrice)}
+              value={
+                hasDiscount ? (
+                  <div className="flex flex-col w-fit items-center  justify-center gap-0.5 ">
+                    <span className="line-through text-xs text-[#44474e] font-normal leading-tight">
+                      {formatCurrency(baseTotalPrice)}
+                    </span>
+                    <span>{formatCurrency(totalPrice)}</span>
+                  </div>
+                ) : (
+                  formatCurrency(totalPrice)
+                )
+              }
               valueClass="text-[#036d36]"
             />
           </div>
@@ -217,7 +278,9 @@ const TripCardAvailable = ({ trip, seats, locale, recommendationId }) => {
             disabled={selecting || selected}
             className="bg-[#007473] border-2 border-[#007473] text-white text-[16px] font-bold font-somar leading-5 rounded-[8px] px-[60px] py-3 text-center hover:opacity-90 transition-opacity whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer"
           >
-            {selecting && <CircularProgress size={16} sx={{ color: "white" }} />}
+            {selecting && (
+              <CircularProgress size={16} sx={{ color: "white" }} />
+            )}
             {selected ? t("card.selectSuccess") : t("card.selectTrip")}
           </button>
           <Link

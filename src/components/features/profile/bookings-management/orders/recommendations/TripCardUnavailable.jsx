@@ -7,6 +7,8 @@ import formatCurrency from "@utils/formatters/FormatCurrency";
 const TripCardUnavailable = ({ trip }) => {
   const t = useTranslations("recommendations.unavailable");
 
+  const hasDiscount = !!trip.discountedPrice || trip.discountedPrice === 0;
+
   return (
     <div className="relative border border-[#c5c6cf] rounded-[12px] overflow-hidden flex items-stretch opacity-70 w-full">
       {/* Desaturation overlay */}
@@ -50,7 +52,16 @@ const TripCardUnavailable = ({ trip }) => {
               {t("pricePerStudent")}
             </span>
             <div className="text-[20px] font-bold text-[#191c1e] font-somar text-right">
-              {formatCurrency(trip.price)}
+              {hasDiscount ? (
+                <div className="flex flex-col w-fit items-center  justify-center gap-0.5">
+                  <span className="line-through text-xs text-[#44474e]/60 font-normal leading-tight">
+                    {formatCurrency(trip.price)}
+                  </span>
+                  <span>{formatCurrency(trip.discountedPrice)}</span>
+                </div>
+              ) : (
+                formatCurrency(trip.price)
+              )}
             </div>
           </div>
         </div>
