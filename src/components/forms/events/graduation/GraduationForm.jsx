@@ -329,9 +329,15 @@ const GraduationForm = () => {
 
     const body = {
       client: regValues._clientId,
-      price,
       quantity: 1,
     };
+
+    if (
+      currentPaymentMethod !== CONSTANT_VALUES.PAYMENT_METHODS.TAMARA &&
+      currentPaymentMethod !== CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD
+    ) {
+      body.price = price;
+    }
 
     if (
       currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD &&

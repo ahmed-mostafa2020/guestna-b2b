@@ -652,7 +652,10 @@ const EventRegistrationWizard = ({ event }) => {
       paymentMethod: currentPaymentMethod,
       redirectUrl: `${vercelUrl}/${locale}/bookingStatus`,
     };
-    if (currentPaymentMethod !== CONSTANT_VALUES.PAYMENT_METHODS.TAMARA) {
+    if (
+      currentPaymentMethod !== CONSTANT_VALUES.PAYMENT_METHODS.TAMARA &&
+      currentPaymentMethod !== CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD
+    ) {
       body.price = dynamicPrice;
     }
     if (appliedPromoCode?.data?._id || appliedPromoCode?.data?.id) {
