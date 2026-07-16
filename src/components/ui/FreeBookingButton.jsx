@@ -6,15 +6,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { resetPromoCode } from "@store/forms/promoCode/promoCodeSlice";
 
-import {
-  CircularProgress,
-  Alert,
-  Box,
-  Typography,
-  Card,
-  CardContent,
-} from "@mui/material";
-import { CheckCircle, CelebrationOutlined } from "@mui/icons-material";
+import { CircularProgress, Alert, Box, Card, CardContent } from "@mui/material";
+import { CelebrationOutlined } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
 
 import axios from "axios";
@@ -56,9 +49,7 @@ const FreeBookingButton = () => {
         client: finalTripData?.client,
         quantity: finalTripData?.quantity || 1,
         promoCode: promoCode || null,
-        ...(finalTripData?.duration !== undefined && finalTripData?.duration !== null && { duration: finalTripData.duration }),
       };
-
       // Remove null/undefined values
       Object.keys(requestBody).forEach((key) => {
         if (requestBody[key] === null || requestBody[key] === undefined) {

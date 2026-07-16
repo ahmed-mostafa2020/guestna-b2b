@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import FrameWithImagedHeader from "@components/ui/frameWithImagedHeader/FrameWithImagedHeader";
-import formatNumbersUint from "@utils/formatters/FormatNumbersUint";
 
 const PriceDetailsSection = ({ finalTripDetails }) => {
   const promoCodeData = useSelector(

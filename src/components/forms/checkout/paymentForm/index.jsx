@@ -99,8 +99,8 @@ const PaymentForm = () => {
     currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD
       ? creditSchema
       : currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.STC
-      ? stcSchema
-      : tamaraSchema;
+        ? stcSchema
+        : tamaraSchema;
 
   const handlePaymentMethodChange = (event) => {
     setCurrentPaymentMethod(event.target.value);
@@ -132,7 +132,7 @@ const PaymentForm = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const vercelUrl = CONSTANT_VALUES.URLS.B2B_VERCEL_URL;
-
+  console.log(vercelUrl);
   const baseData = {
     trip: tripId,
     quantity: quantity,
@@ -242,7 +242,6 @@ const PaymentForm = () => {
         setStatus(false);
 
         // Log the full error for debugging
-
 
         // Extract error message
         const errorMessage = error.response?.data?.message;
