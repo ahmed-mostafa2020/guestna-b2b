@@ -200,7 +200,11 @@ const ActionsDropdownMenu = ({
         },
         {
           key: "custom-details",
-          visible: can.showDetails && isCustom && !hasRecommendationReview,
+          visible:
+            can.showDetails &&
+            isCustom &&
+            !hasRecommendationReview &&
+            status !== TRIP_STATUS.DONE,
           label: t("links.showDetails"),
           href: `/${locale}/profile/bookings-management/orders/${orderId}`,
           onClick: handleClose,
