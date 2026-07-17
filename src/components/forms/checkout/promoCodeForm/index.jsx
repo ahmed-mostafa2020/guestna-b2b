@@ -30,7 +30,9 @@ const PromoCodeForm = () => {
     client,
     quantity,
     _id: tripId,
+    duration
   } = useSelector((state) => state.finalTripDetailsData.data);
+
 
   const locale = useLocale();
   const t = useTranslations();
@@ -60,6 +62,7 @@ const PromoCodeForm = () => {
         trip: tripId,
         client,
         quantity,
+        duration
       },
     };
 

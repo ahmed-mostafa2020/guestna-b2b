@@ -132,7 +132,6 @@ const PaymentForm = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const vercelUrl = CONSTANT_VALUES.URLS.B2B_VERCEL_URL;
-  console.log(vercelUrl);
   const baseData = {
     trip: tripId,
     quantity: quantity,
