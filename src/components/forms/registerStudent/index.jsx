@@ -103,7 +103,9 @@ const RegisterStudentForm = ({
     (state) => state.tripDetailsData.data?.trip?.duration
   );
   const tripPrice = useSelector(
-    (state) => state.tripDetailsData.data?.trip?.price
+    (state) =>
+      state.tripDetailsData.data?.trip?.discountedPrice ??
+      state.tripDetailsData.data?.trip?.price
   );
   const firstAvailableDate = useSelector((state) => {
     const trip = state.tripDetailsData.data?.trip;
