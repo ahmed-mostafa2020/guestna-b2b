@@ -110,26 +110,28 @@ const StepPricing = ({
             })()}
         </div>
 
-        {/* Total Available Seats */}
-        <div className="somar-placeholder">
-          <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
-            {t("fields.total_available_seats.label")}
-            <span className="text-error ml-1">*</span>
-          </label>
-          <TextInputGroup
-            type="number"
-            name="totalAvailableSeats"
-            value={values.totalAvailableSeats}
-            errors={errors.totalAvailableSeats}
-            touched={touched.totalAvailableSeats}
-            onChange={handlePriceChange}
-            onBlur={handleBlur}
-            onKeyDown={handleKeyDown}
-            placeholder={t("fields.total_available_seats.placeholder")}
-            min="0"
-            labelFontFamily="var(--font-somar-sans), sans-serif"
-          />
-        </div>
+        {/* Total Available Seats (Hidden for Custom Trips) */}
+        {isNormalTrip && (
+          <div className="somar-placeholder">
+            <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
+              {t("fields.total_available_seats.label")}
+              <span className="text-error ml-1">*</span>
+            </label>
+            <TextInputGroup
+              type="number"
+              name="totalAvailableSeats"
+              value={values.totalAvailableSeats}
+              errors={errors.totalAvailableSeats}
+              touched={touched.totalAvailableSeats}
+              onChange={handlePriceChange}
+              onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
+              placeholder={t("fields.total_available_seats.placeholder")}
+              min="0"
+              labelFontFamily="var(--font-somar-sans), sans-serif"
+            />
+          </div>
+        )}
       </div>
     </Box>
   );

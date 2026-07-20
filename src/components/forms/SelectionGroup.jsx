@@ -21,7 +21,7 @@ const SelectionGroup = ({
   list,
   multiple = false,
   disabled = false,
-  showCheckbox = true, // Always show checkbox by default
+  showCheckbox = multiple, // Default to true only for multi-select
   label = "", // Label text for the field
   required = false, // Show asterisk for required fields
   errorBorder = false, // Show red border only, without error message

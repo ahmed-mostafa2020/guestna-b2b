@@ -411,8 +411,8 @@ const CustomNewTripForm = ({
         fromHour: editData.fromHour || "",
         toHour: editData.toHour || "",
         priceRange: priceRange,
-        availableSeats: editData.availableSeats || 0,
-        totalAvailableSeats: editData.totalAvailableSeats || 0,
+        availableSeats: editData.availableSeats ?? "",
+        totalAvailableSeats: editData.totalAvailableSeats ?? "",
         specialRequirements: editData.specialRequirements || "",
         file: editData.file || "",
         note: editData.note || "",
@@ -431,7 +431,8 @@ const CustomNewTripForm = ({
       ],
       day: "",
       endDay: "",
-      availableSeats: 0,
+      availableSeats: "",
+      totalAvailableSeats: "",
       category: "",
       supCategory: "",
       name: { en: "", ar: "" },
@@ -996,13 +997,7 @@ const CustomNewTripForm = ({
             const currentStepHasErrors = hasStepErrors(errors, activeStep);
 
             // check if next button disabled
-            const isNextDisabled = isEditMode
-              ? isSubmitting ||
-                currentStepHasErrors ||
-                !values.schoolsInfo.organization
-              : isSubmitting ||
-                currentStepHasErrors ||
-                !Object.keys(touched).length;
+            const isNextDisabled = isSubmitting;
 
             useEffect(() => {
               if (attemptedNext && currentStepHasErrors) {
