@@ -22,7 +22,7 @@ import { Formik } from "formik";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
-
+import { CalendarToday } from "@mui/icons-material";
 const AuthenticatedRequestQuote = ({
   tripId,
   tripData,
@@ -36,6 +36,9 @@ const AuthenticatedRequestQuote = ({
   const [availableGrades, setAvailableGrades] = useState(gradesData || []);
   const [tracksData, setTracksData] = useState([]);
   const [isLoadingTracks, setIsLoadingTracks] = useState(false);
+
+  const [slotsData, setSlotsData] = useState([]);
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
 
   const selectedOrganization = useSelector(
     (state) => state.selectedOrganizations.organizations
@@ -79,10 +82,24 @@ const AuthenticatedRequestQuote = ({
   const academicStageData = formSelectionData?.academicStages || [];
   const servicesData = formSelectionData?.services || [];
 
+  const hasProviderSpecificDays =
+    tripData?.provider &&
+    tripData.provider.providerType !== "DEFAULT" &&
+    Array.isArray(tripData.availableDays) &&
+    tripData.availableDays.length > 0;
+
   // Update available grades when gradesData prop changes
   useEffect(() => {
     setAvailableGrades(gradesData || []);
   }, [gradesData]);
+
+  // Fetch initial slots if editing
+  useEffect(() => {
+    if (hasProviderSpecificDays && tripData?.fromDay) {
+      const initialDay = tripData.fromDay.split("T")[0];
+      fetchSlotsForDay(initialDay);
+    }
+  }, [hasProviderSpecificDays, tripData?.fromDay]);
 
   // Extract names for dropdown display
   const organizationOptions = organizationData.map((item) => item.name);
@@ -134,6 +151,30 @@ const AuthenticatedRequestQuote = ({
     }
   };
 
+  const fetchSlotsForDay = async (day) => {
+    if (!day || !tripData?._id) return;
+    setIsLoadingSlots(true);
+    try {
+      const response = await axios({
+        method: "get",
+        url: getProxyUrl(
+          `${B2B_END_POINTS.PROFILE.PROVIDER_SLOTS}/${tripData._id}?day=${day}`
+        ),
+        headers,
+      });
+      setSlotsData(response.data?.slots || []);
+    } catch (error) {
+      console.error("Error fetching slots:", error);
+      setSlotsData([]);
+      const errorMessage = getErrorMessage(error, t);
+      enqueueSnackbar(errorMessage, {
+        variant: "error",
+      });
+    } finally {
+      setIsLoadingSlots(false);
+    }
+  };
+
   // Helper function to find name by _id
   const findNameById = (options, id) => {
     const option = options.find((opt) => opt._id === id);
@@ -156,6 +197,7 @@ const AuthenticatedRequestQuote = ({
         basePrice: `${tripData.price}` || "",
         day: tripData.fromDay ? tripData.fromDay.split("T")[0] : "",
         endDay: tripData.toDay ? tripData.toDay.split("T")[0] : "",
+        slot: "",
         services: tripData.services?.map((service) => service.name) || [],
         specialRequirements: tripData.specialRequirements || "",
       }
@@ -177,6 +219,7 @@ const AuthenticatedRequestQuote = ({
         basePrice: "",
         day: "",
         endDay: "",
+        slot: "",
         services: [],
         specialRequirements: "",
         file: "",
@@ -196,6 +239,7 @@ const AuthenticatedRequestQuote = ({
       basePrice: `${tripData.price}` || "",
       day: tripData.fromDay ? tripData.fromDay.split("T")[0] : "",
       endDay: tripData.toDay ? tripData.toDay.split("T")[0] : "",
+      slot: "",
       services: tripData.services?.map((service) => service.name) || [],
       specialRequirements: tripData.specialRequirements || "",
       file: "",
@@ -245,6 +289,9 @@ const AuthenticatedRequestQuote = ({
 
       // Add all other form fields to FormData
       Object.keys(values).forEach((key) => {
+        if (key === "slot" && (!hasProviderSpecificDays || !values[key]))
+          return;
+        if (key === "endDay" && hasProviderSpecificDays) return;
         if (key === "file") {
           if (values[key]) {
             formData.append(key, values[key]);
@@ -349,6 +396,9 @@ const AuthenticatedRequestQuote = ({
 
       // Add all other form fields to JSON data
       Object.keys(values).forEach((key) => {
+        if (key === "slot" && (!hasProviderSpecificDays || !values[key]))
+          return;
+        if (key === "endDay" && hasProviderSpecificDays) return;
         if (
           key !== "file" &&
           key !== "availableSeats" &&
@@ -452,7 +502,6 @@ const AuthenticatedRequestQuote = ({
       .catch((error) => {
         setSubmitting(false);
 
-
         const errorMessage = getErrorMessage(error, t);
         enqueueSnackbar(errorMessage, {
           variant: "error",
@@ -496,6 +545,31 @@ const AuthenticatedRequestQuote = ({
               validateOnBlur={true}
               validateOnChange={true}
               validateOnMount={true}
+              validate={(values) => {
+                const formErrors = {};
+                if (hasProviderSpecificDays && values.slot) {
+                  const selectedSlot = slotsData.find(
+                    (s) => s.slot_name === values.slot
+                  );
+                  if (selectedSlot) {
+                    const seats = parseInt(values.availableSeats);
+                    if (!isNaN(seats)) {
+                      if (seats < selectedSlot.min_capacity) {
+                        formErrors.availableSeats = t(
+                          "forms.customTrip.expectedParticipants.error.minSlot",
+                          { min: selectedSlot.min_capacity }
+                        );
+                      } else if (seats > selectedSlot.max_capacity) {
+                        formErrors.availableSeats = t(
+                          "forms.customTrip.expectedParticipants.error.maxSlot",
+                          { max: selectedSlot.max_capacity }
+                        );
+                      }
+                    }
+                  }
+                }
+                return formErrors;
+              }}
             >
               {({
                 values,
@@ -639,7 +713,7 @@ const AuthenticatedRequestQuote = ({
                   {/* Row 2: Expected Participants and Services */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                     {/* Number of students (min) */}
-                    <div className="somar-placeholder">
+                    <div className="somar-placeholder flex flex-col gap-1">
                       <TextInputGroup
                         type="number"
                         name="availableSeats"
@@ -657,7 +731,33 @@ const AuthenticatedRequestQuote = ({
                         )}
                         min="0"
                         required={true}
+                        labelFontFamily="var(--font-somar-sans), sans-serif"
                       />
+                      {hasProviderSpecificDays &&
+                        values.slot &&
+                        (() => {
+                          const s = slotsData.find(
+                            (x) => x.slot_name === values.slot
+                          );
+                          if (s) {
+                            const hasError =
+                              touched.availableSeats && errors.availableSeats;
+                            return (
+                              <div className={hasError ? "pt-6" : "pt-1"}>
+                                <p className="text-xs text-orange-500 font-somar">
+                                  {t(
+                                    "forms.customTrip.expectedParticipants.error.slotCapacity",
+                                    {
+                                      min: s.min_capacity,
+                                      max: s.max_capacity,
+                                    }
+                                  )}
+                                </p>
+                              </div>
+                            );
+                          }
+                          return null;
+                        })()}
                     </div>
 
                     {/* Total number of students */}
@@ -679,6 +779,7 @@ const AuthenticatedRequestQuote = ({
                         )}
                         min="0"
                         required={true}
+                        labelFontFamily="var(--font-somar-sans), sans-serif"
                       />
                     </div>
 
@@ -700,108 +801,183 @@ const AuthenticatedRequestQuote = ({
                   </div>
 
                   {/* Row 3: Start Date and End Date  */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                    {/* Proposed Trip Date */}
-                    <div className="somar-placeholder">
-                      <TextInputGroup
-                        label={t(
-                          "forms.customTrip.proposedTripDate.startLabel"
+                  {hasProviderSpecificDays ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                      <div className="relative min-w-[25%] flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
+                        <label className="font-medium capitalize font-somar">
+                          اليوم<span className="text-error">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="date"
+                            name="day"
+                            id="day"
+                            value={values.day}
+                            onChange={(e) => {
+                              const dateStr = e.target.value;
+                              // Only allow dates in availableDays
+                              if (
+                                dateStr &&
+                                !tripData.availableDays.includes(dateStr)
+                              )
+                                return;
+                              handleChange(e);
+                              setFieldValue("slot", "");
+                              fetchSlotsForDay(dateStr);
+                            }}
+                            onBlur={handleBlur}
+                            onClick={(e) => {
+                              if (e.target.showPicker) {
+                                try {
+                                  e.target.showPicker();
+                                } catch {}
+                              }
+                            }}
+                            min={tripData.availableDays?.[0] || ""}
+                            max={
+                              tripData.availableDays?.[
+                                tripData.availableDays.length - 1
+                              ] || ""
+                            }
+                            className={`text-sm font-normal font-somar transition-all duration-200 ease-in-out p-4 pe-12 bg-white w-full rounded-lg outline-none border-2 cursor-pointer ${
+                              touched.day && errors.day
+                                ? "border-error focus:border-error hover:border-error"
+                                : "border-border focus:border-mainColor hover:border-mainColor"
+                            }`}
+                          />
+                          <div className="absolute inset-y-0 flex items-center pointer-events-none end-0 pe-4">
+                            <CalendarToday
+                              className="text-textLight"
+                              style={{ fontSize: "20px" }}
+                            />
+                          </div>
+                        </div>
+                        {touched.day && errors.day && (
+                          <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-somar text-error">
+                            {errors.day}
+                          </div>
                         )}
-                        type="date"
-                        name="day"
-                        value={values.day}
-                        errors={errors.day}
-                        touched={touched.day}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        min={(() => {
-                          // Always use today as minimum date
-                          const today = new Date();
-                          today.setHours(0, 0, 0, 0);
-                          return formatDateForInput(today);
-                        })()}
-                        {...(() => {
-                          // Only set max if endDay exists and is in the future
-                          if (values.endDay) {
-                            const endDate = new Date(values.endDay);
-                            const today = new Date();
-                            today.setHours(0, 0, 0, 0);
-                            endDate.setHours(0, 0, 0, 0);
-
-                            // Only apply max constraint if end date is in the future
-                            if (endDate >= today) {
-                              return { max: values.endDay };
-                            }
+                      </div>
+                      <div className="somar-placeholder">
+                        <SelectionGroup
+                          name="slot"
+                          value={values.slot}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          touched={touched.slot}
+                          errors={errors.slot}
+                          placeholder={
+                            isLoadingSlots
+                              ? t("forms.validation.loading")
+                              : !values.day
+                                ? "اختر اليوم أولاً"
+                                : "اختر الوقت"
                           }
-                          return {};
-                        })()}
-                        style={{ cursor: "pointer" }}
-                        onClick={(e) =>
-                          e.target.showPicker && e.target.showPicker()
-                        }
-                        labelFontFamily="var(--font-somar-sans), sans-serif"
-                        required={true}
-                      />
+                          list={slotsData.map((s) => s.slot_name)}
+                          label={"الوقت"}
+                          disabled={isLoadingSlots || !values.day}
+                          required={true}
+                          showCheckbox={false}
+                        />
+                      </div>
                     </div>
-                    {/* End Date - Only show for multi-day trips */}
-                    {/* {(() => {
-                      const selectedTripType = tripTypeData.find(
-                        (item) => item.name === values.tripType
-                      );
-                      return selectedTripType?._id === CONSTANT_VALUES.PACKAGE;
-                    })() && (*/}
-
-                    <div className="somar-placeholder">
-                      <TextInputGroup
-                        label={t("forms.customTrip.proposedTripDate.endLabel")}
-                        type="date"
-                        name="endDay"
-                        value={values.endDay}
-                        errors={errors.endDay}
-                        touched={touched.endDay}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        {...(() => {
-                          // If editing a trip with past end date, allow unlimited selection (no min)
-                          if (tripData?.toDay) {
-                            const existingEndDate = new Date(tripData.toDay);
-                            const today = new Date();
-                            today.setHours(0, 0, 0, 0);
-                            existingEndDate.setHours(0, 0, 0, 0);
-
-                            // If existing end date is in the past, don't set min attribute
-                            if (existingEndDate < today) {
-                              return {};
-                            }
-                          }
-
-                          // For new trips or future trips, set min attribute
-                          if (values.day) {
-                            // End date can be same as start date (for 1-day trips)
-                            return { min: values.day };
-                          }
-                          // If no start date selected, use today as minimum
-                          const today = new Date();
-                          today.setHours(0, 0, 0, 0);
-                          return { min: formatDateForInput(today) };
-                        })()}
-                        style={{ cursor: "pointer" }}
-                        onClick={(e) =>
-                          e.target.showPicker && e.target.showPicker()
-                        }
-                        labelFontFamily="var(--font-somar-sans), sans-serif"
-                      />
-                      {/* Helper text for end date validation */}
-                      {values.day && (
-                        <p className="text-xs text-secColor pt-1">
-                          {t(
-                            "forms.customTrip.proposedTripDate.error.endBeforeStart"
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                      {/* Proposed Trip Date */}
+                      <div className="somar-placeholder">
+                        <TextInputGroup
+                          label={t(
+                            "forms.customTrip.proposedTripDate.startLabel"
                           )}
-                        </p>
-                      )}
+                          type="date"
+                          name="day"
+                          value={values.day}
+                          errors={errors.day}
+                          touched={touched.day}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          min={(() => {
+                            // Always use today as minimum date
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            return formatDateForInput(today);
+                          })()}
+                          {...(() => {
+                            // Only set max if endDay exists and is in the future
+                            if (values.endDay) {
+                              const endDate = new Date(values.endDay);
+                              const today = new Date();
+                              today.setHours(0, 0, 0, 0);
+                              endDate.setHours(0, 0, 0, 0);
+
+                              // Only apply max constraint if end date is in the future
+                              if (endDate >= today) {
+                                return { max: values.endDay };
+                              }
+                            }
+                            return {};
+                          })()}
+                          style={{ cursor: "pointer" }}
+                          onClick={(e) =>
+                            e.target.showPicker && e.target.showPicker()
+                          }
+                          labelFontFamily="var(--font-somar-sans), sans-serif"
+                          required={true}
+                        />
+                      </div>
+                      <div className="somar-placeholder">
+                        <TextInputGroup
+                          label={t(
+                            "forms.customTrip.proposedTripDate.endLabel"
+                          )}
+                          type="date"
+                          name="endDay"
+                          value={values.endDay}
+                          errors={errors.endDay}
+                          touched={touched.endDay}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          {...(() => {
+                            // If editing a trip with past end date, allow unlimited selection (no min)
+                            if (tripData?.toDay) {
+                              const existingEndDate = new Date(tripData.toDay);
+                              const today = new Date();
+                              today.setHours(0, 0, 0, 0);
+                              existingEndDate.setHours(0, 0, 0, 0);
+
+                              // If existing end date is in the past, don't set min attribute
+                              if (existingEndDate < today) {
+                                return {};
+                              }
+                            }
+
+                            // For new trips or future trips, set min attribute
+                            if (values.day) {
+                              // End date can be same as start date (for 1-day trips)
+                              return { min: values.day };
+                            }
+                            // If no start date selected, use today as minimum
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            return { min: formatDateForInput(today) };
+                          })()}
+                          style={{ cursor: "pointer" }}
+                          onClick={(e) =>
+                            e.target.showPicker && e.target.showPicker()
+                          }
+                          labelFontFamily="var(--font-somar-sans), sans-serif"
+                        />
+                        {/* Helper text for end date validation */}
+                        {values.day && (
+                          <p className="text-xs text-secColor pt-1">
+                            {t(
+                              "forms.customTrip.proposedTripDate.error.endBeforeStart"
+                            )}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    {/* )} */}
-                  </div>
+                  )}
 
                   {/* Special Requirements */}
                   <div className="somar-placeholder md:col-span-2 mt-6">
