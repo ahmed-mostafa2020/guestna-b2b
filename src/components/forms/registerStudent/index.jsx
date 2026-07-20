@@ -127,12 +127,25 @@ const RegisterStudentForm = ({
 
       schema = schema.concat(
         Yup.object().shape({
+          fullDuration: Yup.boolean().default(true),
           bookingDay: Yup.date()
+            .transform((value, originalValue) =>
+              originalValue === "" || originalValue === null
+                ? undefined
+                : value
+            )
             .required(t("forms.validation.require"))
             .typeError(t("forms.validation.invalidDate") || "Invalid date")
             .min(minLimit, t("forms.validation.minDate") || "Date is before available start")
             .max(maxLimit, t("forms.validation.maxDate") || "Date is after available end"),
-          duration: Yup.number().required(t("forms.validation.require")),
+          duration: Yup.number()
+            .nullable()
+            .typeError(t("forms.validation.require"))
+            .when("fullDuration", {
+              is: (val) => val === false,
+              then: (s) => s.required(t("forms.validation.require")),
+              otherwise: (s) => s.notRequired(),
+            }),
         })
       );
     }
@@ -422,6 +435,7 @@ const RegisterStudentForm = ({
           handleSubmit,
           isSubmitting,
           validateForm,
+          setFieldTouched,
         }) => {
           // Define handlers inside the Formik render function
           const handleChangeChildrenNumber = (event) => {
@@ -534,6 +548,7 @@ const RegisterStudentForm = ({
                 handleChange={handleChange}
                 handleBlur={handleBlur}
                 setFieldValue={setFieldValue}
+                setFieldTouched={setFieldTouched}
                 childrenNumber={childrenNumber}
                 handleChangeChildrenNumber={(event) =>
                   handleChangeChildrenNumber(event, setFieldValue)
