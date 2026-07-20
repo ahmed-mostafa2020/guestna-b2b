@@ -490,7 +490,9 @@
   "quantityDiscountTiers": {
     "title": "Group Discounts",
     "subTitle": "Book for more people and unlock special rates",
-    "discountPrefix": "Save"
+    "discountPrefix": "Save",
+    "fullBookingOnlyNoteTitle": "Group booking discount",
+    "fullBookingOnlyNote": "Group booking discount tiers apply only when booking the full trip duration."
   },
 
   "bookWithConfidence": {

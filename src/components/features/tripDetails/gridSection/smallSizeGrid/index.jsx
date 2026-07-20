@@ -40,7 +40,10 @@ const SmallSizeGrid = () => {
       )}
 
       {data?.quantityDiscountTiers?.length > 0 && (
-        <QuantityDiscountTiers tiers={data.quantityDiscountTiers} />
+        <QuantityDiscountTiers
+          tiers={data.quantityDiscountTiers}
+          isDayBlockPricingEnabled={data?.dayBlockPricing?.enabled === true}
+        />
       )}
 
       <BookWithConfidenceSection />

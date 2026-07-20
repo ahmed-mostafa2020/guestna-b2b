@@ -496,7 +496,9 @@
   "quantityDiscountTiers": {
     "title": "خصومات الحجز الجماعي",
     "subTitle": "احجز لعدد أكبر من الأشخاص واحصل على أسعار خاصة",
-    "discountPrefix": "وفر"
+    "discountPrefix": "وفر",
+    "fullBookingOnlyNoteTitle": "خصم الحجز الجماعي",
+    "fullBookingOnlyNote": "يُطبَّق خصم الحجز الجماعي فقط عند الحجز لمدة الرحلة كاملة."
   },
 
   "bookWithConfidence": {

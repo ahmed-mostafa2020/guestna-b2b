@@ -1,12 +1,12 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { memo } from "react";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import FrameWithImagedHeader from "@components/ui/frameWithImagedHeader/FrameWithImagedHeader";
-import { Loyalty, Group } from "@mui/icons-material";
+import { Loyalty, Group, InfoOutlined } from "@mui/icons-material";
 
-const QuantityDiscountTiers = ({ tiers }) => {
+const QuantityDiscountTiers = ({ tiers, isDayBlockPricingEnabled = false }) => {
   const t = useTranslations("quantityDiscountTiers");
   const tCommon = useTranslations("common");
 
@@ -21,7 +21,7 @@ const QuantityDiscountTiers = ({ tiers }) => {
         <span className="p-2.5   rounded-xl centered shadow-sm mt-0.5 animate-rotation">
           <Loyalty className="text-lg text-mainColor" />
         </span>
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-1">
           <h3 className="text-lg font-bold text-mainColor leading-tight">
             {t("title")}
           </h3>
@@ -30,6 +30,26 @@ const QuantityDiscountTiers = ({ tiers }) => {
           </p>
         </div>
       </div>
+
+      {isDayBlockPricingEnabled && (
+        <div
+          className="flex items-start gap-3 mt-3 p-3.5 rounded-xl border border-status-warning-border bg-status-warning-bg"
+          role="note"
+        >
+          <InfoOutlined
+            className="text-lg text-status-warning-fg shrink-0 mt-0.5"
+            aria-hidden
+          />
+          <div className="flex flex-col gap-0.5 min-w-0">
+            <p className="text-sm font-semibold text-status-warning-fg leading-snug">
+              {t("fullBookingOnlyNoteTitle")}
+            </p>
+            <p className="text-xs sm:text-sm text-textDark leading-relaxed">
+              {t("fullBookingOnlyNote")}
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-col gap-3 mt-3">
         {sortedTiers.map((tier) => {
