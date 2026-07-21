@@ -13,10 +13,8 @@ const LargeSizeGrid = () => {
   const promoCodeData = useSelector(
     (state) => state.promoCode?.promoCodeData?.trip
   );
-
   const isFreeTrip =
-    total === 0 ||
-    promoCodeData?.calculatedPriceInfo?.total === 0;
+    total === 0 || promoCodeData?.calculatedPriceInfo?.total === 0;
   if (isFreeTrip) {
     return <FreeBookingButton />;
   }

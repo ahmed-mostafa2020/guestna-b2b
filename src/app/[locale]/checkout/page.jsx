@@ -28,9 +28,8 @@ const Checkout = () => {
   );
 
   const tripBasePrice = useSelector(
-    (state) => state.finalTripDetailsData?.data?.basePriceTotalWithVat
+    (state) => state.finalTripDetailsData?.data?.calculatedPriceInfo?.total
   );
-
   const promoCodeData = useSelector(
     (state) => state.promoCode?.promoCodeData?.trip
   );
