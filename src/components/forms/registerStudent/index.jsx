@@ -376,12 +376,6 @@ const RegisterStudentForm = ({
               response.data
             );
           }
-          if (response.data.basePriceTotalWithVat === undefined) {
-            console.error(
-              "WARNING: Response missing basePriceTotalWithVat field",
-              response.data
-            );
-          }
 
           enqueueSnackbar(t("forms.validation.success"), {
             variant: "success",
