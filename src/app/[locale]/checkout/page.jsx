@@ -61,10 +61,12 @@ const Checkout = () => {
   // Clear finalTripDetailsData after 30 minutes on checkout page
   useEffect(() => {
     // Set timeout for 30 minutes (1800000 ms)
-    timeoutRef.current = setTimeout(() => {
-
-      dispatch(clearFinalTripDetailsData());
-    }, 30 * 60 * 1000);
+    timeoutRef.current = setTimeout(
+      () => {
+        dispatch(clearFinalTripDetailsData());
+      },
+      30 * 60 * 1000
+    );
 
     // Cleanup timeout on unmount
     return () => {

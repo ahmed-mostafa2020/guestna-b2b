@@ -13,7 +13,10 @@ const extractBackendError = (error, fallback) => {
   const data = error?.response?.data;
   if (!data) return fallback;
   if (Array.isArray(data.info) && data.info.length > 0) {
-    return data.info.map((i) => i.message).filter(Boolean).join(" | ");
+    return data.info
+      .map((i) => i.message)
+      .filter(Boolean)
+      .join(" | ");
   }
   return data.message || fallback;
 };
@@ -67,27 +70,30 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
 
   const handleDebugInitiate = () => {
     try {
-      mutate({
-        ...baseDataRef.current,
-        price: +finalPrice
-      }, {
-        onSuccess: (data) => {
-          if (!data?.bookingId) {
-            enqueueSnackbar("issue at generate Id", { variant: "error" });
-            return;
-          }
-          bookingIdRef.current = data.bookingId;
-          enqueueSnackbar(`Initiation success: ${data.bookingId}`, {
-            variant: "success",
-          });
+      mutate(
+        {
+          ...baseDataRef.current,
+          price: +finalPrice,
         },
-        onError: (error) => {
-          enqueueSnackbar(
-            extractBackendError(error, "on error generate Id"),
-            { variant: "error" }
-          );
-        },
-      });
+        {
+          onSuccess: (data) => {
+            if (!data?.bookingId) {
+              enqueueSnackbar("issue at generate Id", { variant: "error" });
+              return;
+            }
+            bookingIdRef.current = data.bookingId;
+            enqueueSnackbar(`Initiation success: ${data.bookingId}`, {
+              variant: "success",
+            });
+          },
+          onError: (error) => {
+            enqueueSnackbar(
+              extractBackendError(error, "on error generate Id"),
+              { variant: "error" }
+            );
+          },
+        }
+      );
     } catch (error) {
       enqueueSnackbar("on error Initiation", { variant: "error" });
     }
@@ -126,29 +132,34 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
           setIsProcessing(true);
           return new Promise(function (resolve, reject) {
             try {
-              mutate({
-                ...baseDataRef.current,
-                price: +finalPrice
-              }, {
-                onSuccess: (data) => {
-                  if (!data?.bookingId) {
-                    enqueueSnackbar("issue at generate Id", { variant: "error" });
+              mutate(
+                {
+                  ...baseDataRef.current,
+                  price: +finalPrice,
+                },
+                {
+                  onSuccess: (data) => {
+                    if (!data?.bookingId) {
+                      enqueueSnackbar("issue at generate Id", {
+                        variant: "error",
+                      });
+                      setIsProcessing(false);
+                      reject();
+                      return;
+                    }
+                    bookingIdRef.current = data.bookingId;
+                    resolve({});
+                  },
+                  onError: (error) => {
+                    enqueueSnackbar(
+                      extractBackendError(error, "on error generate Id"),
+                      { variant: "error" }
+                    );
                     setIsProcessing(false);
                     reject();
-                    return;
-                  }
-                  bookingIdRef.current = data.bookingId;
-                  resolve({});
-                },
-                onError: (error) => {
-                  enqueueSnackbar(
-                    extractBackendError(error, "on error generate Id"),
-                    { variant: "error" }
-                  );
-                  setIsProcessing(false);
-                  reject();
-                },
-              });
+                  },
+                }
+              );
             } catch (error) {
               enqueueSnackbar("on error Initiation", { variant: "error" });
               setIsProcessing(false);
@@ -180,7 +191,9 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                   },
                 });
               } else {
-                enqueueSnackbar("faild generate paymentId", { variant: "error" });
+                enqueueSnackbar("faild generate paymentId", {
+                  variant: "error",
+                });
                 setIsProcessing(false);
                 reject();
               }

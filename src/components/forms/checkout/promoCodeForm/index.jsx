@@ -84,10 +84,12 @@ const PromoCodeForm = () => {
           }
 
           // Set 30-minute timeout to clear promo code data
-          timeoutRef.current = setTimeout(() => {
-
-            dispatch(resetPromoCode());
-          }, 30 * 60 * 1000); // 30 minutes in milliseconds
+          timeoutRef.current = setTimeout(
+            () => {
+              dispatch(resetPromoCode());
+            },
+            30 * 60 * 1000
+          ); // 30 minutes in milliseconds
 
           // Check if trip is free after promo code applied
           const isFreeTrip =
