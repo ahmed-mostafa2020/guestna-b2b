@@ -34,6 +34,7 @@ import axios from "axios";
 // Global cache for tracks data - persists across component mounts
 // ============================================================================
 const tracksCache = new Map();
+const ongoingRequests = new Map();
 
 // ============================================================================
 // Custom Hook: useTracks - Manages track fetching with persistent caching
@@ -83,41 +84,68 @@ const useTracks = (organizationId, headers) => {
         return;
       }
 
-      // Cancel any ongoing request
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
+      // Check if there is an ongoing request for this orgId
+      if (ongoingRequests.has(orgId)) {
+        if (isMountedRef.current) {
+          setIsLoading(true);
+          setError(null);
+        }
+        try {
+          const data = await ongoingRequests.get(orgId);
+          if (isMountedRef.current) {
+            setTracksData(data);
+            setError(null);
+          }
+        } catch (err) {
+          // Error is handled by the initiating fetch call
+        } finally {
+          if (isMountedRef.current) {
+            setIsLoading(false);
+          }
+        }
+        return;
       }
-
-      // Create new abort controller for this request
-      abortControllerRef.current = new AbortController();
 
       if (isMountedRef.current) {
         setIsLoading(true);
         setError(null);
       }
 
-      try {
-        const response = await axios.get(
-          getProxyUrl(
-            `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.TRACKS}/${orgId}`
-          ),
-          {
-            headers,
-            signal: abortControllerRef.current.signal,
+      // Create abort controller for this request
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+
+      const promise = (async () => {
+        try {
+          const response = await axios.get(
+            getProxyUrl(
+              `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.TRACKS}/${orgId}`
+            ),
+            {
+              headers,
+              signal: controller.signal,
+            }
+          );
+          const data = response.data ?? [];
+          tracksCache.set(orgId, data);
+          return data;
+        } finally {
+          ongoingRequests.delete(orgId);
+          if (abortControllerRef.current === controller) {
+            abortControllerRef.current = null;
           }
-        );
+        }
+      })();
 
-        const data = response.data ?? [];
+      ongoingRequests.set(orgId, promise);
 
-        // Cache the result in global cache
-        tracksCache.set(orgId, data);
-
+      try {
+        const data = await promise;
         if (isMountedRef.current) {
           setTracksData(data);
           setError(null);
         }
       } catch (err) {
-        // Ignore abort errors
         if (axios.isCancel(err)) {
           return;
         }
@@ -131,7 +159,6 @@ const useTracks = (organizationId, headers) => {
         if (isMountedRef.current) {
           setIsLoading(false);
         }
-        abortControllerRef.current = null;
       }
     },
     [headers, t]
@@ -157,11 +184,8 @@ const useTracks = (organizationId, headers) => {
     // Cleanup function
     return () => {
       isMountedRef.current = false;
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
     };
-  }, [organizationId]); // Only depend on organizationId
+  }, [organizationId, fetchTracks]);
 
   // Manual refetch function that bypasses cache
   const refetch = useCallback(() => {

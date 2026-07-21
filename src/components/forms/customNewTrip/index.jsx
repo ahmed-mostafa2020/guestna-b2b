@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 
-import { memo, useState, useRef, useMemo, useEffect } from "react";
+import { memo, useState, useRef, useMemo, useEffect, useCallback } from "react";
 import { Formik } from "formik";
 import axios from "axios";
 import { useSnackbar } from "notistack";
@@ -193,6 +193,83 @@ const CustomNewTripForm = ({
   const isNormalTrip =
     isEditMode && editData?.askType !== askTypeConstants.CUSTOM;
 
+  const [slotsData, setSlotsData] = useState([]);
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
+  const [tripId, setTripId] = useState(null);
+
+  const hasProviderSpecificDays = useMemo(() => {
+    const provider = editData?.trip?.provider || editData?.provider;
+    const availableDays = editData?.trip?.availableDays || editData?.availableDays;
+    return (
+      isEditMode &&
+      editData?.askType === askTypeConstants.TRIP &&
+      provider &&
+      provider.providerType !== "DEFAULT" &&
+      Array.isArray(availableDays) &&
+      availableDays.length > 0
+    );
+  }, [isEditMode, editData]);
+
+  // Fetch the full order details from info endpoint to resolve tripId when in edit mode
+  useEffect(() => {
+    if (isEditMode && editData?.askType === askTypeConstants.TRIP && orderId) {
+      const getTripId = async () => {
+        try {
+          const response = await axios.get(
+            getProxyUrl(
+              `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.INFO}/${orderId}`
+            ),
+            { headers }
+          );
+          if (response.data?.trip?._id) {
+            setTripId(response.data.trip._id);
+          }
+        } catch (error) {
+          console.error("Error fetching order info for trip ID:", error);
+        }
+      };
+      getTripId();
+    }
+  }, [isEditMode, editData?.askType, orderId, headers]);
+
+  const fetchSlotsForDay = useCallback(async (day) => {
+    const targetTripId =
+      tripId ||
+      editData?.trip?._id ||
+      editData?.trip ||
+      editData?.tripId ||
+      editData?._id;
+    if (!day || !targetTripId) return;
+    setIsLoadingSlots(true);
+    try {
+      const response = await axios({
+        method: "get",
+        url: getProxyUrl(
+          `${B2B_END_POINTS.PROFILE.PROVIDER_SLOTS}/${targetTripId}?day=${day}`
+        ),
+        headers,
+      });
+      setSlotsData(response.data?.slots || []);
+    } catch (error) {
+      console.error("Error fetching slots:", error);
+      setSlotsData([]);
+      const errorMessage = getErrorMessage(error, t2);
+      enqueueSnackbar(errorMessage, {
+        variant: "error",
+      });
+    } finally {
+      setIsLoadingSlots(false);
+    }
+  }, [tripId, editData, headers, enqueueSnackbar, t2]);
+
+  // Fetch initial slots if editing a trip with provider-specific slots
+  useEffect(() => {
+    if (hasProviderSpecificDays && editData?.day && (!isEditMode || tripId)) {
+      const initialDay = editData.day.split("T")[0];
+      fetchSlotsForDay(initialDay);
+    }
+  }, [hasProviderSpecificDays, editData?.day, tripId, fetchSlotsForDay, isEditMode]);
+
   useEffect(() => {
     if (isEditMode && !orderId) {
       console.error("Edit mode requires orderId");
@@ -334,11 +411,12 @@ const CustomNewTripForm = ({
         fromHour: editData.fromHour || "",
         toHour: editData.toHour || "",
         priceRange: priceRange,
-        availableSeats: editData.availableSeats || 0,
-        totalAvailableSeats: editData.totalAvailableSeats || 0,
+        availableSeats: editData.availableSeats ?? "",
+        totalAvailableSeats: editData.totalAvailableSeats ?? "",
         specialRequirements: editData.specialRequirements || "",
         file: editData.file || "",
         note: editData.note || "",
+        slot: editData.slot || "",
       };
     }
 
@@ -353,7 +431,8 @@ const CustomNewTripForm = ({
       ],
       day: "",
       endDay: "",
-      availableSeats: 0,
+      availableSeats: "",
+      totalAvailableSeats: "",
       category: "",
       supCategory: "",
       name: { en: "", ar: "" },
@@ -366,6 +445,7 @@ const CustomNewTripForm = ({
       services: [],
       file: "",
       note: "",
+      slot: "",
     };
   }, [isEditMode, editData]);
 
@@ -376,7 +456,9 @@ const CustomNewTripForm = ({
         case 0:
           return ["schoolsInfo"];
         case 1:
-          return ["day", "endDay", "fromHour", "toHour"];
+          return hasProviderSpecificDays
+            ? ["day", "slot"]
+            : ["day", "endDay", "fromHour", "toHour"];
         case 2:
           return ["availableSeats", "totalAvailableSeats"];
         case 3:
@@ -529,7 +611,12 @@ const CustomNewTripForm = ({
     }
 
     if (values.day) formData.append("day", values.day);
-    if (values.endDay) formData.append("endDay", values.endDay);
+    if (!hasProviderSpecificDays && values.endDay) {
+      formData.append("endDay", values.endDay);
+    }
+    if (hasProviderSpecificDays && values.slot) {
+      formData.append("slot", values.slot);
+    }
 
     if (Array.isArray(values.services)) {
       values.services.forEach((id, i) => formData.append(`services[${i}]`, id));
@@ -878,6 +965,31 @@ const CustomNewTripForm = ({
           validateOnChange={true}
           validateOnMount={false}
           innerRef={formRef}
+          validate={(values) => {
+            const formErrors = {};
+            if (hasProviderSpecificDays && values.slot) {
+              const selectedSlot = slotsData.find(
+                (s) => s.slot_name === values.slot
+              );
+              if (selectedSlot) {
+                const seats = parseInt(values.availableSeats);
+                if (!isNaN(seats)) {
+                  if (seats < selectedSlot.min_capacity) {
+                    formErrors.availableSeats = t2(
+                      "forms.customTrip.expectedParticipants.error.minSlot",
+                      { min: selectedSlot.min_capacity }
+                    );
+                  } else if (seats > selectedSlot.max_capacity) {
+                    formErrors.availableSeats = t2(
+                      "forms.customTrip.expectedParticipants.error.maxSlot",
+                      { max: selectedSlot.max_capacity }
+                    );
+                  }
+                }
+              }
+            }
+            return formErrors;
+          }}
         >
           {(formik) => {
             const { isSubmitting, errors, touched, values } = formik;
@@ -885,13 +997,7 @@ const CustomNewTripForm = ({
             const currentStepHasErrors = hasStepErrors(errors, activeStep);
 
             // check if next button disabled
-            const isNextDisabled = isEditMode
-              ? isSubmitting ||
-                currentStepHasErrors ||
-                !values.schoolsInfo.organization
-              : isSubmitting ||
-                currentStepHasErrors ||
-                !Object.keys(touched).length;
+            const isNextDisabled = isSubmitting;
 
             useEffect(() => {
               if (attemptedNext && currentStepHasErrors) {
@@ -912,9 +1018,29 @@ const CustomNewTripForm = ({
                       />
                     );
                   case 1:
-                    return <StepTripDate tripTypeData={tripTypeData} />;
+                    return (
+                      <StepTripDate
+                        tripTypeData={tripTypeData}
+                        hasProviderSpecificDays={hasProviderSpecificDays}
+                        slotsData={slotsData}
+                        isLoadingSlots={isLoadingSlots}
+                        fetchSlotsForDay={fetchSlotsForDay}
+                        availableDays={
+                          editData?.trip?.availableDays ||
+                          editData?.availableDays ||
+                          []
+                        }
+                      />
+                    );
                   case 2:
-                    return <StepPricing isNormalTrip={isNormalTrip} />;
+                    return (
+                      <StepPricing
+                        isNormalTrip={isNormalTrip}
+                        hasProviderSpecificDays={hasProviderSpecificDays}
+                        slotsData={slotsData}
+                        isLoadingSlots={isLoadingSlots}
+                      />
+                    );
                   case 3:
                     return <StepAdditionalInfo />;
                   default:

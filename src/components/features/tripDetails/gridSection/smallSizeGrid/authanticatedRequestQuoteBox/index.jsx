@@ -36,7 +36,6 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
   const fetchTripDetails = async () => {
     if (!tripId) return null;
 
-    setLoading(true);
     try {
       const response = await axios.get(
         getProxyUrl(
@@ -52,8 +51,6 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
       console.error("Error details:", error.response?.data);
       setTripDetails(null);
       return null;
-    } finally {
-      setLoading(false);
     }
   };
 

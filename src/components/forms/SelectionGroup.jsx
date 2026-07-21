@@ -21,7 +21,7 @@ const SelectionGroup = ({
   list,
   multiple = false,
   disabled = false,
-  showCheckbox = true, // Always show checkbox by default
+  showCheckbox = multiple, // Default to true only for multi-select
   label = "", // Label text for the field
   required = false, // Show asterisk for required fields
   errorBorder = false, // Show red border only, without error message
@@ -32,7 +32,7 @@ const SelectionGroup = ({
       className="relative w-full"
     >
       {label && (
-        <label className="block pb-2 font-medium">
+        <label className="block pb-2 font-medium font-somar">
           {label}
           {required && <span className="text-error ml-1">*</span>}
         </label>

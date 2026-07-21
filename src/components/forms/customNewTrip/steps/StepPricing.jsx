@@ -4,9 +4,15 @@ import { useTranslations } from "next-intl";
 import { Box } from "@mui/material";
 import PriceRangePicker from "@components/forms/PriceRangePicker";
 
-const StepPricing = ({ isNormalTrip }) => {
+const StepPricing = ({
+  isNormalTrip,
+  hasProviderSpecificDays,
+  slotsData = [],
+  isLoadingSlots = false,
+}) => {
   const t = useTranslations("forms.customTrip.steps.pricing");
-  const { values, errors, touched, handleBlur, handleChange ,setFieldValue } =
+  const tGlobal = useTranslations();
+  const { values, errors, touched, handleBlur, handleChange, setFieldValue } =
     useFormikContext();
 
   const handlePriceChange = (e) => {
@@ -23,7 +29,7 @@ const StepPricing = ({ isNormalTrip }) => {
       e.preventDefault();
     }
   };
- 
+
   return (
     <Box>
       <h2 className="text-2xl font-bold  text-textDark">
@@ -59,8 +65,8 @@ const StepPricing = ({ isNormalTrip }) => {
         )}
 
         {/* Expected Participants / Available Seats */}
-        <div className="somar-placeholder">
-          <label className="block mb-2 text-sm font-medium text-gray-700">
+        <div className="somar-placeholder flex flex-col gap-1">
+          <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
             {t("fields.avaliable_seats.label")}
             <span className="text-error ml-1">*</span>
           </label>
@@ -75,28 +81,57 @@ const StepPricing = ({ isNormalTrip }) => {
             onKeyDown={handleKeyDown}
             placeholder={t("fields.avaliable_seats.placeholder")}
             min="0"
+            labelFontFamily="var(--font-somar-sans), sans-serif"
           />
+          {hasProviderSpecificDays &&
+            values.slot &&
+            (() => {
+              const s = slotsData.find(
+                (x) => x.slot_name === values.slot
+              );
+              if (s) {
+                const hasError =
+                  touched.availableSeats && errors.availableSeats;
+                return (
+                  <div className={hasError ? "pt-6" : "pt-1"}>
+                    <p className="text-xs text-orange-500 font-somar">
+                      {tGlobal(
+                        "forms.customTrip.expectedParticipants.error.slotCapacity",
+                        {
+                          min: s.min_capacity,
+                          max: s.max_capacity,
+                        }
+                      )}
+                    </p>
+                  </div>
+                );
+              }
+              return null;
+            })()}
         </div>
 
-        {/* Total Available Seats */}
-        <div className="somar-placeholder">
-          <label className="block mb-2 text-sm font-medium text-gray-700">
-            {t("fields.total_available_seats.label")}
-            <span className="text-error ml-1">*</span>
-          </label>
-          <TextInputGroup
-            type="number"
-            name="totalAvailableSeats"
-            value={values.totalAvailableSeats}
-            errors={errors.totalAvailableSeats}
-            touched={touched.totalAvailableSeats}
-            onChange={handlePriceChange}
-            onBlur={handleBlur}
-            onKeyDown={handleKeyDown}
-            placeholder={t("fields.total_available_seats.placeholder")}
-            min="0"
-          />
-        </div>
+        {/* Total Available Seats (Hidden for Custom Trips) */}
+        {isNormalTrip && (
+          <div className="somar-placeholder">
+            <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
+              {t("fields.total_available_seats.label")}
+              <span className="text-error ml-1">*</span>
+            </label>
+            <TextInputGroup
+              type="number"
+              name="totalAvailableSeats"
+              value={values.totalAvailableSeats}
+              errors={errors.totalAvailableSeats}
+              touched={touched.totalAvailableSeats}
+              onChange={handlePriceChange}
+              onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
+              placeholder={t("fields.total_available_seats.placeholder")}
+              min="0"
+              labelFontFamily="var(--font-somar-sans), sans-serif"
+            />
+          </div>
+        )}
       </div>
     </Box>
   );

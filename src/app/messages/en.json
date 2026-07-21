@@ -2509,7 +2509,10 @@
         "placeholder": "Expected Number",
         "error": {
           "min": "Number must be at least 1 person",
-          "max": "Number cannot exceed 1000 people"
+          "max": "Number cannot exceed 1000 people",
+          "slotCapacity": "Valid capacity for this slot is between {min} and {max}",
+          "minSlot": "Minimum allowed is {min}",
+          "maxSlot": "Maximum allowed is {max}"
         }
       },
 

@@ -448,6 +448,18 @@ export const editCustomTripSchema = (t, isNormalTrip = false) =>
         1000,
         t("forms.customTrip.steps.pricing.fields.avaliable_seats.error.max")
       ),
+    totalAvailableSeats: isNormalTrip
+      ? Yup.number()
+          .required(t("forms.validation.require"))
+          .min(
+            1,
+            t("forms.customTrip.steps.pricing.fields.total_available_seats.error.min")
+          )
+          .max(
+            10000,
+            t("forms.customTrip.steps.pricing.fields.total_available_seats.error.max")
+          )
+      : Yup.number().optional(),
 
     category: isNormalTrip
       ? Yup.string().optional()
