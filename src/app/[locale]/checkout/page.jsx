@@ -37,6 +37,7 @@ const Checkout = () => {
   // Check if trip is free
   const isFreeTrip =
     tripBasePrice === 0 ||
+    promoCodeData?.calculatedPriceInfo?.total === 0 ||
     promoCodeData?.discountedTotalPriceWithVat === 0 ||
     promoCodeData?.basePriceTotalWithVat === 0;
 
