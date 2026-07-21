@@ -148,10 +148,16 @@ const TripCardAvailable = ({ trip, seats, locale, recommendationId }) => {
       setSelected(true);
       enqueueSnackbar(t("card.selectSuccess"), { variant: "success" });
       queryClient.invalidateQueries({
-        queryKey: ["fetchData", "profile/askTrips/all"],
+        queryKey: [
+          "fetchData",
+          B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ALL,
+        ],
       });
       queryClient.invalidateQueries({
-        queryKey: ["fetchData", "profile/askTrips/counts"],
+        queryKey: [
+          "fetchData",
+          B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.COUNTS,
+        ],
       });
       router.push(`/${locale}/profile/bookings-management/orders`);
     } catch (err) {
