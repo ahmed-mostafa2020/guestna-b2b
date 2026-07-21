@@ -8,7 +8,7 @@ import { setFinalTripDetailsData } from "@store/checkout/finalTripDetailsSlice";
 import { setFirstDayDate, setTripDate } from "@store/checkout/checkoutSlice";
 import * as Yup from "yup";
 
-import { memo, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
@@ -122,22 +122,32 @@ const RegisterStudentForm = ({
     if (dayBlockPricing?.enabled && firstAvailableDate) {
       const datePart = firstAvailableDate.split("T")[0];
       const parts = datePart.split("-");
-      const minLimit = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-      const maxLimit = new Date(minLimit.getTime() + (tripDuration * 24 * 60 * 60 * 1000));
+      const minLimit = new Date(
+        parseInt(parts[0], 10),
+        parseInt(parts[1], 10) - 1,
+        parseInt(parts[2], 10)
+      );
+      const maxLimit = new Date(
+        minLimit.getTime() + tripDuration * 24 * 60 * 60 * 1000
+      );
 
       schema = schema.concat(
         Yup.object().shape({
           fullDuration: Yup.boolean().default(true),
           bookingDay: Yup.date()
             .transform((value, originalValue) =>
-              originalValue === "" || originalValue === null
-                ? undefined
-                : value
+              originalValue === "" || originalValue === null ? undefined : value
             )
             .required(t("forms.validation.require"))
             .typeError(t("forms.validation.invalidDate") || "Invalid date")
-            .min(minLimit, t("forms.validation.minDate") || "Date is before available start")
-            .max(maxLimit, t("forms.validation.maxDate") || "Date is after available end"),
+            .min(
+              minLimit,
+              t("forms.validation.minDate") || "Date is before available start"
+            )
+            .max(
+              maxLimit,
+              t("forms.validation.maxDate") || "Date is after available end"
+            ),
           duration: Yup.number()
             .nullable()
             .typeError(t("forms.validation.require"))
@@ -150,11 +160,29 @@ const RegisterStudentForm = ({
       );
     }
     return schema;
-  }, [childrenNumber, t, tripMainCategory, dayBlockPricing, firstAvailableDate, tripDuration]);
+  }, [
+    childrenNumber,
+    t,
+    tripMainCategory,
+    dayBlockPricing,
+    firstAvailableDate,
+    tripDuration,
+  ]);
+
+  const formikRef = useRef(null);
+  useEffect(() => {
+    const isDayBlockEnabled =
+      dayBlockPricing?.enabled === true && tripDuration > 0;
+    if (!isDayBlockEnabled || !formikRef.current) return;
+
+    const { values, setFieldValue } = formikRef.current;
+    if ((values.fullDuration ?? true) && values.duration !== tripDuration) {
+      setFieldValue("duration", tripDuration);
+    }
+  }, [dayBlockPricing, tripDuration]);
 
   const { enqueueSnackbar } = useSnackbar();
 
-  // Helper function to generate initial children array
   const generateInitialChildren = (count) => {
     return Array.from({ length: count }, () => {
       const child = {
@@ -402,6 +430,7 @@ const RegisterStudentForm = ({
         {t("forms.registerForm.title")}
       </h3>
       <Formik
+        innerRef={formikRef}
         initialValues={{
           parentName: "",
           childrenNumber: childrenNumber,
