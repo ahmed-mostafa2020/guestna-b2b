@@ -6,18 +6,15 @@ import PaymentForm from "@components/forms/checkout/paymentForm";
 import FreeBookingButton from "@components/ui/FreeBookingButton";
 
 const LargeSizeGrid = () => {
-  const tripBasePrice = useSelector(
-    (state) => state.finalTripDetailsData?.data?.basePriceTotalWithVat
+  const total = useSelector(
+    (state) => state.finalTripDetailsData?.data?.calculatedPriceInfo?.total
   );
 
   const promoCodeData = useSelector(
     (state) => state.promoCode?.promoCodeData?.trip
   );
-
   const isFreeTrip =
-    tripBasePrice === 0 ||
-    promoCodeData?.discountedTotalPriceWithVat === 0 ||
-    promoCodeData?.basePriceTotalWithVat === 0;
+    total === 0 || promoCodeData?.calculatedPriceInfo?.total === 0;
   if (isFreeTrip) {
     return <FreeBookingButton />;
   }

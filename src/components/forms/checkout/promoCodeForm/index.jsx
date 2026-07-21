@@ -30,7 +30,9 @@ const PromoCodeForm = () => {
     client,
     quantity,
     _id: tripId,
+    duration
   } = useSelector((state) => state.finalTripDetailsData.data);
+
 
   const locale = useLocale();
   const t = useTranslations();
@@ -60,6 +62,7 @@ const PromoCodeForm = () => {
         trip: tripId,
         client,
         quantity,
+        duration
       },
     };
 
@@ -93,8 +96,7 @@ const PromoCodeForm = () => {
 
           // Check if trip is free after promo code applied
           const isFreeTrip =
-            response.data?.trip?.discountedTotalPriceWithVat === 0 ||
-            response.data?.trip?.basePriceTotalWithVat === 0;
+            response.data?.trip?.calculatedPriceInfo?.total === 0;
 
           // Scroll to top smoothly if trip is free
           if (isFreeTrip) {

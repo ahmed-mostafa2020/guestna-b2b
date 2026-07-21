@@ -39,6 +39,9 @@
     "onePersonOnly": "للشخص",
     "person": "شخص",
     "people": "أشخاص",
+    "personDual": "شخصان",
+    "peopleCount": "{count, plural, one {شخص واحد} two {شخصان} few {# أشخاص} many {# شخصًا} other {# شخص}}",
+    "discountTierLabel": "{count, plural, =2 {شخصين فأكثر} few {# أشخاص فأكثر} many {# شخصًا فأكثر} other {# شخص فأكثر}}",
     "student": "طالبا",
     "students": "طلبة",
     "stars": "نجوم",
@@ -495,6 +498,13 @@
     "validationMessage": "يتطلب تسجيل دخول",
     "revsionTime": "سيتم مراجعة طلبك خلال 24 ساعة"
   },
+  "quantityDiscountTiers": {
+    "title": "خصومات الحجز الجماعي",
+    "subTitle": "احجز لعدد أكبر من الأشخاص واحصل على أسعار خاصة",
+    "discountPrefix": "وفر",
+    "fullBookingOnlyNoteTitle": "خصم الحجز الجماعي",
+    "fullBookingOnlyNote": "يُطبَّق خصم الحجز الجماعي فقط عند الحجز لمدة الرحلة كاملة."
+  },
 
   "bookWithConfidence": {
     "why": "ليش جستنا",
@@ -545,11 +555,18 @@
     "extraActivityWidget": "تمت إضافة هذا النشاط كخدمة إضافية، ويشمل تكاليف إضافية",
     "freeReturn": "إلغاء مجاني -عند الإشعار قبل 24 ساعة من وقت بدء الفعالية",
     "finalPrice": "تفاصيل الأسعار",
-    "studentsNumber": "عدد الطلاب",
-    "tripPrice": "سعر الرحلة للطالب الواحد",
+    "studentsNumber": "عدد الأشخاص",
+    "tripPrice": "سعر الرحلة للشخص الواحد",
     "mealsNumber": "عدد الوجبات",
-    "total": "المجموع",
-    "includingVAT": "يشمل ضريبة القيمة المضافة"
+    "total": "الإجمالي الكلي",
+    "includingVAT": "يشمل ضريبة القيمة المضافة",
+    "excludingVAT": "غير شامل ضريبة القيمة المضافة",
+    "vat": "ضريبة القيمة المضافة (15%)",
+    "subtotal": "المجموع ",
+    "tripDiscount": "خصم الرحلة",
+    "quantityDiscount": "خصم الحجز الجماعي",
+    "promoCodeDiscount": "خصم كوبون الترويج",
+    "totalDiscount": "إجمالي الخصم"
   },
 
   "bookingStatus": {
@@ -992,6 +1009,7 @@
           "tripType": "نوع الرحلة",
           "category": "الفئة",
           "basePrice": "السعر",
+          "discountedPrice": "السعر المخفض",
           "location": "الموقع",
           "tripDate": "تاريخ الرحلة",
           "orderId": "رقم الطلب",

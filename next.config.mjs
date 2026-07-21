@@ -113,6 +113,7 @@ const nextConfig = {
       "cultural-enrika-guestna-43d7043d.koyeb.app",
       "guestna-revamp-dashboard.vercel.app",
       "localhost",
+      "34.166.65.116",
     ],
   },
   async headers() {
@@ -179,7 +180,7 @@ const nextConfig = {
           // NOTE: Content-Security-Policy is set dynamically in middleware.js
           // with a per-request nonce — do not add a static CSP here or it
           // will override the nonce-based one and break inline scripts.
-...securityHeaders,
+          ...securityHeaders,
           // Block indexing on all non-production deployments (preview, branch, local)
           ...(!isProduction
             ? [{ key: "X-Robots-Tag", value: "noindex, nofollow" }]
@@ -190,8 +191,8 @@ const nextConfig = {
           {
             key: "Link",
             value:
-              "</sitemap.xml>; rel=\"sitemap\", " +
-              "</llms.txt>; rel=\"describedby\"",
+              '</sitemap.xml>; rel="sitemap", ' +
+              '</llms.txt>; rel="describedby"',
           },
         ],
       },

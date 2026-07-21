@@ -55,6 +55,7 @@ const ParentFormFields = ({
   handleChange,
   handleBlur,
   setFieldValue,
+  setFieldTouched,
   childrenNumber,
   handleChangeChildrenNumber,
   handleChangeNationality,
@@ -285,12 +286,9 @@ const ParentFormFields = ({
                   hoveringAction={false}
                   onChangeFunction={(e) => {
                     const checked = e.target.checked;
+                    setFieldTouched("duration", false, false);
                     setFieldValue("fullDuration", checked);
-                    if (checked) {
-                      setFieldValue("duration", tripDuration);
-                    } else {
-                      setFieldValue("duration", null);
-                    }
+                    setFieldValue("duration", checked ? tripDuration : null);
                   }}
                 />
               </div>
@@ -388,6 +386,7 @@ const ParentFormFields = ({
                       );
                     }}
                     onChange={(_, newValue) => {
+                      setFieldTouched("duration", true, false);
                       setFieldValue("duration", newValue ? newValue.day : null);
                     }}
                   />

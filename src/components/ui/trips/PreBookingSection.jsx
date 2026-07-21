@@ -9,8 +9,6 @@ import { memo, useEffect, useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { TRIP_STATUS } from "@constants/tripStatus";
-import formatCurrency from "@utils/formatters/FormatCurrency";
-import calculateDiscountedPrice from "@utils/calculations/CalculateDiscountedPrice";
 
 import FrameWithImagedHeader from "../frameWithImagedHeader/FrameWithImagedHeader";
 import ActionsDialog from "@components/features/customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
@@ -19,6 +17,7 @@ import ParentLoginForm from "@components/forms/auth/parentLogin";
 
 import Cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";
+import formatCurrency from "@/src/utils/formatters/FormatCurrency";
 
 const PreBookingSection = ({ tripData }) => {
   const isSubmitted = useSelector((state) => state.parentLoginForm.isSubmitted);
@@ -63,9 +62,9 @@ const PreBookingSection = ({ tripData }) => {
   const locale = useLocale();
   const t = useTranslations();
 
-  const defaultPriceWithFormatting = tripData?.discountedPrice
-    ? calculateDiscountedPrice(tripData?.price, tripData?.discountedPrice)
-    : formatCurrency(tripData?.price);
+  const defaultPriceWithFormatting = formatCurrency(
+    tripData?.discountedPrice ?? tripData?.price
+  );
 
   const handleLoginForm = () => {
     handleClose();
@@ -168,7 +167,7 @@ const PreBookingSection = ({ tripData }) => {
   return (
     <>
       <FrameWithImagedHeader withBorder={true}>
-        <h3 className="flex items-center gap-1 transition-all duration-200 ease-in-out">
+        <h3 className="flex flex-wrap items-center gap-1 transition-all duration-200 ease-in-out">
           <span className="text-2xl font-medium">
             {defaultPriceWithFormatting}
           </span>
@@ -176,6 +175,7 @@ const PreBookingSection = ({ tripData }) => {
           <span className="text-xl font-normal text-textLight">
             {t("common.onePerson")}
           </span>
+          <span className="text-xs text-textDark ">{`(${t("finalDetails.includingVAT")})`}</span>
         </h3>
 
         {bookingStatus.canBook ? (

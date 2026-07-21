@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import FrameWithImagedHeader from "@components/ui/frameWithImagedHeader/FrameWithImagedHeader";
-import formatNumbersUint from "@utils/formatters/FormatNumbersUint";
 
 const PriceDetailsSection = ({ finalTripDetails }) => {
   const promoCodeData = useSelector(
@@ -15,65 +14,75 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
 
   const t = useTranslations();
 
-  // Safe access with fallback values to prevent crashes
-  const priceExclTax = formatCurrency(
-    promoCodeData?.tripBasePriceWithoutVat ||
-      finalTripDetails?.tripBasePriceWithoutVat ||
-      0
-  );
+  const data = promoCodeData || finalTripDetails;
+  const priceInfo = data?.calculatedPriceInfo;
 
-  const numberOfStudents = formatNumbersUint(
-    promoCodeData?.quantity || finalTripDetails?.quantity || 0,
-    t("common.student"),
-    t("common.students")
-  );
+  const pricePerGuest = priceInfo?.pricePerGuest || 0;
+  const quantity = priceInfo?.quantity || 0;
+  const quantityDiscount = priceInfo?.quantityDiscount || 0;
+  const promoCodeDiscount = priceInfo?.promoCodeDiscount || 0;
 
-  const priceWithTax = formatCurrency(
-    promoCodeData?.basePriceTotalWithVat ||
-      finalTripDetails?.basePriceTotalWithVat ||
-      0
-  );
-  const discountedPriceWithTax = formatCurrency(
-    promoCodeData?.discountedTotalPriceWithVat ||
-      finalTripDetails?.discountedTotalPriceWithVat ||
-      0
-  );
+  const total = priceInfo?.total || 0;
+
+  const numberOfPeople = t("common.peopleCount", { count: quantity });
+
+  const hasAnyDiscount = quantityDiscount > 0 || promoCodeDiscount > 0;
 
   return (
     <FrameWithImagedHeader>
       <h3 className="text-xl font-semibold">{t("finalDetails.finalPrice")}</h3>
 
       <div className="flex flex-col gap-2 pb-5 font-light border-b border-textDark">
-        <div className="flex items-center justify-between gap-2">
+        {/* Price per Guest */}
+        <div className="flex justify-between gap-2 items-start">
           <p>{t("finalDetails.tripPrice")}</p>
-          {priceExclTax}
+          <span className="font-medium">{formatCurrency(pricePerGuest)}</span>
         </div>
 
+        {/* Number of Guests */}
         <div className="flex items-center justify-between gap-2">
           <p>{t("finalDetails.studentsNumber")}</p>
-          {numberOfStudents}
+          {numberOfPeople}
         </div>
+
+        {/* Discounts (Groups / Promocode) */}
+        {hasAnyDiscount && (
+          <div className="flex flex-col w-full gap-2 pt-2 mt-2 border-t border-dashed border-textDark">
+            {quantityDiscount > 0 && (
+              <div className="flex items-center justify-between gap-2 font-medium leading-5 text-error w-full text-sm">
+                <p>{t("finalDetails.quantityDiscount")}</p>
+                <span className="flex items-center gap-0.5">
+                  <span>-</span>
+                  {formatCurrency(quantityDiscount)}
+                </span>
+              </div>
+            )}
+
+            {promoCodeDiscount > 0 && (
+              <div className="flex items-center justify-between gap-2 font-medium leading-5 text-error w-full text-sm">
+                <p>{t("finalDetails.promoCodeDiscount")}</p>
+                <span className="flex items-center gap-0.5">
+                  <span>-</span>
+                  {formatCurrency(promoCodeDiscount)}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
-      <div className="flex justify-between w-full gap-2 pt-2 pb-7">
-        <div className="flex flex-col gap-1">
-          <h4 className="font-medium leading-5">{t("finalDetails.total")}</h4>
-          <h4 className="font-medium leading-5">{`(${t(
-            "finalDetails.includingVAT"
-          )})`}</h4>
-        </div>
-
-        <div className="flex flex-col">
-          {promoCodeData?.promoCode && (
-            <del className="text-end text-[#EB0101] text-sm  font-medium font-ibm">
-              {priceWithTax}
-            </del>
-          )}
-
-          <h4 className="text-xl leading-5 transition-all duration-200 ease-in-out font-ibm">
-            {promoCodeData?.promoCode ? discountedPriceWithTax : priceWithTax}
+      {/* Total (VAT inclusive) */}
+      <div className="flex justify-between w-full gap-2 pt-4 pb-7 items-center">
+        <div className="flex flex-col gap-0.5">
+          <h4 className="font-semibold text-lg leading-5">
+            {t("finalDetails.total")}
           </h4>
+          <span className="text-xs text-textDark">{`(${t("finalDetails.includingVAT")})`}</span>
         </div>
+
+        <h4 className="text-xl font-bold text-primary">
+          {formatCurrency(total)}
+        </h4>
       </div>
     </FrameWithImagedHeader>
   );

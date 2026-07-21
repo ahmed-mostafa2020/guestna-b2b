@@ -14,15 +14,16 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
   const isInitializedRef = useRef(false);
   const widgetContainerRef = useRef(null);
 
-  const price = useSelector(
-    (state) => state.finalTripDetailsData.data.basePriceTotalWithVat
+  const finalTripDetails = useSelector(
+    (state) => state.finalTripDetailsData.data
+  );
+  const promoCodeData = useSelector(
+    (state) => state.promoCode?.promoCodeData?.trip
   );
 
-  const discountedPrice = useSelector(
-    (state) => state.promoCode?.promoCodeData?.trip?.discountedTotalPriceWithVat
-  );
+  const data = promoCodeData || finalTripDetails;
 
-  const finalPrice = discountedPrice ? discountedPrice : price;
+  const finalPrice = data?.calculatedPriceInfo?.total ?? 0;
 
   const tripName = useSelector((state) => state.finalTripDetailsData.data.name);
 

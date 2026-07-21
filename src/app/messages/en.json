@@ -39,6 +39,9 @@
     "onePersonOnly": "Person",
     "person": "Person",
     "people": "People",
+    "personDual": "People",
+    "peopleCount": "{count, plural, one {1 Person} other {# People}}",
+    "discountTierLabel": "{count}+ {count, plural, one {Person} other {People}}",
     "student": "student",
     "students": "students",
     "stars": "Stars",
@@ -489,6 +492,13 @@
     "validationMessage": "Login is required",
     "revsionTime": "Your request will be reviewed within 24 hours"
   },
+  "quantityDiscountTiers": {
+    "title": "Group Discounts",
+    "subTitle": "Book for more people and unlock special rates",
+    "discountPrefix": "Save",
+    "fullBookingOnlyNoteTitle": "Group booking discount",
+    "fullBookingOnlyNote": "Group booking discount tiers apply only when booking the full trip duration."
+  },
 
   "bookWithConfidence": {
     "why": "why GuestNa",
@@ -531,11 +541,18 @@
     "extraActivityWidget": "This activity has been added as an additional service and includes additional costs",
     "freeReturn": "Cancel shipping - when notifications arrive 24 hours before the event starts",
     "finalPrice": "Price Details",
-    "studentsNumber": "Students Number",
-    "tripPrice": "Trip price per student",
+    "studentsNumber": "Number of People",
+    "tripPrice": "Trip price per person",
     "mealsNumber": "Meals Number",
-    "total": "Total",
-    "includingVAT": "Including VAT"
+    "total": "Grand Total",
+    "includingVAT": "Including VAT",
+    "excludingVAT": "Excluding VAT",
+    "vat": "VAT (15%)",
+    "subtotal": "total",
+    "tripDiscount": "Trip Discount",
+    "quantityDiscount": "Group Booking Discount",
+    "promoCodeDiscount": "Promo Code Discount",
+    "totalDiscount": "Total Discount"
   },
 
   "bookingStatus": {
@@ -981,6 +998,7 @@
           "tripType": "Trip Type",
           "category": "Category",
           "basePrice": "Price",
+          "discountedPrice": "Discounted Price",
           "location": "Location",
           "tripDate": "Trip Date",
           "orderId": "Order ID",

@@ -219,10 +219,23 @@ const AllOrdersTable = ({
         key: "budget",
         label: t("profile.tables.orders.tableHeaders.budget"),
         className: "font-medium text-foreground",
-        render: (row) =>
-          formatCurrency(
-            row.basePrice ? row.basePrice : row.priceRange?.max || 0
-          ),
+        render: (row) => {
+          const basePrice = row.basePrice || row.trip?.price || row.priceRange?.max || 0;
+          const discountedPrice = row.discountedPrice || row.trip?.discountedPrice;
+
+          if (!!discountedPrice) {
+            return (
+              <div className="flex flex-col items-end justify-center gap-0.5">
+                <span className="line-through text-xs text-muted-foreground font-normal">
+                  {formatCurrency(basePrice)}
+                </span>
+                <span>{formatCurrency(discountedPrice)}</span>
+              </div>
+            );
+          }
+
+          return formatCurrency(basePrice);
+        },
       },
       {
         key: "status",
