@@ -5,6 +5,8 @@ import { useTranslations, useLocale } from "next-intl";
 import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import ProviderProductsTable from "@components/features/provider-profile/ProviderProductsTable";
+import AddProductModal from "@components/features/provider-profile/AddProductModal";
+import StarIcon from "@mui/icons-material/Star";
 
 const DUMMY_B2B_TRIPS = {
   pageInfo: {
@@ -89,6 +91,9 @@ const ProviderProductsManagementPage = () => {
   const t = useTranslations();
   const locale = useLocale();
 
+  // Modal State
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
   // B2B Table State
   const [b2bPage, setB2bPage] = useState(1);
   const [b2bSearchTerm, setB2bSearchTerm] = useState("");
@@ -133,12 +138,24 @@ const ProviderProductsManagementPage = () => {
   const finalB2cData = b2cData || DUMMY_B2C_TRIPS;
 
   return (
-    <main className="flex flex-col gap-8 min-h-screen">
-      {/* Page Header */}
-      <div className="pb-2 border-b border-border">
-        <h1 className="text-xl lg:text-2xl font-bold text-titleColor">
-          {t("providerProfile.products.title")}
-        </h1>
+    <main className="flex flex-col gap-6 lg:gap-8 min-h-screen">
+      {/* Header Card Section matching Orders page design */}
+      <div className="bg-white rounded-2xl p-4 sm:p-5 border border-border shadow-card flex items-center justify-between flex-wrap gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-[13px] bg-mainColor text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+            <StarIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+          </div>
+          <h1 className="text-lg sm:text-xl lg:text-2xl text-mainColor">
+            {t("providerProfile.products.headerTitle")}
+          </h1>
+        </div>
+
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="bg-mainColor hover:bg-titleColor text-white font-medium text-sm sm:text-base px-5 py-2.5 rounded-lg sm:rounded-xl flex items-center justify-center gap-2 transition-all duration-200 ease-in-out cursor-pointer shadow-sm hover:shadow-md active:scale-[0.98]"
+        >
+          <span>{t("providerProfile.products.addNewProduct")}</span>
+        </button>
       </div>
 
       {/* 1. B2B Trips Table Section */}
@@ -161,6 +178,12 @@ const ProviderProductsManagementPage = () => {
         searchTerm={b2cSearchTerm}
         setSearchTerm={setB2cSearchTerm}
         loading={b2cLoading && !b2cData}
+      />
+
+      {/* Add Product Modal */}
+      <AddProductModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
       />
     </main>
   );
