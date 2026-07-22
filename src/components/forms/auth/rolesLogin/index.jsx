@@ -139,7 +139,11 @@ const RolesLoginForm = () => {
 
           // Get first accessible page based on user permissions
           const userPages = response.data.user.permissions?.PAGE || [];
-          const redirectPath = getFirstAccessiblePage(userPages, locale);
+          const redirectPath = getFirstAccessiblePage(
+            userPages,
+            locale,
+            response.data.userType
+          );
           router.push(redirectPath);
 
           dispatch(submitForm(response.data.user));

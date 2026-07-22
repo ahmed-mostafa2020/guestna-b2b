@@ -111,7 +111,11 @@ const LoginAs = () => {
 
           // Get first accessible page based on user permissions
           const userPages = response.data.user.permissions?.PAGE || [];
-          const redirectPath = getFirstAccessiblePage(userPages, locale);
+          const redirectPath = getFirstAccessiblePage(
+            userPages,
+            locale,
+            response.data.userType
+          );
 
           // Redirect to first accessible page
           router.push(redirectPath);

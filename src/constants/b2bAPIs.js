@@ -240,4 +240,11 @@ export const B2B_END_POINTS = {
     TAMARA_INITIATION: "booking-event-trip/initiation",
     FREE_INITIATION: "booking-event-trip/free/initiation",
   },
+
+  PROVIDER_PROFILE: {
+    INFORMATION: "auth/userInfo",
+    HOME: "profile-provider/home",
+    B2B_TRIPS: "profile-provider/b2b-trips",
+    B2C_TRIPS: "profile-provider/b2c-trips",
+  },
 };

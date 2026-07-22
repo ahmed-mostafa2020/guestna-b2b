@@ -25,6 +25,7 @@ import setToken from "@utils/api/setToken";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import getErrorMessage from "@utils/helpers/getErrorMessage";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { USERS } from "@constants/users";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import FormSubmitButton from "@components/ui/FormSubmitButton";
 
@@ -105,8 +106,12 @@ const LoginAccessModal = ({ open }) => {
         }
 
         resetForm();
-        // No router.push here – ProtectedProfilePage re-evaluates automatically
-        // once userType & permissions are updated in Redux.
+        if (
+          response.data.userType === USERS.PROVIDERS ||
+          response.data.userType === "PROVIDERS"
+        ) {
+          router.push(`/${locale}/provider-profile`);
+        }
       }
     } catch (error) {
       const errorMessage = getErrorMessage(error, t);

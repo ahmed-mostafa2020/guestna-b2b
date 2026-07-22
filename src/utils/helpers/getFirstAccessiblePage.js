@@ -1,4 +1,5 @@
 import { PERMISSIONS } from "@constants/permissions";
+import { USERS } from "@constants/users";
 
 /**
  * Gets the first accessible page route based on user permissions
@@ -6,9 +7,13 @@ import { PERMISSIONS } from "@constants/permissions";
  *
  * @param {string[]} userPages - Array of page permissions the user has
  * @param {string} locale - Current locale (e.g., 'en', 'ar')
+ * @param {string} [userType] - User type string (e.g., 'PROVIDERS')
  * @returns {string} The route path to redirect to
  */
-export const getFirstAccessiblePage = (userPages, locale) => {
+export const getFirstAccessiblePage = (userPages, locale, userType) => {
+  if (userType === USERS.PROVIDERS || userType === "PROVIDERS") {
+    return `/${locale}/provider-profile`;
+  }
   // Define page priority order with their corresponding routes
   // Note: B2B_PROFILE_MAIN_PAGE is at the end as a fallback
   const pageRoutes = [

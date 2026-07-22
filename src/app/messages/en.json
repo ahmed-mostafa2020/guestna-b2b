@@ -1,4 +1,36 @@
 {
+  "providerProfile": {
+    "aside": {
+      "main": "Main Page",
+      "productsManagement": "Products Management"
+    },
+    "infoCards": {
+      "totalBookings": "Total Bookings",
+      "b2bCount": "B2B Bookings",
+      "b2cCount": "B2C Bookings"
+    },
+    "revenueChart": {
+      "title": "Monthly Revenue Performance",
+      "label": "Total Revenue"
+    },
+    "products": {
+      "title": "Products & Activities Management",
+      "empty": "No products available.",
+      "searchPlaceholder": "Search by order name or order ID",
+      "tabs": {
+        "b2b": "B2B Trips",
+        "b2c": "B2C Trips"
+      },
+      "table": {
+        "orderId": "Order ID",
+        "name": "Order Name",
+        "price": "Price",
+        "cities": "Cities",
+        "createdAt": "Created At",
+        "view": "View Trip"
+      }
+    }
+  },
   "common": {
     "back": "Back",
     "select": "Select",

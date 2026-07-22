@@ -1,4 +1,36 @@
 {
+  "providerProfile": {
+    "aside": {
+      "main": "الصفحة الرئيسية",
+      "productsManagement": "إدارة المنتجات والأنشطة"
+    },
+    "infoCards": {
+      "totalBookings": "إجمالي الحجوزات",
+      "b2bCount": "حجوزات B2B",
+      "b2cCount": "حجوزات B2C"
+    },
+    "revenueChart": {
+      "title": "أداء الإيرادات الشهرية",
+      "label": "إجمالي الإيرادات"
+    },
+    "products": {
+      "title": "إدارة المنتجات والأنشطة",
+      "empty": "لا توجد منتجات متاحة حالياً.",
+      "searchPlaceholder": "ابحث باسم الطلب أو رقم الطلب",
+      "tabs": {
+        "b2b": "رحلات B2B",
+        "b2c": "رحلات B2C"
+      },
+      "table": {
+        "orderId": "رقم الطلب",
+        "name": "اسم الطلب",
+        "price": "السعر",
+        "cities": "المدن",
+        "createdAt": "تاريخ الإنشاء",
+        "view": "عرض الرحلة"
+      }
+    }
+  },
   "common": {
     "back": "رجوع",
     "select": "اختر",
