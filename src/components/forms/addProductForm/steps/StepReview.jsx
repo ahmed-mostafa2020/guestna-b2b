@@ -6,6 +6,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const StepReview = () => {
   const t = useTranslations("providerProfile.products.modal.fields");
+  const tModal = useTranslations("providerProfile.products.modal");
   const { values } = useFormikContext();
 
   return (
@@ -30,7 +31,9 @@ const StepReview = () => {
             {values.name?.en || "N/A"} / {values.name?.ar || "N/A"}
           </p>
           <div className="flex gap-2 text-xs text-subtitleColor">
-            <span>Type: {values.tripsType}</span>
+            <span>
+              Type: {values.tripsType ? tModal(`tripTypes.${values.tripsType}`) : "N/A"}
+            </span>
             <span>•</span>
             <span>Systems: {(values.systemTypes || []).join(", ")}</span>
           </div>

@@ -9,6 +9,8 @@ const StepActivities = () => {
   const { values, errors, touched, handleChange, handleBlur } =
     useFormikContext();
 
+  const isB2C = (values.systemTypes || []).includes("B2C");
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -48,41 +50,44 @@ const StepActivities = () => {
           />
         </div>
 
-        {/* Min Guest Range */}
-        <div>
-          <label className="block mb-1.5 text-sm font-medium text-titleColor">
-            {t("fields.guestRangeMin")}
-          </label>
-          <TextInputGroup
-            type="number"
-            min={1}
-            name="guestRange.min"
-            value={values.guestRange?.min ?? ""}
-            errors={errors.guestRange?.min}
-            touched={touched.guestRange?.min}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            placeholder={t("placeholders.minSeats")}
-          />
-        </div>
+        {/* Guest Range (min & max) - ONLY for B2C */}
+        {isB2C && (
+          <>
+            <div>
+              <label className="block mb-1.5 text-sm font-medium text-titleColor">
+                {t("fields.guestRangeMin")}
+              </label>
+              <TextInputGroup
+                type="number"
+                min={1}
+                name="guestRange.min"
+                value={values.guestRange?.min ?? ""}
+                errors={errors.guestRange?.min}
+                touched={touched.guestRange?.min}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder={t("placeholders.minSeats")}
+              />
+            </div>
 
-        {/* Max Guest Range */}
-        <div>
-          <label className="block mb-1.5 text-sm font-medium text-titleColor">
-            {t("fields.guestRangeMax")}
-          </label>
-          <TextInputGroup
-            type="number"
-            min={1}
-            name="guestRange.max"
-            value={values.guestRange?.max ?? ""}
-            errors={errors.guestRange?.max}
-            touched={touched.guestRange?.max}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            placeholder={t("placeholders.maxSeats")}
-          />
-        </div>
+            <div>
+              <label className="block mb-1.5 text-sm font-medium text-titleColor">
+                {t("fields.guestRangeMax")}
+              </label>
+              <TextInputGroup
+                type="number"
+                min={1}
+                name="guestRange.max"
+                value={values.guestRange?.max ?? ""}
+                errors={errors.guestRange?.max}
+                touched={touched.guestRange?.max}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder={t("placeholders.maxSeats")}
+              />
+            </div>
+          </>
+        )}
 
         {/* Duration */}
         <div className="md:col-span-2">

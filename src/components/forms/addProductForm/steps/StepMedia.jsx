@@ -38,11 +38,14 @@ const StepMedia = () => {
               {t("fields.gallery")} <span className="text-error">*</span>
             </h4>
             <p className="text-xs text-subtitleColor">
-              Please upload at least 4 images for the trip gallery.
+              {t("subtitles.galleryHelp")}
             </p>
           </div>
           <span className="text-xs font-bold text-mainColor bg-mainColor/10 px-2.5 py-1 rounded-full">
-            {(values.gallery || []).length} / 4 minimum
+            {t("fields.galleryCount", {
+              count: (values.gallery || []).length,
+              min: 4,
+            })}
           </span>
         </div>
 
@@ -50,10 +53,10 @@ const StepMedia = () => {
         <label className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-mainColor/40 rounded-xl cursor-pointer hover:bg-mainColor/5 transition-colors">
           <AddPhotoAlternateIcon className="w-8 h-8 text-mainColor mb-2" />
           <span className="text-xs font-semibold text-mainColor">
-            Click to upload gallery images
+            {t("placeholders.clickToUploadGallery")}
           </span>
           <span className="text-[11px] text-gray-400 mt-0.5">
-            PNG, JPG, WEBP up to 5MB each
+            {t("placeholders.uploadSpecs")}
           </span>
           <input
             type="file"

@@ -99,10 +99,10 @@ const StepItinerary = () => {
               onClick={() =>
                 push({ day: (values.itinerary?.length || 0) + 1, toDo: { en: "", ar: "" } })
               }
-              className="w-full py-2.5 rounded-xl border border-dashed border-mainColor/40 text-mainColor hover:bg-mainColor/5 font-semibold text-xs transition-colors flex items-center justify-center gap-1.5"
+              className="w-full py-2.5 rounded-xl border border-dashed border-mainColor/40 text-mainColor hover:bg-mainColor/5 font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <AddIcon className="w-4 h-4" />
-              {t("fields.addItem")}
+              {t("fields.addItineraryDay")}
             </button>
           </div>
         )}

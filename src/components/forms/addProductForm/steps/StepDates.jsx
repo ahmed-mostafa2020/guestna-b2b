@@ -152,10 +152,10 @@ const StepDates = () => {
               <button
                 type="button"
                 onClick={() => push({ from: "", to: "" })}
-                className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-mainColor hover:underline"
+                className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-mainColor hover:underline cursor-pointer"
               >
                 <AddIcon className="w-4 h-4" />
-                {t("fields.addItem")}
+                {t("fields.addTime")}
               </button>
             </div>
           )}

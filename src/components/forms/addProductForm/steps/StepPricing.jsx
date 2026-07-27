@@ -9,10 +9,21 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 const StepPricing = ({ targetAudienceOptions = [] }) => {
   const t = useTranslations("providerProfile.products.modal");
+  const tWeekDays = useTranslations("weekDays");
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
 
   const isB2C = (values.systemTypes || []).includes("B2C");
+
+  const weekDayOptions = [
+    { value: "SUNDAY", label: tWeekDays("sunday") },
+    { value: "MONDAY", label: tWeekDays("monday") },
+    { value: "TUESDAY", label: tWeekDays("tuesday") },
+    { value: "WEDNESDAY", label: tWeekDays("wednesday") },
+    { value: "THURSDAY", label: tWeekDays("thursday") },
+    { value: "FRIDAY", label: tWeekDays("friday") },
+    { value: "SATURDAY", label: tWeekDays("saturday") },
+  ];
 
   return (
     <div className="space-y-6">
@@ -52,6 +63,139 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
             placeholder={t("placeholders.price")}
           />
         </div>
+      </div>
+
+      {/* Weekday Pricing Section (Dynamic Day + Price) */}
+      <div className="border-t border-border pt-5">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h4 className="text-sm font-semibold text-titleColor">
+              {t("fields.weekdayPricing")}
+            </h4>
+            <p className="text-xs text-subtitleColor">
+              {t("subtitles.weekdayPricingHelp")}
+            </p>
+          </div>
+        </div>
+
+        <FieldArray name="weekdayPricing">
+          {({ push, remove }) => (
+            <div className="space-y-3">
+              {(values.weekdayPricing || []).map((item, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-3 bg-gray-50/70 p-3 rounded-xl border border-border"
+                >
+                  <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <SelectionGroup
+                      name={`weekdayPricing[${index}].day`}
+                      value={item.day || ""}
+                      onChange={(e) =>
+                        setFieldValue(`weekdayPricing[${index}].day`, e.target.value)
+                      }
+                      placeholder={t("placeholders.selectDay")}
+                      list={weekDayOptions}
+                    />
+
+                    <TextInputGroup
+                      type="number"
+                      min={0}
+                      name={`weekdayPricing[${index}].price`}
+                      value={item.price ?? ""}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder={t("placeholders.price")}
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => remove(index)}
+                    className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
+                    title={t("fields.removeItem")}
+                  >
+                    <DeleteOutlineIcon className="w-5 h-5" />
+                  </button>
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={() => push({ day: "FRIDAY", price: values.price || 0 })}
+                className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-mainColor hover:underline cursor-pointer"
+              >
+                <AddIcon className="w-4 h-4" />
+                {t("fields.addDayPrice")}
+              </button>
+            </div>
+          )}
+        </FieldArray>
+      </div>
+
+      {/* Specific Date Pricing Section (Dynamic Date + Price) */}
+      <div className="border-t border-border pt-5">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h4 className="text-sm font-semibold text-titleColor">
+              {t("fields.datePricing")}
+            </h4>
+            <p className="text-xs text-subtitleColor">
+              {t("subtitles.datePricingHelp")}
+            </p>
+          </div>
+        </div>
+
+        <FieldArray name="datePricing">
+          {({ push, remove }) => (
+            <div className="space-y-3">
+              {(values.datePricing || []).map((item, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-3 bg-gray-50/70 p-3 rounded-xl border border-border"
+                >
+                  <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <TextInputGroup
+                      type="date"
+                      name={`datePricing[${index}].date`}
+                      value={item.date || ""}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder={t("placeholders.selectDate")}
+                    />
+
+                    <TextInputGroup
+                      type="number"
+                      min={0}
+                      name={`datePricing[${index}].price`}
+                      value={item.price ?? ""}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder={t("placeholders.price")}
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => remove(index)}
+                    className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
+                    title={t("fields.removeItem")}
+                  >
+                    <DeleteOutlineIcon className="w-5 h-5" />
+                  </button>
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={() => push({ date: "", price: values.price || 0 })}
+                className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-mainColor hover:underline cursor-pointer"
+              >
+                <AddIcon className="w-4 h-4" />
+                {t("fields.addDatePrice")}
+              </button>
+            </div>
+          )}
+        </FieldArray>
       </div>
 
       {/* Target Audiences Pricing - ONLY for B2C */}
@@ -107,7 +251,7 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors"
+                      className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
                       title={t("fields.removeItem")}
                     >
                       <DeleteOutlineIcon className="w-5 h-5" />
@@ -120,10 +264,10 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
                   onClick={() =>
                     push({ targetAudience: "", price: values.price || 0 })
                   }
-                  className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-mainColor hover:underline"
+                  className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-mainColor hover:underline cursor-pointer"
                 >
                   <AddIcon className="w-4 h-4" />
-                  {t("fields.addItem")}
+                  {t("fields.addAudiencePrice")}
                 </button>
               </div>
             )}
@@ -173,7 +317,7 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
                   <button
                     type="button"
                     onClick={() => remove(index)}
-                    className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors"
+                    className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
                     title={t("fields.removeItem")}
                   >
                     <DeleteOutlineIcon className="w-5 h-5" />
@@ -184,10 +328,10 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
               <button
                 type="button"
                 onClick={() => push({ quantity: 10, discountPercentage: 10 })}
-                className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-mainColor hover:underline"
+                className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-mainColor hover:underline cursor-pointer"
               >
                 <AddIcon className="w-4 h-4" />
-                {t("fields.addItem")}
+                {t("fields.addDiscountTier")}
               </button>
             </div>
           )}

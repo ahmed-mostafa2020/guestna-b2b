@@ -67,7 +67,25 @@ const SelectionGroup = ({
               </span>
             );
           }
-          return multiple ? selected.join(", ") : selected;
+
+          const getLabel = (val) => {
+            const found = list.find((item) => {
+              if (typeof item === "object" && item !== null) {
+                return (item.value ?? item.id ?? item.name) === val;
+              }
+              return item === val;
+            });
+            if (typeof found === "object" && found !== null) {
+              return found.label ?? found.name ?? found.title ?? found.value;
+            }
+            return val;
+          };
+
+          return multiple
+            ? (Array.isArray(selected) ? selected : [])
+                .map(getLabel)
+                .join(", ")
+            : getLabel(selected);
         }}
         MenuProps={{
           PaperProps: {
@@ -127,7 +145,22 @@ const SelectionGroup = ({
         )}
         {list.map((item) => {
           const itemValue =
-            name === "expiryYear" ? item.toString().slice(-2) : item;
+            typeof item === "object" && item !== null
+              ? item.value ?? item.id ?? item.name
+              : name === "expiryYear"
+              ? item.toString().slice(-2)
+              : item;
+
+          const itemLabel =
+            typeof item === "object" && item !== null
+              ? item.label ?? item.name ?? item.title ?? item.value
+              : item;
+
+          const itemKey =
+            typeof item === "object" && item !== null
+              ? item.value ?? item.id ?? item.name
+              : item;
+
           const isSelected = multiple
             ? Array.isArray(value) && value.includes(itemValue)
             : value === itemValue;
@@ -135,9 +168,9 @@ const SelectionGroup = ({
           return (
             <MenuItem
               className="!font-somar !font-semibold"
-              key={item}
+              key={itemKey}
               value={itemValue}
-              title={typeof item === "string" ? item : undefined}
+              title={typeof itemLabel === "string" ? itemLabel : undefined}
             >
               {showCheckbox && (
                 <Checkbox
@@ -151,9 +184,13 @@ const SelectionGroup = ({
                 />
               )}
               <ListItemText
-                primary={typeof item === "string" ? item.slice(0, 50) : item}
+                primary={
+                  typeof itemLabel === "string"
+                    ? itemLabel.slice(0, 50)
+                    : itemLabel
+                }
                 className="!font-somar !font-semibold"
-                title={typeof item === "string" ? item : undefined}
+                title={typeof itemLabel === "string" ? itemLabel : undefined}
               />
             </MenuItem>
           );

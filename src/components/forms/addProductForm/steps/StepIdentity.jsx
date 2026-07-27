@@ -4,9 +4,11 @@ import { useFormikContext } from "formik";
 import { useTranslations } from "next-intl";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import SelectionGroup from "@components/forms/SelectionGroup";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 
 const StepIdentity = () => {
   const t = useTranslations("providerProfile.products.modal");
+  const tCommon = useTranslations("common");
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
 
@@ -25,10 +27,9 @@ const StepIdentity = () => {
   };
 
   const tripTypeOptions = [
-    { value: "ACTIVITY", label: "Activity" },
-    { value: "ONE_DAY", label: "One Day" },
-    { value: "HALF_DAY", label: "Half Day" },
-    { value: "MULTI_DAYS", label: "Multi Days" },
+    { value: CONSTANT_VALUES.PACKAGE, label: t("tripTypes.PACKAGE") },
+    { value: CONSTANT_VALUES.ACTIVITY, label: t("tripTypes.ACTIVITY") },
+    { value: CONSTANT_VALUES.HALF_DAY, label: t("tripTypes.HALF_DAY") },
   ];
 
   return (
@@ -104,12 +105,12 @@ const StepIdentity = () => {
           </label>
           <SelectionGroup
             name="tripsType"
-            value={values.tripsType || "ACTIVITY"}
+            value={values.tripsType || CONSTANT_VALUES.ACTIVITY}
             onChange={(e) => setFieldValue("tripsType", e.target.value)}
             onBlur={handleBlur}
             touched={touched.tripsType}
             errors={errors.tripsType}
-            list={tripTypeOptions.map((opt) => opt.value)}
+            list={tripTypeOptions}
             placeholder={t("placeholders.selectTripType")}
           />
         </div>

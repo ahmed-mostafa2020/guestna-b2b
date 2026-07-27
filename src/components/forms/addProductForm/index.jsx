@@ -42,9 +42,12 @@ export const initialAddProductValues = {
   supCategories: [],
   academicStages: [],
   cities: [],
+  providerBranchs: [],
   bookingBefore: 1,
   recurrencePattern: "WEEKLY",
   selectedDays: ["SUNDAY"],
+  weekdayPricing: [],
+  datePricing: [],
   fromDay: "",
   toDay: "",
   stopBookingDate: [],
@@ -100,11 +103,11 @@ export const formatAddProductPayload = (values) => {
     price: values.price,
     productCost: values.productCost,
     bookingBefore: values.bookingBefore,
-    "guestRange[min]": values.guestRange?.min,
-    "guestRange[max]": values.guestRange?.max,
   };
 
   if (isB2C) {
+    payload["guestRange[min]"] = values.guestRange?.min;
+    payload["guestRange[max]"] = values.guestRange?.max;
     payload.recurrencePattern = values.recurrencePattern || "WEEKLY";
     (values.selectedDays || ["SUNDAY", "TUESDAY"]).forEach((item, idx) => {
       payload[`selectedDays[${idx}]`] = item;
@@ -120,6 +123,24 @@ export const formatAddProductPayload = (values) => {
       payload[`academicStages[${idx}]`] = item;
     });
   }
+
+  (values.providerBranchs || []).forEach((item, idx) => {
+    payload[`providerBranchs[${idx}]`] = item;
+  });
+
+  (values.weekdayPricing || []).forEach((item, idx) => {
+    if (item.day) {
+      payload[`weekdayPricing[${idx}][day]`] = item.day;
+      payload[`weekdayPricing[${idx}][price]`] = item.price;
+    }
+  });
+
+  (values.datePricing || []).forEach((item, idx) => {
+    if (item.date) {
+      payload[`datePricing[${idx}][date]`] = item.date;
+      payload[`datePricing[${idx}][price]`] = item.price;
+    }
+  });
 
   (values.supCategories || []).forEach((item, idx) => {
     payload[`supCategories[${idx}]`] = item;
@@ -144,11 +165,6 @@ export const formatAddProductPayload = (values) => {
     payload[`services[${idx}][service]`] = item.service;
     payload[`services[${idx}][note][en]`] = item.note?.en || "";
     payload[`services[${idx}][note][ar]`] = item.note?.ar || "";
-  });
-
-  (values.targetAudiences || []).forEach((item, idx) => {
-    payload[`targetAudiences[${idx}][targetAudience]`] = item.targetAudience;
-    payload[`targetAudiences[${idx}][price]`] = item.price;
   });
 
   (values.quantityDiscountTiers || []).forEach((item, idx) => {
@@ -312,6 +328,7 @@ const AddProductForm = ({
             supCategoryOptions={supCategoryOptions}
             academicStageOptions={academicStageOptions}
             cityOptions={cityOptions}
+            providerBranchsOptions={providerBranchsOptions}
           />
         );
       case 2:
