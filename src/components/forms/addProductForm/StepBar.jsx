@@ -20,7 +20,7 @@ export const STEP_KEYS = [
   "review",
 ];
 
-const StepBar = ({ activeStep, setActiveStep, maxVisitedStep }) => {
+const StepBar = ({ activeStep, setActiveStep, maxVisitedStep, onStepClick }) => {
   const t = useTranslations("providerProfile.products.modal.steps");
   const scrollContainerRef = useRef(null);
   const stepRefs = useRef([]);
@@ -59,7 +59,14 @@ const StepBar = ({ activeStep, setActiveStep, maxVisitedStep }) => {
               ref={(el) => (stepRefs.current[index] = el)}
               type="button"
               disabled={!isClickable}
-              onClick={() => isClickable && setActiveStep(index)}
+              onClick={() => {
+                if (!isClickable) return;
+                if (onStepClick) {
+                  onStepClick(index);
+                } else {
+                  setActiveStep(index);
+                }
+              }}
               className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap shrink-0 transition-all duration-200 cursor-pointer ${
                 isActive
                   ? "bg-mainColor text-white shadow-md scale-[1.02]"

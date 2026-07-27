@@ -288,6 +288,7 @@
           "MONTHLY": "Monthly"
         },
         "successMessage": "Product added successfully!",
+        "editSuccessMessage": "Product edited successfully!",
         "errorMessage": "Failed to submit product",
         "subtitles": {
           "identity": "Enter the core details and title of your product",

@@ -16,9 +16,35 @@ import {
   Legend,
 } from "recharts";
 
-const ProviderRevenueChart = ({ data }) => {
+const ProviderRevenueChartSkeleton = () => {
+  return (
+    <div className="p-4 bg-white border rounded-xl border-border animate-pulse shadow-sm">
+      {/* Title Skeleton */}
+      <div className="h-6 lg:h-7 bg-gray-200 rounded w-1/4 mb-6"></div>
+
+      {/* Chart Canvas Skeleton */}
+      <div className="h-[320px] bg-gray-50/50 rounded-xl flex items-end justify-between gap-3 p-6 border border-gray-100">
+        {[45, 60, 35, 75, 50, 85, 40, 65, 90, 55, 70, 60].map((height, index) => (
+          <div key={index} className="w-full flex flex-col gap-3 items-center h-full justify-end">
+            <div
+              className="bg-mainColor/15 rounded-t-md w-full transition-all duration-300"
+              style={{ height: `${height}%` }}
+            ></div>
+            <div className="w-8 h-3 bg-gray-200 rounded-sm"></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const ProviderRevenueChart = ({ data, loading = false }) => {
   const locale = useLocale();
   const t = useTranslations();
+
+  if (loading) {
+    return <ProviderRevenueChartSkeleton />;
+  }
 
   const lineData =
     data?.monthlyRevenue?.map((item) => ({

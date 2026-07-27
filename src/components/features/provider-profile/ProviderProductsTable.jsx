@@ -8,7 +8,7 @@ import formatDate from "@utils/formatters/FormateDate";
 import EmptyBookings from "@components/features/profile/myBookings/EmptyBookings";
 import DataTable from "@components/ui/DataTable";
 import SearchHeader from "@components/ui/SearchHeader";
-import { Chip } from "@mui/material";
+import { Chip, CircularProgress } from "@mui/material";
 import { OpenInNew, Edit as EditIcon } from "@mui/icons-material";
 
 const ProviderProductsTable = ({
@@ -19,6 +19,7 @@ const ProviderProductsTable = ({
   searchTerm,
   setSearchTerm,
   loading = false,
+  loadingEditId = null,
   onEdit,
 }) => {
   const t = useTranslations();
@@ -103,19 +104,28 @@ const ProviderProductsTable = ({
       {
         key: "edit",
         label: t("providerProfile.products.table.edit"),
-        render: (row) => (
-          <button
-            type="button"
-            onClick={() => onEdit?.(row)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-titleColor bg-gray-100 hover:bg-mainColor hover:text-white rounded-lg transition-colors cursor-pointer"
-          >
-            <EditIcon className="w-3.5 h-3.5" />
-            <span>{t("providerProfile.products.table.edit")}</span>
-          </button>
-        ),
+        render: (row) => {
+          const rowId = row._id || row.id;
+          const isRowLoading = loadingEditId && loadingEditId === rowId;
+          return (
+            <button
+              type="button"
+              disabled={isRowLoading}
+              onClick={() => onEdit?.(row)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-titleColor bg-gray-100 hover:bg-mainColor hover:text-white rounded-lg transition-colors cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
+            >
+              {isRowLoading ? (
+                <CircularProgress size={14} color="inherit" />
+              ) : (
+                <EditIcon className="w-3.5 h-3.5" />
+              )}
+              <span>{t("providerProfile.products.table.edit")}</span>
+            </button>
+          );
+        },
       },
     ],
-    [t, locale, onEdit]
+    [t, locale, onEdit, loadingEditId]
   );
 
   return (

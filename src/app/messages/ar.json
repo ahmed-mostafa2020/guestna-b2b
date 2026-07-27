@@ -295,6 +295,7 @@
           "MONTHLY": "شهري"
         },
         "successMessage": "تمت إضافة المنتج بنجاح!",
+        "editSuccessMessage": "تم تعديل المنتج بنجاح!",
         "errorMessage": "فشل في إضافة المنتج",
         "subtitles": {
           "identity": "أدخل التفاصيل الأساسية وعنوان المنتج الخاص بك",

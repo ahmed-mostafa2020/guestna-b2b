@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { useQueryClient } from "@tanstack/react-query";
 import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import ProviderProductsTable from "@components/features/provider-profile/ProviderProductsTable";
@@ -12,14 +13,17 @@ import CircularProgress from "@mui/material/CircularProgress";
 const ProviderProductsManagementPage = () => {
   const t = useTranslations();
   const locale = useLocale();
+  const queryClient = useQueryClient();
 
-  // Modal & Selection State
+  // Modal, Editing & Selection State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [shouldFetchSelections, setShouldFetchSelections] = useState(false);
+  const [editingProductId, setEditingProductId] = useState(null);
 
   // B2C Table State
   const [b2cPage, setB2cPage] = useState(1);
   const [b2cSearchTerm, setB2cSearchTerm] = useState("");
+  const [isTableRefetching, setIsTableRefetching] = useState(false);
 
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
@@ -27,7 +31,7 @@ const ProviderProductsManagementPage = () => {
     )}`;
   }, [t]);
 
-  // Fetch Form Selections (categories, cities, services, etc.) on Add Product click
+  // Fetch Form Selections ONLY when Add Product button is clicked
   const {
     data: selectionResponse,
     isLoading: isSelectionsLoading,
@@ -47,22 +51,71 @@ const ProviderProductsManagementPage = () => {
   const isFetchingSelections =
     (isSelectionsLoading || isSelectionsFetching) && shouldFetchSelections;
 
+  // Fetch Product Details for Edit mode ONLY: GET >> profile-provider/b2c-trips/${_id}
+  const {
+    data: editProductResponse,
+    isLoading: isEditProductLoading,
+    isFetching: isEditProductFetching,
+  } = useFetchData(
+    editingProductId
+      ? `${B2B_END_POINTS.PROVIDER_PROFILE.B2C_TRIPS}/${editingProductId}`
+      : null,
+    {},
+    {
+      lang: locale,
+      enabled: !!editingProductId,
+    },
+    [editingProductId]
+  );
+
+  const editProductData = editProductResponse?.data || editProductResponse;
+  const isFetchingEditProduct =
+    (isEditProductLoading || isEditProductFetching) && !!editingProductId;
+
+  // --- Add Product: fetch selections then open modal ---
   const handleOpenAddModal = () => {
+    setEditingProductId(null); // ensure we're in add mode
     if (formSelectionData) {
+      // Selections already cached, open immediately
       setIsAddModalOpen(true);
     } else {
       setShouldFetchSelections(true);
-      if (shouldFetchSelections) {
-        refetchSelections();
-      }
+      if (shouldFetchSelections) refetchSelections();
     }
   };
 
+  // Open add modal once selections arrive (add flow only)
   useEffect(() => {
-    if (shouldFetchSelections && formSelectionData && !isSelectionsFetching) {
+    if (
+      shouldFetchSelections &&
+      !editingProductId &&
+      formSelectionData &&
+      !isSelectionsFetching &&
+      !isAddModalOpen
+    ) {
       setIsAddModalOpen(true);
     }
-  }, [shouldFetchSelections, formSelectionData, isSelectionsFetching]);
+  }, [shouldFetchSelections, editingProductId, formSelectionData, isSelectionsFetching, isAddModalOpen]);
+
+  // --- Edit Product: only fetch product details, then open modal ---
+  const handleEditProduct = (row) => {
+    const id = row?._id || row?.id;
+    if (!id) return;
+    // Set the id to trigger the useFetchData above
+    setEditingProductId(id);
+  };
+
+  // Open edit modal once product data arrives
+  useEffect(() => {
+    if (editingProductId && editProductData && !isFetchingEditProduct) {
+      setIsAddModalOpen(true);
+    }
+  }, [editingProductId, editProductData, isFetchingEditProduct]);
+
+  const handleCloseModal = () => {
+    setIsAddModalOpen(false);
+    setEditingProductId(null);
+  };
 
   // Fetch B2C Trips
   const b2cEndpoint = `${B2B_END_POINTS.PROVIDER_PROFILE.B2C_TRIPS}?page=${b2cPage}&perPage=10${
@@ -74,6 +127,7 @@ const ProviderProductsManagementPage = () => {
   const {
     data: b2cResponse,
     isLoading: b2cLoading,
+    isFetching: b2cFetching,
     refetch: refetchB2c,
   } = useFetchData(
     b2cEndpoint,
@@ -85,6 +139,25 @@ const ProviderProductsManagementPage = () => {
   );
 
   const finalB2cData = b2cResponse?.data || b2cResponse;
+
+  useEffect(() => {
+    if (!b2cFetching && isTableRefetching) {
+      setIsTableRefetching(false);
+    }
+  }, [b2cFetching, isTableRefetching]);
+
+  const handleSuccess = () => {
+    setIsTableRefetching(true);
+    queryClient.invalidateQueries({
+      predicate: (query) =>
+        query.queryKey.some(
+          (key) =>
+            typeof key === "string" &&
+            key.includes(B2B_END_POINTS.PROVIDER_PROFILE.B2C_TRIPS)
+        ),
+    });
+    refetchB2c?.();
+  };
 
   return (
     <main className="flex flex-col gap-6 lg:gap-8 min-h-screen">
@@ -123,8 +196,9 @@ const ProviderProductsManagementPage = () => {
         setCurrentPage={setB2cPage}
         searchTerm={b2cSearchTerm}
         setSearchTerm={setB2cSearchTerm}
-        loading={b2cLoading}
-        onEdit={handleOpenAddModal}
+        loading={b2cLoading || b2cFetching || isTableRefetching}
+        loadingEditId={isFetchingEditProduct ? editingProductId : null}
+        onEdit={handleEditProduct}
       />
       {/* 1. B2B Products Section - Coming Soon */}
       <div className="bg-white p-6 rounded-2xl border border-border shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -141,12 +215,13 @@ const ProviderProductsManagementPage = () => {
         </span>
       </div>
 
-      {/* Add Product Modal */}
+      {/* Add / Edit Product Modal */}
       <AddProductModal
         isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onSuccess={() => refetchB2c?.()}
+        onClose={handleCloseModal}
+        onSuccess={handleSuccess}
         formSelectionData={formSelectionData}
+        productData={editingProductId ? editProductData : null}
       />
     </main>
   );

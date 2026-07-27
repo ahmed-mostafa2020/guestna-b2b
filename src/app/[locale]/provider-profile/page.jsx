@@ -18,7 +18,7 @@ const ProviderMainPage = () => {
     )}`;
   }, [t]);
 
-  const { data: homeResponse } = useFetchData(
+  const { data: homeResponse, isLoading: homeLoading } = useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.HOME,
     {},
     {
@@ -35,7 +35,7 @@ const ProviderMainPage = () => {
 
       {/* Monthly Revenue Chart Section */}
       <div className="w-full">
-        <ProviderRevenueChart data={displayData} />
+        <ProviderRevenueChart data={displayData} loading={homeLoading} />
       </div>
     </main>
   );

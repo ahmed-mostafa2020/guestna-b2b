@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Formik } from "formik";
 import { useTranslations, useLocale } from "next-intl";
 import { useSnackbar } from "notistack";
@@ -74,9 +74,9 @@ export const initialAddProductValues = {
   benefits: { en: [""], ar: [""] },
 };
 
-export const formatAddProductPayload = (values) => {
+export const formatAddProductPayload = (values, isEditMode = false) => {
   const payload = {
-    "systemTypes[0]": "B2C",
+    ...(!isEditMode ? { "systemTypes[0]": "B2C" } : {}),
     "name[en]": values.name?.en || "",
     "name[ar]": values.name?.ar || "",
     tripsType: values.tripsType || "ACTIVITY",
@@ -260,10 +260,19 @@ const AddProductForm = ({
   onClose,
   onSuccess,
   formSelectionData = null,
+  productData = null,
 }) => {
   const [activeStep, setActiveStep] = useState(0);
-  const [maxVisitedStep, setMaxVisitedStep] = useState(0);
+  const [maxVisitedStep, setMaxVisitedStep] = useState(
+    productData ? STEP_KEYS.length - 1 : 0
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (productData) {
+      setMaxVisitedStep(STEP_KEYS.length - 1);
+    }
+  }, [productData]);
 
   const t = useTranslations();
   const locale = useLocale();
@@ -275,6 +284,113 @@ const AddProductForm = ({
     [t]
   );
 
+  const initialValues = useMemo(() => {
+    if (!productData) return initialAddProductValues;
+
+    const supCats = productData.supCategories || productData.category || [];
+
+    return {
+      _id: productData._id || productData.id || "",
+      systemTypes: productData.systemTypes || ["B2C"],
+      name: {
+        en: typeof productData.name === "object" ? productData.name?.en || "" : productData.name || "",
+        ar: typeof productData.name === "object" ? productData.name?.ar || "" : productData.name || "",
+      },
+      tripsType: productData.tripsType || productData.guestnaTripsType || "ACTIVITY",
+      description: {
+        en: typeof productData.description === "object" ? productData.description?.en || "" : productData.description || "",
+        ar: typeof productData.description === "object" ? productData.description?.ar || "" : productData.description || "",
+      },
+      categories: typeof productData.categories === "object" && productData.categories !== null
+        ? productData.categories?._id || productData.categories?.id || ""
+        : productData.categories || "",
+      supCategories: Array.isArray(supCats)
+        ? supCats.map((item) => (typeof item === "object" && item !== null ? item._id || item.id || "" : item))
+        : [],
+      cities: Array.isArray(productData.cities)
+        ? productData.cities.map((item) => (typeof item === "object" && item !== null ? item._id || item.id || "" : item))
+        : [],
+      providerBranchs: Array.isArray(productData.providerBranchs)
+        ? productData.providerBranchs.map((item) => (typeof item === "object" && item !== null ? item._id || item.id || "" : item))
+        : [],
+      bookingBefore: productData.bookingBefore ?? 1,
+      recurrencePattern: productData.recurrencePattern || "WEEKLY",
+      selectedDays: productData.selectedDays || ["SUNDAY"],
+      monthDay: productData.monthDay || 1,
+      weekdayPricing: productData.weekdayPricing || [],
+      datePricing: productData.datePricing || [],
+      fromDay: productData.fromDay ? (productData.fromDay.includes("T") ? productData.fromDay.split("T")[0] : productData.fromDay) : "",
+      toDay: productData.toDay ? (productData.toDay.includes("T") ? productData.toDay.split("T")[0] : productData.toDay) : "",
+      fromHour: productData.fromHour || "20:00",
+      toHour: productData.toHour || "10:00",
+      availableTimes: Array.isArray(productData.availableTimes) && productData.availableTimes.length
+        ? productData.availableTimes
+        : [{ from: "08:00", to: "12:00" }],
+      availableSeats: typeof productData.availableSeats === "object" && productData.availableSeats !== null
+        ? {
+            min: productData.availableSeats?.min ?? 5,
+            max: productData.availableSeats?.max ?? 50,
+          }
+        : {
+            min: 1,
+            max: typeof productData.availableSeats === "number" ? productData.availableSeats : 50,
+          },
+      guestRange: productData.guestRange || { min: 5, max: 50 },
+      duration: productData.duration ?? 5,
+      price: productData.price ?? 1500,
+      productCost: productData.productCost ?? 1000,
+      targetAudiences: Array.isArray(productData.targetAudiences) && productData.targetAudiences.length
+        ? productData.targetAudiences.map((item) => ({
+            targetAudience: typeof item.targetAudience === "object" && item.targetAudience !== null
+              ? item.targetAudience._id || item.targetAudience.id || ""
+              : item.targetAudience || "",
+            price: item.price ?? 1500,
+          }))
+        : [{ targetAudience: "", price: 1500 }],
+      services: Array.isArray(productData.services) && productData.services.length
+        ? productData.services.map((item) => ({
+            service: typeof item.service === "object" && item.service !== null
+              ? item.service._id || item.service.id || ""
+              : item.service || "",
+            note: {
+              en: item.note?.en || "",
+              ar: item.note?.ar || "",
+            },
+          }))
+        : [{ service: "", note: { en: "", ar: "" } }],
+      customServices: Array.isArray(productData.customServices)
+        ? productData.customServices.map((item) => (typeof item === "object" && item !== null ? item._id || item.id || "" : item))
+        : [],
+      gallery: productData.gallary || productData.gallery || [],
+      thumbnailWeb: productData.thumbnail || productData.thumbnailWeb || null,
+      mediaFile: productData.detailsFile || productData.mediaFile || null,
+      video: productData.video || null,
+      gatheringLocation: productData.gatheringLocation || { lat: 24.9576, lng: 46.6988 },
+      location: productData.location || { lat: 26.6176, lng: 37.9221 },
+      itinerary: Array.isArray(productData.itinerary) && productData.itinerary.length
+        ? productData.itinerary.map((item, idx) => ({
+            day: item.day || idx + 1,
+            toDo: {
+              en: item.toDo?.en || "",
+              ar: item.toDo?.ar || "",
+            },
+          }))
+        : [{ day: 1, toDo: { en: "", ar: "" } }],
+      mustHaveItems: {
+        en: productData.mustHaveItems?.en?.length ? productData.mustHaveItems.en : [""],
+        ar: productData.mustHaveItems?.ar?.length ? productData.mustHaveItems.ar : [""],
+      },
+      exemptedFromTrip: {
+        en: productData.exemptedFromTrip?.en?.length ? productData.exemptedFromTrip.en : [""],
+        ar: productData.exemptedFromTrip?.ar?.length ? productData.exemptedFromTrip.ar : [""],
+      },
+      benefits: {
+        en: productData.benefits?.en?.length ? productData.benefits.en : [""],
+        ar: productData.benefits?.ar?.length ? productData.benefits.ar : [""],
+      },
+    };
+  }, [productData]);
+
   const categoryOptions = formSelectionData?.categories || [];
   const supCategoryOptions =
     formSelectionData?.supCategories || formSelectionData?.supCategory || [];
@@ -284,6 +400,44 @@ const AddProductForm = ({
   const targetAudienceOptions = formSelectionData?.targetAudiences || [];
   const customServicesOptions = formSelectionData?.customServices || [];
   const providerBranchsOptions = formSelectionData?.providerBranchs || [];
+
+  const handleStepClick = async (targetStep, validateForm, setTouched) => {
+    if (targetStep === activeStep) return;
+
+    // Going backward is always permitted
+    if (targetStep < activeStep) {
+      setActiveStep(targetStep);
+      return;
+    }
+
+    // Going forward: validate current step fields first
+    const errors = await validateForm();
+    const stepFields = getStepFieldNames(activeStep);
+
+    let hasStepError = false;
+    const touchedObj = {};
+
+    stepFields.forEach((field) => {
+      touchedObj[field] = true;
+      if (field.includes(".")) {
+        const parts = field.split(".");
+        if (errors[parts[0]]?.[parts[1]]) hasStepError = true;
+      } else if (errors[field]) {
+        hasStepError = true;
+      }
+    });
+
+    setTouched((prev) => ({ ...prev, ...touchedObj }));
+
+    if (!hasStepError) {
+      setActiveStep(targetStep);
+      setMaxVisitedStep((prev) => Math.max(prev, targetStep));
+    } else {
+      enqueueSnackbar(t("providerProfile.products.modal.placeholderNotice"), {
+        variant: "warning",
+      });
+    }
+  };
 
   const handleStepNext = async (validateForm, setTouched) => {
     const errors = await validateForm();
@@ -324,7 +478,8 @@ const AddProductForm = ({
   const handleSubmitForm = async (values) => {
     setIsSubmitting(true);
     try {
-      const formattedPayload = formatAddProductPayload(values);
+      const isEditMode = Boolean(values._id);
+      const formattedPayload = formatAddProductPayload(values, isEditMode);
 
       // Build FormData for multipart uploads (files + fields)
       const formData = new FormData();
@@ -335,8 +490,19 @@ const AddProductForm = ({
       if (Array.isArray(values.gallery)) {
         values.gallery.forEach((file) => {
           if (file instanceof File || file instanceof Blob) {
+            // New file uploaded by the user
             formData.append("gallary", file);
           }
+        });
+      }
+
+      // Edit mode: send old gallery URLs that the user kept (not removed)
+      if (isEditMode && Array.isArray(values.gallery)) {
+        const keptOldUrls = values.gallery.filter(
+          (item) => typeof item === "string"
+        );
+        keptOldUrls.forEach((url, idx) => {
+          formData.append(`oldGallary[${idx}]`, url);
         });
       }
 
@@ -354,14 +520,18 @@ const AddProductForm = ({
       }
 
       const headers = getHeaders(locale, true);
-      const url = getProxyUrl(
-        B2B_END_POINTS.PROVIDER_PROFILE.NEW_TRIP
-      );
-
-      await axios.post(url, formData, { headers });
+      if (isEditMode) {
+        const url = getProxyUrl(`${B2B_END_POINTS.PROVIDER_PROFILE.EDIT_TRIP}/${values._id}`);
+        await axios.patch(url, formData, { headers });
+      } else {
+        const url = getProxyUrl(B2B_END_POINTS.PROVIDER_PROFILE.NEW_TRIP);
+        await axios.post(url, formData, { headers });
+      }
 
       enqueueSnackbar(
-        t("providerProfile.products.modal.successMessage"),
+        isEditMode
+          ? t("providerProfile.products.modal.editSuccessMessage")
+          : t("providerProfile.products.modal.successMessage"),
         { variant: "success" }
       );
       if (onSuccess) onSuccess();
@@ -428,7 +598,8 @@ const AddProductForm = ({
 
   return (
     <Formik
-      initialValues={initialAddProductValues}
+      enableReinitialize
+      initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={handleSubmitForm}
     >
@@ -439,6 +610,9 @@ const AddProductForm = ({
             activeStep={activeStep}
             setActiveStep={setActiveStep}
             maxVisitedStep={maxVisitedStep}
+            onStepClick={(targetStep) =>
+              handleStepClick(targetStep, validateForm, setTouched)
+            }
           />
 
           {/* Step Form Body */}

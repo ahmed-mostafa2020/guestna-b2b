@@ -14,6 +14,7 @@ const AddProductModal = ({
   onClose,
   onSuccess,
   formSelectionData: propFormSelectionData,
+  productData = null,
 }) => {
   const t = useTranslations();
   const locale = useLocale();
@@ -76,6 +77,7 @@ const AddProductModal = ({
               onClose={onClose}
               onSuccess={onSuccess}
               formSelectionData={formSelectionData}
+              productData={productData}
             />
           </div>
         </div>
