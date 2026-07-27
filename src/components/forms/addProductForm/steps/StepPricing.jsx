@@ -136,7 +136,7 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
         <div className="border-t border-border pt-5">
           <div className="flex items-center justify-between mb-3">
             <h4 className="text-sm font-semibold text-titleColor">
-              {t("fields.targetAudiences")}
+              {t("fields.targetAudiences")} <span className="text-error">*</span>
             </h4>
           </div>
 
@@ -191,6 +191,12 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
                     </button>
                   </div>
                 ))}
+
+                {touched.targetAudiences && typeof errors.targetAudiences === "string" && (
+                  <p className="text-xs text-error font-medium">
+                    {errors.targetAudiences}
+                  </p>
+                )}
 
                 <button
                   type="button"

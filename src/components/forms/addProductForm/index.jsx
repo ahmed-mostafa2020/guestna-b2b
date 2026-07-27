@@ -303,12 +303,9 @@ const AddProductForm = ({
       });
 
       if (Array.isArray(values.gallery)) {
-        values.gallery.forEach((file, idx) => {
+        values.gallery.forEach((file) => {
           if (file instanceof File || file instanceof Blob) {
             formData.append("gallary", file);
-            formData.append(`gallary[${idx}]`, file);
-            formData.append("gallery", file);
-            formData.append(`gallery[${idx}]`, file);
           }
         });
       }
@@ -316,15 +313,10 @@ const AddProductForm = ({
       const thumbnailFile = values.thumbnailWeb || values.thumbnailMobile;
       if (thumbnailFile instanceof File || thumbnailFile instanceof Blob) {
         formData.append("thumbnail", thumbnailFile);
-        formData.append("thumbnailWeb", thumbnailFile);
-      }
-      if (values.thumbnailMobile instanceof File || values.thumbnailMobile instanceof Blob) {
-        formData.append("thumbnailMobile", values.thumbnailMobile);
       }
 
       if (values.mediaFile instanceof File || values.mediaFile instanceof Blob) {
         formData.append("detailsFile", values.mediaFile);
-        formData.append("mediaFile", values.mediaFile);
       }
 
       if (values.video instanceof File || values.video instanceof Blob) {
@@ -342,6 +334,7 @@ const AddProductForm = ({
       if (onSuccess) onSuccess();
       if (onClose) onClose();
     } catch (err) {
+      console.error("Submit product error response:", err?.response?.data || err?.message || err);
       enqueueSnackbar(
         err?.response?.data?.message || "Failed to submit product",
         { variant: "error" }

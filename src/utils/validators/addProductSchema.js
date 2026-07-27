@@ -93,14 +93,20 @@ export const createAddProductSchema = (t) => {
       .min(0)
       .required(reqMsg),
 
-    targetAudiences: Yup.array()
-      .of(
-        Yup.object().shape({
-          targetAudience: Yup.string().optional(),
-          price: Yup.number().optional(),
-        })
-      )
-      .optional(),
+    targetAudiences: Yup.array().when("systemTypes", {
+      is: (types) => Array.isArray(types) && types.includes("B2C"),
+      then: (schema) =>
+        schema
+          .of(
+            Yup.object().shape({
+              targetAudience: Yup.string().required(reqMsg),
+              price: Yup.number().typeError(reqMsg).min(0).required(reqMsg),
+            })
+          )
+          .min(1, reqMsg)
+          .required(reqMsg),
+      otherwise: (schema) => schema.optional(),
+    }),
 
     quantityDiscountTiers: Yup.array()
       .of(
@@ -196,7 +202,7 @@ export const getStepFieldNames = (stepIndex) => {
     case 3: // Activities
       return ["availableSeats.min", "availableSeats.max", "duration"];
     case 4: // Pricing
-      return ["price", "productCost"];
+      return ["price", "productCost", "targetAudiences"];
     case 5: // Services
       return ["services"];
     case 6: // Media

@@ -264,6 +264,11 @@
         "title": "Add New Product",
         "subtitle": "Fill in the details below to publish a new trip product",
         "placeholderNotice": "Please fill out all required fields marked with *",
+        "validation": {
+          "systemTypesRequired": "At least one system type must be selected",
+          "galleryMin": "Please upload at least 4 images for the gallery",
+          "targetAudiencesRequired": "At least one target audience pricing element is required"
+        },
         "submit": "Submit Product",
         "cancel": "Cancel",
         "next": "Next Step",
