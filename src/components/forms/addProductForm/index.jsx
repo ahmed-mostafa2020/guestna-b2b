@@ -113,8 +113,10 @@ export const formatAddProductPayload = (values) => {
       payload[`selectedDays[${idx}]`] = item;
     });
     (values.targetAudiences || []).forEach((item, idx) => {
-      payload[`targetAudiences[${idx}][targetAudience]`] = item.targetAudience;
-      payload[`targetAudiences[${idx}][price]`] = item.price;
+      if (item.targetAudience) {
+        payload[`targetAudiences[${idx}][targetAudience]`] = item.targetAudience;
+        payload[`targetAudiences[${idx}][price]`] = item.price;
+      }
     });
   }
 
@@ -297,9 +299,9 @@ const AddProductForm = ({
         formData.append("video", values.video);
       }
 
-      const headers = getHeaders(locale);
+      const headers = getHeaders(locale, true);
       const url = getProxyUrl(
-        B2B_END_POINTS.PROVIDER_PROFILE.B2B_TRIPS
+        B2B_END_POINTS.PROVIDER_PROFILE.NEW_TRIP
       );
 
       await axios.post(url, formData, { headers });

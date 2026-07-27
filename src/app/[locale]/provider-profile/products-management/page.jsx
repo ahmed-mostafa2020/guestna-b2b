@@ -69,10 +69,12 @@ const ProviderProductsManagementPage = () => {
   }, [shouldFetchSelections, formSelectionData, isSelectionsFetching]);
 
   // Fetch B2B Trips
+  const b2bEndpoint = `${B2B_END_POINTS.PROVIDER_PROFILE.B2B_TRIPS}?page=${b2bPage}&perPage=10${
+    b2bSearchTerm ? `&filter[searchTerm]=${encodeURIComponent(b2bSearchTerm)}` : ""
+  }`;
+
   const { data: b2bResponse, isLoading: b2bLoading } = useFetchData(
-    `${B2B_END_POINTS.PROVIDER_PROFILE.B2B_TRIPS}?page=${b2bPage}&perPage=10${
-      b2bSearchTerm ? `&searchTerm=${b2bSearchTerm}` : ""
-    }`,
+    b2bEndpoint,
     {},
     {
       lang: locale,
@@ -81,10 +83,12 @@ const ProviderProductsManagementPage = () => {
   );
 
   // Fetch B2C Trips
+  const b2cEndpoint = `${B2B_END_POINTS.PROVIDER_PROFILE.B2C_TRIPS}?page=${b2cPage}&perPage=10${
+    b2cSearchTerm ? `&filter[searchTerm]=${encodeURIComponent(b2cSearchTerm)}` : ""
+  }`;
+
   const { data: b2cResponse, isLoading: b2cLoading } = useFetchData(
-    `${B2B_END_POINTS.PROVIDER_PROFILE.B2C_TRIPS}?page=${b2cPage}&perPage=10${
-      b2cSearchTerm ? `&searchTerm=${b2cSearchTerm}` : ""
-    }`,
+    b2cEndpoint,
     {},
     {
       lang: locale,

@@ -247,5 +247,6 @@ export const B2B_END_POINTS = {
     B2B_TRIPS: "profile-provider/b2b-trips",
     B2C_TRIPS: "profile-provider/b2c-trips",
     FORM_SELECTIONS: "profile-provider/trips/form/selections",
+    NEW_TRIP: "profile-provider/trips/new",
   },
 };
