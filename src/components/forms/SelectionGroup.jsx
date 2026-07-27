@@ -143,10 +143,10 @@ const SelectionGroup = ({
             {placeholder}
           </MenuItem>
         )}
-        {list.map((item) => {
+        {list.map((item, index) => {
           const itemValue =
             typeof item === "object" && item !== null
-              ? item.value ?? item.id ?? item.name
+              ? item.value ?? item._id ?? item.id ?? item.name
               : name === "expiryYear"
               ? item.toString().slice(-2)
               : item;
@@ -158,7 +158,7 @@ const SelectionGroup = ({
 
           const itemKey =
             typeof item === "object" && item !== null
-              ? item.value ?? item.id ?? item.name
+              ? item.value ?? item._id ?? item.id ?? item.name
               : item;
 
           const isSelected = multiple
@@ -168,7 +168,7 @@ const SelectionGroup = ({
           return (
             <MenuItem
               className="!font-somar !font-semibold"
-              key={itemKey}
+              key={`${itemKey}-${index}`}
               value={itemValue}
               title={typeof itemLabel === "string" ? itemLabel : undefined}
             >

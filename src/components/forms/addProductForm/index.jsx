@@ -160,16 +160,28 @@ export const formatAddProductPayload = (values) => {
     payload[`stopBookingDate[${idx}]`] = item;
   });
 
-  (values.itinerary || []).forEach((item, idx) => {
-    payload[`itinerary[${idx}][day]`] = item.day;
-    payload[`itinerary[${idx}][toDo][en]`] = item.toDo?.en || "";
-    payload[`itinerary[${idx}][toDo][ar]`] = item.toDo?.ar || "";
+  let itineraryIdx = 0;
+  (values.itinerary || []).forEach((item) => {
+    const enText = item.toDo?.en?.trim() || "";
+    const arText = item.toDo?.ar?.trim() || "";
+    if (enText || arText) {
+      payload[`itinerary[${itineraryIdx}][day]`] = item.day || (itineraryIdx + 1);
+      if (enText) payload[`itinerary[${itineraryIdx}][toDo][en]`] = enText;
+      if (arText) payload[`itinerary[${itineraryIdx}][toDo][ar]`] = arText;
+      itineraryIdx++;
+    }
   });
 
-  (values.services || []).forEach((item, idx) => {
-    payload[`services[${idx}][service]`] = item.service;
-    payload[`services[${idx}][note][en]`] = item.note?.en || "";
-    payload[`services[${idx}][note][ar]`] = item.note?.ar || "";
+  let serviceIdx = 0;
+  (values.services || []).forEach((item) => {
+    if (item.service) {
+      payload[`services[${serviceIdx}][service]`] = item.service;
+      const noteEn = item.note?.en?.trim();
+      const noteAr = item.note?.ar?.trim();
+      if (noteEn) payload[`services[${serviceIdx}][note][en]`] = noteEn;
+      if (noteAr) payload[`services[${serviceIdx}][note][ar]`] = noteAr;
+      serviceIdx++;
+    }
   });
 
   (values.quantityDiscountTiers || []).forEach((item, idx) => {
@@ -180,30 +192,65 @@ export const formatAddProductPayload = (values) => {
     }
   });
 
-  (values.availableTimes || []).forEach((item, idx) => {
-    payload[`availableTimes[${idx}][from]`] = item.from;
-    payload[`availableTimes[${idx}][to]`] = item.to;
+  let timeIdx = 0;
+  (values.availableTimes || []).forEach((item) => {
+    if (item.from && item.to) {
+      payload[`availableTimes[${timeIdx}][from]`] = item.from;
+      payload[`availableTimes[${timeIdx}][to]`] = item.to;
+      timeIdx++;
+    }
   });
 
-  (values.mustHaveItems?.en || []).forEach((val, idx) => {
-    if (val) payload[`mustHaveItems[en][${idx}]`] = val;
+  let mustHaveEnIdx = 0;
+  (values.mustHaveItems?.en || []).forEach((val) => {
+    if (val?.trim()) {
+      payload[`mustHaveItems[en][${mustHaveEnIdx}]`] = val.trim();
+      mustHaveEnIdx++;
+    }
   });
-  (values.mustHaveItems?.ar || []).forEach((val, idx) => {
-    if (val) payload[`mustHaveItems[ar][${idx}]`] = val;
+  let mustHaveArIdx = 0;
+  (values.mustHaveItems?.ar || []).forEach((val) => {
+    if (val?.trim()) {
+      payload[`mustHaveItems[ar][${mustHaveArIdx}]`] = val.trim();
+      mustHaveArIdx++;
+    }
   });
 
-  (values.exemptedFromTrip?.en || []).forEach((val, idx) => {
-    if (val) payload[`exemptedFromTrip[en][${idx}]`] = val;
+  let exemptionEnIdx = 0;
+  (values.exemptedFromTrip?.en || []).forEach((val) => {
+    if (val?.trim()) {
+      payload[`exemptedFromTrip[en][${exemptionEnIdx}]`] = val.trim();
+      exemptionEnIdx++;
+    }
   });
-  (values.exemptedFromTrip?.ar || []).forEach((val, idx) => {
-    if (val) payload[`exemptedFromTrip[ar][${idx}]`] = val;
+  let exemptionArIdx = 0;
+  (values.exemptedFromTrip?.ar || []).forEach((val) => {
+    if (val?.trim()) {
+      payload[`exemptedFromTrip[ar][${exemptionArIdx}]`] = val.trim();
+      exemptionArIdx++;
+    }
   });
 
-  (values.benefits?.en || []).forEach((val, idx) => {
-    if (val) payload[`benefits[en][${idx}]`] = val;
+  let benefitEnIdx = 0;
+  (values.benefits?.en || []).forEach((val) => {
+    if (val?.trim()) {
+      payload[`benefits[en][${benefitEnIdx}]`] = val.trim();
+      benefitEnIdx++;
+    }
   });
-  (values.benefits?.ar || []).forEach((val, idx) => {
-    if (val) payload[`benefits[ar][${idx}]`] = val;
+  let benefitArIdx = 0;
+  (values.benefits?.ar || []).forEach((val) => {
+    if (val?.trim()) {
+      payload[`benefits[ar][${benefitArIdx}]`] = val.trim();
+      benefitArIdx++;
+    }
+  });
+
+  // Remove any empty string, null, or undefined keys from payload
+  Object.keys(payload).forEach((key) => {
+    if (payload[key] === "" || payload[key] === null || payload[key] === undefined) {
+      delete payload[key];
+    }
   });
 
   return payload;
