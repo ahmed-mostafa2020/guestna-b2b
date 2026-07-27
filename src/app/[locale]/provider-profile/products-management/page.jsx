@@ -7,92 +7,15 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import ProviderProductsTable from "@components/features/provider-profile/ProviderProductsTable";
 import AddProductModal from "@components/features/provider-profile/AddProductModal";
 import StarIcon from "@mui/icons-material/Star";
-
-const DUMMY_B2B_TRIPS = {
-  pageInfo: {
-    total: 4,
-    currentPage: 1,
-    perPage: 10,
-    hasNextPage: false,
-  },
-  nodes: [
-    {
-      _id: "4afc8d5b3bf249a0b4054606",
-      slug: "five-senses",
-      orderId: "cd2cad",
-      price: 1000,
-      createdAt: "2026-07-28T12:10:19.419Z",
-      name: "Five Senses",
-      cities: [
-        { _id: "6b5c4c32d62d7cd01ba5ddec", name: "Dammam" },
-        { _id: "62e60f7326a23d949dcdccba", name: "Riyadh" },
-      ],
-    },
-    {
-      _id: "6a5e867b6e30d7cabac5dd11",
-      slug: "provider2",
-      orderId: "MP-12377",
-      price: 500,
-      createdAt: "2026-07-20T20:35:07.280Z",
-      name: "Provider2",
-      cities: [{ _id: "98fafa508fd56ac9da83d5a6", name: "Makkah" }],
-    },
-    {
-      _id: "6a5d33181ebcbfba4e71b446",
-      slug: "provider",
-      orderId: "MP-14389",
-      price: 600,
-      createdAt: "2026-07-19T20:27:04.322Z",
-      name: "Provider",
-      cities: [{ _id: "771ac36f6da96c09d9125de5", name: "Al-Qassim" }],
-    },
-    {
-      _id: "6a58bbfaaaf7cd4942c0ab39",
-      slug: "fouad-trip3-1784199857732",
-      orderId: "MP-16690",
-      price: 500,
-      createdAt: "2026-07-16T11:09:46.513Z",
-      name: "Fouad Trip3-( AlFouad Language School)",
-      cities: [{ _id: "98fafa508fd56ac9da83d5a6", name: "Makkah" }],
-    },
-  ],
-};
-
-const DUMMY_B2C_TRIPS = {
-  pageInfo: {
-    total: 2,
-    currentPage: 1,
-    perPage: 10,
-    hasNextPage: false,
-  },
-  nodes: [
-    {
-      _id: "7b5c8d5b3bf249a0b4054607",
-      slug: "desert-safari-b2c",
-      orderId: "B2C-98212",
-      price: 350,
-      createdAt: "2026-07-25T10:00:00.000Z",
-      name: "Desert Safari Experience",
-      cities: [{ _id: "62e60f7326a23d949dcdccba", name: "Riyadh" }],
-    },
-    {
-      _id: "8a5e867b6e30d7cabac5dd12",
-      slug: "red-sea-diving-b2c",
-      orderId: "B2C-44129",
-      price: 750,
-      createdAt: "2026-07-22T14:30:00.000Z",
-      name: "Red Sea Diving Adventure",
-      cities: [{ _id: "12fafa508fd56ac9da83d5a1", name: "Jeddah" }],
-    },
-  ],
-};
+import CircularProgress from "@mui/material/CircularProgress";
 
 const ProviderProductsManagementPage = () => {
   const t = useTranslations();
   const locale = useLocale();
 
-  // Modal State
+  // Modal & Selection State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [shouldFetchSelections, setShouldFetchSelections] = useState(false);
 
   // B2B Table State
   const [b2bPage, setB2bPage] = useState(1);
@@ -108,34 +31,69 @@ const ProviderProductsManagementPage = () => {
     )}`;
   }, [t]);
 
+  // Fetch Form Selections (categories, cities, services, etc.) on Add Product click
+  const {
+    data: selectionResponse,
+    isLoading: isSelectionsLoading,
+    isFetching: isSelectionsFetching,
+    refetch: refetchSelections,
+  } = useFetchData(
+    B2B_END_POINTS.PROVIDER_PROFILE.FORM_SELECTIONS,
+    {},
+    {
+      lang: locale,
+      enabled: shouldFetchSelections,
+    },
+    [shouldFetchSelections]
+  );
+
+  const formSelectionData = selectionResponse?.data || selectionResponse;
+  const isFetchingSelections =
+    (isSelectionsLoading || isSelectionsFetching) && shouldFetchSelections;
+
+  const handleOpenAddModal = () => {
+    if (formSelectionData) {
+      setIsAddModalOpen(true);
+    } else {
+      setShouldFetchSelections(true);
+      if (shouldFetchSelections) {
+        refetchSelections();
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (shouldFetchSelections && formSelectionData && !isSelectionsFetching) {
+      setIsAddModalOpen(true);
+    }
+  }, [shouldFetchSelections, formSelectionData, isSelectionsFetching]);
+
   // Fetch B2B Trips
-  const { data: b2bData, isLoading: b2bLoading } = useFetchData(
+  const { data: b2bResponse, isLoading: b2bLoading } = useFetchData(
     `${B2B_END_POINTS.PROVIDER_PROFILE.B2B_TRIPS}?page=${b2bPage}&perPage=10${
       b2bSearchTerm ? `&searchTerm=${b2bSearchTerm}` : ""
     }`,
     {},
     {
       lang: locale,
-      enabled: false,
     },
     [b2bPage, b2bSearchTerm]
   );
 
   // Fetch B2C Trips
-  const { data: b2cData, isLoading: b2cLoading } = useFetchData(
+  const { data: b2cResponse, isLoading: b2cLoading } = useFetchData(
     `${B2B_END_POINTS.PROVIDER_PROFILE.B2C_TRIPS}?page=${b2cPage}&perPage=10${
       b2cSearchTerm ? `&searchTerm=${b2cSearchTerm}` : ""
     }`,
     {},
     {
       lang: locale,
-      enabled: false,
     },
     [b2cPage, b2cSearchTerm]
   );
 
-  const finalB2bData = b2bData || DUMMY_B2B_TRIPS;
-  const finalB2cData = b2cData || DUMMY_B2C_TRIPS;
+  const finalB2bData = b2bResponse?.data || b2bResponse;
+  const finalB2cData = b2cResponse?.data || b2cResponse;
 
   return (
     <main className="flex flex-col gap-6 lg:gap-8 min-h-screen">
@@ -151,10 +109,18 @@ const ProviderProductsManagementPage = () => {
         </div>
 
         <button
-          onClick={() => setIsAddModalOpen(true)}
-          className="bg-mainColor hover:bg-titleColor text-white font-medium text-sm sm:text-base px-5 py-2.5 rounded-lg sm:rounded-xl flex items-center justify-center gap-2 transition-all duration-200 ease-in-out cursor-pointer shadow-sm hover:shadow-md active:scale-[0.98]"
+          onClick={handleOpenAddModal}
+          disabled={isFetchingSelections}
+          className="bg-mainColor hover:bg-titleColor text-white font-medium text-sm sm:text-base px-5 py-2.5 rounded-lg sm:rounded-xl flex items-center justify-center gap-2 transition-all duration-200 ease-in-out cursor-pointer shadow-sm hover:shadow-md active:scale-[0.98] disabled:opacity-75 disabled:cursor-not-allowed"
         >
-          <span>{t("providerProfile.products.addNewProduct")}</span>
+          {isFetchingSelections ? (
+            <>
+              <CircularProgress size={18} color="inherit" />
+              <span>{t("common.loading")}...</span>
+            </>
+          ) : (
+            <span>{t("providerProfile.products.addNewProduct")}</span>
+          )}
         </button>
       </div>
 
@@ -166,7 +132,7 @@ const ProviderProductsManagementPage = () => {
         setCurrentPage={setB2bPage}
         searchTerm={b2bSearchTerm}
         setSearchTerm={setB2bSearchTerm}
-        loading={b2bLoading && !b2bData}
+        loading={b2bLoading}
       />
 
       {/* 2. B2C Trips Table Section */}
@@ -177,13 +143,14 @@ const ProviderProductsManagementPage = () => {
         setCurrentPage={setB2cPage}
         searchTerm={b2cSearchTerm}
         setSearchTerm={setB2cSearchTerm}
-        loading={b2cLoading && !b2cData}
+        loading={b2cLoading}
       />
 
       {/* Add Product Modal */}
       <AddProductModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
+        formSelectionData={formSelectionData}
       />
     </main>
   );

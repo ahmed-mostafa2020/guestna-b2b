@@ -205,12 +205,14 @@ const AddProductForm = ({
   );
 
   const categoryOptions = formSelectionData?.categories || [];
-  const supCategoryOptions = formSelectionData?.supCategory || [];
+  const supCategoryOptions =
+    formSelectionData?.supCategories || formSelectionData?.supCategory || [];
   const academicStageOptions = formSelectionData?.academicStages || [];
   const cityOptions = formSelectionData?.cities || [];
   const servicesOptions = formSelectionData?.services || [];
   const targetAudienceOptions = formSelectionData?.targetAudiences || [];
   const customServicesOptions = formSelectionData?.customServices || [];
+  const providerBranchsOptions = formSelectionData?.providerBranchs || [];
 
   const handleStepNext = async (validateForm, setTouched) => {
     const errors = await validateForm();

@@ -9,22 +9,28 @@ import AddProductForm from "@components/forms/addProductForm";
 import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 
-const AddProductModal = ({ isOpen, onClose, onSuccess }) => {
+const AddProductModal = ({
+  isOpen,
+  onClose,
+  onSuccess,
+  formSelectionData: propFormSelectionData,
+}) => {
   const t = useTranslations();
   const locale = useLocale();
 
-  // Fetch form selections options (categories, cities, academic stages, services, etc.)
+  // Fetch form selections options as fallback if not provided via props
   const { data: selectionResponse } = useFetchData(
-    B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.ADD_NEW_ACTIVITY.FORM_SELECTION,
+    B2B_END_POINTS.PROVIDER_PROFILE.FORM_SELECTIONS,
     {},
     {
       lang: locale,
-      enabled: isOpen,
+      enabled: isOpen && !propFormSelectionData,
     },
-    [isOpen]
+    [isOpen, propFormSelectionData]
   );
 
-  const formSelectionData = selectionResponse?.data || selectionResponse;
+  const formSelectionData =
+    propFormSelectionData || selectionResponse?.data || selectionResponse;
 
   if (!isOpen) return null;
 
