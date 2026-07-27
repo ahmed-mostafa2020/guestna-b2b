@@ -1,46 +1,5 @@
 {
-  "providerProfile": {
-    "aside": {
-      "main": "الصفحة الرئيسية",
-      "productsManagement": "إدارة المنتجات والأنشطة"
-    },
-    "infoCards": {
-      "totalBookings": "إجمالي الحجوزات",
-      "b2bCount": "حجوزات B2B",
-      "b2cCount": "حجوزات B2C"
-    },
-    "revenueChart": {
-      "title": "أداء الإيرادات الشهرية",
-      "label": "إجمالي الإيرادات"
-    },
-    "products": {
-      "title": "إدارة المنتجات والأنشطة",
-      "headerTitle": "إدارة المنتجات",
-      "addNewProduct": "اضافة منتج جديد",
-      "empty": "لا توجد منتجات متاحة حالياً.",
-      "searchPlaceholder": "ابحث باسم الطلب أو رقم الطلب",
-      "tabs": {
-        "b2b": "طلبات B2B",
-        "b2c": "طلبات B2C"
-      },
-      "table": {
-        "orderId": "رقم الطلب",
-        "name": "اسم الطلب",
-        "price": "السعر",
-        "cities": "المدن",
-        "createdAt": "تاريخ الإنشاء",
-        "view": "عرض الرحلة"
-      },
-      "modal": {
-        "title": "إضافة منتج جديد",
-        "subtitle": "قم بإدخال تفاصيل المنتج الجديد أدناه",
-        "placeholderNotice": "أهلاً بك! النموذج جاهز لإضافة الحقول والبيانات التي ستزودنا بها.",
-        "submit": "حفظ المنتج",
-        "cancel": "إلغاء"
-      }
-    }
-  },
-  "common": {
+    "common": {
     "back": "رجوع",
     "select": "اختر",
     "viewLargerImage": "عرض الصورة بحجم أكبر",
@@ -278,11 +237,23 @@
   },
   "providerProfile": {
     "aside": {
+      "main": "الصفحة الرئيسية",
       "productsManagement": "إدارة المنتجات"
     },
+    "infoCards": {
+      "totalBookings": "إجمالي الحجوزات",
+      "b2bCount": "حجوزات B2B",
+      "b2cCount": "حجوزات B2C"
+    },
+    "revenueChart": {
+      "title": "أداء الإيرادات الشهرية",
+      "label": "إجمالي الإيرادات"
+    },
     "products": {
+      "title": "إدارة المنتجات والأنشطة",
       "headerTitle": "إدارة المنتجات",
       "addNewProduct": "إضافة منتج جديد",
+      "empty": "لا توجد منتجات متاحة حالياً.",
       "searchPlaceholder": "البحث باسم المنتج أو رقم الطلب...",
       "tabs": {
         "b2b": "منتجات B2B",
@@ -299,11 +270,11 @@
       "modal": {
         "title": "إضافة منتج جديد",
         "subtitle": "قم بملء البيانات أدناه لنشر منتج رحلة جديد",
-        "cancel": "إلغاء",
+        "placeholderNotice": "يرجى ملء جميع الحقول المطلوبة المشار إليها بـ *",
         "submit": "إرسال المنتج",
+        "cancel": "إلغاء",
         "next": "الخطوة التالية",
         "previous": "السابق",
-        "placeholderNotice": "يرجى ملء جميع الحقول المطلوبة المشار إليها بـ *",
         "step": "الخطوة {current} من {total}",
         "subtitles": {
           "identity": "أدخل التفاصيل الأساسية وعنوان المنتج الخاص بك",

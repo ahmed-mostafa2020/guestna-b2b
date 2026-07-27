@@ -1,46 +1,5 @@
 {
-  "providerProfile": {
-    "aside": {
-      "main": "Main Page",
-      "productsManagement": "Products Management"
-    },
-    "infoCards": {
-      "totalBookings": "Total Bookings",
-      "b2bCount": "B2B Bookings",
-      "b2cCount": "B2C Bookings"
-    },
-    "revenueChart": {
-      "title": "Monthly Revenue Performance",
-      "label": "Total Revenue"
-    },
-    "products": {
-      "title": "Products & Activities Management",
-      "headerTitle": "Products Management",
-      "addNewProduct": "Add New Product",
-      "empty": "No products available.",
-      "searchPlaceholder": "Search by order name or order ID",
-      "tabs": {
-        "b2b": "B2B Orders",
-        "b2c": "B2C Orders"
-      },
-      "table": {
-        "orderId": "Order ID",
-        "name": "Order Name",
-        "price": "Price",
-        "cities": "Cities",
-        "createdAt": "Created At",
-        "view": "View Trip"
-      },
-      "modal": {
-        "title": "Add New Product",
-        "subtitle": "Enter the details for the new product below",
-        "placeholderNotice": "Welcome! The form is ready to receive your required input fields.",
-        "submit": "Save Product",
-        "cancel": "Cancel"
-      }
-    }
-  },
-  "common": {
+    "common": {
     "back": "Back",
     "select": "Select",
     "viewLargerImage": "View larger image",
@@ -271,11 +230,23 @@
   },
   "providerProfile": {
     "aside": {
+      "main": "Main Page",
       "productsManagement": "Products Management"
     },
+    "infoCards": {
+      "totalBookings": "Total Bookings",
+      "b2bCount": "B2B Bookings",
+      "b2cCount": "B2C Bookings"
+    },
+    "revenueChart": {
+      "title": "Monthly Revenue Performance",
+      "label": "Total Revenue"
+    },
     "products": {
+      "title": "Products & Activities Management",
       "headerTitle": "Products Management",
       "addNewProduct": "Add New Product",
+      "empty": "No products available.",
       "searchPlaceholder": "Search by product name or order ID...",
       "tabs": {
         "b2b": "B2B Products",
@@ -292,11 +263,11 @@
       "modal": {
         "title": "Add New Product",
         "subtitle": "Fill in the details below to publish a new trip product",
-        "cancel": "Cancel",
+        "placeholderNotice": "Please fill out all required fields marked with *",
         "submit": "Submit Product",
+        "cancel": "Cancel",
         "next": "Next Step",
         "previous": "Previous",
-        "placeholderNotice": "Please fill out all required fields marked with *",
         "step": "Step {current} of {total}",
         "subtitles": {
           "identity": "Enter the core details and title of your product",
