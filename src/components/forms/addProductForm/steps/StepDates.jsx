@@ -52,14 +52,13 @@ const StepDates = () => {
             {t("fields.fromHour")}
           </label>
           <TextInputGroup
-            type="text"
+            type="time"
             name="fromHour"
             value={values.fromHour || ""}
             errors={errors.fromHour}
             touched={touched.fromHour}
             onChange={handleChange}
             onBlur={handleBlur}
-            placeholder={t("placeholders.fromHour")}
           />
         </div>
 
@@ -69,14 +68,13 @@ const StepDates = () => {
             {t("fields.toHour")}
           </label>
           <TextInputGroup
-            type="text"
+            type="time"
             name="toHour"
             value={values.toHour || ""}
             errors={errors.toHour}
             touched={touched.toHour}
             onChange={handleChange}
             onBlur={handleBlur}
-            placeholder={t("placeholders.toHour")}
           />
         </div>
 
@@ -119,20 +117,18 @@ const StepDates = () => {
                 >
                   <div className="flex-1 grid grid-cols-2 gap-3">
                     <TextInputGroup
-                      type="text"
+                      type="time"
                       name={`availableTimes[${index}].from`}
                       value={slot.from || ""}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      placeholder={t("placeholders.startTime")}
                     />
                     <TextInputGroup
-                      type="text"
+                      type="time"
                       name={`availableTimes[${index}].to`}
                       value={slot.to || ""}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      placeholder={t("placeholders.endTime")}
                     />
                   </div>
 

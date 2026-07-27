@@ -105,8 +105,9 @@ export const createAddProductSchema = (t) => {
     quantityDiscountTiers: Yup.array()
       .of(
         Yup.object().shape({
-          quantity: Yup.number().optional(),
-          discountPercentage: Yup.number().optional(),
+          minQuantity: Yup.number().min(2, reqMsg).optional(),
+          discountType: Yup.string().oneOf(["PERCENTAGE", "AMOUNT"]).optional(),
+          discountValue: Yup.number().min(1, reqMsg).optional(),
         })
       )
       .optional(),

@@ -51,9 +51,9 @@ export const initialAddProductValues = {
   fromDay: "",
   toDay: "",
   stopBookingDate: [],
-  fromHour: "08:00PM",
-  toHour: "10:00AM",
-  availableTimes: [{ from: "08:00AM", to: "12:00PM" }],
+  fromHour: "20:00",
+  toHour: "10:00",
+  availableTimes: [{ from: "08:00", to: "12:00" }],
   availableSeats: { min: 5, max: 50 },
   guestRange: { min: 5, max: 50 },
   duration: 5,
@@ -130,11 +130,31 @@ export const formatAddProductPayload = (values) => {
     payload[`providerBranchs[${idx}]`] = item;
   });
 
-  (values.weekdayPricing || []).forEach((item, idx) => {
+  const ALL_WEEKDAYS = [
+    "SUNDAY",
+    "MONDAY",
+    "TUESDAY",
+    "WEDNESDAY",
+    "THURSDAY",
+    "FRIDAY",
+    "SATURDAY",
+  ];
+
+  const customWeekdayPricingMap = {};
+  (values.weekdayPricing || []).forEach((item) => {
     if (item.day) {
-      payload[`weekdayPricing[${idx}][day]`] = item.day;
-      payload[`weekdayPricing[${idx}][price]`] = item.price;
+      customWeekdayPricingMap[item.day] = item.price;
     }
+  });
+
+  ALL_WEEKDAYS.forEach((day, idx) => {
+    const price =
+      customWeekdayPricingMap[day] !== undefined
+        ? Number(customWeekdayPricingMap[day])
+        : Number(values.price || 0);
+
+    payload[`weekdayPricing[${idx}][day]`] = day;
+    payload[`weekdayPricing[${idx}][price]`] = price;
   });
 
   (values.datePricing || []).forEach((item, idx) => {
@@ -170,8 +190,11 @@ export const formatAddProductPayload = (values) => {
   });
 
   (values.quantityDiscountTiers || []).forEach((item, idx) => {
-    payload[`quantityDiscountTiers[${idx}][quantity]`] = item.quantity;
-    payload[`quantityDiscountTiers[${idx}][discountPercentage]`] = item.discountPercentage;
+    if (item.minQuantity && item.discountValue) {
+      payload[`quantityDiscountTiers[${idx}][minQuantity]`] = Number(item.minQuantity);
+      payload[`quantityDiscountTiers[${idx}][discountType]`] = item.discountType || "PERCENTAGE";
+      payload[`quantityDiscountTiers[${idx}][discountValue]`] = Number(item.discountValue);
+    }
   });
 
   (values.availableTimes || []).forEach((item, idx) => {
@@ -281,21 +304,30 @@ const AddProductForm = ({
 
       if (Array.isArray(values.gallery)) {
         values.gallery.forEach((file, idx) => {
-          if (file instanceof File) {
+          if (file instanceof File || file instanceof Blob) {
+            formData.append("gallary", file);
+            formData.append(`gallary[${idx}]`, file);
+            formData.append("gallery", file);
             formData.append(`gallery[${idx}]`, file);
           }
         });
       }
-      if (values.thumbnailWeb instanceof File) {
-        formData.append("thumbnailWeb", values.thumbnailWeb);
+
+      const thumbnailFile = values.thumbnailWeb || values.thumbnailMobile;
+      if (thumbnailFile instanceof File || thumbnailFile instanceof Blob) {
+        formData.append("thumbnail", thumbnailFile);
+        formData.append("thumbnailWeb", thumbnailFile);
       }
-      if (values.thumbnailMobile instanceof File) {
+      if (values.thumbnailMobile instanceof File || values.thumbnailMobile instanceof Blob) {
         formData.append("thumbnailMobile", values.thumbnailMobile);
       }
-      if (values.mediaFile instanceof File) {
+
+      if (values.mediaFile instanceof File || values.mediaFile instanceof Blob) {
+        formData.append("detailsFile", values.mediaFile);
         formData.append("mediaFile", values.mediaFile);
       }
-      if (values.video instanceof File) {
+
+      if (values.video instanceof File || values.video instanceof Blob) {
         formData.append("video", values.video);
       }
 

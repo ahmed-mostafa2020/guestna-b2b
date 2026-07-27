@@ -224,26 +224,41 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
                   key={index}
                   className="flex items-center gap-3 bg-gray-50/70 p-3 rounded-xl border border-border"
                 >
-                  <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <TextInputGroup
                       type="number"
-                      min={1}
-                      name={`quantityDiscountTiers[${index}].quantity`}
-                      value={item.quantity ?? ""}
+                      min={2}
+                      name={`quantityDiscountTiers[${index}].minQuantity`}
+                      value={item.minQuantity ?? ""}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      placeholder={t("placeholders.quantity")}
+                      placeholder={t("placeholders.minQuantity")}
+                    />
+
+                    <SelectionGroup
+                      name={`quantityDiscountTiers[${index}].discountType`}
+                      value={item.discountType || "PERCENTAGE"}
+                      onChange={(e) =>
+                        setFieldValue(
+                          `quantityDiscountTiers[${index}].discountType`,
+                          e.target.value
+                        )
+                      }
+                      placeholder={t("placeholders.selectDiscountType")}
+                      list={[
+                        { value: "PERCENTAGE", name: t("fields.percentage") },
+                        { value: "AMOUNT", name: t("fields.amount") },
+                      ]}
                     />
 
                     <TextInputGroup
                       type="number"
-                      min={0}
-                      max={100}
-                      name={`quantityDiscountTiers[${index}].discountPercentage`}
-                      value={item.discountPercentage ?? ""}
+                      min={1}
+                      name={`quantityDiscountTiers[${index}].discountValue`}
+                      value={item.discountValue ?? ""}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      placeholder={t("placeholders.discountPercentage")}
+                      placeholder={t("placeholders.discountValue")}
                     />
                   </div>
 
@@ -260,7 +275,13 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
 
               <button
                 type="button"
-                onClick={() => push({ quantity: 10, discountPercentage: 10 })}
+                onClick={() =>
+                  push({
+                    minQuantity: 2,
+                    discountType: "PERCENTAGE",
+                    discountValue: 10,
+                  })
+                }
                 className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-mainColor hover:underline cursor-pointer"
               >
                 <AddIcon className="w-4 h-4" />

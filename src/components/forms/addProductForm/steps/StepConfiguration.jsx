@@ -211,19 +211,23 @@ const StepConfiguration = ({
           </div>
         )}
 
-        {/* Selected Days & Day Pricing (Dynamic Day + Price) - ONLY for B2C */}
-        {isB2C && (
-          <div className="md:col-span-2 border-t border-border pt-4">
-            <div className="flex items-center justify-between mb-3">
-              <div>
-                <label className="block text-sm font-semibold text-titleColor">
-                  {t("fields.selectedDays")} ({t("fields.weekdayPricing")})
-                </label>
-                <p className="text-xs text-subtitleColor">
-                  {t("subtitles.weekdayPricingHelp")}
-                </p>
-              </div>
+        {/* Selected Days & Day Pricing (Dynamic Day + Price) */}
+        <div className="md:col-span-2 border-t border-border pt-4">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <label className="block text-sm font-semibold text-titleColor">
+                {t("fields.selectedDays")} ({t("fields.weekdayPricing")})
+              </label>
+              <p className="text-xs text-subtitleColor">
+                {t("subtitles.weekdayPricingHelp")}
+              </p>
             </div>
+          </div>
+
+          <div className="p-3 mb-3 bg-blue-50/80 border border-blue-200 text-blue-800 rounded-xl text-xs flex items-center gap-2">
+            <span className="font-semibold">💡</span>
+            <span>{t("subtitles.unassignedDaysBasePriceHelp")}</span>
+          </div>
 
             <FieldArray name="weekdayPricing">
               {({ push, remove }) => (
@@ -303,7 +307,6 @@ const StepConfiguration = ({
               )}
             </FieldArray>
           </div>
-        )}
 
         {/* Booking Before */}
         <div className="md:col-span-2">
