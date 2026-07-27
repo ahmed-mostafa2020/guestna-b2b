@@ -10,6 +10,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import GroupsIcon from "@mui/icons-material/Groups";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import TodayIcon from "@mui/icons-material/Today";
+import { getWeekDayOptions } from "@constants/weekDays";
 
 const StepPricing = ({ targetAudienceOptions = [] }) => {
   const t = useTranslations("providerProfile.products.modal");
@@ -17,15 +18,7 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
 
-  const weekDayOptions = [
-    { value: "SUNDAY", label: tWeekDays("sunday") },
-    { value: "MONDAY", label: tWeekDays("monday") },
-    { value: "TUESDAY", label: tWeekDays("tuesday") },
-    { value: "WEDNESDAY", label: tWeekDays("wednesday") },
-    { value: "THURSDAY", label: tWeekDays("thursday") },
-    { value: "FRIDAY", label: tWeekDays("friday") },
-    { value: "SATURDAY", label: tWeekDays("saturday") },
-  ];
+  const weekDayOptions = getWeekDayOptions(tWeekDays);
 
   return (
     <div className="space-y-6">

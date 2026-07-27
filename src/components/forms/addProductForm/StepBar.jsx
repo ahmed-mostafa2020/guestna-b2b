@@ -4,7 +4,7 @@ import { memo, useRef, useEffect } from "react";
 import CheckIcon from "@mui/icons-material/Check";
 import { useTranslations } from "next-intl";
 
-const STEP_KEYS = [
+export const STEP_KEYS = [
   "identity",
   "configuration",
   "dates",

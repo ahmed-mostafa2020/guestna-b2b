@@ -17,8 +17,9 @@ import {
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { ALL_WEEKDAYS } from "@constants/weekDays";
 
-import StepBar from "./StepBar";
+import StepBar, { STEP_KEYS } from "./StepBar";
 import StepIdentity from "./steps/StepIdentity";
 import StepConfiguration from "./steps/StepConfiguration";
 import StepDates from "./steps/StepDates";
@@ -121,16 +122,6 @@ export const formatAddProductPayload = (values) => {
   (values.providerBranchs || []).forEach((item, idx) => {
     payload[`providerBranchs[${idx}]`] = item;
   });
-
-  const ALL_WEEKDAYS = [
-    "SUNDAY",
-    "MONDAY",
-    "TUESDAY",
-    "WEDNESDAY",
-    "THURSDAY",
-    "FRIDAY",
-    "SATURDAY",
-  ];
 
   const customWeekdayPricingMap = {};
   (values.weekdayPricing || []).forEach((item) => {
@@ -433,12 +424,12 @@ const AddProductForm = ({
             <span className="text-xs font-semibold text-subtitleColor">
               {t("providerProfile.products.modal.step", {
                 current: activeStep + 1,
-                total: 13,
+                total: STEP_KEYS.length,
               })}
             </span>
 
             {/* Next / Submit Button */}
-            {activeStep < 12 ? (
+            {activeStep < STEP_KEYS.length - 1 ? (
               <button
                 type="button"
                 onClick={() => handleStepNext(validateForm, setTouched)}

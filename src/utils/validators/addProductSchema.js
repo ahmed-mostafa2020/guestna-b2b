@@ -195,15 +195,15 @@ export const getStepFieldNames = (stepIndex) => {
         "location.lat",
         "location.lng",
       ];
-    case 8: // Itinerary
+    case 8: // Itinerary — optional step, no required fields
       return [];
-    case 9: // Must Have
+    case 9: // Must Have — optional step, no required fields
       return [];
-    case 10: // Exemptions
+    case 10: // Exemptions — optional step, no required fields
       return [];
-    case 11: // Benefits
+    case 11: // Benefits — optional step, no required fields
       return [];
-    case 12: // Review
+    case 12: // Review — read-only summary, no validation needed
       return [];
     default:
       return [];

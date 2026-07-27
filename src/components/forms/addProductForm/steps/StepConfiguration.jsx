@@ -1,9 +1,12 @@
+"use client";
+
 import { useFormikContext, FieldArray } from "formik";
 import { useTranslations } from "next-intl";
 import SelectionGroup from "@components/forms/SelectionGroup";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { getWeekDayOptions } from "@constants/weekDays";
 
 const StepConfiguration = ({
   categoryOptions = [],
@@ -18,15 +21,7 @@ const StepConfiguration = ({
 
   const recurrenceOptions = ["WEEKLY", "MONTHLY"];
 
-  const weekDayOptions = [
-    { value: "SUNDAY", label: tWeekDays("sunday") },
-    { value: "MONDAY", label: tWeekDays("monday") },
-    { value: "TUESDAY", label: tWeekDays("tuesday") },
-    { value: "WEDNESDAY", label: tWeekDays("wednesday") },
-    { value: "THURSDAY", label: tWeekDays("thursday") },
-    { value: "FRIDAY", label: tWeekDays("friday") },
-    { value: "SATURDAY", label: tWeekDays("saturday") },
-  ];
+  const weekDayOptions = getWeekDayOptions(tWeekDays);
 
   const monthDayOptions = Array.from({ length: 31 }, (_, i) => ({
     value: i + 1,

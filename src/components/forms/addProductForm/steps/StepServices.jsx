@@ -68,7 +68,7 @@ const StepServices = ({ servicesOptions = [], customServicesOptions = [] }) => {
                 {/* Service Notes matching Image 1 layout */}
                 <div>
                   <label className="block mb-2 text-xs font-bold text-titleColor uppercase tracking-wider">
-                    {t("fields.service")} Notes
+                    {t("subtitles.serviceNotes")}
                   </label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* EN Note with badge */}

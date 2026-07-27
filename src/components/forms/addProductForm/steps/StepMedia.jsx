@@ -12,6 +12,14 @@ const StepMedia = () => {
   const { values, errors, touched, setFieldValue, handleBlur } =
     useFormikContext();
 
+  const getPreviewUrl = (item) => {
+    if (typeof item === "string") return item;
+    if (item instanceof File || item instanceof Blob) {
+      return URL.createObjectURL(item);
+    }
+    return "";
+  };
+
   const handleGalleryUpload = (e) => {
     const files = Array.from(e.target.files || []);
     if (files.length > 0) {
@@ -71,12 +79,7 @@ const StepMedia = () => {
         {(values.gallery || []).length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
             {values.gallery.map((item, idx) => {
-              const previewUrl =
-                typeof item === "string"
-                  ? item
-                  : item instanceof File
-                  ? URL.createObjectURL(item)
-                  : "";
+              const previewUrl = getPreviewUrl(item);
 
               return (
                 <div

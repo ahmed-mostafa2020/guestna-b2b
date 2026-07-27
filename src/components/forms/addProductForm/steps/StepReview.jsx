@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormikContext } from "formik";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
@@ -14,21 +14,22 @@ const StepReview = () => {
   const tSub = useTranslations("providerProfile.products.modal.subtitles");
   const tModal = useTranslations("providerProfile.products.modal");
   const tWeekDays = useTranslations("weekDays");
-  const locale = useLocale();
   const { values } = useFormikContext();
 
   const isWeekly = values.recurrencePattern === "WEEKLY";
   const isMonthly = values.recurrencePattern === "MONTHLY";
 
-  // Translate days list
+  // Translate days list — only catch missing-key errors, not all errors
   const formatDays = (daysArray) => {
     if (!Array.isArray(daysArray) || daysArray.length === 0) return "-";
     return daysArray
       .map((day) => {
         try {
           return tWeekDays(day.toLowerCase());
-        } catch {
-          return day;
+        } catch (err) {
+          // Only swallow missing key errors; rethrow unexpected ones
+          if (err?.code === "MISSING_MESSAGE") return day;
+          throw err;
         }
       })
       .join(", ");
@@ -106,7 +107,7 @@ const StepReview = () => {
             <p className="flex items-center justify-between">
               <span>{t("bookingBefore")}:</span>
               <span className="font-semibold text-titleColor">
-                {values.bookingBefore || 1} يوم
+                {values.bookingBefore || 1} {tSub("days")}
               </span>
             </p>
           </div>
@@ -136,7 +137,7 @@ const StepReview = () => {
             <p className="flex items-center justify-between">
               <span>{t("duration")}:</span>
               <span className="font-semibold text-titleColor">
-                {values.duration || 1} أيام
+                {values.duration || 1} {tSub("durationDays")}
               </span>
             </p>
           </div>
@@ -177,52 +178,80 @@ const StepReview = () => {
         <div className="p-5 bg-gray-50/80 rounded-2xl border border-border space-y-3 md:col-span-2 shadow-xs">
           <div className="flex items-center gap-2 text-mainColor font-bold text-sm border-b border-border pb-2.5">
             <PermMediaIcon className="w-4 h-4" />
-            <span>وسائط ومواقع المنتج</span>
+            <span>{tSub("mediaAndLocations")}</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-subtitleColor text-xs sm:text-sm pt-1">
             <div className="space-y-2">
               <p className="flex items-center justify-between">
-                <span>معرض الصور:</span>
+                <span>{tSub("galleryImages")}:</span>
                 <span className="font-semibold text-titleColor">
-                  {(values.gallery || []).length} صور
+                  {(values.gallery || []).length} {tSub("images")}
                 </span>
               </p>
               <p className="flex items-center justify-between">
                 <span>{t("thumbnailWeb")}:</span>
-                <span className={`font-semibold px-2 py-0.5 rounded-md text-xs ${values.thumbnailWeb ? "bg-emerald-100 text-emerald-800" : "bg-gray-200 text-gray-700"}`}>
-                  {values.thumbnailWeb ? "مرفقة" : "غير مرفقة"}
+                <span
+                  className={`font-semibold px-2 py-0.5 rounded-md text-xs ${
+                    values.thumbnailWeb
+                      ? "bg-emerald-100 text-emerald-800"
+                      : "bg-gray-200 text-gray-700"
+                  }`}
+                >
+                  {values.thumbnailWeb
+                    ? tSub("attached")
+                    : tSub("notAttached")}
                 </span>
               </p>
               <p className="flex items-center justify-between">
-                <span>ملف الميديا (PDF):</span>
-                <span className={`font-semibold px-2 py-0.5 rounded-md text-xs ${values.mediaFile ? "bg-emerald-100 text-emerald-800" : "bg-gray-200 text-gray-700"}`}>
-                  {values.mediaFile ? "مرفق" : "غير مرفق"}
+                <span>{tSub("mediaFilePdf")}:</span>
+                <span
+                  className={`font-semibold px-2 py-0.5 rounded-md text-xs ${
+                    values.mediaFile
+                      ? "bg-emerald-100 text-emerald-800"
+                      : "bg-gray-200 text-gray-700"
+                  }`}
+                >
+                  {values.mediaFile
+                    ? tSub("attachedFile")
+                    : tSub("notAttachedFile")}
                 </span>
               </p>
               <p className="flex items-center justify-between">
-                <span>فيديو المنتج:</span>
-                <span className={`font-semibold px-2 py-0.5 rounded-md text-xs ${values.video ? "bg-emerald-100 text-emerald-800" : "bg-gray-200 text-gray-700"}`}>
-                  {values.video ? "مرفق" : "غير مرفق"}
+                <span>{tSub("productVideo")}:</span>
+                <span
+                  className={`font-semibold px-2 py-0.5 rounded-md text-xs ${
+                    values.video
+                      ? "bg-emerald-100 text-emerald-800"
+                      : "bg-gray-200 text-gray-700"
+                  }`}
+                >
+                  {values.video
+                    ? tSub("attachedFile")
+                    : tSub("notAttachedFile")}
                 </span>
               </p>
             </div>
             <div className="space-y-2">
               <p className="flex items-center justify-between">
-                <span>موقع التجمع:</span>
+                <span>{tSub("gatheringPoint")}:</span>
                 <span className="font-semibold text-titleColorDir text-xs">
-                  {values.gatheringLocation?.lat ? `${values.gatheringLocation.lat}, ${values.gatheringLocation.lng}` : "-"}
+                  {values.gatheringLocation?.lat
+                    ? `${values.gatheringLocation.lat}, ${values.gatheringLocation.lng}`
+                    : "-"}
                 </span>
               </p>
               <p className="flex items-center justify-between">
-                <span>موقع النشاط:</span>
+                <span>{tSub("activityPoint")}:</span>
                 <span className="font-semibold text-titleColor text-xs">
-                  {values.location?.lat ? `${values.location.lat}, ${values.location.lng}` : "-"}
+                  {values.location?.lat
+                    ? `${values.location.lat}, ${values.location.lng}`
+                    : "-"}
                 </span>
               </p>
               <p className="flex items-center justify-between">
-                <span>الجدول الزمني:</span>
+                <span>{tSub("itinerarySteps")}:</span>
                 <span className="font-semibold text-titleColor">
-                  {(values.itinerary || []).length} خطوات
+                  {(values.itinerary || []).length} {tSub("steps")}
                 </span>
               </p>
             </div>

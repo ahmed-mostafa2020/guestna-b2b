@@ -88,7 +88,7 @@ const StepLocations = () => {
             className="inline-flex items-center gap-1 text-xs font-semibold text-mainColor hover:underline"
           >
             <MapIcon className="w-4 h-4" />
-            <span>Open in Google Maps</span>
+            <span>{t("subtitles.openInGoogleMaps")}</span>
             <OpenInNewIcon className="w-3.5 h-3.5" />
           </a>
         </div>
@@ -103,7 +103,7 @@ const StepLocations = () => {
             name="gatheringUrl"
             value={gatheringUrl}
             onChange={handleGatheringUrlChange}
-            placeholder="Paste Google Maps URL to auto-fill lat & lng..."
+            placeholder={t("subtitles.pasteGoogleMapsUrl")}
           />
         </div>
 
@@ -182,7 +182,7 @@ const StepLocations = () => {
             className="inline-flex items-center gap-1 text-xs font-semibold text-mainColor hover:underline"
           >
             <MapIcon className="w-4 h-4" />
-            <span>Open in Google Maps</span>
+            <span>{t("subtitles.openInGoogleMaps")}</span>
             <OpenInNewIcon className="w-3.5 h-3.5" />
           </a>
         </div>
@@ -197,7 +197,7 @@ const StepLocations = () => {
             name="activityUrl"
             value={activityUrl}
             onChange={handleActivityUrlChange}
-            placeholder="Paste Google Maps URL to auto-fill lat & lng..."
+            placeholder={t("subtitles.pasteGoogleMapsUrl")}
           />
         </div>
 
