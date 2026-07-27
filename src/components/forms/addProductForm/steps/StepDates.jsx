@@ -77,26 +77,6 @@ const StepDates = () => {
             onBlur={handleBlur}
           />
         </div>
-
-        {/* Stop Booking Date */}
-        <div className="md:col-span-2">
-          <label className="block mb-1.5 text-sm font-medium text-titleColor">
-            {t("fields.stopBookingDate")}
-          </label>
-          <TextInputGroup
-            type="date"
-            name="stopBookingDate[0]"
-            value={
-              Array.isArray(values.stopBookingDate)
-                ? values.stopBookingDate[0] || ""
-                : values.stopBookingDate || ""
-            }
-            onChange={(e) =>
-              setFieldValue("stopBookingDate", [e.target.value])
-            }
-            onBlur={handleBlur}
-          />
-        </div>
       </div>
 
       {/* Available Times List */}

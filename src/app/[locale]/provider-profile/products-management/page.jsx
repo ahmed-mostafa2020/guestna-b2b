@@ -17,10 +17,6 @@ const ProviderProductsManagementPage = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [shouldFetchSelections, setShouldFetchSelections] = useState(false);
 
-  // B2B Table State
-  const [b2bPage, setB2bPage] = useState(1);
-  const [b2bSearchTerm, setB2bSearchTerm] = useState("");
-
   // B2C Table State
   const [b2cPage, setB2cPage] = useState(1);
   const [b2cSearchTerm, setB2cSearchTerm] = useState("");
@@ -68,26 +64,18 @@ const ProviderProductsManagementPage = () => {
     }
   }, [shouldFetchSelections, formSelectionData, isSelectionsFetching]);
 
-  // Fetch B2B Trips
-  const b2bEndpoint = `${B2B_END_POINTS.PROVIDER_PROFILE.B2B_TRIPS}?page=${b2bPage}&perPage=10${
-    b2bSearchTerm ? `&filter[searchTerm]=${encodeURIComponent(b2bSearchTerm)}` : ""
-  }`;
-
-  const { data: b2bResponse, isLoading: b2bLoading } = useFetchData(
-    b2bEndpoint,
-    {},
-    {
-      lang: locale,
-    },
-    [b2bPage, b2bSearchTerm]
-  );
-
   // Fetch B2C Trips
   const b2cEndpoint = `${B2B_END_POINTS.PROVIDER_PROFILE.B2C_TRIPS}?page=${b2cPage}&perPage=10${
-    b2cSearchTerm ? `&filter[searchTerm]=${encodeURIComponent(b2cSearchTerm)}` : ""
+    b2cSearchTerm
+      ? `&filter[searchTerm]=${encodeURIComponent(b2cSearchTerm)}`
+      : ""
   }`;
 
-  const { data: b2cResponse, isLoading: b2cLoading } = useFetchData(
+  const {
+    data: b2cResponse,
+    isLoading: b2cLoading,
+    refetch: refetchB2c,
+  } = useFetchData(
     b2cEndpoint,
     {},
     {
@@ -96,7 +84,6 @@ const ProviderProductsManagementPage = () => {
     [b2cPage, b2cSearchTerm]
   );
 
-  const finalB2bData = b2bResponse?.data || b2bResponse;
   const finalB2cData = b2cResponse?.data || b2cResponse;
 
   return (
@@ -128,17 +115,6 @@ const ProviderProductsManagementPage = () => {
         </button>
       </div>
 
-      {/* 1. B2B Trips Table Section */}
-      <ProviderProductsTable
-        title={t("providerProfile.products.tabs.b2b")}
-        data={finalB2bData}
-        currentPage={b2bPage}
-        setCurrentPage={setB2bPage}
-        searchTerm={b2bSearchTerm}
-        setSearchTerm={setB2bSearchTerm}
-        loading={b2bLoading}
-      />
-
       {/* 2. B2C Trips Table Section */}
       <ProviderProductsTable
         title={t("providerProfile.products.tabs.b2c")}
@@ -148,12 +124,28 @@ const ProviderProductsManagementPage = () => {
         searchTerm={b2cSearchTerm}
         setSearchTerm={setB2cSearchTerm}
         loading={b2cLoading}
+        onEdit={handleOpenAddModal}
       />
+      {/* 1. B2B Products Section - Coming Soon */}
+      <div className="bg-white p-6 rounded-2xl border border-border shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-bold text-titleColor mb-1">
+            {t("providerProfile.products.tabs.b2b")}
+          </h2>
+          <p className="text-xs sm:text-sm text-subtitleColor">
+            {t("providerProfile.products.b2bComingSoonSubtitle")}
+          </p>
+        </div>
+        <span className="inline-flex items-center px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-amber-100 text-amber-800 border border-amber-200">
+          {t("common.comingSoon")}
+        </span>
+      </div>
 
       {/* Add Product Modal */}
       <AddProductModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
+        onSuccess={() => refetchB2c?.()}
         formSelectionData={formSelectionData}
       />
     </main>

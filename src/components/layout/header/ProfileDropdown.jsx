@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
+import { useSelector } from "react-redux";
+import Cookies from "js-cookie";
+import { USERS } from "@constants/users";
 
 import { useEffect, useRef, useState } from "react";
 import LogoutButton from "../../features/profile/LogoutButton";
@@ -16,6 +19,15 @@ const ProfileDropdown = () => {
   const locale = useLocale();
   const t = useTranslations();
   const pathname = usePathname();
+
+  const userType = useSelector((state) => state.users.userType);
+  const cookieUserType = Cookies.get("userType") || Cookies.get("role");
+
+  const isProvider =
+    userType === USERS.PROVIDERS ||
+    userType === "PROVIDERS" ||
+    cookieUserType === USERS.PROVIDERS ||
+    cookieUserType === "PROVIDERS";
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -45,10 +57,14 @@ const ProfileDropdown = () => {
     };
   }, [isOpen, isLogoutModalOpen]);
 
+  const profileUrl = isProvider
+    ? `/${locale}/provider-profile`
+    : `/${locale}/profile`;
+
   const dropdownList = [
     {
       name: t("profile.aside.information"),
-      url: `/${locale}/profile`,
+      url: profileUrl,
     },
   ];
 

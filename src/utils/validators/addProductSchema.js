@@ -47,8 +47,6 @@ export const createAddProductSchema = (t) => {
 
     toDay: Yup.string().required(reqMsg),
 
-    stopBookingDate: Yup.array().of(Yup.string()).optional(),
-
     fromHour: Yup.string().optional(),
 
     toHour: Yup.string().optional(),
@@ -93,30 +91,15 @@ export const createAddProductSchema = (t) => {
       .min(0)
       .required(reqMsg),
 
-    targetAudiences: Yup.array().when("systemTypes", {
-      is: (types) => Array.isArray(types) && types.includes("B2C"),
-      then: (schema) =>
-        schema
-          .of(
-            Yup.object().shape({
-              targetAudience: Yup.string().required(reqMsg),
-              price: Yup.number().typeError(reqMsg).min(0).required(reqMsg),
-            })
-          )
-          .min(1, reqMsg)
-          .required(reqMsg),
-      otherwise: (schema) => schema.optional(),
-    }),
-
-    quantityDiscountTiers: Yup.array()
+    targetAudiences: Yup.array()
       .of(
         Yup.object().shape({
-          minQuantity: Yup.number().min(2, reqMsg).optional(),
-          discountType: Yup.string().oneOf(["PERCENTAGE", "AMOUNT"]).optional(),
-          discountValue: Yup.number().min(1, reqMsg).optional(),
+          targetAudience: Yup.string().required(reqMsg),
+          price: Yup.number().typeError(reqMsg).min(0).required(reqMsg),
         })
       )
-      .optional(),
+      .min(1, reqMsg)
+      .required(reqMsg),
 
     services: Yup.array().of(
       Yup.object().shape({
@@ -135,8 +118,6 @@ export const createAddProductSchema = (t) => {
       .required(t("providerProfile.products.modal.validation.galleryMin")),
 
     thumbnailWeb: Yup.mixed().required(reqMsg),
-
-    thumbnailMobile: Yup.mixed().required(reqMsg),
 
     mediaFile: Yup.mixed().nullable().optional(),
 
@@ -206,7 +187,7 @@ export const getStepFieldNames = (stepIndex) => {
     case 5: // Services
       return ["services"];
     case 6: // Media
-      return ["gallery", "thumbnailWeb", "thumbnailMobile"];
+      return ["gallery", "thumbnailWeb"];
     case 7: // Locations
       return [
         "gatheringLocation.lat",

@@ -17,7 +17,7 @@ import ParentLoginForm from "@components/forms/auth/parentLogin";
 
 import Cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";
-import formatCurrency from "@/src/utils/formatters/FormatCurrency";
+import formatCurrency from "@utils/formatters/FormatCurrency";
 
 const PreBookingSection = ({ tripData }) => {
   const isSubmitted = useSelector((state) => state.parentLoginForm.isSubmitted);

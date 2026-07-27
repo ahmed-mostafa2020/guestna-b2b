@@ -11,6 +11,7 @@ import {
 import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { USERS } from "@constants/users";
 import Cookies from "js-cookie";
 import { Skeleton, Checkbox, TextField, InputAdornment } from "@mui/material";
 import { Search, KeyboardArrowDown, Close } from "@mui/icons-material";
@@ -24,8 +25,10 @@ const OrganizationSelector = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Use Redux auth token — reacts immediately to login/logout
+  // Use Redux auth token & user type
   const userToken = useSelector((state) => state.users.userToken);
+  const userType = useSelector((state) => state.users.userType);
+  const isProvider = userType === USERS.PROVIDERS;
 
   // Get organizations from Redux
   const { selectedIds, organizations, allSelected } = useSelector(
@@ -38,7 +41,7 @@ const OrganizationSelector = () => {
     {
       lang: locale,
       skipOrgHeader: true,
-      enabled: Boolean(userToken),
+      enabled: Boolean(userToken) && !isProvider,
     }
   );
 
@@ -117,7 +120,7 @@ const OrganizationSelector = () => {
   const hasOrganizations =
     Array.isArray(organizations) && organizations.length > 0;
 
-  if (!userToken) {
+  if (!userToken || isProvider) {
     return null;
   }
 

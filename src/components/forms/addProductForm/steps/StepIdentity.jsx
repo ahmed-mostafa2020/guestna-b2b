@@ -12,20 +12,6 @@ const StepIdentity = () => {
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
 
-  const handleSystemTypeToggle = (type) => {
-    const current = values.systemTypes || [];
-    if (current.includes(type)) {
-      if (current.length > 1) {
-        setFieldValue(
-          "systemTypes",
-          current.filter((t) => t !== type)
-        );
-      }
-    } else {
-      setFieldValue("systemTypes", [...current, type]);
-    }
-  };
-
   const tripTypeOptions = [
     { value: CONSTANT_VALUES.PACKAGE, label: t("tripTypes.PACKAGE") },
     { value: CONSTANT_VALUES.ACTIVITY, label: t("tripTypes.ACTIVITY") },
@@ -34,34 +20,6 @@ const StepIdentity = () => {
 
   return (
     <div className="space-y-6">
-      {/* System Types Selection */}
-      <div>
-        <label className="block mb-2 text-sm font-semibold text-titleColor">
-          {t("fields.systemTypes")} <span className="text-error">*</span>
-        </label>
-        <div className="flex items-center gap-4">
-          {["B2B", "B2C"].map((type) => {
-            const isSelected = (values.systemTypes || []).includes(type);
-            return (
-              <button
-                key={type}
-                type="button"
-                onClick={() => handleSystemTypeToggle(type)}
-                className={`px-5 py-2.5 rounded-xl border text-sm font-semibold transition-all ${
-                  isSelected
-                    ? "bg-mainColor/10 border-mainColor text-mainColor shadow-sm"
-                    : "bg-white border-border text-gray-500 hover:border-gray-300"
-                }`}
-              >
-                {t(`fields.${type.toLowerCase()}`)}
-              </button>
-            );
-          })}
-        </div>
-        {touched.systemTypes && errors.systemTypes && (
-          <p className="mt-1 text-xs text-error">{errors.systemTypes}</p>
-        )}
-      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Name English */}

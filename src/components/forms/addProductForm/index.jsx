@@ -34,23 +34,22 @@ import StepBenefits from "./steps/StepBenefits";
 import StepReview from "./steps/StepReview";
 
 export const initialAddProductValues = {
-  systemTypes: ["B2B", "B2C"],
+  systemTypes: ["B2C"],
   name: { en: "", ar: "" },
   tripsType: "ACTIVITY",
   description: { en: "", ar: "" },
   categories: "",
   supCategories: [],
-  academicStages: [],
   cities: [],
   providerBranchs: [],
   bookingBefore: 1,
   recurrencePattern: "WEEKLY",
   selectedDays: ["SUNDAY"],
+  monthDay: 1,
   weekdayPricing: [],
   datePricing: [],
   fromDay: "",
   toDay: "",
-  stopBookingDate: [],
   fromHour: "20:00",
   toHour: "10:00",
   availableTimes: [{ from: "08:00", to: "12:00" }],
@@ -59,13 +58,11 @@ export const initialAddProductValues = {
   duration: 5,
   price: 1500,
   productCost: 1000,
-  targetAudiences: [],
-  quantityDiscountTiers: [],
+  targetAudiences: [{ targetAudience: "", price: 1500 }],
   services: [{ service: "", note: { en: "", ar: "" } }],
   customServices: [],
   gallery: [],
   thumbnailWeb: null,
-  thumbnailMobile: null,
   mediaFile: null,
   video: null,
   gatheringLocation: { lat: 24.9576, lng: 46.6988 },
@@ -77,12 +74,8 @@ export const initialAddProductValues = {
 };
 
 export const formatAddProductPayload = (values) => {
-  const isB2B = (values.systemTypes || []).includes("B2B");
-  const isB2C = (values.systemTypes || []).includes("B2C");
-
   const payload = {
-    "systemTypes[0]": values.systemTypes?.[0] || "B2B",
-    "systemTypes[1]": values.systemTypes?.[1] || "B2C",
+    "systemTypes[0]": "B2C",
     "name[en]": values.name?.en || "",
     "name[ar]": values.name?.ar || "",
     tripsType: values.tripsType || "ACTIVITY",
@@ -103,28 +96,27 @@ export const formatAddProductPayload = (values) => {
     price: values.price,
     productCost: values.productCost,
     bookingBefore: values.bookingBefore,
+    "guestRange[min]": values.guestRange?.min,
+    "guestRange[max]": values.guestRange?.max,
+    recurrencePattern: values.recurrencePattern || "WEEKLY",
   };
 
-  if (isB2C) {
-    payload["guestRange[min]"] = values.guestRange?.min;
-    payload["guestRange[max]"] = values.guestRange?.max;
-    payload.recurrencePattern = values.recurrencePattern || "WEEKLY";
-    (values.selectedDays || ["SUNDAY", "TUESDAY"]).forEach((item, idx) => {
+  if (values.recurrencePattern === "MONTHLY") {
+    if (values.monthDay) {
+      payload.monthDay = values.monthDay;
+    }
+  } else {
+    (values.selectedDays || ["SUNDAY"]).forEach((item, idx) => {
       payload[`selectedDays[${idx}]`] = item;
-    });
-    (values.targetAudiences || []).forEach((item, idx) => {
-      if (item.targetAudience) {
-        payload[`targetAudiences[${idx}][targetAudience]`] = item.targetAudience;
-        payload[`targetAudiences[${idx}][price]`] = item.price;
-      }
     });
   }
 
-  if (isB2B) {
-    (values.academicStages || []).forEach((item, idx) => {
-      payload[`academicStages[${idx}]`] = item;
-    });
-  }
+  (values.targetAudiences || []).forEach((item, idx) => {
+    if (item.targetAudience) {
+      payload[`targetAudiences[${idx}][targetAudience]`] = item.targetAudience;
+      payload[`targetAudiences[${idx}][price]`] = item.price;
+    }
+  });
 
   (values.providerBranchs || []).forEach((item, idx) => {
     payload[`providerBranchs[${idx}]`] = item;
@@ -310,7 +302,7 @@ const AddProductForm = ({
         });
       }
 
-      const thumbnailFile = values.thumbnailWeb || values.thumbnailMobile;
+      const thumbnailFile = values.thumbnailWeb;
       if (thumbnailFile instanceof File || thumbnailFile instanceof Blob) {
         formData.append("thumbnail", thumbnailFile);
       }
@@ -330,13 +322,17 @@ const AddProductForm = ({
 
       await axios.post(url, formData, { headers });
 
-      enqueueSnackbar("Product added successfully!", { variant: "success" });
+      enqueueSnackbar(
+        t("providerProfile.products.modal.successMessage"),
+        { variant: "success" }
+      );
       if (onSuccess) onSuccess();
       if (onClose) onClose();
     } catch (err) {
       console.error("Submit product error response:", err?.response?.data || err?.message || err);
       enqueueSnackbar(
-        err?.response?.data?.message || "Failed to submit product",
+        err?.response?.data?.message ||
+          t("providerProfile.products.modal.errorMessage"),
         { variant: "error" }
       );
     } finally {

@@ -45,8 +45,8 @@ const StepBar = ({ activeStep, setActiveStep, maxVisitedStep }) => {
       {/* Scrollable Step Pills */}
       <div
         ref={scrollContainerRef}
-        className="flex items-center gap-2.5 overflow-x-auto no-scrollbar py-1 scroll-smooth"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        className="flex items-center gap-2.5 overflow-x-auto flex-nowrap py-1 scroll-smooth w-full select-none"
+        style={{ scrollbarWidth: "thin" }}
       >
         {STEP_KEYS.map((key, index) => {
           const isCompleted = index < activeStep;
@@ -60,7 +60,7 @@ const StepBar = ({ activeStep, setActiveStep, maxVisitedStep }) => {
               type="button"
               disabled={!isClickable}
               onClick={() => isClickable && setActiveStep(index)}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap shrink-0 transition-all duration-200 cursor-pointer ${
                 isActive
                   ? "bg-mainColor text-white shadow-md scale-[1.02]"
                   : isCompleted

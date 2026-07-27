@@ -44,9 +44,19 @@ const ProfileLayout = ({ children }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // B2B_PARENT users are redirected to home; VISITOR users are handled by
-    // ProtectedProfilePage which shows a LoginAccessModal overlay instead.
+    // Redirect PROVIDER users to /provider-profile
     const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
+    const cookieUserType = Cookies.get("userType") || Cookies.get("role");
+
+    if (
+      userType === USERS.PROVIDERS ||
+      userType === "PROVIDERS" ||
+      cookieUserType === USERS.PROVIDERS ||
+      cookieUserType === "PROVIDERS"
+    ) {
+      router.push(`/${locale}/provider-profile`);
+      return;
+    }
 
     if (userType === USERS.B2B_PARENT || (!token && userType !== USERS.VISITOR)) {
       router.push(`/${locale}`);

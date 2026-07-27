@@ -9,7 +9,7 @@ import EmptyBookings from "@components/features/profile/myBookings/EmptyBookings
 import DataTable from "@components/ui/DataTable";
 import SearchHeader from "@components/ui/SearchHeader";
 import { Chip } from "@mui/material";
-import { OpenInNew } from "@mui/icons-material";
+import { OpenInNew, Edit as EditIcon } from "@mui/icons-material";
 
 const ProviderProductsTable = ({
   title,
@@ -19,6 +19,7 @@ const ProviderProductsTable = ({
   searchTerm,
   setSearchTerm,
   loading = false,
+  onEdit,
 }) => {
   const t = useTranslations();
   const locale = useLocale();
@@ -85,7 +86,7 @@ const ProviderProductsTable = ({
             : "-",
       },
       {
-        key: "action",
+        key: "view",
         label: t("providerProfile.products.table.view"),
         render: (row) => (
           <Link
@@ -99,8 +100,22 @@ const ProviderProductsTable = ({
           </Link>
         ),
       },
+      {
+        key: "edit",
+        label: t("providerProfile.products.table.edit"),
+        render: (row) => (
+          <button
+            type="button"
+            onClick={() => onEdit?.(row)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-titleColor bg-gray-100 hover:bg-mainColor hover:text-white rounded-lg transition-colors cursor-pointer"
+          >
+            <EditIcon className="w-3.5 h-3.5" />
+            <span>{t("providerProfile.products.table.edit")}</span>
+          </button>
+        ),
+      },
     ],
-    [t, locale]
+    [t, locale, onEdit]
   );
 
   return (

@@ -113,49 +113,33 @@ const StepMedia = () => {
         )}
       </div>
 
-      {/* Thumbnails Web & Mobile */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div>
-          <label className="block mb-1.5 text-sm font-medium text-titleColor">
-            {t("fields.thumbnailWeb")} <span className="text-error">*</span>
-          </label>
-          <FileUploadGroup
-            name="thumbnailWeb"
-            label=""
-            placeholder={t("placeholders.selectWebThumbnail")}
-            value={values.thumbnailWeb}
-            onFileChange={(e) => setFieldValue("thumbnailWeb", e.target.files[0])}
-            errors={errors.thumbnailWeb}
-            touched={touched.thumbnailWeb}
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1.5 text-sm font-medium text-titleColor">
-            {t("fields.thumbnailMobile")} <span className="text-error">*</span>
-          </label>
-          <FileUploadGroup
-            name="thumbnailMobile"
-            label=""
-            placeholder={t("placeholders.selectMobileThumbnail")}
-            value={values.thumbnailMobile}
-            onFileChange={(e) => setFieldValue("thumbnailMobile", e.target.files[0])}
-            errors={errors.thumbnailMobile}
-            touched={touched.thumbnailMobile}
-          />
-        </div>
+      {/* Single Thumbnail */}
+      <div>
+        <label className="block mb-1.5 text-sm font-medium text-titleColor">
+          {t("fields.thumbnailWeb")} <span className="text-error">*</span>
+        </label>
+        <FileUploadGroup
+          name="thumbnailWeb"
+          label=""
+          accept="image/*"
+          placeholder={t("placeholders.selectWebThumbnail")}
+          value={values.thumbnailWeb}
+          onFileChange={(e) => setFieldValue("thumbnailWeb", e.target.files[0])}
+          errors={errors.thumbnailWeb}
+          touched={touched.thumbnailWeb}
+        />
       </div>
 
-      {/* Optional Media File & Video */}
+      {/* Optional Media File (PDF Only) & Video */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 border-t border-border pt-5">
         <div>
           <label className="block mb-1.5 text-sm font-medium text-titleColor">
-            {t("fields.mediaFile")}
+            {t("fields.mediaFile")} <span className="text-xs text-subtitleColor">(PDF)</span>
           </label>
           <FileUploadGroup
             name="mediaFile"
             label=""
-            accept="*/*"
+            accept=".pdf,application/pdf"
             placeholder={t("placeholders.selectMediaFile")}
             value={values.mediaFile}
             onFileChange={(e) => setFieldValue("mediaFile", e.target.files[0])}
@@ -164,15 +148,15 @@ const StepMedia = () => {
 
         <div>
           <label className="block mb-1.5 text-sm font-medium text-titleColor">
-            {t("fields.video")}
+            {t("fields.video")} <span className="text-xs text-subtitleColor">(MP4, WEBM)</span>
           </label>
-          <TextInputGroup
-            type="text"
+          <FileUploadGroup
             name="video"
-            value={typeof values.video === "string" ? values.video : ""}
-            onChange={(e) => setFieldValue("video", e.target.value)}
-            onBlur={handleBlur}
+            label=""
+            accept="video/*"
             placeholder={t("placeholders.video")}
+            value={values.video}
+            onFileChange={(e) => setFieldValue("video", e.target.files[0])}
           />
         </div>
       </div>

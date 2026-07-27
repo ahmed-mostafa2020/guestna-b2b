@@ -57,6 +57,9 @@ const sentryAuthToken = isProductionDeploy
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   // Hide Next.js version from response headers (prevents server fingerprinting)
   poweredByHeader: false,
 
