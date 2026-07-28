@@ -82,7 +82,7 @@ const StepReview = () => {
           <div className="space-y-2 text-subtitleColor text-xs sm:text-sm">
             <p className="flex items-center justify-between">
               <span>{t("recurrencePattern")}:</span>
-              <span className="font-bold text-titleColor bg-mainColor/10 text-mainColor px-2.5 py-0.5 rounded-lg">
+              <span className="font-bold text-titleColor bg-mainColor/10 text-mainColor py-0.5 rounded-lg">
                 {values.recurrencePattern
                   ? tModal(`recurrence.${values.recurrencePattern}`)
                   : "-"}
@@ -165,7 +165,9 @@ const StepReview = () => {
               </span>
             </p>
             <p className="flex items-center justify-between">
-              <span>{t("minSeats")} / {t("maxSeats")}:</span>
+              <span>
+                {t("minSeats")} / {t("maxSeats")}:
+              </span>
               <span className="font-semibold text-titleColor">
                 {values.availableSeats?.min || 1} -{" "}
                 {values.availableSeats?.max || 1}
@@ -197,9 +199,7 @@ const StepReview = () => {
                       : "bg-gray-200 text-gray-700"
                   }`}
                 >
-                  {values.thumbnailWeb
-                    ? tSub("attached")
-                    : tSub("notAttached")}
+                  {values.thumbnailWeb ? tSub("attached") : tSub("notAttached")}
                 </span>
               </p>
               <p className="flex items-center justify-between">

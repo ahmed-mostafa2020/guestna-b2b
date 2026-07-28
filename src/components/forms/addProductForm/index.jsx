@@ -74,9 +74,17 @@ export const initialAddProductValues = {
   benefits: { en: [""], ar: [""] },
 };
 
-export const formatAddProductPayload = (values, isEditMode = false) => {
+export const formatAddProductPayload = (
+  values,
+  isEditMode = false,
+  formSelectionData = null
+) => {
+  const catId =
+    typeof values.categories === "object" && values.categories !== null
+      ? values.categories._id || values.categories.id
+      : values.categories;
+
   const payload = {
-    ...(!isEditMode ? { "systemTypes[0]": "B2C" } : {}),
     "name[en]": values.name?.en || "",
     "name[ar]": values.name?.ar || "",
     tripsType: values.tripsType || "ACTIVITY",
@@ -92,15 +100,24 @@ export const formatAddProductPayload = (values, isEditMode = false) => {
     toHour: values.toHour,
     "availableSeats[min]": values.availableSeats?.min,
     "availableSeats[max]": values.availableSeats?.max,
-    duration: values.duration,
-    categories: values.categories,
-    price: values.price,
-    productCost: values.productCost,
-    bookingBefore: values.bookingBefore,
+    duration: values.duration !== "" && !isNaN(Number(values.duration)) ? Number(values.duration) : values.duration,
+    categories: catId || values.categories,
+    price: values.price !== "" && !isNaN(Number(values.price)) ? Number(values.price) : values.price,
+    productCost: values.productCost !== "" && !isNaN(Number(values.productCost)) ? Number(values.productCost) : values.productCost,
+    bookingBefore: values.bookingBefore !== "" && !isNaN(Number(values.bookingBefore)) ? Number(values.bookingBefore) : values.bookingBefore,
     "guestRange[min]": values.guestRange?.min,
     "guestRange[max]": values.guestRange?.max,
     recurrencePattern: values.recurrencePattern || "WEEKLY",
   };
+
+  if (!isEditMode) {
+    const types = Array.isArray(values.systemTypes) && values.systemTypes.length > 0
+      ? values.systemTypes
+      : ["B2C"];
+    types.forEach((type, idx) => {
+      payload[`systemTypes[${idx}]`] = type;
+    });
+  }
 
   if (values.recurrencePattern === "MONTHLY") {
     if (values.monthDay) {
@@ -115,12 +132,24 @@ export const formatAddProductPayload = (values, isEditMode = false) => {
   (values.targetAudiences || []).forEach((item, idx) => {
     if (item.targetAudience) {
       payload[`targetAudiences[${idx}][targetAudience]`] = item.targetAudience;
-      payload[`targetAudiences[${idx}][price]`] = item.price;
+      payload[`targetAudiences[${idx}][price]`] =
+        item.price !== "" && !isNaN(Number(item.price)) ? Number(item.price) : 0;
     }
   });
 
-  (values.providerBranchs || []).forEach((item, idx) => {
-    payload[`providerBranchs[${idx}]`] = item;
+  let branchList = (values.providerBranchs || [])
+    .map((item) => (typeof item === "object" && item !== null ? item._id || item.id : item))
+    .filter((id) => id && typeof id === "string" && id.trim().length === 24);
+
+  // If no branch was explicitly selected but selection options exist, fallback to all available branch IDs
+  if (branchList.length === 0 && Array.isArray(formSelectionData?.providerBranchs)) {
+    branchList = formSelectionData.providerBranchs
+      .map((b) => (typeof b === "object" && b !== null ? b._id || b.id : b))
+      .filter((id) => id && typeof id === "string" && id.trim().length === 24);
+  }
+
+  branchList.forEach((id, idx) => {
+    payload[`providerBranchs[${idx}]`] = id.trim();
   });
 
   const customWeekdayPricingMap = {};
@@ -131,13 +160,15 @@ export const formatAddProductPayload = (values, isEditMode = false) => {
   });
 
   ALL_WEEKDAYS.forEach((day, idx) => {
-    const price =
-      customWeekdayPricingMap[day] !== undefined
-        ? Number(customWeekdayPricingMap[day])
-        : Number(values.price || 0);
+    const customPrice = customWeekdayPricingMap[day];
+    const basePrice =
+      values.price !== "" && !isNaN(Number(values.price)) ? Number(values.price) : 0;
+    const rawPrice =
+      customPrice !== undefined && customPrice !== "" ? Number(customPrice) : basePrice;
+    const finalPrice = isNaN(rawPrice) ? 0 : rawPrice;
 
     payload[`weekdayPricing[${idx}][day]`] = day;
-    payload[`weekdayPricing[${idx}][price]`] = price;
+    payload[`weekdayPricing[${idx}][price]`] = finalPrice;
   });
 
   (values.datePricing || []).forEach((item, idx) => {
@@ -147,14 +178,26 @@ export const formatAddProductPayload = (values, isEditMode = false) => {
     }
   });
 
-  (values.supCategories || []).forEach((item, idx) => {
-    payload[`supCategories[${idx}]`] = item;
+  let supCatIdx = 0;
+  (values.supCategories || []).forEach((item) => {
+    const id = typeof item === "object" && item !== null ? item._id || item.id : item;
+    if (id && typeof id === "string" && id.trim()) {
+      payload[`supCategories[${supCatIdx}]`] = id.trim();
+      supCatIdx++;
+    }
   });
+
   (values.customServices || []).forEach((item, idx) => {
     payload[`customServices[${idx}]`] = item;
   });
-  (values.cities || []).forEach((item, idx) => {
-    payload[`cities[${idx}]`] = item;
+
+  let cityIdx = 0;
+  (values.cities || []).forEach((item) => {
+    const id = typeof item === "object" && item !== null ? item._id || item.id : item;
+    if (id && typeof id === "string" && id.trim()) {
+      payload[`cities[${cityIdx}]`] = id.trim();
+      cityIdx++;
+    }
   });
   (values.stopBookingDate || []).forEach((item, idx) => {
     payload[`stopBookingDate[${idx}]`] = item;
@@ -479,7 +522,7 @@ const AddProductForm = ({
     setIsSubmitting(true);
     try {
       const isEditMode = Boolean(values._id);
-      const formattedPayload = formatAddProductPayload(values, isEditMode);
+      const formattedPayload = formatAddProductPayload(values, isEditMode, formSelectionData);
 
       // Build FormData for multipart uploads (files + fields)
       const formData = new FormData();
