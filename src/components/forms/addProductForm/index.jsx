@@ -563,12 +563,14 @@ const AddProductForm = ({
       }
 
       const headers = getHeaders(locale, true);
+      const requestConfig = { headers, timeout: 180000 };
+
       if (isEditMode) {
         const url = getProxyUrl(`${B2B_END_POINTS.PROVIDER_PROFILE.EDIT_TRIP}/${values._id}`);
-        await axios.patch(url, formData, { headers });
+        await axios.patch(url, formData, requestConfig);
       } else {
         const url = getProxyUrl(B2B_END_POINTS.PROVIDER_PROFILE.NEW_TRIP);
-        await axios.post(url, formData, { headers });
+        await axios.post(url, formData, requestConfig);
       }
 
       enqueueSnackbar(

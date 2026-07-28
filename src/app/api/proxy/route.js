@@ -1,6 +1,10 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
 
+export const maxDuration = 120; // Allow long-running file uploads/requests
+
+const PROXY_TIMEOUT = 180000; // 3 minutes timeout
+
 const getBackendUrl = (path) => {
   let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
   if (path && (path.startsWith("clientInfoBooking/") || path.startsWith("promoCodeDiscounts/"))) {
@@ -49,7 +53,12 @@ export async function GET(request) {
   if (authHeader) headers.authorization = authHeader;
 
   try {
-    const response = await axios.get(backendURL, { headers });
+    const response = await axios.get(backendURL, {
+      headers,
+      timeout: PROXY_TIMEOUT,
+      maxBodyLength: Infinity,
+      maxContentLength: Infinity,
+    });
     return NextResponse.json(response.data);
   } catch (error) {
     const status = error.response?.status || 500;
@@ -100,7 +109,12 @@ export async function POST(request) {
   }
 
   try {
-    const response = await axios.post(backendURL, body, { headers });
+    const response = await axios.post(backendURL, body, {
+      headers,
+      timeout: PROXY_TIMEOUT,
+      maxBodyLength: Infinity,
+      maxContentLength: Infinity,
+    });
     return NextResponse.json(response.data);
   } catch (error) {
     console.error("Proxy error:", error.response?.data || error.message);
@@ -152,7 +166,12 @@ export async function PUT(request) {
   }
 
   try {
-    const response = await axios.put(backendURL, body, { headers });
+    const response = await axios.put(backendURL, body, {
+      headers,
+      timeout: PROXY_TIMEOUT,
+      maxBodyLength: Infinity,
+      maxContentLength: Infinity,
+    });
     return NextResponse.json(response.data);
   } catch (error) {
     console.error("Proxy error:", error.response?.data || error.message);
@@ -204,7 +223,12 @@ export async function PATCH(request) {
   }
 
   try {
-    const response = await axios.patch(backendURL, body, { headers });
+    const response = await axios.patch(backendURL, body, {
+      headers,
+      timeout: PROXY_TIMEOUT,
+      maxBodyLength: Infinity,
+      maxContentLength: Infinity,
+    });
     return NextResponse.json(response.data);
   } catch (error) {
     console.error("Proxy error:", error.response?.data || error.message);
@@ -243,7 +267,12 @@ export async function DELETE(request) {
   };
 
   try {
-    const response = await axios.delete(backendURL, { headers });
+    const response = await axios.delete(backendURL, {
+      headers,
+      timeout: PROXY_TIMEOUT,
+      maxBodyLength: Infinity,
+      maxContentLength: Infinity,
+    });
     return NextResponse.json(response.data);
   } catch (error) {
     console.error("Proxy error:", error.response?.data || error.message);
