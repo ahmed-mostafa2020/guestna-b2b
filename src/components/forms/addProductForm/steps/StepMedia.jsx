@@ -24,7 +24,10 @@ const StepMedia = () => {
     const files = Array.from(e.target.files || []);
     if (files.length > 0) {
       const currentGallery = values.gallery || [];
-      setFieldValue("gallery", [...currentGallery, ...files]);
+      const totalAllowed = 15 - currentGallery.length;
+      if (totalAllowed > 0) {
+        setFieldValue("gallery", [...currentGallery, ...files.slice(0, totalAllowed)]);
+      }
     }
   };
 

@@ -9,6 +9,8 @@ import CategoryIcon from "@mui/icons-material/Category";
 import InfoIcon from "@mui/icons-material/Info";
 import PermMediaIcon from "@mui/icons-material/PermMedia";
 
+import { formatTime12h } from "@utils/formatters/formatTime12h";
+
 const StepReview = () => {
   const t = useTranslations("providerProfile.products.modal.fields");
   const tSub = useTranslations("providerProfile.products.modal.subtitles");
@@ -125,13 +127,13 @@ const StepReview = () => {
             <p className="flex items-center justify-between">
               <span>{t("fromDay")}:</span>
               <span className="font-semibold text-titleColor">
-                {values.fromDay || "-"} ({values.fromHour || "-"})
+                {values.fromDay || "-"} {values.fromHour ? `(${formatTime12h(values.fromHour)})` : ""}
               </span>
             </p>
             <p className="flex items-center justify-between">
               <span>{t("toDay")}:</span>
               <span className="font-semibold text-titleColor">
-                {values.toDay || "-"} ({values.toHour || "-"})
+                {values.toDay || "-"} {values.toHour ? `(${formatTime12h(values.toHour)})` : ""}
               </span>
             </p>
             <p className="flex items-center justify-between">
@@ -147,21 +149,13 @@ const StepReview = () => {
         <div className="p-5 bg-gray-50/80 rounded-2xl border border-border space-y-3 shadow-xs">
           <div className="flex items-center gap-2 text-mainColor font-bold text-sm border-b border-border pb-2.5">
             <AttachMoneyIcon className="w-4 h-4" />
-            <span>
-              {t("productCost")} & {t("price")}
-            </span>
+            <span>{t("price")}</span>
           </div>
           <div className="space-y-2 text-subtitleColor text-xs sm:text-sm">
             <p className="flex items-center justify-between">
-              <span>{t("productCost")}:</span>
-              <span className="font-bold text-titleColor">
-                {values.productCost} SAR
-              </span>
-            </p>
-            <p className="flex items-center justify-between">
               <span>{t("price")}:</span>
               <span className="font-bold text-mainColor text-base">
-                {values.price} SAR
+                {values.price || 0} SAR
               </span>
             </p>
             <p className="flex items-center justify-between">

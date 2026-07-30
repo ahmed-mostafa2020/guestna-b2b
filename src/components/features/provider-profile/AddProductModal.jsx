@@ -43,8 +43,14 @@ const AddProductModal = ({
       closeButton={false}
       padding={false}
     >
-      <div className="flex items-center justify-center min-h-screen p-2 sm:p-4">
-        <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full overflow-hidden transition-all transform h-[90vh] flex flex-col border border-border">
+      <div
+        className="flex items-center justify-center min-h-screen p-2 sm:p-4 cursor-pointer"
+        onClick={onClose}
+      >
+        <div
+          className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full overflow-hidden transition-all transform h-[90vh] flex flex-col border border-border cursor-default"
+          onClick={(e) => e.stopPropagation()}
+        >
           {/* Modal Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-gray-50/50 flex-shrink-0">
             <div className="flex items-center gap-3">
@@ -63,7 +69,10 @@ const AddProductModal = ({
 
             <button
               type="button"
-              onClick={onClose}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onClose) onClose();
+              }}
               className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors outline-none cursor-pointer"
               aria-label={t("providerProfile.products.modal.cancel")}
             >

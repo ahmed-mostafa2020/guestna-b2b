@@ -19,6 +19,8 @@ import { getHeaders } from "@utils/helpers/getHeaders";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { ALL_WEEKDAYS } from "@constants/weekDays";
 
+import { formatTime12h } from "@utils/formatters/formatTime12h";
+
 import StepBar, { STEP_KEYS } from "./StepBar";
 import StepIdentity from "./steps/StepIdentity";
 import StepConfiguration from "./steps/StepConfiguration";
@@ -43,23 +45,23 @@ export const initialAddProductValues = {
   supCategories: [],
   cities: [],
   providerBranchs: [],
-  bookingBefore: 1,
+  bookingBefore: "",
   recurrencePattern: "WEEKLY",
-  selectedDays: ["SUNDAY"],
-  monthDay: 1,
+  selectedDays: [],
+  monthDay: "",
   weekdayPricing: [],
   datePricing: [],
   fromDay: "",
   toDay: "",
-  fromHour: "20:00",
-  toHour: "10:00",
-  availableTimes: [{ from: "08:00", to: "12:00" }],
-  availableSeats: { min: 5, max: 50 },
-  guestRange: { min: 5, max: 50 },
-  duration: 5,
-  price: 1500,
-  productCost: 1000,
-  targetAudiences: [{ targetAudience: "", price: 1500 }],
+  fromHour: "",
+  toHour: "",
+  availableTimes: [{ from: "", to: "" }],
+  availableSeats: { min: "", max: "" },
+  guestRange: { min: "", max: "" },
+  duration: "",
+  price: "",
+  productCost: "",
+  targetAudiences: [{ targetAudience: "", price: "" }],
   services: [{ service: "", note: { en: "", ar: "" } }],
   customServices: [],
   gallery: [],
@@ -96,8 +98,8 @@ export const formatAddProductPayload = (
     "gatheringLocation[lng]": values.gatheringLocation?.lng,
     fromDay: values.fromDay,
     toDay: values.toDay,
-    fromHour: values.fromHour,
-    toHour: values.toHour,
+    fromHour: formatTime12h(values.fromHour),
+    toHour: formatTime12h(values.toHour),
     "availableSeats[min]": values.availableSeats?.min,
     "availableSeats[max]": values.availableSeats?.max,
     duration: values.duration !== "" && !isNaN(Number(values.duration)) ? Number(values.duration) : values.duration,
@@ -238,8 +240,8 @@ export const formatAddProductPayload = (
   let timeIdx = 0;
   (values.availableTimes || []).forEach((item) => {
     if (item.from && item.to) {
-      payload[`availableTimes[${timeIdx}][from]`] = item.from;
-      payload[`availableTimes[${timeIdx}][to]`] = item.to;
+      payload[`availableTimes[${timeIdx}][from]`] = formatTime12h(item.from);
+      payload[`availableTimes[${timeIdx}][to]`] = formatTime12h(item.to);
       timeIdx++;
     }
   });
@@ -356,40 +358,40 @@ const AddProductForm = ({
       providerBranchs: Array.isArray(productData.providerBranchs)
         ? productData.providerBranchs.map((item) => (typeof item === "object" && item !== null ? item._id || item.id || "" : item))
         : [],
-      bookingBefore: productData.bookingBefore ?? 1,
+      bookingBefore: productData.bookingBefore ?? "",
       recurrencePattern: productData.recurrencePattern || "WEEKLY",
-      selectedDays: productData.selectedDays || ["SUNDAY"],
-      monthDay: productData.monthDay || 1,
+      selectedDays: productData.selectedDays || [],
+      monthDay: productData.monthDay || "",
       weekdayPricing: productData.weekdayPricing || [],
       datePricing: productData.datePricing || [],
       fromDay: productData.fromDay ? (productData.fromDay.includes("T") ? productData.fromDay.split("T")[0] : productData.fromDay) : "",
       toDay: productData.toDay ? (productData.toDay.includes("T") ? productData.toDay.split("T")[0] : productData.toDay) : "",
-      fromHour: productData.fromHour || "20:00",
-      toHour: productData.toHour || "10:00",
+      fromHour: productData.fromHour || "",
+      toHour: productData.toHour || "",
       availableTimes: Array.isArray(productData.availableTimes) && productData.availableTimes.length
         ? productData.availableTimes
-        : [{ from: "08:00", to: "12:00" }],
+        : [{ from: "", to: "" }],
       availableSeats: typeof productData.availableSeats === "object" && productData.availableSeats !== null
         ? {
-            min: productData.availableSeats?.min ?? 5,
-            max: productData.availableSeats?.max ?? 50,
+            min: productData.availableSeats?.min ?? "",
+            max: productData.availableSeats?.max ?? "",
           }
         : {
-            min: 1,
-            max: typeof productData.availableSeats === "number" ? productData.availableSeats : 50,
+            min: typeof productData.availableSeats === "number" ? productData.availableSeats : "",
+            max: "",
           },
-      guestRange: productData.guestRange || { min: 5, max: 50 },
-      duration: productData.duration ?? 5,
-      price: productData.price ?? 1500,
-      productCost: productData.productCost ?? 1000,
+      guestRange: productData.guestRange || { min: "", max: "" },
+      duration: productData.duration ?? "",
+      price: productData.price ?? "",
+      productCost: productData.productCost ?? "",
       targetAudiences: Array.isArray(productData.targetAudiences) && productData.targetAudiences.length
         ? productData.targetAudiences.map((item) => ({
             targetAudience: typeof item.targetAudience === "object" && item.targetAudience !== null
               ? item.targetAudience._id || item.targetAudience.id || ""
               : item.targetAudience || "",
-            price: item.price ?? 1500,
+            price: item.price ?? "",
           }))
-        : [{ targetAudience: "", price: 1500 }],
+        : [{ targetAudience: "", price: "" }],
       services: Array.isArray(productData.services) && productData.services.length
         ? productData.services.map((item) => ({
             service: typeof item.service === "object" && item.service !== null
@@ -444,7 +446,43 @@ const AddProductForm = ({
   const customServicesOptions = formSelectionData?.customServices || [];
   const providerBranchsOptions = formSelectionData?.providerBranchs || [];
 
-  const handleStepClick = async (targetStep, validateForm, setTouched) => {
+  const buildNestedTouched = (fields, values) => {
+    const obj = {};
+    fields.forEach((field) => {
+      if (field.includes(".")) {
+        const parts = field.split(".");
+        if (!obj[parts[0]]) obj[parts[0]] = {};
+        obj[parts[0]][parts[1]] = true;
+      } else if (Array.isArray(values?.[field])) {
+        obj[field] = values[field].map((item) => {
+          if (typeof item === "object" && item !== null) {
+            const touchedItem = {};
+            Object.keys(item).forEach((k) => (touchedItem[k] = true));
+            return touchedItem;
+          }
+          return true;
+        });
+      } else {
+        obj[field] = true;
+      }
+    });
+    return obj;
+  };
+
+  const hasErrorForField = (errors, field) => {
+    if (field.includes(".")) {
+      const parts = field.split(".");
+      return !!(errors[parts[0]]?.[parts[1]]);
+    }
+    const err = errors[field];
+    if (!err) return false;
+    if (Array.isArray(err)) {
+      return err.some((item) => Boolean(item && (typeof item === "string" || Object.keys(item).length > 0)));
+    }
+    return true;
+  };
+
+  const handleStepClick = async (targetStep, validateForm, setTouched, values) => {
     if (targetStep === activeStep) return;
 
     // Going backward is always permitted
@@ -457,20 +495,10 @@ const AddProductForm = ({
     const errors = await validateForm();
     const stepFields = getStepFieldNames(activeStep);
 
-    let hasStepError = false;
-    const touchedObj = {};
+    const hasStepError = stepFields.some((field) => hasErrorForField(errors, field));
+    const nestedTouched = buildNestedTouched(stepFields, values);
 
-    stepFields.forEach((field) => {
-      touchedObj[field] = true;
-      if (field.includes(".")) {
-        const parts = field.split(".");
-        if (errors[parts[0]]?.[parts[1]]) hasStepError = true;
-      } else if (errors[field]) {
-        hasStepError = true;
-      }
-    });
-
-    setTouched((prev) => ({ ...prev, ...touchedObj }));
+    setTouched((prev) => ({ ...prev, ...nestedTouched }));
 
     if (!hasStepError) {
       setActiveStep(targetStep);
@@ -482,24 +510,14 @@ const AddProductForm = ({
     }
   };
 
-  const handleStepNext = async (validateForm, setTouched) => {
+  const handleStepNext = async (validateForm, setTouched, values) => {
     const errors = await validateForm();
     const stepFields = getStepFieldNames(activeStep);
 
-    let hasStepError = false;
-    const touchedObj = {};
+    const hasStepError = stepFields.some((field) => hasErrorForField(errors, field));
+    const nestedTouched = buildNestedTouched(stepFields, values);
 
-    stepFields.forEach((field) => {
-      touchedObj[field] = true;
-      if (field.includes(".")) {
-        const parts = field.split(".");
-        if (errors[parts[0]]?.[parts[1]]) hasStepError = true;
-      } else if (errors[field]) {
-        hasStepError = true;
-      }
-    });
-
-    setTouched(touchedObj);
+    setTouched((prev) => ({ ...prev, ...nestedTouched }));
 
     if (!hasStepError) {
       const nextStep = activeStep + 1;
@@ -516,6 +534,40 @@ const AddProductForm = ({
     if (activeStep > 0) {
       setActiveStep((prev) => prev - 1);
     }
+  };
+
+  const handleFinalSubmit = async (validateForm, setTouched, handleSubmit, values) => {
+    const errors = await validateForm();
+    const errorKeys = Object.keys(errors);
+
+    if (errorKeys.length > 0) {
+      console.warn("Form submission blocked by validation errors:", errors);
+
+      // Find the first step index with an error
+      let firstErrorStep = -1;
+      for (let i = 0; i < STEP_KEYS.length; i++) {
+        const stepFields = getStepFieldNames(i);
+        if (stepFields.some((field) => hasErrorForField(errors, field))) {
+          firstErrorStep = i;
+          break;
+        }
+      }
+
+      if (firstErrorStep !== -1) {
+        setActiveStep(firstErrorStep);
+        setMaxVisitedStep((prev) => Math.max(prev, firstErrorStep));
+        const stepFields = getStepFieldNames(firstErrorStep);
+        const nestedTouched = buildNestedTouched(stepFields, values);
+        setTouched((prev) => ({ ...prev, ...nestedTouched }));
+      }
+
+      enqueueSnackbar(t("providerProfile.products.modal.placeholderNotice"), {
+        variant: "warning",
+      });
+      return;
+    }
+
+    handleSubmit();
   };
 
   const handleSubmitForm = async (values) => {
@@ -562,15 +614,29 @@ const AddProductForm = ({
         formData.append("video", values.video);
       }
 
-      const headers = getHeaders(locale, true);
-      const requestConfig = { headers, timeout: 180000 };
+      const headers = getHeaders(locale, true); // true = isFormData — omit Content-Type so browser sets multipart boundary
 
+      let proxyUrl;
+      let method;
       if (isEditMode) {
-        const url = getProxyUrl(`${B2B_END_POINTS.PROVIDER_PROFILE.EDIT_TRIP}/${values._id}`);
-        await axios.patch(url, formData, requestConfig);
+        proxyUrl = getProxyUrl(`${B2B_END_POINTS.PROVIDER_PROFILE.EDIT_TRIP}/${values._id}`);
+        method = "PATCH";
       } else {
-        const url = getProxyUrl(B2B_END_POINTS.PROVIDER_PROFILE.NEW_TRIP);
-        await axios.post(url, formData, requestConfig);
+        proxyUrl = getProxyUrl(B2B_END_POINTS.PROVIDER_PROFILE.NEW_TRIP);
+        method = "POST";
+      }
+
+      // Use fetch instead of axios to preserve FormData multipart boundary
+      const response = await fetch(proxyUrl, {
+        method,
+        headers, // Do NOT include Content-Type here — browser adds it with correct boundary
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw { response: { data, status: response.status } };
       }
 
       enqueueSnackbar(
@@ -625,7 +691,7 @@ const AddProductForm = ({
       case 6:
         return <StepMedia />;
       case 7:
-        return <StepLocations />;
+        return <StepLocations cityOptions={cityOptions} />;
       case 8:
         return <StepItinerary />;
       case 9:
@@ -656,7 +722,7 @@ const AddProductForm = ({
             setActiveStep={setActiveStep}
             maxVisitedStep={maxVisitedStep}
             onStepClick={(targetStep) =>
-              handleStepClick(targetStep, validateForm, setTouched)
+              handleStepClick(targetStep, validateForm, setTouched, values)
             }
           />
 
@@ -698,7 +764,7 @@ const AddProductForm = ({
             {activeStep < STEP_KEYS.length - 1 ? (
               <button
                 type="button"
-                onClick={() => handleStepNext(validateForm, setTouched)}
+                onClick={() => handleStepNext(validateForm, setTouched, values)}
                 className="px-5 py-2.5 rounded-xl bg-mainColor text-white font-medium text-xs sm:text-sm hover:bg-titleColor transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-[0.98]"
               >
                 <span>{t("providerProfile.products.modal.next")}</span>
@@ -712,7 +778,7 @@ const AddProductForm = ({
               <button
                 type="button"
                 disabled={isSubmitting}
-                onClick={() => handleSubmit()}
+                onClick={() => handleFinalSubmit(validateForm, setTouched, handleSubmit, values)}
                 className="px-6 py-2.5 rounded-xl bg-mainColor text-white font-medium text-xs sm:text-sm hover:bg-titleColor transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-[0.98]"
               >
                 {isSubmitting ? (

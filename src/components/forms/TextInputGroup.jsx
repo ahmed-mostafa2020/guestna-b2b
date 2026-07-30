@@ -19,6 +19,7 @@ const TextInputGroup = memo(
     onChange,
     onBlur,
     onKeyDown,
+    onPaste,
     placeholder,
     textarea = false,
     uploadFile = false,
@@ -85,6 +86,7 @@ const TextInputGroup = memo(
               value={value}
               onChange={onChange}
               onBlur={onBlur}
+              onPaste={onPaste}
               minLength={minLength}
               maxLength={maxLength}
               rows={rows}
@@ -122,6 +124,7 @@ const TextInputGroup = memo(
               onChange={onChange}
               onBlur={onBlur}
               onKeyDown={onKeyDown}
+              onPaste={onPaste}
               onClick={(e) => {
                 if (type === "date" && e.target.showPicker) {
                   try {

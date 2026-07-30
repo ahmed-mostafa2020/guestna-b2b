@@ -1,5 +1,5 @@
 {
-    "common": {
+  "common": {
     "back": "Back",
     "comingSoon": "Coming Soon",
     "select": "Select",
@@ -308,9 +308,10 @@
           "activityLocationHelp": "Set coordinates or paste Google Maps link for main product destination.",
           "googleMapsUrl": "Google Maps Link (e.g. https://maps.google.com/?q=24.9576,46.6988)",
           "weekdayPricingHelp": "Set custom prices for specific days of the week (e.g. Friday or Saturday)",
-          "datePricingHelp": "Set custom prices for specific calendar dates",
+          "datePricingHelp": "Set custom prices for specific dates",
           "galleryHelp": "Please upload at least 4 images for the product gallery.",
           "unassignedDaysBasePriceHelp": "Note: Days without custom pricing will automatically use the base product price.",
+          "pricingConflictNotice": "Note: If there is a conflict between the weekday price (day of week) and a specific date price (day of month), the specific date price will take priority over the weekday price.",
           "readyToPublish": "Ready to publish your product",
           "reviewBeforeSubmit": "Please review the summary below before submitting.",
           "days": "day(s)",
@@ -390,6 +391,7 @@
         },
         "validation": {
           "galleryMin": "Minimum 4 gallery images are required",
+          "galleryMax": "Maximum 15 gallery images allowed",
           "systemTypesRequired": "Select at least one system type"
         },
         "steps": {
@@ -440,8 +442,8 @@
           "mustHaveItemNum": "Item #{num}",
           "exemptionItemNum": "Exemption #{num}",
           "benefitItemNum": "Benefit #{num}",
-          "galleryCount": "{count} / {min} minimum",
-          "bookingBefore": "Booking Before (Days)",
+          "galleryCount": "{count} / 15 (Min {min})",
+          "bookingBefore": "Stop Booking Before (Days)",
           "fromDay": "Start Date",
           "toDay": "End Date",
           "stopBookingDate": "Stop Booking Date",

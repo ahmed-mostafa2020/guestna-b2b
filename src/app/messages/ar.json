@@ -315,9 +315,10 @@
           "activityLocationHelp": "حدد الإحداثيات أو الصق رابط خرائط جوجل لوجهة المنتج الرئيسية.",
           "googleMapsUrl": "رابط خرائط جوجل (مثال: https://maps.google.com/?q=24.9576,46.6988)",
           "weekdayPricingHelp": "حدد أسعاراً خاصة لأيام معينة من الأسبوع (مثل الجمعة أو السبت)",
-          "datePricingHelp": "حدد أسعاراً خاصة لتواريخ معينة بالروزنامة",
+          "datePricingHelp": "حدد أسعاراً خاصة لتواريخ معينة",
           "galleryHelp": "يرجى تحميل 4 صور على الأقل لمعرض المنتج.",
           "unassignedDaysBasePriceHelp": "ملاحظة: الأيام التي لم تقم بتحديد سعر خاص لها ستعتمد تلقائياً على سعر المنتج الأساسي.",
+          "pricingConflictNotice": "ملاحظة: في حال وجود تعارض بين سعر يوم الأسبوع وسعر تاريخ محدد (يوم في الشهر)، فإن سعر التاريخ المحدد هو الذي سيُعتمد.",
           "readyToPublish": "منتجك جاهز للنشر",
           "reviewBeforeSubmit": "يرجى مراجعة ملخص البيانات أدناه قبل إرسال الطلب.",
           "days": "يوم",
@@ -397,6 +398,7 @@
         },
         "validation": {
           "galleryMin": "يتطلب تحميل 4 صور على الأقل للمعرض",
+          "galleryMax": "الحد الأقصى 15 صورة للمعرض",
           "systemTypesRequired": "يرجى تحديد نوع نظام واحد على الأقل"
         },
         "steps": {
@@ -447,8 +449,8 @@
           "mustHaveItemNum": "المستلزم #{num}",
           "exemptionItemNum": "المستثنى #{num}",
           "benefitItemNum": "الميزة #{num}",
-          "galleryCount": "{count} / {min} كحد أدنى",
-          "bookingBefore": "الحجز قبل (أيام)",
+          "galleryCount": "{count} / 15 (الحد الأدنى {min})",
+          "bookingBefore": "إيقاف الحجز قبل (أيام)",
           "fromDay": "تاريخ البداية",
           "toDay": "تاريخ النهاية",
           "stopBookingDate": "تاريخ إيقاف الحجز",

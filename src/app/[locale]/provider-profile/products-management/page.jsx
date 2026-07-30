@@ -94,6 +94,7 @@ const ProviderProductsManagementPage = () => {
       !isAddModalOpen
     ) {
       setIsAddModalOpen(true);
+      setShouldFetchSelections(false);
     }
   }, [shouldFetchSelections, editingProductId, formSelectionData, isSelectionsFetching, isAddModalOpen]);
 
@@ -115,6 +116,7 @@ const ProviderProductsManagementPage = () => {
   const handleCloseModal = () => {
     setIsAddModalOpen(false);
     setEditingProductId(null);
+    setShouldFetchSelections(false);
   };
 
   // Fetch B2C Trips

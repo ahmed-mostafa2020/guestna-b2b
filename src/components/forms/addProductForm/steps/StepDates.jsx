@@ -6,6 +6,8 @@ import TextInputGroup from "@components/forms/TextInputGroup";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
+import { formatTime12h } from "@utils/formatters/formatTime12h";
+
 const StepDates = () => {
   const t = useTranslations("providerProfile.products.modal");
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
@@ -48,9 +50,11 @@ const StepDates = () => {
 
         {/* Start Hour */}
         <div>
-          <label className="block mb-1.5 text-sm font-medium text-titleColor">
-            {t("fields.fromHour")}
-          </label>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="text-sm font-medium text-titleColor">
+              {t("fields.fromHour")}
+            </label>
+          </div>
           <TextInputGroup
             type="time"
             name="fromHour"
@@ -64,9 +68,11 @@ const StepDates = () => {
 
         {/* End Hour */}
         <div>
-          <label className="block mb-1.5 text-sm font-medium text-titleColor">
-            {t("fields.toHour")}
-          </label>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="text-sm font-medium text-titleColor">
+              {t("fields.toHour")}
+            </label>
+          </div>
           <TextInputGroup
             type="time"
             name="toHour"
@@ -96,20 +102,24 @@ const StepDates = () => {
                   className="flex items-center gap-3 bg-gray-50/70 p-3 rounded-xl border border-border"
                 >
                   <div className="flex-1 grid grid-cols-2 gap-3">
-                    <TextInputGroup
-                      type="time"
-                      name={`availableTimes[${index}].from`}
-                      value={slot.from || ""}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                    <TextInputGroup
-                      type="time"
-                      name={`availableTimes[${index}].to`}
-                      value={slot.to || ""}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
+                    <div>
+                      <TextInputGroup
+                        type="time"
+                        name={`availableTimes[${index}].from`}
+                        value={slot.from || ""}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                    </div>
+                    <div>
+                      <TextInputGroup
+                        type="time"
+                        name={`availableTimes[${index}].to`}
+                        value={slot.to || ""}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                    </div>
                   </div>
 
                   {values.availableTimes.length > 1 && (

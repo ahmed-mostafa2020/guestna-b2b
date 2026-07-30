@@ -22,7 +22,7 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
 
   return (
     <div className="space-y-6">
-      {/* 1. Base & Market Prices Section */}
+      {/* 1. Market Price Section */}
       <div className="bg-gray-50/80 p-5 rounded-2xl border border-border space-y-4">
         <div className="flex items-center gap-2 text-mainColor font-bold text-sm sm:text-base border-b border-border pb-3">
           <div className="w-8 h-8 rounded-xl bg-mainColor/10 flex items-center justify-center text-mainColor">
@@ -31,42 +31,21 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
           <span>{t("fields.pricingAndCapacity")}</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Base Price (productCost) */}
-          <div>
-            <label className="block mb-1.5 text-sm font-semibold text-titleColor">
-              {t("fields.productCost")} <span className="text-error">*</span>
-            </label>
-            <TextInputGroup
-              type="number"
-              min={0}
-              name="productCost"
-              value={values.productCost ?? ""}
-              errors={errors.productCost}
-              touched={touched.productCost}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              placeholder={t("placeholders.productCost")}
-            />
-          </div>
-
-          {/* Market Price (price) */}
-          <div>
-            <label className="block mb-1.5 text-sm font-semibold text-titleColor">
-              {t("fields.price")} <span className="text-error">*</span>
-            </label>
-            <TextInputGroup
-              type="number"
-              min={0}
-              name="price"
-              value={values.price ?? ""}
-              errors={errors.price}
-              touched={touched.price}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              placeholder={t("placeholders.price")}
-            />
-          </div>
+        <div>
+          <label className="block mb-1.5 text-sm font-semibold text-titleColor">
+            {t("fields.price")} <span className="text-error">*</span>
+          </label>
+          <TextInputGroup
+            type="number"
+            min={0}
+            name="price"
+            value={values.price ?? ""}
+            errors={errors.price}
+            touched={touched.price}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            placeholder={t("placeholders.price")}
+          />
         </div>
       </div>
 
@@ -200,6 +179,9 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
                         );
                         setFieldValue("selectedDays", updatedDays);
                       }}
+                      onBlur={handleBlur}
+                      touched={touched.weekdayPricing?.[index]?.day}
+                      errors={errors.weekdayPricing?.[index]?.day}
                       placeholder={t("placeholders.selectDay")}
                       list={weekDayOptions}
                     />
@@ -211,6 +193,8 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
                       value={item.price ?? ""}
                       onChange={handleChange}
                       onBlur={handleBlur}
+                      touched={touched.weekdayPricing?.[index]?.price}
+                      errors={errors.weekdayPricing?.[index]?.price}
                       placeholder={t("placeholders.price")}
                     />
                   </div>
@@ -255,6 +239,14 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
         </FieldArray>
       </div>
 
+      {/* Pricing Conflict Informational Callout */}
+      <div className="p-3.5 bg-blue-50/80 border border-blue-200 text-blue-900 rounded-2xl text-xs sm:text-sm flex items-start gap-2.5 shadow-xs">
+        <span className="font-semibold text-base flex-shrink-0">💡</span>
+        <p className="font-medium leading-relaxed">
+          {t("subtitles.pricingConflictNotice")}
+        </p>
+      </div>
+
       {/* 4. Specific Date Pricing Section */}
       <div className="bg-gray-50/80 p-5 rounded-2xl border border-border space-y-4">
         <div className="border-b border-border pb-3">
@@ -284,6 +276,8 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
                       value={item.date || ""}
                       onChange={handleChange}
                       onBlur={handleBlur}
+                      touched={touched.datePricing?.[index]?.date}
+                      errors={errors.datePricing?.[index]?.date}
                       placeholder={t("placeholders.selectDate")}
                     />
 
@@ -294,6 +288,8 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
                       value={item.price ?? ""}
                       onChange={handleChange}
                       onBlur={handleBlur}
+                      touched={touched.datePricing?.[index]?.price}
+                      errors={errors.datePricing?.[index]?.price}
                       placeholder={t("placeholders.price")}
                     />
                   </div>

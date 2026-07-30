@@ -19,7 +19,10 @@ const StepConfiguration = ({
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
 
-  const recurrenceOptions = ["WEEKLY", "MONTHLY"];
+  const recurrenceOptions = [
+    { value: "WEEKLY", label: t("recurrence.WEEKLY") },
+    { value: "MONTHLY", label: t("recurrence.MONTHLY") },
+  ];
 
   const weekDayOptions = getWeekDayOptions(tWeekDays);
 
@@ -89,35 +92,6 @@ const StepConfiguration = ({
           />
         </div>
 
-        {/* Cities */}
-        <div>
-          <label className="block mb-1.5 text-sm font-medium text-titleColor">
-            {t("fields.cities")} <span className="text-error">*</span>
-          </label>
-          <SelectionGroup
-            name="cities"
-            multiple={true}
-            value={(values.cities || [])
-              .map((id) => cityOptions.find((c) => c._id === id)?.name)
-              .filter(Boolean)}
-            onChange={(e) => {
-              const selectedNames = e.target.value;
-              const selectedIds = selectedNames
-                .map(
-                  (name) =>
-                    cityOptions.find((c) => c.name === name)?._id || name
-                )
-                .filter(Boolean);
-              setFieldValue("cities", selectedIds);
-            }}
-            onBlur={handleBlur}
-            touched={touched.cities}
-            errors={errors.cities}
-            placeholder={t("placeholders.selectCities")}
-            list={cityOptions.map((c) => c.name || c)}
-          />
-        </div>
-
         {/* Provider Branches */}
         {providerBranchsOptions.length > 0 && (
           <div>
@@ -152,6 +126,24 @@ const StepConfiguration = ({
             />
           </div>
         )}
+
+        {/* Booking Before */}
+        <div>
+          <label className="block mb-1.5 text-sm font-medium text-titleColor">
+            {t("fields.bookingBefore")} <span className="text-error">*</span>
+          </label>
+          <TextInputGroup
+            type="number"
+            min={0}
+            name="bookingBefore"
+            value={values.bookingBefore ?? ""}
+            errors={errors.bookingBefore}
+            touched={touched.bookingBefore}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            placeholder={t("placeholders.bookingBefore")}
+          />
+        </div>
 
         {/* Recurrence Pattern */}
         <div>
@@ -208,24 +200,6 @@ const StepConfiguration = ({
             />
           </div>
         )}
-
-        {/* Booking Before */}
-        <div className="md:col-span-2">
-          <label className="block mb-1.5 text-sm font-medium text-titleColor">
-            {t("fields.bookingBefore")} <span className="text-error">*</span>
-          </label>
-          <TextInputGroup
-            type="number"
-            min={0}
-            name="bookingBefore"
-            value={values.bookingBefore ?? 1}
-            errors={errors.bookingBefore}
-            touched={touched.bookingBefore}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            placeholder={t("placeholders.bookingBefore")}
-          />
-        </div>
       </div>
     </div>
   );

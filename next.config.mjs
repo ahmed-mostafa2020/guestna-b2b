@@ -162,7 +162,7 @@ const nextConfig = {
       // Restrict access to browser features
       {
         key: "Permissions-Policy",
-        value: "camera=(self), microphone=(self), geolocation=(self)",
+        value: "camera=(self), microphone=(self), geolocation=(self), unload=()",
       },
       // Force HTTPS for 2 years, include subdomains, allow preload list submission
       {

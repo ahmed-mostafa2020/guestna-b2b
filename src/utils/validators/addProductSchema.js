@@ -86,10 +86,7 @@ export const createAddProductSchema = (t) => {
       .min(0)
       .required(reqMsg),
 
-    productCost: Yup.number()
-      .typeError(reqMsg)
-      .min(0)
-      .required(reqMsg),
+    productCost: Yup.number().optional(),
 
     targetAudiences: Yup.array()
       .of(
@@ -101,20 +98,77 @@ export const createAddProductSchema = (t) => {
       .min(1, reqMsg)
       .required(reqMsg),
 
-    services: Yup.array().of(
-      Yup.object().shape({
-        service: Yup.string().required(reqMsg),
-        note: Yup.object().shape({
-          en: Yup.string().optional(),
-          ar: Yup.string().optional(),
-        }),
-      })
-    ),
+    weekdayPricing: Yup.array()
+      .of(
+        Yup.object().shape(
+          {
+            day: Yup.string().when("price", {
+              is: (val) => val !== "" && val !== null && val !== undefined,
+              then: (schema) => schema.required(reqMsg),
+              otherwise: (schema) => schema.optional(),
+            }),
+            price: Yup.mixed().when("day", {
+              is: (val) => Boolean(val && String(val).trim()),
+              then: (schema) =>
+                Yup.number()
+                  .typeError(reqMsg)
+                  .min(0, reqMsg)
+                  .required(reqMsg),
+              otherwise: (schema) => schema.optional(),
+            }),
+          },
+          [
+            ["day", "price"],
+            ["price", "day"],
+          ]
+        )
+      )
+      .optional(),
+
+    datePricing: Yup.array()
+      .of(
+        Yup.object().shape(
+          {
+            date: Yup.string().when("price", {
+              is: (val) => val !== "" && val !== null && val !== undefined,
+              then: (schema) => schema.required(reqMsg),
+              otherwise: (schema) => schema.optional(),
+            }),
+            price: Yup.mixed().when("date", {
+              is: (val) => Boolean(val && String(val).trim()),
+              then: (schema) =>
+                Yup.number()
+                  .typeError(reqMsg)
+                  .min(0, reqMsg)
+                  .required(reqMsg),
+              otherwise: (schema) => schema.optional(),
+            }),
+          },
+          [
+            ["date", "price"],
+            ["price", "date"],
+          ]
+        )
+      )
+      .optional(),
+
+    services: Yup.array()
+      .of(
+        Yup.object().shape({
+          service: Yup.string().optional(),
+          note: Yup.object().shape({
+            en: Yup.string().optional(),
+            ar: Yup.string().optional(),
+          }),
+        })
+      )
+      .optional(),
 
     customServices: Yup.array().of(Yup.string()).optional(),
 
     gallery: Yup.array()
       .min(4, t("providerProfile.products.modal.validation.galleryMin"))
+      .max(15, t("providerProfile.products.modal.validation.galleryMax"))
       .required(t("providerProfile.products.modal.validation.galleryMin")),
 
     thumbnailWeb: Yup.mixed().required(reqMsg),
@@ -177,19 +231,20 @@ export const getStepFieldNames = (stepIndex) => {
         "description.ar",
       ];
     case 1: // Configuration
-      return ["categories", "cities", "bookingBefore"];
+      return ["categories", "bookingBefore"];
     case 2: // Dates
       return ["fromDay", "toDay"];
     case 3: // Activities
       return ["availableSeats.min", "availableSeats.max", "duration"];
     case 4: // Pricing
-      return ["price", "productCost", "targetAudiences"];
+      return ["price", "targetAudiences", "weekdayPricing", "datePricing"];
     case 5: // Services
       return ["services"];
     case 6: // Media
       return ["gallery", "thumbnailWeb"];
     case 7: // Locations
       return [
+        "cities",
         "gatheringLocation.lat",
         "gatheringLocation.lng",
         "location.lat",
