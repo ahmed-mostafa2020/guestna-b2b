@@ -239,7 +239,8 @@
   "providerProfile": {
     "aside": {
       "main": "الصفحة الرئيسية",
-      "productsManagement": "إدارة المنتجات"
+      "productsManagement": "إدارة المنتجات",
+      "ourProducts": "منتجاتنا"
     },
     "infoCards": {
       "totalBookings": "إجمالي الحجوزات",
@@ -273,7 +274,9 @@
       },
       "modal": {
         "title": "إضافة منتج جديد",
+        "editTitle": "تعديل المنتج",
         "subtitle": "قم بملء البيانات أدناه لنشر منتج جديد",
+        "editSubtitle": "قم بتحديث البيانات أدناه لتعديل المنتج",
         "placeholderNotice": "يرجى ملء جميع الحقول المطلوبة المشار إليها بـ *",
         "validation": {
           "systemTypesRequired": "يجب اختيار نوع نظام واحد على الأقل",

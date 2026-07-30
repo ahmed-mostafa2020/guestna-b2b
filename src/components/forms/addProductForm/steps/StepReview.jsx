@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormikContext } from "formik";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
@@ -10,8 +10,10 @@ import InfoIcon from "@mui/icons-material/Info";
 import PermMediaIcon from "@mui/icons-material/PermMedia";
 
 import { formatTime12h } from "@utils/formatters/formatTime12h";
+import formatCurrency from "@utils/formatters/FormatCurrency";
 
 const StepReview = () => {
+  const locale = useLocale();
   const t = useTranslations("providerProfile.products.modal.fields");
   const tSub = useTranslations("providerProfile.products.modal.subtitles");
   const tModal = useTranslations("providerProfile.products.modal");
@@ -155,7 +157,7 @@ const StepReview = () => {
             <p className="flex items-center justify-between">
               <span>{t("price")}:</span>
               <span className="font-bold text-mainColor text-base">
-                {values.price || 0} SAR
+                {formatCurrency(values.price || 0, locale)}
               </span>
             </p>
             <p className="flex items-center justify-between">

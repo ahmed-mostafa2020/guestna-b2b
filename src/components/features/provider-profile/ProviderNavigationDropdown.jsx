@@ -3,14 +3,43 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import { useSelector } from "react-redux";
+import Cookies from "js-cookie";
 import { Box, List } from "@mui/material";
-import { Home as HomeIcon, TravelExplore as TravelIcon } from "@mui/icons-material";
+import {
+  Home as HomeIcon,
+  TravelExplore as TravelIcon,
+  Storefront as StorefrontIcon,
+} from "@mui/icons-material";
 import React from "react";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 
 const ProviderNavigationDropdown = () => {
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations();
+
+  const providerProfileData = useSelector(
+    (state) => state.providerProfile?.data
+  );
+  const loginData = useSelector((state) => state.loginForm?.loginData);
+
+  const providerSlug =
+    providerProfileData?.providerSlug ||
+    providerProfileData?.user?.providerSlug ||
+    loginData?.providerSlug ||
+    loginData?.user?.providerSlug ||
+    Cookies.get("providerSlug");
+
+  const b2cVercelUrl =
+    "https://6a6b5f5b6fc6a10008810b41--guestan-b2c.netlify.app/";
+  // CONSTANT_VALUES?.URLS?.VERCEL_URL ||
+  // process.env.NEXT_PUBLIC_B2C_VERCEL ||
+  // "https://guestna.vercel.app";
+
+  const ourProductsUrl = providerSlug
+    ? `${b2cVercelUrl.replace(/\/$/, "")}/${providerSlug}`
+    : "#";
 
   const providerBasePath = `/${locale}/provider-profile`;
 
@@ -27,6 +56,14 @@ const ProviderNavigationDropdown = () => {
       icon: <TravelIcon />,
       path: `${providerBasePath}/products-management`,
     },
+    {
+      id: "our-products",
+      title: t("providerProfile.aside.ourProducts"),
+      icon: <StorefrontIcon />,
+      path: ourProductsUrl,
+      isExternal: true,
+      target: "_blank",
+    },
   ];
 
   return (
@@ -34,14 +71,17 @@ const ProviderNavigationDropdown = () => {
       <List className="p-0 space-y-1 sm:space-y-2">
         {navigationItems.map((item) => {
           const isActive =
-            item.path === providerBasePath
+            !item.isExternal &&
+            (item.path === providerBasePath
               ? pathname === providerBasePath
-              : pathname.startsWith(item.path);
+              : pathname.startsWith(item.path));
 
           return (
             <Box key={item.id} className="flex flex-col w-full">
               <Link
                 href={item.path}
+                target={item.target || "_self"}
+                rel={item.isExternal ? "noopener noreferrer" : undefined}
                 className={`border border-border sm:text-sm lg:text-base flex items-center w-full gap-2 sm:gap-3 px-2 sm:px-4 py-2 sm:py-3 mb-2 sm:mb-3 rounded-lg transition-colors ${
                   isActive
                     ? "text-white bg-mainColor"

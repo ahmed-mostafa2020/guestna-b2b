@@ -80,6 +80,12 @@ const LoginAccessModal = ({ open }) => {
         dispatch(setPermissions(response.data.user.permissions));
         dispatch(submitForm(response.data.user));
 
+        const providerSlug =
+          response.data.user?.providerSlug || response.data.providerSlug;
+        if (providerSlug) {
+          Cookies.set("providerSlug", providerSlug);
+        }
+
         if (response.data.user?.companyLogo) {
           dispatch(setCustomLogo(response.data.user.companyLogo));
         }

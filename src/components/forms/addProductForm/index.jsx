@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Formik } from "formik";
+import { Formik, useFormikContext } from "formik";
 import { useTranslations, useLocale } from "next-intl";
 import { useSnackbar } from "notistack";
 import axios from "axios";
@@ -305,11 +305,22 @@ export const formatAddProductPayload = (
   return payload;
 };
 
+const FormNameNotifier = ({ onProductNameChange }) => {
+  const { values } = useFormikContext();
+  useEffect(() => {
+    if (onProductNameChange) {
+      onProductNameChange(values?.name);
+    }
+  }, [values?.name, onProductNameChange]);
+  return null;
+};
+
 const AddProductForm = ({
   onClose,
   onSuccess,
   formSelectionData = null,
   productData = null,
+  onProductNameChange,
 }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [maxVisitedStep, setMaxVisitedStep] = useState(
@@ -344,7 +355,28 @@ const AddProductForm = ({
   const initialValues = useMemo(() => {
     if (!productData) return initialAddProductValues;
 
-    const supCats = productData.supCategories || productData.category || [];
+    const mainCat = productData.categories || productData.category;
+    let categoryId = "";
+    if (Array.isArray(mainCat)) {
+      const first = mainCat[0];
+      categoryId = typeof first === "object" && first !== null ? first._id || first.id || "" : first || "";
+    } else if (typeof mainCat === "object" && mainCat !== null) {
+      categoryId = mainCat._id || mainCat.id || "";
+    } else {
+      categoryId = mainCat || "";
+    }
+
+    const supCats = productData.supCategories || productData.supCategory || productData.subCategories || [];
+
+    let seatsMin = "";
+    let seatsMax = "";
+    if (typeof productData.availableSeats === "object" && productData.availableSeats !== null) {
+      seatsMin = productData.availableSeats?.min ?? "";
+      seatsMax = productData.availableSeats?.max ?? "";
+    } else if (productData.availableSeats !== undefined && productData.availableSeats !== null && productData.availableSeats !== "") {
+      seatsMin = productData.availableSeats;
+      seatsMax = productData.availableSeats;
+    }
 
     return {
       _id: productData._id || productData.id || "",
@@ -358,9 +390,7 @@ const AddProductForm = ({
         en: typeof productData.description === "object" ? productData.description?.en || "" : productData.description || "",
         ar: typeof productData.description === "object" ? productData.description?.ar || "" : productData.description || "",
       },
-      categories: typeof productData.categories === "object" && productData.categories !== null
-        ? productData.categories?._id || productData.categories?.id || ""
-        : productData.categories || "",
+      categories: categoryId,
       supCategories: Array.isArray(supCats)
         ? supCats.map((item) => (typeof item === "object" && item !== null ? item._id || item.id || "" : item))
         : [],
@@ -383,15 +413,10 @@ const AddProductForm = ({
       availableTimes: Array.isArray(productData.availableTimes) && productData.availableTimes.length
         ? productData.availableTimes
         : [{ from: "", to: "" }],
-      availableSeats: typeof productData.availableSeats === "object" && productData.availableSeats !== null
-        ? {
-            min: productData.availableSeats?.min ?? "",
-            max: productData.availableSeats?.max ?? "",
-          }
-        : {
-            min: typeof productData.availableSeats === "number" ? productData.availableSeats : "",
-            max: "",
-          },
+      availableSeats: {
+        min: seatsMin,
+        max: seatsMax,
+      },
       guestRange: productData.guestRange || { min: "", max: "" },
       duration: productData.duration ?? "",
       price: productData.price ?? "",
@@ -728,6 +753,7 @@ const AddProductForm = ({
     >
       {({ validateForm, setTouched, handleSubmit, values }) => (
         <div className="flex flex-col h-full overflow-hidden">
+          <FormNameNotifier onProductNameChange={onProductNameChange} />
           {/* Step Pills Navigation Bar */}
           <StepBar
             activeStep={activeStep}

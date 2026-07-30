@@ -232,7 +232,8 @@
   "providerProfile": {
     "aside": {
       "main": "Main Page",
-      "productsManagement": "Products Management"
+      "productsManagement": "Products Management",
+      "ourProducts": "Our Products"
     },
     "infoCards": {
       "totalBookings": "Total Bookings",
@@ -266,7 +267,9 @@
       },
       "modal": {
         "title": "Add New Product",
+        "editTitle": "Edit Product",
         "subtitle": "Fill in the details below to publish a new product",
+        "editSubtitle": "Update the details below to edit the product",
         "placeholderNotice": "Please fill out all required fields marked with *",
         "validation": {
           "systemTypesRequired": "At least one system type must be selected",

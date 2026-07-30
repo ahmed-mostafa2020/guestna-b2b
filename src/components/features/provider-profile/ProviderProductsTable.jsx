@@ -2,6 +2,8 @@
 
 import { useTranslations, useLocale } from "next-intl";
 import { memo, useMemo } from "react";
+import { useSelector } from "react-redux";
+import Cookies from "js-cookie";
 import Link from "next/link";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import formatDate from "@utils/formatters/FormateDate";
@@ -10,6 +12,7 @@ import DataTable from "@components/ui/DataTable";
 import SearchHeader from "@components/ui/SearchHeader";
 import { Chip, CircularProgress } from "@mui/material";
 import { OpenInNew, Edit as EditIcon } from "@mui/icons-material";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 
 const ProviderProductsTable = ({
   title,
@@ -24,6 +27,24 @@ const ProviderProductsTable = ({
 }) => {
   const t = useTranslations();
   const locale = useLocale();
+
+  const providerProfileData = useSelector(
+    (state) => state.providerProfile?.data
+  );
+  const loginData = useSelector((state) => state.loginForm?.loginData);
+
+  const providerSlug =
+    providerProfileData?.providerSlug ||
+    providerProfileData?.user?.providerSlug ||
+    loginData?.providerSlug ||
+    loginData?.user?.providerSlug ||
+    Cookies.get("providerSlug") ||
+    "";
+
+  const b2cBaseUrl =
+    // CONSTANT_VALUES?.URLS?.VERCEL_URL ||
+    // process.env.NEXT_PUBLIC_B2C_VERCEL ||
+    "https://6a6b5f5b6fc6a10008810b41--guestan-b2c.netlify.app";
 
   const rawNodes = data?.nodes || [];
   const pageInfo = data?.pageInfo || {
@@ -89,17 +110,29 @@ const ProviderProductsTable = ({
       {
         key: "view",
         label: t("providerProfile.products.table.view"),
-        render: (row) => (
-          <Link
-            href={`/${locale}/discover/${row.slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-mainColor bg-mainColor/10 hover:bg-mainColor hover:text-white rounded-lg transition-colors"
-          >
-            <span>{t("providerProfile.products.table.view")}</span>
-            <OpenInNew className="w-3.5 h-3.5" />
-          </Link>
-        ),
+        render: (row) => {
+          const currentSlug =
+            providerSlug ||
+            row.providerSlug ||
+            row.provider?.providerSlug ||
+            row.provider?.slug ||
+            "";
+          const viewUrl = currentSlug
+            ? `${b2cBaseUrl.replace(/\/$/, "")}/${currentSlug}/${row.slug}`
+            : `/${locale}/discover/${row.slug}`;
+
+          return (
+            <Link
+              href={viewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-mainColor bg-mainColor/10 hover:bg-mainColor hover:text-white rounded-lg transition-colors"
+            >
+              <span>{t("providerProfile.products.table.view")}</span>
+              <OpenInNew className="w-3.5 h-3.5" />
+            </Link>
+          );
+        },
       },
       {
         key: "edit",

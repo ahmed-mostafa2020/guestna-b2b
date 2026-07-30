@@ -1,6 +1,6 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useState, useEffect, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import CustomizedModal from "@components/ui/customizedModal";
 import CloseIcon from "@mui/icons-material/Close";
@@ -19,6 +19,20 @@ const AddProductModal = ({
   const t = useTranslations();
   const locale = useLocale();
 
+  const [formName, setFormName] = useState({ en: "", ar: "" });
+
+  useEffect(() => {
+    if (!isOpen) {
+      setFormName({ en: "", ar: "" });
+    }
+  }, [isOpen, productData]);
+
+  const handleProductNameChange = useCallback((nameObj) => {
+    if (nameObj) {
+      setFormName(nameObj);
+    }
+  }, []);
+
   // Fetch form selections options as fallback if not provided via props
   const { data: selectionResponse } = useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.FORM_SELECTIONS,
@@ -34,6 +48,32 @@ const AddProductModal = ({
     propFormSelectionData || selectionResponse?.data || selectionResponse;
 
   if (!isOpen) return null;
+
+  const isEditMode = Boolean(productData);
+
+  const baseTitle = isEditMode
+    ? t("providerProfile.products.modal.editTitle")
+    : t("providerProfile.products.modal.title");
+
+  const subtitle = isEditMode
+    ? t("providerProfile.products.modal.editSubtitle")
+    : t("providerProfile.products.modal.subtitle");
+
+  const activeProductName = (() => {
+    const hasFormName = Boolean(formName?.ar || formName?.en);
+    const nameObj = hasFormName ? formName : productData?.name;
+    if (!nameObj) return "";
+    if (typeof nameObj === "string") return nameObj.trim();
+    const nameStr =
+      locale === "ar"
+        ? nameObj.ar || nameObj.en || ""
+        : nameObj.en || nameObj.ar || "";
+    return nameStr.trim();
+  })();
+
+  const headerTitle = activeProductName
+    ? `${baseTitle} - ${activeProductName}`
+    : baseTitle;
 
   return (
     <CustomizedModal
@@ -59,10 +99,10 @@ const AddProductModal = ({
               </div>
               <div>
                 <h3 className="text-lg font-bold text-titleColor">
-                  {t("providerProfile.products.modal.title")}
+                  {headerTitle}
                 </h3>
                 <p className="text-xs text-subtitleColor">
-                  {t("providerProfile.products.modal.subtitle")}
+                  {subtitle}
                 </p>
               </div>
             </div>
@@ -87,6 +127,7 @@ const AddProductModal = ({
               onSuccess={onSuccess}
               formSelectionData={formSelectionData}
               productData={productData}
+              onProductNameChange={handleProductNameChange}
             />
           </div>
         </div>

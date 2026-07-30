@@ -41,6 +41,7 @@ import getProxyUrl from "@utils/api/getProxyUrl";
 import TextInputGroup from "../../TextInputGroup";
 // import TermsAndConditions from "./TermsAndConditions";
 
+import Cookies from "js-cookie";
 import { Formik } from "formik";
 
 import FormSubmitButton from "@components/ui/FormSubmitButton";
@@ -106,6 +107,12 @@ const RolesLoginForm = () => {
           dispatch(setUserToken(response.data.token));
           dispatch(setUser(response.data.userType));
           dispatch(setPermissions(response.data.user.permissions));
+
+          const providerSlug =
+            response.data.user?.providerSlug || response.data.providerSlug;
+          if (providerSlug) {
+            Cookies.set("providerSlug", providerSlug);
+          }
 
           // Set custom logo if available
           if (response.data.user.companyLogo) {

@@ -73,6 +73,11 @@ const ProviderProfileLayout = ({ children }) => {
         dispatch(setColorPreferences(data.colorPreferences));
       }
 
+      const providerSlug = data?.providerSlug || data?.user?.providerSlug;
+      if (providerSlug) {
+        Cookies.set("providerSlug", providerSlug);
+      }
+
       if (data?.image) {
         Cookies.set(CONSTANT_VALUES.PROFILE_IMAGE, data?.image || "");
       }
