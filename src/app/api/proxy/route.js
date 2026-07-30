@@ -100,12 +100,9 @@ export async function POST(request) {
     body = await request.json();
     headers["Content-Type"] = "application/json";
   } else if (contentType?.includes("multipart/form-data")) {
-    const formData = await request.formData();
-    const axiosFormData = new FormData();
-    for (const [key, value] of formData.entries()) {
-      axiosFormData.append(key, value);
-    }
-    body = axiosFormData;
+    headers["content-type"] = contentType; // Forward original Content-Type header with client boundary
+    const arrayBuffer = await request.arrayBuffer();
+    body = Buffer.from(arrayBuffer);
   }
 
   try {
@@ -157,12 +154,9 @@ export async function PUT(request) {
     body = await request.json();
     headers["Content-Type"] = "application/json";
   } else if (contentType?.includes("multipart/form-data")) {
-    const formData = await request.formData();
-    const axiosFormData = new FormData();
-    for (const [key, value] of formData.entries()) {
-      axiosFormData.append(key, value);
-    }
-    body = axiosFormData;
+    headers["content-type"] = contentType; // Forward original Content-Type header with client boundary
+    const arrayBuffer = await request.arrayBuffer();
+    body = Buffer.from(arrayBuffer);
   }
 
   try {
@@ -214,12 +208,9 @@ export async function PATCH(request) {
     body = await request.json();
     headers["Content-Type"] = "application/json";
   } else if (contentType?.includes("multipart/form-data")) {
-    const formData = await request.formData();
-    const axiosFormData = new FormData();
-    for (const [key, value] of formData.entries()) {
-      axiosFormData.append(key, value);
-    }
-    body = axiosFormData;
+    headers["content-type"] = contentType; // Forward original Content-Type header with client boundary
+    const arrayBuffer = await request.arrayBuffer();
+    body = Buffer.from(arrayBuffer);
   }
 
   try {

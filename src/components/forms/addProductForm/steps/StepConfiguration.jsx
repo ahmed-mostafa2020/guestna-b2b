@@ -20,6 +20,7 @@ const StepConfiguration = ({
     useFormikContext();
 
   const recurrenceOptions = [
+    { value: "NONE", label: t("recurrence.NONE") },
     { value: "WEEKLY", label: t("recurrence.WEEKLY") },
     { value: "MONTHLY", label: t("recurrence.MONTHLY") },
   ];
@@ -70,7 +71,8 @@ const StepConfiguration = ({
             multiple={true}
             value={(values.supCategories || [])
               .map(
-                (id) => supCategoryOptions.find((sup) => sup._id === id)?.name
+                (id) =>
+                  supCategoryOptions.find((sc) => sc._id === id)?.name || id
               )
               .filter(Boolean)}
             onChange={(e) => {
@@ -78,7 +80,7 @@ const StepConfiguration = ({
               const selectedIds = selectedNames
                 .map(
                   (name) =>
-                    supCategoryOptions.find((sup) => sup.name === name)?._id ||
+                    supCategoryOptions.find((sc) => sc.name === name)?._id ||
                     name
                 )
                 .filter(Boolean);
@@ -88,46 +90,44 @@ const StepConfiguration = ({
             touched={touched.supCategories}
             errors={errors.supCategories}
             placeholder={t("placeholders.selectSubcategories")}
-            list={supCategoryOptions.map((sup) => sup.name || sup)}
+            list={supCategoryOptions.map((sc) => sc.name || sc)}
           />
         </div>
 
         {/* Provider Branches */}
-        {providerBranchsOptions.length > 0 && (
-          <div>
-            <label className="block mb-1.5 text-sm font-medium text-titleColor">
-              {t("fields.providerBranches")}
-            </label>
-            <SelectionGroup
-              name="providerBranchs"
-              multiple={true}
-              value={(values.providerBranchs || [])
+        <div>
+          <label className="block mb-1.5 text-sm font-medium text-titleColor">
+            {t("fields.providerBranches")}
+          </label>
+          <SelectionGroup
+            name="providerBranchs"
+            multiple={true}
+            value={(values.providerBranchs || [])
+              .map(
+                (id) =>
+                  providerBranchsOptions.find((b) => b._id === id)?.name || id
+              )
+              .filter(Boolean)}
+            onChange={(e) => {
+              const selectedNames = e.target.value;
+              const selectedIds = selectedNames
                 .map(
-                  (id) =>
-                    providerBranchsOptions.find((b) => b._id === id)?.name
+                  (name) =>
+                    providerBranchsOptions.find((b) => b.name === name)?._id ||
+                    name
                 )
-                .filter(Boolean)}
-              onChange={(e) => {
-                const selectedNames = e.target.value;
-                const selectedIds = selectedNames
-                  .map(
-                    (name) =>
-                      providerBranchsOptions.find((b) => b.name === name)
-                        ?._id || name
-                  )
-                  .filter(Boolean);
-                setFieldValue("providerBranchs", selectedIds);
-              }}
-              onBlur={handleBlur}
-              touched={touched.providerBranchs}
-              errors={errors.providerBranchs}
-              placeholder={t("placeholders.selectProviderBranches")}
-              list={providerBranchsOptions.map((b) => b.name || b)}
-            />
-          </div>
-        )}
+                .filter(Boolean);
+              setFieldValue("providerBranchs", selectedIds);
+            }}
+            onBlur={handleBlur}
+            touched={touched.providerBranchs}
+            errors={errors.providerBranchs}
+            placeholder={t("placeholders.selectProviderBranches")}
+            list={providerBranchsOptions.map((b) => b.name || b)}
+          />
+        </div>
 
-        {/* Booking Before */}
+        {/* Booking Before (Days) */}
         <div>
           <label className="block mb-1.5 text-sm font-medium text-titleColor">
             {t("fields.bookingBefore")} <span className="text-error">*</span>
@@ -152,8 +152,14 @@ const StepConfiguration = ({
           </label>
           <SelectionGroup
             name="recurrencePattern"
-            value={values.recurrencePattern || "WEEKLY"}
-            onChange={(e) => setFieldValue("recurrencePattern", e.target.value)}
+            value={values.recurrencePattern || "NONE"}
+            onChange={(e) => {
+              const selectedVal = e.target.value;
+              const finalVal = selectedVal === "NONE" ? "" : selectedVal;
+              setFieldValue("recurrencePattern", finalVal);
+              if (finalVal !== "WEEKLY") setFieldValue("selectedDays", []);
+              if (finalVal !== "MONTHLY") setFieldValue("monthDay", "");
+            }}
             onBlur={handleBlur}
             touched={touched.recurrencePattern}
             errors={errors.recurrencePattern}
@@ -166,7 +172,7 @@ const StepConfiguration = ({
         {values.recurrencePattern === "WEEKLY" && (
           <div>
             <label className="block mb-1.5 text-sm font-medium text-titleColor">
-              {t("fields.days")}
+              {t("fields.days")} <span className="text-error">*</span>
             </label>
             <SelectionGroup
               name="selectedDays"
@@ -186,7 +192,7 @@ const StepConfiguration = ({
         {values.recurrencePattern === "MONTHLY" && (
           <div>
             <label className="block mb-1.5 text-sm font-medium text-titleColor">
-              {t("fields.monthDay")}
+              {t("fields.monthDay")} <span className="text-error">*</span>
             </label>
             <SelectionGroup
               name="monthDay"

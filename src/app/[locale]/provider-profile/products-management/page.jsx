@@ -158,7 +158,6 @@ const ProviderProductsManagementPage = () => {
             key.includes(B2B_END_POINTS.PROVIDER_PROFILE.B2C_TRIPS)
         ),
     });
-    refetchB2c?.();
   };
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Formik } from "formik";
 import { useTranslations, useLocale } from "next-intl";
 import { useSnackbar } from "notistack";
@@ -46,7 +46,7 @@ export const initialAddProductValues = {
   cities: [],
   providerBranchs: [],
   bookingBefore: "",
-  recurrencePattern: "WEEKLY",
+  recurrencePattern: "",
   selectedDays: [],
   monthDay: "",
   weekdayPricing: [],
@@ -109,8 +109,11 @@ export const formatAddProductPayload = (
     bookingBefore: values.bookingBefore !== "" && !isNaN(Number(values.bookingBefore)) ? Number(values.bookingBefore) : values.bookingBefore,
     "guestRange[min]": values.guestRange?.min,
     "guestRange[max]": values.guestRange?.max,
-    recurrencePattern: values.recurrencePattern || "WEEKLY",
   };
+
+  if (values.recurrencePattern) {
+    payload.recurrencePattern = values.recurrencePattern;
+  }
 
   if (!isEditMode) {
     const types = Array.isArray(values.systemTypes) && values.systemTypes.length > 0
@@ -125,8 +128,8 @@ export const formatAddProductPayload = (
     if (values.monthDay) {
       payload.monthDay = values.monthDay;
     }
-  } else {
-    (values.selectedDays || ["SUNDAY"]).forEach((item, idx) => {
+  } else if (values.recurrencePattern === "WEEKLY") {
+    (values.selectedDays || []).forEach((item, idx) => {
       payload[`selectedDays[${idx}]`] = item;
     });
   }
@@ -174,9 +177,9 @@ export const formatAddProductPayload = (
   });
 
   (values.datePricing || []).forEach((item, idx) => {
-    if (item.date) {
+    if (item.date && item.price !== "" && item.price !== undefined && item.price !== null) {
       payload[`datePricing[${idx}][date]`] = item.date;
-      payload[`datePricing[${idx}][price]`] = item.price;
+      payload[`datePricing[${idx}][price]`] = Number(item.price);
     }
   });
 
@@ -291,9 +294,10 @@ export const formatAddProductPayload = (
     }
   });
 
-  // Remove any empty string, null, or undefined keys from payload
+  // Remove any empty string, null, undefined, or NaN keys from payload
   Object.keys(payload).forEach((key) => {
-    if (payload[key] === "" || payload[key] === null || payload[key] === undefined) {
+    const val = payload[key];
+    if (val === "" || val === null || val === undefined || (typeof val === "number" && isNaN(val))) {
       delete payload[key];
     }
   });
@@ -312,12 +316,20 @@ const AddProductForm = ({
     productData ? STEP_KEYS.length - 1 : 0
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const stepContainerRef = useRef(null);
 
   useEffect(() => {
     if (productData) {
       setMaxVisitedStep(STEP_KEYS.length - 1);
     }
   }, [productData]);
+
+  // Smooth scroll container to top whenever activeStep changes
+  useEffect(() => {
+    if (stepContainerRef.current) {
+      stepContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [activeStep]);
 
   const t = useTranslations();
   const locale = useLocale();
@@ -359,7 +371,7 @@ const AddProductForm = ({
         ? productData.providerBranchs.map((item) => (typeof item === "object" && item !== null ? item._id || item.id || "" : item))
         : [],
       bookingBefore: productData.bookingBefore ?? "",
-      recurrencePattern: productData.recurrencePattern || "WEEKLY",
+      recurrencePattern: productData.recurrencePattern || "",
       selectedDays: productData.selectedDays || [],
       monthDay: productData.monthDay || "",
       weekdayPricing: productData.weekdayPricing || [],
@@ -727,7 +739,10 @@ const AddProductForm = ({
           />
 
           {/* Step Form Body */}
-          <div className="flex-1 overflow-y-auto p-5 sm:p-6 bg-white">
+          <div
+            ref={stepContainerRef}
+            className="flex-1 overflow-y-auto p-5 sm:p-6 bg-white scroll-smooth"
+          >
             {renderStepContent()}
           </div>
 

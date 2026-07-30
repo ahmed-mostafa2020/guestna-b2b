@@ -41,7 +41,19 @@ export const createAddProductSchema = (t) => {
 
     recurrencePattern: Yup.string().optional(),
 
-    selectedDays: Yup.array().of(Yup.string()).optional(),
+    selectedDays: Yup.array()
+      .of(Yup.string())
+      .when("recurrencePattern", {
+        is: "WEEKLY",
+        then: (schema) => schema.min(1, reqMsg).required(reqMsg),
+        otherwise: (schema) => schema.optional(),
+      }),
+
+    monthDay: Yup.string().when("recurrencePattern", {
+      is: "MONTHLY",
+      then: (schema) => schema.required(reqMsg),
+      otherwise: (schema) => schema.optional(),
+    }),
 
     fromDay: Yup.string().required(reqMsg),
 
@@ -67,13 +79,33 @@ export const createAddProductSchema = (t) => {
         .required(reqMsg),
       max: Yup.number()
         .typeError(reqMsg)
-        .min(Yup.ref("min"), "Max must be greater than or equal to Min")
-        .required(reqMsg),
+        .required(reqMsg)
+        .when("min", (minVal, schema) => {
+          const val = Array.isArray(minVal) ? minVal[0] : minVal;
+          const numMin = Number(val);
+          return !isNaN(numMin) && numMin > 0
+            ? schema.min(
+                numMin,
+                t("providerProfile.products.modal.validation.maxSeatsMinSeatsError")
+              )
+            : schema;
+        }),
     }),
 
     guestRange: Yup.object().shape({
       min: Yup.number().min(1).optional(),
-      max: Yup.number().min(Yup.ref("min")).optional(),
+      max: Yup.number()
+        .optional()
+        .when("min", (minVal, schema) => {
+          const val = Array.isArray(minVal) ? minVal[0] : minVal;
+          const numMin = Number(val);
+          return !isNaN(numMin) && numMin > 0
+            ? schema.min(
+                numMin,
+                t("providerProfile.products.modal.validation.maxGuestsMinGuestsError")
+              )
+            : schema;
+        }),
     }),
 
     duration: Yup.number()
@@ -231,7 +263,13 @@ export const getStepFieldNames = (stepIndex) => {
         "description.ar",
       ];
     case 1: // Configuration
-      return ["categories", "bookingBefore"];
+      return [
+        "categories",
+        "bookingBefore",
+        "recurrencePattern",
+        "selectedDays",
+        "monthDay",
+      ];
     case 2: // Dates
       return ["fromDay", "toDay"];
     case 3: // Activities

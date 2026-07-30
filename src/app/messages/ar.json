@@ -291,6 +291,7 @@
           "HALF_DAY": "نصف يوم"
         },
         "recurrence": {
+          "NONE": "بدون تكرار",
           "WEEKLY": "أسبوعي",
           "MONTHLY": "شهري"
         },
@@ -399,7 +400,9 @@
         "validation": {
           "galleryMin": "يتطلب تحميل 4 صور على الأقل للمعرض",
           "galleryMax": "الحد الأقصى 15 صورة للمعرض",
-          "systemTypesRequired": "يرجى تحديد نوع نظام واحد على الأقل"
+          "systemTypesRequired": "يرجى تحديد نوع نظام واحد على الأقل",
+          "maxSeatsMinSeatsError": "الحد الأقصى للسعة يجب أن يكون أكبر من أو يساوي الحد الأدنى للسعة",
+          "maxGuestsMinGuestsError": "الحد الأقصى للضيوف يجب أن يكون أكبر من أو يساوي الحد الأدنى للضيوف"
         },
         "steps": {
           "identity": "الهوية",

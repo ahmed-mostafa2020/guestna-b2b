@@ -284,6 +284,7 @@
           "HALF_DAY": "Half Day"
         },
         "recurrence": {
+          "NONE": "No Recurrence",
           "WEEKLY": "Weekly",
           "MONTHLY": "Monthly"
         },
@@ -390,9 +391,11 @@
           "benefitAr": "e.g. Free Meals & Refreshments (Arabic)"
         },
         "validation": {
-          "galleryMin": "Minimum 4 gallery images are required",
-          "galleryMax": "Maximum 15 gallery images allowed",
-          "systemTypesRequired": "Select at least one system type"
+          "galleryMin": "Requires uploading at least 4 gallery images",
+          "galleryMax": "Maximum 15 gallery images",
+          "systemTypesRequired": "Please select at least one system type",
+          "maxSeatsMinSeatsError": "Max capacity must be greater than or equal to Min capacity",
+          "maxGuestsMinGuestsError": "Max guests must be greater than or equal to Min guests"
         },
         "steps": {
           "identity": "Identity",

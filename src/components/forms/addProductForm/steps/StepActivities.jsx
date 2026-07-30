@@ -4,6 +4,16 @@ import { useFormikContext } from "formik";
 import { useTranslations } from "next-intl";
 import TextInputGroup from "@components/forms/TextInputGroup";
 
+const getNestedValue = (obj, path) => {
+  if (!obj || !path) return undefined;
+  if (!path.includes(".")) return obj[path];
+  const parts = path.split(".");
+  const parent = obj[parts[0]];
+  if (typeof parent === "boolean") return parent;
+  if (typeof parent === "object" && parent !== null) return parent[parts[1]];
+  return undefined;
+};
+
 const StepActivities = () => {
   const t = useTranslations("providerProfile.products.modal");
   const { values, errors, touched, handleChange, handleBlur } =
@@ -24,8 +34,8 @@ const StepActivities = () => {
             min={1}
             name="availableSeats.min"
             value={values.availableSeats?.min ?? ""}
-            errors={errors.availableSeats?.min}
-            touched={touched.availableSeats?.min}
+            errors={getNestedValue(errors, "availableSeats.min")}
+            touched={Boolean(getNestedValue(touched, "availableSeats.min"))}
             onChange={handleChange}
             onBlur={handleBlur}
             placeholder={t("placeholders.minSeats")}
@@ -42,8 +52,8 @@ const StepActivities = () => {
             min={1}
             name="availableSeats.max"
             value={values.availableSeats?.max ?? ""}
-            errors={errors.availableSeats?.max}
-            touched={touched.availableSeats?.max}
+            errors={getNestedValue(errors, "availableSeats.max")}
+            touched={Boolean(getNestedValue(touched, "availableSeats.max"))}
             onChange={handleChange}
             onBlur={handleBlur}
             placeholder={t("placeholders.maxSeats")}
@@ -62,8 +72,8 @@ const StepActivities = () => {
                 min={1}
                 name="guestRange.min"
                 value={values.guestRange?.min ?? ""}
-                errors={errors.guestRange?.min}
-                touched={touched.guestRange?.min}
+                errors={getNestedValue(errors, "guestRange.min")}
+                touched={Boolean(getNestedValue(touched, "guestRange.min"))}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder={t("placeholders.minSeats")}
@@ -79,8 +89,8 @@ const StepActivities = () => {
                 min={1}
                 name="guestRange.max"
                 value={values.guestRange?.max ?? ""}
-                errors={errors.guestRange?.max}
-                touched={touched.guestRange?.max}
+                errors={getNestedValue(errors, "guestRange.max")}
+                touched={Boolean(getNestedValue(touched, "guestRange.max"))}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder={t("placeholders.maxSeats")}
