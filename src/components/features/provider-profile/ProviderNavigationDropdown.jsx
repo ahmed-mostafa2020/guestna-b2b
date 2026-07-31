@@ -31,7 +31,7 @@ const ProviderNavigationDropdown = () => {
     loginData?.user?.providerSlug ||
     Cookies.get("providerSlug");
 
-  const b2cVercelUrl = "https://provider-marketplace--guestan-b2c.netlify.app";
+  const b2cVercelUrl = "https://guestan-b2c.netlify.app";
   // CONSTANT_VALUES?.URLS?.VERCEL_URL ||
   // process.env.NEXT_PUBLIC_B2C_VERCEL ||
   // "https://guestna.vercel.app";

@@ -44,7 +44,7 @@ const ProviderProductsTable = ({
   const b2cBaseUrl =
     // CONSTANT_VALUES?.URLS?.VERCEL_URL ||
     // process.env.NEXT_PUBLIC_B2C_VERCEL ||
-    "https://provider-marketplace--guestan-b2c.netlify.app/";
+    "https://guestan-b2c.netlify.app/";
 
   const rawNodes = data?.nodes || [];
   const pageInfo = data?.pageInfo || {
