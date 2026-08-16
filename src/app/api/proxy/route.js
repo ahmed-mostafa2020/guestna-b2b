@@ -6,7 +6,10 @@ export const maxDuration = 120; // Allow long-running file uploads/requests
 const PROXY_TIMEOUT = 180000; // 3 minutes timeout
 
 const getBackendUrl = (path) => {
-  let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+  let baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "";
   if (path && (path.startsWith("clientInfoBooking/") || path.startsWith("promoCodeDiscounts/"))) {
     baseUrl = baseUrl.replace(/\/b2b\/?$/, "/");
   }

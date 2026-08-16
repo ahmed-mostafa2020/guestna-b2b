@@ -18,7 +18,11 @@ const ProviderMainPage = () => {
     )}`;
   }, [t]);
 
-  const { data: homeResponse, isLoading: homeLoading } = useFetchData(
+  const {
+    data: homeResponse,
+    isLoading: homeLoading,
+    isFetching: homeFetching,
+  } = useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.HOME,
     {},
     {
@@ -27,15 +31,16 @@ const ProviderMainPage = () => {
   );
 
   const displayData = homeResponse?.data || homeResponse || {};
+  const isLoading = homeLoading || homeFetching || !homeResponse;
 
   return (
     <main className="flex flex-col gap-6 min-h-screen">
       {/* Stats Cards Section */}
-      <ProviderInfoCards data={displayData} />
+      <ProviderInfoCards data={displayData} loading={isLoading} />
 
       {/* Monthly Revenue Chart Section */}
       <div className="w-full">
-        <ProviderRevenueChart data={displayData} loading={homeLoading} />
+        <ProviderRevenueChart data={displayData} loading={isLoading} />
       </div>
     </main>
   );

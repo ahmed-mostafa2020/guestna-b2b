@@ -352,6 +352,7 @@ const AddProductForm = ({
     [t]
   );
 
+  const productId = productData?._id || productData?.id || "";
   const initialValues = useMemo(() => {
     if (!productData) return initialAddProductValues;
 
@@ -471,7 +472,7 @@ const AddProductForm = ({
         ar: productData.benefits?.ar?.length ? productData.benefits.ar : [""],
       },
     };
-  }, [productData]);
+  }, [productId]);
 
   const categoryOptions = formSelectionData?.categories || [];
   const supCategoryOptions =
@@ -670,7 +671,13 @@ const AddProductForm = ({
         body: formData,
       });
 
-      const data = await response.json();
+      const responseText = await response.text();
+      let data = {};
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        data = { message: responseText || `HTTP ${response.status} Error` };
+      }
 
       if (!response.ok) {
         throw { response: { data, status: response.status } };

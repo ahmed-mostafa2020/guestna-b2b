@@ -129,13 +129,15 @@ const StepReview = () => {
             <p className="flex items-center justify-between">
               <span>{t("fromDay")}:</span>
               <span className="font-semibold text-titleColor">
-                {values.fromDay || "-"} {values.fromHour ? `(${formatTime12h(values.fromHour)})` : ""}
+                {values.fromDay || "-"}{" "}
+                {values.fromHour ? `(${formatTime12h(values.fromHour)})` : ""}
               </span>
             </p>
             <p className="flex items-center justify-between">
               <span>{t("toDay")}:</span>
               <span className="font-semibold text-titleColor">
-                {values.toDay || "-"} {values.toHour ? `(${formatTime12h(values.toHour)})` : ""}
+                {values.toDay || "-"}{" "}
+                {values.toHour ? `(${formatTime12h(values.toHour)})` : ""}
               </span>
             </p>
             <p className="flex items-center justify-between">
@@ -157,7 +159,7 @@ const StepReview = () => {
             <p className="flex items-center justify-between">
               <span>{t("price")}:</span>
               <span className="font-bold text-mainColor text-base">
-                {formatCurrency(values.price || 0, locale)}
+                {formatCurrency(values.price || 0)}
               </span>
             </p>
             <p className="flex items-center justify-between">

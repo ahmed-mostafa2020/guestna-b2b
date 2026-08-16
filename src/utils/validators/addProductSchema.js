@@ -273,7 +273,13 @@ export const getStepFieldNames = (stepIndex) => {
     case 2: // Dates
       return ["fromDay", "toDay"];
     case 3: // Activities
-      return ["availableSeats.min", "availableSeats.max", "duration"];
+      return [
+        "availableSeats.min",
+        "availableSeats.max",
+        "guestRange.min",
+        "guestRange.max",
+        "duration",
+      ];
     case 4: // Pricing
       return ["price", "targetAudiences", "weekdayPricing", "datePricing"];
     case 5: // Services
