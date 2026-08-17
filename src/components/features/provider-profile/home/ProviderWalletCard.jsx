@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { memo } from "react";
 import Skeleton from "@mui/material/Skeleton";
-import { newSarLarge, newSarSmall } from "@assets/svg";
+import formatCurrency from "@utils/formatters/FormatCurrency";
 import { AccessTime, BarChart } from "@mui/icons-material";
 
 /* ─── Skeleton ─── */
@@ -62,15 +62,6 @@ export const ProviderWalletCardSkeleton = () => (
   </div>
 );
 
-/* ─── Format number ─── */
-const formatBalance = (amount) => {
-  if (amount === null || amount === undefined || isNaN(amount)) return "0";
-  return new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 1,
-  }).format(amount);
-};
-
 /* ─── Main Component ─── */
 const ProviderWalletCard = ({ data, loading }) => {
   const t = useTranslations();
@@ -97,13 +88,8 @@ const ProviderWalletCard = ({ data, loading }) => {
               {t("providerProfile.home.wallet.availableBalance")}
             </span>
 
-            <div className="flex items-baseline gap-2 mt-0.5" dir="ltr">
-              <span className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white">
-                {formatBalance(data?.availableBalance ?? 103621.5)}
-              </span>
-              <span className="text-white/90 scale-100 sm:scale-110">
-                {newSarLarge}
-              </span>
+            <div className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white mt-0.5 [&_svg]:w-5 sm:[&_svg]:w-6 lg:[&_svg]:w-7 [&_svg]:h-auto">
+              {formatCurrency(data?.availableBalance ?? 0)}
             </div>
           </div>
 
@@ -132,12 +118,8 @@ const ProviderWalletCard = ({ data, loading }) => {
               <span className="text-xs text-white/70 font-medium">
                 {t("providerProfile.home.wallet.pendingBalance")}
               </span>
-              <div
-                className="flex items-baseline gap-1 font-bold text-sm sm:text-base text-white"
-                dir="ltr"
-              >
-                <span>{formatBalance(data?.pendingBalance ?? 0)}</span>
-                <span className="text-white/80 scale-80">{newSarSmall}</span>
+              <div className="font-bold text-sm sm:text-base text-white">
+                {formatCurrency(data?.pendingBalance ?? 0)}
               </div>
             </div>
           </div>
@@ -151,12 +133,8 @@ const ProviderWalletCard = ({ data, loading }) => {
               <span className="text-xs text-white/70 font-medium">
                 {t("providerProfile.home.wallet.totalRevenue")}
               </span>
-              <div
-                className="flex items-baseline gap-1 font-bold text-sm sm:text-base text-white"
-                dir="ltr"
-              >
-                <span>{formatBalance(data?.totalBalance ?? 104621.5)}</span>
-                <span className="text-white/80 scale-80">{newSarSmall}</span>
+              <div className="font-bold text-sm sm:text-base text-white">
+                {formatCurrency(data?.totalBalance ?? 0)}
               </div>
             </div>
           </div>

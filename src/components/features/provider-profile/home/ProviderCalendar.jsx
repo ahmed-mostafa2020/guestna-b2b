@@ -58,11 +58,14 @@ const ProviderCalendar = ({
   onDateSelect,
   selectedDate,
   loading,
+  currentMonth: controlledMonth,
+  onMonthChange,
 }) => {
   const t = useTranslations();
   const locale = useLocale();
 
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [internalMonth, setInternalMonth] = useState(new Date());
+  const activeMonth = controlledMonth || internalMonth;
 
   const dayHeaders = useMemo(
     () => [
@@ -82,13 +85,17 @@ const ProviderCalendar = ({
     [highlightedDates]
   );
 
-  const handleMonthChange = useCallback((direction) => {
-    setCurrentMonth((prev) => {
-      const next = new Date(prev);
+  const handleMonthChange = useCallback(
+    (direction) => {
+      const next = new Date(activeMonth);
       next.setMonth(next.getMonth() + (direction === "next" ? 1 : -1));
-      return next;
-    });
-  }, []);
+      if (!controlledMonth) {
+        setInternalMonth(next);
+      }
+      onMonthChange?.(next);
+    },
+    [activeMonth, controlledMonth, onMonthChange]
+  );
 
   const handleDateClick = useCallback(
     (day) => {
@@ -101,8 +108,9 @@ const ProviderCalendar = ({
 
   if (loading) return <ProviderCalendarSkeleton />;
 
-  const days = getDaysInMonth(currentMonth);
+  const days = getDaysInMonth(activeMonth);
   const today = new Date();
+  const isArabic = locale === "ar";
 
   return (
     <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 h-full flex flex-col justify-between shadow-card">
@@ -115,32 +123,44 @@ const ProviderCalendar = ({
         {/* Month Navigation */}
         <div className="flex items-center gap-0.5 sm:gap-1 shrink-0 bg-gray-50 border border-border rounded-xl px-1.5 py-0.5">
           <button
+            type="button"
             onClick={() => handleMonthChange("prev")}
             className="p-1 hover:bg-white rounded-lg transition-colors text-textLight cursor-pointer"
-            aria-label="Previous month"
+            aria-label={t("providerProfile.home.calendar.prevMonth")}
+            title={t("providerProfile.home.calendar.prevMonth")}
           >
-            <ChevronRight className="!w-4 !h-4" />
+            {isArabic ? (
+              <ChevronRight className="!w-4 !h-4" />
+            ) : (
+              <ChevronLeft className="!w-4 !h-4" />
+            )}
           </button>
           <span className="text-xs sm:text-sm font-bold text-textDark min-w-[80px] sm:min-w-[110px] text-center whitespace-nowrap px-1">
             <span className="hidden sm:inline">
-              {formatDate(currentMonth, locale, {
+              {formatDate(activeMonth, locale, {
                 year: "numeric",
                 month: "long",
               })}
             </span>
             <span className="sm:hidden">
-              {formatDate(currentMonth, locale, {
+              {formatDate(activeMonth, locale, {
                 year: "numeric",
                 month: "short",
               })}
             </span>
           </span>
           <button
+            type="button"
             onClick={() => handleMonthChange("next")}
             className="p-1 hover:bg-white rounded-lg transition-colors text-textLight cursor-pointer"
-            aria-label="Next month"
+            aria-label={t("providerProfile.home.calendar.nextMonth")}
+            title={t("providerProfile.home.calendar.nextMonth")}
           >
-            <ChevronLeft className="!w-4 !h-4" />
+            {isArabic ? (
+              <ChevronLeft className="!w-4 !h-4" />
+            ) : (
+              <ChevronRight className="!w-4 !h-4" />
+            )}
           </button>
         </div>
       </div>
@@ -171,6 +191,7 @@ const ProviderCalendar = ({
 
           return (
             <button
+              type="button"
               key={ymd}
               onClick={() => handleDateClick(day)}
               className={`aspect-square flex items-center justify-center rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all duration-150 cursor-pointer ${
