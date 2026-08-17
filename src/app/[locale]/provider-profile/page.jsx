@@ -144,29 +144,29 @@ const ProviderMainPage = () => {
   }, []);
 
   return (
-    <main className="flex flex-col gap-6 min-h-screen">
+    <main className="flex flex-col gap-6 sm:gap-7 min-h-screen">
       {/* 1. Top Stat Cards */}
       <ProviderStatCards data={cardData} loading={isCardLoading} />
 
       {/* 2. Wallet / Balance Card */}
       <ProviderWalletCard data={balanceData} loading={isBalanceLoading} />
 
-      {/* 3. Row: 2 Columns - Booking Statistics & Performance Analytics */}
-      <Grid container spacing={3} alignItems="stretch">
-        {/* Booking Statistics (start in RTL) */}
-        <Grid size={{ xs: 12, lg: 6 }}>
-          <ProviderBookingStats data={homeData} loading={isHomeLoading} />
-        </Grid>
-
-        {/* Performance Analytics Bar Chart (end in RTL) */}
+      {/* 3. Row: 2 Columns - Performance Analytics (Right/Start) & Booking Statistics (Left/End) */}
+      <Grid container spacing={3.5} alignItems="stretch">
+        {/* Performance Analytics Bar Chart (right in RTL) */}
         <Grid size={{ xs: 12, lg: 6 }}>
           <ProviderPerformanceChart data={homeData} loading={isHomeLoading} />
         </Grid>
+
+        {/* Booking Statistics (left in RTL) */}
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <ProviderBookingStats data={homeData} loading={isHomeLoading} />
+        </Grid>
       </Grid>
 
-      {/* 4. Row: 2 Columns - Calendar at start & Recent Activities at end */}
-      <Grid container spacing={3} alignItems="stretch">
-        {/* Calendar at start (right in RTL) */}
+      {/* 4. Row: 2 Columns - Calendar at start (Right/Start) & Recent Activities at end (Left/End) */}
+      <Grid container spacing={3.5} alignItems="stretch">
+        {/* Timeline / Calendar at start (right in RTL) */}
         <Grid size={{ xs: 12, lg: 5 }}>
           <ProviderCalendar
             highlightedDates={Array.isArray(highlightedDates) ? highlightedDates : []}

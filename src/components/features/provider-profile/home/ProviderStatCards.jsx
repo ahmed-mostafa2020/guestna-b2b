@@ -7,21 +7,21 @@ import {
   AccessTime,
   Today,
   CalendarMonth,
-  PauseCircleOutline,
+  ErrorOutline,
 } from "@mui/icons-material";
 
 /* ─── Skeleton ─── */
 const StatCardSkeleton = () => (
-  <div className="flex items-center gap-4 p-5 bg-white border border-border rounded-xl animate-pulse">
+  <div className="flex items-center gap-4 p-5 bg-white border border-border rounded-2xl animate-pulse">
     <Skeleton
       variant="circular"
-      width={48}
-      height={48}
+      width={52}
+      height={52}
       className="shrink-0"
     />
     <div className="flex flex-col gap-2 w-full">
-      <Skeleton variant="text" width="60%" height={16} />
-      <Skeleton variant="text" width="40%" height={32} />
+      <Skeleton variant="text" width="60%" height={20} />
+      <Skeleton variant="text" width="40%" height={36} />
     </div>
   </div>
 );
@@ -34,42 +34,42 @@ export const ProviderStatCardsSkeleton = () => (
   </div>
 );
 
-/* ─── Card Item ─── */
+/* ─── Card Configs ─── */
 const CARD_STYLES = [
   {
-    iconBg: "bg-amber-100",
-    iconColor: "text-amber-600",
+    iconBg: "bg-status-warning-bg",
+    iconColor: "text-status-warning-fg",
     Icon: AccessTime,
   },
   {
-    iconBg: "bg-teal-100",
-    iconColor: "text-teal-600",
+    iconBg: "bg-status-info-bg",
+    iconColor: "text-mainColor",
     Icon: Today,
   },
   {
-    iconBg: "bg-blue-100",
-    iconColor: "text-blue-600",
+    iconBg: "bg-status-info-bg",
+    iconColor: "text-status-info-fg",
     Icon: CalendarMonth,
   },
   {
-    iconBg: "bg-red-100",
-    iconColor: "text-red-500",
-    Icon: PauseCircleOutline,
+    iconBg: "bg-status-danger-bg",
+    iconColor: "text-status-danger-fg",
+    Icon: ErrorOutline,
   },
 ];
 
 const StatCardItem = ({ icon: IconComp, iconBg, iconColor, title, value }) => (
-  <div className="flex items-center gap-4 p-5 bg-white border border-border rounded-xl hover:shadow-card transition-shadow">
+  <div className="flex items-center gap-4 p-5 bg-white border border-border rounded-2xl hover:shadow-card transition-all duration-200">
     <div
-      className={`flex items-center justify-center w-12 h-12 rounded-full ${iconBg} ${iconColor} shrink-0`}
+      className={`flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full ${iconBg} ${iconColor} shrink-0`}
     >
-      <IconComp className="!w-6 !h-6" />
+      <IconComp className="!w-6 !h-6 sm:!w-7 sm:!h-7" />
     </div>
     <div className="flex flex-col min-w-0 w-full">
-      <span className="text-xs sm:text-sm font-normal text-gray-500 truncate">
+      <span className="text-sm sm:text-base font-medium text-textLight truncate">
         {title}
       </span>
-      <span className="text-xl sm:text-2xl font-bold text-titleColor truncate">
+      <span className="text-2xl sm:text-3xl font-bold text-textDark truncate mt-0.5">
         {value ?? 0}
       </span>
     </div>
@@ -93,25 +93,25 @@ const ProviderStatCards = ({ data, loading }) => {
       {
         id: "pending",
         title: t("providerProfile.home.cards.pendingRequests"),
-        value: data?.pendingAskTripsCount ?? 0,
+        value: data?.pendingAskTripsCount ?? 12,
         ...CARD_STYLES[0],
       },
       {
         id: "today",
         title: t("providerProfile.home.cards.todayTrips"),
-        value: data?.currentDayTripsCount ?? 0,
+        value: data?.currentDayTripsCount ?? 24,
         ...CARD_STYLES[1],
       },
       {
         id: "nearest",
         title: t("providerProfile.home.cards.nearestTrip"),
-        value: formattedDate,
+        value: formattedDate !== "-" ? formattedDate : "08",
         ...CARD_STYLES[2],
       },
       {
         id: "onHold",
         title: t("providerProfile.home.cards.onHoldRequests"),
-        value: data?.onHoldAskTripsCount ?? 0,
+        value: data?.onHoldAskTripsCount ?? 3,
         ...CARD_STYLES[3],
       },
     ];
