@@ -244,6 +244,82 @@
       "title": "Monthly Revenue Performance",
       "label": "Total Revenue"
     },
+    "home": {
+      "cards": {
+        "pendingRequests": "Pending Requests",
+        "todayTrips": "Today's Trips",
+        "nearestTrip": "Nearest Trip",
+        "onHoldRequests": "On Hold Requests"
+      },
+      "wallet": {
+        "title": "Financial Wallet",
+        "availableBalance": "Available Balance",
+        "totalBalance": "Total Balance",
+        "pendingBalance": "Pending Balance",
+        "transfer": "Transfer"
+      },
+      "analytics": {
+        "title": "Performance Analytics",
+        "bookingStats": "Booking Statistics",
+        "b2bTrips": "B2B Trips",
+        "b2cTrips": "B2C Trips",
+        "totalTrips": "Total Trips",
+        "scheduledTrips": "Scheduled Trips",
+        "actualTrips": "Actual Trips",
+        "scheduledLabel": "Scheduled"
+      },
+      "calendar": {
+        "title": "Timeline",
+        "sun": "Sun",
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat"
+      },
+      "recentActivities": {
+        "title": "Recent Activities",
+        "viewAll": "View All Activities",
+        "students": "Students",
+        "city": "City",
+        "seats": "Seats",
+        "noTrips": "No trips on this date"
+      },
+      "bookingsTable": {
+        "title": "Track All Bookings",
+        "filterHint": "Filter Results",
+        "columns": {
+          "orderId": "Order ID",
+          "tripName": "Trip Name",
+          "type": "Type",
+          "organization": "Organization",
+          "capacity": "Capacity",
+          "date": "Date",
+          "price": "Price",
+          "status": "Status",
+          "action": "Action"
+        },
+        "filters": {
+          "allStatuses": "All Statuses",
+          "allTimes": "All Times",
+          "allTypes": "All Types"
+        },
+        "statuses": {
+          "PENDING": "Pending",
+          "PENDING_COMPANY_APPROVAL": "Pending Approval",
+          "ON_HOLD": "On Hold",
+          "SCHEDULED": "Scheduled",
+          "DONE": "Done",
+          "CANCELLED": "Cancelled",
+          "REJECTED": "Rejected"
+        },
+        "types": {
+          "TRIP": "Trip",
+          "CUSTOM_TRIP": "Custom Trip"
+        }
+      }
+    },
     "products": {
       "title": "Products & Activities Management",
       "headerTitle": "Products Management",

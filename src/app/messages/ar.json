@@ -251,6 +251,82 @@
       "title": "أداء الإيرادات الشهرية",
       "label": "إجمالي الإيرادات"
     },
+    "home": {
+      "cards": {
+        "pendingRequests": "الطلبات المعلقة",
+        "todayTrips": "رحلات اليوم",
+        "nearestTrip": "أقرب رحلة",
+        "onHoldRequests": "طلبات قيد الانتظار"
+      },
+      "wallet": {
+        "title": "المحفظة المالية",
+        "availableBalance": "الرصيد المتاح",
+        "totalBalance": "الرصيد الإجمالي",
+        "pendingBalance": "الرصيد المعلق",
+        "transfer": "تحويل"
+      },
+      "analytics": {
+        "title": "تحليلات الأداء",
+        "bookingStats": "إحصائيات الحجوزات",
+        "b2bTrips": "رحلات المدارس",
+        "b2cTrips": "رحلات الأفراد",
+        "totalTrips": "إجمالي الرحلات",
+        "scheduledTrips": "الرحلات المجدولة",
+        "actualTrips": "الرحلات المنفذة",
+        "scheduledLabel": "المجدولة"
+      },
+      "calendar": {
+        "title": "الجدول الزمني",
+        "sun": "الأحد",
+        "mon": "الاثنين",
+        "tue": "الثلاثاء",
+        "wed": "الأربعاء",
+        "thu": "الخميس",
+        "fri": "الجمعة",
+        "sat": "السبت"
+      },
+      "recentActivities": {
+        "title": "آخر النشاطات",
+        "viewAll": "عرض جميع النشاطات",
+        "students": "طلاب",
+        "city": "المدينة",
+        "seats": "المقاعد",
+        "noTrips": "لا توجد رحلات في هذا التاريخ"
+      },
+      "bookingsTable": {
+        "title": "متابعة جميع الحجوزات",
+        "filterHint": "تصفية النتائج",
+        "columns": {
+          "orderId": "رقم الطلب",
+          "tripName": "اسم الرحلة",
+          "type": "النوع",
+          "organization": "المؤسسة",
+          "capacity": "السعة",
+          "date": "يوم القائد",
+          "price": "سعر المزود",
+          "status": "الحالة",
+          "action": "الاكشن"
+        },
+        "filters": {
+          "allStatuses": "كل الحالات",
+          "allTimes": "كل الأوقات",
+          "allTypes": "كل الأنواع"
+        },
+        "statuses": {
+          "PENDING": "معلقة",
+          "PENDING_COMPANY_APPROVAL": "بانتظار الموافقة",
+          "ON_HOLD": "قيد الانتظار",
+          "SCHEDULED": "مجدولة",
+          "DONE": "مكتملة",
+          "CANCELLED": "ملغاة",
+          "REJECTED": "مرفوضة"
+        },
+        "types": {
+          "TRIP": "رحلة",
+          "CUSTOM_TRIP": "رحلة مخصصة"
+        }
+      }
+    },
     "products": {
       "title": "إدارة المنتجات والأنشطة",
       "headerTitle": "إدارة المنتجات",
