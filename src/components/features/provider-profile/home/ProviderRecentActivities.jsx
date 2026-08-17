@@ -78,11 +78,11 @@ export const ProviderRecentActivitiesSkeleton = () => (
 
 /* ─── Activity Card ─── */
 const ActivityCard = ({ trip, t }) => {
-  const bookingNum = trip.bookingNumber || trip.orderId || "GNA-9942";
-  const branchName = trip.branch || trip.cities?.[0]?.name || "الرياض";
+  const bookingNum = trip.bookingNumber || trip.orderId || "-";
+  const branchName = trip.branch || trip.cities?.[0]?.name || "-";
   const orgName =
-    trip.organizationName || trip.organization?.name || "مدارس نجد الأهلية";
-  const visitors = trip.visitorsCount || trip.availableSeats || 45;
+    trip.organizationName || trip.organization?.name || "-";
+  const visitors = trip.visitorsCount || trip.availableSeats || 0;
   const stageName =
     trip.stage ||
     trip.academicStages?.[0]?.name ||
@@ -95,7 +95,7 @@ const ActivityCard = ({ trip, t }) => {
         {trip.thumbnail?.web || typeof trip.thumbnail === "string" ? (
           <Image
             src={trip.thumbnail?.web || trip.thumbnail}
-            alt={trip.name}
+            alt={trip.name || "Trip"}
             fill
             className="object-cover"
             sizes="80px"
@@ -110,7 +110,7 @@ const ActivityCard = ({ trip, t }) => {
       {/* Info Details */}
       <div className="flex flex-col gap-1.5 min-w-0 flex-1">
         <h4 className="text-sm sm:text-base font-bold text-textDark truncate">
-          {trip.name}
+          {trip.name || "-"}
         </h4>
 
         {/* Row 1: Booking No | Branch | Org */}
@@ -156,12 +156,17 @@ const ActivityCard = ({ trip, t }) => {
 };
 
 /* ─── Main Component ─── */
-const ProviderRecentActivities = ({ trips = [], loading }) => {
+const ProviderRecentActivities = ({ trips = [], selectedDate, loading }) => {
   const t = useTranslations();
 
   if (loading) return <ProviderRecentActivitiesSkeleton />;
 
-  const displayTrips = trips && trips.length > 0 ? trips : DEFAULT_ACTIVITIES;
+  const hasSelectedDate = Boolean(selectedDate);
+  const displayTrips = hasSelectedDate
+    ? trips
+    : trips && trips.length > 0
+    ? trips
+    : DEFAULT_ACTIVITIES;
 
   return (
     <div className="bg-white border border-border rounded-2xl p-5 sm:p-6 h-full flex flex-col justify-between shadow-card">
@@ -169,10 +174,16 @@ const ProviderRecentActivities = ({ trips = [], loading }) => {
         {t("providerProfile.home.recentActivities.title")}
       </h3>
 
-      <div className="flex flex-col gap-3 flex-1">
-        {displayTrips.map((trip, idx) => (
-          <ActivityCard key={trip._id || idx} trip={trip} t={t} />
-        ))}
+      <div className="flex flex-col gap-3 flex-1 justify-center">
+        {displayTrips && displayTrips.length > 0 ? (
+          displayTrips.map((trip, idx) => (
+            <ActivityCard key={trip._id || idx} trip={trip} t={t} />
+          ))
+        ) : (
+          <div className="flex items-center justify-center py-12 text-center text-textLight font-semibold text-sm sm:text-base">
+            {t("providerProfile.home.recentActivities.noTrips")}
+          </div>
+        )}
       </div>
 
       {/* View All Button */}

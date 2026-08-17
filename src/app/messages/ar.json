@@ -282,6 +282,8 @@
       },
       "calendar": {
         "title": "الجدول الزمني",
+        "prevMonth": "الشهر السابق",
+        "nextMonth": "الشهر التالي",
         "sun": "الأحد",
         "mon": "الاثنين",
         "tue": "الثلاثاء",
@@ -307,6 +309,7 @@
       "bookingsTable": {
         "title": "متابعة جميع الحجوزات",
         "filterHint": "تصفية النتائج",
+        "viewDetails": "عرض التفاصيل",
         "columns": {
           "orderId": "رقم الطلب",
           "client": "العميل",

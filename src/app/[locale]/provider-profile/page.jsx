@@ -172,6 +172,8 @@ const ProviderMainPage = () => {
             highlightedDates={Array.isArray(highlightedDates) ? highlightedDates : []}
             onDateSelect={handleDateSelect}
             selectedDate={selectedDate}
+            currentMonth={calendarMonth}
+            onMonthChange={setCalendarMonth}
             loading={isCalendarLoading}
           />
         </Grid>
@@ -180,6 +182,7 @@ const ProviderMainPage = () => {
         <Grid size={{ xs: 12, lg: 7 }}>
           <ProviderRecentActivities
             trips={dayTrips}
+            selectedDate={selectedDate}
             loading={isDayTripsLoading}
           />
         </Grid>

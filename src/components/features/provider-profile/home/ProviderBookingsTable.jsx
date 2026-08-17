@@ -1,10 +1,11 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { memo, useMemo, useState } from "react";
 import Skeleton from "@mui/material/Skeleton";
 import { RemoveRedEyeOutlined, KeyboardArrowDown } from "@mui/icons-material";
 import formatCurrency from "@utils/formatters/FormatCurrency";
+import formatDate from "@utils/formatters/FormateDate";
 import DataTable from "@components/ui/DataTable";
 
 /* ─── Skeleton ─── */
@@ -92,6 +93,7 @@ const StatusBadge = ({ status, label }) => {
 /* ─── Main Component ─── */
 const ProviderBookingsTable = ({ data, loading, currentPage, setCurrentPage }) => {
   const t = useTranslations();
+  const locale = useLocale();
   const [b2bFilter, setB2bFilter] = useState("all");
 
   const rawNodes = data?.nodes || [];
@@ -122,21 +124,28 @@ const ProviderBookingsTable = ({ data, loading, currentPage, setCurrentPage }) =
     [t]
   );
 
-  // Table columns matching the screenshot
+  // Table columns matching the design
   const columns = useMemo(
     () => [
       {
         key: "orderId",
         label: t("providerProfile.home.bookingsTable.columns.orderId"),
         className: "font-bold text-textDark text-sm sm:text-base",
-        render: (row) => String(row.orderId || "1234567890"),
+        render: (row) => String(row.orderId || row._id?.slice(-8) || "-"),
       },
       {
         key: "client",
         label: t("providerProfile.home.bookingsTable.columns.client"),
         render: (row) => {
-          const orgName = row.organization || "مدرسة النور المتوسطة";
-          const eduSystem = row.track?.educationSystem?.name || (row.askType === "CUSTOM_TRIP" ? "متعددة المسارات" : "عالمي");
+          const orgName =
+            typeof row.organization === "string"
+              ? row.organization
+              : row.organization?.name || "-";
+          const eduSystem =
+            row.track?.educationSystem?.name ||
+            (row.askType === "CUSTOM_TRIP"
+              ? t("providerProfile.home.recentActivities.multipleStages")
+              : "-");
           return (
             <div className="flex flex-col">
               <span className="font-bold text-textDark text-sm sm:text-base">
@@ -153,7 +162,7 @@ const ProviderBookingsTable = ({ data, loading, currentPage, setCurrentPage }) =
         key: "product",
         label: t("providerProfile.home.bookingsTable.columns.product"),
         className: "font-semibold text-textDark text-sm sm:text-base",
-        render: (row) => row.name || "نشاط العلا التاريخي",
+        render: (row) => row.name || "-",
       },
       {
         key: "orderType",
@@ -168,17 +177,13 @@ const ProviderBookingsTable = ({ data, loading, currentPage, setCurrentPage }) =
         key: "orderDate",
         label: t("providerProfile.home.bookingsTable.columns.orderDate"),
         className: "text-textDark text-sm sm:text-base font-semibold",
-        render: (row) => {
-          if (!row.day) return "6\\10\\2025";
-          const d = new Date(row.day);
-          return `${d.getDate()}\\${d.getMonth() + 1}\\${d.getFullYear()}`;
-        },
+        render: (row) => (row.day ? formatDate(row.day, locale) : "-"),
       },
       {
         key: "budget",
         label: t("providerProfile.home.bookingsTable.columns.budget"),
         className: "font-bold text-textDark text-sm sm:text-base",
-        render: (row) => formatCurrency(row.basePrice ?? 15000),
+        render: (row) => formatCurrency(row.basePrice ?? 0),
       },
       {
         key: "status",
@@ -197,14 +202,15 @@ const ProviderBookingsTable = ({ data, loading, currentPage, setCurrentPage }) =
           <button
             type="button"
             className="w-9 h-9 rounded-xl border border-border hover:border-mainColor hover:bg-mainColor/5 text-textLight hover:text-mainColor transition-all flex items-center justify-center cursor-pointer shadow-2xs"
-            aria-label="View details"
+            aria-label={t("providerProfile.home.bookingsTable.viewDetails")}
+            title={t("providerProfile.home.bookingsTable.viewDetails")}
           >
             <RemoveRedEyeOutlined className="!w-5 !h-5" />
           </button>
         ),
       },
     ],
-    [t]
+    [t, locale]
   );
 
   if (loading) return <ProviderBookingsTableSkeleton />;

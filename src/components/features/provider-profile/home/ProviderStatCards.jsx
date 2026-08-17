@@ -1,8 +1,9 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { memo, useMemo } from "react";
 import Skeleton from "@mui/material/Skeleton";
+import formatDate from "@utils/formatters/FormateDate";
 import {
   AccessTime,
   Today,
@@ -79,11 +80,12 @@ const StatCardItem = ({ icon: IconComp, iconBg, iconColor, title, value }) => (
 /* ─── Main Component ─── */
 const ProviderStatCards = ({ data, loading }) => {
   const t = useTranslations();
+  const locale = useLocale();
 
   const cards = useMemo(() => {
     const isDate = data?.earliestNextTripDay;
     const formattedDate = isDate
-      ? new Date(isDate).toLocaleDateString("en-US", {
+      ? formatDate(isDate, locale, {
           month: "short",
           day: "numeric",
         })
@@ -93,29 +95,29 @@ const ProviderStatCards = ({ data, loading }) => {
       {
         id: "pending",
         title: t("providerProfile.home.cards.pendingRequests"),
-        value: data?.pendingAskTripsCount ?? 12,
+        value: data?.pendingAskTripsCount ?? 0,
         ...CARD_STYLES[0],
       },
       {
         id: "today",
         title: t("providerProfile.home.cards.todayTrips"),
-        value: data?.currentDayTripsCount ?? 24,
+        value: data?.currentDayTripsCount ?? 0,
         ...CARD_STYLES[1],
       },
       {
         id: "nearest",
         title: t("providerProfile.home.cards.nearestTrip"),
-        value: formattedDate !== "-" ? formattedDate : "08",
+        value: formattedDate,
         ...CARD_STYLES[2],
       },
       {
         id: "onHold",
         title: t("providerProfile.home.cards.onHoldRequests"),
-        value: data?.onHoldAskTripsCount ?? 3,
+        value: data?.onHoldAskTripsCount ?? 0,
         ...CARD_STYLES[3],
       },
     ];
-  }, [t, data]);
+  }, [t, locale, data]);
 
   if (loading) return <ProviderStatCardsSkeleton />;
 

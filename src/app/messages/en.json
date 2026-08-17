@@ -275,6 +275,8 @@
       },
       "calendar": {
         "title": "Timeline",
+        "prevMonth": "Previous Month",
+        "nextMonth": "Next Month",
         "sun": "Sun",
         "mon": "Mon",
         "tue": "Tue",
@@ -300,6 +302,7 @@
       "bookingsTable": {
         "title": "Track All Bookings",
         "filterHint": "Filter Results",
+        "viewDetails": "View Details",
         "columns": {
           "orderId": "Order ID",
           "client": "Client",

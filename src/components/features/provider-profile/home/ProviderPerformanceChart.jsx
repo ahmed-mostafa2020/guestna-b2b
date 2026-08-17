@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations, useLocale } from "next-intl";
-import { memo, useState, useEffect } from "react";
+import { memo, useState, useEffect, useMemo } from "react";
 import Skeleton from "@mui/material/Skeleton";
 import formatDate from "@utils/formatters/FormateDate";
 import EmptyBookings from "@components/features/profile/myBookings/EmptyBookings";
@@ -96,22 +96,25 @@ const ProviderPerformanceChart = ({ data, loading }) => {
   const isArabic = locale === "ar";
   const shortMonths = isArabic ? AR_SHORT_MONTHS : EN_SHORT_MONTHS;
 
-  const chartData =
-    data?.monthlyRevenue?.map((item) => {
-      const monthIdx = (item.month - 1) % 12;
-      const shortLabel = shortMonths[monthIdx] || `${item.month}`;
-      const fullMonth = formatDate(
-        new Date(item.year, item.month - 1, 1).toISOString(),
-        locale,
-        { month: "long" }
-      );
+  const chartData = useMemo(() => {
+    return (
+      data?.monthlyRevenue?.map((item) => {
+        const monthIdx = (item.month - 1) % 12;
+        const shortLabel = shortMonths[monthIdx] || `${item.month}`;
+        const fullMonth = formatDate(
+          new Date(item.year, item.month - 1, 1).toISOString(),
+          locale,
+          { month: "long" }
+        );
 
-      return {
-        month: isMobile ? shortLabel : fullMonth,
-        fullMonth,
-        count: item.totalCount ?? 0,
-      };
-    }) || [];
+        return {
+          month: isMobile ? shortLabel : fullMonth,
+          fullMonth,
+          count: item.totalCount ?? 0,
+        };
+      }) || []
+    );
+  }, [data?.monthlyRevenue, isMobile, locale, shortMonths]);
 
   return (
     <div className="bg-white border border-border rounded-2xl p-5 sm:p-6 h-full flex flex-col justify-between shadow-card">
