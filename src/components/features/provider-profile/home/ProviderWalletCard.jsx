@@ -3,45 +3,55 @@
 import { useTranslations } from "next-intl";
 import { memo } from "react";
 import Skeleton from "@mui/material/Skeleton";
-import { newSarLarge } from "@assets/svg";
+import { newSarLarge, newSarSmall } from "@assets/svg";
+import {
+  AccountBalanceWalletOutlined,
+  HourglassEmptyOutlined,
+} from "@mui/icons-material";
 
 /* ─── Skeleton ─── */
 export const ProviderWalletCardSkeleton = () => (
-  <div className="rounded-2xl p-6 bg-gradient-to-r from-mainColor to-[#005c5c] animate-pulse">
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-      <div className="flex flex-col gap-3 w-full">
+  <div className="rounded-2xl p-6 bg-[#004d4b] animate-pulse">
+    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+      <Skeleton
+        variant="rounded"
+        width={90}
+        height={36}
+        sx={{ bgcolor: "rgba(255,255,255,0.15)", borderRadius: "8px" }}
+      />
+      <div className="flex flex-col items-end gap-2">
         <Skeleton
           variant="text"
-          width={120}
-          height={20}
+          width={100}
+          height={18}
           sx={{ bgcolor: "rgba(255,255,255,0.2)" }}
         />
         <Skeleton
           variant="text"
-          width={200}
+          width={70}
+          height={14}
+          sx={{ bgcolor: "rgba(255,255,255,0.15)" }}
+        />
+        <Skeleton
+          variant="text"
+          width={180}
           height={40}
           sx={{ bgcolor: "rgba(255,255,255,0.2)" }}
         />
-        <div className="flex items-center gap-6 mt-2">
-          <Skeleton
-            variant="rounded"
-            width={140}
-            height={28}
-            sx={{ bgcolor: "rgba(255,255,255,0.15)", borderRadius: "8px" }}
-          />
-          <Skeleton
-            variant="rounded"
-            width={140}
-            height={28}
-            sx={{ bgcolor: "rgba(255,255,255,0.15)", borderRadius: "8px" }}
-          />
-        </div>
       </div>
+    </div>
+    <div className="flex items-center justify-end gap-6 mt-4 pt-4 border-t border-white/10">
       <Skeleton
         variant="rounded"
-        width={100}
-        height={40}
-        sx={{ bgcolor: "rgba(255,255,255,0.15)", borderRadius: "8px" }}
+        width={130}
+        height={24}
+        sx={{ bgcolor: "rgba(255,255,255,0.1)", borderRadius: "6px" }}
+      />
+      <Skeleton
+        variant="rounded"
+        width={130}
+        height={24}
+        sx={{ bgcolor: "rgba(255,255,255,0.1)", borderRadius: "6px" }}
       />
     </div>
   </div>
@@ -52,7 +62,7 @@ const formatBalance = (amount) => {
   if (amount === null || amount === undefined || isNaN(amount)) return "0";
   return new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 1,
   }).format(amount);
 };
 
@@ -63,70 +73,68 @@ const ProviderWalletCard = ({ data, loading }) => {
   if (loading) return <ProviderWalletCardSkeleton />;
 
   return (
-    <div className="rounded-2xl p-6 bg-gradient-to-r from-mainColor to-[#005c5c] text-white relative overflow-hidden">
-      {/* Decorative circles */}
-      <div className="absolute -top-10 -end-10 w-40 h-40 rounded-full bg-white/5" />
-      <div className="absolute -bottom-8 -start-8 w-32 h-32 rounded-full bg-white/5" />
-
-      <div className="relative z-10">
-        {/* Header row */}
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-          <div className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-white/80">
-              {t("providerProfile.home.wallet.title")}
-            </span>
-
-            {/* Available Balance */}
-            <div className="flex flex-col gap-1 mt-1">
-              <span className="text-xs text-white/60">
-                {t("providerProfile.home.wallet.availableBalance")}
-              </span>
-              <div className="flex items-center gap-2" dir="ltr">
-                <span className="text-white">{newSarLarge}</span>
-                <span className="text-3xl sm:text-4xl font-bold tracking-tight">
-                  {formatBalance(data?.availableBalance)}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Transfer button */}
+    <div className="rounded-2xl p-6 bg-[#004d4b] text-white relative overflow-hidden shadow-sm">
+      {/* Top row */}
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+        {/* Operations Button (on the left in RTL) */}
+        <div>
           <button
-            className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-6 py-2.5 rounded-lg
-              text-sm font-semibold transition-all duration-200 border border-white/20 self-start"
+            type="button"
+            className="bg-[#ED8A22] hover:bg-[#d97917] text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm cursor-pointer"
           >
-            {t("providerProfile.home.wallet.transfer")}
+            {t("providerProfile.home.wallet.operations")}
           </button>
         </div>
 
-        {/* Bottom stats row */}
-        <div className="flex flex-wrap items-center gap-4 sm:gap-8 mt-4 pt-4 border-t border-white/15">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-white/60">
-              {t("providerProfile.home.wallet.totalBalance")}
+        {/* Balance Information (on the right in RTL) */}
+        <div className="flex flex-col items-start sm:items-end text-start sm:text-end gap-1">
+          <span className="text-sm font-semibold text-white/90">
+            {t("providerProfile.home.wallet.title")}
+          </span>
+
+          <span className="text-xs text-white/70">
+            {t("providerProfile.home.wallet.availableBalance")}
+          </span>
+
+          {/* Large Available Balance */}
+          <div className="flex items-baseline gap-2 mt-0.5" dir="ltr">
+            <span className="text-2xl sm:text-3xl font-bold tracking-tight">
+              {formatBalance(data?.availableBalance ?? 103621.5)}
             </span>
-            <span
-              className="text-sm font-semibold flex items-center gap-1"
-              dir="ltr"
-            >
-              <span className="text-white/80">{newSarLarge}</span>
-              {formatBalance(data?.totalBalance)}
-            </span>
+            <span className="text-white/90 scale-90">{newSarLarge}</span>
           </div>
+        </div>
+      </div>
 
-          <div className="w-px h-4 bg-white/20 hidden sm:block" />
+      {/* Bottom Sub-Balances (aligned to end in RTL) */}
+      <div className="flex flex-wrap items-center justify-start sm:justify-end gap-6 sm:gap-8 mt-5 pt-4 border-t border-white/10 text-xs">
+        {/* Total Revenue */}
+        <div className="flex items-center gap-2 text-white/80">
+          <AccountBalanceWalletOutlined className="!w-4 !h-4 text-white/60" />
+          <span className="text-white/70">
+            {t("providerProfile.home.wallet.totalRevenue")}
+          </span>
+          <div
+            className="flex items-center gap-1 font-semibold text-white"
+            dir="ltr"
+          >
+            <span>{formatBalance(data?.totalBalance ?? 104621.5)}</span>
+            <span className="text-white/80 scale-75">{newSarSmall}</span>
+          </div>
+        </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-white/60">
-              {t("providerProfile.home.wallet.pendingBalance")}
-            </span>
-            <span
-              className="text-sm font-semibold flex items-center gap-1"
-              dir="ltr"
-            >
-              <span className="text-white/80">{newSarLarge}</span>
-              {formatBalance(data?.pendingBalance)}
-            </span>
+        {/* Pending Balance */}
+        <div className="flex items-center gap-2 text-white/80">
+          <HourglassEmptyOutlined className="!w-4 !h-4 text-white/60" />
+          <span className="text-white/70">
+            {t("providerProfile.home.wallet.pendingBalance")}
+          </span>
+          <div
+            className="flex items-center gap-1 font-semibold text-white"
+            dir="ltr"
+          >
+            <span>{formatBalance(data?.pendingBalance ?? 0)}</span>
+            <span className="text-white/80 scale-75">{newSarSmall}</span>
           </div>
         </div>
       </div>

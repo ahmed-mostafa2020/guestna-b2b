@@ -8,29 +8,21 @@ import formatDate from "@utils/formatters/FormateDate";
 
 /* ─── Skeleton ─── */
 export const ProviderCalendarSkeleton = () => (
-  <div className="bg-white border border-border rounded-xl p-5 animate-pulse">
-    <Skeleton variant="text" width="45%" height={24} className="mb-4" />
-    {/* Month nav */}
+  <div className="bg-white border border-border rounded-2xl p-5 animate-pulse h-full flex flex-col justify-between">
+    <Skeleton variant="text" width="45%" height={26} className="mb-4" />
     <div className="flex items-center justify-between mb-4">
-      <Skeleton variant="circular" width={32} height={32} />
-      <Skeleton variant="text" width="40%" height={22} />
-      <Skeleton variant="circular" width={32} height={32} />
+      <Skeleton variant="circular" width={28} height={28} />
+      <Skeleton variant="text" width="35%" height={22} />
+      <Skeleton variant="circular" width={28} height={28} />
     </div>
-    {/* Day headers */}
     <div className="grid grid-cols-7 gap-1 mb-2">
       {Array.from({ length: 7 }).map((_, i) => (
-        <Skeleton key={i} variant="text" height={20} className="rounded" />
+        <Skeleton key={i} variant="text" height={16} className="rounded" />
       ))}
     </div>
-    {/* Calendar grid (5 rows x 7 cols) */}
-    <div className="grid grid-cols-7 gap-1">
+    <div className="grid grid-cols-7 gap-1.5 flex-1">
       {Array.from({ length: 35 }).map((_, i) => (
-        <Skeleton
-          key={i}
-          variant="rounded"
-          height={36}
-          className="rounded-lg"
-        />
+        <Skeleton key={i} variant="rounded" height={32} className="rounded-lg" />
       ))}
     </div>
   </div>
@@ -113,49 +105,52 @@ const ProviderCalendar = ({
   const today = new Date();
 
   return (
-    <div className="bg-white border border-border rounded-xl p-5">
-      <h3 className="text-base font-semibold text-mainColor mb-4">
-        {t("providerProfile.home.calendar.title")}
-      </h3>
+    <div className="bg-white border border-border rounded-2xl p-5 h-full flex flex-col justify-between shadow-sm">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-base font-bold text-mainColor">
+          {t("providerProfile.home.calendar.title")}
+        </h3>
 
-      {/* Month Navigation */}
-      <div className="flex items-center justify-between mb-4">
-        <button
-          onClick={() => handleMonthChange("prev")}
-          className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-500"
-          aria-label="Previous month"
-        >
-          <ChevronLeft className="!w-5 !h-5" />
-        </button>
-        <h4 className="text-sm font-semibold text-gray-800">
-          {formatDate(currentMonth, locale, {
-            year: "numeric",
-            month: "long",
-          })}
-        </h4>
-        <button
-          onClick={() => handleMonthChange("next")}
-          className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-500"
-          aria-label="Next month"
-        >
-          <ChevronRight className="!w-5 !h-5" />
-        </button>
+        {/* Month Navigation */}
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => handleMonthChange("prev")}
+            className="p-1 hover:bg-gray-100 rounded-md transition-colors text-gray-500 cursor-pointer"
+            aria-label="Previous month"
+          >
+            <ChevronRight className="!w-4 !h-4" />
+          </button>
+          <span className="text-xs font-semibold text-gray-700 min-w-[90px] text-center">
+            {formatDate(currentMonth, locale, {
+              year: "numeric",
+              month: "short",
+            })}
+          </span>
+          <button
+            onClick={() => handleMonthChange("next")}
+            className="p-1 hover:bg-gray-100 rounded-md transition-colors text-gray-500 cursor-pointer"
+            aria-label="Next month"
+          >
+            <ChevronLeft className="!w-4 !h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Day Headers */}
-      <div className="grid grid-cols-7 gap-1 mb-1">
+      <div className="grid grid-cols-7 gap-1 mb-1 text-center">
         {dayHeaders.map((day) => (
-          <div
+          <span
             key={day}
-            className="py-1.5 text-center text-xs font-medium text-gray-500"
+            className="py-1 text-[11px] font-medium text-gray-400"
           >
             {day}
-          </div>
+          </span>
         ))}
       </div>
 
       {/* Calendar Grid */}
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7 gap-1.5">
         {days.map((day, index) => {
           if (!day) {
             return <div key={`empty-${index}`} className="aspect-square" />;
@@ -170,13 +165,13 @@ const ProviderCalendar = ({
             <button
               key={ymd}
               onClick={() => handleDateClick(day)}
-              className={`aspect-square flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-200 ${
+              className={`aspect-square flex items-center justify-center rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer ${
                 isSelected
-                  ? "bg-mainColor text-white shadow-md"
+                  ? "bg-[#007473] text-white shadow-sm font-bold scale-105"
                   : isHighlighted
-                  ? "bg-mainColor/15 text-mainColor font-semibold hover:bg-mainColor/25"
+                  ? "bg-[#007473]/15 text-[#007473] font-bold hover:bg-[#007473]/25"
                   : isCurrentDay
-                  ? "bg-gray-100 text-mainColor font-semibold border border-mainColor/30"
+                  ? "bg-gray-100 text-[#007473] font-semibold border border-[#007473]/30"
                   : "text-gray-700 hover:bg-gray-100"
               }`}
             >

@@ -151,39 +151,41 @@ const ProviderMainPage = () => {
       {/* 2. Wallet / Balance Card */}
       <ProviderWalletCard data={balanceData} loading={isBalanceLoading} />
 
-      {/* 3. Two-Column Layout: Analytics + Calendar */}
-      <Grid container spacing={3}>
-        {/* Performance Analytics (left in LTR, right in RTL) */}
-        <Grid size={{ xs: 12, lg: 7 }}>
-          <div className="flex flex-col gap-4">
-            {/* Booking stats mini cards */}
-            <ProviderBookingStats data={homeData} loading={isHomeLoading} />
-            {/* Bar chart */}
-            <ProviderPerformanceChart
-              data={homeData}
-              loading={isHomeLoading}
-            />
-          </div>
+      {/* 3. Row: 2 Columns - Booking Statistics & Performance Analytics */}
+      <Grid container spacing={3} alignItems="stretch">
+        {/* Booking Statistics (start in RTL) */}
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <ProviderBookingStats data={homeData} loading={isHomeLoading} />
         </Grid>
 
-        {/* Calendar + Recent Activities (right in LTR, left in RTL) */}
-        <Grid size={{ xs: 12, lg: 5 }}>
-          <div className="flex flex-col gap-4">
-            <ProviderCalendar
-              highlightedDates={Array.isArray(highlightedDates) ? highlightedDates : []}
-              onDateSelect={handleDateSelect}
-              selectedDate={selectedDate}
-              loading={isCalendarLoading}
-            />
-            <ProviderRecentActivities
-              trips={dayTrips}
-              loading={isDayTripsLoading}
-            />
-          </div>
+        {/* Performance Analytics Bar Chart (end in RTL) */}
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <ProviderPerformanceChart data={homeData} loading={isHomeLoading} />
         </Grid>
       </Grid>
 
-      {/* 4. Bookings Table */}
+      {/* 4. Row: 2 Columns - Calendar at start & Recent Activities at end */}
+      <Grid container spacing={3} alignItems="stretch">
+        {/* Calendar at start (right in RTL) */}
+        <Grid size={{ xs: 12, lg: 5 }}>
+          <ProviderCalendar
+            highlightedDates={Array.isArray(highlightedDates) ? highlightedDates : []}
+            onDateSelect={handleDateSelect}
+            selectedDate={selectedDate}
+            loading={isCalendarLoading}
+          />
+        </Grid>
+
+        {/* Recent Activities at end (left in RTL) */}
+        <Grid size={{ xs: 12, lg: 7 }}>
+          <ProviderRecentActivities
+            trips={dayTrips}
+            loading={isDayTripsLoading}
+          />
+        </Grid>
+      </Grid>
+
+      {/* 5. Bookings Table */}
       <ProviderBookingsTable
         data={tripsData}
         loading={isTripsLoading}

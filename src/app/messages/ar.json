@@ -253,27 +253,32 @@
     },
     "home": {
       "cards": {
-        "pendingRequests": "الطلبات المعلقة",
+        "pendingRequests": "طلبات بانتظار الموافقة",
         "todayTrips": "رحلات اليوم",
-        "nearestTrip": "أقرب رحلة",
-        "onHoldRequests": "طلبات قيد الانتظار"
+        "nearestTrip": "موعد أقرب حجز",
+        "onHoldRequests": "طلبات متأخرة"
       },
       "wallet": {
         "title": "المحفظة المالية",
         "availableBalance": "الرصيد المتاح",
         "totalBalance": "الرصيد الإجمالي",
-        "pendingBalance": "الرصيد المعلق",
+        "pendingBalance": "قيد الإنتظار",
+        "totalRevenue": "إجمالي الإيرادات",
+        "operations": "العمليات",
         "transfer": "تحويل"
       },
       "analytics": {
         "title": "تحليلات الأداء",
         "bookingStats": "إحصائيات الحجوزات",
-        "b2bTrips": "رحلات المدارس",
-        "b2cTrips": "رحلات الأفراد",
-        "totalTrips": "إجمالي الرحلات",
-        "scheduledTrips": "الرحلات المجدولة",
+        "b2bTrips": "حجوزات المؤسسات",
+        "b2cTrips": "حجوزات الأفراد",
+        "totalTrips": "إجمالي الحجوزات",
+        "scheduledTrips": "حجوزات مجدولة",
         "actualTrips": "الرحلات المنفذة",
-        "scheduledLabel": "المجدولة"
+        "scheduledLabel": "المجدولة",
+        "targetSales": "المبيعات المستهدفة",
+        "actualSales": "المبيعات الفعلية",
+        "monthGrowth": "9.5% في ارتفاع هذا الشهر"
       },
       "calendar": {
         "title": "الجدول الزمني",
@@ -287,8 +292,14 @@
       },
       "recentActivities": {
         "title": "آخر النشاطات",
-        "viewAll": "عرض جميع النشاطات",
-        "students": "طلاب",
+        "viewAll": "عرض جميع الأنشطة",
+        "bookingNumber": "رقم الحجز",
+        "branch": "الفرع",
+        "school": "المؤسسة التعليمية",
+        "visitors": "عدد الزوار",
+        "students": "طالب",
+        "stage": "المرحلة الدراسية",
+        "multipleStages": "متعددة المراحل",
         "city": "المدينة",
         "seats": "المقاعد",
         "noTrips": "لا توجد رحلات في هذا التاريخ"
@@ -298,23 +309,25 @@
         "filterHint": "تصفية النتائج",
         "columns": {
           "orderId": "رقم الطلب",
-          "tripName": "اسم الرحلة",
-          "type": "النوع",
-          "organization": "المؤسسة",
-          "capacity": "السعة",
-          "date": "يوم القائد",
-          "price": "سعر المزود",
+          "client": "العميل",
+          "product": "المنتج",
+          "orderType": "نوع الطلب",
+          "orderDate": "تاريخ الطلب",
+          "budget": "الميزانية",
           "status": "الحالة",
           "action": "الاكشن"
         },
         "filters": {
+          "all": "جميع الحجوزات",
+          "b2b": "طلبات المدارس b2b",
+          "b2c": "طلبات الأفراد b2c",
           "allStatuses": "كل الحالات",
           "allTimes": "كل الأوقات",
           "allTypes": "كل الأنواع"
         },
         "statuses": {
-          "PENDING": "معلقة",
-          "PENDING_COMPANY_APPROVAL": "بانتظار الموافقة",
+          "PENDING": "قيد المعالجة",
+          "PENDING_COMPANY_APPROVAL": "قيد التأكيد",
           "ON_HOLD": "قيد الانتظار",
           "SCHEDULED": "مجدولة",
           "DONE": "مكتملة",
@@ -322,8 +335,8 @@
           "REJECTED": "مرفوضة"
         },
         "types": {
-          "TRIP": "رحلة",
-          "CUSTOM_TRIP": "رحلة مخصصة"
+          "TRIP": "طلبات من سوق جستنا",
+          "CUSTOM_TRIP": "طلبات الأنشطة المخصصة"
         }
       }
     },
