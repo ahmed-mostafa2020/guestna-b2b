@@ -21,9 +21,18 @@ export const MOCK_HOME_BALANCE = {
 
 // GET >> ${baseUrl}/b2b/profile-provider/home
 export const MOCK_HOME_DATA = {
-  b2bCount: 68,
-  b2cCount: 2,
-  total: 70,
+  b2bCount: {
+    count: 68,
+    upPercentage: 0,
+  },
+  b2cCount: {
+    count: 6,
+    upPercentage: 100,
+  },
+  total: {
+    count: 74,
+    upPercentage: 0,
+  },
   scheduledCount: 2,
   monthlyRevenue: [
     { totalCount: 1, totalPrice: 150, year: 2025, month: 8 },
@@ -37,7 +46,7 @@ export const MOCK_HOME_DATA = {
     { totalCount: 2, totalPrice: 2, year: 2026, month: 5 },
     { totalCount: 1, totalPrice: 300, year: 2026, month: 6 },
     { totalCount: 22, totalPrice: 81519.5, year: 2026, month: 7 },
-    { totalCount: 1, totalPrice: 6000, year: 2026, month: 8 },
+    { totalCount: 5, totalPrice: 17850, year: 2026, month: 8 },
   ],
 };
 

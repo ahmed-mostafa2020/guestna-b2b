@@ -14,12 +14,7 @@ import {
 /* ─── Skeleton ─── */
 const StatCardSkeleton = () => (
   <div className="flex items-center gap-4 p-5 bg-white border border-border rounded-2xl animate-pulse">
-    <Skeleton
-      variant="circular"
-      width={52}
-      height={52}
-      className="shrink-0"
-    />
+    <Skeleton variant="circular" width={52} height={52} className="shrink-0" />
     <div className="flex flex-col gap-2 w-full">
       <Skeleton variant="text" width="60%" height={20} />
       <Skeleton variant="text" width="40%" height={36} />
@@ -59,7 +54,14 @@ const CARD_STYLES = [
   },
 ];
 
-const StatCardItem = ({ icon: IconComp, iconBg, iconColor, title, value }) => (
+const StatCardItem = ({
+  icon: IconComp,
+  iconBg,
+  iconColor,
+  title,
+  value,
+  locale,
+}) => (
   <div className="flex items-center gap-4 p-5 bg-white border border-border rounded-2xl hover:shadow-card transition-all duration-200">
     <div
       className={`flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full ${iconBg} ${iconColor} shrink-0`}
@@ -71,7 +73,9 @@ const StatCardItem = ({ icon: IconComp, iconBg, iconColor, title, value }) => (
         {title}
       </span>
       <span className="text-2xl sm:text-3xl font-bold text-textDark truncate mt-0.5">
-        {value ?? 0}
+        {typeof value === "number"
+          ? value.toLocaleString(locale)
+          : (value ?? 0)}
       </span>
     </div>
   </div>
@@ -86,7 +90,8 @@ const ProviderStatCards = ({ data, loading }) => {
     const isDate = data?.earliestNextTripDay;
     const formattedDate = isDate
       ? formatDate(isDate, locale, {
-          month: "short",
+          year: "numeric",
+          month: "numeric",
           day: "numeric",
         })
       : "-";
@@ -131,6 +136,7 @@ const ProviderStatCards = ({ data, loading }) => {
           iconColor={card.iconColor}
           title={card.title}
           value={card.value}
+          locale={locale}
         />
       ))}
     </div>

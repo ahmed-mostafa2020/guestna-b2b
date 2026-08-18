@@ -40,6 +40,28 @@ const DEFAULT_ACTIVITIES = [
     thumbnail:
       "https://storage.googleapis.com/guestnabucket/images/1770033823304-766916230.webp",
   },
+  {
+    _id: "act-4",
+    name: "جولة يوم كامل في الطائف من جدة و مكة المكرمة",
+    bookingNumber: "GNA-9942",
+    branch: "الرياض",
+    organizationName: "مدارس نجد الأهلية",
+    visitorsCount: 45,
+    stage: "متعددة المراحل",
+    thumbnail:
+      "https://storage.googleapis.com/guestnabucket/images/1770033823304-766916230.webp",
+  },
+  {
+    _id: "act-5",
+    name: "جولة يوم كامل في الطائف من جدة و مكة المكرمة",
+    bookingNumber: "GNA-9942",
+    branch: "الرياض",
+    organizationName: "مدارس نجد الأهلية",
+    visitorsCount: 45,
+    stage: "متعددة المراحل",
+    thumbnail:
+      "https://storage.googleapis.com/guestnabucket/images/1770033823304-766916230.webp",
+  },
 ];
 
 /* ─── Skeleton ─── */
@@ -63,7 +85,7 @@ export const ProviderRecentActivitiesSkeleton = () => (
   <div className="bg-white border border-border rounded-2xl p-5 sm:p-6 animate-pulse h-full flex flex-col justify-between">
     <Skeleton variant="text" width="35%" height={28} className="mb-4" />
     <div className="flex flex-col gap-3 flex-1">
-      {Array.from({ length: 3 }).map((_, i) => (
+      {Array.from({ length: 5 }).map((_, i) => (
         <ActivityCardSkeleton key={i} />
       ))}
     </div>
@@ -80,8 +102,7 @@ export const ProviderRecentActivitiesSkeleton = () => (
 const ActivityCard = ({ trip, t }) => {
   const bookingNum = trip.bookingNumber || trip.orderId || "-";
   const branchName = trip.branch || trip.cities?.[0]?.name || "-";
-  const orgName =
-    trip.organizationName || trip.organization?.name || "-";
+  const orgName = trip.organizationName || trip.organization?.name || "-";
   const visitors = trip.visitorsCount || trip.availableSeats || 0;
   const stageName =
     trip.stage ||
@@ -165,16 +186,16 @@ const ProviderRecentActivities = ({ trips = [], selectedDate, loading }) => {
   const displayTrips = hasSelectedDate
     ? trips
     : trips && trips.length > 0
-    ? trips
-    : DEFAULT_ACTIVITIES;
+      ? trips
+      : DEFAULT_ACTIVITIES;
 
   return (
-    <div className="bg-white border border-border rounded-2xl p-5 sm:p-6 h-full flex flex-col justify-between shadow-card">
+    <div className="bg-white border border-border rounded-2xl p-5 sm:p-6 h-full flex flex-col shadow-card">
       <h3 className="text-lg sm:text-xl font-bold text-mainColor pb-4">
         {t("providerProfile.home.recentActivities.title")}
       </h3>
 
-      <div className="flex flex-col gap-3 flex-1 justify-center">
+      <div className="flex flex-col gap-3 flex-1 overflow-y-auto max-h-[400px]">
         {displayTrips && displayTrips.length > 0 ? (
           displayTrips.map((trip, idx) => (
             <ActivityCard key={trip._id || idx} trip={trip} t={t} />
@@ -185,14 +206,6 @@ const ProviderRecentActivities = ({ trips = [], selectedDate, loading }) => {
           </div>
         )}
       </div>
-
-      {/* View All Button */}
-      <button
-        type="button"
-        className="w-full mt-4 py-2.5 bg-mainColor hover:bg-mainColor/90 active:scale-98 text-white rounded-xl text-sm sm:text-base font-bold transition-all shadow-sm cursor-pointer"
-      >
-        {t("providerProfile.home.recentActivities.viewAll")}
-      </button>
     </div>
   );
 };

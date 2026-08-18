@@ -271,7 +271,10 @@
         "scheduledLabel": "Scheduled",
         "targetSales": "Target Sales",
         "actualSales": "Actual Sales",
-        "monthGrowth": "8.5% increase this month"
+        "monthGrowth": "8.5% increase this month",
+        "monthDecline": "8.5% decrease this month",
+        "growthRateUp": "{rate}% increase this month",
+        "growthRateDown": "{rate}% decrease this month"
       },
       "calendar": {
         "title": "Timeline",

@@ -9,6 +9,7 @@ import {
   ShowChartOutlined,
   Inventory2Outlined,
   TrendingUp,
+  TrendingDown,
 } from "@mui/icons-material";
 
 /* ─── Skeleton ─── */
@@ -47,12 +48,14 @@ const STAT_CONFIGS = {
     iconColor: "text-[#7C3AED]",
     Icon: PeopleOutline,
     hasGrowth: true,
+    defaultRate: 8.5,
   },
   b2b: {
     iconBg: "bg-[#EDE9FE]",
     iconColor: "text-[#6366F1]",
     Icon: DomainOutlined,
     hasGrowth: true,
+    defaultRate: -2.4,
   },
   scheduled: {
     iconBg: "bg-[#CCFBF1]",
@@ -65,6 +68,7 @@ const STAT_CONFIGS = {
     iconColor: "text-[#16A34A]",
     Icon: ShowChartOutlined,
     hasGrowth: true,
+    defaultRate: 12.8,
   },
 };
 
@@ -76,41 +80,69 @@ const BookingStatCard = ({
   value,
   hasGrowth,
   growthText,
-}) => (
-  <div className="flex flex-col justify-between p-4 sm:p-5 bg-white border border-border rounded-2xl hover:border-gray-300 hover:shadow-sm transition-all">
-    {/* Top: Title on the right, Icon on the left in RTL */}
-    <div className="flex gap-2">
-      <div
-        className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full ${iconBg} ${iconColor} shrink-0`}
-      >
-        <Icon className="!w-4 !h-4 sm:!w-5 sm:!h-5" />
-      </div>
+  isNegative = false,
+}) => {
+  const TrendIcon = isNegative ? TrendingDown : TrendingUp;
+  const trendColor = isNegative ? "text-[#E11D48]" : "text-[#0D9488]";
 
-      <div className="flex flex-col pt-[6px]">
-        <span className="text-xs sm:text-sm text-textLight font-medium">
-          {title}
-        </span>
+  return (
+    <div className="flex flex-col justify-between p-4 sm:p-5 bg-white border border-border rounded-2xl hover:border-gray-300 hover:shadow-sm transition-all">
+      {/* Top: Title on the right, Icon on the left in RTL */}
+      <div className="flex gap-2">
+        <div
+          className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full ${iconBg} ${iconColor} shrink-0`}
+        >
+          <Icon className="!w-4 !h-4 sm:!w-5 sm:!h-5" />
+        </div>
 
-        {/* Center: Big Bold Number */}
-        <div className="flex flex-col my-1.5 sm:my-2">
-          <span className="text-2xl sm:text-3xl font-extrabold text-textDark tracking-tight">
-            {value ?? 0}
+        <div className="flex flex-col pt-[6px]">
+          <span className="text-xs sm:text-sm text-textLight font-medium">
+            {title}
           </span>
 
-          {/* Bottom: Growth Indicator */}
-          {hasGrowth ? (
-            <div className="flex items-center justify-center gap-1 text-[11px] sm:text-xs text-[#0D9488] font-semibold mt-1">
-              <TrendingUp className="!w-3.5 !h-3.5" />
-              <span>{growthText}</span>
-            </div>
-          ) : (
-            <div className="h-4 sm:h-5" />
-          )}
+          {/* Center: Big Bold Number */}
+          <div className="flex flex-col my-1.5 sm:my-2">
+            <span className="text-2xl sm:text-3xl font-extrabold text-textDark tracking-tight">
+              {value ?? 0}
+            </span>
+
+            {/* Bottom: Growth / Decline Indicator */}
+            {hasGrowth ? (
+              <div
+                className={`flex items-center gap-1 text-[11px] sm:text-xs ${trendColor} font-semibold mt-1`}
+              >
+                <TrendIcon className="!w-3.5 !h-3.5 shrink-0" />
+                <span>{growthText}</span>
+              </div>
+            ) : (
+              <div className="h-4 sm:h-5" />
+            )}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
+
+/* ─── Data Extraction Helper ─── */
+const extractStatData = (field, fallbackCount = 0, defaultRate = 0) => {
+  if (field && typeof field === "object") {
+    return {
+      value: field.count ?? fallbackCount,
+      rate: typeof field.upPercentage === "number" ? field.upPercentage : defaultRate,
+    };
+  }
+  if (typeof field === "number") {
+    return {
+      value: field,
+      rate: defaultRate,
+    };
+  }
+  return {
+    value: fallbackCount,
+    rate: defaultRate,
+  };
+};
 
 /* ─── Main Component ─── */
 const ProviderBookingStats = ({ data, loading }) => {
@@ -121,35 +153,63 @@ const ProviderBookingStats = ({ data, loading }) => {
   // 2: Top-Left (حجوزات المؤسسات)
   // 3: Bottom-Right (حجوزات مجدولة)
   // 4: Bottom-Left (إجمالي الحجوزات)
-  const stats = useMemo(
-    () => [
+  const stats = useMemo(() => {
+    const b2c = extractStatData(data?.b2cCount, 0, STAT_CONFIGS.b2c.defaultRate);
+    const b2b = extractStatData(data?.b2bCount, 0, STAT_CONFIGS.b2b.defaultRate);
+    const scheduled = extractStatData(data?.scheduledCount, 0, 0);
+    const total = extractStatData(data?.total, 0, STAT_CONFIGS.total.defaultRate);
+
+    return [
       {
         id: "b2c",
         title: t("providerProfile.home.analytics.b2cTrips"),
-        value: data?.b2cCount ?? 0,
+        value: b2c.value,
+        rate: b2c.rate,
         ...STAT_CONFIGS.b2c,
       },
       {
         id: "b2b",
         title: t("providerProfile.home.analytics.b2bTrips"),
-        value: data?.b2bCount ?? 0,
+        value: b2b.value,
+        rate: b2b.rate,
         ...STAT_CONFIGS.b2b,
       },
       {
         id: "scheduled",
         title: t("providerProfile.home.analytics.scheduledTrips"),
-        value: data?.scheduledCount ?? 0,
+        value: scheduled.value,
+        rate: scheduled.rate,
         ...STAT_CONFIGS.scheduled,
       },
       {
         id: "total",
         title: t("providerProfile.home.analytics.totalTrips"),
-        value: data?.total ?? 0,
+        value: total.value,
+        rate: total.rate,
         ...STAT_CONFIGS.total,
       },
-    ],
-    [t, data]
-  );
+    ].map((stat) => {
+      const isNegative = typeof stat.rate === "number" ? stat.rate < 0 : false;
+      const absRate = typeof stat.rate === "number" ? Math.abs(stat.rate) : null;
+      let growthText = "";
+
+      if (absRate !== null) {
+        growthText = isNegative
+          ? t("providerProfile.home.analytics.growthRateDown", { rate: absRate })
+          : t("providerProfile.home.analytics.growthRateUp", { rate: absRate });
+      } else {
+        growthText = isNegative
+          ? t("providerProfile.home.analytics.monthDecline")
+          : t("providerProfile.home.analytics.monthGrowth");
+      }
+
+      return {
+        ...stat,
+        isNegative,
+        growthText,
+      };
+    });
+  }, [t, data]);
 
   if (loading) return <ProviderBookingStatsSkeleton />;
 
@@ -168,7 +228,8 @@ const ProviderBookingStats = ({ data, loading }) => {
             title={stat.title}
             value={stat.value}
             hasGrowth={stat.hasGrowth}
-            growthText={t("providerProfile.home.analytics.monthGrowth")}
+            isNegative={stat.isNegative}
+            growthText={stat.growthText}
           />
         ))}
       </div>
