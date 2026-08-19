@@ -233,6 +233,7 @@
     "aside": {
       "main": "Main Page",
       "productsManagement": "Products Management",
+      "ordersManagement": "Orders Management",
       "ourProducts": "Our Products"
     },
     "infoCards": {
@@ -518,6 +519,65 @@
           "removeItem": "Remove"
         }
       }
+    },
+    "ordersManagement": {
+      "pageTitle": "Bookings & Orders Management",
+      "pageSubtitle": "Review and process pending booking requests that require immediate approval to ensure business continuity",
+      "breadcrumbs": {
+        "home": "Home",
+        "bookings": "Bookings"
+      },
+      "statusCards": {
+        "PENDING_PROVIDER_APPROVAL": "Awaiting Provider Approval",
+        "PENDING": "Awaiting Client Confirmation",
+        "SCHEDULED": "Scheduled Orders",
+        "ON_HOLD": "Under Registration",
+        "DONE": "Completed Orders",
+        "REJECTED": "Rejected Orders"
+      },
+      "tabs": {
+        "all": "All",
+        "PENDING": "Awaiting Approval",
+        "ON_HOLD": "Under Confirmation",
+        "SCHEDULED": "Confirmed",
+        "DONE": "Completed"
+      },
+      "tableTitle": "Track All Orders",
+      "filters": {
+        "all": "All",
+        "b2b": "School Orders b2b"
+      },
+      "columns": {
+        "orderId": "Order ID",
+        "client": "Client",
+        "product": "Product",
+        "orderType": "Order Type",
+        "orderDate": "Order Date",
+        "budget": "Budget",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "types": {
+        "CUSTOM_TRIP": "Custom Activity Requests",
+        "TRIP": "Guestna Marketplace Orders"
+      },
+      "statuses": {
+        "PENDING": "Pending",
+        "PENDING_COMPANY_APPROVAL": "Pending Approval",
+        "ON_HOLD": "On Hold",
+        "SCHEDULED": "Scheduled",
+        "DONE": "Done",
+        "CANCELLED": "Cancelled",
+        "REJECTED": "Rejected",
+        "PENDING_PROVIDER_APPROVAL": "Pending Provider Approval"
+      },
+      "actions": {
+        "viewDetails": "View Details",
+        "edit": "Edit"
+      },
+      "noOrders": "No orders found",
+      "exportReport": "Export Report",
+      "students": "students"
     }
   },
   "links": {

@@ -240,6 +240,7 @@
     "aside": {
       "main": "الصفحة الرئيسية",
       "productsManagement": "إدارة المنتجات",
+      "ordersManagement": "إدارة الطلبات",
       "ourProducts": "منتجاتنا"
     },
     "infoCards": {
@@ -525,6 +526,65 @@
           "removeItem": "إزالة"
         }
       }
+    },
+    "ordersManagement": {
+      "pageTitle": "إدارة الحجوزات و الطلبات",
+      "pageSubtitle": "مراجعة ومعالجة طلبات الحجز المعلقة التي تتطلب موافقة فورية لضمان استمرارية العمليات",
+      "breadcrumbs": {
+        "home": "الرئيسية",
+        "bookings": "الحجوزات"
+      },
+      "statusCards": {
+        "PENDING_PROVIDER_APPROVAL": "بانتظار موافقة مزود الخدمه",
+        "PENDING": "بانتظار تاكيد العميل",
+        "SCHEDULED": "الطلبات مجدولة",
+        "ON_HOLD": "قيد التسجيل",
+        "DONE": "الطلبات المكتملة",
+        "REJECTED": "الطلبات المرفوضة"
+      },
+      "tabs": {
+        "all": "الكل",
+        "PENDING": "في انتظار الموافقة",
+        "ON_HOLD": "قيد التاكيد",
+        "SCHEDULED": "تم التاكيد",
+        "DONE": "المكتملة"
+      },
+      "tableTitle": "متابعة جميع الطلبات",
+      "filters": {
+        "all": "الكل",
+        "b2b": "طلبات المدارس b2b"
+      },
+      "columns": {
+        "orderId": "رقم الطلب",
+        "client": "العميل",
+        "product": "المنتج",
+        "orderType": "نوع الطلب",
+        "orderDate": "تاريخ الطلب",
+        "budget": "الميزانية",
+        "status": "الحالة",
+        "actions": "الإجراءات"
+      },
+      "types": {
+        "CUSTOM_TRIP": "طلبات الأنشطة المخصصة",
+        "TRIP": "طلبات من سوق جستنا"
+      },
+      "statuses": {
+        "PENDING": "قيد المعالجة",
+        "PENDING_COMPANY_APPROVAL": "قيد التاكيد",
+        "ON_HOLD": "قيد الانتظار",
+        "SCHEDULED": "مجدولة",
+        "DONE": "مكتملة",
+        "CANCELLED": "ملغاة",
+        "REJECTED": "مرفوض",
+        "PENDING_PROVIDER_APPROVAL": "بانتظار موافقة المزود"
+      },
+      "actions": {
+        "viewDetails": "مشاهدة التفاصيل",
+        "edit": "تعديل"
+      },
+      "noOrders": "لا توجد طلبات",
+      "exportReport": "تصدير التقرير",
+      "students": "طالب"
     }
   },
   "links": {
