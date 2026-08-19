@@ -65,7 +65,7 @@ const StatusBadge = ({ status, label }) => {
 
   return (
     <span
-      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-xs sm:text-sm font-bold border ${style.bg} ${style.text} ${style.border} whitespace-nowrap`}
+      className={`inline-flex items-center justify-center gap-1 px-3 py-1 rounded-full text-xs sm:text-sm font-bold border ${style.bg} ${style.text} ${style.border} whitespace-nowrap`}
     >
       {label}
     </span>
@@ -91,20 +91,18 @@ const ActionsDropdown = ({ row, t }) => {
 
   const handleViewDetails = useCallback(() => {
     setOpen(false);
-    // TODO: navigate to order details
   }, []);
 
   const handleEdit = useCallback(() => {
     setOpen(false);
-    // TODO: navigate to edit order
   }, []);
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative inline-block" ref={dropdownRef}>
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="w-9 h-9 rounded-xl hover:border-mainColor hover:bg-mainColor/5 text-textLight hover:text-mainColor transition-all flex items-center justify-center cursor-pointer shadow-2xs"
+        className="w-8 h-8 rounded-lg hover:border-mainColor hover:bg-mainColor/5 text-textLight hover:text-mainColor transition-all flex items-center justify-center cursor-pointer"
         aria-label={t("providerProfile.ordersManagement.columns.actions")}
         aria-haspopup="true"
         aria-expanded={open}
@@ -113,13 +111,13 @@ const ActionsDropdown = ({ row, t }) => {
       </button>
 
       {open && (
-        <div className="absolute end-0 top-full mt-1 z-50 bg-white border border-border rounded-xl shadow-card min-w-[170px] py-1.5 animate-in fade-in slide-in-from-top-1">
+        <div className="absolute end-0 top-full mt-1.5 z-50 bg-white border border-gray-100 rounded-2xl shadow-xl min-w-[160px] py-1.5 overflow-hidden animate-in fade-in slide-in-from-top-1">
           <button
             type="button"
             onClick={handleViewDetails}
-            className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm font-medium text-textDark hover:bg-mainColor/5 hover:text-mainColor transition-colors cursor-pointer"
+            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-medium text-textDark hover:bg-mainColor/5 hover:text-mainColor transition-colors cursor-pointer text-start"
           >
-            <RemoveRedEyeOutlined className="!w-4.5 !h-4.5" />
+            <RemoveRedEyeOutlined className="!w-4.5 !h-4.5 text-mainColor" />
             <span>
               {t("providerProfile.ordersManagement.actions.viewDetails")}
             </span>
@@ -127,9 +125,9 @@ const ActionsDropdown = ({ row, t }) => {
           <button
             type="button"
             onClick={handleEdit}
-            className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm font-medium text-textDark hover:bg-mainColor/5 hover:text-mainColor transition-colors cursor-pointer"
+            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-medium text-textDark hover:bg-mainColor/5 hover:text-mainColor transition-colors cursor-pointer text-start"
           >
-            <EditOutlined className="!w-4.5 !h-4.5" />
+            <EditOutlined className="!w-4.5 !h-4.5 text-mainColor" />
             <span>{t("providerProfile.ordersManagement.actions.edit")}</span>
           </button>
         </div>

@@ -579,7 +579,7 @@
         "PENDING_PROVIDER_APPROVAL": "بانتظار موافقة المزود"
       },
       "actions": {
-        "viewDetails": "مشاهدة التفاصيل",
+        "viewDetails": "التفاصيل",
         "edit": "تعديل"
       },
       "noOrders": "لا توجد طلبات",
@@ -3176,7 +3176,7 @@
   },
 
   "order_details": {
-    "title": "مشاهدة تفاصيل الطلب",
+    "title": "تفاصيل الطلب",
     "no_order_found": "لم يتم العثور على طلبات"
   },
 

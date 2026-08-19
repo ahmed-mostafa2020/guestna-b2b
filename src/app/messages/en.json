@@ -1343,7 +1343,7 @@
       },
       "ordersInfo": {
         "orderDetails": {
-          "title": "Order Details -",
+          "title": "Order Details",
           "tripInfo": "Trip Information",
           "bookingInfo": "Booking Information",
           "tripName": "Trip Name",
@@ -3167,7 +3167,7 @@
     }
   },
   "order_details": {
-    "title": "Show Order Details",
+    "title": "Order Details",
     "no_order_found": "Order Not Found"
   },
   "schoolRegister": {
