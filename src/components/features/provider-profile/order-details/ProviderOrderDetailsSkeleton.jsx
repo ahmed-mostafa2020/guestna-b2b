@@ -5,7 +5,7 @@ import { memo } from "react";
 const ProviderOrderDetailsSkeleton = () => {
   return (
     <div
-      className="flex flex-col gap-5 sm:gap-6 w-full pb-28 sm:pb-32 font-somar animate-pulse"
+      className="flex flex-col gap-5 sm:gap-6 w-full font-somar animate-pulse"
       aria-busy="true"
       aria-label="Loading order details"
     >
@@ -53,7 +53,7 @@ const ProviderOrderDetailsSkeleton = () => {
         {/* Main Column (8 cols) -> Right Side in RTL */}
         <section className="lg:col-span-8 flex flex-col gap-5">
           {/* Status Card Skeleton (Matching ProviderOrderPendingStatusCard) */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-7 shadow-xs flex flex-col">
+          <div className="bg-white rounded-2xl border border-gray-100 border-s-4 border-s-gray-300 p-5 sm:p-7 shadow-xs flex flex-col">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
               <div className="flex flex-col gap-2 flex-1">
                 <div className="h-6 w-44 bg-gray-200 rounded-lg" />
@@ -175,8 +175,8 @@ const ProviderOrderDetailsSkeleton = () => {
       </main>
 
       {/* 4. Bottom Action Bar Skeleton */}
-      <aside className="fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-gray-200/90 px-4 sm:px-8 py-3.5 sm:py-4 shadow-lg">
-        <div className="max-w-7xl mx-auto flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3.5 sm:gap-4">
+      <section className="sticky bottom-0 z-20 -mx-4 lg:-mx-7 -mb-4 lg:-mb-7 px-4 lg:px-7 py-3.5 sm:py-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
+        <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3.5 sm:gap-4">
           <div className="flex sm:flex-col items-center sm:items-start justify-between sm:justify-start gap-1">
             <div className="h-3 w-20 bg-gray-200 rounded-md" />
             <div className="h-4 w-28 bg-gray-200 rounded-md" />
@@ -187,7 +187,7 @@ const ProviderOrderDetailsSkeleton = () => {
             <div className="h-10 sm:h-11 w-full sm:w-24 bg-gray-200 rounded-xl" />
           </div>
         </div>
-      </aside>
+      </section>
     </div>
   );
 };

@@ -40,11 +40,11 @@ const ProviderOrderBottomActionBar = ({
         });
 
   return (
-    <aside
+    <section
       aria-label={t("providerProfile.orderDetails.actionBar.currentStatus")}
-      className="fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-gray-200/90 shadow-[0_-4px_24px_rgba(0,0,0,0.07)] px-4 sm:px-8 py-3.5 sm:py-4 font-somar transition-all"
+      className="sticky bottom-0 z-20 -mx-4 lg:-mx-7 -mb-4 lg:-mb-7 px-4 lg:px-7 py-3.5 sm:py-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_16px_rgba(0,0,0,0.04)] font-somar transition-all"
     >
-      <div className="max-w-7xl mx-auto flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3.5 sm:gap-4">
+      <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3.5 sm:gap-4">
         {/* Current Order Status  */}
         <div className="flex sm:flex-col items-center sm:items-start justify-between sm:justify-start gap-1 shrink-0">
           <span className="text-[11px] sm:text-xs text-textLight font-normal font-somar">
@@ -100,7 +100,7 @@ const ProviderOrderBottomActionBar = ({
           </button>
         </div>
       </div>
-    </aside>
+    </section>
   );
 };
 

@@ -97,11 +97,7 @@ const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
   }, [closeApproveModal, refetch]);
 
   return (
-    <div
-      className={`flex flex-col gap-5 sm:gap-6 w-full font-somar ${
-        isActionableStatus ? "pb-28 sm:pb-32" : "pb-10"
-      }`}
-    >
+    <div className="flex flex-col gap-5 sm:gap-6 w-full font-somar">
       {/* 1. Header (Breadcrumbs, Title, Status Badge, Actions) */}
       <ProviderOrderDetailsHeader orderData={orderData} />
 

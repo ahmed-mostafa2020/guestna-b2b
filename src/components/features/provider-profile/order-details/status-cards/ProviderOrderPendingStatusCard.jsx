@@ -19,14 +19,14 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
 
   const status =
     orderData?.status || PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL;
-  const isPendingApproval =
+  const isPendingProviderApproval =
     status === PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL;
   const rawOrderId = orderData?.orderId || orderData?._id || "";
 
-  // ─── 1. Persistent Timer Calculation ───
+  // ─── 1. Persistent Timer Calculation (Only for PENDING_PROVIDER_APPROVAL) ───
   // Calculate target expiration timestamp (from order creation or cached localStorage)
   const targetExpiryTimestamp = useMemo(() => {
-    if (!isPendingApproval) return null;
+    if (!isPendingProviderApproval) return null;
 
     if (orderData?.createdAt) {
       const createdTime = new Date(orderData.createdAt).getTime();
@@ -51,7 +51,7 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
     }
 
     return Date.now() + TWO_HOURS_MS;
-  }, [isPendingApproval, orderData?.createdAt, rawOrderId]);
+  }, [isPendingProviderApproval, orderData?.createdAt, rawOrderId]);
 
   // Compute remaining seconds from now
   const getRemainingSeconds = () => {
@@ -64,7 +64,7 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
   const onExpireCalledRef = useRef(false);
 
   useEffect(() => {
-    if (!isPendingApproval || !targetExpiryTimestamp) return;
+    if (!isPendingProviderApproval || !targetExpiryTimestamp) return;
 
     // Set initial remaining time
     const initialSecs = getRemainingSeconds();
@@ -88,7 +88,7 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isPendingApproval, targetExpiryTimestamp, onExpire]);
+  }, [isPendingProviderApproval, targetExpiryTimestamp, onExpire]);
 
   // Format HH:MM:SS
   const formatTime = (totalSeconds) => {
@@ -132,79 +132,32 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
     orderData?.seats ??
     0;
 
-  // ─── 3. Header Title & Description by Status ───
-  const getStatusDetails = () => {
-    switch (status) {
-      case PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL:
-        return {
-          title: t(
-            "providerProfile.orderDetails.pendingCard.titlePendingApproval"
-          ),
-          description: t(
-            "providerProfile.orderDetails.pendingCard.descPendingApproval"
-          ),
-        };
-      case PROVIDER_ORDER_STATUS.PENDING_COMPANY_APPROVAL:
-        return {
-          title: t(
-            "providerProfile.orderDetails.pendingCard.titlePendingCompany"
-          ),
-          description: t(
-            "providerProfile.orderDetails.pendingCard.descPendingCompany"
-          ),
-          icon: <Schedule className="!w-7 !h-7 text-sky-600" />,
-          iconBg: "bg-sky-50",
-        };
-      case PROVIDER_ORDER_STATUS.SCHEDULED:
-        return {
-          title: t("providerProfile.orderDetails.pendingCard.titleScheduled"),
-          description: t(
-            "providerProfile.orderDetails.pendingCard.descScheduled"
-          ),
-          icon: <CheckCircleOutline className="!w-7 !h-7 text-mainColor" />,
-          iconBg: "bg-mainColor/10",
-        };
-      case PROVIDER_ORDER_STATUS.ON_HOLD:
-        return {
-          title: t("providerProfile.orderDetails.pendingCard.titleOnHold"),
-          description: t("providerProfile.orderDetails.pendingCard.descOnHold"),
-          icon: <PauseCircleOutline className="!w-7 !h-7 text-purple-600" />,
-          iconBg: "bg-purple-50",
-        };
-      case PROVIDER_ORDER_STATUS.PENDING:
-      default:
-        return {
-          title: t("providerProfile.orderDetails.pendingCard.titlePending"),
-          description: t(
-            "providerProfile.orderDetails.pendingCard.descPending"
-          ),
-          icon: <Schedule className="!w-7 !h-7 text-amber-600" />,
-          iconBg: "bg-amber-50",
-        };
-    }
-  };
-
-  const statusInfo = getStatusDetails();
+  const cardTitle = t(
+    "providerProfile.orderDetails.pendingCard.titlePendingApproval"
+  );
+  const cardDescription = t(
+    "providerProfile.orderDetails.pendingCard.descPendingApproval"
+  );
 
   return (
     <section
-      aria-label={statusInfo.title}
-      className="bg-white border border-gray-100 rounded-2xl p-5 sm:p-7 relative overflow-hidden shadow-xs font-somar"
+      aria-label={cardTitle}
+      className="bg-white border border-gray-100 border-s-4 border-s-[#F59E0B] rounded-2xl p-5 sm:p-7 relative overflow-hidden shadow-xs font-somar"
     >
-      {/* Upper Row: Status Info + (Timer or Status Icon) */}
+      {/* Upper Row: Status Info + Timer */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 sm:gap-6">
         {/* Right in RTL: Title & Description */}
         <div className="flex flex-col max-w-xl">
           <h2 className="text-base sm:text-lg lg:text-xl font-bold text-textDark font-somar">
-            {statusInfo.title}
+            {cardTitle}
           </h2>
           <p className="text-xs sm:text-sm text-textLight font-normal mt-1.5 leading-relaxed font-somar">
-            {statusInfo.description}
+            {cardDescription}
           </p>
         </div>
 
-        {/* Left in RTL: Timer Section OR Status Icon */}
-        {isPendingApproval ? (
+        {/* Left in RTL: Timer Section (Only for PENDING_PROVIDER_APPROVAL) */}
+        {isPendingProviderApproval && (
           <div className="flex flex-col items-center justify-center text-center shrink-0 self-center sm:self-auto min-w-[130px]">
             {/* Orange Circular Badge with Hourglass */}
             <div
@@ -240,8 +193,6 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
               {formatTime(remainingSeconds)}
             </span>
           </div>
-        ) : (
-          <></>
         )}
       </div>
 
