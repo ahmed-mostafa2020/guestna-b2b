@@ -16,7 +16,12 @@ const OrdersPageHeaderSkeleton = () => (
         <Skeleton variant="text" width={280} height={36} />
         <Skeleton variant="text" width={400} height={20} />
       </div>
-      <Skeleton variant="rounded" width={150} height={44} className="rounded-xl" />
+      <Skeleton
+        variant="rounded"
+        width={150}
+        height={44}
+        className="rounded-xl"
+      />
     </div>
   </div>
 );

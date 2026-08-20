@@ -58,12 +58,10 @@ const ProviderOrdersManagementPage = () => {
     data: ordersResponse,
     isLoading: ordersLoading,
     isFetching: ordersFetching,
-  } = useFetchData(
-    ordersEndpoint,
-    {},
-    { lang: locale },
-    [currentPage, activeTab]
-  );
+  } = useFetchData(ordersEndpoint, {}, { lang: locale }, [
+    currentPage,
+    activeTab,
+  ]);
 
   const ordersData = ordersResponse?.data || ordersResponse || {};
   const isOrdersLoading = ordersLoading || ordersFetching;
@@ -93,13 +91,41 @@ const ProviderOrdersManagementPage = () => {
       // Define columns
       const isAr = locale === "ar";
       worksheet.columns = [
-        { header: t("providerProfile.ordersManagement.columns.orderId"), key: "orderId", width: 18 },
-        { header: t("providerProfile.ordersManagement.columns.client"), key: "client", width: 28 },
-        { header: t("providerProfile.ordersManagement.columns.product"), key: "product", width: 22 },
-        { header: t("providerProfile.ordersManagement.columns.orderType"), key: "orderType", width: 22 },
-        { header: t("providerProfile.ordersManagement.columns.orderDate"), key: "orderDate", width: 18 },
-        { header: t("providerProfile.ordersManagement.columns.budget"), key: "budget", width: 14 },
-        { header: t("providerProfile.ordersManagement.columns.status"), key: "status", width: 18 },
+        {
+          header: t("providerProfile.ordersManagement.columns.orderId"),
+          key: "orderId",
+          width: 18,
+        },
+        {
+          header: t("providerProfile.ordersManagement.columns.client"),
+          key: "client",
+          width: 28,
+        },
+        {
+          header: t("providerProfile.ordersManagement.columns.product"),
+          key: "product",
+          width: 22,
+        },
+        {
+          header: t("providerProfile.ordersManagement.columns.orderType"),
+          key: "orderType",
+          width: 22,
+        },
+        {
+          header: t("providerProfile.ordersManagement.columns.orderDate"),
+          key: "orderDate",
+          width: 18,
+        },
+        {
+          header: t("providerProfile.ordersManagement.columns.budget"),
+          key: "budget",
+          width: 14,
+        },
+        {
+          header: t("providerProfile.ordersManagement.columns.status"),
+          key: "status",
+          width: 18,
+        },
       ];
 
       // Style header row

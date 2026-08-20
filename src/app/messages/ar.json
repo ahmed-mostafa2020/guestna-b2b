@@ -623,6 +623,7 @@
         "paymentMethod": "طريقة الدفع",
         "paid": "مدفوع",
         "unpaid": "غير مدفوع",
+        "pendingApproval": "بالانتظار الموافقة",
         "bankTransfer": "تحويل بنكي",
         "package": "باقة",
         "custom": "مخصص"
@@ -640,6 +641,30 @@
         "attachment": "ملف تفاصيل الرحلة",
         "viewPdf": "عرض الملف المرفق",
         "download": "تحميل"
+      },
+      "pendingCard": {
+        "titlePendingApproval": "انتظار الموافقة",
+        "descPendingApproval": "في انتظار مراجعة واعتماد الطلب من الإدارة لإتمام العملية",
+        "titlePending": "قيد المعالجة",
+        "descPending": "الطلب قيد المتابعة والمعالجة من قبل الفريق المختص",
+        "titlePendingCompany": "قيد تأكيد الشركة",
+        "descPendingCompany": "في انتظار تأكيد واعتماد الطلب من قبل الشركة",
+        "titleScheduled": "تم تأكيد الحجز ومجدول",
+        "descScheduled": "تم تأكيد موعد الزيارة وجدولة الرحلة بنجاح",
+        "titleOnHold": "الطلب قيد الانتظار",
+        "descOnHold": "الطلب معلق مؤقتاً في انتظار استكمال المتطلبات",
+        "expiresIn": "تنتهي صلاحية العرض خلال:",
+        "orderNumber": "رقم الحجز",
+        "branch": "فرع",
+        "visitDate": "تاريخ الزيارة",
+        "visitorsCount": "عدد الزوار"
+      },
+      "actionBar": {
+        "currentStatus": "حالة الطلب الحالية",
+        "acceptBooking": "اعتماد الحجز",
+        "requestEdit": "طلب تعديل",
+        "rejectOrder": "رفض الطلب",
+        "operationsReview": "مراجعة العمليات"
       },
       "doneStatusCard": {
         "title": "تم تأكيد الحجز بنجاح",

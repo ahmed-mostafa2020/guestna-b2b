@@ -41,29 +41,19 @@ const ProviderOrderStatsCards = ({ orderData }) => {
       label: t("providerProfile.orderDetails.stats.visitDuration"),
       value: durationValue,
     },
-    {
-      id: "activities",
-      label: t("providerProfile.orderDetails.stats.activities"),
-      value: `${activitiesCount}`,
-    },
-    // {
-    //   id: "team",
-    //   label: t("providerProfile.orderDetails.stats.team"),
-    //   value: teamValue,
-    // },
   ];
 
   return (
     <section
       aria-label="Order Quick Stats"
-      className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 font-somar"
+      className="grid grid-cols-2 gap-3 sm:gap-4 max-w-xl font-somar"
     >
       {stats.map((item) => (
         <div
           key={item.id}
-          className="bg-white rounded-2xl border border-gray-100 p-5 sm:py-6 sm:px-4 flex flex-col items-center justify-center text-center shadow-xs transition-all hover:shadow-card"
+          className="bg-white rounded-2xl border border-gray-100 p-5 sm:py-6 sm:px-6 flex flex-col items-center justify-center text-center shadow-xs transition-all hover:shadow-card"
         >
-          <span className="text-xs sm:text-sm font-medium text-textLight mb-2">
+          <span className="text-xs sm:text-sm font-medium text-textLight mb-2 font-somar">
             {item.label}
           </span>
           <span className="text-xl sm:text-[22px] font-bold text-textDark tracking-tight font-somar">

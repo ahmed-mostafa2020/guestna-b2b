@@ -41,9 +41,15 @@ const STATUS_CONFIG = {
   },
   [PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL]: {
     bg: "bg-amber-50",
-    text: "text-amber-700",
+    text: "text-[#D97706]",
     border: "border-amber-200",
-    icon: <Schedule className="!w-4 !h-4 text-amber-600" />,
+    icon: <Schedule className="!w-4 !h-4 text-[#D97706]" />,
+  },
+  [PROVIDER_ORDER_STATUS.PENDING_COMPANY_APPROVAL]: {
+    bg: "bg-sky-50",
+    text: "text-sky-700",
+    border: "border-sky-200",
+    icon: <Schedule className="!w-4 !h-4 text-sky-600" />,
   },
   [PROVIDER_ORDER_STATUS.SCHEDULED]: {
     bg: "bg-sky-50",
@@ -84,6 +90,8 @@ const ProviderOrderDetailsHeader = ({ orderData }) => {
       ? isAr
         ? "مؤكد"
         : "Confirmed"
+      : status === PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL
+      ? t("providerProfile.orderDetails.pendingCard.titlePendingApproval")
       : t(`providerProfile.ordersManagement.statuses.${status}`, {
           default: status,
         });

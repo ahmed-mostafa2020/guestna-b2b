@@ -11,12 +11,14 @@ const ProviderOrderFinancialCard = ({ orderData }) => {
   const isAr = locale === "ar";
 
   const priceAmount = orderData?.price ?? orderData?.basePrice ?? 0;
-  const isPaid = orderData?.isPaid !== false && orderData?.status === "DONE";
+  const isPaid = orderData?.isPaid === true || orderData?.status === "DONE";
 
-  const paymentMethodLabel = isAr ? "تحويل بنكي" : "Bank Transfer";
+  const paymentStatusLabel = isPaid
+    ? t("providerProfile.orderDetails.financial.paid")
+    : t("providerProfile.orderDetails.financial.pendingApproval");
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-5 font-somar">
+    <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-4 sm:gap-5 font-somar">
       {/* 1. Header */}
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center">
@@ -29,7 +31,7 @@ const ProviderOrderFinancialCard = ({ orderData }) => {
 
       {/* 2. Total Amount Highlight */}
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs sm:text-sm text-textLight font-normal">
+        <span className="text-xs sm:text-sm text-textLight font-normal font-somar">
           {t("providerProfile.orderDetails.financial.totalAmount")}
         </span>
         <span className="text-xl sm:text-2xl font-extrabold text-mainColor font-somar">
@@ -37,17 +39,20 @@ const ProviderOrderFinancialCard = ({ orderData }) => {
         </span>
       </div>
 
-      {/* 3. Payment Details */}
-      <div className="flex flex-col gap-3 text-xs sm:text-sm border-t border-gray-50">
-        {/* Payment Method */}
-        <div className="flex items-center justify-between gap-2 py-1">
-          <span className="text-textLight font-normal">
-            {t("providerProfile.orderDetails.financial.paymentMethod")}
-          </span>
-          <span className="font-bold text-textDark font-somar">
-            {paymentMethodLabel}
-          </span>
-        </div>
+      {/* 3. Payment Status */}
+      <div className="flex items-center justify-between gap-2 pt-2 border-t border-gray-50">
+        <span className="text-xs sm:text-sm text-textLight font-normal font-somar">
+          {t("providerProfile.orderDetails.financial.paymentStatus")}
+        </span>
+        <span
+          className={`inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm font-bold border ${
+            isPaid
+              ? "bg-[#E8F8F5] text-[#00A389] border-[#B2EBE2]"
+              : "bg-[#F59E0B] text-white border-transparent shadow-2xs"
+          } font-somar`}
+        >
+          {paymentStatusLabel}
+        </span>
       </div>
     </div>
   );

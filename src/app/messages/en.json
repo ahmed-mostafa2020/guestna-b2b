@@ -616,6 +616,7 @@
         "paymentMethod": "Payment Method",
         "paid": "Paid",
         "unpaid": "Unpaid",
+        "pendingApproval": "Pending Approval",
         "bankTransfer": "Bank Transfer",
         "package": "Package",
         "custom": "Custom"
@@ -633,6 +634,30 @@
         "attachment": "Trip Details File",
         "viewPdf": "View Attached File",
         "download": "Download"
+      },
+      "pendingCard": {
+        "titlePendingApproval": "Pending Approval",
+        "descPendingApproval": "Waiting for review and approval from administration to complete the process",
+        "titlePending": "In Progress",
+        "descPending": "The order is currently being processed by the team",
+        "titlePendingCompany": "Pending Company Approval",
+        "descPendingCompany": "Waiting for confirmation and approval from the company",
+        "titleScheduled": "Booking Scheduled",
+        "descScheduled": "The visit date has been confirmed and scheduled successfully",
+        "titleOnHold": "Order On Hold",
+        "descOnHold": "The order is temporarily on hold pending required details",
+        "expiresIn": "Offer expires in:",
+        "orderNumber": "Booking No.",
+        "branch": "Branch",
+        "visitDate": "Visit Date",
+        "visitorsCount": "Visitors Count"
+      },
+      "actionBar": {
+        "currentStatus": "Current Order Status",
+        "acceptBooking": "Accept Booking",
+        "requestEdit": "Request Edit",
+        "rejectOrder": "Reject Order",
+        "operationsReview": "Operations Review"
       },
       "doneStatusCard": {
         "title": "Booking Confirmed Successfully",

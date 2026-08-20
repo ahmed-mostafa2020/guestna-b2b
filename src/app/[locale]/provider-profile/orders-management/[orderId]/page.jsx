@@ -109,7 +109,12 @@ const ProviderOrderDetailsPage = () => {
   }
 
   /* ─── 4. Success State ─── */
-  return <ProviderOrderDetailsContent orderData={orderData} />;
+  return (
+    <ProviderOrderDetailsContent
+      orderData={orderData}
+      refetch={refetch}
+    />
+  );
 };
 
 export default ProviderOrderDetailsPage;
