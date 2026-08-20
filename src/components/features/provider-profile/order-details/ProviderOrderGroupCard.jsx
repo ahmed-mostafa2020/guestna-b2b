@@ -12,14 +12,17 @@ const ProviderOrderGroupCard = ({ orderData }) => {
   const organization = orderData?.organization || {};
 
   const orgName =
-    typeof orderData?.organization === "string"
+    (typeof orderData?.organization === "string"
       ? orderData.organization
-      : organization.name || "-";
+      : organization.name) ||
+    orderData?.school?.name ||
+    "-";
 
   const orgPhone =
-    typeof orderData?.organization === "object" && organization.phone
-      ? organization.phone
-      : user.phone || "-";
+    (typeof orderData?.organization === "object" && organization.phone) ||
+    user.phone ||
+    orderData?.phone ||
+    "-";
 
   const userName =
     user.name ||
@@ -31,29 +34,30 @@ const ProviderOrderGroupCard = ({ orderData }) => {
   const userRole =
     user.role?.description ||
     (typeof user.role === "string" ? user.role : "") ||
-    t("providerProfile.orderDetails.groupInfo.coordinator");
+    (orgName !== "-"
+      ? `${t("providerProfile.orderDetails.groupInfo.coordinator")} ${orgName}`
+      : t("providerProfile.orderDetails.groupInfo.coordinator"));
 
   const stageName =
+    orderData?.academicStages?.map((s) => s.name).join("، ") ||
     orderData?.track?.educationSystem?.name ||
     orderData?.stage ||
-    (typeof user.role?.description === "string" ? user.role.description : "") ||
+    orderData?.stageName ||
     "-";
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-5 font-somar">
-      {/* 1. Header with Title & Icon */}
-      <div className="flex items-center gap-2 border-b border-border/50 pb-4">
-        <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center">
-          <SchoolOutlined className="!w-5 !h-5" />
-        </div>
-        <h2 className="text-base sm:text-lg font-bold text-textDark flex items-center gap-2 font-somar">
-          <span>{t("providerProfile.orderDetails.groupInfo.title")}</span>
+    <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-4 font-somar">
+      {/* 1. Header with Title & Icon (Direct icon, no background box or bottom border) */}
+      <div className="flex items-center gap-2">
+        <SchoolOutlined className="!w-5 !h-5 sm:!w-6 sm:!h-6 text-mainColor shrink-0" />
+        <h2 className="text-base sm:text-lg font-bold text-textDark font-somar">
+          {t("providerProfile.orderDetails.groupInfo.title")}
         </h2>
       </div>
 
-      {/* 2. User / Coordinator Info */}
-      <div className="flex items-center gap-3.5">
-        <div className="relative w-12 h-12 rounded-full overflow-hidden bg-mainColor/10 border border-border flex items-center justify-center text-mainColor font-bold text-lg shrink-0">
+      {/* 2. User / Coordinator Info Card with Soft Background */}
+      <div className="bg-[#F8FAFC] rounded-xl p-3.5 sm:p-4 flex items-center gap-3.5">
+        <div className="relative w-12 h-12 rounded-full overflow-hidden bg-mainColor/10 border border-gray-200/60 flex items-center justify-center text-mainColor font-bold text-base shrink-0">
           {user.image ? (
             <Image
               src={user.image}
@@ -68,13 +72,13 @@ const ProviderOrderGroupCard = ({ orderData }) => {
         </div>
         <div className="flex flex-col min-w-0">
           <span
-            className="font-bold text-textDark text-sm sm:text-base truncate font-somar"
+            className="font-bold text-textDark text-sm sm:text-base leading-snug truncate font-somar"
             title={userName}
           >
             {userName}
           </span>
           <span
-            className="text-xs sm:text-sm text-textLight font-normal truncate"
+            className="text-xs sm:text-sm text-textLight font-normal truncate mt-0.5 font-somar"
             title={userRole}
           >
             {userRole}
@@ -82,15 +86,15 @@ const ProviderOrderGroupCard = ({ orderData }) => {
         </div>
       </div>
 
-      {/* 3. Key-Value Details */}
+      {/* 3. Key-Value Details (Clean rows without dividers) */}
       <div className="flex flex-col gap-3 text-xs sm:text-sm pt-1">
         {/* Educational Institution */}
-        <div className="flex items-center justify-between gap-2 py-1.5 border-b border-gray-50">
-          <span className="text-textLight font-normal">
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-textLight font-normal shrink-0">
             {t("providerProfile.orderDetails.groupInfo.educationalInstitution")}
           </span>
           <span
-            className="font-bold text-textDark text-end truncate max-w-[60%] font-somar"
+            className="font-bold text-textDark text-left rtl:text-left truncate max-w-[60%] font-somar"
             title={orgName}
           >
             {orgName}
@@ -98,12 +102,12 @@ const ProviderOrderGroupCard = ({ orderData }) => {
         </div>
 
         {/* Study Stage */}
-        <div className="flex items-center justify-between gap-2 py-1.5 border-b border-gray-50">
-          <span className="text-textLight font-normal">
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-textLight font-normal shrink-0">
             {t("providerProfile.orderDetails.groupInfo.studyStage")}
           </span>
           <span
-            className="font-bold text-textDark text-end truncate max-w-[60%] font-somar"
+            className="font-bold text-textDark text-left rtl:text-left truncate max-w-[60%] font-somar"
             title={stageName}
           >
             {stageName}
@@ -111,8 +115,8 @@ const ProviderOrderGroupCard = ({ orderData }) => {
         </div>
 
         {/* Contact Phone */}
-        <div className="flex items-center justify-between gap-2 py-1.5">
-          <span className="text-textLight font-normal">
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-textLight font-normal shrink-0">
             {t("providerProfile.orderDetails.groupInfo.contactNumber")}
           </span>
           {orgPhone !== "-" ? (

@@ -46,17 +46,17 @@ const ProviderOrderStatsCards = ({ orderData }) => {
       label: t("providerProfile.orderDetails.stats.activities"),
       value: `${activitiesCount}`,
     },
-    {
-      id: "team",
-      label: t("providerProfile.orderDetails.stats.team"),
-      value: teamValue,
-    },
+    // {
+    //   id: "team",
+    //   label: t("providerProfile.orderDetails.stats.team"),
+    //   value: teamValue,
+    // },
   ];
 
   return (
     <section
       aria-label="Order Quick Stats"
-      className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 font-somar"
+      className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 font-somar"
     >
       {stats.map((item) => (
         <div

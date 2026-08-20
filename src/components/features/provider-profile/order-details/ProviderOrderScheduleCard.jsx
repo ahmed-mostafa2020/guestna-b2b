@@ -15,7 +15,7 @@ const ProviderOrderScheduleCard = ({ orderData }) => {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-5 font-somar">
       {/* 1. Header */}
-      <div className="border-b border-border/50 pb-3">
+      <div className="pb-3">
         <h2 className="text-base sm:text-lg font-bold text-textDark font-somar">
           {t("providerProfile.orderDetails.schedule.title")}
         </h2>

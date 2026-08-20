@@ -18,7 +18,7 @@ const ProviderOrderFinancialCard = ({ orderData }) => {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-5 font-somar">
       {/* 1. Header */}
-      <div className="flex items-center gap-2 border-b border-border/50 pb-4">
+      <div className="flex items-center gap-2">
         <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center">
           <AccountBalanceWalletOutlined className="!w-5 !h-5" />
         </div>
@@ -28,35 +28,17 @@ const ProviderOrderFinancialCard = ({ orderData }) => {
       </div>
 
       {/* 2. Total Amount Highlight */}
-      <div className="flex items-center justify-between gap-2 py-1">
+      <div className="flex items-center justify-between gap-2">
         <span className="text-xs sm:text-sm text-textLight font-normal">
           {t("providerProfile.orderDetails.financial.totalAmount")}
         </span>
         <span className="text-xl sm:text-2xl font-extrabold text-mainColor font-somar">
-          {formatCurrency(priceAmount, locale)}
+          {formatCurrency(priceAmount)}
         </span>
       </div>
 
       {/* 3. Payment Details */}
-      <div className="flex flex-col gap-3 text-xs sm:text-sm border-t border-gray-50 pt-2">
-        {/* Payment Status */}
-        <div className="flex items-center justify-between gap-2 py-1">
-          <span className="text-textLight font-normal">
-            {t("providerProfile.orderDetails.financial.paymentStatus")}
-          </span>
-          <span
-            className={`inline-flex items-center px-3 py-0.5 rounded-full text-xs font-bold border ${
-              isPaid
-                ? "bg-[#E8F8F5] text-[#00A389] border-[#B2EBE2]"
-                : "bg-gray-100 text-gray-700 border-gray-200"
-            }`}
-          >
-            {isPaid
-              ? t("providerProfile.orderDetails.financial.paid")
-              : t("providerProfile.orderDetails.financial.unpaid")}
-          </span>
-        </div>
-
+      <div className="flex flex-col gap-3 text-xs sm:text-sm border-t border-gray-50">
         {/* Payment Method */}
         <div className="flex items-center justify-between gap-2 py-1">
           <span className="text-textLight font-normal">
