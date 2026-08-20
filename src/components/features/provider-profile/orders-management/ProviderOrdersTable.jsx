@@ -185,7 +185,7 @@ const ProviderOrdersTable = ({
       {
         key: "orderId",
         label: t("providerProfile.ordersManagement.columns.orderId"),
-        className: "font-bold text-textDark text-sm sm:text-base",
+        className: "font-bold text-textDark text-sm sm:text-base whitespace-nowrap",
         render: (row) => String(row.orderId || row._id?.slice(-8) || "-"),
       },
       {
@@ -198,11 +198,17 @@ const ProviderOrdersTable = ({
               : row.organization?.name || "-";
           const eduSystem = row.track?.educationSystem?.name || "-";
           return (
-            <div className="flex flex-col">
-              <span className="font-bold text-textDark text-sm sm:text-base">
+            <div className="flex flex-col max-w-[180px] sm:max-w-[220px] min-w-0">
+              <span
+                className="font-bold text-textDark text-sm sm:text-base truncate"
+                title={orgName}
+              >
                 {orgName}
               </span>
-              <span className="text-xs sm:text-sm text-textLight font-medium">
+              <span
+                className="text-xs sm:text-sm text-textLight font-medium truncate"
+                title={eduSystem}
+              >
                 {eduSystem}
               </span>
             </div>
@@ -213,12 +219,19 @@ const ProviderOrdersTable = ({
         key: "product",
         label: t("providerProfile.ordersManagement.columns.product"),
         className: "font-semibold text-textDark text-sm sm:text-base",
-        render: (row) => row.name || "-",
+        render: (row) => (
+          <span
+            className="block max-w-[160px] sm:max-w-[200px] truncate"
+            title={row.name || "-"}
+          >
+            {row.name || "-"}
+          </span>
+        ),
       },
       {
         key: "orderType",
         label: t("providerProfile.ordersManagement.columns.orderType"),
-        className: "text-textDark text-sm sm:text-base font-medium",
+        className: "text-textDark text-sm sm:text-base font-medium whitespace-nowrap",
         render: (row) =>
           row.askType === "CUSTOM_TRIP"
             ? t("providerProfile.ordersManagement.types.CUSTOM_TRIP")
