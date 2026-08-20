@@ -4,14 +4,19 @@ import { memo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import formatDate from "@utils/formatters/FormateDate";
 import { formatTripHour } from "@utils/formatters/FormatTripTime";
-import { Check } from "@mui/icons-material";
 
 const ProviderOrderDoneStatusCard = ({ orderData }) => {
   const t = useTranslations();
   const locale = useLocale();
 
-  const orderIdVal = orderData?.orderId || orderData?._id?.slice(-8) || "-";
-  const bookingNumber = `#G-${orderIdVal}`;
+  const rawOrderId = orderData?.orderId || orderData?._id?.slice(-8) || "";
+  const bookingNumber = rawOrderId
+    ? String(rawOrderId).startsWith("#")
+      ? rawOrderId
+      : String(rawOrderId).startsWith("G-")
+      ? `#${rawOrderId}`
+      : `#G-${rawOrderId}`
+    : "-";
 
   const visitDate = orderData?.day || orderData?.date || orderData?.createdAt;
   const formattedVisitDate = visitDate
@@ -23,17 +28,20 @@ const ProviderOrderDoneStatusCard = ({ orderData }) => {
     : "-";
 
   const formattedVisitTime = formatTripHour(
-    orderData?.fromHour || "09:30",
+    orderData?.fromHour || orderData?.time || "09:30",
     locale
   );
 
   return (
-    <div className="bg-[#F4F9F9] border border-[#D5EBEA] rounded-2xl p-5 sm:p-7 relative overflow-hidden shadow-xs font-somar">
-      {/* Main Row: Text Info + Checkmark Icon */}
+    <section
+      aria-label={t("providerProfile.orderDetails.doneStatusCard.title")}
+      className="bg-white border border-gray-100 rounded-2xl p-5 sm:p-7 relative overflow-hidden shadow-xs font-somar"
+    >
+      {/* Main Row: Text Info + Large Checkmark Badge */}
       <div className="flex items-start justify-between gap-4">
         {/* Right / Start in RTL: Title & Description */}
         <div className="flex flex-col max-w-xl">
-          <h2 className="text-lg sm:text-xl font-bold text-textDark font-somar">
+          <h2 className="text-base sm:text-lg lg:text-xl font-bold text-textDark font-somar">
             {t("providerProfile.orderDetails.doneStatusCard.title")}
           </h2>
           <p className="text-xs sm:text-sm text-textLight font-normal mt-1.5 leading-relaxed">
@@ -41,30 +49,53 @@ const ProviderOrderDoneStatusCard = ({ orderData }) => {
           </p>
         </div>
 
-        {/* Left / End in RTL: Checkmark Badge */}
-        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#D7EFEF] text-mainColor flex items-center justify-center shrink-0 shadow-inner">
-          <Check className="!w-8 !h-8 sm:!w-9 sm:!h-9 text-mainColor stroke-[2.5]" />
+        {/* Left / End in RTL: Large Circular Checkmark Badge */}
+        <div
+          className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#E6F4F1] flex items-center justify-center shrink-0"
+          aria-hidden="true"
+        >
+          <svg
+            className="w-8 h-8 sm:w-10 sm:h-10 text-mainColor"
+            viewBox="0 0 48 48"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="24"
+              cy="24"
+              r="18"
+              stroke="currentColor"
+              strokeWidth="3.2"
+            />
+            <path
+              d="M16 24.5L22 30.5L33 18.5"
+              stroke="currentColor"
+              strokeWidth="3.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </div>
       </div>
 
       {/* Divider */}
-      <div className="border-t border-[#D5EBEA]/80 my-5" />
+      <div className="border-t border-gray-100 my-5 sm:my-6" />
 
-      {/* Bottom Row: 3 Data Columns (Right to Left: Order No, Date, Time) */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs sm:text-sm">
+      {/* Bottom Row: 3 Data Columns (Order No, Visit Date, Visit Time) */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 text-xs sm:text-sm">
         {/* Booking Number */}
         <div className="flex flex-col">
-          <span className="text-xs font-medium text-textLight mb-1">
+          <span className="text-xs sm:text-[13px] font-normal text-textLight mb-1">
             {t("providerProfile.orderDetails.doneStatusCard.orderNumber")}
           </span>
-          <span className="font-bold text-textDark text-base sm:text-lg font-mono">
+          <span className="font-bold text-textDark text-base sm:text-lg">
             {bookingNumber}
           </span>
         </div>
 
         {/* Visit Date */}
         <div className="flex flex-col">
-          <span className="text-xs font-medium text-textLight mb-1">
+          <span className="text-xs sm:text-[13px] font-normal text-textLight mb-1">
             {t("providerProfile.orderDetails.doneStatusCard.visitDate")}
           </span>
           <span className="font-bold text-textDark text-base sm:text-lg">
@@ -74,7 +105,7 @@ const ProviderOrderDoneStatusCard = ({ orderData }) => {
 
         {/* Visit Time */}
         <div className="flex flex-col">
-          <span className="text-xs font-medium text-textLight mb-1">
+          <span className="text-xs sm:text-[13px] font-normal text-textLight mb-1">
             {t("providerProfile.orderDetails.doneStatusCard.visitTime")}
           </span>
           <span className="font-bold text-textDark text-base sm:text-lg">
@@ -82,7 +113,7 @@ const ProviderOrderDoneStatusCard = ({ orderData }) => {
           </span>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
