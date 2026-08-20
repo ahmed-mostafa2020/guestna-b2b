@@ -38,22 +38,6 @@ const ProviderOrderFinancialCard = ({ orderData }) => {
           {formatCurrency(priceAmount)}
         </span>
       </div>
-
-      {/* 3. Payment Status */}
-      <div className="flex items-center justify-between gap-2 pt-2 border-t border-gray-50">
-        <span className="text-xs sm:text-sm text-textLight font-normal font-somar">
-          {t("providerProfile.orderDetails.financial.paymentStatus")}
-        </span>
-        <span
-          className={`inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm font-bold border ${
-            isPaid
-              ? "bg-[#E8F8F5] text-[#00A389] border-[#B2EBE2]"
-              : "bg-[#F59E0B] text-white border-transparent shadow-2xs"
-          } font-somar`}
-        >
-          {paymentStatusLabel}
-        </span>
-      </div>
     </div>
   );
 };
