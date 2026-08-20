@@ -3,7 +3,7 @@
 import { memo } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { SchoolOutlined, PhoneOutlined, PersonOutline } from "@mui/icons-material";
+import { SchoolOutlined, PersonOutline } from "@mui/icons-material";
 
 const ProviderOrderGroupCard = ({ orderData }) => {
   const t = useTranslations();
@@ -42,13 +42,13 @@ const ProviderOrderGroupCard = ({ orderData }) => {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-5 font-somar">
       {/* 1. Header with Title & Icon */}
-      <div className="flex items-center justify-between border-b border-border/50 pb-4">
-        <h2 className="text-base sm:text-lg font-bold text-textDark flex items-center gap-2 font-somar">
-          <span>{t("providerProfile.orderDetails.groupInfo.title")}</span>
-        </h2>
+      <div className="flex items-center gap-2 border-b border-border/50 pb-4">
         <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center">
           <SchoolOutlined className="!w-5 !h-5" />
         </div>
+        <h2 className="text-base sm:text-lg font-bold text-textDark flex items-center gap-2 font-somar">
+          <span>{t("providerProfile.orderDetails.groupInfo.title")}</span>
+        </h2>
       </div>
 
       {/* 2. User / Coordinator Info */}
@@ -67,10 +67,16 @@ const ProviderOrderGroupCard = ({ orderData }) => {
           )}
         </div>
         <div className="flex flex-col min-w-0">
-          <span className="font-bold text-textDark text-sm sm:text-base truncate font-somar" title={userName}>
+          <span
+            className="font-bold text-textDark text-sm sm:text-base truncate font-somar"
+            title={userName}
+          >
             {userName}
           </span>
-          <span className="text-xs sm:text-sm text-textLight font-normal truncate" title={userRole}>
+          <span
+            className="text-xs sm:text-sm text-textLight font-normal truncate"
+            title={userRole}
+          >
             {userRole}
           </span>
         </div>
@@ -83,7 +89,10 @@ const ProviderOrderGroupCard = ({ orderData }) => {
           <span className="text-textLight font-normal">
             {t("providerProfile.orderDetails.groupInfo.educationalInstitution")}
           </span>
-          <span className="font-bold text-textDark text-end truncate max-w-[60%] font-somar" title={orgName}>
+          <span
+            className="font-bold text-textDark text-end truncate max-w-[60%] font-somar"
+            title={orgName}
+          >
             {orgName}
           </span>
         </div>
@@ -93,7 +102,10 @@ const ProviderOrderGroupCard = ({ orderData }) => {
           <span className="text-textLight font-normal">
             {t("providerProfile.orderDetails.groupInfo.studyStage")}
           </span>
-          <span className="font-bold text-textDark text-end truncate max-w-[60%] font-somar" title={stageName}>
+          <span
+            className="font-bold text-textDark text-end truncate max-w-[60%] font-somar"
+            title={stageName}
+          >
             {stageName}
           </span>
         </div>
@@ -109,7 +121,6 @@ const ProviderOrderGroupCard = ({ orderData }) => {
               dir="ltr"
               className="font-bold text-textDark hover:text-mainColor transition-colors flex items-center gap-1 font-somar"
             >
-              <PhoneOutlined className="!w-3.5 !h-3.5 text-mainColor" />
               <span>{orgPhone}</span>
             </a>
           ) : (

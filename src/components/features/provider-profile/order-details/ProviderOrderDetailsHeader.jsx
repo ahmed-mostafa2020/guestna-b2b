@@ -65,7 +65,8 @@ const ProviderOrderDetailsHeader = ({ orderData }) => {
   const isAr = locale === "ar";
 
   const status = orderData?.status || PROVIDER_ORDER_STATUS.DONE;
-  const statusCfg = STATUS_CONFIG[status] || STATUS_CONFIG[PROVIDER_ORDER_STATUS.DONE];
+  const statusCfg =
+    STATUS_CONFIG[status] || STATUS_CONFIG[PROVIDER_ORDER_STATUS.DONE];
 
   // Dynamic Title based on status
   const getPageTitle = () => {
@@ -80,7 +81,9 @@ const ProviderOrderDetailsHeader = ({ orderData }) => {
 
   const statusLabel =
     status === PROVIDER_ORDER_STATUS.DONE
-      ? isAr ? "مؤكد" : "Confirmed"
+      ? isAr
+        ? "مؤكد"
+        : "Confirmed"
       : t(`providerProfile.ordersManagement.statuses.${status}`, {
           default: status,
         });
@@ -132,14 +135,14 @@ const ProviderOrderDetailsHeader = ({ orderData }) => {
           </nav>
 
           {/* Title & Status Badge */}
-          <div className="flex items-center gap-3.5 flex-wrap pt-0.5">
+          <div className="flex flex-col gap-3.5 pt-0.5">
             <h1 className="text-2xl sm:text-[28px] font-extrabold text-textDark tracking-tight font-somar">
               {getPageTitle()}
             </h1>
 
             {/* Status Badge */}
             <span
-              className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs sm:text-sm font-bold border ${statusCfg.bg} ${statusCfg.text} ${statusCfg.border}`}
+              className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs sm:text-sm font-bold border w-fit ${statusCfg.bg} ${statusCfg.text} ${statusCfg.border}`}
             >
               {statusCfg.icon}
               <span>{statusLabel}</span>
@@ -157,18 +160,6 @@ const ProviderOrderDetailsHeader = ({ orderData }) => {
             >
               <span>{t("providerProfile.orderDetails.issueInvoice")}</span>
             </button>
-          )}
-
-          {status !== PROVIDER_ORDER_STATUS.DONE && orderData?.detailsFile && (
-            <a
-              href={orderData.detailsFile}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border border-border text-textDark text-sm sm:text-base font-bold px-6 py-3 rounded-xl shadow-2xs transition-all focus:outline-none focus:ring-2 focus:ring-mainColor/30 font-somar"
-            >
-              <PictureAsPdfOutlined className="!w-5 !h-5 text-red-500" />
-              <span>{t("providerProfile.orderDetails.downloadPdf")}</span>
-            </a>
           )}
         </div>
       </div>

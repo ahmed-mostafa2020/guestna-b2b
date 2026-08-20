@@ -18,13 +18,13 @@ const ProviderOrderFinancialCard = ({ orderData }) => {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-5 font-somar">
       {/* 1. Header */}
-      <div className="flex items-center justify-between border-b border-border/50 pb-4">
-        <h2 className="text-base sm:text-lg font-bold text-textDark flex items-center gap-2 font-somar">
-          <span>{t("providerProfile.orderDetails.financial.title")}</span>
-        </h2>
+      <div className="flex items-center gap-2 border-b border-border/50 pb-4">
         <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center">
           <AccountBalanceWalletOutlined className="!w-5 !h-5" />
         </div>
+        <h2 className="text-base sm:text-lg font-bold text-textDark flex items-center gap-2 font-somar">
+          <span>{t("providerProfile.orderDetails.financial.title")}</span>
+        </h2>
       </div>
 
       {/* 2. Total Amount Highlight */}

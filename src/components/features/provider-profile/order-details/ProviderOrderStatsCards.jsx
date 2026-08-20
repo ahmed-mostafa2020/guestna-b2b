@@ -2,6 +2,7 @@
 
 import { memo } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import calculateHours from "@utils/calculations/CalculateHours";
 
 const ProviderOrderStatsCards = ({ orderData }) => {
   const t = useTranslations();
@@ -14,11 +15,15 @@ const ProviderOrderStatsCards = ({ orderData }) => {
     orderData?.seats ??
     0;
 
-  const durationHours = orderData?.duration ?? 1;
-  const durationUnit =
-    durationHours === 1
-      ? t("providerProfile.orderDetails.stats.hour")
-      : t("providerProfile.orderDetails.stats.hours");
+  // Calculate visit duration dynamically using calculateHours from fromHour and toHour
+  const durationValue =
+    orderData?.fromHour && orderData?.toHour
+      ? calculateHours(orderData.fromHour, orderData.toHour, t)
+      : `${orderData?.duration ?? 1} ${
+          (orderData?.duration ?? 1) === 1
+            ? t("common.hour")
+            : t("common.hours")
+        }`;
 
   const activitiesCount = orderData?.services?.length ?? 0;
 
@@ -34,7 +39,7 @@ const ProviderOrderStatsCards = ({ orderData }) => {
     {
       id: "duration",
       label: t("providerProfile.orderDetails.stats.visitDuration"),
-      value: `${durationHours} ${durationUnit}`,
+      value: durationValue,
     },
     {
       id: "activities",
