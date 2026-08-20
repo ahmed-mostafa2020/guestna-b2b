@@ -4,8 +4,16 @@ import { useTranslations } from "next-intl";
 import { memo, useMemo } from "react";
 import Skeleton from "@mui/material/Skeleton";
 
+import PROVIDER_ORDER_STATUS from "@constants/providerOrderStatus";
+
 /* ─── Tab Keys (status values that map to API filter) ─── */
-const TAB_KEYS = ["all", "PENDING", "ON_HOLD", "SCHEDULED", "DONE"];
+const TAB_KEYS = [
+  "all",
+  PROVIDER_ORDER_STATUS.PENDING,
+  PROVIDER_ORDER_STATUS.ON_HOLD,
+  PROVIDER_ORDER_STATUS.SCHEDULED,
+  PROVIDER_ORDER_STATUS.DONE,
+];
 
 /* ─── Skeleton ─── */
 export const OrdersStatusTabsSkeleton = () => (

@@ -9,6 +9,7 @@ import OrdersPageHeader from "@components/features/provider-profile/orders-manag
 import OrdersStatusCards from "@components/features/provider-profile/orders-management/OrdersStatusCards";
 import OrdersStatusTabs from "@components/features/provider-profile/orders-management/OrdersStatusTabs";
 import ProviderOrdersTable from "@components/features/provider-profile/orders-management/ProviderOrdersTable";
+import PROVIDER_ORDER_STATUS from "@constants/providerOrderStatus";
 
 import axios from "axios";
 import getProxyUrl from "@utils/api/getProxyUrl";
@@ -139,7 +140,7 @@ const ProviderOrdersManagementPage = () => {
           orderDate: formattedDate,
           budget: row.basePrice ?? 0,
           status: t(
-            `providerProfile.ordersManagement.statuses.${row.status || "PENDING"}`
+            `providerProfile.ordersManagement.statuses.${row.status || PROVIDER_ORDER_STATUS.PENDING}`
           ),
         });
 

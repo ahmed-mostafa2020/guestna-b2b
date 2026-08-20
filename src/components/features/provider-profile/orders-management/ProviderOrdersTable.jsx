@@ -12,45 +12,46 @@ import { Menu, MenuItem } from "@mui/material";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import formatDate from "@utils/formatters/FormateDate";
 import DataTable from "@components/ui/DataTable";
+import PROVIDER_ORDER_STATUS from "@constants/providerOrderStatus";
 
 /* ─── Status Badge ─── */
 const STATUS_STYLES = {
-  PENDING: {
+  [PROVIDER_ORDER_STATUS.PENDING]: {
     bg: "bg-status-warning-bg",
     text: "text-status-warning-fg",
     border: "border-status-warning-border",
   },
-  PENDING_COMPANY_APPROVAL: {
+  [PROVIDER_ORDER_STATUS.PENDING_COMPANY_APPROVAL]: {
     bg: "bg-status-info-bg",
     text: "text-status-info-fg",
     border: "border-status-info-border",
   },
-  ON_HOLD: {
+  [PROVIDER_ORDER_STATUS.ON_HOLD]: {
     bg: "bg-status-hold-bg",
     text: "text-status-hold-fg",
     border: "border-status-hold-border",
   },
-  SCHEDULED: {
+  [PROVIDER_ORDER_STATUS.SCHEDULED]: {
     bg: "bg-status-info-bg",
     text: "text-status-info-fg",
     border: "border-status-info-border",
   },
-  DONE: {
+  [PROVIDER_ORDER_STATUS.DONE]: {
     bg: "bg-status-success-bg",
     text: "text-status-success-fg",
     border: "border-status-success-border",
   },
-  CANCELLED: {
+  [PROVIDER_ORDER_STATUS.CANCELLED]: {
     bg: "bg-status-danger-bg",
     text: "text-status-danger-fg",
     border: "border-status-danger-border",
   },
-  REJECTED: {
+  [PROVIDER_ORDER_STATUS.REJECTED]: {
     bg: "bg-status-danger-bg",
     text: "text-status-danger-fg",
     border: "border-status-danger-border",
   },
-  PENDING_PROVIDER_APPROVAL: {
+  [PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL]: {
     bg: "bg-status-warning-bg",
     text: "text-status-warning-fg",
     border: "border-status-warning-border",
@@ -283,9 +284,9 @@ const ProviderOrdersTable = ({
         label: t("providerProfile.ordersManagement.columns.status"),
         render: (row) => (
           <StatusBadge
-            status={row.status || "PENDING"}
+            status={row.status || PROVIDER_ORDER_STATUS.PENDING}
             label={t(
-              `providerProfile.ordersManagement.statuses.${row.status || "PENDING"}`
+              `providerProfile.ordersManagement.statuses.${row.status || PROVIDER_ORDER_STATUS.PENDING}`
             )}
           />
         ),
