@@ -1,13 +1,14 @@
 "use client";
 
 import { useTranslations, useLocale } from "next-intl";
-import { memo, useMemo, useState, useRef, useEffect, useCallback } from "react";
+import { memo, useMemo, useState, useCallback } from "react";
 import {
   MoreVert,
   RemoveRedEyeOutlined,
   EditOutlined,
   KeyboardArrowDown,
 } from "@mui/icons-material";
+import { Menu, MenuItem } from "@mui/material";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import formatDate from "@utils/formatters/FormateDate";
 import DataTable from "@components/ui/DataTable";
@@ -74,34 +75,32 @@ const StatusBadge = ({ status, label }) => {
 
 /* ─── Actions Dropdown ─── */
 const ActionsDropdown = ({ row, t }) => {
-  const [open, setOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
 
-  // Close on outside click
-  useEffect(() => {
-    if (!open) return;
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [open]);
+  const handleOpen = (e) => {
+    e.stopPropagation();
+    setAnchorEl(e.currentTarget);
+  };
 
-  const handleViewDetails = useCallback(() => {
-    setOpen(false);
+  const handleClose = (e) => {
+    e?.stopPropagation?.();
+    setAnchorEl(null);
+  };
+
+  const handleViewDetails = useCallback((e) => {
+    handleClose(e);
   }, []);
 
-  const handleEdit = useCallback(() => {
-    setOpen(false);
+  const handleEdit = useCallback((e) => {
+    handleClose(e);
   }, []);
 
   return (
-    <div className="relative inline-block" ref={dropdownRef}>
+    <>
       <button
         type="button"
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={handleOpen}
         className="w-8 h-8 rounded-lg hover:border-mainColor hover:bg-mainColor/5 text-textLight hover:text-mainColor transition-all flex items-center justify-center cursor-pointer"
         aria-label={t("providerProfile.ordersManagement.columns.actions")}
         aria-haspopup="true"
@@ -110,29 +109,40 @@ const ActionsDropdown = ({ row, t }) => {
         <MoreVert className="!w-5 !h-5" />
       </button>
 
-      {open && (
-        <div className="absolute end-0 top-full mt-1.5 z-50 bg-white border border-gray-100 rounded-2xl shadow-xl min-w-[160px] py-1.5 overflow-hidden animate-in fade-in slide-in-from-top-1">
-          <button
-            type="button"
-            onClick={handleViewDetails}
-            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-medium text-textDark hover:bg-mainColor/5 hover:text-mainColor transition-colors cursor-pointer text-start"
-          >
-            <RemoveRedEyeOutlined className="!w-4.5 !h-4.5 text-mainColor" />
-            <span>
-              {t("providerProfile.ordersManagement.actions.viewDetails")}
-            </span>
-          </button>
-          <button
-            type="button"
-            onClick={handleEdit}
-            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-medium text-textDark hover:bg-mainColor/5 hover:text-mainColor transition-colors cursor-pointer text-start"
-          >
-            <EditOutlined className="!w-4.5 !h-4.5 text-mainColor" />
-            <span>{t("providerProfile.ordersManagement.actions.edit")}</span>
-          </button>
-        </div>
-      )}
-    </div>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        slotProps={{
+          paper: {
+            className:
+              "!rounded-2xl !border !border-gray-100 !shadow-xl !py-1.5 !min-w-[160px] !bg-white !font-somar",
+            elevation: 0,
+          },
+        }}
+      >
+        <MenuItem
+          onClick={handleViewDetails}
+          className="flex items-center gap-3 !px-4 !py-2.5 !text-sm !font-medium !text-textDark hover:!bg-mainColor/5 hover:!text-mainColor transition-colors cursor-pointer !justify-start !font-somar"
+        >
+          <RemoveRedEyeOutlined className="!w-4.5 !h-4.5 text-mainColor" />
+          <span className="font-somar">
+            {t("providerProfile.ordersManagement.actions.viewDetails")}
+          </span>
+        </MenuItem>
+        <MenuItem
+          onClick={handleEdit}
+          className="flex items-center gap-3 !px-4 !py-2.5 !text-sm !font-medium !text-textDark hover:!bg-mainColor/5 hover:!text-mainColor transition-colors cursor-pointer !justify-start !font-somar"
+        >
+          <EditOutlined className="!w-4.5 !h-4.5 text-mainColor" />
+          <span className="font-somar">
+            {t("providerProfile.ordersManagement.actions.edit")}
+          </span>
+        </MenuItem>
+      </Menu>
+    </>
   );
 };
 
