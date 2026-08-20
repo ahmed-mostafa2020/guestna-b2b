@@ -10,6 +10,11 @@ import OrdersStatusCards from "@components/features/provider-profile/orders-mana
 import OrdersStatusTabs from "@components/features/provider-profile/orders-management/OrdersStatusTabs";
 import ProviderOrdersTable from "@components/features/provider-profile/orders-management/ProviderOrdersTable";
 
+import axios from "axios";
+import getProxyUrl from "@utils/api/getProxyUrl";
+import { getHeaders } from "@utils/helpers/getHeaders";
+import formatDate from "@utils/formatters/FormateDate";
+
 const ProviderOrdersManagementPage = () => {
   const t = useTranslations();
   const locale = useLocale();
@@ -62,10 +67,19 @@ const ProviderOrdersManagementPage = () => {
   const ordersData = ordersResponse?.data || ordersResponse || {};
   const isOrdersLoading = ordersLoading || ordersFetching;
 
-  /* ─── Export Excel ─── */
+  /* ─── Export Excel (fetches all data with perPage=1000) ─── */
   const handleExport = useCallback(async () => {
     setIsExporting(true);
     try {
+      // Fetch up to 1000 orders matching current status filter
+      const exportEndpoint = `${B2B_END_POINTS.PROVIDER_PROFILE.ASK_TRIPS_ALL}?page=1&perPage=1000${statusFilter}`;
+      const response = await axios.get(getProxyUrl(exportEndpoint), {
+        headers: getHeaders(locale),
+      });
+
+      const exportResponseData = response.data?.data || response.data || {};
+      const nodes = exportResponseData?.nodes || [];
+
       // Lazy-load ExcelJS
       const ExcelJSModule = await import("exceljs");
       const ExcelJS = ExcelJSModule.default || ExcelJSModule;
@@ -99,8 +113,7 @@ const ProviderOrdersManagementPage = () => {
         cell.alignment = { horizontal: "center", vertical: "middle" };
       });
 
-      // Add data rows from current table data
-      const nodes = ordersData?.nodes || [];
+      // Add data rows from fetched nodes
       nodes.forEach((row) => {
         const orgName =
           typeof row.organization === "string"
@@ -108,13 +121,14 @@ const ProviderOrdersManagementPage = () => {
             : row.organization?.name || "-";
         const dateVal = row.day || row.date || row.createdAt;
         const formattedDate = dateVal
-          ? new Date(dateVal).toLocaleDateString(
-              isAr ? "ar-EG" : "en-US",
-              { year: "numeric", month: "numeric", day: "numeric" }
-            )
+          ? formatDate(dateVal, locale, {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            })
           : "-";
 
-        worksheet.addRow({
+        const addedRow = worksheet.addRow({
           orderId: String(row.orderId || row._id?.slice(-8) || "-"),
           client: orgName,
           product: row.name || "-",
@@ -127,6 +141,10 @@ const ProviderOrdersManagementPage = () => {
           status: t(
             `providerProfile.ordersManagement.statuses.${row.status || "PENDING"}`
           ),
+        });
+
+        addedRow.eachCell((cell) => {
+          cell.alignment = { horizontal: "center", vertical: "middle" };
         });
       });
 
@@ -156,7 +174,7 @@ const ProviderOrdersManagementPage = () => {
     } finally {
       setIsExporting(false);
     }
-  }, [ordersData, t, locale]);
+  }, [statusFilter, locale, t]);
 
   return (
     <main className="flex flex-col gap-5 lg:gap-6 min-h-screen">

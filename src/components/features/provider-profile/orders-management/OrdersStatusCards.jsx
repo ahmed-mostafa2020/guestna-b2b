@@ -3,17 +3,15 @@
 import { useTranslations } from "next-intl";
 import { memo, useMemo } from "react";
 import Skeleton from "@mui/material/Skeleton";
-
-/* ─── Status Card Config ─── */
+import PROVIDER_ORDER_STATUS from "@constants/providerOrderStatus";
 const STATUS_CARD_KEYS = [
-  "PENDING_PROVIDER_APPROVAL",
-  "PENDING",
-  "SCHEDULED",
-  "ON_HOLD",
-  "DONE",
-  "REJECTED",
+  PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL,
+  PROVIDER_ORDER_STATUS.PENDING,
+  PROVIDER_ORDER_STATUS.SCHEDULED,
+  PROVIDER_ORDER_STATUS.ON_HOLD,
+  PROVIDER_ORDER_STATUS.DONE,
+  PROVIDER_ORDER_STATUS.REJECTED,
 ];
-
 /* ─── Single Card ─── */
 const StatusCardItem = ({ label, count, loading }) => (
   <div className="flex flex-col items-center justify-center gap-1.5 p-4 bg-white border border-border rounded-xl hover:shadow-card hover:border-mainColor/30 transition-all min-w-[140px] text-center">
