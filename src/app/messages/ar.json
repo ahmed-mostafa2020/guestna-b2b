@@ -585,6 +585,85 @@
       "noOrders": "لا توجد طلبات",
       "exportReport": "تصدير التقرير",
       "students": "طالب"
+    },
+    "orderDetails": {
+      "title": "تفاصيل الحجز",
+      "titleCancelled": "تفاصيل الحجز (ملغي)",
+      "titleRejected": "تفاصيل الحجز (مرفوض)",
+      "breadcrumbs": {
+        "home": "الرئيسية",
+        "bookings": "الحجوزات",
+        "details": "تفاصيل الحجز"
+      },
+      "issueInvoice": "إصدار الفاتورة",
+      "downloadPdf": "تحميل ملف التفاصيل",
+      "stats": {
+        "visitorsCount": "عدد الزوار",
+        "visitDuration": "مدة الزيارة",
+        "activities": "الأنشطة",
+        "team": "فريق العمل",
+        "student": "طالب",
+        "students": "طلاب",
+        "hour": "ساعة",
+        "hours": "ساعات",
+        "guide": "مرشد",
+        "guides": "مرشدين"
+      },
+      "groupInfo": {
+        "title": "بيانات المجموعة",
+        "educationalInstitution": "المؤسسة التعليمية",
+        "studyStage": "المرحلة الدراسية",
+        "contactNumber": "رقم التواصل",
+        "coordinator": "منسق"
+      },
+      "financial": {
+        "title": "التفاصيل المالية",
+        "totalAmount": "إجمالي المبلغ",
+        "paymentStatus": "حالة الدفع",
+        "paymentMethod": "طريقة الدفع",
+        "paid": "مدفوع",
+        "unpaid": "غير مدفوع",
+        "bankTransfer": "تحويل بنكي",
+        "package": "باقة",
+        "custom": "مخصص"
+      },
+      "schedule": {
+        "title": "الجدول الزمني للزيارة",
+        "arrival": "الوصول",
+        "departure": "المغادرة",
+        "arrivalDesc": "استقبال الباصات في ساحة الانتظار",
+        "departureDesc": "تجميع المجموعة للمغادرة"
+      },
+      "services": {
+        "title": "الخدمات والأنشطة المحجوزة",
+        "noServices": "لا توجد خدمات مضافة",
+        "attachment": "ملف تفاصيل الرحلة",
+        "viewPdf": "عرض الملف المرفق",
+        "download": "تحميل"
+      },
+      "doneStatusCard": {
+        "title": "تم تأكيد الحجز بنجاح",
+        "description": "تم تأكيد موعد الزيارة وتخصيص الخدمات وإرسال بيانات المجموعة لفريق التشغيل.",
+        "orderNumber": "رقم الحجز",
+        "visitDate": "تاريخ الزيارة",
+        "visitTime": "وقت الزيارة"
+      },
+      "cancellationCard": {
+        "title": "سبب الإلغاء",
+        "rejectionTitle": "سبب الرفض",
+        "issuedAt": "تاريخ الإلغاء:",
+        "rejectedAt": "تاريخ الرفض:",
+        "issuedBy": "بواسطة:",
+        "system": "النظام",
+        "noReason": "لم يتم تحديد سبب"
+      },
+      "general": {
+        "loading": "جاري تحميل تفاصيل الحجز...",
+        "error": "حدث خطأ أثناء تحميل تفاصيل الحجز",
+        "notFound": "لم يتم العثور على تفاصيل الحجز المطلوب",
+        "backToOrders": "العودة إلى إدارة الحجوزات",
+        "retry": "إعادة المحاولة"
+      }
     }
   },
   "links": {

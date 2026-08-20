@@ -30,7 +30,7 @@ const StatusCardItem = ({ label, count, loading }) => (
 
 /* ─── Skeleton ─── */
 export const OrdersStatusCardsSkeleton = () => (
-  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 my-4">
     {Array.from({ length: 6 }).map((_, i) => (
       <div
         key={i}
@@ -60,7 +60,7 @@ const OrdersStatusCards = ({ counts = {}, loading = false }) => {
   if (loading) return <OrdersStatusCardsSkeleton />;
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 my-4">
       {cards.map((card) => (
         <StatusCardItem
           key={card.key}

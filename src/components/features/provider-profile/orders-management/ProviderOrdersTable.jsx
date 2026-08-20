@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations, useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 import { memo, useMemo, useState, useCallback } from "react";
 import {
   MoreVert,
@@ -76,6 +77,8 @@ const StatusBadge = ({ status, label }) => {
 
 /* ─── Actions Dropdown ─── */
 const ActionsDropdown = ({ row, t }) => {
+  const router = useRouter();
+  const locale = useLocale();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -91,7 +94,11 @@ const ActionsDropdown = ({ row, t }) => {
 
   const handleViewDetails = useCallback((e) => {
     handleClose(e);
-  }, []);
+    const targetId = row.orderId || row._id;
+    if (targetId) {
+      router.push(`/${locale}/provider-profile/orders-management/${targetId}`);
+    }
+  }, [row, router, locale]);
 
   const handleEdit = useCallback((e) => {
     handleClose(e);

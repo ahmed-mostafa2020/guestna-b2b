@@ -578,6 +578,85 @@
       "noOrders": "No orders found",
       "exportReport": "Export Report",
       "students": "students"
+    },
+    "orderDetails": {
+      "title": "Booking Details",
+      "titleCancelled": "Booking Details (Cancelled)",
+      "titleRejected": "Booking Details (Rejected)",
+      "breadcrumbs": {
+        "home": "Home",
+        "bookings": "Bookings",
+        "details": "Booking Details"
+      },
+      "issueInvoice": "Issue Invoice",
+      "downloadPdf": "Download Details File",
+      "stats": {
+        "visitorsCount": "Number of Visitors",
+        "visitDuration": "Visit Duration",
+        "activities": "Activities",
+        "team": "Work Team",
+        "student": "Student",
+        "students": "Students",
+        "hour": "Hour",
+        "hours": "Hours",
+        "guide": "Guide",
+        "guides": "Guides"
+      },
+      "groupInfo": {
+        "title": "Group Details",
+        "educationalInstitution": "Educational Institution",
+        "studyStage": "Academic Level",
+        "contactNumber": "Contact Number",
+        "coordinator": "Coordinator"
+      },
+      "financial": {
+        "title": "Financial Details",
+        "totalAmount": "Total Amount",
+        "paymentStatus": "Payment Status",
+        "paymentMethod": "Payment Method",
+        "paid": "Paid",
+        "unpaid": "Unpaid",
+        "bankTransfer": "Bank Transfer",
+        "package": "Package",
+        "custom": "Custom"
+      },
+      "schedule": {
+        "title": "Visit Schedule",
+        "arrival": "Arrival",
+        "departure": "Departure",
+        "arrivalDesc": "Receiving buses in the waiting area",
+        "departureDesc": "Gathering the group for departure"
+      },
+      "services": {
+        "title": "Booked Services & Activities",
+        "noServices": "No services added",
+        "attachment": "Trip Details File",
+        "viewPdf": "View Attached File",
+        "download": "Download"
+      },
+      "doneStatusCard": {
+        "title": "Booking Confirmed Successfully",
+        "description": "Visit date confirmed, services assigned, and group data sent to operations team.",
+        "orderNumber": "Booking No.",
+        "visitDate": "Visit Date",
+        "visitTime": "Visit Time"
+      },
+      "cancellationCard": {
+        "title": "Cancellation Reason",
+        "rejectionTitle": "Rejection Reason",
+        "issuedAt": "Cancellation Date:",
+        "rejectedAt": "Rejection Date:",
+        "issuedBy": "Issued By:",
+        "system": "System",
+        "noReason": "No reason specified"
+      },
+      "general": {
+        "loading": "Loading booking details...",
+        "error": "Error loading booking details",
+        "notFound": "Requested booking details not found",
+        "backToOrders": "Back to Bookings Management",
+        "retry": "Retry"
+      }
     }
   },
   "links": {
