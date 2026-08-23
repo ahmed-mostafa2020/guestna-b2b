@@ -90,12 +90,12 @@ const ActionsDropdownMenu = ({ booking }) => {
             },
           }}
         >
-          <MenuItem onClick={showBookingDetails}>
+          <MenuItem onClick={showBookingDetails} className="!font-somar">
             {t("links.showDetails")}
           </MenuItem>
 
           {booking.status !== TRIP_STATUS.CANCELLED && (
-            <MenuItem onClick={showAdministrativeComment}>
+            <MenuItem onClick={showAdministrativeComment} className="!font-somar">
               {t("profile.tables.bookings.actions.administrativeComment")}
             </MenuItem>
           )}

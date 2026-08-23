@@ -234,6 +234,7 @@
     "aside": {
       "main": "Main Page",
       "productsManagement": "Products Management",
+      "ordersManagement": "Orders Management",
       "ourProducts": "Our Products"
     },
     "infoCards": {
@@ -519,6 +520,171 @@
           "addItem": "+ Add Item",
           "removeItem": "Remove"
         }
+      }
+    },
+    "ordersManagement": {
+      "pageTitle": "Bookings & Orders Management",
+      "pageSubtitle": "Review and process pending booking requests that require immediate approval to ensure business continuity",
+      "breadcrumbs": {
+        "home": "Home",
+        "bookings": "Bookings"
+      },
+      "statusCards": {
+        "PENDING_PROVIDER_APPROVAL": "Awaiting Provider Approval",
+        "PENDING": "Awaiting Client Confirmation",
+        "SCHEDULED": "Scheduled Orders",
+        "ON_HOLD": "Under Registration",
+        "DONE": "Completed Orders",
+        "REJECTED": "Rejected Orders"
+      },
+      "tabs": {
+        "all": "All",
+        "PENDING": "Awaiting Approval",
+        "ON_HOLD": "Under Confirmation",
+        "SCHEDULED": "Confirmed",
+        "DONE": "Completed"
+      },
+      "tableTitle": "Track All Orders",
+      "filters": {
+        "all": "All",
+        "b2b": "School Orders b2b"
+      },
+      "columns": {
+        "orderId": "Order ID",
+        "client": "Client",
+        "product": "Product",
+        "orderType": "Order Type",
+        "orderDate": "Order Date",
+        "budget": "Budget",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "types": {
+        "CUSTOM_TRIP": "Custom Activity Requests",
+        "TRIP": "Guestna Marketplace Orders"
+      },
+      "statuses": {
+        "PENDING": "Pending",
+        "PENDING_COMPANY_APPROVAL": "Pending Approval",
+        "ON_HOLD": "On Hold",
+        "SCHEDULED": "Scheduled",
+        "DONE": "Done",
+        "CANCELLED": "Cancelled",
+        "REJECTED": "Rejected",
+        "PENDING_PROVIDER_APPROVAL": "Pending Provider Approval"
+      },
+      "actions": {
+        "viewDetails": "View Details",
+        "edit": "Edit"
+      },
+      "noOrders": "No orders found",
+      "exportReport": "Export Report",
+      "students": "students"
+    },
+    "orderDetails": {
+      "title": "Booking Details",
+      "titleCancelled": "Booking Details (Cancelled)",
+      "titleRejected": "Booking Details (Rejected)",
+      "breadcrumbs": {
+        "home": "Home",
+        "bookings": "Bookings",
+        "details": "Booking Details"
+      },
+      "issueInvoice": "Issue Invoice",
+      "downloadPdf": "Download Details File",
+      "stats": {
+        "visitorsCount": "Number of Visitors",
+        "visitDuration": "Visit Duration",
+        "activities": "Activities",
+        "team": "Work Team",
+        "student": "Student",
+        "students": "Students",
+        "hour": "Hour",
+        "hours": "Hours",
+        "guide": "Guide",
+        "guides": "Guides"
+      },
+      "groupInfo": {
+        "title": "Group Details",
+        "educationalInstitution": "Educational Institution",
+        "studyStage": "Academic Level",
+        "contactNumber": "Contact Number",
+        "coordinator": "Coordinator"
+      },
+      "financial": {
+        "title": "Financial Details",
+        "totalAmount": "Total Amount",
+        "paymentStatus": "Payment Status",
+        "paymentMethod": "Payment Method",
+        "paid": "Paid",
+        "unpaid": "Unpaid",
+        "pendingApproval": "Pending Approval",
+        "bankTransfer": "Bank Transfer",
+        "package": "Package",
+        "custom": "Custom"
+      },
+      "schedule": {
+        "title": "Visit Schedule",
+        "arrival": "Arrival",
+        "departure": "Departure",
+        "arrivalDesc": "Receiving buses in the waiting area",
+        "departureDesc": "Gathering the group for departure"
+      },
+      "services": {
+        "title": "Booked Services & Activities",
+        "noServices": "No services added",
+        "attachment": "Trip Details File",
+        "viewPdf": "View Attached File",
+        "download": "Download"
+      },
+      "pendingCard": {
+        "titlePendingApproval": "Pending Approval",
+        "descPendingApproval": "Waiting for review and approval from administration to complete the process",
+        "titlePending": "In Progress",
+        "descPending": "The order is currently being processed by the team",
+        "titlePendingCompany": "Pending Company Approval",
+        "descPendingCompany": "Waiting for confirmation and approval from the company",
+        "titleScheduled": "Booking Scheduled",
+        "descScheduled": "The visit date has been confirmed and scheduled successfully",
+        "titleOnHold": "Order On Hold",
+        "descOnHold": "The order is temporarily on hold pending required details",
+        "expiresIn": "Offer expires in:",
+        "expired": "Offer Expired",
+        "timeEnded": "Time Expired",
+        "orderNumber": "Booking No.",
+        "branch": "Branch",
+        "visitDate": "Visit Date",
+        "visitorsCount": "Visitors Count"
+      },
+      "actionBar": {
+        "currentStatus": "Current Order Status",
+        "acceptBooking": "Accept Booking",
+        "requestEdit": "Request Edit",
+        "rejectOrder": "Reject Order",
+        "operationsReview": "Operations Review"
+      },
+      "doneStatusCard": {
+        "title": "Booking Confirmed Successfully",
+        "description": "Visit date confirmed, services assigned, and group data sent to operations team.",
+        "orderNumber": "Booking No.",
+        "visitDate": "Visit Date",
+        "visitTime": "Visit Time"
+      },
+      "cancellationCard": {
+        "title": "Cancellation Reason",
+        "rejectionTitle": "Rejection Reason",
+        "issuedAt": "Cancellation Date:",
+        "rejectedAt": "Rejection Date:",
+        "issuedBy": "Issued By:",
+        "system": "System",
+        "noReason": "No reason specified"
+      },
+      "general": {
+        "loading": "Loading booking details...",
+        "error": "Error loading booking details",
+        "notFound": "Requested booking details not found",
+        "backToOrders": "Back to Bookings Management",
+        "retry": "Retry"
       }
     }
   },
@@ -1285,7 +1451,7 @@
       },
       "ordersInfo": {
         "orderDetails": {
-          "title": "Order Details -",
+          "title": "Order Details",
           "tripInfo": "Trip Information",
           "bookingInfo": "Booking Information",
           "tripName": "Trip Name",
@@ -3118,7 +3284,7 @@
     }
   },
   "order_details": {
-    "title": "Show Order Details",
+    "title": "Order Details",
     "no_order_found": "Order Not Found"
   },
   "schoolRegister": {
