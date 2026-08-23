@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { resetSignUpData } from "@store/forms/auth/signUp/signUpFormSlice";
 import { resetLoginData } from "@store/forms/auth/login/loginFormSlice";
 import { clearProfile } from "@store/profile/profileInfoSlice";
+import { clearProviderProfile } from "@store/providerProfile/providerProfileSlice";
 import { setUser, setUserToken } from "@store/users/usersSlice";
 import { clearPermissions } from "@store/permissions/permissionsSlice";
 
@@ -18,12 +19,10 @@ import ActionsDialog from "@components/features/customization/gridSection/largeS
 
 import { useSnackbar } from "notistack";
 import Cookies from "js-cookie";
-import {
-  setColorPreferences,
-  setCustomLogo,
-  setTheme,
-} from "@store/theme/themeSlice";
+import { useQueryClient } from "@tanstack/react-query";
+import { clearTheme } from "@store/theme/themeSlice";
 import { clearSelectedOrganizations } from "@store/profile/selectedOrganizationsSlice";
+import { resetRootTheme } from "@components/providers/ThemeProvider";
 
 const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,6 +32,7 @@ const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
 
   const router = useRouter();
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
 
   const clearToken = () => {
@@ -40,6 +40,10 @@ const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
       Cookies.remove(CONSTANT_VALUES.AUTH_TOKEN);
       Cookies.remove(CONSTANT_VALUES.PROFILE_IMAGE);
       Cookies.remove(CONSTANT_VALUES.USER_ID);
+      Cookies.remove(CONSTANT_VALUES.SELECTED_ORGANIZATIONS);
+      Cookies.remove("providerSlug");
+      Cookies.remove("userType");
+      Cookies.remove("role");
 
       dispatch(setUser(USERS.VISITOR));
       dispatch(setUserToken(null));
@@ -48,13 +52,15 @@ const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
       dispatch(resetSignUpData());
       dispatch(resetLoginData());
       dispatch(clearProfile());
+      dispatch(clearProviderProfile());
 
-      dispatch(setColorPreferences(null));
-
-      dispatch(setTheme("original"));
-      dispatch(setCustomLogo(null));
+      dispatch(clearTheme());
+      resetRootTheme();
 
       dispatch(clearSelectedOrganizations());
+
+      // Purge query cache to immediately cancel in-flight queries and prevent 401s
+      queryClient.clear();
 
       setIsOpen(false);
 

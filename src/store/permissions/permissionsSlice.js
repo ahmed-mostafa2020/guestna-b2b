@@ -12,9 +12,10 @@ const permissionsSlice = createSlice({
   initialState,
   reducers: {
     setPermissions: (state, action) => {
-      state.elements = action.payload.ELEMENT || [];
-      state.menuItems = action.payload.MENU_ITEM || [];
-      state.pages = action.payload.PAGE || [];
+      const payload = action.payload || {};
+      state.elements = payload.ELEMENT || [];
+      state.menuItems = payload.MENU_ITEM || [];
+      state.pages = payload.PAGE || [];
       state.isLoaded = true;
     },
     clearPermissions: (state) => {

@@ -6,7 +6,7 @@ export const TRIP_STATUS = {
   CANCLED: "CANCLED",
   ENDED: "ENDED",
   PENDING_COMPANY_APPROVAL: "PENDING_COMPANY_APPROVAL", // Pending approval - Company
-  APPROVED: "APPROVED", // Approved - After approval by the Company
+  PENDING_PROVIDER_APPROVAL: "PENDING_PROVIDER_APPROVAL", // Pending approval - Provider
   REJECTED: "REJECTED",
   ON_HOLD: "ON_HOLD",
   DONE: "DONE",

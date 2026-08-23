@@ -70,6 +70,7 @@
     "FEMALE": "Girls",
     "BOTH": "Boys and Girls",
     "guestna": "Guestna",
+    "poweredBy": "Powered by",
     "startsWith": "Starts with",
     "loading": "Loading",
     "testInitiate": "Test Initiate (debug)",

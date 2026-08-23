@@ -24,9 +24,17 @@ const themeSlice = createSlice({
     setLogoSubtext: (state, action) => {
       state.logoSubtext = action.payload;
     },
+    clearTheme: () => initialState,
+    resetTheme: () => initialState,
   },
 });
 
-export const { setTheme, setColorPreferences, setCustomLogo, setLogoSubtext } =
-  themeSlice.actions;
+export const {
+  setTheme,
+  setColorPreferences,
+  setCustomLogo,
+  setLogoSubtext,
+  clearTheme,
+  resetTheme,
+} = themeSlice.actions;
 export default themeSlice.reducer;

@@ -9,6 +9,7 @@ import { Formik } from "formik";
 import { useSnackbar } from "notistack";
 import axios from "axios";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 import { setUser, setUserToken } from "@store/users/usersSlice";
 import { submitForm } from "@store/forms/auth/login/loginFormSlice";
@@ -57,6 +58,7 @@ const LoginAccessModal = ({ open }) => {
   };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    setFormErrors([]);
     const config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -65,64 +67,95 @@ const LoginAccessModal = ({ open }) => {
       data: JSON.stringify({ email: values.email, password: values.password }),
     };
 
+    let response;
     try {
-      const response = await axios.request(config);
-
-      if (response.data) {
-        enqueueSnackbar(t("forms.auth.confirmAccount.loginSuccessMessage"), {
-          variant: "success",
-        });
-
-        // Persist token to cookie & Redux
-        setToken(response.data.token);
-        dispatch(setUserToken(response.data.token));
-        dispatch(setUser(response.data.userType));
-        dispatch(setPermissions(response.data.user.permissions));
-        dispatch(submitForm(response.data.user));
-
-        const providerSlug =
-          response.data.user?.providerSlug || response.data.providerSlug;
-        if (providerSlug) {
-          Cookies.set("providerSlug", providerSlug);
-        }
-
-        if (response.data.user?.companyLogo) {
-          dispatch(setCustomLogo(response.data.user.companyLogo));
-        }
-        if (response.data.user?.colorPreferences) {
-          dispatch(setTheme("customized"));
-          dispatch(setColorPreferences(response.data.user.colorPreferences));
-        }
-
-        // Fetch organisations header filter (non-blocking)
-        try {
-          const orgsRes = await axios.get(
-            getProxyUrl(B2B_END_POINTS.PROFILE.HEADER_FILTER_BY_ORGANIZATION),
-            {
-              headers: {
-                "Content-Type": "application/json",
-                lang: locale,
-                authorization: `Bearer ${response.data.token}`,
-              },
-            }
-          );
-          if (orgsRes.data) dispatch(setOrganizations(orgsRes.data));
-        } catch {
-          // Non-blocking – OrganizationSelector will retry on its own
-        }
-
-        resetForm();
-        if (
-          response.data.userType === USERS.PROVIDERS ||
-          response.data.userType === "PROVIDERS"
-        ) {
-          router.push(`/${locale}/provider-profile`);
-        }
-      }
+      response = await axios.request(config);
     } catch (error) {
       const errorMessage = getErrorMessage(error, t);
       enqueueSnackbar(errorMessage, { variant: "error" });
       setFormErrors([errorMessage]);
+      setSubmitting(false);
+      return;
+    }
+
+    try {
+      if (response?.data) {
+        enqueueSnackbar(t("forms.auth.confirmAccount.loginSuccessMessage"), {
+          variant: "success",
+        });
+
+        const userData = response.data.user || response.data;
+        const userToken = response.data.token;
+        const userType = response.data.userType || userData?.userType;
+
+        // Persist token to cookie & Redux
+        if (userToken) {
+          setToken(userToken);
+          dispatch(setUserToken(userToken));
+        }
+
+        if (userType) {
+          dispatch(setUser(userType));
+          Cookies.set("userType", userType);
+        }
+
+        if (userData?.permissions) {
+          dispatch(setPermissions(userData.permissions));
+        }
+
+        dispatch(submitForm(userData));
+
+        const providerSlug =
+          userData?.providerSlug || response.data.providerSlug;
+        if (providerSlug) {
+          Cookies.set("providerSlug", providerSlug);
+        }
+
+        if (userData?.companyLogo) {
+          dispatch(setCustomLogo(userData.companyLogo));
+        }
+        if (userData?.colorPreferences) {
+          dispatch(setTheme("customized"));
+          dispatch(setColorPreferences(userData.colorPreferences));
+        }
+
+        // Fetch organisations header filter (non-blocking) - only for school/B2B users
+        if (
+          userType !== USERS.PROVIDERS &&
+          userType !== "PROVIDERS"
+        ) {
+          try {
+            if (userToken) {
+              const orgsRes = await axios.get(
+                getProxyUrl(B2B_END_POINTS.PROFILE.HEADER_FILTER_BY_ORGANIZATION),
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                    lang: locale,
+                    authorization: `Bearer ${userToken}`,
+                  },
+                }
+              );
+              if (orgsRes.data) dispatch(setOrganizations(orgsRes.data));
+            }
+          } catch {
+            // Non-blocking
+          }
+        }
+
+        resetForm();
+
+        // If user logged in as a non-provider while on a provider route, redirect them to regular profile
+        if (
+          userType &&
+          userType !== USERS.PROVIDERS &&
+          userType !== "PROVIDERS"
+        ) {
+          router.push(`/${locale}/profile`);
+        }
+      }
+    } catch (err) {
+      console.error("Error setting user state after login:", err);
     } finally {
       setSubmitting(false);
     }

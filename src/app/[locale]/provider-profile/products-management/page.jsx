@@ -2,9 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { useSelector } from "react-redux";
+import Cookies from "js-cookie";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { CONSTANT_VALUES } from "@constants/constantValues";
+import { USERS } from "@constants/users";
 import ProviderProductsTable from "@components/features/provider-profile/ProviderProductsTable";
 import AddProductModal from "@components/features/provider-profile/AddProductModal";
 import StarIcon from "@mui/icons-material/Star";
@@ -14,6 +18,13 @@ const ProviderProductsManagementPage = () => {
   const t = useTranslations();
   const locale = useLocale();
   const queryClient = useQueryClient();
+
+  const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
+  const userType = useSelector((state) => state.users.userType);
+  const isAuthenticated =
+    Boolean(token) &&
+    userType !== USERS.VISITOR &&
+    userType !== USERS.B2B_PARENT;
 
   // Modal, Editing & Selection State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -42,9 +53,9 @@ const ProviderProductsManagementPage = () => {
     {},
     {
       lang: locale,
-      enabled: shouldFetchSelections,
+      enabled: shouldFetchSelections && isAuthenticated,
     },
-    [shouldFetchSelections]
+    [shouldFetchSelections, isAuthenticated]
   );
 
   const formSelectionData = selectionResponse?.data || selectionResponse;
@@ -63,9 +74,9 @@ const ProviderProductsManagementPage = () => {
     {},
     {
       lang: locale,
-      enabled: !!editingProductId,
+      enabled: !!editingProductId && isAuthenticated,
     },
-    [editingProductId]
+    [editingProductId, isAuthenticated]
   );
 
   const editProductData = editProductResponse?.data || editProductResponse;
@@ -136,8 +147,9 @@ const ProviderProductsManagementPage = () => {
     {},
     {
       lang: locale,
+      enabled: isAuthenticated,
     },
-    [b2cPage, b2cSearchTerm]
+    [b2cPage, b2cSearchTerm, isAuthenticated]
   );
 
   const finalB2cData = b2cResponse?.data || b2cResponse;

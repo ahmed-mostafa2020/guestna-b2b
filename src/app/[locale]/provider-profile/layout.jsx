@@ -25,8 +25,11 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import { USERS } from "@constants/users";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
+import ErrorComponent from "@feedback/error/ErrorComponent";
 import ErrorBoundary from "@components/ui/ErrorBoundary";
 import ProviderProfileTabs from "@components/features/provider-profile/ProviderProfileTabs";
+import ProfilePageSkeleton from "@components/ui/ProfilePageSkeleton";
+import LoginAccessModal from "@components/ui/LoginAccessModal";
 
 const ProviderProfileLayout = ({ children }) => {
   const userType = useSelector((state) => state.users.userType);
@@ -35,21 +38,39 @@ const ProviderProfileLayout = ({ children }) => {
   const dispatch = useDispatch();
 
   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
-  const isAuthenticated = Boolean(token) || userType === USERS.PROVIDERS;
+  const cookieUserType = Cookies.get("userType") || Cookies.get("role");
+
+  const isProvider =
+    userType === USERS.PROVIDERS ||
+    userType === "PROVIDERS" ||
+    cookieUserType === USERS.PROVIDERS ||
+    cookieUserType === "PROVIDERS";
+
+  const isAuthenticated =
+    Boolean(token) &&
+    userType !== USERS.VISITOR &&
+    userType !== USERS.B2B_PARENT;
 
   useEffect(() => {
-    // Only redirect away if neither token nor PROVIDERS userType is present
-    if (!token && userType !== USERS.PROVIDERS && userType !== USERS.VISITOR) {
+    // If authenticated as parent user, redirect to home
+    if (userType === USERS.B2B_PARENT) {
       router.push(`/${locale}`);
+      return;
     }
-  }, [locale, router, token, userType]);
 
-  const { data, isLoading } = useFetchData(
+    // If authenticated as non-provider (e.g. standard B2B client), redirect to regular profile
+    if (isAuthenticated && !isProvider) {
+      router.push(`/${locale}/profile`);
+      return;
+    }
+  }, [locale, router, userType, isAuthenticated, isProvider]);
+
+  const { data, error, isLoading } = useFetchData(
     `${B2B_END_POINTS.PROVIDER_PROFILE.INFORMATION}`,
     {},
     {
       lang: locale,
-      enabled: Boolean(token),
+      enabled: isAuthenticated && isProvider,
       onSuccess: setProviderProfile,
       onError: setProviderProfileError,
       onLoading: setProviderProfileLoading,
@@ -84,11 +105,31 @@ const ProviderProfileLayout = ({ children }) => {
     }
   }, [data, dispatch]);
 
-  if (isLoading && Boolean(token)) {
+  // For unauthenticated / visitor / non-provider users, skip rendering the provider shell and child pages
+  // so no child API requests are fired and LoginAccessModal is displayed
+  if (!isAuthenticated || !isProvider) {
+    return (
+      <>
+        <ProfilePageSkeleton />
+        <LoginAccessModal open={true} />
+      </>
+    );
+  }
+
+  if (isLoading) {
     return (
       <div className="w-full min-h-screen centered">
         <FullScreenLoading status="pending" />
       </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <ErrorComponent
+        statusCode={error?.response?.data?.statusCode}
+        errorMessage={error?.response?.data?.message}
+      />
     );
   }
 

@@ -3,6 +3,31 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
+export const DEFAULT_THEME_COLORS = {
+  "--color-main": "#007473",
+  "--color-secondary": "#F09814",
+  "--color-title": "#008F8F",
+  "--color-text-dark": "#1F2626",
+  "--color-text-light": "#737373",
+  "--color-bg-home": "#eeeeee",
+  "--color-bg-package-details": "#F3F3F3",
+  "--color-buttons-hover": "#E1F5F5",
+  "--color-badge": "#1858A5",
+  "--color-error": "#bf0000",
+  "--color-success": "#5cb85c",
+  "--color-border": "#ECECEC",
+  "--color-footer-link": "#00000099",
+  "--color-links-hover": "#009883",
+};
+
+export const resetRootTheme = () => {
+  if (typeof window === "undefined") return;
+  const root = document.documentElement;
+  Object.entries(DEFAULT_THEME_COLORS).forEach(([property, value]) => {
+    root.style.setProperty(property, value);
+  });
+};
+
 const ThemeProvider = () => {
   const currentTheme = useSelector((state) => state.theme?.currentTheme);
   const colorPreferences = useSelector(
@@ -75,20 +100,7 @@ const ThemeProvider = () => {
       );
     } else {
       // Apply original theme colors
-      root.style.setProperty("--color-main", "#007473");
-      root.style.setProperty("--color-secondary", "#F09814");
-      root.style.setProperty("--color-title", "#008F8F");
-      root.style.setProperty("--color-text-dark", "#1F2626");
-      root.style.setProperty("--color-text-light", "#737373");
-      root.style.setProperty("--color-bg-home", "#eeeeee");
-      root.style.setProperty("--color-bg-package-details", "#F3F3F3");
-      root.style.setProperty("--color-buttons-hover", "#E1F5F5");
-      root.style.setProperty("--color-badge", "#1858A5");
-      root.style.setProperty("--color-error", "#bf0000");
-      root.style.setProperty("--color-success", "#5cb85c");
-      root.style.setProperty("--color-border", "#ECECEC");
-      root.style.setProperty("--color-footer-link", "#00000099");
-      root.style.setProperty("--color-links-hover", "#009883");
+      resetRootTheme();
     }
   }, [currentTheme, colorPreferences]);
 
