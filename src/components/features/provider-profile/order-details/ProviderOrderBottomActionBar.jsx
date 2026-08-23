@@ -21,6 +21,7 @@ const ProviderOrderBottomActionBar = ({
   const getStatusDotColor = () => {
     switch (status) {
       case PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL:
+      case PROVIDER_ORDER_STATUS.PENDING_COMPANY_APPROVAL:
       case PROVIDER_ORDER_STATUS.PENDING:
         return "bg-[#F59E0B]";
       case PROVIDER_ORDER_STATUS.SCHEDULED:

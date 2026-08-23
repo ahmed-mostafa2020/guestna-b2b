@@ -211,4 +211,3 @@ const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
 };
 
 export default memo(ProviderOrderDetailsContent);
-

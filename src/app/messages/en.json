@@ -647,6 +647,8 @@
         "titleOnHold": "Order On Hold",
         "descOnHold": "The order is temporarily on hold pending required details",
         "expiresIn": "Offer expires in:",
+        "expired": "Offer Expired",
+        "timeEnded": "Time Expired",
         "orderNumber": "Booking No.",
         "branch": "Branch",
         "visitDate": "Visit Date",

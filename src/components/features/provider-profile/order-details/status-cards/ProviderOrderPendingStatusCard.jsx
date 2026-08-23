@@ -21,12 +21,13 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
     orderData?.status || PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL;
   const isPendingProviderApproval =
     status === PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL;
+  const hasTimer = isPendingProviderApproval;
   const rawOrderId = orderData?.orderId || orderData?._id || "";
 
   // ─── 1. Persistent Timer Calculation (Only for PENDING_PROVIDER_APPROVAL) ───
   // Calculate target expiration timestamp (from order creation or cached localStorage)
   const targetExpiryTimestamp = useMemo(() => {
-    if (!isPendingProviderApproval) return null;
+    if (!hasTimer) return null;
 
     if (orderData?.createdAt) {
       const createdTime = new Date(orderData.createdAt).getTime();
@@ -51,7 +52,7 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
     }
 
     return Date.now() + TWO_HOURS_MS;
-  }, [isPendingProviderApproval, orderData?.createdAt, rawOrderId]);
+  }, [hasTimer, orderData?.createdAt, rawOrderId]);
 
   // Compute remaining seconds from now
   const getRemainingSeconds = () => {
@@ -64,7 +65,7 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
   const onExpireCalledRef = useRef(false);
 
   useEffect(() => {
-    if (!isPendingProviderApproval || !targetExpiryTimestamp) return;
+    if (!hasTimer || !targetExpiryTimestamp) return;
 
     // Set initial remaining time
     const initialSecs = getRemainingSeconds();
@@ -88,7 +89,7 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isPendingProviderApproval, targetExpiryTimestamp, onExpire]);
+  }, [hasTimer, targetExpiryTimestamp, onExpire]);
 
   // Format HH:MM:SS
   const formatTime = (totalSeconds) => {
@@ -132,17 +133,56 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
     orderData?.seats ??
     0;
 
-  const cardTitle = t(
-    "providerProfile.orderDetails.pendingCard.titlePendingApproval"
-  );
-  const cardDescription = t(
-    "providerProfile.orderDetails.pendingCard.descPendingApproval"
-  );
+  const getCardInfo = () => {
+    switch (status) {
+      case PROVIDER_ORDER_STATUS.PENDING_COMPANY_APPROVAL:
+        return {
+          title: t(
+            "providerProfile.orderDetails.pendingCard.titlePendingCompany"
+          ),
+          description: t(
+            "providerProfile.orderDetails.pendingCard.descPendingCompany"
+          ),
+        };
+      case PROVIDER_ORDER_STATUS.PENDING:
+        return {
+          title: t("providerProfile.orderDetails.pendingCard.titlePending"),
+          description: t("providerProfile.orderDetails.pendingCard.descPending"),
+        };
+      case PROVIDER_ORDER_STATUS.SCHEDULED:
+        return {
+          title: t("providerProfile.orderDetails.pendingCard.titleScheduled"),
+          description: t(
+            "providerProfile.orderDetails.pendingCard.descScheduled"
+          ),
+        };
+      case PROVIDER_ORDER_STATUS.ON_HOLD:
+        return {
+          title: t("providerProfile.orderDetails.pendingCard.titleOnHold"),
+          description: t("providerProfile.orderDetails.pendingCard.descOnHold"),
+        };
+      case PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL:
+      default:
+        return {
+          title: t(
+            "providerProfile.orderDetails.pendingCard.titlePendingApproval"
+          ),
+          description: t(
+            "providerProfile.orderDetails.pendingCard.descPendingApproval"
+          ),
+        };
+    }
+  };
+
+  const { title: cardTitle, description: cardDescription } = getCardInfo();
+  const isExpired = hasTimer && remainingSeconds <= 0;
 
   return (
     <section
       aria-label={cardTitle}
-      className="bg-white border border-gray-100 border-s-4 border-s-[#F59E0B] rounded-2xl p-5 sm:p-7 relative overflow-hidden shadow-xs font-somar"
+      className={`bg-white border border-gray-100 border-s-4 ${
+        isExpired ? "border-s-red-500" : "border-s-[#F59E0B]"
+      } rounded-2xl p-5 sm:p-7 relative overflow-hidden shadow-xs font-somar transition-all`}
     >
       {/* Upper Row: Status Info + Timer */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 sm:gap-6">
@@ -157,15 +197,21 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
         </div>
 
         {/* Left in RTL: Timer Section (Only for PENDING_PROVIDER_APPROVAL) */}
-        {isPendingProviderApproval && (
+        {hasTimer && (
           <div className="flex flex-col items-center justify-center text-center shrink-0 self-center sm:self-auto min-w-[130px]">
-            {/* Orange Circular Badge with Hourglass */}
+            {/* Circular Badge with Hourglass */}
             <div
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 sm:border-[3px] border-[#F59E0B] bg-[#FFFBEB] flex items-center justify-center mb-2 shadow-2xs"
+              className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 sm:border-[3px] ${
+                isExpired
+                  ? "border-red-400 bg-red-50 text-red-500"
+                  : "border-[#F59E0B] bg-[#FFFBEB] text-[#F59E0B]"
+              } flex items-center justify-center mb-2 shadow-2xs transition-colors`}
               aria-hidden="true"
             >
               <svg
-                className="w-8 h-8 sm:w-10 sm:h-10 text-[#F59E0B]"
+                className={`w-8 h-8 sm:w-10 sm:h-10 ${
+                  isExpired ? "text-red-500" : "text-[#F59E0B]"
+                }`}
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -181,17 +227,32 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
             </div>
 
             {/* Timer Label */}
-            <span className="text-[11px] sm:text-xs font-medium text-textLight mb-0.5">
-              {t("providerProfile.orderDetails.pendingCard.expiresIn")}
+            <span
+              className={`text-[11px] sm:text-xs mb-0.5 ${
+                isExpired ? "text-red-600 font-bold" : "text-textLight font-medium"
+              }`}
+            >
+              {isExpired
+                ? t("providerProfile.orderDetails.pendingCard.expired")
+                : t("providerProfile.orderDetails.pendingCard.expiresIn")}
             </span>
 
-            {/* Countdown Display */}
+            {/* Countdown / Expired Display */}
             <span
               dir="ltr"
-              className="text-lg sm:text-2xl font-extrabold text-[#F59E0B] tracking-wider font-somar"
+              className={`text-lg sm:text-2xl font-extrabold tracking-wider font-somar ${
+                isExpired ? "text-red-500" : "text-[#F59E0B]"
+              }`}
             >
               {formatTime(remainingSeconds)}
             </span>
+
+            {/* Expired Tag */}
+            {isExpired && (
+              <span className="inline-flex items-center px-2.5 py-0.5 mt-1 rounded-full text-[10px] sm:text-[11px] font-bold bg-red-100 text-red-700 border border-red-200">
+                {t("providerProfile.orderDetails.pendingCard.timeEnded")}
+              </span>
+            )}
           </div>
         )}
       </div>
