@@ -2,11 +2,6 @@
 
 import { memo, useState, useEffect, useRef, useMemo } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import {
-  Schedule,
-  CheckCircleOutline,
-  PauseCircleOutline,
-} from "@mui/icons-material";
 import formatDate from "@utils/formatters/FormateDate";
 import PROVIDER_ORDER_STATUS from "@constants/providerOrderStatus";
 
@@ -64,6 +59,11 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
   const [remainingSeconds, setRemainingSeconds] = useState(getRemainingSeconds);
   const onExpireCalledRef = useRef(false);
 
+  // Reset expiry called flag when orderId changes
+  useEffect(() => {
+    onExpireCalledRef.current = false;
+  }, [rawOrderId]);
+
   useEffect(() => {
     if (!hasTimer || !targetExpiryTimestamp) return;
 
@@ -112,11 +112,11 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
     : "-";
 
   const branchName =
-    orderData?.name ||
     orderData?.branch ||
     orderData?.city?.name ||
     orderData?.track?.city?.name ||
-    (locale === "ar" ? "الرياض" : "Riyadh");
+    orderData?.name ||
+    "-";
 
   const visitDate = orderData?.day || orderData?.date || orderData?.createdAt;
   const formattedVisitDate = visitDate
@@ -181,17 +181,17 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
     <section
       aria-label={cardTitle}
       className={`bg-white border border-gray-100 border-s-4 ${
-        isExpired ? "border-s-red-500" : "border-s-[#F59E0B]"
+        isExpired ? "border-s-red-500" : "border-s-amber-500"
       } rounded-2xl p-5 sm:p-7 relative overflow-hidden shadow-xs font-somar transition-all`}
     >
       {/* Upper Row: Status Info + Timer */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 sm:gap-6">
         {/* Right in RTL: Title & Description */}
         <div className="flex flex-col max-w-xl">
-          <h2 className="text-base sm:text-lg lg:text-xl font-bold text-textDark font-somar">
+          <h2 className="text-base sm:text-lg lg:text-xl font-bold text-textDark">
             {cardTitle}
           </h2>
-          <p className="text-xs sm:text-sm text-textLight font-normal mt-1.5 leading-relaxed font-somar">
+          <p className="text-xs sm:text-sm text-textLight font-normal mt-1.5 leading-relaxed">
             {cardDescription}
           </p>
         </div>
@@ -204,13 +204,13 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
               className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 sm:border-[3px] ${
                 isExpired
                   ? "border-red-400 bg-red-50 text-red-500"
-                  : "border-[#F59E0B] bg-[#FFFBEB] text-[#F59E0B]"
+                  : "border-amber-500 bg-amber-50 text-amber-500"
               } flex items-center justify-center mb-2 shadow-2xs transition-colors`}
               aria-hidden="true"
             >
               <svg
                 className={`w-8 h-8 sm:w-10 sm:h-10 ${
-                  isExpired ? "text-red-500" : "text-[#F59E0B]"
+                  isExpired ? "text-red-500" : "text-amber-500"
                 }`}
                 viewBox="0 0 24 24"
                 fill="none"
@@ -240,8 +240,8 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
             {/* Countdown / Expired Display */}
             <span
               dir="ltr"
-              className={`text-lg sm:text-2xl font-extrabold tracking-wider font-somar ${
-                isExpired ? "text-red-500" : "text-[#F59E0B]"
+              className={`text-lg sm:text-2xl font-extrabold tracking-wider ${
+                isExpired ? "text-red-500" : "text-amber-600"
               }`}
             >
               {formatTime(remainingSeconds)}
@@ -264,11 +264,11 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 text-xs sm:text-sm">
         {/* 1. Booking Number */}
         <div className="flex flex-col">
-          <span className="text-xs sm:text-[13px] font-normal text-textLight mb-1 font-somar">
+          <span className="text-xs sm:text-[13px] font-normal text-textLight mb-1">
             {t("providerProfile.orderDetails.pendingCard.orderNumber")}
           </span>
           <span
-            className="font-bold text-textDark text-sm sm:text-base font-somar truncate"
+            className="font-bold text-textDark text-sm sm:text-base truncate"
             title={bookingNumber}
           >
             {bookingNumber}
@@ -277,11 +277,11 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
 
         {/* 2. Branch */}
         <div className="flex flex-col">
-          <span className="text-xs sm:text-[13px] font-normal text-textLight mb-1 font-somar">
+          <span className="text-xs sm:text-[13px] font-normal text-textLight mb-1">
             {t("providerProfile.orderDetails.pendingCard.branch")}
           </span>
           <span
-            className="font-bold text-textDark text-sm sm:text-base font-somar truncate"
+            className="font-bold text-textDark text-sm sm:text-base truncate"
             title={branchName}
           >
             {branchName}
@@ -290,11 +290,11 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
 
         {/* 3. Visit Date */}
         <div className="flex flex-col">
-          <span className="text-xs sm:text-[13px] font-normal text-textLight mb-1 font-somar">
+          <span className="text-xs sm:text-[13px] font-normal text-textLight mb-1">
             {t("providerProfile.orderDetails.pendingCard.visitDate")}
           </span>
           <span
-            className="font-bold text-textDark text-sm sm:text-base font-somar truncate"
+            className="font-bold text-textDark text-sm sm:text-base truncate"
             title={formattedVisitDate}
           >
             {formattedVisitDate}
@@ -303,10 +303,10 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
 
         {/* 4. Visitors Count */}
         <div className="flex flex-col">
-          <span className="text-xs sm:text-[13px] font-normal text-textLight mb-1 font-somar">
+          <span className="text-xs sm:text-[13px] font-normal text-textLight mb-1">
             {t("providerProfile.orderDetails.pendingCard.visitorsCount")}
           </span>
-          <span className="font-bold text-textDark text-sm sm:text-base font-somar">
+          <span className="font-bold text-textDark text-sm sm:text-base">
             {visitorsCount} {t("providerProfile.orderDetails.stats.student")}
           </span>
         </div>
@@ -316,3 +316,4 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
 };
 
 export default memo(ProviderOrderPendingStatusCard);
+

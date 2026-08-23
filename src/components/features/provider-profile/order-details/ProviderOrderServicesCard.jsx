@@ -1,25 +1,18 @@
 "use client";
 
 import { memo } from "react";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
-import {
-  LocalActivityOutlined,
-  PictureAsPdfOutlined,
-  OpenInNew,
-  DownloadOutlined,
-} from "@mui/icons-material";
+import { LocalActivityOutlined } from "@mui/icons-material";
 
 const ProviderOrderServicesCard = ({ orderData }) => {
   const t = useTranslations();
   const services = orderData?.services || [];
-  const detailsFile = orderData?.detailsFile;
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-5 font-somar">
       {/* 1. Header */}
       <div className="pb-3">
-        <h2 className="text-base sm:text-lg font-bold text-textDark font-somar">
+        <h2 className="text-base sm:text-lg font-bold text-textDark">
           {t("providerProfile.orderDetails.services.title")}
         </h2>
       </div>
@@ -35,7 +28,7 @@ const ProviderOrderServicesCard = ({ orderData }) => {
             return (
               <div
                 key={item._id || index}
-                className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-gray-100 bg-[#F4F9F9] hover:border-mainColor/40 text-textDark text-xs sm:text-sm font-semibold transition-all shadow-2xs font-somar"
+                className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-gray-100 bg-[#F4F9F9] hover:border-mainColor/40 text-textDark text-xs sm:text-sm font-semibold transition-all shadow-2xs"
               >
                 {iconUrl ? (
                   <div className="relative w-5 h-5 shrink-0">
@@ -64,3 +57,4 @@ const ProviderOrderServicesCard = ({ orderData }) => {
 };
 
 export default memo(ProviderOrderServicesCard);
+

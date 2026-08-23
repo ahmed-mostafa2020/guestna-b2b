@@ -13,18 +13,14 @@ const STATUS_CARD_KEYS = [
   PROVIDER_ORDER_STATUS.REJECTED,
 ];
 /* ─── Single Card ─── */
-const StatusCardItem = ({ label, count, loading }) => (
+const StatusCardItem = ({ label, count }) => (
   <div className="flex flex-col items-center justify-center gap-1.5 p-4 bg-white border border-border rounded-xl hover:shadow-card hover:border-mainColor/30 transition-all min-w-[140px] text-center">
     <span className="text-xs sm:text-sm font-medium text-textLight leading-tight">
       {label}
     </span>
-    {loading ? (
-      <Skeleton variant="text" width={40} height={32} className="rounded" />
-    ) : (
-      <span className="text-lg sm:text-xl font-bold text-titleColor">
-        {count ?? 0}
-      </span>
-    )}
+    <span className="text-lg sm:text-xl font-bold text-titleColor">
+      {count ?? 0}
+    </span>
   </div>
 );
 
@@ -66,7 +62,6 @@ const OrdersStatusCards = ({ counts = {}, loading = false }) => {
           key={card.key}
           label={card.label}
           count={card.count}
-          loading={false}
         />
       ))}
     </div>
@@ -74,3 +69,4 @@ const OrdersStatusCards = ({ counts = {}, loading = false }) => {
 };
 
 export default memo(OrdersStatusCards);
+

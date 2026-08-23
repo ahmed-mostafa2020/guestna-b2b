@@ -2,11 +2,14 @@
 
 import { memo } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { SchoolOutlined, PersonOutline } from "@mui/icons-material";
 
 const ProviderOrderGroupCard = ({ orderData }) => {
   const t = useTranslations();
+  const locale = useLocale();
+  const isAr = locale === "ar";
+  const listSeparator = isAr ? "، " : ", ";
 
   const user = orderData?.user || {};
   const organization = orderData?.organization || {};
@@ -39,7 +42,7 @@ const ProviderOrderGroupCard = ({ orderData }) => {
       : t("providerProfile.orderDetails.groupInfo.coordinator"));
 
   const stageName =
-    orderData?.academicStages?.map((s) => s.name).join("، ") ||
+    orderData?.academicStages?.map((s) => s.name).join(listSeparator) ||
     orderData?.track?.educationSystem?.name ||
     orderData?.stage ||
     orderData?.stageName ||
@@ -47,10 +50,10 @@ const ProviderOrderGroupCard = ({ orderData }) => {
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-4 font-somar">
-      {/* 1. Header with Title & Icon (Direct icon, no background box or bottom border) */}
+      {/* 1. Header with Title & Icon */}
       <div className="flex items-center gap-2">
         <SchoolOutlined className="!w-5 !h-5 sm:!w-6 sm:!h-6 text-mainColor shrink-0" />
-        <h2 className="text-base sm:text-lg font-bold text-textDark font-somar">
+        <h2 className="text-base sm:text-lg font-bold text-textDark">
           {t("providerProfile.orderDetails.groupInfo.title")}
         </h2>
       </div>
@@ -72,13 +75,13 @@ const ProviderOrderGroupCard = ({ orderData }) => {
         </div>
         <div className="flex flex-col min-w-0">
           <span
-            className="font-bold text-textDark text-sm sm:text-base leading-snug truncate font-somar"
+            className="font-bold text-textDark text-sm sm:text-base leading-snug truncate"
             title={userName}
           >
             {userName}
           </span>
           <span
-            className="text-xs sm:text-sm text-textLight font-normal truncate mt-0.5 font-somar"
+            className="text-xs sm:text-sm text-textLight font-normal truncate mt-0.5"
             title={userRole}
           >
             {userRole}
@@ -86,7 +89,7 @@ const ProviderOrderGroupCard = ({ orderData }) => {
         </div>
       </div>
 
-      {/* 3. Key-Value Details (Clean rows without dividers) */}
+      {/* 3. Key-Value Details */}
       <div className="flex flex-col gap-3 text-xs sm:text-sm pt-1">
         {/* Educational Institution */}
         <div className="flex items-center justify-between gap-3">
@@ -94,7 +97,7 @@ const ProviderOrderGroupCard = ({ orderData }) => {
             {t("providerProfile.orderDetails.groupInfo.educationalInstitution")}
           </span>
           <span
-            className="font-bold text-textDark text-left rtl:text-left truncate max-w-[60%] font-somar"
+            className="font-bold text-textDark text-left rtl:text-left truncate max-w-[60%]"
             title={orgName}
           >
             {orgName}
@@ -107,7 +110,7 @@ const ProviderOrderGroupCard = ({ orderData }) => {
             {t("providerProfile.orderDetails.groupInfo.studyStage")}
           </span>
           <span
-            className="font-bold text-textDark text-left rtl:text-left truncate max-w-[60%] font-somar"
+            className="font-bold text-textDark text-left rtl:text-left truncate max-w-[60%]"
             title={stageName}
           >
             {stageName}
@@ -123,12 +126,12 @@ const ProviderOrderGroupCard = ({ orderData }) => {
             <a
               href={`tel:${orgPhone}`}
               dir="ltr"
-              className="font-bold text-textDark hover:text-mainColor transition-colors flex items-center gap-1 font-somar"
+              className="font-bold text-textDark hover:text-mainColor transition-colors flex items-center gap-1"
             >
               <span>{orgPhone}</span>
             </a>
           ) : (
-            <span className="font-bold text-textDark font-somar">-</span>
+            <span className="font-bold text-textDark">-</span>
           )}
         </div>
       </div>
@@ -137,3 +140,4 @@ const ProviderOrderGroupCard = ({ orderData }) => {
 };
 
 export default memo(ProviderOrderGroupCard);
+

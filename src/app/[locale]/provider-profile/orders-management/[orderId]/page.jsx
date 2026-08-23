@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import { ArrowBack, Refresh } from "@mui/icons-material";
@@ -13,9 +13,9 @@ import ProviderOrderDetailsSkeleton from "@components/features/provider-profile/
 
 const ProviderOrderDetailsPage = () => {
   const params = useParams();
-  const router = useRouter();
   const locale = useLocale();
   const t = useTranslations();
+
 
   const orderId = params?.orderId;
 

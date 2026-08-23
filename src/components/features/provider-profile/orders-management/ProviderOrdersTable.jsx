@@ -102,7 +102,11 @@ const ActionsDropdown = ({ row, t }) => {
 
   const handleEdit = useCallback((e) => {
     handleClose(e);
-  }, []);
+    const targetId = row.orderId || row._id;
+    if (targetId) {
+      router.push(`/${locale}/provider-profile/orders-management/${targetId}`);
+    }
+  }, [row, router, locale]);
 
   return (
     <>

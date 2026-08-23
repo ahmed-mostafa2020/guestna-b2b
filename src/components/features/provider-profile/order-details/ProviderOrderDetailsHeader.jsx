@@ -9,59 +9,58 @@ import {
   CheckCircleOutline,
   HighlightOff,
   Schedule,
-  PictureAsPdfOutlined,
 } from "@mui/icons-material";
 import PROVIDER_ORDER_STATUS from "@constants/providerOrderStatus";
 
 /* ─── Status Badge Styles & Icons ─── */
 const STATUS_CONFIG = {
   [PROVIDER_ORDER_STATUS.DONE]: {
-    bg: "bg-[#E8F8F5]",
-    text: "text-[#00A389]",
-    border: "border-[#B2EBE2]",
-    icon: <CheckCircleOutline className="!w-4 !h-4 text-[#00A389]" />,
+    bg: "bg-status-success-bg",
+    text: "text-status-success-fg",
+    border: "border-status-success-border",
+    icon: <CheckCircleOutline className="!w-4 !h-4 text-status-success-fg" />,
   },
   [PROVIDER_ORDER_STATUS.CANCELLED]: {
-    bg: "bg-[#FEECEB]",
-    text: "text-[#D92D20]",
-    border: "border-[#FECDCA]",
-    icon: <HighlightOff className="!w-4 !h-4 text-[#D92D20]" />,
+    bg: "bg-status-danger-bg",
+    text: "text-status-danger-fg",
+    border: "border-status-danger-border",
+    icon: <HighlightOff className="!w-4 !h-4 text-status-danger-fg" />,
   },
   [PROVIDER_ORDER_STATUS.REJECTED]: {
-    bg: "bg-[#FEECEB]",
-    text: "text-[#D92D20]",
-    border: "border-[#FECDCA]",
-    icon: <HighlightOff className="!w-4 !h-4 text-[#D92D20]" />,
+    bg: "bg-status-danger-bg",
+    text: "text-status-danger-fg",
+    border: "border-status-danger-border",
+    icon: <HighlightOff className="!w-4 !h-4 text-status-danger-fg" />,
   },
   [PROVIDER_ORDER_STATUS.PENDING]: {
-    bg: "bg-amber-50",
-    text: "text-amber-700",
-    border: "border-amber-200",
-    icon: <Schedule className="!w-4 !h-4 text-amber-600" />,
+    bg: "bg-status-warning-bg",
+    text: "text-status-warning-fg",
+    border: "border-status-warning-border",
+    icon: <Schedule className="!w-4 !h-4 text-status-warning-fg" />,
   },
   [PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL]: {
-    bg: "bg-amber-50",
-    text: "text-[#D97706]",
-    border: "border-amber-200",
-    icon: <Schedule className="!w-4 !h-4 text-[#D97706]" />,
+    bg: "bg-status-warning-bg",
+    text: "text-status-warning-fg",
+    border: "border-status-warning-border",
+    icon: <Schedule className="!w-4 !h-4 text-status-warning-fg" />,
   },
   [PROVIDER_ORDER_STATUS.PENDING_COMPANY_APPROVAL]: {
-    bg: "bg-sky-50",
-    text: "text-sky-700",
-    border: "border-sky-200",
-    icon: <Schedule className="!w-4 !h-4 text-sky-600" />,
+    bg: "bg-status-info-bg",
+    text: "text-status-info-fg",
+    border: "border-status-info-border",
+    icon: <Schedule className="!w-4 !h-4 text-status-info-fg" />,
   },
   [PROVIDER_ORDER_STATUS.SCHEDULED]: {
-    bg: "bg-sky-50",
-    text: "text-sky-700",
-    border: "border-sky-200",
-    icon: <CheckCircleOutline className="!w-4 !h-4 text-sky-600" />,
+    bg: "bg-status-info-bg",
+    text: "text-status-info-fg",
+    border: "border-status-info-border",
+    icon: <CheckCircleOutline className="!w-4 !h-4 text-status-info-fg" />,
   },
   [PROVIDER_ORDER_STATUS.ON_HOLD]: {
-    bg: "bg-purple-50",
-    text: "text-purple-700",
-    border: "border-purple-200",
-    icon: <Schedule className="!w-4 !h-4 text-purple-600" />,
+    bg: "bg-status-hold-bg",
+    text: "text-status-hold-fg",
+    border: "border-status-hold-border",
+    icon: <Schedule className="!w-4 !h-4 text-status-hold-fg" />,
   },
 };
 
@@ -86,11 +85,7 @@ const ProviderOrderDetailsHeader = ({ orderData }) => {
   };
 
   const statusLabel =
-    status === PROVIDER_ORDER_STATUS.DONE
-      ? isAr
-        ? "مؤكد"
-        : "Confirmed"
-      : status === PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL
+    status === PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL
       ? t("providerProfile.orderDetails.pendingCard.titlePendingApproval")
       : t(`providerProfile.ordersManagement.statuses.${status}`, {
           default: status,
@@ -137,7 +132,7 @@ const ProviderOrderDetailsHeader = ({ orderData }) => {
             ) : (
               <KeyboardArrowRight className="!w-4 !h-4 text-textLight/70" />
             )}
-            <span className="text-[#007473] font-semibold">
+            <span className="text-mainColor font-semibold">
               {t("providerProfile.orderDetails.breadcrumbs.details")}
             </span>
           </nav>
@@ -164,7 +159,7 @@ const ProviderOrderDetailsHeader = ({ orderData }) => {
             <button
               type="button"
               onClick={handleAction}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#007473] hover:bg-[#00605F] active:scale-98 text-white text-sm sm:text-base font-bold px-7 py-3 rounded-xl shadow-xs transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#007473]/30 font-somar"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-mainColor hover:bg-titleColor active:scale-98 text-white text-sm sm:text-base font-bold px-7 py-3 rounded-xl shadow-xs transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-mainColor/30 font-somar"
             >
               <span>{t("providerProfile.orderDetails.issueInvoice")}</span>
             </button>
@@ -176,3 +171,4 @@ const ProviderOrderDetailsHeader = ({ orderData }) => {
 };
 
 export default memo(ProviderOrderDetailsHeader);
+

@@ -15,6 +15,30 @@ const TAB_KEYS = [
   PROVIDER_ORDER_STATUS.DONE,
 ];
 
+/* ─── Single Tab Button ─── */
+const TabButton = ({ tab, isActive, onClick, className = "" }) => (
+  <button
+    role="tab"
+    type="button"
+    onClick={onClick}
+    aria-selected={isActive}
+    className={`flex items-center justify-center gap-1.5 rounded-xl font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${
+      isActive
+        ? "bg-white text-mainColor shadow-sm"
+        : "text-white hover:bg-white/15"
+    } ${className}`}
+  >
+    <span>{tab.label}</span>
+    <span
+      className={`text-xs lg:text-sm font-bold ${
+        isActive ? "text-mainColor" : "text-white/90"
+      }`}
+    >
+      ({tab.count})
+    </span>
+  </button>
+);
+
 /* ─── Skeleton ─── */
 export const OrdersStatusTabsSkeleton = () => (
   <div className="w-full rounded-2xl bg-mainColor/20 p-2 sm:p-2.5 animate-pulse">
@@ -54,64 +78,36 @@ const OrdersStatusTabs = ({
 
   return (
     <div className="w-full">
-      {/* Tabs bar - Dark teal background as in design */}
-      <div className="w-full rounded-2xl bg-mainColor p-2 sm:p-2.5 shadow-md">
+      {/* Tabs bar */}
+      <div
+        role="tablist"
+        aria-label={t("providerProfile.ordersManagement.tableTitle")}
+        className="w-full rounded-2xl bg-mainColor p-2 sm:p-2.5 shadow-md"
+      >
         {/* Desktop / Tablet: Grid layout taking full width */}
         <div className="hidden sm:grid grid-cols-5 gap-2 items-center w-full">
-          {tabs.map((tab) => {
-            const isActive = activeTab === tab.key;
-            return (
-              <button
-                key={tab.key}
-                type="button"
-                onClick={() => onTabChange?.(tab.key)}
-                className={`flex items-center justify-center gap-1.5 py-2.5 px-3 lg:px-6 rounded-xl text-sm lg:text-base font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${
-                  isActive
-                    ? "bg-white text-mainColor shadow-sm"
-                    : "text-white hover:bg-white/15"
-                }`}
-                aria-pressed={isActive}
-              >
-                <span>{tab.label}</span>
-                <span
-                  className={`text-xs lg:text-sm font-bold ${
-                    isActive ? "text-mainColor" : "text-white/90"
-                  }`}
-                >
-                  ({tab.count})
-                </span>
-              </button>
-            );
-          })}
+          {tabs.map((tab) => (
+            <TabButton
+              key={tab.key}
+              tab={tab}
+              isActive={activeTab === tab.key}
+              onClick={() => onTabChange?.(tab.key)}
+              className="py-2.5 px-3 lg:px-6 text-sm lg:text-base"
+            />
+          ))}
         </div>
 
         {/* Mobile: Smooth scrollable flex */}
         <div className="flex sm:hidden items-center gap-2 overflow-x-auto scrollbar-hide py-0.5 px-0.5">
-          {tabs.map((tab) => {
-            const isActive = activeTab === tab.key;
-            return (
-              <button
-                key={tab.key}
-                type="button"
-                onClick={() => onTabChange?.(tab.key)}
-                className={`flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 cursor-pointer shrink-0 ${
-                  isActive
-                    ? "bg-white text-mainColor shadow-sm"
-                    : "text-white hover:bg-white/15"
-                }`}
-                aria-pressed={isActive}
-              >
-                <span>{tab.label}</span>
-                <span
-                  className={`text-xs font-bold ${
-                    isActive ? "text-mainColor" : "text-white/90"
-                  }`}
-                >
-                  ({tab.count})
-                </span>
-              </button>
-            );
-          })}
+          {tabs.map((tab) => (
+            <TabButton
+              key={tab.key}
+              tab={tab}
+              isActive={activeTab === tab.key}
+              onClick={() => onTabChange?.(tab.key)}
+              className="px-4 py-2 text-xs shrink-0"
+            />
+          ))}
         </div>
       </div>
     </div>
@@ -119,3 +115,4 @@ const OrdersStatusTabs = ({
 };
 
 export default memo(OrdersStatusTabs);
+

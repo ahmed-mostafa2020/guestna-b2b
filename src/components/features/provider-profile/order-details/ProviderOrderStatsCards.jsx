@@ -1,13 +1,11 @@
 "use client";
 
 import { memo } from "react";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import calculateHours from "@utils/calculations/CalculateHours";
 
 const ProviderOrderStatsCards = ({ orderData }) => {
   const t = useTranslations();
-  const locale = useLocale();
-  const isAr = locale === "ar";
 
   const visitorsCount =
     orderData?.totalAvailableSeats ??
@@ -24,11 +22,6 @@ const ProviderOrderStatsCards = ({ orderData }) => {
             ? t("common.hour")
             : t("common.hours")
         }`;
-
-  const activitiesCount = orderData?.services?.length ?? 0;
-
-  // Work team: guides count or default
-  const teamValue = isAr ? "3 مرشدين" : "3 Guides";
 
   const stats = [
     {
@@ -53,10 +46,10 @@ const ProviderOrderStatsCards = ({ orderData }) => {
           key={item.id}
           className="bg-white rounded-2xl border border-gray-100 p-5 sm:py-6 sm:px-6 flex flex-col items-center justify-center text-center shadow-xs transition-all hover:shadow-card"
         >
-          <span className="text-xs sm:text-sm font-medium text-textLight mb-2 font-somar">
+          <span className="text-xs sm:text-sm font-medium text-textLight mb-2">
             {item.label}
           </span>
-          <span className="text-xl sm:text-[22px] font-bold text-textDark tracking-tight font-somar">
+          <span className="text-xl sm:text-[22px] font-bold text-textDark tracking-tight">
             {item.value}
           </span>
         </div>
@@ -66,3 +59,4 @@ const ProviderOrderStatsCards = ({ orderData }) => {
 };
 
 export default memo(ProviderOrderStatsCards);
+
