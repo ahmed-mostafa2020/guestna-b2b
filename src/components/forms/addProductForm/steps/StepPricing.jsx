@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useFormikContext, FieldArray } from "formik";
 import { useTranslations } from "next-intl";
 import TextInputGroup from "@components/forms/TextInputGroup";
@@ -18,7 +19,20 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
 
-  const weekDayOptions = getWeekDayOptions(tWeekDays);
+  const allWeekDayOptions = useMemo(
+    () => getWeekDayOptions(tWeekDays),
+    [tWeekDays]
+  );
+
+  const availableDayOptions = useMemo(() => {
+    if (values.recurrencePattern === "WEEKLY") {
+      const selected = Array.isArray(values.selectedDays)
+        ? values.selectedDays
+        : [];
+      return allWeekDayOptions.filter((opt) => selected.includes(opt.value));
+    }
+    return allWeekDayOptions;
+  }, [values.recurrencePattern, values.selectedDays, allWeekDayOptions]);
 
   return (
     <div className="space-y-6">
@@ -156,86 +170,100 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
         </div>
 
         <FieldArray name="weekdayPricing">
-          {({ push, remove }) => (
-            <div className="space-y-3">
-              {(values.weekdayPricing || []).map((item, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-3 bg-white p-3.5 rounded-xl border border-border shadow-xs"
-                >
-                  <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <SelectionGroup
-                      name={`weekdayPricing[${index}].day`}
-                      value={item.day || ""}
-                      onChange={(e) => {
-                        const newDay = e.target.value;
-                        setFieldValue(`weekdayPricing[${index}].day`, newDay);
-                        const updatedDays = Array.from(
-                          new Set(
-                            (values.weekdayPricing || [])
-                              .map((w, i) => (i === index ? newDay : w.day))
-                              .filter(Boolean)
-                          )
-                        );
-                        setFieldValue("selectedDays", updatedDays);
-                      }}
-                      onBlur={handleBlur}
-                      touched={touched.weekdayPricing?.[index]?.day}
-                      errors={errors.weekdayPricing?.[index]?.day}
-                      placeholder={t("placeholders.selectDay")}
-                      list={weekDayOptions}
-                    />
+          {({ push, remove }) => {
+            const chosenDays = (values.weekdayPricing || []).map((w) => w.day);
+            const unchosenOptions = availableDayOptions.filter(
+              (opt) => !chosenDays.includes(opt.value)
+            );
+            const isWeekly = values.recurrencePattern === "WEEKLY";
+            const hasNoWeeklyDays =
+              isWeekly &&
+              (!values.selectedDays || values.selectedDays.length === 0);
+            const canAddMore = !hasNoWeeklyDays && unchosenOptions.length > 0;
 
-                    <TextInputGroup
-                      type="number"
-                      min={0}
-                      name={`weekdayPricing[${index}].price`}
-                      value={item.price ?? ""}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      touched={touched.weekdayPricing?.[index]?.price}
-                      errors={errors.weekdayPricing?.[index]?.price}
-                      placeholder={t("placeholders.price")}
-                    />
+            return (
+              <div className="space-y-3">
+                {hasNoWeeklyDays && (
+                  <div className="p-3 bg-amber-50/90 border border-amber-200 text-amber-900 rounded-xl text-xs flex items-center gap-2">
+                    <span className="text-base">⚠️</span>
+                    <span>{t("subtitles.noWeeklyDaysSelectedNotice")}</span>
                   </div>
+                )}
 
+                {(values.weekdayPricing || []).map((item, index) => {
+                  const currentDay = item.day;
+                  const rowDayOptions = availableDayOptions.filter(
+                    (opt) =>
+                      opt.value === currentDay || !chosenDays.includes(opt.value)
+                  );
+
+                  return (
+                    <div
+                      key={index}
+                      className="flex items-center gap-3 bg-white p-3.5 rounded-xl border border-border shadow-xs"
+                    >
+                      <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <SelectionGroup
+                          name={`weekdayPricing[${index}].day`}
+                          value={item.day || ""}
+                          onChange={(e) => {
+                            setFieldValue(
+                              `weekdayPricing[${index}].day`,
+                              e.target.value
+                            );
+                          }}
+                          onBlur={handleBlur}
+                          touched={touched.weekdayPricing?.[index]?.day}
+                          errors={errors.weekdayPricing?.[index]?.day}
+                          placeholder={t("placeholders.selectDay")}
+                          list={
+                            rowDayOptions.length > 0
+                              ? rowDayOptions
+                              : availableDayOptions
+                          }
+                        />
+
+                        <TextInputGroup
+                          type="number"
+                          min={0}
+                          name={`weekdayPricing[${index}].price`}
+                          value={item.price ?? ""}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          touched={touched.weekdayPricing?.[index]?.price}
+                          errors={errors.weekdayPricing?.[index]?.price}
+                          placeholder={t("placeholders.price")}
+                        />
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => remove(index)}
+                        className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
+                        title={t("fields.removeItem")}
+                      >
+                        <DeleteOutlineIcon className="w-5 h-5" />
+                      </button>
+                    </div>
+                  );
+                })}
+
+                {canAddMore && (
                   <button
                     type="button"
                     onClick={() => {
-                      remove(index);
-                      const remainingDays = (values.weekdayPricing || [])
-                        .filter((_, i) => i !== index)
-                        .map((w) => w.day)
-                        .filter(Boolean);
-                      setFieldValue("selectedDays", remainingDays);
+                      const nextDay = unchosenOptions[0]?.value || "";
+                      push({ day: nextDay, price: values.price || 0 });
                     }}
-                    className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
-                    title={t("fields.removeItem")}
+                    className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-mainColor/10 text-mainColor text-xs font-bold rounded-xl hover:bg-mainColor hover:text-white transition-all cursor-pointer"
                   >
-                    <DeleteOutlineIcon className="w-5 h-5" />
+                    <AddIcon className="w-4 h-4" />
+                    {t("fields.addDayPrice")}
                   </button>
-                </div>
-              ))}
-
-              <button
-                type="button"
-                onClick={() => {
-                  push({ day: "FRIDAY", price: values.price || 0 });
-                  const updatedDays = Array.from(
-                    new Set([
-                      ...(values.selectedDays || []),
-                      "FRIDAY",
-                    ])
-                  );
-                  setFieldValue("selectedDays", updatedDays);
-                }}
-                className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-mainColor/10 text-mainColor text-xs font-bold rounded-xl hover:bg-mainColor hover:text-white transition-all cursor-pointer"
-              >
-                <AddIcon className="w-4 h-4" />
-                {t("fields.addDayPrice")}
-              </button>
-            </div>
-          )}
+                )}
+              </div>
+            );
+          }}
         </FieldArray>
       </div>
 

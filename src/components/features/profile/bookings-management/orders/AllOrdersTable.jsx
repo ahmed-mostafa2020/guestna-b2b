@@ -220,21 +220,22 @@ const AllOrdersTable = ({
         label: t("profile.tables.orders.tableHeaders.budget"),
         className: "font-medium text-foreground",
         render: (row) => {
-          const basePrice = row.basePrice || row.trip?.price || row.priceRange?.max || 0;
-          const discountedPrice = row.discountedPrice || row.trip?.discountedPrice;
+          const hasDiscount =
+            row.discountedPrice !== undefined &&
+            row.discountedPrice !== null &&
+            row.discountedPrice !== ""
+              ? row.discountedPrice
+              : row.trip?.discountedPrice !== undefined &&
+                  row.trip?.discountedPrice !== null &&
+                  row.trip?.discountedPrice !== ""
+                ? row.trip.discountedPrice
+                : null;
 
-          if (!!discountedPrice) {
-            return (
-              <div className="flex flex-col items-end justify-center gap-0.5">
-                <span className="line-through text-xs text-muted-foreground font-normal">
-                  {formatCurrency(basePrice)}
-                </span>
-                <span>{formatCurrency(discountedPrice)}</span>
-              </div>
-            );
-          }
+          const basePrice =
+            row.basePrice || row.trip?.price || row.priceRange?.max || 0;
+          const displayPrice = hasDiscount !== null ? hasDiscount : basePrice;
 
-          return formatCurrency(basePrice);
+          return formatCurrency(displayPrice);
         },
       },
       {

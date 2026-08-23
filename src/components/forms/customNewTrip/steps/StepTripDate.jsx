@@ -8,6 +8,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { Box } from "@mui/material";
 import formatDateForInput from "@utils/formatters/FormateDateForInput";
+import { formatTimeForInput } from "@utils/formatters/formatTimeForInput";
 
 const StepTripDate = ({
   hasProviderSpecificDays,
@@ -157,7 +158,7 @@ const StepTripDate = ({
                 <TextInputGroup
                   type="time"
                   name="fromHour"
-                  value={values.fromHour}
+                  value={formatTimeForInput(values.fromHour)}
                   errors={errors.fromHour}
                   touched={touched.fromHour}
                   onChange={handleChange}
@@ -175,7 +176,7 @@ const StepTripDate = ({
                 <TextInputGroup
                   type="time"
                   name="toHour"
-                  value={values.toHour}
+                  value={formatTimeForInput(values.toHour)}
                   errors={errors.toHour}
                   touched={touched.toHour}
                   onChange={handleChange}

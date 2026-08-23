@@ -26,6 +26,8 @@ import getErrorMessage from "@utils/helpers/getErrorMessage";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { formatTime12h } from "@utils/formatters/formatTime12h";
+import { formatTimeForInput } from "@utils/formatters/formatTimeForInput";
 import StepSchoolInfo from "./steps/StepSchoolInfo";
 import StepTripInfo from "./steps/StepTripInfo";
 import StepTripDate from "./steps/StepTripDate";
@@ -408,8 +410,8 @@ const CustomNewTripForm = ({
         name: editData.name || { en: "", ar: "" },
         day: editData.day || "",
         endDay: editData.endDay || "",
-        fromHour: editData.fromHour || "",
-        toHour: editData.toHour || "",
+        fromHour: formatTimeForInput(editData.fromHour),
+        toHour: formatTimeForInput(editData.toHour),
         priceRange: priceRange,
         availableSeats: editData.availableSeats ?? "",
         totalAvailableSeats: editData.totalAvailableSeats ?? "",
@@ -618,6 +620,18 @@ const CustomNewTripForm = ({
       formData.append("slot", values.slot);
     }
 
+    if (values.fromHour) {
+      formData.append("fromHour", formatTime12h(values.fromHour));
+    } else if (isEditMode) {
+      formData.append("fromHour", "");
+    }
+
+    if (values.toHour) {
+      formData.append("toHour", formatTime12h(values.toHour));
+    } else if (isEditMode) {
+      formData.append("toHour", "");
+    }
+
     if (Array.isArray(values.services)) {
       values.services.forEach((id, i) => formData.append(`services[${i}]`, id));
     }
@@ -722,6 +736,18 @@ const CustomNewTripForm = ({
               });
             }
           });
+        }
+      } else if (key === "fromHour") {
+        if (values.fromHour) {
+          formData.append("fromHour", formatTime12h(values.fromHour));
+        } else if (isEditMode) {
+          formData.append("fromHour", "");
+        }
+      } else if (key === "toHour") {
+        if (values.toHour) {
+          formData.append("toHour", formatTime12h(values.toHour));
+        } else if (isEditMode) {
+          formData.append("toHour", "");
         }
       } else if (values[key] !== null && values[key] !== undefined) {
         if (Array.isArray(values[key])) {

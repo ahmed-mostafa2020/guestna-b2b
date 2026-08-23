@@ -7,12 +7,16 @@ export const formatTime12h = (timeStr) => {
   const trimmed = timeStr.trim();
   if (!trimmed) return "";
 
-  // Check if already in format like 08:00AM or 08:00 AM
-  const amPmMatch = trimmed.match(/^(\d{1,2}):(\d{2})\s*(AM|PM|am|pm)$/i);
+  // Check if already in format like 08:00AM, 08:00 AM, 08AM, 8AM
+  const amPmMatch = trimmed.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM|am|pm)$/i);
   if (amPmMatch) {
-    const hh = parseInt(amPmMatch[1], 10).toString().padStart(2, "0");
-    const mm = amPmMatch[2];
+    let hours = parseInt(amPmMatch[1], 10);
+    const mm = amPmMatch[2] || "00";
     const period = amPmMatch[3].toUpperCase();
+    if (hours > 12) {
+      hours = hours % 12 || 12;
+    }
+    const hh = hours.toString().padStart(2, "0");
     return `${hh}:${mm}${period}`;
   }
 

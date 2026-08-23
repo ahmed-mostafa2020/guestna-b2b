@@ -317,6 +317,7 @@
           "galleryHelp": "Please upload at least 4 images for the product gallery.",
           "unassignedDaysBasePriceHelp": "Note: Days without custom pricing will automatically use the base product price.",
           "pricingConflictNotice": "Note: If there is a conflict between the weekday price (day of week) and a specific date price (day of month), the specific date price will take priority over the weekday price.",
+          "noWeeklyDaysSelectedNotice": "Please select weekly recurrence days in the Configuration step first to set custom prices for them.",
           "readyToPublish": "Ready to publish your product",
           "reviewBeforeSubmit": "Please review the summary below before submitting.",
           "days": "day(s)",

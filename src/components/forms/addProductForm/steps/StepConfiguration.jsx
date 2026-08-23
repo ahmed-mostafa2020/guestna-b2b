@@ -178,7 +178,21 @@ const StepConfiguration = ({
               name="selectedDays"
               multiple={true}
               value={values.selectedDays || []}
-              onChange={(e) => setFieldValue("selectedDays", e.target.value)}
+              onChange={(e) => {
+                const newDays = e.target.value || [];
+                setFieldValue("selectedDays", newDays);
+                if (
+                  Array.isArray(values.weekdayPricing) &&
+                  values.weekdayPricing.length > 0
+                ) {
+                  const filteredPricing = values.weekdayPricing.filter((item) =>
+                    newDays.includes(item.day)
+                  );
+                  if (filteredPricing.length !== values.weekdayPricing.length) {
+                    setFieldValue("weekdayPricing", filteredPricing);
+                  }
+                }
+              }}
               onBlur={handleBlur}
               touched={touched.selectedDays}
               errors={errors.selectedDays}
