@@ -42,36 +42,29 @@ const RolesPermissionsPage = () => {
     )}`;
   }, [t]);
 
-  if (rolesLoading || permissionsLoading) {
-    return (
-      <div className="w-full min-h-screen centered">
-        <FullScreenLoading status="pending" />
-      </div>
-    );
-  }
-
-  if (rolesError || permissionsError) {
-    const error = rolesError || permissionsError;
-    return (
-      <ErrorComponent
-        statusCode={error?.response?.data?.statusCode}
-        errorMessage={error?.response?.data?.message}
-      />
-    );
-  }
-
   return (
     <ProtectedProfilePage
       requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_ROLES_PERMISSIONS_PAGE}
     >
-      <div className="min-h-screen bg-gray-50 p-6">
-        <RolesPermissionsContent
-          rolesData={rolesData}
-          permissionsData={permissionsData}
-          rolesLoading={rolesLoading}
-          permissionsLoading={permissionsLoading}
+      {rolesLoading || permissionsLoading ? (
+        <div className="w-full min-h-screen centered">
+          <FullScreenLoading status="pending" />
+        </div>
+      ) : rolesError || permissionsError ? (
+        <ErrorComponent
+          statusCode={(rolesError || permissionsError)?.response?.data?.statusCode}
+          errorMessage={(rolesError || permissionsError)?.response?.data?.message}
         />
-      </div>
+      ) : (
+        <div className="min-h-screen bg-gray-50 p-6">
+          <RolesPermissionsContent
+            rolesData={rolesData}
+            permissionsData={permissionsData}
+            rolesLoading={rolesLoading}
+            permissionsLoading={permissionsLoading}
+          />
+        </div>
+      )}
     </ProtectedProfilePage>
   );
 };

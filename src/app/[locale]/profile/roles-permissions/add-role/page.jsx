@@ -32,34 +32,26 @@ export default function AddRolePage() {
     { lang: locale }
   );
 
-  // Show loading state
-  if (permissionsLoading) {
-    return (
-      <div className="w-full min-h-screen centered">
-        <FullScreenLoading status="pending" />
-      </div>
-    );
-  }
-
-  // Show error state
-  if (permissionsError) {
-    return (
-      <ErrorComponent
-        statusCode={permissionsError?.response?.data?.statusCode}
-        errorMessage={permissionsError?.response?.data?.message}
-      />
-    );
-  }
-
   return (
     <ProtectedProfilePage
       requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_ADD_ROLE_PAGE}
     >
-      <AddRoleContent
-        permissionsData={permissionsData}
-        permissionsLoading={permissionsLoading}
-        permissionsError={permissionsError}
-      />
+      {permissionsLoading ? (
+        <div className="w-full min-h-screen centered">
+          <FullScreenLoading status="pending" />
+        </div>
+      ) : permissionsError ? (
+        <ErrorComponent
+          statusCode={permissionsError?.response?.data?.statusCode}
+          errorMessage={permissionsError?.response?.data?.message}
+        />
+      ) : (
+        <AddRoleContent
+          permissionsData={permissionsData}
+          permissionsLoading={permissionsLoading}
+          permissionsError={permissionsError}
+        />
+      )}
     </ProtectedProfilePage>
   );
 }

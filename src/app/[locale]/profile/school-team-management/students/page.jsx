@@ -36,55 +36,48 @@ const page = () => {
     )}`;
   }, [t]);
 
-  if (isLoading)
-    return (
-      <div className="w-full min-h-screen centered">
-        <FullScreenLoading status="pending" />
-      </div>
-    );
-
-  if (error)
-    return (
-      <ErrorComponent
-        statusCode={error?.response?.data?.statusCode}
-        errorMessage={error.response?.data?.message}
-      />
-    );
-
   return (
     <ProtectedProfilePage
       requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_STUDENTS_PAGE}
     >
-      <main className="flex flex-col gap-6 min-h-screen">
-        <section className="flex flex-col gap-2">
-          <h1 className="text-2xl font-medium text-titleColor">
-            {t("profile.aside.schoolTeamManagement.studentsOverview.title")}
-          </h1>
-          <p className="text-textLight">
-            {t(
-              "profile.aside.schoolTeamManagement.studentsOverview.description"
-            )}
-          </p>
-        </section>
+      {isLoading ? (
+        <div className="w-full min-h-screen centered">
+          <FullScreenLoading status="pending" />
+        </div>
+      ) : error ? (
+        <ErrorComponent
+          statusCode={error?.response?.data?.statusCode}
+          errorMessage={error.response?.data?.message}
+        />
+      ) : (
+        <main className="flex flex-col gap-6 min-h-screen">
+          <section className="flex flex-col gap-2">
+            <h1 className="text-2xl font-medium text-titleColor">
+              {t("profile.aside.schoolTeamManagement.studentsOverview.title")}
+            </h1>
+            <p className="text-textLight">
+              {t(
+                "profile.aside.schoolTeamManagement.studentsOverview.description"
+              )}
+            </p>
+          </section>
 
-        {/* Info Cards Section */}
-        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS) &&
-          (isLoading ? (
-            <InfoCardsSkeleton showIcon={false} textAlign="center" />
-          ) : (
+          {/* Info Cards Section */}
+          {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS) && (
             <InfoCardsListing
               infoData={data?.summary}
               showIcon={false}
               textAlign="center"
             />
-          ))}
+          )}
 
-        {!isLoading && data?.organizationsChildrenStages?.length > 0 && (
-          <StudentsManagement
-            organizationsChildrenStages={data.organizationsChildrenStages}
-          />
-        )}
-      </main>
+          {data?.organizationsChildrenStages?.length > 0 && (
+            <StudentsManagement
+              organizationsChildrenStages={data.organizationsChildrenStages}
+            />
+          )}
+        </main>
+      )}
     </ProtectedProfilePage>
   );
 };

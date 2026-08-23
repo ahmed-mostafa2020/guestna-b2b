@@ -70,7 +70,9 @@ const TransactionsPage = () => {
       staleTime: 300000,
       // Separate cache key for balance - not dependent on filters
       queryKeySuffix: `balance-data`,
-      enabled: true, // Always enabled for balance
+      enabled: hasElement(
+        PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS
+      ),
     }
   );
 
@@ -318,50 +320,49 @@ const TransactionsPage = () => {
     }));
   };
 
-  if (error || balanceError)
-    return (
-      <ErrorComponent
-        statusCode={
-          error?.response?.data?.statusCode ||
-          balanceError?.response?.data?.statusCode
-        }
-        errorMessage={
-          error?.response?.data?.message ||
-          balanceError?.response?.data?.message
-        }
-      />
-    );
-
   return (
     <ProtectedProfilePage
       requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_TRANSACTIONS_LOG_PAGE}
     >
-      <div className="mx-auto space-y-6">
-        {/* Balance Cards Section */}
-        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS) && (
-          <BalanceCards balanceData={balanceData} isLoading={balanceLoading} />
-        )}
+      {error || balanceError ? (
+        <ErrorComponent
+          statusCode={
+            error?.response?.data?.statusCode ||
+            balanceError?.response?.data?.statusCode
+          }
+          errorMessage={
+            error?.response?.data?.message ||
+            balanceError?.response?.data?.message
+          }
+        />
+      ) : (
+        <div className="mx-auto space-y-6">
+          {/* Balance Cards Section */}
+          {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_TRANSACTIONS_LOG_CARDS) && (
+            <BalanceCards balanceData={balanceData} isLoading={balanceLoading} />
+          )}
 
-        {/* Actions and Filters Section */}
-        <div className="space-y-6">
-          <TransactionsFilters
-            setFilter={setFilter}
-            filter={filter}
-            data={processedData}
-          />
+          {/* Actions and Filters Section */}
+          <div className="space-y-6">
+            <TransactionsFilters
+              setFilter={setFilter}
+              filter={filter}
+              data={processedData}
+            />
 
-          {/* Transactions Table Section */}
-          <TransactionsTable
-            data={processedData}
-            currentPage={pagination.page}
-            setCurrentPage={handlePageChange}
-            enablePagination={true}
-            statusConfig={statusConfig}
-            formatCurrency={formatCurrencyAmount}
-            loading={transactionsLoading}
-          />
+            {/* Transactions Table Section */}
+            <TransactionsTable
+              data={processedData}
+              currentPage={pagination.page}
+              setCurrentPage={handlePageChange}
+              enablePagination={true}
+              statusConfig={statusConfig}
+              formatCurrency={formatCurrencyAmount}
+              loading={transactionsLoading}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </ProtectedProfilePage>
   );
 };

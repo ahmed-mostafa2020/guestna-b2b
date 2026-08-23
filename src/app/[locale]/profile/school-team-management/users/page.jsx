@@ -66,21 +66,6 @@ const UsersPage = () => {
     )}`;
   }, [t]);
 
-  if (isLoading || tableLoading)
-    return (
-      <div className="w-full min-h-screen centered">
-        <FullScreenLoading status="pending" />
-      </div>
-    );
-
-  if (error || tableError)
-    return (
-      <ErrorComponent
-        statusCode={error?.response?.data?.statusCode}
-        errorMessage={error.response?.data?.message}
-      />
-    );
-
   const handleExportToExcel = async () => {
     const allUsers = tableData?.reduce((acc, org) => {
       const orgUsers =
@@ -109,31 +94,42 @@ const UsersPage = () => {
     <ProtectedProfilePage
       requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_USERS_PAGE}
     >
-      <main className="flex flex-col gap-6">
-        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_CARDS) && (
-          <UsersInfoCardsListing data={data} />
-        )}
-
-        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_PRINT_REPORT) &&
-          tableData?.length > 0 && (
-            <div className="flex justify-end mt-2">
-              <button
-                onClick={() => handleExportToExcel()}
-                className="bg-mainColor rounded-lg text-white font-medium font-somar hover:bg-linksHover px-8 py-2"
-              >
-                {t("profile.tables.orders.bookingDetails.printReport")}
-              </button>
-            </div>
+      {isLoading || tableLoading ? (
+        <div className="w-full min-h-screen centered">
+          <FullScreenLoading status="pending" />
+        </div>
+      ) : error || tableError ? (
+        <ErrorComponent
+          statusCode={(error || tableError)?.response?.data?.statusCode}
+          errorMessage={(error || tableError)?.response?.data?.message}
+        />
+      ) : (
+        <main className="flex flex-col gap-6">
+          {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_CARDS) && (
+            <UsersInfoCardsListing data={data} />
           )}
 
-        <UsersManagement
-          data={tableData}
-          setSearchTerm={setSearchTerm}
-          searchTerm={searchTerm}
-          refetchInfo={refetchInfo}
-          refetchTable={refetchTable}
-        />
-      </main>
+          {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_USERS_PRINT_REPORT) &&
+            tableData?.length > 0 && (
+              <div className="flex justify-end mt-2">
+                <button
+                  onClick={() => handleExportToExcel()}
+                  className="bg-mainColor rounded-lg text-white font-medium font-somar hover:bg-linksHover px-8 py-2"
+                >
+                  {t("profile.tables.orders.bookingDetails.printReport")}
+                </button>
+              </div>
+            )}
+
+          <UsersManagement
+            data={tableData}
+            setSearchTerm={setSearchTerm}
+            searchTerm={searchTerm}
+            refetchInfo={refetchInfo}
+            refetchTable={refetchTable}
+          />
+        </main>
+      )}
     </ProtectedProfilePage>
   );
 };

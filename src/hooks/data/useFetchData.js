@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect, useMemo } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { USERS } from "@constants/users";
 
 import axios from "axios";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -14,6 +15,27 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
+  const userType = useSelector((state) => state.users?.userType);
+  const isVisitor = userType === USERS.VISITOR;
+
+  // Identify protected endpoints that strictly require an authenticated token
+  const isProtectedEndpoint = useMemo(() => {
+    if (!endpoint || typeof endpoint !== "string") return false;
+    return (
+      endpoint.startsWith("profile/") ||
+      endpoint.startsWith("profile-provider/") ||
+      endpoint.startsWith("auth/userInfo") ||
+      endpoint === "myLovers"
+    );
+  }, [endpoint]);
+
+  const isQueryEnabled = useMemo(() => {
+    if (isProtectedEndpoint && (!token || isVisitor)) {
+      return false;
+    }
+    return options.enabled !== undefined ? options.enabled : true;
+  }, [isProtectedEndpoint, token, isVisitor, options.enabled]);
+
   const selectedOrgIds = useSelector(
     (state) => state.selectedOrganizations?.selectedIds
   );
@@ -84,7 +106,7 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
     keepPreviousData: true,
     // refetchOnWindowFocus: false,
     retry: 1,
-    enabled: options.enabled !== undefined ? options.enabled : true, // Support conditional fetching
+    enabled: isQueryEnabled,
   });
 
   // Redux dispatch effects

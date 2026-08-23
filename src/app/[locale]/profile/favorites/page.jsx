@@ -3,6 +3,8 @@
 import { useTranslations } from "next-intl";
 
 import { END_POINTS } from "@constants/APIs";
+import { PERMISSIONS } from "@constants/permissions";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 import ProfilePageTemplate from "@components/features/profile/ProfilePageTemplate";
 import EmptyFavorites from "@components/features/profile/myFavorites/EmptyFavorites";
 import MyFavoritesTrips from "@components/features/profile/myFavorites";
@@ -10,17 +12,11 @@ import MyFavoritesTrips from "@components/features/profile/myFavorites";
 const FavoritesPage = () => {
   const t = useTranslations();
 
-  const getAllFavorites = () => {
+  const getAllFavorites = () => {};
 
-  };
+  const getPackagesFavorites = () => {};
 
-  const getPackagesFavorites = () => {
-
-  };
-
-  const getActivitiesFavorites = () => {
-
-  };
+  const getActivitiesFavorites = () => {};
 
   const filterButtons = [
     { name: t("common.all"), handleClick: getAllFavorites },
@@ -29,14 +25,17 @@ const FavoritesPage = () => {
   ];
 
   return (
-    <ProfilePageTemplate
-      title={t("profile.aside.favorites")}
-      endpoint={`${END_POINTS.TRIPS}${END_POINTS.PROFILE.FAVORITES}`}
-      emptyStateComponent={<EmptyFavorites />}
-      contentComponent={(data) => <MyFavoritesTrips data={data} />}
-      filterButtons={filterButtons}
-      // additionalParams={{ lang: locale }}
-    />
+    <ProtectedProfilePage
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}
+    >
+      <ProfilePageTemplate
+        title={t("profile.aside.favorites")}
+        endpoint={`${END_POINTS.TRIPS}${END_POINTS.PROFILE.FAVORITES}`}
+        emptyStateComponent={<EmptyFavorites />}
+        contentComponent={(data) => <MyFavoritesTrips data={data} />}
+        filterButtons={filterButtons}
+      />
+    </ProtectedProfilePage>
   );
 };
 

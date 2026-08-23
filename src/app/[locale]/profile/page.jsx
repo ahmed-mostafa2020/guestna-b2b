@@ -60,10 +60,7 @@ const Profile = () => {
     {},
     {
       lang: locale,
-      enabled: true, // Explicitly enable this request
-      // enabled: hasElement(
-      //   PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS
-      // ),
+      enabled: hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CHARTS),
     }
   );
 
@@ -84,19 +81,21 @@ const Profile = () => {
         },
       },
       lang: locale,
-      enabled: true, // Explicitly enable this request
+      enabled: hasPage(PERMISSIONS.PAGE.B2B_PROFILE_SCHOOLS_PAGE),
     },
     [organizationsSearchTerm, organizationsPage]
   );
 
-  if (error || mostActiveOrganizationsError || organizationsError)
+  const pageError = error || mostActiveOrganizationsError || organizationsError;
+
+  if (pageError)
     return (
       <ProtectedProfilePage
         requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_MAIN_PAGE}
       >
         <ErrorComponent
-          statusCode={error?.response?.data?.statusCode}
-          errorMessage={error?.response?.data?.message}
+          statusCode={pageError?.response?.data?.statusCode}
+          errorMessage={pageError?.response?.data?.message}
         />
       </ProtectedProfilePage>
     );

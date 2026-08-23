@@ -84,73 +84,68 @@ const SchoolsOverViewPage = () => {
     )}`;
   }, [t]);
 
-  // Error Handling
-  if (error || staticsError) {
-    return (
-      <ErrorComponent
-        statusCode={error?.response?.data?.statusCode}
-        errorMessage={error?.response?.data?.message}
-      />
-    );
-  }
-
-  const schools = data?.nodes ?? [];
-
   return (
     <ProtectedProfilePage
       requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_SCHOOLS_PAGE}
     >
-      <main className="flex flex-col gap-6 min-h-screen">
-        {/* Summary Info Cards */}
-        {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS) && (
-          <>
-            {staticsLoading ? (
-              <InfoCardsSkeleton />
-            ) : (
-              <InfoCardsListing infoData={staticsData} />
-            )}
-          </>
-        )}
+      {error || staticsError ? (
+        <ErrorComponent
+          statusCode={(error || staticsError)?.response?.data?.statusCode}
+          errorMessage={(error || staticsError)?.response?.data?.message}
+        />
+      ) : (
+        <main className="flex flex-col gap-6 min-h-screen">
+          {/* Summary Info Cards */}
+          {hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_MAIN_CARDS) && (
+            <>
+              {staticsLoading ? (
+                <InfoCardsSkeleton />
+              ) : (
+                <InfoCardsListing infoData={staticsData} />
+              )}
+            </>
+          )}
 
-        {/* Search and Filters */}
-        <Box className="bg-white p-4 rounded-md shadow-md">
-          <SchoolOverviewSearchFilters
-            searchTerms={searchTerms}
-            setSearchTerms={setSearchTerms}
-          />
-        </Box>
-
-        {/* Listing Section */}
-        {isLoading ? (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <SchoolOverviewCardSkeleton key={index} />
-            ))}
-          </div>
-        ) : schools.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            {schools.map((organization) => (
-              <SchoolOverviewCard key={organization._id} item={organization} />
-            ))}
-          </div>
-        ) : (
-          <Box className="w-full py-10 flex justify-center items-center flex-col gap-4">
-            <Typography className="text-gray-600 font-medium text-center !font-somar !text-lg">
-              {t("profile.schools_overview.no_schools_found")}
-            </Typography>
+          {/* Search and Filters */}
+          <Box className="bg-white p-4 rounded-md shadow-md">
+            <SchoolOverviewSearchFilters
+              searchTerms={searchTerms}
+              setSearchTerms={setSearchTerms}
+            />
           </Box>
-        )}
 
-        {/* Pagination */}
-        {!isLoading && schools.length > 0 && (
-          <Pagination
-            totalPages={data?.totalPages}
-            currentPage={page}
-            onPageChange={(newPage) => setPage(newPage)}
-            pageInfo={data?.pageInfo}
-          />
-        )}
-      </main>
+          {/* Listing Section */}
+          {isLoading ? (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <SchoolOverviewCardSkeleton key={index} />
+              ))}
+            </div>
+          ) : schools.length > 0 ? (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              {schools.map((organization) => (
+                <SchoolOverviewCard key={organization._id} item={organization} />
+              ))}
+            </div>
+          ) : (
+            <Box className="w-full py-10 flex justify-center items-center flex-col gap-4">
+              <Typography className="text-gray-600 font-medium text-center !font-somar !text-lg">
+                {t("profile.schools_overview.no_schools_found")}
+              </Typography>
+            </Box>
+          )}
+
+          {/* Pagination */}
+          {!isLoading && schools.length > 0 && (
+            <Pagination
+              totalPages={data?.totalPages}
+              currentPage={page}
+              onPageChange={(newPage) => setPage(newPage)}
+              pageInfo={data?.pageInfo}
+            />
+          )}
+        </main>
+      )}
     </ProtectedProfilePage>
   );
 };

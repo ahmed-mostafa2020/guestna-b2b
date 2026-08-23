@@ -6,6 +6,8 @@ import { useEffect } from "react";
 
 import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { PERMISSIONS } from "@constants/permissions";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import TripsInfoCardsListing from "@components/features/profile/createTripLink/TripsInfoCardsListing";
@@ -33,27 +35,27 @@ const CreateTripLinkPage = ({ params }) => {
       `;
   }, [t, data]);
 
-  if (isLoading)
-    return (
-      <div className="w-full min-h-screen centered">
-        <FullScreenLoading status="pending" />
-      </div>
-    );
-
-  if (error)
-    return (
-      <ErrorComponent
-        statusCode={error?.response?.data?.statusCode}
-        errorMessage={error.response?.data?.message}
-      />
-    );
-
   return (
-    <main className="flex flex-col gap-6">
-      <TripsInfoCardsListing data={data} />
+    <ProtectedProfilePage
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_TRIPS_MANAGEMENT_PAGE}
+    >
+      {isLoading ? (
+        <div className="w-full min-h-screen centered">
+          <FullScreenLoading status="pending" />
+        </div>
+      ) : error ? (
+        <ErrorComponent
+          statusCode={error?.response?.data?.statusCode}
+          errorMessage={error.response?.data?.message}
+        />
+      ) : (
+        <main className="flex flex-col gap-6">
+          <TripsInfoCardsListing data={data} />
 
-      <CreateTripLink data={data} />
-    </main>
+          <CreateTripLink data={data} />
+        </main>
+      )}
+    </ProtectedProfilePage>
   );
 };
 

@@ -28,6 +28,7 @@ import ErrorComponent from "@feedback/error/ErrorComponent";
 import ErrorBoundary from "@components/ui/ErrorBoundary";
 import ProfileTabs from "@components/features/profile/ProfileTabs";
 import ProfilePageSkeleton from "@components/ui/ProfilePageSkeleton";
+import LoginAccessModal from "@components/ui/LoginAccessModal";
 // import ResponsiveGridLayout from "@components/ui/responsiveGridLayout";
 
 import Grid from "@mui/material/Grid2";
@@ -106,15 +107,13 @@ const ProfileLayout = ({ children }) => {
     }
   }, [data, dispatch]);
 
-  // For VISITOR/PARENT users, skip the live layout shell.
-  // Render a shimmer skeleton of the page so users understand which page they
-  // are on, then let ProtectedProfilePage mount the LoginAccessModal on top
-  // via MUI Portal (which appends to document.body above the skeleton).
+  // For unauthenticated / visitor / parent users, skip rendering the profile shell and child pages
+  // so no child API requests are fired and LoginAccessModal is displayed
   if (!isAuthenticated) {
     return (
       <>
         <ProfilePageSkeleton />
-        {children}
+        <LoginAccessModal open={true} />
       </>
     );
   }

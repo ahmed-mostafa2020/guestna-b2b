@@ -32,7 +32,11 @@ const OrdersPage = () => {
   ];
 
   return (
-    <>
+    <ProtectedProfilePage
+      requiredPermission={
+        PERMISSIONS.PAGE.B2B_PROFILE_ORDER_MANAGEMENT_PAGE
+      }
+    >
       {/* Info Cards Section */}
       <OrdersInfoCards />
 
@@ -45,11 +49,7 @@ const OrdersPage = () => {
 
       {/* Tab Content */}
       {activeTab === "ordersManagement" ? (
-        <ProtectedProfilePage
-          requiredPermission={
-            PERMISSIONS.PAGE.B2B_PROFILE_ORDER_MANAGEMENT_PAGE
-          }
-        >
+        <>
           <TripsOrdersManagement />
 
           <div className="flex flex-col gap-4 w-full bg-white rounded-2xl p-4 shadow-card">
@@ -97,11 +97,11 @@ const OrdersPage = () => {
               />
             </div>
           </div>
-        </ProtectedProfilePage>
+        </>
       ) : (
         <OrdersSettingsTable />
       )}
-    </>
+    </ProtectedProfilePage>
   );
 };
 

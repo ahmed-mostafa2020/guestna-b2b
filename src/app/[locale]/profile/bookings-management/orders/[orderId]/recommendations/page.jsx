@@ -8,6 +8,8 @@ import axios from "axios";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { PERMISSIONS } from "@constants/permissions";
+import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 import { useEditOrderModal } from "@hooks/ui/useEditOrderModal";
 import CustomizedModal from "@components/ui/customizedModal";
 import CustomNewTripForm from "@components/forms/customNewTrip";
@@ -94,102 +96,106 @@ const RecommendationsPage = ({ params }) => {
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="font-somar py-4">
-      {loading && <RecommendationsLoadingSkeleton />}
+    <ProtectedProfilePage
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_ORDER_MANAGEMENT_PAGE}
+    >
+      <div className="font-somar py-4">
+        {loading && <RecommendationsLoadingSkeleton />}
 
-      {!loading && error && (
-        <Alert severity="error" className="!font-somar">
-          {error}
-        </Alert>
-      )}
+        {!loading && error && (
+          <Alert severity="error" className="!font-somar">
+            {error}
+          </Alert>
+        )}
 
-      {!loading && data && (
-        <div className="flex flex-col gap-6">
-          {/* Hero banner */}
-          <HeroBanner
-            data={data}
-            orderId={orderId}
-            locale={locale}
-            onEditClick={handleEditClick}
-          />
+        {!loading && data && (
+          <div className="flex flex-col gap-6">
+            {/* Hero banner */}
+            <HeroBanner
+              data={data}
+              orderId={orderId}
+              locale={locale}
+              onEditClick={handleEditClick}
+            />
 
-          {/* Body — sidebar (FIRST → RIGHT) + main content (LAST → LEFT) */}
-          <div className="flex flex-col lg:flex-row gap-8 items-start">
-            {/* Main content */}
-            <div className="flex-1 min-w-0 flex flex-col gap-6">
-              {/* Info cards */}
-              <div className="flex flex-col gap-4">
-                <WhyCard
-                  budget={data.priceRange?.min}
-                  stage={data.academicStages?.map((s) => s.name).join("، ")}
-                  city={data.city?.name}
-                />
-                {data.recommendation?.note && (
-                  <HowCard note={data.recommendation.note} />
-                )}
+            {/* Body — sidebar (FIRST → RIGHT) + main content (LAST → LEFT) */}
+            <div className="flex flex-col lg:flex-row gap-8 items-start">
+              {/* Main content */}
+              <div className="flex-1 min-w-0 flex flex-col gap-6">
+                {/* Info cards */}
+                <div className="flex flex-col gap-4">
+                  <WhyCard
+                    budget={data.priceRange?.min}
+                    stage={data.academicStages?.map((s) => s.name).join("، ")}
+                    city={data.city?.name}
+                  />
+                  {data.recommendation?.note && (
+                    <HowCard note={data.recommendation.note} />
+                  )}
+                </div>
+
+                {/* Trips section */}
+                <h2 className="text-[24px] font-bold text-[#0b7f8f] font-somar leading-7">
+                  {t("tripsSection")}
+                </h2>
+
+                <div className="flex flex-col gap-6">
+                  {trips.map((trip) =>
+                    trip.available === false ? (
+                      <TripCardUnavailable key={trip._id} trip={trip} />
+                    ) : (
+                      <TripCardAvailable
+                        key={trip._id}
+                        trip={trip}
+                        seats={data.availableSeats}
+                        locale={locale}
+                        recommendationId={data._id}
+                      />
+                    )
+                  )}
+
+                  {trips.length === 0 && (
+                    <Alert severity="info" className="!font-somar">
+                      {t("noTrips")}
+                    </Alert>
+                  )}
+                </div>
               </div>
 
-              {/* Trips section */}
-              <h2 className="text-[24px] font-bold text-[#0b7f8f] font-somar leading-7">
-                {t("tripsSection")}
-              </h2>
-
-              <div className="flex flex-col gap-6">
-                {trips.map((trip) =>
-                  trip.available === false ? (
-                    <TripCardUnavailable key={trip._id} trip={trip} />
-                  ) : (
-                    <TripCardAvailable
-                      key={trip._id}
-                      trip={trip}
-                      seats={data.availableSeats}
-                      locale={locale}
-                      recommendationId={data._id}
-                    />
-                  )
-                )}
-
-                {trips.length === 0 && (
-                  <Alert severity="info" className="!font-somar">
-                    {t("noTrips")}
-                  </Alert>
-                )}
-              </div>
+              {/* Sidebar */}
+              <aside className="w-full lg:w-[320px] shrink-0 flex flex-col gap-6">
+                <RequestSummaryCard data={data} locale={locale} />
+                <HelpCard />
+              </aside>
             </div>
-
-            {/* Sidebar */}
-            <aside className="w-full lg:w-[320px] shrink-0 flex flex-col gap-6">
-              <RequestSummaryCard data={data} locale={locale} />
-              <HelpCard />
-            </aside>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Edit Order Modal */}
-      <CustomizedModal
-        open={isModalOpen}
-        handleClose={closeEditModal}
-        bgcolor="rgba(0, 0, 0, 0.5)"
-        customizedCloseButton={true}
-        padding={false}
-      >
-        {selectedEditOrderId && isDataReady ? (
-          <CustomNewTripForm
-            mode="edit"
-            orderId={currentEditOrderDetails?._id}
-            editData={currentEditOrderDetails}
-            formSelectionData={formSelectionData}
-            onClose={closeEditModal}
-            onSuccess={handleEditSuccess}
-          />
-        ) : selectedEditOrderId ? (
-          <div className="flex items-center justify-center p-20 bg-white rounded-2xl">
-            <CircularProgress size={40} />
-          </div>
-        ) : null}
-      </CustomizedModal>
-    </div>
+        {/* Edit Order Modal */}
+        <CustomizedModal
+          open={isModalOpen}
+          handleClose={closeEditModal}
+          bgcolor="rgba(0, 0, 0, 0.5)"
+          customizedCloseButton={true}
+          padding={false}
+        >
+          {selectedEditOrderId && isDataReady ? (
+            <CustomNewTripForm
+              mode="edit"
+              orderId={currentEditOrderDetails?._id}
+              editData={currentEditOrderDetails}
+              formSelectionData={formSelectionData}
+              onClose={closeEditModal}
+              onSuccess={handleEditSuccess}
+            />
+          ) : selectedEditOrderId ? (
+            <div className="flex items-center justify-center p-20 bg-white rounded-2xl">
+              <CircularProgress size={40} />
+            </div>
+          ) : null}
+        </CustomizedModal>
+      </div>
+    </ProtectedProfilePage>
   );
 };
 
