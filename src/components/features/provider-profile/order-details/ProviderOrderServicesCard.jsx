@@ -9,7 +9,7 @@ const ProviderOrderServicesCard = ({ orderData }) => {
   const services = orderData?.services || [];
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-5 font-somar">
+    <div className="bg-white rounded-2xl border border-border p-5 sm:p-6 shadow-xs flex flex-col gap-5 font-somar">
       {/* 1. Header */}
       <div className="pb-3">
         <h2 className="text-base sm:text-lg font-bold text-textDark">
@@ -28,7 +28,7 @@ const ProviderOrderServicesCard = ({ orderData }) => {
             return (
               <div
                 key={item._id || index}
-                className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-gray-100 bg-[#F4F9F9] hover:border-mainColor/40 text-textDark text-xs sm:text-sm font-semibold transition-all shadow-2xs"
+                className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-border/80 bg-mainColor/5 hover:border-mainColor/40 text-textDark text-xs sm:text-sm font-semibold transition-all shadow-2xs"
               >
                 {iconUrl ? (
                   <div className="relative w-5 h-5 shrink-0">
@@ -54,6 +54,7 @@ const ProviderOrderServicesCard = ({ orderData }) => {
       )}
     </div>
   );
+
 };
 
 export default memo(ProviderOrderServicesCard);

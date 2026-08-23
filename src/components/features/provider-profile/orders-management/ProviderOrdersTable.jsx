@@ -130,9 +130,10 @@ const ActionsDropdown = ({ row, t }) => {
         slotProps={{
           paper: {
             className:
-              "!rounded-2xl !border !border-gray-100 !shadow-xl !py-1.5 !min-w-[160px] !bg-white !font-somar",
+              "!rounded-2xl !border !border-border !shadow-xl !py-1.5 !min-w-[160px] !bg-white !font-somar",
             elevation: 0,
           },
+
         }}
       >
         <MenuItem

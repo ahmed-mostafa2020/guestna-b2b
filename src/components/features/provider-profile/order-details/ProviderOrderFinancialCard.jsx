@@ -11,8 +11,9 @@ const ProviderOrderFinancialCard = ({ orderData }) => {
   const priceAmount = orderData?.price ?? orderData?.basePrice ?? 0;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-4 sm:gap-5 font-somar">
+    <div className="bg-white rounded-2xl border border-border p-5 sm:p-6 shadow-xs flex flex-col gap-4 sm:gap-5 font-somar">
       {/* 1. Header */}
+
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center">
           <AccountBalanceWalletOutlined className="!w-5 !h-5" />

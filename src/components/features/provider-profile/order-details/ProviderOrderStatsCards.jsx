@@ -44,8 +44,9 @@ const ProviderOrderStatsCards = ({ orderData }) => {
       {stats.map((item) => (
         <div
           key={item.id}
-          className="bg-white rounded-2xl border border-gray-100 p-5 sm:py-6 sm:px-6 flex flex-col items-center justify-center text-center shadow-xs transition-all hover:shadow-card"
+          className="bg-white rounded-2xl border border-border p-5 sm:py-6 sm:px-6 flex flex-col items-center justify-center text-center shadow-xs transition-all hover:shadow-card"
         >
+
           <span className="text-xs sm:text-sm font-medium text-textLight mb-2">
             {item.label}
           </span>

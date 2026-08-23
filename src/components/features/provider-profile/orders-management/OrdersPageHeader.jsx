@@ -9,7 +9,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 /* ─── Skeleton ─── */
 const OrdersPageHeaderSkeleton = () => (
-  <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#e0f7fa] via-[#e6fafe] to-[#f0faff] border border-border p-6 sm:p-8 animate-pulse">
+  <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-mainColor/15 via-mainColor/5 to-white border border-border p-6 sm:p-8 animate-pulse">
     <div className="flex flex-col sm:flex-row justify-between items-start gap-4 relative z-10">
       <div className="flex flex-col gap-3">
         <Skeleton variant="text" width={160} height={20} />
@@ -38,10 +38,11 @@ const OrdersPageHeader = ({
   if (loading) return <OrdersPageHeaderSkeleton />;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#e0f7fa] via-[#e6fafe] to-[#f0faff] border border-border p-6 sm:p-8">
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-mainColor/15 via-mainColor/5 to-white border border-border p-6 sm:p-8">
       {/* Decorative circles */}
       <div className="absolute -top-10 -end-10 w-40 h-40 rounded-full bg-mainColor/5 pointer-events-none" />
       <div className="absolute -bottom-8 -start-8 w-32 h-32 rounded-full bg-mainColor/5 pointer-events-none" />
+
 
       <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start gap-4">
         {/* Left side: Breadcrumbs + Title + Subtitle */}

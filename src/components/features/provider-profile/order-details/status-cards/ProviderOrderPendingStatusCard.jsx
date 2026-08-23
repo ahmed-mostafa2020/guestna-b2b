@@ -180,8 +180,8 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
   return (
     <section
       aria-label={cardTitle}
-      className={`bg-white border border-gray-100 border-s-4 ${
-        isExpired ? "border-s-red-500" : "border-s-amber-500"
+      className={`bg-white border border-border border-s-4 ${
+        isExpired ? "border-s-status-danger-border" : "border-s-status-warning-border"
       } rounded-2xl p-5 sm:p-7 relative overflow-hidden shadow-xs font-somar transition-all`}
     >
       {/* Upper Row: Status Info + Timer */}
@@ -203,14 +203,14 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
             <div
               className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 sm:border-[3px] ${
                 isExpired
-                  ? "border-red-400 bg-red-50 text-red-500"
-                  : "border-amber-500 bg-amber-50 text-amber-500"
+                  ? "border-status-danger-border bg-status-danger-bg text-status-danger-fg"
+                  : "border-status-warning-border bg-status-warning-bg text-status-warning-fg"
               } flex items-center justify-center mb-2 shadow-2xs transition-colors`}
               aria-hidden="true"
             >
               <svg
                 className={`w-8 h-8 sm:w-10 sm:h-10 ${
-                  isExpired ? "text-red-500" : "text-amber-500"
+                  isExpired ? "text-status-danger-fg" : "text-status-warning-fg"
                 }`}
                 viewBox="0 0 24 24"
                 fill="none"
@@ -229,7 +229,7 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
             {/* Timer Label */}
             <span
               className={`text-[11px] sm:text-xs mb-0.5 ${
-                isExpired ? "text-red-600 font-bold" : "text-textLight font-medium"
+                isExpired ? "text-status-danger-fg font-bold" : "text-textLight font-medium"
               }`}
             >
               {isExpired
@@ -241,7 +241,7 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
             <span
               dir="ltr"
               className={`text-lg sm:text-2xl font-extrabold tracking-wider ${
-                isExpired ? "text-red-500" : "text-amber-600"
+                isExpired ? "text-status-danger-fg" : "text-status-warning-fg"
               }`}
             >
               {formatTime(remainingSeconds)}
@@ -249,7 +249,7 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
 
             {/* Expired Tag */}
             {isExpired && (
-              <span className="inline-flex items-center px-2.5 py-0.5 mt-1 rounded-full text-[10px] sm:text-[11px] font-bold bg-red-100 text-red-700 border border-red-200">
+              <span className="inline-flex items-center px-2.5 py-0.5 mt-1 rounded-full text-[10px] sm:text-[11px] font-bold bg-status-danger-bg text-status-danger-fg border border-status-danger-border">
                 {t("providerProfile.orderDetails.pendingCard.timeEnded")}
               </span>
             )}
@@ -258,7 +258,8 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
       </div>
 
       {/* Divider */}
-      <div className="border-t border-gray-100 my-5 sm:my-6" />
+      <div className="border-t border-border/60 my-5 sm:my-6" />
+
 
       {/* Bottom Row: 4 Data Columns */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 text-xs sm:text-sm">

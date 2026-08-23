@@ -53,7 +53,7 @@ const ProviderOrderDetailsSkeleton = () => {
         {/* Main Column (8 cols) -> Right Side in RTL */}
         <section className="lg:col-span-8 flex flex-col gap-5">
           {/* Status Card Skeleton (Matching ProviderOrderPendingStatusCard) */}
-          <div className="bg-white rounded-2xl border border-gray-100 border-s-4 border-s-gray-300 p-5 sm:p-7 shadow-xs flex flex-col">
+          <div className="bg-white rounded-2xl border border-border border-s-4 border-s-gray-300 p-5 sm:p-7 shadow-xs flex flex-col">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
               <div className="flex flex-col gap-2 flex-1">
                 <div className="h-6 w-44 bg-gray-200 rounded-lg" />
@@ -67,7 +67,7 @@ const ProviderOrderDetailsSkeleton = () => {
             </div>
 
             {/* Divider */}
-            <div className="border-t border-gray-100 my-5 sm:my-6" />
+            <div className="border-t border-border/60 my-5 sm:my-6" />
 
             {/* 4 Metadata Columns */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
@@ -81,7 +81,7 @@ const ProviderOrderDetailsSkeleton = () => {
           </div>
 
           {/* Schedule Skeleton (Matching ProviderOrderScheduleCard) */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-5">
+          <div className="bg-white rounded-2xl border border-border p-5 sm:p-6 shadow-xs flex flex-col gap-5">
             <div className="h-5 w-36 bg-gray-200 rounded-md pb-1" />
             <div className="flex flex-col gap-6 ps-2">
               {/* Step 1 */}
@@ -104,7 +104,7 @@ const ProviderOrderDetailsSkeleton = () => {
           </div>
 
           {/* Services Skeleton (Matching ProviderOrderServicesCard) */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-4 sm:gap-5">
+          <div className="bg-white rounded-2xl border border-border p-5 sm:p-6 shadow-xs flex flex-col gap-4 sm:gap-5">
             <div className="h-5 w-44 bg-gray-200 rounded-md pb-1" />
             <div className="flex flex-wrap gap-2.5 sm:gap-3">
               {[1, 2, 3, 4].map((s) => (
@@ -120,14 +120,14 @@ const ProviderOrderDetailsSkeleton = () => {
         {/* Side Column (4 cols) -> Left Side in RTL */}
         <aside className="lg:col-span-4 flex flex-col gap-5">
           {/* Group Card Skeleton (Matching ProviderOrderGroupCard) */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-4">
+          <div className="bg-white rounded-2xl border border-border p-5 sm:p-6 shadow-xs flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <div className="w-5 h-5 bg-gray-200 rounded-md" />
               <div className="h-5 w-32 bg-gray-200 rounded-md" />
             </div>
 
             {/* Coordinator User Box */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3.5 sm:p-4 flex items-center gap-3.5">
+            <div className="bg-sidePageBg rounded-xl p-3.5 sm:p-4 flex items-center gap-3.5 border border-border/40">
               <div className="w-12 h-12 rounded-full bg-gray-200 shrink-0" />
               <div className="flex flex-col gap-2 flex-1">
                 <div className="h-4 w-32 bg-gray-200 rounded-md" />
@@ -153,7 +153,8 @@ const ProviderOrderDetailsSkeleton = () => {
           </div>
 
           {/* Financial Card Skeleton (Matching ProviderOrderFinancialCard) */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-4 sm:gap-5">
+          <div className="bg-white rounded-2xl border border-border p-5 sm:p-6 shadow-xs flex flex-col gap-4 sm:gap-5">
+
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-gray-200" />
               <div className="h-5 w-28 bg-gray-200 rounded-md" />

@@ -49,7 +49,7 @@ const ProviderOrderGroupCard = ({ orderData }) => {
     "-";
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-4 font-somar">
+    <div className="bg-white rounded-2xl border border-border p-5 sm:p-6 shadow-xs flex flex-col gap-4 font-somar">
       {/* 1. Header with Title & Icon */}
       <div className="flex items-center gap-2">
         <SchoolOutlined className="!w-5 !h-5 sm:!w-6 sm:!h-6 text-mainColor shrink-0" />
@@ -59,8 +59,9 @@ const ProviderOrderGroupCard = ({ orderData }) => {
       </div>
 
       {/* 2. User / Coordinator Info Card with Soft Background */}
-      <div className="bg-[#F8FAFC] rounded-xl p-3.5 sm:p-4 flex items-center gap-3.5">
-        <div className="relative w-12 h-12 rounded-full overflow-hidden bg-mainColor/10 border border-gray-200/60 flex items-center justify-center text-mainColor font-bold text-base shrink-0">
+      <div className="bg-sidePageBg rounded-xl p-3.5 sm:p-4 flex items-center gap-3.5 border border-border/40">
+        <div className="relative w-12 h-12 rounded-full overflow-hidden bg-mainColor/10 border border-border/60 flex items-center justify-center text-mainColor font-bold text-base shrink-0">
+
           {user.image ? (
             <Image
               src={user.image}

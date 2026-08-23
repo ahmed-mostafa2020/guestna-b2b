@@ -22,11 +22,11 @@ const ProviderOrderBottomActionBar = ({
       case PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL:
       case PROVIDER_ORDER_STATUS.PENDING_COMPANY_APPROVAL:
       case PROVIDER_ORDER_STATUS.PENDING:
-        return "bg-amber-500";
+        return "bg-status-warning-fg";
       case PROVIDER_ORDER_STATUS.SCHEDULED:
-        return "bg-sky-500";
+        return "bg-status-info-fg";
       case PROVIDER_ORDER_STATUS.ON_HOLD:
-        return "bg-purple-500";
+        return "bg-status-hold-fg";
       default:
         return "bg-mainColor";
     }
@@ -42,7 +42,7 @@ const ProviderOrderBottomActionBar = ({
   return (
     <section
       aria-label={t("providerProfile.orderDetails.actionBar.currentStatus")}
-      className="sticky bottom-0 z-20 -mx-4 lg:-mx-7 -mb-4 lg:-mb-7 px-4 lg:px-7 py-3.5 sm:py-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_16px_rgba(0,0,0,0.04)] font-somar transition-all"
+      className="sticky bottom-0 z-20 -mx-4 lg:-mx-7 -mb-4 lg:-mb-7 px-4 lg:px-7 py-3.5 sm:py-4 bg-white/95 backdrop-blur-md border-t border-border shadow-[0_-4px_16px_rgba(0,0,0,0.04)] font-somar transition-all"
     >
       <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3.5 sm:gap-4">
         {/* Current Order Status */}
@@ -80,7 +80,7 @@ const ProviderOrderBottomActionBar = ({
             type="button"
             onClick={onEdit}
             disabled={loading}
-            className="w-full sm:w-auto inline-flex items-center justify-center border border-amber-500 text-amber-700 bg-white hover:bg-amber-50 active:scale-95 font-bold text-xs sm:text-sm md:text-base px-3.5 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-amber-500/30 whitespace-nowrap text-center"
+            className="w-full sm:w-auto inline-flex items-center justify-center border border-status-warning-border text-status-warning-fg bg-white hover:bg-status-warning-bg active:scale-95 font-bold text-xs sm:text-sm md:text-base px-3.5 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-status-warning-border/40 whitespace-nowrap text-center"
           >
             <span>
               {t("providerProfile.orderDetails.actionBar.requestEdit")}
@@ -92,7 +92,7 @@ const ProviderOrderBottomActionBar = ({
             type="button"
             onClick={onReject}
             disabled={loading}
-            className="w-full sm:w-auto inline-flex items-center justify-center border border-red-500 text-red-600 bg-white hover:bg-red-50 active:scale-95 font-bold text-xs sm:text-sm md:text-base px-3.5 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-red-500/30 whitespace-nowrap text-center"
+            className="w-full sm:w-auto inline-flex items-center justify-center border border-status-danger-border text-status-danger-fg bg-white hover:bg-status-danger-bg active:scale-95 font-bold text-xs sm:text-sm md:text-base px-3.5 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-status-danger-border/40 whitespace-nowrap text-center"
           >
             <span>
               {t("providerProfile.orderDetails.actionBar.rejectOrder")}
@@ -102,6 +102,7 @@ const ProviderOrderBottomActionBar = ({
       </div>
     </section>
   );
+
 };
 
 export default memo(ProviderOrderBottomActionBar);

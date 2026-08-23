@@ -13,10 +13,10 @@ const ProviderOrderScheduleCard = ({ orderData }) => {
   const toHour = formatTripHour(orderData?.toHour || "09AM", locale);
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-xs flex flex-col gap-5 font-somar">
+    <div className="bg-white rounded-2xl border border-border p-5 sm:p-6 shadow-xs flex flex-col gap-5 font-somar">
       {/* 1. Header */}
       <div className="pb-3">
-        <h2 className="text-base sm:text-lg font-bold text-textDark font-somar">
+        <h2 className="text-base sm:text-lg font-bold text-textDark">
           {t("providerProfile.orderDetails.schedule.title")}
         </h2>
       </div>
@@ -32,7 +32,7 @@ const ProviderOrderScheduleCard = ({ orderData }) => {
 
           {/* Node Content */}
           <div className="flex flex-col min-w-0 pt-0.5">
-            <span className="font-bold text-textDark text-sm sm:text-base font-somar">
+            <span className="font-bold text-textDark text-sm sm:text-base">
               {fromHour} - {t("providerProfile.orderDetails.schedule.arrival")}
             </span>
             <span className="text-xs sm:text-sm text-textLight font-normal mt-0.5">
@@ -41,19 +41,19 @@ const ProviderOrderScheduleCard = ({ orderData }) => {
           </div>
 
           {/* Connecting Line to next step */}
-          <div className="absolute top-8 start-4 -translate-x-1/2 w-0.5 h-12 bg-gray-200" />
+          <div className="absolute top-8 start-4 -translate-x-1/2 w-0.5 h-12 bg-border" />
         </div>
 
         {/* Step 2: Departure */}
         <div className="relative flex items-start gap-4">
           {/* Timeline Node */}
-          <div className="w-8 h-8 rounded-full bg-gray-100 text-textDark border border-gray-200 flex items-center justify-center shrink-0 shadow-xs z-10">
+          <div className="w-8 h-8 rounded-full bg-sidePageBg text-textDark border border-border flex items-center justify-center shrink-0 shadow-xs z-10">
             <LogoutOutlined className="!w-4 !h-4 text-textLight" />
           </div>
 
           {/* Node Content */}
           <div className="flex flex-col min-w-0 pt-0.5">
-            <span className="font-bold text-textDark text-sm sm:text-base font-somar">
+            <span className="font-bold text-textDark text-sm sm:text-base">
               {toHour} - {t("providerProfile.orderDetails.schedule.departure")}
             </span>
             <span className="text-xs sm:text-sm text-textLight font-normal mt-0.5">
@@ -64,6 +64,7 @@ const ProviderOrderScheduleCard = ({ orderData }) => {
       </div>
     </div>
   );
+
 };
 
 export default memo(ProviderOrderScheduleCard);

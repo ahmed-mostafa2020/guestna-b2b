@@ -35,7 +35,7 @@ const ProviderOrderDoneStatusCard = ({ orderData }) => {
   return (
     <section
       aria-label={t("providerProfile.orderDetails.doneStatusCard.title")}
-      className="bg-white border border-gray-100 rounded-2xl p-5 sm:p-7 relative overflow-hidden shadow-xs font-somar"
+      className="bg-white border border-border rounded-2xl p-5 sm:p-7 relative overflow-hidden shadow-xs font-somar"
     >
       {/* Main Row: Text Info + Large Checkmark Badge */}
       <div className="flex items-start justify-between gap-4">
@@ -51,11 +51,11 @@ const ProviderOrderDoneStatusCard = ({ orderData }) => {
 
         {/* Left / End in RTL: Large Circular Checkmark Badge */}
         <div
-          className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#E6F4F1] flex items-center justify-center shrink-0"
+          className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-status-success-bg border border-status-success-border flex items-center justify-center shrink-0"
           aria-hidden="true"
         >
           <svg
-            className="w-8 h-8 sm:w-10 sm:h-10 text-mainColor"
+            className="w-8 h-8 sm:w-10 sm:h-10 text-status-success-fg"
             viewBox="0 0 48 48"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +79,8 @@ const ProviderOrderDoneStatusCard = ({ orderData }) => {
       </div>
 
       {/* Divider */}
-      <div className="border-t border-gray-100 my-5 sm:my-6" />
+      <div className="border-t border-border/60 my-5 sm:my-6" />
+
 
       {/* Bottom Row: 3 Data Columns (Order No, Visit Date, Visit Time) */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 text-xs sm:text-sm">

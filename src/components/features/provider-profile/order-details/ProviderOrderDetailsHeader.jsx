@@ -101,7 +101,8 @@ const ProviderOrderDetailsHeader = ({ orderData }) => {
   };
 
   return (
-    <header className="bg-white rounded-2xl border border-gray-100 p-5 sm:px-8 sm:py-6 shadow-xs font-somar">
+    <header className="bg-white rounded-2xl border border-border p-5 sm:px-8 sm:py-6 shadow-xs font-somar">
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Right in RTL: Breadcrumbs + Title + Status Badge */}
         <div className="flex flex-col items-start gap-1.5">
