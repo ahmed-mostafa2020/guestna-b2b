@@ -20,6 +20,7 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { ALL_WEEKDAYS } from "@constants/weekDays";
 
 import { formatTime12h } from "@utils/formatters/formatTime12h";
+import { formatTimeForInput } from "@utils/formatters/formatTimeForInput";
 
 import StepBar, { STEP_KEYS } from "./StepBar";
 import StepIdentity from "./steps/StepIdentity";
@@ -409,10 +410,13 @@ const AddProductForm = ({
       datePricing: productData.datePricing || [],
       fromDay: productData.fromDay ? (productData.fromDay.includes("T") ? productData.fromDay.split("T")[0] : productData.fromDay) : "",
       toDay: productData.toDay ? (productData.toDay.includes("T") ? productData.toDay.split("T")[0] : productData.toDay) : "",
-      fromHour: productData.fromHour || "",
-      toHour: productData.toHour || "",
+      fromHour: formatTimeForInput(productData.fromHour),
+      toHour: formatTimeForInput(productData.toHour),
       availableTimes: Array.isArray(productData.availableTimes) && productData.availableTimes.length
-        ? productData.availableTimes
+        ? productData.availableTimes.map((slot) => ({
+            from: formatTimeForInput(slot.from),
+            to: formatTimeForInput(slot.to),
+          }))
         : [{ from: "", to: "" }],
       availableSeats: {
         min: seatsMin,

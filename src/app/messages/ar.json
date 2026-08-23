@@ -2990,10 +2990,18 @@
               "label": "ابتداءً من الساعة",
               "placeholder": "اختر الساعة"
             },
-
             "to_hour": {
               "label": "حتى الساعة ",
               "placeholder": "اختر الساعة"
+            },
+            "day": {
+              "label": "اليوم",
+              "placeholder": "اختر اليوم"
+            },
+            "slot": {
+              "label": "الوقت",
+              "placeholder": "اختر الوقت",
+              "selectDayFirst": "اختر اليوم أولاً"
             }
           }
         },

@@ -18,7 +18,7 @@ const StepTripDate = ({
   availableDays = [],
 }) => {
   const t = useTranslations("forms.customTrip.steps.trip_date");
-  const locale = useLocale();
+  const tGlobal = useTranslations();
   const { values, errors, touched, handleBlur, handleChange, setFieldValue } =
     useFormikContext();
 
@@ -32,7 +32,7 @@ const StepTripDate = ({
 
   return (
     <Box>
-      <h2 className="text-2xl font-bold  text-textDark">{t("title")}</h2>
+      <h2 className="text-2xl font-bold text-textDark">{t("title")}</h2>
 
       <p className="text-base !my-4"> {t("description")}</p>
 
@@ -41,7 +41,7 @@ const StepTripDate = ({
           {/* Day Input */}
           <div className="relative min-w-[25%] flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
             <label className="block text-sm font-medium text-gray-700 font-somar">
-              {locale === "ar" ? "اليوم" : "Day"}
+              {t("fields.day.label")}
               <span className="text-error ml-1">*</span>
             </label>
             <div className="relative">
@@ -92,13 +92,13 @@ const StepTripDate = ({
               errors={errors.slot}
               placeholder={
                 isLoadingSlots
-                  ? (locale === "ar" ? "جاري التحميل..." : "Loading...")
+                  ? tGlobal("common.autocomplete.loading")
                   : !values.day
-                    ? (locale === "ar" ? "اختر اليوم أولاً" : "Select day first")
-                    : (locale === "ar" ? "اختر الوقت" : "Select slot")
+                    ? t("fields.slot.selectDayFirst")
+                    : t("fields.slot.placeholder")
               }
               list={slotsData.map((s) => s.slot_name)}
-              label={locale === "ar" ? "الوقت" : "Time Slot"}
+              label={t("fields.slot.label")}
               disabled={isLoadingSlots || !values.day}
               required={true}
               showCheckbox={false}

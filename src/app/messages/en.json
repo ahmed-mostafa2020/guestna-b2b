@@ -2985,6 +2985,15 @@
             "to_hour": {
               "label": "To Hour",
               "placeholder": "Select hour"
+            },
+            "day": {
+              "label": "Day",
+              "placeholder": "Select day"
+            },
+            "slot": {
+              "label": "Time Slot",
+              "placeholder": "Select slot",
+              "selectDayFirst": "Select day first"
             }
           }
         },

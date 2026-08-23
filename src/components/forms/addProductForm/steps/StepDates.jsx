@@ -6,11 +6,11 @@ import TextInputGroup from "@components/forms/TextInputGroup";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
-import { formatTime12h } from "@utils/formatters/formatTime12h";
+import { formatTimeForInput } from "@utils/formatters/formatTimeForInput";
 
 const StepDates = () => {
   const t = useTranslations("providerProfile.products.modal");
-  const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
+  const { values, errors, touched, handleChange, handleBlur } =
     useFormikContext();
 
   return (
@@ -58,7 +58,7 @@ const StepDates = () => {
           <TextInputGroup
             type="time"
             name="fromHour"
-            value={values.fromHour || ""}
+            value={formatTimeForInput(values.fromHour)}
             errors={errors.fromHour}
             touched={touched.fromHour}
             onChange={handleChange}
@@ -76,7 +76,7 @@ const StepDates = () => {
           <TextInputGroup
             type="time"
             name="toHour"
-            value={values.toHour || ""}
+            value={formatTimeForInput(values.toHour)}
             errors={errors.toHour}
             touched={touched.toHour}
             onChange={handleChange}
@@ -106,7 +106,9 @@ const StepDates = () => {
                       <TextInputGroup
                         type="time"
                         name={`availableTimes[${index}].from`}
-                        value={slot.from || ""}
+                        value={formatTimeForInput(slot.from)}
+                        errors={errors.availableTimes?.[index]?.from}
+                        touched={touched.availableTimes?.[index]?.from}
                         onChange={handleChange}
                         onBlur={handleBlur}
                       />
@@ -115,7 +117,9 @@ const StepDates = () => {
                       <TextInputGroup
                         type="time"
                         name={`availableTimes[${index}].to`}
-                        value={slot.to || ""}
+                        value={formatTimeForInput(slot.to)}
+                        errors={errors.availableTimes?.[index]?.to}
+                        touched={touched.availableTimes?.[index]?.to}
                         onChange={handleChange}
                         onBlur={handleBlur}
                       />
@@ -126,7 +130,7 @@ const StepDates = () => {
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors"
+                      className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
                       title={t("fields.removeItem")}
                     >
                       <DeleteOutlineIcon className="w-5 h-5" />

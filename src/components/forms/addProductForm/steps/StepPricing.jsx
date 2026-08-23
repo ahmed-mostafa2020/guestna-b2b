@@ -101,6 +101,9 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
                           selectedObj?._id || selectedName
                         );
                       }}
+                      onBlur={handleBlur}
+                      touched={touched.targetAudiences?.[index]?.targetAudience}
+                      errors={errors.targetAudiences?.[index]?.targetAudience}
                       placeholder={t("placeholders.targetAudience")}
                       list={targetAudienceOptions.map((opt) => opt.name || opt)}
                     />
@@ -112,6 +115,8 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
                       value={item.price ?? ""}
                       onChange={handleChange}
                       onBlur={handleBlur}
+                      touched={touched.targetAudiences?.[index]?.price}
+                      errors={errors.targetAudiences?.[index]?.price}
                       placeholder={t("placeholders.audiencePrice")}
                     />
                   </div>

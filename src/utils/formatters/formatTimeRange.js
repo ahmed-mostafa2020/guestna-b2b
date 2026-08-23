@@ -1,49 +1,58 @@
+import { formatTime12h } from "./formatTime12h";
+
+/**
+ * Formats a start and end time range with localized prefixes ("from" / "to").
+ *
+ * @param {string} from - Starting time
+ * @param {string} to - Ending time
+ * @param {string} locale - Current locale ('ar' or 'en')
+ * @param {function} t - Translation function
+ * @returns {string} Formatted localized time range
+ */
 const formatTimeRange = (from, to, locale, t) => {
-  // If locale is Arabic (ar), format the time range in Arabic
+  if (!from && !to) return "";
+
+  const from12 = formatTime12h(from) || from || "";
+  const to12 = formatTime12h(to) || to || "";
+
   if (locale === "ar") {
     const convertToArabicTime = (time) => {
-      if (!time || typeof time !== "string") {
-        console.error(
-          'Invalid time format. Expected format: "HH:MMam" or "HHam"'
-        );
-        return time; // Return the original input if invalid
-      }
+      if (!time || typeof time !== "string") return "";
 
-      // Split the time string into time and period (am/pm)
-      const timeParts = time.match(/(\d+)(?::(\d+))?([ap]m)/i);
-
-      if (!timeParts) {
-        console.error("Invalid time format");
-        return time;
-      }
+      // Split the 12-hour time string into parts (e.g. "08:30AM", "8AM")
+      const timeParts = time.match(/(\d+)(?::(\d+))?\s*([ap]m)/i);
+      if (!timeParts) return time;
 
       const hourNum = parseInt(timeParts[1], 10);
       const minuteNum = timeParts[2] ? parseInt(timeParts[2], 10) : 0;
-      const period = time.toLowerCase().includes("am")
+      const period = timeParts[3].toUpperCase() === "AM"
         ? t("common.morning")
         : t("common.night");
 
-      // Convert hour to 12-hour format
       const arabicHour = hourNum % 12 || 12;
+      const arabicMinute = minuteNum > 0 ? `:${minuteNum.toLocaleString("ar-EG").padStart(2, "0")}` : "";
 
-      // Format the time in Arabic
-      return (
-        `${arabicHour.toLocaleString("ar-EG")}` +
-        (minuteNum > 0 ? `:${minuteNum.toLocaleString("ar-EG")}` : "") +
-        ` ${period}`
-      );
+      return `${arabicHour.toLocaleString("ar-EG")}${arabicMinute} ${period}`;
     };
 
-    // Convert start and end times
-    const arabicFrom = convertToArabicTime(from);
-    const arabicTo = convertToArabicTime(to);
+    const arabicFrom = convertToArabicTime(from12);
+    const arabicTo = convertToArabicTime(to12);
 
-    // Return the formatted string in Arabic
-    return `${t("common.from")} ${arabicFrom} ${t("common.to")} ${arabicTo}`;
-  } else {
-    // For non-Arabic locales, return the original time range with "from" and "to"
-    return `${t("common.from")} ${from} ${t("common.to")} ${to}`;
+    if (arabicFrom && arabicTo) {
+      return `${t("common.from")} ${arabicFrom} ${t("common.to")} ${arabicTo}`;
+    }
+    if (arabicFrom) return `${t("common.from")} ${arabicFrom}`;
+    if (arabicTo) return `${t("common.to")} ${arabicTo}`;
+    return "";
   }
+
+  // Non-Arabic locales (e.g. 'en')
+  if (from12 && to12) {
+    return `${t("common.from")} ${from12} ${t("common.to")} ${to12}`;
+  }
+  if (from12) return `${t("common.from")} ${from12}`;
+  if (to12) return `${t("common.to")} ${to12}`;
+  return "";
 };
 
 export default formatTimeRange;
