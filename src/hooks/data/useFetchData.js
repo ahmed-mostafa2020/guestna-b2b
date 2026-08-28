@@ -6,13 +6,12 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import { USERS } from "@constants/users";
 
 import axios from "axios";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { useLocale } from "next-intl";
 
 export const useFetchData = (endpoint, params = {}, options = {}) => {
   const locale = useLocale();
-  const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
   const userType = useSelector((state) => state.users?.userType);
@@ -79,7 +78,7 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
     });
 
     return response.data;
-  }, [endpoint, token, params, options, selectedOrganizationsHeader]);
+  }, [endpoint, token, params, options, locale, selectedOrganizationsHeader]);
 
   // Serialized params for query key
   const serializedParams = useMemo(() => JSON.stringify(params), [params]);
@@ -101,11 +100,14 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
       selectedOrganizationsHeader || "no-org-header",
     ],
     queryFn: fetchData,
-    cacheTime: options.cacheTime || 300000,
-    staleTime: options.staleTime || 300000,
-    keepPreviousData: true,
-    // refetchOnWindowFocus: false,
-    retry: 1,
+    cacheTime: options.cacheTime ?? options.gcTime ?? 300000,
+    gcTime: options.gcTime ?? options.cacheTime ?? 300000,
+    staleTime: options.staleTime ?? 300000,
+    refetchOnMount: options.refetchOnMount ?? true,
+    refetchOnWindowFocus: options.refetchOnWindowFocus ?? false,
+    keepPreviousData:
+      options.keepPreviousData !== undefined ? options.keepPreviousData : true,
+    retry: options.retry !== undefined ? options.retry : 1,
     enabled: isQueryEnabled,
   });
 

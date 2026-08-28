@@ -84,12 +84,12 @@ const ProviderOrderDetailsHeader = ({ orderData }) => {
     return t("providerProfile.orderDetails.title");
   };
 
-  const statusLabel =
-    status === PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL
-      ? t("providerProfile.orderDetails.pendingCard.titlePendingApproval")
-      : t(`providerProfile.ordersManagement.statuses.${status}`, {
-          default: status,
-        });
+  const statusLabel = t(
+    `providerProfile.ordersManagement.statuses.${status}`,
+    {
+      default: status,
+    }
+  );
 
   // Handle Invoice Action / PDF download
   const handleAction = () => {

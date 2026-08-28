@@ -37,6 +37,10 @@ const ProviderOrderDetailsPage = () => {
     {
       lang: locale,
       enabled: Boolean(endpoint),
+      staleTime: 0,
+      gcTime: 0,
+      cacheTime: 0,
+      refetchOnMount: "always",
     }
   );
 

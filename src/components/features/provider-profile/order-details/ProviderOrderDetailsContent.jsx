@@ -2,15 +2,6 @@
 
 import { memo, useCallback, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import axios from "axios";
-import {
-  CircularProgress,
-  Box,
-  Typography,
-  Button,
-  Alert,
-} from "@mui/material";
-import { Refresh } from "@mui/icons-material";
 
 import ProviderOrderDetailsHeader from "./ProviderOrderDetailsHeader";
 import ProviderOrderStatsCards from "./ProviderOrderStatsCards";
@@ -21,6 +12,7 @@ import ProviderOrderServicesCard from "./ProviderOrderServicesCard";
 import ProviderOrderStatusCardRenderer from "./status-cards/ProviderOrderStatusCardRenderer";
 import ProviderOrderBottomActionBar from "./ProviderOrderBottomActionBar";
 import ProviderOrderEditModal from "./ProviderOrderEditModal";
+import ProviderOrderApproveModal from "./ProviderOrderApproveModal";
 import PROVIDER_ORDER_STATUS from "@constants/providerOrderStatus";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 
@@ -38,6 +30,7 @@ const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
 
   // Edit modal state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
 
   // Provider-specific rejection reasons from translations
   const providerRejectReasons = useMemo(
@@ -204,6 +197,7 @@ const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
         handleClose={closeRejectModal}
         bgcolor="rgba(0, 0, 0, 0.5)"
         customizedCloseButton={true}
+        closeButton={false}
         padding={false}
       >
         {selectedRejectOrderId && (
@@ -222,67 +216,15 @@ const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
       </CustomizedModal>
 
       {/* 3. Approve Confirm Dialog */}
-      <CustomizedModal
+      <ProviderOrderApproveModal
         open={isApproveModalOpen}
-        handleClose={closeApproveModal}
-        bgcolor="rgba(0, 0, 0, 0.5)"
-        customizedCloseButton={true}
-        padding={false}
-      >
-        {selectedApproveOrderId && (
-          <Box className="bg-white rounded-2xl max-w-[460px] w-full mx-auto p-6">
-            {/* Title */}
-            <Typography className="!font-somar text-2xl text-center !font-semibold border-b pb-4 !mb-4">
-              {tApproval("providerConfirmTitle")}
-            </Typography>
-
-            {/* Description */}
-            <Typography className="!font-somar text-base text-textLight text-center pb-6">
-              {tApproval("providerConfirmDescription")}
-            </Typography>
-
-            {/* Error */}
-            {approvalError && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {approvalError}
-              </Alert>
-            )}
-
-            {/* Actions */}
-            <Box className="flex gap-3">
-              {/* Confirm Approve Button */}
-              <Button
-                onClick={async () => {
-                  const result = await approveOrder(selectedApproveOrderId);
-                  if (result?.success) {
-                    handleApproveSuccess();
-                  }
-                }}
-                disabled={approvingOrder}
-                className="!bg-mainColor px-8 py-3 !font-somar !text-white w-full rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:!bg-linksHover"
-              >
-                {approvingOrder ? (
-                  <Box className="flex items-center gap-2">
-                    <CircularProgress size={20} color="inherit" />
-                    <span>{tApproval("submitting")}</span>
-                  </Box>
-                ) : (
-                  t2("links.confirm")
-                )}
-              </Button>
-              {/* Cancel Button */}
-              <Button
-                variant="outlined"
-                className="!border-border px-8 py-3 !border-2 !font-somar !text-textDark w-full rounded-lg"
-                onClick={closeApproveModal}
-                disabled={approvingOrder}
-              >
-                {t2("links.cancel")}
-              </Button>
-            </Box>
-          </Box>
-        )}
-      </CustomizedModal>
+        onClose={closeApproveModal}
+        orderId={selectedApproveOrderId}
+        onSuccess={handleApproveSuccess}
+        approveOrder={approveOrder}
+        approvingOrder={approvingOrder}
+        approvalError={approvalError}
+      />
     </div>
   );
 };

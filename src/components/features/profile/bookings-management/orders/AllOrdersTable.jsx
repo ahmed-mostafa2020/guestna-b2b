@@ -350,6 +350,7 @@ const AllOrdersTable = ({
         handleClose={closeRejectModal}
         bgcolor="rgba(0, 0, 0, 0.5)"
         customizedCloseButton={true}
+        closeButton={false}
         padding={false}
       >
         {selectedRejectOrderId && (
@@ -370,6 +371,7 @@ const AllOrdersTable = ({
         handleClose={closeApproveModal}
         bgcolor="rgba(0, 0, 0, 0.5)"
         customizedCloseButton={true}
+        closeButton={false}
         padding={false}
       >
         {selectedApproveOrderId && (

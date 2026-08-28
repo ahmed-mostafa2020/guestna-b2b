@@ -664,7 +664,7 @@
         "acceptBooking": "Accept Order",
         "requestEdit": "Request Edit",
         "rejectOrder": "Reject Order",
-        "operationsReview": "Operations Review"
+        "operationsReview": "Pending Provider Approval"
       },
       "doneStatusCard": {
         "title": "Order Confirmed Successfully",
@@ -3272,8 +3272,8 @@
         "validation": {
           "pleaseSelectReason": "Please select a rejection reason",
           "pleaseProvideCustomReason": "Please provide the reason",
-          "customReasonMinLength": "The reason must be at least 10 characters",
-          "minimumCharacters": "Minimum {{count}} characters",
+          "customReasonMinLength": "The reason must be at least {count} characters",
+          "minimumCharacters": "Minimum {count} characters",
           "reminderSentSuccessfully": "Reminder sent successfully",
           "api_errors": {
             "other_error": "An error occurred. Please try again."

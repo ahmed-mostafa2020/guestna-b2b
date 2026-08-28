@@ -671,7 +671,7 @@
         "acceptBooking": "اعتماد الطلب",
         "requestEdit": "طلب تعديل",
         "rejectOrder": "رفض الطلب",
-        "operationsReview": "مراجعة العمليات"
+        "operationsReview": "انتظار موافقة المزود "
       },
       "doneStatusCard": {
         "title": "تم تأكيد الطلب بنجاح",
@@ -3280,8 +3280,8 @@
         "validation": {
           "pleaseSelectReason": "يرجى اختيار سبب الرفض",
           "pleaseProvideCustomReason": "يرجى توضيح السبب",
-          "customReasonMinLength": "يجب ألا يقل السبب عن 10 أحرف",
-          "minimumCharacters": "الحد الأدنى {{count}} أحرف",
+          "customReasonMinLength": "يجب ألا يقل السبب عن {count} أحرف",
+          "minimumCharacters": "الحد الأدنى {count} أحرف",
           "reminderSentSuccessfully": "تم إرسال التذكير بنجاح",
           "api_errors": {
             "other_error": "حدث خطأ. يرجى المحاولة مرة أخرى."

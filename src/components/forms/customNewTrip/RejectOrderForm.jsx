@@ -1,18 +1,9 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, memo } from "react";
 import { useTranslations } from "next-intl";
-import {
-  Box,
-  Typography,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  TextField,
-  Button,
-  CircularProgress,
-  Alert,
-} from "@mui/material";
+import { CircularProgress } from "@mui/material";
+import { Close } from "@mui/icons-material";
 import TextInputGroup from "../TextInputGroup";
 
 const RejectOrderForm = ({
@@ -87,8 +78,8 @@ const RejectOrderForm = ({
       return false;
     }
 
-    if (selectedReason === "other" && customMessage.trim().length < 10) {
-      setValidationError(t("validation.customReasonMinLength"));
+    if (selectedReason === "other" && customMessage.trim().length < 2) {
+      setValidationError(t("validation.customReasonMinLength", { count: 2 }));
       return false;
     }
 
@@ -119,7 +110,7 @@ const RejectOrderForm = ({
     });
 
     // If successful, call onSuccess callback
-    if (result.success) {
+    if (result?.success) {
       // Reset form
       setSelectedReason("");
       setCustomMessage("");
@@ -154,101 +145,131 @@ const RejectOrderForm = ({
   }, [rejectingOrder, onClose]);
 
   return (
-    <Box
-      className="bg-white rounded-2xl max-w-[500px] w-full mx-auto"
-      sx={{ p: 4 }}
-    >
-      {/* Title */}
-      <Typography className="!font-somar text-2xl text-center !font-semibold border-b pb-6  px-4">
-        {modalTitle}
-      </Typography>
-
-      {/* Subtitle/Description */}
-      <Typography className="!font-somar text-xl !my-4 !font-semibold ">
-        {modalDescription}
-      </Typography>
-
-      {/* Error Alerts */}
-      {rejectionError && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {rejectionError}
-        </Alert>
-      )}
-
-      {validationError && (
-        <Alert severity="warning" sx={{ mb: 2 }}>
-          {validationError}
-        </Alert>
-      )}
-
-      {/* Radio Group for Rejection Reasons */}
-      <RadioGroup value={selectedReason} onChange={handleReasonChange}>
-        {rejectionReasons.map((reason) => (
-          <FormControlLabel
-            key={reason.value}
-            value={reason.value}
-            control={
-              <Radio disabled={rejectingOrder} className="!text-mainColor" />
-            }
-            label={
-              <Typography className="!font-somar text-base">
-                {reason.label}
-              </Typography>
-            }
-          />
-        ))}
-      </RadioGroup>
-
-      {/* Custom Message TextField (only shown when "other" is selected) */}
-      {selectedReason === "other" && (
-        <TextInputGroup
-          fullWidth
-          textarea
-          rows={4}
-          placeholder={t("customMessagePlaceholder")}
-          value={customMessage}
-          onChange={handleCustomMessageChange}
-          disabled={rejectingOrder}
-          variant="outlined"
-          sx={{
-            mb: 3,
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "8px",
-            },
-          }}
-          helperText={t("validation.minimumCharacters", { count: 10 })}
-        />
-      )}
-
-      {/* Action Buttons */}
-      <Box className="flex gap-3 mt-6">
-        {/* Confirm Rejection Button */}
-        <Button
-          onClick={handleSubmit}
-          disabled={rejectingOrder || !selectedReason}
-          className="!bg-error px-8 py-3 !border-2 !font-somar !text-white w-full rounded-lg disabled:!bg-gray-300 disabled:!text-gray-600 disabled:cursor-not-allowed"
-        >
-          {rejectingOrder ? (
-            <Box className="flex items-center gap-2">
-              <CircularProgress size={20} color="inherit" />
-              <span>{t("submitting")}</span>
-            </Box>
-          ) : (
-            t2("links.confirm")
+    <div className="flex items-center justify-center min-h-full p-4 font-somar">
+      <div className="bg-white rounded-2xl max-w-[540px] w-full mx-auto shadow-2xl border border-border overflow-hidden">
+        {/* Modal Header */}
+        <div className="sticky top-0 bg-white z-10 px-6 py-4 border-b border-border flex items-center justify-between">
+          <h2 className="text-lg sm:text-xl font-bold text-textDark font-somar text-center w-full">
+            {modalTitle}
+          </h2>
+          {onClose && (
+            <button
+              type="button"
+              onClick={handleCancel}
+              disabled={rejectingOrder}
+              className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors cursor-pointer text-textLight hover:text-textDark shrink-0 disabled:opacity-50"
+              aria-label={t2("links.cancel")}
+            >
+              <Close className="!w-4 !h-4" />
+            </button>
           )}
-        </Button>
-        {/* Cancel Button */}
-        <Button
-          variant="outlined"
-          className="!border-border px-8 py-3 !border-2 !font-somar !text-textDark w-full rounded-lg"
-          onClick={handleCancel}
-          disabled={rejectingOrder}
-        >
-          {t2("links.cancel")}
-        </Button>
-      </Box>
-    </Box>
+        </div>
+
+        {/* Modal Body */}
+        <div className="p-5 sm:p-7 max-h-[80vh] overflow-y-auto">
+          {/* Subtitle / Description */}
+          {modalDescription && (
+            <p className="text-sm sm:text-base text-textLight !mb-5 leading-relaxed font-somar">
+              {modalDescription}
+            </p>
+          )}
+
+          {/* Error Alert */}
+          {rejectionError && (
+            <div className="mb-4 p-3.5 bg-red-50 border border-red-200 rounded-xl text-error text-sm font-medium font-somar">
+              {rejectionError}
+            </div>
+          )}
+
+          {/* Validation Warning */}
+          {validationError && (
+            <div className="mb-4 p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm font-medium font-somar">
+              {validationError}
+            </div>
+          )}
+
+          {/* Rejection Reasons Options */}
+          <div className="space-y-2.5">
+            {rejectionReasons.map((reason) => {
+              const isSelected = selectedReason === reason.value;
+              return (
+                <label
+                  key={reason.value}
+                  className={`flex items-center gap-3.5 p-3.5 rounded-xl border-2 transition-all cursor-pointer select-none ${
+                    isSelected
+                      ? "border-mainColor bg-mainColor/5 font-semibold text-textDark shadow-xs"
+                      : "border-border hover:border-gray-300 text-textDark font-normal bg-white"
+                  } ${rejectingOrder ? "opacity-60 cursor-not-allowed" : ""}`}
+                >
+                  <input
+                    type="radio"
+                    name="rejectionReason"
+                    value={reason.value}
+                    checked={isSelected}
+                    onChange={handleReasonChange}
+                    disabled={rejectingOrder}
+                    className="w-4 h-4 text-mainColor accent-mainColor focus:ring-mainColor/30 cursor-pointer"
+                  />
+                  <span className="text-sm sm:text-base font-somar flex-1">
+                    {reason.label}
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+
+          {/* Custom Message (when "other" selected) */}
+          {selectedReason === "other" && (
+            <div className="mt-4">
+              <TextInputGroup
+                textarea
+                rows={4}
+                placeholder={t("customMessagePlaceholder")}
+                value={customMessage}
+                onChange={handleCustomMessageChange}
+                disabled={rejectingOrder}
+                errors={validationError}
+                touched={Boolean(validationError)}
+              />
+              <p className="mt-1 text-xs text-textLight font-somar">
+                {t("validation.minimumCharacters", { count: 2 })}
+              </p>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-3 mt-6 pt-5 border-t border-border">
+            {/* Cancel Button */}
+            <button
+              type="button"
+              onClick={handleCancel}
+              disabled={rejectingOrder}
+              className="w-full sm:w-1/2 px-6 h-12 flex items-center justify-center rounded-xl border-2 border-border text-textDark font-bold text-sm sm:text-base hover:border-mainColor hover:text-mainColor active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-white font-somar"
+            >
+              {t2("links.cancel")}
+            </button>
+
+            {/* Confirm Rejection Button */}
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={rejectingOrder || !selectedReason}
+              className="w-full sm:w-1/2 px-6 h-12 flex items-center justify-center border-2 border-transparent bg-error text-white rounded-xl font-bold text-sm sm:text-base hover:bg-red-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shadow-xs focus:outline-none focus:ring-2 focus:ring-error/30 font-somar"
+            >
+              {rejectingOrder ? (
+                <div className="flex items-center justify-center gap-2">
+                  <CircularProgress color="inherit" size={18} />
+                  <span>{t("submitting")}</span>
+                </div>
+              ) : (
+                t("confirmButton") || t2("links.confirm")
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default RejectOrderForm;
+export default memo(RejectOrderForm);

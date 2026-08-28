@@ -406,7 +406,7 @@ const ProviderOrderEditForm = ({
                         )
                   }
                   disabled={isSubmitting}
-                  className="px-6 py-2.5 rounded-xl border-2 border-border text-textDark font-bold text-sm sm:text-base hover:border-mainColor hover:text-mainColor transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full sm:w-auto px-6 h-12 flex items-center justify-center rounded-xl border-2 border-border text-textDark font-bold text-sm sm:text-base hover:border-mainColor hover:text-mainColor transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {tGlobal("common.back")}
                 </button>
@@ -414,7 +414,7 @@ const ProviderOrderEditForm = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-8 py-2.5 bg-mainColor text-white rounded-xl font-bold text-sm sm:text-base hover:bg-titleColor disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shadow-xs active:scale-95 focus:outline-none focus:ring-2 focus:ring-mainColor/30"
+                  className="w-full sm:w-auto px-8 h-12 flex items-center justify-center border-2 border-transparent bg-mainColor text-white rounded-xl font-bold text-sm sm:text-base hover:bg-titleColor disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shadow-xs active:scale-95 focus:outline-none focus:ring-2 focus:ring-mainColor/30"
                 >
                   {isSubmitting ? (
                     <div className="flex items-center justify-center gap-2">

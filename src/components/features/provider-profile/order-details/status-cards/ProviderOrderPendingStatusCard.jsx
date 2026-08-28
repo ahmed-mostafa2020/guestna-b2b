@@ -20,43 +20,64 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
   const rawOrderId = orderData?.orderId || orderData?._id || "";
 
   // ─── 1. Persistent Timer Calculation (Only for PENDING_PROVIDER_APPROVAL) ───
-  // Calculate target expiration timestamp (from order creation or cached localStorage)
+  // Calculate target expiration timestamp (from explicit backend expiry, or persistent 2-hour window per order)
   const targetExpiryTimestamp = useMemo(() => {
     if (!hasTimer) return null;
 
-    if (orderData?.createdAt) {
-      const createdTime = new Date(orderData.createdAt).getTime();
-      if (!isNaN(createdTime) && createdTime > 0) {
-        return createdTime + TWO_HOURS_MS;
+    // Check if backend provided an explicit expiry timestamp
+    const explicitExpiry =
+      orderData?.expiresAt ||
+      orderData?.expiryDate ||
+      orderData?.expirationDate ||
+      orderData?.expiredAt;
+
+    if (explicitExpiry) {
+      let expStr = String(explicitExpiry);
+      if (
+        expStr.includes("T") &&
+        !expStr.endsWith("Z") &&
+        !/[+-]\d{2}:\d{2}$/.test(expStr)
+      ) {
+        expStr = `${expStr}Z`;
+      }
+      const expTime = new Date(expStr).getTime();
+      if (!isNaN(expTime) && expTime > 0) {
+        return expTime;
       }
     }
 
-    // Fallback using localStorage per orderId so refresh won't restart timer
+    // Persistent 2-Hour Timer per order
     if (typeof window !== "undefined" && rawOrderId) {
       const storageKey = `provider_order_expiry_${rawOrderId}`;
       const saved = localStorage.getItem(storageKey);
       if (saved) {
         const parsed = parseInt(saved, 10);
-        if (!isNaN(parsed) && parsed > 0) {
+        // If there's an active non-expired timer within 2 hours from now, continue it
+        if (
+          !isNaN(parsed) &&
+          parsed > Date.now() &&
+          parsed <= Date.now() + TWO_HOURS_MS
+        ) {
           return parsed;
         }
       }
+      // Start a fresh 2-hour timer for this order
       const newTarget = Date.now() + TWO_HOURS_MS;
       localStorage.setItem(storageKey, String(newTarget));
       return newTarget;
     }
 
     return Date.now() + TWO_HOURS_MS;
-  }, [hasTimer, orderData?.createdAt, rawOrderId]);
+  }, [
+    hasTimer,
+    orderData?.expiresAt,
+    orderData?.expiryDate,
+    orderData?.expirationDate,
+    orderData?.expiredAt,
+    rawOrderId,
+  ]);
 
-  // Compute remaining seconds from now
-  const getRemainingSeconds = () => {
-    if (!targetExpiryTimestamp) return 0;
-    const diffMs = targetExpiryTimestamp - Date.now();
-    return Math.max(0, Math.floor(diffMs / 1000));
-  };
-
-  const [remainingSeconds, setRemainingSeconds] = useState(getRemainingSeconds);
+  const [now, setNow] = useState(Date.now);
   const onExpireCalledRef = useRef(false);
 
   // Reset expiry called flag when orderId changes
@@ -67,19 +88,13 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
   useEffect(() => {
     if (!hasTimer || !targetExpiryTimestamp) return;
 
-    // Set initial remaining time
-    const initialSecs = getRemainingSeconds();
-    setRemainingSeconds(initialSecs);
-
-    if (initialSecs <= 0) {
-      return;
-    }
+    setNow(Date.now());
 
     const interval = setInterval(() => {
-      const currentRemaining = getRemainingSeconds();
-      setRemainingSeconds(currentRemaining);
+      const currentTime = Date.now();
+      setNow(currentTime);
 
-      if (currentRemaining <= 0) {
+      if (targetExpiryTimestamp - currentTime <= 0) {
         clearInterval(interval);
         if (!onExpireCalledRef.current) {
           onExpireCalledRef.current = true;
@@ -90,6 +105,12 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
 
     return () => clearInterval(interval);
   }, [hasTimer, targetExpiryTimestamp, onExpire]);
+
+  // Compute remaining seconds reactively from current time and target timestamp
+  const remainingSeconds = useMemo(() => {
+    if (!hasTimer || !targetExpiryTimestamp) return 0;
+    return Math.max(0, Math.floor((targetExpiryTimestamp - now) / 1000));
+  }, [hasTimer, targetExpiryTimestamp, now]);
 
   // Format HH:MM:SS
   const formatTime = (totalSeconds) => {

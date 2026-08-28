@@ -32,12 +32,12 @@ const ProviderOrderBottomActionBar = ({
     }
   };
 
-  const statusLabel =
-    status === PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL
-      ? t("providerProfile.orderDetails.actionBar.operationsReview")
-      : t(`providerProfile.ordersManagement.statuses.${status}`, {
-          default: status,
-        });
+  const statusLabel = t(
+    `providerProfile.ordersManagement.statuses.${status}`,
+    {
+      default: status,
+    }
+  );
 
   if (status !== PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL) {
     return null;

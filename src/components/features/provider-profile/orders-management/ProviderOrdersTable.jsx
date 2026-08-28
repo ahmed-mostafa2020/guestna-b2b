@@ -106,9 +106,8 @@ const ActionsDropdown = ({ row, t, onEdit }) => {
 
   const handleEdit = useCallback((e) => {
     handleClose(e);
-    const targetId = row.orderId || row._id;
-    if (targetId && onEdit) {
-      onEdit(targetId);
+    if (row && onEdit) {
+      onEdit(row);
     }
   }, [row, onEdit]);
 
@@ -176,18 +175,18 @@ const ProviderOrdersTable = ({
   const t = useTranslations();
   const locale = useLocale();
   const [b2bFilter, setB2bFilter] = useState("all");
-  const [selectedEditOrderId, setSelectedEditOrderId] = useState(null);
+  const [selectedEditOrder, setSelectedEditOrder] = useState(null);
 
-  const handleOpenEdit = useCallback((orderId) => {
-    setSelectedEditOrderId(orderId);
+  const handleOpenEdit = useCallback((order) => {
+    setSelectedEditOrder(order);
   }, []);
 
   const handleCloseEdit = useCallback(() => {
-    setSelectedEditOrderId(null);
+    setSelectedEditOrder(null);
   }, []);
 
   const handleEditSuccess = useCallback(() => {
-    setSelectedEditOrderId(null);
+    setSelectedEditOrder(null);
     refetch?.();
   }, [refetch]);
 
@@ -382,8 +381,9 @@ const ProviderOrdersTable = ({
 
       {/* Edit Order Modal */}
       <ProviderOrderEditModal
-        open={Boolean(selectedEditOrderId)}
-        orderId={selectedEditOrderId}
+        open={Boolean(selectedEditOrder)}
+        orderId={selectedEditOrder?.orderId || selectedEditOrder?._id}
+        orderData={selectedEditOrder}
         onClose={handleCloseEdit}
         onSuccess={handleEditSuccess}
       />

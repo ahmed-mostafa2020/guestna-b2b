@@ -44,7 +44,13 @@ const ProviderOrdersManagementPage = () => {
   } = useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.ASK_TRIPS_COUNTS,
     {},
-    { lang: locale }
+    {
+      lang: locale,
+      staleTime: 0,
+      gcTime: 0,
+      cacheTime: 0,
+      refetchOnMount: "always",
+    }
   );
 
   const countsData = countsResponse?.data || countsResponse || {};
@@ -60,10 +66,17 @@ const ProviderOrdersManagementPage = () => {
     isLoading: ordersLoading,
     isFetching: ordersFetching,
     refetch: refetchOrders,
-  } = useFetchData(ordersEndpoint, {}, { lang: locale }, [
-    currentPage,
-    activeTab,
-  ]);
+  } = useFetchData(
+    ordersEndpoint,
+    {},
+    {
+      lang: locale,
+      staleTime: 0,
+      gcTime: 0,
+      cacheTime: 0,
+      refetchOnMount: "always",
+    }
+  );
 
   const ordersData = ordersResponse?.data || ordersResponse || {};
   const isOrdersLoading = ordersLoading || ordersFetching;
