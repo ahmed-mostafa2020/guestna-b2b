@@ -1,7 +1,8 @@
 "use client";
 
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import axios from "axios";
 import {
   CircularProgress,
   Box,
@@ -9,6 +10,7 @@ import {
   Button,
   Alert,
 } from "@mui/material";
+import { Refresh } from "@mui/icons-material";
 
 import ProviderOrderDetailsHeader from "./ProviderOrderDetailsHeader";
 import ProviderOrderStatsCards from "./ProviderOrderStatsCards";
@@ -18,12 +20,12 @@ import ProviderOrderScheduleCard from "./ProviderOrderScheduleCard";
 import ProviderOrderServicesCard from "./ProviderOrderServicesCard";
 import ProviderOrderStatusCardRenderer from "./status-cards/ProviderOrderStatusCardRenderer";
 import ProviderOrderBottomActionBar from "./ProviderOrderBottomActionBar";
+import ProviderOrderEditModal from "./ProviderOrderEditModal";
 import PROVIDER_ORDER_STATUS from "@constants/providerOrderStatus";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 
 import { useEditOrderModal } from "@hooks/ui/useEditOrderModal";
 import CustomizedModal from "@components/ui/customizedModal";
-import CustomNewTripForm from "@components/forms/customNewTrip";
 import RejectOrderForm from "@components/forms/customNewTrip/RejectOrderForm";
 
 const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
@@ -33,6 +35,9 @@ const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
   const t2 = useTranslations();
   const status = orderData?.status;
   const rawOrderId = orderData?.orderId || orderData?._id;
+
+  // Edit modal state
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // Provider-specific rejection reasons from translations
   const providerRejectReasons = useMemo(
@@ -76,8 +81,8 @@ const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
     currentEditOrderDetails,
     formSelectionData,
     isDataReady,
-    openEditModal,
-    closeEditModal,
+    openEditModal: _openEditModal,
+    closeEditModal: _closeEditModal,
 
     selectedRejectOrderId,
     isRejectModalOpen,
@@ -108,9 +113,13 @@ const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
 
   const handleEditClick = useCallback(() => {
     if (rawOrderId) {
-      openEditModal(rawOrderId, orderData);
+      setIsEditModalOpen(true);
     }
-  }, [rawOrderId, orderData, openEditModal]);
+  }, [rawOrderId]);
+
+  const closeEditModal = useCallback(() => {
+    setIsEditModalOpen(false);
+  }, []);
 
   const handleRejectClick = useCallback(() => {
     if (rawOrderId) {
@@ -119,9 +128,9 @@ const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
   }, [rawOrderId, openRejectModal]);
 
   const handleEditSuccess = useCallback(async () => {
-    closeEditModal();
+    setIsEditModalOpen(false);
     refetch?.();
-  }, [closeEditModal, refetch]);
+  }, [refetch]);
 
   const handleRejectSuccess = useCallback(async () => {
     closeRejectModal();
@@ -179,29 +188,15 @@ const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
       )}
 
       {/* ─── Modals ─── */}
+
       {/* 1. Edit Modal */}
-      <CustomizedModal
-        open={Boolean(selectedEditOrderId)}
-        handleClose={closeEditModal}
-        bgcolor="rgba(0, 0, 0, 0.5)"
-        customizedCloseButton={true}
-        padding={false}
-      >
-        {selectedEditOrderId && isDataReady ? (
-          <CustomNewTripForm
-            mode="edit"
-            orderId={currentEditOrderDetails?._id || selectedEditOrderId}
-            editData={currentEditOrderDetails || orderData}
-            formSelectionData={formSelectionData}
-            onClose={closeEditModal}
-            onSuccess={handleEditSuccess}
-          />
-        ) : selectedEditOrderId ? (
-          <div className="flex items-center justify-center p-20 bg-white rounded-2xl">
-            <CircularProgress size={40} />
-          </div>
-        ) : null}
-      </CustomizedModal>
+      <ProviderOrderEditModal
+        open={isEditModalOpen}
+        onClose={closeEditModal}
+        orderId={rawOrderId}
+        orderData={orderData}
+        onSuccess={handleEditSuccess}
+      />
 
       {/* 2. Reject Modal */}
       <CustomizedModal

@@ -71,7 +71,7 @@ const SelectionGroup = ({
           const getLabel = (val) => {
             const found = list.find((item) => {
               if (typeof item === "object" && item !== null) {
-                return (item.value ?? item.id ?? item.name) === val;
+                return (item.value ?? item._id ?? item.id ?? item.name) === val;
               }
               return item === val;
             });

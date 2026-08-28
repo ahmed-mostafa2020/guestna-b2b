@@ -688,6 +688,28 @@
         "notFound": "Requested order details not found",
         "backToOrders": "Back to Orders Management",
         "retry": "Retry"
+      },
+      "editForm": {
+        "pageTitle": "Edit Order",
+        "breadcrumbEdit": "Edit Order",
+        "day": "Start Date",
+        "endDay": "End Date",
+        "availableSeats": "Expected Participants",
+        "totalAvailableSeats": "Total Available Seats",
+        "fromHour": "Start Time",
+        "toHour": "End Time",
+        "services": "Services",
+        "providerBranch": "Provider Branch",
+        "note": "Note",
+        "notePlaceholder": "Add a note about the modification...",
+        "submitEdit": "Submit Edit",
+        "submitting": "Submitting...",
+        "editSuccess": "Order edited successfully",
+        "editError": "Failed to edit order",
+        "loadingSelections": "Loading form data...",
+        "loadError": "Failed to load edit data",
+        "selectService": "Select services",
+        "selectBranch": "Select provider branch"
       }
     }
   },

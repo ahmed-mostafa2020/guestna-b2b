@@ -40,6 +40,7 @@ const ProviderOrdersManagementPage = () => {
     data: countsResponse,
     isLoading: countsLoading,
     isFetching: countsFetching,
+    refetch: refetchCounts,
   } = useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.ASK_TRIPS_COUNTS,
     {},
@@ -58,6 +59,7 @@ const ProviderOrdersManagementPage = () => {
     data: ordersResponse,
     isLoading: ordersLoading,
     isFetching: ordersFetching,
+    refetch: refetchOrders,
   } = useFetchData(ordersEndpoint, {}, { lang: locale }, [
     currentPage,
     activeTab,
@@ -65,6 +67,11 @@ const ProviderOrdersManagementPage = () => {
 
   const ordersData = ordersResponse?.data || ordersResponse || {};
   const isOrdersLoading = ordersLoading || ordersFetching;
+
+  const handleRefetch = useCallback(() => {
+    refetchOrders?.();
+    refetchCounts?.();
+  }, [refetchOrders, refetchCounts]);
 
   /* ─── Export Excel (fetches all data with perPage=1000) ─── */
   const handleExport = useCallback(async () => {
@@ -229,6 +236,7 @@ const ProviderOrdersManagementPage = () => {
         loading={isOrdersLoading}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
+        refetch={handleRefetch}
       />
     </main>
   );

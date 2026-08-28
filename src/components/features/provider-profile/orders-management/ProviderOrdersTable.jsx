@@ -13,6 +13,7 @@ import { Menu, MenuItem } from "@mui/material";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import formatDate from "@utils/formatters/FormateDate";
 import DataTable from "@components/ui/DataTable";
+import ProviderOrderEditModal from "@components/features/provider-profile/order-details/ProviderOrderEditModal";
 import PROVIDER_ORDER_STATUS from "@constants/providerOrderStatus";
 
 /* ─── Status Badge ─── */
@@ -76,11 +77,14 @@ const StatusBadge = ({ status, label }) => {
 };
 
 /* ─── Actions Dropdown ─── */
-const ActionsDropdown = ({ row, t }) => {
+const ActionsDropdown = ({ row, t, onEdit }) => {
   const router = useRouter();
   const locale = useLocale();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
+  const isPendingProviderApproval =
+    row.status === PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL;
 
   const handleOpen = (e) => {
     e.stopPropagation();
@@ -103,10 +107,10 @@ const ActionsDropdown = ({ row, t }) => {
   const handleEdit = useCallback((e) => {
     handleClose(e);
     const targetId = row.orderId || row._id;
-    if (targetId) {
-      router.push(`/${locale}/provider-profile/orders-management/${targetId}`);
+    if (targetId && onEdit) {
+      onEdit(targetId);
     }
-  }, [row, router, locale]);
+  }, [row, onEdit]);
 
   return (
     <>
@@ -145,15 +149,17 @@ const ActionsDropdown = ({ row, t }) => {
             {t("providerProfile.ordersManagement.actions.viewDetails")}
           </span>
         </MenuItem>
-        <MenuItem
-          onClick={handleEdit}
-          className="flex items-center gap-3 !px-4 !py-2.5 !text-sm !font-medium !text-textDark hover:!bg-mainColor/5 hover:!text-mainColor transition-colors cursor-pointer !justify-start !font-somar"
-        >
-          <EditOutlined className="!w-4.5 !h-4.5 text-mainColor" />
-          <span className="font-somar">
-            {t("providerProfile.ordersManagement.actions.edit")}
-          </span>
-        </MenuItem>
+        {isPendingProviderApproval && (
+          <MenuItem
+            onClick={handleEdit}
+            className="flex items-center gap-3 !px-4 !py-2.5 !text-sm !font-medium !text-textDark hover:!bg-mainColor/5 hover:!text-mainColor transition-colors cursor-pointer !justify-start !font-somar"
+          >
+            <EditOutlined className="!w-4.5 !h-4.5 text-mainColor" />
+            <span className="font-somar">
+              {t("providerProfile.ordersManagement.actions.edit")}
+            </span>
+          </MenuItem>
+        )}
       </Menu>
     </>
   );
@@ -165,10 +171,25 @@ const ProviderOrdersTable = ({
   loading = false,
   currentPage,
   setCurrentPage,
+  refetch,
 }) => {
   const t = useTranslations();
   const locale = useLocale();
   const [b2bFilter, setB2bFilter] = useState("all");
+  const [selectedEditOrderId, setSelectedEditOrderId] = useState(null);
+
+  const handleOpenEdit = useCallback((orderId) => {
+    setSelectedEditOrderId(orderId);
+  }, []);
+
+  const handleCloseEdit = useCallback(() => {
+    setSelectedEditOrderId(null);
+  }, []);
+
+  const handleEditSuccess = useCallback(() => {
+    setSelectedEditOrderId(null);
+    refetch?.();
+  }, [refetch]);
 
   const rawNodes = data?.nodes || [];
   const pageInfo = data?.pageInfo || {
@@ -306,10 +327,12 @@ const ProviderOrdersTable = ({
       {
         key: "actions",
         label: t("providerProfile.ordersManagement.columns.actions"),
-        render: (row) => <ActionsDropdown row={row} t={t} />,
+        render: (row) => (
+          <ActionsDropdown row={row} t={t} onEdit={handleOpenEdit} />
+        ),
       },
     ],
-    [t, locale]
+    [t, locale, handleOpenEdit]
   );
 
   return (
@@ -355,6 +378,14 @@ const ProviderOrdersTable = ({
           currentPage: currentPage || 1,
           onPageChange: setCurrentPage,
         }}
+      />
+
+      {/* Edit Order Modal */}
+      <ProviderOrderEditModal
+        open={Boolean(selectedEditOrderId)}
+        orderId={selectedEditOrderId}
+        onClose={handleCloseEdit}
+        onSuccess={handleEditSuccess}
       />
     </div>
   );

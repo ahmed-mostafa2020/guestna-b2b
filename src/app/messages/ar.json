@@ -695,6 +695,28 @@
         "notFound": "لم يتم العثور على تفاصيل الطلب المطلوب",
         "backToOrders": "العودة إلى إدارة الطلبات",
         "retry": "إعادة المحاولة"
+      },
+      "editForm": {
+        "pageTitle": "تعديل الطلب",
+        "breadcrumbEdit": "تعديل الطلب",
+        "day": "تاريخ البداية",
+        "endDay": "تاريخ النهاية",
+        "availableSeats": "المشاركين المتوقعين",
+        "totalAvailableSeats": "إجمالي المقاعد المتاحة",
+        "fromHour": "وقت البداية",
+        "toHour": "وقت الانتهاء",
+        "services": "الخدمات",
+        "providerBranch": "فرع مزود الخدمة",
+        "note": "ملاحظة",
+        "notePlaceholder": "أضف ملاحظة حول التعديل...",
+        "submitEdit": "إرسال التعديل",
+        "submitting": "جاري الإرسال...",
+        "editSuccess": "تم تعديل الطلب بنجاح",
+        "editError": "فشل تعديل الطلب",
+        "loadingSelections": "جاري تحميل بيانات النموذج...",
+        "loadError": "فشل تحميل بيانات التعديل",
+        "selectService": "اختر الخدمات",
+        "selectBranch": "اختر فرع مزود الخدمة"
       }
     }
   },
