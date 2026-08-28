@@ -9,9 +9,13 @@ const FrameWithImagedHeader = ({
   fontFamily = "font-somar",
   withBorder = false,
   imageBgColor = "#E2E6EE",
+  className = "",
+  bodyClassName = "",
 }) => {
   return (
-    <section className={`text-base font-semibold rounded-xl ${fontFamily}`}>
+    <section
+      className={`text-base font-semibold rounded-xl ${fontFamily} ${className}`}
+    >
       <figure className="overflow-hidden rounded-t-xl">
         <Image
           src={imageSrc}
@@ -28,8 +32,8 @@ const FrameWithImagedHeader = ({
 
       <div
         className={`flex flex-col gap-4 px-4 py-6 bg-white rounded-b-xl ${
-          withBorder && "border shadow-xl border-[#E5E7EB]"
-        }`}
+          withBorder ? "border shadow-xl border-[#E5E7EB]" : ""
+        } ${bodyClassName}`}
       >
         {children}
       </div>

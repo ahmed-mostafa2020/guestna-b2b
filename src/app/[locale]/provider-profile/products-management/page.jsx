@@ -107,7 +107,13 @@ const ProviderProductsManagementPage = () => {
       setIsAddModalOpen(true);
       setShouldFetchSelections(false);
     }
-  }, [shouldFetchSelections, editingProductId, formSelectionData, isSelectionsFetching, isAddModalOpen]);
+  }, [
+    shouldFetchSelections,
+    editingProductId,
+    formSelectionData,
+    isSelectionsFetching,
+    isAddModalOpen,
+  ]);
 
   // --- Edit Product: only fetch product details, then open modal ---
   const handleEditProduct = (row) => {
@@ -216,7 +222,7 @@ const ProviderProductsManagementPage = () => {
       {/* 1. B2B Products Section - Coming Soon */}
       <div className="bg-white p-6 rounded-2xl border border-border shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-bold text-titleColor mb-1">
+          <h2 className="text-lg font-bold text-titleColor !mb-1">
             {t("providerProfile.products.tabs.b2b")}
           </h2>
           <p className="text-xs sm:text-sm text-subtitleColor">

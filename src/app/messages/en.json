@@ -710,6 +710,34 @@
         "loadError": "Failed to load edit data",
         "selectService": "Select services",
         "selectBranch": "Select provider branch"
+      },
+      "claimForm": {
+        "title": "Submit Claim",
+        "totalTickets": "Total Tickets",
+        "totalTicketsPlaceholder": "Enter total tickets",
+        "companionsCount": "Companions Count",
+        "companionsCountPlaceholder": "Enter companions count",
+        "totalAmount": "Total Amount",
+        "totalAmountPlaceholder": "Enter total amount",
+        "totalAmountHint": "Enter total amount without tax",
+        "attachInvoice": "Attach Invoice",
+        "supportedFormats": "Supported formats: PDF, Excel, CSV",
+        "uploadInvoice": "Upload Invoice",
+        "fileRequired": "Please attach the invoice",
+        "invalidFileType": "Unsupported file type. Please upload a PDF, Excel, or CSV file",
+        "fileTooLarge": "File size exceeds the limit ({size} MB)",
+        "submit": "Submit",
+        "submitting": "Submitting...",
+        "submitError": "Failed to submit claim",
+        "submitSuccess": "Claim submitted successfully",
+        "validation": {
+          "amountRequired": "Amount is required",
+          "amountPositive": "Amount must be a positive number",
+          "totalTicketsRequired": "Total tickets is required",
+          "totalTicketsMin": "Total tickets cannot be negative",
+          "companionsCountRequired": "Companions count is required",
+          "companionsCountMin": "Companions count cannot be negative"
+        }
       }
     }
   },

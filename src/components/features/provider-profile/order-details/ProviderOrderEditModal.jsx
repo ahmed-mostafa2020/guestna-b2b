@@ -29,7 +29,7 @@ const ProviderOrderEditModal = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const effectiveOrderData = initialOrderData || fetchedOrderData;
+  const effectiveOrderData = fetchedOrderData || initialOrderData;
 
   const fetchData = useCallback(async () => {
     if (!orderId) return;
@@ -40,8 +40,14 @@ const ProviderOrderEditModal = ({
     try {
       const promises = [];
 
-      // 1. Fetch details if not provided
-      if (!initialOrderData) {
+      // 1. Fetch details if not provided or incomplete
+      const hasFullDetails =
+        Boolean(initialOrderData) &&
+        (initialOrderData.fromHour !== undefined ||
+          initialOrderData.services !== undefined ||
+          initialOrderData.providerBranch !== undefined);
+
+      if (!hasFullDetails) {
         promises.push(
           axios.get(
             getProxyUrl(
@@ -67,7 +73,7 @@ const ProviderOrderEditModal = ({
       const [detailsRes, selectionsRes] = await Promise.all(promises);
 
       const detailsData = detailsRes?.data?.data || detailsRes?.data;
-      if (!initialOrderData && detailsData) {
+      if (detailsData) {
         setFetchedOrderData(detailsData);
       }
 

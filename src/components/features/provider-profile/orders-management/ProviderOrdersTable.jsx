@@ -383,7 +383,6 @@ const ProviderOrdersTable = ({
       <ProviderOrderEditModal
         open={Boolean(selectedEditOrder)}
         orderId={selectedEditOrder?.orderId || selectedEditOrder?._id}
-        orderData={selectedEditOrder}
         onClose={handleCloseEdit}
         onSuccess={handleEditSuccess}
       />

@@ -257,5 +257,6 @@ export const B2B_END_POINTS = {
     ASK_TRIPS_EDIT_SELECTED: "profile-provider/ask-trips/edit/selected",
     ASK_TRIPS_EDIT_INFO: "profile-provider/ask-trips/edit/info",
     ASK_TRIPS_EDIT: "profile-provider/ask-trips/edit",
+    ASK_WITHDRAWALS: "profile-provider/ask-withdrawals/new",
   },
 };
