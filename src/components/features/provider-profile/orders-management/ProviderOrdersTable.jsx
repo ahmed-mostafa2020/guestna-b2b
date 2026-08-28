@@ -190,7 +190,7 @@ const ProviderOrdersTable = ({
     refetch?.();
   }, [refetch]);
 
-  const rawNodes = data?.nodes || [];
+  const rawNodes = useMemo(() => data?.nodes || [], [data?.nodes]);
   const pageInfo = data?.pageInfo || {
     total: rawNodes.length,
     currentPage: currentPage || 1,

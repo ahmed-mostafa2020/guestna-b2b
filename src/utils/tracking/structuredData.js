@@ -23,25 +23,6 @@ const geoCoordinates = {
   longitude: 46.6753,
 };
 
-const structuredFAQ = {
-  mainEntity: [
-    {
-      question: "How do schools book trips on Guestna?",
-      answer:
-        "Verified educational accounts can search vetted provider offerings, customize schedules, and confirm reservations instantly.",
-    },
-    {
-      question: "Are transport and safety verified?",
-      answer:
-        "Yes, every activity and package complies with local educational regulatory guidelines and transport insurance requirements.",
-    },
-    {
-      question: "What payment flows are supported?",
-      answer:
-        "Schools can pay via bank transfers, Mada, or staged invoices synced with Ministry of Education approvals.",
-    },
-  ],
-};
 
 const sameAsLinks = [
   "https://www.linkedin.com/company/guestna",

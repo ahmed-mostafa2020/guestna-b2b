@@ -19,7 +19,6 @@ export const useEditOrderModal = (locale, { rejectEndpointOverride, approveEndpo
   const [editOrderDetailsCache, setEditOrderDetailsCache] = useState({});
   const [loadingEditDetails, setLoadingEditDetails] = useState(false);
   const [currentEditOrderDetails, setCurrentEditOrderDetails] = useState(null);
-  const [submittingOrder, setSubmittingOrder] = useState(false);
   const [formSelectionData, setFormSelectionData] = useState(null);
   const [loadingFormSelection, setLoadingFormSelection] = useState(false);
   const [error, setError] = useState(null);
@@ -282,7 +281,14 @@ export const useEditOrderModal = (locale, { rejectEndpointOverride, approveEndpo
         setRejectingOrder(false);
       }
     },
-    [headers, enqueueSnackbar, closeRejectModal, clearOrderFromCache, rejectEndpointOverride]
+    [
+      headers,
+      enqueueSnackbar,
+      closeRejectModal,
+      clearOrderFromCache,
+      rejectEndpointOverride,
+      t,
+    ]
   );
 
   // ==================== END REJECTION FUNCTIONALITY ====================
@@ -317,12 +323,15 @@ export const useEditOrderModal = (locale, { rejectEndpointOverride, approveEndpo
       setApprovalError(null);
 
       try {
-        const approveEndpoint = approveEndpointOverride || B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.APPROVE;
-        // Ask-trips approve uses PATCH with no body; default school approval uses POST with body
+        const approveEndpoint =
+          approveEndpointOverride ||
+          B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER
+            .APPROVE;
+        // Ask-trips approve uses PATCH with no body (or optional payload); default school approval uses POST with body
         const response = approveEndpointOverride
           ? await axios.patch(
               getProxyUrl(`${approveEndpoint}/${orderId}`),
-              {},
+              approvalData || {},
               { headers }
             )
           : await axios.post(
@@ -360,7 +369,14 @@ export const useEditOrderModal = (locale, { rejectEndpointOverride, approveEndpo
         setApprovingOrder(false);
       }
     },
-    [headers, enqueueSnackbar, closeApproveModal, clearOrderFromCache, approveEndpointOverride]
+    [
+      headers,
+      enqueueSnackbar,
+      closeApproveModal,
+      clearOrderFromCache,
+      approveEndpointOverride,
+      t,
+    ]
   );
 
   // ==================== END APPROVAL FUNCTIONALITY ====================
@@ -483,7 +499,6 @@ export const useEditOrderModal = (locale, { rejectEndpointOverride, approveEndpo
     // Loading states
     loadingEditDetails,
     loadingFormSelection,
-    submittingOrder,
     isModalOpen,
     isDataReady,
 

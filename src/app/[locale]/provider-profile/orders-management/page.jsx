@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { useSnackbar } from "notistack";
 import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { download } from "@hooks/utils/useDownload";
@@ -19,6 +20,7 @@ import formatDate from "@utils/formatters/FormateDate";
 const ProviderOrdersManagementPage = () => {
   const t = useTranslations();
   const locale = useLocale();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [activeTab, setActiveTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -218,10 +220,14 @@ const ProviderOrdersManagementPage = () => {
       download(blob, t("providerProfile.ordersManagement.tableTitle"));
     } catch (error) {
       console.error("Export failed:", error);
+      enqueueSnackbar(
+        error?.message || t("providerProfile.orderDetails.general.error"),
+        { variant: "error" }
+      );
     } finally {
       setIsExporting(false);
     }
-  }, [statusFilter, locale, t]);
+  }, [statusFilter, locale, t, enqueueSnackbar]);
 
   return (
     <main className="flex flex-col gap-5 lg:gap-6 min-h-screen">

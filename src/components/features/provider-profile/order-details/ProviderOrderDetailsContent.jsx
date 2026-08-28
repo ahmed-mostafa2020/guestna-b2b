@@ -23,14 +23,11 @@ import RejectOrderForm from "@components/forms/customNewTrip/RejectOrderForm";
 const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
   const locale = useLocale();
   const t = useTranslations("forms.customTrip.rejection");
-  const tApproval = useTranslations("forms.customTrip.approval");
-  const t2 = useTranslations();
   const status = orderData?.status;
   const rawOrderId = orderData?.orderId || orderData?._id;
 
   // Edit modal state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
 
   // Provider-specific rejection reasons from translations
   const providerRejectReasons = useMemo(
@@ -70,13 +67,6 @@ const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
 
   // Modals functionality
   const {
-    selectedEditOrderId,
-    currentEditOrderDetails,
-    formSelectionData,
-    isDataReady,
-    openEditModal: _openEditModal,
-    closeEditModal: _closeEditModal,
-
     selectedRejectOrderId,
     isRejectModalOpen,
     rejectingOrder,

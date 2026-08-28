@@ -49,12 +49,9 @@ const AllOrdersTable = ({
     selectedEditOrderId,
     currentEditOrderDetails,
     formSelectionData,
-    loadingEditDetails,
-    loadingFormSelection,
     isDataReady,
     openEditModal,
     closeEditModal,
-    refreshCustomizedTripsTable,
 
     // Rejection functionality
     selectedRejectOrderId,
@@ -150,10 +147,6 @@ const AllOrdersTable = ({
     },
     [onActionComplete]
   );
-
-  if (!data || !data.nodes) {
-    return <TableSkeleton columns={9} />;
-  }
 
   const columns = useMemo(
     () => [
@@ -266,6 +259,10 @@ const AllOrdersTable = ({
     ],
     [t, locale]
   );
+
+  if (!data || !data.nodes) {
+    return <TableSkeleton columns={9} />;
+  }
 
   return (
     <>

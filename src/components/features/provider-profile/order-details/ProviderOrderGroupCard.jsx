@@ -2,26 +2,13 @@
 
 import { memo } from "react";
 import Image from "next/image";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { ContactPhoneOutlined } from "@mui/icons-material";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 
-const ProviderOrderGroupCard = ({ orderData }) => {
+const ProviderOrderGroupCard = () => {
   const t = useTranslations();
-  const locale = useLocale();
-  const isAr = locale === "ar";
-  const listSeparator = isAr ? "، " : ", ";
-
-  const user = orderData?.user || {};
-
   const companyName = t("providerProfile.orderDetails.groupInfo.companyName");
-
-  const stageName =
-    orderData?.academicStages?.map((s) => s.name).join(listSeparator) ||
-    orderData?.track?.educationSystem?.name ||
-    orderData?.stage ||
-    orderData?.stageName ||
-    "-";
 
   const officialPhone = CONSTANT_VALUES.GUESTNA_PHONE;
   const officialPhoneRaw = CONSTANT_VALUES.GUESTNA_PHONE_RAW;

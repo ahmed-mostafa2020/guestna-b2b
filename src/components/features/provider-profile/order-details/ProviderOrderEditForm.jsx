@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useState, useMemo, useCallback, useEffect } from "react";
+import { memo, useState, useMemo, useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Formik } from "formik";
@@ -84,7 +84,11 @@ const ProviderOrderEditForm = ({
     [selections]
   );
   const branchesOptions = useMemo(
-    () => selections?.providerBranchs || [],
+    () =>
+      selections?.providerBranchs ||
+      selections?.providerBranches ||
+      selections?.branches ||
+      [],
     [selections]
   );
 
@@ -195,7 +199,6 @@ const ProviderOrderEditForm = ({
             touched,
             handleChange,
             handleBlur,
-            setFieldValue,
             isSubmitting,
           } = formik;
 
