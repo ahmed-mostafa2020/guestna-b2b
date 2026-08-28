@@ -50,7 +50,9 @@ const ProviderOrderEditForm = ({
       .map((s) => {
         if (typeof s === "string") return s;
         if (s?.service?._id) return s.service._id;
+        if (s?.service && typeof s.service === "string") return s.service;
         if (s?._id) return s._id;
+        if (s?.id) return s.id;
         return null;
       })
       .filter(Boolean);
@@ -60,13 +62,16 @@ const ProviderOrderEditForm = ({
     if (!branch) return "";
     if (typeof branch === "string") return branch;
     if (branch?._id) return branch._id;
+    if (branch?.id) return branch.id;
+    if (branch?.branch?._id) return branch.branch._id;
+    if (branch?.branch && typeof branch.branch === "string") return branch.branch;
     return "";
   }, []);
 
   // Build initial values from the details response
   const initialValues = useMemo(() => {
     return {
-      day: formatDateForInput(orderData?.day) || "",
+      day: formatDateForInput(orderData?.day || orderData?.date) || "",
       endDay: formatDateForInput(orderData?.endDay) || "",
       availableSeats: orderData?.availableSeats ?? "",
       totalAvailableSeats: orderData?.totalAvailableSeats ?? "",
