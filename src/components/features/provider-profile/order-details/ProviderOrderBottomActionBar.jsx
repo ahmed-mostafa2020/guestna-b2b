@@ -39,6 +39,10 @@ const ProviderOrderBottomActionBar = ({
           default: status,
         });
 
+  if (status !== PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL) {
+    return null;
+  }
+
   return (
     <section
       aria-label={t("providerProfile.orderDetails.actionBar.currentStatus")}

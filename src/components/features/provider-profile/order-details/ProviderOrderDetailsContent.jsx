@@ -1,8 +1,14 @@
 "use client";
 
-import { memo, useCallback } from "react";
-import { useLocale } from "next-intl";
-import { CircularProgress } from "@mui/material";
+import { memo, useCallback, useMemo } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import {
+  CircularProgress,
+  Box,
+  Typography,
+  Button,
+  Alert,
+} from "@mui/material";
 
 import ProviderOrderDetailsHeader from "./ProviderOrderDetailsHeader";
 import ProviderOrderStatsCards from "./ProviderOrderStatsCards";
@@ -13,17 +19,45 @@ import ProviderOrderServicesCard from "./ProviderOrderServicesCard";
 import ProviderOrderStatusCardRenderer from "./status-cards/ProviderOrderStatusCardRenderer";
 import ProviderOrderBottomActionBar from "./ProviderOrderBottomActionBar";
 import PROVIDER_ORDER_STATUS from "@constants/providerOrderStatus";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
 
 import { useEditOrderModal } from "@hooks/ui/useEditOrderModal";
 import CustomizedModal from "@components/ui/customizedModal";
 import CustomNewTripForm from "@components/forms/customNewTrip";
 import RejectOrderForm from "@components/forms/customNewTrip/RejectOrderForm";
-import ApproveOrderForm from "@components/forms/customNewTrip/ApproveOrderForm";
 
 const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
   const locale = useLocale();
+  const t = useTranslations("forms.customTrip.rejection");
+  const tApproval = useTranslations("forms.customTrip.approval");
+  const t2 = useTranslations();
   const status = orderData?.status;
   const rawOrderId = orderData?.orderId || orderData?._id;
+
+  // Provider-specific rejection reasons from translations
+  const providerRejectReasons = useMemo(
+    () => [
+      { value: "no_capacity", label: t("providerReasons.no_capacity") },
+      {
+        value: "date_unavailable",
+        label: t("providerReasons.date_unavailable"),
+      },
+      {
+        value: "time_unavailable",
+        label: t("providerReasons.time_unavailable"),
+      },
+      {
+        value: "branch_unavailable",
+        label: t("providerReasons.branch_unavailable"),
+      },
+      {
+        value: "operational_issue",
+        label: t("providerReasons.operational_issue"),
+      },
+      { value: "other", label: t("providerReasons.other") },
+    ],
+    [t]
+  );
 
   const isCancelledOrRejected =
     status === PROVIDER_ORDER_STATUS.CANCELLED ||
@@ -60,7 +94,10 @@ const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
     openApproveModal,
     closeApproveModal,
     approveOrder,
-  } = useEditOrderModal(locale);
+  } = useEditOrderModal(locale, {
+    rejectEndpointOverride: B2B_END_POINTS.PROVIDER_PROFILE.ASK_TRIPS_REJECT,
+    approveEndpointOverride: B2B_END_POINTS.PROVIDER_PROFILE.ASK_TRIPS_APPROVE,
+  });
 
   // Handle action callbacks
   const handleApproveClick = useCallback(() => {
@@ -182,11 +219,14 @@ const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
             rejectOrder={rejectOrder}
             rejectingOrder={rejectingOrder}
             rejectionError={rejectionError}
+            reasons={providerRejectReasons}
+            title={t("providerTitle")}
+            description={t("providerDescription")}
           />
         )}
       </CustomizedModal>
 
-      {/* 3. Approve Modal */}
+      {/* 3. Approve Confirm Dialog */}
       <CustomizedModal
         open={isApproveModalOpen}
         handleClose={closeApproveModal}
@@ -195,15 +235,57 @@ const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
         padding={false}
       >
         {selectedApproveOrderId && (
-          <ApproveOrderForm
-            orderId={selectedApproveOrderId}
-            orderDetails={currentEditOrderDetails || orderData}
-            onClose={closeApproveModal}
-            onSuccess={handleApproveSuccess}
-            approveOrder={approveOrder}
-            approvingOrder={approvingOrder}
-            approvalError={approvalError}
-          />
+          <Box className="bg-white rounded-2xl max-w-[460px] w-full mx-auto p-6">
+            {/* Title */}
+            <Typography className="!font-somar text-2xl text-center !font-semibold border-b pb-4 !mb-4">
+              {tApproval("providerConfirmTitle")}
+            </Typography>
+
+            {/* Description */}
+            <Typography className="!font-somar text-base text-textLight text-center pb-6">
+              {tApproval("providerConfirmDescription")}
+            </Typography>
+
+            {/* Error */}
+            {approvalError && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {approvalError}
+              </Alert>
+            )}
+
+            {/* Actions */}
+            <Box className="flex gap-3">
+              {/* Confirm Approve Button */}
+              <Button
+                onClick={async () => {
+                  const result = await approveOrder(selectedApproveOrderId);
+                  if (result?.success) {
+                    handleApproveSuccess();
+                  }
+                }}
+                disabled={approvingOrder}
+                className="!bg-mainColor px-8 py-3 !font-somar !text-white w-full rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:!bg-linksHover"
+              >
+                {approvingOrder ? (
+                  <Box className="flex items-center gap-2">
+                    <CircularProgress size={20} color="inherit" />
+                    <span>{tApproval("submitting")}</span>
+                  </Box>
+                ) : (
+                  t2("links.confirm")
+                )}
+              </Button>
+              {/* Cancel Button */}
+              <Button
+                variant="outlined"
+                className="!border-border px-8 py-3 !border-2 !font-somar !text-textDark w-full rounded-lg"
+                onClick={closeApproveModal}
+                disabled={approvingOrder}
+              >
+                {t2("links.cancel")}
+              </Button>
+            </Box>
+          </Box>
         )}
       </CustomizedModal>
     </div>

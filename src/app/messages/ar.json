@@ -546,10 +546,10 @@
       },
       "tabs": {
         "all": "الكل",
-        "PENDING": "في انتظار الموافقة",
-        "ON_HOLD": "قيد التاكيد",
-        "SCHEDULED": "تم التاكيد",
-        "DONE": "المكتملة"
+        "PENDING_PROVIDER_APPROVAL": "بانتظار موافقة المزود",
+        "PENDING": "قيد المعالجة",
+        "ON_HOLD": "قيد الانتظار",
+        "DONE": "مكتملة"
       },
       "tableTitle": "متابعة جميع الطلبات",
       "filters": {
@@ -3232,11 +3232,21 @@
       "rejection": {
         "title": "تأكيد رفض عرض السعر",
         "description": "قبل المتابعة، يُفضّل تحديد سبب رفض عرض السعر. سيساعدنا ذلك على تحسين العروض المقدمة مستقبلًا (اختياري).",
+        "providerTitle": "تأكيد رفض طلب الحجز",
+        "providerDescription": "سيؤدي رفض الطلب إلى عدم متابعة هذا الحجز. يرجى تحديد سبب الرفض لمساعدة فريق جستنا على اتخاذ الإجراء المناسب.",
         "reasons": {
           "inappropriate_price": "السعر غير مناسب",
           "inappropriate_details": "تفاصيل البرنامج غير مناسبة",
           "inappropriate_timing": "التوقيت غير مناسب",
           "other": "سبب آخر"
+        },
+        "providerReasons": {
+          "no_capacity": "لا توجد سعة متاحة",
+          "date_unavailable": "التاريخ المطلوب غير متاح",
+          "time_unavailable": "الوقت المطلوب غير متاح",
+          "branch_unavailable": "الفرع المطلوب غير متاح",
+          "operational_issue": "مشكلة تشغيلية",
+          "other": "أخرى"
         },
         "customMessagePlaceholder": "يرجى تحديد السبب...",
         "confirmButton": "تأكيد الرفض",
@@ -3260,6 +3270,8 @@
         "view_selected_location": "عرض الموقع المحدد",
         "submitting": "جارٍ الموافقة...",
         "order_approved_successfully": "تمت الموافقة على الطلب بنجاح",
+        "providerConfirmTitle": "تأكيد الموافقة على الطلب",
+        "providerConfirmDescription": "هل أنت متأكد من الموافقة على هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.",
         "school_amount": {
           "placeholder": "أدخل نسبة المدرسة",
           "label": "نسبة المدرسة"

@@ -22,26 +22,37 @@ const RejectOrderForm = ({
   rejectOrder,
   rejectingOrder,
   rejectionError,
+  // Configurable props for reusability
+  reasons: customReasons,
+  title: customTitle,
+  description: customDescription,
 }) => {
   const t = useTranslations("forms.customTrip.rejection");
   const t2 = useTranslations();
 
-  // Rejection reason options
-  const rejectionReasons = useMemo(()=> [
-    {
-      value: "inappropriate_price",
-      label: t("reasons.inappropriate_price"),
-    },
-    {
-      value: "inappropriate_details",
-      label: t("reasons.inappropriate_details"),
-    },
-    {
-      value: "inappropriate_timing",
-      label: t("reasons.inappropriate_timing"),
-    },
-    { value: "other", label: t("reasons.other") },
-  ] ,[t]);
+  // Use custom reasons if provided, otherwise fall back to defaults
+  const rejectionReasons = useMemo(() => {
+    if (customReasons) return customReasons;
+    return [
+      {
+        value: "inappropriate_price",
+        label: t("reasons.inappropriate_price"),
+      },
+      {
+        value: "inappropriate_details",
+        label: t("reasons.inappropriate_details"),
+      },
+      {
+        value: "inappropriate_timing",
+        label: t("reasons.inappropriate_timing"),
+      },
+      { value: "other", label: t("reasons.other") },
+    ];
+  }, [customReasons, t]);
+
+  // Use custom title/description if provided, otherwise fall back to defaults
+  const modalTitle = customTitle || t("title");
+  const modalDescription = customDescription || t("description");
 
   const [selectedReason, setSelectedReason] = useState("");
   const [customMessage, setCustomMessage] = useState("");
@@ -102,7 +113,7 @@ const RejectOrderForm = ({
       note = selectedReasonObj?.label || selectedReason;
     }
 
-    // Call the reject API with the note
+    // Call the reject API with note only
     const result = await rejectOrder(orderId, {
       note: note,
     });
@@ -149,12 +160,12 @@ const RejectOrderForm = ({
     >
       {/* Title */}
       <Typography className="!font-somar text-2xl text-center !font-semibold border-b pb-6  px-4">
-        {t("title")}
+        {modalTitle}
       </Typography>
 
       {/* Subtitle/Description */}
       <Typography className="!font-somar text-xl !my-4 !font-semibold ">
-        {t("description")}
+        {modalDescription}
       </Typography>
 
       {/* Error Alerts */}

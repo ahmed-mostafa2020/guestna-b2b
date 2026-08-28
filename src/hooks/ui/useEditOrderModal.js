@@ -9,7 +9,7 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import { askType } from "@constants/askType";
 import { useTranslations } from "next-intl";
 
-export const useEditOrderModal = (locale) => {
+export const useEditOrderModal = (locale, { rejectEndpointOverride, approveEndpointOverride } = {}) => {
   const { enqueueSnackbar } = useSnackbar();
   const t = useTranslations();
   const queryClient = useQueryClient();
@@ -244,9 +244,10 @@ export const useEditOrderModal = (locale) => {
       setRejectionError(null);
 
       try {
+        const rejectEndpoint = rejectEndpointOverride || B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.REJECT;
         const response = await axios.patch(
           getProxyUrl(
-            `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.REJECT}/${orderId}`
+            `${rejectEndpoint}/${orderId}`
           ),
           rejectionData,
           { headers }
@@ -281,7 +282,7 @@ export const useEditOrderModal = (locale) => {
         setRejectingOrder(false);
       }
     },
-    [headers, enqueueSnackbar, closeRejectModal, clearOrderFromCache]
+    [headers, enqueueSnackbar, closeRejectModal, clearOrderFromCache, rejectEndpointOverride]
   );
 
   // ==================== END REJECTION FUNCTIONALITY ====================
@@ -316,13 +317,19 @@ export const useEditOrderModal = (locale) => {
       setApprovalError(null);
 
       try {
-        const response = await axios.post(
-          getProxyUrl(
-            `${B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.APPROVE}/${orderId}`
-          ),
-          approvalData,
-          { headers }
-        );
+        const approveEndpoint = approveEndpointOverride || B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER.APPROVE;
+        // Ask-trips approve uses PATCH with no body; default school approval uses POST with body
+        const response = approveEndpointOverride
+          ? await axios.patch(
+              getProxyUrl(`${approveEndpoint}/${orderId}`),
+              {},
+              { headers }
+            )
+          : await axios.post(
+              getProxyUrl(`${approveEndpoint}/${orderId}`),
+              approvalData,
+              { headers }
+            );
 
         // Show success message
         enqueueSnackbar(
@@ -353,7 +360,7 @@ export const useEditOrderModal = (locale) => {
         setApprovingOrder(false);
       }
     },
-    [headers, enqueueSnackbar, closeApproveModal, clearOrderFromCache]
+    [headers, enqueueSnackbar, closeApproveModal, clearOrderFromCache, approveEndpointOverride]
   );
 
   // ==================== END APPROVAL FUNCTIONALITY ====================

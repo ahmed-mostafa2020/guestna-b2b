@@ -252,5 +252,7 @@ export const B2B_END_POINTS = {
     ASK_TRIPS_COUNTS: "profile-provider/ask-trips/counts",
     ASK_TRIPS_ALL: "profile-provider/ask-trips/all",
     ASK_TRIPS_DETAILS: "profile-provider/ask-trips/details",
+    ASK_TRIPS_REJECT: "profile-provider/ask-trips/reject",
+    ASK_TRIPS_APPROVE: "profile-provider/ask-trips/approve",
   },
 };

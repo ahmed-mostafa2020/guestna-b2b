@@ -539,10 +539,10 @@
       },
       "tabs": {
         "all": "All",
-        "PENDING": "Awaiting Approval",
-        "ON_HOLD": "Under Confirmation",
-        "SCHEDULED": "Confirmed",
-        "DONE": "Completed"
+        "PENDING_PROVIDER_APPROVAL": "Pending Provider Approval",
+        "PENDING": "Pending",
+        "ON_HOLD": "On Hold",
+        "DONE": "Done"
       },
       "tableTitle": "Track All Orders",
       "filters": {
@@ -3224,11 +3224,21 @@
       "rejection": {
         "title": "Confirm Quotation Rejection",
         "description": "Before proceeding, it is recommended to specify the reason for rejecting the quotation. This will help us improve future offers (optional).",
+        "providerTitle": "Confirm Booking Rejection",
+        "providerDescription": "Rejecting the request will cancel this booking. Please specify the reason for rejection to help the Guestna team take appropriate action.",
         "reasons": {
           "inappropriate_price": "Price is not suitable",
           "inappropriate_details": "Program details are not suitable",
           "inappropriate_timing": "Timing is not suitable",
           "other": "Other reason"
+        },
+        "providerReasons": {
+          "no_capacity": "No capacity available",
+          "date_unavailable": "Requested date is not available",
+          "time_unavailable": "Requested time is not available",
+          "branch_unavailable": "Requested branch is not available",
+          "operational_issue": "Operational issue",
+          "other": "Other"
         },
         "customMessagePlaceholder": "Please specify the reason...",
         "confirmButton": "Confirm Rejection",
@@ -3253,6 +3263,8 @@
         "view_selected_location": "View Selected Location",
         "submitting": "Approving...",
         "order_approved_successfully": "Order approved successfully",
+        "providerConfirmTitle": "Confirm Order Approval",
+        "providerConfirmDescription": "Are you sure you want to approve this order? This action cannot be undone.",
         "school_amount": {
           "placeholder": "Enter school percentage",
           "label": "School Percentage"

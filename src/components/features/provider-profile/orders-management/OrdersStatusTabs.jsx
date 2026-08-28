@@ -9,9 +9,9 @@ import PROVIDER_ORDER_STATUS from "@constants/providerOrderStatus";
 /* ─── Tab Keys (status values that map to API filter) ─── */
 const TAB_KEYS = [
   "all",
+  PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL,
   PROVIDER_ORDER_STATUS.PENDING,
   PROVIDER_ORDER_STATUS.ON_HOLD,
-  PROVIDER_ORDER_STATUS.SCHEDULED,
   PROVIDER_ORDER_STATUS.DONE,
 ];
 
@@ -28,9 +28,9 @@ const TabButton = ({ tab, isActive, onClick, className = "" }) => (
         : "text-white hover:bg-white/15"
     } ${className}`}
   >
-    <span>{tab.label}</span>
+    <span className="truncate">{tab.label}</span>
     <span
-      className={`text-xs lg:text-sm font-bold ${
+      className={`text-xs lg:text-sm font-bold shrink-0 ${
         isActive ? "text-mainColor" : "text-white/90"
       }`}
     >
@@ -64,14 +64,26 @@ const OrdersStatusTabs = ({
 }) => {
   const t = useTranslations();
 
+  const totalCount = useMemo(() => {
+    if (counts.all != null) return counts.all;
+    if (counts.total != null) return counts.total;
+    return Object.values(counts).reduce(
+      (sum, val) => (typeof val === "number" ? sum + val : sum),
+      0
+    );
+  }, [counts]);
+
   const tabs = useMemo(
     () =>
       TAB_KEYS.map((key) => ({
         key,
-        label: t(`providerProfile.ordersManagement.tabs.${key}`),
-        count: key === "all" ? counts.all ?? 0 : counts[key] ?? 0,
+        label:
+          key === "all"
+            ? t("providerProfile.ordersManagement.tabs.all")
+            : t(`providerProfile.ordersManagement.statuses.${key}`),
+        count: key === "all" ? totalCount : counts[key] ?? 0,
       })),
-    [t, counts]
+    [t, counts, totalCount]
   );
 
   if (loading) return <OrdersStatusTabsSkeleton />;
@@ -92,7 +104,7 @@ const OrdersStatusTabs = ({
               tab={tab}
               isActive={activeTab === tab.key}
               onClick={() => onTabChange?.(tab.key)}
-              className="py-2.5 px-3 lg:px-6 text-sm lg:text-base"
+              className="py-2.5 px-2 md:px-3 lg:px-6 text-xs sm:text-xs md:text-sm lg:text-base"
             />
           ))}
         </div>
