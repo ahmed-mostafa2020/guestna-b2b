@@ -7,6 +7,7 @@ import FrameWithImagedHeader from "../frameWithImagedHeader/FrameWithImagedHeade
 import headerSection from "@assets/sectionBackground/bookWithConfidenceHeader.png";
 
 import { walletIcon, lockIcon, headPhoneIcon, phoneIcon } from "@assets/svg";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 
 const BookWithConfidenceSection = () => {
   const t = useTranslations();
@@ -36,7 +37,7 @@ const BookWithConfidenceSection = () => {
       icon: phoneIcon,
       title: t("bookWithConfidence.items.callUs.title"),
       subTitle: t("bookWithConfidence.items.callUs.subTitle"),
-      phone: t("bookWithConfidence.items.callUs.phone"),
+      phone: CONSTANT_VALUES.GUESTNA_PHONE,
     },
   ];
 

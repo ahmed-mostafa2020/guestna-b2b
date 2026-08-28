@@ -2,8 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { whiteWhatsAppIcon } from "@assets/svg";
-
-const GUESTNA_WHATSAPP_URL = "https://wa.me/966500000000";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 
 const HelpCard = () => {
   const t = useTranslations("recommendations.help");
@@ -28,7 +27,7 @@ const HelpCard = () => {
         {/* Button row — justify-start pushes button to RIGHT in RTL */}
         <div className="flex justify-start mt-2">
           <a
-            href={GUESTNA_WHATSAPP_URL}
+            href={CONSTANT_VALUES.WHATSAPP_CONTACT}
             target="_blank"
             rel="noopener noreferrer"
             className="bg-[#fc7900] text-[#f6f7f8] text-[16px] font-somar rounded-[8px] px-4 py-2 flex items-center gap-2 hover:opacity-90 transition-opacity"

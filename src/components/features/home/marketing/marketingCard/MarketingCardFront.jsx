@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { memo } from "react";
 
 import ImageWithPlaceholder from "@components/ui/imagesPlaceholder/ImageWithPlaceholder";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 
 const MarketingCardFront = ({ market }) => {
   const t = useTranslations();
@@ -34,7 +35,7 @@ const MarketingCardFront = ({ market }) => {
 
         <Link
           target="_blank"
-          href="https://api.whatsapp.com/send?phone=966547534666"
+          href={CONSTANT_VALUES.WHATSAPP_CONTACT}
           className="px-6 py-3 mx-auto mt-3 text-white transition-all duration-200 ease-in-out rounded-lg lg:px-16 centered bg-mainColor hover:bg-linksHover"
         >
           {t("links.contactUs")}

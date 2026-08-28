@@ -10,6 +10,7 @@ import {
   largeYouTubeIcon,
   whiteWhatsAppIcon,
 } from "@assets/svg";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 
 const ContactUsData = () => {
   const t = useTranslations();
@@ -50,7 +51,7 @@ const ContactUsData = () => {
         </h3>
         <div className="gap-2 px-8 py-3 text-white rounded-lg w-fit centered bg-mainColor">
           {whiteWhatsAppIcon}
-          <h4 className="font-semibold">966547534666</h4>
+          <h4 className="font-semibold" dir="ltr">{CONSTANT_VALUES.GUESTNA_PHONE}</h4>
         </div>
       </div>
 
@@ -60,7 +61,7 @@ const ContactUsData = () => {
         </h3>
 
         <Link
-          href={`https://api.whatsapp.com/send?phone=966547534666`}
+          href={CONSTANT_VALUES.WHATSAPP_CONTACT}
           target="_blank"
           className="gap-2 px-8 py-3 text-white rounded-lg w-fit centered bg-mainColor"
         >

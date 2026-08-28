@@ -239,7 +239,7 @@
     },
     "infoCards": {
       "totalBookings": "Total Bookings",
-      "b2bCount": "Companies & Schools Bookings",
+      "b2bCount": "Schools Bookings",
       "b2cCount": "Individuals Bookings"
     },
     "revenueChart": {
@@ -527,7 +527,7 @@
       "pageSubtitle": "Review and process pending booking requests that require immediate approval to ensure business continuity",
       "breadcrumbs": {
         "home": "Home",
-        "bookings": "Bookings"
+        "bookings": "Orders"
       },
       "statusCards": {
         "PENDING_PROVIDER_APPROVAL": "Awaiting Provider Approval",
@@ -582,13 +582,13 @@
       "students": "students"
     },
     "orderDetails": {
-      "title": "Booking Details",
-      "titleCancelled": "Booking Details (Cancelled)",
-      "titleRejected": "Booking Details (Rejected)",
+      "title": "Order Details",
+      "titleCancelled": "Order Details (Cancelled)",
+      "titleRejected": "Order Details (Rejected)",
       "breadcrumbs": {
         "home": "Home",
-        "bookings": "Bookings",
-        "details": "Booking Details"
+        "bookings": "Orders",
+        "details": "Order Details"
       },
       "issueInvoice": "Issue Invoice",
       "downloadPdf": "Download Details File",
@@ -605,10 +605,13 @@
         "guides": "Guides"
       },
       "groupInfo": {
-        "title": "Group Details",
+        "title": "Contact Information",
+        "companyName": "Guestna App",
+        "companyRole": "Company",
         "educationalInstitution": "Educational Institution",
         "studyStage": "Academic Level",
         "contactNumber": "Contact Number",
+        "officialPhone": "+966 54 753 4666",
         "coordinator": "Coordinator"
       },
       "financial": {
@@ -631,7 +634,7 @@
         "departureDesc": "Gathering the group for departure"
       },
       "services": {
-        "title": "Booked Services & Activities",
+        "title": "Requested Services & Activities",
         "noServices": "No services added",
         "attachment": "Trip Details File",
         "viewPdf": "View Attached File",
@@ -644,29 +647,29 @@
         "descPending": "The order is currently being processed by the team",
         "titlePendingCompany": "Pending Company Approval",
         "descPendingCompany": "Waiting for confirmation and approval from the company",
-        "titleScheduled": "Booking Scheduled",
+        "titleScheduled": "Order Scheduled",
         "descScheduled": "The visit date has been confirmed and scheduled successfully",
         "titleOnHold": "Order On Hold",
         "descOnHold": "The order is temporarily on hold pending required details",
         "expiresIn": "Offer expires in:",
         "expired": "Offer Expired",
         "timeEnded": "Time Expired",
-        "orderNumber": "Booking No.",
+        "orderNumber": "Order No.",
         "branch": "Branch",
         "visitDate": "Visit Date",
         "visitorsCount": "Visitors Count"
       },
       "actionBar": {
         "currentStatus": "Current Order Status",
-        "acceptBooking": "Accept Booking",
+        "acceptBooking": "Accept Order",
         "requestEdit": "Request Edit",
         "rejectOrder": "Reject Order",
         "operationsReview": "Operations Review"
       },
       "doneStatusCard": {
-        "title": "Booking Confirmed Successfully",
+        "title": "Order Confirmed Successfully",
         "description": "Visit date confirmed, services assigned, and group data sent to operations team.",
-        "orderNumber": "Booking No.",
+        "orderNumber": "Order No.",
         "visitDate": "Visit Date",
         "visitTime": "Visit Time"
       },
@@ -680,10 +683,10 @@
         "noReason": "No reason specified"
       },
       "general": {
-        "loading": "Loading booking details...",
-        "error": "Error loading booking details",
-        "notFound": "Requested booking details not found",
-        "backToOrders": "Back to Bookings Management",
+        "loading": "Loading order details...",
+        "error": "Error loading order details",
+        "notFound": "Requested order details not found",
+        "backToOrders": "Back to Orders Management",
         "retry": "Retry"
       }
     }

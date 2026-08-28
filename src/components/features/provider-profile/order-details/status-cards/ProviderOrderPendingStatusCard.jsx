@@ -147,7 +147,9 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
       case PROVIDER_ORDER_STATUS.PENDING:
         return {
           title: t("providerProfile.orderDetails.pendingCard.titlePending"),
-          description: t("providerProfile.orderDetails.pendingCard.descPending"),
+          description: t(
+            "providerProfile.orderDetails.pendingCard.descPending"
+          ),
         };
       case PROVIDER_ORDER_STATUS.SCHEDULED:
         return {
@@ -180,9 +182,7 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
   return (
     <section
       aria-label={cardTitle}
-      className={`bg-white border border-border border-s-4 ${
-        isExpired ? "border-s-status-danger-border" : "border-s-status-warning-border"
-      } rounded-2xl p-5 sm:p-7 relative overflow-hidden shadow-xs font-somar transition-all`}
+      className={`bg-white border border-border rounded-2xl p-5 sm:p-7 relative overflow-hidden shadow-xs font-somar transition-all`}
     >
       {/* Upper Row: Status Info + Timer */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 sm:gap-6">
@@ -229,7 +229,9 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
             {/* Timer Label */}
             <span
               className={`text-[11px] sm:text-xs mb-0.5 ${
-                isExpired ? "text-status-danger-fg font-bold" : "text-textLight font-medium"
+                isExpired
+                  ? "text-status-danger-fg font-bold"
+                  : "text-textLight font-medium"
               }`}
             >
               {isExpired
@@ -259,7 +261,6 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
 
       {/* Divider */}
       <div className="border-t border-border/60 my-5 sm:my-6" />
-
 
       {/* Bottom Row: 4 Data Columns */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 text-xs sm:text-sm">
@@ -317,4 +318,3 @@ const ProviderOrderPendingStatusCard = ({ orderData, onExpire }) => {
 };
 
 export default memo(ProviderOrderPendingStatusCard);
-

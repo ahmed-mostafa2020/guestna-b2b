@@ -27,6 +27,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import { aboutUsIcon, discoverIcon, greenPhoneIcon } from "@assets/svg";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 
 const TemporaryDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -64,7 +65,7 @@ const TemporaryDrawer = () => {
     },
     {
       name: t("header.contactUs"),
-      link: "https://api.whatsapp.com/send?phone=966547534666",
+      link: CONSTANT_VALUES.WHATSAPP_CONTACT,
       isDisabled: false,
       isBlank: true,
       icon: greenPhoneIcon,

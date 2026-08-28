@@ -246,7 +246,7 @@
     },
     "infoCards": {
       "totalBookings": "إجمالي الحجوزات",
-      "b2bCount": "حجوزات الشركات والمدارس",
+      "b2bCount": "حجوزات المدارس",
       "b2cCount": "حجوزات الأفراد"
     },
     "revenueChart": {
@@ -534,7 +534,7 @@
       "pageSubtitle": "مراجعة ومعالجة طلبات الحجز المعلقة التي تتطلب موافقة فورية لضمان استمرارية العمليات",
       "breadcrumbs": {
         "home": "الرئيسية",
-        "bookings": "الحجوزات"
+        "bookings": "الطلبات"
       },
       "statusCards": {
         "PENDING_PROVIDER_APPROVAL": "بانتظار موافقة مزود الخدمه",
@@ -589,13 +589,13 @@
       "students": "طالب"
     },
     "orderDetails": {
-      "title": "تفاصيل الحجز",
-      "titleCancelled": "تفاصيل الحجز (ملغي)",
-      "titleRejected": "تفاصيل الحجز (مرفوض)",
+      "title": "تفاصيل الطلب",
+      "titleCancelled": "تفاصيل الطلب (ملغي)",
+      "titleRejected": "تفاصيل الطلب (مرفوض)",
       "breadcrumbs": {
         "home": "الرئيسية",
-        "bookings": "الحجوزات",
-        "details": "تفاصيل الحجز"
+        "bookings": "الطلبات",
+        "details": "تفاصيل الطلب"
       },
       "issueInvoice": "إصدار الفاتورة",
       "downloadPdf": "تحميل ملف التفاصيل",
@@ -612,10 +612,13 @@
         "guides": "مرشدين"
       },
       "groupInfo": {
-        "title": "بيانات المجموعة",
+        "title": "بيانات التواصل",
+        "companyName": "تطبيق جستنا",
+        "companyRole": "شركة",
         "educationalInstitution": "المؤسسة التعليمية",
         "studyStage": "المرحلة الدراسية",
         "contactNumber": "رقم التواصل",
+        "officialPhone": "+966 54 753 4666",
         "coordinator": "منسق"
       },
       "financial": {
@@ -638,7 +641,7 @@
         "departureDesc": "تجميع المجموعة للمغادرة"
       },
       "services": {
-        "title": "الخدمات والأنشطة المحجوزة",
+        "title": "الخدمات والأنشطة المطلوبة",
         "noServices": "لا توجد خدمات مضافة",
         "attachment": "ملف تفاصيل الرحلة",
         "viewPdf": "عرض الملف المرفق",
@@ -651,29 +654,29 @@
         "descPending": "الطلب قيد المتابعة والمعالجة من قبل الفريق المختص",
         "titlePendingCompany": "قيد تأكيد الشركة",
         "descPendingCompany": "في انتظار تأكيد واعتماد الطلب من قبل الشركة",
-        "titleScheduled": "تم تأكيد الحجز ومجدول",
+        "titleScheduled": "تم تأكيد الطلب ومجدول",
         "descScheduled": "تم تأكيد موعد الزيارة وجدولة الرحلة بنجاح",
         "titleOnHold": "الطلب قيد الانتظار",
         "descOnHold": "الطلب معلق مؤقتاً في انتظار استكمال المتطلبات",
         "expiresIn": "تنتهي صلاحية العرض خلال:",
         "expired": "انتهت مهلة العرض",
         "timeEnded": "انتهى الوقت المحدد",
-        "orderNumber": "رقم الحجز",
+        "orderNumber": "رقم الطلب",
         "branch": "فرع",
         "visitDate": "تاريخ الزيارة",
         "visitorsCount": "عدد الزوار"
       },
       "actionBar": {
         "currentStatus": "حالة الطلب الحالية",
-        "acceptBooking": "اعتماد الحجز",
+        "acceptBooking": "اعتماد الطلب",
         "requestEdit": "طلب تعديل",
         "rejectOrder": "رفض الطلب",
         "operationsReview": "مراجعة العمليات"
       },
       "doneStatusCard": {
-        "title": "تم تأكيد الحجز بنجاح",
+        "title": "تم تأكيد الطلب بنجاح",
         "description": "تم تأكيد موعد الزيارة وتخصيص الخدمات وإرسال بيانات المجموعة لفريق التشغيل.",
-        "orderNumber": "رقم الحجز",
+        "orderNumber": "رقم الطلب",
         "visitDate": "تاريخ الزيارة",
         "visitTime": "وقت الزيارة"
       },
@@ -687,10 +690,10 @@
         "noReason": "لم يتم تحديد سبب"
       },
       "general": {
-        "loading": "جاري تحميل تفاصيل الحجز...",
-        "error": "حدث خطأ أثناء تحميل تفاصيل الحجز",
-        "notFound": "لم يتم العثور على تفاصيل الحجز المطلوب",
-        "backToOrders": "العودة إلى إدارة الحجوزات",
+        "loading": "جاري تحميل تفاصيل الطلب...",
+        "error": "حدث خطأ أثناء تحميل تفاصيل الطلب",
+        "notFound": "لم يتم العثور على تفاصيل الطلب المطلوب",
+        "backToOrders": "العودة إلى إدارة الطلبات",
         "retry": "إعادة المحاولة"
       }
     }
