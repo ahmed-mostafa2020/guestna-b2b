@@ -23,6 +23,7 @@ export const getStatusStyles = (status) => {
 
     case TRIP_STATUS.PENDING:
     case TRIP_STATUS.PENDING_COMPANY_APPROVAL:
+    case TRIP_STATUS.PENDING_CLIENT_REVIEW:
       return "bg-status-warning-bg text-status-warning-fg border border-status-warning-border";
 
     case TRIP_STATUS.SCHEDULED:

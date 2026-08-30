@@ -63,6 +63,12 @@ const STATUS_CONFIG = {
     border: "border-status-hold-border",
     icon: <Schedule className="!w-4 !h-4 text-status-hold-fg" />,
   },
+  [PROVIDER_ORDER_STATUS.PENDING_CLIENT_REVIEW]: {
+    bg: "bg-status-info-bg",
+    text: "text-status-info-fg",
+    border: "border-status-info-border",
+    icon: <Schedule className="!w-4 !h-4 text-status-info-fg" />,
+  },
 };
 
 const ProviderOrderDetailsHeader = ({ orderData, refetch }) => {

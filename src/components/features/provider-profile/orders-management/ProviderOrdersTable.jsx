@@ -58,6 +58,11 @@ const STATUS_STYLES = {
     text: "text-status-warning-fg",
     border: "border-status-warning-border",
   },
+  [PROVIDER_ORDER_STATUS.PENDING_CLIENT_REVIEW]: {
+    bg: "bg-status-info-bg",
+    text: "text-status-info-fg",
+    border: "border-status-info-border",
+  },
 };
 
 const StatusBadge = ({ status, label }) => {

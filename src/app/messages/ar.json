@@ -578,7 +578,8 @@
         "DONE": "مكتملة",
         "CANCELLED": "ملغاة",
         "REJECTED": "مرفوض",
-        "PENDING_PROVIDER_APPROVAL": "بانتظار موافقة المزود"
+        "PENDING_PROVIDER_APPROVAL": "بانتظار موافقة المزود",
+        "PENDING_CLIENT_REVIEW": "قيد مراجعة العميل"
       },
       "actions": {
         "viewDetails": "التفاصيل",

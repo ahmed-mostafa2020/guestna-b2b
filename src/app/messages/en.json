@@ -571,7 +571,8 @@
         "DONE": "Done",
         "CANCELLED": "Cancelled",
         "REJECTED": "Rejected",
-        "PENDING_PROVIDER_APPROVAL": "Pending Provider Approval"
+        "PENDING_PROVIDER_APPROVAL": "Pending Provider Approval",
+        "PENDING_CLIENT_REVIEW": "Pending Client Review"
       },
       "actions": {
         "viewDetails": "View Details",
