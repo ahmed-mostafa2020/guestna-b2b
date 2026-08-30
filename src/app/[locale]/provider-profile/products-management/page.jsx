@@ -245,20 +245,7 @@ const ProviderProductsManagementPage = () => {
         </button>
       </div>
 
-      {/* 1. B2B Trips Table Section */}
-      <ProviderProductsTable
-        title={t("providerProfile.products.tabs.b2b")}
-        data={finalB2bData}
-        currentPage={b2bPage}
-        setCurrentPage={setB2bPage}
-        searchTerm={b2bSearchTerm}
-        setSearchTerm={setB2bSearchTerm}
-        loading={b2bLoading || b2bFetching || isTableRefetching}
-        isB2B={true}
-        hideActions={true}
-      />
-
-      {/* 2. B2C Trips Table Section */}
+      {/* 1. B2C Trips Table Section */}
       <ProviderProductsTable
         title={t("providerProfile.products.tabs.b2c")}
         data={finalB2cData}
@@ -274,6 +261,19 @@ const ProviderProductsManagementPage = () => {
         }
         onEdit={(row) => handleEditProduct(row, "b2c")}
         isB2B={false}
+      />
+
+      {/* 2. B2B Trips Table Section */}
+      <ProviderProductsTable
+        title={t("providerProfile.products.tabs.b2b")}
+        data={finalB2bData}
+        currentPage={b2bPage}
+        setCurrentPage={setB2bPage}
+        searchTerm={b2bSearchTerm}
+        setSearchTerm={setB2bSearchTerm}
+        loading={b2bLoading || b2bFetching || isTableRefetching}
+        isB2B={true}
+        hideActions={true}
       />
 
       {/* Add / Edit Product Modal */}

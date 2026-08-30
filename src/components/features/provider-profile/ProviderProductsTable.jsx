@@ -12,7 +12,6 @@ import DataTable from "@components/ui/DataTable";
 import SearchHeader from "@components/ui/SearchHeader";
 import { Chip, CircularProgress } from "@mui/material";
 import { OpenInNew, Edit as EditIcon } from "@mui/icons-material";
-import { CONSTANT_VALUES } from "@constants/constantValues";
 
 const ProviderProductsTable = ({
   title,
@@ -135,8 +134,8 @@ const ProviderProductsTable = ({
           const viewUrl = isB2B
             ? `/${locale}/discover/${tripSlug}`
             : currentSlug
-            ? `${b2cBaseUrl.replace(/\/$/, "")}/${currentSlug}/${tripSlug}`
-            : `/${locale}/discover/${tripSlug}`;
+              ? `${b2cBaseUrl.replace(/\/$/, "")}/${currentSlug}/${tripSlug}`
+              : `/${locale}/discover/${tripSlug}`;
 
           return (
             <Link
