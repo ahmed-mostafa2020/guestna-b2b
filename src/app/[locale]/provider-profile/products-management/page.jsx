@@ -30,6 +30,11 @@ const ProviderProductsManagementPage = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [shouldFetchSelections, setShouldFetchSelections] = useState(false);
   const [editingProductId, setEditingProductId] = useState(null);
+  const [editingProductType, setEditingProductType] = useState("b2c");
+
+  // B2B Table State
+  const [b2bPage, setB2bPage] = useState(1);
+  const [b2bSearchTerm, setB2bSearchTerm] = useState("");
 
   // B2C Table State
   const [b2cPage, setB2cPage] = useState(1);
@@ -62,21 +67,27 @@ const ProviderProductsManagementPage = () => {
   const isFetchingSelections =
     (isSelectionsLoading || isSelectionsFetching) && shouldFetchSelections;
 
-  // Fetch Product Details for Edit mode ONLY: GET >> profile-provider/b2c-trips/${_id}
+  // Fetch Product Details for Edit mode: GET >> profile-provider/b2c-trips/${_id} or profile-provider/b2b-trips/${_id}
+  const editEndpoint = editingProductId
+    ? `${
+        editingProductType === "b2b"
+          ? B2B_END_POINTS.PROVIDER_PROFILE.B2B_TRIPS
+          : B2B_END_POINTS.PROVIDER_PROFILE.B2C_TRIPS
+      }/${editingProductId}`
+    : null;
+
   const {
     data: editProductResponse,
     isLoading: isEditProductLoading,
     isFetching: isEditProductFetching,
   } = useFetchData(
-    editingProductId
-      ? `${B2B_END_POINTS.PROVIDER_PROFILE.B2C_TRIPS}/${editingProductId}`
-      : null,
+    editEndpoint,
     {},
     {
       lang: locale,
       enabled: !!editingProductId && isAuthenticated,
     },
-    [editingProductId, isAuthenticated]
+    [editEndpoint, isAuthenticated]
   );
 
   const editProductData = editProductResponse?.data || editProductResponse;
@@ -86,6 +97,7 @@ const ProviderProductsManagementPage = () => {
   // --- Add Product: fetch selections then open modal ---
   const handleOpenAddModal = () => {
     setEditingProductId(null); // ensure we're in add mode
+    setEditingProductType("b2c");
     if (formSelectionData) {
       // Selections already cached, open immediately
       setIsAddModalOpen(true);
@@ -116,10 +128,10 @@ const ProviderProductsManagementPage = () => {
   ]);
 
   // --- Edit Product: only fetch product details, then open modal ---
-  const handleEditProduct = (row) => {
+  const handleEditProduct = (row, type = "b2c") => {
     const id = row?._id || row?.id;
     if (!id) return;
-    // Set the id to trigger the useFetchData above
+    setEditingProductType(type);
     setEditingProductId(id);
   };
 
@@ -133,8 +145,33 @@ const ProviderProductsManagementPage = () => {
   const handleCloseModal = () => {
     setIsAddModalOpen(false);
     setEditingProductId(null);
+    setEditingProductType("b2c");
     setShouldFetchSelections(false);
   };
+
+  // Fetch B2B Trips
+  const b2bEndpoint = `${B2B_END_POINTS.PROVIDER_PROFILE.B2B_TRIPS}?page=${b2bPage}&perPage=10${
+    b2bSearchTerm
+      ? `&filter[searchTerm]=${encodeURIComponent(b2bSearchTerm)}`
+      : ""
+  }`;
+
+  const {
+    data: b2bResponse,
+    isLoading: b2bLoading,
+    isFetching: b2bFetching,
+    refetch: refetchB2b,
+  } = useFetchData(
+    b2bEndpoint,
+    {},
+    {
+      lang: locale,
+      enabled: isAuthenticated,
+    },
+    [b2bPage, b2bSearchTerm, isAuthenticated]
+  );
+
+  const finalB2bData = b2bResponse?.data || b2bResponse;
 
   // Fetch B2C Trips
   const b2cEndpoint = `${B2B_END_POINTS.PROVIDER_PROFILE.B2C_TRIPS}?page=${b2cPage}&perPage=10${
@@ -161,10 +198,10 @@ const ProviderProductsManagementPage = () => {
   const finalB2cData = b2cResponse?.data || b2cResponse;
 
   useEffect(() => {
-    if (!b2cFetching && isTableRefetching) {
+    if (!b2cFetching && !b2bFetching && isTableRefetching) {
       setIsTableRefetching(false);
     }
-  }, [b2cFetching, isTableRefetching]);
+  }, [b2cFetching, b2bFetching, isTableRefetching]);
 
   const handleSuccess = () => {
     setIsTableRefetching(true);
@@ -173,7 +210,8 @@ const ProviderProductsManagementPage = () => {
         query.queryKey.some(
           (key) =>
             typeof key === "string" &&
-            key.includes(B2B_END_POINTS.PROVIDER_PROFILE.B2C_TRIPS)
+            (key.includes(B2B_END_POINTS.PROVIDER_PROFILE.B2C_TRIPS) ||
+              key.includes(B2B_END_POINTS.PROVIDER_PROFILE.B2B_TRIPS))
         ),
     });
   };
@@ -207,6 +245,19 @@ const ProviderProductsManagementPage = () => {
         </button>
       </div>
 
+      {/* 1. B2B Trips Table Section */}
+      <ProviderProductsTable
+        title={t("providerProfile.products.tabs.b2b")}
+        data={finalB2bData}
+        currentPage={b2bPage}
+        setCurrentPage={setB2bPage}
+        searchTerm={b2bSearchTerm}
+        setSearchTerm={setB2bSearchTerm}
+        loading={b2bLoading || b2bFetching || isTableRefetching}
+        isB2B={true}
+        hideActions={true}
+      />
+
       {/* 2. B2C Trips Table Section */}
       <ProviderProductsTable
         title={t("providerProfile.products.tabs.b2c")}
@@ -216,23 +267,14 @@ const ProviderProductsManagementPage = () => {
         searchTerm={b2cSearchTerm}
         setSearchTerm={setB2cSearchTerm}
         loading={b2cLoading || b2cFetching || isTableRefetching}
-        loadingEditId={isFetchingEditProduct ? editingProductId : null}
-        onEdit={handleEditProduct}
+        loadingEditId={
+          isFetchingEditProduct && editingProductType === "b2c"
+            ? editingProductId
+            : null
+        }
+        onEdit={(row) => handleEditProduct(row, "b2c")}
+        isB2B={false}
       />
-      {/* 1. B2B Products Section - Coming Soon */}
-      <div className="bg-white p-6 rounded-2xl border border-border shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-lg font-bold text-titleColor !mb-1">
-            {t("providerProfile.products.tabs.b2b")}
-          </h2>
-          <p className="text-xs sm:text-sm text-subtitleColor">
-            {t("providerProfile.products.b2bComingSoonSubtitle")}
-          </p>
-        </div>
-        <span className="inline-flex items-center px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-amber-100 text-amber-800 border border-amber-200">
-          {t("common.comingSoon")}
-        </span>
-      </div>
 
       {/* Add / Edit Product Modal */}
       <AddProductModal

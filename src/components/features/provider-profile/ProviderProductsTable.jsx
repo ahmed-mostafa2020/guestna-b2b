@@ -24,6 +24,8 @@ const ProviderProductsTable = ({
   loading = false,
   loadingEditId = null,
   onEdit,
+  isB2B = false,
+  hideActions = false,
 }) => {
   const t = useTranslations();
   const locale = useLocale();
@@ -57,15 +59,20 @@ const ProviderProductsTable = ({
   const filteredNodes = useMemo(() => {
     if (!searchTerm) return rawNodes;
     const term = searchTerm.toLowerCase();
-    return rawNodes.filter(
-      (item) =>
-        item.name?.toLowerCase().includes(term) ||
+    return rawNodes.filter((item) => {
+      const name =
+        typeof item.name === "object"
+          ? item.name?.[locale] || item.name?.en || item.name?.ar || ""
+          : item.name || "";
+      return (
+        name.toLowerCase().includes(term) ||
         item.orderId?.toLowerCase().includes(term)
-    );
-  }, [rawNodes, searchTerm]);
+      );
+    });
+  }, [rawNodes, searchTerm, locale]);
 
-  const columns = useMemo(
-    () => [
+  const columns = useMemo(() => {
+    const baseColumns = [
       {
         key: "orderId",
         label: t("providerProfile.products.table.orderId"),
@@ -81,6 +88,13 @@ const ProviderProductsTable = ({
         key: "name",
         label: t("providerProfile.products.table.name"),
         className: "font-medium text-titleColor",
+        render: (row) => {
+          if (!row?.name) return "-";
+          if (typeof row.name === "object") {
+            return row.name[locale] || row.name.en || row.name.ar || "-";
+          }
+          return row.name;
+        },
       },
       {
         key: "price",
@@ -117,9 +131,12 @@ const ProviderProductsTable = ({
             row.provider?.providerSlug ||
             row.provider?.slug ||
             "";
-          const viewUrl = currentSlug
-            ? `${b2cBaseUrl.replace(/\/$/, "")}/${currentSlug}/${row.slug}`
-            : `/${locale}/discover/${row.slug}`;
+          const tripSlug = row.slug || row._id || row.id;
+          const viewUrl = isB2B
+            ? `/${locale}/discover/${tripSlug}`
+            : currentSlug
+            ? `${b2cBaseUrl.replace(/\/$/, "")}/${currentSlug}/${tripSlug}`
+            : `/${locale}/discover/${tripSlug}`;
 
           return (
             <Link
@@ -134,7 +151,10 @@ const ProviderProductsTable = ({
           );
         },
       },
-      {
+    ];
+
+    if (!isB2B && !hideActions && onEdit) {
+      baseColumns.push({
         key: "edit",
         label: t("providerProfile.products.table.edit"),
         render: (row) => {
@@ -156,10 +176,20 @@ const ProviderProductsTable = ({
             </button>
           );
         },
-      },
-    ],
-    [t, locale, onEdit, loadingEditId]
-  );
+      });
+    }
+
+    return baseColumns;
+  }, [
+    t,
+    locale,
+    onEdit,
+    loadingEditId,
+    isB2B,
+    hideActions,
+    providerSlug,
+    b2cBaseUrl,
+  ]);
 
   return (
     <div className="flex flex-col gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-border shadow-sm">
