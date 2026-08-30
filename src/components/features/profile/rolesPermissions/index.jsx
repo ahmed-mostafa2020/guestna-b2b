@@ -225,7 +225,7 @@ const RolesPermissionsContent = ({
       try {
         await axios.patch(
           getProxyUrl(
-            `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.UPDATE_PERMISSIONS}/${roleId}`
+            `${B2B_END_POINTS.PROFILE.ROLES_PERMISSIONS.SAVE_ROLE_PERMISSIONS}/${roleId}`
           ),
           { permissions: permissionIds },
           { headers: getHeaders(locale) }
