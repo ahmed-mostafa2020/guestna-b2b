@@ -251,7 +251,13 @@ const CustomNewTripForm = ({
         ),
         headers,
       });
-      setSlotsData(response.data?.slots || []);
+      const rawSlots = response.data?.slots || [];
+      const normalizedSlots = rawSlots.map((s) => ({
+        slotName: s.slotName || s.slot_name || "",
+        minCapacity: s.minCapacity ?? s.min_capacity ?? 0,
+        maxCapacity: s.maxCapacity ?? s.max_capacity ?? 0,
+      }));
+      setSlotsData(normalizedSlots);
     } catch (error) {
       console.error("Error fetching slots:", error);
       setSlotsData([]);
@@ -1006,20 +1012,20 @@ const CustomNewTripForm = ({
             const formErrors = {};
             if (hasProviderSpecificDays && values.slot) {
               const selectedSlot = slotsData.find(
-                (s) => s.slot_name === values.slot
+                (s) => s.slotName === values.slot
               );
               if (selectedSlot) {
                 const seats = parseInt(values.availableSeats);
                 if (!isNaN(seats)) {
-                  if (seats < selectedSlot.min_capacity) {
+                  if (seats < selectedSlot.minCapacity) {
                     formErrors.availableSeats = t2(
                       "forms.customTrip.expectedParticipants.error.minSlot",
-                      { min: selectedSlot.min_capacity }
+                      { min: selectedSlot.minCapacity }
                     );
-                  } else if (seats > selectedSlot.max_capacity) {
+                  } else if (seats > selectedSlot.maxCapacity) {
                     formErrors.availableSeats = t2(
                       "forms.customTrip.expectedParticipants.error.maxSlot",
-                      { max: selectedSlot.max_capacity }
+                      { max: selectedSlot.maxCapacity }
                     );
                   }
                 }

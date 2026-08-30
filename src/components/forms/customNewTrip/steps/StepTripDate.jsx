@@ -30,6 +30,7 @@ const StepTripDate = ({
     }
   };
 
+
   return (
     <Box>
       <h2 className="text-2xl font-bold text-textDark">{t("title")}</h2>
@@ -97,7 +98,7 @@ const StepTripDate = ({
                     ? t("fields.slot.selectDayFirst")
                     : t("fields.slot.placeholder")
               }
-              list={slotsData.map((s) => s.slot_name)}
+              list={slotsData.map((s) => s.slotName)}
               label={t("fields.slot.label")}
               disabled={isLoadingSlots || !values.day}
               required={true}

@@ -162,7 +162,13 @@ const AuthenticatedRequestQuote = ({
         ),
         headers,
       });
-      setSlotsData(response.data?.slots || []);
+      const rawSlots = response.data?.slots || [];
+      const normalizedSlots = rawSlots.map((s) => ({
+        slotName: s.slotName || s.slot_name || "",
+        minCapacity: s.minCapacity ?? s.min_capacity ?? 0,
+        maxCapacity: s.maxCapacity ?? s.max_capacity ?? 0,
+      }));
+      setSlotsData(normalizedSlots);
     } catch (error) {
       console.error("Error fetching slots:", error);
       setSlotsData([]);
@@ -549,20 +555,20 @@ const AuthenticatedRequestQuote = ({
                 const formErrors = {};
                 if (hasProviderSpecificDays && values.slot) {
                   const selectedSlot = slotsData.find(
-                    (s) => s.slot_name === values.slot
+                    (s) => s.slotName === values.slot
                   );
                   if (selectedSlot) {
                     const seats = parseInt(values.availableSeats);
                     if (!isNaN(seats)) {
-                      if (seats < selectedSlot.min_capacity) {
+                      if (seats < selectedSlot.minCapacity) {
                         formErrors.availableSeats = t(
                           "forms.customTrip.expectedParticipants.error.minSlot",
-                          { min: selectedSlot.min_capacity }
+                          { min: selectedSlot.minCapacity }
                         );
-                      } else if (seats > selectedSlot.max_capacity) {
+                      } else if (seats > selectedSlot.maxCapacity) {
                         formErrors.availableSeats = t(
                           "forms.customTrip.expectedParticipants.error.maxSlot",
-                          { max: selectedSlot.max_capacity }
+                          { max: selectedSlot.maxCapacity }
                         );
                       }
                     }
@@ -737,7 +743,7 @@ const AuthenticatedRequestQuote = ({
                         values.slot &&
                         (() => {
                           const s = slotsData.find(
-                            (x) => x.slot_name === values.slot
+                            (x) => x.slotName === values.slot
                           );
                           if (s) {
                             const hasError =
@@ -748,8 +754,8 @@ const AuthenticatedRequestQuote = ({
                                   {t(
                                     "forms.customTrip.expectedParticipants.error.slotCapacity",
                                     {
-                                      min: s.min_capacity,
-                                      max: s.max_capacity,
+                                      min: s.minCapacity,
+                                      max: s.maxCapacity,
                                     }
                                   )}
                                 </p>
@@ -873,7 +879,7 @@ const AuthenticatedRequestQuote = ({
                                 ? "اختر اليوم أولاً"
                                 : "اختر الوقت"
                           }
-                          list={slotsData.map((s) => s.slot_name)}
+                          list={slotsData.map((s) => s.slotName)}
                           label={"الوقت"}
                           disabled={isLoadingSlots || !values.day}
                           required={true}
