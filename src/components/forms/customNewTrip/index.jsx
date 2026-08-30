@@ -434,7 +434,6 @@ const CustomNewTripForm = ({
       day: "",
       endDay: "",
       availableSeats: "",
-      totalAvailableSeats: "",
       category: "",
       supCategory: "",
       name: { en: "", ar: "" },
@@ -447,7 +446,6 @@ const CustomNewTripForm = ({
       services: [],
       file: "",
       note: "",
-      slot: "",
     };
   }, [isEditMode, editData]);
 
@@ -678,7 +676,12 @@ const CustomNewTripForm = ({
 
     const formData = new FormData();
 
+    // Fields that should not be sent for custom trip creation
+    // slot is only for normal trips with provider-specific days
+    const excludedFields = isEditMode ? [] : ["slot"];
+
     Object.keys(values).forEach((key) => {
+      if (excludedFields.includes(key)) return;
       if (key === "file") {
         if (values[key] instanceof File) {
           formData.append(key, values[key]);
@@ -727,13 +730,16 @@ const CustomNewTripForm = ({
                 );
               });
             }
-            if (Array.isArray(school.grades)) {
+            if (Array.isArray(school.grades) && school.grades.length > 0) {
               school.grades.forEach((gradeId, gIndex) => {
                 formData.append(
                   `schoolsInfo[${index}][grades][${gIndex}]`,
                   gradeId
                 );
               });
+            } else {
+              // API requires grades to be present as an array, even if empty
+              formData.append(`schoolsInfo[${index}][grades]`, []);
             }
           });
         }
@@ -766,6 +772,11 @@ const CustomNewTripForm = ({
         }
       }
     });
+
+    // API requires totalAvailableSeats; for custom trip creation, default to availableSeats value
+    if (!isEditMode && !formData.has("totalAvailableSeats") && values.availableSeats) {
+      formData.append("totalAvailableSeats", String(values.availableSeats));
+    }
 
     return formData;
   };
