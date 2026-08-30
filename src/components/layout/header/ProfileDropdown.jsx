@@ -113,10 +113,10 @@ const ProfileDropdown = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute -bottom-[120px] z-10 w-max py-2 bg-[#FCFCFC]">
+        <div className="absolute -bottom-[120px] z-20 w-max py-2 bg-[#FCFCFC]">
           {renderedDropdownList}
           <div ref={logoutButtonRef}>
-            <LogoutButton 
+            <LogoutButton
               onLogoutComplete={() => setIsOpen(false)}
               onModalOpen={() => setIsLogoutModalOpen(true)}
               onModalClose={() => setIsLogoutModalOpen(false)}

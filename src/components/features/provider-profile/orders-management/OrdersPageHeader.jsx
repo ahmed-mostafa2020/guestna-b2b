@@ -43,8 +43,7 @@ const OrdersPageHeader = ({
       <div className="absolute -top-10 -end-10 w-40 h-40 rounded-full bg-mainColor/5 pointer-events-none" />
       <div className="absolute -bottom-8 -start-8 w-32 h-32 rounded-full bg-mainColor/5 pointer-events-none" />
 
-
-      <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start gap-4">
+      <div className="relative z-[2] flex flex-col sm:flex-row justify-between items-start gap-4">
         {/* Left side: Breadcrumbs + Title + Subtitle */}
         <div className="flex flex-col gap-2">
           {/* Breadcrumbs */}
