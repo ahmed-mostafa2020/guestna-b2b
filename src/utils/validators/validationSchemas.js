@@ -3,3 +3,4 @@ export * from "./authSchemas";
 export * from "./checkoutSchemas";
 export * from "./formSchemas";
 export * from "./profileSchemas";
+export * from "./withdrawalClaimSchema";

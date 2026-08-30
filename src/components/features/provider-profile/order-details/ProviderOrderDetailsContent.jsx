@@ -128,7 +128,7 @@ const ProviderOrderDetailsContent = ({ orderData, refetch }) => {
   return (
     <div className="flex flex-col gap-5 sm:gap-6 w-full font-somar">
       {/* 1. Header (Breadcrumbs, Title, Status Badge, Actions) */}
-      <ProviderOrderDetailsHeader orderData={orderData} />
+      <ProviderOrderDetailsHeader orderData={orderData} refetch={refetch} />
 
       {/* 2. Top Summary Stat Cards (Rendered for active statuses) */}
       {!isCancelledOrRejected && (

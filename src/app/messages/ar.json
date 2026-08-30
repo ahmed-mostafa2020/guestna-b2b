@@ -717,6 +717,34 @@
         "loadError": "فشل تحميل بيانات التعديل",
         "selectService": "اختر الخدمات",
         "selectBranch": "اختر فرع مزود الخدمة"
+      },
+      "claimForm": {
+        "title": "رفع المطالبة",
+        "totalTickets": "اجمالي التذاكر",
+        "totalTicketsPlaceholder": "أدخل اجمالي التذاكر",
+        "companionsCount": "عدد المرافقين",
+        "companionsCountPlaceholder": "أدخل عدد المرافقين",
+        "totalAmount": "اجمالي المبلغ",
+        "totalAmountPlaceholder": "أدخل اجمالي المبلغ",
+        "totalAmountHint": "اضافة اجمالي المبلغ بدون ضريبة",
+        "attachInvoice": "ارفاق فاتورة",
+        "supportedFormats": "يدعم ملفات: PDF, Excel, CSV",
+        "uploadInvoice": "رفع الفاتورة",
+        "fileRequired": "يرجى ارفاق الفاتورة",
+        "invalidFileType": "نوع الملف غير مدعوم. يرجى رفع ملف PDF أو Excel أو CSV",
+        "fileTooLarge": "حجم الملف يتجاوز الحد المسموح ({size} ميجابايت)",
+        "submit": "ارسال",
+        "submitting": "جاري الإرسال...",
+        "submitError": "فشل في رفع المطالبة",
+        "submitSuccess": "تم رفع المطالبة بنجاح",
+        "validation": {
+          "amountRequired": "المبلغ مطلوب",
+          "amountPositive": "يجب أن يكون المبلغ رقماً موجباً",
+          "totalTicketsRequired": "اجمالي التذاكر مطلوب",
+          "totalTicketsMin": "اجمالي التذاكر لا يمكن أن يكون سالباً",
+          "companionsCountRequired": "عدد المرافقين مطلوب",
+          "companionsCountMin": "عدد المرافقين لا يمكن أن يكون سالباً"
+        }
       }
     }
   },

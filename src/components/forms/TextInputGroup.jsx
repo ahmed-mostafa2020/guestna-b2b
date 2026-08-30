@@ -41,6 +41,7 @@ const TextInputGroup = memo(
     required = false,
 
     labelFontFamily = "IBM Plex Sans Arabic, sans-serif",
+    labelClassName = "",
   }) => {
     const [showPassword, setShowPassword] = useState(false);
 
@@ -51,15 +52,23 @@ const TextInputGroup = memo(
       setShowPassword(!showPassword);
     };
 
+    const effectiveFontFamily =
+      labelFontFamily === "IBM Plex Sans Arabic, sans-serif" &&
+      labelClassName?.includes("font-somar")
+        ? "var(--font-somar-sans), sans-serif"
+        : labelFontFamily;
+
     return (
       <div className="relative min-w-[25%] flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
         {label && (
           <label
             htmlFor={name}
-            className={`font-medium capitalize font-ibm ${
-              readOnly ? "text-textLight" : ""
-            }`}
-            style={{ fontFamily: labelFontFamily && labelFontFamily }}
+            className={cn(
+              "font-medium capitalize",
+              labelClassName ? labelClassName : "font-ibm",
+              readOnly && "text-textLight"
+            )}
+            style={{ fontFamily: effectiveFontFamily && effectiveFontFamily }}
           >
             {label}
             {required && <span className="text-error">{"*"}</span>}
