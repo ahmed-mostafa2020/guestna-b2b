@@ -12,6 +12,7 @@ import DataTable from "@components/ui/DataTable";
 import SearchHeader from "@components/ui/SearchHeader";
 import { Chip, CircularProgress } from "@mui/material";
 import { OpenInNew, Edit as EditIcon } from "@mui/icons-material";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 
 const ProviderProductsTable = ({
   title,
@@ -43,8 +44,8 @@ const ProviderProductsTable = ({
     "";
 
   const b2cBaseUrl =
-    // CONSTANT_VALUES?.URLS?.VERCEL_URL ||
-    // process.env.NEXT_PUBLIC_B2C_VERCEL ||
+    CONSTANT_VALUES?.URLS?.VERCEL_URL ||
+    process.env.NEXT_PUBLIC_B2C_VERCEL ||
     "https://guestan-b2c.netlify.app/";
 
   const rawNodes = data?.nodes || [];
