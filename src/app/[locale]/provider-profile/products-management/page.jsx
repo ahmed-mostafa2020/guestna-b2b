@@ -80,12 +80,18 @@ const ProviderProductsManagementPage = () => {
     data: editProductResponse,
     isLoading: isEditProductLoading,
     isFetching: isEditProductFetching,
+    refetch: refetchEditProduct,
   } = useFetchData(
     editEndpoint,
     {},
     {
       lang: locale,
       enabled: !!editingProductId && isAuthenticated,
+      staleTime: 0,
+      gcTime: 0,
+      cacheTime: 0,
+      keepPreviousData: false,
+      refetchOnMount: "always",
     },
     [editEndpoint, isAuthenticated]
   );
@@ -134,7 +140,27 @@ const ProviderProductsManagementPage = () => {
     if (!id) return;
     setIsAddingProduct(false); // Ensure Add button does not show loading
     setEditingProductType(type);
-    setEditingProductId(id);
+
+    const endpoint = `${
+      type === "b2b"
+        ? B2B_END_POINTS.PROVIDER_PROFILE.B2B_TRIPS
+        : B2B_END_POINTS.PROVIDER_PROFILE.B2C_TRIPS
+    }/${id}`;
+
+    // Remove any cached data for this product so React Query always fetches fresh data from server
+    queryClient.removeQueries({
+      predicate: (query) =>
+        query.queryKey.some(
+          (k) => typeof k === "string" && k.includes(endpoint)
+        ),
+    });
+
+    if (editingProductId === id) {
+      refetchEditProduct();
+    } else {
+      setEditingProductId(id);
+    }
+
     if (!formSelectionData) {
       setShouldFetchSelections(true);
       if (shouldFetchSelections) refetchSelections();
@@ -161,6 +187,14 @@ const ProviderProductsManagementPage = () => {
 
   const handleCloseModal = () => {
     setIsAddModalOpen(false);
+    if (editEndpoint) {
+      queryClient.removeQueries({
+        predicate: (query) =>
+          query.queryKey.some(
+            (k) => typeof k === "string" && k.includes(editEndpoint)
+          ),
+      });
+    }
     setEditingProductId(null);
     setEditingProductType("b2c");
     setIsAddingProduct(false);
