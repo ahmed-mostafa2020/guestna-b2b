@@ -368,7 +368,41 @@ const AddProductForm = ({
       categoryId = mainCat || "";
     }
 
-    const supCats = productData.supCategories || productData.supCategory || productData.subCategories || [];
+    const supCatsRaw =
+      productData.supCategories ||
+      productData.supCategory ||
+      productData.subCategories ||
+      productData.subCategory ||
+      [];
+    const supCatsList = Array.isArray(supCatsRaw)
+      ? supCatsRaw
+      : typeof supCatsRaw === "object" && supCatsRaw !== null
+      ? [supCatsRaw]
+      : supCatsRaw
+      ? [supCatsRaw]
+      : [];
+
+    const citiesRaw = productData.cities || productData.city || [];
+    const citiesList = Array.isArray(citiesRaw)
+      ? citiesRaw
+      : typeof citiesRaw === "object" && citiesRaw !== null
+      ? [citiesRaw]
+      : citiesRaw
+      ? [citiesRaw]
+      : [];
+
+    const branchesRaw =
+      productData.providerBranchs ||
+      productData.providerBranches ||
+      productData.providerBranch ||
+      [];
+    const branchesList = Array.isArray(branchesRaw)
+      ? branchesRaw
+      : typeof branchesRaw === "object" && branchesRaw !== null
+      ? [branchesRaw]
+      : branchesRaw
+      ? [branchesRaw]
+      : [];
 
     let seatsMin = "";
     let seatsMax = "";
@@ -393,15 +427,15 @@ const AddProductForm = ({
         ar: typeof productData.description === "object" ? productData.description?.ar || "" : productData.description || "",
       },
       categories: categoryId,
-      supCategories: Array.isArray(supCats)
-        ? supCats.map((item) => (typeof item === "object" && item !== null ? item._id || item.id || "" : item))
-        : [],
-      cities: Array.isArray(productData.cities)
-        ? productData.cities.map((item) => (typeof item === "object" && item !== null ? item._id || item.id || "" : item))
-        : [],
-      providerBranchs: Array.isArray(productData.providerBranchs)
-        ? productData.providerBranchs.map((item) => (typeof item === "object" && item !== null ? item._id || item.id || "" : item))
-        : [],
+      supCategories: supCatsList
+        .map((item) => (typeof item === "object" && item !== null ? item._id || item.id || "" : item))
+        .filter(Boolean),
+      cities: citiesList
+        .map((item) => (typeof item === "object" && item !== null ? item._id || item.id || "" : item))
+        .filter(Boolean),
+      providerBranchs: branchesList
+        .map((item) => (typeof item === "object" && item !== null ? item._id || item.id || "" : item))
+        .filter(Boolean),
       bookingBefore: productData.bookingBefore ?? "",
       recurrencePattern: productData.recurrencePattern || "",
       selectedDays: productData.selectedDays || [],
@@ -476,7 +510,7 @@ const AddProductForm = ({
         ar: productData.benefits?.ar?.length ? productData.benefits.ar : [""],
       },
     };
-  }, [productId]);
+  }, [productData]);
 
   const categoryOptions = useMemo(() => {
     const opts = Array.isArray(formSelectionData?.categories)
@@ -497,35 +531,52 @@ const AddProductForm = ({
 
   const supCategoryOptions = useMemo(() => {
     const rawOpts =
-      formSelectionData?.supCategories || formSelectionData?.supCategory || [];
+      formSelectionData?.supCategories ||
+      formSelectionData?.supCategory ||
+      formSelectionData?.subCategories ||
+      [];
     const opts = Array.isArray(rawOpts) ? [...rawOpts] : [];
     if (productData) {
       const supCats =
         productData.supCategories ||
         productData.supCategory ||
         productData.subCategories ||
+        productData.subCategory ||
         [];
-      if (Array.isArray(supCats)) {
-        supCats.forEach((sc) => {
-          if (sc && typeof sc === "object") {
-            const scId = sc._id || sc.id;
-            if (scId && !opts.some((item) => (item._id || item.id) === scId)) {
-              opts.push(sc);
-            }
+      const supCatsList = Array.isArray(supCats)
+        ? supCats
+        : typeof supCats === "object" && supCats !== null
+        ? [supCats]
+        : supCats
+        ? [supCats]
+        : [];
+      supCatsList.forEach((sc) => {
+        if (sc && typeof sc === "object") {
+          const scId = sc._id || sc.id;
+          if (scId && !opts.some((item) => (item._id || item.id) === scId)) {
+            opts.push(sc);
           }
-        });
-      }
+        }
+      });
     }
     return opts;
-  }, [formSelectionData?.supCategories, formSelectionData?.supCategory, productData]);
+  }, [formSelectionData?.supCategories, formSelectionData?.supCategory, formSelectionData?.subCategories, productData]);
 
   const academicStageOptions = formSelectionData?.academicStages || [];
   const cityOptions = useMemo(() => {
     const opts = Array.isArray(formSelectionData?.cities)
       ? [...formSelectionData.cities]
       : [];
-    if (productData && Array.isArray(productData.cities)) {
-      productData.cities.forEach((c) => {
+    if (productData) {
+      const citiesRaw = productData.cities || productData.city || [];
+      const citiesList = Array.isArray(citiesRaw)
+        ? citiesRaw
+        : typeof citiesRaw === "object" && citiesRaw !== null
+        ? [citiesRaw]
+        : citiesRaw
+        ? [citiesRaw]
+        : [];
+      citiesList.forEach((c) => {
         if (c && typeof c === "object") {
           const cId = c._id || c.id;
           if (cId && !opts.some((item) => (item._id || item.id) === cId)) {
@@ -578,8 +629,20 @@ const AddProductForm = ({
     const opts = Array.isArray(formSelectionData?.providerBranchs)
       ? [...formSelectionData.providerBranchs]
       : [];
-    if (productData && Array.isArray(productData.providerBranchs)) {
-      productData.providerBranchs.forEach((b) => {
+    if (productData) {
+      const branchesRaw =
+        productData.providerBranchs ||
+        productData.providerBranches ||
+        productData.providerBranch ||
+        [];
+      const branchesList = Array.isArray(branchesRaw)
+        ? branchesRaw
+        : typeof branchesRaw === "object" && branchesRaw !== null
+        ? [branchesRaw]
+        : branchesRaw
+        ? [branchesRaw]
+        : [];
+      branchesList.forEach((b) => {
         if (b && typeof b === "object") {
           const bId = b._id || b.id;
           if (bId && !opts.some((item) => (item._id || item.id) === bId)) {
