@@ -9,12 +9,59 @@ const withPWA = withPWAInit({
   disable: process.env.NODE_ENV === "development",
   register: true,
   skipWaiting: true,
+  // Skip precaching page chunks — they change every build and bloat the
+  // precache manifest.  Instead, pages are runtime-cached (see below).
+  buildExcludes: [/chunks\/.*$/, /middleware-manifest\.json$/],
+  // Don't precache large public assets (images, icons) — cache at runtime.
+  publicExcludes: ["!images/**/*", "!icons/**/*"],
   workboxOptions: {
     // Avoids workbox-build's separate-chunk path, which sets a Rollup
     // `manualChunks` input option that Rollup 4 (pinned via the
     // package.json `overrides`/`resolutions` for security) rejects with
     // "Unknown input options: manualChunks".
     inlineWorkboxRuntime: true,
+    runtimeCaching: [
+      {
+        // Cache page navigations with network-first so users always get
+        // fresh content but still work offline.
+        urlPattern: /^https?:\/\/.*\/(?:ar|en)\/.*$/,
+        handler: "NetworkFirst",
+        options: {
+          cacheName: "pages-cache",
+          expiration: { maxEntries: 64, maxAgeSeconds: 24 * 60 * 60 },
+          networkTimeoutSeconds: 10,
+        },
+      },
+      {
+        // Cache static assets (JS, CSS) — they have content hashes so
+        // stale-while-revalidate is safe and fast.
+        urlPattern: /\/_next\/static\/.*/,
+        handler: "StaleWhileRevalidate",
+        options: {
+          cacheName: "static-assets-cache",
+          expiration: { maxEntries: 128, maxAgeSeconds: 7 * 24 * 60 * 60 },
+        },
+      },
+      {
+        // Cache images on demand.
+        urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|avif|ico)$/,
+        handler: "CacheFirst",
+        options: {
+          cacheName: "image-cache",
+          expiration: { maxEntries: 64, maxAgeSeconds: 30 * 24 * 60 * 60 },
+        },
+      },
+      {
+        // Cache API calls with network-first to stay fresh.
+        urlPattern: /\/api\/.*/,
+        handler: "NetworkFirst",
+        options: {
+          cacheName: "api-cache",
+          expiration: { maxEntries: 32, maxAgeSeconds: 5 * 60 },
+          networkTimeoutSeconds: 10,
+        },
+      },
+    ],
   },
 });
 
