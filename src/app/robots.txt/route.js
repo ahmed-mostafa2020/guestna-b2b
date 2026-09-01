@@ -2,7 +2,10 @@ const PRODUCTION_URL = "https://guestna-edu.com";
 const isProduction = process.env.VERCEL_ENV === "production";
 const SITE_URL = isProduction
   ? PRODUCTION_URL
-  : (process.env.NEXT_PUBLIC_B2B_VERCEL || "https://guestna-b2b.vercel.app").replace(/\/$/, "");
+  : (process.env.NEXT_PUBLIC_B2B_VERCEL || "https://dev.guestna.app").replace(
+      /\/$/,
+      ""
+    );
 
 const disallowedPaths = [
   "/api",
@@ -26,17 +29,17 @@ const disallowedPaths = [
 ];
 
 const AI_CRAWLERS = [
-  "GPTBot",         // OpenAI
-  "ChatGPT-User",   // OpenAI ChatGPT
-  "Google-Extended",// Google Bard/Gemini
-  "anthropic-ai",   // Anthropic Claude (legacy)
-  "ClaudeBot",      // Anthropic Claude (new)
-  "Claude-Web",     // Anthropic Claude web
-  "Applebot",       // Apple Intelligence
+  "GPTBot", // OpenAI
+  "ChatGPT-User", // OpenAI ChatGPT
+  "Google-Extended", // Google Bard/Gemini
+  "anthropic-ai", // Anthropic Claude (legacy)
+  "ClaudeBot", // Anthropic Claude (new)
+  "Claude-Web", // Anthropic Claude web
+  "Applebot", // Apple Intelligence
   "Applebot-Extended", // Apple AI training
-  "PerplexityBot",  // Perplexity AI
-  "YouBot",         // You.com AI
-  "Bytespider",     // TikTok/ByteDance
+  "PerplexityBot", // Perplexity AI
+  "YouBot", // You.com AI
+  "Bytespider", // TikTok/ByteDance
   "Meta-ExternalAgent", // Meta AI
 ];
 

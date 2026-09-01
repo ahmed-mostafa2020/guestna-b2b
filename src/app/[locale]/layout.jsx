@@ -24,9 +24,10 @@ const PRODUCTION_URL = "https://guestna-edu.com";
 const isProduction = process.env.VERCEL_ENV === "production";
 const SITE_URL = isProduction
   ? PRODUCTION_URL
-  : (
-      process.env.NEXT_PUBLIC_B2B_VERCEL || "https://guestna-b2b.vercel.app"
-    ).replace(/\/$/, "");
+  : (process.env.NEXT_PUBLIC_B2B_VERCEL || "https://dev.guestna.app").replace(
+      /\/$/,
+      ""
+    );
 const defaultLocale = "ar";
 const locales = ["en", "ar"];
 

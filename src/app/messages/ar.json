@@ -147,6 +147,7 @@
       "ON_HOLD": "معلق",
       "PARTIALLY_PAID": "مدفوع جزئياً",
       "REFUNDED": "مسترد",
+      "PENDING_PROVIDER_APPROVAL": "بانتظار موافقة المزود",
       "PENDING_CLIENT_REVIEW": "قيد مراجعة العميل"
     },
     "usersType": {
@@ -242,7 +243,7 @@
       "main": "الصفحة الرئيسية",
       "productsManagement": "إدارة المنتجات",
       "ordersManagement": "إدارة الطلبات",
-      "ourProducts": "منتجاتنا"
+      "ourProducts": "منتجات الأفراد"
     },
     "infoCards": {
       "totalBookings": "إجمالي الحجوزات",
@@ -547,7 +548,7 @@
       "tabs": {
         "all": "الكل",
         "PENDING_PROVIDER_APPROVAL": "بانتظار موافقة المزود",
-        "PENDING": "قيد المعالجة",
+        "PENDING": "بانتظار تاكيد العميل",
         "ON_HOLD": "قيد الانتظار",
         "DONE": "مكتملة"
       },
@@ -571,7 +572,7 @@
         "TRIP": "طلبات من سوق جستنا"
       },
       "statuses": {
-        "PENDING": "قيد المعالجة",
+        "PENDING": "بانتظار تاكيد العميل",
         "PENDING_COMPANY_APPROVAL": "قيد التاكيد",
         "ON_HOLD": "قيد الانتظار",
         "SCHEDULED": "مجدولة",

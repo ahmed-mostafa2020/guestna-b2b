@@ -16,6 +16,18 @@ import DataTable from "@components/ui/DataTable";
 import ProviderOrderEditModal from "@components/features/provider-profile/order-details/ProviderOrderEditModal";
 import PROVIDER_ORDER_STATUS from "@constants/providerOrderStatus";
 
+/**
+ * Normalize status values that may arrive from the API as full
+ * translation-key paths (e.g. "common.organizationTripStatus.PENDING_PROVIDER_APPROVAL")
+ * into the raw enum value ("PENDING_PROVIDER_APPROVAL").
+ */
+const normalizeStatus = (raw) => {
+  if (!raw || typeof raw !== "string") return PROVIDER_ORDER_STATUS.PENDING;
+  // If the value contains dots it's a translation key path → take the last segment
+  const normalized = raw.includes(".") ? raw.split(".").pop() : raw;
+  return normalized || PROVIDER_ORDER_STATUS.PENDING;
+};
+
 /* ─── Status Badge ─── */
 const STATUS_STYLES = {
   [PROVIDER_ORDER_STATUS.PENDING]: {
@@ -89,7 +101,7 @@ const ActionsDropdown = ({ row, t, onEdit }) => {
   const open = Boolean(anchorEl);
 
   const isPendingProviderApproval =
-    row.status === PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL;
+    normalizeStatus(row.status) === PROVIDER_ORDER_STATUS.PENDING_PROVIDER_APPROVAL;
 
   const handleOpen = (e) => {
     e.stopPropagation();
@@ -237,33 +249,6 @@ const ProviderOrdersTable = ({
         render: (row) => String(row.orderId || row._id?.slice(-8) || "-"),
       },
       {
-        key: "client",
-        label: t("providerProfile.ordersManagement.columns.client"),
-        render: (row) => {
-          const orgName =
-            typeof row.organization === "string"
-              ? row.organization
-              : row.organization?.name || "-";
-          const eduSystem = row.track?.educationSystem?.name || "-";
-          return (
-            <div className="flex flex-col max-w-[180px] sm:max-w-[220px] min-w-0">
-              <span
-                className="font-bold text-textDark text-sm sm:text-base truncate"
-                title={orgName}
-              >
-                {orgName}
-              </span>
-              <span
-                className="text-xs sm:text-sm text-textLight font-medium truncate"
-                title={eduSystem}
-              >
-                {eduSystem}
-              </span>
-            </div>
-          );
-        },
-      },
-      {
         key: "product",
         label: t("providerProfile.ordersManagement.columns.product"),
         className: "font-semibold text-textDark text-sm sm:text-base",
@@ -319,14 +304,17 @@ const ProviderOrdersTable = ({
       {
         key: "status",
         label: t("providerProfile.ordersManagement.columns.status"),
-        render: (row) => (
-          <StatusBadge
-            status={row.status || PROVIDER_ORDER_STATUS.PENDING}
-            label={t(
-              `providerProfile.ordersManagement.statuses.${row.status || PROVIDER_ORDER_STATUS.PENDING}`
-            )}
-          />
-        ),
+        render: (row) => {
+          const status = normalizeStatus(row.status);
+          return (
+            <StatusBadge
+              status={status}
+              label={t(
+                `providerProfile.ordersManagement.statuses.${status}`
+              )}
+            />
+          );
+        },
       },
       {
         key: "actions",

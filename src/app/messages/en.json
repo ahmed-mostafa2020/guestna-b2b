@@ -149,6 +149,7 @@
       "ON_HOLD": "On Hold",
       "PARTIALLY_PAID": "Partially Paid",
       "REFUNDED": "Refunded",
+      "PENDING_PROVIDER_APPROVAL": "Pending Provider Approval",
       "PENDING_CLIENT_REVIEW": "Pending Client Review"
     },
     "excel_success": {
@@ -235,7 +236,7 @@
       "main": "Main Page",
       "productsManagement": "Products Management",
       "ordersManagement": "Orders Management",
-      "ourProducts": "Our Products"
+      "ourProducts": "Individuals Products"
     },
     "infoCards": {
       "totalBookings": "Total Bookings",
@@ -540,7 +541,7 @@
       "tabs": {
         "all": "All",
         "PENDING_PROVIDER_APPROVAL": "Pending Provider Approval",
-        "PENDING": "Pending",
+        "PENDING": "Awaiting Client Confirmation",
         "ON_HOLD": "On Hold",
         "DONE": "Done"
       },
@@ -564,7 +565,7 @@
         "TRIP": "Guestna Marketplace Orders"
       },
       "statuses": {
-        "PENDING": "Pending",
+        "PENDING": "Awaiting Client Confirmation",
         "PENDING_COMPANY_APPROVAL": "Pending Approval",
         "ON_HOLD": "On Hold",
         "SCHEDULED": "Scheduled",

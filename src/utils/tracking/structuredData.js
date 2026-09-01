@@ -1,7 +1,7 @@
 import { CONSTANT_VALUES } from "@constants/constantValues";
 
 const SITE_URL = (
-  process.env.NEXT_PUBLIC_B2B_VERCEL || "https://guestna-b2b.vercel.app"
+  process.env.NEXT_PUBLIC_B2B_VERCEL || "https://dev.guestna.app"
 ).replace(/\/$/, "");
 const LOGO_URL = `${SITE_URL}/logo.png`;
 
@@ -22,7 +22,6 @@ const geoCoordinates = {
   latitude: 24.7136,
   longitude: 46.6753,
 };
-
 
 const sameAsLinks = [
   "https://www.linkedin.com/company/guestna",
