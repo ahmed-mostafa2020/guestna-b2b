@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import CustomizedModal from "@components/ui/customizedModal";
 import CloseIcon from "@mui/icons-material/Close";
 import InventoryIcon from "@mui/icons-material/Inventory";
+import CircularProgress from "@mui/material/CircularProgress";
 import AddProductForm from "@components/forms/addProductForm";
 import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -122,13 +123,22 @@ const AddProductModal = ({
 
           {/* Modal Form Content */}
           <div className="flex-1 overflow-hidden">
-            <AddProductForm
-              onClose={onClose}
-              onSuccess={onSuccess}
-              formSelectionData={formSelectionData}
-              productData={productData}
-              onProductNameChange={handleProductNameChange}
-            />
+            {!formSelectionData ? (
+              <div className="flex flex-col items-center justify-center h-full gap-3 p-8">
+                <CircularProgress size={36} className="text-mainColor" />
+                <span className="text-sm font-medium text-subtitleColor font-somar">
+                  {t("common.loading")}...
+                </span>
+              </div>
+            ) : (
+              <AddProductForm
+                onClose={onClose}
+                onSuccess={onSuccess}
+                formSelectionData={formSelectionData}
+                productData={productData}
+                onProductNameChange={handleProductNameChange}
+              />
+            )}
           </div>
         </div>
       </div>

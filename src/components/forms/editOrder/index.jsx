@@ -37,22 +37,38 @@ const EditOrderForm = ({
   const academicStageData = formSelectionData?.academicStages || [];
   const servicesData = formSelectionData?.services || [];
 
+  const getItemName = (item) => {
+    if (!item) return "";
+    if (typeof item === "string") return item;
+    if (typeof item.name === "object" && item.name !== null) {
+      return item.name[locale] || item.name.ar || item.name.en || "";
+    }
+    return item.name || item.title || item.label || "";
+  };
+
   // Extract names for dropdown display
-  const categoryOptions = categoryData.map((item) => item.name);
-  const cityOptions = cityData.map((item) => item.name);
-  const academicStageOptions = academicStageData.map((item) => item.name);
-  const servicesOptions = servicesData.map((item) => item.name);
+  const categoryOptions = categoryData.map(getItemName).filter(Boolean);
+  const cityOptions = cityData.map(getItemName).filter(Boolean);
+  const academicStageOptions = academicStageData.map(getItemName).filter(Boolean);
+  const servicesOptions = servicesData.map(getItemName).filter(Boolean);
 
   // Helper function to find name by _id (reverse lookup for initial values)
   const findNameById = (options, id) => {
-    const option = options.find((opt) => opt._id === id);
-    return option ? option.name : "";
+    if (!id) return "";
+    const option = options.find(
+      (opt) =>
+        (opt?._id || opt?.id) === id ||
+        opt?.name === id ||
+        (typeof opt?.name === "object" &&
+          (opt.name?.ar === id || opt.name?.en === id))
+    );
+    return option ? getItemName(option) : "";
   };
 
   // Helper function to find names by array of objects with _id and name
   const findNamesByObjects = (objectsArray) => {
     if (!Array.isArray(objectsArray)) return [];
-    return objectsArray.map((obj) => obj.name).filter((name) => name);
+    return objectsArray.map(getItemName).filter(Boolean);
   };
 
   // Prevent negative values in number inputs

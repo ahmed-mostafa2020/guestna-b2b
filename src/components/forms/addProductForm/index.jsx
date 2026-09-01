@@ -478,15 +478,118 @@ const AddProductForm = ({
     };
   }, [productId]);
 
-  const categoryOptions = formSelectionData?.categories || [];
-  const supCategoryOptions =
-    formSelectionData?.supCategories || formSelectionData?.supCategory || [];
+  const categoryOptions = useMemo(() => {
+    const opts = Array.isArray(formSelectionData?.categories)
+      ? [...formSelectionData.categories]
+      : [];
+    if (productData) {
+      const mainCat = productData.categories || productData.category;
+      const catObj = Array.isArray(mainCat) ? mainCat[0] : mainCat;
+      if (catObj && typeof catObj === "object") {
+        const catId = catObj._id || catObj.id;
+        if (catId && !opts.some((c) => (c._id || c.id) === catId)) {
+          opts.push(catObj);
+        }
+      }
+    }
+    return opts;
+  }, [formSelectionData?.categories, productData]);
+
+  const supCategoryOptions = useMemo(() => {
+    const rawOpts =
+      formSelectionData?.supCategories || formSelectionData?.supCategory || [];
+    const opts = Array.isArray(rawOpts) ? [...rawOpts] : [];
+    if (productData) {
+      const supCats =
+        productData.supCategories ||
+        productData.supCategory ||
+        productData.subCategories ||
+        [];
+      if (Array.isArray(supCats)) {
+        supCats.forEach((sc) => {
+          if (sc && typeof sc === "object") {
+            const scId = sc._id || sc.id;
+            if (scId && !opts.some((item) => (item._id || item.id) === scId)) {
+              opts.push(sc);
+            }
+          }
+        });
+      }
+    }
+    return opts;
+  }, [formSelectionData?.supCategories, formSelectionData?.supCategory, productData]);
+
   const academicStageOptions = formSelectionData?.academicStages || [];
-  const cityOptions = formSelectionData?.cities || [];
-  const servicesOptions = formSelectionData?.services || [];
-  const targetAudienceOptions = formSelectionData?.targetAudiences || [];
+  const cityOptions = useMemo(() => {
+    const opts = Array.isArray(formSelectionData?.cities)
+      ? [...formSelectionData.cities]
+      : [];
+    if (productData && Array.isArray(productData.cities)) {
+      productData.cities.forEach((c) => {
+        if (c && typeof c === "object") {
+          const cId = c._id || c.id;
+          if (cId && !opts.some((item) => (item._id || item.id) === cId)) {
+            opts.push(c);
+          }
+        }
+      });
+    }
+    return opts;
+  }, [formSelectionData?.cities, productData]);
+
+  const servicesOptions = useMemo(() => {
+    const opts = Array.isArray(formSelectionData?.services)
+      ? [...formSelectionData.services]
+      : [];
+    if (productData && Array.isArray(productData.services)) {
+      productData.services.forEach((s) => {
+        const servObj = s?.service;
+        if (servObj && typeof servObj === "object") {
+          const sId = servObj._id || servObj.id;
+          if (sId && !opts.some((item) => (item._id || item.id) === sId)) {
+            opts.push(servObj);
+          }
+        }
+      });
+    }
+    return opts;
+  }, [formSelectionData?.services, productData]);
+
+  const targetAudienceOptions = useMemo(() => {
+    const opts = Array.isArray(formSelectionData?.targetAudiences)
+      ? [...formSelectionData.targetAudiences]
+      : [];
+    if (productData && Array.isArray(productData.targetAudiences)) {
+      productData.targetAudiences.forEach((ta) => {
+        const taObj = ta?.targetAudience;
+        if (taObj && typeof taObj === "object") {
+          const taId = taObj._id || taObj.id;
+          if (taId && !opts.some((item) => (item._id || item.id) === taId)) {
+            opts.push(taObj);
+          }
+        }
+      });
+    }
+    return opts;
+  }, [formSelectionData?.targetAudiences, productData]);
+
   const customServicesOptions = formSelectionData?.customServices || [];
-  const providerBranchsOptions = formSelectionData?.providerBranchs || [];
+  const providerBranchsOptions = useMemo(() => {
+    const opts = Array.isArray(formSelectionData?.providerBranchs)
+      ? [...formSelectionData.providerBranchs]
+      : [];
+    if (productData && Array.isArray(productData.providerBranchs)) {
+      productData.providerBranchs.forEach((b) => {
+        if (b && typeof b === "object") {
+          const bId = b._id || b.id;
+          if (bId && !opts.some((item) => (item._id || item.id) === bId)) {
+            opts.push(b);
+          }
+        }
+      });
+    }
+    return opts;
+  }, [formSelectionData?.providerBranchs, productData]);
 
   const buildNestedTouched = (fields, values) => {
     const obj = {};

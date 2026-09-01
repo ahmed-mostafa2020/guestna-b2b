@@ -28,6 +28,7 @@ const ProviderProductsManagementPage = () => {
 
   // Modal, Editing & Selection State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isAddingProduct, setIsAddingProduct] = useState(false);
   const [shouldFetchSelections, setShouldFetchSelections] = useState(false);
   const [editingProductId, setEditingProductId] = useState(null);
   const [editingProductType, setEditingProductType] = useState("b2c");
@@ -47,7 +48,7 @@ const ProviderProductsManagementPage = () => {
     )}`;
   }, [t]);
 
-  // Fetch Form Selections ONLY when Add Product button is clicked
+  // Fetch Form Selections when Add or Edit is clicked
   const {
     data: selectionResponse,
     isLoading: isSelectionsLoading,
@@ -64,8 +65,7 @@ const ProviderProductsManagementPage = () => {
   );
 
   const formSelectionData = selectionResponse?.data || selectionResponse;
-  const isFetchingSelections =
-    (isSelectionsLoading || isSelectionsFetching) && shouldFetchSelections;
+  const isSelectionsInProgress = isSelectionsLoading || isSelectionsFetching;
 
   // Fetch Product Details for Edit mode: GET >> profile-provider/b2c-trips/${_id} or profile-provider/b2b-trips/${_id}
   const editEndpoint = editingProductId
@@ -96,12 +96,13 @@ const ProviderProductsManagementPage = () => {
 
   // --- Add Product: fetch selections then open modal ---
   const handleOpenAddModal = () => {
-    setEditingProductId(null); // ensure we're in add mode
+    setEditingProductId(null);
     setEditingProductType("b2c");
     if (formSelectionData) {
       // Selections already cached, open immediately
       setIsAddModalOpen(true);
     } else {
+      setIsAddingProduct(true);
       setShouldFetchSelections(true);
       if (shouldFetchSelections) refetchSelections();
     }
@@ -110,43 +111,59 @@ const ProviderProductsManagementPage = () => {
   // Open add modal once selections arrive (add flow only)
   useEffect(() => {
     if (
-      shouldFetchSelections &&
+      isAddingProduct &&
       !editingProductId &&
       formSelectionData &&
-      !isSelectionsFetching &&
+      !isSelectionsInProgress &&
       !isAddModalOpen
     ) {
       setIsAddModalOpen(true);
-      setShouldFetchSelections(false);
+      setIsAddingProduct(false);
     }
   }, [
-    shouldFetchSelections,
+    isAddingProduct,
     editingProductId,
     formSelectionData,
-    isSelectionsFetching,
+    isSelectionsInProgress,
     isAddModalOpen,
   ]);
 
-  // --- Edit Product: only fetch product details, then open modal ---
+  // --- Edit Product: fetch product details and selections, then open modal ---
   const handleEditProduct = (row, type = "b2c") => {
     const id = row?._id || row?.id;
     if (!id) return;
+    setIsAddingProduct(false); // Ensure Add button does not show loading
     setEditingProductType(type);
     setEditingProductId(id);
+    if (!formSelectionData) {
+      setShouldFetchSelections(true);
+      if (shouldFetchSelections) refetchSelections();
+    }
   };
 
-  // Open edit modal once product data arrives
+  // Open edit modal once product data arrives (and selections if they are fetching)
   useEffect(() => {
-    if (editingProductId && editProductData && !isFetchingEditProduct) {
+    if (
+      editingProductId &&
+      editProductData &&
+      !isFetchingEditProduct &&
+      (!shouldFetchSelections || !isSelectionsInProgress)
+    ) {
       setIsAddModalOpen(true);
     }
-  }, [editingProductId, editProductData, isFetchingEditProduct]);
+  }, [
+    editingProductId,
+    editProductData,
+    isFetchingEditProduct,
+    shouldFetchSelections,
+    isSelectionsInProgress,
+  ]);
 
   const handleCloseModal = () => {
     setIsAddModalOpen(false);
     setEditingProductId(null);
     setEditingProductType("b2c");
-    setShouldFetchSelections(false);
+    setIsAddingProduct(false);
   };
 
   // Fetch B2B Trips
@@ -216,6 +233,12 @@ const ProviderProductsManagementPage = () => {
     });
   };
 
+  const isAddButtonLoading =
+    isAddingProduct && isSelectionsInProgress;
+  const isEditingLoading =
+    Boolean(editingProductId) &&
+    (isFetchingEditProduct || (shouldFetchSelections && isSelectionsInProgress));
+
   return (
     <main className="flex flex-col gap-6 lg:gap-8 min-h-screen">
       {/* Header Card Section matching Orders page design */}
@@ -231,10 +254,10 @@ const ProviderProductsManagementPage = () => {
 
         <button
           onClick={handleOpenAddModal}
-          disabled={isFetchingSelections}
+          disabled={isAddButtonLoading}
           className="bg-mainColor hover:bg-titleColor text-white font-medium text-sm sm:text-base px-5 py-2.5 rounded-lg sm:rounded-xl flex items-center justify-center gap-2 transition-all duration-200 ease-in-out cursor-pointer shadow-sm hover:shadow-md active:scale-[0.98] disabled:opacity-75 disabled:cursor-not-allowed"
         >
-          {isFetchingSelections ? (
+          {isAddButtonLoading ? (
             <>
               <CircularProgress size={18} color="inherit" />
               <span>{t("common.loading")}...</span>
@@ -255,7 +278,7 @@ const ProviderProductsManagementPage = () => {
         setSearchTerm={setB2cSearchTerm}
         loading={b2cLoading || b2cFetching || isTableRefetching}
         loadingEditId={
-          isFetchingEditProduct && editingProductType === "b2c"
+          isEditingLoading && editingProductType === "b2c"
             ? editingProductId
             : null
         }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useFormikContext } from "formik";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Loader } from "@googlemaps/js-api-loader";
 import SelectionGroup from "@components/forms/SelectionGroup";
 import TextInputGroup from "@components/forms/TextInputGroup";
@@ -129,8 +129,23 @@ const parseGoogleMapsUrl = (rawUrl) => {
   return null;
 };
 
+const isHexObjectId = (str) =>
+  typeof str === "string" && /^[0-9a-fA-F]{24}$/.test(str.trim());
+
+const getItemName = (item, locale) => {
+  if (!item) return "";
+  if (typeof item === "string") {
+    return isHexObjectId(item) ? "" : item;
+  }
+  if (typeof item.name === "object" && item.name !== null) {
+    return item.name[locale] || item.name.ar || item.name.en || "";
+  }
+  return item.name || item.title || item.label || "";
+};
+
 const StepLocations = ({ cityOptions = [] }) => {
   const t = useTranslations("providerProfile.products.modal");
+  const locale = useLocale();
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
 
@@ -196,15 +211,37 @@ const StepLocations = ({ cityOptions = [] }) => {
           name="cities"
           multiple={true}
           value={(values.cities || [])
-            .map((id) => cityOptions.find((c) => c._id === id)?.name)
+            .map((id) => {
+              const found = cityOptions.find((c) => {
+                const cId = c?._id || c?.id;
+                if (cId && cId === id) return true;
+                if (c?.name === id) return true;
+                if (typeof c?.name === "object" && c.name !== null) {
+                  return c.name.ar === id || c.name.en === id;
+                }
+                return false;
+              });
+              if (found) return getItemName(found, locale);
+              return isHexObjectId(id) ? "" : id;
+            })
             .filter(Boolean)}
           onChange={(e) => {
-            const selectedNames = e.target.value;
+            const selectedNames = Array.isArray(e.target.value)
+              ? e.target.value
+              : [e.target.value];
             const selectedIds = selectedNames
-              .map(
-                (name) =>
-                  cityOptions.find((c) => c.name === name)?._id || name
-              )
+              .map((name) => {
+                const found = cityOptions.find((c) => {
+                  const cName = getItemName(c, locale);
+                  return (
+                    cName === name ||
+                    c.name === name ||
+                    (typeof c.name === "object" &&
+                      (c.name?.ar === name || c.name?.en === name))
+                  );
+                });
+                return found?._id || found?.id || name;
+              })
               .filter(Boolean);
             setFieldValue("cities", selectedIds);
           }}
@@ -212,7 +249,9 @@ const StepLocations = ({ cityOptions = [] }) => {
           touched={touched.cities}
           errors={errors.cities}
           placeholder={t("placeholders.selectCities")}
-          list={cityOptions.map((c) => c.name || c)}
+          list={cityOptions
+            .map((c) => getItemName(c, locale))
+            .filter(Boolean)}
         />
       </div>
       {/* 1. Gathering Location */}

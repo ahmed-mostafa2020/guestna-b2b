@@ -1,14 +1,29 @@
 "use client";
 
 import { useFormikContext, FieldArray } from "formik";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import SelectionGroup from "@components/forms/SelectionGroup";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
+const isHexObjectId = (str) =>
+  typeof str === "string" && /^[0-9a-fA-F]{24}$/.test(str.trim());
+
+const getItemName = (item, locale) => {
+  if (!item) return "";
+  if (typeof item === "string") {
+    return isHexObjectId(item) ? "" : item;
+  }
+  if (typeof item.name === "object" && item.name !== null) {
+    return item.name[locale] || item.name.ar || item.name.en || "";
+  }
+  return item.name || item.title || item.label || "";
+};
+
 const StepServices = ({ servicesOptions = [], customServicesOptions = [] }) => {
   const t = useTranslations("providerProfile.products.modal");
+  const locale = useLocale();
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
 
@@ -46,22 +61,43 @@ const StepServices = ({ servicesOptions = [], customServicesOptions = [] }) => {
                   <SelectionGroup
                     name={`services[${index}].service`}
                     value={
-                      servicesOptions.find((opt) => opt._id === item.service)
-                        ?.name || item.service || ""
+                      (() => {
+                        const sVal = item.service;
+                        const found = servicesOptions.find((opt) => {
+                          const id = opt?._id || opt?.id;
+                          if (id && id === sVal) return true;
+                          if (opt?.name === sVal) return true;
+                          if (typeof opt?.name === "object" && opt.name !== null) {
+                            return opt.name.ar === sVal || opt.name.en === sVal;
+                          }
+                          return false;
+                        });
+                        if (found) return getItemName(found, locale);
+                        return isHexObjectId(sVal) ? "" : sVal || "";
+                      })()
                     }
                     onChange={(e) => {
                       const selectedName = e.target.value;
-                      const selectedObj = servicesOptions.find(
-                        (opt) => opt.name === selectedName
-                      );
+                      const selectedObj = servicesOptions.find((opt) => {
+                        const name = getItemName(opt, locale);
+                        return (
+                          name === selectedName ||
+                          opt.name === selectedName ||
+                          (typeof opt.name === "object" &&
+                            (opt.name?.ar === selectedName ||
+                              opt.name?.en === selectedName))
+                        );
+                      });
                       setFieldValue(
                         `services[${index}].service`,
-                        selectedObj?._id || selectedName
+                        selectedObj?._id || selectedObj?.id || selectedName
                       );
                     }}
                     onBlur={handleBlur}
                     placeholder={t("placeholders.selectService")}
-                    list={servicesOptions.map((opt) => opt.name || opt)}
+                    list={servicesOptions
+                      .map((opt) => getItemName(opt, locale))
+                      .filter(Boolean)}
                   />
                 </div>
 
@@ -131,22 +167,45 @@ const StepServices = ({ servicesOptions = [], customServicesOptions = [] }) => {
             name="customServices"
             multiple={true}
             value={(values.customServices || [])
-              .map((id) => customServicesOptions.find((cs) => cs._id === id)?.name)
+              .map((id) => {
+                const found = customServicesOptions.find((cs) => {
+                  const sId = cs?._id || cs?.id;
+                  if (sId && sId === id) return true;
+                  if (cs?.name === id) return true;
+                  if (typeof cs?.name === "object" && cs.name !== null) {
+                    return cs.name.ar === id || cs.name.en === id;
+                  }
+                  return false;
+                });
+                if (found) return getItemName(found, locale);
+                return isHexObjectId(id) ? "" : id;
+              })
               .filter(Boolean)}
             onChange={(e) => {
-              const selectedNames = e.target.value;
+              const selectedNames = Array.isArray(e.target.value)
+                ? e.target.value
+                : [e.target.value];
               const selectedIds = selectedNames
-                .map(
-                  (name) =>
-                    customServicesOptions.find((cs) => cs.name === name)?._id ||
-                    name
-                )
+                .map((name) => {
+                  const found = customServicesOptions.find((cs) => {
+                    const csName = getItemName(cs, locale);
+                    return (
+                      csName === name ||
+                      cs.name === name ||
+                      (typeof cs.name === "object" &&
+                        (cs.name?.ar === name || cs.name?.en === name))
+                    );
+                  });
+                  return found?._id || found?.id || name;
+                })
                 .filter(Boolean);
               setFieldValue("customServices", selectedIds);
             }}
             onBlur={handleBlur}
             placeholder={t("placeholders.selectCustomServices")}
-            list={customServicesOptions.map((cs) => cs.name || cs)}
+            list={customServicesOptions
+              .map((cs) => getItemName(cs, locale))
+              .filter(Boolean)}
           />
         </div>
       )}

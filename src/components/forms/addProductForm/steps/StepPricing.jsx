@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useFormikContext, FieldArray } from "formik";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import SelectionGroup from "@components/forms/SelectionGroup";
 import AddIcon from "@mui/icons-material/Add";
@@ -13,9 +13,24 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import TodayIcon from "@mui/icons-material/Today";
 import { getWeekDayOptions } from "@constants/weekDays";
 
+const isHexObjectId = (str) =>
+  typeof str === "string" && /^[0-9a-fA-F]{24}$/.test(str.trim());
+
+const getItemName = (item, locale) => {
+  if (!item) return "";
+  if (typeof item === "string") {
+    return isHexObjectId(item) ? "" : item;
+  }
+  if (typeof item.name === "object" && item.name !== null) {
+    return item.name[locale] || item.name.ar || item.name.en || "";
+  }
+  return item.name || item.title || item.label || "";
+};
+
 const StepPricing = ({ targetAudienceOptions = [] }) => {
   const t = useTranslations("providerProfile.products.modal");
   const tWeekDays = useTranslations("weekDays");
+  const locale = useLocale();
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
 
@@ -87,25 +102,45 @@ const StepPricing = ({ targetAudienceOptions = [] }) => {
                     <SelectionGroup
                       name={`targetAudiences[${index}].targetAudience`}
                       value={
-                        targetAudienceOptions.find(
-                          (opt) => opt._id === item.targetAudience
-                        )?.name || item.targetAudience || ""
+                        (() => {
+                          const taVal = item.targetAudience;
+                          const found = targetAudienceOptions.find((opt) => {
+                            const id = opt?._id || opt?.id;
+                            if (id && id === taVal) return true;
+                            if (opt?.name === taVal) return true;
+                            if (typeof opt?.name === "object" && opt.name !== null) {
+                              return opt.name.ar === taVal || opt.name.en === taVal;
+                            }
+                            return false;
+                          });
+                          if (found) return getItemName(found, locale);
+                          return isHexObjectId(taVal) ? "" : taVal || "";
+                        })()
                       }
                       onChange={(e) => {
                         const selectedName = e.target.value;
-                        const selectedObj = targetAudienceOptions.find(
-                          (opt) => opt.name === selectedName
-                        );
+                        const selectedObj = targetAudienceOptions.find((opt) => {
+                          const name = getItemName(opt, locale);
+                          return (
+                            name === selectedName ||
+                            opt.name === selectedName ||
+                            (typeof opt.name === "object" &&
+                              (opt.name?.ar === selectedName ||
+                                opt.name?.en === selectedName))
+                          );
+                        });
                         setFieldValue(
                           `targetAudiences[${index}].targetAudience`,
-                          selectedObj?._id || selectedName
+                          selectedObj?._id || selectedObj?.id || selectedName
                         );
                       }}
                       onBlur={handleBlur}
                       touched={touched.targetAudiences?.[index]?.targetAudience}
                       errors={errors.targetAudiences?.[index]?.targetAudience}
                       placeholder={t("placeholders.targetAudience")}
-                      list={targetAudienceOptions.map((opt) => opt.name || opt)}
+                      list={targetAudienceOptions
+                        .map((opt) => getItemName(opt, locale))
+                        .filter(Boolean)}
                     />
 
                     <TextInputGroup
