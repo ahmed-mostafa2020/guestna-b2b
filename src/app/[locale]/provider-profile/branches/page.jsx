@@ -186,37 +186,6 @@ const ProviderBranchesPage = () => {
     [locale, t, enqueueSnackbar, invalidateBranchesData]
   );
 
-  /* ─── Delete Branch ─── */
-  const handleDeleteBranch = useCallback(
-    async (branch) => {
-      const id = branch?._id || branch?.id;
-      if (!id) return;
-
-      try {
-        await axios.delete(
-          getProxyUrl(
-            `${B2B_END_POINTS.PROVIDER_PROFILE.BRANCHES.DELETE}/${id}`
-          ),
-          { headers: getHeaders(locale) }
-        );
-
-        enqueueSnackbar(
-          t("providerProfile.branches.notifications.deleteSuccess"),
-          { variant: "success" }
-        );
-        invalidateBranchesData();
-      } catch (err) {
-        console.error("Failed to delete branch:", err);
-        enqueueSnackbar(
-          err.response?.data?.message ||
-            t("providerProfile.branches.notifications.actionError"),
-          { variant: "error" }
-        );
-      }
-    },
-    [locale, t, enqueueSnackbar, invalidateBranchesData]
-  );
-
   /* ─── View Map Preview ─── */
   const handleViewLocation = useCallback((branch) => {
     setPreviewBranch(branch);
@@ -246,7 +215,6 @@ const ProviderBranchesPage = () => {
         loading={isTableLoading}
         onEdit={handleOpenEditModal}
         onToggleStatus={handleToggleStatus}
-        onDelete={handleDeleteBranch}
         onViewLocation={handleViewLocation}
         isTogglingStatusId={isTogglingStatusId}
       />

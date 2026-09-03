@@ -7,7 +7,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import TextInputGroup from "@components/forms/TextInputGroup";
 import SelectionGroup from "@components/forms/SelectionGroup";
-import CustomSwitch from "@components/features/profile/schoolManagementTeam/users/UsersPermissions/CustomSwitch";
 import BranchLocationPicker from "@components/features/provider-profile/branches/BranchLocationPicker";
 import { createBranchValidationSchema } from "@utils/validators/validationSchemas";
 
@@ -35,7 +34,6 @@ const BranchForm = ({
       lng: "46.6753",
       address: "",
     },
-    isActive: true,
   };
 
   const formInitialValues = initialValues || defaultValues;
@@ -57,12 +55,12 @@ const BranchForm = ({
       }) => (
         <Form className="flex flex-col gap-5 max-h-[75vh] overflow-y-auto px-1 font-somar">
           {submitError && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs sm:text-sm text-red-600 font-somar">
+            <div className="p-3 bg-error/10 border border-error/30 rounded-xl text-xs sm:text-sm text-error font-somar">
               {submitError}
             </div>
           )}
 
-          {/* Row 1: Arabic Name & English Name */}
+          {/* Row 1: Arabic Name & English Name (Required) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <TextInputGroup
               label={t("modal.nameAr")}
@@ -90,7 +88,7 @@ const BranchForm = ({
             />
           </div>
 
-          {/* Row 2: City & Phone */}
+          {/* Row 2: City & Phone (Required) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <SelectionGroup
               label={t("modal.city")}
@@ -115,11 +113,12 @@ const BranchForm = ({
               onChange={handleChange}
               onBlur={handleBlur}
               placeholder={t("modal.phonePlaceholder")}
+              required={true}
               textAlign="left"
             />
           </div>
 
-          {/* Row 3: Email */}
+          {/* Row 3: Email (Required) */}
           <TextInputGroup
             label={t("modal.email")}
             name="email"
@@ -130,10 +129,11 @@ const BranchForm = ({
             onChange={handleChange}
             onBlur={handleBlur}
             placeholder={t("modal.emailPlaceholder")}
+            required={true}
             textAlign="left"
           />
 
-          {/* Row 4: About Arabic & English */}
+          {/* Row 4: About Arabic & English (Optional) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <TextInputGroup
               label={t("modal.aboutAr")}
@@ -163,7 +163,7 @@ const BranchForm = ({
             />
           </div>
 
-          {/* Interactive Map Location Picker */}
+          {/* Interactive Map Location Picker (Optional) */}
           <BranchLocationPicker
             lat={values.location?.lat}
             lng={values.location?.lng}
@@ -174,24 +174,6 @@ const BranchForm = ({
             addressPlaceholder={t("modal.addressPlaceholder")}
             onChangeLocation={(newLoc) => setFieldValue("location", newLoc)}
           />
-
-          {/* Active Status Toggle Card */}
-          <div className="bg-white rounded-xl border border-border p-4 flex items-center justify-between shadow-sm">
-            <div className="flex flex-col gap-0.5">
-              <span className="text-sm sm:text-base font-bold text-textDark font-somar">
-                {t("modal.statusTitle")}
-              </span>
-              <span className="text-xs sm:text-sm text-textLight font-somar">
-                {values.isActive
-                  ? t("modal.statusSubtitleActive")
-                  : t("modal.statusSubtitleInactive")}
-              </span>
-            </div>
-            <CustomSwitch
-              checked={values.isActive}
-              onChange={(e) => setFieldValue("isActive", e.target.checked)}
-            />
-          </div>
 
           {/* Footer Action Buttons */}
           <div className="flex items-center gap-3 pt-2">

@@ -190,6 +190,7 @@ export const B2B_END_POINTS = {
   ADDRESS: {
     COUNTRIES_AND_NATIONALITIES: "profile/editFields", //MAIN
     CITIES: "profile/cities", //MAIN
+    SELECTED_CITIES: "cities/selected/all",
   },
 
   SCHOOL_REGISTER: {

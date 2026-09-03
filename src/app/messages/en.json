@@ -307,6 +307,7 @@
       },
       "mapPreviewModal": {
         "title": "Branch Location on Map",
+        "coordinates": "Coordinates",
         "openInGoogleMaps": "Open in Google Maps",
         "close": "Close"
       },
@@ -322,7 +323,9 @@
         "nameArRequired": "Branch Arabic name is required",
         "nameEnRequired": "Branch English name is required",
         "cityRequired": "Please select a city",
+        "phoneRequired": "Phone number is required",
         "phoneInvalid": "Invalid phone number",
+        "emailRequired": "Email is required",
         "emailInvalid": "Invalid email address",
         "locationRequired": "Please select branch location on map"
       }

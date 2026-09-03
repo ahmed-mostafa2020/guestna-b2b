@@ -314,6 +314,7 @@
       },
       "mapPreviewModal": {
         "title": "موقع الفرع على الخريطة",
+        "coordinates": "الإحداثيات",
         "openInGoogleMaps": "فتح في خرائط جوجل",
         "close": "إغلاق"
       },
@@ -329,7 +330,9 @@
         "nameArRequired": "اسم الفرع بالعربي مطلوب",
         "nameEnRequired": "اسم الفرع بالإنجليزية مطلوب",
         "cityRequired": "يرجى اختيار المدينة",
+        "phoneRequired": "رقم الهاتف مطلوب",
         "phoneInvalid": "رقم الهاتف غير صالح",
+        "emailRequired": "البريد الإلكتروني مطلوب",
         "emailInvalid": "البريد الإلكتروني غير صالح",
         "locationRequired": "يرجى تحديد موقع الفرع على الخريطة"
       }

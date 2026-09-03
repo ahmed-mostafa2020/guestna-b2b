@@ -29,9 +29,9 @@ const BranchModal = ({
   const [submitError, setSubmitError] = useState(null);
   const [branchData, setBranchData] = useState(null);
 
-  // Fetch Cities for city selection dropdown
+  // Fetch Cities from cities/selected/all
   const { data: citiesResponse } = useFetchData(
-    B2B_END_POINTS.ADDRESS.CITIES,
+    B2B_END_POINTS.ADDRESS.SELECTED_CITIES,
     {},
     {
       lang: locale,
@@ -39,7 +39,11 @@ const BranchModal = ({
     }
   );
 
-  const rawCities = citiesResponse?.data || citiesResponse || [];
+  const rawCities =
+    citiesResponse?.data?.cities ||
+    citiesResponse?.cities ||
+    citiesResponse?.data ||
+    (Array.isArray(citiesResponse) ? citiesResponse : []);
   const cityList = Array.isArray(rawCities)
     ? rawCities.map((c) => ({
         id: c._id || c.id,
@@ -133,20 +137,24 @@ const BranchModal = ({
         ar: values.nameAr.trim(),
         en: values.nameEn.trim(),
       },
-      email: values.email?.trim() || undefined,
-      phone: values.phone?.trim() || undefined,
+      email: values.email.trim(),
+      phone: values.phone.trim(),
       city: values.city,
-      about: {
-        ar: values.aboutAr?.trim() || undefined,
-        en: values.aboutEn?.trim() || undefined,
-      },
-      location: {
-        lat: String(values.location?.lat || "24.7136"),
-        lng: String(values.location?.lng || "46.6753"),
-        address: values.location?.address || "",
-      },
-      isActive: Boolean(values.isActive),
     };
+
+    if (values.aboutAr?.trim() || values.aboutEn?.trim()) {
+      payload.about = {
+        ...(values.aboutAr?.trim() && { ar: values.aboutAr.trim() }),
+        ...(values.aboutEn?.trim() && { en: values.aboutEn.trim() }),
+      };
+    }
+
+    if (values.location?.lat && values.location?.lng) {
+      payload.location = {
+        lat: String(values.location.lat),
+        lng: String(values.location.lng),
+      };
+    }
 
     try {
       const headers = getHeaders(locale);

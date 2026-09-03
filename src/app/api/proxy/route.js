@@ -10,7 +10,12 @@ const getBackendUrl = (path) => {
     process.env.NEXT_PUBLIC_BASE_URL ||
     process.env.NEXT_PUBLIC_API_URL ||
     "";
-  if (path && (path.startsWith("clientInfoBooking/") || path.startsWith("promoCodeDiscounts/"))) {
+  if (
+    path &&
+    (path.startsWith("clientInfoBooking/") ||
+      path.startsWith("promoCodeDiscounts/") ||
+      path.startsWith("cities/selected/"))
+  ) {
     baseUrl = baseUrl.replace(/\/b2b\/?$/, "/");
   }
   const cleanBase = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
