@@ -85,7 +85,7 @@ const BranchMapPreviewModal = ({ open, onClose, branch }) => {
   if (!open || !branch) return null;
 
   const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-  const embedUrl = `https://maps.google.com/maps?q=${lat},${lng}&hl=${locale || "ar"}&z=15&output=embed`;
+  const embedUrl = `https://maps.google.com/maps?q=${lat},${lng}&hl=${encodeURIComponent(locale || "ar")}&z=15&output=embed`;
 
   return (
     <CustomizedModal

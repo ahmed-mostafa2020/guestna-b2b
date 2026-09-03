@@ -297,6 +297,7 @@
         "save": "Save Branch",
         "saving": "Saving...",
         "loadingInfo": "Loading information...",
+        "mapConfigError": "Google Maps API key is not configured",
         "cancel": "Cancel"
       },
       "deleteModal": {

@@ -116,9 +116,7 @@ const ProviderBranchesPage = () => {
               key.includes(B2B_END_POINTS.PROVIDER_PROFILE.BRANCHES.COUNTS))
         ),
     });
-    refetchBranches?.();
-    refetchCounts?.();
-  }, [queryClient, refetchBranches, refetchCounts]);
+  }, [queryClient]);
 
   /* ─── Add & Edit Modal Handlers ─── */
   const handleOpenAddModal = useCallback(() => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, memo } from "react";
+import { useEffect, useState, useCallback, useMemo, memo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import axios from "axios";
 import { Close } from "@mui/icons-material";
@@ -44,20 +44,23 @@ const BranchModal = ({
     citiesResponse?.cities ||
     citiesResponse?.data ||
     (Array.isArray(citiesResponse) ? citiesResponse : []);
-  const cityList = Array.isArray(rawCities)
-    ? rawCities.map((c) => ({
-        id: c._id || c.id,
-        value: c._id || c.id,
-        name:
-          typeof c.name === "object" && c.name !== null
-            ? c.name[locale] || c.name.ar || c.name.en || ""
-            : c.name || "",
-        label:
-          typeof c.name === "object" && c.name !== null
-            ? c.name[locale] || c.name.ar || c.name.en || ""
-            : c.name || "",
-      }))
-    : [];
+
+  const cityList = useMemo(() => {
+    return Array.isArray(rawCities)
+      ? rawCities.map((c) => {
+          const localizedName =
+            typeof c.name === "object" && c.name !== null
+              ? c.name[locale] || c.name.ar || c.name.en || ""
+              : c.name || "";
+          return {
+            id: c._id || c.id,
+            value: c._id || c.id,
+            name: localizedName,
+            label: localizedName,
+          };
+        })
+      : [];
+  }, [rawCities, locale]);
 
   // Fetch branch details in Edit mode
   const fetchBranchDetails = useCallback(
@@ -134,11 +137,11 @@ const BranchModal = ({
 
     const payload = {
       name: {
-        ar: values.nameAr.trim(),
-        en: values.nameEn.trim(),
+        ar: values.nameAr?.trim() || "",
+        en: values.nameEn?.trim() || "",
       },
-      email: values.email.trim(),
-      phone: values.phone.trim(),
+      email: values.email?.trim() || "",
+      phone: values.phone?.trim() || "",
       city: values.city,
     };
 

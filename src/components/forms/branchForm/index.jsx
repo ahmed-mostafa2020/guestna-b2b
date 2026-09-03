@@ -1,6 +1,6 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Formik, Form } from "formik";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -38,11 +38,16 @@ const BranchForm = ({
 
   const formInitialValues = initialValues || defaultValues;
 
+  const validationSchema = useMemo(
+    () => createBranchValidationSchema(tRoot),
+    [tRoot]
+  );
+
   return (
     <Formik
       enableReinitialize
       initialValues={formInitialValues}
-      validationSchema={createBranchValidationSchema(tRoot)}
+      validationSchema={validationSchema}
       onSubmit={onSubmit}
     >
       {({
@@ -172,6 +177,7 @@ const BranchForm = ({
             instructionText={t("modal.mapInstruction")}
             addressLabel={t("modal.address")}
             addressPlaceholder={t("modal.addressPlaceholder")}
+            mapConfigError={t("modal.mapConfigError")}
             onChangeLocation={(newLoc) => setFieldValue("location", newLoc)}
           />
 

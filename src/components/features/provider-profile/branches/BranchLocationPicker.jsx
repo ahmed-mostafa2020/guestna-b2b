@@ -18,11 +18,15 @@ const BranchLocationPicker = ({
   instructionText = "انقر على الخريطة لتحديد الموقع",
   addressLabel = "العنوان",
   addressPlaceholder = "طريق الملك فهد، الرياض...",
+  mapConfigError = "Google Maps API key is not configured",
 }) => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markerRef = useRef(null);
   const geocoderRef = useRef(null);
+  const isUserInputRef = useRef(false);
+  const dragListenerRef = useRef(null);
+  const clickListenerRef = useRef(null);
 
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [mapError, setMapError] = useState(null);
@@ -58,9 +62,11 @@ const BranchLocationPicker = ({
   );
 
   useEffect(() => {
-    const apiKey =
-      process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ||
-      "AIzaSyDa7OhoR9H6P97J4unsz_Ndqn7kIY5qZqE";
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    if (!apiKey) {
+      setMapError(mapConfigError);
+      return;
+    }
 
     const loader = new Loader({
       apiKey,
@@ -94,13 +100,15 @@ const BranchLocationPicker = ({
           animation: window.google.maps.Animation.DROP,
         });
 
-        marker.addListener("dragend", (e) => {
+        dragListenerRef.current = marker.addListener("dragend", (e) => {
+          isUserInputRef.current = true;
           const newLat = e.latLng.lat();
           const newLng = e.latLng.lng();
           reverseGeocode(newLat, newLng);
         });
 
-        map.addListener("click", (e) => {
+        clickListenerRef.current = map.addListener("click", (e) => {
+          isUserInputRef.current = true;
           const newLat = e.latLng.lat();
           const newLng = e.latLng.lng();
           marker.setPosition({ lat: newLat, lng: newLng });
@@ -115,11 +123,26 @@ const BranchLocationPicker = ({
         console.error("Failed to load Google Maps API:", err);
         setMapError("Failed to load Google Maps");
       });
+
+    return () => {
+      if (window.google?.maps?.event) {
+        if (dragListenerRef.current) {
+          window.google.maps.event.removeListener(dragListenerRef.current);
+        }
+        if (clickListenerRef.current) {
+          window.google.maps.event.removeListener(clickListenerRef.current);
+        }
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Update marker & pan if lat/lng change externally
   useEffect(() => {
+    if (isUserInputRef.current) {
+      isUserInputRef.current = false;
+      return;
+    }
     if (mapInstanceRef.current && markerRef.current) {
       const pos = { lat: numericLat, lng: numericLng };
       mapInstanceRef.current.panTo(pos);

@@ -304,6 +304,7 @@
         "save": "حفظ الفرع",
         "saving": "جاري الحفظ...",
         "loadingInfo": "جاري تحميل البيانات...",
+        "mapConfigError": "لم يتم ضبط مفتاح خرائط جوجل",
         "cancel": "الغاء"
       },
       "deleteModal": {

@@ -25,13 +25,31 @@ export const createBranchValidationSchema = (t) => {
       .required(t("providerProfile.branches.validations.emailRequired")),
     phone: Yup.string()
       .trim()
-      .required(t("providerProfile.branches.validations.phoneRequired")),
+      .required(t("providerProfile.branches.validations.phoneRequired"))
+      .matches(
+        /^(05\d{8}|(?:\+?966\s?5\d{8})|\+?[1-9]\d{7,14})$/,
+        t("providerProfile.branches.validations.phoneInvalid")
+      ),
     aboutAr: Yup.string().nullable().optional(),
     aboutEn: Yup.string().nullable().optional(),
     location: Yup.object()
       .shape({
-        lat: Yup.string().nullable().optional(),
-        lng: Yup.string().nullable().optional(),
+        lat: Yup.string()
+          .nullable()
+          .optional()
+          .test("valid-lat", "Invalid latitude", (val) => {
+            if (!val) return true;
+            const num = parseFloat(val);
+            return !isNaN(num) && num >= -90 && num <= 90;
+          }),
+        lng: Yup.string()
+          .nullable()
+          .optional()
+          .test("valid-lng", "Invalid longitude", (val) => {
+            if (!val) return true;
+            const num = parseFloat(val);
+            return !isNaN(num) && num >= -180 && num <= 180;
+          }),
         address: Yup.string().nullable().optional(),
       })
       .nullable()
