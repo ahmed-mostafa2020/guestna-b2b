@@ -1,4 +1,19 @@
 const ConsentPdfTemplate = ({ consentRef, pdfStudent, booking, locale, t }) => {
+  const studentClass =
+    pdfStudent.child?.class?.name ||
+    (typeof pdfStudent.child?.class === "string" &&
+      pdfStudent.child.class.trim()) ||
+    (typeof pdfStudent.child?.class === "number"
+      ? pdfStudent.child.class
+      : null) ||
+    (typeof pdfStudent.child?.className === "string" &&
+      pdfStudent.child.className.trim()) ||
+    (typeof pdfStudent.class === "string" && pdfStudent.class.trim()) ||
+    (typeof pdfStudent.class === "number" ? pdfStudent.class : null) ||
+    "-";
+
+  const studentGrade = pdfStudent.child?.grade?.name;
+
   return (
     <div
       style={{
@@ -127,6 +142,64 @@ const ConsentPdfTemplate = ({ consentRef, pdfStudent, booking, locale, t }) => {
               }}
             >
               {pdfStudent.child?.nationalId || "-"}
+            </p>
+          </div>
+
+          {studentGrade && (
+            <div>
+              <p
+                style={{
+                  fontSize: "12px",
+
+                  color: "#6b7280",
+
+                  margin: "0 0 4px 0",
+                }}
+              >
+                {t(
+                  "profile.tables.orders.studentsTable.consentPdf.grade"
+                )}
+              </p>
+
+              <p
+                style={{
+                  fontSize: "16px",
+
+                  fontWeight: "600",
+
+                  margin: 0,
+                }}
+              >
+                {studentGrade}
+              </p>
+            </div>
+          )}
+
+          <div>
+            <p
+              style={{
+                fontSize: "12px",
+
+                color: "#6b7280",
+
+                margin: "0 0 4px 0",
+              }}
+            >
+              {t(
+                "profile.tables.orders.studentsTable.consentPdf.class"
+              )}
+            </p>
+
+            <p
+              style={{
+                fontSize: "16px",
+
+                fontWeight: "600",
+
+                margin: 0,
+              }}
+            >
+              {studentClass}
             </p>
           </div>
 

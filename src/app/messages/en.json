@@ -1787,6 +1787,8 @@
             "title": "Parent Consent Form",
             "studentName": "Student Name",
             "nationalId": "National ID",
+            "grade": "Grade",
+            "class": "Class",
             "parentName": "Parent Name",
             "tripName": "Trip Name",
             "schoolName": "School Name",

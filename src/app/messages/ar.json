@@ -1799,6 +1799,8 @@
             "title": "نموذج موافقة ولي الأمر",
             "studentName": "اسم الطالب",
             "nationalId": "رقم الهوية",
+            "grade": "الصف",
+            "class": "الفصل",
             "parentName": "اسم ولي الأمر",
             "tripName": "اسم الرحلة",
             "schoolName": "اسم المدرسة",

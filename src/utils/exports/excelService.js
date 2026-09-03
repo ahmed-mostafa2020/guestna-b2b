@@ -283,7 +283,7 @@ export const ExcelService = {
 
     // Match headers dynamically
     const columnMap = {};
-    headers.forEach((col, index) => {
+    headers.forEach((col) => {
       const matchIndex = excelHeaderValues.findIndex(
         (h) =>
           h?.toLowerCase() === col.label[locale]?.toLowerCase() ||
