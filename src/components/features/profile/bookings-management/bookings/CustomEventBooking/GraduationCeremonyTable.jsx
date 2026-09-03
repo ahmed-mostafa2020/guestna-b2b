@@ -51,14 +51,14 @@ const GraduationCeremonyTable = ({
 
   const mapToRecords = (nodes) =>
     nodes.map((row) => ({
-      orderId: String(row.orderId ?? "").toUpperCase(),
-      price: row.price != null ? row.price : "-",
-      studentName: row.client?.name ?? "-",
-      phone: row.client?.phone ?? "-",
-      academicStage: row.client?.academicStage ?? "-",
-      grade: row.client?.grade ?? "-",
-      clothesSize: row.client?.clothesSize ?? "-",
-      organization: row.organization?.name ?? "-",
+      orderId: row.orderId ? String(row.orderId).toUpperCase() : "",
+      price: row.price != null ? row.price : "",
+      studentName: row.client?.name ?? "",
+      phone: row.client?.phone ?? "",
+      academicStage: row.client?.academicStage ?? "",
+      grade: row.client?.grade ?? "",
+      clothesSize: row.client?.clothesSize ?? "",
+      organization: row.organization?.name ?? "",
     }));
 
   const handleExport = async () => {

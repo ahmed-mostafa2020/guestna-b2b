@@ -23,14 +23,80 @@ const createWorkbook = async (name = "Sheet") => {
 };
 
 const autoFitColumns = (worksheet) => {
+  if (!worksheet.columns) return;
   worksheet.columns.forEach((col) => {
     let max = 10;
     col.eachCell({ includeEmpty: true }, (cell) => {
-      const v = cell.value ? cell.value.toString() : "";
+      const v = cell.value
+        ? typeof cell.value === "object" && cell.value?.text
+          ? cell.value.text
+          : cell.value.toString()
+        : "";
       max = Math.max(max, v.length + 2);
     });
     col.width = max;
   });
+};
+
+export const hasCellData = (val) => {
+  if (val === null || val === undefined) return false;
+  if (typeof val === "string") {
+    const trimmed = val.trim();
+    if (
+      trimmed === "" ||
+      trimmed === "-" ||
+      trimmed === "—" ||
+      trimmed.toLowerCase() === "n/a" ||
+      trimmed.toLowerCase() === "null" ||
+      trimmed.toLowerCase() === "undefined"
+    ) {
+      return false;
+    }
+    return true;
+  }
+  if (typeof val === "number") {
+    return !isNaN(val);
+  }
+  if (typeof val === "boolean") {
+    return true;
+  }
+  if (val instanceof Date) {
+    return !isNaN(val.getTime());
+  }
+  if (typeof val === "object") {
+    if (val.hyperlink) {
+      return String(val.hyperlink).trim() !== "";
+    }
+    if (val.text) {
+      return hasCellData(val.text);
+    }
+    if (val.richText && Array.isArray(val.richText)) {
+      return val.richText.some((rt) => hasCellData(rt.text));
+    }
+    if (Array.isArray(val)) {
+      return val.some(hasCellData);
+    }
+    return Object.keys(val).length > 0;
+  }
+  return false;
+};
+
+export const filterEmptyColumns = (columns = [], rows = []) => {
+  if (!rows || rows.length === 0) return columns;
+  return columns.filter((col) => {
+    return rows.some((row) => hasCellData(row[col.key]));
+  });
+};
+
+export const getColLetter = (colIndex) => {
+  let temp = colIndex;
+  let letter = "";
+  while (temp > 0) {
+    let mod = (temp - 1) % 26;
+    letter = String.fromCharCode(65 + mod) + letter;
+    temp = Math.floor((temp - mod) / 26);
+  }
+  return letter || "A";
 };
 const getCellValue = (cell) => {
   if (!cell) return "";
@@ -255,11 +321,27 @@ export const ExcelService = {
   },
 
   // 3. Export any records to Excel
-  exportRecords: async ({ headers, records, locale = "en" }) => {
+  exportRecords: async ({ headers, records = [], locale = "en" }) => {
     const { workbook, worksheet } = await createWorkbook("Records");
 
-    worksheet.columns = headers.map((col) => ({
-      header: col.label[locale] || col.label.en,
+    if (locale === "ar") {
+      worksheet.views = [{ rightToLeft: true }];
+    }
+
+    const activeHeaders = headers.filter((col) => {
+      if (!records || records.length === 0) return true;
+      return records.some((row) => hasCellData(row[col.key]));
+    });
+
+    worksheet.columns = activeHeaders.map((col) => ({
+      header:
+        typeof col.header === "string"
+          ? col.header
+          : col.label?.[locale] ||
+            col.label?.en ||
+            col.label?.ar ||
+            col.label ||
+            col.key,
       key: col.key,
       width: col.width || 20,
     }));
@@ -276,6 +358,10 @@ export const ExcelService = {
     const { workbook, worksheet: tripSheet } = await createWorkbook(
       t("profile.tables.bookings.details.tripInfo")
     );
+
+    if (locale === "ar") {
+      tripSheet.views = [{ rightToLeft: true }];
+    }
 
     const tripData = [
       [t("profile.tables.bookings.details.tripInfo")],
@@ -360,21 +446,31 @@ export const ExcelService = {
 
       const studentsSheet = workbook.addWorksheet(sheetName);
 
-      // Define columns
-      studentsSheet.columns = myBookingStudentsHeaders({ t });
+      if (locale === "ar") {
+        studentsSheet.views = [{ rightToLeft: true }];
+      }
 
       // Add Data
       const studentsData = bookingDetails.nodes.map((student, index) => ({
         index: index + 1,
         name: student.name || "",
-        nationalId: student.nationalId || "-",
-        grade: student.grade?.name || "-",
+        nationalId: student.nationalId || "",
+        grade: student.grade?.name || "",
       }));
+
+      const allHeaders = myBookingStudentsHeaders({ t });
+      const activeHeaders = allHeaders.filter((col) =>
+        studentsData.some((row) => hasCellData(row[col.key]))
+      );
+
+      // Define columns
+      studentsSheet.columns = activeHeaders;
 
       studentsSheet.addRows(studentsData);
 
       // Style Header
       styleHeaderRow(studentsSheet);
+      autoFitColumns(studentsSheet);
     }
 
     // Save
@@ -430,8 +526,73 @@ export const ExcelService = {
       worksheet.views = [{ rightToLeft: true }];
     }
 
+    const candidateColumns = [
+      {
+        header: "#",
+        width: 8,
+        value: 1,
+      },
+      {
+        header: t("profile.tables.orders.studentsTable.studentName"),
+        width: 25,
+        value: student.child?.name || "",
+      },
+      {
+        header: t("profile.tables.orders.studentsTable.parentName"),
+        width: 25,
+        value: student.parent?.name || "",
+      },
+      {
+        header: t("profile.tables.orders.studentsTable.grade"),
+        width: 20,
+        value: student.child?.grade?.name || "",
+      },
+      {
+        header: t("profile.tables.orders.studentsTable.class"),
+        width: 15,
+        value:
+          student.child?.class?.name ||
+          (typeof student.child?.class === "string" &&
+            student.child.class.trim()) ||
+          (typeof student.child?.class === "number"
+            ? student.child.class
+            : null) ||
+          student.child?.className ||
+          student.class ||
+          "",
+      },
+      {
+        header: t("profile.tables.orders.studentsTable.parentPhone"),
+        width: 20,
+        value: student.parent?.phone || "",
+      },
+      {
+        header: t("profile.tables.orders.studentsTable.nationalId"),
+        width: 20,
+        value: student.child?.nationalId || "",
+      },
+      {
+        header: t("profile.tables.orders.studentsTable.parentConfirmation"),
+        width: 20,
+        value: student.parent?.termsAccepted
+          ? locale === "ar"
+            ? "نعم"
+            : "Yes"
+          : locale === "ar"
+            ? "لا"
+            : "No",
+      },
+    ];
+
+    const activeColumns = candidateColumns.filter((col) =>
+      hasCellData(col.value)
+    );
+
+    const numCols = Math.max(activeColumns.length, 1);
+    const lastColLetter = getColLetter(numCols);
+
     // Add title
-    worksheet.mergeCells("A1:G1");
+    worksheet.mergeCells(`A1:${lastColLetter}1`);
     const titleCell = worksheet.getCell("A1");
     titleCell.value = `${t("profile.tables.orders.studentsTable.title")} - ${
       booking?.name || ""
@@ -441,7 +602,7 @@ export const ExcelService = {
     worksheet.getRow(1).height = 30;
 
     // Add booking info
-    worksheet.mergeCells("A2:G2");
+    worksheet.mergeCells(`A2:${lastColLetter}2`);
     const infoCell = worksheet.getCell("A2");
     infoCell.value = `${t("profile.tables.bookings.header.schoolName")}: ${
       booking?.organization?.name || booking?.organization || ""
@@ -454,19 +615,8 @@ export const ExcelService = {
     worksheet.getRow(2).height = 25;
 
     // Add headers in row 4
-    const headers = [
-      "#",
-      t("profile.tables.orders.studentsTable.studentName"),
-      t("profile.tables.orders.studentsTable.parentName"),
-      t("profile.tables.orders.studentsTable.grade"),
-      t("profile.tables.orders.studentsTable.class"),
-      t("profile.tables.orders.studentsTable.parentPhone"),
-      t("profile.tables.orders.studentsTable.nationalId"),
-      t("profile.tables.orders.studentsTable.parentConfirmation"),
-    ];
-
     worksheet.addRow([]);
-    const headerRow = worksheet.addRow(headers);
+    const headerRow = worksheet.addRow(activeColumns.map((c) => c.header));
     headerRow.eachCell((cell) => {
       cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
       cell.fill = {
@@ -485,40 +635,10 @@ export const ExcelService = {
     worksheet.getRow(4).height = 25;
 
     // Set column widths
-    worksheet.columns = [
-      { width: 8 },
-      { width: 25 },
-      { width: 25 },
-      { width: 20 },
-      { width: 15 },
-      { width: 20 },
-      { width: 20 },
-      { width: 20 },
-    ];
+    worksheet.columns = activeColumns.map((c) => ({ width: c.width || 20 }));
 
     // Add student data
-    const dataRow = worksheet.addRow([
-      1,
-      student.child?.name || "-",
-      student.parent?.name || "-",
-      student.child?.grade?.name || "-",
-      student.child?.class?.name ||
-        (typeof student.child?.class === "string" &&
-          student.child.class.trim()) ||
-        (typeof student.child?.class === "number" ? student.child.class : null) ||
-        student.child?.className ||
-        student.class ||
-        "-",
-      student.parent?.phone || "-",
-      student.child?.nationalId || "-",
-      student.parent?.termsAccepted
-        ? locale === "ar"
-          ? "نعم"
-          : "Yes"
-        : locale === "ar"
-          ? "لا"
-          : "No",
-    ]);
+    const dataRow = worksheet.addRow(activeColumns.map((c) => c.value));
     dataRow.eachCell((cell) => {
       cell.alignment = { horizontal: "center", vertical: "middle" };
       cell.border = {
@@ -532,18 +652,23 @@ export const ExcelService = {
     // Add price info if available
     if (booking?.price) {
       worksheet.addRow([]);
-      const priceRow = worksheet.addRow([
-        "",
-        "",
-        "",
-        "",
-        "",
-        t("profile.tables.bookings.header.budget"),
-        formatCurrencyString(booking.price, locale),
-      ]);
-      priceRow.getCell(6).font = { bold: true };
-      priceRow.getCell(7).font = { bold: true };
+      const priceRowValues = new Array(numCols).fill("");
+      if (numCols >= 2) {
+        priceRowValues[numCols - 2] = t("profile.tables.bookings.header.budget");
+        priceRowValues[numCols - 1] = formatCurrencyString(booking.price, locale);
+      } else {
+        priceRowValues[0] = `${t("profile.tables.bookings.header.budget")}: ${formatCurrencyString(booking.price, locale)}`;
+      }
+      const priceRow = worksheet.addRow(priceRowValues);
+      if (numCols >= 2) {
+        priceRow.getCell(numCols - 1).font = { bold: true };
+        priceRow.getCell(numCols).font = { bold: true };
+      } else {
+        priceRow.getCell(1).font = { bold: true };
+      }
     }
+
+    autoFitColumns(worksheet);
 
     // Generate filename
     const filename = `${t("profile.tables.orders.studentsTable.title")}_${
@@ -564,6 +689,10 @@ export const ExcelService = {
     const { workbook, worksheet: tripSheet } = await createWorkbook(
       t("exportUtils.bookingReport.tripInfo")
     );
+
+    if (locale === "ar") {
+      tripSheet.views = [{ rightToLeft: true }];
+    }
 
     const tripData = [
       [t("exportUtils.bookingReport.tripInfo")],
@@ -642,10 +771,15 @@ export const ExcelService = {
         t("exportUtils.bookingReport.students")
       );
 
-      studentsSheet.columns = bookingManagementStudentsHeaders({ t });
+      if (locale === "ar") {
+        studentsSheet.views = [{ rightToLeft: true }];
+      }
 
-      bookingDetails.nodes.forEach((student) => {
-        const row = {
+      const allHeaders = bookingManagementStudentsHeaders({ t });
+
+      const mappedRows = bookingDetails.nodes.map((student) => {
+        const hasNationalIdImg = Boolean(student.child?.nationalIdImage);
+        return {
           orderId: student.orderId || "",
           studentName: student.child?.name || "",
           academicStage: student.child?.academicStage?.name || "",
@@ -663,11 +797,17 @@ export const ExcelService = {
           size: student.child?.size || "",
           childPhone: student.child?.phone || "",
           childNationalId: student.child?.nationalId || "",
-          nationalIdImage: {
-            text: student.child?.nationalIdImage ? "View Image" : "",
-            hyperlink: student.child?.nationalIdImage || "",
-          },
-          hasFoodAllergy: student.child?.hasFoodAllergy ? "Yes" : "",
+          nationalIdImage: hasNationalIdImg
+            ? {
+                text: "View Image",
+                hyperlink: student.child.nationalIdImage,
+              }
+            : "",
+          hasFoodAllergy: student.child?.hasFoodAllergy
+            ? locale === "ar"
+              ? "نعم"
+              : "Yes"
+            : "",
           foodAllergyDetails: student.child?.foodAllergy || "",
           parentName: student.parent?.name || "",
           parentEmail: student.parent?.email || "",
@@ -683,23 +823,40 @@ export const ExcelService = {
               : "No",
           note: student.child?.note || "",
         };
+      });
 
+      const activeHeaders = allHeaders.filter((col) =>
+        mappedRows.some((row) => hasCellData(row[col.key]))
+      );
+
+      studentsSheet.columns = activeHeaders.map((col) => ({
+        header: col.header,
+        key: col.key,
+        width: col.width || 20,
+      }));
+
+      mappedRows.forEach((row) => {
         const addedRow = studentsSheet.addRow(row);
 
         // Handle Hyperlink cell specifically
-        if (student.child?.nationalIdImage) {
-          addedRow.getCell("nationalIdImage").value = {
-            text: "View Image",
-            hyperlink: student.child.nationalIdImage,
-          };
-          addedRow.getCell("nationalIdImage").font = {
-            color: { argb: "FF0000FF" },
-            underline: true,
-          };
+        if (
+          row.nationalIdImage &&
+          typeof row.nationalIdImage === "object" &&
+          row.nationalIdImage.hyperlink
+        ) {
+          const cell = addedRow.getCell("nationalIdImage");
+          if (cell) {
+            cell.value = row.nationalIdImage;
+            cell.font = {
+              color: { argb: "FF0000FF" },
+              underline: true,
+            };
+          }
         }
       });
 
       styleHeaderRow(studentsSheet);
+      autoFitColumns(studentsSheet);
     }
 
     const orderIdPart = booking.orderId ? `_${booking.orderId}` : "";
@@ -717,42 +874,46 @@ export const ExcelService = {
       t("profile.schoolTeamStudents.details.basicInfo")
     );
 
+    if (locale === "ar") {
+      profileSheet.views = [{ rightToLeft: true }];
+    }
+
     const profileData = [
       [t("profile.schoolTeamStudents.details.basicInfo")],
       [],
-      [t("profile.schoolTeamStudents.details.name"), data.name || "-"],
+      [t("profile.schoolTeamStudents.details.name"), data.name || ""],
       [
         t("profile.schoolTeamStudents.details.academicStage"),
-        data.academicStage?.name || "-",
+        data.academicStage?.name || "",
       ],
-      [t("profile.schoolTeamStudents.details.grade"), data.grade?.name || "-"],
+      [t("profile.schoolTeamStudents.details.grade"), data.grade?.name || ""],
       [
         t("profile.schoolTeamStudents.details.track"),
-        data.track?.educationSystem?.name || "-",
+        data.track?.educationSystem?.name || "",
       ],
-      [t("profile.schoolTeamStudents.details.studentNumber"), data._id || "-"],
+      [t("profile.schoolTeamStudents.details.studentNumber"), data._id || ""],
       [
         t("profile.schoolTeamStudents.details.nationalId"),
-        data.nationalId || "-",
+        data.nationalId || "",
       ],
       [],
       [t("profile.schoolTeamStudents.details.contactWithParent")],
       [],
       [
         t("profile.schoolTeamStudents.details.parentName"),
-        data.parent?.name || "-",
+        data.parent?.name || "",
       ],
       [
         t("profile.schoolTeamStudents.details.parentPhone"),
-        data.parent?.phone || "-",
+        data.parent?.phone || "",
       ],
       [
         t("profile.schoolTeamStudents.details.parentEmail"),
-        data.parent?.email || "-",
+        data.parent?.email || "",
       ],
       [
         t("profile.schoolTeamStudents.details.nationalId"),
-        data.parent?.nationalId || "-",
+        data.parent?.nationalId || "",
       ],
     ];
 
@@ -766,7 +927,11 @@ export const ExcelService = {
         t("profile.schoolTeamStudents.details.bookingDetails")
       );
 
-      bookingsSheet.columns = [
+      if (locale === "ar") {
+        bookingsSheet.views = [{ rightToLeft: true }];
+      }
+
+      const allBookingColumns = [
         {
           header: t("profile.schoolTeamStudents.details.activityName"),
           key: "tripName",
@@ -790,7 +955,7 @@ export const ExcelService = {
       ];
 
       const bookingRows = data.bookings.map((booking) => ({
-        tripName: booking.tripName || "-",
+        tripName: booking.tripName || "",
         date: booking.date
           ? formatDate(booking.date, locale, {
               year: "numeric",
@@ -799,13 +964,19 @@ export const ExcelService = {
               hour: "numeric",
               minute: "numeric",
             })
-          : "-",
+          : "",
         parent: t("profile.schoolTeamStudents.details.parent"),
-        status: t(`common.bookingStatus.${booking.status}`) || booking.status,
+        status: t(`common.bookingStatus.${booking.status}`) || booking.status || "",
       }));
 
+      const activeBookingColumns = allBookingColumns.filter((col) =>
+        bookingRows.some((row) => hasCellData(row[col.key]))
+      );
+
+      bookingsSheet.columns = activeBookingColumns;
       bookingsSheet.addRows(bookingRows);
       styleHeaderRow(bookingsSheet);
+      autoFitColumns(bookingsSheet);
     }
 
     const filename = `Student_Details_${data.name || "student"}_${

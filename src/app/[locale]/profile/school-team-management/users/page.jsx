@@ -71,17 +71,17 @@ const UsersPage = () => {
       const orgUsers =
         org.users?.map((user) => ({
           ...user,
-          role: user.role.description,
-          organizationName: org.organization?.name || "-",
+          role: user.role?.description || user.role || "",
+          organizationName: org.organization?.name || "",
         })) || [];
       return [...acc, ...orgUsers];
     }, []);
 
     const exportUsers = allUsers.map((user) => ({
-      organization: user.organizationName,
-      name: user.name || "-",
-      email: user.email || "-",
-      role: user.role || "-",
+      organization: user.organizationName || "",
+      name: user.name || "",
+      email: user.email || "",
+      role: user.role || "",
     }));
 
     await exportRecords(

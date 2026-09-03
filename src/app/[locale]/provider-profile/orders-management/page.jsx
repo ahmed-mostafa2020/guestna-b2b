@@ -16,6 +16,7 @@ import axios from "axios";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import formatDate from "@utils/formatters/FormateDate";
+import { hasCellData } from "@utils/exports/excelService";
 
 const ProviderOrdersManagementPage = () => {
   const t = useTranslations();
@@ -110,9 +111,9 @@ const ProviderOrdersManagementPage = () => {
         t("providerProfile.ordersManagement.tableTitle")
       );
 
-      // Define columns
+      // Define candidate columns
       const isAr = locale === "ar";
-      worksheet.columns = [
+      const allColumns = [
         {
           header: t("providerProfile.ordersManagement.columns.orderId"),
           key: "orderId",
@@ -150,6 +151,49 @@ const ProviderOrdersManagementPage = () => {
         },
       ];
 
+      // Map data rows from fetched nodes
+      const orderRows = nodes.map((row) => {
+        const orgName =
+          typeof row.organization === "string"
+            ? row.organization
+            : row.organization?.name || "";
+        const dateVal = row.day || row.date || row.createdAt;
+        const formattedDate = dateVal
+          ? formatDate(dateVal, locale, {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            })
+          : "";
+
+        return {
+          orderId: String(row.orderId || row._id?.slice(-8) || ""),
+          client: orgName,
+          product: row.name || "",
+          orderType:
+            row.askType === "CUSTOM_TRIP"
+              ? t("providerProfile.ordersManagement.types.CUSTOM_TRIP")
+              : t("providerProfile.ordersManagement.types.TRIP"),
+          orderDate: formattedDate,
+          budget:
+            row.basePrice !== undefined && row.basePrice !== null
+              ? row.basePrice
+              : "",
+          status: row.status
+            ? t(
+                `providerProfile.ordersManagement.statuses.${row.status || PROVIDER_ORDER_STATUS.PENDING}`
+              )
+            : "",
+        };
+      });
+
+      const activeColumns = allColumns.filter((col) => {
+        if (orderRows.length === 0) return true;
+        return orderRows.some((r) => hasCellData(r[col.key]));
+      });
+
+      worksheet.columns = activeColumns;
+
       // Style header row
       const headerRow = worksheet.getRow(1);
       headerRow.eachCell((cell) => {
@@ -162,36 +206,8 @@ const ProviderOrdersManagementPage = () => {
         cell.alignment = { horizontal: "center", vertical: "middle" };
       });
 
-      // Add data rows from fetched nodes
-      nodes.forEach((row) => {
-        const orgName =
-          typeof row.organization === "string"
-            ? row.organization
-            : row.organization?.name || "-";
-        const dateVal = row.day || row.date || row.createdAt;
-        const formattedDate = dateVal
-          ? formatDate(dateVal, locale, {
-              year: "numeric",
-              month: "numeric",
-              day: "numeric",
-            })
-          : "-";
-
-        const addedRow = worksheet.addRow({
-          orderId: String(row.orderId || row._id?.slice(-8) || "-"),
-          client: orgName,
-          product: row.name || "-",
-          orderType:
-            row.askType === "CUSTOM_TRIP"
-              ? t("providerProfile.ordersManagement.types.CUSTOM_TRIP")
-              : t("providerProfile.ordersManagement.types.TRIP"),
-          orderDate: formattedDate,
-          budget: row.basePrice ?? 0,
-          status: t(
-            `providerProfile.ordersManagement.statuses.${row.status || PROVIDER_ORDER_STATUS.PENDING}`
-          ),
-        });
-
+      orderRows.forEach((row) => {
+        const addedRow = worksheet.addRow(row);
         addedRow.eachCell((cell) => {
           cell.alignment = { horizontal: "center", vertical: "middle" };
         });
