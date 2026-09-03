@@ -315,6 +315,7 @@
       "mapPreviewModal": {
         "title": "موقع الفرع على الخريطة",
         "coordinates": "الإحداثيات",
+        "loadingMap": "جاري تحميل الخريطة...",
         "openInGoogleMaps": "فتح في خرائط جوجل",
         "close": "إغلاق"
       },

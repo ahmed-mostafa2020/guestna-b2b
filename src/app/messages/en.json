@@ -308,6 +308,7 @@
       "mapPreviewModal": {
         "title": "Branch Location on Map",
         "coordinates": "Coordinates",
+        "loadingMap": "Loading map...",
         "openInGoogleMaps": "Open in Google Maps",
         "close": "Close"
       },

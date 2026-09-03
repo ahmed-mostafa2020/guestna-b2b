@@ -1,8 +1,9 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo, useMemo, useState, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Close, OpenInNew } from "@mui/icons-material";
+import { Close, OpenInNew, LocationOnOutlined } from "@mui/icons-material";
+import { CircularProgress } from "@mui/material";
 import CustomizedModal from "@components/ui/customizedModal";
 
 const DEFAULT_LAT = 24.7136;
@@ -61,10 +62,19 @@ const BranchMapPreviewModal = ({ open, onClose, branch }) => {
   const t = useTranslations("providerProfile.branches.mapPreviewModal");
   const locale = useLocale();
 
+  const [isMapLoading, setIsMapLoading] = useState(true);
+
   const { lat, lng } = useMemo(
     () => parseCoordinates(branch),
     [branch]
   );
+
+  // Reset loading state when opening or switching branch
+  useEffect(() => {
+    if (open) {
+      setIsMapLoading(true);
+    }
+  }, [open, branch]);
 
   const address = branch?.location?.address || "";
   const branchName =
@@ -117,11 +127,27 @@ const BranchMapPreviewModal = ({ open, onClose, branch }) => {
             </button>
           </div>
 
-          {/* Map canvas with guaranteed interactive Google Map with Coordinates Pin */}
-          <div className="w-full h-84 sm:h-96 bg-gray-100 relative">
+          {/* Map canvas with skeleton / placeholder loading state */}
+          <div className="w-full h-84 sm:h-96 bg-gray-100 relative overflow-hidden">
+            {/* Skeleton & Spinner Placeholder while map loads */}
+            {isMapLoading && (
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 gap-3 transition-opacity duration-300">
+                <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-border flex items-center justify-center animate-bounce">
+                  <LocationOnOutlined className="!w-7 !h-7 text-mainColor" />
+                </div>
+                <div className="flex items-center gap-2.5 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-xl shadow-sm border border-border">
+                  <CircularProgress size={18} sx={{ color: "var(--color-main)" }} />
+                  <span className="text-xs sm:text-sm font-semibold text-textDark font-somar">
+                    {t("loadingMap")}
+                  </span>
+                </div>
+              </div>
+            )}
+
             <iframe
               title={branchName || t("title")}
               src={embedUrl}
+              onLoad={() => setIsMapLoading(false)}
               className="w-full h-full border-0"
               allowFullScreen
               loading="lazy"
