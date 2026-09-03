@@ -32,7 +32,7 @@ const SelectionGroup = ({
       className="relative w-full"
     >
       {label && (
-        <label className="block pb-2 font-medium font-somar">
+        <label className="block pb-2 font-medium font-ibm">
           {label}
           {required && <span className="text-error ml-1">*</span>}
         </label>

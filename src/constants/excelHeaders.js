@@ -137,6 +137,7 @@ export const bookingManagementStudentsHeaders = ({ t }) => [
     width: 20,
   },
   { header: t("exportUtils.bookingReport.grade"), key: "grade", width: 15 },
+  { header: t("exportUtils.bookingReport.class"), key: "class", width: 15 },
   { header: t("exportUtils.bookingReport.size"), key: "size", width: 10 },
   {
     header: t("exportUtils.bookingReport.childPhone"),

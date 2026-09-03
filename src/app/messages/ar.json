@@ -1778,6 +1778,7 @@
           "studentName": "اسم الطالب",
           "parentName": "اسم ولي الأمر",
           "grade": "الصف",
+          "class": "الفصل",
           "parentPhone": "رقم ولي الأمر",
           "parentConfirmation": "موافقة ولي الأمر",
           "nationalId": "رقم الهوية",
@@ -2476,6 +2477,7 @@
       "nationalIdImage": "صورة الهوية الوطنية",
       "parentName": "اسم ولي الأمر",
       "grade": "الصف",
+      "class": "الفصل",
       "parentPhone": "هاتف ولي الأمر",
       "nationalId": "الهوية الوطنية",
       "orderId": "رقم الطلب",
@@ -2863,6 +2865,12 @@
 
     "grade": {
       "name": "الصف الدراسي"
+    },
+
+    "classes": {
+      "name": "الفصل الدراسي",
+      "placeholder": "اختر الفصل",
+      "selectGradeFirst": "اختر الصف أولاً"
     },
 
     "organizationName": {

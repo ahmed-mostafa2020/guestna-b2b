@@ -1,7 +1,8 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 
 import TextInputGroup from "../../TextInputGroup";
 import DropdownGroup from "../../DropdownGroup";
+import SelectionGroup from "../../SelectionGroup";
 
 // import { Field } from "formik";
 // import PhoneInputWithCountrySelect from "react-phone-number-input";
@@ -24,12 +25,24 @@ const ChildForm = ({
   gradesList,
   gradesLoading,
   handleChangeChildGrade,
+  tripClasses,
+  childrenClasses,
+  handleChangeChildClasses,
   onChildImageChange,
   imageError,
   t,
   cn,
   childrenNumber,
 }) => {
+  // Compute available classes for the selected grade
+  const availableClasses = useMemo(() => {
+    if (!tripClasses || !child.grade) return [];
+    const gradeEntry = tripClasses.find((entry) => entry.grade === child.grade);
+    return gradeEntry?.classes || [];
+  }, [tripClasses, child.grade]);
+
+  const hasTripClasses = tripClasses && tripClasses.length > 0;
+
   return (
     <div className="flex flex-col gap-4 mt-6">
       <h3 className="text-lg font-semibold text-titleColor lg:text-2xl">
@@ -113,6 +126,27 @@ const ChildForm = ({
           </div>
         </div>
 
+        {/* Classes Select Dropdown - Only shown when trip has classes data */}
+        {hasTripClasses && (
+          <div className="sm:col-span-3">
+            <SelectionGroup
+              name={`children[${index}].class`}
+              label={t("forms.classes.name")}
+              placeholder={
+                !child.grade
+                  ? t("forms.classes.selectGradeFirst")
+                  : t("forms.classes.placeholder")
+              }
+              value={childrenClasses[index] || ""}
+              onChange={(event) => handleChangeChildClasses(index, event)}
+              list={availableClasses}
+              multiple={false}
+              disabled={!child.grade}
+              required={true}
+            />
+          </div>
+        )}
+
         {/* <TextInputGroup
           label={t("forms.nationalId.name")}
           type="number"
@@ -195,3 +229,4 @@ const ChildForm = ({
 };
 
 export default memo(ChildForm);
+

@@ -1766,6 +1766,7 @@
           "exportExcel": "Export to Excel",
           "parentName": "Parent Name",
           "grade": "Grade",
+          "class": "Class",
           "parentPhone": "Parent Phone",
           "parentConfirmation": "Parent Confirmation",
           "nationalId": "ID",
@@ -2467,6 +2468,7 @@
       "nationalIdImage": "National ID Image",
       "parentName": "Parent Name",
       "grade": "Grade",
+      "class": "Class",
       "parentPhone": "Parent Phone",
       "nationalId": "National ID",
       "orderId": "Order ID",
@@ -2856,6 +2858,12 @@
 
     "grade": {
       "name": "Grade"
+    },
+
+    "classes": {
+      "name": "Class",
+      "placeholder": "Select Class",
+      "selectGradeFirst": "Select grade first"
     },
 
     "organizationName": {

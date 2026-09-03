@@ -390,6 +390,21 @@ const StudentsTable = ({ bookingDetails, loadingDetails, booking }) => {
         render: (row) => row.child?.grade?.name || "-",
       },
       {
+        key: "class",
+        label: t("profile.tables.orders.studentsTable.class"),
+        render: (row) => {
+          const classVal =
+            row.child?.class?.name ||
+            (typeof row.child?.class === "string" && row.child.class.trim()) ||
+            (typeof row.child?.class === "number" ? row.child.class : null) ||
+            (typeof row.child?.className === "string" &&
+              row.child.className.trim()) ||
+            (typeof row.class === "string" && row.class.trim()) ||
+            (typeof row.class === "number" ? row.class : null);
+          return classVal || "-";
+        },
+      },
+      {
         key: "parentPhone",
         label: t("profile.tables.orders.studentsTable.parentPhone"),
         className: "text-end",

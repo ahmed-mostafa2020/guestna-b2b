@@ -1,8 +1,9 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 
 import TextInputGroup from "../../TextInputGroup";
 import DropdownGroup from "../../DropdownGroup";
 import FileUploadGroup from "../../FileUploadGroup";
+import SelectionGroup from "../../SelectionGroup";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { CircularProgress } from "@mui/material";
 
@@ -20,6 +21,9 @@ const CustomizedRiyadhForm = ({
   gradesList,
   gradesLoading,
   handleChangeChildGrade,
+  tripClasses,
+  childrenClasses,
+  handleChangeChildClasses,
   onChildImageChange,
   onNationalIdImageChange,
   imageError,
@@ -29,6 +33,15 @@ const CustomizedRiyadhForm = ({
   childrenNumber,
   tripMainCategory,
 }) => {
+  // Compute available classes for the selected grade
+  const availableClasses = useMemo(() => {
+    if (!tripClasses || !child.grade) return [];
+    const gradeEntry = tripClasses.find((entry) => entry.grade === child.grade);
+    return gradeEntry?.classes || [];
+  }, [tripClasses, child.grade]);
+
+  const hasTripClasses = tripClasses && tripClasses.length > 0;
+
   return (
     <div className="flex flex-col gap-4 mt-6">
       <h3 className="text-lg font-semibold text-titleColor lg:text-2xl">
@@ -182,9 +195,31 @@ const CustomizedRiyadhForm = ({
               )}
           </div>
         </div>
+
+        {/* Classes Select Dropdown - Only shown when trip has classes data */}
+        {hasTripClasses && (
+          <div className="sm:col-span-3">
+            <SelectionGroup
+              name={`children[${index}].class`}
+              label={t("forms.classes.name")}
+              placeholder={
+                !child.grade
+                  ? t("forms.classes.selectGradeFirst")
+                  : t("forms.classes.placeholder")
+              }
+              value={childrenClasses[index] || ""}
+              onChange={(event) => handleChangeChildClasses(index, event)}
+              list={availableClasses}
+              multiple={false}
+              disabled={!child.grade}
+              required={true}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default memo(CustomizedRiyadhForm);
+

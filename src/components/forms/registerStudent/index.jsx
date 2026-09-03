@@ -52,6 +52,7 @@ const RegisterStudentForm = ({
   const [childrenNationalIdImages, setChildrenNationalIdImages] = useState([]); // array of files
   const [childrenNationalIdImagesError, setChildrenNationalIdImagesError] =
     useState([]);
+  const [childrenClasses, setChildrenClasses] = useState({});
 
   // Terms confirmation state
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -78,6 +79,10 @@ const RegisterStudentForm = ({
 
   const { nationalities, trip } = useSelector(
     (state) => state.tripDetailsData.data
+  );
+
+  const tripClasses = useSelector(
+    (state) => state.tripDetailsData.data?.trip?.classes
   );
 
   const academicStages = useSelector(
@@ -189,6 +194,7 @@ const RegisterStudentForm = ({
         studentName: "",
         academicStage: "",
         grade: "",
+        class: "",
         nationalId: "",
         studentMobile: "",
         studentEmail: "",
@@ -248,6 +254,13 @@ const RegisterStudentForm = ({
       isValid = false;
     } else {
       setGradeError("");
+    }
+
+    // Validate classes (required only when tripClasses exists)
+    if (tripClasses && tripClasses.length > 0) {
+      if (values.children.some((_, idx) => !childrenClasses[idx])) {
+        isValid = false;
+      }
     }
 
     // Validate nationality
@@ -336,6 +349,12 @@ const RegisterStudentForm = ({
 
       formData.append(`childs[${idx}].academicStage`, child.academicStage);
       formData.append(`childs[${idx}].grade`, child.grade);
+
+      // Append selected class if available
+      const selectedClass = childrenClasses[idx] || child.class;
+      if (selectedClass) {
+        formData.append(`childs[${idx}].class`, selectedClass);
+      }
 
       formData.append(`childs[${idx}].formsType`, formsType);
 
@@ -461,6 +480,15 @@ const RegisterStudentForm = ({
           setFieldTouched,
         }) => {
           // Define handlers inside the Formik render function
+          const handleChangeChildClasses = (childIndex, event) => {
+            const selectedClass = event.target.value;
+            setChildrenClasses((prev) => ({
+              ...prev,
+              [childIndex]: selectedClass,
+            }));
+            setFieldValue(`children[${childIndex}].class`, selectedClass);
+          };
+
           const handleChangeChildrenNumber = (event) => {
             const newCount = parseInt(event.target.value);
             setChildrenNumber(newCount);
@@ -475,6 +503,7 @@ const RegisterStudentForm = ({
                   studentName: "",
                   academicStage: "",
                   grade: "",
+                  class: "",
                   nationalId: "",
                   studentMobile: "",
                   studentEmail: "",
@@ -560,6 +589,13 @@ const RegisterStudentForm = ({
           const handleChangeChildGrade = (childIndex, event) => {
             const newGrade = event.target.value;
             setFieldValue(`children[${childIndex}].grade`, newGrade);
+
+            // Reset selected class when grade changes
+            setChildrenClasses((prev) => ({
+              ...prev,
+              [childIndex]: "",
+            }));
+            setFieldValue(`children[${childIndex}].class`, "");
           };
 
           return (
@@ -623,6 +659,9 @@ const RegisterStudentForm = ({
                           gradesList={gradesList[index] || []}
                           gradesLoading={gradesLoading[index] || false}
                           handleChangeChildGrade={handleChangeChildGrade}
+                          tripClasses={tripClasses}
+                          childrenClasses={childrenClasses}
+                          handleChangeChildClasses={handleChangeChildClasses}
                           onChildImageChange={(file) => {
                             const updated = [...childrenNationalIdImages];
                             updated[index] = file;
@@ -672,6 +711,9 @@ const RegisterStudentForm = ({
                           gradesList={gradesList[index] || []}
                           gradesLoading={gradesLoading[index] || false}
                           handleChangeChildGrade={handleChangeChildGrade}
+                          tripClasses={tripClasses}
+                          childrenClasses={childrenClasses}
+                          handleChangeChildClasses={handleChangeChildClasses}
                           onChildImageChange={(file) => {
                             const updated = [...childrenNationalIdImages];
                             updated[index] = file;
@@ -785,7 +827,9 @@ const RegisterStudentForm = ({
                   !nationality ||
                   !termsAccepted ||
                   Object.values(childrenStages).some((v) => !v) ||
-                  values.children.some((child) => !child.grade)
+                  values.children.some((child) => !child.grade) ||
+                  (tripClasses?.length > 0 &&
+                    values.children.some((_, idx) => !childrenClasses[idx]))
                 }
                 label={t("links.continuePayment")}
                 isValid={
@@ -793,7 +837,11 @@ const RegisterStudentForm = ({
                   !!nationality &&
                   !!termsAccepted &&
                   !Object.values(childrenStages).some((v) => !v) &&
-                  !values.children.some((child) => !child.grade)
+                  !values.children.some((child) => !child.grade) &&
+                  !(
+                    tripClasses?.length > 0 &&
+                    values.children.some((_, idx) => !childrenClasses[idx])
+                  )
                 }
                 className="mx-auto px-20 lg:px-40 w-fit mt-4 lg:mt-8 py-3 text-base"
               />

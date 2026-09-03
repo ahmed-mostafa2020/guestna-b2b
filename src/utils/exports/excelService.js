@@ -459,6 +459,7 @@ export const ExcelService = {
       t("profile.tables.orders.studentsTable.studentName"),
       t("profile.tables.orders.studentsTable.parentName"),
       t("profile.tables.orders.studentsTable.grade"),
+      t("profile.tables.orders.studentsTable.class"),
       t("profile.tables.orders.studentsTable.parentPhone"),
       t("profile.tables.orders.studentsTable.nationalId"),
       t("profile.tables.orders.studentsTable.parentConfirmation"),
@@ -489,6 +490,7 @@ export const ExcelService = {
       { width: 25 },
       { width: 25 },
       { width: 20 },
+      { width: 15 },
       { width: 20 },
       { width: 20 },
       { width: 20 },
@@ -500,6 +502,13 @@ export const ExcelService = {
       student.child?.name || "-",
       student.parent?.name || "-",
       student.child?.grade?.name || "-",
+      student.child?.class?.name ||
+        (typeof student.child?.class === "string" &&
+          student.child.class.trim()) ||
+        (typeof student.child?.class === "number" ? student.child.class : null) ||
+        student.child?.className ||
+        student.class ||
+        "-",
       student.parent?.phone || "-",
       student.child?.nationalId || "-",
       student.parent?.termsAccepted
@@ -641,6 +650,16 @@ export const ExcelService = {
           studentName: student.child?.name || "",
           academicStage: student.child?.academicStage?.name || "",
           grade: student.child?.grade?.name || "",
+          class:
+            student.child?.class?.name ||
+            (typeof student.child?.class === "string" &&
+              student.child.class.trim()) ||
+            (typeof student.child?.class === "number"
+              ? student.child.class
+              : null) ||
+            student.child?.className ||
+            student.class ||
+            "",
           size: student.child?.size || "",
           childPhone: student.child?.phone || "",
           childNationalId: student.child?.nationalId || "",
