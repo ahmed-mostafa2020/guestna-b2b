@@ -259,5 +259,14 @@ export const B2B_END_POINTS = {
     ASK_TRIPS_EDIT_INFO: "profile-provider/ask-trips/edit/info",
     ASK_TRIPS_EDIT: "profile-provider/ask-trips/edit",
     ASK_WITHDRAWALS: "profile-provider/ask-withdrawals/new",
+    BRANCHES: {
+      ALL: "profile-provider/branches/all",
+      COUNTS: "profile-provider/branches/counts",
+      INFO: "profile-provider/branches/info",
+      NEW: "profile-provider/branches/new",
+      STATUS: "profile-provider/branches/status",
+      EDIT: "profile-provider/branches",
+      DELETE: "profile-provider/branches",
+    },
   },
 };

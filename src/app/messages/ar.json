@@ -243,7 +243,96 @@
       "main": "الصفحة الرئيسية",
       "productsManagement": "إدارة المنتجات",
       "ordersManagement": "إدارة الطلبات",
-      "ourProducts": "متجر الأفراد"
+      "ourProducts": "متجر الأفراد",
+      "branches": "الفروع"
+    },
+    "branches": {
+      "pageTitle": "الفروع",
+      "pageSubtitle": "إدارة فروع ومواقع الشركة",
+      "addNewBranch": "إضافة فرع جديد",
+      "breadcrumbs": {
+        "home": "الرئيسية",
+        "branches": "الفروع"
+      },
+      "stats": {
+        "totalBranches": "إجمالي الفروع",
+        "activeBranches": "الحالة النشطة"
+      },
+      "table": {
+        "nameAr": "الاسم بالعربي",
+        "nameEn": "الاسم بالانجليزي",
+        "city": "الاسم الدارج للبلد",
+        "location": "الموقع",
+        "viewMap": "عرض الخريطة",
+        "status": "مفعلة",
+        "active": "مفعل",
+        "inactive": "معطل",
+        "actions": "الاجراءات",
+        "edit": "تعديل",
+        "delete": "حذف",
+        "toggleStatus": "تغيير الحالة",
+        "activate": "تفعيل الفرع",
+        "deactivate": "تعطيل الفرع",
+        "empty": "لا توجد فروع مضافة حالياً"
+      },
+      "modal": {
+        "addTitle": "إضافة فرع جديد",
+        "editTitle": "تعديل بيانات الفرع",
+        "addSubtitle": "أدخل بيانات الفرع الجديد",
+        "editSubtitle": "تعديل بيانات الفرع والموقع",
+        "nameAr": "اسم الفرع بالعربي",
+        "nameArPlaceholder": "مثال : فرع الرياض الرئيسي",
+        "nameEn": "Branch Name (English)",
+        "nameEnPlaceholder": "Write the branch name in English",
+        "city": "المدينة",
+        "cityPlaceholder": "اختر المدينة",
+        "phone": "رقم الهاتف",
+        "phonePlaceholder": "05xxxxxxxx",
+        "email": "البريد الإلكتروني",
+        "emailPlaceholder": "branch@provider.com",
+        "aboutAr": "نبذة عن الفرع (بالعربي)",
+        "aboutArPlaceholder": "أدخل نبذة تعريفية عن الفرع...",
+        "aboutEn": "About Branch (English)",
+        "aboutEnPlaceholder": "Enter branch description in English...",
+        "mapTitle": "اختر الموقع على الخريطة",
+        "mapInstruction": "انقر على الخريطة لتحديد الموقع أو اسحب العلامة",
+        "address": "العنوان التفصيلي",
+        "addressPlaceholder": "طريق الملك فهد، الرياض...",
+        "statusTitle": "حالة الفرع",
+        "statusSubtitleActive": "الفرع مفعل وظاهر للعملاء",
+        "statusSubtitleInactive": "الفرع معطل وغير ظاهر للعملاء",
+        "save": "حفظ الفرع",
+        "saving": "جاري الحفظ...",
+        "loadingInfo": "جاري تحميل البيانات...",
+        "cancel": "الغاء"
+      },
+      "deleteModal": {
+        "title": "حذف الفرع",
+        "message": "هل أنت متأكد من رغبتك في حذف هذا الفرع؟ لا يمكن التراجع عن هذا الإجراء.",
+        "confirm": "حذف الفرع",
+        "cancel": "إلغاء"
+      },
+      "mapPreviewModal": {
+        "title": "موقع الفرع على الخريطة",
+        "openInGoogleMaps": "فتح في خرائط جوجل",
+        "close": "إغلاق"
+      },
+      "notifications": {
+        "createSuccess": "تم إضافة الفرع بنجاح",
+        "updateSuccess": "تم تحديث بيانات الفرع بنجاح",
+        "statusSuccess": "تم تغيير حالة الفرع بنجاح",
+        "deleteSuccess": "تم حذف الفرع بنجاح",
+        "fetchError": "فشل في تحميل بيانات الفرع",
+        "actionError": "حدث خطأ أثناء تنفيذ العملية"
+      },
+      "validations": {
+        "nameArRequired": "اسم الفرع بالعربي مطلوب",
+        "nameEnRequired": "اسم الفرع بالإنجليزية مطلوب",
+        "cityRequired": "يرجى اختيار المدينة",
+        "phoneInvalid": "رقم الهاتف غير صالح",
+        "emailInvalid": "البريد الإلكتروني غير صالح",
+        "locationRequired": "يرجى تحديد موقع الفرع على الخريطة"
+      }
     },
     "infoCards": {
       "totalBookings": "إجمالي الحجوزات",

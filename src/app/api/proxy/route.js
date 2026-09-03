@@ -14,7 +14,10 @@ const getBackendUrl = (path) => {
     baseUrl = baseUrl.replace(/\/b2b\/?$/, "/");
   }
   const cleanBase = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
-  const cleanPath = path.startsWith("/") ? path.slice(1) : path;
+  let cleanPath = path.startsWith("/") ? path.slice(1) : path;
+  if (cleanPath.startsWith("b2b/") && cleanBase.endsWith("/b2b/")) {
+    cleanPath = cleanPath.slice(4);
+  }
   return `${cleanBase}${cleanPath}`;
 };
 

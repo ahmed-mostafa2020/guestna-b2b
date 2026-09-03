@@ -1,0 +1,228 @@
+"use client";
+
+import { memo } from "react";
+import { useTranslations } from "next-intl";
+import { Formik, Form } from "formik";
+import CircularProgress from "@mui/material/CircularProgress";
+
+import TextInputGroup from "@components/forms/TextInputGroup";
+import SelectionGroup from "@components/forms/SelectionGroup";
+import CustomSwitch from "@components/features/profile/schoolManagementTeam/users/UsersPermissions/CustomSwitch";
+import BranchLocationPicker from "@components/features/provider-profile/branches/BranchLocationPicker";
+import { createBranchValidationSchema } from "@utils/validators/validationSchemas";
+
+const BranchForm = ({
+  initialValues,
+  onSubmit,
+  isSubmitting = false,
+  submitError = null,
+  onCancel,
+  cityList = [],
+}) => {
+  const t = useTranslations("providerProfile.branches");
+  const tRoot = useTranslations();
+
+  const defaultValues = {
+    nameAr: "",
+    nameEn: "",
+    city: "",
+    phone: "",
+    email: "",
+    aboutAr: "",
+    aboutEn: "",
+    location: {
+      lat: "24.7136",
+      lng: "46.6753",
+      address: "",
+    },
+    isActive: true,
+  };
+
+  const formInitialValues = initialValues || defaultValues;
+
+  return (
+    <Formik
+      enableReinitialize
+      initialValues={formInitialValues}
+      validationSchema={createBranchValidationSchema(tRoot)}
+      onSubmit={onSubmit}
+    >
+      {({
+        values,
+        errors,
+        touched,
+        handleChange,
+        handleBlur,
+        setFieldValue,
+      }) => (
+        <Form className="flex flex-col gap-5 max-h-[75vh] overflow-y-auto px-1 font-somar">
+          {submitError && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs sm:text-sm text-red-600 font-somar">
+              {submitError}
+            </div>
+          )}
+
+          {/* Row 1: Arabic Name & English Name */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <TextInputGroup
+              label={t("modal.nameAr")}
+              name="nameAr"
+              value={values.nameAr}
+              errors={errors.nameAr}
+              touched={touched.nameAr}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              placeholder={t("modal.nameArPlaceholder")}
+              required={true}
+            />
+
+            <TextInputGroup
+              label={t("modal.nameEn")}
+              name="nameEn"
+              value={values.nameEn}
+              errors={errors.nameEn}
+              touched={touched.nameEn}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              placeholder={t("modal.nameEnPlaceholder")}
+              required={true}
+              textAlign="left"
+            />
+          </div>
+
+          {/* Row 2: City & Phone */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <SelectionGroup
+              label={t("modal.city")}
+              name="city"
+              value={values.city}
+              errors={errors.city}
+              touched={touched.city}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              placeholder={t("modal.cityPlaceholder")}
+              list={cityList}
+              required={true}
+            />
+
+            <TextInputGroup
+              label={t("modal.phone")}
+              name="phone"
+              type="tel"
+              value={values.phone}
+              errors={errors.phone}
+              touched={touched.phone}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              placeholder={t("modal.phonePlaceholder")}
+              textAlign="left"
+            />
+          </div>
+
+          {/* Row 3: Email */}
+          <TextInputGroup
+            label={t("modal.email")}
+            name="email"
+            type="email"
+            value={values.email}
+            errors={errors.email}
+            touched={touched.email}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            placeholder={t("modal.emailPlaceholder")}
+            textAlign="left"
+          />
+
+          {/* Row 4: About Arabic & English */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <TextInputGroup
+              label={t("modal.aboutAr")}
+              name="aboutAr"
+              textarea={true}
+              rows={2}
+              value={values.aboutAr}
+              errors={errors.aboutAr}
+              touched={touched.aboutAr}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              placeholder={t("modal.aboutArPlaceholder")}
+            />
+
+            <TextInputGroup
+              label={t("modal.aboutEn")}
+              name="aboutEn"
+              textarea={true}
+              rows={2}
+              value={values.aboutEn}
+              errors={errors.aboutEn}
+              touched={touched.aboutEn}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              placeholder={t("modal.aboutEnPlaceholder")}
+              textAlign="left"
+            />
+          </div>
+
+          {/* Interactive Map Location Picker */}
+          <BranchLocationPicker
+            lat={values.location?.lat}
+            lng={values.location?.lng}
+            address={values.location?.address}
+            mapTitle={t("modal.mapTitle")}
+            instructionText={t("modal.mapInstruction")}
+            addressLabel={t("modal.address")}
+            addressPlaceholder={t("modal.addressPlaceholder")}
+            onChangeLocation={(newLoc) => setFieldValue("location", newLoc)}
+          />
+
+          {/* Active Status Toggle Card */}
+          <div className="bg-white rounded-xl border border-[#EDEDED] p-4 flex items-center justify-between shadow-sm">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-sm sm:text-base font-bold text-[#191C1E] font-somar">
+                {t("modal.statusTitle")}
+              </span>
+              <span className="text-xs sm:text-sm text-textLight font-somar">
+                {values.isActive
+                  ? t("modal.statusSubtitleActive")
+                  : t("modal.statusSubtitleInactive")}
+              </span>
+            </div>
+            <CustomSwitch
+              checked={values.isActive}
+              onChange={(e) => setFieldValue("isActive", e.target.checked)}
+            />
+          </div>
+
+          {/* Footer Action Buttons */}
+          <div className="flex items-center gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex-1 bg-[#006B62] hover:bg-[#00524a] text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md active:scale-[0.98] disabled:opacity-75 disabled:cursor-not-allowed centered gap-2 font-somar text-sm sm:text-base"
+            >
+              {isSubmitting ? (
+                <>
+                  <CircularProgress size={20} color="inherit" />
+                  <span>{t("modal.saving")}</span>
+                </>
+              ) : (
+                <span>{t("modal.save")}</span>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={onCancel}
+              disabled={isSubmitting}
+              className="border border-[#ED8A22] text-[#ED8A22] hover:bg-[#ED8A22]/10 font-bold py-3.5 px-6 rounded-xl transition-all duration-200 cursor-pointer font-somar text-sm sm:text-base shrink-0"
+            >
+              {t("modal.cancel")}
+            </button>
+          </div>
+        </Form>
+      )}
+    </Formik>
+  );
+};
+
+export default memo(BranchForm);

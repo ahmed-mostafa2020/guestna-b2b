@@ -236,7 +236,96 @@
       "main": "Main Page",
       "productsManagement": "Products Management",
       "ordersManagement": "Orders Management",
-      "ourProducts": "Marketplace"
+      "ourProducts": "Marketplace",
+      "branches": "Branches"
+    },
+    "branches": {
+      "pageTitle": "Branches",
+      "pageSubtitle": "Manage company branches and locations",
+      "addNewBranch": "Add New Branch",
+      "breadcrumbs": {
+        "home": "Home",
+        "branches": "Branches"
+      },
+      "stats": {
+        "totalBranches": "Total Branches",
+        "activeBranches": "Active Status"
+      },
+      "table": {
+        "nameAr": "Arabic Name",
+        "nameEn": "English Name",
+        "city": "City",
+        "location": "Location",
+        "viewMap": "View Map",
+        "status": "Active",
+        "active": "Active",
+        "inactive": "Inactive",
+        "actions": "Actions",
+        "edit": "Edit",
+        "delete": "Delete",
+        "toggleStatus": "Change Status",
+        "activate": "Activate Branch",
+        "deactivate": "Deactivate Branch",
+        "empty": "No branches available yet"
+      },
+      "modal": {
+        "addTitle": "Add New Branch",
+        "editTitle": "Edit Branch",
+        "addSubtitle": "Enter new branch details",
+        "editSubtitle": "Update branch and location details",
+        "nameAr": "Branch Name (Arabic)",
+        "nameArPlaceholder": "e.g. Riyadh Main Branch",
+        "nameEn": "Branch Name (English)",
+        "nameEnPlaceholder": "Write the branch name in English",
+        "city": "City",
+        "cityPlaceholder": "Select city",
+        "phone": "Phone Number",
+        "phonePlaceholder": "05xxxxxxxx",
+        "email": "Email Address",
+        "emailPlaceholder": "branch@provider.com",
+        "aboutAr": "About Branch (Arabic)",
+        "aboutArPlaceholder": "Enter branch overview in Arabic...",
+        "aboutEn": "About Branch (English)",
+        "aboutEnPlaceholder": "Enter branch description in English...",
+        "mapTitle": "Select Location on Map",
+        "mapInstruction": "Click on map or drag pin to select location",
+        "address": "Detailed Address",
+        "addressPlaceholder": "King Fahd Road, Riyadh...",
+        "statusTitle": "Branch Status",
+        "statusSubtitleActive": "Branch is active and visible to customers",
+        "statusSubtitleInactive": "Branch is inactive and hidden from customers",
+        "save": "Save Branch",
+        "saving": "Saving...",
+        "loadingInfo": "Loading information...",
+        "cancel": "Cancel"
+      },
+      "deleteModal": {
+        "title": "Delete Branch",
+        "message": "Are you sure you want to delete this branch? This action cannot be undone.",
+        "confirm": "Delete Branch",
+        "cancel": "Cancel"
+      },
+      "mapPreviewModal": {
+        "title": "Branch Location on Map",
+        "openInGoogleMaps": "Open in Google Maps",
+        "close": "Close"
+      },
+      "notifications": {
+        "createSuccess": "Branch added successfully",
+        "updateSuccess": "Branch updated successfully",
+        "statusSuccess": "Branch status updated successfully",
+        "deleteSuccess": "Branch deleted successfully",
+        "fetchError": "Failed to load branch details",
+        "actionError": "An error occurred while executing the operation"
+      },
+      "validations": {
+        "nameArRequired": "Branch Arabic name is required",
+        "nameEnRequired": "Branch English name is required",
+        "cityRequired": "Please select a city",
+        "phoneInvalid": "Invalid phone number",
+        "emailInvalid": "Invalid email address",
+        "locationRequired": "Please select branch location on map"
+      }
     },
     "infoCards": {
       "totalBookings": "Total Bookings",
