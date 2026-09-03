@@ -67,9 +67,9 @@ const BranchMapPreviewModal = ({ open, onClose, branch }) => {
       <div className="flex items-center justify-center min-h-full p-4 font-somar">
         <div className="bg-white rounded-2xl max-w-[620px] w-full mx-auto shadow-2xl border border-border overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[#EDEDED]">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-border">
             <div className="flex flex-col">
-              <h3 className="text-lg sm:text-xl font-bold text-[#191C1E] font-somar">
+              <h3 className="text-lg sm:text-xl font-bold text-textDark font-somar">
                 {branchName || t("title")}
               </h3>
               {address && (
@@ -92,12 +92,12 @@ const BranchMapPreviewModal = ({ open, onClose, branch }) => {
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between px-6 py-4 bg-gray-50 border-t border-[#EDEDED]">
+          <div className="flex items-center justify-between px-6 py-4 bg-gray-50 border-t border-border">
             <a
               href={googleMapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm font-semibold text-[#006B62] hover:underline font-somar"
+              className="flex items-center gap-2 text-sm font-semibold text-mainColor hover:underline font-somar"
             >
               <OpenInNew className="!w-4 !h-4" />
               <span>{t("openInGoogleMaps")}</span>

@@ -229,7 +229,7 @@ const ProviderBranchesPage = () => {
   return (
     <main className="flex flex-col gap-6 lg:gap-8 min-h-screen">
       {/* Top Container Card matching Figma design */}
-      <div className="bg-white rounded-2xl p-5 sm:p-7 border border-[#EDEDED] shadow-card">
+      <div className="bg-white rounded-2xl p-5 sm:p-7 border border-border shadow-card">
         {/* Header Section: Breadcrumbs + Title + Add Button */}
         <BranchesHeader onAddBranch={handleOpenAddModal} />
 

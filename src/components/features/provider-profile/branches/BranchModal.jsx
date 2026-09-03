@@ -200,9 +200,9 @@ const BranchModal = ({
           {/* Top Pattern Header Image Component matching Figma / screenshot */}
           <FrameWithImagedHeader bodyClassName="!px-5 sm:!px-8 !pt-5 !pb-8 !gap-5">
             {/* Modal Header: Title + Subtitle + Close Button */}
-            <div className="flex items-start justify-between gap-4 border-b border-[#EDEDED] pb-4">
+            <div className="flex items-start justify-between gap-4 border-b border-border pb-4">
               <div className="flex flex-col gap-1">
-                <h2 className="text-xl sm:text-2xl font-bold text-[#191C1E] font-somar">
+                <h2 className="text-xl sm:text-2xl font-bold text-textDark font-somar">
                   {isEditMode ? t("modal.editTitle") : t("modal.addTitle")}
                 </h2>
                 <p className="text-xs sm:text-sm text-textLight font-somar">

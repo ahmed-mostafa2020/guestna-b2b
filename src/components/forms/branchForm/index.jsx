@@ -176,9 +176,9 @@ const BranchForm = ({
           />
 
           {/* Active Status Toggle Card */}
-          <div className="bg-white rounded-xl border border-[#EDEDED] p-4 flex items-center justify-between shadow-sm">
+          <div className="bg-white rounded-xl border border-border p-4 flex items-center justify-between shadow-sm">
             <div className="flex flex-col gap-0.5">
-              <span className="text-sm sm:text-base font-bold text-[#191C1E] font-somar">
+              <span className="text-sm sm:text-base font-bold text-textDark font-somar">
                 {t("modal.statusTitle")}
               </span>
               <span className="text-xs sm:text-sm text-textLight font-somar">
@@ -198,7 +198,7 @@ const BranchForm = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-[#006B62] hover:bg-[#00524a] text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md active:scale-[0.98] disabled:opacity-75 disabled:cursor-not-allowed centered gap-2 font-somar text-sm sm:text-base"
+              className="flex-1 bg-mainColor hover:bg-titleColor text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md active:scale-[0.98] disabled:opacity-75 disabled:cursor-not-allowed centered gap-2 font-somar text-sm sm:text-base"
             >
               {isSubmitting ? (
                 <>
@@ -214,7 +214,7 @@ const BranchForm = ({
               type="button"
               onClick={onCancel}
               disabled={isSubmitting}
-              className="border border-[#ED8A22] text-[#ED8A22] hover:bg-[#ED8A22]/10 font-bold py-3.5 px-6 rounded-xl transition-all duration-200 cursor-pointer font-somar text-sm sm:text-base shrink-0"
+              className="border border-secColor text-secColor hover:bg-secColor/10 font-bold py-3.5 px-6 rounded-xl transition-all duration-200 cursor-pointer font-somar text-sm sm:text-base shrink-0"
             >
               {t("modal.cancel")}
             </button>

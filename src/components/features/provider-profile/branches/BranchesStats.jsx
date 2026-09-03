@@ -25,15 +25,15 @@ const BranchesStats = ({ counts = {}, loading = false }) => {
       {statCards.map((card) => (
         <div
           key={card.id}
-          className="bg-white rounded-xl border border-[#EDEDED] py-5 px-6 flex flex-col items-center justify-center text-center transition-all hover:border-mainColor/30"
+          className="bg-white rounded-xl border border-border py-5 px-6 flex flex-col items-center justify-center text-center transition-all hover:border-mainColor/30"
         >
-          <span className="text-sm sm:text-base font-medium text-[#191C1E] font-somar mb-1.5">
+          <span className="text-sm sm:text-base font-medium text-textDark font-somar mb-1.5">
             {card.label}
           </span>
           {loading ? (
             <Skeleton variant="text" width={60} height={36} />
           ) : (
-            <span className="text-xl sm:text-2xl font-bold text-[#191C1E] font-somar">
+            <span className="text-xl sm:text-2xl font-bold text-textDark font-somar">
               {card.value}
             </span>
           )}

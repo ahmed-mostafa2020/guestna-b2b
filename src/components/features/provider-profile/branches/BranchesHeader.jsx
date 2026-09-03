@@ -31,7 +31,7 @@ const BranchesHeader = ({ onAddBranch }) => {
         </nav>
 
         {/* Title */}
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#191C1E] font-somar">
+        <h1 className="text-2xl sm:text-3xl font-bold text-textDark font-somar">
           {t("pageTitle")}
         </h1>
 
@@ -45,7 +45,7 @@ const BranchesHeader = ({ onAddBranch }) => {
       <button
         type="button"
         onClick={onAddBranch}
-        className="flex items-center justify-center gap-2 bg-[#006B62] hover:bg-[#00524a] active:scale-[0.98] text-white font-bold text-sm sm:text-base px-6 py-3 rounded-xl transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md shrink-0 font-somar"
+        className="flex items-center justify-center gap-2 bg-mainColor hover:bg-titleColor active:scale-[0.98] text-white font-bold text-sm sm:text-base px-6 py-3 rounded-xl transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md shrink-0 font-somar"
       >
         <AddIcon className="!w-5 !h-5" />
         <span>{t("addNewBranch")}</span>

@@ -128,19 +128,19 @@ const BranchLocationPicker = ({
   }, [numericLat, numericLng]);
 
   return (
-    <div className="border border-dashed border-[#CAC9C9] rounded-2xl p-4 sm:p-5 bg-white flex flex-col gap-3">
-      <h3 className="text-base font-bold text-[#191C1E] font-somar">
+    <div className="border border-dashed border-border rounded-2xl p-4 sm:p-5 bg-white flex flex-col gap-3">
+      <h3 className="text-base font-bold text-textDark font-somar">
         {mapTitle}
       </h3>
 
       {/* Instruction Banner */}
-      <div className="flex items-center gap-2 bg-[#F8F9FA] border border-[#EDEDED] rounded-xl px-4 py-2.5 text-xs sm:text-sm text-textLight font-somar">
+      <div className="flex items-center gap-2 bg-gray-50 border border-border rounded-xl px-4 py-2.5 text-xs sm:text-sm text-textLight font-somar">
         <NearMeOutlined className="!w-4 !h-4 text-mainColor shrink-0 -rotate-45" />
         <span>{instructionText}</span>
       </div>
 
       {/* Map Canvas */}
-      <div className="relative w-full h-56 sm:h-64 rounded-xl overflow-hidden border border-[#EDEDED] bg-gray-100">
+      <div className="relative w-full h-56 sm:h-64 rounded-xl overflow-hidden border border-border bg-gray-100">
         <div ref={mapRef} className="w-full h-full" />
         {!isMapLoaded && !mapError && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-50/80 z-10">
@@ -148,7 +148,7 @@ const BranchLocationPicker = ({
           </div>
         )}
         {mapError && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 p-4 text-center text-sm text-red-500 font-somar">
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 p-4 text-center text-sm text-error font-somar">
             {mapError}
           </div>
         )}
@@ -156,7 +156,7 @@ const BranchLocationPicker = ({
 
       {/* Address Text Field */}
       <div className="flex flex-col gap-1 mt-1">
-        <label className="text-xs sm:text-sm font-medium text-[#191C1E] font-somar">
+        <label className="text-xs sm:text-sm font-medium text-textDark font-somar">
           {addressLabel}
         </label>
         <input

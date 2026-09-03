@@ -87,7 +87,7 @@ const BranchesTable = ({
         key: "nameAr",
         label: t("table.nameAr"),
         className:
-          "font-semibold text-[#191C1E] text-sm sm:text-base whitespace-nowrap font-somar",
+          "font-semibold text-textDark text-sm sm:text-base whitespace-nowrap font-somar",
         render: (row) =>
           typeof row.name === "object"
             ? row.name?.ar || row.name?.en || "-"
@@ -97,7 +97,7 @@ const BranchesTable = ({
         key: "nameEn",
         label: t("table.nameEn"),
         className:
-          "font-semibold text-[#191C1E] text-sm sm:text-base whitespace-nowrap font-somar",
+          "font-semibold text-textDark text-sm sm:text-base whitespace-nowrap font-somar",
         render: (row) =>
           typeof row.name === "object" ? row.name?.en || "-" : "-",
       },
@@ -110,7 +110,7 @@ const BranchesTable = ({
           <button
             type="button"
             onClick={() => onViewLocation?.(row)}
-            className="inline-flex items-center justify-center gap-1.5 bg-[#E6F4F2] hover:bg-[#d0ece8] active:scale-[0.98] text-[#006B62] font-semibold text-xs sm:text-sm px-3.5 py-1.5 rounded-lg transition-all duration-200 cursor-pointer font-somar"
+            className="inline-flex items-center justify-center gap-1.5 bg-mainColor/10 hover:bg-mainColor/20 active:scale-[0.98] text-mainColor font-semibold text-xs sm:text-sm px-3.5 py-1.5 rounded-lg transition-all duration-200 cursor-pointer font-somar"
           >
             <LocationOnOutlined className="!w-4 !h-4" />
             <span>{t("table.viewMap")}</span>
@@ -133,7 +133,7 @@ const BranchesTable = ({
           return (
             <span
               className={`text-sm sm:text-base font-semibold font-somar ${
-                row.isActive ? "text-[#006B62]" : "text-gray-400"
+                row.isActive ? "text-mainColor" : "text-disabled"
               }`}
             >
               {row.isActive ? t("table.active") : t("table.inactive")}
@@ -150,9 +150,9 @@ const BranchesTable = ({
           <IconButton
             size="small"
             onClick={(e) => handleOpenMenu(e, row)}
-            className="text-[#006B62] hover:bg-[#006B62]/10"
+            className="text-mainColor hover:bg-mainColor/10"
           >
-            <MoreVert className="!w-5 !h-5 text-[#006B62]" />
+            <MoreVert className="!w-5 !h-5 text-mainColor" />
           </IconButton>
         ),
       },
@@ -199,7 +199,7 @@ const BranchesTable = ({
           onClick={handleEditClick}
           className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-somar hover:bg-gray-50 cursor-pointer text-textDark"
         >
-          <EditOutlined className="!w-4 !h-4 text-[#006B62]" />
+          <EditOutlined className="!w-4 !h-4 text-mainColor" />
           <span>{t("table.edit")}</span>
         </MenuItem>
 
@@ -210,12 +210,12 @@ const BranchesTable = ({
         >
           {activeBranch?.isActive ? (
             <>
-              <ToggleOffOutlined className="!w-4 !h-4 text-amber-600" />
+              <ToggleOffOutlined className="!w-4 !h-4 text-secColor" />
               <span>{t("table.deactivate")}</span>
             </>
           ) : (
             <>
-              <ToggleOnOutlined className="!w-4 !h-4 text-[#006B62]" />
+              <ToggleOnOutlined className="!w-4 !h-4 text-mainColor" />
               <span>{t("table.activate")}</span>
             </>
           )}
@@ -224,9 +224,9 @@ const BranchesTable = ({
         {/* Delete Action */}
         <MenuItem
           onClick={handleDeleteClick}
-          className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-somar hover:bg-red-50 cursor-pointer text-red-600"
+          className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-somar hover:bg-error/10 cursor-pointer text-error"
         >
-          <DeleteOutline className="!w-4 !h-4 text-red-500" />
+          <DeleteOutline className="!w-4 !h-4 text-error" />
           <span>{t("table.delete")}</span>
         </MenuItem>
       </Menu>
@@ -243,8 +243,8 @@ const BranchesTable = ({
         >
           <div className="flex items-center justify-center min-h-full p-4 font-somar">
             <div className="bg-white rounded-2xl max-w-[480px] w-full mx-auto shadow-2xl border border-border overflow-hidden">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-[#EDEDED]">
-                <h3 className="text-lg font-bold text-red-600 font-somar">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+                <h3 className="text-lg font-bold text-error font-somar">
                   {t("deleteModal.title")}
                 </h3>
                 <button
@@ -258,7 +258,7 @@ const BranchesTable = ({
               </div>
 
               <div className="p-6 flex flex-col gap-4 font-somar">
-                <p className="text-sm sm:text-base text-[#191C1E]">
+                <p className="text-sm sm:text-base text-textDark">
                   {t("deleteModal.message", {
                     name:
                       typeof branchToDelete?.name === "object"
@@ -267,12 +267,12 @@ const BranchesTable = ({
                   })}
                 </p>
 
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#EDEDED]">
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
                   <button
                     type="button"
                     onClick={() => setBranchToDelete(null)}
                     disabled={isDeleting}
-                    className="px-5 py-2.5 rounded-xl border border-gray-300 text-textDark font-semibold text-sm hover:bg-gray-100 transition-colors font-somar cursor-pointer"
+                    className="px-5 py-2.5 rounded-xl border border-border text-textDark font-semibold text-sm hover:bg-gray-100 transition-colors font-somar cursor-pointer"
                   >
                     {t("deleteModal.cancel")}
                   </button>
@@ -281,7 +281,7 @@ const BranchesTable = ({
                     type="button"
                     onClick={handleConfirmDelete}
                     disabled={isDeleting}
-                    className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold text-sm transition-colors flex items-center gap-2 font-somar cursor-pointer disabled:opacity-75"
+                    className="px-5 py-2.5 rounded-xl bg-error hover:bg-error/90 text-white font-semibold text-sm transition-colors flex items-center gap-2 font-somar cursor-pointer disabled:opacity-75"
                   >
                     {isDeleting && (
                       <CircularProgress size={16} color="inherit" />
