@@ -116,7 +116,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
         currency: currency,
         description: tripName,
         publishable_api_key: appleWidgetKey,
-        callback_url: `${B2B_END_POINTS.PAYMENTS}${B2B_END_POINTS.APPLE_BOOKING.CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus&sessionKey=${baseData.client}`,
+        callback_url: `${B2B_END_POINTS.PAYMENTS}${B2B_END_POINTS.APPLE_BOOKING.CALLBACK}?lang=${locale}&sessionKey=${baseData.client}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
         metadata: {
           sessionKey: baseData.client,
         },
