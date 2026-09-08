@@ -5,16 +5,37 @@ export const maxDuration = 120; // Allow long-running file uploads/requests
 
 const PROXY_TIMEOUT = 180000; // 3 minutes timeout
 
+const isValidProxyPath = (path) => {
+  if (!path || typeof path !== "string") return false;
+  if (
+    path.includes("..") ||
+    path.includes("://") ||
+    path.startsWith("//") ||
+    path.includes("\0")
+  ) {
+    return false;
+  }
+  return true;
+};
+
 const getBackendUrl = (path) => {
   let baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL ||
     process.env.NEXT_PUBLIC_API_URL ||
     "";
-  if (path && (path.startsWith("clientInfoBooking/") || path.startsWith("promoCodeDiscounts/"))) {
+  if (
+    path &&
+    (path.startsWith("clientInfoBooking/") ||
+      path.startsWith("promoCodeDiscounts/") ||
+      path.startsWith("cities/selected/"))
+  ) {
     baseUrl = baseUrl.replace(/\/b2b\/?$/, "/");
   }
   const cleanBase = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
-  const cleanPath = path.startsWith("/") ? path.slice(1) : path;
+  let cleanPath = path.startsWith("/") ? path.slice(1) : path;
+  if (cleanPath.startsWith("b2b/") && cleanBase.endsWith("/b2b/")) {
+    cleanPath = cleanPath.slice(4);
+  }
   return `${cleanBase}${cleanPath}`;
 };
 
@@ -22,9 +43,9 @@ export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const path = searchParams.get("path");
 
-  if (!path) {
+  if (!path || !isValidProxyPath(path)) {
     return NextResponse.json(
-      { error: "Missing path parameter" },
+      { error: "Invalid or missing path parameter" },
       { status: 400 }
     );
   }
@@ -52,9 +73,6 @@ export async function GET(request) {
     }),
   };
 
-  const authHeader = request.headers.get("authorization");
-  if (authHeader) headers.authorization = authHeader;
-
   try {
     const response = await axios.get(backendURL, {
       headers,
@@ -74,9 +92,9 @@ export async function POST(request) {
   const { searchParams } = new URL(request.url);
   const pathPost = searchParams.get("path");
 
-  if (!pathPost) {
+  if (!pathPost || !isValidProxyPath(pathPost)) {
     return NextResponse.json(
-      { error: "Missing path parameter" },
+      { error: "Invalid or missing path parameter" },
       { status: 400 }
     );
   }
@@ -117,7 +135,7 @@ export async function POST(request) {
     });
     return NextResponse.json(response.data);
   } catch (error) {
-    console.error("Proxy error:", error.response?.data || error.message);
+    console.error("Proxy error:", error.response?.status, error.message);
     const status = error.response?.status || 500;
     const data = error.response?.data || { error: "Proxy error" };
     return NextResponse.json(data, { status });
@@ -128,9 +146,9 @@ export async function PUT(request) {
   const { searchParams } = new URL(request.url);
   const pathPut = searchParams.get("path");
 
-  if (!pathPut) {
+  if (!pathPut || !isValidProxyPath(pathPut)) {
     return NextResponse.json(
-      { error: "Missing path parameter" },
+      { error: "Invalid or missing path parameter" },
       { status: 400 }
     );
   }
@@ -171,7 +189,7 @@ export async function PUT(request) {
     });
     return NextResponse.json(response.data);
   } catch (error) {
-    console.error("Proxy error:", error.response?.data || error.message);
+    console.error("Proxy error:", error.response?.status, error.message);
     const status = error.response?.status || 500;
     const data = error.response?.data || { error: "Proxy error" };
     return NextResponse.json(data, { status });
@@ -182,9 +200,9 @@ export async function PATCH(request) {
   const { searchParams } = new URL(request.url);
   const pathPatch = searchParams.get("path");
 
-  if (!pathPatch) {
+  if (!pathPatch || !isValidProxyPath(pathPatch)) {
     return NextResponse.json(
-      { error: "Missing path parameter" },
+      { error: "Invalid or missing path parameter" },
       { status: 400 }
     );
   }
@@ -225,7 +243,7 @@ export async function PATCH(request) {
     });
     return NextResponse.json(response.data);
   } catch (error) {
-    console.error("Proxy error:", error.response?.data || error.message);
+    console.error("Proxy error:", error.response?.status, error.message);
     const status = error.response?.status || 500;
     const data = error.response?.data || { error: "Proxy error" };
     return NextResponse.json(data, { status });
@@ -236,9 +254,9 @@ export async function DELETE(request) {
   const { searchParams } = new URL(request.url);
   const pathDelete = searchParams.get("path");
 
-  if (!pathDelete) {
+  if (!pathDelete || !isValidProxyPath(pathDelete)) {
     return NextResponse.json(
-      { error: "Missing path parameter" },
+      { error: "Invalid or missing path parameter" },
       { status: 400 }
     );
   }
@@ -269,7 +287,7 @@ export async function DELETE(request) {
     });
     return NextResponse.json(response.data);
   } catch (error) {
-    console.error("Proxy error:", error.response?.data || error.message);
+    console.error("Proxy error:", error.response?.status, error.message);
     const status = error.response?.status || 500;
     const data = error.response?.data || { error: "Proxy error" };
     return NextResponse.json(data, { status });
