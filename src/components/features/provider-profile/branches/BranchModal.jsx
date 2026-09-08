@@ -13,6 +13,10 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { useFetchData } from "@hooks/data/useFetchData";
+import {
+  parseBranchCoordinates,
+  isValidCoordinates,
+} from "@utils/helpers/mapHelpers";
 
 const BranchModal = ({
   open,
@@ -77,6 +81,7 @@ const BranchModal = ({
 
         const branch = response.data?.data || response.data;
         if (branch) {
+          const coords = parseBranchCoordinates(branch);
           setBranchData({
             nameAr:
               typeof branch.name === "object"
@@ -99,8 +104,8 @@ const BranchModal = ({
             aboutEn:
               typeof branch.about === "object" ? branch.about?.en || "" : "",
             location: {
-              lat: branch.location?.lat ? String(branch.location.lat) : "24.7136",
-              lng: branch.location?.lng ? String(branch.location.lng) : "46.6753",
+              lat: coords.hasCoords ? String(coords.lat) : "",
+              lng: coords.hasCoords ? String(coords.lng) : "",
               address: branch.location?.address || "",
             },
             isActive:
@@ -152,7 +157,7 @@ const BranchModal = ({
       };
     }
 
-    if (values.location?.lat && values.location?.lng) {
+    if (isValidCoordinates(values.location?.lat, values.location?.lng)) {
       payload.location = {
         lat: String(values.location.lat),
         lng: String(values.location.lng),

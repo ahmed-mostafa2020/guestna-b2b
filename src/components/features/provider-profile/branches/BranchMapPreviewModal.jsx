@@ -5,58 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Close, OpenInNew, LocationOnOutlined } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import CustomizedModal from "@components/ui/customizedModal";
-
-const DEFAULT_LAT = 24.7136;
-const DEFAULT_LNG = 46.6753;
-
-/**
- * Robust helper to extract numerical latitude and longitude
- * from diverse backend schemas (e.g. { lat, lng }, GeoJSON [lng, lat], or string).
- */
-const parseCoordinates = (branch) => {
-  if (!branch) return { lat: DEFAULT_LAT, lng: DEFAULT_LNG, hasCoords: false };
-
-  let rawLat = branch?.location?.lat ?? branch?.lat;
-  let rawLng = branch?.location?.lng ?? branch?.lng;
-
-  // GeoJSON coordinates array: [lng, lat]
-  if (
-    (rawLat === undefined || rawLat === null) &&
-    Array.isArray(branch?.location?.coordinates) &&
-    branch.location.coordinates.length >= 2
-  ) {
-    rawLng = branch.location.coordinates[0];
-    rawLat = branch.location.coordinates[1];
-  } else if (
-    (rawLat === undefined || rawLat === null) &&
-    Array.isArray(branch?.coordinates) &&
-    branch.coordinates.length >= 2
-  ) {
-    rawLng = branch.coordinates[0];
-    rawLat = branch.coordinates[1];
-  }
-
-  // Comma-separated string format: "24.7136, 46.6753"
-  if (typeof branch?.location === "string" && branch.location.includes(",")) {
-    const parts = branch.location.split(",");
-    rawLat = parts[0]?.trim();
-    rawLng = parts[1]?.trim();
-  }
-
-  const parsedLat = parseFloat(rawLat);
-  const parsedLng = parseFloat(rawLng);
-
-  const isValid =
-    !isNaN(parsedLat) &&
-    !isNaN(parsedLng) &&
-    (parsedLat !== 0 || parsedLng !== 0);
-
-  return {
-    lat: isValid ? parsedLat : DEFAULT_LAT,
-    lng: isValid ? parsedLng : DEFAULT_LNG,
-    hasCoords: isValid,
-  };
-};
+import { parseBranchCoordinates } from "@utils/helpers/mapHelpers";
 
 const BranchMapPreviewModal = ({ open, onClose, branch }) => {
   const t = useTranslations("providerProfile.branches.mapPreviewModal");
@@ -65,7 +14,7 @@ const BranchMapPreviewModal = ({ open, onClose, branch }) => {
   const [isMapLoading, setIsMapLoading] = useState(true);
 
   const { lat, lng } = useMemo(
-    () => parseCoordinates(branch),
+    () => parseBranchCoordinates(branch),
     [branch]
   );
 

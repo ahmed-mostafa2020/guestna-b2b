@@ -273,6 +273,7 @@
         "toggleStatus": "تغيير الحالة",
         "activate": "تفعيل الفرع",
         "deactivate": "تعطيل الفرع",
+        "noLocation": "الموقع غير متوفر",
         "empty": "لا توجد فروع مضافة حالياً"
       },
       "modal": {
@@ -297,7 +298,12 @@
         "mapTitle": "اختر الموقع على الخريطة",
         "mapInstruction": "انقر على الخريطة لتحديد الموقع أو اسحب العلامة",
         "address": "العنوان التفصيلي",
-        "addressPlaceholder": "طريق الملك فهد، الرياض...",
+        "locationLinkLabel": "يمكنك وضع رابط الموقع هنا",
+        "locationLinkPlaceholder": "https://maps.google.com/...",
+        "clearLocation": "إلغاء تحديد الموقع",
+        "resolvingLink": "جاري تحديد الموقع...",
+        "linkResolved": "تم تحديد الموقع من الرابط بنجاح",
+        "linkNotFound": "تعذر العثور على إحداثيات من هذا الرابط",
         "statusTitle": "حالة الفرع",
         "statusSubtitleActive": "الفرع مفعل وظاهر للعملاء",
         "statusSubtitleInactive": "الفرع معطل وغير ظاهر للعملاء",
@@ -330,6 +336,7 @@
       },
       "validations": {
         "nameArRequired": "اسم الفرع بالعربي مطلوب",
+        "nameArInvalid": "يرجى كتابة اسم الفرع بالحروف العربية فقط",
         "nameEnRequired": "اسم الفرع بالإنجليزية مطلوب",
         "cityRequired": "يرجى اختيار المدينة",
         "phoneRequired": "رقم الهاتف مطلوب",

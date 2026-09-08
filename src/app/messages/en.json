@@ -266,6 +266,7 @@
         "toggleStatus": "Change Status",
         "activate": "Activate Branch",
         "deactivate": "Deactivate Branch",
+        "noLocation": "Location not available",
         "empty": "No branches available yet"
       },
       "modal": {
@@ -290,7 +291,12 @@
         "mapTitle": "Select Location on Map",
         "mapInstruction": "Click on map or drag pin to select location",
         "address": "Detailed Address",
-        "addressPlaceholder": "King Fahd Road, Riyadh...",
+        "locationLinkLabel": "You can put the location link here",
+        "locationLinkPlaceholder": "https://maps.google.com/...",
+        "clearLocation": "Clear location",
+        "resolvingLink": "Locating from link...",
+        "linkResolved": "Location determined successfully",
+        "linkNotFound": "Could not find coordinates from this link",
         "statusTitle": "Branch Status",
         "statusSubtitleActive": "Branch is active and visible to customers",
         "statusSubtitleInactive": "Branch is inactive and hidden from customers",
@@ -323,6 +329,7 @@
       },
       "validations": {
         "nameArRequired": "Branch Arabic name is required",
+        "nameArInvalid": "Please use Arabic letters only for the Arabic name",
         "nameEnRequired": "Branch English name is required",
         "cityRequired": "Please select a city",
         "phoneRequired": "Phone number is required",

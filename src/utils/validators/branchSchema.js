@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+import { isValidPhoneNumber } from "react-phone-number-input";
 
 /**
  * Yup validation schema generator for Branch add / edit form.
@@ -12,7 +13,11 @@ export const createBranchValidationSchema = (t) => {
   return Yup.object().shape({
     nameAr: Yup.string()
       .trim()
-      .required(t("providerProfile.branches.validations.nameArRequired")),
+      .required(t("providerProfile.branches.validations.nameArRequired"))
+      .matches(
+        /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\s0-9\-_.،,()[\]/&#'"؛:!]+$/,
+        t("providerProfile.branches.validations.nameArInvalid")
+      ),
     nameEn: Yup.string()
       .trim()
       .required(t("providerProfile.branches.validations.nameEnRequired")),
@@ -24,11 +29,14 @@ export const createBranchValidationSchema = (t) => {
       .email(t("providerProfile.branches.validations.emailInvalid"))
       .required(t("providerProfile.branches.validations.emailRequired")),
     phone: Yup.string()
-      .trim()
       .required(t("providerProfile.branches.validations.phoneRequired"))
-      .matches(
-        /^(05\d{8}|(?:\+?966\s?5\d{8})|\+?[1-9]\d{7,14})$/,
-        t("providerProfile.branches.validations.phoneInvalid")
+      .test(
+        "is-valid-phone",
+        t("providerProfile.branches.validations.phoneInvalid"),
+        (value) => {
+          if (!value) return false;
+          return isValidPhoneNumber(value);
+        }
       ),
     aboutAr: Yup.string().nullable().optional(),
     aboutEn: Yup.string().nullable().optional(),

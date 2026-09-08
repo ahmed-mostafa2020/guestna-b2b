@@ -12,6 +12,7 @@ import {
 import { Menu, MenuItem, IconButton, CircularProgress } from "@mui/material";
 
 import DataTable from "@components/ui/DataTable";
+import { hasValidLocation } from "@utils/helpers/mapHelpers";
 
 const BranchesTable = ({
   branches = [],
@@ -80,16 +81,29 @@ const BranchesTable = ({
         label: t("table.location"),
         className: "whitespace-nowrap",
         headerClassName: "text-center",
-        render: (row) => (
-          <button
-            type="button"
-            onClick={() => onViewLocation?.(row)}
-            className="inline-flex items-center justify-center gap-1.5 bg-mainColor/10 hover:bg-mainColor/20 active:scale-[0.98] text-mainColor font-semibold text-xs sm:text-sm px-3.5 py-1.5 rounded-lg transition-all duration-200 cursor-pointer font-somar"
-          >
-            <LocationOnOutlined className="!w-4 !h-4" />
-            <span>{t("table.viewMap")}</span>
-          </button>
-        ),
+        render: (row) => {
+          const hasLocation = hasValidLocation(row);
+
+          if (!hasLocation) {
+            return (
+              <span className="inline-flex items-center justify-center gap-1.5 bg-gray-100 text-textLight font-semibold text-xs sm:text-sm px-3.5 py-1.5 rounded-lg font-somar">
+                <LocationOnOutlined className="!w-4 !h-4 text-disabled" />
+                <span>{t("table.noLocation")}</span>
+              </span>
+            );
+          }
+
+          return (
+            <button
+              type="button"
+              onClick={() => onViewLocation?.(row)}
+              className="inline-flex items-center justify-center gap-1.5 bg-mainColor/10 hover:bg-mainColor/20 active:scale-[0.98] text-mainColor font-semibold text-xs sm:text-sm px-3.5 py-1.5 rounded-lg transition-all duration-200 cursor-pointer font-somar"
+            >
+              <LocationOnOutlined className="!w-4 !h-4" />
+              <span>{t("table.viewMap")}</span>
+            </button>
+          );
+        },
       },
       {
         key: "status",
