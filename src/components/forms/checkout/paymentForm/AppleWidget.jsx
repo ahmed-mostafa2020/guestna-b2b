@@ -76,6 +76,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
         {
           ...baseDataRef.current,
           price: +finalPrice,
+          sessionKey: baseDataRef.current.client,
         },
         {
           onSuccess: (data) => {
@@ -115,7 +116,10 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
         currency: currency,
         description: tripName,
         publishable_api_key: appleWidgetKey,
-        callback_url: `${B2B_END_POINTS.PAYMENTS}${B2B_END_POINTS.APPLE_BOOKING.CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
+        callback_url: `${B2B_END_POINTS.PAYMENTS}${B2B_END_POINTS.APPLE_BOOKING.CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus&sessionKey=${baseData.client}`,
+        metadata: {
+          sessionKey: baseData.client,
+        },
         methods: ["applepay"],
         apple_pay: {
           country: "SA",
@@ -138,6 +142,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                 {
                   ...baseDataRef.current,
                   price: +finalPrice,
+                  sessionKey: baseDataRef.current.client,
                 },
                 {
                   onSuccess: (data) => {
