@@ -84,6 +84,8 @@ const SchoolsOverViewPage = () => {
     )}`;
   }, [t]);
 
+  const schools = data?.nodes ?? [];
+
   return (
     <ProtectedProfilePage
       requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_SCHOOLS_PAGE}
