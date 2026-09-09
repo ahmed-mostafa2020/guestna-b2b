@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 
-import { memo, useState, useEffect } from "react";
+import { memo, useState, useEffect, useCallback, useMemo } from "react";
 
 import { getHeaders } from "@utils/helpers/getHeaders";
 import getErrorMessage from "@utils/helpers/getErrorMessage";
@@ -12,6 +12,7 @@ import { createAuthenticatedRequestQuoteSchema } from "@utils/validators/validat
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { isTimeWithinAvailableRange, getTimeRangesForDate } from "@utils/helpers/parseTimeRange";
 import TripInformation from "./TripInformation";
 import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
@@ -82,18 +83,99 @@ const AuthenticatedRequestQuote = ({
   const academicStageData = formSelectionData?.academicStages || [];
   const servicesData = formSelectionData?.services || [];
 
+  // --- Integration type logic (replaces providerType check) ---
+  const integrationType = tripData?.integrationType || null;
+  const isApiIntegration = integrationType === "API";
+  const hasNonApiIntegration = Boolean(integrationType) && integrationType !== "API";
+
+  const rawAvailableDays = useMemo(() => {
+    return Array.isArray(tripData?.availableDays) ? tripData.availableDays : [];
+  }, [tripData]);
+
+  const rawAvailableDaysSlots = useMemo(() => {
+    return tripData?.availableDaysSlots || null;
+  }, [tripData]);
+
+  // --- Provider branches ---
+  const providerBranches = useMemo(() => {
+    const branches = tripData?.providerBranchs || [];
+    return Array.isArray(branches) ? branches : [];
+  }, [tripData]);
+
+  const [selectedBranch, setSelectedBranch] = useState("");
+  const [branchAvailableDays, setBranchAvailableDays] = useState([]);
+  const [branchAvailableDaysSlots, setBranchAvailableDaysSlots] = useState(null);
+  const [isLoadingBranchDays, setIsLoadingBranchDays] = useState(false);
+
+  // Effective available days and slots (branch overrides base if selected)
+  const effectiveAvailableDays = useMemo(() => {
+    if (selectedBranch && branchAvailableDays.length > 0) return branchAvailableDays;
+    return rawAvailableDays;
+  }, [selectedBranch, branchAvailableDays, rawAvailableDays]);
+
+  const effectiveAvailableDaysSlots = useMemo(() => {
+    if (selectedBranch && branchAvailableDaysSlots) return branchAvailableDaysSlots;
+    return rawAvailableDaysSlots;
+  }, [selectedBranch, branchAvailableDaysSlots, rawAvailableDaysSlots]);
+
+  // For API integration: use slot-based flow
   const hasProviderSpecificDays =
-    tripData?.provider &&
-    tripData.provider.providerType !== "DEFAULT" &&
-    Array.isArray(tripData.availableDays) &&
-    tripData.availableDays.length > 0;
+    isApiIntegration &&
+    effectiveAvailableDays.length > 0;
+
+  // For non-API integration: use date restriction + time range validation
+  const hasNonApiProviderDays =
+    hasNonApiIntegration &&
+    effectiveAvailableDays.length > 0;
+
+  // Branch options for dropdown
+  const branchOptions = useMemo(() => {
+    return providerBranches.map((b) => {
+      const branchName =
+        typeof b.name === "object" && b.name !== null
+          ? b.name[locale] || b.name.ar || b.name.en || ""
+          : b.name || b._id;
+      return {
+        value: b._id,
+        label: branchName,
+      };
+    });
+  }, [providerBranches, locale]);
+
+  const fetchBranchAvailableDays = useCallback(async (branchId) => {
+    if (!branchId) {
+      setBranchAvailableDays([]);
+      setBranchAvailableDaysSlots(null);
+      return;
+    }
+    setIsLoadingBranchDays(true);
+    try {
+      const response = await axios.get(
+        getProxyUrl(
+          `${B2B_END_POINTS.PROFILE.PROVIDER_BRANCH_AVAILABLE_DAYS}/${branchId}`
+        ),
+        { headers }
+      );
+      const data = response.data;
+      setBranchAvailableDays(data?.availableDays || []);
+      setBranchAvailableDaysSlots(data?.availableDaysSlots || null);
+    } catch (error) {
+      console.error("Error fetching branch available days:", error);
+      setBranchAvailableDays([]);
+      setBranchAvailableDaysSlots(null);
+      const errorMessage = getErrorMessage(error, t);
+      enqueueSnackbar(errorMessage, { variant: "error" });
+    } finally {
+      setIsLoadingBranchDays(false);
+    }
+  }, [headers, enqueueSnackbar, t]);
 
   // Update available grades when gradesData prop changes
   useEffect(() => {
     setAvailableGrades(gradesData || []);
   }, [gradesData]);
 
-  // Fetch initial slots if editing
+  // Fetch initial slots if editing with API integration
   useEffect(() => {
     if (hasProviderSpecificDays && tripData?.fromDay) {
       const initialDay = tripData.fromDay.split("T")[0];
@@ -200,10 +282,21 @@ const AuthenticatedRequestQuote = ({
         grades: tripData.grades?.map((grade) => grade.name) || [],
         availableSeats: `${tripData.availableSeats?.min}` || "",
         totalAvailableSeats: "",
-        basePrice: `${tripData.price}` || "",
-        day: tripData.fromDay ? tripData.fromDay.split("T")[0] : "",
-        endDay: tripData.toDay ? tripData.toDay.split("T")[0] : "",
-        slot: "",
+        day:
+          hasProviderSpecificDays || hasNonApiProviderDays
+            ? tripData.fromDay &&
+              effectiveAvailableDays.includes(tripData.fromDay.split("T")[0])
+              ? tripData.fromDay.split("T")[0]
+              : ""
+            : tripData.fromDay
+              ? tripData.fromDay.split("T")[0]
+              : "",
+        endDay:
+          hasProviderSpecificDays || hasNonApiProviderDays
+            ? ""
+            : tripData.toDay
+              ? tripData.toDay.split("T")[0]
+              : "",
         services: tripData.services?.map((service) => service.name) || [],
         specialRequirements: tripData.specialRequirements || "",
       }
@@ -226,6 +319,9 @@ const AuthenticatedRequestQuote = ({
         day: "",
         endDay: "",
         slot: "",
+        fromHour: "",
+        toHour: "",
+        providerBranch: "",
         services: [],
         specialRequirements: "",
         file: "",
@@ -243,9 +339,25 @@ const AuthenticatedRequestQuote = ({
       availableSeats: `${tripData.availableSeats?.min}` || "",
       totalAvailableSeats: "",
       basePrice: `${tripData.price}` || "",
-      day: tripData.fromDay ? tripData.fromDay.split("T")[0] : "",
-      endDay: tripData.toDay ? tripData.toDay.split("T")[0] : "",
+      day:
+        hasProviderSpecificDays || hasNonApiProviderDays
+          ? tripData.fromDay &&
+            effectiveAvailableDays.includes(tripData.fromDay.split("T")[0])
+            ? tripData.fromDay.split("T")[0]
+            : ""
+          : tripData.fromDay
+            ? tripData.fromDay.split("T")[0]
+            : "",
+      endDay:
+        hasProviderSpecificDays || hasNonApiProviderDays
+          ? ""
+          : tripData.toDay
+            ? tripData.toDay.split("T")[0]
+            : "",
       slot: "",
+      fromHour: "",
+      toHour: "",
+      providerBranch: "",
       services: tripData.services?.map((service) => service.name) || [],
       specialRequirements: tripData.specialRequirements || "",
       file: "",
@@ -297,7 +409,10 @@ const AuthenticatedRequestQuote = ({
       Object.keys(values).forEach((key) => {
         if (key === "slot" && (!hasProviderSpecificDays || !values[key]))
           return;
-        if (key === "endDay" && hasProviderSpecificDays) return;
+        if (key === "endDay" && (hasProviderSpecificDays || hasNonApiProviderDays)) return;
+        if (key === "fromHour" && hasProviderSpecificDays) return;
+        if (key === "toHour" && hasProviderSpecificDays) return;
+        if (key === "providerBranch") return; // handled separately below
         if (key === "file") {
           if (values[key]) {
             formData.append(key, values[key]);
@@ -368,6 +483,12 @@ const AuthenticatedRequestQuote = ({
         }
       });
 
+      // Include providerBranch if selected
+      const branchToSend = selectedBranch || values.providerBranch;
+      if (branchToSend) {
+        formData.append("providerBranch", branchToSend);
+      }
+
       const organizationId = findIdByName(
         organizationData,
         values.organization
@@ -404,7 +525,10 @@ const AuthenticatedRequestQuote = ({
       Object.keys(values).forEach((key) => {
         if (key === "slot" && (!hasProviderSpecificDays || !values[key]))
           return;
-        if (key === "endDay" && hasProviderSpecificDays) return;
+        if (key === "endDay" && (hasProviderSpecificDays || hasNonApiProviderDays)) return;
+        if (key === "fromHour" && hasProviderSpecificDays) return;
+        if (key === "toHour" && hasProviderSpecificDays) return;
+        if (key === "providerBranch") return; // handled separately below
         if (
           key !== "file" &&
           key !== "availableSeats" &&
@@ -464,6 +588,12 @@ const AuthenticatedRequestQuote = ({
           jsonData[key] = valueToSend;
         }
       });
+
+      // Include providerBranch if selected
+      const branchToSend = selectedBranch || values.providerBranch;
+      if (branchToSend) {
+        jsonData.providerBranch = branchToSend;
+      }
 
       const organizationId = findIdByName(
         organizationData,
@@ -569,6 +699,34 @@ const AuthenticatedRequestQuote = ({
                         formErrors.availableSeats = t(
                           "forms.customTrip.expectedParticipants.error.maxSlot",
                           { max: selectedSlot.maxCapacity }
+                        );
+                      }
+                    }
+                  }
+                }
+                // Time range validation for non-API integrations
+                if (hasNonApiProviderDays && values.day) {
+                  if (!values.fromHour) {
+                    formErrors.fromHour = t("forms.validation.require");
+                  }
+                  const slotsSource = effectiveAvailableDaysSlots;
+                  const ranges = getTimeRangesForDate(values.day, slotsSource);
+                  if (ranges.length > 0) {
+                    if (values.fromHour) {
+                      const fromResult = isTimeWithinAvailableRange(values.fromHour, values.day, slotsSource, false);
+                      if (!fromResult.valid) {
+                        formErrors.fromHour = t(
+                          "forms.customTrip.steps.trip_date.fields.timeRangeError",
+                          { range: ranges.join(", ") }
+                        );
+                      }
+                    }
+                    if (values.toHour) {
+                      const toResult = isTimeWithinAvailableRange(values.toHour, values.day, slotsSource, true);
+                      if (!toResult.valid) {
+                        formErrors.toHour = t(
+                          "forms.customTrip.steps.trip_date.fields.timeRangeError",
+                          { range: ranges.join(", ") }
                         );
                       }
                     }
@@ -804,6 +962,43 @@ const AuthenticatedRequestQuote = ({
                         label={t("forms.customTrip.services.label")}
                       />
                     </div>
+
+                    {/* Provider Branch Selector - aligned with services on the same line */}
+                    {providerBranches.length > 1 && (
+                      <div className="somar-placeholder">
+                        <SelectionGroup
+                          name="providerBranch"
+                          value={selectedBranch || ""}
+                          onChange={(e) => {
+                            const branchId = e.target.value;
+                            if (branchId) {
+                              setSelectedBranch(branchId);
+                              fetchBranchAvailableDays(branchId);
+                              setFieldValue("providerBranch", branchId);
+                              // Reset day and time when branch changes
+                              setFieldValue("day", "");
+                              setFieldValue("endDay", "");
+                              setFieldValue("fromHour", "");
+                              setFieldValue("toHour", "");
+                              setFieldValue("slot", "");
+                            }
+                          }}
+                          onBlur={handleBlur}
+                          touched={touched.providerBranch}
+                          errors={errors.providerBranch}
+                          placeholder={
+                            isLoadingBranchDays
+                              ? t("forms.customTrip.steps.trip_date.fields.providerBranch.loading")
+                              : t("forms.customTrip.steps.trip_date.fields.providerBranch.placeholder")
+                          }
+                          list={branchOptions}
+                          label={t("forms.customTrip.steps.trip_date.fields.providerBranch.label")}
+                          disabled={isLoadingBranchDays}
+                          required={false}
+                          showCheckbox={false}
+                        />
+                      </div>
+                    )}
                   </div>
 
                   {/* Row 3: Start Date and End Date  */}
@@ -811,7 +1006,7 @@ const AuthenticatedRequestQuote = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                       <div className="relative min-w-[25%] flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
                         <label className="font-medium capitalize font-somar">
-                          اليوم<span className="text-error">*</span>
+                          {t("forms.customTrip.steps.trip_date.fields.day.label")}<span className="text-error">*</span>
                         </label>
                         <div className="relative">
                           <input
@@ -821,10 +1016,10 @@ const AuthenticatedRequestQuote = ({
                             value={values.day}
                             onChange={(e) => {
                               const dateStr = e.target.value;
-                              // Only allow dates in availableDays
+                              // Only allow dates in effectiveAvailableDays
                               if (
                                 dateStr &&
-                                !tripData.availableDays.includes(dateStr)
+                                !effectiveAvailableDays.includes(dateStr)
                               )
                                 return;
                               handleChange(e);
@@ -839,10 +1034,10 @@ const AuthenticatedRequestQuote = ({
                                 } catch {}
                               }
                             }}
-                            min={tripData.availableDays?.[0] || ""}
+                            min={effectiveAvailableDays?.[0] || ""}
                             max={
-                              tripData.availableDays?.[
-                                tripData.availableDays.length - 1
+                              effectiveAvailableDays?.[
+                                effectiveAvailableDays.length - 1
                               ] || ""
                             }
                             className={`text-sm font-normal font-somar transition-all duration-200 ease-in-out p-4 pe-12 bg-white w-full rounded-lg outline-none border-2 cursor-pointer ${
@@ -876,14 +1071,117 @@ const AuthenticatedRequestQuote = ({
                             isLoadingSlots
                               ? t("forms.validation.loading")
                               : !values.day
-                                ? "اختر اليوم أولاً"
-                                : "اختر الوقت"
+                                ? t("forms.customTrip.steps.trip_date.fields.slot.selectDayFirst")
+                                : t("forms.customTrip.steps.trip_date.fields.slot.placeholder")
                           }
                           list={slotsData.map((s) => s.slotName)}
-                          label={"الوقت"}
+                          label={t("forms.customTrip.steps.trip_date.fields.slot.label")}
                           disabled={isLoadingSlots || !values.day}
                           required={true}
                           showCheckbox={false}
+                        />
+                      </div>
+                    </div>
+                  ) : hasNonApiProviderDays ? (
+                    /* Non-API integration: restricted dates + time range validation */
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                      {/* Day Input (restricted to available days) */}
+                      <div className="relative min-w-[25%] flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
+                        <label className="font-medium capitalize font-somar">
+                          {t("forms.customTrip.steps.trip_date.fields.day.label")}<span className="text-error">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="date"
+                            name="day"
+                            id="day"
+                            value={values.day}
+                            onChange={(e) => {
+                              const dateStr = e.target.value;
+                              if (dateStr && !effectiveAvailableDays.includes(dateStr)) return;
+                              handleChange(e);
+                            }}
+                            onBlur={handleBlur}
+                            onClick={(e) => {
+                              if (e.target.showPicker) {
+                                try {
+                                  e.target.showPicker();
+                                } catch {}
+                              }
+                            }}
+                            min={effectiveAvailableDays?.[0] || ""}
+                            max={effectiveAvailableDays?.[effectiveAvailableDays.length - 1] || ""}
+                            className={`text-sm font-normal font-somar transition-all duration-200 ease-in-out p-4 pe-12 bg-white w-full rounded-lg outline-none border-2 cursor-pointer ${
+                              touched.day && errors.day
+                                ? "border-error focus:border-error hover:border-error"
+                                : "border-border focus:border-mainColor hover:border-mainColor"
+                            }`}
+                          />
+                          <div className="absolute inset-y-0 flex items-center pointer-events-none end-0 pe-4">
+                            <CalendarToday
+                              className="text-textLight"
+                              style={{ fontSize: "20px" }}
+                            />
+                          </div>
+                        </div>
+                        {touched.day && errors.day && (
+                          <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-somar text-error">
+                            {errors.day}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* From Hour */}
+                      <div className="somar-placeholder">
+                        <TextInputGroup
+                          label={t("forms.customTrip.steps.trip_date.fields.from_hour.label")}
+                          type="time"
+                          name="fromHour"
+                          value={values.fromHour || ""}
+                          errors={errors.fromHour}
+                          touched={touched.fromHour}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          style={{ cursor: "pointer" }}
+                          onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                          labelFontFamily="var(--font-somar-sans), sans-serif"
+                          required={true}
+                          disabled={!values.day}
+                        />
+                        {/* Show available time range hint */}
+                        {values.day && (() => {
+                          const ranges = getTimeRangesForDate(values.day, effectiveAvailableDaysSlots);
+                          if (ranges.length > 0) {
+                            const hasError = Boolean(touched.fromHour && errors.fromHour);
+                            return (
+                              <div className={hasError ? "pt-6" : "pt-1"}>
+                                <p className="text-xs text-secColor font-somar">
+                                  {t("forms.customTrip.steps.trip_date.fields.availableTimeRange", {
+                                    range: ranges.join(", "),
+                                  })}
+                                </p>
+                              </div>
+                            );
+                          }
+                          return null;
+                        })()}
+                      </div>
+
+                      {/* To Hour */}
+                      <div className="somar-placeholder">
+                        <TextInputGroup
+                          label={t("forms.customTrip.steps.trip_date.fields.to_hour.label")}
+                          type="time"
+                          name="toHour"
+                          value={values.toHour || ""}
+                          errors={errors.toHour}
+                          touched={touched.toHour}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          style={{ cursor: "pointer" }}
+                          onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                          labelFontFamily="var(--font-somar-sans), sans-serif"
+                          disabled={!values.day}
                         />
                       </div>
                     </div>

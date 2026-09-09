@@ -3334,7 +3334,15 @@
               "label": "الوقت",
               "placeholder": "اختر الوقت",
               "selectDayFirst": "اختر اليوم أولاً"
-            }
+            },
+            "providerBranch": {
+              "label": "فرع مزود الخدمة",
+              "placeholder": "اختر الفرع",
+              "loading": "جاري تحميل الفروع..."
+            },
+            "timeRangeError": "الوقت المحدد خارج النطاق المتاح ({range})",
+            "selectBranchFirst": "اختر الفرع أولاً",
+            "availableTimeRange": "الوقت المتاح: {range}"
           }
         },
         "pricing": {

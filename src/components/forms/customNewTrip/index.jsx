@@ -27,6 +27,7 @@ import getProxyUrl from "@utils/api/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { formatTime12h } from "@utils/formatters/formatTime12h";
+import { isTimeWithinAvailableRange, getTimeRangesForDate } from "@utils/helpers/parseTimeRange";
 import { formatTimeForInput } from "@utils/formatters/formatTimeForInput";
 import StepSchoolInfo from "./steps/StepSchoolInfo";
 import StepTripInfo from "./steps/StepTripInfo";
@@ -199,18 +200,93 @@ const CustomNewTripForm = ({
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
   const [tripId, setTripId] = useState(null);
 
+  // --- Integration type logic (replaces providerType check) ---
+  const integrationType = useMemo(() => {
+    return editData?.trip?.integrationType || editData?.integrationType || null;
+  }, [editData]);
+
+  const isApiIntegration = integrationType === "API";
+  const hasNonApiIntegration = Boolean(integrationType) && integrationType !== "API";
+
+  const rawAvailableDays = useMemo(() => {
+    return editData?.trip?.availableDays || editData?.availableDays || [];
+  }, [editData]);
+
+  const rawAvailableDaysSlots = useMemo(() => {
+    return editData?.trip?.availableDaysSlots || editData?.availableDaysSlots || null;
+  }, [editData]);
+
+  // --- Provider branches ---
+  const providerBranches = useMemo(() => {
+    const branches = editData?.trip?.providerBranchs || editData?.providerBranchs || [];
+    return Array.isArray(branches) ? branches : [];
+  }, [editData]);
+
+  const [selectedBranch, setSelectedBranch] = useState("");
+  const [branchAvailableDays, setBranchAvailableDays] = useState([]);
+  const [branchAvailableDaysSlots, setBranchAvailableDaysSlots] = useState(null);
+  const [isLoadingBranchDays, setIsLoadingBranchDays] = useState(false);
+
+  // Effective available days and slots (branch overrides base if selected)
+  const effectiveAvailableDays = useMemo(() => {
+    if (selectedBranch && branchAvailableDays.length > 0) return branchAvailableDays;
+    return rawAvailableDays;
+  }, [selectedBranch, branchAvailableDays, rawAvailableDays]);
+
+  const effectiveAvailableDaysSlots = useMemo(() => {
+    if (selectedBranch && branchAvailableDaysSlots) return branchAvailableDaysSlots;
+    return rawAvailableDaysSlots;
+  }, [selectedBranch, branchAvailableDaysSlots, rawAvailableDaysSlots]);
+
+  // For API integration: use slot-based flow (same as old providerType !== DEFAULT)
   const hasProviderSpecificDays = useMemo(() => {
-    const provider = editData?.trip?.provider || editData?.provider;
-    const availableDays = editData?.trip?.availableDays || editData?.availableDays;
     return (
       isEditMode &&
       editData?.askType === askTypeConstants.TRIP &&
-      provider &&
-      provider.providerType !== "DEFAULT" &&
-      Array.isArray(availableDays) &&
-      availableDays.length > 0
+      isApiIntegration &&
+      Array.isArray(effectiveAvailableDays) &&
+      effectiveAvailableDays.length > 0
     );
-  }, [isEditMode, editData]);
+  }, [isEditMode, editData, isApiIntegration, effectiveAvailableDays]);
+
+  // For non-API integration: use date restriction + time range validation
+  const hasNonApiProviderDays = useMemo(() => {
+    return (
+      isEditMode &&
+      editData?.askType === askTypeConstants.TRIP &&
+      hasNonApiIntegration &&
+      Array.isArray(effectiveAvailableDays) &&
+      effectiveAvailableDays.length > 0
+    );
+  }, [isEditMode, editData, hasNonApiIntegration, effectiveAvailableDays]);
+
+  const fetchBranchAvailableDays = useCallback(async (branchId) => {
+    if (!branchId) {
+      setBranchAvailableDays([]);
+      setBranchAvailableDaysSlots(null);
+      return;
+    }
+    setIsLoadingBranchDays(true);
+    try {
+      const response = await axios.get(
+        getProxyUrl(
+          `${B2B_END_POINTS.PROFILE.PROVIDER_BRANCH_AVAILABLE_DAYS}/${branchId}`
+        ),
+        { headers }
+      );
+      const data = response.data;
+      setBranchAvailableDays(data?.availableDays || []);
+      setBranchAvailableDaysSlots(data?.availableDaysSlots || null);
+    } catch (error) {
+      console.error("Error fetching branch available days:", error);
+      setBranchAvailableDays([]);
+      setBranchAvailableDaysSlots(null);
+      const errorMessage = getErrorMessage(error, t2);
+      enqueueSnackbar(errorMessage, { variant: "error" });
+    } finally {
+      setIsLoadingBranchDays(false);
+    }
+  }, [headers, enqueueSnackbar, t2]);
 
   // Fetch the full order details from info endpoint to resolve tripId when in edit mode
   useEffect(() => {
@@ -270,7 +346,7 @@ const CustomNewTripForm = ({
     }
   }, [tripId, editData, headers, enqueueSnackbar, t2]);
 
-  // Fetch initial slots if editing a trip with provider-specific slots
+  // Fetch initial slots if editing a trip with API integration
   useEffect(() => {
     if (hasProviderSpecificDays && editData?.day && (!isEditMode || tripId)) {
       const initialDay = editData.day.split("T")[0];
@@ -425,6 +501,7 @@ const CustomNewTripForm = ({
         file: editData.file || "",
         note: editData.note || "",
         slot: editData.slot || "",
+        providerBranch: "",
       };
     }
 
@@ -452,6 +529,7 @@ const CustomNewTripForm = ({
       services: [],
       file: "",
       note: "",
+      providerBranch: "",
     };
   }, [isEditMode, editData]);
 
@@ -462,9 +540,9 @@ const CustomNewTripForm = ({
         case 0:
           return ["schoolsInfo"];
         case 1:
-          return hasProviderSpecificDays
-            ? ["day", "slot"]
-            : ["day", "endDay", "fromHour", "toHour"];
+          if (hasProviderSpecificDays) return ["day", "slot"];
+          if (hasNonApiProviderDays) return ["day", "fromHour", "toHour"];
+          return ["day", "endDay", "fromHour", "toHour"];
         case 2:
           return ["availableSeats", "totalAvailableSeats"];
         case 3:
@@ -617,11 +695,17 @@ const CustomNewTripForm = ({
     }
 
     if (values.day) formData.append("day", values.day);
-    if (!hasProviderSpecificDays && values.endDay) {
+    if (!hasProviderSpecificDays && !hasNonApiProviderDays && values.endDay) {
       formData.append("endDay", values.endDay);
     }
     if (hasProviderSpecificDays && values.slot) {
       formData.append("slot", values.slot);
+    }
+
+    // Include providerBranch if selected
+    const branchToSend = selectedBranch || values.providerBranch;
+    if (branchToSend) {
+      formData.append("providerBranch", branchToSend);
     }
 
     if (values.fromHour) {
@@ -1031,6 +1115,34 @@ const CustomNewTripForm = ({
                 }
               }
             }
+            // Time range validation for non-API integrations
+            if (hasNonApiProviderDays && values.day) {
+              if (!values.fromHour) {
+                formErrors.fromHour = t2("forms.validation.require");
+              }
+              const slotsSource = effectiveAvailableDaysSlots;
+              const ranges = getTimeRangesForDate(values.day, slotsSource);
+              if (ranges.length > 0) {
+                if (values.fromHour) {
+                  const fromResult = isTimeWithinAvailableRange(values.fromHour, values.day, slotsSource, false);
+                  if (!fromResult.valid) {
+                    formErrors.fromHour = t(
+                      "steps.trip_date.fields.timeRangeError",
+                      { range: ranges.join(", ") }
+                    );
+                  }
+                }
+                if (values.toHour) {
+                  const toResult = isTimeWithinAvailableRange(values.toHour, values.day, slotsSource, true);
+                  if (!toResult.valid) {
+                    formErrors.toHour = t(
+                      "steps.trip_date.fields.timeRangeError",
+                      { range: ranges.join(", ") }
+                    );
+                  }
+                }
+              }
+            }
             return formErrors;
           }}
         >
@@ -1065,14 +1177,25 @@ const CustomNewTripForm = ({
                       <StepTripDate
                         tripTypeData={tripTypeData}
                         hasProviderSpecificDays={hasProviderSpecificDays}
+                        hasNonApiProviderDays={hasNonApiProviderDays}
                         slotsData={slotsData}
                         isLoadingSlots={isLoadingSlots}
                         fetchSlotsForDay={fetchSlotsForDay}
-                        availableDays={
-                          editData?.trip?.availableDays ||
-                          editData?.availableDays ||
-                          []
-                        }
+                        availableDays={effectiveAvailableDays}
+                        availableDaysSlots={effectiveAvailableDaysSlots}
+                        providerBranches={providerBranches}
+                        selectedBranch={selectedBranch}
+                        isLoadingBranchDays={isLoadingBranchDays}
+                        onBranchChange={(branchId) => {
+                          setSelectedBranch(branchId);
+                          fetchBranchAvailableDays(branchId);
+                          // Reset day and time when branch changes
+                          formik.setFieldValue("day", "");
+                          formik.setFieldValue("fromHour", "");
+                          formik.setFieldValue("toHour", "");
+                          formik.setFieldValue("slot", "");
+                          formik.setFieldValue("providerBranch", branchId);
+                        }}
                       />
                     );
                   case 2:
