@@ -23,8 +23,10 @@ const SelectionGroup = ({
   disabled = false,
   showCheckbox = multiple, // Default to true only for multi-select
   label = "", // Label text for the field
+  labelClassName = "", // Optional custom label class
   required = false, // Show asterisk for required fields
   errorBorder = false, // Show red border only, without error message
+  border = "2px solid var(--color-border)", // Custom border style
 }) => {
   return (
     <FormControl
@@ -32,7 +34,13 @@ const SelectionGroup = ({
       className="relative w-full"
     >
       {label && (
-        <label className="block pb-2 font-medium font-ibm">
+        <label
+          className={
+            labelClassName
+              ? labelClassName
+              : "block pb-2 font-medium font-ibm"
+          }
+        >
           {label}
           {required && <span className="text-error ml-1">*</span>}
         </label>
@@ -107,16 +115,16 @@ const SelectionGroup = ({
           "& .MuiSelect-select": {
             paddingInlineEnd: "40px !important",
             paddingInlineStart: "14px !important",
-            border: "2px solid var(--color-border)",
+            border: border,
             borderRadius: "8px",
             width: "100%",
             fontFamily: "var(--font-somar), sans-serif",
 
             "&:hover": {
-              border: "2px solid var(--color-main)",
+              border: "1.5px solid var(--color-main)",
             },
             "&:focus": {
-              border: "2px solid var(--color-main)",
+              border: "1.5px solid var(--color-main)",
             },
           },
           "& .MuiSelect-icon": {

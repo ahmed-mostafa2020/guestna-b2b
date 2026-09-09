@@ -11,7 +11,9 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import { USERS } from "@constants/users";
 import ProviderProductsTable from "@components/features/provider-profile/ProviderProductsTable";
 import AddProductModal from "@components/features/provider-profile/AddProductModal";
+import Link from "next/link";
 import StarIcon from "@mui/icons-material/Star";
+import AddIcon from "@mui/icons-material/Add";
 import CircularProgress from "@mui/material/CircularProgress";
 
 const ProviderProductsManagementPage = () => {
@@ -286,20 +288,32 @@ const ProviderProductsManagementPage = () => {
           </h1>
         </div>
 
-        <button
-          onClick={handleOpenAddModal}
-          disabled={isAddButtonLoading}
-          className="bg-mainColor hover:bg-titleColor text-white font-medium text-sm sm:text-base px-5 py-2.5 rounded-lg sm:rounded-xl flex items-center justify-center gap-2 transition-all duration-200 ease-in-out cursor-pointer shadow-sm hover:shadow-md active:scale-[0.98] disabled:opacity-75 disabled:cursor-not-allowed"
-        >
-          {isAddButtonLoading ? (
-            <>
-              <CircularProgress size={18} color="inherit" />
-              <span>{t("common.loading")}...</span>
-            </>
-          ) : (
-            <span>{t("providerProfile.products.addNewProduct")}</span>
-          )}
-        </button>
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* Link to the new multi-step Add Product page */}
+          <Link
+            href={`/${locale}/provider-profile/products-management/add-product`}
+            className="bg-mainColor hover:bg-titleColor text-white font-medium text-sm sm:text-base px-5 py-2.5 rounded-lg sm:rounded-xl flex items-center justify-center gap-2 transition-all duration-200 ease-in-out cursor-pointer shadow-sm hover:shadow-md active:scale-[0.98]"
+          >
+            <AddIcon className="w-5 h-5" />
+            <span>{t("providerProfile.products.addNewProductPageLink")}</span>
+          </Link>
+
+          {/* Current Add Product Modal Button */}
+          <button
+            onClick={handleOpenAddModal}
+            disabled={isAddButtonLoading}
+            className="border border-mainColor text-mainColor hover:bg-mainColor/10 font-medium text-sm sm:text-base px-5 py-2.5 rounded-lg sm:rounded-xl flex items-center justify-center gap-2 transition-all duration-200 ease-in-out cursor-pointer shadow-xs active:scale-[0.98] disabled:opacity-75 disabled:cursor-not-allowed"
+          >
+            {isAddButtonLoading ? (
+              <>
+                <CircularProgress size={18} color="inherit" />
+                <span>{t("common.loading")}...</span>
+              </>
+            ) : (
+              <span>{t("providerProfile.products.addNewProduct")}</span>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* 1. B2C Trips Table Section */}
