@@ -200,6 +200,11 @@ export const B2B_END_POINTS = {
     GRADES_BY_STAGES: "grades/stages",
   },
 
+  PROVIDER_REGISTER: {
+    SELECTIONS: "providers/register/selections",
+    SUBMIT: "providers/register",
+  },
+
   RAMADAN_NIGHTS: {
     INITIATION: "ramadan-nights/initiation",
     APPLE_INITIATE: "ramadan-nights/initiation/apple",
