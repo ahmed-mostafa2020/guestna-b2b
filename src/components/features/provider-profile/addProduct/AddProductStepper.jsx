@@ -1,6 +1,6 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@utils/helpers/cn";
 
@@ -20,6 +20,31 @@ const AddProductStepper = ({
   isStep2Completed = false,
 }) => {
   const t = useTranslations("providerProfile.products.newAddPage.steps");
+  const scrollContainerRef = useRef(null);
+  const stepRefs = useRef({});
+
+  // Auto-scroll active step pill into view within horizontal stepper on mobile
+  useEffect(() => {
+    const activeEl = stepRefs.current[currentStep];
+    const container = scrollContainerRef.current;
+    if (activeEl && container) {
+      const containerRect = container.getBoundingClientRect();
+      const itemRect = activeEl.getBoundingClientRect();
+
+      const isPartiallyHidden =
+        itemRect.left < containerRect.left ||
+        itemRect.right > containerRect.right;
+
+      if (isPartiallyHidden) {
+        const offset =
+          itemRect.left -
+          containerRect.left -
+          containerRect.width / 2 +
+          itemRect.width / 2;
+        container.scrollBy({ left: offset, behavior: "smooth" });
+      }
+    }
+  }, [currentStep]);
 
   // Support both array of completedSteps and legacy boolean flags
   const isCompletedStep = (stepId) => {
@@ -32,7 +57,7 @@ const AddProductStepper = ({
   };
 
   return (
-    <div className="w-full overflow-x-auto py-2 px-1">
+    <div ref={scrollContainerRef} className="w-full overflow-x-auto py-2 px-1">
       <nav
         aria-label="Progress Stepper"
         className="flex items-center justify-between min-w-[620px] sm:min-w-full max-w-4xl mx-auto"
@@ -48,6 +73,7 @@ const AddProductStepper = ({
             <div key={step.id} className="flex items-center flex-1 last:flex-none">
               {/* Step Item */}
               <div
+                ref={(el) => (stepRefs.current[step.id] = el)}
                 role={isClickable ? "button" : "group"}
                 tabIndex={isClickable ? 0 : -1}
                 onClick={() => isClickable && onStepClick?.(step.id)}

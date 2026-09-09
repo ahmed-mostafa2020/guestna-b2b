@@ -137,6 +137,54 @@ const AddProductPage = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState([]);
+  const pageTopRef = useRef(null);
+  const isFirstRender = useRef(true);
+  const scrollTimerRef = useRef(null);
+
+  /**
+   * Nicely scrolls user to the top of the step.
+   * Respects prefers-reduced-motion for accessibility.
+   */
+  const scrollToStepTop = useCallback(() => {
+    if (typeof window === "undefined") return;
+
+    if (scrollTimerRef.current) {
+      clearTimeout(scrollTimerRef.current);
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    const behavior = prefersReducedMotion ? "auto" : "smooth";
+
+    scrollTimerRef.current = setTimeout(() => {
+      if (pageTopRef.current) {
+        pageTopRef.current.scrollIntoView({
+          behavior,
+          block: "start",
+          inline: "nearest",
+        });
+      } else {
+        window.scrollTo({ top: 0, behavior });
+      }
+    }, 50);
+  }, []);
+
+  // Smoothly scroll user to the top of the step whenever currentStep changes
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    scrollToStepTop();
+
+    return () => {
+      if (scrollTimerRef.current) {
+        clearTimeout(scrollTimerRef.current);
+      }
+    };
+  }, [currentStep, scrollToStepTop]);
 
   // Fetch form selections data (categories, cities, targetAudiences, services, etc.)
   const { data: selectionResponse, isLoading: isSelectionsLoading } =
@@ -213,7 +261,8 @@ const AddProductPage = () => {
 
   return (
     <main
-      className="flex flex-col gap-6 lg:gap-8 mx-auto pb-12 font-somar"
+      ref={pageTopRef}
+      className="flex flex-col gap-6 lg:gap-8 mx-auto pb-12 font-somar scroll-mt-4 sm:scroll-mt-6"
       dir={isAr ? "rtl" : "ltr"}
     >
       {/* 1. Header with Back Navigation */}
@@ -240,7 +289,11 @@ const AddProductPage = () => {
               );
               return;
             }
-            setCurrentStep(stepId);
+            if (stepId === currentStep) {
+              scrollToStepTop();
+            } else {
+              setCurrentStep(stepId);
+            }
           }}
         />
       </div>
