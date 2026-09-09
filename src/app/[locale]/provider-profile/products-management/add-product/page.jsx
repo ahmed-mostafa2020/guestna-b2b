@@ -13,9 +13,12 @@ import AddProductStepper, {
   PRODUCT_STEPS,
 } from "@components/features/provider-profile/addProduct/AddProductStepper";
 import Step1BasicInfo from "@components/features/provider-profile/addProduct/steps/Step1BasicInfo";
+import Step4SalesChannels from "@components/features/provider-profile/addProduct/steps/Step4SalesChannels";
 import {
   createStep1Schema,
   STEP_1_FIELD_NAMES,
+  createStep4Schema,
+  STEP_4_FIELD_NAMES,
 } from "@utils/validators/addProductStepSchema";
 import { initialAddProductValues } from "@components/forms/addProductForm";
 import { useFetchData } from "@hooks/data/useFetchData";
@@ -59,7 +62,7 @@ const scrollToFirstFieldWithTarget = (fieldName) => {
  * Component inside Formik that listens for failed submission attempts
  * and smoothly scrolls to the first invalid field in visual DOM order.
  */
-const ScrollToError = () => {
+const ScrollToError = ({ currentStep }) => {
   const { errors, isValidating, submitCount } = useFormikContext();
   const lastSubmitCount = useRef(0);
 
@@ -67,15 +70,18 @@ const ScrollToError = () => {
     if (submitCount > lastSubmitCount.current && !isValidating) {
       lastSubmitCount.current = submitCount;
 
-      const orderedFields = [
-        "name.ar",
-        "name.en",
-        "tripsType",
-        "duration",
-        "allowedAges",
-        "description.ar",
-        "description.en",
-      ];
+      const orderedFields =
+        currentStep === 4
+          ? ["systemTypes", "academicStages", "b2cTargetAudiences"]
+          : [
+              "name.ar",
+              "name.en",
+              "tripsType",
+              "duration",
+              "allowedAges",
+              "description.ar",
+              "description.en",
+            ];
 
       const getError = (path) => {
         if (!errors) return undefined;
@@ -91,7 +97,7 @@ const ScrollToError = () => {
         scrollToFirstFieldWithTarget(firstErrorField);
       }
     }
-  }, [errors, isValidating, submitCount]);
+  }, [errors, isValidating, submitCount, currentStep]);
 
   return null;
 };
@@ -104,6 +110,7 @@ const AddProductPage = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isStep1Completed, setIsStep1Completed] = useState(false);
 
   // Fetch form selections data (categories, cities, targetAudiences, services, etc.)
   const { data: selectionResponse, isLoading: isSelectionsLoading } =
@@ -135,6 +142,9 @@ const AddProductPage = () => {
   const stepValidationSchema = useMemo(() => {
     if (currentStep === 1) {
       return createStep1Schema(t);
+    }
+    if (currentStep === 4) {
+      return createStep4Schema(t);
     }
     return null;
   }, [currentStep, t]);
@@ -186,15 +196,41 @@ const AddProductPage = () => {
         }
 
         // Successfully validated step 1
+        setIsStep1Completed(true);
         enqueueSnackbar(
           isAr
             ? "تم حفظ المعلومات الأساسية بنجاح"
             : "Basic information saved successfully",
           { variant: "success" }
         );
-        setCurrentStep(2);
+        // Advance directly to Step 4 as requested
+        setCurrentStep(4);
+      } else if (currentStep === 4) {
+        // Validate Step 4 fields
+        const errors = await formikHelpers.validateForm();
+        const orderedFields = ["systemTypes", "academicStages", "b2cTargetAudiences"];
+        const firstErrorField = orderedFields.find((f) => Boolean(errors[f]));
+
+        if (firstErrorField) {
+          const touchedFields = {};
+          STEP_4_FIELD_NAMES.forEach((fieldName) => {
+            touchedFields[fieldName] = true;
+          });
+          formikHelpers.setTouched(touchedFields);
+          scrollToFirstFieldWithTarget(firstErrorField);
+          return;
+        }
+
+        // Successfully validated step 4
+        enqueueSnackbar(
+          isAr
+            ? "تم حفظ قنوات البيع بنجاح"
+            : "Sales channels saved successfully",
+          { variant: "success" }
+        );
+        setCurrentStep(5);
       } else {
-        // For upcoming steps 2-5 placeholder feedback
+        // For upcoming steps placeholder feedback
         enqueueSnackbar(
           isAr
             ? `الخطوة ${currentStep} ستكون متاحة قريباً`
@@ -215,13 +251,31 @@ const AddProductPage = () => {
       <div className="py-2 px-1">
         <AddProductStepper
           currentStep={currentStep}
-          onStepClick={(stepId) => setCurrentStep(stepId)}
+          isStep1Completed={isStep1Completed}
+          onStepClick={(stepId) => {
+            if (stepId === 4 && !isStep1Completed) {
+              enqueueSnackbar(
+                isAr
+                  ? "يرجى إكمال بيانات الخطوة الأولى أولاً"
+                  : "Please complete Step 1 information first",
+                { variant: "warning" }
+              );
+              return;
+            }
+            setCurrentStep(stepId);
+          }}
         />
       </div>
 
       {/* 3. Formik Multi-Step Form */}
       <Formik
-        initialValues={{ ...initialAddProductValues, allowedAges: [] }}
+        initialValues={{
+          ...initialAddProductValues,
+          systemTypes: ["B2B", "B2C"],
+          allowedAges: [],
+          academicStages: [],
+          b2cTargetAudiences: [],
+        }}
         validationSchema={stepValidationSchema}
         onSubmit={handleStepSubmit}
         validateOnBlur={true}
@@ -230,7 +284,7 @@ const AddProductPage = () => {
         {({ handleSubmit, isValid, isSubmitting: formikSubmitting }) => (
           <Form onSubmit={handleSubmit} className="flex flex-col gap-6">
             {/* Smooth scroll to first error on submit attempt */}
-            <ScrollToError />
+            <ScrollToError currentStep={currentStep} />
 
             {/* Step 1: Basic Information matching Figma node 21212:95745 */}
             {currentStep === 1 && (
@@ -240,8 +294,16 @@ const AddProductPage = () => {
               />
             )}
 
+            {/* Step 4: Sales Channels matching Figma node 21218:101279 */}
+            {currentStep === 4 && (
+              <Step4SalesChannels
+                formSelectionData={formSelectionData}
+                isSelectionsLoading={isSelectionsLoading}
+              />
+            )}
+
             {/* Placeholder for subsequent steps */}
-            {currentStep > 1 && (
+            {currentStep !== 1 && currentStep !== 4 && (
               <div className="bg-white rounded-2xl border border-[#eaeaea] p-8 sm:p-12 text-center shadow-xs space-y-4">
                 <div className="w-16 h-16 rounded-2xl bg-mainColor/10 text-mainColor flex items-center justify-center mx-auto text-2xl font-bold">
                   {currentStep}
@@ -276,9 +338,13 @@ const AddProductPage = () => {
               {currentStep > 1 && (
                 <button
                   type="button"
-                  onClick={() =>
-                    setCurrentStep((prev) => Math.max(1, prev - 1))
-                  }
+                  onClick={() => {
+                    if (currentStep === 4) {
+                      setCurrentStep(1);
+                    } else {
+                      setCurrentStep((prev) => Math.max(1, prev - 1));
+                    }
+                  }}
                   className="w-full sm:w-auto px-6 py-3.5 rounded-xl border border-titleColor/20 text-titleColor hover:bg-gray-50 font-medium text-base transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
                 >
                   {isAr ? (
@@ -317,3 +383,4 @@ const AddProductPage = () => {
 };
 
 export default AddProductPage;
+

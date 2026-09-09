@@ -12,7 +12,11 @@ export const PRODUCT_STEPS = [
   { id: 5, key: "pricing" },
 ];
 
-const AddProductStepper = ({ currentStep = 1, onStepClick }) => {
+const AddProductStepper = ({
+  currentStep = 1,
+  onStepClick,
+  isStep1Completed = false,
+}) => {
   const t = useTranslations("providerProfile.products.newAddPage.steps");
 
   return (
@@ -23,8 +27,15 @@ const AddProductStepper = ({ currentStep = 1, onStepClick }) => {
       >
         {PRODUCT_STEPS.map((step, index) => {
           const isActive = currentStep === step.id;
-          const isCompleted = currentStep > step.id;
-          const isClickable = Boolean(onStepClick && (isCompleted || isActive));
+          const isCompleted =
+            currentStep > step.id || (step.id === 1 && isStep1Completed);
+          const isClickable = Boolean(
+            onStepClick &&
+              (isCompleted ||
+                isActive ||
+                step.id === 1 ||
+                (step.id === 4 && isStep1Completed))
+          );
 
           return (
             <div key={step.id} className="flex items-center flex-1 last:flex-none">

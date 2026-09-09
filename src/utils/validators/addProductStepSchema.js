@@ -94,3 +94,44 @@ export const STEP_1_FIELD_NAMES = [
   "description.en",
   "description.ar",
 ];
+
+/**
+ * Yup schema for Step 4 (Sales Channels) of the multi-step Add Product flow
+ */
+export const createStep4Schema = (t) => {
+  const channelReqMsg =
+    t("providerProfile.products.newAddPage.step4.validations.salesChannelRequired") ||
+    "يرجى اختيار قناة بيع واحدة على الأقل";
+  const b2bStagesReqMsg =
+    t("providerProfile.products.newAddPage.step4.validations.b2bStagesRequired") ||
+    "يرجى اختيار مرحلة دراسية واحدة على الأقل لقناة المدارس";
+  const b2cAudienceReqMsg =
+    t("providerProfile.products.newAddPage.step4.validations.b2cAudienceRequired") ||
+    "يرجى اختيار فئة جمهور واحدة على الأقل لقناة الأفراد";
+
+  return Yup.object().shape({
+    systemTypes: Yup.array()
+      .of(Yup.string())
+      .min(1, channelReqMsg)
+      .required(channelReqMsg),
+
+    academicStages: Yup.array().when("systemTypes", {
+      is: (val) => Array.isArray(val) && val.includes("B2B"),
+      then: (schema) => schema.min(1, b2bStagesReqMsg).required(b2bStagesReqMsg),
+      otherwise: (schema) => schema.optional(),
+    }),
+
+    b2cTargetAudiences: Yup.array().when("systemTypes", {
+      is: (val) => Array.isArray(val) && val.includes("B2C"),
+      then: (schema) => schema.min(1, b2cAudienceReqMsg).required(b2cAudienceReqMsg),
+      otherwise: (schema) => schema.optional(),
+    }),
+  });
+};
+
+export const STEP_4_FIELD_NAMES = [
+  "systemTypes",
+  "academicStages",
+  "b2cTargetAudiences",
+];
+

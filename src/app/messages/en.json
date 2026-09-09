@@ -393,6 +393,41 @@
           "descAr": "Description in Arabic",
           "descArPlaceholder": "Enter description",
           "next": "Next"
+        },
+        "step4": {
+          "cardTitle": "Sales Channels",
+          "cardSubtitle": "Specify the channels where your product will be sold. Pricing will be configured independently for each channel",
+          "options": {
+            "both": {
+              "title": "Schools and Individuals",
+              "desc": "Product available across both channels with independent pricing for each."
+            },
+            "b2c": {
+              "title": "Individuals Only",
+              "desc": "Product available for individuals and retail customers via B2C channel."
+            },
+            "b2b": {
+              "title": "Schools Only",
+              "desc": "Product available exclusively for institutions and schools via B2B channels."
+            }
+          },
+          "b2bSection": {
+            "cardTitle": "Study Stages — B2B",
+            "cardSubtitle": "Choose the study stages targeted by this product via the schools channel.",
+            "label": "Study Stages",
+            "placeholder": "Select study stage"
+          },
+          "b2cSection": {
+            "cardTitle": "Individual Categories — B2C",
+            "cardSubtitle": "Choose the individual categories targeted by this product via the retail channel.",
+            "label": "Target Audience",
+            "placeholder": "Select target audience"
+          },
+          "validations": {
+            "salesChannelRequired": "Please select at least one sales channel",
+            "b2bStagesRequired": "Please select at least one study stage for schools channel",
+            "b2cAudienceRequired": "Please select at least one target audience for retail channel"
+          }
         }
       },
       "b2bComingSoonSubtitle": "Companies & Schools products will be available on the platform soon.",
