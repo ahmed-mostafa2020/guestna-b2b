@@ -84,6 +84,8 @@ const SchoolsOverViewPage = () => {
     )}`;
   }, [t]);
 
+  const schools = data?.nodes ?? [];
+
   return (
     <ProtectedProfilePage
       requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_SCHOOLS_PAGE}
@@ -124,7 +126,10 @@ const SchoolsOverViewPage = () => {
           ) : schools.length > 0 ? (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
               {schools.map((organization) => (
-                <SchoolOverviewCard key={organization._id} item={organization} />
+                <SchoolOverviewCard
+                  key={organization._id}
+                  item={organization}
+                />
               ))}
             </div>
           ) : (
