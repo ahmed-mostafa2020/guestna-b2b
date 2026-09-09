@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
-import { nanoid } from "nanoid";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { useMutationData } from "@hooks/data/useMutationData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -32,13 +31,6 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const { enqueueSnackbar } = useSnackbar();
   const showDebugInitiate = useMemo(() => isTestEnvironment(), []);
 
-  // Fresh unique session key generated with nanoid per checkout visit / refresh
-  const sessionKeyRef = useRef(null);
-  if (!sessionKeyRef.current) {
-    sessionKeyRef.current = nanoid();
-  }
-  const sessionKey = sessionKeyRef.current;
-
   const bookingIdRef = useRef(null);
   const isInitializedRef = useRef(false);
   const widgetContainerRef = useRef(null);
@@ -46,7 +38,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const finalTripDetails = useSelector(
-    (state) => state.finalTripDetailsData?.data
+    (state) => state.finalTripDetailsData.data
   );
   const promoCodeData = useSelector(
     (state) => state.promoCode?.promoCodeData?.trip
@@ -56,9 +48,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
 
   const finalPrice = data?.calculatedPriceInfo?.total ?? 0;
 
-  const tripName = useSelector(
-    (state) => state.finalTripDetailsData?.data?.name
-  );
+  const tripName = useSelector((state) => state.finalTripDetailsData.data.name);
 
   const locale = useLocale();
 
@@ -85,8 +75,8 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
       mutate(
         {
           ...baseDataRef.current,
-          sessionKey,
           price: +finalPrice,
+          sessionKey: baseDataRef.current.client,
         },
         {
           onSuccess: (data) => {
@@ -126,8 +116,10 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
         currency: currency,
         description: tripName,
         publishable_api_key: appleWidgetKey,
-        callback_url: `${B2B_END_POINTS.PAYMENTS}${B2B_END_POINTS.APPLE_BOOKING.CALLBACK}?lang=${locale}&sessionKey=${sessionKey}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
-        metadata: { sessionKey },
+        callback_url: `${B2B_END_POINTS.PAYMENTS}${B2B_END_POINTS.APPLE_BOOKING.CALLBACK}?lang=${locale}&redirectUrl=${vercelUrl}/${locale}/bookingStatus&sessionKey=${baseData.client}`,
+        metadata: {
+          sessionKey: baseData.client,
+        },
         methods: ["applepay"],
         apple_pay: {
           country: "SA",
@@ -149,8 +141,8 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
               mutate(
                 {
                   ...baseDataRef.current,
-                  sessionKey,
                   price: +finalPrice,
+                  sessionKey: baseDataRef.current.client,
                 },
                 {
                   onSuccess: (data) => {
