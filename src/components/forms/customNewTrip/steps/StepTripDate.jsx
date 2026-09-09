@@ -9,7 +9,10 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import { Box } from "@mui/material";
 import formatDateForInput from "@utils/formatters/FormateDateForInput";
 import { formatTimeForInput } from "@utils/formatters/formatTimeForInput";
-import { getTimeRangesForDate } from "@utils/helpers/parseTimeRange";
+import {
+  getTimeRangesForDate,
+  formatDisplayTimeRanges,
+} from "@utils/helpers/parseTimeRange";
 
 const StepTripDate = ({
   hasProviderSpecificDays,
@@ -38,11 +41,21 @@ const StepTripDate = ({
     }
   };
 
+  // Ensure available days are sorted for valid HTML5 date picker min/max
+  const sortedAvailableDays = React.useMemo(() => {
+    return Array.isArray(availableDays) ? [...availableDays].sort() : [];
+  }, [availableDays]);
+
   // Get time ranges for the selected day (for non-API integrations)
-  const timeRangesForDay =
-    hasNonApiProviderDays && values.day
+  const timeRangesForDay = React.useMemo(() => {
+    return hasNonApiProviderDays && values.day
       ? getTimeRangesForDate(values.day, availableDaysSlots)
       : [];
+  }, [hasNonApiProviderDays, values.day, availableDaysSlots]);
+
+  const formattedTimeRanges = React.useMemo(() => {
+    return formatDisplayTimeRanges(timeRangesForDay, locale, tGlobal);
+  }, [timeRangesForDay, locale, tGlobal]);
 
   // Branch options for dropdown
   const branchOptions = React.useMemo(() => {
@@ -120,8 +133,8 @@ const StepTripDate = ({
                 }}
                 onBlur={handleBlur}
                 onClick={handleInputClick}
-                min={availableDays?.[0] || ""}
-                max={availableDays?.[availableDays.length - 1] || ""}
+                min={sortedAvailableDays?.[0] || ""}
+                max={sortedAvailableDays?.[sortedAvailableDays.length - 1] || ""}
                 className={`text-sm font-normal font-somar transition-all duration-200 ease-in-out p-4 pe-12 bg-white w-full rounded-lg outline-none border-2 cursor-pointer ${
                   touched.day && errors.day
                     ? "border-error focus:border-error hover:border-error"
@@ -183,7 +196,7 @@ const StepTripDate = ({
                 value={formatDateForInput(values.day)}
                 onChange={(e) => {
                   const dateStr = e.target.value;
-                  if (dateStr && !availableDays.includes(dateStr)) return;
+                  if (dateStr && !sortedAvailableDays.includes(dateStr)) return;
                   handleChange(e);
                   // Reset time fields when day changes
                   setFieldValue("fromHour", "");
@@ -191,8 +204,8 @@ const StepTripDate = ({
                 }}
                 onBlur={handleBlur}
                 onClick={handleInputClick}
-                min={availableDays?.[0] || ""}
-                max={availableDays?.[availableDays.length - 1] || ""}
+                min={sortedAvailableDays?.[0] || ""}
+                max={sortedAvailableDays?.[sortedAvailableDays.length - 1] || ""}
                 className={`text-sm font-normal font-somar transition-all duration-200 ease-in-out p-4 pe-12 bg-white w-full rounded-lg outline-none border-2 cursor-pointer ${
                   touched.day && errors.day
                     ? "border-error focus:border-error hover:border-error"
@@ -240,7 +253,7 @@ const StepTripDate = ({
                   <div className={hasError ? "pt-6" : "pt-1"}>
                     <p className="text-xs text-secColor font-somar">
                       {t("fields.availableTimeRange", {
-                        range: timeRangesForDay.join(", "),
+                        range: formattedTimeRanges,
                       })}
                     </p>
                   </div>

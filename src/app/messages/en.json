@@ -3316,7 +3316,10 @@
             },
             "to_hour": {
               "label": "To Hour",
-              "placeholder": "Select hour"
+              "placeholder": "Select hour",
+              "error": {
+                "afterFrom": "End time must be after start time"
+              }
             },
             "day": {
               "label": "Day",
