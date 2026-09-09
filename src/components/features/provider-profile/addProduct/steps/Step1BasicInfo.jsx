@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo, useMemo, useCallback } from "react";
 import { useFormikContext, getIn } from "formik";
 import { useTranslations, useLocale } from "next-intl";
 import TextInputGroup from "@components/forms/TextInputGroup";
@@ -12,36 +12,31 @@ const Step1BasicInfo = ({
   isSelectionsLoading = false,
 }) => {
   const t = useTranslations("providerProfile.products.newAddPage.step1");
+  const tCommon = useTranslations("providerProfile.products.newAddPage.common");
   const locale = useLocale();
   const isAr = locale === "ar";
 
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
 
-  // Instant feedback for language validation + blur/submit support
-  const nameArError = getIn(errors, "name.ar");
-  const nameArTouched = getIn(touched, "name.ar");
-  const showNameArError = Boolean(
-    nameArError && (nameArTouched || values.name?.ar)
+  // Helper for error state
+  const getFieldErrorState = useCallback(
+    (path) => {
+      const error = getIn(errors, path);
+      const isTouched = getIn(touched, path);
+      const val = getIn(values, path);
+      return {
+        error,
+        showError: Boolean(error && (isTouched || val)),
+      };
+    },
+    [errors, touched, values]
   );
 
-  const nameEnError = getIn(errors, "name.en");
-  const nameEnTouched = getIn(touched, "name.en");
-  const showNameEnError = Boolean(
-    nameEnError && (nameEnTouched || values.name?.en)
-  );
-
-  const descArError = getIn(errors, "description.ar");
-  const descArTouched = getIn(touched, "description.ar");
-  const showDescArError = Boolean(
-    descArError && (descArTouched || values.description?.ar)
-  );
-
-  const descEnError = getIn(errors, "description.en");
-  const descEnTouched = getIn(touched, "description.en");
-  const showDescEnError = Boolean(
-    descEnError && (descEnTouched || values.description?.en)
-  );
+  const nameAr = getFieldErrorState("name.ar");
+  const nameEn = getFieldErrorState("name.en");
+  const descAr = getFieldErrorState("description.ar");
+  const descEn = getFieldErrorState("description.en");
 
   const tripsTypeError = getIn(errors, "tripsType");
   const tripsTypeTouched = getIn(touched, "tripsType");
@@ -52,41 +47,50 @@ const Step1BasicInfo = ({
   const allowedAgesError = getIn(errors, "allowedAges");
   const allowedAgesTouched = getIn(touched, "allowedAges");
 
-  const tripTypeOptions = [
-    {
-      value: CONSTANT_VALUES.ACTIVITY || "ACTIVITY",
-      label: isAr ? "يوم واحد (نشاط)" : "One Day (Activity)",
-    },
-    {
-      value: CONSTANT_VALUES.HALF_DAY || "HALF_DAY",
-      label: isAr ? "نصف يوم" : "Half Day",
-    },
-    {
-      value: CONSTANT_VALUES.PACKAGE || "PACKAGE",
-      label: isAr ? "متعددة الأيام (باقة)" : "Multi-Day (Package)",
-    },
-  ];
+  const tripTypeOptions = useMemo(
+    () => [
+      {
+        value: CONSTANT_VALUES.ACTIVITY || "ACTIVITY",
+        label: t("tripTypes.activity"),
+      },
+      {
+        value: CONSTANT_VALUES.HALF_DAY || "HALF_DAY",
+        label: t("tripTypes.halfDay"),
+      },
+      {
+        value: CONSTANT_VALUES.PACKAGE || "PACKAGE",
+        label: t("tripTypes.package"),
+      },
+    ],
+    [t]
+  );
 
-  const durationOptions = [
-    { value: 1, label: isAr ? "يوم واحد" : "1 Day" },
-    { value: 2, label: isAr ? "يومان (2)" : "2 Days" },
-    { value: 3, label: isAr ? "3 أيام" : "3 Days" },
-    { value: 4, label: isAr ? "4 أيام" : "4 Days" },
-    { value: 5, label: isAr ? "5 أيام" : "5 Days" },
-    { value: 7, label: isAr ? "أسبوع (7 أيام)" : "1 Week (7 Days)" },
-    { value: 10, label: isAr ? "10 أيام" : "10 Days" },
-    { value: 14, label: isAr ? "أسبوعان (14 يوماً)" : "2 Weeks (14 Days)" },
-  ];
+  const durationOptions = useMemo(
+    () => [
+      { value: 1, label: t("durations.1") },
+      { value: 2, label: t("durations.2") },
+      { value: 3, label: t("durations.3") },
+      { value: 4, label: t("durations.4") },
+      { value: 5, label: t("durations.5") },
+      { value: 7, label: t("durations.7") },
+      { value: 10, label: t("durations.10") },
+      { value: 14, label: t("durations.14") },
+    ],
+    [t]
+  );
 
-  const ageOptions = [
-    { value: "ALL", label: isAr ? "جميع الأعمار (عائلي)" : "All Ages (Family)" },
-    { value: "UNDER_6", label: isAr ? "أقل من 6 سنوات" : "Under 6 Years" },
-    { value: "6_TO_12", label: isAr ? "6 - 12 سنة" : "6 - 12 Years" },
-    { value: "13_TO_17", label: isAr ? "13 - 17 سنة" : "13 - 17 Years" },
-    { value: "18_TO_30", label: isAr ? "18 - 30 سنة" : "18 - 30 Years" },
-    { value: "31_TO_50", label: isAr ? "31 - 50 سنة" : "31 - 50 Years" },
-    { value: "OVER_50", label: isAr ? "أكثر من 50 سنة" : "Over 50 Years" },
-  ];
+  const ageOptions = useMemo(
+    () => [
+      { value: "ALL", label: t("defaultAges.ALL") },
+      { value: "UNDER_6", label: t("defaultAges.UNDER_6") },
+      { value: "6_TO_12", label: t("defaultAges.6_TO_12") },
+      { value: "13_TO_17", label: t("defaultAges.13_TO_17") },
+      { value: "18_TO_30", label: t("defaultAges.18_TO_30") },
+      { value: "31_TO_50", label: t("defaultAges.31_TO_50") },
+      { value: "OVER_50", label: t("defaultAges.OVER_50") },
+    ],
+    [t]
+  );
 
   // Dynamically populate target audiences / age range from API selections
   const audienceOptions = useMemo(() => {
@@ -110,62 +114,61 @@ const Step1BasicInfo = ({
   }, [formSelectionData?.targetAudiences, ageOptions, locale]);
 
   const inputBorderCls =
-    "border border-[#d0d5dd] hover:border-mainColor focus:border-mainColor";
+    "border border-border hover:border-mainColor focus:border-mainColor";
+  const labelCls =
+    "font-somar text-base font-medium text-textDark text-start block mb-1";
 
   return (
     <section
-      dir="rtl"
+      dir={isAr ? "rtl" : "ltr"}
       aria-labelledby="step1-title"
-      className="bg-white rounded-2xl border border-[#d0d5dd] p-6 sm:p-8 lg:p-10 transition-all duration-200 text-start shadow-none"
+      className="bg-white rounded-2xl border border-border p-6 sm:p-8 lg:p-10 transition-all duration-200 text-start shadow-none"
     >
-      {/* Card Header (RTL on the right) */}
+      {/* Card Header */}
       <div className="mb-6 sm:mb-8 text-start">
         <h2
           id="step1-title"
-          className="font-somar text-xl font-medium text-[#042a30] leading-6"
+          className="font-somar text-xl font-medium text-textDark leading-6"
         >
           {t("cardTitle")}
         </h2>
-        <p className="font-somar text-base font-medium text-[#042a30] leading-5 !mt-2">
+        <p className="font-somar text-base font-medium text-textDark leading-5 !mt-2">
           {t("cardSubtitle")}
         </p>
       </div>
 
-      {/* Form Fields Grid using reusable TextInputGroup and SelectionGroup:
-          Column 1 is on the RIGHT in RTL (Arabic fields, Product Type, Ages)
-          Column 2 is on the LEFT in RTL (English fields, Duration, Spacer)
-      */}
+      {/* Form Fields Grid using reusable TextInputGroup and SelectionGroup */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 text-start">
         {/* ─── ROW 1 ─── */}
-        {/* Right Column: Arabic Name */}
+        {/* Arabic Name */}
         <div>
           <TextInputGroup
             name="name.ar"
             value={values.name?.ar || ""}
             onChange={handleChange}
             onBlur={handleBlur}
-            touched={showNameArError}
-            errors={nameArError}
+            touched={nameAr.showError}
+            errors={nameAr.error}
             borderClassName={inputBorderCls}
             label={t("nameAr")}
-            labelClassName="font-somar text-base font-medium text-[#042a30] text-start block mb-1"
+            labelClassName={labelCls}
             placeholder={t("nameArPlaceholder")}
             autoComplete="off"
           />
         </div>
 
-        {/* Left Column: English Name */}
+        {/* English Name */}
         <div dir="ltr" className="text-start">
           <TextInputGroup
             name="name.en"
             value={values.name?.en || ""}
             onChange={handleChange}
             onBlur={handleBlur}
-            touched={showNameEnError}
-            errors={nameEnError}
+            touched={nameEn.showError}
+            errors={nameEn.error}
             borderClassName={inputBorderCls}
             label={t("nameEn")}
-            labelClassName="font-somar text-base font-medium text-[#042a30] text-start block mb-1"
+            labelClassName={labelCls}
             placeholder={t("nameEnPlaceholder")}
             textAlign="left"
             autoComplete="off"
@@ -173,7 +176,7 @@ const Step1BasicInfo = ({
         </div>
 
         {/* ─── ROW 2 ─── */}
-        {/* Right Column: Product Type (tripsType) */}
+        {/* Product Type (tripsType) */}
         <div>
           <SelectionGroup
             name="tripsType"
@@ -182,15 +185,15 @@ const Step1BasicInfo = ({
             onBlur={handleBlur}
             touched={tripsTypeTouched}
             errors={tripsTypeError}
-            border="1px solid #d0d5dd"
+            border="1px solid var(--color-border)"
             label={t("tripsType")}
-            labelClassName="font-somar text-base font-medium text-[#042a30] text-start block mb-1"
+            labelClassName={labelCls}
             list={tripTypeOptions}
             placeholder={t("tripsTypePlaceholder")}
           />
         </div>
 
-        {/* Left Column: Product Duration */}
+        {/* Product Duration */}
         <div>
           <SelectionGroup
             name="duration"
@@ -204,16 +207,16 @@ const Step1BasicInfo = ({
             onBlur={handleBlur}
             touched={durationTouched}
             errors={durationError}
-            border="1px solid #d0d5dd"
+            border="1px solid var(--color-border)"
             label={t("duration")}
-            labelClassName="font-somar text-base font-medium text-[#042a30] text-start block mb-1"
+            labelClassName={labelCls}
             list={durationOptions}
             placeholder={t("durationPlaceholder")}
           />
         </div>
 
         {/* ─── ROW 3 ─── */}
-        {/* Right Column: Multi-Selection Dropdown for Ages */}
+        {/* Multi-Selection Dropdown for Ages */}
         <div>
           <SelectionGroup
             name="allowedAges"
@@ -221,7 +224,6 @@ const Step1BasicInfo = ({
             onChange={(e) => {
               const selectedVal = e.target.value;
               setFieldValue("allowedAges", selectedVal);
-              // Also keep targetAudiences array synchronized for backend compatibility
               const arr = Array.isArray(selectedVal) ? selectedVal : [selectedVal];
               const mapped = arr.filter(Boolean).map((id) => ({
                 targetAudience: id,
@@ -232,25 +234,25 @@ const Step1BasicInfo = ({
             onBlur={handleBlur}
             touched={allowedAgesTouched}
             errors={allowedAgesError}
-            border="1px solid #d0d5dd"
+            border="1px solid var(--color-border)"
             label={t("ageRange")}
-            labelClassName="font-somar text-base font-medium text-[#042a30] text-start block mb-1"
+            labelClassName={labelCls}
             multiple={true}
             showCheckbox={true}
             list={audienceOptions}
             placeholder={
               isSelectionsLoading
-                ? (isAr ? "جاري تحميل الخيارات..." : "Loading options...")
+                ? tCommon("loadingOptions")
                 : t("ageRangePlaceholder")
             }
           />
         </div>
 
-        {/* Left Column: Spacer to keep 2-column alignment matching screenshot */}
+        {/* Spacer for 2-column alignment */}
         <div className="hidden md:block" aria-hidden="true" />
 
         {/* ─── ROW 4 ─── */}
-        {/* Right Column: Arabic Description */}
+        {/* Arabic Description */}
         <div>
           <TextInputGroup
             textarea={true}
@@ -259,16 +261,16 @@ const Step1BasicInfo = ({
             value={values.description?.ar || ""}
             onChange={handleChange}
             onBlur={handleBlur}
-            touched={showDescArError}
-            errors={descArError}
+            touched={descAr.showError}
+            errors={descAr.error}
             borderClassName={inputBorderCls}
             label={t("descAr")}
-            labelClassName="font-somar text-base font-medium text-[#042a30] text-start block mb-1"
+            labelClassName={labelCls}
             placeholder={t("descArPlaceholder")}
           />
         </div>
 
-        {/* Left Column: English Description */}
+        {/* English Description */}
         <div dir="ltr" className="text-start">
           <TextInputGroup
             textarea={true}
@@ -277,11 +279,11 @@ const Step1BasicInfo = ({
             value={values.description?.en || ""}
             onChange={handleChange}
             onBlur={handleBlur}
-            touched={showDescEnError}
-            errors={descEnError}
+            touched={descEn.showError}
+            errors={descEn.error}
             borderClassName={inputBorderCls}
             label={t("descEn")}
-            labelClassName="font-somar text-base font-medium text-[#042a30] text-start block mb-1"
+            labelClassName={labelCls}
             placeholder={t("descEnPlaceholder")}
             textAlign="left"
           />

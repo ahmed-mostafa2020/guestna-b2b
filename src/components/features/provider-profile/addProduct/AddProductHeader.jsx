@@ -11,14 +11,17 @@ const AddProductHeader = () => {
   const isAr = locale === "ar";
 
   return (
-    <header className="flex items-center justify-between gap-4 py-2" dir="rtl">
+    <header
+      className="flex items-center justify-between gap-4 py-2"
+      dir={isAr ? "rtl" : "ltr"}
+    >
       <div className="flex items-center gap-3 sm:gap-4">
-        {/* Back Link Button matching Figma: 40x40, rounded-lg, border #0b7f8f */}
+        {/* Back Link Button matching theme titleColor */}
         <Link
           href={`/${locale}/provider-profile/products-management`}
           title={t("backTooltip")}
           aria-label={t("backTooltip")}
-          className="w-10 h-10 rounded-lg border border-[#0b7f8f] text-[#0b7f8f] flex items-center justify-center hover:bg-[#0b7f8f]/10 transition-all duration-200 active:scale-95 flex-shrink-0"
+          className="w-10 h-10 rounded-lg border border-titleColor text-titleColor flex items-center justify-center hover:bg-titleColor/10 transition-all duration-200 active:scale-95 flex-shrink-0"
         >
           {isAr ? (
             <KeyboardArrowRight className="w-5 h-5" />
@@ -27,8 +30,8 @@ const AddProductHeader = () => {
           )}
         </Link>
 
-        {/* Title matching Figma: Somar Sans, 24px, 500, #042a30, line-height 28px */}
-        <h1 className="font-somar text-2xl font-medium text-[#042a30] leading-7">
+        {/* Title */}
+        <h1 className="font-somar text-2xl font-medium text-textDark leading-7">
           {t("headerTitle")}
         </h1>
       </div>

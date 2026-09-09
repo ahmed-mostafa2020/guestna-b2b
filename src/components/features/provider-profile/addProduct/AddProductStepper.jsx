@@ -15,10 +15,21 @@ export const PRODUCT_STEPS = [
 const AddProductStepper = ({
   currentStep = 1,
   onStepClick,
+  completedSteps = [],
   isStep1Completed = false,
   isStep2Completed = false,
 }) => {
   const t = useTranslations("providerProfile.products.newAddPage.steps");
+
+  // Support both array of completedSteps and legacy boolean flags
+  const isCompletedStep = (stepId) => {
+    return (
+      currentStep > stepId ||
+      completedSteps.includes(stepId) ||
+      (stepId === 1 && isStep1Completed) ||
+      (stepId === 2 && isStep2Completed)
+    );
+  };
 
   return (
     <div className="w-full overflow-x-auto py-2 px-1">
@@ -28,17 +39,9 @@ const AddProductStepper = ({
       >
         {PRODUCT_STEPS.map((step, index) => {
           const isActive = currentStep === step.id;
-          const isCompleted =
-            currentStep > step.id ||
-            (step.id === 1 && isStep1Completed) ||
-            (step.id === 2 && isStep2Completed);
+          const isCompleted = isCompletedStep(step.id);
           const isClickable = Boolean(
-            onStepClick &&
-              (isCompleted ||
-                isActive ||
-                step.id === 1 ||
-                (step.id === 2 && isStep1Completed) ||
-                (step.id === 4 && isStep1Completed))
+            onStepClick && (isCompleted || isActive || step.id === 1)
           );
 
           return (
@@ -60,32 +63,30 @@ const AddProductStepper = ({
                 )}
                 aria-current={isActive ? "step" : undefined}
               >
-                {/* Step Circle: 32x32, IBM Plex Sans Arabic, 16px, 500, leading-[14px] */}
+                {/* Step Circle */}
                 <div
                   className={cn(
                     "w-8 h-8 rounded-full flex items-center justify-center font-ibm text-base font-medium leading-[14px] transition-all duration-200 flex-shrink-0",
-                    isActive
-                      ? "bg-[#008f8f] text-white shadow-sm"
-                      : isCompleted
-                      ? "bg-[#008f8f] text-white"
-                      : "border-[1.5px] border-[#0a0a0a] text-[#0a0a0a] bg-white"
+                    isActive || isCompleted
+                      ? "bg-titleColor text-white shadow-xs"
+                      : "border-[1.5px] border-textDark text-textDark bg-white"
                   )}
                 >
                   {step.id}
                 </div>
 
-                {/* Step Label: Somar Sans, 16px, 500, leading-6 (24px), #1f2626 */}
-                <span className="font-somar text-base font-medium leading-6 text-[#1f2626] whitespace-nowrap">
+                {/* Step Label */}
+                <span className="font-somar text-base font-medium leading-6 text-textDark whitespace-nowrap">
                   {t(step.key)}
                 </span>
               </div>
 
-              {/* Connecting Line between steps: 1.5px, #292D32 or completed #008f8f */}
+              {/* Connecting Line between steps */}
               {index < PRODUCT_STEPS.length - 1 && (
                 <div
                   className={cn(
                     "flex-1 h-[1.5px] mx-2.5 sm:mx-4 transition-colors duration-200",
-                    isCompleted ? "bg-[#008f8f]" : "bg-[#292D32]"
+                    isCompleted ? "bg-titleColor" : "bg-gray-300"
                   )}
                   aria-hidden="true"
                 />

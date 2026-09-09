@@ -1,8 +1,8 @@
 "use client";
 
-import { memo, useMemo, useRef } from "react";
+import { memo, useMemo, useRef, useState, useEffect } from "react";
 import { useFormikContext, getIn } from "formik";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { cn } from "@utils/helpers/cn";
 
@@ -43,6 +43,9 @@ const GalleryExportIcon = ({ className }) => (
 
 const Step2Gallery = () => {
   const t = useTranslations("providerProfile.products.newAddPage.step2");
+  const locale = useLocale();
+  const isAr = locale === "ar";
+
   const { values, errors, touched, setFieldValue, setFieldTouched } =
     useFormikContext();
 
@@ -64,35 +67,48 @@ const Step2Gallery = () => {
     [values.gallery]
   );
 
-  // Memoized URL preview for cover image
-  const coverPreview = useMemo(() => {
-    if (!values.thumbnailWeb) return "";
-    if (typeof values.thumbnailWeb === "string") return values.thumbnailWeb;
-    if (
-      values.thumbnailWeb instanceof File ||
-      values.thumbnailWeb instanceof Blob
-    ) {
-      return URL.createObjectURL(values.thumbnailWeb);
+  // Safely manage cover image preview with automatic URL cleanup to prevent memory leaks
+  const [coverPreview, setCoverPreview] = useState("");
+  useEffect(() => {
+    let createdUrl = "";
+    if (values.thumbnailWeb instanceof File || values.thumbnailWeb instanceof Blob) {
+      createdUrl = URL.createObjectURL(values.thumbnailWeb);
+      setCoverPreview(createdUrl);
+    } else if (typeof values.thumbnailWeb === "string") {
+      setCoverPreview(values.thumbnailWeb);
+    } else {
+      setCoverPreview("");
     }
-    return "";
+
+    return () => {
+      if (createdUrl) URL.revokeObjectURL(createdUrl);
+    };
   }, [values.thumbnailWeb]);
 
-  // Memoized URL previews for gallery items
-  const galleryPreviews = useMemo(() => {
-    return galleryItems.map((item) => {
-      if (!item) return "";
-      if (typeof item === "string") return item;
+  // Safely manage gallery items previews with automatic URL cleanup
+  const [galleryPreviews, setGalleryPreviews] = useState([]);
+  useEffect(() => {
+    const createdUrls = [];
+    const previews = galleryItems.map((item) => {
       if (item instanceof File || item instanceof Blob) {
-        return URL.createObjectURL(item);
+        const url = URL.createObjectURL(item);
+        createdUrls.push(url);
+        return url;
       }
+      if (typeof item === "string") return item;
       return "";
     });
+    setGalleryPreviews(previews);
+
+    return () => {
+      createdUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
   }, [galleryItems]);
 
-  // Handle single cover image upload
+  // Handle single cover image upload with validation
   const handleCoverUpload = (e) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (file && file.type.startsWith("image/")) {
       setFieldValue("thumbnailWeb", file);
       setFieldTouched("thumbnailWeb", true, false);
     }
@@ -106,9 +122,11 @@ const Step2Gallery = () => {
     setFieldTouched("thumbnailWeb", true, false);
   };
 
-  // Handle multiple gallery upload (min 4, max 15)
+  // Handle multiple gallery upload (min 4, max 15) with validation
   const handleGalleryUpload = (e) => {
-    const files = Array.from(e.target.files || []);
+    const files = Array.from(e.target.files || []).filter((f) =>
+      f.type.startsWith("image/")
+    );
     if (files.length > 0) {
       const remainingAllowed = 15 - galleryItems.length;
       if (remainingAllowed > 0) {
@@ -152,35 +170,35 @@ const Step2Gallery = () => {
 
   return (
     <section
-      dir="rtl"
+      dir={isAr ? "rtl" : "ltr"}
       aria-labelledby="step2-title"
-      className="bg-white rounded-2xl border border-[#eaeaea] p-5 sm:p-8 lg:p-10 transition-all duration-200 text-start shadow-none flex flex-col gap-8"
+      className="bg-white rounded-2xl border border-border p-5 sm:p-8 lg:p-10 transition-all duration-200 text-start shadow-none flex flex-col gap-8"
     >
       {/* 1. Card Header */}
       <div className="text-start">
         <h2
           id="step2-title"
-          className="font-somar text-xl font-medium text-[#042a30] leading-6"
+          className="font-somar text-xl font-medium text-textDark leading-6"
         >
           {t("cardTitle")}
         </h2>
-        <p className="font-somar text-base font-medium text-[#042a30] leading-5 !mt-2">
+        <p className="font-somar text-base font-medium text-textDark leading-5 !mt-2">
           {t("cardSubtitle")}
         </p>
       </div>
 
-      {/* 2. Section 1: Trip Cover Image (صورة الرحلة) */}
+      {/* 2. Section 1: Trip Cover Image */}
       <div className="flex flex-col gap-4 text-start" id="thumbnailWeb">
         <div>
-          <h3 className="font-ibm text-base font-bold text-[#2b1e4c] leading-5">
+          <h3 className="font-ibm text-base font-bold text-textDark leading-5">
             {t("tripImageTitle")} <span className="text-error">*</span>
           </h3>
-          <p className="font-ibm text-sm sm:text-base font-normal text-[#2b1e4c]/85 leading-6 mt-1 whitespace-pre-line">
+          <p className="font-ibm text-sm sm:text-base font-normal text-textLight leading-6 mt-1 whitespace-pre-line">
             {t("tripImageSubtitle")}
           </p>
         </div>
 
-        {/* Cover Preview Container: max-w-[402px] x h-[241px] */}
+        {/* Cover Preview Container */}
         <div className="flex flex-col gap-3 max-w-[402px] w-full">
           <div
             className={cn(
@@ -214,11 +232,11 @@ const Step2Gallery = () => {
             ) : null}
           </div>
 
-          {/* Upload Button: border-2 border-[#7a57d9] text-[#1f2626] font-bold */}
+          {/* Upload Button */}
           <button
             type="button"
             onClick={() => coverInputRef.current?.click()}
-            className="w-full h-[44px] rounded-lg border-2 border-[#7a57d9] text-[#1f2626] hover:bg-[#7a57d9]/10 font-ibm text-base font-bold flex items-center justify-center cursor-pointer transition-colors duration-200 select-none"
+            className="w-full h-[44px] rounded-lg border-2 border-mainColor text-textDark hover:bg-mainColor/10 font-ibm text-base font-bold flex items-center justify-center cursor-pointer transition-colors duration-200 select-none"
           >
             {coverPreview ? t("changeImageBtn") : t("uploadImageBtn")}
           </button>
@@ -236,15 +254,15 @@ const Step2Gallery = () => {
         </div>
       </div>
 
-      {/* 3. Section 2: Image Gallery (معرض الصور) */}
+      {/* 3. Section 2: Image Gallery */}
       <div className="flex flex-col gap-4 pt-2 text-start" id="gallery">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div>
-            <h3 className="font-ibm text-base font-bold text-[#2b1e4c] leading-5 flex items-center gap-1.5">
+            <h3 className="font-ibm text-base font-bold text-textDark leading-5 flex items-center gap-1.5">
               <span>{t("gallerySectionTitle")}</span>
               <span className="text-error">*</span>
             </h3>
-            <p className="font-ibm text-sm sm:text-base font-normal text-[#2b1e4c]/85 leading-6 mt-1">
+            <p className="font-ibm text-sm sm:text-base font-normal text-textLight leading-6 mt-1">
               {t("gallerySectionSubtitle")}
             </p>
           </div>
@@ -255,7 +273,7 @@ const Step2Gallery = () => {
               className={cn(
                 "text-xs font-bold px-3 py-1 rounded-full font-ibm",
                 galleryItems.length >= 4
-                  ? "text-[#007473] bg-[#007473]/10"
+                  ? "text-mainColor bg-mainColor/10"
                   : "text-amber-700 bg-amber-50"
               )}
             >
@@ -278,7 +296,7 @@ const Step2Gallery = () => {
                   showGalleryError && galleryItems.length < 4 && !isUploaded
                     ? "border-error/60"
                     : "border-gray-200",
-                  !isUploaded && "cursor-pointer hover:border-[#007473]/50"
+                  !isUploaded && "cursor-pointer hover:border-mainColor/50"
                 )}
                 style={!isUploaded ? checkeredPatternStyle : undefined}
                 onClick={() => {
@@ -332,7 +350,7 @@ const Step2Gallery = () => {
             {showGalleryError ? (
               <p className="text-xs text-error font-medium">{galleryError}</p>
             ) : (
-              <p className="text-xs text-subtitleColor font-ibm">
+              <p className="text-xs text-textLight font-ibm">
                 {t("minPhotosHelp")}
               </p>
             )}
@@ -344,7 +362,7 @@ const Step2Gallery = () => {
               type="button"
               disabled={galleryItems.length >= 15}
               onClick={() => galleryInputRef.current?.click()}
-              className="h-12 px-6 rounded-lg bg-[#007473] hover:bg-[#005f5e] text-white font-ibm font-bold text-base leading-5 flex items-center gap-2 transition-all duration-200 shadow-sm hover:shadow active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+              className="h-12 px-6 rounded-lg bg-mainColor hover:bg-titleColor text-white font-ibm font-bold text-base leading-5 flex items-center gap-2 transition-all duration-200 shadow-sm hover:shadow active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
             >
               <GalleryExportIcon className="w-5 h-5 text-white" />
               <span>

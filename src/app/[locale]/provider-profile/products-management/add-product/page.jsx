@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Formik, Form, useFormikContext } from "formik";
+import { Formik, Form, useFormikContext, getIn } from "formik";
 import { useSnackbar } from "notistack";
 import CircularProgress from "@mui/material/CircularProgress";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -26,6 +26,30 @@ import {
 import { initialAddProductValues } from "@components/forms/addProductForm";
 import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+
+/**
+ * Declarative Step Configuration
+ */
+const STEP_CONFIG = {
+  1: {
+    getSchema: (t) => createStep1Schema(t),
+    fields: STEP_1_FIELD_NAMES,
+    successKey: "step1.savedSuccess",
+    nextStep: 2,
+  },
+  2: {
+    getSchema: (t) => createStep2Schema(t),
+    fields: STEP_2_FIELD_NAMES,
+    successKey: "step2.savedSuccess",
+    nextStep: 4,
+  },
+  4: {
+    getSchema: (t) => createStep4Schema(t),
+    fields: STEP_4_FIELD_NAMES,
+    successKey: "step4.savedSuccess",
+    nextStep: 5,
+  },
+};
 
 /**
  * Helper to smoothly scroll to and focus the first invalid field
@@ -62,6 +86,23 @@ const scrollToFirstFieldWithTarget = (fieldName) => {
 };
 
 /**
+ * Builds Formik touched map for nested and flat field paths
+ */
+const buildTouchedMap = (fields) => {
+  const touched = {};
+  fields.forEach((fieldName) => {
+    if (fieldName.includes(".")) {
+      const [parent, child] = fieldName.split(".");
+      if (!touched[parent]) touched[parent] = {};
+      touched[parent][child] = true;
+    } else {
+      touched[fieldName] = true;
+    }
+  });
+  return touched;
+};
+
+/**
  * Component inside Formik that listens for failed submission attempts
  * and smoothly scrolls to the first invalid field in visual DOM order.
  */
@@ -73,33 +114,14 @@ const ScrollToError = ({ currentStep }) => {
     if (submitCount > lastSubmitCount.current && !isValidating) {
       lastSubmitCount.current = submitCount;
 
-      const orderedFields =
-        currentStep === 4
-          ? ["systemTypes", "academicStages", "b2cTargetAudiences"]
-          : currentStep === 2
-          ? ["thumbnailWeb", "gallery"]
-          : [
-              "name.ar",
-              "name.en",
-              "tripsType",
-              "duration",
-              "allowedAges",
-              "description.ar",
-              "description.en",
-            ];
-
-      const getError = (path) => {
-        if (!errors) return undefined;
-        if (path.includes(".")) {
-          const [parent, child] = path.split(".");
-          return errors[parent]?.[child];
+      const config = STEP_CONFIG[currentStep];
+      if (config) {
+        const firstErrorField = config.fields.find((f) =>
+          Boolean(getIn(errors, f))
+        );
+        if (firstErrorField) {
+          scrollToFirstFieldWithTarget(firstErrorField);
         }
-        return errors[path];
-      };
-
-      const firstErrorField = orderedFields.find((f) => Boolean(getError(f)));
-      if (firstErrorField) {
-        scrollToFirstFieldWithTarget(firstErrorField);
       }
     }
   }, [errors, isValidating, submitCount, currentStep]);
@@ -114,9 +136,8 @@ const AddProductPage = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const [currentStep, setCurrentStep] = useState(1);
+  const [completedSteps, setCompletedSteps] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isStep1Completed, setIsStep1Completed] = useState(false);
-  const [isStep2Completed, setIsStep2Completed] = useState(false);
 
   // Fetch form selections data (categories, cities, targetAudiences, services, etc.)
   const { data: selectionResponse, isLoading: isSelectionsLoading } =
@@ -146,163 +167,76 @@ const AddProductPage = () => {
 
   // Validation schema dynamically adjusted per step
   const stepValidationSchema = useMemo(() => {
-    if (currentStep === 1) {
-      return createStep1Schema(t);
-    }
-    if (currentStep === 2) {
-      return createStep2Schema(t);
-    }
-    if (currentStep === 4) {
-      return createStep4Schema(t);
-    }
-    return null;
+    const config = STEP_CONFIG[currentStep];
+    return config ? config.getSchema(t) : null;
   }, [currentStep, t]);
 
-  // Handle advancing to the next step
+  // Unified step submission handler
   const handleStepSubmit = useCallback(
     async (values, formikHelpers) => {
-      if (currentStep === 1) {
-        // Validate all Step 1 fields
-        const errors = await formikHelpers.validateForm();
-        const orderedFields = [
-          "name.ar",
-          "name.en",
-          "tripsType",
-          "duration",
-          "allowedAges",
-          "description.ar",
-          "description.en",
-        ];
-
-        const getError = (path) => {
-          if (!errors) return undefined;
-          if (path.includes(".")) {
-            const [parent, child] = path.split(".");
-            return errors[parent]?.[child];
-          }
-          return errors[path];
-        };
-
-        const firstErrorField = orderedFields.find((f) => Boolean(getError(f)));
-
-        if (firstErrorField) {
-          // Mark step 1 fields as touched to display errors
-          const touchedFields = {};
-          STEP_1_FIELD_NAMES.forEach((fieldName) => {
-            if (fieldName.includes(".")) {
-              const [parent, child] = fieldName.split(".");
-              if (!touchedFields[parent]) touchedFields[parent] = {};
-              touchedFields[parent][child] = true;
-            } else {
-              touchedFields[fieldName] = true;
-            }
-          });
-          formikHelpers.setTouched(touchedFields);
-
-          // Nicely scroll user to the first error element
-          scrollToFirstFieldWithTarget(firstErrorField);
-          return;
-        }
-
-        // Successfully validated step 1
-        setIsStep1Completed(true);
+      const config = STEP_CONFIG[currentStep];
+      if (!config) {
         enqueueSnackbar(
-          isAr
-            ? "تم حفظ المعلومات الأساسية بنجاح"
-            : "Basic information saved successfully",
-          { variant: "success" }
-        );
-        // Advance to Step 2 (Gallery)
-        setCurrentStep(2);
-      } else if (currentStep === 2) {
-        // Validate Step 2 fields
-        const errors = await formikHelpers.validateForm();
-        const orderedFields = ["thumbnailWeb", "gallery"];
-        const firstErrorField = orderedFields.find((f) => Boolean(errors[f]));
-
-        if (firstErrorField) {
-          const touchedFields = {};
-          STEP_2_FIELD_NAMES.forEach((fieldName) => {
-            touchedFields[fieldName] = true;
-          });
-          formikHelpers.setTouched(touchedFields);
-          scrollToFirstFieldWithTarget(firstErrorField);
-          return;
-        }
-
-        // Successfully validated step 2
-        setIsStep2Completed(true);
-        enqueueSnackbar(
-          isAr
-            ? "تم حفظ معرض الصور بنجاح"
-            : "Photo gallery saved successfully",
-          { variant: "success" }
-        );
-        // Advance to Step 4 (Sales Channels)
-        setCurrentStep(4);
-      } else if (currentStep === 4) {
-        // Validate Step 4 fields
-        const errors = await formikHelpers.validateForm();
-        const orderedFields = ["systemTypes", "academicStages", "b2cTargetAudiences"];
-        const firstErrorField = orderedFields.find((f) => Boolean(errors[f]));
-
-        if (firstErrorField) {
-          const touchedFields = {};
-          STEP_4_FIELD_NAMES.forEach((fieldName) => {
-            touchedFields[fieldName] = true;
-          });
-          formikHelpers.setTouched(touchedFields);
-          scrollToFirstFieldWithTarget(firstErrorField);
-          return;
-        }
-
-        // Successfully validated step 4
-        enqueueSnackbar(
-          isAr
-            ? "تم حفظ قنوات البيع بنجاح"
-            : "Sales channels saved successfully",
-          { variant: "success" }
-        );
-        setCurrentStep(5);
-      } else {
-        // For upcoming steps placeholder feedback
-        enqueueSnackbar(
-          isAr
-            ? `الخطوة ${currentStep} ستكون متاحة قريباً`
-            : `Step ${currentStep} will be available soon`,
+          t("providerProfile.products.newAddPage.common.upcomingStepSoon", {
+            step: currentStep,
+          }),
           { variant: "info" }
         );
+        return;
+      }
+
+      // Validate all fields for this step
+      const errors = await formikHelpers.validateForm();
+      const firstErrorField = config.fields.find((f) =>
+        Boolean(getIn(errors, f))
+      );
+
+      if (firstErrorField) {
+        formikHelpers.setTouched(buildTouchedMap(config.fields));
+        scrollToFirstFieldWithTarget(firstErrorField);
+        return;
+      }
+
+      // Mark step completed
+      setCompletedSteps((prev) => Array.from(new Set([...prev, currentStep])));
+
+      enqueueSnackbar(
+        t(`providerProfile.products.newAddPage.${config.successKey}`),
+        { variant: "success" }
+      );
+
+      if (config.nextStep) {
+        setCurrentStep(config.nextStep);
       }
     },
-    [currentStep, enqueueSnackbar, isAr]
+    [currentStep, enqueueSnackbar, t]
   );
 
   return (
-    <main className="flex flex-col gap-6 lg:gap-8 mx-auto pb-12 font-somar" dir="rtl">
+    <main
+      className="flex flex-col gap-6 lg:gap-8 mx-auto pb-12 font-somar"
+      dir={isAr ? "rtl" : "ltr"}
+    >
       {/* 1. Header with Back Navigation */}
       <AddProductHeader />
 
-      {/* 2. 5-Step Stepper Progress Bar */}
+      {/* 2. Stepper Progress Bar */}
       <div className="py-2 px-1">
         <AddProductStepper
           currentStep={currentStep}
-          isStep1Completed={isStep1Completed}
-          isStep2Completed={isStep2Completed}
+          completedSteps={completedSteps}
           onStepClick={(stepId) => {
-            if (stepId === 2 && !isStep1Completed) {
+            const canAccess =
+              stepId === 1 ||
+              completedSteps.includes(stepId) ||
+              (stepId === 2 && completedSteps.includes(1)) ||
+              (stepId === 4 && completedSteps.includes(2));
+
+            if (!canAccess) {
               enqueueSnackbar(
-                isAr
-                  ? "يرجى إكمال بيانات الخطوة الأولى أولاً"
-                  : "Please complete Step 1 information first",
-                { variant: "warning" }
-              );
-              return;
-            }
-            if (stepId === 4 && !isStep1Completed) {
-              enqueueSnackbar(
-                isAr
-                  ? "يرجى إكمال بيانات الخطوة الأولى أولاً"
-                  : "Please complete Step 1 information first",
+                t(
+                  "providerProfile.products.newAddPage.common.stepPrerequisiteWarning"
+                ),
                 { variant: "warning" }
               );
               return;
@@ -326,12 +260,12 @@ const AddProductPage = () => {
         validateOnBlur={true}
         validateOnChange={true}
       >
-        {({ handleSubmit, isValid, isSubmitting: formikSubmitting }) => (
+        {({ handleSubmit, isSubmitting: formikSubmitting }) => (
           <Form onSubmit={handleSubmit} className="flex flex-col gap-6">
             {/* Smooth scroll to first error on submit attempt */}
             <ScrollToError currentStep={currentStep} />
 
-            {/* Step 1: Basic Information matching Figma node 21212:95745 */}
+            {/* Step 1: Basic Information */}
             {currentStep === 1 && (
               <Step1BasicInfo
                 formSelectionData={formSelectionData}
@@ -339,10 +273,10 @@ const AddProductPage = () => {
               />
             )}
 
-            {/* Step 2: Gallery matching Figma node 21055:97609 */}
+            {/* Step 2: Gallery */}
             {currentStep === 2 && <Step2Gallery />}
 
-            {/* Step 4: Sales Channels matching Figma node 21218:101279 */}
+            {/* Step 4: Sales Channels */}
             {currentStep === 4 && (
               <Step4SalesChannels
                 formSelectionData={formSelectionData}
@@ -350,9 +284,9 @@ const AddProductPage = () => {
               />
             )}
 
-            {/* Placeholder for subsequent steps */}
+            {/* Placeholder for upcoming steps */}
             {currentStep !== 1 && currentStep !== 2 && currentStep !== 4 && (
-              <div className="bg-white rounded-2xl border border-[#eaeaea] p-8 sm:p-12 text-center shadow-xs space-y-4">
+              <div className="bg-white rounded-2xl border border-border p-8 sm:p-12 text-center shadow-xs space-y-4">
                 <div className="w-16 h-16 rounded-2xl bg-mainColor/10 text-mainColor flex items-center justify-center mx-auto text-2xl font-bold">
                   {currentStep}
                 </div>
@@ -364,19 +298,19 @@ const AddProductPage = () => {
                     }`
                   )}
                 </h3>
-                <p className="text-sm text-subtitleColor max-w-md mx-auto">
-                  {isAr
-                    ? "يجري حالياً تصميم هذه الخطوة وسيتم إتاحتها قريباً."
-                    : "This step is currently being prepared and will be available soon."}
+                <p className="text-sm text-textLight max-w-md mx-auto">
+                  {t(
+                    "providerProfile.products.newAddPage.common.stepUnderDevelopment"
+                  )}
                 </p>
                 <button
                   type="button"
                   onClick={() => setCurrentStep(1)}
                   className="text-sm text-mainColor font-semibold hover:underline cursor-pointer pt-2"
                 >
-                  {isAr
-                    ? "العودة إلى المعلومات الأساسية"
-                    : "Back to Basic Info"}
+                  {t(
+                    "providerProfile.products.newAddPage.common.backToBasicInfo"
+                  )}
                 </button>
               </div>
             )}
@@ -395,21 +329,23 @@ const AddProductPage = () => {
                       setCurrentStep((prev) => Math.max(1, prev - 1));
                     }
                   }}
-                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl border border-titleColor/20 text-titleColor hover:bg-gray-50 font-medium text-base transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl border border-titleColor/20 text-titleColor hover:bg-titleColor/5 font-medium text-base transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
                 >
                   {isAr ? (
                     <ArrowForwardIcon className="w-5 h-5" />
                   ) : (
                     <ArrowBackIcon className="w-5 h-5" />
                   )}
-                  <span>{isAr ? "السابق" : "Previous"}</span>
+                  <span>
+                    {t("providerProfile.products.newAddPage.common.previous")}
+                  </span>
                 </button>
               )}
 
               <button
                 type="submit"
                 disabled={formikSubmitting || isSubmitting}
-                className="w-full h-[52px] rounded-lg bg-[#138ba9] hover:bg-[#0b7f8f] text-white font-somar font-bold text-base leading-5 transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.99] disabled:opacity-75 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full h-[52px] rounded-lg bg-mainColor hover:bg-titleColor text-white font-somar font-bold text-base leading-5 transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.99] disabled:opacity-75 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
               >
                 {formikSubmitting || isSubmitting ? (
                   <>
@@ -420,7 +356,7 @@ const AddProductPage = () => {
                   </>
                 ) : (
                   <span className="font-somar font-bold text-base leading-5">
-                    {t("providerProfile.products.newAddPage.step1.next")}
+                    {t("providerProfile.products.newAddPage.common.next")}
                   </span>
                 )}
               </button>

@@ -357,6 +357,17 @@
         "pageTitle": "Create New Product",
         "headerTitle": "Create New Product",
         "backTooltip": "Back to products management",
+        "common": {
+          "next": "Next",
+          "previous": "Previous",
+          "loading": "Saving...",
+          "loadingOptions": "Loading options...",
+          "removeTag": "Remove {name}",
+          "stepPrerequisiteWarning": "Please complete the previous step first",
+          "upcomingStepSoon": "Step {step} will be available soon",
+          "stepUnderDevelopment": "This step is currently being prepared and will be available soon.",
+          "backToBasicInfo": "Back to Basic Information"
+        },
         "steps": {
           "basicInfo": "Basic Information",
           "gallery": "Photo Gallery",
@@ -393,6 +404,31 @@
           "descEnPlaceholder": "Enter description",
           "descAr": "Description in Arabic",
           "descArPlaceholder": "Enter description",
+          "savedSuccess": "Basic information saved successfully",
+          "tripTypes": {
+            "activity": "One Day (Activity)",
+            "halfDay": "Half Day",
+            "package": "Multi-Day (Package)"
+          },
+          "durations": {
+            "1": "1 Day",
+            "2": "2 Days",
+            "3": "3 Days",
+            "4": "4 Days",
+            "5": "5 Days",
+            "7": "1 Week (7 Days)",
+            "10": "10 Days",
+            "14": "2 Weeks (14 Days)"
+          },
+          "defaultAges": {
+            "ALL": "All Ages (Family)",
+            "UNDER_6": "Under 6 Years",
+            "6_TO_12": "6 - 12 Years",
+            "13_TO_17": "13 - 17 Years",
+            "18_TO_30": "18 - 30 Years",
+            "31_TO_50": "31 - 50 Years",
+            "OVER_50": "Over 50 Years"
+          },
           "next": "Next"
         },
         "step2": {
@@ -419,6 +455,7 @@
         "step4": {
           "cardTitle": "Sales Channels",
           "cardSubtitle": "Specify the channels where your product will be sold. Pricing will be configured independently for each channel",
+          "savedSuccess": "Sales channels saved successfully",
           "options": {
             "both": {
               "title": "Schools and Individuals",
@@ -444,6 +481,22 @@
             "cardSubtitle": "Choose the individual categories targeted by this product via the retail channel.",
             "label": "Target Audience",
             "placeholder": "Select target audience"
+          },
+          "defaultStages": {
+            "kindergarten": "Kindergarten",
+            "elementary": "Elementary School",
+            "middle": "Middle School",
+            "high": "High School",
+            "university": "Higher Education / University"
+          },
+          "defaultAudiences": {
+            "ALL": "All Ages (Family)",
+            "CHILDREN": "Children (Under 12)",
+            "YOUTH": "Youth (13 - 18)",
+            "ADULTS": "Adults (18 - 50)",
+            "SENIORS": "Seniors (50+)",
+            "WOMEN": "Women Only",
+            "MEN": "Men Only"
           },
           "validations": {
             "salesChannelRequired": "Please select at least one sales channel",

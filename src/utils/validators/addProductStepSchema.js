@@ -11,30 +11,10 @@ export const ENGLISH_LETTERS_REGEX = /[a-zA-Z]/;
  */
 export const createStep1Schema = (t) => {
   const reqMsg = t("forms.validation.require");
-  let nameArInvalid = "يرجى استخدام الحروف العربية فقط للاسم بالعربي";
-  let nameEnInvalid = "Please use English letters only for the English name";
-  let descArInvalid = "يرجى كتابة الوصف بالعربي باستخدام الحروف العربية";
-  let descEnInvalid = "Please write the English description using English letters";
-
-  try {
-    const val = t("providerProfile.products.newAddPage.validations.nameArInvalid");
-    if (val && !val.includes("validations.nameArInvalid")) nameArInvalid = val;
-  } catch (e) {}
-
-  try {
-    const val = t("providerProfile.products.newAddPage.validations.nameEnInvalid");
-    if (val && !val.includes("validations.nameEnInvalid")) nameEnInvalid = val;
-  } catch (e) {}
-
-  try {
-    const val = t("providerProfile.products.newAddPage.validations.descArInvalid");
-    if (val && !val.includes("validations.descArInvalid")) descArInvalid = val;
-  } catch (e) {}
-
-  try {
-    const val = t("providerProfile.products.newAddPage.validations.descEnInvalid");
-    if (val && !val.includes("validations.descEnInvalid")) descEnInvalid = val;
-  } catch (e) {}
+  const nameArInvalid = t("providerProfile.products.newAddPage.validations.nameArInvalid");
+  const nameEnInvalid = t("providerProfile.products.newAddPage.validations.nameEnInvalid");
+  const descArInvalid = t("providerProfile.products.newAddPage.validations.descArInvalid");
+  const descEnInvalid = t("providerProfile.products.newAddPage.validations.descEnInvalid");
 
   return Yup.object().shape({
     name: Yup.object().shape({
@@ -86,40 +66,22 @@ export const createStep1Schema = (t) => {
  * Step field paths to validate per step
  */
 export const STEP_1_FIELD_NAMES = [
-  "name.en",
   "name.ar",
+  "name.en",
   "tripsType",
   "duration",
   "allowedAges",
-  "description.en",
   "description.ar",
+  "description.en",
 ];
 
 /**
  * Yup schema for Step 2 (Gallery / Media) of the multi-step Add Product flow
  */
 export const createStep2Schema = (t) => {
-  let coverReqMsg = "يرجى رفع صورة لغلاف الرحلة";
-  try {
-    const val = t("providerProfile.products.newAddPage.step2.coverRequired");
-    if (val && !val.includes("step2.coverRequired")) coverReqMsg = val;
-  } catch (e) {}
-
-  let galleryMinMsg = "يتطلب رفع 4 صور على الأقل للمعرض";
-  try {
-    const val =
-      t("providerProfile.products.newAddPage.step2.galleryMinError") ||
-      t("providerProfile.products.modal.validation.galleryMin");
-    if (val && !val.includes("galleryMinError")) galleryMinMsg = val;
-  } catch (e) {}
-
-  let galleryMaxMsg = "الحد الأقصى المسموح به 15 صورة";
-  try {
-    const val =
-      t("providerProfile.products.newAddPage.step2.galleryMaxError") ||
-      t("providerProfile.products.modal.validation.galleryMax");
-    if (val && !val.includes("galleryMaxError")) galleryMaxMsg = val;
-  } catch (e) {}
+  const coverReqMsg = t("providerProfile.products.newAddPage.step2.coverRequired");
+  const galleryMinMsg = t("providerProfile.products.newAddPage.step2.galleryMinError");
+  const galleryMaxMsg = t("providerProfile.products.newAddPage.step2.galleryMaxError");
 
   return Yup.object().shape({
     thumbnailWeb: Yup.mixed()
@@ -146,15 +108,15 @@ export const STEP_2_FIELD_NAMES = ["thumbnailWeb", "gallery"];
  * Yup schema for Step 4 (Sales Channels) of the multi-step Add Product flow
  */
 export const createStep4Schema = (t) => {
-  const channelReqMsg =
-    t("providerProfile.products.newAddPage.step4.validations.salesChannelRequired") ||
-    "يرجى اختيار قناة بيع واحدة على الأقل";
-  const b2bStagesReqMsg =
-    t("providerProfile.products.newAddPage.step4.validations.b2bStagesRequired") ||
-    "يرجى اختيار مرحلة دراسية واحدة على الأقل لقناة المدارس";
-  const b2cAudienceReqMsg =
-    t("providerProfile.products.newAddPage.step4.validations.b2cAudienceRequired") ||
-    "يرجى اختيار فئة جمهور واحدة على الأقل لقناة الأفراد";
+  const channelReqMsg = t(
+    "providerProfile.products.newAddPage.step4.validations.salesChannelRequired"
+  );
+  const b2bStagesReqMsg = t(
+    "providerProfile.products.newAddPage.step4.validations.b2bStagesRequired"
+  );
+  const b2cAudienceReqMsg = t(
+    "providerProfile.products.newAddPage.step4.validations.b2cAudienceRequired"
+  );
 
   return Yup.object().shape({
     systemTypes: Yup.array()
