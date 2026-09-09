@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { cn } from "@utils/helpers/cn";
 
 import {
   FormControl,
@@ -25,6 +26,8 @@ const SelectionGroup = ({
   label = "", // Label text for the field
   required = false, // Show asterisk for required fields
   errorBorder = false, // Show red border only, without error message
+  labelClassName = "",
+  labelFontFamily = "",
 }) => {
   return (
     <FormControl
@@ -32,7 +35,13 @@ const SelectionGroup = ({
       className="relative w-full"
     >
       {label && (
-        <label className="block pb-2 font-medium font-ibm">
+        <label
+          className={cn(
+            "block font-medium",
+            labelClassName ? labelClassName : "pb-2 font-ibm"
+          )}
+          style={labelFontFamily ? { fontFamily: labelFontFamily } : undefined}
+        >
           {label}
           {required && <span className="text-error ml-1">*</span>}
         </label>
@@ -90,19 +99,19 @@ const SelectionGroup = ({
         MenuProps={{
           PaperProps: {
             sx: {
-              fontFamily: "var(--font-somar), sans-serif",
+              fontFamily: "var(--font-somar-sans), sans-serif",
               "& .MuiMenuItem-root": {
-                fontFamily: "var(--font-somar), sans-serif",
+                fontFamily: "var(--font-somar-sans), sans-serif",
               },
               "& .MuiListItemText-primary": {
-                fontFamily: "var(--font-somar), sans-serif",
+                fontFamily: "var(--font-somar-sans), sans-serif",
               },
             },
           },
         }}
         sx={{
           width: "100%",
-          fontFamily: "var(--font-somar), sans-serif",
+          fontFamily: "var(--font-somar-sans), sans-serif",
 
           "& .MuiSelect-select": {
             paddingInlineEnd: "40px !important",
@@ -110,7 +119,7 @@ const SelectionGroup = ({
             border: "2px solid var(--color-border)",
             borderRadius: "8px",
             width: "100%",
-            fontFamily: "var(--font-somar), sans-serif",
+            fontFamily: "var(--font-somar-sans), sans-serif",
 
             "&:hover": {
               border: "2px solid var(--color-main)",

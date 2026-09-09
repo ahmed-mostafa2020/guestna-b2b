@@ -2,6 +2,7 @@ import React from "react";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import SelectionGroup from "@components/forms/SelectionGroup";
 import { CalendarToday } from "@mui/icons-material";
+import { cn } from "@utils/helpers/cn";
 
 import { useFormikContext } from "formik";
 import { useLocale, useTranslations } from "next-intl";
@@ -79,42 +80,47 @@ const StepTripDate = ({
 
       <p className="text-base !my-4"> {t("description")}</p>
 
-      {/* Provider Branch Selector */}
-      {showBranchSelector && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div className="somar-placeholder">
-            <SelectionGroup
-              name="providerBranch"
-              value={selectedBranch || ""}
-              onChange={(e) => {
-                const branchId = e.target.value;
-                if (branchId && onBranchChange) {
-                  onBranchChange(branchId);
-                }
-              }}
-              onBlur={handleBlur}
-              touched={touched.providerBranch}
-              errors={errors.providerBranch}
-              placeholder={
-                isLoadingBranchDays
-                  ? t("fields.providerBranch.loading")
-                  : t("fields.providerBranch.placeholder")
-              }
-              list={branchOptions}
-              label={t("fields.providerBranch.label")}
-              disabled={isLoadingBranchDays}
-              required={false}
-              showCheckbox={false}
-            />
-          </div>
-        </div>
-      )}
-
       {hasProviderSpecificDays ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Provider Branch Selector */}
+          {showBranchSelector && (
+            <div className="somar-placeholder">
+              <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
+                {t("fields.providerBranch.label")}
+              </label>
+              <SelectionGroup
+                name="providerBranch"
+                value={selectedBranch || ""}
+                onChange={(e) => {
+                  const branchId = e.target.value;
+                  if (branchId && onBranchChange) {
+                    onBranchChange(branchId);
+                  }
+                }}
+                onBlur={handleBlur}
+                touched={touched.providerBranch}
+                errors={errors.providerBranch}
+                placeholder={
+                  isLoadingBranchDays
+                    ? t("fields.providerBranch.loading")
+                    : t("fields.providerBranch.placeholder")
+                }
+                list={branchOptions}
+                disabled={isLoadingBranchDays}
+                required={false}
+                showCheckbox={false}
+              />
+            </div>
+          )}
+
           {/* Day Input */}
-          <div className="relative min-w-[25%] flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
-            <label className="block text-sm font-medium text-gray-700 font-somar">
+          <div
+            className={cn(
+              "relative min-w-[25%] flex flex-col flex-1 transition-all duration-200 ease-in-out",
+              !showBranchSelector && "md:col-span-1"
+            )}
+          >
+            <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
               {t("fields.day.label")}
               <span className="text-error ml-1">*</span>
             </label>
@@ -156,7 +162,16 @@ const StepTripDate = ({
           </div>
 
           {/* Time Slot Selection */}
-          <div className="somar-placeholder">
+          <div
+            className={cn(
+              "somar-placeholder",
+              showBranchSelector && "md:col-span-2"
+            )}
+          >
+            <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
+              {t("fields.slot.label")}
+              <span className="text-error ml-1">*</span>
+            </label>
             <SelectionGroup
               name="slot"
               value={values.slot}
@@ -172,9 +187,8 @@ const StepTripDate = ({
                     : t("fields.slot.placeholder")
               }
               list={slotsData.map((s) => s.slotName)}
-              label={t("fields.slot.label")}
               disabled={isLoadingSlots || !values.day}
-              required={true}
+              required={false}
               showCheckbox={false}
             />
           </div>
@@ -182,9 +196,45 @@ const StepTripDate = ({
       ) : hasNonApiProviderDays ? (
         /* Non-API integration: restricted dates + time range validation */
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Provider Branch Selector */}
+          {showBranchSelector && (
+            <div className="somar-placeholder">
+              <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
+                {t("fields.providerBranch.label")}
+              </label>
+              <SelectionGroup
+                name="providerBranch"
+                value={selectedBranch || ""}
+                onChange={(e) => {
+                  const branchId = e.target.value;
+                  if (branchId && onBranchChange) {
+                    onBranchChange(branchId);
+                  }
+                }}
+                onBlur={handleBlur}
+                touched={touched.providerBranch}
+                errors={errors.providerBranch}
+                placeholder={
+                  isLoadingBranchDays
+                    ? t("fields.providerBranch.loading")
+                    : t("fields.providerBranch.placeholder")
+                }
+                list={branchOptions}
+                disabled={isLoadingBranchDays}
+                required={false}
+                showCheckbox={false}
+              />
+            </div>
+          )}
+
           {/* Day Input (restricted to available days) */}
-          <div className="relative min-w-[25%] flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
-            <label className="block text-sm font-medium text-gray-700 font-somar">
+          <div
+            className={cn(
+              "relative min-w-[25%] flex flex-col flex-1 transition-all duration-200 ease-in-out",
+              !showBranchSelector && "md:col-span-2"
+            )}
+          >
+            <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
               {t("fields.day.label")}
               <span className="text-error ml-1">*</span>
             </label>
@@ -227,8 +277,8 @@ const StepTripDate = ({
           </div>
 
           {/* From Hour */}
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700">
+          <div className="somar-placeholder">
+            <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
               {t("fields.from_hour.label")}
               <span className="text-error ml-1">*</span>
             </label>
@@ -243,6 +293,7 @@ const StepTripDate = ({
               style={{ cursor: "pointer" }}
               onClick={handleInputClick}
               disabled={!values.day}
+              labelFontFamily="var(--font-somar-sans), sans-serif"
             />
             {/* Show available time range hint */}
             {values.day &&
@@ -262,10 +313,9 @@ const StepTripDate = ({
           </div>
 
           {/* To Hour */}
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700">
+          <div className="somar-placeholder">
+            <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
               {t("fields.to_hour.label")}
-              <span className="text-error ml-1">*</span>
             </label>
             <TextInputGroup
               type="time"
@@ -278,14 +328,52 @@ const StepTripDate = ({
               style={{ cursor: "pointer" }}
               onClick={handleInputClick}
               disabled={!values.day}
+              labelFontFamily="var(--font-somar-sans), sans-serif"
             />
           </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Provider Branch Selector */}
+          {showBranchSelector && (
+            <div className="somar-placeholder">
+              <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
+                {t("fields.providerBranch.label")}
+              </label>
+              <SelectionGroup
+                name="providerBranch"
+                value={selectedBranch || ""}
+                onChange={(e) => {
+                  const branchId = e.target.value;
+                  if (branchId && onBranchChange) {
+                    onBranchChange(branchId);
+                  }
+                }}
+                onBlur={handleBlur}
+                touched={touched.providerBranch}
+                errors={errors.providerBranch}
+                placeholder={
+                  isLoadingBranchDays
+                    ? t("fields.providerBranch.loading")
+                    : t("fields.providerBranch.placeholder")
+                }
+                list={branchOptions}
+                disabled={isLoadingBranchDays}
+                required={false}
+                showCheckbox={false}
+              />
+            </div>
+          )}
+
           {/* Start Date */}
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700">
+          <div
+            className={cn(
+              !showBranchSelector &&
+                values.tripType !== CONSTANT_VALUES.PACKAGE &&
+                "md:col-span-2"
+            )}
+          >
+            <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
               {t("fields.start_date.label")}
               <span className="text-error ml-1">*</span>
             </label>
@@ -301,13 +389,14 @@ const StepTripDate = ({
               max={values.endDay || undefined}
               style={{ cursor: "pointer" }}
               onClick={handleInputClick}
+              labelFontFamily="var(--font-somar-sans), sans-serif"
             />
           </div>
 
           {/* End Date - Only show for multi-day trips */}
           {values.tripType === CONSTANT_VALUES.PACKAGE ? (
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">
+              <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
                 {t("fields.end_date.label")}
                 <span className="text-error ml-1">*</span>
               </label>
@@ -322,13 +411,14 @@ const StepTripDate = ({
                 min={values.day || new Date().toISOString().split("T")[0]}
                 style={{ cursor: "pointer" }}
                 onClick={handleInputClick}
+                labelFontFamily="var(--font-somar-sans), sans-serif"
               />
             </div>
           ) : (
             <>
               {/* Time Range - From */}
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">
+              <div className="somar-placeholder">
+                <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
                   {t("fields.from_hour.label")}
                 </label>
                 <TextInputGroup
@@ -341,12 +431,13 @@ const StepTripDate = ({
                   onBlur={handleBlur}
                   style={{ cursor: "pointer" }}
                   onClick={handleInputClick}
+                  labelFontFamily="var(--font-somar-sans), sans-serif"
                 />
               </div>
 
               {/* Time Range - To */}
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">
+              <div className="somar-placeholder">
+                <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
                   {t("fields.to_hour.label")}
                 </label>
                 <TextInputGroup
@@ -359,6 +450,7 @@ const StepTripDate = ({
                   onBlur={handleBlur}
                   style={{ cursor: "pointer" }}
                   onClick={handleInputClick}
+                  labelFontFamily="var(--font-somar-sans), sans-serif"
                 />
               </div>
             </>
