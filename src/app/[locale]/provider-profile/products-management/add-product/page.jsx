@@ -137,7 +137,6 @@ const AddProductPage = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Fetch form selections data (categories, cities, targetAudiences, services, etc.)
   const { data: selectionResponse, isLoading: isSelectionsLoading } =
@@ -344,10 +343,10 @@ const AddProductPage = () => {
 
               <button
                 type="submit"
-                disabled={formikSubmitting || isSubmitting}
+                disabled={formikSubmitting}
                 className="w-full h-[52px] rounded-lg bg-mainColor hover:bg-titleColor text-white font-somar font-bold text-base leading-5 transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.99] disabled:opacity-75 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
               >
-                {formikSubmitting || isSubmitting ? (
+                {formikSubmitting ? (
                   <>
                     <CircularProgress size={20} color="inherit" />
                     <span className="font-somar font-bold text-base leading-5">
