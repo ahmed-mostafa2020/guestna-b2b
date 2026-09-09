@@ -96,6 +96,53 @@ export const STEP_1_FIELD_NAMES = [
 ];
 
 /**
+ * Yup schema for Step 2 (Gallery / Media) of the multi-step Add Product flow
+ */
+export const createStep2Schema = (t) => {
+  let coverReqMsg = "يرجى رفع صورة لغلاف الرحلة";
+  try {
+    const val = t("providerProfile.products.newAddPage.step2.coverRequired");
+    if (val && !val.includes("step2.coverRequired")) coverReqMsg = val;
+  } catch (e) {}
+
+  let galleryMinMsg = "يتطلب رفع 4 صور على الأقل للمعرض";
+  try {
+    const val =
+      t("providerProfile.products.newAddPage.step2.galleryMinError") ||
+      t("providerProfile.products.modal.validation.galleryMin");
+    if (val && !val.includes("galleryMinError")) galleryMinMsg = val;
+  } catch (e) {}
+
+  let galleryMaxMsg = "الحد الأقصى المسموح به 15 صورة";
+  try {
+    const val =
+      t("providerProfile.products.newAddPage.step2.galleryMaxError") ||
+      t("providerProfile.products.modal.validation.galleryMax");
+    if (val && !val.includes("galleryMaxError")) galleryMaxMsg = val;
+  } catch (e) {}
+
+  return Yup.object().shape({
+    thumbnailWeb: Yup.mixed()
+      .nullable()
+      .test("is-cover-provided", coverReqMsg, (val) => {
+        if (!val) return false;
+        if (typeof val === "string" && val.trim().length > 0) return true;
+        if (val instanceof File || val instanceof Blob) return true;
+        return false;
+      })
+      .required(coverReqMsg),
+
+    gallery: Yup.array()
+      .of(Yup.mixed())
+      .min(4, galleryMinMsg)
+      .max(15, galleryMaxMsg)
+      .required(galleryMinMsg),
+  });
+};
+
+export const STEP_2_FIELD_NAMES = ["thumbnailWeb", "gallery"];
+
+/**
  * Yup schema for Step 4 (Sales Channels) of the multi-step Add Product flow
  */
 export const createStep4Schema = (t) => {

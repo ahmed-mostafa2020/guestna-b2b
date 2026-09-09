@@ -13,10 +13,13 @@ import AddProductStepper, {
   PRODUCT_STEPS,
 } from "@components/features/provider-profile/addProduct/AddProductStepper";
 import Step1BasicInfo from "@components/features/provider-profile/addProduct/steps/Step1BasicInfo";
+import Step2Gallery from "@components/features/provider-profile/addProduct/steps/Step2Gallery";
 import Step4SalesChannels from "@components/features/provider-profile/addProduct/steps/Step4SalesChannels";
 import {
   createStep1Schema,
   STEP_1_FIELD_NAMES,
+  createStep2Schema,
+  STEP_2_FIELD_NAMES,
   createStep4Schema,
   STEP_4_FIELD_NAMES,
 } from "@utils/validators/addProductStepSchema";
@@ -73,6 +76,8 @@ const ScrollToError = ({ currentStep }) => {
       const orderedFields =
         currentStep === 4
           ? ["systemTypes", "academicStages", "b2cTargetAudiences"]
+          : currentStep === 2
+          ? ["thumbnailWeb", "gallery"]
           : [
               "name.ar",
               "name.en",
@@ -111,6 +116,7 @@ const AddProductPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isStep1Completed, setIsStep1Completed] = useState(false);
+  const [isStep2Completed, setIsStep2Completed] = useState(false);
 
   // Fetch form selections data (categories, cities, targetAudiences, services, etc.)
   const { data: selectionResponse, isLoading: isSelectionsLoading } =
@@ -142,6 +148,9 @@ const AddProductPage = () => {
   const stepValidationSchema = useMemo(() => {
     if (currentStep === 1) {
       return createStep1Schema(t);
+    }
+    if (currentStep === 2) {
+      return createStep2Schema(t);
     }
     if (currentStep === 4) {
       return createStep4Schema(t);
@@ -203,7 +212,33 @@ const AddProductPage = () => {
             : "Basic information saved successfully",
           { variant: "success" }
         );
-        // Advance directly to Step 4 as requested
+        // Advance to Step 2 (Gallery)
+        setCurrentStep(2);
+      } else if (currentStep === 2) {
+        // Validate Step 2 fields
+        const errors = await formikHelpers.validateForm();
+        const orderedFields = ["thumbnailWeb", "gallery"];
+        const firstErrorField = orderedFields.find((f) => Boolean(errors[f]));
+
+        if (firstErrorField) {
+          const touchedFields = {};
+          STEP_2_FIELD_NAMES.forEach((fieldName) => {
+            touchedFields[fieldName] = true;
+          });
+          formikHelpers.setTouched(touchedFields);
+          scrollToFirstFieldWithTarget(firstErrorField);
+          return;
+        }
+
+        // Successfully validated step 2
+        setIsStep2Completed(true);
+        enqueueSnackbar(
+          isAr
+            ? "تم حفظ معرض الصور بنجاح"
+            : "Photo gallery saved successfully",
+          { variant: "success" }
+        );
+        // Advance to Step 4 (Sales Channels)
         setCurrentStep(4);
       } else if (currentStep === 4) {
         // Validate Step 4 fields
@@ -252,7 +287,17 @@ const AddProductPage = () => {
         <AddProductStepper
           currentStep={currentStep}
           isStep1Completed={isStep1Completed}
+          isStep2Completed={isStep2Completed}
           onStepClick={(stepId) => {
+            if (stepId === 2 && !isStep1Completed) {
+              enqueueSnackbar(
+                isAr
+                  ? "يرجى إكمال بيانات الخطوة الأولى أولاً"
+                  : "Please complete Step 1 information first",
+                { variant: "warning" }
+              );
+              return;
+            }
             if (stepId === 4 && !isStep1Completed) {
               enqueueSnackbar(
                 isAr
@@ -294,6 +339,9 @@ const AddProductPage = () => {
               />
             )}
 
+            {/* Step 2: Gallery matching Figma node 21055:97609 */}
+            {currentStep === 2 && <Step2Gallery />}
+
             {/* Step 4: Sales Channels matching Figma node 21218:101279 */}
             {currentStep === 4 && (
               <Step4SalesChannels
@@ -303,7 +351,7 @@ const AddProductPage = () => {
             )}
 
             {/* Placeholder for subsequent steps */}
-            {currentStep !== 1 && currentStep !== 4 && (
+            {currentStep !== 1 && currentStep !== 2 && currentStep !== 4 && (
               <div className="bg-white rounded-2xl border border-[#eaeaea] p-8 sm:p-12 text-center shadow-xs space-y-4">
                 <div className="w-16 h-16 rounded-2xl bg-mainColor/10 text-mainColor flex items-center justify-center mx-auto text-2xl font-bold">
                   {currentStep}
@@ -340,6 +388,8 @@ const AddProductPage = () => {
                   type="button"
                   onClick={() => {
                     if (currentStep === 4) {
+                      setCurrentStep(2);
+                    } else if (currentStep === 2) {
                       setCurrentStep(1);
                     } else {
                       setCurrentStep((prev) => Math.max(1, prev - 1));

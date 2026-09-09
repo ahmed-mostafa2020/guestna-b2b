@@ -366,6 +366,7 @@
         "backTooltip": "العودة إلى إدارة المنتجات",
         "steps": {
           "basicInfo": "المعلومات الأساسية",
+          "gallery": "معرض الصور",
           "locations": "مواقع تقديم الخدمة",
           "media": "الوسائط والمحتوى",
           "salesChannels": "قنوات البيع",
@@ -400,6 +401,27 @@
           "descAr": "الوصف  بالعربي ",
           "descArPlaceholder": "Enter description",
           "next": "التالي "
+        },
+        "step2": {
+          "cardTitle": "معرض الصور",
+          "cardSubtitle": "تم اعتماد عرض السعر بنجاح. يرجى استكمال بيانات الرحلة التالية للبدء في التنفيذ",
+          "tripImageTitle": "صورة الرحلة",
+          "tripImageSubtitle": "ستظهر هذه الصورة كغلاف للرحلة للطلاب وأولياء الأمور. JPG / PNG، مقاس مقترح 1200×800\"",
+          "uploadImageBtn": "رفع الصورة",
+          "changeImageBtn": "تغيير الصورة",
+          "removeImage": "حذف الصورة",
+          "gallerySectionTitle": "معرض الصور",
+          "gallerySectionSubtitle": "ستظهر هذه الصور للطلاب وأولياء الأمور لزيادة الوضوح والثقة.",
+          "addPhotosBtn": "اضافة صور",
+          "viewAllPhotos": "عرض كل الصور البالغ عددها {count}",
+          "maxPhotosReached": "تم الوصول للحد الأقصى (15 صورة)",
+          "minPhotosHelp": "الحد الأدنى 4 صور والحد الأقصى 15 صورة",
+          "coverRequired": "يرجى رفع صورة لغلاف الرحلة",
+          "galleryMinError": "يتطلب رفع 4 صور على الأقل للمعرض",
+          "galleryMaxError": "الحد الأقصى المسموح به 15 صورة",
+          "savedSuccess": "تم حفظ معرض الصور بنجاح",
+          "next": "التالي",
+          "previous": "السابق"
         },
         "step4": {
           "cardTitle": "قنوات البيع",

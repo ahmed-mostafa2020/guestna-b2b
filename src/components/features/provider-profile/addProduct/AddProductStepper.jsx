@@ -6,8 +6,8 @@ import { cn } from "@utils/helpers/cn";
 
 export const PRODUCT_STEPS = [
   { id: 1, key: "basicInfo" },
-  { id: 2, key: "locations" },
-  { id: 3, key: "media" },
+  { id: 2, key: "gallery" },
+  { id: 3, key: "locations" },
   { id: 4, key: "salesChannels" },
   { id: 5, key: "pricing" },
 ];
@@ -16,6 +16,7 @@ const AddProductStepper = ({
   currentStep = 1,
   onStepClick,
   isStep1Completed = false,
+  isStep2Completed = false,
 }) => {
   const t = useTranslations("providerProfile.products.newAddPage.steps");
 
@@ -28,12 +29,15 @@ const AddProductStepper = ({
         {PRODUCT_STEPS.map((step, index) => {
           const isActive = currentStep === step.id;
           const isCompleted =
-            currentStep > step.id || (step.id === 1 && isStep1Completed);
+            currentStep > step.id ||
+            (step.id === 1 && isStep1Completed) ||
+            (step.id === 2 && isStep2Completed);
           const isClickable = Boolean(
             onStepClick &&
               (isCompleted ||
                 isActive ||
                 step.id === 1 ||
+                (step.id === 2 && isStep1Completed) ||
                 (step.id === 4 && isStep1Completed))
           );
 

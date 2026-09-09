@@ -359,6 +359,7 @@
         "backTooltip": "Back to products management",
         "steps": {
           "basicInfo": "Basic Information",
+          "gallery": "Photo Gallery",
           "locations": "Service Locations",
           "media": "Media & Content",
           "salesChannels": "Sales Channels",
@@ -393,6 +394,27 @@
           "descAr": "Description in Arabic",
           "descArPlaceholder": "Enter description",
           "next": "Next"
+        },
+        "step2": {
+          "cardTitle": "Photo Gallery",
+          "cardSubtitle": "Quotation approved successfully. Please complete the following trip details to start implementation",
+          "tripImageTitle": "Trip Image",
+          "tripImageSubtitle": "This image will appear as the trip cover for students and parents. JPG / PNG, suggested size 1200×800\"",
+          "uploadImageBtn": "Upload Image",
+          "changeImageBtn": "Change Image",
+          "removeImage": "Remove Image",
+          "gallerySectionTitle": "Image Gallery",
+          "gallerySectionSubtitle": "These photos will appear to students and parents to enhance clarity and trust.",
+          "addPhotosBtn": "Add Images",
+          "viewAllPhotos": "View all {count} photos",
+          "maxPhotosReached": "Maximum limit reached (15 images)",
+          "minPhotosHelp": "Minimum 4 images and maximum 15 images",
+          "coverRequired": "Trip cover image is required",
+          "galleryMinError": "At least 4 gallery images are required",
+          "galleryMaxError": "Maximum 15 images allowed",
+          "savedSuccess": "Photo gallery saved successfully",
+          "next": "Next",
+          "previous": "Previous"
         },
         "step4": {
           "cardTitle": "Sales Channels",
