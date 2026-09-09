@@ -3316,7 +3316,10 @@
             },
             "to_hour": {
               "label": "To Hour",
-              "placeholder": "Select hour"
+              "placeholder": "Select hour",
+              "error": {
+                "afterFrom": "End time must be after start time"
+              }
             },
             "day": {
               "label": "Day",
@@ -3326,7 +3329,15 @@
               "label": "Time Slot",
               "placeholder": "Select slot",
               "selectDayFirst": "Select day first"
-            }
+            },
+            "providerBranch": {
+              "label": "Provider Branch",
+              "placeholder": "Select branch",
+              "loading": "Loading branches..."
+            },
+            "timeRangeError": "Selected time is outside the available range ({range})",
+            "selectBranchFirst": "Select a branch first",
+            "availableTimeRange": "Available time: {range}"
           }
         },
         "pricing": {

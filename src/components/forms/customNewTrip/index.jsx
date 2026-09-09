@@ -13,7 +13,6 @@ import {
   Step,
   StepLabel,
   Box,
-  Alert,
 } from "@mui/material";
 
 import {
@@ -28,6 +27,12 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { formatTime12h } from "@utils/formatters/formatTime12h";
 import { formatTimeForInput } from "@utils/formatters/formatTimeForInput";
+import {
+  isTimeWithinAvailableRange,
+  getTimeRangesForDate,
+  formatDisplayTimeRanges,
+  parseTimeToMinutes,
+} from "@utils/helpers/parseTimeRange";
 import StepSchoolInfo from "./steps/StepSchoolInfo";
 import StepTripInfo from "./steps/StepTripInfo";
 import StepTripDate from "./steps/StepTripDate";
@@ -166,6 +171,15 @@ const deepTouchFields = (obj, depth = 0) => {
   return touched;
 };
 
+const StepWatcher = ({ attemptedNext, currentStepHasErrors, onTouch }) => {
+  useEffect(() => {
+    if (attemptedNext && currentStepHasErrors) {
+      onTouch();
+    }
+  }, [attemptedNext, currentStepHasErrors, onTouch]);
+  return null;
+};
+
 const CustomNewTripForm = ({
   formSelectionData,
   onClose,
@@ -187,6 +201,7 @@ const CustomNewTripForm = ({
   const t = useTranslations("forms.customTrip");
   const t2 = useTranslations();
   const formRef = useRef(null);
+  const scrollContainerRef = useRef(null);
 
   const headers = useMemo(() => getHeaders(locale), [locale]);
   const { enqueueSnackbar } = useSnackbar();
@@ -199,22 +214,162 @@ const CustomNewTripForm = ({
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
   const [tripId, setTripId] = useState(null);
 
+  // --- Integration type logic (replaces providerType check) ---
+  const integrationType = useMemo(() => {
+    return (
+      editData?.trip?.integrationType ||
+      editData?.integrationType ||
+      editData?.trip?.provider?.integrationType ||
+      editData?.provider?.integrationType ||
+      null
+    );
+  }, [editData]);
+
+  const isApiIntegration = integrationType === "API";
+
+  const rawAvailableDaysSlots = useMemo(() => {
+    return (
+      editData?.trip?.availableDaysSlots ||
+      editData?.availableDaysSlots ||
+      null
+    );
+  }, [editData]);
+
+  const rawAvailableDays = useMemo(() => {
+    const directDays =
+      editData?.trip?.availableDays || editData?.availableDays;
+    if (Array.isArray(directDays) && directDays.length > 0) return directDays;
+
+    if (rawAvailableDaysSlots) {
+      let slotsObj = rawAvailableDaysSlots;
+      if (typeof slotsObj === "string") {
+        try {
+          slotsObj = JSON.parse(slotsObj);
+        } catch {
+          slotsObj = null;
+        }
+      }
+      const daysList = Array.isArray(slotsObj)
+        ? slotsObj
+        : Array.isArray(slotsObj?.days)
+        ? slotsObj.days
+        : [];
+      const extracted = daysList
+        .map((d) =>
+          typeof d.date === "string" ? d.date.split("T")[0] : d.date
+        )
+        .filter(Boolean);
+      if (extracted.length > 0) return extracted;
+    }
+    return [];
+  }, [editData, rawAvailableDaysSlots]);
+
+  // --- Provider branches ---
+  const providerBranches = useMemo(() => {
+    const branches =
+      editData?.trip?.providerBranchs ||
+      editData?.providerBranchs ||
+      editData?.trip?.provider?.providerBranchs ||
+      editData?.provider?.providerBranchs ||
+      [];
+    return Array.isArray(branches) ? branches : [];
+  }, [editData]);
+
+  const [selectedBranch, setSelectedBranch] = useState("");
+  const [branchAvailableDays, setBranchAvailableDays] = useState([]);
+  const [branchAvailableDaysSlots, setBranchAvailableDaysSlots] = useState(null);
+  const [isLoadingBranchDays, setIsLoadingBranchDays] = useState(false);
+
+  // Effective available days and slots (branch overrides base if selected)
+  const effectiveAvailableDays = useMemo(() => {
+    if (selectedBranch && branchAvailableDays.length > 0) return branchAvailableDays;
+    return rawAvailableDays;
+  }, [selectedBranch, branchAvailableDays, rawAvailableDays]);
+
+  const effectiveAvailableDaysSlots = useMemo(() => {
+    if (selectedBranch && branchAvailableDaysSlots) return branchAvailableDaysSlots;
+    return rawAvailableDaysSlots;
+  }, [selectedBranch, branchAvailableDaysSlots, rawAvailableDaysSlots]);
+
+  const hasNonApiIntegration =
+    !isApiIntegration &&
+    (Boolean(integrationType) ||
+      (Array.isArray(effectiveAvailableDays) && effectiveAvailableDays.length > 0) ||
+      Boolean(effectiveAvailableDaysSlots));
+
+  // For API integration: use slot-based flow (same as old providerType !== DEFAULT)
   const hasProviderSpecificDays = useMemo(() => {
-    const provider = editData?.trip?.provider || editData?.provider;
-    const availableDays = editData?.trip?.availableDays || editData?.availableDays;
     return (
       isEditMode &&
-      editData?.askType === askTypeConstants.TRIP &&
-      provider &&
-      provider.providerType !== "DEFAULT" &&
-      Array.isArray(availableDays) &&
-      availableDays.length > 0
+      isNormalTrip &&
+      isApiIntegration &&
+      Array.isArray(effectiveAvailableDays) &&
+      effectiveAvailableDays.length > 0
     );
-  }, [isEditMode, editData]);
+  }, [isEditMode, isNormalTrip, isApiIntegration, effectiveAvailableDays]);
+
+  // For non-API integration: use date restriction + time range validation
+  const hasNonApiProviderDays = useMemo(() => {
+    return (
+      isEditMode &&
+      isNormalTrip &&
+      hasNonApiIntegration &&
+      Array.isArray(effectiveAvailableDays) &&
+      effectiveAvailableDays.length > 0
+    );
+  }, [isEditMode, isNormalTrip, hasNonApiIntegration, effectiveAvailableDays]);
+
+  const fetchBranchAvailableDays = useCallback(async (branchId) => {
+    if (!branchId) {
+      setBranchAvailableDays([]);
+      setBranchAvailableDaysSlots(null);
+      return;
+    }
+    setIsLoadingBranchDays(true);
+    try {
+      const response = await axios.get(
+        getProxyUrl(
+          `${B2B_END_POINTS.PROFILE.PROVIDER_BRANCH_AVAILABLE_DAYS}/${branchId}`
+        ),
+        { headers }
+      );
+      const data = response.data;
+      let days = data?.availableDays || [];
+      const slots = data?.availableDaysSlots || null;
+      if ((!days || days.length === 0) && slots) {
+        let slotsObj = slots;
+        if (typeof slotsObj === "string") {
+          try {
+            slotsObj = JSON.parse(slotsObj);
+          } catch {}
+        }
+        const daysList = Array.isArray(slotsObj)
+          ? slotsObj
+          : Array.isArray(slotsObj?.days)
+          ? slotsObj.days
+          : [];
+        days = daysList
+          .map((d) =>
+            typeof d.date === "string" ? d.date.split("T")[0] : d.date
+          )
+          .filter(Boolean);
+      }
+      setBranchAvailableDays(days);
+      setBranchAvailableDaysSlots(slots);
+    } catch (error) {
+      console.error("Error fetching branch available days:", error);
+      setBranchAvailableDays([]);
+      setBranchAvailableDaysSlots(null);
+      const errorMessage = getErrorMessage(error, t2);
+      enqueueSnackbar(errorMessage, { variant: "error" });
+    } finally {
+      setIsLoadingBranchDays(false);
+    }
+  }, [headers, enqueueSnackbar, t2]);
 
   // Fetch the full order details from info endpoint to resolve tripId when in edit mode
   useEffect(() => {
-    if (isEditMode && editData?.askType === askTypeConstants.TRIP && orderId) {
+    if (isEditMode && isNormalTrip && orderId) {
       const getTripId = async () => {
         try {
           const response = await axios.get(
@@ -232,7 +387,7 @@ const CustomNewTripForm = ({
       };
       getTripId();
     }
-  }, [isEditMode, editData?.askType, orderId, headers]);
+  }, [isEditMode, isNormalTrip, orderId, headers]);
 
   const fetchSlotsForDay = useCallback(async (day) => {
     const targetTripId =
@@ -270,7 +425,7 @@ const CustomNewTripForm = ({
     }
   }, [tripId, editData, headers, enqueueSnackbar, t2]);
 
-  // Fetch initial slots if editing a trip with provider-specific slots
+  // Fetch initial slots if editing a trip with API integration
   useEffect(() => {
     if (hasProviderSpecificDays && editData?.day && (!isEditMode || tripId)) {
       const initialDay = editData.day.split("T")[0];
@@ -425,6 +580,7 @@ const CustomNewTripForm = ({
         file: editData.file || "",
         note: editData.note || "",
         slot: editData.slot || "",
+        providerBranch: "",
       };
     }
 
@@ -452,6 +608,7 @@ const CustomNewTripForm = ({
       services: [],
       file: "",
       note: "",
+      providerBranch: "",
     };
   }, [isEditMode, editData]);
 
@@ -462,9 +619,9 @@ const CustomNewTripForm = ({
         case 0:
           return ["schoolsInfo"];
         case 1:
-          return hasProviderSpecificDays
-            ? ["day", "slot"]
-            : ["day", "endDay", "fromHour", "toHour"];
+          if (hasProviderSpecificDays) return ["day", "slot"];
+          if (hasNonApiProviderDays) return ["day", "fromHour", "toHour"];
+          return ["day", "endDay", "fromHour", "toHour"];
         case 2:
           return ["availableSeats", "totalAvailableSeats"];
         case 3:
@@ -591,6 +748,7 @@ const CustomNewTripForm = ({
       formik.submitForm();
     } else {
       setActiveStep((prev) => prev + 1);
+      scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -598,6 +756,47 @@ const CustomNewTripForm = ({
     setShowValidationErrors(false);
     setAttemptedNext(false);
     setActiveStep((prev) => prev - 1);
+    scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleStepClick = async (targetStep, formik) => {
+    if (targetStep === activeStep) return;
+
+    // Moving backward to already visited steps is always allowed
+    if (targetStep < activeStep) {
+      setShowValidationErrors(false);
+      setAttemptedNext(false);
+      setActiveStep(targetStep);
+      scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    // Moving forward: validate current step first
+    setAttemptedNext(true);
+    const errors = await formik.validateForm();
+
+    const currentStepHasErrors = hasStepErrors(errors, activeStep);
+    if (currentStepHasErrors) {
+      touchStepFields(formik, activeStep);
+      setShowValidationErrors(true);
+      return;
+    }
+
+    // If attempting to jump ahead multiple steps, ensure any intermediate steps are also valid
+    for (let s = activeStep + 1; s < targetStep; s++) {
+      if (hasStepErrors(errors, s)) {
+        touchStepFields(formik, s);
+        setShowValidationErrors(true);
+        setActiveStep(s);
+        scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+    }
+
+    setShowValidationErrors(false);
+    setAttemptedNext(false);
+    setActiveStep(targetStep);
+    scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const prepareNormalTripFormData = (values) => {
@@ -617,11 +816,17 @@ const CustomNewTripForm = ({
     }
 
     if (values.day) formData.append("day", values.day);
-    if (!hasProviderSpecificDays && values.endDay) {
+    if (!hasProviderSpecificDays && !hasNonApiProviderDays && values.endDay) {
       formData.append("endDay", values.endDay);
     }
     if (hasProviderSpecificDays && values.slot) {
       formData.append("slot", values.slot);
+    }
+
+    // Include providerBranch if selected
+    const branchToSend = selectedBranch || values.providerBranch;
+    if (branchToSend) {
+      formData.append("providerBranch", branchToSend);
     }
 
     if (values.fromHour) {
@@ -843,253 +1048,117 @@ const CustomNewTripForm = ({
     : createCustomNewTripSchema(t2);
 
   return (
-    <div className="px-4 py-4 sm:px-6 sm:py-8 bg-white rounded-2xl mx-auto max-h-[90vh] overflow-y-auto sm:max-w-lg lg:max-w-6xl">
-      <h3 className="pb-4 text-center text-lg font-medium text-black lg:text-2xl sm:pb-6 lg:pb-8">
-        {isEditMode ? t("edit") : t("title")}
-      </h3>
-
-      <Box
-        className="mb-6 sm:mb-8 lg:mb-10 w-full"
-        dir={locale === "ar" ? "rtl" : "ltr"}
-      >
-        <Stepper
-          activeStep={activeStep}
-          orientation="horizontal"
-          alternativeLabel={false}
-          sx={{
-            "@media (max-width: 640px)": {
-              flexDirection: "column",
-              alignItems: "stretch",
-              gap: "0.1rem",
-            },
-            "@media (min-width: 641px)": {
-              flexDirection: "row",
-            },
-            "& .MuiStep-root": {
-              "@media (max-width: 640px)": {
-                padding: "0.2rem 0",
-              },
-            },
-            "& .MuiStepLabel-root": {
-              "@media (max-width: 640px)": {
-                flexDirection: "row",
-                alignItems: "center",
-                padding: "0.1rem",
-              },
-            },
-            "& .MuiStepLabel-root .Mui-completed": {
-              color: "var(--color-main)",
-            },
-            "& .MuiStepLabel-root .Mui-active": {
-              color: "var(--color-main)",
-            },
-            "& .MuiStepLabel-label.Mui-completed": {
-              color: "var(--color-main)",
-              fontWeight: 400,
-            },
-            "& .MuiStepLabel-label.Mui-active": {
-              color: "var(--color-main)",
-              fontWeight: 600,
-            },
-            "& .MuiStepConnector-root": {
-              "@media (min-width: 641px)": {
-                left: "calc(-50% + 16px)",
-                right: "calc(50% + 16px)",
-              },
-              "@media (max-width: 640px)": {
-                display: "none",
-              },
-              "& .MuiStepConnector-line": {
-                borderColor: "#e0e0e0",
-                borderTopWidth: 2,
-              },
-              "&.Mui-completed .MuiStepConnector-line": {
-                borderColor: "var(--color-main)",
-              },
-              "&.Mui-active .MuiStepConnector-line": {
-                borderColor: "var(--color-main)",
-              },
-            },
-            "& .MuiStep-root:first-of-type .MuiStepConnector-root": {
-              display: "none",
-            },
-            "& .MuiStepIcon-root": {
-              fontSize: "2rem",
-              "@media (min-width: 641px)": {
-                fontSize: "2.5rem",
-              },
-              border: "1px solid",
-              "&.Mui-completed": {
-                color: "var(--color-main)",
-                border: "none",
-                backgroundColor: "white",
-                padding: "0px",
-                boxShadow: "none",
-              },
-              "&.Mui-active": {
-                color: "var(--color-main)",
-              },
-              "&:not(.Mui-active):not(.Mui-completed)": {
-                color: "#bdbdbd",
-              },
-            },
-            "& .MuiStepLabel-label": {
-              marginInlineStart: "8px",
-              fontSize: "0.875rem",
-              "@media (min-width: 641px)": {
-                fontSize: "1rem",
-                marginInlineStart: "5px",
-              },
-              fontFamily: "var(--font-somar), sans-serif",
-            },
-          }}
-        >
-          {steps.map((label, index) => (
-            <Step key={label}>
-              <StepLabel
-                icon={index + 1}
-                slotProps={{
-                  stepIcon: {
-                    sx: {
-                      width: { xs: 32, sm: 36 },
-                      height: { xs: 32, sm: 36 },
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: "50%",
-                      border: "2px solid",
-                      borderColor:
-                        index === activeStep
-                          ? "var(--color-main)"
-                          : index < activeStep
-                            ? "var(--color-success)"
-                            : "#bdbdbd",
-                      backgroundColor:
-                        index === activeStep
-                          ? "var(--color-main)"
-                          : index < activeStep
-                            ? "var(--color-success)"
-                            : "white",
-                      color: index <= activeStep ? "white" : "#bdbdbd",
-                      fontWeight: "bold",
-                      fontSize: { xs: "1rem", sm: "1.125rem" },
-                      zIndex: 1,
-                    },
-                  },
-                }}
-              >
-                {label}
-              </StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-      </Box>
-
-      <div className="p-2 sm:p-4">
-        <style jsx>{`
-          .somar-placeholder input::placeholder,
-          .somar-placeholder textarea::placeholder {
-            font-family: "somar", sans-serif !important;
-          }
-          .somar-placeholder .MuiSelect-select span {
-            font-family: "somar", sans-serif !important;
-          }
-          .somar-placeholder input,
-          .somar-placeholder textarea {
-            font-family: "somar", sans-serif !important;
-          }
-        `}</style>
-        <Formik
-          enableReinitialize
-          initialValues={getInitialValues}
-          validationSchema={customTripSchema}
-          onSubmit={handleSubmit}
-          validateOnBlur={true}
-          validateOnChange={true}
-          validateOnMount={false}
-          innerRef={formRef}
-          validate={(values) => {
-            const formErrors = {};
-            if (hasProviderSpecificDays && values.slot) {
-              const selectedSlot = slotsData.find(
-                (s) => s.slotName === values.slot
-              );
-              if (selectedSlot) {
-                const seats = parseInt(values.availableSeats);
-                if (!isNaN(seats)) {
-                  if (seats < selectedSlot.minCapacity) {
-                    formErrors.availableSeats = t2(
-                      "forms.customTrip.expectedParticipants.error.minSlot",
-                      { min: selectedSlot.minCapacity }
-                    );
-                  } else if (seats > selectedSlot.maxCapacity) {
-                    formErrors.availableSeats = t2(
-                      "forms.customTrip.expectedParticipants.error.maxSlot",
-                      { max: selectedSlot.maxCapacity }
-                    );
-                  }
+    <div className="flex flex-col bg-white rounded-2xl mx-auto max-h-[90vh] sm:max-w-lg lg:max-w-6xl overflow-hidden shadow-2xl">
+      <style jsx>{`
+        .somar-placeholder input::placeholder,
+        .somar-placeholder textarea::placeholder {
+          font-family: "somar", sans-serif !important;
+        }
+        .somar-placeholder .MuiSelect-select span {
+          font-family: "somar", sans-serif !important;
+        }
+        .somar-placeholder input,
+        .somar-placeholder textarea {
+          font-family: "somar", sans-serif !important;
+        }
+      `}</style>
+      <Formik
+        enableReinitialize
+        initialValues={getInitialValues}
+        validationSchema={customTripSchema}
+        onSubmit={handleSubmit}
+        validateOnBlur={true}
+        validateOnChange={true}
+        validateOnMount={false}
+        innerRef={formRef}
+        validate={(values) => {
+          const formErrors = {};
+          if (hasProviderSpecificDays && values.slot) {
+            const selectedSlot = slotsData.find(
+              (s) => s.slotName === values.slot
+            );
+            if (selectedSlot) {
+              const seats = parseInt(values.availableSeats);
+              if (!isNaN(seats)) {
+                if (seats < selectedSlot.minCapacity) {
+                  formErrors.availableSeats = t2(
+                    "forms.customTrip.expectedParticipants.error.minSlot",
+                    { min: selectedSlot.minCapacity }
+                  );
+                } else if (seats > selectedSlot.maxCapacity) {
+                  formErrors.availableSeats = t2(
+                    "forms.customTrip.expectedParticipants.error.maxSlot",
+                    { max: selectedSlot.maxCapacity }
+                  );
                 }
               }
             }
-            return formErrors;
-          }}
-        >
-          {(formik) => {
-            const { isSubmitting, errors, touched, values } = formik;
-
-            const currentStepHasErrors = hasStepErrors(errors, activeStep);
-
-            // check if next button disabled
-            const isNextDisabled = isSubmitting;
-
-            useEffect(() => {
-              if (attemptedNext && currentStepHasErrors) {
-                touchStepFields(formik, activeStep);
-              }
-            }, [attemptedNext, currentStepHasErrors, activeStep]);
-
-            const renderStepContent = (step) => {
-              if (isNormalTrip) {
-                switch (step) {
-                  case 0:
-                    return (
-                      <StepSchoolInfo
-                        isEditMode={isEditMode}
-                        organizationOptions={organizationsOptions}
-                        academicStagesOptions={academicStagesOptions}
-                        editGrades={editData?.grades || []}
-                      />
-                    );
-                  case 1:
-                    return (
-                      <StepTripDate
-                        tripTypeData={tripTypeData}
-                        hasProviderSpecificDays={hasProviderSpecificDays}
-                        slotsData={slotsData}
-                        isLoadingSlots={isLoadingSlots}
-                        fetchSlotsForDay={fetchSlotsForDay}
-                        availableDays={
-                          editData?.trip?.availableDays ||
-                          editData?.availableDays ||
-                          []
-                        }
-                      />
-                    );
-                  case 2:
-                    return (
-                      <StepPricing
-                        isNormalTrip={isNormalTrip}
-                        hasProviderSpecificDays={hasProviderSpecificDays}
-                        slotsData={slotsData}
-                        isLoadingSlots={isLoadingSlots}
-                      />
-                    );
-                  case 3:
-                    return <StepAdditionalInfo />;
-                  default:
-                    return <div>Unknown Step</div>;
+          }
+          // Time range validation for non-API integrations
+          if (hasNonApiProviderDays && values.day) {
+            if (!values.fromHour) {
+              formErrors.fromHour = t2("forms.validation.require");
+            }
+            const slotsSource = effectiveAvailableDaysSlots;
+            const ranges = getTimeRangesForDate(values.day, slotsSource);
+            const formattedRanges = formatDisplayTimeRanges(
+              ranges,
+              locale,
+              t2
+            );
+            if (ranges.length > 0) {
+              if (values.fromHour) {
+                const fromResult = isTimeWithinAvailableRange(
+                  values.fromHour,
+                  values.day,
+                  slotsSource,
+                  false
+                );
+                if (!fromResult.valid) {
+                  formErrors.fromHour = t(
+                    "steps.trip_date.fields.timeRangeError",
+                    { range: formattedRanges }
+                  );
                 }
               }
+              if (values.toHour) {
+                const toResult = isTimeWithinAvailableRange(
+                  values.toHour,
+                  values.day,
+                  slotsSource,
+                  true
+                );
+                if (!toResult.valid) {
+                  formErrors.toHour = t(
+                    "steps.trip_date.fields.timeRangeError",
+                    { range: formattedRanges }
+                  );
+                }
+              }
+            }
+            if (values.fromHour && values.toHour) {
+              const fromMin = parseTimeToMinutes(values.fromHour);
+              const toMin = parseTimeToMinutes(values.toHour, { isEnd: true });
+              if (!isNaN(fromMin) && !isNaN(toMin) && toMin <= fromMin) {
+                formErrors.toHour = t(
+                  "steps.trip_date.fields.to_hour.error.afterFrom"
+                );
+              }
+            }
+          }
+          return formErrors;
+        }}
+      >
+        {(formik) => {
+          const { isSubmitting, errors } = formik;
+
+          const currentStepHasErrors = hasStepErrors(errors, activeStep);
+
+          // check if next button disabled
+          const isNextDisabled = isSubmitting;
+
+          const renderStepContent = (step) => {
+            if (isNormalTrip) {
               switch (step) {
                 case 0:
                   return (
@@ -1102,75 +1171,310 @@ const CustomNewTripForm = ({
                   );
                 case 1:
                   return (
-                    <StepTripInfo
-                      categoryOptions={categoryOptions}
-                      supCategoryOptions={supCategoryOptions}
-                      tripTypeOptions={tripTypeOptions}
-                      cityOptions={cityOptions}
-                      servicesOptions={servicesOptions}
+                    <StepTripDate
+                      tripTypeData={tripTypeData}
+                      hasProviderSpecificDays={hasProviderSpecificDays}
+                      hasNonApiProviderDays={hasNonApiProviderDays}
+                      slotsData={slotsData}
+                      isLoadingSlots={isLoadingSlots}
+                      fetchSlotsForDay={fetchSlotsForDay}
+                      availableDays={effectiveAvailableDays}
+                      availableDaysSlots={effectiveAvailableDaysSlots}
+                      providerBranches={providerBranches}
+                      selectedBranch={selectedBranch}
+                      isLoadingBranchDays={isLoadingBranchDays}
+                      onBranchChange={(branchId) => {
+                        setSelectedBranch(branchId);
+                        fetchBranchAvailableDays(branchId);
+                        // Reset day and time when branch changes
+                        formik.setFieldValue("day", "");
+                        formik.setFieldValue("fromHour", "");
+                        formik.setFieldValue("toHour", "");
+                        formik.setFieldValue("slot", "");
+                        formik.setFieldValue("providerBranch", branchId);
+                      }}
                     />
                   );
                 case 2:
-                  return <StepTripDate tripTypeData={tripTypeData} />;
+                  return (
+                    <StepPricing
+                      isNormalTrip={isNormalTrip}
+                      hasProviderSpecificDays={hasProviderSpecificDays}
+                      slotsData={slotsData}
+                      isLoadingSlots={isLoadingSlots}
+                    />
+                  );
                 case 3:
-                  return <StepPricing isNormalTrip={isNormalTrip} />;
-                case 4:
                   return <StepAdditionalInfo />;
                 default:
                   return <div>Unknown Step</div>;
               }
-            };
+            }
+            switch (step) {
+              case 0:
+                return (
+                  <StepSchoolInfo
+                    isEditMode={isEditMode}
+                    organizationOptions={organizationsOptions}
+                    academicStagesOptions={academicStagesOptions}
+                    editGrades={editData?.grades || []}
+                  />
+                );
+              case 1:
+                return (
+                  <StepTripInfo
+                    categoryOptions={categoryOptions}
+                    supCategoryOptions={supCategoryOptions}
+                    tripTypeOptions={tripTypeOptions}
+                    cityOptions={cityOptions}
+                    servicesOptions={servicesOptions}
+                  />
+                );
+              case 2:
+                return <StepTripDate tripTypeData={tripTypeData} />;
+              case 3:
+                return <StepPricing isNormalTrip={isNormalTrip} />;
+              case 4:
+                return <StepAdditionalInfo />;
+              default:
+                return <div>Unknown Step</div>;
+            }
+          };
 
-            return (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleNext(formik);
-                }}
+          return (
+            <>
+              {/* Fixed Header: Title & Interactive Stepper */}
+              <div className="shrink-0 bg-white px-4 pt-4 pb-3 sm:px-8 sm:pt-6 sm:pb-4 border-b border-gray-100 shadow-sm">
+                <h3 className="pb-3 text-center text-lg font-medium text-black lg:text-2xl sm:pb-4">
+                  {isEditMode ? t("edit") : t("title")}
+                </h3>
+
+                <Box
+                  className="w-full"
+                  dir={locale === "ar" ? "rtl" : "ltr"}
+                >
+                  <Stepper
+                    activeStep={activeStep}
+                    orientation="horizontal"
+                    alternativeLabel={false}
+                    sx={{
+                      "@media (max-width: 640px)": {
+                        flexDirection: "column",
+                        alignItems: "stretch",
+                        gap: "0.1rem",
+                      },
+                      "@media (min-width: 641px)": {
+                        flexDirection: "row",
+                      },
+                      "& .MuiStep-root": {
+                        cursor: "pointer",
+                        "@media (max-width: 640px)": {
+                          padding: "0.2rem 0",
+                        },
+                      },
+                      "& .MuiStepLabel-root": {
+                        cursor: "pointer",
+                        "@media (max-width: 640px)": {
+                          flexDirection: "row",
+                          alignItems: "center",
+                          padding: "0.1rem",
+                        },
+                      },
+                      "& .MuiStepLabel-root .Mui-completed": {
+                        color: "var(--color-main)",
+                      },
+                      "& .MuiStepLabel-root .Mui-active": {
+                        color: "var(--color-main)",
+                      },
+                      "& .MuiStepLabel-label.Mui-completed": {
+                        color: "var(--color-main)",
+                        fontWeight: 400,
+                      },
+                      "& .MuiStepLabel-label.Mui-active": {
+                        color: "var(--color-main)",
+                        fontWeight: 600,
+                      },
+                      "& .MuiStepConnector-root": {
+                        "@media (min-width: 641px)": {
+                          left: "calc(-50% + 16px)",
+                          right: "calc(50% + 16px)",
+                        },
+                        "@media (max-width: 640px)": {
+                          display: "none",
+                        },
+                        "& .MuiStepConnector-line": {
+                          borderColor: "#e0e0e0",
+                          borderTopWidth: 2,
+                        },
+                        "&.Mui-completed .MuiStepConnector-line": {
+                          borderColor: "var(--color-main)",
+                        },
+                        "&.Mui-active .MuiStepConnector-line": {
+                          borderColor: "var(--color-main)",
+                        },
+                      },
+                      "& .MuiStep-root:first-of-type .MuiStepConnector-root": {
+                        display: "none",
+                      },
+                      "& .MuiStepIcon-root": {
+                        fontSize: "2rem",
+                        "@media (min-width: 641px)": {
+                          fontSize: "2.5rem",
+                        },
+                        border: "1px solid",
+                        "&.Mui-completed": {
+                          color: "var(--color-main)",
+                          border: "none",
+                          backgroundColor: "white",
+                          padding: "0px",
+                          boxShadow: "none",
+                        },
+                        "&.Mui-active": {
+                          color: "var(--color-main)",
+                        },
+                        "&:not(.Mui-active):not(.Mui-completed)": {
+                          color: "#bdbdbd",
+                        },
+                      },
+                      "& .MuiStepLabel-label": {
+                        cursor: "pointer",
+                        marginInlineStart: "8px",
+                        fontSize: "0.875rem",
+                        transition: "color 0.2s ease-in-out",
+                        "&:hover": {
+                          color: "var(--color-main)",
+                        },
+                        "@media (min-width: 641px)": {
+                          fontSize: "1rem",
+                          marginInlineStart: "5px",
+                        },
+                        fontFamily: "var(--font-somar), sans-serif",
+                      },
+                    }}
+                  >
+                    {steps.map((label, index) => (
+                      <Step key={label} completed={index < activeStep}>
+                        <StepLabel
+                          onClick={() => handleStepClick(index, formik)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              handleStepClick(index, formik);
+                            }
+                          }}
+                          className={`select-none transition-all duration-150 ${
+                            index === activeStep
+                              ? "cursor-default"
+                              : "cursor-pointer hover:opacity-85"
+                          }`}
+                          icon={index + 1}
+                          slotProps={{
+                            stepIcon: {
+                              sx: {
+                                cursor:
+                                  index === activeStep ? "default" : "pointer",
+                                width: { xs: 32, sm: 36 },
+                                height: { xs: 32, sm: 36 },
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                borderRadius: "50%",
+                                border: "2px solid",
+                                borderColor:
+                                  index === activeStep
+                                    ? "var(--color-main)"
+                                    : index < activeStep
+                                      ? "var(--color-success)"
+                                      : "#bdbdbd",
+                                backgroundColor:
+                                  index === activeStep
+                                    ? "var(--color-main)"
+                                    : index < activeStep
+                                      ? "var(--color-success)"
+                                      : "white",
+                                color: index <= activeStep ? "white" : "#bdbdbd",
+                                fontWeight: "bold",
+                                fontSize: { xs: "1rem", sm: "1.125rem" },
+                                zIndex: 1,
+                                transition: "transform 0.15s ease-in-out",
+                                "&:hover": {
+                                  transform:
+                                    index !== activeStep ? "scale(1.08)" : "none",
+                                },
+                              },
+                            },
+                          }}
+                        >
+                          {label}
+                        </StepLabel>
+                      </Step>
+                    ))}
+                  </Stepper>
+                </Box>
+              </div>
+
+              {/* Scrollable Form Body */}
+              <div
+                ref={scrollContainerRef}
+                className="flex-1 overflow-y-auto px-4 py-4 sm:px-8 sm:py-6"
               >
-                {renderStepContent(activeStep)}
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleNext(formik);
+                  }}
+                >
+                  <StepWatcher
+                    attemptedNext={attemptedNext}
+                    currentStepHasErrors={currentStepHasErrors}
+                    onTouch={() => touchStepFields(formik, activeStep)}
+                  />
+                  {renderStepContent(activeStep)}
 
-                <div className="flex flex-col-reverse sm:flex-row justify-between gap-3 sm:gap-0 mt-6 sm:mt-8">
-                  <button
-                    type="button"
-                    onClick={handleBack}
-                    disabled={activeStep === 0 || isSubmitting}
-                    className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg border text-sm sm:text-base ${
-                      activeStep === 0
-                        ? "opacity-50 cursor-not-allowed bg-gray-100 text-gray-400"
-                        : "border-mainColor text-mainColor hover:bg-mainColor hover:text-white transition-colors"
-                    }`}
-                  >
-                    {t2("common.back")}
-                  </button>
+                  <div className="flex flex-col-reverse sm:flex-row justify-between gap-3 sm:gap-0 mt-6 sm:mt-8">
+                    <button
+                      type="button"
+                      onClick={handleBack}
+                      disabled={activeStep === 0 || isSubmitting}
+                      className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg border text-sm sm:text-base ${
+                        activeStep === 0
+                          ? "opacity-50 cursor-not-allowed bg-gray-100 text-gray-400"
+                          : "border-mainColor text-mainColor hover:bg-mainColor hover:text-white transition-colors"
+                      }`}
+                    >
+                      {t2("common.back")}
+                    </button>
 
-                  <button
-                    type="button"
-                    onClick={() => handleNext(formik)}
-                    disabled={isNextDisabled}
-                    className="px-4 sm:px-6 py-2 sm:py-2.5 bg-mainColor text-white rounded-lg hover:bg-titleColor disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
-                  >
-                    {isSubmitting ? (
-                      <div className="flex items-center justify-center gap-2">
-                        <CircularProgress color="inherit" size={18} />
-                        <span>{t2("forms.validation.sending")}</span>
-                      </div>
-                    ) : activeStep === steps.length - 1 ? (
-                      isEditMode ? (
-                        t2("common.edit")
+                    <button
+                      type="button"
+                      onClick={() => handleNext(formik)}
+                      disabled={isNextDisabled}
+                      className="px-4 sm:px-6 py-2 sm:py-2.5 bg-mainColor text-white rounded-lg hover:bg-titleColor disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
+                    >
+                      {isSubmitting ? (
+                        <div className="flex items-center justify-center gap-2">
+                          <CircularProgress color="inherit" size={18} />
+                          <span>{t2("forms.validation.sending")}</span>
+                        </div>
+                      ) : activeStep === steps.length - 1 ? (
+                        isEditMode ? (
+                          t2("common.edit")
+                        ) : (
+                          t2("common.submit")
+                        )
                       ) : (
-                        t2("common.submit")
-                      )
-                    ) : (
-                      t2("common.next")
-                    )}
-                  </button>
-                </div>
-              </form>
-            );
-          }}
-        </Formik>
-      </div>
+                        t2("common.next")
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </>
+          );
+        }}
+      </Formik>
     </div>
   );
 };

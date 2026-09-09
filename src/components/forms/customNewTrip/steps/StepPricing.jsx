@@ -8,7 +8,7 @@ const StepPricing = ({
   isNormalTrip,
   hasProviderSpecificDays,
   slotsData = [],
-  isLoadingSlots = false,
+  _isLoadingSlots = false,
 }) => {
   const t = useTranslations("forms.customTrip.steps.pricing");
   const tGlobal = useTranslations();
@@ -39,11 +39,11 @@ const StepPricing = ({
       <p className="text-base !my-4">
         {isNormalTrip ? t("description_seats_only") : t("description")}
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
         {/* Min Price (Hidden for Normal Trips) */}
         {!isNormalTrip && (
           <div className="somar-placeholder">
-            <label className="block mb-2 text-sm font-medium text-gray-700">
+            <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
               {t("fields.price.label")}
               <span className="text-error ml-1">*</span>
             </label>
@@ -65,7 +65,7 @@ const StepPricing = ({
         )}
 
         {/* Expected Participants / Available Seats */}
-        <div className="somar-placeholder flex flex-col gap-1">
+        <div className="somar-placeholder">
           <label className="block mb-2 text-sm font-medium text-gray-700 font-somar">
             {t("fields.avaliable_seats.label")}
             <span className="text-error ml-1">*</span>
