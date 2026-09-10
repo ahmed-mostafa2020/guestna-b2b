@@ -12,6 +12,7 @@ import {
   Storefront as StorefrontIcon,
   ListAlt as ListAltIcon,
   Business as BusinessIcon,
+  DescriptionOutlined as DescriptionIcon,
 } from "@mui/icons-material";
 import React from "react";
 import { CONSTANT_VALUES } from "@constants/constantValues";
@@ -45,6 +46,12 @@ const ProviderNavigationDropdown = () => {
   const providerBasePath = `/${locale}/provider-profile`;
 
   const navigationItems = [
+    {
+      id: "onboarding",
+      title: t("providerProfile.aside.onboarding"),
+      icon: <DescriptionIcon />,
+      path: `${providerBasePath}/onboarding`,
+    },
     {
       id: "main",
       title: t("providerProfile.aside.main"),
