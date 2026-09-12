@@ -304,6 +304,13 @@ const RolesLoginForm = () => {
                   isValid={isValid}
                   className="w-full py-3 text-base"
                 />
+
+                <Link
+                  href={`/${locale}/provider-register`}
+                  className="w-full text-sm font-semibold text-center text-titleColor hover:text-linksHover transition-all duration-200 ease-in-out"
+                >
+                  {t("providerRegister.loginLink")}
+                </Link>
               </form>
             </div>
           </div>

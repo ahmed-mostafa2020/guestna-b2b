@@ -225,6 +225,7 @@
       "contactUs": "Contact Us",
       "faq": "FAQ",
       "schoolRegister": "School Register",
+      "providerRegister": "Provider Registration",
       "confirmingData": "Confirming Data",
       "loginAs": "Login As",
       "error": "404: This page could not be found",
@@ -3635,6 +3636,192 @@
           "invalid": "Please enter a valid phone number"
         }
       }
+    }
+  },
+
+  "providerRegister": {
+    "hero": {
+      "title": "Register your facility with Guestna",
+      "subtitle": "Three short steps, then the supply team reviews your data. No documents are needed at this stage."
+    },
+    "steps": {
+      "facility": {
+        "title": "Facility details",
+        "subtitle": "Business identity and contact details"
+      },
+      "location": {
+        "title": "Location & operations",
+        "subtitle": "City, district, and working hours"
+      },
+      "review": {
+        "title": "Review & submit",
+        "subtitle": "Confirm your details before sending"
+      }
+    },
+    "sidebar": {
+      "title": "What happens after you submit?",
+      "privacy": "Your data is used only for registration and commercial dealings with Guestna, and is not shared with other parties.",
+      "steps": {
+        "register": {
+          "title": "1. Register your details",
+          "description": "Your facility status becomes “Registered” as soon as the request is sent."
+        },
+        "review": {
+          "title": "2. Supply team review",
+          "description": "The Guestna team reviews the data and contacts you if any clarification is needed."
+        },
+        "qualify": {
+          "title": "3. Qualification steps",
+          "description": "Qualification and accreditation happen later with the Guestna team, not in this step."
+        }
+      }
+    },
+    "facility": {
+      "title": "Facility details",
+      "subtitle": "We use this information to verify the facility and issue contracts and invoices."
+    },
+    "contact": {
+      "title": "Contact details",
+      "subtitle": "The sales team will contact this account about the registration request."
+    },
+    "location": {
+      "title": "Main branch location & operations",
+      "subtitle": "These fields are optional. Add city, district, and a description that helps groups reach you.",
+      "mapTitle": "Choose the location on the map",
+      "mapHint": "Optional — tap the map to pin your main branch location."
+    },
+    "review": {
+      "title": "Review details",
+      "subtitle": "Make sure everything is correct before submitting. You can go back to edit any field.",
+      "locationSubtitle": "City, district, and working hours",
+      "edit": "Edit"
+    },
+    "fields": {
+      "nameAr": {
+        "label": "Trade name (Arabic)",
+        "placeholder": "Enter the trade name in Arabic"
+      },
+      "nameEn": {
+        "label": "Trade name (English)",
+        "placeholder": "Enter the trade name in English"
+      },
+      "legalNameAr": {
+        "label": "Legal name (Arabic)",
+        "placeholder": "Enter the legal name in Arabic"
+      },
+      "legalNameEn": {
+        "label": "Legal name (English)",
+        "placeholder": "Enter the legal name in English"
+      },
+      "crNumber": {
+        "label": "Commercial registration number",
+        "placeholder": "Enter the CR number"
+      },
+      "taxNumber": {
+        "label": "Tax number",
+        "placeholder": "Enter the tax number"
+      },
+      "businessType": {
+        "label": "Business type",
+        "placeholder": "Select business type"
+      },
+      "services": {
+        "label": "Services",
+        "placeholder": "Select services"
+      },
+      "aboutAr": {
+        "label": "About the facility (Arabic)",
+        "placeholder": "Describe your facility in Arabic"
+      },
+      "aboutEn": {
+        "label": "About the facility (English)",
+        "placeholder": "Describe your facility in English"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter email address"
+      },
+      "phone": {
+        "label": "Mobile number",
+        "placeholder": "Enter mobile number"
+      },
+      "city": {
+        "label": "City",
+        "placeholder": "Select city"
+      },
+      "district": {
+        "label": "District",
+        "placeholder": "Enter district name"
+      },
+      "address": {
+        "label": "Access description",
+        "placeholder": "Add a description that helps groups reach you"
+      },
+      "businessHours": {
+        "label": "Working hours"
+      },
+      "businessHoursFrom": {
+        "label": "Working hours from"
+      },
+      "businessHoursTo": {
+        "label": "Working hours to"
+      }
+    },
+    "businessTypes": {
+      "TOUR_OPERATOR": "Tour operator",
+      "ENTERTAINMENT_CENTERS": "Entertainment centers"
+    },
+    "form": {
+      "next": "Next",
+      "back": "Back",
+      "submit": "Submit request",
+      "submitting": "Submitting...",
+      "success": "Facility registered successfully",
+      "error": "An error occurred while registering the facility"
+    },
+    "success": {
+      "title": "We received your request",
+      "body": "Your facility status is now “Registered”. We will send login details to your email, and the supply team will review the request and contact you if needed.",
+      "goToLogin": "Go to login"
+    },
+    "loginLink": "Are you a provider? Register your facility",
+    "validation": {
+      "name": {
+        "min": "The trade name must be at least 2 characters",
+        "max": "The trade name cannot exceed 100 characters"
+      },
+      "legalName": {
+        "max": "The legal name cannot exceed 100 characters",
+        "both": "Please enter the legal name in both Arabic and English"
+      },
+      "about": {
+        "min": "The description must be at least 5 characters",
+        "max": "The description cannot exceed 500 characters"
+      },
+      "crNumber": {
+        "max": "The commercial registration number cannot exceed 50 characters"
+      },
+      "taxNumber": {
+        "max": "The tax number cannot exceed 50 characters"
+      },
+      "businessType": {
+        "invalid": "Please select a valid business type"
+      },
+      "mongoId": "Invalid selection",
+      "district": {
+        "max": "The district cannot exceed 100 characters"
+      },
+      "address": {
+        "max": "The access description cannot exceed 500 characters"
+      },
+      "location": {
+        "both": "Please set both latitude and longitude on the map",
+        "invalid": "Location coordinates must be numbers"
+      },
+      "businessHours": {
+        "both": "Please enter both opening and closing hours"
+      },
+      "stepIncomplete": "Please complete the required fields before continuing"
     }
   },
   "confirmingData": {

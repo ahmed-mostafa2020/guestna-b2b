@@ -4,4 +4,5 @@ export * from "./checkoutSchemas";
 export * from "./formSchemas";
 export * from "./profileSchemas";
 export * from "./withdrawalClaimSchema";
+export * from "./providerRegisterSchema";
 export * from "./branchSchema";
