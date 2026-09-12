@@ -233,11 +233,85 @@
   },
   "providerProfile": {
     "aside": {
+      "onboarding": "Data Management",
       "main": "Main Page",
       "productsManagement": "Products Management",
       "ordersManagement": "Orders Management",
       "ourProducts": "Marketplace",
       "branches": "Branches"
+    },
+    "onboarding": {
+      "pageTitle": "Data Management",
+      "qualification": {
+        "title": "Qualification Documents",
+        "description": "Please upload the required documents to complete qualification. Documents will be reviewed by the GuestNa team.",
+        "totalDocuments": "Total Documents",
+        "completed": "Completed",
+        "underReview": "Under Review",
+        "actionRequired": "Action Required"
+      },
+      "documents": {
+        "title": "Documents",
+        "uploadFiles": "Upload Files",
+        "uploadDocument": "Upload Document",
+        "reupload": "Re-upload",
+        "show": "Show",
+        "empty": "No documents yet",
+        "name": "Document Name",
+        "notes": "Notes",
+        "status": "Status",
+        "actions": "Action",
+        "types": {
+          "COMMERCIAL_REGISTRATION": "Commercial Registration",
+          "TAX_CERTIFICATE": "Tax Certificate",
+          "OTHER": "Other"
+        },
+        "statuses": {
+          "PENDING": "Not Uploaded",
+          "SUBMITTED": "Under Review",
+          "APPROVED": "Approved",
+          "REJECTED": "Rejected"
+        },
+        "modal": {
+          "title": "Upload Qualification Document",
+          "documentType": "Document Type",
+          "documentTypePlaceholder": "Select document type",
+          "titleEn": "Title (English)",
+          "titleAr": "Title (Arabic)",
+          "file": "File",
+          "dragOrClick": "Drag the file here or click to select",
+          "supportedFiles": "Supports files: PDF, Excel, CSV",
+          "chooseFile": "Choose File",
+          "fileTypeError": "File type not allowed. Use PDF, Excel, or CSV.",
+          "fileSizeError": "Maximum allowed file size is 10 MB",
+          "submit": "Upload Document",
+          "submitting": "Uploading...",
+          "cancel": "Cancel"
+        }
+      },
+      "contracts": {
+        "title": "Contracts",
+        "empty": "No contracts yet",
+        "name": "Contract Name",
+        "notes": "Notes",
+        "status": "Status",
+        "actions": "Action",
+        "sign": "Sign",
+        "signing": "Signing...",
+        "show": "Show",
+        "statuses": {
+          "DRAFT": "Draft",
+          "PENDING_SIGNATURE": "Pending Signature",
+          "ACTIVE": "Active",
+          "EXPIRED": "Expired",
+          "TERMINATED": "Terminated"
+        }
+      },
+      "notifications": {
+        "uploadSuccess": "Document uploaded successfully",
+        "signSuccess": "Contract signed successfully",
+        "actionError": "Something went wrong. Please try again."
+      }
     },
     "branches": {
       "pageTitle": "Branches",

@@ -240,11 +240,85 @@
   },
   "providerProfile": {
     "aside": {
+      "onboarding": "إدارة البيانات",
       "main": "الصفحة الرئيسية",
       "productsManagement": "إدارة المنتجات",
       "ordersManagement": "إدارة الطلبات",
       "ourProducts": "متجر الأفراد",
       "branches": "الفروع"
+    },
+    "onboarding": {
+      "pageTitle": "إدارة البيانات",
+      "qualification": {
+        "title": "مستندات التأهيل",
+        "description": "يرجى رفع المستندات المطلوبة لإكمال عملية التأهيل. سيتم مراجعة المستندات من قبل فريق GuestNa.",
+        "totalDocuments": "إجمالي المستندات",
+        "completed": "مكتمل",
+        "underReview": "قيد المراجعة",
+        "actionRequired": "إجراء مطلوب"
+      },
+      "documents": {
+        "title": "المستندات",
+        "uploadFiles": "رفع ملفات",
+        "uploadDocument": "رفع المستند",
+        "reupload": "إعادة رفع",
+        "show": "عرض",
+        "empty": "لا توجد مستندات بعد",
+        "name": "اسم المستند",
+        "notes": "الملاحظات",
+        "status": "الحالة",
+        "actions": "الاكشن",
+        "types": {
+          "COMMERCIAL_REGISTRATION": "السجل التجاري",
+          "TAX_CERTIFICATE": "الرقم الضريبي",
+          "OTHER": "أخرى"
+        },
+        "statuses": {
+          "PENDING": "لم يتم الرفع",
+          "SUBMITTED": "قيد المراجعة",
+          "APPROVED": "معتمد",
+          "REJECTED": "مرفوض"
+        },
+        "modal": {
+          "title": "رفع مستند التأهيل",
+          "documentType": "نوع المستند",
+          "documentTypePlaceholder": "اختر نوع المستند",
+          "titleEn": "العنوان (إنجليزي)",
+          "titleAr": "العنوان (عربي)",
+          "file": "الملف",
+          "dragOrClick": "اسحب الملف هنا أو انقر للاختيار",
+          "supportedFiles": "يدعم ملفات: PDF, Excel, CSV",
+          "chooseFile": "اختيار الملف",
+          "fileTypeError": "نوع الملف غير مسموح. استخدم PDF أو Excel أو CSV.",
+          "fileSizeError": "الحد الأقصى لحجم الملف هو 10 ميجابايت",
+          "submit": "رفع المستند",
+          "submitting": "جاري الرفع...",
+          "cancel": "إلغاء"
+        }
+      },
+      "contracts": {
+        "title": "العقود",
+        "empty": "لا توجد عقود بعد",
+        "name": "اسم العقد",
+        "notes": "الملاحظات",
+        "status": "الحالة",
+        "actions": "الاكشن",
+        "sign": "توقيع",
+        "signing": "جاري التوقيع...",
+        "show": "عرض",
+        "statuses": {
+          "DRAFT": "مسودة",
+          "PENDING_SIGNATURE": "بانتظار التوقيع",
+          "ACTIVE": "نشط",
+          "EXPIRED": "منتهي",
+          "TERMINATED": "ملغى"
+        }
+      },
+      "notifications": {
+        "uploadSuccess": "تم رفع المستند بنجاح",
+        "signSuccess": "تم توقيع العقد بنجاح",
+        "actionError": "حدث خطأ. يرجى المحاولة مرة أخرى."
+      }
     },
     "branches": {
       "pageTitle": "الفروع",
