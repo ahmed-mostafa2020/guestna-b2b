@@ -1,21 +1,20 @@
 "use client";
 
-import { memo, useCallback, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useMemo } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
-import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 
 import TextInputGroup from "@components/forms/TextInputGroup";
 import SelectionGroup from "@components/forms/SelectionGroup";
+import FileUploadGroup from "@components/forms/FileUploadGroup";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import getErrorMessage from "@utils/helpers/getErrorMessage";
-import { cn } from "@utils/helpers/cn";
 
 const DOCUMENT_TYPES = ["COMMERCIAL_REGISTRATION", "TAX_CERTIFICATE", "OTHER"];
 const MAX_FILE_SIZE_MB = 10;
@@ -47,8 +46,6 @@ const OnboardingDocumentUploadForm = ({
   const t = useTranslations();
   const locale = useLocale();
   const { enqueueSnackbar } = useSnackbar();
-  const inputRef = useRef(null);
-  const [isDragging, setIsDragging] = useState(false);
 
   const headers = getHeaders(locale, true);
   const typeLocked = Boolean(lockType);
@@ -175,195 +172,109 @@ const OnboardingDocumentUploadForm = ({
         handleChange,
         handleBlur,
         setFieldValue,
-        setFieldTouched,
         isSubmitting,
-      }) => {
-        const applyFile = (nextFile) => {
-          setFieldTouched("file", true, false);
-          setFieldValue("file", nextFile || null);
-        };
+      }) => (
+        <Form className="px-6 pb-6 pt-5 sm:px-8 sm:pb-8 space-y-5">
+          <SelectionGroup
+            label={t("providerProfile.onboarding.documents.modal.documentType")}
+            name="documentType"
+            value={values.documentType}
+            errors={errors.documentType}
+            touched={touched.documentType}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            placeholder={t(
+              "providerProfile.onboarding.documents.modal.documentTypePlaceholder"
+            )}
+            list={documentTypeList}
+            disabled={isSubmitting || typeLocked}
+            required
+            labelClassName="font-somar pb-2 text-start"
+          />
 
-        return (
-          <Form className="px-6 pb-6 pt-5 sm:px-8 sm:pb-8 space-y-5">
-            <SelectionGroup
-              label={t(
-                "providerProfile.onboarding.documents.modal.documentType"
-              )}
-              name="documentType"
-              value={values.documentType}
-              errors={errors.documentType}
-              touched={touched.documentType}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              placeholder={t(
-                "providerProfile.onboarding.documents.modal.documentTypePlaceholder"
-              )}
-              list={documentTypeList}
-              disabled={isSubmitting || typeLocked}
-              required
-              labelClassName="font-somar pb-2 text-start"
-            />
-
-            {values.documentType === "OTHER" ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <TextInputGroup
-                  label={t(
-                    "providerProfile.onboarding.documents.modal.titleEn"
-                  )}
-                  name="titleEn"
-                  type="text"
-                  value={values.titleEn}
-                  errors={errors.titleEn}
-                  touched={touched.titleEn}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder={t(
-                    "providerProfile.onboarding.documents.modal.titleEn"
-                  )}
-                  required
-                  labelClassName="font-somar"
-                  readOnly={isSubmitting}
-                />
-                <TextInputGroup
-                  label={t(
-                    "providerProfile.onboarding.documents.modal.titleAr"
-                  )}
-                  name="titleAr"
-                  type="text"
-                  value={values.titleAr}
-                  errors={errors.titleAr}
-                  touched={touched.titleAr}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder={t(
-                    "providerProfile.onboarding.documents.modal.titleAr"
-                  )}
-                  required
-                  labelClassName="font-somar"
-                  readOnly={isSubmitting}
-                />
-              </div>
-            ) : null}
-
-            <div className="flex flex-col gap-2">
-              <input
-                ref={inputRef}
-                type="file"
-                className="hidden"
-                accept=".pdf,.xls,.xlsx,.csv,application/pdf,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"
-                disabled={isSubmitting}
-                onChange={(e) => applyFile(e.target.files?.[0] || null)}
-              />
-
-              <div
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    if (!isSubmitting) inputRef.current?.click();
-                  }
-                }}
-                onClick={() => {
-                  if (!isSubmitting) inputRef.current?.click();
-                }}
-                onDragEnter={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (!isSubmitting) setIsDragging(true);
-                }}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (!isSubmitting) setIsDragging(true);
-                }}
-                onDragLeave={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setIsDragging(false);
-                }}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setIsDragging(false);
-                  if (isSubmitting) return;
-                  applyFile(e.dataTransfer?.files?.[0] || null);
-                }}
-                className={cn(
-                  "w-full rounded-xl border border-dashed px-4 py-8 sm:py-10 flex flex-col items-center justify-center gap-3 text-center transition-colors cursor-pointer font-somar",
-                  isDragging
-                    ? "border-mainColor bg-mainColor/5"
-                    : "border-[#bdc9c8] bg-white hover:border-mainColor/60",
-                  isSubmitting && "opacity-60 pointer-events-none"
+          {values.documentType === "OTHER" ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <TextInputGroup
+                label={t("providerProfile.onboarding.documents.modal.titleEn")}
+                name="titleEn"
+                type="text"
+                value={values.titleEn}
+                errors={errors.titleEn}
+                touched={touched.titleEn}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder={t(
+                  "providerProfile.onboarding.documents.modal.titleEn"
                 )}
-              >
-                <CloudUploadOutlinedIcon
-                  className="!w-10 !h-10 text-mainColor"
-                  aria-hidden
-                />
+                required
+                labelClassName="font-somar"
+                readOnly={isSubmitting}
+              />
+              <TextInputGroup
+                label={t("providerProfile.onboarding.documents.modal.titleAr")}
+                name="titleAr"
+                type="text"
+                value={values.titleAr}
+                errors={errors.titleAr}
+                touched={touched.titleAr}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder={t(
+                  "providerProfile.onboarding.documents.modal.titleAr"
+                )}
+                required
+                labelClassName="font-somar"
+                readOnly={isSubmitting}
+              />
+            </div>
+          ) : null}
 
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm sm:text-base font-semibold text-textDark">
-                    {values.file
-                      ? values.file.name
-                      : t(
-                          "providerProfile.onboarding.documents.modal.dragOrClick"
-                        )}
-                  </p>
-                  <p className="text-xs sm:text-sm text-textLight">
-                    {t(
-                      "providerProfile.onboarding.documents.modal.supportedFiles"
-                    )}
-                  </p>
-                </div>
+          <FileUploadGroup
+            name="file"
+            label={t("providerProfile.onboarding.documents.modal.file")}
+            required
+            accept=".pdf,.xls,.xlsx,.csv,application/pdf,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"
+            allowedTypes={ACCEPTED_TYPES}
+            disallowedTypes={[]}
+            maxSizeInMB={MAX_FILE_SIZE_MB}
+            placeholder={t(
+              "providerProfile.onboarding.documents.modal.chooseFile"
+            )}
+            value={values.file}
+            onFileChange={(e) =>
+              setFieldValue("file", e.target.files?.[0] || null)
+            }
+            onBlur={handleBlur}
+            errors={errors.file}
+            touched={touched.file}
+          />
 
-                <button
-                  type="button"
-                  disabled={isSubmitting}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    inputRef.current?.click();
-                  }}
-                  className="mt-1 inline-flex items-center justify-center min-w-[140px] h-10 px-5 rounded-lg border border-secColor bg-white text-mainColor font-bold text-sm hover:bg-secColor/5 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed font-somar"
-                >
-                  {t("providerProfile.onboarding.documents.modal.chooseFile")}
-                </button>
-              </div>
-
-              {touched.file && errors.file ? (
-                <p className="text-error text-sm font-somar text-start">
-                  {errors.file}
-                </p>
+          <div className="flex items-center gap-3 pt-1">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex-1 px-6 h-12 inline-flex items-center justify-center gap-2 bg-mainColor text-white rounded-xl font-bold text-sm sm:text-base hover:bg-titleColor active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shadow-xs font-somar"
+            >
+              {isSubmitting ? (
+                <CircularProgress size={18} sx={{ color: "white" }} />
               ) : null}
-            </div>
-
-            <div className="flex items-center gap-3 pt-1">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex-1 px-6 h-12 inline-flex items-center justify-center gap-2 bg-mainColor text-white rounded-xl font-bold text-sm sm:text-base hover:bg-titleColor active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shadow-xs font-somar"
-              >
-                {isSubmitting ? (
-                  <CircularProgress size={18} sx={{ color: "white" }} />
-                ) : null}
-                {isSubmitting
-                  ? t("providerProfile.onboarding.documents.modal.submitting")
-                  : t("providerProfile.onboarding.documents.modal.submit")}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  if (!isSubmitting) onClose?.();
-                }}
-                disabled={isSubmitting}
-                className="shrink-0 min-w-[110px] px-6 h-12 flex items-center justify-center rounded-xl bg-[#e8f3f3] text-textDark font-bold text-sm sm:text-base hover:bg-[#d7ebeb] active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed font-somar"
-              >
-                {t("providerProfile.onboarding.documents.modal.cancel")}
-              </button>
-            </div>
-          </Form>
-        );
-      }}
+              {isSubmitting
+                ? t("providerProfile.onboarding.documents.modal.submitting")
+                : t("providerProfile.onboarding.documents.modal.submit")}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (!isSubmitting) onClose?.();
+              }}
+              disabled={isSubmitting}
+              className="shrink-0 min-w-[110px] px-6 h-12 flex items-center justify-center rounded-xl bg-[#e8f3f3] text-textDark font-bold text-sm sm:text-base hover:bg-[#d7ebeb] active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed font-somar"
+            >
+              {t("providerProfile.onboarding.documents.modal.cancel")}
+            </button>
+          </div>
+        </Form>
+      )}
     </Formik>
   );
 };
