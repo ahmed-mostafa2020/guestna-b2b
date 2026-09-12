@@ -1,63 +1,43 @@
 "use client";
 
-import Link from "next/link";
+import { useCallback, useMemo, useState } from "react";
 import { Formik } from "formik";
 import { useLocale, useTranslations } from "next-intl";
 import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 import {
   createProviderRegisterSchema,
-  getProviderRegisterStepFields,
   PROVIDER_REGISTER_STEPS,
 } from "@utils/validators/providerRegisterSchema";
 import { formatTime12h } from "@utils/formatters/formatTime12h";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { getHeaders } from "@utils/helpers/getHeaders";
+import getErrorMessage from "@utils/helpers/getErrorMessage";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import {
-  resetForm,
-  setActiveStep,
-  setMaxVisitedStep,
-  submitForm,
-  updateFormData,
-} from "@store/forms/providerRegister/providerRegisterFormSlice";
 import { clearProviderRegisterSelections } from "@store/forms/providerRegister/providerRegisterSelectionsSlice";
 
+import { validateCurrentStep } from "./stepHelpers";
 import ProcessSidebar from "./ProcessSidebar";
 import RegisterStepper from "./RegisterStepper";
+import SuccessScreen from "./SuccessScreen";
 import StepFacility from "./steps/StepFacility";
 import StepLocation from "./steps/StepLocation";
 import StepReview from "./steps/StepReview";
 
-const buildNestedTouched = (fields) => {
-  const touchedFields = {};
-  fields.forEach((field) => {
-    if (field.includes(".")) {
-      const [parent, child] = field.split(".");
-      if (!touchedFields[parent]) touchedFields[parent] = {};
-      touchedFields[parent][child] = true;
-    } else {
-      touchedFields[field] = true;
-    }
-  });
-  return touchedFields;
-};
+const buildSubmissionData = (values) => {
+  const fromHour = formatTime12h(values.businessHoursFrom);
+  const toHour = formatTime12h(values.businessHoursTo);
+  const services = Array.isArray(values.services)
+    ? values.services.filter(Boolean)
+    : [];
+  const { lat, lng } = values.location || {};
+  const legalNameAr = values.legalName?.ar?.trim();
+  const legalNameEn = values.legalName?.en?.trim();
 
-const hasErrorForField = (errors, field) => {
-  if (field.includes(".")) {
-    const [parent, child] = field.split(".");
-    if (typeof errors[parent] === "string") return true;
-    return Boolean(errors[parent]?.[child]);
-  }
-  return Boolean(errors[field]);
-};
-
-const formatRegisterPayload = (values) => {
-  const payload = {
+  return {
     name: {
       ar: values.name?.ar?.trim(),
       en: values.name?.en?.trim(),
@@ -68,49 +48,26 @@ const formatRegisterPayload = (values) => {
     },
     email: values.email?.trim(),
     phone: values.phone,
+    businessType: values.businessType,
+    ...(legalNameAr &&
+      legalNameEn && {
+        legalName: { ar: legalNameAr, en: legalNameEn },
+      }),
+    ...(values.crNumber?.trim() && { crNumber: values.crNumber.trim() }),
+    ...(values.taxNumber?.trim() && { taxNumber: values.taxNumber.trim() }),
+    ...(services.length > 0 && { services }),
+    ...(values.city && { city: values.city }),
+    ...(values.district?.trim() && { district: values.district.trim() }),
+    ...(values.address?.trim() && { address: values.address.trim() }),
+    ...(lat != null &&
+      lng != null && {
+        location: { lat: Number(lat), lng: Number(lng) },
+      }),
+    ...(fromHour &&
+      toHour && {
+        businessHours: [{ from: fromHour, to: toHour }],
+      }),
   };
-
-  const legalNameAr = values.legalName?.ar?.trim();
-  const legalNameEn = values.legalName?.en?.trim();
-  if (legalNameAr && legalNameEn) {
-    payload.legalName = { ar: legalNameAr, en: legalNameEn };
-  }
-
-  if (values.crNumber?.trim()) payload.crNumber = values.crNumber.trim();
-  if (values.taxNumber?.trim()) payload.taxNumber = values.taxNumber.trim();
-  if (values.businessType) payload.businessType = values.businessType;
-
-  if (Array.isArray(values.services) && values.services.length > 0) {
-    payload.services = values.services.filter(Boolean);
-  }
-
-  if (values.city) payload.city = values.city;
-  if (values.district?.trim()) payload.district = values.district.trim();
-  if (values.address?.trim()) payload.address = values.address.trim();
-
-  const latitude = values.location?.lat;
-  const longitude = values.location?.lng;
-  if (
-    latitude !== null &&
-    latitude !== undefined &&
-    latitude !== "" &&
-    longitude !== null &&
-    longitude !== undefined &&
-    longitude !== ""
-  ) {
-    payload.location = {
-      lat: Number(latitude),
-      lng: Number(longitude),
-    };
-  }
-
-  const fromHour = formatTime12h(values.businessHoursFrom);
-  const toHour = formatTime12h(values.businessHoursTo);
-  if (fromHour && toHour) {
-    payload.businessHours = [{ from: fromHour, to: toHour }];
-  }
-
-  return payload;
 };
 
 const ProviderRegisterForm = () => {
@@ -120,152 +77,137 @@ const ProviderRegisterForm = () => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { cities = [], services = [] } = useSelector(
-    (state) => state.providerRegisterSelections
-  );
-  const { formData, activeStep, maxVisitedStep, isSuccess } = useSelector(
-    (state) => state.providerRegisterForm
-  );
+  const { cities: cityOptions = [], services: serviceOptions = [] } =
+    useSelector((state) => state.providerRegisterSelections);
+
+  const [activeStep, setActiveStep] = useState(0);
+  const [maxVisitedStep, setMaxVisitedStep] = useState(0);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const initialValues = {
+    name: { ar: "", en: "" },
+    legalName: { ar: "", en: "" },
+    about: { ar: "", en: "" },
+    crNumber: "",
+    taxNumber: "",
+    businessType: "",
+    services: [],
+    email: "",
+    phone: "",
+    city: "",
+    district: "",
+    address: "",
+    location: { lat: null, lng: null },
+    businessHoursFrom: "",
+    businessHoursTo: "",
+  };
 
   const isLastStep = activeStep === PROVIDER_REGISTER_STEPS.length - 1;
+  const validationSchema = useMemo(
+    () => createProviderRegisterSchema(tRoot),
+    [tRoot]
+  );
 
-  const syncFormData = (values) => {
-    dispatch(updateFormData(values));
-  };
+  const goToStep = useCallback((targetStep) => {
+    setActiveStep(targetStep);
+    setMaxVisitedStep((previous) => Math.max(previous, targetStep));
+  }, []);
 
-  const goToStep = (targetStep, values) => {
-    if (values) syncFormData(values);
-    dispatch(setActiveStep(targetStep));
-    dispatch(setMaxVisitedStep(targetStep));
-  };
-
-  const handleStepClick = async (
-    targetStep,
-    validateForm,
-    setTouched,
-    values
-  ) => {
-    if (targetStep === activeStep) return;
-    if (targetStep < activeStep) {
-      goToStep(targetStep, values);
-      return;
-    }
-
-    const errors = await validateForm();
-    const stepFields = getProviderRegisterStepFields(activeStep);
-    setTouched((previousTouched) => ({
-      ...previousTouched,
-      ...buildNestedTouched(stepFields),
-    }));
-
-    const hasStepError = stepFields.some((field) =>
-      hasErrorForField(errors, field)
-    );
-    if (!hasStepError) {
-      goToStep(targetStep, values);
-    } else {
-      enqueueSnackbar(t("validation.stepIncomplete"), { variant: "warning" });
-    }
-  };
-
-  const handleNext = async (validateForm, setTouched, values) => {
-    const errors = await validateForm();
-    const stepFields = getProviderRegisterStepFields(activeStep);
-    setTouched((previousTouched) => ({
-      ...previousTouched,
-      ...buildNestedTouched(stepFields),
-    }));
-
-    const hasStepError = stepFields.some((field) =>
-      hasErrorForField(errors, field)
-    );
-    if (!hasStepError) {
-      goToStep(activeStep + 1, values);
-    } else {
-      enqueueSnackbar(t("validation.stepIncomplete"), { variant: "warning" });
-    }
-  };
-
-  const handleBack = (values) => {
-    goToStep(activeStep - 1, values);
-  };
-
-  const handleEditStep = (targetStep, values) => {
-    goToStep(targetStep, values);
-  };
-
-  const handleSubmit = async (values, { setSubmitting }) => {
-    try {
-      const payload = formatRegisterPayload(values);
-      const response = await axios({
-        method: "POST",
-        url: getProxyUrl(B2B_END_POINTS.PROVIDER_REGISTER.SUBMIT),
-        data: payload,
-        headers: getHeaders(locale),
-      });
-
-      if (response.status === 200 || response.status === 201) {
-        enqueueSnackbar(t("form.success"), { variant: "success" });
-        dispatch(submitForm(values));
+  const handleStepClick = useCallback(
+    async (targetStep, validateForm, setTouched) => {
+      if (targetStep === activeStep) return;
+      if (targetStep < activeStep) {
+        goToStep(targetStep);
+        return;
       }
-    } catch (error) {
-      if (
-        error.response?.data?.info &&
-        Array.isArray(error.response.data.info)
-      ) {
-        error.response.data.info.forEach((errorItem) => {
+
+      const hasStepError = await validateCurrentStep(
+        activeStep,
+        validateForm,
+        setTouched
+      );
+      if (!hasStepError) {
+        goToStep(targetStep);
+      } else {
+        enqueueSnackbar(t("validation.stepIncomplete"), { variant: "warning" });
+      }
+    },
+    [activeStep, enqueueSnackbar, goToStep, t]
+  );
+
+  const handleNext = useCallback(
+    async (validateForm, setTouched) => {
+      const hasStepError = await validateCurrentStep(
+        activeStep,
+        validateForm,
+        setTouched
+      );
+      if (!hasStepError) {
+        goToStep(activeStep + 1);
+      } else {
+        enqueueSnackbar(t("validation.stepIncomplete"), { variant: "warning" });
+      }
+    },
+    [activeStep, enqueueSnackbar, goToStep, t]
+  );
+
+  const handleSubmit = useCallback(
+    async (values, { setSubmitting }) => {
+      try {
+        const response = await axios({
+          method: "POST",
+          url: getProxyUrl(B2B_END_POINTS.PROVIDER_REGISTER.SUBMIT),
+          data: buildSubmissionData(values),
+          headers: getHeaders(locale),
+        });
+
+        if (response.status === 200 || response.status === 201) {
+          enqueueSnackbar(t("form.success"), { variant: "success" });
+          setIsSuccess(true);
+        }
+      } catch (error) {
+        console.error("Provider register error:", error);
+
+        if (
+          error.response?.data?.info &&
+          Array.isArray(error.response.data.info)
+        ) {
+          error.response.data.info.forEach((errorItem) => {
+            enqueueSnackbar(
+              `${errorItem.field || ""}: ${errorItem.message || t("form.error")}`,
+              { variant: "error" }
+            );
+          });
+        } else {
           enqueueSnackbar(
-            `${errorItem.field || ""}: ${errorItem.message || t("form.error")}`,
+            getErrorMessage(error, tRoot, "providerRegister.form.error"),
             { variant: "error" }
           );
-        });
-      } else {
-        enqueueSnackbar(error.response?.data?.message || t("form.error"), {
-          variant: "error",
-        });
+        }
+      } finally {
+        setSubmitting(false);
       }
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const resetProviderRegisterStores = () => {
-    dispatch(resetForm());
-    dispatch(clearProviderRegisterSelections());
-  };
+    },
+    [enqueueSnackbar, locale, t, tRoot]
+  );
 
   if (isSuccess) {
     return (
-      <div className="bg-white border border-border rounded-2xl p-8 md:p-12 flex flex-col items-center gap-4 text-center">
-        <CheckCircleIcon sx={{ fontSize: 56, color: "var(--color-main)" }} />
-        <h2 className="text-2xl font-semibold text-titleColor font-somar">
-          {t("success.title")}
-        </h2>
-        <p className="text-base text-textLight font-somar max-w-xl">
-          {t("success.body")}
-        </p>
-        <Link
-          href={`/${locale}/login`}
-          onClick={resetProviderRegisterStores}
-          className="mt-2 centered font-semibold text-center border-2 border-mainColor py-3 px-8 bg-mainColor text-white rounded-lg hover:bg-linksHover hover:border-linksHover transition-all duration-200 ease-in-out"
-        >
-          {t("success.goToLogin")}
-        </Link>
-      </div>
+      <SuccessScreen
+        onNavigate={() => dispatch(clearProviderRegisterSelections())}
+      />
     );
   }
 
   return (
     <Formik
-      initialValues={formData}
-      validationSchema={createProviderRegisterSchema(tRoot)}
+      initialValues={initialValues}
+      validationSchema={validationSchema}
       onSubmit={handleSubmit}
-      enableReinitialize
       validateOnChange
       validateOnBlur
     >
       {({
-        values,
         handleSubmit: submitFormik,
         isSubmitting,
         validateForm,
@@ -280,10 +222,6 @@ const ProviderRegisterForm = () => {
           className="w-full"
         >
           <div className="flex flex-col lg:flex-row gap-4 items-start">
-            <div className="w-full lg:w-[363px] shrink-0">
-              <ProcessSidebar />
-            </div>
-
             <div className="w-full flex flex-col gap-6 min-w-0">
               <div className="bg-white border border-border rounded-2xl p-5 flex flex-col gap-4">
                 <div className="flex flex-col gap-3">
@@ -299,25 +237,20 @@ const ProviderRegisterForm = () => {
                   currentStep={activeStep}
                   maxVisitedStep={maxVisitedStep}
                   onStepClick={(targetStep) =>
-                    handleStepClick(
-                      targetStep,
-                      validateForm,
-                      setTouched,
-                      values
-                    )
+                    handleStepClick(targetStep, validateForm, setTouched)
                   }
                 />
               </div>
 
-              {activeStep === 0 && <StepFacility serviceOptions={services} />}
-              {activeStep === 1 && <StepLocation cityOptions={cities} />}
+              {activeStep === 0 && (
+                <StepFacility serviceOptions={serviceOptions} />
+              )}
+              {activeStep === 1 && <StepLocation cityOptions={cityOptions} />}
               {activeStep === 2 && (
                 <StepReview
-                  cityOptions={cities}
-                  serviceOptions={services}
-                  onEditStep={(targetStep) =>
-                    handleEditStep(targetStep, values)
-                  }
+                  cityOptions={cityOptions}
+                  serviceOptions={serviceOptions}
+                  onEditStep={goToStep}
                 />
               )}
 
@@ -325,7 +258,7 @@ const ProviderRegisterForm = () => {
                 {activeStep > 0 && (
                   <button
                     type="button"
-                    onClick={() => handleBack(values)}
+                    onClick={() => goToStep(activeStep - 1)}
                     className="sm:flex-1 w-full centered font-semibold text-center border-2 border-mainColor py-3 bg-white text-mainColor rounded-lg hover:bg-buttonsHover transition-all duration-200 ease-in-out"
                   >
                     {t("form.back")}
@@ -351,13 +284,17 @@ const ProviderRegisterForm = () => {
                 ) : (
                   <button
                     type="button"
-                    onClick={() => handleNext(validateForm, setTouched, values)}
+                    onClick={() => handleNext(validateForm, setTouched)}
                     className="sm:flex-1 w-full centered font-semibold text-center border-2 border-mainColor py-3 bg-mainColor text-white rounded-lg hover:bg-linksHover hover:border-linksHover transition-all duration-200 ease-in-out"
                   >
                     {t("form.next")}
                   </button>
                 )}
               </div>
+            </div>
+
+            <div className="w-full lg:w-[363px] shrink-0">
+              <ProcessSidebar />
             </div>
           </div>
         </form>

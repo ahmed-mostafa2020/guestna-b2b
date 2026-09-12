@@ -3793,11 +3793,22 @@
       "taxNumber": {
         "max": "The tax number cannot exceed 50 characters"
       },
+      "businessType": {
+        "invalid": "Please select a valid business type"
+      },
+      "mongoId": "Invalid selection",
       "district": {
         "max": "The district cannot exceed 100 characters"
       },
       "address": {
         "max": "The access description cannot exceed 500 characters"
+      },
+      "location": {
+        "both": "Please set both latitude and longitude on the map",
+        "invalid": "Location coordinates must be numbers"
+      },
+      "businessHours": {
+        "both": "Please enter both opening and closing hours"
       },
       "stepIncomplete": "Please complete the required fields before continuing"
     }

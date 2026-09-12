@@ -138,6 +138,12 @@ const StepLocation = ({ cityOptions = [] }) => {
               }}
             />
           </div>
+          {typeof errors.location === "string" &&
+          (touched.location || touched.location?.lat || touched.location?.lng) ? (
+            <p className="text-error text-sm font-somar text-start">
+              {errors.location}
+            </p>
+          ) : null}
         </div>
       </div>
     </FormSectionCard>

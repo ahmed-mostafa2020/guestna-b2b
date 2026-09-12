@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 import { Container } from "@mui/material";
@@ -26,15 +26,6 @@ const ProviderRegisterPage = () => {
     )}`;
   }, [t]);
 
-  const handleSelectionsSuccess = useCallback(
-    (data) =>
-      setProviderRegisterSelections({
-        ...(data?.data || data || {}),
-        lang: locale,
-      }),
-    [locale]
-  );
-
   const { isLoading, error } = useFetchData(
     B2B_END_POINTS.PROVIDER_REGISTER.SELECTIONS,
     {},
@@ -42,7 +33,7 @@ const ProviderRegisterPage = () => {
       method: "GET",
       lang: locale,
       queryKeySuffix: locale,
-      onSuccess: handleSelectionsSuccess,
+      onSuccess: setProviderRegisterSelections,
       onError: setProviderRegisterSelectionsError,
       onLoading: setProviderRegisterSelectionsLoading,
     }

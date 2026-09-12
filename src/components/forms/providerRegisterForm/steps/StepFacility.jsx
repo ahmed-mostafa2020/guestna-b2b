@@ -14,16 +14,10 @@ import FormSectionCard from "../FormSectionCard";
 
 const LABEL_FONT = "var(--font-somar-sans), sans-serif";
 
-const StepFacility = () => {
+const StepFacility = ({ serviceOptions = [] }) => {
   const t = useTranslations("providerRegister");
-  const {
-    values,
-    errors,
-    touched,
-    handleChange,
-    handleBlur,
-    setFieldValue,
-  } = useFormikContext();
+  const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
+    useFormikContext();
 
   const businessTypeOptions = [
     {
@@ -35,6 +29,11 @@ const StepFacility = () => {
       label: t("businessTypes.ENTERTAINMENT_CENTERS"),
     },
   ];
+
+  const servicesList = serviceOptions.map((service) => ({
+    value: service._id,
+    label: service.name,
+  }));
 
   return (
     <div className="flex flex-col gap-5">
@@ -128,7 +127,23 @@ const StepFacility = () => {
               placeholder={t("fields.businessType.placeholder")}
               list={businessTypeOptions}
               label={t("fields.businessType.label")}
+              required
             />
+            {servicesList.length > 0 ? (
+              <SelectionGroup
+                name="services"
+                value={values.services}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                touched={touched.services}
+                errors={errors.services}
+                placeholder={t("fields.services.placeholder")}
+                list={servicesList}
+                label={t("fields.services.label")}
+                multiple
+                showCheckbox
+              />
+            ) : null}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-5">
