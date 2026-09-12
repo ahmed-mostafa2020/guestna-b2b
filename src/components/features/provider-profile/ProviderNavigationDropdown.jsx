@@ -47,16 +47,16 @@ const ProviderNavigationDropdown = () => {
 
   const navigationItems = [
     {
-      id: "onboarding",
-      title: t("providerProfile.aside.onboarding"),
-      icon: <DescriptionIcon />,
-      path: `${providerBasePath}/onboarding`,
-    },
-    {
       id: "main",
       title: t("providerProfile.aside.main"),
       icon: <HomeIcon />,
       path: providerBasePath,
+    },
+    {
+      id: "onboarding",
+      title: t("providerProfile.aside.onboarding"),
+      icon: <DescriptionIcon />,
+      path: `${providerBasePath}/onboarding`,
     },
     {
       id: "products-management",
