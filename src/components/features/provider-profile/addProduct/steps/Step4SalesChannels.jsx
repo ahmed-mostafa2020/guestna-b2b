@@ -331,8 +331,9 @@ const Step4SalesChannels = ({
     >
       {/* ─── CARD 1: SALES CHANNELS ─── */}
       <section
+        id="systemTypes"
         aria-labelledby="sales-channels-title"
-        className="bg-white rounded-2xl border border-border p-6 sm:p-8 lg:p-10 transition-all duration-200 shadow-none text-start"
+        className="bg-white rounded-2xl border border-border p-6 sm:p-8 lg:p-10 transition-all duration-200 shadow-none text-start scroll-mt-6"
       >
         {/* Header */}
         <div className="mb-6 sm:mb-8 text-start">

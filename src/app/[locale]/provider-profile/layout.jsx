@@ -105,7 +105,7 @@ const ProviderProfileLayout = ({ children }) => {
     }
   }, [data, dispatch]);
 
-  // DEV VERIFICATION TEMPORARY BYPASS:
+  // TEMPORARY DEV BYPASS FOR TESTING
   // if (!isAuthenticated || !isProvider) {
   //   return (
   //     <>

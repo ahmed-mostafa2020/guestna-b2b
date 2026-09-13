@@ -10,9 +10,15 @@ export const ENGLISH_LETTERS_REGEX = /[a-zA-Z]/;
  * Yup schema for Step 1 of the new multi-step Add Product flow
  */
 export const createStep1Schema = (t) => {
-  const reqMsg = t("forms.validation.require");
+  const reqMsg = t("providerProfile.products.newAddPage.validations.required");
+  const nameArReq = t("providerProfile.products.newAddPage.validations.nameArRequired");
+  const nameEnReq = t("providerProfile.products.newAddPage.validations.nameEnRequired");
   const nameArInvalid = t("providerProfile.products.newAddPage.validations.nameArInvalid");
   const nameEnInvalid = t("providerProfile.products.newAddPage.validations.nameEnInvalid");
+  const tripsTypeReq = t("providerProfile.products.newAddPage.validations.tripsTypeRequired");
+  const durationReq = t("providerProfile.products.newAddPage.validations.durationRequired");
+  const descArReq = t("providerProfile.products.newAddPage.validations.descArRequired");
+  const descEnReq = t("providerProfile.products.newAddPage.validations.descEnRequired");
   const descArInvalid = t("providerProfile.products.newAddPage.validations.descArInvalid");
   const descEnInvalid = t("providerProfile.products.newAddPage.validations.descEnInvalid");
 
@@ -20,40 +26,40 @@ export const createStep1Schema = (t) => {
     name: Yup.object().shape({
       en: Yup.string()
         .trim()
-        .required(reqMsg)
+        .required(nameEnReq || reqMsg)
         .test("is-english-only", nameEnInvalid, (val) => {
           if (!val) return true;
           return ENGLISH_LETTERS_REGEX.test(val) && !ARABIC_LETTERS_REGEX.test(val);
         }),
       ar: Yup.string()
         .trim()
-        .required(reqMsg)
+        .required(nameArReq || reqMsg)
         .test("is-arabic-only", nameArInvalid, (val) => {
           if (!val) return true;
           return ARABIC_LETTERS_REGEX.test(val) && !ENGLISH_LETTERS_REGEX.test(val);
         }),
     }),
 
-    tripsType: Yup.string().required(reqMsg),
+    tripsType: Yup.string().trim().required(tripsTypeReq || reqMsg),
 
     duration: Yup.number()
-      .typeError(reqMsg)
-      .min(1, reqMsg)
-      .required(reqMsg),
+      .typeError(durationReq || reqMsg)
+      .min(1, durationReq || reqMsg)
+      .required(durationReq || reqMsg),
 
     allowedAges: Yup.array().of(Yup.string()).optional(),
 
     description: Yup.object().shape({
       en: Yup.string()
         .trim()
-        .required(reqMsg)
+        .required(descEnReq || reqMsg)
         .test("is-english-desc", descEnInvalid, (val) => {
           if (!val) return true;
           return ENGLISH_LETTERS_REGEX.test(val) && !ARABIC_LETTERS_REGEX.test(val);
         }),
       ar: Yup.string()
         .trim()
-        .required(reqMsg)
+        .required(descArReq || reqMsg)
         .test("is-arabic-desc", descArInvalid, (val) => {
           if (!val) return true;
           return ARABIC_LETTERS_REGEX.test(val) && !ENGLISH_LETTERS_REGEX.test(val);
@@ -70,7 +76,6 @@ export const STEP_1_FIELD_NAMES = [
   "name.en",
   "tripsType",
   "duration",
-  "allowedAges",
   "description.ar",
   "description.en",
 ];
@@ -107,15 +112,28 @@ export const STEP_2_FIELD_NAMES = ["thumbnailWeb", "gallery"];
 /**
  * Yup schema for Step 2 (Service Locations & Capacity) of the multi-step Add Product flow
  */
-export const createStepLocationsSchema = (_t) => {
+export const createStepLocationsSchema = (t) => {
+  const branchReq = t("providerProfile.products.newAddPage.validations.branchRequired");
+  const minReq = t("providerProfile.products.newAddPage.validations.capacityMinRequired");
+  const minInvalid = t("providerProfile.products.newAddPage.validations.capacityMinInvalid");
+  const maxReq = t("providerProfile.products.newAddPage.validations.capacityMaxRequired");
+  const maxInvalid = t("providerProfile.products.newAddPage.validations.capacityMaxInvalid");
+
   return Yup.object().shape({
-    providerBranchs: Yup.array().of(Yup.string()).optional(),
-    availableSeats: Yup.object()
-      .shape({
-        min: Yup.mixed().optional(),
-        max: Yup.mixed().optional(),
-      })
-      .optional(),
+    providerBranchs: Yup.array()
+      .of(Yup.string())
+      .min(1, branchReq)
+      .required(branchReq),
+    availableSeats: Yup.object().shape({
+      min: Yup.number()
+        .typeError(minReq)
+        .min(1, minInvalid)
+        .required(minReq),
+      max: Yup.number()
+        .typeError(maxReq)
+        .min(Yup.ref("min"), maxInvalid)
+        .required(maxReq),
+    }),
   });
 };
 
@@ -168,14 +186,37 @@ export const STEP_4_FIELD_NAMES = [
 /**
  * Yup schema for Step 4 (Booking Dates) of the multi-step Add Product flow
  */
-export const createStepBookingDatesSchema = (_t) => {
+export const createStepBookingDatesSchema = (t) => {
+  const startDateReq = t("providerProfile.products.newAddPage.validations.startDateRequired");
+  const endDateReq = t("providerProfile.products.newAddPage.validations.endDateRequired");
+  const deadlineReq = t("providerProfile.products.newAddPage.validations.bookingDeadlineRequired");
+  const patternReq = t("providerProfile.products.newAddPage.validations.recurrencePatternRequired");
+  const daysReq = t("providerProfile.products.newAddPage.validations.daysRequired");
+  const calReq = t("providerProfile.products.newAddPage.validations.calendarRequired");
+  const fromHourReq = t("providerProfile.products.newAddPage.validations.fromHourRequired");
+  const toHourReq = t("providerProfile.products.newAddPage.validations.toHourRequired");
+
   return Yup.object().shape({
-    fromDay: Yup.string().optional(),
-    toDay: Yup.string().optional(),
-    bookingBefore: Yup.mixed().optional(),
-    recurrencePattern: Yup.string().optional(),
-    selectedDays: Yup.array().of(Yup.string()).optional(),
-    monthDay: Yup.string().optional(),
+    fromDay: Yup.string().trim().required(startDateReq),
+    toDay: Yup.string().trim().required(endDateReq),
+    bookingBefore: Yup.number().typeError(deadlineReq).min(0, deadlineReq).required(deadlineReq),
+    recurrencePattern: Yup.string().trim().required(patternReq),
+    selectedDays: Yup.array().when("recurrencePattern", {
+      is: (val) => val !== "MONTHLY",
+      then: (schema) => schema.min(1, daysReq).required(daysReq),
+      otherwise: (schema) => schema.optional(),
+    }),
+    monthDay: Yup.string().when("recurrencePattern", {
+      is: "MONTHLY",
+      then: (schema) => schema.trim().required(calReq),
+      otherwise: (schema) => schema.optional(),
+    }),
+    availableTimes: Yup.array().of(
+      Yup.object().shape({
+        from: Yup.string().trim().required(fromHourReq),
+        to: Yup.string().trim().required(toHourReq),
+      })
+    ).optional(),
   });
 };
 
@@ -186,18 +227,22 @@ export const STEP_BOOKING_DATES_FIELD_NAMES = [
   "recurrencePattern",
   "selectedDays",
   "monthDay",
+  "availableTimes[0].from",
+  "availableTimes[0].to",
 ];
-
 
 /**
  * Yup schema for Step 5 (Services) of the multi-step Add Product flow
  */
-export const createStep5Schema = (_t) => {
+export const createStep5Schema = (t) => {
+  const serviceReq = t("providerProfile.products.newAddPage.validations.serviceRequired");
+  const servicesMin = t("providerProfile.products.newAddPage.validations.servicesMin");
+
   return Yup.object().shape({
     services: Yup.array()
       .of(
         Yup.object().shape({
-          service: Yup.string().optional(),
+          service: Yup.string().trim().required(serviceReq),
           note: Yup.object()
             .shape({
               en: Yup.string().optional(),
@@ -206,11 +251,12 @@ export const createStep5Schema = (_t) => {
             .optional(),
         })
       )
-      .optional(),
+      .min(1, servicesMin)
+      .required(servicesMin),
   });
 };
 
-export const STEP_5_FIELD_NAMES = ["services"];
+export const STEP_5_FIELD_NAMES = ["services", "services[0].service"];
 
 /**
  * Yup schema for Step 6 (Product Details: Supplies & Exclusions) of the multi-step Add Product flow

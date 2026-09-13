@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useMemo, useState, useCallback } from "react";
-import { useFormikContext } from "formik";
+import { useFormikContext, getIn } from "formik";
 import { useTranslations, useLocale } from "next-intl";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
@@ -86,15 +86,25 @@ const Step2Locations = ({
   const locale = useLocale();
   const isAr = locale === "ar";
 
-  const { values, setFieldValue } = useFormikContext();
+  const { values, errors, touched, setFieldValue } = useFormikContext();
 
-  // Branch customization section active state
-  const [isBranchCustomizeActive, setIsBranchCustomizeActive] = useState(true);
+  const branchError = getIn(errors, "providerBranchs");
+  const branchTouched = getIn(touched, "providerBranchs");
+  const hasBranchError = Boolean(branchError && branchTouched);
+
+  const minCapacityError = getIn(errors, "availableSeats.min");
+  const minCapacityTouched = getIn(touched, "availableSeats.min");
+  const hasMinCapacityError = Boolean(minCapacityError && minCapacityTouched);
+
+  const maxCapacityError = getIn(errors, "availableSeats.max");
+  const maxCapacityTouched = getIn(touched, "availableSeats.max");
+  const hasMaxCapacityError = Boolean(maxCapacityError && maxCapacityTouched);
+
+  // Branch customization section active state (starts inactive / empty state)
+  const [isBranchCustomizeActive, setIsBranchCustomizeActive] = useState(false);
 
   // Accordion state for branches in Card 3
-  const [openBranches, setOpenBranches] = useState({
-    "branch-nakheel-riyadh": true,
-  });
+  const [openBranches, setOpenBranches] = useState({});
 
   const toggleBranch = useCallback((branchId) => {
     setOpenBranches((prev) => ({
@@ -149,9 +159,6 @@ const Step2Locations = ({
 
   // Branches that should appear in Card 3 (customization accordion)
   const customizedBranches = useMemo(() => {
-    if (selectedBranchIds.length === 0) {
-      return allBranches.slice(0, 3);
-    }
     return allBranches.filter((b) => selectedBranchIds.includes(b.id));
   }, [selectedBranchIds, allBranches]);
 
@@ -169,9 +176,9 @@ const Step2Locations = ({
     [selectedBranchIds, setFieldValue]
   );
 
-  // Capacity default values
-  const defaultCapacityMin = values.availableSeats?.min ?? "100";
-  const defaultCapacityMax = values.availableSeats?.max ?? "100";
+  // Capacity default values (empty unless entered by user)
+  const defaultCapacityMin = values.availableSeats?.min ?? "";
+  const defaultCapacityMax = values.availableSeats?.max ?? "";
 
   const handleCapacityChange = (field, val) => {
     setFieldValue(`availableSeats.${field}`, val);
@@ -181,8 +188,8 @@ const Step2Locations = ({
   // Branch-specific capacity handler
   const handleBranchCapacityChange = (branchId, field, val) => {
     const existing = values.branchCapacities?.[branchId] || {
-      min: defaultCapacityMin,
-      max: defaultCapacityMax,
+      min: "",
+      max: "",
     };
     setFieldValue(`branchCapacities.${branchId}`, {
       ...existing,
@@ -202,14 +209,26 @@ const Step2Locations = ({
       {/* ────────────────────────────────────────────────────────── */}
       {/* CARD 1: اختر الفرع (Choose Branch)                        */}
       {/* ────────────────────────────────────────────────────────── */}
-      <div className="bg-white rounded-2xl border border-border p-6 shadow-none">
+      <div
+        id="providerBranchs"
+        tabIndex={-1}
+        className={cn(
+          "bg-white rounded-2xl border p-6 shadow-none transition-all duration-200 outline-none scroll-mt-6",
+          hasBranchError ? "border-error/70 ring-1 ring-error/30" : "border-border"
+        )}
+      >
         <div>
           <h2 className="text-lg font-bold text-titleColor">
-            {t("cardTitle")}
+            {t("cardTitle")} <span className="text-error ms-0.5">*</span>
           </h2>
           <p className="text-sm text-gray-500 mt-1">
             {t("cardSubtitle")}
           </p>
+          {hasBranchError && (
+            <p className="text-xs text-error font-medium mt-2 animate-fadeIn">
+              {branchError}
+            </p>
+          )}
         </div>
 
         <div className="mt-5 space-y-6">
@@ -293,35 +312,60 @@ const Step2Locations = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {/* Input 1 (Right in RTL): السعة (عدد الأشخاص) */}
             <div className="flex flex-col">
-              <label className="text-xs font-semibold text-gray-700 mb-1.5">
+              <label htmlFor="availableSeats.min" className="text-xs font-semibold text-gray-700 mb-1.5">
                 {t("capacity")} <span className="text-error ms-0.5">*</span>
               </label>
               <input
+                id="availableSeats.min"
+                name="availableSeats.min"
                 type="number"
                 min="1"
                 value={defaultCapacityMin}
                 onChange={(e) => handleCapacityChange("min", e.target.value)}
                 placeholder={t("capacityPlaceholder")}
-                className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-sm font-medium text-titleColor focus:border-mainColor focus:outline-none transition-colors"
+                className={cn(
+                  "w-full h-11 px-3.5 rounded-lg border bg-white text-sm font-medium text-titleColor transition-colors focus:outline-none",
+                  hasMinCapacityError
+                    ? "border-error focus:border-error"
+                    : "border-gray-200 focus:border-mainColor"
+                )}
               />
-              <p className="text-xs text-gray-400 mt-1.5 leading-relaxed">
-                {t("capacityHelp")}
-              </p>
+              {hasMinCapacityError ? (
+                <p className="text-xs text-error mt-1 font-medium">
+                  {minCapacityError}
+                </p>
+              ) : (
+                <p className="text-xs text-gray-400 mt-1.5 leading-relaxed">
+                  {t("capacityHelp")}
+                </p>
+              )}
             </div>
 
             {/* Input 2 (Left in RTL): أقصى سعة (عدد الأشخاص) */}
             <div className="flex flex-col">
-              <label className="text-xs font-semibold text-gray-700 mb-1.5">
+              <label htmlFor="availableSeats.max" className="text-xs font-semibold text-gray-700 mb-1.5">
                 {t("maxCapacity")} <span className="text-error ms-0.5">*</span>
               </label>
               <input
+                id="availableSeats.max"
+                name="availableSeats.max"
                 type="number"
                 min="1"
                 value={defaultCapacityMax}
                 onChange={(e) => handleCapacityChange("max", e.target.value)}
                 placeholder={t("maxCapacityPlaceholder")}
-                className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-sm font-medium text-titleColor focus:border-mainColor focus:outline-none transition-colors"
+                className={cn(
+                  "w-full h-11 px-3.5 rounded-lg border bg-white text-sm font-medium text-titleColor transition-colors focus:outline-none",
+                  hasMaxCapacityError
+                    ? "border-error focus:border-error"
+                    : "border-gray-200 focus:border-mainColor"
+                )}
               />
+              {hasMaxCapacityError && (
+                <p className="text-xs text-error mt-1 font-medium">
+                  {maxCapacityError}
+                </p>
+              )}
             </div>
           </div>
         </div>

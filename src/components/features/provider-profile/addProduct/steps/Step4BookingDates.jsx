@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useMemo, useState, useCallback } from "react";
-import { useFormikContext, FieldArray } from "formik";
+import { useFormikContext, FieldArray, getIn } from "formik";
 import { useTranslations, useLocale } from "next-intl";
 import SelectionGroup from "@components/forms/SelectionGroup";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
@@ -59,7 +59,6 @@ const WEEKDAY_KEYS = [
   "SATURDAY",
   "SUNDAY",
   "MONDAY",
-  "TUESDAY",
   "WEDNESDAY",
   "THURSDAY",
   "FRIDAY",
@@ -75,6 +74,28 @@ const Step4BookingDates = ({
 
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
+
+  const fromDayErr = getIn(errors, "fromDay");
+  const fromDayTouched = getIn(touched, "fromDay");
+  const hasFromDayErr = Boolean(fromDayErr && fromDayTouched);
+
+  const toDayErr = getIn(errors, "toDay");
+  const toDayTouched = getIn(touched, "toDay");
+  const hasToDayErr = Boolean(toDayErr && toDayTouched);
+
+  const bookingBeforeErr = getIn(errors, "bookingBefore");
+  const bookingBeforeTouched = getIn(touched, "bookingBefore");
+  const hasBookingBeforeErr = Boolean(bookingBeforeErr && bookingBeforeTouched);
+
+  const patternErr = getIn(errors, "recurrencePattern");
+  const patternTouched = getIn(touched, "recurrencePattern");
+
+  const selectedDaysErr = getIn(errors, "selectedDays");
+  const selectedDaysTouched = getIn(touched, "selectedDays");
+
+  const monthDayErr = getIn(errors, "monthDay");
+  const monthDayTouched = getIn(touched, "monthDay");
+  const hasMonthDayErr = Boolean(monthDayErr && monthDayTouched);
 
   // Branch customization toggle state: switches between empty state and branch accordion
   const [isBranchCustomizeActive, setIsBranchCustomizeActive] = useState(false);
@@ -130,19 +151,10 @@ const Step4BookingDates = ({
   const availableTimes =
     Array.isArray(values.availableTimes) && values.availableTimes.length > 0
       ? values.availableTimes
-      : [{ from: "09:00", to: "17:00" }];
+      : [{ from: "", to: "" }];
 
   // Branch-specific dates data
-  const branchDatesData = values.branchDates || {
-    "branch-1": {
-      fromDay: "",
-      toDay: "",
-      bookingBefore: "1",
-      recurrencePattern: "WEEKLY",
-      selectedDays: ["FRIDAY"],
-      availableTimes: [{ from: "", to: "" }],
-    },
-  };
+  const branchDatesData = values.branchDates || {};
 
   const labelCls =
     "font-somar text-sm sm:text-base font-medium text-textDark text-start block mb-1";
@@ -177,7 +189,7 @@ const Step4BookingDates = ({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             {/* Start Date */}
             <div>
-              <label className={labelCls}>
+              <label htmlFor="fromDay" className={labelCls}>
                 {t("startDate")} <span className="text-error ms-1">*</span>
               </label>
               <div
@@ -187,10 +199,17 @@ const Step4BookingDates = ({
                     input.showPicker();
                   }
                 }}
-                className={cn(fieldContainerCls, "cursor-pointer hover:border-mainColor/60")}
+                className={cn(
+                  fieldContainerCls,
+                  "cursor-pointer",
+                  hasFromDayErr
+                    ? "border-error focus-within:border-error"
+                    : "hover:border-mainColor/60"
+                )}
               >
-                <CalendarMonthOutlinedIcon className="w-5 h-5 text-mainColor flex-shrink-0 me-2" />
+                <CalendarMonthOutlinedIcon className={cn("w-5 h-5 flex-shrink-0 me-2", hasFromDayErr ? "text-error" : "text-mainColor")} />
                 <input
+                  id="fromDay"
                   type="date"
                   name="fromDay"
                   value={values.fromDay || ""}
@@ -200,11 +219,14 @@ const Step4BookingDates = ({
                   className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark cursor-pointer"
                 />
               </div>
+              {hasFromDayErr && (
+                <p className="text-xs text-error mt-1 font-medium">{fromDayErr}</p>
+              )}
             </div>
 
             {/* End Date */}
             <div>
-              <label className={labelCls}>
+              <label htmlFor="toDay" className={labelCls}>
                 {t("endDate")} <span className="text-error ms-1">*</span>
               </label>
               <div
@@ -214,10 +236,17 @@ const Step4BookingDates = ({
                     input.showPicker();
                   }
                 }}
-                className={cn(fieldContainerCls, "cursor-pointer hover:border-mainColor/60")}
+                className={cn(
+                  fieldContainerCls,
+                  "cursor-pointer",
+                  hasToDayErr
+                    ? "border-error focus-within:border-error"
+                    : "hover:border-mainColor/60"
+                )}
               >
-                <CalendarMonthOutlinedIcon className="w-5 h-5 text-mainColor flex-shrink-0 me-2" />
+                <CalendarMonthOutlinedIcon className={cn("w-5 h-5 flex-shrink-0 me-2", hasToDayErr ? "text-error" : "text-mainColor")} />
                 <input
+                  id="toDay"
                   type="date"
                   name="toDay"
                   value={values.toDay || ""}
@@ -227,19 +256,23 @@ const Step4BookingDates = ({
                   className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark cursor-pointer"
                 />
               </div>
+              {hasToDayErr && (
+                <p className="text-xs text-error mt-1 font-medium">{toDayErr}</p>
+              )}
             </div>
 
             {/* Booking Deadline (in days before) */}
             <div>
-              <label className={labelCls}>
+              <label htmlFor="bookingBefore" className={labelCls}>
                 {t("bookingDeadline")} <span className="text-error ms-1">*</span>
               </label>
-              <div className={fieldContainerCls}>
+              <div className={cn(fieldContainerCls, hasBookingBeforeErr && "border-error focus-within:border-error")}>
                 <input
+                  id="bookingBefore"
                   type="number"
                   min="0"
                   name="bookingBefore"
-                  value={values.bookingBefore || ""}
+                  value={values.bookingBefore ?? ""}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   placeholder={t("bookingDeadlinePlaceholder")}
@@ -247,6 +280,9 @@ const Step4BookingDates = ({
                 />
                 <UnfoldMoreOutlinedIcon className="w-4 h-4 text-gray-400 flex-shrink-0 ms-2" />
               </div>
+              {hasBookingBeforeErr && (
+                <p className="text-xs text-error mt-1 font-medium">{bookingBeforeErr}</p>
+              )}
             </div>
           </div>
 
@@ -264,6 +300,8 @@ const Step4BookingDates = ({
                 label={t("recurrencePattern")}
                 labelClassName={labelCls}
                 required={true}
+                touched={patternTouched}
+                errors={patternErr}
                 border="1px solid var(--color-border)"
                 list={recurrenceOptions}
                 placeholder={t("selectPattern")}
@@ -278,9 +316,7 @@ const Step4BookingDates = ({
                   multiple={true}
                   required={true}
                   value={
-                    Array.isArray(values.selectedDays) && values.selectedDays.length > 0
-                      ? values.selectedDays
-                      : ["SATURDAY", "SUNDAY", "TUESDAY", "THURSDAY", "FRIDAY"]
+                    Array.isArray(values.selectedDays) ? values.selectedDays : []
                   }
                   onChange={(e) => {
                     const val = Array.isArray(e.target.value)
@@ -291,6 +327,8 @@ const Step4BookingDates = ({
                   onBlur={handleBlur}
                   label={t("days")}
                   labelClassName={labelCls}
+                  touched={selectedDaysTouched}
+                  errors={selectedDaysErr}
                   border="1px solid var(--color-border)"
                   list={weekDayOptions}
                   placeholder={t("selectDays")}
@@ -298,7 +336,7 @@ const Step4BookingDates = ({
               </div>
             ) : (
               <div>
-                <label className={labelCls}>
+                <label htmlFor="monthDay" className={labelCls}>
                   {t("calendar")} <span className="text-error ms-1">*</span>
                 </label>
                 <div
@@ -308,10 +346,17 @@ const Step4BookingDates = ({
                       input.showPicker();
                     }
                   }}
-                  className={cn(fieldContainerCls, "cursor-pointer hover:border-mainColor/60")}
+                  className={cn(
+                    fieldContainerCls,
+                    "cursor-pointer",
+                    hasMonthDayErr
+                      ? "border-error focus-within:border-error"
+                      : "hover:border-mainColor/60"
+                  )}
                 >
-                  <CalendarMonthOutlinedIcon className="w-5 h-5 text-mainColor flex-shrink-0 me-2" />
+                  <CalendarMonthOutlinedIcon className={cn("w-5 h-5 flex-shrink-0 me-2", hasMonthDayErr ? "text-error" : "text-mainColor")} />
                   <input
+                    id="monthDay"
                     type="date"
                     name="monthDay"
                     value={values.monthDay || ""}
@@ -321,6 +366,9 @@ const Step4BookingDates = ({
                     className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark cursor-pointer"
                   />
                 </div>
+                {hasMonthDayErr && (
+                  <p className="text-xs text-error mt-1 font-medium">{monthDayErr}</p>
+                )}
               </div>
             )}
           </div>
@@ -329,17 +377,24 @@ const Step4BookingDates = ({
           <FieldArray name="availableTimes">
             {({ push, remove }) => (
               <div className="space-y-4">
-                {availableTimes.map((slot, index) => (
+                {availableTimes.map((slot, index) => {
+                  const fromErr = getIn(errors, `availableTimes[${index}].from`);
+                  const fromTch = getIn(touched, `availableTimes[${index}].from`);
+                  const toErr = getIn(errors, `availableTimes[${index}].to`);
+                  const toTch = getIn(touched, `availableTimes[${index}].to`);
+
+                  return (
                   <div key={index} className="space-y-3">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-end">
                       {/* From Hour */}
                       <div>
-                        <label className={labelCls}>
+                        <label htmlFor={`availableTimes[${index}].from`} className={labelCls}>
                           {t("fromHour")} <span className="text-error ms-1">*</span>
                         </label>
-                        <div className={fieldContainerCls}>
-                          <AccessTimeOutlinedIcon className="w-5 h-5 text-mainColor flex-shrink-0 me-2" />
+                        <div className={cn(fieldContainerCls, fromErr && fromTch && "border-error focus-within:border-error")}>
+                          <AccessTimeOutlinedIcon className={cn("w-5 h-5 flex-shrink-0 me-2", fromErr && fromTch ? "text-error" : "text-mainColor")} />
                           <input
+                            id={`availableTimes[${index}].from`}
                             type="time"
                             name={`availableTimes[${index}].from`}
                             value={slot.from || ""}
@@ -349,17 +404,21 @@ const Step4BookingDates = ({
                             className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark"
                           />
                         </div>
+                        {fromErr && fromTch && (
+                          <p className="text-xs text-error mt-1 font-medium">{fromErr}</p>
+                        )}
                       </div>
 
                       {/* To Hour + Delete if multiple */}
                       <div className="flex items-center gap-2">
                         <div className="flex-1">
-                          <label className={labelCls}>
+                          <label htmlFor={`availableTimes[${index}].to`} className={labelCls}>
                             {t("toHour")} <span className="text-error ms-1">*</span>
                           </label>
-                          <div className={fieldContainerCls}>
-                            <AccessTimeOutlinedIcon className="w-5 h-5 text-mainColor flex-shrink-0 me-2" />
+                          <div className={cn(fieldContainerCls, toErr && toTch && "border-error focus-within:border-error")}>
+                            <AccessTimeOutlinedIcon className={cn("w-5 h-5 flex-shrink-0 me-2", toErr && toTch ? "text-error" : "text-mainColor")} />
                             <input
+                              id={`availableTimes[${index}].to`}
                               type="time"
                               name={`availableTimes[${index}].to`}
                               value={slot.to || ""}
@@ -369,6 +428,9 @@ const Step4BookingDates = ({
                               className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark"
                             />
                           </div>
+                          {toErr && toTch && (
+                            <p className="text-xs text-error mt-1 font-medium">{toErr}</p>
+                          )}
                         </div>
 
                         {availableTimes.length > 1 && (
@@ -383,7 +445,8 @@ const Step4BookingDates = ({
                       </div>
                     </div>
                   </div>
-                ))}
+                );
+              })}
 
                 {/* Add Time Slot Button (Orange styled matching Figma) */}
                 <button

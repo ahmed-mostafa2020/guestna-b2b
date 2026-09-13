@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useMemo, useState, useCallback } from "react";
-import { useFormikContext, FieldArray } from "formik";
+import { useFormikContext, FieldArray, getIn } from "formik";
 import { useTranslations, useLocale } from "next-intl";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import SelectionGroup from "@components/forms/SelectionGroup";
@@ -61,7 +61,7 @@ const Step5Services = ({
   const locale = useLocale();
   const isAr = locale === "ar";
 
-  const { values, handleChange, handleBlur, setFieldValue } = useFormikContext();
+  const { values, errors, touched, handleChange, handleBlur, setFieldValue } = useFormikContext();
 
   // Manage open branches accordion state
   const [openBranches, setOpenBranches] = useState({ "branch-1": true });
@@ -128,8 +128,9 @@ const Step5Services = ({
           SECTION 1: Default Services Card
       ───────────────────────────────────────────────────────────── */}
       <section
+        id="services"
         aria-labelledby="services-default-title"
-        className="bg-white rounded-2xl border border-border p-6 sm:p-8 lg:p-10 transition-all duration-200 text-start shadow-none"
+        className="bg-white rounded-2xl border border-border p-6 sm:p-8 lg:p-10 transition-all duration-200 text-start shadow-none scroll-mt-6"
       >
         {/* Header */}
         <div className="mb-6 sm:mb-8 text-start">
@@ -142,6 +143,11 @@ const Step5Services = ({
           <p className="font-somar text-base font-medium text-textDark leading-5 !mt-2">
             {t("cardSubtitle")}
           </p>
+          {typeof errors.services === "string" && touched.services && (
+            <p className="text-xs text-error mt-2 font-medium">
+              {errors.services}
+            </p>
+          )}
         </div>
 
         {/* Services List with FieldArray */}
@@ -151,6 +157,15 @@ const Step5Services = ({
             return (
               <div className="space-y-4 sm:space-y-6">
                 {servicesList.map((item, index) => {
+                  const serviceErr =
+                    getIn(errors, `services[${index}].service`) ||
+                    (index === 0 && typeof errors.services === "string"
+                      ? errors.services
+                      : null);
+                  const serviceTouched =
+                    getIn(touched, `services[${index}].service`) ||
+                    Boolean(touched.services);
+
                   const selectedServiceName = (() => {
                     const sVal = item.service;
                     const found = servicesOptions.find((opt) => {
@@ -221,6 +236,8 @@ const Step5Services = ({
                             border="1px solid var(--color-border)"
                             list={serviceNameList}
                             disabled={isSelectionsLoading}
+                            touched={serviceTouched}
+                            errors={serviceErr}
                           />
                         </div>
 
