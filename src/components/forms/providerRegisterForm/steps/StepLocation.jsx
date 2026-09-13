@@ -34,6 +34,16 @@ const StepLocation = ({ cityOptions = [] }) => {
     ? selectedLng
     : CONSTANT_VALUES.DEFAULT_MAP_LOCATION.LNG;
 
+  const locationError =
+    getFieldErrorMessage(errors.location) ||
+    getFieldErrorMessage(errors.location?.lat) ||
+    getFieldErrorMessage(errors.location?.lng);
+  const isLocationTouched = Boolean(
+    touched.location ||
+      touched.location?.lat ||
+      touched.location?.lng
+  );
+
   return (
     <FormSectionCard
       title={t("location.title")}
@@ -56,7 +66,6 @@ const StepLocation = ({ cityOptions = [] }) => {
             placeholder={t("fields.city.placeholder")}
             list={cityNames}
             label={t("fields.city.label")}
-            labelClassName="font-somar"
           />
           <TextInputGroup
             label={t("fields.district.label")}
@@ -110,7 +119,7 @@ const StepLocation = ({ cityOptions = [] }) => {
           />
         </div>
 
-        <div className="border border-dashed border-textLight rounded-lg px-4 md:px-6 py-8 flex flex-col gap-5">
+        <div className="border border-dashed border-border rounded-lg px-4 md:px-6 py-8 flex flex-col gap-5">
           <p className="font-somar font-semibold text-base text-textDark text-center">
             {t("location.mapTitle")}
           </p>
@@ -139,12 +148,13 @@ const StepLocation = ({ cityOptions = [] }) => {
               }}
             />
           </div>
-          {getFieldErrorMessage(errors.location) &&
-          (touched.location ||
-            touched.location?.lat ||
-            touched.location?.lng) ? (
-            <p className="text-error text-sm font-somar text-start">
-              {getFieldErrorMessage(errors.location)}
+          {locationError && isLocationTouched ? (
+            <p
+              id="location-error"
+              role="alert"
+              className="text-error text-sm font-somar text-start"
+            >
+              {locationError}
             </p>
           ) : null}
         </div>

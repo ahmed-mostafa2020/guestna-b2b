@@ -230,10 +230,16 @@ const StepFacility = ({ serviceOptions = [] }) => {
                   onChange={(value) => {
                     setFieldValue("phone", value);
                   }}
-                  errors={errors.phone}
-                  touched={touched.phone}
                   onBlur={handleBlur}
                   id="phone"
+                  aria-invalid={Boolean(
+                    getFieldErrorMessage(errors.phone) && touched.phone
+                  )}
+                  aria-describedby={
+                    getFieldErrorMessage(errors.phone) && touched.phone
+                      ? "phone-error"
+                      : undefined
+                  }
                   addInternationalOption={false}
                   style={{ direction: "ltr" }}
                   flagComponent={({ country }) => (
@@ -242,16 +248,20 @@ const StepFacility = ({ serviceOptions = [] }) => {
                     </span>
                   )}
                   className={cn(
-                    "flex bg-white w-full gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out",
-                    errors.phone && touched.phone
-                      ? "border-error PhoneInputInput-focus:border-error hover:border-error"
-                      : "border-border PhoneInputInput-focus:border-textDark hover:border-textDark"
+                    "flex items-center bg-white w-full gap-2 px-4 font-normal border-2 rounded-lg h-[55px] font-somar text-base selection:bg-buttonsHover transition-all duration-200 ease-in-out",
+                    "[&_.PhoneInputInput]:outline-none [&_.PhoneInputInput]:bg-transparent [&_.PhoneInputInput]:font-somar [&_.PhoneInputInput]:text-base [&_.PhoneInputInput]:w-full",
+                    getFieldErrorMessage(errors.phone) && touched.phone
+                      ? "border-error focus-within:border-error hover:border-error"
+                      : "border-border focus-within:border-mainColor hover:border-mainColor"
                   )}
                 />
               )}
             </Field>
             {getFieldErrorMessage(errors.phone) && touched.phone && (
-              <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+              <div
+                id="phone-error"
+                className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error"
+              >
                 {getFieldErrorMessage(errors.phone)}
               </div>
             )}

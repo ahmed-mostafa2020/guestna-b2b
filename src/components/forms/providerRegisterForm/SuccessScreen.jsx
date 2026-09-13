@@ -10,7 +10,7 @@ const SuccessScreen = ({ onNavigate }) => {
 
   return (
     <div className="bg-white border border-border rounded-2xl p-8 md:p-12 flex flex-col items-center gap-4 text-center">
-      <CheckCircleIcon sx={{ fontSize: 56, color: "var(--color-main)" }} />
+      <CheckCircleIcon className="text-mainColor !text-[56px]" />
       <h2 className="text-2xl font-semibold text-titleColor font-somar">
         {t("title")}
       </h2>

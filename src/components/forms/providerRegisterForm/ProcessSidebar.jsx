@@ -8,8 +8,6 @@ import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import FrameWithImagedHeader from "@components/ui/frameWithImagedHeader/FrameWithImagedHeader";
 import headerSection from "@assets/sectionBackground/bookWithConfidenceHeader.png";
 
-const SIDEBAR_ICON_SX = { fontSize: 24, color: "var(--color-title)" };
-
 const ProcessSidebar = () => {
   const t = useTranslations("providerRegister.sidebar");
 
@@ -17,22 +15,25 @@ const ProcessSidebar = () => {
     {
       title: t("steps.register.title"),
       description: t("steps.register.description"),
-      icon: <HowToRegOutlinedIcon sx={SIDEBAR_ICON_SX} />,
+      icon: <HowToRegOutlinedIcon className="text-titleColor !text-2xl" />,
     },
     {
       title: t("steps.review.title"),
       description: t("steps.review.description"),
-      icon: <DescriptionOutlinedIcon sx={SIDEBAR_ICON_SX} />,
+      icon: <DescriptionOutlinedIcon className="text-titleColor !text-2xl" />,
     },
     {
       title: t("steps.qualify.title"),
       description: t("steps.qualify.description"),
-      icon: <AccessTimeOutlinedIcon sx={SIDEBAR_ICON_SX} />,
+      icon: <AccessTimeOutlinedIcon className="text-titleColor !text-2xl" />,
     },
   ];
 
   return (
-    <aside className="flex flex-col gap-4 lg:sticky lg:top-24">
+    <aside
+      aria-label={t("title")}
+      className="flex flex-col gap-4 lg:sticky lg:top-24"
+    >
       <FrameWithImagedHeader
         imageSrc={headerSection}
         withBorder={true}
@@ -46,7 +47,7 @@ const ProcessSidebar = () => {
         <div className="flex flex-col gap-6">
           {processSteps.map((processStep) => (
             <div key={processStep.title} className="flex gap-4 items-start">
-              <div className="bg-buttonsHover size-12 rounded-xl flex items-center justify-center shrink-0">
+              <div className="bg-buttonsHover text-titleColor size-12 rounded-xl flex items-center justify-center shrink-0">
                 {processStep.icon}
               </div>
               <div className="flex-1 flex flex-col gap-1 min-w-0">

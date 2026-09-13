@@ -148,7 +148,7 @@ const ProviderRegisterForm = () => {
   );
 
   const handleSubmit = useCallback(
-    async (values, { setSubmitting }) => {
+    async (values, { setSubmitting, setFieldError }) => {
       try {
         const response = await axios({
           method: "POST",
@@ -169,17 +169,16 @@ const ProviderRegisterForm = () => {
           Array.isArray(error.response.data.info)
         ) {
           error.response.data.info.forEach((errorItem) => {
-            enqueueSnackbar(
-              `${errorItem.field || ""}: ${errorItem.message || t("form.error")}`,
-              { variant: "error" }
-            );
+            if (errorItem.field && errorItem.message) {
+              setFieldError(errorItem.field, errorItem.message);
+            }
           });
-        } else {
-          enqueueSnackbar(
-            getErrorMessage(error, tRoot, "providerRegister.form.error"),
-            { variant: "error" }
-          );
         }
+
+        enqueueSnackbar(
+          getErrorMessage(error, tRoot, "providerRegister.form.error"),
+          { variant: "error" }
+        );
       } finally {
         setSubmitting(false);
       }
