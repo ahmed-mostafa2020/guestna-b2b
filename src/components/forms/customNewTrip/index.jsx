@@ -172,11 +172,14 @@ const deepTouchFields = (obj, depth = 0) => {
 };
 
 const StepWatcher = ({ attemptedNext, currentStepHasErrors, onTouch }) => {
+  const onTouchRef = useRef(onTouch);
+  onTouchRef.current = onTouch;
+
   useEffect(() => {
     if (attemptedNext && currentStepHasErrors) {
-      onTouch();
+      onTouchRef.current();
     }
-  }, [attemptedNext, currentStepHasErrors, onTouch]);
+  }, [attemptedNext, currentStepHasErrors]);
   return null;
 };
 

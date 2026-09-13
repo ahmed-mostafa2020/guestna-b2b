@@ -169,13 +169,6 @@ export const formatDisplayTimeRanges = (ranges, locale = "ar", t) => {
       let from = parts[0].trim();
       let to = parts[1].trim();
 
-      // Fix midday noon anomaly: if start is morning and end is "12:00AM", treat end as "12:00PM"
-      const startMin = parseTimeToMinutes(from, { isEnd: false });
-      const endClean = to.toUpperCase().replace(/\s+/g, "");
-      if (endClean === "12:00AM" && !isNaN(startMin) && startMin < 720) {
-        to = "12:00PM";
-      }
-
       if (typeof t === "function") {
         const formatted = formatTimeRange(from, to, locale, t);
         if (formatted) return formatted;
