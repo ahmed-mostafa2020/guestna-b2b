@@ -19,6 +19,7 @@ const publicRoutes = [
   "/discover",
   "/packageInfo",
   "/school-register",
+  "/provider-register",
   "/about-us", // Add if exists
 ];
 
