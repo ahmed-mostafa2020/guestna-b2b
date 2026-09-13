@@ -6,10 +6,12 @@ import { cn } from "@utils/helpers/cn";
 
 export const PRODUCT_STEPS = [
   { id: 1, key: "basicInfo" },
-  { id: 2, key: "gallery" },
-  { id: 3, key: "locations" },
-  { id: 4, key: "salesChannels" },
-  { id: 5, key: "pricing" },
+  { id: 2, key: "locations" },
+  { id: 3, key: "salesChannels" },
+  { id: 4, key: "bookingDates" },
+  { id: 5, key: "services" },
+  { id: 6, key: "productDetails" },
+  { id: 7, key: "gallery" },
 ];
 
 const AddProductStepper = ({
@@ -60,7 +62,7 @@ const AddProductStepper = ({
     <div ref={scrollContainerRef} className="w-full overflow-x-auto py-2 px-1">
       <nav
         aria-label="Progress Stepper"
-        className="flex items-center justify-between min-w-[620px] sm:min-w-full max-w-4xl mx-auto"
+        className="flex items-center justify-between min-w-[860px] xl:min-w-full max-w-5xl mx-auto"
       >
         {PRODUCT_STEPS.map((step, index) => {
           const isActive = currentStep === step.id;

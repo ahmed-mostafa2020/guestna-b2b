@@ -13,22 +13,34 @@ import AddProductStepper, {
   PRODUCT_STEPS,
 } from "@components/features/provider-profile/addProduct/AddProductStepper";
 import Step1BasicInfo from "@components/features/provider-profile/addProduct/steps/Step1BasicInfo";
+import Step2Locations from "@components/features/provider-profile/addProduct/steps/Step2Locations";
 import Step2Gallery from "@components/features/provider-profile/addProduct/steps/Step2Gallery";
 import Step4SalesChannels from "@components/features/provider-profile/addProduct/steps/Step4SalesChannels";
+import Step4BookingDates from "@components/features/provider-profile/addProduct/steps/Step4BookingDates";
+import Step5Services from "@components/features/provider-profile/addProduct/steps/Step5Services";
+import Step6ProductDetails from "@components/features/provider-profile/addProduct/steps/Step6ProductDetails";
 import {
   createStep1Schema,
   STEP_1_FIELD_NAMES,
+  createStepLocationsSchema,
+  STEP_LOCATIONS_FIELD_NAMES,
   createStep2Schema,
   STEP_2_FIELD_NAMES,
   createStep4Schema,
   STEP_4_FIELD_NAMES,
+  createStepBookingDatesSchema,
+  STEP_BOOKING_DATES_FIELD_NAMES,
+  createStep5Schema,
+  STEP_5_FIELD_NAMES,
+  createStep6Schema,
+  STEP_6_FIELD_NAMES,
 } from "@utils/validators/addProductStepSchema";
 import { initialAddProductValues } from "@components/forms/addProductForm";
 import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 
 /**
- * Declarative Step Configuration
+ * Declarative Step Configuration (7 Steps)
  */
 const STEP_CONFIG = {
   1: {
@@ -38,16 +50,40 @@ const STEP_CONFIG = {
     nextStep: 2,
   },
   2: {
-    getSchema: (t) => createStep2Schema(t),
-    fields: STEP_2_FIELD_NAMES,
-    successKey: "step2.savedSuccess",
-    nextStep: 4,
+    getSchema: (t) => createStepLocationsSchema(t),
+    fields: STEP_LOCATIONS_FIELD_NAMES,
+    successKey: "stepLocations.savedSuccess",
+    nextStep: 3,
   },
-  4: {
+  3: {
     getSchema: (t) => createStep4Schema(t),
     fields: STEP_4_FIELD_NAMES,
     successKey: "step4.savedSuccess",
+    nextStep: 4,
+  },
+  4: {
+    getSchema: (t) => createStepBookingDatesSchema(t),
+    fields: STEP_BOOKING_DATES_FIELD_NAMES,
+    successKey: "stepBookingDates.savedSuccess",
     nextStep: 5,
+  },
+  5: {
+    getSchema: (t) => createStep5Schema(t),
+    fields: STEP_5_FIELD_NAMES,
+    successKey: "step5.savedSuccess",
+    nextStep: 6,
+  },
+  6: {
+    getSchema: (t) => createStep6Schema(t),
+    fields: STEP_6_FIELD_NAMES,
+    successKey: "step6.savedSuccess",
+    nextStep: 7,
+  },
+  7: {
+    getSchema: (t) => createStep2Schema(t),
+    fields: STEP_2_FIELD_NAMES,
+    successKey: "step2.savedSuccess",
+    nextStep: null,
   },
 };
 
@@ -247,10 +283,12 @@ const AddProductPage = () => {
       // Mark step completed
       setCompletedSteps((prev) => Array.from(new Set([...prev, currentStep])));
 
-      enqueueSnackbar(
-        t(`providerProfile.products.newAddPage.${config.successKey}`),
-        { variant: "success" }
-      );
+      if (config.successKey) {
+        enqueueSnackbar(
+          t(`providerProfile.products.newAddPage.${config.successKey}`),
+          { variant: "success" }
+        );
+      }
 
       if (config.nextStep) {
         setCurrentStep(config.nextStep);
@@ -274,11 +312,7 @@ const AddProductPage = () => {
           currentStep={currentStep}
           completedSteps={completedSteps}
           onStepClick={(stepId) => {
-            const canAccess =
-              stepId === 1 ||
-              completedSteps.includes(stepId) ||
-              (stepId === 2 && completedSteps.includes(1)) ||
-              (stepId === 4 && completedSteps.includes(2));
+            const canAccess = true;
 
             if (!canAccess) {
               enqueueSnackbar(
@@ -306,6 +340,21 @@ const AddProductPage = () => {
           allowedAges: [],
           academicStages: [],
           b2cTargetAudiences: [],
+          providerBranchs: [
+            "branch-nakheel-riyadh",
+            "branch-olaya-riyadh",
+            "branch-rawdah-jeddah",
+          ],
+          availableSeats: { min: "100", max: "100" },
+          guestRange: { min: "100", max: "100" },
+          branchCapacities: {
+            "branch-nakheel-riyadh": { min: "100", max: "100" },
+            "branch-olaya-riyadh": { min: "100", max: "100" },
+            "branch-rawdah-jeddah": { min: "100", max: "100" },
+          },
+          services: [{ service: "", note: { en: "", ar: "" } }],
+          mustHaveItems: { en: [""], ar: [""] },
+          exemptedFromTrip: { en: [""], ar: [""] },
         }}
         validationSchema={stepValidationSchema}
         onSubmit={handleStepSubmit}
@@ -325,47 +374,43 @@ const AddProductPage = () => {
               />
             )}
 
-            {/* Step 2: Gallery */}
-            {currentStep === 2 && <Step2Gallery />}
+            {/* Step 2: Locations & Capacity */}
+            {currentStep === 2 && (
+              <Step2Locations
+                formSelectionData={formSelectionData}
+                isSelectionsLoading={isSelectionsLoading}
+              />
+            )}
 
-            {/* Step 4: Sales Channels */}
-            {currentStep === 4 && (
+            {/* Step 3: Sales Channels */}
+            {currentStep === 3 && (
               <Step4SalesChannels
                 formSelectionData={formSelectionData}
                 isSelectionsLoading={isSelectionsLoading}
               />
             )}
 
-            {/* Placeholder for upcoming steps */}
-            {currentStep !== 1 && currentStep !== 2 && currentStep !== 4 && (
-              <div className="bg-white rounded-2xl border border-border p-8 sm:p-12 text-center shadow-xs space-y-4">
-                <div className="w-16 h-16 rounded-2xl bg-mainColor/10 text-mainColor flex items-center justify-center mx-auto text-2xl font-bold">
-                  {currentStep}
-                </div>
-                <h3 className="text-xl font-bold text-titleColor">
-                  {t(
-                    `providerProfile.products.newAddPage.steps.${
-                      PRODUCT_STEPS.find((s) => s.id === currentStep)?.key ||
-                      "basicInfo"
-                    }`
-                  )}
-                </h3>
-                <p className="text-sm text-textLight max-w-md mx-auto">
-                  {t(
-                    "providerProfile.products.newAddPage.common.stepUnderDevelopment"
-                  )}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => setCurrentStep(1)}
-                  className="text-sm text-mainColor font-semibold hover:underline cursor-pointer pt-2"
-                >
-                  {t(
-                    "providerProfile.products.newAddPage.common.backToBasicInfo"
-                  )}
-                </button>
-              </div>
+            {/* Step 4: Product Booking Dates (NEW) */}
+            {currentStep === 4 && (
+              <Step4BookingDates
+                formSelectionData={formSelectionData}
+                isSelectionsLoading={isSelectionsLoading}
+              />
             )}
+
+            {/* Step 5: Services (NEW) */}
+            {currentStep === 5 && (
+              <Step5Services
+                formSelectionData={formSelectionData}
+                isSelectionsLoading={isSelectionsLoading}
+              />
+            )}
+
+            {/* Step 6: Product Details (NEW) */}
+            {currentStep === 6 && <Step6ProductDetails />}
+
+            {/* Step 7: Gallery */}
+            {currentStep === 7 && <Step2Gallery />}
 
             {/* Bottom Action Bar */}
             <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
@@ -373,13 +418,7 @@ const AddProductPage = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    if (currentStep === 4) {
-                      setCurrentStep(2);
-                    } else if (currentStep === 2) {
-                      setCurrentStep(1);
-                    } else {
-                      setCurrentStep((prev) => Math.max(1, prev - 1));
-                    }
+                    setCurrentStep((prev) => Math.max(1, prev - 1));
                   }}
                   className="w-full sm:w-auto px-6 py-3.5 rounded-xl border border-titleColor/20 text-titleColor hover:bg-titleColor/5 font-medium text-base transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
                 >

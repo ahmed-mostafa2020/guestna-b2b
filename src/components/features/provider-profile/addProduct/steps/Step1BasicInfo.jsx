@@ -144,6 +144,7 @@ const Step1BasicInfo = ({
         <div>
           <TextInputGroup
             name="name.ar"
+            required={true}
             value={values.name?.ar || ""}
             onChange={handleChange}
             onBlur={handleBlur}
@@ -161,6 +162,7 @@ const Step1BasicInfo = ({
         <div dir="ltr" className="text-start">
           <TextInputGroup
             name="name.en"
+            required={true}
             value={values.name?.en || ""}
             onChange={handleChange}
             onBlur={handleBlur}
@@ -180,6 +182,7 @@ const Step1BasicInfo = ({
         <div>
           <SelectionGroup
             name="tripsType"
+            required={true}
             value={values.tripsType || ""}
             onChange={(e) => setFieldValue("tripsType", e.target.value)}
             onBlur={handleBlur}
@@ -197,6 +200,7 @@ const Step1BasicInfo = ({
         <div>
           <SelectionGroup
             name="duration"
+            required={true}
             value={values.duration || ""}
             onChange={(e) =>
               setFieldValue(
@@ -258,6 +262,7 @@ const Step1BasicInfo = ({
             textarea={true}
             rows={4}
             name="description.ar"
+            required={true}
             value={values.description?.ar || ""}
             onChange={handleChange}
             onBlur={handleBlur}
@@ -276,6 +281,7 @@ const Step1BasicInfo = ({
             textarea={true}
             rows={4}
             name="description.en"
+            required={true}
             value={values.description?.en || ""}
             onChange={handleChange}
             onBlur={handleBlur}

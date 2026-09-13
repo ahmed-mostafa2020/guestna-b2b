@@ -101,11 +101,12 @@ const ChannelAudienceCard = memo(
         {/* Form Field */}
         <div className="space-y-3">
           <label className="block font-somar font-medium text-base text-textDark">
-            {label}
+            {label} <span className="text-error ms-1">*</span>
           </label>
 
           <SelectionGroup
             name={name}
+            required={true}
             value={value}
             onChange={onSelectChange}
             onBlur={onBlur}

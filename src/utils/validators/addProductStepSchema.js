@@ -105,6 +105,27 @@ export const createStep2Schema = (t) => {
 export const STEP_2_FIELD_NAMES = ["thumbnailWeb", "gallery"];
 
 /**
+ * Yup schema for Step 2 (Service Locations & Capacity) of the multi-step Add Product flow
+ */
+export const createStepLocationsSchema = (_t) => {
+  return Yup.object().shape({
+    providerBranchs: Yup.array().of(Yup.string()).optional(),
+    availableSeats: Yup.object()
+      .shape({
+        min: Yup.mixed().optional(),
+        max: Yup.mixed().optional(),
+      })
+      .optional(),
+  });
+};
+
+export const STEP_LOCATIONS_FIELD_NAMES = [
+  "providerBranchs",
+  "availableSeats.min",
+  "availableSeats.max",
+];
+
+/**
  * Yup schema for Step 4 (Sales Channels) of the multi-step Add Product flow
  */
 export const createStep4Schema = (t) => {
@@ -143,4 +164,74 @@ export const STEP_4_FIELD_NAMES = [
   "academicStages",
   "b2cTargetAudiences",
 ];
+
+/**
+ * Yup schema for Step 4 (Booking Dates) of the multi-step Add Product flow
+ */
+export const createStepBookingDatesSchema = (_t) => {
+  return Yup.object().shape({
+    fromDay: Yup.string().optional(),
+    toDay: Yup.string().optional(),
+    bookingBefore: Yup.mixed().optional(),
+    recurrencePattern: Yup.string().optional(),
+    selectedDays: Yup.array().of(Yup.string()).optional(),
+    monthDay: Yup.string().optional(),
+  });
+};
+
+export const STEP_BOOKING_DATES_FIELD_NAMES = [
+  "fromDay",
+  "toDay",
+  "bookingBefore",
+  "recurrencePattern",
+  "selectedDays",
+  "monthDay",
+];
+
+
+/**
+ * Yup schema for Step 5 (Services) of the multi-step Add Product flow
+ */
+export const createStep5Schema = (_t) => {
+  return Yup.object().shape({
+    services: Yup.array()
+      .of(
+        Yup.object().shape({
+          service: Yup.string().optional(),
+          note: Yup.object()
+            .shape({
+              en: Yup.string().optional(),
+              ar: Yup.string().optional(),
+            })
+            .optional(),
+        })
+      )
+      .optional(),
+  });
+};
+
+export const STEP_5_FIELD_NAMES = ["services"];
+
+/**
+ * Yup schema for Step 6 (Product Details: Supplies & Exclusions) of the multi-step Add Product flow
+ */
+export const createStep6Schema = (_t) => {
+  return Yup.object().shape({
+    mustHaveItems: Yup.object()
+      .shape({
+        ar: Yup.array().of(Yup.string()).optional(),
+        en: Yup.array().of(Yup.string()).optional(),
+      })
+      .optional(),
+    exemptedFromTrip: Yup.object()
+      .shape({
+        ar: Yup.array().of(Yup.string()).optional(),
+        en: Yup.array().of(Yup.string()).optional(),
+      })
+      .optional(),
+  });
+};
+
+export const STEP_6_FIELD_NAMES = ["mustHaveItems", "exemptedFromTrip"];
+
 
