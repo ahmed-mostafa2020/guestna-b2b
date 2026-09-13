@@ -3777,15 +3777,21 @@
     "validation": {
       "name": {
         "min": "The trade name must be at least 2 characters",
-        "max": "The trade name cannot exceed 100 characters"
+        "max": "The trade name cannot exceed 100 characters",
+        "ar": "Please use Arabic characters only",
+        "en": "Please use English characters only"
       },
       "legalName": {
         "max": "The legal name cannot exceed 100 characters",
-        "both": "Please enter the legal name in both Arabic and English"
+        "both": "Please enter the legal name in both Arabic and English",
+        "ar": "Please use Arabic characters only",
+        "en": "Please use English characters only"
       },
       "about": {
         "min": "The description must be at least 5 characters",
-        "max": "The description cannot exceed 500 characters"
+        "max": "The description cannot exceed 500 characters",
+        "ar": "Please use Arabic characters only",
+        "en": "Please use English characters only"
       },
       "crNumber": {
         "max": "The commercial registration number cannot exceed 50 characters"

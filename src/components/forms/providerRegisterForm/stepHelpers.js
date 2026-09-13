@@ -5,9 +5,11 @@ export const buildNestedTouched = (fields) => {
   fields.forEach((field) => {
     if (field.includes(".")) {
       const [parent, child] = field.split(".");
-      if (!touchedFields[parent]) touchedFields[parent] = {};
+      if (!touchedFields[parent] || typeof touchedFields[parent] !== "object") {
+        touchedFields[parent] = {};
+      }
       touchedFields[parent][child] = true;
-    } else {
+    } else if (typeof touchedFields[field] !== "object") {
       touchedFields[field] = true;
     }
   });
@@ -23,14 +25,22 @@ export const hasErrorForField = (errors, field) => {
   return Boolean(errors[field]);
 };
 
-export const validateCurrentStep = async (stepIndex, validateForm, setTouched) => {
+export const validateCurrentStep = async (
+  stepIndex,
+  validateForm,
+  setTouched,
+  touched = {}
+) => {
   const errors = await validateForm();
   const stepFields = getProviderRegisterStepFields(stepIndex);
 
-  setTouched((previousTouched) => ({
-    ...previousTouched,
-    ...buildNestedTouched(stepFields),
-  }));
+  setTouched(
+    {
+      ...touched,
+      ...buildNestedTouched(stepFields),
+    },
+    true
+  );
 
   return stepFields.some((field) => hasErrorForField(errors, field));
 };

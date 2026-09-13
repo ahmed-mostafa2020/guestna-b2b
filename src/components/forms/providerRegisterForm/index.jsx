@@ -111,10 +111,11 @@ const ProviderRegisterForm = () => {
   const goToStep = useCallback((targetStep) => {
     setActiveStep(targetStep);
     setMaxVisitedStep((previous) => Math.max(previous, targetStep));
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   const handleStepClick = useCallback(
-    async (targetStep, validateForm, setTouched) => {
+    async (targetStep, validateForm, setTouched, touched) => {
       if (targetStep === activeStep) return;
       if (targetStep < activeStep) {
         goToStep(targetStep);
@@ -124,31 +125,29 @@ const ProviderRegisterForm = () => {
       const hasStepError = await validateCurrentStep(
         activeStep,
         validateForm,
-        setTouched
+        setTouched,
+        touched
       );
       if (!hasStepError) {
         goToStep(targetStep);
-      } else {
-        enqueueSnackbar(t("validation.stepIncomplete"), { variant: "warning" });
       }
     },
-    [activeStep, enqueueSnackbar, goToStep, t]
+    [activeStep, goToStep]
   );
 
   const handleNext = useCallback(
-    async (validateForm, setTouched) => {
+    async (validateForm, setTouched, touched) => {
       const hasStepError = await validateCurrentStep(
         activeStep,
         validateForm,
-        setTouched
+        setTouched,
+        touched
       );
       if (!hasStepError) {
         goToStep(activeStep + 1);
-      } else {
-        enqueueSnackbar(t("validation.stepIncomplete"), { variant: "warning" });
       }
     },
-    [activeStep, enqueueSnackbar, goToStep, t]
+    [activeStep, goToStep]
   );
 
   const handleSubmit = useCallback(
@@ -212,6 +211,7 @@ const ProviderRegisterForm = () => {
         isSubmitting,
         validateForm,
         setTouched,
+        touched,
       }) => (
         <form
           onSubmit={(event) => {
@@ -237,7 +237,12 @@ const ProviderRegisterForm = () => {
                   currentStep={activeStep}
                   maxVisitedStep={maxVisitedStep}
                   onStepClick={(targetStep) =>
-                    handleStepClick(targetStep, validateForm, setTouched)
+                    handleStepClick(
+                      targetStep,
+                      validateForm,
+                      setTouched,
+                      touched
+                    )
                   }
                 />
               </div>
@@ -284,7 +289,9 @@ const ProviderRegisterForm = () => {
                 ) : (
                   <button
                     type="button"
-                    onClick={() => handleNext(validateForm, setTouched)}
+                    onClick={() =>
+                      handleNext(validateForm, setTouched, touched)
+                    }
                     className="sm:flex-1 w-full centered font-semibold text-center border-2 border-mainColor py-3 bg-mainColor text-white rounded-lg hover:bg-linksHover hover:border-linksHover transition-all duration-200 ease-in-out"
                   >
                     {t("form.next")}

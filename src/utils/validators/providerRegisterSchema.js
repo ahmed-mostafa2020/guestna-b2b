@@ -66,12 +66,20 @@ export const createProviderRegisterSchema = (t) => {
         .trim()
         .required(reqMsg)
         .min(2, t("providerRegister.validation.name.min"))
-        .max(100, t("providerRegister.validation.name.max")),
+        .max(100, t("providerRegister.validation.name.max"))
+        .matches(
+          /^[\u0600-\u06FF0-9\s.,!?'-]+$/,
+          t("providerRegister.validation.name.ar")
+        ),
       en: Yup.string()
         .trim()
         .required(reqMsg)
         .min(2, t("providerRegister.validation.name.min"))
-        .max(100, t("providerRegister.validation.name.max")),
+        .max(100, t("providerRegister.validation.name.max"))
+        .matches(
+          /^[a-zA-Z0-9\s.,!?'-]+$/,
+          t("providerRegister.validation.name.en")
+        ),
     }),
 
     about: Yup.object().shape({
@@ -79,12 +87,20 @@ export const createProviderRegisterSchema = (t) => {
         .trim()
         .required(reqMsg)
         .min(5, t("providerRegister.validation.about.min"))
-        .max(500, t("providerRegister.validation.about.max")),
+        .max(500, t("providerRegister.validation.about.max"))
+        .matches(
+          /^[\u0600-\u06FF0-9\s.,!?'-]+$/,
+          t("providerRegister.validation.about.ar")
+        ),
       en: Yup.string()
         .trim()
         .required(reqMsg)
         .min(5, t("providerRegister.validation.about.min"))
-        .max(500, t("providerRegister.validation.about.max")),
+        .max(500, t("providerRegister.validation.about.max"))
+        .matches(
+          /^[a-zA-Z0-9\s.,!?'-]+$/,
+          t("providerRegister.validation.about.en")
+        ),
     }),
 
     email: Yup.string()
@@ -100,10 +116,18 @@ export const createProviderRegisterSchema = (t) => {
       .shape({
         ar: Yup.string()
           .trim()
-          .max(100, t("providerRegister.validation.legalName.max")),
+          .max(100, t("providerRegister.validation.legalName.max"))
+          .matches(/^[\u0600-\u06FF0-9\s.,!?'-]+$/, {
+            message: t("providerRegister.validation.legalName.ar"),
+            excludeEmptyString: true,
+          }),
         en: Yup.string()
           .trim()
-          .max(100, t("providerRegister.validation.legalName.max")),
+          .max(100, t("providerRegister.validation.legalName.max"))
+          .matches(/^[a-zA-Z0-9\s.,!?'-]+$/, {
+            message: t("providerRegister.validation.legalName.en"),
+            excludeEmptyString: true,
+          }),
       })
       .test(
         "legal-name-both-or-neither",
