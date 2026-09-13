@@ -270,5 +270,12 @@ export const B2B_END_POINTS = {
       EDIT: "profile-provider/branches",
       DELETE: "profile-provider/branches",
     },
+    ONBOARDING: {
+      STATUS: "profile-provider/onboarding/status",
+      DOCUMENTS: "profile-provider/onboarding/documents",
+      DOCUMENTS_UPLOAD: "profile-provider/onboarding/documents/upload",
+      CONTRACTS: "profile-provider/onboarding/contracts",
+      CONTRACTS_SIGN: "profile-provider/onboarding/contracts/sign",
+    },
   },
 };
