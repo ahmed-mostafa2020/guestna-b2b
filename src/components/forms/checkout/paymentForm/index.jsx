@@ -583,39 +583,39 @@ const PaymentForm = () => {
               )}
             </RadioGroup>
 
-            <div className="flex-col w-full gap-2 centered">
-              <button
-                type="submit"
-                disabled={!isValid || isSubmitting || disabledButton}
-                className={`centered gap-5 lg:w-[540px] mt-8 lg:mt-12 lg:py-4 py-2 px-4 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor  bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
-                  isValid && "hover:bg-linksHover hover:border-linksHover"
-                }`}
-              >
-                {isSubmitting ? (
-                  <>
-                    {t("forms.validation.sending")}
+            {currentPaymentMethod !== CONSTANT_VALUES.PAYMENT_METHODS.APPLE && (
+              <div className="flex-col w-full gap-2 centered">
+                <button
+                  type="submit"
+                  disabled={!isValid || isSubmitting || disabledButton}
+                  className={`centered gap-5 w-full lg:w-[540px] mt-8 lg:mt-12 lg:py-4 py-3 px-4 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
+                    isValid && "hover:bg-linksHover hover:border-linksHover"
+                  }`}
+                >
+                  {isSubmitting ? (
+                    <>
+                      {t("forms.validation.sending")}
 
-                    <CircularProgress size={25} sx={{ color: "#ED8A22" }} />
-                  </>
-                ) : currentPaymentMethod ===
-                    CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD ||
-                  currentPaymentMethod ===
-                    CONSTANT_VALUES.PAYMENT_METHODS.TAMARA ||
-                  currentPaymentMethod ===
-                    CONSTANT_VALUES.PAYMENT_METHODS.APPLE ? (
-                  t("links.confirmPayment")
-                ) : isFormSubmitted && showStcOtp ? (
-                  <>
-                    {t("links.confirmPayment")}
-                    {showCounter && (
-                      <OtpCounter onComplete={() => setShowStcOtp(false)} />
-                    )}
-                  </>
-                ) : (
-                  t("links.sendStcOtp")
-                )}
-              </button>
-            </div>
+                      <CircularProgress size={25} sx={{ color: "#ED8A22" }} />
+                    </>
+                  ) : currentPaymentMethod ===
+                      CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD ||
+                    currentPaymentMethod ===
+                      CONSTANT_VALUES.PAYMENT_METHODS.TAMARA ? (
+                    t("links.confirmPayment")
+                  ) : isFormSubmitted && showStcOtp ? (
+                    <>
+                      {t("links.confirmPayment")}
+                      {showCounter && (
+                        <OtpCounter onComplete={() => setShowStcOtp(false)} />
+                      )}
+                    </>
+                  ) : (
+                    t("links.sendStcOtp")
+                  )}
+                </button>
+              </div>
+            )}
           </form>
         )}
       </Formik>
