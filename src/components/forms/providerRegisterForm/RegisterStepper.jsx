@@ -70,7 +70,7 @@ const RegisterStepper = ({
                   {t(`${stepKey}.title`)}
                 </p>
                 <p
-                  className={`font-somar font-medium text-sm  text-nowrap text-textLight ${
+                  className={`font-somar font-medium text-xs text-textLight ${
                     isEmphasized ? "opacity-100" : "opacity-70"
                   }`}
                 >
