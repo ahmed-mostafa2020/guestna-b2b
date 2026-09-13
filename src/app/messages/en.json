@@ -3683,7 +3683,9 @@
       "title": "Review details",
       "subtitle": "Make sure everything is correct before submitting. You can go back to edit any field.",
       "locationSubtitle": "City, district, and working hours",
-      "edit": "Edit"
+      "edit": "Edit",
+      "from": "From",
+      "to": "to"
     },
     "fields": {
       "nameAr": {

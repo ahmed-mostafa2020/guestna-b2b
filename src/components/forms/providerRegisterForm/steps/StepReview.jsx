@@ -37,9 +37,16 @@ const StepReview = ({ cityOptions = [], serviceOptions = [], onEditStep }) => {
     .filter(Boolean)
     .join(locale === "ar" ? "، " : ", ");
 
+  const formattedFrom = formatTime12h(values.businessHoursFrom);
+  const formattedTo = formatTime12h(values.businessHoursTo);
+
   const hoursLabel =
-    values.businessHoursFrom && values.businessHoursTo
-      ? `${formatTime12h(values.businessHoursFrom)} – ${formatTime12h(values.businessHoursTo)}`
+    formattedFrom && formattedTo
+      ? `${t("review.from")} ${formattedFrom} ${t("review.to")} ${formattedTo}`
+      : formattedFrom
+      ? `${t("review.from")} ${formattedFrom}`
+      : formattedTo
+      ? `${t("review.to")} ${formattedTo}`
       : "";
 
   return (
@@ -84,7 +91,11 @@ const StepReview = ({ cityOptions = [], serviceOptions = [], onEditStep }) => {
           />
           <ReviewRow label={t("fields.services.label")} value={servicesLabel} />
           <ReviewRow label={t("fields.email.label")} value={values.email} />
-          <ReviewRow label={t("fields.phone.label")} value={values.phone} dir="ltr" />
+          <ReviewRow
+            label={t("fields.phone.label")}
+            value={values.phone}
+            dir="ltr"
+          />
         </div>
         <ReviewRow label={t("fields.aboutAr.label")} value={values.about?.ar} />
         <ReviewRow label={t("fields.aboutEn.label")} value={values.about?.en} />
