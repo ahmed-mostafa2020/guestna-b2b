@@ -10,6 +10,8 @@ const DocumentUploadModal = ({
   open,
   onClose,
   onSuccess,
+  documentId = null,
+  isReupload = false,
   initialDocumentType = "OTHER",
   initialTitle,
   lockType = false,
@@ -34,11 +36,13 @@ const DocumentUploadModal = ({
         >
           <div className="px-6 pt-6 pb-4 sm:px-8 border-b border-[#e6ecec]">
             <h2 className="text-lg sm:text-xl font-bold text-textDark text-center font-somar">
-              {t("modal.title")}
+              {isReupload ? t("modal.reuploadTitle") : t("modal.createTitle")}
             </h2>
           </div>
 
           <OnboardingDocumentUploadForm
+            documentId={documentId}
+            isReupload={isReupload}
             initialDocumentType={initialDocumentType}
             initialTitle={initialTitle}
             lockType={lockType}

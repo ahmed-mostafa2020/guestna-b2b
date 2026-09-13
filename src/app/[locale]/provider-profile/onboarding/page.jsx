@@ -112,9 +112,11 @@ const ProviderOnboardingPage = () => {
   /* ─── Upload Modal ─── */
   const handleOpenUpload = useCallback((defaults) => {
     setEditingDocument({
+      _id: defaults?._id || null,
       documentType: defaults?.documentType || "OTHER",
       title: defaults?.title || null,
       lockType: defaults?.lockType !== false,
+      isReupload: Boolean(defaults?.isReupload),
     });
     setIsUploadModalOpen(true);
   }, []);
@@ -154,6 +156,8 @@ const ProviderOnboardingPage = () => {
         open={isUploadModalOpen}
         onClose={handleCloseUpload}
         onSuccess={handleUploadSuccess}
+        documentId={editingDocument?._id || null}
+        isReupload={Boolean(editingDocument?.isReupload)}
         initialDocumentType={editingDocument?.documentType || "OTHER"}
         initialTitle={editingDocument?.title || null}
         lockType={editingDocument?.lockType !== false}

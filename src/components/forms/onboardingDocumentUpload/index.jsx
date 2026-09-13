@@ -36,7 +36,23 @@ const isAcceptedFile = (file) => {
   return ACCEPTED_EXTENSIONS.some((ext) => name.endsWith(ext));
 };
 
+const getLocalizedTitleParts = (title, locale) => {
+  if (!title) return { titleEn: "", titleAr: "" };
+  if (typeof title === "string") {
+    return {
+      titleEn: locale === "en" ? title : "",
+      titleAr: locale === "ar" ? title : "",
+    };
+  }
+  return {
+    titleEn: title.en || "",
+    titleAr: title.ar || "",
+  };
+};
+
 const OnboardingDocumentUploadForm = ({
+  documentId = null,
+  isReupload = false,
   initialDocumentType = "OTHER",
   initialTitle,
   lockType = false,
@@ -49,16 +65,17 @@ const OnboardingDocumentUploadForm = ({
 
   const headers = getHeaders(locale, true);
   const typeLocked = Boolean(lockType);
+  const reuploadMode = Boolean(isReupload);
 
-  const initialValues = useMemo(
-    () => ({
+  const initialValues = useMemo(() => {
+    const { titleEn, titleAr } = getLocalizedTitleParts(initialTitle, locale);
+    return {
       documentType: initialDocumentType || "OTHER",
-      titleEn: initialTitle?.en || "",
-      titleAr: initialTitle?.ar || "",
+      titleEn,
+      titleAr,
       file: null,
-    }),
-    [initialDocumentType, initialTitle]
-  );
+    };
+  }, [initialDocumentType, initialTitle, locale]);
 
   const validationSchema = useMemo(
     () =>
@@ -108,6 +125,10 @@ const OnboardingDocumentUploadForm = ({
       formData.append("file", values.file);
       formData.append("documentType", values.documentType);
 
+      if (documentId) {
+        formData.append("_id", documentId);
+      }
+
       if (values.documentType === "OTHER") {
         formData.append("title[en]", values.titleEn.trim());
         formData.append("title[ar]", values.titleAr.trim());
@@ -126,7 +147,11 @@ const OnboardingDocumentUploadForm = ({
 
         if (response?.data) {
           enqueueSnackbar(
-            t("providerProfile.onboarding.notifications.uploadSuccess"),
+            t(
+              reuploadMode
+                ? "providerProfile.onboarding.notifications.reuploadSuccess"
+                : "providerProfile.onboarding.notifications.uploadSuccess"
+            ),
             { variant: "success" }
           );
           onSuccess?.();
@@ -155,7 +180,7 @@ const OnboardingDocumentUploadForm = ({
         setSubmitting(false);
       }
     },
-    [headers, enqueueSnackbar, t, onSuccess, onClose]
+    [documentId, headers, enqueueSnackbar, t, onSuccess, onClose, reuploadMode]
   );
 
   return (
@@ -259,8 +284,16 @@ const OnboardingDocumentUploadForm = ({
                 <CircularProgress size={18} sx={{ color: "white" }} />
               ) : null}
               {isSubmitting
-                ? t("providerProfile.onboarding.documents.modal.submitting")
-                : t("providerProfile.onboarding.documents.modal.submit")}
+                ? t(
+                    reuploadMode
+                      ? "providerProfile.onboarding.documents.modal.reuploadSubmitting"
+                      : "providerProfile.onboarding.documents.modal.submitting"
+                  )
+                : t(
+                    reuploadMode
+                      ? "providerProfile.onboarding.documents.modal.reuploadSubmit"
+                      : "providerProfile.onboarding.documents.modal.submit"
+                  )}
             </button>
             <button
               type="button"

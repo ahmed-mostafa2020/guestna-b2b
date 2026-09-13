@@ -5,7 +5,6 @@ import { useLocale, useTranslations } from "next-intl";
 import {
   Add as AddIcon,
   VisibilityOutlined as ViewIcon,
-  UploadOutlined as UploadIcon,
   ReplayOutlined as ReuploadIcon,
 } from "@mui/icons-material";
 import DataTable from "@components/ui/DataTable";
@@ -184,38 +183,36 @@ const DocumentsTable = ({
             );
           }
 
-          if (row.status === "REJECTED") {
+          if (row.status === "REJECTED" || row.status === "SUBMITTED") {
             return (
               <ActionButton
                 label={t("reupload")}
                 icon={<ReuploadIcon className="!w-3.5 !h-3.5" />}
                 onClick={() =>
                   onUpload?.({
+                    _id: row._id,
                     documentType: row.documentType,
                     title: row.title,
                     lockType: true,
+                    isReupload: true,
                   })
                 }
               />
             );
           }
 
-          if (row.status === "PENDING" || row.status === "SUBMITTED") {
+          if (row.status === "PENDING") {
             return (
               <ActionButton
                 label={t("uploadDocument")}
-                icon={
-                  row.status === "PENDING" ? (
-                    <AddIcon className="!w-3.5 !h-3.5" />
-                  ) : (
-                    <UploadIcon className="!w-3.5 !h-3.5" />
-                  )
-                }
+                icon={<AddIcon className="!w-3.5 !h-3.5" />}
                 onClick={() =>
                   onUpload?.({
+                    _id: row._id,
                     documentType: row.documentType,
                     title: row.title,
                     lockType: true,
+                    isReupload: false,
                   })
                 }
               />
@@ -242,6 +239,7 @@ const DocumentsTable = ({
             onUpload?.({
               documentType: "OTHER",
               lockType: true,
+              isReupload: false,
             })
           }
           className="inline-flex items-center justify-center gap-1 bg-mainColor border-2 border-mainColor text-white font-bold text-base px-8 py-3 rounded-lg hover:bg-titleColor hover:border-titleColor active:scale-[0.98] transition-all font-somar cursor-pointer shrink-0 self-start sm:self-auto"

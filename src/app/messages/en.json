@@ -273,7 +273,8 @@
           "REJECTED": "Rejected"
         },
         "modal": {
-          "title": "Upload Qualification Document",
+          "createTitle": "Upload Qualification Document",
+          "reuploadTitle": "Re-upload Qualification Document",
           "documentType": "Document Type",
           "documentTypePlaceholder": "Select document type",
           "titleEn": "Title (English)",
@@ -286,6 +287,8 @@
           "fileSizeError": "Maximum allowed file size is 10 MB",
           "submit": "Upload Document",
           "submitting": "Uploading...",
+          "reuploadSubmit": "Re-upload Document",
+          "reuploadSubmitting": "Re-uploading...",
           "cancel": "Cancel"
         }
       },
@@ -309,6 +312,7 @@
       },
       "notifications": {
         "uploadSuccess": "Document uploaded successfully",
+        "reuploadSuccess": "Document re-uploaded successfully",
         "signSuccess": "Contract signed successfully",
         "actionError": "Something went wrong. Please try again."
       }

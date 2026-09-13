@@ -280,7 +280,8 @@
           "REJECTED": "مرفوض"
         },
         "modal": {
-          "title": "رفع مستند التأهيل",
+          "createTitle": "رفع مستند التأهيل",
+          "reuploadTitle": "إعادة رفع مستند التأهيل",
           "documentType": "نوع المستند",
           "documentTypePlaceholder": "اختر نوع المستند",
           "titleEn": "العنوان (إنجليزي)",
@@ -293,6 +294,8 @@
           "fileSizeError": "الحد الأقصى لحجم الملف هو 10 ميجابايت",
           "submit": "رفع المستند",
           "submitting": "جاري الرفع...",
+          "reuploadSubmit": "إعادة رفع المستند",
+          "reuploadSubmitting": "جاري إعادة الرفع...",
           "cancel": "إلغاء"
         }
       },
@@ -316,6 +319,7 @@
       },
       "notifications": {
         "uploadSuccess": "تم رفع المستند بنجاح",
+        "reuploadSuccess": "تمت إعادة رفع المستند بنجاح",
         "signSuccess": "تم توقيع العقد بنجاح",
         "actionError": "حدث خطأ. يرجى المحاولة مرة أخرى."
       }
