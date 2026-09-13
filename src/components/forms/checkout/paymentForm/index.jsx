@@ -289,7 +289,9 @@ const PaymentForm = () => {
 
   return (
     <>
-      <h3 className="font-semibold">
+      <PromoCodeForm />
+
+      <h3 className="font-semibold mt-8 mb-4">
         {t("forms.paymentMethodsForm.subTitle")}
       </h3>
 
@@ -580,8 +582,6 @@ const PaymentForm = () => {
                 </div>
               )}
             </RadioGroup>
-
-            <PromoCodeForm />
 
             <div className="flex-col w-full gap-2 centered">
               <button

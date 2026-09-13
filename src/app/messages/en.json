@@ -2899,8 +2899,10 @@
 
     "promoCode": {
       "label": "Promo code",
+      "optional": "(Optional)",
       "placeholder": "Enter the promo code",
       "useCode": "Use the promo code",
+      "apply": "Apply",
       "successMessage": "Discount has been applied successfully"
     },
 

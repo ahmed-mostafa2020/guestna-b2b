@@ -133,36 +133,57 @@ const PromoCodeForm = () => {
   }, []);
 
   return (
-    <div className="pt-4">
+    <div className="w-full lg:w-[510px]">
       <div className="flex flex-col gap-2">
-        <label htmlFor="promoCode" className="font-medium capitalize ">
-          {t("forms.promoCode.label")}
+        <label
+          htmlFor="promoCode"
+          className="flex items-center gap-1.5 font-medium capitalize font-ibm text-textDark text-sm sm:text-base"
+        >
+          <span>{t("forms.promoCode.label")}</span>
+          <span className="text-xs sm:text-sm font-normal text-textLight">
+            {t("forms.promoCode.optional")}
+          </span>
         </label>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-2 w-full">
           <input
-            className="lg:w-[50%] p-4 text-sm font-normal transition-all duration-200 ease-in-out bg-white border-2 rounded-lg outline-none font-ibm placeholder:font-normal placeholder:text-sm placeholder:font-ibm placeholder:text-textLight selection:bg-buttonsHover border-border focus:border-textDark hover:border-textDark"
-            type="text"
+            id="promoCode"
             name="promoCode"
+            type="text"
             placeholder={t("forms.promoCode.placeholder")}
             value={promoValue}
             onChange={handleInputChange}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                if (promoValue && !isSubmitting) {
+                  handleSubmit(e);
+                }
+              }
+            }}
+            className="flex-1 min-w-0 h-[44px] sm:h-[52px] px-3 sm:px-4 text-xs sm:text-sm font-normal transition-all duration-200 ease-in-out bg-white border-2 rounded-lg outline-none font-ibm placeholder:font-normal placeholder:text-xs sm:placeholder:text-sm placeholder:font-ibm placeholder:text-textLight selection:bg-buttonsHover border-border focus:border-textDark hover:border-textDark"
           />
 
           <button
             type="button"
             disabled={!promoValue || isSubmitting}
             onClick={handleSubmit}
-            className="centered border border-[#E3EBF5] bg-[#E3EBF5] rounded-lg py-4 px-8 font-semibold transition-all duration-200 ease-in-out disabled:opacity-60 disabled:cursor-not-allowed"
+            className="shrink-0 centered h-[44px] sm:h-[52px] border border-[#E3EBF5] bg-[#E3EBF5] text-textDark rounded-lg px-3.5 sm:px-8 text-xs sm:text-base font-semibold transition-all duration-200 ease-in-out disabled:opacity-60 disabled:cursor-not-allowed whitespace-nowrap hover:bg-[#d8e3f0]"
           >
             {isSubmitting ? (
-              <>
-                {t("forms.validation.sending")}
-
-                <CircularProgress size={20} sx={{ color: "#ED8A22" }} />
-              </>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs sm:text-sm">
+                  {t("forms.validation.sending")}
+                </span>
+                <CircularProgress size={16} sx={{ color: "#ED8A22" }} />
+              </div>
             ) : (
-              t("forms.promoCode.useCode")
+              <>
+                <span className="sm:hidden">{t("forms.promoCode.apply")}</span>
+                <span className="hidden sm:inline">
+                  {t("forms.promoCode.useCode")}
+                </span>
+              </>
             )}
           </button>
         </div>
