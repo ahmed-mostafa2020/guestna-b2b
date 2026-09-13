@@ -171,6 +171,36 @@ const deepTouchFields = (obj, depth = 0) => {
   return touched;
 };
 
+const extractId = (value) => {
+  if (!value) return "";
+  if (Array.isArray(value)) {
+    return value.length > 0 ? extractId(value[0]) : "";
+  }
+  if (typeof value === "object") {
+    return value._id || value.id || value.value || "";
+  }
+  return value;
+};
+
+const extractIds = (array) => {
+  if (!Array.isArray(array)) return [];
+  return array.map((item) => extractId(item)).filter(Boolean);
+};
+
+const extractBranchId = (branch) => {
+  if (!branch) return "";
+  if (typeof branch === "string") return branch;
+  if (Array.isArray(branch)) {
+    return branch.length > 0 ? extractBranchId(branch[0]) : "";
+  }
+  if (branch?._id) return branch._id;
+  if (branch?.id) return branch.id;
+  if (branch?.value) return branch.value;
+  if (branch?.branch?._id) return branch.branch._id;
+  if (branch?.branch && typeof branch.branch === "string") return branch.branch;
+  return "";
+};
+
 const StepWatcher = ({ attemptedNext, currentStepHasErrors, onTouch }) => {
   const onTouchRef = useRef(onTouch);
   onTouchRef.current = onTouch;
@@ -268,17 +298,46 @@ const CustomNewTripForm = ({
   }, [editData, rawAvailableDaysSlots]);
 
   // --- Provider branches ---
+  const initialBranchId = useMemo(() => {
+    if (!editData) return "";
+    const branch =
+      editData?.providerBranch ||
+      editData?.trip?.providerBranch ||
+      editData?.branch ||
+      "";
+    return extractBranchId(branch);
+  }, [editData]);
+
   const providerBranches = useMemo(() => {
     const branches =
       editData?.trip?.providerBranchs ||
+      editData?.trip?.providerBranches ||
       editData?.providerBranchs ||
+      editData?.providerBranches ||
       editData?.trip?.provider?.providerBranchs ||
+      editData?.trip?.provider?.providerBranches ||
       editData?.provider?.providerBranchs ||
+      editData?.provider?.providerBranches ||
+      formSelectionData?.providerBranchs ||
+      formSelectionData?.providerBranches ||
       [];
-    return Array.isArray(branches) ? branches : [];
-  }, [editData]);
+    const list = Array.isArray(branches) ? [...branches] : [];
+    const currentBranch =
+      editData?.providerBranch || editData?.trip?.providerBranch;
+    if (
+      currentBranch &&
+      typeof currentBranch === "object" &&
+      (currentBranch._id || currentBranch.id)
+    ) {
+      const currentId = currentBranch._id || currentBranch.id;
+      if (!list.some((b) => (b._id || b.id || b.value) === currentId)) {
+        list.unshift(currentBranch);
+      }
+    }
+    return list;
+  }, [editData, formSelectionData]);
 
-  const [selectedBranch, setSelectedBranch] = useState("");
+  const [selectedBranch, setSelectedBranch] = useState(initialBranchId);
   const [branchAvailableDays, setBranchAvailableDays] = useState([]);
   const [branchAvailableDaysSlots, setBranchAvailableDaysSlots] = useState(null);
   const [isLoadingBranchDays, setIsLoadingBranchDays] = useState(false);
@@ -369,6 +428,14 @@ const CustomNewTripForm = ({
       setIsLoadingBranchDays(false);
     }
   }, [headers, enqueueSnackbar, t2]);
+
+  // Sync selected branch and fetch its available days when editing
+  useEffect(() => {
+    if (initialBranchId) {
+      setSelectedBranch(initialBranchId);
+      fetchBranchAvailableDays(initialBranchId);
+    }
+  }, [initialBranchId, fetchBranchAvailableDays]);
 
   // Fetch the full order details from info endpoint to resolve tripId when in edit mode
   useEffect(() => {
@@ -505,16 +572,6 @@ const CustomNewTripForm = ({
         t("steps.additional_info.step_title"),
       ];
 
-  const extractId = (value) => {
-    if (!value) return "";
-    return typeof value === "object" && value._id ? value._id : value;
-  };
-
-  const extractIds = (array) => {
-    if (!Array.isArray(array)) return [];
-    return array.map((item) => extractId(item)).filter(Boolean);
-  };
-
   const getInitialValues = useMemo(() => {
     if (isEditMode && editData) {
       const priceRange = {
@@ -583,7 +640,7 @@ const CustomNewTripForm = ({
         file: editData.file || "",
         note: editData.note || "",
         slot: editData.slot || "",
-        providerBranch: "",
+        providerBranch: initialBranchId || "",
       };
     }
 

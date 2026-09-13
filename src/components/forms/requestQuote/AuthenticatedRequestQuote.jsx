@@ -31,6 +31,21 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
 import { CalendarToday } from "@mui/icons-material";
+
+const extractBranchId = (branch) => {
+  if (!branch) return "";
+  if (typeof branch === "string") return branch;
+  if (Array.isArray(branch)) {
+    return branch.length > 0 ? extractBranchId(branch[0]) : "";
+  }
+  if (branch?._id) return branch._id;
+  if (branch?.id) return branch.id;
+  if (branch?.value) return branch.value;
+  if (branch?.branch?._id) return branch.branch._id;
+  if (branch?.branch && typeof branch.branch === "string") return branch.branch;
+  return "";
+};
+
 const AuthenticatedRequestQuote = ({
   tripId,
   tripData,
@@ -136,13 +151,45 @@ const AuthenticatedRequestQuote = ({
   }, [tripData, rawAvailableDaysSlots]);
 
   // --- Provider branches ---
-  const providerBranches = useMemo(() => {
-    const branches =
-      tripData?.providerBranchs || tripData?.provider?.providerBranchs || [];
-    return Array.isArray(branches) ? branches : [];
+  const initialBranchId = useMemo(() => {
+    if (!tripData) return "";
+    const branch =
+      tripData?.providerBranch ||
+      tripData?.trip?.providerBranch ||
+      tripData?.provider?.providerBranch ||
+      tripData?.branch ||
+      "";
+    return extractBranchId(branch);
   }, [tripData]);
 
-  const [selectedBranch, setSelectedBranch] = useState("");
+  const providerBranches = useMemo(() => {
+    const branches =
+      tripData?.providerBranchs ||
+      tripData?.providerBranches ||
+      tripData?.trip?.providerBranchs ||
+      tripData?.trip?.providerBranches ||
+      tripData?.provider?.providerBranchs ||
+      tripData?.provider?.providerBranches ||
+      formSelectionData?.providerBranchs ||
+      formSelectionData?.providerBranches ||
+      [];
+    const list = Array.isArray(branches) ? [...branches] : [];
+    const currentBranch =
+      tripData?.providerBranch || tripData?.trip?.providerBranch;
+    if (
+      currentBranch &&
+      typeof currentBranch === "object" &&
+      (currentBranch._id || currentBranch.id)
+    ) {
+      const currentId = currentBranch._id || currentBranch.id;
+      if (!list.some((b) => (b._id || b.id || b.value) === currentId)) {
+        list.unshift(currentBranch);
+      }
+    }
+    return list;
+  }, [tripData, formSelectionData]);
+
+  const [selectedBranch, setSelectedBranch] = useState(initialBranchId);
   const [branchAvailableDays, setBranchAvailableDays] = useState([]);
   const [branchAvailableDaysSlots, setBranchAvailableDaysSlots] = useState(null);
   const [isLoadingBranchDays, setIsLoadingBranchDays] = useState(false);
@@ -183,12 +230,14 @@ const AuthenticatedRequestQuote = ({
   // Branch options for dropdown
   const branchOptions = useMemo(() => {
     return providerBranches.map((b) => {
+      const branchId =
+        b._id || b.id || b.value || (typeof b === "string" ? b : "");
       const branchName =
         typeof b.name === "object" && b.name !== null
           ? b.name[locale] || b.name.ar || b.name.en || ""
-          : b.name || b._id;
+          : b.name || branchId;
       return {
-        value: b._id,
+        value: branchId,
         label: branchName,
       };
     });
@@ -241,6 +290,14 @@ const AuthenticatedRequestQuote = ({
       setIsLoadingBranchDays(false);
     }
   }, [headers, enqueueSnackbar, t]);
+
+  // Sync selected branch and fetch its available days when editing
+  useEffect(() => {
+    if (initialBranchId) {
+      setSelectedBranch(initialBranchId);
+      fetchBranchAvailableDays(initialBranchId);
+    }
+  }, [initialBranchId, fetchBranchAvailableDays]);
 
   // Update available grades when gradesData prop changes
   useEffect(() => {
@@ -393,7 +450,7 @@ const AuthenticatedRequestQuote = ({
         slot: "",
         fromHour: "",
         toHour: "",
-        providerBranch: "",
+        providerBranch: initialBranchId || "",
         services: [],
         specialRequirements: "",
         file: "",
@@ -429,7 +486,7 @@ const AuthenticatedRequestQuote = ({
       slot: "",
       fromHour: "",
       toHour: "",
-      providerBranch: "",
+      providerBranch: initialBranchId || "",
       services: tripData.services?.map((service) => service.name) || [],
       specialRequirements: tripData.specialRequirements || "",
       file: "",
@@ -1076,7 +1133,7 @@ const AuthenticatedRequestQuote = ({
                       <div className="somar-placeholder">
                         <SelectionGroup
                           name="providerBranch"
-                          value={selectedBranch || ""}
+                          value={selectedBranch || values.providerBranch || ""}
                           onChange={(e) => {
                             const branchId = e.target.value;
                             if (branchId) {
