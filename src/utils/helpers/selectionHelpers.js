@@ -1,13 +1,9 @@
-/**
- * Selection helpers for form dropdowns.
- * Provider register selections return `{ _id, name }` where `name` is already
- * localized by the request `lang` header (string).
- */
 
 export const getItemName = (item) => {
   if (!item) return "";
   if (typeof item === "string") return item;
-  return item.name || "";
+  if (typeof item.name === "string") return item.name;
+  return "";
 };
 
 export const findNameById = (options = [], id) => {

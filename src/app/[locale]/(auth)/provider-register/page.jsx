@@ -11,7 +11,7 @@ import {
   setProviderRegisterSelections,
   setProviderRegisterSelectionsError,
   setProviderRegisterSelectionsLoading,
-} from "@store/forms/providerRegister/providerRegisterSelectionsSlice";
+} from "@store/providerRegister/providerRegisterSelectionsSlice";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
 import ProviderRegisterForm from "@components/forms/providerRegisterForm";
 

@@ -8,7 +8,7 @@ const initialState = {
   error: null,
 };
 
-const providerRegisterSelectionsSlice = createSlice({
+export const providerRegisterSelectionsSlice = createSlice({
   name: "providerRegisterSelections",
   initialState,
   reducers: {

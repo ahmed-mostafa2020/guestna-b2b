@@ -12,7 +12,7 @@ const FormSectionCard = ({ title, subtitle, action, children }) => {
             {action}
           </div>
           {subtitle && (
-            <p className="text-base font-medium text-textLight font-somar">
+            <p className="text-sm font-medium text-textLight font-somar">
               {subtitle}
             </p>
           )}

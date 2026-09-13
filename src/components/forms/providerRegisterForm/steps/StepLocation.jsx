@@ -8,6 +8,7 @@ import SelectionGroup from "@components/forms/SelectionGroup";
 import Map from "@components/features/tripDetails/gridSection/largeSizeGrid/accordionsGroupSection/accordionsDetails/Map";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import FormSectionCard from "../FormSectionCard";
+import { getFieldErrorMessage } from "../stepHelpers";
 import {
   findIdByName,
   findNameById,
@@ -51,7 +52,7 @@ const StepLocation = ({ cityOptions = [] }) => {
             }}
             onBlur={handleBlur}
             touched={touched.city}
-            errors={errors.city}
+            errors={getFieldErrorMessage(errors.city)}
             placeholder={t("fields.city.placeholder")}
             list={cityNames}
             label={t("fields.city.label")}
@@ -65,7 +66,7 @@ const StepLocation = ({ cityOptions = [] }) => {
             onChange={handleChange}
             onBlur={handleBlur}
             touched={touched.district}
-            errors={errors.district}
+            errors={getFieldErrorMessage(errors.district)}
             placeholder={t("fields.district.placeholder")}
           />
         </div>
@@ -80,7 +81,7 @@ const StepLocation = ({ cityOptions = [] }) => {
           onChange={handleChange}
           onBlur={handleBlur}
           touched={touched.address}
-          errors={errors.address}
+          errors={getFieldErrorMessage(errors.address)}
           placeholder={t("fields.address.placeholder")}
         />
 
@@ -94,7 +95,7 @@ const StepLocation = ({ cityOptions = [] }) => {
             onChange={handleChange}
             onBlur={handleBlur}
             touched={touched.businessHoursFrom}
-            errors={errors.businessHoursFrom}
+            errors={getFieldErrorMessage(errors.businessHoursFrom)}
           />
           <TextInputGroup
             type="time"
@@ -105,7 +106,7 @@ const StepLocation = ({ cityOptions = [] }) => {
             onChange={handleChange}
             onBlur={handleBlur}
             touched={touched.businessHoursTo}
-            errors={errors.businessHoursTo}
+            errors={getFieldErrorMessage(errors.businessHoursTo)}
           />
         </div>
 
@@ -138,10 +139,12 @@ const StepLocation = ({ cityOptions = [] }) => {
               }}
             />
           </div>
-          {typeof errors.location === "string" &&
-          (touched.location || touched.location?.lat || touched.location?.lng) ? (
+          {getFieldErrorMessage(errors.location) &&
+          (touched.location ||
+            touched.location?.lat ||
+            touched.location?.lng) ? (
             <p className="text-error text-sm font-somar text-start">
-              {errors.location}
+              {getFieldErrorMessage(errors.location)}
             </p>
           ) : null}
         </div>

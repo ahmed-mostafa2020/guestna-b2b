@@ -8,9 +8,11 @@ import "react-phone-number-input/style.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import { cn } from "@utils/helpers/cn";
+import { getItemName } from "@utils/helpers/selectionHelpers";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import SelectionGroup from "@components/forms/SelectionGroup";
 import FormSectionCard from "../FormSectionCard";
+import { getFieldErrorMessage } from "../stepHelpers";
 
 const LABEL_FONT = "var(--font-somar-sans), sans-serif";
 
@@ -32,7 +34,7 @@ const StepFacility = ({ serviceOptions = [] }) => {
 
   const servicesList = serviceOptions.map((service) => ({
     value: service._id,
-    label: service.name,
+    label: getItemName(service),
   }));
 
   return (
@@ -52,7 +54,7 @@ const StepFacility = ({ serviceOptions = [] }) => {
               onChange={handleChange}
               onBlur={handleBlur}
               touched={touched.name?.ar}
-              errors={errors.name?.ar}
+              errors={getFieldErrorMessage(errors.name?.ar)}
               placeholder={t("fields.nameAr.placeholder")}
               required
             />
@@ -65,7 +67,7 @@ const StepFacility = ({ serviceOptions = [] }) => {
               onChange={handleChange}
               onBlur={handleBlur}
               touched={touched.name?.en}
-              errors={errors.name?.en}
+              errors={getFieldErrorMessage(errors.name?.en)}
               placeholder={t("fields.nameEn.placeholder")}
               required
             />
@@ -77,8 +79,11 @@ const StepFacility = ({ serviceOptions = [] }) => {
               value={values.legalName?.ar || ""}
               onChange={handleChange}
               onBlur={handleBlur}
-              touched={touched.legalName?.ar}
-              errors={errors.legalName?.ar || errors.legalName}
+              touched={touched.legalName?.ar || touched.legalName}
+              errors={
+                getFieldErrorMessage(errors.legalName?.ar) ||
+                getFieldErrorMessage(errors.legalName)
+              }
               placeholder={t("fields.legalNameAr.placeholder")}
             />
             <TextInputGroup
@@ -89,8 +94,11 @@ const StepFacility = ({ serviceOptions = [] }) => {
               value={values.legalName?.en || ""}
               onChange={handleChange}
               onBlur={handleBlur}
-              touched={touched.legalName?.en}
-              errors={errors.legalName?.en || errors.legalName}
+              touched={touched.legalName?.en || touched.legalName}
+              errors={
+                getFieldErrorMessage(errors.legalName?.en) ||
+                getFieldErrorMessage(errors.legalName)
+              }
               placeholder={t("fields.legalNameEn.placeholder")}
             />
             <TextInputGroup
@@ -102,7 +110,7 @@ const StepFacility = ({ serviceOptions = [] }) => {
               onChange={handleChange}
               onBlur={handleBlur}
               touched={touched.crNumber}
-              errors={errors.crNumber}
+              errors={getFieldErrorMessage(errors.crNumber)}
               placeholder={t("fields.crNumber.placeholder")}
             />
             <TextInputGroup
@@ -114,7 +122,7 @@ const StepFacility = ({ serviceOptions = [] }) => {
               onChange={handleChange}
               onBlur={handleBlur}
               touched={touched.taxNumber}
-              errors={errors.taxNumber}
+              errors={getFieldErrorMessage(errors.taxNumber)}
               placeholder={t("fields.taxNumber.placeholder")}
             />
             <SelectionGroup
@@ -123,7 +131,7 @@ const StepFacility = ({ serviceOptions = [] }) => {
               onChange={handleChange}
               onBlur={handleBlur}
               touched={touched.businessType}
-              errors={errors.businessType}
+              errors={getFieldErrorMessage(errors.businessType)}
               placeholder={t("fields.businessType.placeholder")}
               list={businessTypeOptions}
               label={t("fields.businessType.label")}
@@ -136,7 +144,7 @@ const StepFacility = ({ serviceOptions = [] }) => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 touched={touched.services}
-                errors={errors.services}
+                errors={getFieldErrorMessage(errors.services)}
                 placeholder={t("fields.services.placeholder")}
                 list={servicesList}
                 label={t("fields.services.label")}
@@ -158,7 +166,7 @@ const StepFacility = ({ serviceOptions = [] }) => {
               onChange={handleChange}
               onBlur={handleBlur}
               touched={touched.about?.ar}
-              errors={errors.about?.ar}
+              errors={getFieldErrorMessage(errors.about?.ar)}
               placeholder={t("fields.aboutAr.placeholder")}
               required
             />
@@ -173,7 +181,7 @@ const StepFacility = ({ serviceOptions = [] }) => {
               onChange={handleChange}
               onBlur={handleBlur}
               touched={touched.about?.en}
-              errors={errors.about?.en}
+              errors={getFieldErrorMessage(errors.about?.en)}
               placeholder={t("fields.aboutEn.placeholder")}
               required
             />
@@ -196,7 +204,7 @@ const StepFacility = ({ serviceOptions = [] }) => {
             onChange={handleChange}
             onBlur={handleBlur}
             touched={touched.email}
-            errors={errors.email}
+            errors={getFieldErrorMessage(errors.email)}
             placeholder={t("fields.email.placeholder")}
             required
           />
@@ -242,9 +250,9 @@ const StepFacility = ({ serviceOptions = [] }) => {
                 />
               )}
             </Field>
-            {errors.phone && touched.phone && (
+            {getFieldErrorMessage(errors.phone) && touched.phone && (
               <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-                {errors.phone}
+                {getFieldErrorMessage(errors.phone)}
               </div>
             )}
           </div>

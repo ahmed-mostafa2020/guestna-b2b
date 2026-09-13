@@ -17,7 +17,7 @@ import getProxyUrl from "@utils/api/getProxyUrl";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import getErrorMessage from "@utils/helpers/getErrorMessage";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { clearProviderRegisterSelections } from "@store/forms/providerRegister/providerRegisterSelectionsSlice";
+import { clearProviderRegisterSelections } from "@store/providerRegister/providerRegisterSelectionsSlice";
 
 import { validateCurrentStep } from "./stepHelpers";
 import ProcessSidebar from "./ProcessSidebar";
@@ -115,37 +115,34 @@ const ProviderRegisterForm = () => {
   }, []);
 
   const handleStepClick = useCallback(
-    async (targetStep, validateForm, setTouched, touched) => {
+    async (targetStep, validateForm, setTouched) => {
       if (targetStep === activeStep) return;
       if (targetStep < activeStep) {
         goToStep(targetStep);
         return;
       }
 
+      // Only advance one step at a time after the current step is valid
       const hasStepError = await validateCurrentStep(
         activeStep,
         validateForm,
-        setTouched,
-        touched
+        setTouched
       );
-      if (!hasStepError) {
-        goToStep(targetStep);
-      }
+      if (hasStepError) return;
+      goToStep(activeStep + 1);
     },
     [activeStep, goToStep]
   );
 
   const handleNext = useCallback(
-    async (validateForm, setTouched, touched) => {
+    async (validateForm, setTouched) => {
       const hasStepError = await validateCurrentStep(
         activeStep,
         validateForm,
-        setTouched,
-        touched
+        setTouched
       );
-      if (!hasStepError) {
-        goToStep(activeStep + 1);
-      }
+      if (hasStepError) return;
+      goToStep(activeStep + 1);
     },
     [activeStep, goToStep]
   );
@@ -211,7 +208,6 @@ const ProviderRegisterForm = () => {
         isSubmitting,
         validateForm,
         setTouched,
-        touched,
       }) => (
         <form
           onSubmit={(event) => {
@@ -237,12 +233,7 @@ const ProviderRegisterForm = () => {
                   currentStep={activeStep}
                   maxVisitedStep={maxVisitedStep}
                   onStepClick={(targetStep) =>
-                    handleStepClick(
-                      targetStep,
-                      validateForm,
-                      setTouched,
-                      touched
-                    )
+                    handleStepClick(targetStep, validateForm, setTouched)
                   }
                 />
               </div>
@@ -289,9 +280,7 @@ const ProviderRegisterForm = () => {
                 ) : (
                   <button
                     type="button"
-                    onClick={() =>
-                      handleNext(validateForm, setTouched, touched)
-                    }
+                    onClick={() => handleNext(validateForm, setTouched)}
                     className="sm:flex-1 w-full centered font-semibold text-center border-2 border-mainColor py-3 bg-mainColor text-white rounded-lg hover:bg-linksHover hover:border-linksHover transition-all duration-200 ease-in-out"
                   >
                     {t("form.next")}
