@@ -5,13 +5,17 @@ import { useLocale, useTranslations } from "next-intl";
 
 import FormSectionCard from "../FormSectionCard";
 import { findNameById } from "@utils/helpers/selectionHelpers";
+import { formatTime12h } from "@utils/formatters/formatTime12h";
 
-const ReviewRow = ({ label, value }) => (
+const ReviewRow = ({ label, value, dir }) => (
   <div className="flex flex-col gap-1 py-2 border-b border-border last:border-b-0">
     <span className="font-medium capitalize font-somar text-textLight">
       {label}
     </span>
-    <span className="font-medium font-somar text-textDark break-words">
+    <span
+      dir={dir}
+      className="font-medium font-somar text-textDark break-words w-fit"
+    >
       {value || "—"}
     </span>
   </div>
@@ -35,7 +39,7 @@ const StepReview = ({ cityOptions = [], serviceOptions = [], onEditStep }) => {
 
   const hoursLabel =
     values.businessHoursFrom && values.businessHoursTo
-      ? `${values.businessHoursFrom} – ${values.businessHoursTo}`
+      ? `${formatTime12h(values.businessHoursFrom)} – ${formatTime12h(values.businessHoursTo)}`
       : "";
 
   return (
@@ -80,7 +84,7 @@ const StepReview = ({ cityOptions = [], serviceOptions = [], onEditStep }) => {
           />
           <ReviewRow label={t("fields.services.label")} value={servicesLabel} />
           <ReviewRow label={t("fields.email.label")} value={values.email} />
-          <ReviewRow label={t("fields.phone.label")} value={values.phone} />
+          <ReviewRow label={t("fields.phone.label")} value={values.phone} dir="ltr" />
         </div>
         <ReviewRow label={t("fields.aboutAr.label")} value={values.about?.ar} />
         <ReviewRow label={t("fields.aboutEn.label")} value={values.about?.en} />

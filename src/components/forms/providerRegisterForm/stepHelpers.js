@@ -65,23 +65,32 @@ export const scrollToField = (field) => {
 export const validateCurrentStep = async (
   stepIndex,
   validateForm,
-  setTouched
+  setTouched,
+  currentTouched = {}
 ) => {
   const errors = await validateForm();
   const stepFields = getProviderRegisterStepFields(stepIndex);
 
-  setTouched((previous) => ({
-    ...previous,
-    ...buildNestedTouched(stepFields),
-  }));
+  // Formik's setTouched does NOT accept a function updater — pass merged object directly.
+  // Pass `true` as the second arg so Formik re-runs validation after marking fields touched.
+  setTouched(
+    {
+      ...currentTouched,
+      ...buildNestedTouched(stepFields),
+    },
+    true
+  );
 
   const firstInvalidField = stepFields.find((field) =>
     hasErrorForField(errors, field)
   );
 
   if (firstInvalidField) {
-    // Wait for touched/error UI to paint before scrolling
-    requestAnimationFrame(() => scrollToField(firstInvalidField));
+    // Double RAF ensures React has committed the touched/error state to the DOM
+    // before we attempt to scroll, so the error element is visible and focusable.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => scrollToField(firstInvalidField));
+    });
     return true;
   }
 

@@ -115,7 +115,7 @@ const ProviderRegisterForm = () => {
   }, []);
 
   const handleStepClick = useCallback(
-    async (targetStep, validateForm, setTouched) => {
+    async (targetStep, validateForm, setTouched, touched) => {
       if (targetStep === activeStep) return;
       if (targetStep < activeStep) {
         goToStep(targetStep);
@@ -126,7 +126,8 @@ const ProviderRegisterForm = () => {
       const hasStepError = await validateCurrentStep(
         activeStep,
         validateForm,
-        setTouched
+        setTouched,
+        touched
       );
       if (hasStepError) return;
       goToStep(activeStep + 1);
@@ -135,11 +136,12 @@ const ProviderRegisterForm = () => {
   );
 
   const handleNext = useCallback(
-    async (validateForm, setTouched) => {
+    async (validateForm, setTouched, touched) => {
       const hasStepError = await validateCurrentStep(
         activeStep,
         validateForm,
-        setTouched
+        setTouched,
+        touched
       );
       if (hasStepError) return;
       goToStep(activeStep + 1);
@@ -207,6 +209,7 @@ const ProviderRegisterForm = () => {
         isSubmitting,
         validateForm,
         setTouched,
+        touched,
       }) => (
         <form
           onSubmit={(event) => {
@@ -232,7 +235,7 @@ const ProviderRegisterForm = () => {
                   currentStep={activeStep}
                   maxVisitedStep={maxVisitedStep}
                   onStepClick={(targetStep) =>
-                    handleStepClick(targetStep, validateForm, setTouched)
+                    handleStepClick(targetStep, validateForm, setTouched, touched)
                   }
                 />
               </div>
@@ -279,7 +282,7 @@ const ProviderRegisterForm = () => {
                 ) : (
                   <button
                     type="button"
-                    onClick={() => handleNext(validateForm, setTouched)}
+                    onClick={() => handleNext(validateForm, setTouched, touched)}
                     className="sm:flex-1 w-full centered font-semibold text-center border-2 border-mainColor py-3 bg-mainColor text-white rounded-lg hover:bg-linksHover hover:border-linksHover transition-all duration-200 ease-in-out"
                   >
                     {t("form.next")}
