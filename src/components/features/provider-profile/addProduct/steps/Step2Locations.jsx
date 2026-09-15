@@ -81,13 +81,22 @@ const DEFAULT_BRANCH_GROUPS = [
 
 const Step2Locations = ({
   formSelectionData = null,
-  isSelectionsLoading = false,
+  isSelectionsLoading: _isSelectionsLoading = false,
 }) => {
   const t = useTranslations("providerProfile.products.newAddPage.stepLocations");
   const locale = useLocale();
   const isAr = locale === "ar";
 
-  const { values, errors, touched, setFieldValue } = useFormikContext();
+  const {
+    values,
+    errors,
+    touched,
+    setFieldValue,
+    setFieldTouched,
+    setFieldError,
+    handleBlur,
+    validateForm,
+  } = useFormikContext();
 
   const branchError = getIn(errors, "providerBranchs");
   const branchTouched = getIn(touched, "providerBranchs");
@@ -182,8 +191,37 @@ const Step2Locations = ({
   const defaultCapacityMax = values.availableSeats?.max ?? "";
 
   const handleCapacityChange = (field, val) => {
-    setFieldValue(`availableSeats.${field}`, val);
-    setFieldValue(`guestRange.${field}`, val);
+    const parsed = val === "" ? "" : isNaN(Number(val)) ? val : Number(val);
+    setFieldValue(`availableSeats.${field}`, parsed, true);
+    setFieldValue(`guestRange.${field}`, parsed, true);
+
+    const nextMin = field === "min" ? parsed : values.availableSeats?.min;
+    const nextMax = field === "max" ? parsed : values.availableSeats?.max;
+    const numMin = Number(nextMin);
+    const numMax = Number(nextMax);
+
+    // If min has valid number, immediately clear min error on change
+    if (nextMin !== "" && !isNaN(numMin) && numMin >= 1) {
+      setFieldError("availableSeats.min", undefined);
+    }
+
+    // If max has valid number and is >= min (or min is not yet a number), immediately clear max error on change
+    if (
+      nextMax !== "" &&
+      !isNaN(numMax) &&
+      numMax >= 1 &&
+      (nextMin === "" || isNaN(numMin) || numMax >= numMin)
+    ) {
+      setFieldError("availableSeats.max", undefined);
+    }
+
+    // Mark field as touched for immediate feedback
+    setFieldTouched(`availableSeats.${field}`, true, false);
+
+    // Revalidate asynchronously to ensure all dependent validation states sync
+    setTimeout(() => {
+      validateForm();
+    }, 0);
   };
 
   // Branch-specific capacity handler
@@ -323,6 +361,8 @@ const Step2Locations = ({
                 min="1"
                 value={defaultCapacityMin}
                 onChange={(e) => handleCapacityChange("min", e.target.value)}
+                onBlur={handleBlur}
+                onFocus={() => setFieldTouched("availableSeats.min", true, false)}
                 placeholder={t("capacityPlaceholder")}
                 className={cn(
                   "w-full h-11 px-3.5 rounded-lg border bg-white text-sm font-medium text-titleColor transition-colors focus:outline-none",
@@ -354,6 +394,8 @@ const Step2Locations = ({
                 min="1"
                 value={defaultCapacityMax}
                 onChange={(e) => handleCapacityChange("max", e.target.value)}
+                onBlur={handleBlur}
+                onFocus={() => setFieldTouched("availableSeats.max", true, false)}
                 placeholder={t("maxCapacityPlaceholder")}
                 className={cn(
                   "w-full h-11 px-3.5 rounded-lg border bg-white text-sm font-medium text-titleColor transition-colors focus:outline-none",

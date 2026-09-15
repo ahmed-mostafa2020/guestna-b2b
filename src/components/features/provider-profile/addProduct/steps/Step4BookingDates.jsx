@@ -12,48 +12,10 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AddIcon from "@mui/icons-material/Add";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { cn } from "@utils/helpers/cn";
-
-const isHexObjectId = (str) =>
-  typeof str === "string" && /^[0-9a-fA-F]{24}$/.test(str.trim());
-
-const getItemName = (item, locale) => {
-  if (!item) return "";
-  if (typeof item === "string") {
-    return isHexObjectId(item) ? "" : item;
-  }
-  if (typeof item.name === "object" && item.name !== null) {
-    return item.name[locale] || item.name.ar || item.name.en || "";
-  }
-  return item.name || item.title || item.label || "";
-};
-
-const DEFAULT_DEMO_BRANCHES = [
-  {
-    id: "branch-1",
-    name: { ar: "فرع النخيل - الرياض", en: "Al-Nakheel Branch - Riyadh" },
-    subtitle: {
-      ar: "3 تواريخ مختاره \\ 4 فترات زمنيه",
-      en: "3 selected dates \\ 4 time slots",
-    },
-  },
-  {
-    id: "branch-2",
-    name: { ar: "فرع العليا - الرياض", en: "Al-Olaya Branch - Riyadh" },
-    subtitle: {
-      ar: "فرع العليا - الرياض",
-      en: "Al-Olaya Branch - Riyadh",
-    },
-  },
-  {
-    id: "branch-3",
-    name: { ar: "فرع الروضة - جدة", en: "Al-Rawdah Branch - Jeddah" },
-    subtitle: {
-      ar: "فرع الروضة - جدة",
-      en: "Al-Rawdah Branch - Jeddah",
-    },
-  },
-];
+import BranchCustomizationSidebar from "./BranchCustomizationSidebar";
+import { buildBranchGroups } from "../branchConstants";
 
 const WEEKDAY_KEYS = [
   "SATURDAY",
@@ -66,7 +28,7 @@ const WEEKDAY_KEYS = [
 
 const Step4BookingDates = ({
   formSelectionData = null,
-  isSelectionsLoading = false,
+  isSelectionsLoading: _isSelectionsLoading = false,
 }) => {
   const t = useTranslations("providerProfile.products.newAddPage.stepBookingDates");
   const locale = useLocale();
@@ -97,10 +59,101 @@ const Step4BookingDates = ({
   const monthDayTouched = getIn(touched, "monthDay");
   const hasMonthDayErr = Boolean(monthDayErr && monthDayTouched);
 
-  // Branch customization toggle state: switches between empty state and branch accordion
-  const [isBranchCustomizeActive, setIsBranchCustomizeActive] = useState(false);
+  // Branch customization sidebar state
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // Branch accordion expanded/collapsed state
-  const [openBranches, setOpenBranches] = useState({ "branch-1": true });
+  const [openBranches, setOpenBranches] = useState({});
+
+  // Prepare branch groups (by city)
+  const branchGroups = useMemo(() => {
+    return buildBranchGroups(formSelectionData?.providerBranchs, locale, isAr);
+  }, [formSelectionData?.providerBranchs, locale, isAr]);
+
+  // Flattened branch map for lookup by ID
+  const allBranchesMap = useMemo(() => {
+    const map = new Map();
+    branchGroups.forEach((group) => {
+      group.branches?.forEach((b) => {
+        map.set(b.id, b);
+      });
+    });
+    return map;
+  }, [branchGroups]);
+
+  // Selected branch IDs for customization
+  const [selectedBranchIds, setSelectedBranchIds] = useState(() => {
+    if (Array.isArray(values.customizedBranchDateIds) && values.customizedBranchDateIds.length > 0) {
+      return values.customizedBranchDateIds;
+    }
+    if (values.branchDates && typeof values.branchDates === "object") {
+      const keys = Object.keys(values.branchDates).filter((k) => {
+        const item = values.branchDates[k];
+        return Boolean(
+          item &&
+            (item.fromDay ||
+              item.toDay ||
+              item.selectedDays?.length > 0 ||
+              item.availableTimes?.length > 0)
+        );
+      });
+      if (keys.length > 0) return keys;
+    }
+    return [];
+  });
+
+  const isCustomizedActive = selectedBranchIds.length > 0;
+
+  // Active customized branch objects to render in form
+  const activeCustomizedBranches = useMemo(() => {
+    return selectedBranchIds
+      .map((id) => allBranchesMap.get(id))
+      .filter(Boolean);
+  }, [selectedBranchIds, allBranchesMap]);
+
+  // Handle saving branch selections from sidebar
+  const handleSaveSelectedBranches = useCallback(
+    (newSelectedIds) => {
+      setSelectedBranchIds(newSelectedIds);
+      setFieldValue("customizedBranchDateIds", newSelectedIds);
+
+      const currentBranchDates = { ...(values.branchDates || {}) };
+      newSelectedIds.forEach((bId) => {
+        if (!currentBranchDates[bId]) {
+          currentBranchDates[bId] = {
+            fromDay: "",
+            toDay: "",
+            bookingBefore: "",
+            recurrencePattern: "WEEKLY",
+            selectedDays: [],
+            availableTimes: [{ from: "", to: "" }],
+          };
+        }
+      });
+      // Remove unselected branches
+      Object.keys(currentBranchDates).forEach((bId) => {
+        if (!newSelectedIds.includes(bId)) {
+          delete currentBranchDates[bId];
+        }
+      });
+      setFieldValue("branchDates", currentBranchDates);
+
+      // Open the first branch accordion
+      if (newSelectedIds.length > 0) {
+        setOpenBranches((prev) => ({
+          ...prev,
+          [newSelectedIds[0]]: true,
+        }));
+      }
+    },
+    [values.branchDates, setFieldValue]
+  );
+
+  // Handle clearing customization
+  const handleCancelCustomization = useCallback(() => {
+    setSelectedBranchIds([]);
+    setFieldValue("customizedBranchDateIds", []);
+    setFieldValue("branchDates", {});
+  }, [setFieldValue]);
 
   const toggleBranch = useCallback((branchId) => {
     setOpenBranches((prev) => ({
@@ -127,25 +180,6 @@ const Step4BookingDates = ({
       })),
     [t]
   );
-
-  // Prepare branches list
-  const branchesList = useMemo(() => {
-    const rawBranches = formSelectionData?.providerBranchs;
-    if (Array.isArray(rawBranches) && rawBranches.length > 0) {
-      return rawBranches.map((b, idx) => ({
-        id: b._id || b.id || `branch-${idx}`,
-        name: {
-          ar: getItemName(b, "ar") || `فرع ${idx + 1}`,
-          en: getItemName(b, "en") || `Branch ${idx + 1}`,
-        },
-        subtitle: {
-          ar: idx === 0 ? "3 تواريخ مختاره \\ 4 فترات زمنيه" : getItemName(b, "ar"),
-          en: idx === 0 ? "3 selected dates \\ 4 time slots" : getItemName(b, "en"),
-        },
-      }));
-    }
-    return DEFAULT_DEMO_BRANCHES;
-  }, [formSelectionData?.providerBranchs]);
 
   // Available times list in default section
   const availableTimes =
@@ -484,24 +518,39 @@ const Step4BookingDates = ({
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setIsBranchCustomizeActive((prev) => !prev)}
-            className={cn(
-              "self-start sm:self-auto px-4 py-2 rounded-lg border font-somar text-sm font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap",
-              isBranchCustomizeActive
-                ? "border-mainColor bg-mainColor text-white hover:bg-titleColor"
-                : "border-mainColor text-mainColor hover:bg-mainColor/5"
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            {isCustomizedActive ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setIsSidebarOpen(true)}
+                  className="px-4 py-2 rounded-lg border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
+                >
+                  <EditOutlinedIcon sx={{ fontSize: 16 }} />
+                  <span>{t("editBranchesBtn")}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancelCustomization}
+                  className="px-3 py-2 rounded-lg text-error hover:bg-error/5 font-somar text-sm font-medium transition-all duration-200 cursor-pointer whitespace-nowrap"
+                >
+                  {t("cancelCustomizeBtn")}
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsSidebarOpen(true)}
+                className="px-4 py-2 rounded-lg border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar text-sm font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap"
+              >
+                {t("branchCustomizeBtn")}
+              </button>
             )}
-          >
-            {isBranchCustomizeActive
-              ? t("cancelCustomizeBtn")
-              : t("branchCustomizeBtn")}
-          </button>
+          </div>
         </div>
 
         {/* When NOT customized: Empty State Box Matching Figma */}
-        {!isBranchCustomizeActive ? (
+        {!isCustomizedActive ? (
           <div className="bg-[#F9FAFA] border border-gray-200 rounded-2xl p-8 sm:p-12 text-center flex flex-col items-center justify-center gap-3">
             <div className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400">
               <AutoAwesomeOutlinedIcon className="w-6 h-6 text-gray-400" />
@@ -512,11 +561,18 @@ const Step4BookingDates = ({
             <p className="font-somar text-xs sm:text-sm text-gray-500 max-w-md">
               {t("emptyBranchesSubtitle")}
             </p>
+            <button
+              type="button"
+              onClick={() => setIsSidebarOpen(true)}
+              className="mt-2 px-5 py-2.5 rounded-xl bg-mainColor hover:bg-titleColor text-white font-somar font-semibold text-sm transition-all duration-200 cursor-pointer shadow-sm"
+            >
+              {t("branchCustomizeBtn")}
+            </button>
           </div>
         ) : (
           /* When CUSTOMIZED: Branches Accordion List Matching Figma */
           <div className="space-y-4">
-            {branchesList.map((branch) => {
+            {activeCustomizedBranches.map((branch) => {
               const isOpen = Boolean(openBranches[branch.id]);
               const branchName =
                 branch.name?.[locale] ||
@@ -800,6 +856,18 @@ const Step4BookingDates = ({
           </div>
         )}
       </section>
+
+      {/* Branch Customization Sidebar Drawer */}
+      <BranchCustomizationSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        selectedBranchIds={selectedBranchIds}
+        onSave={handleSaveSelectedBranches}
+        branchGroups={branchGroups}
+        title={t("sidebarTitle")}
+        subtitle={t("sidebarSubtitle")}
+        saveBtnText={t("saveBtn")}
+      />
     </div>
   );
 };

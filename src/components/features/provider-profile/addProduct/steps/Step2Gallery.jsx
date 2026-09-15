@@ -6,7 +6,6 @@ import { useTranslations, useLocale } from "next-intl";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import OndemandVideoOutlinedIcon from "@mui/icons-material/OndemandVideoOutlined";
-import LinkOutlinedIcon from "@mui/icons-material/LinkOutlined";
 import { cn } from "@utils/helpers/cn";
 
 /**
@@ -100,6 +99,12 @@ const Step2Gallery = () => {
   const youtubeError = getIn(errors, "youtubeUrl");
   const youtubeTouched = getIn(touched, "youtubeUrl");
   const showYoutubeError = Boolean(youtubeError && youtubeTouched);
+
+  // Extract YouTube video ID for embedded player preview
+  const youtubeVideoId = useMemo(
+    () => getYouTubeVideoId(values.youtubeUrl),
+    [values.youtubeUrl]
+  );
 
   // Safe gallery array
   const galleryItems = useMemo(

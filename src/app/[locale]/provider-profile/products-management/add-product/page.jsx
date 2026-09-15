@@ -486,7 +486,6 @@ const AddProductPage = () => {
           ...initialAddProductValues,
           name: { en: "", ar: "" },
           tripsType: "",
-          duration: "",
           categories: "",
           supCategories: [],
           description: { en: "", ar: "" },

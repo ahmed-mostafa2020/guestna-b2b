@@ -16,7 +16,6 @@ export const createStep1Schema = (t) => {
   const nameArInvalid = t("providerProfile.products.newAddPage.validations.nameArInvalid");
   const nameEnInvalid = t("providerProfile.products.newAddPage.validations.nameEnInvalid");
   const tripsTypeReq = t("providerProfile.products.newAddPage.validations.tripsTypeRequired");
-  const durationReq = t("providerProfile.products.newAddPage.validations.durationRequired");
   const descArReq = t("providerProfile.products.newAddPage.validations.descArRequired");
   const descEnReq = t("providerProfile.products.newAddPage.validations.descEnRequired");
   const descArInvalid = t("providerProfile.products.newAddPage.validations.descArInvalid");
@@ -41,11 +40,6 @@ export const createStep1Schema = (t) => {
     }),
 
     tripsType: Yup.string().trim().required(tripsTypeReq || reqMsg),
-
-    duration: Yup.number()
-      .typeError(durationReq || reqMsg)
-      .min(1, durationReq || reqMsg)
-      .required(durationReq || reqMsg),
 
     categories: Yup.string()
       .trim()
@@ -81,7 +75,6 @@ export const STEP_1_FIELD_NAMES = [
   "name.ar",
   "name.en",
   "tripsType",
-  "duration",
   "categories",
   "supCategories",
   "description.ar",
@@ -189,8 +182,14 @@ export const createStepLocationsSchema = (t) => {
         .required(minReq),
       max: Yup.number()
         .typeError(maxReq)
-        .min(Yup.ref("min"), maxInvalid)
-        .required(maxReq),
+        .required(maxReq)
+        .when("min", (minVal, schema) => {
+          const val = Array.isArray(minVal) ? minVal[0] : minVal;
+          const numMin = Number(val);
+          return !isNaN(numMin) && numMin > 0
+            ? schema.min(numMin, maxInvalid)
+            : schema;
+        }),
     }),
     location: Yup.object()
       .shape({

@@ -30,8 +30,15 @@ const Step1BasicInfo = ({
   const locale = useLocale();
   const isAr = locale === "ar";
 
-  const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
-    useFormikContext();
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    setFieldValue,
+    setFieldTouched,
+  } = useFormikContext();
 
   // Helper for error state
   const getFieldErrorState = useCallback(
@@ -55,8 +62,6 @@ const Step1BasicInfo = ({
   const tripsTypeError = getIn(errors, "tripsType");
   const tripsTypeTouched = getIn(touched, "tripsType");
 
-  const durationError = getIn(errors, "duration");
-  const durationTouched = getIn(touched, "duration");
 
   const allowedAgesError = getIn(errors, "allowedAges");
   const allowedAgesTouched = getIn(touched, "allowedAges");
@@ -131,19 +136,6 @@ const Step1BasicInfo = ({
     [t]
   );
 
-  const durationOptions = useMemo(
-    () => [
-      { value: 1, label: t("durations.1") },
-      { value: 2, label: t("durations.2") },
-      { value: 3, label: t("durations.3") },
-      { value: 4, label: t("durations.4") },
-      { value: 5, label: t("durations.5") },
-      { value: 7, label: t("durations.7") },
-      { value: 10, label: t("durations.10") },
-      { value: 14, label: t("durations.14") },
-    ],
-    [t]
-  );
 
   const ageOptions = useMemo(
     () => [
@@ -262,30 +254,6 @@ const Step1BasicInfo = ({
           />
         </div>
 
-        {/* Product Duration */}
-        <div>
-          <SelectionGroup
-            name="duration"
-            required={true}
-            value={values.duration || ""}
-            onChange={(e) =>
-              setFieldValue(
-                "duration",
-                e.target.value ? Number(e.target.value) : ""
-              )
-            }
-            onBlur={handleBlur}
-            touched={durationTouched}
-            errors={durationError}
-            border="1px solid var(--color-border)"
-            label={t("duration")}
-            labelClassName={labelCls}
-            list={durationOptions}
-            placeholder={t("durationPlaceholder")}
-          />
-        </div>
-
-        {/* ─── ROW 3 ─── */}
         {/* Category (Required) */}
         <div>
           <SelectionGroup
@@ -321,6 +289,7 @@ const Step1BasicInfo = ({
           />
         </div>
 
+        {/* ─── ROW 3 ─── */}
         {/* Subcategories (supCategories - Optional multi-select) */}
         <div>
           <SelectionGroup
@@ -350,7 +319,6 @@ const Step1BasicInfo = ({
           />
         </div>
 
-        {/* ─── ROW 4 ─── */}
         {/* Multi-Selection Dropdown for Ages */}
         <div>
           <SelectionGroup
@@ -382,9 +350,6 @@ const Step1BasicInfo = ({
             }
           />
         </div>
-
-        {/* Spacer for 2-column alignment */}
-        <div className="hidden md:block" aria-hidden="true" />
 
         {/* ─── ROW 4 ─── */}
         {/* Arabic Description */}

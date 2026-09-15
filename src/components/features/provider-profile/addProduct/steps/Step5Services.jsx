@@ -10,21 +10,15 @@ import AddIcon from "@mui/icons-material/Add";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
-import { cn } from "@utils/helpers/cn";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import BranchCustomizationSidebar from "./BranchCustomizationSidebar";
+import {
+  buildBranchGroups,
+  getItemName,
+} from "../branchConstants";
 
 const isHexObjectId = (str) =>
   typeof str === "string" && /^[0-9a-fA-F]{24}$/.test(str.trim());
-
-const getItemName = (item, locale) => {
-  if (!item) return "";
-  if (typeof item === "string") {
-    return isHexObjectId(item) ? "" : item;
-  }
-  if (typeof item.name === "object" && item.name !== null) {
-    return item.name[locale] || item.name.ar || item.name.en || "";
-  }
-  return item.name || item.title || item.label || "";
-};
 
 const DEFAULT_DEMO_SERVICES = [
   { id: "s1", name: { ar: "وجبة غداء خفيفة", en: "Light Lunch" } },
@@ -35,24 +29,6 @@ const DEFAULT_DEMO_SERVICES = [
   { id: "s6", name: { ar: "مشروبات وضيافة", en: "Beverages & Hospitality" } },
 ];
 
-const DEFAULT_DEMO_BRANCHES = [
-  {
-    id: "branch-1",
-    name: { ar: "فرع النخيل - الرياض", en: "Al-Nakheel Branch - Riyadh" },
-    subtitle: { ar: "فرع النخيل - الرياض", en: "Al-Nakheel Branch - Riyadh" },
-  },
-  {
-    id: "branch-2",
-    name: { ar: "فرع العليا - الرياض", en: "Al-Olaya Branch - Riyadh" },
-    subtitle: { ar: "فرع العليا - الرياض", en: "Al-Olaya Branch - Riyadh" },
-  },
-  {
-    id: "branch-3",
-    name: { ar: "فرع الروضة - جدة", en: "Al-Rawdah Branch - Jeddah" },
-    subtitle: { ar: "فرع الروضة - جدة", en: "Al-Rawdah Branch - Jeddah" },
-  },
-];
-
 const Step5Services = ({
   formSelectionData = null,
   isSelectionsLoading = false,
@@ -61,12 +37,100 @@ const Step5Services = ({
   const locale = useLocale();
   const isAr = locale === "ar";
 
-  const { values, errors, touched, handleChange, handleBlur, setFieldValue } = useFormikContext();
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    setFieldValue,
+  } = useFormikContext();
+
+  // Sidebar open/closed state
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Manage open branches accordion state
-  const [openBranches, setOpenBranches] = useState({ "branch-1": true });
-  // Toggle for branch customisation mode
-  const [isBranchCustomizeActive, setIsBranchCustomizeActive] = useState(false);
+  const [openBranches, setOpenBranches] = useState({});
+
+  // Prepare branch groups (by city)
+  const branchGroups = useMemo(() => {
+    return buildBranchGroups(formSelectionData?.providerBranchs, locale, isAr);
+  }, [formSelectionData?.providerBranchs, locale, isAr]);
+
+  // Flattened branch map for quick lookup by ID
+  const allBranchesMap = useMemo(() => {
+    const map = new Map();
+    branchGroups.forEach((group) => {
+      group.branches?.forEach((b) => {
+        map.set(b.id, b);
+      });
+    });
+    return map;
+  }, [branchGroups]);
+
+  // Selected branch IDs for customization
+  const [selectedBranchIds, setSelectedBranchIds] = useState(() => {
+    if (Array.isArray(values.customizedBranchIds) && values.customizedBranchIds.length > 0) {
+      return values.customizedBranchIds;
+    }
+    if (values.branchServices && typeof values.branchServices === "object") {
+      const keys = Object.keys(values.branchServices).filter((k) => {
+        const item = values.branchServices[k];
+        return Array.isArray(item) && item.length > 0;
+      });
+      if (keys.length > 0) return keys;
+    }
+    return [];
+  });
+
+  const isCustomizedActive = selectedBranchIds.length > 0;
+
+  // Active customized branch objects to render in form
+  const activeCustomizedBranches = useMemo(() => {
+    return selectedBranchIds
+      .map((id) => allBranchesMap.get(id))
+      .filter(Boolean);
+  }, [selectedBranchIds, allBranchesMap]);
+
+  // Handle saving branch selections from sidebar
+  const handleSaveSelectedBranches = useCallback(
+    (newSelectedIds) => {
+      setSelectedBranchIds(newSelectedIds);
+      setFieldValue("customizedBranchIds", newSelectedIds);
+
+      const currentBranchServices = { ...(values.branchServices || {}) };
+      newSelectedIds.forEach((bId) => {
+        if (!currentBranchServices[bId] || currentBranchServices[bId].length === 0) {
+          currentBranchServices[bId] = [
+            { service: "", note: { ar: "", en: "" } },
+          ];
+        }
+      });
+      // Remove unselected branches from formik state
+      Object.keys(currentBranchServices).forEach((bId) => {
+        if (!newSelectedIds.includes(bId)) {
+          delete currentBranchServices[bId];
+        }
+      });
+      setFieldValue("branchServices", currentBranchServices);
+
+      // Automatically open the first branch accordion if none open
+      if (newSelectedIds.length > 0) {
+        setOpenBranches((prev) => ({
+          ...prev,
+          [newSelectedIds[0]]: true,
+        }));
+      }
+    },
+    [values.branchServices, setFieldValue]
+  );
+
+  // Handle clearing customization
+  const handleCancelCustomization = useCallback(() => {
+    setSelectedBranchIds([]);
+    setFieldValue("customizedBranchIds", []);
+    setFieldValue("branchServices", {});
+  }, [setFieldValue]);
 
   const toggleBranch = useCallback((branchId) => {
     setOpenBranches((prev) => ({
@@ -90,32 +154,8 @@ const Step5Services = ({
       .filter(Boolean);
   }, [servicesOptions, locale]);
 
-  // Prepare branches list
-  const branchesList = useMemo(() => {
-    const rawBranches = formSelectionData?.providerBranchs;
-    if (Array.isArray(rawBranches) && rawBranches.length > 0) {
-      return rawBranches.map((b, idx) => ({
-        id: b._id || b.id || `branch-${idx}`,
-        name: {
-          ar: getItemName(b, "ar") || `فرع ${idx + 1}`,
-          en: getItemName(b, "en") || `Branch ${idx + 1}`,
-        },
-        subtitle: {
-          ar: getItemName(b, "ar") || `فرع ${idx + 1}`,
-          en: getItemName(b, "en") || `Branch ${idx + 1}`,
-        },
-      }));
-    }
-    return DEFAULT_DEMO_BRANCHES;
-  }, [formSelectionData?.providerBranchs]);
-
   // Branch-specific services initialized in form values or local state fallback
-  const branchServicesData = values.branchServices || {
-    "branch-1": [
-      { service: "", note: { ar: "", en: "" } },
-      { service: "", note: { ar: "", en: "" } },
-    ],
-  };
+  const branchServicesData = values.branchServices || {};
 
   const labelCls =
     "font-somar text-sm sm:text-base font-medium text-textDark text-start block mb-1";
@@ -316,24 +356,39 @@ const Step5Services = ({
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setIsBranchCustomizeActive((prev) => !prev)}
-            className={cn(
-              "self-start sm:self-auto px-4 py-2 rounded-lg border font-somar text-sm font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap",
-              isBranchCustomizeActive
-                ? "border-mainColor bg-mainColor text-white hover:bg-titleColor"
-                : "border-mainColor text-mainColor hover:bg-mainColor/5"
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            {isCustomizedActive ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setIsSidebarOpen(true)}
+                  className="px-4 py-2 rounded-lg border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
+                >
+                  <EditOutlinedIcon sx={{ fontSize: 16 }} />
+                  <span>{t("editBranchesBtn")}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancelCustomization}
+                  className="px-3 py-2 rounded-lg text-error hover:bg-error/5 font-somar text-sm font-medium transition-all duration-200 cursor-pointer whitespace-nowrap"
+                >
+                  {t("cancelCustomizeBtn")}
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsSidebarOpen(true)}
+                className="px-4 py-2 rounded-lg border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar text-sm font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap"
+              >
+                {t("branchCustomizeBtn")}
+              </button>
             )}
-          >
-            {isBranchCustomizeActive
-              ? t("cancelCustomizeBtn")
-              : t("branchCustomizeBtn")}
-          </button>
+          </div>
         </div>
 
         {/* When NOT customized: Empty State Box Matching Figma */}
-        {!isBranchCustomizeActive ? (
+        {!isCustomizedActive ? (
           <div className="bg-[#F9FAFA] border border-gray-200 rounded-2xl p-8 sm:p-12 text-center flex flex-col items-center justify-center gap-3">
             <div className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400">
               <AutoAwesomeOutlinedIcon className="w-6 h-6 text-gray-400" />
@@ -344,226 +399,242 @@ const Step5Services = ({
             <p className="font-somar text-xs sm:text-sm text-gray-500 max-w-md">
               {t("emptyBranchesSubtitle")}
             </p>
+            <button
+              type="button"
+              onClick={() => setIsSidebarOpen(true)}
+              className="mt-2 px-5 py-2.5 rounded-xl bg-mainColor hover:bg-titleColor text-white font-somar font-semibold text-sm transition-all duration-200 cursor-pointer shadow-sm"
+            >
+              {t("branchCustomizeBtn")}
+            </button>
           </div>
         ) : (
-          /* When CUSTOMIZED: Branches Accordion List */
+          /* When CUSTOMIZED: Branches Accordion List for Selected Branches ONLY */
           <div className="space-y-4">
-          {branchesList.map((branch) => {
-            const isOpen = Boolean(openBranches[branch.id]);
-            const branchName = branch.name?.[locale] || branch.name?.ar || branch.name?.en || "";
-            const branchSubtitle = branch.subtitle?.[locale] || branch.subtitle?.ar || branch.subtitle?.en || "";
-            const branchServices = branchServicesData[branch.id] || [
-              { service: "", note: { ar: "", en: "" } },
-            ];
+            {activeCustomizedBranches.map((branch) => {
+              const isOpen = Boolean(openBranches[branch.id]);
+              const branchName = branch.name?.[locale] || branch.name?.ar || branch.name?.en || "";
+              const branchSubtitle = branch.fullName?.[locale] || branch.fullName?.ar || branch.fullName?.en || "";
+              const branchServices = branchServicesData[branch.id] || [
+                { service: "", note: { ar: "", en: "" } },
+              ];
 
-            return (
-              <div
-                key={branch.id}
-                className="rounded-2xl border border-border overflow-hidden transition-all duration-200"
-              >
-                {/* Accordion Header */}
-                <button
-                  type="button"
-                  onClick={() => toggleBranch(branch.id)}
-                  className="w-full p-4 sm:p-5 bg-gray-50/50 hover:bg-gray-50 flex items-center justify-between cursor-pointer transition-colors"
+              return (
+                <div
+                  key={branch.id}
+                  className="rounded-2xl border border-border overflow-hidden transition-all duration-200"
                 >
-                  <div className="text-start">
-                    <h4 className="font-somar font-bold text-base text-titleColor">
-                      {branchName}
-                    </h4>
-                    {branchSubtitle && (
-                      <p className="font-somar text-xs sm:text-sm text-gray-500 mt-0.5">
-                        {branchSubtitle}
-                      </p>
-                    )}
-                  </div>
+                  {/* Accordion Header */}
+                  <button
+                    type="button"
+                    onClick={() => toggleBranch(branch.id)}
+                    className="w-full p-4 sm:p-5 bg-gray-50/50 hover:bg-gray-50 flex items-center justify-between cursor-pointer transition-colors"
+                  >
+                    <div className="text-start">
+                      <h4 className="font-somar font-bold text-base text-titleColor">
+                        {branchName}
+                      </h4>
+                      {branchSubtitle && (
+                        <p className="font-somar text-xs sm:text-sm text-gray-500 mt-0.5">
+                          {branchSubtitle}
+                        </p>
+                      )}
+                    </div>
 
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center text-textDark hover:bg-gray-200/50 transition-colors">
-                    {isOpen ? (
-                      <KeyboardArrowUpIcon className="w-5 h-5 text-gray-600" />
-                    ) : (
-                      <KeyboardArrowDownIcon className="w-5 h-5 text-gray-600" />
-                    )}
-                  </div>
-                </button>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-textDark hover:bg-gray-200/50 transition-colors">
+                      {isOpen ? (
+                        <KeyboardArrowUpIcon className="w-5 h-5 text-gray-600" />
+                      ) : (
+                        <KeyboardArrowDownIcon className="w-5 h-5 text-gray-600" />
+                      )}
+                    </div>
+                  </button>
 
-                {/* Accordion Content */}
-                {isOpen && (
-                  <div className="p-4 sm:p-6 bg-white border-t border-border space-y-4 sm:space-y-6">
-                    {branchServices.map((bItem, bIdx) => {
-                      const selectedServiceName = (() => {
-                        const sVal = bItem.service;
-                        const found = servicesOptions.find((opt) => {
-                          const id = opt?._id || opt?.id;
-                          if (id && id === sVal) return true;
-                          if (opt?.name === sVal) return true;
-                          if (typeof opt?.name === "object" && opt.name !== null) {
-                            return opt.name.ar === sVal || opt.name.en === sVal;
-                          }
-                          return false;
-                        });
-                        if (found) return getItemName(found, locale);
-                        return isHexObjectId(sVal) ? "" : sVal || "";
-                      })();
+                  {/* Accordion Content */}
+                  {isOpen && (
+                    <div className="p-4 sm:p-6 bg-white border-t border-border space-y-4 sm:space-y-6">
+                      {branchServices.map((bItem, bIdx) => {
+                        const selectedServiceName = (() => {
+                          const sVal = bItem.service;
+                          const found = servicesOptions.find((opt) => {
+                            const id = opt?._id || opt?.id;
+                            if (id && id === sVal) return true;
+                            if (opt?.name === sVal) return true;
+                            if (typeof opt?.name === "object" && opt.name !== null) {
+                              return opt.name.ar === sVal || opt.name.en === sVal;
+                            }
+                            return false;
+                          });
+                          if (found) return getItemName(found, locale);
+                          return isHexObjectId(sVal) ? "" : sVal || "";
+                        })();
 
-                      return (
-                        <div
-                          key={bIdx}
-                          className="bg-gray-50/70 p-4 sm:p-6 rounded-2xl border border-border space-y-4"
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="font-somar text-base font-medium text-textDark">
-                              {t("serviceItem", { num: bIdx + 1 })}
-                            </span>
+                        return (
+                          <div
+                            key={bIdx}
+                            className="bg-gray-50/70 p-4 sm:p-6 rounded-2xl border border-border space-y-4"
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="font-somar text-base font-medium text-textDark">
+                                {t("serviceItem", { num: bIdx + 1 })}
+                              </span>
 
-                            {branchServices.length > 1 && (
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const updated = branchServices.filter(
-                                    (_, i) => i !== bIdx
-                                  );
-                                  setFieldValue(
-                                    `branchServices.${branch.id}`,
-                                    updated
-                                  );
-                                }}
-                                aria-label={t("removeService")}
-                                className="w-8 h-8 flex items-center justify-center text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
-                              >
-                                <DeleteOutlineIcon className="w-5 h-5" />
-                              </button>
-                            )}
-                          </div>
-
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-                            {/* Service dropdown */}
-                            <div>
-                              <SelectionGroup
-                                name={`branchServices.${branch.id}[${bIdx}].service`}
-                                required={true}
-                                value={selectedServiceName}
-                                onChange={(e) => {
-                                  const selectedName = e.target.value;
-                                  const selectedObj = servicesOptions.find((opt) => {
-                                    const name = getItemName(opt, locale);
-                                    return (
-                                      name === selectedName ||
-                                      opt.name === selectedName ||
-                                      (typeof opt.name === "object" &&
-                                        (opt.name?.ar === selectedName ||
-                                          opt.name?.en === selectedName))
+                              {branchServices.length > 1 && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const updated = branchServices.filter(
+                                      (_, i) => i !== bIdx
                                     );
-                                  });
-                                  const updated = [...branchServices];
-                                  updated[bIdx] = {
-                                    ...updated[bIdx],
-                                    service:
-                                      selectedObj?._id ||
-                                      selectedObj?.id ||
-                                      selectedName,
-                                  };
-                                  setFieldValue(
-                                    `branchServices.${branch.id}`,
-                                    updated
-                                  );
-                                }}
-                                onBlur={handleBlur}
-                                label={t("serviceLabel")}
-                                labelClassName={labelCls}
-                                placeholder={t("servicePlaceholder")}
-                                border="1px solid var(--color-border)"
-                                list={serviceNameList}
-                                disabled={isSelectionsLoading}
-                              />
+                                    setFieldValue(
+                                      `branchServices.${branch.id}`,
+                                      updated
+                                    );
+                                  }}
+                                  aria-label={t("removeService")}
+                                  className="w-8 h-8 flex items-center justify-center text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
+                                >
+                                  <DeleteOutlineIcon className="w-5 h-5" />
+                                </button>
+                              )}
                             </div>
 
-                            {/* Arabic Notes */}
-                            <div>
-                              <TextInputGroup
-                                type="text"
-                                name={`branchServices.${branch.id}[${bIdx}].note.ar`}
-                                value={bItem.note?.ar || ""}
-                                onChange={(e) => {
-                                  const updated = [...branchServices];
-                                  updated[bIdx] = {
-                                    ...updated[bIdx],
-                                    note: {
-                                      ...updated[bIdx]?.note,
-                                      ar: e.target.value,
-                                    },
-                                  };
-                                  setFieldValue(
-                                    `branchServices.${branch.id}`,
-                                    updated
-                                  );
-                                }}
-                                onBlur={handleBlur}
-                                label={t("notesArLabel")}
-                                labelClassName={labelCls}
-                                placeholder={t("notesArPlaceholder")}
-                                borderClassName={inputBorderCls}
-                                autoComplete="off"
-                              />
-                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                              {/* Service dropdown */}
+                              <div>
+                                <SelectionGroup
+                                  name={`branchServices.${branch.id}[${bIdx}].service`}
+                                  required={true}
+                                  value={selectedServiceName}
+                                  onChange={(e) => {
+                                    const selectedName = e.target.value;
+                                    const selectedObj = servicesOptions.find((opt) => {
+                                      const name = getItemName(opt, locale);
+                                      return (
+                                        name === selectedName ||
+                                        opt.name === selectedName ||
+                                        (typeof opt.name === "object" &&
+                                          (opt.name?.ar === selectedName ||
+                                            opt.name?.en === selectedName))
+                                      );
+                                    });
+                                    const updated = [...branchServices];
+                                    updated[bIdx] = {
+                                      ...updated[bIdx],
+                                      service:
+                                        selectedObj?._id ||
+                                        selectedObj?.id ||
+                                        selectedName,
+                                    };
+                                    setFieldValue(
+                                      `branchServices.${branch.id}`,
+                                      updated
+                                    );
+                                  }}
+                                  onBlur={handleBlur}
+                                  label={t("serviceLabel")}
+                                  labelClassName={labelCls}
+                                  placeholder={t("servicePlaceholder")}
+                                  border="1px solid var(--color-border)"
+                                  list={serviceNameList}
+                                  disabled={isSelectionsLoading}
+                                />
+                              </div>
 
-                            {/* English Notes */}
-                            <div dir="ltr" className="text-start">
-                              <TextInputGroup
-                                type="text"
-                                name={`branchServices.${branch.id}[${bIdx}].note.en`}
-                                value={bItem.note?.en || ""}
-                                onChange={(e) => {
-                                  const updated = [...branchServices];
-                                  updated[bIdx] = {
-                                    ...updated[bIdx],
-                                    note: {
-                                      ...updated[bIdx]?.note,
-                                      en: e.target.value,
-                                    },
-                                  };
-                                  setFieldValue(
-                                    `branchServices.${branch.id}`,
-                                    updated
-                                  );
-                                }}
-                                onBlur={handleBlur}
-                                label={t("notesEnLabel")}
-                                labelClassName={labelCls}
-                                placeholder={t("notesEnPlaceholder")}
-                                borderClassName={inputBorderCls}
-                                textAlign="left"
-                                autoComplete="off"
-                              />
+                              {/* Arabic Notes */}
+                              <div>
+                                <TextInputGroup
+                                  type="text"
+                                  name={`branchServices.${branch.id}[${bIdx}].note.ar`}
+                                  value={bItem.note?.ar || ""}
+                                  onChange={(e) => {
+                                    const updated = [...branchServices];
+                                    updated[bIdx] = {
+                                      ...updated[bIdx],
+                                      note: {
+                                        ...updated[bIdx]?.note,
+                                        ar: e.target.value,
+                                      },
+                                    };
+                                    setFieldValue(
+                                      `branchServices.${branch.id}`,
+                                      updated
+                                    );
+                                  }}
+                                  onBlur={handleBlur}
+                                  label={t("notesArLabel")}
+                                  labelClassName={labelCls}
+                                  placeholder={t("notesArPlaceholder")}
+                                  borderClassName={inputBorderCls}
+                                  autoComplete="off"
+                                />
+                              </div>
+
+                              {/* English Notes */}
+                              <div dir="ltr" className="text-start">
+                                <TextInputGroup
+                                  type="text"
+                                  name={`branchServices.${branch.id}[${bIdx}].note.en`}
+                                  value={bItem.note?.en || ""}
+                                  onChange={(e) => {
+                                    const updated = [...branchServices];
+                                    updated[bIdx] = {
+                                      ...updated[bIdx],
+                                      note: {
+                                        ...updated[bIdx]?.note,
+                                        en: e.target.value,
+                                      },
+                                    };
+                                    setFieldValue(
+                                      `branchServices.${branch.id}`,
+                                      updated
+                                    );
+                                  }}
+                                  onBlur={handleBlur}
+                                  label={t("notesEnLabel")}
+                                  labelClassName={labelCls}
+                                  placeholder={t("notesEnPlaceholder")}
+                                  borderClassName={inputBorderCls}
+                                  textAlign="left"
+                                  autoComplete="off"
+                                />
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const updated = [
-                          ...branchServices,
-                          { service: "", note: { ar: "", en: "" } },
-                        ];
-                        setFieldValue(`branchServices.${branch.id}`, updated);
-                      }}
-                      className="w-full py-3 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <AddIcon className="w-4 h-4" />
-                      <span>{t("addServiceBtn")}</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </section>
-  </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = [
+                            ...branchServices,
+                            { service: "", note: { ar: "", en: "" } },
+                          ];
+                          setFieldValue(`branchServices.${branch.id}`, updated);
+                        }}
+                        className="w-full py-3 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        <AddIcon className="w-4 h-4" />
+                        <span>{t("addServiceBtn")}</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {/* Branch Customization Sidebar Drawer */}
+      <BranchCustomizationSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        selectedBranchIds={selectedBranchIds}
+        onSave={handleSaveSelectedBranches}
+        branchGroups={branchGroups}
+      />
+    </div>
   );
 };
 
