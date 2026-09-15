@@ -487,12 +487,16 @@ const AddProductPage = () => {
           name: { en: "", ar: "" },
           tripsType: "",
           duration: "",
+          categories: "",
+          supCategories: [],
           description: { en: "", ar: "" },
           systemTypes: ["B2B", "B2C"],
           allowedAges: [],
           academicStages: [],
           b2cTargetAudiences: [],
           providerBranchs: [],
+          location: { lat: 26.6176, lng: 37.9221, address: "" },
+          gatheringLocation: { lat: 24.9576, lng: 46.6988, address: "" },
           availableSeats: { min: "", max: "" },
           guestRange: { min: "", max: "" },
           branchCapacities: {},
@@ -503,6 +507,10 @@ const AddProductPage = () => {
           services: [{ service: "", note: { en: "", ar: "" } }],
           mustHaveItems: { en: [""], ar: [""] },
           exemptedFromTrip: { en: [""], ar: [""] },
+          thumbnailWeb: null,
+          gallery: [],
+          video: null,
+          youtubeUrl: "",
         }}
         validationSchema={stepValidationSchema}
         onSubmit={async (values, formikHelpers) => {

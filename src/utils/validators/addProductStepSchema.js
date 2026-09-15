@@ -47,6 +47,12 @@ export const createStep1Schema = (t) => {
       .min(1, durationReq || reqMsg)
       .required(durationReq || reqMsg),
 
+    categories: Yup.string()
+      .trim()
+      .required(t("providerProfile.products.newAddPage.validations.categoryRequired") || reqMsg),
+
+    supCategories: Yup.array().of(Yup.string()).optional(),
+
     allowedAges: Yup.array().of(Yup.string()).optional(),
 
     description: Yup.object().shape({
@@ -76,6 +82,8 @@ export const STEP_1_FIELD_NAMES = [
   "name.en",
   "tripsType",
   "duration",
+  "categories",
+  "supCategories",
   "description.ar",
   "description.en",
 ];
@@ -87,6 +95,15 @@ export const createStep2Schema = (t) => {
   const coverReqMsg = t("providerProfile.products.newAddPage.step2.coverRequired");
   const galleryMinMsg = t("providerProfile.products.newAddPage.step2.galleryMinError");
   const galleryMaxMsg = t("providerProfile.products.newAddPage.step2.galleryMaxError");
+  const videoSizeError =
+    t("providerProfile.products.newAddPage.validations.videoSizeError") ||
+    "Video size must not exceed 50MB";
+  const videoFormatError =
+    t("providerProfile.products.newAddPage.validations.videoFormatError") ||
+    "Unsupported video format";
+  const youtubeInvalidError =
+    t("providerProfile.products.newAddPage.validations.youtubeInvalidError") ||
+    "Please enter a valid YouTube URL";
 
   return Yup.object().shape({
     thumbnailWeb: Yup.mixed()
@@ -104,10 +121,51 @@ export const createStep2Schema = (t) => {
       .min(4, galleryMinMsg)
       .max(15, galleryMaxMsg)
       .required(galleryMinMsg),
+
+    video: Yup.mixed()
+      .nullable()
+      .test("is-valid-video", videoFormatError, (val) => {
+        if (!val) return true;
+        if (typeof val === "string") return true;
+        if (val instanceof File || val instanceof Blob) {
+          const allowedTypes = [
+            "video/mp4",
+            "video/webm",
+            "video/ogg",
+            "video/quicktime",
+          ];
+          return allowedTypes.includes(val.type) || val.type.startsWith("video/");
+        }
+        return true;
+      })
+      .test("is-valid-video-size", videoSizeError, (val) => {
+        if (!val) return true;
+        if (val instanceof File || val instanceof Blob) {
+          const maxSize = 50 * 1024 * 1024; // 50MB
+          return val.size <= maxSize;
+        }
+        return true;
+      })
+      .optional(),
+
+    youtubeUrl: Yup.string()
+      .trim()
+      .test("is-valid-youtube", youtubeInvalidError, (val) => {
+        if (!val || val.trim() === "") return true;
+        const youtubeRegex =
+          /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/|shorts\/)|youtu\.be\/)[a-zA-Z0-9_-]+/;
+        return youtubeRegex.test(val.trim());
+      })
+      .optional(),
   });
 };
 
-export const STEP_2_FIELD_NAMES = ["thumbnailWeb", "gallery"];
+export const STEP_2_FIELD_NAMES = [
+  "thumbnailWeb",
+  "gallery",
+  "video",
+  "youtubeUrl",
+];
 
 /**
  * Yup schema for Step 2 (Service Locations & Capacity) of the multi-step Add Product flow
@@ -134,6 +192,20 @@ export const createStepLocationsSchema = (t) => {
         .min(Yup.ref("min"), maxInvalid)
         .required(maxReq),
     }),
+    location: Yup.object()
+      .shape({
+        lat: Yup.mixed().optional(),
+        lng: Yup.mixed().optional(),
+        address: Yup.string().optional(),
+      })
+      .optional(),
+    gatheringLocation: Yup.object()
+      .shape({
+        lat: Yup.mixed().optional(),
+        lng: Yup.mixed().optional(),
+        address: Yup.string().optional(),
+      })
+      .optional(),
   });
 };
 
@@ -141,6 +213,8 @@ export const STEP_LOCATIONS_FIELD_NAMES = [
   "providerBranchs",
   "availableSeats.min",
   "availableSeats.max",
+  "location",
+  "gatheringLocation",
 ];
 
 /**

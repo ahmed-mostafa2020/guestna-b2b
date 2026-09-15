@@ -4,7 +4,37 @@ import { memo, useMemo, useRef, useState, useEffect } from "react";
 import { useFormikContext, getIn } from "formik";
 import { useTranslations, useLocale } from "next-intl";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import CloseIcon from "@mui/icons-material/Close";
+import OndemandVideoOutlinedIcon from "@mui/icons-material/OndemandVideoOutlined";
+import LinkOutlinedIcon from "@mui/icons-material/LinkOutlined";
 import { cn } from "@utils/helpers/cn";
+
+/**
+ * YouTube SVG Icon
+ */
+const YouTubeIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+  </svg>
+);
+
+/**
+ * Extracts 11-char YouTube video ID from various YouTube URL formats
+ */
+const getYouTubeVideoId = (url) => {
+  if (!url || typeof url !== "string") return null;
+  const trimmed = url.trim();
+  const regExp =
+    /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = trimmed.match(regExp);
+  return match && match[2]?.length === 11 ? match[2] : null;
+};
+
+const formatFileSize = (bytes) => {
+  if (!bytes || bytes === 0) return "0 MB";
+  const mb = bytes / (1024 * 1024);
+  return `${mb.toFixed(1)} MB`;
+};
 
 /**
  * Gallery Export icon matching Figma node 2078:54195
@@ -51,6 +81,7 @@ const Step2Gallery = () => {
 
   const galleryInputRef = useRef(null);
   const coverInputRef = useRef(null);
+  const videoInputRef = useRef(null);
 
   // Field errors and touched states
   const coverError = getIn(errors, "thumbnailWeb");
@@ -61,11 +92,92 @@ const Step2Gallery = () => {
   const galleryTouched = getIn(touched, "gallery");
   const showGalleryError = Boolean(galleryError && galleryTouched);
 
+  const [videoFileError, setVideoFileError] = useState("");
+  const videoError = getIn(errors, "video") || videoFileError;
+  const videoTouched = getIn(touched, "video");
+  const showVideoError = Boolean(videoError && (videoTouched || videoFileError));
+
+  const youtubeError = getIn(errors, "youtubeUrl");
+  const youtubeTouched = getIn(touched, "youtubeUrl");
+  const showYoutubeError = Boolean(youtubeError && youtubeTouched);
+
   // Safe gallery array
   const galleryItems = useMemo(
     () => (Array.isArray(values.gallery) ? values.gallery : []),
     [values.gallery]
   );
+
+  // Video preview management
+  const [videoPreview, setVideoPreview] = useState("");
+  const [videoMetadata, setVideoMetadata] = useState({ name: "", size: 0 });
+
+  useEffect(() => {
+    let createdUrl = "";
+    if (values.video instanceof File || values.video instanceof Blob) {
+      createdUrl = URL.createObjectURL(values.video);
+      setVideoPreview(createdUrl);
+      setVideoMetadata({
+        name: values.video.name || "video.mp4",
+        size: values.video.size || 0,
+      });
+    } else if (typeof values.video === "string" && values.video) {
+      setVideoPreview(values.video);
+      setVideoMetadata({ name: values.video.split("/").pop() || "video", size: 0 });
+    } else {
+      setVideoPreview("");
+      setVideoMetadata({ name: "", size: 0 });
+    }
+
+    return () => {
+      if (createdUrl) URL.revokeObjectURL(createdUrl);
+    };
+  }, [values.video]);
+
+  // Handle single video upload (max 50MB, mp4/webm/mov/ogg)
+  const handleVideoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const maxSize = 50 * 1024 * 1024;
+    if (file.size > maxSize) {
+      setVideoFileError(
+        t("videoSizeError") || "Video size must not exceed 50MB"
+      );
+      e.target.value = "";
+      return;
+    }
+
+    const allowedMimePrefix = "video/";
+    const allowedTypes = [
+      "video/mp4",
+      "video/webm",
+      "video/ogg",
+      "video/quicktime",
+    ];
+    if (!allowedTypes.includes(file.type) && !file.type.startsWith(allowedMimePrefix)) {
+      setVideoFileError(
+        t("videoFormatError") || "Unsupported video format"
+      );
+      e.target.value = "";
+      return;
+    }
+
+    setVideoFileError("");
+    setFieldValue("video", file, true);
+    setFieldTouched("video", true, false);
+    e.target.value = "";
+  };
+
+  // Remove uploaded video
+  const handleRemoveVideo = (e) => {
+    e?.stopPropagation?.();
+    setVideoFileError("");
+    setFieldValue("video", null, true);
+    setFieldTouched("video", true, false);
+    if (videoInputRef.current) {
+      videoInputRef.current.value = "";
+    }
+  };
 
   // Safely manage cover image preview with automatic URL cleanup to prevent memory leaks
   const [coverPreview, setCoverPreview] = useState("");
@@ -380,6 +492,174 @@ const Step2Gallery = () => {
               onChange={handleGalleryUpload}
             />
           </div>
+        </div>
+      </div>
+
+      {/* 4. Section 3: Product Video Upload */}
+      <div className="flex flex-col gap-4 pt-4 border-t border-border text-start" id="video">
+        <div>
+          <h3 className="font-ibm text-base font-bold text-textDark leading-5 flex items-center gap-2">
+            <OndemandVideoOutlinedIcon className="w-5 h-5 text-mainColor" />
+            <span>{t("videoSectionTitle")}</span>
+          </h3>
+          <p className="font-ibm text-sm sm:text-base font-normal text-textLight leading-6 mt-1">
+            {t("videoSectionSubtitle")}
+          </p>
+        </div>
+
+        {/* Video Preview or Upload Box */}
+        <div className="flex flex-col gap-3 max-w-[540px] w-full">
+          {videoPreview ? (
+            <div className="flex flex-col gap-3">
+              <div className="w-full rounded-xl overflow-hidden bg-black border border-gray-200 relative aspect-video flex items-center justify-center shadow-xs">
+                <video
+                  src={videoPreview}
+                  controls
+                  playsInline
+                  className="w-full h-full object-contain"
+                />
+              </div>
+
+              {/* Video Info and Controls */}
+              <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-200 text-xs sm:text-sm">
+                <div className="flex items-center gap-2 overflow-hidden text-ellipsis">
+                  <OndemandVideoOutlinedIcon className="w-4 h-4 text-gray-500 shrink-0" />
+                  <span className="font-medium text-textDark truncate max-w-[220px] sm:max-w-[300px]">
+                    {videoMetadata.name}
+                  </span>
+                  {videoMetadata.size > 0 && (
+                    <span className="text-gray-400 font-ibm shrink-0">
+                      ({formatFileSize(videoMetadata.size)})
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => videoInputRef.current?.click()}
+                    className="text-xs font-semibold text-mainColor hover:underline cursor-pointer"
+                  >
+                    {t("changeVideoBtn")}
+                  </button>
+                  <span className="text-gray-300">|</span>
+                  <button
+                    type="button"
+                    onClick={handleRemoveVideo}
+                    className="text-xs font-semibold text-red-500 hover:text-red-700 flex items-center gap-1 cursor-pointer"
+                    title={t("removeVideo")}
+                  >
+                    <DeleteOutlineIcon className="w-3.5 h-3.5" />
+                    <span>{t("removeVideo")}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <button
+                type="button"
+                onClick={() => videoInputRef.current?.click()}
+                className="w-full h-[52px] rounded-xl border-2 border-dashed border-gray-300 hover:border-mainColor bg-gray-50/50 hover:bg-mainColor/[0.02] text-textDark font-ibm text-sm sm:text-base font-medium flex items-center justify-center gap-2.5 cursor-pointer transition-all duration-200 select-none"
+              >
+                <OndemandVideoOutlinedIcon className="w-5 h-5 text-mainColor" />
+                <span>{t("uploadVideoBtn")}</span>
+                <span className="text-xs text-gray-400 font-normal">
+                  (MP4, WebM, MOV, OGG — max 50MB)
+                </span>
+              </button>
+            </div>
+          )}
+
+          <input
+            ref={videoInputRef}
+            type="file"
+            accept="video/mp4,video/webm,video/ogg,video/quicktime"
+            className="hidden"
+            onChange={handleVideoUpload}
+          />
+
+          {showVideoError && (
+            <p className="text-xs text-error font-medium">{videoError}</p>
+          )}
+        </div>
+      </div>
+
+      {/* 5. Section 4: YouTube Video Link */}
+      <div className="flex flex-col gap-4 pt-4 border-t border-border text-start" id="youtubeUrl">
+        <div>
+          <h3 className="font-ibm text-base font-bold text-textDark leading-5 flex items-center gap-2">
+            <YouTubeIcon className="w-5 h-5 text-red-600" />
+            <span>{t("youtubeSectionTitle")}</span>
+          </h3>
+          <p className="font-ibm text-sm sm:text-base font-normal text-textLight leading-6 mt-1">
+            {t("youtubeSectionSubtitle")}
+          </p>
+        </div>
+
+        {/* YouTube URL Input with Live Embed Preview */}
+        <div className="flex flex-col gap-4 max-w-[540px] w-full">
+          <div className="relative flex items-center">
+            {/* YouTube Icon */}
+            <div className="absolute start-3.5 flex items-center justify-center pointer-events-none text-red-600">
+              <YouTubeIcon className="w-5 h-5" />
+            </div>
+
+            <input
+              type="url"
+              name="youtubeUrl"
+              value={values.youtubeUrl || ""}
+              onChange={(e) => {
+                setFieldValue("youtubeUrl", e.target.value, true);
+                setFieldTouched("youtubeUrl", true, false);
+              }}
+              placeholder={t("youtubeUrlPlaceholder")}
+              dir="ltr"
+              className={cn(
+                "w-full h-12 ps-11 pe-10 rounded-xl border bg-white font-somar text-sm text-textDark transition-all outline-none",
+                showYoutubeError
+                  ? "border-error focus:border-error ring-1 ring-error/30"
+                  : "border-border hover:border-mainColor focus:border-mainColor focus:ring-1 focus:ring-mainColor/30"
+              )}
+            />
+
+            {/* Clear button if URL is entered */}
+            {values.youtubeUrl && (
+              <button
+                type="button"
+                onClick={() => {
+                  setFieldValue("youtubeUrl", "", true);
+                  setFieldTouched("youtubeUrl", true, false);
+                }}
+                className="absolute end-3 w-6 h-6 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
+                title="Clear"
+              >
+                <CloseIcon sx={{ fontSize: 16 }} />
+              </button>
+            )}
+          </div>
+
+          {showYoutubeError && (
+            <p className="text-xs text-error font-medium">{youtubeError}</p>
+          )}
+
+          {/* Live YouTube Embedded Player Preview */}
+          {youtubeVideoId && (
+            <div className="space-y-2 animate-fadeIn">
+              <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-xs border border-gray-200 bg-black">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${youtubeVideoId}`}
+                  title="YouTube video player preview"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full border-0"
+                />
+              </div>
+              <p className="text-xs text-textLight font-ibm">
+                ✓ {t("videoUploaded")}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </section>

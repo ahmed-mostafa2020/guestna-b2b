@@ -7,6 +7,20 @@ import TextInputGroup from "@components/forms/TextInputGroup";
 import SelectionGroup from "@components/forms/SelectionGroup";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 
+const isHexObjectId = (str) =>
+  typeof str === "string" && /^[0-9a-fA-F]{24}$/.test(str.trim());
+
+const getItemName = (item, locale) => {
+  if (!item) return "";
+  if (typeof item === "string") {
+    return isHexObjectId(item) ? "" : item;
+  }
+  if (typeof item.name === "object" && item.name !== null) {
+    return item.name[locale] || item.name.ar || item.name.en || "";
+  }
+  return item.name || item.title || item.label || "";
+};
+
 const Step1BasicInfo = ({
   formSelectionData = null,
   isSelectionsLoading = false,
@@ -46,6 +60,58 @@ const Step1BasicInfo = ({
 
   const allowedAgesError = getIn(errors, "allowedAges");
   const allowedAgesTouched = getIn(touched, "allowedAges");
+
+  const categoriesError = getIn(errors, "categories");
+  const categoriesTouched = getIn(touched, "categories");
+  const showCategoriesError = Boolean(categoriesError && categoriesTouched);
+
+  const supCategoriesError = getIn(errors, "supCategories");
+  const supCategoriesTouched = getIn(touched, "supCategories");
+
+  // Categories list from selection data
+  const categoryOptions = useMemo(() => {
+    const raw = formSelectionData?.categories || [];
+    return Array.isArray(raw)
+      ? raw.map((cat) => {
+          const id = cat._id || cat.id || cat.name;
+          const label = getItemName(cat, locale) || id;
+          return { value: id, label, raw: cat };
+        })
+      : [];
+  }, [formSelectionData?.categories, locale]);
+
+  // Subcategories list from selection data
+  const allSubCategoryOptions = useMemo(() => {
+    const raw =
+      formSelectionData?.supCategories ||
+      formSelectionData?.subCategories ||
+      formSelectionData?.supCategory ||
+      [];
+    return Array.isArray(raw)
+      ? raw.map((sc) => {
+          const id = sc._id || sc.id || sc.name;
+          const label = getItemName(sc, locale) || id;
+          const categoryRef =
+            sc.category?._id || sc.category?.id || sc.category || sc.categoryId;
+          return { value: id, label, categoryRef, raw: sc };
+        })
+      : [];
+  }, [
+    formSelectionData?.supCategories,
+    formSelectionData?.subCategories,
+    formSelectionData?.supCategory,
+    locale,
+  ]);
+
+  // Filter subcategories if category is selected and subcategories reference a category
+  const filteredSubCategoryOptions = useMemo(() => {
+    if (!values.categories) return allSubCategoryOptions;
+    const hasCategoryBinding = allSubCategoryOptions.some((sc) => sc.categoryRef);
+    if (!hasCategoryBinding) return allSubCategoryOptions;
+    return allSubCategoryOptions.filter(
+      (sc) => !sc.categoryRef || sc.categoryRef === values.categories
+    );
+  }, [allSubCategoryOptions, values.categories]);
 
   const tripTypeOptions = useMemo(
     () => [
@@ -220,6 +286,71 @@ const Step1BasicInfo = ({
         </div>
 
         {/* ─── ROW 3 ─── */}
+        {/* Category (Required) */}
+        <div>
+          <SelectionGroup
+            name="categories"
+            required={true}
+            value={values.categories || ""}
+            onChange={(e) => {
+              const newCat = e.target.value;
+              setFieldValue("categories", newCat, true);
+              setFieldTouched("categories", true, false);
+
+              // If previously selected subcategories are not compatible with new category, keep valid ones
+              if (Array.isArray(values.supCategories) && values.supCategories.length > 0) {
+                const validIds = allSubCategoryOptions
+                  .filter((sc) => !sc.categoryRef || sc.categoryRef === newCat)
+                  .map((sc) => sc.value);
+                const kept = values.supCategories.filter((id) => validIds.includes(id));
+                setFieldValue("supCategories", kept, true);
+              }
+            }}
+            onBlur={handleBlur}
+            touched={showCategoriesError}
+            errors={categoriesError}
+            border="1px solid var(--color-border)"
+            label={t("category")}
+            labelClassName={labelCls}
+            list={categoryOptions}
+            placeholder={
+              isSelectionsLoading
+                ? tCommon("loadingOptions")
+                : t("categoryPlaceholder")
+            }
+          />
+        </div>
+
+        {/* Subcategories (supCategories - Optional multi-select) */}
+        <div>
+          <SelectionGroup
+            name="supCategories"
+            value={values.supCategories || []}
+            onChange={(e) => {
+              const selectedVal = Array.isArray(e.target.value)
+                ? e.target.value
+                : [e.target.value];
+              setFieldValue("supCategories", selectedVal, true);
+              setFieldTouched("supCategories", true, false);
+            }}
+            onBlur={handleBlur}
+            touched={supCategoriesTouched}
+            errors={supCategoriesError}
+            border="1px solid var(--color-border)"
+            label={t("subCategory")}
+            labelClassName={labelCls}
+            multiple={true}
+            showCheckbox={true}
+            list={filteredSubCategoryOptions}
+            placeholder={
+              isSelectionsLoading
+                ? tCommon("loadingOptions")
+                : t("subCategoryPlaceholder")
+            }
+          />
+        </div>
+
+        {/* ─── ROW 4 ─── */}
         {/* Multi-Selection Dropdown for Ages */}
         <div>
           <SelectionGroup

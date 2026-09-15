@@ -198,8 +198,8 @@ const Step4SalesChannels = ({
       } else if (channelKey === "B2B") {
         nextTypes = ["B2B"];
       }
-      setFieldValue("systemTypes", nextTypes);
-      setFieldTouched("systemTypes", true);
+      setFieldValue("systemTypes", nextTypes, true);
+      setFieldTouched("systemTypes", true, false);
     },
     [setFieldValue, setFieldTouched]
   );
@@ -301,24 +301,22 @@ const Step4SalesChannels = ({
   const handleRemoveStage = useCallback(
     (valToRemove) => {
       const current = values.academicStages || [];
-      setFieldValue(
-        "academicStages",
-        current.filter((item) => item !== valToRemove)
-      );
+      const next = current.filter((item) => item !== valToRemove);
+      setFieldValue("academicStages", next, true);
+      setFieldTouched("academicStages", true, false);
     },
-    [values.academicStages, setFieldValue]
+    [values.academicStages, setFieldValue, setFieldTouched]
   );
 
   // Handle removing a selected target audience chip
   const handleRemoveAudience = useCallback(
     (valToRemove) => {
       const current = values.b2cTargetAudiences || [];
-      setFieldValue(
-        "b2cTargetAudiences",
-        current.filter((item) => item !== valToRemove)
-      );
+      const next = current.filter((item) => item !== valToRemove);
+      setFieldValue("b2cTargetAudiences", next, true);
+      setFieldTouched("b2cTargetAudiences", true, false);
     },
-    [values.b2cTargetAudiences, setFieldValue]
+    [values.b2cTargetAudiences, setFieldValue, setFieldTouched]
   );
 
   const showB2BSection = selectedSystemTypes.includes("B2B");
@@ -444,8 +442,9 @@ const Step4SalesChannels = ({
           touched={touched.academicStages}
           error={errors.academicStages}
           onSelectChange={(e) => {
-            setFieldValue("academicStages", e.target.value);
-            setFieldTouched("academicStages", true);
+            const nextVal = e.target.value;
+            setFieldValue("academicStages", nextVal, true);
+            setFieldTouched("academicStages", true, false);
           }}
           onBlur={handleBlur}
           onRemoveTag={handleRemoveStage}
@@ -471,8 +470,9 @@ const Step4SalesChannels = ({
           touched={touched.b2cTargetAudiences}
           error={errors.b2cTargetAudiences}
           onSelectChange={(e) => {
-            setFieldValue("b2cTargetAudiences", e.target.value);
-            setFieldTouched("b2cTargetAudiences", true);
+            const nextVal = e.target.value;
+            setFieldValue("b2cTargetAudiences", nextVal, true);
+            setFieldTouched("b2cTargetAudiences", true, false);
           }}
           onBlur={handleBlur}
           onRemoveTag={handleRemoveAudience}

@@ -9,6 +9,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import BranchLocationPicker from "@components/features/provider-profile/branches/BranchLocationPicker";
 import { cn } from "@utils/helpers/cn";
 
 const isHexObjectId = (str) =>
@@ -368,6 +369,93 @@ const Step2Locations = ({
               )}
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* ────────────────────────────────────────────────────────── */}
+      {/* MAPS: موقع المنتج وموقع التجمع (2 Columns on Web)          */}
+      {/* ────────────────────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* موقع المنتج / الفعالية (Product Location) */}
+        <div
+          id="location"
+          className="bg-white rounded-2xl border border-border p-6 shadow-none scroll-mt-6 flex flex-col justify-between"
+        >
+          <div className="mb-4 text-start">
+            <div className="flex items-center gap-2">
+              <LocationOnOutlinedIcon className="w-5 h-5 text-mainColor" />
+              <h2 className="text-lg font-bold text-titleColor">
+                {t("productLocationTitle")}
+              </h2>
+            </div>
+            <p className="text-sm text-gray-500 mt-1">
+              {t("productLocationSubtitle")}
+            </p>
+          </div>
+
+          <BranchLocationPicker
+            lat={values.location?.lat}
+            lng={values.location?.lng}
+            address={values.location?.address}
+            mapTitle={t("productLocationTitle")}
+            instructionText={t("mapInstruction")}
+            locationLinkLabel={t("locationLinkLabel")}
+            locationLinkPlaceholder={t("locationLinkPlaceholder")}
+            clearLocationText={t("clearLocation")}
+            resolvingLinkText={t("resolvingLink")}
+            linkResolvedText={t("linkResolved")}
+            linkNotFoundText={t("linkNotFound")}
+            mapConfigError={t("mapConfigError")}
+            inputId="product-location-input"
+            onChangeLocation={(newLoc) => {
+              setFieldValue("location", {
+                lat: newLoc.lat,
+                lng: newLoc.lng,
+                address: newLoc.address || "",
+              });
+            }}
+          />
+        </div>
+
+        {/* موقع التجمع (Gathering Location) */}
+        <div
+          id="gatheringLocation"
+          className="bg-white rounded-2xl border border-border p-6 shadow-none scroll-mt-6 flex flex-col justify-between"
+        >
+          <div className="mb-4 text-start">
+            <div className="flex items-center gap-2">
+              <LocationOnOutlinedIcon className="w-5 h-5 text-mainColor" />
+              <h2 className="text-lg font-bold text-titleColor">
+                {t("gatheringLocationTitle")}
+              </h2>
+            </div>
+            <p className="text-sm text-gray-500 mt-1">
+              {t("gatheringLocationSubtitle")}
+            </p>
+          </div>
+
+          <BranchLocationPicker
+            lat={values.gatheringLocation?.lat}
+            lng={values.gatheringLocation?.lng}
+            address={values.gatheringLocation?.address}
+            mapTitle={t("gatheringLocationTitle")}
+            instructionText={t("mapInstruction")}
+            locationLinkLabel={t("locationLinkLabel")}
+            locationLinkPlaceholder={t("locationLinkPlaceholder")}
+            clearLocationText={t("clearLocation")}
+            resolvingLinkText={t("resolvingLink")}
+            linkResolvedText={t("linkResolved")}
+            linkNotFoundText={t("linkNotFound")}
+            mapConfigError={t("mapConfigError")}
+            inputId="gathering-location-input"
+            onChangeLocation={(newLoc) => {
+              setFieldValue("gatheringLocation", {
+                lat: newLoc.lat,
+                lng: newLoc.lng,
+                address: newLoc.address || "",
+              });
+            }}
+          />
         </div>
       </div>
 

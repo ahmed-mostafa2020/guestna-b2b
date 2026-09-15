@@ -37,6 +37,7 @@ const BranchLocationPicker = ({
   linkResolvedText = "تم تحديد الموقع من الرابط بنجاح",
   linkNotFoundText = "تعذر العثور على إحداثيات من هذا الرابط",
   mapConfigError = "Google Maps API key is not configured",
+  inputId = "branch-location-input",
 }) => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -432,7 +433,7 @@ const BranchLocationPicker = ({
       {/* Location Link / Address Input */}
       <div className="flex flex-col gap-1.5 mt-1">
         <label
-          htmlFor="branch-location-input"
+          htmlFor={inputId}
           className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-textDark font-somar cursor-pointer"
         >
           <LinkOutlined className="!w-4 !h-4 text-mainColor" />
@@ -440,7 +441,7 @@ const BranchLocationPicker = ({
         </label>
         <div className="relative" dir={inputDir}>
           <input
-            id="branch-location-input"
+            id={inputId}
             type="text"
             value={address || ""}
             onChange={handleAddressChange}

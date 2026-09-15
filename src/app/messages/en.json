@@ -237,15 +237,15 @@
       "productsManagement": "Products Management",
       "ordersManagement": "Orders Management",
       "ourProducts": "Marketplace",
-      "branches": "Branches"
+      "branches": "Branches Management"
     },
     "branches": {
-      "pageTitle": "Branches",
+      "pageTitle": "Branches Management",
       "pageSubtitle": "Manage company branches and locations",
       "addNewBranch": "Add New Branch",
       "breadcrumbs": {
         "home": "Home",
-        "branches": "Branches"
+        "branches": "Branches Management"
       },
       "stats": {
         "totalBranches": "Total Branches",
@@ -406,11 +406,19 @@
           "toHourRequired": "Please select end time",
           "serviceRequired": "Please select a service",
           "servicesMin": "Please add at least one service",
+          "categoryRequired": "Please select a category",
+          "videoSizeError": "Video size must not exceed 50MB",
+          "videoFormatError": "Unsupported video format (allowed: MP4, WebM, MOV, OGG)",
+          "youtubeInvalidError": "Please enter a valid YouTube URL",
           "validationFailed": "Please fix the highlighted errors to proceed"
         },
         "step1": {
           "cardTitle": "Basic Product Information",
           "cardSubtitle": "Please enter the basic information to create the product and link it to the organization.",
+          "category": "Category",
+          "categoryPlaceholder": "Select category",
+          "subCategory": "Subcategories",
+          "subCategoryPlaceholder": "Select subcategories",
           "nameEn": "The name of the trip in English",
           "nameEnPlaceholder": "Write the name of the trip in English",
           "nameAr": "Product Name in Arabic",
@@ -475,6 +483,16 @@
           "galleryMinError": "At least 4 gallery images are required",
           "galleryMaxError": "Maximum 15 images allowed",
           "savedSuccess": "Photo gallery saved successfully",
+          "videoSectionTitle": "Product Video",
+          "videoSectionSubtitle": "Upload a product video to showcase the experience (MP4, WebM, MOV, OGG, up to 50MB).",
+          "uploadVideoBtn": "Upload Video",
+          "changeVideoBtn": "Change Video",
+          "removeVideo": "Remove Video",
+          "videoUploaded": "Video uploaded successfully",
+          "youtubeSectionTitle": "YouTube Video Link",
+          "youtubeSectionSubtitle": "Provide a YouTube video link to showcase directly with the product.",
+          "youtubeUrlLabel": "YouTube URL",
+          "youtubeUrlPlaceholder": "https://www.youtube.com/watch?v=...",
           "next": "Next",
           "previous": "Previous"
         },
@@ -548,6 +566,18 @@
           "emptyBranchesSubtitle": "All branches currently use the default capacity above",
           "deleteCustomization": "Delete Customization",
           "noBranchesSelected": "Please select at least one branch above to begin customizing",
+          "productLocationTitle": "Product / Activity Location",
+          "productLocationSubtitle": "Set the product or activity location on the map or paste the location link below.",
+          "gatheringLocationTitle": "Gathering Location",
+          "gatheringLocationSubtitle": "Set the participants gathering point on the map or paste the location link below.",
+          "locationLinkLabel": "You can paste the location link here",
+          "locationLinkPlaceholder": "https://maps.google.com/...",
+          "mapInstruction": "Click on the map to set location or drag the marker",
+          "clearLocation": "Clear location",
+          "resolvingLink": "Resolving location from link...",
+          "linkResolved": "Location resolved from link successfully",
+          "linkNotFound": "Could not find coordinates from this link",
+          "mapConfigError": "Google Maps API key is not configured",
           "savedSuccess": "Service locations and capacity saved successfully"
         },
         "stepBookingDates": {

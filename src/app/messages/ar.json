@@ -244,15 +244,15 @@
       "productsManagement": "إدارة المنتجات",
       "ordersManagement": "إدارة الطلبات",
       "ourProducts": "متجر الأفراد",
-      "branches": "الفروع"
+      "branches": "إدارة الفروع"
     },
     "branches": {
-      "pageTitle": "الفروع",
+      "pageTitle": "إدارة الفروع",
       "pageSubtitle": "إدارة فروع ومواقع الشركة",
       "addNewBranch": "إضافة فرع جديد",
       "breadcrumbs": {
         "home": "الرئيسية",
-        "branches": "الفروع"
+        "branches": "إدارة الفروع"
       },
       "stats": {
         "totalBranches": "إجمالي الفروع",
@@ -413,11 +413,19 @@
           "toHourRequired": "يرجى تحديد وقت النهاية",
           "serviceRequired": "يرجى اختيار الخدمة",
           "servicesMin": "يرجى إضافة خدمة واحدة على الأقل",
+          "categoryRequired": "يرجى اختيار الفئة",
+          "videoSizeError": "حجم الفيديو يجب ألا يتجاوز 50 ميجابايت",
+          "videoFormatError": "صيغة الفيديو غير مدعومة (المسموح: MP4, WebM, MOV, OGG)",
+          "youtubeInvalidError": "يرجى إدخال رابط يوتيوب صحيح",
           "validationFailed": "يرجى تصحيح الأخطاء الموضحة للمتابعة"
         },
         "step1": {
           "cardTitle": "بيانات المنتج الاساسية",
           "cardSubtitle": "من فضلك أدخل البيانات الأساسية لإنشاء المنتج وربطها بالمؤسسة.",
+          "category": "الفئة",
+          "categoryPlaceholder": "اختر الفئة",
+          "subCategory": "الفئات الفرعية",
+          "subCategoryPlaceholder": "اختر الفئات الفرعية",
           "nameEn": "The name of the trip in English",
           "nameEnPlaceholder": "Write the name of the trip in English",
           "nameAr": "اسم المنتج  بالعربي ",
@@ -482,6 +490,16 @@
           "galleryMinError": "يتطلب رفع 4 صور على الأقل للمعرض",
           "galleryMaxError": "الحد الأقصى المسموح به 15 صورة",
           "savedSuccess": "تم حفظ معرض الصور بنجاح",
+          "videoSectionTitle": "فيديو المنتج",
+          "videoSectionSubtitle": "يمكنك رفع مقطع فيديو واحد لتقديم وتوضيح تفاصيل المنتج للعملاء (MP4, WebM, MOV, OGG، بحد أقصى 50 ميجابايت).",
+          "uploadVideoBtn": "رفع الفيديو",
+          "changeVideoBtn": "تغيير الفيديو",
+          "removeVideo": "حذف الفيديو",
+          "videoUploaded": "تم رفع الفيديو بنجاح",
+          "youtubeSectionTitle": "رابط فيديو يوتيوب",
+          "youtubeSectionSubtitle": "أضف رابط فيديو من يوتيوب ليعرض مباشرة مع المنتج.",
+          "youtubeUrlLabel": "رابط اليوتيوب",
+          "youtubeUrlPlaceholder": "https://www.youtube.com/watch?v=...",
           "next": "التالي",
           "previous": "السابق"
         },
@@ -555,6 +573,18 @@
           "emptyBranchesSubtitle": "جميع الفروع تستخدم حاليا السعة الافتراضية أعلاه",
           "deleteCustomization": "حذف التخصيص",
           "noBranchesSelected": "يرجى اختيار فرع واحد على الأقل أعلاه للبدء في التخصيص",
+          "productLocationTitle": "موقع المنتج / الفعالية",
+          "productLocationSubtitle": "حدد موقع تقديم المنتج أو الفعالية على الخريطة أو ضع رابط الموقع أدناه.",
+          "gatheringLocationTitle": "موقع التجمع",
+          "gatheringLocationSubtitle": "حدد موقع نقطة التجمع للمشاركين على الخريطة أو ضع رابط الموقع أدناه.",
+          "locationLinkLabel": "يمكنك وضع رابط الموقع هنا",
+          "locationLinkPlaceholder": "https://maps.google.com/...",
+          "mapInstruction": "انقر على الخريطة لتحديد الموقع أو اسحب العلامة",
+          "clearLocation": "إلغاء تحديد الموقع",
+          "resolvingLink": "جاري تحديد الموقع من الرابط...",
+          "linkResolved": "تم تحديد الموقع من الرابط بنجاح",
+          "linkNotFound": "تعذر العثور على إحداثيات من هذا الرابط",
+          "mapConfigError": "مفتاح خريطة جوجل غير متوفر حالياً",
           "savedSuccess": "تم حفظ مواقع تقديم الخدمة والسعة بنجاح"
         },
         "stepBookingDates": {
@@ -564,7 +594,7 @@
           "startDatePlaceholder": "اختر تاريخ بداية المنتج",
           "endDate": "تاريخ انتهاء",
           "endDatePlaceholder": "اختر تاريخ نهاية المنتج",
-          "bookingDeadline": "الموعد النهائي (بالأيام قبل)",
+          "bookingDeadline": "الموعد النهائي للحجز (بالأيام)",
           "bookingDeadlinePlaceholder": "2 يوم",
           "recurrencePattern": "نمط التكرار",
           "selectPattern": "اسبوعي",
