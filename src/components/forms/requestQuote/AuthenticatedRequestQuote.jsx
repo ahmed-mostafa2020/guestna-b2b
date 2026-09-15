@@ -736,9 +736,9 @@ const AuthenticatedRequestQuote = ({
                           return {};
                         })()}
                         style={{ cursor: "pointer" }}
-                        onClick={(e) =>
-                          e.target.showPicker && e.target.showPicker()
-                        }
+                        onClick={(e) => {
+                          try { e.target.showPicker?.(); } catch {}
+                        }}
                         labelFontFamily="var(--font-somar-sans), sans-serif"
                         required={true}
                       />
@@ -786,9 +786,9 @@ const AuthenticatedRequestQuote = ({
                           return { min: formatDateForInput(today) };
                         })()}
                         style={{ cursor: "pointer" }}
-                        onClick={(e) =>
-                          e.target.showPicker && e.target.showPicker()
-                        }
+                        onClick={(e) => {
+                          try { e.target.showPicker?.(); } catch {}
+                        }}
                         labelFontFamily="var(--font-somar-sans), sans-serif"
                       />
                       {/* Helper text for end date validation */}

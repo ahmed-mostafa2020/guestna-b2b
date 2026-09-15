@@ -34,7 +34,7 @@ const StepTripDate = () => {
             min={new Date().toISOString().split("T")[0]}
             max={values.endDay || undefined}
             style={{ cursor: "pointer" }}
-            onClick={(e) => e.target.showPicker && e.target.showPicker()}
+            onClick={(e) => { try { e.target.showPicker?.(); } catch {} }}
           />
         </div>
 
@@ -55,7 +55,7 @@ const StepTripDate = () => {
               onBlur={handleBlur}
               min={values.day || new Date().toISOString().split("T")[0]}
               style={{ cursor: "pointer" }}
-              onClick={(e) => e.target.showPicker && e.target.showPicker()}
+              onClick={(e) => { try { e.target.showPicker?.(); } catch {} }}
             />
           </div>
         ) : (
@@ -74,7 +74,7 @@ const StepTripDate = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 style={{ cursor: "pointer" }}
-                onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                onClick={(e) => { try { e.target.showPicker?.(); } catch {} }}
               />
             </div>
 
@@ -92,7 +92,7 @@ const StepTripDate = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 style={{ cursor: "pointer" }}
-                onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                onClick={(e) => { try { e.target.showPicker?.(); } catch {} }}
               />
             </div>
           </>

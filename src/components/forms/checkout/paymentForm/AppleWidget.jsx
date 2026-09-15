@@ -35,6 +35,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
 
   const bookingIdRef = useRef(null);
   const isInitializedRef = useRef(false);
+  const isPaymentActiveRef = useRef(false);
   const widgetContainerRef = useRef(null);
   const baseDataRef = useRef(baseData);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -125,6 +126,11 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
           validate_merchant_url: "https://api.moyasar.com/v1/applepay/initiate",
         },
         on_initiating: function () {
+          // Guard against double-tap — prevents "active payment session" error
+          if (isPaymentActiveRef.current) {
+            return Promise.reject(new Error("Payment already in progress"));
+          }
+          isPaymentActiveRef.current = true;
           setIsProcessing(true);
           return new Promise(function (resolve, reject) {
             try {
@@ -133,6 +139,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                   if (!data?.bookingId) {
                     enqueueSnackbar("issue at generate Id", { variant: "error" });
                     setIsProcessing(false);
+                    isPaymentActiveRef.current = false;
                     reject();
                     return;
                   }
@@ -145,12 +152,14 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                     { variant: "error" }
                   );
                   setIsProcessing(false);
+                  isPaymentActiveRef.current = false;
                   reject();
                 },
               });
             } catch (error) {
               enqueueSnackbar("on error Initiation", { variant: "error" });
               setIsProcessing(false);
+              isPaymentActiveRef.current = false;
               reject();
             }
           });
@@ -167,6 +176,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                 mutateComferm(confirmationData, {
                   onSuccess: () => {
                     bookingIdRef.current = null;
+                    isPaymentActiveRef.current = false;
                     resolve({});
                   },
                   onError: (error) => {
@@ -175,17 +185,20 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                       { variant: "error" }
                     );
                     setIsProcessing(false);
+                    isPaymentActiveRef.current = false;
                     reject();
                   },
                 });
               } else {
                 enqueueSnackbar("faild generate paymentId", { variant: "error" });
                 setIsProcessing(false);
+                isPaymentActiveRef.current = false;
                 reject();
               }
             } catch (error) {
               enqueueSnackbar("faild on complete", { variant: "error" });
               setIsProcessing(false);
+              isPaymentActiveRef.current = false;
               reject();
             }
           });
