@@ -254,18 +254,26 @@ export const formatAddProductPayload = (
         : values.discountedPrice !== "" && !isNaN(Number(values.discountedPrice))
         ? Number(values.discountedPrice)
         : b2cMarketPrice;
-    if (values.b2cPrice?.hasTax !== undefined) {
-      payload["b2cPrice[hasTax]"] = Boolean(values.b2cPrice.hasTax);
-    }
-    if (values.b2cPrice?.depositRatio !== undefined && values.b2cPrice?.depositRatio !== "") {
-      payload["b2cPrice[depositRatio]"] = Number(values.b2cPrice.depositRatio);
-    }
-    if (values.b2cPrice?.depositValue !== undefined && values.b2cPrice?.depositValue !== "") {
-      payload["b2cPrice[depositValue]"] = Number(values.b2cPrice.depositValue);
-    }
-    if (values.b2cPrice?.finalDepositValue !== undefined && values.b2cPrice?.finalDepositValue !== "") {
-      payload["b2cPrice[finalDepositValue]"] = Number(values.b2cPrice.finalDepositValue);
-    }
+    const b2cHasTax = values.b2cPrice?.hasTax !== undefined ? Boolean(values.b2cPrice.hasTax) : true;
+    payload["b2cPrice[hasTax]"] = b2cHasTax;
+
+    const b2cDepositRatio =
+      values.b2cPrice?.depositRatio !== undefined && values.b2cPrice?.depositRatio !== ""
+        ? Number(values.b2cPrice.depositRatio)
+        : 10;
+    payload["b2cPrice[depositRatio]"] = b2cDepositRatio;
+
+    const b2cDepositVal =
+      values.b2cPrice?.depositValue !== undefined && values.b2cPrice?.depositValue !== ""
+        ? Number(values.b2cPrice.depositValue)
+        : Math.round((b2cMarketPrice * b2cDepositRatio) / 100);
+    payload["b2cPrice[depositValue]"] = b2cDepositVal;
+
+    const b2cFinalDepositVal =
+      values.b2cPrice?.finalDepositValue !== undefined && values.b2cPrice?.finalDepositValue !== ""
+        ? Number(values.b2cPrice.finalDepositValue)
+        : b2cDepositVal;
+    payload["b2cPrice[finalDepositValue]"] = b2cFinalDepositVal;
   }
 
   let b2cTargetIdx = 0;
@@ -336,18 +344,26 @@ export const formatAddProductPayload = (
       values.b2bPrice?.finalPrice !== undefined && values.b2bPrice?.finalPrice !== ""
         ? Number(values.b2bPrice.finalPrice)
         : b2bMarketPrice;
-    if (values.b2bPrice?.hasTax !== undefined) {
-      payload["b2bPrice[hasTax]"] = Boolean(values.b2bPrice.hasTax);
-    }
-    if (values.b2bPrice?.depositRatio !== undefined && values.b2bPrice?.depositRatio !== "") {
-      payload["b2bPrice[depositRatio]"] = Number(values.b2bPrice.depositRatio);
-    }
-    if (values.b2bPrice?.depositValue !== undefined && values.b2bPrice?.depositValue !== "") {
-      payload["b2bPrice[depositValue]"] = Number(values.b2bPrice.depositValue);
-    }
-    if (values.b2bPrice?.finalDepositValue !== undefined && values.b2bPrice?.finalDepositValue !== "") {
-      payload["b2bPrice[finalDepositValue]"] = Number(values.b2bPrice.finalDepositValue);
-    }
+    const b2bHasTax = values.b2bPrice?.hasTax !== undefined ? Boolean(values.b2bPrice.hasTax) : true;
+    payload["b2bPrice[hasTax]"] = b2bHasTax;
+
+    const b2bDepositRatio =
+      values.b2bPrice?.depositRatio !== undefined && values.b2bPrice?.depositRatio !== ""
+        ? Number(values.b2bPrice.depositRatio)
+        : 10;
+    payload["b2bPrice[depositRatio]"] = b2bDepositRatio;
+
+    const b2bDepositVal =
+      values.b2bPrice?.depositValue !== undefined && values.b2bPrice?.depositValue !== ""
+        ? Number(values.b2bPrice.depositValue)
+        : Math.round((b2bMarketPrice * b2bDepositRatio) / 100);
+    payload["b2bPrice[depositValue]"] = b2bDepositVal;
+
+    const b2bFinalDepositVal =
+      values.b2bPrice?.finalDepositValue !== undefined && values.b2bPrice?.finalDepositValue !== ""
+        ? Number(values.b2bPrice.finalDepositValue)
+        : b2bDepositVal;
+    payload["b2bPrice[finalDepositValue]"] = b2bFinalDepositVal;
   }
   if (b2bCost !== undefined) {
     payload["b2bPrice[productCost]"] = b2bCost;
