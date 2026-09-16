@@ -36,9 +36,15 @@ import {
   createStepPricingSchema,
   STEP_PRICING_FIELD_NAMES,
 } from "@utils/validators/addProductStepSchema";
-import { initialAddProductValues } from "@components/forms/addProductForm";
+import {
+  initialAddProductValues,
+  formatAddProductPayload,
+} from "@components/forms/addProductForm";
 import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { useRouter } from "next/navigation";
+import getProxyUrl from "@utils/api/getProxyUrl";
+import { getHeaders } from "@utils/helpers/getHeaders";
 
 /**
  * Declarative Step Configuration (7 Steps)
@@ -253,9 +259,11 @@ const AddProductPage = () => {
   const locale = useLocale();
   const isAr = locale === "ar";
   const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState([]);
+  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
   const pageTopRef = useRef(null);
   const isFirstRender = useRef(true);
   const scrollTimerRef = useRef(null);
@@ -342,6 +350,92 @@ const AddProductPage = () => {
     return config ? config.getSchema(t) : null;
   }, [currentStep, t]);
 
+  const handleFinalSubmit = useCallback(
+    async (values) => {
+      setIsSubmittingForm(true);
+      try {
+        const formattedPayload = formatAddProductPayload(
+          values,
+          false,
+          formSelectionData
+        );
+        const formData = new FormData();
+        Object.keys(formattedPayload).forEach((key) => {
+          formData.append(key, formattedPayload[key]);
+        });
+
+        if (Array.isArray(values.gallery)) {
+          values.gallery.forEach((file) => {
+            if (file instanceof File || file instanceof Blob) {
+              formData.append("gallary", file);
+            }
+          });
+        }
+
+        if (
+          values.thumbnailWeb instanceof File ||
+          values.thumbnailWeb instanceof Blob
+        ) {
+          formData.append("thumbnail", values.thumbnailWeb);
+        }
+
+        if (
+          values.mediaFile instanceof File ||
+          values.mediaFile instanceof Blob
+        ) {
+          formData.append("detailsFile", values.mediaFile);
+        }
+
+        if (values.video instanceof File || values.video instanceof Blob) {
+          formData.append("video", values.video);
+        }
+
+        const headers = getHeaders(locale, true);
+        const proxyUrl = getProxyUrl(B2B_END_POINTS.PROVIDER_PROFILE.NEW_TRIP);
+
+        const response = await fetch(proxyUrl, {
+          method: "POST",
+          headers,
+          body: formData,
+        });
+
+        const responseText = await response.text();
+        let data = {};
+        try {
+          data = JSON.parse(responseText);
+        } catch (e) {
+          data = { message: responseText || `HTTP ${response.status} Error` };
+        }
+
+        if (!response.ok) {
+          throw { response: { data, status: response.status } };
+        }
+
+        enqueueSnackbar(
+          t("providerProfile.products.modal.successMessage") ||
+            "Product added successfully",
+          { variant: "success" }
+        );
+
+        router.push(`/${locale}/provider-profile/products-management`);
+      } catch (err) {
+        console.error(
+          "Submit product error response:",
+          err?.response?.data || err?.message || err
+        );
+        enqueueSnackbar(
+          err?.response?.data?.message ||
+            t("providerProfile.products.modal.errorMessage") ||
+            "An error occurred",
+          { variant: "error" }
+        );
+      } finally {
+        setIsSubmittingForm(false);
+      }
+    },
+    [formSelectionData, locale, enqueueSnackbar, router, t]
+  );
+
   // Unified step validation & progression handler
   const handleNextClick = useCallback(
     async (validateForm, setTouched, touched, values) => {
@@ -403,9 +497,12 @@ const AddProductPage = () => {
 
       if (config.nextStep) {
         setCurrentStep(config.nextStep);
+      } else {
+        // Step 8: Final Submission!
+        await handleFinalSubmit(values);
       }
     },
-    [currentStep, enqueueSnackbar, t]
+    [currentStep, enqueueSnackbar, t, handleFinalSubmit]
   );
 
   return (
@@ -519,7 +616,8 @@ const AddProductPage = () => {
         initialValues={{
           ...initialAddProductValues,
           name: { en: "", ar: "" },
-          tripsType: "",
+          tripType: "ACTIVITY",
+          tripsType: "ACTIVITY",
           categories: "",
           supCategories: [],
           description: { en: "", ar: "" },
@@ -532,14 +630,16 @@ const AddProductPage = () => {
           gatheringLocation: { lat: 24.9576, lng: 46.6988, address: "" },
           availableSeats: { min: "", max: "" },
           guestRange: { min: "", max: "" },
+          ageRange: { from: "", to: "" },
           branchCapacities: {},
           recurrencePattern: "WEEKLY",
           selectedDays: [],
           monthDay: "",
           availableTimes: [{ from: "", to: "" }],
-          services: [{ service: "", note: { en: "", ar: "" } }],
+          services: [{ service: "", price: 0, note: { en: "", ar: "" } }],
           mustHaveItems: { en: [""], ar: [""] },
           exemptedFromTrip: { en: [""], ar: [""] },
+          benefits: { en: [""], ar: [""] },
           thumbnailWeb: null,
           gallery: [],
           video: null,
@@ -560,6 +660,7 @@ const AddProductPage = () => {
             selectedStage: "",
             freeSupervisor: false,
             supervisorRatio: "10",
+            studentsPerSupervisor: "10",
           },
           b2bBulkPricing: [{ minCount: "", price: "" }],
           b2bSeasonPrice: "",
@@ -671,7 +772,7 @@ const AddProductPage = () => {
 
                 <button
                   type="button"
-                  disabled={formikSubmitting}
+                  disabled={formikSubmitting || isSubmittingForm}
                   onClick={() =>
                     handleNextClick(
                       validateForm,
@@ -682,7 +783,7 @@ const AddProductPage = () => {
                   }
                   className="w-full h-[52px] rounded-lg bg-mainColor hover:bg-titleColor text-white font-somar font-bold text-base leading-5 transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.99] disabled:opacity-75 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  {formikSubmitting ? (
+                  {formikSubmitting || isSubmittingForm ? (
                     <>
                       <CircularProgress size={20} color="inherit" />
                       <span className="font-somar font-bold text-base leading-5">

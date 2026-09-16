@@ -244,8 +244,8 @@ const Step5Services = ({
                         )}
                       </div>
 
-                      {/* 3 Inputs Grid: Service, AR Notes, EN Notes */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                      {/* 4 Inputs Grid: Service, Price, AR Notes, EN Notes */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                         {/* Service Selection */}
                         <div>
                           <SelectionGroup
@@ -278,6 +278,23 @@ const Step5Services = ({
                             disabled={isSelectionsLoading}
                             touched={serviceTouched}
                             errors={serviceErr}
+                          />
+                        </div>
+
+                        {/* Service Price */}
+                        <div>
+                          <TextInputGroup
+                            type="number"
+                            min="0"
+                            name={`services[${index}].price`}
+                            value={item.price ?? ""}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            label={t("servicePrice")}
+                            labelClassName={labelCls}
+                            placeholder={t("servicePricePlaceholder")}
+                            borderClassName={inputBorderCls}
+                            autoComplete="off"
                           />
                         </div>
 
@@ -322,7 +339,7 @@ const Step5Services = ({
                 <button
                   type="button"
                   onClick={() =>
-                    push({ service: "", note: { en: "", ar: "" } })
+                    push({ service: "", price: 0, note: { en: "", ar: "" } })
                   }
                   className="w-full py-3 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
                 >
@@ -498,7 +515,7 @@ const Step5Services = ({
                               )}
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                               {/* Service dropdown */}
                               <div>
                                 <SelectionGroup
@@ -537,6 +554,33 @@ const Step5Services = ({
                                   border="1px solid var(--color-border)"
                                   list={serviceNameList}
                                   disabled={isSelectionsLoading}
+                                />
+                              </div>
+
+                              {/* Service Price */}
+                              <div>
+                                <TextInputGroup
+                                  type="number"
+                                  min="0"
+                                  name={`branchServices.${branch.id}[${bIdx}].price`}
+                                  value={bItem.price ?? ""}
+                                  onChange={(e) => {
+                                    const updated = [...branchServices];
+                                    updated[bIdx] = {
+                                      ...updated[bIdx],
+                                      price: e.target.value,
+                                    };
+                                    setFieldValue(
+                                      `branchServices.${branch.id}`,
+                                      updated
+                                    );
+                                  }}
+                                  onBlur={handleBlur}
+                                  label={t("servicePrice")}
+                                  labelClassName={labelCls}
+                                  placeholder={t("servicePricePlaceholder")}
+                                  borderClassName={inputBorderCls}
+                                  autoComplete="off"
                                 />
                               </div>
 

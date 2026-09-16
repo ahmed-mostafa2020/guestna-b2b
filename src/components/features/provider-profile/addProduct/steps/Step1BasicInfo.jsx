@@ -6,6 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import SelectionGroup from "@components/forms/SelectionGroup";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { cn } from "@utils/helpers/cn";
 
 const isHexObjectId = (str) =>
   typeof str === "string" && /^[0-9a-fA-F]{24}$/.test(str.trim());
@@ -58,13 +59,11 @@ const Step1BasicInfo = ({
   const nameEn = getFieldErrorState("name.en");
   const descAr = getFieldErrorState("description.ar");
   const descEn = getFieldErrorState("description.en");
+  const ageFrom = getFieldErrorState("ageRange.from");
+  const ageTo = getFieldErrorState("ageRange.to");
 
-  const tripsTypeError = getIn(errors, "tripsType");
-  const tripsTypeTouched = getIn(touched, "tripsType");
-
-
-  const allowedAgesError = getIn(errors, "allowedAges");
-  const allowedAgesTouched = getIn(touched, "allowedAges");
+  const tripTypeError = getIn(errors, "tripType") || getIn(errors, "tripsType");
+  const tripTypeTouched = getIn(touched, "tripType") || getIn(touched, "tripsType");
 
   const categoriesError = getIn(errors, "categories");
   const categoriesTouched = getIn(touched, "categories");
@@ -136,41 +135,6 @@ const Step1BasicInfo = ({
     [t]
   );
 
-
-  const ageOptions = useMemo(
-    () => [
-      { value: "ALL", label: t("defaultAges.ALL") },
-      { value: "UNDER_6", label: t("defaultAges.UNDER_6") },
-      { value: "6_TO_12", label: t("defaultAges.6_TO_12") },
-      { value: "13_TO_17", label: t("defaultAges.13_TO_17") },
-      { value: "18_TO_30", label: t("defaultAges.18_TO_30") },
-      { value: "31_TO_50", label: t("defaultAges.31_TO_50") },
-      { value: "OVER_50", label: t("defaultAges.OVER_50") },
-    ],
-    [t]
-  );
-
-  // Dynamically populate target audiences / age range from API selections
-  const audienceOptions = useMemo(() => {
-    if (
-      Array.isArray(formSelectionData?.targetAudiences) &&
-      formSelectionData.targetAudiences.length > 0
-    ) {
-      return formSelectionData.targetAudiences.map((item) => {
-        const id = item._id || item.id || item.name;
-        const label =
-          typeof item.name === "object" && item.name !== null
-            ? item.name[locale] || item.name.ar || item.name.en || id
-            : item.name || item.label || id;
-        return {
-          value: id,
-          label: label,
-        };
-      });
-    }
-    return ageOptions;
-  }, [formSelectionData?.targetAudiences, ageOptions, locale]);
-
   const inputBorderCls =
     "border border-border hover:border-mainColor focus:border-mainColor";
   const labelCls =
@@ -236,18 +200,22 @@ const Step1BasicInfo = ({
         </div>
 
         {/* ─── ROW 2 ─── */}
-        {/* Product Type (tripsType) */}
+        {/* Product Type (tripType) */}
         <div>
           <SelectionGroup
-            name="tripsType"
+            name="tripType"
             required={true}
-            value={values.tripsType || ""}
-            onChange={(e) => setFieldValue("tripsType", e.target.value)}
+            value={values.tripType || values.tripsType || ""}
+            onChange={(e) => {
+              const val = e.target.value;
+              setFieldValue("tripType", val);
+              setFieldValue("tripsType", val);
+            }}
             onBlur={handleBlur}
-            touched={tripsTypeTouched}
-            errors={tripsTypeError}
+            touched={tripTypeTouched}
+            errors={tripTypeError}
             border="1px solid var(--color-border)"
-            label={t("tripsType")}
+            label={t("tripType") || t("tripsType")}
             labelClassName={labelCls}
             list={tripTypeOptions}
             placeholder={t("tripsTypePlaceholder")}
@@ -319,36 +287,72 @@ const Step1BasicInfo = ({
           />
         </div>
 
-        {/* Multi-Selection Dropdown for Ages */}
+        {/* Age Range (ageRange[from] & ageRange[to]) */}
         <div>
-          <SelectionGroup
-            name="allowedAges"
-            value={values.allowedAges || []}
-            onChange={(e) => {
-              const selectedVal = e.target.value;
-              setFieldValue("allowedAges", selectedVal);
-              const arr = Array.isArray(selectedVal) ? selectedVal : [selectedVal];
-              const mapped = arr.filter(Boolean).map((id) => ({
-                targetAudience: id,
-                price: "",
-              }));
-              setFieldValue("targetAudiences", mapped);
-            }}
-            onBlur={handleBlur}
-            touched={allowedAgesTouched}
-            errors={allowedAgesError}
-            border="1px solid var(--color-border)"
-            label={t("ageRange")}
-            labelClassName={labelCls}
-            multiple={true}
-            showCheckbox={true}
-            list={audienceOptions}
-            placeholder={
-              isSelectionsLoading
-                ? tCommon("loadingOptions")
-                : t("ageRangePlaceholder")
-            }
-          />
+          <label className={labelCls}>
+            {t("ageRange")}
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <div id="ageRange.from" className="flex flex-col scroll-mt-6">
+              <input
+                id="ageRange.from"
+                name="ageRange.from"
+                type="number"
+                min="0"
+                value={values.ageRange?.from ?? ""}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder={t("minAgePlaceholder")}
+                className={cn(
+                  "w-full h-11 px-3.5 rounded-lg border bg-white text-sm font-medium text-titleColor transition-colors focus:outline-none font-somar",
+                  ageFrom.showError
+                    ? "border-error focus:border-error ring-1 ring-error/30"
+                    : "border-gray-200 hover:border-mainColor focus:border-mainColor"
+                )}
+              />
+              <label
+                htmlFor="ageRange.from"
+                className="font-somar text-xs font-medium text-gray-500 block mt-1.5 text-start cursor-pointer"
+              >
+                {t("minAge")}
+              </label>
+              {ageFrom.showError && (
+                <p className="text-xs text-error font-medium mt-1 text-start">
+                  {ageFrom.error}
+                </p>
+              )}
+            </div>
+
+            <div id="ageRange.to" className="flex flex-col scroll-mt-6">
+              <input
+                id="ageRange.to"
+                name="ageRange.to"
+                type="number"
+                min="0"
+                value={values.ageRange?.to ?? ""}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder={t("maxAgePlaceholder")}
+                className={cn(
+                  "w-full h-11 px-3.5 rounded-lg border bg-white text-sm font-medium text-titleColor transition-colors focus:outline-none font-somar",
+                  ageTo.showError
+                    ? "border-error focus:border-error ring-1 ring-error/30"
+                    : "border-gray-200 hover:border-mainColor focus:border-mainColor"
+                )}
+              />
+              <label
+                htmlFor="ageRange.to"
+                className="font-somar text-xs font-medium text-gray-500 block mt-1.5 text-start cursor-pointer"
+              >
+                {t("maxAge")}
+              </label>
+              {ageTo.showError && (
+                <p className="text-xs text-error font-medium mt-1 text-start">
+                  {ageTo.error}
+                </p>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* ─── ROW 4 ─── */}

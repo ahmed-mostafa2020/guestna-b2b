@@ -21,6 +21,10 @@ const Step6ProductDetails = () => {
   const exemptedEn = values.exemptedFromTrip?.en || [""];
   const exclusionsCount = Math.max(exemptedAr.length, exemptedEn.length, 1);
 
+  const benefitsAr = values.benefits?.ar || [""];
+  const benefitsEn = values.benefits?.en || [""];
+  const benefitsCount = Math.max(benefitsAr.length, benefitsEn.length, 1);
+
   // Supplies Handlers
   const handleAddSupply = useCallback(() => {
     const currentAr = values.mustHaveItems?.ar || [""];
@@ -59,6 +63,26 @@ const Step6ProductDetails = () => {
       setFieldValue("exemptedFromTrip.en", newEn.length > 0 ? newEn : [""]);
     },
     [values.exemptedFromTrip, setFieldValue]
+  );
+
+  // Benefits Handlers
+  const handleAddBenefit = useCallback(() => {
+    const currentAr = values.benefits?.ar || [""];
+    const currentEn = values.benefits?.en || [""];
+    setFieldValue("benefits.ar", [...currentAr, ""]);
+    setFieldValue("benefits.en", [...currentEn, ""]);
+  }, [values.benefits, setFieldValue]);
+
+  const handleRemoveBenefit = useCallback(
+    (index) => {
+      const currentAr = values.benefits?.ar || [""];
+      const currentEn = values.benefits?.en || [""];
+      const newAr = currentAr.filter((_, i) => i !== index);
+      const newEn = currentEn.filter((_, i) => i !== index);
+      setFieldValue("benefits.ar", newAr.length > 0 ? newAr : [""]);
+      setFieldValue("benefits.en", newEn.length > 0 ? newEn : [""]);
+    },
+    [values.benefits, setFieldValue]
   );
 
   const labelCls =
@@ -255,6 +279,102 @@ const Step6ProductDetails = () => {
               className="w-full sm:w-auto min-w-[200px] px-8 py-2.5 rounded-lg border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>{t("addExclusionBtn")}</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ─────────────────────────────────────────────────────────────
+          SECTION 3: Trip Benefits (مميزات الرحلة)
+      ───────────────────────────────────────────────────────────── */}
+      <section
+        aria-labelledby="benefits-title"
+        className="bg-white rounded-2xl border border-border p-6 sm:p-8 lg:p-10 transition-all duration-200 text-start shadow-none"
+      >
+        {/* Header */}
+        <div className="mb-6 sm:mb-8 text-start">
+          <h2
+            id="benefits-title"
+            className="font-somar text-xl font-medium text-textDark leading-6"
+          >
+            {t("benefitsTitle")}
+          </h2>
+          <p className="font-somar text-base font-medium text-textDark leading-5 !mt-2">
+            {t("benefitsSubtitle")}
+          </p>
+        </div>
+
+        {/* Benefits Items List */}
+        <div className="space-y-4 sm:space-y-6">
+          {Array.from({ length: benefitsCount }).map((_, index) => (
+            <div
+              key={`benefit-${index}`}
+              className="bg-gray-50/70 p-4 sm:p-6 rounded-2xl border border-border space-y-4 transition-all"
+            >
+              {/* Item Top Bar */}
+              <div className="flex items-center justify-between">
+                <span className="font-somar text-base font-medium text-textDark">
+                  {t("benefitItem", { num: index + 1 })}
+                </span>
+
+                {benefitsCount > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveBenefit(index)}
+                    aria-label={t("removeBenefit") || t("removeItem")}
+                    className="w-8 h-8 flex items-center justify-center text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
+                  >
+                    <DeleteOutlineIcon className="w-5 h-5" />
+                  </button>
+                )}
+              </div>
+
+              {/* 2-Column Inputs Grid (Arabic & English) */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                {/* Arabic Input */}
+                <div>
+                  <TextInputGroup
+                    type="text"
+                    name={`benefits.ar[${index}]`}
+                    value={benefitsAr[index] || ""}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    label={t("benefitArLabel") || t("itemArLabel")}
+                    labelClassName={labelCls}
+                    placeholder={t("benefitArPlaceholder") || t("itemArPlaceholder")}
+                    borderClassName={inputBorderCls}
+                    autoComplete="off"
+                  />
+                </div>
+
+                {/* English Input */}
+                <div dir="ltr" className="text-start">
+                  <TextInputGroup
+                    type="text"
+                    name={`benefits.en[${index}]`}
+                    value={benefitsEn[index] || ""}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    label={t("benefitEnLabel") || t("itemEnLabel")}
+                    labelClassName={labelCls}
+                    placeholder={t("benefitEnPlaceholder") || t("itemEnPlaceholder")}
+                    borderClassName={inputBorderCls}
+                    textAlign="left"
+                    autoComplete="off"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* Add Benefit Button */}
+          <div className="flex justify-center pt-2">
+            <button
+              type="button"
+              onClick={handleAddBenefit}
+              className="w-full sm:w-auto min-w-[200px] px-8 py-2.5 rounded-lg border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>{t("addBenefitBtn")}</span>
             </button>
           </div>
         </div>

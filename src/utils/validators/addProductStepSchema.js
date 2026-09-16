@@ -20,6 +20,12 @@ export const createStep1Schema = (t) => {
   const descEnReq = t("providerProfile.products.newAddPage.validations.descEnRequired");
   const descArInvalid = t("providerProfile.products.newAddPage.validations.descArInvalid");
   const descEnInvalid = t("providerProfile.products.newAddPage.validations.descEnInvalid");
+  const minAgeInvalid =
+    t("providerProfile.products.newAddPage.validations.minAgeInvalid") ||
+    "Minimum age must be less than maximum age";
+  const maxAgeInvalid =
+    t("providerProfile.products.newAddPage.validations.maxAgeInvalid") ||
+    "Maximum age must be greater than minimum age";
 
   return Yup.object().shape({
     name: Yup.object().shape({
@@ -39,7 +45,59 @@ export const createStep1Schema = (t) => {
         }),
     }),
 
-    tripsType: Yup.string().trim().required(tripsTypeReq || reqMsg),
+    tripType: Yup.string().trim().required(tripsTypeReq || reqMsg),
+    tripsType: Yup.string().trim().optional(),
+
+    ageRange: Yup.object()
+      .shape({
+        from: Yup.number()
+          .transform((val, orig) => (orig === "" ? undefined : val))
+          .min(0)
+          .nullable()
+          .optional()
+          .test(
+            "is-smaller-than-to",
+            minAgeInvalid,
+            function (val) {
+              const { to } = this.parent;
+              if (
+                val !== undefined &&
+                val !== null &&
+                to !== undefined &&
+                to !== null &&
+                !isNaN(Number(val)) &&
+                !isNaN(Number(to))
+              ) {
+                return Number(val) < Number(to);
+              }
+              return true;
+            }
+          ),
+        to: Yup.number()
+          .transform((val, orig) => (orig === "" ? undefined : val))
+          .min(0)
+          .nullable()
+          .optional()
+          .test(
+            "is-greater-than-from",
+            maxAgeInvalid,
+            function (val) {
+              const { from } = this.parent;
+              if (
+                val !== undefined &&
+                val !== null &&
+                from !== undefined &&
+                from !== null &&
+                !isNaN(Number(val)) &&
+                !isNaN(Number(from))
+              ) {
+                return Number(val) > Number(from);
+              }
+              return true;
+            }
+          ),
+      })
+      .optional(),
 
     categories: Yup.string()
       .trim()
@@ -74,7 +132,10 @@ export const createStep1Schema = (t) => {
 export const STEP_1_FIELD_NAMES = [
   "name.ar",
   "name.en",
+  "tripType",
   "tripsType",
+  "ageRange.from",
+  "ageRange.to",
   "categories",
   "supCategories",
   "description.ar",
@@ -284,12 +345,14 @@ export const createStepBookingDatesSchema = (t) => {
       then: (schema) => schema.trim().required(calReq),
       otherwise: (schema) => schema.optional(),
     }),
-    availableTimes: Yup.array().of(
-      Yup.object().shape({
-        from: Yup.string().trim().required(fromHourReq),
-        to: Yup.string().trim().required(toHourReq),
-      })
-    ).optional(),
+    availableTimes: Yup.array()
+      .of(
+        Yup.object().shape({
+          from: Yup.string().trim().required(fromHourReq),
+          to: Yup.string().trim().required(toHourReq),
+        })
+      )
+      .optional(),
   });
 };
 
@@ -316,6 +379,11 @@ export const createStep5Schema = (t) => {
       .of(
         Yup.object().shape({
           service: Yup.string().trim().required(serviceReq),
+          price: Yup.number()
+            .transform((val, orig) => (orig === "" ? 0 : val))
+            .min(0)
+            .nullable()
+            .optional(),
           note: Yup.object()
             .shape({
               en: Yup.string().optional(),
@@ -332,7 +400,7 @@ export const createStep5Schema = (t) => {
 export const STEP_5_FIELD_NAMES = ["services", "services[0].service"];
 
 /**
- * Yup schema for Step 6 (Product Details: Supplies & Exclusions) of the multi-step Add Product flow
+ * Yup schema for Step 6 (Product Details: Supplies, Exclusions & Benefits) of the multi-step Add Product flow
  */
 export const createStep6Schema = (_t) => {
   return Yup.object().shape({
@@ -348,10 +416,16 @@ export const createStep6Schema = (_t) => {
         en: Yup.array().of(Yup.string()).optional(),
       })
       .optional(),
+    benefits: Yup.object()
+      .shape({
+        ar: Yup.array().of(Yup.string()).optional(),
+        en: Yup.array().of(Yup.string()).optional(),
+      })
+      .optional(),
   });
 };
 
-export const STEP_6_FIELD_NAMES = ["mustHaveItems", "exemptedFromTrip"];
+export const STEP_6_FIELD_NAMES = ["mustHaveItems", "exemptedFromTrip", "benefits"];
 
 /**
  * Yup schema for Step 8 (Pricing) of the multi-step Add Product flow

@@ -413,6 +413,8 @@
           "videoSizeError": "Video size must not exceed 50MB",
           "videoFormatError": "Unsupported video format (allowed: MP4, WebM, MOV, OGG)",
           "youtubeInvalidError": "Please enter a valid YouTube URL",
+          "minAgeInvalid": "Minimum age must be less than maximum age",
+          "maxAgeInvalid": "Maximum age must be greater than minimum age",
           "validationFailed": "Please fix the highlighted errors to proceed"
         },
         "step1": {
@@ -427,6 +429,7 @@
           "nameAr": "Product Name in Arabic",
           "nameArPlaceholder": "Write the trip name in Arabic",
           "tripsType": "Product Type",
+          "tripType": "Product Type",
           "tripsTypePlaceholder": "One Day / Half Day",
           "duration": "Product Duration",
           "durationPlaceholder": "Select product duration (days or hours)",
@@ -652,6 +655,8 @@
           "serviceItem": "Service #{num}",
           "serviceLabel": "Service",
           "servicePlaceholder": "Select Service",
+          "servicePrice": "Service Price",
+          "servicePricePlaceholder": "0",
           "notesArLabel": "Notes in Arabic",
           "notesArPlaceholder": "Enter description",
           "notesEnLabel": "Notes in English",
@@ -674,6 +679,15 @@
           "addSupplyBtn": "Add Supply",
           "addExclusionBtn": "Add Excluded Item",
           "removeItem": "Remove Item",
+          "benefitsTitle": "Trip Benefits",
+          "benefitsSubtitle": "Add special perks or benefits included with the product (optional)",
+          "benefitItem": "Benefit #{num}",
+          "benefitArLabel": "Benefit (in Arabic)",
+          "benefitArPlaceholder": "Write benefit in Arabic (e.g. Breakfast included)",
+          "benefitEnLabel": "Benefit (in English)",
+          "benefitEnPlaceholder": "Write benefit in English",
+          "addBenefitBtn": "Add Benefit",
+          "removeBenefit": "Remove Benefit",
           "savedSuccess": "Product details saved successfully"
         },
         "stepPricing": {

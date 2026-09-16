@@ -40,6 +40,7 @@ import StepReview from "./steps/StepReview";
 export const initialAddProductValues = {
   systemTypes: ["B2C"],
   name: { en: "", ar: "" },
+  tripType: "ACTIVITY",
   tripsType: "ACTIVITY",
   description: { en: "", ar: "" },
   categories: "",
@@ -59,11 +60,12 @@ export const initialAddProductValues = {
   availableTimes: [{ from: "", to: "" }],
   availableSeats: { min: "", max: "" },
   guestRange: { min: "", max: "" },
+  ageRange: { from: "", to: "" },
   duration: "",
   price: "",
   productCost: "",
   targetAudiences: [{ targetAudience: "", price: "" }],
-  services: [{ service: "", note: { en: "", ar: "" } }],
+  services: [{ service: "", price: 0, note: { en: "", ar: "" } }],
   customServices: [],
   gallery: [],
   thumbnailWeb: null,
@@ -87,10 +89,35 @@ export const formatAddProductPayload = (
       ? values.categories._id || values.categories.id
       : values.categories;
 
+  const tripTypeValue = values.tripType || values.tripsType || "ACTIVITY";
+
+  // Calculate duration according to tripType and user inputs
+  let calculatedDuration = 1;
+  if (tripTypeValue === "PACKAGE") {
+    if (Array.isArray(values.itinerary) && values.itinerary.length > 0) {
+      calculatedDuration = values.itinerary.length;
+    } else if (values.duration !== "" && !isNaN(Number(values.duration)) && Number(values.duration) > 0) {
+      calculatedDuration = Number(values.duration);
+    } else if (values.fromDay && values.toDay) {
+      const diffDays = Math.ceil(
+        (new Date(values.toDay).getTime() - new Date(values.fromDay).getTime()) /
+          (1000 * 60 * 60 * 24)
+      ) + 1;
+      calculatedDuration = diffDays > 0 ? diffDays : 1;
+    }
+  } else {
+    if (values.duration !== "" && !isNaN(Number(values.duration)) && Number(values.duration) > 0) {
+      calculatedDuration = Number(values.duration);
+    } else {
+      calculatedDuration = 1;
+    }
+  }
+
   const payload = {
     "name[en]": values.name?.en || "",
     "name[ar]": values.name?.ar || "",
-    tripsType: values.tripsType || "ACTIVITY",
+    tripType: tripTypeValue,
+    tripsType: tripTypeValue,
     "description[en]": values.description?.en || "",
     "description[ar]": values.description?.ar || "",
     "location[lat]": values.location?.lat,
@@ -103,7 +130,7 @@ export const formatAddProductPayload = (
     toHour: formatTime12h(values.toHour),
     "availableSeats[min]": values.availableSeats?.min,
     "availableSeats[max]": values.availableSeats?.max,
-    duration: values.duration !== "" && !isNaN(Number(values.duration)) ? Number(values.duration) : values.duration,
+    duration: calculatedDuration,
     categories: catId || values.categories,
     price: values.price !== "" && !isNaN(Number(values.price)) ? Number(values.price) : values.price,
     productCost: values.productCost !== "" && !isNaN(Number(values.productCost)) ? Number(values.productCost) : values.productCost,
@@ -111,6 +138,24 @@ export const formatAddProductPayload = (
     "guestRange[min]": values.guestRange?.min,
     "guestRange[max]": values.guestRange?.max,
   };
+
+  // Age Range
+  if (
+    values.ageRange?.from !== "" &&
+    values.ageRange?.from !== undefined &&
+    values.ageRange?.from !== null &&
+    !isNaN(Number(values.ageRange?.from))
+  ) {
+    payload["ageRange[from]"] = Number(values.ageRange.from);
+  }
+  if (
+    values.ageRange?.to !== "" &&
+    values.ageRange?.to !== undefined &&
+    values.ageRange?.to !== null &&
+    !isNaN(Number(values.ageRange?.to))
+  ) {
+    payload["ageRange[to]"] = Number(values.ageRange.to);
+  }
 
   if (values.recurrencePattern) {
     payload.recurrencePattern = values.recurrencePattern;
@@ -177,6 +222,97 @@ export const formatAddProductPayload = (
     payload[`weekdayPricing[${idx}][price]`] = finalPrice;
   });
 
+  // B2C Structured Pricing
+  const b2cMarketPrice =
+    values.b2cPrice?.price !== "" && !isNaN(Number(values.b2cPrice?.price))
+      ? Number(values.b2cPrice?.price)
+      : values.price !== "" && !isNaN(Number(values.price))
+      ? Number(values.price)
+      : undefined;
+
+  if (b2cMarketPrice !== undefined) {
+    payload["b2cPrice[price]"] = b2cMarketPrice;
+  }
+
+  let b2cTargetIdx = 0;
+  (values.targetAudiences || []).forEach((item) => {
+    if (item.targetAudience) {
+      const audId =
+        typeof item.targetAudience === "object" && item.targetAudience !== null
+          ? item.targetAudience._id || item.targetAudience.id
+          : item.targetAudience;
+      if (audId) {
+        payload[`b2cPrice[targetAudiences][${b2cTargetIdx}][targetAudience]`] = audId;
+        payload[`b2cPrice[targetAudiences][${b2cTargetIdx}][price]`] =
+          item.price !== "" && !isNaN(Number(item.price))
+            ? Number(item.price)
+            : (b2cMarketPrice || 0);
+        b2cTargetIdx++;
+      }
+    }
+  });
+
+  ALL_WEEKDAYS.forEach((day, idx) => {
+    const customPrice = customWeekdayPricingMap[day];
+    const basePrice = b2cMarketPrice !== undefined ? b2cMarketPrice : 0;
+    const rawPrice =
+      customPrice !== undefined && customPrice !== "" ? Number(customPrice) : basePrice;
+    const finalPrice = isNaN(rawPrice) ? 0 : rawPrice;
+    payload[`b2cPrice[weekdayPricing][${idx}][day]`] = day;
+    payload[`b2cPrice[weekdayPricing][${idx}][price]`] = finalPrice;
+  });
+
+  // B2B Structured Pricing
+  const b2bMarketPrice =
+    values.b2bPrice?.price !== "" && !isNaN(Number(values.b2bPrice?.price))
+      ? Number(values.b2bPrice?.price)
+      : values.b2bPricing?.schoolsPrice !== "" && !isNaN(Number(values.b2bPricing?.schoolsPrice))
+      ? Number(values.b2bPricing?.schoolsPrice)
+      : values.b2bPricing?.price !== "" && !isNaN(Number(values.b2bPricing?.price))
+      ? Number(values.b2bPricing?.price)
+      : b2cMarketPrice;
+
+  const b2bCost =
+    values.b2bPrice?.productCost !== "" && !isNaN(Number(values.b2bPrice?.productCost))
+      ? Number(values.b2bPrice?.productCost)
+      : values.productCost !== "" && !isNaN(Number(values.productCost))
+      ? Number(values.productCost)
+      : undefined;
+
+  const studentsPerSupervisorVal =
+    values.b2bPricing?.studentsPerSupervisor !== "" &&
+    !isNaN(Number(values.b2bPricing?.studentsPerSupervisor))
+      ? Number(values.b2bPricing?.studentsPerSupervisor)
+      : values.b2bPricing?.supervisorRatio !== "" &&
+        !isNaN(Number(values.b2bPricing?.supervisorRatio))
+      ? Number(values.b2bPricing?.supervisorRatio)
+      : values.studentsPerSupervisor !== "" &&
+        !isNaN(Number(values.studentsPerSupervisor))
+      ? Number(values.studentsPerSupervisor)
+      : values.b2bPricing?.freeSupervisor
+      ? 10
+      : undefined;
+
+  if (b2bMarketPrice !== undefined) {
+    payload["b2bPrice[price]"] = b2bMarketPrice;
+  }
+  if (b2bCost !== undefined) {
+    payload["b2bPrice[productCost]"] = b2bCost;
+  }
+  if (studentsPerSupervisorVal !== undefined) {
+    payload["b2bPrice[studentsPerSupervisor]"] = studentsPerSupervisorVal;
+  }
+
+  ALL_WEEKDAYS.forEach((day, idx) => {
+    const customPrice = customWeekdayPricingMap[day];
+    const basePrice = b2bMarketPrice !== undefined ? b2bMarketPrice : 0;
+    const rawPrice =
+      customPrice !== undefined && customPrice !== "" ? Number(customPrice) : basePrice;
+    const finalPrice = isNaN(rawPrice) ? 0 : rawPrice;
+    payload[`b2bPrice[weekdayPricing][${idx}][day]`] = day;
+    payload[`b2bPrice[weekdayPricing][${idx}][price]`] = finalPrice;
+  });
+
   (values.datePricing || []).forEach((item, idx) => {
     if (item.date && item.price !== "" && item.price !== undefined && item.price !== null) {
       payload[`datePricing[${idx}][date]`] = item.date;
@@ -190,6 +326,15 @@ export const formatAddProductPayload = (
     if (id && typeof id === "string" && id.trim()) {
       payload[`supCategories[${supCatIdx}]`] = id.trim();
       supCatIdx++;
+    }
+  });
+
+  let academicStageIdx = 0;
+  (values.academicStages || []).forEach((stage) => {
+    const id = typeof stage === "object" && stage !== null ? stage._id || stage.id : stage;
+    if (id && typeof id === "string" && id.trim()) {
+      payload[`academicStages[${academicStageIdx}]`] = id.trim();
+      academicStageIdx++;
     }
   });
 
@@ -223,8 +368,13 @@ export const formatAddProductPayload = (
 
   let serviceIdx = 0;
   (values.services || []).forEach((item) => {
-    if (item.service) {
-      payload[`services[${serviceIdx}][service]`] = item.service;
+    const sId = typeof item.service === "object" && item.service !== null
+      ? item.service._id || item.service.id
+      : item.service;
+    if (sId) {
+      payload[`services[${serviceIdx}][service]`] = sId;
+      payload[`services[${serviceIdx}][price]`] =
+        item.price !== "" && !isNaN(Number(item.price)) ? Number(item.price) : 0;
       const noteEn = item.note?.en?.trim();
       const noteAr = item.note?.ar?.trim();
       if (noteEn) payload[`services[${serviceIdx}][note][en]`] = noteEn;
@@ -293,6 +443,97 @@ export const formatAddProductPayload = (
       payload[`benefits[ar][${benefitArIdx}]`] = val.trim();
       benefitArIdx++;
     }
+  });
+
+  // Branch Trips Customizations (if branch overrides exist)
+  const customizedBranchIdSet = new Set([
+    ...(Array.isArray(values.customizedPricingBranches) ? values.customizedPricingBranches : []),
+    ...(Array.isArray(values.customizedBranchDateIds) ? values.customizedBranchDateIds : []),
+    ...Object.keys(values.branchPricing || {}),
+    ...Object.keys(values.branchDates || {}),
+    ...Object.keys(values.branchCapacities || {}),
+  ]);
+
+  let branchTripIdx = 0;
+  customizedBranchIdSet.forEach((bId) => {
+    if (!bId || typeof bId !== "string" || bId.trim().length !== 24) return;
+    const branchId = bId.trim();
+    const bPricing = values.branchPricing?.[branchId] || {};
+    const bDates = values.branchDates?.[branchId] || {};
+    const bCapacities = values.branchCapacities?.[branchId] || {};
+
+    payload[`branchTrips[${branchTripIdx}][branch]`] = branchId;
+    payload[`branchTrips[${branchTripIdx}][fromDay]`] = bDates.fromDay || values.fromDay;
+    payload[`branchTrips[${branchTripIdx}][toDay]`] = bDates.toDay || values.toDay;
+    payload[`branchTrips[${branchTripIdx}][fromHour]`] = formatTime12h(bDates.fromHour || values.fromHour);
+    payload[`branchTrips[${branchTripIdx}][toHour]`] = formatTime12h(bDates.toHour || values.toHour);
+    payload[`branchTrips[${branchTripIdx}][bookingBefore]`] =
+      bDates.bookingBefore !== "" && !isNaN(Number(bDates.bookingBefore))
+        ? Number(bDates.bookingBefore)
+        : Number(values.bookingBefore) || 1;
+    payload[`branchTrips[${branchTripIdx}][availableSeats][min]`] =
+      bCapacities.min !== undefined && bCapacities.min !== ""
+        ? Number(bCapacities.min)
+        : values.availableSeats?.min !== undefined && values.availableSeats?.min !== ""
+        ? Number(values.availableSeats.min)
+        : 1;
+    payload[`branchTrips[${branchTripIdx}][availableSeats][max]`] =
+      bCapacities.max !== undefined && bCapacities.max !== ""
+        ? Number(bCapacities.max)
+        : values.availableSeats?.max !== undefined && values.availableSeats?.max !== ""
+        ? Number(values.availableSeats.max)
+        : 50;
+    payload[`branchTrips[${branchTripIdx}][recurrencePattern]`] =
+      bDates.recurrencePattern || values.recurrencePattern || "WEEKLY";
+
+    const bSelectedDays = Array.isArray(bDates.selectedDays) && bDates.selectedDays.length > 0
+      ? bDates.selectedDays
+      : values.selectedDays || [];
+    bSelectedDays.forEach((day, dIdx) => {
+      payload[`branchTrips[${branchTripIdx}][selectedDays][${dIdx}]`] = day;
+    });
+
+    const bTimes = Array.isArray(bDates.availableTimes) && bDates.availableTimes.length > 0
+      ? bDates.availableTimes
+      : values.availableTimes || [];
+    let bTimeIdx = 0;
+    bTimes.forEach((t) => {
+      if (t.from && t.to) {
+        payload[`branchTrips[${branchTripIdx}][availableTimes][${bTimeIdx}][from]`] = formatTime12h(t.from);
+        payload[`branchTrips[${branchTripIdx}][availableTimes][${bTimeIdx}][to]`] = formatTime12h(t.to);
+        bTimeIdx++;
+      }
+    });
+
+    const b2cBranchPrice =
+      bPricing.price !== "" && !isNaN(Number(bPricing.price))
+        ? Number(bPricing.price)
+        : b2cMarketPrice || 0;
+    payload[`branchTrips[${branchTripIdx}][b2cPrice][price]`] = b2cBranchPrice;
+    ALL_WEEKDAYS.forEach((day, dIdx) => {
+      payload[`branchTrips[${branchTripIdx}][b2cPrice][weekdayPricing][${dIdx}][day]`] = day;
+      payload[`branchTrips[${branchTripIdx}][b2cPrice][weekdayPricing][${dIdx}][price]`] = b2cBranchPrice;
+    });
+
+    const b2bBranchPrice =
+      bPricing.schoolsPrice !== "" && !isNaN(Number(bPricing.schoolsPrice))
+        ? Number(bPricing.schoolsPrice)
+        : b2bMarketPrice || b2cBranchPrice;
+    const b2bBranchCost =
+      bPricing.productCost !== "" && !isNaN(Number(bPricing.productCost))
+        ? Number(bPricing.productCost)
+        : b2bCost || 0;
+    payload[`branchTrips[${branchTripIdx}][b2bPrice][price]`] = b2bBranchPrice;
+    payload[`branchTrips[${branchTripIdx}][b2bPrice][productCost]`] = b2bBranchCost;
+    if (studentsPerSupervisorVal !== undefined) {
+      payload[`branchTrips[${branchTripIdx}][b2bPrice][studentsPerSupervisor]`] = studentsPerSupervisorVal;
+    }
+    ALL_WEEKDAYS.forEach((day, dIdx) => {
+      payload[`branchTrips[${branchTripIdx}][b2bPrice][weekdayPricing][${dIdx}][day]`] = day;
+      payload[`branchTrips[${branchTripIdx}][b2bPrice][weekdayPricing][${dIdx}][price]`] = b2bBranchPrice;
+    });
+
+    branchTripIdx++;
   });
 
   // Remove any empty string, null, undefined, or NaN keys from payload

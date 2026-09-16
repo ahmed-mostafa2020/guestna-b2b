@@ -420,6 +420,8 @@
           "videoSizeError": "حجم الفيديو يجب ألا يتجاوز 50 ميجابايت",
           "videoFormatError": "صيغة الفيديو غير مدعومة (المسموح: MP4, WebM, MOV, OGG)",
           "youtubeInvalidError": "يرجى إدخال رابط يوتيوب صحيح",
+          "minAgeInvalid": "الحد الأدنى للعمر يجب أن يكون أصغر من الحد الأقصى",
+          "maxAgeInvalid": "الحد الأقصى للعمر يجب أن يكون أكبر من الحد الأدنى",
           "validationFailed": "يرجى تصحيح الأخطاء الموضحة للمتابعة"
         },
         "step1": {
@@ -434,6 +436,7 @@
           "nameAr": "اسم المنتج  بالعربي ",
           "nameArPlaceholder": "اكتب اسم الرحلة بالعربي ",
           "tripsType": "نوع المنتج",
+          "tripType": "نوع المنتج",
           "tripsTypePlaceholder": "يوم واحد \\ نص يوم ",
           "duration": " مدة المنتج",
           "durationPlaceholder": "حدد مدة المنتج (أيام أو ساعات)",
@@ -659,6 +662,8 @@
           "serviceItem": "الخدمة #{num}",
           "serviceLabel": "الخدمة",
           "servicePlaceholder": "اختار الخدمه",
+          "servicePrice": "سعر الخدمة",
+          "servicePricePlaceholder": "0",
           "notesArLabel": "ملاحظات بالعربي",
           "notesArPlaceholder": "أدخل الوصف",
           "notesEnLabel": "ملاحظات بالانجليزي",
@@ -681,6 +686,15 @@
           "addSupplyBtn": "اضافة مستلزم",
           "addExclusionBtn": "اضافة عنصر مستثني",
           "removeItem": "حذف العنصر",
+          "benefitsTitle": "مميزات الرحلة",
+          "benefitsSubtitle": "أضف المميزات والمنافع المشمولة في باقة المنتج (اختياري)",
+          "benefitItem": "الميزة #{num}",
+          "benefitArLabel": "الميزة (بالعربي)",
+          "benefitArPlaceholder": "اكتب الميزة بالعربي (مثال: الإفطار مشمول)",
+          "benefitEnLabel": "الميزة (بالإنجليزية)",
+          "benefitEnPlaceholder": "Write benefit in English",
+          "addBenefitBtn": "اضافة ميزة",
+          "removeBenefit": "حذف الميزة",
           "savedSuccess": "تم حفظ تفاصيل المنتج بنجاح"
         },
         "stepPricing": {
