@@ -12,6 +12,7 @@ export const PRODUCT_STEPS = [
   { id: 5, key: "services" },
   { id: 6, key: "productDetails" },
   { id: 7, key: "gallery" },
+  { id: 8, key: "pricing" },
 ];
 
 const AddProductStepper = ({

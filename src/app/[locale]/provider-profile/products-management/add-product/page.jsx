@@ -9,9 +9,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 import AddProductHeader from "@components/features/provider-profile/addProduct/AddProductHeader";
-import AddProductStepper, {
-  PRODUCT_STEPS,
-} from "@components/features/provider-profile/addProduct/AddProductStepper";
+import AddProductStepper from "@components/features/provider-profile/addProduct/AddProductStepper";
 import Step1BasicInfo from "@components/features/provider-profile/addProduct/steps/Step1BasicInfo";
 import Step2Locations from "@components/features/provider-profile/addProduct/steps/Step2Locations";
 import Step2Gallery from "@components/features/provider-profile/addProduct/steps/Step2Gallery";
@@ -19,6 +17,7 @@ import Step4SalesChannels from "@components/features/provider-profile/addProduct
 import Step4BookingDates from "@components/features/provider-profile/addProduct/steps/Step4BookingDates";
 import Step5Services from "@components/features/provider-profile/addProduct/steps/Step5Services";
 import Step6ProductDetails from "@components/features/provider-profile/addProduct/steps/Step6ProductDetails";
+import Step8Pricing from "@components/features/provider-profile/addProduct/steps/Step8Pricing";
 import {
   createStep1Schema,
   STEP_1_FIELD_NAMES,
@@ -34,6 +33,8 @@ import {
   STEP_5_FIELD_NAMES,
   createStep6Schema,
   STEP_6_FIELD_NAMES,
+  createStepPricingSchema,
+  STEP_PRICING_FIELD_NAMES,
 } from "@utils/validators/addProductStepSchema";
 import { initialAddProductValues } from "@components/forms/addProductForm";
 import { useFetchData } from "@hooks/data/useFetchData";
@@ -83,6 +84,12 @@ const STEP_CONFIG = {
     getSchema: (t) => createStep2Schema(t),
     fields: STEP_2_FIELD_NAMES,
     successKey: "step2.savedSuccess",
+    nextStep: 8,
+  },
+  8: {
+    getSchema: (t) => createStepPricingSchema(t),
+    fields: STEP_PRICING_FIELD_NAMES,
+    successKey: "stepPricing.savedSuccess",
     nextStep: null,
   },
 };
@@ -537,6 +544,27 @@ const AddProductPage = () => {
           gallery: [],
           video: null,
           youtubeUrl: "",
+          price: "",
+          discountedPrice: "",
+          productCost: "",
+          b2cSeats: "",
+          enableDiscounts: false,
+          discountsList: [],
+          targetAudiences: [{ targetAudience: "", price: "" }],
+          bulkPricing: [{ minCount: "", price: "" }],
+          pricingRules: [],
+          seasonPrice: "",
+          b2bPricing: {
+            price: "",
+            schoolsPrice: "",
+            selectedStage: "",
+            freeSupervisor: false,
+            supervisorRatio: "10",
+          },
+          b2bBulkPricing: [{ minCount: "", price: "" }],
+          b2bSeasonPrice: "",
+          branchPricing: {},
+          customizedPricingBranches: [],
         }}
         validationSchema={stepValidationSchema}
         onSubmit={async (values, formikHelpers) => {
@@ -612,6 +640,14 @@ const AddProductPage = () => {
               {/* Step 7: Gallery */}
               {currentStep === 7 && <Step2Gallery />}
 
+              {/* Step 8: Pricing */}
+              {currentStep === 8 && (
+                <Step8Pricing
+                  formSelectionData={formSelectionData}
+                  isSelectionsLoading={isSelectionsLoading}
+                />
+              )}
+
               {/* Bottom Action Bar */}
               <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
                 {currentStep > 1 && (
@@ -653,6 +689,10 @@ const AddProductPage = () => {
                         {t("common.loading")}...
                       </span>
                     </>
+                  ) : currentStep === 8 ? (
+                    <span className="font-somar font-bold text-base leading-5">
+                      {t("providerProfile.products.modal.submit")}
+                    </span>
                   ) : (
                     <span className="font-somar font-bold text-base leading-5">
                       {t("providerProfile.products.newAddPage.common.next")}

@@ -353,4 +353,55 @@ export const createStep6Schema = (_t) => {
 
 export const STEP_6_FIELD_NAMES = ["mustHaveItems", "exemptedFromTrip"];
 
+/**
+ * Yup schema for Step 8 (Pricing) of the multi-step Add Product flow
+ */
+export const createStepPricingSchema = (t) => {
+  const priceReq =
+    t("providerProfile.products.newAddPage.stepPricing.validations.priceRequired") ||
+    "Price is required";
+  const priceInvalid =
+    t("providerProfile.products.newAddPage.stepPricing.validations.priceInvalid") ||
+    "Price must be greater than 0";
 
+  return Yup.object().shape({
+    price: Yup.number()
+      .typeError(priceReq)
+      .min(1, priceInvalid)
+      .required(priceReq),
+    discountedPrice: Yup.number()
+      .typeError(priceInvalid)
+      .min(0, priceInvalid)
+      .nullable()
+      .optional(),
+    productCost: Yup.number()
+      .typeError(priceInvalid)
+      .min(0, priceInvalid)
+      .nullable()
+      .optional(),
+    targetAudiences: Yup.array()
+      .of(
+        Yup.object().shape({
+          targetAudience: Yup.string().optional(),
+          price: Yup.number().typeError(priceInvalid).min(0, priceInvalid).optional(),
+        })
+      )
+      .optional(),
+    bulkPricing: Yup.array()
+      .of(
+        Yup.object().shape({
+          minCount: Yup.number().typeError(priceInvalid).min(1, priceInvalid).optional(),
+          price: Yup.number().typeError(priceInvalid).min(0, priceInvalid).optional(),
+        })
+      )
+      .optional(),
+  });
+};
+
+export const STEP_PRICING_FIELD_NAMES = [
+  "price",
+  "discountedPrice",
+  "productCost",
+  "targetAudiences",
+  "bulkPricing",
+];
