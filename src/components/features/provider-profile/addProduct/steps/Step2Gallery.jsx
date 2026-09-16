@@ -82,13 +82,13 @@ const Step2Gallery = () => {
   const coverInputRef = useRef(null);
   const videoInputRef = useRef(null);
 
-  // Field errors and touched states
-  const coverError = getIn(errors, "thumbnailWeb");
-  const coverTouched = getIn(touched, "thumbnailWeb");
+  // Field errors and touched states (supporting backend names thumbnail and gallary)
+  const coverError = getIn(errors, "thumbnail") || getIn(errors, "thumbnailWeb");
+  const coverTouched = getIn(touched, "thumbnail") || getIn(touched, "thumbnailWeb");
   const showCoverError = Boolean(coverError && coverTouched);
 
-  const galleryError = getIn(errors, "gallery");
-  const galleryTouched = getIn(touched, "gallery");
+  const galleryError = getIn(errors, "gallary") || getIn(errors, "gallery");
+  const galleryTouched = getIn(touched, "gallary") || getIn(touched, "gallery");
   const showGalleryError = Boolean(galleryError && galleryTouched);
 
   const [videoFileError, setVideoFileError] = useState("");
@@ -106,11 +106,16 @@ const Step2Gallery = () => {
     [values.youtubeUrl]
   );
 
-  // Safe gallery array
-  const galleryItems = useMemo(
-    () => (Array.isArray(values.gallery) ? values.gallery : []),
-    [values.gallery]
-  );
+  // Safe gallery array (supports gallary and gallery)
+  const galleryItems = useMemo(() => {
+    if (Array.isArray(values.gallary) && values.gallary.length > 0) {
+      return values.gallary;
+    }
+    if (Array.isArray(values.gallery) && values.gallery.length > 0) {
+      return values.gallery;
+    }
+    return [];
+  }, [values.gallary, values.gallery]);
 
   // Video preview management
   const [videoPreview, setVideoPreview] = useState("");
@@ -186,13 +191,14 @@ const Step2Gallery = () => {
 
   // Safely manage cover image preview with automatic URL cleanup to prevent memory leaks
   const [coverPreview, setCoverPreview] = useState("");
+  const thumbnailFileVal = values.thumbnail || values.thumbnailWeb;
   useEffect(() => {
     let createdUrl = "";
-    if (values.thumbnailWeb instanceof File || values.thumbnailWeb instanceof Blob) {
-      createdUrl = URL.createObjectURL(values.thumbnailWeb);
+    if (thumbnailFileVal instanceof File || thumbnailFileVal instanceof Blob) {
+      createdUrl = URL.createObjectURL(thumbnailFileVal);
       setCoverPreview(createdUrl);
-    } else if (typeof values.thumbnailWeb === "string") {
-      setCoverPreview(values.thumbnailWeb);
+    } else if (typeof thumbnailFileVal === "string") {
+      setCoverPreview(thumbnailFileVal);
     } else {
       setCoverPreview("");
     }
@@ -200,7 +206,7 @@ const Step2Gallery = () => {
     return () => {
       if (createdUrl) URL.revokeObjectURL(createdUrl);
     };
-  }, [values.thumbnailWeb]);
+  }, [thumbnailFileVal]);
 
   // Safely manage gallery items previews with automatic URL cleanup
   const [galleryPreviews, setGalleryPreviews] = useState([]);
@@ -226,7 +232,9 @@ const Step2Gallery = () => {
   const handleCoverUpload = (e) => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
+      setFieldValue("thumbnail", file);
       setFieldValue("thumbnailWeb", file);
+      setFieldTouched("thumbnail", true, false);
       setFieldTouched("thumbnailWeb", true, false);
     }
     e.target.value = "";
@@ -235,7 +243,9 @@ const Step2Gallery = () => {
   // Remove cover image
   const handleRemoveCover = (e) => {
     e.stopPropagation();
+    setFieldValue("thumbnail", null);
     setFieldValue("thumbnailWeb", null);
+    setFieldTouched("thumbnail", true, false);
     setFieldTouched("thumbnailWeb", true, false);
   };
 
@@ -248,7 +258,10 @@ const Step2Gallery = () => {
       const remainingAllowed = 15 - galleryItems.length;
       if (remainingAllowed > 0) {
         const addedFiles = files.slice(0, remainingAllowed);
-        setFieldValue("gallery", [...galleryItems, ...addedFiles]);
+        const nextList = [...galleryItems, ...addedFiles];
+        setFieldValue("gallary", nextList);
+        setFieldValue("gallery", nextList);
+        setFieldTouched("gallary", true, false);
         setFieldTouched("gallery", true, false);
       }
     }
@@ -258,7 +271,9 @@ const Step2Gallery = () => {
   // Remove single gallery item
   const handleRemoveGalleryItem = (index) => {
     const updated = galleryItems.filter((_, i) => i !== index);
+    setFieldValue("gallary", updated);
     setFieldValue("gallery", updated);
+    setFieldTouched("gallary", true, false);
     setFieldTouched("gallery", true, false);
   };
 

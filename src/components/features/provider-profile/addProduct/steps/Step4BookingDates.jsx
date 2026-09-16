@@ -437,7 +437,12 @@ const Step4BookingDates = ({
                             type="time"
                             name={`availableTimes[${index}].from`}
                             value={slot.from || ""}
-                            onChange={handleChange}
+                            onChange={(e) => {
+                              handleChange(e);
+                              if (index === 0) {
+                                setFieldValue("fromHour", e.target.value);
+                              }
+                            }}
                             onBlur={handleBlur}
                             placeholder={t("fromHourPlaceholder")}
                             className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark"
@@ -461,7 +466,12 @@ const Step4BookingDates = ({
                               type="time"
                               name={`availableTimes[${index}].to`}
                               value={slot.to || ""}
-                              onChange={handleChange}
+                              onChange={(e) => {
+                                handleChange(e);
+                                if (index === 0) {
+                                  setFieldValue("toHour", e.target.value);
+                                }
+                              }}
                               onBlur={handleBlur}
                               placeholder={t("toHourPlaceholder")}
                               className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark"

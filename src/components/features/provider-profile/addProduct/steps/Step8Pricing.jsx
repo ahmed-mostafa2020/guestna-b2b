@@ -431,8 +431,11 @@ const Step8Pricing = ({
                       type="number"
                       min="0"
                       name="price"
-                      value={values.price ?? ""}
-                      onChange={handleChange}
+                      value={values.b2cPrice?.price ?? values.price ?? ""}
+                      onChange={(e) => {
+                        handleChange(e);
+                        setFieldValue("b2cPrice.price", e.target.value);
+                      }}
                       onBlur={handleBlur}
                       placeholder={t("b2c.marketPricePlaceholder")}
                       className="w-full bg-transparent outline-none font-somar text-sm sm:text-base text-textDark placeholder:text-gray-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -466,8 +469,11 @@ const Step8Pricing = ({
                       type="number"
                       min="0"
                       name="discountedPrice"
-                      value={values.discountedPrice ?? ""}
-                      onChange={handleChange}
+                      value={values.b2cPrice?.finalPrice ?? values.discountedPrice ?? ""}
+                      onChange={(e) => {
+                        handleChange(e);
+                        setFieldValue("b2cPrice.finalPrice", e.target.value);
+                      }}
                       onBlur={handleBlur}
                       placeholder={t("b2c.discountedPricePlaceholder")}
                       className="w-full bg-transparent outline-none font-somar text-sm sm:text-base text-textDark placeholder:text-gray-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -1145,13 +1151,16 @@ const Step8Pricing = ({
                     id="b2bPrice"
                     type="number"
                     min="0"
-                    name="b2bPrice"
-                    value={values.b2bPricing?.schoolsPrice ?? values.price ?? ""}
+                    name="b2bPrice.price"
+                    value={values.b2bPrice?.price ?? values.b2bPricing?.schoolsPrice ?? values.price ?? ""}
                     onChange={(e) => {
                       const val = e.target.value;
+                      setFieldValue("b2bPrice.price", val);
+                      setFieldValue("b2bPrice.finalPrice", val);
                       setFieldValue("b2bPricing.schoolsPrice", val);
                       if (!values.price) {
                         setFieldValue("price", val);
+                        setFieldValue("b2cPrice.price", val);
                       }
                     }}
                     onBlur={handleBlur}
@@ -1349,15 +1358,24 @@ const Step8Pricing = ({
                     </label>
                     <div className={fieldContainerCls}>
                       <input
+                        id="studentsPerSupervisor"
+                        name="studentsPerSupervisor"
                         type="number"
                         min="1"
-                        value={values.b2bPricing?.supervisorRatio ?? "10"}
-                        onChange={(e) =>
-                          setFieldValue(
-                            "b2bPricing.supervisorRatio",
-                            e.target.value
-                          )
+                        value={
+                          values.studentsPerSupervisor ??
+                          values.b2bPrice?.studentsPerSupervisor ??
+                          values.b2bPricing?.studentsPerSupervisor ??
+                          values.b2bPricing?.supervisorRatio ??
+                          "10"
                         }
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setFieldValue("studentsPerSupervisor", val);
+                          setFieldValue("b2bPrice.studentsPerSupervisor", val);
+                          setFieldValue("b2bPricing.studentsPerSupervisor", val);
+                          setFieldValue("b2bPricing.supervisorRatio", val);
+                        }}
                         placeholder={t("b2b.studentsCountPlaceholder")}
                         className="w-full bg-transparent outline-none font-somar text-sm sm:text-base text-textDark placeholder:text-gray-400"
                       />
@@ -1371,7 +1389,12 @@ const Step8Pricing = ({
                   <p className="font-somar font-medium text-sm text-mainColor flex items-center gap-1">
                     {t("b2b.supervisorRatioCalculation", {
                       students:
-                        (Number(values.b2bPricing?.supervisorRatio) || 10) * 2,
+                        (Number(
+                          values.studentsPerSupervisor ??
+                            values.b2bPrice?.studentsPerSupervisor ??
+                            values.b2bPricing?.studentsPerSupervisor ??
+                            values.b2bPricing?.supervisorRatio
+                        ) || 10) * 2,
                       supervisors: 2,
                     })}
                   </p>

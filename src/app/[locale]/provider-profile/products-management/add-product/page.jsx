@@ -364,26 +364,26 @@ const AddProductPage = () => {
           formData.append(key, formattedPayload[key]);
         });
 
-        if (Array.isArray(values.gallery)) {
-          values.gallery.forEach((file) => {
-            if (file instanceof File || file instanceof Blob) {
-              formData.append("gallary", file);
-            }
-          });
+        const galleryFiles =
+          Array.isArray(values.gallary) && values.gallary.length > 0
+            ? values.gallary
+            : Array.isArray(values.gallery)
+            ? values.gallery
+            : [];
+        galleryFiles.forEach((file) => {
+          if (file instanceof File || file instanceof Blob) {
+            formData.append("gallary", file);
+          }
+        });
+
+        const thumb = values.thumbnail || values.thumbnailWeb;
+        if (thumb instanceof File || thumb instanceof Blob) {
+          formData.append("thumbnail", thumb);
         }
 
-        if (
-          values.thumbnailWeb instanceof File ||
-          values.thumbnailWeb instanceof Blob
-        ) {
-          formData.append("thumbnail", values.thumbnailWeb);
-        }
-
-        if (
-          values.mediaFile instanceof File ||
-          values.mediaFile instanceof Blob
-        ) {
-          formData.append("detailsFile", values.mediaFile);
+        const details = values.detailsFile || values.mediaFile;
+        if (details instanceof File || details instanceof Blob) {
+          formData.append("detailsFile", details);
         }
 
         if (values.video instanceof File || values.video instanceof Blob) {
@@ -640,13 +640,35 @@ const AddProductPage = () => {
           mustHaveItems: { en: [""], ar: [""] },
           exemptedFromTrip: { en: [""], ar: [""] },
           benefits: { en: [""], ar: [""] },
+          thumbnail: null,
           thumbnailWeb: null,
+          gallary: [],
           gallery: [],
+          detailsFile: null,
+          mediaFile: null,
           video: null,
           youtubeUrl: "",
           price: "",
           discountedPrice: "",
           productCost: "",
+          b2cPrice: {
+            price: "",
+            finalPrice: "",
+            hasTax: false,
+            depositRatio: 0,
+            depositValue: 0,
+            finalDepositValue: 0,
+          },
+          b2bPrice: {
+            price: "",
+            finalPrice: "",
+            hasTax: false,
+            depositRatio: 0,
+            depositValue: 0,
+            finalDepositValue: 0,
+            studentsPerSupervisor: "10",
+          },
+          studentsPerSupervisor: "10",
           b2cSeats: "",
           enableDiscounts: false,
           discountsList: [],

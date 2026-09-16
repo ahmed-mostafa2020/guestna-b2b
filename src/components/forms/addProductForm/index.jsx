@@ -65,10 +65,25 @@ export const initialAddProductValues = {
   price: "",
   productCost: "",
   targetAudiences: [{ targetAudience: "", price: "" }],
+  b2cPrice: {
+    price: "",
+    targetAudiences: [],
+    weekdayPricing: [],
+  },
+  b2bPrice: {
+    price: "",
+    productCost: "",
+    studentsPerSupervisor: "10",
+    weekdayPricing: [],
+  },
+  studentsPerSupervisor: "10",
   services: [{ service: "", price: 0, note: { en: "", ar: "" } }],
   customServices: [],
+  gallary: [],
   gallery: [],
+  thumbnail: null,
   thumbnailWeb: null,
+  detailsFile: null,
   mediaFile: null,
   video: null,
   gatheringLocation: { lat: 24.9576, lng: 46.6988 },
@@ -77,6 +92,7 @@ export const initialAddProductValues = {
   mustHaveItems: { en: [""], ar: [""] },
   exemptedFromTrip: { en: [""], ar: [""] },
   benefits: { en: [""], ar: [""] },
+  branchTrips: [],
 };
 
 export const formatAddProductPayload = (
@@ -126,8 +142,8 @@ export const formatAddProductPayload = (
     "gatheringLocation[lng]": values.gatheringLocation?.lng,
     fromDay: values.fromDay,
     toDay: values.toDay,
-    fromHour: formatTime12h(values.fromHour),
-    toHour: formatTime12h(values.toHour),
+    fromHour: formatTime12h(values.fromHour || values.availableTimes?.[0]?.from),
+    toHour: formatTime12h(values.toHour || values.availableTimes?.[0]?.to),
     "availableSeats[min]": values.availableSeats?.min,
     "availableSeats[max]": values.availableSeats?.max,
     duration: calculatedDuration,
@@ -232,6 +248,24 @@ export const formatAddProductPayload = (
 
   if (b2cMarketPrice !== undefined) {
     payload["b2cPrice[price]"] = b2cMarketPrice;
+    payload["b2cPrice[finalPrice]"] =
+      values.b2cPrice?.finalPrice !== undefined && values.b2cPrice?.finalPrice !== ""
+        ? Number(values.b2cPrice.finalPrice)
+        : values.discountedPrice !== "" && !isNaN(Number(values.discountedPrice))
+        ? Number(values.discountedPrice)
+        : b2cMarketPrice;
+    if (values.b2cPrice?.hasTax !== undefined) {
+      payload["b2cPrice[hasTax]"] = Boolean(values.b2cPrice.hasTax);
+    }
+    if (values.b2cPrice?.depositRatio !== undefined && values.b2cPrice?.depositRatio !== "") {
+      payload["b2cPrice[depositRatio]"] = Number(values.b2cPrice.depositRatio);
+    }
+    if (values.b2cPrice?.depositValue !== undefined && values.b2cPrice?.depositValue !== "") {
+      payload["b2cPrice[depositValue]"] = Number(values.b2cPrice.depositValue);
+    }
+    if (values.b2cPrice?.finalDepositValue !== undefined && values.b2cPrice?.finalDepositValue !== "") {
+      payload["b2cPrice[finalDepositValue]"] = Number(values.b2cPrice.finalDepositValue);
+    }
   }
 
   let b2cTargetIdx = 0;
@@ -280,27 +314,47 @@ export const formatAddProductPayload = (
       : undefined;
 
   const studentsPerSupervisorVal =
-    values.b2bPricing?.studentsPerSupervisor !== "" &&
-    !isNaN(Number(values.b2bPricing?.studentsPerSupervisor))
+    values.studentsPerSupervisor !== "" &&
+    !isNaN(Number(values.studentsPerSupervisor))
+      ? Number(values.studentsPerSupervisor)
+      : values.b2bPrice?.studentsPerSupervisor !== "" &&
+        !isNaN(Number(values.b2bPrice?.studentsPerSupervisor))
+      ? Number(values.b2bPrice?.studentsPerSupervisor)
+      : values.b2bPricing?.studentsPerSupervisor !== "" &&
+        !isNaN(Number(values.b2bPricing?.studentsPerSupervisor))
       ? Number(values.b2bPricing?.studentsPerSupervisor)
       : values.b2bPricing?.supervisorRatio !== "" &&
         !isNaN(Number(values.b2bPricing?.supervisorRatio))
       ? Number(values.b2bPricing?.supervisorRatio)
-      : values.studentsPerSupervisor !== "" &&
-        !isNaN(Number(values.studentsPerSupervisor))
-      ? Number(values.studentsPerSupervisor)
       : values.b2bPricing?.freeSupervisor
       ? 10
       : undefined;
 
   if (b2bMarketPrice !== undefined) {
     payload["b2bPrice[price]"] = b2bMarketPrice;
+    payload["b2bPrice[finalPrice]"] =
+      values.b2bPrice?.finalPrice !== undefined && values.b2bPrice?.finalPrice !== ""
+        ? Number(values.b2bPrice.finalPrice)
+        : b2bMarketPrice;
+    if (values.b2bPrice?.hasTax !== undefined) {
+      payload["b2bPrice[hasTax]"] = Boolean(values.b2bPrice.hasTax);
+    }
+    if (values.b2bPrice?.depositRatio !== undefined && values.b2bPrice?.depositRatio !== "") {
+      payload["b2bPrice[depositRatio]"] = Number(values.b2bPrice.depositRatio);
+    }
+    if (values.b2bPrice?.depositValue !== undefined && values.b2bPrice?.depositValue !== "") {
+      payload["b2bPrice[depositValue]"] = Number(values.b2bPrice.depositValue);
+    }
+    if (values.b2bPrice?.finalDepositValue !== undefined && values.b2bPrice?.finalDepositValue !== "") {
+      payload["b2bPrice[finalDepositValue]"] = Number(values.b2bPrice.finalDepositValue);
+    }
   }
   if (b2bCost !== undefined) {
     payload["b2bPrice[productCost]"] = b2bCost;
   }
   if (studentsPerSupervisorVal !== undefined) {
     payload["b2bPrice[studentsPerSupervisor]"] = studentsPerSupervisorVal;
+    payload.studentsPerSupervisor = studentsPerSupervisorVal;
   }
 
   ALL_WEEKDAYS.forEach((day, idx) => {
@@ -342,13 +396,27 @@ export const formatAddProductPayload = (
     payload[`customServices[${idx}]`] = item;
   });
 
-  let cityIdx = 0;
-  (values.cities || []).forEach((item) => {
-    const id = typeof item === "object" && item !== null ? item._id || item.id : item;
-    if (id && typeof id === "string" && id.trim()) {
-      payload[`cities[${cityIdx}]`] = id.trim();
-      cityIdx++;
-    }
+  let cityList = (values.cities || [])
+    .map((item) => (typeof item === "object" && item !== null ? item._id || item.id : item))
+    .filter((id) => id && typeof id === "string" && id.trim().length === 24);
+
+  // If no cities in values.cities, resolve from selected providerBranchs
+  if (cityList.length === 0 && Array.isArray(formSelectionData?.providerBranchs)) {
+    const selectedBranches = formSelectionData.providerBranchs.filter((b) =>
+      branchList.includes(b._id || b.id)
+    );
+    const cityIds = new Set();
+    selectedBranches.forEach((b) => {
+      const cId = typeof b.city === "object" && b.city !== null ? b.city._id || b.city.id : b.city;
+      if (cId && typeof cId === "string" && cId.trim().length === 24) {
+        cityIds.add(cId.trim());
+      }
+    });
+    cityList = Array.from(cityIds);
+  }
+
+  cityList.forEach((id, idx) => {
+    payload[`cities[${idx}]`] = id.trim();
   });
   (values.stopBookingDate || []).forEach((item, idx) => {
     payload[`stopBookingDate[${idx}]`] = item;
@@ -373,8 +441,25 @@ export const formatAddProductPayload = (
       : item.service;
     if (sId) {
       payload[`services[${serviceIdx}][service]`] = sId;
-      payload[`services[${serviceIdx}][price]`] =
+      const sPrice =
         item.price !== "" && !isNaN(Number(item.price)) ? Number(item.price) : 0;
+      payload[`services[${serviceIdx}][price]`] = sPrice;
+      payload[`services[${serviceIdx}][isPaid]`] = sPrice > 0;
+
+      let nameEn = item.name?.en?.trim() || "";
+      let nameAr = item.name?.ar?.trim() || "";
+      if (!nameEn || !nameAr) {
+        const found = Array.isArray(formSelectionData?.services)
+          ? formSelectionData.services.find((s) => (s._id || s.id) === sId)
+          : null;
+        if (found) {
+          nameEn = nameEn || found.name?.en || (typeof found.name === "string" ? found.name : "") || "";
+          nameAr = nameAr || found.name?.ar || (typeof found.name === "string" ? found.name : "") || "";
+        }
+      }
+      if (nameEn) payload[`services[${serviceIdx}][name][en]`] = nameEn;
+      if (nameAr) payload[`services[${serviceIdx}][name][ar]`] = nameAr;
+
       const noteEn = item.note?.en?.trim();
       const noteAr = item.note?.ar?.trim();
       if (noteEn) payload[`services[${serviceIdx}][note][en]`] = noteEn;
@@ -462,7 +547,13 @@ export const formatAddProductPayload = (
     const bDates = values.branchDates?.[branchId] || {};
     const bCapacities = values.branchCapacities?.[branchId] || {};
 
+    payload[`branchTrips[${branchTripIdx}][providerBranch]`] = branchId;
     payload[`branchTrips[${branchTripIdx}][branch]`] = branchId;
+    const bSelectedDays = Array.isArray(bDates.selectedDays) && bDates.selectedDays.length > 0
+      ? bDates.selectedDays
+      : values.selectedDays || [];
+    payload[`branchTrips[${branchTripIdx}][tripDays]`] =
+      bSelectedDays.length > 0 ? bSelectedDays.length : 6;
     payload[`branchTrips[${branchTripIdx}][fromDay]`] = bDates.fromDay || values.fromDay;
     payload[`branchTrips[${branchTripIdx}][toDay]`] = bDates.toDay || values.toDay;
     payload[`branchTrips[${branchTripIdx}][fromHour]`] = formatTime12h(bDates.fromHour || values.fromHour);
@@ -486,9 +577,6 @@ export const formatAddProductPayload = (
     payload[`branchTrips[${branchTripIdx}][recurrencePattern]`] =
       bDates.recurrencePattern || values.recurrencePattern || "WEEKLY";
 
-    const bSelectedDays = Array.isArray(bDates.selectedDays) && bDates.selectedDays.length > 0
-      ? bDates.selectedDays
-      : values.selectedDays || [];
     bSelectedDays.forEach((day, dIdx) => {
       payload[`branchTrips[${branchTripIdx}][selectedDays][${dIdx}]`] = day;
     });
@@ -1031,18 +1119,22 @@ const AddProductForm = ({
         formData.append(key, formattedPayload[key]);
       });
 
-      if (Array.isArray(values.gallery)) {
-        values.gallery.forEach((file) => {
-          if (file instanceof File || file instanceof Blob) {
-            // New file uploaded by the user
-            formData.append("gallary", file);
-          }
-        });
-      }
+      const galleryList =
+        Array.isArray(values.gallary) && values.gallary.length > 0
+          ? values.gallary
+          : Array.isArray(values.gallery)
+          ? values.gallery
+          : [];
+
+      galleryList.forEach((file) => {
+        if (file instanceof File || file instanceof Blob) {
+          formData.append("gallary", file);
+        }
+      });
 
       // Edit mode: send old gallery URLs that the user kept (not removed)
-      if (isEditMode && Array.isArray(values.gallery)) {
-        const keptOldUrls = values.gallery.filter(
+      if (isEditMode) {
+        const keptOldUrls = galleryList.filter(
           (item) => typeof item === "string"
         );
         keptOldUrls.forEach((url, idx) => {
@@ -1050,13 +1142,14 @@ const AddProductForm = ({
         });
       }
 
-      const thumbnailFile = values.thumbnailWeb;
+      const thumbnailFile = values.thumbnail || values.thumbnailWeb;
       if (thumbnailFile instanceof File || thumbnailFile instanceof Blob) {
         formData.append("thumbnail", thumbnailFile);
       }
 
-      if (values.mediaFile instanceof File || values.mediaFile instanceof Blob) {
-        formData.append("detailsFile", values.mediaFile);
+      const detailsFile = values.detailsFile || values.mediaFile;
+      if (detailsFile instanceof File || detailsFile instanceof Blob) {
+        formData.append("detailsFile", detailsFile);
       }
 
       if (values.video instanceof File || values.video instanceof Blob) {

@@ -264,10 +264,16 @@ const Step5Services = ({
                                       opt.name?.en === selectedName))
                                 );
                               });
+                              const sId = selectedObj?._id || selectedObj?.id || selectedName;
                               setFieldValue(
                                 `services[${index}].service`,
-                                selectedObj?._id || selectedObj?.id || selectedName
+                                sId
                               );
+                              if (selectedObj) {
+                                const nameEn = selectedObj.name?.en || (typeof selectedObj.name === "string" ? selectedObj.name : selectedName);
+                                const nameAr = selectedObj.name?.ar || (typeof selectedObj.name === "string" ? selectedObj.name : selectedName);
+                                setFieldValue(`services[${index}].name`, { en: nameEn, ar: nameAr });
+                              }
                             }}
                             onBlur={handleBlur}
                             label={t("serviceLabel")}
@@ -288,7 +294,11 @@ const Step5Services = ({
                             min="0"
                             name={`services[${index}].price`}
                             value={item.price ?? ""}
-                            onChange={handleChange}
+                            onChange={(e) => {
+                              handleChange(e);
+                              const pVal = Number(e.target.value) || 0;
+                              setFieldValue(`services[${index}].isPaid`, pVal > 0);
+                            }}
                             onBlur={handleBlur}
                             label={t("servicePrice")}
                             labelClassName={labelCls}

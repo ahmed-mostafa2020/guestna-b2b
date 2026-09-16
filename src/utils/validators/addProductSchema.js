@@ -16,7 +16,8 @@ export const createAddProductSchema = (t) => {
       ar: Yup.string().trim().required(reqMsg),
     }),
 
-    tripsType: Yup.string().required(reqMsg),
+    tripType: Yup.string().optional(),
+    tripsType: Yup.string().optional(),
 
     description: Yup.object().shape({
       en: Yup.string().trim().required(reqMsg),
@@ -198,13 +199,20 @@ export const createAddProductSchema = (t) => {
 
     customServices: Yup.array().of(Yup.string()).optional(),
 
+    gallary: Yup.array()
+      .min(4, t("providerProfile.products.modal.validation.galleryMin"))
+      .max(15, t("providerProfile.products.modal.validation.galleryMax"))
+      .optional(),
+
     gallery: Yup.array()
       .min(4, t("providerProfile.products.modal.validation.galleryMin"))
       .max(15, t("providerProfile.products.modal.validation.galleryMax"))
-      .required(t("providerProfile.products.modal.validation.galleryMin")),
+      .optional(),
 
-    thumbnailWeb: Yup.mixed().required(reqMsg),
+    thumbnail: Yup.mixed().optional(),
+    thumbnailWeb: Yup.mixed().optional(),
 
+    detailsFile: Yup.mixed().nullable().optional(),
     mediaFile: Yup.mixed().nullable().optional(),
 
     video: Yup.mixed().nullable().optional(),
@@ -258,6 +266,7 @@ export const getStepFieldNames = (stepIndex) => {
         "systemTypes",
         "name.en",
         "name.ar",
+        "tripType",
         "tripsType",
         "description.en",
         "description.ar",
@@ -285,7 +294,14 @@ export const getStepFieldNames = (stepIndex) => {
     case 5: // Services
       return ["services"];
     case 6: // Media
-      return ["gallery", "thumbnailWeb"];
+      return [
+        "thumbnail",
+        "thumbnailWeb",
+        "gallary",
+        "gallery",
+        "detailsFile",
+        "mediaFile",
+      ];
     case 7: // Locations
       return [
         "cities",

@@ -160,21 +160,45 @@ export const createStep2Schema = (t) => {
     "Please enter a valid YouTube URL";
 
   return Yup.object().shape({
-    thumbnailWeb: Yup.mixed()
+    thumbnail: Yup.mixed()
       .nullable()
-      .test("is-cover-provided", coverReqMsg, (val) => {
-        if (!val) return false;
-        if (typeof val === "string" && val.trim().length > 0) return true;
-        if (val instanceof File || val instanceof Blob) return true;
+      .test("is-thumbnail-provided", coverReqMsg, function (val) {
+        const target = val || this.parent?.thumbnailWeb;
+        if (!target) return false;
+        if (typeof target === "string" && target.trim().length > 0) return true;
+        if (target instanceof File || target instanceof Blob) return true;
         return false;
       })
-      .required(coverReqMsg),
+      .optional(),
+
+    thumbnailWeb: Yup.mixed()
+      .nullable()
+      .test("is-cover-provided", coverReqMsg, function (val) {
+        const target = val || this.parent?.thumbnail;
+        if (!target) return false;
+        if (typeof target === "string" && target.trim().length > 0) return true;
+        if (target instanceof File || target instanceof Blob) return true;
+        return false;
+      })
+      .optional(),
+
+    gallary: Yup.array()
+      .of(Yup.mixed())
+      .test("is-gallary-min", galleryMinMsg, function (val) {
+        const target =
+          Array.isArray(val) && val.length > 0 ? val : this.parent?.gallery;
+        return Array.isArray(target) && target.length >= 4;
+      })
+      .optional(),
 
     gallery: Yup.array()
       .of(Yup.mixed())
-      .min(4, galleryMinMsg)
-      .max(15, galleryMaxMsg)
-      .required(galleryMinMsg),
+      .test("is-gallery-min", galleryMinMsg, function (val) {
+        const target =
+          Array.isArray(val) && val.length > 0 ? val : this.parent?.gallary;
+        return Array.isArray(target) && target.length >= 4;
+      })
+      .optional(),
 
     video: Yup.mixed()
       .nullable()
@@ -215,7 +239,9 @@ export const createStep2Schema = (t) => {
 };
 
 export const STEP_2_FIELD_NAMES = [
+  "thumbnail",
   "thumbnailWeb",
+  "gallary",
   "gallery",
   "video",
   "youtubeUrl",
@@ -363,6 +389,8 @@ export const STEP_BOOKING_DATES_FIELD_NAMES = [
   "recurrencePattern",
   "selectedDays",
   "monthDay",
+  "fromHour",
+  "toHour",
   "availableTimes[0].from",
   "availableTimes[0].to",
 ];
@@ -474,8 +502,12 @@ export const createStepPricingSchema = (t) => {
 
 export const STEP_PRICING_FIELD_NAMES = [
   "price",
+  "b2cPrice.price",
   "discountedPrice",
+  "b2cPrice.finalPrice",
+  "b2bPrice.price",
   "productCost",
   "targetAudiences",
   "bulkPricing",
+  "studentsPerSupervisor",
 ];
