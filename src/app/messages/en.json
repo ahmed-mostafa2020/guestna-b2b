@@ -366,7 +366,10 @@
           "stepPrerequisiteWarning": "Please complete the previous step first",
           "upcomingStepSoon": "Step {step} will be available soon",
           "stepUnderDevelopment": "This step is currently being prepared and will be available soon.",
-          "backToBasicInfo": "Back to Basic Information"
+          "backToBasicInfo": "Back to Basic Information",
+          "loadingFormData": "Loading form data...",
+          "errorLoadingFormData": "An error occurred while loading data. Please try again.",
+          "retry": "Retry"
         },
         "steps": {
           "basicInfo": "Basic Information",
@@ -578,7 +581,12 @@
           "linkResolved": "Location resolved from link successfully",
           "linkNotFound": "Could not find coordinates from this link",
           "mapConfigError": "Google Maps API key is not configured",
-          "savedSuccess": "Service locations and capacity saved successfully"
+          "savedSuccess": "Service locations and capacity saved successfully",
+          "selectBranchesBtn": "Select Branches",
+          "editBranchesBtn": "Edit Branches",
+          "saveBranchesBtn": "Save",
+          "noBranchesSelectedTitle": "No Branch Selected",
+          "noBranchesSelectedSubtitle": "Select the branches where this product will be offered"
         },
         "stepBookingDates": {
           "cardTitle": "Dates",

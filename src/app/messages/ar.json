@@ -373,7 +373,10 @@
           "stepPrerequisiteWarning": "يرجى إكمال بيانات الخطوة الأولى أولاً",
           "upcomingStepSoon": "الخطوة {step} ستكون متاحة قريباً",
           "stepUnderDevelopment": "يجري حالياً تصميم هذه الخطوة وسيتم إتاحتها قريباً.",
-          "backToBasicInfo": "العودة إلى المعلومات الأساسية"
+          "backToBasicInfo": "العودة إلى المعلومات الأساسية",
+          "loadingFormData": "جاري تحميل البيانات...",
+          "errorLoadingFormData": "حدث خطأ أثناء تحميل البيانات، يرجى المحاولة مرة أخرى.",
+          "retry": "إعادة المحاولة"
         },
         "steps": {
           "basicInfo": "المعلومات الأساسية",
@@ -585,7 +588,12 @@
           "linkResolved": "تم تحديد الموقع من الرابط بنجاح",
           "linkNotFound": "تعذر العثور على إحداثيات من هذا الرابط",
           "mapConfigError": "مفتاح خريطة جوجل غير متوفر حالياً",
-          "savedSuccess": "تم حفظ مواقع تقديم الخدمة والسعة بنجاح"
+          "savedSuccess": "تم حفظ مواقع تقديم الخدمة والسعة بنجاح",
+          "selectBranchesBtn": "اختر الفروع",
+          "editBranchesBtn": "تعديل الفروع",
+          "saveBranchesBtn": "حفظ",
+          "noBranchesSelectedTitle": "لم يتم اختيار أي فرع",
+          "noBranchesSelectedSubtitle": "اختر الفروع التي سيُقدّم فيها هذا المنتج"
         },
         "stepBookingDates": {
           "cardTitle": "التواريخ",

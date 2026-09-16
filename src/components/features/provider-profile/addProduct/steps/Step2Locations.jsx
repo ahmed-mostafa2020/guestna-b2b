@@ -9,75 +9,12 @@ import CheckIcon from "@mui/icons-material/Check";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
 import BranchLocationPicker from "@components/features/provider-profile/branches/BranchLocationPicker";
+import BranchCustomizationSidebar from "./BranchCustomizationSidebar";
+import { buildBranchGroups } from "../branchConstants";
 import { cn } from "@utils/helpers/cn";
-
-const isHexObjectId = (str) =>
-  typeof str === "string" && /^[0-9a-fA-F]{24}$/.test(str.trim());
-
-const getItemName = (item, locale) => {
-  if (!item) return "";
-  if (typeof item === "string") {
-    return isHexObjectId(item) ? "" : item;
-  }
-  if (typeof item.name === "object" && item.name !== null) {
-    return item.name[locale] || item.name.ar || item.name.en || "";
-  }
-  return item.name || item.title || item.label || "";
-};
-
-const DEFAULT_BRANCH_GROUPS = [
-  {
-    city: { ar: "الرياض", en: "Riyadh" },
-    branches: [
-      {
-        id: "branch-nakheel-riyadh",
-        name: { ar: "فرع النخيل", en: "Al Nakheel Branch" },
-        fullName: {
-          ar: "فرع النخيل - الرياض",
-          en: "Al Nakheel Branch - Riyadh",
-        },
-      },
-      {
-        id: "branch-malqa-riyadh",
-        name: { ar: "فرع الملقا", en: "Al Malqa Branch" },
-        fullName: {
-          ar: "فرع الملقا - الرياض",
-          en: "Al Malqa Branch - Riyadh",
-        },
-      },
-      {
-        id: "branch-olaya-riyadh",
-        name: { ar: "فرع العليا", en: "Al Olaya Branch" },
-        fullName: {
-          ar: "فرع العليا - الرياض",
-          en: "Al Olaya Branch - Riyadh",
-        },
-      },
-    ],
-  },
-  {
-    city: { ar: "جدة", en: "Jeddah" },
-    branches: [
-      {
-        id: "branch-rawdah-jeddah",
-        name: { ar: "فرع الروضة", en: "Al Rawdah Branch" },
-        fullName: {
-          ar: "فرع الروضة - جدة",
-          en: "Al Rawdah Branch - Jeddah",
-        },
-      },
-      {
-        id: "branch-hamra-jeddah",
-        name: { ar: "فرع الحمراء", en: "Al Hamra Branch" },
-        fullName: {
-          ar: "فرع الحمراء - جدة",
-          en: "Al Hamra Branch - Jeddah",
-        },
-      },
-    ],
-  },
-];
 
 const Step2Locations = ({
   formSelectionData = null,
@@ -110,8 +47,8 @@ const Step2Locations = ({
   const maxCapacityTouched = getIn(touched, "availableSeats.max");
   const hasMaxCapacityError = Boolean(maxCapacityError && maxCapacityTouched);
 
-  // Branch customization section active state (starts inactive / empty state)
-  const [isBranchCustomizeActive, setIsBranchCustomizeActive] = useState(false);
+  // Sidebar state for branch capacity customization (Card 3)
+  const [isCapacitySidebarOpen, setIsCapacitySidebarOpen] = useState(false);
 
   // Accordion state for branches in Card 3
   const [openBranches, setOpenBranches] = useState({});
@@ -123,43 +60,14 @@ const Step2Locations = ({
     }));
   }, []);
 
-  // Selected branch IDs in Formik
+  // Selected branch IDs for the product (Card 1)
   const selectedBranchIds = useMemo(() => {
     return Array.isArray(values.providerBranchs) ? values.providerBranchs : [];
   }, [values.providerBranchs]);
 
-  // Build branch groups (from API if available, or fallback to default groups)
+  // Build branch groups using shared utility (from API data)
   const branchGroups = useMemo(() => {
-    const rawBranches = formSelectionData?.providerBranchs;
-    if (Array.isArray(rawBranches) && rawBranches.length > 0) {
-      const cityMap = new Map();
-      rawBranches.forEach((b, idx) => {
-        const cityName =
-          typeof b.city === "object" && b.city !== null
-            ? getItemName(b.city, locale)
-            : b.city || (isAr ? "الفرع" : "Branch");
-        const branchItem = {
-          id: b._id || b.id || `branch-${idx}`,
-          name: {
-            ar: getItemName(b, "ar") || `فرع ${idx + 1}`,
-            en: getItemName(b, "en") || `Branch ${idx + 1}`,
-          },
-          fullName: {
-            ar: `${getItemName(b, "ar") || `فرع ${idx + 1}`} - ${cityName}`,
-            en: `${getItemName(b, "en") || `Branch ${idx + 1}`} - ${cityName}`,
-          },
-        };
-        if (!cityMap.has(cityName)) {
-          cityMap.set(cityName, {
-            city: { ar: cityName, en: cityName },
-            branches: [],
-          });
-        }
-        cityMap.get(cityName).branches.push(branchItem);
-      });
-      return Array.from(cityMap.values());
-    }
-    return DEFAULT_BRANCH_GROUPS;
+    return buildBranchGroups(formSelectionData?.providerBranchs, locale, isAr);
   }, [formSelectionData?.providerBranchs, locale, isAr]);
 
   // Flattened list of all available branches
@@ -167,12 +75,7 @@ const Step2Locations = ({
     return branchGroups.flatMap((group) => group.branches);
   }, [branchGroups]);
 
-  // Branches that should appear in Card 3 (customization accordion)
-  const customizedBranches = useMemo(() => {
-    return allBranches.filter((b) => selectedBranchIds.includes(b.id));
-  }, [selectedBranchIds, allBranches]);
-
-  // Toggle branch selection
+  // Toggle branch selection directly on Card 1
   const handleToggleBranchSelection = useCallback(
     (branchId) => {
       let updated;
@@ -182,9 +85,30 @@ const Step2Locations = ({
         updated = [...selectedBranchIds, branchId];
       }
       setFieldValue("providerBranchs", updated);
+      setFieldTouched("providerBranchs", true, false);
+      if (updated.length > 0) {
+        setFieldError("providerBranchs", undefined);
+      }
     },
-    [selectedBranchIds, setFieldValue]
+    [selectedBranchIds, setFieldValue, setFieldTouched, setFieldError]
   );
+
+  // Customized capacity branch IDs
+  const customizedCapacityBranchIds = useMemo(() => {
+    if (values.branchCapacities && typeof values.branchCapacities === "object") {
+      return Object.keys(values.branchCapacities);
+    }
+    return [];
+  }, [values.branchCapacities]);
+
+  const isCapacityCustomizedActive = customizedCapacityBranchIds.length > 0;
+
+  // Active customized branch objects for Card 3
+  const activeCapacityBranches = useMemo(() => {
+    return customizedCapacityBranchIds
+      .map((id) => allBranches.find((b) => b.id === id))
+      .filter(Boolean);
+  }, [customizedCapacityBranchIds, allBranches]);
 
   // Capacity default values (empty unless entered by user)
   const defaultCapacityMin = values.availableSeats?.min ?? "";
@@ -205,7 +129,7 @@ const Step2Locations = ({
       setFieldError("availableSeats.min", undefined);
     }
 
-    // If max has valid number and is >= min (or min is not yet a number), immediately clear max error on change
+    // If max has valid number and is >= min, immediately clear max error on change
     if (
       nextMax !== "" &&
       !isNaN(numMax) &&
@@ -243,24 +167,54 @@ const Step2Locations = ({
     setFieldValue("branchCapacities", updated);
   };
 
+  // Handle saving capacity branches from sidebar
+  const handleSaveCapacityBranches = useCallback(
+    (newSelectedIds) => {
+      const current = { ...(values.branchCapacities || {}) };
+      const updated = {};
+      newSelectedIds.forEach((bId) => {
+        updated[bId] = current[bId] || {
+          min: defaultCapacityMin,
+          max: defaultCapacityMax,
+        };
+      });
+      setFieldValue("branchCapacities", updated);
+      setIsCapacitySidebarOpen(false);
+      if (newSelectedIds.length > 0) {
+        setOpenBranches((prev) => ({ ...prev, [newSelectedIds[0]]: true }));
+      }
+    },
+    [values.branchCapacities, defaultCapacityMin, defaultCapacityMax, setFieldValue]
+  );
+
+  // Handle canceling capacity customization
+  const handleCancelCapacityCustomization = useCallback(() => {
+    setFieldValue("branchCapacities", {});
+    setOpenBranches({});
+  }, [setFieldValue]);
+
   return (
     <div className="flex flex-col gap-6 font-somar">
       {/* ────────────────────────────────────────────────────────── */}
-      {/* CARD 1: اختر الفرع (Choose Branch)                        */}
+      {/* CARD 1: اختر الفرع (Choose Branch) — Inline Direct Listing */}
       {/* ────────────────────────────────────────────────────────── */}
-      <div
+      <section
         id="providerBranchs"
         tabIndex={-1}
+        aria-labelledby="branch-selection-title"
         className={cn(
-          "bg-white rounded-2xl border p-6 shadow-none transition-all duration-200 outline-none scroll-mt-6",
+          "bg-white rounded-2xl border p-6 sm:p-8 lg:p-10 shadow-none transition-all duration-200 outline-none scroll-mt-6 text-start",
           hasBranchError ? "border-error/70 ring-1 ring-error/30" : "border-border"
         )}
       >
         <div>
-          <h2 className="text-lg font-bold text-titleColor">
+          <h2
+            id="branch-selection-title"
+            className="font-somar text-xl font-medium text-textDark leading-6"
+          >
             {t("cardTitle")} <span className="text-error ms-0.5">*</span>
           </h2>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="font-somar text-base font-medium text-textDark leading-5 !mt-2">
             {t("cardSubtitle")}
           </p>
           {hasBranchError && (
@@ -271,74 +225,94 @@ const Step2Locations = ({
         </div>
 
         <div className="mt-5 space-y-6">
-          {branchGroups.map((group, groupIdx) => {
-            const cityName = isAr ? group.city.ar : group.city.en;
-            return (
-              <div key={`group-${groupIdx}`} className="space-y-2.5">
-                <h3 className="text-sm font-semibold text-gray-700">
-                  {cityName}
-                </h3>
-                <div className="space-y-2.5">
-                  {group.branches.map((branch) => {
-                    const isSelected = selectedBranchIds.includes(branch.id);
-                    const branchName = isAr ? branch.name.ar : branch.name.en;
+          {branchGroups.length === 0 ? (
+            <p className="text-sm text-gray-400 py-4 font-somar text-center">
+              {t("emptyBranchesTitle")}
+            </p>
+          ) : (
+            branchGroups.map((group, groupIdx) => {
+              const cityName =
+                group.city?.[locale] ||
+                group.city?.ar ||
+                group.city?.en ||
+                "";
+              const branches = group.branches || [];
+              if (branches.length === 0) return null;
 
-                    return (
-                      <div
-                        key={branch.id}
-                        onClick={() => handleToggleBranchSelection(branch.id)}
-                        className={cn(
-                          "w-full flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer select-none",
-                          isSelected
-                            ? "border-mainColor bg-mainColor/[0.02]"
-                            : "border-border/80 bg-white hover:border-mainColor/40"
-                        )}
-                        role="checkbox"
-                        aria-checked={isSelected}
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            handleToggleBranchSelection(branch.id);
-                          }
-                        }}
-                      >
-                        {/* Right side in RTL: Location pin + Branch Name */}
-                        <div className="flex items-center gap-2.5">
-                          <LocationOnOutlinedIcon className="w-5 h-5 text-gray-400 shrink-0" />
-                          <span className="text-sm font-medium text-titleColor">
-                            {branchName}
-                          </span>
-                        </div>
+              return (
+                <div key={`group-${groupIdx}`} className="space-y-2.5">
+                  {cityName && (
+                    <h3 className="text-sm font-semibold text-gray-700">
+                      {cityName}
+                    </h3>
+                  )}
+                  <div className="space-y-2.5">
+                    {branches.map((branch) => {
+                      const isSelected = selectedBranchIds.includes(branch.id);
+                      const branchName =
+                        branch.name?.[locale] ||
+                        branch.name?.ar ||
+                        branch.name?.en ||
+                        branch.id;
 
-                        {/* Left side in RTL: Checkbox */}
+                      return (
                         <div
+                          key={branch.id}
+                          onClick={() => handleToggleBranchSelection(branch.id)}
                           className={cn(
-                            "w-5 h-5 rounded flex items-center justify-center border transition-all shrink-0",
+                            "w-full flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer select-none",
                             isSelected
-                              ? "bg-mainColor border-mainColor text-white shadow-xs"
-                              : "border-gray-300 bg-white"
+                              ? "border-mainColor bg-mainColor/[0.02]"
+                              : "border-border/80 bg-white hover:border-mainColor/40"
                           )}
+                          role="checkbox"
+                          aria-checked={isSelected}
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              handleToggleBranchSelection(branch.id);
+                            }
+                          }}
                         >
-                          {isSelected && (
-                            <CheckIcon className="w-3.5 h-3.5 stroke-[3]" />
-                          )}
+                          {/* Right side in RTL: Location pin + Branch Name */}
+                          <div className="flex items-center gap-2.5">
+                            <LocationOnOutlinedIcon className="w-5 h-5 text-gray-400 shrink-0" />
+                            <span className="text-sm font-medium text-titleColor">
+                              {branchName}
+                            </span>
+                          </div>
+
+                          {/* Left side in RTL: Checkbox */}
+                          <div
+                            className={cn(
+                              "w-5 h-5 rounded flex items-center justify-center border transition-all shrink-0",
+                              isSelected
+                                ? "bg-mainColor border-mainColor text-white shadow-xs"
+                                : "border-gray-300 bg-white"
+                            )}
+                            aria-hidden="true"
+                          >
+                            {isSelected && (
+                              <CheckIcon className="w-3.5 h-3.5 text-white stroke-[3]" />
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
-      </div>
+      </section>
 
       {/* ────────────────────────────────────────────────────────── */}
       {/* CARD 2: السعة الاستيعابية (Default Capacity)               */}
       {/* ────────────────────────────────────────────────────────── */}
-      <div className="bg-white rounded-2xl border border-border p-6 shadow-none">
-        <div>
+      <div className="bg-white rounded-2xl border border-border p-6 shadow-none text-start">
+        <div className="mb-4">
           <h2 className="text-lg font-bold text-titleColor">
             {t("capacityCardTitle")}
           </h2>
@@ -347,69 +321,70 @@ const Step2Locations = ({
           </p>
         </div>
 
-        <div className="mt-5 p-5 rounded-2xl border border-dashed border-gray-200 bg-[#FAFCFC]">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {/* Input 1 (Right in RTL): السعة (عدد الأشخاص) */}
-            <div className="flex flex-col">
-              <label htmlFor="availableSeats.min" className="text-xs font-semibold text-gray-700 mb-1.5">
-                {t("capacity")} <span className="text-error ms-0.5">*</span>
-              </label>
-              <input
-                id="availableSeats.min"
-                name="availableSeats.min"
-                type="number"
-                min="1"
-                value={defaultCapacityMin}
-                onChange={(e) => handleCapacityChange("min", e.target.value)}
-                onBlur={handleBlur}
-                onFocus={() => setFieldTouched("availableSeats.min", true, false)}
-                placeholder={t("capacityPlaceholder")}
-                className={cn(
-                  "w-full h-11 px-3.5 rounded-lg border bg-white text-sm font-medium text-titleColor transition-colors focus:outline-none",
-                  hasMinCapacityError
-                    ? "border-error focus:border-error"
-                    : "border-gray-200 focus:border-mainColor"
-                )}
-              />
-              {hasMinCapacityError ? (
-                <p className="text-xs text-error mt-1 font-medium">
-                  {minCapacityError}
-                </p>
-              ) : (
-                <p className="text-xs text-gray-400 mt-1.5 leading-relaxed">
-                  {t("capacityHelp")}
-                </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Input 1: السعة (الحد الأدنى) */}
+          <div id="availableSeats.min" className="flex flex-col scroll-mt-6">
+            <label
+              htmlFor="default-capacity-min-input"
+              className="text-xs font-semibold text-gray-700 mb-1.5"
+            >
+              {t("capacity")} <span className="text-error ms-0.5">*</span>
+            </label>
+            <input
+              id="default-capacity-min-input"
+              type="number"
+              min="1"
+              value={defaultCapacityMin}
+              onChange={(e) => handleCapacityChange("min", e.target.value)}
+              onBlur={handleBlur}
+              onFocus={() => setFieldTouched("availableSeats.min", true, false)}
+              placeholder={t("capacityPlaceholder")}
+              className={cn(
+                "w-full h-11 px-3.5 rounded-lg border bg-white text-sm font-medium text-titleColor transition-colors focus:outline-none",
+                hasMinCapacityError
+                  ? "border-error focus:border-error ring-1 ring-error/30"
+                  : "border-gray-200 focus:border-mainColor"
               )}
-            </div>
+            />
+            {hasMinCapacityError && (
+              <p className="text-xs text-error font-medium mt-1">
+                {minCapacityError}
+              </p>
+            )}
+            <p className="text-[11px] text-gray-400 mt-1">
+              {t("capacityHelp")}
+            </p>
+          </div>
 
-            {/* Input 2 (Left in RTL): أقصى سعة (عدد الأشخاص) */}
-            <div className="flex flex-col">
-              <label htmlFor="availableSeats.max" className="text-xs font-semibold text-gray-700 mb-1.5">
-                {t("maxCapacity")} <span className="text-error ms-0.5">*</span>
-              </label>
-              <input
-                id="availableSeats.max"
-                name="availableSeats.max"
-                type="number"
-                min="1"
-                value={defaultCapacityMax}
-                onChange={(e) => handleCapacityChange("max", e.target.value)}
-                onBlur={handleBlur}
-                onFocus={() => setFieldTouched("availableSeats.max", true, false)}
-                placeholder={t("maxCapacityPlaceholder")}
-                className={cn(
-                  "w-full h-11 px-3.5 rounded-lg border bg-white text-sm font-medium text-titleColor transition-colors focus:outline-none",
-                  hasMaxCapacityError
-                    ? "border-error focus:border-error"
-                    : "border-gray-200 focus:border-mainColor"
-                )}
-              />
-              {hasMaxCapacityError && (
-                <p className="text-xs text-error mt-1 font-medium">
-                  {maxCapacityError}
-                </p>
+          {/* Input 2: أقصى سعة (الحد الأقصى) */}
+          <div id="availableSeats.max" className="flex flex-col scroll-mt-6">
+            <label
+              htmlFor="default-capacity-max-input"
+              className="text-xs font-semibold text-gray-700 mb-1.5"
+            >
+              {t("maxCapacity")} <span className="text-error ms-0.5">*</span>
+            </label>
+            <input
+              id="default-capacity-max-input"
+              type="number"
+              min="1"
+              value={defaultCapacityMax}
+              onChange={(e) => handleCapacityChange("max", e.target.value)}
+              onBlur={handleBlur}
+              onFocus={() => setFieldTouched("availableSeats.max", true, false)}
+              placeholder={t("maxCapacityPlaceholder")}
+              className={cn(
+                "w-full h-11 px-3.5 rounded-lg border bg-white text-sm font-medium text-titleColor transition-colors focus:outline-none",
+                hasMaxCapacityError
+                  ? "border-error focus:border-error ring-1 ring-error/30"
+                  : "border-gray-200 focus:border-mainColor"
               )}
-            </div>
+            />
+            {hasMaxCapacityError && (
+              <p className="text-xs text-error font-medium mt-1">
+                {maxCapacityError}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -504,7 +479,7 @@ const Step2Locations = ({
       {/* ────────────────────────────────────────────────────────── */}
       {/* CARD 3: تخصيص السعة الاستيعابية حسب الفرع                   */}
       {/* ────────────────────────────────────────────────────────── */}
-      <div className="bg-white rounded-2xl border border-border p-6 shadow-none">
+      <div className="bg-white rounded-2xl border border-border p-6 shadow-none text-start">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -516,149 +491,182 @@ const Step2Locations = ({
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setIsBranchCustomizeActive((prev) => !prev)}
-            className="self-start sm:self-auto h-10 px-4 rounded-lg border border-mainColor text-mainColor hover:bg-mainColor/5 text-sm font-medium transition-colors cursor-pointer shrink-0"
-          >
-            {isBranchCustomizeActive
-              ? t("cancelCustomizeBtn")
-              : t("branchCustomizeBtn")}
-          </button>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            {isCapacityCustomizedActive ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setIsCapacitySidebarOpen(true)}
+                  className="px-4 py-2 rounded-lg border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
+                >
+                  <EditOutlinedIcon sx={{ fontSize: 16 }} />
+                  <span>{t("editBranchesBtn")}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancelCapacityCustomization}
+                  className="px-3 py-2 rounded-lg text-error hover:bg-error/5 font-somar text-sm font-medium transition-all duration-200 cursor-pointer whitespace-nowrap"
+                >
+                  {t("cancelCustomizeBtn")}
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsCapacitySidebarOpen(true)}
+                className="px-4 py-2 rounded-lg border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar text-sm font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap"
+              >
+                {t("branchCustomizeBtn")}
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Content: Switch between Empty State and Accordion */}
         <div className="mt-6">
-          {!isBranchCustomizeActive ? (
+          {!isCapacityCustomizedActive ? (
             /* Empty State Box */
-            <div className="rounded-xl border border-dashed border-gray-200 bg-[#FAFCFC] p-8 sm:p-10 text-center flex flex-col items-center justify-center">
-              <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 mb-3">
-                <StorefrontOutlinedIcon className="w-6 h-6" />
+            <div className="bg-[#F9FAFA] border border-gray-200 rounded-2xl p-8 sm:p-12 text-center flex flex-col items-center justify-center gap-3">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400">
+                <AutoAwesomeOutlinedIcon className="w-6 h-6 text-gray-400" />
               </div>
-              <h3 className="text-base font-bold text-titleColor mb-1">
+              <h3 className="font-somar font-bold text-base sm:text-lg text-titleColor">
                 {t("emptyBranchesTitle")}
               </h3>
-              <p className="text-sm text-gray-500 max-w-md">
+              <p className="font-somar text-xs sm:text-sm text-gray-500 max-w-md">
                 {t("emptyBranchesSubtitle")}
               </p>
+              <button
+                type="button"
+                onClick={() => setIsCapacitySidebarOpen(true)}
+                className="mt-2 px-5 py-2.5 rounded-xl bg-mainColor hover:bg-titleColor text-white font-somar font-semibold text-sm transition-all duration-200 cursor-pointer shadow-sm"
+              >
+                {t("branchCustomizeBtn")}
+              </button>
             </div>
           ) : (
             /* Branch Accordion List */
             <div className="space-y-3">
-              {customizedBranches.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-gray-200 bg-[#FAFCFC] p-6 text-center text-sm text-gray-500">
-                  {t("noBranchesSelected")}
-                </div>
-              ) : (
-                customizedBranches.map((branch) => {
-                  const isOpen = Boolean(openBranches[branch.id]);
-                  const branchFullName = isAr
-                    ? branch.fullName.ar
-                    : branch.fullName.en;
+              {activeCapacityBranches.map((branch) => {
+                const isOpen = Boolean(openBranches[branch.id]);
+                const branchFullName = isAr
+                  ? branch.fullName?.ar || branch.name?.ar
+                  : branch.fullName?.en || branch.name?.en;
 
-                  const branchCap = values.branchCapacities?.[branch.id] || {
-                    min: defaultCapacityMin,
-                    max: defaultCapacityMax,
-                  };
+                const branchCap = values.branchCapacities?.[branch.id] || {
+                  min: defaultCapacityMin,
+                  max: defaultCapacityMax,
+                };
 
-                  return (
-                    <div
-                      key={branch.id}
-                      className="rounded-xl border border-border overflow-hidden transition-all bg-white"
+                return (
+                  <div
+                    key={branch.id}
+                    className="rounded-xl border border-border overflow-hidden transition-all bg-white"
+                  >
+                    {/* Accordion Header */}
+                    <button
+                      type="button"
+                      onClick={() => toggleBranch(branch.id)}
+                      className="w-full p-4 flex items-center justify-between text-start hover:bg-gray-50/70 transition-colors cursor-pointer"
                     >
-                      {/* Accordion Header */}
-                      <button
-                        type="button"
-                        onClick={() => toggleBranch(branch.id)}
-                        className="w-full p-4 flex items-center justify-between text-start hover:bg-gray-50/70 transition-colors cursor-pointer"
-                      >
-                        <div>
-                          <h4 className="text-sm font-bold text-titleColor">
-                            {branchFullName}
-                          </h4>
-                          <p className="text-xs text-gray-400 mt-0.5">
-                            {branchFullName}
-                          </p>
-                        </div>
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-titleColor transition-colors">
-                          {isOpen ? (
-                            <KeyboardArrowUpIcon className="w-5 h-5" />
-                          ) : (
-                            <KeyboardArrowDownIcon className="w-5 h-5" />
-                          )}
-                        </div>
-                      </button>
+                      <div>
+                        <h4 className="text-sm font-bold text-titleColor">
+                          {branchFullName}
+                        </h4>
+                        <p className="text-xs text-gray-400 mt-0.5">
+                          {branchFullName}
+                        </p>
+                      </div>
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-titleColor transition-colors">
+                        {isOpen ? (
+                          <KeyboardArrowUpIcon className="w-5 h-5" />
+                        ) : (
+                          <KeyboardArrowDownIcon className="w-5 h-5" />
+                        )}
+                      </div>
+                    </button>
 
-                      {/* Accordion Expanded Body */}
-                      {isOpen && (
-                        <div className="p-4 sm:p-5 border-t border-gray-100 bg-[#FAFCFC]/50">
-                          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                            {/* Input 1: السعة */}
-                            <div className="flex-1 flex flex-col">
-                              <label className="text-xs font-semibold text-gray-700 mb-1.5">
-                                {t("capacity")} <span className="text-error ms-0.5">*</span>
-                              </label>
-                              <input
-                                type="number"
-                                min="1"
-                                value={branchCap.min ?? defaultCapacityMin}
-                                onChange={(e) =>
-                                  handleBranchCapacityChange(
-                                    branch.id,
-                                    "min",
-                                    e.target.value
-                                  )
-                                }
-                                placeholder={t("capacityPlaceholder")}
-                                className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-sm font-medium text-titleColor focus:border-mainColor focus:outline-none transition-colors"
-                              />
-                            </div>
+                    {/* Accordion Expanded Body */}
+                    {isOpen && (
+                      <div className="p-4 sm:p-5 border-t border-gray-100 bg-[#FAFCFC]/50">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                          {/* Input 1: السعة */}
+                          <div className="flex-1 flex flex-col">
+                            <label className="text-xs font-semibold text-gray-700 mb-1.5">
+                              {t("capacity")} <span className="text-error ms-0.5">*</span>
+                            </label>
+                            <input
+                              type="number"
+                              min="1"
+                              value={branchCap.min ?? defaultCapacityMin}
+                              onChange={(e) =>
+                                handleBranchCapacityChange(
+                                  branch.id,
+                                  "min",
+                                  e.target.value
+                                )
+                              }
+                              placeholder={t("capacityPlaceholder")}
+                              className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-sm font-medium text-titleColor focus:border-mainColor focus:outline-none transition-colors"
+                            />
+                          </div>
 
-                            {/* Input 2: أقصى سعة */}
-                            <div className="flex-1 flex flex-col">
-                              <label className="text-xs font-semibold text-gray-700 mb-1.5">
-                                {t("maxCapacity")} <span className="text-error ms-0.5">*</span>
-                              </label>
-                              <input
-                                type="number"
-                                min="1"
-                                value={branchCap.max ?? defaultCapacityMax}
-                                onChange={(e) =>
-                                  handleBranchCapacityChange(
-                                    branch.id,
-                                    "max",
-                                    e.target.value
-                                  )
-                                }
-                                placeholder={t("maxCapacityPlaceholder")}
-                                className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-sm font-medium text-titleColor focus:border-mainColor focus:outline-none transition-colors"
-                              />
-                            </div>
+                          {/* Input 2: أقصى سعة */}
+                          <div className="flex-1 flex flex-col">
+                            <label className="text-xs font-semibold text-gray-700 mb-1.5">
+                              {t("maxCapacity")} <span className="text-error ms-0.5">*</span>
+                            </label>
+                            <input
+                              type="number"
+                              min="1"
+                              value={branchCap.max ?? defaultCapacityMax}
+                              onChange={(e) =>
+                                handleBranchCapacityChange(
+                                  branch.id,
+                                  "max",
+                                  e.target.value
+                                )
+                              }
+                              placeholder={t("maxCapacityPlaceholder")}
+                              className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-sm font-medium text-titleColor focus:border-mainColor focus:outline-none transition-colors"
+                            />
+                          </div>
 
-                            {/* Delete / Remove customization */}
-                            <div className="sm:pt-5 shrink-0 flex items-center">
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  handleRemoveBranchCapacity(branch.id)
-                                }
-                                title={t("deleteCustomization")}
-                                className="w-11 h-11 rounded-lg border border-red-200 text-red-500 hover:bg-red-50 flex items-center justify-center transition-colors cursor-pointer"
-                              >
-                                <DeleteOutlineIcon className="w-5 h-5" />
-                              </button>
-                            </div>
+                          {/* Delete / Remove customization */}
+                          <div className="sm:pt-5 shrink-0 flex items-center">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleRemoveBranchCapacity(branch.id)
+                              }
+                              title={t("deleteCustomization")}
+                              className="w-11 h-11 rounded-lg border border-red-200 text-red-500 hover:bg-red-50 flex items-center justify-center transition-colors cursor-pointer"
+                            >
+                              <DeleteOutlineIcon className="w-5 h-5" />
+                            </button>
                           </div>
                         </div>
-                      )}
-                    </div>
-                  );
-                })
-              )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
       </div>
+
+      {/* Branch Capacity Customization Sidebar Drawer */}
+      <BranchCustomizationSidebar
+        isOpen={isCapacitySidebarOpen}
+        onClose={() => setIsCapacitySidebarOpen(false)}
+        selectedBranchIds={customizedCapacityBranchIds}
+        onSave={handleSaveCapacityBranches}
+        branchGroups={branchGroups}
+        title={t("branchCustomizeTitle")}
+        subtitle={t("branchCustomizeSubtitle")}
+        saveBtnText={t("saveBranchesBtn")}
+      />
     </div>
   );
 };

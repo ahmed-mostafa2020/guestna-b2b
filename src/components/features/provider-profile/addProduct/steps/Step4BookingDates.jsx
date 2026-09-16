@@ -26,6 +26,26 @@ const WEEKDAY_KEYS = [
   "FRIDAY",
 ];
 
+/**
+ * Safely trigger date picker without throwing NotAllowedError if the user gesture
+ * is already consumed by clicking directly on the input.
+ */
+const handleDatePickerContainerClick = (e) => {
+  if (e.target.tagName === "INPUT") return;
+  const input = e.currentTarget.querySelector("input[type='date']");
+  if (input) {
+    try {
+      if (typeof input.showPicker === "function") {
+        input.showPicker();
+      } else {
+        input.focus();
+      }
+    } catch {
+      input.focus();
+    }
+  }
+};
+
 const Step4BookingDates = ({
   formSelectionData = null,
   isSelectionsLoading: _isSelectionsLoading = false,
@@ -227,12 +247,7 @@ const Step4BookingDates = ({
                 {t("startDate")} <span className="text-error ms-1">*</span>
               </label>
               <div
-                onClick={(e) => {
-                  const input = e.currentTarget.querySelector("input[type='date']");
-                  if (input && typeof input.showPicker === "function") {
-                    input.showPicker();
-                  }
-                }}
+                onClick={handleDatePickerContainerClick}
                 className={cn(
                   fieldContainerCls,
                   "cursor-pointer",
@@ -264,12 +279,7 @@ const Step4BookingDates = ({
                 {t("endDate")} <span className="text-error ms-1">*</span>
               </label>
               <div
-                onClick={(e) => {
-                  const input = e.currentTarget.querySelector("input[type='date']");
-                  if (input && typeof input.showPicker === "function") {
-                    input.showPicker();
-                  }
-                }}
+                onClick={handleDatePickerContainerClick}
                 className={cn(
                   fieldContainerCls,
                   "cursor-pointer",
@@ -374,12 +384,7 @@ const Step4BookingDates = ({
                   {t("calendar")} <span className="text-error ms-1">*</span>
                 </label>
                 <div
-                  onClick={(e) => {
-                    const input = e.currentTarget.querySelector("input[type='date']");
-                    if (input && typeof input.showPicker === "function") {
-                      input.showPicker();
-                    }
-                  }}
+                  onClick={handleDatePickerContainerClick}
                   className={cn(
                     fieldContainerCls,
                     "cursor-pointer",
@@ -634,12 +639,7 @@ const Step4BookingDates = ({
                             {t("startDate")} <span className="text-error ms-1">*</span>
                           </label>
                           <div
-                            onClick={(e) => {
-                              const input = e.currentTarget.querySelector("input[type='date']");
-                              if (input && typeof input.showPicker === "function") {
-                                input.showPicker();
-                              }
-                            }}
+                            onClick={handleDatePickerContainerClick}
                             className={cn(fieldContainerCls, "cursor-pointer hover:border-mainColor/60")}
                           >
                             <CalendarMonthOutlinedIcon className="w-5 h-5 text-mainColor flex-shrink-0 me-2" />
@@ -661,12 +661,7 @@ const Step4BookingDates = ({
                             {t("endDate")} <span className="text-error ms-1">*</span>
                           </label>
                           <div
-                            onClick={(e) => {
-                              const input = e.currentTarget.querySelector("input[type='date']");
-                              if (input && typeof input.showPicker === "function") {
-                                input.showPicker();
-                              }
-                            }}
+                            onClick={handleDatePickerContainerClick}
                             className={cn(fieldContainerCls, "cursor-pointer hover:border-mainColor/60")}
                           >
                             <CalendarMonthOutlinedIcon className="w-5 h-5 text-mainColor flex-shrink-0 me-2" />
@@ -762,12 +757,7 @@ const Step4BookingDates = ({
                               {t("calendar")} <span className="text-error ms-1">*</span>
                             </label>
                             <div
-                              onClick={(e) => {
-                                const input = e.currentTarget.querySelector("input[type='date']");
-                                if (input && typeof input.showPicker === "function") {
-                                  input.showPicker();
-                                }
-                              }}
+                              onClick={handleDatePickerContainerClick}
                               className={cn(fieldContainerCls, "cursor-pointer hover:border-mainColor/60")}
                             >
                               <CalendarMonthOutlinedIcon className="w-5 h-5 text-mainColor flex-shrink-0 me-2" />

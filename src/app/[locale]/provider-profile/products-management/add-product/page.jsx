@@ -300,14 +300,18 @@ const AddProductPage = () => {
   }, [currentStep, scrollToStepTop]);
 
   // Fetch form selections data (categories, cities, targetAudiences, services, etc.)
-  const { data: selectionResponse, isLoading: isSelectionsLoading } =
-    useFetchData(
-      B2B_END_POINTS.PROVIDER_PROFILE.FORM_SELECTIONS,
-      {},
-      {
-        lang: locale,
-      }
-    );
+  const {
+    data: selectionResponse,
+    isLoading: isSelectionsLoading,
+    isError: isSelectionsError,
+    refetch: refetchSelections,
+  } = useFetchData(
+    B2B_END_POINTS.PROVIDER_PROFILE.FORM_SELECTIONS,
+    {},
+    {
+      lang: locale,
+    }
+  );
 
   const formSelectionData = useMemo(() => {
     return (
@@ -406,6 +410,29 @@ const AddProductPage = () => {
       {/* 1. Header with Back Navigation */}
       <AddProductHeader />
 
+      {/* Loading Gate: Wait for form selections data before rendering form */}
+      {isSelectionsError && !formSelectionData ? (
+        <div className="flex flex-col items-center justify-center gap-4 py-20 sm:py-32">
+          <p className="font-somar text-base text-error">
+            {t("providerProfile.products.newAddPage.common.errorLoadingFormData")}
+          </p>
+          <button
+            type="button"
+            onClick={() => refetchSelections()}
+            className="px-5 py-2.5 rounded-xl bg-mainColor hover:bg-titleColor text-white font-somar font-semibold text-sm transition-all duration-200 cursor-pointer shadow-sm"
+          >
+            {t("providerProfile.products.newAddPage.common.retry")}
+          </button>
+        </div>
+      ) : isSelectionsLoading || !formSelectionData ? (
+        <div className="flex flex-col items-center justify-center gap-4 py-20 sm:py-32">
+          <CircularProgress size={40} sx={{ color: "var(--color-main)" }} />
+          <p className="font-somar text-base text-gray-500 animate-pulse">
+            {t("providerProfile.products.newAddPage.common.loadingFormData")}
+          </p>
+        </div>
+      ) : (
+      <>
       {/* 2. Stepper Progress Bar */}
       <div className="py-2 px-1">
         <AddProductStepper
@@ -637,6 +664,8 @@ const AddProductPage = () => {
           );
         }}
       </Formik>
+      </>
+      )}
     </main>
   );
 };

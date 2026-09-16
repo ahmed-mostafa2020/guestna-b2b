@@ -3,9 +3,7 @@
 import { memo, useState, useEffect, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import CloseIcon from "@mui/icons-material/Close";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import CheckIcon from "@mui/icons-material/Check";
 import { cn } from "@utils/helpers/cn";
 
@@ -29,16 +27,6 @@ const BranchCustomizationSidebar = ({
 
   // Local selection state inside the sidebar
   const [localSelectedIds, setLocalSelectedIds] = useState(selectedBranchIds);
-
-  // Manage open/collapse state for city accordions (first 2 open by default)
-  const [openCities, setOpenCities] = useState(() => {
-    const initial = {};
-    branchGroups.slice(0, 2).forEach((group, idx) => {
-      const cityKey = group.city?.[locale] || group.city?.ar || group.city?.en || `city-${idx}`;
-      initial[cityKey] = true;
-    });
-    return initial;
-  });
 
   // Sync local selected IDs whenever sidebar is opened
   useEffect(() => {
@@ -65,14 +53,6 @@ const BranchCustomizationSidebar = ({
       return () => window.removeEventListener("keydown", handleKeyDown);
     }
   }, [isOpen, onClose]);
-
-  // Toggle city accordion open/close
-  const toggleCity = useCallback((cityKey) => {
-    setOpenCities((prev) => ({
-      ...prev,
-      [cityKey]: !prev[cityKey],
-    }));
-  }, []);
 
   // Toggle branch selection
   const handleToggleBranch = useCallback((branchId) => {
@@ -143,119 +123,96 @@ const BranchCustomizationSidebar = ({
             </button>
           </div>
 
-          {/* Body: Scrollable Accordion Groups */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
-            {branchGroups.map((group, gIdx) => {
-              const cityName =
-                group.city?.[locale] ||
-                group.city?.ar ||
-                group.city?.en ||
-                `City ${gIdx + 1}`;
-              const cityKey = `${cityName}-${gIdx}`;
-              const isOpenCity = Boolean(openCities[cityKey]);
-              const branches = group.branches || [];
+          {/* Body: Direct Scrollable Branch Listing (No Accordions) */}
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+            {branchGroups.length === 0 ? (
+              <div className="p-8 text-center text-gray-400 font-somar text-sm">
+                {t("emptyBranchesTitle")}
+              </div>
+            ) : (
+              branchGroups.map((group, gIdx) => {
+                const cityName =
+                  group.city?.[locale] ||
+                  group.city?.ar ||
+                  group.city?.en ||
+                  "";
+                const branches = group.branches || [];
+                if (branches.length === 0) return null;
 
-              // Count how many branches in this city are selected
-              const selectedInCityCount = branches.filter((b) =>
-                localSelectedIds.includes(b.id)
-              ).length;
-
-              return (
-                <div
-                  key={cityKey}
-                  className="rounded-2xl border border-gray-200 bg-white overflow-hidden transition-all duration-200"
-                >
-                  {/* City Header */}
-                  <button
-                    type="button"
-                    onClick={() => toggleCity(cityKey)}
-                    className="w-full p-4 flex items-center justify-between bg-white hover:bg-gray-50/70 transition-colors cursor-pointer select-none"
-                  >
-                    <div className="flex items-center gap-2 text-start">
-                      <span className="font-somar font-bold text-base text-titleColor">
+                return (
+                  <div key={`group-${gIdx}`} className="space-y-3">
+                    {cityName && (
+                      <h3 className="font-somar font-bold text-sm text-gray-700 px-1 text-start">
                         {cityName}
-                      </span>
-                      {selectedInCityCount > 0 && (
-                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-mainColor/10 text-mainColor">
-                          {selectedInCityCount}
-                        </span>
-                      )}
-                    </div>
+                      </h3>
+                    )}
+                    <div className="space-y-2.5">
+                      {branches.map((branch) => {
+                        const isChecked = localSelectedIds.includes(branch.id);
+                        const branchName =
+                          branch.name?.[locale] ||
+                          branch.name?.ar ||
+                          branch.name?.en ||
+                          branch.id;
 
-                    <div className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors">
-                      {isOpenCity ? (
-                        <KeyboardArrowDownIcon className="w-5 h-5 text-gray-600" />
-                      ) : isAr ? (
-                        <KeyboardArrowLeftIcon className="w-5 h-5 text-gray-600" />
-                      ) : (
-                        <KeyboardArrowRightIcon className="w-5 h-5 text-gray-600" />
-                      )}
-                    </div>
-                  </button>
-
-                  {/* Expanded City Branches Container */}
-                  {isOpenCity && (
-                    <div className="p-3 sm:p-4 bg-[#FAFAFA] border-t border-gray-100 space-y-2.5">
-                      {branches.length === 0 ? (
-                        <p className="text-xs text-gray-400 text-center py-2 font-somar">
-                          {t("emptyBranchesTitle")}
-                        </p>
-                      ) : (
-                        branches.map((branch) => {
-                          const isChecked = localSelectedIds.includes(branch.id);
-                          const branchName =
-                            branch.name?.[locale] ||
-                            branch.name?.ar ||
-                            branch.name?.en ||
-                            branch.id;
-
-                          return (
-                            <div
-                              key={branch.id}
-                              onClick={() => handleToggleBranch(branch.id)}
-                              className={cn(
-                                "w-full bg-white border rounded-xl p-3.5 sm:p-4 flex items-center justify-between cursor-pointer transition-all shadow-[0_1px_2px_rgba(0,0,0,0.02)] select-none",
-                                isChecked
-                                  ? "border-mainColor/80 ring-1 ring-mainColor/20 bg-mainColor/[0.02]"
-                                  : "border-gray-200 hover:border-mainColor/40"
-                              )}
-                            >
-                              {/* Branch Name */}
+                        return (
+                          <div
+                            key={branch.id}
+                            onClick={() => handleToggleBranch(branch.id)}
+                            className={cn(
+                              "w-full bg-white border rounded-xl p-3.5 sm:p-4 flex items-center justify-between cursor-pointer transition-all shadow-xs select-none",
+                              isChecked
+                                ? "border-mainColor/80 ring-1 ring-mainColor/20 bg-mainColor/[0.02]"
+                                : "border-gray-200 hover:border-mainColor/40"
+                            )}
+                            role="checkbox"
+                            aria-checked={isChecked}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                handleToggleBranch(branch.id);
+                              }
+                            }}
+                          >
+                            {/* Branch Name with Location Icon */}
+                            <div className="flex items-center gap-2.5 text-start">
+                              <LocationOnOutlinedIcon className="w-4 h-4 text-gray-400 shrink-0" />
                               <span
                                 className={cn(
-                                  "font-somar text-sm sm:text-base font-semibold text-start",
+                                  "font-somar text-sm sm:text-base font-semibold",
                                   isChecked ? "text-titleColor" : "text-gray-700"
                                 )}
                               >
                                 {branchName}
                               </span>
-
-                              {/* Custom Styled Checkbox matching Figma */}
-                              <div
-                                className={cn(
-                                  "w-5 h-5 rounded-[6px] border flex items-center justify-center transition-all flex-shrink-0 ms-3",
-                                  isChecked
-                                    ? "bg-mainColor border-mainColor text-white shadow-xs"
-                                    : "bg-white border-gray-300 hover:border-gray-400"
-                                )}
-                                aria-hidden="true"
-                              >
-                                {isChecked && (
-                                  <CheckIcon
-                                    className="w-3.5 h-3.5 text-white stroke-[2]"
-                                    sx={{ fontSize: 14 }}
-                                  />
-                                )}
-                              </div>
                             </div>
-                          );
-                        })
-                      )}
+
+                            {/* Custom Styled Checkbox */}
+                            <div
+                              className={cn(
+                                "w-5 h-5 rounded-[6px] border flex items-center justify-center transition-all shrink-0 ms-3",
+                                isChecked
+                                  ? "bg-mainColor border-mainColor text-white shadow-xs"
+                                  : "bg-white border-gray-300 hover:border-gray-400"
+                              )}
+                              aria-hidden="true"
+                            >
+                              {isChecked && (
+                                <CheckIcon
+                                  className="w-3.5 h-3.5 text-white stroke-[2]"
+                                  sx={{ fontSize: 14 }}
+                                />
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
-                  )}
-                </div>
-              );
-            })}
+                  </div>
+                );
+              })
+            )}
           </div>
 
           {/* Footer with "Save" button */}
