@@ -3,7 +3,7 @@
 import { useTranslations, useLocale } from "next-intl";
 import { memo, useMemo, useState } from "react";
 import Skeleton from "@mui/material/Skeleton";
-import { RemoveRedEyeOutlined, KeyboardArrowDown } from "@mui/icons-material";
+import { RemoveRedEyeOutlined } from "@mui/icons-material";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import formatDate from "@utils/formatters/FormateDate";
 import DataTable from "@components/ui/DataTable";
@@ -129,35 +129,12 @@ const StatusBadge = ({ status, label }) => {
 const ProviderBookingsTable = ({ data, loading, currentPage, setCurrentPage }) => {
   const t = useTranslations();
   const locale = useLocale();
-  const [b2bFilter, setB2bFilter] = useState("all");
-
   const rawNodes = Array.isArray(data) ? data : data?.nodes || [];
   const pageInfo = data?.pageInfo || {
     total: rawNodes.length,
     currentPage: currentPage || 1,
     perPage: 10,
   };
-
-  // Filter nodes by b2b / b2c if selected
-  const filteredNodes = useMemo(() => {
-    if (b2bFilter === "b2b") {
-      return rawNodes.filter((item) => item.askType === "CUSTOM_TRIP" || item.organization);
-    }
-    if (b2bFilter === "b2c") {
-      return rawNodes.filter((item) => item.askType === "TRIP" && !item.organization);
-    }
-    return rawNodes;
-  }, [rawNodes, b2bFilter]);
-
-  // Dropdown filter options
-  const filterOptions = useMemo(
-    () => [
-      { value: "all", label: t("providerProfile.home.bookingsTable.filters.all") },
-      { value: "b2b", label: t("providerProfile.home.bookingsTable.filters.b2b") },
-      { value: "b2c", label: t("providerProfile.home.bookingsTable.filters.b2c") },
-    ],
-    [t]
-  );
 
   // Table columns matching the design
   const columns = useMemo(
@@ -268,36 +245,17 @@ const ProviderBookingsTable = ({ data, loading, currentPage, setCurrentPage }) =
 
   return (
     <div className="bg-white p-5 sm:p-7 rounded-2xl border border-border shadow-card">
-      {/* Header: Title on start (right in RTL), Filter Dropdown on end (left in RTL) */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-        {/* Table Title */}
+      {/* Header */}
+      <div className="mb-6">
         <h3 className="text-xl sm:text-2xl font-bold text-mainColor">
           {t("providerProfile.home.bookingsTable.title")}
         </h3>
-
-        {/* Dropdown Filter at the end */}
-        <div className="relative inline-block">
-          <select
-            value={b2bFilter}
-            onChange={(e) => setB2bFilter(e.target.value)}
-            className="appearance-none bg-white border border-border rounded-xl px-5 py-2.5 pe-10 text-sm sm:text-base font-bold text-textDark hover:border-mainColor focus:outline-none focus:ring-2 focus:ring-mainColor/20 focus:border-mainColor cursor-pointer shadow-2xs transition-all"
-          >
-            {filterOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 end-0 flex items-center px-3 text-textLight">
-            <KeyboardArrowDown className="!w-5 !h-5" />
-          </div>
-        </div>
       </div>
 
       {/* Reusable DataTable Component */}
       <DataTable
         columns={columns}
-        data={filteredNodes}
+        data={rawNodes}
         loading={false}
         emptyState={
           <p className="text-textLight py-12 text-center text-base font-semibold">
