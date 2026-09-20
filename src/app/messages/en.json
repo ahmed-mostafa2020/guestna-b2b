@@ -1378,7 +1378,7 @@
         }
       },
       "bookingsManagement": {
-        "title": "Bookings Management",
+        "title": "Orders and Bookings Management",
         "ordersManagement": "Orders Management",
         "bookings": {
           "title": "Bookings",
@@ -1657,7 +1657,10 @@
       }
     },
     "donutChart": {
-      "title": "The best selling activities"
+      "title": "The best selling activities",
+      "topActivity": "Top Activity",
+      "percentage": "Percentage",
+      "activities": "Activities"
     },
 
     "revenueLineChart": {

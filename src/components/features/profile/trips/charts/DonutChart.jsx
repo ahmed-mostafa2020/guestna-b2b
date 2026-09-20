@@ -1,90 +1,233 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-
-import { memo } from "react";
-
+import { memo, useMemo, useState } from "react";
 import { CHART_COLORS } from "@constants/chartColors";
-
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import {
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  Sector,
+} from "recharts";
 import EmptyBookings from "@components/features/profile/myBookings/EmptyBookings";
+
+// Custom active shape for highlighted donut slice on hover
+const renderActiveShape = (props) => {
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } =
+    props;
+
+  return (
+    <g>
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius - 3}
+        outerRadius={outerRadius + 6}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+        style={{
+          filter: "drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.18))",
+          transition: "all 0.3s ease",
+        }}
+      />
+    </g>
+  );
+};
 
 const DonutChart = ({ infoData }) => {
   const t = useTranslations();
+  const [activeIndex, setActiveIndex] = useState(null);
 
-  const pieData =
-    infoData?.bestSellingActivities?.map((activity) => ({
-      name: activity.category,
-      value: activity.percentage,
-    })) || [];
-
-  // Custom label renderer with contrasting color
-  const renderCustomLabel = ({
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    name,
-    value,
-  }) => {
-    const RADIAN = Math.PI / 180;
-    const radius = outerRadius + 25;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
+  const pieData = useMemo(() => {
     return (
-      <text
-        x={x}
-        y={y}
-        fill="#333"
-        textAnchor={x > cx ? "start" : "end"}
-        dominantBaseline="central"
-        fontSize="14"
-        fontWeight="400"
-      >
-        {`${name}: ${value}%`}
-      </text>
+      infoData?.bestSellingActivities?.map((activity, index) => ({
+        name: activity.category,
+        value: Number(activity.percentage) || 0,
+        color: activity.color || CHART_COLORS[index % CHART_COLORS.length],
+      })) || []
+    );
+  }, [infoData?.bestSellingActivities]);
+
+  const topActivity = useMemo(() => {
+    if (!pieData.length) return null;
+    return [...pieData].sort((a, b) => b.value - a.value)[0];
+  }, [pieData]);
+
+  const activeItem = activeIndex !== null ? pieData[activeIndex] : null;
+
+  // Custom rich tooltip
+  const CustomTooltip = ({ active, payload }) => {
+    if (!active || !payload || !payload.length) return null;
+    const data = payload[0];
+    return (
+      <div className="bg-white/95 backdrop-blur-md px-3.5 py-2.5 rounded-xl shadow-lg border border-border text-xs z-50">
+        <div className="flex items-center gap-2 mb-1">
+          <span
+            className="w-2.5 h-2.5 rounded-full shrink-0"
+            style={{ backgroundColor: data.payload.color }}
+          />
+          <span className="font-bold text-slate-800 text-sm">{data.name}</span>
+        </div>
+        <div className="text-slate-600 flex items-center justify-between gap-4">
+          <span>{t("profile.donutChart.percentage")}:</span>
+          <span className="font-extrabold text-slate-900">
+            {`\u200E${data.value}%`}
+          </span>
+        </div>
+      </div>
     );
   };
 
   return (
     <div className="p-4 bg-white border h-fit rounded-xl border-border hover:shadow-card">
-      <h2 className="pb-4 text-lg font-medium lg:text-xl text-titleColor">
-        {t("profile.donutChart.title")}
-      </h2>
+      <div className="flex items-center justify-between pb-4">
+        <h2 className="text-lg font-medium lg:text-xl text-titleColor">
+          {t("profile.donutChart.title")}
+        </h2>
+        {pieData.length > 0 && (
+          <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
+            {pieData.length} {t("profile.donutChart.activities")}
+          </span>
+        )}
+      </div>
 
-      {infoData?.bestSellingActivities?.length ? (
-        <div className="h-[320px]">
-          {/* Fixed height container */}
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={pieData}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={100}
-                paddingAngle={5}
-                dataKey="value"
-                label={renderCustomLabel}
-                labelLine={false}
-              >
-                {pieData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={
-                      entry.color || CHART_COLORS[index % CHART_COLORS.length]
-                    }
-                  />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+      {pieData.length ? (
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
+          {/* Donut Chart Container with Center Summary */}
+          <div className="relative w-full lg:w-1/2 h-[220px] flex items-center justify-center">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={55}
+                  outerRadius={80}
+                  paddingAngle={4}
+                  dataKey="value"
+                  activeIndex={activeIndex ?? undefined}
+                  activeShape={renderActiveShape}
+                  onMouseEnter={(_, index) => setActiveIndex(index)}
+                  onMouseLeave={() => setActiveIndex(null)}
+                  cursor="pointer"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={entry.color}
+                      opacity={
+                        activeIndex === null || activeIndex === index ? 1 : 0.45
+                      }
+                      style={{ transition: "opacity 0.2s ease" }}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+              </PieChart>
+            </ResponsiveContainer>
+
+            {/* Interactive Center Information */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none p-2 text-center select-none">
+              {activeItem ? (
+                <>
+                  <span className="text-[11px] font-semibold text-slate-500 truncate max-w-[95px]">
+                    {activeItem.name}
+                  </span>
+                  <span
+                    className="text-lg font-black mt-0.5"
+                    style={{ color: activeItem.color }}
+                  >
+                    {`\u200E${activeItem.value}%`}
+                  </span>
+                </>
+              ) : topActivity ? (
+                <>
+                  <span className="text-[10px] font-medium text-slate-400">
+                    {t("profile.donutChart.topActivity")}
+                  </span>
+                  <span className="text-[11px] font-bold text-slate-800 truncate max-w-[95px]">
+                    {topActivity.name}
+                  </span>
+                  <span className="text-base font-extrabold text-mainColor">
+                    {`\u200E${topActivity.value}%`}
+                  </span>
+                </>
+              ) : null}
+            </div>
+          </div>
+
+          {/* Compact Aside List: Single-Row, Elegant, No Overflow */}
+          <div
+            className="w-full lg:w-1/2 flex flex-col gap-1 overflow-y-auto overflow-x-hidden max-h-[220px]"
+            role="list"
+            aria-label={t("profile.donutChart.title")}
+          >
+            {pieData.map((item, index) => {
+              const isHovered = activeIndex === index;
+              return (
+                <button
+                  key={`activity-item-${index}`}
+                  type="button"
+                  role="listitem"
+                  className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-start transition-colors duration-150 cursor-pointer ${
+                    isHovered
+                      ? "bg-slate-100/90 text-slate-900"
+                      : "hover:bg-slate-50 text-slate-700"
+                  }`}
+                  onMouseEnter={() => setActiveIndex(index)}
+                  onMouseLeave={() => setActiveIndex(null)}
+                  onClick={() =>
+                    setActiveIndex(isHovered ? null : index)
+                  }
+                  aria-label={`${item.name}: ${item.value}%`}
+                >
+                  {/* Color dot & Activity Title */}
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <span
+                      className="w-2.5 h-2.5 rounded-full shrink-0 transition-transform duration-150"
+                      style={{
+                        backgroundColor: item.color,
+                        transform: isHovered ? "scale(1.25)" : "scale(1)",
+                      }}
+                    />
+                    <span
+                      className={`text-xs truncate transition-colors ${
+                        isHovered
+                          ? "font-bold text-slate-900"
+                          : "font-medium text-slate-700"
+                      }`}
+                      title={item.name}
+                    >
+                      {item.name}
+                    </span>
+                  </div>
+
+                  {/* Inline Micro Progress Bar & Percentage */}
+                  <div className="flex items-center gap-2.5 shrink-0">
+                    <div className="w-12 sm:w-16 h-1 bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-300"
+                        style={{
+                          width: `${Math.min(100, Math.max(item.value, 4))}%`,
+                          backgroundColor: item.color,
+                          opacity: isHovered ? 1 : 0.85,
+                        }}
+                      />
+                    </div>
+                    <span className="text-xs font-bold text-slate-900 min-w-[42px] text-end">
+                      {`\u200E${item.value}%`}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
       ) : (
-        <div className="h-[320px]">
+        <div className="h-[220px]">
           <EmptyBookings subTitle={false} hasLink={false} />
         </div>
       )}

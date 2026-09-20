@@ -368,7 +368,7 @@
         "availableBalance": "الرصيد المتاح",
         "totalBalance": "الرصيد الإجمالي",
         "pendingBalance": "قيد الإنتظار",
-        "totalRevenue": "إجمالي الإيرادات",
+        "totalRevenue": "إجمالي الأرباح",
         "operations": "العمليات",
         "transfer": "تحويل"
       },
@@ -1392,7 +1392,7 @@
         }
       },
       "bookingsManagement": {
-        "title": "إدارة الحجوزات",
+        "title": "إدارة الطلبات والحجوزات",
         "ordersManagement": "إدارة الطلبات",
         "bookings": {
           "title": "الحجوزات",
@@ -1513,7 +1513,7 @@
     "infoCards": {
       "totalStudents": "إجمالي الطلاب",
       "totalSchools": "إجمالي المدارس",
-      "totalRevenue": "إجمالي الإيرادات",
+      "totalRevenue": "إجمالي الأرباح",
       "totalActivities": "إجمالي الأنشطة",
       "totalTrips": "إجمالي الرحلات",
       "scheduledTrips": "الرحلات المجدولة",
@@ -1668,11 +1668,14 @@
       }
     },
     "donutChart": {
-      "title": "الأنشطة الأكثر طلبا"
+      "title": "الأنشطة الأكثر طلبا",
+      "topActivity": "الأكثر طلباً",
+      "percentage": "النسبة",
+      "activities": "الأنشطة"
     },
 
     "revenueLineChart": {
-      "title": "إجمالي الإيردات الشهرية",
+      "title": "إجمالي الإيرادات الشهرية",
       "label": "الإيردات"
     },
 
