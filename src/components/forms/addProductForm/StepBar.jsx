@@ -51,7 +51,8 @@ const StepBar = ({ activeStep, setActiveStep, maxVisitedStep, onStepClick }) => 
         {STEP_KEYS.map((key, index) => {
           const isCompleted = index < activeStep;
           const isActive = index === activeStep;
-          const isClickable = index <= Math.max(activeStep, maxVisitedStep);
+          const isReviewStep = index === STEP_KEYS.length - 1;
+          const isClickable = index <= Math.max(activeStep, maxVisitedStep) || isReviewStep;
 
           return (
             <button
@@ -72,6 +73,8 @@ const StepBar = ({ activeStep, setActiveStep, maxVisitedStep, onStepClick }) => 
                   ? "bg-mainColor text-white shadow-md scale-[1.02]"
                   : isCompleted
                   ? "bg-mainColor/10 text-mainColor border border-mainColor/30 hover:bg-mainColor/20"
+                  : isReviewStep
+                  ? "bg-teal-50 text-mainColor border border-mainColor/50 hover:bg-mainColor/15 shadow-xs"
                   : isClickable
                   ? "bg-gray-100 text-titleColor border border-gray-200 hover:bg-gray-200"
                   : "bg-gray-50 text-gray-400 border border-gray-100 cursor-not-allowed opacity-60"

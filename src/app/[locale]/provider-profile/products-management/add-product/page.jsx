@@ -7,6 +7,7 @@ import { useSnackbar } from "notistack";
 import CircularProgress from "@mui/material/CircularProgress";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 import AddProductHeader from "@components/features/provider-profile/addProduct/AddProductHeader";
 import AddProductStepper from "@components/features/provider-profile/addProduct/AddProductStepper";
@@ -18,6 +19,7 @@ import Step4BookingDates from "@components/features/provider-profile/addProduct/
 import Step5Services from "@components/features/provider-profile/addProduct/steps/Step5Services";
 import Step6ProductDetails from "@components/features/provider-profile/addProduct/steps/Step6ProductDetails";
 import Step8Pricing from "@components/features/provider-profile/addProduct/steps/Step8Pricing";
+import StepReview from "@components/forms/addProductForm/steps/StepReview";
 import {
   createStep1Schema,
   STEP_1_FIELD_NAMES,
@@ -96,6 +98,12 @@ const STEP_CONFIG = {
     getSchema: (t) => createStepPricingSchema(t),
     fields: STEP_PRICING_FIELD_NAMES,
     successKey: "stepPricing.savedSuccess",
+    nextStep: 9,
+  },
+  9: {
+    getSchema: () => null,
+    fields: [],
+    successKey: null,
     nextStep: null,
   },
 };
@@ -594,7 +602,8 @@ const AddProductPage = () => {
 
             const canAccess =
               completedSteps.includes(stepId) ||
-              completedSteps.includes(stepId - 1);
+              completedSteps.includes(stepId - 1) ||
+              stepId === 9;
 
             if (!canAccess) {
               enqueueSnackbar(
@@ -771,6 +780,23 @@ const AddProductPage = () => {
                 />
               )}
 
+              {/* Step 9: Review (Trip Details Design) */}
+              {currentStep === 9 && (
+                <StepReview
+                  formSelectionData={formSelectionData}
+                  categoryOptions={formSelectionData?.categories || []}
+                  supCategoryOptions={formSelectionData?.supCategories || []}
+                  academicStageOptions={formSelectionData?.academicStages || []}
+                  cityOptions={formSelectionData?.cities || []}
+                  providerBranchsOptions={formSelectionData?.providerBranchs || []}
+                  servicesOptions={formSelectionData?.services || []}
+                  customServicesOptions={formSelectionData?.customServices || []}
+                  targetAudienceOptions={formSelectionData?.targetAudiences || []}
+                  setActiveStep={setCurrentStep}
+                  isSubmitting={formikSubmitting || isSubmittingForm}
+                />
+              )}
+
               {/* Bottom Action Bar */}
               <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
                 {currentStep > 1 && (
@@ -788,6 +814,20 @@ const AddProductPage = () => {
                     )}
                     <span>
                       {t("providerProfile.products.newAddPage.common.previous")}
+                    </span>
+                  </button>
+                )}
+
+                {/* Quick Review Button: Available on all steps prior to step 9 */}
+                {currentStep < 9 && (
+                  <button
+                    type="button"
+                    onClick={() => setCurrentStep(9)}
+                    className="w-full sm:w-auto px-6 py-3.5 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/10 font-somar font-bold text-base transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <VisibilityIcon className="w-5 h-5" />
+                    <span>
+                      {t("providerProfile.products.modal.subtitles.reviewProduct")}
                     </span>
                   </button>
                 )}
@@ -813,6 +853,11 @@ const AddProductPage = () => {
                       </span>
                     </>
                   ) : currentStep === 8 ? (
+                    <span className="font-somar font-bold text-base leading-5 flex items-center gap-2">
+                      <VisibilityIcon className="w-5 h-5" />
+                      <span>{t("providerProfile.products.modal.subtitles.reviewProduct")}</span>
+                    </span>
+                  ) : currentStep === 9 ? (
                     <span className="font-somar font-bold text-base leading-5">
                       {t("providerProfile.products.modal.submit")}
                     </span>

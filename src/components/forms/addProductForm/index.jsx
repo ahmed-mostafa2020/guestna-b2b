@@ -9,6 +9,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CheckIcon from "@mui/icons-material/Check";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 import {
   createAddProductSchema,
@@ -133,7 +134,6 @@ export const formatAddProductPayload = (
     "name[en]": values.name?.en || "",
     "name[ar]": values.name?.ar || "",
     tripType: tripTypeValue,
-    tripsType: tripTypeValue,
     "description[en]": values.description?.en || "",
     "description[ar]": values.description?.ar || "",
     "location[lat]": values.location?.lat,
@@ -144,15 +144,23 @@ export const formatAddProductPayload = (
     toDay: values.toDay,
     fromHour: formatTime12h(values.fromHour || values.availableTimes?.[0]?.from),
     toHour: formatTime12h(values.toHour || values.availableTimes?.[0]?.to),
-    "availableSeats[min]": values.availableSeats?.min,
-    "availableSeats[max]": values.availableSeats?.max,
+    "availableSeats[min]":
+      values.availableSeats?.min !== "" &&
+      values.availableSeats?.min !== undefined &&
+      values.availableSeats?.min !== null &&
+      !isNaN(Number(values.availableSeats?.min))
+        ? Number(values.availableSeats.min)
+        : values.availableSeats?.min,
+    "availableSeats[max]":
+      values.availableSeats?.max !== "" &&
+      values.availableSeats?.max !== undefined &&
+      values.availableSeats?.max !== null &&
+      !isNaN(Number(values.availableSeats?.max))
+        ? Number(values.availableSeats.max)
+        : values.availableSeats?.max,
     duration: calculatedDuration,
     categories: catId || values.categories,
-    price: values.price !== "" && !isNaN(Number(values.price)) ? Number(values.price) : values.price,
-    productCost: values.productCost !== "" && !isNaN(Number(values.productCost)) ? Number(values.productCost) : values.productCost,
     bookingBefore: values.bookingBefore !== "" && !isNaN(Number(values.bookingBefore)) ? Number(values.bookingBefore) : values.bookingBefore,
-    "guestRange[min]": values.guestRange?.min,
-    "guestRange[max]": values.guestRange?.max,
   };
 
   // Age Range
@@ -196,14 +204,6 @@ export const formatAddProductPayload = (
     });
   }
 
-  (values.targetAudiences || []).forEach((item, idx) => {
-    if (item.targetAudience) {
-      payload[`targetAudiences[${idx}][targetAudience]`] = item.targetAudience;
-      payload[`targetAudiences[${idx}][price]`] =
-        item.price !== "" && !isNaN(Number(item.price)) ? Number(item.price) : 0;
-    }
-  });
-
   let branchList = (values.providerBranchs || [])
     .map((item) => (typeof item === "object" && item !== null ? item._id || item.id : item))
     .filter((id) => id && typeof id === "string" && id.trim().length === 24);
@@ -224,18 +224,6 @@ export const formatAddProductPayload = (
     if (item.day) {
       customWeekdayPricingMap[item.day] = item.price;
     }
-  });
-
-  ALL_WEEKDAYS.forEach((day, idx) => {
-    const customPrice = customWeekdayPricingMap[day];
-    const basePrice =
-      values.price !== "" && !isNaN(Number(values.price)) ? Number(values.price) : 0;
-    const rawPrice =
-      customPrice !== undefined && customPrice !== "" ? Number(customPrice) : basePrice;
-    const finalPrice = isNaN(rawPrice) ? 0 : rawPrice;
-
-    payload[`weekdayPricing[${idx}][day]`] = day;
-    payload[`weekdayPricing[${idx}][price]`] = finalPrice;
   });
 
   // B2C Structured Pricing
@@ -369,7 +357,6 @@ export const formatAddProductPayload = (
     payload["b2bPrice[productCost]"] = b2bCost;
   }
   if (studentsPerSupervisorVal !== undefined) {
-    payload["b2bPrice[studentsPerSupervisor]"] = studentsPerSupervisorVal;
     payload.studentsPerSupervisor = studentsPerSupervisorVal;
   }
 
@@ -492,15 +479,6 @@ export const formatAddProductPayload = (
     }
   });
 
-  let timeIdx = 0;
-  (values.availableTimes || []).forEach((item) => {
-    if (item.from && item.to) {
-      payload[`availableTimes[${timeIdx}][from]`] = formatTime12h(item.from);
-      payload[`availableTimes[${timeIdx}][to]`] = formatTime12h(item.to);
-      timeIdx++;
-    }
-  });
-
   let mustHaveEnIdx = 0;
   (values.mustHaveItems?.en || []).forEach((val) => {
     if (val?.trim()) {
@@ -531,18 +509,28 @@ export const formatAddProductPayload = (
     }
   });
 
-  let benefitEnIdx = 0;
-  (values.benefits?.en || []).forEach((val) => {
-    if (val?.trim()) {
-      payload[`benefits[en][${benefitEnIdx}]`] = val.trim();
-      benefitEnIdx++;
+  const benefitEnList = values.benefits?.en || [];
+  const benefitArList = values.benefits?.ar || [];
+  const benefitCount = Math.max(benefitEnList.length, benefitArList.length);
+  let benefitIdx = 0;
+  for (let i = 0; i < benefitCount; i++) {
+    const enText = benefitEnList[i]?.trim();
+    const arText = benefitArList[i]?.trim();
+    if (enText || arText) {
+      if (enText) payload[`benefits[${benefitIdx}][en]`] = enText;
+      if (arText) payload[`benefits[${benefitIdx}][ar]`] = arText;
+      benefitIdx++;
     }
-  });
-  let benefitArIdx = 0;
-  (values.benefits?.ar || []).forEach((val) => {
-    if (val?.trim()) {
-      payload[`benefits[ar][${benefitArIdx}]`] = val.trim();
-      benefitArIdx++;
+  }
+
+  let termIdx = 0;
+  (values.terms || []).forEach((item) => {
+    const enText = typeof item === "string" ? item.trim() : item.en?.trim() || "";
+    const arText = typeof item === "object" && item !== null ? item.ar?.trim() || "" : "";
+    if (enText || arText) {
+      if (enText) payload[`terms[${termIdx}][en]`] = enText;
+      if (arText) payload[`terms[${termIdx}][ar]`] = arText;
+      termIdx++;
     }
   });
 
@@ -564,12 +552,12 @@ export const formatAddProductPayload = (
     const bCapacities = values.branchCapacities?.[branchId] || {};
 
     payload[`branchTrips[${branchTripIdx}][providerBranch]`] = branchId;
-    payload[`branchTrips[${branchTripIdx}][branch]`] = branchId;
     const bSelectedDays = Array.isArray(bDates.selectedDays) && bDates.selectedDays.length > 0
       ? bDates.selectedDays
       : values.selectedDays || [];
-    payload[`branchTrips[${branchTripIdx}][tripDays]`] =
-      bSelectedDays.length > 0 ? bSelectedDays.length : 6;
+    bSelectedDays.forEach((day, dIdx) => {
+      payload[`branchTrips[${branchTripIdx}][tripDays][${dIdx}]`] = day;
+    });
     payload[`branchTrips[${branchTripIdx}][fromDay]`] = bDates.fromDay || values.fromDay;
     payload[`branchTrips[${branchTripIdx}][toDay]`] = bDates.toDay || values.toDay;
     payload[`branchTrips[${branchTripIdx}][fromHour]`] = formatTime12h(bDates.fromHour || values.fromHour);
@@ -592,11 +580,6 @@ export const formatAddProductPayload = (
         : 50;
     payload[`branchTrips[${branchTripIdx}][recurrencePattern]`] =
       bDates.recurrencePattern || values.recurrencePattern || "WEEKLY";
-
-    bSelectedDays.forEach((day, dIdx) => {
-      payload[`branchTrips[${branchTripIdx}][selectedDays][${dIdx}]`] = day;
-    });
-
     const bTimes = Array.isArray(bDates.availableTimes) && bDates.availableTimes.length > 0
       ? bDates.availableTimes
       : values.availableTimes || [];
@@ -1263,9 +1246,23 @@ const AddProductForm = ({
       case 10:
         return <StepExemptions />;
       case 11:
-        return <StepBenefits />;
+        return <StepBenefits setActiveStep={setActiveStep} />;
       case 12:
-        return <StepReview />;
+        return (
+          <StepReview
+            formSelectionData={formSelectionData}
+            categoryOptions={categoryOptions}
+            supCategoryOptions={supCategoryOptions}
+            academicStageOptions={academicStageOptions}
+            cityOptions={cityOptions}
+            providerBranchsOptions={providerBranchsOptions}
+            servicesOptions={servicesOptions}
+            customServicesOptions={customServicesOptions}
+            targetAudienceOptions={targetAudienceOptions}
+            setActiveStep={setActiveStep}
+            isSubmitting={isSubmitting}
+          />
+        );
       default:
         return null;
     }
@@ -1328,35 +1325,67 @@ const AddProductForm = ({
               })}
             </span>
 
-            {/* Next / Submit Button */}
-            {activeStep < STEP_KEYS.length - 1 ? (
-              <button
-                type="button"
-                onClick={() => handleStepNext(validateForm, setTouched, values)}
-                className="px-5 py-2.5 rounded-xl bg-mainColor text-white font-medium text-xs sm:text-sm hover:bg-titleColor transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-[0.98]"
-              >
-                <span>{t("providerProfile.products.modal.next")}</span>
-                {isRtl ? (
-                  <ArrowBackIcon className="w-4 h-4" />
-                ) : (
-                  <ArrowForwardIcon className="w-4 h-4" />
-                )}
-              </button>
-            ) : (
-              <button
-                type="button"
-                disabled={isSubmitting}
-                onClick={() => handleFinalSubmit(validateForm, setTouched, handleSubmit, values)}
-                className="px-6 py-2.5 rounded-xl bg-mainColor text-white font-medium text-xs sm:text-sm hover:bg-titleColor transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-[0.98]"
-              >
-                {isSubmitting ? (
-                  <CircularProgress size={18} color="inherit" />
-                ) : (
-                  <CheckIcon className="w-4 h-4" />
-                )}
-                <span>{t("providerProfile.products.modal.submit")}</span>
-              </button>
-            )}
+            {/* Next / Review / Submit Controls */}
+            <div className="flex items-center gap-2.5">
+              {/* Quick Review Button available on all steps prior to the review step */}
+              {activeStep < STEP_KEYS.length - 1 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveStep(STEP_KEYS.length - 1);
+                    setMaxVisitedStep((prev) => Math.max(prev, STEP_KEYS.length - 1));
+                  }}
+                  className="px-4 py-2.5 rounded-xl border border-mainColor text-mainColor bg-white hover:bg-mainColor/10 font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer shadow-xs transition-all active:scale-[0.98]"
+                >
+                  <VisibilityIcon className="w-4 h-4" />
+                  <span>{t("providerProfile.products.modal.subtitles.reviewProduct")}</span>
+                </button>
+              )}
+
+              {activeStep < STEP_KEYS.length - 2 ? (
+                <button
+                  type="button"
+                  onClick={() => handleStepNext(validateForm, setTouched, values)}
+                  className="px-5 py-2.5 rounded-xl bg-mainColor text-white font-medium text-xs sm:text-sm hover:bg-titleColor transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-[0.98]"
+                >
+                  <span>{t("providerProfile.products.modal.next")}</span>
+                  {isRtl ? (
+                    <ArrowBackIcon className="w-4 h-4" />
+                  ) : (
+                    <ArrowForwardIcon className="w-4 h-4" />
+                  )}
+                </button>
+              ) : activeStep === STEP_KEYS.length - 2 ? (
+                /* Step 11: Button directly to Review Step */
+                <button
+                  type="button"
+                  onClick={() => handleStepNext(validateForm, setTouched, values)}
+                  className="px-6 py-2.5 rounded-xl bg-mainColor text-white font-bold text-xs sm:text-sm hover:bg-titleColor transition-all flex items-center gap-2 cursor-pointer shadow-md active:scale-[0.98]"
+                >
+                  <VisibilityIcon className="w-4 h-4" />
+                  <span>{t("providerProfile.products.modal.subtitles.reviewProduct")}</span>
+                  {isRtl ? (
+                    <ArrowBackIcon className="w-4 h-4" />
+                  ) : (
+                    <ArrowForwardIcon className="w-4 h-4" />
+                  )}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={() => handleFinalSubmit(validateForm, setTouched, handleSubmit, values)}
+                  className="px-6 py-2.5 rounded-xl bg-mainColor text-white font-medium text-xs sm:text-sm hover:bg-titleColor transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-[0.98]"
+                >
+                  {isSubmitting ? (
+                    <CircularProgress size={18} color="inherit" />
+                  ) : (
+                    <CheckIcon className="w-4 h-4" />
+                  )}
+                  <span>{t("providerProfile.products.modal.submit")}</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}

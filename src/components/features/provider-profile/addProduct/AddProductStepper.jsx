@@ -13,6 +13,7 @@ export const PRODUCT_STEPS = [
   { id: 6, key: "productDetails" },
   { id: 7, key: "gallery" },
   { id: 8, key: "pricing" },
+  { id: 9, key: "review" },
 ];
 
 const AddProductStepper = ({
@@ -69,7 +70,7 @@ const AddProductStepper = ({
           const isActive = currentStep === step.id;
           const isCompleted = isCompletedStep(step.id);
           const isClickable = Boolean(
-            onStepClick && (isCompleted || isActive || step.id === 1)
+            onStepClick && (isCompleted || isActive || step.id === 1 || step.id === 9)
           );
 
           return (
