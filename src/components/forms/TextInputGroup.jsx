@@ -42,6 +42,7 @@ const TextInputGroup = memo(
 
     labelFontFamily = "IBM Plex Sans Arabic, sans-serif",
     labelClassName = "",
+    inputClassName = "",
   }) => {
     const [showPassword, setShowPassword] = useState(false);
 
@@ -57,6 +58,8 @@ const TextInputGroup = memo(
       labelClassName?.includes("font-somar")
         ? "var(--font-somar-sans), sans-serif"
         : labelFontFamily;
+
+    const isSomarInput = inputClassName?.includes("font-somar");
 
     return (
       <div className="relative min-w-[25%] flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
@@ -85,10 +88,14 @@ const TextInputGroup = memo(
                 border && "border-2",
                 touched && errors && border
                   ? "border-error focus:border-error hover:border-error"
-                  : "border-border focus:border-mainColor hover:border-mainColor"
+                  : "border-border focus:border-mainColor hover:border-mainColor",
+                inputClassName,
+                isSomarInput && "placeholder:font-somar"
               )}
               style={{
-                fontFamily: "inherit",
+                fontFamily: isSomarInput
+                  ? "var(--font-somar-sans), sans-serif"
+                  : (style?.fontFamily || "inherit"),
               }}
               id={name}
               name={name}
@@ -112,10 +119,14 @@ const TextInputGroup = memo(
                 touched && errors && border
                   ? "border-error focus:border-error hover:border-error"
                   : "border-border focus:border-mainColor hover:border-mainColor",
-                type === "date" && "cursor-pointer pe-12"
+                type === "date" && "cursor-pointer pe-12",
+                inputClassName,
+                isSomarInput && "placeholder:font-somar"
               )}
               style={{
-                fontFamily: "inherit",
+                fontFamily: isSomarInput
+                  ? "var(--font-somar-sans), sans-serif"
+                  : (style?.fontFamily || "inherit"),
                 ...style,
               }}
               type={type === "password" && showPassword ? "text" : type}
@@ -241,7 +252,14 @@ const TextInputGroup = memo(
         </div>
 
         {touched && errors && (
-          <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
+          <div
+            className={cn(
+              "absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 text-error",
+              labelClassName?.includes("font-somar") || isSomarInput
+                ? "font-somar"
+                : "font-ibm"
+            )}
+          >
             {errors}
           </div>
         )}

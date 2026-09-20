@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useSnackbar } from "notistack";
@@ -28,6 +29,7 @@ const isTestEnvironment = () => {
 };
 
 const AppleWidget = ({ baseData, currency = "SAR" }) => {
+  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const showDebugInitiate = useMemo(() => isTestEnvironment(), []);
 
@@ -183,6 +185,20 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
           });
         },
         on_completed: function (payment) {
+          const handleFailedRedirect = () => {
+            const currentBookingId = bookingIdRef.current;
+            if (currentBookingId) {
+              const targetUrl = `/${locale}/bookingStatus/${currentBookingId}`;
+              setTimeout(() => {
+                try {
+                  router.push(targetUrl);
+                } catch {
+                  window.location.href = targetUrl;
+                }
+              }, 500);
+            }
+          };
+
           return new Promise(function (resolve, reject) {
             try {
               if (payment && payment.id) {
@@ -205,6 +221,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                     setIsProcessing(false);
                     isPaymentActiveRef.current = false;
                     reject();
+                    handleFailedRedirect();
                   },
                 });
               } else {
@@ -214,12 +231,14 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                 setIsProcessing(false);
                 isPaymentActiveRef.current = false;
                 reject();
+                handleFailedRedirect();
               }
             } catch (error) {
               enqueueSnackbar("faild on complete", { variant: "error" });
               setIsProcessing(false);
               isPaymentActiveRef.current = false;
               reject();
+              handleFailedRedirect();
             }
           });
         },
