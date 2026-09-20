@@ -47,28 +47,21 @@ const STAT_CONFIGS = {
     iconBg: "bg-[#EDE9FE]",
     iconColor: "text-[#7C3AED]",
     Icon: PeopleOutline,
-    hasGrowth: true,
-    defaultRate: 8.5,
   },
   b2b: {
     iconBg: "bg-[#EDE9FE]",
     iconColor: "text-[#6366F1]",
     Icon: DomainOutlined,
-    hasGrowth: true,
-    defaultRate: -2.4,
   },
   scheduled: {
     iconBg: "bg-[#CCFBF1]",
     iconColor: "text-[#0D9488]",
     Icon: Inventory2Outlined,
-    hasGrowth: false,
   },
   total: {
     iconBg: "bg-[#DCFCE7]",
     iconColor: "text-[#16A34A]",
     Icon: ShowChartOutlined,
-    hasGrowth: true,
-    defaultRate: 12.8,
   },
 };
 
@@ -125,22 +118,22 @@ const BookingStatCard = ({
 };
 
 /* ─── Data Extraction Helper ─── */
-const extractStatData = (field, fallbackCount = 0, defaultRate = 0) => {
+const extractStatData = (field, fallbackCount = 0) => {
   if (field && typeof field === "object") {
     return {
       value: field.count ?? fallbackCount,
-      rate: typeof field.upPercentage === "number" ? field.upPercentage : defaultRate,
+      rate: typeof field.upPercentage === "number" ? field.upPercentage : null,
     };
   }
   if (typeof field === "number") {
     return {
       value: field,
-      rate: defaultRate,
+      rate: null,
     };
   }
   return {
     value: fallbackCount,
-    rate: defaultRate,
+    rate: null,
   };
 };
 
@@ -154,10 +147,10 @@ const ProviderBookingStats = ({ data, loading }) => {
   // 3: Bottom-Right (حجوزات مجدولة)
   // 4: Bottom-Left (إجمالي الحجوزات)
   const stats = useMemo(() => {
-    const b2c = extractStatData(data?.b2cCount, 0, STAT_CONFIGS.b2c.defaultRate);
-    const b2b = extractStatData(data?.b2bCount, 0, STAT_CONFIGS.b2b.defaultRate);
-    const scheduled = extractStatData(data?.scheduledCount, 0, 0);
-    const total = extractStatData(data?.total, 0, STAT_CONFIGS.total.defaultRate);
+    const b2c = extractStatData(data?.b2cCount, 0);
+    const b2b = extractStatData(data?.b2bCount, 0);
+    const scheduled = extractStatData(data?.scheduledCount, 0);
+    const total = extractStatData(data?.total, 0);
 
     return [
       {
@@ -189,22 +182,20 @@ const ProviderBookingStats = ({ data, loading }) => {
         ...STAT_CONFIGS.total,
       },
     ].map((stat) => {
-      const isNegative = typeof stat.rate === "number" ? stat.rate < 0 : false;
-      const absRate = typeof stat.rate === "number" ? Math.abs(stat.rate) : null;
+      const hasGrowth = typeof stat.rate === "number";
+      const isNegative = hasGrowth ? stat.rate < 0 : false;
+      const absRate = hasGrowth ? Math.abs(stat.rate) : null;
       let growthText = "";
 
-      if (absRate !== null) {
+      if (hasGrowth) {
         growthText = isNegative
           ? t("providerProfile.home.analytics.growthRateDown", { rate: absRate })
           : t("providerProfile.home.analytics.growthRateUp", { rate: absRate });
-      } else {
-        growthText = isNegative
-          ? t("providerProfile.home.analytics.monthDecline")
-          : t("providerProfile.home.analytics.monthGrowth");
       }
 
       return {
         ...stat,
+        hasGrowth,
         isNegative,
         growthText,
       };

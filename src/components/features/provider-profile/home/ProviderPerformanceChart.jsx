@@ -91,30 +91,77 @@ const ProviderPerformanceChart = ({ data, loading }) => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  if (loading) return <ProviderPerformanceChartSkeleton />;
-
   const isArabic = locale === "ar";
   const shortMonths = isArabic ? AR_SHORT_MONTHS : EN_SHORT_MONTHS;
 
   const chartData = useMemo(() => {
-    return (
-      data?.monthlyRevenue?.map((item) => {
-        const monthIdx = (item.month - 1) % 12;
-        const shortLabel = shortMonths[monthIdx] || `${item.month}`;
-        const fullMonth = formatDate(
-          new Date(item.year, item.month - 1, 1).toISOString(),
-          locale,
-          { month: "long" }
-        );
+    const rawRevenue = Array.isArray(data?.monthlyRevenue)
+      ? data.monthlyRevenue
+      : typeof data?.monthlyRevenue === "object" && data?.monthlyRevenue !== null
+      ? Object.entries(data.monthlyRevenue).map(([key, val]) => ({
+          month: key,
+          totalCount: typeof val === "number" ? val : val?.totalCount ?? val?.count ?? 0,
+        }))
+      : [];
+
+    if (!rawRevenue.length) return [];
+
+    return rawRevenue
+      .map((item) => {
+        if (!item) return null;
+
+        const rawMonth = item.month ?? item.monthName;
+        const currentYear = new Date().getFullYear();
+        const rawYear = item.year ? Number(item.year) : currentYear;
+
+        let shortLabel = "";
+        let fullMonth = "";
+
+        if (typeof rawMonth === "number") {
+          const monthIdx = ((rawMonth - 1) % 12 + 12) % 12;
+          shortLabel = shortMonths[monthIdx] || `${rawMonth}`;
+          try {
+            const dateObj = new Date(rawYear || currentYear, monthIdx, 1);
+            fullMonth = !isNaN(dateObj.getTime())
+              ? formatDate(dateObj, locale, { month: "long" })
+              : shortLabel;
+          } catch {
+            fullMonth = shortLabel;
+          }
+        } else if (typeof rawMonth === "string") {
+          const parsedNum = parseInt(rawMonth, 10);
+          if (!isNaN(parsedNum) && parsedNum >= 1 && parsedNum <= 12) {
+            const monthIdx = parsedNum - 1;
+            shortLabel = shortMonths[monthIdx] || rawMonth;
+            try {
+              const dateObj = new Date(rawYear || currentYear, monthIdx, 1);
+              fullMonth = !isNaN(dateObj.getTime())
+                ? formatDate(dateObj, locale, { month: "long" })
+                : shortLabel;
+            } catch {
+              fullMonth = shortLabel;
+            }
+          } else {
+            shortLabel = rawMonth;
+            fullMonth = rawMonth;
+          }
+        } else {
+          shortLabel = "-";
+          fullMonth = "-";
+        }
+
+        const count = item.totalCount ?? item.count ?? item.totalPrice ?? item.total ?? 0;
 
         return {
           month: isMobile ? shortLabel : fullMonth,
           fullMonth,
-          count: item.totalCount ?? 0,
+          count: typeof count === "number" ? count : Number(count) || 0,
         };
-      }) || []
-    );
+      })
+      .filter(Boolean);
   }, [data?.monthlyRevenue, isMobile, locale, shortMonths]);
+
+  if (loading) return <ProviderPerformanceChartSkeleton />;
 
   return (
     <div className="bg-white border border-border rounded-2xl p-5 sm:p-6 h-full flex flex-col justify-between shadow-card">

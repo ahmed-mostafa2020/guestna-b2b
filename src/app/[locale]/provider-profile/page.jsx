@@ -7,16 +7,6 @@ import Grid from "@mui/material/Grid2";
 import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import {
-  USE_MOCK_DATA,
-  MOCK_HOME_CARD,
-  MOCK_HOME_BALANCE,
-  MOCK_HOME_DATA,
-  MOCK_ASK_TRIPS,
-  MOCK_ORG_TRIPS_MONTH,
-  MOCK_ORG_TRIPS_DAY,
-} from "@constants/mocks/providerHomeMocks";
-
-import {
   ProviderStatCards,
   ProviderWalletCard,
   ProviderBookingStats,
@@ -39,71 +29,67 @@ const ProviderMainPage = () => {
     )}`;
   }, [t]);
 
-  /* ─── Data Fetching with Mock Fallback ─── */
+  /* ─── Data Fetching ─── */
 
   // 1. Home Cards (stat cards)
   const {
     data: cardResponse,
     isLoading: cardLoading,
     isFetching: cardFetching,
+    isError: cardError,
   } = useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.HOME_CARD,
     {},
-    { lang: locale, enabled: !USE_MOCK_DATA }
+    { lang: locale }
   );
-  const cardData = USE_MOCK_DATA
-    ? MOCK_HOME_CARD
-    : cardResponse?.data || cardResponse || {};
+  const cardData = cardResponse?.data || cardResponse || {};
   const isCardLoading =
-    !USE_MOCK_DATA && (cardLoading || cardFetching || !cardResponse);
+    (cardLoading || (cardFetching && !cardResponse)) && !cardError;
 
   // 2. Balance (wallet)
   const {
     data: balanceResponse,
     isLoading: balanceLoading,
     isFetching: balanceFetching,
+    isError: balanceError,
   } = useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.HOME_BALANCE,
     {},
-    { lang: locale, enabled: !USE_MOCK_DATA }
+    { lang: locale }
   );
-  const balanceData = USE_MOCK_DATA
-    ? MOCK_HOME_BALANCE
-    : balanceResponse?.data || balanceResponse || {};
+  const balanceData = balanceResponse?.data || balanceResponse || {};
   const isBalanceLoading =
-    !USE_MOCK_DATA && (balanceLoading || balanceFetching || !balanceResponse);
+    (balanceLoading || (balanceFetching && !balanceResponse)) && !balanceError;
 
   // 3. Home data (analytics, chart)
   const {
     data: homeResponse,
     isLoading: homeLoading,
     isFetching: homeFetching,
+    isError: homeError,
   } = useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.HOME,
     {},
-    { lang: locale, enabled: !USE_MOCK_DATA }
+    { lang: locale }
   );
-  const homeData = USE_MOCK_DATA
-    ? MOCK_HOME_DATA
-    : homeResponse?.data || homeResponse || {};
+  const homeData = homeResponse?.data || homeResponse || {};
   const isHomeLoading =
-    !USE_MOCK_DATA && (homeLoading || homeFetching || !homeResponse);
+    (homeLoading || (homeFetching && !homeResponse)) && !homeError;
 
   // 4. Bookings table (ask trips)
   const {
     data: tripsResponse,
     isLoading: tripsLoading,
     isFetching: tripsFetching,
+    isError: tripsError,
   } = useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.ASK_TRIPS_ALL,
     { page: currentPage },
-    { lang: locale, enabled: !USE_MOCK_DATA, queryKeySuffix: `page-${currentPage}` }
+    { lang: locale, queryKeySuffix: `page-${currentPage}` }
   );
-  const tripsData = USE_MOCK_DATA
-    ? MOCK_ASK_TRIPS
-    : tripsResponse?.data || tripsResponse || {};
+  const tripsData = tripsResponse?.data || tripsResponse || {};
   const isTripsLoading =
-    !USE_MOCK_DATA && (tripsLoading || tripsFetching || !tripsResponse);
+    (tripsLoading || (tripsFetching && !tripsResponse)) && !tripsError;
 
   // 5. Calendar month highlights
   const monthParam = calendarMonth.getMonth() + 1;
@@ -111,33 +97,33 @@ const ProviderMainPage = () => {
   const {
     data: monthTripsResponse,
     isLoading: monthTripsLoading,
+    isError: monthTripsError,
   } = useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.ORG_TRIPS_MONTH,
     { month: monthParam, year: yearParam },
-    { lang: locale, enabled: !USE_MOCK_DATA, queryKeySuffix: `month-${yearParam}-${monthParam}` }
+    { lang: locale, queryKeySuffix: `month-${yearParam}-${monthParam}` }
   );
-  const highlightedDates = USE_MOCK_DATA
-    ? MOCK_ORG_TRIPS_MONTH
-    : monthTripsResponse?.data || monthTripsResponse || [];
-  const isCalendarLoading = !USE_MOCK_DATA && monthTripsLoading;
+  const highlightedDates = monthTripsResponse?.data || monthTripsResponse || [];
+  const isCalendarLoading = monthTripsLoading && !monthTripsError;
 
   // 6. Day trips (for recent activities when date selected)
   const {
     data: dayTripsResponse,
     isLoading: dayTripsLoading,
+    isError: dayTripsError,
   } = useFetchData(
     selectedDate
       ? `${B2B_END_POINTS.PROVIDER_PROFILE.ORG_TRIPS_DAY}/${selectedDate}`
       : "",
     {},
-    { lang: locale, enabled: !USE_MOCK_DATA && !!selectedDate, queryKeySuffix: `day-${selectedDate}` }
+    { lang: locale, enabled: !!selectedDate, queryKeySuffix: `day-${selectedDate}` }
   );
-  const dayTrips = USE_MOCK_DATA
-    ? selectedDate
-      ? MOCK_ORG_TRIPS_DAY
-      : []
-    : dayTripsResponse?.data || dayTripsResponse || [];
-  const isDayTripsLoading = !USE_MOCK_DATA && dayTripsLoading && !!selectedDate;
+  const dayTrips = Array.isArray(dayTripsResponse?.data)
+    ? dayTripsResponse.data
+    : Array.isArray(dayTripsResponse)
+    ? dayTripsResponse
+    : [];
+  const isDayTripsLoading = dayTripsLoading && !dayTripsError && !!selectedDate;
 
   const handleDateSelect = useCallback((dateStr) => {
     setSelectedDate((prev) => (prev === dateStr ? null : dateStr));

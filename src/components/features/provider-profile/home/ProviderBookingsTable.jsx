@@ -96,7 +96,7 @@ const ProviderBookingsTable = ({ data, loading, currentPage, setCurrentPage }) =
   const locale = useLocale();
   const [b2bFilter, setB2bFilter] = useState("all");
 
-  const rawNodes = data?.nodes || [];
+  const rawNodes = Array.isArray(data) ? data : data?.nodes || [];
   const pageInfo = data?.pageInfo || {
     total: rawNodes.length,
     currentPage: currentPage || 1,

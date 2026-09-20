@@ -88,13 +88,21 @@ const ProviderStatCards = ({ data, loading }) => {
 
   const cards = useMemo(() => {
     const isDate = data?.earliestNextTripDay;
-    const formattedDate = isDate
-      ? formatDate(isDate, locale, {
-          year: "numeric",
-          month: "numeric",
-          day: "numeric",
-        })
-      : "-";
+    let formattedDate = "-";
+    if (isDate) {
+      try {
+        const d = new Date(isDate);
+        if (!isNaN(d.getTime())) {
+          formattedDate = formatDate(isDate, locale, {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          });
+        }
+      } catch {
+        formattedDate = "-";
+      }
+    }
 
     return [
       {

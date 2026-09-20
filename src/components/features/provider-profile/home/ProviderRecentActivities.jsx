@@ -5,64 +5,7 @@ import { memo } from "react";
 import Skeleton from "@mui/material/Skeleton";
 import Image from "next/image";
 
-/* ─── Default Sample Activity Items (matches Figma screenshot) ─── */
-const DEFAULT_ACTIVITIES = [
-  {
-    _id: "act-1",
-    name: "جولة يوم كامل في الطائف من جدة و مكة المكرمة",
-    bookingNumber: "GNA-9942",
-    branch: "الرياض",
-    organizationName: "مدارس نجد الأهلية",
-    visitorsCount: 45,
-    stage: "متعددة المراحل",
-    thumbnail:
-      "https://storage.googleapis.com/guestnabucket/images/1770033823304-766916230.webp",
-  },
-  {
-    _id: "act-2",
-    name: "جولة يوم كامل في الطائف من جدة و مكة المكرمة",
-    bookingNumber: "GNA-9942",
-    branch: "الرياض",
-    organizationName: "مدارس نجد الأهلية",
-    visitorsCount: 45,
-    stage: "متعددة المراحل",
-    thumbnail:
-      "https://storage.googleapis.com/guestnabucket/images/1770033823304-766916230.webp",
-  },
-  {
-    _id: "act-3",
-    name: "جولة يوم كامل في الطائف من جدة و مكة المكرمة",
-    bookingNumber: "GNA-9942",
-    branch: "الرياض",
-    organizationName: "مدارس نجد الأهلية",
-    visitorsCount: 45,
-    stage: "متعددة المراحل",
-    thumbnail:
-      "https://storage.googleapis.com/guestnabucket/images/1770033823304-766916230.webp",
-  },
-  {
-    _id: "act-4",
-    name: "جولة يوم كامل في الطائف من جدة و مكة المكرمة",
-    bookingNumber: "GNA-9942",
-    branch: "الرياض",
-    organizationName: "مدارس نجد الأهلية",
-    visitorsCount: 45,
-    stage: "متعددة المراحل",
-    thumbnail:
-      "https://storage.googleapis.com/guestnabucket/images/1770033823304-766916230.webp",
-  },
-  {
-    _id: "act-5",
-    name: "جولة يوم كامل في الطائف من جدة و مكة المكرمة",
-    bookingNumber: "GNA-9942",
-    branch: "الرياض",
-    organizationName: "مدارس نجد الأهلية",
-    visitorsCount: 45,
-    stage: "متعددة المراحل",
-    thumbnail:
-      "https://storage.googleapis.com/guestnabucket/images/1770033823304-766916230.webp",
-  },
-];
+
 
 /* ─── Skeleton ─── */
 const ActivityCardSkeleton = () => (
@@ -82,19 +25,13 @@ const ActivityCardSkeleton = () => (
 );
 
 export const ProviderRecentActivitiesSkeleton = () => (
-  <div className="bg-white border border-border rounded-2xl p-5 sm:p-6 animate-pulse h-full flex flex-col justify-between">
+  <div className="bg-white border border-border rounded-2xl p-5 sm:p-6 animate-pulse h-full flex flex-col">
     <Skeleton variant="text" width="35%" height={28} className="mb-4" />
     <div className="flex flex-col gap-3 flex-1">
-      {Array.from({ length: 5 }).map((_, i) => (
+      {Array.from({ length: 3 }).map((_, i) => (
         <ActivityCardSkeleton key={i} />
       ))}
     </div>
-    <Skeleton
-      variant="rounded"
-      width="100%"
-      height={44}
-      className="mt-4 rounded-xl"
-    />
   </div>
 );
 
@@ -182,12 +119,7 @@ const ProviderRecentActivities = ({ trips = [], selectedDate, loading }) => {
 
   if (loading) return <ProviderRecentActivitiesSkeleton />;
 
-  const hasSelectedDate = Boolean(selectedDate);
-  const displayTrips = hasSelectedDate
-    ? trips
-    : trips && trips.length > 0
-      ? trips
-      : DEFAULT_ACTIVITIES;
+  const displayTrips = Array.isArray(trips) ? trips : [];
 
   return (
     <div className="bg-white border border-border rounded-2xl p-5 sm:p-6 h-full flex flex-col shadow-card">

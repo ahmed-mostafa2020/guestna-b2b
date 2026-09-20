@@ -8,21 +8,21 @@ import formatDate from "@utils/formatters/FormateDate";
 
 /* ─── Skeleton ─── */
 export const ProviderCalendarSkeleton = () => (
-  <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 animate-pulse h-full flex flex-col justify-between">
-    <Skeleton variant="text" width="50%" height={28} className="mb-3" />
-    <div className="flex items-center justify-between mb-3">
+  <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 animate-pulse h-full flex flex-col gap-3.5 sm:gap-4">
+    <Skeleton variant="text" width="50%" height={28} />
+    <div className="flex items-center justify-between">
       <Skeleton variant="circular" width={28} height={28} />
       <Skeleton variant="text" width="35%" height={22} />
       <Skeleton variant="circular" width={28} height={28} />
     </div>
-    <div className="grid grid-cols-7 gap-1 mb-2">
+    <div className="grid grid-cols-7 gap-1">
       {Array.from({ length: 7 }).map((_, i) => (
         <Skeleton key={i} variant="text" height={16} className="rounded" />
       ))}
     </div>
-    <div className="grid grid-cols-7 gap-1.5 flex-1">
+    <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
       {Array.from({ length: 35 }).map((_, i) => (
-        <Skeleton key={i} variant="rounded" height={32} className="rounded-lg" />
+        <Skeleton key={i} variant="rounded" className="aspect-square rounded-lg sm:rounded-xl" />
       ))}
     </div>
   </div>
@@ -113,9 +113,9 @@ const ProviderCalendar = ({
   const isArabic = locale === "ar";
 
   return (
-    <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 h-full flex flex-col justify-between shadow-card">
+    <div className="bg-white border border-border rounded-2xl p-4 sm:p-6 h-full flex flex-col gap-3.5 sm:gap-4.5 shadow-card">
       {/* Header with Title and Month Controls (Responsive without overlap) */}
-      <div className="flex items-center justify-between gap-2 mb-3">
+      <div className="flex items-center justify-between gap-2">
         <h3 className="text-lg sm:text-xl font-bold text-mainColor shrink-0">
           {t("providerProfile.home.calendar.title")}
         </h3>
