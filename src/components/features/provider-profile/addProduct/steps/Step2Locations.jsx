@@ -484,7 +484,7 @@ const Step2Locations = ({
         <div className="mt-6">
           {!isCapacityCustomizedActive ? (
             /* Empty State Box */
-            <div className="bg-[#F9FAFA] border border-gray-200 rounded-2xl p-8 sm:p-12 text-center flex flex-col items-center justify-center gap-3">
+            <div className="bg-gray-50/80 border border-border rounded-2xl p-8 sm:p-12 text-center flex flex-col items-center justify-center gap-3">
               <div className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400">
                 <AutoAwesomeOutlinedIcon className="w-6 h-6 text-gray-400" />
               </div>
@@ -546,7 +546,7 @@ const Step2Locations = ({
 
                     {/* Accordion Expanded Body */}
                     {isOpen && (
-                      <div className="p-4 sm:p-5 border-t border-gray-100 bg-[#FAFCFC]/50">
+                      <div className="p-4 sm:p-5 border-t border-gray-100 bg-gray-50/50">
                         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                           {/* Input 1: السعة */}
                           <div className="flex-1 flex flex-col">

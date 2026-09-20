@@ -219,7 +219,13 @@ const StepReview = ({
         minCount: item.minCount || 1,
       };
     });
-  }, [activeView, values.b2cPrice, values.targetAudiences, targetAudienceOptions, locale]);
+  }, [
+    activeView,
+    values.b2cPrice,
+    values.targetAudiences,
+    targetAudienceOptions,
+    locale,
+  ]);
 
   // Resolve Services with icons & notes
   const resolvedServices = useMemo(() => {
@@ -237,7 +243,11 @@ const StepReview = ({
           item.note?.[locale] || item.note?.ar || item.note?.en || "";
         return {
           id: sId,
-          name: getLocalizedName(found) || (typeof item.service === "object" ? getLocalizedName(item.service) : sId),
+          name:
+            getLocalizedName(found) ||
+            (typeof item.service === "object"
+              ? getLocalizedName(item.service)
+              : sId),
           icon: found?.icon || found?.image || "",
           note: noteText,
         };
@@ -264,7 +274,8 @@ const StepReview = ({
             ? branchObj.city?._id || branchObj.city?.id
             : branchObj.city;
         const cityFound = cityOptions.find((c) => (c._id || c.id) === cityId);
-        const cityName = getLocalizedName(cityFound) || getLocalizedName(branchObj.city);
+        const cityName =
+          getLocalizedName(cityFound) || getLocalizedName(branchObj.city);
 
         // Check custom branch price/dates overrides
         const customPrice = values.branchPricing?.[id]?.price;
@@ -284,7 +295,14 @@ const StepReview = ({
         };
       })
       .filter(Boolean);
-  }, [values.providerBranchs, providerBranchsOptions, cityOptions, values.branchPricing, values.branchDates, locale]);
+  }, [
+    values.providerBranchs,
+    providerBranchsOptions,
+    cityOptions,
+    values.branchPricing,
+    values.branchDates,
+    locale,
+  ]);
 
   // Filter branches by search query
   const filteredBranches = useMemo(() => {
@@ -302,19 +320,20 @@ const StepReview = ({
   const activePrice = useMemo(() => {
     if (activeView === "B2B") {
       return (
-        values.b2bPrice?.price ||
-        values.b2bPricing?.price ||
-        values.price ||
-        0
+        values.b2bPrice?.price || values.b2bPricing?.price || values.price || 0
       );
     }
     return (
-      values.b2cPrice?.price ||
-      values.b2cPricing?.price ||
-      values.price ||
-      0
+      values.b2cPrice?.price || values.b2cPricing?.price || values.price || 0
     );
-  }, [activeView, values.b2bPrice, values.b2cPrice, values.b2bPricing, values.b2cPricing, values.price]);
+  }, [
+    activeView,
+    values.b2bPrice,
+    values.b2cPrice,
+    values.b2bPricing,
+    values.b2cPricing,
+    values.price,
+  ]);
 
   // Active Discounted Price (finalPrice / discountedPrice) — only if set and less than base price
   const activeDiscount = useMemo(() => {
@@ -325,29 +344,43 @@ const StepReview = ({
     return Number(discounted) > 0 && Number(discounted) < Number(activePrice)
       ? Number(discounted)
       : 0;
-  }, [activeView, activePrice, values.b2bPrice, values.b2cPrice, values.discountedPrice]);
+  }, [
+    activeView,
+    activePrice,
+    values.b2bPrice,
+    values.b2cPrice,
+    values.discountedPrice,
+  ]);
 
   // Discount percentage for display
   const discountPercent = useMemo(() => {
     if (!activeDiscount || !activePrice) return 0;
-    return Math.round(((Number(activePrice) - Number(activeDiscount)) / Number(activePrice)) * 100);
+    return Math.round(
+      ((Number(activePrice) - Number(activeDiscount)) / Number(activePrice)) *
+        100
+    );
   }, [activePrice, activeDiscount]);
 
   // Bulk pricing list for B2B
   const bulkPricingList = useMemo(() => {
     const list =
-      activeView === "B2B" && Array.isArray(values.bulkPricing) && values.bulkPricing.length > 0
+      activeView === "B2B" &&
+      Array.isArray(values.bulkPricing) &&
+      values.bulkPricing.length > 0
         ? values.bulkPricing
-        : Array.isArray(values.b2bBulkPricing) && values.b2bBulkPricing.length > 0
-        ? values.b2bBulkPricing
-        : [];
+        : Array.isArray(values.b2bBulkPricing) &&
+            values.b2bBulkPricing.length > 0
+          ? values.b2bBulkPricing
+          : [];
     return list.filter((item) => item && (item.minCount || item.price));
   }, [activeView, values.bulkPricing, values.b2bBulkPricing]);
 
   // Video URL resolution
   const resolvedVideoUrl = useMemo(() => {
-    if (values.videoUrl && typeof values.videoUrl === "string") return values.videoUrl;
-    if (values.youtubeUrl && typeof values.youtubeUrl === "string") return values.youtubeUrl;
+    if (values.videoUrl && typeof values.videoUrl === "string")
+      return values.videoUrl;
+    if (values.youtubeUrl && typeof values.youtubeUrl === "string")
+      return values.youtubeUrl;
     if (values.video) {
       if (typeof values.video === "string") return values.video;
       if (values.video instanceof File || values.video instanceof Blob) {
@@ -357,7 +390,8 @@ const StepReview = ({
           return null;
         }
       }
-      if (typeof values.video === "object" && values.video.url) return values.video.url;
+      if (typeof values.video === "object" && values.video.url)
+        return values.video.url;
     }
     return null;
   }, [values.video, values.videoUrl, values.youtubeUrl]);
@@ -368,8 +402,8 @@ const StepReview = ({
       activeView === "B2B" && values.b2bPrice?.weekdayPricing?.length
         ? values.b2bPrice.weekdayPricing
         : activeView === "B2C" && values.b2cPrice?.weekdayPricing?.length
-        ? values.b2cPrice.weekdayPricing
-        : values.weekdayPricing || [];
+          ? values.b2cPrice.weekdayPricing
+          : values.weekdayPricing || [];
 
     return list.map((item) => {
       let dayName = item.day;
@@ -384,7 +418,13 @@ const StepReview = ({
         rawDay: item.day,
       };
     });
-  }, [activeView, values.b2bPrice, values.b2cPrice, values.weekdayPricing, tWeekDays]);
+  }, [
+    activeView,
+    values.b2bPrice,
+    values.b2cPrice,
+    values.weekdayPricing,
+    tWeekDays,
+  ]);
 
   // Exempted list
   const exemptedList = useMemo(() => {
@@ -392,7 +432,9 @@ const StepReview = ({
       locale === "ar"
         ? values.exemptedFromTrip?.ar || values.exemptedFromTrip?.en || []
         : values.exemptedFromTrip?.en || values.exemptedFromTrip?.ar || [];
-    return (Array.isArray(list) ? list : []).filter((item) => item && item.trim());
+    return (Array.isArray(list) ? list : []).filter(
+      (item) => item && item.trim()
+    );
   }, [values.exemptedFromTrip, locale]);
 
   // Must-have list
@@ -401,7 +443,9 @@ const StepReview = ({
       locale === "ar"
         ? values.mustHaveItems?.ar || values.mustHaveItems?.en || []
         : values.mustHaveItems?.en || values.mustHaveItems?.ar || [];
-    return (Array.isArray(list) ? list : []).filter((item) => item && item.trim());
+    return (Array.isArray(list) ? list : []).filter(
+      (item) => item && item.trim()
+    );
   }, [values.mustHaveItems, locale]);
 
   // Benefits list
@@ -410,7 +454,9 @@ const StepReview = ({
       locale === "ar"
         ? values.benefits?.ar || values.benefits?.en || []
         : values.benefits?.en || values.benefits?.ar || [];
-    return (Array.isArray(list) ? list : []).filter((item) => item && item.trim());
+    return (Array.isArray(list) ? list : []).filter(
+      (item) => item && item.trim()
+    );
   }, [values.benefits, locale]);
 
   // Product Name & Description
@@ -449,57 +495,6 @@ const StepReview = ({
   // Render Trip Details Layout Content (used both in main view and full preview modal)
   const renderTripDetailsView = () => (
     <div className="space-y-6">
-      {/* 1. Header & Title */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-4">
-        <div>
-          <div className="flex flex-wrap items-center gap-2 mb-2">
-            {categoryLabel && (
-              <span className="px-3 py-1 rounded-full bg-mainColor/10 text-mainColor text-xs font-bold">
-                {categoryLabel}
-              </span>
-            )}
-            {values.tripsType && (
-              <span className="px-3 py-1 rounded-full bg-gray-100 text-titleColor text-xs font-medium border border-border">
-                {tModal(`tripTypes.${values.tripsType}`)}
-              </span>
-            )}
-            {subCategoryLabels.map((sc, i) => (
-              <span
-                key={i}
-                className="px-2.5 py-0.5 rounded-full bg-gray-50 text-subtitleColor text-xs border border-border"
-              >
-                {sc}
-              </span>
-            ))}
-          </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-mainColor text-start">
-            {productName}
-          </h1>
-        </div>
-
-        {/* Edit & Preview Actions */}
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <button
-            type="button"
-            onClick={() => setOpenPreviewModal(true)}
-            className="px-4 py-2 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/10 font-medium text-xs sm:text-sm flex items-center gap-1.5 transition-all cursor-pointer"
-          >
-            <VisibilityIcon className="w-4 h-4" />
-            <span>{tSub("reviewPreviewDesign")}</span>
-          </button>
-          {setActiveStep && (
-            <button
-              type="button"
-              onClick={() => setActiveStep(0)}
-              className="px-4 py-2 rounded-xl border border-border bg-white text-titleColor hover:bg-gray-50 font-medium text-xs sm:text-sm flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
-            >
-              <EditIcon className="w-4 h-4" />
-              <span>{tSub("reviewEdit")}</span>
-            </button>
-          )}
-        </div>
-      </div>
-
       {/* 2. Gallery Grid Section matching Figma 3-column layout */}
       <div className="rounded-2xl overflow-hidden bg-gray-50 border border-border p-3 sm:p-4">
         {galleryUrls.length > 0 ? (
@@ -564,7 +559,8 @@ const StepReview = ({
             <div className="md:col-span-4 rounded-2xl overflow-hidden h-[260px] sm:h-[360px] md:h-[420px] relative bg-neutral-900 flex items-center justify-center">
               {resolvedVideoUrl ? (
                 <div className="w-full h-full relative group">
-                  {resolvedVideoUrl.includes("youtube.com") || resolvedVideoUrl.includes("youtu.be") ? (
+                  {resolvedVideoUrl.includes("youtube.com") ||
+                  resolvedVideoUrl.includes("youtu.be") ? (
                     <iframe
                       src={resolvedVideoUrl.replace("watch?v=", "embed/")}
                       title="Product Video"
@@ -593,17 +589,26 @@ const StepReview = ({
                   {/* Figma-like simulated video control overlay */}
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 flex items-center justify-between text-white text-xs">
                     <div className="flex items-center gap-2">
-                      <button type="button" className="p-1 hover:text-mainColor transition-colors">
+                      <button
+                        type="button"
+                        className="p-1 hover:text-mainColor transition-colors"
+                      >
                         <PlayArrowIcon className="w-4 h-4" />
                       </button>
-                      <button type="button" className="p-1 hover:text-mainColor transition-colors">
+                      <button
+                        type="button"
+                        className="p-1 hover:text-mainColor transition-colors"
+                      >
                         <VolumeUpIcon className="w-4 h-4" />
                       </button>
                       <div className="w-24 sm:w-32 bg-white/30 rounded-full h-1">
                         <div className="bg-white h-full w-2/3 rounded-full" />
                       </div>
                     </div>
-                    <button type="button" className="p-1 hover:text-mainColor transition-colors">
+                    <button
+                      type="button"
+                      className="p-1 hover:text-mainColor transition-colors"
+                    >
                       <FullscreenIcon className="w-4 h-4" />
                     </button>
                   </div>
@@ -611,26 +616,30 @@ const StepReview = ({
               ) : (
                 <div className="w-full h-full rounded-2xl bg-gray-100 border border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 text-xs p-4 gap-2">
                   <OndemandVideoOutlinedIcon className="w-8 h-8 text-gray-400" />
-                  <span>{tSub("productVideo")} - {tSub("notAttached")}</span>
+                  <span>
+                    {tSub("productVideo")} - {tSub("notAttached")}
+                  </span>
                 </div>
               )}
             </div>
           </div>
         ) : (
           <div className="p-8 text-center text-subtitleColor bg-white rounded-xl border border-dashed border-gray-300">
-            <p className="text-sm font-medium">{tSub("galleryImages")} - {tSub("notAttached")}</p>
+            <p className="text-sm font-medium">
+              {tSub("galleryImages")} - {tSub("notAttached")}
+            </p>
           </div>
         )}
       </div>
 
       {/* 3. B2B / B2C Toggle Bar matching Figma */}
-      <div className="w-full bg-[#0B737F] p-1.5 rounded-2xl flex items-center gap-2 shadow-xs">
+      <div className="w-full bg-mainColor p-1.5 rounded-2xl flex items-center gap-2 shadow-xs">
         <button
           type="button"
           onClick={() => setActiveView("B2B")}
           className={`flex-1 py-3 px-6 rounded-xl text-sm sm:text-base font-bold transition-all cursor-pointer text-center ${
             activeView === "B2B"
-              ? "bg-white text-[#0B737F] shadow-sm"
+              ? "bg-white text-mainColor shadow-sm"
               : "text-white hover:bg-white/10"
           }`}
         >
@@ -641,7 +650,7 @@ const StepReview = ({
           onClick={() => setActiveView("B2C")}
           className={`flex-1 py-3 px-6 rounded-xl text-sm sm:text-base font-bold transition-all cursor-pointer text-center ${
             activeView === "B2C"
-              ? "bg-white text-[#0B737F] shadow-sm"
+              ? "bg-white text-mainColor shadow-sm"
               : "text-white hover:bg-white/10"
           }`}
         >
@@ -651,137 +660,11 @@ const StepReview = ({
 
       {/* 4. Main Two-Column Trip Details Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column: Sidebar Pricing Card (4 of 12) */}
-        <div className="lg:col-span-4 lg:sticky lg:top-4 space-y-4">
-          <FrameWithImagedHeader
-            withBorder={true}
-            className="shadow-md rounded-2xl overflow-hidden"
-          >
-            {/* Price Section with Discount support */}
-            <div className="space-y-1 pb-4 border-b border-border text-start">
-              <span className="text-xs text-subtitleColor font-medium block">
-                {tSub("reviewPriceStartsFrom")}
-              </span>
-              {activeDiscount > 0 ? (
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-extrabold text-mainColor">
-                      {formatCurrency(activeDiscount)}
-                    </span>
-                    <span className="line-through text-sm text-subtitleColor font-normal">
-                      {formatCurrency(activePrice)}
-                    </span>
-                  </div>
-                  <span className="inline-flex w-fit px-2.5 py-0.5 text-xs font-bold text-red-600 bg-red-50 rounded-full border border-red-200">
-                    {tSub("reviewDiscountBadge", { percent: discountPercent })}
-                  </span>
-                </div>
-              ) : (
-                <div className="text-3xl font-extrabold text-mainColor">
-                  {formatCurrency(activePrice)}
-                </div>
-              )}
-            </div>
-
-            {/* Meta Rows matching Figma */}
-            <div className="space-y-3.5 text-xs sm:text-sm text-subtitleColor py-3 text-start">
-              {/* Date Range */}
-              <div className="flex items-center justify-between gap-2">
-                <div>
-                  <span className="text-[11px] text-subtitleColor block">
-                    {tSub("reviewDate")}
-                  </span>
-                  <span className="text-titleColor font-bold text-sm block">
-                    {dateRangeStr}
-                  </span>
-                </div>
-                <div className="w-8 h-8 rounded-lg bg-teal-50 text-mainColor flex items-center justify-center flex-shrink-0">
-                  <CalendarTodayIcon className="w-4 h-4" />
-                </div>
-              </div>
-
-              {/* Activity Duration */}
-              {durationHours > 0 && (
-                <div className="flex items-center justify-between gap-2">
-                  <div>
-                    <span className="text-[11px] text-subtitleColor block">
-                      {tSub("reviewActivityDuration")}
-                    </span>
-                    <span className="text-titleColor font-bold text-sm block">
-                      {durationHours} {tSub("reviewHours")}
-                    </span>
-                  </div>
-                  <div className="w-8 h-8 rounded-lg bg-teal-50 text-mainColor flex items-center justify-center flex-shrink-0">
-                    <AccessTimeIcon className="w-4 h-4" />
-                  </div>
-                </div>
-              )}
-
-              {/* Ages */}
-              {(values.ageRange?.from || values.ageRange?.to) && (
-                <div className="flex items-center justify-between gap-2">
-                  <div>
-                    <span className="text-[11px] text-subtitleColor block">
-                      {tSub("reviewAgeFrom")}
-                    </span>
-                    <span className="text-titleColor font-bold text-sm block">
-                      {tSub("reviewAgeYears", {
-                        from: values.ageRange?.from || 8,
-                        to: values.ageRange?.to || 16,
-                      })}
-                    </span>
-                  </div>
-                  <div className="w-8 h-8 rounded-lg bg-teal-50 text-mainColor flex items-center justify-center flex-shrink-0">
-                    <AccessTimeIcon className="w-4 h-4" />
-                  </div>
-                </div>
-              )}
-
-              {/* Deadline Box matching Figma */}
-              <div className="p-3 rounded-xl bg-[#E8F8F0] border border-[#C6EFD9] text-[#036D36] flex items-center justify-between font-bold text-xs sm:text-sm">
-                <span>{values.bookingBefore || 1}</span>
-                <span>{tSub("reviewBookingDeadlineNotice")}</span>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="space-y-2.5 pt-3 border-t border-border">
-              <button
-                type="button"
-                disabled={isSubmitting}
-                onClick={handleSubmit}
-                className="w-full py-3 px-4 rounded-xl bg-[#0B737F] hover:bg-[#0B737F]/90 text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.99] disabled:opacity-50"
-              >
-                {isSubmitting ? (
-                  <CircularProgress size={18} color="inherit" />
-                ) : (
-                  <CheckCircleIcon className="w-4 h-4" />
-                )}
-                <span>{tSub("reviewPublish")}</span>
-              </button>
-
-              {setActiveStep && (
-                <button
-                  type="button"
-                  onClick={() => setActiveStep(0)}
-                  className="w-full py-2.5 px-4 rounded-xl border border-[#0B737F] text-[#0B737F] hover:bg-[#0B737F]/5 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer transition-all shadow-xs"
-                >
-                  <EditIcon className="w-4 h-4" />
-                  <span>{tSub("reviewEdit")}</span>
-                </button>
-              )}
-            </div>
-          </FrameWithImagedHeader>
-        </div>
-
         {/* Right Column: Accordions (8 of 12) */}
         <div className="lg:col-span-8 space-y-4">
           {/* Accordion 1: Product Description */}
           {productDescription && (
-            <FilterAccordion
-              index={0}
-              title={tSub("reviewProductDescription")}
-            >
+            <FilterAccordion index={0} title={tSub("reviewProductDescription")}>
               <div className="p-2 text-sm text-subtitleColor leading-relaxed whitespace-pre-line">
                 {productDescription}
               </div>
@@ -797,7 +680,7 @@ const StepReview = ({
                     key={serv.id || idx}
                     className="flex flex-col items-center text-center p-4 bg-gray-50/60 rounded-2xl border border-gray-100 shadow-xs hover:border-mainColor/40 transition-all"
                   >
-                    <div className="w-16 h-16 rounded-2xl border-2 border-teal-600/30 bg-white flex items-center justify-center mb-2.5 p-2 shadow-xs">
+                    <div className="w-16 h-16 rounded-2xl border-2 border-mainColor/30 bg-white flex items-center justify-center mb-2.5 p-2 shadow-xs">
                       {serv.icon ? (
                         <ImageWithPlaceholder
                           src={serv.icon}
@@ -825,16 +708,14 @@ const StepReview = ({
           )}
 
           {/* Accordion 3: Academic Stages / Age Range */}
-          {(academicStageLabels.length > 0 || resolvedTargetAudiences.length > 0) && (
-            <FilterAccordion
-              index={2}
-              title={tSub("reviewAcademicStages")}
-            >
+          {(academicStageLabels.length > 0 ||
+            resolvedTargetAudiences.length > 0) && (
+            <FilterAccordion index={2} title={tSub("reviewAcademicStages")}>
               <div className="flex flex-wrap gap-2.5 p-2">
                 {academicStageLabels.map((stage, idx) => (
                   <span
                     key={idx}
-                    className="px-4 py-1.5 rounded-full bg-[#EBF7F5] text-mainColor border border-[#D4F2EB] text-xs font-semibold shadow-xs"
+                    className="px-4 py-1.5 rounded-full bg-mainColor/10 text-mainColor border border-mainColor/20 text-xs font-semibold shadow-xs"
                   >
                     {stage}
                   </span>
@@ -842,7 +723,7 @@ const StepReview = ({
                 {resolvedTargetAudiences.map((ta, idx) => (
                   <span
                     key={`ta-${idx}`}
-                    className="px-4 py-1.5 rounded-full bg-[#EBF7F5] text-mainColor border border-[#D4F2EB] text-xs font-semibold shadow-xs"
+                    className="px-4 py-1.5 rounded-full bg-mainColor/10 text-mainColor border border-mainColor/20 text-xs font-semibold shadow-xs"
                   >
                     {ta.name}
                   </span>
@@ -920,7 +801,8 @@ const StepReview = ({
                     const lat = branch.location?.lat || 24.7136;
                     const lng = branch.location?.lng || 46.6753;
                     const mapUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-                    const capacityVal = values.branchCapacities?.[branch.id] || 50;
+                    const capacityVal =
+                      values.branchCapacities?.[branch.id] || 50;
 
                     return (
                       <div
@@ -932,7 +814,9 @@ const StepReview = ({
                           <div className="flex items-center gap-2">
                             <AccountBalanceOutlinedIcon className="w-5 h-5 text-mainColor" />
                             <h4 className="font-bold text-titleColor text-sm">
-                              {branch.city ? `${branch.city} ${branch.name}` : branch.name}
+                              {branch.city
+                                ? `${branch.city} ${branch.name}`
+                                : branch.name}
                             </h4>
                           </div>
                           {branch.city && (
@@ -948,7 +832,7 @@ const StepReview = ({
                             <span className="text-gray-500 font-medium">
                               {tSub("reviewCategory")}
                             </span>
-                            <span className="px-2 py-0.5 rounded-md bg-teal-50 text-mainColor font-bold text-[11px] flex items-center gap-1">
+                            <span className="px-2 py-0.5 rounded-md bg-mainColor/10 text-mainColor font-bold text-[11px] flex items-center gap-1">
                               <GroupsIcon className="w-3.5 h-3.5" />
                               {tSub("reviewBoysAndGirls")}
                             </span>
@@ -958,7 +842,7 @@ const StepReview = ({
                             <span className="text-gray-500 font-medium">
                               {tSub("reviewCapacity")}
                             </span>
-                            <span className="px-2 py-0.5 rounded-md bg-teal-50 text-mainColor font-bold text-[11px] flex items-center gap-1">
+                            <span className="px-2 py-0.5 rounded-md bg-mainColor/10 text-mainColor font-bold text-[11px] flex items-center gap-1">
                               <SchoolIcon className="w-3.5 h-3.5" />
                               {capacityVal} {tSub("reviewStudentsUnit")}
                             </span>
@@ -1093,8 +977,8 @@ const StepReview = ({
                       {values.productCost
                         ? formatCurrency(values.productCost)
                         : values.b2bPrice?.productCost
-                        ? formatCurrency(values.b2bPrice.productCost)
-                        : "-"}
+                          ? formatCurrency(values.b2bPrice.productCost)
+                          : "-"}
                     </div>
                   </div>
 
@@ -1152,7 +1036,8 @@ const StepReview = ({
                       ) : (
                         <tr className="hover:bg-gray-50/50">
                           <td className="py-3 px-4 text-subtitleColor font-medium">
-                            {values.availableSeats?.min || 45} {tSub("reviewStudentsUnit")}
+                            {values.availableSeats?.min || 45}{" "}
+                            {tSub("reviewStudentsUnit")}
                           </td>
                           <td className="py-3 px-4 font-bold text-mainColor">
                             {activeDiscount > 0 ? (
@@ -1188,7 +1073,7 @@ const StepReview = ({
                             <span className="font-bold text-xs sm:text-sm text-titleColor">
                               {item.day}
                             </span>
-                            <span className="text-[11px] px-2 py-0.5 rounded-md bg-teal-50 text-mainColor font-semibold">
+                            <span className="text-[11px] px-2 py-0.5 rounded-md bg-mainColor/10 text-mainColor font-semibold">
                               {t("weekdayPricing")}
                             </span>
                           </div>
@@ -1233,7 +1118,7 @@ const StepReview = ({
                       {activeDiscount > 0 ? (
                         <div className="flex items-center justify-center gap-2">
                           <span>{formatCurrency(activeDiscount)}</span>
-                          <span className="text-xs text-red-600 bg-red-50 px-2 py-0.5 rounded-md border border-red-200">
+                          <span className="text-xs text-error bg-error/10 px-2 py-0.5 rounded-md border border-error/20">
                             %{discountPercent}
                           </span>
                         </div>
@@ -1296,7 +1181,7 @@ const StepReview = ({
                             <span className="font-bold text-xs sm:text-sm text-titleColor">
                               {item.day}
                             </span>
-                            <span className="text-[11px] px-2 py-0.5 rounded-md bg-teal-50 text-mainColor font-semibold">
+                            <span className="text-[11px] px-2 py-0.5 rounded-md bg-mainColor/10 text-mainColor font-semibold">
                               {t("weekdayPricing")}
                             </span>
                           </div>
@@ -1317,6 +1202,129 @@ const StepReview = ({
               </div>
             </FilterAccordion>
           )}
+        </div>
+
+        {/* Left Column: Sidebar Pricing Card (4 of 12) */}
+        <div className="lg:col-span-4 lg:sticky lg:top-4 space-y-4">
+          <FrameWithImagedHeader
+            withBorder={true}
+            className="shadow-md rounded-2xl overflow-hidden"
+          >
+            {/* Price Section with Discount support */}
+            <div className="space-y-1 pb-4 border-b border-border text-start">
+              <span className="text-xs text-subtitleColor font-medium block">
+                {tSub("reviewPriceStartsFrom")}
+              </span>
+              {activeDiscount > 0 ? (
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl font-extrabold text-mainColor">
+                      {formatCurrency(activeDiscount)}
+                    </span>
+                    <span className="line-through text-sm text-subtitleColor font-normal">
+                      {formatCurrency(activePrice)}
+                    </span>
+                  </div>
+                  <span className="inline-flex w-fit px-2.5 py-0.5 text-xs font-bold text-error bg-error/10 rounded-full border border-error/20">
+                    {tSub("reviewDiscountBadge", { percent: discountPercent })}
+                  </span>
+                </div>
+              ) : (
+                <div className="text-3xl font-extrabold text-mainColor">
+                  {formatCurrency(activePrice)}
+                </div>
+              )}
+            </div>
+
+            {/* Meta Rows matching Figma */}
+            <div className="space-y-3.5 text-xs sm:text-sm text-subtitleColor py-3 text-start">
+              {/* Date Range */}
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <span className="text-[11px] text-subtitleColor block">
+                    {tSub("reviewDate")}
+                  </span>
+                  <span className="text-titleColor font-bold text-sm block">
+                    {dateRangeStr}
+                  </span>
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
+                  <CalendarTodayIcon className="w-4 h-4" />
+                </div>
+              </div>
+
+              {/* Activity Duration */}
+              {durationHours > 0 && (
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <span className="text-[11px] text-subtitleColor block">
+                      {tSub("reviewActivityDuration")}
+                    </span>
+                    <span className="text-titleColor font-bold text-sm block">
+                      {durationHours} {tSub("reviewHours")}
+                    </span>
+                  </div>
+                  <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
+                    <AccessTimeIcon className="w-4 h-4" />
+                  </div>
+                </div>
+              )}
+
+              {/* Ages */}
+              {(values.ageRange?.from || values.ageRange?.to) && (
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <span className="text-[11px] text-subtitleColor block">
+                      {tSub("reviewAgeFrom")}
+                    </span>
+                    <span className="text-titleColor font-bold text-sm block">
+                      {tSub("reviewAgeYears", {
+                        from: values.ageRange?.from || 8,
+                        to: values.ageRange?.to || 16,
+                      })}
+                    </span>
+                  </div>
+                  <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
+                    <AccessTimeIcon className="w-4 h-4" />
+                  </div>
+                </div>
+              )}
+
+              {/* Deadline Box matching Figma */}
+              <div className="p-3 rounded-xl bg-status-success-bg border border-status-success-border text-status-success-fg flex items-center justify-between font-bold text-xs sm:text-sm">
+                <span>{values.bookingBefore || 1}</span>
+                <span>{tSub("reviewBookingDeadlineNotice")}</span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-2.5 pt-3 border-t border-border">
+              <button
+                type="button"
+                disabled={isSubmitting}
+                onClick={handleSubmit}
+                className="w-full py-3 px-4 rounded-xl bg-mainColor hover:bg-titleColor text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.99] disabled:opacity-50"
+              >
+                {isSubmitting ? (
+                  <CircularProgress size={18} color="inherit" />
+                ) : (
+                  <CheckCircleIcon className="w-4 h-4" />
+                )}
+                <span>{tSub("reviewPublish")}</span>
+              </button>
+
+              {setActiveStep && (
+                <button
+                  type="button"
+                  onClick={() => setActiveStep(1)}
+                  className="w-full py-2.5 px-4 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/5 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer transition-all shadow-xs"
+                >
+                  <EditIcon className="w-4 h-4" />
+                  <span>{tSub("reviewEdit")}</span>
+                </button>
+              )}
+            </div>
+          </FrameWithImagedHeader>
         </div>
       </div>
     </div>
@@ -1389,7 +1397,10 @@ const StepReview = ({
         width="95%"
         padding={true}
       >
-        <div className="max-w-6xl mx-auto p-4 sm:p-6 bg-white min-h-screen text-titleColor" dir={isRtl ? "rtl" : "ltr"}>
+        <div
+          className="max-w-6xl mx-auto p-4 sm:p-6 bg-white min-h-screen text-titleColor"
+          dir={isRtl ? "rtl" : "ltr"}
+        >
           <div className="flex items-center justify-between pb-4 mb-4 border-b border-border">
             <span className="text-base font-bold text-mainColor flex items-center gap-2">
               <VisibilityIcon className="w-5 h-5" />

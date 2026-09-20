@@ -21,6 +21,7 @@ const WEEKDAY_KEYS = [
   "SATURDAY",
   "SUNDAY",
   "MONDAY",
+  "TUESDAY",
   "WEDNESDAY",
   "THURSDAY",
   "FRIDAY",
@@ -521,7 +522,7 @@ const Step4BookingDates = ({
                 <button
                   type="button"
                   onClick={() => push({ from: "", to: "" })}
-                  className="w-full py-3 rounded-xl border border-[#F2994A] text-[#F2994A] hover:bg-[#F2994A]/5 font-somar font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer mt-2"
+                  className="w-full py-3 rounded-xl border border-secColor text-secColor hover:bg-secColor/5 font-somar font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer mt-2"
                 >
                   <AddIcon className="w-4 h-4" />
                   <span>{t("addTimeSlot")}</span>
@@ -586,7 +587,7 @@ const Step4BookingDates = ({
 
         {/* When NOT customized: Empty State Box Matching Figma */}
         {!isCustomizedActive ? (
-          <div className="bg-[#F9FAFA] border border-gray-200 rounded-2xl p-8 sm:p-12 text-center flex flex-col items-center justify-center gap-3">
+          <div className="bg-gray-50/80 border border-border rounded-2xl p-8 sm:p-12 text-center flex flex-col items-center justify-center gap-3">
             <div className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400">
               <AutoAwesomeOutlinedIcon className="w-6 h-6 text-gray-400" />
             </div>
@@ -864,7 +865,7 @@ const Step4BookingDates = ({
                               ];
                               setFieldValue(`branchDates.${branch.id}.availableTimes`, times);
                             }}
-                            className="w-full py-2.5 rounded-lg border border-[#F2994A] text-[#F2994A] hover:bg-[#F2994A]/5 font-somar font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer"
+                            className="w-full py-2.5 rounded-lg border border-secColor text-secColor hover:bg-secColor/5 font-somar font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer"
                           >
                             <AddIcon className="w-4 h-4" />
                             <span>{t("addTimeSlot")}</span>

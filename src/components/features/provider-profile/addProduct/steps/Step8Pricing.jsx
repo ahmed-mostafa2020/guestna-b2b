@@ -276,7 +276,7 @@ const Step8Pricing = ({
             className={cn(
               "flex items-center gap-3.5 p-4 sm:p-5 rounded-2xl border transition-all duration-200 cursor-pointer text-start",
               activeTab === "individual"
-                ? "border-mainColor bg-[#EBF7F5] shadow-xs"
+                ? "border-mainColor bg-mainColor/10 shadow-xs"
                 : "border-border bg-white hover:border-gray-300"
             )}
           >
@@ -284,7 +284,7 @@ const Step8Pricing = ({
               className={cn(
                 "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-colors",
                 activeTab === "individual"
-                  ? "bg-[#D4F2EB] text-mainColor"
+                  ? "bg-mainColor/20 text-mainColor"
                   : "bg-gray-100 text-gray-400"
               )}
             >
@@ -315,7 +315,7 @@ const Step8Pricing = ({
             className={cn(
               "flex items-center gap-3.5 p-4 sm:p-5 rounded-2xl border transition-all duration-200 cursor-pointer text-start",
               activeTab === "schools"
-                ? "border-mainColor bg-[#EBF7F5] shadow-xs"
+                ? "border-mainColor bg-mainColor/10 shadow-xs"
                 : "border-border bg-white hover:border-gray-300"
             )}
           >
@@ -323,7 +323,7 @@ const Step8Pricing = ({
               className={cn(
                 "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-colors",
                 activeTab === "schools"
-                  ? "bg-[#D4F2EB] text-mainColor"
+                  ? "bg-mainColor/20 text-mainColor"
                   : "bg-gray-100 text-gray-400"
               )}
             >
