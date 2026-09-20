@@ -82,6 +82,7 @@ const StepTripDate = ({
 
       <p className="text-base !my-4"> {t("description")}</p>
 
+
       {hasProviderSpecificDays ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Provider Branch Selector */}

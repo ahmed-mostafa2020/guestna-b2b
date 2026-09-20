@@ -30,6 +30,31 @@ Sentry.init({
     /Non-Error promise rejection captured/i,
     /ResizeObserver loop limit exceeded/i,
     /ResizeObserver loop completed with undelivered notifications/i,
+    // Google Maps Legacy Marker touch-event bug on Android
+    /Cannot read properties of null \(reading 'clientX'\)/i,
+    // Safari SW registration rejection (no details provided)
+    /^Rejected$/,
+    // Brave browser privacy protection injects __firefox__ variable
+    /__firefox__/i,
+    /Can't find variable: __firefox__/i,
+    // Transient PWA / workbox errors (offline, deploy, storage full)
+    /Failed to execute 'put' on 'Cache'/i,
+    /Cannot read properties of undefined \(reading 'waiting'\)/i,
+    // Browser extensions (MetaMask, wallets, ad blockers, VPNs)
+    /MetaMask/i,
+    /Cannot read properties of undefined \(reading 'M_ID'\)/i,
+    // Webpack chunk load failures during deployments
+    /ChunkLoadError/i,
+    /Loading chunk [\d]+ failed/i,
+  ],
+
+  // Deny errors originating from browser extensions injected into pages
+  denyUrls: [
+    /extensions\//i,
+    /^chrome-extension:\/\//i,
+    /^moz-extension:\/\//i,
+    /^safari-web-extension:\/\//i,
+    /executors\//i,
   ],
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
