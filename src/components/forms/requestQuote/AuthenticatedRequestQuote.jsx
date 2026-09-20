@@ -789,7 +789,7 @@ const AuthenticatedRequestQuote = ({
   };
 
   return (
-    <div className="px-4 py-8 mb-4 bg-white rounded-2xl w-[75%] mx-auto">
+    <div className="px-3 sm:px-4 py-6 md:py-8 mb-4 bg-white rounded-2xl w-[95%] lg:w-[75%] mx-auto">
       {showThanksMessage ? (
         <div className="centered w-fit p-2 border rounded-2xl mx-auto">
           <ThanksMessage />
@@ -800,7 +800,7 @@ const AuthenticatedRequestQuote = ({
             {t("links.requestQuote")} {t("common.trip")} : {tripData?.name}
           </h3>
 
-          <div className="p-4">
+          <div className="p-2 sm:p-4">
             <style jsx>{`
               .somar-placeholder input::placeholder,
               .somar-placeholder textarea::placeholder {
@@ -919,7 +919,7 @@ const AuthenticatedRequestQuote = ({
                   </h2>
                   {selectedOrganization && selectedOrganization.length > 0 && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                      <div className="somar-placeholder">
+                      <div className="somar-placeholder w-full min-w-0">
                         <SelectionGroup
                           name="organization"
                           label={t(
@@ -945,7 +945,7 @@ const AuthenticatedRequestQuote = ({
                           required={true}
                         />
                       </div>
-                      <div className="somar-placeholder">
+                      <div className="somar-placeholder w-full min-w-0">
                         <SelectionGroup
                           name="track"
                           value={values.track}
@@ -972,7 +972,7 @@ const AuthenticatedRequestQuote = ({
                   )}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Academic Stage */}
-                    <div className="somar-placeholder">
+                    <div className="somar-placeholder w-full min-w-0">
                       <SelectionGroup
                         name="academicStages"
                         value={values.academicStages}
@@ -1018,7 +1018,7 @@ const AuthenticatedRequestQuote = ({
                     </div>
 
                     {/* Grades */}
-                    <div className="somar-placeholder">
+                    <div className="somar-placeholder w-full min-w-0">
                       <SelectionGroup
                         name="grades"
                         value={values.grades}
@@ -1042,7 +1042,7 @@ const AuthenticatedRequestQuote = ({
                   {/* Row 2: Expected Participants and Services */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                     {/* Number of students (min) */}
-                    <div className="somar-placeholder flex flex-col gap-1">
+                    <div className="somar-placeholder w-full min-w-0 flex flex-col gap-1">
                       <TextInputGroup
                         type="number"
                         name="availableSeats"
@@ -1090,7 +1090,7 @@ const AuthenticatedRequestQuote = ({
                     </div>
 
                     {/* Total number of students */}
-                    <div className="somar-placeholder">
+                    <div className="somar-placeholder w-full min-w-0">
                       <TextInputGroup
                         type="number"
                         name="totalAvailableSeats"
@@ -1113,7 +1113,7 @@ const AuthenticatedRequestQuote = ({
                     </div>
 
                     {/* Services */}
-                    <div className="somar-placeholder">
+                    <div className="somar-placeholder w-full min-w-0">
                       <SelectionGroup
                         name="services"
                         value={values.services}
@@ -1130,7 +1130,7 @@ const AuthenticatedRequestQuote = ({
 
                     {/* Provider Branch Selector - aligned on the same line as services */}
                     {providerBranches.length > 1 && (
-                      <div className="somar-placeholder">
+                      <div className="somar-placeholder w-full min-w-0">
                         <SelectionGroup
                           name="providerBranch"
                           value={selectedBranch || values.providerBranch || ""}
@@ -1169,11 +1169,11 @@ const AuthenticatedRequestQuote = ({
                   {/* Row 3: Start Date and End Date  */}
                   {hasProviderSpecificDays ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                      <div className="relative min-w-[25%] flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
+                      <div className="relative w-full min-w-0 flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
                         <label className="font-medium capitalize font-somar">
                           {t("forms.customTrip.steps.trip_date.fields.day.label")}<span className="text-error">*</span>
                         </label>
-                        <div className="relative">
+                        <div className="relative w-full">
                           <input
                             type="date"
                             name="day"
@@ -1205,7 +1205,7 @@ const AuthenticatedRequestQuote = ({
                                 sortedEffectiveAvailableDays.length - 1
                               ] || ""
                             }
-                            className={`text-sm font-normal font-somar transition-all duration-200 ease-in-out p-4 pe-12 bg-white w-full rounded-lg outline-none border-2 cursor-pointer ${
+                            className={`text-sm font-normal font-somar transition-all duration-200 ease-in-out p-4 pe-12 bg-white w-full min-w-0 max-w-full box-border rounded-lg outline-none border-2 cursor-pointer ${
                               touched.day && errors.day
                                 ? "border-error focus:border-error hover:border-error"
                                 : "border-border focus:border-mainColor hover:border-mainColor"
@@ -1224,7 +1224,7 @@ const AuthenticatedRequestQuote = ({
                           </div>
                         )}
                       </div>
-                      <div className="somar-placeholder">
+                      <div className="somar-placeholder w-full min-w-0">
                         <SelectionGroup
                           name="slot"
                           value={values.slot}
@@ -1251,11 +1251,11 @@ const AuthenticatedRequestQuote = ({
                     /* Non-API integration: restricted dates + time range validation */
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                       {/* Day Input (restricted to available days) */}
-                      <div className="relative min-w-[25%] flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
+                      <div className="relative w-full min-w-0 flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out md:col-span-2">
                         <label className="font-medium capitalize font-somar">
                           {t("forms.customTrip.steps.trip_date.fields.day.label")}<span className="text-error">*</span>
                         </label>
-                        <div className="relative">
+                        <div className="relative w-full">
                           <input
                             type="date"
                             name="day"
@@ -1278,7 +1278,7 @@ const AuthenticatedRequestQuote = ({
                             }}
                             min={sortedEffectiveAvailableDays?.[0] || ""}
                             max={sortedEffectiveAvailableDays?.[sortedEffectiveAvailableDays.length - 1] || ""}
-                            className={`text-sm font-normal font-somar transition-all duration-200 ease-in-out p-4 pe-12 bg-white w-full rounded-lg outline-none border-2 cursor-pointer ${
+                            className={`text-sm font-normal font-somar transition-all duration-200 ease-in-out p-4 pe-12 bg-white w-full min-w-0 max-w-full box-border rounded-lg outline-none border-2 cursor-pointer ${
                               touched.day && errors.day
                                 ? "border-error focus:border-error hover:border-error"
                                 : "border-border focus:border-mainColor hover:border-mainColor"
@@ -1299,7 +1299,7 @@ const AuthenticatedRequestQuote = ({
                       </div>
 
                       {/* From Hour */}
-                      <div className="somar-placeholder">
+                      <div className="somar-placeholder w-full min-w-0">
                         <TextInputGroup
                           label={t("forms.customTrip.steps.trip_date.fields.from_hour.label")}
                           type="time"
@@ -1310,7 +1310,11 @@ const AuthenticatedRequestQuote = ({
                           onChange={handleChange}
                           onBlur={handleBlur}
                           style={{ cursor: "pointer" }}
-                          onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                          onClick={(e) => {
+                            try {
+                              if (e.target.showPicker) e.target.showPicker();
+                            } catch {}
+                          }}
                           labelFontFamily="var(--font-somar-sans), sans-serif"
                           required={true}
                           disabled={!values.day}
@@ -1336,7 +1340,7 @@ const AuthenticatedRequestQuote = ({
                       </div>
 
                       {/* To Hour */}
-                      <div className="somar-placeholder">
+                      <div className="somar-placeholder w-full min-w-0">
                         <TextInputGroup
                           label={t("forms.customTrip.steps.trip_date.fields.to_hour.label")}
                           type="time"
@@ -1347,7 +1351,11 @@ const AuthenticatedRequestQuote = ({
                           onChange={handleChange}
                           onBlur={handleBlur}
                           style={{ cursor: "pointer" }}
-                          onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                          onClick={(e) => {
+                            try {
+                              if (e.target.showPicker) e.target.showPicker();
+                            } catch {}
+                          }}
                           labelFontFamily="var(--font-somar-sans), sans-serif"
                           disabled={!values.day}
                         />
@@ -1356,7 +1364,7 @@ const AuthenticatedRequestQuote = ({
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                       {/* Proposed Trip Date */}
-                      <div className="somar-placeholder">
+                      <div className="somar-placeholder w-full min-w-0">
                         <TextInputGroup
                           label={t(
                             "forms.customTrip.proposedTripDate.startLabel"
@@ -1390,14 +1398,16 @@ const AuthenticatedRequestQuote = ({
                             return {};
                           })()}
                           style={{ cursor: "pointer" }}
-                          onClick={(e) =>
-                            e.target.showPicker && e.target.showPicker()
-                          }
+                          onClick={(e) => {
+                            try {
+                              if (e.target.showPicker) e.target.showPicker();
+                            } catch {}
+                          }}
                           labelFontFamily="var(--font-somar-sans), sans-serif"
                           required={true}
                         />
                       </div>
-                      <div className="somar-placeholder">
+                      <div className="somar-placeholder w-full min-w-0">
                         <TextInputGroup
                           label={t(
                             "forms.customTrip.proposedTripDate.endLabel"
@@ -1434,9 +1444,11 @@ const AuthenticatedRequestQuote = ({
                             return { min: formatDateForInput(today) };
                           })()}
                           style={{ cursor: "pointer" }}
-                          onClick={(e) =>
-                            e.target.showPicker && e.target.showPicker()
-                          }
+                          onClick={(e) => {
+                            try {
+                              if (e.target.showPicker) e.target.showPicker();
+                            } catch {}
+                          }}
                           labelFontFamily="var(--font-somar-sans), sans-serif"
                         />
                         {/* Helper text for end date validation */}
@@ -1452,7 +1464,7 @@ const AuthenticatedRequestQuote = ({
                   )}
 
                   {/* Special Requirements */}
-                  <div className="somar-placeholder md:col-span-2 mt-6">
+                  <div className="somar-placeholder w-full min-w-0 md:col-span-2 mt-6">
                     <TextInputGroup
                       type="text"
                       name="specialRequirements"

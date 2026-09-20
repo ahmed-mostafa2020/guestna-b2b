@@ -34,6 +34,7 @@ const TextInputGroup = memo(
     nationalIdImageError,
     imageError,
     readOnly = false,
+    disabled = false,
     style,
     onClick,
     min,
@@ -62,14 +63,14 @@ const TextInputGroup = memo(
     const isSomarInput = inputClassName?.includes("font-somar");
 
     return (
-      <div className="relative min-w-[25%] flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
+      <div className="relative w-full min-w-0 flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
         {label && (
           <label
             htmlFor={name}
             className={cn(
               "font-medium capitalize",
               labelClassName ? labelClassName : "font-ibm",
-              readOnly && "text-textLight"
+              (readOnly || disabled) && "text-textLight"
             )}
             style={{ fontFamily: effectiveFontFamily && effectiveFontFamily }}
           >
@@ -78,12 +79,13 @@ const TextInputGroup = memo(
           </label>
         )}
 
-        <div className="relative">
+        <div className="relative w-full">
           {textarea ? (
             <textarea
               className={cn(
-                "text-sm resize-none font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full  rounded-lg outline-none placeholder:font-normal placeholder:text-base placeholder:text-textLight selection:bg-buttonsHover",
+                "text-sm resize-none font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full min-w-0 max-w-full box-border rounded-lg outline-none placeholder:font-normal placeholder:text-base placeholder:text-textLight selection:bg-buttonsHover",
                 readOnly && "cursor-not-allowed opacity-50",
+                disabled && "cursor-not-allowed opacity-60 bg-gray-50",
                 textAlign && `text-${textAlign}`,
                 border && "border-2",
                 touched && errors && border
@@ -108,18 +110,21 @@ const TextInputGroup = memo(
               rows={rows}
               placeholder={placeholder}
               readOnly={readOnly}
+              disabled={disabled}
             />
           ) : (
             <input
               className={cn(
-                "text-sm font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full rounded-lg outline-none placeholder:font-normal placeholder:text-sm placeholder:text-textLight selection:bg-buttonsHover ",
+                "text-sm font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full min-w-0 max-w-full box-border rounded-lg outline-none placeholder:font-normal placeholder:text-sm placeholder:text-textLight selection:bg-buttonsHover ",
                 readOnly && "cursor-not-allowed opacity-90",
+                disabled && "cursor-not-allowed opacity-60 bg-gray-50",
                 textAlign && `text-${textAlign}`,
                 border && "border-2",
                 touched && errors && border
                   ? "border-error focus:border-error hover:border-error"
                   : "border-border focus:border-mainColor hover:border-mainColor",
-                type === "date" && "cursor-pointer pe-12",
+                (type === "date" || type === "time") && "cursor-pointer",
+                type === "date" && "pe-12",
                 inputClassName,
                 isSomarInput && "placeholder:font-somar"
               )}
@@ -146,14 +151,19 @@ const TextInputGroup = memo(
               onKeyDown={onKeyDown}
               onPaste={onPaste}
               onClick={(e) => {
-                if (type === "date" && e.target.showPicker) {
+                if (onClick) {
+                  try {
+                    onClick(e);
+                  } catch (err) {
+                    // Ignore showPicker gesture error or caller error
+                  }
+                } else if ((type === "date" || type === "time") && e.target.showPicker) {
                   try {
                     e.target.showPicker();
                   } catch (err) {
-                    console.error("Failed to show picker:", err);
+                    // Ignore showPicker gesture error
                   }
                 }
-                if (onClick) onClick(e);
               }}
               placeholder={placeholder}
               autoComplete={
@@ -168,6 +178,7 @@ const TextInputGroup = memo(
               min={min}
               max={max}
               readOnly={readOnly}
+              disabled={disabled}
             />
           )}
 
