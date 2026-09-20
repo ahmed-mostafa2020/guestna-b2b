@@ -1786,6 +1786,8 @@
       "bookings": {
         "title": "Trips List",
         "header": {
+          "createdAt": "Creation Time",
+          "creationTime": "Creation Time",
           "schoolName": "School Name",
           "orderId": "Order ID",
           "tripType": "Trip Type",

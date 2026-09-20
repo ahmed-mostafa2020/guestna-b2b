@@ -1797,6 +1797,8 @@
       "bookings": {
         "title": "قائمة الرحلات",
         "header": {
+          "createdAt": "وقت الإنشاء",
+          "creationTime": "وقت الإنشاء",
           "schoolName": "اسم المدرسة",
           "orderId": "رقم الطلب",
           "tripType": "نوع الرحلة",
