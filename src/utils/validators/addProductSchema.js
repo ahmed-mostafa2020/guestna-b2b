@@ -141,7 +141,7 @@ export const createAddProductSchema = (t) => {
             }),
             price: Yup.mixed().when("day", {
               is: (val) => Boolean(val && String(val).trim()),
-              then: (schema) =>
+              then: () =>
                 Yup.number()
                   .typeError(reqMsg)
                   .min(0, reqMsg)
@@ -168,7 +168,7 @@ export const createAddProductSchema = (t) => {
             }),
             price: Yup.mixed().when("date", {
               is: (val) => Boolean(val && String(val).trim()),
-              then: (schema) =>
+              then: () =>
                 Yup.number()
                   .typeError(reqMsg)
                   .min(0, reqMsg)

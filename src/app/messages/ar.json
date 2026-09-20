@@ -356,6 +356,108 @@
       "title": "أداء الإيرادات الشهرية",
       "label": "إجمالي الإيرادات"
     },
+    "home": {
+      "cards": {
+        "pendingRequests": "طلبات بانتظار الموافقة",
+        "todayTrips": "رحلات اليوم",
+        "nearestTrip": "موعد أقرب حجز",
+        "onHoldRequests": "طلبات متأخرة"
+      },
+      "wallet": {
+        "title": "المحفظة المالية",
+        "availableBalance": "الرصيد المتاح",
+        "totalBalance": "الرصيد الإجمالي",
+        "pendingBalance": "قيد الإنتظار",
+        "totalRevenue": "إجمالي الإيرادات",
+        "operations": "العمليات",
+        "transfer": "تحويل"
+      },
+      "analytics": {
+        "title": "تحليلات الأداء",
+        "bookingStats": "إحصائيات الحجوزات",
+        "b2bTrips": "حجوزات المؤسسات",
+        "b2cTrips": "حجوزات الأفراد",
+        "totalTrips": "إجمالي الحجوزات",
+        "scheduledTrips": "حجوزات مجدولة",
+        "actualTrips": "الرحلات المنفذة",
+        "scheduledLabel": "المجدولة",
+        "targetSales": "المبيعات المستهدفة",
+        "actualSales": "المبيعات الفعلية",
+        "monthGrowth": "8.5% فى ارتفاع هذا الشهر",
+        "monthDecline": "8.5% فى انخفاض هذا الشهر",
+        "growthRateUp": "{rate}% فى ارتفاع هذا الشهر",
+        "growthRateDown": "{rate}% فى انخفاض هذا الشهر"
+      },
+      "calendar": {
+        "title": "الجدول الزمني",
+        "prevMonth": "الشهر السابق",
+        "nextMonth": "الشهر التالي",
+        "sun": "الأحد",
+        "mon": "الاثنين",
+        "tue": "الثلاثاء",
+        "wed": "الأربعاء",
+        "thu": "الخميس",
+        "fri": "الجمعة",
+        "sat": "السبت"
+      },
+      "recentActivities": {
+        "title": "آخر النشاطات",
+        "viewAll": "عرض جميع الأنشطة",
+        "bookingNumber": "رقم الحجز",
+        "branch": "الفرع",
+        "school": "المؤسسة التعليمية",
+        "visitors": "عدد الزوار",
+        "students": "طالب",
+        "stage": "المرحلة الدراسية",
+        "multipleStages": "متعددة المراحل",
+        "city": "المدينة",
+        "seats": "المقاعد",
+        "noTrips": "لا توجد رحلات في هذا التاريخ"
+      },
+      "bookingsTable": {
+        "title": "متابعة جميع الحجوزات",
+        "filterHint": "تصفية النتائج",
+        "viewDetails": "عرض التفاصيل",
+        "columns": {
+          "orderId": "رقم الطلب",
+          "client": "العميل",
+          "product": "المنتج",
+          "orderType": "نوع الطلب",
+          "orderDate": "تاريخ الطلب",
+          "budget": "الميزانية",
+          "status": "الحالة",
+          "action": "الإجراءات"
+        },
+        "filters": {
+          "all": "جميع الحجوزات",
+          "b2b": "طلبات المدارس b2b",
+          "b2c": "طلبات الأفراد b2c",
+          "allStatuses": "كل الحالات",
+          "allTimes": "كل الأوقات",
+          "allTypes": "كل الأنواع"
+        },
+        "statuses": {
+          "PENDING": "قيد المعالجة",
+          "PENDING_COMPANY_APPROVAL": "قيد التأكيد",
+          "PENDING_CLIENT_REVIEW": "قيد مراجعة العميل",
+          "PENDING_PROVIDER_APPROVAL": "بانتظار موافقة المزود",
+          "ON_HOLD": "قيد الانتظار",
+          "SCHEDULED": "مجدولة",
+          "DONE": "مكتملة",
+          "CANCELLED": "ملغاة",
+          "CANCLED": "ملغاة",
+          "REJECTED": "مرفوضة",
+          "APPROVED": "موافق عليه",
+          "ENDED": "منتهية",
+          "PARTIALLY_PAID": "مدفوع جزئياً",
+          "REFUNDED": "مسترد"
+        },
+        "types": {
+          "TRIP": "طلبات من سوق جستنا",
+          "CUSTOM_TRIP": "طلبات الأنشطة المخصصة"
+        }
+      }
+    },
     "products": {
       "title": "إدارة المنتجات والأنشطة",
       "headerTitle": "إدارة المنتجات",

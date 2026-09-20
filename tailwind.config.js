@@ -58,6 +58,13 @@ module.exports = {
     "border-slate-600",
     "border-fuchsia-600",
     "border-gray-600",
+    // Status badge classes (dynamically composed in ProviderBookingsTable)
+    "bg-status-success-bg", "text-status-success-fg", "border-status-success-border",
+    "bg-status-warning-bg", "text-status-warning-fg", "border-status-warning-border",
+    "bg-status-info-bg", "text-status-info-fg", "border-status-info-border",
+    "bg-status-hold-bg", "text-status-hold-fg", "border-status-hold-border",
+    "bg-status-danger-bg", "text-status-danger-fg", "border-status-danger-border",
+    "bg-status-neutral-bg", "text-status-neutral-fg", "border-status-neutral-border",
   ],
   theme: {
     extend: {

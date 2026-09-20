@@ -349,6 +349,108 @@
       "title": "Monthly Revenue Performance",
       "label": "Total Revenue"
     },
+    "home": {
+      "cards": {
+        "pendingRequests": "Pending Approval Requests",
+        "todayTrips": "Today's Trips",
+        "nearestTrip": "Nearest Booking Date",
+        "onHoldRequests": "Overdue Requests"
+      },
+      "wallet": {
+        "title": "Financial Wallet",
+        "availableBalance": "Available Balance",
+        "totalBalance": "Total Balance",
+        "pendingBalance": "Pending",
+        "totalRevenue": "Total Revenue",
+        "operations": "Operations",
+        "transfer": "Transfer"
+      },
+      "analytics": {
+        "title": "Performance Analytics",
+        "bookingStats": "Booking Statistics",
+        "b2bTrips": "Organization Bookings",
+        "b2cTrips": "Individual Bookings",
+        "totalTrips": "Total Bookings",
+        "scheduledTrips": "Scheduled Bookings",
+        "actualTrips": "Actual Trips",
+        "scheduledLabel": "Scheduled",
+        "targetSales": "Target Sales",
+        "actualSales": "Actual Sales",
+        "monthGrowth": "8.5% increase this month",
+        "monthDecline": "8.5% decrease this month",
+        "growthRateUp": "{rate}% increase this month",
+        "growthRateDown": "{rate}% decrease this month"
+      },
+      "calendar": {
+        "title": "Timeline",
+        "prevMonth": "Previous Month",
+        "nextMonth": "Next Month",
+        "sun": "Sun",
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat"
+      },
+      "recentActivities": {
+        "title": "Recent Activities",
+        "viewAll": "View All Activities",
+        "bookingNumber": "Booking No.",
+        "branch": "Branch",
+        "school": "Educational Institution",
+        "visitors": "Visitors",
+        "students": "students",
+        "stage": "Academic Stage",
+        "multipleStages": "Multiple Stages",
+        "city": "City",
+        "seats": "Seats",
+        "noTrips": "No trips on this date"
+      },
+      "bookingsTable": {
+        "title": "Track All Bookings",
+        "filterHint": "Filter Results",
+        "viewDetails": "View Details",
+        "columns": {
+          "orderId": "Order ID",
+          "client": "Client",
+          "product": "Product",
+          "orderType": "Order Type",
+          "orderDate": "Order Date",
+          "budget": "Budget",
+          "status": "Status",
+          "action": "Action"
+        },
+        "filters": {
+          "all": "All Bookings",
+          "b2b": "B2B School Requests",
+          "b2c": "B2C Individual Requests",
+          "allStatuses": "All Statuses",
+          "allTimes": "All Times",
+          "allTypes": "All Types"
+        },
+        "statuses": {
+          "PENDING": "Processing",
+          "PENDING_COMPANY_APPROVAL": "Pending Confirmation",
+          "PENDING_CLIENT_REVIEW": "Pending Client Review",
+          "PENDING_PROVIDER_APPROVAL": "Pending Provider Approval",
+          "ON_HOLD": "On Hold",
+          "SCHEDULED": "Scheduled",
+          "DONE": "Completed",
+          "CANCELLED": "Cancelled",
+          "CANCLED": "Cancelled",
+          "REJECTED": "Rejected",
+          "APPROVED": "Approved",
+          "ENDED": "Ended",
+          "PARTIALLY_PAID": "Partially Paid",
+          "REFUNDED": "Refunded"
+        },
+        "types": {
+          "TRIP": "Marketplace Requests",
+          "CUSTOM_TRIP": "Custom Activity Requests"
+        }
+      }
+    },
     "products": {
       "title": "Products & Activities Management",
       "headerTitle": "Products Management",
