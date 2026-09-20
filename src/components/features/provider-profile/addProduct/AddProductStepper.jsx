@@ -69,9 +69,11 @@ const AddProductStepper = ({
         {PRODUCT_STEPS.map((step, index) => {
           const isActive = currentStep === step.id;
           const isCompleted = isCompletedStep(step.id);
-          const isClickable = Boolean(
-            onStepClick && (isCompleted || isActive || step.id === 1 || step.id === 9)
-          );
+          // TEMPORARY (for testing): allow clicking any step freely
+          const isClickable = Boolean(onStepClick);
+          // const isClickable = Boolean(
+          //   onStepClick && (isCompleted || isActive || step.id === 1 || step.id === 9)
+          // );
 
           return (
             <div key={step.id} className="flex items-center flex-1 last:flex-none">

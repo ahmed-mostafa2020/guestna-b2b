@@ -1,4 +1,8 @@
 import * as Yup from "yup";
+import {
+  ARABIC_LETTERS_REGEX,
+  ENGLISH_LETTERS_REGEX,
+} from "./addProductStepSchema";
 
 /**
  * Yup schema generator for Add Product form
@@ -190,8 +194,24 @@ export const createAddProductSchema = (t) => {
         Yup.object().shape({
           service: Yup.string().optional(),
           note: Yup.object().shape({
-            en: Yup.string().optional(),
-            ar: Yup.string().optional(),
+            en: Yup.string()
+              .trim()
+              .test("is-en-valid", "Please use English letters only", (val) => {
+                if (!val || val.trim() === "") return true;
+                return (
+                  ENGLISH_LETTERS_REGEX.test(val) && !ARABIC_LETTERS_REGEX.test(val)
+                );
+              })
+              .optional(),
+            ar: Yup.string()
+              .trim()
+              .test("is-ar-valid", "يرجى استخدام الحروف العربية فقط", (val) => {
+                if (!val || val.trim() === "") return true;
+                return (
+                  ARABIC_LETTERS_REGEX.test(val) && !ENGLISH_LETTERS_REGEX.test(val)
+                );
+              })
+              .optional(),
           }),
         })
       )
@@ -232,26 +252,108 @@ export const createAddProductSchema = (t) => {
         Yup.object().shape({
           day: Yup.number().optional(),
           toDo: Yup.object().shape({
-            en: Yup.string().optional(),
-            ar: Yup.string().optional(),
+            en: Yup.string()
+              .trim()
+              .test("is-en-valid", "Please use English letters only", (val) => {
+                if (!val || val.trim() === "") return true;
+                return (
+                  ENGLISH_LETTERS_REGEX.test(val) && !ARABIC_LETTERS_REGEX.test(val)
+                );
+              })
+              .optional(),
+            ar: Yup.string()
+              .trim()
+              .test("is-ar-valid", "يرجى استخدام الحروف العربية فقط", (val) => {
+                if (!val || val.trim() === "") return true;
+                return (
+                  ARABIC_LETTERS_REGEX.test(val) && !ENGLISH_LETTERS_REGEX.test(val)
+                );
+              })
+              .optional(),
           }),
         })
       )
       .optional(),
 
     mustHaveItems: Yup.object().shape({
-      en: Yup.array().of(Yup.string()).optional(),
-      ar: Yup.array().of(Yup.string()).optional(),
+      en: Yup.array()
+        .of(
+          Yup.string()
+            .trim()
+            .test("is-en-valid", "Please use English letters only", (val) => {
+              if (!val || val.trim() === "") return true;
+              return (
+                ENGLISH_LETTERS_REGEX.test(val) && !ARABIC_LETTERS_REGEX.test(val)
+              );
+            })
+        )
+        .optional(),
+      ar: Yup.array()
+        .of(
+          Yup.string()
+            .trim()
+            .test("is-ar-valid", "يرجى استخدام الحروف العربية فقط", (val) => {
+              if (!val || val.trim() === "") return true;
+              return (
+                ARABIC_LETTERS_REGEX.test(val) && !ENGLISH_LETTERS_REGEX.test(val)
+              );
+            })
+        )
+        .optional(),
     }),
 
     exemptedFromTrip: Yup.object().shape({
-      en: Yup.array().of(Yup.string()).optional(),
-      ar: Yup.array().of(Yup.string()).optional(),
+      en: Yup.array()
+        .of(
+          Yup.string()
+            .trim()
+            .test("is-en-valid", "Please use English letters only", (val) => {
+              if (!val || val.trim() === "") return true;
+              return (
+                ENGLISH_LETTERS_REGEX.test(val) && !ARABIC_LETTERS_REGEX.test(val)
+              );
+            })
+        )
+        .optional(),
+      ar: Yup.array()
+        .of(
+          Yup.string()
+            .trim()
+            .test("is-ar-valid", "يرجى استخدام الحروف العربية فقط", (val) => {
+              if (!val || val.trim() === "") return true;
+              return (
+                ARABIC_LETTERS_REGEX.test(val) && !ENGLISH_LETTERS_REGEX.test(val)
+              );
+            })
+        )
+        .optional(),
     }),
 
     benefits: Yup.object().shape({
-      en: Yup.array().of(Yup.string()).optional(),
-      ar: Yup.array().of(Yup.string()).optional(),
+      en: Yup.array()
+        .of(
+          Yup.string()
+            .trim()
+            .test("is-en-valid", "Please use English letters only", (val) => {
+              if (!val || val.trim() === "") return true;
+              return (
+                ENGLISH_LETTERS_REGEX.test(val) && !ARABIC_LETTERS_REGEX.test(val)
+              );
+            })
+        )
+        .optional(),
+      ar: Yup.array()
+        .of(
+          Yup.string()
+            .trim()
+            .test("is-ar-valid", "يرجى استخدام الحروف العربية فقط", (val) => {
+              if (!val || val.trim() === "") return true;
+              return (
+                ARABIC_LETTERS_REGEX.test(val) && !ENGLISH_LETTERS_REGEX.test(val)
+              );
+            })
+        )
+        .optional(),
     }),
   });
 };

@@ -8,6 +8,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { KeyboardArrowDown } from "@mui/icons-material";
+import { cn } from "@utils/helpers/cn";
 
 const SelectionGroup = ({
   name,
@@ -27,11 +28,12 @@ const SelectionGroup = ({
   required = false, // Show asterisk for required fields
   errorBorder = false, // Show red border only, without error message
   border = "2px solid var(--color-border)", // Custom border style
+  className = "",
 }) => {
   return (
     <FormControl
       error={errorBorder || (touched && Boolean(errors))}
-      className="relative w-full"
+      className={cn("relative w-full flex flex-col gap-2", className)}
     >
       {label && (
         <label
@@ -115,6 +117,12 @@ const SelectionGroup = ({
           "& .MuiSelect-select": {
             paddingInlineEnd: "40px !important",
             paddingInlineStart: "14px !important",
+            paddingTop: "0px !important",
+            paddingBottom: "0px !important",
+            height: "52px !important",
+            minHeight: "52px !important",
+            display: "flex !important",
+            alignItems: "center !important",
             border: border,
             borderRadius: "8px",
             width: "100%",

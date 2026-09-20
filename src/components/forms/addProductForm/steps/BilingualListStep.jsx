@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormikContext, FieldArray } from "formik";
+import { useFormikContext, FieldArray, getIn } from "formik";
 import { useTranslations } from "next-intl";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import AddIcon from "@mui/icons-material/Add";
@@ -32,7 +32,21 @@ const BilingualListStep = ({
   addButtonKey,
 }) => {
   const t = useTranslations("providerProfile.products.modal");
-  const { values, handleChange, handleBlur } = useFormikContext();
+  const { values, errors, touched, handleChange, handleBlur } = useFormikContext();
+
+  const getFieldErrorState = (path) => {
+    const error = getIn(errors, path);
+    const isTouched = getIn(touched, path);
+    const val = getIn(values, path);
+    return {
+      error: typeof error === "string" ? error : undefined,
+      showError: Boolean(
+        error &&
+          (isTouched ||
+            (typeof val === "string" && val.trim().length > 0))
+      ),
+    };
+  };
 
   const enList = values[fieldName]?.en || [""];
   const arList = values[fieldName]?.ar || [""];
@@ -49,62 +63,71 @@ const BilingualListStep = ({
           <FieldArray name={`${fieldName}.ar`}>
             {({ push: pushAr, remove: removeAr }) => (
               <div className="space-y-4">
-                {enList.map((_, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-50/60 p-4 rounded-2xl border border-border space-y-3"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-titleColor">
-                        {t(itemLabelKey, { num: index + 1 })}
-                      </span>
+                {enList.map((_, index) => {
+                  const enState = getFieldErrorState(`${fieldName}.en[${index}]`);
+                  const arState = getFieldErrorState(`${fieldName}.ar[${index}]`);
 
-                      {enList.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            removeEn(index);
-                            removeAr(index);
-                          }}
-                          className="p-1 text-error hover:bg-error/10 rounded transition-colors text-xs flex items-center gap-1 font-semibold"
-                        >
-                          <DeleteOutlineIcon className="w-4 h-4" />
-                          {t("fields.removeItem")}
-                        </button>
-                      )}
-                    </div>
+                  return (
+                    <div
+                      key={index}
+                      className="bg-gray-50/60 p-4 rounded-2xl border border-border space-y-3"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-titleColor">
+                          {t(itemLabelKey, { num: index + 1 })}
+                        </span>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div>
-                        <label className="block mb-1 text-xs font-semibold text-gray-600">
-                          {t(enLabelKey)}
-                        </label>
-                        <TextInputGroup
-                          type="text"
-                          name={`${fieldName}.en[${index}]`}
-                          value={enList[index] || ""}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          placeholder={t(enPlaceholderKey)}
-                        />
+                        {enList.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              removeEn(index);
+                              removeAr(index);
+                            }}
+                            className="p-1 text-error hover:bg-error/10 rounded transition-colors text-xs flex items-center gap-1 font-semibold"
+                          >
+                            <DeleteOutlineIcon className="w-4 h-4" />
+                            {t("fields.removeItem")}
+                          </button>
+                        )}
                       </div>
 
-                      <div>
-                        <label className="block mb-1 text-xs font-semibold text-gray-600">
-                          {t(arLabelKey)}
-                        </label>
-                        <TextInputGroup
-                          type="text"
-                          name={`${fieldName}.ar[${index}]`}
-                          value={arList[index] || ""}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          placeholder={t(arPlaceholderKey)}
-                        />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-2">
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600">
+                            {t(enLabelKey)}
+                          </label>
+                          <TextInputGroup
+                            type="text"
+                            name={`${fieldName}.en[${index}]`}
+                            value={enList[index] || ""}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            touched={enState.showError}
+                            errors={enState.error}
+                            placeholder={t(enPlaceholderKey)}
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600">
+                            {t(arLabelKey)}
+                          </label>
+                          <TextInputGroup
+                            type="text"
+                            name={`${fieldName}.ar[${index}]`}
+                            value={arList[index] || ""}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            touched={arState.showError}
+                            errors={arState.error}
+                            placeholder={t(arPlaceholderKey)}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
 
                 <button
                   type="button"

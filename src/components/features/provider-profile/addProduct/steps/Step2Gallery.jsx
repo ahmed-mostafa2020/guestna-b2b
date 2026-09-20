@@ -6,7 +6,10 @@ import { useTranslations, useLocale } from "next-intl";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import OndemandVideoOutlinedIcon from "@mui/icons-material/OndemandVideoOutlined";
+import CircularProgress from "@mui/material/CircularProgress";
 import { cn } from "@utils/helpers/cn";
+import { compressVideo } from "@utils/helpers/compressVideo";
+import { compressImage } from "@utils/helpers/compressImage";
 
 /**
  * YouTube SVG Icon
@@ -92,6 +95,8 @@ const Step2Gallery = () => {
   const showGalleryError = Boolean(galleryError && galleryTouched);
 
   const [videoFileError, setVideoFileError] = useState("");
+  const [isCompressingVideo, setIsCompressingVideo] = useState(false);
+  const [compressionProgress, setCompressionProgress] = useState(0);
   const videoError = getIn(errors, "video") || videoFileError;
   const videoTouched = getIn(touched, "video");
   const showVideoError = Boolean(videoError && (videoTouched || videoFileError));
@@ -99,6 +104,11 @@ const Step2Gallery = () => {
   const youtubeError = getIn(errors, "youtubeUrl");
   const youtubeTouched = getIn(touched, "youtubeUrl");
   const showYoutubeError = Boolean(youtubeError && youtubeTouched);
+
+  const hasVideoFile = Boolean(values.video);
+  const hasYoutubeUrl = Boolean(
+    values.youtubeUrl && String(values.youtubeUrl).trim().length > 0
+  );
 
   // Extract YouTube video ID for embedded player preview
   const youtubeVideoId = useMemo(
@@ -117,7 +127,8 @@ const Step2Gallery = () => {
     return [];
   }, [values.gallary, values.gallery]);
 
-  // Video preview management
+  // Image compression state
+  const [isCompressingImage, setIsCompressingImage] = useState(false);
   const [videoPreview, setVideoPreview] = useState("");
   const [videoMetadata, setVideoMetadata] = useState({ name: "", size: 0 });
 
@@ -143,15 +154,15 @@ const Step2Gallery = () => {
     };
   }, [values.video]);
 
-  // Handle single video upload (max 50MB, mp4/webm/mov/ogg)
-  const handleVideoUpload = (e) => {
+  // Handle single video upload (max 20MB, auto-compress if 12MB-40MB, mp4/webm/mov/ogg)
+  const handleVideoUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const maxSize = 50 * 1024 * 1024;
-    if (file.size > maxSize) {
+    const absoluteLimit = 40 * 1024 * 1024;
+    if (file.size > absoluteLimit) {
       setVideoFileError(
-        t("videoSizeError") || "Video size must not exceed 50MB"
+        t("videoSizeLimit") || "Video size must not exceed 20MB (please use YouTube link for larger videos)"
       );
       e.target.value = "";
       return;
@@ -172,9 +183,40 @@ const Step2Gallery = () => {
       return;
     }
 
+    let processedFile = file;
+
+    // Auto-compress if file is between 12MB and 40MB
+    if (file.size > 12 * 1024 * 1024) {
+      setIsCompressingVideo(true);
+      setCompressionProgress(0);
+      try {
+        processedFile = await compressVideo(file, {
+          maxDimension: 720,
+          targetBitrate: 1000000,
+          onProgress: (pct) => setCompressionProgress(pct),
+        });
+      } catch (err) {
+        console.warn("Video compression error, fallback to original:", err);
+      } finally {
+        setIsCompressingVideo(false);
+      }
+    }
+
+    const maxSize = 20 * 1024 * 1024; // 20MB limit
+    if (processedFile.size > maxSize) {
+      setVideoFileError(
+        t("videoSizeLimit") || "Video size must not exceed 20MB (please use YouTube link for larger videos)"
+      );
+      e.target.value = "";
+      return;
+    }
+
     setVideoFileError("");
-    setFieldValue("video", file, true);
+    setFieldValue("video", processedFile, true);
     setFieldTouched("video", true, false);
+    // User can only upload a video file OR add a YouTube URL, not both
+    setFieldValue("youtubeUrl", "", true);
+    setFieldTouched("youtubeUrl", false, false);
     e.target.value = "";
   };
 
@@ -228,14 +270,25 @@ const Step2Gallery = () => {
     };
   }, [galleryItems]);
 
-  // Handle single cover image upload with validation
-  const handleCoverUpload = (e) => {
+  // Handle single cover image upload with validation + compression
+  const handleCoverUpload = async (e) => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
-      setFieldValue("thumbnail", file);
-      setFieldValue("thumbnailWeb", file);
-      setFieldTouched("thumbnail", true, false);
-      setFieldTouched("thumbnailWeb", true, false);
+      setIsCompressingImage(true);
+      try {
+        const compressed = await compressImage(file, { maxWidthOrHeight: 1920, quality: 0.8, maxSizeMB: 1 });
+        setFieldValue("thumbnail", compressed);
+        setFieldValue("thumbnailWeb", compressed);
+        setFieldTouched("thumbnail", true, false);
+        setFieldTouched("thumbnailWeb", true, false);
+      } catch (_) {
+        setFieldValue("thumbnail", file);
+        setFieldValue("thumbnailWeb", file);
+        setFieldTouched("thumbnail", true, false);
+        setFieldTouched("thumbnailWeb", true, false);
+      } finally {
+        setIsCompressingImage(false);
+      }
     }
     e.target.value = "";
   };
@@ -249,8 +302,8 @@ const Step2Gallery = () => {
     setFieldTouched("thumbnailWeb", true, false);
   };
 
-  // Handle multiple gallery upload (min 4, max 15) with validation
-  const handleGalleryUpload = (e) => {
+  // Handle multiple gallery upload (min 4, max 15) with validation + compression
+  const handleGalleryUpload = async (e) => {
     const files = Array.from(e.target.files || []).filter((f) =>
       f.type.startsWith("image/")
     );
@@ -258,11 +311,21 @@ const Step2Gallery = () => {
       const remainingAllowed = 15 - galleryItems.length;
       if (remainingAllowed > 0) {
         const addedFiles = files.slice(0, remainingAllowed);
-        const nextList = [...galleryItems, ...addedFiles];
-        setFieldValue("gallary", nextList);
-        setFieldValue("gallery", nextList);
-        setFieldTouched("gallary", true, false);
-        setFieldTouched("gallery", true, false);
+        setIsCompressingImage(true);
+        try {
+          const compressedFiles = await Promise.all(
+            addedFiles.map((f) =>
+              compressImage(f, { maxWidthOrHeight: 1920, quality: 0.8, maxSizeMB: 1 }).catch(() => f)
+            )
+          );
+          const nextList = [...galleryItems, ...compressedFiles];
+          setFieldValue("gallary", nextList);
+          setFieldValue("gallery", nextList);
+          setFieldTouched("gallary", true, false);
+          setFieldTouched("gallery", true, false);
+        } finally {
+          setIsCompressingImage(false);
+        }
       }
     }
     e.target.value = "";
@@ -368,9 +431,17 @@ const Step2Gallery = () => {
           <button
             type="button"
             onClick={() => coverInputRef.current?.click()}
-            className="w-full h-[44px] rounded-lg border-2 border-mainColor text-textDark hover:bg-mainColor/10 font-ibm text-base font-bold flex items-center justify-center cursor-pointer transition-colors duration-200 select-none"
+            disabled={isCompressingImage}
+            className="w-full h-[44px] rounded-lg border-2 border-mainColor text-textDark hover:bg-mainColor/10 font-ibm text-base font-bold flex items-center justify-center cursor-pointer transition-colors duration-200 select-none disabled:opacity-60 disabled:cursor-not-allowed gap-2"
           >
-            {coverPreview ? t("changeImageBtn") : t("uploadImageBtn")}
+            {isCompressingImage ? (
+              <>
+                <CircularProgress size={16} color="inherit" />
+                <span className="text-sm">{t("compressingImage") || "جاري ضغط الصورة..."}</span>
+              </>
+            ) : (
+              coverPreview ? t("changeImageBtn") : t("uploadImageBtn")
+            )}
           </button>
           <input
             ref={coverInputRef}
@@ -575,19 +646,47 @@ const Step2Gallery = () => {
                 </div>
               </div>
             </div>
+          ) : isCompressingVideo ? (
+            <div className="w-full p-4 rounded-xl border border-mainColor/30 bg-mainColor/5 flex flex-col items-center justify-center gap-2.5">
+              <div className="flex items-center gap-2 text-mainColor font-somar font-bold text-sm">
+                <CircularProgress size={18} color="inherit" />
+                <span>{t("videoCompressing")}</span>
+                {compressionProgress > 0 && <span>{compressionProgress}%</span>}
+              </div>
+              <div className="w-full max-w-xs bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                <div
+                  className="bg-mainColor h-full transition-all duration-200"
+                  style={{ width: `${Math.max(5, compressionProgress)}%` }}
+                />
+              </div>
+            </div>
           ) : (
             <div>
               <button
                 type="button"
-                onClick={() => videoInputRef.current?.click()}
-                className="w-full h-[52px] rounded-xl border-2 border-dashed border-gray-300 hover:border-mainColor bg-gray-50/50 hover:bg-mainColor/[0.02] text-textDark font-ibm text-sm sm:text-base font-medium flex items-center justify-center gap-2.5 cursor-pointer transition-all duration-200 select-none"
+                disabled={hasYoutubeUrl}
+                onClick={() => {
+                  if (!hasYoutubeUrl) videoInputRef.current?.click();
+                }}
+                className={cn(
+                  "w-full h-[52px] rounded-xl border-2 border-dashed font-ibm text-sm sm:text-base font-medium flex items-center justify-center gap-2.5 transition-all duration-200 select-none",
+                  hasYoutubeUrl
+                    ? "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed opacity-60"
+                    : "border-gray-300 hover:border-mainColor bg-gray-50/50 hover:bg-mainColor/[0.02] text-textDark cursor-pointer"
+                )}
               >
-                <OndemandVideoOutlinedIcon className="w-5 h-5 text-mainColor" />
+                <OndemandVideoOutlinedIcon className={cn("w-5 h-5", hasYoutubeUrl ? "text-gray-400" : "text-mainColor")} />
                 <span>{t("uploadVideoBtn")}</span>
                 <span className="text-xs text-gray-400 font-normal">
-                  (MP4, WebM, MOV, OGG — max 50MB)
+                  (MP4, WebM, MOV, OGG — max 20MB)
                 </span>
               </button>
+              {hasYoutubeUrl && (
+                <p className="text-xs text-amber-600 font-medium mt-1.5 flex items-center gap-1.5">
+                  <span>ℹ️</span>
+                  <span>{t("youtubeEnteredNotice")}</span>
+                </p>
+              )}
             </div>
           )}
 
@@ -628,23 +727,30 @@ const Step2Gallery = () => {
             <input
               type="url"
               name="youtubeUrl"
+              disabled={hasVideoFile}
               value={values.youtubeUrl || ""}
               onChange={(e) => {
-                setFieldValue("youtubeUrl", e.target.value, true);
+                const val = e.target.value;
+                setFieldValue("youtubeUrl", val, true);
                 setFieldTouched("youtubeUrl", true, false);
+                if (val && val.trim() && values.video) {
+                  handleRemoveVideo();
+                }
               }}
               placeholder={t("youtubeUrlPlaceholder")}
               dir="ltr"
               className={cn(
-                "w-full h-12 ps-11 pe-10 rounded-xl border bg-white font-somar text-sm text-textDark transition-all outline-none",
-                showYoutubeError
-                  ? "border-error focus:border-error ring-1 ring-error/30"
-                  : "border-border hover:border-mainColor focus:border-mainColor focus:ring-1 focus:ring-mainColor/30"
+                "w-full h-12 ps-11 pe-10 rounded-xl border font-somar text-sm transition-all outline-none",
+                hasVideoFile
+                  ? "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed opacity-60"
+                  : showYoutubeError
+                  ? "border-error focus:border-error ring-1 ring-error/30 bg-white text-textDark"
+                  : "border-border hover:border-mainColor focus:border-mainColor focus:ring-1 focus:ring-mainColor/30 bg-white text-textDark"
               )}
             />
 
             {/* Clear button if URL is entered */}
-            {values.youtubeUrl && (
+            {values.youtubeUrl && !hasVideoFile && (
               <button
                 type="button"
                 onClick={() => {
@@ -658,6 +764,13 @@ const Step2Gallery = () => {
               </button>
             )}
           </div>
+
+          {hasVideoFile && (
+            <p className="text-xs text-amber-600 font-medium flex items-center gap-1.5">
+              <span>ℹ️</span>
+              <span>{t("videoUploadedNotice")}</span>
+            </p>
+          )}
 
           {showYoutubeError && (
             <p className="text-xs text-error font-medium">{youtubeError}</p>

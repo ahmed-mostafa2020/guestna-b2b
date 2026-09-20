@@ -57,6 +57,8 @@ const Step4BookingDates = ({
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
 
+  const todayStr = useMemo(() => new Date().toISOString().split("T")[0], []);
+
   const fromDayErr = getIn(errors, "fromDay");
   const fromDayTouched = getIn(touched, "fromDay");
   const hasFromDayErr = Boolean(fromDayErr && fromDayTouched);
@@ -182,6 +184,21 @@ const Step4BookingDates = ({
     }));
   }, []);
 
+  const handleDatePickerContainerClick = useCallback((e) => {
+    const input = e.currentTarget.querySelector('input[type="date"]');
+    if (input) {
+      if (typeof input.showPicker === "function") {
+        try {
+          input.showPicker();
+        } catch (err) {
+          input.focus();
+        }
+      } else {
+        input.focus();
+      }
+    }
+  }, []);
+
   // Recurrence options: Weekly and Monthly only
   const recurrenceOptions = useMemo(
     () => [
@@ -261,6 +278,7 @@ const Step4BookingDates = ({
                   id="fromDay"
                   type="date"
                   name="fromDay"
+                  min={todayStr}
                   value={values.fromDay || ""}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -293,6 +311,7 @@ const Step4BookingDates = ({
                   id="toDay"
                   type="date"
                   name="toDay"
+                  min={values.fromDay || todayStr}
                   value={values.toDay || ""}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -397,6 +416,7 @@ const Step4BookingDates = ({
                   <input
                     id="monthDay"
                     type="date"
+                    min={todayStr}
                     name="monthDay"
                     value={values.monthDay || ""}
                     onChange={handleChange}
@@ -656,6 +676,7 @@ const Step4BookingDates = ({
                             <input
                               type="date"
                               name={`branchDates.${branch.id}.fromDay`}
+                              min={todayStr}
                               value={branchData.fromDay || ""}
                               onChange={(e) => {
                                 setFieldValue(`branchDates.${branch.id}.fromDay`, e.target.value);
@@ -678,6 +699,7 @@ const Step4BookingDates = ({
                             <input
                               type="date"
                               name={`branchDates.${branch.id}.toDay`}
+                              min={branchData.fromDay || todayStr}
                               value={branchData.toDay || ""}
                               onChange={(e) => {
                                 setFieldValue(`branchDates.${branch.id}.toDay`, e.target.value);
@@ -773,6 +795,7 @@ const Step4BookingDates = ({
                               <CalendarMonthOutlinedIcon className="w-5 h-5 text-mainColor flex-shrink-0 me-2" />
                               <input
                                 type="date"
+                                min={todayStr}
                                 name={`branchDates.${branch.id}.monthDay`}
                                 value={branchData.monthDay || ""}
                                 onChange={(e) => {

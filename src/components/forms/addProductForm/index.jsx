@@ -78,7 +78,7 @@ export const initialAddProductValues = {
     weekdayPricing: [],
   },
   studentsPerSupervisor: "10",
-  services: [{ service: "", price: 0, note: { en: "", ar: "" } }],
+  services: [{ service: "", price: "", note: { en: "", ar: "" } }],
   customServices: [],
   gallary: [],
   gallery: [],
@@ -87,6 +87,8 @@ export const initialAddProductValues = {
   detailsFile: null,
   mediaFile: null,
   video: null,
+  youtubeUrl: "",
+  videoUrl: "",
   gatheringLocation: { lat: 24.9576, lng: 46.6988 },
   location: { lat: 26.6176, lng: 37.9221 },
   itinerary: [{ day: 1, toDo: { en: "", ar: "" } }],
@@ -163,6 +165,16 @@ export const formatAddProductPayload = (
     bookingBefore: values.bookingBefore !== "" && !isNaN(Number(values.bookingBefore)) ? Number(values.bookingBefore) : values.bookingBefore,
   };
 
+  // Root-level Available Times
+  let rootTimeIdx = 0;
+  (values.availableTimes || []).forEach((slot) => {
+    if (slot && (slot.from || slot.to)) {
+      payload[`availableTimes[${rootTimeIdx}][from]`] = formatTime12h(slot.from);
+      payload[`availableTimes[${rootTimeIdx}][to]`] = formatTime12h(slot.to);
+      rootTimeIdx++;
+    }
+  });
+
   // Age Range
   if (
     values.ageRange?.from !== "" &&
@@ -236,32 +248,6 @@ export const formatAddProductPayload = (
 
   if (b2cMarketPrice !== undefined) {
     payload["b2cPrice[price]"] = b2cMarketPrice;
-    payload["b2cPrice[finalPrice]"] =
-      values.b2cPrice?.finalPrice !== undefined && values.b2cPrice?.finalPrice !== ""
-        ? Number(values.b2cPrice.finalPrice)
-        : values.discountedPrice !== "" && !isNaN(Number(values.discountedPrice))
-        ? Number(values.discountedPrice)
-        : b2cMarketPrice;
-    const b2cHasTax = values.b2cPrice?.hasTax !== undefined ? Boolean(values.b2cPrice.hasTax) : true;
-    payload["b2cPrice[hasTax]"] = b2cHasTax;
-
-    const b2cDepositRatio =
-      values.b2cPrice?.depositRatio !== undefined && values.b2cPrice?.depositRatio !== ""
-        ? Number(values.b2cPrice.depositRatio)
-        : 10;
-    payload["b2cPrice[depositRatio]"] = b2cDepositRatio;
-
-    const b2cDepositVal =
-      values.b2cPrice?.depositValue !== undefined && values.b2cPrice?.depositValue !== ""
-        ? Number(values.b2cPrice.depositValue)
-        : Math.round((b2cMarketPrice * b2cDepositRatio) / 100);
-    payload["b2cPrice[depositValue]"] = b2cDepositVal;
-
-    const b2cFinalDepositVal =
-      values.b2cPrice?.finalDepositValue !== undefined && values.b2cPrice?.finalDepositValue !== ""
-        ? Number(values.b2cPrice.finalDepositValue)
-        : b2cDepositVal;
-    payload["b2cPrice[finalDepositValue]"] = b2cFinalDepositVal;
   }
 
   let b2cTargetIdx = 0;
@@ -328,36 +314,12 @@ export const formatAddProductPayload = (
 
   if (b2bMarketPrice !== undefined) {
     payload["b2bPrice[price]"] = b2bMarketPrice;
-    payload["b2bPrice[finalPrice]"] =
-      values.b2bPrice?.finalPrice !== undefined && values.b2bPrice?.finalPrice !== ""
-        ? Number(values.b2bPrice.finalPrice)
-        : b2bMarketPrice;
-    const b2bHasTax = values.b2bPrice?.hasTax !== undefined ? Boolean(values.b2bPrice.hasTax) : true;
-    payload["b2bPrice[hasTax]"] = b2bHasTax;
-
-    const b2bDepositRatio =
-      values.b2bPrice?.depositRatio !== undefined && values.b2bPrice?.depositRatio !== ""
-        ? Number(values.b2bPrice.depositRatio)
-        : 10;
-    payload["b2bPrice[depositRatio]"] = b2bDepositRatio;
-
-    const b2bDepositVal =
-      values.b2bPrice?.depositValue !== undefined && values.b2bPrice?.depositValue !== ""
-        ? Number(values.b2bPrice.depositValue)
-        : Math.round((b2bMarketPrice * b2bDepositRatio) / 100);
-    payload["b2bPrice[depositValue]"] = b2bDepositVal;
-
-    const b2bFinalDepositVal =
-      values.b2bPrice?.finalDepositValue !== undefined && values.b2bPrice?.finalDepositValue !== ""
-        ? Number(values.b2bPrice.finalDepositValue)
-        : b2bDepositVal;
-    payload["b2bPrice[finalDepositValue]"] = b2bFinalDepositVal;
   }
   if (b2bCost !== undefined) {
     payload["b2bPrice[productCost]"] = b2bCost;
   }
   if (studentsPerSupervisorVal !== undefined) {
-    payload.studentsPerSupervisor = studentsPerSupervisorVal;
+    payload["b2bPrice[studentsPerSupervisor]"] = studentsPerSupervisorVal;
   }
 
   ALL_WEEKDAYS.forEach((day, idx) => {
@@ -447,21 +409,6 @@ export const formatAddProductPayload = (
       const sPrice =
         item.price !== "" && !isNaN(Number(item.price)) ? Number(item.price) : 0;
       payload[`services[${serviceIdx}][price]`] = sPrice;
-      payload[`services[${serviceIdx}][isPaid]`] = sPrice > 0;
-
-      let nameEn = item.name?.en?.trim() || "";
-      let nameAr = item.name?.ar?.trim() || "";
-      if (!nameEn || !nameAr) {
-        const found = Array.isArray(formSelectionData?.services)
-          ? formSelectionData.services.find((s) => (s._id || s.id) === sId)
-          : null;
-        if (found) {
-          nameEn = nameEn || found.name?.en || (typeof found.name === "string" ? found.name : "") || "";
-          nameAr = nameAr || found.name?.ar || (typeof found.name === "string" ? found.name : "") || "";
-        }
-      }
-      if (nameEn) payload[`services[${serviceIdx}][name][en]`] = nameEn;
-      if (nameAr) payload[`services[${serviceIdx}][name][ar]`] = nameAr;
 
       const noteEn = item.note?.en?.trim();
       const noteAr = item.note?.ar?.trim();
@@ -509,19 +456,20 @@ export const formatAddProductPayload = (
     }
   });
 
-  const benefitEnList = values.benefits?.en || [];
-  const benefitArList = values.benefits?.ar || [];
-  const benefitCount = Math.max(benefitEnList.length, benefitArList.length);
-  let benefitIdx = 0;
-  for (let i = 0; i < benefitCount; i++) {
-    const enText = benefitEnList[i]?.trim();
-    const arText = benefitArList[i]?.trim();
-    if (enText || arText) {
-      if (enText) payload[`benefits[${benefitIdx}][en]`] = enText;
-      if (arText) payload[`benefits[${benefitIdx}][ar]`] = arText;
-      benefitIdx++;
+  let benefitEnIdx = 0;
+  (values.benefits?.en || []).forEach((val) => {
+    if (val?.trim()) {
+      payload[`benefits[en][${benefitEnIdx}]`] = val.trim();
+      benefitEnIdx++;
     }
-  }
+  });
+  let benefitArIdx = 0;
+  (values.benefits?.ar || []).forEach((val) => {
+    if (val?.trim()) {
+      payload[`benefits[ar][${benefitArIdx}]`] = val.trim();
+      benefitArIdx++;
+    }
+  });
 
   let termIdx = 0;
   (values.terms || []).forEach((item) => {
@@ -533,6 +481,11 @@ export const formatAddProductPayload = (
       termIdx++;
     }
   });
+
+  const youtubeLink = values.youtubeUrl?.trim() || values.videoUrl?.trim();
+  if (youtubeLink) {
+    payload.videoUrl = youtubeLink;
+  }
 
   // Branch Trips Customizations (if branch overrides exist)
   const customizedBranchIdSet = new Set([
@@ -551,12 +504,12 @@ export const formatAddProductPayload = (
     const bDates = values.branchDates?.[branchId] || {};
     const bCapacities = values.branchCapacities?.[branchId] || {};
 
-    payload[`branchTrips[${branchTripIdx}][providerBranch]`] = branchId;
+    payload[`branchTrips[${branchTripIdx}][branch]`] = branchId;
     const bSelectedDays = Array.isArray(bDates.selectedDays) && bDates.selectedDays.length > 0
       ? bDates.selectedDays
       : values.selectedDays || [];
     bSelectedDays.forEach((day, dIdx) => {
-      payload[`branchTrips[${branchTripIdx}][tripDays][${dIdx}]`] = day;
+      payload[`branchTrips[${branchTripIdx}][selectedDays][${dIdx}]`] = day;
     });
     payload[`branchTrips[${branchTripIdx}][fromDay]`] = bDates.fromDay || values.fromDay;
     payload[`branchTrips[${branchTripIdx}][toDay]`] = bDates.toDay || values.toDay;
@@ -597,9 +550,41 @@ export const formatAddProductPayload = (
         ? Number(bPricing.price)
         : b2cMarketPrice || 0;
     payload[`branchTrips[${branchTripIdx}][b2cPrice][price]`] = b2cBranchPrice;
-    ALL_WEEKDAYS.forEach((day, dIdx) => {
+
+    // Target Audiences for branch
+    let b2cBranchTargetIdx = 0;
+    const branchTargetAudienceList =
+      Array.isArray(bPricing.targetAudiences) && bPricing.targetAudiences.length > 0
+        ? bPricing.targetAudiences
+        : values.targetAudiences || [];
+
+    branchTargetAudienceList.forEach((item) => {
+      if (item.targetAudience) {
+        const audId =
+          typeof item.targetAudience === "object" && item.targetAudience !== null
+            ? item.targetAudience._id || item.targetAudience.id
+            : item.targetAudience;
+        if (audId) {
+          payload[`branchTrips[${branchTripIdx}][b2cPrice][targetAudiences][${b2cBranchTargetIdx}][targetAudience]`] = audId;
+          payload[`branchTrips[${branchTripIdx}][b2cPrice][targetAudiences][${b2cBranchTargetIdx}][price]`] =
+            item.price !== "" && !isNaN(Number(item.price))
+              ? Number(item.price)
+              : b2cBranchPrice;
+          b2cBranchTargetIdx++;
+        }
+      }
+    });
+
+    // Weekday pricing for branch (selected days or ALL_WEEKDAYS if none)
+    const branchWeekdayPricingDays = bSelectedDays.length > 0 ? bSelectedDays : ALL_WEEKDAYS;
+    branchWeekdayPricingDays.forEach((day, dIdx) => {
+      const customPrice = customWeekdayPricingMap[day];
+      const dayPrice =
+        customPrice !== undefined && customPrice !== "" && !isNaN(Number(customPrice))
+          ? Number(customPrice)
+          : b2cBranchPrice;
       payload[`branchTrips[${branchTripIdx}][b2cPrice][weekdayPricing][${dIdx}][day]`] = day;
-      payload[`branchTrips[${branchTripIdx}][b2cPrice][weekdayPricing][${dIdx}][price]`] = b2cBranchPrice;
+      payload[`branchTrips[${branchTripIdx}][b2cPrice][weekdayPricing][${dIdx}][price]`] = dayPrice;
     });
 
     const b2bBranchPrice =
@@ -615,10 +600,6 @@ export const formatAddProductPayload = (
     if (studentsPerSupervisorVal !== undefined) {
       payload[`branchTrips[${branchTripIdx}][b2bPrice][studentsPerSupervisor]`] = studentsPerSupervisorVal;
     }
-    ALL_WEEKDAYS.forEach((day, dIdx) => {
-      payload[`branchTrips[${branchTripIdx}][b2bPrice][weekdayPricing][${dIdx}][day]`] = day;
-      payload[`branchTrips[${branchTripIdx}][b2bPrice][weekdayPricing][${dIdx}][price]`] = b2bBranchPrice;
-    });
 
     branchTripIdx++;
   });
@@ -652,9 +633,11 @@ const AddProductForm = ({
   onProductNameChange,
 }) => {
   const [activeStep, setActiveStep] = useState(0);
-  const [maxVisitedStep, setMaxVisitedStep] = useState(
-    productData ? STEP_KEYS.length - 1 : 0
-  );
+  // TEMPORARY (for testing): unlock all steps
+  const [maxVisitedStep, setMaxVisitedStep] = useState(STEP_KEYS.length - 1);
+  // const [maxVisitedStep, setMaxVisitedStep] = useState(
+  //   productData ? STEP_KEYS.length - 1 : 0
+  // );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const stepContainerRef = useRef(null);
 
@@ -1021,6 +1004,11 @@ const AddProductForm = ({
   const handleStepClick = async (targetStep, validateForm, setTouched, values) => {
     if (targetStep === activeStep) return;
 
+    // === TEMPORARY (for testing): Step validation commented out ===
+    setActiveStep(targetStep);
+    setMaxVisitedStep((prev) => Math.max(prev, targetStep));
+
+    /*
     // Going backward is always permitted
     if (targetStep < activeStep) {
       setActiveStep(targetStep);
@@ -1044,9 +1032,16 @@ const AddProductForm = ({
         variant: "warning",
       });
     }
+    */
   };
 
   const handleStepNext = async (validateForm, setTouched, values) => {
+    // === TEMPORARY (for testing): Step validation commented out ===
+    const nextStep = activeStep + 1;
+    setActiveStep(nextStep);
+    setMaxVisitedStep((prev) => Math.max(prev, nextStep));
+
+    /*
     const errors = await validateForm();
     const stepFields = getStepFieldNames(activeStep);
 
@@ -1064,6 +1059,7 @@ const AddProductForm = ({
         variant: "warning",
       });
     }
+    */
   };
 
   const handleStepPrev = () => {
@@ -1155,6 +1151,11 @@ const AddProductForm = ({
         formData.append("video", values.video);
       }
 
+      const youtubeLink = values.youtubeUrl?.trim() || values.videoUrl?.trim();
+      if (youtubeLink && !formData.has("videoUrl")) {
+        formData.append("videoUrl", youtubeLink);
+      }
+
       const headers = getHeaders(locale, true); // true = isFormData — omit Content-Type so browser sets multipart boundary
 
       let proxyUrl;
@@ -1163,7 +1164,7 @@ const AddProductForm = ({
         proxyUrl = getProxyUrl(`${B2B_END_POINTS.PROVIDER_PROFILE.EDIT_TRIP}/${values._id}`);
         method = "PATCH";
       } else {
-        proxyUrl = getProxyUrl(B2B_END_POINTS.PROVIDER_PROFILE.NEW_TRIP);
+        proxyUrl = getProxyUrl(B2B_END_POINTS.PROVIDER_PROFILE.ADD_PRODUCT);
         method = "POST";
       }
 
@@ -1327,20 +1328,7 @@ const AddProductForm = ({
 
             {/* Next / Review / Submit Controls */}
             <div className="flex items-center gap-2.5">
-              {/* Quick Review Button available on all steps prior to the review step */}
-              {activeStep < STEP_KEYS.length - 1 && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveStep(STEP_KEYS.length - 1);
-                    setMaxVisitedStep((prev) => Math.max(prev, STEP_KEYS.length - 1));
-                  }}
-                  className="px-4 py-2.5 rounded-xl border border-mainColor text-mainColor bg-white hover:bg-mainColor/10 font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer shadow-xs transition-all active:scale-[0.98]"
-                >
-                  <VisibilityIcon className="w-4 h-4" />
-                  <span>{t("providerProfile.products.modal.subtitles.reviewProduct")}</span>
-                </button>
-              )}
+
 
               {activeStep < STEP_KEYS.length - 2 ? (
                 <button

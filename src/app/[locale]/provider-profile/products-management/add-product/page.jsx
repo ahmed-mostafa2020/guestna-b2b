@@ -205,6 +205,27 @@ const setPathValue = (obj, path, value) => {
 };
 
 /**
+ * Safely extracts the first string error message from nested Yup/Formik error structures
+ */
+const extractFirstErrorMessage = (err) => {
+  if (!err) return null;
+  if (typeof err === "string") return err;
+  if (Array.isArray(err)) {
+    for (const item of err) {
+      const msg = extractFirstErrorMessage(item);
+      if (msg) return msg;
+    }
+  }
+  if (typeof err === "object") {
+    for (const key of Object.keys(err)) {
+      const msg = extractFirstErrorMessage(err[key]);
+      if (msg) return msg;
+    }
+  }
+  return null;
+};
+
+/**
  * Builds Formik touched map for nested, flat, and array field paths
  */
 const buildTouchedMap = (fields, values = {}) => {
@@ -216,8 +237,30 @@ const buildTouchedMap = (fields, values = {}) => {
   if (fields.includes("services") && Array.isArray(values?.services)) {
     touched.services = values.services.map(() => ({
       service: true,
+      price: true,
       note: { ar: true, en: true },
     }));
+  }
+
+  if (fields.includes("mustHaveItems")) {
+    touched.mustHaveItems = {
+      ar: (values?.mustHaveItems?.ar || []).map(() => true),
+      en: (values?.mustHaveItems?.en || []).map(() => true),
+    };
+  }
+
+  if (fields.includes("exemptedFromTrip")) {
+    touched.exemptedFromTrip = {
+      ar: (values?.exemptedFromTrip?.ar || []).map(() => true),
+      en: (values?.exemptedFromTrip?.en || []).map(() => true),
+    };
+  }
+
+  if (fields.includes("benefits")) {
+    touched.benefits = {
+      ar: (values?.benefits?.ar || []).map(() => true),
+      en: (values?.benefits?.en || []).map(() => true),
+    };
   }
 
   if (
@@ -398,8 +441,13 @@ const AddProductPage = () => {
           formData.append("video", values.video);
         }
 
+        const youtubeLink = values.youtubeUrl?.trim() || values.videoUrl?.trim();
+        if (youtubeLink && !formData.has("videoUrl")) {
+          formData.append("videoUrl", youtubeLink);
+        }
+
         const headers = getHeaders(locale, true);
-        const proxyUrl = getProxyUrl(B2B_END_POINTS.PROVIDER_PROFILE.NEW_TRIP);
+        const proxyUrl = getProxyUrl(B2B_END_POINTS.PROVIDER_PROFILE.ADD_PRODUCT);
 
         const response = await fetch(proxyUrl, {
           method: "POST",
@@ -468,7 +516,7 @@ const AddProductPage = () => {
         const err = getIn(validationErrors, field);
         if (err) {
           firstErrorField = field;
-          firstErrorMessage = typeof err === "string" ? err : null;
+          firstErrorMessage = extractFirstErrorMessage(err);
           break;
         }
       }
@@ -556,6 +604,10 @@ const AddProductPage = () => {
               return;
             }
 
+            // === TEMPORARY (for testing): Allow jumping to any step directly ===
+            setCurrentStep(stepId);
+
+            /*
             // Always allow navigating back to previous steps
             if (stepId < currentStep) {
               setCurrentStep(stepId);
@@ -616,6 +668,7 @@ const AddProductPage = () => {
             }
 
             setCurrentStep(stepId);
+            */
           }}
         />
       </div>
@@ -645,7 +698,7 @@ const AddProductPage = () => {
           selectedDays: [],
           monthDay: "",
           availableTimes: [{ from: "", to: "" }],
-          services: [{ service: "", price: 0, note: { en: "", ar: "" } }],
+          services: [{ service: "", price: "", note: { en: "", ar: "" } }],
           mustHaveItems: { en: [""], ar: [""] },
           exemptedFromTrip: { en: [""], ar: [""] },
           benefits: { en: [""], ar: [""] },
@@ -657,6 +710,7 @@ const AddProductPage = () => {
           mediaFile: null,
           video: null,
           youtubeUrl: "",
+          videoUrl: "",
           price: "",
           discountedPrice: "",
           productCost: "",
@@ -818,19 +872,7 @@ const AddProductPage = () => {
                   </button>
                 )}
 
-                {/* Quick Review Button: Available on all steps prior to step 9 */}
-                {currentStep < 9 && (
-                  <button
-                    type="button"
-                    onClick={() => setCurrentStep(9)}
-                    className="w-full sm:w-auto px-6 py-3.5 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/10 font-somar font-bold text-base transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
-                  >
-                    <VisibilityIcon className="w-5 h-5" />
-                    <span>
-                      {t("providerProfile.products.modal.subtitles.reviewProduct")}
-                    </span>
-                  </button>
-                )}
+
 
                 <button
                   type="button"

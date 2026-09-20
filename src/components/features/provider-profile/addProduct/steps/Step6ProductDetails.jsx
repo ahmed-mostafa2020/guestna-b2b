@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useCallback } from "react";
-import { useFormikContext } from "formik";
+import { useFormikContext, getIn } from "formik";
 import { useTranslations, useLocale } from "next-intl";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -11,7 +11,26 @@ const Step6ProductDetails = () => {
   const locale = useLocale();
   const isAr = locale === "ar";
 
-  const { values, handleChange, handleBlur, setFieldValue } = useFormikContext();
+  const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
+    useFormikContext();
+
+  // Helper for field error state matching Step 1
+  const getFieldErrorState = useCallback(
+    (path) => {
+      const error = getIn(errors, path);
+      const isTouched = getIn(touched, path);
+      const val = getIn(values, path);
+      return {
+        error: typeof error === "string" ? error : undefined,
+        showError: Boolean(
+          error &&
+            (isTouched ||
+              (typeof val === "string" && val.trim().length > 0))
+        ),
+      };
+    },
+    [errors, touched, values]
+  );
 
   const mustHaveAr = values.mustHaveItems?.ar || [""];
   const mustHaveEn = values.mustHaveItems?.en || [""];
@@ -114,66 +133,75 @@ const Step6ProductDetails = () => {
 
         {/* Supplies Items List */}
         <div className="space-y-4 sm:space-y-6">
-          {Array.from({ length: suppliesCount }).map((_, index) => (
-            <div
-              key={`supply-${index}`}
-              className="bg-gray-50/70 p-4 sm:p-6 rounded-2xl border border-border space-y-4 transition-all"
-            >
-              {/* Item Top Bar */}
-              <div className="flex items-center justify-between">
-                <span className="font-somar text-base font-medium text-textDark">
-                  {t("supplyItem", { num: index + 1 })}
-                </span>
+          {Array.from({ length: suppliesCount }).map((_, index) => {
+            const arState = getFieldErrorState(`mustHaveItems.ar[${index}]`);
+            const enState = getFieldErrorState(`mustHaveItems.en[${index}]`);
 
-                {suppliesCount > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveSupply(index)}
-                    aria-label={t("removeItem")}
-                    className="w-8 h-8 flex items-center justify-center text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
-                  >
-                    <DeleteOutlineIcon className="w-5 h-5" />
-                  </button>
-                )}
-              </div>
+            return (
+              <div
+                key={`supply-${index}`}
+                className="bg-gray-50/70 p-4 sm:p-6 rounded-2xl border border-border space-y-4 transition-all"
+              >
+                {/* Item Top Bar */}
+                <div className="flex items-center justify-between">
+                  <span className="font-somar text-base font-medium text-textDark">
+                    {t("supplyItem", { num: index + 1 })}
+                  </span>
 
-              {/* 2-Column Inputs Grid (Arabic & English) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                {/* Arabic Input */}
-                <div>
-                  <TextInputGroup
-                    type="text"
-                    name={`mustHaveItems.ar[${index}]`}
-                    value={mustHaveAr[index] || ""}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    label={t("itemArLabel")}
-                    labelClassName={labelCls}
-                    placeholder={t("itemArPlaceholder")}
-                    borderClassName={inputBorderCls}
-                    autoComplete="off"
-                  />
+                  {suppliesCount > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSupply(index)}
+                      aria-label={t("removeItem")}
+                      className="w-8 h-8 flex items-center justify-center text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
+                    >
+                      <DeleteOutlineIcon className="w-5 h-5" />
+                    </button>
+                  )}
                 </div>
 
-                {/* English Input */}
-                <div dir="ltr" className="text-start">
-                  <TextInputGroup
-                    type="text"
-                    name={`mustHaveItems.en[${index}]`}
-                    value={mustHaveEn[index] || ""}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    label={t("itemEnLabel")}
-                    labelClassName={labelCls}
-                    placeholder={t("itemEnPlaceholder")}
-                    borderClassName={inputBorderCls}
-                    textAlign="left"
-                    autoComplete="off"
-                  />
+                {/* 2-Column Inputs Grid (Arabic & English) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 pb-2">
+                  {/* Arabic Input */}
+                  <div>
+                    <TextInputGroup
+                      type="text"
+                      name={`mustHaveItems.ar[${index}]`}
+                      value={mustHaveAr[index] || ""}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      touched={arState.showError}
+                      errors={arState.error}
+                      label={t("itemArLabel")}
+                      labelClassName={labelCls}
+                      placeholder={t("itemArPlaceholder")}
+                      borderClassName={inputBorderCls}
+                      autoComplete="off"
+                    />
+                  </div>
+
+                  {/* English Input */}
+                  <div dir="ltr" className="text-start">
+                    <TextInputGroup
+                      type="text"
+                      name={`mustHaveItems.en[${index}]`}
+                      value={mustHaveEn[index] || ""}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      touched={enState.showError}
+                      errors={enState.error}
+                      label={t("itemEnLabel")}
+                      labelClassName={labelCls}
+                      placeholder={t("itemEnPlaceholder")}
+                      borderClassName={inputBorderCls}
+                      textAlign="left"
+                      autoComplete="off"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {/* Add Supply Button */}
           <div className="flex justify-center pt-2">
@@ -210,66 +238,75 @@ const Step6ProductDetails = () => {
 
         {/* Exclusions Items List */}
         <div className="space-y-4 sm:space-y-6">
-          {Array.from({ length: exclusionsCount }).map((_, index) => (
-            <div
-              key={`exclusion-${index}`}
-              className="bg-gray-50/70 p-4 sm:p-6 rounded-2xl border border-border space-y-4 transition-all"
-            >
-              {/* Item Top Bar */}
-              <div className="flex items-center justify-between">
-                <span className="font-somar text-base font-medium text-textDark">
-                  {t("exclusionItem", { num: index + 1 })}
-                </span>
+          {Array.from({ length: exclusionsCount }).map((_, index) => {
+            const arState = getFieldErrorState(`exemptedFromTrip.ar[${index}]`);
+            const enState = getFieldErrorState(`exemptedFromTrip.en[${index}]`);
 
-                {exclusionsCount > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveExclusion(index)}
-                    aria-label={t("removeItem")}
-                    className="w-8 h-8 flex items-center justify-center text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
-                  >
-                    <DeleteOutlineIcon className="w-5 h-5" />
-                  </button>
-                )}
-              </div>
+            return (
+              <div
+                key={`exclusion-${index}`}
+                className="bg-gray-50/70 p-4 sm:p-6 rounded-2xl border border-border space-y-4 transition-all"
+              >
+                {/* Item Top Bar */}
+                <div className="flex items-center justify-between">
+                  <span className="font-somar text-base font-medium text-textDark">
+                    {t("exclusionItem", { num: index + 1 })}
+                  </span>
 
-              {/* 2-Column Inputs Grid (Arabic & English) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                {/* Arabic Input */}
-                <div>
-                  <TextInputGroup
-                    type="text"
-                    name={`exemptedFromTrip.ar[${index}]`}
-                    value={exemptedAr[index] || ""}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    label={t("itemArLabel")}
-                    labelClassName={labelCls}
-                    placeholder={t("itemArPlaceholder")}
-                    borderClassName={inputBorderCls}
-                    autoComplete="off"
-                  />
+                  {exclusionsCount > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveExclusion(index)}
+                      aria-label={t("removeItem")}
+                      className="w-8 h-8 flex items-center justify-center text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
+                    >
+                      <DeleteOutlineIcon className="w-5 h-5" />
+                    </button>
+                  )}
                 </div>
 
-                {/* English Input */}
-                <div dir="ltr" className="text-start">
-                  <TextInputGroup
-                    type="text"
-                    name={`exemptedFromTrip.en[${index}]`}
-                    value={exemptedEn[index] || ""}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    label={t("itemEnLabel")}
-                    labelClassName={labelCls}
-                    placeholder={t("itemEnPlaceholder")}
-                    borderClassName={inputBorderCls}
-                    textAlign="left"
-                    autoComplete="off"
-                  />
+                {/* 2-Column Inputs Grid (Arabic & English) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 pb-2">
+                  {/* Arabic Input */}
+                  <div>
+                    <TextInputGroup
+                      type="text"
+                      name={`exemptedFromTrip.ar[${index}]`}
+                      value={exemptedAr[index] || ""}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      touched={arState.showError}
+                      errors={arState.error}
+                      label={t("itemArLabel")}
+                      labelClassName={labelCls}
+                      placeholder={t("itemArPlaceholder")}
+                      borderClassName={inputBorderCls}
+                      autoComplete="off"
+                    />
+                  </div>
+
+                  {/* English Input */}
+                  <div dir="ltr" className="text-start">
+                    <TextInputGroup
+                      type="text"
+                      name={`exemptedFromTrip.en[${index}]`}
+                      value={exemptedEn[index] || ""}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      touched={enState.showError}
+                      errors={enState.error}
+                      label={t("itemEnLabel")}
+                      labelClassName={labelCls}
+                      placeholder={t("itemEnPlaceholder")}
+                      borderClassName={inputBorderCls}
+                      textAlign="left"
+                      autoComplete="off"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {/* Add Exclusion Button */}
           <div className="flex justify-center pt-2">
@@ -306,66 +343,75 @@ const Step6ProductDetails = () => {
 
         {/* Benefits Items List */}
         <div className="space-y-4 sm:space-y-6">
-          {Array.from({ length: benefitsCount }).map((_, index) => (
-            <div
-              key={`benefit-${index}`}
-              className="bg-gray-50/70 p-4 sm:p-6 rounded-2xl border border-border space-y-4 transition-all"
-            >
-              {/* Item Top Bar */}
-              <div className="flex items-center justify-between">
-                <span className="font-somar text-base font-medium text-textDark">
-                  {t("benefitItem", { num: index + 1 })}
-                </span>
+          {Array.from({ length: benefitsCount }).map((_, index) => {
+            const arState = getFieldErrorState(`benefits.ar[${index}]`);
+            const enState = getFieldErrorState(`benefits.en[${index}]`);
 
-                {benefitsCount > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveBenefit(index)}
-                    aria-label={t("removeBenefit") || t("removeItem")}
-                    className="w-8 h-8 flex items-center justify-center text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
-                  >
-                    <DeleteOutlineIcon className="w-5 h-5" />
-                  </button>
-                )}
-              </div>
+            return (
+              <div
+                key={`benefit-${index}`}
+                className="bg-gray-50/70 p-4 sm:p-6 rounded-2xl border border-border space-y-4 transition-all"
+              >
+                {/* Item Top Bar */}
+                <div className="flex items-center justify-between">
+                  <span className="font-somar text-base font-medium text-textDark">
+                    {t("benefitItem", { num: index + 1 })}
+                  </span>
 
-              {/* 2-Column Inputs Grid (Arabic & English) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                {/* Arabic Input */}
-                <div>
-                  <TextInputGroup
-                    type="text"
-                    name={`benefits.ar[${index}]`}
-                    value={benefitsAr[index] || ""}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    label={t("benefitArLabel") || t("itemArLabel")}
-                    labelClassName={labelCls}
-                    placeholder={t("benefitArPlaceholder") || t("itemArPlaceholder")}
-                    borderClassName={inputBorderCls}
-                    autoComplete="off"
-                  />
+                  {benefitsCount > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveBenefit(index)}
+                      aria-label={t("removeBenefit") || t("removeItem")}
+                      className="w-8 h-8 flex items-center justify-center text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
+                    >
+                      <DeleteOutlineIcon className="w-5 h-5" />
+                    </button>
+                  )}
                 </div>
 
-                {/* English Input */}
-                <div dir="ltr" className="text-start">
-                  <TextInputGroup
-                    type="text"
-                    name={`benefits.en[${index}]`}
-                    value={benefitsEn[index] || ""}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    label={t("benefitEnLabel") || t("itemEnLabel")}
-                    labelClassName={labelCls}
-                    placeholder={t("benefitEnPlaceholder") || t("itemEnPlaceholder")}
-                    borderClassName={inputBorderCls}
-                    textAlign="left"
-                    autoComplete="off"
-                  />
+                {/* 2-Column Inputs Grid (Arabic & English) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 pb-2">
+                  {/* Arabic Input */}
+                  <div>
+                    <TextInputGroup
+                      type="text"
+                      name={`benefits.ar[${index}]`}
+                      value={benefitsAr[index] || ""}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      touched={arState.showError}
+                      errors={arState.error}
+                      label={t("benefitArLabel") || t("itemArLabel")}
+                      labelClassName={labelCls}
+                      placeholder={t("benefitArPlaceholder") || t("itemArPlaceholder")}
+                      borderClassName={inputBorderCls}
+                      autoComplete="off"
+                    />
+                  </div>
+
+                  {/* English Input */}
+                  <div dir="ltr" className="text-start">
+                    <TextInputGroup
+                      type="text"
+                      name={`benefits.en[${index}]`}
+                      value={benefitsEn[index] || ""}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      touched={enState.showError}
+                      errors={enState.error}
+                      label={t("benefitEnLabel") || t("itemEnLabel")}
+                      labelClassName={labelCls}
+                      placeholder={t("benefitEnPlaceholder") || t("itemEnPlaceholder")}
+                      borderClassName={inputBorderCls}
+                      textAlign="left"
+                      autoComplete="off"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {/* Add Benefit Button */}
           <div className="flex justify-center pt-2">

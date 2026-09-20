@@ -42,28 +42,33 @@ const Step8Pricing = ({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [openBranches, setOpenBranches] = useState({});
 
-  // Local state for temporary inputs in B2C discounts
-  const [tempDiscount, setTempDiscount] = useState({
-    type: "percentage",
-    value: "",
-    code: "",
-  });
-
   // Local state for rule condition builder
   const [conditionRule, setConditionRule] = useState({
-    type: "SEASON",
-    season: "RIYADH_SEASON",
     changeType: "INCREASE",
     value: "15",
   });
+
+  // Current date formatted as YYYY-MM-DD for min date validation
+  const todayStr = useMemo(() => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }, []);
+
+  const defaultStartDate =
+    values.fromDay && values.fromDay >= todayStr ? values.fromDay : todayStr;
+  const defaultEndDate =
+    values.toDay && values.toDay >= defaultStartDate ? values.toDay : defaultStartDate;
 
   // Date pricing rows state
   const [datePricingRows, setDatePricingRows] = useState(() => [
     {
       id: 1,
-      fromDate: values.fromDay || "10",
-      toDate: values.toDay || "60",
-      price: values.seasonPrice || "60",
+      fromDate: defaultStartDate,
+      toDate: defaultEndDate,
+      price: values.seasonPrice || "",
     },
   ]);
 
@@ -126,63 +131,11 @@ const Step8Pricing = ({
     }));
   }, [targetAudienceOptions, locale]);
 
-  // Academic stages options
-  const academicStageOptions = useMemo(() => {
-    if (
-      Array.isArray(formSelectionData?.academicStages) &&
-      formSelectionData.academicStages.length > 0
-    ) {
-      return formSelectionData.academicStages;
-    }
-    return [
-      { id: "kindergarten", name: { ar: "رياض الأطفال", en: "Kindergarten" } },
-      { id: "primary", name: { ar: "المرحلة الابتدائية", en: "Primary School" } },
-      { id: "middle", name: { ar: "المرحلة المتوسطة", en: "Middle School" } },
-      { id: "secondary", name: { ar: "المرحلة الثانوية", en: "High School" } },
-      { id: "university", name: { ar: "المرحلة الجامعية", en: "University" } },
-    ];
-  }, [formSelectionData?.academicStages]);
-
-  const academicStageList = useMemo(() => {
-    return academicStageOptions.map((opt) => ({
-      value: opt._id || opt.id,
-      label: getItemName(opt, locale),
-    }));
-  }, [academicStageOptions, locale]);
-
   // Season condition lists for SelectionGroup
-  const seasonTypeList = useMemo(
-    () => [
-      { value: "SEASON", label: t("b2c.seasons.season") },
-      { value: "DAY", label: t("b2c.day") },
-    ],
-    [t]
-  );
-
-  const seasonOptionsList = useMemo(
-    () => [
-      { value: "RIYADH_SEASON", label: t("b2c.seasons.riyadhSeason") },
-      { value: "JEDDAH_SEASON", label: t("b2c.seasons.jeddahSeason") },
-      { value: "DIRIYAH_SEASON", label: t("b2c.seasons.diriyahSeason") },
-      { value: "SUMMER", label: t("b2c.seasons.summer") },
-      { value: "WEEKEND", label: t("b2c.seasons.weekend") },
-      { value: "NATIONAL_DAY", label: t("b2c.seasons.nationalDay") },
-    ],
-    [t]
-  );
-
   const changeTypeList = useMemo(
     () => [
       { value: "INCREASE", label: t("b2c.increase") },
       { value: "DECREASE", label: t("b2c.decrease") },
-    ],
-    [t]
-  );
-
-  const discountTypeList = useMemo(
-    () => [
-      { value: "percentage", label: t("b2c.discountTypes.percentage") },
-      { value: "fixed", label: t("b2c.discountTypes.fixed") },
     ],
     [t]
   );
@@ -258,7 +211,7 @@ const Step8Pricing = ({
   const labelCls =
     "font-somar text-sm sm:text-base font-medium text-textDark text-start block mb-1.5";
   const fieldContainerCls =
-    "relative flex items-center bg-white rounded-xl border border-border hover:border-mainColor focus-within:border-mainColor px-3.5 py-2.5 transition-all duration-200";
+    "relative flex items-center bg-white rounded-xl border border-border hover:border-mainColor focus-within:border-mainColor px-3.5 h-[52px] transition-all duration-200";
 
   return (
     <div className="flex flex-col gap-6 sm:gap-8" dir={isAr ? "rtl" : "ltr"}>
@@ -343,7 +296,11 @@ const Step8Pricing = ({
                 {t("tabs.individual")}
               </span>
               <div className="font-somar font-bold text-base sm:text-lg text-mainColor flex items-center gap-1 mt-0.5">
-                <span>{formatCurrency(values.price || 15000)}</span>
+                <span>
+                  {values.price && Number(values.price) > 0
+                    ? formatCurrency(values.price)
+                    : "-"}
+                </span>
                 <span className="text-sm font-medium text-gray-600">
                   / {t("tabs.perPerson")}
                 </span>
@@ -379,9 +336,12 @@ const Step8Pricing = ({
               </span>
               <div className="font-somar font-bold text-base sm:text-lg text-mainColor flex items-center gap-1 mt-0.5">
                 <span>
-                  {formatCurrency(
-                    values.b2bPricing?.schoolsPrice || values.price || 15000
-                  )}
+                  {(values.b2bPricing?.schoolsPrice || values.b2bPrice?.price || values.price) &&
+                  Number(values.b2bPricing?.schoolsPrice || values.b2bPrice?.price || values.price) > 0
+                    ? formatCurrency(
+                        values.b2bPricing?.schoolsPrice || values.b2bPrice?.price || values.price
+                      )
+                    : "-"}
                 </span>
                 <span className="text-sm font-medium text-gray-600">
                   / {t("tabs.perPerson")}
@@ -516,160 +476,7 @@ const Step8Pricing = ({
               </div>
             </div>
 
-            {/* 2. Discounts Section with Toggle */}
-            <div className="bg-gray-50/70 p-4 sm:p-6 rounded-2xl border border-border space-y-4">
-              <div className="flex items-center justify-between border-b border-border pb-3">
-                <div className="flex items-center gap-2 text-start">
-                  <div className="w-8 h-8 rounded-xl bg-mainColor/10 flex items-center justify-center text-mainColor">
-                    <LocalOfferOutlinedIcon className="w-5 h-5" />
-                  </div>
-                  <h3 className="font-somar font-bold text-base text-titleColor">
-                    {t("b2c.discountsTitle")}
-                  </h3>
-                </div>
 
-                <label className="inline-flex items-center gap-2.5 cursor-pointer">
-                  <span className="font-somar text-xs sm:text-sm font-medium text-textDark">
-                    {t("b2c.enableDiscounts")}
-                  </span>
-                  <input
-                    type="checkbox"
-                    checked={Boolean(values.enableDiscounts)}
-                    onChange={(e) =>
-                      setFieldValue("enableDiscounts", e.target.checked)
-                    }
-                    className="sr-only peer"
-                  />
-                  <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-mainColor"></div>
-                </label>
-              </div>
-
-              {values.enableDiscounts && (
-                <div className="space-y-4 pt-2">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                    {/* Discount Type using SelectionGroup */}
-                    <div>
-                      <SelectionGroup
-                        name="discountTypeSelect"
-                        value={tempDiscount.type}
-                        onChange={(e) =>
-                          setTempDiscount((prev) => ({
-                            ...prev,
-                            type: e.target.value,
-                          }))
-                        }
-                        label={t("b2c.discountType")}
-                        labelClassName={labelCls}
-                        placeholder={t("b2c.selectDiscountType")}
-                        list={discountTypeList}
-                        border="1px solid var(--color-border)"
-                      />
-                    </div>
-
-                    <div>
-                      <label className={labelCls}>
-                        {t("b2c.discountValue")}
-                      </label>
-                      <div className={fieldContainerCls}>
-                        <input
-                          type="number"
-                          min="0"
-                          value={tempDiscount.value}
-                          onChange={(e) =>
-                            setTempDiscount((prev) => ({
-                              ...prev,
-                              value: e.target.value,
-                            }))
-                          }
-                          placeholder={t("b2c.discountValuePlaceholder")}
-                          className="w-full bg-transparent outline-none font-somar text-sm text-textDark placeholder:text-gray-400"
-                        />
-                        <span className="ms-1 flex-shrink-0 inline-flex items-center">
-                          {tempDiscount.type === "percentage" ? "%" : newSarSmall}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className={labelCls}>
-                        {t("b2c.discountCode")}
-                      </label>
-                      <div className={fieldContainerCls}>
-                        <input
-                          type="text"
-                          value={tempDiscount.code}
-                          onChange={(e) =>
-                            setTempDiscount((prev) => ({
-                              ...prev,
-                              code: e.target.value.toUpperCase(),
-                            }))
-                          }
-                          placeholder={t("b2c.discountCodePlaceholder")}
-                          className="w-full bg-transparent outline-none font-somar text-sm text-textDark uppercase placeholder:text-gray-400"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pt-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!tempDiscount.value) return;
-                        const currentList = values.discountsList || [];
-                        setFieldValue("discountsList", [
-                          ...currentList,
-                          { ...tempDiscount, id: Date.now() },
-                        ]);
-                        setTempDiscount({
-                          type: "percentage",
-                          value: "",
-                          code: "",
-                        });
-                      }}
-                      className="w-full py-3 rounded-xl border border-mainColor text-mainColor font-somar font-bold text-sm sm:text-base hover:bg-mainColor/5 transition-colors cursor-pointer text-center"
-                    >
-                      {t("b2c.addDiscountBtn")}
-                    </button>
-                  </div>
-
-                  {Array.isArray(values.discountsList) &&
-                    values.discountsList.length > 0 && (
-                      <div className="flex flex-wrap gap-2 pt-2">
-                        {values.discountsList.map((disc, idx) => (
-                          <div
-                            key={disc.id || idx}
-                            className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-border rounded-xl text-xs font-somar text-textDark shadow-xs"
-                          >
-                            <span className="font-bold text-mainColor">
-                              {disc.code || `#${idx + 1}`}:
-                            </span>
-                            <span className="inline-flex items-center gap-1">
-                              {disc.type === "percentage" ? (
-                                `${disc.value}%`
-                              ) : (
-                                formatCurrency(disc.value)
-                              )}
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const updated = values.discountsList.filter(
-                                  (_, i) => i !== idx
-                                );
-                                setFieldValue("discountsList", updated);
-                              }}
-                              className="text-error hover:bg-error/10 p-0.5 rounded cursor-pointer transition-colors"
-                            >
-                              <DeleteOutlineIcon sx={{ fontSize: 16 }} />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                </div>
-              )}
-            </div>
 
             {/* 3. Target Audience Pricing Section (with SelectionGroup) */}
             <div className="bg-gray-50/70 p-4 sm:p-6 rounded-2xl border border-border space-y-4">
@@ -730,7 +537,7 @@ const Step8Pricing = ({
                               <label className="block mb-1 text-xs font-somar font-medium text-gray-500">
                                 {t("b2c.price")}
                               </label>
-                              <div className="relative flex items-center bg-gray-50/50 rounded-lg border border-border px-3 py-2.5 focus-within:border-mainColor">
+                              <div className={fieldContainerCls}>
                                 <input
                                   type="number"
                                   min="0"
@@ -782,108 +589,7 @@ const Step8Pricing = ({
               </FieldArray>
             </div>
 
-            {/* 4. Bulk / Quantity Tier Pricing Section */}
-            <div className="bg-gray-50/70 p-4 sm:p-6 rounded-2xl border border-border space-y-4">
-              <div className="border-b border-border pb-3 text-start">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-mainColor/10 flex items-center justify-center text-mainColor">
-                    <LocalOfferOutlinedIcon className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-somar font-bold text-base text-titleColor">
-                      {t("b2c.bulkPricingTitle")}
-                    </h3>
-                    <p className="font-somar text-xs text-gray-500">
-                      {t("b2c.bulkPricingSubtitle")}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <FieldArray name="bulkPricing">
-                {({ push, remove }) => {
-                  const bulkList =
-                    Array.isArray(values.bulkPricing) &&
-                    values.bulkPricing.length > 0
-                      ? values.bulkPricing
-                      : [{ minCount: "", price: "" }];
-
-                  return (
-                    <div className="space-y-3">
-                      {bulkList.map((item, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center gap-3 bg-white p-3 sm:p-4 rounded-xl border border-border shadow-xs transition-all hover:border-gray-300"
-                        >
-                          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                              <label className="block mb-1 text-xs font-somar font-medium text-gray-500">
-                                {t("b2c.minCount")}
-                              </label>
-                              <input
-                                type="number"
-                                min="1"
-                                name={`bulkPricing[${index}].minCount`}
-                                value={item.minCount ?? ""}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                placeholder={t("b2c.minCountPlaceholder")}
-                                className="w-full bg-gray-50/50 rounded-lg border border-border px-3 py-2 text-xs sm:text-sm font-somar text-textDark outline-none focus:border-mainColor"
-                              />
-                            </div>
-
-                            <div>
-                              <label className="block mb-1 text-xs font-somar font-medium text-gray-500">
-                                {t("b2c.perPersonPrice")}
-                              </label>
-                              <div className="relative flex items-center bg-gray-50/50 rounded-lg border border-border px-3 py-2 focus-within:border-mainColor">
-                                <input
-                                  type="number"
-                                  min="0"
-                                  name={`bulkPricing[${index}].price`}
-                                  value={item.price ?? ""}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  placeholder={t("b2c.perPersonPricePlaceholder")}
-                                  className="w-full bg-transparent outline-none font-somar text-xs sm:text-sm text-textDark"
-                                />
-                                <span className="ms-2 flex-shrink-0 inline-flex items-center">
-                                  {newSarSmall}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Delete Button (Hidden on first row) */}
-                          {index > 0 ? (
-                            <button
-                              type="button"
-                              onClick={() => remove(index)}
-                              className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer self-center"
-                              title="Delete"
-                            >
-                              <DeleteOutlineIcon className="w-5 h-5" />
-                            </button>
-                          ) : bulkList.length > 1 ? (
-                            <div className="w-9 h-9 flex-shrink-0" aria-hidden="true" />
-                          ) : null}
-                        </div>
-                      ))}
-
-                      <button
-                        type="button"
-                        onClick={() => push({ minCount: "", price: "" })}
-                        className="w-full py-3 rounded-xl border border-mainColor text-mainColor font-somar font-bold text-sm sm:text-base hover:bg-mainColor/5 transition-colors cursor-pointer text-center mt-2"
-                      >
-                        {t("b2c.addBulkTierBtn")}
-                      </button>
-                    </div>
-                  );
-                }}
-              </FieldArray>
-            </div>
-
-            {/* 5. Weekday & Season Pricing Rules (MATCHING FIGMA & SCREENSHOT 1) */}
+            {/* 4. Weekday & Season Pricing Rules (MATCHING FIGMA & SCREENSHOT 1) */}
             <div className="bg-white p-5 sm:p-7 rounded-2xl border border-border space-y-6 shadow-none">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
                 <div className="text-start">
@@ -903,9 +609,9 @@ const Step8Pricing = ({
                       ...prev,
                       {
                         id: nextId,
-                        fromDate: bookingStartDate || "10",
-                        toDate: bookingEndDate || "60",
-                        price: "60",
+                        fromDate: defaultStartDate,
+                        toDate: defaultEndDate,
+                        price: "",
                       },
                     ]);
                   }}
@@ -915,55 +621,13 @@ const Step8Pricing = ({
                 </button>
               </div>
 
-              {/* Condition Builder Row with SelectionGroup */}
+              {/* Condition Builder Row */}
               <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-somar text-textDark">
-                <span className="font-medium text-gray-700 flex-shrink-0">
-                  {t("b2c.ifLabel")}
-                </span>
-
-                {/* Dropdown 1: الموسم */}
-                <div className="w-28 sm:w-32">
-                  <SelectionGroup
-                    name="conditionRuleType"
-                    value={conditionRule.type}
-                    onChange={(e) =>
-                      setConditionRule((prev) => ({
-                        ...prev,
-                        type: e.target.value,
-                      }))
-                    }
-                    placeholder={t("b2c.seasons.season")}
-                    list={seasonTypeList}
-                    border="1px solid var(--color-border)"
-                  />
-                </div>
-
-                <span className="font-medium text-gray-700 flex-shrink-0">
-                  {t("b2c.thenLabel")}
-                </span>
-
-                {/* Dropdown 2: موسم الرياض */}
-                <div className="w-36 sm:w-44">
-                  <SelectionGroup
-                    name="conditionRuleSeason"
-                    value={conditionRule.season}
-                    onChange={(e) =>
-                      setConditionRule((prev) => ({
-                        ...prev,
-                        season: e.target.value,
-                      }))
-                    }
-                    placeholder={t("b2c.seasons.riyadhSeason")}
-                    list={seasonOptionsList}
-                    border="1px solid var(--color-border)"
-                  />
-                </div>
-
                 <span className="font-medium text-gray-700 flex-shrink-0">
                   {t("b2c.priceByLabel")}
                 </span>
 
-                {/* Dropdown 3: زيادة */}
+                {/* Dropdown: زيادة / تخفيض */}
                 <div className="w-28 sm:w-32">
                   <SelectionGroup
                     name="conditionRuleChangeType"
@@ -980,8 +644,8 @@ const Step8Pricing = ({
                   />
                 </div>
 
-                {/* Input: %15 */}
-                <div className="relative flex items-center bg-white rounded-xl border border-gray-200 px-3 py-2 w-24 sm:w-28 focus-within:border-mainColor shadow-2xs">
+                {/* Input: %15 with matching 52px height */}
+                <div className="relative flex items-center bg-white rounded-xl border border-border px-3.5 h-[52px] w-24 sm:w-28 focus-within:border-mainColor shadow-xs">
                   <input
                     type="number"
                     min="1"
@@ -993,7 +657,7 @@ const Step8Pricing = ({
                       }))
                     }
                     placeholder="15"
-                    className="w-full bg-transparent outline-none text-xs sm:text-sm text-center"
+                    className="w-full bg-transparent outline-none font-somar text-xs sm:text-sm text-center text-textDark"
                   />
                   <span className="text-gray-400 ms-1">%</span>
                 </div>
@@ -1001,89 +665,202 @@ const Step8Pricing = ({
 
               {/* Date Range Rows Matching Screenshot 1 */}
               <div className="space-y-4 pt-2">
-                {datePricingRows.map((row, index) => (
-                  <div
-                    key={row.id || index}
-                    className="flex items-end gap-3 sm:gap-4 transition-all"
-                  >
-                    <div className="flex-1">
-                      <label className="block mb-1.5 text-xs sm:text-sm font-somar font-medium text-gray-700 text-start">
-                        {t("b2c.fromDateReadOnly")}
-                      </label>
-                      <div className="relative flex items-center bg-white rounded-xl border border-gray-200 px-3.5 py-2.5 shadow-2xs">
-                        <CalendarMonthOutlinedIcon className="w-5 h-5 text-emerald-600 flex-shrink-0 me-2" />
-                        <input
-                          type="text"
-                          readOnly
-                          disabled
-                          value={bookingStartDate || row.fromDate}
-                          className="w-full bg-transparent outline-none font-somar text-sm text-textDark cursor-default text-end"
-                        />
-                      </div>
-                    </div>
+                {datePricingRows.map((row, index) => {
+                  const isFromPast = Boolean(row.fromDate && row.fromDate < todayStr);
+                  const isToPast = Boolean(row.toDate && row.toDate < todayStr);
+                  const isToBeforeFrom = Boolean(
+                    row.toDate && row.fromDate && row.toDate < row.fromDate
+                  );
 
-                    <div className="flex-1">
-                      <label className="block mb-1.5 text-xs sm:text-sm font-somar font-medium text-gray-700 text-start">
-                        {t("b2c.toDateReadOnly")}
-                      </label>
-                      <div className="relative flex items-center bg-white rounded-xl border border-gray-200 px-3.5 py-2.5 shadow-2xs">
-                        <CalendarMonthOutlinedIcon className="w-5 h-5 text-emerald-600 flex-shrink-0 me-2" />
-                        <input
-                          type="text"
-                          readOnly
-                          disabled
-                          value={bookingEndDate || row.toDate}
-                          className="w-full bg-transparent outline-none font-somar text-sm text-textDark cursor-default text-end"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex-1">
-                      <label className="block mb-1.5 text-xs sm:text-sm font-somar font-medium text-gray-700 text-start">
-                        {t("b2c.priceInSar")}
-                      </label>
-                      <div className="relative flex items-center bg-white rounded-xl border border-gray-200 hover:border-mainColor focus-within:border-mainColor px-3.5 py-2.5 transition-all shadow-2xs">
-                        <input
-                          type="number"
-                          min="0"
-                          value={row.price}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setDatePricingRows((prev) =>
-                              prev.map((r, i) =>
-                                i === index ? { ...r, price: val } : r
-                              )
-                            );
-                            setFieldValue("seasonPrice", val);
+                  return (
+                    <div
+                      key={row.id || index}
+                      className="flex items-start gap-3 sm:gap-4 transition-all"
+                    >
+                      {/* From Date */}
+                      <div className="flex-1">
+                        <label
+                          htmlFor={`fromDate-${row.id || index}`}
+                          className="block mb-1.5 text-xs sm:text-sm font-somar font-medium text-gray-700 text-start"
+                        >
+                          {t("b2c.fromDateReadOnly")}
+                        </label>
+                        <div
+                          onClick={(e) => {
+                            const input = e.currentTarget.querySelector('input[type="date"]');
+                            if (input && typeof input.showPicker === "function") {
+                              try {
+                                input.showPicker();
+                              } catch (err) {}
+                            }
                           }}
-                          placeholder="60"
-                          className="w-full bg-transparent outline-none font-somar text-sm text-textDark text-end"
-                        />
-                        <span className="ms-2 flex-shrink-0 inline-flex items-center justify-center">
-                          {newSarSmall}
-                        </span>
+                          className={cn(
+                            "relative flex items-center bg-white rounded-xl border px-3.5 h-[52px] transition-all duration-200 cursor-pointer",
+                            isFromPast
+                              ? "border-error focus-within:border-error"
+                              : "border-border hover:border-mainColor focus-within:border-mainColor"
+                          )}
+                        >
+                          <CalendarMonthOutlinedIcon
+                            className={cn(
+                              "w-5 h-5 flex-shrink-0 me-2",
+                              isFromPast ? "text-error" : "text-emerald-600"
+                            )}
+                          />
+                          <input
+                            id={`fromDate-${row.id || index}`}
+                            type="date"
+                            min={todayStr}
+                            value={row.fromDate || ""}
+                            onClick={(e) => {
+                              if (typeof e.target.showPicker === "function") {
+                                try {
+                                  e.target.showPicker();
+                                } catch (err) {}
+                              }
+                            }}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setDatePricingRows((prev) =>
+                                prev.map((r, i) => {
+                                  if (i !== index) return r;
+                                  const updated = { ...r, fromDate: val };
+                                  if (val && r.toDate && val > r.toDate) {
+                                    updated.toDate = val;
+                                  }
+                                  return updated;
+                                })
+                              );
+                            }}
+                            className="w-full bg-transparent outline-none font-somar text-sm text-textDark cursor-pointer"
+                          />
+                        </div>
+                        {isFromPast && (
+                          <p className="mt-1 font-somar text-xs text-error text-start">
+                            {t("validations.pastDateError")}
+                          </p>
+                        )}
                       </div>
-                    </div>
 
-                    {/* Delete Button (Hidden on first row) */}
-                    {index > 0 ? (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setDatePricingRows((prev) =>
-                            prev.filter((_, i) => i !== index)
-                          );
-                        }}
-                        className="w-10 h-10 flex items-center justify-center text-error hover:bg-error/10 rounded-xl transition-colors cursor-pointer flex-shrink-0 mb-0.5"
-                        title="حذف"
-                      >
-                        <DeleteOutlineIcon className="w-5 h-5" />
-                      </button>
-                    ) : datePricingRows.length > 1 ? (
-                      <div className="w-10 h-10 flex-shrink-0 mb-0.5" aria-hidden="true" />
-                    ) : null}
-                  </div>
-                ))}
+                      {/* To Date */}
+                      <div className="flex-1">
+                        <label
+                          htmlFor={`toDate-${row.id || index}`}
+                          className="block mb-1.5 text-xs sm:text-sm font-somar font-medium text-gray-700 text-start"
+                        >
+                          {t("b2c.toDateReadOnly")}
+                        </label>
+                        <div
+                          onClick={(e) => {
+                            const input = e.currentTarget.querySelector('input[type="date"]');
+                            if (input && typeof input.showPicker === "function") {
+                              try {
+                                input.showPicker();
+                              } catch (err) {}
+                            }
+                          }}
+                          className={cn(
+                            "relative flex items-center bg-white rounded-xl border px-3.5 h-[52px] transition-all duration-200 cursor-pointer",
+                            isToPast || isToBeforeFrom
+                              ? "border-error focus-within:border-error"
+                              : "border-border hover:border-mainColor focus-within:border-mainColor"
+                          )}
+                        >
+                          <CalendarMonthOutlinedIcon
+                            className={cn(
+                              "w-5 h-5 flex-shrink-0 me-2",
+                              isToPast || isToBeforeFrom
+                                ? "text-error"
+                                : "text-emerald-600"
+                            )}
+                          />
+                          <input
+                            id={`toDate-${row.id || index}`}
+                            type="date"
+                            min={row.fromDate || todayStr}
+                            value={row.toDate || ""}
+                            onClick={(e) => {
+                              if (typeof e.target.showPicker === "function") {
+                                try {
+                                  e.target.showPicker();
+                                } catch (err) {}
+                              }
+                            }}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setDatePricingRows((prev) =>
+                                prev.map((r, i) =>
+                                  i === index ? { ...r, toDate: val } : r
+                                )
+                              );
+                            }}
+                            className="w-full bg-transparent outline-none font-somar text-sm text-textDark cursor-pointer"
+                          />
+                        </div>
+                        {isToPast && (
+                          <p className="mt-1 font-somar text-xs text-error text-start">
+                            {t("validations.pastDateError")}
+                          </p>
+                        )}
+                        {!isToPast && isToBeforeFrom && (
+                          <p className="mt-1 font-somar text-xs text-error text-start">
+                            {t("validations.endDateAfterStartDate")}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Price */}
+                      <div className="flex-1">
+                        <label
+                          htmlFor={`price-${row.id || index}`}
+                          className="block mb-1.5 text-xs sm:text-sm font-somar font-medium text-gray-700 text-start"
+                        >
+                          {t("b2c.priceInSar")}
+                        </label>
+                        <div className={fieldContainerCls}>
+                          <input
+                            id={`price-${row.id || index}`}
+                            type="number"
+                            min="0"
+                            value={row.price}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setDatePricingRows((prev) =>
+                                prev.map((r, i) =>
+                                  i === index ? { ...r, price: val } : r
+                                )
+                              );
+                              setFieldValue("seasonPrice", val);
+                            }}
+                            placeholder="60"
+                            className="w-full bg-transparent outline-none font-somar text-sm text-textDark"
+                          />
+                          <span className="ms-2 flex-shrink-0 inline-flex items-center justify-center">
+                            {newSarSmall}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Delete Button (Hidden on first row) */}
+                      {index > 0 ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setDatePricingRows((prev) =>
+                              prev.filter((_, i) => i !== index)
+                            );
+                          }}
+                          className="w-10 h-10 flex items-center justify-center text-error hover:bg-error/10 rounded-xl transition-colors cursor-pointer flex-shrink-0 mb-0.5 mt-6"
+                          title="حذف"
+                        >
+                          <DeleteOutlineIcon className="w-5 h-5" />
+                        </button>
+                      ) : datePricingRows.length > 1 ? (
+                        <div className="w-10 h-10 flex-shrink-0 mb-0.5 mt-6" aria-hidden="true" />
+                      ) : null}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -1104,9 +881,9 @@ const Step8Pricing = ({
               </p>
             </div>
 
-            {/* 2-column Base Price Fields: تكلفة المنتج الأساسي (Right) & سعر السوق (Left) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-              {/* Product Cost (تكلفة المنتج الأساسي - Right Column in RTL) */}
+            {/* 3-column Base Price Fields: تكلفة المنتج الأساسي & سعر السوق & السعر بعد الخصم */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+              {/* Product Cost (تكلفة المنتج الأساسي) */}
               <div>
                 <label htmlFor="productCost" className={labelCls}>
                   {t("b2b.productCost")}
@@ -1141,7 +918,7 @@ const Step8Pricing = ({
                 )}
               </div>
 
-              {/* Market Price (سعر السوق - Left Column in RTL) */}
+              {/* Market Price (سعر السوق) */}
               <div>
                 <label htmlFor="b2bPrice" className={labelCls}>
                   {t("b2b.marketPrice")}
@@ -1156,7 +933,6 @@ const Step8Pricing = ({
                     onChange={(e) => {
                       const val = e.target.value;
                       setFieldValue("b2bPrice.price", val);
-                      setFieldValue("b2bPrice.finalPrice", val);
                       setFieldValue("b2bPricing.schoolsPrice", val);
                       if (!values.price) {
                         setFieldValue("price", val);
@@ -1172,152 +948,142 @@ const Step8Pricing = ({
                   </span>
                 </div>
               </div>
-            </div>
 
-            {/* Inner Card 1: الخصومات */}
-            <div className="bg-white p-5 sm:p-6 rounded-2xl border border-border space-y-4 shadow-none">
-              <div className="flex items-center justify-between">
-                <div className="text-start">
-                  <h4 className="font-somar font-bold text-base sm:text-lg text-titleColor">
-                    {t("b2b.discountsTitle")}
-                  </h4>
-                  <p className="font-somar text-xs sm:text-sm text-gray-500 mt-0.5">
-                    {t("b2b.discountsSubtitle")}
-                  </p>
-                </div>
-
-                {/* Toggle Switch in Teal */}
-                <label className="inline-flex items-center gap-2.5 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={Boolean(values.b2bEnableDiscounts)}
-                    onChange={(e) =>
-                      setFieldValue("b2bEnableDiscounts", e.target.checked)
-                    }
-                    className="sr-only peer"
-                  />
-                  <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-mainColor"></div>
+              {/* Discounted Price (السعر بعد الخصم) */}
+              <div>
+                <label htmlFor="b2bDiscountedPrice" className={labelCls}>
+                  {t("b2b.discountedPrice")}
                 </label>
-              </div>
-
-              {values.b2bEnableDiscounts && (
-                <div className="space-y-4 pt-2">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* نوع الخصم -> SelectionGroup */}
-                    <div>
-                      <SelectionGroup
-                        name="b2bDiscountStage"
-                        value={values.b2bPricing?.selectedStage || ""}
-                        onChange={(e) =>
-                          setFieldValue("b2bPricing.selectedStage", e.target.value)
-                        }
-                        label={t("b2b.discountType")}
-                        labelClassName={labelCls}
-                        placeholder={t("b2b.selectAcademicStage")}
-                        list={academicStageList}
-                        border="1px solid var(--color-border)"
-                      />
-                    </div>
-
-                    {/* قيمة الخصم */}
-                    <div>
-                      <label className={labelCls}>
-                        {t("b2b.discountValue")}
-                      </label>
-                      <div className={fieldContainerCls}>
-                        <input
-                          type="number"
-                          min="0"
-                          value={values.b2bPricing?.discountValue ?? ""}
-                          onChange={(e) =>
-                            setFieldValue("b2bPricing.discountValue", e.target.value)
-                          }
-                          placeholder={t("b2b.discountValuePlaceholder")}
-                          className="w-full bg-transparent outline-none font-somar text-sm sm:text-base text-textDark placeholder:text-gray-400"
-                        />
-                        <span className="ms-2 flex-shrink-0 inline-flex items-center justify-center">
-                          {newSarSmall}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* البرومو كود */}
-                    <div>
-                      <label className={labelCls}>
-                        {t("b2b.promoCode")}
-                      </label>
-                      <div className={fieldContainerCls}>
-                        <input
-                          type="text"
-                          value={values.b2bPricing?.promoCode ?? ""}
-                          onChange={(e) =>
-                            setFieldValue(
-                              "b2bPricing.promoCode",
-                              e.target.value.toUpperCase()
-                            )
-                          }
-                          placeholder={t("b2b.promoCodePlaceholder")}
-                          className="w-full bg-transparent outline-none font-somar text-sm sm:text-base text-textDark uppercase placeholder:text-gray-400"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* اضف الخصومات Button */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (values.b2bPricing?.discountValue) {
-                        const currentList = values.b2bDiscountsList || [];
-                        setFieldValue("b2bDiscountsList", [
-                          ...currentList,
-                          {
-                            stage: values.b2bPricing?.selectedStage,
-                            value: values.b2bPricing?.discountValue,
-                            code: values.b2bPricing?.promoCode,
-                            id: Date.now(),
-                          },
-                        ]);
+                <div className={fieldContainerCls}>
+                  <input
+                    id="b2bDiscountedPrice"
+                    type="number"
+                    min="0"
+                    name="b2bPrice.finalPrice"
+                    value={
+                      values.b2bPrice?.finalPrice ??
+                      values.discountedPrice ??
+                      ""
+                    }
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setFieldValue("b2bPrice.finalPrice", val);
+                      if (!values.discountedPrice) {
+                        setFieldValue("discountedPrice", val);
                       }
                     }}
-                    className="w-full py-3 rounded-xl border border-mainColor text-mainColor font-somar font-bold text-sm sm:text-base hover:bg-mainColor/5 transition-colors cursor-pointer text-center"
-                  >
-                    {t("b2b.addDiscountsBtn")}
-                  </button>
+                    onBlur={handleBlur}
+                    placeholder={t("b2b.discountedPricePlaceholder")}
+                    className="w-full bg-transparent outline-none font-somar text-sm sm:text-base text-textDark placeholder:text-gray-400"
+                  />
+                  <span className="ms-2 flex-shrink-0 inline-flex items-center justify-center">
+                    {newSarSmall}
+                  </span>
+                </div>
+              </div>
+            </div>
 
-                  {/* Added B2B discounts badges */}
-                  {Array.isArray(values.b2bDiscountsList) &&
-                    values.b2bDiscountsList.length > 0 && (
-                      <div className="flex flex-wrap gap-2 pt-1">
-                        {values.b2bDiscountsList.map((disc, idx) => (
-                          <div
-                            key={disc.id || idx}
-                            className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-border rounded-xl text-xs font-somar text-textDark shadow-xs"
-                          >
-                            <span className="font-bold text-mainColor">
-                              {disc.code || `#${idx + 1}`}:
-                            </span>
-                            <span className="inline-flex items-center gap-1">
-                              {formatCurrency(disc.value)}
-                            </span>
+            {/* Bulk / Quantity Tier Pricing Section (التسعير الكمي) */}
+            <div className="bg-gray-50/70 p-4 sm:p-6 rounded-2xl border border-border space-y-4">
+              <div className="border-b border-border pb-3 text-start">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-mainColor/10 flex items-center justify-center text-mainColor">
+                    <LocalOfferOutlinedIcon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-somar font-bold text-base text-titleColor">
+                      {t("b2b.bulkPricingTitle")}
+                    </h3>
+                    <p className="font-somar text-xs text-gray-500">
+                      {t("b2b.bulkPricingSubtitle")}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <FieldArray name="bulkPricing">
+                {({ push, remove }) => {
+                  const bulkList =
+                    Array.isArray(values.bulkPricing) &&
+                    values.bulkPricing.length > 0
+                      ? values.bulkPricing
+                      : [{ minCount: "", price: "" }];
+
+                  return (
+                    <div className="space-y-3">
+                      {bulkList.map((item, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center gap-3 bg-white p-3 sm:p-4 rounded-xl border border-border shadow-xs transition-all hover:border-gray-300"
+                        >
+                          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                              <label className="block mb-1 text-xs font-somar font-medium text-gray-500">
+                                {t("b2b.minCount")}
+                              </label>
+                              <div className={fieldContainerCls}>
+                                <input
+                                  type="number"
+                                  min="1"
+                                  name={`bulkPricing[${index}].minCount`}
+                                  value={item.minCount ?? ""}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  placeholder={t("b2b.minCountPlaceholder")}
+                                  className="w-full bg-transparent outline-none font-somar text-xs sm:text-sm text-textDark"
+                                />
+                              </div>
+                            </div>
+
+                            <div>
+                              <label className="block mb-1 text-xs font-somar font-medium text-gray-500">
+                                {t("b2b.perPersonPrice")}
+                              </label>
+                              <div className={fieldContainerCls}>
+                                <input
+                                  type="number"
+                                  min="0"
+                                  name={`bulkPricing[${index}].price`}
+                                  value={item.price ?? ""}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  placeholder={t("b2b.perPersonPricePlaceholder")}
+                                  className="w-full bg-transparent outline-none font-somar text-xs sm:text-sm text-textDark"
+                                />
+                                <span className="ms-2 flex-shrink-0 inline-flex items-center">
+                                  {newSarSmall}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Delete Button (Hidden on first row) */}
+                          {index > 0 ? (
                             <button
                               type="button"
-                              onClick={() => {
-                                const updated = values.b2bDiscountsList.filter(
-                                  (_, i) => i !== idx
-                                );
-                                setFieldValue("b2bDiscountsList", updated);
-                              }}
-                              className="text-error hover:bg-error/10 p-0.5 rounded cursor-pointer transition-colors"
+                              onClick={() => remove(index)}
+                              className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer self-center"
+                              title="Delete"
                             >
-                              <DeleteOutlineIcon sx={{ fontSize: 16 }} />
+                              <DeleteOutlineIcon className="w-5 h-5" />
                             </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                </div>
-              )}
+                          ) : bulkList.length > 1 ? (
+                            <div className="w-9 h-9 flex-shrink-0" aria-hidden="true" />
+                          ) : null}
+                        </div>
+                      ))}
+
+                      <button
+                        type="button"
+                        onClick={() => push({ minCount: "", price: "" })}
+                        className="w-full py-3 rounded-xl border border-mainColor text-mainColor font-somar font-bold text-sm sm:text-base hover:bg-mainColor/5 transition-colors cursor-pointer text-center mt-2"
+                      >
+                        {t("b2b.addBulkTierBtn")}
+                      </button>
+                    </div>
+                  );
+                }}
+              </FieldArray>
             </div>
 
             {/* Inner Card 2: المشرف / المعلم مجاناً */}

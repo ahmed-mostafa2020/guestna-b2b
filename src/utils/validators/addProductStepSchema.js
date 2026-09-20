@@ -158,6 +158,9 @@ export const createStep2Schema = (t) => {
   const youtubeInvalidError =
     t("providerProfile.products.newAddPage.validations.youtubeInvalidError") ||
     "Please enter a valid YouTube URL";
+  const videoOrYoutubeExclusiveError =
+    t("providerProfile.products.newAddPage.validations.videoOrYoutubeExclusiveError") ||
+    "You can only upload a video file or add a YouTube URL, not both";
 
   return Yup.object().shape({
     thumbnail: Yup.mixed()
@@ -202,6 +205,11 @@ export const createStep2Schema = (t) => {
 
     video: Yup.mixed()
       .nullable()
+      .test("is-exclusive", videoOrYoutubeExclusiveError, function (val) {
+        if (!val) return true;
+        const yt = this.parent?.youtubeUrl;
+        return !yt || yt.trim() === "";
+      })
       .test("is-valid-video", videoFormatError, (val) => {
         if (!val) return true;
         if (typeof val === "string") return true;
@@ -219,7 +227,7 @@ export const createStep2Schema = (t) => {
       .test("is-valid-video-size", videoSizeError, (val) => {
         if (!val) return true;
         if (val instanceof File || val instanceof Blob) {
-          const maxSize = 50 * 1024 * 1024; // 50MB
+          const maxSize = 20 * 1024 * 1024; // 20MB (safe limit for HTTP upload)
           return val.size <= maxSize;
         }
         return true;
@@ -228,6 +236,10 @@ export const createStep2Schema = (t) => {
 
     youtubeUrl: Yup.string()
       .trim()
+      .test("is-exclusive", videoOrYoutubeExclusiveError, function (val) {
+        if (!val || val.trim() === "") return true;
+        return !this.parent?.video;
+      })
       .test("is-valid-youtube", youtubeInvalidError, (val) => {
         if (!val || val.trim() === "") return true;
         const youtubeRegex =
@@ -344,21 +356,83 @@ export const STEP_4_FIELD_NAMES = [
 ];
 
 /**
+ * Helper to parse time string (e.g. "09:00", "17:00", "09:00AM", "05:01 PM") into minutes from midnight
+ */
+const parseTimeToMinutes = (timeStr) => {
+  if (!timeStr || typeof timeStr !== "string") return null;
+  const trimmed = timeStr.trim();
+  const amPmMatch = trimmed.match(/^(\d{1,2}):(\d{2})\s*(AM|PM|am|pm)$/i);
+  if (amPmMatch) {
+    let hours = parseInt(amPmMatch[1], 10);
+    const minutes = parseInt(amPmMatch[2], 10);
+    const period = amPmMatch[3].toUpperCase();
+    if (period === "PM" && hours < 12) hours += 12;
+    if (period === "AM" && hours === 12) hours = 0;
+    return hours * 60 + minutes;
+  }
+  const match24 = trimmed.match(/^(\d{1,2}):(\d{2})$/);
+  if (match24) {
+    const hours = parseInt(match24[1], 10);
+    const minutes = parseInt(match24[2], 10);
+    return hours * 60 + minutes;
+  }
+  return null;
+};
+
+/**
  * Yup schema for Step 4 (Booking Dates) of the multi-step Add Product flow
  */
 export const createStepBookingDatesSchema = (t) => {
   const startDateReq = t("providerProfile.products.newAddPage.validations.startDateRequired");
   const endDateReq = t("providerProfile.products.newAddPage.validations.endDateRequired");
+  const startDatePastError =
+    t("providerProfile.products.newAddPage.validations.startDatePastError") ||
+    "Start date cannot be in the past";
+  const endDateBeforeStartDate =
+    t("providerProfile.products.newAddPage.validations.endDateBeforeStartDate") ||
+    "End date must be on or after start date";
+  const dateRangeTooLong =
+    t("providerProfile.products.newAddPage.validations.dateRangeTooLong") ||
+    "Date range must not exceed one year (365 days)";
+  const toHourAfterFrom =
+    t("providerProfile.products.newAddPage.validations.toHourAfterFrom") ||
+    "End time must be after start time";
   const deadlineReq = t("providerProfile.products.newAddPage.validations.bookingDeadlineRequired");
   const patternReq = t("providerProfile.products.newAddPage.validations.recurrencePatternRequired");
   const daysReq = t("providerProfile.products.newAddPage.validations.daysRequired");
   const calReq = t("providerProfile.products.newAddPage.validations.calendarRequired");
+  const calPastError =
+    t("providerProfile.products.newAddPage.validations.calendarPastDateError") ||
+    "The selected date cannot be in the past";
   const fromHourReq = t("providerProfile.products.newAddPage.validations.fromHourRequired");
   const toHourReq = t("providerProfile.products.newAddPage.validations.toHourRequired");
 
   return Yup.object().shape({
-    fromDay: Yup.string().trim().required(startDateReq),
-    toDay: Yup.string().trim().required(endDateReq),
+    fromDay: Yup.string()
+      .trim()
+      .required(startDateReq)
+      .test("fromDay-not-in-past", startDatePastError, (val) => {
+        if (!val) return true;
+        const d = new Date(val);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return d >= today;
+      }),
+    toDay: Yup.string()
+      .trim()
+      .required(endDateReq)
+      .test("toDay-after-fromDay", endDateBeforeStartDate, function (val) {
+        const { fromDay } = this.parent;
+        if (!val || !fromDay) return true;
+        return new Date(val) >= new Date(fromDay);
+      })
+      .test("toDay-range-limit", dateRangeTooLong, function (val) {
+        const { fromDay } = this.parent;
+        if (!val || !fromDay) return true;
+        const diffMs = new Date(val) - new Date(fromDay);
+        const diffDays = diffMs / (1000 * 60 * 60 * 24);
+        return diffDays <= 365;
+      }),
     bookingBefore: Yup.number().typeError(deadlineReq).min(0, deadlineReq).required(deadlineReq),
     recurrencePattern: Yup.string().trim().required(patternReq),
     selectedDays: Yup.array().when("recurrencePattern", {
@@ -368,14 +442,50 @@ export const createStepBookingDatesSchema = (t) => {
     }),
     monthDay: Yup.string().when("recurrencePattern", {
       is: "MONTHLY",
-      then: (schema) => schema.trim().required(calReq),
+      then: (schema) =>
+        schema
+          .trim()
+          .required(calReq)
+          .test("not-in-past", calPastError, (val) => {
+            if (!val) return true;
+            const selectedDate = new Date(val);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return selectedDate >= today;
+          }),
       otherwise: (schema) => schema.optional(),
     }),
+    fromHour: Yup.string().trim().optional(),
+    toHour: Yup.string()
+      .trim()
+      .optional()
+      .test("is-toHour-after-fromHour", toHourAfterFrom, function (val) {
+        const { fromHour } = this.parent;
+        if (!val || !fromHour) return true;
+        const fromMins = parseTimeToMinutes(fromHour);
+        const toMins = parseTimeToMinutes(val);
+        if (fromMins !== null && toMins !== null) {
+          return toMins > fromMins;
+        }
+        return true;
+      }),
     availableTimes: Yup.array()
       .of(
         Yup.object().shape({
           from: Yup.string().trim().required(fromHourReq),
-          to: Yup.string().trim().required(toHourReq),
+          to: Yup.string()
+            .trim()
+            .required(toHourReq)
+            .test("is-to-after-from", toHourAfterFrom, function (val) {
+              const { from } = this.parent;
+              if (!val || !from) return true;
+              const fromMins = parseTimeToMinutes(from);
+              const toMins = parseTimeToMinutes(val);
+              if (fromMins !== null && toMins !== null) {
+                return toMins > fromMins;
+              }
+              return true;
+            }),
         })
       )
       .optional(),
@@ -397,10 +507,134 @@ export const STEP_BOOKING_DATES_FIELD_NAMES = [
 
 /**
  * Yup schema for Step 5 (Services) of the multi-step Add Product flow
+/**
+ * Helper to build a bilingual array schema for list steps (e.g. supplies, exclusions, benefits)
+ */
+const createBilingualListFieldSchema = ({
+  arInvalid,
+  enInvalid,
+  arRequired,
+  enRequired,
+}) => {
+  return Yup.object().shape({
+    ar: Yup.array()
+      .of(
+        Yup.string()
+          .trim()
+          .test("is-ar-required-if-en-or-list-active", arRequired, function (val) {
+            const path = this.path;
+            const index = parseInt(path?.match(/\d+/)?.[0] || "0", 10);
+            const parentObj = this.from?.[1]?.value || this.from?.[0]?.value;
+            const enVal = parentObj?.en?.[index];
+
+            const hasAnyAr =
+              Array.isArray(parentObj?.ar) &&
+              parentObj.ar.some(
+                (s) => typeof s === "string" && s.trim().length > 0
+              );
+            const hasAnyEn =
+              Array.isArray(parentObj?.en) &&
+              parentObj.en.some(
+                (s) => typeof s === "string" && s.trim().length > 0
+              );
+            const isSectionActive = hasAnyAr || hasAnyEn;
+
+            // If section has no content at all, allow empty
+            if (!isSectionActive) return true;
+
+            // If the row has an English entry, Arabic is required
+            if (enVal && typeof enVal === "string" && enVal.trim().length > 0) {
+              return Boolean(val && val.trim().length > 0);
+            }
+
+            // If section is active and this row has no English entry, but is an extra empty row
+            const isCurrentRowEmpty =
+              (!val || val.trim().length === 0) &&
+              (!enVal || enVal.trim().length === 0);
+            if (isCurrentRowEmpty) {
+              return false;
+            }
+
+            return true;
+          })
+          .test("is-arabic-only", arInvalid, (val) => {
+            if (!val || val.trim().length === 0) return true;
+            return (
+              ARABIC_LETTERS_REGEX.test(val) && !ENGLISH_LETTERS_REGEX.test(val)
+            );
+          })
+      )
+      .optional(),
+
+    en: Yup.array()
+      .of(
+        Yup.string()
+          .trim()
+          .test("is-en-required-if-ar-or-list-active", enRequired, function (val) {
+            const path = this.path;
+            const index = parseInt(path?.match(/\d+/)?.[0] || "0", 10);
+            const parentObj = this.from?.[1]?.value || this.from?.[0]?.value;
+            const arVal = parentObj?.ar?.[index];
+
+            const hasAnyAr =
+              Array.isArray(parentObj?.ar) &&
+              parentObj.ar.some(
+                (s) => typeof s === "string" && s.trim().length > 0
+              );
+            const hasAnyEn =
+              Array.isArray(parentObj?.en) &&
+              parentObj.en.some(
+                (s) => typeof s === "string" && s.trim().length > 0
+              );
+            const isSectionActive = hasAnyAr || hasAnyEn;
+
+            // If section has no content at all, allow empty
+            if (!isSectionActive) return true;
+
+            // If the row has an Arabic entry, English is required
+            if (arVal && typeof arVal === "string" && arVal.trim().length > 0) {
+              return Boolean(val && val.trim().length > 0);
+            }
+
+            // If section is active and this row has no Arabic entry, but is an extra empty row
+            const isCurrentRowEmpty =
+              (!val || val.trim().length === 0) &&
+              (!arVal || arVal.trim().length === 0);
+            if (isCurrentRowEmpty) {
+              return false;
+            }
+
+            return true;
+          })
+          .test("is-english-only", enInvalid, (val) => {
+            if (!val || val.trim().length === 0) return true;
+            return (
+              ENGLISH_LETTERS_REGEX.test(val) && !ARABIC_LETTERS_REGEX.test(val)
+            );
+          })
+      )
+      .optional(),
+  });
+};
+
+/**
+ * Yup schema for Step 5 (Services) of the multi-step Add Product flow
  */
 export const createStep5Schema = (t) => {
   const serviceReq = t("providerProfile.products.newAddPage.validations.serviceRequired");
   const servicesMin = t("providerProfile.products.newAddPage.validations.servicesMin");
+  const arOnlyError =
+    t("providerProfile.products.newAddPage.validations.arOnlyInvalid") ||
+    "يرجى استخدام الحروف العربية فقط";
+  const enOnlyError =
+    t("providerProfile.products.newAddPage.validations.enOnlyInvalid") ||
+    "يرجى استخدام الحروف الإنجليزية فقط";
+  const notesArInvalid =
+    t("providerProfile.products.newAddPage.validations.notesArInvalid") ||
+    arOnlyError;
+  const notesEnInvalid =
+    t("providerProfile.products.newAddPage.validations.notesEnInvalid") ||
+    enOnlyError;
 
   return Yup.object().shape({
     services: Yup.array()
@@ -414,42 +648,142 @@ export const createStep5Schema = (t) => {
             .optional(),
           note: Yup.object()
             .shape({
-              en: Yup.string().optional(),
-              ar: Yup.string().optional(),
+              ar: Yup.string()
+                .trim()
+                .test("is-note-ar-valid", notesArInvalid, (val) => {
+                  if (!val || val.trim() === "") return true;
+                  return (
+                    ARABIC_LETTERS_REGEX.test(val) &&
+                    !ENGLISH_LETTERS_REGEX.test(val)
+                  );
+                })
+                .optional(),
+              en: Yup.string()
+                .trim()
+                .test("is-note-en-valid", notesEnInvalid, (val) => {
+                  if (!val || val.trim() === "") return true;
+                  return (
+                    ENGLISH_LETTERS_REGEX.test(val) &&
+                    !ARABIC_LETTERS_REGEX.test(val)
+                  );
+                })
+                .optional(),
             })
             .optional(),
         })
       )
       .min(1, servicesMin)
       .required(servicesMin),
+
+    branchServices: Yup.lazy((obj) => {
+      if (!obj || typeof obj !== "object") return Yup.mixed().optional();
+      const shape = {};
+      Object.keys(obj).forEach((branchId) => {
+        shape[branchId] = Yup.array().of(
+          Yup.object().shape({
+            service: Yup.string().trim().optional(),
+            price: Yup.number()
+              .transform((val, orig) => (orig === "" ? 0 : val))
+              .min(0)
+              .nullable()
+              .optional(),
+            note: Yup.object()
+              .shape({
+                ar: Yup.string()
+                  .trim()
+                  .test("is-branch-note-ar-valid", notesArInvalid, (val) => {
+                    if (!val || val.trim() === "") return true;
+                    return (
+                      ARABIC_LETTERS_REGEX.test(val) &&
+                      !ENGLISH_LETTERS_REGEX.test(val)
+                    );
+                  })
+                  .optional(),
+                en: Yup.string()
+                  .trim()
+                  .test("is-branch-note-en-valid", notesEnInvalid, (val) => {
+                    if (!val || val.trim() === "") return true;
+                    return (
+                      ENGLISH_LETTERS_REGEX.test(val) &&
+                      !ARABIC_LETTERS_REGEX.test(val)
+                    );
+                  })
+                  .optional(),
+              })
+              .optional(),
+          })
+        );
+      });
+      return Yup.object().shape(shape);
+    }),
   });
 };
 
-export const STEP_5_FIELD_NAMES = ["services", "services[0].service"];
+export const STEP_5_FIELD_NAMES = [
+  "services",
+  "services[0].service",
+  "services[0].note.ar",
+  "services[0].note.en",
+];
 
 /**
  * Yup schema for Step 6 (Product Details: Supplies, Exclusions & Benefits) of the multi-step Add Product flow
  */
-export const createStep6Schema = (_t) => {
+export const createStep6Schema = (t) => {
+  const arOnlyError =
+    t("providerProfile.products.newAddPage.validations.arOnlyInvalid") ||
+    "يرجى استخدام الحروف العربية فقط";
+  const enOnlyError =
+    t("providerProfile.products.newAddPage.validations.enOnlyInvalid") ||
+    "يرجى استخدام الحروف الإنجليزية فقط";
+
+  const itemArRequired =
+    t("providerProfile.products.newAddPage.validations.itemArRequired") ||
+    "يرجى إدخال هذا الحقل بالعربي";
+  const itemEnRequired =
+    t("providerProfile.products.newAddPage.validations.itemEnRequired") ||
+    "يرجى إدخال هذا الحقل بالإنجليزي";
+
+  const suppliesArInvalid =
+    t("providerProfile.products.newAddPage.validations.suppliesArInvalid") ||
+    arOnlyError;
+  const suppliesEnInvalid =
+    t("providerProfile.products.newAddPage.validations.suppliesEnInvalid") ||
+    enOnlyError;
+
+  const exclusionsArInvalid =
+    t("providerProfile.products.newAddPage.validations.exclusionsArInvalid") ||
+    arOnlyError;
+  const exclusionsEnInvalid =
+    t("providerProfile.products.newAddPage.validations.exclusionsEnInvalid") ||
+    enOnlyError;
+
+  const benefitsArInvalid =
+    t("providerProfile.products.newAddPage.validations.benefitsArInvalid") ||
+    arOnlyError;
+  const benefitsEnInvalid =
+    t("providerProfile.products.newAddPage.validations.benefitsEnInvalid") ||
+    enOnlyError;
+
   return Yup.object().shape({
-    mustHaveItems: Yup.object()
-      .shape({
-        ar: Yup.array().of(Yup.string()).optional(),
-        en: Yup.array().of(Yup.string()).optional(),
-      })
-      .optional(),
-    exemptedFromTrip: Yup.object()
-      .shape({
-        ar: Yup.array().of(Yup.string()).optional(),
-        en: Yup.array().of(Yup.string()).optional(),
-      })
-      .optional(),
-    benefits: Yup.object()
-      .shape({
-        ar: Yup.array().of(Yup.string()).optional(),
-        en: Yup.array().of(Yup.string()).optional(),
-      })
-      .optional(),
+    mustHaveItems: createBilingualListFieldSchema({
+      arInvalid: suppliesArInvalid,
+      enInvalid: suppliesEnInvalid,
+      arRequired: itemArRequired,
+      enRequired: itemEnRequired,
+    }),
+    exemptedFromTrip: createBilingualListFieldSchema({
+      arInvalid: exclusionsArInvalid,
+      enInvalid: exclusionsEnInvalid,
+      arRequired: itemArRequired,
+      enRequired: itemEnRequired,
+    }),
+    benefits: createBilingualListFieldSchema({
+      arInvalid: benefitsArInvalid,
+      enInvalid: benefitsEnInvalid,
+      arRequired: itemArRequired,
+      enRequired: itemEnRequired,
+    }),
   });
 };
 

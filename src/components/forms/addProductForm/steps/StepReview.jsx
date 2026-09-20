@@ -10,7 +10,6 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import GroupsIcon from "@mui/icons-material/Groups";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import SearchIcon from "@mui/icons-material/Search";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import EditIcon from "@mui/icons-material/Edit";
@@ -18,6 +17,11 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import PlaceIcon from "@mui/icons-material/Place";
 import SchoolIcon from "@mui/icons-material/School";
 import CategoryIcon from "@mui/icons-material/Category";
+import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
+import OndemandVideoOutlinedIcon from "@mui/icons-material/OndemandVideoOutlined";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
 
 // Reusable Components
 import FilterAccordion from "@components/filtersBox/FilterAccordion";
@@ -312,6 +316,52 @@ const StepReview = ({
     );
   }, [activeView, values.b2bPrice, values.b2cPrice, values.b2bPricing, values.b2cPricing, values.price]);
 
+  // Active Discounted Price (finalPrice / discountedPrice) — only if set and less than base price
+  const activeDiscount = useMemo(() => {
+    const discounted =
+      activeView === "B2B"
+        ? values.b2bPrice?.finalPrice || values.discountedPrice || 0
+        : values.b2cPrice?.finalPrice || values.discountedPrice || 0;
+    return Number(discounted) > 0 && Number(discounted) < Number(activePrice)
+      ? Number(discounted)
+      : 0;
+  }, [activeView, activePrice, values.b2bPrice, values.b2cPrice, values.discountedPrice]);
+
+  // Discount percentage for display
+  const discountPercent = useMemo(() => {
+    if (!activeDiscount || !activePrice) return 0;
+    return Math.round(((Number(activePrice) - Number(activeDiscount)) / Number(activePrice)) * 100);
+  }, [activePrice, activeDiscount]);
+
+  // Bulk pricing list for B2B
+  const bulkPricingList = useMemo(() => {
+    const list =
+      activeView === "B2B" && Array.isArray(values.bulkPricing) && values.bulkPricing.length > 0
+        ? values.bulkPricing
+        : Array.isArray(values.b2bBulkPricing) && values.b2bBulkPricing.length > 0
+        ? values.b2bBulkPricing
+        : [];
+    return list.filter((item) => item && (item.minCount || item.price));
+  }, [activeView, values.bulkPricing, values.b2bBulkPricing]);
+
+  // Video URL resolution
+  const resolvedVideoUrl = useMemo(() => {
+    if (values.videoUrl && typeof values.videoUrl === "string") return values.videoUrl;
+    if (values.youtubeUrl && typeof values.youtubeUrl === "string") return values.youtubeUrl;
+    if (values.video) {
+      if (typeof values.video === "string") return values.video;
+      if (values.video instanceof File || values.video instanceof Blob) {
+        try {
+          return URL.createObjectURL(values.video);
+        } catch (e) {
+          return null;
+        }
+      }
+      if (typeof values.video === "object" && values.video.url) return values.video.url;
+    }
+    return null;
+  }, [values.video, values.videoUrl, values.youtubeUrl]);
+
   // Weekday Pricing List based on active tab
   const weekdayPricingList = useMemo(() => {
     const list =
@@ -422,7 +472,7 @@ const StepReview = ({
               </span>
             ))}
           </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-titleColor">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-mainColor text-start">
             {productName}
           </h1>
         </div>
@@ -450,12 +500,12 @@ const StepReview = ({
         </div>
       </div>
 
-      {/* 2. Gallery Grid Section */}
+      {/* 2. Gallery Grid Section matching Figma 3-column layout */}
       <div className="rounded-2xl overflow-hidden bg-gray-50 border border-border p-3 sm:p-4">
         {galleryUrls.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4 items-center">
-            {/* Main Featured Image */}
-            <div className="md:col-span-6 relative rounded-2xl overflow-hidden group h-[260px] sm:h-[360px] md:h-[420px]">
+            {/* Main Featured Image (5 of 12) */}
+            <div className="md:col-span-5 relative rounded-2xl overflow-hidden group h-[260px] sm:h-[360px] md:h-[420px]">
               <ImageWithPlaceholder
                 src={galleryUrls[0]}
                 alt={productName}
@@ -475,7 +525,7 @@ const StepReview = ({
               </button>
             </div>
 
-            {/* Middle Stacked Images */}
+            {/* Middle Stacked Images (3 of 12) */}
             <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-1 gap-3 sm:gap-4 h-[260px] sm:h-[360px] md:h-[420px]">
               {galleryUrls[1] ? (
                 <div className="rounded-2xl overflow-hidden h-[125px] sm:h-[175px] md:h-[200px]">
@@ -510,19 +560,58 @@ const StepReview = ({
               )}
             </div>
 
-            {/* End / Right Image */}
-            <div className="md:col-span-3 rounded-2xl overflow-hidden h-[260px] sm:h-[360px] md:h-[420px]">
-              {galleryUrls[3] ? (
-                <ImageWithPlaceholder
-                  src={galleryUrls[3]}
-                  alt={`${productName} 4`}
-                  width={400}
-                  height={500}
-                  className="w-full h-full object-cover"
-                />
+            {/* End / Right: Video Player or Media 4 (4 of 12) */}
+            <div className="md:col-span-4 rounded-2xl overflow-hidden h-[260px] sm:h-[360px] md:h-[420px] relative bg-neutral-900 flex items-center justify-center">
+              {resolvedVideoUrl ? (
+                <div className="w-full h-full relative group">
+                  {resolvedVideoUrl.includes("youtube.com") || resolvedVideoUrl.includes("youtu.be") ? (
+                    <iframe
+                      src={resolvedVideoUrl.replace("watch?v=", "embed/")}
+                      title="Product Video"
+                      className="w-full h-full object-cover border-0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <video
+                      src={resolvedVideoUrl}
+                      controls
+                      className="w-full h-full object-cover"
+                      poster={galleryUrls[0] || ""}
+                    />
+                  )}
+                </div>
+              ) : galleryUrls[3] ? (
+                <div className="w-full h-full relative group">
+                  <ImageWithPlaceholder
+                    src={galleryUrls[3]}
+                    alt={`${productName} 4`}
+                    width={450}
+                    height={500}
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Figma-like simulated video control overlay */}
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 flex items-center justify-between text-white text-xs">
+                    <div className="flex items-center gap-2">
+                      <button type="button" className="p-1 hover:text-mainColor transition-colors">
+                        <PlayArrowIcon className="w-4 h-4" />
+                      </button>
+                      <button type="button" className="p-1 hover:text-mainColor transition-colors">
+                        <VolumeUpIcon className="w-4 h-4" />
+                      </button>
+                      <div className="w-24 sm:w-32 bg-white/30 rounded-full h-1">
+                        <div className="bg-white h-full w-2/3 rounded-full" />
+                      </div>
+                    </div>
+                    <button type="button" className="p-1 hover:text-mainColor transition-colors">
+                      <FullscreenIcon className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
               ) : (
-                <div className="w-full h-full rounded-2xl bg-gray-100 border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-xs">
-                  {tSub("galleryImages")}
+                <div className="w-full h-full rounded-2xl bg-gray-100 border border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 text-xs p-4 gap-2">
+                  <OndemandVideoOutlinedIcon className="w-8 h-8 text-gray-400" />
+                  <span>{tSub("productVideo")} - {tSub("notAttached")}</span>
                 </div>
               )}
             </div>
@@ -534,15 +623,15 @@ const StepReview = ({
         )}
       </div>
 
-      {/* 3. B2B / B2C Toggle Tabs */}
-      <div className="flex items-center justify-center gap-3 pt-2">
+      {/* 3. B2B / B2C Toggle Bar matching Figma */}
+      <div className="w-full bg-[#0B737F] p-1.5 rounded-2xl flex items-center gap-2 shadow-xs">
         <button
           type="button"
           onClick={() => setActiveView("B2B")}
-          className={`px-7 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-xs ${
+          className={`flex-1 py-3 px-6 rounded-xl text-sm sm:text-base font-bold transition-all cursor-pointer text-center ${
             activeView === "B2B"
-              ? "bg-mainColor text-white shadow-md scale-105"
-              : "bg-gray-100 text-titleColor hover:bg-gray-200"
+              ? "bg-white text-[#0B737F] shadow-sm"
+              : "text-white hover:bg-white/10"
           }`}
         >
           {tSub("reviewB2bTab")}
@@ -550,10 +639,10 @@ const StepReview = ({
         <button
           type="button"
           onClick={() => setActiveView("B2C")}
-          className={`px-7 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-xs ${
+          className={`flex-1 py-3 px-6 rounded-xl text-sm sm:text-base font-bold transition-all cursor-pointer text-center ${
             activeView === "B2C"
-              ? "bg-mainColor text-white shadow-md scale-105"
-              : "bg-gray-100 text-titleColor hover:bg-gray-200"
+              ? "bg-white text-[#0B737F] shadow-sm"
+              : "text-white hover:bg-white/10"
           }`}
         >
           {tSub("reviewB2cTab")}
@@ -562,7 +651,130 @@ const StepReview = ({
 
       {/* 4. Main Two-Column Trip Details Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column: Accordions (8 of 12) */}
+        {/* Left Column: Sidebar Pricing Card (4 of 12) */}
+        <div className="lg:col-span-4 lg:sticky lg:top-4 space-y-4">
+          <FrameWithImagedHeader
+            withBorder={true}
+            className="shadow-md rounded-2xl overflow-hidden"
+          >
+            {/* Price Section with Discount support */}
+            <div className="space-y-1 pb-4 border-b border-border text-start">
+              <span className="text-xs text-subtitleColor font-medium block">
+                {tSub("reviewPriceStartsFrom")}
+              </span>
+              {activeDiscount > 0 ? (
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl font-extrabold text-mainColor">
+                      {formatCurrency(activeDiscount)}
+                    </span>
+                    <span className="line-through text-sm text-subtitleColor font-normal">
+                      {formatCurrency(activePrice)}
+                    </span>
+                  </div>
+                  <span className="inline-flex w-fit px-2.5 py-0.5 text-xs font-bold text-red-600 bg-red-50 rounded-full border border-red-200">
+                    {tSub("reviewDiscountBadge", { percent: discountPercent })}
+                  </span>
+                </div>
+              ) : (
+                <div className="text-3xl font-extrabold text-mainColor">
+                  {formatCurrency(activePrice)}
+                </div>
+              )}
+            </div>
+
+            {/* Meta Rows matching Figma */}
+            <div className="space-y-3.5 text-xs sm:text-sm text-subtitleColor py-3 text-start">
+              {/* Date Range */}
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <span className="text-[11px] text-subtitleColor block">
+                    {tSub("reviewDate")}
+                  </span>
+                  <span className="text-titleColor font-bold text-sm block">
+                    {dateRangeStr}
+                  </span>
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-teal-50 text-mainColor flex items-center justify-center flex-shrink-0">
+                  <CalendarTodayIcon className="w-4 h-4" />
+                </div>
+              </div>
+
+              {/* Activity Duration */}
+              {durationHours > 0 && (
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <span className="text-[11px] text-subtitleColor block">
+                      {tSub("reviewActivityDuration")}
+                    </span>
+                    <span className="text-titleColor font-bold text-sm block">
+                      {durationHours} {tSub("reviewHours")}
+                    </span>
+                  </div>
+                  <div className="w-8 h-8 rounded-lg bg-teal-50 text-mainColor flex items-center justify-center flex-shrink-0">
+                    <AccessTimeIcon className="w-4 h-4" />
+                  </div>
+                </div>
+              )}
+
+              {/* Ages */}
+              {(values.ageRange?.from || values.ageRange?.to) && (
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <span className="text-[11px] text-subtitleColor block">
+                      {tSub("reviewAgeFrom")}
+                    </span>
+                    <span className="text-titleColor font-bold text-sm block">
+                      {tSub("reviewAgeYears", {
+                        from: values.ageRange?.from || 8,
+                        to: values.ageRange?.to || 16,
+                      })}
+                    </span>
+                  </div>
+                  <div className="w-8 h-8 rounded-lg bg-teal-50 text-mainColor flex items-center justify-center flex-shrink-0">
+                    <AccessTimeIcon className="w-4 h-4" />
+                  </div>
+                </div>
+              )}
+
+              {/* Deadline Box matching Figma */}
+              <div className="p-3 rounded-xl bg-[#E8F8F0] border border-[#C6EFD9] text-[#036D36] flex items-center justify-between font-bold text-xs sm:text-sm">
+                <span>{values.bookingBefore || 1}</span>
+                <span>{tSub("reviewBookingDeadlineNotice")}</span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-2.5 pt-3 border-t border-border">
+              <button
+                type="button"
+                disabled={isSubmitting}
+                onClick={handleSubmit}
+                className="w-full py-3 px-4 rounded-xl bg-[#0B737F] hover:bg-[#0B737F]/90 text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.99] disabled:opacity-50"
+              >
+                {isSubmitting ? (
+                  <CircularProgress size={18} color="inherit" />
+                ) : (
+                  <CheckCircleIcon className="w-4 h-4" />
+                )}
+                <span>{tSub("reviewPublish")}</span>
+              </button>
+
+              {setActiveStep && (
+                <button
+                  type="button"
+                  onClick={() => setActiveStep(0)}
+                  className="w-full py-2.5 px-4 rounded-xl border border-[#0B737F] text-[#0B737F] hover:bg-[#0B737F]/5 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer transition-all shadow-xs"
+                >
+                  <EditIcon className="w-4 h-4" />
+                  <span>{tSub("reviewEdit")}</span>
+                </button>
+              )}
+            </div>
+          </FrameWithImagedHeader>
+        </div>
+
+        {/* Right Column: Accordions (8 of 12) */}
         <div className="lg:col-span-8 space-y-4">
           {/* Accordion 1: Product Description */}
           {productDescription && (
@@ -579,36 +791,36 @@ const StepReview = ({
           {/* Accordion 2: Product Contents / Services */}
           {resolvedServices.length > 0 && (
             <FilterAccordion index={1} title={tSub("reviewProductContents")}>
-              <ul className="flex gap-3.5 pb-2 overflow-x-auto py-1">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5 p-2">
                 {resolvedServices.map((serv, idx) => (
-                  <li
+                  <div
                     key={serv.id || idx}
-                    className="flex flex-col items-center text-center p-4 bg-white rounded-xl border border-border min-w-[150px] w-[170px] shadow-xs flex-shrink-0"
+                    className="flex flex-col items-center text-center p-4 bg-gray-50/60 rounded-2xl border border-gray-100 shadow-xs hover:border-mainColor/40 transition-all"
                   >
-                    <div className="w-14 h-14 rounded-xl bg-teal-50 text-mainColor flex items-center justify-center mb-3 p-2 border border-teal-100">
+                    <div className="w-16 h-16 rounded-2xl border-2 border-teal-600/30 bg-white flex items-center justify-center mb-2.5 p-2 shadow-xs">
                       {serv.icon ? (
                         <ImageWithPlaceholder
                           src={serv.icon}
                           alt={serv.name}
-                          width={40}
-                          height={40}
-                          className="object-contain w-8 h-8"
+                          width={44}
+                          height={44}
+                          className="object-contain w-10 h-10"
                         />
                       ) : (
-                        <CategoryIcon className="w-6 h-6" />
+                        <CategoryIcon className="w-8 h-8 text-mainColor" />
                       )}
                     </div>
-                    <h4 className="font-bold text-titleColor text-xs sm:text-sm line-clamp-1 mb-1">
+                    <h4 className="font-bold text-titleColor text-xs sm:text-sm line-clamp-2">
                       {serv.name}
                     </h4>
                     {serv.note && (
-                      <p className="text-[11px] text-subtitleColor line-clamp-2">
+                      <p className="text-[11px] text-subtitleColor line-clamp-2 mt-1">
                         {serv.note}
                       </p>
                     )}
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </FilterAccordion>
           )}
 
@@ -622,19 +834,17 @@ const StepReview = ({
                 {academicStageLabels.map((stage, idx) => (
                   <span
                     key={idx}
-                    className="px-4 py-2 rounded-xl bg-teal-50 text-teal-800 border border-teal-200 text-xs font-bold shadow-xs flex items-center gap-1.5"
+                    className="px-4 py-1.5 rounded-full bg-[#EBF7F5] text-mainColor border border-[#D4F2EB] text-xs font-semibold shadow-xs"
                   >
-                    <SchoolIcon className="w-3.5 h-3.5 text-mainColor" />
-                    <span>{stage}</span>
+                    {stage}
                   </span>
                 ))}
                 {resolvedTargetAudiences.map((ta, idx) => (
                   <span
                     key={`ta-${idx}`}
-                    className="px-4 py-2 rounded-xl bg-blue-50 text-blue-800 border border-blue-200 text-xs font-bold shadow-xs flex items-center gap-1.5"
+                    className="px-4 py-1.5 rounded-full bg-[#EBF7F5] text-mainColor border border-[#D4F2EB] text-xs font-semibold shadow-xs"
                   >
-                    <GroupsIcon className="w-3.5 h-3.5 text-blue-600" />
-                    <span>{ta.name}</span>
+                    {ta.name}
                   </span>
                 ))}
               </div>
@@ -703,25 +913,83 @@ const StepReview = ({
                 </div>
               )}
 
-              {/* Branches Grid */}
+              {/* Branches Grid matching Figma Cards */}
               {filteredBranches.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {filteredBranches.map((branch) => {
                     const lat = branch.location?.lat || 24.7136;
                     const lng = branch.location?.lng || 46.6753;
                     const mapUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+                    const capacityVal = values.branchCapacities?.[branch.id] || 50;
 
                     return (
                       <div
                         key={branch.id}
-                        className="p-4 bg-white rounded-xl border border-border space-y-3 shadow-xs hover:shadow-md transition-shadow"
+                        className="p-4 bg-white rounded-2xl border border-border space-y-3 shadow-xs hover:shadow-md transition-shadow text-start"
                       >
+                        {/* Branch Header with Building Icon */}
+                        <div className="flex items-center justify-between gap-2 border-b border-border pb-2.5">
+                          <div className="flex items-center gap-2">
+                            <AccountBalanceOutlinedIcon className="w-5 h-5 text-mainColor" />
+                            <h4 className="font-bold text-titleColor text-sm">
+                              {branch.city ? `${branch.city} ${branch.name}` : branch.name}
+                            </h4>
+                          </div>
+                          {branch.city && (
+                            <span className="px-2 py-0.5 rounded-md bg-mainColor/10 text-mainColor text-[11px] font-semibold flex-shrink-0">
+                              {branch.city}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* 2 Stats Badges matching Figma */}
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div className="flex items-center justify-between p-2 rounded-xl bg-gray-50 border border-gray-100">
+                            <span className="text-gray-500 font-medium">
+                              {tSub("reviewCategory")}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-md bg-teal-50 text-mainColor font-bold text-[11px] flex items-center gap-1">
+                              <GroupsIcon className="w-3.5 h-3.5" />
+                              {tSub("reviewBoysAndGirls")}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center justify-between p-2 rounded-xl bg-gray-50 border border-gray-100">
+                            <span className="text-gray-500 font-medium">
+                              {tSub("reviewCapacity")}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-md bg-teal-50 text-mainColor font-bold text-[11px] flex items-center gap-1">
+                              <SchoolIcon className="w-3.5 h-3.5" />
+                              {capacityVal} {tSub("reviewStudentsUnit")}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Additional Services / Academic stages tags */}
+                        {academicStageLabels.length > 0 && (
+                          <div>
+                            <span className="text-[11px] text-gray-500 block mb-1">
+                              {tSub("reviewAdditionalServices")}
+                            </span>
+                            <div className="flex flex-wrap gap-1.5">
+                              {academicStageLabels.slice(0, 4).map((st, i) => (
+                                <span
+                                  key={i}
+                                  className="px-2 py-0.5 rounded-md bg-gray-100 text-gray-700 text-[11px]"
+                                >
+                                  {st}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
                         {/* Branch Map Preview */}
-                        <div className="relative rounded-lg overflow-hidden border border-border h-36 bg-gray-100">
+                        <div className="relative rounded-xl overflow-hidden border border-border h-32 bg-gray-100 mt-2">
                           <Map
                             lat={lat}
                             lng={lng}
-                            height="h-36"
+                            height="h-32"
                             locationLink={false}
                             isAuth={true}
                             zoom={13}
@@ -735,36 +1003,6 @@ const StepReview = ({
                             <span>{tSub("reviewGoToMap")}</span>
                             <OpenInNewIcon className="w-3 h-3" />
                           </a>
-                        </div>
-
-                        {/* Branch Details */}
-                        <div className="space-y-1">
-                          <div className="flex items-center justify-between gap-2">
-                            <h4 className="font-bold text-titleColor text-sm line-clamp-1">
-                              {branch.name}
-                            </h4>
-                            {branch.city && (
-                              <span className="px-2 py-0.5 rounded-md bg-mainColor/10 text-mainColor text-[11px] font-semibold flex-shrink-0">
-                                {branch.city}
-                              </span>
-                            )}
-                          </div>
-                          {branch.address && (
-                            <p className="text-xs text-subtitleColor line-clamp-1">
-                              {branch.address}
-                            </p>
-                          )}
-                          {branch.customPrice && (
-                            <p className="text-xs text-mainColor font-bold pt-1">
-                              {tSub("reviewBranchPrice")}:{" "}
-                              {formatCurrency(branch.customPrice)}
-                            </p>
-                          )}
-                          {branch.customHours && (
-                            <p className="text-[11px] text-subtitleColor">
-                              {branch.customHours}
-                            </p>
-                          )}
                         </div>
                       </div>
                     );
@@ -835,272 +1073,250 @@ const StepReview = ({
             </div>
           </FilterAccordion>
 
-          {/* Accordion 8: B2B Pricing Table (Schools Pricing) */}
-          <FilterAccordion index={7} title={tSub("reviewB2bPricing")}>
-            <div className="space-y-4 p-2">
-              {/* Stat Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="p-3.5 bg-gray-50 rounded-xl border border-border text-center">
-                  <span className="text-xs text-subtitleColor block mb-1">
-                    {tSub("reviewBaseProductCost")}
-                  </span>
-                  <span className="text-base font-bold text-titleColor">
-                    {values.b2bPrice?.productCost
-                      ? formatCurrency(values.b2bPrice.productCost)
-                      : values.productCost
-                      ? formatCurrency(values.productCost)
-                      : "-"}
-                  </span>
-                </div>
+          {/* Accordion 8: B2B Pricing Table (Schools Pricing) matching Figma */}
+          {activeView === "B2B" && (
+            <FilterAccordion index={7} title={tSub("reviewB2bPricing")}>
+              <div className="space-y-5 p-2">
+                {/* Section Title matching Figma */}
+                <h4 className="font-bold text-base text-titleColor text-start">
+                  {tSub("reviewB2bPricing")}
+                </h4>
 
-                <div className="p-3.5 bg-gray-50 rounded-xl border border-border text-center">
-                  <span className="text-xs text-subtitleColor block mb-1">
-                    {tSub("reviewSupervisorPrice")}
-                  </span>
-                  <span className="text-base font-bold text-titleColor">
-                    {values.b2bPrice?.supervisorPrice
-                      ? formatCurrency(values.b2bPrice.supervisorPrice)
-                      : "-"}
-                  </span>
-                </div>
-
-                <div className="p-3.5 bg-gray-50 rounded-xl border border-border text-center">
-                  <span className="text-xs text-subtitleColor block mb-1">
-                    {tSub("reviewStudentSupervisor")}
-                  </span>
-                  <span className="text-base font-bold text-mainColor">
-                    {tSub("reviewFreeSupervisorPerStudents", {
-                      count:
-                        values.studentsPerSupervisor ||
-                        values.b2bPrice?.studentsPerSupervisor ||
-                        10,
-                    })}
-                  </span>
-                </div>
-              </div>
-
-              {/* Pricing Matrix Table */}
-              <div className="overflow-x-auto rounded-xl border border-border">
-                <table className="w-full text-xs sm:text-sm text-start">
-                  <thead className="bg-gray-50 text-subtitleColor border-b border-border">
-                    <tr>
-                      <th className="py-2.5 px-4 text-start font-semibold">
-                        {tSub("reviewStage")}
-                      </th>
-                      <th className="py-2.5 px-4 text-start font-semibold">
-                        {t("price")}
-                      </th>
-                      <th className="py-2.5 px-4 text-start font-semibold">
-                        {tSub("reviewMinCount")}
-                      </th>
-                      <th className="py-2.5 px-4 text-start font-semibold">
-                        {t("depositRatio")}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {academicStageLabels.length > 0 ? (
-                      academicStageLabels.map((stage, idx) => (
-                        <tr key={idx} className="hover:bg-gray-50/50">
-                          <td className="py-2.5 px-4 font-semibold text-titleColor">
-                            {stage}
-                          </td>
-                          <td className="py-2.5 px-4 font-bold text-mainColor">
-                            {formatCurrency(activePrice)}
-                          </td>
-                          <td className="py-2.5 px-4 text-subtitleColor">
-                            {values.availableSeats?.min || 10}
-                          </td>
-                          <td className="py-2.5 px-4 text-subtitleColor">
-                            {values.b2bPrice?.depositRatio || 10}%
-                          </td>
-                        </tr>
-                      ))
-                    ) : resolvedTargetAudiences.length > 0 ? (
-                      resolvedTargetAudiences.map((ta, idx) => (
-                        <tr key={idx} className="hover:bg-gray-50/50">
-                          <td className="py-2.5 px-4 font-semibold text-titleColor">
-                            {ta.name}
-                          </td>
-                          <td className="py-2.5 px-4 font-bold text-mainColor">
-                            {formatCurrency(ta.price || activePrice)}
-                          </td>
-                          <td className="py-2.5 px-4 text-subtitleColor">
-                            {ta.minCount || 10}
-                          </td>
-                          <td className="py-2.5 px-4 text-subtitleColor">
-                            {values.b2bPrice?.depositRatio || 10}%
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td className="py-2.5 px-4 font-semibold text-titleColor">
-                          {productName}
-                        </td>
-                        <td className="py-2.5 px-4 font-bold text-mainColor">
-                          {formatCurrency(activePrice)}
-                        </td>
-                        <td className="py-2.5 px-4 text-subtitleColor">
-                          {values.availableSeats?.min || 1}
-                        </td>
-                        <td className="py-2.5 px-4 text-subtitleColor">
-                          {values.b2bPrice?.depositRatio || 10}%
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </FilterAccordion>
-
-          {/* Accordion 9: Weekday Pricing Breakdown */}
-          {weekdayPricingList.length > 0 && (
-            <FilterAccordion index={8} title={tSub("reviewWeekdayPricing")}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 p-2">
-                {weekdayPricingList.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="p-3.5 bg-white rounded-xl border border-border shadow-xs space-y-1.5 hover:border-mainColor transition-all"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-xs sm:text-sm text-titleColor">
-                        {item.day}
-                      </span>
-                      <span className="text-[11px] px-2 py-0.5 rounded-md bg-teal-50 text-mainColor font-semibold">
-                        {t("weekdayPricing")}
-                      </span>
+                {/* 3 Input-styled Display Boxes matching Figma */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {/* Base Product Cost */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1.5 text-start">
+                      {tSub("reviewBaseProductCost")}
+                    </label>
+                    <div className="w-full bg-gray-50 rounded-xl border border-gray-200 py-3 px-4 text-center font-bold text-titleColor text-sm">
+                      {values.productCost
+                        ? formatCurrency(values.productCost)
+                        : values.b2bPrice?.productCost
+                        ? formatCurrency(values.b2bPrice.productCost)
+                        : "-"}
                     </div>
-                    <div className="text-base font-extrabold text-mainColor">
-                      {formatCurrency(item.price)}
-                    </div>
-                    {timeRangeStr !== "-" && (
-                      <div className="text-[11px] text-subtitleColor flex items-center gap-1">
-                        <AccessTimeIcon className="w-3.5 h-3.5" />
-                        <span>{timeRangeStr}</span>
-                      </div>
-                    )}
                   </div>
-                ))}
+
+                  {/* Market Price */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1.5 text-start">
+                      {tSub("reviewMarketPrice")}
+                    </label>
+                    <div className="w-full bg-gray-50 rounded-xl border border-gray-200 py-3 px-4 text-center font-bold text-titleColor text-sm">
+                      {activePrice ? formatCurrency(activePrice) : "-"}
+                    </div>
+                  </div>
+
+                  {/* Free Supervisor */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1.5 text-start">
+                      {tSub("reviewFreeSupervisorFor")}
+                    </label>
+                    <div className="w-full bg-gray-50 rounded-xl border border-gray-200 py-3 px-4 text-center font-bold text-mainColor text-sm">
+                      {tSub("reviewFreeSupervisorPerStudents", {
+                        count:
+                          values.b2bPrice?.studentsPerSupervisor ||
+                          values.studentsPerSupervisor ||
+                          10,
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tiered / Bulk Pricing Table matching Figma */}
+                <div className="overflow-x-auto rounded-xl border border-border">
+                  <table className="w-full text-xs sm:text-sm text-center">
+                    <thead className="bg-gray-50 text-subtitleColor border-b border-border">
+                      <tr>
+                        <th className="py-3 px-4 text-center font-semibold">
+                          {tSub("reviewMinCount")}
+                        </th>
+                        <th className="py-3 px-4 text-center font-semibold">
+                          {t("price")}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {bulkPricingList.length > 0 ? (
+                        bulkPricingList.map((tier, idx) => (
+                          <tr key={idx} className="hover:bg-gray-50/50">
+                            <td className="py-3 px-4 text-subtitleColor font-medium">
+                              {tier.minCount} {tSub("reviewStudentsUnit")}
+                            </td>
+                            <td className="py-3 px-4 font-bold text-mainColor">
+                              {formatCurrency(tier.price)}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr className="hover:bg-gray-50/50">
+                          <td className="py-3 px-4 text-subtitleColor font-medium">
+                            {values.availableSeats?.min || 45} {tSub("reviewStudentsUnit")}
+                          </td>
+                          <td className="py-3 px-4 font-bold text-mainColor">
+                            {activeDiscount > 0 ? (
+                              <div className="flex items-center justify-center gap-2">
+                                <span>{formatCurrency(activeDiscount)}</span>
+                                <span className="line-through text-xs text-subtitleColor font-normal">
+                                  {formatCurrency(activePrice)}
+                                </span>
+                              </div>
+                            ) : (
+                              formatCurrency(activePrice)
+                            )}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Weekday Pricing Breakdown */}
+                {weekdayPricingList.length > 0 && (
+                  <div className="space-y-3 pt-2">
+                    <h5 className="font-bold text-sm text-titleColor text-start">
+                      {tSub("reviewWeekdayPricing")}
+                    </h5>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                      {weekdayPricingList.map((item, idx) => (
+                        <div
+                          key={idx}
+                          className="p-3.5 bg-white rounded-xl border border-border shadow-xs space-y-1.5 hover:border-mainColor transition-all text-start"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-xs sm:text-sm text-titleColor">
+                              {item.day}
+                            </span>
+                            <span className="text-[11px] px-2 py-0.5 rounded-md bg-teal-50 text-mainColor font-semibold">
+                              {t("weekdayPricing")}
+                            </span>
+                          </div>
+                          <div className="text-base font-extrabold text-mainColor">
+                            {formatCurrency(item.price)}
+                          </div>
+                          {timeRangeStr !== "-" && (
+                            <div className="text-[11px] text-subtitleColor flex items-center gap-1">
+                              <AccessTimeIcon className="w-3.5 h-3.5" />
+                              <span>{timeRangeStr}</span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </FilterAccordion>
           )}
-        </div>
 
-        {/* Right Column: Sidebar Pricing Card (4 of 12) */}
-        <div className="lg:col-span-4 lg:sticky lg:top-4 space-y-4">
-          <FrameWithImagedHeader
-            withBorder={true}
-            className="shadow-md rounded-2xl overflow-hidden"
-          >
-            {/* Price Section */}
-            <div className="border-b border-border pb-4 space-y-1">
-              <span className="text-xs text-subtitleColor font-medium">
-                {tSub("reviewPriceStartsFrom")}
-              </span>
-              <div className="text-3xl font-extrabold text-mainColor">
-                {formatCurrency(activePrice)}
-              </div>
-            </div>
-
-            {/* Product Meta List */}
-            <div className="space-y-3.5 text-xs sm:text-sm text-subtitleColor py-2">
-              {/* Dates / Recurrence */}
-              <div className="flex items-start gap-3">
-                <CalendarTodayIcon className="w-4 h-4 text-mainColor flex-shrink-0 mt-0.5" />
-                <div>
-                  <span className="text-titleColor font-semibold block">
-                    {dateRangeStr}
-                  </span>
-                  {values.recurrencePattern && (
-                    <span className="text-[11px] text-subtitleColor">
-                      {tModal(`recurrence.${values.recurrencePattern}`)}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Time Range & Duration */}
-              {timeRangeStr !== "-" && (
-                <div className="flex items-start gap-3">
-                  <AccessTimeIcon className="w-4 h-4 text-mainColor flex-shrink-0 mt-0.5" />
+          {/* Accordion 8 (B2C): Target Audiences & Pricing Breakdown */}
+          {activeView === "B2C" && (
+            <FilterAccordion index={7} title={tSub("reviewPriceStartsFrom")}>
+              <div className="space-y-5 p-2">
+                {/* 2 Summary Boxes: Market Price & Discounted Price */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <span className="text-titleColor font-semibold block">
-                      {timeRangeStr}
-                    </span>
-                    {durationHours > 0 && (
-                      <span className="text-[11px] text-subtitleColor">
-                        {tSub("reviewAvailablePeriod")}: {durationHours}{" "}
-                        {tSub("reviewHours")}
-                      </span>
-                    )}
+                    <label className="block text-xs font-medium text-gray-500 mb-1.5 text-start">
+                      {tSub("reviewMarketPrice")}
+                    </label>
+                    <div className="w-full bg-gray-50 rounded-xl border border-gray-200 py-3 px-4 text-center font-bold text-titleColor text-sm">
+                      {formatCurrency(activePrice)}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1.5 text-start">
+                      {tSub("reviewDiscountLabel")}
+                    </label>
+                    <div className="w-full bg-gray-50 rounded-xl border border-gray-200 py-3 px-4 text-center font-bold text-mainColor text-sm">
+                      {activeDiscount > 0 ? (
+                        <div className="flex items-center justify-center gap-2">
+                          <span>{formatCurrency(activeDiscount)}</span>
+                          <span className="text-xs text-red-600 bg-red-50 px-2 py-0.5 rounded-md border border-red-200">
+                            %{discountPercent}
+                          </span>
+                        </div>
+                      ) : (
+                        "-"
+                      )}
+                    </div>
                   </div>
                 </div>
-              )}
 
-              {/* Ages / Target Audience */}
-              {(values.ageRange?.from || values.ageRange?.to || academicStageLabels.length > 0) && (
-                <div className="flex items-start gap-3">
-                  <GroupsIcon className="w-4 h-4 text-mainColor flex-shrink-0 mt-0.5" />
-                  <div>
-                    {values.ageRange?.from || values.ageRange?.to ? (
-                      <span className="text-titleColor font-semibold block">
-                        {tSub("reviewAgesFromTo", {
-                          from: values.ageRange?.from || 5,
-                          to: values.ageRange?.to || 18,
-                        })}
-                      </span>
-                    ) : (
-                      <span className="text-titleColor font-semibold block">
-                        {academicStageLabels.slice(0, 3).join(", ")}
-                      </span>
-                    )}
+                {/* Target Audience Table */}
+                {resolvedTargetAudiences.length > 0 && (
+                  <div className="overflow-x-auto rounded-xl border border-border">
+                    <table className="w-full text-xs sm:text-sm text-start">
+                      <thead className="bg-gray-50 text-subtitleColor border-b border-border">
+                        <tr>
+                          <th className="py-2.5 px-4 text-start font-semibold">
+                            {tSub("reviewStage")}
+                          </th>
+                          <th className="py-2.5 px-4 text-start font-semibold">
+                            {t("price")}
+                          </th>
+                          <th className="py-2.5 px-4 text-start font-semibold">
+                            {tSub("reviewMinCount")}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border">
+                        {resolvedTargetAudiences.map((ta, idx) => (
+                          <tr key={idx} className="hover:bg-gray-50/50">
+                            <td className="py-2.5 px-4 font-semibold text-titleColor">
+                              {ta.name}
+                            </td>
+                            <td className="py-2.5 px-4 font-bold text-mainColor">
+                              {formatCurrency(ta.price || activePrice)}
+                            </td>
+                            <td className="py-2.5 px-4 text-subtitleColor">
+                              {ta.minCount || 1}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                </div>
-              )}
-
-              {/* Booking Deadline */}
-              <div className="flex items-start gap-3">
-                <NotificationsNoneIcon className="w-4 h-4 text-mainColor flex-shrink-0 mt-0.5" />
-                <div>
-                  <span className="text-titleColor font-semibold block">
-                    {tSub("reviewBookingDeadline")}{" "}
-                    {values.bookingBefore || 1}{" "}
-                    {tSub("reviewBookingBeforeDays")}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="space-y-2.5 pt-3 border-t border-border">
-              <button
-                type="button"
-                disabled={isSubmitting}
-                onClick={handleSubmit}
-                className="w-full py-3 px-4 rounded-xl bg-mainColor hover:bg-mainColor/90 text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.99] disabled:opacity-50"
-              >
-                {isSubmitting ? (
-                  <CircularProgress size={18} color="inherit" />
-                ) : (
-                  <CheckCircleIcon className="w-4 h-4" />
                 )}
-                <span>{tSub("reviewPublish")}</span>
-              </button>
 
-              {setActiveStep && (
-                <button
-                  type="button"
-                  onClick={() => setActiveStep(0)}
-                  className="w-full py-2.5 px-4 rounded-xl border border-border bg-white hover:bg-gray-50 text-titleColor font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer transition-all shadow-xs"
-                >
-                  <EditIcon className="w-4 h-4" />
-                  <span>{tSub("reviewEdit")}</span>
-                </button>
-              )}
-            </div>
-          </FrameWithImagedHeader>
+                {/* Weekday Pricing Breakdown */}
+                {weekdayPricingList.length > 0 && (
+                  <div className="space-y-3 pt-2">
+                    <h5 className="font-bold text-sm text-titleColor text-start">
+                      {tSub("reviewWeekdayPricing")}
+                    </h5>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                      {weekdayPricingList.map((item, idx) => (
+                        <div
+                          key={idx}
+                          className="p-3.5 bg-white rounded-xl border border-border shadow-xs space-y-1.5 hover:border-mainColor transition-all text-start"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-xs sm:text-sm text-titleColor">
+                              {item.day}
+                            </span>
+                            <span className="text-[11px] px-2 py-0.5 rounded-md bg-teal-50 text-mainColor font-semibold">
+                              {t("weekdayPricing")}
+                            </span>
+                          </div>
+                          <div className="text-base font-extrabold text-mainColor">
+                            {formatCurrency(item.price)}
+                          </div>
+                          {timeRangeStr !== "-" && (
+                            <div className="text-[11px] text-subtitleColor flex items-center gap-1">
+                              <AccessTimeIcon className="w-3.5 h-3.5" />
+                              <span>{timeRangeStr}</span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </FilterAccordion>
+          )}
         </div>
       </div>
     </div>

@@ -46,6 +46,24 @@ const Step5Services = ({
     setFieldValue,
   } = useFormikContext();
 
+  // Helper for field error state matching Step 1
+  const getFieldErrorState = useCallback(
+    (path) => {
+      const error = getIn(errors, path);
+      const isTouched = getIn(touched, path);
+      const val = getIn(values, path);
+      return {
+        error: typeof error === "string" ? error : undefined,
+        showError: Boolean(
+          error &&
+            (isTouched ||
+              (typeof val === "string" && val.trim().length > 0))
+        ),
+      };
+    },
+    [errors, touched, values]
+  );
+
   // Sidebar open/closed state
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -102,7 +120,7 @@ const Step5Services = ({
       newSelectedIds.forEach((bId) => {
         if (!currentBranchServices[bId] || currentBranchServices[bId].length === 0) {
           currentBranchServices[bId] = [
-            { service: "", note: { ar: "", en: "" } },
+            { service: "", price: "", note: { ar: "", en: "" } },
           ];
         }
       });
@@ -158,9 +176,10 @@ const Step5Services = ({
   const branchServicesData = values.branchServices || {};
 
   const labelCls =
-    "font-somar text-sm sm:text-base font-medium text-textDark text-start block mb-1";
+    "font-somar text-sm sm:text-base font-medium text-textDark text-start block";
   const inputBorderCls =
     "border border-border hover:border-mainColor focus:border-mainColor";
+  const inputFieldCls = "!h-[52px] !py-0 px-4";
 
   return (
     <div className="flex flex-col gap-6 sm:gap-8" dir={isAr ? "rtl" : "ltr"}>
@@ -245,7 +264,7 @@ const Step5Services = ({
                       </div>
 
                       {/* 4 Inputs Grid: Service, Price, AR Notes, EN Notes */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-start">
                         {/* Service Selection */}
                         <div>
                           <SelectionGroup
@@ -304,6 +323,7 @@ const Step5Services = ({
                             labelClassName={labelCls}
                             placeholder={t("servicePricePlaceholder")}
                             borderClassName={inputBorderCls}
+                            inputClassName={inputFieldCls}
                             autoComplete="off"
                           />
                         </div>
@@ -316,10 +336,13 @@ const Step5Services = ({
                             value={item.note?.ar || ""}
                             onChange={handleChange}
                             onBlur={handleBlur}
+                            touched={getFieldErrorState(`services[${index}].note.ar`).showError}
+                            errors={getFieldErrorState(`services[${index}].note.ar`).error}
                             label={t("notesArLabel")}
                             labelClassName={labelCls}
                             placeholder={t("notesArPlaceholder")}
                             borderClassName={inputBorderCls}
+                            inputClassName={inputFieldCls}
                             autoComplete="off"
                           />
                         </div>
@@ -332,10 +355,13 @@ const Step5Services = ({
                             value={item.note?.en || ""}
                             onChange={handleChange}
                             onBlur={handleBlur}
+                            touched={getFieldErrorState(`services[${index}].note.en`).showError}
+                            errors={getFieldErrorState(`services[${index}].note.en`).error}
                             label={t("notesEnLabel")}
                             labelClassName={labelCls}
                             placeholder={t("notesEnPlaceholder")}
                             borderClassName={inputBorderCls}
+                            inputClassName={inputFieldCls}
                             textAlign="left"
                             autoComplete="off"
                           />
@@ -349,7 +375,7 @@ const Step5Services = ({
                 <button
                   type="button"
                   onClick={() =>
-                    push({ service: "", price: 0, note: { en: "", ar: "" } })
+                    push({ service: "", price: "", note: { en: "", ar: "" } })
                   }
                   className="w-full py-3 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
                 >
@@ -525,7 +551,7 @@ const Step5Services = ({
                               )}
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-start">
                               {/* Service dropdown */}
                               <div>
                                 <SelectionGroup
@@ -590,6 +616,7 @@ const Step5Services = ({
                                   labelClassName={labelCls}
                                   placeholder={t("servicePricePlaceholder")}
                                   borderClassName={inputBorderCls}
+                                  inputClassName={inputFieldCls}
                                   autoComplete="off"
                                 />
                               </div>
@@ -615,10 +642,13 @@ const Step5Services = ({
                                     );
                                   }}
                                   onBlur={handleBlur}
+                                  touched={getFieldErrorState(`branchServices.${branch.id}[${bIdx}].note.ar`).showError}
+                                  errors={getFieldErrorState(`branchServices.${branch.id}[${bIdx}].note.ar`).error}
                                   label={t("notesArLabel")}
                                   labelClassName={labelCls}
                                   placeholder={t("notesArPlaceholder")}
                                   borderClassName={inputBorderCls}
+                                  inputClassName={inputFieldCls}
                                   autoComplete="off"
                                 />
                               </div>
@@ -644,10 +674,13 @@ const Step5Services = ({
                                     );
                                   }}
                                   onBlur={handleBlur}
+                                  touched={getFieldErrorState(`branchServices.${branch.id}[${bIdx}].note.en`).showError}
+                                  errors={getFieldErrorState(`branchServices.${branch.id}[${bIdx}].note.en`).error}
                                   label={t("notesEnLabel")}
                                   labelClassName={labelCls}
                                   placeholder={t("notesEnPlaceholder")}
                                   borderClassName={inputBorderCls}
+                                  inputClassName={inputFieldCls}
                                   textAlign="left"
                                   autoComplete="off"
                                 />
@@ -662,7 +695,7 @@ const Step5Services = ({
                         onClick={() => {
                           const updated = [
                             ...branchServices,
-                            { service: "", note: { ar: "", en: "" } },
+                            { service: "", price: "", note: { ar: "", en: "" } },
                           ];
                           setFieldValue(`branchServices.${branch.id}`, updated);
                         }}
