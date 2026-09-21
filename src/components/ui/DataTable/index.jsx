@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, useMemo, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import {
   Card,
   CardContent,
@@ -100,6 +101,7 @@ const DataTable = ({
   defaultSort = null,
   loadingComponent,
 }) => {
+  const t = useTranslations();
   const [internalSort, setInternalSort] = useState(defaultSort);
   const activeSort = sortConfig !== undefined ? sortConfig : internalSort;
 
@@ -161,7 +163,7 @@ const DataTable = ({
           typeof valA === "string" &&
           valA.includes("-")
         ) {
-          return direction === "asc" ? dateB - dateA : dateA - dateB;
+          return direction === "asc" ? dateA - dateB : dateB - dateA;
         }
 
         if (typeof valA === "number" && typeof valB === "number") {
@@ -233,7 +235,7 @@ const DataTable = ({
         {hasBulkActions && (
           <div className="flex items-center gap-3 bg-mainColor/5 px-4 py-2 rounded-xl border border-mainColor/10 animate-in fade-in slide-in-from-top-2">
             <span className="text-sm font-semibold text-mainColor">
-              {selectedSet.size} selected
+              {selectedSet.size} {t("selected")}
             </span>
             <div className="h-4 w-[1px] bg-mainColor/20 mx-1" />
             <div className="flex items-center gap-1">
@@ -367,7 +369,7 @@ const DataTable = ({
                     >
                       {emptyState || (
                         <p className="text-muted-foreground">
-                          No data available
+                          {t("noDataAvailable")}
                         </p>
                       )}
                     </td>
@@ -437,7 +439,7 @@ const DataTable = ({
           <Card className="transition-shadow shadow-md">
             <CardContent className="p-8 text-center">
               {emptyState || (
-                <p className="text-muted-foreground">No data available</p>
+                <p className="text-muted-foreground">{t("noDataAvailable")}</p>
               )}
             </CardContent>
           </Card>
@@ -456,7 +458,7 @@ const DataTable = ({
               >
                 <CardContent className="p-4 space-y-3 relative">
                   {selectable && (
-                    <div className="absolute top-2 right-2">
+                    <div className="absolute top-2 end-2">
                       <Checkbox
                         size="small"
                         checked={isSelected}

@@ -58,6 +58,8 @@
     "multiCities": "Multi Cities",
     "customizable": "Customizable",
     "instantConfirmation": "Instant Confirmation",
+    "selected": "Selected",
+    "noDataAvailable": "No data available",
     "available": "Available",
     "historyAndCivilization": "History and Civilization",
     "from": "From",
@@ -1792,7 +1794,6 @@
         "title": "Trips List",
         "header": {
           "createdAt": "Creation Time",
-          "creationTime": "Creation Time",
           "schoolName": "School Name",
           "orderId": "Order ID",
           "tripType": "Trip Type",

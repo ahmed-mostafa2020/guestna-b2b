@@ -37,16 +37,16 @@ const BookingsTable = ({
 
   const sortConfig = useMemo(() => {
     if (sort === SORTING_TYPE.NEWEST_DAY) {
-      return { key: "date", direction: "asc" };
-    }
-    if (sort === SORTING_TYPE.OLDEST_DAY) {
       return { key: "date", direction: "desc" };
     }
+    if (sort === SORTING_TYPE.OLDEST_DAY) {
+      return { key: "date", direction: "asc" };
+    }
     if (sort === SORTING_TYPE.NEWEST) {
-      return { key: "createdAt", direction: "asc" };
+      return { key: "createdAt", direction: "desc" };
     }
     if (sort === SORTING_TYPE.OLDEST) {
-      return { key: "createdAt", direction: "desc" };
+      return { key: "createdAt", direction: "asc" };
     }
     return null;
   }, [sort]);
@@ -56,17 +56,17 @@ const BookingsTable = ({
       if (!setSort) return;
       setIsSorting(true);
       if (key === "date") {
-        if (direction === "asc") {
+        if (direction === "desc") {
           setSort(SORTING_TYPE.NEWEST_DAY);
-        } else if (direction === "desc") {
+        } else if (direction === "asc") {
           setSort(SORTING_TYPE.OLDEST_DAY);
         } else {
           setSort(SORTING_TYPE.NEWEST_DAY);
         }
       } else if (key === "createdAt") {
-        if (direction === "asc") {
+        if (direction === "desc") {
           setSort(SORTING_TYPE.NEWEST);
-        } else if (direction === "desc") {
+        } else if (direction === "asc") {
           setSort(SORTING_TYPE.OLDEST);
         } else {
           setSort(SORTING_TYPE.NEWEST);
@@ -101,7 +101,7 @@ const BookingsTable = ({
             sortFn: (a, b, direction) => {
               const dateA = new Date(a.createdAt || 0).getTime();
               const dateB = new Date(b.createdAt || 0).getTime();
-              return direction === "asc" ? dateB - dateA : dateA - dateB;
+              return direction === "asc" ? dateA - dateB : dateB - dateA;
             },
             render: (row) =>
               row.createdAt ? (
@@ -156,7 +156,7 @@ const BookingsTable = ({
             sortFn: (a, b, direction) => {
               const dateA = new Date(a.day || a.date || a.createdAt || 0).getTime();
               const dateB = new Date(b.day || b.date || b.createdAt || 0).getTime();
-              return direction === "asc" ? dateB - dateA : dateA - dateB;
+              return direction === "asc" ? dateA - dateB : dateB - dateA;
             },
             render: (row) => (
               <>

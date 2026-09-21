@@ -21,15 +21,15 @@ const BookingsTableSkeleton = ({
   const t = useTranslations();
 
   const columns = [
-    { label: t("profile.tables.bookings.header.createdAt") || "وقت الإنشاء" },
-    { label: t("profile.tables.bookings.header.schoolName") || "اسم المدرسة" },
-    { label: t("profile.tables.bookings.header.tripName") || "اسم الرحلة" },
-    { label: t("profile.tables.bookings.header.tripType") || "نوع الرحلة" },
-    { label: t("profile.tables.bookings.header.date") || "التاريخ/الوقت" },
-    { label: t("profile.tables.bookings.header.price") || "الإيرادات" },
-    { label: t("profile.tables.bookings.header.quantity") || "عدد الطلاب" },
-    { label: t("profile.tables.bookings.header.status") || "الحالة" },
-    { label: t("profile.tables.bookings.header.actions") || "الإجراءات" },
+    { label: t("profile.tables.bookings.header.createdAt") },
+    { label: t("profile.tables.bookings.header.schoolName") },
+    { label: t("profile.tables.bookings.header.tripName") },
+    { label: t("profile.tables.bookings.header.tripType") },
+    { label: t("profile.tables.bookings.header.date") },
+    { label: t("profile.tables.bookings.header.price") },
+    { label: t("profile.tables.bookings.header.quantity") },
+    { label: t("profile.tables.bookings.header.status") },
+    { label: t("profile.tables.bookings.header.actions") },
   ];
 
   return (

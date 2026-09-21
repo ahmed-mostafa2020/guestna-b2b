@@ -11,7 +11,6 @@ import calculateHours from "@utils/calculations/CalculateHours";
 import formatNumbersUint from "@utils/formatters/FormatNumbersUint";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import ImageWithPlaceholder from "../imagesPlaceholder/ImageWithPlaceholder";
-// import FavoriteButton from "./FavoriteButton";
 
 import { locationIcon, yellowStarIcon, smallCalenderIcon } from "@assets/svg";
 
@@ -85,12 +84,6 @@ const TripCard = ({ activityCard, imageWidth = 300 }) => {
 
       <div className="mt-[-30px] relative bg-white z-[1] rounded-tr-[32px] p-4 flex flex-col gap-2">
         <div className="flex items-center gap-3">
-          {/* <FavoriteButton
-            tripId={activityCard._id}
-            favoriteState={activityCard.isFavorite}
-            isAbsolute={true}
-          /> */}
-
           {renderCities}
 
           <h4 className="flex items-center gap-1">

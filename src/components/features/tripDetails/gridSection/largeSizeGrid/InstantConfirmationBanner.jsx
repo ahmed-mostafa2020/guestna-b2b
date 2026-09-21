@@ -10,18 +10,17 @@ const InstantConfirmationBanner = () => {
     <div
       role="status"
       aria-label={t("tripDetails.instantConfirmation.title")}
-      className="flex items-start sm:items-center gap-4 p-4 rounded-lg bg-[#006844]/10 border border-[#006844]/30 w-full"
+      className="flex items-start sm:items-center gap-4 p-4 rounded-lg w-full"
       style={{
         backgroundColor:
-          "color-mix(in srgb, var(--color-main, #006844) 10%, transparent)",
+          "color-mix(in srgb, var(--color-main) 10%, transparent)",
         borderColor:
-          "color-mix(in srgb, var(--color-main, #006844) 30%, transparent)",
+          "color-mix(in srgb, var(--color-main) 30%, transparent)",
+        borderWidth: "1px",
+        borderStyle: "solid",
       }}
     >
-      <div
-        className="w-10 h-10 rounded-[12px] bg-[#006844] flex items-center justify-center shrink-0"
-        style={{ backgroundColor: "var(--color-main, #006844)" }}
-      >
+      <div className="w-10 h-10 rounded-[12px] bg-mainColor flex items-center justify-center shrink-0">
         <svg
           width="14"
           height="17"

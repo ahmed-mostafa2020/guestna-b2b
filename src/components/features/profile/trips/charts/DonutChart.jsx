@@ -37,6 +37,29 @@ const renderActiveShape = (props) => {
   );
 };
 
+// Custom rich tooltip outside component to avoid remounting on every render
+const CustomTooltip = ({ active, payload, percentageLabel }) => {
+  if (!active || !payload || !payload.length) return null;
+  const data = payload[0];
+  return (
+    <div className="bg-white/95 backdrop-blur-md px-3.5 py-2.5 rounded-xl shadow-lg border border-border text-xs z-50">
+      <div className="flex items-center gap-2 mb-1">
+        <span
+          className="w-2.5 h-2.5 rounded-full shrink-0"
+          style={{ backgroundColor: data.payload.color }}
+        />
+        <span className="font-bold text-textDark text-sm">{data.name}</span>
+      </div>
+      <div className="text-textLight flex items-center justify-between gap-4">
+        <span>{percentageLabel}:</span>
+        <span className="font-extrabold text-textDark">
+          {`\u200E${data.value}%`}
+        </span>
+      </div>
+    </div>
+  );
+};
+
 const DonutChart = ({ infoData }) => {
   const t = useTranslations();
   const [activeIndex, setActiveIndex] = useState(null);
@@ -58,29 +81,6 @@ const DonutChart = ({ infoData }) => {
 
   const activeItem = activeIndex !== null ? pieData[activeIndex] : null;
 
-  // Custom rich tooltip
-  const CustomTooltip = ({ active, payload }) => {
-    if (!active || !payload || !payload.length) return null;
-    const data = payload[0];
-    return (
-      <div className="bg-white/95 backdrop-blur-md px-3.5 py-2.5 rounded-xl shadow-lg border border-border text-xs z-50">
-        <div className="flex items-center gap-2 mb-1">
-          <span
-            className="w-2.5 h-2.5 rounded-full shrink-0"
-            style={{ backgroundColor: data.payload.color }}
-          />
-          <span className="font-bold text-slate-800 text-sm">{data.name}</span>
-        </div>
-        <div className="text-slate-600 flex items-center justify-between gap-4">
-          <span>{t("profile.donutChart.percentage")}:</span>
-          <span className="font-extrabold text-slate-900">
-            {`\u200E${data.value}%`}
-          </span>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="p-4 bg-white border h-fit rounded-xl border-border hover:shadow-card">
       <div className="flex items-center justify-between pb-4">
@@ -88,7 +88,7 @@ const DonutChart = ({ infoData }) => {
           {t("profile.donutChart.title")}
         </h2>
         {pieData.length > 0 && (
-          <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
+          <span className="text-xs font-medium text-textLight bg-gray-100 px-2.5 py-1 rounded-full">
             {pieData.length} {t("profile.donutChart.activities")}
           </span>
         )}
@@ -125,7 +125,13 @@ const DonutChart = ({ infoData }) => {
                     />
                   ))}
                 </Pie>
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip
+                  content={
+                    <CustomTooltip
+                      percentageLabel={t("profile.donutChart.percentage")}
+                    />
+                  }
+                />
               </PieChart>
             </ResponsiveContainer>
 
@@ -133,7 +139,7 @@ const DonutChart = ({ infoData }) => {
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none p-2 text-center select-none">
               {activeItem ? (
                 <>
-                  <span className="text-[11px] font-semibold text-slate-500 truncate max-w-[95px]">
+                  <span className="text-[11px] font-semibold text-textLight truncate max-w-[95px]">
                     {activeItem.name}
                   </span>
                   <span
@@ -145,10 +151,10 @@ const DonutChart = ({ infoData }) => {
                 </>
               ) : topActivity ? (
                 <>
-                  <span className="text-[10px] font-medium text-slate-400">
+                  <span className="text-[10px] font-medium text-textLight">
                     {t("profile.donutChart.topActivity")}
                   </span>
-                  <span className="text-[11px] font-bold text-slate-800 truncate max-w-[95px]">
+                  <span className="text-[11px] font-bold text-titleColor truncate max-w-[95px]">
                     {topActivity.name}
                   </span>
                   <span className="text-base font-extrabold text-mainColor">
@@ -174,8 +180,8 @@ const DonutChart = ({ infoData }) => {
                   role="listitem"
                   className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-start transition-colors duration-150 cursor-pointer ${
                     isHovered
-                      ? "bg-slate-100/90 text-slate-900"
-                      : "hover:bg-slate-50 text-slate-700"
+                      ? "bg-gray-100 text-textDark"
+                      : "hover:bg-gray-50 text-textDark"
                   }`}
                   onMouseEnter={() => setActiveIndex(index)}
                   onMouseLeave={() => setActiveIndex(null)}
@@ -196,8 +202,8 @@ const DonutChart = ({ infoData }) => {
                     <span
                       className={`text-xs truncate transition-colors ${
                         isHovered
-                          ? "font-bold text-slate-900"
-                          : "font-medium text-slate-700"
+                          ? "font-bold text-textDark"
+                          : "font-medium text-textDark"
                       }`}
                       title={item.name}
                     >
@@ -207,7 +213,7 @@ const DonutChart = ({ infoData }) => {
 
                   {/* Inline Micro Progress Bar & Percentage */}
                   <div className="flex items-center gap-2.5 shrink-0">
-                    <div className="w-12 sm:w-16 h-1 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="w-12 sm:w-16 h-1 bg-gray-100 rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all duration-300"
                         style={{
@@ -217,7 +223,7 @@ const DonutChart = ({ infoData }) => {
                         }}
                       />
                     </div>
-                    <span className="text-xs font-bold text-slate-900 min-w-[42px] text-end">
+                    <span className="text-xs font-bold text-textDark min-w-[42px] text-end">
                       {`\u200E${item.value}%`}
                     </span>
                   </div>

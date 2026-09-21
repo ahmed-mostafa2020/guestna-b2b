@@ -58,6 +58,8 @@
     "multiCities": "متعددة المدن",
     "customizable": "قابلة للتخصيص",
     "instantConfirmation": "تأكيد فوري",
+    "selected": "محدد",
+    "noDataAvailable": "لا توجد بيانات متاحة",
     "available": "متاحة",
     "historyAndCivilization": "التاريخ والحضارة",
     "from": "من",
@@ -369,7 +371,7 @@
         "availableBalance": "الرصيد المتاح",
         "totalBalance": "الرصيد الإجمالي",
         "pendingBalance": "قيد الإنتظار",
-        "totalRevenue": "إجمالي الأرباح",
+        "totalRevenue": "إجمالي الإيرادات",
         "operations": "العمليات",
         "transfer": "تحويل"
       },
@@ -1803,7 +1805,6 @@
         "title": "قائمة الرحلات",
         "header": {
           "createdAt": "وقت الإنشاء",
-          "creationTime": "وقت الإنشاء",
           "schoolName": "اسم المدرسة",
           "orderId": "رقم الطلب",
           "tripType": "نوع الرحلة",

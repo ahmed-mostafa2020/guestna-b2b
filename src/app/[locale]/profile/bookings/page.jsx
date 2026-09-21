@@ -22,35 +22,14 @@ const BookingsPage = () => {
         title={t("profile.aside.bookings")}
         endpoint={`${B2B_END_POINTS.PROFILE.BOOKINGS}`}
         method="POST"
+        enablePagination={true}
+        enableSearch={true}
         initialSort={SORTING_TYPE.NEWEST_DAY}
         skeletonComponent={
           <BookingsTableSkeleton tableTitle={t("profile.aside.bookings")} />
         }
         emptyStateComponent={<EmptyBookings />}
-        contentComponent={(
-          data,
-          currentPage,
-          setCurrentPage,
-          enablePagination,
-          searchTerm,
-          setSearchTerm,
-          handleRefetch,
-          sort,
-          setSort,
-          isLoading
-        ) => (
-          <MyBookingsTrips
-            data={data}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            enablePagination={enablePagination}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            sort={sort}
-            setSort={setSort}
-            loading={isLoading}
-          />
-        )}
+        contentComponent={<MyBookingsTrips />}
       />
     </ProtectedProfilePage>
   );
