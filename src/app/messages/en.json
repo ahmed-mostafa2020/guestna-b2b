@@ -57,6 +57,7 @@
     "HALF_DAY": "Half Day",
     "multiCities": "Multi Cities",
     "customizable": "Customizable",
+    "instantConfirmation": "Instant Confirmation",
     "available": "Available",
     "historyAndCivilization": "History and Civilization",
     "from": "From",
@@ -1181,6 +1182,10 @@
     "subTitle": "Every destination we visit and every adventure we experience is filled with meaningful moments. These moments become stories worth sharing and unforgettable memories."
   },
   "tripDetails": {
+    "instantConfirmation": {
+      "title": "Instant Confirmation",
+      "description": "The booking will be confirmed immediately after completing the required details and verifying availability. This feature ensures fast completion of administrative procedures."
+    },
     "tags": {
       "capacity": "Trip capacity is"
     },

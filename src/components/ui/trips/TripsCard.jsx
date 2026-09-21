@@ -164,6 +164,12 @@ const TripsCard = ({
             {t("common.halfDayTrip")}
           </p>
         )}
+
+        {activityCard?.isIntegrations && (
+          <p className="px-3 py-1 bg-secColor text-white rounded-2xl font-medium">
+            {t("common.instantConfirmation")}
+          </p>
+        )}
       </div>
 
       <ImageWithPlaceholder

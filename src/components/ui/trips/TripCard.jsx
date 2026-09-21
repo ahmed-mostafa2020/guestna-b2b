@@ -11,7 +11,7 @@ import calculateHours from "@utils/calculations/CalculateHours";
 import formatNumbersUint from "@utils/formatters/FormatNumbersUint";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import ImageWithPlaceholder from "../imagesPlaceholder/ImageWithPlaceholder";
-import FavoriteButton from "./FavoriteButton";
+// import FavoriteButton from "./FavoriteButton";
 
 import { locationIcon, yellowStarIcon, smallCalenderIcon } from "@assets/svg";
 
@@ -59,19 +59,21 @@ const TripCard = ({ activityCard, imageWidth = 300 }) => {
 
   return (
     <div className="rounded-2xl overflow-hidden flex flex-col card-shadow relative border border-[#E4E6E8]">
-      <p
-        className={`font-medium absolute z-[1] bg-white py-1 px-3 text-badge top-8 ${
-          locale == "ar"
-            ? "rounded-bl-2xl rounded-tl-2xl"
-            : "rounded-br-2xl rounded-tr-2xl"
-        }`}
-      >
-        {activityCard.tripsType === CONSTANT_VALUES.PACKAGE
-          ? t("common.multiDaysTrip")
-          : activityCard.tripsType === CONSTANT_VALUES.ACTIVITY
-            ? t("common.oneDayTrip")
-            : t("common.halfDayTrip")}
-      </p>
+      <div className="flex items-center ps-4 gap-2 absolute z-[1] text-xs top-8">
+        <p className="px-3 py-1 bg-white text-badge rounded-2xl font-medium">
+          {activityCard.tripsType === CONSTANT_VALUES.PACKAGE
+            ? t("common.multiDaysTrip")
+            : activityCard.tripsType === CONSTANT_VALUES.ACTIVITY
+              ? t("common.oneDayTrip")
+              : t("common.halfDayTrip")}
+        </p>
+
+        {activityCard?.isIntegrations && (
+          <p className="px-3 py-1 bg-secColor text-white rounded-2xl font-medium">
+            {t("common.instantConfirmation")}
+          </p>
+        )}
+      </div>
 
       <ImageWithPlaceholder
         src={activityCard.thumbnail.web}
