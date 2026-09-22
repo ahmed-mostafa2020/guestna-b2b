@@ -342,10 +342,48 @@ export const formatAddProductPayload = (
     payload[`b2bPrice[weekdayPricing][${idx}][price]`] = finalPrice;
   });
 
-  (values.datePricing || []).forEach((item, idx) => {
-    if (item.date && item.price !== "" && item.price !== undefined && item.price !== null) {
-      payload[`datePricing[${idx}][date]`] = item.date;
-      payload[`datePricing[${idx}][price]`] = Number(item.price);
+  let datePricingIdx = 0;
+  const processedDates = new Set();
+
+  (values.datePricing || []).forEach((item) => {
+    const startStr = item.fromDate || item.date;
+    const endStr = item.toDate || item.fromDate || item.date;
+    const rawPrice =
+      item.price !== "" && item.price !== undefined && item.price !== null
+        ? Number(item.price)
+        : undefined;
+
+    if (startStr && rawPrice !== undefined && !isNaN(rawPrice)) {
+      if (endStr && endStr > startStr) {
+        const [sYear, sMonth, sDay] = startStr.split("-").map(Number);
+        const [eYear, eMonth, eDay] = endStr.split("-").map(Number);
+        const current = new Date(sYear, sMonth - 1, sDay);
+        const end = new Date(eYear, eMonth - 1, eDay);
+
+        let steps = 0;
+        while (current <= end && steps < 366) {
+          const year = current.getFullYear();
+          const month = String(current.getMonth() + 1).padStart(2, "0");
+          const day = String(current.getDate()).padStart(2, "0");
+          const dStr = `${year}-${month}-${day}`;
+
+          if (!processedDates.has(dStr)) {
+            processedDates.add(dStr);
+            payload[`datePricing[${datePricingIdx}][date]`] = dStr;
+            payload[`datePricing[${datePricingIdx}][price]`] = rawPrice;
+            datePricingIdx++;
+          }
+          current.setDate(current.getDate() + 1);
+          steps++;
+        }
+      } else {
+        if (!processedDates.has(startStr)) {
+          processedDates.add(startStr);
+          payload[`datePricing[${datePricingIdx}][date]`] = startStr;
+          payload[`datePricing[${datePricingIdx}][price]`] = rawPrice;
+          datePricingIdx++;
+        }
+      }
     }
   });
 

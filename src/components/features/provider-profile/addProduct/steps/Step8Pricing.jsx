@@ -64,11 +64,29 @@ const Step8Pricing = ({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [openBranches, setOpenBranches] = useState({});
 
-  // Local state for rule condition builder
-  const [conditionRule, setConditionRule] = useState(() => ({
-    changeType: values.key || values.conditionRuleChangeType || "INCREASE",
-    value: values.conditionRuleValue || "15",
-  }));
+  // Helper to calculate price based on base price, condition rule key (INCREASE/DECREASE) and percentage
+  const calculateRulePrice = useCallback((basePrice, changeType, percentage) => {
+    const numBase = Number(basePrice) || 0;
+    const numPercent = Number(percentage) || 0;
+    if (!numBase) return "";
+    if (changeType === "DECREASE") {
+      return Math.max(0, Math.round(numBase - (numBase * numPercent) / 100));
+    }
+    return Math.round(numBase + (numBase * numPercent) / 100);
+  }, []);
+
+  // Ensure values.datePricing, values.key, and values.conditionRuleValue are initialized
+  useEffect(() => {
+    if (!Array.isArray(values.datePricing) || values.datePricing.length === 0) {
+      setFieldValue("datePricing", [{ date: "", price: "" }], false);
+    }
+    if (!values.key) {
+      setFieldValue("key", "INCREASE", false);
+    }
+    if (values.conditionRuleValue === undefined || values.conditionRuleValue === "") {
+      setFieldValue("conditionRuleValue", "15", false);
+    }
+  }, [values.datePricing, values.key, values.conditionRuleValue, setFieldValue]);
 
   // Current date formatted as YYYY-MM-DD for min date validation
   const todayStr = useMemo(() => {
@@ -78,23 +96,6 @@ const Step8Pricing = ({
     const day = String(d.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }, []);
-
-  const defaultStartDate =
-    values.fromDay && values.fromDay >= todayStr ? values.fromDay : todayStr;
-  const defaultEndDate =
-    values.toDay && values.toDay >= defaultStartDate
-      ? values.toDay
-      : defaultStartDate;
-
-  // Date pricing rows state
-  const [datePricingRows, setDatePricingRows] = useState(() => [
-    {
-      id: 1,
-      fromDate: defaultStartDate,
-      toDate: defaultEndDate,
-      price: values.seasonPrice || "",
-    },
-  ]);
 
   // Branch groups mapping
   const branchGroups = useMemo(() => {
@@ -624,215 +625,249 @@ const Step8Pricing = ({
 
             {/* 4. Weekday & Season Pricing Rules (MATCHING FIGMA & SCREENSHOT 1) */}
             <div className="bg-white p-5 sm:p-7 rounded-2xl border border-border space-y-6 shadow-none">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
-                <div className="text-start">
-                  <h3 className="font-somar font-bold text-base sm:text-lg text-titleColor">
-                    {t("b2c.weekdayPricingTitle")}
-                  </h3>
-                  <p className="font-somar text-xs sm:text-sm text-textLight mt-1">
-                    {t("b2c.weekdayPricingSubtitle")}
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    const nextId = Date.now();
-                    setDatePricingRows((prev) => [
-                      ...prev,
-                      {
-                        id: nextId,
-                        fromDate: defaultStartDate,
-                        toDate: defaultEndDate,
-                        price: "",
-                      },
-                    ]);
-                  }}
-                  className="px-4 py-2 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer self-start sm:self-auto flex items-center gap-1.5 whitespace-nowrap"
-                >
-                  <span>{t("b2c.addRuleBtn")}</span>
-                </button>
-              </div>
-
-              {/* Condition Builder Row */}
-              <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-somar text-textDark">
-                <span className="font-medium text-textDark flex-shrink-0">
-                  {t("b2c.priceByLabel")}
-                </span>
-
-                {/* Dropdown: زيادة / تخفيض */}
-                <div className="w-28 sm:w-32">
-                  <SelectionGroup
-                    name="key"
-                    value={values.key || conditionRule.changeType}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setConditionRule((prev) => ({
-                        ...prev,
-                        changeType: val,
-                      }));
-                      setFieldValue("key", val, true);
-                      setFieldValue("conditionRuleChangeType", val, true);
-                    }}
-                    placeholder={t("b2c.increase")}
-                    list={changeTypeList}
-                    border="1px solid var(--color-border)"
-                  />
-                </div>
-
-                {/* Input: %15 with matching 52px height */}
-                <div className="w-24 sm:w-28">
-                  <TextInputGroup
-                    type="number"
-                    min="1"
-                    name="conditionRuleValue"
-                    value={conditionRule.value}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setConditionRule((prev) => ({
-                        ...prev,
-                        value: val,
-                      }));
-                      setFieldValue("conditionRuleValue", val, true);
-                    }}
-                    placeholder="15"
-                    borderClassName={inputBorderCls}
-                    inputClassName="!h-[52px] !py-0 px-2 text-center font-somar text-xs sm:text-sm text-textDark"
-                    endAdornment={
-                      <span className="text-textLight font-somar text-sm">
-                        %
-                      </span>
-                    }
-                  />
-                </div>
-              </div>
-
-              {/* Date Range Rows Matching Screenshot 1 */}
-              <div className="space-y-4 pt-2">
-                {datePricingRows.map((row, index) => {
-                  const isFromPast = Boolean(
-                    row.fromDate && row.fromDate < todayStr
-                  );
-                  const isToPast = Boolean(row.toDate && row.toDate < todayStr);
-                  const isToBeforeFrom = Boolean(
-                    row.toDate && row.fromDate && row.toDate < row.fromDate
-                  );
+              <FieldArray name="datePricing">
+                {({ push, remove }) => {
+                  const datePricingList =
+                    Array.isArray(values.datePricing) && values.datePricing.length > 0
+                      ? values.datePricing
+                      : [{ date: "", price: "" }];
 
                   return (
-                    <div
-                      key={row.id || index}
-                      className="flex flex-wrap md:flex-nowrap items-start gap-3 sm:gap-4 transition-all"
-                    >
-                      {/* From Date */}
-                      <div className="w-full md:w-auto md:flex-1">
-                        <TextInputGroup
-                          id={`fromDate-${row.id || index}`}
-                          name={`fromDate-${row.id || index}`}
-                          type="date"
-                          min={todayStr}
-                          label={t("b2c.fromDateReadOnly")}
-                          labelClassName={subLabelCls}
-                          value={row.fromDate || ""}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setDatePricingRows((prev) =>
-                              prev.map((r, i) => {
-                                if (i !== index) return r;
-                                const updated = { ...r, fromDate: val };
-                                if (val && r.toDate && val > r.toDate) {
-                                  updated.toDate = val;
-                                }
-                                return updated;
-                              })
-                            );
-                          }}
-                          borderClassName={inputBorderCls}
-                          inputClassName={inputFieldCls}
-                          touched={isFromPast}
-                          errors={
-                            isFromPast
-                              ? t("validations.pastDateError")
-                              : undefined
-                          }
-                        />
-                      </div>
+                    <>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
+                        <div className="text-start">
+                          <h3 className="font-somar font-bold text-base sm:text-lg text-titleColor">
+                            {t("b2c.weekdayPricingTitle")}
+                          </h3>
+                          <p className="font-somar text-xs sm:text-sm text-textLight mt-1">
+                            {t("b2c.weekdayPricingSubtitle")}
+                          </p>
+                        </div>
 
-                      {/* To Date */}
-                      <div className="w-full md:w-auto md:flex-1">
-                        <TextInputGroup
-                          id={`toDate-${row.id || index}`}
-                          name={`toDate-${row.id || index}`}
-                          type="date"
-                          min={row.fromDate || todayStr}
-                          label={t("b2c.toDateReadOnly")}
-                          labelClassName={subLabelCls}
-                          value={row.toDate || ""}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setDatePricingRows((prev) =>
-                              prev.map((r, i) =>
-                                i === index ? { ...r, toDate: val } : r
-                              )
-                            );
-                          }}
-                          borderClassName={inputBorderCls}
-                          inputClassName={inputFieldCls}
-                          touched={isToPast || isToBeforeFrom}
-                          errors={
-                            isToPast
-                              ? t("validations.pastDateError")
-                              : isToBeforeFrom
-                                ? t("validations.endDateAfterStartDate")
-                                : undefined
-                          }
-                        />
-                      </div>
-
-                      {/* Price */}
-                      <div className="flex-1 min-w-0 md:w-auto">
-                        <TextInputGroup
-                          id={`price-${row.id || index}`}
-                          name={`price-${row.id || index}`}
-                          type="number"
-                          min="0"
-                          label={t("b2c.priceInSar")}
-                          labelClassName={subLabelCls}
-                          value={row.price}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setDatePricingRows((prev) =>
-                              prev.map((r, i) =>
-                                i === index ? { ...r, price: val } : r
-                              )
-                            );
-                            setFieldValue("seasonPrice", val);
-                          }}
-                          placeholder="60"
-                          borderClassName={inputBorderCls}
-                          inputClassName={inputFieldCls}
-                          endAdornment={newSarSmall}
-                        />
-                      </div>
-
-                      {/* Delete Button (Shown on all rows when more than 1 row exists) */}
-                      {datePricingRows.length > 1 && (
                         <button
                           type="button"
                           onClick={() => {
-                            setDatePricingRows((prev) =>
-                              prev.filter((_, i) => i !== index)
+                            const defaultPrice = calculateRulePrice(
+                              values.price,
+                              values.key || "INCREASE",
+                              values.conditionRuleValue || 15
                             );
+                            push({
+                              date: "",
+                              price: defaultPrice !== "" ? defaultPrice : "",
+                            });
                           }}
-                          className="w-10 h-10 flex items-center justify-center text-error hover:bg-error/10 rounded-xl transition-colors cursor-pointer flex-shrink-0 mb-0.5 mt-6"
-                          title="حذف"
+                          className="px-4 py-2 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer self-start sm:self-auto flex items-center gap-1.5 whitespace-nowrap"
                         >
-                          <DeleteOutlineIcon className="w-5 h-5" />
+                          <span>{t("b2c.addRuleBtn")}</span>
                         </button>
-                      )}
-                    </div>
+                      </div>
+
+                      {/* Condition Builder Row: السعر بـ [زيادة/تخفيض] [%15] */}
+                      <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-somar text-textDark">
+                        <span className="font-medium text-textDark flex-shrink-0">
+                          {t("b2c.priceByLabel")}
+                        </span>
+
+                        {/* Dropdown: زيادة / تخفيض (key) */}
+                        <div className="w-28 sm:w-32">
+                          <SelectionGroup
+                            name="key"
+                            value={values.key || "INCREASE"}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setFieldValue("key", val, true);
+                              setFieldValue("conditionRuleChangeType", val, true);
+                            }}
+                            placeholder={t("b2c.increase")}
+                            list={changeTypeList}
+                            border="1px solid var(--color-border)"
+                          />
+                        </div>
+
+                        {/* Input: %15 with matching 52px height */}
+                        <div className="w-24 sm:w-28">
+                          <TextInputGroup
+                            type="number"
+                            min="1"
+                            name="conditionRuleValue"
+                            value={values.conditionRuleValue ?? "15"}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setFieldValue("conditionRuleValue", val, true);
+                            }}
+                            placeholder="15"
+                            borderClassName={inputBorderCls}
+                            inputClassName="!h-[52px] !py-0 px-2 text-center font-somar text-xs sm:text-sm text-textDark"
+                            endAdornment={
+                              <span className="text-textLight font-somar text-sm">
+                                %
+                              </span>
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      {/* Date Pricing Rows */}
+                      <div className="space-y-4 pt-2">
+                        {datePricingList.map((item, index) => {
+                          const fromDateVal = item.fromDate || item.date || "";
+                          const toDateVal = item.toDate || fromDateVal || "";
+
+                          const isFromPast = Boolean(
+                            fromDateVal && fromDateVal < todayStr
+                          );
+                          const isToPast = Boolean(
+                            toDateVal && toDateVal < todayStr
+                          );
+                          const isToBeforeFrom = Boolean(
+                            toDateVal && fromDateVal && toDateVal < fromDateVal
+                          );
+
+                          const fromTouched = getIn(
+                            touched,
+                            `datePricing[${index}].fromDate`
+                          );
+                          const toTouched = getIn(
+                            touched,
+                            `datePricing[${index}].toDate`
+                          );
+                          const fromError = getIn(
+                            errors,
+                            `datePricing[${index}].fromDate`
+                          );
+                          const toError = getIn(
+                            errors,
+                            `datePricing[${index}].toDate`
+                          );
+                          const priceTouched = getIn(
+                            touched,
+                            `datePricing[${index}].price`
+                          );
+                          const priceError = getIn(
+                            errors,
+                            `datePricing[${index}].price`
+                          );
+
+                          return (
+                            <div
+                              key={index}
+                              className="flex flex-wrap md:flex-nowrap items-start gap-3 sm:gap-4 transition-all"
+                            >
+                              {/* From Date */}
+                              <div className="w-full md:w-auto md:flex-1">
+                                <TextInputGroup
+                                  id={`datePricing-${index}-fromDate`}
+                                  name={`datePricing[${index}].fromDate`}
+                                  type="date"
+                                  min={todayStr}
+                                  label={t("b2c.fromDateReadOnly")}
+                                  labelClassName={subLabelCls}
+                                  value={fromDateVal}
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    setFieldValue(
+                                      `datePricing[${index}].fromDate`,
+                                      val
+                                    );
+                                    setFieldValue(
+                                      `datePricing[${index}].date`,
+                                      val
+                                    );
+                                    if (val && item.toDate && val > item.toDate) {
+                                      setFieldValue(
+                                        `datePricing[${index}].toDate`,
+                                        val
+                                      );
+                                    }
+                                  }}
+                                  onBlur={handleBlur}
+                                  borderClassName={inputBorderCls}
+                                  inputClassName={inputFieldCls}
+                                  touched={fromTouched || isFromPast}
+                                  errors={
+                                    isFromPast
+                                      ? t("validations.pastDateError")
+                                      : fromError
+                                  }
+                                />
+                              </div>
+
+                              {/* To Date */}
+                              <div className="w-full md:w-auto md:flex-1">
+                                <TextInputGroup
+                                  id={`datePricing-${index}-toDate`}
+                                  name={`datePricing[${index}].toDate`}
+                                  type="date"
+                                  min={fromDateVal || todayStr}
+                                  label={t("b2c.toDateReadOnly")}
+                                  labelClassName={subLabelCls}
+                                  value={toDateVal}
+                                  onChange={(e) => {
+                                    setFieldValue(
+                                      `datePricing[${index}].toDate`,
+                                      e.target.value
+                                    );
+                                  }}
+                                  onBlur={handleBlur}
+                                  borderClassName={inputBorderCls}
+                                  inputClassName={inputFieldCls}
+                                  touched={toTouched || isToPast || isToBeforeFrom}
+                                  errors={
+                                    isToPast
+                                      ? t("validations.pastDateError")
+                                      : isToBeforeFrom
+                                      ? t("validations.endDateAfterStartDate")
+                                      : toError
+                                  }
+                                />
+                              </div>
+
+                              {/* Price */}
+                              <div className="w-full md:w-auto md:flex-1">
+                                <TextInputGroup
+                                  id={`datePricing-${index}-price`}
+                                  name={`datePricing[${index}].price`}
+                                  type="number"
+                                  min="0"
+                                  label={t("b2c.priceInSar")}
+                                  labelClassName={subLabelCls}
+                                  value={item.price ?? ""}
+                                  onChange={(e) => {
+                                    setFieldValue(
+                                      `datePricing[${index}].price`,
+                                      e.target.value
+                                    );
+                                  }}
+                                  onBlur={handleBlur}
+                                  placeholder="60"
+                                  borderClassName={inputBorderCls}
+                                  inputClassName={inputFieldCls}
+                                  endAdornment={newSarSmall}
+                                  touched={priceTouched}
+                                  errors={priceError}
+                                />
+                              </div>
+
+                              {/* Delete Button (Shown on all rows when more than 1 row exists) */}
+                              {datePricingList.length > 1 && (
+                                <button
+                                  type="button"
+                                  onClick={() => remove(index)}
+                                  className="w-10 h-10 flex items-center justify-center text-error hover:bg-error/10 rounded-xl transition-colors cursor-pointer flex-shrink-0 mb-0.5 mt-6"
+                                  title={isAr ? "حذف" : "Delete"}
+                                >
+                                  <DeleteOutlineIcon className="w-5 h-5" />
+                                </button>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
                   );
-                })}
-              </div>
+                }}
+              </FieldArray>
             </div>
           </div>
         )}

@@ -775,7 +775,7 @@ const StepReview = ({
       )}
 
       {/* 4. Main Two-Column Trip Details Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-28 lg:pb-0">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-14 lg:pb-0">
         {/* Right Column: Accordions (8 of 12) */}
         <div className="lg:col-span-8 space-y-4">
           {/* Accordion 1: Product Description */}
@@ -1339,6 +1339,66 @@ const StepReview = ({
                     </div>
                   </div>
                 )}
+
+                {/* Specific Date Pricing Breakdown */}
+                {Array.isArray(values.datePricing) &&
+                  values.datePricing.some(
+                    (dp) =>
+                      dp.date &&
+                      dp.price !== "" &&
+                      dp.price !== undefined &&
+                      dp.price !== null
+                  ) && (
+                    <div className="space-y-3 pt-2">
+                      <div className="flex items-center justify-between">
+                        <h5 className="font-bold text-sm text-titleColor text-start">
+                          {tSub("reviewDatePricing")}
+                        </h5>
+                        {values.key && (
+                          <span className="text-[11px] px-2 py-0.5 rounded-md bg-mainColor/10 text-mainColor font-semibold">
+                            {values.key === "DECREASE"
+                              ? tSub("reviewDiscountLabel") || "تخفيض"
+                              : isRtl
+                              ? "زيادة"
+                              : "Increase"}
+                          </span>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                        {values.datePricing
+                          .filter(
+                            (dp) =>
+                              (dp.fromDate || dp.date) &&
+                              dp.price !== "" &&
+                              dp.price !== undefined &&
+                              dp.price !== null
+                          )
+                          .map((item, idx) => {
+                            const dateDisplay =
+                              item.fromDate && item.toDate && item.fromDate !== item.toDate
+                                ? `${item.fromDate} - ${item.toDate}`
+                                : item.fromDate || item.date;
+
+                            return (
+                              <div
+                                key={idx}
+                                className="p-3.5 bg-white rounded-xl border border-border shadow-xs space-y-1.5 hover:border-mainColor transition-all text-start"
+                              >
+                                <div className="flex items-center justify-between">
+                                  <span className="font-bold text-xs sm:text-sm text-titleColor flex items-center gap-1.5">
+                                    <CalendarTodayIcon className="w-3.5 h-3.5 text-mainColor" />
+                                    <span>{dateDisplay}</span>
+                                  </span>
+                                </div>
+                                <div className="text-base font-extrabold text-mainColor">
+                                  {formatCurrency(item.price)}
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </div>
+                  )}
               </div>
             </FilterAccordion>
           )}

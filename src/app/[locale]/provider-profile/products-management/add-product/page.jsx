@@ -275,6 +275,13 @@ const buildTouchedMap = (fields, values = {}) => {
     }
   }
 
+  if (fields.includes("datePricing") && Array.isArray(values?.datePricing)) {
+    touched.datePricing = values.datePricing.map(() => ({
+      date: true,
+      price: true,
+    }));
+  }
+
   return touched;
 };
 
@@ -702,6 +709,8 @@ const AddProductPage = () => {
           systemTypes: ["B2B", "B2C"],
           // istantConfirmation: false,
           key: "INCREASE",
+          conditionRuleValue: "15",
+          datePricing: [{ date: "", price: "" }],
           allowedAges: [],
           academicStages: [],
           b2cTargetAudiences: [],

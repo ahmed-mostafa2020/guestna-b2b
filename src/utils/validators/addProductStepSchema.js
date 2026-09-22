@@ -831,6 +831,16 @@ export const createStepPricingSchema = (t) => {
         })
       )
       .optional(),
+    datePricing: Yup.array()
+      .of(
+        Yup.object().shape({
+          date: Yup.string().optional(),
+          price: Yup.mixed().optional(),
+        })
+      )
+      .optional(),
+    key: Yup.string().optional(),
+    conditionRuleValue: Yup.mixed().optional(),
   });
 };
 
@@ -844,4 +854,7 @@ export const STEP_PRICING_FIELD_NAMES = [
   "targetAudiences",
   "bulkPricing",
   "studentsPerSupervisor",
+  "datePricing",
+  "key",
+  "conditionRuleValue",
 ];
