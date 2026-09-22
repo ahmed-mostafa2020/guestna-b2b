@@ -1025,7 +1025,15 @@
           "reviewCapacity": "السعه الاستيعابيه",
           "reviewAdditionalServices": "الخدمات الاضافيه",
           "reviewBoysAndGirls": "بنين و بنات",
-          "reviewDiscountBadge": "{percent}% خصم"
+          "reviewDiscountBadge": "{percent}% خصم",
+          "reviewAllTab": "الكل",
+          "reviewB2cPricing": "تسعير الأفراد والجمهور",
+          "reviewBookingDeadlineDaysBefore": "الموعد النهائي (بالأيام قبل)",
+          "reviewB2cBadge": "نظام الأفراد (B2C)",
+          "reviewB2bBadge": "نظام المدارس (B2B)",
+          "reviewBothBadge": "شامل النظامين (B2B & B2C)",
+          "reviewB2cPriceLabel": "تسعير الأفراد",
+          "reviewB2bPriceLabel": "تسعير المدارس"
         },
         "placeholders": {
           "nameEn": "أدخل اسم المنتج بالإنجليزي",

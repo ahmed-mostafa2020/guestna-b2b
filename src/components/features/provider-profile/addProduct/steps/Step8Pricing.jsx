@@ -366,17 +366,14 @@ const Step8Pricing = ({
                 <div className="font-somar font-bold text-base sm:text-lg text-mainColor flex items-center gap-1 mt-0.5">
                   <span>
                     {(values.b2bPricing?.schoolsPrice ||
-                      values.b2bPrice?.price ||
-                      values.price) &&
+                      values.b2bPrice?.price) &&
                     Number(
                       values.b2bPricing?.schoolsPrice ||
-                        values.b2bPrice?.price ||
-                        values.price
+                        values.b2bPrice?.price
                     ) > 0
                       ? formatCurrency(
                           values.b2bPricing?.schoolsPrice ||
-                            values.b2bPrice?.price ||
-                            values.price
+                            values.b2bPrice?.price
                         )
                       : "-"}
                   </span>
@@ -960,14 +957,13 @@ const Step8Pricing = ({
                     value={
                       values.b2bPrice?.price ??
                       values.b2bPricing?.schoolsPrice ??
-                      values.price ??
                       ""
                     }
                     onChange={(e) => {
                       const val = e.target.value;
                       setFieldValue("b2bPrice.price", val);
                       setFieldValue("b2bPricing.schoolsPrice", val);
-                      if (!isB2CEnabled || !values.price) {
+                      if (!isB2CEnabled) {
                         setFieldValue("price", val);
                         setFieldValue("b2cPrice.price", val);
                       }
@@ -1000,13 +996,12 @@ const Step8Pricing = ({
                     name="b2bPrice.finalPrice"
                     value={
                       values.b2bPrice?.finalPrice ??
-                      values.discountedPrice ??
                       ""
                     }
                     onChange={(e) => {
                       const val = e.target.value;
                       setFieldValue("b2bPrice.finalPrice", val);
-                      if (!isB2CEnabled || !values.discountedPrice) {
+                      if (!isB2CEnabled) {
                         setFieldValue("discountedPrice", val);
                       }
                     }}

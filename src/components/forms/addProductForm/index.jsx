@@ -296,7 +296,7 @@ export const formatAddProductPayload = (
       ? Number(values.b2bPricing?.schoolsPrice)
       : values.b2bPricing?.price !== "" && !isNaN(Number(values.b2bPricing?.price))
       ? Number(values.b2bPricing?.price)
-      : b2cMarketPrice;
+      : undefined;
 
   const b2bCost =
     values.b2bPrice?.productCost !== "" && !isNaN(Number(values.b2bPrice?.productCost))
@@ -600,7 +600,7 @@ export const formatAddProductPayload = (
     const b2bBranchPrice =
       bPricing.schoolsPrice !== "" && !isNaN(Number(bPricing.schoolsPrice))
         ? Number(bPricing.schoolsPrice)
-        : b2bMarketPrice || b2cBranchPrice;
+        : b2bMarketPrice;
     const b2bBranchCost =
       bPricing.productCost !== "" && !isNaN(Number(bPricing.productCost))
         ? Number(bPricing.productCost)

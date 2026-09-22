@@ -33,7 +33,12 @@ import Map from "@components/features/tripDetails/gridSection/largeSizeGrid/acco
 // Utilities & Assets
 import { formatTime12h } from "@utils/formatters/formatTime12h";
 import formatCurrency from "@utils/formatters/FormatCurrency";
-import { wrongIcon, imagesListIcon } from "@assets/svg";
+import {
+  wrongIcon,
+  imagesListIcon,
+  newSarLarge,
+  newSarSmall,
+} from "@assets/svg";
 
 const StepReview = ({
   _formSelectionData,
@@ -64,7 +69,7 @@ const StepReview = ({
   const isB2CEnabled =
     selectedSystemTypes.includes("B2C") ||
     (!isB2BEnabled && selectedSystemTypes.length === 0);
-  const showBothViews = isB2BEnabled && isB2CEnabled;
+  const isBoth = isB2BEnabled && isB2CEnabled;
 
   // Active View Tab: "B2B" (Schools) or "B2C" (Individuals)
   const [activeView, setActiveView] = useState(() => {
@@ -74,7 +79,7 @@ const StepReview = ({
     return "B2B";
   });
 
-  // Synchronize activeView with step 3 channel selection
+  // Synchronize activeView with step 3/4 channel selection
   useEffect(() => {
     if (!isB2BEnabled && isB2CEnabled && activeView !== "B2C") {
       setActiveView("B2C");
@@ -340,41 +345,53 @@ const StepReview = ({
     );
   }, [resolvedBranches, branchSearch]);
 
+  const b2bBasePrice = useMemo(() => {
+    return Number(
+      values.b2bPrice?.price ||
+        values.b2bPricing?.schoolsPrice ||
+        values.b2bPricing?.price ||
+        0
+    );
+  }, [values.b2bPrice, values.b2bPricing]);
+
+  const b2cBasePrice = useMemo(() => {
+    return Number(values.b2cPrice?.price || values.b2cPricing?.price || values.price || 0);
+  }, [values.b2cPrice, values.b2cPricing, values.price]);
+
   // Active Price based on selected tab
   const activePrice = useMemo(() => {
     if (activeView === "B2B") {
-      return (
-        values.b2bPrice?.price || values.b2bPricing?.price || values.price || 0
-      );
+      return b2bBasePrice;
     }
-    return (
-      values.b2cPrice?.price || values.b2cPricing?.price || values.price || 0
-    );
-  }, [
-    activeView,
-    values.b2bPrice,
-    values.b2cPrice,
-    values.b2bPricing,
-    values.b2cPricing,
-    values.price,
-  ]);
+    if (activeView === "B2C") {
+      return b2cBasePrice;
+    }
+    // "ALL" view: lowest non-zero starting price
+    const nonZero = [b2bBasePrice, b2cBasePrice].filter((p) => p > 0);
+    return nonZero.length > 0 ? Math.min(...nonZero) : values.price || 0;
+  }, [activeView, b2bBasePrice, b2cBasePrice, values.price]);
+
+  const b2bDiscount = useMemo(() => {
+    const d = Number(values.b2bPrice?.finalPrice || 0);
+    return d > 0 && b2bBasePrice > 0 && d < b2bBasePrice ? d : 0;
+  }, [values.b2bPrice, b2bBasePrice]);
+
+  const b2cDiscount = useMemo(() => {
+    const d = Number(values.b2cPrice?.finalPrice || values.discountedPrice || 0);
+    return d > 0 && b2cBasePrice > 0 && d < b2cBasePrice ? d : 0;
+  }, [values.b2cPrice, values.discountedPrice, b2cBasePrice]);
 
   // Active Discounted Price (finalPrice / discountedPrice) — only if set and less than base price
   const activeDiscount = useMemo(() => {
-    const discounted =
-      activeView === "B2B"
-        ? values.b2bPrice?.finalPrice || values.discountedPrice || 0
-        : values.b2cPrice?.finalPrice || values.discountedPrice || 0;
-    return Number(discounted) > 0 && Number(discounted) < Number(activePrice)
-      ? Number(discounted)
-      : 0;
-  }, [
-    activeView,
-    activePrice,
-    values.b2bPrice,
-    values.b2cPrice,
-    values.discountedPrice,
-  ]);
+    if (activeView === "B2B") {
+      return b2bDiscount;
+    }
+    if (activeView === "B2C") {
+      return b2cDiscount;
+    }
+    const nonZero = [b2bDiscount, b2cDiscount].filter((d) => d > 0);
+    return nonZero.length > 0 ? Math.min(...nonZero) : 0;
+  }, [activeView, b2bDiscount, b2cDiscount]);
 
   // Discount percentage for display
   const discountPercent = useMemo(() => {
@@ -388,16 +405,13 @@ const StepReview = ({
   // Bulk pricing list for B2B
   const bulkPricingList = useMemo(() => {
     const list =
-      activeView === "B2B" &&
-      Array.isArray(values.bulkPricing) &&
-      values.bulkPricing.length > 0
-        ? values.bulkPricing
-        : Array.isArray(values.b2bBulkPricing) &&
-            values.b2bBulkPricing.length > 0
-          ? values.b2bBulkPricing
+      Array.isArray(values.b2bBulkPricing) && values.b2bBulkPricing.length > 0
+        ? values.b2bBulkPricing
+        : Array.isArray(values.bulkPricing) && values.bulkPricing.length > 0
+          ? values.bulkPricing
           : [];
     return list.filter((item) => item && (item.minCount || item.price));
-  }, [activeView, values.bulkPricing, values.b2bBulkPricing]);
+  }, [values.bulkPricing, values.b2bBulkPricing]);
 
   // Video URL resolution
   const resolvedVideoUrl = useMemo(() => {
@@ -420,14 +434,11 @@ const StepReview = ({
     return null;
   }, [values.video, values.videoUrl, values.youtubeUrl]);
 
-  // Weekday Pricing List based on active tab
-  const weekdayPricingList = useMemo(() => {
-    const list =
-      activeView === "B2B" && values.b2bPrice?.weekdayPricing?.length
-        ? values.b2bPrice.weekdayPricing
-        : activeView === "B2C" && values.b2cPrice?.weekdayPricing?.length
-          ? values.b2cPrice.weekdayPricing
-          : values.weekdayPricing || [];
+  // Weekday Pricing List for B2B
+  const b2bWeekdayPricingList = useMemo(() => {
+    const list = values.b2bPrice?.weekdayPricing?.length
+      ? values.b2bPrice.weekdayPricing
+      : values.weekdayPricing || [];
 
     return list.map((item) => {
       let dayName = item.day;
@@ -442,13 +453,28 @@ const StepReview = ({
         rawDay: item.day,
       };
     });
-  }, [
-    activeView,
-    values.b2bPrice,
-    values.b2cPrice,
-    values.weekdayPricing,
-    tWeekDays,
-  ]);
+  }, [values.b2bPrice, values.weekdayPricing, tWeekDays]);
+
+  // Weekday Pricing List for B2C
+  const b2cWeekdayPricingList = useMemo(() => {
+    const list = values.b2cPrice?.weekdayPricing?.length
+      ? values.b2cPrice.weekdayPricing
+      : values.weekdayPricing || [];
+
+    return list.map((item) => {
+      let dayName = item.day;
+      try {
+        dayName = tWeekDays(item.day?.toLowerCase());
+      } catch (e) {
+        dayName = item.day;
+      }
+      return {
+        day: dayName,
+        price: item.price,
+        rawDay: item.day,
+      };
+    });
+  }, [values.b2cPrice, values.weekdayPricing, tWeekDays]);
 
   // Exempted list
   const exemptedList = useMemo(() => {
@@ -500,13 +526,30 @@ const StepReview = ({
   // Date range string
   const dateRangeStr = useMemo(() => {
     if (values.fromDay && values.toDay) {
+      try {
+        const fromDate = new Date(values.fromDay);
+        const toDate = new Date(values.toDay);
+        if (!isNaN(fromDate.getTime()) && !isNaN(toDate.getTime())) {
+          const formatter = new Intl.DateTimeFormat(
+            locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US",
+            {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            }
+          );
+          return `${formatter.format(fromDate)} - ${formatter.format(toDate)}`;
+        }
+      } catch (e) {
+        // fallback
+      }
       return `${values.fromDay} - ${values.toDay}`;
     }
     if (values.selectedDays?.length) {
       return formatDays(values.selectedDays);
     }
     return "-";
-  }, [values.fromDay, values.toDay, values.selectedDays, locale]);
+  }, [values.fromDay, values.toDay, values.selectedDays, locale, formatDays]);
 
   // Time range string
   const timeRangeStr = useMemo(() => {
@@ -656,37 +699,35 @@ const StepReview = ({
         )}
       </div>
 
-      {/* 3. B2B / B2C Toggle Bar matching user selection at Step 3 */}
-      <div className="w-full bg-mainColor p-1.5 rounded-2xl flex items-center gap-2 shadow-xs">
-        {isB2BEnabled && (
+      {/* 3. B2B / B2C Toggle Bar (shown only if user selected both systems) */}
+      {isBoth && (
+        <div className="w-full bg-mainColor p-1.5 rounded-2xl flex items-center gap-2 shadow-xs">
           <button
             type="button"
             onClick={() => setActiveView("B2B")}
-            className={`flex-1 py-3 px-6 rounded-xl text-sm sm:text-base font-bold transition-all text-center ${
+            className={`flex-1 py-3 px-6 rounded-xl text-sm sm:text-base font-bold transition-all text-center cursor-pointer ${
               activeView === "B2B"
                 ? "bg-white text-mainColor shadow-sm cursor-default"
-                : "text-white hover:bg-white/10 cursor-pointer"
+                : "text-white hover:bg-white/10"
             }`}
             aria-pressed={activeView === "B2B"}
           >
             {tSub("reviewB2bTab")}
           </button>
-        )}
-        {isB2CEnabled && (
           <button
             type="button"
             onClick={() => setActiveView("B2C")}
-            className={`flex-1 py-3 px-6 rounded-xl text-sm sm:text-base font-bold transition-all text-center ${
+            className={`flex-1 py-3 px-6 rounded-xl text-sm sm:text-base font-bold transition-all text-center cursor-pointer ${
               activeView === "B2C"
                 ? "bg-white text-mainColor shadow-sm cursor-default"
-                : "text-white hover:bg-white/10 cursor-pointer"
+                : "text-white hover:bg-white/10"
             }`}
             aria-pressed={activeView === "B2C"}
           >
             {tSub("reviewB2cTab")}
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* 4. Main Two-Column Trip Details Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -737,9 +778,8 @@ const StepReview = ({
             </FilterAccordion>
           )}
 
-          {/* Accordion 3: Academic Stages / Age Range */}
-          {(academicStageLabels.length > 0 ||
-            resolvedTargetAudiences.length > 0) && (
+          {/* Accordion 3: Academic Stages (for B2B) or Target Audiences (for B2C) */}
+          {activeView === "B2B" && academicStageLabels.length > 0 && (
             <FilterAccordion index={2} title={tSub("reviewAcademicStages")}>
               <div className="flex flex-wrap gap-2.5 p-2">
                 {academicStageLabels.map((stage, idx) => (
@@ -750,6 +790,13 @@ const StepReview = ({
                     {stage}
                   </span>
                 ))}
+              </div>
+            </FilterAccordion>
+          )}
+
+          {activeView === "B2C" && resolvedTargetAudiences.length > 0 && (
+            <FilterAccordion index={2} title={tSub("reviewAcademicStages")}>
+              <div className="flex flex-wrap gap-2.5 p-2">
                 {resolvedTargetAudiences.map((ta, idx) => (
                   <span
                     key={`ta-${idx}`}
@@ -1019,7 +1066,7 @@ const StepReview = ({
                       {tSub("reviewMarketPrice")}
                     </label>
                     <div className="w-full bg-gray-50 rounded-xl border border-gray-200 py-3 px-4 text-center font-bold text-titleColor text-sm">
-                      {activePrice ? formatCurrency(activePrice) : "-"}
+                      {b2bBasePrice ? formatCurrency(b2bBasePrice) : "-"}
                     </div>
                   </div>
 
@@ -1071,15 +1118,15 @@ const StepReview = ({
                             {tSub("reviewStudentsUnit")}
                           </td>
                           <td className="py-3 px-4 font-bold text-mainColor">
-                            {activeDiscount > 0 ? (
+                            {b2bDiscount > 0 ? (
                               <div className="flex items-center justify-center gap-2">
-                                <span>{formatCurrency(activeDiscount)}</span>
+                                <span>{formatCurrency(b2bDiscount)}</span>
                                 <span className="line-through text-xs text-subtitleColor font-normal">
-                                  {formatCurrency(activePrice)}
+                                  {formatCurrency(b2bBasePrice)}
                                 </span>
                               </div>
                             ) : (
-                              formatCurrency(activePrice)
+                              formatCurrency(b2bBasePrice)
                             )}
                           </td>
                         </tr>
@@ -1089,13 +1136,13 @@ const StepReview = ({
                 </div>
 
                 {/* Weekday Pricing Breakdown */}
-                {weekdayPricingList.length > 0 && (
+                {b2bWeekdayPricingList.length > 0 && (
                   <div className="space-y-3 pt-2">
                     <h5 className="font-bold text-sm text-titleColor text-start">
                       {tSub("reviewWeekdayPricing")}
                     </h5>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                      {weekdayPricingList.map((item, idx) => (
+                      {b2bWeekdayPricingList.map((item, idx) => (
                         <div
                           key={idx}
                           className="p-3.5 bg-white rounded-xl border border-border shadow-xs space-y-1.5 hover:border-mainColor transition-all text-start"
@@ -1128,7 +1175,7 @@ const StepReview = ({
 
           {/* Accordion 8 (B2C): Target Audiences & Pricing Breakdown */}
           {activeView === "B2C" && (
-            <FilterAccordion index={7} title={tSub("reviewPriceStartsFrom")}>
+            <FilterAccordion index={7} title={tSub("reviewB2cPricing")}>
               <div className="space-y-5 p-2">
                 {/* 2 Summary Boxes: Market Price & Discounted Price */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1137,7 +1184,7 @@ const StepReview = ({
                       {tSub("reviewMarketPrice")}
                     </label>
                     <div className="w-full bg-gray-50 rounded-xl border border-gray-200 py-3 px-4 text-center font-bold text-titleColor text-sm">
-                      {formatCurrency(activePrice)}
+                      {b2cBasePrice ? formatCurrency(b2cBasePrice) : "-"}
                     </div>
                   </div>
 
@@ -1146,11 +1193,11 @@ const StepReview = ({
                       {tSub("reviewDiscountLabel")}
                     </label>
                     <div className="w-full bg-gray-50 rounded-xl border border-gray-200 py-3 px-4 text-center font-bold text-mainColor text-sm">
-                      {activeDiscount > 0 ? (
+                      {b2cDiscount > 0 ? (
                         <div className="flex items-center justify-center gap-2">
-                          <span>{formatCurrency(activeDiscount)}</span>
+                          <span>{formatCurrency(b2cDiscount)}</span>
                           <span className="text-xs text-error bg-error/10 px-2 py-0.5 rounded-md border border-error/20">
-                            %{discountPercent}
+                            %{Math.round(((b2cBasePrice - b2cDiscount) / b2cBasePrice) * 100)}
                           </span>
                         </div>
                       ) : (
@@ -1184,7 +1231,7 @@ const StepReview = ({
                               {ta.name}
                             </td>
                             <td className="py-2.5 px-4 font-bold text-mainColor">
-                              {formatCurrency(ta.price || activePrice)}
+                              {formatCurrency(ta.price || b2cBasePrice)}
                             </td>
                             <td className="py-2.5 px-4 text-subtitleColor">
                               {ta.minCount || 1}
@@ -1197,13 +1244,13 @@ const StepReview = ({
                 )}
 
                 {/* Weekday Pricing Breakdown */}
-                {weekdayPricingList.length > 0 && (
+                {b2cWeekdayPricingList.length > 0 && (
                   <div className="space-y-3 pt-2">
                     <h5 className="font-bold text-sm text-titleColor text-start">
                       {tSub("reviewWeekdayPricing")}
                     </h5>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                      {weekdayPricingList.map((item, idx) => (
+                      {b2cWeekdayPricingList.map((item, idx) => (
                         <div
                           key={idx}
                           className="p-3.5 bg-white rounded-xl border border-border shadow-xs space-y-1.5 hover:border-mainColor transition-all text-start"
@@ -1241,90 +1288,105 @@ const StepReview = ({
             withBorder={true}
             className="shadow-md rounded-2xl overflow-hidden"
           >
-            {/* Price Section with Discount support */}
-            <div className="space-y-1 pb-4 border-b border-border text-start">
-              <span className="text-xs text-subtitleColor font-medium block">
+            {/* Price Section with Discount support matching Figma node 21205-187866 */}
+            <div className="space-y-1 pb-4 text-start">
+              <span className="text-sm text-[#4A5C5F] font-normal block leading-5">
                 {tSub("reviewPriceStartsFrom")}
               </span>
               {activeDiscount > 0 ? (
                 <div className="flex flex-col gap-1">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-extrabold text-mainColor">
-                      {formatCurrency(activeDiscount)}
-                    </span>
-                    <span className="line-through text-sm text-subtitleColor font-normal">
-                      {formatCurrency(activePrice)}
-                    </span>
+                  <div className="flex items-baseline gap-2 flex-wrap">
+                    <div className="flex items-center gap-1.5 text-2xl font-bold text-[#042A30]">
+                      <span>{activeDiscount}</span>
+                      <span className="inline-flex items-center text-[#042A30]">
+                        {newSarLarge}
+                      </span>
+                    </div>
+                    <div className="line-through text-sm text-[#4A5C5F] font-normal flex items-center gap-1">
+                      <span>{activePrice}</span>
+                      <span className="inline-flex items-center text-[#4A5C5F]">
+                        {newSarSmall}
+                      </span>
+                    </div>
                   </div>
                   <span className="inline-flex w-fit px-2.5 py-0.5 text-xs font-bold text-error bg-error/10 rounded-full border border-error/20">
                     {tSub("reviewDiscountBadge", { percent: discountPercent })}
                   </span>
                 </div>
               ) : (
-                <div className="text-3xl font-extrabold text-mainColor">
-                  {formatCurrency(activePrice)}
+                <div className="flex items-center gap-1.5 text-2xl font-bold text-[#042A30]">
+                  <span>{activePrice}</span>
+                  <span className="inline-flex items-center text-[#042A30]">
+                    {newSarLarge}
+                  </span>
                 </div>
               )}
             </div>
 
-            {/* Meta Rows matching Figma */}
-            <div className="space-y-3.5 text-xs sm:text-sm text-subtitleColor py-3 text-start">
-              {/* Date Range */}
-              <div className="flex gap-2">
-                <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
-                  <CalendarTodayIcon className="w-4 h-4" />
+            {/* Meta Rows matching Figma node 21205-187866 */}
+            <div className="space-y-3 py-1 text-start">
+              {/* Row 1: Date Range */}
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-12 rounded-[8px] bg-[#EEFAF9] text-[#2991AA] flex items-center justify-center flex-shrink-0">
+                  <CalendarTodayIcon className="w-5 h-5 text-[#2991AA]" />
                 </div>
-                <div>
-                  <span className="text-[11px] text-subtitleColor block">
+                <div className="min-w-0 flex-1">
+                  <span className="text-base font-medium text-[#042A30] leading-5 block">
                     {tSub("reviewDate")}
                   </span>
-                  <span className="text-titleColor font-bold text-sm block">
+                  <span className="text-base font-semibold text-[#042A30] leading-5 block truncate">
                     {dateRangeStr}
                   </span>
                 </div>
               </div>
 
-              {/* Activity Duration */}
+              {/* Row 2: Activity Duration */}
               {durationHours > 0 && (
-                <div className="flex gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
-                    <AccessTimeIcon className="w-4 h-4" />
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-12 rounded-[8px] bg-[#EEFAF9] text-[#2991AA] flex items-center justify-center flex-shrink-0">
+                    <AccessTimeIcon className="w-5 h-5 text-[#2991AA]" />
                   </div>
-                  <div>
-                    <span className="text-[11px] text-subtitleColor block">
+                  <div className="min-w-0 flex-1">
+                    <span className="text-base font-medium text-[#042A30] leading-5 block">
                       {tSub("reviewActivityDuration")}
                     </span>
-                    <span className="text-titleColor font-bold text-sm block">
+                    <span className="text-base font-semibold text-[#042A30] leading-5 block">
                       {durationHours} {tSub("reviewHours")}
                     </span>
                   </div>
                 </div>
               )}
 
-              {/* Ages */}
-              {(values.ageRange?.from || values.ageRange?.to) && (
-                <div className="flex gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
-                    <AccessTimeIcon className="w-4 h-4" />
+              {/* Row 3: Age Range */}
+              {(values.ageRange?.from || values.ageRange?.to || academicStageLabels.length > 0) && (
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-12 rounded-[8px] bg-[#EEFAF9] text-[#2991AA] flex items-center justify-center flex-shrink-0">
+                    <AccessTimeIcon className="w-5 h-5 text-[#2991AA]" />
                   </div>
-                  <div>
-                    <span className="text-[11px] text-subtitleColor block">
+                  <div className="min-w-0 flex-1">
+                    <span className="text-base font-medium text-[#042A30] leading-5 block">
                       {tSub("reviewAgeFrom")}
                     </span>
-                    <span className="text-titleColor font-bold text-sm block">
-                      {tSub("reviewAgeYears", {
-                        from: values.ageRange?.from || 8,
-                        to: values.ageRange?.to || 16,
-                      })}
+                    <span className="text-base font-semibold text-[#042A30] leading-5 block">
+                      {values.ageRange?.from || values.ageRange?.to
+                        ? tSub("reviewAgeYears", {
+                            from: values.ageRange?.from || 8,
+                            to: values.ageRange?.to || 16,
+                          })
+                        : academicStageLabels.slice(0, 2).join(", ")}
                     </span>
                   </div>
                 </div>
               )}
 
-              {/* Deadline Box */}
-              <div className="flex items-center justify-between p-3 rounded-xl bg-status-success-bg border border-status-success-border font-bold text-xs sm:text-sm">
-                <span className="text-status-success-fg">{tSub("reviewBookingDeadlineNotice")}</span>
-                <span className="text-status-success-fg">{values.bookingBefore || 1}</span>
+              {/* Row 4: Deadline Box matching Figma */}
+              <div className="flex items-center justify-between p-3 rounded-[8px] bg-[#EFFACF] text-base">
+                <span className="text-[#0B7F8F] font-semibold text-sm sm:text-base">
+                  {tSub("reviewBookingDeadlineDaysBefore")}
+                </span>
+                <span className="text-[#0B7F8F] font-bold text-sm sm:text-base">
+                  {values.bookingBefore || 1}
+                </span>
               </div>
             </div>
 

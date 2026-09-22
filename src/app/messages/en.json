@@ -1018,7 +1018,15 @@
           "reviewCapacity": "Capacity",
           "reviewAdditionalServices": "Additional Services",
           "reviewBoysAndGirls": "Boys & Girls",
-          "reviewDiscountBadge": "{percent}% OFF"
+          "reviewDiscountBadge": "{percent}% OFF",
+          "reviewAllTab": "All",
+          "reviewB2cPricing": "Individuals & Public Pricing",
+          "reviewBookingDeadlineDaysBefore": "Deadline (days before)",
+          "reviewB2cBadge": "Individuals System (B2C)",
+          "reviewB2bBadge": "Schools System (B2B)",
+          "reviewBothBadge": "Both Systems (B2B & B2C)",
+          "reviewB2cPriceLabel": "Individuals Price",
+          "reviewB2bPriceLabel": "Schools Price"
         },
         "placeholders": {
           "nameEn": "Enter product name in English",
