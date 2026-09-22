@@ -936,10 +936,33 @@ const AddProductForm = ({
   }, [formSelectionData?.targetAudiences, productData]);
 
   const customServicesOptions = formSelectionData?.customServices || [];
+
+  // Grouped branches by city (for UI display)
+  const providerBranchsByCity = useMemo(() => {
+    const raw = formSelectionData?.providerBranchs || [];
+    if (!Array.isArray(raw) || raw.length === 0) return [];
+    // Check if data is in grouped format (has `branches` array and `city` string)
+    const isGrouped = raw.some(
+      (item) => Array.isArray(item.branches) && typeof item.city === "string"
+    );
+    if (isGrouped) return raw;
+    // Fallback: wrap flat list into a single group
+    return [{ city: "", branches: raw, _id: "flat" }];
+  }, [formSelectionData?.providerBranchs]);
+
+  // Flat branch options list (for payload building and lookups)
   const providerBranchsOptions = useMemo(() => {
-    const opts = Array.isArray(formSelectionData?.providerBranchs)
-      ? [...formSelectionData.providerBranchs]
-      : [];
+    const opts = [];
+    providerBranchsByCity.forEach((group) => {
+      (group.branches || []).forEach((b) => {
+        if (b && typeof b === "object") {
+          const bId = b._id || b.id;
+          if (bId && !opts.some((item) => (item._id || item.id) === bId)) {
+            opts.push(b);
+          }
+        }
+      });
+    });
     if (productData) {
       const branchesRaw =
         productData.providerBranchs ||
@@ -963,7 +986,7 @@ const AddProductForm = ({
       });
     }
     return opts;
-  }, [formSelectionData?.providerBranchs, productData]);
+  }, [providerBranchsByCity, productData]);
 
   const buildNestedTouched = (fields, values) => {
     const obj = {};
@@ -1093,9 +1116,6 @@ const AddProductForm = ({
         setTouched((prev) => ({ ...prev, ...nestedTouched }));
       }
 
-      enqueueSnackbar(t("providerProfile.products.modal.placeholderNotice"), {
-        variant: "warning",
-      });
       return;
     }
 

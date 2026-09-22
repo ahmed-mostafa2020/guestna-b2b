@@ -888,6 +888,7 @@ const Step4BookingDates = ({
         selectedBranchIds={selectedBranchIds}
         onSave={handleSaveSelectedBranches}
         branchGroups={branchGroups}
+        allowedBranchIds={values.providerBranchs}
         title={t("sidebarTitle")}
         subtitle={t("sidebarSubtitle")}
         saveBtnText={t("saveBtn")}

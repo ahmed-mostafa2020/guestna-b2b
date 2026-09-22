@@ -1,11 +1,15 @@
 "use client";
 
-import { memo, useState, useEffect, useCallback } from "react";
+import { memo, useState, useEffect, useCallback, useMemo } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { useFormikContext } from "formik";
 import CloseIcon from "@mui/icons-material/Close";
-import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import CheckIcon from "@mui/icons-material/Check";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { cn } from "@utils/helpers/cn";
+import { filterBranchGroupsBySelected } from "../branchConstants";
 
 const BranchCustomizationSidebar = ({
   isOpen = false,
@@ -13,25 +17,57 @@ const BranchCustomizationSidebar = ({
   selectedBranchIds = [],
   onSave,
   branchGroups = [],
+  allowedBranchIds = null,
   title,
   subtitle,
   saveBtnText,
 }) => {
   const t = useTranslations("providerProfile.products.newAddPage.step5");
+  const tCommon = useTranslations("providerProfile.products.newAddPage.common");
   const locale = useLocale();
   const isAr = locale === "ar";
+
+  const formik = useFormikContext();
 
   const resolvedTitle = title || t("sidebarTitle");
   const resolvedSubtitle = subtitle || t("sidebarSubtitle");
   const resolvedSaveBtnText = saveBtnText || t("saveBtn");
 
+  // Determine allowed branch IDs (product branches selected in Step 2/3)
+  const effectiveAllowedIds = useMemo(() => {
+    if (allowedBranchIds !== null && allowedBranchIds !== undefined) {
+      return allowedBranchIds;
+    }
+    return formik?.values?.providerBranchs || [];
+  }, [allowedBranchIds, formik?.values?.providerBranchs]);
+
+  // Filter branch groups so ONLY the product's selected branches appear
+  const effectiveBranchGroups = useMemo(() => {
+    if (!effectiveAllowedIds || effectiveAllowedIds.length === 0) {
+      return [];
+    }
+    return filterBranchGroupsBySelected(branchGroups, effectiveAllowedIds);
+  }, [branchGroups, effectiveAllowedIds]);
+
   // Local selection state inside the sidebar
   const [localSelectedIds, setLocalSelectedIds] = useState(selectedBranchIds);
 
-  // Sync local selected IDs whenever sidebar is opened
+  // Accordion open/close state per city
+  const [openCities, setOpenCities] = useState({});
+
+  // Sync state whenever sidebar is opened
   useEffect(() => {
     if (isOpen) {
       setLocalSelectedIds(selectedBranchIds);
+
+      // Initialize all cities as open by default
+      const initialOpen = {};
+      effectiveBranchGroups.forEach((group, idx) => {
+        const groupKey = group.id || `city-${idx}`;
+        initialOpen[groupKey] = true;
+      });
+      setOpenCities(initialOpen);
+
       // Lock background scroll when drawer is open
       const originalOverflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
@@ -39,7 +75,7 @@ const BranchCustomizationSidebar = ({
         document.body.style.overflow = originalOverflow;
       };
     }
-  }, [isOpen, selectedBranchIds]);
+  }, [isOpen, selectedBranchIds, effectiveBranchGroups]);
 
   // Handle Escape key to close drawer
   useEffect(() => {
@@ -64,6 +100,14 @@ const BranchCustomizationSidebar = ({
     });
   }, []);
 
+  // Toggle city accordion
+  const handleToggleCity = useCallback((cityKey) => {
+    setOpenCities((prev) => ({
+      ...prev,
+      [cityKey]: !prev[cityKey],
+    }));
+  }, []);
+
   // Save handler
   const handleSave = useCallback(() => {
     if (onSave) {
@@ -75,6 +119,9 @@ const BranchCustomizationSidebar = ({
   }, [localSelectedIds, onSave, onClose]);
 
   if (!isOpen) return null;
+
+  const hasNoProductBranches =
+    !effectiveAllowedIds || effectiveAllowedIds.length === 0;
 
   return (
     <div
@@ -123,14 +170,28 @@ const BranchCustomizationSidebar = ({
             </button>
           </div>
 
-          {/* Body: Direct Scrollable Branch Listing (No Accordions) */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
-            {branchGroups.length === 0 ? (
+          {/* Body: City Accordions Matching Screenshot 1 */}
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+            {hasNoProductBranches ? (
+              <div className="p-8 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200 space-y-2">
+                <p className="font-somar text-sm font-semibold text-gray-700">
+                  {isAr
+                    ? "لم يتم اختيار أي فروع للمنتج بعد"
+                    : "No branches selected for the product yet"}
+                </p>
+                <p className="font-somar text-xs text-gray-500">
+                  {isAr
+                    ? "يرجى اختيار فروع المنتج في خطوة مواقع تقديم الخدمة لتتمكن من تخصيصها هنا."
+                    : "Please select product branches in the Service Locations step to customize them here."}
+                </p>
+              </div>
+            ) : effectiveBranchGroups.length === 0 ? (
               <div className="p-8 text-center text-gray-400 font-somar text-sm">
                 {t("emptyBranchesTitle")}
               </div>
             ) : (
-              branchGroups.map((group, gIdx) => {
+              effectiveBranchGroups.map((group, gIdx) => {
+                const groupKey = group.id || `group-${gIdx}`;
                 const cityName =
                   group.city?.[locale] ||
                   group.city?.ar ||
@@ -139,83 +200,106 @@ const BranchCustomizationSidebar = ({
                 const branches = group.branches || [];
                 if (branches.length === 0) return null;
 
-                return (
-                  <div key={`group-${gIdx}`} className="space-y-3">
-                    {cityName && (
-                      <h3 className="font-somar font-bold text-sm text-gray-700 px-1 text-start">
-                        {cityName}
-                      </h3>
-                    )}
-                    <div className="space-y-2.5">
-                      {branches.map((branch) => {
-                        const isChecked = localSelectedIds.includes(branch.id);
-                        const branchName =
-                          branch.name?.[locale] ||
-                          branch.name?.ar ||
-                          branch.name?.en ||
-                          branch.id;
+                const isCityOpen = Boolean(openCities[groupKey]);
 
-                        return (
-                          <div
-                            key={branch.id}
-                            onClick={() => handleToggleBranch(branch.id)}
-                            className={cn(
-                              "w-full bg-white border rounded-xl p-3.5 sm:p-4 flex items-center justify-between cursor-pointer transition-all shadow-xs select-none",
-                              isChecked
-                                ? "border-mainColor/80 ring-1 ring-mainColor/20 bg-mainColor/[0.02]"
-                                : "border-gray-200 hover:border-mainColor/40"
-                            )}
-                            role="checkbox"
-                            aria-checked={isChecked}
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter" || e.key === " ") {
-                                e.preventDefault();
-                                handleToggleBranch(branch.id);
-                              }
-                            }}
-                          >
-                            {/* Branch Name with Location Icon */}
-                            <div className="flex items-center gap-2.5 text-start">
-                              <LocationOnOutlinedIcon className="w-4 h-4 text-gray-400 shrink-0" />
+                return (
+                  <div
+                    key={groupKey}
+                    className="border border-gray-200 rounded-2xl p-4 bg-white transition-all shadow-xs"
+                  >
+                    {/* City Accordion Header */}
+                    <button
+                      type="button"
+                      onClick={() => handleToggleCity(groupKey)}
+                      className="w-full flex items-center justify-between gap-2 text-start cursor-pointer select-none py-1"
+                    >
+                      {/* Chevron Arrow */}
+                      <div className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors">
+                        {isCityOpen ? (
+                          <KeyboardArrowDownIcon className="w-5 h-5 text-gray-700" />
+                        ) : isAr ? (
+                          <KeyboardArrowLeftIcon className="w-5 h-5 text-gray-700" />
+                        ) : (
+                          <KeyboardArrowRightIcon className="w-5 h-5 text-gray-700" />
+                        )}
+                      </div>
+
+                      {/* City Name */}
+                      <span className="font-somar font-bold text-base text-gray-800">
+                        {cityName}
+                      </span>
+                    </button>
+
+                    {/* City Branches (Expanded) */}
+                    {isCityOpen && (
+                      <div className="bg-gray-50/70 border border-gray-200/80 rounded-xl p-3 space-y-2.5 mt-3 animate-fadeIn">
+                        {branches.map((branch) => {
+                          const isChecked = localSelectedIds.includes(branch.id);
+                          const branchName =
+                            branch.name?.[locale] ||
+                            branch.name?.ar ||
+                            branch.name?.en ||
+                            branch.id;
+
+                          return (
+                            <div
+                              key={branch.id}
+                              onClick={() => handleToggleBranch(branch.id)}
+                              className={cn(
+                                "w-full bg-white border rounded-xl p-3.5 flex items-center justify-between cursor-pointer transition-all shadow-xs select-none",
+                                isChecked
+                                  ? "border-mainColor/80 ring-1 ring-mainColor/20 bg-mainColor/[0.02]"
+                                  : "border-gray-200 hover:border-mainColor/50"
+                              )}
+                              role="checkbox"
+                              aria-checked={isChecked}
+                              tabIndex={0}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  e.preventDefault();
+                                  handleToggleBranch(branch.id);
+                                }
+                              }}
+                            >
+                              {/* Checkbox */}
+                              <div
+                                className={cn(
+                                  "w-5 h-5 rounded-[6px] border flex items-center justify-center transition-all shrink-0",
+                                  isChecked
+                                    ? "bg-mainColor border-mainColor text-white shadow-xs"
+                                    : "bg-white border-gray-300 hover:border-gray-400"
+                                )}
+                                aria-hidden="true"
+                              >
+                                {isChecked && (
+                                  <CheckIcon
+                                    className="w-3.5 h-3.5 text-white stroke-[2.5]"
+                                    sx={{ fontSize: 14 }}
+                                  />
+                                )}
+                              </div>
+
+                              {/* Branch Name */}
                               <span
                                 className={cn(
-                                  "font-somar text-sm sm:text-base font-semibold",
+                                  "font-somar text-sm sm:text-base font-semibold text-end",
                                   isChecked ? "text-titleColor" : "text-gray-700"
                                 )}
                               >
                                 {branchName}
                               </span>
                             </div>
-
-                            {/* Custom Styled Checkbox */}
-                            <div
-                              className={cn(
-                                "w-5 h-5 rounded-[6px] border flex items-center justify-center transition-all shrink-0 ms-3",
-                                isChecked
-                                  ? "bg-mainColor border-mainColor text-white shadow-xs"
-                                  : "bg-white border-gray-300 hover:border-gray-400"
-                              )}
-                              aria-hidden="true"
-                            >
-                              {isChecked && (
-                                <CheckIcon
-                                  className="w-3.5 h-3.5 text-white stroke-[2]"
-                                  sx={{ fontSize: 14 }}
-                                />
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                 );
               })
             )}
           </div>
 
-          {/* Footer with "Save" button */}
+          {/* Footer with "حفظ" button */}
           <div className="p-4 sm:p-6 border-t border-gray-100 bg-white flex-shrink-0">
             <button
               type="button"

@@ -544,13 +544,6 @@ const AddProductPage = () => {
       // 4. If step validation passed:
       setCompletedSteps((prev) => Array.from(new Set([...prev, currentStep])));
 
-      if (config.successKey) {
-        enqueueSnackbar(
-          t(`providerProfile.products.newAddPage.${config.successKey}`),
-          { variant: "success" }
-        );
-      }
-
       if (config.nextStep) {
         setCurrentStep(config.nextStep);
       } else {

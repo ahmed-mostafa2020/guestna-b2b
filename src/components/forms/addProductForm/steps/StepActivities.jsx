@@ -60,44 +60,6 @@ const StepActivities = () => {
           />
         </div>
 
-        {/* Guest Range (min & max) - ONLY for B2C */}
-        {isB2C && (
-          <>
-            <div>
-              <label className="block mb-1.5 text-sm font-medium text-titleColor">
-                {t("fields.guestRangeMin")}
-              </label>
-              <TextInputGroup
-                type="number"
-                min={1}
-                name="guestRange.min"
-                value={values.guestRange?.min ?? ""}
-                errors={getNestedValue(errors, "guestRange.min")}
-                touched={Boolean(getNestedValue(touched, "guestRange.min"))}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                placeholder={t("placeholders.minSeats")}
-              />
-            </div>
-
-            <div>
-              <label className="block mb-1.5 text-sm font-medium text-titleColor">
-                {t("fields.guestRangeMax")}
-              </label>
-              <TextInputGroup
-                type="number"
-                min={1}
-                name="guestRange.max"
-                value={values.guestRange?.max ?? ""}
-                errors={getNestedValue(errors, "guestRange.max")}
-                touched={Boolean(getNestedValue(touched, "guestRange.max"))}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                placeholder={t("placeholders.maxSeats")}
-              />
-            </div>
-          </>
-        )}
 
         {/* Duration */}
         <div className="md:col-span-2">

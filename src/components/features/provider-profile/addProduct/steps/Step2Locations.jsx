@@ -621,6 +621,7 @@ const Step2Locations = ({
         selectedBranchIds={customizedCapacityBranchIds}
         onSave={handleSaveCapacityBranches}
         branchGroups={branchGroups}
+        allowedBranchIds={selectedBranchIds}
         title={t("branchCustomizeTitle")}
         subtitle={t("branchCustomizeSubtitle")}
         saveBtnText={t("saveBranchesBtn")}

@@ -276,7 +276,7 @@ const Step8Pricing = ({
             className={cn(
               "flex items-center gap-3.5 p-4 sm:p-5 rounded-2xl border transition-all duration-200 cursor-pointer text-start",
               activeTab === "individual"
-                ? "border-mainColor bg-mainColor/10 shadow-xs"
+                ? "border-mainColor bg-[#EAF5F4] shadow-xs"
                 : "border-border bg-white hover:border-gray-300"
             )}
           >
@@ -284,7 +284,7 @@ const Step8Pricing = ({
               className={cn(
                 "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-colors",
                 activeTab === "individual"
-                  ? "bg-mainColor/20 text-mainColor"
+                  ? "bg-[#D7ECE7] text-mainColor"
                   : "bg-gray-100 text-gray-400"
               )}
             >
@@ -315,7 +315,7 @@ const Step8Pricing = ({
             className={cn(
               "flex items-center gap-3.5 p-4 sm:p-5 rounded-2xl border transition-all duration-200 cursor-pointer text-start",
               activeTab === "schools"
-                ? "border-mainColor bg-mainColor/10 shadow-xs"
+                ? "border-mainColor bg-[#EAF5F4] shadow-xs"
                 : "border-border bg-white hover:border-gray-300"
             )}
           >
@@ -323,7 +323,7 @@ const Step8Pricing = ({
               className={cn(
                 "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-colors",
                 activeTab === "schools"
-                  ? "bg-mainColor/20 text-mainColor"
+                  ? "bg-[#D7ECE7] text-mainColor"
                   : "bg-gray-100 text-gray-400"
               )}
             >
@@ -372,7 +372,7 @@ const Step8Pricing = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 {/* Market Price (سعر السوق) */}
                 <div>
                   <label htmlFor="price" className={labelCls}>
@@ -447,31 +447,6 @@ const Step8Pricing = ({
                       {discountedPriceErr}
                     </p>
                   )}
-                </div>
-
-                {/* Available Seats (عدد المقاعد المتاحة للحجز) */}
-                <div>
-                  <label htmlFor="b2cSeats" className={labelCls}>
-                    {t("b2c.availableSeats")}
-                  </label>
-                  <div className={fieldContainerCls}>
-                    <input
-                      id="b2cSeats"
-                      type="number"
-                      min="1"
-                      name="b2cSeats"
-                      value={values.b2cSeats ?? values.availableSeats?.max ?? ""}
-                      onChange={(e) => {
-                        setFieldValue("b2cSeats", e.target.value);
-                        if (!values.availableSeats?.max) {
-                          setFieldValue("availableSeats.max", e.target.value);
-                        }
-                      }}
-                      onBlur={handleBlur}
-                      placeholder={t("b2c.availableSeatsPlaceholder")}
-                      className="w-full bg-transparent outline-none font-somar text-sm sm:text-base text-textDark placeholder:text-gray-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
-                  </div>
                 </div>
               </div>
             </div>
@@ -1343,6 +1318,7 @@ const Step8Pricing = ({
         selectedBranchIds={customizedBranchIds}
         onSave={handleSaveSidebarBranches}
         branchGroups={branchGroups}
+        allowedBranchIds={values.providerBranchs}
         title={t("sidebarTitle")}
         subtitle={t("sidebarSubtitle")}
         saveBtnText={t("saveBtn")}

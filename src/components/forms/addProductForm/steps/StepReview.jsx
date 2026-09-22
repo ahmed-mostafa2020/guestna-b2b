@@ -813,6 +813,7 @@ const StepReview = ({
                         <div className="flex items-center justify-between gap-2 border-b border-border pb-2.5">
                           <div className="flex items-center gap-2">
                             <AccountBalanceOutlinedIcon className="w-5 h-5 text-mainColor" />
+
                             <h4 className="font-bold text-titleColor text-sm">
                               {branch.city
                                 ? `${branch.city} ${branch.name}`
@@ -1239,7 +1240,10 @@ const StepReview = ({
             {/* Meta Rows matching Figma */}
             <div className="space-y-3.5 text-xs sm:text-sm text-subtitleColor py-3 text-start">
               {/* Date Range */}
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex gap-2">
+                <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
+                  <CalendarTodayIcon className="w-4 h-4" />
+                </div>
                 <div>
                   <span className="text-[11px] text-subtitleColor block">
                     {tSub("reviewDate")}
@@ -1248,14 +1252,14 @@ const StepReview = ({
                     {dateRangeStr}
                   </span>
                 </div>
-                <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
-                  <CalendarTodayIcon className="w-4 h-4" />
-                </div>
               </div>
 
               {/* Activity Duration */}
               {durationHours > 0 && (
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
+                    <AccessTimeIcon className="w-4 h-4" />
+                  </div>
                   <div>
                     <span className="text-[11px] text-subtitleColor block">
                       {tSub("reviewActivityDuration")}
@@ -1264,15 +1268,15 @@ const StepReview = ({
                       {durationHours} {tSub("reviewHours")}
                     </span>
                   </div>
-                  <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
-                    <AccessTimeIcon className="w-4 h-4" />
-                  </div>
                 </div>
               )}
 
               {/* Ages */}
               {(values.ageRange?.from || values.ageRange?.to) && (
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
+                    <AccessTimeIcon className="w-4 h-4" />
+                  </div>
                   <div>
                     <span className="text-[11px] text-subtitleColor block">
                       {tSub("reviewAgeFrom")}
@@ -1284,16 +1288,13 @@ const StepReview = ({
                       })}
                     </span>
                   </div>
-                  <div className="w-8 h-8 rounded-lg bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
-                    <AccessTimeIcon className="w-4 h-4" />
-                  </div>
                 </div>
               )}
 
-              {/* Deadline Box matching Figma */}
-              <div className="p-3 rounded-xl bg-status-success-bg border border-status-success-border text-status-success-fg flex items-center justify-between font-bold text-xs sm:text-sm">
-                <span>{tSub("reviewBookingDeadlineNotice")}</span>
-                <span>{values.bookingBefore || 1}</span>
+              {/* Deadline Box */}
+              <div className="flex items-center justify-between p-3 rounded-xl bg-status-success-bg border border-status-success-border font-bold text-xs sm:text-sm">
+                <span className="text-status-success-fg">{tSub("reviewBookingDeadlineNotice")}</span>
+                <span className="text-status-success-fg">{values.bookingBefore || 1}</span>
               </div>
             </div>
 

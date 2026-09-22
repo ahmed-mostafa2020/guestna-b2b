@@ -368,7 +368,7 @@ const Step4SalesChannels = ({
                 className={cn(
                   "w-full rounded-2xl p-4 sm:p-5 flex items-center justify-between gap-4 cursor-pointer transition-all duration-200 border-2 select-none",
                   isSelected
-                    ? "border-mainColor bg-mainColor/5 shadow-xs"
+                    ? "border-mainColor bg-[#EAF5F4] shadow-xs"
                     : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50/60"
                 )}
               >
