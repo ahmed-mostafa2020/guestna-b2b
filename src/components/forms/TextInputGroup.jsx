@@ -119,7 +119,7 @@ const TextInputGroup = memo(
                   : borderClassName
                   ? borderClassName
                   : "border-border focus:border-mainColor hover:border-mainColor",
-                type === "date" && "cursor-pointer pe-12",
+                (type === "date" || type === "time") && "cursor-pointer pe-12",
                 inputClassName
               )}
               style={{
@@ -143,7 +143,7 @@ const TextInputGroup = memo(
               onKeyDown={onKeyDown}
               onPaste={onPaste}
               onClick={(e) => {
-                if (type === "date" && e.target.showPicker) {
+                if ((type === "date" || type === "time") && e.target.showPicker) {
                   try {
                     e.target.showPicker();
                   } catch (err) {

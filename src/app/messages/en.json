@@ -547,7 +547,9 @@
           },
           "b2bSection": {
             "cardTitle": "Study Stages — B2B",
-            "cardSubtitle": "Choose the study stages targeted by this product via the schools channel.",
+            "cardSubtitle": "Choose the study stages targeted by this product via the corporate and schools channel.",
+            "instantConfirmationTitle": "Automatic Approval for New Bookings",
+            "instantConfirmationSubtitle": "When activated, new bookings are automatically confirmed and dates are blocked.",
             "label": "Study Stages",
             "placeholder": "Select study stage"
           },

@@ -47,6 +47,24 @@ const handleDatePickerContainerClick = (e) => {
   }
 };
 
+/**
+ * Safely trigger time picker on container click without throwing NotAllowedError
+ */
+const handleTimePickerContainerClick = (e) => {
+  const input = e.currentTarget.querySelector("input[type='time']");
+  if (input) {
+    try {
+      if (typeof input.showPicker === "function") {
+        input.showPicker();
+      } else {
+        input.focus();
+      }
+    } catch {
+      input.focus();
+    }
+  }
+};
+
 const Step4BookingDates = ({
   formSelectionData = null,
   isSelectionsLoading: _isSelectionsLoading = false,
@@ -186,7 +204,24 @@ const Step4BookingDates = ({
   }, []);
 
   const handleDatePickerContainerClick = useCallback((e) => {
+    if (e.target.tagName === "INPUT") return;
     const input = e.currentTarget.querySelector('input[type="date"]');
+    if (input) {
+      if (typeof input.showPicker === "function") {
+        try {
+          input.showPicker();
+        } catch (err) {
+          input.focus();
+        }
+      } else {
+        input.focus();
+      }
+    }
+  }, []);
+
+  const handleTimePickerContainerClick = useCallback((e) => {
+    if (e.target.tagName === "INPUT") return;
+    const input = e.currentTarget.querySelector('input[type="time"]');
     if (input) {
       if (typeof input.showPicker === "function") {
         try {
@@ -451,13 +486,25 @@ const Step4BookingDates = ({
                         <label htmlFor={`availableTimes[${index}].from`} className={labelCls}>
                           {t("fromHour")} <span className="text-error ms-1">*</span>
                         </label>
-                        <div className={cn(fieldContainerCls, fromErr && fromTch && "border-error focus-within:border-error")}>
-                          <AccessTimeOutlinedIcon className={cn("w-5 h-5 flex-shrink-0 me-2", fromErr && fromTch ? "text-error" : "text-mainColor")} />
+                        <div
+                          onClick={handleTimePickerContainerClick}
+                          className={cn(
+                            fieldContainerCls,
+                            "cursor-pointer",
+                            fromErr && fromTch && "border-error focus-within:border-error"
+                          )}
+                        >
+                          <AccessTimeOutlinedIcon className={cn("w-6 h-6 flex-shrink-0 me-2.5", fromErr && fromTch ? "text-error" : "text-mainColor")} />
                           <input
                             id={`availableTimes[${index}].from`}
                             type="time"
                             name={`availableTimes[${index}].from`}
                             value={slot.from || ""}
+                            onClick={(e) => {
+                              try {
+                                if (typeof e.target.showPicker === "function") e.target.showPicker();
+                              } catch {}
+                            }}
                             onChange={(e) => {
                               handleChange(e);
                               if (index === 0) {
@@ -466,7 +513,7 @@ const Step4BookingDates = ({
                             }}
                             onBlur={handleBlur}
                             placeholder={t("fromHourPlaceholder")}
-                            className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark"
+                            className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:appearance-none"
                           />
                         </div>
                         {fromErr && fromTch && (
@@ -480,13 +527,25 @@ const Step4BookingDates = ({
                           <label htmlFor={`availableTimes[${index}].to`} className={labelCls}>
                             {t("toHour")} <span className="text-error ms-1">*</span>
                           </label>
-                          <div className={cn(fieldContainerCls, toErr && toTch && "border-error focus-within:border-error")}>
-                            <AccessTimeOutlinedIcon className={cn("w-5 h-5 flex-shrink-0 me-2", toErr && toTch ? "text-error" : "text-mainColor")} />
+                          <div
+                            onClick={handleTimePickerContainerClick}
+                            className={cn(
+                              fieldContainerCls,
+                              "cursor-pointer",
+                              toErr && toTch && "border-error focus-within:border-error"
+                            )}
+                          >
+                            <AccessTimeOutlinedIcon className={cn("w-6 h-6 flex-shrink-0 me-2.5", toErr && toTch ? "text-error" : "text-mainColor")} />
                             <input
                               id={`availableTimes[${index}].to`}
                               type="time"
                               name={`availableTimes[${index}].to`}
                               value={slot.to || ""}
+                              onClick={(e) => {
+                                try {
+                                  if (typeof e.target.showPicker === "function") e.target.showPicker();
+                                } catch {}
+                              }}
                               onChange={(e) => {
                                 handleChange(e);
                                 if (index === 0) {
@@ -495,7 +554,7 @@ const Step4BookingDates = ({
                               }}
                               onBlur={handleBlur}
                               placeholder={t("toHourPlaceholder")}
-                              className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark"
+                              className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:appearance-none"
                             />
                           </div>
                           {toErr && toTch && (
@@ -814,64 +873,140 @@ const Step4BookingDates = ({
                       </div>
 
                       {/* Row 3: Time Slot + Add Period button inside Branch */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 items-end">
-                        <div>
-                          <label className={labelCls}>
-                            {t("fromHour")} <span className="text-error ms-1">*</span>
-                          </label>
-                          <div className={fieldContainerCls}>
-                            <AccessTimeOutlinedIcon className="w-5 h-5 text-mainColor flex-shrink-0 me-2" />
-                            <input
-                              type="time"
-                              placeholder={t("fromHourPlaceholder")}
-                              value={branchData.availableTimes?.[0]?.from || ""}
-                              onChange={(e) => {
-                                const times = [...(branchData.availableTimes || [{ from: "", to: "" }])];
-                                times[0] = { ...times[0], from: e.target.value };
-                                setFieldValue(`branchDates.${branch.id}.availableTimes`, times);
-                              }}
-                              className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark"
-                            />
-                          </div>
-                        </div>
+                      {(() => {
+                        const branchTimes =
+                          Array.isArray(branchData.availableTimes) &&
+                          branchData.availableTimes.length > 0
+                            ? branchData.availableTimes
+                            : [{ from: "", to: "" }];
 
-                        <div>
-                          <label className={labelCls}>
-                            {t("toHour")} <span className="text-error ms-1">*</span>
-                          </label>
-                          <div className={fieldContainerCls}>
-                            <AccessTimeOutlinedIcon className="w-5 h-5 text-mainColor flex-shrink-0 me-2" />
-                            <input
-                              type="time"
-                              placeholder={t("toHourPlaceholder")}
-                              value={branchData.availableTimes?.[0]?.to || ""}
-                              onChange={(e) => {
-                                const times = [...(branchData.availableTimes || [{ from: "", to: "" }])];
-                                times[0] = { ...times[0], to: e.target.value };
-                                setFieldValue(`branchDates.${branch.id}.availableTimes`, times);
-                              }}
-                              className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark"
-                            />
-                          </div>
-                        </div>
+                        return (
+                          <div className="space-y-4 pt-1">
+                            {branchTimes.map((slot, tIdx) => (
+                              <div
+                                key={tIdx}
+                                className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-end"
+                              >
+                                {/* From Hour */}
+                                <div>
+                                  <label className={labelCls}>
+                                    {t("fromHour")}{" "}
+                                    <span className="text-error ms-1">*</span>
+                                  </label>
+                                  <div
+                                    onClick={handleTimePickerContainerClick}
+                                    className={cn(fieldContainerCls, "cursor-pointer")}
+                                  >
+                                    <AccessTimeOutlinedIcon className="w-6 h-6 text-mainColor flex-shrink-0 me-2.5" />
+                                    <input
+                                      type="time"
+                                      placeholder={t("fromHourPlaceholder")}
+                                      value={slot.from || ""}
+                                      onClick={(e) => {
+                                        try {
+                                          if (typeof e.target.showPicker === "function") {
+                                            e.target.showPicker();
+                                          }
+                                        } catch {}
+                                      }}
+                                      onChange={(e) => {
+                                        const times = [...branchTimes];
+                                        times[tIdx] = {
+                                          ...(times[tIdx] || {}),
+                                          from: e.target.value,
+                                        };
+                                        setFieldValue(
+                                          `branchDates.${branch.id}.availableTimes`,
+                                          times
+                                        );
+                                      }}
+                                      className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:appearance-none"
+                                    />
+                                  </div>
+                                </div>
 
-                        <div>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const times = [
-                                ...(branchData.availableTimes || []),
-                                { from: "", to: "" },
-                              ];
-                              setFieldValue(`branchDates.${branch.id}.availableTimes`, times);
-                            }}
-                            className="w-full py-2.5 rounded-lg border border-secColor text-secColor hover:bg-secColor/5 font-somar font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer"
-                          >
-                            <AddIcon className="w-4 h-4" />
-                            <span>{t("addTimeSlot")}</span>
-                          </button>
-                        </div>
-                      </div>
+                                {/* To Hour + Delete Button */}
+                                <div className="flex items-center gap-2">
+                                  <div className="flex-1">
+                                    <label className={labelCls}>
+                                      {t("toHour")}{" "}
+                                      <span className="text-error ms-1">*</span>
+                                    </label>
+                                    <div
+                                      onClick={handleTimePickerContainerClick}
+                                      className={cn(fieldContainerCls, "cursor-pointer")}
+                                    >
+                                      <AccessTimeOutlinedIcon className="w-6 h-6 text-mainColor flex-shrink-0 me-2.5" />
+                                      <input
+                                        type="time"
+                                        placeholder={t("toHourPlaceholder")}
+                                        value={slot.to || ""}
+                                        onClick={(e) => {
+                                          try {
+                                            if (typeof e.target.showPicker === "function") {
+                                              e.target.showPicker();
+                                            }
+                                          } catch {}
+                                        }}
+                                        onChange={(e) => {
+                                          const times = [...branchTimes];
+                                          times[tIdx] = {
+                                            ...(times[tIdx] || {}),
+                                            to: e.target.value,
+                                          };
+                                          setFieldValue(
+                                            `branchDates.${branch.id}.availableTimes`,
+                                            times
+                                          );
+                                        }}
+                                        className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:appearance-none"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  {branchTimes.length > 1 && (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const nextTimes = branchTimes.filter(
+                                          (_, i) => i !== tIdx
+                                        );
+                                        setFieldValue(
+                                          `branchDates.${branch.id}.availableTimes`,
+                                          nextTimes
+                                        );
+                                      }}
+                                      className="w-10 h-10 flex items-center justify-center text-error hover:bg-error/10 rounded-xl transition-colors cursor-pointer self-end mb-0.5"
+                                      title="حذف"
+                                    >
+                                      <DeleteOutlineIcon className="w-5 h-5" />
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+
+                            {/* Add Time Slot Button */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const times = [
+                                  ...branchTimes,
+                                  { from: "", to: "" },
+                                ];
+                                setFieldValue(
+                                  `branchDates.${branch.id}.availableTimes`,
+                                  times
+                                );
+                              }}
+                              className="w-full py-2.5 rounded-lg border border-secColor text-secColor hover:bg-secColor/5 font-somar font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer mt-2"
+                            >
+                              <AddIcon className="w-4 h-4" />
+                              <span>{t("addTimeSlot")}</span>
+                            </button>
+                          </div>
+                        );
+                      })()}
                     </div>
                   )}
                 </div>

@@ -79,6 +79,7 @@ const ChannelAudienceCard = memo(
     onBlur,
     onRemoveTag,
     tCommon,
+    extraTopContent,
   }) => {
     return (
       <section
@@ -97,6 +98,9 @@ const ChannelAudienceCard = memo(
             {subtitle}
           </p>
         </div>
+
+        {/* Optional Extra Top Content (e.g. Instant Confirmation Switch) */}
+        {extraTopContent}
 
         {/* Form Field */}
         <div className="space-y-3">
@@ -449,6 +453,47 @@ const Step4SalesChannels = ({
           onBlur={handleBlur}
           onRemoveTag={handleRemoveStage}
           tCommon={tCommon}
+          extraTopContent={
+            <div className="bg-white rounded-2xl border border-border p-4 sm:p-5 flex items-center justify-between gap-4 mb-5 shadow-xs transition-all">
+              <div className="flex flex-col gap-1 text-start">
+                <h4 className="font-somar font-bold text-sm sm:text-base text-textDark">
+                  {t("b2bSection.instantConfirmationTitle")}
+                </h4>
+                <p className="font-somar font-medium text-xs sm:text-sm text-textLight">
+                  {t("b2bSection.instantConfirmationSubtitle")}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                role="switch"
+                aria-checked={Boolean(values.istantConfirmation)}
+                onClick={() =>
+                  setFieldValue(
+                    "istantConfirmation",
+                    !Boolean(values.istantConfirmation),
+                    true
+                  )
+                }
+                className={cn(
+                  "relative inline-flex h-7 w-12 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-mainColor focus:ring-offset-2",
+                  values.istantConfirmation ? "bg-mainColor" : "bg-[#C7C7CC]"
+                )}
+              >
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-md transition duration-200 ease-in-out",
+                    values.istantConfirmation
+                      ? isAr
+                        ? "-translate-x-5"
+                        : "translate-x-5"
+                      : "translate-x-0"
+                  )}
+                />
+              </button>
+            </div>
+          }
         />
       )}
 

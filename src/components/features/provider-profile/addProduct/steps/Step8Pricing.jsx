@@ -60,10 +60,10 @@ const Step8Pricing = ({
   const [openBranches, setOpenBranches] = useState({});
 
   // Local state for rule condition builder
-  const [conditionRule, setConditionRule] = useState({
-    changeType: "INCREASE",
-    value: "15",
-  });
+  const [conditionRule, setConditionRule] = useState(() => ({
+    changeType: values.key || values.conditionRuleChangeType || "INCREASE",
+    value: values.conditionRuleValue || "15",
+  }));
 
   // Current date formatted as YYYY-MM-DD for min date validation
   const todayStr = useMemo(() => {
@@ -643,14 +643,17 @@ const Step8Pricing = ({
                 {/* Dropdown: زيادة / تخفيض */}
                 <div className="w-28 sm:w-32">
                   <SelectionGroup
-                    name="conditionRuleChangeType"
-                    value={conditionRule.changeType}
-                    onChange={(e) =>
+                    name="key"
+                    value={values.key || conditionRule.changeType}
+                    onChange={(e) => {
+                      const val = e.target.value;
                       setConditionRule((prev) => ({
                         ...prev,
-                        changeType: e.target.value,
-                      }))
-                    }
+                        changeType: val,
+                      }));
+                      setFieldValue("key", val, true);
+                      setFieldValue("conditionRuleChangeType", val, true);
+                    }}
                     placeholder={t("b2c.increase")}
                     list={changeTypeList}
                     border="1px solid var(--color-border)"
@@ -662,13 +665,16 @@ const Step8Pricing = ({
                   <input
                     type="number"
                     min="1"
+                    name="conditionRuleValue"
                     value={conditionRule.value}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const val = e.target.value;
                       setConditionRule((prev) => ({
                         ...prev,
-                        value: e.target.value,
-                      }))
-                    }
+                        value: val,
+                      }));
+                      setFieldValue("conditionRuleValue", val, true);
+                    }}
                     placeholder="15"
                     className="w-full bg-transparent outline-none font-somar text-xs sm:text-sm text-center text-textDark"
                   />

@@ -677,6 +677,8 @@ const AddProductPage = () => {
           supCategories: [],
           description: { en: "", ar: "" },
           systemTypes: ["B2B", "B2C"],
+          istantConfirmation: false,
+          key: "INCREASE",
           allowedAges: [],
           academicStages: [],
           b2cTargetAudiences: [],
