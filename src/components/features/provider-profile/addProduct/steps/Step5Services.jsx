@@ -165,6 +165,7 @@ const ServiceRowItem = memo(
                 border="1px solid var(--color-border)"
                 list={servicesTypeOptions.map((opt) => opt.label)}
                 disabled={isSelectionsLoading}
+                errorBorder={Boolean(serviceTouched && !currentServiceType)}
               />
             </div>
 
@@ -780,10 +781,25 @@ const Step5Services = ({
                             }}
                             canRemove={branchServices.length > 1}
                             isSelectionsLoading={isSelectionsLoading}
-                            serviceTouched={false}
-                            serviceErr={null}
-                            arNoteState={{ showError: false, error: null }}
-                            enNoteState={{ showError: false, error: null }}
+                            serviceTouched={
+                              getIn(
+                                touched,
+                                `branchServices.${branch.id}[${bIdx}].service`
+                              ) ||
+                              Boolean(getIn(touched, `branchServices.${branch.id}`))
+                            }
+                            serviceErr={
+                              getIn(
+                                errors,
+                                `branchServices.${branch.id}[${bIdx}].service`
+                              ) || null
+                            }
+                            arNoteState={getFieldErrorState(
+                              `branchServices.${branch.id}[${bIdx}].note.ar`
+                            )}
+                            enNoteState={getFieldErrorState(
+                              `branchServices.${branch.id}[${bIdx}].note.en`
+                            )}
                             t={t}
                             locale={locale}
                             labelCls={labelCls}

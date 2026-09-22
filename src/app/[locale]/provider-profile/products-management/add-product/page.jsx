@@ -202,21 +202,64 @@ const scrollToFirstFieldWithTarget = (fieldName) => {
 };
 
 /**
- * Helper to safely set nested path values in touched object
+ * Helper to safely set nested path values in touched object without throwing
  */
 const setPathValue = (obj, path, value) => {
+  if (!obj || typeof obj !== "object") return;
   const keys = path.replace(/\[(\w+)\]/g, ".$1").split(".");
   let current = obj;
   for (let i = 0; i < keys.length - 1; i++) {
     const key = keys[i];
     const nextKey = keys[i + 1];
     const isNextNumber = /^\d+$/.test(nextKey);
-    if (!current[key]) {
+    if (!current[key] || typeof current[key] !== "object") {
       current[key] = isNextNumber ? [] : {};
     }
     current = current[key];
   }
-  current[keys[keys.length - 1]] = value;
+  const lastKey = keys[keys.length - 1];
+  // Avoid overwriting existing nested object/array with primitive value
+  if (
+    current[lastKey] &&
+    typeof current[lastKey] === "object" &&
+    (typeof value !== "object" || value === null)
+  ) {
+    return;
+  }
+  current[lastKey] = value;
+};
+
+/**
+ * Recursively extracts the first leaf error message and exact field path
+ */
+const findFirstLeafError = (errors, prefix = "") => {
+  if (!errors) return null;
+  if (typeof errors === "string") {
+    return { path: prefix, message: errors };
+  }
+  if (Array.isArray(errors)) {
+    for (let i = 0; i < errors.length; i++) {
+      const item = errors[i];
+      if (item) {
+        const leaf = findFirstLeafError(item, prefix ? `${prefix}[${i}]` : `[${i}]`);
+        if (leaf) return leaf;
+      }
+    }
+  } else if (typeof errors === "object") {
+    for (const key of Object.keys(errors)) {
+      const val = errors[key];
+      if (val) {
+        const nextPrefix = prefix
+          ? /^\d+$/.test(key)
+            ? `${prefix}[${key}]`
+            : `${prefix}.${key}`
+          : key;
+        const leaf = findFirstLeafError(val, nextPrefix);
+        if (leaf) return leaf;
+      }
+    }
+  }
+  return null;
 };
 
 /**
@@ -252,9 +295,25 @@ const buildTouchedMap = (fields, values = {}) => {
   if (fields.includes("services") && Array.isArray(values?.services)) {
     touched.services = values.services.map(() => ({
       service: true,
+      serviceType: true,
       price: true,
       note: { ar: true, en: true },
     }));
+  }
+
+  if (values?.branchServices && typeof values.branchServices === "object") {
+    touched.branchServices = {};
+    Object.keys(values.branchServices).forEach((branchId) => {
+      const bServices = values.branchServices[branchId];
+      if (Array.isArray(bServices)) {
+        touched.branchServices[branchId] = bServices.map(() => ({
+          service: true,
+          serviceType: true,
+          price: true,
+          note: { ar: true, en: true },
+        }));
+      }
+    });
   }
 
   if (fields.includes("mustHaveItems")) {
@@ -328,9 +387,15 @@ const ScrollToError = ({ currentStep }) => {
 
       const config = STEP_CONFIG[currentStep];
       if (config) {
-        const firstErrorField = config.fields.find((f) =>
-          Boolean(getIn(errors, f))
-        );
+        let firstErrorField = null;
+        for (const field of config.fields) {
+          const err = getIn(errors, field);
+          if (err) {
+            const leaf = findFirstLeafError(err, field);
+            firstErrorField = leaf?.path || field;
+            break;
+          }
+        }
         if (firstErrorField) {
           scrollToFirstFieldWithTarget(firstErrorField);
         }
@@ -574,8 +639,9 @@ const AddProductPage = () => {
       for (const field of config.fields) {
         const err = getIn(validationErrors, field);
         if (err) {
-          firstErrorField = field;
-          firstErrorMessage = extractFirstErrorMessage(err);
+          const leaf = findFirstLeafError(err, field);
+          firstErrorField = leaf?.path || field;
+          firstErrorMessage = leaf?.message || extractFirstErrorMessage(err);
           break;
         }
       }

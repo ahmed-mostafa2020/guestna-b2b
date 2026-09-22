@@ -236,6 +236,26 @@ const Step8Pricing = ({
     [t]
   );
 
+  const discountTypeList = useMemo(
+    () => [
+      {
+        value: "PERCENTAGE",
+        label:
+          t("b2b.discountTypePercentage") ||
+          t("b2c.discountTypePercentage") ||
+          "%",
+      },
+      {
+        value: "AMOUNT",
+        label:
+          t("b2b.discountTypeAmount") ||
+          t("b2c.discountTypeAmount") ||
+          "SAR",
+      },
+    ],
+    [t]
+  );
+
   // Toggle branch accordion
   const toggleBranch = useCallback((branchId) => {
     setOpenBranches((prev) => ({
@@ -253,10 +273,50 @@ const Step8Pricing = ({
       newSelectedIds.forEach((id) => {
         if (!updatedBranchPricing[id]) {
           updatedBranchPricing[id] = {
-            price: values.price || "",
-            discountedPrice: values.discountedPrice || "",
-            productCost: values.productCost || "",
-            bulkPricing: values.bulkPricing ? [...values.bulkPricing] : [],
+            price: values.b2cPrice?.price || values.price || "",
+            discountedPrice:
+              values.b2cPrice?.discountedPrice ||
+              values.b2cPrice?.finalPrice ||
+              values.discountedPrice ||
+              "",
+            schoolsPrice:
+              values.b2bPrice?.price ||
+              values.b2bPricing?.schoolsPrice ||
+              "",
+            b2bDiscountedPrice:
+              values.b2bPrice?.discountedPrice ||
+              values.b2bPrice?.finalPrice ||
+              "",
+            productCost:
+              values.productCost ||
+              values.b2bPrice?.productCost ||
+              "",
+            key: values.key || "INCREASE",
+            conditionRuleValue: values.conditionRuleValue || "15",
+            b2bKey: values.b2bPrice?.key || "DECREASE",
+            b2bConditionRuleValue: values.b2bPrice?.conditionRuleValue || "10",
+            studentsPerSupervisor:
+              values.studentsPerSupervisor ||
+              values.b2bPrice?.studentsPerSupervisor ||
+              "10",
+            targetAudiences: Array.isArray(values.targetAudiences)
+              ? values.targetAudiences.map((ta) => ({ ...ta }))
+              : [],
+            datePricing: Array.isArray(values.datePricing)
+              ? values.datePricing.map((dp) => ({
+                  ...dp,
+                }))
+              : [],
+            b2bQuantityDiscountTiers: Array.isArray(values.b2bPrice?.quantityDiscountTiers)
+              ? values.b2bPrice.quantityDiscountTiers.map((tier) => ({ ...tier }))
+              : Array.isArray(values.bulkPricing)
+              ? values.bulkPricing.map((tier) => ({ ...tier }))
+              : [],
+            b2bDatePricing: Array.isArray(values.b2bPrice?.datePricing)
+              ? values.b2bPrice.datePricing.map((dp) => ({
+                  ...dp,
+                }))
+              : [],
           };
         }
       });
@@ -280,7 +340,13 @@ const Step8Pricing = ({
       setFieldValue,
       values.price,
       values.discountedPrice,
+      values.b2cPrice,
+      values.b2bPrice,
+      values.b2bPricing,
       values.productCost,
+      values.studentsPerSupervisor,
+      values.targetAudiences,
+      values.datePricing,
       values.bulkPricing,
       values.branchPricing,
     ]
@@ -745,6 +811,10 @@ const Step8Pricing = ({
                             );
                             push({
                               date: "",
+                              fromDate: "",
+                              toDate: "",
+                              key: values.key || "INCREASE",
+                              percentage: values.conditionRuleValue || 15,
                               price: defaultPrice !== "" ? defaultPrice : "",
                             });
                           }}
@@ -960,6 +1030,408 @@ const Step8Pricing = ({
                 }}
               </FieldArray>
             </div>
+
+            {/* ─────────────────────────────────────────────────────────────
+                Dedicated B2C Branch Customization Section (Strictly Individuals)
+            ───────────────────────────────────────────────────────────── */}
+            {isCustomizedActive && (
+              <div
+                aria-labelledby="branch-pricing-b2c-title"
+                className="bg-white rounded-2xl border border-border p-5 sm:p-7 transition-all duration-200 text-start shadow-none space-y-4 mt-6"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
+                  <div>
+                    <h3
+                      id="branch-pricing-b2c-title"
+                      className="font-somar text-lg sm:text-xl font-bold text-titleColor"
+                    >
+                      {t("b2cBranchSectionTitle") || "تخصيص أسعار الفروع للأفراد"}
+                    </h3>
+                    <p className="font-somar text-xs sm:text-sm text-textLight mt-1">
+                      {t("b2cBranchSectionSubtitle") || "تحديد أسعار وفئات وخصومات مخصصة للأفراد لكل فرع"}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsSidebarOpen(true)}
+                    className="px-4 py-2 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 self-start sm:self-auto"
+                  >
+                    <EditOutlinedIcon sx={{ fontSize: 16 }} />
+                    <span>{t("editBranchesBtn")}</span>
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {activeCustomizedBranches.map((branch) => {
+                    const isOpen = Boolean(openBranches[branch.id]);
+                    const branchName =
+                      branch.name?.[locale] ||
+                      branch.name?.ar ||
+                      branch.name?.en ||
+                      "";
+                    const branchSubtitle =
+                      branch.fullName?.[locale] ||
+                      branch.fullName?.ar ||
+                      branch.fullName?.en ||
+                      "";
+                    const branchData = values.branchPricing?.[branch.id] || {};
+
+                    return (
+                      <div
+                        key={branch.id}
+                        className="rounded-2xl border border-border overflow-hidden transition-all duration-200"
+                      >
+                        <button
+                          type="button"
+                          onClick={() => toggleBranch(branch.id)}
+                          className="w-full p-4 sm:p-5 bg-gray-50/60 hover:bg-gray-50 flex items-center justify-between cursor-pointer transition-colors"
+                        >
+                          <div className="text-start">
+                            <h4 className="font-somar font-bold text-base text-titleColor">
+                              {branchName}
+                            </h4>
+                            {branchSubtitle && (
+                              <p className="font-somar text-xs sm:text-sm text-textLight mt-0.5">
+                                {branchSubtitle}
+                              </p>
+                            )}
+                          </div>
+                          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-textDark hover:bg-buttonsHover/30 transition-colors">
+                            {isOpen ? (
+                              <KeyboardArrowUpIcon className="w-5 h-5 text-textLight" />
+                            ) : (
+                              <KeyboardArrowDownIcon className="w-5 h-5 text-textLight" />
+                            )}
+                          </div>
+                        </button>
+
+                        {isOpen && (
+                          <div className="p-4 sm:p-6 bg-white border-t border-border space-y-6">
+                            {/* 1. Market Price & Discounted Price for Branch */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                              <div>
+                                <TextInputGroup
+                                  type="number"
+                                  min="0"
+                                  label={t("b2c.marketPrice")}
+                                  labelClassName={labelCls}
+                                  value={branchData.price ?? ""}
+                                  onChange={(e) =>
+                                    setFieldValue(
+                                      `branchPricing.${branch.id}.price`,
+                                      e.target.value
+                                    )
+                                  }
+                                  placeholder={t("b2c.marketPricePlaceholder")}
+                                  borderClassName={inputBorderCls}
+                                  inputClassName={inputFieldCls}
+                                  endAdornment={newSarSmall}
+                                />
+                              </div>
+
+                              <div>
+                                <TextInputGroup
+                                  type="number"
+                                  min="0"
+                                  label={t("b2c.discountedPrice")}
+                                  labelClassName={labelCls}
+                                  value={branchData.discountedPrice ?? ""}
+                                  onChange={(e) =>
+                                    setFieldValue(
+                                      `branchPricing.${branch.id}.discountedPrice`,
+                                      e.target.value
+                                    )
+                                  }
+                                  placeholder={t("b2c.discountedPricePlaceholder")}
+                                  borderClassName={inputBorderCls}
+                                  inputClassName={inputFieldCls}
+                                  endAdornment={newSarSmall}
+                                />
+                              </div>
+                            </div>
+
+                            {/* 2. Target Audience Pricing Section for Branch (Matching Screenshot 1) */}
+                            <div className="bg-gray-50/70 p-4 sm:p-5 rounded-xl border border-border space-y-4">
+                              <div className="border-b border-border pb-3 text-start">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-8 h-8 rounded-xl bg-mainColor/10 flex items-center justify-center text-mainColor">
+                                    <GroupsOutlinedIcon className="w-5 h-5" />
+                                  </div>
+                                  <div>
+                                    <h6 className="font-somar font-bold text-sm text-titleColor">
+                                      {t("b2c.targetAudiencesTitle")}
+                                    </h6>
+                                    <p className="font-somar text-xs text-textLight">
+                                      {t("b2c.targetAudiencesSubtitle")}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <FieldArray name={`branchPricing.${branch.id}.targetAudiences`}>
+                                {({ push: pushBranchAudience, remove: removeBranchAudience }) => {
+                                  const audiencesList =
+                                    Array.isArray(branchData.targetAudiences) &&
+                                    branchData.targetAudiences.length > 0
+                                      ? branchData.targetAudiences
+                                      : [{ targetAudience: "", price: "" }];
+
+                                  return (
+                                    <div className="space-y-3">
+                                      {audiencesList.map((item, audIdx) => {
+                                        const audId =
+                                          typeof item.targetAudience === "object" && item.targetAudience !== null
+                                            ? item.targetAudience._id || item.targetAudience.id
+                                            : item.targetAudience || "";
+
+                                        return (
+                                          <div
+                                            key={audIdx}
+                                            className="flex items-center gap-3 bg-white p-3 sm:p-4 rounded-xl border border-border shadow-xs transition-all hover:border-mainColor/30"
+                                          >
+                                            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 items-start">
+                                              {/* Category Dropdown */}
+                                              <div>
+                                                <SelectionGroup
+                                                  name={`branchPricing.${branch.id}.targetAudiences[${audIdx}].targetAudience`}
+                                                  value={audId}
+                                                  onChange={(e) => {
+                                                    setFieldValue(
+                                                      `branchPricing.${branch.id}.targetAudiences[${audIdx}].targetAudience`,
+                                                      e.target.value
+                                                    );
+                                                  }}
+                                                  label={t("b2c.category")}
+                                                  labelClassName="block text-xs font-somar font-medium text-textLight text-start"
+                                                  placeholder={t("b2c.selectCategory")}
+                                                  list={targetAudienceList}
+                                                  border="1px solid var(--color-border)"
+                                                />
+                                              </div>
+
+                                              {/* Price */}
+                                              <div>
+                                                <TextInputGroup
+                                                  type="number"
+                                                  min="0"
+                                                  name={`branchPricing.${branch.id}.targetAudiences[${audIdx}].price`}
+                                                  value={item.price ?? ""}
+                                                  onChange={(e) => {
+                                                    setFieldValue(
+                                                      `branchPricing.${branch.id}.targetAudiences[${audIdx}].price`,
+                                                      e.target.value
+                                                    );
+                                                  }}
+                                                  label={t("b2c.price")}
+                                                  labelClassName="block text-xs font-somar font-medium text-textLight text-start"
+                                                  placeholder={t("b2c.pricePlaceholder")}
+                                                  borderClassName={inputBorderCls}
+                                                  inputClassName={inputFieldCls}
+                                                  endAdornment={newSarSmall}
+                                                />
+                                              </div>
+                                            </div>
+
+                                            {/* Delete Button (Shown on all rows when more than 1 row exists) */}
+                                            {audiencesList.length > 1 && (
+                                              <button
+                                                type="button"
+                                                onClick={() => removeBranchAudience(audIdx)}
+                                                className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer self-center"
+                                                title={isAr ? "حذف" : "Delete"}
+                                              >
+                                                <DeleteOutlineIcon className="w-5 h-5" />
+                                              </button>
+                                            )}
+                                          </div>
+                                        );
+                                      })}
+
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          pushBranchAudience({
+                                            targetAudience: "",
+                                            price: branchData.price || values.price || "",
+                                          })
+                                        }
+                                        className="w-full py-3 rounded-xl border border-mainColor text-mainColor font-somar font-bold text-sm sm:text-base hover:bg-mainColor/5 transition-colors cursor-pointer text-center mt-2"
+                                      >
+                                        {t("b2c.addAudiencePriceBtn")}
+                                      </button>
+                                    </div>
+                                  );
+                                }}
+                              </FieldArray>
+                            </div>
+
+                            {/* 3. Date / Seasonal Pricing for Branch */}
+                            <div className="bg-gray-50/70 p-4 sm:p-5 rounded-xl border border-border space-y-4">
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
+                                <div>
+                                  <h6 className="font-somar font-bold text-sm text-titleColor">
+                                    {t("branchDatePricingTitle") || "التسعير الموسمي للفرع"}
+                                  </h6>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const currentRules = Array.isArray(branchData.datePricing)
+                                      ? branchData.datePricing
+                                      : [];
+                                    const branchKey = branchData.key || values.key || "INCREASE";
+                                    const branchPercent = branchData.conditionRuleValue ?? values.conditionRuleValue ?? 15;
+                                    const defaultPrice = calculateRulePrice(
+                                      branchData.price || values.price,
+                                      branchKey,
+                                      branchPercent
+                                    );
+                                    setFieldValue(`branchPricing.${branch.id}.datePricing`, [
+                                      ...currentRules,
+                                      {
+                                        fromDate: "",
+                                        toDate: "",
+                                        key: branchKey,
+                                        percentage: branchPercent,
+                                        price: defaultPrice !== "" ? defaultPrice : "",
+                                      },
+                                    ]);
+                                  }}
+                                  className="px-3 py-1.5 rounded-lg border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar font-bold text-xs transition-colors cursor-pointer self-start sm:self-auto"
+                                >
+                                  + {t("b2c.addRuleBtn")}
+                                </button>
+                              </div>
+
+                              {/* Condition Builder Row: السعر بـ [زيادة/تخفيض] [%15] */}
+                              <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-somar text-textDark">
+                                <span className="font-medium text-textDark flex-shrink-0">
+                                  {t("b2c.priceByLabel")}
+                                </span>
+
+                                {/* Dropdown: زيادة / تخفيض (key) */}
+                                <div className="w-28 sm:w-32">
+                                  <SelectionGroup
+                                    name={`branchPricing.${branch.id}.key`}
+                                    value={branchData.key || values.key || "INCREASE"}
+                                    onChange={(e) => {
+                                      setFieldValue(
+                                        `branchPricing.${branch.id}.key`,
+                                        e.target.value,
+                                        true
+                                      );
+                                    }}
+                                    placeholder={t("b2c.increase")}
+                                    list={changeTypeList}
+                                    border="1px solid var(--color-border)"
+                                  />
+                                </div>
+
+                                {/* Input: %15 with matching 52px height */}
+                                <div className="w-24 sm:w-28">
+                                  <TextInputGroup
+                                    type="number"
+                                    min="1"
+                                    name={`branchPricing.${branch.id}.conditionRuleValue`}
+                                    value={branchData.conditionRuleValue ?? values.conditionRuleValue ?? "15"}
+                                    onChange={(e) => {
+                                      setFieldValue(
+                                        `branchPricing.${branch.id}.conditionRuleValue`,
+                                        e.target.value,
+                                        true
+                                      );
+                                    }}
+                                    placeholder="15"
+                                    borderClassName={inputBorderCls}
+                                    inputClassName="!h-[52px] !py-0 px-2 text-center font-somar text-xs sm:text-sm text-textDark"
+                                    endAdornment={
+                                      <span className="text-textLight font-somar text-sm">
+                                        %
+                                      </span>
+                                    }
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="space-y-3">
+                                {(Array.isArray(branchData.datePricing) ? branchData.datePricing : []).map(
+                                  (rule, rIdx) => (
+                                    <div
+                                      key={rIdx}
+                                      className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end bg-white p-3 rounded-xl border border-border"
+                                    >
+                                      <TextInputGroup
+                                        type="date"
+                                        min={todayStr}
+                                        label={t("b2c.fromDateReadOnly")}
+                                        value={rule.fromDate || rule.fromDay || ""}
+                                        onChange={(e) =>
+                                          setFieldValue(
+                                            `branchPricing.${branch.id}.datePricing[${rIdx}].fromDate`,
+                                            e.target.value
+                                          )
+                                        }
+                                        borderClassName={inputBorderCls}
+                                        inputClassName="!h-[44px] !py-0 px-3 font-somar text-xs text-textDark"
+                                      />
+                                      <TextInputGroup
+                                        type="date"
+                                        min={rule.fromDate || todayStr}
+                                        label={t("b2c.toDateReadOnly")}
+                                        value={rule.toDate || rule.toDay || ""}
+                                        onChange={(e) =>
+                                          setFieldValue(
+                                            `branchPricing.${branch.id}.datePricing[${rIdx}].toDate`,
+                                            e.target.value
+                                          )
+                                        }
+                                        borderClassName={inputBorderCls}
+                                        inputClassName="!h-[44px] !py-0 px-3 font-somar text-xs text-textDark"
+                                      />
+                                      <TextInputGroup
+                                        type="number"
+                                        min="0"
+                                        label={t("b2c.priceInSar")}
+                                        value={rule.price ?? ""}
+                                        onChange={(e) =>
+                                          setFieldValue(
+                                            `branchPricing.${branch.id}.datePricing[${rIdx}].price`,
+                                            e.target.value
+                                          )
+                                        }
+                                        borderClassName={inputBorderCls}
+                                        inputClassName="!h-[44px] !py-0 px-3 font-somar text-xs text-textDark"
+                                        endAdornment={newSarSmall}
+                                      />
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const updated = (branchData.datePricing || []).filter(
+                                            (_, i) => i !== rIdx
+                                          );
+                                          setFieldValue(
+                                            `branchPricing.${branch.id}.datePricing`,
+                                            updated
+                                          );
+                                        }}
+                                        className="w-9 h-9 flex items-center justify-center text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer self-center sm:self-end mb-1"
+                                      >
+                                        <DeleteOutlineIcon className="w-5 h-5" />
+                                      </button>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -1063,7 +1535,7 @@ const Step8Pricing = ({
               </div>
             </div>
 
-            {/* Bulk / Quantity Tier Pricing Section (التسعير الكمي) */}
+            {/* 2. Quantity Discount Tiers for Schools (شرائح الخصم الكمي للمدارس) */}
             <div className="bg-gray-50/70 p-4 sm:p-6 rounded-2xl border border-border space-y-4">
               <div className="border-b border-border pb-3 text-start">
                 <div className="flex items-center gap-2">
@@ -1072,22 +1544,25 @@ const Step8Pricing = ({
                   </div>
                   <div>
                     <h3 className="font-somar font-bold text-base text-titleColor">
-                      {t("b2b.bulkPricingTitle")}
+                      {t("b2b.quantityDiscountTitle")}
                     </h3>
                     <p className="font-somar text-xs text-textLight">
-                      {t("b2b.bulkPricingSubtitle")}
+                      {t("b2b.quantityDiscountSubtitle")}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <FieldArray name="bulkPricing">
+              <FieldArray name="b2bPrice.quantityDiscountTiers">
                 {({ push, remove }) => {
                   const bulkList =
-                    Array.isArray(values.bulkPricing) &&
-                    values.bulkPricing.length > 0
+                    Array.isArray(values.b2bPrice?.quantityDiscountTiers) &&
+                    values.b2bPrice.quantityDiscountTiers.length > 0
+                      ? values.b2bPrice.quantityDiscountTiers
+                      : Array.isArray(values.bulkPricing) &&
+                        values.bulkPricing.length > 0
                       ? values.bulkPricing
-                      : [{ minCount: "", price: "" }];
+                      : [];
 
                   return (
                     <div className="space-y-3">
@@ -1096,28 +1571,47 @@ const Step8Pricing = ({
                           key={index}
                           className="flex items-center gap-3 bg-white p-3 sm:p-4 rounded-xl border border-border shadow-xs transition-all hover:border-mainColor/30"
                         >
-                          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 items-start">
+                          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3 items-start">
                             <div>
                               <TextInputGroup
                                 type="number"
                                 min="1"
-                                name={`bulkPricing[${index}].minCount`}
-                                value={item.minCount ?? ""}
-                                onChange={handleChange}
+                                name={`b2bPrice.quantityDiscountTiers[${index}].minQuantity`}
+                                value={item.minQuantity ?? item.minCount ?? ""}
+                                onChange={(e) => {
+                                  setFieldValue(
+                                    `b2bPrice.quantityDiscountTiers[${index}].minQuantity`,
+                                    e.target.value
+                                  );
+                                  setFieldValue(
+                                    `b2bPrice.quantityDiscountTiers[${index}].minCount`,
+                                    e.target.value
+                                  );
+                                }}
                                 onBlur={handleBlur}
-                                label={t("b2b.minCount")}
+                                label={t("b2b.minQuantity")}
                                 labelClassName="block text-xs font-somar font-medium text-textLight text-start"
-                                placeholder={t("b2b.minCountPlaceholder")}
+                                placeholder={t("b2b.minQuantityPlaceholder")}
                                 borderClassName={inputBorderCls}
                                 inputClassName={inputFieldCls}
-                                touched={getIn(
-                                  touched,
-                                  `bulkPricing[${index}].minCount`
-                                )}
-                                errors={getIn(
-                                  errors,
-                                  `bulkPricing[${index}].minCount`
-                                )}
+                              />
+                            </div>
+
+                            <div>
+                              <SelectionGroup
+                                name={`b2bPrice.quantityDiscountTiers[${index}].discountType`}
+                                value={item.discountType || "PERCENTAGE"}
+                                onChange={(e) =>
+                                  setFieldValue(
+                                    `b2bPrice.quantityDiscountTiers[${index}].discountType`,
+                                    e.target.value
+                                  )
+                                }
+                                onBlur={handleBlur}
+                                label={t("b2b.discountType")}
+                                labelClassName="block text-xs font-somar font-medium text-textLight text-start"
+                                list={discountTypeList}
+                                border="1px solid var(--color-border)"
                               />
                             </div>
 
@@ -1125,50 +1619,247 @@ const Step8Pricing = ({
                               <TextInputGroup
                                 type="number"
                                 min="0"
-                                name={`bulkPricing[${index}].price`}
-                                value={item.price ?? ""}
-                                onChange={handleChange}
+                                name={`b2bPrice.quantityDiscountTiers[${index}].discountValue`}
+                                value={item.discountValue ?? ""}
+                                onChange={(e) =>
+                                  setFieldValue(
+                                    `b2bPrice.quantityDiscountTiers[${index}].discountValue`,
+                                    e.target.value
+                                  )
+                                }
                                 onBlur={handleBlur}
-                                label={t("b2b.perPersonPrice")}
+                                label={t("b2b.discountValue")}
                                 labelClassName="block text-xs font-somar font-medium text-textLight text-start"
-                                placeholder={t("b2b.perPersonPricePlaceholder")}
+                                placeholder={t("b2b.discountValuePlaceholder")}
                                 borderClassName={inputBorderCls}
                                 inputClassName={inputFieldCls}
-                                endAdornment={newSarSmall}
-                                touched={getIn(
-                                  touched,
-                                  `bulkPricing[${index}].price`
-                                )}
-                                errors={getIn(
-                                  errors,
-                                  `bulkPricing[${index}].price`
-                                )}
+                                endAdornment={
+                                  item.discountType === "AMOUNT" ? (
+                                    newSarSmall
+                                  ) : (
+                                    <span className="text-textLight font-somar text-sm">%</span>
+                                  )
+                                }
                               />
                             </div>
                           </div>
 
-                          {/* Delete Button (Shown on all rows when more than 1 row exists) */}
-                          {bulkList.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => remove(index)}
-                              className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer self-center"
-                              title="Delete"
-                            >
-                              <DeleteOutlineIcon className="w-5 h-5" />
-                            </button>
-                          )}
+                          <button
+                            type="button"
+                            onClick={() => remove(index)}
+                            className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer self-center"
+                            title="Delete"
+                          >
+                            <DeleteOutlineIcon className="w-5 h-5" />
+                          </button>
                         </div>
                       ))}
 
                       <button
                         type="button"
-                        onClick={() => push({ minCount: "", price: "" })}
+                        onClick={() =>
+                          push({
+                            minQuantity: "",
+                            discountType: "PERCENTAGE",
+                            discountValue: "",
+                          })
+                        }
                         className="w-full py-3 rounded-xl border border-mainColor text-mainColor font-somar font-bold text-sm sm:text-base hover:bg-mainColor/5 transition-colors cursor-pointer text-center mt-2"
                       >
-                        {t("b2b.addBulkTierBtn")}
+                        {t("b2b.addTierBtn")}
                       </button>
                     </div>
+                  );
+                }}
+              </FieldArray>
+            </div>
+
+            {/* 3. B2B Date & Season Pricing Rules (قواعد التسعير حسب التواريخ للمدارس) */}
+            <div className="bg-white p-5 sm:p-7 rounded-2xl border border-border space-y-6 shadow-none">
+              <FieldArray name="b2bPrice.datePricing">
+                {({ push, remove }) => {
+                  const b2bDatePricingList =
+                    Array.isArray(values.b2bPrice?.datePricing) &&
+                    values.b2bPrice.datePricing.length > 0
+                      ? values.b2bPrice.datePricing
+                      : [];
+
+                  return (
+                    <>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
+                        <div className="text-start">
+                          <h3 className="font-somar font-bold text-base sm:text-lg text-titleColor">
+                            {t("b2b.datePricingTitle")}
+                          </h3>
+                          <p className="font-somar text-xs sm:text-sm text-textLight mt-1">
+                            {t("b2b.datePricingSubtitle")}
+                          </p>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const bPrice =
+                              values.b2bPrice?.price ||
+                              values.b2bPricing?.schoolsPrice ||
+                              values.price ||
+                              0;
+                            const defaultPrice = calculateRulePrice(
+                              bPrice,
+                              values.b2bPrice?.key || "DECREASE",
+                              values.b2bPrice?.conditionRuleValue || 10
+                            );
+                            push({
+                              fromDate: "",
+                              toDate: "",
+                              key: values.b2bPrice?.key || "DECREASE",
+                              percentage: values.b2bPrice?.conditionRuleValue || 10,
+                              price: defaultPrice !== "" ? defaultPrice : "",
+                            });
+                          }}
+                          className="px-4 py-2 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer self-start sm:self-auto flex items-center gap-1.5 whitespace-nowrap"
+                        >
+                          <span>{t("b2b.addRuleBtn")}</span>
+                        </button>
+                      </div>
+
+                      {/* Condition Builder Row for B2B */}
+                      <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-somar text-textDark">
+                        <span className="font-medium text-textDark flex-shrink-0">
+                          {t("b2b.priceByLabel")}
+                        </span>
+
+                        <div className="w-28 sm:w-32">
+                          <SelectionGroup
+                            name="b2bPrice.key"
+                            value={values.b2bPrice?.key || "DECREASE"}
+                            onChange={(e) => {
+                              setFieldValue("b2bPrice.key", e.target.value, true);
+                            }}
+                            placeholder={t("b2b.decrease")}
+                            list={changeTypeList}
+                            border="1px solid var(--color-border)"
+                          />
+                        </div>
+
+                        <div className="w-24 sm:w-28">
+                          <TextInputGroup
+                            type="number"
+                            min="1"
+                            name="b2bPrice.conditionRuleValue"
+                            value={values.b2bPrice?.conditionRuleValue ?? "10"}
+                            onChange={(e) => {
+                              setFieldValue(
+                                "b2bPrice.conditionRuleValue",
+                                e.target.value,
+                                true
+                              );
+                            }}
+                            placeholder="10"
+                            borderClassName={inputBorderCls}
+                            inputClassName="!h-[52px] !py-0 px-2 text-center font-somar text-xs sm:text-sm text-textDark"
+                            endAdornment={
+                              <span className="text-textLight font-somar text-sm">
+                                %
+                              </span>
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      {/* Date Pricing Rows for B2B */}
+                      <div className="space-y-4 pt-2">
+                        {b2bDatePricingList.map((item, index) => {
+                          const fromDateVal = item.fromDate || item.date || "";
+                          const toDateVal = item.toDate || fromDateVal || "";
+
+                          return (
+                            <div
+                              key={index}
+                              className="flex flex-wrap md:flex-nowrap items-start gap-3 sm:gap-4 transition-all"
+                            >
+                              <div className="w-full md:w-auto md:flex-1">
+                                <TextInputGroup
+                                  type="date"
+                                  min={todayStr}
+                                  name={`b2bPrice.datePricing[${index}].fromDate`}
+                                  label={t("b2b.fromDateReadOnly")}
+                                  labelClassName={subLabelCls}
+                                  value={fromDateVal}
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    setFieldValue(
+                                      `b2bPrice.datePricing[${index}].fromDate`,
+                                      val
+                                    );
+                                    if (val && item.toDate && val > item.toDate) {
+                                      setFieldValue(
+                                        `b2bPrice.datePricing[${index}].toDate`,
+                                        val
+                                      );
+                                    }
+                                  }}
+                                  onBlur={handleBlur}
+                                  borderClassName={inputBorderCls}
+                                  inputClassName={inputFieldCls}
+                                />
+                              </div>
+
+                              <div className="w-full md:w-auto md:flex-1">
+                                <TextInputGroup
+                                  type="date"
+                                  min={fromDateVal || todayStr}
+                                  name={`b2bPrice.datePricing[${index}].toDate`}
+                                  label={t("b2b.toDateReadOnly")}
+                                  labelClassName={subLabelCls}
+                                  value={toDateVal}
+                                  onChange={(e) => {
+                                    setFieldValue(
+                                      `b2bPrice.datePricing[${index}].toDate`,
+                                      e.target.value
+                                    );
+                                  }}
+                                  onBlur={handleBlur}
+                                  borderClassName={inputBorderCls}
+                                  inputClassName={inputFieldCls}
+                                />
+                              </div>
+
+                              <div className="w-full md:w-auto md:flex-1">
+                                <TextInputGroup
+                                  type="number"
+                                  min="0"
+                                  name={`b2bPrice.datePricing[${index}].price`}
+                                  label={t("b2b.priceInSar")}
+                                  labelClassName={subLabelCls}
+                                  value={item.price ?? ""}
+                                  onChange={(e) => {
+                                    setFieldValue(
+                                      `b2bPrice.datePricing[${index}].price`,
+                                      e.target.value
+                                    );
+                                  }}
+                                  onBlur={handleBlur}
+                                  placeholder="30"
+                                  borderClassName={inputBorderCls}
+                                  inputClassName={inputFieldCls}
+                                  endAdornment={newSarSmall}
+                                />
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={() => remove(index)}
+                                className="w-10 h-10 flex items-center justify-center text-error hover:bg-error/10 rounded-xl transition-colors cursor-pointer flex-shrink-0 mb-0.5 mt-6"
+                                title={isAr ? "حذف" : "Delete"}
+                              >
+                                <DeleteOutlineIcon className="w-5 h-5" />
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
                   );
                 }}
               </FieldArray>
@@ -1243,160 +1934,465 @@ const Step8Pricing = ({
                 </div>
               )}
             </div>
+
+            {/* ─────────────────────────────────────────────────────────────
+                Dedicated B2B Branch Customization Section (Strictly Schools)
+            ───────────────────────────────────────────────────────────── */}
+            {isCustomizedActive && (
+              <div
+                aria-labelledby="branch-pricing-b2b-title"
+                className="bg-white rounded-2xl border border-border p-5 sm:p-7 transition-all duration-200 text-start shadow-none space-y-4 mt-6"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
+                  <div>
+                    <h3
+                      id="branch-pricing-b2b-title"
+                      className="font-somar text-lg sm:text-xl font-bold text-titleColor"
+                    >
+                      {t("b2bBranchSectionTitle") || "تخصيص أسعار الفروع للمدارس والجهات"}
+                    </h3>
+                    <p className="font-somar text-xs sm:text-sm text-textLight mt-1">
+                      {t("b2bBranchSectionSubtitle") || "تحديد أسعار وتكاليف وخصومات كمية مخصصة للمدارس لكل فرع"}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsSidebarOpen(true)}
+                    className="px-4 py-2 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 self-start sm:self-auto"
+                  >
+                    <EditOutlinedIcon sx={{ fontSize: 16 }} />
+                    <span>{t("editBranchesBtn")}</span>
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {activeCustomizedBranches.map((branch) => {
+                    const isOpen = Boolean(openBranches[branch.id]);
+                    const branchName =
+                      branch.name?.[locale] ||
+                      branch.name?.ar ||
+                      branch.name?.en ||
+                      "";
+                    const branchSubtitle =
+                      branch.fullName?.[locale] ||
+                      branch.fullName?.ar ||
+                      branch.fullName?.en ||
+                      "";
+                    const branchData = values.branchPricing?.[branch.id] || {};
+
+                    return (
+                      <div
+                        key={branch.id}
+                        className="rounded-2xl border border-border overflow-hidden transition-all duration-200"
+                      >
+                        <button
+                          type="button"
+                          onClick={() => toggleBranch(branch.id)}
+                          className="w-full p-4 sm:p-5 bg-gray-50/60 hover:bg-gray-50 flex items-center justify-between cursor-pointer transition-colors"
+                        >
+                          <div className="text-start">
+                            <h4 className="font-somar font-bold text-base text-titleColor">
+                              {branchName}
+                            </h4>
+                            {branchSubtitle && (
+                              <p className="font-somar text-xs sm:text-sm text-textLight mt-0.5">
+                                {branchSubtitle}
+                              </p>
+                            )}
+                          </div>
+                          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-textDark hover:bg-buttonsHover/30 transition-colors">
+                            {isOpen ? (
+                              <KeyboardArrowUpIcon className="w-5 h-5 text-textLight" />
+                            ) : (
+                              <KeyboardArrowDownIcon className="w-5 h-5 text-textLight" />
+                            )}
+                          </div>
+                        </button>
+
+                        {isOpen && (
+                          <div className="p-4 sm:p-6 bg-white border-t border-border space-y-6">
+                            {/* 1. Base 4 inputs for B2B Branch */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                              <div>
+                                <TextInputGroup
+                                  type="number"
+                                  min="0"
+                                  label={t("b2b.marketPrice")}
+                                  labelClassName={labelCls}
+                                  value={branchData.schoolsPrice ?? ""}
+                                  onChange={(e) =>
+                                    setFieldValue(
+                                      `branchPricing.${branch.id}.schoolsPrice`,
+                                      e.target.value
+                                    )
+                                  }
+                                  placeholder={t("b2b.marketPricePlaceholder")}
+                                  borderClassName={inputBorderCls}
+                                  inputClassName={inputFieldCls}
+                                  endAdornment={newSarSmall}
+                                />
+                              </div>
+
+                              <div>
+                                <TextInputGroup
+                                  type="number"
+                                  min="0"
+                                  label={t("b2b.discountedPrice")}
+                                  labelClassName={labelCls}
+                                  value={branchData.b2bDiscountedPrice ?? ""}
+                                  onChange={(e) =>
+                                    setFieldValue(
+                                      `branchPricing.${branch.id}.b2bDiscountedPrice`,
+                                      e.target.value
+                                    )
+                                  }
+                                  placeholder={t("b2b.discountedPricePlaceholder")}
+                                  borderClassName={inputBorderCls}
+                                  inputClassName={inputFieldCls}
+                                  endAdornment={newSarSmall}
+                                />
+                              </div>
+
+                              <div>
+                                <TextInputGroup
+                                  type="number"
+                                  min="0"
+                                  label={t("b2b.productCost")}
+                                  labelClassName={labelCls}
+                                  value={branchData.productCost ?? ""}
+                                  onChange={(e) =>
+                                    setFieldValue(
+                                      `branchPricing.${branch.id}.productCost`,
+                                      e.target.value
+                                    )
+                                  }
+                                  placeholder={t("b2b.productCostPlaceholder")}
+                                  borderClassName={inputBorderCls}
+                                  inputClassName={inputFieldCls}
+                                  endAdornment={newSarSmall}
+                                />
+                              </div>
+
+                              <div>
+                                <TextInputGroup
+                                  type="number"
+                                  min="1"
+                                  label={t("b2b.freeSupervisorLabel")}
+                                  labelClassName={labelCls}
+                                  value={branchData.studentsPerSupervisor ?? ""}
+                                  onChange={(e) =>
+                                    setFieldValue(
+                                      `branchPricing.${branch.id}.studentsPerSupervisor`,
+                                      e.target.value
+                                    )
+                                  }
+                                  placeholder="10"
+                                  borderClassName={inputBorderCls}
+                                  inputClassName={inputFieldCls}
+                                />
+                              </div>
+                            </div>
+
+                            {/* 2. Quantity Discount Tiers for B2B Branch (التسعير الكمي) */}
+                            <div className="bg-gray-50/70 p-4 sm:p-5 rounded-xl border border-border space-y-4">
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
+                                <div>
+                                  <h6 className="font-somar font-bold text-sm text-titleColor">
+                                    {t("branchQuantityDiscountsTitle") || t("b2b.quantityDiscountTitle")}
+                                  </h6>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const currentTiers = Array.isArray(
+                                      branchData.b2bQuantityDiscountTiers
+                                    )
+                                      ? branchData.b2bQuantityDiscountTiers
+                                      : [];
+                                    setFieldValue(
+                                      `branchPricing.${branch.id}.b2bQuantityDiscountTiers`,
+                                      [
+                                        ...currentTiers,
+                                        {
+                                          minQuantity: "",
+                                          discountType: "PERCENTAGE",
+                                          discountValue: "",
+                                        },
+                                      ]
+                                    );
+                                  }}
+                                  className="px-3 py-1.5 rounded-lg border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar font-bold text-xs transition-colors cursor-pointer self-start sm:self-auto"
+                                >
+                                  + {t("b2b.addTierBtn")}
+                                </button>
+                              </div>
+
+                              <div className="space-y-3">
+                                {(Array.isArray(branchData.b2bQuantityDiscountTiers)
+                                  ? branchData.b2bQuantityDiscountTiers
+                                  : []
+                                ).map((tier, tIdx) => (
+                                  <div
+                                    key={tIdx}
+                                    className="flex items-center gap-3 bg-white p-3 rounded-xl border border-border"
+                                  >
+                                    <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3 items-start">
+                                      <TextInputGroup
+                                        type="number"
+                                        min="1"
+                                        label={t("b2b.minQuantity")}
+                                        value={tier.minQuantity ?? ""}
+                                        onChange={(e) =>
+                                          setFieldValue(
+                                            `branchPricing.${branch.id}.b2bQuantityDiscountTiers[${tIdx}].minQuantity`,
+                                            e.target.value
+                                          )
+                                        }
+                                        borderClassName={inputBorderCls}
+                                        inputClassName="!h-[44px] !py-0 px-3 font-somar text-xs text-textDark"
+                                      />
+                                      <SelectionGroup
+                                        label={t("b2b.discountType")}
+                                        value={tier.discountType || "PERCENTAGE"}
+                                        onChange={(e) =>
+                                          setFieldValue(
+                                            `branchPricing.${branch.id}.b2bQuantityDiscountTiers[${tIdx}].discountType`,
+                                            e.target.value
+                                          )
+                                        }
+                                        list={discountTypeList}
+                                        border="1px solid var(--color-border)"
+                                      />
+                                      <TextInputGroup
+                                        type="number"
+                                        min="0"
+                                        label={t("b2b.discountValue")}
+                                        value={tier.discountValue ?? ""}
+                                        onChange={(e) =>
+                                          setFieldValue(
+                                            `branchPricing.${branch.id}.b2bQuantityDiscountTiers[${tIdx}].discountValue`,
+                                            e.target.value
+                                          )
+                                        }
+                                        borderClassName={inputBorderCls}
+                                        inputClassName="!h-[44px] !py-0 px-3 font-somar text-xs text-textDark"
+                                        endAdornment={
+                                          tier.discountType === "AMOUNT" ? (
+                                            newSarSmall
+                                          ) : (
+                                            <span className="text-textLight font-somar text-xs">%</span>
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const updated = (
+                                          branchData.b2bQuantityDiscountTiers || []
+                                        ).filter((_, i) => i !== tIdx);
+                                        setFieldValue(
+                                          `branchPricing.${branch.id}.b2bQuantityDiscountTiers`,
+                                          updated
+                                        );
+                                      }}
+                                      className="p-1.5 text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer self-center"
+                                    >
+                                      <DeleteOutlineIcon className="w-5 h-5" />
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* 3. Date / Seasonal Pricing for B2B Branch */}
+                            <div className="bg-gray-50/70 p-4 sm:p-5 rounded-xl border border-border space-y-4">
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
+                                <div>
+                                  <h6 className="font-somar font-bold text-sm text-titleColor">
+                                    {t("branchDatePricingTitle") || t("b2b.datePricingTitle")}
+                                  </h6>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const currentRules = Array.isArray(
+                                      branchData.b2bDatePricing
+                                    )
+                                      ? branchData.b2bDatePricing
+                                      : [];
+                                    const b2bBranchKey =
+                                      branchData.b2bKey ||
+                                      values.b2bPrice?.key ||
+                                      "DECREASE";
+                                    const b2bBranchPercent =
+                                      branchData.b2bConditionRuleValue ??
+                                      values.b2bPrice?.conditionRuleValue ??
+                                      10;
+                                    const defaultPrice = calculateRulePrice(
+                                      branchData.schoolsPrice || values.b2bPrice?.price,
+                                      b2bBranchKey,
+                                      b2bBranchPercent
+                                    );
+                                    setFieldValue(
+                                      `branchPricing.${branch.id}.b2bDatePricing`,
+                                      [
+                                        ...currentRules,
+                                        {
+                                          fromDate: "",
+                                          toDate: "",
+                                          key: b2bBranchKey,
+                                          percentage: b2bBranchPercent,
+                                          price: defaultPrice !== "" ? defaultPrice : "",
+                                        },
+                                      ]
+                                    );
+                                  }}
+                                  className="px-3 py-1.5 rounded-lg border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar font-bold text-xs transition-colors cursor-pointer self-start sm:self-auto"
+                                >
+                                  + {t("b2b.addRuleBtn")}
+                                </button>
+                              </div>
+
+                              {/* Condition Builder Row for B2B Branch */}
+                              <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-somar text-textDark">
+                                <span className="font-medium text-textDark flex-shrink-0">
+                                  {t("b2b.priceByLabel")}
+                                </span>
+
+                                <div className="w-28 sm:w-32">
+                                  <SelectionGroup
+                                    name={`branchPricing.${branch.id}.b2bKey`}
+                                    value={
+                                      branchData.b2bKey ||
+                                      values.b2bPrice?.key ||
+                                      "DECREASE"
+                                    }
+                                    onChange={(e) => {
+                                      setFieldValue(
+                                        `branchPricing.${branch.id}.b2bKey`,
+                                        e.target.value,
+                                        true
+                                      );
+                                    }}
+                                    placeholder={t("b2b.decrease")}
+                                    list={changeTypeList}
+                                    border="1px solid var(--color-border)"
+                                  />
+                                </div>
+
+                                <div className="w-24 sm:w-28">
+                                  <TextInputGroup
+                                    type="number"
+                                    min="1"
+                                    name={`branchPricing.${branch.id}.b2bConditionRuleValue`}
+                                    value={
+                                      branchData.b2bConditionRuleValue ??
+                                      values.b2bPrice?.conditionRuleValue ??
+                                      "10"
+                                    }
+                                    onChange={(e) => {
+                                      setFieldValue(
+                                        `branchPricing.${branch.id}.b2bConditionRuleValue`,
+                                        e.target.value,
+                                        true
+                                      );
+                                    }}
+                                    placeholder="10"
+                                    borderClassName={inputBorderCls}
+                                    inputClassName="!h-[52px] !py-0 px-2 text-center font-somar text-xs sm:text-sm text-textDark"
+                                    endAdornment={
+                                      <span className="text-textLight font-somar text-sm">
+                                        %
+                                      </span>
+                                    }
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="space-y-3">
+                                {(Array.isArray(branchData.b2bDatePricing)
+                                  ? branchData.b2bDatePricing
+                                  : []
+                                ).map((rule, rIdx) => (
+                                  <div
+                                    key={rIdx}
+                                    className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end bg-white p-3 rounded-xl border border-border"
+                                  >
+                                    <TextInputGroup
+                                      type="date"
+                                      min={todayStr}
+                                      label={t("b2b.fromDateReadOnly")}
+                                      value={rule.fromDate || rule.fromDay || ""}
+                                      onChange={(e) =>
+                                        setFieldValue(
+                                          `branchPricing.${branch.id}.b2bDatePricing[${rIdx}].fromDate`,
+                                          e.target.value
+                                        )
+                                      }
+                                      borderClassName={inputBorderCls}
+                                      inputClassName="!h-[44px] !py-0 px-3 font-somar text-xs text-textDark"
+                                    />
+                                    <TextInputGroup
+                                      type="date"
+                                      min={rule.fromDate || todayStr}
+                                      label={t("b2b.toDateReadOnly")}
+                                      value={rule.toDate || rule.toDay || ""}
+                                      onChange={(e) =>
+                                        setFieldValue(
+                                          `branchPricing.${branch.id}.b2bDatePricing[${rIdx}].toDate`,
+                                          e.target.value
+                                        )
+                                      }
+                                      borderClassName={inputBorderCls}
+                                      inputClassName="!h-[44px] !py-0 px-3 font-somar text-xs text-textDark"
+                                    />
+                                    <TextInputGroup
+                                      type="number"
+                                      min="0"
+                                      label={t("b2b.priceInSar")}
+                                      value={rule.price ?? ""}
+                                      onChange={(e) =>
+                                        setFieldValue(
+                                          `branchPricing.${branch.id}.b2bDatePricing[${rIdx}].price`,
+                                          e.target.value
+                                        )
+                                      }
+                                      borderClassName={inputBorderCls}
+                                      inputClassName="!h-[44px] !py-0 px-3 font-somar text-xs text-textDark"
+                                      endAdornment={newSarSmall}
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const updated = (
+                                          branchData.b2bDatePricing || []
+                                        ).filter((_, i) => i !== rIdx);
+                                        setFieldValue(
+                                          `branchPricing.${branch.id}.b2bDatePricing`,
+                                          updated
+                                        );
+                                      }}
+                                      className="w-9 h-9 flex items-center justify-center text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer self-center sm:self-end mb-1"
+                                    >
+                                      <DeleteOutlineIcon className="w-5 h-5" />
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </section>
-
-      {/* ─────────────────────────────────────────────────────────────
-          CARD 2: Branch Specific Customization
-      ───────────────────────────────────────────────────────────── */}
-      {isCustomizedActive && (
-        <section
-          aria-labelledby="branch-pricing-customization-title"
-          className="bg-white rounded-2xl border border-border p-6 sm:p-8 lg:p-10 transition-all duration-200 text-start shadow-none space-y-4"
-        >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-            <div>
-              <h3
-                id="branch-pricing-customization-title"
-                className="font-somar text-xl font-medium text-textDark leading-6"
-              >
-                {t("branchSectionTitle")}
-              </h3>
-              <p className="font-somar text-base font-medium text-textDark leading-5 !mt-2">
-                {t("branchSectionSubtitle")}
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setIsSidebarOpen(true)}
-              className="px-4 py-2 rounded-lg border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 self-start sm:self-auto"
-            >
-              <EditOutlinedIcon sx={{ fontSize: 16 }} />
-              <span>{t("editBranchesBtn")}</span>
-            </button>
-          </div>
-
-          <div className="space-y-4">
-            {activeCustomizedBranches.map((branch) => {
-              const isOpen = Boolean(openBranches[branch.id]);
-              const branchName =
-                branch.name?.[locale] ||
-                branch.name?.ar ||
-                branch.name?.en ||
-                "";
-              const branchSubtitle =
-                branch.fullName?.[locale] ||
-                branch.fullName?.ar ||
-                branch.fullName?.en ||
-                "";
-              const branchData = values.branchPricing?.[branch.id] || {
-                price: "",
-                discountedPrice: "",
-                productCost: "",
-              };
-
-              return (
-                <div
-                  key={branch.id}
-                  className="rounded-2xl border border-border overflow-hidden transition-all duration-200"
-                >
-                  <button
-                    type="button"
-                    onClick={() => toggleBranch(branch.id)}
-                    className="w-full p-4 sm:p-5 bg-gray-50/60 hover:bg-gray-50 flex items-center justify-between cursor-pointer transition-colors"
-                  >
-                    <div className="text-start">
-                      <h4 className="font-somar font-bold text-base text-titleColor">
-                        {branchName}
-                      </h4>
-                      {branchSubtitle && (
-                        <p className="font-somar text-xs sm:text-sm text-textLight mt-0.5">
-                          {branchSubtitle}
-                        </p>
-                      )}
-                    </div>
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-textDark hover:bg-buttonsHover/30 transition-colors">
-                      {isOpen ? (
-                        <KeyboardArrowUpIcon className="w-5 h-5 text-textLight" />
-                      ) : (
-                        <KeyboardArrowDownIcon className="w-5 h-5 text-textLight" />
-                      )}
-                    </div>
-                  </button>
-
-                  {isOpen && (
-                    <div className="p-4 sm:p-6 bg-white border-t border-border space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                          <TextInputGroup
-                            type="number"
-                            min="0"
-                            label={t("b2c.marketPrice")}
-                            labelClassName={labelCls}
-                            value={branchData.price ?? ""}
-                            onChange={(e) =>
-                              setFieldValue(
-                                `branchPricing.${branch.id}.price`,
-                                e.target.value
-                              )
-                            }
-                            placeholder={t("b2c.marketPricePlaceholder")}
-                            borderClassName={inputBorderCls}
-                            inputClassName={inputFieldCls}
-                            endAdornment={newSarSmall}
-                          />
-                        </div>
-
-                        <div>
-                          <TextInputGroup
-                            type="number"
-                            min="0"
-                            label={t("b2c.discountedPrice")}
-                            labelClassName={labelCls}
-                            value={branchData.discountedPrice ?? ""}
-                            onChange={(e) =>
-                              setFieldValue(
-                                `branchPricing.${branch.id}.discountedPrice`,
-                                e.target.value
-                              )
-                            }
-                            placeholder={t("b2c.discountedPricePlaceholder")}
-                            borderClassName={inputBorderCls}
-                            inputClassName={inputFieldCls}
-                            endAdornment={newSarSmall}
-                          />
-                        </div>
-
-                        <div>
-                          <TextInputGroup
-                            type="number"
-                            min="0"
-                            label={t("b2b.productCost")}
-                            labelClassName={labelCls}
-                            value={branchData.productCost ?? ""}
-                            onChange={(e) =>
-                              setFieldValue(
-                                `branchPricing.${branch.id}.productCost`,
-                                e.target.value
-                              )
-                            }
-                            placeholder={t("b2b.productCostPlaceholder")}
-                            borderClassName={inputBorderCls}
-                            inputClassName={inputFieldCls}
-                            endAdornment={newSarSmall}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      )}
 
       {/* ─────────────────────────────────────────────────────────────
           Branch Customization Drawer / Sidebar

@@ -54,9 +54,14 @@ export const createAddProductSchema = (t) => {
         otherwise: (schema) => schema.optional(),
       }),
 
-    monthDay: Yup.string().when("recurrencePattern", {
+    monthDay: Yup.mixed().when("recurrencePattern", {
       is: "MONTHLY",
-      then: (schema) => schema.required(reqMsg),
+      then: (schema) =>
+        schema.test("monthDay-required", reqMsg, (val) => {
+          if (Array.isArray(val)) return val.length > 0;
+          if (val !== undefined && val !== null && String(val).trim().length > 0) return true;
+          return false;
+        }),
       otherwise: (schema) => schema.optional(),
     }),
 

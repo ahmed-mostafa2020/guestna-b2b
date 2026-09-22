@@ -247,11 +247,36 @@ const Step4BookingDates = ({
   // Weekday options for multi-select
   const weekDayOptions = useMemo(
     () =>
-      WEEKDAY_KEYS.map((key) => ({
-        value: key,
-        label: t(`weekDays.${key}`),
-      })),
+      WEEKDAY_KEYS.map((key) => {
+        let label = "";
+        try {
+          label = t(`daysList.${key}`);
+        } catch {
+          label = "";
+        }
+        if (!label || label.includes(`daysList.${key}`)) {
+          try {
+            label = t(`weekDays.${key}`);
+          } catch {
+            label = "";
+          }
+        }
+        return {
+          value: key,
+          label: label || key,
+        };
+      }),
     [t]
+  );
+
+  // Month day options (1 to 31) for multi-select
+  const monthDayOptions = useMemo(
+    () =>
+      Array.from({ length: 31 }, (_, i) => ({
+        value: String(i + 1),
+        label: isAr ? `يوم ${i + 1}` : `Day ${i + 1}`,
+      })),
+    [isAr]
   );
 
   // Available times list in default section
@@ -435,35 +460,33 @@ const Step4BookingDates = ({
               </div>
             ) : (
               <div>
-                <label htmlFor="monthDay" className={labelCls}>
-                  {t("calendar")} <span className="text-error ms-1">*</span>
-                </label>
-                <div
-                  onClick={handleDatePickerContainerClick}
-                  className={cn(
-                    fieldContainerCls,
-                    "cursor-pointer",
-                    hasMonthDayErr
-                      ? "border-error focus-within:border-error"
-                      : "hover:border-mainColor/60"
-                  )}
-                >
-                  <CalendarMonthOutlinedIcon className={cn("w-5 h-5 flex-shrink-0 me-2", hasMonthDayErr ? "text-error" : "text-mainColor")} />
-                  <input
-                    id="monthDay"
-                    type="date"
-                    min={todayStr}
-                    name="monthDay"
-                    value={values.monthDay || ""}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder={t("calendarPlaceholder")}
-                    className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark cursor-pointer"
-                  />
-                </div>
-                {hasMonthDayErr && (
-                  <p className="text-xs text-error mt-1 font-medium">{monthDayErr}</p>
-                )}
+                <SelectionGroup
+                  id="monthDay"
+                  name="monthDay"
+                  multiple={true}
+                  required={true}
+                  value={
+                    Array.isArray(values.monthDay)
+                      ? values.monthDay
+                      : values.monthDay
+                      ? [String(values.monthDay)]
+                      : []
+                  }
+                  onChange={(e) => {
+                    const val = Array.isArray(e.target.value)
+                      ? e.target.value
+                      : [e.target.value];
+                    setFieldValue("monthDay", val);
+                  }}
+                  onBlur={handleBlur}
+                  label={t("calendar")}
+                  labelClassName={labelCls}
+                  touched={monthDayTouched}
+                  errors={monthDayErr}
+                  border="1px solid var(--color-border)"
+                  list={monthDayOptions}
+                  placeholder={t("selectDays")}
+                />
               </div>
             )}
           </div>
@@ -845,29 +868,31 @@ const Step4BookingDates = ({
                           </div>
                         ) : (
                           <div>
-                            <label className={labelCls}>
-                              {t("calendar")} <span className="text-error ms-1">*</span>
-                            </label>
-                            <div
-                              onClick={handleDatePickerContainerClick}
-                              className={cn(fieldContainerCls, "cursor-pointer hover:border-mainColor/60")}
-                            >
-                              <CalendarMonthOutlinedIcon className="w-5 h-5 text-mainColor flex-shrink-0 me-2" />
-                              <input
-                                type="date"
-                                min={todayStr}
-                                name={`branchDates.${branch.id}.monthDay`}
-                                value={branchData.monthDay || ""}
-                                onChange={(e) => {
-                                  setFieldValue(
-                                    `branchDates.${branch.id}.monthDay`,
-                                    e.target.value
-                                  );
-                                }}
-                                placeholder={t("calendarPlaceholder")}
-                                className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark cursor-pointer"
-                              />
-                            </div>
+                            <SelectionGroup
+                              name={`branchDates.${branch.id}.monthDay`}
+                              multiple={true}
+                              value={
+                                Array.isArray(branchData.monthDay)
+                                  ? branchData.monthDay
+                                  : branchData.monthDay
+                                  ? [String(branchData.monthDay)]
+                                  : []
+                              }
+                              onChange={(e) => {
+                                const val = Array.isArray(e.target.value)
+                                  ? e.target.value
+                                  : [e.target.value];
+                                setFieldValue(
+                                  `branchDates.${branch.id}.monthDay`,
+                                  val
+                                );
+                              }}
+                              label={t("calendar")}
+                              labelClassName={labelCls}
+                              border="1px solid var(--color-border)"
+                              list={monthDayOptions}
+                              placeholder={t("selectDays")}
+                            />
                           </div>
                         )}
                       </div>

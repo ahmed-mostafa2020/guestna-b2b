@@ -415,13 +415,20 @@ const StepReview = ({
   }, [activeView, b2bBasePrice, b2cBasePrice, values.price]);
 
   const b2bDiscount = useMemo(() => {
-    const d = Number(values.b2bPrice?.finalPrice || 0);
+    const d = Number(
+      values.b2bPrice?.discountedPrice ||
+      values.b2bPrice?.finalPrice ||
+      0
+    );
     return d > 0 && b2bBasePrice > 0 && d < b2bBasePrice ? d : 0;
   }, [values.b2bPrice, b2bBasePrice]);
 
   const b2cDiscount = useMemo(() => {
     const d = Number(
-      values.b2cPrice?.finalPrice || values.discountedPrice || 0
+      values.b2cPrice?.discountedPrice ||
+      values.b2cPrice?.finalPrice ||
+      values.discountedPrice ||
+      0
     );
     return d > 0 && b2cBasePrice > 0 && d < b2cBasePrice ? d : 0;
   }, [values.b2cPrice, values.discountedPrice, b2cBasePrice]);
@@ -447,8 +454,20 @@ const StepReview = ({
     );
   }, [activePrice, activeDiscount]);
 
-  // Bulk pricing list for B2B
+  // Bulk pricing list for B2B (including quantityDiscountTiers)
   const bulkPricingList = useMemo(() => {
+    if (
+      Array.isArray(values.b2bPrice?.quantityDiscountTiers) &&
+      values.b2bPrice.quantityDiscountTiers.length > 0
+    ) {
+      return values.b2bPrice.quantityDiscountTiers
+        .map((tier) => ({
+          minCount: tier.minQuantity ?? tier.minCount,
+          price: tier.discountValue ?? tier.price,
+          discountType: tier.discountType,
+        }))
+        .filter((item) => item && (item.minCount || item.price));
+    }
     const list =
       Array.isArray(values.b2bBulkPricing) && values.b2bBulkPricing.length > 0
         ? values.b2bBulkPricing
@@ -456,7 +475,7 @@ const StepReview = ({
           ? values.bulkPricing
           : [];
     return list.filter((item) => item && (item.minCount || item.price));
-  }, [values.bulkPricing, values.b2bBulkPricing]);
+  }, [values.bulkPricing, values.b2bBulkPricing, values.b2bPrice]);
 
   // Video URL resolution
   const resolvedVideoUrl = useMemo(() => {
@@ -570,6 +589,16 @@ const StepReview = ({
 
   // Date range string
   const dateRangeStr = useMemo(() => {
+    if (values.recurrencePattern === "MONTHLY") {
+      const days = Array.isArray(values.monthDay)
+        ? values.monthDay
+        : values.monthDay
+        ? [values.monthDay]
+        : [];
+      if (days.length > 0) {
+        return `${locale === "ar" ? "أيام الشهر:" : "Days of month:"} ${days.join(", ")}`;
+      }
+    }
     if (values.fromDay && values.toDay) {
       try {
         const fromDate = new Date(values.fromDay);
@@ -594,7 +623,7 @@ const StepReview = ({
       return formatDays(values.selectedDays);
     }
     return "-";
-  }, [values.fromDay, values.toDay, values.selectedDays, locale, formatDays]);
+  }, [values.fromDay, values.toDay, values.selectedDays, values.recurrencePattern, values.monthDay, locale, formatDays]);
 
   // Time range string
   const timeRangeStr = useMemo(() => {

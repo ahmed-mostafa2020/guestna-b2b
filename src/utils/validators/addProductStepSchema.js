@@ -440,19 +440,18 @@ export const createStepBookingDatesSchema = (t) => {
       then: (schema) => schema.min(1, daysReq).required(daysReq),
       otherwise: (schema) => schema.optional(),
     }),
-    monthDay: Yup.string().when("recurrencePattern", {
+    monthDay: Yup.mixed().when("recurrencePattern", {
       is: "MONTHLY",
       then: (schema) =>
-        schema
-          .trim()
-          .required(calReq)
-          .test("not-in-past", calPastError, (val) => {
-            if (!val) return true;
-            const selectedDate = new Date(val);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            return selectedDate >= today;
-          }),
+        Yup.mixed().test("monthDay-required", calReq, (val) => {
+          if (Array.isArray(val)) {
+            return val.length > 0;
+          }
+          if (val !== undefined && val !== null && String(val).trim().length > 0) {
+            return true;
+          }
+          return false;
+        }),
       otherwise: (schema) => schema.optional(),
     }),
     fromHour: Yup.string().trim().optional(),
@@ -724,6 +723,7 @@ export const STEP_5_FIELD_NAMES = [
   "services[0].service",
   "services[0].note.ar",
   "services[0].note.en",
+  "branchServices",
 ];
 
 /**
@@ -1040,6 +1040,11 @@ export const createStepPricingSchema = (t) => {
       )
       .optional(),
 
+    "b2cPrice.quantityDiscountTiers": Yup.array().optional(),
+    "b2cPrice.datePricing": Yup.array().optional(),
+    "b2bPrice.quantityDiscountTiers": Yup.array().optional(),
+    "b2bPrice.datePricing": Yup.array().optional(),
+
     key: Yup.string().optional(),
     conditionRuleValue: Yup.mixed().optional(),
   });
@@ -1050,14 +1055,20 @@ export const STEP_PRICING_FIELD_NAMES = [
   "b2cPrice.price",
   "discountedPrice",
   "b2cPrice.finalPrice",
+  "b2cPrice.discountedPrice",
   "b2bPrice.price",
   "b2bPrice.finalPrice",
+  "b2bPrice.discountedPrice",
   "productCost",
   "targetAudiences",
   "bulkPricing",
+  "b2cPrice.quantityDiscountTiers",
+  "b2bPrice.quantityDiscountTiers",
   "studentsPerSupervisor",
   "b2bPrice.studentsPerSupervisor",
   "datePricing",
+  "b2cPrice.datePricing",
+  "b2bPrice.datePricing",
   "key",
   "conditionRuleValue",
 ];

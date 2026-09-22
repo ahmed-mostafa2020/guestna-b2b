@@ -53,7 +53,7 @@ export const initialAddProductValues = {
   bookingBefore: "",
   recurrencePattern: "",
   selectedDays: [],
-  monthDay: "",
+  monthDay: [],
   weekdayPricing: [],
   datePricing: [],
   fromDay: "",
@@ -70,17 +70,28 @@ export const initialAddProductValues = {
   targetAudiences: [{ targetAudience: "", price: "" }],
   b2cPrice: {
     price: "",
+    discountedPrice: "",
+    finalPrice: "",
     targetAudiences: [],
     weekdayPricing: [],
+    quantityDiscountTiers: [],
+    datePricing: [],
   },
   b2bPrice: {
     price: "",
+    discountedPrice: "",
+    finalPrice: "",
     productCost: "",
     studentsPerSupervisor: "10",
     weekdayPricing: [],
+    quantityDiscountTiers: [],
+    datePricing: [],
   },
   studentsPerSupervisor: "10",
+  quantityDiscountTiers: [],
   services: [{ service: "", price: "", note: { en: "", ar: "" } }],
+  branchServices: {},
+  customizedBranchIds: [],
   customServices: [],
   gallary: [],
   gallery: [],
@@ -217,9 +228,16 @@ export const formatAddProductPayload = (
   payload.key = pricingKey;
 
   if (values.recurrencePattern === "MONTHLY") {
-    if (values.monthDay) {
-      payload.monthDay = values.monthDay;
-    }
+    const rootMonthDays = Array.isArray(values.monthDay)
+      ? values.monthDay
+      : values.monthDay !== "" && values.monthDay !== undefined && values.monthDay !== null
+      ? [values.monthDay]
+      : [];
+    rootMonthDays.forEach((day, idx) => {
+      if (day !== "" && day !== undefined && day !== null && !isNaN(Number(day))) {
+        payload[`monthDay[${idx}]`] = Number(day);
+      }
+    });
   } else if (values.recurrencePattern === "WEEKLY") {
     (values.selectedDays || []).forEach((item, idx) => {
       payload[`selectedDays[${idx}]`] = item;
@@ -260,6 +278,28 @@ export const formatAddProductPayload = (
     payload["b2cPrice[price]"] = b2cMarketPrice;
   }
 
+  const b2cDiscounted =
+    values.b2cPrice?.discountedPrice !== "" &&
+    values.b2cPrice?.discountedPrice !== undefined &&
+    values.b2cPrice?.discountedPrice !== null &&
+    !isNaN(Number(values.b2cPrice?.discountedPrice))
+      ? Number(values.b2cPrice?.discountedPrice)
+      : values.b2cPrice?.finalPrice !== "" &&
+        values.b2cPrice?.finalPrice !== undefined &&
+        values.b2cPrice?.finalPrice !== null &&
+        !isNaN(Number(values.b2cPrice?.finalPrice))
+      ? Number(values.b2cPrice?.finalPrice)
+      : values.discountedPrice !== "" &&
+        values.discountedPrice !== undefined &&
+        values.discountedPrice !== null &&
+        !isNaN(Number(values.discountedPrice))
+      ? Number(values.discountedPrice)
+      : undefined;
+
+  if (b2cDiscounted !== undefined) {
+    payload["b2cPrice[discountedPrice]"] = b2cDiscounted;
+  }
+
   let b2cTargetIdx = 0;
   (values.targetAudiences || []).forEach((item) => {
     if (item.targetAudience) {
@@ -286,6 +326,41 @@ export const formatAddProductPayload = (
     const finalPrice = isNaN(rawPrice) ? 0 : rawPrice;
     payload[`b2cPrice[weekdayPricing][${idx}][day]`] = day;
     payload[`b2cPrice[weekdayPricing][${idx}][price]`] = finalPrice;
+  });
+
+  // B2C Date Pricing
+  const b2cDatePricingList =
+    Array.isArray(values.b2cPrice?.datePricing) && values.b2cPrice.datePricing.length > 0
+      ? values.b2cPrice.datePricing
+      : Array.isArray(values.datePricing) && values.datePricing.length > 0
+      ? values.datePricing
+      : [];
+
+  let b2cDateIdx = 0;
+  b2cDatePricingList.forEach((dp) => {
+    const fromDay = dp.fromDay || dp.fromDate || dp.date;
+    const toDay = dp.toDay || dp.toDate || fromDay;
+    const rawPrice =
+      dp.price !== "" && dp.price !== undefined && dp.price !== null
+        ? Number(dp.price)
+        : undefined;
+
+    if (fromDay) {
+      const enTitle = dp.title?.en?.trim() || "";
+      const arTitle = dp.title?.ar?.trim() || "";
+      if (enTitle) payload[`b2cPrice[datePricing][${b2cDateIdx}][title][en]`] = enTitle;
+      if (arTitle) payload[`b2cPrice[datePricing][${b2cDateIdx}][title][ar]`] = arTitle;
+      payload[`b2cPrice[datePricing][${b2cDateIdx}][fromDay]`] = fromDay;
+      payload[`b2cPrice[datePricing][${b2cDateIdx}][toDay]`] = toDay;
+      payload[`b2cPrice[datePricing][${b2cDateIdx}][key]`] = dp.key || values.key || "INCREASE";
+      if (dp.percentage !== "" && dp.percentage !== undefined && !isNaN(Number(dp.percentage))) {
+        payload[`b2cPrice[datePricing][${b2cDateIdx}][percentage]`] = Number(dp.percentage);
+      }
+      if (rawPrice !== undefined && !isNaN(rawPrice)) {
+        payload[`b2cPrice[datePricing][${b2cDateIdx}][price]`] = rawPrice;
+      }
+      b2cDateIdx++;
+    }
   });
 
   // B2B Structured Pricing
@@ -325,6 +400,24 @@ export const formatAddProductPayload = (
   if (b2bMarketPrice !== undefined) {
     payload["b2bPrice[price]"] = b2bMarketPrice;
   }
+
+  const b2bDiscounted =
+    values.b2bPrice?.discountedPrice !== "" &&
+    values.b2bPrice?.discountedPrice !== undefined &&
+    values.b2bPrice?.discountedPrice !== null &&
+    !isNaN(Number(values.b2bPrice?.discountedPrice))
+      ? Number(values.b2bPrice?.discountedPrice)
+      : values.b2bPrice?.finalPrice !== "" &&
+        values.b2bPrice?.finalPrice !== undefined &&
+        values.b2bPrice?.finalPrice !== null &&
+        !isNaN(Number(values.b2bPrice?.finalPrice))
+      ? Number(values.b2bPrice?.finalPrice)
+      : undefined;
+
+  if (b2bDiscounted !== undefined) {
+    payload["b2bPrice[discountedPrice]"] = b2bDiscounted;
+  }
+
   if (b2bCost !== undefined) {
     payload["b2bPrice[productCost]"] = b2bCost;
   }
@@ -342,48 +435,65 @@ export const formatAddProductPayload = (
     payload[`b2bPrice[weekdayPricing][${idx}][price]`] = finalPrice;
   });
 
-  let datePricingIdx = 0;
-  const processedDates = new Set();
+  // B2B Quantity Discount Tiers
+  const b2bQuantityTiers =
+    Array.isArray(values.b2bPrice?.quantityDiscountTiers) && values.b2bPrice.quantityDiscountTiers.length > 0
+      ? values.b2bPrice.quantityDiscountTiers
+      : Array.isArray(values.bulkPricing) && values.bulkPricing.length > 0
+      ? values.bulkPricing
+      : [];
 
-  (values.datePricing || []).forEach((item) => {
-    const startStr = item.fromDate || item.date;
-    const endStr = item.toDate || item.fromDate || item.date;
+  let b2bTierIdx = 0;
+  b2bQuantityTiers.forEach((tier) => {
+    const minQ = tier?.minQuantity ?? tier?.minCount;
+    const dVal = tier?.discountValue ?? tier?.discount ?? tier?.price;
+    if (
+      minQ !== "" &&
+      minQ !== undefined &&
+      minQ !== null &&
+      !isNaN(Number(minQ)) &&
+      dVal !== "" &&
+      dVal !== undefined &&
+      dVal !== null &&
+      !isNaN(Number(dVal))
+    ) {
+      payload[`b2bPrice[quantityDiscountTiers][${b2bTierIdx}][minQuantity]`] = Number(minQ);
+      payload[`b2bPrice[quantityDiscountTiers][${b2bTierIdx}][discountType]`] = tier.discountType || "PERCENTAGE";
+      payload[`b2bPrice[quantityDiscountTiers][${b2bTierIdx}][discountValue]`] = Number(dVal);
+      b2bTierIdx++;
+    }
+  });
+
+  // B2B Date Pricing
+  const b2bDatePricingList =
+    Array.isArray(values.b2bPrice?.datePricing) && values.b2bPrice.datePricing.length > 0
+      ? values.b2bPrice.datePricing
+      : [];
+
+  let b2bDateIdx = 0;
+  b2bDatePricingList.forEach((dp) => {
+    const fromDay = dp.fromDay || dp.fromDate || dp.date;
+    const toDay = dp.toDay || dp.toDate || fromDay;
     const rawPrice =
-      item.price !== "" && item.price !== undefined && item.price !== null
-        ? Number(item.price)
+      dp.price !== "" && dp.price !== undefined && dp.price !== null
+        ? Number(dp.price)
         : undefined;
 
-    if (startStr && rawPrice !== undefined && !isNaN(rawPrice)) {
-      if (endStr && endStr > startStr) {
-        const [sYear, sMonth, sDay] = startStr.split("-").map(Number);
-        const [eYear, eMonth, eDay] = endStr.split("-").map(Number);
-        const current = new Date(sYear, sMonth - 1, sDay);
-        const end = new Date(eYear, eMonth - 1, eDay);
-
-        let steps = 0;
-        while (current <= end && steps < 366) {
-          const year = current.getFullYear();
-          const month = String(current.getMonth() + 1).padStart(2, "0");
-          const day = String(current.getDate()).padStart(2, "0");
-          const dStr = `${year}-${month}-${day}`;
-
-          if (!processedDates.has(dStr)) {
-            processedDates.add(dStr);
-            payload[`datePricing[${datePricingIdx}][date]`] = dStr;
-            payload[`datePricing[${datePricingIdx}][price]`] = rawPrice;
-            datePricingIdx++;
-          }
-          current.setDate(current.getDate() + 1);
-          steps++;
-        }
-      } else {
-        if (!processedDates.has(startStr)) {
-          processedDates.add(startStr);
-          payload[`datePricing[${datePricingIdx}][date]`] = startStr;
-          payload[`datePricing[${datePricingIdx}][price]`] = rawPrice;
-          datePricingIdx++;
-        }
+    if (fromDay) {
+      const enTitle = dp.title?.en?.trim() || "";
+      const arTitle = dp.title?.ar?.trim() || "";
+      if (enTitle) payload[`b2bPrice[datePricing][${b2bDateIdx}][title][en]`] = enTitle;
+      if (arTitle) payload[`b2bPrice[datePricing][${b2bDateIdx}][title][ar]`] = arTitle;
+      payload[`b2bPrice[datePricing][${b2bDateIdx}][fromDay]`] = fromDay;
+      payload[`b2bPrice[datePricing][${b2bDateIdx}][toDay]`] = toDay;
+      payload[`b2bPrice[datePricing][${b2bDateIdx}][key]`] = dp.key || values.b2bPrice?.key || "DECREASE";
+      if (dp.percentage !== "" && dp.percentage !== undefined && !isNaN(Number(dp.percentage))) {
+        payload[`b2bPrice[datePricing][${b2bDateIdx}][percentage]`] = Number(dp.percentage);
       }
+      if (rawPrice !== undefined && !isNaN(rawPrice)) {
+        payload[`b2bPrice[datePricing][${b2bDateIdx}][price]`] = rawPrice;
+      }
+      b2bDateIdx++;
     }
   });
 
@@ -466,13 +576,7 @@ export const formatAddProductPayload = (
     }
   });
 
-  (values.quantityDiscountTiers || []).forEach((item, idx) => {
-    if (item.minQuantity && item.discountValue) {
-      payload[`quantityDiscountTiers[${idx}][minQuantity]`] = Number(item.minQuantity);
-      payload[`quantityDiscountTiers[${idx}][discountType]`] = item.discountType || "PERCENTAGE";
-      payload[`quantityDiscountTiers[${idx}][discountValue]`] = Number(item.discountValue);
-    }
-  });
+  // Note: quantityDiscountTiers are serialized under b2cPrice and b2bPrice
 
   let mustHaveEnIdx = 0;
   (values.mustHaveItems?.en || []).forEach((val) => {
@@ -539,9 +643,11 @@ export const formatAddProductPayload = (
   const customizedBranchIdSet = new Set([
     ...(Array.isArray(values.customizedPricingBranches) ? values.customizedPricingBranches : []),
     ...(Array.isArray(values.customizedBranchDateIds) ? values.customizedBranchDateIds : []),
+    ...(Array.isArray(values.customizedBranchIds) ? values.customizedBranchIds : []),
     ...Object.keys(values.branchPricing || {}),
     ...Object.keys(values.branchDates || {}),
     ...Object.keys(values.branchCapacities || {}),
+    ...Object.keys(values.branchServices || {}),
   ]);
 
   let branchTripIdx = 0;
@@ -553,12 +659,43 @@ export const formatAddProductPayload = (
     const bCapacities = values.branchCapacities?.[branchId] || {};
 
     payload[`branchTrips[${branchTripIdx}][branch]`] = branchId;
-    const bSelectedDays = Array.isArray(bDates.selectedDays) && bDates.selectedDays.length > 0
-      ? bDates.selectedDays
-      : values.selectedDays || [];
-    bSelectedDays.forEach((day, dIdx) => {
-      payload[`branchTrips[${branchTripIdx}][selectedDays][${dIdx}]`] = day;
+
+    // Branch Services (Array of service objects per backend requirement)
+    const branchServicesList =
+      Array.isArray(values.branchServices?.[branchId]) &&
+      values.branchServices[branchId].length > 0
+        ? values.branchServices[branchId]
+        : values.services || [];
+
+    let bServiceIdx = 0;
+    branchServicesList.forEach((item) => {
+      const sId =
+        typeof item?.service === "object" && item.service !== null
+          ? item.service._id || item.service.id
+          : typeof item === "string"
+          ? item
+          : item?.service;
+      if (sId && typeof sId === "string" && sId.trim()) {
+        payload[`branchTrips[${branchTripIdx}][services][${bServiceIdx}][service]`] = sId.trim();
+        const sPrice =
+          item.price !== "" && item.price !== undefined && !isNaN(Number(item.price))
+            ? Number(item.price)
+            : 0;
+        payload[`branchTrips[${branchTripIdx}][services][${bServiceIdx}][price]`] = sPrice;
+
+        const noteEn = item.note?.en?.trim();
+        const noteAr = item.note?.ar?.trim();
+        if (noteEn) payload[`branchTrips[${branchTripIdx}][services][${bServiceIdx}][note][en]`] = noteEn;
+        if (noteAr) payload[`branchTrips[${branchTripIdx}][services][${bServiceIdx}][note][ar]`] = noteAr;
+        bServiceIdx++;
+      }
     });
+
+    const bSelectedDays =
+      Array.isArray(bDates.selectedDays) && bDates.selectedDays.length > 0
+        ? bDates.selectedDays
+        : values.selectedDays || [];
+
     payload[`branchTrips[${branchTripIdx}][fromDay]`] = bDates.fromDay || values.fromDay;
     payload[`branchTrips[${branchTripIdx}][toDay]`] = bDates.toDay || values.toDay;
     payload[`branchTrips[${branchTripIdx}][fromHour]`] = formatTime12h(bDates.fromHour || values.fromHour);
@@ -579,11 +716,37 @@ export const formatAddProductPayload = (
         : values.availableSeats?.max !== undefined && values.availableSeats?.max !== ""
         ? Number(values.availableSeats.max)
         : 50;
-    payload[`branchTrips[${branchTripIdx}][recurrencePattern]`] =
+
+    const branchRecurrence =
       bDates.recurrencePattern || values.recurrencePattern || "WEEKLY";
-    const bTimes = Array.isArray(bDates.availableTimes) && bDates.availableTimes.length > 0
-      ? bDates.availableTimes
-      : values.availableTimes || [];
+    payload[`branchTrips[${branchTripIdx}][recurrencePattern]`] = branchRecurrence;
+
+    if (branchRecurrence === "MONTHLY") {
+      const bMonthDays =
+        Array.isArray(bDates.monthDay) && bDates.monthDay.length > 0
+          ? bDates.monthDay
+          : Array.isArray(values.monthDay) && values.monthDay.length > 0
+          ? values.monthDay
+          : bDates.monthDay
+          ? [bDates.monthDay]
+          : values.monthDay
+          ? [values.monthDay]
+          : [];
+      bMonthDays.forEach((day, dIdx) => {
+        if (day !== "" && day !== undefined && day !== null && !isNaN(Number(day))) {
+          payload[`branchTrips[${branchTripIdx}][monthDay][${dIdx}]`] = Number(day);
+        }
+      });
+    } else if (branchRecurrence === "WEEKLY") {
+      bSelectedDays.forEach((day, dIdx) => {
+        payload[`branchTrips[${branchTripIdx}][selectedDays][${dIdx}]`] = day;
+      });
+    }
+
+    const bTimes =
+      Array.isArray(bDates.availableTimes) && bDates.availableTimes.length > 0
+        ? bDates.availableTimes
+        : values.availableTimes || [];
     let bTimeIdx = 0;
     bTimes.forEach((t) => {
       if (t.from && t.to) {
@@ -598,6 +761,23 @@ export const formatAddProductPayload = (
         ? Number(bPricing.price)
         : b2cMarketPrice || 0;
     payload[`branchTrips[${branchTripIdx}][b2cPrice][price]`] = b2cBranchPrice;
+
+    const b2cBranchDiscounted =
+      bPricing.discountedPrice !== "" &&
+      bPricing.discountedPrice !== undefined &&
+      !isNaN(Number(bPricing.discountedPrice))
+        ? Number(bPricing.discountedPrice)
+        : bPricing.finalPrice !== "" &&
+          bPricing.finalPrice !== undefined &&
+          !isNaN(Number(bPricing.finalPrice))
+        ? Number(bPricing.finalPrice)
+        : b2cDiscounted !== undefined
+        ? b2cDiscounted
+        : undefined;
+
+    if (b2cBranchDiscounted !== undefined) {
+      payload[`branchTrips[${branchTripIdx}][b2cPrice][discountedPrice]`] = b2cBranchDiscounted;
+    }
 
     // Target Audiences for branch
     let b2cBranchTargetIdx = 0;
@@ -635,6 +815,42 @@ export const formatAddProductPayload = (
       payload[`branchTrips[${branchTripIdx}][b2cPrice][weekdayPricing][${dIdx}][price]`] = dayPrice;
     });
 
+    // Branch B2C Date Pricing
+    const branchB2cDatePricing =
+      Array.isArray(bPricing.b2cDatePricing) && bPricing.b2cDatePricing.length > 0
+        ? bPricing.b2cDatePricing
+        : Array.isArray(bPricing.datePricing) && bPricing.datePricing.length > 0
+        ? bPricing.datePricing
+        : Array.isArray(values.b2cPrice?.datePricing)
+        ? values.b2cPrice.datePricing
+        : [];
+    let b2cBranchDateIdx = 0;
+    branchB2cDatePricing.forEach((dp) => {
+      const fromDay = dp.fromDay || dp.fromDate || dp.date;
+      const toDay = dp.toDay || dp.toDate || fromDay;
+      const rawPrice =
+        dp.price !== "" && dp.price !== undefined && dp.price !== null
+          ? Number(dp.price)
+          : undefined;
+
+      if (fromDay) {
+        const enTitle = dp.title?.en?.trim() || "";
+        const arTitle = dp.title?.ar?.trim() || "";
+        if (enTitle) payload[`branchTrips[${branchTripIdx}][b2cPrice][datePricing][${b2cBranchDateIdx}][title][en]`] = enTitle;
+        if (arTitle) payload[`branchTrips[${branchTripIdx}][b2cPrice][datePricing][${b2cBranchDateIdx}][title][ar]`] = arTitle;
+        payload[`branchTrips[${branchTripIdx}][b2cPrice][datePricing][${b2cBranchDateIdx}][fromDay]`] = fromDay;
+        payload[`branchTrips[${branchTripIdx}][b2cPrice][datePricing][${b2cBranchDateIdx}][toDay]`] = toDay;
+        payload[`branchTrips[${branchTripIdx}][b2cPrice][datePricing][${b2cBranchDateIdx}][key]`] = dp.key || "INCREASE";
+        if (dp.percentage !== "" && dp.percentage !== undefined && !isNaN(Number(dp.percentage))) {
+          payload[`branchTrips[${branchTripIdx}][b2cPrice][datePricing][${b2cBranchDateIdx}][percentage]`] = Number(dp.percentage);
+        }
+        if (rawPrice !== undefined && !isNaN(rawPrice)) {
+          payload[`branchTrips[${branchTripIdx}][b2cPrice][datePricing][${b2cBranchDateIdx}][price]`] = rawPrice;
+        }
+        b2cBranchDateIdx++;
+      }
+    });
+
     const b2bBranchPrice =
       bPricing.schoolsPrice !== "" && !isNaN(Number(bPricing.schoolsPrice))
         ? Number(bPricing.schoolsPrice)
@@ -645,9 +861,101 @@ export const formatAddProductPayload = (
         : b2bCost || 0;
     payload[`branchTrips[${branchTripIdx}][b2bPrice][price]`] = b2bBranchPrice;
     payload[`branchTrips[${branchTripIdx}][b2bPrice][productCost]`] = b2bBranchCost;
-    if (studentsPerSupervisorVal !== undefined) {
-      payload[`branchTrips[${branchTripIdx}][b2bPrice][studentsPerSupervisor]`] = studentsPerSupervisorVal;
+    const branchSupervisorRatio =
+      bPricing.studentsPerSupervisor !== "" &&
+      bPricing.studentsPerSupervisor !== undefined &&
+      !isNaN(Number(bPricing.studentsPerSupervisor))
+        ? Number(bPricing.studentsPerSupervisor)
+        : studentsPerSupervisorVal;
+    if (branchSupervisorRatio !== undefined) {
+      payload[`branchTrips[${branchTripIdx}][b2bPrice][studentsPerSupervisor]`] = branchSupervisorRatio;
     }
+
+    const b2bBranchDiscounted =
+      bPricing.b2bDiscountedPrice !== "" &&
+      bPricing.b2bDiscountedPrice !== undefined &&
+      !isNaN(Number(bPricing.b2bDiscountedPrice))
+        ? Number(bPricing.b2bDiscountedPrice)
+        : bPricing.b2bFinalPrice !== "" &&
+          bPricing.b2bFinalPrice !== undefined &&
+          !isNaN(Number(bPricing.b2bFinalPrice))
+        ? Number(bPricing.b2bFinalPrice)
+        : b2bDiscounted !== undefined
+        ? b2bDiscounted
+        : undefined;
+
+    if (b2bBranchDiscounted !== undefined) {
+      payload[`branchTrips[${branchTripIdx}][b2bPrice][discountedPrice]`] = b2bBranchDiscounted;
+    }
+
+    // Weekday pricing for B2B branch
+    branchWeekdayPricingDays.forEach((day, dIdx) => {
+      const customPrice = customWeekdayPricingMap[day];
+      const dayPrice =
+        customPrice !== undefined && customPrice !== "" && !isNaN(Number(customPrice))
+          ? Number(customPrice)
+          : b2bBranchPrice !== undefined
+          ? b2bBranchPrice
+          : 0;
+      payload[`branchTrips[${branchTripIdx}][b2bPrice][weekdayPricing][${dIdx}][day]`] = day;
+      payload[`branchTrips[${branchTripIdx}][b2bPrice][weekdayPricing][${dIdx}][price]`] = dayPrice;
+    });
+
+    // Branch B2B Quantity Discount Tiers
+    const branchB2bTiers =
+      Array.isArray(bPricing.b2bQuantityDiscountTiers) && bPricing.b2bQuantityDiscountTiers.length > 0
+        ? bPricing.b2bQuantityDiscountTiers
+        : Array.isArray(values.b2bPrice?.quantityDiscountTiers)
+        ? values.b2bPrice.quantityDiscountTiers
+        : [];
+    let b2bBranchTierIdx = 0;
+    branchB2bTiers.forEach((tier) => {
+      const minQ = tier.minQuantity;
+      const dVal = tier.discountValue;
+      if (
+        minQ !== "" && minQ !== undefined && !isNaN(Number(minQ)) && Number(minQ) > 0 &&
+        dVal !== "" && dVal !== undefined && !isNaN(Number(dVal)) && Number(dVal) >= 0
+      ) {
+        payload[`branchTrips[${branchTripIdx}][b2bPrice][quantityDiscountTiers][${b2bBranchTierIdx}][minQuantity]`] = Number(minQ);
+        payload[`branchTrips[${branchTripIdx}][b2bPrice][quantityDiscountTiers][${b2bBranchTierIdx}][discountType]`] = tier.discountType || "PERCENTAGE";
+        payload[`branchTrips[${branchTripIdx}][b2bPrice][quantityDiscountTiers][${b2bBranchTierIdx}][discountValue]`] = Number(dVal);
+        b2bBranchTierIdx++;
+      }
+    });
+
+    // Branch B2B Date Pricing
+    const branchB2bDatePricing =
+      Array.isArray(bPricing.b2bDatePricing) && bPricing.b2bDatePricing.length > 0
+        ? bPricing.b2bDatePricing
+        : Array.isArray(values.b2bPrice?.datePricing)
+        ? values.b2bPrice.datePricing
+        : [];
+    let b2bBranchDateIdx = 0;
+    branchB2bDatePricing.forEach((dp) => {
+      const fromDay = dp.fromDay || dp.fromDate || dp.date;
+      const toDay = dp.toDay || dp.toDate || fromDay;
+      const rawPrice =
+        dp.price !== "" && dp.price !== undefined && dp.price !== null
+          ? Number(dp.price)
+          : undefined;
+
+      if (fromDay) {
+        const enTitle = dp.title?.en?.trim() || "";
+        const arTitle = dp.title?.ar?.trim() || "";
+        if (enTitle) payload[`branchTrips[${branchTripIdx}][b2bPrice][datePricing][${b2bBranchDateIdx}][title][en]`] = enTitle;
+        if (arTitle) payload[`branchTrips[${branchTripIdx}][b2bPrice][datePricing][${b2bBranchDateIdx}][title][ar]`] = arTitle;
+        payload[`branchTrips[${branchTripIdx}][b2bPrice][datePricing][${b2bBranchDateIdx}][fromDay]`] = fromDay;
+        payload[`branchTrips[${branchTripIdx}][b2bPrice][datePricing][${b2bBranchDateIdx}][toDay]`] = toDay;
+        payload[`branchTrips[${branchTripIdx}][b2bPrice][datePricing][${b2bBranchDateIdx}][key]`] = dp.key || values.b2bPrice?.key || "DECREASE";
+        if (dp.percentage !== "" && dp.percentage !== undefined && !isNaN(Number(dp.percentage))) {
+          payload[`branchTrips[${branchTripIdx}][b2bPrice][datePricing][${b2bBranchDateIdx}][percentage]`] = Number(dp.percentage);
+        }
+        if (rawPrice !== undefined && !isNaN(rawPrice)) {
+          payload[`branchTrips[${branchTripIdx}][b2bPrice][datePricing][${b2bBranchDateIdx}][price]`] = rawPrice;
+        }
+        b2bBranchDateIdx++;
+      }
+    });
 
     branchTripIdx++;
   });
@@ -796,7 +1104,11 @@ const AddProductForm = ({
       bookingBefore: productData.bookingBefore ?? "",
       recurrencePattern: productData.recurrencePattern || "",
       selectedDays: productData.selectedDays || [],
-      monthDay: productData.monthDay || "",
+      monthDay: Array.isArray(productData.monthDay)
+        ? productData.monthDay.map(String)
+        : productData.monthDay
+        ? [String(productData.monthDay)]
+        : [],
       weekdayPricing: productData.weekdayPricing || [],
       datePricing: productData.datePricing || [],
       fromDay: productData.fromDay ? (productData.fromDay.includes("T") ? productData.fromDay.split("T")[0] : productData.fromDay) : "",
@@ -816,7 +1128,27 @@ const AddProductForm = ({
       guestRange: productData.guestRange || { min: "", max: "" },
       duration: productData.duration ?? "",
       price: productData.price ?? "",
-      productCost: productData.productCost ?? "",
+      discountedPrice: productData.discountedPrice ?? productData.b2cPrice?.discountedPrice ?? "",
+      productCost: productData.productCost ?? productData.b2bPrice?.productCost ?? "",
+      b2cPrice: {
+        price: productData.b2cPrice?.price ?? productData.price ?? "",
+        discountedPrice: productData.b2cPrice?.discountedPrice ?? productData.discountedPrice ?? "",
+        finalPrice: productData.b2cPrice?.discountedPrice ?? productData.discountedPrice ?? "",
+        targetAudiences: productData.b2cPrice?.targetAudiences || [],
+        weekdayPricing: productData.b2cPrice?.weekdayPricing || [],
+        quantityDiscountTiers: productData.b2cPrice?.quantityDiscountTiers || productData.quantityDiscountTiers || [],
+        datePricing: productData.b2cPrice?.datePricing || productData.datePricing || [],
+      },
+      b2bPrice: {
+        price: productData.b2bPrice?.price ?? productData.b2bPricing?.price ?? "",
+        discountedPrice: productData.b2bPrice?.discountedPrice ?? "",
+        finalPrice: productData.b2bPrice?.discountedPrice ?? "",
+        productCost: productData.b2bPrice?.productCost ?? productData.productCost ?? "",
+        studentsPerSupervisor: productData.b2bPrice?.studentsPerSupervisor ?? productData.studentsPerSupervisor ?? "10",
+        weekdayPricing: productData.b2bPrice?.weekdayPricing || [],
+        quantityDiscountTiers: productData.b2bPrice?.quantityDiscountTiers || [],
+        datePricing: productData.b2bPrice?.datePricing || [],
+      },
       targetAudiences: Array.isArray(productData.targetAudiences) && productData.targetAudiences.length
         ? productData.targetAudiences.map((item) => ({
             targetAudience: typeof item.targetAudience === "object" && item.targetAudience !== null
