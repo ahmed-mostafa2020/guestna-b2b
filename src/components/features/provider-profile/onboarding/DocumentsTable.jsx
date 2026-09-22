@@ -173,53 +173,56 @@ const DocumentsTable = ({
         className: "whitespace-nowrap align-middle",
         headerClassName: "text-start align-middle",
         render: (row) => {
-          if (row.status === "APPROVED" && row.fileUrl) {
-            return (
+          const fileUrl = row.fileUrl
+          const openUpload = (isReupload) =>
+            onUpload?.({
+              _id: row._id,
+              documentType: row.documentType,
+              title: row.title,
+              lockType: true,
+              isReupload,
+            });
+
+          const actions = [];
+
+          if (fileUrl) {
+            actions.push(
               <ActionButton
+                key="show"
                 label={t("show")}
-                href={row.fileUrl}
+                href={fileUrl}
                 icon={<ViewIcon className="!w-4 !h-4" />}
               />
             );
           }
 
           if (row.status === "REJECTED" || row.status === "SUBMITTED") {
-            return (
+            actions.push(
               <ActionButton
+                key="reupload"
                 label={t("reupload")}
                 icon={<ReuploadIcon className="!w-3.5 !h-3.5" />}
-                onClick={() =>
-                  onUpload?.({
-                    _id: row._id,
-                    documentType: row.documentType,
-                    title: row.title,
-                    lockType: true,
-                    isReupload: true,
-                  })
-                }
+                onClick={() => openUpload(true)}
               />
             );
-          }
-
-          if (row.status === "PENDING") {
-            return (
+          } else if (row.status === "PENDING") {
+            actions.push(
               <ActionButton
+                key="upload"
                 label={t("uploadDocument")}
                 icon={<AddIcon className="!w-3.5 !h-3.5" />}
-                onClick={() =>
-                  onUpload?.({
-                    _id: row._id,
-                    documentType: row.documentType,
-                    title: row.title,
-                    lockType: true,
-                    isReupload: false,
-                  })
-                }
+                onClick={() => openUpload(false)}
               />
             );
           }
 
-          return null;
+          if (!actions.length) return null;
+
+          return (
+            <div className="inline-flex flex-wrap items-center gap-2">
+              {actions}
+            </div>
+          );
         },
       },
     ],
