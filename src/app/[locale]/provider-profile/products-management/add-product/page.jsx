@@ -388,6 +388,29 @@ const AddProductPage = () => {
     );
   }, [selectionResponse]);
 
+  const fixedSelectionLocation = useMemo(() => {
+    const loc =
+      formSelectionData?.location ||
+      selectionResponse?.data?.location ||
+      selectionResponse?.location;
+    if (
+      loc &&
+      loc.lat != null &&
+      loc.lng != null &&
+      !isNaN(Number(loc.lat)) &&
+      !isNaN(Number(loc.lng)) &&
+      Number(loc.lat) !== 0 &&
+      Number(loc.lng) !== 0
+    ) {
+      return {
+        lat: Number(loc.lat),
+        lng: Number(loc.lng),
+        address: loc.address || "",
+      };
+    }
+    return null;
+  }, [formSelectionData, selectionResponse]);
+
   // Set SEO Document Title
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
@@ -677,14 +700,26 @@ const AddProductPage = () => {
           supCategories: [],
           description: { en: "", ar: "" },
           systemTypes: ["B2B", "B2C"],
-          istantConfirmation: false,
+          // istantConfirmation: false,
           key: "INCREASE",
           allowedAges: [],
           academicStages: [],
           b2cTargetAudiences: [],
           providerBranchs: [],
-          location: { lat: 26.6176, lng: 37.9221, address: "" },
-          gatheringLocation: { lat: 24.9576, lng: 46.6988, address: "" },
+          location: fixedSelectionLocation
+            ? {
+                lat: fixedSelectionLocation.lat,
+                lng: fixedSelectionLocation.lng,
+                address: fixedSelectionLocation.address || "",
+              }
+            : { lat: 26.6176, lng: 37.9221, address: "" },
+          gatheringLocation: fixedSelectionLocation
+            ? {
+                lat: fixedSelectionLocation.lat,
+                lng: fixedSelectionLocation.lng,
+                address: fixedSelectionLocation.address || "",
+              }
+            : { lat: 24.9576, lng: 46.6988, address: "" },
           availableSeats: { min: "", max: "" },
           guestRange: { min: "", max: "" },
           ageRange: { from: "", to: "" },

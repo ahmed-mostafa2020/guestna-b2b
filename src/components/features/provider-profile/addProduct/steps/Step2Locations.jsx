@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useMemo, useState, useCallback } from "react";
+import { memo, useMemo, useState, useCallback, useEffect } from "react";
 import { useFormikContext, getIn } from "formik";
 import { useTranslations, useLocale } from "next-intl";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
@@ -34,6 +34,52 @@ const Step2Locations = ({
     handleBlur,
     validateForm,
   } = useFormikContext();
+
+  // Check if endpoint selections provided fixed location coordinates
+  const fixedLocation = useMemo(() => {
+    const loc = formSelectionData?.location;
+    if (
+      loc &&
+      loc.lat != null &&
+      loc.lng != null &&
+      !isNaN(Number(loc.lat)) &&
+      !isNaN(Number(loc.lng)) &&
+      Number(loc.lat) !== 0 &&
+      Number(loc.lng) !== 0
+    ) {
+      return {
+        lat: Number(loc.lat),
+        lng: Number(loc.lng),
+        address: loc.address || "",
+      };
+    }
+    return null;
+  }, [formSelectionData?.location]);
+
+  const isLocationReadOnly = Boolean(fixedLocation);
+
+  // Apply coordinates to Formik when fixedLocation is present
+  useEffect(() => {
+    if (fixedLocation) {
+      const currentLat = Number(values.location?.lat);
+      const currentLng = Number(values.location?.lng);
+      if (currentLat !== fixedLocation.lat || currentLng !== fixedLocation.lng) {
+        const updatedLoc = {
+          lat: fixedLocation.lat,
+          lng: fixedLocation.lng,
+          address: values.location?.address || fixedLocation.address || "",
+        };
+        setFieldValue("location", updatedLoc);
+        setFieldValue("gatheringLocation", updatedLoc);
+      }
+    }
+  }, [
+    fixedLocation,
+    values.location?.lat,
+    values.location?.lng,
+    values.location?.address,
+    setFieldValue,
+  ]);
 
   const branchError = getIn(errors, "providerBranchs");
   const branchTouched = getIn(touched, "providerBranchs");
@@ -414,6 +460,9 @@ const Step2Locations = ({
           address={values.location?.address}
           mapTitle={t("productLocationTitle")}
           instructionText={t("mapInstruction")}
+          readOnly={isLocationReadOnly}
+          readOnlyInstructionText={t("mapReadOnlyInstruction")}
+          readOnlyBadgeText={t("mapReadOnlyBadge")}
           locationLinkLabel={t("locationLinkLabel")}
           locationLinkPlaceholder={t("locationLinkPlaceholder")}
           clearLocationText={t("clearLocation")}
@@ -423,6 +472,16 @@ const Step2Locations = ({
           mapConfigError={t("mapConfigError")}
           inputId="product-location-input"
           onChangeLocation={(newLoc) => {
+            if (isLocationReadOnly && fixedLocation) {
+              const updatedLoc = {
+                lat: fixedLocation.lat,
+                lng: fixedLocation.lng,
+                address: newLoc.address || values.location?.address || "",
+              };
+              setFieldValue("location", updatedLoc);
+              setFieldValue("gatheringLocation", updatedLoc);
+              return;
+            }
             const updatedLoc = {
               lat: newLoc.lat,
               lng: newLoc.lng,

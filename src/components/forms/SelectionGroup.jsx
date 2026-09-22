@@ -100,11 +100,15 @@ const SelectionGroup = ({
         MenuProps={{
           PaperProps: {
             sx: {
+              maxHeight: 340,
               fontFamily: "var(--font-somar), sans-serif",
               "& .MuiMenuItem-root": {
                 fontFamily: "var(--font-somar), sans-serif",
               },
               "& .MuiListItemText-primary": {
+                fontFamily: "var(--font-somar), sans-serif",
+              },
+              "& .MuiListItemText-secondary": {
                 fontFamily: "var(--font-somar), sans-serif",
               },
             },
@@ -172,6 +176,15 @@ const SelectionGroup = ({
               ? item.label ?? item.name ?? item.title ?? item.value
               : item;
 
+          const itemDescription = (() => {
+            if (typeof item !== "object" || item === null) return "";
+            const desc = item.description ?? item.desc;
+            if (typeof desc === "object" && desc !== null) {
+              return desc.ar || desc.en || Object.values(desc)[0] || "";
+            }
+            return typeof desc === "string" ? desc : "";
+          })();
+
           const itemKey =
             typeof item === "object" && item !== null
               ? item.value ?? item._id ?? item.id ?? item.name
@@ -183,16 +196,36 @@ const SelectionGroup = ({
 
           return (
             <MenuItem
-              className="!font-somar !font-semibold"
+              className="!font-somar"
               key={`${itemKey}-${index}`}
               value={itemValue}
-              title={typeof itemLabel === "string" ? itemLabel : undefined}
+              title={
+                typeof itemLabel === "string"
+                  ? itemDescription
+                    ? `${itemLabel} - ${itemDescription}`
+                    : itemLabel
+                  : undefined
+              }
+              sx={{
+                whiteSpace: "normal",
+                alignItems: itemDescription ? "flex-start" : "center",
+                py: itemDescription ? 1.25 : 1,
+                gap: 1,
+                borderBottom: itemDescription
+                  ? "1px solid rgba(0, 0, 0, 0.05)"
+                  : "none",
+                "&:last-child": {
+                  borderBottom: "none",
+                },
+              }}
             >
               {showCheckbox && (
                 <Checkbox
                   checked={isSelected}
                   sx={{
                     color: "var(--color-text)",
+                    mt: itemDescription ? "-2px" : 0,
+                    p: 0,
                     "&.Mui-checked": {
                       color: "var(--color-main)",
                     },
@@ -201,12 +234,18 @@ const SelectionGroup = ({
               )}
               <ListItemText
                 primary={
-                  typeof itemLabel === "string"
-                    ? itemLabel.slice(0, 50)
-                    : itemLabel
+                  <span className="block font-somar font-semibold text-sm text-textDark leading-snug">
+                    {typeof itemLabel === "string" ? itemLabel : itemLabel}
+                  </span>
                 }
-                className="!font-somar !font-semibold"
-                title={typeof itemLabel === "string" ? itemLabel : undefined}
+                secondary={
+                  itemDescription ? (
+                    <span className="block font-somar font-normal text-xs text-textLight mt-0.5 whitespace-normal break-words leading-relaxed">
+                      {itemDescription}
+                    </span>
+                  ) : null
+                }
+                className="!my-0 !font-somar"
               />
             </MenuItem>
           );

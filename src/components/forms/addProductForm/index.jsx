@@ -40,7 +40,7 @@ import StepReview from "./steps/StepReview";
 
 export const initialAddProductValues = {
   systemTypes: ["B2C"],
-  istantConfirmation: false,
+  // istantConfirmation: false,
   key: "INCREASE",
   name: { en: "", ar: "" },
   tripType: "ACTIVITY",
@@ -208,10 +208,10 @@ export const formatAddProductPayload = (
     });
   }
 
-  if (values.istantConfirmation !== undefined) {
-    payload.istantConfirmation = Boolean(values.istantConfirmation);
-    payload.instantConfirmation = Boolean(values.istantConfirmation);
-  }
+  // if (values.istantConfirmation !== undefined) {
+  //   payload.istantConfirmation = Boolean(values.istantConfirmation);
+  //   payload.instantConfirmation = Boolean(values.istantConfirmation);
+  // }
 
   const pricingKey = values.key || values.conditionRuleChangeType || "INCREASE";
   payload.key = pricingKey;

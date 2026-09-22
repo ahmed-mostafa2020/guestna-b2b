@@ -241,9 +241,14 @@ const StepReview = ({
       const found = targetAudienceOptions.find(
         (ta) => (ta._id || ta.id) === taId
       );
+      const description =
+        typeof found?.description === "object" && found.description !== null
+          ? found.description[locale] || found.description.ar || found.description.en || ""
+          : found?.description || found?.desc || "";
       return {
         id: taId,
         name: getLocalizedName(found) || taId,
+        description,
         price: item.price,
         minCount: item.minCount || 1,
       };
@@ -800,9 +805,15 @@ const StepReview = ({
                 {resolvedTargetAudiences.map((ta, idx) => (
                   <span
                     key={`ta-${idx}`}
-                    className="px-4 py-1.5 rounded-full bg-mainColor/10 text-mainColor border border-mainColor/20 text-xs font-semibold shadow-xs"
+                    title={ta.description ? `${ta.name}: ${ta.description}` : ta.name}
+                    className="px-4 py-1.5 rounded-full bg-mainColor/10 text-mainColor border border-mainColor/20 text-xs font-semibold shadow-xs inline-flex items-center gap-1.5"
                   >
-                    {ta.name}
+                    <span>{ta.name}</span>
+                    {ta.description && (
+                      <span className="text-[11px] font-normal opacity-80 max-w-[160px] truncate">
+                        ({ta.description})
+                      </span>
+                    )}
                   </span>
                 ))}
               </div>
@@ -1228,7 +1239,12 @@ const StepReview = ({
                         {resolvedTargetAudiences.map((ta, idx) => (
                           <tr key={idx} className="hover:bg-gray-50/50">
                             <td className="py-2.5 px-4 font-semibold text-titleColor">
-                              {ta.name}
+                              <div>{ta.name}</div>
+                              {ta.description && (
+                                <div className="text-xs text-subtitleColor font-normal mt-0.5">
+                                  {ta.description}
+                                </div>
+                              )}
                             </td>
                             <td className="py-2.5 px-4 font-bold text-mainColor">
                               {formatCurrency(ta.price || b2cBasePrice)}

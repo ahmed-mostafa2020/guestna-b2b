@@ -12,6 +12,20 @@ export const getItemName = (item, locale = "ar") => {
   return item.name || item.title || item.label || "";
 };
 
+export const getItemDescription = (item, locale = "ar") => {
+  if (!item) return "";
+  if (typeof item === "string") return "";
+  if (typeof item.description === "object" && item.description !== null) {
+    return (
+      item.description[locale] ||
+      item.description.ar ||
+      item.description.en ||
+      ""
+    );
+  }
+  return item.description || item.desc || "";
+};
+
 export const buildBranchGroups = (rawBranches, locale = "ar", isAr = true) => {
   if (!Array.isArray(rawBranches) || rawBranches.length === 0) {
     return [];

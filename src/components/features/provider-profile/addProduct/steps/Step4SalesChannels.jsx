@@ -292,9 +292,14 @@ const Step4SalesChannels = ({
           typeof item.name === "object" && item.name !== null
             ? item.name[locale] || item.name.ar || item.name.en || id
             : item.name || item.label || id;
+        const description =
+          typeof item.description === "object" && item.description !== null
+            ? item.description[locale] || item.description.ar || item.description.en || ""
+            : item.description || item.desc || "";
         return {
           value: id,
           label: label,
+          description: description,
         };
       });
     }
@@ -453,7 +458,7 @@ const Step4SalesChannels = ({
           onBlur={handleBlur}
           onRemoveTag={handleRemoveStage}
           tCommon={tCommon}
-          extraTopContent={
+          /* extraTopContent={
             <div className="bg-white rounded-2xl border border-border p-4 sm:p-5 flex items-center justify-between gap-4 mb-5 shadow-xs transition-all">
               <div className="flex flex-col gap-1 text-start">
                 <h4 className="font-somar font-bold text-sm sm:text-base text-textDark">
@@ -493,7 +498,7 @@ const Step4SalesChannels = ({
                 />
               </button>
             </div>
-          }
+          } */
         />
       )}
 
