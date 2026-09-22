@@ -392,7 +392,13 @@ export const getStepFieldNames = (stepIndex) => {
         "duration",
       ];
     case 4: // Pricing
-      return ["price", "targetAudiences", "weekdayPricing", "datePricing"];
+      return [
+        "price",
+        "b2bPrice.price",
+        "targetAudiences",
+        "weekdayPricing",
+        "datePricing",
+      ];
     case 5: // Services
       return ["services"];
     case 6: // Media

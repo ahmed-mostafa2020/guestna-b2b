@@ -625,7 +625,10 @@
           "editBranchesBtn": "تعديل الفروع",
           "saveBranchesBtn": "حفظ",
           "noBranchesSelectedTitle": "لم يتم اختيار أي فرع",
-          "noBranchesSelectedSubtitle": "اختر الفروع التي سيُقدّم فيها هذا المنتج"
+          "noBranchesSelectedSubtitle": "اختر الفروع التي سيُقدّم فيها هذا المنتج",
+          "branchCapacityRequired": "هذا الحقل مطلوب",
+          "branchCapacityMinOne": "يجب أن تكون القيمة 1 على الأقل",
+          "branchCapacityMaxError": "أقصى سعة يجب أن تكون أكبر من أو تساوي السعة"
         },
         "stepBookingDates": {
           "cardTitle": "التواريخ",
@@ -866,6 +869,7 @@
           "validations": {
             "priceRequired": "يرجى إدخال سعر السوق",
             "priceInvalid": "السعر يجب أن يكون أكبر من 0",
+            "b2bPriceRequired": "يرجى إدخال سعر السوق للمدارس",
             "productCostRequired": "يرجى إدخال تكلفة المنتج الأساسي",
             "discountedPriceInvalid": "السعر بعد التخفيض يجب أن يكون أقل من سعر السوق",
             "seatsRequired": "يرجى إدخال عدد المقاعد المتاحة",

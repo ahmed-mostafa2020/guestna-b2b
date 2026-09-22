@@ -149,6 +149,21 @@ const scrollToFirstFieldWithTarget = (fieldName) => {
       document.querySelector(`[id*="${safeField}"]`);
   }
 
+  if (!el) {
+    setTimeout(() => {
+      const retryEl =
+        document.getElementById(fieldName) ||
+        document.querySelector(`[name="${safeField}"]`) ||
+        document.querySelector(`[data-field="${safeField}"]`) ||
+        document.querySelector(`[name*="${safeField}"]`) ||
+        document.querySelector(`[id*="${safeField}"]`);
+      if (retryEl) {
+        scrollToFirstFieldWithTarget(fieldName);
+      }
+    }, 150);
+    return;
+  }
+
   if (el) {
     const container =
       el.closest("section") ||
@@ -278,6 +293,20 @@ const buildTouchedMap = (fields, values = {}) => {
   if (fields.includes("datePricing") && Array.isArray(values?.datePricing)) {
     touched.datePricing = values.datePricing.map(() => ({
       date: true,
+      price: true,
+    }));
+  }
+
+  if (fields.includes("targetAudiences") && Array.isArray(values?.targetAudiences)) {
+    touched.targetAudiences = values.targetAudiences.map(() => ({
+      targetAudience: true,
+      price: true,
+    }));
+  }
+
+  if (fields.includes("bulkPricing") && Array.isArray(values?.bulkPricing)) {
+    touched.bulkPricing = values.bulkPricing.map(() => ({
+      minCount: true,
       price: true,
     }));
   }

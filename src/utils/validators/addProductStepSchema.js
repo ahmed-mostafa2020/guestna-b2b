@@ -799,46 +799,247 @@ export const createStepPricingSchema = (t) => {
   const priceInvalid =
     t("providerProfile.products.newAddPage.stepPricing.validations.priceInvalid") ||
     "Price must be greater than 0";
+  const b2bPriceReq =
+    t("providerProfile.products.newAddPage.stepPricing.validations.b2bPriceRequired") ||
+    t("providerProfile.products.newAddPage.stepPricing.validations.priceRequired") ||
+    "Market price for schools is required";
+  const discountedPriceInvalid =
+    t("providerProfile.products.newAddPage.stepPricing.validations.discountedPriceInvalid") ||
+    "Discounted price must be less than market price";
+  const minCountReq =
+    t("providerProfile.products.newAddPage.stepPricing.validations.minCountRequired") ||
+    "Minimum quantity is required";
+  const bulkPriceReq =
+    t("providerProfile.products.newAddPage.stepPricing.validations.bulkPriceRequired") ||
+    "Tier price per person is required";
+  const freeSupervisorRatioReq =
+    t("providerProfile.products.newAddPage.stepPricing.validations.freeSupervisorRatioRequired") ||
+    "Please specify student ratio per supervisor";
+  const targetAudienceReq =
+    t("providerProfile.products.newAddPage.stepPricing.validations.targetAudienceRequired") ||
+    "Target audience category is required";
+  const targetAudiencePriceReq =
+    t("providerProfile.products.newAddPage.stepPricing.validations.targetAudiencePriceRequired") ||
+    "Price for audience category is required";
 
   return Yup.object().shape({
+    systemTypes: Yup.array().of(Yup.string()).optional(),
+
+    // 1. B2C Market Price (Required if B2C is selected or default)
     price: Yup.number()
-      .typeError(priceReq)
-      .min(1, priceInvalid)
-      .required(priceReq),
+      .transform((val, orig) =>
+        orig === "" || orig === null || orig === undefined ? undefined : val
+      )
+      .when("systemTypes", {
+        is: (val) =>
+          !Array.isArray(val) ||
+          val.includes("B2C") ||
+          (!val.includes("B2B") && val.length === 0),
+        then: (schema) =>
+          schema
+            .typeError(priceReq)
+            .min(1, priceInvalid)
+            .required(priceReq),
+        otherwise: (schema) => schema.nullable().optional(),
+      }),
+
+    // 2. B2C Discounted Price
     discountedPrice: Yup.number()
-      .typeError(priceInvalid)
+      .transform((val, orig) =>
+        orig === "" || orig === null || orig === undefined ? undefined : val
+      )
       .min(0, priceInvalid)
+      .test(
+        "discounted-less-than-price",
+        discountedPriceInvalid,
+        function (val) {
+          if (val === undefined || val === null || val === "") return true;
+          const { price } = this.parent || {};
+          if (price && Number(val) >= Number(price)) {
+            return false;
+          }
+          return true;
+        }
+      )
       .nullable()
       .optional(),
+
+    // 3. Product Base Cost
     productCost: Yup.number()
-      .typeError(priceInvalid)
+      .transform((val, orig) =>
+        orig === "" || orig === null || orig === undefined ? undefined : val
+      )
       .min(0, priceInvalid)
       .nullable()
       .optional(),
+
+    // 4. B2B Structured Pricing (Market price required when B2B channel enabled)
+    b2bPrice: Yup.object().when("systemTypes", {
+      is: (val) => Array.isArray(val) && val.includes("B2B"),
+      then: (schema) =>
+        schema.shape({
+          price: Yup.number()
+            .transform((val, orig) =>
+              orig === "" || orig === null || orig === undefined ? undefined : val
+            )
+            .typeError(b2bPriceReq)
+            .min(1, priceInvalid)
+            .required(b2bPriceReq),
+          finalPrice: Yup.number()
+            .transform((val, orig) =>
+              orig === "" || orig === null || orig === undefined ? undefined : val
+            )
+            .min(0, priceInvalid)
+            .test(
+              "b2b-finalPrice-less-than-price",
+              discountedPriceInvalid,
+              function (val) {
+                if (val === undefined || val === null || val === "") return true;
+                const parentPrice = Number(this.parent?.price);
+                if (parentPrice && Number(val) >= parentPrice) {
+                  return false;
+                }
+                return true;
+              }
+            )
+            .nullable()
+            .optional(),
+        }),
+      otherwise: (schema) =>
+        schema
+          .shape({
+            price: Yup.number()
+              .transform((val, orig) =>
+                orig === "" || orig === null || orig === undefined ? undefined : val
+              )
+              .min(0, priceInvalid)
+              .nullable()
+              .optional(),
+            finalPrice: Yup.number()
+              .transform((val, orig) =>
+                orig === "" || orig === null || orig === undefined ? undefined : val
+              )
+              .min(0, priceInvalid)
+              .nullable()
+              .optional(),
+          })
+          .optional(),
+    }),
+
+    // 5. B2B Free Supervisor Students Ratio
+    studentsPerSupervisor: Yup.number()
+      .transform((val, orig) =>
+        orig === "" || orig === null || orig === undefined ? undefined : val
+      )
+      .when(["b2bPricing.freeSupervisor", "systemTypes"], {
+        is: (freeSupervisor, systemTypes) => {
+          const isB2B = Array.isArray(systemTypes) && systemTypes.includes("B2B");
+          return Boolean(freeSupervisor) && isB2B;
+        },
+        then: (schema) =>
+          schema
+            .typeError(freeSupervisorRatioReq)
+            .min(1, freeSupervisorRatioReq)
+            .required(freeSupervisorRatioReq),
+        otherwise: (schema) => schema.nullable().optional(),
+      }),
+
+    // 6. Target Audiences (B2C)
     targetAudiences: Yup.array()
       .of(
         Yup.object().shape({
-          targetAudience: Yup.string().optional(),
-          price: Yup.number().typeError(priceInvalid).min(0, priceInvalid).optional(),
+          targetAudience: Yup.string()
+            .test(
+              "audience-req-if-price",
+              targetAudienceReq,
+              function (val) {
+                const { price } = this.parent || {};
+                const hasPrice = price !== "" && price !== null && price !== undefined;
+                if (hasPrice && !val) return false;
+                return true;
+              }
+            )
+            .optional(),
+          price: Yup.number()
+            .transform((val, orig) =>
+              orig === "" || orig === null || orig === undefined ? undefined : val
+            )
+            .test(
+              "price-req-if-audience",
+              targetAudiencePriceReq,
+              function (val) {
+                const { targetAudience } = this.parent || {};
+                if (targetAudience && (val === undefined || val === null || val === "")) {
+                  return false;
+                }
+                return true;
+              }
+            )
+            .min(0, priceInvalid)
+            .nullable()
+            .optional(),
         })
       )
       .optional(),
+
+    // 7. Bulk / Volume Pricing (B2B)
     bulkPricing: Yup.array()
       .of(
         Yup.object().shape({
-          minCount: Yup.number().typeError(priceInvalid).min(1, priceInvalid).optional(),
-          price: Yup.number().typeError(priceInvalid).min(0, priceInvalid).optional(),
+          minCount: Yup.number()
+            .transform((val, orig) =>
+              orig === "" || orig === null || orig === undefined ? undefined : val
+            )
+            .test(
+              "minCount-req-if-price",
+              minCountReq,
+              function (val) {
+                const { price } = this.parent || {};
+                const hasPrice = price !== "" && price !== null && price !== undefined;
+                if (hasPrice && (val === undefined || val === null || val === "")) {
+                  return false;
+                }
+                return true;
+              }
+            )
+            .min(1, priceInvalid)
+            .nullable()
+            .optional(),
+          price: Yup.number()
+            .transform((val, orig) =>
+              orig === "" || orig === null || orig === undefined ? undefined : val
+            )
+            .test(
+              "price-req-if-minCount",
+              bulkPriceReq,
+              function (val) {
+                const { minCount } = this.parent || {};
+                const hasMinCount = minCount !== "" && minCount !== null && minCount !== undefined;
+                if (hasMinCount && (val === undefined || val === null || val === "")) {
+                  return false;
+                }
+                return true;
+              }
+            )
+            .min(0, priceInvalid)
+            .nullable()
+            .optional(),
         })
       )
       .optional(),
+
+    // 8. Specific Dates Pricing
     datePricing: Yup.array()
       .of(
         Yup.object().shape({
           date: Yup.string().optional(),
+          fromDate: Yup.string().optional(),
+          toDate: Yup.string().optional(),
           price: Yup.mixed().optional(),
         })
       )
       .optional(),
+
     key: Yup.string().optional(),
     conditionRuleValue: Yup.mixed().optional(),
   });
@@ -850,10 +1051,12 @@ export const STEP_PRICING_FIELD_NAMES = [
   "discountedPrice",
   "b2cPrice.finalPrice",
   "b2bPrice.price",
+  "b2bPrice.finalPrice",
   "productCost",
   "targetAudiences",
   "bulkPricing",
   "studentsPerSupervisor",
+  "b2bPrice.studentsPerSupervisor",
   "datePricing",
   "key",
   "conditionRuleValue",

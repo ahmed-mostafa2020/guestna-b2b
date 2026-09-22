@@ -99,6 +99,9 @@ const Step2Locations = ({
   // Accordion state for branches in Card 3
   const [openBranches, setOpenBranches] = useState({});
 
+  // Branch capacity validation errors: { [branchId]: { min: string|null, max: string|null } }
+  const [branchCapacityErrors, setBranchCapacityErrors] = useState({});
+
   const toggleBranch = useCallback((branchId) => {
     setOpenBranches((prev) => ({
       ...prev,
@@ -194,16 +197,44 @@ const Step2Locations = ({
     }, 0);
   };
 
+  // Validate a single branch capacity pair and return error object
+  const validateBranchCapacity = useCallback(
+    (minVal, maxVal) => {
+      const errs = { min: null, max: null };
+      const numMin = Number(minVal);
+      const numMax = Number(maxVal);
+
+      if (minVal === "" || minVal === undefined || minVal === null) {
+        errs.min = t("branchCapacityRequired");
+      } else if (isNaN(numMin) || numMin < 1) {
+        errs.min = t("branchCapacityMinOne");
+      }
+
+      if (maxVal === "" || maxVal === undefined || maxVal === null) {
+        errs.max = t("branchCapacityRequired");
+      } else if (isNaN(numMax) || numMax < 1) {
+        errs.max = t("branchCapacityMinOne");
+      } else if (!isNaN(numMin) && numMin >= 1 && numMax < numMin) {
+        errs.max = t("branchCapacityMaxError");
+      }
+
+      return errs;
+    },
+    [t]
+  );
+
   // Branch-specific capacity handler
   const handleBranchCapacityChange = (branchId, field, val) => {
     const existing = values.branchCapacities?.[branchId] || {
       min: "",
       max: "",
     };
-    setFieldValue(`branchCapacities.${branchId}`, {
-      ...existing,
-      [field]: val,
-    });
+    const updated = { ...existing, [field]: val };
+    setFieldValue(`branchCapacities.${branchId}`, updated);
+
+    // Validate and update errors
+    const errs = validateBranchCapacity(updated.min, updated.max);
+    setBranchCapacityErrors((prev) => ({ ...prev, [branchId]: errs }));
   };
 
   // Remove branch capacity customization
@@ -211,6 +242,11 @@ const Step2Locations = ({
     const updated = { ...(values.branchCapacities || {}) };
     delete updated[branchId];
     setFieldValue("branchCapacities", updated);
+    setBranchCapacityErrors((prev) => {
+      const next = { ...prev };
+      delete next[branchId];
+      return next;
+    });
   };
 
   // Handle saving capacity branches from sidebar
@@ -574,6 +610,9 @@ const Step2Locations = ({
                   min: defaultCapacityMin,
                   max: defaultCapacityMax,
                 };
+                const capErrors = branchCapacityErrors[branch.id] || {};
+                const hasMinError = Boolean(capErrors.min);
+                const hasMaxError = Boolean(capErrors.max);
 
                 return (
                   <div
@@ -624,8 +663,18 @@ const Step2Locations = ({
                                 )
                               }
                               placeholder={t("capacityPlaceholder")}
-                              className="w-full h-11 px-3.5 rounded-lg border border-border bg-white text-sm font-medium text-titleColor focus:border-mainColor focus:outline-none transition-colors"
+                              className={cn(
+                                "w-full h-11 px-3.5 rounded-lg border bg-white text-sm font-medium text-titleColor focus:outline-none transition-colors",
+                                hasMinError
+                                  ? "border-error focus:border-error ring-1 ring-error/30"
+                                  : "border-border focus:border-mainColor"
+                              )}
                             />
+                            {hasMinError && (
+                              <p className="text-xs text-error font-medium mt-1">
+                                {capErrors.min}
+                              </p>
+                            )}
                           </div>
 
                           {/* Input 2: أقصى سعة */}
@@ -645,8 +694,18 @@ const Step2Locations = ({
                                 )
                               }
                               placeholder={t("maxCapacityPlaceholder")}
-                              className="w-full h-11 px-3.5 rounded-lg border border-border bg-white text-sm font-medium text-titleColor focus:border-mainColor focus:outline-none transition-colors"
+                              className={cn(
+                                "w-full h-11 px-3.5 rounded-lg border bg-white text-sm font-medium text-titleColor focus:outline-none transition-colors",
+                                hasMaxError
+                                  ? "border-error focus:border-error ring-1 ring-error/30"
+                                  : "border-border focus:border-mainColor"
+                              )}
                             />
+                            {hasMaxError && (
+                              <p className="text-xs text-error font-medium mt-1">
+                                {capErrors.max}
+                              </p>
+                            )}
                           </div>
 
                           {/* Delete / Remove customization */}

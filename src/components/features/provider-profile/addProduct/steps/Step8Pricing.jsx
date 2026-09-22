@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useMemo, useState, useCallback, useEffect } from "react";
+import { memo, useMemo, useState, useCallback, useEffect, useRef } from "react";
 import { useFormikContext, FieldArray, getIn } from "formik";
 import { useTranslations, useLocale } from "next-intl";
 import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
@@ -31,8 +31,15 @@ const Step8Pricing = ({
   const locale = useLocale();
   const isAr = locale === "ar";
 
-  const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
-    useFormikContext();
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    setFieldValue,
+    submitCount,
+  } = useFormikContext();
 
   const selectedSystemTypes = Array.isArray(values.systemTypes)
     ? values.systemTypes
@@ -59,6 +66,34 @@ const Step8Pricing = ({
       setActiveTab("individual");
     }
   }, [isB2BEnabled, isB2CEnabled, activeTab]);
+
+  // Auto-switch tabs when user attempts to proceed and errors belong to the inactive tab
+  const lastSubmitCountRef = useRef(submitCount);
+  useEffect(() => {
+    if (submitCount > lastSubmitCountRef.current) {
+      lastSubmitCountRef.current = submitCount;
+      if (showBothTabs) {
+        const hasB2CInvalid = Boolean(
+          getIn(errors, "price") ||
+            getIn(errors, "discountedPrice") ||
+            getIn(errors, "targetAudiences") ||
+            getIn(errors, "datePricing")
+        );
+        const hasB2BInvalid = Boolean(
+          getIn(errors, "b2bPrice") ||
+            getIn(errors, "b2bPricing") ||
+            getIn(errors, "bulkPricing") ||
+            getIn(errors, "studentsPerSupervisor")
+        );
+
+        if (activeTab === "individual" && !hasB2CInvalid && hasB2BInvalid) {
+          setActiveTab("schools");
+        } else if (activeTab === "schools" && !hasB2BInvalid && hasB2CInvalid) {
+          setActiveTab("individual");
+        }
+      }
+    }
+  }, [submitCount, errors, showBothTabs, activeTab]);
 
   // Branch customization states
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -268,6 +303,36 @@ const Step8Pricing = ({
   const productCostErr = getIn(errors, "productCost");
   const productCostTouched = getIn(touched, "productCost");
 
+  const b2bPriceErr =
+    getIn(errors, "b2bPrice.price") || getIn(errors, "b2bPricing.schoolsPrice");
+  const b2bPriceTouched =
+    getIn(touched, "b2bPrice.price") || getIn(touched, "b2bPricing.schoolsPrice");
+
+  const b2bDiscountedPriceErr = getIn(errors, "b2bPrice.finalPrice");
+  const b2bDiscountedPriceTouched = getIn(touched, "b2bPrice.finalPrice");
+
+  const studentsPerSupervisorErr =
+    getIn(errors, "studentsPerSupervisor") ||
+    getIn(errors, "b2bPrice.studentsPerSupervisor") ||
+    getIn(errors, "b2bPricing.studentsPerSupervisor");
+  const studentsPerSupervisorTouched =
+    getIn(touched, "studentsPerSupervisor") ||
+    getIn(touched, "b2bPrice.studentsPerSupervisor") ||
+    getIn(touched, "b2bPricing.studentsPerSupervisor");
+
+  const hasB2CError = Boolean(
+    (priceTouched && priceErr) ||
+      (discountedPriceTouched && discountedPriceErr) ||
+      (getIn(touched, "targetAudiences") && getIn(errors, "targetAudiences"))
+  );
+
+  const hasB2BError = Boolean(
+    (b2bPriceTouched && b2bPriceErr) ||
+      (b2bDiscountedPriceTouched && b2bDiscountedPriceErr) ||
+      (studentsPerSupervisorTouched && studentsPerSupervisorErr) ||
+      (getIn(touched, "bulkPricing") && getIn(errors, "bulkPricing"))
+  );
+
   // Common CSS styles
   const labelCls =
     "font-somar text-sm sm:text-base font-medium text-textDark text-start block mb-1.5";
@@ -351,7 +416,9 @@ const Step8Pricing = ({
                 showBothTabs ? "cursor-pointer" : "cursor-default",
                 activeTab === "individual"
                   ? "border-mainColor bg-buttonsHover/50 shadow-xs"
-                  : "border-border bg-white hover:border-mainColor/30"
+                  : hasB2CError
+                    ? "border-error/50 bg-error/5 hover:border-error"
+                    : "border-border bg-white hover:border-mainColor/30"
               )}
             >
               <div
@@ -359,16 +426,23 @@ const Step8Pricing = ({
                   "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-colors",
                   activeTab === "individual"
                     ? "bg-mainColor/15 text-mainColor"
-                    : "bg-homeBg text-textLight/60"
+                    : hasB2CError
+                      ? "bg-error/15 text-error"
+                      : "bg-homeBg text-textLight/60"
                 )}
               >
                 <GroupsOutlinedIcon className="w-6 h-6" />
               </div>
 
               <div className="flex flex-col">
-                <span className="font-somar font-medium text-sm sm:text-base text-textDark">
-                  {t("tabs.individual")}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-somar font-medium text-sm sm:text-base text-textDark">
+                    {t("tabs.individual")}
+                  </span>
+                  {hasB2CError && activeTab !== "individual" && (
+                    <span className="w-2 h-2 rounded-full bg-error inline-block" />
+                  )}
+                </div>
                 <div className="font-somar font-bold text-base sm:text-lg text-mainColor flex items-center gap-1 mt-0.5">
                   <span>
                     {values.price && Number(values.price) > 0
@@ -393,7 +467,9 @@ const Step8Pricing = ({
                 showBothTabs ? "cursor-pointer" : "cursor-default",
                 activeTab === "schools"
                   ? "border-mainColor bg-buttonsHover/50 shadow-xs"
-                  : "border-border bg-white hover:border-mainColor/30"
+                  : hasB2BError
+                    ? "border-error/50 bg-error/5 hover:border-error"
+                    : "border-border bg-white hover:border-mainColor/30"
               )}
             >
               <div
@@ -401,16 +477,23 @@ const Step8Pricing = ({
                   "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-colors",
                   activeTab === "schools"
                     ? "bg-mainColor/15 text-mainColor"
-                    : "bg-homeBg text-textLight/60"
+                    : hasB2BError
+                      ? "bg-error/15 text-error"
+                      : "bg-homeBg text-textLight/60"
                 )}
               >
                 <SchoolOutlinedIcon className="w-6 h-6" />
               </div>
 
               <div className="flex flex-col">
-                <span className="font-somar font-medium text-sm sm:text-base text-textDark">
-                  {t("tabs.schools")}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-somar font-medium text-sm sm:text-base text-textDark">
+                    {t("tabs.schools")}
+                  </span>
+                  {hasB2BError && activeTab !== "schools" && (
+                    <span className="w-2 h-2 rounded-full bg-error inline-block" />
+                  )}
+                </div>
                 <div className="font-somar font-bold text-base sm:text-lg text-mainColor flex items-center gap-1 mt-0.5">
                   <span>
                     {(values.b2bPricing?.schoolsPrice ||
@@ -561,6 +644,14 @@ const Step8Pricing = ({
                                 placeholder={t("b2c.selectCategory")}
                                 list={targetAudienceList}
                                 border="1px solid var(--color-border)"
+                                touched={getIn(
+                                  touched,
+                                  `targetAudiences[${index}].targetAudience`
+                                )}
+                                errors={getIn(
+                                  errors,
+                                  `targetAudiences[${index}].targetAudience`
+                                )}
                               />
                             </div>
 
@@ -935,8 +1026,8 @@ const Step8Pricing = ({
                     }
                   }}
                   onBlur={handleBlur}
-                  touched={priceTouched}
-                  errors={priceErr}
+                  touched={b2bPriceTouched}
+                  errors={b2bPriceErr}
                   placeholder={t("b2b.marketPricePlaceholder")}
                   borderClassName={inputBorderCls}
                   inputClassName={inputFieldCls}
@@ -962,6 +1053,8 @@ const Step8Pricing = ({
                     }
                   }}
                   onBlur={handleBlur}
+                  touched={b2bDiscountedPriceTouched}
+                  errors={b2bDiscountedPriceErr}
                   placeholder={t("b2b.discountedPricePlaceholder")}
                   borderClassName={inputBorderCls}
                   inputClassName={inputFieldCls}
@@ -1103,6 +1196,7 @@ const Step8Pricing = ({
                       name="studentsPerSupervisor"
                       type="number"
                       min="1"
+                      required={true}
                       label={t("b2b.freeSupervisorLabel")}
                       labelClassName={labelCls}
                       value={
@@ -1119,6 +1213,9 @@ const Step8Pricing = ({
                         setFieldValue("b2bPricing.studentsPerSupervisor", val);
                         setFieldValue("b2bPricing.supervisorRatio", val);
                       }}
+                      onBlur={handleBlur}
+                      touched={studentsPerSupervisorTouched}
+                      errors={studentsPerSupervisorErr}
                       placeholder={t("b2b.studentsCountPlaceholder")}
                       borderClassName={inputBorderCls}
                       inputClassName={inputFieldCls}

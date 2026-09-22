@@ -618,7 +618,10 @@
           "editBranchesBtn": "Edit Branches",
           "saveBranchesBtn": "Save",
           "noBranchesSelectedTitle": "No Branch Selected",
-          "noBranchesSelectedSubtitle": "Select the branches where this product will be offered"
+          "noBranchesSelectedSubtitle": "Select the branches where this product will be offered",
+          "branchCapacityRequired": "This field is required",
+          "branchCapacityMinOne": "Value must be at least 1",
+          "branchCapacityMaxError": "Max capacity must be greater than or equal to capacity"
         },
         "stepBookingDates": {
           "cardTitle": "Dates",
@@ -859,6 +862,7 @@
           "validations": {
             "priceRequired": "Market price is required",
             "priceInvalid": "Price must be greater than 0",
+            "b2bPriceRequired": "Market price for schools is required",
             "productCostRequired": "Base product cost is required",
             "discountedPriceInvalid": "Discounted price must be less than market price",
             "seatsRequired": "Available seats count is required",
