@@ -681,11 +681,9 @@ const AddProductForm = ({
   onProductNameChange,
 }) => {
   const [activeStep, setActiveStep] = useState(0);
-  // TEMPORARY (for testing): unlock all steps
-  const [maxVisitedStep, setMaxVisitedStep] = useState(STEP_KEYS.length - 1);
-  // const [maxVisitedStep, setMaxVisitedStep] = useState(
-  //   productData ? STEP_KEYS.length - 1 : 0
-  // );
+  const [maxVisitedStep, setMaxVisitedStep] = useState(
+    productData ? STEP_KEYS.length - 1 : 0
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const stepContainerRef = useRef(null);
 
@@ -1075,11 +1073,6 @@ const AddProductForm = ({
   const handleStepClick = async (targetStep, validateForm, setTouched, values) => {
     if (targetStep === activeStep) return;
 
-    // === TEMPORARY (for testing): Step validation commented out ===
-    setActiveStep(targetStep);
-    setMaxVisitedStep((prev) => Math.max(prev, targetStep));
-
-    /*
     // Going backward is always permitted
     if (targetStep < activeStep) {
       setActiveStep(targetStep);
@@ -1103,16 +1096,9 @@ const AddProductForm = ({
         variant: "warning",
       });
     }
-    */
   };
 
   const handleStepNext = async (validateForm, setTouched, values) => {
-    // === TEMPORARY (for testing): Step validation commented out ===
-    const nextStep = activeStep + 1;
-    setActiveStep(nextStep);
-    setMaxVisitedStep((prev) => Math.max(prev, nextStep));
-
-    /*
     const errors = await validateForm();
     const stepFields = getStepFieldNames(activeStep);
 
@@ -1130,7 +1116,6 @@ const AddProductForm = ({
         variant: "warning",
       });
     }
-    */
   };
 
   const handleStepPrev = () => {

@@ -52,9 +52,7 @@ const StepBar = ({ activeStep, setActiveStep, maxVisitedStep, onStepClick }) => 
           const isCompleted = index < activeStep;
           const isActive = index === activeStep;
           const isReviewStep = index === STEP_KEYS.length - 1;
-          // TEMPORARY (for testing): allow clicking any step freely
-          const isClickable = true;
-          // const isClickable = index <= Math.max(activeStep, maxVisitedStep) || isReviewStep;
+          const isClickable = index <= Math.max(activeStep, maxVisitedStep) || isReviewStep;
 
           return (
             <button

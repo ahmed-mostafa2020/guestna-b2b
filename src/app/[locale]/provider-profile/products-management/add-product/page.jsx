@@ -627,10 +627,6 @@ const AddProductPage = () => {
               return;
             }
 
-            // === TEMPORARY (for testing): Allow jumping to any step directly ===
-            setCurrentStep(stepId);
-
-            /*
             // Always allow navigating back to previous steps
             if (stepId < currentStep) {
               setCurrentStep(stepId);
@@ -650,7 +646,7 @@ const AddProductPage = () => {
                   const err = getIn(validationErrors, field);
                   if (err) {
                     firstErrorField = field;
-                    firstErrorMessage = typeof err === "string" ? err : null;
+                    firstErrorMessage = extractFirstErrorMessage(err);
                     break;
                   }
                 }
@@ -691,7 +687,6 @@ const AddProductPage = () => {
             }
 
             setCurrentStep(stepId);
-            */
           }}
         />
       </div>
