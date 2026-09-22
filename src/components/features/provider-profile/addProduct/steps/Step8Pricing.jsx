@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useMemo, useState, useCallback } from "react";
+import { memo, useMemo, useState, useCallback, useEffect } from "react";
 import { useFormikContext, FieldArray, getIn } from "formik";
 import { useTranslations, useLocale } from "next-intl";
 import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
@@ -29,14 +29,31 @@ const Step8Pricing = ({
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
 
+  const selectedSystemTypes = Array.isArray(values.systemTypes)
+    ? values.systemTypes
+    : [];
+  const isB2BEnabled = selectedSystemTypes.includes("B2B");
+  const isB2CEnabled =
+    selectedSystemTypes.includes("B2C") ||
+    (!isB2BEnabled && selectedSystemTypes.length === 0);
+  const showBothTabs = isB2BEnabled && isB2CEnabled;
+
   // Active pricing tab: only "individual" (B2C) and "schools" (B2B)
   const [activeTab, setActiveTab] = useState(() => {
-    const systems = Array.isArray(values.systemTypes) ? values.systemTypes : [];
-    if (!systems.includes("B2C") && systems.includes("B2B")) {
+    if (!isB2CEnabled && isB2BEnabled) {
       return "schools";
     }
     return "individual";
   });
+
+  // Keep activeTab in sync with step 3 channel selection
+  useEffect(() => {
+    if (!isB2CEnabled && isB2BEnabled && activeTab !== "schools") {
+      setActiveTab("schools");
+    } else if (!isB2BEnabled && isB2CEnabled && activeTab !== "individual") {
+      setActiveTab("individual");
+    }
+  }, [isB2BEnabled, isB2CEnabled, activeTab]);
 
   // Branch customization states
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -267,88 +284,109 @@ const Step8Pricing = ({
           </div>
         </div>
 
-        {/* ── 2 TABS: سعر الفرد & للمدارس (MATCHING SCREENSHOT 3) ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 sm:mb-8">
+        {/* ── TABS: سعر الفرد & للمدارس (Based on Step 3 Selection) ── */}
+        <div
+          className={cn(
+            "grid gap-4 mb-6 sm:mb-8",
+            showBothTabs
+              ? "grid-cols-1 sm:grid-cols-2"
+              : "grid-cols-1 sm:max-w-md"
+          )}
+        >
           {/* Tab 1: سعر الفرد (Individual / B2C) */}
-          <button
-            type="button"
-            onClick={() => setActiveTab("individual")}
-            className={cn(
-              "flex items-center gap-3.5 p-4 sm:p-5 rounded-2xl border transition-all duration-200 cursor-pointer text-start",
-              activeTab === "individual"
-                ? "border-mainColor bg-[#EAF5F4] shadow-xs"
-                : "border-border bg-white hover:border-gray-300"
-            )}
-          >
-            <div
+          {isB2CEnabled && (
+            <button
+              type="button"
+              onClick={() => setActiveTab("individual")}
               className={cn(
-                "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-colors",
+                "flex items-center gap-3.5 p-4 sm:p-5 rounded-2xl border transition-all duration-200 text-start",
+                showBothTabs ? "cursor-pointer" : "cursor-default",
                 activeTab === "individual"
-                  ? "bg-[#D7ECE7] text-mainColor"
-                  : "bg-gray-100 text-gray-400"
+                  ? "border-mainColor bg-[#EAF5F4] shadow-xs"
+                  : "border-border bg-white hover:border-gray-300"
               )}
             >
-              <GroupsOutlinedIcon className="w-6 h-6" />
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-somar font-medium text-sm sm:text-base text-gray-700">
-                {t("tabs.individual")}
-              </span>
-              <div className="font-somar font-bold text-base sm:text-lg text-mainColor flex items-center gap-1 mt-0.5">
-                <span>
-                  {values.price && Number(values.price) > 0
-                    ? formatCurrency(values.price)
-                    : "-"}
-                </span>
-                <span className="text-sm font-medium text-gray-600">
-                  / {t("tabs.perPerson")}
-                </span>
+              <div
+                className={cn(
+                  "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-colors",
+                  activeTab === "individual"
+                    ? "bg-[#D7ECE7] text-mainColor"
+                    : "bg-gray-100 text-gray-400"
+                )}
+              >
+                <GroupsOutlinedIcon className="w-6 h-6" />
               </div>
-            </div>
-          </button>
+
+              <div className="flex flex-col">
+                <span className="font-somar font-medium text-sm sm:text-base text-gray-700">
+                  {t("tabs.individual")}
+                </span>
+                <div className="font-somar font-bold text-base sm:text-lg text-mainColor flex items-center gap-1 mt-0.5">
+                  <span>
+                    {values.price && Number(values.price) > 0
+                      ? formatCurrency(values.price)
+                      : "-"}
+                  </span>
+                  <span className="text-sm font-medium text-gray-600">
+                    / {t("tabs.perPerson")}
+                  </span>
+                </div>
+              </div>
+            </button>
+          )}
 
           {/* Tab 2: للمدارس (Schools / B2B) */}
-          <button
-            type="button"
-            onClick={() => setActiveTab("schools")}
-            className={cn(
-              "flex items-center gap-3.5 p-4 sm:p-5 rounded-2xl border transition-all duration-200 cursor-pointer text-start",
-              activeTab === "schools"
-                ? "border-mainColor bg-[#EAF5F4] shadow-xs"
-                : "border-border bg-white hover:border-gray-300"
-            )}
-          >
-            <div
+          {isB2BEnabled && (
+            <button
+              type="button"
+              onClick={() => setActiveTab("schools")}
               className={cn(
-                "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-colors",
+                "flex items-center gap-3.5 p-4 sm:p-5 rounded-2xl border transition-all duration-200 text-start",
+                showBothTabs ? "cursor-pointer" : "cursor-default",
                 activeTab === "schools"
-                  ? "bg-[#D7ECE7] text-mainColor"
-                  : "bg-gray-100 text-gray-400"
+                  ? "border-mainColor bg-[#EAF5F4] shadow-xs"
+                  : "border-border bg-white hover:border-gray-300"
               )}
             >
-              <SchoolOutlinedIcon className="w-6 h-6" />
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-somar font-medium text-sm sm:text-base text-gray-700">
-                {t("tabs.schools")}
-              </span>
-              <div className="font-somar font-bold text-base sm:text-lg text-mainColor flex items-center gap-1 mt-0.5">
-                <span>
-                  {(values.b2bPricing?.schoolsPrice || values.b2bPrice?.price || values.price) &&
-                  Number(values.b2bPricing?.schoolsPrice || values.b2bPrice?.price || values.price) > 0
-                    ? formatCurrency(
-                        values.b2bPricing?.schoolsPrice || values.b2bPrice?.price || values.price
-                      )
-                    : "-"}
-                </span>
-                <span className="text-sm font-medium text-gray-600">
-                  / {t("tabs.perPerson")}
-                </span>
+              <div
+                className={cn(
+                  "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-colors",
+                  activeTab === "schools"
+                    ? "bg-[#D7ECE7] text-mainColor"
+                    : "bg-gray-100 text-gray-400"
+                )}
+              >
+                <SchoolOutlinedIcon className="w-6 h-6" />
               </div>
-            </div>
-          </button>
+
+              <div className="flex flex-col">
+                <span className="font-somar font-medium text-sm sm:text-base text-gray-700">
+                  {t("tabs.schools")}
+                </span>
+                <div className="font-somar font-bold text-base sm:text-lg text-mainColor flex items-center gap-1 mt-0.5">
+                  <span>
+                    {(values.b2bPricing?.schoolsPrice ||
+                      values.b2bPrice?.price ||
+                      values.price) &&
+                    Number(
+                      values.b2bPricing?.schoolsPrice ||
+                        values.b2bPrice?.price ||
+                        values.price
+                    ) > 0
+                      ? formatCurrency(
+                          values.b2bPricing?.schoolsPrice ||
+                            values.b2bPrice?.price ||
+                            values.price
+                        )
+                      : "-"}
+                  </span>
+                  <span className="text-sm font-medium text-gray-600">
+                    / {t("tabs.perPerson")}
+                  </span>
+                </div>
+              </div>
+            </button>
+          )}
         </div>
 
         {/* ═════════════════════════════════════════════════════════════
@@ -896,20 +934,34 @@ const Step8Pricing = ({
               {/* Market Price (سعر السوق) */}
               <div>
                 <label htmlFor="b2bPrice" className={labelCls}>
-                  {t("b2b.marketPrice")}
+                  {t("b2b.marketPrice")}{" "}
+                  <span className="text-error ms-1">*</span>
                 </label>
-                <div className={fieldContainerCls}>
+                <div
+                  className={cn(
+                    fieldContainerCls,
+                    hasPriceErr
+                      ? "border-error focus-within:border-error"
+                      : "hover:border-mainColor/60"
+                  )}
+                >
                   <input
                     id="b2bPrice"
                     type="number"
                     min="0"
                     name="b2bPrice.price"
-                    value={values.b2bPrice?.price ?? values.b2bPricing?.schoolsPrice ?? values.price ?? ""}
+                    data-field="price"
+                    value={
+                      values.b2bPrice?.price ??
+                      values.b2bPricing?.schoolsPrice ??
+                      values.price ??
+                      ""
+                    }
                     onChange={(e) => {
                       const val = e.target.value;
                       setFieldValue("b2bPrice.price", val);
                       setFieldValue("b2bPricing.schoolsPrice", val);
-                      if (!values.price) {
+                      if (!isB2CEnabled || !values.price) {
                         setFieldValue("price", val);
                         setFieldValue("b2cPrice.price", val);
                       }
@@ -922,6 +974,11 @@ const Step8Pricing = ({
                     {newSarSmall}
                   </span>
                 </div>
+                {hasPriceErr && (
+                  <p className="mt-1 font-somar text-xs text-error">
+                    {priceErr}
+                  </p>
+                )}
               </div>
 
               {/* Discounted Price (السعر بعد الخصم) */}
@@ -943,7 +1000,7 @@ const Step8Pricing = ({
                     onChange={(e) => {
                       const val = e.target.value;
                       setFieldValue("b2bPrice.finalPrice", val);
-                      if (!values.discountedPrice) {
+                      if (!isB2CEnabled || !values.discountedPrice) {
                         setFieldValue("discountedPrice", val);
                       }
                     }}

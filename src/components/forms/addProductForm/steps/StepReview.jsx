@@ -57,8 +57,32 @@ const StepReview = ({
 
   const { values, handleSubmit } = useFormikContext();
 
+  const selectedSystemTypes = Array.isArray(values.systemTypes)
+    ? values.systemTypes
+    : [];
+  const isB2BEnabled = selectedSystemTypes.includes("B2B");
+  const isB2CEnabled =
+    selectedSystemTypes.includes("B2C") ||
+    (!isB2BEnabled && selectedSystemTypes.length === 0);
+  const showBothViews = isB2BEnabled && isB2CEnabled;
+
   // Active View Tab: "B2B" (Schools) or "B2C" (Individuals)
-  const [activeView, setActiveView] = useState("B2B");
+  const [activeView, setActiveView] = useState(() => {
+    if (!isB2BEnabled && isB2CEnabled) {
+      return "B2C";
+    }
+    return "B2B";
+  });
+
+  // Synchronize activeView with step 3 channel selection
+  useEffect(() => {
+    if (!isB2BEnabled && isB2CEnabled && activeView !== "B2C") {
+      setActiveView("B2C");
+    } else if (!isB2CEnabled && isB2BEnabled && activeView !== "B2B") {
+      setActiveView("B2B");
+    }
+  }, [isB2BEnabled, isB2CEnabled, activeView]);
+
   // Search query for locations / branches
   const [branchSearch, setBranchSearch] = useState("");
   // Modal for viewing all gallery images
@@ -632,30 +656,36 @@ const StepReview = ({
         )}
       </div>
 
-      {/* 3. B2B / B2C Toggle Bar matching Figma */}
+      {/* 3. B2B / B2C Toggle Bar matching user selection at Step 3 */}
       <div className="w-full bg-mainColor p-1.5 rounded-2xl flex items-center gap-2 shadow-xs">
-        <button
-          type="button"
-          onClick={() => setActiveView("B2B")}
-          className={`flex-1 py-3 px-6 rounded-xl text-sm sm:text-base font-bold transition-all cursor-pointer text-center ${
-            activeView === "B2B"
-              ? "bg-white text-mainColor shadow-sm"
-              : "text-white hover:bg-white/10"
-          }`}
-        >
-          {tSub("reviewB2bTab")}
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveView("B2C")}
-          className={`flex-1 py-3 px-6 rounded-xl text-sm sm:text-base font-bold transition-all cursor-pointer text-center ${
-            activeView === "B2C"
-              ? "bg-white text-mainColor shadow-sm"
-              : "text-white hover:bg-white/10"
-          }`}
-        >
-          {tSub("reviewB2cTab")}
-        </button>
+        {isB2BEnabled && (
+          <button
+            type="button"
+            onClick={() => setActiveView("B2B")}
+            className={`flex-1 py-3 px-6 rounded-xl text-sm sm:text-base font-bold transition-all text-center ${
+              activeView === "B2B"
+                ? "bg-white text-mainColor shadow-sm cursor-default"
+                : "text-white hover:bg-white/10 cursor-pointer"
+            }`}
+            aria-pressed={activeView === "B2B"}
+          >
+            {tSub("reviewB2bTab")}
+          </button>
+        )}
+        {isB2CEnabled && (
+          <button
+            type="button"
+            onClick={() => setActiveView("B2C")}
+            className={`flex-1 py-3 px-6 rounded-xl text-sm sm:text-base font-bold transition-all text-center ${
+              activeView === "B2C"
+                ? "bg-white text-mainColor shadow-sm cursor-default"
+                : "text-white hover:bg-white/10 cursor-pointer"
+            }`}
+            aria-pressed={activeView === "B2C"}
+          >
+            {tSub("reviewB2cTab")}
+          </button>
+        )}
       </div>
 
       {/* 4. Main Two-Column Trip Details Grid */}
