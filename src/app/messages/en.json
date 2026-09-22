@@ -977,7 +977,7 @@
           "reviewProduct": "Review Product",
           "readyToReview": "All Steps Completed",
           "reviewBeforeSubmitNotice": "Click to review all entered data in the trip details design before publishing",
-          "reviewBookingDeadlineNotice": "Booking deadline (days in advance)",
+          "reviewBookingDeadlineNotice": "Booking deadline (days before)",
           "reviewActivityDuration": "Activity Duration",
           "reviewAgeFrom": "Age from",
           "reviewAgeYears": "{from} to {to} years",

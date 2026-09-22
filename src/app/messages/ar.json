@@ -984,7 +984,7 @@
           "reviewProduct": "مراجعة المنتج",
           "readyToReview": "اكتمل إدخال البيانات",
           "reviewBeforeSubmitNotice": "انقر لمراجعة كافة البيانات المدخلة بتصميم صفحة الرحلة قبل النشر",
-          "reviewBookingDeadlineNotice": "الموعد النهائي (بالأيام قبل)",
+          "reviewBookingDeadlineNotice": "الموعد النهائي للحجز قبلها (بالأيام)",
           "reviewActivityDuration": "مده النشاط",
           "reviewAgeFrom": "العمر من",
           "reviewAgeYears": "{from} الي {to} سنه",

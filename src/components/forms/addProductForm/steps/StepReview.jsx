@@ -1292,8 +1292,8 @@ const StepReview = ({
 
               {/* Deadline Box matching Figma */}
               <div className="p-3 rounded-xl bg-status-success-bg border border-status-success-border text-status-success-fg flex items-center justify-between font-bold text-xs sm:text-sm">
-                <span>{values.bookingBefore || 1}</span>
                 <span>{tSub("reviewBookingDeadlineNotice")}</span>
+                <span>{values.bookingBefore || 1}</span>
               </div>
             </div>
 
