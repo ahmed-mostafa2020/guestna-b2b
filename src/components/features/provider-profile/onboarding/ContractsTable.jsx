@@ -3,18 +3,18 @@
 import { memo, useCallback, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
-import axios from "axios";
+// import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import {
   VisibilityOutlined as ViewIcon,
   DrawOutlined as SignIcon,
 } from "@mui/icons-material";
 import DataTable from "@components/ui/DataTable";
-import { B2B_END_POINTS } from "@constants/b2bAPIs";
+// import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { getHeaders } from "@utils/helpers/getHeaders";
-import getProxyUrl from "@utils/api/getProxyUrl";
-import getErrorMessage from "@utils/helpers/getErrorMessage";
+// import getProxyUrl from "@utils/api/getProxyUrl";
+// import getErrorMessage from "@utils/helpers/getErrorMessage";
 
 const STATUS_STYLES = {
   DRAFT: {
@@ -111,13 +111,13 @@ const ContractsTable = ({
   loading = false,
   currentPage = 1,
   onPageChange,
-  refetch,
+  // refetch,
 }) => {
-  const t = useTranslations();
+  // const t = useTranslations();
   const tContracts = useTranslations("providerProfile.onboarding.contracts");
   const locale = useLocale();
-  const { enqueueSnackbar } = useSnackbar();
-  const [signingId, setSigningId] = useState(null);
+  // const { enqueueSnackbar } = useSnackbar();
+  // const [signingId, setSigningId] = useState(null);
 
   const contracts = data?.nodes || [];
   const pageInfo = data?.pageInfo || {
@@ -127,61 +127,61 @@ const ContractsTable = ({
     hasNextPage: false,
   };
 
-  const headers = getHeaders(locale);
+  // const headers = getHeaders(locale);
 
-  const handleSign = useCallback(
-    (contract) => {
-      const contractId = contract?._id || contract?.id;
-      if (!contractId || signingId) return;
+  // const handleSign = useCallback(
+  //   (contract) => {
+  //     const contractId = contract?._id || contract?.id;
+  //     if (!contractId || signingId) return;
 
-      setSigningId(contractId);
+  //     setSigningId(contractId);
 
-      const config = {
-        method: "post",
-        url: getProxyUrl(
-          `${B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.CONTRACTS_SIGN}/${contractId}`
-        ),
-        headers,
-        data: {},
-      };
+  //     const config = {
+  //       method: "post",
+  //       url: getProxyUrl(
+  //         `${B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.CONTRACTS_SIGN}/${contractId}`
+  //       ),
+  //       headers,
+  //       data: {},
+  //     };
 
-      axios
-        .request(config)
-        .then((response) => {
-          setSigningId(null);
+  //     axios
+  //       .request(config)
+  //       .then((response) => {
+  //         setSigningId(null);
 
-          if (response?.data) {
-            enqueueSnackbar(
-              t("providerProfile.onboarding.notifications.signSuccess"),
-              { variant: "success" }
-            );
-            refetch?.();
-          } else {
-            enqueueSnackbar(
-              t("providerProfile.onboarding.notifications.actionError"),
-              { variant: "error" }
-            );
-          }
-        })
-        .catch((error) => {
-          setSigningId(null);
-          console.error("Onboarding contract sign error:", {
-            message: error?.message,
-            response: error?.response?.data,
-            status: error?.response?.status,
-          });
-          enqueueSnackbar(
-            getErrorMessage(
-              error,
-              t,
-              "providerProfile.onboarding.notifications.actionError"
-            ),
-            { variant: "error" }
-          );
-        });
-    },
-    [signingId, headers, enqueueSnackbar, t, refetch]
-  );
+  //         if (response?.data) {
+  //           enqueueSnackbar(
+  //             t("providerProfile.onboarding.notifications.signSuccess"),
+  //             { variant: "success" }
+  //           );
+  //           refetch?.();
+  //         } else {
+  //           enqueueSnackbar(
+  //             t("providerProfile.onboarding.notifications.actionError"),
+  //             { variant: "error" }
+  //           );
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         setSigningId(null);
+  //         console.error("Onboarding contract sign error:", {
+  //           message: error?.message,
+  //           response: error?.response?.data,
+  //           status: error?.response?.status,
+  //         });
+  //         enqueueSnackbar(
+  //           getErrorMessage(
+  //             error,
+  //             t,
+  //             "providerProfile.onboarding.notifications.actionError"
+  //           ),
+  //           { variant: "error" }
+  //         );
+  //       });
+  //   },
+  //   [signingId, headers, enqueueSnackbar, t, refetch]
+  // );
 
   const columns = useMemo(
     () => [
@@ -226,34 +226,32 @@ const ContractsTable = ({
         className: "whitespace-nowrap align-middle",
         headerClassName: "text-start align-middle",
         render: (row) => {
-          const id = row._id || row.id;
-          const isSigning = signingId === id;
-          const attachment = Array.isArray(row.attachments)
-            ? row.attachments[0]
-            : null;
+          // const id = row._id || row.id;
+          // const isSigning = signingId === id;
+          const pdfUrl = row.pdfUrl;
 
-          if (isSignable(row.status)) {
-            return (
-              <ActionButton
-                label={isSigning ? tContracts("signing") : tContracts("sign")}
-                disabled={!!signingId}
-                icon={
-                  isSigning ? (
-                    <CircularProgress size={14} sx={{ color: "#0d0d0d" }} />
-                  ) : (
-                    <SignIcon className="!w-4 !h-4" />
-                  )
-                }
-                onClick={() => handleSign(row)}
-              />
-            );
-          }
+          // if (isSignable(row.status)) {
+          //   return (
+          //     <ActionButton
+          //       label={isSigning ? tContracts("signing") : tContracts("sign")}
+          //       disabled={!!signingId}
+          //       icon={
+          //         isSigning ? (
+          //           <CircularProgress size={14} sx={{ color: "#0d0d0d" }} />
+          //         ) : (
+          //           <SignIcon className="!w-4 !h-4" />
+          //         )
+          //       }
+          //       onClick={() => handleSign(row)}
+          //     />
+          //   );
+          // }
 
-          if (attachment) {
+          if (pdfUrl) {
             return (
               <ActionButton
                 label={tContracts("show")}
-                href={attachment}
+                href={pdfUrl}
                 icon={<ViewIcon className="!w-4 !h-4" />}
               />
             );
@@ -263,7 +261,7 @@ const ContractsTable = ({
         },
       },
     ],
-    [tContracts, signingId, handleSign]
+    [tContracts]
   );
 
   return (
