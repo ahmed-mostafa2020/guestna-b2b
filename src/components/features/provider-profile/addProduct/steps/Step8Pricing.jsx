@@ -271,7 +271,7 @@ const Step8Pricing = ({
   const labelCls =
     "font-somar text-sm sm:text-base font-medium text-textDark text-start block mb-1.5";
   const subLabelCls =
-    "font-somar text-xs sm:text-sm font-medium text-gray-700 text-start block mb-1";
+    "font-somar text-xs sm:text-sm font-medium text-textDark text-start block mb-1";
   const inputBorderCls =
     "border border-border hover:border-mainColor focus:border-mainColor rounded-xl";
   const inputFieldCls =
@@ -349,23 +349,23 @@ const Step8Pricing = ({
                 "flex items-center gap-3.5 p-4 sm:p-5 rounded-2xl border transition-all duration-200 text-start",
                 showBothTabs ? "cursor-pointer" : "cursor-default",
                 activeTab === "individual"
-                  ? "border-mainColor bg-[#EAF5F4] shadow-xs"
-                  : "border-border bg-white hover:border-gray-300"
+                  ? "border-mainColor bg-buttonsHover/50 shadow-xs"
+                  : "border-border bg-white hover:border-mainColor/30"
               )}
             >
               <div
                 className={cn(
                   "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-colors",
                   activeTab === "individual"
-                    ? "bg-[#D7ECE7] text-mainColor"
-                    : "bg-gray-100 text-gray-400"
+                    ? "bg-mainColor/15 text-mainColor"
+                    : "bg-homeBg text-textLight/60"
                 )}
               >
                 <GroupsOutlinedIcon className="w-6 h-6" />
               </div>
 
               <div className="flex flex-col">
-                <span className="font-somar font-medium text-sm sm:text-base text-gray-700">
+                <span className="font-somar font-medium text-sm sm:text-base text-textDark">
                   {t("tabs.individual")}
                 </span>
                 <div className="font-somar font-bold text-base sm:text-lg text-mainColor flex items-center gap-1 mt-0.5">
@@ -374,7 +374,7 @@ const Step8Pricing = ({
                       ? formatCurrency(values.price)
                       : "-"}
                   </span>
-                  <span className="text-sm font-medium text-gray-600">
+                  <span className="text-sm font-medium text-textLight">
                     / {t("tabs.perPerson")}
                   </span>
                 </div>
@@ -391,23 +391,23 @@ const Step8Pricing = ({
                 "flex items-center gap-3.5 p-4 sm:p-5 rounded-2xl border transition-all duration-200 text-start",
                 showBothTabs ? "cursor-pointer" : "cursor-default",
                 activeTab === "schools"
-                  ? "border-mainColor bg-[#EAF5F4] shadow-xs"
-                  : "border-border bg-white hover:border-gray-300"
+                  ? "border-mainColor bg-buttonsHover/50 shadow-xs"
+                  : "border-border bg-white hover:border-mainColor/30"
               )}
             >
               <div
                 className={cn(
                   "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-colors",
                   activeTab === "schools"
-                    ? "bg-[#D7ECE7] text-mainColor"
-                    : "bg-gray-100 text-gray-400"
+                    ? "bg-mainColor/15 text-mainColor"
+                    : "bg-homeBg text-textLight/60"
                 )}
               >
                 <SchoolOutlinedIcon className="w-6 h-6" />
               </div>
 
               <div className="flex flex-col">
-                <span className="font-somar font-medium text-sm sm:text-base text-gray-700">
+                <span className="font-somar font-medium text-sm sm:text-base text-textDark">
                   {t("tabs.schools")}
                 </span>
                 <div className="font-somar font-bold text-base sm:text-lg text-mainColor flex items-center gap-1 mt-0.5">
@@ -423,7 +423,7 @@ const Step8Pricing = ({
                         )
                       : "-"}
                   </span>
-                  <span className="text-sm font-medium text-gray-600">
+                  <span className="text-sm font-medium text-textLight">
                     / {t("tabs.perPerson")}
                   </span>
                 </div>
@@ -447,7 +447,7 @@ const Step8Pricing = ({
                   <h3 className="font-somar font-bold text-base text-titleColor">
                     {t("b2c.basePriceTitle")}
                   </h3>
-                  <p className="font-somar text-xs text-gray-500">
+                  <p className="font-somar text-xs text-textLight">
                     {t("b2c.basePriceSubtitle")}
                   </p>
                 </div>
@@ -520,7 +520,7 @@ const Step8Pricing = ({
                     <h3 className="font-somar font-bold text-base text-titleColor">
                       {t("b2c.targetAudiencesTitle")}
                     </h3>
-                    <p className="font-somar text-xs text-gray-500">
+                    <p className="font-somar text-xs text-textLight">
                       {t("b2c.targetAudiencesSubtitle")}
                     </p>
                   </div>
@@ -540,7 +540,7 @@ const Step8Pricing = ({
                       {audiencesList.map((item, index) => (
                         <div
                           key={index}
-                          className="flex items-center gap-3 bg-white p-3 sm:p-4 rounded-xl border border-border shadow-xs transition-all hover:border-gray-300"
+                          className="flex items-center gap-3 bg-white p-3 sm:p-4 rounded-xl border border-border shadow-xs transition-all hover:border-mainColor/30"
                         >
                           <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 items-start">
                             {/* Category Dropdown using SelectionGroup */}
@@ -556,7 +556,7 @@ const Step8Pricing = ({
                                 }}
                                 onBlur={handleBlur}
                                 label={t("b2c.category")}
-                                labelClassName="block text-xs font-somar font-medium text-gray-500 text-start"
+                                labelClassName="block text-xs font-somar font-medium text-textLight text-start"
                                 placeholder={t("b2c.selectCategory")}
                                 list={targetAudienceList}
                                 border="1px solid var(--color-border)"
@@ -573,7 +573,7 @@ const Step8Pricing = ({
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 label={t("b2c.price")}
-                                labelClassName="block text-xs font-somar font-medium text-gray-500 text-start"
+                                labelClassName="block text-xs font-somar font-medium text-textLight text-start"
                                 placeholder={t("b2c.pricePlaceholder")}
                                 borderClassName={inputBorderCls}
                                 inputClassName={inputFieldCls}
@@ -624,12 +624,12 @@ const Step8Pricing = ({
 
             {/* 4. Weekday & Season Pricing Rules (MATCHING FIGMA & SCREENSHOT 1) */}
             <div className="bg-white p-5 sm:p-7 rounded-2xl border border-border space-y-6 shadow-none">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
                 <div className="text-start">
                   <h3 className="font-somar font-bold text-base sm:text-lg text-titleColor">
                     {t("b2c.weekdayPricingTitle")}
                   </h3>
-                  <p className="font-somar text-xs sm:text-sm text-gray-500 mt-1">
+                  <p className="font-somar text-xs sm:text-sm text-textLight mt-1">
                     {t("b2c.weekdayPricingSubtitle")}
                   </p>
                 </div>
@@ -656,7 +656,7 @@ const Step8Pricing = ({
 
               {/* Condition Builder Row */}
               <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-somar text-textDark">
-                <span className="font-medium text-gray-700 flex-shrink-0">
+                <span className="font-medium text-textDark flex-shrink-0">
                   {t("b2c.priceByLabel")}
                 </span>
 
@@ -699,7 +699,7 @@ const Step8Pricing = ({
                     borderClassName={inputBorderCls}
                     inputClassName="!h-[52px] !py-0 px-2 text-center font-somar text-xs sm:text-sm text-textDark"
                     endAdornment={
-                      <span className="text-gray-400 font-somar text-sm">
+                      <span className="text-textLight font-somar text-sm">
                         %
                       </span>
                     }
@@ -847,7 +847,7 @@ const Step8Pricing = ({
               <h3 className="font-somar font-bold text-lg sm:text-xl text-titleColor">
                 {t("b2b.basePriceTitle")}
               </h3>
-              <p className="font-somar text-xs sm:text-sm text-gray-500 mt-1">
+              <p className="font-somar text-xs sm:text-sm text-textLight mt-1">
                 {t("b2b.basePriceSubtitle")}
               </p>
             </div>
@@ -946,7 +946,7 @@ const Step8Pricing = ({
                     <h3 className="font-somar font-bold text-base text-titleColor">
                       {t("b2b.bulkPricingTitle")}
                     </h3>
-                    <p className="font-somar text-xs text-gray-500">
+                    <p className="font-somar text-xs text-textLight">
                       {t("b2b.bulkPricingSubtitle")}
                     </p>
                   </div>
@@ -966,7 +966,7 @@ const Step8Pricing = ({
                       {bulkList.map((item, index) => (
                         <div
                           key={index}
-                          className="flex items-center gap-3 bg-white p-3 sm:p-4 rounded-xl border border-border shadow-xs transition-all hover:border-gray-300"
+                          className="flex items-center gap-3 bg-white p-3 sm:p-4 rounded-xl border border-border shadow-xs transition-all hover:border-mainColor/30"
                         >
                           <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 items-start">
                             <div>
@@ -978,7 +978,7 @@ const Step8Pricing = ({
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 label={t("b2b.minCount")}
-                                labelClassName="block text-xs font-somar font-medium text-gray-500 text-start"
+                                labelClassName="block text-xs font-somar font-medium text-textLight text-start"
                                 placeholder={t("b2b.minCountPlaceholder")}
                                 borderClassName={inputBorderCls}
                                 inputClassName={inputFieldCls}
@@ -1002,7 +1002,7 @@ const Step8Pricing = ({
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 label={t("b2b.perPersonPrice")}
-                                labelClassName="block text-xs font-somar font-medium text-gray-500 text-start"
+                                labelClassName="block text-xs font-somar font-medium text-textLight text-start"
                                 placeholder={t("b2b.perPersonPricePlaceholder")}
                                 borderClassName={inputBorderCls}
                                 inputClassName={inputFieldCls}
@@ -1088,7 +1088,7 @@ const Step8Pricing = ({
                       borderClassName={inputBorderCls}
                       inputClassName={inputFieldCls}
                       endAdornment={
-                        <span className="text-xs font-somar text-gray-500 flex-shrink-0">
+                        <span className="text-xs font-somar text-textLight flex-shrink-0">
                           {t("b2b.students")}
                         </span>
                       }
@@ -1180,16 +1180,16 @@ const Step8Pricing = ({
                         {branchName}
                       </h4>
                       {branchSubtitle && (
-                        <p className="font-somar text-xs sm:text-sm text-gray-500 mt-0.5">
+                        <p className="font-somar text-xs sm:text-sm text-textLight mt-0.5">
                           {branchSubtitle}
                         </p>
                       )}
                     </div>
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-textDark hover:bg-gray-200/50 transition-colors">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-textDark hover:bg-buttonsHover/30 transition-colors">
                       {isOpen ? (
-                        <KeyboardArrowUpIcon className="w-5 h-5 text-gray-600" />
+                        <KeyboardArrowUpIcon className="w-5 h-5 text-textLight" />
                       ) : (
-                        <KeyboardArrowDownIcon className="w-5 h-5 text-gray-600" />
+                        <KeyboardArrowDownIcon className="w-5 h-5 text-textLight" />
                       )}
                     </div>
                   </button>

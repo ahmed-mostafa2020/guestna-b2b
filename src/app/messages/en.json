@@ -1029,7 +1029,9 @@
           "reviewB2bBadge": "Schools System (B2B)",
           "reviewBothBadge": "Both Systems (B2B & B2C)",
           "reviewB2cPriceLabel": "Individuals Price",
-          "reviewB2bPriceLabel": "Schools Price"
+          "reviewB2bPriceLabel": "Schools Price",
+          "reviewViewDetails": "View Details",
+          "reviewHideDetails": "Hide Details"
         },
         "placeholders": {
           "nameEn": "Enter product name in English",

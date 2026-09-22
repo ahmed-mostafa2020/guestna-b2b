@@ -377,8 +377,8 @@ const Step4SalesChannels = ({
                 className={cn(
                   "w-full rounded-2xl p-4 sm:p-5 flex items-center justify-between gap-4 cursor-pointer transition-all duration-200 border-2 select-none",
                   isSelected
-                    ? "border-mainColor bg-[#EAF5F4] shadow-xs"
-                    : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50/60"
+                    ? "border-mainColor bg-buttonsHover/50 shadow-xs"
+                    : "border-border bg-white hover:border-mainColor/40 hover:bg-homeBg/40"
                 )}
               >
                 {/* Icon Badge */}
@@ -388,7 +388,7 @@ const Step4SalesChannels = ({
                       "w-11 h-11 rounded-xl flex items-center justify-center transition-all flex-shrink-0",
                       isSelected
                         ? "bg-mainColor text-white shadow-xs"
-                        : "bg-gray-100 text-textLight"
+                        : "bg-homeBg text-textLight"
                     )}
                   >
                     <Icon className="w-5 h-5" />
@@ -411,7 +411,7 @@ const Step4SalesChannels = ({
                     "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all",
                     isSelected
                       ? "border-mainColor"
-                      : "border-gray-300 bg-white"
+                      : "border-border bg-white"
                   )}
                 >
                   {isSelected && (

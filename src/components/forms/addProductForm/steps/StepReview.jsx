@@ -22,6 +22,8 @@ import OndemandVideoOutlinedIcon from "@mui/icons-material/OndemandVideoOutlined
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 // Reusable Components
 import FilterAccordion from "@components/filtersBox/FilterAccordion";
@@ -60,7 +62,36 @@ const StepReview = ({
   const tModal = useTranslations("providerProfile.products.modal");
   const tWeekDays = useTranslations("weekDays");
 
-  const { values, handleSubmit } = useFormikContext();
+  const {
+    values,
+    handleSubmit,
+    isSubmitting: formikIsSubmitting,
+  } = useFormikContext() || {};
+
+  const [isPublishClicked, setIsPublishClicked] = useState(false);
+
+  // Combined submitting / publishing state
+  const isPublishing = Boolean(
+    isSubmitting || formikIsSubmitting || isPublishClicked
+  );
+
+  // Reset local clicked state if Formik / parent finished submission (success or error)
+  useEffect(() => {
+    if (!isSubmitting && !formikIsSubmitting && isPublishClicked) {
+      const timer = setTimeout(() => {
+        setIsPublishClicked(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isSubmitting, formikIsSubmitting, isPublishClicked]);
+
+  const handlePublishClick = (e) => {
+    if (isPublishing) return;
+    setIsPublishClicked(true);
+    if (handleSubmit) {
+      handleSubmit(e);
+    }
+  };
 
   const selectedSystemTypes = Array.isArray(values.systemTypes)
     ? values.systemTypes
@@ -94,6 +125,8 @@ const StepReview = ({
   const [openAllImagesModal, setOpenAllImagesModal] = useState(false);
   // Full-screen trip details design preview modal
   const [openPreviewModal, setOpenPreviewModal] = useState(false);
+  // Mobile sticky bottom details drawer state
+  const [isMobileDetailsOpen, setIsMobileDetailsOpen] = useState(false);
 
   // Safe localized name helper
   const getLocalizedName = React.useCallback(
@@ -243,7 +276,10 @@ const StepReview = ({
       );
       const description =
         typeof found?.description === "object" && found.description !== null
-          ? found.description[locale] || found.description.ar || found.description.en || ""
+          ? found.description[locale] ||
+            found.description.ar ||
+            found.description.en ||
+            ""
           : found?.description || found?.desc || "";
       return {
         id: taId,
@@ -360,7 +396,9 @@ const StepReview = ({
   }, [values.b2bPrice, values.b2bPricing]);
 
   const b2cBasePrice = useMemo(() => {
-    return Number(values.b2cPrice?.price || values.b2cPricing?.price || values.price || 0);
+    return Number(
+      values.b2cPrice?.price || values.b2cPricing?.price || values.price || 0
+    );
   }, [values.b2cPrice, values.b2cPricing, values.price]);
 
   // Active Price based on selected tab
@@ -382,7 +420,9 @@ const StepReview = ({
   }, [values.b2bPrice, b2bBasePrice]);
 
   const b2cDiscount = useMemo(() => {
-    const d = Number(values.b2cPrice?.finalPrice || values.discountedPrice || 0);
+    const d = Number(
+      values.b2cPrice?.finalPrice || values.discountedPrice || 0
+    );
     return d > 0 && b2cBasePrice > 0 && d < b2cBasePrice ? d : 0;
   }, [values.b2cPrice, values.discountedPrice, b2cBasePrice]);
 
@@ -605,7 +645,7 @@ const StepReview = ({
                   />
                 </div>
               ) : (
-                <div className="rounded-2xl bg-gray-100 border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-xs h-[125px] sm:h-[175px] md:h-[200px]">
+                <div className="rounded-2xl bg-homeBg/40 border border-dashed border-border flex items-center justify-center text-textLight text-xs h-[125px] sm:h-[175px] md:h-[200px]">
                   {tSub("galleryImages")}
                 </div>
               )}
@@ -621,7 +661,7 @@ const StepReview = ({
                   />
                 </div>
               ) : (
-                <div className="rounded-2xl bg-gray-100 border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-xs h-[125px] sm:h-[175px] md:h-[200px]">
+                <div className="rounded-2xl bg-homeBg/40 border border-dashed border-border flex items-center justify-center text-textLight text-xs h-[125px] sm:h-[175px] md:h-[200px]">
                   {tSub("galleryImages")}
                 </div>
               )}
@@ -686,8 +726,8 @@ const StepReview = ({
                   </div>
                 </div>
               ) : (
-                <div className="w-full h-full rounded-2xl bg-gray-100 border border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 text-xs p-4 gap-2">
-                  <OndemandVideoOutlinedIcon className="w-8 h-8 text-gray-400" />
+                <div className="w-full h-full rounded-2xl bg-homeBg/40 border border-dashed border-border flex flex-col items-center justify-center text-textLight text-xs p-4 gap-2">
+                  <OndemandVideoOutlinedIcon className="w-8 h-8 text-textLight" />
                   <span>
                     {tSub("productVideo")} - {tSub("notAttached")}
                   </span>
@@ -696,7 +736,7 @@ const StepReview = ({
             </div>
           </div>
         ) : (
-          <div className="p-8 text-center text-subtitleColor bg-white rounded-xl border border-dashed border-gray-300">
+          <div className="p-8 text-center text-textLight bg-white rounded-xl border border-dashed border-border">
             <p className="text-sm font-medium">
               {tSub("galleryImages")} - {tSub("notAttached")}
             </p>
@@ -735,7 +775,7 @@ const StepReview = ({
       )}
 
       {/* 4. Main Two-Column Trip Details Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-28 lg:pb-0">
         {/* Right Column: Accordions (8 of 12) */}
         <div className="lg:col-span-8 space-y-4">
           {/* Accordion 1: Product Description */}
@@ -805,7 +845,9 @@ const StepReview = ({
                 {resolvedTargetAudiences.map((ta, idx) => (
                   <span
                     key={`ta-${idx}`}
-                    title={ta.description ? `${ta.name}: ${ta.description}` : ta.name}
+                    title={
+                      ta.description ? `${ta.name}: ${ta.description}` : ta.name
+                    }
                     className="px-4 py-1.5 rounded-full bg-mainColor/10 text-mainColor border border-mainColor/20 text-xs font-semibold shadow-xs inline-flex items-center gap-1.5"
                   >
                     <span>{ta.name}</span>
@@ -829,7 +871,7 @@ const StepReview = ({
                     key={idx}
                     className="flex items-start gap-2.5 text-xs sm:text-sm text-subtitleColor"
                   >
-                    <span className="text-red-500 flex-shrink-0 mt-0.5">
+                    <span className="text-error flex-shrink-0 mt-0.5">
                       {wrongIcon}
                     </span>
                     <span>{item}</span>
@@ -917,8 +959,8 @@ const StepReview = ({
 
                         {/* 2 Stats Badges matching Figma */}
                         <div className="grid grid-cols-2 gap-2 text-xs">
-                          <div className="flex items-center justify-between p-2 rounded-xl bg-gray-50 border border-gray-100">
-                            <span className="text-gray-500 font-medium">
+                          <div className="flex items-center justify-between p-2 rounded-xl bg-homeBg/40 border border-border">
+                            <span className="text-textLight font-medium">
                               {tSub("reviewCategory")}
                             </span>
                             <span className="px-2 py-0.5 rounded-md bg-mainColor/10 text-mainColor font-bold text-[11px] flex items-center gap-1">
@@ -927,8 +969,8 @@ const StepReview = ({
                             </span>
                           </div>
 
-                          <div className="flex items-center justify-between p-2 rounded-xl bg-gray-50 border border-gray-100">
-                            <span className="text-gray-500 font-medium">
+                          <div className="flex items-center justify-between p-2 rounded-xl bg-homeBg/40 border border-border">
+                            <span className="text-textLight font-medium">
                               {tSub("reviewCapacity")}
                             </span>
                             <span className="px-2 py-0.5 rounded-md bg-mainColor/10 text-mainColor font-bold text-[11px] flex items-center gap-1">
@@ -941,14 +983,14 @@ const StepReview = ({
                         {/* Additional Services / Academic stages tags */}
                         {academicStageLabels.length > 0 && (
                           <div>
-                            <span className="text-[11px] text-gray-500 block mb-1">
+                            <span className="text-[11px] text-textLight block mb-1">
                               {tSub("reviewAdditionalServices")}
                             </span>
                             <div className="flex flex-wrap gap-1.5">
                               {academicStageLabels.slice(0, 4).map((st, i) => (
                                 <span
                                   key={i}
-                                  className="px-2 py-0.5 rounded-md bg-gray-100 text-gray-700 text-[11px]"
+                                  className="px-2 py-0.5 rounded-md bg-homeBg text-textDark text-[11px]"
                                 >
                                   {st}
                                 </span>
@@ -1059,10 +1101,10 @@ const StepReview = ({
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {/* Base Product Cost */}
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1.5 text-start">
+                    <label className="block text-xs font-medium text-textLight mb-1.5 text-start">
                       {tSub("reviewBaseProductCost")}
                     </label>
-                    <div className="w-full bg-gray-50 rounded-xl border border-gray-200 py-3 px-4 text-center font-bold text-titleColor text-sm">
+                    <div className="w-full bg-homeBg/30 rounded-xl border border-border py-3 px-4 text-center font-bold text-titleColor text-sm">
                       {values.productCost
                         ? formatCurrency(values.productCost)
                         : values.b2bPrice?.productCost
@@ -1073,20 +1115,20 @@ const StepReview = ({
 
                   {/* Market Price */}
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1.5 text-start">
+                    <label className="block text-xs font-medium text-textLight mb-1.5 text-start">
                       {tSub("reviewMarketPrice")}
                     </label>
-                    <div className="w-full bg-gray-50 rounded-xl border border-gray-200 py-3 px-4 text-center font-bold text-titleColor text-sm">
+                    <div className="w-full bg-homeBg/30 rounded-xl border border-border py-3 px-4 text-center font-bold text-titleColor text-sm">
                       {b2bBasePrice ? formatCurrency(b2bBasePrice) : "-"}
                     </div>
                   </div>
 
                   {/* Free Supervisor */}
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1.5 text-start">
+                    <label className="block text-xs font-medium text-textLight mb-1.5 text-start">
                       {tSub("reviewFreeSupervisorFor")}
                     </label>
-                    <div className="w-full bg-gray-50 rounded-xl border border-gray-200 py-3 px-4 text-center font-bold text-mainColor text-sm">
+                    <div className="w-full bg-homeBg/30 rounded-xl border border-border py-3 px-4 text-center font-bold text-mainColor text-sm">
                       {tSub("reviewFreeSupervisorPerStudents", {
                         count:
                           values.b2bPrice?.studentsPerSupervisor ||
@@ -1191,24 +1233,28 @@ const StepReview = ({
                 {/* 2 Summary Boxes: Market Price & Discounted Price */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1.5 text-start">
+                    <label className="block text-xs font-medium text-textLight mb-1.5 text-start">
                       {tSub("reviewMarketPrice")}
                     </label>
-                    <div className="w-full bg-gray-50 rounded-xl border border-gray-200 py-3 px-4 text-center font-bold text-titleColor text-sm">
+                    <div className="w-full bg-homeBg/30 rounded-xl border border-border py-3 px-4 text-center font-bold text-titleColor text-sm">
                       {b2cBasePrice ? formatCurrency(b2cBasePrice) : "-"}
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1.5 text-start">
+                    <label className="block text-xs font-medium text-textLight mb-1.5 text-start">
                       {tSub("reviewDiscountLabel")}
                     </label>
-                    <div className="w-full bg-gray-50 rounded-xl border border-gray-200 py-3 px-4 text-center font-bold text-mainColor text-sm">
+                    <div className="w-full bg-homeBg/30 rounded-xl border border-border py-3 px-4 text-center font-bold text-mainColor text-sm">
                       {b2cDiscount > 0 ? (
                         <div className="flex items-center justify-center gap-2">
                           <span>{formatCurrency(b2cDiscount)}</span>
                           <span className="text-xs text-error bg-error/10 px-2 py-0.5 rounded-md border border-error/20">
-                            %{Math.round(((b2cBasePrice - b2cDiscount) / b2cBasePrice) * 100)}
+                            %
+                            {Math.round(
+                              ((b2cBasePrice - b2cDiscount) / b2cBasePrice) *
+                                100
+                            )}
                           </span>
                         </div>
                       ) : (
@@ -1298,29 +1344,29 @@ const StepReview = ({
           )}
         </div>
 
-        {/* Left Column: Sidebar Pricing Card (4 of 12) */}
-        <div className="lg:col-span-4 lg:sticky lg:top-4 space-y-4">
+        {/* Left Column: Sidebar Pricing Card (hidden on mobile, visible on lg) */}
+        <div className="hidden lg:block lg:col-span-4 lg:sticky lg:top-4 space-y-4">
           <FrameWithImagedHeader
             withBorder={true}
-            className="shadow-md rounded-2xl overflow-hidden"
+            className="shadow-md rounded-2xl overflow-hidden bg-white"
           >
             {/* Price Section with Discount support matching Figma node 21205-187866 */}
             <div className="space-y-1 pb-4 text-start">
-              <span className="text-sm text-[#4A5C5F] font-normal block leading-5">
+              <span className="text-sm text-textLight font-normal block leading-5">
                 {tSub("reviewPriceStartsFrom")}
               </span>
               {activeDiscount > 0 ? (
                 <div className="flex flex-col gap-1">
                   <div className="flex items-baseline gap-2 flex-wrap">
-                    <div className="flex items-center gap-1.5 text-2xl font-bold text-[#042A30]">
+                    <div className="flex items-center gap-1.5 text-2xl font-bold text-textDark">
                       <span>{activeDiscount}</span>
-                      <span className="inline-flex items-center text-[#042A30]">
+                      <span className="inline-flex items-center text-textDark">
                         {newSarLarge}
                       </span>
                     </div>
-                    <div className="line-through text-sm text-[#4A5C5F] font-normal flex items-center gap-1">
+                    <div className="line-through text-sm text-textLight font-normal flex items-center gap-1">
                       <span>{activePrice}</span>
-                      <span className="inline-flex items-center text-[#4A5C5F]">
+                      <span className="inline-flex items-center text-textLight">
                         {newSarSmall}
                       </span>
                     </div>
@@ -1330,9 +1376,9 @@ const StepReview = ({
                   </span>
                 </div>
               ) : (
-                <div className="flex items-center gap-1.5 text-2xl font-bold text-[#042A30]">
+                <div className="flex items-center gap-1.5 text-2xl font-bold text-textDark">
                   <span>{activePrice}</span>
-                  <span className="inline-flex items-center text-[#042A30]">
+                  <span className="inline-flex items-center text-textDark">
                     {newSarLarge}
                   </span>
                 </div>
@@ -1343,14 +1389,14 @@ const StepReview = ({
             <div className="space-y-3 py-1 text-start">
               {/* Row 1: Date Range */}
               <div className="flex items-center gap-3">
-                <div className="w-11 h-12 rounded-[8px] bg-[#EEFAF9] text-[#2991AA] flex items-center justify-center flex-shrink-0">
-                  <CalendarTodayIcon className="w-5 h-5 text-[#2991AA]" />
+                <div className="w-11 h-12 rounded-[8px] bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
+                  <CalendarTodayIcon className="w-5 h-5 text-mainColor" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <span className="text-base font-medium text-[#042A30] leading-5 block">
+                  <span className="text-base font-medium text-textDark leading-5 block">
                     {tSub("reviewDate")}
                   </span>
-                  <span className="text-base font-semibold text-[#042A30] leading-5 block truncate">
+                  <span className="text-base font-semibold text-textDark leading-5 block truncate">
                     {dateRangeStr}
                   </span>
                 </div>
@@ -1359,14 +1405,14 @@ const StepReview = ({
               {/* Row 2: Activity Duration */}
               {durationHours > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-12 rounded-[8px] bg-[#EEFAF9] text-[#2991AA] flex items-center justify-center flex-shrink-0">
-                    <AccessTimeIcon className="w-5 h-5 text-[#2991AA]" />
+                  <div className="w-11 h-12 rounded-[8px] bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
+                    <AccessTimeIcon className="w-5 h-5 text-mainColor" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <span className="text-base font-medium text-[#042A30] leading-5 block">
+                    <span className="text-base font-medium text-textDark leading-5 block">
                       {tSub("reviewActivityDuration")}
                     </span>
-                    <span className="text-base font-semibold text-[#042A30] leading-5 block">
+                    <span className="text-base font-semibold text-textDark leading-5 block">
                       {durationHours} {tSub("reviewHours")}
                     </span>
                   </div>
@@ -1374,16 +1420,18 @@ const StepReview = ({
               )}
 
               {/* Row 3: Age Range */}
-              {(values.ageRange?.from || values.ageRange?.to || academicStageLabels.length > 0) && (
+              {(values.ageRange?.from ||
+                values.ageRange?.to ||
+                academicStageLabels.length > 0) && (
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-12 rounded-[8px] bg-[#EEFAF9] text-[#2991AA] flex items-center justify-center flex-shrink-0">
-                    <AccessTimeIcon className="w-5 h-5 text-[#2991AA]" />
+                  <div className="w-11 h-12 rounded-[8px] bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
+                    <AccessTimeIcon className="w-5 h-5 text-mainColor" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <span className="text-base font-medium text-[#042A30] leading-5 block">
+                    <span className="text-base font-medium text-textDark leading-5 block">
                       {tSub("reviewAgeFrom")}
                     </span>
-                    <span className="text-base font-semibold text-[#042A30] leading-5 block">
+                    <span className="text-base font-semibold text-textDark leading-5 block">
                       {values.ageRange?.from || values.ageRange?.to
                         ? tSub("reviewAgeYears", {
                             from: values.ageRange?.from || 8,
@@ -1396,11 +1444,11 @@ const StepReview = ({
               )}
 
               {/* Row 4: Deadline Box matching Figma */}
-              <div className="flex items-center justify-between p-3 rounded-[8px] bg-[#EFFACF] text-base">
-                <span className="text-[#0B7F8F] font-semibold text-sm sm:text-base">
+              <div className="flex items-center justify-between p-3 rounded-[8px] bg-buttonsHover/50 text-base">
+                <span className="text-titleColor font-semibold text-sm sm:text-base">
                   {tSub("reviewBookingDeadlineDaysBefore")}
                 </span>
-                <span className="text-[#0B7F8F] font-bold text-sm sm:text-base">
+                <span className="text-titleColor font-bold text-sm sm:text-base">
                   {values.bookingBefore || 1}
                 </span>
               </div>
@@ -1410,11 +1458,11 @@ const StepReview = ({
             <div className="space-y-2.5 pt-3 border-t border-border">
               <button
                 type="button"
-                disabled={isSubmitting}
-                onClick={handleSubmit}
-                className="w-full py-3 px-4 rounded-xl bg-mainColor hover:bg-titleColor text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.99] disabled:opacity-50"
+                disabled={isPublishing}
+                onClick={handlePublishClick}
+                className="w-full py-3 px-4 rounded-xl bg-mainColor hover:bg-titleColor text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? (
+                {isPublishing ? (
                   <CircularProgress size={18} color="inherit" />
                 ) : (
                   <CheckCircleIcon className="w-4 h-4" />
@@ -1425,8 +1473,9 @@ const StepReview = ({
               {setActiveStep && (
                 <button
                   type="button"
-                  onClick={() => setActiveStep(1)}
-                  className="w-full py-2.5 px-4 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/5 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer transition-all shadow-xs"
+                  disabled={isPublishing}
+                  onClick={isPublishing ? undefined : () => setActiveStep(1)}
+                  className="w-full py-2.5 px-4 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/5 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer transition-all shadow-xs disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
                 >
                   <EditIcon className="w-4 h-4" />
                   <span>{tSub("reviewEdit")}</span>
@@ -1434,6 +1483,173 @@ const StepReview = ({
               )}
             </div>
           </FrameWithImagedHeader>
+        </div>
+      </div>
+
+      {/* Mobile Sticky Bar at VH Bottom (hidden on desktop, fixed at bottom-0 on mobile) */}
+      <div className="lg:hidden fixed bottom-6 inset-x-0 z-40 bg-white/98 backdrop-blur-md border-t border-border shadow-[0_-8px_30px_rgba(0,0,0,0.12)]">
+        {/* Toggle Details Bar */}
+        <button
+          type="button"
+          onClick={() => setIsMobileDetailsOpen((prev) => !prev)}
+          className="w-full pt-2 pb-1.5 px-4 flex items-center justify-between cursor-pointer text-subtitleColor hover:text-mainColor transition-colors bg-gray-50/80 border-b border-border/40"
+          aria-expanded={isMobileDetailsOpen}
+          aria-label={
+            isMobileDetailsOpen
+              ? tSub("reviewHideDetails")
+              : tSub("reviewViewDetails")
+          }
+        >
+          <span className="text-xs font-semibold text-titleColor flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-mainColor inline-block" />
+            <span>
+              {isMobileDetailsOpen
+                ? tSub("reviewHideDetails")
+                : tSub("reviewViewDetails")}
+            </span>
+          </span>
+          <div className="flex items-center gap-1.5 text-xs text-subtitleColor">
+            {dateRangeStr && dateRangeStr !== "-" && (
+              <span className="truncate max-w-[150px] font-medium">
+                {dateRangeStr}
+              </span>
+            )}
+            {isMobileDetailsOpen ? (
+              <KeyboardArrowDownIcon className="w-4 h-4 text-mainColor" />
+            ) : (
+              <KeyboardArrowUpIcon className="w-4 h-4 text-mainColor" />
+            )}
+          </div>
+        </button>
+
+        {/* Expandable Details Drawer */}
+        {isMobileDetailsOpen && (
+          <div className="px-4 py-3 bg-white space-y-3 max-h-[40vh] overflow-y-auto border-b border-border/60 text-start shadow-inner">
+            {/* Row 1: Date Range */}
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-[8px] bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
+                <CalendarTodayIcon className="w-4 h-4 text-mainColor" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="text-xs font-medium text-textLight block">
+                  {tSub("reviewDate")}
+                </span>
+                <span className="text-xs sm:text-sm font-semibold text-textDark block truncate">
+                  {dateRangeStr}
+                </span>
+              </div>
+            </div>
+
+            {/* Row 2: Activity Duration */}
+            {durationHours > 0 && (
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-[8px] bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
+                  <AccessTimeIcon className="w-4 h-4 text-mainColor" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <span className="text-xs font-medium text-textLight block">
+                    {tSub("reviewActivityDuration")}
+                  </span>
+                  <span className="text-xs sm:text-sm font-semibold text-textDark block">
+                    {durationHours} {tSub("reviewHours")}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Row 3: Age Range */}
+            {(values.ageRange?.from ||
+              values.ageRange?.to ||
+              academicStageLabels.length > 0) && (
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-[8px] bg-mainColor/10 text-mainColor flex items-center justify-center flex-shrink-0">
+                  <AccessTimeIcon className="w-4 h-4 text-mainColor" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <span className="text-xs font-medium text-textLight block">
+                    {tSub("reviewAgeFrom")}
+                  </span>
+                  <span className="text-xs sm:text-sm font-semibold text-textDark block">
+                    {values.ageRange?.from || values.ageRange?.to
+                      ? tSub("reviewAgeYears", {
+                          from: values.ageRange?.from || 8,
+                          to: values.ageRange?.to || 16,
+                        })
+                      : academicStageLabels.slice(0, 2).join(", ")}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Row 4: Deadline Box matching Figma */}
+            <div className="flex items-center justify-between p-2.5 rounded-[8px] bg-buttonsHover/50 text-xs sm:text-sm">
+              <span className="text-titleColor font-semibold">
+                {tSub("reviewBookingDeadlineDaysBefore")}
+              </span>
+              <span className="text-titleColor font-bold">
+                {values.bookingBefore || 1}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Action Bar (Always Visible at VH bottom) */}
+        <div className="px-4 py-3 flex items-center justify-between gap-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          {/* Price Starts From */}
+          <div className="text-start shrink-0">
+            <span className="text-[11px] text-textLight block leading-tight">
+              {tSub("reviewPriceStartsFrom")}
+            </span>
+            {activeDiscount > 0 ? (
+              <div className="flex items-baseline gap-1.5 flex-wrap">
+                <div className="flex items-center gap-1 text-lg font-bold text-textDark">
+                  <span>{activeDiscount}</span>
+                  <span className="inline-flex items-center text-textDark">
+                    {newSarSmall}
+                  </span>
+                </div>
+                <span className="line-through text-xs text-textLight">
+                  {activePrice}
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1 text-lg font-bold text-textDark">
+                <span>{activePrice}</span>
+                <span className="inline-flex items-center text-textDark">
+                  {newSarSmall}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Buttons: Edit & Publish */}
+          <div className="flex items-center gap-2 flex-1 justify-end">
+            {setActiveStep && (
+              <button
+                type="button"
+                disabled={isPublishing}
+                onClick={isPublishing ? undefined : () => setActiveStep(1)}
+                className="py-2.5 px-3.5 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/5 font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-xs shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
+              >
+                <EditIcon className="w-3.5 h-3.5" />
+                <span>{tSub("reviewEdit")}</span>
+              </button>
+            )}
+
+            <button
+              type="button"
+              disabled={isPublishing}
+              onClick={handlePublishClick}
+              className="py-2.5 px-5 rounded-xl bg-mainColor hover:bg-titleColor text-white font-bold text-xs sm:text-sm shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed min-w-[100px]"
+            >
+              {isPublishing ? (
+                <CircularProgress size={16} color="inherit" />
+              ) : (
+                <CheckCircleIcon className="w-4 h-4" />
+              )}
+              <span>{tSub("reviewPublish")}</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

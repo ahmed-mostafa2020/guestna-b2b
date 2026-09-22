@@ -886,10 +886,11 @@ const AddProductPage = () => {
                 {currentStep > 1 && (
                   <button
                     type="button"
+                    disabled={formikSubmitting || isSubmittingForm}
                     onClick={() => {
                       setCurrentStep((prev) => Math.max(1, prev - 1));
                     }}
-                    className="w-full sm:w-auto px-6 py-3.5 rounded-xl border border-titleColor/20 text-titleColor hover:bg-titleColor/5 font-medium text-base transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full sm:w-auto px-6 py-3.5 rounded-xl border border-titleColor/20 text-titleColor hover:bg-titleColor/5 font-medium text-base transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isAr ? (
                       <ArrowForwardIcon className="w-5 h-5" />

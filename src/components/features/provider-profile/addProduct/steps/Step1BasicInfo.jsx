@@ -307,12 +307,12 @@ const Step1BasicInfo = ({
                   "w-full h-11 px-3.5 rounded-lg border bg-white text-sm font-medium text-titleColor transition-colors focus:outline-none font-somar",
                   ageFrom.showError
                     ? "border-error focus:border-error ring-1 ring-error/30"
-                    : "border-gray-200 hover:border-mainColor focus:border-mainColor"
+                    : "border-border hover:border-mainColor focus:border-mainColor"
                 )}
               />
               <label
                 htmlFor="ageRange.from"
-                className="font-somar text-xs font-medium text-gray-500 block mt-1.5 text-start cursor-pointer"
+                className="font-somar text-xs font-medium text-textLight block mt-1.5 text-start cursor-pointer"
               >
                 {t("minAge")}
               </label>
@@ -337,12 +337,12 @@ const Step1BasicInfo = ({
                   "w-full h-11 px-3.5 rounded-lg border bg-white text-sm font-medium text-titleColor transition-colors focus:outline-none font-somar",
                   ageTo.showError
                     ? "border-error focus:border-error ring-1 ring-error/30"
-                    : "border-gray-200 hover:border-mainColor focus:border-mainColor"
+                    : "border-border hover:border-mainColor focus:border-mainColor"
                 )}
               />
               <label
                 htmlFor="ageRange.to"
-                className="font-somar text-xs font-medium text-gray-500 block mt-1.5 text-start cursor-pointer"
+                className="font-somar text-xs font-medium text-textLight block mt-1.5 text-start cursor-pointer"
               >
                 {t("maxAge")}
               </label>

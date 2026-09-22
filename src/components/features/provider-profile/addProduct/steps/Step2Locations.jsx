@@ -272,7 +272,7 @@ const Step2Locations = ({
 
         <div className="mt-5 space-y-6">
           {branchGroups.length === 0 ? (
-            <p className="text-sm text-gray-400 py-4 font-somar text-center">
+            <p className="text-sm text-textLight py-4 font-somar text-center">
               {t("emptyBranchesTitle")}
             </p>
           ) : (
@@ -288,7 +288,7 @@ const Step2Locations = ({
               return (
                 <div key={`group-${groupIdx}`} className="space-y-2.5">
                   {cityName && (
-                    <h3 className="text-sm font-semibold text-gray-700">
+                    <h3 className="text-sm font-semibold text-textDark">
                       {cityName}
                     </h3>
                   )}
@@ -323,7 +323,7 @@ const Step2Locations = ({
                         >
                           {/* Right side in RTL: Location pin + Branch Name */}
                           <div className="flex items-center gap-2.5">
-                            <LocationOnOutlinedIcon className="w-5 h-5 text-gray-400 shrink-0" />
+                            <LocationOnOutlinedIcon className="w-5 h-5 text-textLight shrink-0" />
                             <span className="text-sm font-medium text-titleColor">
                               {branchName}
                             </span>
@@ -335,7 +335,7 @@ const Step2Locations = ({
                               "w-5 h-5 rounded flex items-center justify-center border transition-all shrink-0",
                               isSelected
                                 ? "bg-mainColor border-mainColor text-white shadow-xs"
-                                : "border-gray-300 bg-white"
+                                : "border-border bg-white"
                             )}
                             aria-hidden="true"
                           >
@@ -362,7 +362,7 @@ const Step2Locations = ({
           <h2 className="text-lg font-bold text-titleColor">
             {t("capacityCardTitle")}
           </h2>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-textLight mt-1">
             {t("capacityCardSubtitle")}
           </p>
         </div>
@@ -372,7 +372,7 @@ const Step2Locations = ({
           <div id="availableSeats.min" className="flex flex-col scroll-mt-6">
             <label
               htmlFor="default-capacity-min-input"
-              className="text-xs font-semibold text-gray-700 mb-1.5"
+              className="text-xs font-semibold text-textDark mb-1.5"
             >
               {t("capacity")} <span className="text-error ms-0.5">*</span>
             </label>
@@ -389,7 +389,7 @@ const Step2Locations = ({
                 "w-full h-11 px-3.5 rounded-lg border bg-white text-sm font-medium text-titleColor transition-colors focus:outline-none",
                 hasMinCapacityError
                   ? "border-error focus:border-error ring-1 ring-error/30"
-                  : "border-gray-200 focus:border-mainColor"
+                  : "border-border focus:border-mainColor"
               )}
             />
             {hasMinCapacityError && (
@@ -397,7 +397,7 @@ const Step2Locations = ({
                 {minCapacityError}
               </p>
             )}
-            <p className="text-[11px] text-gray-400 mt-1">
+            <p className="text-[11px] text-textLight mt-1">
               {t("capacityHelp")}
             </p>
           </div>
@@ -406,7 +406,7 @@ const Step2Locations = ({
           <div id="availableSeats.max" className="flex flex-col scroll-mt-6">
             <label
               htmlFor="default-capacity-max-input"
-              className="text-xs font-semibold text-gray-700 mb-1.5"
+              className="text-xs font-semibold text-textDark mb-1.5"
             >
               {t("maxCapacity")} <span className="text-error ms-0.5">*</span>
             </label>
@@ -423,7 +423,7 @@ const Step2Locations = ({
                 "w-full h-11 px-3.5 rounded-lg border bg-white text-sm font-medium text-titleColor transition-colors focus:outline-none",
                 hasMaxCapacityError
                   ? "border-error focus:border-error ring-1 ring-error/30"
-                  : "border-gray-200 focus:border-mainColor"
+                  : "border-border focus:border-mainColor"
               )}
             />
             {hasMaxCapacityError && (
@@ -449,7 +449,7 @@ const Step2Locations = ({
               {t("productLocationTitle")}
             </h2>
           </div>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-textLight mt-1">
             {t("productLocationSubtitle")}
           </p>
         </div>
@@ -503,7 +503,7 @@ const Step2Locations = ({
             <h2 className="text-lg font-bold text-titleColor">
               {t("branchCustomizeTitle")}
             </h2>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-textLight mt-1">
               {t("branchCustomizeSubtitle")}
             </p>
           </div>
@@ -544,13 +544,13 @@ const Step2Locations = ({
           {!isCapacityCustomizedActive ? (
             /* Empty State Box */
             <div className="bg-gray-50/80 border border-border rounded-2xl p-8 sm:p-12 text-center flex flex-col items-center justify-center gap-3">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400">
-                <AutoAwesomeOutlinedIcon className="w-6 h-6 text-gray-400" />
+              <div className="w-10 h-10 rounded-full flex items-center justify-center text-textLight">
+                <AutoAwesomeOutlinedIcon className="w-6 h-6 text-textLight" />
               </div>
               <h3 className="font-somar font-bold text-base sm:text-lg text-titleColor">
                 {t("emptyBranchesTitle")}
               </h3>
-              <p className="font-somar text-xs sm:text-sm text-gray-500 max-w-md">
+              <p className="font-somar text-xs sm:text-sm text-textLight max-w-md">
                 {t("emptyBranchesSubtitle")}
               </p>
               <button
@@ -590,11 +590,11 @@ const Step2Locations = ({
                         <h4 className="text-sm font-bold text-titleColor">
                           {branchFullName}
                         </h4>
-                        <p className="text-xs text-gray-400 mt-0.5">
+                        <p className="text-xs text-textLight mt-0.5">
                           {branchFullName}
                         </p>
                       </div>
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-titleColor transition-colors">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-textLight hover:text-titleColor transition-colors">
                         {isOpen ? (
                           <KeyboardArrowUpIcon className="w-5 h-5" />
                         ) : (
@@ -605,11 +605,11 @@ const Step2Locations = ({
 
                     {/* Accordion Expanded Body */}
                     {isOpen && (
-                      <div className="p-4 sm:p-5 border-t border-gray-100 bg-gray-50/50">
+                      <div className="p-4 sm:p-5 border-t border-border bg-gray-50/50">
                         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                           {/* Input 1: السعة */}
                           <div className="flex-1 flex flex-col">
-                            <label className="text-xs font-semibold text-gray-700 mb-1.5">
+                            <label className="text-xs font-semibold text-textDark mb-1.5">
                               {t("capacity")} <span className="text-error ms-0.5">*</span>
                             </label>
                             <input
@@ -624,13 +624,13 @@ const Step2Locations = ({
                                 )
                               }
                               placeholder={t("capacityPlaceholder")}
-                              className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-sm font-medium text-titleColor focus:border-mainColor focus:outline-none transition-colors"
+                              className="w-full h-11 px-3.5 rounded-lg border border-border bg-white text-sm font-medium text-titleColor focus:border-mainColor focus:outline-none transition-colors"
                             />
                           </div>
 
                           {/* Input 2: أقصى سعة */}
                           <div className="flex-1 flex flex-col">
-                            <label className="text-xs font-semibold text-gray-700 mb-1.5">
+                            <label className="text-xs font-semibold text-textDark mb-1.5">
                               {t("maxCapacity")} <span className="text-error ms-0.5">*</span>
                             </label>
                             <input
@@ -645,7 +645,7 @@ const Step2Locations = ({
                                 )
                               }
                               placeholder={t("maxCapacityPlaceholder")}
-                              className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-sm font-medium text-titleColor focus:border-mainColor focus:outline-none transition-colors"
+                              className="w-full h-11 px-3.5 rounded-lg border border-border bg-white text-sm font-medium text-titleColor focus:border-mainColor focus:outline-none transition-colors"
                             />
                           </div>
 
@@ -657,7 +657,7 @@ const Step2Locations = ({
                                 handleRemoveBranchCapacity(branch.id)
                               }
                               title={t("deleteCustomization")}
-                              className="w-11 h-11 rounded-lg border border-red-200 text-red-500 hover:bg-red-50 flex items-center justify-center transition-colors cursor-pointer"
+                              className="w-11 h-11 rounded-lg border border-error/20 text-error hover:bg-error/10 flex items-center justify-center transition-colors cursor-pointer"
                             >
                               <DeleteOutlineIcon className="w-5 h-5" />
                             </button>

@@ -377,7 +377,7 @@ const Step4BookingDates = ({
                   placeholder={t("bookingDeadlinePlaceholder")}
                   className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark"
                 />
-                <UnfoldMoreOutlinedIcon className="w-4 h-4 text-gray-400 flex-shrink-0 ms-2" />
+                <UnfoldMoreOutlinedIcon className="w-4 h-4 text-textLight flex-shrink-0 ms-2" />
               </div>
               {hasBookingBeforeErr && (
                 <p className="text-xs text-error mt-1 font-medium">{bookingBeforeErr}</p>
@@ -647,13 +647,13 @@ const Step4BookingDates = ({
         {/* When NOT customized: Empty State Box Matching Figma */}
         {!isCustomizedActive ? (
           <div className="bg-gray-50/80 border border-border rounded-2xl p-8 sm:p-12 text-center flex flex-col items-center justify-center gap-3">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400">
-              <AutoAwesomeOutlinedIcon className="w-6 h-6 text-gray-400" />
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-textLight">
+              <AutoAwesomeOutlinedIcon className="w-6 h-6 text-textLight" />
             </div>
             <h3 className="font-somar font-bold text-base sm:text-lg text-titleColor">
               {t("emptyBranchesTitle")}
             </h3>
-            <p className="font-somar text-xs sm:text-sm text-gray-500 max-w-md">
+            <p className="font-somar text-xs sm:text-sm text-textLight max-w-md">
               {t("emptyBranchesSubtitle")}
             </p>
             <button
@@ -704,17 +704,17 @@ const Step4BookingDates = ({
                         {branchName}
                       </h4>
                       {branchSubtitle && (
-                        <p className="font-somar text-xs sm:text-sm text-gray-500 mt-0.5">
+                        <p className="font-somar text-xs sm:text-sm text-textLight mt-0.5">
                           {branchSubtitle}
                         </p>
                       )}
                     </div>
 
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-textDark hover:bg-gray-200/50 transition-colors">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-textDark hover:bg-buttonsHover/30 transition-colors">
                       {isOpen ? (
-                        <KeyboardArrowUpIcon className="w-5 h-5 text-gray-600" />
+                        <KeyboardArrowUpIcon className="w-5 h-5 text-textLight" />
                       ) : (
-                        <KeyboardArrowDownIcon className="w-5 h-5 text-gray-600" />
+                        <KeyboardArrowDownIcon className="w-5 h-5 text-textLight" />
                       )}
                     </div>
                   </button>
@@ -789,7 +789,7 @@ const Step4BookingDates = ({
                               placeholder="1"
                               className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark"
                             />
-                            <UnfoldMoreOutlinedIcon className="w-4 h-4 text-gray-400 flex-shrink-0 ms-2" />
+                            <UnfoldMoreOutlinedIcon className="w-4 h-4 text-textLight flex-shrink-0 ms-2" />
                           </div>
                         </div>
                       </div>

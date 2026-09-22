@@ -477,7 +477,7 @@ const Step2Gallery = () => {
                 "text-xs font-bold px-3 py-1 rounded-full font-ibm",
                 galleryItems.length >= 4
                   ? "text-mainColor bg-mainColor/10"
-                  : "text-amber-700 bg-amber-50"
+                  : "text-secColor bg-secColor/10"
               )}
             >
               {galleryItems.length} / 15
@@ -498,7 +498,7 @@ const Step2Gallery = () => {
                   "relative w-full aspect-[4/3] rounded-xl overflow-hidden border transition-all duration-200 flex items-center justify-center group",
                   showGalleryError && galleryItems.length < 4 && !isUploaded
                     ? "border-error/60"
-                    : "border-gray-200",
+                    : "border-border",
                   !isUploaded && "cursor-pointer hover:border-mainColor/50"
                 )}
                 style={!isUploaded ? checkeredPatternStyle : undefined}
@@ -523,7 +523,7 @@ const Step2Gallery = () => {
                           e.stopPropagation();
                           handleRemoveGalleryItem(index);
                         }}
-                        className="bg-red-500/90 hover:bg-red-600 text-white p-2 rounded-lg transition-colors cursor-pointer shadow-sm"
+                        className="bg-error/90 hover:bg-error text-white p-2 rounded-lg transition-colors cursor-pointer shadow-sm"
                         title={t("removeImage")}
                       >
                         <DeleteOutlineIcon className="w-4 h-4" />
@@ -535,8 +535,8 @@ const Step2Gallery = () => {
                     </span>
                   </>
                 ) : (
-                  <div className="text-gray-400 text-xs font-ibm flex flex-col items-center gap-1">
-                    <span className="text-xl leading-none font-light text-gray-400/80">
+                  <div className="text-textLight text-xs font-ibm flex flex-col items-center gap-1">
+                    <span className="text-xl leading-none font-light text-textLight/80">
                       +
                     </span>
                   </div>
@@ -612,14 +612,14 @@ const Step2Gallery = () => {
               </div>
 
               {/* Video Info and Controls */}
-              <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-200 text-xs sm:text-sm">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-homeBg/40 border border-border text-xs sm:text-sm">
                 <div className="flex items-center gap-2 overflow-hidden text-ellipsis">
-                  <OndemandVideoOutlinedIcon className="w-4 h-4 text-gray-500 shrink-0" />
+                  <OndemandVideoOutlinedIcon className="w-4 h-4 text-textLight shrink-0" />
                   <span className="font-medium text-textDark truncate max-w-[220px] sm:max-w-[300px]">
                     {videoMetadata.name}
                   </span>
                   {videoMetadata.size > 0 && (
-                    <span className="text-gray-400 font-ibm shrink-0">
+                    <span className="text-textLight font-ibm shrink-0">
                       ({formatFileSize(videoMetadata.size)})
                     </span>
                   )}
@@ -633,11 +633,11 @@ const Step2Gallery = () => {
                   >
                     {t("changeVideoBtn")}
                   </button>
-                  <span className="text-gray-300">|</span>
+                  <span className="text-border">|</span>
                   <button
                     type="button"
                     onClick={handleRemoveVideo}
-                    className="text-xs font-semibold text-red-500 hover:text-red-700 flex items-center gap-1 cursor-pointer"
+                    className="text-xs font-semibold text-error hover:text-error/80 flex items-center gap-1 cursor-pointer"
                     title={t("removeVideo")}
                   >
                     <DeleteOutlineIcon className="w-3.5 h-3.5" />
@@ -671,18 +671,18 @@ const Step2Gallery = () => {
                 className={cn(
                   "w-full h-[52px] rounded-xl border-2 border-dashed font-ibm text-sm sm:text-base font-medium flex items-center justify-center gap-2.5 transition-all duration-200 select-none",
                   hasYoutubeUrl
-                    ? "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed opacity-60"
-                    : "border-gray-300 hover:border-mainColor bg-gray-50/50 hover:bg-mainColor/[0.02] text-textDark cursor-pointer"
+                    ? "border-border bg-disabled/20 text-disabled cursor-not-allowed opacity-60"
+                    : "border-border hover:border-mainColor bg-homeBg/30 hover:bg-mainColor/[0.02] text-textDark cursor-pointer"
                 )}
               >
-                <OndemandVideoOutlinedIcon className={cn("w-5 h-5", hasYoutubeUrl ? "text-gray-400" : "text-mainColor")} />
+                <OndemandVideoOutlinedIcon className={cn("w-5 h-5", hasYoutubeUrl ? "text-disabled" : "text-mainColor")} />
                 <span>{t("uploadVideoBtn")}</span>
-                <span className="text-xs text-gray-400 font-normal">
+                <span className="text-xs text-textLight font-normal">
                   (MP4, WebM, MOV, OGG — max 20MB)
                 </span>
               </button>
               {hasYoutubeUrl && (
-                <p className="text-xs text-amber-600 font-medium mt-1.5 flex items-center gap-1.5">
+                <p className="text-xs text-secColor font-medium mt-1.5 flex items-center gap-1.5">
                   <span>ℹ️</span>
                   <span>{t("youtubeEnteredNotice")}</span>
                 </p>
@@ -708,7 +708,7 @@ const Step2Gallery = () => {
       <div className="flex flex-col gap-4 pt-4 border-t border-border text-start" id="youtubeUrl">
         <div>
           <h3 className="font-ibm text-base font-bold text-textDark leading-5 flex items-center gap-2">
-            <YouTubeIcon className="w-5 h-5 text-red-600" />
+            <YouTubeIcon className="w-5 h-5 text-error" />
             <span>{t("youtubeSectionTitle")}</span>
           </h3>
           <p className="font-ibm text-sm sm:text-base font-normal text-textLight leading-6 mt-1">
@@ -720,7 +720,7 @@ const Step2Gallery = () => {
         <div className="flex flex-col gap-4 max-w-[540px] w-full">
           <div className="relative flex items-center">
             {/* YouTube Icon */}
-            <div className="absolute start-3.5 flex items-center justify-center pointer-events-none text-red-600">
+            <div className="absolute start-3.5 flex items-center justify-center pointer-events-none text-error">
               <YouTubeIcon className="w-5 h-5" />
             </div>
 
@@ -742,7 +742,7 @@ const Step2Gallery = () => {
               className={cn(
                 "w-full h-12 ps-11 pe-10 rounded-xl border font-somar text-sm transition-all outline-none",
                 hasVideoFile
-                  ? "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed opacity-60"
+                  ? "border-border bg-disabled/20 text-disabled cursor-not-allowed opacity-60"
                   : showYoutubeError
                   ? "border-error focus:border-error ring-1 ring-error/30 bg-white text-textDark"
                   : "border-border hover:border-mainColor focus:border-mainColor focus:ring-1 focus:ring-mainColor/30 bg-white text-textDark"
@@ -757,7 +757,7 @@ const Step2Gallery = () => {
                   setFieldValue("youtubeUrl", "", true);
                   setFieldTouched("youtubeUrl", true, false);
                 }}
-                className="absolute end-3 w-6 h-6 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
+                className="absolute end-3 w-6 h-6 rounded-full flex items-center justify-center text-textLight hover:text-textDark hover:bg-buttonsHover/20 transition-colors cursor-pointer"
                 title="Clear"
               >
                 <CloseIcon sx={{ fontSize: 16 }} />
@@ -766,7 +766,7 @@ const Step2Gallery = () => {
           </div>
 
           {hasVideoFile && (
-            <p className="text-xs text-amber-600 font-medium flex items-center gap-1.5">
+            <p className="text-xs text-secColor font-medium flex items-center gap-1.5">
               <span>ℹ️</span>
               <span>{t("videoUploadedNotice")}</span>
             </p>

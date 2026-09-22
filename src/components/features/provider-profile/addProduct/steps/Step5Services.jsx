@@ -621,10 +621,10 @@ const Step5Services = ({
         {/* When NOT customized: Empty placeholder state */}
         {!isCustomizedActive ? (
           <div className="py-12 px-4 rounded-xl border border-dashed border-border flex flex-col items-center justify-center text-center space-y-3 bg-gray-50/50">
-            <h3 className="font-somar font-bold text-base text-gray-700">
+            <h3 className="font-somar font-bold text-base text-textDark">
               {t("emptyBranchesTitle")}
             </h3>
-            <p className="font-somar text-xs sm:text-sm text-gray-500 max-w-md">
+            <p className="font-somar text-xs sm:text-sm text-textLight max-w-md">
               {t("emptyBranchesSubtitle")}
             </p>
             <button
@@ -670,17 +670,17 @@ const Step5Services = ({
                         {branchName}
                       </h4>
                       {branchSubtitle && (
-                        <p className="font-somar text-xs sm:text-sm text-gray-500 mt-0.5">
+                        <p className="font-somar text-xs sm:text-sm text-textLight mt-0.5">
                           {branchSubtitle}
                         </p>
                       )}
                     </div>
 
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-textDark hover:bg-gray-200/50 transition-colors">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-textDark hover:bg-buttonsHover/30 transition-colors">
                       {isOpen ? (
-                        <KeyboardArrowUpIcon className="w-5 h-5 text-gray-600" />
+                        <KeyboardArrowUpIcon className="w-5 h-5 text-textLight" />
                       ) : (
-                        <KeyboardArrowDownIcon className="w-5 h-5 text-gray-600" />
+                        <KeyboardArrowDownIcon className="w-5 h-5 text-textLight" />
                       )}
                     </div>
                   </button>

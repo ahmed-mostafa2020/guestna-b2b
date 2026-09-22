@@ -1036,7 +1036,9 @@
           "reviewB2bBadge": "نظام المدارس (B2B)",
           "reviewBothBadge": "شامل النظامين (B2B & B2C)",
           "reviewB2cPriceLabel": "تسعير الأفراد",
-          "reviewB2bPriceLabel": "تسعير المدارس"
+          "reviewB2bPriceLabel": "تسعير المدارس",
+          "reviewViewDetails": "عرض التفاصيل",
+          "reviewHideDetails": "إخفاء التفاصيل"
         },
         "placeholders": {
           "nameEn": "أدخل اسم المنتج بالإنجليزي",

@@ -147,7 +147,7 @@ const BranchCustomizationSidebar = ({
       >
         <div className="w-screen max-w-[516px] bg-white shadow-2xl flex flex-col h-full overflow-hidden animate-slideInEnd">
           {/* Header */}
-          <div className="p-6 sm:p-8 pb-4 flex items-start justify-between gap-4 border-b border-gray-100 flex-shrink-0">
+          <div className="p-6 sm:p-8 pb-4 flex items-start justify-between gap-4 border-b border-border flex-shrink-0">
             <div className="text-start flex-1">
               <h2
                 id="branch-customization-sidebar-title"
@@ -155,7 +155,7 @@ const BranchCustomizationSidebar = ({
               >
                 {resolvedTitle}
               </h2>
-              <p className="font-somar text-xs sm:text-sm text-gray-500 mt-2 leading-relaxed">
+              <p className="font-somar text-xs sm:text-sm text-textLight mt-2 leading-relaxed">
                 {resolvedSubtitle}
               </p>
             </div>
@@ -163,7 +163,7 @@ const BranchCustomizationSidebar = ({
             <button
               type="button"
               onClick={onClose}
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors flex-shrink-0 cursor-pointer"
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-textLight hover:text-textDark hover:bg-buttonsHover/20 transition-colors flex-shrink-0 cursor-pointer"
               aria-label="Close drawer"
             >
               <CloseIcon className="w-5 h-5" />
@@ -173,20 +173,20 @@ const BranchCustomizationSidebar = ({
           {/* Body: City Accordions Matching Screenshot 1 */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
             {hasNoProductBranches ? (
-              <div className="p-8 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200 space-y-2">
-                <p className="font-somar text-sm font-semibold text-gray-700">
+              <div className="p-8 text-center bg-gray-50 rounded-2xl border border-dashed border-border space-y-2">
+                <p className="font-somar text-sm font-semibold text-textDark">
                   {isAr
                     ? "لم يتم اختيار أي فروع للمنتج بعد"
                     : "No branches selected for the product yet"}
                 </p>
-                <p className="font-somar text-xs text-gray-500">
+                <p className="font-somar text-xs text-textLight">
                   {isAr
                     ? "يرجى اختيار فروع المنتج في خطوة مواقع تقديم الخدمة لتتمكن من تخصيصها هنا."
                     : "Please select product branches in the Service Locations step to customize them here."}
                 </p>
               </div>
             ) : effectiveBranchGroups.length === 0 ? (
-              <div className="p-8 text-center text-gray-400 font-somar text-sm">
+              <div className="p-8 text-center text-textLight font-somar text-sm">
                 {t("emptyBranchesTitle")}
               </div>
             ) : (
@@ -205,7 +205,7 @@ const BranchCustomizationSidebar = ({
                 return (
                   <div
                     key={groupKey}
-                    className="border border-gray-200 rounded-2xl p-4 bg-white transition-all shadow-xs"
+                    className="border border-border rounded-2xl p-4 bg-white transition-all shadow-xs"
                   >
                     {/* City Accordion Header */}
                     <button
@@ -214,25 +214,25 @@ const BranchCustomizationSidebar = ({
                       className="w-full flex items-center justify-between gap-2 text-start cursor-pointer select-none py-1"
                     >
                       {/* Chevron Arrow */}
-                      <div className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors">
+                      <div className="w-7 h-7 rounded-lg flex items-center justify-center text-textLight hover:bg-buttonsHover/20 transition-colors">
                         {isCityOpen ? (
-                          <KeyboardArrowDownIcon className="w-5 h-5 text-gray-700" />
+                          <KeyboardArrowDownIcon className="w-5 h-5 text-textDark" />
                         ) : isAr ? (
-                          <KeyboardArrowLeftIcon className="w-5 h-5 text-gray-700" />
+                          <KeyboardArrowLeftIcon className="w-5 h-5 text-textDark" />
                         ) : (
-                          <KeyboardArrowRightIcon className="w-5 h-5 text-gray-700" />
+                          <KeyboardArrowRightIcon className="w-5 h-5 text-textDark" />
                         )}
                       </div>
 
                       {/* City Name */}
-                      <span className="font-somar font-bold text-base text-gray-800">
+                      <span className="font-somar font-bold text-base text-textDark">
                         {cityName}
                       </span>
                     </button>
 
                     {/* City Branches (Expanded) */}
                     {isCityOpen && (
-                      <div className="bg-gray-50/70 border border-gray-200/80 rounded-xl p-3 space-y-2.5 mt-3 animate-fadeIn">
+                      <div className="bg-gray-50/70 border border-border rounded-xl p-3 space-y-2.5 mt-3 animate-fadeIn">
                         {branches.map((branch) => {
                           const isChecked = localSelectedIds.includes(branch.id);
                           const branchName =
@@ -249,7 +249,7 @@ const BranchCustomizationSidebar = ({
                                 "w-full bg-white border rounded-xl p-3.5 flex items-center justify-between cursor-pointer transition-all shadow-xs select-none",
                                 isChecked
                                   ? "border-mainColor/80 ring-1 ring-mainColor/20 bg-mainColor/[0.02]"
-                                  : "border-gray-200 hover:border-mainColor/50"
+                                  : "border-border hover:border-mainColor/50"
                               )}
                               role="checkbox"
                               aria-checked={isChecked}
@@ -267,7 +267,7 @@ const BranchCustomizationSidebar = ({
                                   "w-5 h-5 rounded-[6px] border flex items-center justify-center transition-all shrink-0",
                                   isChecked
                                     ? "bg-mainColor border-mainColor text-white shadow-xs"
-                                    : "bg-white border-gray-300 hover:border-gray-400"
+                                    : "bg-white border-border hover:border-mainColor/50"
                                 )}
                                 aria-hidden="true"
                               >
@@ -283,7 +283,7 @@ const BranchCustomizationSidebar = ({
                               <span
                                 className={cn(
                                   "font-somar text-sm sm:text-base font-semibold text-end",
-                                  isChecked ? "text-titleColor" : "text-gray-700"
+                                  isChecked ? "text-titleColor" : "text-textDark"
                                 )}
                               >
                                 {branchName}
@@ -300,7 +300,7 @@ const BranchCustomizationSidebar = ({
           </div>
 
           {/* Footer with "حفظ" button */}
-          <div className="p-4 sm:p-6 border-t border-gray-100 bg-white flex-shrink-0">
+          <div className="p-4 sm:p-6 border-t border-border bg-white flex-shrink-0">
             <button
               type="button"
               onClick={handleSave}
