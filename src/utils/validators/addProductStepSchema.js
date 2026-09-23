@@ -312,7 +312,6 @@ export const STEP_LOCATIONS_FIELD_NAMES = [
   "availableSeats.min",
   "availableSeats.max",
   "location",
-  "gatheringLocation",
 ];
 
 /**

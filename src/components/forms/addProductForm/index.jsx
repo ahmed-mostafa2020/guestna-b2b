@@ -96,7 +96,6 @@ export const initialAddProductValues = {
   video: null,
   youtubeUrl: "",
   videoUrl: "",
-  gatheringLocation: { lat: 24.7136, lng: 46.6753 },
   location: { lat: 24.7136, lng: 46.6753 },
   itinerary: [{ day: 1, toDo: { en: "", ar: "" } }],
   mustHaveItems: { en: [""], ar: [""] },
@@ -157,24 +156,6 @@ export const formatAddProductPayload = (
       ? Number(values.location.lat)
       : 24.7136;
 
-  const gatheringLng =
-    values.gatheringLocation?.lng !== "" &&
-    values.gatheringLocation?.lng !== undefined &&
-    values.gatheringLocation?.lng !== null &&
-    !isNaN(Number(values.gatheringLocation?.lng)) &&
-    Number(values.gatheringLocation?.lng) !== 0
-      ? Number(values.gatheringLocation.lng)
-      : locLng;
-
-  const gatheringLat =
-    values.gatheringLocation?.lat !== "" &&
-    values.gatheringLocation?.lat !== undefined &&
-    values.gatheringLocation?.lat !== null &&
-    !isNaN(Number(values.gatheringLocation?.lat)) &&
-    Number(values.gatheringLocation?.lat) !== 0
-      ? Number(values.gatheringLocation.lat)
-      : locLat;
-
   const payload = {
     "name[en]": values.name?.en || "",
     "name[ar]": values.name?.ar || "",
@@ -183,8 +164,6 @@ export const formatAddProductPayload = (
     "description[ar]": values.description?.ar || "",
     "location[lng]": locLng,
     "location[lat]": locLat,
-    "gatheringLocation[lng]": gatheringLng,
-    "gatheringLocation[lat]": gatheringLat,
     fromDay: values.fromDay,
     toDay: values.toDay,
     fromHour: formatTime12h(values.fromHour || values.availableTimes?.[0]?.from),

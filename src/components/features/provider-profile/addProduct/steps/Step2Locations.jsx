@@ -70,7 +70,6 @@ const Step2Locations = ({
           address: values.location?.address || fixedLocation.address || "",
         };
         setFieldValue("location", updatedLoc);
-        setFieldValue("gatheringLocation", updatedLoc);
       }
     } else {
       const currentLat = Number(values.location?.lat);
@@ -86,7 +85,6 @@ const Step2Locations = ({
           address: values.location?.address || "",
         };
         setFieldValue("location", defaultLoc);
-        setFieldValue("gatheringLocation", defaultLoc);
       }
     }
   }, [
@@ -538,7 +536,6 @@ const Step2Locations = ({
                 address: newLoc.address || values.location?.address || "",
               };
               setFieldValue("location", updatedLoc);
-              setFieldValue("gatheringLocation", updatedLoc);
               return;
             }
             const parsedLat =
@@ -555,7 +552,6 @@ const Step2Locations = ({
               address: newLoc.address || "",
             };
             setFieldValue("location", updatedLoc);
-            setFieldValue("gatheringLocation", updatedLoc);
           }}
         />
       </div>
