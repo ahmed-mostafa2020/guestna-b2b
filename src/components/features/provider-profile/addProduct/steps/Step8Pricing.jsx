@@ -110,7 +110,7 @@ const Step8Pricing = ({
     return Math.round(numBase + (numBase * numPercent) / 100);
   }, []);
 
-  // Ensure values.datePricing, values.key, and values.conditionRuleValue are initialized
+  // Ensure values.datePricing, values.key, values.conditionRuleValue, and b2bPrice are initialized
   useEffect(() => {
     if (!Array.isArray(values.datePricing) || values.datePricing.length === 0) {
       setFieldValue("datePricing", [{ date: "", price: "" }], false);
@@ -121,7 +121,32 @@ const Step8Pricing = ({
     if (values.conditionRuleValue === undefined || values.conditionRuleValue === "") {
       setFieldValue("conditionRuleValue", "15", false);
     }
-  }, [values.datePricing, values.key, values.conditionRuleValue, setFieldValue]);
+
+    if (
+      !values.b2bPrice?.datePricing ||
+      !Array.isArray(values.b2bPrice.datePricing) ||
+      values.b2bPrice.datePricing.length === 0
+    ) {
+      setFieldValue("b2bPrice.datePricing", [{ date: "", price: "" }], false);
+    }
+    if (!values.b2bPrice?.key) {
+      setFieldValue("b2bPrice.key", "DECREASE", false);
+    }
+    if (
+      values.b2bPrice?.conditionRuleValue === undefined ||
+      values.b2bPrice?.conditionRuleValue === ""
+    ) {
+      setFieldValue("b2bPrice.conditionRuleValue", "10", false);
+    }
+  }, [
+    values.datePricing,
+    values.key,
+    values.conditionRuleValue,
+    values.b2bPrice?.datePricing,
+    values.b2bPrice?.key,
+    values.b2bPrice?.conditionRuleValue,
+    setFieldValue,
+  ]);
 
   // Current date formatted as YYYY-MM-DD for min date validation
   const todayStr = useMemo(() => {
@@ -273,50 +298,20 @@ const Step8Pricing = ({
       newSelectedIds.forEach((id) => {
         if (!updatedBranchPricing[id]) {
           updatedBranchPricing[id] = {
-            price: values.b2cPrice?.price || values.price || "",
-            discountedPrice:
-              values.b2cPrice?.discountedPrice ||
-              values.b2cPrice?.finalPrice ||
-              values.discountedPrice ||
-              "",
-            schoolsPrice:
-              values.b2bPrice?.price ||
-              values.b2bPricing?.schoolsPrice ||
-              "",
-            b2bDiscountedPrice:
-              values.b2bPrice?.discountedPrice ||
-              values.b2bPrice?.finalPrice ||
-              "",
-            productCost:
-              values.productCost ||
-              values.b2bPrice?.productCost ||
-              "",
-            key: values.key || "INCREASE",
-            conditionRuleValue: values.conditionRuleValue || "15",
-            b2bKey: values.b2bPrice?.key || "DECREASE",
-            b2bConditionRuleValue: values.b2bPrice?.conditionRuleValue || "10",
-            studentsPerSupervisor:
-              values.studentsPerSupervisor ||
-              values.b2bPrice?.studentsPerSupervisor ||
-              "10",
-            targetAudiences: Array.isArray(values.targetAudiences)
-              ? values.targetAudiences.map((ta) => ({ ...ta }))
-              : [],
-            datePricing: Array.isArray(values.datePricing)
-              ? values.datePricing.map((dp) => ({
-                  ...dp,
-                }))
-              : [],
-            b2bQuantityDiscountTiers: Array.isArray(values.b2bPrice?.quantityDiscountTiers)
-              ? values.b2bPrice.quantityDiscountTiers.map((tier) => ({ ...tier }))
-              : Array.isArray(values.bulkPricing)
-              ? values.bulkPricing.map((tier) => ({ ...tier }))
-              : [],
-            b2bDatePricing: Array.isArray(values.b2bPrice?.datePricing)
-              ? values.b2bPrice.datePricing.map((dp) => ({
-                  ...dp,
-                }))
-              : [],
+            price: "",
+            discountedPrice: "",
+            schoolsPrice: "",
+            b2bDiscountedPrice: "",
+            productCost: "",
+            key: "INCREASE",
+            conditionRuleValue: "",
+            b2bKey: "DECREASE",
+            b2bConditionRuleValue: "",
+            studentsPerSupervisor: "",
+            targetAudiences: [],
+            datePricing: [],
+            b2bQuantityDiscountTiers: [],
+            b2bDatePricing: [],
           };
         }
       });
@@ -338,16 +333,6 @@ const Step8Pricing = ({
     },
     [
       setFieldValue,
-      values.price,
-      values.discountedPrice,
-      values.b2cPrice,
-      values.b2bPrice,
-      values.b2bPricing,
-      values.productCost,
-      values.studentsPerSupervisor,
-      values.targetAudiences,
-      values.datePricing,
-      values.bulkPricing,
       values.branchPricing,
     ]
   );
@@ -1450,30 +1435,9 @@ const Step8Pricing = ({
               </p>
             </div>
 
-            {/* 3-column Base Price Fields: تكلفة المنتج الأساسي & سعر السوق & السعر بعد الخصم */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-              {/* Product Cost (تكلفة المنتج الأساسي) */}
-              <div>
-                <TextInputGroup
-                  id="productCost"
-                  name="productCost"
-                  type="number"
-                  min="0"
-                  label={t("b2b.productCost")}
-                  labelClassName={labelCls}
-                  value={values.productCost ?? ""}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  touched={productCostTouched}
-                  errors={productCostErr}
-                  placeholder={t("b2b.productCostPlaceholder")}
-                  borderClassName={inputBorderCls}
-                  inputClassName={inputFieldCls}
-                  endAdornment={newSarSmall}
-                />
-              </div>
-
-              {/* Market Price (سعر السوق) */}
+            {/* 4-column Base Price Fields: سعر السوق & السعر بعد الخصم & تكلفة المنتج الأساسي & مشرف مجاني لكل (MATCHING BRANCH CUSTOMIZATION STYLE) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+              {/* 1. Market Price (سعر السوق) */}
               <div>
                 <TextInputGroup
                   id="b2bPrice"
@@ -1507,7 +1471,7 @@ const Step8Pricing = ({
                 />
               </div>
 
-              {/* Discounted Price (السعر بعد الخصم) */}
+              {/* 2. Discounted Price (السعر بعد الخصم) */}
               <div>
                 <TextInputGroup
                   id="b2bDiscountedPrice"
@@ -1516,10 +1480,15 @@ const Step8Pricing = ({
                   min="0"
                   label={t("b2b.discountedPrice")}
                   labelClassName={labelCls}
-                  value={values.b2bPrice?.finalPrice ?? ""}
+                  value={
+                    values.b2bPrice?.finalPrice ??
+                    values.b2bPrice?.discountedPrice ??
+                    ""
+                  }
                   onChange={(e) => {
                     const val = e.target.value;
                     setFieldValue("b2bPrice.finalPrice", val);
+                    setFieldValue("b2bPrice.discountedPrice", val);
                     if (!isB2CEnabled) {
                       setFieldValue("discountedPrice", val);
                     }
@@ -1531,6 +1500,66 @@ const Step8Pricing = ({
                   borderClassName={inputBorderCls}
                   inputClassName={inputFieldCls}
                   endAdornment={newSarSmall}
+                />
+              </div>
+
+              {/* 3. Product Cost (تكلفة المنتج الأساسي) */}
+              <div>
+                <TextInputGroup
+                  id="productCost"
+                  name="productCost"
+                  type="number"
+                  min="0"
+                  label={t("b2b.productCost")}
+                  labelClassName={labelCls}
+                  value={values.productCost ?? values.b2bPrice?.productCost ?? ""}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFieldValue("b2bPrice.productCost", e.target.value);
+                  }}
+                  onBlur={handleBlur}
+                  touched={productCostTouched}
+                  errors={productCostErr}
+                  placeholder={t("b2b.productCostPlaceholder")}
+                  borderClassName={inputBorderCls}
+                  inputClassName={inputFieldCls}
+                  endAdornment={newSarSmall}
+                />
+              </div>
+
+              {/* 4. Free Supervisor (مشرف مجاني لكل) */}
+              <div>
+                <TextInputGroup
+                  id="studentsPerSupervisor"
+                  name="studentsPerSupervisor"
+                  type="number"
+                  min="1"
+                  label={t("b2b.freeSupervisorLabel")}
+                  labelClassName={labelCls}
+                  value={
+                    values.studentsPerSupervisor ??
+                    values.b2bPrice?.studentsPerSupervisor ??
+                    values.b2bPricing?.studentsPerSupervisor ??
+                    values.b2bPricing?.supervisorRatio ??
+                    ""
+                  }
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setFieldValue("studentsPerSupervisor", val);
+                    setFieldValue("b2bPrice.studentsPerSupervisor", val);
+                    setFieldValue("b2bPricing.studentsPerSupervisor", val);
+                    setFieldValue("b2bPricing.supervisorRatio", val);
+                    setFieldValue(
+                      "b2bPricing.freeSupervisor",
+                      Boolean(val && Number(val) > 0)
+                    );
+                  }}
+                  onBlur={handleBlur}
+                  touched={studentsPerSupervisorTouched}
+                  errors={studentsPerSupervisorErr}
+                  placeholder="10"
+                  borderClassName={inputBorderCls}
+                  inputClassName={inputFieldCls}
                 />
               </div>
             </div>
@@ -1674,7 +1703,7 @@ const Step8Pricing = ({
               </FieldArray>
             </div>
 
-            {/* 3. B2B Date & Season Pricing Rules (قواعد التسعير حسب التواريخ للمدارس) */}
+            {/* 3. B2B Date & Season Pricing Rules (MATCHING INDIVIDUALS B2C) */}
             <div className="bg-white p-5 sm:p-7 rounded-2xl border border-border space-y-6 shadow-none">
               <FieldArray name="b2bPrice.datePricing">
                 {({ push, remove }) => {
@@ -1682,7 +1711,7 @@ const Step8Pricing = ({
                     Array.isArray(values.b2bPrice?.datePricing) &&
                     values.b2bPrice.datePricing.length > 0
                       ? values.b2bPrice.datePricing
-                      : [];
+                      : [{ date: "", price: "" }];
 
                   return (
                     <>
@@ -1710,6 +1739,7 @@ const Step8Pricing = ({
                               values.b2bPrice?.conditionRuleValue || 10
                             );
                             push({
+                              date: "",
                               fromDate: "",
                               toDate: "",
                               key: values.b2bPrice?.key || "DECREASE",
@@ -1729,6 +1759,7 @@ const Step8Pricing = ({
                           {t("b2b.priceByLabel")}
                         </span>
 
+                        {/* Dropdown: زيادة / تخفيض */}
                         <div className="w-28 sm:w-32">
                           <SelectionGroup
                             name="b2bPrice.key"
@@ -1742,6 +1773,7 @@ const Step8Pricing = ({
                           />
                         </div>
 
+                        {/* Input: %10 with matching 52px height */}
                         <div className="w-24 sm:w-28">
                           <TextInputGroup
                             type="number"
@@ -1773,16 +1805,53 @@ const Step8Pricing = ({
                           const fromDateVal = item.fromDate || item.date || "";
                           const toDateVal = item.toDate || fromDateVal || "";
 
+                          const isFromPast = Boolean(
+                            fromDateVal && fromDateVal < todayStr
+                          );
+                          const isToPast = Boolean(
+                            toDateVal && toDateVal < todayStr
+                          );
+                          const isToBeforeFrom = Boolean(
+                            toDateVal && fromDateVal && toDateVal < fromDateVal
+                          );
+
+                          const fromTouched = getIn(
+                            touched,
+                            `b2bPrice.datePricing[${index}].fromDate`
+                          );
+                          const toTouched = getIn(
+                            touched,
+                            `b2bPrice.datePricing[${index}].toDate`
+                          );
+                          const fromError = getIn(
+                            errors,
+                            `b2bPrice.datePricing[${index}].fromDate`
+                          );
+                          const toError = getIn(
+                            errors,
+                            `b2bPrice.datePricing[${index}].toDate`
+                          );
+                          const priceTouched = getIn(
+                            touched,
+                            `b2bPrice.datePricing[${index}].price`
+                          );
+                          const priceError = getIn(
+                            errors,
+                            `b2bPrice.datePricing[${index}].price`
+                          );
+
                           return (
                             <div
                               key={index}
                               className="flex flex-wrap md:flex-nowrap items-start gap-3 sm:gap-4 transition-all"
                             >
+                              {/* From Date */}
                               <div className="w-full md:w-auto md:flex-1">
                                 <TextInputGroup
+                                  id={`b2bDatePricing-${index}-fromDate`}
+                                  name={`b2bPrice.datePricing[${index}].fromDate`}
                                   type="date"
                                   min={todayStr}
-                                  name={`b2bPrice.datePricing[${index}].fromDate`}
                                   label={t("b2b.fromDateReadOnly")}
                                   labelClassName={subLabelCls}
                                   value={fromDateVal}
@@ -1790,6 +1859,10 @@ const Step8Pricing = ({
                                     const val = e.target.value;
                                     setFieldValue(
                                       `b2bPrice.datePricing[${index}].fromDate`,
+                                      val
+                                    );
+                                    setFieldValue(
+                                      `b2bPrice.datePricing[${index}].date`,
                                       val
                                     );
                                     if (val && item.toDate && val > item.toDate) {
@@ -1802,14 +1875,22 @@ const Step8Pricing = ({
                                   onBlur={handleBlur}
                                   borderClassName={inputBorderCls}
                                   inputClassName={inputFieldCls}
+                                  touched={fromTouched || isFromPast}
+                                  errors={
+                                    isFromPast
+                                      ? t("validations.pastDateError")
+                                      : fromError
+                                  }
                                 />
                               </div>
 
+                              {/* To Date */}
                               <div className="w-full md:w-auto md:flex-1">
                                 <TextInputGroup
+                                  id={`b2bDatePricing-${index}-toDate`}
+                                  name={`b2bPrice.datePricing[${index}].toDate`}
                                   type="date"
                                   min={fromDateVal || todayStr}
-                                  name={`b2bPrice.datePricing[${index}].toDate`}
                                   label={t("b2b.toDateReadOnly")}
                                   labelClassName={subLabelCls}
                                   value={toDateVal}
@@ -1822,14 +1903,26 @@ const Step8Pricing = ({
                                   onBlur={handleBlur}
                                   borderClassName={inputBorderCls}
                                   inputClassName={inputFieldCls}
+                                  touched={
+                                    toTouched || isToPast || isToBeforeFrom
+                                  }
+                                  errors={
+                                    isToPast
+                                      ? t("validations.pastDateError")
+                                      : isToBeforeFrom
+                                      ? t("validations.endDateAfterStartDate")
+                                      : toError
+                                  }
                                 />
                               </div>
 
+                              {/* Price */}
                               <div className="w-full md:w-auto md:flex-1">
                                 <TextInputGroup
+                                  id={`b2bDatePricing-${index}-price`}
+                                  name={`b2bPrice.datePricing[${index}].price`}
                                   type="number"
                                   min="0"
-                                  name={`b2bPrice.datePricing[${index}].price`}
                                   label={t("b2b.priceInSar")}
                                   labelClassName={subLabelCls}
                                   value={item.price ?? ""}
@@ -1844,17 +1937,22 @@ const Step8Pricing = ({
                                   borderClassName={inputBorderCls}
                                   inputClassName={inputFieldCls}
                                   endAdornment={newSarSmall}
+                                  touched={priceTouched}
+                                  errors={priceError}
                                 />
                               </div>
 
-                              <button
-                                type="button"
-                                onClick={() => remove(index)}
-                                className="w-10 h-10 flex items-center justify-center text-error hover:bg-error/10 rounded-xl transition-colors cursor-pointer flex-shrink-0 mb-0.5 mt-6"
-                                title={isAr ? "حذف" : "Delete"}
-                              >
-                                <DeleteOutlineIcon className="w-5 h-5" />
-                              </button>
+                              {/* Delete Button (Shown only when more than 1 row exists) */}
+                              {b2bDatePricingList.length > 1 && (
+                                <button
+                                  type="button"
+                                  onClick={() => remove(index)}
+                                  className="w-10 h-10 flex items-center justify-center text-error hover:bg-error/10 rounded-xl transition-colors cursor-pointer flex-shrink-0 mb-0.5 mt-6"
+                                  title={isAr ? "حذف" : "Delete"}
+                                >
+                                  <DeleteOutlineIcon className="w-5 h-5" />
+                                </button>
+                              )}
                             </div>
                           );
                         })}
@@ -1863,76 +1961,6 @@ const Step8Pricing = ({
                   );
                 }}
               </FieldArray>
-            </div>
-
-            {/* Inner Card 2: المشرف / المعلم مجاناً */}
-            <div className="bg-white p-5 sm:p-6 rounded-2xl border border-border space-y-4 shadow-none">
-              <div>
-                <CheckboxGroup
-                  label={t("b2b.freeSupervisorTitle")}
-                  isChecked={Boolean(values.b2bPricing?.freeSupervisor)}
-                  onChangeFunction={(e) =>
-                    setFieldValue("b2bPricing.freeSupervisor", e.target.checked)
-                  }
-                  hoveringAction={false}
-                  fontSize="16px"
-                />
-              </div>
-
-              {values.b2bPricing?.freeSupervisor && (
-                <div className="space-y-3 pt-1">
-                  <div>
-                    <TextInputGroup
-                      id="studentsPerSupervisor"
-                      name="studentsPerSupervisor"
-                      type="number"
-                      min="1"
-                      required={true}
-                      label={t("b2b.freeSupervisorLabel")}
-                      labelClassName={labelCls}
-                      value={
-                        values.studentsPerSupervisor ??
-                        values.b2bPrice?.studentsPerSupervisor ??
-                        values.b2bPricing?.studentsPerSupervisor ??
-                        values.b2bPricing?.supervisorRatio ??
-                        "10"
-                      }
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        setFieldValue("studentsPerSupervisor", val);
-                        setFieldValue("b2bPrice.studentsPerSupervisor", val);
-                        setFieldValue("b2bPricing.studentsPerSupervisor", val);
-                        setFieldValue("b2bPricing.supervisorRatio", val);
-                      }}
-                      onBlur={handleBlur}
-                      touched={studentsPerSupervisorTouched}
-                      errors={studentsPerSupervisorErr}
-                      placeholder={t("b2b.studentsCountPlaceholder")}
-                      borderClassName={inputBorderCls}
-                      inputClassName={inputFieldCls}
-                      endAdornment={
-                        <span className="text-xs font-somar text-textLight flex-shrink-0">
-                          {t("b2b.students")}
-                        </span>
-                      }
-                    />
-                  </div>
-
-                  {/* Helper calculation: لكل 20 طالب ← 2 مشرف مجاني */}
-                  <p className="font-somar font-medium text-sm text-mainColor flex items-center gap-1">
-                    {t("b2b.supervisorRatioCalculation", {
-                      students:
-                        (Number(
-                          values.studentsPerSupervisor ??
-                            values.b2bPrice?.studentsPerSupervisor ??
-                            values.b2bPricing?.studentsPerSupervisor ??
-                            values.b2bPricing?.supervisorRatio
-                        ) || 10) * 2,
-                      supervisors: 2,
-                    })}
-                  </p>
-                </div>
-              )}
             </div>
 
             {/* ─────────────────────────────────────────────────────────────
@@ -2163,6 +2191,7 @@ const Step8Pricing = ({
                                         }
                                         list={discountTypeList}
                                         border="1px solid var(--color-border)"
+                                        className="[&_.MuiSelect-select]:!h-[44px] [&_.MuiSelect-select]:!min-h-[44px]"
                                       />
                                       <TextInputGroup
                                         type="number"
@@ -2224,14 +2253,12 @@ const Step8Pricing = ({
                                       : [];
                                     const b2bBranchKey =
                                       branchData.b2bKey ||
-                                      values.b2bPrice?.key ||
                                       "DECREASE";
                                     const b2bBranchPercent =
                                       branchData.b2bConditionRuleValue ??
-                                      values.b2bPrice?.conditionRuleValue ??
                                       10;
                                     const defaultPrice = calculateRulePrice(
-                                      branchData.schoolsPrice || values.b2bPrice?.price,
+                                      branchData.schoolsPrice,
                                       b2bBranchKey,
                                       b2bBranchPercent
                                     );
@@ -2266,7 +2293,6 @@ const Step8Pricing = ({
                                     name={`branchPricing.${branch.id}.b2bKey`}
                                     value={
                                       branchData.b2bKey ||
-                                      values.b2bPrice?.key ||
                                       "DECREASE"
                                     }
                                     onChange={(e) => {
@@ -2289,8 +2315,7 @@ const Step8Pricing = ({
                                     name={`branchPricing.${branch.id}.b2bConditionRuleValue`}
                                     value={
                                       branchData.b2bConditionRuleValue ??
-                                      values.b2bPrice?.conditionRuleValue ??
-                                      "10"
+                                      ""
                                     }
                                     onChange={(e) => {
                                       setFieldValue(

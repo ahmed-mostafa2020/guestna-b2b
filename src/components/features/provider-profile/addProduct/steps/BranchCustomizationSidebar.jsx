@@ -205,6 +205,7 @@ const BranchCustomizationSidebar = ({
                 return (
                   <div
                     key={groupKey}
+                    dir={isAr ? "rtl" : "ltr"}
                     className="border border-border rounded-2xl p-4 bg-white transition-all shadow-xs"
                   >
                     {/* City Accordion Header */}
@@ -213,6 +214,11 @@ const BranchCustomizationSidebar = ({
                       onClick={() => handleToggleCity(groupKey)}
                       className="w-full flex items-center justify-between gap-2 text-start cursor-pointer select-none py-1"
                     >
+                      {/* City Name */}
+                      <span className="font-somar font-bold text-base text-textDark">
+                        {cityName}
+                      </span>
+
                       {/* Chevron Arrow */}
                       <div className="w-7 h-7 rounded-lg flex items-center justify-center text-textLight hover:bg-buttonsHover/20 transition-colors">
                         {isCityOpen ? (
@@ -223,18 +229,15 @@ const BranchCustomizationSidebar = ({
                           <KeyboardArrowRightIcon className="w-5 h-5 text-textDark" />
                         )}
                       </div>
-
-                      {/* City Name */}
-                      <span className="font-somar font-bold text-base text-textDark">
-                        {cityName}
-                      </span>
                     </button>
 
                     {/* City Branches (Expanded) */}
                     {isCityOpen && (
                       <div className="bg-gray-50/70 border border-border rounded-xl p-3 space-y-2.5 mt-3 animate-fadeIn">
                         {branches.map((branch) => {
-                          const isChecked = localSelectedIds.includes(branch.id);
+                          const isChecked = localSelectedIds.includes(
+                            branch.id
+                          );
                           const branchName =
                             branch.name?.[locale] ||
                             branch.name?.ar ||
@@ -261,33 +264,39 @@ const BranchCustomizationSidebar = ({
                                 }
                               }}
                             >
+                              {/* Branch Name */}
+                              <span
+                                className={cn(
+                                  "font-somar text-sm sm:text-base font-semibold text-start",
+                                  isChecked
+                                    ? "text-titleColor"
+                                    : "text-textDark"
+                                )}
+                              >
+                                {branchName}
+                              </span>
+
                               {/* Checkbox */}
                               <div
                                 className={cn(
-                                  "w-5 h-5 rounded-[6px] border flex items-center justify-center transition-all shrink-0",
+                                  "w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all shrink-0",
                                   isChecked
                                     ? "bg-mainColor border-mainColor text-white shadow-xs"
-                                    : "bg-white border-border hover:border-mainColor/50"
+                                    : "bg-white border-gray-300 hover:border-mainColor/60"
                                 )}
                                 aria-hidden="true"
                               >
                                 {isChecked && (
                                   <CheckIcon
-                                    className="w-3.5 h-3.5 text-white stroke-[2.5]"
-                                    sx={{ fontSize: 14 }}
+                                    className="w-4 h-4 text-white stroke-current stroke-[2]"
+                                    sx={{
+                                      fontSize: 16,
+                                      stroke: "currentColor",
+                                      strokeWidth: 2,
+                                    }}
                                   />
                                 )}
                               </div>
-
-                              {/* Branch Name */}
-                              <span
-                                className={cn(
-                                  "font-somar text-sm sm:text-base font-semibold text-end",
-                                  isChecked ? "text-titleColor" : "text-textDark"
-                                )}
-                              >
-                                {branchName}
-                              </span>
                             </div>
                           );
                         })}

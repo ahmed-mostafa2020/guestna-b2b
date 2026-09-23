@@ -11,10 +11,6 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CheckIcon from "@mui/icons-material/Check";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
-import {
-  createAddProductSchema,
-  getStepFieldNames,
-} from "@utils/validators/addProductSchema";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -41,14 +37,12 @@ import StepReview from "./steps/StepReview";
 export const initialAddProductValues = {
   systemTypes: ["B2C"],
   // istantConfirmation: false,
-  key: "INCREASE",
   name: { en: "", ar: "" },
   tripType: "ACTIVITY",
   tripsType: "ACTIVITY",
   description: { en: "", ar: "" },
   categories: "",
   supCategories: [],
-  cities: [],
   providerBranchs: [],
   bookingBefore: "",
   recurrencePattern: "",
@@ -102,8 +96,8 @@ export const initialAddProductValues = {
   video: null,
   youtubeUrl: "",
   videoUrl: "",
-  gatheringLocation: { lat: 24.9576, lng: 46.6988 },
-  location: { lat: 26.6176, lng: 37.9221 },
+  gatheringLocation: { lat: 24.7136, lng: 46.6753 },
+  location: { lat: 24.7136, lng: 46.6753 },
   itinerary: [{ day: 1, toDo: { en: "", ar: "" } }],
   mustHaveItems: { en: [""], ar: [""] },
   exemptedFromTrip: { en: [""], ar: [""] },
@@ -145,16 +139,52 @@ export const formatAddProductPayload = (
     }
   }
 
+  const locLng =
+    values.location?.lng !== "" &&
+    values.location?.lng !== undefined &&
+    values.location?.lng !== null &&
+    !isNaN(Number(values.location?.lng)) &&
+    Number(values.location?.lng) !== 0
+      ? Number(values.location.lng)
+      : 46.6753;
+
+  const locLat =
+    values.location?.lat !== "" &&
+    values.location?.lat !== undefined &&
+    values.location?.lat !== null &&
+    !isNaN(Number(values.location?.lat)) &&
+    Number(values.location?.lat) !== 0
+      ? Number(values.location.lat)
+      : 24.7136;
+
+  const gatheringLng =
+    values.gatheringLocation?.lng !== "" &&
+    values.gatheringLocation?.lng !== undefined &&
+    values.gatheringLocation?.lng !== null &&
+    !isNaN(Number(values.gatheringLocation?.lng)) &&
+    Number(values.gatheringLocation?.lng) !== 0
+      ? Number(values.gatheringLocation.lng)
+      : locLng;
+
+  const gatheringLat =
+    values.gatheringLocation?.lat !== "" &&
+    values.gatheringLocation?.lat !== undefined &&
+    values.gatheringLocation?.lat !== null &&
+    !isNaN(Number(values.gatheringLocation?.lat)) &&
+    Number(values.gatheringLocation?.lat) !== 0
+      ? Number(values.gatheringLocation.lat)
+      : locLat;
+
   const payload = {
     "name[en]": values.name?.en || "",
     "name[ar]": values.name?.ar || "",
     tripType: tripTypeValue,
     "description[en]": values.description?.en || "",
     "description[ar]": values.description?.ar || "",
-    "location[lat]": values.location?.lat,
-    "location[lng]": values.location?.lng,
-    "gatheringLocation[lat]": values.gatheringLocation?.lat,
-    "gatheringLocation[lng]": values.gatheringLocation?.lng,
+    "location[lng]": locLng,
+    "location[lat]": locLat,
+    "gatheringLocation[lng]": gatheringLng,
+    "gatheringLocation[lat]": gatheringLat,
     fromDay: values.fromDay,
     toDay: values.toDay,
     fromHour: formatTime12h(values.fromHour || values.availableTimes?.[0]?.from),
@@ -224,8 +254,6 @@ export const formatAddProductPayload = (
   //   payload.instantConfirmation = Boolean(values.istantConfirmation);
   // }
 
-  const pricingKey = values.key || values.conditionRuleChangeType || "INCREASE";
-  payload.key = pricingKey;
 
   if (values.recurrencePattern === "MONTHLY") {
     const rootMonthDays = Array.isArray(values.monthDay)

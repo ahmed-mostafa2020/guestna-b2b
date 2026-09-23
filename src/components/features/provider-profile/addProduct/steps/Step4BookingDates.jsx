@@ -247,25 +247,10 @@ const Step4BookingDates = ({
   // Weekday options for multi-select
   const weekDayOptions = useMemo(
     () =>
-      WEEKDAY_KEYS.map((key) => {
-        let label = "";
-        try {
-          label = t(`daysList.${key}`);
-        } catch {
-          label = "";
-        }
-        if (!label || label.includes(`daysList.${key}`)) {
-          try {
-            label = t(`weekDays.${key}`);
-          } catch {
-            label = "";
-          }
-        }
-        return {
-          value: key,
-          label: label || key,
-        };
-      }),
+      WEEKDAY_KEYS.map((key) => ({
+        value: key,
+        label: t(`weekDays.${key}`) || key,
+      })),
     [t]
   );
 

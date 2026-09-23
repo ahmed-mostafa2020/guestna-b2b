@@ -668,15 +668,6 @@
           },
           "weekDays": {
             "SATURDAY": "السبت",
-            "SUNDAY": "الاحد",
-            "MONDAY": "الاثنين",
-            "TUESDAY": "الثلاثاء",
-            "WEDNESDAY": "الاربعاء",
-            "THURSDAY": "الخميس",
-            "FRIDAY": "الجمعة"
-          },
-          "daysList": {
-            "SATURDAY": "السبت",
             "SUNDAY": "الأحد",
             "MONDAY": "الاثنين",
             "TUESDAY": "الثلاثاء",
@@ -1081,7 +1072,7 @@
           "reviewDiscountBadge": "{percent}% خصم",
           "reviewAllTab": "الكل",
           "reviewB2cPricing": "تسعير الأفراد والجمهور",
-          "reviewBookingDeadlineDaysBefore": "الموعد النهائي (بالأيام قبل)",
+          "reviewBookingDeadlineDaysBefore": "الموعد النهائي للحجز قبلها (بالأيام)",
           "reviewB2cBadge": "نظام الأفراد (B2C)",
           "reviewB2bBadge": "نظام المدارس (B2B)",
           "reviewBothBadge": "شامل النظامين (B2B & B2C)",

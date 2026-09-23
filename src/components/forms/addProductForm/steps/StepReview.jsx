@@ -19,9 +19,6 @@ import SchoolIcon from "@mui/icons-material/School";
 import CategoryIcon from "@mui/icons-material/Category";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
 import OndemandVideoOutlinedIcon from "@mui/icons-material/OndemandVideoOutlined";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import VolumeUpIcon from "@mui/icons-material/VolumeUp";
-import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
@@ -29,6 +26,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import FilterAccordion from "@components/filtersBox/FilterAccordion";
 import FrameWithImagedHeader from "@components/ui/frameWithImagedHeader/FrameWithImagedHeader";
 import ImageWithPlaceholder from "@components/ui/imagesPlaceholder/ImageWithPlaceholder";
+import Video from "@components/ui/trips/Video";
 import CustomizedModal from "@components/ui/customizedModal";
 import Map from "@components/features/tripDetails/gridSection/largeSizeGrid/accordionsGroupSection/accordionsDetails/Map";
 
@@ -84,6 +82,17 @@ const StepReview = ({
       return () => clearTimeout(timer);
     }
   }, [isSubmitting, formikIsSubmitting, isPublishClicked]);
+
+  // Responsive gallery height matching tripDetails (550px desktop, 250px mobile)
+  const [galleryHeight, setGalleryHeight] = useState(250);
+  useEffect(() => {
+    const handleResize = () => {
+      setGalleryHeight(window.innerWidth >= 1024 ? 550 : 250);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handlePublishClick = (e) => {
     if (isPublishing) return;
@@ -636,133 +645,197 @@ const StepReview = ({
   // Render Trip Details Layout Content (used both in main view and full preview modal)
   const renderTripDetailsView = () => (
     <div className="space-y-6">
-      {/* 2. Gallery Grid Section matching Figma 3-column layout */}
+      {/* 2. Gallery Section matching Trip Details layout */}
       <div className="rounded-2xl overflow-hidden bg-gray-50 border border-border p-3 sm:p-4">
-        {galleryUrls.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4 items-center">
-            {/* Main Featured Image (5 of 12) */}
-            <div className="md:col-span-5 relative rounded-2xl overflow-hidden group h-[260px] sm:h-[360px] md:h-[420px]">
-              <ImageWithPlaceholder
-                src={galleryUrls[0]}
-                alt={productName}
-                width={700}
-                height={500}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <button
-                type="button"
-                onClick={() => setOpenAllImagesModal(true)}
-                className="absolute z-10 bottom-4 start-4 bg-white/95 backdrop-blur-xs text-titleColor hover:bg-white text-xs sm:text-sm font-bold px-3.5 py-2 rounded-xl shadow-lg flex items-center gap-2 border border-gray-200 transition-all cursor-pointer"
-              >
-                <span>{imagesListIcon}</span>
-                <span>
-                  {tSub("reviewAllImages", { count: galleryUrls.length })}
-                </span>
-              </button>
-            </div>
+        {galleryUrls.length > 0 || resolvedVideoUrl ? (
+          <div className="flex-row-reverse flex-wrap gap-3 centered w-full">
+            {/* Case: No video and only 1 image */}
+            {!resolvedVideoUrl && galleryUrls.length === 1 && (
+              <div className="relative w-full">
+                <ImageWithPlaceholder
+                  src={galleryUrls[0]}
+                  alt={`${productName} image`}
+                  width={1200}
+                  height={550}
+                  className="w-full h-[250px] lg:h-[550px] object-cover rounded-2xl"
+                />
+                <button
+                  type="button"
+                  onClick={() => setOpenAllImagesModal(true)}
+                  className="absolute z-[2] gap-3 p-3 bg-white centered end-6 bottom-6 border-textDark rounded-lg shadow-sm hover:bg-gray-50 transition-colors cursor-pointer select-none"
+                >
+                  {imagesListIcon}
+                  <span className="text-base font-somar font-bold text-titleColor">
+                    {tSub("reviewAllImages", { count: galleryUrls.length })}
+                  </span>
+                </button>
+              </div>
+            )}
 
-            {/* Middle Stacked Images (3 of 12) */}
-            <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-1 gap-3 sm:gap-4 h-[260px] sm:h-[360px] md:h-[420px]">
-              {galleryUrls[1] ? (
-                <div className="rounded-2xl overflow-hidden h-[125px] sm:h-[175px] md:h-[200px]">
-                  <ImageWithPlaceholder
-                    src={galleryUrls[1]}
-                    alt={`${productName} 2`}
-                    width={400}
-                    height={300}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="rounded-2xl bg-homeBg/40 border border-dashed border-border flex items-center justify-center text-textLight text-xs h-[125px] sm:h-[175px] md:h-[200px]">
-                  {tSub("galleryImages")}
-                </div>
-              )}
+            {/* Case: No video and only 2 images */}
+            {!resolvedVideoUrl && galleryUrls.length === 2 && (
+              <div className="relative flex flex-col md:flex-row gap-3 w-full">
+                <ImageWithPlaceholder
+                  src={galleryUrls[0]}
+                  alt={`${productName} 1`}
+                  width={600}
+                  height={550}
+                  className="flex-1 w-full md:w-1/2 h-[250px] lg:h-[550px] object-cover rounded-2xl"
+                />
+                <ImageWithPlaceholder
+                  src={galleryUrls[1]}
+                  alt={`${productName} 2`}
+                  width={600}
+                  height={550}
+                  className="flex-1 w-full md:w-1/2 h-[250px] lg:h-[550px] object-cover rounded-2xl"
+                />
+                <button
+                  type="button"
+                  onClick={() => setOpenAllImagesModal(true)}
+                  className="absolute z-[2] gap-3 p-3 bg-white centered end-6 bottom-6 border-textDark rounded-lg shadow-sm hover:bg-gray-50 transition-colors cursor-pointer select-none"
+                >
+                  {imagesListIcon}
+                  <span className="text-base font-somar font-bold text-titleColor">
+                    {tSub("reviewAllImages", { count: galleryUrls.length })}
+                  </span>
+                </button>
+              </div>
+            )}
 
-              {galleryUrls[2] ? (
-                <div className="rounded-2xl overflow-hidden h-[125px] sm:h-[175px] md:h-[200px]">
-                  <ImageWithPlaceholder
-                    src={galleryUrls[2]}
-                    alt={`${productName} 3`}
-                    width={400}
-                    height={300}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="rounded-2xl bg-homeBg/40 border border-dashed border-border flex items-center justify-center text-textLight text-xs h-[125px] sm:h-[175px] md:h-[200px]">
-                  {tSub("galleryImages")}
-                </div>
-              )}
-            </div>
-
-            {/* End / Right: Video Player or Media 4 (4 of 12) */}
-            <div className="md:col-span-4 rounded-2xl overflow-hidden h-[260px] sm:h-[360px] md:h-[420px] relative bg-neutral-900 flex items-center justify-center">
-              {resolvedVideoUrl ? (
-                <div className="w-full h-full relative group">
-                  {resolvedVideoUrl.includes("youtube.com") ||
-                  resolvedVideoUrl.includes("youtu.be") ? (
-                    <iframe
-                      src={resolvedVideoUrl.replace("watch?v=", "embed/")}
-                      title="Product Video"
-                      className="w-full h-full object-cover border-0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
+            {/* Case: Video exists (shown with 3 images) OR 3+ images without video */}
+            {(resolvedVideoUrl || galleryUrls.length >= 3) && (
+              <>
+                {/* Slot 1 (Visually on the Right in tripDetails): Main Featured Image with Show All Images button */}
+                <div className="relative">
+                  {galleryUrls[0] ? (
+                    <ImageWithPlaceholder
+                      src={galleryUrls[0]}
+                      alt={`${productName} image`}
+                      width={430}
+                      height={550}
+                      className={`w-[430px] h-[250px] lg:h-[550px] object-cover ${
+                        locale === "ar"
+                          ? "rounded-tl-2xl rounded-bl-2xl"
+                          : "rounded-tr-2xl rounded-br-2xl"
+                      }`}
                     />
                   ) : (
-                    <video
-                      src={resolvedVideoUrl}
-                      controls
-                      className="w-full h-full object-cover"
-                      poster={galleryUrls[0] || ""}
+                    <div
+                      className={`w-[430px] h-[250px] lg:h-[550px] bg-homeBg/40 border border-dashed border-border flex items-center justify-center text-textLight text-xs ${
+                        locale === "ar"
+                          ? "rounded-tl-2xl rounded-bl-2xl"
+                          : "rounded-tr-2xl rounded-br-2xl"
+                      }`}
+                    >
+                      {tSub("galleryImages")}
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => setOpenAllImagesModal(true)}
+                    className="absolute z-[2] gap-3 p-3 bg-white centered end-6 bottom-6 border-textDark rounded-lg shadow-sm hover:bg-gray-50 transition-colors cursor-pointer select-none"
+                  >
+                    {imagesListIcon}
+                    <span className="text-base font-somar font-bold text-titleColor">
+                      {tSub("reviewAllImages", { count: galleryUrls.length })}
+                    </span>
+                  </button>
+                </div>
+
+                {/* Slot 2 (Visually in the Middle): 2 Stacked Images */}
+                <div className="flex gap-4 lg:flex-col">
+                  {galleryUrls[1] || galleryUrls[0] ? (
+                    <ImageWithPlaceholder
+                      src={galleryUrls[1] || galleryUrls[0]}
+                      alt={`${productName} 2`}
+                      width={305}
+                      height={267}
+                      className="w-[305px] h-[267px] object-cover rounded-2xl"
                     />
+                  ) : (
+                    <div className="w-[305px] h-[267px] rounded-2xl bg-homeBg/40 border border-dashed border-border flex items-center justify-center text-textLight text-xs">
+                      {tSub("galleryImages")}
+                    </div>
+                  )}
+                  {galleryUrls[2] || galleryUrls[1] || galleryUrls[0] ? (
+                    <ImageWithPlaceholder
+                      src={galleryUrls[2] || galleryUrls[1] || galleryUrls[0]}
+                      alt={`${productName} 3`}
+                      width={305}
+                      height={267}
+                      className="w-[305px] h-[267px] object-cover rounded-2xl"
+                    />
+                  ) : (
+                    <div className="w-[305px] h-[267px] rounded-2xl bg-homeBg/40 border border-dashed border-border flex items-center justify-center text-textLight text-xs">
+                      {tSub("galleryImages")}
+                    </div>
                   )}
                 </div>
-              ) : galleryUrls[3] ? (
-                <div className="w-full h-full relative group">
-                  <ImageWithPlaceholder
-                    src={galleryUrls[3]}
-                    alt={`${productName} 4`}
-                    width={450}
-                    height={500}
-                    className="w-full h-full object-cover"
-                  />
-                  {/* Figma-like simulated video control overlay */}
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 flex items-center justify-between text-white text-xs">
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        className="p-1 hover:text-mainColor transition-colors"
+
+                {/* Slot 3 (Visually on the Left): Video or 4th Image */}
+                <div>
+                  {resolvedVideoUrl ? (
+                    resolvedVideoUrl.includes("youtube.com") ||
+                    resolvedVideoUrl.includes("youtu.be") ? (
+                      <div
+                        className={`relative mx-auto overflow-hidden max-w-[330px] lg:max-w-full ${
+                          locale === "ar"
+                            ? "rounded-tr-2xl rounded-br-2xl"
+                            : "rounded-tl-2xl rounded-bl-2xl"
+                        }`}
+                        style={{
+                          height: `${galleryHeight}px`,
+                          width: "430px",
+                        }}
                       >
-                        <PlayArrowIcon className="w-4 h-4" />
-                      </button>
-                      <button
-                        type="button"
-                        className="p-1 hover:text-mainColor transition-colors"
-                      >
-                        <VolumeUpIcon className="w-4 h-4" />
-                      </button>
-                      <div className="w-24 sm:w-32 bg-white/30 rounded-full h-1">
-                        <div className="bg-white h-full w-2/3 rounded-full" />
+                        <iframe
+                          src={resolvedVideoUrl.replace("watch?v=", "embed/")}
+                          title="Product Video"
+                          className="w-full h-full object-cover border-0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
                       </div>
-                    </div>
-                    <button
-                      type="button"
-                      className="p-1 hover:text-mainColor transition-colors"
+                    ) : (
+                      <Video
+                        src={resolvedVideoUrl}
+                        width="430"
+                        height={galleryHeight}
+                        poster={galleryUrls[0] || ""}
+                        showTitleLink={false}
+                        cornerVideo={true}
+                      />
+                    )
+                  ) : (galleryUrls[3] || galleryUrls[0]) ? (
+                    <ImageWithPlaceholder
+                      src={galleryUrls[3] || galleryUrls[0]}
+                      alt={`${productName} 4`}
+                      width={430}
+                      height={550}
+                      className={`w-[430px] h-[250px] lg:h-[550px] object-cover ${
+                        locale === "ar"
+                          ? "rounded-tr-2xl rounded-br-2xl"
+                          : "rounded-tl-2xl rounded-bl-2xl"
+                      }`}
+                    />
+                  ) : (
+                    <div
+                      className={`w-[430px] h-[250px] lg:h-[550px] bg-homeBg/40 border border-dashed border-border flex flex-col items-center justify-center text-textLight text-xs p-4 gap-2 ${
+                        locale === "ar"
+                          ? "rounded-tr-2xl rounded-br-2xl"
+                          : "rounded-tl-2xl rounded-bl-2xl"
+                      }`}
                     >
-                      <FullscreenIcon className="w-4 h-4" />
-                    </button>
-                  </div>
+                      <OndemandVideoOutlinedIcon className="w-8 h-8 text-textLight" />
+                      <span>
+                        {tSub("productVideo")} - {tSub("notAttached")}
+                      </span>
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <div className="w-full h-full rounded-2xl bg-homeBg/40 border border-dashed border-border flex flex-col items-center justify-center text-textLight text-xs p-4 gap-2">
-                  <OndemandVideoOutlinedIcon className="w-8 h-8 text-textLight" />
-                  <span>
-                    {tSub("productVideo")} - {tSub("notAttached")}
-                  </span>
-                </div>
-              )}
-            </div>
+              </>
+            )}
           </div>
         ) : (
           <div className="p-8 text-center text-textLight bg-white rounded-xl border border-dashed border-border">

@@ -58,7 +58,7 @@ const Step2Locations = ({
 
   const isLocationReadOnly = Boolean(fixedLocation);
 
-  // Apply coordinates to Formik when fixedLocation is present
+  // Apply coordinates to Formik when fixedLocation is present or fallback to Riyadh default
   useEffect(() => {
     if (fixedLocation) {
       const currentLat = Number(values.location?.lat);
@@ -71,6 +71,22 @@ const Step2Locations = ({
         };
         setFieldValue("location", updatedLoc);
         setFieldValue("gatheringLocation", updatedLoc);
+      }
+    } else {
+      const currentLat = Number(values.location?.lat);
+      const currentLng = Number(values.location?.lng);
+      if (
+        !currentLat ||
+        !currentLng ||
+        (currentLat === 26.6176 && currentLng === 37.9221)
+      ) {
+        const defaultLoc = {
+          lat: 24.7136,
+          lng: 46.6753,
+          address: values.location?.address || "",
+        };
+        setFieldValue("location", defaultLoc);
+        setFieldValue("gatheringLocation", defaultLoc);
       }
     }
   }, [
@@ -368,15 +384,22 @@ const Step2Locations = ({
                           {/* Left side in RTL: Checkbox */}
                           <div
                             className={cn(
-                              "w-5 h-5 rounded flex items-center justify-center border transition-all shrink-0",
+                              "w-6 h-6 rounded-md flex items-center justify-center border-2 transition-all shrink-0",
                               isSelected
                                 ? "bg-mainColor border-mainColor text-white shadow-xs"
-                                : "border-border bg-white"
+                                : "border-gray-300 bg-white hover:border-mainColor/60"
                             )}
                             aria-hidden="true"
                           >
                             {isSelected && (
-                              <CheckIcon className="w-3.5 h-3.5 text-white stroke-[3]" />
+                              <CheckIcon
+                                className="w-4 h-4 text-white stroke-current stroke-[2]"
+                                sx={{
+                                  fontSize: 16,
+                                  stroke: "currentColor",
+                                  strokeWidth: 2,
+                                }}
+                              />
                             )}
                           </div>
                         </div>
@@ -518,9 +541,17 @@ const Step2Locations = ({
               setFieldValue("gatheringLocation", updatedLoc);
               return;
             }
+            const parsedLat =
+              newLoc.lat != null && !isNaN(Number(newLoc.lat)) && Number(newLoc.lat) !== 0
+                ? Number(newLoc.lat)
+                : 24.7136;
+            const parsedLng =
+              newLoc.lng != null && !isNaN(Number(newLoc.lng)) && Number(newLoc.lng) !== 0
+                ? Number(newLoc.lng)
+                : 46.6753;
             const updatedLoc = {
-              lat: newLoc.lat,
-              lng: newLoc.lng,
+              lat: parsedLat,
+              lng: parsedLng,
               address: newLoc.address || "",
             };
             setFieldValue("location", updatedLoc);

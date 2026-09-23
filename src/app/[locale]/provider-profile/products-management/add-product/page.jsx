@@ -798,7 +798,6 @@ const AddProductPage = () => {
           description: { en: "", ar: "" },
           systemTypes: ["B2B", "B2C"],
           // istantConfirmation: false,
-          key: "INCREASE",
           conditionRuleValue: "15",
           datePricing: [{ date: "", price: "" }],
           allowedAges: [],
@@ -811,14 +810,14 @@ const AddProductPage = () => {
                 lng: fixedSelectionLocation.lng,
                 address: fixedSelectionLocation.address || "",
               }
-            : { lat: 26.6176, lng: 37.9221, address: "" },
+            : { lat: 24.7136, lng: 46.6753, address: "" },
           gatheringLocation: fixedSelectionLocation
             ? {
                 lat: fixedSelectionLocation.lat,
                 lng: fixedSelectionLocation.lng,
                 address: fixedSelectionLocation.address || "",
               }
-            : { lat: 24.9576, lng: 46.6988, address: "" },
+            : { lat: 24.7136, lng: 46.6753, address: "" },
           availableSeats: { min: "", max: "" },
           guestRange: { min: "", max: "" },
           ageRange: { from: "", to: "" },
