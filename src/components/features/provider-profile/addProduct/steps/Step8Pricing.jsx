@@ -953,12 +953,20 @@ const Step8Pricing = ({
                           <TextInputGroup
                             type="number"
                             min="1"
+                            max={values.key === "DECREASE" || values.conditionRuleChangeType === "DECREASE" ? "100" : undefined}
                             name="conditionRuleValue"
                             value={values.conditionRuleValue ?? "15"}
                             onChange={(e) => {
-                              const val = e.target.value;
+                              let val = e.target.value;
+                              const isDiscount = values.key === "DECREASE" || values.conditionRuleChangeType === "DECREASE";
+                              if (isDiscount && Number(val) > 100) {
+                                val = "100";
+                              }
                               setFieldValue("conditionRuleValue", val, true);
                             }}
+                            onBlur={handleBlur}
+                            touched={getIn(touched, "conditionRuleValue")}
+                            errors={getIn(errors, "conditionRuleValue")}
                             placeholder="15"
                             borderClassName={inputBorderCls}
                             inputClassName="!h-[52px] !py-0 px-2 text-center font-somar text-xs sm:text-sm text-textDark"
@@ -1304,6 +1312,15 @@ const Step8Pricing = ({
                                                       e.target.value
                                                     );
                                                   }}
+                                                  onBlur={handleBlur}
+                                                  touched={getIn(
+                                                    touched,
+                                                    `branchPricing.${branch.id}.targetAudiences[${audIdx}].targetAudience`
+                                                  )}
+                                                  errors={getIn(
+                                                    errors,
+                                                    `branchPricing.${branch.id}.targetAudiences[${audIdx}].targetAudience`
+                                                  )}
                                                   label={t("b2c.category")}
                                                   labelClassName="block text-xs font-somar font-medium text-textLight text-start"
                                                   placeholder={t("b2c.selectCategory")}
@@ -1325,6 +1342,15 @@ const Step8Pricing = ({
                                                       e.target.value
                                                     );
                                                   }}
+                                                  onBlur={handleBlur}
+                                                  touched={getIn(
+                                                    touched,
+                                                    `branchPricing.${branch.id}.targetAudiences[${audIdx}].price`
+                                                  )}
+                                                  errors={getIn(
+                                                    errors,
+                                                    `branchPricing.${branch.id}.targetAudiences[${audIdx}].price`
+                                                  )}
                                                   label={t("b2c.price")}
                                                   labelClassName="block text-xs font-somar font-medium text-textLight text-start"
                                                   placeholder={t("b2c.pricePlaceholder")}
@@ -1469,15 +1495,23 @@ const Step8Pricing = ({
                                         <TextInputGroup
                                           type="number"
                                           min="1"
+                                          max={branchKey === "DECREASE" ? "100" : undefined}
                                           name={`branchPricing.${branch.id}.conditionRuleValue`}
                                           value={branchPercent}
                                           onChange={(e) => {
+                                            let val = e.target.value;
+                                            if (branchKey === "DECREASE" && Number(val) > 100) {
+                                              val = "100";
+                                            }
                                             setFieldValue(
                                               `branchPricing.${branch.id}.conditionRuleValue`,
-                                              e.target.value,
+                                              val,
                                               true
                                             );
                                           }}
+                                          onBlur={handleBlur}
+                                          touched={getIn(touched, `branchPricing.${branch.id}.conditionRuleValue`)}
+                                          errors={getIn(errors, `branchPricing.${branch.id}.conditionRuleValue`)}
                                           placeholder="15"
                                           borderClassName={inputBorderCls}
                                           inputClassName="!h-[52px] !py-0 px-2 text-center font-somar text-xs sm:text-sm text-textDark"
@@ -1700,7 +1734,7 @@ const Step8Pricing = ({
             </div>
 
             {/* 4-column Base Price Fields: سعر السوق & السعر بعد الخصم & تكلفة المنتج الأساسي & مشرف مجاني لكل (MATCHING BRANCH CUSTOMIZATION STYLE) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 items-start">
               {/* 1. Market Price (سعر السوق) */}
               <div>
                 <TextInputGroup
@@ -1824,7 +1858,38 @@ const Step8Pricing = ({
                   placeholder="10"
                   borderClassName={inputBorderCls}
                   inputClassName={inputFieldCls}
+                  endAdornment={
+                    <span className="text-xs text-textLight font-somar font-medium pointer-events-none select-none">
+                      {t("b2b.studentUnit")}
+                    </span>
+                  }
                 />
+                {!(studentsPerSupervisorTouched && studentsPerSupervisorErr) && (
+                  <p className="text-xs text-subtitleColor mt-1.5 font-somar flex items-center gap-1.5">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-mainColor/70 shrink-0" />
+                    <span>
+                      {(values.studentsPerSupervisor ??
+                        values.b2bPrice?.studentsPerSupervisor ??
+                        values.b2bPricing?.studentsPerSupervisor ??
+                        values.b2bPricing?.supervisorRatio) &&
+                      Number(
+                        values.studentsPerSupervisor ??
+                          values.b2bPrice?.studentsPerSupervisor ??
+                          values.b2bPricing?.studentsPerSupervisor ??
+                          values.b2bPricing?.supervisorRatio
+                      ) > 0
+                        ? t("b2b.supervisorRatioCalculation", {
+                            students:
+                              values.studentsPerSupervisor ??
+                              values.b2bPrice?.studentsPerSupervisor ??
+                              values.b2bPricing?.studentsPerSupervisor ??
+                              values.b2bPricing?.supervisorRatio,
+                            supervisors: 1,
+                          })
+                        : t("b2b.freeSupervisorHint")}
+                    </span>
+                  </p>
+                )}
               </div>
             </div>
 
@@ -1880,6 +1945,12 @@ const Step8Pricing = ({
                                     `b2bPrice.quantityDiscountTiers[${index}].minCount`,
                                     e.target.value
                                   );
+                                  if (!item.discountType) {
+                                    setFieldValue(
+                                      `b2bPrice.quantityDiscountTiers[${index}].discountType`,
+                                      "PERCENTAGE"
+                                    );
+                                  }
                                 }}
                                 onBlur={handleBlur}
                                 label={t("b2b.minQuantity")}
@@ -1894,12 +1965,19 @@ const Step8Pricing = ({
                               <SelectionGroup
                                 name={`b2bPrice.quantityDiscountTiers[${index}].discountType`}
                                 value={item.discountType || "PERCENTAGE"}
-                                onChange={(e) =>
+                                onChange={(e) => {
+                                  const newType = e.target.value;
                                   setFieldValue(
                                     `b2bPrice.quantityDiscountTiers[${index}].discountType`,
-                                    e.target.value
-                                  )
-                                }
+                                    newType
+                                  );
+                                  if (newType === "PERCENTAGE" && Number(item.discountValue) > 100) {
+                                    setFieldValue(
+                                      `b2bPrice.quantityDiscountTiers[${index}].discountValue`,
+                                      "100"
+                                    );
+                                  }
+                                }}
                                 onBlur={handleBlur}
                                 label={t("b2b.discountType")}
                                 labelClassName="block text-xs font-somar font-medium text-textLight text-start"
@@ -1909,31 +1987,55 @@ const Step8Pricing = ({
                             </div>
 
                             <div>
-                              <TextInputGroup
-                                type="number"
-                                min="0"
-                                name={`b2bPrice.quantityDiscountTiers[${index}].discountValue`}
-                                value={item.discountValue ?? ""}
-                                onChange={(e) =>
-                                  setFieldValue(
-                                    `b2bPrice.quantityDiscountTiers[${index}].discountValue`,
-                                    e.target.value
-                                  )
-                                }
-                                onBlur={handleBlur}
-                                label={t("b2b.discountValue")}
-                                labelClassName="block text-xs font-somar font-medium text-textLight text-start"
-                                placeholder={t("b2b.discountValuePlaceholder")}
-                                borderClassName={inputBorderCls}
-                                inputClassName={inputFieldCls}
-                                endAdornment={
-                                  item.discountType === "AMOUNT" ? (
-                                    newSarSmall
-                                  ) : (
-                                    <span className="text-textLight font-somar text-sm">%</span>
-                                  )
-                                }
-                              />
+                              {(() => {
+                                const isPercentage = (item.discountType || "PERCENTAGE") === "PERCENTAGE";
+                                return (
+                                  <TextInputGroup
+                                    type="number"
+                                    min="0"
+                                    max={isPercentage ? "100" : undefined}
+                                    name={`b2bPrice.quantityDiscountTiers[${index}].discountValue`}
+                                    value={item.discountValue ?? ""}
+                                    onChange={(e) => {
+                                      let val = e.target.value;
+                                      if (isPercentage && Number(val) > 100) {
+                                        val = "100";
+                                      }
+                                      setFieldValue(
+                                        `b2bPrice.quantityDiscountTiers[${index}].discountValue`,
+                                        val
+                                      );
+                                      if (!item.discountType) {
+                                        setFieldValue(
+                                          `b2bPrice.quantityDiscountTiers[${index}].discountType`,
+                                          "PERCENTAGE"
+                                        );
+                                      }
+                                    }}
+                                    onBlur={handleBlur}
+                                    touched={getIn(
+                                      touched,
+                                      `b2bPrice.quantityDiscountTiers[${index}].discountValue`
+                                    )}
+                                    errors={getIn(
+                                      errors,
+                                      `b2bPrice.quantityDiscountTiers[${index}].discountValue`
+                                    )}
+                                    label={t("b2b.discountValue")}
+                                    labelClassName="block text-xs font-somar font-medium text-textLight text-start"
+                                    placeholder={t("b2b.discountValuePlaceholder")}
+                                    borderClassName={inputBorderCls}
+                                    inputClassName={inputFieldCls}
+                                    endAdornment={
+                                      !isPercentage ? (
+                                        newSarSmall
+                                      ) : (
+                                        <span className="text-textLight font-somar text-sm">%</span>
+                                      )
+                                    }
+                                  />
+                                );
+                              })()}
                             </div>
                           </div>
 
@@ -2042,15 +2144,24 @@ const Step8Pricing = ({
                           <TextInputGroup
                             type="number"
                             min="1"
+                            max={(values.b2bPrice?.key || "DECREASE") === "DECREASE" ? "100" : undefined}
                             name="b2bPrice.conditionRuleValue"
                             value={values.b2bPrice?.conditionRuleValue ?? "10"}
                             onChange={(e) => {
+                              let val = e.target.value;
+                              const isDiscount = (values.b2bPrice?.key || "DECREASE") === "DECREASE";
+                              if (isDiscount && Number(val) > 100) {
+                                val = "100";
+                              }
                               setFieldValue(
                                 "b2bPrice.conditionRuleValue",
-                                e.target.value,
+                                val,
                                 true
                               );
                             }}
+                            onBlur={handleBlur}
+                            touched={getIn(touched, "b2bPrice.conditionRuleValue")}
+                            errors={getIn(errors, "b2bPrice.conditionRuleValue")}
                             placeholder="10"
                             borderClassName={inputBorderCls}
                             inputClassName="!h-[52px] !py-0 px-2 text-center font-somar text-xs sm:text-sm text-textDark"
@@ -2305,7 +2416,7 @@ const Step8Pricing = ({
                         {isOpen && (
                           <div className="p-4 sm:p-6 bg-white border-t border-border space-y-6">
                             {/* 1. Base 4 inputs for B2B Branch */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-start">
                               <div>
                                 <TextInputGroup
                                   type="number"
@@ -2382,7 +2493,36 @@ const Step8Pricing = ({
                                   placeholder="10"
                                   borderClassName={inputBorderCls}
                                   inputClassName={inputFieldCls}
+                                  endAdornment={
+                                    <span className="text-xs text-textLight font-somar font-medium pointer-events-none select-none">
+                                      {t("b2b.studentUnit")}
+                                    </span>
+                                  }
                                 />
+                                {!(
+                                  getIn(
+                                    touched,
+                                    `branchPricing.${branch.id}.studentsPerSupervisor`
+                                  ) &&
+                                  getIn(
+                                    errors,
+                                    `branchPricing.${branch.id}.studentsPerSupervisor`
+                                  )
+                                ) && (
+                                  <p className="text-xs text-subtitleColor mt-1.5 font-somar flex items-center gap-1.5">
+                                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-mainColor/70 shrink-0" />
+                                    <span>
+                                      {branchData.studentsPerSupervisor &&
+                                      Number(branchData.studentsPerSupervisor) > 0
+                                        ? t("b2b.supervisorRatioCalculation", {
+                                            students:
+                                              branchData.studentsPerSupervisor,
+                                            supervisors: 1,
+                                          })
+                                        : t("b2b.freeSupervisorHint")}
+                                    </span>
+                                  </p>
+                                )}
                               </div>
                             </div>
 
@@ -2435,49 +2575,88 @@ const Step8Pricing = ({
                                         min="1"
                                         label={t("b2b.minQuantity")}
                                         value={tier.minQuantity ?? ""}
-                                        onChange={(e) =>
+                                        onChange={(e) => {
                                           setFieldValue(
                                             `branchPricing.${branch.id}.b2bQuantityDiscountTiers[${tIdx}].minQuantity`,
                                             e.target.value
-                                          )
-                                        }
+                                          );
+                                          if (!tier.discountType) {
+                                            setFieldValue(
+                                              `branchPricing.${branch.id}.b2bQuantityDiscountTiers[${tIdx}].discountType`,
+                                              "PERCENTAGE"
+                                            );
+                                          }
+                                        }}
                                         borderClassName={inputBorderCls}
                                         inputClassName="!h-[44px] !py-0 px-3 font-somar text-xs text-textDark"
                                       />
                                       <SelectionGroup
                                         label={t("b2b.discountType")}
                                         value={tier.discountType || "PERCENTAGE"}
-                                        onChange={(e) =>
+                                        onChange={(e) => {
+                                          const newType = e.target.value;
                                           setFieldValue(
                                             `branchPricing.${branch.id}.b2bQuantityDiscountTiers[${tIdx}].discountType`,
-                                            e.target.value
-                                          )
-                                        }
+                                            newType
+                                          );
+                                          if (newType === "PERCENTAGE" && Number(tier.discountValue) > 100) {
+                                            setFieldValue(
+                                              `branchPricing.${branch.id}.b2bQuantityDiscountTiers[${tIdx}].discountValue`,
+                                              "100"
+                                            );
+                                          }
+                                        }}
                                         list={discountTypeList}
                                         border="1px solid var(--color-border)"
                                         className="[&_.MuiSelect-select]:!h-[44px] [&_.MuiSelect-select]:!min-h-[44px]"
                                       />
-                                      <TextInputGroup
-                                        type="number"
-                                        min="0"
-                                        label={t("b2b.discountValue")}
-                                        value={tier.discountValue ?? ""}
-                                        onChange={(e) =>
-                                          setFieldValue(
-                                            `branchPricing.${branch.id}.b2bQuantityDiscountTiers[${tIdx}].discountValue`,
-                                            e.target.value
-                                          )
-                                        }
-                                        borderClassName={inputBorderCls}
-                                        inputClassName="!h-[44px] !py-0 px-3 font-somar text-xs text-textDark"
-                                        endAdornment={
-                                          tier.discountType === "AMOUNT" ? (
-                                            newSarSmall
-                                          ) : (
-                                            <span className="text-textLight font-somar text-xs">%</span>
-                                          )
-                                        }
-                                      />
+                                      {(() => {
+                                        const isPercentage = (tier.discountType || "PERCENTAGE") === "PERCENTAGE";
+                                        return (
+                                          <TextInputGroup
+                                            type="number"
+                                            min="0"
+                                            max={isPercentage ? "100" : undefined}
+                                            name={`branchPricing.${branch.id}.b2bQuantityDiscountTiers[${tIdx}].discountValue`}
+                                            label={t("b2b.discountValue")}
+                                            value={tier.discountValue ?? ""}
+                                            onChange={(e) => {
+                                              let val = e.target.value;
+                                              if (isPercentage && Number(val) > 100) {
+                                                val = "100";
+                                              }
+                                              setFieldValue(
+                                                `branchPricing.${branch.id}.b2bQuantityDiscountTiers[${tIdx}].discountValue`,
+                                                val
+                                              );
+                                              if (!tier.discountType) {
+                                                setFieldValue(
+                                                  `branchPricing.${branch.id}.b2bQuantityDiscountTiers[${tIdx}].discountType`,
+                                                  "PERCENTAGE"
+                                                );
+                                              }
+                                            }}
+                                            onBlur={handleBlur}
+                                            touched={getIn(
+                                              touched,
+                                              `branchPricing.${branch.id}.b2bQuantityDiscountTiers[${tIdx}].discountValue`
+                                            )}
+                                            errors={getIn(
+                                              errors,
+                                              `branchPricing.${branch.id}.b2bQuantityDiscountTiers[${tIdx}].discountValue`
+                                            )}
+                                            borderClassName={inputBorderCls}
+                                            inputClassName="!h-[44px] !py-0 px-3 font-somar text-xs text-textDark"
+                                            endAdornment={
+                                              !isPercentage ? (
+                                                newSarSmall
+                                              ) : (
+                                                <span className="text-textLight font-somar text-xs">%</span>
+                                              )
+                                            }
+                                          />
+                                        );
+                                      })()}
                                     </div>
                                     <button
                                       type="button"
@@ -2602,15 +2781,30 @@ const Step8Pricing = ({
                                         <TextInputGroup
                                           type="number"
                                           min="1"
+                                          max={(b2bBranchKey || "DECREASE") === "DECREASE" ? "100" : undefined}
                                           name={`branchPricing.${branch.id}.b2bConditionRuleValue`}
                                           value={b2bBranchPercent}
                                           onChange={(e) => {
+                                            let val = e.target.value;
+                                            const isDiscount = (b2bBranchKey || "DECREASE") === "DECREASE";
+                                            if (isDiscount && Number(val) > 100) {
+                                              val = "100";
+                                            }
                                             setFieldValue(
                                               `branchPricing.${branch.id}.b2bConditionRuleValue`,
-                                              e.target.value,
+                                              val,
                                               true
                                             );
                                           }}
+                                          onBlur={handleBlur}
+                                          touched={getIn(
+                                            touched,
+                                            `branchPricing.${branch.id}.b2bConditionRuleValue`
+                                          )}
+                                          errors={getIn(
+                                            errors,
+                                            `branchPricing.${branch.id}.b2bConditionRuleValue`
+                                          )}
                                           placeholder="10"
                                           borderClassName={inputBorderCls}
                                           inputClassName="!h-[52px] !py-0 px-2 text-center font-somar text-xs sm:text-sm text-textDark"

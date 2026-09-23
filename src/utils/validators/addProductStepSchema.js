@@ -405,6 +405,14 @@ export const createStepBookingDatesSchema = (t) => {
     "The selected date cannot be in the past";
   const fromHourReq = t("providerProfile.products.newAddPage.validations.fromHourRequired");
   const toHourReq = t("providerProfile.products.newAddPage.validations.toHourRequired");
+  const branchMonthDayReq =
+    t("providerProfile.products.newAddPage.validations.branchMonthDayRequired") ||
+    calReq ||
+    "Please select month days for the customized branch";
+  const branchDaysReq =
+    t("providerProfile.products.newAddPage.validations.branchDaysRequired") ||
+    daysReq ||
+    "Please select days for the customized branch";
 
   return Yup.object().shape({
     fromDay: Yup.string()
@@ -444,14 +452,51 @@ export const createStepBookingDatesSchema = (t) => {
       then: (schema) =>
         Yup.mixed().test("monthDay-required", calReq, (val) => {
           if (Array.isArray(val)) {
-            return val.length > 0;
+            return (
+              val.length > 0 &&
+              val.every((d) => !isNaN(Number(d)) && Number(d) >= 1 && Number(d) <= 31)
+            );
           }
           if (val !== undefined && val !== null && String(val).trim().length > 0) {
-            return true;
+            const num = Number(val);
+            return !isNaN(num) && num >= 1 && num <= 31;
           }
           return false;
         }),
       otherwise: (schema) => schema.optional(),
+    }),
+    branchDates: Yup.lazy((obj) => {
+      if (!obj || typeof obj !== "object") return Yup.mixed().optional();
+      const shape = {};
+      Object.keys(obj).forEach((branchId) => {
+        shape[branchId] = Yup.object().shape({
+          recurrencePattern: Yup.string().optional(),
+          monthDay: Yup.mixed().when("recurrencePattern", {
+            is: "MONTHLY",
+            then: () =>
+              Yup.mixed().test("branch-monthDay-required", branchMonthDayReq, (val) => {
+                if (Array.isArray(val)) {
+                  return (
+                    val.length > 0 &&
+                    val.every((d) => !isNaN(Number(d)) && Number(d) >= 1 && Number(d) <= 31)
+                  );
+                }
+                if (val !== undefined && val !== null && String(val).trim().length > 0) {
+                  const num = Number(val);
+                  return !isNaN(num) && num >= 1 && num <= 31;
+                }
+                return false;
+              }),
+            otherwise: () => Yup.mixed().optional(),
+          }),
+          selectedDays: Yup.array().when("recurrencePattern", {
+            is: (val) => val === "WEEKLY",
+            then: (schema) => schema.min(1, branchDaysReq).required(branchDaysReq),
+            otherwise: (schema) => schema.optional(),
+          }),
+        });
+      });
+      return Yup.object().shape(shape);
     }),
     fromHour: Yup.string().trim().optional(),
     toHour: Yup.string()
@@ -497,6 +542,7 @@ export const STEP_BOOKING_DATES_FIELD_NAMES = [
   "recurrencePattern",
   "selectedDays",
   "monthDay",
+  "branchDates",
   "fromHour",
   "toHour",
   "availableTimes[0].from",
@@ -820,6 +866,48 @@ export const createStepPricingSchema = (t) => {
   const targetAudiencePriceReq =
     t("providerProfile.products.newAddPage.stepPricing.validations.targetAudiencePriceRequired") ||
     "Price for audience category is required";
+  const targetAudiencesMinReq =
+    t("providerProfile.products.newAddPage.stepPricing.validations.targetAudiencesMinRequired") ||
+    t("providerProfile.products.newAddPage.validations.targetAudiencesMinRequired") ||
+    "At least one target audience category is required";
+  const discountPercentageMax =
+    t("providerProfile.products.newAddPage.stepPricing.validations.discountPercentageMax") ||
+    t("providerProfile.products.newAddPage.validations.discountPercentageMax") ||
+    "Discount percentage must not exceed 100%";
+  const discountPercentageMin =
+    t("providerProfile.products.newAddPage.stepPricing.validations.discountPercentageMin") ||
+    t("providerProfile.products.newAddPage.validations.discountPercentageMin") ||
+    "Discount percentage cannot be negative";
+
+  const quantityDiscountTierSchema = Yup.object().shape({
+    minQuantity: Yup.number()
+      .transform((val, orig) =>
+        orig === "" || orig === null || orig === undefined ? undefined : val
+      )
+      .nullable()
+      .optional(),
+    discountType: Yup.string().optional(),
+    discountValue: Yup.number()
+      .transform((val, orig) =>
+        orig === "" || orig === null || orig === undefined ? undefined : val
+      )
+      .test(
+        "max-100-if-percentage",
+        discountPercentageMax,
+        function (val) {
+          if (val === undefined || val === null || val === "") return true;
+          const { discountType } = this.parent || {};
+          const isPercentage = !discountType || discountType === "PERCENTAGE";
+          if (isPercentage && Number(val) > 100) {
+            return false;
+          }
+          return true;
+        }
+      )
+      .min(0, discountPercentageMin)
+      .nullable()
+      .optional(),
+  });
 
   return Yup.object().shape({
     systemTypes: Yup.array().of(Yup.string()).optional(),
@@ -903,6 +991,50 @@ export const createStepPricingSchema = (t) => {
             )
             .nullable()
             .optional(),
+          quantityDiscountTiers: Yup.array()
+            .of(quantityDiscountTierSchema)
+            .optional(),
+          datePricing: Yup.array()
+            .of(
+              Yup.object().shape({
+                date: Yup.string().optional(),
+                fromDate: Yup.string().optional(),
+                toDate: Yup.string().optional(),
+                price: Yup.mixed().optional(),
+                percentage: Yup.number()
+                  .transform((val, orig) =>
+                    orig === "" || orig === null || orig === undefined ? undefined : val
+                  )
+                  .test("b2b-dp-discount-max-100", discountPercentageMax, function (val) {
+                    if (val === undefined || val === null || val === "") return true;
+                    const { key } = this.parent || {};
+                    if (key === "DECREASE" && Number(val) > 100) return false;
+                    return true;
+                  })
+                  .min(0, discountPercentageMin)
+                  .nullable()
+                  .optional(),
+              })
+            )
+            .optional(),
+          conditionRuleValue: Yup.number()
+            .transform((val, orig) =>
+              orig === "" || orig === null || orig === undefined ? undefined : val
+            )
+            .test(
+              "b2b-seasonal-discount-max-100",
+              discountPercentageMax,
+              function (val) {
+                if (val === undefined || val === null || val === "") return true;
+                const { key } = this.parent || {};
+                const isDiscount = key === "DECREASE" || !key;
+                if (isDiscount && Number(val) > 100) return false;
+                return true;
+              }
+            )
+            .min(0, discountPercentageMin)
+            .nullable()
+            .optional(),
         }),
       otherwise: (schema) =>
         schema
@@ -919,6 +1051,27 @@ export const createStepPricingSchema = (t) => {
                 orig === "" || orig === null || orig === undefined ? undefined : val
               )
               .min(0, priceInvalid)
+              .nullable()
+              .optional(),
+            quantityDiscountTiers: Yup.array()
+              .of(quantityDiscountTierSchema)
+              .optional(),
+            conditionRuleValue: Yup.number()
+              .transform((val, orig) =>
+                orig === "" || orig === null || orig === undefined ? undefined : val
+              )
+              .test(
+                "b2b-seasonal-discount-max-100",
+                discountPercentageMax,
+                function (val) {
+                  if (val === undefined || val === null || val === "") return true;
+                  const { key } = this.parent || {};
+                  const isDiscount = key === "DECREASE" || !key;
+                  if (isDiscount && Number(val) > 100) return false;
+                  return true;
+                }
+              )
+              .min(0, discountPercentageMin)
               .nullable()
               .optional(),
           })
@@ -944,42 +1097,137 @@ export const createStepPricingSchema = (t) => {
       }),
 
     // 6. Target Audiences (B2C)
-    targetAudiences: Yup.array()
-      .of(
-        Yup.object().shape({
-          targetAudience: Yup.string()
-            .test(
-              "audience-req-if-price",
-              targetAudienceReq,
-              function (val) {
-                const { price } = this.parent || {};
-                const hasPrice = price !== "" && price !== null && price !== undefined;
-                if (hasPrice && !val) return false;
-                return true;
-              }
-            )
-            .optional(),
+    targetAudiences: Yup.array().when("systemTypes", {
+      is: (val) =>
+        !Array.isArray(val) ||
+        val.includes("B2C") ||
+        (!val.includes("B2B") && val.length === 0),
+      then: (schema) =>
+        schema
+          .min(1, targetAudiencesMinReq)
+          .of(
+            Yup.object().shape({
+              targetAudience: Yup.string()
+                .trim()
+                .required(targetAudienceReq),
+              price: Yup.number()
+                .transform((val, orig) =>
+                  orig === "" || orig === null || orig === undefined ? undefined : val
+                )
+                .typeError(targetAudiencePriceReq)
+                .min(0, priceInvalid)
+                .required(targetAudiencePriceReq),
+            })
+          )
+          .required(targetAudiencesMinReq),
+      otherwise: (schema) =>
+        schema
+          .of(
+            Yup.object().shape({
+              targetAudience: Yup.string().optional(),
+              price: Yup.number()
+                .transform((val, orig) =>
+                  orig === "" || orig === null || orig === undefined ? undefined : val
+                )
+                .min(0, priceInvalid)
+                .nullable()
+                .optional(),
+            })
+          )
+          .optional(),
+    }),
+
+    // Branch Pricing Customizations
+    branchPricing: Yup.lazy((obj) => {
+      if (!obj || typeof obj !== "object") return Yup.mixed().optional();
+      const shape = {};
+      Object.keys(obj).forEach((branchId) => {
+        shape[branchId] = Yup.object().shape({
           price: Yup.number()
             .transform((val, orig) =>
               orig === "" || orig === null || orig === undefined ? undefined : val
             )
+            .min(0, priceInvalid)
+            .optional(),
+          targetAudiences: Yup.array()
+            .of(
+              Yup.object().shape({
+                targetAudience: Yup.string()
+                  .test(
+                    "branch-audience-req-if-price",
+                    targetAudienceReq,
+                    function (val) {
+                      const { price } = this.parent || {};
+                      const hasPrice = price !== "" && price !== null && price !== undefined;
+                      if (hasPrice && !val) return false;
+                      return true;
+                    }
+                  )
+                  .optional(),
+                price: Yup.number()
+                  .transform((val, orig) =>
+                    orig === "" || orig === null || orig === undefined ? undefined : val
+                  )
+                  .test(
+                    "branch-price-req-if-audience",
+                    targetAudiencePriceReq,
+                    function (val) {
+                      const { targetAudience } = this.parent || {};
+                      if (targetAudience && (val === undefined || val === null || val === "")) {
+                        return false;
+                      }
+                      return true;
+                    }
+                  )
+                  .min(0, priceInvalid)
+                  .nullable()
+                  .optional(),
+              })
+            )
+            .optional(),
+          b2bQuantityDiscountTiers: Yup.array()
+            .of(quantityDiscountTierSchema)
+            .optional(),
+          conditionRuleValue: Yup.number()
+            .transform((val, orig) =>
+              orig === "" || orig === null || orig === undefined ? undefined : val
+            )
             .test(
-              "price-req-if-audience",
-              targetAudiencePriceReq,
+              "branch-seasonal-discount-max-100",
+              discountPercentageMax,
               function (val) {
-                const { targetAudience } = this.parent || {};
-                if (targetAudience && (val === undefined || val === null || val === "")) {
-                  return false;
-                }
+                if (val === undefined || val === null || val === "") return true;
+                const { key, conditionRuleChangeType } = this.parent || {};
+                const isDiscount = key === "DECREASE" || conditionRuleChangeType === "DECREASE";
+                if (isDiscount && Number(val) > 100) return false;
                 return true;
               }
             )
-            .min(0, priceInvalid)
+            .min(0, discountPercentageMin)
             .nullable()
             .optional(),
-        })
-      )
-      .optional(),
+          b2bConditionRuleValue: Yup.number()
+            .transform((val, orig) =>
+              orig === "" || orig === null || orig === undefined ? undefined : val
+            )
+            .test(
+              "branch-b2b-seasonal-discount-max-100",
+              discountPercentageMax,
+              function (val) {
+                if (val === undefined || val === null || val === "") return true;
+                const { b2bKey, b2bConditionRuleChangeType } = this.parent || {};
+                const isDiscount = b2bKey === "DECREASE" || b2bConditionRuleChangeType === "DECREASE" || !b2bKey;
+                if (isDiscount && Number(val) > 100) return false;
+                return true;
+              }
+            )
+            .min(0, discountPercentageMin)
+            .nullable()
+            .optional(),
+        });
+      });
+      return Yup.object().shape(shape);
+    }),
 
     // 7. Bulk / Volume Pricing (B2B)
     bulkPricing: Yup.array()
@@ -1035,17 +1283,62 @@ export const createStepPricingSchema = (t) => {
           fromDate: Yup.string().optional(),
           toDate: Yup.string().optional(),
           price: Yup.mixed().optional(),
+          percentage: Yup.number()
+            .transform((val, orig) =>
+              orig === "" || orig === null || orig === undefined ? undefined : val
+            )
+            .test("datePricing-discount-max-100", discountPercentageMax, function (val) {
+              if (val === undefined || val === null || val === "") return true;
+              const { key } = this.parent || {};
+              if (key === "DECREASE" && Number(val) > 100) return false;
+              return true;
+            })
+            .min(0, discountPercentageMin)
+            .nullable()
+            .optional(),
         })
       )
       .optional(),
 
-    "b2cPrice.quantityDiscountTiers": Yup.array().optional(),
+    "b2cPrice.quantityDiscountTiers": Yup.array().of(quantityDiscountTierSchema).optional(),
     "b2cPrice.datePricing": Yup.array().optional(),
-    "b2bPrice.quantityDiscountTiers": Yup.array().optional(),
+    "b2bPrice.quantityDiscountTiers": Yup.array().of(quantityDiscountTierSchema).optional(),
     "b2bPrice.datePricing": Yup.array().optional(),
+    "b2bPrice.conditionRuleValue": Yup.number()
+      .transform((val, orig) =>
+        orig === "" || orig === null || orig === undefined ? undefined : val
+      )
+      .test(
+        "flat-b2b-seasonal-discount-max-100",
+        discountPercentageMax,
+        function (val) {
+          if (val === undefined || val === null || val === "") return true;
+          return Number(val) <= 100;
+        }
+      )
+      .min(0, discountPercentageMin)
+      .nullable()
+      .optional(),
 
     key: Yup.string().optional(),
-    conditionRuleValue: Yup.mixed().optional(),
+    conditionRuleValue: Yup.number()
+      .transform((val, orig) =>
+        orig === "" || orig === null || orig === undefined ? undefined : val
+      )
+      .test(
+        "seasonal-discount-max-100",
+        discountPercentageMax,
+        function (val) {
+          if (val === undefined || val === null || val === "") return true;
+          const { key, conditionRuleChangeType } = this.parent || {};
+          const isDiscount = key === "DECREASE" || conditionRuleChangeType === "DECREASE";
+          if (isDiscount && Number(val) > 100) return false;
+          return true;
+        }
+      )
+      .min(0, discountPercentageMin)
+      .nullable()
+      .optional(),
   });
 };
 
@@ -1060,6 +1353,7 @@ export const STEP_PRICING_FIELD_NAMES = [
   "b2bPrice.discountedPrice",
   "productCost",
   "targetAudiences",
+  "branchPricing",
   "bulkPricing",
   "b2cPrice.quantityDiscountTiers",
   "b2bPrice.quantityDiscountTiers",
@@ -1070,4 +1364,6 @@ export const STEP_PRICING_FIELD_NAMES = [
   "b2bPrice.datePricing",
   "key",
   "conditionRuleValue",
+  "b2bPrice.conditionRuleValue",
+  "b2bPrice.key",
 ];

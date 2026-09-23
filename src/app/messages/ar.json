@@ -444,7 +444,12 @@
           "benefitsArInvalid": "يرجى كتابة الميزة بالعربي باستخدام الحروف العربية فقط",
           "benefitsEnInvalid": "يرجى كتابة الميزة بالإنجليزي باستخدام الحروف الإنجليزية فقط",
           "notesArInvalid": "يرجى كتابة الملاحظات بالعربي باستخدام الحروف العربية فقط",
-          "notesEnInvalid": "يرجى كتابة الملاحظات بالإنجليزي باستخدام الحروف الإنجليزية فقط"
+          "notesEnInvalid": "يرجى كتابة الملاحظات بالإنجليزي باستخدام الحروف الإنجليزية فقط",
+          "branchMonthDayRequired": "يرجى تحديد أيام الشهر للفرع المخصص",
+          "branchDaysRequired": "يرجى تحديد الأيام للفرع المخصص",
+          "targetAudiencesMinRequired": "يرجى إضافة فئة واحدة على الأقل للجمهور المستهدف",
+          "discountPercentageMax": "نسبة الخصم يجب ألا تتجاوز 100%",
+          "discountPercentageMin": "نسبة الخصم لا يمكن أن تكون سالبة"
         },
         "step1": {
           "cardTitle": "بيانات المنتج الاساسية",
@@ -885,10 +890,12 @@
             "priceInSarPlaceholder": "100",
             "freeSupervisorTitle": "المشرف / المعلم مجاناً",
             "freeSupervisorCheckbox": "المشرف / المعلم مجاناً",
-            "freeSupervisorLabel": "مشرف مجاني لكل",
+            "freeSupervisorLabel": "مشرف مجاني لكل (عدد الطلاب)",
             "students": "طلاب",
-            "studentsCountPlaceholder": "10 طلاب",
-            "supervisorRatioCalculation": "لكل {students} طالب ← {supervisors} مشرف مجاني"
+            "studentUnit": "طالب",
+            "studentsCountPlaceholder": "10",
+            "supervisorRatioCalculation": "لكل {students} طالب ← {supervisors} مشرف مجاني",
+            "freeSupervisorHint": "أدخل عدد الطلاب المستحقين لمشرف مجاني واحد (مثال: 10)"
           },
           "branchSectionTitle": "تخصيص التواريخ والأسعار حسب الفرع",
           "branchSectionSubtitle": "حدد أسعار مختلفة لبعض الفروع عند الحاجة.",
@@ -914,7 +921,17 @@
             "bulkPriceRequired": "يرجى إدخال سعر الفرد للشريحة",
             "freeSupervisorRatioRequired": "يرجى تحديد عدد الطلاب لكل مشرف مجاني",
             "pastDateError": "التاريخ لا يمكن أن يكون في الماضي",
-            "endDateAfterStartDate": "تاريخ النهاية يجب أن يكون بعد تاريخ البداية"
+            "endDateAfterStartDate": "تاريخ النهاية يجب أن يكون بعد تاريخ البداية",
+            "targetAudiencesMinRequired": "يرجى إضافة فئة واحدة على الأقل للجمهور المستهدف",
+            "discountPercentageMax": "نسبة الخصم يجب ألا تتجاوز 100%",
+            "discountPercentageMin": "نسبة الخصم لا يمكن أن تكون سالبة"
+          }
+        },
+        "step8": {
+          "validations": {
+            "targetAudiencesMinRequired": "يرجى إضافة فئة واحدة على الأقل للجمهور المستهدف",
+            "discountPercentageMax": "نسبة الخصم يجب ألا تتجاوز 100%",
+            "discountPercentageMin": "نسبة الخصم لا يمكن أن تكون سالبة"
           }
         }
       },

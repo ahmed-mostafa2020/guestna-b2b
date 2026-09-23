@@ -437,7 +437,12 @@
           "benefitsArInvalid": "Please write the benefit in Arabic using Arabic letters only",
           "benefitsEnInvalid": "Please write the benefit in English using English letters only",
           "notesArInvalid": "Please write notes in Arabic using Arabic letters only",
-          "notesEnInvalid": "Please write notes in English using English letters only"
+          "notesEnInvalid": "Please write notes in English using English letters only",
+          "branchMonthDayRequired": "Please select month days for the customized branch",
+          "branchDaysRequired": "Please select days for the customized branch",
+          "targetAudiencesMinRequired": "At least one target audience category is required",
+          "discountPercentageMax": "Discount percentage must not exceed 100%",
+          "discountPercentageMin": "Discount percentage cannot be negative"
         },
         "step1": {
           "cardTitle": "Basic Product Information",
@@ -878,10 +883,12 @@
             "priceInSarPlaceholder": "100",
             "freeSupervisorTitle": "Free Supervisor / Teacher",
             "freeSupervisorCheckbox": "Free Supervisor / Teacher",
-            "freeSupervisorLabel": "Free supervisor per",
+            "freeSupervisorLabel": "Free supervisor per (students count)",
             "students": "Students",
-            "studentsCountPlaceholder": "10 students",
-            "supervisorRatioCalculation": "For every {students} students → {supervisors} free supervisors"
+            "studentUnit": "Students",
+            "studentsCountPlaceholder": "10",
+            "supervisorRatioCalculation": "For every {students} students → {supervisors} free supervisor",
+            "freeSupervisorHint": "Enter number of students per 1 free supervisor (e.g. 10)"
           },
           "branchSectionTitle": "Customize Dates and Prices by Branch",
           "branchSectionSubtitle": "Set specific pricing for selected branches when needed.",
@@ -907,7 +914,17 @@
             "bulkPriceRequired": "Tier price per person is required",
             "freeSupervisorRatioRequired": "Please specify student ratio per supervisor",
             "pastDateError": "The selected date cannot be in the past",
-            "endDateAfterStartDate": "End date must be after start date"
+            "endDateAfterStartDate": "End date must be after start date",
+            "targetAudiencesMinRequired": "At least one target audience category is required",
+            "discountPercentageMax": "Discount percentage must not exceed 100%",
+            "discountPercentageMin": "Discount percentage cannot be negative"
+          }
+        },
+        "step8": {
+          "validations": {
+            "targetAudiencesMinRequired": "At least one target audience category is required",
+            "discountPercentageMax": "Discount percentage must not exceed 100%",
+            "discountPercentageMin": "Discount percentage cannot be negative"
           }
         }
       },

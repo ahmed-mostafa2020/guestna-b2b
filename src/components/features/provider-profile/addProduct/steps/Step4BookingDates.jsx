@@ -830,10 +830,9 @@ const Step4BookingDates = ({
                               multiple={true}
                               required={true}
                               value={
-                                Array.isArray(branchData.selectedDays) &&
-                                branchData.selectedDays.length > 0
+                                Array.isArray(branchData.selectedDays)
                                   ? branchData.selectedDays
-                                  : ["FRIDAY"]
+                                  : []
                               }
                               onChange={(e) => {
                                 const val = Array.isArray(e.target.value)
@@ -844,6 +843,15 @@ const Step4BookingDates = ({
                                   val
                                 );
                               }}
+                              onBlur={handleBlur}
+                              touched={getIn(
+                                touched,
+                                `branchDates.${branch.id}.selectedDays`
+                              )}
+                              errors={getIn(
+                                errors,
+                                `branchDates.${branch.id}.selectedDays`
+                              )}
                               label={t("days")}
                               labelClassName={labelCls}
                               border="1px solid var(--color-border)"
@@ -856,6 +864,7 @@ const Step4BookingDates = ({
                             <SelectionGroup
                               name={`branchDates.${branch.id}.monthDay`}
                               multiple={true}
+                              required={true}
                               value={
                                 Array.isArray(branchData.monthDay)
                                   ? branchData.monthDay
@@ -872,6 +881,15 @@ const Step4BookingDates = ({
                                   val
                                 );
                               }}
+                              onBlur={handleBlur}
+                              touched={getIn(
+                                touched,
+                                `branchDates.${branch.id}.monthDay`
+                              )}
+                              errors={getIn(
+                                errors,
+                                `branchDates.${branch.id}.monthDay`
+                              )}
                               label={t("calendar")}
                               labelClassName={labelCls}
                               border="1px solid var(--color-border)"

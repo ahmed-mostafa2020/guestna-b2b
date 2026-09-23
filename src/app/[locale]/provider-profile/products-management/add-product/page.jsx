@@ -370,6 +370,66 @@ const buildTouchedMap = (fields, values = {}) => {
     }));
   }
 
+  if (fields.includes("branchDates") && values?.branchDates && typeof values.branchDates === "object") {
+    touched.branchDates = {};
+    Object.keys(values.branchDates).forEach((branchId) => {
+      const bDate = values.branchDates[branchId] || {};
+      touched.branchDates[branchId] = {
+        recurrencePattern: true,
+        monthDay: true,
+        selectedDays: true,
+        fromDay: true,
+        toDay: true,
+      };
+      if (Array.isArray(bDate.availableTimes)) {
+        touched.branchDates[branchId].availableTimes = bDate.availableTimes.map(() => ({
+          from: true,
+          to: true,
+        }));
+      }
+    });
+  }
+
+  if (
+    fields.includes("b2bPrice.quantityDiscountTiers") &&
+    Array.isArray(values?.b2bPrice?.quantityDiscountTiers)
+  ) {
+    if (!touched.b2bPrice) touched.b2bPrice = {};
+    touched.b2bPrice.quantityDiscountTiers = values.b2bPrice.quantityDiscountTiers.map(() => ({
+      minQuantity: true,
+      discountType: true,
+      discountValue: true,
+    }));
+  }
+
+  if (fields.includes("branchPricing") && values?.branchPricing && typeof values.branchPricing === "object") {
+    touched.branchPricing = {};
+    Object.keys(values.branchPricing).forEach((branchId) => {
+      const bPrice = values.branchPricing[branchId] || {};
+      touched.branchPricing[branchId] = {
+        price: true,
+        discountedPrice: true,
+        schoolsPrice: true,
+        productCost: true,
+        conditionRuleValue: true,
+        b2bConditionRuleValue: true,
+      };
+      if (Array.isArray(bPrice.targetAudiences)) {
+        touched.branchPricing[branchId].targetAudiences = bPrice.targetAudiences.map(() => ({
+          targetAudience: true,
+          price: true,
+        }));
+      }
+      if (Array.isArray(bPrice.b2bQuantityDiscountTiers)) {
+        touched.branchPricing[branchId].b2bQuantityDiscountTiers = bPrice.b2bQuantityDiscountTiers.map(() => ({
+          minQuantity: true,
+          discountType: true,
+          discountValue: true,
+        }));
+      }
+    });
+  }
+
   return touched;
 };
 
@@ -858,6 +918,7 @@ const AddProductPage = () => {
             depositValue: 0,
             finalDepositValue: 0,
             studentsPerSupervisor: "10",
+            quantityDiscountTiers: [{ minQuantity: "", discountType: "PERCENTAGE", discountValue: "" }],
           },
           studentsPerSupervisor: "10",
           b2cSeats: "",
