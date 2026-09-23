@@ -1,4 +1,8 @@
 import * as Yup from "yup";
+import {
+  ARABIC_LETTERS_REGEX,
+  ENGLISH_LETTERS_REGEX,
+} from "./addProductStepSchema";
 
 /**
  * Yup schema generator for Add Product form
@@ -16,7 +20,8 @@ export const createAddProductSchema = (t) => {
       ar: Yup.string().trim().required(reqMsg),
     }),
 
-    tripsType: Yup.string().required(reqMsg),
+    tripType: Yup.string().optional(),
+    tripsType: Yup.string().optional(),
 
     description: Yup.object().shape({
       en: Yup.string().trim().required(reqMsg),
@@ -49,9 +54,14 @@ export const createAddProductSchema = (t) => {
         otherwise: (schema) => schema.optional(),
       }),
 
-    monthDay: Yup.string().when("recurrencePattern", {
+    monthDay: Yup.mixed().when("recurrencePattern", {
       is: "MONTHLY",
-      then: (schema) => schema.required(reqMsg),
+      then: (schema) =>
+        schema.test("monthDay-required", reqMsg, (val) => {
+          if (Array.isArray(val)) return val.length > 0;
+          if (val !== undefined && val !== null && String(val).trim().length > 0) return true;
+          return false;
+        }),
       otherwise: (schema) => schema.optional(),
     }),
 
@@ -189,8 +199,24 @@ export const createAddProductSchema = (t) => {
         Yup.object().shape({
           service: Yup.string().optional(),
           note: Yup.object().shape({
-            en: Yup.string().optional(),
-            ar: Yup.string().optional(),
+            en: Yup.string()
+              .trim()
+              .test("is-en-valid", "Please use English letters only", (val) => {
+                if (!val || val.trim() === "") return true;
+                return (
+                  ENGLISH_LETTERS_REGEX.test(val) && !ARABIC_LETTERS_REGEX.test(val)
+                );
+              })
+              .optional(),
+            ar: Yup.string()
+              .trim()
+              .test("is-ar-valid", "يرجى استخدام الحروف العربية فقط", (val) => {
+                if (!val || val.trim() === "") return true;
+                return (
+                  ARABIC_LETTERS_REGEX.test(val) && !ENGLISH_LETTERS_REGEX.test(val)
+                );
+              })
+              .optional(),
           }),
         })
       )
@@ -198,13 +224,20 @@ export const createAddProductSchema = (t) => {
 
     customServices: Yup.array().of(Yup.string()).optional(),
 
+    gallary: Yup.array()
+      .min(4, t("providerProfile.products.modal.validation.galleryMin"))
+      .max(15, t("providerProfile.products.modal.validation.galleryMax"))
+      .optional(),
+
     gallery: Yup.array()
       .min(4, t("providerProfile.products.modal.validation.galleryMin"))
       .max(15, t("providerProfile.products.modal.validation.galleryMax"))
-      .required(t("providerProfile.products.modal.validation.galleryMin")),
+      .optional(),
 
-    thumbnailWeb: Yup.mixed().required(reqMsg),
+    thumbnail: Yup.mixed().optional(),
+    thumbnailWeb: Yup.mixed().optional(),
 
+    detailsFile: Yup.mixed().nullable().optional(),
     mediaFile: Yup.mixed().nullable().optional(),
 
     video: Yup.mixed().nullable().optional(),
@@ -224,26 +257,108 @@ export const createAddProductSchema = (t) => {
         Yup.object().shape({
           day: Yup.number().optional(),
           toDo: Yup.object().shape({
-            en: Yup.string().optional(),
-            ar: Yup.string().optional(),
+            en: Yup.string()
+              .trim()
+              .test("is-en-valid", "Please use English letters only", (val) => {
+                if (!val || val.trim() === "") return true;
+                return (
+                  ENGLISH_LETTERS_REGEX.test(val) && !ARABIC_LETTERS_REGEX.test(val)
+                );
+              })
+              .optional(),
+            ar: Yup.string()
+              .trim()
+              .test("is-ar-valid", "يرجى استخدام الحروف العربية فقط", (val) => {
+                if (!val || val.trim() === "") return true;
+                return (
+                  ARABIC_LETTERS_REGEX.test(val) && !ENGLISH_LETTERS_REGEX.test(val)
+                );
+              })
+              .optional(),
           }),
         })
       )
       .optional(),
 
     mustHaveItems: Yup.object().shape({
-      en: Yup.array().of(Yup.string()).optional(),
-      ar: Yup.array().of(Yup.string()).optional(),
+      en: Yup.array()
+        .of(
+          Yup.string()
+            .trim()
+            .test("is-en-valid", "Please use English letters only", (val) => {
+              if (!val || val.trim() === "") return true;
+              return (
+                ENGLISH_LETTERS_REGEX.test(val) && !ARABIC_LETTERS_REGEX.test(val)
+              );
+            })
+        )
+        .optional(),
+      ar: Yup.array()
+        .of(
+          Yup.string()
+            .trim()
+            .test("is-ar-valid", "يرجى استخدام الحروف العربية فقط", (val) => {
+              if (!val || val.trim() === "") return true;
+              return (
+                ARABIC_LETTERS_REGEX.test(val) && !ENGLISH_LETTERS_REGEX.test(val)
+              );
+            })
+        )
+        .optional(),
     }),
 
     exemptedFromTrip: Yup.object().shape({
-      en: Yup.array().of(Yup.string()).optional(),
-      ar: Yup.array().of(Yup.string()).optional(),
+      en: Yup.array()
+        .of(
+          Yup.string()
+            .trim()
+            .test("is-en-valid", "Please use English letters only", (val) => {
+              if (!val || val.trim() === "") return true;
+              return (
+                ENGLISH_LETTERS_REGEX.test(val) && !ARABIC_LETTERS_REGEX.test(val)
+              );
+            })
+        )
+        .optional(),
+      ar: Yup.array()
+        .of(
+          Yup.string()
+            .trim()
+            .test("is-ar-valid", "يرجى استخدام الحروف العربية فقط", (val) => {
+              if (!val || val.trim() === "") return true;
+              return (
+                ARABIC_LETTERS_REGEX.test(val) && !ENGLISH_LETTERS_REGEX.test(val)
+              );
+            })
+        )
+        .optional(),
     }),
 
     benefits: Yup.object().shape({
-      en: Yup.array().of(Yup.string()).optional(),
-      ar: Yup.array().of(Yup.string()).optional(),
+      en: Yup.array()
+        .of(
+          Yup.string()
+            .trim()
+            .test("is-en-valid", "Please use English letters only", (val) => {
+              if (!val || val.trim() === "") return true;
+              return (
+                ENGLISH_LETTERS_REGEX.test(val) && !ARABIC_LETTERS_REGEX.test(val)
+              );
+            })
+        )
+        .optional(),
+      ar: Yup.array()
+        .of(
+          Yup.string()
+            .trim()
+            .test("is-ar-valid", "يرجى استخدام الحروف العربية فقط", (val) => {
+              if (!val || val.trim() === "") return true;
+              return (
+                ARABIC_LETTERS_REGEX.test(val) && !ENGLISH_LETTERS_REGEX.test(val)
+              );
+            })
+        )
+        .optional(),
     }),
   });
 };
@@ -258,6 +373,7 @@ export const getStepFieldNames = (stepIndex) => {
         "systemTypes",
         "name.en",
         "name.ar",
+        "tripType",
         "tripsType",
         "description.en",
         "description.ar",
@@ -281,11 +397,24 @@ export const getStepFieldNames = (stepIndex) => {
         "duration",
       ];
     case 4: // Pricing
-      return ["price", "targetAudiences", "weekdayPricing", "datePricing"];
+      return [
+        "price",
+        "b2bPrice.price",
+        "targetAudiences",
+        "weekdayPricing",
+        "datePricing",
+      ];
     case 5: // Services
       return ["services"];
     case 6: // Media
-      return ["gallery", "thumbnailWeb"];
+      return [
+        "thumbnail",
+        "thumbnailWeb",
+        "gallary",
+        "gallery",
+        "detailsFile",
+        "mediaFile",
+      ];
     case 7: // Locations
       return [
         "cities",

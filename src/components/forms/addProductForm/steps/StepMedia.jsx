@@ -23,21 +23,24 @@ const StepMedia = () => {
   const handleGalleryUpload = (e) => {
     const files = Array.from(e.target.files || []);
     if (files.length > 0) {
-      const currentGallery = values.gallery || [];
+      const currentGallery = values.gallary || values.gallery || [];
       const totalAllowed = 15 - currentGallery.length;
       if (totalAllowed > 0) {
-        setFieldValue("gallery", [...currentGallery, ...files.slice(0, totalAllowed)]);
+        const next = [...currentGallery, ...files.slice(0, totalAllowed)];
+        setFieldValue("gallary", next);
+        setFieldValue("gallery", next);
       }
     }
   };
 
   const handleRemoveGalleryItem = (index) => {
-    const currentGallery = values.gallery || [];
-    setFieldValue(
-      "gallery",
-      currentGallery.filter((_, i) => i !== index)
-    );
+    const currentGallery = values.gallary || values.gallery || [];
+    const next = currentGallery.filter((_, i) => i !== index);
+    setFieldValue("gallary", next);
+    setFieldValue("gallery", next);
   };
+
+  const galleryList = values.gallary || values.gallery || [];
 
   return (
     <div className="space-y-6">
@@ -54,7 +57,7 @@ const StepMedia = () => {
           </div>
           <span className="text-xs font-bold text-mainColor bg-mainColor/10 px-2.5 py-1 rounded-full">
             {t("fields.galleryCount", {
-              count: (values.gallery || []).length,
+              count: galleryList.length,
               min: 4,
             })}
           </span>
@@ -79,9 +82,9 @@ const StepMedia = () => {
         </label>
 
         {/* Gallery Thumbnails Grid */}
-        {(values.gallery || []).length > 0 && (
+        {galleryList.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-            {values.gallery.map((item, idx) => {
+            {galleryList.map((item, idx) => {
               const previewUrl = getPreviewUrl(item);
 
               return (
@@ -114,8 +117,8 @@ const StepMedia = () => {
           </div>
         )}
 
-        {touched.gallery && errors.gallery && (
-          <p className="text-xs text-error font-medium">{errors.gallery}</p>
+        {((touched.gallary && errors.gallary) || (touched.gallery && errors.gallery)) && (
+          <p className="text-xs text-error font-medium">{errors.gallary || errors.gallery}</p>
         )}
       </div>
 
@@ -125,30 +128,38 @@ const StepMedia = () => {
           {t("fields.thumbnailWeb")} <span className="text-error">*</span>
         </label>
         <FileUploadGroup
-          name="thumbnailWeb"
+          name="thumbnail"
           label=""
           accept="image/*"
           placeholder={t("placeholders.selectWebThumbnail")}
-          value={values.thumbnailWeb}
-          onFileChange={(e) => setFieldValue("thumbnailWeb", e.target.files[0])}
-          errors={errors.thumbnailWeb}
-          touched={touched.thumbnailWeb}
+          value={values.thumbnail || values.thumbnailWeb}
+          onFileChange={(e) => {
+            const file = e.target.files[0];
+            setFieldValue("thumbnail", file);
+            setFieldValue("thumbnailWeb", file);
+          }}
+          errors={errors.thumbnail || errors.thumbnailWeb}
+          touched={touched.thumbnail || touched.thumbnailWeb}
         />
       </div>
 
-      {/* Optional Media File (PDF Only) & Video */}
+      {/* Optional Details File (PDF Only) & Video */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 border-t border-border pt-5">
         <div>
           <label className="block mb-1.5 text-sm font-medium text-titleColor">
             {t("fields.mediaFile")} <span className="text-xs text-subtitleColor">(PDF)</span>
           </label>
           <FileUploadGroup
-            name="mediaFile"
+            name="detailsFile"
             label=""
             accept=".pdf,application/pdf"
             placeholder={t("placeholders.selectMediaFile")}
-            value={values.mediaFile}
-            onFileChange={(e) => setFieldValue("mediaFile", e.target.files[0])}
+            value={values.detailsFile || values.mediaFile}
+            onFileChange={(e) => {
+              const file = e.target.files[0];
+              setFieldValue("detailsFile", file);
+              setFieldValue("mediaFile", file);
+            }}
           />
         </div>
 

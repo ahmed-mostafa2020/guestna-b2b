@@ -42,6 +42,18 @@ const TextInputGroup = memo(
 
     labelFontFamily = "IBM Plex Sans Arabic, sans-serif",
     labelClassName = "",
+    inputClassName = "",
+    borderClassName = "",
+    className = "",
+    containerClassName = "",
+    endAdornment = null,
+    startAdornment = null,
+    endAdornmentClassName = "",
+    startAdornmentClassName = "",
+    hideErrorMessage = false,
+    errorClassName = "",
+    id,
+    autoComplete,
   }) => {
     const [showPassword, setShowPassword] = useState(false);
 
@@ -59,10 +71,15 @@ const TextInputGroup = memo(
         : labelFontFamily;
 
     return (
-      <div className="relative min-w-[25%] flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
+      <div
+        className={cn(
+          "relative min-w-[25%] flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out",
+          containerClassName || className
+        )}
+      >
         {label && (
           <label
-            htmlFor={name}
+            htmlFor={id || name}
             className={cn(
               "font-medium capitalize",
               labelClassName ? labelClassName : "font-ibm",
@@ -79,18 +96,21 @@ const TextInputGroup = memo(
           {textarea ? (
             <textarea
               className={cn(
-                "text-sm resize-none font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full  rounded-lg outline-none placeholder:font-normal placeholder:text-base placeholder:text-textLight selection:bg-buttonsHover",
+                "text-sm resize-none font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full rounded-lg outline-none placeholder:font-normal placeholder:text-base placeholder:text-textLight selection:bg-buttonsHover",
                 readOnly && "cursor-not-allowed opacity-50",
                 textAlign && `text-${textAlign}`,
-                border && "border-2",
+                border && (borderClassName ? borderClassName : "border-2"),
                 touched && errors && border
                   ? "border-error focus:border-error hover:border-error"
-                  : "border-border focus:border-mainColor hover:border-mainColor"
+                  : borderClassName
+                  ? borderClassName
+                  : "border-border focus:border-mainColor hover:border-mainColor",
+                inputClassName
               )}
               style={{
                 fontFamily: "inherit",
               }}
-              id={name}
+              id={id || name}
               name={name}
               value={value}
               onChange={onChange}
@@ -105,14 +125,21 @@ const TextInputGroup = memo(
           ) : (
             <input
               className={cn(
-                "text-sm font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full rounded-lg outline-none placeholder:font-normal placeholder:text-sm placeholder:text-textLight selection:bg-buttonsHover ",
+                "text-sm font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full rounded-lg outline-none placeholder:font-normal placeholder:text-sm placeholder:text-textLight selection:bg-buttonsHover",
                 readOnly && "cursor-not-allowed opacity-90",
                 textAlign && `text-${textAlign}`,
-                border && "border-2",
+                border && (borderClassName ? borderClassName : "border-2"),
                 touched && errors && border
                   ? "border-error focus:border-error hover:border-error"
+                  : borderClassName
+                  ? borderClassName
                   : "border-border focus:border-mainColor hover:border-mainColor",
-                type === "date" && "cursor-pointer pe-12"
+                (type === "date" || type === "time") && "cursor-pointer pe-12",
+                endAdornment && "pe-12",
+                startAdornment && "ps-12",
+                type === "number" &&
+                  "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+                inputClassName
               )}
               style={{
                 fontFamily: "inherit",
@@ -126,6 +153,7 @@ const TextInputGroup = memo(
                   ? undefined
                   : type
               }
+              id={id || name}
               name={name}
               value={value}
               error={errors?.toString()}
@@ -135,7 +163,7 @@ const TextInputGroup = memo(
               onKeyDown={onKeyDown}
               onPaste={onPaste}
               onClick={(e) => {
-                if (type === "date" && e.target.showPicker) {
+                if ((type === "date" || type === "time") && e.target.showPicker) {
                   try {
                     e.target.showPicker();
                   } catch (err) {
@@ -146,12 +174,15 @@ const TextInputGroup = memo(
               }}
               placeholder={placeholder}
               autoComplete={
-                name === "cardholderName" ? "new-password" : "false"
+                autoComplete
+                  ? autoComplete
+                  : name === "cardholderName"
+                  ? "new-password"
+                  : "false"
               }
               autoFocus={autoFocus}
               spellCheck={name === "cardholderName" ? "false" : "true"}
               data-card-element={name === "cardholderName" ? "true" : "false"}
-              // aria-autocomplete={name === "cardholderName" ? "none" : "list"}
               maxLength={maxLength}
               minLength={minLength}
               min={min}
@@ -160,7 +191,29 @@ const TextInputGroup = memo(
             />
           )}
 
-          {type === "date" && (
+          {startAdornment && (
+            <div
+              className={cn(
+                "absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3.5",
+                startAdornmentClassName
+              )}
+            >
+              {startAdornment}
+            </div>
+          )}
+
+          {endAdornment && (
+            <div
+              className={cn(
+                "absolute inset-y-0 flex items-center pointer-events-none end-0 pe-3.5",
+                endAdornmentClassName
+              )}
+            >
+              {endAdornment}
+            </div>
+          )}
+
+          {type === "date" && !endAdornment && (
             <div className="absolute inset-y-0 flex items-center pointer-events-none end-0 pe-4">
               <CalendarTodayIcon className="text-textLight" style={{ fontSize: "20px" }} />
             </div>
@@ -240,9 +293,14 @@ const TextInputGroup = memo(
           )}
         </div>
 
-        {touched && errors && (
-          <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-            {errors}
+        {!hideErrorMessage && touched && errors && (
+          <div
+            className={cn(
+              "absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error",
+              errorClassName
+            )}
+          >
+            {typeof errors === "string" ? errors : errors?.message || ""}
           </div>
         )}
       </div>
