@@ -94,14 +94,14 @@ const ProviderWalletCard = ({ data, loading }) => {
           </div>
 
           {/* Left side in RTL: Operations Button */}
-          <div>
+          {/* <div>
             <button
               type="button"
               className="bg-secColor hover:bg-secColor/90 active:scale-95 text-white px-7 py-2.5 rounded-xl text-sm sm:text-base font-bold transition-all shadow-sm cursor-pointer"
             >
               {t("providerProfile.home.wallet.operations")}
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Subtle Divider */}

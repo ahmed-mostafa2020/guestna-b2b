@@ -1,9 +1,8 @@
 "use client";
 
 import { useTranslations, useLocale } from "next-intl";
-import { memo, useMemo, useState } from "react";
+import { memo, useMemo } from "react";
 import Skeleton from "@mui/material/Skeleton";
-import { RemoveRedEyeOutlined } from "@mui/icons-material";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import formatDate from "@utils/formatters/FormateDate";
 import DataTable from "@components/ui/DataTable";
@@ -20,8 +19,8 @@ export const ProviderBookingsTableSkeleton = () => (
     {/* Table rows */}
     <div className="space-y-3">
       {Array.from({ length: 5 }).map((_, row) => (
-        <div key={row} className="grid grid-cols-8 gap-3 p-3.5 border-b border-border items-center">
-          {Array.from({ length: 8 }).map((_, col) => (
+        <div key={row} className="grid grid-cols-7 gap-3 p-3.5 border-b border-border items-center">
+          {Array.from({ length: 7 }).map((_, col) => (
             <Skeleton key={col} variant="text" height={20} />
           ))}
         </div>
@@ -222,20 +221,6 @@ const ProviderBookingsTable = ({ data, loading, currentPage, setCurrentPage }) =
 
           return <StatusBadge status={statusKey} label={label} />;
         },
-      },
-      {
-        key: "action",
-        label: t("providerProfile.home.bookingsTable.columns.action"),
-        render: () => (
-          <button
-            type="button"
-            className="w-9 h-9 rounded-xl border border-border hover:border-mainColor hover:bg-mainColor/5 text-textLight hover:text-mainColor transition-all flex items-center justify-center cursor-pointer shadow-2xs"
-            aria-label={t("providerProfile.home.bookingsTable.viewDetails")}
-            title={t("providerProfile.home.bookingsTable.viewDetails")}
-          >
-            <RemoveRedEyeOutlined className="!w-5 !h-5" />
-          </button>
-        ),
       },
     ],
     [t, locale]
