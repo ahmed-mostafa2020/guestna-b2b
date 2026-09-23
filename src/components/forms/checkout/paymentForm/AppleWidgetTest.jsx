@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { memo, useEffect, useState, useRef } from "react";
 import { CONSTANT_VALUES } from "@constants/constantValues";
@@ -9,6 +10,7 @@ import { useSnackbar } from "notistack";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 
 const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
+  const router = useRouter();
   const [currentBookingId, setCurrentBookingId] = useState(null);
   const bookingIdRef = useRef(null); // Use ref to store bookingId immediately
   const isInitializedRef = useRef(false);
@@ -131,6 +133,20 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
           });
         },
         on_completed: function (payment) {
+          const handleFailedRedirect = () => {
+            const currentBookingId = bookingIdRef.current;
+            if (currentBookingId) {
+              const targetUrl = `/${locale}/bookingStatus/${currentBookingId}`;
+              setTimeout(() => {
+                try {
+                  router.push(targetUrl);
+                } catch {
+                  window.location.href = targetUrl;
+                }
+              }, 500);
+            }
+          };
+
           return new Promise(function (resolve, reject) {
             try {
               if (payment && payment.id) {
@@ -158,6 +174,7 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
                       }
                     );
                     reject();
+                    handleFailedRedirect();
                   },
                 });
               } else {
@@ -168,6 +185,7 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
                   }
                 );
                 reject();
+                handleFailedRedirect();
               }
             } catch (error) {
               enqueueSnackbar(
@@ -179,6 +197,7 @@ const AppleWidgetTest = ({ baseData, currency = "SAR" }) => {
                 }
               );
               reject();
+              handleFailedRedirect();
             }
           });
         },

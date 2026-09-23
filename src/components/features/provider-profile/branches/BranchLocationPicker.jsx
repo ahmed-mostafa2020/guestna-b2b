@@ -8,8 +8,10 @@ import {
   Close,
   CheckCircleOutline,
   ErrorOutline,
+  LockOutlined,
 } from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress";
+import { cn } from "@utils/helpers/cn";
 
 import {
   extractCoordsFromMapUrl,
@@ -37,6 +39,10 @@ const BranchLocationPicker = ({
   linkResolvedText = "تم تحديد الموقع من الرابط بنجاح",
   linkNotFoundText = "تعذر العثور على إحداثيات من هذا الرابط",
   mapConfigError = "Google Maps API key is not configured",
+  inputId = "branch-location-input",
+  readOnly = false,
+  readOnlyInstructionText = "الموقع محدد مسبقاً ولا يمكن تعديله",
+  readOnlyBadgeText = "محدد مسبقاً",
 }) => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -105,6 +111,7 @@ const BranchLocationPicker = ({
   // Apply coordinates to map and form
   const applyCoords = useCallback(
     (targetLat, targetLng, preservedAddress = null) => {
+      if (readOnly) return;
       isUserInputRef.current = true;
       if (mapInstanceRef.current) {
         const pos = { lat: targetLat, lng: targetLng };
@@ -125,7 +132,7 @@ const BranchLocationPicker = ({
 
       setResolveStatus({ type: "success", message: linkResolvedText });
     },
-    [onChangeLocation, address, linkResolvedText]
+    [readOnly, onChangeLocation, address, linkResolvedText]
   );
 
   // Geocode address or place name as fallback
@@ -244,7 +251,7 @@ const BranchLocationPicker = ({
         const map = new window.google.maps.Map(mapRef.current, {
           center,
           zoom: hasLocation ? 15 : 12,
-          draggableCursor: "crosshair",
+          draggableCursor: readOnly ? "default" : "crosshair",
           zoomControl: true,
           streetViewControl: false,
           fullscreenControl: true,
@@ -254,28 +261,9 @@ const BranchLocationPicker = ({
         const marker = new window.google.maps.Marker({
           position: center,
           map,
-          draggable: true,
+          draggable: !readOnly,
           visible: hasLocation,
           animation: window.google.maps.Animation.DROP,
-        });
-
-        dragListenerRef.current = marker.addListener("dragend", (e) => {
-          isUserInputRef.current = true;
-          const newLat = e.latLng.lat();
-          const newLng = e.latLng.lng();
-          marker.setVisible(true);
-          setResolveStatus(null);
-          reverseGeocode(newLat, newLng);
-        });
-
-        clickListenerRef.current = map.addListener("click", (e) => {
-          isUserInputRef.current = true;
-          const newLat = e.latLng.lat();
-          const newLng = e.latLng.lng();
-          marker.setPosition({ lat: newLat, lng: newLng });
-          marker.setVisible(true);
-          setResolveStatus(null);
-          reverseGeocode(newLat, newLng);
         });
 
         mapInstanceRef.current = map;
@@ -303,6 +291,64 @@ const BranchLocationPicker = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Manage marker draggable and map click/drag listeners based on readOnly
+  useEffect(() => {
+    if (!mapInstanceRef.current || !markerRef.current) return;
+
+    markerRef.current.setDraggable(!readOnly);
+    mapInstanceRef.current.setOptions({
+      draggableCursor: readOnly ? "default" : "crosshair",
+    });
+
+    if (dragListenerRef.current) {
+      window.google.maps.event.removeListener(dragListenerRef.current);
+      dragListenerRef.current = null;
+    }
+    if (clickListenerRef.current) {
+      window.google.maps.event.removeListener(clickListenerRef.current);
+      clickListenerRef.current = null;
+    }
+
+    if (!readOnly) {
+      dragListenerRef.current = markerRef.current.addListener("dragend", (e) => {
+        isUserInputRef.current = true;
+        const newLat = e.latLng.lat();
+        const newLng = e.latLng.lng();
+        markerRef.current.setVisible(true);
+        setResolveStatus(null);
+        reverseGeocode(newLat, newLng);
+      });
+
+      clickListenerRef.current = mapInstanceRef.current.addListener("click", (e) => {
+        isUserInputRef.current = true;
+        const newLat = e.latLng.lat();
+        const newLng = e.latLng.lng();
+        markerRef.current.setPosition({ lat: newLat, lng: newLng });
+        markerRef.current.setVisible(true);
+        setResolveStatus(null);
+        reverseGeocode(newLat, newLng);
+      });
+    }
+  }, [readOnly, isMapLoaded, reverseGeocode]);
+
+  // Auto reverse-geocode address if coordinates are present but address is missing
+  useEffect(() => {
+    if (!isMapLoaded || !geocoderRef.current || !hasLocation || address) return;
+
+    geocoderRef.current.geocode(
+      { location: { lat: currentLat, lng: currentLng } },
+      (results, status) => {
+        if (status === "OK" && results?.[0]?.formatted_address) {
+          onChangeLocation({
+            lat: String(currentLat),
+            lng: String(currentLng),
+            address: results[0].formatted_address,
+          });
+        }
+      }
+    );
+  }, [isMapLoaded, hasLocation, address, currentLat, currentLng, onChangeLocation]);
+
   // Update marker & pan if lat/lng change externally
   useEffect(() => {
     if (isUserInputRef.current) {
@@ -323,6 +369,7 @@ const BranchLocationPicker = ({
 
   // Handle address / link input typing
   const handleAddressChange = (e) => {
+    if (readOnly) return;
     const inputValue = e.target.value;
     setResolveStatus(null);
 
@@ -363,6 +410,7 @@ const BranchLocationPicker = ({
 
   // Immediate resolution when user pastes a link
   const handlePaste = (e) => {
+    if (readOnly) return;
     const pastedText = e.clipboardData?.getData("text");
     if (pastedText && pastedText.trim()) {
       if (resolveTimeoutRef.current) {
@@ -376,6 +424,7 @@ const BranchLocationPicker = ({
 
   // Clear location button
   const handleClearLocation = () => {
+    if (readOnly) return;
     if (resolveTimeoutRef.current) {
       clearTimeout(resolveTimeoutRef.current);
     }
@@ -393,10 +442,17 @@ const BranchLocationPicker = ({
   return (
     <div className="border border-dashed border-border rounded-2xl p-4 sm:p-5 bg-white flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-base font-bold text-textDark font-somar">
-          {mapTitle}
-        </h3>
-        {(hasLocation || address) && (
+        <div className="flex items-center gap-2">
+          <h3 className="text-base font-bold text-textDark font-somar">
+            {mapTitle}
+          </h3>
+          {readOnly && readOnlyBadgeText && (
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-mainColor/10 text-mainColor font-somar border border-mainColor/20">
+              {readOnlyBadgeText}
+            </span>
+          )}
+        </div>
+        {!readOnly && (hasLocation || address) && (
           <button
             type="button"
             onClick={handleClearLocation}
@@ -409,9 +465,20 @@ const BranchLocationPicker = ({
       </div>
 
       {/* Instruction Banner */}
-      <div className="flex items-center gap-2 bg-gray-50 border border-border rounded-xl px-4 py-2.5 text-xs sm:text-sm text-textLight font-somar">
-        <NearMeOutlined className="!w-4 !h-4 text-mainColor shrink-0 -rotate-45" />
-        <span>{instructionText}</span>
+      <div
+        className={cn(
+          "flex items-center gap-2 border rounded-xl px-4 py-2.5 text-xs sm:text-sm font-somar",
+          readOnly
+            ? "bg-mainColor/[0.04] border-mainColor/20 text-textDark"
+            : "bg-gray-50 border-border text-textLight"
+        )}
+      >
+        {readOnly ? (
+          <LockOutlined className="!w-4 !h-4 text-mainColor shrink-0" />
+        ) : (
+          <NearMeOutlined className="!w-4 !h-4 text-mainColor shrink-0 -rotate-45" />
+        )}
+        <span>{readOnly ? (readOnlyInstructionText || instructionText) : instructionText}</span>
       </div>
 
       {/* Map Canvas */}
@@ -432,28 +499,42 @@ const BranchLocationPicker = ({
       {/* Location Link / Address Input */}
       <div className="flex flex-col gap-1.5 mt-1">
         <label
-          htmlFor="branch-location-input"
-          className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-textDark font-somar cursor-pointer"
+          htmlFor={inputId}
+          className={cn(
+            "flex items-center gap-1.5 text-xs sm:text-sm font-medium text-textDark font-somar",
+            readOnly ? "cursor-default" : "cursor-pointer"
+          )}
         >
-          <LinkOutlined className="!w-4 !h-4 text-mainColor" />
+          {readOnly ? (
+            <LockOutlined className="!w-4 !h-4 text-mainColor" />
+          ) : (
+            <LinkOutlined className="!w-4 !h-4 text-mainColor" />
+          )}
           {locationLinkLabel}
         </label>
         <div className="relative" dir={inputDir}>
           <input
-            id="branch-location-input"
+            id={inputId}
             type="text"
             value={address || ""}
-            onChange={handleAddressChange}
-            onPaste={handlePaste}
+            onChange={readOnly ? undefined : handleAddressChange}
+            onPaste={readOnly ? undefined : handlePaste}
+            readOnly={readOnly}
+            disabled={readOnly}
             placeholder={locationLinkPlaceholder}
             dir={inputDir}
-            className="w-full ps-3.5 pe-11 py-2.5 text-sm border border-border rounded-xl outline-none focus:border-mainColor transition-colors font-somar bg-white text-textDark placeholder:text-muted-foreground"
+            className={cn(
+              "w-full ps-3.5 pe-11 py-2.5 text-sm border rounded-xl outline-none font-somar placeholder:text-muted-foreground transition-colors",
+              readOnly
+                ? "bg-gray-100/70 border-border text-gray-700 cursor-not-allowed select-none"
+                : "bg-white border-border text-textDark focus:border-mainColor"
+            )}
           />
           {isResolving ? (
             <div className="absolute end-3 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
               <CircularProgress size={16} sx={{ color: "var(--color-main)" }} />
             </div>
-          ) : address ? (
+          ) : !readOnly && address ? (
             <button
               type="button"
               onClick={handleClearLocation}

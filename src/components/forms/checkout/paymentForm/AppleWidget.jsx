@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useSnackbar } from "notistack";
@@ -28,11 +29,13 @@ const isTestEnvironment = () => {
 };
 
 const AppleWidget = ({ baseData, currency = "SAR" }) => {
+  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const showDebugInitiate = useMemo(() => isTestEnvironment(), []);
 
   const bookingIdRef = useRef(null);
   const isInitializedRef = useRef(false);
+  const isPaymentActiveRef = useRef(false);
   const widgetContainerRef = useRef(null);
   const baseDataRef = useRef(baseData);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -135,6 +138,11 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
           validate_merchant_url: "https://api.moyasar.com/v1/applepay/initiate",
         },
         on_initiating: function () {
+          // Guard against double-tap — prevents "active payment session" error
+          if (isPaymentActiveRef.current) {
+            return Promise.reject(new Error("Payment already in progress"));
+          }
+          isPaymentActiveRef.current = true;
           setIsProcessing(true);
           return new Promise(function (resolve, reject) {
             try {
@@ -163,6 +171,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                       { variant: "error" }
                     );
                     setIsProcessing(false);
+                    isPaymentActiveRef.current = false;
                     reject();
                   },
                 }
@@ -170,11 +179,26 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
             } catch (error) {
               enqueueSnackbar("on error Initiation", { variant: "error" });
               setIsProcessing(false);
+              isPaymentActiveRef.current = false;
               reject();
             }
           });
         },
         on_completed: function (payment) {
+          const handleFailedRedirect = () => {
+            const currentBookingId = bookingIdRef.current;
+            if (currentBookingId) {
+              const targetUrl = `/${locale}/bookingStatus/${currentBookingId}`;
+              setTimeout(() => {
+                try {
+                  router.push(targetUrl);
+                } catch {
+                  window.location.href = targetUrl;
+                }
+              }, 500);
+            }
+          };
+
           return new Promise(function (resolve, reject) {
             try {
               if (payment && payment.id) {
@@ -186,6 +210,7 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                 mutateComferm(confirmationData, {
                   onSuccess: () => {
                     bookingIdRef.current = null;
+                    isPaymentActiveRef.current = false;
                     resolve({});
                   },
                   onError: (error) => {
@@ -194,7 +219,9 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                       { variant: "error" }
                     );
                     setIsProcessing(false);
+                    isPaymentActiveRef.current = false;
                     reject();
+                    handleFailedRedirect();
                   },
                 });
               } else {
@@ -202,12 +229,16 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
                   variant: "error",
                 });
                 setIsProcessing(false);
+                isPaymentActiveRef.current = false;
                 reject();
+                handleFailedRedirect();
               }
             } catch (error) {
               enqueueSnackbar("faild on complete", { variant: "error" });
               setIsProcessing(false);
+              isPaymentActiveRef.current = false;
               reject();
+              handleFailedRedirect();
             }
           });
         },

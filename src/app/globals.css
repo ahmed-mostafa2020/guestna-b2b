@@ -135,19 +135,22 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none; /* Chrome, Safari, Edge */
 }
 
-/* Date input styling and normalization */
-input[type="date"] {
+/* Date and Time input styling and normalization */
+input[type="date"],
+input[type="time"] {
   position: relative;
   -webkit-appearance: none;
   appearance: none;
 }
 
-input[type="date"]::-webkit-date-and-time-value {
+input[type="date"]::-webkit-date-and-time-value,
+input[type="time"]::-webkit-date-and-time-value {
   min-height: 1.5em;
   text-align: inherit;
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator {
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
   position: absolute;
   top: 0;
   left: 0;
@@ -159,6 +162,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
   -webkit-appearance: none;
   appearance: none;
+}
+
+input[type="time"]::-webkit-inner-spin-button,
+input[type="time"]::-webkit-clear-button {
+  -webkit-appearance: none;
+  display: none;
 }
 
 @layer utilities {

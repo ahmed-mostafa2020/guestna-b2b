@@ -303,7 +303,7 @@ export const createCustomNewTripSchema = (t) =>
     day: Yup.date()
       .required(t("forms.validation.require"))
       .min(
-        new Date(),
+        (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })(),
         t("forms.customTrip.steps.trip_date.fields.start_date.error.past_date")
       )
       .test(
@@ -320,7 +320,7 @@ export const createCustomNewTripSchema = (t) =>
     endDay: Yup.date()
       .optional()
       .min(
-        new Date(),
+        (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })(),
         t("forms.customTrip.steps.trip_date.fields.end_date.error.past_date")
       )
       .test(
@@ -407,7 +407,7 @@ export const editCustomTripSchema = (t, isNormalTrip = false) =>
     day: Yup.date()
       .required(t("forms.validation.require"))
       .min(
-        new Date(),
+        (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })(),
         t("forms.customTrip.steps.trip_date.fields.start_date.error.past_date")
       )
       .test(
@@ -424,7 +424,7 @@ export const editCustomTripSchema = (t, isNormalTrip = false) =>
     endDay: Yup.date()
       .optional()
       .min(
-        new Date(),
+        (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })(),
         t("forms.customTrip.steps.trip_date.fields.end_date.error.past_date")
       )
       .test(

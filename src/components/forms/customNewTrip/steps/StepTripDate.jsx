@@ -61,12 +61,14 @@ const StepTripDate = ({
   // Branch options for dropdown
   const branchOptions = React.useMemo(() => {
     return providerBranches.map((b) => {
+      const branchId =
+        b._id || b.id || b.value || (typeof b === "string" ? b : "");
       const branchName =
         typeof b.name === "object" && b.name !== null
           ? b.name[locale] || b.name.ar || b.name.en || ""
-          : b.name || b._id;
+          : b.name || branchId;
       return {
-        value: b._id,
+        value: branchId,
         label: branchName,
       };
     });
@@ -80,6 +82,7 @@ const StepTripDate = ({
 
       <p className="text-base !my-4"> {t("description")}</p>
 
+
       {hasProviderSpecificDays ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Provider Branch Selector */}
@@ -90,7 +93,7 @@ const StepTripDate = ({
               </label>
               <SelectionGroup
                 name="providerBranch"
-                value={selectedBranch || ""}
+                value={selectedBranch || values.providerBranch || ""}
                 onChange={(e) => {
                   const branchId = e.target.value;
                   if (branchId && onBranchChange) {
@@ -204,7 +207,7 @@ const StepTripDate = ({
               </label>
               <SelectionGroup
                 name="providerBranch"
-                value={selectedBranch || ""}
+                value={selectedBranch || values.providerBranch || ""}
                 onChange={(e) => {
                   const branchId = e.target.value;
                   if (branchId && onBranchChange) {
@@ -342,7 +345,7 @@ const StepTripDate = ({
               </label>
               <SelectionGroup
                 name="providerBranch"
-                value={selectedBranch || ""}
+                value={selectedBranch || values.providerBranch || ""}
                 onChange={(e) => {
                   const branchId = e.target.value;
                   if (branchId && onBranchChange) {

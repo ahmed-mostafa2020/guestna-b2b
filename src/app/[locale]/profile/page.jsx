@@ -21,7 +21,9 @@ import ChartsSkeleton from "@components/features/profile/trips/charts/ChartsSkel
 import ProfilePageTemplate from "@components/features/profile/ProfilePageTemplate";
 import EmptyBookings from "@components/features/profile/myBookings/EmptyBookings";
 import MyBookingsTrips from "@components/features/profile/myBookings";
+import BookingsTableSkeleton from "@components/features/profile/myBookings/BookingsTableSkeleton";
 import OrganizationsSection from "@components/features/profile/myBookings/OrganizationsSection";
+import { SORTING_TYPE } from "@constants/sorting";
 
 const Profile = () => {
   const { hasElement, hasPage } = usePermissions();
@@ -138,7 +140,21 @@ const Profile = () => {
             method="POST"
             enablePagination={true}
             enableSearch={true}
-            emptyStateComponent={(data, searchTerm, setSearchTerm) => (
+            initialSort={SORTING_TYPE.NEWEST_DAY}
+            skeletonComponent={
+              <BookingsTableSkeleton
+                tableTitle={t("profile.tables.bookings.title")}
+              />
+            }
+            emptyStateComponent={(
+              data,
+              searchTerm,
+              setSearchTerm,
+              handleRefetch,
+              sort,
+              setSort,
+              isLoading
+            ) => (
               <>
                 <MyBookingsTrips
                   tableTitle={t("profile.tables.bookings.title")}
@@ -148,28 +164,18 @@ const Profile = () => {
                   enablePagination={false}
                   searchTerm={searchTerm}
                   setSearchTerm={setSearchTerm}
+                  sort={sort}
+                  setSort={setSort}
+                  loading={isLoading}
                 />
                 <EmptyBookings />
               </>
             )}
-            contentComponent={(
-              data,
-              currentPage,
-              setCurrentPage,
-              enablePagination,
-              searchTerm,
-              setSearchTerm
-            ) => (
+            contentComponent={
               <MyBookingsTrips
                 tableTitle={t("profile.tables.bookings.title")}
-                data={data}
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                enablePagination={enablePagination}
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
               />
-            )}
+            }
           />
         )}
 

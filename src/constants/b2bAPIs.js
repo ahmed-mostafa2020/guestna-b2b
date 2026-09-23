@@ -202,6 +202,11 @@ export const B2B_END_POINTS = {
     GRADES_BY_STAGES: "grades/stages",
   },
 
+  PROVIDER_REGISTER: {
+    SELECTIONS: "providers/register/selections",
+    SUBMIT: "providers/register",
+  },
+
   RAMADAN_NIGHTS: {
     INITIATION: "ramadan-nights/initiation",
     APPLE_INITIATE: "ramadan-nights/initiation/apple",
@@ -247,10 +252,15 @@ export const B2B_END_POINTS = {
   PROVIDER_PROFILE: {
     INFORMATION: "auth/userInfo",
     HOME: "profile-provider/home",
+    HOME_CARD: "profile-provider/home/card",
+    HOME_BALANCE: "profile-provider/home/balance",
+    ORG_TRIPS_MONTH: "profile-provider/org-trips/month",
+    ORG_TRIPS_DAY: "profile-provider/org-trips/day",
     B2B_TRIPS: "profile-provider/b2b-trips",
     B2C_TRIPS: "profile-provider/b2c-trips",
     FORM_SELECTIONS: "profile-provider/trips/form/selections",
-    NEW_TRIP: "profile-provider/trips/new",
+    NEW_TRIP: "profile-provider/trips/add-product",
+    ADD_PRODUCT: "profile-provider/trips/add-product",
     EDIT_TRIP: "profile-provider/b2c-trips/edit",
     ASK_TRIPS_COUNTS: "profile-provider/ask-trips/counts",
     ASK_TRIPS_ALL: "profile-provider/ask-trips/all",

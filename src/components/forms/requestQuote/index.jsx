@@ -120,7 +120,7 @@ const RequestQuoteForm = () => {
         setFieldValue,
         isSubmitting,
       }) => (
-        <div className="lg:w-[530px] w-[400px] bg-white rounded-2xl mx-auto my-5">
+        <div className="w-[95%] sm:w-[400px] lg:w-[530px] bg-white rounded-2xl mx-auto my-5">
           <div className="p-4 border-b border-black centered">
             <Logo />
           </div>
@@ -128,7 +128,7 @@ const RequestQuoteForm = () => {
           {showThanksMessage ? (
             <ThanksMessage />
           ) : (
-            <div className="flex flex-col w-full gap-5 px-8 py-8 lg:gap-4">
+            <div className="flex flex-col w-full gap-5 px-4 sm:px-8 py-8 lg:gap-4">
               <div className="flex-col gap-1 centered">
                 <div className="flex items-center gap-1">
                   <h3 className="text-xl lg:text-2xl text-mainColor">

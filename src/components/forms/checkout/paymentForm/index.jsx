@@ -58,7 +58,7 @@ const PaymentForm = () => {
 
   // For Form
   const [currentPaymentMethod, setCurrentPaymentMethod] = useState(
-    CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD
+    CONSTANT_VALUES.PAYMENT_METHODS.APPLE
   );
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
@@ -100,7 +100,9 @@ const PaymentForm = () => {
       ? creditSchema
       : currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.STC
         ? stcSchema
-        : tamaraSchema;
+        : currentPaymentMethod === CONSTANT_VALUES.PAYMENT_METHODS.TAMARA
+          ? tamaraSchema
+          : null;
 
   const handlePaymentMethodChange = (event) => {
     setCurrentPaymentMethod(event.target.value);
@@ -289,7 +291,9 @@ const PaymentForm = () => {
 
   return (
     <>
-      <h3 className="font-semibold">
+      <PromoCodeForm />
+
+      <h3 className="font-semibold mt-8 mb-4 font-somar">
         {t("forms.paymentMethodsForm.subTitle")}
       </h3>
 
@@ -334,210 +338,6 @@ const PaymentForm = () => {
               name="radio-buttons-group"
               className="flex flex-col w-full gap-7"
             >
-              {/* Credit card and AmEx */}
-              <div className="flex flex-col transition-all duration-200 ease-in-out">
-                <PaymentMethod
-                  value={CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD}
-                  currentPaymentMethod={currentPaymentMethod}
-                  label={t("forms.methods.credit")}
-                  imagesList={creditImages}
-                />
-
-                {currentPaymentMethod ===
-                  CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD && (
-                  <div className="px-4 py-8 bg-[#FAF9F9] transition-all duration-200 ease-in-out">
-                    <div className="flex flex-col gap-8 lg:w-[510px]">
-                      <TextInputGroup
-                        label={t("forms.cardholderName.name")}
-                        type="text"
-                        name="cardholderName"
-                        value={values.cardholderName}
-                        errors={errors.cardholderName}
-                        touched={touched.cardholderName}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
-
-                      <TextInputGroup
-                        label={t("forms.cardNumber.name")}
-                        type="text"
-                        name="cardNumber"
-                        inputMode="numeric"
-                        value={values.cardNumber}
-                        errors={errors.cardNumber}
-                        touched={touched.cardNumber}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        minLength="15"
-                        maxLength="16"
-                      />
-
-                      <div className="flex flex-wrap gap-x-12 gap-y-4 lg:flex-nowrap">
-                        <div className="flex flex-col justify-between gap-2">
-                          <label className="font-medium font-ibm">
-                            {t("forms.expirationDate.title")}
-                          </label>
-
-                          <div className="flex gap-3">
-                            <SelectionGroup
-                              name="expiryMonth"
-                              value={values.expiryMonth}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              touched={touched.expiryMonth}
-                              errors={errors.expiryMonth}
-                              placeholder={t("common.allMonths")}
-                              list={months}
-                            />
-
-                            <SelectionGroup
-                              name="expiryYear"
-                              value={values.expiryYear}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              touched={touched.expiryYear}
-                              errors={errors.expiryYear}
-                              placeholder={t("common.years")}
-                              list={years}
-                            />
-                          </div>
-                        </div>
-
-                        <TextInputGroup
-                          label={t("forms.cvc.name")}
-                          type="text"
-                          name="cvc"
-                          inputMode="numeric"
-                          value={values.cvc}
-                          errors={errors.cvc}
-                          touched={touched.cvc}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          minLength="3"
-                          maxLength="4"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* STC */}
-              {/* <div className="flex flex-col transition-all duration-200 ease-in-out">
-                <PaymentMethod
-                  value={CONSTANT_VALUES.PAYMENT_METHODS.STC}
-                  currentPaymentMethod={currentPaymentMethod}
-                  label={t("forms.methods.stc")}
-                  imagesList={stcImage}
-                />
-
-                {currentPaymentMethod ===
-                  CONSTANT_VALUES.PAYMENT_METHODS.STC && (
-                  <div className="flex flex-col gap-4 px-4 py-8 bg-[#FAF9F9] transition-all duration-200 ease-in-out">
-                    <div className=" lg:w-[510px]">
-                      {isFormSubmitted && showStcOtp ? (
-                        <TextInputGroup
-                          label={t("forms.stcOtp.name")}
-                          type="text"
-                          name="stcOtp"
-                          inputMode="numeric"
-                          value={values.stcOtp}
-                          autoFocus
-                          errors={errors.stcOtp}
-                          touched={touched.stcOtp}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          minLength="4"
-                          maxLength="6"
-                        />
-                      ) : (
-                        <TextInputGroup
-                          label={t("forms.phone.name")}
-                          type="tel"
-                          name="stcPhoneNumber"
-                          placeholder="05xxxxxxxx"
-                          inputMode="numeric"
-                          value={values.stcPhoneNumber}
-                          errors={errors.stcPhoneNumber}
-                          touched={touched.stcPhoneNumber}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          minLength="10"
-                          maxLength="10"
-                        />
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div> */}
-
-              <div className="flex flex-col transition-all duration-200 ease-in-out">
-                <PaymentMethod
-                  value={CONSTANT_VALUES.PAYMENT_METHODS.TAMARA}
-                  currentPaymentMethod={currentPaymentMethod}
-                  label={t("forms.methods.tamara")}
-                  imagesList={tamaraImage}
-                />
-
-                {currentPaymentMethod ===
-                  CONSTANT_VALUES.PAYMENT_METHODS.TAMARA && (
-                  <div className="flex flex-col gap-4 px-4 py-8 bg-[#FAF9F9] transition-all duration-200 ease-in-out">
-                    <div className="lg:w-[510px]">
-                      <div className="lg:w-[510px]">
-                        <TamaraWidget
-                          key="tamara-widget"
-                          price={finalPrice}
-                          publicKey={process.env.NEXT_PUBLIC_TAMARA_WIDGET_KEY}
-                          currency="SAR"
-                          paymentType="installment"
-                        />
-                      </div>
-
-                      <div className="relative flex flex-col gap-2 mb-6">
-                        <label className="font-medium capitalize font-ibm">
-                          {t("forms.phone.name")}
-                        </label>
-
-                        <Field name="tamaraMobile">
-                          {({ field }) => (
-                            <PhoneInput
-                              {...field}
-                              international
-                              countries={["SA", "AE", "BH", "KW", "OM"]}
-                              defaultCountry="SA"
-                              onCountryChange={(country) => {
-                                setFieldValue("selectedCountry", country);
-                              }}
-                              value={values.tamaraMobile}
-                              onChange={(value) => {
-                                setFieldValue("tamaraMobile", value);
-                              }}
-                              errors={errors.tamaraMobile}
-                              touched={touched.tamaraMobile}
-                              onBlur={handleBlur}
-                              id="tamaraMobile"
-                              addInternationalOption={false}
-                              style={{ direction: "ltr" }}
-                              className={cn(
-                                "flex bg-white lg:w-[510px] gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50  transition-all duration-200 ease-in-out",
-                                errors.tamaraMobile && touched.tamaraMobile
-                                  ? "border-error PhoneInputInput-focus:border-error hover:border-error"
-                                  : "border-border PhoneInputInput-focus:border-textDark hover:border-textDark"
-                              )}
-                            />
-                          )}
-                        </Field>
-                        {errors.tamaraMobile && touched.tamaraMobile && (
-                          <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error">
-                            {errors.tamaraMobile}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
               {/* Apple pay */}
               {canMakePayments && (
                 <div className="flex flex-col transition-all duration-200 ease-in-out">
@@ -579,43 +379,257 @@ const PaymentForm = () => {
                   )}
                 </div>
               )}
+
+              {/* Credit card and AmEx */}
+              <div className="flex flex-col transition-all duration-200 ease-in-out">
+                <PaymentMethod
+                  value={CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD}
+                  currentPaymentMethod={currentPaymentMethod}
+                  label={t("forms.methods.credit")}
+                  imagesList={creditImages}
+                />
+
+                {currentPaymentMethod ===
+                  CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD && (
+                  <div className="px-4 py-8 bg-[#FAF9F9] transition-all duration-200 ease-in-out">
+                    <div className="flex flex-col gap-8 lg:w-[510px]">
+                      <TextInputGroup
+                        label={t("forms.cardholderName.name")}
+                        type="text"
+                        name="cardholderName"
+                        value={values.cardholderName}
+                        errors={errors.cardholderName}
+                        touched={touched.cardholderName}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        labelClassName="font-somar"
+                        inputClassName="font-somar placeholder:font-somar"
+                      />
+
+                      <TextInputGroup
+                        label={t("forms.cardNumber.name")}
+                        type="text"
+                        name="cardNumber"
+                        inputMode="numeric"
+                        value={values.cardNumber}
+                        errors={errors.cardNumber}
+                        touched={touched.cardNumber}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        minLength="15"
+                        maxLength="16"
+                        labelClassName="font-somar"
+                        inputClassName="font-somar placeholder:font-somar"
+                      />
+
+                      <div className="flex flex-wrap gap-x-12 gap-y-4 lg:flex-nowrap">
+                        <div className="flex flex-col justify-between gap-2">
+                          <label className="font-medium font-somar">
+                            {t("forms.expirationDate.title")}
+                          </label>
+
+                          <div className="flex gap-3">
+                            <SelectionGroup
+                              name="expiryMonth"
+                              value={values.expiryMonth}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              touched={touched.expiryMonth}
+                              errors={errors.expiryMonth}
+                              placeholder={t("common.allMonths")}
+                              list={months}
+                              labelClassName="font-somar"
+                            />
+
+                            <SelectionGroup
+                              name="expiryYear"
+                              value={values.expiryYear}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              touched={touched.expiryYear}
+                              errors={errors.expiryYear}
+                              placeholder={t("common.years")}
+                              list={years}
+                              labelClassName="font-somar"
+                            />
+                          </div>
+                        </div>
+
+                        <TextInputGroup
+                          label={t("forms.cvc.name")}
+                          type="text"
+                          name="cvc"
+                          inputMode="numeric"
+                          value={values.cvc}
+                          errors={errors.cvc}
+                          touched={touched.cvc}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          minLength="3"
+                          maxLength="4"
+                          labelClassName="font-somar"
+                          inputClassName="font-somar placeholder:font-somar"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* STC */}
+              {/* <div className="flex flex-col transition-all duration-200 ease-in-out">
+                <PaymentMethod
+                  value={CONSTANT_VALUES.PAYMENT_METHODS.STC}
+                  currentPaymentMethod={currentPaymentMethod}
+                  label={t("forms.methods.stc")}
+                  imagesList={stcImage}
+                />
+
+                {currentPaymentMethod ===
+                  CONSTANT_VALUES.PAYMENT_METHODS.STC && (
+                  <div className="flex flex-col gap-4 px-4 py-8 bg-[#FAF9F9] transition-all duration-200 ease-in-out">
+                    <div className=" lg:w-[510px]">
+                      {isFormSubmitted && showStcOtp ? (
+                        <TextInputGroup
+                          label={t("forms.stcOtp.name")}
+                          type="text"
+                          name="stcOtp"
+                          inputMode="numeric"
+                          value={values.stcOtp}
+                          autoFocus
+                          errors={errors.stcOtp}
+                          touched={touched.stcOtp}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          minLength="4"
+                          maxLength="6"
+                          labelClassName="font-somar"
+                          inputClassName="font-somar placeholder:font-somar"
+                        />
+                      ) : (
+                        <TextInputGroup
+                          label={t("forms.phone.name")}
+                          type="tel"
+                          name="stcPhoneNumber"
+                          placeholder="05xxxxxxxx"
+                          inputMode="numeric"
+                          value={values.stcPhoneNumber}
+                          errors={errors.stcPhoneNumber}
+                          touched={touched.stcPhoneNumber}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          minLength="10"
+                          maxLength="10"
+                          labelClassName="font-somar"
+                          inputClassName="font-somar placeholder:font-somar"
+                        />
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div> */}
+
+              <div className="flex flex-col transition-all duration-200 ease-in-out">
+                <PaymentMethod
+                  value={CONSTANT_VALUES.PAYMENT_METHODS.TAMARA}
+                  currentPaymentMethod={currentPaymentMethod}
+                  label={t("forms.methods.tamara")}
+                  imagesList={tamaraImage}
+                />
+
+                {currentPaymentMethod ===
+                  CONSTANT_VALUES.PAYMENT_METHODS.TAMARA && (
+                  <div className="flex flex-col gap-4 px-4 py-8 bg-[#FAF9F9] transition-all duration-200 ease-in-out">
+                    <div className="lg:w-[510px]">
+                      <div className="lg:w-[510px]">
+                        <TamaraWidget
+                          key="tamara-widget"
+                          price={finalPrice}
+                          publicKey={process.env.NEXT_PUBLIC_TAMARA_WIDGET_KEY}
+                          currency="SAR"
+                          paymentType="installment"
+                        />
+                      </div>
+
+                      <div className="relative flex flex-col gap-2 mb-6">
+                        <label className="font-medium capitalize font-somar">
+                          {t("forms.phone.name")}
+                        </label>
+
+                        <Field name="tamaraMobile">
+                          {({ field }) => (
+                            <PhoneInput
+                              {...field}
+                              international
+                              countries={["SA", "AE", "BH", "KW", "OM"]}
+                              defaultCountry="SA"
+                              onCountryChange={(country) => {
+                                setFieldValue("selectedCountry", country);
+                              }}
+                              value={values.tamaraMobile}
+                              onChange={(value) => {
+                                setFieldValue("tamaraMobile", value);
+                              }}
+                              errors={errors.tamaraMobile}
+                              touched={touched.tamaraMobile}
+                              onBlur={handleBlur}
+                              id="tamaraMobile"
+                              addInternationalOption={false}
+                              style={{ direction: "ltr" }}
+                              className={cn(
+                                "flex bg-white lg:w-[510px] gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50  transition-all duration-200 ease-in-out",
+                                errors.tamaraMobile && touched.tamaraMobile
+                                  ? "border-error PhoneInputInput-focus:border-error hover:border-error"
+                                  : "border-border PhoneInputInput-focus:border-textDark hover:border-textDark"
+                              )}
+                            />
+                          )}
+                        </Field>
+                        {errors.tamaraMobile && touched.tamaraMobile && (
+                          <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-somar text-error">
+                            {errors.tamaraMobile}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </RadioGroup>
 
-            <PromoCodeForm />
+            {currentPaymentMethod !== CONSTANT_VALUES.PAYMENT_METHODS.APPLE && (
+              <div className="flex-col w-full gap-2 centered">
+                <button
+                  type="submit"
+                  disabled={!isValid || isSubmitting || disabledButton}
+                  className={`centered gap-5 w-full lg:w-[540px] mt-8 lg:mt-12 lg:py-4 py-3 px-4 text-base font-medium font-somar text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
+                    isValid && "hover:bg-linksHover hover:border-linksHover"
+                  }`}
+                >
+                  {isSubmitting ? (
+                    <>
+                      {t("forms.validation.sending")}
 
-            <div className="flex-col w-full gap-2 centered">
-              <button
-                type="submit"
-                disabled={!isValid || isSubmitting || disabledButton}
-                className={`centered gap-5 lg:w-[540px] mt-8 lg:mt-12 lg:py-4 py-2 px-4 text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor  bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
-                  isValid && "hover:bg-linksHover hover:border-linksHover"
-                }`}
-              >
-                {isSubmitting ? (
-                  <>
-                    {t("forms.validation.sending")}
-
-                    <CircularProgress size={25} sx={{ color: "#ED8A22" }} />
-                  </>
-                ) : currentPaymentMethod ===
-                    CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD ||
-                  currentPaymentMethod ===
-                    CONSTANT_VALUES.PAYMENT_METHODS.TAMARA ||
-                  currentPaymentMethod ===
-                    CONSTANT_VALUES.PAYMENT_METHODS.APPLE ? (
-                  t("links.confirmPayment")
-                ) : isFormSubmitted && showStcOtp ? (
-                  <>
-                    {t("links.confirmPayment")}
-                    {showCounter && (
-                      <OtpCounter onComplete={() => setShowStcOtp(false)} />
-                    )}
-                  </>
-                ) : (
-                  t("links.sendStcOtp")
-                )}
-              </button>
-            </div>
+                      <CircularProgress size={25} sx={{ color: "#ED8A22" }} />
+                    </>
+                  ) : currentPaymentMethod ===
+                      CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD ||
+                    currentPaymentMethod ===
+                      CONSTANT_VALUES.PAYMENT_METHODS.TAMARA ? (
+                    t("links.confirmPayment")
+                  ) : isFormSubmitted && showStcOtp ? (
+                    <>
+                      {t("links.confirmPayment")}
+                      {showCounter && (
+                        <OtpCounter onComplete={() => setShowStcOtp(false)} />
+                      )}
+                    </>
+                  ) : (
+                    t("links.sendStcOtp")
+                  )}
+                </button>
+              </div>
+            )}
           </form>
         )}
       </Formik>

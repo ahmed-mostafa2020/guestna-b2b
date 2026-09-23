@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { cn } from "@utils/helpers/cn";
 
 import {
   FormControl,
@@ -9,6 +8,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { KeyboardArrowDown } from "@mui/icons-material";
+import { cn } from "@utils/helpers/cn";
 
 const SelectionGroup = ({
   name,
@@ -24,23 +24,22 @@ const SelectionGroup = ({
   disabled = false,
   showCheckbox = multiple, // Default to true only for multi-select
   label = "", // Label text for the field
+  labelClassName = "", // Optional custom label class
   required = false, // Show asterisk for required fields
   errorBorder = false, // Show red border only, without error message
-  labelClassName = "",
-  labelFontFamily = "",
+  border = "2px solid var(--color-border)", // Custom border style
+  className = "",
 }) => {
   return (
     <FormControl
       error={errorBorder || (touched && Boolean(errors))}
-      className="relative w-full"
+      className={cn("relative w-full flex flex-col gap-2", className)}
     >
       {label && (
         <label
-          className={cn(
-            "block font-medium",
-            labelClassName ? labelClassName : "pb-2 font-ibm"
-          )}
-          style={labelFontFamily ? { fontFamily: labelFontFamily } : undefined}
+          className={
+            labelClassName ? labelClassName : "block pb-2 font-medium font-ibm"
+          }
         >
           {label}
           {required && <span className="text-error ml-1">*</span>}
@@ -91,20 +90,22 @@ const SelectionGroup = ({
           };
 
           return multiple
-            ? (Array.isArray(selected) ? selected : [])
-                .map(getLabel)
-                .join(", ")
+            ? (Array.isArray(selected) ? selected : []).map(getLabel).join(", ")
             : getLabel(selected);
         }}
         MenuProps={{
           PaperProps: {
             sx: {
-              fontFamily: "var(--font-somar-sans), sans-serif",
+              maxHeight: 340,
+              fontFamily: "var(--font-somar), sans-serif",
               "& .MuiMenuItem-root": {
                 fontFamily: "var(--font-somar-sans), sans-serif",
               },
               "& .MuiListItemText-primary": {
                 fontFamily: "var(--font-somar-sans), sans-serif",
+              },
+              "& .MuiListItemText-secondary": {
+                fontFamily: "var(--font-somar), sans-serif",
               },
             },
           },
@@ -116,16 +117,22 @@ const SelectionGroup = ({
           "& .MuiSelect-select": {
             paddingInlineEnd: "40px !important",
             paddingInlineStart: "14px !important",
-            border: "2px solid var(--color-border)",
+            paddingTop: "0px !important",
+            paddingBottom: "0px !important",
+            height: "52px !important",
+            minHeight: "52px !important",
+            display: "flex !important",
+            alignItems: "center !important",
+            border: border,
             borderRadius: "8px",
             width: "100%",
             fontFamily: "var(--font-somar-sans), sans-serif",
 
             "&:hover": {
-              border: "2px solid var(--color-main)",
+              border: "1.5px solid var(--color-main)",
             },
             "&:focus": {
-              border: "2px solid var(--color-main)",
+              border: "1.5px solid var(--color-main)",
             },
           },
           "& .MuiSelect-icon": {
@@ -155,19 +162,28 @@ const SelectionGroup = ({
         {list.map((item, index) => {
           const itemValue =
             typeof item === "object" && item !== null
-              ? item.value ?? item._id ?? item.id ?? item.name
+              ? (item.value ?? item._id ?? item.id ?? item.name)
               : name === "expiryYear"
-              ? item.toString().slice(-2)
-              : item;
+                ? item.toString().slice(-2)
+                : item;
 
           const itemLabel =
             typeof item === "object" && item !== null
-              ? item.label ?? item.name ?? item.title ?? item.value
+              ? (item.label ?? item.name ?? item.title ?? item.value)
               : item;
+
+          const itemDescription = (() => {
+            if (typeof item !== "object" || item === null) return "";
+            const desc = item.description ?? item.desc;
+            if (typeof desc === "object" && desc !== null) {
+              return desc.ar || desc.en || Object.values(desc)[0] || "";
+            }
+            return typeof desc === "string" ? desc : "";
+          })();
 
           const itemKey =
             typeof item === "object" && item !== null
-              ? item.value ?? item._id ?? item.id ?? item.name
+              ? (item.value ?? item._id ?? item.id ?? item.name)
               : item;
 
           const isSelected = multiple
@@ -176,16 +192,36 @@ const SelectionGroup = ({
 
           return (
             <MenuItem
-              className="!font-somar !font-semibold"
+              className="!font-somar"
               key={`${itemKey}-${index}`}
               value={itemValue}
-              title={typeof itemLabel === "string" ? itemLabel : undefined}
+              title={
+                typeof itemLabel === "string"
+                  ? itemDescription
+                    ? `${itemLabel} - ${itemDescription}`
+                    : itemLabel
+                  : undefined
+              }
+              sx={{
+                whiteSpace: "normal",
+                alignItems: itemDescription ? "flex-start" : "center",
+                py: itemDescription ? 1.25 : 1,
+                gap: 1,
+                borderBottom: itemDescription
+                  ? "1px solid rgba(0, 0, 0, 0.05)"
+                  : "none",
+                "&:last-child": {
+                  borderBottom: "none",
+                },
+              }}
             >
               {showCheckbox && (
                 <Checkbox
                   checked={isSelected}
                   sx={{
                     color: "var(--color-text)",
+                    mt: itemDescription ? "-2px" : 0,
+                    p: 0,
                     "&.Mui-checked": {
                       color: "var(--color-main)",
                     },
@@ -194,19 +230,30 @@ const SelectionGroup = ({
               )}
               <ListItemText
                 primary={
-                  typeof itemLabel === "string"
-                    ? itemLabel.slice(0, 50)
-                    : itemLabel
+                  <span className="block font-somar font-semibold text-sm text-textDark leading-snug">
+                    {typeof itemLabel === "string" ? itemLabel : itemLabel}
+                  </span>
                 }
-                className="!font-somar !font-semibold"
-                title={typeof itemLabel === "string" ? itemLabel : undefined}
+                secondary={
+                  itemDescription ? (
+                    <span className="block font-somar font-normal text-xs text-textLight mt-0.5 whitespace-normal break-words leading-relaxed">
+                      {itemDescription}
+                    </span>
+                  ) : null
+                }
+                className="!my-0 !font-somar"
               />
             </MenuItem>
           );
         })}
       </Select>
       {touched && errors && (
-        <p className="absolute text-xs -bottom-4 text-error mt-1 font-ibm">
+        <p
+          className={cn(
+            "absolute text-xs -bottom-4 text-error mt-1",
+            labelClassName?.includes("font-somar") ? "font-somar" : "font-ibm"
+          )}
+        >
           {errors}
         </p>
       )}

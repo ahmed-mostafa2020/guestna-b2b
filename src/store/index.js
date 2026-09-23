@@ -28,6 +28,7 @@ import loginForm from "./forms/auth/login/loginFormSlice";
 import parentLoginForm from "./forms/auth/parentLogin/parentLoginFormSlice";
 import profileData from "./profile/profileInfoSlice";
 import providerProfile from "./providerProfile/providerProfileSlice";
+import providerRegisterSelections from "./providerRegister/providerRegisterSelectionsSlice";
 import selectedOrganizations from "./profile/selectedOrganizationsSlice";
 import faqData from "./faq/faqSlice";
 
@@ -81,6 +82,7 @@ const rootReducer = combineReducers({
   parentLoginForm,
   profileData,
   providerProfile,
+  providerRegisterSelections,
   selectedOrganizations,
   faqData,
 

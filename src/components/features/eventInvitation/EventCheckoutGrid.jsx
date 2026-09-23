@@ -444,18 +444,20 @@ const EventPaymentForm = ({
         >
           {t("pagination.previous")}
         </button>
-        <button
-          type="button"
-          disabled={isSubmitting || isPaymentSubmitting || !isValid}
-          onClick={submitForm}
-          className="sm:flex-1 py-3.5 px-6 bg-mainColor text-white rounded-xl font-semibold text-lg flex items-center justify-center gap-2 font-somar shadow-md hover:shadow-lg hover:bg-linksHover transition-all duration-200"
-        >
-          {isSubmitting || isPaymentSubmitting ? (
-            <CircularProgress size={20} color="inherit" />
-          ) : (
-            t("eventTrips.payment.confirm")
-          )}
-        </button>
+        {currentPaymentMethod !== CONSTANT_VALUES.PAYMENT_METHODS.APPLE && (
+          <button
+            type="button"
+            disabled={isSubmitting || isPaymentSubmitting || !isValid}
+            onClick={submitForm}
+            className="sm:flex-1 py-3.5 px-6 bg-mainColor text-white rounded-xl font-semibold text-lg flex items-center justify-center gap-2 font-somar shadow-md hover:shadow-lg hover:bg-linksHover transition-all duration-200"
+          >
+            {isSubmitting || isPaymentSubmitting ? (
+              <CircularProgress size={20} color="inherit" />
+            ) : (
+              t("eventTrips.payment.confirm")
+            )}
+          </button>
+        )}
       </div>
     </div>
   );

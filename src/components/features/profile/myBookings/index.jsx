@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import { memo } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import formatDate from "@utils/formatters/FormateDate";
@@ -10,7 +10,9 @@ import { Badge } from "@mui/material";
 import ActionsDropdownMenu from "./ActionsDropdownMenu";
 import SearchHeader from "@components/ui/SearchHeader";
 import DataTable from "@components/ui/DataTable";
+import BookingsTableSkeleton from "./BookingsTableSkeleton";
 import { getStatusStyles } from "@utils/formatters/getStatusStyles";
+import { SORTING_TYPE } from "@constants/sorting";
 
 const BookingsTable = ({
   tableTitle,
@@ -20,9 +22,61 @@ const BookingsTable = ({
   enablePagination,
   searchTerm,
   setSearchTerm,
+  sort,
+  setSort,
+  loading = false,
 }) => {
   const locale = useLocale();
   const t = useTranslations();
+  const [isSorting, setIsSorting] = useState(false);
+
+  // Reset local sorting spinner when new data arrives
+  useEffect(() => {
+    setIsSorting(false);
+  }, [data]);
+
+  const sortConfig = useMemo(() => {
+    if (sort === SORTING_TYPE.NEWEST_DAY) {
+      return { key: "date", direction: "desc" };
+    }
+    if (sort === SORTING_TYPE.OLDEST_DAY) {
+      return { key: "date", direction: "asc" };
+    }
+    if (sort === SORTING_TYPE.NEWEST) {
+      return { key: "createdAt", direction: "desc" };
+    }
+    if (sort === SORTING_TYPE.OLDEST) {
+      return { key: "createdAt", direction: "asc" };
+    }
+    return null;
+  }, [sort]);
+
+  const handleSort = useCallback(
+    (key, direction) => {
+      if (!setSort) return;
+      setIsSorting(true);
+      if (key === "date") {
+        if (direction === "desc") {
+          setSort(SORTING_TYPE.NEWEST_DAY);
+        } else if (direction === "asc") {
+          setSort(SORTING_TYPE.OLDEST_DAY);
+        } else {
+          setSort(SORTING_TYPE.NEWEST_DAY);
+        }
+      } else if (key === "createdAt") {
+        if (direction === "desc") {
+          setSort(SORTING_TYPE.NEWEST);
+        } else if (direction === "asc") {
+          setSort(SORTING_TYPE.OLDEST);
+        } else {
+          setSort(SORTING_TYPE.NEWEST);
+        }
+      }
+    },
+    [setSort]
+  );
+
+  const isTableLoading = Boolean(loading || isSorting || !data || !data.nodes);
 
   return (
     <section className="w-full space-y-6">
@@ -36,7 +90,36 @@ const BookingsTable = ({
             placeholder={t("profile.tables.bookings.header.searchTripName")}
           />
         }
+        sortConfig={sortConfig}
+        onSort={setSort ? handleSort : undefined}
         columns={[
+          {
+            key: "createdAt",
+            label: t("profile.tables.bookings.header.createdAt"),
+            sortable: true,
+            className: "font-medium text-foreground whitespace-nowrap",
+            sortFn: (a, b, direction) => {
+              const dateA = new Date(a.createdAt || 0).getTime();
+              const dateB = new Date(b.createdAt || 0).getTime();
+              return direction === "asc" ? dateA - dateB : dateB - dateA;
+            },
+            render: (row) =>
+              row.createdAt ? (
+                <>
+                  {formatDate(row.createdAt, locale, {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                  <br />
+                  <span className="text-xs text-gray-600">
+                    {formatDate(row.createdAt, locale, { timeOnly: true })}
+                  </span>
+                </>
+              ) : (
+                "-"
+              ),
+          },
           {
             key: "organization",
             label: t("profile.tables.bookings.header.schoolName"),
@@ -68,6 +151,13 @@ const BookingsTable = ({
           {
             key: "date",
             label: t("profile.tables.bookings.header.date"),
+            sortable: true,
+            className: "whitespace-nowrap",
+            sortFn: (a, b, direction) => {
+              const dateA = new Date(a.day || a.date || a.createdAt || 0).getTime();
+              const dateB = new Date(b.day || b.date || b.createdAt || 0).getTime();
+              return direction === "asc" ? dateA - dateB : dateB - dateA;
+            },
             render: (row) => (
               <>
                 {formatDate(row.day, locale, {
@@ -132,7 +222,13 @@ const BookingsTable = ({
           }
         ]}
         data={data?.nodes || []}
-        loading={!data || !data.nodes}
+        loading={isTableLoading}
+        loadingComponent={
+          <BookingsTableSkeleton
+            tableTitle={tableTitle}
+            showSearchHeader={true}
+          />
+        }
         actionsLabel={t("profile.tables.bookings.header.actions")}
         rowActions={(row) => (
           <div className="centered w-full">
