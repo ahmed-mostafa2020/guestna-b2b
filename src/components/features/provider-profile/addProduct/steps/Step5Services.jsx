@@ -16,31 +16,13 @@ import {
   buildBranchGroups,
   getItemName,
 } from "../branchConstants";
+import { SERVICES_TYPES } from "@constants/servicesTypes";
+
+export { SERVICES_TYPES };
 
 const isHexObjectId = (str) =>
   typeof str === "string" && /^[0-9a-fA-F]{24}$/.test(str.trim());
 
-export const SERVICES_TYPES = [
-  "MEALS",
-  "FOOD",
-  "MEDIA_COVERAGE",
-  "BADGES",
-  "SUPERVISION",
-  "PHOTOGRAPHERS",
-  "TRANSLATORS",
-  "TRANSPORTATION",
-  "ACCOMMODATION",
-  "OTHER",
-];
-
-const DEFAULT_DEMO_SERVICES = [
-  { id: "s1", servicesType: "FOOD", name: { ar: "وجبة غداء خفيفة", en: "Light Lunch" } },
-  { id: "s2", servicesType: "SUPERVISION", name: { ar: "مرشد سياحي معتمد", en: "Certified Tour Guide" } },
-  { id: "s3", servicesType: "TRANSPORTATION", name: { ar: "مواصلات ذهاب وعودة", en: "Round-trip Transportation" } },
-  { id: "s4", servicesType: "OTHER", name: { ar: "تذاكر الدخول للفعاليات", en: "Event Entry Tickets" } },
-  { id: "s5", servicesType: "PHOTOGRAPHERS", name: { ar: "تصوير فوتوغرافي تذكاري", en: "Commemorative Photography" } },
-  { id: "s6", servicesType: "MEALS", name: { ar: "مشروبات وضيافة", en: "Beverages & Hospitality" } },
-];
 
 /**
  * Reusable Service Row Item supporting Service Type filtering
@@ -164,7 +146,7 @@ const ServiceRowItem = memo(
                 placeholder={t("serviceTypePlaceholder")}
                 border="1px solid var(--color-border)"
                 list={servicesTypeOptions.map((opt) => opt.label)}
-                disabled={isSelectionsLoading}
+                disabled={isSelectionsLoading || servicesTypeOptions.length === 0}
                 errorBorder={Boolean(serviceTouched && !currentServiceType)}
               />
             </div>
@@ -198,7 +180,11 @@ const ServiceRowItem = memo(
                 }
                 border="1px solid var(--color-border)"
                 list={filteredServiceNameList}
-                disabled={isSelectionsLoading || !currentServiceType}
+                disabled={
+                  isSelectionsLoading ||
+                  !currentServiceType ||
+                  filteredServiceNameList.length === 0
+                }
                 touched={serviceTouched}
                 errors={serviceErr}
               />
@@ -217,7 +203,6 @@ const ServiceRowItem = memo(
                 onChange={(e) => onChangePrice(e.target.value)}
                 label={t("servicePrice")}
                 labelClassName={labelCls}
-                placeholder={t("servicePricePlaceholder")}
                 borderClassName={inputBorderCls}
                 inputClassName={inputFieldCls}
                 autoComplete="off"
@@ -394,22 +379,46 @@ const Step5Services = ({
     }));
   }, []);
 
-  // Prepare services list options
+  // Prepare services list options (strictly real services from formSelectionData)
   const servicesOptions = useMemo(() => {
     const rawServices = formSelectionData?.services;
     if (Array.isArray(rawServices) && rawServices.length > 0) {
       return rawServices;
     }
-    return DEFAULT_DEMO_SERVICES;
+    return [];
   }, [formSelectionData?.services]);
 
   // Service Type options list for dropdown
+  // Only include types that exist in the real response services
   const servicesTypeOptions = useMemo(() => {
-    return SERVICES_TYPES.map((typeKey) => ({
+    if (!Array.isArray(servicesOptions) || servicesOptions.length === 0) {
+      return [];
+    }
+
+    // Collect all unique service types present in the response services
+    const availableTypes = new Set(
+      servicesOptions
+        .map((s) => s?.servicesType || s?.serviceType)
+        .filter(Boolean)
+    );
+
+    // Filter SERVICES_TYPES to only types that exist in the response
+    const filteredTypes = SERVICES_TYPES.filter((typeKey) =>
+      availableTypes.has(typeKey)
+    );
+
+    // If there are any custom types returned from backend not in SERVICES_TYPES, append them
+    availableTypes.forEach((typeKey) => {
+      if (!filteredTypes.includes(typeKey)) {
+        filteredTypes.push(typeKey);
+      }
+    });
+
+    return filteredTypes.map((typeKey) => ({
       value: typeKey,
       label: t(`servicesTypes.${typeKey}`) || typeKey,
     }));
-  }, [t]);
+  }, [servicesOptions, t]);
 
   // Branch-specific services initialized in form values or local state fallback
   const branchServicesData = values.branchServices || {};

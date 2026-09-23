@@ -1,25 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useFormikContext, FieldArray } from "formik";
 import { useTranslations, useLocale } from "next-intl";
 import SelectionGroup from "@components/forms/SelectionGroup";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-
-const SERVICES_TYPES = [
-  "MEALS",
-  "FOOD",
-  "MEDIA_COVERAGE",
-  "BADGES",
-  "SUPERVISION",
-  "PHOTOGRAPHERS",
-  "TRANSLATORS",
-  "TRANSPORTATION",
-  "ACCOMMODATION",
-  "OTHER",
-];
+import { SERVICES_TYPES } from "@constants/servicesTypes";
 
 const isHexObjectId = (str) =>
   typeof str === "string" && /^[0-9a-fA-F]{24}$/.test(str.trim());
@@ -58,11 +46,33 @@ const StepServices = ({ servicesOptions = [], customServicesOptions = [] }) => {
     return found?.servicesType || "";
   };
 
-  // Build service type options for the dropdown
-  const serviceTypeOptions = SERVICES_TYPES.map((type) => ({
-    value: type,
-    label: tTypes(type),
-  }));
+  // Build service type options for the dropdown - only types present in response services
+  const serviceTypeOptions = useMemo(() => {
+    if (!Array.isArray(servicesOptions) || servicesOptions.length === 0) {
+      return [];
+    }
+
+    const availableTypes = new Set(
+      servicesOptions
+        .map((opt) => opt?.servicesType || opt?.serviceType)
+        .filter(Boolean)
+    );
+
+    const filteredTypes = SERVICES_TYPES.filter((typeKey) =>
+      availableTypes.has(typeKey)
+    );
+
+    availableTypes.forEach((typeKey) => {
+      if (!filteredTypes.includes(typeKey)) {
+        filteredTypes.push(typeKey);
+      }
+    });
+
+    return filteredTypes.map((type) => ({
+      value: type,
+      label: tTypes(type),
+    }));
+  }, [servicesOptions, tTypes]);
 
   // Filter services by selected type
   const getFilteredServices = (selectedType) => {

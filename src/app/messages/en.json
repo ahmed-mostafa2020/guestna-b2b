@@ -703,7 +703,6 @@
           "serviceLabel": "Service",
           "servicePlaceholder": "Select Service",
           "servicePrice": "Service Price",
-          "servicePricePlaceholder": "0",
           "notesArLabel": "Notes in Arabic",
           "notesArPlaceholder": "Enter description",
           "notesEnLabel": "Notes in English",

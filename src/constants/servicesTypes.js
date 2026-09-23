@@ -1,0 +1,14 @@
+export const SERVICES_TYPES = [
+  "MEALS",
+  "FOOD",
+  "MEDIA_COVERAGE",
+  "BADGES",
+  "SUPERVISION",
+  "PHOTOGRAPHERS",
+  "TRANSLATORS",
+  "TRANSPORTATION",
+  "ACCOMMODATION",
+  "OTHER",
+];
+
+export default SERVICES_TYPES;
