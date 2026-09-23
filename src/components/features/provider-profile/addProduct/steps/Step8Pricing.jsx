@@ -583,7 +583,7 @@ const Step8Pricing = ({
                 "flex items-center gap-3.5 p-4 sm:p-5 rounded-2xl border transition-all duration-200 text-start",
                 showBothTabs ? "cursor-pointer" : "cursor-default",
                 activeTab === "individual"
-                  ? "border-mainColor bg-buttonsHover/50 shadow-xs"
+                  ? "border-mainColor bg-[#EAF5F4] shadow-xs"
                   : hasB2CError
                     ? "border-error/50 bg-error/5 hover:border-error"
                     : "border-border bg-white hover:border-mainColor/30"
@@ -593,7 +593,7 @@ const Step8Pricing = ({
                 className={cn(
                   "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-colors",
                   activeTab === "individual"
-                    ? "bg-mainColor/15 text-mainColor"
+                    ? "bg-[#D7ECE7] text-mainColor"
                     : hasB2CError
                       ? "bg-error/15 text-error"
                       : "bg-homeBg text-textLight/60"
@@ -634,7 +634,7 @@ const Step8Pricing = ({
                 "flex items-center gap-3.5 p-4 sm:p-5 rounded-2xl border transition-all duration-200 text-start",
                 showBothTabs ? "cursor-pointer" : "cursor-default",
                 activeTab === "schools"
-                  ? "border-mainColor bg-buttonsHover/50 shadow-xs"
+                  ? "border-mainColor bg-[#EAF5F4] shadow-xs"
                   : hasB2BError
                     ? "border-error/50 bg-error/5 hover:border-error"
                     : "border-border bg-white hover:border-mainColor/30"
@@ -644,7 +644,7 @@ const Step8Pricing = ({
                 className={cn(
                   "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-colors",
                   activeTab === "schools"
-                    ? "bg-mainColor/15 text-mainColor"
+                    ? "bg-[#D7ECE7] text-mainColor"
                     : hasB2BError
                       ? "bg-error/15 text-error"
                       : "bg-homeBg text-textLight/60"

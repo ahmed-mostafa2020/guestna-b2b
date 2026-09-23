@@ -470,11 +470,33 @@ const StepReview = ({
       values.b2bPrice.quantityDiscountTiers.length > 0
     ) {
       return values.b2bPrice.quantityDiscountTiers
-        .map((tier) => ({
-          minCount: tier.minQuantity ?? tier.minCount,
-          price: tier.discountValue ?? tier.price,
-          discountType: tier.discountType,
-        }))
+        .map((tier) => {
+          const minCount = tier.minQuantity ?? tier.minCount;
+          const discountType = tier.discountType || "PERCENTAGE";
+          const dVal = Number(tier.discountValue);
+          let price = tier.price;
+
+          if (
+            (price === undefined || price === null || price === "") &&
+            !isNaN(dVal)
+          ) {
+            if (discountType === "AMOUNT") {
+              price = dVal;
+            } else if (discountType === "PERCENTAGE" && b2bBasePrice > 0) {
+              price = Math.max(
+                0,
+                Math.round(b2bBasePrice - (b2bBasePrice * dVal) / 100)
+              );
+            }
+          }
+
+          return {
+            minCount,
+            price: price ?? tier.discountValue ?? tier.price,
+            discountType,
+            discountValue: tier.discountValue,
+          };
+        })
         .filter((item) => item && (item.minCount || item.price));
     }
     const list =
@@ -484,7 +506,7 @@ const StepReview = ({
           ? values.bulkPricing
           : [];
     return list.filter((item) => item && (item.minCount || item.price));
-  }, [values.bulkPricing, values.b2bBulkPricing, values.b2bPrice]);
+  }, [values.bulkPricing, values.b2bBulkPricing, values.b2bPrice, b2bBasePrice]);
 
   // Video URL resolution
   const resolvedVideoUrl = useMemo(() => {
@@ -507,47 +529,431 @@ const StepReview = ({
     return null;
   }, [values.video, values.videoUrl, values.youtubeUrl]);
 
-  // Weekday Pricing List for B2B
-  const b2bWeekdayPricingList = useMemo(() => {
-    const list = values.b2bPrice?.weekdayPricing?.length
-      ? values.b2bPrice.weekdayPricing
-      : values.weekdayPricing || [];
-
-    return list.map((item) => {
-      let dayName = item.day;
+  // Helper to format date with day name: e.g. "الجمعة، 18 أكتوبر"
+  const formatDateWithDay = useCallback(
+    (dateStr) => {
+      if (!dateStr || typeof dateStr !== "string") return "";
       try {
-        dayName = tWeekDays(item.day?.toLowerCase());
+        const parts = dateStr.trim().split(/[-/]/);
+        if (parts.length === 3) {
+          const y = parseInt(parts[0], 10);
+          const m = parseInt(parts[1], 10) - 1;
+          const d = parseInt(parts[2], 10);
+          const dateObj = new Date(y, m, d);
+          if (!isNaN(dateObj.getTime())) {
+            return new Intl.DateTimeFormat(locale === "ar" ? "ar-EG" : "en-US", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+            }).format(dateObj);
+          }
+        }
       } catch (e) {
-        dayName = item.day;
+        return dateStr;
       }
-      return {
-        day: dayName,
-        price: item.price,
-        rawDay: item.day,
-      };
-    });
-  }, [values.b2bPrice, values.weekdayPricing, tWeekDays]);
+      return dateStr;
+    },
+    [locale]
+  );
 
-  // Weekday Pricing List for B2C
-  const b2cWeekdayPricingList = useMemo(() => {
-    const list = values.b2cPrice?.weekdayPricing?.length
-      ? values.b2cPrice.weekdayPricing
-      : values.weekdayPricing || [];
+  // Helper to format date range: e.g. "18\10-20\10"
+  const formatDateRange = useCallback((fromDate, toDate) => {
+    if (!fromDate && !toDate) return "";
+    const getDM = (str) => {
+      if (!str || typeof str !== "string") return "";
+      const parts = str.trim().split(/[-/]/);
+      if (parts.length === 3) {
+        return `${parseInt(parts[2], 10)}\\${parseInt(parts[1], 10)}`;
+      }
+      return str;
+    };
 
-    return list.map((item) => {
-      let dayName = item.day;
+    const dmFrom = getDM(fromDate || toDate);
+    const dmTo = getDM(toDate || fromDate);
+    if (dmFrom && dmTo && dmFrom !== dmTo) {
+      return `${dmFrom}-${dmTo}`;
+    }
+    return dmFrom || dmTo;
+  }, []);
+
+  // Helper to detect summer or weekend context
+  const detectSeasonOrWeekend = useCallback(
+    (dateStr) => {
+      if (!dateStr || typeof dateStr !== "string") return "";
       try {
-        dayName = tWeekDays(item.day?.toLowerCase());
+        const parts = dateStr.trim().split(/[-/]/);
+        if (parts.length === 3) {
+          const y = parseInt(parts[0], 10);
+          const m = parseInt(parts[1], 10) - 1;
+          const d = parseInt(parts[2], 10);
+          const dateObj = new Date(y, m, d);
+          if (!isNaN(dateObj.getTime())) {
+            const dayOfWeek = dateObj.getDay();
+            const isWeekend = dayOfWeek === 5 || dayOfWeek === 6; // Friday or Saturday
+            const isSummer = m >= 5 && m <= 8; // June to Sept
+
+            if (isWeekend) {
+              return (
+                tSub("reviewDuringWeekend") ||
+                (isRtl ? "خلال عطلات نهاية الاسبوع" : "during weekends")
+              );
+            }
+            if (isSummer) {
+              return (
+                tSub("reviewDuringSummer") ||
+                (isRtl ? "خلال الصيف" : "during summer")
+              );
+            }
+          }
+        }
       } catch (e) {
-        dayName = item.day;
+        return "";
       }
-      return {
-        day: dayName,
-        price: item.price,
-        rawDay: item.day,
-      };
+      return "";
+    },
+    [tSub, isRtl]
+  );
+
+  // Cards List for B2B (combines B2B datePricing and B2B weekdayPricing)
+  const b2bPricingCards = useMemo(() => {
+    const cards = [];
+    const unitLabel =
+      tSub("reviewStudentsUnit") || (isRtl ? "طالب" : "Student");
+    const numBase = Number(b2bBasePrice) || 0;
+
+    // 1. Process B2B Date / Seasonal Pricing rules
+    const rawDateList = Array.isArray(values.b2bPrice?.datePricing)
+      ? values.b2bPrice.datePricing
+      : [];
+
+    rawDateList.forEach((item) => {
+      const fromDate = item.fromDate || item.date || "";
+      const toDate = item.toDate || fromDate || "";
+      const hasPrice =
+        item.price !== "" && item.price !== undefined && item.price !== null;
+
+      if (fromDate && hasPrice) {
+        const numPrice = Number(item.price);
+        const ruleKey = item.key || values.b2bPrice?.key;
+        const rulePercent =
+          item.percentage ?? values.b2bPrice?.conditionRuleValue;
+        let discountText = null;
+
+        // Check if there is an amount discount for B2B only
+        if (item.discountType === "AMOUNT" && item.discountValue) {
+          discountText = tSub("reviewDiscountAmount", {
+            amount: item.discountValue,
+          });
+        } else if (
+          ruleKey === "DECREASE" ||
+          (numBase > 0 && numPrice < numBase)
+        ) {
+          const pct =
+            rulePercent ||
+            (numBase > 0
+              ? Math.round(((numBase - numPrice) / numBase) * 100)
+              : null);
+          if (pct) {
+            discountText = tSub("reviewDiscountPercent", { percent: pct });
+          }
+        } else if (
+          ruleKey === "INCREASE" ||
+          (numBase > 0 && numPrice > numBase)
+        ) {
+          const pct =
+            rulePercent ||
+            (numBase > 0
+              ? Math.round(((numPrice - numBase) / numBase) * 100)
+              : null);
+          if (pct) {
+            discountText = tSub("reviewIncreasePercent", { percent: pct });
+          }
+        }
+
+        if (discountText) {
+          const seasonNote = detectSeasonOrWeekend(fromDate);
+          if (seasonNote) {
+            discountText += ` ${seasonNote}`;
+          }
+        }
+
+        cards.push({
+          discountText,
+          dayAndDate: formatDateWithDay(fromDate),
+          dateRange: formatDateRange(fromDate, toDate),
+          price: item.price,
+          unit: unitLabel,
+        });
+      }
     });
-  }, [values.b2cPrice, values.weekdayPricing, tWeekDays]);
+
+    // 2. Process B2B Weekday Pricing rules
+    const rawWeekdayList =
+      Array.isArray(values.b2bPrice?.weekdayPricing) &&
+      values.b2bPrice.weekdayPricing.length > 0
+        ? values.b2bPrice.weekdayPricing
+        : Array.isArray(values.weekdayPricing)
+          ? values.weekdayPricing
+          : [];
+
+    rawWeekdayList.forEach((item) => {
+      const hasPrice =
+        item.price !== "" && item.price !== undefined && item.price !== null;
+
+      if (item.day && hasPrice) {
+        let localizedDay = item.day;
+        try {
+          localizedDay = tWeekDays(item.day?.toLowerCase());
+        } catch (e) {
+          localizedDay = item.day;
+        }
+
+        const numPrice = Number(item.price);
+        let discountText = null;
+
+        if (numBase > 0 && numPrice < numBase) {
+          const pct = Math.round(((numBase - numPrice) / numBase) * 100);
+          discountText = tSub("reviewDiscountPercent", { percent: pct });
+          const rawLower = String(item.day).toLowerCase();
+          if (rawLower === "friday" || rawLower === "saturday") {
+            const weekendNote =
+              tSub("reviewDuringWeekend") ||
+              (isRtl ? "خلال عطلات نهاية الاسبوع" : "during weekends");
+            discountText += ` ${weekendNote}`;
+          }
+        } else if (numBase > 0 && numPrice > numBase) {
+          const pct = Math.round(((numPrice - numBase) / numBase) * 100);
+          discountText = tSub("reviewIncreasePercent", { percent: pct });
+        }
+
+        const dateRangeStr =
+          values.fromDate && values.toDate
+            ? formatDateRange(values.fromDate, values.toDate)
+            : tSub("reviewWeekly") || (isRtl ? "أسبوعياً" : "Weekly");
+
+        cards.push({
+          discountText,
+          dayAndDate: localizedDay,
+          dateRange: dateRangeStr,
+          price: item.price,
+          unit: unitLabel,
+        });
+      }
+    });
+
+    return cards;
+  }, [
+    values.b2bPrice,
+    values.weekdayPricing,
+    values.fromDate,
+    values.toDate,
+    b2bBasePrice,
+    isRtl,
+    tSub,
+    tWeekDays,
+    detectSeasonOrWeekend,
+    formatDateWithDay,
+    formatDateRange,
+  ]);
+
+  // Cards List for B2C (combines B2C datePricing and B2C weekdayPricing)
+  const b2cPricingCards = useMemo(() => {
+    const cards = [];
+    const unitLabel =
+      tSub("reviewPerPerson") || (isRtl ? "الشخص" : "Person");
+    const numBase = Number(b2cBasePrice) || 0;
+
+    // 1. Process B2C Date / Seasonal Pricing rules
+    const rawDateList = Array.isArray(values.datePricing)
+      ? values.datePricing
+      : [];
+
+    rawDateList.forEach((item) => {
+      const fromDate = item.fromDate || item.date || "";
+      const toDate = item.toDate || fromDate || "";
+      const hasPrice =
+        item.price !== "" && item.price !== undefined && item.price !== null;
+
+      if (fromDate && hasPrice) {
+        const numPrice = Number(item.price);
+        const ruleKey = item.key || values.key;
+        const rulePercent = item.percentage ?? values.conditionRuleValue;
+        let discountText = null;
+
+        if (
+          ruleKey === "DECREASE" ||
+          (numBase > 0 && numPrice < numBase)
+        ) {
+          const pct =
+            rulePercent ||
+            (numBase > 0
+              ? Math.round(((numBase - numPrice) / numBase) * 100)
+              : null);
+          if (pct) {
+            discountText = tSub("reviewDiscountPercent", { percent: pct });
+          }
+        } else if (
+          ruleKey === "INCREASE" ||
+          (numBase > 0 && numPrice > numBase)
+        ) {
+          const pct =
+            rulePercent ||
+            (numBase > 0
+              ? Math.round(((numPrice - numBase) / numBase) * 100)
+              : null);
+          if (pct) {
+            discountText = tSub("reviewIncreasePercent", { percent: pct });
+          }
+        }
+
+        if (discountText) {
+          const seasonNote = detectSeasonOrWeekend(fromDate);
+          if (seasonNote) {
+            discountText += ` ${seasonNote}`;
+          }
+        }
+
+        cards.push({
+          discountText,
+          dayAndDate: formatDateWithDay(fromDate),
+          dateRange: formatDateRange(fromDate, toDate),
+          price: item.price,
+          unit: unitLabel,
+        });
+      }
+    });
+
+    // 2. Process B2C Weekday Pricing rules
+    const rawWeekdayList =
+      Array.isArray(values.b2cPrice?.weekdayPricing) &&
+      values.b2cPrice.weekdayPricing.length > 0
+        ? values.b2cPrice.weekdayPricing
+        : Array.isArray(values.weekdayPricing)
+          ? values.weekdayPricing
+          : [];
+
+    rawWeekdayList.forEach((item) => {
+      const hasPrice =
+        item.price !== "" && item.price !== undefined && item.price !== null;
+
+      if (item.day && hasPrice) {
+        let localizedDay = item.day;
+        try {
+          localizedDay = tWeekDays(item.day?.toLowerCase());
+        } catch (e) {
+          localizedDay = item.day;
+        }
+
+        const numPrice = Number(item.price);
+        let discountText = null;
+
+        if (numBase > 0 && numPrice < numBase) {
+          const pct = Math.round(((numBase - numPrice) / numBase) * 100);
+          discountText = tSub("reviewDiscountPercent", { percent: pct });
+          const rawLower = String(item.day).toLowerCase();
+          if (rawLower === "friday" || rawLower === "saturday") {
+            const weekendNote =
+              tSub("reviewDuringWeekend") ||
+              (isRtl ? "خلال عطلات نهاية الاسبوع" : "during weekends");
+            discountText += ` ${weekendNote}`;
+          }
+        } else if (numBase > 0 && numPrice > numBase) {
+          const pct = Math.round(((numPrice - numBase) / numBase) * 100);
+          discountText = tSub("reviewIncreasePercent", { percent: pct });
+        }
+
+        const dateRangeStr =
+          values.fromDate && values.toDate
+            ? formatDateRange(values.fromDate, values.toDate)
+            : tSub("reviewWeekly") || (isRtl ? "أسبوعياً" : "Weekly");
+
+        cards.push({
+          discountText,
+          dayAndDate: localizedDay,
+          dateRange: dateRangeStr,
+          price: item.price,
+          unit: unitLabel,
+        });
+      }
+    });
+
+    return cards;
+  }, [
+    values.datePricing,
+    values.key,
+    values.conditionRuleValue,
+    values.b2cPrice,
+    values.weekdayPricing,
+    values.fromDate,
+    values.toDate,
+    b2cBasePrice,
+    isRtl,
+    tSub,
+    tWeekDays,
+    detectSeasonOrWeekend,
+    formatDateWithDay,
+    formatDateRange,
+  ]);
+
+  // Render Pricing Cards Section inspired by screenshot
+  const renderPricingCardsSection = (
+    cardsList,
+    title = tSub("reviewWeekdayPricing")
+  ) => {
+    if (!Array.isArray(cardsList) || cardsList.length === 0) return null;
+    return (
+      <div className="space-y-3 pt-3 text-start">
+        <h5 className="font-somar font-bold text-sm sm:text-base text-titleColor">
+          {title}
+        </h5>
+        <div className="rounded-2xl border-2 border-dashed border-[#CFD8DC] bg-[#F8FAFC]/60 p-4 sm:p-5">
+          <div className="flex items-stretch gap-3.5 overflow-x-auto pb-2 scrollbar-thin">
+            {cardsList.map((card, idx) => (
+              <div
+                key={idx}
+                className="min-w-[210px] sm:min-w-[230px] max-w-[280px] flex-1 bg-white rounded-2xl border border-border p-4 shadow-2xs hover:shadow-xs hover:border-mainColor/40 transition-all flex flex-col justify-between text-start"
+              >
+                <div>
+                  {/* Top line: Discount or Increase badge if applicable */}
+                  {card.discountText ? (
+                    <div className="text-xs sm:text-sm font-somar font-bold text-[#7C3AED] leading-snug">
+                      {card.discountText}
+                    </div>
+                  ) : null}
+
+                  {/* Day of Week + Date */}
+                  <div className="text-sm sm:text-base font-somar font-bold text-titleColor mt-1.5 leading-tight">
+                    {card.dayAndDate}
+                  </div>
+
+                  {/* Date Range or frequency */}
+                  {card.dateRange && (
+                    <div
+                      className="text-xs sm:text-sm font-somar font-medium text-subtitleColor mt-1 leading-normal"
+                      dir="ltr"
+                    >
+                      {card.dateRange}
+                    </div>
+                  )}
+                </div>
+
+                {/* Bottom line: Price + Unit */}
+                <div className="flex items-baseline gap-1 mt-4 pt-2 font-somar font-bold text-base sm:text-lg text-titleColor border-t border-border/50">
+                  <span>{card.price}</span>
+                  <span className="text-sm font-normal text-textLight">
+                    {newSarSmall || "﷼"}
+                  </span>
+                  <span className="text-xs sm:text-sm font-normal text-subtitleColor">
+                    / {card.unit}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   // Exempted list
   const exemptedList = useMemo(() => {
@@ -635,7 +1041,7 @@ const StepReview = ({
   }, [values.fromDay, values.toDay, values.selectedDays, values.recurrencePattern, values.monthDay, locale, formatDays]);
 
   // Time range string
-  const timeRangeStr = useMemo(() => {
+  const _timeRangeStr = useMemo(() => {
     if (values.fromHour && values.toHour) {
       return `${formatTime12h(values.fromHour)} - ${formatTime12h(values.toHour)}`;
     }
@@ -1126,39 +1532,10 @@ const StepReview = ({
                   })}
                 </div>
               ) : (
-                /* Static or Gathering / Destination Map if no branch overrides */
+                /* Activity / Destination Map if no branch overrides */
                 <div className="space-y-3">
-                  {values.gatheringLocation?.lat && (
-                    <div className="space-y-1.5">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-titleColor flex items-center gap-1">
-                          <PlaceIcon className="w-4 h-4 text-mainColor" />
-                          {tModal("subtitles.gatheringPoint")}
-                        </span>
-                        <a
-                          href={`https://www.google.com/maps?q=${values.gatheringLocation.lat},${values.gatheringLocation.lng}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs text-mainColor font-medium flex items-center gap-1"
-                        >
-                          <span>{tSub("reviewGoToMap")}</span>
-                          <OpenInNewIcon className="w-3 h-3" />
-                        </a>
-                      </div>
-                      <div className="rounded-xl overflow-hidden border border-border h-40">
-                        <Map
-                          lat={values.gatheringLocation.lat}
-                          lng={values.gatheringLocation.lng}
-                          height="h-40"
-                          locationLink={false}
-                          isAuth={true}
-                        />
-                      </div>
-                    </div>
-                  )}
-
                   {values.location?.lat && (
-                    <div className="space-y-1.5 pt-2">
+                    <div className="space-y-1.5">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold text-titleColor flex items-center gap-1">
                           <PlaceIcon className="w-4 h-4 text-mainColor" />
@@ -1241,12 +1618,12 @@ const StepReview = ({
                   </div>
                 </div>
 
-                {/* Tiered / Bulk Pricing Table matching Figma */}
+                {/* Tiered / Bulk Pricing Table matching Figma & Screenshot */}
                 <div className="overflow-x-auto rounded-xl border border-border">
                   <table className="w-full text-xs sm:text-sm text-center">
                     <thead className="bg-gray-50 text-subtitleColor border-b border-border">
                       <tr>
-                        <th className="py-3 px-4 text-center font-semibold">
+                        <th className="py-3 px-4 text-center font-semibold border-e border-border">
                           {tSub("reviewMinCount")}
                         </th>
                         <th className="py-3 px-4 text-center font-semibold">
@@ -1258,21 +1635,39 @@ const StepReview = ({
                       {bulkPricingList.length > 0 ? (
                         bulkPricingList.map((tier, idx) => (
                           <tr key={idx} className="hover:bg-gray-50/50">
-                            <td className="py-3 px-4 text-subtitleColor font-medium">
+                            <td className="py-3.5 px-4 text-subtitleColor font-medium border-e border-border">
                               {tier.minCount} {tSub("reviewStudentsUnit")}
                             </td>
-                            <td className="py-3 px-4 font-bold text-mainColor">
-                              {formatCurrency(tier.price)}
+                            <td className="py-3.5 px-4 font-bold text-mainColor">
+                              <div className="flex items-center justify-center gap-2 flex-wrap">
+                                <span>{formatCurrency(tier.price)}</span>
+                                {tier.discountType === "AMOUNT" &&
+                                  tier.discountValue && (
+                                    <span className="text-[11px] text-[#7C3AED] bg-[#7C3AED]/10 px-2 py-0.5 rounded-md font-semibold border border-[#7C3AED]/20">
+                                      {tSub("reviewQuantityDiscountAmount", {
+                                        amount: tier.discountValue,
+                                      })}
+                                    </span>
+                                  )}
+                                {tier.discountType === "PERCENTAGE" &&
+                                  tier.discountValue && (
+                                    <span className="text-[11px] text-[#7C3AED] bg-[#7C3AED]/10 px-2 py-0.5 rounded-md font-semibold border border-[#7C3AED]/20">
+                                      {tSub("reviewDiscountBadge", {
+                                        percent: tier.discountValue,
+                                      })}
+                                    </span>
+                                  )}
+                              </div>
                             </td>
                           </tr>
                         ))
                       ) : (
                         <tr className="hover:bg-gray-50/50">
-                          <td className="py-3 px-4 text-subtitleColor font-medium">
+                          <td className="py-3.5 px-4 text-subtitleColor font-medium border-e border-border">
                             {values.availableSeats?.min || 45}{" "}
                             {tSub("reviewStudentsUnit")}
                           </td>
-                          <td className="py-3 px-4 font-bold text-mainColor">
+                          <td className="py-3.5 px-4 font-bold text-mainColor">
                             {b2bDiscount > 0 ? (
                               <div className="flex items-center justify-center gap-2">
                                 <span>{formatCurrency(b2bDiscount)}</span>
@@ -1290,40 +1685,8 @@ const StepReview = ({
                   </table>
                 </div>
 
-                {/* Weekday Pricing Breakdown */}
-                {b2bWeekdayPricingList.length > 0 && (
-                  <div className="space-y-3 pt-2">
-                    <h5 className="font-bold text-sm text-titleColor text-start">
-                      {tSub("reviewWeekdayPricing")}
-                    </h5>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                      {b2bWeekdayPricingList.map((item, idx) => (
-                        <div
-                          key={idx}
-                          className="p-3.5 bg-white rounded-xl border border-border shadow-xs space-y-1.5 hover:border-mainColor transition-all text-start"
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="font-bold text-xs sm:text-sm text-titleColor">
-                              {item.day}
-                            </span>
-                            <span className="text-[11px] px-2 py-0.5 rounded-md bg-mainColor/10 text-mainColor font-semibold">
-                              {t("weekdayPricing")}
-                            </span>
-                          </div>
-                          <div className="text-base font-extrabold text-mainColor">
-                            {formatCurrency(item.price)}
-                          </div>
-                          {timeRangeStr !== "-" && (
-                            <div className="text-[11px] text-subtitleColor flex items-center gap-1">
-                              <AccessTimeIcon className="w-3.5 h-3.5" />
-                              <span>{timeRangeStr}</span>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                {/* Weekdays & Seasonal / Monthdays Pricing Cards matching Screenshot */}
+                {renderPricingCardsSection(b2bPricingCards)}
               </div>
             </FilterAccordion>
           )}
@@ -1407,100 +1770,8 @@ const StepReview = ({
                   </div>
                 )}
 
-                {/* Weekday Pricing Breakdown */}
-                {b2cWeekdayPricingList.length > 0 && (
-                  <div className="space-y-3 pt-2">
-                    <h5 className="font-bold text-sm text-titleColor text-start">
-                      {tSub("reviewWeekdayPricing")}
-                    </h5>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                      {b2cWeekdayPricingList.map((item, idx) => (
-                        <div
-                          key={idx}
-                          className="p-3.5 bg-white rounded-xl border border-border shadow-xs space-y-1.5 hover:border-mainColor transition-all text-start"
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="font-bold text-xs sm:text-sm text-titleColor">
-                              {item.day}
-                            </span>
-                            <span className="text-[11px] px-2 py-0.5 rounded-md bg-mainColor/10 text-mainColor font-semibold">
-                              {t("weekdayPricing")}
-                            </span>
-                          </div>
-                          <div className="text-base font-extrabold text-mainColor">
-                            {formatCurrency(item.price)}
-                          </div>
-                          {timeRangeStr !== "-" && (
-                            <div className="text-[11px] text-subtitleColor flex items-center gap-1">
-                              <AccessTimeIcon className="w-3.5 h-3.5" />
-                              <span>{timeRangeStr}</span>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Specific Date Pricing Breakdown */}
-                {Array.isArray(values.datePricing) &&
-                  values.datePricing.some(
-                    (dp) =>
-                      dp.date &&
-                      dp.price !== "" &&
-                      dp.price !== undefined &&
-                      dp.price !== null
-                  ) && (
-                    <div className="space-y-3 pt-2">
-                      <div className="flex items-center justify-between">
-                        <h5 className="font-bold text-sm text-titleColor text-start">
-                          {tSub("reviewDatePricing")}
-                        </h5>
-                        {values.key && (
-                          <span className="text-[11px] px-2 py-0.5 rounded-md bg-mainColor/10 text-mainColor font-semibold">
-                            {values.key === "DECREASE"
-                              ? tSub("reviewDiscountLabel") || "تخفيض"
-                              : isRtl
-                              ? "زيادة"
-                              : "Increase"}
-                          </span>
-                        )}
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                        {values.datePricing
-                          .filter(
-                            (dp) =>
-                              (dp.fromDate || dp.date) &&
-                              dp.price !== "" &&
-                              dp.price !== undefined &&
-                              dp.price !== null
-                          )
-                          .map((item, idx) => {
-                            const dateDisplay =
-                              item.fromDate && item.toDate && item.fromDate !== item.toDate
-                                ? `${item.fromDate} - ${item.toDate}`
-                                : item.fromDate || item.date;
-
-                            return (
-                              <div
-                                key={idx}
-                                className="p-3.5 bg-white rounded-xl border border-border shadow-xs space-y-1.5 hover:border-mainColor transition-all text-start"
-                              >
-                                <div className="flex items-center justify-between">
-                                  <span className="font-bold text-xs sm:text-sm text-titleColor flex items-center gap-1.5">
-                                    <CalendarTodayIcon className="w-3.5 h-3.5 text-mainColor" />
-                                    <span>{dateDisplay}</span>
-                                  </span>
-                                </div>
-                                <div className="text-base font-extrabold text-mainColor">
-                                  {formatCurrency(item.price)}
-                                </div>
-                              </div>
-                            );
-                          })}
-                      </div>
-                    </div>
-                  )}
+                {/* Weekdays & Seasonal / Monthdays Pricing Cards matching Screenshot */}
+                {renderPricingCardsSection(b2cPricingCards)}
               </div>
             </FilterAccordion>
           )}
@@ -1606,7 +1877,7 @@ const StepReview = ({
               )}
 
               {/* Row 4: Deadline Box matching Figma */}
-              <div className="flex items-center justify-between p-3 rounded-[8px] bg-buttonsHover/50 text-base">
+              <div className="flex items-center justify-between p-3 rounded-[8px] bg-[#EEFAF9] text-base">
                 <span className="text-titleColor font-semibold text-sm sm:text-base">
                   {tSub("reviewBookingDeadlineDaysBefore")}
                 </span>
@@ -1744,7 +2015,7 @@ const StepReview = ({
             )}
 
             {/* Row 4: Deadline Box matching Figma */}
-            <div className="flex items-center justify-between p-2.5 rounded-[8px] bg-buttonsHover/50 text-xs sm:text-sm">
+            <div className="flex items-center justify-between p-2.5 rounded-[8px] bg-[#EEFAF9] text-xs sm:text-sm">
               <span className="text-titleColor font-semibold">
                 {tSub("reviewBookingDeadlineDaysBefore")}
               </span>
