@@ -110,7 +110,7 @@ const Step8Pricing = ({
     return Math.round(numBase + (numBase * numPercent) / 100);
   }, []);
 
-  // Ensure values.datePricing, values.key, values.conditionRuleValue, and b2bPrice are initialized
+  // Ensure values.datePricing, values.key, values.conditionRuleValue, b2bPrice, and branchPricing rules are initialized
   useEffect(() => {
     if (!Array.isArray(values.datePricing) || values.datePricing.length === 0) {
       setFieldValue("datePricing", [{ date: "", price: "" }], false);
@@ -138,6 +138,75 @@ const Step8Pricing = ({
     ) {
       setFieldValue("b2bPrice.conditionRuleValue", "10", false);
     }
+
+    if (values.branchPricing && typeof values.branchPricing === "object") {
+      let hasUpdates = false;
+      const updatedPricing = { ...values.branchPricing };
+      Object.keys(updatedPricing).forEach((bId) => {
+        const bData = updatedPricing[bId];
+        if (bData && typeof bData === "object") {
+          let bUpdated = false;
+          let newDatePricing = bData.datePricing;
+          let newB2bDatePricing = bData.b2bDatePricing;
+
+          if (!Array.isArray(newDatePricing) || newDatePricing.length === 0) {
+            const branchKey = bData.key || values.key || "INCREASE";
+            const branchPercent =
+              bData.conditionRuleValue ?? values.conditionRuleValue ?? 15;
+            const defPrice = calculateRulePrice(
+              bData.price || values.price,
+              branchKey,
+              branchPercent
+            );
+            newDatePricing = [
+              {
+                date: "",
+                fromDate: "",
+                toDate: "",
+                key: branchKey,
+                percentage: branchPercent,
+                price: defPrice !== "" ? defPrice : "",
+              },
+            ];
+            bUpdated = true;
+          }
+
+          if (!Array.isArray(newB2bDatePricing) || newB2bDatePricing.length === 0) {
+            const b2bKey = bData.b2bKey || values.b2bPrice?.key || "DECREASE";
+            const b2bPercent =
+              bData.b2bConditionRuleValue ?? values.b2bPrice?.conditionRuleValue ?? 10;
+            const defB2bPrice = calculateRulePrice(
+              bData.schoolsPrice || values.b2bPrice?.price || values.price,
+              b2bKey,
+              b2bPercent
+            );
+            newB2bDatePricing = [
+              {
+                date: "",
+                fromDate: "",
+                toDate: "",
+                key: b2bKey,
+                percentage: b2bPercent,
+                price: defB2bPrice !== "" ? defB2bPrice : "",
+              },
+            ];
+            bUpdated = true;
+          }
+
+          if (bUpdated) {
+            updatedPricing[bId] = {
+              ...bData,
+              datePricing: newDatePricing,
+              b2bDatePricing: newB2bDatePricing,
+            };
+            hasUpdates = true;
+          }
+        }
+      });
+      if (hasUpdates) {
+        setFieldValue("branchPricing", updatedPricing, false);
+      }
+    }
   }, [
     values.datePricing,
     values.key,
@@ -145,6 +214,10 @@ const Step8Pricing = ({
     values.b2bPrice?.datePricing,
     values.b2bPrice?.key,
     values.b2bPrice?.conditionRuleValue,
+    values.branchPricing,
+    values.price,
+    values.b2bPrice?.price,
+    calculateRulePrice,
     setFieldValue,
   ]);
 
@@ -297,21 +370,58 @@ const Step8Pricing = ({
 
       newSelectedIds.forEach((id) => {
         if (!updatedBranchPricing[id]) {
+          const defaultBranchPrice = values.price || "";
+          const branchKey = values.key || "INCREASE";
+          const branchPercent = values.conditionRuleValue || 15;
+          const defaultRulePrice = calculateRulePrice(
+            defaultBranchPrice,
+            branchKey,
+            branchPercent
+          );
+
+          const defaultB2bBranchPrice =
+            values.b2bPrice?.price || values.price || "";
+          const b2bBranchKey = values.b2bPrice?.key || "DECREASE";
+          const b2bBranchPercent = values.b2bPrice?.conditionRuleValue || 10;
+          const defaultB2bRulePrice = calculateRulePrice(
+            defaultB2bBranchPrice,
+            b2bBranchKey,
+            b2bBranchPercent
+          );
+
           updatedBranchPricing[id] = {
             price: "",
             discountedPrice: "",
             schoolsPrice: "",
             b2bDiscountedPrice: "",
             productCost: "",
-            key: "INCREASE",
-            conditionRuleValue: "",
-            b2bKey: "DECREASE",
-            b2bConditionRuleValue: "",
+            key: branchKey,
+            conditionRuleValue: branchPercent,
+            b2bKey: b2bBranchKey,
+            b2bConditionRuleValue: b2bBranchPercent,
             studentsPerSupervisor: "",
             targetAudiences: [],
-            datePricing: [],
+            datePricing: [
+              {
+                date: "",
+                fromDate: "",
+                toDate: "",
+                key: branchKey,
+                percentage: branchPercent,
+                price: defaultRulePrice !== "" ? defaultRulePrice : "",
+              },
+            ],
             b2bQuantityDiscountTiers: [],
-            b2bDatePricing: [],
+            b2bDatePricing: [
+              {
+                date: "",
+                fromDate: "",
+                toDate: "",
+                key: b2bBranchKey,
+                percentage: b2bBranchPercent,
+                price: defaultB2bRulePrice !== "" ? defaultB2bRulePrice : "",
+              },
+            ],
           };
         }
       });
@@ -334,6 +444,13 @@ const Step8Pricing = ({
     [
       setFieldValue,
       values.branchPricing,
+      values.price,
+      values.key,
+      values.conditionRuleValue,
+      values.b2bPrice?.price,
+      values.b2bPrice?.key,
+      values.b2bPrice?.conditionRuleValue,
+      calculateRulePrice,
     ]
   );
 
@@ -1253,161 +1370,308 @@ const Step8Pricing = ({
 
                             {/* 3. Date / Seasonal Pricing for Branch */}
                             <div className="bg-gray-50/70 p-4 sm:p-5 rounded-xl border border-border space-y-4">
-                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
-                                <div>
-                                  <h6 className="font-somar font-bold text-sm text-titleColor">
-                                    {t("branchDatePricingTitle") || "التسعير الموسمي للفرع"}
-                                  </h6>
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const currentRules = Array.isArray(branchData.datePricing)
-                                      ? branchData.datePricing
-                                      : [];
-                                    const branchKey = branchData.key || values.key || "INCREASE";
-                                    const branchPercent = branchData.conditionRuleValue ?? values.conditionRuleValue ?? 15;
-                                    const defaultPrice = calculateRulePrice(
-                                      branchData.price || values.price,
-                                      branchKey,
-                                      branchPercent
-                                    );
-                                    setFieldValue(`branchPricing.${branch.id}.datePricing`, [
-                                      ...currentRules,
-                                      {
-                                        fromDate: "",
-                                        toDate: "",
-                                        key: branchKey,
-                                        percentage: branchPercent,
-                                        price: defaultPrice !== "" ? defaultPrice : "",
-                                      },
-                                    ]);
-                                  }}
-                                  className="px-3 py-1.5 rounded-lg border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar font-bold text-xs transition-colors cursor-pointer self-start sm:self-auto"
-                                >
-                                  + {t("b2c.addRuleBtn")}
-                                </button>
-                              </div>
+                              {(() => {
+                                const branchKey =
+                                  branchData.key || values.key || "INCREASE";
+                                const branchPercent =
+                                  branchData.conditionRuleValue ??
+                                  values.conditionRuleValue ??
+                                  15;
+                                const defaultPrice = calculateRulePrice(
+                                  branchData.price || values.price,
+                                  branchKey,
+                                  branchPercent
+                                );
+                                const branchDatePricingList =
+                                  Array.isArray(branchData.datePricing) &&
+                                  branchData.datePricing.length > 0
+                                    ? branchData.datePricing
+                                    : [
+                                        {
+                                          date: "",
+                                          fromDate: "",
+                                          toDate: "",
+                                          key: branchKey,
+                                          percentage: branchPercent,
+                                          price:
+                                            defaultPrice !== ""
+                                              ? defaultPrice
+                                              : "",
+                                        },
+                                      ];
 
-                              {/* Condition Builder Row: السعر بـ [زيادة/تخفيض] [%15] */}
-                              <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-somar text-textDark">
-                                <span className="font-medium text-textDark flex-shrink-0">
-                                  {t("b2c.priceByLabel")}
-                                </span>
-
-                                {/* Dropdown: زيادة / تخفيض (key) */}
-                                <div className="w-28 sm:w-32">
-                                  <SelectionGroup
-                                    name={`branchPricing.${branch.id}.key`}
-                                    value={branchData.key || values.key || "INCREASE"}
-                                    onChange={(e) => {
-                                      setFieldValue(
-                                        `branchPricing.${branch.id}.key`,
-                                        e.target.value,
-                                        true
-                                      );
-                                    }}
-                                    placeholder={t("b2c.increase")}
-                                    list={changeTypeList}
-                                    border="1px solid var(--color-border)"
-                                  />
-                                </div>
-
-                                {/* Input: %15 with matching 52px height */}
-                                <div className="w-24 sm:w-28">
-                                  <TextInputGroup
-                                    type="number"
-                                    min="1"
-                                    name={`branchPricing.${branch.id}.conditionRuleValue`}
-                                    value={branchData.conditionRuleValue ?? values.conditionRuleValue ?? "15"}
-                                    onChange={(e) => {
-                                      setFieldValue(
-                                        `branchPricing.${branch.id}.conditionRuleValue`,
-                                        e.target.value,
-                                        true
-                                      );
-                                    }}
-                                    placeholder="15"
-                                    borderClassName={inputBorderCls}
-                                    inputClassName="!h-[52px] !py-0 px-2 text-center font-somar text-xs sm:text-sm text-textDark"
-                                    endAdornment={
-                                      <span className="text-textLight font-somar text-sm">
-                                        %
-                                      </span>
-                                    }
-                                  />
-                                </div>
-                              </div>
-
-                              <div className="space-y-3">
-                                {(Array.isArray(branchData.datePricing) ? branchData.datePricing : []).map(
-                                  (rule, rIdx) => (
-                                    <div
-                                      key={rIdx}
-                                      className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end bg-white p-3 rounded-xl border border-border"
-                                    >
-                                      <TextInputGroup
-                                        type="date"
-                                        min={todayStr}
-                                        label={t("b2c.fromDateReadOnly")}
-                                        value={rule.fromDate || rule.fromDay || ""}
-                                        onChange={(e) =>
-                                          setFieldValue(
-                                            `branchPricing.${branch.id}.datePricing[${rIdx}].fromDate`,
-                                            e.target.value
-                                          )
-                                        }
-                                        borderClassName={inputBorderCls}
-                                        inputClassName="!h-[44px] !py-0 px-3 font-somar text-xs text-textDark"
-                                      />
-                                      <TextInputGroup
-                                        type="date"
-                                        min={rule.fromDate || todayStr}
-                                        label={t("b2c.toDateReadOnly")}
-                                        value={rule.toDate || rule.toDay || ""}
-                                        onChange={(e) =>
-                                          setFieldValue(
-                                            `branchPricing.${branch.id}.datePricing[${rIdx}].toDate`,
-                                            e.target.value
-                                          )
-                                        }
-                                        borderClassName={inputBorderCls}
-                                        inputClassName="!h-[44px] !py-0 px-3 font-somar text-xs text-textDark"
-                                      />
-                                      <TextInputGroup
-                                        type="number"
-                                        min="0"
-                                        label={t("b2c.priceInSar")}
-                                        value={rule.price ?? ""}
-                                        onChange={(e) =>
-                                          setFieldValue(
-                                            `branchPricing.${branch.id}.datePricing[${rIdx}].price`,
-                                            e.target.value
-                                          )
-                                        }
-                                        borderClassName={inputBorderCls}
-                                        inputClassName="!h-[44px] !py-0 px-3 font-somar text-xs text-textDark"
-                                        endAdornment={newSarSmall}
-                                      />
+                                return (
+                                  <>
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-3">
+                                      <div className="text-start">
+                                        <h6 className="font-somar font-bold text-sm sm:text-base text-titleColor">
+                                          {t("branchDatePricingTitle") ||
+                                            "التسعير الموسمي للفرع"}
+                                        </h6>
+                                        <p className="font-somar text-xs sm:text-sm text-textLight mt-1">
+                                          {t("branchDatePricingSubtitle") ||
+                                            t("b2c.weekdayPricingSubtitle")}
+                                        </p>
+                                      </div>
                                       <button
                                         type="button"
                                         onClick={() => {
-                                          const updated = (branchData.datePricing || []).filter(
-                                            (_, i) => i !== rIdx
-                                          );
                                           setFieldValue(
                                             `branchPricing.${branch.id}.datePricing`,
-                                            updated
+                                            [
+                                              ...branchDatePricingList,
+                                              {
+                                                date: "",
+                                                fromDate: "",
+                                                toDate: "",
+                                                key: branchKey,
+                                                percentage: branchPercent,
+                                                price:
+                                                  defaultPrice !== ""
+                                                    ? defaultPrice
+                                                    : "",
+                                              },
+                                            ]
                                           );
                                         }}
-                                        className="w-9 h-9 flex items-center justify-center text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer self-center sm:self-end mb-1"
+                                        className="px-4 py-2 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer self-start sm:self-auto flex items-center gap-1.5 whitespace-nowrap"
                                       >
-                                        <DeleteOutlineIcon className="w-5 h-5" />
+                                        <span>{t("b2c.addRuleBtn")}</span>
                                       </button>
                                     </div>
-                                  )
-                                )}
-                              </div>
+
+                                    {/* Condition Builder Row: السعر بـ [زيادة/تخفيض] [%15] */}
+                                    <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-somar text-textDark">
+                                      <span className="font-medium text-textDark flex-shrink-0">
+                                        {t("b2c.priceByLabel")}
+                                      </span>
+
+                                      {/* Dropdown: زيادة / تخفيض (key) */}
+                                      <div className="w-28 sm:w-32">
+                                        <SelectionGroup
+                                          name={`branchPricing.${branch.id}.key`}
+                                          value={branchKey}
+                                          onChange={(e) => {
+                                            setFieldValue(
+                                              `branchPricing.${branch.id}.key`,
+                                              e.target.value,
+                                              true
+                                            );
+                                          }}
+                                          placeholder={t("b2c.increase")}
+                                          list={changeTypeList}
+                                          border="1px solid var(--color-border)"
+                                        />
+                                      </div>
+
+                                      {/* Input: %15 with matching 52px height */}
+                                      <div className="w-24 sm:w-28">
+                                        <TextInputGroup
+                                          type="number"
+                                          min="1"
+                                          name={`branchPricing.${branch.id}.conditionRuleValue`}
+                                          value={branchPercent}
+                                          onChange={(e) => {
+                                            setFieldValue(
+                                              `branchPricing.${branch.id}.conditionRuleValue`,
+                                              e.target.value,
+                                              true
+                                            );
+                                          }}
+                                          placeholder="15"
+                                          borderClassName={inputBorderCls}
+                                          inputClassName="!h-[52px] !py-0 px-2 text-center font-somar text-xs sm:text-sm text-textDark"
+                                          endAdornment={
+                                            <span className="text-textLight font-somar text-sm">
+                                              %
+                                            </span>
+                                          }
+                                        />
+                                      </div>
+                                    </div>
+
+                                    {/* Date Pricing Rows */}
+                                    <div className="space-y-4 pt-2">
+                                      {branchDatePricingList.map((rule, rIdx) => {
+                                        const fromDateVal =
+                                          rule.fromDate || rule.fromDay || rule.date || "";
+                                        const toDateVal =
+                                          rule.toDate || rule.toDay || fromDateVal || "";
+
+                                        const isFromPast = Boolean(
+                                          fromDateVal && fromDateVal < todayStr
+                                        );
+                                        const isToPast = Boolean(
+                                          toDateVal && toDateVal < todayStr
+                                        );
+                                        const isToBeforeFrom = Boolean(
+                                          toDateVal &&
+                                            fromDateVal &&
+                                            toDateVal < fromDateVal
+                                        );
+
+                                        const fromTouched = getIn(
+                                          touched,
+                                          `branchPricing.${branch.id}.datePricing[${rIdx}].fromDate`
+                                        );
+                                        const toTouched = getIn(
+                                          touched,
+                                          `branchPricing.${branch.id}.datePricing[${rIdx}].toDate`
+                                        );
+                                        const fromError = getIn(
+                                          errors,
+                                          `branchPricing.${branch.id}.datePricing[${rIdx}].fromDate`
+                                        );
+                                        const toError = getIn(
+                                          errors,
+                                          `branchPricing.${branch.id}.datePricing[${rIdx}].toDate`
+                                        );
+                                        const priceTouched = getIn(
+                                          touched,
+                                          `branchPricing.${branch.id}.datePricing[${rIdx}].price`
+                                        );
+                                        const priceError = getIn(
+                                          errors,
+                                          `branchPricing.${branch.id}.datePricing[${rIdx}].price`
+                                        );
+
+                                        return (
+                                          <div
+                                            key={rIdx}
+                                            className="flex flex-wrap md:flex-nowrap items-start gap-3 sm:gap-4 transition-all"
+                                          >
+                                            {/* From Date */}
+                                            <div className="w-full md:w-auto md:flex-1">
+                                              <TextInputGroup
+                                                id={`branchPricing-${branch.id}-datePricing-${rIdx}-fromDate`}
+                                                name={`branchPricing.${branch.id}.datePricing[${rIdx}].fromDate`}
+                                                type="date"
+                                                min={todayStr}
+                                                label={t("b2c.fromDateReadOnly")}
+                                                labelClassName={subLabelCls}
+                                                value={fromDateVal}
+                                                onChange={(e) => {
+                                                  const val = e.target.value;
+                                                  setFieldValue(
+                                                    `branchPricing.${branch.id}.datePricing[${rIdx}].fromDate`,
+                                                    val
+                                                  );
+                                                  setFieldValue(
+                                                    `branchPricing.${branch.id}.datePricing[${rIdx}].date`,
+                                                    val
+                                                  );
+                                                  if (
+                                                    val &&
+                                                    rule.toDate &&
+                                                    val > rule.toDate
+                                                  ) {
+                                                    setFieldValue(
+                                                      `branchPricing.${branch.id}.datePricing[${rIdx}].toDate`,
+                                                      val
+                                                    );
+                                                  }
+                                                }}
+                                                onBlur={handleBlur}
+                                                borderClassName={inputBorderCls}
+                                                inputClassName={inputFieldCls}
+                                                touched={fromTouched || isFromPast}
+                                                errors={
+                                                  isFromPast
+                                                    ? t("validations.pastDateError")
+                                                    : fromError
+                                                }
+                                              />
+                                            </div>
+
+                                            {/* To Date */}
+                                            <div className="w-full md:w-auto md:flex-1">
+                                              <TextInputGroup
+                                                id={`branchPricing-${branch.id}-datePricing-${rIdx}-toDate`}
+                                                name={`branchPricing.${branch.id}.datePricing[${rIdx}].toDate`}
+                                                type="date"
+                                                min={fromDateVal || todayStr}
+                                                label={t("b2c.toDateReadOnly")}
+                                                labelClassName={subLabelCls}
+                                                value={toDateVal}
+                                                onChange={(e) => {
+                                                  setFieldValue(
+                                                    `branchPricing.${branch.id}.datePricing[${rIdx}].toDate`,
+                                                    e.target.value
+                                                  );
+                                                }}
+                                                onBlur={handleBlur}
+                                                borderClassName={inputBorderCls}
+                                                inputClassName={inputFieldCls}
+                                                touched={
+                                                  toTouched ||
+                                                  isToPast ||
+                                                  isToBeforeFrom
+                                                }
+                                                errors={
+                                                  isToPast
+                                                    ? t("validations.pastDateError")
+                                                    : isToBeforeFrom
+                                                    ? t("validations.endDateAfterStartDate")
+                                                    : toError
+                                                }
+                                              />
+                                            </div>
+
+                                            {/* Price */}
+                                            <div className="w-full md:w-auto md:flex-1">
+                                              <TextInputGroup
+                                                id={`branchPricing-${branch.id}-datePricing-${rIdx}-price`}
+                                                name={`branchPricing.${branch.id}.datePricing[${rIdx}].price`}
+                                                type="number"
+                                                min="0"
+                                                label={t("b2c.priceInSar")}
+                                                labelClassName={subLabelCls}
+                                                value={rule.price ?? ""}
+                                                onChange={(e) => {
+                                                  setFieldValue(
+                                                    `branchPricing.${branch.id}.datePricing[${rIdx}].price`,
+                                                    e.target.value
+                                                  );
+                                                }}
+                                                onBlur={handleBlur}
+                                                placeholder={String(
+                                                  defaultPrice || "60"
+                                                )}
+                                                borderClassName={inputBorderCls}
+                                                inputClassName={inputFieldCls}
+                                                endAdornment={newSarSmall}
+                                                touched={priceTouched}
+                                                errors={priceError}
+                                              />
+                                            </div>
+
+                                            {/* Delete Button (Shown on all rows when more than 1 row exists) */}
+                                            {branchDatePricingList.length > 1 && (
+                                              <button
+                                                type="button"
+                                                onClick={() => {
+                                                  const updated =
+                                                    branchDatePricingList.filter(
+                                                      (_, i) => i !== rIdx
+                                                    );
+                                                  setFieldValue(
+                                                    `branchPricing.${branch.id}.datePricing`,
+                                                    updated
+                                                  );
+                                                }}
+                                                className="w-10 h-10 flex items-center justify-center text-error hover:bg-error/10 rounded-xl transition-colors cursor-pointer flex-shrink-0 mb-0.5 mt-6"
+                                                title={isAr ? "حذف" : "Delete"}
+                                              >
+                                                <DeleteOutlineIcon className="w-5 h-5" />
+                                              </button>
+                                            )}
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </>
+                                );
+                              })()}
                             </div>
                           </div>
                         )}
@@ -2237,175 +2501,340 @@ const Step8Pricing = ({
 
                             {/* 3. Date / Seasonal Pricing for B2B Branch */}
                             <div className="bg-gray-50/70 p-4 sm:p-5 rounded-xl border border-border space-y-4">
-                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
-                                <div>
-                                  <h6 className="font-somar font-bold text-sm text-titleColor">
-                                    {t("branchDatePricingTitle") || t("b2b.datePricingTitle")}
-                                  </h6>
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const currentRules = Array.isArray(
-                                      branchData.b2bDatePricing
-                                    )
-                                      ? branchData.b2bDatePricing
-                                      : [];
-                                    const b2bBranchKey =
-                                      branchData.b2bKey ||
-                                      "DECREASE";
-                                    const b2bBranchPercent =
-                                      branchData.b2bConditionRuleValue ??
-                                      10;
-                                    const defaultPrice = calculateRulePrice(
-                                      branchData.schoolsPrice,
-                                      b2bBranchKey,
-                                      b2bBranchPercent
-                                    );
-                                    setFieldValue(
-                                      `branchPricing.${branch.id}.b2bDatePricing`,
-                                      [
-                                        ...currentRules,
+                              {(() => {
+                                const b2bBranchKey =
+                                  branchData.b2bKey ||
+                                  values.b2bPrice?.key ||
+                                  "DECREASE";
+                                const b2bBranchPercent =
+                                  branchData.b2bConditionRuleValue ??
+                                  values.b2bPrice?.conditionRuleValue ??
+                                  10;
+                                const defaultB2bPrice = calculateRulePrice(
+                                  branchData.schoolsPrice ||
+                                    values.b2bPrice?.price ||
+                                    values.price,
+                                  b2bBranchKey,
+                                  b2bBranchPercent
+                                );
+                                const branchB2bDatePricingList =
+                                  Array.isArray(branchData.b2bDatePricing) &&
+                                  branchData.b2bDatePricing.length > 0
+                                    ? branchData.b2bDatePricing
+                                    : [
                                         {
+                                          date: "",
                                           fromDate: "",
                                           toDate: "",
                                           key: b2bBranchKey,
                                           percentage: b2bBranchPercent,
-                                          price: defaultPrice !== "" ? defaultPrice : "",
+                                          price:
+                                            defaultB2bPrice !== ""
+                                              ? defaultB2bPrice
+                                              : "",
                                         },
-                                      ]
-                                    );
-                                  }}
-                                  className="px-3 py-1.5 rounded-lg border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar font-bold text-xs transition-colors cursor-pointer self-start sm:self-auto"
-                                >
-                                  + {t("b2b.addRuleBtn")}
-                                </button>
-                              </div>
+                                      ];
 
-                              {/* Condition Builder Row for B2B Branch */}
-                              <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-somar text-textDark">
-                                <span className="font-medium text-textDark flex-shrink-0">
-                                  {t("b2b.priceByLabel")}
-                                </span>
+                                return (
+                                  <>
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-3">
+                                      <div className="text-start">
+                                        <h6 className="font-somar font-bold text-sm sm:text-base text-titleColor">
+                                          {t("branchDatePricingTitle") ||
+                                            t("b2b.datePricingTitle")}
+                                        </h6>
+                                        <p className="font-somar text-xs sm:text-sm text-textLight mt-1">
+                                          {t("branchDatePricingSubtitle") ||
+                                            t("b2b.datePricingSubtitle")}
+                                        </p>
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setFieldValue(
+                                            `branchPricing.${branch.id}.b2bDatePricing`,
+                                            [
+                                              ...branchB2bDatePricingList,
+                                              {
+                                                date: "",
+                                                fromDate: "",
+                                                toDate: "",
+                                                key: b2bBranchKey,
+                                                percentage: b2bBranchPercent,
+                                                price:
+                                                  defaultB2bPrice !== ""
+                                                    ? defaultB2bPrice
+                                                    : "",
+                                              },
+                                            ]
+                                          );
+                                        }}
+                                        className="px-4 py-2 rounded-xl border border-mainColor text-mainColor hover:bg-mainColor/5 font-somar font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer self-start sm:self-auto flex items-center gap-1.5 whitespace-nowrap"
+                                      >
+                                        <span>{t("b2b.addRuleBtn")}</span>
+                                      </button>
+                                    </div>
 
-                                <div className="w-28 sm:w-32">
-                                  <SelectionGroup
-                                    name={`branchPricing.${branch.id}.b2bKey`}
-                                    value={
-                                      branchData.b2bKey ||
-                                      "DECREASE"
-                                    }
-                                    onChange={(e) => {
-                                      setFieldValue(
-                                        `branchPricing.${branch.id}.b2bKey`,
-                                        e.target.value,
-                                        true
-                                      );
-                                    }}
-                                    placeholder={t("b2b.decrease")}
-                                    list={changeTypeList}
-                                    border="1px solid var(--color-border)"
-                                  />
-                                </div>
-
-                                <div className="w-24 sm:w-28">
-                                  <TextInputGroup
-                                    type="number"
-                                    min="1"
-                                    name={`branchPricing.${branch.id}.b2bConditionRuleValue`}
-                                    value={
-                                      branchData.b2bConditionRuleValue ??
-                                      ""
-                                    }
-                                    onChange={(e) => {
-                                      setFieldValue(
-                                        `branchPricing.${branch.id}.b2bConditionRuleValue`,
-                                        e.target.value,
-                                        true
-                                      );
-                                    }}
-                                    placeholder="10"
-                                    borderClassName={inputBorderCls}
-                                    inputClassName="!h-[52px] !py-0 px-2 text-center font-somar text-xs sm:text-sm text-textDark"
-                                    endAdornment={
-                                      <span className="text-textLight font-somar text-sm">
-                                        %
+                                    {/* Condition Builder Row for B2B Branch */}
+                                    <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-somar text-textDark">
+                                      <span className="font-medium text-textDark flex-shrink-0">
+                                        {t("b2b.priceByLabel")}
                                       </span>
-                                    }
-                                  />
-                                </div>
-                              </div>
 
-                              <div className="space-y-3">
-                                {(Array.isArray(branchData.b2bDatePricing)
-                                  ? branchData.b2bDatePricing
-                                  : []
-                                ).map((rule, rIdx) => (
-                                  <div
-                                    key={rIdx}
-                                    className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end bg-white p-3 rounded-xl border border-border"
-                                  >
-                                    <TextInputGroup
-                                      type="date"
-                                      min={todayStr}
-                                      label={t("b2b.fromDateReadOnly")}
-                                      value={rule.fromDate || rule.fromDay || ""}
-                                      onChange={(e) =>
-                                        setFieldValue(
-                                          `branchPricing.${branch.id}.b2bDatePricing[${rIdx}].fromDate`,
-                                          e.target.value
-                                        )
-                                      }
-                                      borderClassName={inputBorderCls}
-                                      inputClassName="!h-[44px] !py-0 px-3 font-somar text-xs text-textDark"
-                                    />
-                                    <TextInputGroup
-                                      type="date"
-                                      min={rule.fromDate || todayStr}
-                                      label={t("b2b.toDateReadOnly")}
-                                      value={rule.toDate || rule.toDay || ""}
-                                      onChange={(e) =>
-                                        setFieldValue(
-                                          `branchPricing.${branch.id}.b2bDatePricing[${rIdx}].toDate`,
-                                          e.target.value
-                                        )
-                                      }
-                                      borderClassName={inputBorderCls}
-                                      inputClassName="!h-[44px] !py-0 px-3 font-somar text-xs text-textDark"
-                                    />
-                                    <TextInputGroup
-                                      type="number"
-                                      min="0"
-                                      label={t("b2b.priceInSar")}
-                                      value={rule.price ?? ""}
-                                      onChange={(e) =>
-                                        setFieldValue(
-                                          `branchPricing.${branch.id}.b2bDatePricing[${rIdx}].price`,
-                                          e.target.value
-                                        )
-                                      }
-                                      borderClassName={inputBorderCls}
-                                      inputClassName="!h-[44px] !py-0 px-3 font-somar text-xs text-textDark"
-                                      endAdornment={newSarSmall}
-                                    />
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        const updated = (
-                                          branchData.b2bDatePricing || []
-                                        ).filter((_, i) => i !== rIdx);
-                                        setFieldValue(
-                                          `branchPricing.${branch.id}.b2bDatePricing`,
-                                          updated
-                                        );
-                                      }}
-                                      className="w-9 h-9 flex items-center justify-center text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer self-center sm:self-end mb-1"
-                                    >
-                                      <DeleteOutlineIcon className="w-5 h-5" />
-                                    </button>
-                                  </div>
-                                ))}
-                              </div>
+                                      <div className="w-28 sm:w-32">
+                                        <SelectionGroup
+                                          name={`branchPricing.${branch.id}.b2bKey`}
+                                          value={b2bBranchKey}
+                                          onChange={(e) => {
+                                            setFieldValue(
+                                              `branchPricing.${branch.id}.b2bKey`,
+                                              e.target.value,
+                                              true
+                                            );
+                                          }}
+                                          placeholder={t("b2b.decrease")}
+                                          list={changeTypeList}
+                                          border="1px solid var(--color-border)"
+                                        />
+                                      </div>
+
+                                      <div className="w-24 sm:w-28">
+                                        <TextInputGroup
+                                          type="number"
+                                          min="1"
+                                          name={`branchPricing.${branch.id}.b2bConditionRuleValue`}
+                                          value={b2bBranchPercent}
+                                          onChange={(e) => {
+                                            setFieldValue(
+                                              `branchPricing.${branch.id}.b2bConditionRuleValue`,
+                                              e.target.value,
+                                              true
+                                            );
+                                          }}
+                                          placeholder="10"
+                                          borderClassName={inputBorderCls}
+                                          inputClassName="!h-[52px] !py-0 px-2 text-center font-somar text-xs sm:text-sm text-textDark"
+                                          endAdornment={
+                                            <span className="text-textLight font-somar text-sm">
+                                              %
+                                            </span>
+                                          }
+                                        />
+                                      </div>
+                                    </div>
+
+                                    {/* Date Pricing Rows for B2B Branch */}
+                                    <div className="space-y-4 pt-2">
+                                      {branchB2bDatePricingList.map(
+                                        (rule, rIdx) => {
+                                          const fromDateVal =
+                                            rule.fromDate ||
+                                            rule.fromDay ||
+                                            rule.date ||
+                                            "";
+                                          const toDateVal =
+                                            rule.toDate ||
+                                            rule.toDay ||
+                                            fromDateVal ||
+                                            "";
+
+                                          const isFromPast = Boolean(
+                                            fromDateVal &&
+                                              fromDateVal < todayStr
+                                          );
+                                          const isToPast = Boolean(
+                                            toDateVal && toDateVal < todayStr
+                                          );
+                                          const isToBeforeFrom = Boolean(
+                                            toDateVal &&
+                                              fromDateVal &&
+                                              toDateVal < fromDateVal
+                                          );
+
+                                          const fromTouched = getIn(
+                                            touched,
+                                            `branchPricing.${branch.id}.b2bDatePricing[${rIdx}].fromDate`
+                                          );
+                                          const toTouched = getIn(
+                                            touched,
+                                            `branchPricing.${branch.id}.b2bDatePricing[${rIdx}].toDate`
+                                          );
+                                          const fromError = getIn(
+                                            errors,
+                                            `branchPricing.${branch.id}.b2bDatePricing[${rIdx}].fromDate`
+                                          );
+                                          const toError = getIn(
+                                            errors,
+                                            `branchPricing.${branch.id}.b2bDatePricing[${rIdx}].toDate`
+                                          );
+                                          const priceTouched = getIn(
+                                            touched,
+                                            `branchPricing.${branch.id}.b2bDatePricing[${rIdx}].price`
+                                          );
+                                          const priceError = getIn(
+                                            errors,
+                                            `branchPricing.${branch.id}.b2bDatePricing[${rIdx}].price`
+                                          );
+
+                                          return (
+                                            <div
+                                              key={rIdx}
+                                              className="flex flex-wrap md:flex-nowrap items-start gap-3 sm:gap-4 transition-all"
+                                            >
+                                              {/* From Date */}
+                                              <div className="w-full md:w-auto md:flex-1">
+                                                <TextInputGroup
+                                                  id={`branchPricing-${branch.id}-b2bDatePricing-${rIdx}-fromDate`}
+                                                  name={`branchPricing.${branch.id}.b2bDatePricing[${rIdx}].fromDate`}
+                                                  type="date"
+                                                  min={todayStr}
+                                                  label={t(
+                                                    "b2b.fromDateReadOnly"
+                                                  )}
+                                                  labelClassName={subLabelCls}
+                                                  value={fromDateVal}
+                                                  onChange={(e) => {
+                                                    const val = e.target.value;
+                                                    setFieldValue(
+                                                      `branchPricing.${branch.id}.b2bDatePricing[${rIdx}].fromDate`,
+                                                      val
+                                                    );
+                                                    setFieldValue(
+                                                      `branchPricing.${branch.id}.b2bDatePricing[${rIdx}].date`,
+                                                      val
+                                                    );
+                                                    if (
+                                                      val &&
+                                                      rule.toDate &&
+                                                      val > rule.toDate
+                                                    ) {
+                                                      setFieldValue(
+                                                        `branchPricing.${branch.id}.b2bDatePricing[${rIdx}].toDate`,
+                                                        val
+                                                      );
+                                                    }
+                                                  }}
+                                                  onBlur={handleBlur}
+                                                  borderClassName={
+                                                    inputBorderCls
+                                                  }
+                                                  inputClassName={inputFieldCls}
+                                                  touched={
+                                                    fromTouched || isFromPast
+                                                  }
+                                                  errors={
+                                                    isFromPast
+                                                      ? t(
+                                                          "validations.pastDateError"
+                                                        )
+                                                      : fromError
+                                                  }
+                                                />
+                                              </div>
+
+                                              {/* To Date */}
+                                              <div className="w-full md:w-auto md:flex-1">
+                                                <TextInputGroup
+                                                  id={`branchPricing-${branch.id}-b2bDatePricing-${rIdx}-toDate`}
+                                                  name={`branchPricing.${branch.id}.b2bDatePricing[${rIdx}].toDate`}
+                                                  type="date"
+                                                  min={fromDateVal || todayStr}
+                                                  label={t(
+                                                    "b2b.toDateReadOnly"
+                                                  )}
+                                                  labelClassName={subLabelCls}
+                                                  value={toDateVal}
+                                                  onChange={(e) => {
+                                                    setFieldValue(
+                                                      `branchPricing.${branch.id}.b2bDatePricing[${rIdx}].toDate`,
+                                                      e.target.value
+                                                    );
+                                                  }}
+                                                  onBlur={handleBlur}
+                                                  borderClassName={
+                                                    inputBorderCls
+                                                  }
+                                                  inputClassName={inputFieldCls}
+                                                  touched={
+                                                    toTouched ||
+                                                    isToPast ||
+                                                    isToBeforeFrom
+                                                  }
+                                                  errors={
+                                                    isToPast
+                                                      ? t(
+                                                          "validations.pastDateError"
+                                                        )
+                                                      : isToBeforeFrom
+                                                      ? t(
+                                                          "validations.endDateAfterStartDate"
+                                                        )
+                                                      : toError
+                                                  }
+                                                />
+                                              </div>
+
+                                              {/* Price */}
+                                              <div className="w-full md:w-auto md:flex-1">
+                                                <TextInputGroup
+                                                  id={`branchPricing-${branch.id}-b2bDatePricing-${rIdx}-price`}
+                                                  name={`branchPricing.${branch.id}.b2bDatePricing[${rIdx}].price`}
+                                                  type="number"
+                                                  min="0"
+                                                  label={t("b2b.priceInSar")}
+                                                  labelClassName={subLabelCls}
+                                                  value={rule.price ?? ""}
+                                                  onChange={(e) => {
+                                                    setFieldValue(
+                                                      `branchPricing.${branch.id}.b2bDatePricing[${rIdx}].price`,
+                                                      e.target.value
+                                                    );
+                                                  }}
+                                                  onBlur={handleBlur}
+                                                  placeholder={String(
+                                                    defaultB2bPrice || "60"
+                                                  )}
+                                                  borderClassName={
+                                                    inputBorderCls
+                                                  }
+                                                  inputClassName={inputFieldCls}
+                                                  endAdornment={newSarSmall}
+                                                  touched={priceTouched}
+                                                  errors={priceError}
+                                                />
+                                              </div>
+
+                                              {/* Delete Button (Shown on all rows when more than 1 row exists) */}
+                                              {branchB2bDatePricingList.length >
+                                                1 && (
+                                                <button
+                                                  type="button"
+                                                  onClick={() => {
+                                                    const updated =
+                                                      branchB2bDatePricingList.filter(
+                                                        (_, i) => i !== rIdx
+                                                      );
+                                                    setFieldValue(
+                                                      `branchPricing.${branch.id}.b2bDatePricing`,
+                                                      updated
+                                                    );
+                                                  }}
+                                                  className="w-10 h-10 flex items-center justify-center text-error hover:bg-error/10 rounded-xl transition-colors cursor-pointer flex-shrink-0 mb-0.5 mt-6"
+                                                  title={
+                                                    isAr ? "حذف" : "Delete"
+                                                  }
+                                                >
+                                                  <DeleteOutlineIcon className="w-5 h-5" />
+                                                </button>
+                                              )}
+                                            </div>
+                                          );
+                                        }
+                                      )}
+                                    </div>
+                                  </>
+                                );
+                              })()}
                             </div>
                           </div>
                         )}

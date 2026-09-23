@@ -897,6 +897,7 @@
           "b2bBranchSectionTitle": "تخصيص أسعار الفروع للمدارس والجهات",
           "b2bBranchSectionSubtitle": "تحديد أسعار وتكاليف وخصومات كمية مخصصة للمدارس لكل فرع",
           "branchDatePricingTitle": "التسعير الموسمي للفرع",
+          "branchDatePricingSubtitle": "اترك أي يوم فارغاً لاستخدام السعر الأساسي/الفئة",
           "branchQuantityDiscountsTitle": "شرائح الخصم الكمي للفرع",
           "validations": {
             "priceRequired": "يرجى إدخال سعر السوق",

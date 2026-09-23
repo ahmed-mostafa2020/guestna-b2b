@@ -890,6 +890,7 @@
           "b2bBranchSectionTitle": "Branch Pricing Customization for Schools",
           "b2bBranchSectionSubtitle": "Set custom prices, costs, and quantity discounts for schools per branch",
           "branchDatePricingTitle": "Branch Seasonal Pricing",
+          "branchDatePricingSubtitle": "Leave any day empty to use base/category price",
           "branchQuantityDiscountsTitle": "Branch Quantity Discounts",
           "validations": {
             "priceRequired": "Market price is required",
