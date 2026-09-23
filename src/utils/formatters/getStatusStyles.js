@@ -33,6 +33,7 @@ export const getStatusStyles = (status) => {
       return "bg-status-hold-bg text-status-hold-fg border border-status-hold-border";
 
     case TRIP_STATUS.CANCELLED:
+    case TRIP_STATUS.CANCLED:
     case TRIP_STATUS.REJECTED:
       return "bg-status-danger-bg text-status-danger-fg border border-status-danger-border";
 
