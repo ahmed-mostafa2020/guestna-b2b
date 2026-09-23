@@ -1944,7 +1944,7 @@
   "bookingStatus": {
     "success": {
       "title": "Thank You!",
-      "subTitle": "Your payment has been completed successfully",
+      "subTitle": "Payment and registration were completed successfully",
       "data": {
         "senderName": "Sender's Name",
         "bookingId": "Reference Number",
@@ -2804,7 +2804,8 @@
           "message": "Withdrawal request submitted successfully"
         },
         "error": {
-          "submission": "Error occurred while submitting withdrawal request"
+          "submission": "Error occurred while submitting withdrawal request",
+          "validation": "Please check the entered data"
         },
         "submitting": "Submitting...",
         "submitButton": "Submit Withdrawal Request",

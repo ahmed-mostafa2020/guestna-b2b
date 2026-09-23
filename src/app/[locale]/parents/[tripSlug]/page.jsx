@@ -55,13 +55,13 @@ const TripDetails = ({ params }) => {
     return null;
   });
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(setColorPreferences(null));
     dispatch(setCustomLogo(null));
     dispatch(setTheme("original"));
-  }, []);
-
-  const dispatch = useDispatch();
+  }, [dispatch]);
 
   const {
     isActive: siteIsActive,
@@ -210,11 +210,11 @@ const TripDetails = ({ params }) => {
 
   return (
     <main
-      className={`py-5 overflow-hidden ${
+      className={`pt-5 pb-24 overflow-hidden ${
         data?.tripsType === CONSTANT_VALUES.PACKAGE
           ? "bg-packageDetailsBg"
           : "bg-activityDetailsBg"
-      }  lg:py-10`}
+      } lg:py-10`}
     >
       <CustomizedBreadcrumbs breadcrumbsList={breadcrumbsList} />
 
