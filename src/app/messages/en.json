@@ -57,6 +57,9 @@
     "HALF_DAY": "Half Day",
     "multiCities": "Multi Cities",
     "customizable": "Customizable",
+    "instantConfirmation": "Instant Confirmation",
+    "selected": "Selected",
+    "noDataAvailable": "No data available",
     "available": "Available",
     "historyAndCivilization": "History and Civilization",
     "from": "From",
@@ -1841,6 +1844,10 @@
     "subTitle": "Every destination we visit and every adventure we experience is filled with meaningful moments. These moments become stories worth sharing and unforgettable memories."
   },
   "tripDetails": {
+    "instantConfirmation": {
+      "title": "Instant Confirmation",
+      "description": "The booking will be confirmed immediately after completing the required details and verifying availability. This feature ensures fast completion of administrative procedures."
+    },
     "tags": {
       "capacity": "Trip capacity is"
     },
@@ -2038,7 +2045,7 @@
         }
       },
       "bookingsManagement": {
-        "title": "Bookings Management",
+        "title": "Orders and Bookings Management",
         "ordersManagement": "Orders Management",
         "bookings": {
           "title": "Bookings",
@@ -2317,7 +2324,10 @@
       }
     },
     "donutChart": {
-      "title": "The best selling activities"
+      "title": "The best selling activities",
+      "topActivity": "Top Activity",
+      "percentage": "Percentage",
+      "activities": "Activities"
     },
 
     "revenueLineChart": {
@@ -2443,6 +2453,7 @@
       "bookings": {
         "title": "Trips List",
         "header": {
+          "createdAt": "Creation Time",
           "schoolName": "School Name",
           "orderId": "Order ID",
           "tripType": "Trip Type",

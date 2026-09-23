@@ -1,4 +1,4 @@
-"user client";
+"use client";
 
 import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 // import { USERS } from "@constants/users";
 import AccordionsGroupSection from "./accordionsGroupSection";
 import TripTagsListing from "./tripTags/TripTagsListing";
+import InstantConfirmationBanner from "./InstantConfirmationBanner";
 
 const LargeSizeSection = () => {
   // const userType = useSelector((state) => state.users.userType);
@@ -27,6 +28,7 @@ const LargeSizeSection = () => {
       {isAuth && pathname?.includes("/parents/") && (
         <TripTagsListing data={data} />
       )}
+      {Boolean(data?.isIntegrations) && <InstantConfirmationBanner />}
       <AccordionsGroupSection />
     </div>
   );

@@ -248,7 +248,12 @@ const SelectionGroup = ({
         })}
       </Select>
       {touched && errors && (
-        <p className="absolute text-xs -bottom-4 text-error mt-1 font-ibm">
+        <p
+          className={cn(
+            "absolute text-xs -bottom-4 text-error mt-1",
+            labelClassName?.includes("font-somar") ? "font-somar" : "font-ibm"
+          )}
+        >
           {errors}
         </p>
       )}

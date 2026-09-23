@@ -19,11 +19,24 @@ const ProfilePageTemplate = ({
   enablePagination = false,
   bodyParameters = {},
   enableSearch = false,
+  initialSort,
+  skeletonComponent,
 }) => {
   const locale = useLocale();
   const t = useTranslations();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [sort, setSort] = useState(initialSort || undefined);
+
+  const handleSortChange = useCallback(
+    (newSort) => {
+      setSort(newSort);
+      if (enablePagination) {
+        setCurrentPage(1);
+      }
+    },
+    [enablePagination]
+  );
 
   const requestBody = enablePagination
     ? {
@@ -33,11 +46,15 @@ const ProfilePageTemplate = ({
           ...(enableSearch && searchTerm && { searchTerm }),
           ...bodyParameters?.filter,
         },
+        ...(sort ? { sort } : {}),
         ...bodyParameters,
       }
-    : {};
+    : {
+        ...(sort ? { sort } : {}),
+        ...bodyParameters,
+      };
 
-  const { data, error, isLoading, refetch } = useFetchData(
+  const { data, error, isLoading, isFetching, refetch } = useFetchData(
     endpoint,
     {},
     {
@@ -64,7 +81,12 @@ const ProfilePageTemplate = ({
     }
   }, [searchTerm, enableSearch]);
 
-  if (isLoading)
+  if (isLoading) {
+    if (skeletonComponent) {
+      return typeof skeletonComponent === "function"
+        ? skeletonComponent()
+        : skeletonComponent;
+    }
     return (
       <div className="w-full py-12 centered">
         <div className="flex flex-col items-center gap-3">
@@ -73,6 +95,7 @@ const ProfilePageTemplate = ({
         </div>
       </div>
     );
+  }
 
   if (error)
     return (
@@ -95,7 +118,15 @@ const ProfilePageTemplate = ({
 
       {isEmpty ? (
         typeof emptyStateComponent === "function" ? (
-          emptyStateComponent(data, searchTerm, setSearchTerm)
+          emptyStateComponent(
+            data,
+            searchTerm,
+            setSearchTerm,
+            handleRefetch,
+            sort,
+            handleSortChange,
+            isFetching || isLoading
+          )
         ) : (
           emptyStateComponent
         )
@@ -127,7 +158,10 @@ const ProfilePageTemplate = ({
                 enablePagination, // 4th param: boolean flag
                 searchTerm, // 5th param: search term string
                 setSearchTerm, // 6th param: function to update search
-                handleRefetch // 7th param: refetch function
+                handleRefetch, // 7th param: refetch function
+                sort, // 8th param: current sort
+                handleSortChange, // 9th param: function to update sort
+                isFetching || isLoading // 10th param: loading state during fetch/sort
               )
             : React.isValidElement(contentComponent)
               ? React.cloneElement(contentComponent, {
@@ -138,6 +172,9 @@ const ProfilePageTemplate = ({
                   searchTerm,
                   setSearchTerm,
                   refetch: handleRefetch,
+                  sort,
+                  setSort: handleSortChange,
+                  loading: isFetching || isLoading,
                 })
               : contentComponent}
         </>

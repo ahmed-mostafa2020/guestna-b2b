@@ -137,10 +137,10 @@ const PromoCodeForm = () => {
       <div className="flex flex-col gap-2">
         <label
           htmlFor="promoCode"
-          className="flex items-center gap-1.5 font-medium capitalize font-ibm text-textDark text-sm sm:text-base"
+          className="flex items-center gap-1.5 font-medium capitalize font-somar text-textDark text-sm sm:text-base"
         >
           <span>{t("forms.promoCode.label")}</span>
-          <span className="text-xs sm:text-sm font-normal text-textLight">
+          <span className="text-xs sm:text-sm font-normal text-textLight font-somar">
             {t("forms.promoCode.optional")}
           </span>
         </label>
@@ -161,26 +161,26 @@ const PromoCodeForm = () => {
                 }
               }
             }}
-            className="flex-1 min-w-0 h-[44px] sm:h-[52px] px-3 sm:px-4 text-xs sm:text-sm font-normal transition-all duration-200 ease-in-out bg-white border-2 rounded-lg outline-none font-ibm placeholder:font-normal placeholder:text-xs sm:placeholder:text-sm placeholder:font-ibm placeholder:text-textLight selection:bg-buttonsHover border-border focus:border-textDark hover:border-textDark"
+            className="flex-1 min-w-0 h-[44px] sm:h-[52px] px-3 sm:px-4 text-xs sm:text-sm font-normal transition-all duration-200 ease-in-out bg-white border-2 rounded-lg outline-none font-somar placeholder:font-normal placeholder:text-xs sm:placeholder:text-sm placeholder:font-somar placeholder:text-textLight selection:bg-buttonsHover border-border focus:border-textDark hover:border-textDark"
           />
 
           <button
             type="button"
             disabled={!promoValue || isSubmitting}
             onClick={handleSubmit}
-            className="shrink-0 centered h-[44px] sm:h-[52px] border border-[#E3EBF5] bg-[#E3EBF5] text-textDark rounded-lg px-3.5 sm:px-8 text-xs sm:text-base font-semibold transition-all duration-200 ease-in-out disabled:opacity-60 disabled:cursor-not-allowed whitespace-nowrap hover:bg-[#d8e3f0]"
+            className="shrink-0 centered h-[44px] sm:h-[52px] border border-[#E3EBF5] bg-[#E3EBF5] text-textDark rounded-lg px-3.5 sm:px-8 text-xs sm:text-base font-semibold font-somar transition-all duration-200 ease-in-out disabled:opacity-60 disabled:cursor-not-allowed whitespace-nowrap hover:bg-[#d8e3f0]"
           >
             {isSubmitting ? (
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs sm:text-sm">
+              <div className="flex items-center gap-1.5 font-somar">
+                <span className="text-xs sm:text-sm font-somar">
                   {t("forms.validation.sending")}
                 </span>
                 <CircularProgress size={16} sx={{ color: "#ED8A22" }} />
               </div>
             ) : (
               <>
-                <span className="sm:hidden">{t("forms.promoCode.apply")}</span>
-                <span className="hidden sm:inline">
+                <span className="sm:hidden font-somar">{t("forms.promoCode.apply")}</span>
+                <span className="hidden sm:inline font-somar">
                   {t("forms.promoCode.useCode")}
                 </span>
               </>

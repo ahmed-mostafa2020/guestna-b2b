@@ -1,4 +1,5 @@
 import { memo, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@utils/helpers/cn";
 
@@ -34,6 +35,7 @@ const TextInputGroup = memo(
     nationalIdImageError,
     imageError,
     readOnly = false,
+    disabled = false,
     style,
     onClick,
     min,
@@ -55,6 +57,7 @@ const TextInputGroup = memo(
     id,
     autoComplete,
   }) => {
+    const t = useTranslations();
     const [showPassword, setShowPassword] = useState(false);
 
     const [selectedFileName, setSelectedFileName] = useState("");
@@ -70,10 +73,12 @@ const TextInputGroup = memo(
         ? "var(--font-somar-sans), sans-serif"
         : labelFontFamily;
 
+    const isSomarInput = inputClassName?.includes("font-somar");
+
     return (
       <div
         className={cn(
-          "relative min-w-[25%] flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out",
+          "relative w-full min-w-0 flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out",
           containerClassName || className
         )}
       >
@@ -83,7 +88,7 @@ const TextInputGroup = memo(
             className={cn(
               "font-medium capitalize",
               labelClassName ? labelClassName : "font-ibm",
-              readOnly && "text-textLight"
+              (readOnly || disabled) && "text-textLight"
             )}
             style={{ fontFamily: effectiveFontFamily && effectiveFontFamily }}
           >
@@ -92,12 +97,13 @@ const TextInputGroup = memo(
           </label>
         )}
 
-        <div className="relative">
+        <div className="relative w-full">
           {textarea ? (
             <textarea
               className={cn(
-                "text-sm resize-none font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full rounded-lg outline-none placeholder:font-normal placeholder:text-base placeholder:text-textLight selection:bg-buttonsHover",
+                "text-sm resize-none font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full min-w-0 max-w-full box-border rounded-lg outline-none placeholder:font-normal placeholder:text-base placeholder:text-textLight selection:bg-buttonsHover",
                 readOnly && "cursor-not-allowed opacity-50",
+                disabled && "cursor-not-allowed opacity-60 bg-gray-50",
                 textAlign && `text-${textAlign}`,
                 border && (borderClassName ? borderClassName : "border-2"),
                 touched && errors && border
@@ -105,10 +111,13 @@ const TextInputGroup = memo(
                   : borderClassName
                   ? borderClassName
                   : "border-border focus:border-mainColor hover:border-mainColor",
-                inputClassName
+                inputClassName,
+                isSomarInput && "placeholder:font-somar"
               )}
               style={{
-                fontFamily: "inherit",
+                fontFamily: isSomarInput
+                  ? "var(--font-somar-sans), sans-serif"
+                  : (style?.fontFamily || "inherit"),
               }}
               id={id || name}
               name={name}
@@ -121,12 +130,14 @@ const TextInputGroup = memo(
               rows={rows}
               placeholder={placeholder}
               readOnly={readOnly}
+              disabled={disabled}
             />
           ) : (
             <input
               className={cn(
-                "text-sm font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full rounded-lg outline-none placeholder:font-normal placeholder:text-sm placeholder:text-textLight selection:bg-buttonsHover",
+                "text-sm font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full min-w-0 max-w-full box-border rounded-lg outline-none placeholder:font-normal placeholder:text-sm placeholder:text-textLight selection:bg-buttonsHover",
                 readOnly && "cursor-not-allowed opacity-90",
+                disabled && "cursor-not-allowed opacity-60 bg-gray-50",
                 textAlign && `text-${textAlign}`,
                 border && (borderClassName ? borderClassName : "border-2"),
                 touched && errors && border
@@ -134,15 +145,18 @@ const TextInputGroup = memo(
                   : borderClassName
                   ? borderClassName
                   : "border-border focus:border-mainColor hover:border-mainColor",
-                (type === "date" || type === "time") && "cursor-pointer pe-12",
-                endAdornment && "pe-12",
+                (type === "date" || type === "time") && "cursor-pointer",
+                ((type === "date" || type === "time") || endAdornment) && "pe-12",
                 startAdornment && "ps-12",
                 type === "number" &&
                   "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
-                inputClassName
+                inputClassName,
+                isSomarInput && "placeholder:font-somar"
               )}
               style={{
-                fontFamily: "inherit",
+                fontFamily: isSomarInput
+                  ? "var(--font-somar-sans), sans-serif"
+                  : (style?.fontFamily || "inherit"),
                 ...style,
               }}
               type={type === "password" && showPassword ? "text" : type}
@@ -163,14 +177,19 @@ const TextInputGroup = memo(
               onKeyDown={onKeyDown}
               onPaste={onPaste}
               onClick={(e) => {
-                if ((type === "date" || type === "time") && e.target.showPicker) {
+                if (onClick) {
+                  try {
+                    onClick(e);
+                  } catch (err) {
+                    // Ignore showPicker gesture error or caller error
+                  }
+                } else if ((type === "date" || type === "time") && e.target.showPicker) {
                   try {
                     e.target.showPicker();
                   } catch (err) {
-                    console.error("Failed to show picker:", err);
+                    // Ignore showPicker gesture error
                   }
                 }
-                if (onClick) onClick(e);
               }}
               placeholder={placeholder}
               autoComplete={
@@ -188,6 +207,7 @@ const TextInputGroup = memo(
               min={min}
               max={max}
               readOnly={readOnly}
+              disabled={disabled}
             />
           )}
 
@@ -296,7 +316,10 @@ const TextInputGroup = memo(
         {!hideErrorMessage && touched && errors && (
           <div
             className={cn(
-              "absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-ibm text-error",
+              "absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 text-error",
+              labelClassName?.includes("font-somar") || isSomarInput
+                ? "font-somar"
+                : "font-ibm",
               errorClassName
             )}
           >
