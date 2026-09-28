@@ -271,7 +271,7 @@
         "name": "اسم المستند",
         "notes": "الملاحظات",
         "status": "الحالة",
-        "actions": "الاكشن",
+        "actions": "الاجراءات",
         "types": {
           "COMMERCIAL_REGISTRATION": "السجل التجاري",
           "TAX_CERTIFICATE": "الرقم الضريبي",

@@ -200,22 +200,26 @@ const OnboardingDocumentUploadForm = ({
         isSubmitting,
       }) => (
         <Form className="px-6 pb-6 pt-5 sm:px-8 sm:pb-8 space-y-5">
-          <SelectionGroup
-            label={t("providerProfile.onboarding.documents.modal.documentType")}
-            name="documentType"
-            value={values.documentType}
-            errors={errors.documentType}
-            touched={touched.documentType}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            placeholder={t(
-              "providerProfile.onboarding.documents.modal.documentTypePlaceholder"
-            )}
-            list={documentTypeList}
-            disabled={isSubmitting || typeLocked}
-            required
-            labelClassName="font-somar pb-2 text-start"
-          />
+          {!typeLocked ? (
+            <SelectionGroup
+              label={t(
+                "providerProfile.onboarding.documents.modal.documentType"
+              )}
+              name="documentType"
+              value={values.documentType}
+              errors={errors.documentType}
+              touched={touched.documentType}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              placeholder={t(
+                "providerProfile.onboarding.documents.modal.documentTypePlaceholder"
+              )}
+              list={documentTypeList}
+              disabled={isSubmitting}
+              required
+              labelClassName="font-somar pb-2 text-start"
+            />
+          ) : null}
 
           {values.documentType === "OTHER" ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
