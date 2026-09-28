@@ -6,10 +6,11 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useSelector } from "react-redux";
 
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { TRIP_STATUS } from "@constants/tripStatus";
+import { Group } from "@mui/icons-material";
 
 import FrameWithImagedHeader from "../frameWithImagedHeader/FrameWithImagedHeader";
 import ActionsDialog from "@components/features/customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
@@ -69,6 +70,17 @@ const PreBookingSection = ({ tripData }) => {
   const defaultPriceWithFormatting = formatCurrency(
     tripData?.discountedPrice ?? tripData?.price
   );
+
+  const sortedTiers = useMemo(() => {
+    const rawTiers =
+      tripData?.quantityDiscountTiers || tripData?.b2bQuantityDiscountTiers;
+    if (!rawTiers || !Array.isArray(rawTiers) || rawTiers.length === 0) {
+      return [];
+    }
+    return [...rawTiers].sort(
+      (a, b) => (Number(a.minQuantity) || 0) - (Number(b.minQuantity) || 0)
+    );
+  }, [tripData?.quantityDiscountTiers, tripData?.b2bQuantityDiscountTiers]);
 
   const handleLoginForm = () => {
     handleClose();
@@ -270,7 +282,7 @@ const PreBookingSection = ({ tripData }) => {
 
         <div className="px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-3">
           {/* Price Section */}
-          <div className="flex flex-col justify-center min-w-0">
+          <div className="flex flex-col justify-center min-w-0 flex-1">
             <div className="flex items-baseline gap-1">
               <span className="text-xl sm:text-2xl font-bold text-textDark">
                 {defaultPriceWithFormatting}
@@ -282,6 +294,46 @@ const PreBookingSection = ({ tripData }) => {
             <span className="text-[10px] sm:text-xs text-textLight font-normal">
               ({t("finalDetails.includingVAT")})
             </span>
+
+            {/* Quantity Discount Tiers under the price */}
+            {sortedTiers?.length > 0 && (
+              <div className="flex flex-col gap-1.5 mt-2 max-h-28 overflow-y-auto">
+                {sortedTiers.map((tier) => {
+                  const discountStr =
+                    tier.discountType === "PERCENTAGE" ? (
+                      <span>
+                        {locale === "ar"
+                          ? `%${tier.discountValue}`
+                          : `${tier.discountValue}%`}
+                      </span>
+                    ) : (
+                      formatCurrency(tier.discountValue)
+                    );
+
+                  const count = tier.minQuantity;
+
+                  return (
+                    <div
+                      key={tier._id || tier.minQuantity}
+                      className="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-xl border border-gray-150 bg-white shadow-xs"
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="w-7 h-7 rounded-lg bg-mainColor/10 text-mainColor centered shrink-0">
+                          <Group className="!text-sm" />
+                        </div>
+                        <span className="text-xs font-semibold text-textDark truncate">
+                          {t("common.discountTierLabel", { count })}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 text-success px-2.5 py-0.5 rounded-full text-xs font-bold border border-success/30 bg-success/5 shrink-0">
+                        <span>{t("quantityDiscountTiers.discountPrefix")}</span>
+                        <span className="font-extrabold">{discountStr}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Action Button or Booking Status */}
