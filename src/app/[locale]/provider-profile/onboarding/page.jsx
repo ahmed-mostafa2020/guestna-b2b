@@ -89,7 +89,6 @@ const ProviderOnboardingPage = () => {
     data: contractsResponse,
     isLoading: contractsLoading,
     isFetching: contractsFetching,
-    refetch: refetchContracts,
   } = useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.CONTRACTS,
     {
@@ -132,11 +131,6 @@ const ProviderOnboardingPage = () => {
     refetchStatus?.();
   }, [refetchDocuments, refetchStatus]);
 
-  const handleContractsRefetch = useCallback(() => {
-    refetchContracts?.();
-    refetchStatus?.();
-  }, [refetchContracts, refetchStatus]);
-
   return (
     <main className="flex flex-col gap-6 lg:gap-8 min-h-screen">
       <DocumentsQualificationStats
@@ -168,7 +162,6 @@ const ProviderOnboardingPage = () => {
         loading={isContractsLoading}
         currentPage={contractsPage}
         onPageChange={setContractsPage}
-        refetch={handleContractsRefetch}
       />
     </main>
   );

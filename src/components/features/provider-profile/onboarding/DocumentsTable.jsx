@@ -14,20 +14,20 @@ const REQUIRED_TYPES = new Set(["COMMERCIAL_REGISTRATION", "TAX_CERTIFICATE"]);
 
 const STATUS_STYLES = {
   PENDING: {
-    bg: "bg-[#effbf9]",
-    text: "text-[#0b7f8f]",
+    bg: "bg-status-info-bg",
+    text: "text-status-info-fg",
   },
   SUBMITTED: {
-    bg: "bg-[rgba(254,191,125,0.23)]",
-    text: "text-[#ed8a22]",
+    bg: "bg-status-warning-bg",
+    text: "text-status-warning-fg",
   },
   APPROVED: {
-    bg: "bg-[#effadb]",
-    text: "text-[#80ab3c]",
+    bg: "bg-status-success-bg",
+    text: "text-status-success-fg",
   },
   REJECTED: {
-    bg: "bg-[#ffcfcf]",
-    text: "text-[#eb0101]",
+    bg: "bg-status-danger-bg",
+    text: "text-status-danger-fg",
   },
 };
 
@@ -173,7 +173,7 @@ const DocumentsTable = ({
         className: "whitespace-nowrap align-middle",
         headerClassName: "text-start align-middle",
         render: (row) => {
-          const fileUrl = row.fileUrl
+          const fileUrl = row.fileUrl;
           const openUpload = (isReupload) =>
             onUpload?.({
               _id: row._id,

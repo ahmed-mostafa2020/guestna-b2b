@@ -1,46 +1,33 @@
 "use client";
 
-import { memo, useCallback, useMemo, useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
-import { useSnackbar } from "notistack";
-// import axios from "axios";
-import { CircularProgress } from "@mui/material";
-import {
-  VisibilityOutlined as ViewIcon,
-  DrawOutlined as SignIcon,
-} from "@mui/icons-material";
+import { memo, useMemo } from "react";
+import { useTranslations } from "next-intl";
+import { VisibilityOutlined as ViewIcon } from "@mui/icons-material";
 import DataTable from "@components/ui/DataTable";
-// import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import { getHeaders } from "@utils/helpers/getHeaders";
-// import getProxyUrl from "@utils/api/getProxyUrl";
-// import getErrorMessage from "@utils/helpers/getErrorMessage";
 
 const STATUS_STYLES = {
   DRAFT: {
-    bg: "bg-[#effbf9]",
-    text: "text-[#0b7f8f]",
+    bg: "bg-status-info-bg",
+    text: "text-status-info-fg",
   },
   PENDING_SIGNATURE: {
-    bg: "bg-[rgba(254,191,125,0.23)]",
-    text: "text-[#ed8a22]",
+    bg: "bg-status-warning-bg",
+    text: "text-status-warning-fg",
   },
   ACTIVE: {
-    bg: "bg-[#effadb]",
-    text: "text-[#80ab3c]",
+    bg: "bg-status-success-bg",
+    text: "text-status-success-fg",
   },
   EXPIRED: {
-    bg: "bg-[rgba(189,201,200,0.35)]",
-    text: "text-[#5f6e6d]",
+    bg: "bg-status-neutral-bg",
+    text: "text-status-neutral-fg",
   },
   TERMINATED: {
-    bg: "bg-[#ffcfcf]",
-    text: "text-[#eb0101]",
+    bg: "bg-status-danger-bg",
+    text: "text-status-danger-fg",
   },
 };
-
-const isSignable = (status) =>
-  status === "DRAFT" || status === "PENDING_SIGNATURE";
 
 const StatusBadge = ({ status, label }) => {
   const style = STATUS_STYLES[status] || STATUS_STYLES.DRAFT;
@@ -111,13 +98,8 @@ const ContractsTable = ({
   loading = false,
   currentPage = 1,
   onPageChange,
-  // refetch,
 }) => {
-  // const t = useTranslations();
   const tContracts = useTranslations("providerProfile.onboarding.contracts");
-  const locale = useLocale();
-  // const { enqueueSnackbar } = useSnackbar();
-  // const [signingId, setSigningId] = useState(null);
 
   const contracts = data?.nodes || [];
   const pageInfo = data?.pageInfo || {
@@ -126,62 +108,6 @@ const ContractsTable = ({
     perPage: CONSTANT_VALUES.TABLE_PER_PAGE,
     hasNextPage: false,
   };
-
-  // const headers = getHeaders(locale);
-
-  // const handleSign = useCallback(
-  //   (contract) => {
-  //     const contractId = contract?._id || contract?.id;
-  //     if (!contractId || signingId) return;
-
-  //     setSigningId(contractId);
-
-  //     const config = {
-  //       method: "post",
-  //       url: getProxyUrl(
-  //         `${B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.CONTRACTS_SIGN}/${contractId}`
-  //       ),
-  //       headers,
-  //       data: {},
-  //     };
-
-  //     axios
-  //       .request(config)
-  //       .then((response) => {
-  //         setSigningId(null);
-
-  //         if (response?.data) {
-  //           enqueueSnackbar(
-  //             t("providerProfile.onboarding.notifications.signSuccess"),
-  //             { variant: "success" }
-  //           );
-  //           refetch?.();
-  //         } else {
-  //           enqueueSnackbar(
-  //             t("providerProfile.onboarding.notifications.actionError"),
-  //             { variant: "error" }
-  //           );
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         setSigningId(null);
-  //         console.error("Onboarding contract sign error:", {
-  //           message: error?.message,
-  //           response: error?.response?.data,
-  //           status: error?.response?.status,
-  //         });
-  //         enqueueSnackbar(
-  //           getErrorMessage(
-  //             error,
-  //             t,
-  //             "providerProfile.onboarding.notifications.actionError"
-  //           ),
-  //           { variant: "error" }
-  //         );
-  //       });
-  //   },
-  //   [signingId, headers, enqueueSnackbar, t, refetch]
-  // );
 
   const columns = useMemo(
     () => [
@@ -226,26 +152,7 @@ const ContractsTable = ({
         className: "whitespace-nowrap align-middle",
         headerClassName: "text-start align-middle",
         render: (row) => {
-          // const id = row._id || row.id;
-          // const isSigning = signingId === id;
           const pdfUrl = row.pdfUrl;
-
-          // if (isSignable(row.status)) {
-          //   return (
-          //     <ActionButton
-          //       label={isSigning ? tContracts("signing") : tContracts("sign")}
-          //       disabled={!!signingId}
-          //       icon={
-          //         isSigning ? (
-          //           <CircularProgress size={14} sx={{ color: "#0d0d0d" }} />
-          //         ) : (
-          //           <SignIcon className="!w-4 !h-4" />
-          //         )
-          //       }
-          //       onClick={() => handleSign(row)}
-          //     />
-          //   );
-          // }
 
           if (pdfUrl) {
             return (
