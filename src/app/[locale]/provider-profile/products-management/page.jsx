@@ -24,13 +24,9 @@ const ProviderProductsManagementPage = () => {
     userType !== USERS.VISITOR &&
     userType !== USERS.B2B_PARENT;
 
-  // B2B Table State
-  const [b2bPage, setB2bPage] = useState(1);
-  const [b2bSearchTerm, setB2bSearchTerm] = useState("");
-
-  // B2C Table State
-  const [b2cPage, setB2cPage] = useState(1);
-  const [b2cSearchTerm, setB2cSearchTerm] = useState("");
+  // Single Table State
+  const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
@@ -38,55 +34,37 @@ const ProviderProductsManagementPage = () => {
     )}`;
   }, [t]);
 
-  // Fetch B2B Trips
-  const b2bEndpoint = `${B2B_END_POINTS.PROVIDER_PROFILE.B2B_TRIPS}?page=${b2bPage}&perPage=10${
-    b2bSearchTerm
-      ? `&filter[searchTerm]=${encodeURIComponent(b2bSearchTerm)}`
+  const handleSearchChange = (term) => {
+    setSearchTerm(term);
+    setPage(1);
+  };
+
+  // Fetch All Trips using /profile-provider/trips/all
+  const allProductsEndpoint = `${B2B_END_POINTS.PROVIDER_PROFILE.ALL_PRODUCTS}?page=${page}&perPage=10${
+    searchTerm
+      ? `&filter[searchTerm]=${encodeURIComponent(searchTerm)}`
       : ""
   }`;
 
   const {
-    data: b2bResponse,
-    isLoading: b2bLoading,
-    isFetching: b2bFetching,
+    data: productsResponse,
+    isLoading,
+    isFetching,
   } = useFetchData(
-    b2bEndpoint,
+    allProductsEndpoint,
     {},
     {
       lang: locale,
       enabled: isAuthenticated,
     },
-    [b2bPage, b2bSearchTerm, isAuthenticated]
+    [page, searchTerm, isAuthenticated]
   );
 
-  const finalB2bData = b2bResponse?.data || b2bResponse;
-
-  // Fetch B2C Trips
-  const b2cEndpoint = `${B2B_END_POINTS.PROVIDER_PROFILE.B2C_TRIPS}?page=${b2cPage}&perPage=10${
-    b2cSearchTerm
-      ? `&filter[searchTerm]=${encodeURIComponent(b2cSearchTerm)}`
-      : ""
-  }`;
-
-  const {
-    data: b2cResponse,
-    isLoading: b2cLoading,
-    isFetching: b2cFetching,
-  } = useFetchData(
-    b2cEndpoint,
-    {},
-    {
-      lang: locale,
-      enabled: isAuthenticated,
-    },
-    [b2cPage, b2cSearchTerm, isAuthenticated]
-  );
-
-  const finalB2cData = b2cResponse?.data || b2cResponse;
+  const finalProductsData = productsResponse?.data || productsResponse;
 
   return (
     <main className="flex flex-col gap-6 lg:gap-8 min-h-screen">
-      {/* Header Card Section matching Orders page design */}
+      {/* Header Card Section */}
       <div className="bg-white rounded-2xl p-4 sm:p-5 border border-border shadow-card flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-[13px] bg-mainColor text-white flex items-center justify-center flex-shrink-0 shadow-sm">
@@ -98,7 +76,7 @@ const ProviderProductsManagementPage = () => {
         </div>
 
         <div className="flex items-center gap-3 flex-wrap">
-          {/* Primary CTA Link to the new multi-step Add Product page */}
+          {/* Primary CTA Link to Add Product page */}
           <Link
             href={`/${locale}/provider-profile/products-management/add-product`}
             className="bg-mainColor hover:bg-titleColor text-white font-medium text-sm sm:text-base px-5 py-2.5 rounded-lg sm:rounded-xl flex items-center justify-center gap-2 transition-all duration-200 ease-in-out cursor-pointer shadow-sm hover:shadow-md active:scale-[0.98]"
@@ -109,29 +87,15 @@ const ProviderProductsManagementPage = () => {
         </div>
       </div>
 
-      {/* 1. B2C Trips Table Section */}
+      {/* Single Unified Products Table */}
       <ProviderProductsTable
-        title={t("providerProfile.products.tabs.b2c")}
-        data={finalB2cData}
-        currentPage={b2cPage}
-        setCurrentPage={setB2cPage}
-        searchTerm={b2cSearchTerm}
-        setSearchTerm={setB2cSearchTerm}
-        loading={b2cLoading || b2cFetching}
-        isB2B={false}
-      />
-
-      {/* 2. B2B Trips Table Section */}
-      <ProviderProductsTable
-        title={t("providerProfile.products.tabs.b2b")}
-        data={finalB2bData}
-        currentPage={b2bPage}
-        setCurrentPage={setB2bPage}
-        searchTerm={b2bSearchTerm}
-        setSearchTerm={setB2bSearchTerm}
-        loading={b2bLoading || b2bFetching}
-        isB2B={true}
-        hideActions={true}
+        title={t("providerProfile.products.table.title")}
+        data={finalProductsData}
+        currentPage={page}
+        setCurrentPage={setPage}
+        searchTerm={searchTerm}
+        setSearchTerm={handleSearchChange}
+        loading={isLoading || isFetching}
       />
     </main>
   );

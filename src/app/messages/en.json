@@ -1116,18 +1116,39 @@
       "empty": "No products available.",
       "searchPlaceholder": "Search by product name or order ID...",
       "tabs": {
+        "all": "All Products",
         "b2b": "Schools Products",
         "b2c": "Individuals Products"
       },
       "table": {
+        "title": "All Products",
         "orderId": "Order ID",
         "name": "Product Name",
-        "price": "Price",
+        "tripType": "Product Type",
+        "city": "City",
         "cities": "Cities",
-        "createdAt": "Created At",
-        "view": "View Product",
+        "multipleCities": "Multiple Cities",
+        "capacity": "Capacity",
+        "person": "guests",
+        "individualPrice": "Price per Person",
+        "price": "Price per Person",
+        "status": "Status",
+        "active": "Active",
+        "inactive": "Inactive",
         "actions": "Actions",
-        "edit": "Edit"
+        "b2cDetails": "Individual Details",
+        "b2bDetails": "School Details",
+        "details": "Details",
+        "view": "View Product",
+        "edit": "Edit",
+        "noActions": "No actions available",
+        "noLinks": "No details link",
+        "createdAt": "Created At",
+        "types": {
+          "ACTIVITY": "Full Day",
+          "HALF_DAY": "Half Day",
+          "PACKAGE": "Multi-Day"
+        }
       },
       "modal": {
         "title": "Add New Product",
@@ -2006,7 +2027,7 @@
     "freeReturn": "Cancel shipping - when notifications arrive 24 hours before the event starts",
     "finalPrice": "Price Details",
     "studentsNumber": "Number of People",
-    "tripPrice": "Trip price per person",
+    "tripPrice": "Price per person",
     "mealsNumber": "Meals Number",
     "total": "Grand Total",
     "includingVAT": "Including VAT",
@@ -2022,7 +2043,7 @@
   "bookingStatus": {
     "success": {
       "title": "Thank You!",
-      "subTitle": "Your payment has been completed successfully",
+      "subTitle": "Payment and registration were completed successfully",
       "data": {
         "senderName": "Sender's Name",
         "bookingId": "Reference Number",
@@ -2882,7 +2903,8 @@
           "message": "Withdrawal request submitted successfully"
         },
         "error": {
-          "submission": "Error occurred while submitting withdrawal request"
+          "submission": "Error occurred while submitting withdrawal request",
+          "validation": "Please check the entered data"
         },
         "submitting": "Submitting...",
         "submitButton": "Submit Withdrawal Request",

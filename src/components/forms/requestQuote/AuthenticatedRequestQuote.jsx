@@ -25,12 +25,12 @@ import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
 import FileUploadGroup from "../FileUploadGroup";
 import ThanksMessage from "./ThanksMessage";
+import AvailableDatePicker from "./AvailableDatePicker";
 
 import { Formik } from "formik";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
-import { CalendarToday } from "@mui/icons-material";
 
 const extractBranchId = (branch) => {
   if (!branch) return "";
@@ -414,17 +414,19 @@ const AuthenticatedRequestQuote = ({
         day:
           hasProviderSpecificDays || hasNonApiProviderDays
             ? tripData.fromDay &&
-              effectiveAvailableDays.includes(tripData.fromDay.split("T")[0])
-              ? tripData.fromDay.split("T")[0]
+              effectiveAvailableDays.includes(
+                tripData.fromDay.split(/[T\s]/)[0]
+              )
+              ? tripData.fromDay.split(/[T\s]/)[0]
               : ""
             : tripData.fromDay
-              ? tripData.fromDay.split("T")[0]
+              ? tripData.fromDay.split(/[T\s]/)[0]
               : "",
         endDay:
           hasProviderSpecificDays || hasNonApiProviderDays
             ? ""
             : tripData.toDay
-              ? tripData.toDay.split("T")[0]
+              ? tripData.toDay.split(/[T\s]/)[0]
               : "",
         services: tripData.services?.map((service) => service.name) || [],
         specialRequirements: tripData.specialRequirements || "",
@@ -471,17 +473,19 @@ const AuthenticatedRequestQuote = ({
       day:
         hasProviderSpecificDays || hasNonApiProviderDays
           ? tripData.fromDay &&
-            effectiveAvailableDays.includes(tripData.fromDay.split("T")[0])
-            ? tripData.fromDay.split("T")[0]
+            effectiveAvailableDays.includes(
+              tripData.fromDay.split(/[T\s]/)[0]
+            )
+            ? tripData.fromDay.split(/[T\s]/)[0]
             : ""
           : tripData.fromDay
-            ? tripData.fromDay.split("T")[0]
+            ? tripData.fromDay.split(/[T\s]/)[0]
             : "",
       endDay:
         hasProviderSpecificDays || hasNonApiProviderDays
           ? ""
           : tripData.toDay
-            ? tripData.toDay.split("T")[0]
+            ? tripData.toDay.split(/[T\s]/)[0]
             : "",
       slot: "",
       fromHour: "",
@@ -1169,61 +1173,25 @@ const AuthenticatedRequestQuote = ({
                   {/* Row 3: Start Date and End Date  */}
                   {hasProviderSpecificDays ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                      <div className="relative w-full min-w-0 flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
-                        <label className="font-medium capitalize font-somar">
-                          {t("forms.customTrip.steps.trip_date.fields.day.label")}<span className="text-error">*</span>
-                        </label>
-                        <div className="relative w-full">
-                          <input
-                            type="date"
-                            name="day"
-                            id="day"
-                            value={formatDateForInput(values.day)}
-                            onChange={(e) => {
-                              const dateStr = e.target.value;
-                              // Only allow dates in sortedEffectiveAvailableDays
-                              if (
-                                dateStr &&
-                                !sortedEffectiveAvailableDays.includes(dateStr)
-                              )
-                                return;
-                              handleChange(e);
-                              setFieldValue("slot", "");
-                              fetchSlotsForDay(dateStr);
-                            }}
-                            onBlur={handleBlur}
-                            onClick={(e) => {
-                              if (e.target.showPicker) {
-                                try {
-                                  e.target.showPicker();
-                                } catch {}
-                              }
-                            }}
-                            min={sortedEffectiveAvailableDays?.[0] || ""}
-                            max={
-                              sortedEffectiveAvailableDays?.[
-                                sortedEffectiveAvailableDays.length - 1
-                              ] || ""
-                            }
-                            className={`text-sm font-normal font-somar transition-all duration-200 ease-in-out p-4 pe-12 bg-white w-full min-w-0 max-w-full box-border rounded-lg outline-none border-2 cursor-pointer ${
-                              touched.day && errors.day
-                                ? "border-error focus:border-error hover:border-error"
-                                : "border-border focus:border-mainColor hover:border-mainColor"
-                            }`}
-                          />
-                          <div className="absolute inset-y-0 flex items-center pointer-events-none end-0 pe-4">
-                            <CalendarToday
-                              className="text-textLight"
-                              style={{ fontSize: "20px" }}
-                            />
-                          </div>
-                        </div>
-                        {touched.day && errors.day && (
-                          <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-somar text-error">
-                            {errors.day}
-                          </div>
-                        )}
-                      </div>
+                      <AvailableDatePicker
+                        id="day"
+                        name="day"
+                        value={values.day}
+                        onChange={(dateStr) => {
+                          setFieldValue("day", dateStr);
+                          setFieldValue("slot", "");
+                          if (dateStr) {
+                            fetchSlotsForDay(dateStr);
+                          }
+                        }}
+                        onBlur={() => handleBlur({ target: { name: "day" } })}
+                        availableDays={sortedEffectiveAvailableDays}
+                        error={errors.day}
+                        touched={touched.day}
+                        label={t("forms.customTrip.steps.trip_date.fields.day.label")}
+                        required={true}
+                        locale={locale}
+                      />
                       <div className="somar-placeholder w-full min-w-0">
                         <SelectionGroup
                           name="slot"
@@ -1251,52 +1219,24 @@ const AuthenticatedRequestQuote = ({
                     /* Non-API integration: restricted dates + time range validation */
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                       {/* Day Input (restricted to available days) */}
-                      <div className="relative w-full min-w-0 flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out md:col-span-2">
-                        <label className="font-medium capitalize font-somar">
-                          {t("forms.customTrip.steps.trip_date.fields.day.label")}<span className="text-error">*</span>
-                        </label>
-                        <div className="relative w-full">
-                          <input
-                            type="date"
-                            name="day"
-                            id="day"
-                            value={formatDateForInput(values.day)}
-                            onChange={(e) => {
-                              const dateStr = e.target.value;
-                              if (dateStr && !sortedEffectiveAvailableDays.includes(dateStr)) return;
-                              handleChange(e);
-                              setFieldValue("fromHour", "");
-                              setFieldValue("toHour", "");
-                            }}
-                            onBlur={handleBlur}
-                            onClick={(e) => {
-                              if (e.target.showPicker) {
-                                try {
-                                  e.target.showPicker();
-                                } catch {}
-                              }
-                            }}
-                            min={sortedEffectiveAvailableDays?.[0] || ""}
-                            max={sortedEffectiveAvailableDays?.[sortedEffectiveAvailableDays.length - 1] || ""}
-                            className={`text-sm font-normal font-somar transition-all duration-200 ease-in-out p-4 pe-12 bg-white w-full min-w-0 max-w-full box-border rounded-lg outline-none border-2 cursor-pointer ${
-                              touched.day && errors.day
-                                ? "border-error focus:border-error hover:border-error"
-                                : "border-border focus:border-mainColor hover:border-mainColor"
-                            }`}
-                          />
-                          <div className="absolute inset-y-0 flex items-center pointer-events-none end-0 pe-4">
-                            <CalendarToday
-                              className="text-textLight"
-                              style={{ fontSize: "20px" }}
-                            />
-                          </div>
-                        </div>
-                        {touched.day && errors.day && (
-                          <div className="absolute text-xs transition-all duration-200 ease-in-out -bottom-[18px] start-0 font-somar text-error">
-                            {errors.day}
-                          </div>
-                        )}
-                      </div>
+                      <AvailableDatePicker
+                        id="day"
+                        name="day"
+                        value={values.day}
+                        onChange={(dateStr) => {
+                          setFieldValue("day", dateStr);
+                          setFieldValue("fromHour", "");
+                          setFieldValue("toHour", "");
+                        }}
+                        onBlur={() => handleBlur({ target: { name: "day" } })}
+                        availableDays={sortedEffectiveAvailableDays}
+                        error={errors.day}
+                        touched={touched.day}
+                        label={t("forms.customTrip.steps.trip_date.fields.day.label")}
+                        required={true}
+                        locale={locale}
+                        className="md:col-span-2"
+                      />
 
                       {/* From Hour */}
                       <div className="somar-placeholder w-full min-w-0">

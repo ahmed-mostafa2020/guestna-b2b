@@ -6,6 +6,7 @@ import { memo, useState, useMemo } from "react";
 
 import { usePermissions } from "@hooks/utils/usePermissions";
 import formatDate from "@utils/formatters/FormateDate";
+import { getStatusStyles } from "@utils/formatters/getStatusStyles";
 import { TRIP_STATUS } from "@constants/tripStatus";
 import { PERMISSIONS } from "@constants/permissions";
 import SurveyForm from "@components/forms/survey";
@@ -51,56 +52,86 @@ const ReportTable = ({
   };
 
   if (!data || !data.nodes) {
-    return <TableSkeleton columns={4} />;
+    return <TableSkeleton columns={hasAnyReportPermission ? 5 : 4} />;
   }
 
-  const columns = useMemo(() => [
-    {
-      key: "organization",
-      label: t("profile.tables.bookings.header.schoolName"),
-      render: (row) => row.organization?.name || "-",
-      className: "font-medium text-foreground",
-    },
-    {
-      key: "name",
-      label: t("profile.tables.bookings.header.tripName"),
-      className: "font-medium text-foreground",
-    },
-    {
-      key: "date",
-      label: t("profile.tables.bookings.header.date"),
-      render: (row) => formatDate(row.day, locale, {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    },
-  ], [t, locale]);
+  const columns = useMemo(
+    () => [
+      {
+        key: "organization",
+        label: t("profile.tables.bookings.header.schoolName"),
+        render: (row) => row.organization?.name || "-",
+        className: "font-medium text-foreground",
+      },
+      {
+        key: "name",
+        label: t("profile.tables.bookings.header.tripName"),
+        className: "font-medium text-foreground",
+      },
+      {
+        key: "date",
+        label: t("profile.tables.bookings.header.date"),
+        render: (row) =>
+          formatDate(row.day, locale, {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+      },
+      {
+        key: "status",
+        label: t("profile.tables.bookings.header.status"),
+        className: "whitespace-nowrap",
+        render: (row) => {
+          const status = row.status;
+          if (!status) return "-";
+
+          return (
+            <span
+              className={`inline-flex items-center justify-center px-2.5 py-1 rounded-full text-xs lg:text-sm font-medium whitespace-nowrap ${getStatusStyles(status)}`}
+            >
+              {t(`common.organizationTripStatus.${status}`) || status}
+            </span>
+          );
+        },
+      },
+    ],
+    [t, locale]
+  );
 
   return (
     <>
-        <DataTable
-          title={tableTitle}
-          columns={columns}
-          data={data?.nodes || []}
-          actionsLabel={hasAnyReportPermission ? t("profile.tables.bookings.header.actions") : null}
-          rowActions={hasAnyReportPermission ? (booking) => (
-            <div className="flex gap-[6px] items-center justify-end">
-              {canConfirmAchievement && !booking.survey && (
-                <button
-                  disabled={
-                    booking.status !== TRIP_STATUS.PENDING ||
-                    disabledBookingIds.has(booking._id)
-                  }
-                  onClick={() => handleSurveyFormOpen(booking)}
-                  className="disabled:opacity-70 disabled:cursor-not-allowed flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
-                >
-                  {t("links.ConfirmationOfAchievement")}
-                </button>
-              )}
+      <DataTable
+        title={tableTitle}
+        columns={columns}
+        data={data?.nodes || []}
+        actionsLabel={
+          hasAnyReportPermission
+            ? t("profile.tables.bookings.header.actions")
+            : null
+        }
+        rowActions={
+          hasAnyReportPermission
+            ? (booking) => (
+                <div className="flex gap-[6px] items-center justify-end">
+                  {canConfirmAchievement &&
+                  !booking.survey &&
+                  booking.status !== TRIP_STATUS.PENDING &&
+                  new Date(booking.day) <= new Date() ? (
+                    <button
+                      disabled={disabledBookingIds.has(booking._id)}
+                      onClick={() => handleSurveyFormOpen(booking)}
+                      className="disabled:opacity-70 disabled:cursor-not-allowed flex-1 rounded-md text-sm text-white bg-mainColor px-4 py-2 hover:bg-titleColor transition-all duration-200 ease-in-out"
+                    >
+                      {t("links.ConfirmationOfAchievement")}
+                    </button>
+                  ) : (
+                    <span className="text-secColor w-full">-</span>
+                  )}
 
+                  {/* 
               {canViewFinalReport && (
                 <button
                   disabled={true}
@@ -114,15 +145,19 @@ const ReportTable = ({
                 >
                   {t("links.finalReport")}
                 </button>
-              )}
-            </div>
-          ) : null}
-          pagination={enablePagination && {
+              )} */}
+                </div>
+              )
+            : null
+        }
+        pagination={
+          enablePagination && {
             currentPage,
             pageInfo: data?.pageInfo,
-            onPageChange: setCurrentPage
-          }}
-        />
+            onPageChange: setCurrentPage,
+          }
+        }
+      />
 
       {showSurveyForm && (
         <div className="bg-white centered">

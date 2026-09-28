@@ -11,7 +11,17 @@ const getErrorMessage = (
     const validationErrors = error.response.data.info
       .map((err) => `${err.message}`)
       .join(", ");
-    errorMessage += ` (${validationErrors})`;
+
+    const isGenericValidation =
+      errorMessage === "خطأ في التحقق" ||
+      error.response?.data?.error === "VALIDATION_ERROR" ||
+      errorMessage?.toLowerCase?.() === "validation error";
+
+    if (isGenericValidation) {
+      errorMessage = validationErrors;
+    } else {
+      errorMessage += ` (${validationErrors})`;
+    }
   }
 
   return errorMessage;

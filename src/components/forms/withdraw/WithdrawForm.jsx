@@ -126,7 +126,10 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
     setTimeout(() => validateForm(), 0);
   };
 
-  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+  const handleSubmit = async (
+    values,
+    { setSubmitting, resetForm, setFieldError, setFieldTouched }
+  ) => {
     try {
       const requestBody = {
         trips: selectedTrips.map((trip) => trip._id),
@@ -156,7 +159,12 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
         }
       );
 
-      const result = await response.json();
+      let result = {};
+      try {
+        result = await response.json();
+      } catch (jsonErr) {
+        console.error("Failed to parse JSON response:", jsonErr);
+      }
 
       if (response.ok) {
         enqueueSnackbar(t("success.message"), {
@@ -171,9 +179,84 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
         });
       } else {
         // Handle API error response
-        const apiErrorMessage =
-          result.message || result.error || t("error.submission");
         console.error("API Error:", result);
+
+        if (Array.isArray(result.info) && result.info.length > 0) {
+          const apiMessages = [];
+
+          result.info.forEach((item) => {
+            const field = item.field || "";
+            const apiMsg = item.message || "";
+            let fieldName = "";
+
+            if (
+              field === "bankTransfer.iban" ||
+              field.toLowerCase().includes("iban")
+            ) {
+              fieldName = "ibanNumber";
+            } else if (
+              field === "bankTransfer.bankName" ||
+              field.toLowerCase().includes("bankname")
+            ) {
+              fieldName = "bankName";
+            } else if (
+              field === "bankTransfer.clientName" ||
+              field.toLowerCase().includes("clientname")
+            ) {
+              fieldName = "clientName";
+            } else if (
+              field === "stcPay.phone" ||
+              field.toLowerCase().includes("phone")
+            ) {
+              fieldName = "phoneNumber";
+            } else if (field === "amount") {
+              fieldName = "withdrawAmount";
+            } else if (field === "trips") {
+              fieldName = "selectedTripIds";
+            } else {
+              fieldName = field;
+            }
+
+            if (fieldName && setFieldError && apiMsg) {
+              setFieldError(fieldName, apiMsg);
+              if (setFieldTouched) {
+                setFieldTouched(fieldName, true, false);
+              }
+            }
+
+            if (apiMsg && !apiMessages.includes(apiMsg)) {
+              apiMessages.push(apiMsg);
+            }
+          });
+
+          const isGenericMessage =
+            result.message === "خطأ في التحقق" ||
+            result.error === "VALIDATION_ERROR" ||
+            result.message?.toLowerCase?.() === "validation error";
+
+          const displayMessage =
+            apiMessages.length > 0
+              ? apiMessages.join(" - ")
+              : !isGenericMessage && result.message
+              ? result.message
+              : t("error.submission");
+
+          enqueueSnackbar(displayMessage, { variant: "error" });
+          return;
+        }
+
+        const isGenericValidationError =
+          result.message === "خطأ في التحقق" ||
+          result.error === "VALIDATION_ERROR" ||
+          result.message?.toLowerCase?.() === "validation error";
+
+        const apiErrorMessage =
+          !isGenericValidationError && result.message
+            ? result.message
+            : !isGenericValidationError && result.error
+            ? result.error
+            : t("error.validation");
+
         enqueueSnackbar(apiErrorMessage, { variant: "error" });
         return; // Don't throw, just show the error and return
       }

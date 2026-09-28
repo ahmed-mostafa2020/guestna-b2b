@@ -1,14 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 
 import { useSelector } from "react-redux";
 
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { TRIP_STATUS } from "@constants/tripStatus";
+import { Group } from "@mui/icons-material";
 
 import FrameWithImagedHeader from "../frameWithImagedHeader/FrameWithImagedHeader";
 import ActionsDialog from "@components/features/customization/gridSection/largeSizeGrid/dayActivities/eventCard/actionsDialog";
@@ -18,22 +20,25 @@ import ParentLoginForm from "@components/forms/auth/parentLogin";
 import Cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";
 import formatCurrency from "@utils/formatters/FormatCurrency";
+import preBookingSection from "@assets/sectionBackground/preBookingSection.png";
 
 const PreBookingSection = ({ tripData }) => {
   const isSubmitted = useSelector((state) => state.parentLoginForm.isSubmitted);
   const [isOpen, setIsOpen] = useState(false);
   const [isParentLoginFormOpen, setIsParentLoginFormOpen] = useState(false);
+  const [isFormInView, setIsFormInView] = useState(false);
   const searchParams = useSearchParams();
   const onlyDetails = Boolean(searchParams.get("onlyDetails"));
+
   const handleClick = () => {
     handleClose();
 
     if (typeof window !== "undefined") {
       const target = document.querySelector("#register-student-form");
       if (target) {
-        window.scrollTo({
-          top: target.offsetTop,
+        target.scrollIntoView({
           behavior: "smooth",
+          block: "start",
         });
       }
     }
@@ -66,6 +71,17 @@ const PreBookingSection = ({ tripData }) => {
     tripData?.discountedPrice ?? tripData?.price
   );
 
+  const sortedTiers = useMemo(() => {
+    const rawTiers =
+      tripData?.quantityDiscountTiers || tripData?.b2bQuantityDiscountTiers;
+    if (!rawTiers || !Array.isArray(rawTiers) || rawTiers.length === 0) {
+      return [];
+    }
+    return [...rawTiers].sort(
+      (a, b) => (Number(a.minQuantity) || 0) - (Number(b.minQuantity) || 0)
+    );
+  }, [tripData?.quantityDiscountTiers, tripData?.b2bQuantityDiscountTiers]);
+
   const handleLoginForm = () => {
     handleClose();
     handleParentLoginFormOpen();
@@ -76,13 +92,40 @@ const PreBookingSection = ({ tripData }) => {
     if (isParentLoginFormOpen && isSubmitted) {
       const target = document.querySelector("#register-student-form");
       if (target) {
-        window.scrollTo({
-          top: target.offsetTop,
+        target.scrollIntoView({
           behavior: "smooth",
+          block: "start",
         });
       }
     }
   }, [isParentLoginFormOpen, isSubmitted]);
+
+  // Observer to hide mobile sticky bar when register student form is in viewport
+  useEffect(() => {
+    let observer = null;
+    let timer = null;
+
+    const setupObserver = () => {
+      const target = document.querySelector("#register-student-form");
+      if (target) {
+        observer = new IntersectionObserver(
+          ([entry]) => {
+            setIsFormInView(entry.isIntersecting);
+          },
+          { root: null, rootMargin: "0px", threshold: 0.05 }
+        );
+        observer.observe(target);
+      }
+    };
+
+    setupObserver();
+    timer = setTimeout(setupObserver, 500);
+
+    return () => {
+      if (observer) observer.disconnect();
+      if (timer) clearTimeout(timer);
+    };
+  }, [tripData]);
 
   const endDate = new Date(tripData?.endAvailableBookingDay);
   const currentDate = new Date();
@@ -166,53 +209,166 @@ const PreBookingSection = ({ tripData }) => {
 
   return (
     <>
-      <FrameWithImagedHeader withBorder={true}>
-        <h3 className="flex flex-wrap items-center gap-1 transition-all duration-200 ease-in-out">
-          <span className="text-2xl font-medium">
-            {defaultPriceWithFormatting}
-          </span>
-          <span className="text-3xl font-thin text-textLight">/</span>
-          <span className="text-xl font-normal text-textLight">
-            {t("common.onePerson")}
-          </span>
-          <span className="text-xs text-textDark ">{`(${t("finalDetails.includingVAT")})`}</span>
-        </h3>
+      {/* Desktop view: Sidebar Card */}
+      <div className="hidden lg:block">
+        <FrameWithImagedHeader withBorder={true}>
+          <h3 className="flex flex-wrap items-center gap-1 transition-all duration-200 ease-in-out">
+            <span className="text-2xl font-medium">
+              {defaultPriceWithFormatting}
+            </span>
+            <span className="text-3xl font-thin text-textLight">/</span>
+            <span className="text-xl font-normal text-textLight">
+              {t("common.onePerson")}
+            </span>
+            <span className="text-xs text-textDark ">{`(${t("finalDetails.includingVAT")})`}</span>
+          </h3>
 
-        {bookingStatus.canBook ? (
-          <>
-            {!onlyDetails && (
-              <button
-                onClick={handleOpen}
-                className="w-full px-8 py-3 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor"
-              >
-                {t("links.register")}
-              </button>
-            )}
-          </>
-        ) : (
-          <div className="w-full p-6 text-center bg-gray-50 border-2 border-gray-200 rounded-lg">
-            <div className="mb-2">
-              <h4 className="text-lg font-semibold text-gray-800">
-                {t(`booking.unavailable.${bookingStatus.messageKey}.title`)}
-              </h4>
+          {bookingStatus.canBook ? (
+            <>
+              {!onlyDetails && (
+                <button
+                  onClick={handleOpen}
+                  className="w-full px-8 py-3 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor"
+                >
+                  {t("links.register")}
+                </button>
+              )}
+            </>
+          ) : (
+            <div className="w-full p-6 text-center bg-gray-50 border-2 border-gray-200 rounded-lg">
+              <div className="mb-2">
+                <h4 className="text-lg font-semibold text-gray-800">
+                  {t(`booking.unavailable.${bookingStatus.messageKey}.title`)}
+                </h4>
+              </div>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                {t(`booking.unavailable.${bookingStatus.messageKey}.subtitle`)}
+              </p>
             </div>
-            <p className="text-sm text-gray-600 leading-relaxed">
-              {t(`booking.unavailable.${bookingStatus.messageKey}.subtitle`)}
-            </p>
-          </div>
-        )}
-
-        {bookingStatus.canBook &&
-          tripData?.isCustomizable &&
-          tripData?.guestnaTripsType === CONSTANT_VALUES.PACKAGE && (
-            <Link
-              href={`/${locale}/customization/${tripData?.slug}`}
-              className="w-full px-8 py-3 text-base font-semibold text-center transition-all duration-200 ease-in-out bg-white border-2 rounded-lg border-secColor text-mainColor hover:text-white hover:bg-secColor"
-            >
-              {t("links.customizeYourPackage")}
-            </Link>
           )}
-      </FrameWithImagedHeader>
+
+          {bookingStatus.canBook &&
+            tripData?.isCustomizable &&
+            tripData?.guestnaTripsType === CONSTANT_VALUES.PACKAGE && (
+              <Link
+                href={`/${locale}/customization/${tripData?.slug}`}
+                className="w-full px-8 py-3 text-base font-semibold text-center transition-all duration-200 ease-in-out bg-white border-2 rounded-lg border-secColor text-mainColor hover:text-white hover:bg-secColor"
+              >
+                {t("links.customizeYourPackage")}
+              </Link>
+            )}
+        </FrameWithImagedHeader>
+      </div>
+
+      {/* Mobile Sticky Bar at Bottom (hidden on desktop, fixed at bottom-0 on mobile) */}
+      <div
+        className={`lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-border shadow-[0_-4px_25px_rgba(0,0,0,0.12)] transition-all duration-300 ease-in-out ${
+          isFormInView
+            ? "translate-y-full opacity-0 pointer-events-none"
+            : "translate-y-0 opacity-100"
+        }`}
+      >
+        {/* Subtle patterned header accent matching FrameWithImagedHeader */}
+        <div className="h-12 w-full overflow-hidden bg-[#E2E6EE] relative">
+          <Image
+            src={preBookingSection}
+            alt=""
+            fill
+            priority
+            className="object-cover"
+            aria-hidden="true"
+          />
+        </div>
+
+        <div className="px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-3">
+          {/* Price Section */}
+          <div className="flex flex-col justify-center min-w-0 flex-1">
+            <div className="flex items-baseline gap-1">
+              <span className="text-xl sm:text-2xl font-bold text-textDark">
+                {defaultPriceWithFormatting}
+              </span>
+              <span className="text-xs sm:text-sm font-light text-textLight">
+                / {t("common.onePerson")}
+              </span>
+            </div>
+            <span className="text-[10px] sm:text-xs text-textLight font-normal">
+              ({t("finalDetails.includingVAT")})
+            </span>
+
+            {/* Quantity Discount Tiers under the price */}
+            {sortedTiers?.length > 0 && (
+              <div className="flex flex-col gap-1.5 mt-2 max-h-28 overflow-y-auto">
+                {sortedTiers.map((tier) => {
+                  const discountStr =
+                    tier.discountType === "PERCENTAGE" ? (
+                      <span>
+                        {locale === "ar"
+                          ? `%${tier.discountValue}`
+                          : `${tier.discountValue}%`}
+                      </span>
+                    ) : (
+                      formatCurrency(tier.discountValue)
+                    );
+
+                  const count = tier.minQuantity;
+
+                  return (
+                    <div
+                      key={tier._id || tier.minQuantity}
+                      className="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-xl border border-gray-150 bg-white shadow-xs"
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="w-7 h-7 rounded-lg bg-mainColor/10 text-mainColor centered shrink-0">
+                          <Group className="!text-sm" />
+                        </div>
+                        <span className="text-xs font-semibold text-textDark truncate">
+                          {t("common.discountTierLabel", { count })}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 text-success px-2.5 py-0.5 rounded-full text-xs font-bold border border-success/30 bg-success/5 shrink-0">
+                        <span>{t("quantityDiscountTiers.discountPrefix")}</span>
+                        <span className="font-extrabold">{discountStr}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Action Button or Booking Status */}
+          <div className="flex items-center gap-2 shrink-0">
+            {bookingStatus.canBook ? (
+              <>
+                {tripData?.isCustomizable &&
+                  tripData?.guestnaTripsType === CONSTANT_VALUES.PACKAGE && (
+                    <Link
+                      href={`/${locale}/customization/${tripData?.slug}`}
+                      className="px-3 py-2 text-xs font-semibold text-center transition-all duration-200 border rounded-lg border-secColor text-secColor hover:bg-secColor hover:text-white"
+                    >
+                      {t("links.customizeYourPackage")}
+                    </Link>
+                  )}
+
+                {!onlyDetails && (
+                  <button
+                    onClick={handleOpen}
+                    className="px-6 py-2.5 text-sm sm:text-base font-semibold text-center text-white transition-all duration-200 border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor active:scale-95 shadow-sm"
+                  >
+                    {t("links.register")}
+                  </button>
+                )}
+              </>
+            ) : (
+              <div className="px-3 py-1.5 text-center bg-gray-100 border border-gray-200 rounded-lg">
+                <span className="text-xs font-semibold text-gray-700 block">
+                  {t(`booking.unavailable.${bookingStatus.messageKey}.title`)}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
       {isOpen && (
         <ActionsDialog
