@@ -1034,6 +1034,17 @@
           }
         }
       },
+      "editPage": {
+        "pageTitle": "Edit Product",
+        "headerTitle": "Edit Product",
+        "backTooltip": "Back to products management",
+        "loadingProductData": "Loading product data...",
+        "errorLoadingProductData": "An error occurred while loading product data. Please try again.",
+        "productNotFound": "Product not found",
+        "updateProduct": "Update Product",
+        "updateSuccess": "Product updated successfully!",
+        "updateError": "Failed to update product"
+      },
       "b2bComingSoonSubtitle": "Companies & Schools products will be available on the platform soon.",
       "empty": "No products available.",
       "searchPlaceholder": "Search by product name or order ID...",
@@ -1063,6 +1074,7 @@
         "details": "Details",
         "view": "View Product",
         "edit": "Edit",
+        "editProduct": "Edit Product",
         "noActions": "No actions available",
         "noLinks": "No details link",
         "createdAt": "Created At",

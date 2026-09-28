@@ -262,6 +262,8 @@ export const B2B_END_POINTS = {
     FORM_SELECTIONS: "profile-provider/trips/form/selections",
     NEW_TRIP: "profile-provider/trips/add-product",
     ADD_PRODUCT: "profile-provider/trips/add-product",
+    TRIP_DETAILS: "profile-provider/trips/details",
+    EDIT_PRODUCT: "profile-provider/trips/edit-product",
     EDIT_TRIP: "profile-provider/b2c-trips/edit",
     ASK_TRIPS_COUNTS: "profile-provider/ask-trips/counts",
     ASK_TRIPS_ALL: "profile-provider/ask-trips/all",

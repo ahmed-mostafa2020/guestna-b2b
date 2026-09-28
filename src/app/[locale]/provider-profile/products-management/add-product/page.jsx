@@ -776,6 +776,7 @@ const AddProductPage = () => {
         <AddProductStepper
           currentStep={currentStep}
           completedSteps={completedSteps}
+          allStepsClickable={true}
           onStepClick={async (stepId) => {
             if (stepId === currentStep) {
               scrollToStepTop();
@@ -826,21 +827,10 @@ const AddProductPage = () => {
               }
             }
 
-            const canAccess =
-              completedSteps.includes(stepId) ||
-              completedSteps.includes(stepId - 1) ||
-              stepId === 9;
-
-            if (!canAccess) {
-              enqueueSnackbar(
-                t(
-                  "providerProfile.products.newAddPage.common.stepPrerequisiteWarning"
-                ),
-                { variant: "warning" }
-              );
-              return;
-            }
-
+            // User can visit any step if the current step is validated
+            setCompletedSteps((prev) =>
+              Array.from(new Set([...prev, currentStep]))
+            );
             setCurrentStep(stepId);
           }}
         />

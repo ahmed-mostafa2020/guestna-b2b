@@ -22,6 +22,7 @@ const AddProductStepper = ({
   completedSteps = [],
   isStep1Completed = false,
   isStep2Completed = false,
+  allStepsClickable = true,
 }) => {
   const t = useTranslations("providerProfile.products.newAddPage.steps");
   const scrollContainerRef = useRef(null);
@@ -70,7 +71,7 @@ const AddProductStepper = ({
           const isActive = currentStep === step.id;
           const isCompleted = isCompletedStep(step.id);
           const isClickable = Boolean(
-            onStepClick && (isCompleted || isActive || step.id === 1 || step.id === 9)
+            onStepClick && (allStepsClickable || isCompleted || isActive || step.id === 1 || step.id === 9)
           );
 
           return (
@@ -89,7 +90,7 @@ const AddProductStepper = ({
                 }}
                 className={cn(
                   "flex items-center gap-2.5 sm:gap-3 select-none transition-all duration-200",
-                  isClickable ? "cursor-pointer" : "cursor-default"
+                  isClickable ? "cursor-pointer hover:opacity-80 active:scale-[0.98]" : "cursor-default"
                 )}
                 aria-current={isActive ? "step" : undefined}
               >

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
@@ -10,6 +10,7 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import { USERS } from "@constants/users";
 import ProviderProductsTable from "@components/features/provider-profile/ProviderProductsTable";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import StarIcon from "@mui/icons-material/Star";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -38,6 +39,19 @@ const ProviderProductsManagementPage = () => {
     setSearchTerm(term);
     setPage(1);
   };
+
+  const router = useRouter();
+
+  const handleEditProduct = useCallback(
+    (row) => {
+      if (row?._id) {
+        router.push(
+          `/${locale}/provider-profile/products-management/edit-product/${row._id}`
+        );
+      }
+    },
+    [router, locale]
+  );
 
   // Fetch All Trips using /profile-provider/trips/all
   const allProductsEndpoint = `${B2B_END_POINTS.PROVIDER_PROFILE.ALL_PRODUCTS}?page=${page}&perPage=10${
@@ -96,6 +110,7 @@ const ProviderProductsManagementPage = () => {
         searchTerm={searchTerm}
         setSearchTerm={handleSearchChange}
         loading={isLoading || isFetching}
+        onEdit={handleEditProduct}
       />
     </main>
   );
