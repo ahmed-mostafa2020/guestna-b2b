@@ -1038,18 +1038,39 @@
       "empty": "No products available.",
       "searchPlaceholder": "Search by product name or order ID...",
       "tabs": {
+        "all": "All Products",
         "b2b": "Schools Products",
         "b2c": "Individuals Products"
       },
       "table": {
+        "title": "All Products",
         "orderId": "Order ID",
         "name": "Product Name",
-        "price": "Price",
+        "tripType": "Product Type",
+        "city": "City",
         "cities": "Cities",
-        "createdAt": "Created At",
-        "view": "View Product",
+        "multipleCities": "Multiple Cities",
+        "capacity": "Capacity",
+        "person": "guests",
+        "individualPrice": "Price per Person",
+        "price": "Price per Person",
+        "status": "Status",
+        "active": "Active",
+        "inactive": "Inactive",
         "actions": "Actions",
-        "edit": "Edit"
+        "b2cDetails": "Individual Details",
+        "b2bDetails": "School Details",
+        "details": "Details",
+        "view": "View Product",
+        "edit": "Edit",
+        "noActions": "No actions available",
+        "noLinks": "No details link",
+        "createdAt": "Created At",
+        "types": {
+          "ACTIVITY": "Full Day",
+          "HALF_DAY": "Half Day",
+          "PACKAGE": "Multi-Day"
+        }
       },
       "modal": {
         "title": "Add New Product",

@@ -256,8 +256,9 @@ export const B2B_END_POINTS = {
     HOME_BALANCE: "profile-provider/home/balance",
     ORG_TRIPS_MONTH: "profile-provider/org-trips/month",
     ORG_TRIPS_DAY: "profile-provider/org-trips/day",
-    B2B_TRIPS: "profile-provider/b2b-trips",
-    B2C_TRIPS: "profile-provider/b2c-trips",
+
+    ALL_PRODUCTS: "profile-provider/trips/all",
+    ALL_TRIPS: "profile-provider/trips/all",
     FORM_SELECTIONS: "profile-provider/trips/form/selections",
     NEW_TRIP: "profile-provider/trips/add-product",
     ADD_PRODUCT: "profile-provider/trips/add-product",
