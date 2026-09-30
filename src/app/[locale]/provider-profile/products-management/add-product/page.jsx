@@ -25,6 +25,15 @@ import {
   handleStepValidation,
   ScrollToError,
 } from "@utils/helpers/productFormHelpers";
+import {
+  initialAddProductValues,
+  formatAddProductPayload,
+} from "@components/forms/addProductForm";
+import { useFetchData } from "@hooks/data/useFetchData";
+import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { useRouter } from "next/navigation";
+import getProxyUrl from "@utils/api/getProxyUrl";
+import { getHeaders } from "@utils/helpers/getHeaders";
 
 const AddProductPage = () => {
   const t = useTranslations();
