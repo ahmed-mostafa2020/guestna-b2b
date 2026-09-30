@@ -31,6 +31,8 @@ export const buildBranchGroups = (rawBranches, locale = "ar", isAr = true) => {
     return [];
   }
 
+  const seenBranchIds = new Set();
+
   // Check if rawBranches is in nested format: [{ city, branches: [...] }]
   const hasNestedBranches = rawBranches.some((item) => Array.isArray(item?.branches));
 
@@ -43,24 +45,38 @@ export const buildBranchGroups = (rawBranches, locale = "ar", isAr = true) => {
             : group.city || (isAr ? `مدينة ${gIdx + 1}` : `City ${gIdx + 1}`);
 
         const branches = Array.isArray(group.branches)
-          ? group.branches.map((b, bIdx) => {
-              const bName =
-                typeof b.name === "object" && b.name !== null
-                  ? getItemName(b, locale)
-                  : b.name || (isAr ? `فرع ${bIdx + 1}` : `Branch ${bIdx + 1}`);
-              return {
-                id: b._id || b.id || `branch-${gIdx}-${bIdx}`,
-                name: {
-                  ar: (typeof b.name === "object" ? b.name?.ar : b.name) || bName,
-                  en: (typeof b.name === "object" ? b.name?.en : b.name) || bName,
-                },
-                fullName: {
-                  ar: `${bName} - ${cityName}`,
-                  en: `${bName} - ${cityName}`,
-                },
-                city: cityName,
-              };
-            })
+          ? group.branches
+              .map((b, bIdx) => {
+                if (!b) return null;
+                const rawId =
+                  typeof b === "object"
+                    ? b._id || b.id || b.branchId || `branch-${gIdx}-${bIdx}`
+                    : b;
+                const cleanId = String(rawId).trim();
+                if (!cleanId || seenBranchIds.has(cleanId)) return null;
+                seenBranchIds.add(cleanId);
+
+                const bName =
+                  typeof b === "object" && b.name !== null
+                    ? getItemName(b, locale)
+                    : typeof b === "string"
+                    ? (isHexObjectId(b) ? (isAr ? `فرع (${b.slice(-4)})` : `Branch (${b.slice(-4)})`) : b)
+                    : (isAr ? `فرع ${bIdx + 1}` : `Branch ${bIdx + 1}`);
+
+                return {
+                  id: cleanId,
+                  name: {
+                    ar: (typeof b === "object" && typeof b.name === "object" ? b.name?.ar : bName) || bName,
+                    en: (typeof b === "object" && typeof b.name === "object" ? b.name?.en : bName) || bName,
+                  },
+                  fullName: {
+                    ar: cityName ? `${bName} - ${cityName}` : bName,
+                    en: cityName ? `${bName} - ${cityName}` : bName,
+                  },
+                  city: cityName,
+                };
+              })
+              .filter(Boolean)
           : [];
 
         return {
@@ -75,20 +91,36 @@ export const buildBranchGroups = (rawBranches, locale = "ar", isAr = true) => {
   // Flat format fallback: [{ _id, name, city }]
   const cityMap = new Map();
   rawBranches.forEach((b, idx) => {
+    if (!b) return;
+    const rawId =
+      typeof b === "object"
+        ? b._id || b.id || b.branchId || `branch-${idx}`
+        : b;
+    const cleanId = String(rawId).trim();
+    if (!cleanId || seenBranchIds.has(cleanId)) return;
+    seenBranchIds.add(cleanId);
+
     const cityName =
-      typeof b.city === "object" && b.city !== null
+      typeof b === "object" && typeof b.city === "object" && b.city !== null
         ? getItemName(b.city, locale)
-        : b.city || (isAr ? "الفرع" : "Branch");
-    const bName = getItemName(b, locale) || (isAr ? `فرع ${idx + 1}` : `Branch ${idx + 1}`);
+        : (typeof b === "object" ? b.city : "") || (isAr ? "الفرع" : "Branch");
+
+    const bName =
+      typeof b === "object"
+        ? getItemName(b, locale) || (isAr ? `فرع ${idx + 1}` : `Branch ${idx + 1}`)
+        : typeof b === "string"
+        ? (isHexObjectId(b) ? (isAr ? `فرع (${b.slice(-4)})` : `Branch (${b.slice(-4)})`) : b)
+        : (isAr ? `فرع ${idx + 1}` : `Branch ${idx + 1}`);
+
     const branchItem = {
-      id: b._id || b.id || `branch-${idx}`,
+      id: cleanId,
       name: {
-        ar: getItemName(b, "ar") || `فرع ${idx + 1}`,
-        en: getItemName(b, "en") || `Branch ${idx + 1}`,
+        ar: (typeof b === "object" && typeof b.name === "object" ? b.name?.ar : bName) || bName,
+        en: (typeof b === "object" && typeof b.name === "object" ? b.name?.en : bName) || bName,
       },
       fullName: {
-        ar: `${bName} - ${cityName}`,
-        en: `${bName} - ${cityName}`,
+        ar: cityName ? `${bName} - ${cityName}` : bName,
+        en: cityName ? `${bName} - ${cityName}` : bName,
       },
       city: cityName,
     };
@@ -113,11 +145,12 @@ export const filterBranchGroupsBySelected = (branchGroups, selectedBranchIds = [
       .map((item) => (typeof item === "object" && item !== null ? item._id || item.id : item))
       .filter(Boolean)
       .map(String)
+      .map((s) => s.trim())
   );
   return (branchGroups || [])
     .map((group) => ({
       ...group,
-      branches: (group.branches || []).filter((b) => idSet.has(String(b.id))),
+      branches: (group.branches || []).filter((b) => idSet.has(String(b.id).trim())),
     }))
     .filter((group) => group.branches.length > 0);
 };

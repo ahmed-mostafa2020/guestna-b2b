@@ -669,13 +669,15 @@
             "instantConfirmationTitle": "الموافقه التلقائية علي الحجوزات الجديدة",
             "instantConfirmationSubtitle": "عند التفعيل، تُعتمد الحجوزات الجديدة تلقائياً وتُحجب أيامها.",
             "label": "المراحل الدراسية",
-            "placeholder": "اختر المرحلة الدراسية"
+            "placeholder": "اختر المرحلة الدراسية",
+            "requiredBadge": "مطلوب لهذه القناة *"
           },
           "b2cSection": {
             "cardTitle": "فئات الأفراد — B2C",
             "cardSubtitle": "اختر فئات الأفراد التي يستهدفها هذا المنتج عبر قناة التجزئة.",
             "label": "الجمهور المستهدف",
-            "placeholder": "اختر الجمهور المستهدف"
+            "placeholder": "اختر الجمهور المستهدف",
+            "requiredBadge": "مطلوب لهذه القناة *"
           },
           "defaultStages": {
             "kindergarten": "رياض الأطفال",
@@ -697,6 +699,12 @@
             "salesChannelRequired": "يرجى اختيار قناة بيع واحدة على الأقل",
             "b2bStagesRequired": "يرجى اختيار مرحلة دراسية واحدة على الأقل لقناة المدارس",
             "b2cAudienceRequired": "يرجى اختيار فئة جمهور واحدة على الأقل لقناة الأفراد"
+          },
+          "channelChangeAlert": {
+            "addedB2C": "تمت إضافة قناة الأفراد (B2C). يرجى تحديد الفئات المستهدفة أدناه، وإكمال التسعير في خطوة التسعير.",
+            "addedB2B": "تمت إضافة قناة المدارس (B2B). يرجى تحديد المراحل الدراسية أدناه، وإكمال التسعير في خطوة التسعير.",
+            "addedBoth": "تمت إضافة قناتي المدارس والأفراد. يرجى تحديد المراحل الدراسية والفئات المستهدفة أدناه، وإكمال التسعير في خطوة التسعير.",
+            "goToPricing": "الذهاب للتسعير"
           }
         },
         "stepLocations": {
@@ -1050,7 +1058,16 @@
         "productNotFound": "المنتج غير موجود",
         "updateProduct": "تحديث المنتج",
         "updateSuccess": "تم تحديث المنتج بنجاح!",
-        "updateError": "فشل في تحديث المنتج"
+        "updateError": "فشل في تحديث المنتج",
+        "incompleteStepsWarning": "يرجى إكمال الخطوات التالية قبل تحديث المنتج:",
+        "stepNeedsUpdate": "تحتاج تحديث",
+        "quickPublish": "حفظ ونشر التعديلات",
+        "quickPublishDirect": "حفظ ونشر المنتج",
+        "quickPublishTooltip": "حفظ وتحديث المنتج مباشرة دون الحاجة للانتقال لخطوة المراجعة",
+        "pricingRequiredToPublish": "لا يمكن النشر مباشرة: تمت إضافة قناة بيع جديدة تتطلب تحديد السعر في خطوة التسعير أولاً.",
+        "pricingRequiredAction": "يلزم إكمال التسعير للنشر",
+        "pricingRequiredTooltip": "تمت إضافة قناة بيع جديدة تتطلب إدخال التسعير في خطوة 8 قبل التمكن من نشر المنتج",
+        "step8Pricing": "انتقل للتسعير"
       },
       "b2bComingSoonSubtitle": "منتجات الشركات والمدارس ستكون متاحة قريباً في المنصة.",
       "empty": "لا توجد منتجات متاحة حالياً.",
@@ -1244,7 +1261,9 @@
           "reviewB2cPriceLabel": "تسعير الأفراد",
           "reviewB2bPriceLabel": "تسعير المدارس",
           "reviewViewDetails": "عرض التفاصيل",
-          "reviewHideDetails": "إخفاء التفاصيل"
+          "reviewHideDetails": "إخفاء التفاصيل",
+          "reviewBranchCustomPrice": "سعر خاص بالفرع",
+          "reviewBranchCustomHours": "أوقات العمل المخصصة"
         },
         "placeholders": {
           "nameEn": "أدخل اسم المنتج بالإنجليزي",

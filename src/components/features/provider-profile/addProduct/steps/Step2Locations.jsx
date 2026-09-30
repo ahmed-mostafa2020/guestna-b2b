@@ -4,7 +4,6 @@ import { memo, useMemo, useState, useCallback, useEffect } from "react";
 import { useFormikContext, getIn } from "formik";
 import { useTranslations, useLocale } from "next-intl";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
-import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import CheckIcon from "@mui/icons-material/Check";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -125,27 +124,60 @@ const Step2Locations = ({
 
   // Selected branch IDs for the product (Card 1)
   const selectedBranchIds = useMemo(() => {
-    return Array.isArray(values.providerBranchs) ? values.providerBranchs : [];
+    return (Array.isArray(values.providerBranchs) ? values.providerBranchs : [])
+      .map((b) => (typeof b === "object" ? b?._id || b?.id : b))
+      .filter(Boolean)
+      .map(String)
+      .map((s) => s.trim());
   }, [values.providerBranchs]);
 
-  // Build branch groups using shared utility (from API data)
+  // Build branch groups using shared utility (from API data + values)
   const branchGroups = useMemo(() => {
-    return buildBranchGroups(formSelectionData?.providerBranchs, locale, isAr);
-  }, [formSelectionData?.providerBranchs, locale, isAr]);
+    const sources = [
+      ...(Array.isArray(formSelectionData?.providerBranchs)
+        ? formSelectionData.providerBranchs
+        : []),
+    ];
+    (values.branchTrips || []).forEach((bt) => {
+      if (bt?.branch && typeof bt.branch === "object") {
+        sources.push(bt.branch);
+      }
+    });
+    (values.providerBranchs || []).forEach((b) => {
+      if (b && typeof b === "object") {
+        sources.push(b);
+      }
+    });
+    return buildBranchGroups(sources, locale, isAr);
+  }, [
+    formSelectionData?.providerBranchs,
+    values.branchTrips,
+    values.providerBranchs,
+    locale,
+    isAr,
+  ]);
 
-  // Flattened list of all available branches
-  const allBranches = useMemo(() => {
-    return branchGroups.flatMap((group) => group.branches);
+  const allBranchesMap = useMemo(() => {
+    const map = new Map();
+    branchGroups.forEach((group) => {
+      group.branches?.forEach((b) => {
+        if (b?.id) {
+          map.set(String(b.id).trim(), b);
+        }
+      });
+    });
+    return map;
   }, [branchGroups]);
 
   // Toggle branch selection directly on Card 1
   const handleToggleBranchSelection = useCallback(
     (branchId) => {
+      const cleanBranchId = String(branchId).trim();
       let updated;
-      if (selectedBranchIds.includes(branchId)) {
-        updated = selectedBranchIds.filter((id) => id !== branchId);
+      if (selectedBranchIds.includes(cleanBranchId)) {
+        updated = selectedBranchIds.filter((id) => id !== cleanBranchId);
       } else {
-        updated = [...selectedBranchIds, branchId];
+        updated = [...selectedBranchIds, cleanBranchId];
       }
       setFieldValue("providerBranchs", updated);
       setFieldTouched("providerBranchs", true, false);
@@ -159,19 +191,90 @@ const Step2Locations = ({
   // Customized capacity branch IDs
   const customizedCapacityBranchIds = useMemo(() => {
     if (values.branchCapacities && typeof values.branchCapacities === "object") {
-      return Object.keys(values.branchCapacities);
+      return Object.keys(values.branchCapacities).map(String).map((s) => s.trim());
     }
     return [];
   }, [values.branchCapacities]);
 
   const isCapacityCustomizedActive = customizedCapacityBranchIds.length > 0;
 
-  // Active customized branch objects for Card 3
+  // Active customized branch objects for Card 3 with multi-tiered resolution
   const activeCapacityBranches = useMemo(() => {
     return customizedCapacityBranchIds
-      .map((id) => allBranches.find((b) => b.id === id))
+      .map((id) => {
+        const cleanId = String(id).trim();
+        const found = allBranchesMap.get(cleanId);
+        if (found) return found;
+
+        // Check values.branchTrips
+        const tripBranch = (values.branchTrips || []).find((bt) => {
+          const bId = bt?.branch?._id || bt?.branch?.id || bt?.branch || bt?.branchId;
+          return String(bId).trim() === cleanId;
+        });
+        if (tripBranch?.branch && typeof tripBranch.branch === "object") {
+          return {
+            id: cleanId,
+            name:
+              tripBranch.branch.name ||
+              tripBranch.branch.title ||
+              (isAr ? tripBranch.branch.name_ar : tripBranch.branch.name_en) ||
+              cleanId,
+            fullName: tripBranch.branch.name || tripBranch.branch.title || cleanId,
+            city: tripBranch.branch.city || "",
+            address: tripBranch.branch.address || "",
+          };
+        }
+
+        // Check values.providerBranchs
+        const pbBranch = (values.providerBranchs || []).find((pb) => {
+          if (typeof pb === "object" && pb !== null) {
+            return String(pb._id || pb.id).trim() === cleanId;
+          }
+          return false;
+        });
+        if (pbBranch) {
+          return {
+            id: cleanId,
+            name:
+              pbBranch.name ||
+              pbBranch.title ||
+              (isAr ? pbBranch.name_ar : pbBranch.name_en) ||
+              cleanId,
+            fullName: pbBranch.name || pbBranch.title || cleanId,
+            city: pbBranch.city || "",
+            address: pbBranch.address || "",
+          };
+        }
+
+        return {
+          id: cleanId,
+          name: cleanId,
+          fullName: cleanId,
+          city: "",
+          address: "",
+        };
+      })
       .filter(Boolean);
-  }, [customizedCapacityBranchIds, allBranches]);
+  }, [
+    customizedCapacityBranchIds,
+    allBranchesMap,
+    values.branchTrips,
+    values.providerBranchs,
+    isAr,
+  ]);
+
+  // Auto-expand first customized branch accordion on load
+  useEffect(() => {
+    if (customizedCapacityBranchIds.length > 0) {
+      setOpenBranches((prev) => {
+        const hasOpen = Object.values(prev).some(Boolean);
+        if (!hasOpen) {
+          return { ...prev, [customizedCapacityBranchIds[0]]: true };
+        }
+        return prev;
+      });
+    }
+  }, [customizedCapacityBranchIds]);
 
   // Capacity default values (empty unless entered by user)
   const defaultCapacityMin = values.availableSeats?.min ?? "";
@@ -344,7 +447,9 @@ const Step2Locations = ({
                   )}
                   <div className="space-y-2.5">
                     {branches.map((branch) => {
-                      const isSelected = selectedBranchIds.includes(branch.id);
+                      const isSelected = selectedBranchIds.includes(
+                        String(branch.id).trim()
+                      );
                       const branchName =
                         branch.name?.[locale] ||
                         branch.name?.ar ||
@@ -629,9 +734,13 @@ const Step2Locations = ({
             <div className="space-y-3">
               {activeCapacityBranches.map((branch) => {
                 const isOpen = Boolean(openBranches[branch.id]);
-                const branchFullName = isAr
-                  ? branch.fullName?.ar || branch.name?.ar
-                  : branch.fullName?.en || branch.name?.en;
+                const branchFullName =
+                  typeof branch.fullName === "object"
+                    ? (isAr ? branch.fullName?.ar : branch.fullName?.en) || branch.fullName?.ar || branch.fullName?.en
+                    : branch.fullName ||
+                      (typeof branch.name === "object"
+                        ? (isAr ? branch.name?.ar : branch.name?.en) || branch.name?.ar || branch.name?.en
+                        : branch.name || branch.id);
 
                 const branchCap = values.branchCapacities?.[branch.id] || {
                   min: defaultCapacityMin,

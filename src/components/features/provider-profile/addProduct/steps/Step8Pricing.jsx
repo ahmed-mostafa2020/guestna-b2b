@@ -230,39 +230,160 @@ const Step8Pricing = ({
     return `${year}-${month}-${day}`;
   }, []);
 
-  // Branch groups mapping
+  // Branch groups mapping (merging formSelectionData, values.branchTrips, and values.providerBranchs)
   const branchGroups = useMemo(() => {
-    return buildBranchGroups(formSelectionData?.providerBranchs, locale, isAr);
-  }, [formSelectionData?.providerBranchs, locale, isAr]);
+    const sources = [
+      ...(Array.isArray(formSelectionData?.providerBranchs)
+        ? formSelectionData.providerBranchs
+        : []),
+    ];
+    (values.branchTrips || []).forEach((bt) => {
+      if (bt?.branch && typeof bt.branch === "object") {
+        sources.push(bt.branch);
+      }
+    });
+    (values.providerBranchs || []).forEach((b) => {
+      if (b && typeof b === "object") {
+        sources.push(b);
+      }
+    });
+    return buildBranchGroups(sources, locale, isAr);
+  }, [
+    formSelectionData?.providerBranchs,
+    values.branchTrips,
+    values.providerBranchs,
+    locale,
+    isAr,
+  ]);
 
   const allBranchesMap = useMemo(() => {
     const map = new Map();
     branchGroups.forEach((group) => {
       group.branches?.forEach((b) => {
-        map.set(b.id, b);
+        if (b?.id) {
+          map.set(String(b.id).trim(), b);
+        }
       });
     });
     return map;
   }, [branchGroups]);
 
-  // Selected customized branch IDs
+  // Selected customized branch IDs (handles both customizedPricingBranches and branchPricing keys)
   const customizedBranchIds = useMemo(() => {
-    if (Array.isArray(values.customizedPricingBranches)) {
-      return values.customizedPricingBranches;
-    }
-    if (values.branchPricing && typeof values.branchPricing === "object") {
-      return Object.keys(values.branchPricing);
-    }
-    return [];
+    const fromArray = Array.isArray(values.customizedPricingBranches)
+      ? values.customizedPricingBranches
+      : [];
+    const fromPricingKeys =
+      values.branchPricing && typeof values.branchPricing === "object"
+        ? Object.keys(values.branchPricing)
+        : [];
+    return Array.from(
+      new Set(
+        [...fromArray, ...fromPricingKeys]
+          .map((id) => (typeof id === "object" ? id?._id || id?.id : id))
+          .filter(Boolean)
+          .map(String)
+          .map((s) => s.trim())
+      )
+    );
   }, [values.customizedPricingBranches, values.branchPricing]);
 
   const isCustomizedActive = customizedBranchIds.length > 0;
 
   const activeCustomizedBranches = useMemo(() => {
     return customizedBranchIds
-      .map((id) => allBranchesMap.get(id))
+      .map((id) => {
+        const cleanId = String(id).trim();
+        const found = allBranchesMap.get(cleanId);
+        if (found) return found;
+
+        // Check values.branchTrips
+        const bt = (values.branchTrips || []).find((item) => {
+          const rawB = item?.branch || item?.providerBranch || item?.branchId;
+          const bId = typeof rawB === "object" ? rawB?._id || rawB?.id : rawB;
+          return String(bId).trim() === cleanId;
+        });
+        if (bt && typeof bt.branch === "object" && bt.branch !== null) {
+          const bName = getItemName(bt.branch, locale) || (isAr ? "فرع" : "Branch");
+          const cName =
+            typeof bt.branch.city === "object"
+              ? getItemName(bt.branch.city, locale)
+              : bt.branch.city || "";
+          return {
+            id: cleanId,
+            name: {
+              ar: bt.branch.name?.ar || bName,
+              en: bt.branch.name?.en || bName,
+            },
+            fullName: {
+              ar: cName ? `${bName} - ${cName}` : bName,
+              en: cName ? `${bName} - ${cName}` : bName,
+            },
+            city: cName,
+          };
+        }
+
+        // Check values.providerBranchs
+        const pb = (values.providerBranchs || []).find((item) => {
+          if (typeof item === "object" && item !== null) {
+            return String(item._id || item.id).trim() === cleanId;
+          }
+          return false;
+        });
+        if (pb) {
+          const bName = getItemName(pb, locale) || (isAr ? "فرع" : "Branch");
+          const cName =
+            typeof pb.city === "object"
+              ? getItemName(pb.city, locale)
+              : pb.city || "";
+          return {
+            id: cleanId,
+            name: {
+              ar: pb.name?.ar || bName,
+              en: pb.name?.en || bName,
+            },
+            fullName: {
+              ar: cName ? `${bName} - ${cName}` : bName,
+              en: cName ? `${bName} - ${cName}` : bName,
+            },
+            city: cName,
+          };
+        }
+
+        return {
+          id: cleanId,
+          name: {
+            ar: `${isAr ? "فرع" : "Branch"} (${cleanId.slice(-4)})`,
+            en: `Branch (${cleanId.slice(-4)})`,
+          },
+          fullName: {
+            ar: `${isAr ? "فرع" : "Branch"} (${cleanId.slice(-4)})`,
+            en: `Branch (${cleanId.slice(-4)})`,
+          },
+          city: "",
+        };
+      })
       .filter(Boolean);
-  }, [customizedBranchIds, allBranchesMap]);
+  }, [
+    customizedBranchIds,
+    allBranchesMap,
+    values.branchTrips,
+    values.providerBranchs,
+    locale,
+    isAr,
+  ]);
+
+  // Automatically expand the first customized branch if none is expanded
+  useEffect(() => {
+    if (activeCustomizedBranches.length > 0) {
+      setOpenBranches((prev) => {
+        if (Object.keys(prev).length === 0) {
+          return { [activeCustomizedBranches[0].id]: true };
+        }
+        return prev;
+      });
+    }
+  }, [activeCustomizedBranches]);
 
   // Target audience options from selection API or fallback
   const targetAudienceOptions = useMemo(() => {

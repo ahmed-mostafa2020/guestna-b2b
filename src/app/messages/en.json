@@ -662,13 +662,15 @@
             "instantConfirmationTitle": "Automatic Approval for New Bookings",
             "instantConfirmationSubtitle": "When activated, new bookings are automatically confirmed and dates are blocked.",
             "label": "Study Stages",
-            "placeholder": "Select study stage"
+            "placeholder": "Select study stage",
+            "requiredBadge": "Required for this channel *"
           },
           "b2cSection": {
             "cardTitle": "Individual Categories — B2C",
             "cardSubtitle": "Choose the individual categories targeted by this product via the retail channel.",
             "label": "Target Audience",
-            "placeholder": "Select target audience"
+            "placeholder": "Select target audience",
+            "requiredBadge": "Required for this channel *"
           },
           "defaultStages": {
             "kindergarten": "Kindergarten",
@@ -690,6 +692,12 @@
             "salesChannelRequired": "Please select at least one sales channel",
             "b2bStagesRequired": "Please select at least one study stage for schools channel",
             "b2cAudienceRequired": "Please select at least one target audience for retail channel"
+          },
+          "channelChangeAlert": {
+            "addedB2C": "Individuals channel (B2C) has been added. Please select target audiences below, and complete pricing in the Pricing step.",
+            "addedB2B": "Schools channel (B2B) has been added. Please select study stages below, and complete pricing in the Pricing step.",
+            "addedBoth": "Schools and Individuals channels added. Please select study stages and target audiences below, and complete pricing in the Pricing step.",
+            "goToPricing": "Go to Pricing"
           }
         },
         "stepLocations": {
@@ -1043,7 +1051,16 @@
         "productNotFound": "Product not found",
         "updateProduct": "Update Product",
         "updateSuccess": "Product updated successfully!",
-        "updateError": "Failed to update product"
+        "updateError": "Failed to update product",
+        "incompleteStepsWarning": "Please complete the following steps before updating the product:",
+        "stepNeedsUpdate": "Needs update",
+        "quickPublish": "Save & Publish Changes",
+        "quickPublishDirect": "Save & Publish Product",
+        "quickPublishTooltip": "Save and update product directly without going to review step",
+        "pricingRequiredToPublish": "Cannot publish directly: A new sales channel was added requiring pricing in the pricing step first.",
+        "pricingRequiredAction": "Pricing completion required to publish",
+        "pricingRequiredTooltip": "A new sales channel was added requiring pricing in step 8 before the product can be published",
+        "step8Pricing": "Go to Pricing"
       },
       "b2bComingSoonSubtitle": "Companies & Schools products will be available on the platform soon.",
       "empty": "No products available.",
@@ -1237,7 +1254,9 @@
           "reviewB2cPriceLabel": "Individuals Price",
           "reviewB2bPriceLabel": "Schools Price",
           "reviewViewDetails": "View Details",
-          "reviewHideDetails": "Hide Details"
+          "reviewHideDetails": "Hide Details",
+          "reviewBranchCustomPrice": "Branch Custom Price",
+          "reviewBranchCustomHours": "Branch Custom Hours"
         },
         "placeholders": {
           "nameEn": "Enter product name in English",

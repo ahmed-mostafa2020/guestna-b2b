@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useMemo, useState, useCallback } from "react";
+import { memo, useMemo, useState, useCallback, useEffect } from "react";
 import { useFormikContext, FieldArray, getIn } from "formik";
 import { useTranslations, useLocale } from "next-intl";
 import SelectionGroup from "@components/forms/SelectionGroup";
@@ -69,7 +69,9 @@ const Step4BookingDates = ({
   formSelectionData = null,
   isSelectionsLoading: _isSelectionsLoading = false,
 }) => {
-  const t = useTranslations("providerProfile.products.newAddPage.stepBookingDates");
+  const t = useTranslations(
+    "providerProfile.products.newAddPage.stepBookingDates"
+  );
   const locale = useLocale();
   const isAr = locale === "ar";
 
@@ -105,17 +107,40 @@ const Step4BookingDates = ({
   // Branch accordion expanded/collapsed state
   const [openBranches, setOpenBranches] = useState({});
 
-  // Prepare branch groups (by city)
+  // Prepare branch groups (by city), merging formSelectionData, values.branchTrips, and values.providerBranchs
   const branchGroups = useMemo(() => {
-    return buildBranchGroups(formSelectionData?.providerBranchs, locale, isAr);
-  }, [formSelectionData?.providerBranchs, locale, isAr]);
+    const sources = [
+      ...(Array.isArray(formSelectionData?.providerBranchs)
+        ? formSelectionData.providerBranchs
+        : []),
+    ];
+    (values.branchTrips || []).forEach((bt) => {
+      if (bt?.branch && typeof bt.branch === "object") {
+        sources.push(bt.branch);
+      }
+    });
+    (values.providerBranchs || []).forEach((b) => {
+      if (b && typeof b === "object") {
+        sources.push(b);
+      }
+    });
+    return buildBranchGroups(sources, locale, isAr);
+  }, [
+    formSelectionData?.providerBranchs,
+    values.branchTrips,
+    values.providerBranchs,
+    locale,
+    isAr,
+  ]);
 
   // Flattened branch map for lookup by ID
   const allBranchesMap = useMemo(() => {
     const map = new Map();
     branchGroups.forEach((group) => {
       group.branches?.forEach((b) => {
-        map.set(b.id, b);
+        if (b?.id) {
+          map.set(String(b.id).trim(), b);
+        }
       });
     });
     return map;
@@ -123,33 +148,146 @@ const Step4BookingDates = ({
 
   // Selected branch IDs for customization
   const [selectedBranchIds, setSelectedBranchIds] = useState(() => {
-    if (Array.isArray(values.customizedBranchDateIds) && values.customizedBranchDateIds.length > 0) {
-      return values.customizedBranchDateIds;
+    if (
+      Array.isArray(values.customizedBranchDateIds) &&
+      values.customizedBranchDateIds.length > 0
+    ) {
+      return values.customizedBranchDateIds.map(String).map((s) => s.trim());
     }
     if (values.branchDates && typeof values.branchDates === "object") {
       const keys = Object.keys(values.branchDates).filter((k) => {
         const item = values.branchDates[k];
         return Boolean(
           item &&
-            (item.fromDay ||
-              item.toDay ||
-              item.selectedDays?.length > 0 ||
-              item.availableTimes?.length > 0)
+          (item.fromDay ||
+            item.toDay ||
+            item.selectedDays?.length > 0 ||
+            item.availableTimes?.length > 0)
         );
       });
-      if (keys.length > 0) return keys;
+      if (keys.length > 0) return keys.map(String).map((s) => s.trim());
     }
     return [];
   });
+
+  // Sync selectedBranchIds when Formik values reinitialize or update
+  useEffect(() => {
+    const idsFromValues =
+      Array.isArray(values.customizedBranchDateIds) &&
+      values.customizedBranchDateIds.length > 0
+        ? values.customizedBranchDateIds.map(String).map((s) => s.trim())
+        : values.branchDates && typeof values.branchDates === "object"
+          ? Object.keys(values.branchDates)
+              .filter((k) => {
+                const item = values.branchDates[k];
+                return Boolean(
+                  item &&
+                  (item.fromDay ||
+                    item.toDay ||
+                    item.selectedDays?.length > 0 ||
+                    item.availableTimes?.length > 0)
+                );
+              })
+              .map(String)
+              .map((s) => s.trim())
+          : [];
+    if (idsFromValues.length > 0) {
+      setSelectedBranchIds(idsFromValues);
+      setOpenBranches((prev) => {
+        if (Object.keys(prev).length === 0) {
+          return { [idsFromValues[0]]: true };
+        }
+        return prev;
+      });
+    }
+  }, [values.customizedBranchDateIds, values.branchDates]);
 
   const isCustomizedActive = selectedBranchIds.length > 0;
 
   // Active customized branch objects to render in form
   const activeCustomizedBranches = useMemo(() => {
     return selectedBranchIds
-      .map((id) => allBranchesMap.get(id))
+      .map((id) => {
+        const cleanId = String(id).trim();
+        const found = allBranchesMap.get(cleanId);
+        if (found) return found;
+
+        // Check values.branchTrips
+        const bt = (values.branchTrips || []).find((item) => {
+          const rawB = item?.branch || item?.providerBranch || item?.branchId;
+          const bId = typeof rawB === "object" ? rawB?._id || rawB?.id : rawB;
+          return String(bId).trim() === cleanId;
+        });
+        if (bt && typeof bt.branch === "object" && bt.branch !== null) {
+          const bName =
+            getItemName(bt.branch, locale) || (isAr ? "فرع" : "Branch");
+          const cName =
+            typeof bt.branch.city === "object"
+              ? getItemName(bt.branch.city, locale)
+              : bt.branch.city || "";
+          return {
+            id: cleanId,
+            name: {
+              ar: bt.branch.name?.ar || bName,
+              en: bt.branch.name?.en || bName,
+            },
+            fullName: {
+              ar: cName ? `${bName} - ${cName}` : bName,
+              en: cName ? `${bName} - ${cName}` : bName,
+            },
+            city: cName,
+          };
+        }
+
+        // Check values.providerBranchs
+        const pb = (values.providerBranchs || []).find((item) => {
+          if (typeof item === "object" && item !== null) {
+            return String(item._id || item.id).trim() === cleanId;
+          }
+          return false;
+        });
+        if (pb) {
+          const bName = getItemName(pb, locale) || (isAr ? "فرع" : "Branch");
+          const cName =
+            typeof pb.city === "object"
+              ? getItemName(pb.city, locale)
+              : pb.city || "";
+          return {
+            id: cleanId,
+            name: {
+              ar: pb.name?.ar || bName,
+              en: pb.name?.en || bName,
+            },
+            fullName: {
+              ar: cName ? `${bName} - ${cName}` : bName,
+              en: cName ? `${bName} - ${cName}` : bName,
+            },
+            city: cName,
+          };
+        }
+
+        return {
+          id: cleanId,
+          name: {
+            ar: `${isAr ? "فرع" : "Branch"} (${cleanId.slice(-4)})`,
+            en: `Branch (${cleanId.slice(-4)})`,
+          },
+          fullName: {
+            ar: `${isAr ? "فرع" : "Branch"} (${cleanId.slice(-4)})`,
+            en: `Branch (${cleanId.slice(-4)})`,
+          },
+          city: "",
+        };
+      })
       .filter(Boolean);
-  }, [selectedBranchIds, allBranchesMap]);
+  }, [
+    selectedBranchIds,
+    allBranchesMap,
+    values.branchTrips,
+    values.providerBranchs,
+    locale,
+    isAr,
+  ]);
 
   // Handle saving branch selections from sidebar
   const handleSaveSelectedBranches = useCallback(
@@ -319,7 +457,12 @@ const Step4BookingDates = ({
                     : "hover:border-mainColor/60"
                 )}
               >
-                <CalendarMonthOutlinedIcon className={cn("w-5 h-5 flex-shrink-0 me-2", hasFromDayErr ? "text-error" : "text-mainColor")} />
+                <CalendarMonthOutlinedIcon
+                  className={cn(
+                    "w-5 h-5 flex-shrink-0 me-2",
+                    hasFromDayErr ? "text-error" : "text-mainColor"
+                  )}
+                />
                 <input
                   id="fromDay"
                   type="date"
@@ -333,7 +476,9 @@ const Step4BookingDates = ({
                 />
               </div>
               {hasFromDayErr && (
-                <p className="text-xs text-error mt-1 font-medium">{fromDayErr}</p>
+                <p className="text-xs text-error mt-1 font-medium">
+                  {fromDayErr}
+                </p>
               )}
             </div>
 
@@ -352,7 +497,12 @@ const Step4BookingDates = ({
                     : "hover:border-mainColor/60"
                 )}
               >
-                <CalendarMonthOutlinedIcon className={cn("w-5 h-5 flex-shrink-0 me-2", hasToDayErr ? "text-error" : "text-mainColor")} />
+                <CalendarMonthOutlinedIcon
+                  className={cn(
+                    "w-5 h-5 flex-shrink-0 me-2",
+                    hasToDayErr ? "text-error" : "text-mainColor"
+                  )}
+                />
                 <input
                   id="toDay"
                   type="date"
@@ -366,16 +516,25 @@ const Step4BookingDates = ({
                 />
               </div>
               {hasToDayErr && (
-                <p className="text-xs text-error mt-1 font-medium">{toDayErr}</p>
+                <p className="text-xs text-error mt-1 font-medium">
+                  {toDayErr}
+                </p>
               )}
             </div>
 
             {/* Booking Deadline (in days before) */}
             <div>
               <label htmlFor="bookingBefore" className={labelCls}>
-                {t("bookingDeadline")} <span className="text-error ms-1">*</span>
+                {t("bookingDeadline")}{" "}
+                <span className="text-error ms-1">*</span>
               </label>
-              <div className={cn(fieldContainerCls, hasBookingBeforeErr && "border-error focus-within:border-error")}>
+              <div
+                className={cn(
+                  fieldContainerCls,
+                  hasBookingBeforeErr &&
+                    "border-error focus-within:border-error"
+                )}
+              >
                 <input
                   id="bookingBefore"
                   type="number"
@@ -390,7 +549,9 @@ const Step4BookingDates = ({
                 <UnfoldMoreOutlinedIcon className="w-4 h-4 text-textLight flex-shrink-0 ms-2" />
               </div>
               {hasBookingBeforeErr && (
-                <p className="text-xs text-error mt-1 font-medium">{bookingBeforeErr}</p>
+                <p className="text-xs text-error mt-1 font-medium">
+                  {bookingBeforeErr}
+                </p>
               )}
             </div>
           </div>
@@ -425,7 +586,9 @@ const Step4BookingDates = ({
                   multiple={true}
                   required={true}
                   value={
-                    Array.isArray(values.selectedDays) ? values.selectedDays : []
+                    Array.isArray(values.selectedDays)
+                      ? values.selectedDays
+                      : []
                   }
                   onChange={(e) => {
                     const val = Array.isArray(e.target.value)
@@ -454,8 +617,8 @@ const Step4BookingDates = ({
                     Array.isArray(values.monthDay)
                       ? values.monthDay
                       : values.monthDay
-                      ? [String(values.monthDay)]
-                      : []
+                        ? [String(values.monthDay)]
+                        : []
                   }
                   onChange={(e) => {
                     const val = Array.isArray(e.target.value)
@@ -481,109 +644,149 @@ const Step4BookingDates = ({
             {({ push, remove }) => (
               <div className="space-y-4">
                 {availableTimes.map((slot, index) => {
-                  const fromErr = getIn(errors, `availableTimes[${index}].from`);
-                  const fromTch = getIn(touched, `availableTimes[${index}].from`);
+                  const fromErr = getIn(
+                    errors,
+                    `availableTimes[${index}].from`
+                  );
+                  const fromTch = getIn(
+                    touched,
+                    `availableTimes[${index}].from`
+                  );
                   const toErr = getIn(errors, `availableTimes[${index}].to`);
                   const toTch = getIn(touched, `availableTimes[${index}].to`);
 
                   return (
-                  <div key={index} className="space-y-3">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-end">
-                      {/* From Hour */}
-                      <div>
-                        <label htmlFor={`availableTimes[${index}].from`} className={labelCls}>
-                          {t("fromHour")} <span className="text-error ms-1">*</span>
-                        </label>
-                        <div
-                          onClick={handleTimePickerContainerClick}
-                          className={cn(
-                            fieldContainerCls,
-                            "cursor-pointer",
-                            fromErr && fromTch && "border-error focus-within:border-error"
-                          )}
-                        >
-                          <AccessTimeOutlinedIcon className={cn("w-6 h-6 flex-shrink-0 me-2.5", fromErr && fromTch ? "text-error" : "text-mainColor")} />
-                          <input
-                            id={`availableTimes[${index}].from`}
-                            type="time"
-                            name={`availableTimes[${index}].from`}
-                            value={slot.from || ""}
-                            onClick={(e) => {
-                              try {
-                                if (typeof e.target.showPicker === "function") e.target.showPicker();
-                              } catch {}
-                            }}
-                            onChange={(e) => {
-                              handleChange(e);
-                              if (index === 0) {
-                                setFieldValue("fromHour", e.target.value);
-                              }
-                            }}
-                            onBlur={handleBlur}
-                            placeholder={t("fromHourPlaceholder")}
-                            className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:appearance-none"
-                          />
-                        </div>
-                        {fromErr && fromTch && (
-                          <p className="text-xs text-error mt-1 font-medium">{fromErr}</p>
-                        )}
-                      </div>
-
-                      {/* To Hour + Delete if multiple */}
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1">
-                          <label htmlFor={`availableTimes[${index}].to`} className={labelCls}>
-                            {t("toHour")} <span className="text-error ms-1">*</span>
+                    <div key={index} className="space-y-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-end">
+                        {/* From Hour */}
+                        <div>
+                          <label
+                            htmlFor={`availableTimes[${index}].from`}
+                            className={labelCls}
+                          >
+                            {t("fromHour")}{" "}
+                            <span className="text-error ms-1">*</span>
                           </label>
                           <div
                             onClick={handleTimePickerContainerClick}
                             className={cn(
                               fieldContainerCls,
                               "cursor-pointer",
-                              toErr && toTch && "border-error focus-within:border-error"
+                              fromErr &&
+                                fromTch &&
+                                "border-error focus-within:border-error"
                             )}
                           >
-                            <AccessTimeOutlinedIcon className={cn("w-6 h-6 flex-shrink-0 me-2.5", toErr && toTch ? "text-error" : "text-mainColor")} />
+                            <AccessTimeOutlinedIcon
+                              className={cn(
+                                "w-6 h-6 flex-shrink-0 me-2.5",
+                                fromErr && fromTch
+                                  ? "text-error"
+                                  : "text-mainColor"
+                              )}
+                            />
                             <input
-                              id={`availableTimes[${index}].to`}
+                              id={`availableTimes[${index}].from`}
                               type="time"
-                              name={`availableTimes[${index}].to`}
-                              value={slot.to || ""}
+                              name={`availableTimes[${index}].from`}
+                              value={slot.from || ""}
                               onClick={(e) => {
                                 try {
-                                  if (typeof e.target.showPicker === "function") e.target.showPicker();
+                                  if (typeof e.target.showPicker === "function")
+                                    e.target.showPicker();
                                 } catch {}
                               }}
                               onChange={(e) => {
                                 handleChange(e);
                                 if (index === 0) {
-                                  setFieldValue("toHour", e.target.value);
+                                  setFieldValue("fromHour", e.target.value);
                                 }
                               }}
                               onBlur={handleBlur}
-                              placeholder={t("toHourPlaceholder")}
+                              placeholder={t("fromHourPlaceholder")}
                               className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:appearance-none"
                             />
                           </div>
-                          {toErr && toTch && (
-                            <p className="text-xs text-error mt-1 font-medium">{toErr}</p>
+                          {fromErr && fromTch && (
+                            <p className="text-xs text-error mt-1 font-medium">
+                              {fromErr}
+                            </p>
                           )}
                         </div>
 
-                        {availableTimes.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => remove(index)}
-                            className="w-10 h-10 flex items-center justify-center text-error hover:bg-error/10 rounded-xl transition-colors cursor-pointer self-end mb-0.5"
-                          >
-                            <DeleteOutlineIcon className="w-5 h-5" />
-                          </button>
-                        )}
+                        {/* To Hour + Delete if multiple */}
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1">
+                            <label
+                              htmlFor={`availableTimes[${index}].to`}
+                              className={labelCls}
+                            >
+                              {t("toHour")}{" "}
+                              <span className="text-error ms-1">*</span>
+                            </label>
+                            <div
+                              onClick={handleTimePickerContainerClick}
+                              className={cn(
+                                fieldContainerCls,
+                                "cursor-pointer",
+                                toErr &&
+                                  toTch &&
+                                  "border-error focus-within:border-error"
+                              )}
+                            >
+                              <AccessTimeOutlinedIcon
+                                className={cn(
+                                  "w-6 h-6 flex-shrink-0 me-2.5",
+                                  toErr && toTch
+                                    ? "text-error"
+                                    : "text-mainColor"
+                                )}
+                              />
+                              <input
+                                id={`availableTimes[${index}].to`}
+                                type="time"
+                                name={`availableTimes[${index}].to`}
+                                value={slot.to || ""}
+                                onClick={(e) => {
+                                  try {
+                                    if (
+                                      typeof e.target.showPicker === "function"
+                                    )
+                                      e.target.showPicker();
+                                  } catch {}
+                                }}
+                                onChange={(e) => {
+                                  handleChange(e);
+                                  if (index === 0) {
+                                    setFieldValue("toHour", e.target.value);
+                                  }
+                                }}
+                                onBlur={handleBlur}
+                                placeholder={t("toHourPlaceholder")}
+                                className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:appearance-none"
+                              />
+                            </div>
+                            {toErr && toTch && (
+                              <p className="text-xs text-error mt-1 font-medium">
+                                {toErr}
+                              </p>
+                            )}
+                          </div>
+
+                          {availableTimes.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => remove(index)}
+                              className="w-10 h-10 flex items-center justify-center text-error hover:bg-error/10 rounded-xl transition-colors cursor-pointer self-end mb-0.5"
+                            >
+                              <DeleteOutlineIcon className="w-5 h-5" />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
 
                 {/* Add Time Slot Button (Orange styled matching Figma) */}
                 <button
@@ -734,11 +937,15 @@ const Step4BookingDates = ({
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                         <div>
                           <label className={labelCls}>
-                            {t("startDate")} <span className="text-error ms-1">*</span>
+                            {t("startDate")}{" "}
+                            <span className="text-error ms-1">*</span>
                           </label>
                           <div
                             onClick={handleDatePickerContainerClick}
-                            className={cn(fieldContainerCls, "cursor-pointer hover:border-mainColor/60")}
+                            className={cn(
+                              fieldContainerCls,
+                              "cursor-pointer hover:border-mainColor/60"
+                            )}
                           >
                             <CalendarMonthOutlinedIcon className="w-5 h-5 text-mainColor flex-shrink-0 me-2" />
                             <input
@@ -747,7 +954,10 @@ const Step4BookingDates = ({
                               min={todayStr}
                               value={branchData.fromDay || ""}
                               onChange={(e) => {
-                                setFieldValue(`branchDates.${branch.id}.fromDay`, e.target.value);
+                                setFieldValue(
+                                  `branchDates.${branch.id}.fromDay`,
+                                  e.target.value
+                                );
                               }}
                               placeholder={t("startDatePlaceholder")}
                               className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark cursor-pointer"
@@ -757,11 +967,15 @@ const Step4BookingDates = ({
 
                         <div>
                           <label className={labelCls}>
-                            {t("endDate")} <span className="text-error ms-1">*</span>
+                            {t("endDate")}{" "}
+                            <span className="text-error ms-1">*</span>
                           </label>
                           <div
                             onClick={handleDatePickerContainerClick}
-                            className={cn(fieldContainerCls, "cursor-pointer hover:border-mainColor/60")}
+                            className={cn(
+                              fieldContainerCls,
+                              "cursor-pointer hover:border-mainColor/60"
+                            )}
                           >
                             <CalendarMonthOutlinedIcon className="w-5 h-5 text-mainColor flex-shrink-0 me-2" />
                             <input
@@ -770,7 +984,10 @@ const Step4BookingDates = ({
                               min={branchData.fromDay || todayStr}
                               value={branchData.toDay || ""}
                               onChange={(e) => {
-                                setFieldValue(`branchDates.${branch.id}.toDay`, e.target.value);
+                                setFieldValue(
+                                  `branchDates.${branch.id}.toDay`,
+                                  e.target.value
+                                );
                               }}
                               placeholder={t("endDatePlaceholder")}
                               className="w-full bg-transparent border-none outline-none font-somar text-sm text-textDark cursor-pointer"
@@ -780,7 +997,8 @@ const Step4BookingDates = ({
 
                         <div>
                           <label className={labelCls}>
-                            {t("bookingDeadline")} <span className="text-error ms-1">*</span>
+                            {t("bookingDeadline")}{" "}
+                            <span className="text-error ms-1">*</span>
                           </label>
                           <div className={fieldContainerCls}>
                             <input
@@ -869,8 +1087,8 @@ const Step4BookingDates = ({
                                 Array.isArray(branchData.monthDay)
                                   ? branchData.monthDay
                                   : branchData.monthDay
-                                  ? [String(branchData.monthDay)]
-                                  : []
+                                    ? [String(branchData.monthDay)]
+                                    : []
                               }
                               onChange={(e) => {
                                 const val = Array.isArray(e.target.value)
@@ -923,7 +1141,10 @@ const Step4BookingDates = ({
                                   </label>
                                   <div
                                     onClick={handleTimePickerContainerClick}
-                                    className={cn(fieldContainerCls, "cursor-pointer")}
+                                    className={cn(
+                                      fieldContainerCls,
+                                      "cursor-pointer"
+                                    )}
                                   >
                                     <AccessTimeOutlinedIcon className="w-6 h-6 text-mainColor flex-shrink-0 me-2.5" />
                                     <input
@@ -932,7 +1153,10 @@ const Step4BookingDates = ({
                                       value={slot.from || ""}
                                       onClick={(e) => {
                                         try {
-                                          if (typeof e.target.showPicker === "function") {
+                                          if (
+                                            typeof e.target.showPicker ===
+                                            "function"
+                                          ) {
                                             e.target.showPicker();
                                           }
                                         } catch {}
@@ -962,7 +1186,10 @@ const Step4BookingDates = ({
                                     </label>
                                     <div
                                       onClick={handleTimePickerContainerClick}
-                                      className={cn(fieldContainerCls, "cursor-pointer")}
+                                      className={cn(
+                                        fieldContainerCls,
+                                        "cursor-pointer"
+                                      )}
                                     >
                                       <AccessTimeOutlinedIcon className="w-6 h-6 text-mainColor flex-shrink-0 me-2.5" />
                                       <input
@@ -971,7 +1198,10 @@ const Step4BookingDates = ({
                                         value={slot.to || ""}
                                         onClick={(e) => {
                                           try {
-                                            if (typeof e.target.showPicker === "function") {
+                                            if (
+                                              typeof e.target.showPicker ===
+                                              "function"
+                                            ) {
                                               e.target.showPicker();
                                             }
                                           } catch {}

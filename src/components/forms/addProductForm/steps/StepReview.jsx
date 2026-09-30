@@ -339,36 +339,75 @@ const StepReview = ({
     if (!Array.isArray(values.providerBranchs)) return [];
     return values.providerBranchs
       .map((bId) => {
-        const branchObj =
+        const cleanId =
+          typeof bId === "object" && bId !== null
+            ? String(bId._id || bId.id || "").trim()
+            : String(bId || "").trim();
+
+        if (!cleanId) return null;
+
+        let branchObj =
           typeof bId === "object" && bId !== null
             ? bId
             : providerBranchsOptions.find(
-                (item) => (item._id || item.id) === bId
+                (item) => String(item._id || item.id).trim() === cleanId
               );
-        if (!branchObj) return null;
-        const id = branchObj._id || branchObj.id || bId;
-        const name = getLocalizedName(branchObj);
+
+        // Fallback to values.branchTrips if not in providerBranchsOptions
+        if (!branchObj && Array.isArray(values.branchTrips)) {
+          const tripBranch = values.branchTrips.find((bt) => {
+            const btId =
+              bt?.branch?._id || bt?.branch?.id || bt?.branch || bt?.branchId;
+            return String(btId).trim() === cleanId;
+          });
+          if (tripBranch?.branch && typeof tripBranch.branch === "object") {
+            branchObj = tripBranch.branch;
+          }
+        }
+
+        const id = cleanId;
+        const name = branchObj ? getLocalizedName(branchObj) : id;
         const cityId =
-          typeof branchObj.city === "object"
+          branchObj && typeof branchObj.city === "object"
             ? branchObj.city?._id || branchObj.city?.id
-            : branchObj.city;
-        const cityFound = cityOptions.find((c) => (c._id || c.id) === cityId);
+            : branchObj?.city;
+        const cityFound = cityId
+          ? cityOptions.find(
+              (c) => String(c._id || c.id).trim() === String(cityId).trim()
+            )
+          : null;
         const cityName =
-          getLocalizedName(cityFound) || getLocalizedName(branchObj.city);
+          getLocalizedName(cityFound) ||
+          getLocalizedName(branchObj?.city) ||
+          (typeof branchObj?.city === "string" ? branchObj.city : "");
 
         // Check custom branch price/dates overrides
-        const customPrice = values.branchPricing?.[id]?.price;
-        const customHours =
-          values.branchDates?.[id]?.fromHour && values.branchDates?.[id]?.toHour
-            ? `${formatTime12h(values.branchDates[id].fromHour)} - ${formatTime12h(values.branchDates[id].toHour)}`
-            : null;
+        const branchPricingData = values.branchPricing?.[id];
+        const customPrice =
+          activeView === "B2B"
+            ? branchPricingData?.schoolsPrice || branchPricingData?.price
+            : branchPricingData?.price;
+
+        const branchDateData = values.branchDates?.[id];
+        let customHours = null;
+        if (
+          Array.isArray(branchDateData?.availableTimes) &&
+          branchDateData.availableTimes.length > 0
+        ) {
+          const t0 = branchDateData.availableTimes[0];
+          if (t0?.fromHour && t0?.toHour) {
+            customHours = `${formatTime12h(t0.fromHour)} - ${formatTime12h(t0.toHour)}`;
+          }
+        } else if (branchDateData?.fromHour && branchDateData?.toHour) {
+          customHours = `${formatTime12h(branchDateData.fromHour)} - ${formatTime12h(branchDateData.toHour)}`;
+        }
 
         return {
           id,
           name,
           city: cityName,
-          location: branchObj.location || null,
-          address: branchObj.address || "",
+          location: branchObj?.location || null,
+          address: branchObj?.address || "",
           customPrice,
           customHours,
         };
@@ -376,11 +415,14 @@ const StepReview = ({
       .filter(Boolean);
   }, [
     values.providerBranchs,
+    values.branchTrips,
     providerBranchsOptions,
     cityOptions,
     values.branchPricing,
     values.branchDates,
+    activeView,
     locale,
+    getLocalizedName,
   ]);
 
   // Filter branches by search query
@@ -1439,8 +1481,16 @@ const StepReview = ({
                     const lat = branch.location?.lat || 24.7136;
                     const lng = branch.location?.lng || 46.6753;
                     const mapUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+                    const rawCap = values.branchCapacities?.[branch.id];
                     const capacityVal =
-                      values.branchCapacities?.[branch.id] || 50;
+                      typeof rawCap === "object" && rawCap !== null
+                        ? rawCap.min && rawCap.max && rawCap.min !== rawCap.max
+                          ? `${rawCap.min} - ${rawCap.max}`
+                          : rawCap.max || rawCap.min || ""
+                        : rawCap ||
+                          values.availableSeats?.max ||
+                          values.availableSeats?.min ||
+                          50;
 
                     return (
                       <div
@@ -1465,7 +1515,7 @@ const StepReview = ({
                           )}
                         </div>
 
-                        {/* 2 Stats Badges matching Figma */}
+                        {/* Stats Badges matching Figma */}
                         <div className="grid grid-cols-2 gap-2 text-xs">
                           <div className="flex items-center justify-between p-2 rounded-xl bg-homeBg/40 border border-border">
                             <span className="text-textLight font-medium">
@@ -1487,6 +1537,33 @@ const StepReview = ({
                             </span>
                           </div>
                         </div>
+
+                        {/* Custom Price or Hours Badges */}
+                        {(branch.customPrice || branch.customHours) && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            {branch.customPrice && (
+                              <div className="flex items-center justify-between p-2 rounded-xl bg-emerald-50/50 border border-emerald-100">
+                                <span className="text-textLight font-medium">
+                                  {tSub("reviewBranchCustomPrice")}
+                                </span>
+                                <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-bold text-[11px]">
+                                  {formatCurrency(branch.customPrice, locale)}
+                                </span>
+                              </div>
+                            )}
+                            {branch.customHours && (
+                              <div className="flex items-center justify-between p-2 rounded-xl bg-mainColor/[0.04] border border-mainColor/10">
+                                <span className="text-textLight font-medium">
+                                  {tSub("reviewBranchCustomHours")}
+                                </span>
+                                <span className="px-2 py-0.5 rounded-md bg-mainColor/10 text-mainColor font-bold text-[11px] flex items-center gap-1">
+                                  <AccessTimeIcon className="w-3.5 h-3.5" />
+                                  {branch.customHours}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )}
 
                         {/* Additional Services / Academic stages tags */}
                         {academicStageLabels.length > 0 && (

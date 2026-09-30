@@ -80,23 +80,38 @@ const ChannelAudienceCard = memo(
     onRemoveTag,
     tCommon,
     extraTopContent,
+    isNewlyAdded = false,
+    badgeText = "",
   }) => {
     return (
       <section
         aria-labelledby={id}
-        className="bg-white rounded-2xl border border-border p-6 sm:p-8 transition-all duration-300 shadow-none text-start animate-fadeIn"
+        className={cn(
+          "bg-white rounded-2xl border p-6 sm:p-8 transition-all duration-300 shadow-none text-start animate-fadeIn",
+          isNewlyAdded
+            ? "border-amber-300 ring-2 ring-amber-300/40 bg-amber-50/[0.04]"
+            : "border-border"
+        )}
       >
         {/* Header */}
-        <div className="border-b border-border pb-3.5 mb-5 text-start">
-          <h3
-            id={id}
-            className="font-somar font-bold text-base text-textDark leading-6"
-          >
-            {title}
-          </h3>
-          <p className="font-somar font-medium text-xs sm:text-sm text-textLight leading-5 !mt-1">
-            {subtitle}
-          </p>
+        <div className="border-b border-border pb-3.5 mb-5 text-start flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div>
+            <h3
+              id={id}
+              className="font-somar font-bold text-base text-textDark leading-6"
+            >
+              {title}
+            </h3>
+            <p className="font-somar font-medium text-xs sm:text-sm text-textLight leading-5 !mt-1">
+              {subtitle}
+            </p>
+          </div>
+          {badgeText && isNewlyAdded && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300 flex-shrink-0 self-start sm:self-auto animate-pulse">
+              <span className="w-2 h-2 rounded-full bg-amber-500" />
+              <span>{badgeText}</span>
+            </span>
+          )}
         </div>
 
         {/* Optional Extra Top Content (e.g. Instant Confirmation Switch) */}
@@ -159,6 +174,9 @@ ChannelAudienceCard.displayName = "ChannelAudienceCard";
 const Step4SalesChannels = ({
   formSelectionData = null,
   isSelectionsLoading = false,
+  isEditMode = false,
+  originalSystemTypes = [],
+  onNavigateToPricing,
 }) => {
   const t = useTranslations("providerProfile.products.newAddPage.step4");
   const tCommon = useTranslations("providerProfile.products.newAddPage.common");
@@ -191,7 +209,12 @@ const Step4SalesChannels = ({
         ? "B2B"
         : "";
 
-  // Set system types based on chosen option
+  // Detect newly added channels (only in edit mode)
+  const addedB2C = isEditMode && selectedSystemTypes.includes("B2C") && !originalSystemTypes.includes("B2C");
+  const addedB2B = isEditMode && selectedSystemTypes.includes("B2B") && !originalSystemTypes.includes("B2B");
+  const showChannelChangeAlert = addedB2C || addedB2B;
+
+  // Set system types based on chosen option and auto-scroll to revealed section
   const handleSelectChannel = useCallback(
     (channelKey) => {
       let nextTypes = [];
@@ -204,6 +227,23 @@ const Step4SalesChannels = ({
       }
       setFieldValue("systemTypes", nextTypes, true);
       setFieldTouched("systemTypes", true, false);
+
+      // Auto-scroll to newly revealed section so user notices it immediately
+      if (typeof window !== "undefined") {
+        setTimeout(() => {
+          if (channelKey === "B2B" || channelKey === "BOTH") {
+            const el = document.getElementById("b2b-stages-title");
+            if (el) {
+              el.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+          } else if (channelKey === "B2C") {
+            const el = document.getElementById("b2c-audience-title");
+            if (el) {
+              el.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+          }
+        }, 150);
+      }
     },
     [setFieldValue, setFieldTouched]
   );
@@ -431,6 +471,56 @@ const Step4SalesChannels = ({
               : t("validations.salesChannelRequired")}
           </p>
         )}
+
+        {/* Channel Change Alert (edit mode only) */}
+        {showChannelChangeAlert && (
+          <div
+            className="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3 animate-fadeIn"
+            role="alert"
+          >
+            <div className="flex items-start gap-3 flex-1">
+              <div className="w-9 h-9 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <p className="font-somar text-sm font-medium text-amber-800 leading-6">
+                {addedB2C && addedB2B
+                  ? t("channelChangeAlert.addedBoth")
+                  : addedB2C
+                    ? t("channelChangeAlert.addedB2C")
+                    : t("channelChangeAlert.addedB2B")}
+              </p>
+            </div>
+            {onNavigateToPricing && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (addedB2B && (!values.academicStages || values.academicStages.length === 0)) {
+                    setFieldTouched("academicStages", true, true);
+                    const el = document.getElementById("b2b-stages-title");
+                    if (el) {
+                      el.scrollIntoView({ behavior: "smooth", block: "center" });
+                    }
+                    return;
+                  }
+                  if (addedB2C && (!values.b2cTargetAudiences || values.b2cTargetAudiences.length === 0)) {
+                    setFieldTouched("b2cTargetAudiences", true, true);
+                    const el = document.getElementById("b2c-audience-title");
+                    if (el) {
+                      el.scrollIntoView({ behavior: "smooth", block: "center" });
+                    }
+                    return;
+                  }
+                  onNavigateToPricing();
+                }}
+                className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-somar text-sm font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap flex-shrink-0 active:scale-[0.97]"
+              >
+                {t("channelChangeAlert.goToPricing")}
+              </button>
+            )}
+          </div>
+        )}
       </section>
 
       {/* ─── CARD 2: B2B STUDY STAGES (Schools) ─── */}
@@ -458,47 +548,8 @@ const Step4SalesChannels = ({
           onBlur={handleBlur}
           onRemoveTag={handleRemoveStage}
           tCommon={tCommon}
-          /* extraTopContent={
-            <div className="bg-white rounded-2xl border border-border p-4 sm:p-5 flex items-center justify-between gap-4 mb-5 shadow-xs transition-all">
-              <div className="flex flex-col gap-1 text-start">
-                <h4 className="font-somar font-bold text-sm sm:text-base text-textDark">
-                  {t("b2bSection.instantConfirmationTitle")}
-                </h4>
-                <p className="font-somar font-medium text-xs sm:text-sm text-textLight">
-                  {t("b2bSection.instantConfirmationSubtitle")}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                role="switch"
-                aria-checked={Boolean(values.istantConfirmation)}
-                onClick={() =>
-                  setFieldValue(
-                    "istantConfirmation",
-                    !Boolean(values.istantConfirmation),
-                    true
-                  )
-                }
-                className={cn(
-                  "relative inline-flex h-7 w-12 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-mainColor focus:ring-offset-2",
-                  values.istantConfirmation ? "bg-mainColor" : "bg-[#C7C7CC]"
-                )}
-              >
-                <span
-                  aria-hidden="true"
-                  className={cn(
-                    "pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-md transition duration-200 ease-in-out",
-                    values.istantConfirmation
-                      ? isAr
-                        ? "-translate-x-5"
-                        : "translate-x-5"
-                      : "translate-x-0"
-                  )}
-                />
-              </button>
-            </div>
-          } */
+          isNewlyAdded={addedB2B}
+          badgeText={t("b2bSection.requiredBadge")}
         />
       )}
 
@@ -527,6 +578,8 @@ const Step4SalesChannels = ({
           onBlur={handleBlur}
           onRemoveTag={handleRemoveAudience}
           tCommon={tCommon}
+          isNewlyAdded={addedB2C}
+          badgeText={t("b2cSection.requiredBadge")}
         />
       )}
     </div>

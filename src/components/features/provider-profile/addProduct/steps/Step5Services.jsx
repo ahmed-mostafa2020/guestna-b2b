@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useMemo, useState, useCallback } from "react";
+import { memo, useMemo, useState, useCallback, useEffect } from "react";
 import { useFormikContext, FieldArray, getIn } from "formik";
 import { useTranslations, useLocale } from "next-intl";
 import TextInputGroup from "@components/forms/TextInputGroup";
@@ -12,17 +12,13 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import BranchCustomizationSidebar from "./BranchCustomizationSidebar";
-import {
-  buildBranchGroups,
-  getItemName,
-} from "../branchConstants";
+import { buildBranchGroups, getItemName } from "../branchConstants";
 import { SERVICES_TYPES } from "@constants/servicesTypes";
 
 export { SERVICES_TYPES };
 
 const isHexObjectId = (str) =>
   typeof str === "string" && /^[0-9a-fA-F]{24}$/.test(str.trim());
-
 
 /**
  * Reusable Service Row Item supporting Service Type filtering
@@ -146,7 +142,9 @@ const ServiceRowItem = memo(
                 placeholder={t("serviceTypePlaceholder")}
                 border="1px solid var(--color-border)"
                 list={servicesTypeOptions.map((opt) => opt.label)}
-                disabled={isSelectionsLoading || servicesTypeOptions.length === 0}
+                disabled={
+                  isSelectionsLoading || servicesTypeOptions.length === 0
+                }
                 errorBorder={Boolean(serviceTouched && !currentServiceType)}
               />
             </div>
@@ -261,12 +259,7 @@ const Step5Services = ({
   const locale = useLocale();
   const isAr = locale === "ar";
 
-  const {
-    values,
-    errors,
-    touched,
-    setFieldValue,
-  } = useFormikContext();
+  const { values, errors, touched, setFieldValue } = useFormikContext();
 
   // Helper for field error state matching Step 1
   const getFieldErrorState = useCallback(
@@ -278,8 +271,7 @@ const Step5Services = ({
         error: typeof error === "string" ? error : undefined,
         showError: Boolean(
           error &&
-            (isTouched ||
-              (typeof val === "string" && val.trim().length > 0))
+          (isTouched || (typeof val === "string" && val.trim().length > 0))
         ),
       };
     },
@@ -292,17 +284,40 @@ const Step5Services = ({
   // Manage open branches accordion state
   const [openBranches, setOpenBranches] = useState({});
 
-  // Prepare branch groups (by city)
+  // Prepare branch groups (by city), merging formSelectionData, values.branchTrips, and values.providerBranchs
   const branchGroups = useMemo(() => {
-    return buildBranchGroups(formSelectionData?.providerBranchs, locale, isAr);
-  }, [formSelectionData?.providerBranchs, locale, isAr]);
+    const sources = [
+      ...(Array.isArray(formSelectionData?.providerBranchs)
+        ? formSelectionData.providerBranchs
+        : []),
+    ];
+    (values.branchTrips || []).forEach((bt) => {
+      if (bt?.branch && typeof bt.branch === "object") {
+        sources.push(bt.branch);
+      }
+    });
+    (values.providerBranchs || []).forEach((b) => {
+      if (b && typeof b === "object") {
+        sources.push(b);
+      }
+    });
+    return buildBranchGroups(sources, locale, isAr);
+  }, [
+    formSelectionData?.providerBranchs,
+    values.branchTrips,
+    values.providerBranchs,
+    locale,
+    isAr,
+  ]);
 
   // Flattened branch map for quick lookup by ID
   const allBranchesMap = useMemo(() => {
     const map = new Map();
     branchGroups.forEach((group) => {
       group.branches?.forEach((b) => {
-        map.set(b.id, b);
+        if (b?.id) {
+          map.set(String(b.id).trim(), b);
+        }
       });
     });
     return map;
@@ -310,27 +325,134 @@ const Step5Services = ({
 
   // Selected branch IDs for customization
   const [selectedBranchIds, setSelectedBranchIds] = useState(() => {
-    if (Array.isArray(values.customizedBranchIds) && values.customizedBranchIds.length > 0) {
-      return values.customizedBranchIds;
+    if (
+      Array.isArray(values.customizedBranchIds) &&
+      values.customizedBranchIds.length > 0
+    ) {
+      return values.customizedBranchIds.map(String).map((s) => s.trim());
     }
     if (values.branchServices && typeof values.branchServices === "object") {
       const keys = Object.keys(values.branchServices).filter((k) => {
         const item = values.branchServices[k];
         return Array.isArray(item) && item.length > 0;
       });
-      if (keys.length > 0) return keys;
+      if (keys.length > 0) return keys.map(String).map((s) => s.trim());
     }
     return [];
   });
+
+  // Sync selectedBranchIds when Formik values reinitialize or update
+  useEffect(() => {
+    const idsFromValues =
+      Array.isArray(values.customizedBranchIds) &&
+      values.customizedBranchIds.length > 0
+        ? values.customizedBranchIds.map(String).map((s) => s.trim())
+        : values.branchServices && typeof values.branchServices === "object"
+          ? Object.keys(values.branchServices)
+              .filter((k) => {
+                const item = values.branchServices[k];
+                return Array.isArray(item) && item.length > 0;
+              })
+              .map(String)
+              .map((s) => s.trim())
+          : [];
+    if (idsFromValues.length > 0) {
+      setSelectedBranchIds(idsFromValues);
+      setOpenBranches((prev) => {
+        if (Object.keys(prev).length === 0) {
+          return { [idsFromValues[0]]: true };
+        }
+        return prev;
+      });
+    }
+  }, [values.customizedBranchIds, values.branchServices]);
 
   const isCustomizedActive = selectedBranchIds.length > 0;
 
   // Active customized branch objects to render in form
   const activeCustomizedBranches = useMemo(() => {
     return selectedBranchIds
-      .map((id) => allBranchesMap.get(id))
+      .map((id) => {
+        const cleanId = String(id).trim();
+        const found = allBranchesMap.get(cleanId);
+        if (found) return found;
+
+        // Check values.branchTrips
+        const bt = (values.branchTrips || []).find((item) => {
+          const rawB = item?.branch || item?.providerBranch || item?.branchId;
+          const bId = typeof rawB === "object" ? rawB?._id || rawB?.id : rawB;
+          return String(bId).trim() === cleanId;
+        });
+        if (bt && typeof bt.branch === "object" && bt.branch !== null) {
+          const bName =
+            getItemName(bt.branch, locale) || (isAr ? "فرع" : "Branch");
+          const cName =
+            typeof bt.branch.city === "object"
+              ? getItemName(bt.branch.city, locale)
+              : bt.branch.city || "";
+          return {
+            id: cleanId,
+            name: {
+              ar: bt.branch.name?.ar || bName,
+              en: bt.branch.name?.en || bName,
+            },
+            fullName: {
+              ar: cName ? `${bName} - ${cName}` : bName,
+              en: cName ? `${bName} - ${cName}` : bName,
+            },
+            city: cName,
+          };
+        }
+
+        // Check values.providerBranchs
+        const pb = (values.providerBranchs || []).find((item) => {
+          if (typeof item === "object" && item !== null) {
+            return String(item._id || item.id).trim() === cleanId;
+          }
+          return false;
+        });
+        if (pb) {
+          const bName = getItemName(pb, locale) || (isAr ? "فرع" : "Branch");
+          const cName =
+            typeof pb.city === "object"
+              ? getItemName(pb.city, locale)
+              : pb.city || "";
+          return {
+            id: cleanId,
+            name: {
+              ar: pb.name?.ar || bName,
+              en: pb.name?.en || bName,
+            },
+            fullName: {
+              ar: cName ? `${bName} - ${cName}` : bName,
+              en: cName ? `${bName} - ${cName}` : bName,
+            },
+            city: cName,
+          };
+        }
+
+        return {
+          id: cleanId,
+          name: {
+            ar: `${isAr ? "فرع" : "Branch"} (${cleanId.slice(-4)})`,
+            en: `Branch (${cleanId.slice(-4)})`,
+          },
+          fullName: {
+            ar: `${isAr ? "فرع" : "Branch"} (${cleanId.slice(-4)})`,
+            en: `Branch (${cleanId.slice(-4)})`,
+          },
+          city: "",
+        };
+      })
       .filter(Boolean);
-  }, [selectedBranchIds, allBranchesMap]);
+  }, [
+    selectedBranchIds,
+    allBranchesMap,
+    values.branchTrips,
+    values.providerBranchs,
+    locale,
+    isAr,
+  ]);
 
   // Handle saving branch selections from sidebar
   const handleSaveSelectedBranches = useCallback(
@@ -340,9 +462,17 @@ const Step5Services = ({
 
       const currentBranchServices = { ...(values.branchServices || {}) };
       newSelectedIds.forEach((bId) => {
-        if (!currentBranchServices[bId] || currentBranchServices[bId].length === 0) {
+        if (
+          !currentBranchServices[bId] ||
+          currentBranchServices[bId].length === 0
+        ) {
           currentBranchServices[bId] = [
-            { service: "", serviceType: "", price: "", note: { ar: "", en: "" } },
+            {
+              service: "",
+              serviceType: "",
+              price: "",
+              note: { ar: "", en: "" },
+            },
           ];
         }
       });
@@ -481,7 +611,10 @@ const Step5Services = ({
                       servicesOptions={servicesOptions}
                       servicesTypeOptions={servicesTypeOptions}
                       onChangeServiceType={(newType) => {
-                        setFieldValue(`services[${index}].serviceType`, newType);
+                        setFieldValue(
+                          `services[${index}].serviceType`,
+                          newType
+                        );
                         // Reset service if current service doesn't belong to the new type
                         const currentServiceObj = servicesOptions.find(
                           (opt) => (opt?._id || opt?.id) === item.service
@@ -491,11 +624,15 @@ const Step5Services = ({
                           currentServiceObj?.serviceType;
                         if (matchType !== newType) {
                           setFieldValue(`services[${index}].service`, "");
-                          setFieldValue(`services[${index}].name`, { ar: "", en: "" });
+                          setFieldValue(`services[${index}].name`, {
+                            ar: "",
+                            en: "",
+                          });
                         }
                       }}
                       onChangeService={(selectedObj, selectedName) => {
-                        const sId = selectedObj?._id || selectedObj?.id || selectedName;
+                        const sId =
+                          selectedObj?._id || selectedObj?.id || selectedName;
                         setFieldValue(`services[${index}].service`, sId);
                         if (selectedObj) {
                           const nameEn =
@@ -530,8 +667,12 @@ const Step5Services = ({
                       isSelectionsLoading={isSelectionsLoading}
                       serviceTouched={serviceTouched}
                       serviceErr={serviceErr}
-                      arNoteState={getFieldErrorState(`services[${index}].note.ar`)}
-                      enNoteState={getFieldErrorState(`services[${index}].note.en`)}
+                      arNoteState={getFieldErrorState(
+                        `services[${index}].note.ar`
+                      )}
+                      enNoteState={getFieldErrorState(
+                        `services[${index}].note.en`
+                      )}
                       t={t}
                       locale={locale}
                       labelCls={labelCls}
@@ -661,7 +802,12 @@ const Step5Services = ({
                 branch.fullName?.en ||
                 "";
               const branchServices = branchServicesData[branch.id] || [
-                { service: "", serviceType: "", price: "", note: { ar: "", en: "" } },
+                {
+                  service: "",
+                  serviceType: "",
+                  price: "",
+                  note: { ar: "", en: "" },
+                },
               ];
 
               return (
@@ -718,7 +864,10 @@ const Step5Services = ({
                               updated[bIdx] = {
                                 ...updated[bIdx],
                                 serviceType: newType,
-                                service: matchType === newType ? updated[bIdx].service : "",
+                                service:
+                                  matchType === newType
+                                    ? updated[bIdx].service
+                                    : "",
                               };
                               setFieldValue(
                                 `branchServices.${branch.id}`,
@@ -795,7 +944,9 @@ const Step5Services = ({
                                 touched,
                                 `branchServices.${branch.id}[${bIdx}].service`
                               ) ||
-                              Boolean(getIn(touched, `branchServices.${branch.id}`))
+                              Boolean(
+                                getIn(touched, `branchServices.${branch.id}`)
+                              )
                             }
                             serviceErr={
                               getIn(
