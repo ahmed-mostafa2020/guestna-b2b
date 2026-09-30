@@ -118,7 +118,7 @@ const ReportTable = ({
                 <div className="flex gap-[6px] items-center justify-end">
                   {canConfirmAchievement &&
                   !booking.survey &&
-                  booking.status !== TRIP_STATUS.PENDING &&
+                  booking.status === TRIP_STATUS.PENDING &&
                   new Date(booking.day) <= new Date() ? (
                     <button
                       disabled={disabledBookingIds.has(booking._id)}
