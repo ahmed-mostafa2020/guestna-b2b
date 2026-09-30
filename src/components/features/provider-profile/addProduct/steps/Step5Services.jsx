@@ -16,6 +16,7 @@ import {
   buildUnifiedBranchGroups,
   buildBranchesMap,
   resolveBranchById,
+  getItemName,
 } from "../branchConstants";
 import { SERVICES_TYPES } from "@constants/servicesTypes";
 
