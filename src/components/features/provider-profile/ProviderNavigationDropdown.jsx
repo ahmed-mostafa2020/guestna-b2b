@@ -12,6 +12,7 @@ import {
   Storefront as StorefrontIcon,
   ListAlt as ListAltIcon,
   Business as BusinessIcon,
+  DescriptionOutlined as DescriptionIcon,
 } from "@mui/icons-material";
 import React from "react";
 import { CONSTANT_VALUES } from "@constants/constantValues";
@@ -50,6 +51,12 @@ const ProviderNavigationDropdown = () => {
       title: t("providerProfile.aside.main"),
       icon: <HomeIcon />,
       path: providerBasePath,
+    },
+    {
+      id: "onboarding",
+      title: t("providerProfile.aside.onboarding"),
+      icon: <DescriptionIcon />,
+      path: `${providerBasePath}/onboarding`,
     },
     {
       id: "products-management",
