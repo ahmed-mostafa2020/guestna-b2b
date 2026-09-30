@@ -18,7 +18,9 @@ import { newSarSmall } from "@assets/svg";
 import { cn } from "@utils/helpers/cn";
 import BranchCustomizationSidebar from "./BranchCustomizationSidebar";
 import {
-  buildBranchGroups,
+  buildUnifiedBranchGroups,
+  buildBranchesMap,
+  resolveBranchById,
   getItemName,
   getItemDescription,
 } from "../branchConstants";
@@ -232,22 +234,13 @@ const Step8Pricing = ({
 
   // Branch groups mapping (merging formSelectionData, values.branchTrips, and values.providerBranchs)
   const branchGroups = useMemo(() => {
-    const sources = [
-      ...(Array.isArray(formSelectionData?.providerBranchs)
-        ? formSelectionData.providerBranchs
-        : []),
-    ];
-    (values.branchTrips || []).forEach((bt) => {
-      if (bt?.branch && typeof bt.branch === "object") {
-        sources.push(bt.branch);
-      }
-    });
-    (values.providerBranchs || []).forEach((b) => {
-      if (b && typeof b === "object") {
-        sources.push(b);
-      }
-    });
-    return buildBranchGroups(sources, locale, isAr);
+    return buildUnifiedBranchGroups(
+      formSelectionData?.providerBranchs,
+      values.branchTrips,
+      values.providerBranchs,
+      locale,
+      isAr
+    );
   }, [
     formSelectionData?.providerBranchs,
     values.branchTrips,
@@ -257,15 +250,7 @@ const Step8Pricing = ({
   ]);
 
   const allBranchesMap = useMemo(() => {
-    const map = new Map();
-    branchGroups.forEach((group) => {
-      group.branches?.forEach((b) => {
-        if (b?.id) {
-          map.set(String(b.id).trim(), b);
-        }
-      });
-    });
-    return map;
+    return buildBranchesMap(branchGroups);
   }, [branchGroups]);
 
   // Selected customized branch IDs (handles both customizedPricingBranches and branchPricing keys)
@@ -292,77 +277,16 @@ const Step8Pricing = ({
 
   const activeCustomizedBranches = useMemo(() => {
     return customizedBranchIds
-      .map((id) => {
-        const cleanId = String(id).trim();
-        const found = allBranchesMap.get(cleanId);
-        if (found) return found;
-
-        // Check values.branchTrips
-        const bt = (values.branchTrips || []).find((item) => {
-          const rawB = item?.branch || item?.providerBranch || item?.branchId;
-          const bId = typeof rawB === "object" ? rawB?._id || rawB?.id : rawB;
-          return String(bId).trim() === cleanId;
-        });
-        if (bt && typeof bt.branch === "object" && bt.branch !== null) {
-          const bName = getItemName(bt.branch, locale) || (isAr ? "فرع" : "Branch");
-          const cName =
-            typeof bt.branch.city === "object"
-              ? getItemName(bt.branch.city, locale)
-              : bt.branch.city || "";
-          return {
-            id: cleanId,
-            name: {
-              ar: bt.branch.name?.ar || bName,
-              en: bt.branch.name?.en || bName,
-            },
-            fullName: {
-              ar: cName ? `${bName} - ${cName}` : bName,
-              en: cName ? `${bName} - ${cName}` : bName,
-            },
-            city: cName,
-          };
-        }
-
-        // Check values.providerBranchs
-        const pb = (values.providerBranchs || []).find((item) => {
-          if (typeof item === "object" && item !== null) {
-            return String(item._id || item.id).trim() === cleanId;
-          }
-          return false;
-        });
-        if (pb) {
-          const bName = getItemName(pb, locale) || (isAr ? "فرع" : "Branch");
-          const cName =
-            typeof pb.city === "object"
-              ? getItemName(pb.city, locale)
-              : pb.city || "";
-          return {
-            id: cleanId,
-            name: {
-              ar: pb.name?.ar || bName,
-              en: pb.name?.en || bName,
-            },
-            fullName: {
-              ar: cName ? `${bName} - ${cName}` : bName,
-              en: cName ? `${bName} - ${cName}` : bName,
-            },
-            city: cName,
-          };
-        }
-
-        return {
-          id: cleanId,
-          name: {
-            ar: `${isAr ? "فرع" : "Branch"} (${cleanId.slice(-4)})`,
-            en: `Branch (${cleanId.slice(-4)})`,
-          },
-          fullName: {
-            ar: `${isAr ? "فرع" : "Branch"} (${cleanId.slice(-4)})`,
-            en: `Branch (${cleanId.slice(-4)})`,
-          },
-          city: "",
-        };
-      })
+      .map((id) =>
+        resolveBranchById({
+          branchId: id,
+          allBranchesMap,
+          branchTrips: values.branchTrips,
+          providerBranchs: values.providerBranchs,
+          locale,
+          isAr,
+        })
+      )
       .filter(Boolean);
   }, [
     customizedBranchIds,

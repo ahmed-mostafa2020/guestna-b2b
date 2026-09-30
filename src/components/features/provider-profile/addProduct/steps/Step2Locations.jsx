@@ -12,7 +12,11 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
 import BranchLocationPicker from "@components/features/provider-profile/branches/BranchLocationPicker";
 import BranchCustomizationSidebar from "./BranchCustomizationSidebar";
-import { buildBranchGroups } from "../branchConstants";
+import {
+  buildUnifiedBranchGroups,
+  buildBranchesMap,
+  resolveBranchById,
+} from "../branchConstants";
 import { cn } from "@utils/helpers/cn";
 
 const Step2Locations = ({
@@ -133,22 +137,13 @@ const Step2Locations = ({
 
   // Build branch groups using shared utility (from API data + values)
   const branchGroups = useMemo(() => {
-    const sources = [
-      ...(Array.isArray(formSelectionData?.providerBranchs)
-        ? formSelectionData.providerBranchs
-        : []),
-    ];
-    (values.branchTrips || []).forEach((bt) => {
-      if (bt?.branch && typeof bt.branch === "object") {
-        sources.push(bt.branch);
-      }
-    });
-    (values.providerBranchs || []).forEach((b) => {
-      if (b && typeof b === "object") {
-        sources.push(b);
-      }
-    });
-    return buildBranchGroups(sources, locale, isAr);
+    return buildUnifiedBranchGroups(
+      formSelectionData?.providerBranchs,
+      values.branchTrips,
+      values.providerBranchs,
+      locale,
+      isAr
+    );
   }, [
     formSelectionData?.providerBranchs,
     values.branchTrips,
@@ -158,15 +153,7 @@ const Step2Locations = ({
   ]);
 
   const allBranchesMap = useMemo(() => {
-    const map = new Map();
-    branchGroups.forEach((group) => {
-      group.branches?.forEach((b) => {
-        if (b?.id) {
-          map.set(String(b.id).trim(), b);
-        }
-      });
-    });
-    return map;
+    return buildBranchesMap(branchGroups);
   }, [branchGroups]);
 
   // Toggle branch selection directly on Card 1
@@ -201,65 +188,23 @@ const Step2Locations = ({
   // Active customized branch objects for Card 3 with multi-tiered resolution
   const activeCapacityBranches = useMemo(() => {
     return customizedCapacityBranchIds
-      .map((id) => {
-        const cleanId = String(id).trim();
-        const found = allBranchesMap.get(cleanId);
-        if (found) return found;
-
-        // Check values.branchTrips
-        const tripBranch = (values.branchTrips || []).find((bt) => {
-          const bId = bt?.branch?._id || bt?.branch?.id || bt?.branch || bt?.branchId;
-          return String(bId).trim() === cleanId;
-        });
-        if (tripBranch?.branch && typeof tripBranch.branch === "object") {
-          return {
-            id: cleanId,
-            name:
-              tripBranch.branch.name ||
-              tripBranch.branch.title ||
-              (isAr ? tripBranch.branch.name_ar : tripBranch.branch.name_en) ||
-              cleanId,
-            fullName: tripBranch.branch.name || tripBranch.branch.title || cleanId,
-            city: tripBranch.branch.city || "",
-            address: tripBranch.branch.address || "",
-          };
-        }
-
-        // Check values.providerBranchs
-        const pbBranch = (values.providerBranchs || []).find((pb) => {
-          if (typeof pb === "object" && pb !== null) {
-            return String(pb._id || pb.id).trim() === cleanId;
-          }
-          return false;
-        });
-        if (pbBranch) {
-          return {
-            id: cleanId,
-            name:
-              pbBranch.name ||
-              pbBranch.title ||
-              (isAr ? pbBranch.name_ar : pbBranch.name_en) ||
-              cleanId,
-            fullName: pbBranch.name || pbBranch.title || cleanId,
-            city: pbBranch.city || "",
-            address: pbBranch.address || "",
-          };
-        }
-
-        return {
-          id: cleanId,
-          name: cleanId,
-          fullName: cleanId,
-          city: "",
-          address: "",
-        };
-      })
+      .map((id) =>
+        resolveBranchById({
+          branchId: id,
+          allBranchesMap,
+          branchTrips: values.branchTrips,
+          providerBranchs: values.providerBranchs,
+          locale,
+          isAr,
+        })
+      )
       .filter(Boolean);
   }, [
     customizedCapacityBranchIds,
     allBranchesMap,
     values.branchTrips,
     values.providerBranchs,
+    locale,
     isAr,
   ]);
 
@@ -734,13 +679,9 @@ const Step2Locations = ({
             <div className="space-y-3">
               {activeCapacityBranches.map((branch) => {
                 const isOpen = Boolean(openBranches[branch.id]);
-                const branchFullName =
-                  typeof branch.fullName === "object"
-                    ? (isAr ? branch.fullName?.ar : branch.fullName?.en) || branch.fullName?.ar || branch.fullName?.en
-                    : branch.fullName ||
-                      (typeof branch.name === "object"
-                        ? (isAr ? branch.name?.ar : branch.name?.en) || branch.name?.ar || branch.name?.en
-                        : branch.name || branch.id);
+                const branchFullName = isAr
+                  ? branch.fullName?.ar || branch.name?.ar
+                  : branch.fullName?.en || branch.name?.en;
 
                 const branchCap = values.branchCapacities?.[branch.id] || {
                   min: defaultCapacityMin,

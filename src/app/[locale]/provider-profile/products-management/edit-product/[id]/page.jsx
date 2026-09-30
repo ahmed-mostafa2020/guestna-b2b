@@ -423,16 +423,11 @@ const EditProductPage = () => {
     [currentStep, enqueueSnackbar, t, handleFinalSubmit]
   );
 
-  // Direct publish handler: allows publishing from any step (1-8) without going to step 9,
-  // EXCEPT when there are blocking warnings (such as newly added channels requiring pricing).
-  const handleDirectPublish = useCallback(
+  // Navigate to Step 8 (Pricing) with current step validation
+  const handleGoToPricing = useCallback(
     async (validateForm, setTouched, touched, values) => {
-      if (warningSteps.length > 0) {
-        enqueueSnackbar(
-          t("providerProfile.products.editPage.pricingRequiredToPublish"),
-          { variant: "warning" }
-        );
-        setCurrentStep(8);
+      if (currentStep === 8) {
+        scrollToStepTop();
         return;
       }
 
@@ -449,9 +444,54 @@ const EditProductPage = () => {
       if (!isValid) return;
 
       setCompletedSteps((prev) => Array.from(new Set([...prev, currentStep])));
+      enqueueSnackbar(
+        t("providerProfile.products.editPage.pricingRequiredToPublish"),
+        { variant: "warning" }
+      );
+      setCurrentStep(8);
+      scrollToStepTop();
+    },
+    [currentStep, enqueueSnackbar, t, scrollToStepTop]
+  );
+
+  const handleHeaderGoToPricing = useCallback(async () => {
+    if (!formikContextRef.current) return;
+    const { validateForm, setTouched, touched, values } =
+      formikContextRef.current;
+    await handleGoToPricing(validateForm, setTouched, touched, values);
+  }, [handleGoToPricing]);
+
+  // Direct publish handler: allows publishing from any step (1-8) without going to step 9,
+  // EXCEPT when there are blocking warnings (such as newly added channels requiring pricing).
+  const handleDirectPublish = useCallback(
+    async (validateForm, setTouched, touched, values) => {
+      const isValid = await handleStepValidation({
+        currentStep,
+        validateForm,
+        setTouched,
+        touched,
+        values,
+        enqueueSnackbar,
+        t,
+      });
+
+      if (!isValid) return;
+
+      setCompletedSteps((prev) => Array.from(new Set([...prev, currentStep])));
+
+      if (warningSteps.length > 0) {
+        enqueueSnackbar(
+          t("providerProfile.products.editPage.pricingRequiredToPublish"),
+          { variant: "warning" }
+        );
+        setCurrentStep(8);
+        scrollToStepTop();
+        return;
+      }
+
       await handleFinalSubmit(values);
     },
-    [warningSteps, currentStep, enqueueSnackbar, t, handleFinalSubmit]
+    [warningSteps, currentStep, enqueueSnackbar, t, scrollToStepTop, handleFinalSubmit]
   );
 
   const handleHeaderQuickPublish = useCallback(async () => {
@@ -502,13 +542,7 @@ const EditProductPage = () => {
             {warningSteps.length > 0 ? (
               <button
                 type="button"
-                onClick={() => {
-                  enqueueSnackbar(
-                    t("providerProfile.products.editPage.pricingRequiredToPublish"),
-                    { variant: "warning" }
-                  );
-                  setCurrentStep(8);
-                }}
+                onClick={handleHeaderGoToPricing}
                 title={t("providerProfile.products.editPage.pricingRequiredTooltip")}
                 className="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs sm:text-sm font-somar font-bold transition-all duration-200 cursor-pointer shadow-xs active:scale-95"
               >
@@ -529,7 +563,7 @@ const EditProductPage = () => {
                 {isSubmittingForm ? (
                   <CircularProgress size={16} color="inherit" />
                 ) : (
-                  <svg className="w-4 h-4 text-white/90 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                  <svg className="w-4 h-4 text-white/90 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 )}
@@ -667,10 +701,14 @@ const EditProductPage = () => {
                       isSelectionsLoading={isSelectionsLoading}
                       isEditMode={true}
                       originalSystemTypes={originalSystemTypesRef.current || []}
-                      onNavigateToPricing={() => {
-                        // Clear warning for step 8 when user navigates there
-                        setCurrentStep(8);
-                      }}
+                      onNavigateToPricing={() =>
+                        handleGoToPricing(
+                          validateForm,
+                          setTouched,
+                          touched,
+                          values
+                        )
+                      }
                     />
                   )}
 
@@ -731,7 +769,7 @@ const EditProductPage = () => {
                       >
                         <div className="flex items-start gap-3 flex-1">
                           <div className="w-9 h-9 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
                             </svg>
                           </div>
@@ -792,13 +830,14 @@ const EditProductPage = () => {
                             // Exempted case: channel added requiring pricing
                             <button
                               type="button"
-                              onClick={() => {
-                                enqueueSnackbar(
-                                  t("providerProfile.products.editPage.pricingRequiredToPublish"),
-                                  { variant: "warning" }
-                                );
-                                setCurrentStep(8);
-                              }}
+                              onClick={() =>
+                                handleGoToPricing(
+                                  validateForm,
+                                  setTouched,
+                                  touched,
+                                  values
+                                )
+                              }
                               title={t("providerProfile.products.editPage.pricingRequiredTooltip")}
                               className="w-full sm:w-auto h-[50px] px-5 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-800 font-somar font-bold text-sm leading-5 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
                             >
@@ -831,7 +870,7 @@ const EditProductPage = () => {
                                 </>
                               ) : (
                                 <>
-                                  <svg className="w-5 h-5 text-white/90 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                                  <svg className="w-5 h-5 text-white/90 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                   </svg>
                                   <span>{t("providerProfile.products.editPage.quickPublish")}</span>

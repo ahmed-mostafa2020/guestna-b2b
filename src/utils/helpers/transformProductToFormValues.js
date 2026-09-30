@@ -5,6 +5,38 @@
 import { initialAddProductValues } from "@components/forms/addProductForm";
 import { formatTimeForInput } from "@utils/formatters/formatTimeForInput";
 
+const formatDatePricingList = (list, defaultKey = "INCREASE") => {
+  if (!Array.isArray(list) || list.length === 0) return [];
+  return list.map((dp) => {
+    const fromVal = dp.fromDate
+      ? String(dp.fromDate).split("T")[0]
+      : dp.fromDay
+      ? String(dp.fromDay).split("T")[0]
+      : dp.date
+      ? String(dp.date).split("T")[0]
+      : "";
+    const toVal = dp.toDate
+      ? String(dp.toDate).split("T")[0]
+      : dp.toDay
+      ? String(dp.toDay).split("T")[0]
+      : fromVal;
+    return {
+      date: fromVal,
+      fromDate: fromVal,
+      toDate: toVal,
+      fromDay: fromVal,
+      toDay: toVal,
+      price: dp.price ?? "",
+      percentage: dp.percentage ?? "",
+      key: dp.key || defaultKey,
+      title: {
+        en: dp.title?.en || "",
+        ar: dp.title?.ar || "",
+      },
+    };
+  });
+};
+
 const transformProductToFormValues = (product, fixedSelectionLocation) => {
   if (!product) return null;
 
@@ -53,7 +85,7 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
     });
   }
 
-  const allBranchTrips = [
+  const allBranchTripsRaw = [
     ...(Array.isArray(actualProduct.branchTrips) ? actualProduct.branchTrips : []),
     ...(Array.isArray(actualProduct.branch_trips) ? actualProduct.branch_trips : []),
     ...(Array.isArray(actualProduct.branchesTrips) ? actualProduct.branchesTrips : []),
@@ -76,34 +108,51 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
         item.fromDay ||
         item.availableTimes
       ) {
-        const itemId = String(item._id || item.id || "").trim();
-        const exists = allBranchTrips.some((bt) => {
-          const rawB = bt?.branch || bt?.providerBranch || bt?.branchId;
-          const btId = typeof rawB === "object" ? rawB?._id || rawB?.id : rawB;
-          return String(btId).trim() === itemId;
+        allBranchTripsRaw.push({
+          ...item,
+          branch: item,
         });
-        if (!exists && itemId) {
-          allBranchTrips.push({
-            ...item,
-            branch: item,
-          });
-        }
       }
     });
   }
 
-  allBranchTrips.forEach((bt) => {
+  // Deduplicate and merge by clean branch ID
+  const branchTripMap = new Map();
+  allBranchTripsRaw.forEach((bt) => {
+    if (!bt) return;
     const rawBranch = bt?.branch || bt?.providerBranch || bt?.branchId || bt?._id;
     const bId =
       typeof rawBranch === "object" && rawBranch !== null
         ? String(rawBranch._id || rawBranch.id || "")
         : String(rawBranch || "");
     const cleanBranchId = bId.trim();
-    if (cleanBranchId) {
-      branchIdSet.add(cleanBranchId);
+    if (!cleanBranchId) return;
+
+    branchIdSet.add(cleanBranchId);
+
+    if (!branchTripMap.has(cleanBranchId)) {
+      branchTripMap.set(cleanBranchId, { ...bt });
+    } else {
+      const existing = branchTripMap.get(cleanBranchId);
+      branchTripMap.set(cleanBranchId, {
+        ...existing,
+        ...bt,
+        branch: bt.branch || existing.branch,
+        b2cPrice: bt.b2cPrice || existing.b2cPrice,
+        b2bPrice: bt.b2bPrice || existing.b2bPrice,
+        services:
+          Array.isArray(bt.services) && bt.services.length > 0
+            ? bt.services
+            : existing.services,
+        availableTimes:
+          Array.isArray(bt.availableTimes) && bt.availableTimes.length > 0
+            ? bt.availableTimes
+            : existing.availableTimes,
+      });
     }
   });
 
+  const allBranchTrips = Array.from(branchTripMap.values());
   const providerBranchs = Array.from(branchIdSet);
 
   // ─── 3. Target Audiences Extraction ────────────────────────────
@@ -330,65 +379,19 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
           : Array.isArray(bt.datePricing) && bt.datePricing.length > 0
           ? bt.datePricing
           : [];
-      const b2cDatePricingMapped = rawB2cDatePricing.map((dp) => {
-        const fromVal = dp.fromDate
-          ? String(dp.fromDate).split("T")[0]
-          : dp.fromDay
-          ? String(dp.fromDay).split("T")[0]
-          : dp.date
-          ? String(dp.date).split("T")[0]
-          : "";
-        const toVal = dp.toDate
-          ? String(dp.toDate).split("T")[0]
-          : dp.toDay
-          ? String(dp.toDay).split("T")[0]
-          : fromVal;
-        return {
-          date: fromVal,
-          fromDate: fromVal,
-          toDate: toVal,
-          fromDay: fromVal,
-          toDay: toVal,
-          price: dp.price ?? "",
-          percentage: dp.percentage ?? "",
-          key: dp.key || btB2c.key || "INCREASE",
-          title: {
-            en: dp.title?.en || "",
-            ar: dp.title?.ar || "",
-          },
-        };
-      });
+      const b2cDatePricingMapped = formatDatePricingList(
+        rawB2cDatePricing,
+        btB2c.key || "INCREASE"
+      );
 
       // 4. Date pricing (B2B) for branch
-      const rawB2bDatePricing = Array.isArray(btB2b.datePricing) ? btB2b.datePricing : [];
-      const b2bDatePricingMapped = rawB2bDatePricing.map((dp) => {
-        const fromVal = dp.fromDate
-          ? String(dp.fromDate).split("T")[0]
-          : dp.fromDay
-          ? String(dp.fromDay).split("T")[0]
-          : dp.date
-          ? String(dp.date).split("T")[0]
-          : "";
-        const toVal = dp.toDate
-          ? String(dp.toDate).split("T")[0]
-          : dp.toDay
-          ? String(dp.toDay).split("T")[0]
-          : fromVal;
-        return {
-          date: fromVal,
-          fromDate: fromVal,
-          toDate: toVal,
-          fromDay: fromVal,
-          toDay: toVal,
-          price: dp.price ?? "",
-          percentage: dp.percentage ?? "",
-          key: dp.key || btB2b.key || "DECREASE",
-          title: {
-            en: dp.title?.en || "",
-            ar: dp.title?.ar || "",
-          },
-        };
-      });
+      const rawB2bDatePricing = Array.isArray(btB2b.datePricing)
+        ? btB2b.datePricing
+        : [];
+      const b2bDatePricingMapped = formatDatePricingList(
+        rawB2bDatePricing,
+        btB2b.key || "DECREASE"
+      );
 
       // 5. Quantity discount tiers (B2B) for branch
       const rawB2bTiers =
@@ -488,7 +491,7 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
     actualProduct.availableSeats?.min ??
     b2b.availableSeats?.min ??
     (typeof b2c.availableSeats === "object" ? b2c.availableSeats?.min : "") ??
-    "";
+    (typeof actualProduct.availableSeats === "number" ? 1 : "");
 
   const maxSeats =
     actualProduct.availableSeats?.max ??
@@ -497,8 +500,9 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
       ? b2c.availableSeats
       : typeof b2c.availableSeats === "object"
       ? b2c.availableSeats?.max
-      : "") ??
-    "";
+      : typeof actualProduct.availableSeats === "number"
+      ? actualProduct.availableSeats
+      : "");
 
   // ─── 9. Gallery & Thumbnail ────────────────────────────────────
   const gallary = Array.isArray(actualProduct.gallary)
@@ -546,38 +550,6 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
         }))
       : [{ minQuantity: "", discountType: "PERCENTAGE", discountValue: "" }];
 
-  const formatMainDatePricing = (list, defaultKey = "INCREASE") => {
-    if (!Array.isArray(list) || list.length === 0) return [];
-    return list.map((dp) => {
-      const fromVal = dp.fromDate
-        ? String(dp.fromDate).split("T")[0]
-        : dp.fromDay
-        ? String(dp.fromDay).split("T")[0]
-        : dp.date
-        ? String(dp.date).split("T")[0]
-        : "";
-      const toVal = dp.toDate
-        ? String(dp.toDate).split("T")[0]
-        : dp.toDay
-        ? String(dp.toDay).split("T")[0]
-        : fromVal;
-      return {
-        date: fromVal,
-        fromDate: fromVal,
-        toDate: toVal,
-        fromDay: fromVal,
-        toDay: toVal,
-        price: dp.price ?? "",
-        percentage: dp.percentage ?? "",
-        key: dp.key || defaultKey,
-        title: {
-          en: dp.title?.en || "",
-          ar: dp.title?.ar || "",
-        },
-      };
-    });
-  };
-
   const rawB2cDatePricing =
     Array.isArray(b2c.datePricing) && b2c.datePricing.length > 0
       ? b2c.datePricing
@@ -585,8 +557,11 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
       ? actualProduct.datePricing
       : [];
 
-  const b2cDatePricing = formatMainDatePricing(rawB2cDatePricing, "INCREASE");
-  const b2bDatePricing = formatMainDatePricing(Array.isArray(b2b.datePricing) ? b2b.datePricing : [], "DECREASE");
+  const b2cDatePricing = formatDatePricingList(rawB2cDatePricing, "INCREASE");
+  const b2bDatePricing = formatDatePricingList(
+    Array.isArray(b2b.datePricing) ? b2b.datePricing : [],
+    "DECREASE"
+  );
 
   // ─── 11. Locations ─────────────────────────────────────────────
   const locSource = actualProduct.location || b2c.location || b2b.location;

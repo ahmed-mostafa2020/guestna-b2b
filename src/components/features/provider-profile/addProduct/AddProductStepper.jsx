@@ -94,6 +94,7 @@ const AddProductStepper = ({
                   "flex items-center gap-2.5 sm:gap-3 select-none transition-all duration-200",
                   isClickable ? "cursor-pointer hover:opacity-80 active:scale-[0.98]" : "cursor-default"
                 )}
+                aria-label={t(step.key)}
                 aria-current={isActive ? "step" : undefined}
               >
                 {/* Step Circle */}

@@ -154,3 +154,154 @@ export const filterBranchGroupsBySelected = (branchGroups, selectedBranchIds = [
     }))
     .filter((group) => group.branches.length > 0);
 };
+
+/**
+ * Combines formSelectionData branches, values.branchTrips, and values.providerBranchs into unified branch groups.
+ */
+export const buildUnifiedBranchGroups = (
+  formSelectionBranches = [],
+  branchTrips = [],
+  providerBranchs = [],
+  locale = "ar",
+  isAr = true
+) => {
+  const sources = [
+    ...(Array.isArray(formSelectionBranches) ? formSelectionBranches : []),
+  ];
+  (branchTrips || []).forEach((bt) => {
+    if (bt?.branch && typeof bt.branch === "object") {
+      sources.push(bt.branch);
+    }
+  });
+  (providerBranchs || []).forEach((b) => {
+    if (b && typeof b === "object") {
+      sources.push(b);
+    }
+  });
+  return buildBranchGroups(sources, locale, isAr);
+};
+
+/**
+ * Creates a Map of cleanId -> normalized branch item from branchGroups.
+ */
+export const buildBranchesMap = (branchGroups = []) => {
+  const map = new Map();
+  (branchGroups || []).forEach((group) => {
+    group.branches?.forEach((b) => {
+      if (b?.id) {
+        map.set(String(b.id).trim(), b);
+      }
+    });
+  });
+  return map;
+};
+
+/**
+ * Resolves a branch with multi-tiered fallbacks and returns a consistent, normalized shape:
+ * { id, name: { ar, en }, fullName: { ar, en }, city, address, location }
+ */
+export const resolveBranchById = ({
+  branchId,
+  allBranchesMap,
+  branchTrips = [],
+  providerBranchs = [],
+  locale = "ar",
+  isAr = true,
+}) => {
+  const cleanId = String(branchId || "").trim();
+  if (!cleanId) return null;
+
+  if (allBranchesMap && allBranchesMap.has(cleanId)) {
+    const found = allBranchesMap.get(cleanId);
+    return {
+      id: cleanId,
+      name:
+        typeof found.name === "object"
+          ? found.name
+          : { ar: found.name || cleanId, en: found.name || cleanId },
+      fullName:
+        typeof found.fullName === "object"
+          ? found.fullName
+          : { ar: found.fullName || cleanId, en: found.fullName || cleanId },
+      city: found.city || "",
+      address: found.address || "",
+      location: found.location || null,
+    };
+  }
+
+  // Fallback 1: check branchTrips
+  const tripBranch = (branchTrips || []).find((bt) => {
+    const rawB = bt?.branch || bt?.providerBranch || bt?.branchId || bt?._id;
+    const bId = typeof rawB === "object" ? rawB?._id || rawB?.id : rawB;
+    return String(bId).trim() === cleanId;
+  });
+  if (tripBranch?.branch && typeof tripBranch.branch === "object") {
+    const b = tripBranch.branch;
+    const bName =
+      getItemName(b, locale) ||
+      (isAr ? `فرع (${cleanId.slice(-4)})` : `Branch (${cleanId.slice(-4)})`);
+    const cName =
+      typeof b.city === "object"
+        ? getItemName(b.city, locale)
+        : (typeof b.city === "string" ? b.city : "") || "";
+    return {
+      id: cleanId,
+      name: {
+        ar: (typeof b.name === "object" ? b.name?.ar : null) || bName,
+        en: (typeof b.name === "object" ? b.name?.en : null) || bName,
+      },
+      fullName: {
+        ar: cName ? `${bName} - ${cName}` : bName,
+        en: cName ? `${bName} - ${cName}` : bName,
+      },
+      city: cName,
+      address: b.address || "",
+      location: b.location || null,
+    };
+  }
+
+  // Fallback 2: check providerBranchs
+  const pb = (providerBranchs || []).find((item) => {
+    if (typeof item === "object" && item !== null) {
+      return String(item._id || item.id).trim() === cleanId;
+    }
+    return false;
+  });
+  if (pb) {
+    const bName =
+      getItemName(pb, locale) ||
+      (isAr ? `فرع (${cleanId.slice(-4)})` : `Branch (${cleanId.slice(-4)})`);
+    const cName =
+      typeof pb.city === "object"
+        ? getItemName(pb.city, locale)
+        : (typeof pb.city === "string" ? pb.city : "") || "";
+    return {
+      id: cleanId,
+      name: {
+        ar: (typeof pb.name === "object" ? pb.name?.ar : null) || bName,
+        en: (typeof pb.name === "object" ? pb.name?.en : null) || bName,
+      },
+      fullName: {
+        ar: cName ? `${bName} - ${cName}` : bName,
+        en: cName ? `${bName} - ${cName}` : bName,
+      },
+      city: cName,
+      address: pb.address || "",
+      location: pb.location || null,
+    };
+  }
+
+  // Fallback 3: generic branch with ID
+  const fallbackLabel = isAr
+    ? `فرع (${cleanId.slice(-4)})`
+    : `Branch (${cleanId.slice(-4)})`;
+  return {
+    id: cleanId,
+    name: { ar: fallbackLabel, en: fallbackLabel },
+    fullName: { ar: fallbackLabel, en: fallbackLabel },
+    city: "",
+    address: "",
+    location: null,
+  };
+};
+
