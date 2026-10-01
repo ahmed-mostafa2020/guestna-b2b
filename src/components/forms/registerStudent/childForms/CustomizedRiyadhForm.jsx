@@ -1,7 +1,6 @@
 import { memo, useMemo } from "react";
 
 import TextInputGroup from "../../TextInputGroup";
-import DropdownGroup from "../../DropdownGroup";
 import FileUploadGroup from "../../FileUploadGroup";
 import SelectionGroup from "../../SelectionGroup";
 import { CONSTANT_VALUES } from "@constants/constantValues";
@@ -141,12 +140,12 @@ const CustomizedRiyadhForm = ({
         <div className="sm:col-span-3 grid grid-cols-2 sm:grid-cols-2 gap-x-4 gap-y-6">
           {/* Academic Stage Dropdown */}
           <div className="relative flex flex-1 flex-col gap-2">
-            <DropdownGroup
+            <SelectionGroup
               label={t("forms.academicStages.name")}
               placeholder={t("forms.academicStages.name")}
               value={childrenStages[index] || ""}
               onChange={(event) => handleChangeChildStage(index, event)}
-              menuItemsList={academicStages}
+              list={academicStages}
               required={true}
             />
             {errors.children?.[index]?.academicStage &&
@@ -160,7 +159,7 @@ const CustomizedRiyadhForm = ({
           {/* Grade Dropdown */}
           <div className="relative flex-1 flex-col gap-2">
             <div className="relative">
-              <DropdownGroup
+              <SelectionGroup
                 label={t("forms.grade.name")}
                 placeholder={
                   !childrenStages[index]
@@ -172,7 +171,7 @@ const CustomizedRiyadhForm = ({
                 }
                 value={child.grade}
                 onChange={(event) => handleChangeChildGrade(index, event)}
-                menuItemsList={gradesList}
+                list={gradesList}
                 required={true}
                 disabled={!childrenStages[index] || gradesLoading}
                 className={

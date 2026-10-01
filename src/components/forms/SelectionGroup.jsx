@@ -1,5 +1,6 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+"use client";
 
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   FormControl,
   MenuItem,
@@ -12,7 +13,7 @@ import {
 import { KeyboardArrowDown } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
 import { cn } from "@utils/helpers/cn";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 const SEARCH_THRESHOLD = 7;
 
@@ -26,31 +27,53 @@ const SelectionGroup = ({
   errors,
   placeholder,
   list,
+  menuItemsList,
   multiple = false,
   disabled = false,
   showCheckbox = multiple, // Default to true only for multi-select
   label = "", // Label text for the field
   labelClassName = "", // Optional custom label class
+  labelFontFamily,
   required = false, // Show asterisk for required fields
   errorBorder = false, // Show red border only, without error message
   border = "2px solid var(--color-border)", // Custom border style
   className = "",
+  insetInlineStart,
 }) => {
+  const locale = useLocale();
   const t = useTranslations("common.autocomplete");
   const [searchTerm, setSearchTerm] = useState("");
   const searchInputRef = useRef(null);
 
-  const showSearch = list?.length > SEARCH_THRESHOLD;
+  // Accept both 'list' and 'menuItemsList' for full compatibility
+  const items = list || menuItemsList || [];
+  const showSearch = items?.length > SEARCH_THRESHOLD;
+
+  // Helper to format item label (handles string, number, or { ar, en } localized objects)
+  const getFormattedLabel = (item) => {
+    if (item === null || item === undefined) return "";
+    if (typeof item === "object") {
+      const raw = item.label ?? item.name ?? item.title ?? item.value;
+      if (typeof raw === "object" && raw !== null) {
+        return locale === "ar" ? raw.ar || raw.en : raw.en || raw.ar;
+      }
+      return raw !== undefined ? raw : "";
+    }
+    return item;
+  };
+
+  // Format placeholder if it's a localized object
+  const displayPlaceholder =
+    typeof placeholder === "object" && placeholder !== null
+      ? locale === "ar"
+        ? placeholder.ar || placeholder.en
+        : placeholder.en || placeholder.ar
+      : placeholder;
 
   // Auto-select when there's only one option (single-select only)
   useEffect(() => {
-    if (
-      !multiple &&
-      list?.length === 1 &&
-      onChange &&
-      !disabled
-    ) {
-      const singleItem = list[0];
+    if (!multiple && items?.length === 1 && onChange && !disabled) {
+      const singleItem = items[0];
       const singleValue =
         typeof singleItem === "object" && singleItem !== null
           ? (singleItem.value ?? singleItem._id ?? singleItem.id ?? singleItem.name)
@@ -61,33 +84,40 @@ const SelectionGroup = ({
         onChange({ target: { name, value: singleValue } });
       }
     }
-  }, [list, onChange, disabled, value, multiple, name]);
+  }, [items, onChange, disabled, value, multiple, name]);
 
   // Filter list based on search term
   const filteredList = useMemo(() => {
-    if (!list || !showSearch || !searchTerm.trim()) {
-      return list || [];
+    if (!items?.length || !showSearch || !searchTerm.trim()) {
+      return items || [];
     }
 
     const lowerSearch = searchTerm.toLowerCase().trim();
-    return list.filter((item) => {
-      const itemLabel =
-        typeof item === "object" && item !== null
-          ? (item.label ?? item.name ?? item.title ?? item.value ?? "")
-          : String(item);
+    return items.filter((item) => {
+      const itemLabel = getFormattedLabel(item);
       return String(itemLabel).toLowerCase().includes(lowerSearch);
     });
-  }, [list, searchTerm, showSearch]);
+  }, [items, searchTerm, showSearch, locale]);
 
   return (
     <FormControl
       error={errorBorder || (touched && Boolean(errors))}
       className={cn("relative w-full flex flex-col gap-2", className)}
+      disabled={disabled}
     >
       {label && (
         <label
-          className={
-            labelClassName ? labelClassName : "block pb-2 font-medium font-ibm"
+          className={cn(
+            "font-medium capitalize",
+            labelClassName || "block pb-2 font-ibm"
+          )}
+          style={
+            labelFontFamily || labelClassName?.includes("font-somar")
+              ? {
+                  fontFamily:
+                    labelFontFamily || "var(--font-somar-sans), sans-serif",
+                }
+              : undefined
           }
         >
           {label}
@@ -95,10 +125,10 @@ const SelectionGroup = ({
         </label>
       )}
       <Select
-        labelId={`${name}-label`}
+        labelId={name ? `${name}-label` : undefined}
         id={name}
         name={name}
-        value={value}
+        value={value ?? (multiple ? [] : "")}
         onChange={onChange}
         onBlur={onBlur}
         onClose={(e) => {
@@ -123,27 +153,27 @@ const SelectionGroup = ({
           ) {
             return (
               <span className="text-light opacity-60 text-sm font-somar">
-                {placeholder}
+                {displayPlaceholder}
               </span>
             );
           }
           if (!multiple && (!selected || selected === "")) {
             return (
               <span className="text-light opacity-60 text-sm font-somar">
-                {placeholder}
+                {displayPlaceholder}
               </span>
             );
           }
 
           const getLabel = (val) => {
-            const found = list.find((item) => {
+            const found = items.find((item) => {
               if (typeof item === "object" && item !== null) {
                 return (item.value ?? item._id ?? item.id ?? item.name) === val;
               }
               return item === val;
             });
-            if (typeof found === "object" && found !== null) {
-              return found.label ?? found.name ?? found.title ?? found.value;
+            if (found !== undefined) {
+              return getFormattedLabel(found);
             }
             return val;
           };
@@ -173,14 +203,18 @@ const SelectionGroup = ({
         sx={{
           width: "100%",
           fontFamily: "var(--font-somar-sans), sans-serif",
-
+          height: "55px",
+          "&.MuiInputBase-root": {
+            height: "55px",
+          },
           "& .MuiSelect-select": {
             paddingInlineEnd: "40px !important",
             paddingInlineStart: "14px !important",
             paddingTop: "0px !important",
             paddingBottom: "0px !important",
-            height: "52px !important",
-            minHeight: "52px !important",
+            height: "55px !important",
+            minHeight: "55px !important",
+            boxSizing: "border-box !important",
             display: "flex !important",
             alignItems: "center !important",
             border: border,
@@ -197,7 +231,7 @@ const SelectionGroup = ({
           },
           "& .MuiSelect-icon": {
             insetInlineEnd: "10px !important",
-            insetInlineStart: "auto !important",
+            insetInlineStart: insetInlineStart || "auto !important",
             color: "var(--color-text)",
           },
           "& .MuiOutlinedInput-notchedOutline": {
@@ -216,7 +250,7 @@ const SelectionGroup = ({
       >
         {!multiple && (
           <MenuItem className="!font-somar" value="" disabled>
-            {placeholder}
+            {displayPlaceholder}
           </MenuItem>
         )}
 
@@ -297,10 +331,7 @@ const SelectionGroup = ({
                   ? item.toString().slice(-2)
                   : item;
 
-            const itemLabel =
-              typeof item === "object" && item !== null
-                ? (item.label ?? item.name ?? item.title ?? item.value)
-                : item;
+            const itemLabel = getFormattedLabel(item);
 
             const itemDescription = (() => {
               if (typeof item !== "object" || item === null) return "";

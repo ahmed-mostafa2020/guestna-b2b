@@ -1,7 +1,6 @@
 import { memo, useMemo } from "react";
 
 import TextInputGroup from "../../TextInputGroup";
-import DropdownGroup from "../../DropdownGroup";
 import SelectionGroup from "../../SelectionGroup";
 
 // import { Field } from "formik";
@@ -71,12 +70,12 @@ const ChildForm = ({
         <div className="sm:col-span-2 grid grid-cols-2 gap-x-4 gap-y-6">
           {/* Academic Stage Dropdown */}
           <div className="relative flex flex-1 flex-col gap-2">
-            <DropdownGroup
+            <SelectionGroup
               label={t("forms.academicStages.name")}
               placeholder={t("forms.academicStages.placeholder")}
               value={childrenStages[index] || ""}
               onChange={(event) => handleChangeChildStage(index, event)}
-              menuItemsList={academicStages}
+              list={academicStages}
               required={true}
             />
             {errors.children?.[index]?.academicStage &&
@@ -90,7 +89,7 @@ const ChildForm = ({
           {/* Grade Dropdown */}
           <div className="relative flex-1 flex-col gap-2">
             <div className="relative">
-              <DropdownGroup
+              <SelectionGroup
                 label={t("forms.grade.name")}
                 placeholder={
                   !childrenStages[index]
@@ -102,7 +101,7 @@ const ChildForm = ({
                 }
                 value={child.grade}
                 onChange={(event) => handleChangeChildGrade(index, event)}
-                menuItemsList={gradesList}
+                list={gradesList}
                 required={true}
                 disabled={!childrenStages[index] || gradesLoading}
                 className={

@@ -2,7 +2,7 @@ import { memo, useMemo } from "react";
 import { useLocale } from "next-intl";
 
 import TextInputGroup from "../TextInputGroup";
-import DropdownGroup from "../DropdownGroup";
+import SelectionGroup from "../SelectionGroup";
 import AutocompleteInputGroup from "../AutocompleteInputGroup";
 import CheckboxGroup from "../CheckboxGroup";
 import formatCurrency from "@utils/formatters/FormatCurrency";
@@ -238,17 +238,17 @@ const ParentFormFields = ({
           )}
         </div>
 
-        <DropdownGroup
+        <SelectionGroup
           label={t("forms.registerForm.numberOfChildren")}
           placeholder={childrenNumber}
           value={values.childrenNumber}
           onChange={handleChangeChildrenNumber}
-          menuItemsList={childrenNumberList}
+          list={childrenNumberList}
           required={true}
         />
 
         <div className="relative flex flex-col gap-2">
-          <DropdownGroup
+          <SelectionGroup
             label={t("profile.information.personalInformation.nationality")}
             placeholder={t(
               "profile.information.personalInformation.nationality"
@@ -259,7 +259,7 @@ const ParentFormFields = ({
                 ?._id
             }
             onChange={handleChangeNationality}
-            menuItemsList={nationalities}
+            list={nationalities}
             required={true}
           />
           {errors.nationality && touched.nationality && (

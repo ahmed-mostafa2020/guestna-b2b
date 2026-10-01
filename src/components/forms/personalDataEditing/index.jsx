@@ -14,7 +14,7 @@ import getErrorMessage from "@utils/helpers/getErrorMessage";
 import { cn } from "@utils/helpers/cn";
 import { createPersonalInfoEditingSchema } from "@utils/validators/validationSchemas";
 import TextInputGroup from "../TextInputGroup";
-import DropdownGroup from "../DropdownGroup";
+import SelectionGroup from "../SelectionGroup";
 import RadioButtonsGroup from "../RadioButtonsGroup";
 
 import { Field, Formik } from "formik";
@@ -307,32 +307,32 @@ const PersonalDataEditing = ({ handleClose }) => {
             </div>
 
             {/* Nationality */}
-            <DropdownGroup
+            <SelectionGroup
               label={t("profile.information.personalInformation.nationality")}
               placeholder={oldNationality.name}
               value={nationality}
               onChange={handleChangeNationality}
               // value={values.nationality}
               // onChange={(e) => setFieldValue("nationality", e.target.value)}
-              menuItemsList={nationalities}
+              list={nationalities}
             />
 
-            <DropdownGroup
+            <SelectionGroup
               label={t(
                 "profile.information.personalInformation.countryOfResidence"
               )}
               placeholder={oldCountryOfResidence.name}
               value={countryOfResidence}
               onChange={handleChangeCountryOfResidence}
-              menuItemsList={countries}
+              list={countries}
             />
 
-            <DropdownGroup
+            <SelectionGroup
               label={t("profile.information.personalInformation.city")}
               placeholder={oldCity.name}
               value={city}
               onChange={handleChangeCity}
-              menuItemsList={cities}
+              list={cities}
             />
 
             <div className="flex items-center justify-end gap-2 mt-4">
