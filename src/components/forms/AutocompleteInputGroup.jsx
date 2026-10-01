@@ -1,10 +1,12 @@
 import React from "react";
 import { Autocomplete, TextField, CircularProgress } from "@mui/material";
 import { useTranslations } from "next-intl";
+import { cn } from "@utils/helpers/cn";
 
 const AutocompleteInputGroup = ({
   label,
   labelFontFamily = "IBM Plex Sans Arabic, sans-serif",
+  labelClassName = "",
   name,
   value,
   inputValue,
@@ -27,13 +29,22 @@ const AutocompleteInputGroup = ({
   const t = useTranslations("common.autocomplete");
   const hasError = touched && !!errors;
 
+  const effectiveFontFamily =
+    labelFontFamily === "IBM Plex Sans Arabic, sans-serif" &&
+    labelClassName?.includes("font-somar")
+      ? "var(--font-somar-sans), sans-serif"
+      : labelFontFamily;
+
   return (
-    <div className="relative flex flex-col gap-2">
+    <div className="relative w-full min-w-0 flex flex-col gap-2">
       {/* Label */}
       <div className="flex items-center gap-0.5">
         <label
-          className="font-medium capitalize font-ibm"
-          style={{ fontFamily: labelFontFamily }}
+          className={cn(
+            "font-medium capitalize",
+            labelClassName || "font-ibm"
+          )}
+          style={{ fontFamily: effectiveFontFamily }}
         >
           {label}
         </label>

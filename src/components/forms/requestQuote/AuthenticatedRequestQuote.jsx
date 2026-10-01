@@ -808,14 +808,17 @@ const AuthenticatedRequestQuote = ({
             <style jsx>{`
               .somar-placeholder input::placeholder,
               .somar-placeholder textarea::placeholder {
-                font-family: "somar", sans-serif !important;
+                font-family: var(--font-somar-sans), sans-serif !important;
               }
               .somar-placeholder .MuiSelect-select span {
-                font-family: "somar", sans-serif !important;
+                font-family: var(--font-somar-sans), sans-serif !important;
               }
               .somar-placeholder input,
               .somar-placeholder textarea {
-                font-family: "somar", sans-serif !important;
+                font-family: var(--font-somar-sans), sans-serif !important;
+              }
+              .somar-placeholder label {
+                font-family: var(--font-somar-sans), sans-serif !important;
               }
             `}</style>
             <Formik
@@ -929,6 +932,8 @@ const AuthenticatedRequestQuote = ({
                           label={t(
                             "forms.customTrip.steps.school_info.fields.organization.label"
                           )}
+                          labelClassName="font-somar"
+                          labelFontFamily="var(--font-somar-sans), sans-serif"
                           value={values.organization}
                           onChange={(e) => {
                             handleChange(e);
@@ -969,6 +974,8 @@ const AuthenticatedRequestQuote = ({
                           label={t(
                             "forms.customTrip.steps.school_info.fields.track.label"
                           )}
+                          labelClassName="font-somar"
+                          labelFontFamily="var(--font-somar-sans), sans-serif"
                           required={true}
                         />
                       </div>
@@ -1018,6 +1025,8 @@ const AuthenticatedRequestQuote = ({
                         list={academicStageOptions}
                         multiple={true}
                         label={t("forms.customTrip.targetedTrip.label")}
+                        labelClassName="font-somar"
+                        labelFontFamily="var(--font-somar-sans), sans-serif"
                       />
                     </div>
 
@@ -1034,6 +1043,8 @@ const AuthenticatedRequestQuote = ({
                         list={gradeOptions}
                         multiple={true}
                         label={t("forms.registerForm.grade.label")}
+                        labelClassName="font-somar"
+                        labelFontFamily="var(--font-somar-sans), sans-serif"
                         disabled={
                           !values.academicStages ||
                           values.academicStages.length === 0
@@ -1053,6 +1064,8 @@ const AuthenticatedRequestQuote = ({
                         label={t(
                           "forms.confirmRequest.availableSeats.secondaryLabel"
                         )}
+                        labelClassName="font-somar"
+                        labelFontFamily="var(--font-somar-sans), sans-serif"
                         value={values.availableSeats}
                         errors={errors.availableSeats}
                         touched={touched.availableSeats}
@@ -1064,7 +1077,6 @@ const AuthenticatedRequestQuote = ({
                         )}
                         min="0"
                         required={true}
-                        labelFontFamily="var(--font-somar-sans), sans-serif"
                       />
                       {hasProviderSpecificDays &&
                         values.slot &&
@@ -1101,6 +1113,8 @@ const AuthenticatedRequestQuote = ({
                         label={t(
                           "forms.confirmRequest.totalAvailableSeats.label"
                         )}
+                        labelClassName="font-somar"
+                        labelFontFamily="var(--font-somar-sans), sans-serif"
                         value={values.totalAvailableSeats}
                         errors={errors.totalAvailableSeats}
                         touched={touched.totalAvailableSeats}
@@ -1112,7 +1126,6 @@ const AuthenticatedRequestQuote = ({
                         )}
                         min="0"
                         required={true}
-                        labelFontFamily="var(--font-somar-sans), sans-serif"
                       />
                     </div>
 
@@ -1129,6 +1142,8 @@ const AuthenticatedRequestQuote = ({
                         list={servicesOptions}
                         multiple={true}
                         label={t("forms.customTrip.services.label")}
+                        labelClassName="font-somar"
+                        labelFontFamily="var(--font-somar-sans), sans-serif"
                       />
                     </div>
 
@@ -1162,6 +1177,8 @@ const AuthenticatedRequestQuote = ({
                           }
                           list={branchOptions}
                           label={t("forms.customTrip.steps.trip_date.fields.providerBranch.label")}
+                          labelClassName="font-somar"
+                          labelFontFamily="var(--font-somar-sans), sans-serif"
                           disabled={isLoadingBranchDays}
                           required={false}
                           showCheckbox={false}
@@ -1209,6 +1226,8 @@ const AuthenticatedRequestQuote = ({
                           }
                           list={slotsData.map((s) => s.slotName)}
                           label={t("forms.customTrip.steps.trip_date.fields.slot.label")}
+                          labelClassName="font-somar"
+                          labelFontFamily="var(--font-somar-sans), sans-serif"
                           disabled={isLoadingSlots || !values.day}
                           required={true}
                           showCheckbox={false}
@@ -1242,6 +1261,8 @@ const AuthenticatedRequestQuote = ({
                       <div className="somar-placeholder w-full min-w-0">
                         <TextInputGroup
                           label={t("forms.customTrip.steps.trip_date.fields.from_hour.label")}
+                          labelClassName="font-somar"
+                          labelFontFamily="var(--font-somar-sans), sans-serif"
                           type="time"
                           name="fromHour"
                           value={formatTimeForInput(values.fromHour)}
@@ -1255,7 +1276,6 @@ const AuthenticatedRequestQuote = ({
                               if (e.target.showPicker) e.target.showPicker();
                             } catch {}
                           }}
-                          labelFontFamily="var(--font-somar-sans), sans-serif"
                           required={true}
                           disabled={!values.day}
                         />
@@ -1283,6 +1303,8 @@ const AuthenticatedRequestQuote = ({
                       <div className="somar-placeholder w-full min-w-0">
                         <TextInputGroup
                           label={t("forms.customTrip.steps.trip_date.fields.to_hour.label")}
+                          labelClassName="font-somar"
+                          labelFontFamily="var(--font-somar-sans), sans-serif"
                           type="time"
                           name="toHour"
                           value={formatTimeForInput(values.toHour)}
@@ -1296,7 +1318,6 @@ const AuthenticatedRequestQuote = ({
                               if (e.target.showPicker) e.target.showPicker();
                             } catch {}
                           }}
-                          labelFontFamily="var(--font-somar-sans), sans-serif"
                           disabled={!values.day}
                         />
                       </div>
@@ -1309,6 +1330,8 @@ const AuthenticatedRequestQuote = ({
                           label={t(
                             "forms.customTrip.proposedTripDate.startLabel"
                           )}
+                          labelClassName="font-somar"
+                          labelFontFamily="var(--font-somar-sans), sans-serif"
                           type="date"
                           name="day"
                           value={values.day}
@@ -1343,7 +1366,6 @@ const AuthenticatedRequestQuote = ({
                               if (e.target.showPicker) e.target.showPicker();
                             } catch {}
                           }}
-                          labelFontFamily="var(--font-somar-sans), sans-serif"
                           required={true}
                         />
                       </div>
@@ -1352,6 +1374,8 @@ const AuthenticatedRequestQuote = ({
                           label={t(
                             "forms.customTrip.proposedTripDate.endLabel"
                           )}
+                          labelClassName="font-somar"
+                          labelFontFamily="var(--font-somar-sans), sans-serif"
                           type="date"
                           name="endDay"
                           value={values.endDay}
@@ -1389,7 +1413,6 @@ const AuthenticatedRequestQuote = ({
                               if (e.target.showPicker) e.target.showPicker();
                             } catch {}
                           }}
-                          labelFontFamily="var(--font-somar-sans), sans-serif"
                         />
                         {/* Helper text for end date validation */}
                         {values.day && (
@@ -1418,6 +1441,8 @@ const AuthenticatedRequestQuote = ({
                       )}
                       textarea={true}
                       rows={3}
+                      labelClassName="font-somar"
+                      labelFontFamily="var(--font-somar-sans), sans-serif"
                     />
                   </div>
 

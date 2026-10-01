@@ -30,7 +30,7 @@ export const getFirstAccessiblePage = (userPages, locale, userType) => {
       route: `/${locale}/profile/bookings-management/orders`,
     },
     {
-      permission: PERMISSIONS.PAGE.B2B_INVITE_SCHOOL_PAGE,
+      permission: PERMISSIONS.PAGE.B2B_INVITE_ORGANIZATION_SALES_PAGE,
       route: `/${locale}/school-register`,
     },
     {

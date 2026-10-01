@@ -33,6 +33,7 @@ const SchoolRegisterForm = ({
   const locale = useLocale();
   const { enqueueSnackbar } = useSnackbar();
   const loginData = useSelector((state) => state.loginForm.loginData);
+  const profileName = useSelector((state) => state.profileData?.data?.name);
 
   // State for organization autocomplete
   const [organizationOptions, setOrganizationOptions] = useState([]);
@@ -113,7 +114,7 @@ const SchoolRegisterForm = ({
   ];
 
   const initialValues = {
-    salesPersonName: loginData?.name || "",
+    salesPersonName: loginData?.name || profileName || "",
     schoolNameArabic: "",
     schoolNameEnglish: "",
     organizationPhone: "",
@@ -421,6 +422,7 @@ const SchoolRegisterForm = ({
                   {/* Sales Person Name - Readonly */}
                   <TextInputGroup
                     label={t("schoolRegister.form.salesPersonName.label")}
+                    labelClassName="font-somar"
                     labelFontFamily="var(--font-somar-sans), sans-serif"
                     name="salesPersonName"
                     value={values.salesPersonName}
@@ -435,20 +437,20 @@ const SchoolRegisterForm = ({
                     required={true}
                   />
 
-                  <div>
-                    <SelectionGroup
-                      name="city"
-                      value={values.city}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      touched={touched.city}
-                      errors={errors.city}
-                      placeholder={t("schoolRegister.form.city.placeholder")}
-                      list={cityNames}
-                      label={t("schoolRegister.form.city.label")}
-                      required={true}
-                    />
-                  </div>
+                  <SelectionGroup
+                    name="city"
+                    value={values.city}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    touched={touched.city}
+                    errors={errors.city}
+                    placeholder={t("schoolRegister.form.city.placeholder")}
+                    list={cityNames}
+                    label={t("schoolRegister.form.city.label")}
+                    labelClassName="font-somar"
+                    labelFontFamily="var(--font-somar-sans), sans-serif"
+                    required={true}
+                  />
                 </div>
 
                 {/* Organization Name Autocomplete - Arabic and English */}
@@ -456,6 +458,7 @@ const SchoolRegisterForm = ({
                   {/* Arabic Organization Name Autocomplete */}
                   <AutocompleteInputGroup
                     label={t("schoolRegister.form.schoolNameArabic.label")}
+                    labelClassName="font-somar"
                     labelFontFamily="var(--font-somar-sans), sans-serif"
                     name="schoolNameArabic"
                     value={selectedOrganization}
@@ -514,6 +517,7 @@ const SchoolRegisterForm = ({
                   {/* English Organization Name Autocomplete */}
                   <AutocompleteInputGroup
                     label={t("schoolRegister.form.schoolNameEnglish.label")}
+                    labelClassName="font-somar"
                     labelFontFamily="var(--font-somar-sans), sans-serif"
                     name="schoolNameEnglish"
                     value={selectedOrganization}
@@ -574,6 +578,7 @@ const SchoolRegisterForm = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
                   <TextInputGroup
                     label={t("schoolRegister.form.organizationEmail.label")}
+                    labelClassName="font-somar"
                     labelFontFamily="var(--font-somar-sans), sans-serif"
                     name="organizationEmail"
                     type="email"
@@ -589,9 +594,12 @@ const SchoolRegisterForm = ({
                     readOnly={!!selectedOrganization}
                   />
 
-                  <div className="relative flex flex-col gap-2">
+                  <div className="relative w-full min-w-0 flex flex-col gap-2">
                     <div className="flex items-center gap-0.5">
-                      <label className="font-medium capitalize">
+                      <label
+                        className="font-medium capitalize font-somar"
+                        style={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
+                      >
                         {t("schoolRegister.form.organizationPhone.label")}
                       </label>
                       <span className="text-error">*</span>
@@ -623,7 +631,7 @@ const SchoolRegisterForm = ({
                             </span>
                           )}
                           className={
-                            "flex bg-white w-full gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out " +
+                            "flex items-center bg-white w-full gap-1 px-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-base file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out " +
                             (errors.organizationPhone &&
                             touched.organizationPhone
                               ? "border-error focus-visible:ring-error"
@@ -643,120 +651,126 @@ const SchoolRegisterForm = ({
 
                 {/* Gender and Educational Track */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
-                  <div>
-                    <SelectionGroup
-                      name="educationalTrack"
-                      value={values.educationalTrack}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      touched={touched.educationalTrack}
-                      errors={errors.educationalTrack}
-                      placeholder={t(
-                        "schoolRegister.form.educationalTrack.placeholder"
-                      )}
-                      list={educationSystemNames}
-                      label={t("schoolRegister.form.educationalTrack.label")}
-                      required={true}
-                    />
-                  </div>
+                  <SelectionGroup
+                    name="educationalTrack"
+                    value={values.educationalTrack}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    touched={touched.educationalTrack}
+                    errors={errors.educationalTrack}
+                    placeholder={t(
+                      "schoolRegister.form.educationalTrack.placeholder"
+                    )}
+                    list={educationSystemNames}
+                    label={t("schoolRegister.form.educationalTrack.label")}
+                    labelClassName="font-somar"
+                    labelFontFamily="var(--font-somar-sans), sans-serif"
+                    required={true}
+                  />
 
-                  <div>
-                    <SelectionGroup
-                      name="gender"
-                      value={values.gender}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      touched={touched.gender}
-                      errors={errors.gender}
-                      placeholder={t("schoolRegister.form.gender.placeholder")}
-                      list={genderOptions}
-                      multiple={true}
-                      label={t("schoolRegister.form.gender.label")}
-                      required={true}
-                    />
-                  </div>
+                  <SelectionGroup
+                    name="gender"
+                    value={values.gender}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    touched={touched.gender}
+                    errors={errors.gender}
+                    placeholder={t("schoolRegister.form.gender.placeholder")}
+                    list={genderOptions}
+                    multiple={true}
+                    label={t("schoolRegister.form.gender.label")}
+                    labelClassName="font-somar"
+                    labelFontFamily="var(--font-somar-sans), sans-serif"
+                    required={true}
+                  />
                 </div>
 
                 {/* Stages and Grades */}
                 {stageNames.length > 0 && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
-                    <div>
+                    <SelectionGroup
+                      name="stages"
+                      value={values.stages}
+                      onChange={(e) => {
+                        const selectedNames = Array.isArray(e.target.value)
+                          ? e.target.value
+                          : [];
+                        // Resolve IDs immediately while availableStages is in scope
+                        latestStagesRef.current = selectedNames
+                          .map((name) => {
+                            const stage = availableStages.find(
+                              (s) => s.name === name
+                            );
+                            return stage?._id || stage?.id || null;
+                          })
+                          .filter(Boolean);
+                        handleChange(e);
+                      }}
+                      onBlur={handleBlur}
+                      onClose={() => {
+                        setFieldValue("grades", []);
+                        fetchGrades(latestStagesRef.current);
+                      }}
+                      touched={touched.stages}
+                      errors={errors.stages}
+                      placeholder={t(
+                        "schoolRegister.form.stages.placeholder"
+                      )}
+                      list={stageNames}
+                      multiple={true}
+                      label={t("schoolRegister.form.stages.label")}
+                      labelClassName="font-somar"
+                      labelFontFamily="var(--font-somar-sans), sans-serif"
+                      required={true}
+                    />
+
+                    {values.stages.length === 0 ? (
+                      <div className="relative w-full min-w-0 flex flex-col gap-2">
+                        <label
+                          className="font-medium capitalize font-somar"
+                          style={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
+                        >
+                          {t("schoolRegister.form.grades.label")}
+                          <span className="text-error ml-1">*</span>
+                        </label>
+                        <div className="h-[55px] flex items-center px-4 border-2 border-border rounded-lg text-sm text-light opacity-60 font-somar box-border">
+                          {t("schoolRegister.form.grades.selectStagesFirst")}
+                        </div>
+                      </div>
+                    ) : loadingGrades ? (
+                      <div className="relative w-full min-w-0 flex flex-col gap-2">
+                        <label
+                          className="font-medium capitalize font-somar"
+                          style={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
+                        >
+                          {t("schoolRegister.form.grades.label")}
+                          <span className="text-error ml-1">*</span>
+                        </label>
+                        <Skeleton
+                          variant="rectangular"
+                          height={55}
+                          sx={{ borderRadius: "8px" }}
+                        />
+                      </div>
+                    ) : (
                       <SelectionGroup
-                        name="stages"
-                        value={values.stages}
-                        onChange={(e) => {
-                          const selectedNames = Array.isArray(e.target.value)
-                            ? e.target.value
-                            : [];
-                          // Resolve IDs immediately while availableStages is in scope
-                          latestStagesRef.current = selectedNames
-                            .map((name) => {
-                              const stage = availableStages.find(
-                                (s) => s.name === name
-                              );
-                              return stage?._id || stage?.id || null;
-                            })
-                            .filter(Boolean);
-                          handleChange(e);
-                        }}
+                        name="grades"
+                        value={values.grades}
+                        onChange={handleChange}
                         onBlur={handleBlur}
-                        onClose={() => {
-                          setFieldValue("grades", []);
-                          fetchGrades(latestStagesRef.current);
-                        }}
-                        touched={touched.stages}
-                        errors={errors.stages}
+                        touched={touched.grades}
+                        errors={errors.grades}
                         placeholder={t(
-                          "schoolRegister.form.stages.placeholder"
+                          "schoolRegister.form.grades.placeholder"
                         )}
-                        list={stageNames}
+                        list={grades.map((g) => g.name)}
                         multiple={true}
-                        label={t("schoolRegister.form.stages.label")}
+                        label={t("schoolRegister.form.grades.label")}
+                        labelClassName="font-somar"
+                        labelFontFamily="var(--font-somar-sans), sans-serif"
                         required={true}
                       />
-                    </div>
-
-                    <div>
-                      {values.stages.length === 0 ? (
-                        <>
-                          <label className="block pb-2 font-medium">
-                            {t("schoolRegister.form.grades.label")}
-                            <span className="text-error ml-1">*</span>
-                          </label>
-                          <div className="h-[55px] flex items-center px-4 border-2 border-border rounded-lg text-sm text-light opacity-60 font-somar">
-                            {t("schoolRegister.form.grades.selectStagesFirst")}
-                          </div>
-                        </>
-                      ) : loadingGrades ? (
-                        <>
-                          <label className="block pb-2 font-medium">
-                            {t("schoolRegister.form.grades.label")}
-                            <span className="text-error ml-1">*</span>
-                          </label>
-                          <Skeleton
-                            variant="rectangular"
-                            height={55}
-                            sx={{ borderRadius: "8px" }}
-                          />
-                        </>
-                      ) : (
-                        <SelectionGroup
-                          name="grades"
-                          value={values.grades}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          touched={touched.grades}
-                          errors={errors.grades}
-                          placeholder={t(
-                            "schoolRegister.form.grades.placeholder"
-                          )}
-                          list={grades.map((g) => g.name)}
-                          multiple={true}
-                          label={t("schoolRegister.form.grades.label")}
-                          required={true}
-                        />
-                      )}
-                    </div>
+                    )}
                   </div>
                 )}
 
@@ -764,6 +778,7 @@ const SchoolRegisterForm = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
                   <TextInputGroup
                     label={t("schoolRegister.form.contactPersonName.label")}
+                    labelClassName="font-somar"
                     labelFontFamily="var(--font-somar-sans), sans-serif"
                     name="contactPersonName"
                     value={values.contactPersonName}
@@ -777,29 +792,30 @@ const SchoolRegisterForm = ({
                     required={true}
                   />
 
-                  <div>
-                    <SelectionGroup
-                      name="functionalDegree"
-                      value={values.functionalDegree}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      touched={touched.functionalDegree}
-                      errors={errors.functionalDegree}
-                      placeholder={t(
-                        "schoolRegister.form.functionalDegree.placeholder"
-                      )}
-                      list={roleNames}
-                      multiple={false}
-                      label={t("schoolRegister.form.functionalDegree.label")}
-                      required={true}
-                    />
-                  </div>
+                  <SelectionGroup
+                    name="functionalDegree"
+                    value={values.functionalDegree}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    touched={touched.functionalDegree}
+                    errors={errors.functionalDegree}
+                    placeholder={t(
+                      "schoolRegister.form.functionalDegree.placeholder"
+                    )}
+                    list={roleNames}
+                    multiple={false}
+                    label={t("schoolRegister.form.functionalDegree.label")}
+                    labelClassName="font-somar"
+                    labelFontFamily="var(--font-somar-sans), sans-serif"
+                    required={true}
+                  />
                 </div>
 
                 {/* Email and Phone */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
                   <TextInputGroup
                     label={t("schoolRegister.form.email.label")}
+                    labelClassName="font-somar"
                     labelFontFamily="var(--font-somar-sans), sans-serif"
                     name="email"
                     type="email"
@@ -812,9 +828,12 @@ const SchoolRegisterForm = ({
                     required={true}
                   />
 
-                  <div className="relative flex flex-col gap-2">
+                  <div className="relative w-full min-w-0 flex flex-col gap-2">
                     <div className="flex items-center gap-0.5">
-                      <label className="font-medium capitalize">
+                      <label
+                        className="font-medium capitalize font-somar"
+                        style={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
+                      >
                         {t("schoolRegister.form.phone.label")}
                       </label>
                       <span className="text-error">*</span>
@@ -845,7 +864,7 @@ const SchoolRegisterForm = ({
                             </span>
                           )}
                           className={
-                            "flex bg-white w-full gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out " +
+                            "flex items-center bg-white w-full gap-1 px-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-base file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out " +
                             (errors.mobile && touched.mobile
                               ? "border-error focus-visible:ring-error"
                               : "border-border focus-visible:ring-mainColor")
@@ -930,6 +949,7 @@ const SchoolRegisterForm = ({
                             label={t(
                               "schoolRegister.form.contactPersonName.label"
                             )}
+                            labelClassName="font-somar"
                             labelFontFamily="var(--font-somar-sans), sans-serif"
                             name={`additionalUsers.${index}.name`}
                             value={user.name}
@@ -943,26 +963,27 @@ const SchoolRegisterForm = ({
                             required={true}
                           />
 
-                          <div>
-                            <SelectionGroup
-                              name={`additionalUsers.${index}.role`}
-                              value={user.role}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              touched={touched.additionalUsers?.[index]?.role}
-                              errors={errors.additionalUsers?.[index]?.role}
-                              placeholder={t(
-                                "schoolRegister.form.functionalDegree.placeholder"
-                              )}
-                              list={roleNames}
-                              multiple={false}
-                              label={t("schoolRegister.form.functionalDegree.label")}
-                              required={true}
-                            />
-                          </div>
+                          <SelectionGroup
+                            name={`additionalUsers.${index}.role`}
+                            value={user.role}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            touched={touched.additionalUsers?.[index]?.role}
+                            errors={errors.additionalUsers?.[index]?.role}
+                            placeholder={t(
+                              "schoolRegister.form.functionalDegree.placeholder"
+                            )}
+                            list={roleNames}
+                            multiple={false}
+                            label={t("schoolRegister.form.functionalDegree.label")}
+                            labelClassName="font-somar"
+                            labelFontFamily="var(--font-somar-sans), sans-serif"
+                            required={true}
+                          />
 
                           <TextInputGroup
                             label={t("schoolRegister.form.email.label")}
+                            labelClassName="font-somar"
                             labelFontFamily="var(--font-somar-sans), sans-serif"
                             name={`additionalUsers.${index}.email`}
                             type="email"
@@ -977,9 +998,12 @@ const SchoolRegisterForm = ({
                             required={true}
                           />
 
-                          <div className="relative flex flex-col gap-2">
+                          <div className="relative w-full min-w-0 flex flex-col gap-2">
                             <div className="flex items-center gap-0.5">
-                              <label className="font-medium capitalize">
+                              <label
+                                className="font-medium capitalize font-somar"
+                                style={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
+                              >
                                 {t("schoolRegister.form.phone.label")}
                               </label>
                               <span className="text-error">*</span>
@@ -1013,7 +1037,7 @@ const SchoolRegisterForm = ({
                                     </span>
                                   )}
                                   className={
-                                    "flex bg-white w-full gap-1 p-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-lg file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out " +
+                                    "flex items-center bg-white w-full gap-1 px-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-base file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out " +
                                     (errors.additionalUsers?.[index]?.mobile &&
                                     touched.additionalUsers?.[index]?.mobile
                                       ? "border-error focus-visible:ring-error"

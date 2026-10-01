@@ -1,7 +1,6 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useSelector } from "react-redux";
 
 import { useEffect } from "react";
 
@@ -15,8 +14,6 @@ import SchoolRegisterForm from "@components/forms/schoolRegisterForm";
 import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 
 const SchoolRegisterPage = () => {
-  const userType = useSelector((state) => state.loginForm.loginData?.userType);
-
   const locale = useLocale();
   const t = useTranslations();
 
@@ -43,9 +40,7 @@ const SchoolRegisterPage = () => {
 
   return (
     <ProtectedProfilePage
-      requiredPermission={
-        userType === "SALES" ? PERMISSIONS.PAGE.B2B_INVITE_ORGANIZATION_SALES_PAGE : null
-      }
+      requiredPermission={PERMISSIONS.PAGE.B2B_INVITE_ORGANIZATION_SALES_PAGE}
     >
       <>
         <PageHeader />

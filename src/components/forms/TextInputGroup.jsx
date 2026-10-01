@@ -135,7 +135,7 @@ const TextInputGroup = memo(
           ) : (
             <input
               className={cn(
-                "text-sm font-normal font-ibm transition-all duration-200 ease-in-out p-4 bg-white w-full min-w-0 max-w-full box-border rounded-lg outline-none placeholder:font-normal placeholder:text-sm placeholder:text-textLight selection:bg-buttonsHover",
+                "text-sm font-normal font-ibm transition-all duration-200 ease-in-out h-[55px] px-4 bg-white w-full min-w-0 max-w-full box-border rounded-lg outline-none placeholder:font-normal placeholder:text-sm placeholder:text-textLight selection:bg-buttonsHover",
                 readOnly && "cursor-not-allowed opacity-90",
                 disabled && "cursor-not-allowed opacity-60 bg-gray-50",
                 textAlign && `text-${textAlign}`,

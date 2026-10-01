@@ -25,6 +25,7 @@ const SelectionGroup = ({
   showCheckbox = multiple, // Default to true only for multi-select
   label = "", // Label text for the field
   labelClassName = "", // Optional custom label class
+  labelFontFamily,
   required = false, // Show asterisk for required fields
   errorBorder = false, // Show red border only, without error message
   border = "2px solid var(--color-border)", // Custom border style
@@ -37,8 +38,17 @@ const SelectionGroup = ({
     >
       {label && (
         <label
-          className={
-            labelClassName ? labelClassName : "block pb-2 font-medium font-ibm"
+          className={cn(
+            "font-medium capitalize",
+            labelClassName || "font-ibm"
+          )}
+          style={
+            labelFontFamily || labelClassName?.includes("font-somar")
+              ? {
+                  fontFamily:
+                    labelFontFamily || "var(--font-somar-sans), sans-serif",
+                }
+              : undefined
           }
         >
           {label}
@@ -113,14 +123,18 @@ const SelectionGroup = ({
         sx={{
           width: "100%",
           fontFamily: "var(--font-somar-sans), sans-serif",
-
+          height: "55px",
+          "&.MuiInputBase-root": {
+            height: "55px",
+          },
           "& .MuiSelect-select": {
             paddingInlineEnd: "40px !important",
             paddingInlineStart: "14px !important",
             paddingTop: "0px !important",
             paddingBottom: "0px !important",
-            height: "52px !important",
-            minHeight: "52px !important",
+            height: "55px !important",
+            minHeight: "55px !important",
+            boxSizing: "border-box !important",
             display: "flex !important",
             alignItems: "center !important",
             border: border,

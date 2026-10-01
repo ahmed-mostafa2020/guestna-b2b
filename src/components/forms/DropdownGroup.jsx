@@ -7,6 +7,7 @@ import { memo } from "react";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import { cn } from "@utils/helpers/cn";
 
 const DropdownGroup = ({
   label,
@@ -17,6 +18,8 @@ const DropdownGroup = ({
   required = false,
   disabled = false,
   insetInlineStart,
+  labelClassName = "",
+  labelFontFamily,
 }) => {
   const locale = useLocale();
   const isRTL = locale === "ar";
@@ -59,8 +62,22 @@ const DropdownGroup = ({
       disabled={disabled}
     >
       <div className="flex gap-0.5">
-        {/* font-ibm */}
-        <label className="mb-2 font-medium capitalize font-ibm">{label}</label>
+        <label
+          className={cn(
+            "mb-2 font-medium capitalize",
+            labelClassName || "font-ibm"
+          )}
+          style={
+            labelFontFamily || labelClassName?.includes("font-somar")
+              ? {
+                  fontFamily:
+                    labelFontFamily || "var(--font-somar-sans), sans-serif",
+                }
+              : undefined
+          }
+        >
+          {label}
+        </label>
         {required && <span className="text-error">{"*"}</span>}
       </div>
 
