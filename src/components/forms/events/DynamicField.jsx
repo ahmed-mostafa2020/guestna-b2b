@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, useMemo, useRef, memo } from "react";
 import {
   RadioGroup,
   Radio,
@@ -7,7 +7,10 @@ import {
   Select,
   MenuItem,
   ListItemText,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import PhoneInputWithCountrySelect from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
@@ -161,6 +164,8 @@ const PriceBadge = ({ price }) => {
 };
 
 // ─── Main Component ───────────────────────────────────────────────────────────
+const SEARCH_THRESHOLD = 7;
+
 const DynamicField = memo(
   ({
     input,
@@ -176,6 +181,8 @@ const DynamicField = memo(
     id,
   }) => {
     const [cardLightbox, setCardLightbox] = useState(null);
+    const [selectSearchTerm, setSelectSearchTerm] = useState("");
+    const selectSearchRef = useRef(null);
     const fieldName = name || input.key;
     const inputId =
       id || `dynamic-field-${fieldName.replace(/[\[\]\.]/g, "-")}`;
@@ -215,6 +222,30 @@ const DynamicField = memo(
 
     // 2. Select (Dropdown)
     if (input.type === "select") {
+      const selectOptions = input.options || [];
+      const showSelectSearch = selectOptions.length > SEARCH_THRESHOLD;
+
+      // Auto-select single option for non-multiple selects
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      useEffect(() => {
+        if (
+          !input.isMultiple &&
+          selectOptions.length === 1 &&
+          value !== selectOptions[0].value
+        ) {
+          handleChange({ target: { name: fieldName, value: selectOptions[0].value } });
+        }
+      }, [selectOptions.length, input.isMultiple, value, fieldName, handleChange]);
+
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const filteredSelectOptions = useMemo(() => {
+        if (!showSelectSearch || !selectSearchTerm.trim()) return selectOptions;
+        const lower = selectSearchTerm.toLowerCase().trim();
+        return selectOptions.filter((opt) =>
+          (opt.label || "").toLowerCase().includes(lower)
+        );
+      }, [selectOptions, selectSearchTerm, showSelectSearch]);
+
       return (
         <div className="flex flex-col gap-2 relative">
           <label
@@ -235,6 +266,11 @@ const DynamicField = memo(
             onChange={handleChange}
             onBlur={handleBlur}
             displayEmpty
+            onOpen={() => {
+              setSelectSearchTerm("");
+              setTimeout(() => selectSearchRef.current?.focus(), 100);
+            }}
+            onClose={() => setSelectSearchTerm("")}
             renderValue={(selected) => {
               if (
                 !selected ||
@@ -259,6 +295,10 @@ const DynamicField = memo(
                 selected
               );
             }}
+            MenuProps={{
+              PaperProps: { sx: { maxHeight: 340 } },
+              autoFocus: false,
+            }}
             sx={{
               border:
                 touched && error
@@ -276,37 +316,92 @@ const DynamicField = memo(
                 {input.placeholder || t("common.select")}
               </MenuItem>
             )}
-            {input.options?.map((opt) => (
-              <MenuItem key={opt._id} value={opt.value}>
-                <div className="flex items-center w-full justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    {input.isMultiple && (
-                      <Checkbox
-                        checked={(value || []).indexOf(opt.value) > -1}
-                        sx={{
-                          "&.Mui-checked": {
-                            color: "var(--color-main)",
+
+            {/* Search field */}
+            {showSelectSearch && (
+              <MenuItem
+                disableRipple
+                disableTouchRipple
+                onKeyDown={(e) => e.stopPropagation()}
+                sx={{
+                  position: "sticky",
+                  top: 0,
+                  zIndex: 1,
+                  backgroundColor: "white",
+                  p: "8px 16px",
+                  "&:hover": { backgroundColor: "white" },
+                  "&.Mui-focusVisible": { backgroundColor: "white" },
+                }}
+              >
+                <TextField
+                  inputRef={selectSearchRef}
+                  size="small"
+                  autoFocus
+                  placeholder={t("common.autocomplete.searchPlaceholder")}
+                  fullWidth
+                  value={selectSearchTerm}
+                  onChange={(e) => { e.stopPropagation(); setSelectSearchTerm(e.target.value); }}
+                  onKeyDown={(e) => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation()}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon sx={{ color: "var(--color-text-light)", fontSize: 20 }} />
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      fontFamily: "var(--font-somar-sans), sans-serif",
+                      fontSize: "0.875rem",
+                      borderRadius: "8px",
+                      backgroundColor: "#f9f9f9",
+                      "& fieldset": { borderColor: "#eaeaea" },
+                      "&:hover fieldset": { borderColor: "var(--color-main)" },
+                      "&.Mui-focused fieldset": { borderColor: "var(--color-main)" },
+                    },
+                  }}
+                />
+              </MenuItem>
+            )}
+
+            {filteredSelectOptions.length > 0 ? (
+              filteredSelectOptions.map((opt) => (
+                <MenuItem key={opt._id} value={opt.value}>
+                  <div className="flex items-center w-full justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      {input.isMultiple && (
+                        <Checkbox
+                          checked={(value || []).indexOf(opt.value) > -1}
+                          sx={{
+                            "&.Mui-checked": {
+                              color: "var(--color-main)",
+                            },
+                            padding: 0,
+                            marginRight: "4px",
+                          }}
+                        />
+                      )}
+                      <OptionImage src={opt.src} alt={opt.label} t={t} />
+                      <ListItemText
+                        primary={opt.label}
+                        primaryTypographyProps={{
+                          style: {
+                            fontFamily: "var(--font-somar-sans), sans-serif",
+                            fontSize: "0.875rem",
                           },
-                          padding: 0,
-                          marginRight: "4px",
                         }}
                       />
-                    )}
-                    <OptionImage src={opt.src} alt={opt.label} t={t} />
-                    <ListItemText
-                      primary={opt.label}
-                      primaryTypographyProps={{
-                        style: {
-                          fontFamily: "var(--font-somar-sans), sans-serif",
-                          fontSize: "0.875rem",
-                        },
-                      }}
-                    />
+                    </div>
+                    <PriceBadge price={opt.price} />
                   </div>
-                  <PriceBadge price={opt.price} />
-                </div>
+                </MenuItem>
+              ))
+            ) : showSelectSearch && selectSearchTerm.trim() ? (
+              <MenuItem disabled sx={{ justifyContent: "center", opacity: 0.6 }}>
+                <em className="text-textLight text-sm">{t("common.autocomplete.noResults")}</em>
               </MenuItem>
-            ))}
+            ) : null}
           </Select>
           {touched && error && (
             <span className="text-xs text-error font-somar mt-1 absolute -bottom-5 start-0">

@@ -1,11 +1,14 @@
 import { bluelocationIcon, emailBlueIcon } from "@assets/svg";
 import { ArrowDropDown, Email, Phone } from "@mui/icons-material";
-import { Box, MenuItem, Select, Skeleton, Typography } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import { Box, MenuItem, Select, Skeleton, Typography, TextField, InputAdornment } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+
+const SEARCH_THRESHOLD = 7;
 
 const SelectSchoolForDetailsSkeleton = () => {
   return (
@@ -94,6 +97,30 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
     );
   };
 
+  const tCommon = useTranslations("common.autocomplete");
+  const [schoolSearchTerm, setSchoolSearchTerm] = useState("");
+  const schoolSearchRef = useRef(null);
+
+  const showSchoolSearch = orgOptions.length > SEARCH_THRESHOLD;
+
+  const filteredOrgOptions = useMemo(() => {
+    if (!showSchoolSearch || !schoolSearchTerm.trim()) return orgOptions;
+    const lower = schoolSearchTerm.toLowerCase().trim();
+    return orgOptions.filter((org) =>
+      (org.label || "").toLowerCase().includes(lower)
+    );
+  }, [orgOptions, schoolSearchTerm, showSchoolSearch]);
+
+  // Auto-select when only one school is available
+  useEffect(() => {
+    if (
+      orgOptions.length === 1 &&
+      selectedSchool !== orgOptions[0].value
+    ) {
+      handleSchoolSelect({ target: { value: orgOptions[0].value } });
+    }
+  }, [orgOptions, selectedSchool]);
+
   if (isLoading || !details || !organizations?.length)
     return <SelectSchoolForDetailsSkeleton />;
 
@@ -108,8 +135,15 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
         open={open}
         value={selectedSchool}
         onChange={handleSchoolSelect}
-        onOpen={() => setOpen(true)}
-        onClose={() => setOpen(false)}
+        onOpen={() => {
+          setOpen(true);
+          setSchoolSearchTerm("");
+          setTimeout(() => schoolSearchRef.current?.focus(), 100);
+        }}
+        onClose={() => {
+          setOpen(false);
+          setSchoolSearchTerm("");
+        }}
         className="w-full !border-2 !border-border"
         sx={{
           "& .MuiOutlinedInput-notchedOutline": {
@@ -124,20 +158,76 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
         MenuProps={{
           PaperProps: {
             className: "py-4 px-3",
+            sx: { maxHeight: 340 },
           },
           anchorOrigin: { vertical: "bottom", horizontal: "left" },
           transformOrigin: { vertical: "top", horizontal: "left" },
+          autoFocus: false,
         }}
       >
-        {orgOptions.map((org) => (
+        {/* Search field */}
+        {showSchoolSearch && (
           <MenuItem
-            key={org.value}
-            value={org.value}
-            className="!font-somar p-2 !bg-white hover:!bg-buttonsHover"
+            disableRipple
+            disableTouchRipple
+            onKeyDown={(e) => e.stopPropagation()}
+            sx={{
+              position: "sticky",
+              top: 0,
+              zIndex: 1,
+              backgroundColor: "white",
+              p: "8px 16px",
+              "&:hover": { backgroundColor: "white" },
+              "&.Mui-focusVisible": { backgroundColor: "white" },
+            }}
           >
-            {org.label}
+            <TextField
+              inputRef={schoolSearchRef}
+              size="small"
+              autoFocus
+              placeholder={tCommon("searchPlaceholder")}
+              fullWidth
+              value={schoolSearchTerm}
+              onChange={(e) => { e.stopPropagation(); setSchoolSearchTerm(e.target.value); }}
+              onKeyDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ color: "var(--color-text-light)", fontSize: 20 }} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  fontFamily: "var(--font-somar-sans), sans-serif",
+                  fontSize: "0.875rem",
+                  borderRadius: "8px",
+                  backgroundColor: "#f9f9f9",
+                  "& fieldset": { borderColor: "#eaeaea" },
+                  "&:hover fieldset": { borderColor: "var(--color-main)" },
+                  "&.Mui-focused fieldset": { borderColor: "var(--color-main)" },
+                },
+              }}
+            />
           </MenuItem>
-        ))}
+        )}
+
+        {filteredOrgOptions.length > 0 ? (
+          filteredOrgOptions.map((org) => (
+            <MenuItem
+              key={org.value}
+              value={org.value}
+              className="!font-somar p-2 !bg-white hover:!bg-buttonsHover"
+            >
+              {org.label}
+            </MenuItem>
+          ))
+        ) : showSchoolSearch && schoolSearchTerm.trim() ? (
+          <MenuItem disabled sx={{ justifyContent: "center", opacity: 0.6 }}>
+            <em className="text-textLight text-sm">{tCommon("noResults")}</em>
+          </MenuItem>
+        ) : null}
       </Select>
 
       <Box className="bg-[#E6F0F1] p-6 rounded-xl flex flex-col md:flex-row gap-4 border-[#6EC1E366] border-2">

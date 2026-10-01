@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 
 import {
   FormControl,
@@ -6,9 +6,15 @@ import {
   Select,
   Checkbox,
   ListItemText,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
 import { KeyboardArrowDown } from "@mui/icons-material";
+import SearchIcon from "@mui/icons-material/Search";
 import { cn } from "@utils/helpers/cn";
+import { useTranslations } from "next-intl";
+
+const SEARCH_THRESHOLD = 7;
 
 const SelectionGroup = ({
   name,
@@ -30,6 +36,49 @@ const SelectionGroup = ({
   border = "2px solid var(--color-border)", // Custom border style
   className = "",
 }) => {
+  const t = useTranslations("common.autocomplete");
+  const [searchTerm, setSearchTerm] = useState("");
+  const searchInputRef = useRef(null);
+
+  const showSearch = list?.length > SEARCH_THRESHOLD;
+
+  // Auto-select when there's only one option (single-select only)
+  useEffect(() => {
+    if (
+      !multiple &&
+      list?.length === 1 &&
+      onChange &&
+      !disabled
+    ) {
+      const singleItem = list[0];
+      const singleValue =
+        typeof singleItem === "object" && singleItem !== null
+          ? (singleItem.value ?? singleItem._id ?? singleItem.id ?? singleItem.name)
+          : singleItem;
+
+      if (value !== singleValue && value !== singleItem) {
+        // Simulate a change event
+        onChange({ target: { name, value: singleValue } });
+      }
+    }
+  }, [list, onChange, disabled, value, multiple, name]);
+
+  // Filter list based on search term
+  const filteredList = useMemo(() => {
+    if (!list || !showSearch || !searchTerm.trim()) {
+      return list || [];
+    }
+
+    const lowerSearch = searchTerm.toLowerCase().trim();
+    return list.filter((item) => {
+      const itemLabel =
+        typeof item === "object" && item !== null
+          ? (item.label ?? item.name ?? item.title ?? item.value ?? "")
+          : String(item);
+      return String(itemLabel).toLowerCase().includes(lowerSearch);
+    });
+  }, [list, searchTerm, showSearch]);
+
   return (
     <FormControl
       error={errorBorder || (touched && Boolean(errors))}
@@ -52,7 +101,17 @@ const SelectionGroup = ({
         value={value}
         onChange={onChange}
         onBlur={onBlur}
-        onClose={onClose}
+        onClose={(e) => {
+          setSearchTerm("");
+          if (onClose) onClose(e);
+        }}
+        onOpen={() => {
+          setSearchTerm("");
+          // Focus search input when dropdown opens
+          setTimeout(() => {
+            searchInputRef.current?.focus();
+          }, 100);
+        }}
         displayEmpty
         multiple={multiple}
         disabled={disabled}
@@ -109,6 +168,7 @@ const SelectionGroup = ({
               },
             },
           },
+          autoFocus: false,
         }}
         sx={{
           width: "100%",
@@ -159,93 +219,168 @@ const SelectionGroup = ({
             {placeholder}
           </MenuItem>
         )}
-        {list.map((item, index) => {
-          const itemValue =
-            typeof item === "object" && item !== null
-              ? (item.value ?? item._id ?? item.id ?? item.name)
-              : name === "expiryYear"
-                ? item.toString().slice(-2)
-                : item;
 
-          const itemLabel =
-            typeof item === "object" && item !== null
-              ? (item.label ?? item.name ?? item.title ?? item.value)
-              : item;
-
-          const itemDescription = (() => {
-            if (typeof item !== "object" || item === null) return "";
-            const desc = item.description ?? item.desc;
-            if (typeof desc === "object" && desc !== null) {
-              return desc.ar || desc.en || Object.values(desc)[0] || "";
-            }
-            return typeof desc === "string" ? desc : "";
-          })();
-
-          const itemKey =
-            typeof item === "object" && item !== null
-              ? (item.value ?? item._id ?? item.id ?? item.name)
-              : item;
-
-          const isSelected = multiple
-            ? Array.isArray(value) && value.includes(itemValue)
-            : value === itemValue;
-
-          return (
-            <MenuItem
-              className="!font-somar"
-              key={`${itemKey}-${index}`}
-              value={itemValue}
-              title={
-                typeof itemLabel === "string"
-                  ? itemDescription
-                    ? `${itemLabel} - ${itemDescription}`
-                    : itemLabel
-                  : undefined
-              }
+        {/* Search field - rendered only when items exceed threshold */}
+        {showSearch && (
+          <MenuItem
+            disableRipple
+            disableTouchRipple
+            onKeyDown={(e) => e.stopPropagation()}
+            sx={{
+              position: "sticky",
+              top: 0,
+              zIndex: 1,
+              backgroundColor: "white",
+              p: "8px 16px",
+              "&:hover": {
+                backgroundColor: "white",
+              },
+              "&.Mui-focusVisible": {
+                backgroundColor: "white",
+              },
+            }}
+          >
+            <TextField
+              inputRef={searchInputRef}
+              size="small"
+              autoFocus
+              placeholder={t("searchPlaceholder")}
+              fullWidth
+              value={searchTerm}
+              onChange={(e) => {
+                e.stopPropagation();
+                setSearchTerm(e.target.value);
+              }}
+              onKeyDown={(e) => {
+                e.stopPropagation();
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon
+                      sx={{ color: "var(--color-text-light)", fontSize: 20 }}
+                    />
+                  </InputAdornment>
+                ),
+              }}
               sx={{
-                whiteSpace: "normal",
-                alignItems: itemDescription ? "flex-start" : "center",
-                py: itemDescription ? 1.25 : 1,
-                gap: 1,
-                borderBottom: itemDescription
-                  ? "1px solid rgba(0, 0, 0, 0.05)"
-                  : "none",
-                "&:last-child": {
-                  borderBottom: "none",
+                "& .MuiOutlinedInput-root": {
+                  fontFamily: "var(--font-somar-sans), sans-serif",
+                  fontSize: "0.875rem",
+                  borderRadius: "8px",
+                  backgroundColor: "#f9f9f9",
+                  "& fieldset": {
+                    borderColor: "#eaeaea",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "var(--color-main)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "var(--color-main)",
+                  },
                 },
               }}
-            >
-              {showCheckbox && (
-                <Checkbox
-                  checked={isSelected}
-                  sx={{
-                    color: "var(--color-text)",
-                    mt: itemDescription ? "-2px" : 0,
-                    p: 0,
-                    "&.Mui-checked": {
-                      color: "var(--color-main)",
-                    },
-                  }}
-                />
-              )}
-              <ListItemText
-                primary={
-                  <span className="block font-somar font-semibold text-sm text-textDark leading-snug">
-                    {typeof itemLabel === "string" ? itemLabel : itemLabel}
-                  </span>
+            />
+          </MenuItem>
+        )}
+
+        {/* Filtered items */}
+        {filteredList.length > 0 ? (
+          filteredList.map((item, index) => {
+            const itemValue =
+              typeof item === "object" && item !== null
+                ? (item.value ?? item._id ?? item.id ?? item.name)
+                : name === "expiryYear"
+                  ? item.toString().slice(-2)
+                  : item;
+
+            const itemLabel =
+              typeof item === "object" && item !== null
+                ? (item.label ?? item.name ?? item.title ?? item.value)
+                : item;
+
+            const itemDescription = (() => {
+              if (typeof item !== "object" || item === null) return "";
+              const desc = item.description ?? item.desc;
+              if (typeof desc === "object" && desc !== null) {
+                return desc.ar || desc.en || Object.values(desc)[0] || "";
+              }
+              return typeof desc === "string" ? desc : "";
+            })();
+
+            const itemKey =
+              typeof item === "object" && item !== null
+                ? (item.value ?? item._id ?? item.id ?? item.name)
+                : item;
+
+            const isSelected = multiple
+              ? Array.isArray(value) && value.includes(itemValue)
+              : value === itemValue;
+
+            return (
+              <MenuItem
+                className="!font-somar"
+                key={`${itemKey}-${index}`}
+                value={itemValue}
+                title={
+                  typeof itemLabel === "string"
+                    ? itemDescription
+                      ? `${itemLabel} - ${itemDescription}`
+                      : itemLabel
+                    : undefined
                 }
-                secondary={
-                  itemDescription ? (
-                    <span className="block font-somar font-normal text-xs text-textLight mt-0.5 whitespace-normal break-words leading-relaxed">
-                      {itemDescription}
+                sx={{
+                  whiteSpace: "normal",
+                  alignItems: itemDescription ? "flex-start" : "center",
+                  py: itemDescription ? 1.25 : 1,
+                  gap: 1,
+                  borderBottom: itemDescription
+                    ? "1px solid rgba(0, 0, 0, 0.05)"
+                    : "none",
+                  "&:last-child": {
+                    borderBottom: "none",
+                  },
+                }}
+              >
+                {showCheckbox && (
+                  <Checkbox
+                    checked={isSelected}
+                    sx={{
+                      color: "var(--color-text)",
+                      mt: itemDescription ? "-2px" : 0,
+                      p: 0,
+                      "&.Mui-checked": {
+                        color: "var(--color-main)",
+                      },
+                    }}
+                  />
+                )}
+                <ListItemText
+                  primary={
+                    <span className="block font-somar font-semibold text-sm text-textDark leading-snug">
+                      {typeof itemLabel === "string" ? itemLabel : itemLabel}
                     </span>
-                  ) : null
-                }
-                className="!my-0 !font-somar"
-              />
-            </MenuItem>
-          );
-        })}
+                  }
+                  secondary={
+                    itemDescription ? (
+                      <span className="block font-somar font-normal text-xs text-textLight mt-0.5 whitespace-normal break-words leading-relaxed">
+                        {itemDescription}
+                      </span>
+                    ) : null
+                  }
+                  className="!my-0 !font-somar"
+                />
+              </MenuItem>
+            );
+          })
+        ) : showSearch && searchTerm.trim() ? (
+          <MenuItem disabled sx={{ justifyContent: "center", opacity: 0.6 }}>
+            <em className="text-textLight text-sm">{t("noResults")}</em>
+          </MenuItem>
+        ) : null}
       </Select>
       {touched && errors && (
         <p

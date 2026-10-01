@@ -42,7 +42,7 @@ const RegisterStudentForm = ({
   const [___, setGradeError] = useState("");
 
   const [childrenNumber, setChildrenNumber] = useState(1);
-  const [nationality, setNationality] = useState("a7568f9b909fa74e02403a29");
+  const [nationality, setNationality] = useState("68052bdd38ea31c8cf95dc04");
   const [nationalIdImage, setNationalIdImage] = useState(null);
   const [nationalIdImageError, setNationalIdImageError] = useState("");
 
@@ -451,7 +451,7 @@ const RegisterStudentForm = ({
           mobile: parentPhone || "",
           backupMobile: "",
           email: parentEmail || "",
-          nationality: "a7568f9b909fa74e02403a29",
+          nationality: "68052bdd38ea31c8cf95dc04",
           nationalId: "",
           promoCode: "",
           duration: tripDuration || null,
