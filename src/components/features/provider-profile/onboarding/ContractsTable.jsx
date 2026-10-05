@@ -1,10 +1,12 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
+import { useDispatch, useSelector } from "react-redux";
 import { VisibilityOutlined as ViewIcon } from "@mui/icons-material";
 import DataTable from "@components/ui/DataTable";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { setOnboardingContractsPage } from "@store/providerOnboarding/onboardingContractsSlice";
 
 const STATUS_STYLES = {
   DRAFT: {
@@ -93,16 +95,27 @@ const getStatusLabel = (status, t) => {
   return status;
 };
 
-const ContractsTable = ({
-  data = {},
-  loading = false,
-  currentPage = 1,
-  onPageChange,
-}) => {
+const ContractsTable = () => {
   const tContracts = useTranslations("providerProfile.onboarding.contracts");
+  const dispatch = useDispatch();
+  const {
+    data,
+    page: currentPage,
+    loading,
+  } = useSelector((state) => state.onboardingContracts);
 
-  const contracts = data?.nodes || [];
-  const pageInfo = data?.pageInfo || {
+  const contractsData = data || {};
+  const isLoading = loading === "loading";
+
+  const onPageChange = useCallback(
+    (page) => {
+      dispatch(setOnboardingContractsPage(page));
+    },
+    [dispatch]
+  );
+
+  const contracts = contractsData?.nodes || [];
+  const pageInfo = contractsData?.pageInfo || {
     currentPage: currentPage || 1,
     total: contracts.length,
     perPage: CONSTANT_VALUES.TABLE_PER_PAGE,
@@ -180,7 +193,7 @@ const ContractsTable = ({
       <DataTable
         columns={columns}
         data={contracts}
-        loading={loading}
+        loading={isLoading}
         emptyState={
           <p className="text-textLight py-12 text-center text-base font-semibold font-somar">
             {tContracts("empty")}

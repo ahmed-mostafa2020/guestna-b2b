@@ -285,6 +285,8 @@ export const B2B_END_POINTS = {
       STATUS: "profile-provider/onboarding/status",
       DOCUMENTS: "profile-provider/onboarding/documents",
       DOCUMENTS_UPLOAD: "profile-provider/onboarding/documents/upload",
+      DOCUMENTS_UPLOAD_SELECT:
+        "profile-provider/onboarding/documents/upload/select",
       CONTRACTS: "profile-provider/onboarding/contracts",
       CONTRACTS_SIGN: "profile-provider/onboarding/contracts/sign",
     },

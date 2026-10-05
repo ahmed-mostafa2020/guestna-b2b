@@ -275,6 +275,7 @@
         "types": {
           "COMMERCIAL_REGISTRATION": "السجل التجاري",
           "TAX_CERTIFICATE": "الرقم الضريبي",
+          "NATIONAL_ADDRESS": "العنوان الوطني",
           "OTHER": "أخرى"
         },
         "statuses": {
@@ -1166,7 +1167,10 @@
         "validation": {
           "systemTypesRequired": "يجب اختيار نوع نظام واحد على الأقل",
           "galleryMin": "يرجى تحميل 4 صور على الأقل للمعرض",
-          "targetAudiencesRequired": "يجب إضافة عنصر واحد على الأقل للجمهور المستهدف وتحديد سعره"
+          "targetAudiencesRequired": "يجب إضافة عنصر واحد على الأقل للجمهور المستهدف وتحديد سعره",
+          "galleryMax": "الحد الأقصى 15 صورة للمعرض",
+          "maxSeatsMinSeatsError": "الحد الأقصى للسعة يجب أن يكون أكبر من أو يساوي الحد الأدنى للسعة",
+          "maxGuestsMinGuestsError": "الحد الأقصى للضيوف يجب أن يكون أكبر من أو يساوي الحد الأدنى للضيوف"
         },
         "submit": "إرسال المنتج",
         "cancel": "إلغاء",
@@ -1368,13 +1372,6 @@
           "exemptionAr": "مثال: المصاريف الشخصية",
           "benefitEn": "مثال: وجبات ومشروبات مجانية",
           "benefitAr": "مثال: وجبات ومشروبات مجانية"
-        },
-        "validation": {
-          "galleryMin": "يتطلب تحميل 4 صور على الأقل للمعرض",
-          "galleryMax": "الحد الأقصى 15 صورة للمعرض",
-          "systemTypesRequired": "يرجى تحديد نوع نظام واحد على الأقل",
-          "maxSeatsMinSeatsError": "الحد الأقصى للسعة يجب أن يكون أكبر من أو يساوي الحد الأدنى للسعة",
-          "maxGuestsMinGuestsError": "الحد الأقصى للضيوف يجب أن يكون أكبر من أو يساوي الحد الأدنى للضيوف"
         },
         "steps": {
           "identity": "الهوية",

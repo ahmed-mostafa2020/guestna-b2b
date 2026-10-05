@@ -12,11 +12,11 @@ import TextInputGroup from "@components/forms/TextInputGroup";
 import SelectionGroup from "@components/forms/SelectionGroup";
 import FileUploadGroup from "@components/forms/FileUploadGroup";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { ONBOARDING_DOCUMENT_TYPES } from "@constants/onboardingDocumentTypes";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import getErrorMessage from "@utils/helpers/getErrorMessage";
 
-const DOCUMENT_TYPES = ["COMMERCIAL_REGISTRATION", "TAX_CERTIFICATE", "OTHER"];
 const MAX_FILE_SIZE_MB = 10;
 
 const ACCEPTED_TYPES = [
@@ -50,11 +50,19 @@ const getLocalizedTitleParts = (title, locale) => {
   };
 };
 
+const getChoiceLabel = (choice, locale, t) => {
+  const title = choice?.title;
+  if (typeof title === "string" && title.trim()) return title;
+  const localized = title?.[locale] || title?.en || title?.ar;
+  if (localized) return localized;
+  return t(
+    `providerProfile.onboarding.documents.types.${choice?.documentType}`
+  );
+};
+
 const OnboardingDocumentUploadForm = ({
-  documentId = null,
+  choices = [],
   isReupload = false,
-  initialDocumentType = "OTHER",
-  initialTitle,
   lockType = false,
   onClose,
   onSuccess,
@@ -68,27 +76,32 @@ const OnboardingDocumentUploadForm = ({
   const reuploadMode = Boolean(isReupload);
 
   const initialValues = useMemo(() => {
-    const { titleEn, titleAr } = getLocalizedTitleParts(initialTitle, locale);
+    const firstChoice = choices[0];
+    const existingTitle =
+      firstChoice?.documentType === ONBOARDING_DOCUMENT_TYPES.OTHER
+        ? firstChoice.documentTitle || firstChoice.title
+        : null;
+    const { titleEn, titleAr } = getLocalizedTitleParts(existingTitle, locale);
     return {
-      documentType: initialDocumentType || "OTHER",
+      documentType: firstChoice?.documentType || "",
       titleEn,
       titleAr,
       file: null,
     };
-  }, [initialDocumentType, initialTitle, locale]);
+  }, [choices, locale]);
 
   const validationSchema = useMemo(
     () =>
       Yup.object().shape({
         documentType: Yup.string().required(t("forms.validation.require")),
         titleEn: Yup.string().when("documentType", {
-          is: "OTHER",
+          is: ONBOARDING_DOCUMENT_TYPES.OTHER,
           then: (schema) =>
             schema.trim().required(t("forms.validation.require")),
           otherwise: (schema) => schema.optional(),
         }),
         titleAr: Yup.string().when("documentType", {
-          is: "OTHER",
+          is: ONBOARDING_DOCUMENT_TYPES.OTHER,
           then: (schema) =>
             schema.trim().required(t("forms.validation.require")),
           otherwise: (schema) => schema.optional(),
@@ -111,25 +124,41 @@ const OnboardingDocumentUploadForm = ({
 
   const documentTypeList = useMemo(
     () =>
-      DOCUMENT_TYPES.map((type) => ({
-        value: type,
-        label: t(`providerProfile.onboarding.documents.types.${type}`),
-        name: t(`providerProfile.onboarding.documents.types.${type}`),
-      })),
-    [t]
+      choices.map((choice) => {
+        const label = getChoiceLabel(choice, locale, t);
+        return {
+          value: choice.documentType,
+          label,
+          name: label,
+        };
+      }),
+    [choices, locale, t]
   );
 
   const handleSubmit = useCallback(
     async (values, { setSubmitting }) => {
+      const selected = choices.find(
+        (choice) => choice.documentType === values.documentType
+      );
+      if (!selected) {
+        enqueueSnackbar(
+          t("providerProfile.onboarding.notifications.actionError"),
+          { variant: "error" }
+        );
+        setSubmitting(false);
+        return;
+      }
+
       const formData = new FormData();
       formData.append("file", values.file);
       formData.append("documentType", values.documentType);
 
+      const documentId = selected.documentId || selected._id;
       if (documentId) {
         formData.append("_id", documentId);
       }
 
-      if (values.documentType === "OTHER") {
+      if (values.documentType === ONBOARDING_DOCUMENT_TYPES.OTHER) {
         formData.append("title[en]", values.titleEn.trim());
         formData.append("title[ar]", values.titleAr.trim());
       }
@@ -180,7 +209,7 @@ const OnboardingDocumentUploadForm = ({
         setSubmitting(false);
       }
     },
-    [documentId, headers, enqueueSnackbar, t, onSuccess, onClose, reuploadMode]
+    [choices, headers, enqueueSnackbar, t, onSuccess, onClose, reuploadMode]
   );
 
   return (
@@ -200,28 +229,24 @@ const OnboardingDocumentUploadForm = ({
         isSubmitting,
       }) => (
         <Form className="px-6 pb-6 pt-5 sm:px-8 sm:pb-8 space-y-5">
-          {!typeLocked ? (
-            <SelectionGroup
-              label={t(
-                "providerProfile.onboarding.documents.modal.documentType"
-              )}
-              name="documentType"
-              value={values.documentType}
-              errors={errors.documentType}
-              touched={touched.documentType}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              placeholder={t(
-                "providerProfile.onboarding.documents.modal.documentTypePlaceholder"
-              )}
-              list={documentTypeList}
-              disabled={isSubmitting}
-              required
-              labelClassName="font-somar pb-2 text-start"
-            />
-          ) : null}
+          <SelectionGroup
+            label={t("providerProfile.onboarding.documents.modal.documentType")}
+            name="documentType"
+            value={values.documentType}
+            errors={errors.documentType}
+            touched={touched.documentType}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            placeholder={t(
+              "providerProfile.onboarding.documents.modal.documentTypePlaceholder"
+            )}
+            list={documentTypeList}
+            disabled={typeLocked || isSubmitting}
+            required
+            labelClassName="font-somar pb-2 text-start"
+          />
 
-          {values.documentType === "OTHER" ? (
+          {values.documentType === ONBOARDING_DOCUMENT_TYPES.OTHER ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <TextInputGroup
                 label={t("providerProfile.onboarding.documents.modal.titleEn")}

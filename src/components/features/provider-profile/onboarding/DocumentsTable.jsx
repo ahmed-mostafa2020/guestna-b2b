@@ -1,7 +1,8 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Add as AddIcon,
   VisibilityOutlined as ViewIcon,
@@ -9,8 +10,11 @@ import {
 } from "@mui/icons-material";
 import DataTable from "@components/ui/DataTable";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { ONBOARDING_DOCUMENT_TYPES } from "@constants/onboardingDocumentTypes";
+import { setOnboardingDocumentsPage } from "@store/providerOnboarding/onboardingDocumentsSlice";
 
-const REQUIRED_TYPES = new Set(["COMMERCIAL_REGISTRATION", "TAX_CERTIFICATE"]);
+const isRequiredDocument = (documentType) =>
+  documentType !== ONBOARDING_DOCUMENT_TYPES.OTHER;
 
 const STATUS_STYLES = {
   PENDING: {
@@ -89,17 +93,13 @@ const getStatusLabel = (status, t) => {
 };
 
 const getDocumentName = (document, locale, t) => {
-  if (document.documentType === "OTHER") {
-    if (typeof document.title === "string" && document.title.trim()) {
-      return document.title;
-    }
-    return (
-      document.title?.[locale] ||
-      document.title?.en ||
-      document.title?.ar ||
-      t("types.OTHER")
-    );
+  if (typeof document.title === "string" && document.title.trim()) {
+    return document.title;
   }
+  const localizedTitle =
+    document.title?.[locale] || document.title?.en || document.title?.ar;
+  if (localizedTitle) return localizedTitle;
+
   const types = t.raw("types");
   if (types && typeof types === "object" && types[document.documentType]) {
     return types[document.documentType];
@@ -107,18 +107,34 @@ const getDocumentName = (document, locale, t) => {
   return document.documentType;
 };
 
-const DocumentsTable = ({
-  data = {},
-  loading = false,
-  currentPage = 1,
-  onPageChange,
-  onUpload,
-}) => {
+const DocumentsTable = ({ onUpload }) => {
   const t = useTranslations("providerProfile.onboarding.documents");
   const locale = useLocale();
+  const dispatch = useDispatch();
+  const {
+    data,
+    page: currentPage,
+    loading,
+  } = useSelector((state) => state.onboardingDocuments);
+  const { options: uploadOptions, loading: uploadSelectLoading } = useSelector(
+    (state) => state.onboardingUploadSelect
+  );
+  const canUploadNew =
+    uploadSelectLoading === "succeeded" &&
+    uploadOptions.some((option) => option?.documentType);
 
-  const documents = data?.nodes || [];
-  const pageInfo = data?.pageInfo || {
+  const documentsData = data || {};
+  const isLoading = loading === "loading";
+
+  const onPageChange = useCallback(
+    (page) => {
+      dispatch(setOnboardingDocumentsPage(page));
+    },
+    [dispatch]
+  );
+
+  const documents = documentsData?.nodes || [];
+  const pageInfo = documentsData?.pageInfo || {
     currentPage: currentPage || 1,
     total: documents.length,
     perPage: CONSTANT_VALUES.TABLE_PER_PAGE,
@@ -135,7 +151,7 @@ const DocumentsTable = ({
         headerClassName: "text-start align-middle",
         render: (row) => {
           const name = getDocumentName(row, locale, t);
-          const required = REQUIRED_TYPES.has(row.documentType);
+          const required = isRequiredDocument(row.documentType);
           return (
             <span className="font-semibold text-[#042a30] text-sm sm:text-base font-somar">
               {name}
@@ -238,14 +254,9 @@ const DocumentsTable = ({
 
         <button
           type="button"
-          onClick={() =>
-            onUpload?.({
-              documentType: "OTHER",
-              lockType: true,
-              isReupload: false,
-            })
-          }
-          className="inline-flex items-center justify-center gap-1 bg-mainColor border-2 border-mainColor text-white font-bold text-base px-8 py-3 rounded-lg hover:bg-titleColor hover:border-titleColor active:scale-[0.98] transition-all font-somar cursor-pointer shrink-0 self-start sm:self-auto"
+          disabled={!canUploadNew}
+          onClick={() => onUpload?.({ lockType: false })}
+          className="inline-flex items-center justify-center gap-1 bg-mainColor border-2 border-mainColor text-white font-bold text-base px-8 py-3 rounded-lg hover:bg-titleColor hover:border-titleColor active:scale-[0.98] transition-all font-somar cursor-pointer shrink-0 self-start sm:self-auto disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <span>{t("uploadFiles")}</span>
         </button>
@@ -254,7 +265,7 @@ const DocumentsTable = ({
       <DataTable
         columns={columns}
         data={documents}
-        loading={loading}
+        loading={isLoading}
         emptyState={
           <p className="text-textLight py-12 text-center text-base font-semibold font-somar">
             {t("empty")}
