@@ -57,12 +57,14 @@ const PhoneInputGroup = ({
             onBlur={onBlur}
             disabled={disabled}
             dir="ltr"
+            style={{ direction: "ltr" }}
             aria-invalid={hasError}
             aria-describedby={hasError ? errorId : undefined}
             flagComponent={FlagIcon}
             className={cn(
               "flex items-center bg-white w-full gap-1 px-4 h-[55px] font-normal font-somar text-base border-2 rounded-lg transition-all duration-200 ease-in-out",
-              "focus-within:ring-2 focus-within:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+              "focus-within:ring-2 focus-within:ring-offset-2",
+              disabled && "cursor-not-allowed opacity-60 bg-gray-50",
               hasError
                 ? "border-error focus-within:ring-error"
                 : "border-border hover:border-mainColor focus-within:ring-mainColor"

@@ -37,6 +37,7 @@ const RequestQuote = () => {
     params?.tripSlug ||
     useSelector((state) => state.checkoutData?.tripSlug) ||
     trip?.slug;
+  const tripId = trip?._id || tripSlug;
 
   return (
     <>
@@ -64,7 +65,7 @@ const RequestQuote = () => {
           <div className="flex flex-col gap-3 pt-3 border-t border-border">
             <Link
               id="market-template-school-register-cta"
-              href={`/${locale}/discover/${tripSlug}/school-booking`}
+              href={`/${locale}/school-register/${tripId}`}
               className="w-full py-3 px-8 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-secColor bg-secColor hover:bg-buttonsHover hover:border-buttonsHover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secColor focus-visible:ring-offset-2"
             >
               {t("tripDetails.marketTemplate.cta")}

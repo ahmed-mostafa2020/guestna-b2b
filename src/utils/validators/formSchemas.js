@@ -878,24 +878,104 @@ export const createSchoolTripBookingSchema = (t) =>
       .min(1, t("schoolTripBooking.validation.studentsCount.min"))
       .max(5000, t("schoolTripBooking.validation.studentsCount.max")),
 
-    services: Yup.array().of(Yup.string()),
-
-    notes: Yup.string()
-      .trim()
-      .max(500, t("schoolTripBooking.validation.notes.max")),
-
     // Step 2 — Contact info
-    ...getSchoolOrganizationFields(t),
+    schoolNameArabic: Yup.string()
+      .trim()
+      .required(t("schoolRegister.validation.schoolNameArabic.required"))
+      .min(2, t("schoolRegister.validation.schoolNameArabic.min"))
+      .max(100, t("schoolRegister.validation.schoolNameArabic.max"))
+      .matches(
+        /^[\u0600-\u06FF0-9\s.,!?'-]+$/,
+        t("schoolRegister.validation.schoolNameArabic.onlyArabic")
+      ),
+
+    schoolNameEnglish: Yup.string()
+      .trim()
+      .required(t("schoolRegister.validation.schoolNameEnglish.required"))
+      .min(2, t("schoolRegister.validation.schoolNameEnglish.min"))
+      .max(100, t("schoolRegister.validation.schoolNameEnglish.max"))
+      .matches(
+        /^[a-zA-Z0-9\s.,!?'-]+$/,
+        t("schoolRegister.validation.schoolNameEnglish.onlyEnglish")
+      ),
+
+    organizationEmail: Yup.string()
+      .email(t("forms.email.error"))
+      .matches(emailRegex, t("forms.email.error_tld"))
+      .required(t("forms.validation.require"))
+      .test(
+        "emails-different",
+        t("schoolRegister.validation.organizationEmail.sameAsContactEmail"),
+        function (value) {
+          const { email } = this.parent;
+          if (!value || !email) return true;
+          return value.toLowerCase() !== email.toLowerCase();
+        }
+      ),
+
+    organizationPhone: createPhoneValidation(t, true),
+
+    gender: Yup.string().required(t("schoolRegister.validation.gender.required")),
+
+    contactPersonName: Yup.string()
+      .trim()
+      .required(t("schoolRegister.validation.contactPersonName.required"))
+      .min(2, t("schoolRegister.validation.contactPersonName.min"))
+      .max(50, t("schoolRegister.validation.contactPersonName.max")),
+
+    functionalDegree: Yup.string()
+      .trim()
+      .required(t("schoolRegister.validation.functionalDegree.required"))
+      .min(2, t("schoolRegister.validation.functionalDegree.min"))
+      .max(50, t("schoolRegister.validation.functionalDegree.max")),
+
+    email: Yup.string()
+      .email(t("forms.email.error"))
+      .matches(emailRegex, t("forms.email.error_tld"))
+      .required(t("forms.validation.require"))
+      .test(
+        "emails-different",
+        t("schoolRegister.validation.email.sameAsOrganizationEmail"),
+        function (value) {
+          const { organizationEmail } = this.parent;
+          if (!value || !organizationEmail) return true;
+          return value.toLowerCase() !== organizationEmail.toLowerCase();
+        }
+      ),
+
+    mobile: createPhoneValidation(t, true),
+
+    city: Yup.string().required(t("schoolRegister.validation.city.required")),
 
     // Step 3 — Gathering location & school profit
     gatheringLocation: Yup.object().shape({
-      lat: Yup.string().required(
+      mapLink: Yup.string()
+        .trim()
+        .required(t("schoolTripBooking.validation.gatheringLocation.linkRequired"))
+        .test(
+          "has-valid-coords",
+          t("schoolTripBooking.validation.gatheringLocation.invalidLink"),
+          function () {
+            const { lat, lng } = this.parent || {};
+            const numLat = parseFloat(lat);
+            const numLng = parseFloat(lng);
+            return (
+              !isNaN(numLat) &&
+              !isNaN(numLng) &&
+              numLat >= -90 &&
+              numLat <= 90 &&
+              numLng >= -180 &&
+              numLng <= 180 &&
+              (numLat !== 0 || numLng !== 0)
+            );
+          }
+        ),
+      lat: Yup.mixed().required(
         t("schoolTripBooking.validation.gatheringLocation.required")
       ),
-      lng: Yup.string().required(
+      lng: Yup.mixed().required(
         t("schoolTripBooking.validation.gatheringLocation.required")
       ),
-      address: Yup.string(),
     }),
 
     schoolProfit: Yup.number()

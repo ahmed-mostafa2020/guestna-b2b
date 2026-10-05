@@ -57,6 +57,7 @@ export const normalizeTripTemplate = (tripTemplate) => {
 
   return {
     text,
+    id: tripTemplate?._id || tripTemplate?.id,
     slug: tripTemplate?.slug,
     name: tripTemplate?.name,
     keywords,

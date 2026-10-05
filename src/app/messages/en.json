@@ -1,8 +1,4 @@
 {
-  "providerMarketplace": {
-    "discover": "Discover Activity",
-    "galleryImageAlt": "Activity image {index}"
-  },
   "common": {
     "back": "Back",
     "comingSoon": "Coming Soon",
@@ -233,6 +229,7 @@
       "faq": "FAQ",
       "schoolRegister": "School Register",
       "schoolTripBooking": "School Trip Booking",
+      "schoolTripBookingSuccess": "School Account Confirmation",
       "providerRegister": "Provider Registration",
       "confirmingData": "Confirming Data",
       "loginAs": "Login As",
@@ -1774,6 +1771,11 @@
     "print": "Print",
     "viewSelectedLocation": "View Selected Location",
     "clickToSelectLocation": "Click to select location"
+  },
+
+  "providerMarketplace": {
+    "discover": "Discover Activity",
+    "galleryImageAlt": "Activity image {index}"
   },
 
   "recommendations": {
@@ -4457,12 +4459,14 @@
       "schoolNameArabic": {
         "required": "School name in Arabic is required",
         "min": "School name must be at least 2 characters",
-        "max": "School name cannot exceed 100 characters"
+        "max": "School name cannot exceed 100 characters",
+        "onlyArabic": "School name in Arabic must contain only Arabic letters"
       },
       "schoolNameEnglish": {
         "required": "School name in English is required",
         "min": "School name must be at least 2 characters",
-        "max": "School name cannot exceed 100 characters"
+        "max": "School name cannot exceed 100 characters",
+        "onlyEnglish": "School name in English must contain only English letters"
       },
       "organizationEmail": {
         "sameAsContactEmail": "Organization email must be different from contact person email"
@@ -4524,6 +4528,7 @@
   },
 
   "schoolTripBooking": {
+    "loading": "Loading booking form...",
     "pageHeader": {
       "title": "Register your school now and enjoy an easy and unique school trip planning experience.",
       "subTitle": "We provide all schools in the Kingdom with the ability to easily register their school through our platform, discover the tourism programs designed specifically for schools, and benefit from our tools to professionally manage all the details of the trips."
@@ -4563,15 +4568,17 @@
         "placeholder": "Notes or additional information you would like to share"
       },
       "gatheringLocation": {
-        "label": "Gathering Location",
-        "title": "Select Gathering Location on Map",
-        "instruction": "Click on the map or drag the marker to set the location",
-        "linkLabel": "Or paste gathering location link from Google Maps",
-        "linkPlaceholder": "https://maps.google.com/...",
+        "label": "Gathering Location Google Maps Link",
+        "title": "Gathering Location on Map",
+        "instruction": "Paste a Google Maps link or click on the map to set the exact gathering location",
+        "linkLabel": "Gathering Location Google Maps Link",
+        "linkPlaceholder": "https://maps.app.goo.gl/... or https://www.google.com/maps?q=...",
         "clear": "Clear location",
-        "resolving": "Locating...",
-        "resolved": "Location identified successfully",
-        "notFound": "Could not find coordinates from this link",
+        "resolving": "Extracting coordinates from link...",
+        "resolved": "Coordinates extracted successfully",
+        "notFound": "Could not extract valid coordinates from this link, please check the link",
+        "openInGoogleMaps": "Open in Google Maps",
+        "coordinatesLabel": "Selected Coordinates:",
         "configError": "Google Maps API key is not configured"
       },
       "schoolProfit": {
@@ -4602,7 +4609,9 @@
         "max": "Notes cannot exceed 500 characters"
       },
       "gatheringLocation": {
-        "required": "Gathering location on the map is required"
+        "required": "Gathering location is required",
+        "linkRequired": "Google Maps gathering location link is required",
+        "invalidLink": "Please enter a valid Google Maps link containing location coordinates"
       },
       "schoolProfit": {
         "required": "School profit per student is required",
@@ -4617,6 +4626,49 @@
       "successDescription": "Our team will review your booking details and contact you shortly.",
       "backToTrip": "Back to Trip Details",
       "newRequest": "Submit Another Request"
+    }
+  },
+
+  "schoolTripBookingSuccess": {
+    "pageTitle": "School Account Confirmation",
+    "badgeTitle": "Verified School Portal",
+    "mainGreeting": "Welcome to Guestna Platform!",
+    "accountCreated": "Your school account has been created successfully on Guestna.",
+    "participationNotice": "You can now participate in {tripName} and benefit from Guestna trips throughout the academic year.",
+    "defaultTripName": "Al-Qiddiya trip",
+    "credentials": {
+      "title": "Approved School Account Details",
+      "schoolNameLabel": "School Name:",
+      "adminLabel": "Administrative Officer:",
+      "defaultSchoolName": "Al-Andalus Private School for Girls",
+      "defaultSchoolCode": "SCH-2025-884",
+      "defaultAdminName": "Ms. Noura Al-Subaie"
+    },
+    "valuesSection": {
+      "title": "Benefits of Your School Account Throughout the Academic Year",
+      "card1": {
+        "title": "Academic Year Trips Library",
+        "description": "Browse and book cultural, scientific, and recreational trips scheduled across all three semesters in a single click.",
+        "badge": "Continuous updates • Semesters 1, 2, 3"
+      },
+      "card2": {
+        "title": "Dedicated Link & QR Code for Each Trip",
+        "description": "Share customized links with parents, track registrations, and complete payments with total privacy.",
+        "badge": "Easy to send via WhatsApp"
+      },
+      "card3": {
+        "title": "Unified Management Dashboard",
+        "description": "Track instant reports, manage parent approvals, and schedule direct bus notifications.",
+        "badge": "Full automation for teachers"
+      }
+    },
+    "actions": {
+      "primary": "Continue to complete sharing {tripName} and get the link",
+      "primaryDefault": "Continue to complete sharing Al-Qiddiya trip and get the link",
+      "secondary": "Explore the School Trips Guide for the Academic Year"
+    },
+    "breadcrumbs": {
+      "confirmation": "Account Confirmation"
     }
   },
 

@@ -17,7 +17,7 @@ const TripTemplateSection = ({ tripTemplate }) => {
   const normalized = normalizeTripTemplate(tripTemplate);
   if (!normalized) return null;
 
-  const { text, slug, name, keywords, gallery } = normalized;
+  const { text, id, slug, name, keywords, gallery } = normalized;
 
   return (
     <section
@@ -40,7 +40,7 @@ const TripTemplateSection = ({ tripTemplate }) => {
 
             <KeywordsList keywords={keywords} />
 
-            <DiscoverButton slug={slug} />
+            <DiscoverButton id={id} slug={slug} />
           </div>
 
           {/* Gallery: stacked cards (end side — left in RTL, right in LTR) */}

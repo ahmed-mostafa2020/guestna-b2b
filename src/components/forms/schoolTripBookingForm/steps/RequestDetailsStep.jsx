@@ -4,7 +4,6 @@ import { memo, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useFormikContext } from "formik";
 import { Skeleton } from "@mui/material";
-import { EditOutlined } from "@mui/icons-material";
 
 import SelectionGroup from "@components/forms/SelectionGroup";
 import TextInputGroup from "@components/forms/TextInputGroup";
@@ -26,7 +25,6 @@ const GradesPlaceholder = ({ label, children }) => (
 const RequestDetailsStep = ({
   stages,
   educationSystems,
-  services,
   availableDays,
   grades,
   isLoadingGrades,
@@ -42,7 +40,6 @@ const RequestDetailsStep = ({
 
   const stageLabels = stages.map((s) => getNameLabel(s, locale));
   const educationSystemLabels = educationSystems.map((s) => getNameLabel(s, locale));
-  const serviceLabels = services.map((s) => getNameLabel(s, locale));
   const gradeLabels = grades.map((g) => getNameLabel(g, locale));
 
   const handleStagesChange = (event) => {
@@ -63,6 +60,40 @@ const RequestDetailsStep = ({
   return (
     <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
       <legend className="sr-only">{t("schoolTripBooking.steps.details")}</legend>
+
+      {/* Educational track */}
+      <SelectionGroup
+        {...LABEL_PROPS}
+        name="educationalTrack"
+        label={t("schoolRegister.form.educationalTrack.label")}
+        placeholder={t("schoolRegister.form.educationalTrack.placeholder")}
+        value={values.educationalTrack}
+        list={educationSystemLabels}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        touched={touched.educationalTrack}
+        errors={errors.educationalTrack}
+        required
+      />
+
+      {/* Date */}
+      <AvailableDatePicker
+        id="date"
+        name="date"
+        label={t("schoolTripBooking.form.date.label")}
+        placeholder={t("schoolTripBooking.form.date.placeholder")}
+        value={values.date}
+        availableDays={availableDays}
+        locale={locale}
+        onChange={(date) => {
+          setFieldValue("date", date);
+          setFieldTouched("date", true, false);
+        }}
+        onBlur={() => setFieldTouched("date", true)}
+        error={errors.date}
+        touched={touched.date}
+        required
+      />
 
       {/* Stage */}
       <SelectionGroup
@@ -109,28 +140,10 @@ const RequestDetailsStep = ({
         />
       )}
 
-      {/* Date */}
-      <AvailableDatePicker
-        id="date"
-        name="date"
-        label={t("schoolTripBooking.form.date.label")}
-        placeholder={t("schoolTripBooking.form.date.placeholder")}
-        value={values.date}
-        availableDays={availableDays}
-        locale={locale}
-        onChange={(date) => {
-          setFieldValue("date", date);
-          setFieldTouched("date", true, false);
-        }}
-        onBlur={() => setFieldTouched("date", true)}
-        error={errors.date}
-        touched={touched.date}
-        required
-      />
-
-      {/* Students count */}
+      {/* Students count (availableSeates) */}
       <TextInputGroup
         {...LABEL_PROPS}
+        containerClassName="md:col-span-2"
         inputClassName="font-somar"
         type="number"
         inputMode="numeric"
@@ -144,60 +157,6 @@ const RequestDetailsStep = ({
         touched={touched.studentsCount}
         errors={errors.studentsCount}
         required
-      />
-
-      {/* Services */}
-      <SelectionGroup
-        {...LABEL_PROPS}
-        name="services"
-        label={t("schoolTripBooking.form.services.label")}
-        placeholder={
-          serviceLabels.length
-            ? t("schoolTripBooking.form.services.placeholder")
-            : t("schoolTripBooking.form.services.empty")
-        }
-        value={values.services}
-        list={serviceLabels}
-        multiple
-        disabled={serviceLabels.length === 0}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        touched={touched.services}
-        errors={errors.services}
-      />
-
-      {/* Educational track */}
-      <SelectionGroup
-        {...LABEL_PROPS}
-        name="educationalTrack"
-        label={t("schoolRegister.form.educationalTrack.label")}
-        placeholder={t("schoolRegister.form.educationalTrack.placeholder")}
-        value={values.educationalTrack}
-        list={educationSystemLabels}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        touched={touched.educationalTrack}
-        errors={errors.educationalTrack}
-        required
-      />
-
-      {/* Notes */}
-      <TextInputGroup
-        {...LABEL_PROPS}
-        containerClassName="md:col-span-2"
-        inputClassName="font-somar pe-12"
-        textarea
-        rows={3}
-        maxLength={500}
-        name="notes"
-        label={t("schoolTripBooking.form.notes.label")}
-        placeholder={t("schoolTripBooking.form.notes.placeholder")}
-        value={values.notes}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        touched={touched.notes}
-        errors={errors.notes}
-        endAdornment={<EditOutlined className="text-mainColor" sx={{ fontSize: 20 }} />}
       />
     </fieldset>
   );

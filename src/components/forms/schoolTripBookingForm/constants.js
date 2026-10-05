@@ -3,52 +3,44 @@ export const BOOKING_STEPS = ["details", "contact", "location"];
 
 // Fields validated before leaving each step (index-aligned with BOOKING_STEPS)
 export const STEP_FIELDS = [
-  ["stages", "grades", "date", "studentsCount", "services", "educationalTrack", "notes"],
+  ["educationalTrack", "stages", "grades", "date", "studentsCount"],
   [
-    "city",
     "schoolNameArabic",
     "schoolNameEnglish",
+    "city",
+    "gender",
     "organizationEmail",
     "organizationPhone",
-    "gender",
     "contactPersonName",
     "functionalDegree",
     "email",
     "mobile",
-    "additionalUsers",
   ],
   ["gatheringLocation", "schoolProfit"],
 ];
 
-export const EMPTY_ADDITIONAL_USER = { name: "", role: "", email: "", mobile: "" };
-
-export const MAX_ADDITIONAL_USERS = 1;
-
 export const INITIAL_VALUES = {
   // Step 1 — Request details
+  educationalTrack: "",
   stages: [],
   grades: [],
   date: "",
   studentsCount: "",
-  services: [],
-  educationalTrack: "",
-  notes: "",
 
   // Step 2 — Contact info
-  city: "",
   schoolNameArabic: "",
   schoolNameEnglish: "",
+  city: "",
+  gender: "",
   organizationEmail: "",
   organizationPhone: "",
-  gender: [],
   contactPersonName: "",
   functionalDegree: "",
   email: "",
   mobile: "",
-  additionalUsers: [],
 
-  // Step 3 — Gathering location & school profit
-  gatheringLocation: { lat: "", lng: "", address: "" },
+  // Step 3 — Gathering location & school amount
+  gatheringLocation: { lat: "", lng: "", mapLink: "" },
   schoolProfit: "",
 };
 

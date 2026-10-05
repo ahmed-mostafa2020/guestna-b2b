@@ -1,3 +1,4 @@
+
 import { CONSTANT_VALUES } from "@constants/constantValues";
 
 const localize = (value, locale) =>
@@ -28,17 +29,56 @@ export const findIdByLabel = (list = [], label, locale) => {
 export const mapLabelsToIds = (list = [], labels = [], locale) =>
   labels.map((label) => findIdByLabel(list, label, locale)).filter(Boolean);
 
-/** Maps selected gender labels to the API enum. */
-export const mapGenderToAPI = (selected = [], labels) => {
-  if (selected.length === 1) {
-    if (selected[0] === labels.boys) return CONSTANT_VALUES.GENDERS.MALE;
-    if (selected[0] === labels.girls) return CONSTANT_VALUES.GENDERS.FEMALE;
+/** Maps selected gender label to the API value (CONSTANT_VALUES.GENDERS.MALE | FEMALE | BOTH). */
+export const mapGenderToAPI = (gender, labels = {}) => {
+  const { MALE, FEMALE, BOTH } = CONSTANT_VALUES.GENDERS;
+
+  if (Array.isArray(gender)) {
+    if (gender.length === 2) {
+      return BOTH;
+    }
+    if (gender.length === 1) {
+      const single = gender[0];
+      const normalizedSingle =
+        typeof single === "string" ? single.trim().toUpperCase() : "";
+      if (normalizedSingle === MALE || single === labels.boys || single === "male") {
+        return MALE;
+      }
+      if (normalizedSingle === FEMALE || single === labels.girls || single === "female") {
+        return FEMALE;
+      }
+      if (normalizedSingle === BOTH || single === labels.both || single === "both") {
+        return BOTH;
+      }
+    }
+    return MALE;
   }
-  return CONSTANT_VALUES.GENDERS.BOTH;
+
+  const normalized = typeof gender === "string" ? gender.trim().toUpperCase() : "";
+  if (normalized === MALE) return MALE;
+  if (normalized === FEMALE) return FEMALE;
+  if (normalized === BOTH) return BOTH;
+
+  if (gender === labels.boys || gender === "male") return MALE;
+  if (gender === labels.girls || gender === "female") return FEMALE;
+  if (gender === labels.both || gender === "both") return BOTH;
+
+  return MALE;
 };
 
-/** Extracts available booking days (YYYY-MM-DD) from trip details. */
-export const extractAvailableDays = (trip) => {
+/** Extracts available booking days (YYYY-MM-DD) from select response or trip details. */
+export const extractAvailableDays = (trip, selectDays = []) => {
+  if (Array.isArray(selectDays) && selectDays.length > 0) {
+    return selectDays
+      .map((d) =>
+        typeof d === "string"
+          ? d.split("T")[0]
+          : d?.date?.split("T")[0] || d?.day?.split("T")[0] || null
+      )
+      .filter(Boolean)
+      .sort();
+  }
+
   if (!trip) return [];
 
   if (Array.isArray(trip.availableDays) && trip.availableDays.length > 0) {
@@ -71,65 +111,51 @@ export const extractAvailableDays = (trip) => {
   return [];
 };
 
-/** Builds the API payload from form values and lookup data. */
+/** Builds the API payload matching POST /b2b/organizations/market-trip */
 export const buildBookingPayload = ({
   values,
   trip,
   tripSlug,
   locale,
-  lookups,
-  selectedOrganization,
-  genderLabels,
+  lookups = {},
+  genderLabels = {},
 }) => {
-  const { cities, educationSystems, stages, grades, services, roles } = lookups;
-
-  const toUser = ({ name, role, email, mobile }) => ({
-    name,
-    role: findIdByLabel(roles, role, locale),
-    email,
-    phone: mobile,
-    systemType: "B2B",
-  });
+  const { cities = [], educationSystems = [], stages = [], grades = [], roles = [] } = lookups;
 
   return {
-    trip: trip?._id,
-    tripSlug,
-
-    booking: {
-      date: values.date,
-      studentsCount: Number(values.studentsCount),
-      services: mapLabelsToIds(services, values.services, locale),
-      notes: values.notes?.trim() || "",
-      gatheringLocation: {
-        lat: Number(values.gatheringLocation.lat),
-        lng: Number(values.gatheringLocation.lng),
-        address: values.gatheringLocation.address || "",
-      },
-      schoolProfitPerStudent: Number(values.schoolProfit),
-    },
-
     organization: {
-      ...(selectedOrganization?._id && { _id: selectedOrganization._id }),
-      phone: values.organizationPhone,
-      email: values.organizationEmail,
-      name: { ar: values.schoolNameArabic, en: values.schoolNameEnglish },
-      city: findIdByLabel(cities, values.city, locale),
+      name: {
+        en: values.schoolNameEnglish?.trim() || "",
+        ar: values.schoolNameArabic?.trim() || "",
+      },
+      phone: values.organizationPhone || "",
+      email: values.organizationEmail || "",
       track: {
-        educationSystem: findIdByLabel(educationSystems, values.educationalTrack, locale),
+        educationSystem:
+          findIdByLabel(educationSystems, values.educationalTrack, locale) ||
+          values.educationalTrack ||
+          "",
         gender: mapGenderToAPI(values.gender, genderLabels),
         academicStages: mapLabelsToIds(stages, values.stages, locale),
         grades: mapLabelsToIds(grades, values.grades, locale),
       },
+      city: findIdByLabel(cities, values.city, locale) || values.city || "",
     },
-
-    users: [
-      toUser({
-        name: values.contactPersonName,
-        role: values.functionalDegree,
-        email: values.email,
-        mobile: values.mobile,
-      }),
-      ...values.additionalUsers.map(toUser),
-    ],
+    user: {
+      name: values.contactPersonName?.trim() || "",
+      phone: values.mobile || "",
+      email: values.email || "",
+      role: findIdByLabel(roles, values.functionalDegree, locale) || values.functionalDegree || "",
+    },
+    trip: {
+      trip: trip?._id || tripSlug || "",
+      day: values.date || "",
+      availableSeates: Number(values.studentsCount) || 0,
+      gatheringLocation: {
+        lat: Number(values.gatheringLocation?.lat) || 0,
+        lng: Number(values.gatheringLocation?.lng) || 0,
+      },
+      schoolAmount: Number(values.schoolProfit) || 0,
+    },
   };
 };

@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Formik, setNestedObjectValues } from "formik";
 import { useSnackbar } from "notistack";
@@ -12,7 +13,6 @@ import { createSchoolTripBookingSchema } from "@utils/validators/validationSchem
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { getHeaders } from "@utils/helpers/getHeaders";
-import { useOrganizationLookup } from "@hooks/schoolRegister/useOrganizationLookup";
 import { useGradesByStages } from "@hooks/schoolRegister/useGradesByStages";
 
 import BookingStepper from "./BookingStepper";
@@ -30,40 +30,89 @@ const pickFields = (source, fields) =>
 const findFirstStepWithErrors = (errors) =>
   STEP_FIELDS.findIndex((fields) => fields.some((field) => errors[field] !== undefined));
 
+const isStepValid = (step, errors = {}, values = {}) => {
+  const fields = STEP_FIELDS[step];
+  if (!fields) return false;
+
+  const hasError = fields.some((field) => {
+    const err = errors[field];
+    if (err !== undefined) {
+      if (typeof err === "object" && err !== null) {
+        return Object.keys(err).length > 0;
+      }
+      return true;
+    }
+    return Object.keys(errors).some((key) => key.startsWith(`${field}.`));
+  });
+  if (hasError) return false;
+
+  const isMissingRequired = fields.some((field) => {
+    const val = values[field];
+    if (val === undefined || val === null || val === "") return true;
+    if (Array.isArray(val) && val.length === 0) return true;
+    if (field === "gatheringLocation") {
+      const { lat, lng, mapLink } = val || {};
+      return (
+        !mapLink ||
+        lat === "" ||
+        lng === "" ||
+        lat === undefined ||
+        lng === undefined
+      );
+    }
+    return false;
+  });
+
+  return !isMissingRequired;
+};
+
 const SchoolTripBookingForm = ({
   trip,
+  tripId: propTripId,
   tripSlug,
   cities = [],
   roles = [],
   educationSystems = [],
   stages = [],
-  services = [],
+  grades: propGrades = [],
+  selectDays = [],
+  genderOptions: propGenderOptions = [],
 }) => {
   const t = useTranslations();
   const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
   const { enqueueSnackbar } = useSnackbar();
+
+  const effectiveTripId = propTripId || trip?._id || tripSlug;
 
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const cardRef = useRef(null);
 
-  const organization = useOrganizationLookup();
-  const { grades, isLoadingGrades, fetchGrades } = useGradesByStages();
+  const { grades: fetchedGrades, isLoadingGrades, fetchGrades } = useGradesByStages();
+  const effectiveGrades = propGrades.length ? propGrades : fetchedGrades;
 
   const validationSchema = useMemo(() => createSchoolTripBookingSchema(t), [t]);
-  const availableDays = useMemo(() => extractAvailableDays(trip), [trip]);
-  const availableRoles = organization.organizationRoles.length
-    ? organization.organizationRoles
-    : roles;
+  const availableDays = useMemo(
+    () => extractAvailableDays(trip, selectDays),
+    [trip, selectDays]
+  );
+  const availableRoles = roles;
 
   const genderLabels = useMemo(
     () => ({
       boys: t("schoolRegister.form.gender.options.boys"),
       girls: t("schoolRegister.form.gender.options.girls"),
+      both: t("schoolRegister.form.gender.options.both"),
     }),
     [t]
   );
-  const genderOptions = useMemo(() => Object.values(genderLabels), [genderLabels]);
+  const defaultGenderOptions = useMemo(
+    () => [genderLabels.boys, genderLabels.girls, genderLabels.both],
+    [genderLabels]
+  );
+  const genderOptions = propGenderOptions.length ? propGenderOptions : defaultGenderOptions;
 
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === BOOKING_STEPS.length - 1;
@@ -110,29 +159,72 @@ const SchoolTripBookingForm = ({
       const payload = buildBookingPayload({
         values,
         trip,
-        tripSlug,
+        tripSlug: effectiveTripId,
         locale,
         genderLabels,
-        selectedOrganization: organization.selectedOrganization,
         lookups: {
           cities,
           educationSystems,
           stages,
-          grades,
-          services,
+          grades: effectiveGrades,
           roles: availableRoles,
         },
       });
 
-      await axios.post(getProxyUrl(B2B_END_POINTS.MARKET_TEMPLATE.BOOK), payload, {
-        headers: getHeaders(locale),
+      const response = await axios.post(
+        getProxyUrl(B2B_END_POINTS.ORGANIZATIONS_MARKET_TRIP.SUBMIT),
+        payload,
+        {
+          headers: getHeaders(locale),
+        }
+      );
+
+      enqueueSnackbar(t("schoolTripBooking.feedback.success"), {
+        variant: "success",
       });
 
-      enqueueSnackbar(t("schoolTripBooking.feedback.success"), { variant: "success" });
+      const schoolName =
+        (locale === "ar" ? values.schoolNameArabic : values.schoolNameEnglish) ||
+        values.schoolNameArabic ||
+        values.schoolNameEnglish ||
+        "";
+      const adminName = values.contactPersonName || "";
+      const schoolCode =
+        response?.data?.schoolCode ||
+        response?.data?.organization?.code ||
+        response?.data?.data?.schoolCode ||
+        "";
+
+      if (typeof window !== "undefined") {
+        try {
+          sessionStorage.setItem(
+            `schoolBookingSuccess_${effectiveTripId}`,
+            JSON.stringify({
+              schoolName,
+              adminName,
+              schoolCode,
+              tripSlug: effectiveTripId,
+              tripName: trip?.name || "",
+            })
+          );
+        } catch (e) {
+          console.error("Error storing booking confirmation:", e);
+        }
+      }
+
       resetForm();
-      organization.resetOrganization();
       setCurrentStep(0);
-      setIsSubmitted(true);
+
+      const targetPath = `/${locale}/school-register/${effectiveTripId}/success`;
+
+      const queryParams = new URLSearchParams();
+      if (schoolName) queryParams.set("schoolName", schoolName);
+      if (adminName) queryParams.set("adminName", adminName);
+      if (schoolCode) queryParams.set("schoolCode", schoolCode);
+      if (trip?.name) queryParams.set("tripName", trip.name);
+      const queryString = queryParams.toString() ? `?${queryParams.toString()}` : "";
+
+      router.push(`${targetPath}${queryString}`);
     } catch (error) {
       console.error("Error submitting school trip booking:", error);
       const info = error.response?.data?.info;
@@ -198,46 +290,61 @@ const SchoolTripBookingForm = ({
         {t("schoolTripBooking.form.title")}
       </h2>
 
-      <div className="py-8 md:py-12">
-        <BookingStepper
-          steps={BOOKING_STEPS}
-          currentStep={currentStep}
-          onStepClick={goToStep}
-        />
-      </div>
-
-      <p className="sr-only" aria-live="polite">
-        {t("schoolTripBooking.steps.progress", {
-          current: currentStep + 1,
-          total: BOOKING_STEPS.length,
-          name: t(`schoolTripBooking.steps.${BOOKING_STEPS[currentStep]}`),
-        })}
-      </p>
-
       <Formik
         initialValues={INITIAL_VALUES}
         validationSchema={validationSchema}
+        validateOnMount
         onSubmit={handleSubmit}
         validateOnBlur
         validateOnChange
       >
-        {(formik) => (
-          <form
-            noValidate
-            className="flex flex-col gap-7"
-            onSubmit={(event) => {
-              event.preventDefault();
-              if (isLastStep) handleFinalSubmit(formik);
-              else handleNext(formik);
-            }}
-          >
+        {(formik) => {
+          const isCurrentStepValid = isStepValid(
+            currentStep,
+            formik.errors,
+            formik.values
+          );
+
+          return (
+            <>
+              <div className="py-8 md:py-12">
+                <BookingStepper
+                  steps={BOOKING_STEPS}
+                  currentStep={currentStep}
+                  isCurrentStepValid={isCurrentStepValid}
+                  onStepClick={(targetStep) => {
+                    if (targetStep === currentStep + 1) {
+                      handleNext(formik);
+                    } else {
+                      goToStep(targetStep);
+                    }
+                  }}
+                />
+              </div>
+
+              <p className="sr-only" aria-live="polite">
+                {t("schoolTripBooking.steps.progress", {
+                  current: currentStep + 1,
+                  total: BOOKING_STEPS.length,
+                  name: t(`schoolTripBooking.steps.${BOOKING_STEPS[currentStep]}`),
+                })}
+              </p>
+
+              <form
+                noValidate
+                className="flex flex-col gap-7"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  if (isLastStep) handleFinalSubmit(formik);
+                  else handleNext(formik);
+                }}
+              >
             {currentStep === 0 && (
               <RequestDetailsStep
                 stages={stages}
                 educationSystems={educationSystems}
-                services={services}
                 availableDays={availableDays}
-                grades={grades}
+                grades={effectiveGrades}
                 isLoadingGrades={isLoadingGrades}
                 fetchGrades={fetchGrades}
               />
@@ -248,7 +355,6 @@ const SchoolTripBookingForm = ({
                 cities={cities}
                 roles={availableRoles}
                 genderOptions={genderOptions}
-                organization={organization}
               />
             )}
 
@@ -262,8 +368,10 @@ const SchoolTripBookingForm = ({
               onNext={() => handleNext(formik)}
             />
           </form>
-        )}
-      </Formik>
+        </>
+      );
+    }}
+  </Formik>
     </section>
   );
 };
