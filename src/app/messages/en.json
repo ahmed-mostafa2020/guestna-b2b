@@ -232,6 +232,7 @@
       "contactUs": "Contact Us",
       "faq": "FAQ",
       "schoolRegister": "School Register",
+      "schoolTripBooking": "School Trip Booking",
       "providerRegister": "Provider Registration",
       "confirmingData": "Confirming Data",
       "loginAs": "Login As",
@@ -1947,6 +1948,10 @@
     "subTitle": "Every destination we visit and every adventure we experience is filled with meaningful moments. These moments become stories worth sharing and unforgettable memories."
   },
   "tripDetails": {
+    "marketTemplate": {
+      "cta": "Register Your School Now",
+      "ctaDescription": "Registration is reserved for school administrations and authorized supervisory staff. No immediate fees are required."
+    },
     "instantConfirmation": {
       "title": "Instant Confirmation",
       "description": "The booking will be confirmed immediately after completing the required details and verifying availability. This feature ensures fast completion of administrative procedures."
@@ -4515,6 +4520,103 @@
           "invalid": "Please enter a valid phone number"
         }
       }
+    }
+  },
+
+  "schoolTripBooking": {
+    "pageHeader": {
+      "title": "Register your school now and enjoy an easy and unique school trip planning experience.",
+      "subTitle": "We provide all schools in the Kingdom with the ability to easily register their school through our platform, discover the tourism programs designed specifically for schools, and benefit from our tools to professionally manage all the details of the trips."
+    },
+    "steps": {
+      "ariaLabel": "School trip booking steps",
+      "details": "Request Details",
+      "contact": "Contact Information",
+      "location": "Gathering Location & Profit",
+      "progress": "Step {current} of {total}: {name}"
+    },
+    "form": {
+      "title": "Register school details for free",
+      "stage": {
+        "label": "Educational Stage",
+        "placeholder": "Select educational stages"
+      },
+      "grade": {
+        "label": "Grade",
+        "placeholder": "Select grade"
+      },
+      "date": {
+        "label": "Date",
+        "placeholder": "DD/MM/YYYY"
+      },
+      "studentsCount": {
+        "label": "Number of Students",
+        "placeholder": "Enter number of students"
+      },
+      "services": {
+        "label": "Services",
+        "placeholder": "Select services",
+        "empty": "No additional services"
+      },
+      "notes": {
+        "label": "Notes",
+        "placeholder": "Notes or additional information you would like to share"
+      },
+      "gatheringLocation": {
+        "label": "Gathering Location",
+        "title": "Select Gathering Location on Map",
+        "instruction": "Click on the map or drag the marker to set the location",
+        "linkLabel": "Or paste gathering location link from Google Maps",
+        "linkPlaceholder": "https://maps.google.com/...",
+        "clear": "Clear location",
+        "resolving": "Locating...",
+        "resolved": "Location identified successfully",
+        "notFound": "Could not find coordinates from this link",
+        "configError": "Google Maps API key is not configured"
+      },
+      "schoolProfit": {
+        "label": "School Profit (Per Student)",
+        "placeholder": "Enter profit amount per student",
+        "currency": "SAR",
+        "hint": "This amount is added to each student's ticket price for the school."
+      }
+    },
+    "actions": {
+      "next": "Next",
+      "back": "Back",
+      "submit": "Submit",
+      "submitting": "Submitting..."
+    },
+    "validation": {
+      "date": {
+        "required": "Trip date is required",
+        "past": "Trip date cannot be in the past"
+      },
+      "studentsCount": {
+        "required": "Number of students is required",
+        "invalid": "Please enter a valid number",
+        "min": "Number of students must be at least 1",
+        "max": "Number of students cannot exceed 5000"
+      },
+      "notes": {
+        "max": "Notes cannot exceed 500 characters"
+      },
+      "gatheringLocation": {
+        "required": "Gathering location on the map is required"
+      },
+      "schoolProfit": {
+        "required": "School profit per student is required",
+        "invalid": "Please enter a valid amount",
+        "min": "School profit cannot be negative"
+      }
+    },
+    "feedback": {
+      "success": "School booking request submitted successfully!",
+      "error": "An error occurred while submitting the booking request",
+      "successTitle": "Request Received Successfully!",
+      "successDescription": "Our team will review your booking details and contact you shortly.",
+      "backToTrip": "Back to Trip Details",
+      "newRequest": "Submit Another Request"
     }
   },
 

@@ -713,15 +713,29 @@ export const createChildImageUploadSchema = (t) =>
       .notRequired(),
   });
 
-// School Register Form
-export const createSchoolRegisterSchema = (t) =>
-  Yup.object().shape({
-    salesPersonName: Yup.string()
-      .trim()
-      .required(t("schoolRegister.validation.salesPersonName.required"))
-      .min(2, t("schoolRegister.validation.salesPersonName.min"))
-      .max(50, t("schoolRegister.validation.salesPersonName.max")),
+// ---------------------------------------------------------------------------
+// School shared field builders (used by school register + school trip booking)
+// ---------------------------------------------------------------------------
 
+// Educational track, stages and grades
+const getSchoolTrackFields = (t) => ({
+  educationalTrack: Yup.string()
+    .trim()
+    .required(t("schoolRegister.validation.educationalTrack.required"))
+    .min(2, t("schoolRegister.validation.educationalTrack.min"))
+    .max(100, t("schoolRegister.validation.educationalTrack.max")),
+
+  stages: Yup.array()
+    .of(Yup.string())
+    .min(1, t("schoolRegister.validation.stages.required")),
+
+  grades: Yup.array()
+    .of(Yup.string())
+    .min(1, t("schoolRegister.validation.grades.required")),
+});
+
+// Organization info, contact person and additional users
+const getSchoolOrganizationFields = (t) => ({
     schoolNameArabic: Yup.string()
       .trim()
       .required(t("schoolRegister.validation.schoolNameArabic.required"))
@@ -754,20 +768,6 @@ export const createSchoolRegisterSchema = (t) =>
       .of(Yup.string())
       .min(1, t("schoolRegister.validation.gender.required"))
       .required(t("schoolRegister.validation.gender.required")),
-
-    educationalTrack: Yup.string()
-      .trim()
-      .required(t("schoolRegister.validation.educationalTrack.required"))
-      .min(2, t("schoolRegister.validation.educationalTrack.min"))
-      .max(100, t("schoolRegister.validation.educationalTrack.max")),
-
-    stages: Yup.array()
-      .of(Yup.string())
-      .min(1, t("schoolRegister.validation.stages.required")),
-
-    grades: Yup.array()
-      .of(Yup.string())
-      .min(1, t("schoolRegister.validation.grades.required")),
 
     functionalDegree: Yup.string()
       .trim()
@@ -832,6 +832,76 @@ export const createSchoolRegisterSchema = (t) =>
         })
       )
       .max(1, "Maximum 1 additional users allowed"),
+});
+
+// School Register Form
+export const createSchoolRegisterSchema = (t) =>
+  Yup.object().shape({
+    salesPersonName: Yup.string()
+      .trim()
+      .required(t("schoolRegister.validation.salesPersonName.required"))
+      .min(2, t("schoolRegister.validation.salesPersonName.min"))
+      .max(50, t("schoolRegister.validation.salesPersonName.max")),
+
+    ...getSchoolTrackFields(t),
+    ...getSchoolOrganizationFields(t),
+  });
+
+// School Trip Booking Form (market-template trips) — 3 steps
+// Step 1: request details | Step 2: contact info | Step 3: gathering location & profit
+export const createSchoolTripBookingSchema = (t) =>
+  Yup.object().shape({
+    // Step 1 — Request details
+    ...getSchoolTrackFields(t),
+
+    date: Yup.string()
+      .required(t("schoolTripBooking.validation.date.required"))
+      .test(
+        "not-in-past",
+        t("schoolTripBooking.validation.date.past"),
+        (value) => {
+          if (!value) return true;
+          const now = new Date();
+          const today = [
+            now.getFullYear(),
+            String(now.getMonth() + 1).padStart(2, "0"),
+            String(now.getDate()).padStart(2, "0"),
+          ].join("-");
+          return value >= today;
+        }
+      ),
+
+    studentsCount: Yup.number()
+      .typeError(t("schoolTripBooking.validation.studentsCount.invalid"))
+      .required(t("schoolTripBooking.validation.studentsCount.required"))
+      .integer(t("schoolTripBooking.validation.studentsCount.invalid"))
+      .min(1, t("schoolTripBooking.validation.studentsCount.min"))
+      .max(5000, t("schoolTripBooking.validation.studentsCount.max")),
+
+    services: Yup.array().of(Yup.string()),
+
+    notes: Yup.string()
+      .trim()
+      .max(500, t("schoolTripBooking.validation.notes.max")),
+
+    // Step 2 — Contact info
+    ...getSchoolOrganizationFields(t),
+
+    // Step 3 — Gathering location & school profit
+    gatheringLocation: Yup.object().shape({
+      lat: Yup.string().required(
+        t("schoolTripBooking.validation.gatheringLocation.required")
+      ),
+      lng: Yup.string().required(
+        t("schoolTripBooking.validation.gatheringLocation.required")
+      ),
+      address: Yup.string(),
+    }),
+
+    schoolProfit: Yup.number()
+      .typeError(t("schoolTripBooking.validation.schoolProfit.invalid"))
+      .required(t("schoolTripBooking.validation.schoolProfit.required"))
+      .min(0, t("schoolTripBooking.validation.schoolProfit.min")),
   });
 
 // Graduation Event Registration Schema

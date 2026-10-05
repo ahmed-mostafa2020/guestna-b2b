@@ -76,8 +76,8 @@ export default function Home() {
   return (
     <>
       <main className="overflow-hidden bg-activityDetailsBg">
-        <HeroSection />
         <TripTemplateSection tripTemplate={tripTimplate} />
+        <HeroSection />
 
         <Plans />
 

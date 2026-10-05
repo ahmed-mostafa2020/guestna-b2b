@@ -202,6 +202,13 @@ export const B2B_END_POINTS = {
     GRADES_BY_STAGES: "grades/stages",
   },
 
+  // School booking for market-template trips (discover/[tripSlug]/school-booking)
+  // TODO: placeholders — replace with the final backend endpoints
+  MARKET_TEMPLATE: {
+    SERVICES: "market-template/services",
+    BOOK: "market-template/book",
+  },
+
   PROVIDER_REGISTER: {
     SELECTIONS: "providers/register/selections",
     SUBMIT: "providers/register",
