@@ -46,6 +46,8 @@ const RequestQuote = () => {
             {t("links.contactUs")}
           </Link>
         </div>
+
+        <div>hi</div>
       </FrameWithImagedHeader>
 
       {/* Parent login form */}

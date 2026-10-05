@@ -1,4 +1,8 @@
 {
+  "providerMarketplace": {
+    "discover": "Discover Activity",
+    "galleryImageAlt": "Activity image {index}"
+  },
   "common": {
     "back": "Back",
     "comingSoon": "Coming Soon",

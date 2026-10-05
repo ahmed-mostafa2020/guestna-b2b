@@ -1,4 +1,8 @@
 {
+  "providerMarketplace": {
+    "discover": "اكتشف النشاط",
+    "galleryImageAlt": "صورة النشاط {index}"
+  },
   "common": {
     "back": "رجوع",
     "comingSoon": "قريباً",

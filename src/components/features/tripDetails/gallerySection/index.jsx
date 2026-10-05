@@ -4,7 +4,10 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useSelector } from "react-redux";
 
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
+import Image from "next/image";
+
+import playVideo from "@assets/play.png";
 
 import GalleryHeader from "./GalleryHeader";
 import ImageWithPlaceholder from "@components/ui/imagesPlaceholder/ImageWithPlaceholder";
@@ -18,6 +21,55 @@ import { SwiperSlide } from "swiper/react";
 import { Container } from "@mui/material";
 
 import { imagesListIcon } from "@assets/svg";
+
+const MobileVideoThumb = ({ src, poster, label }) => {
+  const [playing, setPlaying] = useState(false);
+  const videoRef = useRef(null);
+
+  const togglePlay = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) {
+      video.play().catch(() => {});
+      setPlaying(true);
+    } else {
+      video.pause();
+      setPlaying(false);
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={togglePlay}
+      aria-label={label}
+      className="relative w-full overflow-hidden aspect-[4/3] rounded-xl sm:rounded-2xl"
+    >
+      <video
+        ref={videoRef}
+        src={src}
+        poster={poster}
+        muted
+        loop
+        playsInline
+        preload="none"
+        className="object-cover w-full h-full"
+      />
+      {!playing && (
+        <span className="absolute inset-0 centered bg-black/20">
+          <Image
+            src={playVideo}
+            alt=""
+            aria-hidden="true"
+            width={48}
+            height={48}
+            className="w-8 h-8 rounded-full sm:w-12 sm:h-12"
+          />
+        </span>
+      )}
+    </button>
+  );
+};
 
 const GallerySection = () => {
   const [height, setHeight] = useState(250);
@@ -74,7 +126,82 @@ const GallerySection = () => {
             </h1>
           </div> */}
 
-          <div className="flex-row-reverse flex-wrap gap-3 centered">
+          {/* Small & medium screens layout */}
+          <div className="flex flex-col gap-3 sm:gap-4 lg:hidden">
+            {specialGalleryImages?.[3]?.url && (
+              <div className="relative w-full overflow-hidden rounded-2xl aspect-[16/10] [&>div]:h-full">
+                <ImageWithPlaceholder
+                  src={specialGalleryImages?.[3]?.url}
+                  alt={`${data?.name} image`}
+                  width={800}
+                  height={500}
+                  priority
+                  className="object-cover w-full h-full"
+                />
+
+                <button
+                  type="button"
+                  onClick={handleOpen}
+                  className="absolute z-[2] flex items-center gap-2 px-3 py-2 text-xs font-medium text-white transition-colors rounded-full sm:px-4 sm:text-sm bottom-3 end-3 sm:bottom-4 sm:end-4 bg-black/60 backdrop-blur-sm hover:bg-black/75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white [&_svg]:w-4 [&_svg]:h-4 [&_svg_path]:stroke-white"
+                >
+                  {imagesListIcon}
+                  <span>
+                    {t("links.showAllImages")} {data?.gallary?.length}
+                  </span>
+                </button>
+              </div>
+            )}
+
+            <div className="grid grid-cols-3 gap-2 sm:gap-4">
+              {[specialGalleryImages?.[2], specialGalleryImages?.[0]]
+                .filter((img) => img?.url)
+                .map((img) => (
+                  <button
+                    key={img._id || img.url}
+                    type="button"
+                    onClick={handleOpen}
+                    aria-label={t("links.showAllImages")}
+                    className="w-full overflow-hidden aspect-[4/3] rounded-xl sm:rounded-2xl [&>div]:h-full"
+                  >
+                    <ImageWithPlaceholder
+                      src={img.url}
+                      alt={`${data?.name} image`}
+                      width={300}
+                      height={225}
+                      className="object-cover w-full h-full"
+                    />
+                  </button>
+                ))}
+
+              {data?.video ? (
+                <MobileVideoThumb
+                  src={data?.video}
+                  poster={specialGalleryImages?.[1]?.url || specialGalleryImages?.[3]?.url}
+                  label={data?.name}
+                />
+              ) : (
+                specialGalleryImages?.[1]?.url && (
+                  <button
+                    type="button"
+                    onClick={handleOpen}
+                    aria-label={t("links.showAllImages")}
+                    className="w-full overflow-hidden aspect-[4/3] rounded-xl sm:rounded-2xl [&>div]:h-full"
+                  >
+                    <ImageWithPlaceholder
+                      src={specialGalleryImages?.[1]?.url}
+                      alt={`${data?.name} image`}
+                      width={300}
+                      height={225}
+                      className="object-cover w-full h-full"
+                    />
+                  </button>
+                )
+              )}
+            </div>
+          </div>
+
+          {/* Large screens layout */}
+          <div className="flex-row-reverse flex-wrap hidden gap-3 lg:flex centered">
             <div className="relative">
               {specialGalleryImages?.[3]?.url && (
                 <ImageWithPlaceholder

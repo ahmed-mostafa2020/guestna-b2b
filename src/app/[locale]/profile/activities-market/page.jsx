@@ -2,7 +2,6 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams, useRouter } from "next/navigation";
-import banner from "@assets/sectionBackground/discover.webp";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setCurrentPage,
@@ -18,6 +17,9 @@ import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 import { PERMISSIONS } from "@constants/permissions";
 import TripsGrid from "@components/features/discover/gridSection/tripsGrid";
 import { usePaginatedTrips } from "@hooks/data/usePaginatedTrips";
+import TripTemplateSection from "@components/ui/tripTemplateSection";
+// TODO: switch to `data?.tripTimplate` once the endpoint returns it
+import { STATIC_TRIP_TEMPLATE } from "@constants/tripTemplate";
 
 const ActivitiesMarketPage = () => {
   const { currentPage, filter, searchTerm } = useSelector(
@@ -119,29 +121,22 @@ const ActivitiesMarketPage = () => {
     <ProtectedProfilePage
       requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_ACTIVITIES_MARKET_PAGE}
     >
-      <section
-        style={{ backgroundImage: `url(${banner.src})` }}
-        className=" font-ibm text-white mb-4 lg:mb-8 bg-cover bg-center rounded-xl !overflow-hidden"
-      >
-        <div className="centered gap-4 flex-col text-center  bg-activities-market-gradient md:!px-20 md:!py-12  px-12 py-8  ">
-          <h1 className="text-4xl lg:text-6xl font-bold mb-4 text-foreground">
-            {t("profile.aside.activitiesMarketTitle")}
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            {t("profile.aside.activitiesMarketDescription")}
-          </p>
+      <div className="mb-4 lg:mb-8 rounded-xl overflow-hidden">
+        <TripTemplateSection tripTemplate={STATIC_TRIP_TEMPLATE} />
+      </div>
 
-          {/* Show fetching indicator when loading new page */}
-          {isFetching && !isLoading && (
-            <div className="flex items-center gap-2 text-sm text-mainColor">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-mainColor"></div>
-              <span>
-                {t("profile.myWallet.transactionsPage.table.loading.message")}
-              </span>
-            </div>
-          )}
+      {/* Show fetching indicator when loading new page */}
+      {isFetching && !isLoading && (
+        <div
+          role="status"
+          className="flex items-center justify-center gap-2 text-sm text-mainColor mb-4"
+        >
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-mainColor"></div>
+          <span>
+            {t("profile.myWallet.transactionsPage.table.loading.message")}
+          </span>
         </div>
-      </section>
+      )}
 
       <TripsGrid showFilters />
     </ProtectedProfilePage>
