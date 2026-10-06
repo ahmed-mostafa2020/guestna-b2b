@@ -87,6 +87,7 @@ const SchoolTripBookingForm = ({
   const effectiveTripId = propTripId || trip?._id || tripSlug;
 
   const [currentStep, setCurrentStep] = useState(0);
+  const [isTransitioningStep, setIsTransitioningStep] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const cardRef = useRef(null);
 
@@ -138,11 +139,20 @@ const SchoolTripBookingForm = ({
   };
 
   const handleNext = async (formik) => {
-    const { isValid } = await validateStep(currentStep, formik);
-    if (isValid) goToStep(currentStep + 1);
+    if (isTransitioningStep) return;
+    setIsTransitioningStep(true);
+    try {
+      const { isValid } = await validateStep(currentStep, formik);
+      if (isValid) goToStep(currentStep + 1);
+    } finally {
+      setTimeout(() => {
+        setIsTransitioningStep(false);
+      }, 300);
+    }
   };
 
   const handleFinalSubmit = async (formik) => {
+    if (isTransitioningStep) return;
     const errors = await formik.validateForm();
     const invalidStep = findFirstStepWithErrors(errors);
 
@@ -313,6 +323,7 @@ const SchoolTripBookingForm = ({
                   currentStep={currentStep}
                   isCurrentStepValid={isCurrentStepValid}
                   onStepClick={(targetStep) => {
+                    if (isTransitioningStep) return;
                     if (targetStep === currentStep + 1) {
                       handleNext(formik);
                     } else {
@@ -335,8 +346,15 @@ const SchoolTripBookingForm = ({
                 className="flex flex-col gap-7"
                 onSubmit={(event) => {
                   event.preventDefault();
+                  if (isTransitioningStep) return;
                   if (isLastStep) handleFinalSubmit(formik);
                   else handleNext(formik);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !isLastStep && e.target.tagName === "INPUT") {
+                    e.preventDefault();
+                    handleNext(formik);
+                  }
                 }}
               >
             {currentStep === 0 && (
@@ -352,19 +370,18 @@ const SchoolTripBookingForm = ({
 
             {currentStep === 1 && (
               <ContactInfoStep
-                cities={cities}
                 roles={availableRoles}
                 genderOptions={genderOptions}
               />
             )}
 
-            {currentStep === 2 && <GatheringLocationStep />}
+            {currentStep === 2 && <GatheringLocationStep cities={cities} />}
 
             <StepNavigation
               isFirstStep={isFirstStep}
               isLastStep={isLastStep}
-              isSubmitting={formik.isSubmitting}
-              onBack={() => goToStep(currentStep - 1)}
+              isSubmitting={formik.isSubmitting || isTransitioningStep}
+              onBack={() => !isTransitioningStep && goToStep(currentStep - 1)}
               onNext={() => handleNext(formik)}
             />
           </form>

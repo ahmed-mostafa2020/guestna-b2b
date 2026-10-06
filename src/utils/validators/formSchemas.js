@@ -875,7 +875,7 @@ export const createSchoolTripBookingSchema = (t) =>
       .typeError(t("schoolTripBooking.validation.studentsCount.invalid"))
       .required(t("schoolTripBooking.validation.studentsCount.required"))
       .integer(t("schoolTripBooking.validation.studentsCount.invalid"))
-      .min(1, t("schoolTripBooking.validation.studentsCount.min"))
+      .min(10, t("schoolTripBooking.validation.studentsCount.min"))
       .max(5000, t("schoolTripBooking.validation.studentsCount.max")),
 
     // Step 2 — Contact info
@@ -945,7 +945,7 @@ export const createSchoolTripBookingSchema = (t) =>
 
     mobile: createPhoneValidation(t, true),
 
-    city: Yup.string().required(t("schoolRegister.validation.city.required")),
+    city: Yup.string().nullable(),
 
     // Step 3 — Gathering location & school profit
     gatheringLocation: Yup.object().shape({

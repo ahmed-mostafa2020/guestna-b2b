@@ -4588,6 +4588,8 @@
         "notFound": "تعذر العثور على إحداثيات صالحة من هذا الرابط، يرجى التأكد من صحة الرابط",
         "openInGoogleMaps": "فتح في خرائط جوجل",
         "coordinatesLabel": "الإحداثيات المحددة:",
+        "detectedCity": "المدينة المحددة:",
+        "detectingCity": "جاري تحديد المدينة من الموقع...",
         "configError": "Google Maps API key is not configured"
       },
       "schoolProfit": {
@@ -4611,7 +4613,7 @@
       "studentsCount": {
         "required": "عدد الطلاب مطلوب",
         "invalid": "يرجى إدخال رقم صحيح",
-        "min": "يجب ألا يقل عدد الطلاب عن 1",
+        "min": "يجب ألا يقل عدد الطلاب عن 10",
         "max": "الحد الأقصى لعدد الطلاب 5000"
       },
       "notes": {

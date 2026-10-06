@@ -4579,6 +4579,8 @@
         "notFound": "Could not extract valid coordinates from this link, please check the link",
         "openInGoogleMaps": "Open in Google Maps",
         "coordinatesLabel": "Selected Coordinates:",
+        "detectedCity": "Detected City:",
+        "detectingCity": "Detecting city from location...",
         "configError": "Google Maps API key is not configured"
       },
       "schoolProfit": {
@@ -4602,7 +4604,7 @@
       "studentsCount": {
         "required": "Number of students is required",
         "invalid": "Please enter a valid number",
-        "min": "Number of students must be at least 1",
+        "min": "Number of students must be at least 10",
         "max": "Number of students cannot exceed 5000"
       },
       "notes": {

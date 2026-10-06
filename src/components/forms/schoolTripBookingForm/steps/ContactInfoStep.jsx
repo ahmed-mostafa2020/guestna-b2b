@@ -9,13 +9,12 @@ import PhoneInputGroup from "@components/forms/PhoneInputGroup";
 import { LABEL_PROPS } from "../constants";
 import { getNameLabel, getRoleLabel } from "../utils";
 
-const ContactInfoStep = ({ cities, roles, genderOptions }) => {
+const ContactInfoStep = ({ roles, genderOptions }) => {
   const t = useTranslations();
   const locale = useLocale();
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
     useFormikContext();
 
-  const cityLabels = cities.map((c) => getNameLabel(c, locale));
   const roleLabels = roles.map((r) => getRoleLabel(r, locale));
 
   return (
@@ -48,20 +47,6 @@ const ContactInfoStep = ({ cities, roles, genderOptions }) => {
           onBlur={handleBlur}
           touched={touched.schoolNameEnglish}
           errors={errors.schoolNameEnglish}
-          required
-        />
-
-        <SelectionGroup
-          {...LABEL_PROPS}
-          name="city"
-          label={t("schoolRegister.form.city.label")}
-          placeholder={t("schoolRegister.form.city.placeholder")}
-          value={values.city}
-          list={cityLabels}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          touched={touched.city}
-          errors={errors.city}
           required
         />
 

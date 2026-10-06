@@ -7,7 +7,6 @@ export const STEP_FIELDS = [
   [
     "schoolNameArabic",
     "schoolNameEnglish",
-    "city",
     "gender",
     "organizationEmail",
     "organizationPhone",

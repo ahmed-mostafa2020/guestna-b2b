@@ -9,9 +9,10 @@ import {
   ErrorOutline,
   NearMeOutlined,
   OpenInNew,
+  LocationCityOutlined,
 } from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import {
   extractCoordsFromMapUrl,
@@ -19,20 +20,26 @@ import {
   DEFAULT_COORDINATES,
 } from "@utils/helpers/mapHelpers";
 import { cn } from "@utils/helpers/cn";
+import { extractCityFromComponents, matchCityFromLookups } from "../utils";
 
 const GatheringLocationPicker = ({
   mapLink = "",
   lat = "",
   lng = "",
+  cities = [],
+  currentCityValue = "",
   onChange,
+  onCityChange,
   onBlur,
   error,
   touched,
 }) => {
   const t = useTranslations("schoolTripBooking.form.gatheringLocation");
+  const locale = useLocale();
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markerRef = useRef(null);
+  const geocoderRef = useRef(null);
   const isInternalMapChangeRef = useRef(false);
   const resolveTimeoutRef = useRef(null);
 
@@ -40,10 +47,47 @@ const GatheringLocationPicker = ({
   const [mapError, setMapError] = useState(null);
   const [isResolving, setIsResolving] = useState(false);
   const [resolveStatus, setResolveStatus] = useState(null);
+  const [isDetectingCity, setIsDetectingCity] = useState(false);
+  const [detectedCityName, setDetectedCityName] = useState("");
 
   const hasCoords = isValidCoordinates(lat, lng);
   const currentLat = hasCoords ? parseFloat(lat) : DEFAULT_COORDINATES.lat;
   const currentLng = hasCoords ? parseFloat(lng) : DEFAULT_COORDINATES.lng;
+
+  // Reverse geocode coordinates to extract city and match with cities lookups
+  const reverseGeocodeCity = useCallback(
+    (targetLat, targetLng) => {
+      if (!geocoderRef.current || !targetLat || !targetLng) return;
+
+      setIsDetectingCity(true);
+      geocoderRef.current.geocode(
+        {
+          location: { lat: Number(targetLat), lng: Number(targetLng) },
+          language: locale || "ar",
+        },
+        (results, status) => {
+          setIsDetectingCity(false);
+          if (status === "OK" && results?.[0]) {
+            const rawCity = extractCityFromComponents(
+              results[0].address_components || []
+            );
+            const matched = matchCityFromLookups(rawCity, cities);
+            const cityValue = matched?._id || matched?.id || rawCity || "";
+            const displayCity =
+              (typeof matched?.name === "object"
+                ? matched.name[locale] || matched.name.ar || matched.name.en
+                : matched?.name) || rawCity;
+
+            setDetectedCityName(displayCity || "");
+            if (onCityChange) {
+              onCityChange(cityValue);
+            }
+          }
+        }
+      );
+    },
+    [cities, locale, onCityChange]
+  );
 
   // Pan map and place marker at given coordinates
   const updateMapPosition = useCallback(
@@ -71,8 +115,9 @@ const GatheringLocationPicker = ({
         mapLink: linkText,
       });
       setResolveStatus({ type: "success", message: t("resolved") });
+      reverseGeocodeCity(targetLat, targetLng);
     },
-    [onChange, updateMapPosition, t]
+    [onChange, updateMapPosition, reverseGeocodeCity, t]
   );
 
   // Async URL resolution using /api/resolve-map-url (follows redirects for maps.app.goo.gl, etc.)
@@ -132,7 +177,7 @@ const GatheringLocationPicker = ({
     [applyCoordinates, onChange, t]
   );
 
-  // Initialize Google Maps instance
+  // Initialize Google Maps instance & Geocoder
   useEffect(() => {
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
     if (!apiKey) {
@@ -150,6 +195,8 @@ const GatheringLocationPicker = ({
       .load()
       .then(() => {
         if (!mapRef.current) return;
+
+        geocoderRef.current = new window.google.maps.Geocoder();
 
         const center = { lat: currentLat, lng: currentLng };
         const map = new window.google.maps.Map(mapRef.current, {
@@ -184,6 +231,7 @@ const GatheringLocationPicker = ({
             lng: newLng,
             mapLink: generatedUrl,
           });
+          reverseGeocodeCity(newLat, newLng);
         });
 
         // Drag marker to adjust location
@@ -198,11 +246,16 @@ const GatheringLocationPicker = ({
             lng: newLng,
             mapLink: generatedUrl,
           });
+          reverseGeocodeCity(newLat, newLng);
         });
 
         mapInstanceRef.current = map;
         markerRef.current = marker;
         setIsMapLoaded(true);
+
+        if (hasCoords) {
+          reverseGeocodeCity(currentLat, currentLng);
+        }
       })
       .catch((err) => {
         console.error("Failed to load Google Maps:", err);
@@ -234,6 +287,22 @@ const GatheringLocationPicker = ({
     }
   }, [lat, lng, hasCoords]);
 
+  // Sync detectedCityName from currentCityValue lookup if already present
+  useEffect(() => {
+    if (!detectedCityName && currentCityValue && cities?.length) {
+      const matched = cities.find(
+        (c) => c._id === currentCityValue || c.id === currentCityValue
+      );
+      if (matched) {
+        const displayCity =
+          (typeof matched.name === "object"
+            ? matched.name[locale] || matched.name.ar || matched.name.en
+            : matched.name) || "";
+        setDetectedCityName(displayCity);
+      }
+    }
+  }, [currentCityValue, cities, locale, detectedCityName]);
+
   // Handle typing / changing map link input
   const handleLinkChange = (e) => {
     const value = e.target.value;
@@ -241,6 +310,8 @@ const GatheringLocationPicker = ({
 
     if (!value.trim()) {
       if (markerRef.current) markerRef.current.setVisible(false);
+      setDetectedCityName("");
+      onCityChange?.("");
       onChange({ lat: "", lng: "", mapLink: "" });
       return;
     }
@@ -278,6 +349,8 @@ const GatheringLocationPicker = ({
     if (resolveTimeoutRef.current) clearTimeout(resolveTimeoutRef.current);
     if (markerRef.current) markerRef.current.setVisible(false);
     setResolveStatus(null);
+    setDetectedCityName("");
+    onCityChange?.("");
     onChange({ lat: "", lng: "", mapLink: "" });
   };
 
@@ -309,7 +382,22 @@ const GatheringLocationPicker = ({
         <span>{t("instruction")}</span>
       </div>
 
-      {/* 3. Google Maps Link Input with Validation */}
+      {/* 3. Interactive Map Canvas (Placed ABOVE the link input as requested) */}
+      <div className="relative w-full h-56 sm:h-72 rounded-xl overflow-hidden border border-border bg-gray-100">
+        <div ref={mapRef} className="w-full h-full" />
+        {!isMapLoaded && !mapError && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-50/80 z-10">
+            <CircularProgress size={32} sx={{ color: "var(--color-main)" }} />
+          </div>
+        )}
+        {mapError && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 p-4 text-center text-sm text-error font-somar">
+            {mapError}
+          </div>
+        )}
+      </div>
+
+      {/* 4. Google Maps Link Input with Validation & Details (Placed UNDER the map) */}
       <div className="flex flex-col gap-1.5">
         <label
           htmlFor="gathering-map-link-input"
@@ -384,14 +472,33 @@ const GatheringLocationPicker = ({
           </div>
         )}
 
-        {/* Resolved Coordinates Badge & Google Maps Link */}
+        {/* Resolved Coordinates Badge, Detected City & Google Maps Link */}
         {hasCoords && (
           <div className="flex flex-wrap items-center justify-between gap-2 pt-2 px-3 py-2 rounded-lg bg-mainColor/[0.04] border border-mainColor/15">
-            <div className="flex items-center gap-2 text-xs font-somar text-textDark">
-              <span className="font-semibold text-mainColor">{t("coordinatesLabel")}</span>
-              <span className="font-mono bg-white px-2 py-0.5 rounded border border-border text-[11px]" dir="ltr">
-                {Number(lat).toFixed(6)}, {Number(lng).toFixed(6)}
-              </span>
+            <div className="flex flex-wrap items-center gap-3 text-xs font-somar text-textDark">
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold text-mainColor">{t("coordinatesLabel")}</span>
+                <span className="font-mono bg-white px-2 py-0.5 rounded border border-border text-[11px]" dir="ltr">
+                  {Number(lat).toFixed(6)}, {Number(lng).toFixed(6)}
+                </span>
+              </div>
+
+              {detectedCityName && (
+                <div className="flex items-center gap-1.5">
+                  <LocationCityOutlined className="!w-4 !h-4 text-mainColor" />
+                  <span className="font-semibold text-mainColor">{t("detectedCity")}</span>
+                  <span className="bg-white px-2 py-0.5 rounded border border-border text-xs font-medium text-textDark">
+                    {detectedCityName}
+                  </span>
+                </div>
+              )}
+
+              {isDetectingCity && (
+                <div className="flex items-center gap-1 text-xs text-textLight">
+                  <CircularProgress size={12} sx={{ color: "var(--color-main)" }} />
+                  <span>{t("detectingCity")}</span>
+                </div>
+              )}
             </div>
 
             {googleMapsUrl && (
@@ -405,21 +512,6 @@ const GatheringLocationPicker = ({
                 <OpenInNew className="!w-3.5 !h-3.5" />
               </a>
             )}
-          </div>
-        )}
-      </div>
-
-      {/* 4. Interactive Map Canvas */}
-      <div className="relative w-full h-56 sm:h-64 rounded-xl overflow-hidden border border-border bg-gray-100">
-        <div ref={mapRef} className="w-full h-full" />
-        {!isMapLoaded && !mapError && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-50/80 z-10">
-            <CircularProgress size={32} sx={{ color: "var(--color-main)" }} />
-          </div>
-        )}
-        {mapError && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 p-4 text-center text-sm text-error font-somar">
-            {mapError}
           </div>
         )}
       </div>

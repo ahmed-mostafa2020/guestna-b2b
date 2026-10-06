@@ -10,7 +10,7 @@ import TextInputGroup from "@components/forms/TextInputGroup";
 
 import { LABEL_PROPS } from "../constants";
 
-const GatheringLocationStep = () => {
+const GatheringLocationStep = ({ cities = [] }) => {
   const t = useTranslations("schoolTripBooking.form");
   const { values, errors, touched, handleChange, handleBlur, setFieldValue, setFieldTouched } =
     useFormikContext();
@@ -36,6 +36,13 @@ const GatheringLocationStep = () => {
     [setFieldValue, setFieldTouched]
   );
 
+  const handleCityChange = useCallback(
+    (city) => {
+      setFieldValue("city", city || "");
+    },
+    [setFieldValue]
+  );
+
   const handleLinkBlur = useCallback(() => {
     setFieldTouched("gatheringLocation.mapLink", true, true);
   }, [setFieldTouched]);
@@ -49,7 +56,10 @@ const GatheringLocationStep = () => {
         mapLink={values.gatheringLocation?.mapLink}
         lat={values.gatheringLocation?.lat}
         lng={values.gatheringLocation?.lng}
+        cities={cities}
+        currentCityValue={values.city}
         onChange={handleLocationChange}
+        onCityChange={handleCityChange}
         onBlur={handleLinkBlur}
         error={mapLinkError}
         touched={isLocationTouched}

@@ -11,6 +11,7 @@ const StepNavigation = ({ isFirstStep, isLastStep, isSubmitting, onBack, onNext 
     <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">
       {!isFirstStep && (
         <button
+          key="school-booking-back-btn"
           id="school-booking-back"
           type="button"
           onClick={onBack}
@@ -23,6 +24,7 @@ const StepNavigation = ({ isFirstStep, isLastStep, isSubmitting, onBack, onNext 
 
       {isLastStep ? (
         <button
+          key="school-booking-submit-btn"
           id="school-booking-submit"
           type="submit"
           disabled={isSubmitting}
@@ -39,10 +41,12 @@ const StepNavigation = ({ isFirstStep, isLastStep, isSubmitting, onBack, onNext 
         </button>
       ) : (
         <button
+          key="school-booking-next-btn"
           id="school-booking-next"
           type="button"
           onClick={onNext}
-          className="flex-1 py-3 font-semibold font-somar text-white rounded-lg border-2 border-mainColor bg-mainColor hover:bg-linksHover hover:border-linksHover transition-all duration-200 ease-in-out"
+          disabled={isSubmitting}
+          className="flex-1 py-3 font-semibold font-somar text-white rounded-lg border-2 border-mainColor bg-mainColor hover:bg-linksHover hover:border-linksHover transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {t("next")}
         </button>

@@ -111,6 +111,68 @@ export const extractAvailableDays = (trip, selectDays = []) => {
   return [];
 };
 
+/** Matches a city name or extracted string against the cities lookups */
+export const matchCityFromLookups = (cityName, cities = []) => {
+  if (!cityName || !Array.isArray(cities) || cities.length === 0) {
+    return null;
+  }
+
+  const clean = (str) =>
+    (str || "")
+      .toString()
+      .trim()
+      .toLowerCase()
+      .replace(/^(city of|city|municipality of|محافظة|مدينة|منطقة)\s+/i, "")
+      .replace(/\s+(city|municipality|محافظة|مدينة|منطقة)$/i, "")
+      .trim();
+
+  const target = clean(cityName);
+  if (!target) return null;
+
+  // 1. Exact match on normalized label
+  for (const c of cities) {
+    const arName = clean(typeof c?.name === "object" ? c.name?.ar : c?.name);
+    const enName = clean(typeof c?.name === "object" ? c.name?.en : c?.name);
+    if ((arName && arName === target) || (enName && enName === target)) {
+      return c;
+    }
+  }
+
+  // 2. Substring match
+  for (const c of cities) {
+    const arName = clean(typeof c?.name === "object" ? c.name?.ar : c?.name);
+    const enName = clean(typeof c?.name === "object" ? c.name?.en : c?.name);
+    if (
+      (arName && (target.includes(arName) || arName.includes(target))) ||
+      (enName && (target.includes(enName) || enName.includes(target)))
+    ) {
+      return c;
+    }
+  }
+
+  return null;
+};
+
+/** Extracts city name from Google Maps Geocoder address_components */
+export const extractCityFromComponents = (components = []) => {
+  if (!Array.isArray(components) || components.length === 0) return "";
+
+  const locality = components.find((c) => c.types?.includes("locality"));
+  if (locality) return locality.long_name || locality.short_name || "";
+
+  const admin2 = components.find((c) =>
+    c.types?.includes("administrative_area_level_2")
+  );
+  if (admin2) return admin2.long_name || admin2.short_name || "";
+
+  const admin1 = components.find((c) =>
+    c.types?.includes("administrative_area_level_1")
+  );
+  if (admin1) return admin1.long_name || admin1.short_name || "";
+
+  return "";
+};
+
 /** Builds the API payload matching POST /b2b/organizations/market-trip */
 export const buildBookingPayload = ({
   values,
@@ -121,6 +183,13 @@ export const buildBookingPayload = ({
   genderLabels = {},
 }) => {
   const { cities = [], educationSystems = [], stages = [], grades = [], roles = [] } = lookups;
+
+  const matchedCity =
+    cities.find((c) => c._id === values.city || c.id === values.city) ||
+    matchCityFromLookups(values.city, cities) ||
+    findIdByLabel(cities, values.city, locale);
+
+  const finalCity = matchedCity?._id || matchedCity?.id || values.city || "";
 
   return {
     organization: {
@@ -139,7 +208,7 @@ export const buildBookingPayload = ({
         academicStages: mapLabelsToIds(stages, values.stages, locale),
         grades: mapLabelsToIds(grades, values.grades, locale),
       },
-      city: findIdByLabel(cities, values.city, locale) || values.city || "",
+      city: finalCity,
     },
     user: {
       name: values.contactPersonName?.trim() || "",
