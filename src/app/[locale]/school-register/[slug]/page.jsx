@@ -2,19 +2,33 @@
 
 import { useEffect, useMemo } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { useSelector } from "react-redux";
+import Cookies from "js-cookie";
 import { Container } from "@mui/material";
 
 import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { CONSTANT_VALUES } from "@constants/constantValues";
+import { USERS } from "@constants/users";
 
 import PageHeader from "@components/features/schoolRegister/PageHeader";
-import SchoolTripBookingForm from "@components/forms/schoolTripBookingForm";
+import SchoolTripBookingForm, {
+  AuthSchoolTripBookingForm,
+} from "@components/forms/schoolTripBookingForm";
 import SchoolTripBookingSkeleton from "@components/forms/schoolTripBookingForm/SchoolTripBookingSkeleton";
 
 const SchoolTripBookingPage = ({ params }) => {
   const locale = useLocale();
   const t = useTranslations();
   const tripId = params?.slug || params?.tripSlug || params?.id;
+
+  const reduxToken = useSelector((state) => state.users?.userToken);
+  const reduxUserType = useSelector((state) => state.users?.userType);
+  const token = reduxToken || Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
+  const userType = reduxUserType || Cookies.get("userType");
+
+  const isProvider = userType === USERS.PROVIDERS || userType === "PROVIDERS";
+  const isAuth = Boolean(token) && userType !== USERS.VISITOR && !isProvider;
 
   // 1. Fetch select data directly for the market trip: /organizations/market-trip/select/${tripId}
   const {
@@ -108,10 +122,21 @@ const SchoolTripBookingPage = ({ params }) => {
       <Container maxWidth="lg" className="mt-8">
         {isLoading ? (
           <SchoolTripBookingSkeleton />
+        ) : isAuth ? (
+          <AuthSchoolTripBookingForm
+            tripId={tripId}
+            tripSlug={tripId}
+            trip={selectData?.trip}
+            cities={cities}
+            stages={stages}
+            grades={grades}
+            selectDays={selectDays}
+          />
         ) : (
           <SchoolTripBookingForm
             tripId={tripId}
             tripSlug={tripId}
+            trip={selectData?.trip}
             cities={cities}
             roles={roles}
             educationSystems={educationSystems}

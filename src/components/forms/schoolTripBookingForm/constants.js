@@ -43,6 +43,34 @@ export const INITIAL_VALUES = {
   schoolProfit: "",
 };
 
+// ---------------------------------------------------------------------------
+// Authenticated variant (existing school / company users)
+// ---------------------------------------------------------------------------
+export const AUTH_BOOKING_STEPS = ["school", "trip", "location"];
+
+export const AUTH_STEP_FIELDS = [
+  ["organization", "track", "stages", "grades"],
+  ["date", "studentsCount"],
+  ["gatheringLocation", "schoolProfit"],
+];
+
+export const AUTH_INITIAL_VALUES = {
+  // Step 1 — School info (IDs)
+  organization: "",
+  track: "",
+  stages: [],
+  grades: [],
+
+  // Step 2 — Trip details
+  date: "",
+  studentsCount: "",
+
+  // Step 3 — Gathering location & school amount
+  city: "",
+  gatheringLocation: { lat: "", lng: "", mapLink: "" },
+  schoolProfit: "",
+};
+
 // Shared label props to keep inputs visually consistent with school-register
 export const LABEL_PROPS = {
   labelClassName: "font-somar",

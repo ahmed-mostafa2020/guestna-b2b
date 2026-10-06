@@ -984,6 +984,85 @@ export const createSchoolTripBookingSchema = (t) =>
       .min(0, t("schoolTripBooking.validation.schoolProfit.min")),
   });
 
+// Authenticated School Trip Booking (existing school / company users) — 3 steps
+// Step 1: organization, track, stages, grades | Step 2: date & seats | Step 3: location & profit
+export const createAuthSchoolTripBookingSchema = (t) =>
+  Yup.object().shape({
+    // Step 1 — School Info
+    organization: Yup.string()
+      .trim()
+      .required(t("schoolTripBooking.validation.organization.required")),
+    track: Yup.string()
+      .trim()
+      .required(t("schoolTripBooking.validation.track.required")),
+    stages: Yup.array()
+      .of(Yup.string())
+      .min(1, t("schoolRegister.validation.stages.required")),
+    grades: Yup.array()
+      .of(Yup.string())
+      .min(1, t("schoolRegister.validation.grades.required")),
+
+    // Step 2 — Trip Details
+    date: Yup.string()
+      .required(t("schoolTripBooking.validation.date.required"))
+      .test(
+        "not-in-past",
+        t("schoolTripBooking.validation.date.past"),
+        (value) => {
+          if (!value) return true;
+          const now = new Date();
+          const today = [
+            now.getFullYear(),
+            String(now.getMonth() + 1).padStart(2, "0"),
+            String(now.getDate()).padStart(2, "0"),
+          ].join("-");
+          return value >= today;
+        }
+      ),
+    studentsCount: Yup.number()
+      .typeError(t("schoolTripBooking.validation.studentsCount.invalid"))
+      .required(t("schoolTripBooking.validation.studentsCount.required"))
+      .integer(t("schoolTripBooking.validation.studentsCount.invalid"))
+      .min(10, t("schoolTripBooking.validation.studentsCount.min"))
+      .max(5000, t("schoolTripBooking.validation.studentsCount.max")),
+
+    // Step 3 — Location & Profit
+    city: Yup.string().nullable().optional(),
+    gatheringLocation: Yup.object().shape({
+      mapLink: Yup.string()
+        .trim()
+        .required(t("schoolTripBooking.validation.gatheringLocation.linkRequired"))
+        .test(
+          "has-valid-coords",
+          t("schoolTripBooking.validation.gatheringLocation.invalidLink"),
+          function () {
+            const { lat, lng } = this.parent || {};
+            const numLat = parseFloat(lat);
+            const numLng = parseFloat(lng);
+            return (
+              !isNaN(numLat) &&
+              !isNaN(numLng) &&
+              numLat >= -90 &&
+              numLat <= 90 &&
+              numLng >= -180 &&
+              numLng <= 180 &&
+              (numLat !== 0 || numLng !== 0)
+            );
+          }
+        ),
+      lat: Yup.mixed().required(
+        t("schoolTripBooking.validation.gatheringLocation.required")
+      ),
+      lng: Yup.mixed().required(
+        t("schoolTripBooking.validation.gatheringLocation.required")
+      ),
+    }),
+    schoolProfit: Yup.number()
+      .typeError(t("schoolTripBooking.validation.schoolProfit.invalid"))
+      .required(t("schoolTripBooking.validation.schoolProfit.required"))
+      .min(0, t("schoolTripBooking.validation.schoolProfit.min")),
+  });
+
 // Graduation Event Registration Schema
 // isIntermediateStage: (stageName) => boolean — locale-agnostic check via API IDs
 export const createGraduationSchema = (t, branch, isIntermediateStage) =>

@@ -4,7 +4,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { Formik, setNestedObjectValues } from "formik";
+import { Formik } from "formik";
 import { useSnackbar } from "notistack";
 import axios from "axios";
 import { CheckCircleOutline } from "@mui/icons-material";
@@ -23,48 +23,16 @@ import GatheringLocationStep from "./steps/GatheringLocationStep";
 
 import { BOOKING_STEPS, INITIAL_VALUES, STEP_FIELDS } from "./constants";
 import { buildBookingPayload, extractAvailableDays } from "./utils";
+import {
+  findFirstStepWithErrors as findFirstInvalidStep,
+  isStepValid as isStepFieldsValid,
+  validateStepFields,
+} from "./stepHelpers";
 
-const pickFields = (source, fields) =>
-  fields.reduce((acc, field) => ({ ...acc, [field]: source[field] }), {});
+const findFirstStepWithErrors = (errors) => findFirstInvalidStep(errors, STEP_FIELDS);
 
-const findFirstStepWithErrors = (errors) =>
-  STEP_FIELDS.findIndex((fields) => fields.some((field) => errors[field] !== undefined));
-
-const isStepValid = (step, errors = {}, values = {}) => {
-  const fields = STEP_FIELDS[step];
-  if (!fields) return false;
-
-  const hasError = fields.some((field) => {
-    const err = errors[field];
-    if (err !== undefined) {
-      if (typeof err === "object" && err !== null) {
-        return Object.keys(err).length > 0;
-      }
-      return true;
-    }
-    return Object.keys(errors).some((key) => key.startsWith(`${field}.`));
-  });
-  if (hasError) return false;
-
-  const isMissingRequired = fields.some((field) => {
-    const val = values[field];
-    if (val === undefined || val === null || val === "") return true;
-    if (Array.isArray(val) && val.length === 0) return true;
-    if (field === "gatheringLocation") {
-      const { lat, lng, mapLink } = val || {};
-      return (
-        !mapLink ||
-        lat === "" ||
-        lng === "" ||
-        lat === undefined ||
-        lng === undefined
-      );
-    }
-    return false;
-  });
-
-  return !isMissingRequired;
-};
+const isStepValid = (step, errors = {}, values = {}) =>
+  isStepFieldsValid(step, errors, values, STEP_FIELDS);
 
 const SchoolTripBookingForm = ({
   trip,
@@ -124,19 +92,7 @@ const SchoolTripBookingForm = ({
   }, []);
 
   /** Validates the given step; marks its fields as touched when invalid. */
-  const validateStep = async (step, { validateForm, values, touched, setTouched }) => {
-    const errors = await validateForm();
-    const fields = STEP_FIELDS[step];
-    const hasErrors = fields.some((field) => errors[field] !== undefined);
-
-    if (hasErrors) {
-      setTouched(
-        { ...touched, ...setNestedObjectValues(pickFields(values, fields), true) },
-        false
-      );
-    }
-    return { errors, isValid: !hasErrors };
-  };
+  const validateStep = (step, formik) => validateStepFields(step, STEP_FIELDS, formik);
 
   const handleNext = async (formik) => {
     if (isTransitioningStep) return;
@@ -393,4 +349,5 @@ const SchoolTripBookingForm = ({
   );
 };
 
+export { default as AuthSchoolTripBookingForm } from "./AuthSchoolTripBookingForm";
 export default SchoolTripBookingForm;

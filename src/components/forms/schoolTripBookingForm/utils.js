@@ -19,10 +19,12 @@ export const findIdByLabel = (list = [], label, locale) => {
   if (!label) return null;
   const item = list.find(
     (entry) =>
+      entry?._id === label ||
+      entry?.id === label ||
       getNameLabel(entry, locale) === label ||
       getRoleLabel(entry, locale) === label
   );
-  return item?._id || item?.id || null;
+  return item?._id || item?.id || label;
 };
 
 /** Maps a list of displayed labels to IDs, dropping unknown values. */
@@ -215,6 +217,52 @@ export const buildBookingPayload = ({
       phone: values.mobile || "",
       email: values.email || "",
       role: findIdByLabel(roles, values.functionalDegree, locale) || values.functionalDegree || "",
+    },
+    trip: {
+      trip: trip?._id || tripSlug || "",
+      day: values.date || "",
+      availableSeates: Number(values.studentsCount) || 0,
+      gatheringLocation: {
+        lat: Number(values.gatheringLocation?.lat) || 0,
+        lng: Number(values.gatheringLocation?.lng) || 0,
+      },
+      schoolAmount: Number(values.schoolProfit) || 0,
+    },
+  };
+};
+
+/**
+ * Builds the authenticated payload for POST /b2b/organizations/market-trip.
+ * Same endpoint as guests, but references an existing organization & track by ID
+ * instead of creating new school / user records.
+ */
+export const buildAuthBookingPayload = ({
+  values,
+  trip,
+  tripSlug,
+  locale,
+  lookups = {},
+}) => {
+  const { cities = [], stages = [], grades = [] } = lookups;
+  const matchedCity =
+    cities.find((c) => c._id === values.city || c.id === values.city) ||
+    matchCityFromLookups(values.city, cities) ||
+    findIdByLabel(cities, values.city, locale);
+
+  const finalCity = matchedCity?._id || matchedCity?.id || values.city || "";
+
+  const stageIds = mapLabelsToIds(stages, values.stages, locale);
+  const gradeIds = mapLabelsToIds(grades, values.grades, locale);
+
+  return {
+    organization: {
+      _id: values.organization,
+      track: {
+        _id: values.track,
+        academicStages: stageIds.length ? stageIds : values.stages || [],
+        grades: gradeIds.length ? gradeIds : values.grades || [],
+      },
+      ...(finalCity && { city: finalCity }),
     },
     trip: {
       trip: trip?._id || tripSlug || "",

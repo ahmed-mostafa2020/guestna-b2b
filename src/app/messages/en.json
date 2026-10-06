@@ -4537,11 +4537,22 @@
       "ariaLabel": "School trip booking steps",
       "details": "Request Details",
       "contact": "Contact Information",
+      "school": "School Information",
+      "trip": "Trip Details",
       "location": "Gathering Location & Profit",
       "progress": "Step {current} of {total}: {name}"
     },
     "form": {
       "title": "Register school details for free",
+      "titleAuth": "Confirm Trip Booking",
+      "organization": {
+        "label": "School",
+        "placeholder": "Select school"
+      },
+      "track": {
+        "label": "Educational Track",
+        "placeholder": "Select track"
+      },
       "stage": {
         "label": "Educational Stage",
         "placeholder": "Select educational stages"
@@ -4597,6 +4608,12 @@
       "submitting": "Submitting..."
     },
     "validation": {
+      "organization": {
+        "required": "Please select a school"
+      },
+      "track": {
+        "required": "Please select an educational track"
+      },
       "date": {
         "required": "Trip date is required",
         "past": "Trip date cannot be in the past"
