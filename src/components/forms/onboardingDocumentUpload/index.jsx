@@ -13,6 +13,10 @@ import SelectionGroup from "@components/forms/SelectionGroup";
 import FileUploadGroup from "@components/forms/FileUploadGroup";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { ONBOARDING_DOCUMENT_TYPES } from "@constants/onboardingDocumentTypes";
+import {
+  ARABIC_LOCALIZED_TEXT_REGEX,
+  ENGLISH_LOCALIZED_TEXT_REGEX,
+} from "@utils/validators/localizedTextPatterns";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import getErrorMessage from "@utils/helpers/getErrorMessage";
@@ -79,7 +83,7 @@ const OnboardingDocumentUploadForm = ({
     const firstChoice = choices[0];
     const existingTitle =
       firstChoice?.documentType === ONBOARDING_DOCUMENT_TYPES.OTHER
-        ? firstChoice.documentTitle || firstChoice.title
+        ? firstChoice.documentTitle
         : null;
     const { titleEn, titleAr } = getLocalizedTitleParts(existingTitle, locale);
     return {
@@ -97,13 +101,25 @@ const OnboardingDocumentUploadForm = ({
         titleEn: Yup.string().when("documentType", {
           is: ONBOARDING_DOCUMENT_TYPES.OTHER,
           then: (schema) =>
-            schema.trim().required(t("forms.validation.require")),
+            schema
+              .trim()
+              .required(t("forms.validation.require"))
+              .matches(
+                ENGLISH_LOCALIZED_TEXT_REGEX,
+                t("providerProfile.onboarding.documents.modal.titleEnInvalid")
+              ),
           otherwise: (schema) => schema.optional(),
         }),
         titleAr: Yup.string().when("documentType", {
           is: ONBOARDING_DOCUMENT_TYPES.OTHER,
           then: (schema) =>
-            schema.trim().required(t("forms.validation.require")),
+            schema
+              .trim()
+              .required(t("forms.validation.require"))
+              .matches(
+                ARABIC_LOCALIZED_TEXT_REGEX,
+                t("providerProfile.onboarding.documents.modal.titleArInvalid")
+              ),
           otherwise: (schema) => schema.optional(),
         }),
         file: Yup.mixed()

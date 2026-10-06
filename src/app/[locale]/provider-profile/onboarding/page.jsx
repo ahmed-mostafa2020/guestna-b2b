@@ -8,6 +8,7 @@ import Cookies from "js-cookie";
 import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { ONBOARDING_DOCUMENT_TYPES } from "@constants/onboardingDocumentTypes";
 import { USERS } from "@constants/users";
 import {
   setOnboardingStatus,
@@ -93,74 +94,69 @@ const ProviderOnboardingPage = () => {
     [locale, isAuthenticated]
   );
 
-  const statusOptions = useMemo(
-    () => ({
+  const { refetch: refetchStatus } = useFetchData(
+    B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.STATUS,
+    EMPTY_PARAMS,
+    {
       ...sharedQueryOptions,
       onSuccess: setOnboardingStatus,
       onError: setOnboardingStatusError,
       onLoading: setOnboardingStatusLoading,
-    }),
-    [sharedQueryOptions]
-  );
-
-  const documentsOptions = useMemo(
-    () => ({
-      ...sharedQueryOptions,
-      onSuccess: setOnboardingDocuments,
-      onError: setOnboardingDocumentsError,
-      onLoading: setOnboardingDocumentsLoading,
-    }),
-    [sharedQueryOptions]
-  );
-
-  const uploadSelectOptions = useMemo(
-    () => ({
-      ...sharedQueryOptions,
-      onSuccess: setOnboardingUploadSelect,
-      onError: setOnboardingUploadSelectError,
-      onLoading: setOnboardingUploadSelectLoading,
-    }),
-    [sharedQueryOptions]
-  );
-
-  const contractsOptions = useMemo(
-    () => ({
-      ...sharedQueryOptions,
-      onSuccess: setOnboardingContracts,
-      onError: setOnboardingContractsError,
-      onLoading: setOnboardingContractsLoading,
-    }),
-    [sharedQueryOptions]
-  );
-
-  const { refetch: refetchStatus } = useFetchData(
-    B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.STATUS,
-    EMPTY_PARAMS,
-    statusOptions
+    }
   );
 
   const { refetch: refetchDocuments } = useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.DOCUMENTS,
     documentsParams,
-    documentsOptions
+    {
+      ...sharedQueryOptions,
+      onSuccess: setOnboardingDocuments,
+      onError: setOnboardingDocumentsError,
+      onLoading: setOnboardingDocumentsLoading,
+    }
   );
 
   const { refetch: refetchUploadSelect } = useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.DOCUMENTS_UPLOAD_SELECT,
     EMPTY_PARAMS,
-    uploadSelectOptions
+    {
+      ...sharedQueryOptions,
+      onSuccess: setOnboardingUploadSelect,
+      onError: setOnboardingUploadSelectError,
+      onLoading: setOnboardingUploadSelectLoading,
+    }
   );
 
   useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.CONTRACTS,
     contractsParams,
-    contractsOptions
+    {
+      ...sharedQueryOptions,
+      onSuccess: setOnboardingContracts,
+      onError: setOnboardingContractsError,
+      onLoading: setOnboardingContractsLoading,
+    }
   );
 
   const handleOpenUpload = useCallback(
     (defaults) => {
       const locked = Boolean(defaults?.lockType);
-      const choices = locked ? [defaults] : uploadOptions;
+      const matchedOption = uploadOptions.find(
+        (option) => option.documentType === defaults?.documentType
+      );
+      const choices = locked
+        ? [
+            {
+              documentType: defaults.documentType,
+              title: matchedOption?.title,
+              _id: defaults._id,
+              documentTitle:
+                defaults.documentType === ONBOARDING_DOCUMENT_TYPES.OTHER
+                  ? defaults.title
+                  : null,
+            },
+          ]
+        : uploadOptions;
 
       if (!choices.length || !choices[0]?.documentType) return;
 

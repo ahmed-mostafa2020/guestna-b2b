@@ -291,6 +291,8 @@
           "documentTypePlaceholder": "اختر نوع المستند",
           "titleEn": "العنوان (إنجليزي)",
           "titleAr": "العنوان (عربي)",
+          "titleEnInvalid": "يرجى استخدام الأحرف الإنجليزية فقط",
+          "titleArInvalid": "يرجى استخدام الأحرف العربية فقط",
           "file": "الملف",
           "dragOrClick": "اسحب الملف هنا أو انقر للاختيار",
           "supportedFiles": "يدعم ملفات: PDF, Excel, CSV",
