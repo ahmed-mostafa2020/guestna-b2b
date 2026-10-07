@@ -631,11 +631,11 @@ const SchoolRegisterForm = ({
                             </span>
                           )}
                           className={
-                            "flex items-center bg-white w-full gap-1 px-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-base file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out " +
+                            "flex items-center bg-white w-full gap-1 px-4 font-normal font-somar text-base border-2 rounded-lg h-[55px] [&_.PhoneInputInput]:outline-none [&_.PhoneInputInput]:border-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out " +
                             (errors.organizationPhone &&
                             touched.organizationPhone
-                              ? "border-error focus-visible:ring-error"
-                              : "border-border focus-visible:ring-mainColor")
+                              ? "border-error focus-within:border-error"
+                              : "border-border hover:border-mainColor focus-within:border-mainColor")
                           }
                         />
                       )}
@@ -864,10 +864,10 @@ const SchoolRegisterForm = ({
                             </span>
                           )}
                           className={
-                            "flex items-center bg-white w-full gap-1 px-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-base file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out " +
+                            "flex items-center bg-white w-full gap-1 px-4 font-normal font-somar text-base border-2 rounded-lg h-[55px] [&_.PhoneInputInput]:outline-none [&_.PhoneInputInput]:border-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out " +
                             (errors.mobile && touched.mobile
-                              ? "border-error focus-visible:ring-error"
-                              : "border-border focus-visible:ring-mainColor")
+                              ? "border-error focus-within:border-error"
+                              : "border-border hover:border-mainColor focus-within:border-mainColor")
                           }
                         />
                       )}
@@ -1037,11 +1037,11 @@ const SchoolRegisterForm = ({
                                     </span>
                                   )}
                                   className={
-                                    "flex items-center bg-white w-full gap-1 px-4 font-normal border-2 rounded-lg h-[55px] border-input ring-offset-background file:border-0 font-somar text-base file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed selection:bg-buttonsHover disabled:opacity-50 transition-all duration-200 ease-in-out " +
+                                    "flex items-center bg-white w-full gap-1 px-4 font-normal font-somar text-base border-2 rounded-lg h-[55px] [&_.PhoneInputInput]:outline-none [&_.PhoneInputInput]:border-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out " +
                                     (errors.additionalUsers?.[index]?.mobile &&
                                     touched.additionalUsers?.[index]?.mobile
-                                      ? "border-error focus-visible:ring-error"
-                                      : "border-border focus-visible:ring-mainColor")
+                                      ? "border-error focus-within:border-error"
+                                      : "border-border hover:border-mainColor focus-within:border-mainColor")
                                   }
                                 />
                               )}

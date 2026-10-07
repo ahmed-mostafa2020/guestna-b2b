@@ -206,6 +206,7 @@ export const B2B_END_POINTS = {
   ORGANIZATIONS_MARKET_TRIP: {
     SELECT: "organizations/market-trip/select",
     SUBMIT: "organizations/market-trip",
+    SUBMIT_ORG: "organizations/market-trip-org",
   },
 
   PROVIDER_REGISTER: {

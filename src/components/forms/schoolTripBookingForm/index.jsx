@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Formik } from "formik";
 import { useSnackbar } from "notistack";
@@ -22,7 +22,12 @@ import ContactInfoStep from "./steps/ContactInfoStep";
 import GatheringLocationStep from "./steps/GatheringLocationStep";
 
 import { BOOKING_STEPS, INITIAL_VALUES, STEP_FIELDS } from "./constants";
-import { buildBookingPayload, extractAvailableDays } from "./utils";
+import {
+  buildBookingPayload,
+  extractAvailableDays,
+  getRoleLabel,
+  getNameLabel,
+} from "./utils";
 import {
   findFirstStepWithErrors as findFirstInvalidStep,
   isStepValid as isStepFieldsValid,
@@ -49,7 +54,6 @@ const SchoolTripBookingForm = ({
   const t = useTranslations();
   const locale = useLocale();
   const router = useRouter();
-  const pathname = usePathname();
   const { enqueueSnackbar } = useSnackbar();
 
   const effectiveTripId = propTripId || trip?._id || tripSlug;
@@ -62,10 +66,13 @@ const SchoolTripBookingForm = ({
   const { grades: fetchedGrades, isLoadingGrades, fetchGrades } = useGradesByStages();
   const effectiveGrades = propGrades.length ? propGrades : fetchedGrades;
 
-  const validationSchema = useMemo(() => createSchoolTripBookingSchema(t), [t]);
   const availableDays = useMemo(
     () => extractAvailableDays(trip, selectDays),
     [trip, selectDays]
+  );
+  const validationSchema = useMemo(
+    () => createSchoolTripBookingSchema(t, availableDays),
+    [t, availableDays]
   );
   const availableRoles = roles;
 
@@ -154,7 +161,20 @@ const SchoolTripBookingForm = ({
         values.schoolNameArabic ||
         values.schoolNameEnglish ||
         "";
-      const adminName = values.contactPersonName || "";
+      const adminName = values.contactPersonName?.trim() || "";
+      const matchedRole = availableRoles?.find(
+        (r) =>
+          r?._id === values.functionalDegree ||
+          r?.id === values.functionalDegree ||
+          getRoleLabel(r, locale) === values.functionalDegree ||
+          getNameLabel(r, locale) === values.functionalDegree
+      );
+      const adminRole =
+        (matchedRole ? getRoleLabel(matchedRole, locale) : null) ||
+        (typeof values.functionalDegree === "string"
+          ? values.functionalDegree.trim()
+          : "") ||
+        "";
       const schoolCode =
         response?.data?.schoolCode ||
         response?.data?.organization?.code ||
@@ -168,6 +188,7 @@ const SchoolTripBookingForm = ({
             JSON.stringify({
               schoolName,
               adminName,
+              adminRole,
               schoolCode,
               tripSlug: effectiveTripId,
               tripName: trip?.name || "",
@@ -186,6 +207,7 @@ const SchoolTripBookingForm = ({
       const queryParams = new URLSearchParams();
       if (schoolName) queryParams.set("schoolName", schoolName);
       if (adminName) queryParams.set("adminName", adminName);
+      if (adminRole) queryParams.set("adminRole", adminRole);
       if (schoolCode) queryParams.set("schoolCode", schoolCode);
       if (trip?.name) queryParams.set("tripName", trip.name);
       const queryString = queryParams.toString() ? `?${queryParams.toString()}` : "";

@@ -29,7 +29,28 @@ const AvailableDatePicker = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const sortedDays = useMemo(() => {
-    return Array.isArray(availableDays) ? [...availableDays].sort() : [];
+    if (!Array.isArray(availableDays) || availableDays.length === 0) return [];
+    const normalized = availableDays
+      .map((d) => {
+        if (!d) return null;
+        if (typeof d === "string") {
+          return d.split("T")[0].split(" ")[0].trim();
+        }
+        if (typeof d === "object") {
+          const raw =
+            d.bookingDay ||
+            d.date ||
+            d.day ||
+            d.availableDay ||
+            (typeof d.toISOString === "function" ? d.toISOString() : null);
+          if (typeof raw === "string") {
+            return raw.split("T")[0].split(" ")[0].trim();
+          }
+        }
+        return null;
+      })
+      .filter(Boolean);
+    return Array.from(new Set(normalized)).sort();
   }, [availableDays]);
 
   const minDate = useMemo(() => {
@@ -44,12 +65,6 @@ const AvailableDatePicker = ({
     return d.isValid() ? d : undefined;
   }, [sortedDays]);
 
-  const shouldDisableDate = (dayjsDate) => {
-    if (sortedDays.length === 0) return false;
-    const dateStr = dayjsDate.format("YYYY-MM-DD");
-    return !sortedDays.includes(dateStr);
-  };
-
   const dayjsValue = useMemo(() => {
     if (!value) return null;
     const cleanDateStr =
@@ -57,6 +72,18 @@ const AvailableDatePicker = ({
     const parsed = dayjs(cleanDateStr);
     return parsed.isValid() ? parsed : null;
   }, [value]);
+
+  const referenceDate = useMemo(() => {
+    if (dayjsValue && dayjsValue.isValid()) return dayjsValue;
+    if (minDate && minDate.isValid()) return minDate;
+    return undefined;
+  }, [dayjsValue, minDate]);
+
+  const shouldDisableDate = (dayjsDate) => {
+    if (sortedDays.length === 0) return false;
+    const dateStr = dayjsDate.format("YYYY-MM-DD");
+    return !sortedDays.includes(dateStr);
+  };
 
   const handleDateChange = (newDate) => {
     if (!newDate || !newDate.isValid()) {
@@ -103,6 +130,7 @@ const AvailableDatePicker = ({
               shouldDisableDate={shouldDisableDate}
               minDate={minDate}
               maxDate={maxDate}
+              referenceDate={referenceDate}
               disabled={disabled}
               format="DD/MM/YYYY"
               enableAccessibleFieldDOMStructure={false}
@@ -178,14 +206,34 @@ const AvailableDatePicker = ({
                     },
                     "& .MuiPickersDay-root": {
                       fontFamily: "var(--font-somar-sans), sans-serif",
+                      borderRadius: "8px",
                       "&.Mui-selected": {
                         backgroundColor: "var(--color-main, #3F6EB5) !important",
                         color: "#ffffff !important",
+                        fontWeight: "700 !important",
                       },
                       "&.Mui-disabled": {
                         color: "#bdbdbd !important",
                         opacity: 0.35,
                       },
+                      ...(sortedDays.length > 0
+                        ? {
+                            "&:not(.Mui-disabled):not(.Mui-selected)": {
+                              fontWeight: 600,
+                              color: "var(--color-text-dark, #1f2937)",
+                              backgroundColor: "rgba(63, 110, 181, 0.08)",
+                              "&:hover": {
+                                backgroundColor:
+                                  "rgba(63, 110, 181, 0.2) !important",
+                              },
+                            },
+                          }
+                        : {
+                            "&:hover": {
+                              backgroundColor:
+                                "rgba(63, 110, 181, 0.1) !important",
+                            },
+                          }),
                     },
                     "& .MuiPickersArrowSwitcher-root": {
                       direction: "ltr !important",

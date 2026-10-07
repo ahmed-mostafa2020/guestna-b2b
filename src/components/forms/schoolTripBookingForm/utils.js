@@ -68,49 +68,88 @@ export const mapGenderToAPI = (gender, labels = {}) => {
   return MALE;
 };
 
-/** Extracts available booking days (YYYY-MM-DD) from select response or trip details. */
-export const extractAvailableDays = (trip, selectDays = []) => {
-  if (Array.isArray(selectDays) && selectDays.length > 0) {
-    return selectDays
-      .map((d) =>
-        typeof d === "string"
-          ? d.split("T")[0]
-          : d?.date?.split("T")[0] || d?.day?.split("T")[0] || null
-      )
-      .filter(Boolean)
-      .sort();
+/** Normalizes a date entry (string, ISO string, or object with bookingDay/date/day) to YYYY-MM-DD. */
+export const normalizeDateString = (item) => {
+  if (!item) return null;
+  if (typeof item === "string") {
+    const clean = item.split("T")[0].split(" ")[0].trim();
+    return clean && /^\d{4}-\d{2}-\d{2}$/.test(clean) ? clean : clean || null;
   }
-
-  if (!trip) return [];
-
-  if (Array.isArray(trip.availableDays) && trip.availableDays.length > 0) {
-    return [...trip.availableDays].sort();
-  }
-
-  let slots = trip.availableDaysSlots;
-  if (typeof slots === "string") {
-    try {
-      slots = JSON.parse(slots);
-    } catch {
-      slots = null;
+  if (typeof item === "object") {
+    const raw =
+      item.bookingDay ||
+      item.date ||
+      item.day ||
+      item.availableDay ||
+      (typeof item.toISOString === "function" ? item.toISOString() : null);
+    if (typeof raw === "string") {
+      const clean = raw.split("T")[0].split(" ")[0].trim();
+      return clean || null;
     }
   }
-  const slotDays = Array.isArray(slots) ? slots : slots?.days;
-  if (Array.isArray(slotDays) && slotDays.length > 0) {
-    return slotDays
-      .map((d) => (typeof d?.date === "string" ? d.date.split("T")[0] : d?.date))
-      .filter(Boolean)
-      .sort();
+  return null;
+};
+
+/** Extracts available booking days (YYYY-MM-DD) from select response or trip details. */
+export const extractAvailableDays = (trip, selectDays = []) => {
+  const candidateDays = [];
+
+  // 1. From selectDays (array or object containing bookingDay / availableDays / days)
+  const rawSelectDays = Array.isArray(selectDays)
+    ? selectDays
+    : selectDays?.bookingDay || selectDays?.availableDays || selectDays?.days;
+
+  if (Array.isArray(rawSelectDays) && rawSelectDays.length > 0) {
+    rawSelectDays.forEach((d) => {
+      const parsed = normalizeDateString(d);
+      if (parsed) candidateDays.push(parsed);
+    });
   }
 
-  if (Array.isArray(trip.bookingDay) && trip.bookingDay.length > 0) {
-    return trip.bookingDay
-      .map((d) => (typeof d?.bookingDay === "string" ? d.bookingDay.split("T")[0] : null))
-      .filter(Boolean)
-      .sort();
+  // 2. From trip.bookingDay (array of strings or objects)
+  if (Array.isArray(trip?.bookingDay) && trip.bookingDay.length > 0) {
+    trip.bookingDay.forEach((d) => {
+      const parsed = normalizeDateString(d);
+      if (parsed) candidateDays.push(parsed);
+    });
   }
 
-  return [];
+  // 3. From trip.availableDays
+  if (Array.isArray(trip?.availableDays) && trip.availableDays.length > 0) {
+    trip.availableDays.forEach((d) => {
+      const parsed = normalizeDateString(d);
+      if (parsed) candidateDays.push(parsed);
+    });
+  }
+
+  // 4. From trip.availableDaysSlots
+  if (trip?.availableDaysSlots) {
+    let slots = trip.availableDaysSlots;
+    if (typeof slots === "string") {
+      try {
+        slots = JSON.parse(slots);
+      } catch {
+        slots = null;
+      }
+    }
+    const slotDays = Array.isArray(slots) ? slots : slots?.days;
+    if (Array.isArray(slotDays) && slotDays.length > 0) {
+      slotDays.forEach((d) => {
+        const parsed = normalizeDateString(d);
+        if (parsed) candidateDays.push(parsed);
+      });
+    }
+  }
+
+  // 5. From trip.days
+  if (Array.isArray(trip?.days) && trip.days.length > 0) {
+    trip.days.forEach((d) => {
+      const parsed = normalizeDateString(d);
+      if (parsed) candidateDays.push(parsed);
+    });
+  }
+
+  return Array.from(new Set(candidateDays)).sort();
 };
 
 /** Matches a city name or extracted string against the cities lookups */
@@ -232,9 +271,7 @@ export const buildBookingPayload = ({
 };
 
 /**
- * Builds the authenticated payload for POST /b2b/organizations/market-trip.
- * Same endpoint as guests, but references an existing organization & track by ID
- * instead of creating new school / user records.
+ * Builds the authenticated payload for POST /b2b/organizations/market-trip-org.
  */
 export const buildAuthBookingPayload = ({
   values,
@@ -243,27 +280,65 @@ export const buildAuthBookingPayload = ({
   locale,
   lookups = {},
 }) => {
-  const { cities = [], stages = [], grades = [] } = lookups;
-  const matchedCity =
-    cities.find((c) => c._id === values.city || c.id === values.city) ||
-    matchCityFromLookups(values.city, cities) ||
-    findIdByLabel(cities, values.city, locale);
+  const {
+    cities = [],
+    stages = [],
+    grades = [],
+    organizations = [],
+  } = lookups;
 
-  const finalCity = matchedCity?._id || matchedCity?.id || values.city || "";
+  const selectedOrg = organizations.find(
+    (org) => (org?._id || org?.id) === (values.organization?._id || values.organization)
+  );
+  const orgCity =
+    selectedOrg?.city?._id || selectedOrg?.city?.id || selectedOrg?.city || "";
+  const tripCity =
+    trip?.city?._id || trip?.city?.id || trip?.city || "";
+
+  const rawCity = values.city || orgCity || tripCity || "";
+
+  const matchedCity =
+    cities.find((c) => c._id === rawCity || c.id === rawCity) ||
+    matchCityFromLookups(rawCity, cities) ||
+    findIdByLabel(cities, rawCity, locale);
+
+  const finalCity = matchedCity?._id || matchedCity?.id || rawCity || "";
 
   const stageIds = mapLabelsToIds(stages, values.stages, locale);
   const gradeIds = mapLabelsToIds(grades, values.grades, locale);
 
+  const academicStages = stageIds.length
+    ? stageIds
+    : Array.isArray(values.stages)
+    ? values.stages
+    : values.stages
+    ? [values.stages]
+    : [];
+
+  const finalGrades = gradeIds.length
+    ? gradeIds
+    : Array.isArray(values.grades)
+    ? values.grades
+    : values.grades
+    ? [values.grades]
+    : [];
+
+  const orgId =
+    typeof values.organization === "object"
+      ? values.organization?._id || values.organization?.id || ""
+      : values.organization || "";
+
+  const trackId =
+    typeof values.track === "object"
+      ? values.track?._id || values.track?.id || ""
+      : values.track || "";
+
   return {
-    organization: {
-      _id: values.organization,
-      track: {
-        _id: values.track,
-        academicStages: stageIds.length ? stageIds : values.stages || [],
-        grades: gradeIds.length ? gradeIds : values.grades || [],
-      },
-      ...(finalCity && { city: finalCity }),
-    },
+    organization: orgId,
+    track: trackId,
+    academicStages,
+    grades: finalGrades,
+    city: finalCity,
     trip: {
       trip: trip?._id || tripSlug || "",
       day: values.date || "",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
+import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
@@ -18,9 +19,16 @@ import SchoolTripBookingForm, {
 import SchoolTripBookingSkeleton from "@components/forms/schoolTripBookingForm/SchoolTripBookingSkeleton";
 
 const SchoolTripBookingPage = ({ params }) => {
+  const routeParams = useParams();
   const locale = useLocale();
   const t = useTranslations();
-  const tripId = params?.slug || params?.tripSlug || params?.id;
+  const tripId =
+    params?.slug ||
+    params?.tripSlug ||
+    params?.id ||
+    routeParams?.slug ||
+    routeParams?.tripSlug ||
+    routeParams?.id;
 
   const reduxToken = useSelector((state) => state.users?.userToken);
   const reduxUserType = useSelector((state) => state.users?.userType);
@@ -97,14 +105,32 @@ const SchoolTripBookingPage = ({ params }) => {
 
   const grades = useMemo(() => selectData?.grades || [], [selectData]);
 
-  const selectDays = useMemo(
-    () =>
+  const selectDays = useMemo(() => {
+    const raw =
       selectData?.bookingDay ||
+      selectResponse?.bookingDay ||
+      selectData?.trip?.bookingDay ||
+      selectResponse?.trip?.bookingDay ||
+      selectResponse?.data?.bookingDay ||
+      selectResponse?.data?.trip?.bookingDay ||
       selectData?.availableDays ||
+      selectResponse?.availableDays ||
       selectData?.days ||
-      [],
-    [selectData]
-  );
+      selectResponse?.days ||
+      [];
+    return Array.isArray(raw) ? raw : [];
+  }, [selectData, selectResponse]);
+
+  const tripData = useMemo(() => {
+    const base =
+      selectData?.trip ||
+      selectResponse?.trip ||
+      (selectData?._id ? selectData : null);
+    return {
+      ...(base || {}),
+      bookingDay: selectDays.length ? selectDays : base?.bookingDay,
+    };
+  }, [selectData, selectResponse, selectDays]);
 
   // Set document title for SEO and browser tab
   useEffect(() => {
@@ -126,7 +152,7 @@ const SchoolTripBookingPage = ({ params }) => {
           <AuthSchoolTripBookingForm
             tripId={tripId}
             tripSlug={tripId}
-            trip={selectData?.trip}
+            trip={tripData}
             cities={cities}
             stages={stages}
             grades={grades}
@@ -136,7 +162,7 @@ const SchoolTripBookingPage = ({ params }) => {
           <SchoolTripBookingForm
             tripId={tripId}
             tripSlug={tripId}
-            trip={selectData?.trip}
+            trip={tripData}
             cities={cities}
             roles={roles}
             educationSystems={educationSystems}

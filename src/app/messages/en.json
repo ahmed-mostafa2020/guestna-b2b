@@ -4616,7 +4616,8 @@
       },
       "date": {
         "required": "Trip date is required",
-        "past": "Trip date cannot be in the past"
+        "past": "Trip date cannot be in the past",
+        "unavailable": "Selected date is not available for this trip"
       },
       "studentsCount": {
         "required": "Number of students is required",

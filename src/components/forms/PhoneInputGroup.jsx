@@ -63,11 +63,11 @@ const PhoneInputGroup = ({
             flagComponent={FlagIcon}
             className={cn(
               "flex items-center bg-white w-full gap-1 px-4 h-[55px] font-normal font-somar text-base border-2 rounded-lg transition-all duration-200 ease-in-out",
-              "focus-within:ring-2 focus-within:ring-offset-2",
+              "[&_.PhoneInputInput]:outline-none [&_.PhoneInputInput]:border-none",
               disabled && "cursor-not-allowed opacity-60 bg-gray-50",
               hasError
-                ? "border-error focus-within:ring-error"
-                : "border-border hover:border-mainColor focus-within:ring-mainColor"
+                ? "border-error focus-within:border-error"
+                : "border-border hover:border-mainColor focus-within:border-mainColor"
             )}
           />
         )}

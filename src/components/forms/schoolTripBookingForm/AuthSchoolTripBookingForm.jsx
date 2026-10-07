@@ -82,10 +82,13 @@ const AuthSchoolTripBookingForm = ({
   const { grades: fetchedGrades, isLoadingGrades, fetchGrades } = useGradesByStages();
   const effectiveGrades = propGrades.length ? propGrades : fetchedGrades;
 
-  const validationSchema = useMemo(() => createAuthSchoolTripBookingSchema(t), [t]);
   const availableDays = useMemo(
     () => extractAvailableDays(trip, selectDays),
     [trip, selectDays]
+  );
+  const validationSchema = useMemo(
+    () => createAuthSchoolTripBookingSchema(t, availableDays),
+    [t, availableDays]
   );
 
   // If redux organizations is empty, fetch from API
@@ -192,6 +195,7 @@ const AuthSchoolTripBookingForm = ({
           cities,
           stages,
           grades: effectiveGrades,
+          organizations: organizationsList,
         },
       });
 
@@ -203,7 +207,7 @@ const AuthSchoolTripBookingForm = ({
       };
 
       const response = await axios.post(
-        getProxyUrl(B2B_END_POINTS.ORGANIZATIONS_MARKET_TRIP.SUBMIT),
+        getProxyUrl(B2B_END_POINTS.ORGANIZATIONS_MARKET_TRIP.SUBMIT_ORG),
         payload,
         { headers: requestHeaders }
       );
@@ -212,46 +216,10 @@ const AuthSchoolTripBookingForm = ({
         variant: "success",
       });
 
-      const selectedOrg = organizationsList.find(
-        (org) => (org._id || org.id) === values.organization
-      );
-      const schoolName = selectedOrg?.name || "";
-      const schoolCode =
-        response?.data?.schoolCode ||
-        response?.data?.organization?.code ||
-        response?.data?.data?.schoolCode ||
-        selectedOrg?.code ||
-        "";
-
-      if (typeof window !== "undefined") {
-        try {
-          sessionStorage.setItem(
-            `schoolBookingSuccess_${effectiveTripId}`,
-            JSON.stringify({
-              schoolName,
-              schoolCode,
-              tripSlug: effectiveTripId,
-              tripName: trip?.name || "",
-            })
-          );
-        } catch (e) {
-          console.error("Error storing booking confirmation:", e);
-        }
-      }
-
       resetForm();
       setCurrentStep(0);
 
-      const targetPath = `/${locale}/school-register/${effectiveTripId}/success`;
-      const queryParams = new URLSearchParams();
-      if (schoolName) queryParams.set("schoolName", schoolName);
-      if (schoolCode) queryParams.set("schoolCode", schoolCode);
-      if (trip?.name) queryParams.set("tripName", trip.name);
-      const queryString = queryParams.toString()
-        ? `?${queryParams.toString()}`
-        : "";
-
-      router.push(`${targetPath}${queryString}`);
+      router.push(`/${locale}/profile/trips-activities-management`);
     } catch (error) {
       console.error("Error submitting auth school trip booking:", error);
       const info = error.response?.data?.info;

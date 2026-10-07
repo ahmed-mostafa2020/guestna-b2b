@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useFormikContext } from "formik";
 import { Skeleton } from "@mui/material";
@@ -34,6 +34,18 @@ const RequestDetailsStep = ({
   const locale = useLocale();
   const { values, errors, touched, handleChange, handleBlur, setFieldValue, setFieldTouched } =
     useFormikContext();
+
+  // If available days are provided, ensure the current date selection is valid
+  useEffect(() => {
+    if (
+      Array.isArray(availableDays) &&
+      availableDays.length > 0 &&
+      values.date &&
+      !availableDays.includes(values.date)
+    ) {
+      setFieldValue("date", "");
+    }
+  }, [availableDays, values.date, setFieldValue]);
 
   // Holds the latest stage IDs synchronously so `onClose` can fetch grades
   const selectedStageIdsRef = useRef([]);

@@ -849,7 +849,7 @@ export const createSchoolRegisterSchema = (t) =>
 
 // School Trip Booking Form (market-template trips) — 3 steps
 // Step 1: request details | Step 2: contact info | Step 3: gathering location & profit
-export const createSchoolTripBookingSchema = (t) =>
+export const createSchoolTripBookingSchema = (t, availableDays = []) =>
   Yup.object().shape({
     // Step 1 — Request details
     ...getSchoolTrackFields(t),
@@ -857,10 +857,14 @@ export const createSchoolTripBookingSchema = (t) =>
     date: Yup.string()
       .required(t("schoolTripBooking.validation.date.required"))
       .test(
-        "not-in-past",
-        t("schoolTripBooking.validation.date.past"),
+        "valid-booking-date",
+        t("schoolTripBooking.validation.date.unavailable") ||
+          t("schoolTripBooking.validation.date.past"),
         (value) => {
           if (!value) return true;
+          if (Array.isArray(availableDays) && availableDays.length > 0) {
+            return availableDays.includes(value);
+          }
           const now = new Date();
           const today = [
             now.getFullYear(),
@@ -986,7 +990,7 @@ export const createSchoolTripBookingSchema = (t) =>
 
 // Authenticated School Trip Booking (existing school / company users) — 3 steps
 // Step 1: organization, track, stages, grades | Step 2: date & seats | Step 3: location & profit
-export const createAuthSchoolTripBookingSchema = (t) =>
+export const createAuthSchoolTripBookingSchema = (t, availableDays = []) =>
   Yup.object().shape({
     // Step 1 — School Info
     organization: Yup.string()
@@ -1006,10 +1010,14 @@ export const createAuthSchoolTripBookingSchema = (t) =>
     date: Yup.string()
       .required(t("schoolTripBooking.validation.date.required"))
       .test(
-        "not-in-past",
-        t("schoolTripBooking.validation.date.past"),
+        "valid-booking-date",
+        t("schoolTripBooking.validation.date.unavailable") ||
+          t("schoolTripBooking.validation.date.past"),
         (value) => {
           if (!value) return true;
+          if (Array.isArray(availableDays) && availableDays.length > 0) {
+            return availableDays.includes(value);
+          }
           const now = new Date();
           const today = [
             now.getFullYear(),

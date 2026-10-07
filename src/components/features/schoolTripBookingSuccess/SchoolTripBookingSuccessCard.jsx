@@ -17,18 +17,21 @@ import {
 const SchoolTripBookingSuccessCard = ({
   schoolName,
   adminName,
+  adminRole,
   tripName,
   tripSlug,
 }) => {
   const locale = useLocale();
   const t = useTranslations("schoolTripBookingSuccess");
 
-  const effectiveSchoolName =
-    schoolName || t("credentials.defaultSchoolName");
-  const effectiveAdminName =
-    adminName || t("credentials.defaultAdminName");
-  const effectiveTripName =
-    tripName || t("defaultTripName");
+  const effectiveSchoolName = schoolName || t("credentials.defaultSchoolName");
+  const effectiveAdminName = adminName || t("credentials.defaultAdminName");
+  const effectiveTripName = tripName || t("defaultTripName");
+  const effectiveAdminRoleLabel = adminRole
+    ? adminRole.endsWith(":") || adminRole.endsWith("：")
+      ? adminRole
+      : `${adminRole}:`
+    : t("credentials.adminLabel");
 
   const createTripLinkUrl = tripSlug
     ? `/${locale}/profile/create-trip-link/${tripSlug}`
@@ -73,7 +76,7 @@ const SchoolTripBookingSuccessCard = ({
         >
           <h2
             id="credentials-section-title"
-            className="text-xs font-semibold text-gray-400 font-somar mb-3.5 text-start"
+            className="text-xs font-semibold text-gray-400 font-somar pb-3.5 text-start"
           >
             {t("credentials.title")}
           </h2>
@@ -89,10 +92,10 @@ const SchoolTripBookingSuccessCard = ({
               </strong>
             </div>
 
-            {/* Administrator */}
+            {/* Administrator / Dynamic Role */}
             <div className="pt-3 sm:pt-0 sm:ps-6 flex flex-col text-start">
               <span className="text-[11px] sm:text-xs text-gray-500 font-somar mb-1">
-                {t("credentials.adminLabel")}
+                {effectiveAdminRoleLabel}
               </span>
               <strong className="text-xs sm:text-sm md:text-[15px] font-bold text-gray-800 font-somar truncate">
                 {effectiveAdminName}

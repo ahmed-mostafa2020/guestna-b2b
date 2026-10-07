@@ -1,6 +1,6 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useFormikContext } from "formik";
 
@@ -20,6 +20,18 @@ const AuthTripDetailsStep = ({ availableDays = [] }) => {
     setFieldValue,
     setFieldTouched,
   } = useFormikContext();
+
+  // If available days are provided, ensure the current date selection is valid
+  useEffect(() => {
+    if (
+      Array.isArray(availableDays) &&
+      availableDays.length > 0 &&
+      values.date &&
+      !availableDays.includes(values.date)
+    ) {
+      setFieldValue("date", "");
+    }
+  }, [availableDays, values.date, setFieldValue]);
 
   return (
     <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
