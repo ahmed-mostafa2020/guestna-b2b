@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { matchesSearch } from "@utils/helpers/normalizeArabic";
 
 const SEARCH_THRESHOLD = 7;
 
@@ -105,9 +106,8 @@ const SelectSchoolForDetails = ({ details, isLoading }) => {
 
   const filteredOrgOptions = useMemo(() => {
     if (!showSchoolSearch || !schoolSearchTerm.trim()) return orgOptions;
-    const lower = schoolSearchTerm.toLowerCase().trim();
     return orgOptions.filter((org) =>
-      (org.label || "").toLowerCase().includes(lower)
+      matchesSearch(org.label, schoolSearchTerm)
     );
   }, [orgOptions, schoolSearchTerm, showSchoolSearch]);
 

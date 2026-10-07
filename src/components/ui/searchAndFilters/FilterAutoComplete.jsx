@@ -1,5 +1,6 @@
 import { Autocomplete, TextField, Checkbox, Chip, Box } from "@mui/material";
 import React from "react";
+import { createArabicFilterOptions } from "@utils/helpers/normalizeArabic";
 
 const FilterAutoComplete = ({
   label,
@@ -21,6 +22,7 @@ const FilterAutoComplete = ({
       disableCloseOnSelect={multiple}
       disableClearable={multiple}
       options={options}
+      filterOptions={createArabicFilterOptions()}
       value={resolvedValue}
       className="!border-2 rounded-md !border-solid !border-gray-200 w-full min-w-[140px]"
       slotProps={{

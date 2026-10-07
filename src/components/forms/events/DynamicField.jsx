@@ -19,6 +19,7 @@ import formatCurrency from "@utils/formatters/FormatCurrency";
 import TextInputGroup from "@components/forms/TextInputGroup";
 import DynamicFileUpload from "@components/forms/DynamicFileUpload";
 import { getDynamicFormInitialValues } from "@utils/validators/dynamicFormSchema";
+import { matchesSearch } from "@utils/helpers/normalizeArabic";
 
 // ─── Image Lightbox ──────────────────────────────────────────────────────────
 const ImageLightbox = ({ src, alt, onClose, t }) => {
@@ -240,9 +241,8 @@ const DynamicField = memo(
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const filteredSelectOptions = useMemo(() => {
         if (!showSelectSearch || !selectSearchTerm.trim()) return selectOptions;
-        const lower = selectSearchTerm.toLowerCase().trim();
         return selectOptions.filter((opt) =>
-          (opt.label || "").toLowerCase().includes(lower)
+          matchesSearch(opt.label, selectSearchTerm)
         );
       }, [selectOptions, selectSearchTerm, showSelectSearch]);
 

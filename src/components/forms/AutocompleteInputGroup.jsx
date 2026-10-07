@@ -1,6 +1,7 @@
 import React from "react";
 import { Autocomplete, TextField, CircularProgress } from "@mui/material";
 import { useTranslations } from "next-intl";
+import { createArabicFilterOptions } from "@utils/helpers/normalizeArabic";
 
 const AutocompleteInputGroup = ({
   label,
@@ -51,7 +52,9 @@ const AutocompleteInputGroup = ({
         {...(onInputChange !== undefined ? { onInputChange } : {})}
         freeSolo={freeSolo}
         disabled={disabled}
-        {...(filterOptions ? { filterOptions } : {})}
+        filterOptions={
+          filterOptions || createArabicFilterOptions({ getOptionLabel })
+        }
         renderInput={(params) => (
           <TextField
             {...params}

@@ -14,6 +14,7 @@ import {
 import { KeyboardArrowDown } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
 import formatCurrency from "@utils/formatters/FormatCurrency";
+import { matchesSearch } from "@utils/helpers/normalizeArabic";
 
 const SEARCH_THRESHOLD = 7;
 
@@ -50,10 +51,8 @@ const BankTransferForm = ({
 
   const filteredTrips = useMemo(() => {
     if (!showTripSearch || !tripSearchTerm.trim()) return completedTrips;
-    const lower = tripSearchTerm.toLowerCase().trim();
     return completedTrips.filter((trip) =>
-      (trip.name || "").toLowerCase().includes(lower) ||
-      (trip.schoolName || "").toLowerCase().includes(lower)
+      matchesSearch([trip.name, trip.schoolName], tripSearchTerm)
     );
   }, [completedTrips, tripSearchTerm, showTripSearch]);
 

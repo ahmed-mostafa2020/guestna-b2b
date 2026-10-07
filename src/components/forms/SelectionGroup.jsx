@@ -14,6 +14,7 @@ import { KeyboardArrowDown } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
 import { cn } from "@utils/helpers/cn";
 import { useLocale, useTranslations } from "next-intl";
+import { matchesSearch } from "@utils/helpers/normalizeArabic";
 
 const SEARCH_THRESHOLD = 7;
 
@@ -86,16 +87,26 @@ const SelectionGroup = ({
     }
   }, [items, onChange, disabled, value, multiple, name]);
 
-  // Filter list based on search term
+  // Helper to extract item description if present
+  const getItemDescription = (item) => {
+    if (typeof item !== "object" || item === null) return "";
+    const desc = item.description ?? item.desc;
+    if (typeof desc === "object" && desc !== null) {
+      return locale === "ar" ? desc.ar || desc.en : desc.en || desc.ar;
+    }
+    return typeof desc === "string" ? desc : "";
+  };
+
+  // Filter list based on search term (with Arabic normalization for أ/ا/إ, ة/ه, etc.)
   const filteredList = useMemo(() => {
     if (!items?.length || !showSearch || !searchTerm.trim()) {
       return items || [];
     }
 
-    const lowerSearch = searchTerm.toLowerCase().trim();
     return items.filter((item) => {
       const itemLabel = getFormattedLabel(item);
-      return String(itemLabel).toLowerCase().includes(lowerSearch);
+      const itemDescription = getItemDescription(item);
+      return matchesSearch([itemLabel, itemDescription], searchTerm);
     });
   }, [items, searchTerm, showSearch, locale]);
 
@@ -332,15 +343,7 @@ const SelectionGroup = ({
                   : item;
 
             const itemLabel = getFormattedLabel(item);
-
-            const itemDescription = (() => {
-              if (typeof item !== "object" || item === null) return "";
-              const desc = item.description ?? item.desc;
-              if (typeof desc === "object" && desc !== null) {
-                return desc.ar || desc.en || Object.values(desc)[0] || "";
-              }
-              return typeof desc === "string" ? desc : "";
-            })();
+            const itemDescription = getItemDescription(item);
 
             const itemKey =
               typeof item === "object" && item !== null
