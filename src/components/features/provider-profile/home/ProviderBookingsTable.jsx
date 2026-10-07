@@ -19,8 +19,8 @@ export const ProviderBookingsTableSkeleton = () => (
     {/* Table rows */}
     <div className="space-y-3">
       {Array.from({ length: 5 }).map((_, row) => (
-        <div key={row} className="grid grid-cols-7 gap-3 p-3.5 border-b border-border items-center">
-          {Array.from({ length: 7 }).map((_, col) => (
+        <div key={row} className="grid grid-cols-6 gap-3 p-3.5 border-b border-border items-center">
+          {Array.from({ length: 6 }).map((_, col) => (
             <Skeleton key={col} variant="text" height={20} />
           ))}
         </div>
@@ -143,31 +143,6 @@ const ProviderBookingsTable = ({ data, loading, currentPage, setCurrentPage }) =
         label: t("providerProfile.home.bookingsTable.columns.orderId"),
         className: "font-bold text-textDark text-sm sm:text-base",
         render: (row) => String(row.orderId || row._id?.slice(-8) || "-"),
-      },
-      {
-        key: "client",
-        label: t("providerProfile.home.bookingsTable.columns.client"),
-        render: (row) => {
-          const orgName =
-            typeof row.organization === "string"
-              ? row.organization
-              : row.organization?.name || "-";
-          const eduSystem =
-            row.track?.educationSystem?.name ||
-            (row.askType === "CUSTOM_TRIP"
-              ? t("providerProfile.home.recentActivities.multipleStages")
-              : "-");
-          return (
-            <div className="flex flex-col">
-              <span className="font-bold text-textDark text-sm sm:text-base">
-                {orgName}
-              </span>
-              <span className="text-xs sm:text-sm text-textLight font-medium">
-                {eduSystem}
-              </span>
-            </div>
-          );
-        },
       },
       {
         key: "product",
