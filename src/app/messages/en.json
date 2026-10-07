@@ -11,7 +11,9 @@
     "edit": "Edit",
     "autocomplete": {
       "noOptions": "No options",
-      "loading": "Loading..."
+      "loading": "Loading...",
+      "searchPlaceholder": "Search...",
+      "noResults": "No results found"
     },
     "characters": "characters",
     "oneDayTrip": "One day trip",

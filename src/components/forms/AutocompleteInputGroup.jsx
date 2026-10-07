@@ -2,6 +2,7 @@ import React from "react";
 import { Autocomplete, TextField, CircularProgress } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { cn } from "@utils/helpers/cn";
+import { createArabicFilterOptions } from "@utils/helpers/normalizeArabic";
 
 const AutocompleteInputGroup = ({
   label,
@@ -40,10 +41,7 @@ const AutocompleteInputGroup = ({
       {/* Label */}
       <div className="flex items-center gap-0.5">
         <label
-          className={cn(
-            "font-medium capitalize",
-            labelClassName || "font-ibm"
-          )}
+          className={cn("font-medium capitalize", labelClassName || "font-ibm")}
           style={{ fontFamily: effectiveFontFamily }}
         >
           {label}
@@ -62,7 +60,9 @@ const AutocompleteInputGroup = ({
         {...(onInputChange !== undefined ? { onInputChange } : {})}
         freeSolo={freeSolo}
         disabled={disabled}
-        {...(filterOptions ? { filterOptions } : {})}
+        filterOptions={
+          filterOptions || createArabicFilterOptions({ getOptionLabel })
+        }
         renderInput={(params) => (
           <TextField
             {...params}

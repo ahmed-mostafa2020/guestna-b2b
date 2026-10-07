@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { useState, useMemo, useRef } from "react";
 import TextInputGroup from "../TextInputGroup";
 import {
   FormControl,
@@ -7,9 +8,15 @@ import {
   Checkbox,
   ListItemText,
   CircularProgress,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
 import { KeyboardArrowDown } from "@mui/icons-material";
+import SearchIcon from "@mui/icons-material/Search";
 import formatCurrency from "@utils/formatters/FormatCurrency";
+import { matchesSearch } from "@utils/helpers/normalizeArabic";
+
+const SEARCH_THRESHOLD = 7;
 
 const BankTransferForm = ({
   values,
@@ -35,6 +42,19 @@ const BankTransferForm = ({
     const selectedIds = event.target.value;
     onTripSelection(selectedIds, setFieldValue, validateForm);
   };
+
+  const tCommon = useTranslations("common.autocomplete");
+  const [tripSearchTerm, setTripSearchTerm] = useState("");
+  const tripSearchRef = useRef(null);
+
+  const showTripSearch = completedTrips.length > SEARCH_THRESHOLD;
+
+  const filteredTrips = useMemo(() => {
+    if (!showTripSearch || !tripSearchTerm.trim()) return completedTrips;
+    return completedTrips.filter((trip) =>
+      matchesSearch([trip.name, trip.schoolName], tripSearchTerm)
+    );
+  }, [completedTrips, tripSearchTerm, showTripSearch]);
 
   const renderSelectedTrips = (selected) => {
     if (!selected || !Array.isArray(selected) || selected.length === 0) {
@@ -77,14 +97,20 @@ const BankTransferForm = ({
             MenuProps={{
               PaperProps: {
                 sx: {
-                  maxHeight: 300,
+                  maxHeight: 340,
                   fontFamily: "var(--font-somar-sans), sans-serif",
                   "& .MuiMenuItem-root": {
                     fontFamily: "var(--font-somar-sans), sans-serif",
                   },
                 },
               },
+              autoFocus: false,
             }}
+            onOpen={() => {
+              setTripSearchTerm("");
+              setTimeout(() => tripSearchRef.current?.focus(), 100);
+            }}
+            onClose={() => setTripSearchTerm("")}
             sx={{
               width: "100%",
               fontFamily: "var(--font-somar-sans), sans-serif",
@@ -118,36 +144,90 @@ const BankTransferForm = ({
               },
             }}
           >
-            {completedTrips.map((trip) => (
-              <MenuItem key={trip._id} value={trip._id}>
-                <Checkbox
-                  checked={(values.selectedTripIds || []).includes(trip._id)}
+            {/* Search field */}
+            {showTripSearch && (
+              <MenuItem
+                disableRipple
+                disableTouchRipple
+                onKeyDown={(e) => e.stopPropagation()}
+                sx={{
+                  position: "sticky",
+                  top: 0,
+                  zIndex: 1,
+                  backgroundColor: "white",
+                  p: "8px 16px",
+                  "&:hover": { backgroundColor: "white" },
+                  "&.Mui-focusVisible": { backgroundColor: "white" },
+                }}
+              >
+                <TextField
+                  inputRef={tripSearchRef}
+                  size="small"
+                  autoFocus
+                  placeholder={tCommon("searchPlaceholder")}
+                  fullWidth
+                  value={tripSearchTerm}
+                  onChange={(e) => { e.stopPropagation(); setTripSearchTerm(e.target.value); }}
+                  onKeyDown={(e) => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation()}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon sx={{ color: "var(--color-text-light)", fontSize: 20 }} />
+                      </InputAdornment>
+                    ),
+                  }}
                   sx={{
-                    color: "var(--color-text)",
-                    "&.Mui-checked": {
-                      color: "var(--color-main)",
+                    "& .MuiOutlinedInput-root": {
+                      fontFamily: "var(--font-somar-sans), sans-serif",
+                      fontSize: "0.875rem",
+                      borderRadius: "8px",
+                      backgroundColor: "#f9f9f9",
+                      "& fieldset": { borderColor: "#eaeaea" },
+                      "&:hover fieldset": { borderColor: "var(--color-main)" },
+                      "&.Mui-focused fieldset": { borderColor: "var(--color-main)" },
                     },
                   }}
                 />
-                <ListItemText
-                  primary={
-                    <span className="flex items-center justify-between w-full gap-2">
-                      <span className="font-medium truncate">
-                        {trip.name}
-                        {trip.schoolName && (
-                          <span className="text-xs text-textLight ms-1">
-                            ({trip.schoolName})
-                          </span>
-                        )}
-                      </span>
-                      <span className="text-sm font-bold text-mainColor shrink-0">
-                        {formatCurrency(trip.amount)}
-                      </span>
-                    </span>
-                  }
-                />
               </MenuItem>
-            ))}
+            )}
+
+            {filteredTrips.length > 0 ? (
+              filteredTrips.map((trip) => (
+                <MenuItem key={trip._id} value={trip._id}>
+                  <Checkbox
+                    checked={(values.selectedTripIds || []).includes(trip._id)}
+                    sx={{
+                      color: "var(--color-text)",
+                      "&.Mui-checked": {
+                        color: "var(--color-main)",
+                      },
+                    }}
+                  />
+                  <ListItemText
+                    primary={
+                      <span className="flex items-center justify-between w-full gap-2">
+                        <span className="font-medium truncate">
+                          {trip.name}
+                          {trip.schoolName && (
+                            <span className="text-xs text-textLight ms-1">
+                              ({trip.schoolName})
+                            </span>
+                          )}
+                        </span>
+                        <span className="text-sm font-bold text-mainColor shrink-0">
+                          {formatCurrency(trip.amount)}
+                        </span>
+                      </span>
+                    }
+                  />
+                </MenuItem>
+              ))
+            ) : showTripSearch && tripSearchTerm.trim() ? (
+              <MenuItem disabled sx={{ justifyContent: "center", opacity: 0.6 }}>
+                <em className="text-textLight text-sm">{tCommon("noResults")}</em>
+              </MenuItem>
+            ) : null}
           </Select>
         </FormControl>
         {tripsError && (

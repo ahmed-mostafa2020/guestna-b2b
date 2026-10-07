@@ -17,3 +17,10 @@ export const findIdByName = (options = [], name) => {
   const option = options.find((opt) => getItemName(opt) === name);
   return option?._id || "";
 };
+
+export {
+  normalizeArabic,
+  matchesSearch,
+  createArabicFilterOptions,
+} from "./normalizeArabic";
+

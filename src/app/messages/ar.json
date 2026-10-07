@@ -11,7 +11,9 @@
     "edit": "تعديل",
     "autocomplete": {
       "noOptions": "لا توجد خيارات",
-      "loading": "جاري التحميل..."
+      "loading": "جاري التحميل...",
+      "searchPlaceholder": "بحث...",
+      "noResults": "لا توجد نتائج"
     },
     "characters": "حرف",
     "oneDayTrip": "رحلات يوم كامل",

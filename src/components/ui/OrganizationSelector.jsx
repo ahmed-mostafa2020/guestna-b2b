@@ -15,6 +15,7 @@ import { USERS } from "@constants/users";
 import Cookies from "js-cookie";
 import { Skeleton, Checkbox, TextField, InputAdornment } from "@mui/material";
 import { Search, KeyboardArrowDown, Close } from "@mui/icons-material";
+import { matchesSearch } from "@utils/helpers/normalizeArabic";
 
 const OrganizationSelector = () => {
   const t = useTranslations();
@@ -78,9 +79,8 @@ const OrganizationSelector = () => {
   // Filter organizations based on search term
   const filteredOrganizations = useMemo(() => {
     if (!searchTerm.trim()) return organizations;
-    const lowerSearch = searchTerm.toLowerCase();
     return organizations.filter((org) =>
-      org.name?.toLowerCase().includes(lowerSearch)
+      matchesSearch(org.name, searchTerm)
     );
   }, [organizations, searchTerm]);
 
