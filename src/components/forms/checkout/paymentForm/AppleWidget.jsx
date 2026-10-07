@@ -6,9 +6,27 @@ import { useSelector } from "react-redux";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
+import axios from "axios";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { useMutationData } from "@hooks/data/useMutationData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+
+// If Apple Pay neither completes nor fails within this time (sheet never
+// opened, user dismissed it, Safari dropped the session...), stop waiting.
+const PAYMENT_WATCHDOG_MS = 60 * 1000;
+// Moyasar redirects to callback_url after on_completed; fall back if it doesn't.
+const REDIRECT_FALLBACK_MS = 4 * 1000;
+
+const MESSAGES = {
+  ar: {
+    notCompleted: "لم تكتمل عملية الدفع، يمكنك المحاولة مرة أخرى",
+    failed: "فشلت عملية الدفع، يمكنك المحاولة مرة أخرى",
+  },
+  en: {
+    notCompleted: "The payment was not completed, you can try again",
+    failed: "The payment failed, you can try again",
+  },
+};
 
 const extractBackendError = (error, fallback) => {
   const data = error?.response?.data;
@@ -36,7 +54,10 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const bookingIdRef = useRef(null);
   const isInitializedRef = useRef(false);
   const isPaymentActiveRef = useRef(false);
-  const widgetContainerRef = useRef(null);
+  const isMountedRef = useRef(true);
+  const watchdogRef = useRef(null);
+  const redirectFallbackRef = useRef(null);
+  const formRef = useRef(null);
   const baseDataRef = useRef(baseData);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -50,10 +71,14 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   const data = promoCodeData || finalTripDetails;
 
   const finalPrice = data?.calculatedPriceInfo?.total ?? 0;
+  // Moyasar needs an integer amount in halalas, and the backend rejects any
+  // difference from the booking price (250.1 * 100 = 25009.999...).
+  const amountInHalalas = Math.round(+finalPrice * 100);
 
   const tripName = useSelector((state) => state.finalTripDetailsData.data.name);
 
   const locale = useLocale();
+  const messages = MESSAGES[locale] || MESSAGES.ar;
 
   const vercelUrl = CONSTANT_VALUES.URLS.B2B_VERCEL_URL;
   const appleWidgetKey = process.env.NEXT_PUBLIC_APPLE_WIDGET_KEY;
@@ -72,6 +97,60 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   useEffect(() => {
     baseDataRef.current = baseData;
   }, [baseData]);
+
+  const clearTimers = () => {
+    clearTimeout(watchdogRef.current);
+    clearTimeout(redirectFallbackRef.current);
+    watchdogRef.current = null;
+    redirectFallbackRef.current = null;
+  };
+
+  // Single exit for every path that ends without a redirect: hides the
+  // spinner and lets the user tap Apple Pay again.
+  const resetPayment = () => {
+    clearTimers();
+    isPaymentActiveRef.current = false;
+    if (isMountedRef.current) setIsProcessing(false);
+  };
+
+  const goToBookingStatus = (bookingId) => {
+    const targetUrl = `/${locale}/bookingStatus/${bookingId}`;
+    try {
+      router.push(targetUrl);
+    } catch {
+      window.location.href = targetUrl;
+    }
+  };
+
+  // Asks the backend whether the booking got paid anyway (e.g. the webhook
+  // confirmed it while the browser hung).
+  const isBookingPaid = async (bookingId) => {
+    try {
+      const { data: res } = await axios.get(
+        `${B2B_END_POINTS.MAIN}${B2B_END_POINTS.CHECK_BOOKING}/${bookingId}`,
+        { headers: { lang: locale } }
+      );
+      return !!res?.isBooking;
+    } catch {
+      return false;
+    }
+  };
+
+  const onWatchdogTimeout = async () => {
+    const bookingId = bookingIdRef.current;
+    if (bookingId && (await isBookingPaid(bookingId))) {
+      clearTimers();
+      goToBookingStatus(bookingId);
+      return;
+    }
+    resetPayment();
+    enqueueSnackbar(messages.notCompleted, { variant: "warning" });
+  };
+
+  const startWatchdog = () => {
+    clearTimeout(watchdogRef.current);
+    watchdogRef.current = setTimeout(onWatchdogTimeout, PAYMENT_WATCHDOG_MS);
+  };
 
   const handleDebugInitiate = () => {
     try {
@@ -106,22 +185,24 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
   };
 
   useEffect(() => {
+    isMountedRef.current = true;
     if (isInitializedRef.current) return;
     if (typeof window === "undefined" || !window.Moyasar) return;
 
     isInitializedRef.current = true;
+    const sessionKey = baseData.client;
 
     try {
       Moyasar.init({
         element: ".mysr-form",
-        amount: +finalPrice * 100,
+        amount: amountInHalalas,
         language: locale,
         currency: currency,
         description: tripName,
         publishable_api_key: appleWidgetKey,
-        callback_url: `${B2B_END_POINTS.PAYMENTS}${B2B_END_POINTS.APPLE_BOOKING.CALLBACK}?lang=${locale}&sessionKey=${baseData.client}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
+        callback_url: `${B2B_END_POINTS.PAYMENTS}${B2B_END_POINTS.APPLE_BOOKING.CALLBACK}?lang=${locale}&sessionKey=${sessionKey}&redirectUrl=${vercelUrl}/${locale}/bookingStatus`,
         metadata: {
-          sessionKey: baseData.client,
+          sessionKey,
         },
         methods: ["applepay"],
         apple_pay: {
@@ -145,100 +226,94 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
           isPaymentActiveRef.current = true;
           setIsProcessing(true);
           return new Promise(function (resolve, reject) {
+            const fail = (message) => {
+              enqueueSnackbar(message, { variant: "error" });
+              resetPayment();
+              reject();
+            };
             try {
               mutate(
                 {
                   ...baseDataRef.current,
                   price: +finalPrice,
-                  sessionKey: baseDataRef.current.client,
+                  sessionKey,
                 },
                 {
                   onSuccess: (data) => {
                     if (!data?.bookingId) {
-                      enqueueSnackbar("issue at generate Id", {
-                        variant: "error",
-                      });
-                      setIsProcessing(false);
-                      reject();
+                      fail("issue at generate Id");
                       return;
                     }
                     bookingIdRef.current = data.bookingId;
+                    // From here on Apple Pay may hang without any callback.
+                    startWatchdog();
                     resolve({});
                   },
                   onError: (error) => {
-                    enqueueSnackbar(
-                      extractBackendError(error, "on error generate Id"),
-                      { variant: "error" }
-                    );
-                    setIsProcessing(false);
-                    isPaymentActiveRef.current = false;
-                    reject();
+                    fail(extractBackendError(error, "on error generate Id"));
                   },
                 }
               );
             } catch (error) {
-              enqueueSnackbar("on error Initiation", { variant: "error" });
-              setIsProcessing(false);
-              isPaymentActiveRef.current = false;
-              reject();
+              fail("on error Initiation");
             }
           });
         },
+        on_failure: function (error) {
+          // Apple Pay / Moyasar failed before a payment was created.
+          console.error("Apple Pay failed:", error);
+          resetPayment();
+          enqueueSnackbar(messages.failed, { variant: "error" });
+        },
         on_completed: function (payment) {
+          // A payment exists now — the watchdog must not reset the UI while
+          // we confirm it.
+          clearTimeout(watchdogRef.current);
+
           const handleFailedRedirect = () => {
             const currentBookingId = bookingIdRef.current;
             if (currentBookingId) {
-              const targetUrl = `/${locale}/bookingStatus/${currentBookingId}`;
-              setTimeout(() => {
-                try {
-                  router.push(targetUrl);
-                } catch {
-                  window.location.href = targetUrl;
-                }
-              }, 500);
+              setTimeout(() => goToBookingStatus(currentBookingId), 500);
             }
           };
 
           return new Promise(function (resolve, reject) {
+            const fail = (message) => {
+              enqueueSnackbar(message, { variant: "error" });
+              resetPayment();
+              reject();
+              handleFailedRedirect();
+            };
             try {
               if (payment && payment.id) {
                 const confirmationData = {
                   trip: baseDataRef.current?.trip,
                   bookingId: bookingIdRef.current,
                   paymentId: payment.id,
+                  sessionKey,
                 };
                 mutateComferm(confirmationData, {
                   onSuccess: () => {
-                    bookingIdRef.current = null;
+                    const confirmedBookingId = bookingIdRef.current;
                     isPaymentActiveRef.current = false;
+                    // Moyasar should redirect to callback_url now; if it
+                    // doesn't, open the booking status page ourselves.
+                    redirectFallbackRef.current = setTimeout(() => {
+                      if (isMountedRef.current && confirmedBookingId) {
+                        goToBookingStatus(confirmedBookingId);
+                      }
+                    }, REDIRECT_FALLBACK_MS);
                     resolve({});
                   },
                   onError: (error) => {
-                    enqueueSnackbar(
-                      extractBackendError(error, "error to confirmed"),
-                      { variant: "error" }
-                    );
-                    setIsProcessing(false);
-                    isPaymentActiveRef.current = false;
-                    reject();
-                    handleFailedRedirect();
+                    fail(extractBackendError(error, "error to confirmed"));
                   },
                 });
               } else {
-                enqueueSnackbar("faild generate paymentId", {
-                  variant: "error",
-                });
-                setIsProcessing(false);
-                isPaymentActiveRef.current = false;
-                reject();
-                handleFailedRedirect();
+                fail("faild generate paymentId");
               }
             } catch (error) {
-              enqueueSnackbar("faild on complete", { variant: "error" });
-              setIsProcessing(false);
-              isPaymentActiveRef.current = false;
-              reject();
-              handleFailedRedirect();
+              fail("faild on complete");
             }
           });
         },
@@ -248,23 +323,31 @@ const AppleWidget = ({ baseData, currency = "SAR" }) => {
       isInitializedRef.current = false;
     }
 
+    const formElement = formRef.current;
     return () => {
-      if (widgetContainerRef.current) {
+      isMountedRef.current = false;
+      clearTimers();
+      isPaymentActiveRef.current = false;
+      // Clear only Moyasar's injected markup — the .mysr-form node itself is
+      // owned by React and must stay for a re-init.
+      if (formElement) {
         try {
-          widgetContainerRef.current.innerHTML = "";
+          formElement.innerHTML = "";
         } catch (error) {
           console.error("Error cleaning up widget:", error);
         }
       }
       isInitializedRef.current = false;
     };
+    // Re-init when the client changes: metadata.sessionKey / callback_url must
+    // match the booking's sessionKey or the backend rejects the payment.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [baseData.client]);
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="relative" ref={widgetContainerRef}>
-        <div className="mysr-form"></div>
+      <div className="relative">
+        <div className="mysr-form" ref={formRef}></div>
         {isProcessing && (
           <div
             className="absolute inset-0 flex items-center justify-center bg-white/70 rounded-xl cursor-not-allowed"
