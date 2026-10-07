@@ -19,11 +19,15 @@ const getItemName = (item, locale) => {
   if (typeof item.name === "object" && item.name !== null) {
     return item.name[locale] || item.name.ar || item.name.en || "";
   }
+  if (typeof item.title === "object" && item.title !== null) {
+    return item.title[locale] || item.title.ar || item.title.en || "";
+  }
   return item.name || item.title || item.label || "";
 };
 
 const Step1BasicInfo = ({
   formSelectionData = null,
+  productData = null,
   isSelectionsLoading = false,
 }) => {
   const t = useTranslations("providerProfile.products.newAddPage.step1");
@@ -72,50 +76,145 @@ const Step1BasicInfo = ({
   const supCategoriesError = getIn(errors, "supCategories");
   const supCategoriesTouched = getIn(touched, "supCategories");
 
-  // Categories list from selection data
+  // Categories list from selection data + productData.category fallback
   const categoryOptions = useMemo(() => {
     const raw = formSelectionData?.categories || [];
-    return Array.isArray(raw)
+    const list = Array.isArray(raw)
       ? raw.map((cat) => {
           const id = cat._id || cat.id || cat.name;
           const label = getItemName(cat, locale) || id;
           return { value: id, label, raw: cat };
         })
       : [];
-  }, [formSelectionData?.categories, locale]);
 
-  // Subcategories list from selection data
+    if (productData?.category) {
+      const pCat = productData.category;
+      const pCatId = typeof pCat === "object" && pCat !== null ? pCat._id || pCat.id : pCat;
+      if (pCatId && !list.some((c) => c.value === pCatId)) {
+        const pCatLabel = getItemName(pCat, locale) || pCatId;
+        list.push({ value: pCatId, label: pCatLabel, raw: pCat });
+      }
+    }
+
+    return list;
+  }, [formSelectionData?.categories, productData?.category, locale]);
+
+  // Subcategories list from selection data (root & nested categories) + productData
   const allSubCategoryOptions = useMemo(() => {
-    const raw =
-      formSelectionData?.supCategories ||
-      formSelectionData?.subCategories ||
-      formSelectionData?.supCategory ||
-      [];
-    return Array.isArray(raw)
-      ? raw.map((sc) => {
-          const id = sc._id || sc.id || sc.name;
-          const label = getItemName(sc, locale) || id;
-          const categoryRef =
-            sc.category?._id || sc.category?.id || sc.category || sc.categoryId;
-          return { value: id, label, categoryRef, raw: sc };
-        })
-      : [];
-  }, [
-    formSelectionData?.supCategories,
-    formSelectionData?.subCategories,
-    formSelectionData?.supCategory,
-    locale,
-  ]);
+    const optionsMap = new Map();
 
-  // Filter subcategories if category is selected and subcategories reference a category
+    const addOption = (sc, defaultCategoryRef = null) => {
+      if (!sc) return;
+      let id = "";
+      let label = "";
+      let categoryRef = defaultCategoryRef;
+
+      if (typeof sc === "string") {
+        id = sc.trim();
+        label = isHexObjectId(id) ? "" : id;
+      } else if (typeof sc === "object" && sc !== null) {
+        id = sc._id || sc.id || (typeof sc.name === "string" ? sc.name : "");
+        label = getItemName(sc, locale) || (isHexObjectId(id) ? "" : id);
+        categoryRef =
+          sc.category?._id ||
+          sc.category?.id ||
+          sc.category ||
+          sc.categoryId ||
+          sc.categories?._id ||
+          sc.categories?.id ||
+          sc.categories ||
+          sc.categoryRef ||
+          defaultCategoryRef;
+      }
+
+      if (!id) return;
+
+      if (optionsMap.has(id)) {
+        const existing = optionsMap.get(id);
+        optionsMap.set(id, {
+          value: id,
+          label: existing.label || label || id,
+          categoryRef: existing.categoryRef || categoryRef,
+          raw: sc,
+        });
+      } else {
+        optionsMap.set(id, {
+          value: id,
+          label: label || id,
+          categoryRef,
+          raw: sc,
+        });
+      }
+    };
+
+    // 1. Root arrays in formSelectionData
+    const rootSubCategories = [
+      ...(Array.isArray(formSelectionData?.supCategories) ? formSelectionData.supCategories : []),
+      ...(Array.isArray(formSelectionData?.subCategories) ? formSelectionData.subCategories : []),
+      ...(Array.isArray(formSelectionData?.supCategory) ? formSelectionData.supCategory : []),
+      ...(Array.isArray(formSelectionData?.subCategory) ? formSelectionData.subCategory : []),
+    ];
+    rootSubCategories.forEach((sc) => addOption(sc));
+
+    // 2. Nested subcategories inside formSelectionData.categories
+    const categoriesList = Array.isArray(formSelectionData?.categories)
+      ? formSelectionData.categories
+      : [];
+    categoriesList.forEach((cat) => {
+      const catId = cat?._id || cat?.id;
+      const catSubs = [
+        ...(Array.isArray(cat?.supCategories) ? cat.supCategories : []),
+        ...(Array.isArray(cat?.subCategories) ? cat.subCategories : []),
+        ...(Array.isArray(cat?.children) ? cat.children : []),
+      ];
+      catSubs.forEach((sc) => addOption(sc, catId));
+    });
+
+    // 3. Subcategories from productData (the response of the product being edited)
+    if (productData) {
+      const productSubs = [
+        ...(Array.isArray(productData?.supCategories) ? productData.supCategories : []),
+        ...(Array.isArray(productData?.subCategories) ? productData.subCategories : []),
+        ...(Array.isArray(productData?.supCategory) ? productData.supCategory : []),
+        ...(Array.isArray(productData?.subCategory) ? productData.subCategory : []),
+      ];
+      if (typeof productData?.supCategory === "object" && productData.supCategory !== null && !Array.isArray(productData.supCategory)) {
+        productSubs.push(productData.supCategory);
+      }
+      if (typeof productData?.subCategory === "object" && productData.subCategory !== null && !Array.isArray(productData.subCategory)) {
+        productSubs.push(productData.subCategory);
+      }
+      const pCatId =
+        typeof productData?.category === "object" && productData.category !== null
+          ? productData.category?._id || productData.category?.id
+          : productData?.category;
+      productSubs.forEach((sc) => addOption(sc, pCatId));
+    }
+
+    return Array.from(optionsMap.values());
+  }, [formSelectionData, productData, locale]);
+
+  // Filter subcategories if category is selected and subcategories reference a category.
+  // ALWAYS keep currently selected subcategories so they never get hidden or display as raw IDs.
   const filteredSubCategoryOptions = useMemo(() => {
+    const selectedValues = Array.isArray(values.supCategories)
+      ? values.supCategories
+      : values.supCategories
+      ? [values.supCategories]
+      : [];
+
     if (!values.categories) return allSubCategoryOptions;
+
     const hasCategoryBinding = allSubCategoryOptions.some((sc) => sc.categoryRef);
     if (!hasCategoryBinding) return allSubCategoryOptions;
+
     return allSubCategoryOptions.filter(
-      (sc) => !sc.categoryRef || sc.categoryRef === values.categories
+      (sc) =>
+        selectedValues.includes(sc.value) ||
+        !sc.categoryRef ||
+        sc.categoryRef === values.categories
     );
-  }, [allSubCategoryOptions, values.categories]);
+  }, [allSubCategoryOptions, values.categories, values.supCategories]);
 
   const tripTypeOptions = useMemo(
     () => [

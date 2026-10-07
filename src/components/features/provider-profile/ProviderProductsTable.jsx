@@ -566,7 +566,7 @@ const ProviderProductsTable = ({
           >
             <EditOutlined className="!w-4 !h-4 text-mainColor" />
             <span className="flex-1 font-medium font-somar">
-              {t("providerProfile.products.table.edit")}
+              {t("providerProfile.products.table.editProduct")}
             </span>
           </MenuItem>
         )}

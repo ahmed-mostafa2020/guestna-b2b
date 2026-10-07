@@ -22,6 +22,8 @@ const AddProductStepper = ({
   completedSteps = [],
   isStep1Completed = false,
   isStep2Completed = false,
+  allStepsClickable = true,
+  warningSteps = [],
 }) => {
   const t = useTranslations("providerProfile.products.newAddPage.steps");
   const scrollContainerRef = useRef(null);
@@ -69,8 +71,9 @@ const AddProductStepper = ({
         {PRODUCT_STEPS.map((step, index) => {
           const isActive = currentStep === step.id;
           const isCompleted = isCompletedStep(step.id);
+          const hasWarning = warningSteps.includes(step.id) && !isActive;
           const isClickable = Boolean(
-            onStepClick && (isCompleted || isActive || step.id === 1 || step.id === 9)
+            onStepClick && (allStepsClickable || isCompleted || isActive || hasWarning || step.id === 1 || step.id === 9)
           );
 
           return (
@@ -89,24 +92,40 @@ const AddProductStepper = ({
                 }}
                 className={cn(
                   "flex items-center gap-2.5 sm:gap-3 select-none transition-all duration-200",
-                  isClickable ? "cursor-pointer" : "cursor-default"
+                  isClickable ? "cursor-pointer hover:opacity-80 active:scale-[0.98]" : "cursor-default"
                 )}
+                aria-label={t(step.key)}
                 aria-current={isActive ? "step" : undefined}
               >
                 {/* Step Circle */}
-                <div
-                  className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center font-ibm text-base font-medium leading-[14px] transition-all duration-200 flex-shrink-0",
-                    isActive || isCompleted
-                      ? "bg-titleColor text-white shadow-xs"
-                      : "border-[1.5px] border-textDark text-textDark bg-white"
+                <div className="relative flex-shrink-0">
+                  <div
+                    className={cn(
+                      "w-8 h-8 rounded-full flex items-center justify-center font-ibm text-base font-medium leading-[14px] transition-all duration-200",
+                      hasWarning
+                        ? "bg-amber-500 text-white shadow-xs ring-2 ring-amber-200"
+                        : isActive || isCompleted
+                          ? "bg-titleColor text-white shadow-xs"
+                          : "border-[1.5px] border-textDark text-textDark bg-white"
+                    )}
+                  >
+                    {hasWarning ? "!" : step.id}
+                  </div>
+                  {hasWarning && (
+                    <span
+                      className="absolute -top-0.5 -end-0.5 w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"
+                      aria-hidden="true"
+                    />
                   )}
-                >
-                  {step.id}
                 </div>
 
                 {/* Step Label */}
-                <span className="font-somar text-base font-medium leading-6 text-textDark whitespace-nowrap">
+                <span
+                  className={cn(
+                    "font-somar text-base font-medium leading-6 whitespace-nowrap",
+                    hasWarning ? "text-amber-600" : "text-textDark"
+                  )}
+                >
                   {t(step.key)}
                 </span>
               </div>

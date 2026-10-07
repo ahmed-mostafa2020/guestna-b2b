@@ -219,21 +219,26 @@ export const formatAddProductPayload = (
     payload.recurrencePattern = values.recurrencePattern;
   }
 
-  const selectedSystemTypes = (
+  const validSystemTypes = ["B2B", "B2C", "DASHBOARD"];
+  const rawSystemTypes = (
     Array.isArray(values.systemTypes) && values.systemTypes.length > 0
       ? values.systemTypes
       : ["B2C"]
-  ).map((t) => (typeof t === "string" ? t.trim().toUpperCase() : t));
+  )
+    .map((t) => (typeof t === "string" ? t.trim().toUpperCase() : t))
+    .filter((t) => validSystemTypes.includes(t));
+
+  const selectedSystemTypes =
+    rawSystemTypes.length > 0 ? rawSystemTypes : ["B2C"];
 
   const isB2B = selectedSystemTypes.includes("B2B");
   const isB2C =
     selectedSystemTypes.includes("B2C") || (!isB2B && selectedSystemTypes.length === 0);
 
-  if (!isEditMode) {
-    selectedSystemTypes.forEach((type, idx) => {
-      payload[`systemTypes[${idx}]`] = type;
-    });
-  }
+  // Always send systemTypes (required by backend on both add and edit product)
+  selectedSystemTypes.forEach((type, idx) => {
+    payload[`systemTypes[${idx}]`] = type;
+  });
 
   // if (values.istantConfirmation !== undefined) {
   //   payload.istantConfirmation = Boolean(values.istantConfirmation);
@@ -267,9 +272,26 @@ export const formatAddProductPayload = (
 
   // If no branch was explicitly selected but selection options exist, fallback to all available branch IDs
   if (branchList.length === 0 && Array.isArray(formSelectionData?.providerBranchs)) {
-    branchList = formSelectionData.providerBranchs
-      .map((b) => (typeof b === "object" && b !== null ? b._id || b.id : b))
-      .filter((id) => id && typeof id === "string" && id.trim().length === 24);
+    const extractedBranchIds = [];
+    formSelectionData.providerBranchs.forEach((item) => {
+      if (!item) return;
+      if (typeof item === "string" && item.trim().length === 24) {
+        extractedBranchIds.push(item.trim());
+      } else if (Array.isArray(item.branches)) {
+        item.branches.forEach((b) => {
+          const bId = typeof b === "object" ? b?._id || b?.id : b;
+          if (bId && typeof bId === "string" && bId.trim().length === 24) {
+            extractedBranchIds.push(bId.trim());
+          }
+        });
+      } else {
+        const bId = item._id || item.id;
+        if (bId && typeof bId === "string" && bId.trim().length === 24) {
+          extractedBranchIds.push(bId.trim());
+        }
+      }
+    });
+    branchList = extractedBranchIds;
   }
 
   branchList.forEach((id, idx) => {
@@ -335,6 +357,16 @@ export const formatAddProductPayload = (
         }
       }
     });
+
+    if (b2cTargetIdx === 0 && Array.isArray(values.b2cTargetAudiences)) {
+      values.b2cTargetAudiences.forEach((audId) => {
+        if (audId && typeof audId === "string" && audId.trim()) {
+          payload[`b2cPrice[targetAudiences][${b2cTargetIdx}][targetAudience]`] = audId.trim();
+          payload[`b2cPrice[targetAudiences][${b2cTargetIdx}][price]`] = b2cMarketPrice || 0;
+          b2cTargetIdx++;
+        }
+      });
+    }
 
     ALL_WEEKDAYS.forEach((day, idx) => {
       const customPrice = customWeekdayPricingMap[day];
@@ -570,9 +602,11 @@ export const formatAddProductPayload = (
     cityList = Array.from(cityIds);
   }
 
-  cityList.forEach((id, idx) => {
-    payload[`cities[${idx}]`] = id.trim();
-  });
+  if (!isEditMode) {
+    cityList.forEach((id, idx) => {
+      payload[`cities[${idx}]`] = id.trim();
+    });
+  }
   (values.stopBookingDate || []).forEach((item, idx) => {
     payload[`stopBookingDate[${idx}]`] = item;
   });

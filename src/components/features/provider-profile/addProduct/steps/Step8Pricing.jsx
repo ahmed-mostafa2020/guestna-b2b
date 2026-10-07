@@ -18,7 +18,9 @@ import { newSarSmall } from "@assets/svg";
 import { cn } from "@utils/helpers/cn";
 import BranchCustomizationSidebar from "./BranchCustomizationSidebar";
 import {
-  buildBranchGroups,
+  buildUnifiedBranchGroups,
+  buildBranchesMap,
+  resolveBranchById,
   getItemName,
   getItemDescription,
 } from "../branchConstants";
@@ -230,39 +232,82 @@ const Step8Pricing = ({
     return `${year}-${month}-${day}`;
   }, []);
 
-  // Branch groups mapping
+  // Branch groups mapping (merging formSelectionData, values.branchTrips, and values.providerBranchs)
   const branchGroups = useMemo(() => {
-    return buildBranchGroups(formSelectionData?.providerBranchs, locale, isAr);
-  }, [formSelectionData?.providerBranchs, locale, isAr]);
+    return buildUnifiedBranchGroups(
+      formSelectionData?.providerBranchs,
+      values.branchTrips,
+      values.providerBranchs,
+      locale,
+      isAr
+    );
+  }, [
+    formSelectionData?.providerBranchs,
+    values.branchTrips,
+    values.providerBranchs,
+    locale,
+    isAr,
+  ]);
 
   const allBranchesMap = useMemo(() => {
-    const map = new Map();
-    branchGroups.forEach((group) => {
-      group.branches?.forEach((b) => {
-        map.set(b.id, b);
-      });
-    });
-    return map;
+    return buildBranchesMap(branchGroups);
   }, [branchGroups]);
 
-  // Selected customized branch IDs
+  // Selected customized branch IDs (handles both customizedPricingBranches and branchPricing keys)
   const customizedBranchIds = useMemo(() => {
-    if (Array.isArray(values.customizedPricingBranches)) {
-      return values.customizedPricingBranches;
-    }
-    if (values.branchPricing && typeof values.branchPricing === "object") {
-      return Object.keys(values.branchPricing);
-    }
-    return [];
+    const fromArray = Array.isArray(values.customizedPricingBranches)
+      ? values.customizedPricingBranches
+      : [];
+    const fromPricingKeys =
+      values.branchPricing && typeof values.branchPricing === "object"
+        ? Object.keys(values.branchPricing)
+        : [];
+    return Array.from(
+      new Set(
+        [...fromArray, ...fromPricingKeys]
+          .map((id) => (typeof id === "object" ? id?._id || id?.id : id))
+          .filter(Boolean)
+          .map(String)
+          .map((s) => s.trim())
+      )
+    );
   }, [values.customizedPricingBranches, values.branchPricing]);
 
   const isCustomizedActive = customizedBranchIds.length > 0;
 
   const activeCustomizedBranches = useMemo(() => {
     return customizedBranchIds
-      .map((id) => allBranchesMap.get(id))
+      .map((id) =>
+        resolveBranchById({
+          branchId: id,
+          allBranchesMap,
+          branchTrips: values.branchTrips,
+          providerBranchs: values.providerBranchs,
+          locale,
+          isAr,
+        })
+      )
       .filter(Boolean);
-  }, [customizedBranchIds, allBranchesMap]);
+  }, [
+    customizedBranchIds,
+    allBranchesMap,
+    values.branchTrips,
+    values.providerBranchs,
+    locale,
+    isAr,
+  ]);
+
+  // Automatically expand the first customized branch if none is expanded
+  useEffect(() => {
+    if (activeCustomizedBranches.length > 0) {
+      setOpenBranches((prev) => {
+        if (Object.keys(prev).length === 0) {
+          return { [activeCustomizedBranches[0].id]: true };
+        }
+        return prev;
+      });
+    }
+  }, [activeCustomizedBranches]);
 
   // Target audience options from selection API or fallback
   const targetAudienceOptions = useMemo(() => {

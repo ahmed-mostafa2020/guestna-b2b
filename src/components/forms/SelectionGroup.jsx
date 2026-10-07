@@ -18,6 +18,9 @@ import { matchesSearch } from "@utils/helpers/normalizeArabic";
 
 const SEARCH_THRESHOLD = 7;
 
+const isHexObjectId = (str) =>
+  typeof str === "string" && /^[0-9a-fA-F]{24}$/.test(str.trim());
+
 const SelectionGroup = ({
   name,
   value,
@@ -56,7 +59,11 @@ const SelectionGroup = ({
     if (typeof item === "object") {
       const raw = item.label ?? item.name ?? item.title ?? item.value;
       if (typeof raw === "object" && raw !== null) {
-        return locale === "ar" ? raw.ar || raw.en : raw.en || raw.ar;
+        return (
+          (locale === "ar" ? raw.ar || raw.en : raw.en || raw.ar) ||
+          Object.values(raw)[0] ||
+          ""
+        );
       }
       return raw !== undefined ? raw : "";
     }
@@ -95,7 +102,11 @@ const SelectionGroup = ({
     if (typeof item !== "object" || item === null) return "";
     const desc = item.description ?? item.desc;
     if (typeof desc === "object" && desc !== null) {
-      return locale === "ar" ? desc.ar || desc.en : desc.en || desc.ar;
+      return (
+        (locale === "ar" ? desc.ar || desc.en : desc.en || desc.ar) ||
+        Object.values(desc)[0] ||
+        ""
+      );
     }
     return typeof desc === "string" ? desc : "";
   };
@@ -187,14 +198,34 @@ const SelectionGroup = ({
               return item === val;
             });
             if (found !== undefined) {
-              return getFormattedLabel(found);
+              const formatted = getFormattedLabel(found);
+              if (typeof formatted === "string" && isHexObjectId(formatted)) {
+                return "";
+              }
+              return formatted;
+            }
+            if (typeof val === "string" && isHexObjectId(val)) {
+              return "";
             }
             return val;
           };
 
-          return multiple
-            ? (Array.isArray(selected) ? selected : []).map(getLabel).join(", ")
+          const rendered = multiple
+            ? (Array.isArray(selected) ? selected : [])
+                .map(getLabel)
+                .filter(Boolean)
+                .join(", ")
             : getLabel(selected);
+
+          if (!rendered) {
+            return (
+              <span className="text-light opacity-60 text-sm font-somar">
+                {displayPlaceholder}
+              </span>
+            );
+          }
+
+          return rendered;
         }}
         MenuProps={{
           PaperProps: {
