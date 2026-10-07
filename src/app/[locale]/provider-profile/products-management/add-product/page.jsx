@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Formik, Form, useFormikContext, getIn } from "formik";
 import { useSnackbar } from "notistack";
+import { useQueryClient } from "@tanstack/react-query";
 import CircularProgress from "@mui/material/CircularProgress";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
@@ -40,6 +41,7 @@ const AddProductPage = () => {
   const locale = useLocale();
   const isAr = locale === "ar";
   const { enqueueSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -220,12 +222,24 @@ const AddProductPage = () => {
           throw { response: { data, status: response.status } };
         }
 
+        // Invalidate React Query cache so products list page table refetches fresh data
+        await queryClient.invalidateQueries({
+          predicate: (query) =>
+            query.queryKey.some(
+              (key) =>
+                typeof key === "string" &&
+                (key.includes(B2B_END_POINTS.PROVIDER_PROFILE.ALL_PRODUCTS) ||
+                  key.includes(B2B_END_POINTS.PROVIDER_PROFILE.ALL_TRIPS))
+            ),
+        });
+
         enqueueSnackbar(
           t("providerProfile.products.modal.successMessage") ||
             "Product added successfully",
           { variant: "success" }
         );
 
+        router.refresh();
         router.push(`/${locale}/provider-profile/products-management`);
       } catch (err) {
         console.error(
@@ -242,7 +256,7 @@ const AddProductPage = () => {
         setIsSubmittingForm(false);
       }
     },
-    [formSelectionData, locale, enqueueSnackbar, router, t]
+    [formSelectionData, locale, enqueueSnackbar, router, t, queryClient]
   );
 
   // Unified step validation & progression handler

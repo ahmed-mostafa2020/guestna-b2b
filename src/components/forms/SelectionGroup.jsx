@@ -10,6 +10,9 @@ import {
 import { KeyboardArrowDown } from "@mui/icons-material";
 import { cn } from "@utils/helpers/cn";
 
+const isHexObjectId = (str) =>
+  typeof str === "string" && /^[0-9a-fA-F]{24}$/.test(str.trim());
+
 const SelectionGroup = ({
   name,
   value,
@@ -84,14 +87,34 @@ const SelectionGroup = ({
               return item === val;
             });
             if (typeof found === "object" && found !== null) {
-              return found.label ?? found.name ?? found.title ?? found.value;
+              const candidate = found.label ?? found.name ?? found.title ?? found.value;
+              if (typeof candidate === "object" && candidate !== null) {
+                return candidate.ar || candidate.en || Object.values(candidate)[0] || "";
+              }
+              if (typeof candidate === "string" && isHexObjectId(candidate)) {
+                return "";
+              }
+              return candidate;
+            }
+            if (typeof val === "string" && isHexObjectId(val)) {
+              return "";
             }
             return val;
           };
 
-          return multiple
-            ? (Array.isArray(selected) ? selected : []).map(getLabel).join(", ")
+          const rendered = multiple
+            ? (Array.isArray(selected) ? selected : []).map(getLabel).filter(Boolean).join(", ")
             : getLabel(selected);
+
+          if (!rendered) {
+            return (
+              <span className="text-light opacity-60 text-sm font-somar">
+                {placeholder}
+              </span>
+            );
+          }
+
+          return rendered;
         }}
         MenuProps={{
           PaperProps: {
@@ -167,10 +190,15 @@ const SelectionGroup = ({
                 ? item.toString().slice(-2)
                 : item;
 
-          const itemLabel =
+          const rawLabel =
             typeof item === "object" && item !== null
               ? (item.label ?? item.name ?? item.title ?? item.value)
               : item;
+
+          const itemLabel =
+            typeof rawLabel === "object" && rawLabel !== null
+              ? rawLabel.ar || rawLabel.en || Object.values(rawLabel)[0] || ""
+              : rawLabel;
 
           const itemDescription = (() => {
             if (typeof item !== "object" || item === null) return "";

@@ -11,15 +11,15 @@ const formatDatePricingList = (list, defaultKey = "INCREASE") => {
     const fromVal = dp.fromDate
       ? String(dp.fromDate).split("T")[0]
       : dp.fromDay
-      ? String(dp.fromDay).split("T")[0]
-      : dp.date
-      ? String(dp.date).split("T")[0]
-      : "";
+        ? String(dp.fromDay).split("T")[0]
+        : dp.date
+          ? String(dp.date).split("T")[0]
+          : "";
     const toVal = dp.toDate
       ? String(dp.toDate).split("T")[0]
       : dp.toDay
-      ? String(dp.toDay).split("T")[0]
-      : fromVal;
+        ? String(dp.toDay).split("T")[0]
+        : fromVal;
     return {
       date: fromVal,
       fromDate: fromVal,
@@ -46,13 +46,22 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
 
   // ─── 1. Determine System Types ─────────────────────────────────
   let systemTypes = [];
-  if (Array.isArray(actualProduct.systemTypes) && actualProduct.systemTypes.length > 0) {
+  if (
+    Array.isArray(actualProduct.systemTypes) &&
+    actualProduct.systemTypes.length > 0
+  ) {
     systemTypes = actualProduct.systemTypes.map((t) =>
       typeof t === "string" ? t.trim().toUpperCase() : t
     );
   } else {
-    if (actualProduct.b2bTrip || actualProduct.b2bPrice || actualProduct.productCost) systemTypes.push("B2B");
-    if (actualProduct.b2cTrip || actualProduct.b2cPrice || actualProduct.price) systemTypes.push("B2C");
+    if (
+      actualProduct.b2bTrip ||
+      actualProduct.b2bPrice ||
+      actualProduct.productCost
+    )
+      systemTypes.push("B2B");
+    if (actualProduct.b2cTrip || actualProduct.b2cPrice || actualProduct.price)
+      systemTypes.push("B2C");
     if (systemTypes.length === 0) systemTypes.push("B2C");
   }
 
@@ -86,9 +95,15 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
   }
 
   const allBranchTripsRaw = [
-    ...(Array.isArray(actualProduct.branchTrips) ? actualProduct.branchTrips : []),
-    ...(Array.isArray(actualProduct.branch_trips) ? actualProduct.branch_trips : []),
-    ...(Array.isArray(actualProduct.branchesTrips) ? actualProduct.branchesTrips : []),
+    ...(Array.isArray(actualProduct.branchTrips)
+      ? actualProduct.branchTrips
+      : []),
+    ...(Array.isArray(actualProduct.branch_trips)
+      ? actualProduct.branch_trips
+      : []),
+    ...(Array.isArray(actualProduct.branchesTrips)
+      ? actualProduct.branchesTrips
+      : []),
     ...(Array.isArray(b2b.branchTrips) ? b2b.branchTrips : []),
     ...(Array.isArray(b2b.branch_trips) ? b2b.branch_trips : []),
     ...(Array.isArray(b2c.branchTrips) ? b2c.branchTrips : []),
@@ -120,7 +135,8 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
   const branchTripMap = new Map();
   allBranchTripsRaw.forEach((bt) => {
     if (!bt) return;
-    const rawBranch = bt?.branch || bt?.providerBranch || bt?.branchId || bt?._id;
+    const rawBranch =
+      bt?.branch || bt?.providerBranch || bt?.branchId || bt?._id;
     const bId =
       typeof rawBranch === "object" && rawBranch !== null
         ? String(rawBranch._id || rawBranch.id || "")
@@ -157,15 +173,18 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
 
   // ─── 3. Target Audiences Extraction ────────────────────────────
   const rawTargetAudiences =
-    Array.isArray(actualProduct.targetAudiences) && actualProduct.targetAudiences.length > 0
+    Array.isArray(actualProduct.targetAudiences) &&
+    actualProduct.targetAudiences.length > 0
       ? actualProduct.targetAudiences
       : Array.isArray(b2c.targetAudiences) && b2c.targetAudiences.length > 0
-      ? b2c.targetAudiences
-      : Array.isArray(actualProduct.b2cTargetAudiences) && actualProduct.b2cTargetAudiences.length > 0
-      ? actualProduct.b2cTargetAudiences
-      : Array.isArray(b2c.b2cTargetAudiences) && b2c.b2cTargetAudiences.length > 0
-      ? b2c.b2cTargetAudiences
-      : [];
+        ? b2c.targetAudiences
+        : Array.isArray(actualProduct.b2cTargetAudiences) &&
+            actualProduct.b2cTargetAudiences.length > 0
+          ? actualProduct.b2cTargetAudiences
+          : Array.isArray(b2c.b2cTargetAudiences) &&
+              b2c.b2cTargetAudiences.length > 0
+            ? b2c.b2cTargetAudiences
+            : [];
 
   const b2cTargetAudiences = [];
   const targetAudiences = [];
@@ -207,11 +226,12 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
 
   // ─── 4. Academic Stages Extraction (B2B) ───────────────────────
   const rawAcademicStages =
-    Array.isArray(actualProduct.academicStages) && actualProduct.academicStages.length > 0
+    Array.isArray(actualProduct.academicStages) &&
+    actualProduct.academicStages.length > 0
       ? actualProduct.academicStages
       : Array.isArray(b2b.academicStages) && b2b.academicStages.length > 0
-      ? b2b.academicStages
-      : [];
+        ? b2b.academicStages
+        : [];
 
   const academicStages = rawAcademicStages
     .map((s) => (typeof s === "object" ? s?._id || s?.id || "" : s))
@@ -336,15 +356,19 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
       bt.discountedPrice != null ||
       bt.productCost != null ||
       bt.schoolsPrice != null ||
-      (Array.isArray(btB2c.targetAudiences) && btB2c.targetAudiences.length > 0) ||
+      (Array.isArray(btB2c.targetAudiences) &&
+        btB2c.targetAudiences.length > 0) ||
       (Array.isArray(bt.targetAudiences) && bt.targetAudiences.length > 0) ||
-      (Array.isArray(btB2c.weekdayPricing) && btB2c.weekdayPricing.length > 0) ||
-      (Array.isArray(btB2b.weekdayPricing) && btB2b.weekdayPricing.length > 0) ||
+      (Array.isArray(btB2c.weekdayPricing) &&
+        btB2c.weekdayPricing.length > 0) ||
+      (Array.isArray(btB2b.weekdayPricing) &&
+        btB2b.weekdayPricing.length > 0) ||
       (Array.isArray(bt.weekdayPricing) && bt.weekdayPricing.length > 0) ||
       (Array.isArray(btB2c.datePricing) && btB2c.datePricing.length > 0) ||
       (Array.isArray(btB2b.datePricing) && btB2b.datePricing.length > 0) ||
       (Array.isArray(bt.datePricing) && bt.datePricing.length > 0) ||
-      (Array.isArray(btB2b.quantityDiscountTiers) && btB2b.quantityDiscountTiers.length > 0);
+      (Array.isArray(btB2b.quantityDiscountTiers) &&
+        btB2b.quantityDiscountTiers.length > 0);
 
     if (hasBranchPricing) {
       // 1. Target audiences for branch
@@ -352,8 +376,8 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
         Array.isArray(btB2c.targetAudiences) && btB2c.targetAudiences.length > 0
           ? btB2c.targetAudiences
           : Array.isArray(bt.targetAudiences) && bt.targetAudiences.length > 0
-          ? bt.targetAudiences
-          : [];
+            ? bt.targetAudiences
+            : [];
       const btTargetAudiences = rawBtAudiences.map((ta) => ({
         targetAudience:
           typeof ta.targetAudience === "object"
@@ -364,12 +388,18 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
 
       // 2. Weekday pricing for branch
       const b2cWeekday = Array.isArray(btB2c.weekdayPricing)
-        ? btB2c.weekdayPricing.map((w) => ({ day: w.day, price: w.price ?? "" }))
+        ? btB2c.weekdayPricing.map((w) => ({
+            day: w.day,
+            price: w.price ?? "",
+          }))
         : Array.isArray(bt.weekdayPricing)
-        ? bt.weekdayPricing.map((w) => ({ day: w.day, price: w.price ?? "" }))
-        : [];
+          ? bt.weekdayPricing.map((w) => ({ day: w.day, price: w.price ?? "" }))
+          : [];
       const b2bWeekday = Array.isArray(btB2b.weekdayPricing)
-        ? btB2b.weekdayPricing.map((w) => ({ day: w.day, price: w.price ?? "" }))
+        ? btB2b.weekdayPricing.map((w) => ({
+            day: w.day,
+            price: w.price ?? "",
+          }))
         : [];
 
       // 3. Date pricing (B2C) for branch
@@ -377,8 +407,8 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
         Array.isArray(btB2c.datePricing) && btB2c.datePricing.length > 0
           ? btB2c.datePricing
           : Array.isArray(bt.datePricing) && bt.datePricing.length > 0
-          ? bt.datePricing
-          : [];
+            ? bt.datePricing
+            : [];
       const b2cDatePricingMapped = formatDatePricingList(
         rawB2cDatePricing,
         btB2c.key || "INCREASE"
@@ -395,11 +425,13 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
 
       // 5. Quantity discount tiers (B2B) for branch
       const rawB2bTiers =
-        Array.isArray(btB2b.quantityDiscountTiers) && btB2b.quantityDiscountTiers.length > 0
+        Array.isArray(btB2b.quantityDiscountTiers) &&
+        btB2b.quantityDiscountTiers.length > 0
           ? btB2b.quantityDiscountTiers
-          : Array.isArray(bt.quantityDiscountTiers) && bt.quantityDiscountTiers.length > 0
-          ? bt.quantityDiscountTiers
-          : [];
+          : Array.isArray(bt.quantityDiscountTiers) &&
+              bt.quantityDiscountTiers.length > 0
+            ? bt.quantityDiscountTiers
+            : [];
       const b2bQuantityDiscountTiers = rawB2bTiers.map((t) => ({
         minQuantity: t.minQuantity ?? "",
         discountType: t.discountType || "PERCENTAGE",
@@ -409,19 +441,56 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
       branchPricing[cleanBranchId] = {
         price: btB2c.price ?? bt.price ?? "",
         discountedPrice: btB2c.discountedPrice ?? bt.discountedPrice ?? "",
-        schoolsPrice: btB2b.price ?? btB2b.schoolsPrice ?? bt.schoolsPrice ?? btB2b.productCost ?? "",
-        b2bDiscountedPrice: btB2b.discountedPrice ?? bt.b2bDiscountedPrice ?? "",
+        schoolsPrice:
+          btB2b.price ??
+          btB2b.schoolsPrice ??
+          bt.schoolsPrice ??
+          btB2b.productCost ??
+          "",
+        b2bDiscountedPrice:
+          btB2b.discountedPrice ?? bt.b2bDiscountedPrice ?? "",
         productCost: btB2b.productCost ?? bt.productCost ?? "",
-        studentsPerSupervisor: String(btB2b.studentsPerSupervisor ?? bt.studentsPerSupervisor ?? "10"),
-        conditionRuleValue: btB2c.conditionRuleValue ?? btB2c.percentage ?? "15",
-        b2bConditionRuleValue: btB2b.conditionRuleValue ?? btB2b.percentage ?? "10",
+        studentsPerSupervisor: String(
+          btB2b.studentsPerSupervisor ?? bt.studentsPerSupervisor ?? "10"
+        ),
+        conditionRuleValue:
+          btB2c.conditionRuleValue ?? btB2c.percentage ?? "15",
+        b2bConditionRuleValue:
+          btB2b.conditionRuleValue ?? btB2b.percentage ?? "10",
         key: btB2c.key || "INCREASE",
         b2bKey: btB2b.key || "DECREASE",
-        targetAudiences: btTargetAudiences.length > 0 ? btTargetAudiences : [{ targetAudience: "", price: "" }],
+        targetAudiences:
+          btTargetAudiences.length > 0
+            ? btTargetAudiences
+            : [{ targetAudience: "", price: "" }],
         weekdayPricing: b2cWeekday,
         b2bWeekdayPricing: b2bWeekday,
-        datePricing: b2cDatePricingMapped.length > 0 ? b2cDatePricingMapped : [{ date: "", fromDate: "", toDate: "", price: "", key: "INCREASE", percentage: 15 }],
-        b2bDatePricing: b2bDatePricingMapped.length > 0 ? b2bDatePricingMapped : [{ date: "", fromDate: "", toDate: "", price: "", key: "DECREASE", percentage: 10 }],
+        datePricing:
+          b2cDatePricingMapped.length > 0
+            ? b2cDatePricingMapped
+            : [
+                {
+                  date: "",
+                  fromDate: "",
+                  toDate: "",
+                  price: "",
+                  key: "INCREASE",
+                  percentage: 15,
+                },
+              ],
+        b2bDatePricing:
+          b2bDatePricingMapped.length > 0
+            ? b2bDatePricingMapped
+            : [
+                {
+                  date: "",
+                  fromDate: "",
+                  toDate: "",
+                  price: "",
+                  key: "DECREASE",
+                  percentage: 10,
+                },
+              ],
         b2bQuantityDiscountTiers,
       };
 
@@ -433,13 +502,14 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
 
   // ─── 7. Available Times, Dates & Recurrence ────────────────────
   const rawTimes =
-    Array.isArray(actualProduct.availableTimes) && actualProduct.availableTimes.length > 0
+    Array.isArray(actualProduct.availableTimes) &&
+    actualProduct.availableTimes.length > 0
       ? actualProduct.availableTimes
       : Array.isArray(b2c.availableTimes) && b2c.availableTimes.length > 0
-      ? b2c.availableTimes
-      : Array.isArray(b2b.availableTimes) && b2b.availableTimes.length > 0
-      ? b2b.availableTimes
-      : [];
+        ? b2c.availableTimes
+        : Array.isArray(b2b.availableTimes) && b2b.availableTimes.length > 0
+          ? b2b.availableTimes
+          : [];
 
   const availableTimes =
     rawTimes.length > 0
@@ -455,36 +525,46 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
   const toDay = rawToDay ? String(rawToDay).split("T")[0] : "";
 
   const fromHour =
-    formatTimeForInput(actualProduct.fromHour || b2c.fromHour || b2b.fromHour || availableTimes[0]?.from) || "";
+    formatTimeForInput(
+      actualProduct.fromHour ||
+        b2c.fromHour ||
+        b2b.fromHour ||
+        availableTimes[0]?.from
+    ) || "";
   const toHour =
-    formatTimeForInput(actualProduct.toHour || b2c.toHour || b2b.toHour || availableTimes[0]?.to) || "";
+    formatTimeForInput(
+      actualProduct.toHour || b2c.toHour || b2b.toHour || availableTimes[0]?.to
+    ) || "";
 
   const recurrencePattern =
-    actualProduct.recurrencePattern || b2c.recurrencePattern || b2b.recurrencePattern || "WEEKLY";
+    actualProduct.recurrencePattern ||
+    b2c.recurrencePattern ||
+    b2b.recurrencePattern ||
+    "WEEKLY";
 
   const selectedDays =
-    Array.isArray(actualProduct.selectedDays) && actualProduct.selectedDays.length > 0
+    Array.isArray(actualProduct.selectedDays) &&
+    actualProduct.selectedDays.length > 0
       ? actualProduct.selectedDays
       : Array.isArray(b2c.selectedDays) && b2c.selectedDays.length > 0
-      ? b2c.selectedDays
-      : Array.isArray(b2b.selectedDays) && b2b.selectedDays.length > 0
-      ? b2b.selectedDays
-      : [];
+        ? b2c.selectedDays
+        : Array.isArray(b2b.selectedDays) && b2b.selectedDays.length > 0
+          ? b2b.selectedDays
+          : [];
 
   const monthDay =
     Array.isArray(actualProduct.monthDay) && actualProduct.monthDay.length > 0
       ? actualProduct.monthDay
       : Array.isArray(b2c.monthDay) && b2c.monthDay.length > 0
-      ? b2c.monthDay
-      : Array.isArray(b2b.monthDay) && b2b.monthDay.length > 0
-      ? b2b.monthDay
-      : [];
+        ? b2c.monthDay
+        : Array.isArray(b2b.monthDay) && b2b.monthDay.length > 0
+          ? b2b.monthDay
+          : [];
 
   const bookingBefore =
     actualProduct.bookingBefore ?? b2c.bookingBefore ?? b2b.bookingBefore ?? "";
 
-  const duration =
-    actualProduct.duration ?? b2c.duration ?? b2b.duration ?? 1;
+  const duration = actualProduct.duration ?? b2c.duration ?? b2b.duration ?? 1;
 
   // ─── 8. Available Seats & Guests ──────────────────────────────
   const minSeats =
@@ -499,29 +579,38 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
     (typeof b2c.availableSeats === "number"
       ? b2c.availableSeats
       : typeof b2c.availableSeats === "object"
-      ? b2c.availableSeats?.max
-      : typeof actualProduct.availableSeats === "number"
-      ? actualProduct.availableSeats
-      : "");
+        ? b2c.availableSeats?.max
+        : typeof actualProduct.availableSeats === "number"
+          ? actualProduct.availableSeats
+          : "");
 
   // ─── 9. Gallery & Thumbnail ────────────────────────────────────
   const gallary = Array.isArray(actualProduct.gallary)
-    ? actualProduct.gallary.map((g) => (typeof g === "object" ? g.url : g)).filter(Boolean)
+    ? actualProduct.gallary
+        .map((g) => (typeof g === "object" ? g.url : g))
+        .filter(Boolean)
     : Array.isArray(actualProduct.gallery)
-    ? actualProduct.gallery.map((g) => (typeof g === "object" ? g.url : g)).filter(Boolean)
-    : [];
+      ? actualProduct.gallery
+          .map((g) => (typeof g === "object" ? g.url : g))
+          .filter(Boolean)
+      : [];
 
   const thumbnail =
     actualProduct.thumbnail?.web ||
     actualProduct.thumbnail?.app ||
-    (typeof actualProduct.thumbnail === "string" ? actualProduct.thumbnail : null);
+    (typeof actualProduct.thumbnail === "string"
+      ? actualProduct.thumbnail
+      : null);
 
   // ─── 10. Pricing & Discounts ───────────────────────────────────
   const b2cWeekdayPricing = Array.isArray(b2c.weekdayPricing)
     ? b2c.weekdayPricing.map((wp) => ({ day: wp.day, price: wp.price ?? "" }))
     : Array.isArray(actualProduct.weekdayPricing)
-    ? actualProduct.weekdayPricing.map((wp) => ({ day: wp.day, price: wp.price ?? "" }))
-    : [];
+      ? actualProduct.weekdayPricing.map((wp) => ({
+          day: wp.day,
+          price: wp.price ?? "",
+        }))
+      : [];
 
   const b2bWeekdayPricing = Array.isArray(b2b.weekdayPricing)
     ? b2b.weekdayPricing.map((wp) => ({ day: wp.day, price: wp.price ?? "" }))
@@ -531,15 +620,17 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
     b2cWeekdayPricing.length > 0
       ? b2cWeekdayPricing
       : b2bWeekdayPricing.length > 0
-      ? b2bWeekdayPricing
-      : [];
+        ? b2bWeekdayPricing
+        : [];
 
   const rawTiers =
-    Array.isArray(b2b.quantityDiscountTiers) && b2b.quantityDiscountTiers.length > 0
+    Array.isArray(b2b.quantityDiscountTiers) &&
+    b2b.quantityDiscountTiers.length > 0
       ? b2b.quantityDiscountTiers
-      : Array.isArray(actualProduct.quantityDiscountTiers) && actualProduct.quantityDiscountTiers.length > 0
-      ? actualProduct.quantityDiscountTiers
-      : [];
+      : Array.isArray(actualProduct.quantityDiscountTiers) &&
+          actualProduct.quantityDiscountTiers.length > 0
+        ? actualProduct.quantityDiscountTiers
+        : [];
 
   const quantityDiscountTiers =
     rawTiers.length > 0
@@ -553,9 +644,10 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
   const rawB2cDatePricing =
     Array.isArray(b2c.datePricing) && b2c.datePricing.length > 0
       ? b2c.datePricing
-      : Array.isArray(actualProduct.datePricing) && actualProduct.datePricing.length > 0
-      ? actualProduct.datePricing
-      : [];
+      : Array.isArray(actualProduct.datePricing) &&
+          actualProduct.datePricing.length > 0
+        ? actualProduct.datePricing
+        : [];
 
   const b2cDatePricing = formatDatePricingList(rawB2cDatePricing, "INCREASE");
   const b2bDatePricing = formatDatePricingList(
@@ -573,12 +665,12 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
           address: locSource.address || "",
         }
       : fixedSelectionLocation
-      ? {
-          lat: Number(fixedSelectionLocation.lat),
-          lng: Number(fixedSelectionLocation.lng),
-          address: fixedSelectionLocation.address || "",
-        }
-      : { lat: 24.7136, lng: 46.6753, address: "" };
+        ? {
+            lat: Number(fixedSelectionLocation.lat),
+            lng: Number(fixedSelectionLocation.lng),
+            address: fixedSelectionLocation.address || "",
+          }
+        : { lat: 24.7136, lng: 46.6753, address: "" };
 
   const gLocSource = actualProduct.gatheringLocation || locSource;
   const gatheringLocation =
@@ -593,55 +685,88 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
   // ─── 12. Text Lists (Items, Exemptions, Benefits) ──────────────
   const mustHaveItems = {
     en:
-      Array.isArray(actualProduct.mustHaveItems?.en) && actualProduct.mustHaveItems.en.length > 0
+      Array.isArray(actualProduct.mustHaveItems?.en) &&
+      actualProduct.mustHaveItems.en.length > 0
         ? actualProduct.mustHaveItems.en
         : [""],
     ar:
-      Array.isArray(actualProduct.mustHaveItems?.ar) && actualProduct.mustHaveItems.ar.length > 0
+      Array.isArray(actualProduct.mustHaveItems?.ar) &&
+      actualProduct.mustHaveItems.ar.length > 0
         ? actualProduct.mustHaveItems.ar
         : [""],
   };
 
   const exemptedFromTrip = {
     en:
-      Array.isArray(actualProduct.exemptedFromTrip?.en) && actualProduct.exemptedFromTrip.en.length > 0
+      Array.isArray(actualProduct.exemptedFromTrip?.en) &&
+      actualProduct.exemptedFromTrip.en.length > 0
         ? actualProduct.exemptedFromTrip.en
         : [""],
     ar:
-      Array.isArray(actualProduct.exemptedFromTrip?.ar) && actualProduct.exemptedFromTrip.ar.length > 0
+      Array.isArray(actualProduct.exemptedFromTrip?.ar) &&
+      actualProduct.exemptedFromTrip.ar.length > 0
         ? actualProduct.exemptedFromTrip.ar
         : [""],
   };
 
   const benefits = {
     en:
-      Array.isArray(actualProduct.benefits?.en) && actualProduct.benefits.en.length > 0
+      Array.isArray(actualProduct.benefits?.en) &&
+      actualProduct.benefits.en.length > 0
         ? actualProduct.benefits.en
         : [""],
     ar:
-      Array.isArray(actualProduct.benefits?.ar) && actualProduct.benefits.ar.length > 0
+      Array.isArray(actualProduct.benefits?.ar) &&
+      actualProduct.benefits.ar.length > 0
         ? actualProduct.benefits.ar
         : [""],
   };
 
   // ─── 13. Categories & Cities ───────────────────────────────────
   const cities = Array.isArray(actualProduct.cities)
-    ? actualProduct.cities.map((c) => (typeof c === "object" ? c._id || c.id || c : c)).filter(Boolean)
+    ? actualProduct.cities
+        .map((c) =>
+          typeof c === "object" && c !== null ? c._id || c.id || c : c
+        )
+        .filter(Boolean)
     : [];
 
-  const rawSupCategories = actualProduct.supCategories || actualProduct.subCategories || [];
-  const supCategories = Array.isArray(rawSupCategories)
-    ? rawSupCategories.map((sc) => (typeof sc === "object" ? sc._id || sc.id || sc : sc)).filter(Boolean)
-    : [];
+  const rawSupCategories =
+    actualProduct.supCategories ??
+    actualProduct.subCategories ??
+    actualProduct.supCategory ??
+    actualProduct.subCategory ??
+    [];
+
+  const supCategoriesArray = Array.isArray(rawSupCategories)
+    ? rawSupCategories
+    : rawSupCategories
+      ? [rawSupCategories]
+      : [];
+
+  const supCategories = supCategoriesArray
+    .map((sc) =>
+      typeof sc === "object" && sc !== null ? sc._id || sc.id || sc : sc
+    )
+    .filter(Boolean);
 
   const categorySource = actualProduct.category || actualProduct.categories;
-  const categories =
-    typeof categorySource === "object" && categorySource !== null
-      ? categorySource._id || categorySource.id || ""
-      : categorySource || "";
+  let categories = "";
+  if (Array.isArray(categorySource) && categorySource.length > 0) {
+    const firstCat = categorySource[0];
+    categories =
+      typeof firstCat === "object" && firstCat !== null
+        ? firstCat._id || firstCat.id || ""
+        : firstCat || "";
+  } else if (typeof categorySource === "object" && categorySource !== null) {
+    categories = categorySource._id || categorySource.id || "";
+  } else if (typeof categorySource === "string") {
+    categories = categorySource;
+  }
 
   // ─── 14. Age Range ─────────────────────────────────────────────
-  const ageSource = actualProduct.ageRange || b2c.ageRange || b2b.ageRange || {};
+  const ageSource =
+    actualProduct.ageRange || b2c.ageRange || b2b.ageRange || {};
   const ageRange = {
     from: ageSource.from ?? "",
     to: ageSource.to ?? "",
@@ -727,26 +852,31 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
       depositRatio: b2b.depositRatio ?? 0,
       depositValue: b2b.depositValue ?? 0,
       finalDepositValue: b2b.finalDepositValue ?? 0,
-      productCost: b2b.productCost ?? b2b.price ?? actualProduct.productCost ?? "",
+      productCost:
+        b2b.productCost ?? b2b.price ?? actualProduct.productCost ?? "",
       studentsPerSupervisor: String(b2b.studentsPerSupervisor ?? "10"),
       weekdayPricing: b2bWeekdayPricing,
       quantityDiscountTiers,
       datePricing: b2bDatePricing,
     },
-    productCost: b2b.productCost ?? b2b.price ?? actualProduct.productCost ?? "",
+    productCost:
+      b2b.productCost ?? b2b.price ?? actualProduct.productCost ?? "",
     studentsPerSupervisor: String(b2b.studentsPerSupervisor ?? "10"),
-    b2cSeats: typeof b2c.availableSeats === "number" ? b2c.availableSeats : maxSeats,
+    b2cSeats:
+      typeof b2c.availableSeats === "number" ? b2c.availableSeats : maxSeats,
     weekdayPricing,
     targetAudiences: finalTargetAudiences,
     b2cTargetAudiences,
     academicStages,
     allowedAges: [],
-    datePricing: b2cDatePricing.length > 0 ? b2cDatePricing : [{ date: "", price: "" }],
+    datePricing:
+      b2cDatePricing.length > 0 ? b2cDatePricing : [{ date: "", price: "" }],
     bulkPricing: [{ minCount: "", price: "" }],
     branchPricing,
     customizedPricingBranches,
     itinerary:
-      Array.isArray(actualProduct.itinerary) && actualProduct.itinerary.length > 0
+      Array.isArray(actualProduct.itinerary) &&
+      actualProduct.itinerary.length > 0
         ? actualProduct.itinerary.map((item, idx) => ({
             day: item.day || idx + 1,
             toDo: {
@@ -756,10 +886,9 @@ const transformProductToFormValues = (product, fixedSelectionLocation) => {
           }))
         : [{ day: 1, toDo: { en: "", ar: "" } }],
     branchTrips: allBranchTrips,
-    bookingDay:
-      Array.isArray(b2b.bookingDay)
-        ? b2b.bookingDay
-        : Array.isArray(actualProduct.bookingDay)
+    bookingDay: Array.isArray(b2b.bookingDay)
+      ? b2b.bookingDay
+      : Array.isArray(actualProduct.bookingDay)
         ? actualProduct.bookingDay
         : [],
   };

@@ -70,6 +70,8 @@ const ProviderProductsManagementPage = () => {
     {
       lang: locale,
       enabled: isAuthenticated,
+      refetchOnMount: "always",
+      staleTime: 0,
     },
     [page, searchTerm, isAuthenticated]
   );

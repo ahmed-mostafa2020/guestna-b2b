@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Formik, Form, useFormikContext } from "formik";
 import { useSnackbar } from "notistack";
+import { useQueryClient } from "@tanstack/react-query";
 import CircularProgress from "@mui/material/CircularProgress";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
@@ -77,6 +78,7 @@ const EditProductPage = () => {
   const locale = useLocale();
   const isAr = locale === "ar";
   const { enqueueSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
   const router = useRouter();
   const params = useParams();
   const productId = params?.id;
@@ -247,6 +249,54 @@ const EditProductPage = () => {
     }
   }, [productData]);
 
+  // Combined Category and Subcategory options for Step 9 Review
+  const reviewCategoryOptions = useMemo(() => {
+    const list = Array.isArray(formSelectionData?.categories)
+      ? [...formSelectionData.categories]
+      : [];
+    if (productData?.category) {
+      const pCat = productData.category;
+      const pCatId = typeof pCat === "object" && pCat !== null ? pCat._id || pCat.id : pCat;
+      if (pCatId && !list.some((c) => (c._id || c.id) === pCatId)) {
+        list.push(pCat);
+      }
+    }
+    return list;
+  }, [formSelectionData?.categories, productData?.category]);
+
+  const reviewSupCategoryOptions = useMemo(() => {
+    const list = [
+      ...(Array.isArray(formSelectionData?.supCategories) ? formSelectionData.supCategories : []),
+      ...(Array.isArray(formSelectionData?.subCategories) ? formSelectionData.subCategories : []),
+      ...(Array.isArray(formSelectionData?.supCategory) ? formSelectionData.supCategory : []),
+      ...(Array.isArray(formSelectionData?.subCategory) ? formSelectionData.subCategory : []),
+    ];
+    (formSelectionData?.categories || []).forEach((cat) => {
+      const catSubs = [
+        ...(Array.isArray(cat?.supCategories) ? cat.supCategories : []),
+        ...(Array.isArray(cat?.subCategories) ? cat.subCategories : []),
+        ...(Array.isArray(cat?.children) ? cat.children : []),
+      ];
+      catSubs.forEach((sc) => list.push(sc));
+    });
+    if (productData) {
+      const pSubs = [
+        ...(Array.isArray(productData?.supCategories) ? productData.supCategories : []),
+        ...(Array.isArray(productData?.subCategories) ? productData.subCategories : []),
+        ...(Array.isArray(productData?.supCategory) ? productData.supCategory : []),
+        ...(Array.isArray(productData?.subCategory) ? productData.subCategory : []),
+      ];
+      if (typeof productData?.supCategory === "object" && productData.supCategory !== null && !Array.isArray(productData.supCategory)) {
+        pSubs.push(productData.supCategory);
+      }
+      if (typeof productData?.subCategory === "object" && productData.subCategory !== null && !Array.isArray(productData.subCategory)) {
+        pSubs.push(productData.subCategory);
+      }
+      pSubs.forEach((sc) => list.push(sc));
+    }
+    return list;
+  }, [formSelectionData, productData]);
+
   // Set SEO Document Title
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t(
@@ -359,11 +409,25 @@ const EditProductPage = () => {
           throw { response: { data, status: response.status } };
         }
 
+        // Invalidate React Query cache so products list page table refetches fresh data
+        await queryClient.invalidateQueries({
+          predicate: (query) =>
+            query.queryKey.some(
+              (key) =>
+                typeof key === "string" &&
+                (key.includes(B2B_END_POINTS.PROVIDER_PROFILE.ALL_PRODUCTS) ||
+                  key.includes(B2B_END_POINTS.PROVIDER_PROFILE.ALL_TRIPS) ||
+                  key.includes(B2B_END_POINTS.PROVIDER_PROFILE.TRIP_DETAILS) ||
+                  key.includes(productId))
+            ),
+        });
+
         enqueueSnackbar(
           t("providerProfile.products.editPage.updateSuccess"),
           { variant: "success" }
         );
 
+        router.refresh();
         router.push(`/${locale}/provider-profile/products-management`);
       } catch (err) {
         console.error(
@@ -383,7 +447,7 @@ const EditProductPage = () => {
         setIsSubmittingForm(false);
       }
     },
-    [formSelectionData, locale, enqueueSnackbar, router, t, productId]
+    [formSelectionData, locale, enqueueSnackbar, router, t, productId, queryClient]
   );
 
   // Unified step validation & progression handler
@@ -682,6 +746,7 @@ const EditProductPage = () => {
                   {currentStep === 1 && (
                     <Step1BasicInfo
                       formSelectionData={formSelectionData}
+                      productData={productData}
                       isSelectionsLoading={isSelectionsLoading}
                     />
                   )}
@@ -746,8 +811,8 @@ const EditProductPage = () => {
                   {currentStep === 9 && (
                     <StepReview
                       formSelectionData={formSelectionData}
-                      categoryOptions={formSelectionData?.categories || []}
-                      supCategoryOptions={formSelectionData?.supCategories || []}
+                      categoryOptions={reviewCategoryOptions}
+                      supCategoryOptions={reviewSupCategoryOptions}
                       academicStageOptions={formSelectionData?.academicStages || []}
                       cityOptions={formSelectionData?.cities || []}
                       providerBranchsOptions={formSelectionData?.providerBranchs || []}
