@@ -1,6 +1,10 @@
 import * as Yup from "yup";
 
 import { createPhoneValidation, emailRegex } from "./authSchemas";
+import {
+  ARABIC_LOCALIZED_TEXT_REGEX,
+  ENGLISH_LOCALIZED_TEXT_REGEX,
+} from "./localizedTextPatterns";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 
 export const PROVIDER_REGISTER_STEPS = ["facility", "location", "review"];
@@ -68,7 +72,7 @@ export const createProviderRegisterSchema = (t) => {
         .min(2, t("providerRegister.validation.name.min"))
         .max(100, t("providerRegister.validation.name.max"))
         .matches(
-          /^[\u0600-\u06FF0-9\s.,!?'-]+$/,
+          ARABIC_LOCALIZED_TEXT_REGEX,
           t("providerRegister.validation.name.ar")
         ),
       en: Yup.string()
@@ -77,7 +81,7 @@ export const createProviderRegisterSchema = (t) => {
         .min(2, t("providerRegister.validation.name.min"))
         .max(100, t("providerRegister.validation.name.max"))
         .matches(
-          /^[a-zA-Z0-9\s.,!?'-]+$/,
+          ENGLISH_LOCALIZED_TEXT_REGEX,
           t("providerRegister.validation.name.en")
         ),
     }),
@@ -89,7 +93,7 @@ export const createProviderRegisterSchema = (t) => {
         .min(5, t("providerRegister.validation.about.min"))
         .max(500, t("providerRegister.validation.about.max"))
         .matches(
-          /^[\u0600-\u06FF0-9\s.,!?'-]+$/,
+          ARABIC_LOCALIZED_TEXT_REGEX,
           t("providerRegister.validation.about.ar")
         ),
       en: Yup.string()
@@ -98,7 +102,7 @@ export const createProviderRegisterSchema = (t) => {
         .min(5, t("providerRegister.validation.about.min"))
         .max(500, t("providerRegister.validation.about.max"))
         .matches(
-          /^[a-zA-Z0-9\s.,!?'-]+$/,
+          ENGLISH_LOCALIZED_TEXT_REGEX,
           t("providerRegister.validation.about.en")
         ),
     }),
@@ -117,14 +121,14 @@ export const createProviderRegisterSchema = (t) => {
         ar: Yup.string()
           .trim()
           .max(100, t("providerRegister.validation.legalName.max"))
-          .matches(/^[\u0600-\u06FF0-9\s.,!?'-]+$/, {
+          .matches(ARABIC_LOCALIZED_TEXT_REGEX, {
             message: t("providerRegister.validation.legalName.ar"),
             excludeEmptyString: true,
           }),
         en: Yup.string()
           .trim()
           .max(100, t("providerRegister.validation.legalName.max"))
-          .matches(/^[a-zA-Z0-9\s.,!?'-]+$/, {
+          .matches(ENGLISH_LOCALIZED_TEXT_REGEX, {
             message: t("providerRegister.validation.legalName.en"),
             excludeEmptyString: true,
           }),

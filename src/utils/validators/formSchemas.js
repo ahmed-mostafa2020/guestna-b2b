@@ -2,6 +2,10 @@ import * as Yup from "yup";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { createPhoneValidation, emailRegex } from "./authSchemas";
+import {
+  ARABIC_LOCALIZED_TEXT_REGEX,
+  ENGLISH_LOCALIZED_TEXT_REGEX,
+} from "./localizedTextPatterns";
 import { isValidPhoneByPattern } from "../phonePatterns";
 
 // Search
@@ -303,7 +307,11 @@ export const createCustomNewTripSchema = (t) =>
     day: Yup.date()
       .required(t("forms.validation.require"))
       .min(
-        (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })(),
+        (() => {
+          const d = new Date();
+          d.setHours(0, 0, 0, 0);
+          return d;
+        })(),
         t("forms.customTrip.steps.trip_date.fields.start_date.error.past_date")
       )
       .test(
@@ -320,7 +328,11 @@ export const createCustomNewTripSchema = (t) =>
     endDay: Yup.date()
       .optional()
       .min(
-        (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })(),
+        (() => {
+          const d = new Date();
+          d.setHours(0, 0, 0, 0);
+          return d;
+        })(),
         t("forms.customTrip.steps.trip_date.fields.end_date.error.past_date")
       )
       .test(
@@ -353,13 +365,13 @@ export const createCustomNewTripSchema = (t) =>
         en: Yup.string()
           .required(t("forms.validation.require"))
           .matches(
-            /^[a-zA-Z0-9\s.,!?'-]+$/,
+            ENGLISH_LOCALIZED_TEXT_REGEX,
             t("forms.customTrip.steps.trip_info.fields.name.en.error")
           ),
         ar: Yup.string()
           .required(t("forms.validation.require"))
           .matches(
-            /^[\u0600-\u06FF0-9\s.,!?'-]+$/,
+            ARABIC_LOCALIZED_TEXT_REGEX,
             t("forms.customTrip.steps.trip_info.fields.name.ar.error")
           ),
       })
@@ -407,7 +419,11 @@ export const editCustomTripSchema = (t, isNormalTrip = false) =>
     day: Yup.date()
       .required(t("forms.validation.require"))
       .min(
-        (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })(),
+        (() => {
+          const d = new Date();
+          d.setHours(0, 0, 0, 0);
+          return d;
+        })(),
         t("forms.customTrip.steps.trip_date.fields.start_date.error.past_date")
       )
       .test(
@@ -424,7 +440,11 @@ export const editCustomTripSchema = (t, isNormalTrip = false) =>
     endDay: Yup.date()
       .optional()
       .min(
-        (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })(),
+        (() => {
+          const d = new Date();
+          d.setHours(0, 0, 0, 0);
+          return d;
+        })(),
         t("forms.customTrip.steps.trip_date.fields.end_date.error.past_date")
       )
       .test(
@@ -453,11 +473,15 @@ export const editCustomTripSchema = (t, isNormalTrip = false) =>
           .required(t("forms.validation.require"))
           .min(
             1,
-            t("forms.customTrip.steps.pricing.fields.total_available_seats.error.min")
+            t(
+              "forms.customTrip.steps.pricing.fields.total_available_seats.error.min"
+            )
           )
           .max(
             10000,
-            t("forms.customTrip.steps.pricing.fields.total_available_seats.error.max")
+            t(
+              "forms.customTrip.steps.pricing.fields.total_available_seats.error.max"
+            )
           )
       : Yup.number().optional(),
 
@@ -475,7 +499,7 @@ export const editCustomTripSchema = (t, isNormalTrip = false) =>
           : Yup.string()
               .required(t("forms.validation.require"))
               .matches(
-                /^[a-zA-Z0-9\s.,!?'-]+$/,
+                ENGLISH_LOCALIZED_TEXT_REGEX,
                 t("forms.customTrip.steps.trip_info.fields.name.en.error")
               ),
         ar: isNormalTrip
@@ -483,7 +507,7 @@ export const editCustomTripSchema = (t, isNormalTrip = false) =>
           : Yup.string()
               .required(t("forms.validation.require"))
               .matches(
-                /^[\u0600-\u06FF0-9\s.,!?'-]+$/,
+                ARABIC_LOCALIZED_TEXT_REGEX,
                 t("forms.customTrip.steps.trip_info.fields.name.ar.error")
               ),
       })

@@ -271,6 +271,7 @@
         "types": {
           "COMMERCIAL_REGISTRATION": "Commercial Registration",
           "TAX_CERTIFICATE": "Tax Certificate",
+          "NATIONAL_ADDRESS": "National Address",
           "OTHER": "Other"
         },
         "statuses": {
@@ -286,6 +287,8 @@
           "documentTypePlaceholder": "Select document type",
           "titleEn": "Title (English)",
           "titleAr": "Title (Arabic)",
+          "titleEnInvalid": "Please use English characters only",
+          "titleArInvalid": "Please use Arabic characters only",
           "file": "File",
           "dragOrClick": "Drag the file here or click to select",
           "supportedFiles": "Supports files: PDF, Excel, CSV",

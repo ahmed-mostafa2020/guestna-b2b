@@ -2,10 +2,15 @@
 
 import { memo } from "react";
 import { useTranslations } from "next-intl";
+import { useSelector } from "react-redux";
 import Skeleton from "@mui/material/Skeleton";
 
-const DocumentsQualificationStats = ({ status, loading = false }) => {
+const DocumentsQualificationStats = () => {
   const t = useTranslations("providerProfile.onboarding.qualification");
+  const { data: status, loading } = useSelector(
+    (state) => state.onboardingStatus
+  );
+  const isLoading = loading === "loading";
   const progress = status?.qualificationProgress;
 
   const cards = [
@@ -60,7 +65,7 @@ const DocumentsQualificationStats = ({ status, loading = false }) => {
               >
                 {card.label}
               </span>
-              {loading ? (
+              {isLoading ? (
                 <Skeleton variant="text" width={40} height={32} />
               ) : (
                 <span

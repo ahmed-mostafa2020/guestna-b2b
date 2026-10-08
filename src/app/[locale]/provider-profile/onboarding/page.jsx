@@ -1,33 +1,61 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
 
 import { useFetchData } from "@hooks/data/useFetchData";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { ONBOARDING_DOCUMENT_TYPES } from "@constants/onboardingDocumentTypes";
 import { USERS } from "@constants/users";
+import {
+  setOnboardingStatus,
+  setOnboardingStatusError,
+  setOnboardingStatusLoading,
+} from "@store/providerOnboarding/onboardingStatusSlice";
+import {
+  setOnboardingDocuments,
+  setOnboardingDocumentsError,
+  setOnboardingDocumentsLoading,
+  setOnboardingDocumentsPage,
+} from "@store/providerOnboarding/onboardingDocumentsSlice";
+import {
+  setOnboardingUploadSelect,
+  setOnboardingUploadSelectError,
+  setOnboardingUploadSelectLoading,
+} from "@store/providerOnboarding/onboardingUploadSelectSlice";
+import {
+  setOnboardingContracts,
+  setOnboardingContractsError,
+  setOnboardingContractsLoading,
+} from "@store/providerOnboarding/onboardingContractsSlice";
 
 import DocumentsQualificationStats from "@components/features/provider-profile/onboarding/DocumentsQualificationStats";
 import DocumentsTable from "@components/features/provider-profile/onboarding/DocumentsTable";
 import ContractsTable from "@components/features/provider-profile/onboarding/ContractsTable";
 import DocumentUploadModal from "@components/features/provider-profile/onboarding/DocumentUploadModal";
 
+const EMPTY_PARAMS = {};
+
 const ProviderOnboardingPage = () => {
   const t = useTranslations();
   const locale = useLocale();
+  const dispatch = useDispatch();
 
   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
   const userType = useSelector((state) => state.users?.userType);
+  const documentsPage = useSelector((state) => state.onboardingDocuments.page);
+  const contractsPage = useSelector((state) => state.onboardingContracts.page);
+  const uploadOptions = useSelector(
+    (state) => state.onboardingUploadSelect.options
+  );
   const isAuthenticated =
     Boolean(token) &&
     userType !== USERS.VISITOR &&
     userType !== USERS.B2B_PARENT;
 
-  const [documentsPage, setDocumentsPage] = useState(1);
-  const [contractsPage, setContractsPage] = useState(1);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [editingDocument, setEditingDocument] = useState(null);
 
@@ -37,88 +65,110 @@ const ProviderOnboardingPage = () => {
     )}`;
   }, [t]);
 
-  /* ─── Fetch Qualification Status ─── */
-  const {
-    data: statusResponse,
-    isLoading: statusLoading,
-    isFetching: statusFetching,
-    refetch: refetchStatus,
-  } = useFetchData(
-    B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.STATUS,
-    {},
-    {
-      lang: locale,
-      enabled: isAuthenticated,
-      staleTime: 0,
-      gcTime: 0,
-      cacheTime: 0,
-      refetchOnMount: "always",
-    }
-  );
-
-  const statusData = statusResponse?.data || statusResponse || null;
-  const isStatusLoading = statusLoading || statusFetching;
-
-  /* ─── Fetch Documents (paginated) ─── */
-  const {
-    data: documentsResponse,
-    isLoading: documentsLoading,
-    isFetching: documentsFetching,
-    refetch: refetchDocuments,
-  } = useFetchData(
-    B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.DOCUMENTS,
-    {
+  const documentsParams = useMemo(
+    () => ({
       page: documentsPage,
       perPage: CONSTANT_VALUES.TABLE_PER_PAGE,
-    },
-    {
-      lang: locale,
-      enabled: isAuthenticated,
-      staleTime: 0,
-      gcTime: 0,
-      cacheTime: 0,
-      refetchOnMount: "always",
-    }
+    }),
+    [documentsPage]
   );
 
-  const documentsData = documentsResponse?.data || documentsResponse || {};
-  const isDocumentsLoading = documentsLoading || documentsFetching;
-
-  /* ─── Fetch Contracts (paginated) ─── */
-  const {
-    data: contractsResponse,
-    isLoading: contractsLoading,
-    isFetching: contractsFetching,
-  } = useFetchData(
-    B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.CONTRACTS,
-    {
+  const contractsParams = useMemo(
+    () => ({
       page: contractsPage,
       perPage: CONSTANT_VALUES.TABLE_PER_PAGE,
-    },
-    {
+    }),
+    [contractsPage]
+  );
+
+  const sharedQueryOptions = useMemo(
+    () => ({
       lang: locale,
       enabled: isAuthenticated,
       staleTime: 0,
       gcTime: 0,
       cacheTime: 0,
       refetchOnMount: "always",
+      queryKeySuffix: locale,
+    }),
+    [locale, isAuthenticated]
+  );
+
+  const { refetch: refetchStatus } = useFetchData(
+    B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.STATUS,
+    EMPTY_PARAMS,
+    {
+      ...sharedQueryOptions,
+      onSuccess: setOnboardingStatus,
+      onError: setOnboardingStatusError,
+      onLoading: setOnboardingStatusLoading,
     }
   );
 
-  const contractsData = contractsResponse?.data || contractsResponse || {};
-  const isContractsLoading = contractsLoading || contractsFetching;
+  const { refetch: refetchDocuments } = useFetchData(
+    B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.DOCUMENTS,
+    documentsParams,
+    {
+      ...sharedQueryOptions,
+      onSuccess: setOnboardingDocuments,
+      onError: setOnboardingDocumentsError,
+      onLoading: setOnboardingDocumentsLoading,
+    }
+  );
 
-  /* ─── Upload Modal ─── */
-  const handleOpenUpload = useCallback((defaults) => {
-    setEditingDocument({
-      _id: defaults?._id || null,
-      documentType: defaults?.documentType || "OTHER",
-      title: defaults?.title || null,
-      lockType: defaults?.lockType !== false,
-      isReupload: Boolean(defaults?.isReupload),
-    });
-    setIsUploadModalOpen(true);
-  }, []);
+  const { refetch: refetchUploadSelect } = useFetchData(
+    B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.DOCUMENTS_UPLOAD_SELECT,
+    EMPTY_PARAMS,
+    {
+      ...sharedQueryOptions,
+      onSuccess: setOnboardingUploadSelect,
+      onError: setOnboardingUploadSelectError,
+      onLoading: setOnboardingUploadSelectLoading,
+    }
+  );
+
+  useFetchData(
+    B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.CONTRACTS,
+    contractsParams,
+    {
+      ...sharedQueryOptions,
+      onSuccess: setOnboardingContracts,
+      onError: setOnboardingContractsError,
+      onLoading: setOnboardingContractsLoading,
+    }
+  );
+
+  const handleOpenUpload = useCallback(
+    (defaults) => {
+      const locked = Boolean(defaults?.lockType);
+      const matchedOption = uploadOptions.find(
+        (option) => option.documentType === defaults?.documentType
+      );
+      const choices = locked
+        ? [
+            {
+              documentType: defaults.documentType,
+              title: matchedOption?.title,
+              _id: defaults._id,
+              documentTitle:
+                defaults.documentType === ONBOARDING_DOCUMENT_TYPES.OTHER
+                  ? defaults.title
+                  : null,
+            },
+          ]
+        : uploadOptions;
+
+      if (!choices.length || !choices[0]?.documentType) return;
+
+      setEditingDocument({
+        lockType: locked,
+        isReupload: Boolean(defaults?.isReupload),
+        choices,
+      });
+      setIsUploadModalOpen(true);
+    },
+    [uploadOptions]
+  );
 
   const handleCloseUpload = useCallback(() => {
     setIsUploadModalOpen(false);
@@ -126,43 +176,34 @@ const ProviderOnboardingPage = () => {
   }, []);
 
   const handleUploadSuccess = useCallback(() => {
-    setDocumentsPage(1);
-    refetchDocuments?.();
+    if (documentsPage === 1) {
+      refetchDocuments?.();
+    } else {
+      dispatch(setOnboardingDocumentsPage(1));
+    }
+    refetchUploadSelect?.();
     refetchStatus?.();
-  }, [refetchDocuments, refetchStatus]);
+  }, [
+    documentsPage,
+    dispatch,
+    refetchDocuments,
+    refetchUploadSelect,
+    refetchStatus,
+  ]);
 
   return (
     <main className="flex flex-col gap-6 lg:gap-8 min-h-screen">
-      <DocumentsQualificationStats
-        status={statusData}
-        loading={isStatusLoading}
-      />
-
-      <DocumentsTable
-        data={documentsData}
-        loading={isDocumentsLoading}
-        currentPage={documentsPage}
-        onPageChange={setDocumentsPage}
-        onUpload={handleOpenUpload}
-      />
-
+      <DocumentsQualificationStats />
+      <DocumentsTable onUpload={handleOpenUpload} />
       <DocumentUploadModal
         open={isUploadModalOpen}
         onClose={handleCloseUpload}
         onSuccess={handleUploadSuccess}
-        documentId={editingDocument?._id || null}
+        choices={editingDocument?.choices || []}
         isReupload={Boolean(editingDocument?.isReupload)}
-        initialDocumentType={editingDocument?.documentType || "OTHER"}
-        initialTitle={editingDocument?.title || null}
-        lockType={editingDocument?.lockType !== false}
+        lockType={Boolean(editingDocument?.lockType)}
       />
-
-      <ContractsTable
-        data={contractsData}
-        loading={isContractsLoading}
-        currentPage={contractsPage}
-        onPageChange={setContractsPage}
-      />
+      <ContractsTable />
     </main>
   );
 };

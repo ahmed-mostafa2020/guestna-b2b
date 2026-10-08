@@ -10,10 +10,8 @@ const DocumentUploadModal = ({
   open,
   onClose,
   onSuccess,
-  documentId = null,
+  choices = [],
   isReupload = false,
-  initialDocumentType = "OTHER",
-  initialTitle,
   lockType = false,
 }) => {
   const t = useTranslations("providerProfile.onboarding.documents");
@@ -41,10 +39,8 @@ const DocumentUploadModal = ({
           </div>
 
           <OnboardingDocumentUploadForm
-            documentId={documentId}
+            choices={choices}
             isReupload={isReupload}
-            initialDocumentType={initialDocumentType}
-            initialTitle={initialTitle}
             lockType={lockType}
             onClose={onClose}
             onSuccess={onSuccess}
