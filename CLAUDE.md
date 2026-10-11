@@ -1,251 +1,42 @@
-# Guestna B2B — Project Guide
+# Guestna B2B
 
-Business-to-business platform for organizations, schools, and parents to plan, customize, and book trips/packages. The main consumer-facing flows are discovery, customization, checkout, and account/permissions management.
-
----
+B2B platform for organizations, schools, and parents to discover, customize, and book trips.
 
 ## Stack
+Next.js 14.2 App Router · React 18 · **JavaScript only** (`.jsx`, no TS in `src`) · Tailwind 3 (CSS-var tokens) + MUI v6/Emotion · TanStack Query + Axios · Redux Toolkit + redux-persist · Formik + Yup · next-intl (`ar` default/RTL, `en`) · Sentry · Yarn (never npm/package-lock).
 
-- **Framework:** Next.js 14.2 (App Router) + React 18 — JavaScript (`jsconfig.json`, not TS in `src`).
-- **UI:** Material UI v6 (+ `@mui/lab`, `@mui/x-date-pickers`) with Emotion, plus Tailwind CSS v3 (`tailwind-merge`, `clsx`).
-- **State:** Redux Toolkit + `redux-persist` (whitelist-based persistence in [src/store/index.js](src/store/index.js)).
-- **Server data:** TanStack Query (`@tanstack/react-query`) + Axios.
-- **Forms:** Formik + Yup.
-- **i18n:** `next-intl` — default locale **`ar`**, also **`en`**. Locale segment lives at `src/app/[locale]/...`. Middleware redirects unprefixed paths to `/ar/...`.
-- **Maps:** `@react-google-maps/api` + `@googlemaps/js-api-loader`.
-- **Payments:** Moyasar + Tamara (CSP allowlists their CDNs/APIs in [middleware.js](middleware.js)).
-- **Observability:** Sentry (`@sentry/nextjs`) — config in [sentry.server.config.js](sentry.server.config.js), [sentry.edge.config.js](sentry.edge.config.js), [src/instrumentation.js](src/instrumentation.js), [src/instrumentation-client.js](src/instrumentation-client.js).
-- **PWA:** `@ducanh2912/next-pwa` (disabled in dev).
-- **Hosting:** Vercel (primary) + Netlify config present.
+## Commands
+- `yarn dev` / `yarn build` / `yarn lint`
+- Lint one file: `yarn eslint <path>` — there is **no typecheck and no test runner**.
+- A hook auto-runs prettier + `eslint --fix` on every edited file.
 
-## Layout
+## Structure
+- `src/app/[locale]/` — all user-facing routes (never add pages beside `[locale]`); `src/app/api/` route handlers; `src/app/messages/{ar,en}.json`
+- `src/components/{ui,forms,features/<domain>,layout,providers}` — reuse `ui/` + `forms/*Group.jsx` primitives first
+- `src/hooks/data` (`useFetchData`, `useMutationData`), `src/utils/{api,validators,helpers}`, `src/store/<domain>`, `src/feedback/{loading,error}`, `src/constants` (endpoints in `APIs`/`b2bAPIs`)
+- Aliases: `@components/* @hooks/* @utils/* @store/* @constants/* @feedback/* @assets/*` — never deep `../../`
 
-```
-src/
-  app/
-    [locale]/        # localized routes: (auth), checkout, discover, customization,
-                     # packageInfo, profile, school-register, parents, contact-us, faq, ...
-    api/             # route handlers (checkout, git-control, sentry-example)
-    git-dashboard/   # internal tool (non-localized)
-    messages/        # next-intl translation JSON
-  assets/            # static images, SVGs, gifs
-  components/        # shared UI (filtersBox, forms, ...)
-  constants/
-  feedback/          # toast/snackbar primitives
-  hooks/             # data, forms, ui, utils
-  store/             # Redux slices grouped by domain
-  utils/             # api, calculations, exports, formatters, helpers, tracking, validators
-middleware.js        # locale redirect + per-request CSP nonce
-next.config.mjs      # Sentry + next-intl + PWA + security headers + image domains
-i18n.config.js
-```
+## Non-negotiable rules
+- No hard-coded UI strings: `useTranslations`/`getTranslations`, add keys to **both** `ar.json` and `en.json`.
+- RTL-safe classes only: `ps-/pe-/ms-/me-/start-/end-/text-start`, never `pl-/pr-/left-/right-` for direction.
+- Colors/fonts from Tailwind tokens (`mainColor`, `secColor`, `textDark`, `error`, `status.*`, `font-somar`/`font-ibm`); compose classes with `cn()` from `@utils/helpers/cn`.
+- CSP is built per request with a nonce in `middleware.js` — never add a static CSP in `next.config.mjs`. New third-party host → update `buildCSP()` (+ `images` domains for images).
+- New persisted Redux slice → add to `rootPersistConfig.whitelist` in `src/store/index.js`; never persist large/derived state.
+- Keep `middleware.js` matcher and `next.config.mjs` rewrites aligned; don't move the Apple Pay `.well-known` rewrite.
+- Forms: Formik + Yup schema in `src/utils/validators`; submit via `FormSubmitButton`.
+- Don't commit secrets; never read `.env*`.
 
-## Path Aliases (from [jsconfig.json](jsconfig.json))
+## Working style
+- Locate code with Grep/Glob before opening files; read only the relevant ranges.
+- Minimal diffs; never rewrite a whole file for a small change; don't touch unrelated code.
+- Plan first (short list) for changes touching 3+ files, then proceed.
+- After edits, lint only the affected files.
+- Short replies: what changed and why — no code recaps.
+- If ambiguous, ask one focused question instead of guessing.
+- No new dependencies without asking.
+- Match surrounding code style; many files contain commented-out legacy code — ignore it, don't delete it unless asked.
 
-`@/*`, `@assets/*`, `@components/*`, `@utils/*`, `@store/*`, `@constants/*`, `@feedback/*`, `@hooks/*`, `@layouts/*`, `@validations/*`, `@lib/*`. **Always prefer aliases over deep relative paths.**
+## Skills
+`.claude/skills/`: nextjs-component, nextjs-data, ui-design, accessibility, performance, code-review, clean-code, forms.
 
-## Scripts
-
-```
-yarn dev      # next dev
-yarn build    # next build
-yarn start    # next start
-yarn lint     # next lint
-```
-
-Package manager is **Yarn** (see `yarn.lock`). Don't introduce `package-lock.json`.
-
----
-
-## Conventions & Things to Watch
-
-### i18n
-- All user-facing routes live under `src/app/[locale]/`. New pages must go inside that segment, never as a sibling of `[locale]`.
-- Default locale is **`ar`** (Arabic, RTL). When adding strings, update both `ar.json` and `en.json` in `src/app/messages/`.
-- Use `next-intl`'s `useTranslations` / `getTranslations` — do not hard-code Arabic/English strings in components.
-
-### Security headers & CSP
-- Static security headers (HSTS, X-Frame-Options, Permissions-Policy, etc.) are set in [next.config.mjs](next.config.mjs).
-- **Content-Security-Policy is dynamic** — built per request with a nonce in [middleware.js](middleware.js). **Do not** add a static CSP to `next.config.mjs`; it would override the nonce-based one and break inline scripts.
-- If you add a new third-party script/image/font/iframe/API host, update the matching directive in `buildCSP()` AND (for images) `images.domains` in `next.config.mjs`.
-
-### Redux persistence
-- Only the slices in `rootPersistConfig.whitelist` ([src/store/index.js](src/store/index.js)) survive reload. Adding a new slice that needs persistence requires whitelisting it. Don't persist large/derived state.
-
-### Routing & middleware
-- The `matcher` in [middleware.js](middleware.js) skips `api`, `_next`, `static`, and any path with a file extension. The `rewrites` block in `next.config.mjs` mirrors this for the locale fallback regex. Keep them aligned if you add new top-level paths.
-
-### Apple Pay
-- `/.well-known/apple-developer-merchantid-domain-association[.txt]` is rewritten to a public file in [next.config.mjs](next.config.mjs). Don't move/rename without updating the rewrite.
-
-### Code style
-- JS only in `src/` (no TS files there). Components are `.jsx`.
-- Forms: Formik + Yup schemas (look in `src/utils/validators` and `src/components/forms`).
-- Styling: prefer MUI `sx` / `styled` for component styling, Tailwind for layout/utility classes. `tailwind-merge` is available for conditional class composition.
-
----
-
-## Byterover MCP — Knowledge Tools
-
-Two tools are available from the Byterover MCP server:
-
-### `byterover-retrieve-knowledge`
-**Use when:**
-- Starting a new task or implementation — gather relevant context first.
-- Before architectural decisions — check existing patterns.
-- When debugging — look for previously stored solutions.
-- Working in unfamiliar parts of the codebase.
-
-### `byterover-store-knowledge`
-**Use when:**
-- Learning new patterns, APIs, or architectural decisions from the codebase.
-- Encountering an error solution or debugging technique worth recording.
-- Finding reusable code patterns or utility functions.
-- Completing a significant task or plan implementation.
-
-[byterover-mcp]
-
-[byterover-mcp]
-
-You are given two tools from Byterover MCP server, including
-## 1. `byterover-store-knowledge`
-You `MUST` always use this tool when:
-
-+ Learning new patterns, APIs, or architectural decisions from the codebase
-+ Encountering error solutions or debugging techniques
-+ Finding reusable code patterns or utility functions
-+ Completing any significant task or plan implementation
-
-## 2. `byterover-retrieve-knowledge`
-You `MUST` always use this tool when:
-
-+ Starting any new task or implementation to gather relevant context
-+ Before making architectural decisions to understand existing patterns
-+ When debugging issues to check for previous solutions
-+ Working with unfamiliar parts of the codebase
-
-[byterover-mcp]
-
-[byterover-mcp]
-
-You are given two tools from Byterover MCP server, including
-## 1. `byterover-store-knowledge`
-You `MUST` always use this tool when:
-
-+ Learning new patterns, APIs, or architectural decisions from the codebase
-+ Encountering error solutions or debugging techniques
-+ Finding reusable code patterns or utility functions
-+ Completing any significant task or plan implementation
-
-## 2. `byterover-retrieve-knowledge`
-You `MUST` always use this tool when:
-
-+ Starting any new task or implementation to gather relevant context
-+ Before making architectural decisions to understand existing patterns
-+ When debugging issues to check for previous solutions
-+ Working with unfamiliar parts of the codebase
-
-[byterover-mcp]
-
-[byterover-mcp]
-
-You are given two tools from Byterover MCP server, including
-## 1. `byterover-store-knowledge`
-You `MUST` always use this tool when:
-
-+ Learning new patterns, APIs, or architectural decisions from the codebase
-+ Encountering error solutions or debugging techniques
-+ Finding reusable code patterns or utility functions
-+ Completing any significant task or plan implementation
-
-## 2. `byterover-retrieve-knowledge`
-You `MUST` always use this tool when:
-
-+ Starting any new task or implementation to gather relevant context
-+ Before making architectural decisions to understand existing patterns
-+ When debugging issues to check for previous solutions
-+ Working with unfamiliar parts of the codebase
-
-[byterover-mcp]
-
-[byterover-mcp]
-
-You are given two tools from Byterover MCP server, including
-## 1. `byterover-store-knowledge`
-You `MUST` always use this tool when:
-
-+ Learning new patterns, APIs, or architectural decisions from the codebase
-+ Encountering error solutions or debugging techniques
-+ Finding reusable code patterns or utility functions
-+ Completing any significant task or plan implementation
-
-## 2. `byterover-retrieve-knowledge`
-You `MUST` always use this tool when:
-
-+ Starting any new task or implementation to gather relevant context
-+ Before making architectural decisions to understand existing patterns
-+ When debugging issues to check for previous solutions
-+ Working with unfamiliar parts of the codebase
-
-[byterover-mcp]
-
-[byterover-mcp]
-
-You are given two tools from Byterover MCP server, including
-## 1. `byterover-store-knowledge`
-You `MUST` always use this tool when:
-
-+ Learning new patterns, APIs, or architectural decisions from the codebase
-+ Encountering error solutions or debugging techniques
-+ Finding reusable code patterns or utility functions
-+ Completing any significant task or plan implementation
-
-## 2. `byterover-retrieve-knowledge`
-You `MUST` always use this tool when:
-
-+ Starting any new task or implementation to gather relevant context
-+ Before making architectural decisions to understand existing patterns
-+ When debugging issues to check for previous solutions
-+ Working with unfamiliar parts of the codebase
-
-[byterover-mcp]
-
-[byterover-mcp]
-
-You are given two tools from Byterover MCP server, including
-## 1. `byterover-store-knowledge`
-You `MUST` always use this tool when:
-
-+ Learning new patterns, APIs, or architectural decisions from the codebase
-+ Encountering error solutions or debugging techniques
-+ Finding reusable code patterns or utility functions
-+ Completing any significant task or plan implementation
-
-## 2. `byterover-retrieve-knowledge`
-You `MUST` always use this tool when:
-
-+ Starting any new task or implementation to gather relevant context
-+ Before making architectural decisions to understand existing patterns
-+ When debugging issues to check for previous solutions
-+ Working with unfamiliar parts of the codebase
-
-[byterover-mcp]
-
-[byterover-mcp]
-
-You are given two tools from Byterover MCP server, including
-## 1. `byterover-store-knowledge`
-You `MUST` always use this tool when:
-
-+ Learning new patterns, APIs, or architectural decisions from the codebase
-+ Encountering error solutions or debugging techniques
-+ Finding reusable code patterns or utility functions
-+ Completing any significant task or plan implementation
-
-## 2. `byterover-retrieve-knowledge`
-You `MUST` always use this tool when:
-
-+ Starting any new task or implementation to gather relevant context
-+ Before making architectural decisions to understand existing patterns
-+ When debugging issues to check for previous solutions
-+ Working with unfamiliar parts of the codebase
+Byterover MCP (if connected): `byterover-retrieve-knowledge` before unfamiliar/architectural work; `byterover-store-knowledge` after notable fixes or patterns.
