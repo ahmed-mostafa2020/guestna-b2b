@@ -68,3 +68,4 @@ build_log.txt
 build_utf8.log
 implementation-guide.md
 refactor-enhancement-plan.md
+.claude/settings.local.json
