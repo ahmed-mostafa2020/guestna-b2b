@@ -69,7 +69,7 @@ const BookingStepper = ({
                   aria-hidden="true"
                   className={cn(
                     "h-px w-10 sm:w-20 md:w-28 transition-colors duration-300",
-                    isCompleted ? "bg-secColor" : "bg-titleColor/60"
+                    isCompleted ? "bg-secColor" : "bg-accordionBorder"
                   )}
                 />
               )}

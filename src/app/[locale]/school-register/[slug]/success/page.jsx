@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import SchoolTripBookingSuccessCard from "@components/features/schoolTripBookingSuccess/SchoolTripBookingSuccessCard";
 
@@ -73,15 +73,15 @@ const SchoolTripBookingSuccessContent = ({ params }) => {
   }, [t]);
 
   return (
-    <main className="min-h-screen relative overflow-hidden bg-[#F8FAFC] pb-16">
+    <main className="min-h-screen relative overflow-hidden bg-activityDetailsBg pb-16">
       {/* Background Floating Accents matching Figma */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-12 -right-24 md:right-10 w-80 md:w-96 h-80 md:h-96 rounded-full bg-[#086F68] opacity-5 blur-[72px]"
+        className="pointer-events-none absolute top-12 -end-24 md:end-10 w-80 md:w-96 h-80 md:h-96 rounded-full bg-mainColor opacity-5 blur-[72px]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-12 -left-24 md:left-10 w-80 md:w-96 h-80 md:h-96 rounded-full bg-[#C99635] opacity-10 blur-[72px]"
+        className="pointer-events-none absolute bottom-12 -start-24 md:start-10 w-80 md:w-96 h-80 md:h-96 rounded-full bg-secColor opacity-10 blur-[72px]"
       />
 
       <div className="mt-6 md:mt-10 px-4 max-w-7xl mx-auto relative z-10 flex justify-center">

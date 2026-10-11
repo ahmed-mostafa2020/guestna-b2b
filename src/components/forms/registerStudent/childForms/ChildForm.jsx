@@ -123,7 +123,7 @@ const ChildForm = ({
               />
               {gradesLoading && (
                 <div className="absolute end-10 top-[70%] transform -translate-y-1/2 pointer-events-none">
-                  <CircularProgress size={20} sx={{ color: "#ED8A22" }} />
+                  <CircularProgress size={20} sx={{ color: "var(--color-secondary)" }} />
                 </div>
               )}
             </div>

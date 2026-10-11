@@ -4750,7 +4750,8 @@
     "actions": {
       "primary": "Continue to complete sharing {tripName} and get the link",
       "primaryDefault": "Continue to complete sharing Al-Qiddiya trip and get the link",
-      "secondary": "Explore the School Trips Guide for the Academic Year"
+      "secondary": "Explore the School Trips Guide for the Academic Year",
+      "ariaLabel": "Account actions"
     },
     "breadcrumbs": {
       "confirmation": "Account Confirmation"

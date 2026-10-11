@@ -29,14 +29,12 @@ const RequestQuote = () => {
   const params = useParams();
 
   const tripDetailsData = useSelector((state) => state.tripDetailsData?.data);
+  const checkoutTripSlug = useSelector((state) => state.checkoutData?.tripSlug);
   const trip = tripDetailsData?.trip;
   const isMarketTemplate = Boolean(
     trip?.marketTemplate ?? tripDetailsData?.marketTemplate
   );
-  const tripSlug =
-    params?.tripSlug ||
-    useSelector((state) => state.checkoutData?.tripSlug) ||
-    trip?.slug;
+  const tripSlug = params?.tripSlug || checkoutTripSlug || trip?.slug;
   const tripId = trip?._id || tripSlug;
 
   return (
@@ -70,7 +68,7 @@ const RequestQuote = () => {
             >
               {t("tripDetails.marketTemplate.cta")}
             </Link>
-            <p className="text-xs font-medium text-center font-ibm text-textDark/85 leading-relaxed px-1">
+            <p className="text-xs font-medium text-center font-ibm text-textDark leading-relaxed px-1">
               {t("tripDetails.marketTemplate.ctaDescription")}
             </p>
           </div>

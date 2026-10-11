@@ -7,6 +7,7 @@ import AutocompleteInputGroup from "../AutocompleteInputGroup";
 import CheckboxGroup from "../CheckboxGroup";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import formatDateForInput from "@utils/formatters/FormateDateForInput";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 
 import PhoneInputWithCountrySelect from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -296,7 +297,7 @@ const ParentFormFields = ({
             )}
             value={
               values.nationality ||
-              nationalities?.find((n) => n._id === "68052bdd38ea31c8cf95dc04")
+              nationalities?.find((n) => n._id === CONSTANT_VALUES.DEFAULT_NATIONALITY_ID)
                 ?._id
             }
             onChange={handleChangeNationality}
@@ -312,7 +313,7 @@ const ParentFormFields = ({
 
         {/* Day Block Pricing inputs wrapped in a nice responsive UI sub-grid */}
         {isDayBlockEnabled && (
-          <div className="col-span-full border border-border/60 bg-gray-50/30 rounded-xl p-5 mt-2">
+          <div className="col-span-full border border-border bg-activityDetailsBg rounded-xl p-5 mt-2">
             <h4 className="text-sm font-semibold text-titleColor pb-4 font-somar">
               {t("forms.registerForm.dayBlockPricing.sectionTitle")}
             </h4>

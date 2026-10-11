@@ -120,7 +120,7 @@ const TermsConfirmationModal = ({
           </div>
 
           {/* Terms Confirmation Checkbox */}
-          <div className="mt-6 p-4 bg-[#FFF1764D] rounded-xl">
+          <div className="mt-6 p-4 bg-noticeBg rounded-xl">
             <CheckboxGroup
               label={t("forms.termsConfirmation.modal.confirmLabel")}
               isChecked={isChecked}

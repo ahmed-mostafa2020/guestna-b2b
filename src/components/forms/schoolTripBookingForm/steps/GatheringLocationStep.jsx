@@ -90,7 +90,7 @@ const GatheringLocationStep = ({ cities = [] }) => {
           required
         />
 
-        <p className="flex items-start gap-2 mt-2 px-4 py-3 rounded-lg bg-secColor/10 text-sm font-somar text-textDark">
+        <p className="flex items-start gap-2 mt-2 px-4 py-3 rounded-lg bg-status-warning-bg text-sm font-somar text-textDark">
           <InfoOutlined className="text-secColor shrink-0" sx={{ fontSize: 18 }} />
           {t("schoolProfit.hint")}
         </p>

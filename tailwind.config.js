@@ -124,6 +124,7 @@ module.exports = {
         upperBarBg: "var(--color-bg-upper-bar)",
         headerBg: "var(--color-bg-header)",
         figure: "var(--color-bg-figure)",
+        noticeBg: "var(--color-bg-notice)",
       },
       boxShadow: {
         card: "0px 0px 4px 0px rgba(0, 0, 0, 0.16)",

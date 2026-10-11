@@ -368,7 +368,7 @@ const GatheringLocationPicker = ({
           <button
             type="button"
             onClick={handleClear}
-            className="flex items-center gap-1 text-xs text-error hover:text-red-700 font-medium font-somar transition-colors cursor-pointer"
+            className="flex items-center gap-1 text-xs text-error hover:opacity-80 font-medium font-somar transition-colors cursor-pointer"
           >
             <Close className="!w-3.5 !h-3.5" />
             <span>{t("clear")}</span>
@@ -377,21 +377,21 @@ const GatheringLocationPicker = ({
       </div>
 
       {/* 2. Instruction Banner */}
-      <div className="flex items-center gap-2 border border-border rounded-xl px-4 py-2.5 text-xs sm:text-sm font-somar bg-gray-50 text-textLight">
+      <div className="flex items-center gap-2 border border-border rounded-xl px-4 py-2.5 text-xs sm:text-sm font-somar bg-activityDetailsBg text-textLight">
         <NearMeOutlined className="!w-4 !h-4 text-mainColor shrink-0 -rotate-45" />
         <span>{t("instruction")}</span>
       </div>
 
       {/* 3. Interactive Map Canvas (Placed ABOVE the link input as requested) */}
-      <div className="relative w-full h-56 sm:h-72 rounded-xl overflow-hidden border border-border bg-gray-100">
+      <div className="relative w-full h-56 sm:h-72 rounded-xl overflow-hidden border border-border bg-status-neutral-bg">
         <div ref={mapRef} className="w-full h-full" />
         {!isMapLoaded && !mapError && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-50/80 z-10">
+          <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-10">
             <CircularProgress size={32} sx={{ color: "var(--color-main)" }} />
           </div>
         )}
         {mapError && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 p-4 text-center text-sm text-error font-somar">
+          <div className="absolute inset-0 flex items-center justify-center bg-status-neutral-bg p-4 text-center text-sm text-error font-somar">
             {mapError}
           </div>
         )}
@@ -420,9 +420,9 @@ const GatheringLocationPicker = ({
             placeholder={t("linkPlaceholder")}
             dir="ltr"
             className={cn(
-              "w-full ps-3.5 pe-11 py-3 text-sm border-2 rounded-xl outline-none font-somar placeholder:text-muted-foreground transition-all duration-200",
+              "w-full ps-3.5 pe-11 py-3 text-sm border-2 rounded-xl outline-none font-somar placeholder:text-textLight transition-all duration-200",
               hasValidationError
-                ? "border-error bg-red-50/20 text-textDark focus:border-error focus:ring-1 focus:ring-error"
+                ? "border-error bg-white text-textDark focus:border-error focus:ring-1 focus:ring-error"
                 : "border-border bg-white text-textDark focus:border-mainColor"
             )}
           />
@@ -435,7 +435,7 @@ const GatheringLocationPicker = ({
             <button
               type="button"
               onClick={handleClear}
-              className="absolute end-2.5 top-1/2 -translate-y-1/2 p-1 text-textLight hover:text-error transition-colors cursor-pointer rounded-full hover:bg-gray-100 flex items-center justify-center"
+              className="absolute end-2.5 top-1/2 -translate-y-1/2 p-1 text-textLight hover:text-error transition-colors cursor-pointer rounded-full hover:bg-status-neutral-bg flex items-center justify-center"
               aria-label={t("clear")}
             >
               <Close className="!w-4 !h-4" />
@@ -459,7 +459,7 @@ const GatheringLocationPicker = ({
         )}
 
         {!isResolving && resolveStatus?.type === "success" && (
-          <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-somar font-medium pt-0.5">
+          <div className="flex items-center gap-1.5 text-xs text-status-success-fg font-somar font-medium pt-0.5">
             <CheckCircleOutline className="!w-4 !h-4" />
             <span>{resolveStatus.message}</span>
           </div>
@@ -474,7 +474,7 @@ const GatheringLocationPicker = ({
 
         {/* Resolved Coordinates Badge, Detected City & Google Maps Link */}
         {hasCoords && (
-          <div className="flex flex-wrap items-center justify-between gap-2 pt-2 px-3 py-2 rounded-lg bg-mainColor/[0.04] border border-mainColor/15">
+          <div className="flex flex-wrap items-center justify-between gap-2 pt-2 px-3 py-2 rounded-lg bg-buttonsHover border border-border">
             <div className="flex flex-wrap items-center gap-3 text-xs font-somar text-textDark">
               <div className="flex items-center gap-1.5">
                 <span className="font-semibold text-mainColor">{t("coordinatesLabel")}</span>

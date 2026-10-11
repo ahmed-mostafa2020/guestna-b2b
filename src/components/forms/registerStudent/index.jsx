@@ -40,7 +40,7 @@ const EMPTY_COMPANION = {
   relationship: "",
   age: "",
   nationalId: "",
-  nationality: "68052bdd38ea31c8cf95dc04", // Saudi Arabia
+  nationality: CONSTANT_VALUES.DEFAULT_NATIONALITY_ID,
   note: "",
 };
 
@@ -77,7 +77,7 @@ const checkboxLabelSx = {
   margin: 0,
   width: "100%",
   "& .MuiFormControlLabel-label": {
-    color: "#1F2626",
+    color: "var(--color-text-dark)",
     fontSize: "14px",
     lineHeight: 1.6,
     fontFamily: "var(--font-somar-sans), sans-serif",
@@ -104,7 +104,7 @@ const RegisterStudentForm = ({
   const [___, setGradeError] = useState("");
 
   const [childrenNumber, setChildrenNumber] = useState(1);
-  const [nationality, setNationality] = useState("68052bdd38ea31c8cf95dc04");
+  const [nationality, setNationality] = useState(CONSTANT_VALUES.DEFAULT_NATIONALITY_ID);
   const [nationalIdImage, setNationalIdImage] = useState(null);
   const [nationalIdImageError, setNationalIdImageError] = useState("");
 
@@ -555,7 +555,7 @@ const RegisterStudentForm = ({
           mobile: parentPhone || "",
           backupMobile: "",
           email: parentEmail || "",
-          nationality: "68052bdd38ea31c8cf95dc04",
+          nationality: CONSTANT_VALUES.DEFAULT_NATIONALITY_ID,
           nationalId: "",
           promoCode: "",
           duration: tripDuration || null,
@@ -1072,7 +1072,7 @@ const RegisterStudentForm = ({
 
               {/* Parent responsibility confirmation */}
               {stepKey === "parent" && (
-                <div className="p-4 bg-[#FFF1764D] rounded-xl">
+                <div className="p-4 bg-noticeBg rounded-xl">
                   <FormControlLabel
                     sx={checkboxLabelSx}
                     control={
@@ -1093,7 +1093,7 @@ const RegisterStudentForm = ({
 
               {/* Terms Confirmation Checkbox */}
               {isLastFormStep && (
-                <div className="p-4 bg-[#FFF1764D] rounded-xl">
+                <div className="p-4 bg-noticeBg rounded-xl">
                   <FormControlLabel
                     sx={checkboxLabelSx}
                     control={
