@@ -19,6 +19,7 @@ const FileUploadGroup = memo(
     disallowedTypes = ["image/svg+xml"],
     value = null,
     required = false,
+    labelClassName = "",
   }) => {
     const [selectedFileName, setSelectedFileName] = useState("");
     const [fileError, setFileError] = useState("");
@@ -73,7 +74,13 @@ const FileUploadGroup = memo(
     return (
       <div className="relative min-w-[25%] flex flex-col flex-1 gap-2 transition-all duration-200 ease-in-out">
         {label && (
-          <label htmlFor={name} className="font-medium capitalize font-ibm">
+          <label
+            htmlFor={name}
+            className={cn(
+              "font-medium capitalize",
+              labelClassName || "font-ibm"
+            )}
+          >
             {label}
             {required && <span className="text-error">{"*"}</span>}
           </label>

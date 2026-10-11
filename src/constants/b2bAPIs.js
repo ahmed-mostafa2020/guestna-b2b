@@ -202,6 +202,13 @@ export const B2B_END_POINTS = {
     GRADES_BY_STAGES: "grades/stages",
   },
 
+  // School booking for market trips (school-register/[slug])
+  ORGANIZATIONS_MARKET_TRIP: {
+    SELECT: "organizations/market-trip/select",
+    SUBMIT: "organizations/market-trip",
+    SUBMIT_ORG: "organizations/market-trip-org",
+  },
+
   PROVIDER_REGISTER: {
     SELECTIONS: "providers/register/selections",
     SUBMIT: "providers/register",

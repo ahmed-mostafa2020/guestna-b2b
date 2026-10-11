@@ -5,8 +5,6 @@ import { memo } from "react";
 import Skeleton from "@mui/material/Skeleton";
 import Image from "next/image";
 
-
-
 /* ─── Skeleton ─── */
 const ActivityCardSkeleton = () => (
   <div className="flex gap-4 p-3.5 bg-gray-50 border border-border rounded-xl animate-pulse">
@@ -84,12 +82,6 @@ const ActivityCard = ({ trip, t }) => {
               {t("providerProfile.home.recentActivities.branch")}:
             </strong>{" "}
             {branchName}
-          </span>
-          <span>
-            <strong className="text-textDark font-semibold">
-              {t("providerProfile.home.recentActivities.school")}:
-            </strong>{" "}
-            {orgName}
           </span>
         </div>
 

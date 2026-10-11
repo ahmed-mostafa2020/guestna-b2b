@@ -44,6 +44,9 @@ export const CONSTANT_VALUES = {
     PARENT: "PARENT",
   },
 
+  // Saudi Arabia nationality id (default for parents and companions)
+  DEFAULT_NATIONALITY_ID: "68052bdd38ea31c8cf95dc04",
+
   MAIN_CATEGORIES: {
     ENTERTAINMENT_CENTERS: "ENTERTAINMENT_CENTERS",
     RIYADH_VIBES: "RIYADH_VIBES",

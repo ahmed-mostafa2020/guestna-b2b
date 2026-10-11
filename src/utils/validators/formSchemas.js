@@ -98,6 +98,34 @@ export const createRegisterChildSchema = (
 
     relationship: Yup.string().optional(),
 
+    companionsCount: Yup.number().min(0).max(9).optional(),
+
+    companions: Yup.array().of(
+      Yup.object().shape({
+        name: Yup.string()
+          .trim()
+          .required(t("forms.validation.require"))
+          .min(3, t("forms.name.error.min"))
+          .max(50, t("forms.name.error.max")),
+        relationship: Yup.string().required(t("forms.validation.require")),
+        age: Yup.number()
+          .transform((value, originalValue) =>
+            originalValue === "" ? undefined : value
+          )
+          .typeError(t("forms.validation.number"))
+          .integer(t("forms.validation.integer"))
+          .min(1, t("forms.validation.number"))
+          .max(120, t("forms.validation.number"))
+          .optional(),
+        nationalId: Yup.string()
+          .matches(/^\d+$/, t("forms.validation.number"))
+          .max(20, t("forms.nationalId.error.max"))
+          .optional(),
+        nationality: Yup.string().optional(),
+        note: Yup.string().max(500).optional(),
+      })
+    ),
+
     children: Yup.array()
       .of(
         Yup.object().shape({
@@ -303,7 +331,11 @@ export const createCustomNewTripSchema = (t) =>
     day: Yup.date()
       .required(t("forms.validation.require"))
       .min(
-        (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })(),
+        (() => {
+          const d = new Date();
+          d.setHours(0, 0, 0, 0);
+          return d;
+        })(),
         t("forms.customTrip.steps.trip_date.fields.start_date.error.past_date")
       )
       .test(
@@ -320,7 +352,11 @@ export const createCustomNewTripSchema = (t) =>
     endDay: Yup.date()
       .optional()
       .min(
-        (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })(),
+        (() => {
+          const d = new Date();
+          d.setHours(0, 0, 0, 0);
+          return d;
+        })(),
         t("forms.customTrip.steps.trip_date.fields.end_date.error.past_date")
       )
       .test(
@@ -407,7 +443,11 @@ export const editCustomTripSchema = (t, isNormalTrip = false) =>
     day: Yup.date()
       .required(t("forms.validation.require"))
       .min(
-        (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })(),
+        (() => {
+          const d = new Date();
+          d.setHours(0, 0, 0, 0);
+          return d;
+        })(),
         t("forms.customTrip.steps.trip_date.fields.start_date.error.past_date")
       )
       .test(
@@ -424,7 +464,11 @@ export const editCustomTripSchema = (t, isNormalTrip = false) =>
     endDay: Yup.date()
       .optional()
       .min(
-        (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })(),
+        (() => {
+          const d = new Date();
+          d.setHours(0, 0, 0, 0);
+          return d;
+        })(),
         t("forms.customTrip.steps.trip_date.fields.end_date.error.past_date")
       )
       .test(
@@ -453,11 +497,15 @@ export const editCustomTripSchema = (t, isNormalTrip = false) =>
           .required(t("forms.validation.require"))
           .min(
             1,
-            t("forms.customTrip.steps.pricing.fields.total_available_seats.error.min")
+            t(
+              "forms.customTrip.steps.pricing.fields.total_available_seats.error.min"
+            )
           )
           .max(
             10000,
-            t("forms.customTrip.steps.pricing.fields.total_available_seats.error.max")
+            t(
+              "forms.customTrip.steps.pricing.fields.total_available_seats.error.max"
+            )
           )
       : Yup.number().optional(),
 
@@ -713,6 +761,123 @@ export const createChildImageUploadSchema = (t) =>
       .notRequired(),
   });
 
+// ---------------------------------------------------------------------------
+// School shared field builders (used by school register + school trip booking)
+// ---------------------------------------------------------------------------
+
+// Educational track, stages and grades
+const getSchoolTrackFields = (t) => ({
+  educationalTrack: Yup.string()
+    .trim()
+    .required(t("schoolRegister.validation.educationalTrack.required"))
+    .min(2, t("schoolRegister.validation.educationalTrack.min"))
+    .max(100, t("schoolRegister.validation.educationalTrack.max")),
+
+  stages: Yup.array()
+    .of(Yup.string())
+    .min(1, t("schoolRegister.validation.stages.required")),
+
+  grades: Yup.array()
+    .of(Yup.string())
+    .min(1, t("schoolRegister.validation.grades.required")),
+});
+
+// Organization info, contact person and additional users
+const getSchoolOrganizationFields = (t) => ({
+  schoolNameArabic: Yup.string()
+    .trim()
+    .required(t("schoolRegister.validation.schoolNameArabic.required"))
+    .min(2, t("schoolRegister.validation.schoolNameArabic.min"))
+    .max(100, t("schoolRegister.validation.schoolNameArabic.max")),
+
+  schoolNameEnglish: Yup.string()
+    .trim()
+    .required(t("schoolRegister.validation.schoolNameEnglish.required"))
+    .min(2, t("schoolRegister.validation.schoolNameEnglish.min"))
+    .max(100, t("schoolRegister.validation.schoolNameEnglish.max")),
+
+  organizationEmail: Yup.string()
+    .email(t("forms.email.error"))
+    .matches(emailRegex, t("forms.email.error_tld"))
+    .required(t("forms.validation.require"))
+    .test(
+      "emails-different",
+      t("schoolRegister.validation.organizationEmail.sameAsContactEmail"),
+      function (value) {
+        const { email } = this.parent;
+        if (!value || !email) return true;
+        return value.toLowerCase() !== email.toLowerCase();
+      }
+    ),
+
+  organizationPhone: createPhoneValidation(t, true),
+
+  gender: Yup.array()
+    .of(Yup.string())
+    .min(1, t("schoolRegister.validation.gender.required"))
+    .required(t("schoolRegister.validation.gender.required")),
+
+  functionalDegree: Yup.string()
+    .trim()
+    .required(t("schoolRegister.validation.functionalDegree.required"))
+    .min(2, t("schoolRegister.validation.functionalDegree.min"))
+    .max(50, t("schoolRegister.validation.functionalDegree.max")),
+
+  contactPersonName: Yup.string()
+    .trim()
+    .required(t("schoolRegister.validation.contactPersonName.required"))
+    .min(2, t("schoolRegister.validation.contactPersonName.min"))
+    .max(50, t("schoolRegister.validation.contactPersonName.max")),
+
+  email: Yup.string()
+    .email(t("forms.email.error"))
+    .matches(emailRegex, t("forms.email.error_tld"))
+    .required(t("forms.validation.require"))
+    .test(
+      "emails-different",
+      t("schoolRegister.validation.email.sameAsOrganizationEmail"),
+      function (value) {
+        const { organizationEmail } = this.parent;
+        if (!value || !organizationEmail) return true;
+        return value.toLowerCase() !== organizationEmail.toLowerCase();
+      }
+    ),
+
+  mobile: createPhoneValidation(t, true),
+
+  city: Yup.string().required(t("schoolRegister.validation.city.required")),
+
+  additionalUsers: Yup.array()
+    .of(
+      Yup.object().shape({
+        name: Yup.string()
+          .trim()
+          .required(t("schoolRegister.validation.additionalUser.name.required"))
+          .min(2, t("schoolRegister.validation.additionalUser.name.min"))
+          .max(50, t("schoolRegister.validation.additionalUser.name.max")),
+
+        role: Yup.string()
+          .trim()
+          .required(t("schoolRegister.validation.additionalUser.role.required"))
+          .min(2, t("schoolRegister.validation.additionalUser.role.min"))
+          .max(50, t("schoolRegister.validation.additionalUser.role.max")),
+
+        email: Yup.string()
+          .email(t("schoolRegister.validation.additionalUser.email.invalid"))
+          .matches(
+            emailRegex,
+            t("schoolRegister.validation.additionalUser.email.invalid")
+          )
+          .required(
+            t("schoolRegister.validation.additionalUser.email.required")
+          ),
+
+        mobile: createPhoneValidation(t, true),
+      })
+    )
+    .max(1, "Maximum 1 additional users allowed"),
+});
+
 // School Register Form
 export const createSchoolRegisterSchema = (t) =>
   Yup.object().shape({
@@ -722,17 +887,65 @@ export const createSchoolRegisterSchema = (t) =>
       .min(2, t("schoolRegister.validation.salesPersonName.min"))
       .max(50, t("schoolRegister.validation.salesPersonName.max")),
 
+    ...getSchoolTrackFields(t),
+    ...getSchoolOrganizationFields(t),
+  });
+
+// School Trip Booking Form (market-template trips) — 3 steps
+// Step 1: request details | Step 2: contact info | Step 3: gathering location & profit
+export const createSchoolTripBookingSchema = (t, availableDays = []) =>
+  Yup.object().shape({
+    // Step 1 — Request details
+    ...getSchoolTrackFields(t),
+
+    date: Yup.string()
+      .required(t("schoolTripBooking.validation.date.required"))
+      .test(
+        "valid-booking-date",
+        t("schoolTripBooking.validation.date.unavailable") ||
+          t("schoolTripBooking.validation.date.past"),
+        (value) => {
+          if (!value) return true;
+          if (Array.isArray(availableDays) && availableDays.length > 0) {
+            return availableDays.includes(value);
+          }
+          const now = new Date();
+          const today = [
+            now.getFullYear(),
+            String(now.getMonth() + 1).padStart(2, "0"),
+            String(now.getDate()).padStart(2, "0"),
+          ].join("-");
+          return value >= today;
+        }
+      ),
+
+    studentsCount: Yup.number()
+      .typeError(t("schoolTripBooking.validation.studentsCount.invalid"))
+      .required(t("schoolTripBooking.validation.studentsCount.required"))
+      .integer(t("schoolTripBooking.validation.studentsCount.invalid"))
+      .min(10, t("schoolTripBooking.validation.studentsCount.min"))
+      .max(5000, t("schoolTripBooking.validation.studentsCount.max")),
+
+    // Step 2 — Contact info
     schoolNameArabic: Yup.string()
       .trim()
       .required(t("schoolRegister.validation.schoolNameArabic.required"))
       .min(2, t("schoolRegister.validation.schoolNameArabic.min"))
-      .max(100, t("schoolRegister.validation.schoolNameArabic.max")),
+      .max(100, t("schoolRegister.validation.schoolNameArabic.max"))
+      .matches(
+        /^[\u0600-\u06FF0-9\s.,!?'-]+$/,
+        t("schoolRegister.validation.schoolNameArabic.onlyArabic")
+      ),
 
     schoolNameEnglish: Yup.string()
       .trim()
       .required(t("schoolRegister.validation.schoolNameEnglish.required"))
       .min(2, t("schoolRegister.validation.schoolNameEnglish.min"))
-      .max(100, t("schoolRegister.validation.schoolNameEnglish.max")),
+      .max(100, t("schoolRegister.validation.schoolNameEnglish.max"))
+      .matches(
+        /^[a-zA-Z0-9\s.,!?'-]+$/,
+        t("schoolRegister.validation.schoolNameEnglish.onlyEnglish")
+      ),
 
     organizationEmail: Yup.string()
       .email(t("forms.email.error"))
@@ -750,36 +963,21 @@ export const createSchoolRegisterSchema = (t) =>
 
     organizationPhone: createPhoneValidation(t, true),
 
-    gender: Yup.array()
-      .of(Yup.string())
-      .min(1, t("schoolRegister.validation.gender.required"))
-      .required(t("schoolRegister.validation.gender.required")),
-
-    educationalTrack: Yup.string()
-      .trim()
-      .required(t("schoolRegister.validation.educationalTrack.required"))
-      .min(2, t("schoolRegister.validation.educationalTrack.min"))
-      .max(100, t("schoolRegister.validation.educationalTrack.max")),
-
-    stages: Yup.array()
-      .of(Yup.string())
-      .min(1, t("schoolRegister.validation.stages.required")),
-
-    grades: Yup.array()
-      .of(Yup.string())
-      .min(1, t("schoolRegister.validation.grades.required")),
-
-    functionalDegree: Yup.string()
-      .trim()
-      .required(t("schoolRegister.validation.functionalDegree.required"))
-      .min(2, t("schoolRegister.validation.functionalDegree.min"))
-      .max(50, t("schoolRegister.validation.functionalDegree.max")),
+    gender: Yup.string().required(
+      t("schoolRegister.validation.gender.required")
+    ),
 
     contactPersonName: Yup.string()
       .trim()
       .required(t("schoolRegister.validation.contactPersonName.required"))
       .min(2, t("schoolRegister.validation.contactPersonName.min"))
       .max(50, t("schoolRegister.validation.contactPersonName.max")),
+
+    functionalDegree: Yup.string()
+      .trim()
+      .required(t("schoolRegister.validation.functionalDegree.required"))
+      .min(2, t("schoolRegister.validation.functionalDegree.min"))
+      .max(50, t("schoolRegister.validation.functionalDegree.max")),
 
     email: Yup.string()
       .email(t("forms.email.error"))
@@ -797,41 +995,130 @@ export const createSchoolRegisterSchema = (t) =>
 
     mobile: createPhoneValidation(t, true),
 
-    city: Yup.string().required(t("schoolRegister.validation.city.required")),
+    city: Yup.string().nullable(),
 
-    additionalUsers: Yup.array()
-      .of(
-        Yup.object().shape({
-          name: Yup.string()
-            .trim()
-            .required(
-              t("schoolRegister.validation.additionalUser.name.required")
-            )
-            .min(2, t("schoolRegister.validation.additionalUser.name.min"))
-            .max(50, t("schoolRegister.validation.additionalUser.name.max")),
+    // Step 3 — Gathering location & school profit
+    gatheringLocation: Yup.object().shape({
+      mapLink: Yup.string()
+        .trim()
+        .required(
+          t("schoolTripBooking.validation.gatheringLocation.linkRequired")
+        )
+        .test(
+          "has-valid-coords",
+          t("schoolTripBooking.validation.gatheringLocation.invalidLink"),
+          function () {
+            const { lat, lng } = this.parent || {};
+            const numLat = parseFloat(lat);
+            const numLng = parseFloat(lng);
+            return (
+              !isNaN(numLat) &&
+              !isNaN(numLng) &&
+              numLat >= -90 &&
+              numLat <= 90 &&
+              numLng >= -180 &&
+              numLng <= 180 &&
+              (numLat !== 0 || numLng !== 0)
+            );
+          }
+        ),
+      lat: Yup.mixed().required(
+        t("schoolTripBooking.validation.gatheringLocation.required")
+      ),
+      lng: Yup.mixed().required(
+        t("schoolTripBooking.validation.gatheringLocation.required")
+      ),
+    }),
 
-          role: Yup.string()
-            .trim()
-            .required(
-              t("schoolRegister.validation.additionalUser.role.required")
-            )
-            .min(2, t("schoolRegister.validation.additionalUser.role.min"))
-            .max(50, t("schoolRegister.validation.additionalUser.role.max")),
+    schoolProfit: Yup.number()
+      .typeError(t("schoolTripBooking.validation.schoolProfit.invalid"))
+      .required(t("schoolTripBooking.validation.schoolProfit.required"))
+      .min(0, t("schoolTripBooking.validation.schoolProfit.min")),
+  });
 
-          email: Yup.string()
-            .email(t("schoolRegister.validation.additionalUser.email.invalid"))
-            .matches(
-              emailRegex,
-              t("schoolRegister.validation.additionalUser.email.invalid")
-            )
-            .required(
-              t("schoolRegister.validation.additionalUser.email.required")
-            ),
+// Authenticated School Trip Booking (existing school / company users) — 3 steps
+// Step 1: organization, track, stages, grades | Step 2: date & seats | Step 3: location & profit
+export const createAuthSchoolTripBookingSchema = (t, availableDays = []) =>
+  Yup.object().shape({
+    // Step 1 — School Info
+    organization: Yup.string()
+      .trim()
+      .required(t("schoolTripBooking.validation.organization.required")),
+    track: Yup.string()
+      .trim()
+      .required(t("schoolTripBooking.validation.track.required")),
+    stages: Yup.array()
+      .of(Yup.string())
+      .min(1, t("schoolRegister.validation.stages.required")),
+    grades: Yup.array()
+      .of(Yup.string())
+      .min(1, t("schoolRegister.validation.grades.required")),
 
-          mobile: createPhoneValidation(t, true),
-        })
-      )
-      .max(1, "Maximum 1 additional users allowed"),
+    // Step 2 — Trip Details
+    date: Yup.string()
+      .required(t("schoolTripBooking.validation.date.required"))
+      .test(
+        "valid-booking-date",
+        t("schoolTripBooking.validation.date.unavailable") ||
+          t("schoolTripBooking.validation.date.past"),
+        (value) => {
+          if (!value) return true;
+          if (Array.isArray(availableDays) && availableDays.length > 0) {
+            return availableDays.includes(value);
+          }
+          const now = new Date();
+          const today = [
+            now.getFullYear(),
+            String(now.getMonth() + 1).padStart(2, "0"),
+            String(now.getDate()).padStart(2, "0"),
+          ].join("-");
+          return value >= today;
+        }
+      ),
+    studentsCount: Yup.number()
+      .typeError(t("schoolTripBooking.validation.studentsCount.invalid"))
+      .required(t("schoolTripBooking.validation.studentsCount.required"))
+      .integer(t("schoolTripBooking.validation.studentsCount.invalid"))
+      .min(10, t("schoolTripBooking.validation.studentsCount.min"))
+      .max(5000, t("schoolTripBooking.validation.studentsCount.max")),
+
+    // Step 3 — Location & Profit
+    city: Yup.string().nullable().optional(),
+    gatheringLocation: Yup.object().shape({
+      mapLink: Yup.string()
+        .trim()
+        .required(
+          t("schoolTripBooking.validation.gatheringLocation.linkRequired")
+        )
+        .test(
+          "has-valid-coords",
+          t("schoolTripBooking.validation.gatheringLocation.invalidLink"),
+          function () {
+            const { lat, lng } = this.parent || {};
+            const numLat = parseFloat(lat);
+            const numLng = parseFloat(lng);
+            return (
+              !isNaN(numLat) &&
+              !isNaN(numLng) &&
+              numLat >= -90 &&
+              numLat <= 90 &&
+              numLng >= -180 &&
+              numLng <= 180 &&
+              (numLat !== 0 || numLng !== 0)
+            );
+          }
+        ),
+      lat: Yup.mixed().required(
+        t("schoolTripBooking.validation.gatheringLocation.required")
+      ),
+      lng: Yup.mixed().required(
+        t("schoolTripBooking.validation.gatheringLocation.required")
+      ),
+    }),
+    schoolProfit: Yup.number()
+      .typeError(t("schoolTripBooking.validation.schoolProfit.invalid"))
+      .required(t("schoolTripBooking.validation.schoolProfit.required"))
+      .min(0, t("schoolTripBooking.validation.schoolProfit.min")),
   });
 
 // Graduation Event Registration Schema

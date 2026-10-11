@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 // import { useReportWebVitals } from "next/web-vitals";
 
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 import {
   setHomeData,
@@ -25,6 +26,7 @@ import Trips from "@components/features/home/trips/Trips";
 import SmallSeparator from "@components/ui/separators/SmallSeparator";
 import ResponsiveSeparator from "@components/ui/separators/ResponsiveSeparator";
 import FeatureTrips from "@components/features/home/featureTrips";
+import TripTemplateSection from "@components/ui/tripTemplateSection";
 
 export default function Home() {
   // useReportWebVitals((metric) => {
@@ -33,6 +35,10 @@ export default function Home() {
 
   const locale = useLocale();
   const t = useTranslations();
+  // Backend field name is intentionally `tripTimplate`
+  const tripTimplate = useSelector(
+    (state) => state.homeData.items?.tripTimplate
+  );
 
   useEffect(() => {
     document.title = `${t("pagesHead.appName")} | ${t("pagesHead.title.home")}`;
@@ -70,8 +76,8 @@ export default function Home() {
   return (
     <>
       <main className="overflow-hidden bg-activityDetailsBg">
+        <TripTemplateSection tripTemplate={tripTimplate} />
         <HeroSection />
-        <SmallSeparator />
 
         <Plans />
 

@@ -231,6 +231,8 @@
       "contactUs": "Contact Us",
       "faq": "FAQ",
       "schoolRegister": "School Register",
+      "schoolTripBooking": "School Trip Booking",
+      "schoolTripBookingSuccess": "School Account Confirmation",
       "providerRegister": "Provider Registration",
       "confirmingData": "Confirming Data",
       "loginAs": "Login As",
@@ -1805,6 +1807,12 @@
     "clickToSelectLocation": "Click to select location"
   },
 
+  "providerMarketplace": {
+    "discover": "Discover Activity",
+    "galleryImageAlt": "Activity image {index}",
+    "registerSchoolFree": "Register your school for free"
+  },
+
   "recommendations": {
     "title": "Choose the Right Trip for Your Students",
     "subtitle": "We reviewed your request and prepared {count} recommended trips that match your needs",
@@ -1977,6 +1985,10 @@
     "subTitle": "Every destination we visit and every adventure we experience is filled with meaningful moments. These moments become stories worth sharing and unforgettable memories."
   },
   "tripDetails": {
+    "marketTemplate": {
+      "cta": "Register Your School Now",
+      "ctaDescription": "Registration is reserved for school administrations and authorized supervisory staff. No immediate fees are required."
+    },
     "instantConfirmation": {
       "title": "Instant Confirmation",
       "description": "The booking will be confirmed immediately after completing the required details and verifying availability. This feature ensures fast completion of administrative procedures."
@@ -3489,6 +3501,13 @@
       "foodAllergyDetails": "Food Allergy Details",
       "note": "Note",
       "parentEmail": "Parent Email",
+      "companions": "Companions List",
+      "companionName": "Companion Name",
+      "relationship": "Relationship",
+      "age": "Age",
+      "nationality": "Nationality",
+      "linkedStudents": "Linked Students",
+      "companionsCount": "Companions Count",
       "filename": "Booking_Report",
       "currency": "SAR"
     }
@@ -3625,6 +3644,71 @@
     },
 
     "registerForm": {
+      "steps": {
+        "ariaLabel": "Student registration steps",
+        "parent": "Parent information",
+        "students": "Student information",
+        "companions": "Companions",
+        "payment": "Payment"
+      },
+      "parentSection": {
+        "title": "Registration & contact person details",
+        "subtitle": "Please enter the parent's details accurately to issue the event ticket"
+      },
+      "studentSection": {
+        "subtitle": "Please enter the details of the student enrolled in the school accurately to issue the event ticket"
+      },
+      "parentRelationshipPlaceholder": "Father / Mother / Legal guardian / Other",
+      "parentRelationshipOptions": {
+        "father": "Father",
+        "mother": "Mother",
+        "guardian": "Legal guardian",
+        "other": "Other"
+      },
+      "parentResponsibleConfirm": "I am responsible for all students added to this booking",
+      "actions": {
+        "next": "Next",
+        "addStudent": "Add another student",
+        "removeStudent": "Remove student",
+        "removeCompanion": "Remove companion"
+      },
+      "companions": {
+        "countLabel": "Book for relative companions (optional)",
+        "title": "Add relative companions (optional)",
+        "subtitle": "Allow sisters and mothers of students to join the trip activities",
+        "itemTitle": "Companion {number}",
+        "name": {
+          "label": "Companion full name",
+          "placeholder": "Enter the companion's full name"
+        },
+        "relationship": {
+          "label": "Relationship to the student",
+          "placeholder": "Select relationship"
+        },
+        "nationalId": {
+          "label": "ID number",
+          "placeholder": "Companion's national ID number"
+        },
+        "age": {
+          "label": "Age",
+          "placeholder": "Enter age"
+        },
+        "note": {
+          "label": "Notes",
+          "placeholder": "Write your notes"
+        },
+        "relationshipOptions": {
+          "father": "Father",
+          "mother": "Mother",
+          "brother": "Brother",
+          "sister": "Sister",
+          "uncle": "Uncle",
+          "aunt": "Aunt",
+          "grandfather": "Grandfather",
+          "grandmother": "Grandmother",
+          "other": "Other"
+        }
+      },
       "title": "Enter student information",
       "numberOfChildren": "Number of students",
 
@@ -4482,12 +4566,14 @@
       "schoolNameArabic": {
         "required": "School name in Arabic is required",
         "min": "School name must be at least 2 characters",
-        "max": "School name cannot exceed 100 characters"
+        "max": "School name cannot exceed 100 characters",
+        "onlyArabic": "School name in Arabic must contain only Arabic letters"
       },
       "schoolNameEnglish": {
         "required": "School name in English is required",
         "min": "School name must be at least 2 characters",
-        "max": "School name cannot exceed 100 characters"
+        "max": "School name cannot exceed 100 characters",
+        "onlyEnglish": "School name in English must contain only English letters"
       },
       "organizationEmail": {
         "sameAsContactEmail": "Organization email must be different from contact person email"
@@ -4545,6 +4631,178 @@
           "invalid": "Please enter a valid phone number"
         }
       }
+    }
+  },
+
+  "schoolTripBooking": {
+    "loading": "Loading booking form...",
+    "notForProvider": {
+      "title": "This page isn’t for you",
+      "description": "School registration and booking is available to schools and organizations only. You can keep managing your services from your provider profile.",
+      "noPermissionDescription": "You don’t have permission to register and book school trips. Contact your organization admin to grant you access.",
+      "goToProfile": "Go to my profile"
+    },
+    "pageHeader": {
+      "title": "Register your school now and enjoy an easy and unique school trip planning experience.",
+      "subTitle": "We provide all schools in the Kingdom with the ability to easily register their school through our platform, discover the tourism programs designed specifically for schools, and benefit from our tools to professionally manage all the details of the trips."
+    },
+    "steps": {
+      "ariaLabel": "School trip booking steps",
+      "details": "Request Details",
+      "contact": "Contact Information",
+      "school": "School Information",
+      "trip": "Trip Details",
+      "location": "Gathering Location & Profit",
+      "progress": "Step {current} of {total}: {name}"
+    },
+    "form": {
+      "title": "Register school details for free",
+      "titleAuth": "Confirm Trip Booking",
+      "organization": {
+        "label": "School",
+        "placeholder": "Select school"
+      },
+      "track": {
+        "label": "Educational Track",
+        "placeholder": "Select track"
+      },
+      "stage": {
+        "label": "Educational Stage",
+        "placeholder": "Select educational stages"
+      },
+      "grade": {
+        "label": "Grade",
+        "placeholder": "Select grade"
+      },
+      "date": {
+        "label": "Date",
+        "placeholder": "DD/MM/YYYY"
+      },
+      "studentsCount": {
+        "label": "Number of Students",
+        "placeholder": "Enter number of students"
+      },
+      "services": {
+        "label": "Services",
+        "placeholder": "Select services",
+        "empty": "No additional services"
+      },
+      "notes": {
+        "label": "Notes",
+        "placeholder": "Notes or additional information you would like to share"
+      },
+      "gatheringLocation": {
+        "label": "Gathering Location Google Maps Link",
+        "title": "Gathering Location on Map",
+        "instruction": "Paste a Google Maps link or click on the map to set the exact gathering location",
+        "linkLabel": "Gathering Location Google Maps Link",
+        "linkPlaceholder": "https://maps.app.goo.gl/... or https://www.google.com/maps?q=...",
+        "clear": "Clear location",
+        "resolving": "Extracting coordinates from link...",
+        "resolved": "Coordinates extracted successfully",
+        "notFound": "Could not extract valid coordinates from this link, please check the link",
+        "openInGoogleMaps": "Open in Google Maps",
+        "coordinatesLabel": "Selected Coordinates:",
+        "detectedCity": "Detected City:",
+        "detectingCity": "Detecting city from location...",
+        "configError": "Google Maps API key is not configured"
+      },
+      "schoolProfit": {
+        "label": "School Profit (Per Student)",
+        "placeholder": "Enter profit amount per student",
+        "currency": "SAR",
+        "hint": "This amount is added to each student's ticket price for the school."
+      }
+    },
+    "actions": {
+      "next": "Next",
+      "back": "Back",
+      "submit": "Submit",
+      "submitting": "Submitting..."
+    },
+    "validation": {
+      "organization": {
+        "required": "Please select a school"
+      },
+      "track": {
+        "required": "Please select an educational track"
+      },
+      "date": {
+        "required": "Trip date is required",
+        "past": "Trip date cannot be in the past",
+        "unavailable": "Selected date is not available for this trip"
+      },
+      "studentsCount": {
+        "required": "Number of students is required",
+        "invalid": "Please enter a valid number",
+        "min": "Number of students must be at least 10",
+        "max": "Number of students cannot exceed 5000"
+      },
+      "notes": {
+        "max": "Notes cannot exceed 500 characters"
+      },
+      "gatheringLocation": {
+        "required": "Gathering location is required",
+        "linkRequired": "Google Maps gathering location link is required",
+        "invalidLink": "Please enter a valid Google Maps link containing location coordinates"
+      },
+      "schoolProfit": {
+        "required": "School profit per student is required",
+        "invalid": "Please enter a valid amount",
+        "min": "School profit cannot be negative"
+      }
+    },
+    "feedback": {
+      "success": "School booking request submitted successfully!",
+      "error": "An error occurred while submitting the booking request",
+      "successTitle": "Request Received Successfully!",
+      "successDescription": "Our team will review your booking details and contact you shortly.",
+      "backToTrip": "Back to Trip Details",
+      "newRequest": "Submit Another Request"
+    }
+  },
+
+  "schoolTripBookingSuccess": {
+    "pageTitle": "School Account Confirmation",
+    "badgeTitle": "Verified School Portal",
+    "mainGreeting": "Welcome to Guestna Platform!",
+    "accountCreated": "Your school account has been created successfully on Guestna.",
+    "participationNotice": "You can now participate in {tripName} and benefit from Guestna trips throughout the academic year.",
+    "defaultTripName": "Al-Qiddiya trip",
+    "credentials": {
+      "title": "Approved School Account Details",
+      "schoolNameLabel": "School Name:",
+      "adminLabel": "Administrative Officer:",
+      "defaultSchoolName": "Al-Andalus Private School for Girls",
+      "defaultSchoolCode": "SCH-2025-884",
+      "defaultAdminName": "Ms. Noura Al-Subaie"
+    },
+    "valuesSection": {
+      "title": "Benefits of Your School Account Throughout the Academic Year",
+      "card1": {
+        "title": "Academic Year Trips Library",
+        "description": "Browse and book cultural, scientific, and recreational trips scheduled across all three semesters in a single click.",
+        "badge": "Continuous updates • Semesters 1, 2, 3"
+      },
+      "card2": {
+        "title": "Dedicated Link & QR Code for Each Trip",
+        "description": "Share customized links with parents, track registrations, and complete payments with total privacy.",
+        "badge": "Easy to send via WhatsApp"
+      },
+      "card3": {
+        "title": "Unified Management Dashboard",
+        "description": "Track instant reports, manage parent approvals, and schedule direct bus notifications.",
+        "badge": "Full automation for teachers"
+      }
+    },
+    "actions": {
+      "primary": "Continue to complete sharing {tripName} and get the link",
+      "primaryDefault": "Continue to complete sharing Al-Qiddiya trip and get the link",
+      "secondary": "Explore the School Trips Guide for the Academic Year",
+      "ariaLabel": "Account actions"
+    },
+    "breadcrumbs": {
+      "confirmation": "Account Confirmation"
     }
   },
 

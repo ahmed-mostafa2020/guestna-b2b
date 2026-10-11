@@ -25,15 +25,18 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
   const t = useTranslations();
   const { exportBookingManagement, isExporting } = useExcel({ t, locale });
 
-  if (!booking) return null;
-
   // Process bookingDetails to ensure StudentsTable gets the right structure
   const processedBookingDetails = React.useMemo(() => {
-    if (!bookingDetails) return { nodes: [] };
+    if (!bookingDetails) return { nodes: [], companions: [] };
 
+    const companions = Array.isArray(bookingDetails?.companions)
+      ? bookingDetails.companions
+      : [];
     let studentsArray = [];
 
-    if (Array.isArray(bookingDetails)) {
+    if (Array.isArray(bookingDetails?.childs)) {
+      studentsArray = bookingDetails.childs;
+    } else if (Array.isArray(bookingDetails)) {
       studentsArray = bookingDetails;
     } else if (bookingDetails?.nodes && Array.isArray(bookingDetails.nodes)) {
       studentsArray = bookingDetails.nodes;
@@ -64,53 +67,16 @@ const BookingDetailsModal = ({ booking, bookingDetails, loadingDetails }) => {
       }
     }
 
-    return { nodes: studentsArray };
+    return { nodes: studentsArray, companions };
   }, [bookingDetails]);
 
+  if (!booking) return null;
+
   const handleExcelExport = async () => {
-    // Ensure we're using all students data (not paginated)
-
-    // Handle different possible data structures
-    let studentsArray = [];
-
-    // Extract students array from various possible structures
-    if (Array.isArray(bookingDetails)) {
-      studentsArray = bookingDetails;
-    } else if (bookingDetails?.nodes && Array.isArray(bookingDetails.nodes)) {
-      studentsArray = bookingDetails.nodes;
-    } else if (
-      bookingDetails?.data?.nodes &&
-      Array.isArray(bookingDetails.data.nodes)
-    ) {
-      studentsArray = bookingDetails.data.nodes;
-    } else if (bookingDetails?.data && Array.isArray(bookingDetails.data)) {
-      studentsArray = bookingDetails.data;
-    } else if (bookingDetails && typeof bookingDetails === "object") {
-      // Look for arrays in the object that contain student-like data
-      const keys = Object.keys(bookingDetails);
-      for (const key of keys) {
-        if (
-          Array.isArray(bookingDetails[key]) &&
-          bookingDetails[key].length > 0
-        ) {
-          const firstItem = bookingDetails[key][0];
-          if (
-            firstItem &&
-            (firstItem.child || firstItem.parent || firstItem.student)
-          ) {
-            studentsArray = bookingDetails[key];
-
-            break;
-          }
-        }
-      }
-    }
-
-    const allStudentsData = { nodes: studentsArray };
-
+    // processedBookingDetails holds all students (not paginated) + companions
     await exportBookingManagement({
       booking,
-      bookingDetails: allStudentsData,
+      bookingDetails: processedBookingDetails,
       t,
       locale,
     });

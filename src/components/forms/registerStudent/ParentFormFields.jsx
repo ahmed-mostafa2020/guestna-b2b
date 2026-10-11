@@ -7,6 +7,7 @@ import AutocompleteInputGroup from "../AutocompleteInputGroup";
 import CheckboxGroup from "../CheckboxGroup";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import formatDateForInput from "@utils/formatters/FormateDateForInput";
+import { CONSTANT_VALUES } from "@constants/constantValues";
 
 import PhoneInputWithCountrySelect from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -48,6 +49,8 @@ const formatDaysAr = (n) => {
   return `${n} يومًا`;
 };
 
+const PARENT_RELATIONSHIPS = ["father", "mother", "guardian", "other"];
+
 const ParentFormFields = ({
   values,
   errors,
@@ -68,6 +71,9 @@ const ParentFormFields = ({
   tripDuration,
   tripPrice,
   firstAvailableDate,
+  isSharedWithCompanions,
+  companionsCountList,
+  handleChangeCompanionsCount,
   t,
   cn,
 }) => {
@@ -162,10 +168,21 @@ const ParentFormFields = ({
     return `${option.day} ${daysLabel}`;
   };
 
+  // The backend stores the relationship as plain text
+  const relationshipOptions = useMemo(
+    () =>
+      PARENT_RELATIONSHIPS.map((key) => {
+        const label = t(`forms.registerForm.parentRelationshipOptions.${key}`);
+        return { _id: label, name: label };
+      }),
+    [t]
+  );
+
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-7">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
         <TextInputGroup
+          labelClassName="font-somar"
           label={t("forms.parentName.name")}
           type="text"
           name="parentName"
@@ -180,7 +197,19 @@ const ParentFormFields = ({
           required={true}
         />
 
+        <SelectionGroup
+          labelClassName="font-somar"
+          label={t("forms.relationship.name")}
+          placeholder={t("forms.registerForm.parentRelationshipPlaceholder")}
+          value={values.relationship}
+          onChange={(event) =>
+            setFieldValue("relationship", event.target.value)
+          }
+          menuItemsList={relationshipOptions}
+        />
+
         <TextInputGroup
+          labelClassName="font-somar"
           label={t("forms.email.parentEmail")}
           type="email"
           name="email"
@@ -195,7 +224,7 @@ const ParentFormFields = ({
 
         <div className="relative flex flex-col gap-2">
           <div className="flex items-center gap-0.5">
-            <label className="font-medium capitalize font-ibm">
+            <label className="font-medium capitalize font-somar">
               {t("forms.phone.parentPhone")}
             </label>
             <span className="text-error">{"*"}</span>
@@ -239,6 +268,7 @@ const ParentFormFields = ({
         </div>
 
         <SelectionGroup
+          labelClassName="font-somar"
           label={t("forms.registerForm.numberOfChildren")}
           placeholder={childrenNumber}
           value={values.childrenNumber}
@@ -247,16 +277,29 @@ const ParentFormFields = ({
           required={true}
         />
 
+        {isSharedWithCompanions && (
+          <SelectionGroup
+            labelClassName="font-somar"
+            label={t("forms.registerForm.companions.countLabel")}
+            placeholder={t("forms.registerForm.companions.countLabel")}
+            value={String(values.companionsCount ?? 0)}
+            onChange={handleChangeCompanionsCount}
+            menuItemsList={companionsCountList}
+          />
+        )}
+
         <div className="relative flex flex-col gap-2">
           <SelectionGroup
+            labelClassName="font-somar"
             label={t("profile.information.personalInformation.nationality")}
             placeholder={t(
               "profile.information.personalInformation.nationality"
             )}
             value={
               values.nationality ||
-              nationalities?.find((n) => n._id === "68052bdd38ea31c8cf95dc04")
-                ?._id
+              nationalities?.find(
+                (n) => n._id === CONSTANT_VALUES.DEFAULT_NATIONALITY_ID
+              )?._id
             }
             onChange={handleChangeNationality}
             list={nationalities}
@@ -271,8 +314,8 @@ const ParentFormFields = ({
 
         {/* Day Block Pricing inputs wrapped in a nice responsive UI sub-grid */}
         {isDayBlockEnabled && (
-          <div className="col-span-full border border-border/60 bg-gray-50/30 rounded-xl p-5 mt-2">
-            <h4 className="text-sm font-semibold text-titleColor pb-4 font-ibm">
+          <div className="col-span-full border border-border bg-activityDetailsBg rounded-xl p-5 mt-2">
+            <h4 className="text-sm font-semibold text-titleColor pb-4 font-somar">
               {t("forms.registerForm.dayBlockPricing.sectionTitle")}
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-6 items-end">
@@ -297,6 +340,7 @@ const ParentFormFields = ({
               {!(values.fullDuration ?? true) && (
                 <div className="relative flex flex-col gap-2">
                   <AutocompleteInputGroup
+                    labelClassName="font-somar"
                     label={t("forms.registerForm.dayBlockPricing.label")}
                     placeholder={t(
                       "forms.registerForm.dayBlockPricing.placeholder"
@@ -395,6 +439,7 @@ const ParentFormFields = ({
 
               {/* Date Input for Day Block Pricing */}
               <TextInputGroup
+                labelClassName="font-somar"
                 label={t(
                   "forms.registerForm.dayBlockPricing.firstDayDateLabel"
                 )}

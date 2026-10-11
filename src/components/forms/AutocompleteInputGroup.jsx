@@ -90,18 +90,8 @@ const AutocompleteInputGroup = ({
                 borderColor: hasError
                   ? "var(--color-error)"
                   : "var(--color-border)",
-                "& fieldset": {
-                  borderColor: hasError
-                    ? "var(--color-error)"
-                    : "var(--color-border)",
-                  borderWidth: "2px",
-                },
+                transition: "all 0.2s ease-in-out",
                 "&:hover": {
-                  borderColor: hasError
-                    ? "var(--color-error)"
-                    : "var(--color-main)",
-                },
-                "&:hover fieldset": {
                   borderColor: hasError
                     ? "var(--color-error)"
                     : "var(--color-main)",
@@ -111,10 +101,8 @@ const AutocompleteInputGroup = ({
                     ? "var(--color-error)"
                     : "var(--color-main)",
                 },
-                "&.Mui-focused fieldset": {
-                  borderColor: hasError
-                    ? "var(--color-error)"
-                    : "var(--color-main)",
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: "none",
                 },
                 "&.Mui-disabled": {
                   opacity: 0.9,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 
 import { useDispatch } from "react-redux";
@@ -24,6 +24,9 @@ import { clearTheme } from "@store/theme/themeSlice";
 import { clearSelectedOrganizations } from "@store/profile/selectedOrganizationsSlice";
 import { resetRootTheme } from "@components/providers/ThemeProvider";
 
+// Public school booking page: stays put on logout so it switches to the non-auth form
+const SCHOOL_BOOKING_PATH_REGEX = /\/school-register\/[^/]+\/?$/;
+
 const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -31,6 +34,7 @@ const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
   const t = useTranslations();
 
   const router = useRouter();
+  const pathname = usePathname();
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
@@ -74,7 +78,9 @@ const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
         onLogoutComplete();
       }
 
-      router.push(`/${locale}`);
+      if (!SCHOOL_BOOKING_PATH_REGEX.test(pathname || "")) {
+        router.push(`/${locale}`);
+      }
     } catch (error) {
       console.error("Logout failed:", error);
       enqueueSnackbar(t("validations.tryAgain"), {

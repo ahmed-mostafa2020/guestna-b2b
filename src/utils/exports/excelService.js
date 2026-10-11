@@ -13,6 +13,7 @@ import { download } from "@hooks/utils/useDownload";
 import {
   myBookingStudentsHeaders,
   bookingManagementStudentsHeaders,
+  bookingCompanionsHeaders,
 } from "@constants/excelHeaders";
 
 const createWorkbook = async (name = "Sheet") => {
@@ -218,6 +219,46 @@ const styleRow = (row) => {
     };
     cell.alignment = { horizontal: "center" };
   });
+};
+
+// Adds a "Companions" sheet from the booking info `companions` array
+const addCompanionsSheet = (workbook, companions, t, locale) => {
+  if (!companions?.length) return;
+
+  let sheetName = t("exportUtils.bookingReport.companions");
+  // excel sheet name length limit is 31 chars
+  if (sheetName.length > 31) sheetName = sheetName.substring(0, 31);
+
+  const companionsSheet = workbook.addWorksheet(sheetName);
+  if (locale === "ar") {
+    companionsSheet.views = [{ rightToLeft: true }];
+  }
+
+  const rows = companions.map((item, index) => ({
+    index: index + 1,
+    orderId: item.orderId || "",
+    companionName: item.companion?.name || "",
+    relationship: item.companion?.relationship || "",
+    age: item.companion?.age ?? "",
+    nationality:
+      item.companion?.nationality?.name || item.companion?.nationality || "",
+    linkedStudents: (item.childs || [])
+      .map((child) => child?.name)
+      .filter(Boolean)
+      .join(", "),
+    parentName: item.parent?.name || "",
+    parentPhone: item.parent?.phone || "",
+    parentEmail: item.parent?.email || "",
+  }));
+
+  const activeHeaders = bookingCompanionsHeaders({ t }).filter((col) =>
+    rows.some((row) => hasCellData(row[col.key]))
+  );
+
+  companionsSheet.columns = activeHeaders;
+  companionsSheet.addRows(rows);
+  styleHeaderRow(companionsSheet);
+  autoFitColumns(companionsSheet);
 };
 
 const saveWorkbook = async (workbook, filename) => {
@@ -453,9 +494,12 @@ export const ExcelService = {
       // Add Data
       const studentsData = bookingDetails.nodes.map((student, index) => ({
         index: index + 1,
-        name: student.name || "",
-        nationalId: student.nationalId || "",
-        grade: student.grade?.name || "",
+        name: student.child?.name || student.name || "",
+        nationalId: student.child?.nationalId || student.nationalId || "",
+        grade: student.child?.grade?.name || student.grade?.name || "",
+        companionsCount: student.hasCompanions
+          ? student.companionsCount || 0
+          : "",
       }));
 
       const allHeaders = myBookingStudentsHeaders({ t });
@@ -473,6 +517,9 @@ export const ExcelService = {
       autoFitColumns(studentsSheet);
     }
 
+    // -- Sheet 3: Companions Information --
+    addCompanionsSheet(workbook, bookingDetails?.companions, t, locale);
+
     // Save
     const filename = `${t("exportUtils.bookingReport.filename")}_${
       booking.name || "booking"
@@ -485,7 +532,9 @@ export const ExcelService = {
   // 5. Export Student List (Simple)
   exportStudentsList: async ({ students, gradeName, translatedLabels }) => {
     // translatedLabels: { reportTitle, studentName, filename }
-    const { workbook, worksheet } = await createWorkbook(gradeName || "Students");
+    const { workbook, worksheet } = await createWorkbook(
+      gradeName || "Students"
+    );
 
     // Add Title Row
     worksheet.addRow([translatedLabels.reportTitle]);
@@ -654,8 +703,13 @@ export const ExcelService = {
       worksheet.addRow([]);
       const priceRowValues = new Array(numCols).fill("");
       if (numCols >= 2) {
-        priceRowValues[numCols - 2] = t("profile.tables.bookings.header.budget");
-        priceRowValues[numCols - 1] = formatCurrencyString(booking.price, locale);
+        priceRowValues[numCols - 2] = t(
+          "profile.tables.bookings.header.budget"
+        );
+        priceRowValues[numCols - 1] = formatCurrencyString(
+          booking.price,
+          locale
+        );
       } else {
         priceRowValues[0] = `${t("profile.tables.bookings.header.budget")}: ${formatCurrencyString(booking.price, locale)}`;
       }
@@ -821,6 +875,9 @@ export const ExcelService = {
             : locale === "ar"
               ? "لا"
               : "No",
+          companionsCount: student.hasCompanions
+            ? student.companionsCount || 0
+            : "",
           note: student.child?.note || "",
         };
       });
@@ -858,6 +915,9 @@ export const ExcelService = {
       styleHeaderRow(studentsSheet);
       autoFitColumns(studentsSheet);
     }
+
+    // -- Sheet 3: Companions --
+    addCompanionsSheet(workbook, bookingDetails?.companions, t, locale);
 
     const orderIdPart = booking.orderId ? `_${booking.orderId}` : "";
     const filename = `${t("exportUtils.bookingReport.filename")}_${
@@ -966,7 +1026,8 @@ export const ExcelService = {
             })
           : "",
         parent: t("profile.schoolTeamStudents.details.parent"),
-        status: t(`common.bookingStatus.${booking.status}`) || booking.status || "",
+        status:
+          t(`common.bookingStatus.${booking.status}`) || booking.status || "",
       }));
 
       const activeBookingColumns = allBookingColumns.filter((col) =>
