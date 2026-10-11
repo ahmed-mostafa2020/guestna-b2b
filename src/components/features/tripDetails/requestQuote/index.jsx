@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
+import { useSchoolRegisterAccess } from "@hooks/schoolRegister/useSchoolRegisterAccess";
 
 import FrameWithImagedHeader from "@components/ui/frameWithImagedHeader/FrameWithImagedHeader";
 import CustomizedModal from "@components/ui/customizedModal";
@@ -27,6 +28,7 @@ const RequestQuote = () => {
   const t = useTranslations();
   const locale = useLocale();
   const params = useParams();
+  const { canRegister } = useSchoolRegisterAccess();
 
   const tripDetailsData = useSelector((state) => state.tripDetailsData?.data);
   const checkoutTripSlug = useSelector((state) => state.checkoutData?.tripSlug);
@@ -59,7 +61,7 @@ const RequestQuote = () => {
           </Link>
         </div>
 
-        {isMarketTemplate && (
+        {isMarketTemplate && canRegister && (
           <div className="flex flex-col gap-3 pt-3 border-t border-border">
             <Link
               id="market-template-school-register-cta"

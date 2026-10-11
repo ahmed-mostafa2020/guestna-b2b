@@ -3,16 +3,14 @@
 import { useEffect, useMemo } from "react";
 import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { useSelector } from "react-redux";
-import Cookies from "js-cookie";
 import { Container } from "@mui/material";
 
 import { useFetchData } from "@hooks/data/useFetchData";
+import { useSchoolRegisterAccess } from "@hooks/schoolRegister/useSchoolRegisterAccess";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { CONSTANT_VALUES } from "@constants/constantValues";
-import { USERS } from "@constants/users";
 
 import PageHeader from "@components/features/schoolRegister/PageHeader";
+import SchoolRegisterAccessDenied from "@components/features/schoolRegister/SchoolRegisterAccessDenied";
 import SchoolTripBookingForm, {
   AuthSchoolTripBookingForm,
 } from "@components/forms/schoolTripBookingForm";
@@ -30,13 +28,7 @@ const SchoolTripBookingPage = ({ params }) => {
     routeParams?.tripSlug ||
     routeParams?.id;
 
-  const reduxToken = useSelector((state) => state.users?.userToken);
-  const reduxUserType = useSelector((state) => state.users?.userType);
-  const token = reduxToken || Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
-  const userType = reduxUserType || Cookies.get("userType");
-
-  const isProvider = userType === USERS.PROVIDERS || userType === "PROVIDERS";
-  const isAuth = Boolean(token) && userType !== USERS.VISITOR && !isProvider;
+  const { isAuth, isProvider, isBlocked } = useSchoolRegisterAccess();
 
   // 1. Fetch select data directly for the market trip: /organizations/market-trip/select/${tripId}
   const {
@@ -44,14 +36,14 @@ const SchoolTripBookingPage = ({ params }) => {
     isLoading: isLoadingSelect,
     error: selectError,
   } = useFetchData(
-    tripId
+    tripId && !isBlocked
       ? `${B2B_END_POINTS.ORGANIZATIONS_MARKET_TRIP.SELECT}/${tripId}`
       : null,
     {},
     {
       method: "GET",
       lang: locale,
-      enabled: Boolean(tripId),
+      enabled: Boolean(tripId) && !isBlocked,
       retry: 1,
     }
   );
@@ -146,7 +138,9 @@ const SchoolTripBookingPage = ({ params }) => {
       />
 
       <Container maxWidth="lg" className="mt-8">
-        {isLoading ? (
+        {isBlocked ? (
+          <SchoolRegisterAccessDenied isProvider={isProvider} />
+        ) : isLoading ? (
           <SchoolTripBookingSkeleton />
         ) : isAuth ? (
           <AuthSchoolTripBookingForm

@@ -1775,7 +1775,8 @@
 
   "providerMarketplace": {
     "discover": "Discover Activity",
-    "galleryImageAlt": "Activity image {index}"
+    "galleryImageAlt": "Activity image {index}",
+    "registerSchoolFree": "Register your school for free"
   },
 
   "recommendations": {
@@ -4601,6 +4602,12 @@
 
   "schoolTripBooking": {
     "loading": "Loading booking form...",
+    "notForProvider": {
+      "title": "This page isn’t for you",
+      "description": "School registration and booking is available to schools and organizations only. You can keep managing your services from your provider profile.",
+      "noPermissionDescription": "You don’t have permission to register and book school trips. Contact your organization admin to grant you access.",
+      "goToProfile": "Go to my profile"
+    },
     "pageHeader": {
       "title": "Register your school now and enjoy an easy and unique school trip planning experience.",
       "subTitle": "We provide all schools in the Kingdom with the ability to easily register their school through our platform, discover the tourism programs designed specifically for schools, and benefit from our tools to professionally manage all the details of the trips."
