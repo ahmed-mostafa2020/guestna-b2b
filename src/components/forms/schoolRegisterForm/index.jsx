@@ -17,7 +17,7 @@ import TextInputGroup from "../TextInputGroup";
 import SelectionGroup from "../SelectionGroup";
 import AutocompleteInputGroup from "../AutocompleteInputGroup";
 
-import PhoneInputWithCountrySelect from "react-phone-number-input";
+import PhoneInputWithCountrySelect from "@components/forms/PhoneNumberInput";
 import "react-phone-number-input/style.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 

@@ -41,11 +41,10 @@ const TripTagsListing = ({ data }) => {
 
   // Duration
   const duration = data?.duration;
-  const tripDuration = formatNumbersUint(
-    duration,
-    t("common.day"),
-    t("common.days")
-  );
+  const tripDuration =
+    Number(duration) === 1
+      ? t("common.oneDay")
+      : formatNumbersUint(duration, t("common.day"), t("common.days"));
 
   // Hours
   const hours =
@@ -58,6 +57,7 @@ const TripTagsListing = ({ data }) => {
   // Day date
   const day = data?.day;
   const tripDay = formatDate(day, locale, {
+    weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",

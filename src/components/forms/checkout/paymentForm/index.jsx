@@ -31,7 +31,7 @@ import AppleWidget from "./AppleWidget";
 import axios from "axios";
 import { Field, Formik } from "formik";
 
-import PhoneInput from "react-phone-number-input";
+import PhoneInput from "@components/forms/PhoneNumberInput";
 import "react-phone-number-input/style.css";
 
 import { useSnackbar } from "notistack";

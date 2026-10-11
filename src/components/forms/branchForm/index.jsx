@@ -4,7 +4,7 @@ import { memo, useMemo, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Formik, Form, Field, useFormikContext } from "formik";
 import CircularProgress from "@mui/material/CircularProgress";
-import PhoneInputWithCountrySelect from "react-phone-number-input";
+import PhoneInputWithCountrySelect from "@components/forms/PhoneNumberInput";
 import "react-phone-number-input/style.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 

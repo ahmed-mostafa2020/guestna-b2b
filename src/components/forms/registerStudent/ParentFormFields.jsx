@@ -9,7 +9,7 @@ import formatCurrency from "@utils/formatters/FormatCurrency";
 import formatDateForInput from "@utils/formatters/FormateDateForInput";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 
-import PhoneInputWithCountrySelect from "react-phone-number-input";
+import PhoneInputWithCountrySelect from "@components/forms/PhoneNumberInput";
 import "react-phone-number-input/style.css";
 
 import { Field } from "formik";

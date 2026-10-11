@@ -181,7 +181,7 @@ const TripsCard = ({
       />
 
       <div
-        className={`mt-[-30px] relative bg-white z-[1] rounded-tr-[32px] p-4 flex flex-col ${"gap-1"}  `}
+        className={`mt-[-30px] relative bg-white z-[1] rounded-tr-[32px] p-4 flex flex-1 flex-col ${"gap-1"}  `}
       >
         <div className="flex justify-between">
           {renderCities}
@@ -266,7 +266,7 @@ const TripsCard = ({
         </div>
 
         <div
-          className={`flex items-center justify-between gap-2 lg:mt-4 mt-2
+          className={`flex items-center justify-between gap-2 mt-auto lg:pt-4 pt-2
             ${newDesign ? "flex-wrap" : ""}`}
         >
           {activityCard.price && isActivitiesMarketTrip && (

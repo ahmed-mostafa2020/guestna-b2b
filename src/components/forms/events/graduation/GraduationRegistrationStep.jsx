@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Field } from "formik";
-import PhoneInputWithCountrySelect from "react-phone-number-input";
+import PhoneInputWithCountrySelect from "@components/forms/PhoneNumberInput";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 import "react-phone-number-input/style.css";
 import TextInputGroup from "@components/forms/TextInputGroup";

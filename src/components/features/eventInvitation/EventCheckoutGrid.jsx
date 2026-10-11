@@ -14,7 +14,7 @@ import {
 import { CelebrationOutlined } from "@mui/icons-material";
 import Image from "next/image";
 import thanksMessage from "@assets/sectionBackground/thanksMessage.png";
-import PhoneInput from "react-phone-number-input";
+import PhoneInput from "@components/forms/PhoneNumberInput";
 import "react-phone-number-input/style.css";
 import { cn } from "@utils/helpers/cn";
 import formatCurrency from "@utils/formatters/FormatCurrency";

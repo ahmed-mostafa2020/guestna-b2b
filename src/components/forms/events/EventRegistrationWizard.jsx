@@ -27,7 +27,7 @@ import TextInputGroup from "@components/forms/TextInputGroup";
 import PaymentMethod from "@components/forms/checkout/paymentForm/PaymentMethod";
 import EventAppleWidget from "./EventAppleWidget";
 import TamaraWidget from "@components/forms/checkout/paymentForm/TamaraWidget";
-import PhoneInput from "react-phone-number-input";
+import PhoneInput from "@components/forms/PhoneNumberInput";
 import "react-phone-number-input/style.css";
 import { cn } from "@utils/helpers/cn";
 

@@ -3,7 +3,7 @@
 import { Field, useFormikContext } from "formik";
 import { useTranslations } from "next-intl";
 
-import PhoneInputWithCountrySelect from "react-phone-number-input";
+import PhoneInputWithCountrySelect from "@components/forms/PhoneNumberInput";
 import "react-phone-number-input/style.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 

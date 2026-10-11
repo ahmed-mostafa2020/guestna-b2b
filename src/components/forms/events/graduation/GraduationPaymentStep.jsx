@@ -9,7 +9,7 @@ import SelectionGroup from "@components/forms/SelectionGroup";
 import PaymentMethod from "@components/forms/checkout/paymentForm/PaymentMethod";
 import GraduationAppleWidget from "./GraduationAppleWidget";
 import TamaraWidget from "@components/forms/checkout/paymentForm/TamaraWidget";
-import PhoneInput from "react-phone-number-input";
+import PhoneInput from "@components/forms/PhoneNumberInput";
 import "react-phone-number-input/style.css";
 import { cn } from "@utils/helpers/cn";
 

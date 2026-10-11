@@ -20,7 +20,7 @@ import { getHeaders } from "@utils/helpers/getHeaders";
 import TextInputGroup from "../../TextInputGroup";
 import RememberMe from "./RememberMe";
 
-import PhoneInputWithCountrySelect from "react-phone-number-input";
+import PhoneInputWithCountrySelect from "@components/forms/PhoneNumberInput";
 import "react-phone-number-input/style.css";
 // import "react-phone-number-input/flags.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
