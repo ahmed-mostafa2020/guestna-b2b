@@ -31,12 +31,15 @@ const SmallSizeGrid = () => {
     <>
       {pathname?.includes("/parents/") ? (
         <PreBookingSection tripData={data} />
-      ) : !token || data?.marketTemplate ? (
+      ) : !token ? (
         <RequestQuote />
       ) : null}
 
-      {pathname?.includes("/discover/") && isAuth && token && !data?.marketTemplate && (
-        <AuthanticatedRequestQuoteBox tripId={data?._id} />
+      {pathname?.includes("/discover/") && isAuth && token && (
+        <AuthanticatedRequestQuoteBox
+          tripId={data?._id}
+          isMarketTemplate={Boolean(data?.marketTemplate)}
+        />
       )}
 
       {data?.quantityDiscountTiers?.length > 0 && (

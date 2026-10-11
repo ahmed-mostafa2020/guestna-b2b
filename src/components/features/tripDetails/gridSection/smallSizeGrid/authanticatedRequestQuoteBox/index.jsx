@@ -11,11 +11,12 @@ import getProxyUrl from "@utils/api/getProxyUrl";
 import FrameWithImagedHeader from "@components/ui/frameWithImagedHeader/FrameWithImagedHeader";
 import CustomizedModal from "@components/ui/customizedModal";
 import AuthenticatedRequestQuote from "@components/forms/requestQuote/AuthenticatedRequestQuote";
+import MarketTemplateRegisterCta from "@components/features/tripDetails/requestQuote/MarketTemplateRegisterCta";
 
 import { CircularProgress } from "@mui/material";
 import axios from "axios";
 
-const AuthanticatedRequestQuoteBox = ({ tripId }) => {
+const AuthanticatedRequestQuoteBox = ({ tripId, isMarketTemplate = false }) => {
   const locale = useLocale();
   const t = useTranslations();
   const { hasElement } = usePermissions();
@@ -181,6 +182,8 @@ const AuthanticatedRequestQuoteBox = ({ tripId }) => {
             {t("links.contactUs")}
           </Link>
         </div>
+
+        {isMarketTemplate && <MarketTemplateRegisterCta tripId={tripId} />}
       </FrameWithImagedHeader>
 
       {/* edit trip modal */}

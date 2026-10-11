@@ -16,6 +16,9 @@ import MustHaveItems from "./accordionsDetails/MustHaveItems";
 import ExtraInformation from "./accordionsDetails/ExtraInformation";
 import Benefits from "./accordionsDetails/Benefits";
 
+const hasContent = (value) =>
+  Array.isArray(value) ? value.length > 0 : Boolean(value);
+
 const AccordionsGroupSection = () => {
   const data = useSelector((state) => state.tripDetailsData?.data?.trip);
 
@@ -40,19 +43,19 @@ const AccordionsGroupSection = () => {
         : `${data?.description?.substring(0, 120)}...`,
     },
     {
-      isShown: data?.services,
+      isShown: hasContent(data?.services),
       title: t(`tripDetails.accordionsGroup.${tripType}.contents`),
       children: <Services data={data?.services} isAuth={isAuth} />,
     },
     {
-      isShown: data?.exemptedFromTrip,
+      isShown: hasContent(data?.exemptedFromTrip),
       title: t(`tripDetails.accordionsGroup.${tripType}.exempted`),
       children: (
         <ExemptedFromTrip data={data?.exemptedFromTrip} isAuth={isAuth} />
       ),
     },
     {
-      isShown: data?.itinerary,
+      isShown: hasContent(data?.itinerary),
       title: t(`tripDetails.accordionsGroup.${tripType}.itinerary`),
       children: <Itinerary data={data?.itinerary} isAuth={isAuth} />,
     },
@@ -70,17 +73,17 @@ const AccordionsGroupSection = () => {
       ),
     },
     {
-      isShown: data?.mustHaveItems,
+      isShown: hasContent(data?.mustHaveItems),
       title: t("tripDetails.accordionsGroup.whatToBring"),
       children: <MustHaveItems data={data?.mustHaveItems} isAuth={isAuth} />,
     },
     {
-      isShown: data?.attributes,
+      isShown: hasContent(data?.attributes),
       title: t("tripDetails.accordionsGroup.extraInfo"),
       children: <ExtraInformation data={data?.attributes} isAuth={isAuth} />,
     },
     {
-      isShown: data?.benefits,
+      isShown: hasContent(data?.benefits),
       title: t(`tripDetails.accordionsGroup.benefits`),
       children: <Benefits data={data?.benefits} isAuth={isAuth} />,
     },
