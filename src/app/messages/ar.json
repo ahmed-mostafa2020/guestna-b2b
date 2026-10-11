@@ -3475,6 +3475,13 @@
       "hasFoodAllergy": "لديه حساسية طعام",
       "foodAllergyDetails": "تفاصيل حساسية الطعام",
       "parentEmail": "البريد الإلكتروني لولي الأمر",
+      "companions": "قائمة المرافقين",
+      "companionName": "اسم المرافق",
+      "relationship": "صلة القرابة",
+      "age": "العمر",
+      "nationality": "الجنسية",
+      "linkedStudents": "الطلاب المرتبطون",
+      "companionsCount": "عدد المرافقين",
 
       "filename": "تقرير_الحجز",
       "currency": "ريال"

@@ -3466,6 +3466,13 @@
       "foodAllergyDetails": "Food Allergy Details",
       "note": "Note",
       "parentEmail": "Parent Email",
+      "companions": "Companions List",
+      "companionName": "Companion Name",
+      "relationship": "Relationship",
+      "age": "Age",
+      "nationality": "Nationality",
+      "linkedStudents": "Linked Students",
+      "companionsCount": "Companions Count",
       "filename": "Booking_Report",
       "currency": "SAR"
     }

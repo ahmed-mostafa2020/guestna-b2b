@@ -28,11 +28,16 @@ const BookingDetailsModal = ({ booking, bookingDetails, loading }) => {
   // Process bookingDetails to ensure StudentsTable gets the right structure
   // MUST be before conditional returns to avoid hook order issues
   const processedBookingDetails = React.useMemo(() => {
-    if (!bookingDetails) return { nodes: [] };
+    if (!bookingDetails) return { nodes: [], companions: [] };
 
+    const companions = Array.isArray(bookingDetails?.companions)
+      ? bookingDetails.companions
+      : [];
     let studentsArray = [];
 
-    if (Array.isArray(bookingDetails)) {
+    if (Array.isArray(bookingDetails?.childs)) {
+      studentsArray = bookingDetails.childs;
+    } else if (Array.isArray(bookingDetails)) {
       studentsArray = bookingDetails;
     } else if (bookingDetails?.nodes && Array.isArray(bookingDetails.nodes)) {
       studentsArray = bookingDetails.nodes;
@@ -63,7 +68,7 @@ const BookingDetailsModal = ({ booking, bookingDetails, loading }) => {
       }
     }
 
-    return { nodes: studentsArray };
+    return { nodes: studentsArray, companions };
   }, [bookingDetails]);
 
   const handleExcelExport = async () => {

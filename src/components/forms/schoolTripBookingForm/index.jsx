@@ -176,7 +176,8 @@ const SchoolTripBookingForm = ({
         setToken(token);
         dispatch(setUserToken(token));
         dispatch(setUser(userType || user?.userType));
-        if (user?.permissions) dispatch(setPermissions(user.permissions));
+        const permissions = user?.permissions || response?.data?.permissions;
+        if (permissions) dispatch(setPermissions(permissions));
 
         try {
           const orgsResponse = await axios.get(

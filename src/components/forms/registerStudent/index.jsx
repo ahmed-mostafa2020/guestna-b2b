@@ -104,7 +104,9 @@ const RegisterStudentForm = ({
   const [___, setGradeError] = useState("");
 
   const [childrenNumber, setChildrenNumber] = useState(1);
-  const [nationality, setNationality] = useState(CONSTANT_VALUES.DEFAULT_NATIONALITY_ID);
+  const [nationality, setNationality] = useState(
+    CONSTANT_VALUES.DEFAULT_NATIONALITY_ID
+  );
   const [nationalIdImage, setNationalIdImage] = useState(null);
   const [nationalIdImageError, setNationalIdImageError] = useState("");
 
@@ -244,6 +246,8 @@ const RegisterStudentForm = ({
   ]);
 
   const formikRef = useRef(null);
+  // Cache grades requests per URL so children sharing a stage reuse one request
+  const gradesCacheRef = useRef({});
   useEffect(() => {
     const isDayBlockEnabled =
       dayBlockPricing?.enabled === true && tripDuration > 0;
@@ -598,6 +602,11 @@ const RegisterStudentForm = ({
           const isLastFormStep = currentStep === lastFormStep;
           const canAddChild = childrenNumber < childrenNumberList.length;
 
+          // Lets the stepper unlock the next step once the current one passes validation
+          const isCurrentStepValid =
+            (STEP_FIELDS[stepKey] || []).every((field) => !errors[field]) &&
+            (stepKey !== "parent" || parentResponsible);
+
           const scrollToForm = () =>
             document
               .getElementById("register-student-form")
@@ -770,16 +779,23 @@ const RegisterStudentForm = ({
             }));
 
             // Fetch grades for the selected stage
+            const gradesUrl = getProxyUrl(
+              `${B2B_END_POINTS.STUDENTS_GRADES}/${tripId}/${newStage}/${educationSystem}`
+            );
             try {
-              const response = await axios.get(
-                getProxyUrl(
-                  `${B2B_END_POINTS.STUDENTS_GRADES}/${tripId}/${newStage}/${educationSystem}`
-                ),
-                { headers: headersGetMethod }
-              );
+              if (!gradesCacheRef.current[gradesUrl]) {
+                gradesCacheRef.current[gradesUrl] = axios
+                  .get(gradesUrl, { headers: headersGetMethod })
+                  .then((res) => res.data)
+                  .catch((err) => {
+                    delete gradesCacheRef.current[gradesUrl];
+                    throw err;
+                  });
+              }
+              const grades = await gradesCacheRef.current[gradesUrl];
               setGradesList((prev) => ({
                 ...prev,
-                [childIndex]: response.data, // adjust according to your API response
+                [childIndex]: grades,
               }));
             } catch (error) {
               setGradesList((prev) => ({
@@ -817,8 +833,11 @@ const RegisterStudentForm = ({
                 namespace="forms.registerForm.steps"
                 steps={steps}
                 currentStep={currentStep}
-                isCurrentStepValid={false}
-                onStepClick={(step) => step < currentStep && goToStep(step)}
+                isCurrentStepValid={isCurrentStepValid}
+                onStepClick={(step) => {
+                  if (step < currentStep) goToStep(step);
+                  else if (step === currentStep + 1) goToNextStep();
+                }}
               />
 
               {stepKey === "parent" && (

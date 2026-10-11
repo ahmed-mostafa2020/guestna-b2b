@@ -118,6 +118,11 @@ export const myBookingStudentsHeaders = ({ t }) => [
     key: "grade",
     width: 20,
   },
+  {
+    header: t("exportUtils.bookingReport.companionsCount"),
+    key: "companionsCount",
+    width: 15,
+  },
 ];
 
 export const bookingManagementStudentsHeaders = ({ t }) => [
@@ -189,7 +194,57 @@ export const bookingManagementStudentsHeaders = ({ t }) => [
     key: "parentConfirmation",
     width: 20,
   },
+  {
+    header: t("exportUtils.bookingReport.companionsCount"),
+    key: "companionsCount",
+    width: 15,
+  },
   { header: t("exportUtils.bookingReport.note"), key: "note", width: 30 },
+];
+
+export const bookingCompanionsHeaders = ({ t }) => [
+  { header: "#", key: "index", width: 5 },
+  {
+    header: t("exportUtils.bookingReport.orderId"),
+    key: "orderId",
+    width: 15,
+  },
+  {
+    header: t("exportUtils.bookingReport.companionName"),
+    key: "companionName",
+    width: 25,
+  },
+  {
+    header: t("exportUtils.bookingReport.relationship"),
+    key: "relationship",
+    width: 15,
+  },
+  { header: t("exportUtils.bookingReport.age"), key: "age", width: 10 },
+  {
+    header: t("exportUtils.bookingReport.nationality"),
+    key: "nationality",
+    width: 15,
+  },
+  {
+    header: t("exportUtils.bookingReport.linkedStudents"),
+    key: "linkedStudents",
+    width: 35,
+  },
+  {
+    header: t("exportUtils.bookingReport.parentName"),
+    key: "parentName",
+    width: 25,
+  },
+  {
+    header: t("exportUtils.bookingReport.parentPhone"),
+    key: "parentPhone",
+    width: 15,
+  },
+  {
+    header: t("exportUtils.bookingReport.parentEmail"),
+    key: "parentEmail",
+    width: 30,
+  },
 ];
 
 export const studentDetailsBookingsHeaders = ({ t }) => [
