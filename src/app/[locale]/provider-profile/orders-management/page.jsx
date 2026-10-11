@@ -120,11 +120,6 @@ const ProviderOrdersManagementPage = () => {
           width: 18,
         },
         {
-          header: t("providerProfile.ordersManagement.columns.client"),
-          key: "client",
-          width: 28,
-        },
-        {
           header: t("providerProfile.ordersManagement.columns.product"),
           key: "product",
           width: 22,
@@ -153,10 +148,6 @@ const ProviderOrdersManagementPage = () => {
 
       // Map data rows from fetched nodes
       const orderRows = nodes.map((row) => {
-        const orgName =
-          typeof row.organization === "string"
-            ? row.organization
-            : row.organization?.name || "";
         const dateVal = row.day || row.date || row.createdAt;
         const formattedDate = dateVal
           ? formatDate(dateVal, locale, {
@@ -168,7 +159,6 @@ const ProviderOrdersManagementPage = () => {
 
         return {
           orderId: String(row.orderId || row._id?.slice(-8) || ""),
-          client: orgName,
           product: row.name || "",
           orderType:
             row.askType === "CUSTOM_TRIP"
@@ -209,18 +199,22 @@ const ProviderOrdersManagementPage = () => {
       orderRows.forEach((row) => {
         const addedRow = worksheet.addRow(row);
         addedRow.eachCell((cell) => {
-          cell.alignment = { horizontal: "center", vertical: "middle" };
+          cell.alignment = {
+            horizontal: "center",
+            vertical: "middle",
+            wrapText: true,
+          };
         });
       });
 
-      // Auto-fit columns
+      // Auto-fit columns (capped so long text wraps instead of stretching)
       worksheet.columns.forEach((col) => {
         let max = col.width || 10;
         col.eachCell({ includeEmpty: true }, (cell) => {
           const v = cell.value ? cell.value.toString() : "";
           max = Math.max(max, v.length + 4);
         });
-        col.width = max;
+        col.width = Math.min(max, 40);
       });
 
       // RTL support
