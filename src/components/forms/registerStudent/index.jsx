@@ -18,7 +18,7 @@ import { cn } from "@utils/helpers/cn";
 import getErrorMessage from "@utils/helpers/getErrorMessage";
 import getProxyUrl from "@utils/api/getProxyUrl";
 
-import { FieldArray, Formik } from "formik";
+import { FieldArray, Formik, setNestedObjectValues } from "formik";
 
 import axios from "axios";
 
@@ -30,7 +30,69 @@ import ParentFormFields from "./ParentFormFields";
 import ChildForm from "./childForms/ChildForm";
 import CustomizedRiyadhForm from "./childForms/CustomizedRiyadhForm";
 import TermsConfirmationModal from "./TermsConfirmationModal";
+import CompanionForm from "./CompanionForm";
+import FormSectionHeader from "./FormSectionHeader";
+import BookingStepper from "../schoolTripBookingForm/BookingStepper";
 import { infoIcon } from "@assets/svg";
+
+const EMPTY_COMPANION = {
+  name: "",
+  relationship: "",
+  age: "",
+  nationalId: "",
+  nationality: "68052bdd38ea31c8cf95dc04", // Saudi Arabia
+  note: "",
+};
+
+// Formik fields validated before leaving each step
+const STEP_FIELDS = {
+  parent: [
+    "parentName",
+    "relationship",
+    "email",
+    "mobile",
+    "nationality",
+    "childrenNumber",
+    "companionsCount",
+    "duration",
+    "bookingDay",
+  ],
+  students: ["children"],
+  companions: ["companions"],
+};
+
+// Drop the entry at `idx` from an index-keyed object and shift the rest down
+const removeIndexedKey = (obj, idx) =>
+  Object.fromEntries(
+    Object.entries(obj)
+      .filter(([key]) => Number(key) !== idx)
+      .map(([key, value]) => [
+        Number(key) > idx ? Number(key) - 1 : Number(key),
+        value,
+      ])
+  );
+
+const checkboxLabelSx = {
+  alignItems: "flex-start",
+  margin: 0,
+  width: "100%",
+  "& .MuiFormControlLabel-label": {
+    color: "#1F2626",
+    fontSize: "14px",
+    lineHeight: 1.6,
+    fontFamily: "var(--font-somar-sans), sans-serif",
+  },
+};
+
+const checkboxSx = {
+  padding: "4px",
+  marginTop: "-4px",
+  color: "var(--color-text-dark)",
+  "& .MuiSvgIcon-root": { fontSize: 24 },
+  "&.Mui-checked": {
+    color: "var(--color-title)",
+  },
+};
 
 const RegisterStudentForm = ({
   tripMainCategory,
@@ -42,7 +104,7 @@ const RegisterStudentForm = ({
   const [___, setGradeError] = useState("");
 
   const [childrenNumber, setChildrenNumber] = useState(1);
-  const [nationality, setNationality] = useState("a7568f9b909fa74e02403a29");
+  const [nationality, setNationality] = useState("68052bdd38ea31c8cf95dc04");
   const [nationalIdImage, setNationalIdImage] = useState(null);
   const [nationalIdImageError, setNationalIdImageError] = useState("");
 
@@ -57,6 +119,9 @@ const RegisterStudentForm = ({
   // Terms confirmation state
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [termsModalOpen, setTermsModalOpen] = useState(false);
+
+  const [currentStep, setCurrentStep] = useState(0);
+  const [parentResponsible, setParentResponsible] = useState(false);
 
   const parentEmail = useSelector(
     (state) => state.parentLoginForm.parentData?.email
@@ -95,6 +160,10 @@ const RegisterStudentForm = ({
 
   const formsType = useSelector(
     (state) => state.tripDetailsData.data?.trip?.categories?.formsType
+  );
+
+  const isSharedWithCompanions = useSelector(
+    (state) => !!state.tripDetailsData.data?.trip?.isSharedWithCompanions
   );
 
   const tripId = useSelector((state) => state.tripDetailsData.data?.trip?._id);
@@ -236,6 +305,20 @@ const RegisterStudentForm = ({
         ];
   }, [availableSeats, seatsArray]);
 
+  // Companions share the trip seats with the children (string ids so 0 is selectable)
+  const maxCompanions = Math.max(
+    0,
+    Math.min(9, (availableSeats || 0) - childrenNumber)
+  );
+  const companionsCountList = useMemo(
+    () =>
+      Array.from({ length: maxCompanions + 1 }, (_, i) => ({
+        _id: String(i),
+        name: String(i),
+      })),
+    [maxCompanions]
+  );
+
   // Validate custom fields
   const validateCustomFields = (values) => {
     let isValid = true;
@@ -301,7 +384,9 @@ const RegisterStudentForm = ({
     const formData = new FormData();
     formData.append("formsType", tripMainCategory);
     formData.append("name", values.parentName);
-    formData.append("quantity", values.childrenNumber);
+    const companions = isSharedWithCompanions ? values.companions : [];
+    // Total seats = children + companions
+    formData.append("quantity", values.childrenNumber + companions.length);
     if (values.relationship) {
       formData.append("relationship", values.relationship);
     }
@@ -362,6 +447,25 @@ const RegisterStudentForm = ({
         formData.append(`childs[${idx}].phone`, child.studentMobile);
       if (child.studentEmail)
         formData.append(`childs[${idx}].email`, child.studentEmail);
+    });
+
+    companions.forEach((companion, idx) => {
+      formData.append(
+        `companions[${idx}].relationship`,
+        companion.relationship
+      );
+      formData.append(`companions[${idx}].name`, companion.name.trim());
+      if (companion.age !== "" && companion.age != null)
+        formData.append(`companions[${idx}].age`, companion.age);
+      if (companion.nationalId)
+        formData.append(`companions[${idx}].nationalId`, companion.nationalId);
+      if (companion.nationality)
+        formData.append(
+          `companions[${idx}].nationality`,
+          companion.nationality
+        );
+      if (companion.note)
+        formData.append(`companions[${idx}].note`, companion.note.trim());
     });
 
     let config = {
@@ -451,13 +555,15 @@ const RegisterStudentForm = ({
           mobile: parentPhone || "",
           backupMobile: "",
           email: parentEmail || "",
-          nationality: "a7568f9b909fa74e02403a29",
+          nationality: "68052bdd38ea31c8cf95dc04",
           nationalId: "",
           promoCode: "",
           duration: tripDuration || null,
           fullDuration: true,
           bookingDay: "",
           children: generateInitialChildren(childrenNumber),
+          companionsCount: 0,
+          companions: [],
         }}
         validationSchema={registerChildSchema}
         onSubmit={handleSubmit}
@@ -478,7 +584,97 @@ const RegisterStudentForm = ({
           isSubmitting,
           validateForm,
           setFieldTouched,
+          setTouched,
         }) => {
+          const hasCompanions =
+            isSharedWithCompanions && values.companionsCount > 0;
+          const steps = [
+            "parent",
+            "students",
+            ...(hasCompanions ? ["companions"] : []),
+          ];
+          const lastFormStep = steps.length - 1;
+          const stepKey = steps[currentStep];
+          const isLastFormStep = currentStep === lastFormStep;
+          const canAddChild = childrenNumber < childrenNumberList.length;
+
+          const scrollToForm = () =>
+            document
+              .getElementById("register-student-form")
+              ?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+          const goToStep = (step) => {
+            setCurrentStep(step);
+            scrollToForm();
+          };
+
+          const goToNextStep = async () => {
+            const allErrors = await validateForm();
+            const stepErrors = Object.fromEntries(
+              (STEP_FIELDS[stepKey] || [])
+                .filter((field) => allErrors[field])
+                .map((field) => [field, allErrors[field]])
+            );
+
+            if (Object.keys(stepErrors).length > 0) {
+              setTouched(
+                { ...touched, ...setNestedObjectValues(stepErrors, true) },
+                false
+              );
+              return;
+            }
+
+            if (stepKey === "parent" && !parentResponsible) return;
+            if (stepKey === "students" && !validateCustomFields(values)) return;
+
+            goToStep(currentStep + 1);
+          };
+
+          const handleFormSubmit = (event) => {
+            // Enter key on an intermediate step moves forward instead of submitting
+            if (!isLastFormStep) {
+              event.preventDefault();
+              goToNextStep();
+              return;
+            }
+            handleSubmit(event);
+          };
+
+          const handleChangeCompanionsCount = (event) => {
+            const count = parseInt(event.target.value, 10) || 0;
+            const updated = values.companions.slice(0, count);
+            while (updated.length < count) {
+              updated.push({ ...EMPTY_COMPANION });
+            }
+            setFieldValue("companions", updated);
+            setFieldValue("companionsCount", count);
+          };
+
+          const handleRemoveChild = (index, remove) => {
+            const newCount = childrenNumber - 1;
+            remove(index);
+            setChildrenNumber(newCount);
+            setFieldValue("childrenNumber", newCount);
+            setChildrenStages((prev) => removeIndexedKey(prev, index));
+            setGradesList((prev) => removeIndexedKey(prev, index));
+            setGradesLoading((prev) => removeIndexedKey(prev, index));
+            setChildrenClasses((prev) => removeIndexedKey(prev, index));
+            setChildrenNationalIdImages((prev) =>
+              prev.filter((_, i) => i !== index)
+            );
+            setChildrenNationalIdImagesError((prev) =>
+              prev.filter((_, i) => i !== index)
+            );
+          };
+
+          const handleRemoveCompanion = (index, remove) => {
+            const newCount = values.companionsCount - 1;
+            remove(index);
+            setFieldValue("companionsCount", newCount);
+            // No companions left → the companions step disappears
+            if (newCount === 0) goToStep(steps.indexOf("students"));
+          };
+
           // Define handlers inside the Formik render function
           const handleChangeChildClasses = (childIndex, event) => {
             const selectedClass = event.target.value;
@@ -529,6 +725,19 @@ const RegisterStudentForm = ({
             // Update form values
             setFieldValue("children", updatedChildren);
             setFieldValue("childrenNumber", newCount);
+
+            // Keep children + companions within the available seats
+            const companionsLimit = Math.max(
+              0,
+              Math.min(9, (availableSeats || 0) - newCount)
+            );
+            if (values.companionsCount > companionsLimit) {
+              setFieldValue(
+                "companions",
+                values.companions.slice(0, companionsLimit)
+              );
+              setFieldValue("companionsCount", companionsLimit);
+            }
 
             // Reset stages for new children count
             const newStages = {};
@@ -599,200 +808,323 @@ const RegisterStudentForm = ({
           };
 
           return (
-            <form onSubmit={handleSubmit} id="register-student-form">
-              <ParentFormFields
-                values={values}
-                errors={errors}
-                touched={touched}
-                handleChange={handleChange}
-                handleBlur={handleBlur}
-                setFieldValue={setFieldValue}
-                setFieldTouched={setFieldTouched}
-                childrenNumber={childrenNumber}
-                handleChangeChildrenNumber={(event) =>
-                  handleChangeChildrenNumber(event, setFieldValue)
-                }
-                handleChangeNationality={(event) =>
-                  handleChangeNationality(event, setFieldValue)
-                }
-                setNationalIdImage={setNationalIdImage}
-                nationalIdImageError={nationalIdImageError}
-                setNationalIdImageError={setNationalIdImageError}
-                childrenNumberList={childrenNumberList}
-                nationalities={nationalities}
-                dayBlockPricing={dayBlockPricing}
-                tripDuration={tripDuration}
-                tripPrice={tripPrice}
-                firstAvailableDate={firstAvailableDate}
-                t={t}
-                cn={cn}
+            <form
+              onSubmit={handleFormSubmit}
+              id="register-student-form"
+              className="flex flex-col gap-8 px-4 py-8 bg-white shadow-sm rounded-xl sm:px-8 lg:py-12"
+            >
+              <BookingStepper
+                namespace="forms.registerForm.steps"
+                steps={steps}
+                currentStep={currentStep}
+                isCurrentStepValid={false}
+                onStepClick={(step) => step < currentStep && goToStep(step)}
               />
+
+              {stepKey === "parent" && (
+                <div className="flex flex-col gap-5">
+                  <FormSectionHeader
+                    title={t("forms.registerForm.parentSection.title")}
+                    subtitle={t("forms.registerForm.parentSection.subtitle")}
+                  />
+                  <ParentFormFields
+                    values={values}
+                    errors={errors}
+                    touched={touched}
+                    handleChange={handleChange}
+                    handleBlur={handleBlur}
+                    setFieldValue={setFieldValue}
+                    setFieldTouched={setFieldTouched}
+                    childrenNumber={childrenNumber}
+                    handleChangeChildrenNumber={(event) =>
+                      handleChangeChildrenNumber(event, setFieldValue)
+                    }
+                    handleChangeNationality={(event) =>
+                      handleChangeNationality(event, setFieldValue)
+                    }
+                    setNationalIdImage={setNationalIdImage}
+                    nationalIdImageError={nationalIdImageError}
+                    setNationalIdImageError={setNationalIdImageError}
+                    childrenNumberList={childrenNumberList}
+                    nationalities={nationalities}
+                    dayBlockPricing={dayBlockPricing}
+                    tripDuration={tripDuration}
+                    tripPrice={tripPrice}
+                    firstAvailableDate={firstAvailableDate}
+                    isSharedWithCompanions={isSharedWithCompanions}
+                    companionsCountList={companionsCountList}
+                    handleChangeCompanionsCount={handleChangeCompanionsCount}
+                    t={t}
+                    cn={cn}
+                  />
+                </div>
+              )}
 
               {/* Dynamic Children Fields */}
               {/* tripMainCategory ===
               CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH */}
 
-              <FieldArray
-                name="children"
-                className="transition-all duration-200 ease-in-out"
-              >
-                {/* eslint-disable-next-line no-unused-vars */}
-                {({ push, remove }) => (
-                  <div>
-                    {values.children.map((child, index) => {
-                      return tripMainCategory ===
-                        CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH ||
-                        tripMainCategory ===
-                          CONSTANT_VALUES.MAIN_CATEGORIES.RIYADH_VIBES ? (
-                        <CustomizedRiyadhForm
-                          key={`child-${index}`}
-                          child={child}
-                          index={index}
-                          errors={errors}
-                          touched={touched}
-                          handleChange={handleChange}
-                          handleBlur={handleBlur}
-                          setFieldValue={setFieldValue}
-                          childrenStages={childrenStages}
-                          academicStages={academicStages}
-                          handleChangeChildStage={handleChangeChildStage}
-                          gradesList={gradesList[index] || []}
-                          gradesLoading={gradesLoading[index] || false}
-                          handleChangeChildGrade={handleChangeChildGrade}
-                          tripClasses={tripClasses}
-                          childrenClasses={childrenClasses}
-                          handleChangeChildClasses={handleChangeChildClasses}
-                          onChildImageChange={(file) => {
-                            const updated = [...childrenNationalIdImages];
-                            updated[index] = file;
-                            setChildrenNationalIdImages(updated);
+              {stepKey === "students" && (
+                <FieldArray
+                  name="children"
+                  className="transition-all duration-200 ease-in-out"
+                >
+                  {/* eslint-disable-next-line no-unused-vars */}
+                  {({ push, remove }) => (
+                    <div className="flex flex-col gap-10">
+                      {values.children.map((child, index) => {
+                        const onRemove =
+                          childrenNumber > 1
+                            ? () => handleRemoveChild(index, remove)
+                            : undefined;
+                        return tripMainCategory ===
+                          CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH ||
+                          tripMainCategory ===
+                            CONSTANT_VALUES.MAIN_CATEGORIES.RIYADH_VIBES ? (
+                          <CustomizedRiyadhForm
+                            key={`child-${index}`}
+                            child={child}
+                            index={index}
+                            errors={errors}
+                            touched={touched}
+                            handleChange={handleChange}
+                            handleBlur={handleBlur}
+                            setFieldValue={setFieldValue}
+                            childrenStages={childrenStages}
+                            academicStages={academicStages}
+                            handleChangeChildStage={handleChangeChildStage}
+                            gradesList={gradesList[index] || []}
+                            gradesLoading={gradesLoading[index] || false}
+                            handleChangeChildGrade={handleChangeChildGrade}
+                            tripClasses={tripClasses}
+                            childrenClasses={childrenClasses}
+                            handleChangeChildClasses={handleChangeChildClasses}
+                            onChildImageChange={(file) => {
+                              const updated = [...childrenNationalIdImages];
+                              updated[index] = file;
+                              setChildrenNationalIdImages(updated);
 
-                            // Clear error for this child on new file
-                            setChildrenNationalIdImagesError((prev) => {
-                              const arr = [...prev];
-                              arr[index] = "";
-                              return arr;
-                            });
-                          }}
-                          onNationalIdImageChange={(file) => {
-                            const updated = [...childrenNationalIdImages];
-                            updated[index] = file;
-                            setChildrenNationalIdImages(updated);
+                              // Clear error for this child on new file
+                              setChildrenNationalIdImagesError((prev) => {
+                                const arr = [...prev];
+                                arr[index] = "";
+                                return arr;
+                              });
+                            }}
+                            onNationalIdImageChange={(file) => {
+                              const updated = [...childrenNationalIdImages];
+                              updated[index] = file;
+                              setChildrenNationalIdImages(updated);
 
-                            // Clear error for this child on new file
-                            setChildrenNationalIdImagesError((prev) => {
-                              const arr = [...prev];
-                              arr[index] = "";
-                              return arr;
-                            });
-                          }}
-                          imageError={childrenNationalIdImagesError[index]}
-                          nationalIdImageError={
-                            childrenNationalIdImagesError[index]
-                          }
-                          t={t}
-                          cn={cn}
-                          childrenNumber={childrenNumber}
-                          tripMainCategory={tripMainCategory}
-                        />
-                      ) : (
-                        <ChildForm
-                          key={`child-${index}`}
-                          child={child}
-                          index={index}
-                          errors={errors}
-                          touched={touched}
-                          handleChange={handleChange}
-                          handleBlur={handleBlur}
-                          setFieldValue={setFieldValue}
-                          childrenStages={childrenStages}
-                          academicStages={academicStages}
-                          handleChangeChildStage={handleChangeChildStage}
-                          gradesList={gradesList[index] || []}
-                          gradesLoading={gradesLoading[index] || false}
-                          handleChangeChildGrade={handleChangeChildGrade}
-                          tripClasses={tripClasses}
-                          childrenClasses={childrenClasses}
-                          handleChangeChildClasses={handleChangeChildClasses}
-                          onChildImageChange={(file) => {
-                            const updated = [...childrenNationalIdImages];
-                            updated[index] = file;
-                            setChildrenNationalIdImages(updated);
+                              // Clear error for this child on new file
+                              setChildrenNationalIdImagesError((prev) => {
+                                const arr = [...prev];
+                                arr[index] = "";
+                                return arr;
+                              });
+                            }}
+                            imageError={childrenNationalIdImagesError[index]}
+                            nationalIdImageError={
+                              childrenNationalIdImagesError[index]
+                            }
+                            t={t}
+                            cn={cn}
+                            childrenNumber={childrenNumber}
+                            tripMainCategory={tripMainCategory}
+                            onRemove={onRemove}
+                          />
+                        ) : (
+                          <ChildForm
+                            key={`child-${index}`}
+                            child={child}
+                            index={index}
+                            errors={errors}
+                            touched={touched}
+                            handleChange={handleChange}
+                            handleBlur={handleBlur}
+                            setFieldValue={setFieldValue}
+                            childrenStages={childrenStages}
+                            academicStages={academicStages}
+                            handleChangeChildStage={handleChangeChildStage}
+                            gradesList={gradesList[index] || []}
+                            gradesLoading={gradesLoading[index] || false}
+                            handleChangeChildGrade={handleChangeChildGrade}
+                            tripClasses={tripClasses}
+                            childrenClasses={childrenClasses}
+                            handleChangeChildClasses={handleChangeChildClasses}
+                            onChildImageChange={(file) => {
+                              const updated = [...childrenNationalIdImages];
+                              updated[index] = file;
+                              setChildrenNationalIdImages(updated);
 
-                            // Set only the file name in Formik values
-                            setFieldValue(
-                              `children[${index}].nationalIdImage`,
-                              file ? file.name : null
-                            );
+                              // Set only the file name in Formik values
+                              setFieldValue(
+                                `children[${index}].nationalIdImage`,
+                                file ? file.name : null
+                              );
 
-                            // Clear error for this child on new file
-                            setChildrenNationalIdImagesError((prev) => {
-                              const arr = [...prev];
-                              arr[index] = "";
-                              return arr;
-                            });
-                          }}
-                          imageError={childrenNationalIdImagesError[index]}
-                          t={t}
-                          cn={cn}
-                          childrenNumber={childrenNumber}
-                        />
-                      );
-                    })}
-                  </div>
+                              // Clear error for this child on new file
+                              setChildrenNationalIdImagesError((prev) => {
+                                const arr = [...prev];
+                                arr[index] = "";
+                                return arr;
+                              });
+                            }}
+                            imageError={childrenNationalIdImagesError[index]}
+                            t={t}
+                            cn={cn}
+                            childrenNumber={childrenNumber}
+                            onRemove={onRemove}
+                          />
+                        );
+                      })}
+                    </div>
+                  )}
+                </FieldArray>
+              )}
+
+              {stepKey === "companions" && (
+                <div className="flex flex-col gap-5">
+                  <FormSectionHeader
+                    title={t("forms.registerForm.companions.title")}
+                    subtitle={t("forms.registerForm.companions.subtitle")}
+                  />
+                  <FieldArray name="companions">
+                    {({ remove }) => (
+                      <div className="flex flex-col gap-10">
+                        {values.companions.map((companion, index) => (
+                          <CompanionForm
+                            key={`companion-${index}`}
+                            companion={companion}
+                            index={index}
+                            errors={errors}
+                            touched={touched}
+                            handleChange={handleChange}
+                            handleBlur={handleBlur}
+                            setFieldValue={setFieldValue}
+                            setFieldTouched={setFieldTouched}
+                            nationalities={nationalities}
+                            onRemove={() =>
+                              handleRemoveCompanion(index, remove)
+                            }
+                            t={t}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </FieldArray>
+                </div>
+              )}
+
+              {/* Step actions */}
+              <div className="flex flex-col-reverse gap-4 sm:flex-row sm:gap-9">
+                {stepKey === "students" && canAddChild && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleChangeChildrenNumber({
+                        target: { value: childrenNumber + 1 },
+                      })
+                    }
+                    className="flex-1 py-3 font-bold text-center transition-all duration-200 ease-in-out bg-white border-2 rounded-lg font-somar border-secColor text-mainColor hover:bg-secColor hover:text-white"
+                  >
+                    {t("forms.registerForm.actions.addStudent")}
+                  </button>
                 )}
-              </FieldArray>
+
+                {isLastFormStep ? (
+                  <FormSubmitButton
+                    loading={isSubmitting}
+                    disabled={
+                      !isValid ||
+                      !nationality ||
+                      !termsAccepted ||
+                      Object.values(childrenStages).some((v) => !v) ||
+                      values.children.some((child) => !child.grade) ||
+                      (tripClasses?.length > 0 &&
+                        values.children.some((_, idx) => !childrenClasses[idx]))
+                    }
+                    label={t("links.continuePayment")}
+                    isValid={
+                      isValid &&
+                      !!nationality &&
+                      !!termsAccepted &&
+                      !Object.values(childrenStages).some((v) => !v) &&
+                      !values.children.some((child) => !child.grade) &&
+                      !(
+                        tripClasses?.length > 0 &&
+                        values.children.some((_, idx) => !childrenClasses[idx])
+                      )
+                    }
+                    className="flex-1 !mt-0 py-3 text-base font-bold font-somar"
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    onClick={goToNextStep}
+                    disabled={stepKey === "parent" && !parentResponsible}
+                    className="flex-1 py-3 font-bold text-white transition-all duration-200 ease-in-out border-2 rounded-lg font-somar border-mainColor bg-mainColor hover:bg-linksHover hover:border-linksHover disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {t("forms.registerForm.actions.next")}
+                  </button>
+                )}
+              </div>
+
+              {/* Parent responsibility confirmation */}
+              {stepKey === "parent" && (
+                <div className="p-4 bg-[#FFF1764D] rounded-xl">
+                  <FormControlLabel
+                    sx={checkboxLabelSx}
+                    control={
+                      <Checkbox
+                        checked={parentResponsible}
+                        onChange={(e) => setParentResponsible(e.target.checked)}
+                        sx={checkboxSx}
+                      />
+                    }
+                    label={
+                      <span className="font-semibold">
+                        {t("forms.registerForm.parentResponsibleConfirm")}
+                      </span>
+                    }
+                  />
+                </div>
+              )}
 
               {/* Terms Confirmation Checkbox */}
-              <div className="mt-6 p-4 bg-[#FFF1764D] rounded-xl">
-                <FormControlLabel
-                  sx={{
-                    alignItems: "flex-start",
-                    margin: 0,
-                    width: "100%",
-                    "& .MuiFormControlLabel-label": {
-                      color: "#1F2626",
-                      fontSize: "14px",
-                      lineHeight: 1.6,
-                      fontFamily: "var(--font-somar-sans), sans-serif",
-                    },
-                  }}
-                  control={
-                    <Checkbox
-                      checked={termsAccepted}
-                      onChange={(e) => setTermsAccepted(e.target.checked)}
-                      sx={{
-                        padding: "4px",
-                        marginTop: "-4px",
-                        color: "var(--color-text-dark)",
-                        "& .MuiSvgIcon-root": { fontSize: 24 },
-                        "&.Mui-checked": {
-                          color: "var(--color-title)",
-                        },
-                      }}
-                    />
-                  }
-                  label={
-                    <span className="font-semibold">
-                      {t("forms.termsConfirmation.checkboxLabel")}{" "}
-                      <button
-                        type="button"
-                        onClick={() => setTermsModalOpen(true)}
-                        className="text-mainColor underline hover:text-linksHover font-semibold transition-colors"
-                      >
-                        {t("forms.termsConfirmation.termsLinkText")}
-                      </button>
-                    </span>
-                  }
-                />
+              {isLastFormStep && (
+                <div className="p-4 bg-[#FFF1764D] rounded-xl">
+                  <FormControlLabel
+                    sx={checkboxLabelSx}
+                    control={
+                      <Checkbox
+                        checked={termsAccepted}
+                        onChange={(e) => setTermsAccepted(e.target.checked)}
+                        sx={checkboxSx}
+                      />
+                    }
+                    label={
+                      <span className="font-semibold">
+                        {t("forms.termsConfirmation.checkboxLabel")}{" "}
+                        <button
+                          type="button"
+                          onClick={() => setTermsModalOpen(true)}
+                          className="text-mainColor underline hover:text-linksHover font-semibold transition-colors"
+                        >
+                          {t("forms.termsConfirmation.termsLinkText")}
+                        </button>
+                      </span>
+                    }
+                  />
 
-                <div className="flex items-center gap-2 mt-4">
-                  {infoIcon}
-                  <p className="text-sm text-textLight">
-                    {t("forms.termsConfirmation.infoText")}
-                  </p>
+                  <div className="flex items-center gap-2 mt-4">
+                    {infoIcon}
+                    <p className="text-sm text-textLight">
+                      {t("forms.termsConfirmation.infoText")}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Terms Confirmation Modal */}
               <TermsConfirmationModal
@@ -818,32 +1150,6 @@ const RegisterStudentForm = ({
                 tripName={tripName}
                 termsData={termsData}
                 t={t}
-              />
-
-              <FormSubmitButton
-                loading={isSubmitting}
-                disabled={
-                  !isValid ||
-                  !nationality ||
-                  !termsAccepted ||
-                  Object.values(childrenStages).some((v) => !v) ||
-                  values.children.some((child) => !child.grade) ||
-                  (tripClasses?.length > 0 &&
-                    values.children.some((_, idx) => !childrenClasses[idx]))
-                }
-                label={t("links.continuePayment")}
-                isValid={
-                  isValid &&
-                  !!nationality &&
-                  !!termsAccepted &&
-                  !Object.values(childrenStages).some((v) => !v) &&
-                  !values.children.some((child) => !child.grade) &&
-                  !(
-                    tripClasses?.length > 0 &&
-                    values.children.some((_, idx) => !childrenClasses[idx])
-                  )
-                }
-                className="mx-auto px-20 lg:px-40 w-fit mt-4 lg:mt-8 py-3 text-base"
               />
             </form>
           );

@@ -3609,6 +3609,71 @@
     },
 
     "registerForm": {
+      "steps": {
+        "ariaLabel": "خطوات تسجيل الطالب",
+        "parent": "معلومات ولي الأمر",
+        "students": "معلومات الطالب/ـة",
+        "companions": "المرافقين",
+        "payment": "الدفع"
+      },
+      "parentSection": {
+        "title": "بيانات المسؤول عن التسجيل والتواصل",
+        "subtitle": "يرجى تسجيل بيانات ولي الأمر للطلاب المقيدين بالمدرسة بدقة لإصدار تذكرة الفعالية"
+      },
+      "studentSection": {
+        "subtitle": "يرجى تسجيل بيانات الطالب/ـة المقيد/ة بالمدرسة بدقة لإصدار تذكرة الفعالية"
+      },
+      "parentRelationshipPlaceholder": "أب / أم / ولي أو وصي قانوني / أخرى",
+      "parentRelationshipOptions": {
+        "father": "أب",
+        "mother": "أم",
+        "guardian": "ولي أو وصي قانوني",
+        "other": "أخرى"
+      },
+      "parentResponsibleConfirm": "أنا المسؤول عن جميع الطلاب المضافين في هذا الحجز",
+      "actions": {
+        "next": "التالي",
+        "addStudent": "إضافة طالب آخر",
+        "removeStudent": "حذف الطالب",
+        "removeCompanion": "حذف المرافق"
+      },
+      "companions": {
+        "countLabel": "الحجز للمرافقين من الأقارب (اختياري)",
+        "title": "إضافة مرافقين من الأقارب (اختياري)",
+        "subtitle": "إتاحة تسجيل الأخوات وأمهات الطالبات للمشاركة في فعاليات الرحلة",
+        "itemTitle": "المرافق {number}",
+        "name": {
+          "label": "اسم المرافق بالكامل",
+          "placeholder": "اكتب اسم المرافق بالكامل"
+        },
+        "relationship": {
+          "label": "صلة القرابة للطالب/ـة",
+          "placeholder": "اختر صلة القرابة"
+        },
+        "nationalId": {
+          "label": "رقم الهوية",
+          "placeholder": "رقم بطاقة الهوية الوطنية للمرافق"
+        },
+        "age": {
+          "label": "السن",
+          "placeholder": "أدخل السن"
+        },
+        "note": {
+          "label": "ملاحظات",
+          "placeholder": "اكتب ملاحظاتك"
+        },
+        "relationshipOptions": {
+          "father": "أب",
+          "mother": "أم",
+          "brother": "أخ",
+          "sister": "أخت",
+          "uncle": "عم / خال",
+          "aunt": "عمة / خالة",
+          "grandfather": "جد",
+          "grandmother": "جدة",
+          "other": "أخرى"
+        }
+      },
       "title": "ادخل معلومات الطالب/ـة",
       "numberOfChildren": "عدد الطلاب",
 

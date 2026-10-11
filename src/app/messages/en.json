@@ -3602,6 +3602,71 @@
     },
 
     "registerForm": {
+      "steps": {
+        "ariaLabel": "Student registration steps",
+        "parent": "Parent information",
+        "students": "Student information",
+        "companions": "Companions",
+        "payment": "Payment"
+      },
+      "parentSection": {
+        "title": "Registration & contact person details",
+        "subtitle": "Please enter the parent's details accurately to issue the event ticket"
+      },
+      "studentSection": {
+        "subtitle": "Please enter the details of the student enrolled in the school accurately to issue the event ticket"
+      },
+      "parentRelationshipPlaceholder": "Father / Mother / Legal guardian / Other",
+      "parentRelationshipOptions": {
+        "father": "Father",
+        "mother": "Mother",
+        "guardian": "Legal guardian",
+        "other": "Other"
+      },
+      "parentResponsibleConfirm": "I am responsible for all students added to this booking",
+      "actions": {
+        "next": "Next",
+        "addStudent": "Add another student",
+        "removeStudent": "Remove student",
+        "removeCompanion": "Remove companion"
+      },
+      "companions": {
+        "countLabel": "Book for relative companions (optional)",
+        "title": "Add relative companions (optional)",
+        "subtitle": "Allow sisters and mothers of students to join the trip activities",
+        "itemTitle": "Companion {number}",
+        "name": {
+          "label": "Companion full name",
+          "placeholder": "Enter the companion's full name"
+        },
+        "relationship": {
+          "label": "Relationship to the student",
+          "placeholder": "Select relationship"
+        },
+        "nationalId": {
+          "label": "ID number",
+          "placeholder": "Companion's national ID number"
+        },
+        "age": {
+          "label": "Age",
+          "placeholder": "Enter age"
+        },
+        "note": {
+          "label": "Notes",
+          "placeholder": "Write your notes"
+        },
+        "relationshipOptions": {
+          "father": "Father",
+          "mother": "Mother",
+          "brother": "Brother",
+          "sister": "Sister",
+          "uncle": "Uncle",
+          "aunt": "Aunt",
+          "grandfather": "Grandfather",
+          "grandmother": "Grandmother",
+          "other": "Other"
+        }
+      },
       "title": "Enter student information",
       "numberOfChildren": "Number of students",
 

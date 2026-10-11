@@ -10,6 +10,7 @@ import SelectionGroup from "../../SelectionGroup";
 
 import "react-phone-number-input/style.css";
 import { CircularProgress } from "@mui/material";
+import FormSectionHeader from "../FormSectionHeader";
 
 const ChildForm = ({
   child,
@@ -33,6 +34,7 @@ const ChildForm = ({
   t,
   cn,
   childrenNumber,
+  onRemove,
 }) => {
   // Compute available classes for the selected grade
   const availableClasses = useMemo(() => {
@@ -44,15 +46,21 @@ const ChildForm = ({
   const hasTripClasses = tripClasses && tripClasses.length > 0;
 
   return (
-    <div className="flex flex-col gap-4 mt-6">
-      <h3 className="text-lg font-semibold text-titleColor lg:text-2xl">
-        {childrenNumber > 1
-          ? t(`forms.registerForm.childrenNumber.${index + 1}`)
-          : t(`forms.registerForm.childrenNumber.${index}`)}
-      </h3>
+    <div className="flex flex-col gap-5">
+      <FormSectionHeader
+        title={
+          childrenNumber > 1
+            ? t(`forms.registerForm.childrenNumber.${index + 1}`)
+            : t(`forms.registerForm.childrenNumber.${index}`)
+        }
+        subtitle={t("forms.registerForm.studentSection.subtitle")}
+        onRemove={onRemove}
+        removeLabel={t("forms.registerForm.actions.removeStudent")}
+      />
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-6">
         {/* Student Name field stays in its own column */}
         <TextInputGroup
+          labelClassName="font-somar"
           label={t("forms.studentName.name")}
           type="text"
           name={`children[${index}].studentName`}
@@ -72,6 +80,7 @@ const ChildForm = ({
           {/* Academic Stage Dropdown */}
           <div className="relative flex flex-1 flex-col gap-2">
             <DropdownGroup
+              labelClassName="font-somar"
               label={t("forms.academicStages.name")}
               placeholder={t("forms.academicStages.placeholder")}
               value={childrenStages[index] || ""}
@@ -91,14 +100,15 @@ const ChildForm = ({
           <div className="relative flex-1 flex-col gap-2">
             <div className="relative">
               <DropdownGroup
+                labelClassName="font-somar"
                 label={t("forms.grade.name")}
                 placeholder={
                   !childrenStages[index]
                     ? t("forms.academicStages.selectFirst") ||
                       "Please select academic stage first"
                     : gradesLoading
-                    ? t("forms.academicStages.loading")
-                    : t("forms.grade.name")
+                      ? t("forms.academicStages.loading")
+                      : t("forms.grade.name")
                 }
                 value={child.grade}
                 onChange={(event) => handleChangeChildGrade(index, event)}
@@ -130,6 +140,7 @@ const ChildForm = ({
         {hasTripClasses && (
           <div className="sm:col-span-3">
             <SelectionGroup
+              labelClassName="font-somar"
               name={`children[${index}].class`}
               label={t("forms.classes.name")}
               placeholder={
@@ -229,4 +240,3 @@ const ChildForm = ({
 };
 
 export default memo(ChildForm);
-

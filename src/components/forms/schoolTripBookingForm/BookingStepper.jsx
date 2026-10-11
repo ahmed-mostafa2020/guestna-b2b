@@ -11,8 +11,9 @@ const BookingStepper = ({
   currentStep,
   isCurrentStepValid = false,
   onStepClick,
+  namespace = "schoolTripBooking.steps",
 }) => {
-  const t = useTranslations("schoolTripBooking.steps");
+  const t = useTranslations(namespace);
 
   return (
     <nav
@@ -43,8 +44,8 @@ const BookingStepper = ({
                   isActive || isCompleted
                     ? "text-titleColor font-medium"
                     : isClickable
-                    ? "text-titleColor hover:text-secColor"
-                    : "text-textDark"
+                      ? "text-titleColor hover:text-secColor"
+                      : "text-textDark"
                 )}
               >
                 <span
@@ -54,8 +55,8 @@ const BookingStepper = ({
                     isActive || isCompleted
                       ? "bg-secColor text-white"
                       : isClickable
-                      ? "border-2 border-secColor text-secColor"
-                      : "border border-textDark text-textDark"
+                        ? "border-2 border-secColor text-secColor"
+                        : "border border-textDark text-textDark"
                   )}
                 >
                   {isCompleted ? <Check sx={{ fontSize: 14 }} /> : index + 1}
