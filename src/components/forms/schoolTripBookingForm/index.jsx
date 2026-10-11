@@ -14,6 +14,11 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import { useGradesByStages } from "@hooks/schoolRegister/useGradesByStages";
+import setToken from "@utils/api/setToken";
+import { useDispatch } from "react-redux";
+import { setUser, setUserToken } from "@store/users/usersSlice";
+import { setPermissions } from "@store/permissions/permissionsSlice";
+import { setOrganizations } from "@store/profile/selectedOrganizationsSlice";
 
 import BookingStepper from "./BookingStepper";
 import StepNavigation from "./StepNavigation";
@@ -34,7 +39,8 @@ import {
   validateStepFields,
 } from "./stepHelpers";
 
-const findFirstStepWithErrors = (errors) => findFirstInvalidStep(errors, STEP_FIELDS);
+const findFirstStepWithErrors = (errors) =>
+  findFirstInvalidStep(errors, STEP_FIELDS);
 
 const isStepValid = (step, errors = {}, values = {}) =>
   isStepFieldsValid(step, errors, values, STEP_FIELDS);
@@ -54,6 +60,7 @@ const SchoolTripBookingForm = ({
   const t = useTranslations();
   const locale = useLocale();
   const router = useRouter();
+  const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
   const effectiveTripId = propTripId || trip?._id || tripSlug;
@@ -63,7 +70,11 @@ const SchoolTripBookingForm = ({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const cardRef = useRef(null);
 
-  const { grades: fetchedGrades, isLoadingGrades, fetchGrades } = useGradesByStages();
+  const {
+    grades: fetchedGrades,
+    isLoadingGrades,
+    fetchGrades,
+  } = useGradesByStages();
   const effectiveGrades = propGrades.length ? propGrades : fetchedGrades;
 
   const availableDays = useMemo(
@@ -88,7 +99,9 @@ const SchoolTripBookingForm = ({
     () => [genderLabels.boys, genderLabels.girls, genderLabels.both],
     [genderLabels]
   );
-  const genderOptions = propGenderOptions.length ? propGenderOptions : defaultGenderOptions;
+  const genderOptions = propGenderOptions.length
+    ? propGenderOptions
+    : defaultGenderOptions;
 
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === BOOKING_STEPS.length - 1;
@@ -99,7 +112,8 @@ const SchoolTripBookingForm = ({
   }, []);
 
   /** Validates the given step; marks its fields as touched when invalid. */
-  const validateStep = (step, formik) => validateStepFields(step, STEP_FIELDS, formik);
+  const validateStep = (step, formik) =>
+    validateStepFields(step, STEP_FIELDS, formik);
 
   const handleNext = async (formik) => {
     if (isTransitioningStep) return;
@@ -156,8 +170,37 @@ const SchoolTripBookingForm = ({
         variant: "success",
       });
 
+      // Log the newly created staff user in, same as the roles login form
+      const { token, userType, user } = response?.data || {};
+      if (token) {
+        setToken(token);
+        dispatch(setUserToken(token));
+        dispatch(setUser(userType || user?.userType));
+        if (user?.permissions) dispatch(setPermissions(user.permissions));
+
+        try {
+          const orgsResponse = await axios.get(
+            getProxyUrl(B2B_END_POINTS.PROFILE.HEADER_FILTER_BY_ORGANIZATION),
+            {
+              headers: {
+                ...getHeaders(locale),
+                authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (orgsResponse.data) dispatch(setOrganizations(orgsResponse.data));
+        } catch {
+          // Non-blocking — OrganizationSelector will retry on its own
+        }
+      }
+
+      // Success page (and its create-trip-link CTA) is keyed by the created trip's slug
+      const successSlug = response?.data?.trip?.slug || effectiveTripId;
+
       const schoolName =
-        (locale === "ar" ? values.schoolNameArabic : values.schoolNameEnglish) ||
+        (locale === "ar"
+          ? values.schoolNameArabic
+          : values.schoolNameEnglish) ||
         values.schoolNameArabic ||
         values.schoolNameEnglish ||
         "";
@@ -184,7 +227,7 @@ const SchoolTripBookingForm = ({
       if (typeof window !== "undefined") {
         try {
           sessionStorage.setItem(
-            `schoolBookingSuccess_${effectiveTripId}`,
+            `schoolBookingSuccess_${successSlug}`,
             JSON.stringify({
               schoolName,
               adminName,
@@ -202,7 +245,7 @@ const SchoolTripBookingForm = ({
       resetForm();
       setCurrentStep(0);
 
-      const targetPath = `/${locale}/school-register/${effectiveTripId}/success`;
+      const targetPath = `/${locale}/school-register/${successSlug}/success`;
 
       const queryParams = new URLSearchParams();
       if (schoolName) queryParams.set("schoolName", schoolName);
@@ -210,7 +253,9 @@ const SchoolTripBookingForm = ({
       if (adminRole) queryParams.set("adminRole", adminRole);
       if (schoolCode) queryParams.set("schoolCode", schoolCode);
       if (trip?.name) queryParams.set("tripName", trip.name);
-      const queryString = queryParams.toString() ? `?${queryParams.toString()}` : "";
+      const queryString = queryParams.toString()
+        ? `?${queryParams.toString()}`
+        : "";
 
       router.push(`${targetPath}${queryString}`);
     } catch (error) {
@@ -219,11 +264,14 @@ const SchoolTripBookingForm = ({
 
       if (Array.isArray(info) && info.length) {
         info.forEach(({ field, message }) =>
-          enqueueSnackbar(`${field || ""}: ${message || ""}`, { variant: "error" })
+          enqueueSnackbar(`${field || ""}: ${message || ""}`, {
+            variant: "error",
+          })
         );
       } else {
         enqueueSnackbar(
-          error.response?.data?.message || t("schoolTripBooking.feedback.error"),
+          error.response?.data?.message ||
+            t("schoolTripBooking.feedback.error"),
           { variant: "error" }
         );
       }
@@ -315,7 +363,9 @@ const SchoolTripBookingForm = ({
                 {t("schoolTripBooking.steps.progress", {
                   current: currentStep + 1,
                   total: BOOKING_STEPS.length,
-                  name: t(`schoolTripBooking.steps.${BOOKING_STEPS[currentStep]}`),
+                  name: t(
+                    `schoolTripBooking.steps.${BOOKING_STEPS[currentStep]}`
+                  ),
                 })}
               </p>
 
@@ -329,44 +379,50 @@ const SchoolTripBookingForm = ({
                   else handleNext(formik);
                 }}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && !isLastStep && e.target.tagName === "INPUT") {
+                  if (
+                    e.key === "Enter" &&
+                    !isLastStep &&
+                    e.target.tagName === "INPUT"
+                  ) {
                     e.preventDefault();
                     handleNext(formik);
                   }
                 }}
               >
-            {currentStep === 0 && (
-              <RequestDetailsStep
-                stages={stages}
-                educationSystems={educationSystems}
-                availableDays={availableDays}
-                grades={effectiveGrades}
-                isLoadingGrades={isLoadingGrades}
-                fetchGrades={fetchGrades}
-              />
-            )}
+                {currentStep === 0 && (
+                  <RequestDetailsStep
+                    stages={stages}
+                    educationSystems={educationSystems}
+                    availableDays={availableDays}
+                    grades={effectiveGrades}
+                    isLoadingGrades={isLoadingGrades}
+                    fetchGrades={fetchGrades}
+                  />
+                )}
 
-            {currentStep === 1 && (
-              <ContactInfoStep
-                roles={availableRoles}
-                genderOptions={genderOptions}
-              />
-            )}
+                {currentStep === 1 && (
+                  <ContactInfoStep
+                    roles={availableRoles}
+                    genderOptions={genderOptions}
+                  />
+                )}
 
-            {currentStep === 2 && <GatheringLocationStep cities={cities} />}
+                {currentStep === 2 && <GatheringLocationStep cities={cities} />}
 
-            <StepNavigation
-              isFirstStep={isFirstStep}
-              isLastStep={isLastStep}
-              isSubmitting={formik.isSubmitting || isTransitioningStep}
-              onBack={() => !isTransitioningStep && goToStep(currentStep - 1)}
-              onNext={() => handleNext(formik)}
-            />
-          </form>
-        </>
-      );
-    }}
-  </Formik>
+                <StepNavigation
+                  isFirstStep={isFirstStep}
+                  isLastStep={isLastStep}
+                  isSubmitting={formik.isSubmitting || isTransitioningStep}
+                  onBack={() =>
+                    !isTransitioningStep && goToStep(currentStep - 1)
+                  }
+                  onNext={() => handleNext(formik)}
+                />
+              </form>
+            </>
+          );
+        }}
+      </Formik>
     </section>
   );
 };
