@@ -33,7 +33,6 @@ import TermsConfirmationModal from "./TermsConfirmationModal";
 import CompanionForm from "./CompanionForm";
 import FormSectionHeader from "./FormSectionHeader";
 import BookingStepper from "../schoolTripBookingForm/BookingStepper";
-import { infoIcon } from "@assets/svg";
 
 const EMPTY_COMPANION = {
   name: "",
@@ -123,7 +122,10 @@ const RegisterStudentForm = ({
   const [termsModalOpen, setTermsModalOpen] = useState(false);
 
   const [currentStep, setCurrentStep] = useState(0);
-  const [parentResponsible, setParentResponsible] = useState(false);
+
+  // Father as parent → the student name is auto-completed with the father's name
+  const isFatherParent = (relationship) =>
+    relationship === t("forms.registerForm.parentRelationshipOptions.father");
 
   const parentEmail = useSelector(
     (state) => state.parentLoginForm.parentData?.email
@@ -424,7 +426,7 @@ const RegisterStudentForm = ({
 
     // Append each child as a nested object
     values.children.forEach((child, idx) => {
-      formData.append(`childs[${idx}].name`, child.studentName);
+      formData.append(`childs[${idx}].name`, child.studentName.trim());
       if (child.nationalId) {
         formData.append(`childs[${idx}].nationalId`, `${child.nationalId}`);
       }
@@ -602,10 +604,14 @@ const RegisterStudentForm = ({
           const isLastFormStep = currentStep === lastFormStep;
           const canAddChild = childrenNumber < childrenNumberList.length;
 
+          const fatherName = isFatherParent(values.relationship)
+            ? values.parentName.trim()
+            : "";
+
           // Lets the stepper unlock the next step once the current one passes validation
           const isCurrentStepValid =
             (STEP_FIELDS[stepKey] || []).every((field) => !errors[field]) &&
-            (stepKey !== "parent" || parentResponsible);
+            (stepKey !== "parent" || termsAccepted);
 
           const scrollToForm = () =>
             document
@@ -633,7 +639,7 @@ const RegisterStudentForm = ({
               return;
             }
 
-            if (stepKey === "parent" && !parentResponsible) return;
+            if (stepKey === "parent" && !termsAccepted) return;
             if (stepKey === "students" && !validateCustomFields(values)) return;
 
             goToStep(currentStep + 1);
@@ -854,17 +860,12 @@ const RegisterStudentForm = ({
                     handleBlur={handleBlur}
                     setFieldValue={setFieldValue}
                     setFieldTouched={setFieldTouched}
-                    childrenNumber={childrenNumber}
-                    handleChangeChildrenNumber={(event) =>
-                      handleChangeChildrenNumber(event, setFieldValue)
-                    }
                     handleChangeNationality={(event) =>
                       handleChangeNationality(event, setFieldValue)
                     }
                     setNationalIdImage={setNationalIdImage}
                     nationalIdImageError={nationalIdImageError}
                     setNationalIdImageError={setNationalIdImageError}
-                    childrenNumberList={childrenNumberList}
                     nationalities={nationalities}
                     dayBlockPricing={dayBlockPricing}
                     tripDuration={tripDuration}
@@ -949,6 +950,7 @@ const RegisterStudentForm = ({
                             t={t}
                             cn={cn}
                             childrenNumber={childrenNumber}
+                            fatherName={fatherName}
                             tripMainCategory={tripMainCategory}
                             onRemove={onRemove}
                           />
@@ -993,6 +995,7 @@ const RegisterStudentForm = ({
                             t={t}
                             cn={cn}
                             childrenNumber={childrenNumber}
+                            fatherName={fatherName}
                             onRemove={onRemove}
                           />
                         );
@@ -1023,6 +1026,13 @@ const RegisterStudentForm = ({
                             setFieldValue={setFieldValue}
                             setFieldTouched={setFieldTouched}
                             nationalities={nationalities}
+                            showNationalId={
+                              tripMainCategory ===
+                                CONSTANT_VALUES.MAIN_CATEGORIES
+                                  .OUTSIDE_RIYADH ||
+                              tripMainCategory ===
+                                CONSTANT_VALUES.MAIN_CATEGORIES.RIYADH_VIBES
+                            }
                             onRemove={() =>
                               handleRemoveCompanion(index, remove)
                             }
@@ -1032,6 +1042,34 @@ const RegisterStudentForm = ({
                       </div>
                     )}
                   </FieldArray>
+                </div>
+              )}
+
+              {/* Parent responsibility + terms confirmation */}
+              {stepKey === "parent" && (
+                <div className="p-4 bg-noticeBg rounded-xl">
+                  <FormControlLabel
+                    sx={checkboxLabelSx}
+                    control={
+                      <Checkbox
+                        checked={termsAccepted}
+                        onChange={(e) => setTermsAccepted(e.target.checked)}
+                        sx={checkboxSx}
+                      />
+                    }
+                    label={
+                      <span className="font-semibold">
+                        {t("forms.registerForm.parentResponsibleConfirm")}{" "}
+                        <button
+                          type="button"
+                          onClick={() => setTermsModalOpen(true)}
+                          className="text-mainColor underline hover:text-linksHover font-semibold transition-colors"
+                        >
+                          {t("forms.registerForm.parentTermsLinkText")}
+                        </button>
+                      </span>
+                    }
+                  />
                 </div>
               )}
 
@@ -1081,69 +1119,13 @@ const RegisterStudentForm = ({
                   <button
                     type="button"
                     onClick={goToNextStep}
-                    disabled={stepKey === "parent" && !parentResponsible}
+                    disabled={stepKey === "parent" && !termsAccepted}
                     className="flex-1 py-3 font-bold text-white transition-all duration-200 ease-in-out border-2 rounded-lg font-somar border-mainColor bg-mainColor hover:bg-linksHover hover:border-linksHover disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {t("forms.registerForm.actions.next")}
                   </button>
                 )}
               </div>
-
-              {/* Parent responsibility confirmation */}
-              {stepKey === "parent" && (
-                <div className="p-4 bg-noticeBg rounded-xl">
-                  <FormControlLabel
-                    sx={checkboxLabelSx}
-                    control={
-                      <Checkbox
-                        checked={parentResponsible}
-                        onChange={(e) => setParentResponsible(e.target.checked)}
-                        sx={checkboxSx}
-                      />
-                    }
-                    label={
-                      <span className="font-semibold">
-                        {t("forms.registerForm.parentResponsibleConfirm")}
-                      </span>
-                    }
-                  />
-                </div>
-              )}
-
-              {/* Terms Confirmation Checkbox */}
-              {isLastFormStep && (
-                <div className="p-4 bg-noticeBg rounded-xl">
-                  <FormControlLabel
-                    sx={checkboxLabelSx}
-                    control={
-                      <Checkbox
-                        checked={termsAccepted}
-                        onChange={(e) => setTermsAccepted(e.target.checked)}
-                        sx={checkboxSx}
-                      />
-                    }
-                    label={
-                      <span className="font-semibold">
-                        {t("forms.termsConfirmation.checkboxLabel")}{" "}
-                        <button
-                          type="button"
-                          onClick={() => setTermsModalOpen(true)}
-                          className="text-mainColor underline hover:text-linksHover font-semibold transition-colors"
-                        >
-                          {t("forms.termsConfirmation.termsLinkText")}
-                        </button>
-                      </span>
-                    }
-                  />
-
-                  <div className="flex items-center gap-2 mt-4">
-                    {infoIcon}
-                    <p className="text-sm text-textLight">
-                      {t("forms.termsConfirmation.infoText")}
-                    </p>
-                  </div>
-                </div>
-              )}
 
               {/* Terms Confirmation Modal */}
               <TermsConfirmationModal

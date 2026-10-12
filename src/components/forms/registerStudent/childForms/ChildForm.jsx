@@ -1,6 +1,5 @@
 import { memo, useMemo } from "react";
 
-import TextInputGroup from "../../TextInputGroup";
 import SelectionGroup from "../../SelectionGroup";
 
 // import { Field } from "formik";
@@ -10,6 +9,7 @@ import SelectionGroup from "../../SelectionGroup";
 import "react-phone-number-input/style.css";
 import { CircularProgress } from "@mui/material";
 import FormSectionHeader from "../FormSectionHeader";
+import StudentNameInput from "../StudentNameInput";
 
 const ChildForm = ({
   child,
@@ -33,6 +33,7 @@ const ChildForm = ({
   t,
   cn,
   childrenNumber,
+  fatherName = "",
   onRemove,
 }) => {
   // Compute available classes for the selected grade
@@ -58,17 +59,23 @@ const ChildForm = ({
       />
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-6">
         {/* Student Name field stays in its own column */}
-        <TextInputGroup
+        <StudentNameInput
           labelClassName="font-somar"
           label={t("forms.studentName.name")}
           type="text"
           name={`children[${index}].studentName`}
-          placeholder={t("forms.studentName.placeholder")}
+          placeholder={t(
+            fatherName
+              ? "forms.studentName.firstNamePlaceholder"
+              : "forms.studentName.placeholder"
+          )}
           value={child.studentName}
           errors={errors.children?.[index]?.studentName}
           touched={touched.children?.[index]?.studentName}
           onChange={handleChange}
           onBlur={handleBlur}
+          setFieldValue={setFieldValue}
+          fatherName={fatherName}
           minLength="2"
           maxLength="50"
           required={true}

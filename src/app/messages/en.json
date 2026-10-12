@@ -3666,7 +3666,8 @@
         "guardian": "Legal guardian",
         "other": "Other"
       },
-      "parentResponsibleConfirm": "I am responsible for all students added to this booking",
+      "parentResponsibleConfirm": "I am responsible for those registered on the trip and agree to the",
+      "parentTermsLinkText": "Terms & Conditions",
       "actions": {
         "next": "Next",
         "addStudent": "Add another student",
@@ -3914,6 +3915,7 @@
     "studentName": {
       "name": "Student name",
       "placeholder": "Student's full name in English",
+      "firstNamePlaceholder": "Student's full name",
       "error": {
         "min": "Student name should be less than 2 characters",
         "max": "Student name Student name be more than 50 characters",
@@ -4709,8 +4711,9 @@
         "configError": "Google Maps API key is not configured"
       },
       "schoolProfit": {
-        "label": "School Profit (Per Student)",
-        "placeholder": "Enter profit amount per student",
+        "toggleLabel": "Are there operating margins?",
+        "label": "Operating Margin (Per Student)",
+        "placeholder": "Enter operating margin per student",
         "currency": "SAR",
         "hint": "This amount is added to each student's ticket price for the school."
       }
@@ -4748,9 +4751,9 @@
         "invalidLink": "Please enter a valid Google Maps link containing location coordinates"
       },
       "schoolProfit": {
-        "required": "School profit per student is required",
+        "required": "Operating margin per student is required",
         "invalid": "Please enter a valid amount",
-        "min": "School profit cannot be negative"
+        "min": "Operating margin cannot be negative"
       }
     },
     "feedback": {
@@ -4786,7 +4789,7 @@
         "badge": "Continuous updates • Semesters 1, 2, 3"
       },
       "card2": {
-        "title": "Dedicated Link & QR Code for Each Trip",
+        "title": "Dedicated Link for Each Trip",
         "description": "Share customized links with parents, track registrations, and complete payments with total privacy.",
         "badge": "Easy to send via WhatsApp"
       },

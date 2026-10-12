@@ -40,6 +40,7 @@ export const INITIAL_VALUES = {
 
   // Step 3 — Gathering location & school amount
   gatheringLocation: { lat: "", lng: "", mapLink: "" },
+  hasSchoolProfit: false,
   schoolProfit: "",
 };
 
@@ -68,6 +69,7 @@ export const AUTH_INITIAL_VALUES = {
   // Step 3 — Gathering location & school amount
   city: "",
   gatheringLocation: { lat: "", lng: "", mapLink: "" },
+  hasSchoolProfit: false,
   schoolProfit: "",
 };
 

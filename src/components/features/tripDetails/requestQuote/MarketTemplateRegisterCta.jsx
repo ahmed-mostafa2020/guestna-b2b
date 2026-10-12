@@ -21,7 +21,7 @@ const MarketTemplateRegisterCta = ({ tripId }) => {
       >
         {t("tripDetails.marketTemplate.cta")}
       </Link>
-      <p className="text-xs font-medium text-center font-ibm text-textDark leading-relaxed px-1">
+      <p className="text-xs font-medium text-center text-textDark leading-relaxed px-1">
         {t("tripDetails.marketTemplate.ctaDescription")}
       </p>
     </div>

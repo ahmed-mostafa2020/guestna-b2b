@@ -8,6 +8,7 @@ import { memo, useState, useEffect, useCallback, useMemo } from "react";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import getErrorMessage from "@utils/helpers/getErrorMessage";
 import getProxyUrl from "@utils/api/getProxyUrl";
+import { cn } from "@utils/helpers/cn";
 import { createAuthenticatedRequestQuoteSchema } from "@utils/validators/validationSchemas";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -113,9 +114,7 @@ const AuthenticatedRequestQuote = ({
 
   // --- Integration type logic (replaces providerType check) ---
   const integrationType =
-    tripData?.integrationType ||
-    tripData?.provider?.integrationType ||
-    null;
+    tripData?.integrationType || tripData?.provider?.integrationType || null;
   const isApiIntegration = integrationType === "API";
 
   const rawAvailableDaysSlots = useMemo(() => {
@@ -123,7 +122,10 @@ const AuthenticatedRequestQuote = ({
   }, [tripData]);
 
   const rawAvailableDays = useMemo(() => {
-    if (Array.isArray(tripData?.availableDays) && tripData.availableDays.length > 0) {
+    if (
+      Array.isArray(tripData?.availableDays) &&
+      tripData.availableDays.length > 0
+    ) {
       return tripData.availableDays;
     }
     if (rawAvailableDaysSlots) {
@@ -138,8 +140,8 @@ const AuthenticatedRequestQuote = ({
       const daysList = Array.isArray(slotsObj)
         ? slotsObj
         : Array.isArray(slotsObj?.days)
-        ? slotsObj.days
-        : [];
+          ? slotsObj.days
+          : [];
       const extracted = daysList
         .map((d) =>
           typeof d.date === "string" ? d.date.split("T")[0] : d.date
@@ -191,12 +193,14 @@ const AuthenticatedRequestQuote = ({
 
   const [selectedBranch, setSelectedBranch] = useState(initialBranchId);
   const [branchAvailableDays, setBranchAvailableDays] = useState([]);
-  const [branchAvailableDaysSlots, setBranchAvailableDaysSlots] = useState(null);
+  const [branchAvailableDaysSlots, setBranchAvailableDaysSlots] =
+    useState(null);
   const [isLoadingBranchDays, setIsLoadingBranchDays] = useState(false);
 
   // Effective available days and slots (branch overrides base if selected)
   const effectiveAvailableDays = useMemo(() => {
-    if (selectedBranch && branchAvailableDays.length > 0) return branchAvailableDays;
+    if (selectedBranch && branchAvailableDays.length > 0)
+      return branchAvailableDays;
     return rawAvailableDays;
   }, [selectedBranch, branchAvailableDays, rawAvailableDays]);
 
@@ -207,25 +211,25 @@ const AuthenticatedRequestQuote = ({
   }, [effectiveAvailableDays]);
 
   const effectiveAvailableDaysSlots = useMemo(() => {
-    if (selectedBranch && branchAvailableDaysSlots) return branchAvailableDaysSlots;
+    if (selectedBranch && branchAvailableDaysSlots)
+      return branchAvailableDaysSlots;
     return rawAvailableDaysSlots;
   }, [selectedBranch, branchAvailableDaysSlots, rawAvailableDaysSlots]);
 
   const hasNonApiIntegration =
     !isApiIntegration &&
     (Boolean(integrationType) ||
-      (Array.isArray(effectiveAvailableDays) && effectiveAvailableDays.length > 0) ||
+      (Array.isArray(effectiveAvailableDays) &&
+        effectiveAvailableDays.length > 0) ||
       Boolean(effectiveAvailableDaysSlots));
 
   // For API integration: use slot-based flow
   const hasProviderSpecificDays =
-    isApiIntegration &&
-    effectiveAvailableDays.length > 0;
+    isApiIntegration && effectiveAvailableDays.length > 0;
 
   // For non-API integration: use date restriction + time range validation
   const hasNonApiProviderDays =
-    hasNonApiIntegration &&
-    effectiveAvailableDays.length > 0;
+    hasNonApiIntegration && effectiveAvailableDays.length > 0;
 
   // Branch options for dropdown
   const branchOptions = useMemo(() => {
@@ -243,53 +247,56 @@ const AuthenticatedRequestQuote = ({
     });
   }, [providerBranches, locale]);
 
-  const fetchBranchAvailableDays = useCallback(async (branchId) => {
-    if (!branchId) {
-      setBranchAvailableDays([]);
-      setBranchAvailableDaysSlots(null);
-      return;
-    }
-    setIsLoadingBranchDays(true);
-    try {
-      const response = await axios.get(
-        getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.PROVIDER_BRANCH_AVAILABLE_DAYS}/${branchId}`
-        ),
-        { headers }
-      );
-      const data = response.data;
-      let days = data?.availableDays || [];
-      const slots = data?.availableDaysSlots || null;
-      if ((!days || days.length === 0) && slots) {
-        let slotsObj = slots;
-        if (typeof slotsObj === "string") {
-          try {
-            slotsObj = JSON.parse(slotsObj);
-          } catch {}
-        }
-        const daysList = Array.isArray(slotsObj)
-          ? slotsObj
-          : Array.isArray(slotsObj?.days)
-          ? slotsObj.days
-          : [];
-        days = daysList
-          .map((d) =>
-            typeof d.date === "string" ? d.date.split("T")[0] : d.date
-          )
-          .filter(Boolean);
+  const fetchBranchAvailableDays = useCallback(
+    async (branchId) => {
+      if (!branchId) {
+        setBranchAvailableDays([]);
+        setBranchAvailableDaysSlots(null);
+        return;
       }
-      setBranchAvailableDays(days);
-      setBranchAvailableDaysSlots(slots);
-    } catch (error) {
-      console.error("Error fetching branch available days:", error);
-      setBranchAvailableDays([]);
-      setBranchAvailableDaysSlots(null);
-      const errorMessage = getErrorMessage(error, t);
-      enqueueSnackbar(errorMessage, { variant: "error" });
-    } finally {
-      setIsLoadingBranchDays(false);
-    }
-  }, [headers, enqueueSnackbar, t]);
+      setIsLoadingBranchDays(true);
+      try {
+        const response = await axios.get(
+          getProxyUrl(
+            `${B2B_END_POINTS.PROFILE.PROVIDER_BRANCH_AVAILABLE_DAYS}/${branchId}`
+          ),
+          { headers }
+        );
+        const data = response.data;
+        let days = data?.availableDays || [];
+        const slots = data?.availableDaysSlots || null;
+        if ((!days || days.length === 0) && slots) {
+          let slotsObj = slots;
+          if (typeof slotsObj === "string") {
+            try {
+              slotsObj = JSON.parse(slotsObj);
+            } catch {}
+          }
+          const daysList = Array.isArray(slotsObj)
+            ? slotsObj
+            : Array.isArray(slotsObj?.days)
+              ? slotsObj.days
+              : [];
+          days = daysList
+            .map((d) =>
+              typeof d.date === "string" ? d.date.split("T")[0] : d.date
+            )
+            .filter(Boolean);
+        }
+        setBranchAvailableDays(days);
+        setBranchAvailableDaysSlots(slots);
+      } catch (error) {
+        console.error("Error fetching branch available days:", error);
+        setBranchAvailableDays([]);
+        setBranchAvailableDaysSlots(null);
+        const errorMessage = getErrorMessage(error, t);
+        enqueueSnackbar(errorMessage, { variant: "error" });
+      } finally {
+        setIsLoadingBranchDays(false);
+      }
+    },
+    [headers, enqueueSnackbar, t]
+  );
 
   // Sync selected branch and fetch its available days when editing
   useEffect(() => {
@@ -473,9 +480,7 @@ const AuthenticatedRequestQuote = ({
       day:
         hasProviderSpecificDays || hasNonApiProviderDays
           ? tripData.fromDay &&
-            effectiveAvailableDays.includes(
-              tripData.fromDay.split(/[T\s]/)[0]
-            )
+            effectiveAvailableDays.includes(tripData.fromDay.split(/[T\s]/)[0])
             ? tripData.fromDay.split(/[T\s]/)[0]
             : ""
           : tripData.fromDay
@@ -542,7 +547,11 @@ const AuthenticatedRequestQuote = ({
       Object.keys(values).forEach((key) => {
         if (key === "slot" && (!hasProviderSpecificDays || !values[key]))
           return;
-        if (key === "endDay" && (hasProviderSpecificDays || hasNonApiProviderDays)) return;
+        if (
+          key === "endDay" &&
+          (hasProviderSpecificDays || hasNonApiProviderDays)
+        )
+          return;
         if (key === "fromHour" && hasProviderSpecificDays) return;
         if (key === "toHour" && hasProviderSpecificDays) return;
         if (key === "providerBranch") return; // handled separately below
@@ -664,7 +673,11 @@ const AuthenticatedRequestQuote = ({
       Object.keys(values).forEach((key) => {
         if (key === "slot" && (!hasProviderSpecificDays || !values[key]))
           return;
-        if (key === "endDay" && (hasProviderSpecificDays || hasNonApiProviderDays)) return;
+        if (
+          key === "endDay" &&
+          (hasProviderSpecificDays || hasNonApiProviderDays)
+        )
+          return;
         if (key === "fromHour" && hasProviderSpecificDays) return;
         if (key === "toHour" && hasProviderSpecificDays) return;
         if (key === "providerBranch") return; // handled separately below
@@ -896,7 +909,9 @@ const AuthenticatedRequestQuote = ({
                   }
                   if (values.fromHour && values.toHour) {
                     const fromMin = parseTimeToMinutes(values.fromHour);
-                    const toMin = parseTimeToMinutes(values.toHour, { isEnd: true });
+                    const toMin = parseTimeToMinutes(values.toHour, {
+                      isEnd: true,
+                    });
                     if (!isNaN(fromMin) && !isNaN(toMin) && toMin <= fromMin) {
                       formErrors.toHour = t(
                         "forms.customTrip.steps.trip_date.fields.to_hour.error.afterFrom"
@@ -912,6 +927,7 @@ const AuthenticatedRequestQuote = ({
                 errors,
                 touched,
                 isValid,
+                setFieldTouched,
                 handleBlur,
                 handleChange,
                 handleSubmit,
@@ -1172,11 +1188,17 @@ const AuthenticatedRequestQuote = ({
                           errors={errors.providerBranch}
                           placeholder={
                             isLoadingBranchDays
-                              ? t("forms.customTrip.steps.trip_date.fields.providerBranch.loading")
-                              : t("forms.customTrip.steps.trip_date.fields.providerBranch.placeholder")
+                              ? t(
+                                  "forms.customTrip.steps.trip_date.fields.providerBranch.loading"
+                                )
+                              : t(
+                                  "forms.customTrip.steps.trip_date.fields.providerBranch.placeholder"
+                                )
                           }
                           list={branchOptions}
-                          label={t("forms.customTrip.steps.trip_date.fields.providerBranch.label")}
+                          label={t(
+                            "forms.customTrip.steps.trip_date.fields.providerBranch.label"
+                          )}
                           labelClassName="font-somar"
                           labelFontFamily="var(--font-somar-sans), sans-serif"
                           disabled={isLoadingBranchDays}
@@ -1205,7 +1227,9 @@ const AuthenticatedRequestQuote = ({
                         availableDays={sortedEffectiveAvailableDays}
                         error={errors.day}
                         touched={touched.day}
-                        label={t("forms.customTrip.steps.trip_date.fields.day.label")}
+                        label={t(
+                          "forms.customTrip.steps.trip_date.fields.day.label"
+                        )}
                         required={true}
                         locale={locale}
                       />
@@ -1221,11 +1245,17 @@ const AuthenticatedRequestQuote = ({
                             isLoadingSlots
                               ? t("forms.validation.loading")
                               : !values.day
-                                ? t("forms.customTrip.steps.trip_date.fields.slot.selectDayFirst")
-                                : t("forms.customTrip.steps.trip_date.fields.slot.placeholder")
+                                ? t(
+                                    "forms.customTrip.steps.trip_date.fields.slot.selectDayFirst"
+                                  )
+                                : t(
+                                    "forms.customTrip.steps.trip_date.fields.slot.placeholder"
+                                  )
                           }
                           list={slotsData.map((s) => s.slotName)}
-                          label={t("forms.customTrip.steps.trip_date.fields.slot.label")}
+                          label={t(
+                            "forms.customTrip.steps.trip_date.fields.slot.label"
+                          )}
                           labelClassName="font-somar"
                           labelFontFamily="var(--font-somar-sans), sans-serif"
                           disabled={isLoadingSlots || !values.day}
@@ -1251,7 +1281,9 @@ const AuthenticatedRequestQuote = ({
                         availableDays={sortedEffectiveAvailableDays}
                         error={errors.day}
                         touched={touched.day}
-                        label={t("forms.customTrip.steps.trip_date.fields.day.label")}
+                        label={t(
+                          "forms.customTrip.steps.trip_date.fields.day.label"
+                        )}
                         required={true}
                         locale={locale}
                         className="md:col-span-2"
@@ -1260,7 +1292,9 @@ const AuthenticatedRequestQuote = ({
                       {/* From Hour */}
                       <div className="somar-placeholder w-full min-w-0">
                         <TextInputGroup
-                          label={t("forms.customTrip.steps.trip_date.fields.from_hour.label")}
+                          label={t(
+                            "forms.customTrip.steps.trip_date.fields.from_hour.label"
+                          )}
                           labelClassName="font-somar"
                           labelFontFamily="var(--font-somar-sans), sans-serif"
                           type="time"
@@ -1280,29 +1314,44 @@ const AuthenticatedRequestQuote = ({
                           disabled={!values.day}
                         />
                         {/* Show available time range hint */}
-                        {values.day && (() => {
-                          const ranges = getTimeRangesForDate(values.day, effectiveAvailableDaysSlots);
-                          if (ranges.length > 0) {
-                            const formattedRanges = formatDisplayTimeRanges(ranges, locale, t);
-                            const hasError = Boolean(touched.fromHour && errors.fromHour);
-                            return (
-                              <div className={hasError ? "pt-6" : "pt-1"}>
-                                <p className="text-xs text-secColor font-somar">
-                                  {t("forms.customTrip.steps.trip_date.fields.availableTimeRange", {
-                                    range: formattedRanges,
-                                  })}
-                                </p>
-                              </div>
+                        {values.day &&
+                          (() => {
+                            const ranges = getTimeRangesForDate(
+                              values.day,
+                              effectiveAvailableDaysSlots
                             );
-                          }
-                          return null;
-                        })()}
+                            if (ranges.length > 0) {
+                              const formattedRanges = formatDisplayTimeRanges(
+                                ranges,
+                                locale,
+                                t
+                              );
+                              const hasError = Boolean(
+                                touched.fromHour && errors.fromHour
+                              );
+                              return (
+                                <div className={hasError ? "pt-6" : "pt-1"}>
+                                  <p className="text-xs text-secColor font-somar">
+                                    {t(
+                                      "forms.customTrip.steps.trip_date.fields.availableTimeRange",
+                                      {
+                                        range: formattedRanges,
+                                      }
+                                    )}
+                                  </p>
+                                </div>
+                              );
+                            }
+                            return null;
+                          })()}
                       </div>
 
                       {/* To Hour */}
                       <div className="somar-placeholder w-full min-w-0">
                         <TextInputGroup
-                          label={t("forms.customTrip.steps.trip_date.fields.to_hour.label")}
+                          label={t(
+                            "forms.customTrip.steps.trip_date.fields.to_hour.label"
+                          )}
                           labelClassName="font-somar"
                           labelFontFamily="var(--font-somar-sans), sans-serif"
                           type="time"
@@ -1337,28 +1386,19 @@ const AuthenticatedRequestQuote = ({
                           value={values.day}
                           errors={errors.day}
                           touched={touched.day}
-                          onChange={handleChange}
+                          onChange={(e) => {
+                            handleChange(e);
+                            // Surface the end-day error right away if start passes it
+                            if (values.endDay) {
+                              setFieldTouched("endDay", true, false);
+                            }
+                          }}
                           onBlur={handleBlur}
                           min={(() => {
                             // Always use today as minimum date
                             const today = new Date();
                             today.setHours(0, 0, 0, 0);
                             return formatDateForInput(today);
-                          })()}
-                          {...(() => {
-                            // Only set max if endDay exists and is in the future
-                            if (values.endDay) {
-                              const endDate = new Date(values.endDay);
-                              const today = new Date();
-                              today.setHours(0, 0, 0, 0);
-                              endDate.setHours(0, 0, 0, 0);
-
-                              // Only apply max constraint if end date is in the future
-                              if (endDate >= today) {
-                                return { max: values.endDay };
-                              }
-                            }
-                            return {};
                           })()}
                           style={{ cursor: "pointer" }}
                           onClick={(e) => {
@@ -1416,7 +1456,12 @@ const AuthenticatedRequestQuote = ({
                         />
                         {/* Helper text for end date validation */}
                         {values.day && (
-                          <p className="text-xs text-secColor pt-1">
+                          <p
+                            className={cn(
+                              "text-xs text-secColor pt-1",
+                              touched.endDay && errors.endDay && "invisible"
+                            )}
+                          >
                             {t(
                               "forms.customTrip.proposedTripDate.error.endBeforeStart"
                             )}

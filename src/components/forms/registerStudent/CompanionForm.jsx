@@ -33,6 +33,7 @@ const CompanionForm = ({
   setFieldValue,
   setFieldTouched,
   nationalities,
+  showNationalId = false,
   onRemove,
   t,
 }) => {
@@ -97,22 +98,25 @@ const CompanionForm = ({
           <ErrorText message={fieldError("relationship")} />
         </div>
 
-        <TextInputGroup
-          labelClassName="font-somar"
-          label={t("forms.registerForm.companions.nationalId.label")}
-          type="text"
-          inputMode="numeric"
-          name={fieldName("nationalId")}
-          placeholder={t(
-            "forms.registerForm.companions.nationalId.placeholder"
-          )}
-          value={companion.nationalId}
-          errors={errors.companions?.[index]?.nationalId}
-          touched={touched.companions?.[index]?.nationalId}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          maxLength="20"
-        />
+        {/* Mirrors the student form: no student ID field → no companion ID */}
+        {showNationalId && (
+          <TextInputGroup
+            labelClassName="font-somar"
+            label={t("forms.registerForm.companions.nationalId.label")}
+            type="text"
+            inputMode="numeric"
+            name={fieldName("nationalId")}
+            placeholder={t(
+              "forms.registerForm.companions.nationalId.placeholder"
+            )}
+            value={companion.nationalId}
+            errors={errors.companions?.[index]?.nationalId}
+            touched={touched.companions?.[index]?.nationalId}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            maxLength="20"
+          />
+        )}
 
         <TextInputGroup
           labelClassName="font-somar"
@@ -141,7 +145,7 @@ const CompanionForm = ({
           menuItemsList={nationalities}
         />
 
-        <div className="md:col-start-1">
+        <div className="md:col-span-2">
           <TextInputGroup
             labelClassName="font-somar"
             label={t("forms.registerForm.companions.note.label")}

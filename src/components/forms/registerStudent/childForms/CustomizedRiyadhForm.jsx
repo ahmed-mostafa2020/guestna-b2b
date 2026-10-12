@@ -6,6 +6,7 @@ import SelectionGroup from "../../SelectionGroup";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { CircularProgress } from "@mui/material";
 import FormSectionHeader from "../FormSectionHeader";
+import StudentNameInput from "../StudentNameInput";
 
 const CustomizedRiyadhForm = ({
   child,
@@ -32,6 +33,7 @@ const CustomizedRiyadhForm = ({
   cn,
   childrenNumber,
   tripMainCategory,
+  fatherName = "",
   onRemove,
 }) => {
   // Compute available classes for the selected grade
@@ -59,17 +61,23 @@ const CustomizedRiyadhForm = ({
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-6">
         {/* Student Name - This will occupy one full column on all screen sizes due to the parent grid */}
         <div className="sm:col-span-1">
-          <TextInputGroup
+          <StudentNameInput
             labelClassName="font-somar"
             label={t("forms.studentName.name")}
             type="text"
             name={`children[${index}].studentName`}
-            placeholder={t("forms.studentName.placeholder")}
+            placeholder={t(
+              fatherName
+                ? "forms.studentName.firstNamePlaceholder"
+                : "forms.studentName.placeholder"
+            )}
             value={child.studentName}
             errors={errors.children?.[index]?.studentName}
             touched={touched.children?.[index]?.studentName}
             onChange={handleChange}
             onBlur={handleBlur}
+            setFieldValue={setFieldValue}
+            fatherName={fatherName}
             minLength="2"
             maxLength="50"
             required={true}

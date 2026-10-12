@@ -67,8 +67,8 @@ export const createRegisterChildSchema = (
           if (!value) return false;
           const words = value.trim().split(/\s+/);
 
-          // Must have at least 2 words
-          if (words.length < 2) return false;
+          // Must have at least 3 words
+          if (words.length < 3) return false;
 
           // Each word must be at least 2 characters
           return words.every((word) => word.length >= 2);
@@ -150,8 +150,8 @@ export const createRegisterChildSchema = (
                 if (!value) return false;
                 const words = value.trim().split(/\s+/);
 
-                // Must have at least 2 words
-                if (words.length < 2) return false;
+                // Must have at least 3 words
+                if (words.length < 3) return false;
 
                 // Each word must be at least 2 characters
                 return words.every((word) => word.length >= 2);
@@ -279,17 +279,8 @@ export const createAuthenticatedRequestQuoteSchema = (t) =>
       .required(t("forms.validation.require"))
       .min(1, t("forms.customTrip.expectedParticipants.error.min"))
       .max(10000, t("forms.customTrip.expectedParticipants.error.max")),
-    day: Yup.date()
-      .required(t("forms.validation.require"))
-      .test(
-        "start-before-end",
-        t("forms.customTrip.proposedTripDate.error.startAfterEnd"),
-        function (value) {
-          const { endDay } = this.parent;
-          if (!endDay || !value) return true;
-          return new Date(value) <= new Date(endDay);
-        }
-      ),
+    // Start day is open; a start after the end day is reported on endDay
+    day: Yup.date().required(t("forms.validation.require")),
     endDay: Yup.date()
       .optional()
       .test(
@@ -1030,10 +1021,16 @@ export const createSchoolTripBookingSchema = (t, availableDays = []) =>
       ),
     }),
 
-    schoolProfit: Yup.number()
-      .typeError(t("schoolTripBooking.validation.schoolProfit.invalid"))
-      .required(t("schoolTripBooking.validation.schoolProfit.required"))
-      .min(0, t("schoolTripBooking.validation.schoolProfit.min")),
+    hasSchoolProfit: Yup.boolean(),
+    schoolProfit: Yup.number().when("hasSchoolProfit", {
+      is: true,
+      then: (schema) =>
+        schema
+          .typeError(t("schoolTripBooking.validation.schoolProfit.invalid"))
+          .required(t("schoolTripBooking.validation.schoolProfit.required"))
+          .min(0, t("schoolTripBooking.validation.schoolProfit.min")),
+      otherwise: (schema) => schema.nullable().notRequired(),
+    }),
   });
 
 // Authenticated School Trip Booking (existing school / company users) — 3 steps
@@ -1115,10 +1112,16 @@ export const createAuthSchoolTripBookingSchema = (t, availableDays = []) =>
         t("schoolTripBooking.validation.gatheringLocation.required")
       ),
     }),
-    schoolProfit: Yup.number()
-      .typeError(t("schoolTripBooking.validation.schoolProfit.invalid"))
-      .required(t("schoolTripBooking.validation.schoolProfit.required"))
-      .min(0, t("schoolTripBooking.validation.schoolProfit.min")),
+    hasSchoolProfit: Yup.boolean(),
+    schoolProfit: Yup.number().when("hasSchoolProfit", {
+      is: true,
+      then: (schema) =>
+        schema
+          .typeError(t("schoolTripBooking.validation.schoolProfit.invalid"))
+          .required(t("schoolTripBooking.validation.schoolProfit.required"))
+          .min(0, t("schoolTripBooking.validation.schoolProfit.min")),
+      otherwise: (schema) => schema.nullable().notRequired(),
+    }),
   });
 
 // Graduation Event Registration Schema

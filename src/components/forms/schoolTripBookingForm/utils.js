@@ -265,7 +265,9 @@ export const buildBookingPayload = ({
         lat: Number(values.gatheringLocation?.lat) || 0,
         lng: Number(values.gatheringLocation?.lng) || 0,
       },
-      schoolAmount: Number(values.schoolProfit) || 0,
+      schoolAmount: values.hasSchoolProfit
+        ? Number(values.schoolProfit) || 0
+        : 0,
     },
   };
 };
@@ -347,7 +349,9 @@ export const buildAuthBookingPayload = ({
         lat: Number(values.gatheringLocation?.lat) || 0,
         lng: Number(values.gatheringLocation?.lng) || 0,
       },
-      schoolAmount: Number(values.schoolProfit) || 0,
+      schoolAmount: values.hasSchoolProfit
+        ? Number(values.schoolProfit) || 0
+        : 0,
     },
   };
 };

@@ -59,10 +59,7 @@ const ParentFormFields = ({
   handleBlur,
   setFieldValue,
   setFieldTouched,
-  childrenNumber,
-  handleChangeChildrenNumber,
   handleChangeNationality,
-  childrenNumberList,
   nationalities,
   setNationalIdImage,
   nationalIdImageError,
@@ -266,16 +263,6 @@ const ParentFormFields = ({
             </div>
           )}
         </div>
-
-        <SelectionGroup
-          labelClassName="font-somar"
-          label={t("forms.registerForm.numberOfChildren")}
-          placeholder={childrenNumber}
-          value={values.childrenNumber}
-          onChange={handleChangeChildrenNumber}
-          list={childrenNumberList}
-          required={true}
-        />
 
         {isSharedWithCompanions && (
           <SelectionGroup
