@@ -18,8 +18,6 @@ import { PERMISSIONS } from "@constants/permissions";
 import TripsGrid from "@components/features/discover/gridSection/tripsGrid";
 import { usePaginatedTrips } from "@hooks/data/usePaginatedTrips";
 import TripTemplateSection from "@components/ui/tripTemplateSection";
-// TODO: switch to `data?.tripTimplate` once the endpoint returns it
-import { STATIC_TRIP_TEMPLATE } from "@constants/tripTemplate";
 
 const ActivitiesMarketPage = () => {
   const { currentPage, filter, searchTerm } = useSelector(
@@ -121,9 +119,11 @@ const ActivitiesMarketPage = () => {
     <ProtectedProfilePage
       requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_ACTIVITIES_MARKET_PAGE}
     >
-      <div className="mb-4 lg:mb-8 rounded-xl overflow-hidden">
-        <TripTemplateSection tripTemplate={STATIC_TRIP_TEMPLATE} />
-      </div>
+      {data?.tripTimplate && (
+        <div className="mb-4 lg:mb-8 rounded-xl overflow-hidden">
+          <TripTemplateSection tripTemplate={data.tripTimplate} />
+        </div>
+      )}
 
       {/* Show fetching indicator when loading new page */}
       {isFetching && !isLoading && (
