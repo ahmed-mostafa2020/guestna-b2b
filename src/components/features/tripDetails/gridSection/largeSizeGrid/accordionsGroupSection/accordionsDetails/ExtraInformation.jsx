@@ -3,14 +3,26 @@ import { useLocale } from "next-intl";
 
 import ValidationMessage from "./ValidationMessage";
 
+export const getValidAttributes = (data) =>
+  Array.isArray(data)
+    ? data
+        // API may wrap items as { contents: [...] }
+        .flatMap((item) =>
+          Array.isArray(item?.contents) ? item.contents : [item]
+        )
+        .filter((item) => item?.name?.trim() || item?.title?.trim())
+    : [];
+
 const ExtraInformation = ({ data, isAuth }) => {
   const locale = useLocale();
   const isAr = locale === "ar";
 
-  if (!isAuth && (!data || data.length === 0)) return <ValidationMessage />;
-  if (!data || data.length === 0) return null;
+  const validData = getValidAttributes(data);
 
-  const renderedData = data.map((item) => {
+  if (!isAuth && validData.length === 0) return <ValidationMessage />;
+  if (validData.length === 0) return null;
+
+  const renderedData = validData.map((item) => {
     const rawText = isAr ? item.name : item.title;
     // Fallback if one language is missing
     const text = rawText || item.name || item.title || "";
@@ -77,4 +89,3 @@ const ExtraInformation = ({ data, isAuth }) => {
 };
 
 export default memo(ExtraInformation);
-

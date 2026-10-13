@@ -18,7 +18,9 @@ import ImageWithPlaceholder from "@components/ui/imagesPlaceholder/ImageWithPlac
 import SafeHtml from "@components/common/SafeHtml";
 import ValidationMessage from "@components/features/tripDetails/gridSection/largeSizeGrid/accordionsGroupSection/accordionsDetails/ValidationMessage";
 import Map from "@components/features/tripDetails/gridSection/largeSizeGrid/accordionsGroupSection/accordionsDetails/Map";
-import ExtraInformation from "@components/features/tripDetails/gridSection/largeSizeGrid/accordionsGroupSection/accordionsDetails/ExtraInformation";
+import ExtraInformation, {
+  getValidAttributes,
+} from "@components/features/tripDetails/gridSection/largeSizeGrid/accordionsGroupSection/accordionsDetails/ExtraInformation";
 import Benefits from "@components/features/tripDetails/gridSection/largeSizeGrid/accordionsGroupSection/accordionsDetails/Benefits";
 import ExemptedFromTrip from "@components/features/tripDetails/gridSection/largeSizeGrid/accordionsGroupSection/accordionsDetails/ExemptedFromTrip";
 import MustHaveItems from "@components/features/tripDetails/gridSection/largeSizeGrid/accordionsGroupSection/accordionsDetails/MustHaveItems";
@@ -53,7 +55,8 @@ const EventTagsListing = ({ event }) => {
   }, [cities]);
 
   // Category
-  const categoryName = event?.categories?.name || event?.supCategories?.[0]?.name || "";
+  const categoryName =
+    event?.categories?.name || event?.supCategories?.[0]?.name || "";
 
   // Duration
   const duration = event?.duration;
@@ -108,9 +111,10 @@ const EventItinerary = ({ data, isAuth, locale }) => {
   if (!isAuth && (!data || data.length === 0)) return <ValidationMessage />;
 
   const renderedData = data?.map((item, index) => {
-    const toDoContent = item.toDo && typeof item.toDo === "object"
-      ? item.toDo[locale] || item.toDo["ar"] || item.toDo["en"] || ""
-      : item.toDo || "";
+    const toDoContent =
+      item.toDo && typeof item.toDo === "object"
+        ? item.toDo[locale] || item.toDo["ar"] || item.toDo["en"] || ""
+        : item.toDo || "";
 
     return (
       <li key={index}>
@@ -167,27 +171,36 @@ const EventAccordionsGroup = ({ event }) => {
   const accordionsList = [
     {
       isShown: !!event?.description,
-      title: t("tripDetails.accordionsGroup.activity.description") || "Description",
+      title:
+        t("tripDetails.accordionsGroup.activity.description") || "Description",
       children: <p className="whitespace-pre-line">{event?.description}</p>,
     },
     {
       isShown: event?.services && event.services.length > 0,
-      title: t("tripDetails.accordionsGroup.activity.contents") || "Included Services",
+      title:
+        t("tripDetails.accordionsGroup.activity.contents") ||
+        "Included Services",
       children: <EventServices data={event?.services} isAuth={true} />,
     },
     {
       isShown: event?.exemptedFromTrip && event.exemptedFromTrip.length > 0,
       title: t("tripDetails.accordionsGroup.activity.exempted") || "Exempted",
-      children: <ExemptedFromTrip data={event?.exemptedFromTrip} isAuth={true} />,
+      children: (
+        <ExemptedFromTrip data={event?.exemptedFromTrip} isAuth={true} />
+      ),
     },
     {
       isShown: event?.itinerary && event.itinerary.length > 0,
       title: t("tripDetails.accordionsGroup.activity.itinerary") || "Itinerary",
-      children: <EventItinerary data={event?.itinerary} isAuth={true} locale={locale} />,
+      children: (
+        <EventItinerary data={event?.itinerary} isAuth={true} locale={locale} />
+      ),
     },
     {
       isShown: !!event?.gatheringLocation,
-      title: t("tripDetails.accordionsGroup.gatheringLocation") || "Gathering Location",
+      title:
+        t("tripDetails.accordionsGroup.gatheringLocation") ||
+        "Gathering Location",
       children: (
         <Map
           lat={event?.gatheringLocation?.lat || 0}
@@ -203,7 +216,7 @@ const EventAccordionsGroup = ({ event }) => {
       children: <MustHaveItems data={event?.mustHaveItems} isAuth={true} />,
     },
     {
-      isShown: event?.attributes && event.attributes.length > 0,
+      isShown: getValidAttributes(event?.attributes).length > 0,
       title: t("tripDetails.accordionsGroup.extraInfo") || "Extra Info",
       children: <ExtraInformation data={event?.attributes} isAuth={true} />,
     },
@@ -247,7 +260,8 @@ const EventSidebarSection = ({ event }) => {
   const price = Number(event?.price || 0);
   const discountedPrice = Number(event?.discountedPrice || 0);
   const hasDiscount = event?.discountedPrice && discountedPrice < price;
-  const discountPercentage = price > 0 ? Math.round(((price - discountedPrice) / price) * 100) : 0;
+  const discountPercentage =
+    price > 0 ? Math.round(((price - discountedPrice) / price) * 100) : 0;
 
   const endDate = new Date(event?.endAvailableBookingDay);
   const currentDate = new Date();
@@ -307,7 +321,9 @@ const EventSidebarSection = ({ event }) => {
               />
             </span>
             <span className="bg-red-50 text-red-600 border border-red-100 px-2 py-0.5 rounded-md text-xs font-semibold font-somar">
-              {locale === "ar" ? `خصم ${discountPercentage}%` : `${discountPercentage}% OFF`}
+              {locale === "ar"
+                ? `خصم ${discountPercentage}%`
+                : `${discountPercentage}% OFF`}
             </span>
           </div>
         )}
@@ -333,11 +349,13 @@ const EventSidebarSection = ({ event }) => {
         <div className="w-full p-6 text-center bg-gray-50 border-2 border-gray-200 rounded-lg">
           <div className="mb-2">
             <h4 className="text-lg font-semibold text-gray-800">
-              {t(`booking.unavailable.${bookingStatus.messageKey}.title`) || "Unavailable"}
+              {t(`booking.unavailable.${bookingStatus.messageKey}.title`) ||
+                "Unavailable"}
             </h4>
           </div>
           <p className="text-sm text-gray-600 leading-relaxed">
-            {t(`booking.unavailable.${bookingStatus.messageKey}.subtitle`) || "Booking is currently unavailable."}
+            {t(`booking.unavailable.${bookingStatus.messageKey}.subtitle`) ||
+              "Booking is currently unavailable."}
           </p>
         </div>
       )}

@@ -13,7 +13,9 @@ import ExemptedFromTrip from "./accordionsDetails/ExemptedFromTrip";
 import Itinerary from "./accordionsDetails/Itinerary";
 import Map from "./accordionsDetails/Map";
 import MustHaveItems from "./accordionsDetails/MustHaveItems";
-import ExtraInformation from "./accordionsDetails/ExtraInformation";
+import ExtraInformation, {
+  getValidAttributes,
+} from "./accordionsDetails/ExtraInformation";
 import Benefits from "./accordionsDetails/Benefits";
 
 const hasContent = (value) =>
@@ -78,7 +80,7 @@ const AccordionsGroupSection = () => {
       children: <MustHaveItems data={data?.mustHaveItems} isAuth={isAuth} />,
     },
     {
-      isShown: hasContent(data?.attributes),
+      isShown: hasContent(getValidAttributes(data?.attributes)),
       title: t("tripDetails.accordionsGroup.extraInfo"),
       children: <ExtraInformation data={data?.attributes} isAuth={isAuth} />,
     },
