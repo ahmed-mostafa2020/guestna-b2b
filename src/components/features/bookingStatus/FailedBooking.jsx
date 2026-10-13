@@ -7,9 +7,27 @@ import failedBooking from "@assets/failedBooking.svg";
 import { Container } from "@mui/material";
 import Link from "next/link";
 
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { clearFinalTripDetailsData } from "@store/checkout/finalTripDetailsSlice";
+
 const FailedBooking = () => {
   const locale = useLocale();
   const t = useTranslations();
+  const dispatch = useDispatch();
+
+  // Keep the slug before clearing — a retry needs a new client (session key)
+  // from the registration form; the backend rejects the failed one.
+  const storedSlug = useSelector(
+    (state) => state.finalTripDetailsData?.data?.slug
+  );
+  const [tripSlug] = useState(storedSlug);
+
+  useEffect(() => {
+    dispatch(clearFinalTripDetailsData());
+  }, [dispatch]);
+
+  const retryUrl = tripSlug ? `/${locale}/parents/${tripSlug}` : `/${locale}`;
 
   return (
     <Container maxWidth="lg" className="flex-col centered">
@@ -31,7 +49,7 @@ const FailedBooking = () => {
       </div>
 
       <Link
-        href={`/${locale}/checkout`}
+        href={retryUrl}
         className="text-white bg-[#82181A] py-3 px-10 lg:px-20 rounded-lg mt-2 hover:bg-secColor transition-all duration-200 ease-in-out"
       >
         {t("validations.tryAgain")}
