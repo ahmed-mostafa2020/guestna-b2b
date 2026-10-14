@@ -413,7 +413,6 @@ const RegisterStudentForm = ({
       children.forEach((child, idx) => {
         stages[idx] = child.academicStage || "";
         if (child.class) classes[idx] = child.class;
-        if (child.academicStage) fetchChildGrades(idx, child.academicStage);
       });
       setChildrenStages(stages);
       setChildrenClasses(classes);
@@ -431,6 +430,16 @@ const RegisterStudentForm = ({
   useEffect(() => {
     if (isDraftRestored) formikRef.current?.validateForm();
   }, [isDraftRestored]);
+
+  // Load grades for restored stages once the trip's education system is known
+  // (the grades URL needs it, and it may arrive after the draft is restored)
+  useEffect(() => {
+    if (!isDraftRestored || !educationSystem) return;
+    formikRef.current?.values.children.forEach((child, idx) => {
+      if (child.academicStage) fetchChildGrades(idx, child.academicStage);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDraftRestored, educationSystem]);
 
   const seatsArray = useMemo(() => {
     return Array.from({ length: availableSeats }, (_, i) => ({

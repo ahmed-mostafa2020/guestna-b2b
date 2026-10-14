@@ -7,6 +7,7 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import { CircularProgress } from "@mui/material";
 import FormSectionHeader from "../FormSectionHeader";
 import StudentNameInput from "../StudentNameInput";
+import StudentNoteField from "./StudentNoteField";
 
 const CustomizedRiyadhForm = ({
   child,
@@ -240,23 +241,15 @@ const CustomizedRiyadhForm = ({
           </div>
         )}
 
-        {/* Student notes (e.g. allergies) */}
-        <div className="sm:col-span-3">
-          <TextInputGroup
-            labelClassName="font-somar"
-            label={t("forms.registerForm.studentNote.label")}
-            name={`children[${index}].note`}
-            placeholder={t("forms.registerForm.studentNote.placeholder")}
-            value={child.note || ""}
-            errors={errors.children?.[index]?.note}
-            touched={touched.children?.[index]?.note}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            textarea={true}
-            rows={4}
-            maxLength="500"
-          />
-        </div>
+        <StudentNoteField
+          index={index}
+          value={child.note}
+          errors={errors}
+          touched={touched}
+          handleChange={handleChange}
+          handleBlur={handleBlur}
+          t={t}
+        />
       </div>
     </div>
   );
