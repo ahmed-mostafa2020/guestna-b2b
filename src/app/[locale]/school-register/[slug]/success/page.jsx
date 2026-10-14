@@ -15,7 +15,6 @@ const SchoolTripBookingSuccessContent = ({ params }) => {
   const [bookingInfo, setBookingInfo] = useState({
     schoolName: "",
     adminName: "",
-    adminRole: "",
     schoolCode: "",
     tripName: "",
   });
@@ -23,8 +22,6 @@ const SchoolTripBookingSuccessContent = ({ params }) => {
   useEffect(() => {
     const paramSchoolName = searchParams.get("schoolName");
     const paramAdminName = searchParams.get("adminName");
-    const paramAdminRole =
-      searchParams.get("adminRole") || searchParams.get("role");
     const paramSchoolCode = searchParams.get("schoolCode");
     const paramTripName = searchParams.get("tripName");
 
@@ -41,27 +38,10 @@ const SchoolTripBookingSuccessContent = ({ params }) => {
     }
 
     setBookingInfo({
-      schoolName:
-        paramSchoolName ||
-        sessionData?.schoolName ||
-        "",
-      adminName:
-        paramAdminName ||
-        sessionData?.adminName ||
-        "",
-      adminRole:
-        paramAdminRole ||
-        sessionData?.adminRole ||
-        sessionData?.role ||
-        "",
-      schoolCode:
-        paramSchoolCode ||
-        sessionData?.schoolCode ||
-        "",
-      tripName:
-        paramTripName ||
-        sessionData?.tripName ||
-        "",
+      schoolName: paramSchoolName || sessionData?.schoolName || "",
+      adminName: paramAdminName || sessionData?.adminName || "",
+      schoolCode: paramSchoolCode || sessionData?.schoolCode || "",
+      tripName: paramTripName || sessionData?.tripName || "",
     });
   }, [searchParams, tripId]);
 
@@ -88,7 +68,6 @@ const SchoolTripBookingSuccessContent = ({ params }) => {
         <SchoolTripBookingSuccessCard
           schoolName={bookingInfo.schoolName}
           adminName={bookingInfo.adminName}
-          adminRole={bookingInfo.adminRole}
           tripName={bookingInfo.tripName}
           tripSlug={tripId}
         />

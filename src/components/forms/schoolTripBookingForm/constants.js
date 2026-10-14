@@ -1,72 +1,57 @@
 // Step keys map to translations at `schoolTripBooking.steps.<key>`
-export const BOOKING_STEPS = ["details", "contact", "location"];
+export const BOOKING_STEPS = ["details", "contact"];
 
 // Fields validated before leaving each step (index-aligned with BOOKING_STEPS)
 export const STEP_FIELDS = [
-  ["educationalTrack", "stages", "grades", "date", "studentsCount"],
-  [
-    "schoolNameArabic",
-    "schoolNameEnglish",
-    "gender",
-    "organizationEmail",
-    "organizationPhone",
-    "contactPersonName",
-    "functionalDegree",
-    "email",
-    "mobile",
-  ],
-  ["gatheringLocation", "schoolProfit"],
+  ["educationalTrack", "gender", "stageGrades", "date", "studentsCount"],
+  ["schoolName", "organizationPhone", "contactPersonName", "email", "mobile"],
 ];
 
 export const INITIAL_VALUES = {
   // Step 1 — Request details
   educationalTrack: "",
-  stages: [],
-  grades: [],
+  gender: "",
+  stageGrades: [],
   date: "",
   studentsCount: "",
 
   // Step 2 — Contact info
-  schoolNameArabic: "",
-  schoolNameEnglish: "",
-  city: "",
-  gender: "",
-  organizationEmail: "",
+  schoolName: "",
   organizationPhone: "",
   contactPersonName: "",
-  functionalDegree: "",
   email: "",
   mobile: "",
-
-  // Step 3 — Gathering location & school amount
-  gatheringLocation: { lat: "", lng: "", mapLink: "" },
-  hasSchoolProfit: false,
-  schoolProfit: "",
 };
 
 // ---------------------------------------------------------------------------
 // Authenticated variant (existing school / company users)
 // ---------------------------------------------------------------------------
-export const AUTH_BOOKING_STEPS = ["school", "trip", "location"];
+export const AUTH_BOOKING_STEPS = ["school", "trip"];
 
 export const AUTH_STEP_FIELDS = [
-  ["organization", "track", "stages", "grades"],
+  ["organization", "track", "stageGrades"],
   ["date", "studentsCount"],
-  ["gatheringLocation", "schoolProfit"],
 ];
 
 export const AUTH_INITIAL_VALUES = {
   // Step 1 — School info (IDs)
   organization: "",
   track: "",
-  stages: [],
-  grades: [],
+  stageGrades: [],
 
   // Step 2 — Trip details
   date: "",
   studentsCount: "",
+};
 
-  // Step 3 — Gathering location & school amount
+// Gathering location & school amount — removed from the booking forms, kept
+// for reuse with `GatheringLocationStep` + `getGatheringLocationFields`
+export const GATHERING_LOCATION_STEP_FIELDS = [
+  "gatheringLocation",
+  "schoolProfit",
+];
+
+export const GATHERING_LOCATION_INITIAL_VALUES = {
   city: "",
   gatheringLocation: { lat: "", lng: "", mapLink: "" },
   hasSchoolProfit: false,

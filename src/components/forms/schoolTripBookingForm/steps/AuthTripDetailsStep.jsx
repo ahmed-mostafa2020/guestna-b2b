@@ -8,7 +8,7 @@ import AvailableDatePicker from "@components/forms/requestQuote/AvailableDatePic
 import TextInputGroup from "@components/forms/TextInputGroup";
 import { LABEL_PROPS } from "../constants";
 
-const AuthTripDetailsStep = ({ availableDays = [] }) => {
+const AuthTripDetailsStep = ({ availableDays = [], seatsRange }) => {
   const t = useTranslations();
   const locale = useLocale();
   const {
@@ -56,7 +56,7 @@ const AuthTripDetailsStep = ({ availableDays = [] }) => {
         required
       />
 
-      {/* Available seats (only one input as specified) */}
+      {/* Students count (availableSeates) */}
       <TextInputGroup
         {...LABEL_PROPS}
         inputClassName="font-somar"
@@ -66,7 +66,8 @@ const AuthTripDetailsStep = ({ availableDays = [] }) => {
         label={t("schoolTripBooking.form.studentsCount.label")}
         placeholder={t("schoolTripBooking.form.studentsCount.placeholder")}
         value={values.studentsCount}
-        min={1}
+        min={seatsRange?.min}
+        max={seatsRange?.max}
         onChange={handleChange}
         onBlur={handleBlur}
         touched={touched.studentsCount}

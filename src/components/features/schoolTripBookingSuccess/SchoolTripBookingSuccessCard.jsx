@@ -83,7 +83,6 @@ const ValueCard = ({ Icon, title, description, badge, classNames }) => (
 const SchoolTripBookingSuccessCard = ({
   schoolName,
   adminName,
-  adminRole,
   tripName,
   tripSlug,
 }) => {
@@ -93,11 +92,6 @@ const SchoolTripBookingSuccessCard = ({
   const effectiveSchoolName = schoolName || t("credentials.defaultSchoolName");
   const effectiveAdminName = adminName || t("credentials.defaultAdminName");
   const effectiveTripName = tripName || t("defaultTripName");
-  const effectiveAdminRoleLabel = adminRole
-    ? adminRole.endsWith(":") || adminRole.endsWith("：")
-      ? adminRole
-      : `${adminRole}:`
-    : t("credentials.adminLabel");
 
   const createTripLinkUrl = tripSlug
     ? `/${locale}/profile/create-trip-link/${tripSlug}`
@@ -158,10 +152,10 @@ const SchoolTripBookingSuccessCard = ({
               </strong>
             </div>
 
-            {/* Administrator / Dynamic Role */}
+            {/* Administrator */}
             <div className="flex flex-col pt-3 sm:pt-0 sm:ps-6 text-start">
               <span className="text-[11px] sm:text-xs text-textLight font-somar mb-1">
-                {effectiveAdminRoleLabel}
+                {t("credentials.adminLabel")}
               </span>
               <strong className="text-xs font-bold truncate sm:text-sm md:text-[15px] text-textDark font-somar">
                 {effectiveAdminName}

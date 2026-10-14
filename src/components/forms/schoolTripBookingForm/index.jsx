@@ -13,7 +13,6 @@ import { createSchoolTripBookingSchema } from "@utils/validators/validationSchem
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { getHeaders } from "@utils/helpers/getHeaders";
-import { useGradesByStages } from "@hooks/schoolRegister/useGradesByStages";
 import setToken from "@utils/api/setToken";
 import { useDispatch } from "react-redux";
 import { setUser, setUserToken } from "@store/users/usersSlice";
@@ -24,15 +23,9 @@ import BookingStepper from "./BookingStepper";
 import StepNavigation from "./StepNavigation";
 import RequestDetailsStep from "./steps/RequestDetailsStep";
 import ContactInfoStep from "./steps/ContactInfoStep";
-import GatheringLocationStep from "./steps/GatheringLocationStep";
 
 import { BOOKING_STEPS, INITIAL_VALUES, STEP_FIELDS } from "./constants";
-import {
-  buildBookingPayload,
-  extractAvailableDays,
-  getRoleLabel,
-  getNameLabel,
-} from "./utils";
+import { buildBookingPayload, extractAvailableDays } from "./utils";
 import {
   findFirstStepWithErrors as findFirstInvalidStep,
   isStepValid as isStepFieldsValid,
@@ -49,13 +42,12 @@ const SchoolTripBookingForm = ({
   trip,
   tripId: propTripId,
   tripSlug,
-  cities = [],
-  roles = [],
   educationSystems = [],
   stages = [],
-  grades: propGrades = [],
   selectDays = [],
+  availableSeats,
   genderOptions: propGenderOptions = [],
+  onRegistered,
 }) => {
   const t = useTranslations();
   const locale = useLocale();
@@ -70,22 +62,14 @@ const SchoolTripBookingForm = ({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const cardRef = useRef(null);
 
-  const {
-    grades: fetchedGrades,
-    isLoadingGrades,
-    fetchGrades,
-  } = useGradesByStages();
-  const effectiveGrades = propGrades.length ? propGrades : fetchedGrades;
-
   const availableDays = useMemo(
     () => extractAvailableDays(trip, selectDays),
     [trip, selectDays]
   );
   const validationSchema = useMemo(
-    () => createSchoolTripBookingSchema(t, availableDays),
-    [t, availableDays]
+    () => createSchoolTripBookingSchema(t, availableDays, availableSeats),
+    [t, availableDays, availableSeats]
   );
-  const availableRoles = roles;
 
   const genderLabels = useMemo(
     () => ({
@@ -141,7 +125,7 @@ const SchoolTripBookingForm = ({
     formik.submitForm();
   };
 
-  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const payload = buildBookingPayload({
         values,
@@ -149,13 +133,7 @@ const SchoolTripBookingForm = ({
         tripSlug: effectiveTripId,
         locale,
         genderLabels,
-        lookups: {
-          cities,
-          educationSystems,
-          stages,
-          grades: effectiveGrades,
-          roles: availableRoles,
-        },
+        lookups: { educationSystems, stages },
       });
 
       const response = await axios.post(
@@ -170,6 +148,9 @@ const SchoolTripBookingForm = ({
         variant: "success",
       });
 
+      // Keep the page on this form while logging in, so it doesn't swap to the auth form before redirecting
+      onRegistered?.();
+
       // Log the newly created staff user in, same as the roles login form
       const { token, userType, user } = response?.data || {};
       if (token) {
@@ -179,8 +160,9 @@ const SchoolTripBookingForm = ({
         const permissions = user?.permissions || response?.data?.permissions;
         if (permissions) dispatch(setPermissions(permissions));
 
-        try {
-          const orgsResponse = await axios.get(
+        // Non-blocking — OrganizationSelector will retry on its own
+        axios
+          .get(
             getProxyUrl(B2B_END_POINTS.PROFILE.HEADER_FILTER_BY_ORGANIZATION),
             {
               headers: {
@@ -188,37 +170,16 @@ const SchoolTripBookingForm = ({
                 authorization: `Bearer ${token}`,
               },
             }
-          );
-          if (orgsResponse.data) dispatch(setOrganizations(orgsResponse.data));
-        } catch {
-          // Non-blocking — OrganizationSelector will retry on its own
-        }
+          )
+          .then(({ data }) => data && dispatch(setOrganizations(data)))
+          .catch(() => {});
       }
 
       // Success page (and its create-trip-link CTA) is keyed by the created trip's slug
       const successSlug = response?.data?.trip?.slug || effectiveTripId;
 
-      const schoolName =
-        (locale === "ar"
-          ? values.schoolNameArabic
-          : values.schoolNameEnglish) ||
-        values.schoolNameArabic ||
-        values.schoolNameEnglish ||
-        "";
+      const schoolName = values.schoolName?.trim() || "";
       const adminName = values.contactPersonName?.trim() || "";
-      const matchedRole = availableRoles?.find(
-        (r) =>
-          r?._id === values.functionalDegree ||
-          r?.id === values.functionalDegree ||
-          getRoleLabel(r, locale) === values.functionalDegree ||
-          getNameLabel(r, locale) === values.functionalDegree
-      );
-      const adminRole =
-        (matchedRole ? getRoleLabel(matchedRole, locale) : null) ||
-        (typeof values.functionalDegree === "string"
-          ? values.functionalDegree.trim()
-          : "") ||
-        "";
       const schoolCode =
         response?.data?.schoolCode ||
         response?.data?.organization?.code ||
@@ -232,7 +193,6 @@ const SchoolTripBookingForm = ({
             JSON.stringify({
               schoolName,
               adminName,
-              adminRole,
               schoolCode,
               tripSlug: effectiveTripId,
               tripName: trip?.name || "",
@@ -243,22 +203,19 @@ const SchoolTripBookingForm = ({
         }
       }
 
-      resetForm();
-      setCurrentStep(0);
-
       const targetPath = `/${locale}/school-register/${successSlug}/success`;
 
       const queryParams = new URLSearchParams();
       if (schoolName) queryParams.set("schoolName", schoolName);
       if (adminName) queryParams.set("adminName", adminName);
-      if (adminRole) queryParams.set("adminRole", adminRole);
       if (schoolCode) queryParams.set("schoolCode", schoolCode);
       if (trip?.name) queryParams.set("tripName", trip.name);
       const queryString = queryParams.toString()
         ? `?${queryParams.toString()}`
         : "";
 
-      router.push(`${targetPath}${queryString}`);
+      // replace: going back shouldn't return to the already-submitted form
+      router.replace(`${targetPath}${queryString}`);
     } catch (error) {
       console.error("Error submitting school trip booking:", error);
       const info = error.response?.data?.info;
@@ -395,20 +352,12 @@ const SchoolTripBookingForm = ({
                     stages={stages}
                     educationSystems={educationSystems}
                     availableDays={availableDays}
-                    grades={effectiveGrades}
-                    isLoadingGrades={isLoadingGrades}
-                    fetchGrades={fetchGrades}
-                  />
-                )}
-
-                {currentStep === 1 && (
-                  <ContactInfoStep
-                    roles={availableRoles}
+                    seatsRange={availableSeats}
                     genderOptions={genderOptions}
                   />
                 )}
 
-                {currentStep === 2 && <GatheringLocationStep cities={cities} />}
+                {currentStep === 1 && <ContactInfoStep />}
 
                 <StepNavigation
                   isFirstStep={isFirstStep}

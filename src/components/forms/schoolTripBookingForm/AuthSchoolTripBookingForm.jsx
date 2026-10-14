@@ -14,14 +14,12 @@ import { createAuthSchoolTripBookingSchema } from "@utils/validators/validationS
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { getHeaders } from "@utils/helpers/getHeaders";
-import { useGradesByStages } from "@hooks/schoolRegister/useGradesByStages";
 import { setOrganizations } from "@store/profile/selectedOrganizationsSlice";
 
 import BookingStepper from "./BookingStepper";
 import StepNavigation from "./StepNavigation";
 import AuthSchoolInfoStep from "./steps/AuthSchoolInfoStep";
 import AuthTripDetailsStep from "./steps/AuthTripDetailsStep";
-import GatheringLocationStep from "./steps/GatheringLocationStep";
 
 import {
   AUTH_BOOKING_STEPS,
@@ -31,6 +29,7 @@ import {
 import {
   buildAuthBookingPayload,
   extractAvailableDays,
+  getTrackStages,
 } from "./utils";
 import {
   findFirstStepWithErrors as findFirstInvalidStep,
@@ -49,9 +48,8 @@ const AuthSchoolTripBookingForm = ({
   tripId: propTripId,
   tripSlug,
   cities = [],
-  stages = [],
-  grades: propGrades = [],
   selectDays = [],
+  availableSeats,
 }) => {
   const t = useTranslations();
   const locale = useLocale();
@@ -78,17 +76,13 @@ const AuthSchoolTripBookingForm = ({
   const [tracksData, setTracksData] = useState([]);
   const [isLoadingTracks, setIsLoadingTracks] = useState(false);
 
-  // Grades fetching hook
-  const { grades: fetchedGrades, isLoadingGrades, fetchGrades } = useGradesByStages();
-  const effectiveGrades = propGrades.length ? propGrades : fetchedGrades;
-
   const availableDays = useMemo(
     () => extractAvailableDays(trip, selectDays),
     [trip, selectDays]
   );
   const validationSchema = useMemo(
-    () => createAuthSchoolTripBookingSchema(t, availableDays),
-    [t, availableDays]
+    () => createAuthSchoolTripBookingSchema(t, availableDays, availableSeats),
+    [t, availableDays, availableSeats]
   );
 
   // If redux organizations is empty, fetch from API
@@ -193,8 +187,9 @@ const AuthSchoolTripBookingForm = ({
         locale,
         lookups: {
           cities,
-          stages,
-          grades: effectiveGrades,
+          stages: getTrackStages(
+            tracksData.find((track) => (track._id || track.id) === values.track)
+          ),
           organizations: organizationsList,
         },
       });
@@ -325,7 +320,9 @@ const AuthSchoolTripBookingForm = ({
                 {t("schoolTripBooking.steps.progress", {
                   current: currentStep + 1,
                   total: AUTH_BOOKING_STEPS.length,
-                  name: t(`schoolTripBooking.steps.${AUTH_BOOKING_STEPS[currentStep]}`),
+                  name: t(
+                    `schoolTripBooking.steps.${AUTH_BOOKING_STEPS[currentStep]}`
+                  ),
                 })}
               </p>
 
@@ -355,26 +352,23 @@ const AuthSchoolTripBookingForm = ({
                     tracks={tracksData}
                     isLoadingTracks={isLoadingTracks}
                     onOrganizationChange={handleOrganizationChange}
-                    stages={stages}
-                    grades={effectiveGrades}
-                    isLoadingGrades={isLoadingGrades}
-                    fetchGrades={fetchGrades}
                   />
                 )}
 
                 {currentStep === 1 && (
-                  <AuthTripDetailsStep availableDays={availableDays} />
-                )}
-
-                {currentStep === 2 && (
-                  <GatheringLocationStep cities={cities} />
+                  <AuthTripDetailsStep
+                    availableDays={availableDays}
+                    seatsRange={availableSeats}
+                  />
                 )}
 
                 <StepNavigation
                   isFirstStep={isFirstStep}
                   isLastStep={isLastStep}
                   isSubmitting={formik.isSubmitting || isTransitioningStep}
-                  onBack={() => !isTransitioningStep && goToStep(currentStep - 1)}
+                  onBack={() =>
+                    !isTransitioningStep && goToStep(currentStep - 1)
+                  }
                   onNext={() => handleNext(formik)}
                 />
               </form>

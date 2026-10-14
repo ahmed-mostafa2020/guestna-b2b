@@ -9,6 +9,7 @@ import {
   ListItemText,
   TextField,
   InputAdornment,
+  ListSubheader,
 } from "@mui/material";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -17,6 +18,10 @@ import { useLocale, useTranslations } from "next-intl";
 import { matchesSearch } from "@utils/helpers/normalizeArabic";
 
 const SEARCH_THRESHOLD = 7;
+
+// Non-selectable group title, e.g. { isGroupHeader: true, label: "Stage" }
+const isGroupHeader = (item) =>
+  typeof item === "object" && item !== null && item.isGroupHeader === true;
 
 const isHexObjectId = (str) =>
   typeof str === "string" && /^[0-9a-fA-F]{24}$/.test(str.trim());
@@ -117,10 +122,21 @@ const SelectionGroup = ({
       return items || [];
     }
 
-    return items.filter((item) => {
-      const itemLabel = getFormattedLabel(item);
-      const itemDescription = getItemDescription(item);
-      return matchesSearch([itemLabel, itemDescription], searchTerm);
+    const matches = (item) =>
+      matchesSearch(
+        [getFormattedLabel(item), getItemDescription(item)],
+        searchTerm
+      );
+
+    // Keep a group header only when one of its items matches
+    return items.filter((item, index) => {
+      if (!isGroupHeader(item)) return matches(item);
+      const nextHeaderIndex = items.findIndex(
+        (entry, i) => i > index && isGroupHeader(entry)
+      );
+      return items
+        .slice(index + 1, nextHeaderIndex === -1 ? undefined : nextHeaderIndex)
+        .some(matches);
     });
   }, [items, searchTerm, showSearch, locale]);
 
@@ -192,13 +208,15 @@ const SelectionGroup = ({
 
           const getLabel = (val) => {
             const found = items.find((item) => {
+              if (isGroupHeader(item)) return false;
               if (typeof item === "object" && item !== null) {
                 return (item.value ?? item._id ?? item.id ?? item.name) === val;
               }
               return item === val;
             });
             if (found !== undefined) {
-              const formatted = getFormattedLabel(found);
+              const formatted =
+                found?.selectedLabel ?? getFormattedLabel(found);
               if (typeof formatted === "string" && isHexObjectId(formatted)) {
                 return "";
               }
@@ -369,6 +387,18 @@ const SelectionGroup = ({
         {/* Filtered items */}
         {filteredList.length > 0 ? (
           filteredList.map((item, index) => {
+            if (isGroupHeader(item)) {
+              return (
+                <ListSubheader
+                  key={`group-${item.key ?? item.label}-${index}`}
+                  disableSticky
+                  className="!font-somar !font-bold !text-mainColor !leading-9"
+                >
+                  {getFormattedLabel(item)}
+                </ListSubheader>
+              );
+            }
+
             const itemValue =
               typeof item === "object" && item !== null
                 ? (item.value ?? item._id ?? item.id ?? item.name)

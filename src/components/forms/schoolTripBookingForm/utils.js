@@ -1,4 +1,3 @@
-
 import { CONSTANT_VALUES } from "@constants/constantValues";
 
 const localize = (value, locale) =>
@@ -31,6 +30,60 @@ export const findIdByLabel = (list = [], label, locale) => {
 export const mapLabelsToIds = (list = [], labels = [], locale) =>
   labels.map((label) => findIdByLabel(list, label, locale)).filter(Boolean);
 
+/**
+ * Options for the combined stage/grade dropdown: each stage is a group header
+ * followed by its grades; a stage without grades is selectable itself.
+ */
+export const buildStageGradeOptions = (stages = [], locale) =>
+  stages.flatMap((stage) => {
+    const stageLabel = getNameLabel(stage, locale);
+    const grades = Array.isArray(stage?.grades) ? stage.grades : [];
+
+    if (!grades.length) return [{ value: stage._id, label: stageLabel }];
+
+    return [
+      { isGroupHeader: true, key: stage._id, label: stageLabel },
+      ...grades.map((grade) => {
+        const gradeLabel = getNameLabel(grade, locale);
+        return {
+          value: grade._id,
+          label: gradeLabel,
+          selectedLabel: `${stageLabel} - ${gradeLabel}`,
+        };
+      }),
+    ];
+  });
+
+/** Nests a track's flat `grades` under its `academicStages` (same shape as the select endpoint's stages). */
+export const getTrackStages = (track) => {
+  const grades = Array.isArray(track?.grades) ? track.grades : [];
+  return (track?.academicStages || []).map((stage) => ({
+    ...stage,
+    grades: grades.filter(
+      (grade) =>
+        (grade?.academicStage?._id ?? grade?.academicStage) === stage._id
+    ),
+  }));
+};
+
+/** Splits selected stage/grade option IDs into the API's academicStages + grades. */
+export const splitStageGrades = (selectedIds = [], stages = []) => {
+  const selected = new Set(selectedIds);
+  const academicStages = new Set();
+  const grades = [];
+
+  stages.forEach((stage) => {
+    if (selected.has(stage._id)) academicStages.add(stage._id);
+    (stage?.grades || []).forEach((grade) => {
+      if (!selected.has(grade._id)) return;
+      grades.push(grade._id);
+      academicStages.add(stage._id);
+    });
+  });
+
+  return { academicStages: [...academicStages], grades };
+};
+
 /** Maps selected gender label to the API value (CONSTANT_VALUES.GENDERS.MALE | FEMALE | BOTH). */
 export const mapGenderToAPI = (gender, labels = {}) => {
   const { MALE, FEMALE, BOTH } = CONSTANT_VALUES.GENDERS;
@@ -43,20 +96,33 @@ export const mapGenderToAPI = (gender, labels = {}) => {
       const single = gender[0];
       const normalizedSingle =
         typeof single === "string" ? single.trim().toUpperCase() : "";
-      if (normalizedSingle === MALE || single === labels.boys || single === "male") {
+      if (
+        normalizedSingle === MALE ||
+        single === labels.boys ||
+        single === "male"
+      ) {
         return MALE;
       }
-      if (normalizedSingle === FEMALE || single === labels.girls || single === "female") {
+      if (
+        normalizedSingle === FEMALE ||
+        single === labels.girls ||
+        single === "female"
+      ) {
         return FEMALE;
       }
-      if (normalizedSingle === BOTH || single === labels.both || single === "both") {
+      if (
+        normalizedSingle === BOTH ||
+        single === labels.both ||
+        single === "both"
+      ) {
         return BOTH;
       }
     }
     return MALE;
   }
 
-  const normalized = typeof gender === "string" ? gender.trim().toUpperCase() : "";
+  const normalized =
+    typeof gender === "string" ? gender.trim().toUpperCase() : "";
   if (normalized === MALE) return MALE;
   if (normalized === FEMALE) return FEMALE;
   if (normalized === BOTH) return BOTH;
@@ -223,51 +289,29 @@ export const buildBookingPayload = ({
   lookups = {},
   genderLabels = {},
 }) => {
-  const { cities = [], educationSystems = [], stages = [], grades = [], roles = [] } = lookups;
-
-  const matchedCity =
-    cities.find((c) => c._id === values.city || c.id === values.city) ||
-    matchCityFromLookups(values.city, cities) ||
-    findIdByLabel(cities, values.city, locale);
-
-  const finalCity = matchedCity?._id || matchedCity?.id || values.city || "";
-
+  const { educationSystems = [], stages = [] } = lookups;
   return {
     organization: {
-      name: {
-        en: values.schoolNameEnglish?.trim() || "",
-        ar: values.schoolNameArabic?.trim() || "",
-      },
+      name: values.schoolName?.trim() || "",
       phone: values.organizationPhone || "",
-      email: values.organizationEmail || "",
       track: {
         educationSystem:
           findIdByLabel(educationSystems, values.educationalTrack, locale) ||
           values.educationalTrack ||
           "",
         gender: mapGenderToAPI(values.gender, genderLabels),
-        academicStages: mapLabelsToIds(stages, values.stages, locale),
-        grades: mapLabelsToIds(grades, values.grades, locale),
+        ...splitStageGrades(values.stageGrades, stages),
       },
-      city: finalCity,
     },
     user: {
       name: values.contactPersonName?.trim() || "",
       phone: values.mobile || "",
       email: values.email || "",
-      role: findIdByLabel(roles, values.functionalDegree, locale) || values.functionalDegree || "",
     },
     trip: {
       trip: trip?._id || tripSlug || "",
       day: values.date || "",
       availableSeates: Number(values.studentsCount) || 0,
-      gatheringLocation: {
-        lat: Number(values.gatheringLocation?.lat) || 0,
-        lng: Number(values.gatheringLocation?.lng) || 0,
-      },
-      schoolAmount: values.hasSchoolProfit
-        ? Number(values.schoolProfit) || 0
-        : 0,
     },
   };
 };
@@ -282,22 +326,18 @@ export const buildAuthBookingPayload = ({
   locale,
   lookups = {},
 }) => {
-  const {
-    cities = [],
-    stages = [],
-    grades = [],
-    organizations = [],
-  } = lookups;
+  const { cities = [], stages = [], organizations = [] } = lookups;
 
   const selectedOrg = organizations.find(
-    (org) => (org?._id || org?.id) === (values.organization?._id || values.organization)
+    (org) =>
+      (org?._id || org?.id) ===
+      (values.organization?._id || values.organization)
   );
   const orgCity =
     selectedOrg?.city?._id || selectedOrg?.city?.id || selectedOrg?.city || "";
-  const tripCity =
-    trip?.city?._id || trip?.city?.id || trip?.city || "";
+  const tripCity = trip?.city?._id || trip?.city?.id || trip?.city || "";
 
-  const rawCity = values.city || orgCity || tripCity || "";
+  const rawCity = orgCity || tripCity || "";
 
   const matchedCity =
     cities.find((c) => c._id === rawCity || c.id === rawCity) ||
@@ -305,25 +345,6 @@ export const buildAuthBookingPayload = ({
     findIdByLabel(cities, rawCity, locale);
 
   const finalCity = matchedCity?._id || matchedCity?.id || rawCity || "";
-
-  const stageIds = mapLabelsToIds(stages, values.stages, locale);
-  const gradeIds = mapLabelsToIds(grades, values.grades, locale);
-
-  const academicStages = stageIds.length
-    ? stageIds
-    : Array.isArray(values.stages)
-    ? values.stages
-    : values.stages
-    ? [values.stages]
-    : [];
-
-  const finalGrades = gradeIds.length
-    ? gradeIds
-    : Array.isArray(values.grades)
-    ? values.grades
-    : values.grades
-    ? [values.grades]
-    : [];
 
   const orgId =
     typeof values.organization === "object"
@@ -338,20 +359,12 @@ export const buildAuthBookingPayload = ({
   return {
     organization: orgId,
     track: trackId,
-    academicStages,
-    grades: finalGrades,
+    ...splitStageGrades(values.stageGrades, stages),
     city: finalCity,
     trip: {
       trip: trip?._id || tripSlug || "",
       day: values.date || "",
       availableSeates: Number(values.studentsCount) || 0,
-      gatheringLocation: {
-        lat: Number(values.gatheringLocation?.lat) || 0,
-        lng: Number(values.gatheringLocation?.lng) || 0,
-      },
-      schoolAmount: values.hasSchoolProfit
-        ? Number(values.schoolProfit) || 0
-        : 0,
     },
   };
 };

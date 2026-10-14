@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Container } from "@mui/material";
@@ -28,7 +28,14 @@ const SchoolTripBookingPage = ({ params }) => {
     routeParams?.tripSlug ||
     routeParams?.id;
 
-  const { isAuth, isProvider, isBlocked } = useSchoolRegisterAccess();
+  const access = useSchoolRegisterAccess();
+
+  // Set once a visitor registers: they get logged in right away, so keep the
+  // visitor form mounted until the redirect to the success page completes
+  const [isRegistered, setIsRegistered] = useState(false);
+  const isAuth = access.isAuth && !isRegistered;
+  const isBlocked = access.isBlocked && !isRegistered;
+  const { isProvider } = access;
 
   // 1. Fetch select data directly for the market trip: /organizations/market-trip/select/${tripId}
   const {
@@ -72,12 +79,6 @@ const SchoolTripBookingPage = ({ params }) => {
     [selectData, selectError, fallbackLookups]
   );
 
-  const roles = useMemo(
-    () =>
-      selectData?.roles || (selectError ? fallbackLookups?.roles : []) || [],
-    [selectData, selectError, fallbackLookups]
-  );
-
   const educationSystems = useMemo(
     () =>
       selectData?.educationSystems ||
@@ -95,7 +96,8 @@ const SchoolTripBookingPage = ({ params }) => {
     [selectData, selectError, fallbackLookups]
   );
 
-  const grades = useMemo(() => selectData?.grades || [], [selectData]);
+  // { min, max } bounds for the students count
+  const availableSeats = selectData?.availableSeats;
 
   const selectDays = useMemo(() => {
     const raw =
@@ -148,21 +150,19 @@ const SchoolTripBookingPage = ({ params }) => {
             tripSlug={tripId}
             trip={tripData}
             cities={cities}
-            stages={stages}
-            grades={grades}
             selectDays={selectDays}
+            availableSeats={availableSeats}
           />
         ) : (
           <SchoolTripBookingForm
             tripId={tripId}
             tripSlug={tripId}
             trip={tripData}
-            cities={cities}
-            roles={roles}
             educationSystems={educationSystems}
             stages={stages}
-            grades={grades}
             selectDays={selectDays}
+            availableSeats={availableSeats}
+            onRegistered={() => setIsRegistered(true)}
           />
         )}
       </Container>

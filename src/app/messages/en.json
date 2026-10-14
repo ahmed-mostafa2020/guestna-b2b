@@ -3715,16 +3715,16 @@
         "addStudent": "Add another student",
         "removeStudent": "Remove student",
         "removeCompanion": "Remove companion",
-        "addCompanion": "Add companion"
+        "addCompanion": "Add another companion"
       },
       "studentNote": {
         "label": "Notes",
         "placeholder": "Example: Ahmed has Almond allergy "
       },
       "companions": {
-        "countLabel": "Book for relative companions (optional)",
-        "toggleLabel": "I want to book for relative companions (optional)",
-        "title": "Add relative companions (optional)",
+        "countLabel": "Book for relative companions (Optional)",
+        "toggleLabel": "I want to book for relative companions (Optional)",
+        "title": "Add relative companions (Optional)",
         "subtitle": "Allow sisters and mothers of students to join the trip activities",
         "itemTitle": "Companion {number}",
         "name": {
@@ -3842,7 +3842,7 @@
       "name": "Email",
       "error_tld": "Please enter a valid email address, including a domain (e.g., .com)",
       "parentEmail": "Parent Email",
-      "studentEmail": "Student Email (If Available)",
+      "studentEmail": "Student Email (Optional)",
       "error": "Please enter a valid email address",
       "is_exists": "This email address already exists",
       "done": "Your account has been added",
@@ -3853,7 +3853,7 @@
       "name": "Phone",
       "parentPhone": "Parent Phone",
       "backupPhone": "Backup Phone (Optional)",
-      "studentPhone": "Student Phone Number (If Available)",
+      "studentPhone": "Student Phone Number (Optional)",
       "error": {
         "invalid": "Invalid phone number",
         "min": "Number should be more than 12",
@@ -4722,16 +4722,24 @@
         "label": "Educational Stage",
         "placeholder": "Select educational stages"
       },
+      "stageGrade": {
+        "label": "Educational Stage & Grade",
+        "placeholder": "Select stages and grades"
+      },
+      "schoolName": {
+        "label": "Organization Name",
+        "placeholder": "Enter school name"
+      },
       "grade": {
         "label": "Grade",
         "placeholder": "Select grade"
       },
       "date": {
-        "label": "Date",
+        "label": "Trip Date",
         "placeholder": "DD/MM/YYYY"
       },
       "studentsCount": {
-        "label": "Number of Students",
+        "label": "Expected Number of Attending Students",
         "placeholder": "Enter number of students"
       },
       "services": {
@@ -4785,11 +4793,19 @@
         "past": "Trip date cannot be in the past",
         "unavailable": "Selected date is not available for this trip"
       },
+      "stageGrades": {
+        "required": "Select at least one stage or grade"
+      },
+      "schoolName": {
+        "required": "Organization name is required",
+        "min": "Organization name must be at least 2 characters",
+        "max": "Organization name cannot exceed 100 characters"
+      },
       "studentsCount": {
         "required": "Number of students is required",
         "invalid": "Please enter a valid number",
-        "min": "Number of students must be at least 10",
-        "max": "Number of students cannot exceed 5000"
+        "min": "Number of students must be at least {min}",
+        "max": "Number of students cannot exceed {max}"
       },
       "notes": {
         "max": "Notes cannot exceed 500 characters"
@@ -4825,7 +4841,7 @@
     "credentials": {
       "title": "Approved School Account Details",
       "schoolNameLabel": "School Name:",
-      "adminLabel": "Administrative Officer:",
+      "adminLabel": "Admin Name:",
       "defaultSchoolName": "Al-Andalus Private School for Girls",
       "defaultSchoolCode": "SCH-2025-884",
       "defaultAdminName": "Ms. Noura Al-Subaie"

@@ -1,46 +1,23 @@
 "use client";
 
-import { memo, useEffect, useRef } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { memo, useEffect, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useFormikContext } from "formik";
-import { Skeleton } from "@mui/material";
 
 import SelectionGroup from "@components/forms/SelectionGroup";
+import StageGradeSelect from "./StageGradeSelect";
 import { LABEL_PROPS } from "../constants";
-import { findIdByLabel, getNameLabel } from "../utils";
-
-const GradesPlaceholder = ({ label, children }) => (
-  <div className="relative w-full min-w-0 flex flex-col gap-2">
-    <span className="font-medium capitalize font-somar">
-      {label}
-      <span className="text-error ms-1">*</span>
-    </span>
-    {children}
-  </div>
-);
+import { getTrackStages } from "../utils";
 
 const AuthSchoolInfoStep = ({
   organizations = [],
   tracks = [],
   isLoadingTracks = false,
   onOrganizationChange,
-  stages = [],
-  grades = [],
-  isLoadingGrades = false,
-  fetchGrades,
 }) => {
   const t = useTranslations();
-  const locale = useLocale();
-  const {
-    values,
-    errors,
-    touched,
-    handleChange,
-    handleBlur,
-    setFieldValue,
-  } = useFormikContext();
-
-  const selectedStageIdsRef = useRef([]);
+  const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
+    useFormikContext();
 
   // Auto-select organization if only one is available
   useEffect(() => {
@@ -70,32 +47,28 @@ const AuthSchoolInfoStep = ({
     };
   });
 
-  const stageLabels = stages.map((s) => getNameLabel(s, locale));
-  const gradeLabels = grades.map((g) => getNameLabel(g, locale));
+  // Stages & grades come from the selected track (profile/settingsTrips/tracks/:orgId)
+  const trackStages = useMemo(
+    () =>
+      getTrackStages(
+        tracks.find((track) => (track._id || track.id) === values.track)
+      ),
+    [tracks, values.track]
+  );
 
   const handleOrganizationSelect = (e) => {
     const orgId = e.target.value;
     handleChange(e);
     setFieldValue("track", "");
-    setFieldValue("stages", []);
-    setFieldValue("grades", []);
+    setFieldValue("stageGrades", []);
     onOrganizationChange?.(orgId);
   };
 
-  const handleStagesChange = (event) => {
-    const selected = Array.isArray(event.target.value) ? event.target.value : [];
-    selectedStageIdsRef.current = selected
-      .map((label) => findIdByLabel(stages, label, locale))
-      .filter(Boolean);
-    handleChange(event);
+  const handleTrackSelect = (e) => {
+    if (e.target.value === values.track) return;
+    handleChange(e);
+    setFieldValue("stageGrades", []);
   };
-
-  const handleStagesClose = () => {
-    setFieldValue("grades", []);
-    fetchGrades?.(selectedStageIdsRef.current);
-  };
-
-  const gradesLabel = t("schoolTripBooking.form.grade.label");
 
   return (
     <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-7">
@@ -128,7 +101,7 @@ const AuthSchoolInfoStep = ({
         }
         value={values.track}
         list={trackOptions}
-        onChange={handleChange}
+        onChange={handleTrackSelect}
         onBlur={handleBlur}
         disabled={isLoadingTracks || !values.organization}
         touched={touched.track}
@@ -136,54 +109,12 @@ const AuthSchoolInfoStep = ({
         required
       />
 
-      {/* Stages */}
-      <SelectionGroup
-        {...LABEL_PROPS}
-        name="stages"
-        label={t("schoolTripBooking.form.stage.label")}
-        placeholder={t("schoolTripBooking.form.stage.placeholder")}
-        value={values.stages}
-        list={stageLabels}
-        multiple
-        onChange={handleStagesChange}
-        onClose={handleStagesClose}
-        onBlur={handleBlur}
-        touched={touched.stages}
-        errors={errors.stages}
-        required
+      {/* Stages & grades */}
+      <StageGradeSelect
+        className="md:col-span-2"
+        stages={trackStages}
+        disabled={!values.track}
       />
-
-      {/* Grades */}
-      {values.stages.length === 0 ? (
-        <GradesPlaceholder label={gradesLabel}>
-          <div className="h-[55px] flex items-center px-4 border-2 border-border rounded-lg text-sm text-textLight font-somar">
-            {t("schoolRegister.form.grades.selectStagesFirst")}
-          </div>
-        </GradesPlaceholder>
-      ) : isLoadingGrades ? (
-        <GradesPlaceholder label={gradesLabel}>
-          <Skeleton
-            variant="rectangular"
-            height={55}
-            sx={{ borderRadius: "8px" }}
-          />
-        </GradesPlaceholder>
-      ) : (
-        <SelectionGroup
-          {...LABEL_PROPS}
-          name="grades"
-          label={gradesLabel}
-          placeholder={t("schoolTripBooking.form.grade.placeholder")}
-          value={values.grades}
-          list={gradeLabels}
-          multiple
-          onChange={handleChange}
-          onBlur={handleBlur}
-          touched={touched.grades}
-          errors={errors.grades}
-          required
-        />
-      )}
     </fieldset>
   );
 };
