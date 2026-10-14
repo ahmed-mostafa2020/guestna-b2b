@@ -7,7 +7,7 @@ import { useFormikContext } from "formik";
 import SelectionGroup from "@components/forms/SelectionGroup";
 import StageGradeSelect from "./StageGradeSelect";
 import { LABEL_PROPS } from "../constants";
-import { getTrackStages } from "../utils";
+import { getSelectedTrackStages } from "../utils";
 
 const AuthSchoolInfoStep = ({
   organizations = [],
@@ -49,10 +49,7 @@ const AuthSchoolInfoStep = ({
 
   // Stages & grades come from the selected track (profile/settingsTrips/tracks/:orgId)
   const trackStages = useMemo(
-    () =>
-      getTrackStages(
-        tracks.find((track) => (track._id || track.id) === values.track)
-      ),
+    () => getSelectedTrackStages(tracks, values.track),
     [tracks, values.track]
   );
 

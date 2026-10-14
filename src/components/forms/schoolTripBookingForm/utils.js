@@ -27,10 +27,6 @@ export const findIdByLabel = (list = [], label, locale) => {
   return item?._id || item?.id || label;
 };
 
-/** Maps a list of displayed labels to IDs, dropping unknown values. */
-export const mapLabelsToIds = (list = [], labels = [], locale) =>
-  labels.map((label) => findIdByLabel(list, label, locale)).filter(Boolean);
-
 /**
  * Options for the combined stage/grade dropdown: each stage is a group header
  * followed by its grades; a stage without grades is selectable itself.
@@ -66,6 +62,10 @@ export const getTrackStages = (track) => {
     ),
   }));
 };
+
+/** Stages (with nested grades) of the track whose id is `trackId`. */
+export const getSelectedTrackStages = (tracks = [], trackId) =>
+  getTrackStages(tracks.find((track) => (track._id || track.id) === trackId));
 
 /** Splits selected stage/grade option IDs into the API's academicStages + grades. */
 export const splitStageGrades = (selectedIds = [], stages = []) => {

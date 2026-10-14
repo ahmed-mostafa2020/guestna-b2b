@@ -56,7 +56,7 @@ const AuthTripDetailsStep = ({ availableDays = [], seatsRange }) => {
         required
       />
 
-      {/* Students count (availableSeates) */}
+      {/* Students count */}
       <TextInputGroup
         {...LABEL_PROPS}
         inputClassName="font-somar"

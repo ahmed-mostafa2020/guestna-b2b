@@ -29,7 +29,7 @@ import {
 import {
   buildAuthBookingPayload,
   extractAvailableDays,
-  getTrackStages,
+  getSelectedTrackStages,
 } from "./utils";
 import {
   findFirstStepWithErrors as findFirstInvalidStep,
@@ -187,9 +187,7 @@ const AuthSchoolTripBookingForm = ({
         locale,
         lookups: {
           cities,
-          stages: getTrackStages(
-            tracksData.find((track) => (track._id || track.id) === values.track)
-          ),
+          stages: getSelectedTrackStages(tracksData, values.track),
           organizations: organizationsList,
         },
       });

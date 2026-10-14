@@ -105,7 +105,7 @@ const RequestDetailsStep = ({
         required
       />
 
-      {/* Students count (availableSeates) */}
+      {/* Students count */}
       <TextInputGroup
         {...LABEL_PROPS}
         containerClassName="md:col-span-2"
