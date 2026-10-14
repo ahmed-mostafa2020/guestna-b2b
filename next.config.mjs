@@ -129,7 +129,19 @@ const nextConfig = {
         },
       ];
     }
-    return [];
+    return [
+      // Trips management moved under bookings management
+      {
+        source: "/:locale(ar|en)/profile/trips-activities-management",
+        destination: "/:locale/profile/bookings-management/trips",
+        permanent: true,
+      },
+      {
+        source: "/profile/trips-activities-management",
+        destination: "/ar/profile/bookings-management/trips",
+        permanent: true,
+      },
+    ];
   },
 
   rewrites: async () => {
@@ -209,7 +221,8 @@ const nextConfig = {
       // Restrict access to browser features
       {
         key: "Permissions-Policy",
-        value: "camera=(self), microphone=(self), geolocation=(self), unload=()",
+        value:
+          "camera=(self), microphone=(self), geolocation=(self), unload=()",
       },
       // Force HTTPS for 2 years, include subdomains, allow preload list submission
       {
