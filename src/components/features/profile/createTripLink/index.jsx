@@ -312,7 +312,8 @@ const CreateTripLink = ({ data }) => {
             </h2>
 
             <p className=" ">
-              {t("profile.createTripLink.modal.subtitle")} "{tripData?.name}"
+              {t("profile.createTripLink.modal.subtitle")} &quot;
+              {tripData?.name}&quot;
             </p>
 
             <div className="bg-gray-50 rounded-lg p-4 border-2 border-dashed border-gray-300">

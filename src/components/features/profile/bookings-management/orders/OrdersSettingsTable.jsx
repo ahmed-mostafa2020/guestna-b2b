@@ -78,18 +78,6 @@ const OrdersSettingsTable = () => {
 
   const settingsData = data?.nodes || [];
 
-  // Error state display
-  if (error) {
-    return (
-      <ErrorComponent
-        statusCode={error?.response?.data?.statusCode}
-        errorMessage={error?.response?.data?.message}
-        notFoundPage={false}
-        padding={false}
-      />
-    );
-  }
-
   const columns = useMemo(
     () => [
       {
@@ -146,6 +134,18 @@ const OrdersSettingsTable = () => {
     ],
     [t]
   );
+
+  // Error state display — after all hooks so the hook order never changes between renders
+  if (error) {
+    return (
+      <ErrorComponent
+        statusCode={error?.response?.data?.statusCode}
+        errorMessage={error?.response?.data?.message}
+        notFoundPage={false}
+        padding={false}
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col w-full bg-white rounded-2xl py-4 px-3 shadow-card">
