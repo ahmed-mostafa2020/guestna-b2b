@@ -3,6 +3,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 import ImageWithPlaceholder from "./imagesPlaceholder/ImageWithPlaceholder";
 import logo from "@assets/logo.png";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const Logo = () => {
   const locale = useLocale();
@@ -12,9 +13,9 @@ const Logo = () => {
 
   const hasCustomLogo = Boolean(
     customLogo &&
-      customLogo !== logo &&
-      customLogo !== "/logo.png" &&
-      customLogo !== "/assets/logo.png"
+    customLogo !== logo &&
+    customLogo !== "/logo.png" &&
+    customLogo !== "/assets/logo.png"
   );
 
   const currentLogo = hasCustomLogo ? customLogo : logo;
@@ -22,6 +23,7 @@ const Logo = () => {
   return (
     <Link
       href={`/${locale}`}
+      {...getGtmTag(GTM_TAGS.NAV.LOGO, "navigation")}
       className="outline-none w-fit flex flex-col items-center gap-0.5"
     >
       <ImageWithPlaceholder

@@ -13,6 +13,7 @@ import formatCurrency from "@utils/formatters/FormatCurrency";
 import ImageWithPlaceholder from "../imagesPlaceholder/ImageWithPlaceholder";
 
 import { locationIcon, yellowStarIcon, smallCalenderIcon } from "@assets/svg";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const TripCard = ({ activityCard, imageWidth = 300 }) => {
   const [shouldSlide, setShouldSlide] = useState(false);
@@ -149,6 +150,11 @@ const TripCard = ({ activityCard, imageWidth = 300 }) => {
 
           <Link
             href={`/${locale}/discover/${activityCard.slug}`}
+            {...getGtmTag(
+              GTM_TAGS.TRIPS.VIEW_DETAILS,
+              "trips",
+              activityCard.slug
+            )}
             className="px-6 text-center py-3 capitalize rounded-[10px] text-white bg-mainColor border-2 border-mainColor font-medium text-base transition-all ease-in-out duration-200 hover:bg-linksHover hover:border-linksHover ms-auto "
           >
             {t("links.viewTripDetails")}

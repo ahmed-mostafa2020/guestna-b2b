@@ -19,6 +19,7 @@ import CustomizedModal from "@components/ui/customizedModal";
 import { useSnackbar } from "notistack";
 
 import { addIcon } from "@assets/svg";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const DayActivities = ({
   activity,
@@ -95,7 +96,12 @@ const DayActivities = ({
           })}
         </p>
 
-        <button onClick={addNewDay}>{addIcon}</button>
+        <button
+          onClick={addNewDay}
+          {...getGtmTag(GTM_TAGS.CUSTOMIZATION.ADD_DAY, "customization")}
+        >
+          {addIcon}
+        </button>
       </div>
 
       {renderedEvents}
@@ -104,6 +110,7 @@ const DayActivities = ({
         <Link
           href={`/${locale}/customization/${tripSlug}/${activityDay}`}
           onClick={handleSavingDayNumber}
+          {...getGtmTag(GTM_TAGS.CUSTOMIZATION.ADD_ACTIVITY, "customization")}
           className="flex-1 py-3 text-lg font-semibold text-center transition-all duration-200 ease-in-out border-2 rounded-lg border-secColor text-mainColor hover:bg-secColor hover:text-white"
         >
           {t("customization.actions.addActivity")}
@@ -111,6 +118,7 @@ const DayActivities = ({
 
         <button
           onClick={handleOpen}
+          {...getGtmTag(GTM_TAGS.CUSTOMIZATION.MORE_SERVICES, "customization")}
           className="flex-1 py-3 text-lg text-center border-2 border-[#1858A5] rounded-lg font-light bg-[#1858A5] text-white transition-all ease-in-out duration-200 hover:bg-[#134684] hover:border-[#134684]"
         >
           {t("customization.actions.moreServices")}

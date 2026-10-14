@@ -16,6 +16,7 @@ import { Formik } from "formik";
 import { Container } from "@mui/system";
 
 import { searchBarIcon } from "@assets/svg";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 // import ResetButton from "../gridSection/filterGrid/resetButton";
 
 const SearchBar = () => {
@@ -97,6 +98,7 @@ const SearchBar = () => {
                 <div className="relative w-full lg:w-fit">
                   <button
                     type="submit"
+                    {...getGtmTag(GTM_TAGS.DISCOVER.SEARCH, "discover")}
                     disabled={
                       !isValid || isSubmitting || values.searchBar.length === 0
                     }

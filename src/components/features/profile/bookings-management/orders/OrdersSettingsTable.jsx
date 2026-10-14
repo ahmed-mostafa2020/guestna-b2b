@@ -11,6 +11,7 @@ import DataTable from "@components/ui/DataTable";
 import { actionsIcon } from "@assets/svg";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import OrdersTableFilter from "./OrdersTableFilter";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const getStatusInfo = (tripsCount, maximumNumberTrips, t) => {
   const remaining = maximumNumberTrips - tripsCount;
@@ -170,6 +171,7 @@ const OrdersSettingsTable = () => {
         rowActions={(row) => (
           <button
             onClick={() => handleEditClick(row)}
+            {...getGtmTag(GTM_TAGS.ORDERS.EDIT_SETTINGS, "orders", row._id)}
             className="p-2 text-mainColor hover:bg-mainColor/10 rounded-lg transition-colors flex items-center justify-center m-auto"
             title={t("links.edit")}
           >

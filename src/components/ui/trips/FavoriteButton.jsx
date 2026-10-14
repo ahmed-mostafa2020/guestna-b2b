@@ -24,6 +24,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
 import Cookies from "js-cookie";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const FavoriteButton = ({
   tripId,
@@ -119,8 +120,6 @@ const FavoriteButton = ({
         setLoading(false);
         setHasInteracted(false); // Reset interaction state on error
 
-
-
         // Extract error message
         const errorMessage =
           !(
@@ -144,6 +143,13 @@ const FavoriteButton = ({
         <button
           disabled={loading || disabledButton}
           onClick={toggleFavorite}
+          {...getGtmTag(
+            localFavoriteState
+              ? GTM_TAGS.TRIPS.REMOVE_FROM_FAVORITES
+              : GTM_TAGS.TRIPS.ADD_TO_FAVORITES,
+            "trips",
+            tripId
+          )}
           className="flex items-center gap-1"
         >
           {loading ? (
@@ -160,6 +166,13 @@ const FavoriteButton = ({
         <button
           disabled={loading || disabledButton}
           onClick={toggleFavorite}
+          {...getGtmTag(
+            localFavoriteState
+              ? GTM_TAGS.TRIPS.REMOVE_FROM_FAVORITES
+              : GTM_TAGS.TRIPS.ADD_TO_FAVORITES,
+            "trips",
+            tripId
+          )}
           className={`gap-1 centered bg-[#04040473] h-11 w-11  rounded-full end-4 disabled:cursor-not-allowed ${
             isAbsolute && "absolute top-[-60px]"
           }`}

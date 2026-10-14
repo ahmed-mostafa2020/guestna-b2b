@@ -16,6 +16,7 @@ import { TRIP_STATUS } from "@constants/tripStatus";
 import { PERMISSIONS } from "@constants/permissions";
 import { usePermissions } from "@hooks/utils/usePermissions";
 import axios from "axios";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const ActionsDropdownMenu = ({ booking }) => {
   const locale = useLocale();
@@ -94,16 +95,34 @@ const ActionsDropdownMenu = ({ booking }) => {
             },
           }}
         >
-          <MenuItem onClick={showBookingDetails} className="!font-somar">
+          <MenuItem
+            onClick={showBookingDetails}
+            {...getGtmTag(
+              GTM_TAGS.BOOKINGS.VIEW_DETAILS,
+              "bookings",
+              booking._id
+            )}
+            className="!font-somar"
+          >
             {t("links.showDetails")}
           </MenuItem>
 
           {booking.status !== TRIP_STATUS.CANCELLED &&
-            hasElement(PERMISSIONS.ELEMENT.B2B_PROFILE_BOOKINGS_COMMENT_BUTTON) && (
-            <MenuItem onClick={showAdministrativeComment} className="!font-somar">
-              {t("profile.tables.bookings.actions.administrativeComment")}
-            </MenuItem>
-          )}
+            hasElement(
+              PERMISSIONS.ELEMENT.B2B_PROFILE_BOOKINGS_COMMENT_BUTTON
+            ) && (
+              <MenuItem
+                onClick={showAdministrativeComment}
+                {...getGtmTag(
+                  GTM_TAGS.BOOKINGS.ADMINISTRATIVE_COMMENT,
+                  "bookings",
+                  booking._id
+                )}
+                className="!font-somar"
+              >
+                {t("profile.tables.bookings.actions.administrativeComment")}
+              </MenuItem>
+            )}
         </Menu>
       </div>
 

@@ -9,6 +9,7 @@ import { actGetDiscoverTrips } from "@store/discover/act/actGetDiscoverTrips";
 
 import { SORTING_TYPE } from "@constants/sorting";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const ResetButton = ({ targetRef }) => {
   const { loading } = useSelector((state) => state.discoverData);
@@ -70,6 +71,7 @@ const ResetButton = ({ targetRef }) => {
     <>
       <button
         onClick={handleReset}
+        {...getGtmTag(GTM_TAGS.DISCOVER.FILTERS_RESET, "discover")}
         className="py-3 text-white rounded-lg font-bold flex-1 border-2 border-[#A21E21] bg-[#A21E21] transition-all ease-in-out duration-200 hover:bg-[#c61114] hover:border-[#c61114]"
       >
         {t("links.reset")}

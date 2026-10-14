@@ -22,6 +22,7 @@ import "react-phone-number-input/style.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import { Checkbox, FormControlLabel } from "@mui/material";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const ContactForm = () => {
   const dispatch = useDispatch();
@@ -188,6 +189,7 @@ const ContactForm = () => {
             <div className="w-full centered">
               <button
                 type="submit"
+                {...getGtmTag(GTM_TAGS.PAYMENT.CONTACT_CONTINUE, "payment")}
                 disabled={
                   !isValid ||
                   formData.name == "" ||

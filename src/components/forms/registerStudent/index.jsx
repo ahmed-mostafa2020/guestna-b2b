@@ -38,6 +38,7 @@ import TermsConfirmationModal from "./TermsConfirmationModal";
 import CompanionForm from "./CompanionForm";
 import FormSectionHeader from "./FormSectionHeader";
 import BookingStepper from "../schoolTripBookingForm/BookingStepper";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const EMPTY_COMPANION = {
   name: "",
@@ -1269,6 +1270,10 @@ const RegisterStudentForm = ({
 
                 {isLastFormStep ? (
                   <FormSubmitButton
+                    {...getGtmTag(
+                      GTM_TAGS.PAYMENT.REGISTER_STUDENT_CONTINUE,
+                      "payment"
+                    )}
                     loading={isSubmitting}
                     disabled={
                       !isValid ||

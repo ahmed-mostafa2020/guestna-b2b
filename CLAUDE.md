@@ -28,6 +28,7 @@ Next.js 14.2 App Router · React 18 · **JavaScript only** (`.jsx`, no TS in `sr
 - New persisted Redux slice → add to `rootPersistConfig.whitelist` in `src/store/index.js`; never persist large/derived state.
 - Keep `middleware.js` matcher and `next.config.mjs` rewrites aligned; don't move the Apple Pay `.well-known` rewrite.
 - Forms: Formik + Yup schema in `src/utils/validators`; submit via `FormSubmitButton`.
+- Analytics (GA4 + GTM): clicks → spread `getGtmTag(GTM_TAGS.X.Y, category, id)` from `@utils/tracking/gtmUtils` (auto-sent as `ui_click`, no onClick); outcomes (success, created, shared) → `trackEvent(ANALYTICS_EVENTS.X, params)` from `@utils/tracking/analytics`. New names go in those constants; never send PII.
 - Don't commit secrets; never read `.env*`.
 
 ## Working style

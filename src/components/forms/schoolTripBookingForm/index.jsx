@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -18,6 +18,11 @@ import { useDispatch } from "react-redux";
 import { setUser, setUserToken } from "@store/users/usersSlice";
 import { setPermissions } from "@store/permissions/permissionsSlice";
 import { setOrganizations } from "@store/profile/selectedOrganizationsSlice";
+import {
+  ANALYTICS_EVENTS,
+  REGISTER_FORM_TYPES,
+  trackEvent,
+} from "@utils/tracking/analytics";
 
 import BookingStepper from "./BookingStepper";
 import StepNavigation from "./StepNavigation";
@@ -62,6 +67,13 @@ const SchoolTripBookingForm = ({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const cardRef = useRef(null);
 
+  useEffect(() => {
+    trackEvent(ANALYTICS_EVENTS.SCHOOL_REGISTER_FORM_VIEW, {
+      form_type: REGISTER_FORM_TYPES.NEW_SCHOOL,
+      trip_id: effectiveTripId,
+    });
+  }, [effectiveTripId]);
+
   const availableDays = useMemo(
     () => extractAvailableDays(trip, selectDays),
     [trip, selectDays]
@@ -104,7 +116,15 @@ const SchoolTripBookingForm = ({
     setIsTransitioningStep(true);
     try {
       const { isValid } = await validateStep(currentStep, formik);
-      if (isValid) goToStep(currentStep + 1);
+      if (isValid) {
+        trackEvent(ANALYTICS_EVENTS.SCHOOL_REGISTER_STEP_COMPLETE, {
+          form_type: REGISTER_FORM_TYPES.NEW_SCHOOL,
+          step_number: currentStep + 1,
+          step_name: BOOKING_STEPS[currentStep],
+          trip_id: effectiveTripId,
+        });
+        goToStep(currentStep + 1);
+      }
     } finally {
       setTimeout(() => {
         setIsTransitioningStep(false);
@@ -147,6 +167,14 @@ const SchoolTripBookingForm = ({
       enqueueSnackbar(t("schoolTripBooking.feedback.success"), {
         variant: "success",
       });
+
+      trackEvent(ANALYTICS_EVENTS.SCHOOL_REGISTER_COMPLETE, {
+        form_type: REGISTER_FORM_TYPES.NEW_SCHOOL,
+        trip_id: effectiveTripId,
+        students_count: Number(values.studentsCount) || undefined,
+      });
+      // This form also creates the school account
+      trackEvent(ANALYTICS_EVENTS.SIGN_UP, { method: "school_trip_register" });
 
       // Keep the page on this form while logging in, so it doesn't swap to the auth form before redirecting
       onRegistered?.();
@@ -218,6 +246,11 @@ const SchoolTripBookingForm = ({
       router.replace(`${targetPath}${queryString}`);
     } catch (error) {
       console.error("Error submitting school trip booking:", error);
+      trackEvent(ANALYTICS_EVENTS.SCHOOL_REGISTER_ERROR, {
+        form_type: REGISTER_FORM_TYPES.NEW_SCHOOL,
+        trip_id: effectiveTripId,
+        error_status: error.response?.status,
+      });
       const info = error.response?.data?.info;
 
       if (Array.isArray(info) && info.length) {

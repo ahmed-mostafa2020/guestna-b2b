@@ -18,6 +18,7 @@ import SelectionGroup from "../SelectionGroup";
 import InteractiveRating from "@components/ui/InteractiveRating";
 
 import FormSubmitButton from "@components/ui/FormSubmitButton";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const SurveyForm = ({ tripId, organizationId, onClose, onSuccess }) => {
   const locale = useLocale();
@@ -184,6 +185,7 @@ const SurveyForm = ({ tripId, organizationId, onClose, onSuccess }) => {
               {/* Submit Button */}
               <div className="flex gap-2 pt-4">
                 <FormSubmitButton
+                  {...getGtmTag(GTM_TAGS.SURVEY.SUBMIT, "survey")}
                   loading={isSubmitting}
                   disabled={!isValid}
                   label={t("forms.survey.submit")}
@@ -193,6 +195,7 @@ const SurveyForm = ({ tripId, organizationId, onClose, onSuccess }) => {
                 <button
                   type="button"
                   onClick={onClose}
+                  {...getGtmTag(GTM_TAGS.SURVEY.CANCEL, "survey")}
                   className="px-6 py-3 text-base font-medium text-gray-600 transition-all duration-200 ease-in-out border-2 border-gray-300 rounded-lg hover:bg-gray-50"
                 >
                   {t("links.cancel")}

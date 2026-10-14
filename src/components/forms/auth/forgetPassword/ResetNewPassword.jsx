@@ -20,6 +20,7 @@ import { Formik } from "formik";
 
 import FormSubmitButton from "@components/ui/FormSubmitButton";
 import useAxiosForm from "@hooks/forms/useAxiosForm";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const ResetNewPassword = () => {
   const { makeRequest, isDisabled, setIsDisabled } = useAxiosForm();
@@ -150,6 +151,7 @@ const ResetNewPassword = () => {
 
               <div className="w-full centered">
                 <FormSubmitButton
+                  {...getGtmTag(GTM_TAGS.AUTH.RESET_PASSWORD_SUBMIT, "auth")}
                   loading={isSubmitting}
                   disabled={!isValid || isDisabled}
                   label={t("forms.auth.resetPassword.resetPassword")}

@@ -13,6 +13,7 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import TextInputGroup from "./TextInputGroup";
 import CustomizedModal from "@components/ui/customizedModal";
 import { CircularProgress } from "@mui/material";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const EditTripSettingsForm = ({ item, onClose, onSuccess }) => {
   const locale = useLocale();
@@ -204,6 +205,7 @@ const EditTripSettingsForm = ({ item, onClose, onSuccess }) => {
                   <button
                     type="button"
                     onClick={onClose}
+                    {...getGtmTag(GTM_TAGS.TRIPS.SETTINGS_CANCEL, "trips")}
                     className="flex-1 lg:px-8 px-4 py-3 font-medium transition-all duration-200 ease-in-out bg-white border-2 rounded-lg border-mainColor hover:text-white hover:bg-linksHover hover:border-linksHover"
                   >
                     {t("links.cancel")}
@@ -212,6 +214,7 @@ const EditTripSettingsForm = ({ item, onClose, onSuccess }) => {
                   <button
                     type="submit"
                     disabled={!isValid || isSubmitting}
+                    {...getGtmTag(GTM_TAGS.TRIPS.SETTINGS_SAVE, "trips")}
                     className="flex-1 px-6 py-3 bg-mainColor text-white font-medium rounded-lg hover:bg-linksHover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {isSubmitting ? (

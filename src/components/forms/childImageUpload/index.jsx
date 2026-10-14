@@ -16,6 +16,7 @@ import FileUploadGroup from "../FileUploadGroup";
 import SelectionGroup from "../SelectionGroup";
 import TextInputGroup from "../TextInputGroup";
 import { CircularProgress } from "@mui/material";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const ChildImageUploadForm = ({ clientId, childId }) => {
   const locale = useLocale();
@@ -344,6 +345,10 @@ const ChildImageUploadForm = ({ clientId, childId }) => {
               <div className="flex justify-end">
                 <button
                   type="submit"
+                  {...getGtmTag(
+                    GTM_TAGS.STUDENTS.UPLOAD_IMAGE_SUBMIT,
+                    "students"
+                  )}
                   disabled={!isValid || isSubmitting}
                   className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
                     !isValid || isSubmitting

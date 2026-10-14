@@ -9,6 +9,7 @@ import { Close } from "@mui/icons-material";
 import TextInputGroup from "../TextInputGroup";
 import Map from "@components/features/tripDetails/gridSection/largeSizeGrid/accordionsGroupSection/accordionsDetails/Map";
 import { getApproveOrderValidationSchema } from "@utils/validators/validationSchemas";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const ApproveOrderForm = ({
   orderId,
@@ -177,6 +178,7 @@ const ApproveOrderForm = ({
             <button
               type="button"
               onClick={handleCancel}
+              {...getGtmTag(GTM_TAGS.ORDERS.APPROVE_CANCEL, "orders")}
               disabled={approvingOrder}
               className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors cursor-pointer text-textLight hover:text-textDark shrink-0 disabled:opacity-50"
               aria-label={t2("links.cancel")}
@@ -330,6 +332,7 @@ const ApproveOrderForm = ({
               <button
                 type="button"
                 onClick={handleCancel}
+                {...getGtmTag(GTM_TAGS.ORDERS.APPROVE_CANCEL, "orders")}
                 disabled={approvingOrder}
                 className="w-full sm:w-1/2 px-6 h-12 flex items-center justify-center rounded-xl border-2 border-border text-textDark font-bold text-sm sm:text-base hover:border-mainColor hover:text-mainColor active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-white font-somar"
               >
@@ -339,6 +342,7 @@ const ApproveOrderForm = ({
               {/* Confirm Approve Button */}
               <button
                 type="submit"
+                {...getGtmTag(GTM_TAGS.ORDERS.APPROVE, "orders")}
                 disabled={
                   approvingOrder ||
                   !isValid ||

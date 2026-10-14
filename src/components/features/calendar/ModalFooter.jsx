@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { CircularProgress } from "@mui/material";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const ModalFooter = ({
   onCancel,
@@ -20,6 +21,7 @@ const ModalFooter = ({
         <button
           type="button"
           onClick={onCancel}
+          {...getGtmTag(GTM_TAGS.CALENDAR.MODAL_CANCEL, "calendar")}
           className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 font-medium"
         >
           {cancelText}
@@ -27,6 +29,7 @@ const ModalFooter = ({
         <button
           type={isForm ? "submit" : "button"}
           onClick={!isForm ? onConfirm : undefined}
+          {...getGtmTag(GTM_TAGS.CALENDAR.MODAL_CONFIRM, "calendar")}
           disabled={confirmDisabled || isLoading}
           className="flex-1 px-6 py-3 bg-mainColor text-white rounded-xl hover:bg-linksHover transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >

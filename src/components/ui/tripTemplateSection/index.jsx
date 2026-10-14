@@ -11,9 +11,9 @@ import StackedGallery from "./StackedGallery";
  *
  * @param {{ tripTemplate?: { slug?: string, name?: string, marketTemplate?: {
  *   text?: string, keywords?: string[], galary?: Array, gallery?: Array, isActive?: boolean
- * } } }} props
+ * } }, source?: string }} props - source: page name for analytics (REGISTER_SOURCES)
  */
-const TripTemplateSection = ({ tripTemplate }) => {
+const TripTemplateSection = ({ tripTemplate, source }) => {
   const normalized = normalizeTripTemplate(tripTemplate);
   if (!normalized) return null;
 
@@ -40,7 +40,7 @@ const TripTemplateSection = ({ tripTemplate }) => {
 
             <KeywordsList keywords={keywords} />
 
-            <DiscoverButton id={id} slug={slug} />
+            <DiscoverButton id={id} slug={slug} source={source} />
           </div>
 
           {/* Gallery: stacked cards (end side — left in RTL, right in LTR) */}

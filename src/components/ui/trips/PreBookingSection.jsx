@@ -21,6 +21,7 @@ import Cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import preBookingSection from "@assets/sectionBackground/preBookingSection.png";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const PreBookingSection = ({ tripData }) => {
   const isSubmitted = useSelector((state) => state.parentLoginForm.isSubmitted);
@@ -228,6 +229,7 @@ const PreBookingSection = ({ tripData }) => {
               {!onlyDetails && (
                 <button
                   onClick={handleOpen}
+                  {...getGtmTag(GTM_TAGS.TRIP_DETAILS.REGISTER, "trip_details")}
                   className="w-full px-8 py-3 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor"
                 >
                   {t("links.register")}
@@ -252,6 +254,10 @@ const PreBookingSection = ({ tripData }) => {
             tripData?.guestnaTripsType === CONSTANT_VALUES.PACKAGE && (
               <Link
                 href={`/${locale}/customization/${tripData?.slug}`}
+                {...getGtmTag(
+                  GTM_TAGS.TRIP_DETAILS.CUSTOMIZE_PACKAGE,
+                  "trip_details"
+                )}
                 className="w-full px-8 py-3 text-base font-semibold text-center transition-all duration-200 ease-in-out bg-white border-2 rounded-lg border-secColor text-mainColor hover:text-white hover:bg-secColor"
               >
                 {t("links.customizeYourPackage")}
@@ -344,6 +350,10 @@ const PreBookingSection = ({ tripData }) => {
                   tripData?.guestnaTripsType === CONSTANT_VALUES.PACKAGE && (
                     <Link
                       href={`/${locale}/customization/${tripData?.slug}`}
+                      {...getGtmTag(
+                        GTM_TAGS.TRIP_DETAILS.CUSTOMIZE_PACKAGE,
+                        "trip_details"
+                      )}
                       className="px-3 py-2 text-xs font-semibold text-center transition-all duration-200 border rounded-lg border-secColor text-secColor hover:bg-secColor hover:text-white"
                     >
                       {t("links.customizeYourPackage")}
@@ -353,6 +363,10 @@ const PreBookingSection = ({ tripData }) => {
                 {!onlyDetails && (
                   <button
                     onClick={handleOpen}
+                    {...getGtmTag(
+                      GTM_TAGS.TRIP_DETAILS.REGISTER,
+                      "trip_details"
+                    )}
                     className="px-6 py-2.5 text-sm sm:text-base font-semibold text-center text-white transition-all duration-200 border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor active:scale-95 shadow-sm"
                   >
                     {t("links.register")}
@@ -383,6 +397,10 @@ const PreBookingSection = ({ tripData }) => {
             <div className="flex-col flex-wrap w-full gap-2 centered">
               <button
                 onClick={handleLoginForm}
+                {...getGtmTag(
+                  GTM_TAGS.TRIP_DETAILS.LOGIN_POPUP,
+                  "trip_details"
+                )}
                 className="w-full p-3 text-base font-semibold text-center text-white capitalize transition-all duration-200 ease-in-out border-2 rounded-lg bg-mainColor border-mainColor hover:bg-linksHover hover:border-linksHover"
               >
                 {t("links.login")}
@@ -392,6 +410,10 @@ const PreBookingSection = ({ tripData }) => {
             <div className="flex-col w-full gap-2 centered">
               <button
                 onClick={handleClick}
+                {...getGtmTag(
+                  GTM_TAGS.TRIP_DETAILS.CONTINUE_GUEST,
+                  "trip_details"
+                )}
                 className="w-full p-3 text-base font-semibold text-center transition-all duration-200 ease-in-out bg-white border-2 rounded-lg text-secColor border-secColor hover:bg-secColor hover:border-secColor hover:text-white"
               >
                 {t("links.continuaAsGuest")}

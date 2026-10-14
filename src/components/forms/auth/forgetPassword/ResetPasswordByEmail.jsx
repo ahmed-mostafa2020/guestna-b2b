@@ -19,6 +19,7 @@ import FormSubmitButton from "@components/ui/FormSubmitButton";
 
 import { useSnackbar } from "notistack";
 import useAxiosForm from "@hooks/forms/useAxiosForm";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const ResetPasswordByEmail = () => {
   const { makeRequest, isDisabled } = useAxiosForm();
@@ -114,6 +115,10 @@ const ResetPasswordByEmail = () => {
               />
 
               <FormSubmitButton
+                {...getGtmTag(
+                  GTM_TAGS.AUTH.FORGOT_PASSWORD_EMAIL_SUBMIT_EMAIL_SUBMIT,
+                  "auth"
+                )}
                 loading={isSubmitting}
                 disabled={!isValid || isDisabled}
                 label={t("forms.auth.forgetPassword.send")}

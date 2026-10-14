@@ -38,6 +38,7 @@ import axios from "axios";
 
 import { Checkbox, FormControlLabel } from "@mui/material";
 import FormSubmitButton from "@components/ui/FormSubmitButton";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const SignupForm = ({ redirect = true }) => {
   const { confirmTermsAndConditions, isMarketingEmails } = useSelector(
@@ -116,7 +117,6 @@ const SignupForm = ({ redirect = true }) => {
         setSubmitting(false);
 
         // Log the full error for debugging
-
 
         // Extract error message
         const errorMessage = getErrorMessage(error, t);
@@ -321,6 +321,10 @@ const SignupForm = ({ redirect = true }) => {
 
                   <Link
                     href={`/${locale}/terms-and-conditions`}
+                    {...getGtmTag(
+                      GTM_TAGS.NAV.TERMS_AND_CONDITIONS,
+                      "navigation"
+                    )}
                     className="border-b text-mainColor border-mainColor"
                   >
                     {t("pagesHead.title.termsAndConditions")}
@@ -363,6 +367,7 @@ const SignupForm = ({ redirect = true }) => {
 
               <div className="w-full centered">
                 <FormSubmitButton
+                  {...getGtmTag(GTM_TAGS.AUTH.SIGNUP_BUTTON, "auth")}
                   loading={isSubmitting}
                   disabled={!isValid || !values.confirmTermsAndConditions}
                   label={t("forms.auth.signUp.name")}

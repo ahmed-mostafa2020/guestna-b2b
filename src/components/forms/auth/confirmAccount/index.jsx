@@ -29,6 +29,8 @@ import { Formik } from "formik";
 import axios from "axios";
 
 import { CircularProgress } from "@mui/material";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
+import { ANALYTICS_EVENTS, trackEvent } from "@utils/tracking/analytics";
 
 const VerificationCodeForm = ({ redirect = true }) => {
   const [formErrors, setFormErrors] = useState([]);
@@ -97,6 +99,12 @@ const VerificationCodeForm = ({ redirect = true }) => {
         dispatch(submitForm(response.data));
 
         setToken(response.data.token, rememberMe);
+
+        // OTP endpoint = login; confirm-account endpoint = finishing a signup
+        trackEvent(
+          email || phone ? ANALYTICS_EVENTS.LOGIN : ANALYTICS_EVENTS.SIGN_UP,
+          { method: emailAddress ? "email" : "phone" }
+        );
 
         if (redirect) {
           router.push(`/${locale}`);
@@ -192,6 +200,7 @@ const VerificationCodeForm = ({ redirect = true }) => {
               <button
                 type="submit"
                 disabled={!isValid || isSubmitting}
+                {...getGtmTag(GTM_TAGS.AUTH.VERIFY_EMAIL, "auth")}
                 className={`centered gap-2 py-3 px-5 lg:px-10 text-sm lg:text-base font-medium text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                   isValid && "hover:bg-linksHover hover:border-linksHover"
                 }`}

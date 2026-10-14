@@ -13,6 +13,8 @@ import { ProgressBar } from "@feedback/loading/ProgressBar";
 import ReduxProvider from "@components/libraries/ReduxProvider";
 import QueryProvider from "@components/libraries/QueryProvider";
 import GoogleTagManager from "@components/libraries/GoogleTagManager";
+import AnalyticsClickTracker from "@components/libraries/AnalyticsClickTracker";
+import AnalyticsUserProperties from "@components/libraries/AnalyticsUserProperties";
 import ThemeProvider from "@components/providers/ThemeProvider";
 
 import Header from "@components/layout/header/Header";
@@ -282,12 +284,14 @@ export default async function RootLayout({ children, params: { locale } }) {
         />
 
         <GoogleTagManager gtmId={GTM_ID} nonce={nonce} />
+        <AnalyticsClickTracker />
 
         <Suspense fallback={<div className="centered">Loading...</div>}>
           <ReduxProvider locale={locale}>
             <QueryProvider>
               <NextIntlClientProvider locale={locale} messages={messages}>
                 <ThemeProvider />
+                <AnalyticsUserProperties />
                 <ProgressBar />
                 <Header />
                 {children}

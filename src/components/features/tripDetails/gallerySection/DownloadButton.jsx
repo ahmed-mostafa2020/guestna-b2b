@@ -9,6 +9,7 @@ import { useState } from "react";
 import SystemUpdateAltIcon from "@mui/icons-material/SystemUpdateAlt";
 import { CircularProgress } from "@mui/material";
 import { isIOS } from "@utils/helpers/deviceDetection";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const DownloadButton = () => {
   const [isDownloading, setIsDownloading] = useState(false);
@@ -30,7 +31,6 @@ const DownloadButton = () => {
     try {
       // Force download using fetch + blob approach for better control
 
-
       const response = await fetch(fileUrl, {
         method: "GET",
         headers: {
@@ -44,7 +44,6 @@ const DownloadButton = () => {
 
       // Get the file as a blob
       const blob = await response.blob();
-
 
       // Create a blob URL
       const blobUrl = window.URL.createObjectURL(blob);
@@ -61,8 +60,6 @@ const DownloadButton = () => {
         fileName += ".pdf";
       }
 
-
-
       // Create download link and force download
       const downloadLink = document.createElement("a");
       downloadLink.href = blobUrl;
@@ -77,16 +74,12 @@ const DownloadButton = () => {
       // Clean up the blob URL after a short delay
       setTimeout(() => {
         window.URL.revokeObjectURL(blobUrl);
-
       }, 1000);
-
-
     } catch (error) {
       console.error("Download failed:", error);
 
       // Fallback: Try direct link approach
       try {
-
         const fallbackLink = document.createElement("a");
         fallbackLink.href = fileUrl;
         fallbackLink.download = fileUrl.split("/").pop() || "trip-details.pdf";
@@ -95,7 +88,6 @@ const DownloadButton = () => {
         document.body.appendChild(fallbackLink);
         fallbackLink.click();
         document.body.removeChild(fallbackLink);
-
       } catch (fallbackError) {
         console.error("Fallback download failed:", fallbackError);
         // Last resort: open in new tab
@@ -112,6 +104,7 @@ const DownloadButton = () => {
       <button
         onClick={handleDownloadWithFetch}
         disabled={!fileUrl || isDownloading}
+        {...getGtmTag(GTM_TAGS.TRIP_DETAILS.DOWNLOAD_FILE, "trip_details")}
         className={`gap-1 px-4 py-3 font-semibold transition-all duration-200 ease-in-out bg-transparent border-2 rounded-lg centered border-mainColor hover:text-mainColor ${
           !fileUrl || isDownloading ? "opacity-70 cursor-not-allowed" : ""
         }`}

@@ -15,6 +15,11 @@ import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import { setOrganizations } from "@store/profile/selectedOrganizationsSlice";
+import {
+  ANALYTICS_EVENTS,
+  REGISTER_FORM_TYPES,
+  trackEvent,
+} from "@utils/tracking/analytics";
 
 import BookingStepper from "./BookingStepper";
 import StepNavigation from "./StepNavigation";
@@ -75,6 +80,13 @@ const AuthSchoolTripBookingForm = ({
   // Tracks for the selected organization
   const [tracksData, setTracksData] = useState([]);
   const [isLoadingTracks, setIsLoadingTracks] = useState(false);
+
+  useEffect(() => {
+    trackEvent(ANALYTICS_EVENTS.SCHOOL_REGISTER_FORM_VIEW, {
+      form_type: REGISTER_FORM_TYPES.EXISTING_ACCOUNT,
+      trip_id: effectiveTripId,
+    });
+  }, [effectiveTripId]);
 
   const availableDays = useMemo(
     () => extractAvailableDays(trip, selectDays),
@@ -157,7 +169,15 @@ const AuthSchoolTripBookingForm = ({
     setIsTransitioningStep(true);
     try {
       const { isValid } = await validateStep(currentStep, formik);
-      if (isValid) goToStep(currentStep + 1);
+      if (isValid) {
+        trackEvent(ANALYTICS_EVENTS.SCHOOL_REGISTER_STEP_COMPLETE, {
+          form_type: REGISTER_FORM_TYPES.EXISTING_ACCOUNT,
+          step_number: currentStep + 1,
+          step_name: AUTH_BOOKING_STEPS[currentStep],
+          trip_id: effectiveTripId,
+        });
+        goToStep(currentStep + 1);
+      }
     } finally {
       setTimeout(() => {
         setIsTransitioningStep(false);
@@ -209,12 +229,23 @@ const AuthSchoolTripBookingForm = ({
         variant: "success",
       });
 
+      trackEvent(ANALYTICS_EVENTS.SCHOOL_REGISTER_COMPLETE, {
+        form_type: REGISTER_FORM_TYPES.EXISTING_ACCOUNT,
+        trip_id: effectiveTripId,
+        students_count: Number(values.studentsCount) || undefined,
+      });
+
       resetForm();
       setCurrentStep(0);
 
       router.push(`/${locale}/profile/bookings-management/trips`);
     } catch (error) {
       console.error("Error submitting auth school trip booking:", error);
+      trackEvent(ANALYTICS_EVENTS.SCHOOL_REGISTER_ERROR, {
+        form_type: REGISTER_FORM_TYPES.EXISTING_ACCOUNT,
+        trip_id: effectiveTripId,
+        error_status: error.response?.status,
+      });
       const info = error.response?.data?.info;
 
       if (Array.isArray(info) && info.length) {
