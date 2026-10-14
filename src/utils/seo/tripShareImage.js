@@ -1,15 +1,12 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
+import getBackendUrl from "@utils/api/getBackendUrl";
+
 const REVALIDATE_SECONDS = 3600;
 
-// Mirrors getBackendUrl() in src/app/api/proxy/route.js
-const getBackendUrl = (path) => {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_API_URL || "";
-  const cleanBase = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
-  return `${cleanBase}${path}`;
-};
+// Gallery images are requested from the CDN as JPEG (see toShareSizedUrl)
+export const SHARE_IMAGE_CONTENT_TYPE = "image/jpeg";
 
 // Ask the image CDN for a share-sized JPEG (keeps it under WhatsApp's size limit)
 const toShareSizedUrl = (url) => {

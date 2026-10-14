@@ -1,5 +1,6 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
+import getBackendUrl from "@utils/api/getBackendUrl";
 
 export const maxDuration = 120; // Allow long-running file uploads/requests
 
@@ -16,27 +17,6 @@ const isValidProxyPath = (path) => {
     return false;
   }
   return true;
-};
-
-const getBackendUrl = (path) => {
-  let baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    "";
-  if (
-    path &&
-    (path.startsWith("clientInfoBooking/") ||
-      path.startsWith("promoCodeDiscounts/") ||
-      path.startsWith("cities/selected/"))
-  ) {
-    baseUrl = baseUrl.replace(/\/b2b\/?$/, "/");
-  }
-  const cleanBase = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
-  let cleanPath = path.startsWith("/") ? path.slice(1) : path;
-  if (cleanPath.startsWith("b2b/") && cleanBase.endsWith("/b2b/")) {
-    cleanPath = cleanPath.slice(4);
-  }
-  return `${cleanBase}${cleanPath}`;
 };
 
 export async function GET(request) {
