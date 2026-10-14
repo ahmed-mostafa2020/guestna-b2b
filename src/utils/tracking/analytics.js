@@ -68,6 +68,38 @@ export const trackEvent = (name, params = {}) => {
   }
 };
 
+// The paid total is only known on the checkout page; bookingStatus (after the
+// payment redirect, same tab) reads it back for the purchase event.
+const CHECKOUT_VALUE_KEY = "analytics_checkout_value";
+const CHECKOUT_VALUE_MAX_AGE_MS = 60 * 60 * 1000;
+
+/** Remembers the checkout total (VAT incl., after discounts) for the purchase event. */
+export const rememberCheckoutValue = (value) => {
+  if (typeof window === "undefined" || !(value > 0)) return;
+  try {
+    sessionStorage.setItem(
+      CHECKOUT_VALUE_KEY,
+      JSON.stringify({ value, savedAt: Date.now() })
+    );
+  } catch {
+    // Storage may be unavailable (private mode) — purchase is sent without value
+  }
+};
+
+/** Returns the remembered checkout total once (then clears it), or undefined if stale/missing. */
+export const takeCheckoutValue = () => {
+  if (typeof window === "undefined") return undefined;
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(CHECKOUT_VALUE_KEY));
+    sessionStorage.removeItem(CHECKOUT_VALUE_KEY);
+    if (!saved || Date.now() - saved.savedAt > CHECKOUT_VALUE_MAX_AGE_MS)
+      return undefined;
+    return saved.value;
+  } catch {
+    return undefined;
+  }
+};
+
 /**
  * Sets GA4 user properties (attached to every following event) and exposes
  * them to GTM as data layer variables. No PII.
