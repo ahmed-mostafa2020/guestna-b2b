@@ -10,6 +10,7 @@ import TabSwitcher from "@components/ui/TabSwitcher";
 import TripsOrdersManagement from "@components/features/profile/bookings-management/orders/TripsOrdersManagement";
 import ProfilePageTemplate from "@components/features/profile/ProfilePageTemplate";
 import EmptyBookings from "@components/features/profile/myBookings/EmptyBookings";
+import DataTableSkeleton from "@components/ui/DataTable/DataTableSkeleton";
 import OrdersInfoCards from "@components/features/profile/bookings-management/orders/OrdersInfoCards";
 import OrdersSettingsTable from "@components/features/profile/bookings-management/orders/OrdersSettingsTable";
 import AllOrdersTable from "@components/features/profile/bookings-management/orders/AllOrdersTable";
@@ -33,9 +34,7 @@ const OrdersPage = () => {
 
   return (
     <ProtectedProfilePage
-      requiredPermission={
-        PERMISSIONS.PAGE.B2B_PROFILE_ORDER_MANAGEMENT_PAGE
-      }
+      requiredPermission={PERMISSIONS.PAGE.B2B_PROFILE_ORDER_MANAGEMENT_PAGE}
     >
       {/* Info Cards Section */}
       <OrdersInfoCards />
@@ -73,6 +72,69 @@ const OrdersPage = () => {
                     ...filter,
                   },
                 }}
+                skeletonComponent={
+                  <DataTableSkeleton
+                    columns={[
+                      {
+                        label: t(
+                          "profile.tables.orders.tableHeaders.orderNumber"
+                        ),
+                        width: 80,
+                      },
+                      {
+                        label: t("profile.tables.orders.tableHeaders.school"),
+                        width: 140,
+                      },
+                      {
+                        label: t("profile.tables.orders.tableHeaders.activity"),
+                        width: 90,
+                      },
+                      {
+                        label: t(
+                          "profile.tables.orders.tableHeaders.orderType"
+                        ),
+                        width: 70,
+                      },
+                      {
+                        label: t(
+                          "profile.tables.orders.tableHeaders.orderDate"
+                        ),
+                        width: 110,
+                      },
+                      {
+                        label: t("profile.tables.orders.tableHeaders.budget"),
+                        width: 70,
+                      },
+                      {
+                        label: t("profile.tables.orders.tableHeaders.status"),
+                        width: 80,
+                        badge: true,
+                      },
+                      {
+                        label: t(
+                          "profile.tables.orders.tableHeaders.hasRecommendation"
+                        ),
+                        width: 50,
+                        badge: true,
+                      },
+                    ]}
+                    actionsLabel={t(
+                      "profile.tables.orders.tableHeaders.actions"
+                    )}
+                    actionsPermissions={[
+                      PERMISSIONS.ELEMENT
+                        .B2B_PROFILE_ORDER_MANAGEMENT_SHOWDETAILS,
+                      PERMISSIONS.ELEMENT
+                        .B2B_PROFILE_ORDER_MANAGEMENT_REMINDER_GUESTNA,
+                      PERMISSIONS.ELEMENT
+                        .B2B_PROFILE_ORDER_MANAGEMENT_UPDATE_TRIP,
+                      PERMISSIONS.ELEMENT
+                        .B2B_PROFILE_ORDER_MANAGEMENT_REJECT_TRIP,
+                      PERMISSIONS.ELEMENT
+                        .B2B_PROFILE_ORDER_MANAGEMENT_APPROVE_TRIP,
+                    ]}
+                  />
+                }
                 emptyStateComponent={<EmptyBookings />}
                 contentComponent={(
                   data,
