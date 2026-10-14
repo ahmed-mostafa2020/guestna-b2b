@@ -214,7 +214,7 @@ const AuthSchoolTripBookingForm = ({
       resetForm();
       setCurrentStep(0);
 
-      router.push(`/${locale}/profile/trips-activities-management`);
+      router.push(`/${locale}/profile/bookings-management/trips`);
     } catch (error) {
       console.error("Error submitting auth school trip booking:", error);
       const info = error.response?.data?.info;

@@ -76,14 +76,6 @@ const NavigationDropdown = () => {
       permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_ACTIVITIES_MARKET_TAB,
     },
     {
-      id: "trips-management",
-      title: t("profile.aside.tripsManagement.title"),
-      icon: <TravelIcon />,
-      path: `${profileBasePath}/trips-activities-management`,
-      hasDropdown: false,
-      permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_TRIPS_MANAGEMENT_TAB,
-    },
-    {
       id: "bookings-management",
       title: t("profile.aside.bookingsManagement.title"),
       icon: <BookingIcon />,
@@ -94,6 +86,11 @@ const NavigationDropdown = () => {
           title: t("profile.aside.bookingsManagement.ordersManagement"),
           path: `${profileBasePath}/bookings-management/orders`,
           permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_ORDER_MANAGEMENT_TAB,
+        },
+        {
+          title: t("profile.aside.tripsManagement.title"),
+          path: `${profileBasePath}/bookings-management/trips`,
+          permission: PERMISSIONS.MENU_ITEM.B2B_PROFILE_TRIPS_MANAGEMENT_TAB,
         },
         {
           title: t("profile.aside.bookingsManagement.bookings.title"),

@@ -44,20 +44,6 @@ export const AUTH_INITIAL_VALUES = {
   studentsCount: "",
 };
 
-// Gathering location & school amount — removed from the booking forms, kept
-// for reuse with `GatheringLocationStep` + `getGatheringLocationFields`
-export const GATHERING_LOCATION_STEP_FIELDS = [
-  "gatheringLocation",
-  "schoolProfit",
-];
-
-export const GATHERING_LOCATION_INITIAL_VALUES = {
-  city: "",
-  gatheringLocation: { lat: "", lng: "", mapLink: "" },
-  hasSchoolProfit: false,
-  schoolProfit: "",
-};
-
 // Shared label props to keep inputs visually consistent with school-register
 export const LABEL_PROPS = {
   labelClassName: "font-somar",

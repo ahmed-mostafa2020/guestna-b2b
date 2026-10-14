@@ -931,8 +931,7 @@ const getStageGradesField = (t) =>
     .of(Yup.string())
     .min(1, t("schoolTripBooking.validation.stageGrades.required"));
 
-// Gathering location & school profit — not used in the booking forms now,
-// kept for reuse with `GatheringLocationStep`
+// Gathering location & school profit — used by `TripParticipationForm`
 export const getGatheringLocationFields = (t) => ({
   city: Yup.string().nullable(),
   gatheringLocation: Yup.object().shape({
@@ -977,6 +976,10 @@ export const getGatheringLocationFields = (t) => ({
     otherwise: (schema) => schema.nullable().notRequired(),
   }),
 });
+
+// Trip participation (create-trip-link modal) — gathering location + optional profit
+export const createTripParticipationSchema = (t) =>
+  Yup.object().shape(getGatheringLocationFields(t));
 
 // School Trip Booking Form (market-template trips) — 2 steps
 // Step 1: request details | Step 2: contact info

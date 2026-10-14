@@ -18,9 +18,10 @@ import {
   extractCoordsFromMapUrl,
   isValidCoordinates,
   DEFAULT_COORDINATES,
+  extractCityFromComponents,
+  matchCityFromLookups,
 } from "@utils/helpers/mapHelpers";
 import { cn } from "@utils/helpers/cn";
-import { extractCityFromComponents, matchCityFromLookups } from "../utils";
 
 const GatheringLocationPicker = ({
   mapLink = "",
@@ -72,15 +73,15 @@ const GatheringLocationPicker = ({
               results[0].address_components || []
             );
             const matched = matchCityFromLookups(rawCity, cities);
-            const cityValue = matched?._id || matched?.id || rawCity || "";
             const displayCity =
               (typeof matched?.name === "object"
                 ? matched.name[locale] || matched.name.ar || matched.name.en
                 : matched?.name) || rawCity;
 
             setDetectedCityName(displayCity || "");
+            // City is stored as its display name (text), not the lookup id
             if (onCityChange) {
-              onCityChange(cityValue);
+              onCityChange(displayCity || "");
             }
           }
         }
@@ -90,20 +91,17 @@ const GatheringLocationPicker = ({
   );
 
   // Pan map and place marker at given coordinates
-  const updateMapPosition = useCallback(
-    (targetLat, targetLng) => {
-      if (!mapInstanceRef.current) return;
-      const pos = { lat: targetLat, lng: targetLng };
-      mapInstanceRef.current.panTo(pos);
-      mapInstanceRef.current.setZoom(16);
+  const updateMapPosition = useCallback((targetLat, targetLng) => {
+    if (!mapInstanceRef.current) return;
+    const pos = { lat: targetLat, lng: targetLng };
+    mapInstanceRef.current.panTo(pos);
+    mapInstanceRef.current.setZoom(16);
 
-      if (markerRef.current) {
-        markerRef.current.setPosition(pos);
-        markerRef.current.setVisible(true);
-      }
-    },
-    []
-  );
+    if (markerRef.current) {
+      markerRef.current.setPosition(pos);
+      markerRef.current.setVisible(true);
+    }
+  }, []);
 
   // Apply resolved coordinates to Formik state
   const applyCoordinates = useCallback(
@@ -151,7 +149,10 @@ const GatheringLocationPicker = ({
           });
           const data = await res.json();
 
-          if (data?.coords && isValidCoordinates(data.coords.lat, data.coords.lng)) {
+          if (
+            data?.coords &&
+            isValidCoordinates(data.coords.lat, data.coords.lng)
+          ) {
             applyCoordinates(data.coords.lat, data.coords.lng, trimmed);
           } else {
             // URL could not be resolved to valid coordinates
@@ -287,21 +288,12 @@ const GatheringLocationPicker = ({
     }
   }, [lat, lng, hasCoords]);
 
-  // Sync detectedCityName from currentCityValue lookup if already present
+  // Sync detectedCityName from the current city text if already present
   useEffect(() => {
-    if (!detectedCityName && currentCityValue && cities?.length) {
-      const matched = cities.find(
-        (c) => c._id === currentCityValue || c.id === currentCityValue
-      );
-      if (matched) {
-        const displayCity =
-          (typeof matched.name === "object"
-            ? matched.name[locale] || matched.name.ar || matched.name.en
-            : matched.name) || "";
-        setDetectedCityName(displayCity);
-      }
+    if (!detectedCityName && currentCityValue) {
+      setDetectedCityName(currentCityValue);
     }
-  }, [currentCityValue, cities, locale, detectedCityName]);
+  }, [currentCityValue, detectedCityName]);
 
   // Handle typing / changing map link input
   const handleLinkChange = (e) => {
@@ -355,15 +347,22 @@ const GatheringLocationPicker = ({
   };
 
   const hasValidationError = Boolean(error && touched);
-  const googleMapsUrl = hasCoords ? `https://www.google.com/maps?q=${lat},${lng}` : null;
+  const googleMapsUrl = hasCoords
+    ? `https://www.google.com/maps?q=${lat},${lng}`
+    : null;
 
   return (
     <div className="border border-border rounded-2xl p-4 sm:p-5 bg-white flex flex-col gap-4 shadow-sm">
       {/* 1. Header with Title and Clear Action */}
-      <div className="flex items-center justify-between">
-        <h3 className="text-base font-bold text-textDark font-somar">
-          {t("title")}
-        </h3>
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex flex-col gap-2">
+          <h3 className="text-lg md:text-xl font-medium text-textDark font-somar">
+            {t("title")}
+          </h3>
+          <p className="text-sm md:text-base font-medium text-textDark font-somar">
+            {t("subtitle")}
+          </p>
+        </div>
         {(hasCoords || mapLink) && (
           <button
             type="button"
@@ -445,7 +444,10 @@ const GatheringLocationPicker = ({
 
         {/* Validation Error Message */}
         {hasValidationError && (
-          <p role="alert" className="text-xs font-somar text-error font-medium pt-0.5">
+          <p
+            role="alert"
+            className="text-xs font-somar text-error font-medium pt-0.5"
+          >
             {error}
           </p>
         )}
@@ -465,20 +467,27 @@ const GatheringLocationPicker = ({
           </div>
         )}
 
-        {!isResolving && resolveStatus?.type === "error" && !hasValidationError && (
-          <div className="flex items-center gap-1.5 text-xs text-error font-somar pt-0.5">
-            <ErrorOutline className="!w-4 !h-4" />
-            <span>{resolveStatus.message}</span>
-          </div>
-        )}
+        {!isResolving &&
+          resolveStatus?.type === "error" &&
+          !hasValidationError && (
+            <div className="flex items-center gap-1.5 text-xs text-error font-somar pt-0.5">
+              <ErrorOutline className="!w-4 !h-4" />
+              <span>{resolveStatus.message}</span>
+            </div>
+          )}
 
         {/* Resolved Coordinates Badge, Detected City & Google Maps Link */}
         {hasCoords && (
           <div className="flex flex-wrap items-center justify-between gap-2 pt-2 px-3 py-2 rounded-lg bg-buttonsHover border border-border">
             <div className="flex flex-wrap items-center gap-3 text-xs font-somar text-textDark">
               <div className="flex items-center gap-1.5">
-                <span className="font-semibold text-mainColor">{t("coordinatesLabel")}</span>
-                <span className="font-mono bg-white px-2 py-0.5 rounded border border-border text-[11px]" dir="ltr">
+                <span className="font-semibold text-mainColor">
+                  {t("coordinatesLabel")}
+                </span>
+                <span
+                  className="font-mono bg-white px-2 py-0.5 rounded border border-border text-[11px]"
+                  dir="ltr"
+                >
                   {Number(lat).toFixed(6)}, {Number(lng).toFixed(6)}
                 </span>
               </div>
@@ -486,7 +495,9 @@ const GatheringLocationPicker = ({
               {detectedCityName && (
                 <div className="flex items-center gap-1.5">
                   <LocationCityOutlined className="!w-4 !h-4 text-mainColor" />
-                  <span className="font-semibold text-mainColor">{t("detectedCity")}</span>
+                  <span className="font-semibold text-mainColor">
+                    {t("detectedCity")}
+                  </span>
                   <span className="bg-white px-2 py-0.5 rounded border border-border text-xs font-medium text-textDark">
                     {detectedCityName}
                   </span>
@@ -495,7 +506,10 @@ const GatheringLocationPicker = ({
 
               {isDetectingCity && (
                 <div className="flex items-center gap-1 text-xs text-textLight">
-                  <CircularProgress size={12} sx={{ color: "var(--color-main)" }} />
+                  <CircularProgress
+                    size={12}
+                    sx={{ color: "var(--color-main)" }}
+                  />
                   <span>{t("detectingCity")}</span>
                 </div>
               )}

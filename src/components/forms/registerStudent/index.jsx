@@ -400,7 +400,8 @@ const RegisterStudentForm = ({
         withCompanions,
         companions: withCompanions ? companions : [],
       };
-      formikRef.current.setValues(restoredValues, false);
+      // Validate so isValid reflects the restored draft, not the empty form
+      formikRef.current.setValues(restoredValues);
 
       setChildrenNumber(children.length);
       setNationality(
@@ -735,6 +736,7 @@ const RegisterStudentForm = ({
           validateForm,
           setFieldTouched,
           setTouched,
+          setValues,
         }) => {
           const hasCompanions =
             isSharedWithCompanions &&
@@ -841,12 +843,15 @@ const RegisterStudentForm = ({
 
           const handleRemoveCompanion = (index, remove) => {
             const newCount = values.companions.length - 1;
-            remove(index);
-            // No companions left → the companions step disappears
+            // No companions left → the companions step disappears.
+            // Single setValues so validation runs on the final values
+            // (remove + setFieldValue raced and left a stale companions error)
             if (newCount === 0) {
-              setFieldValue("withCompanions", false);
+              setValues({ ...values, withCompanions: false, companions: [] });
               goToStep(steps.indexOf("students"));
+              return;
             }
+            remove(index);
           };
 
           // Define handlers inside the Formik render function

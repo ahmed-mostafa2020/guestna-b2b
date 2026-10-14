@@ -2189,7 +2189,7 @@
       "main": "Main",
 
       "tripsManagement": {
-        "title": "Trips and activities Management",
+        "title": "Trips Management",
         "filters": {
           "title": "Search",
           "school": {
@@ -2207,7 +2207,7 @@
         }
       },
       "bookingsManagement": {
-        "title": "Orders and Bookings Management",
+        "title": "Orders and Trips Management",
         "ordersManagement": "Orders Management",
         "bookings": {
           "title": "Bookings",
@@ -2531,7 +2531,43 @@
         "closeButton": "Close",
         "copySuccess": "Link copied successfully!"
       },
-      "linkCreated": "Booking link created successfully!"
+      "linkCreated": "Booking link created successfully!",
+      "participation": {
+        "title": "School participation details",
+        "services": {
+          "label": "Services",
+          "placeholder": "Select services"
+        },
+        "profit": {
+          "label": "Operating margin",
+          "placeholder": "Enter the amount per student",
+          "hint": "This amount is added to each student's ticket price for the school"
+        },
+        "nextSteps": {
+          "title": "What happens after submitting the request?",
+          "steps": {
+            "review": {
+              "title": "Request review",
+              "description": "Your school's request will be sent to Guestna for review."
+            },
+            "approval": {
+              "title": "Trip approval",
+              "description": "Once Guestna approves, the trip becomes available to the school."
+            },
+            "complete": {
+              "title": "Complete the trip",
+              "description": "You can open the trip and create a custom link to send to parents."
+            }
+          },
+          "notice": "We'll notify you when the request status is updated."
+        },
+        "help": {
+          "title": "Need help?",
+          "body": "For technical support, contact us on WhatsApp.",
+          "cta": "Contact on WhatsApp"
+        },
+        "submit": "Submit trip request for review"
+      }
     },
 
     "tables": {
@@ -2597,7 +2633,7 @@
         }
       },
       "management": {
-        "title": "Follow All Orders",
+        "title": "Follow All Trips",
         "header": {
           "organization": "School",
           "targetStudents": "Target Students",
@@ -4754,6 +4790,7 @@
       "gatheringLocation": {
         "label": "Gathering Location Google Maps Link",
         "title": "Gathering Location on Map",
+        "subtitle": "Set the participants' gathering location precisely to avoid any confusion.",
         "instruction": "Paste a Google Maps link or click on the map to set the exact gathering location",
         "linkLabel": "Gathering Location Google Maps Link",
         "linkPlaceholder": "https://maps.app.goo.gl/... or https://www.google.com/maps?q=...",

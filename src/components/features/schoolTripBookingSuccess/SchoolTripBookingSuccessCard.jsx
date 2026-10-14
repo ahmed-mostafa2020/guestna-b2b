@@ -97,7 +97,7 @@ const SchoolTripBookingSuccessCard = ({
     ? `/${locale}/profile/create-trip-link/${tripSlug}`
     : `/${locale}/profile/create-trip-link`;
 
-  const tripsManagementUrl = `/${locale}/profile/trips-activities-management`;
+  const tripsManagementUrl = `/${locale}/profile/bookings-management/trips`;
 
   return (
     <article
@@ -212,7 +212,7 @@ const SchoolTripBookingSuccessCard = ({
             <ArrowNextIcon />
           </Link>
 
-          {/* Secondary CTA Button: Redirects to trips-activities-management */}
+          {/* Secondary CTA Button: Redirects to bookings-management/trips */}
           <Link
             href={tripsManagementUrl}
             id="secondary-guide-cta-btn"

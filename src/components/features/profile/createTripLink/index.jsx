@@ -10,6 +10,8 @@ import { getHeaders } from "@utils/helpers/getHeaders";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import getErrorMessage from "@utils/helpers/getErrorMessage";
 import CustomizedModal from "@components/ui/customizedModal";
+import TripParticipationForm from "@components/forms/tripParticipationForm";
+import { isValidCoordinates } from "@utils/helpers/mapHelpers";
 import { useSnackbar } from "notistack";
 
 import { smallWhatsappIcon, posterIcon, copyIcon } from "@assets/svg";
@@ -26,6 +28,19 @@ const CreateTripLink = ({ data }) => {
 
   const [tripStatus, setTripStatus] = useState(tripData?.status);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+
+  // Scheduled trips without a gathering location need participation details first
+  const needsParticipationDetails =
+    tripStatus === TRIP_STATUS.SCHEDULED &&
+    !isValidCoordinates(
+      tripData?.gatheringLocation?.lat,
+      tripData?.gatheringLocation?.lng
+    );
+
+  // Opened on visit; reopened from the generate button if the user dismissed it
+  const [showParticipationModal, setShowParticipationModal] = useState(
+    needsParticipationDetails
+  );
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -94,7 +109,6 @@ const CreateTripLink = ({ data }) => {
   //     } catch (error) {
   //       console.error("Error updating trip status:", error);
 
-
   //       const errorMessage = getErrorMessage(error, t);
   //       enqueueSnackbar(errorMessage, {
   //         variant: "error",
@@ -108,6 +122,11 @@ const CreateTripLink = ({ data }) => {
   // };
 
   const handleOpenLinkModal = async () => {
+    if (needsParticipationDetails) {
+      setShowParticipationModal(true);
+      return;
+    }
+
     // Check if the trip is already scheduled before proceeding
     const isScheduled = tripStatus === TRIP_STATUS.SCHEDULED;
 
@@ -147,6 +166,13 @@ const CreateTripLink = ({ data }) => {
       // This block always executes, regardless of success or failure
       setIsUpdatingStatus(false);
     }
+  };
+
+  // generate/url succeeded — trip moves to pending and the link is ready
+  const handleParticipationSuccess = () => {
+    setTripStatus(TRIP_STATUS.PENDING);
+    setShowParticipationModal(false);
+    setShowLinkModal(true);
   };
 
   const handleCloseLinkModal = () => {
@@ -251,6 +277,25 @@ const CreateTripLink = ({ data }) => {
           </div>
         </div>
       </div>
+
+      {/* Participation Details Modal (scheduled trips without a gathering location) */}
+      {showParticipationModal && (
+        <CustomizedModal
+          open={showParticipationModal}
+          handleClose={() => setShowParticipationModal(false)}
+          bgcolor="rgba(0, 0, 0, 0.5)"
+          customizedCloseButton={true}
+          padding={false}
+        >
+          <div className="w-[calc(100%-2rem)] max-w-[968px] mx-auto my-6">
+            <TripParticipationForm
+              tripId={tripData?._id}
+              services={tripData?.proposedServices}
+              onSuccess={handleParticipationSuccess}
+            />
+          </div>
+        </CustomizedModal>
+      )}
 
       {/* Link Generation Modal */}
       {showLinkModal && (

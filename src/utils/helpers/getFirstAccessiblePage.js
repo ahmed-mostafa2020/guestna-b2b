@@ -35,7 +35,7 @@ export const getFirstAccessiblePage = (userPages, locale, userType) => {
     },
     {
       permission: PERMISSIONS.PAGE.B2B_PROFILE_TRIPS_MANAGEMENT_PAGE,
-      route: `/${locale}/profile/trips-activities-management`,
+      route: `/${locale}/profile/bookings-management/trips`,
     },
     {
       permission: PERMISSIONS.PAGE.B2B_PROFILE_ACTIVITIES_MARKET_PAGE,
