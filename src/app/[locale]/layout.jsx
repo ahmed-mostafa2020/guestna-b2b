@@ -281,7 +281,7 @@ export default async function RootLayout({ children, params: { locale } }) {
           src="https://cdn.tamara.co/widget-v1/tamara-widget.js"
         />
 
-        <GoogleTagManager gtmId={GTM_ID} />
+        <GoogleTagManager gtmId={GTM_ID} nonce={nonce} />
 
         <Suspense fallback={<div className="centered">Loading...</div>}>
           <ReduxProvider locale={locale}>

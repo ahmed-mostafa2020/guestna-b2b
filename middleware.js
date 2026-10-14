@@ -15,19 +15,22 @@ function buildCSP(nonce) {
 
     // Scripts: only our domain + nonce-verified inlines + trusted CDNs
     // 'strict-dynamic' trusts scripts loaded by a nonce-verified script (Next.js chunks)
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.moyasar.com https://cdn.tamara.co`,
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://*.googletagmanager.com https://tagmanager.google.com https://www.google-analytics.com https://cdn.moyasar.com https://cdn.tamara.co`,
 
     // Styles: unsafe-inline kept — CSS-in-JS and Tailwind require it
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    // GTM hosts: Tag Assistant / Preview mode badge styles
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com",
 
-    // Fonts: Google Fonts CDN only
-    "font-src 'self' https://fonts.gstatic.com",
+    // Fonts: Google Fonts CDN (data: for GTM Preview mode)
+    "font-src 'self' data: https://fonts.gstatic.com",
 
     // Images: trusted CDNs + data URIs for base64
-    "img-src 'self' data: blob: https://res.cloudinary.com https://ik.imagekit.io https://storage.googleapis.com https://drive.google.com https://www.googletagmanager.com https://www.google-analytics.com",
+    "img-src 'self' data: blob: https://res.cloudinary.com https://ik.imagekit.io https://storage.googleapis.com https://drive.google.com https://*.googletagmanager.com https://*.google-analytics.com https://*.g.doubleclick.net https://*.google.com https://*.google.com.sa https://ssl.gstatic.com https://www.gstatic.com",
 
     // API calls: payment gateways + error tracking + analytics
-    "connect-src 'self' https://api.moyasar.com https://cdn.tamara.co https://*.sentry.io https://sentry.io https://www.googletagmanager.com https://www.google-analytics.com",
+    // GA4 sends hits to regional hosts (region1.google-analytics.com, *.analytics.google.com),
+    // and Google Signals uses doubleclick / google.<tld> — per Google's GA4 CSP guide
+    "connect-src 'self' https://api.moyasar.com https://cdn.tamara.co https://*.sentry.io https://sentry.io https://*.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://*.g.doubleclick.net https://*.google.com https://*.google.com.sa",
 
     // Iframes: Moyasar payment widget only
     "frame-src 'self' https://api.moyasar.com https://cdn.moyasar.com",
