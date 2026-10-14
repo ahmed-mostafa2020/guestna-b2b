@@ -144,23 +144,6 @@ const CompanionForm = ({
           }
           menuItemsList={nationalities}
         />
-
-        <div className="md:col-span-2">
-          <TextInputGroup
-            labelClassName="font-somar"
-            label={t("forms.registerForm.companions.note.label")}
-            name={fieldName("note")}
-            placeholder={t("forms.registerForm.companions.note.placeholder")}
-            value={companion.note}
-            errors={errors.companions?.[index]?.note}
-            touched={touched.companions?.[index]?.note}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            textarea={true}
-            rows={4}
-            maxLength="500"
-          />
-        </div>
       </div>
     </div>
   );

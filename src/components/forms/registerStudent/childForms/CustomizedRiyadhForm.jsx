@@ -239,6 +239,24 @@ const CustomizedRiyadhForm = ({
             />
           </div>
         )}
+
+        {/* Student notes (e.g. allergies) */}
+        <div className="sm:col-span-3">
+          <TextInputGroup
+            labelClassName="font-somar"
+            label={t("forms.registerForm.studentNote.label")}
+            name={`children[${index}].note`}
+            placeholder={t("forms.registerForm.studentNote.placeholder")}
+            value={child.note || ""}
+            errors={errors.children?.[index]?.note}
+            touched={touched.children?.[index]?.note}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            textarea={true}
+            rows={4}
+            maxLength="500"
+          />
+        </div>
       </div>
     </div>
   );

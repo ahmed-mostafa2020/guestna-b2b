@@ -159,6 +159,14 @@
       "PENDING_PROVIDER_APPROVAL": "Pending Provider Approval",
       "PENDING_CLIENT_REVIEW": "Pending Client Review"
     },
+    "usersType": {
+      "VISITOR": "Visitor",
+      "B2B_PARENT": "Parent",
+      "B2B_ADMINISTRATION": "School Administration",
+      "B2B_STAFF_MANAGER": "School Manager",
+      "B2B_STAFF_FINANCE": "Finance Officer",
+      "B2B_STAFF_STMS": "Activities Coordinator"
+    },
     "excel_success": {
       "export": "Export successful successfully"
     },
@@ -2059,6 +2067,14 @@
     },
     "activityLocation": "Activity location"
   },
+  "registerChild": {
+    "popup": {
+      "header": "Complete your child's registration",
+      "toComplete": "To complete registration quickly using your saved children's data | ",
+      "haveNoAccount": "I don't have an account yet",
+      "quickRegister": "Complete registration now without creating an account"
+    }
+  },
   "finalDetails": {
     "stepper": {
       "selectYourActivity": "Select Your Activity",
@@ -2892,6 +2908,15 @@
           "title": "Withdraw",
           "description": "Withdraw your available balance to your bank account"
         },
+        "balanceCards": {
+          "totalBalance": "Total Balance",
+          "availableBalance": "Available Balance",
+          "holdBalance": "Hold Balance",
+          "error": {
+            "message": "An error occurred while loading balance data",
+            "retry": "Retry"
+          }
+        },
         "form": {
           "amount": {
             "label": "Amount",
@@ -2972,6 +2997,7 @@
           "amount": {
             "label": "Withdrawal Amount",
             "placeholder": "Amount will be auto-filled",
+            "limits": "Min: {min} SAR | Max: {max} SAR",
             "autoFilled": "Amount auto-filled from selected trips",
             "selectTripFirst": "Please select a trip first",
             "currency": "SAR",
@@ -3026,6 +3052,7 @@
           "amount": {
             "label": "Withdrawal Amount",
             "placeholder": "Amount will be auto-filled",
+            "limits": "Min: {min} SAR | Max: {max} SAR",
             "autoFilled": "Amount auto-filled from selected trips",
             "selectTripFirst": "Please select a trip first",
             "currency": "SAR",
@@ -3106,6 +3133,20 @@
             "undefined": "Not specified",
             "noTrack": "No Track"
           },
+          "months": {
+            "january": "January",
+            "february": "February",
+            "march": "March",
+            "april": "April",
+            "may": "May",
+            "june": "June",
+            "july": "July",
+            "august": "August",
+            "september": "September",
+            "october": "October",
+            "november": "November",
+            "december": "December"
+          },
           "loading": "Loading...",
           "balanceSummary": {
             "title": "Balance Summary Available",
@@ -3152,6 +3193,7 @@
         "selectedDayEvents": "Selected Day Events",
         "noEventsTitle": "No events for this day",
         "noEventsDescription": "No events found scheduled for this date",
+        "addNewEvent": "Add New Event",
         "addEvent": "Add Event",
         "uploadCalendar": "Upload Calendar",
         "interactiveCalendar": "Interactive Calendar",
@@ -3672,10 +3714,16 @@
         "next": "Next",
         "addStudent": "Add another student",
         "removeStudent": "Remove student",
-        "removeCompanion": "Remove companion"
+        "removeCompanion": "Remove companion",
+        "addCompanion": "Add companion"
+      },
+      "studentNote": {
+        "label": "Notes",
+        "placeholder": "Example: Ahmed has Almond allergy "
       },
       "companions": {
         "countLabel": "Book for relative companions (optional)",
+        "toggleLabel": "I want to book for relative companions (optional)",
         "title": "Add relative companions (optional)",
         "subtitle": "Allow sisters and mothers of students to join the trip activities",
         "itemTitle": "Companion {number}",
@@ -3879,6 +3927,7 @@
       "name": "Confirm Password",
       "error": {
         "min": "Password should be more than 8 characters",
+        "max": "Password must not exceed 50 characters",
         "match": "Passwords do not match"
       }
     },

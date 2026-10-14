@@ -18,7 +18,12 @@ import { cn } from "@utils/helpers/cn";
 import getErrorMessage from "@utils/helpers/getErrorMessage";
 import getProxyUrl from "@utils/api/getProxyUrl";
 
-import { FieldArray, Formik, setNestedObjectValues } from "formik";
+import {
+  FieldArray,
+  Formik,
+  setNestedObjectValues,
+  useFormikContext,
+} from "formik";
 
 import axios from "axios";
 
@@ -40,7 +45,6 @@ const EMPTY_COMPANION = {
   age: "",
   nationalId: "",
   nationality: CONSTANT_VALUES.DEFAULT_NATIONALITY_ID,
-  note: "",
 };
 
 // Formik fields validated before leaving each step
@@ -52,12 +56,46 @@ const STEP_FIELDS = {
     "mobile",
     "nationality",
     "childrenNumber",
-    "companionsCount",
     "duration",
     "bookingDay",
   ],
   students: ["children"],
   companions: ["companions"],
+};
+
+const STORAGE_KEY_PREFIX = "registerStudentForm";
+
+// Saves the entered values to localStorage so they survive a page refresh
+// (files can't be serialized, so uploaded images are left out)
+const FormPersist = ({ storageKey, enabled, termsAccepted, currentStep }) => {
+  const { values } = useFormikContext();
+
+  useEffect(() => {
+    if (!enabled || !storageKey) return;
+    const timeoutId = setTimeout(() => {
+      try {
+        localStorage.setItem(
+          storageKey,
+          JSON.stringify({
+            values: {
+              ...values,
+              children: values.children.map(
+                // eslint-disable-next-line no-unused-vars
+                ({ nationalIdImage, ...child }) => child
+              ),
+            },
+            termsAccepted,
+            currentStep,
+          })
+        );
+      } catch {
+        // Storage unavailable (private mode / quota) → skip persisting
+      }
+    }, 400);
+    return () => clearTimeout(timeoutId);
+  }, [enabled, storageKey, values, termsAccepted, currentStep]);
+
+  return null;
 };
 
 // Drop the entry at `idx` from an index-keyed object and shift the rest down
@@ -122,6 +160,8 @@ const RegisterStudentForm = ({
   const [termsModalOpen, setTermsModalOpen] = useState(false);
 
   const [currentStep, setCurrentStep] = useState(0);
+  // Saving starts only after the stored draft (if any) has been restored
+  const [isDraftRestored, setIsDraftRestored] = useState(false);
 
   // Father as parent → the student name is auto-completed with the father's name
   const isFatherParent = (relationship) =>
@@ -273,6 +313,7 @@ const RegisterStudentForm = ({
         nationalId: "",
         studentMobile: "",
         studentEmail: "",
+        note: "",
         ...((tripMainCategory ===
           CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH ||
           tripMainCategory ===
@@ -286,6 +327,109 @@ const RegisterStudentForm = ({
       return child;
     });
   };
+
+  // Fetch the grades of a stage for one child (requests are cached per URL)
+  const fetchChildGrades = async (childIndex, stage) => {
+    setGradesLoading((prev) => ({
+      ...prev,
+      [childIndex]: true,
+    }));
+
+    const gradesUrl = getProxyUrl(
+      `${B2B_END_POINTS.STUDENTS_GRADES}/${tripId}/${stage}/${educationSystem}`
+    );
+    try {
+      if (!gradesCacheRef.current[gradesUrl]) {
+        gradesCacheRef.current[gradesUrl] = axios
+          .get(gradesUrl, { headers: headersGetMethod })
+          .then((res) => res.data)
+          .catch((err) => {
+            delete gradesCacheRef.current[gradesUrl];
+            throw err;
+          });
+      }
+      const grades = await gradesCacheRef.current[gradesUrl];
+      setGradesList((prev) => ({
+        ...prev,
+        [childIndex]: grades,
+      }));
+    } catch (error) {
+      setGradesList((prev) => ({
+        ...prev,
+        [childIndex]: [],
+      }));
+    } finally {
+      setGradesLoading((prev) => ({
+        ...prev,
+        [childIndex]: false,
+      }));
+    }
+  };
+
+  const storageKey = tripId ? `${STORAGE_KEY_PREFIX}:${tripId}` : null;
+
+  // Restore the draft saved before a refresh
+  useEffect(() => {
+    if (!storageKey || !formikRef.current) return;
+
+    let saved = null;
+    try {
+      saved = JSON.parse(localStorage.getItem(storageKey));
+    } catch {
+      saved = null;
+    }
+
+    if (saved?.values) {
+      const [emptyChild] = generateInitialChildren(1);
+      const children = (
+        saved.values.children?.length ? saved.values.children : [{}]
+      ).map((child) => ({ ...emptyChild, ...child }));
+      const companions = Array.isArray(saved.values.companions)
+        ? saved.values.companions
+        : [];
+      const withCompanions =
+        isSharedWithCompanions &&
+        !!saved.values.withCompanions &&
+        companions.length > 0;
+
+      const restoredValues = {
+        ...formikRef.current.values,
+        ...saved.values,
+        children,
+        childrenNumber: children.length,
+        withCompanions,
+        companions: withCompanions ? companions : [],
+      };
+      formikRef.current.setValues(restoredValues, false);
+
+      setChildrenNumber(children.length);
+      setNationality(
+        restoredValues.nationality || CONSTANT_VALUES.DEFAULT_NATIONALITY_ID
+      );
+
+      const stages = {};
+      const classes = {};
+      children.forEach((child, idx) => {
+        stages[idx] = child.academicStage || "";
+        if (child.class) classes[idx] = child.class;
+        if (child.academicStage) fetchChildGrades(idx, child.academicStage);
+      });
+      setChildrenStages(stages);
+      setChildrenClasses(classes);
+
+      setTermsAccepted(!!saved.termsAccepted);
+      const lastStep = withCompanions ? 2 : 1;
+      setCurrentStep(Math.min(Number(saved.currentStep) || 0, lastStep));
+    }
+
+    setIsDraftRestored(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storageKey]);
+
+  // Re-validate once the restored values and children count are in place
+  useEffect(() => {
+    if (isDraftRestored) formikRef.current?.validateForm();
+  }, [isDraftRestored]);
 
   const seatsArray = useMemo(() => {
     return Array.from({ length: availableSeats }, (_, i) => ({
@@ -311,18 +455,10 @@ const RegisterStudentForm = ({
         ];
   }, [availableSeats, seatsArray]);
 
-  // Companions share the trip seats with the children (string ids so 0 is selectable)
+  // Companions share the trip seats with the children
   const maxCompanions = Math.max(
     0,
     Math.min(9, (availableSeats || 0) - childrenNumber)
-  );
-  const companionsCountList = useMemo(
-    () =>
-      Array.from({ length: maxCompanions + 1 }, (_, i) => ({
-        _id: String(i),
-        name: String(i),
-      })),
-    [maxCompanions]
   );
 
   // Validate custom fields
@@ -390,7 +526,8 @@ const RegisterStudentForm = ({
     const formData = new FormData();
     formData.append("formsType", tripMainCategory);
     formData.append("name", values.parentName);
-    const companions = isSharedWithCompanions ? values.companions : [];
+    const companions =
+      isSharedWithCompanions && values.withCompanions ? values.companions : [];
     // Total seats = children + companions
     formData.append("quantity", values.childrenNumber + companions.length);
     if (values.relationship) {
@@ -453,6 +590,8 @@ const RegisterStudentForm = ({
         formData.append(`childs[${idx}].phone`, child.studentMobile);
       if (child.studentEmail)
         formData.append(`childs[${idx}].email`, child.studentEmail);
+      if (child.note?.trim())
+        formData.append(`childs[${idx}].note`, child.note.trim());
     });
 
     companions.forEach((companion, idx) => {
@@ -470,8 +609,6 @@ const RegisterStudentForm = ({
           `companions[${idx}].nationality`,
           companion.nationality
         );
-      if (companion.note)
-        formData.append(`companions[${idx}].note`, companion.note.trim());
     });
 
     let config = {
@@ -489,6 +626,13 @@ const RegisterStudentForm = ({
         setSubmitting(false);
         setFormErrors([]);
         // resetForm();
+
+        // Booking sent → the saved draft is no longer needed
+        try {
+          if (storageKey) localStorage.removeItem(storageKey);
+        } catch {
+          // ignore storage errors
+        }
 
         // Change acc to response
         if (response && response.data) {
@@ -568,7 +712,7 @@ const RegisterStudentForm = ({
           fullDuration: true,
           bookingDay: "",
           children: generateInitialChildren(childrenNumber),
-          companionsCount: 0,
+          withCompanions: false,
           companions: [],
         }}
         validationSchema={registerChildSchema}
@@ -593,7 +737,10 @@ const RegisterStudentForm = ({
           setTouched,
         }) => {
           const hasCompanions =
-            isSharedWithCompanions && values.companionsCount > 0;
+            isSharedWithCompanions &&
+            values.withCompanions &&
+            values.companions.length > 0;
+          const canAddCompanion = values.companions.length < maxCompanions;
           const steps = [
             "parent",
             "students",
@@ -655,14 +802,24 @@ const RegisterStudentForm = ({
             handleSubmit(event);
           };
 
-          const handleChangeCompanionsCount = (event) => {
-            const count = parseInt(event.target.value, 10) || 0;
-            const updated = values.companions.slice(0, count);
-            while (updated.length < count) {
-              updated.push({ ...EMPTY_COMPANION });
-            }
-            setFieldValue("companions", updated);
-            setFieldValue("companionsCount", count);
+          // Checkbox under the students → adds/removes the companions step
+          const handleToggleCompanions = (checked) => {
+            setFieldValue("withCompanions", checked);
+            setFieldValue(
+              "companions",
+              checked
+                ? values.companions.length
+                  ? values.companions
+                  : [{ ...EMPTY_COMPANION }]
+                : []
+            );
+          };
+
+          const handleAddCompanion = () => {
+            setFieldValue("companions", [
+              ...values.companions,
+              { ...EMPTY_COMPANION },
+            ]);
           };
 
           const handleRemoveChild = (index, remove) => {
@@ -683,11 +840,13 @@ const RegisterStudentForm = ({
           };
 
           const handleRemoveCompanion = (index, remove) => {
-            const newCount = values.companionsCount - 1;
+            const newCount = values.companions.length - 1;
             remove(index);
-            setFieldValue("companionsCount", newCount);
             // No companions left → the companions step disappears
-            if (newCount === 0) goToStep(steps.indexOf("students"));
+            if (newCount === 0) {
+              setFieldValue("withCompanions", false);
+              goToStep(steps.indexOf("students"));
+            }
           };
 
           // Define handlers inside the Formik render function
@@ -718,6 +877,7 @@ const RegisterStudentForm = ({
                   nationalId: "",
                   studentMobile: "",
                   studentEmail: "",
+                  note: "",
                   ...((tripMainCategory ===
                     CONSTANT_VALUES.MAIN_CATEGORIES.OUTSIDE_RIYADH ||
                     tripMainCategory ===
@@ -746,12 +906,12 @@ const RegisterStudentForm = ({
               0,
               Math.min(9, (availableSeats || 0) - newCount)
             );
-            if (values.companionsCount > companionsLimit) {
+            if (values.companions.length > companionsLimit) {
               setFieldValue(
                 "companions",
                 values.companions.slice(0, companionsLimit)
               );
-              setFieldValue("companionsCount", companionsLimit);
+              if (companionsLimit === 0) setFieldValue("withCompanions", false);
             }
 
             // Reset stages for new children count
@@ -778,43 +938,8 @@ const RegisterStudentForm = ({
             }));
             setFieldValue(`children[${childIndex}].academicStage`, newStage);
 
-            // Set loading state for this child's grade dropdown
-            setGradesLoading((prev) => ({
-              ...prev,
-              [childIndex]: true,
-            }));
-
             // Fetch grades for the selected stage
-            const gradesUrl = getProxyUrl(
-              `${B2B_END_POINTS.STUDENTS_GRADES}/${tripId}/${newStage}/${educationSystem}`
-            );
-            try {
-              if (!gradesCacheRef.current[gradesUrl]) {
-                gradesCacheRef.current[gradesUrl] = axios
-                  .get(gradesUrl, { headers: headersGetMethod })
-                  .then((res) => res.data)
-                  .catch((err) => {
-                    delete gradesCacheRef.current[gradesUrl];
-                    throw err;
-                  });
-              }
-              const grades = await gradesCacheRef.current[gradesUrl];
-              setGradesList((prev) => ({
-                ...prev,
-                [childIndex]: grades,
-              }));
-            } catch (error) {
-              setGradesList((prev) => ({
-                ...prev,
-                [childIndex]: [],
-              }));
-            } finally {
-              // Clear loading state
-              setGradesLoading((prev) => ({
-                ...prev,
-                [childIndex]: false,
-              }));
-            }
+            await fetchChildGrades(childIndex, newStage);
           };
 
           const handleChangeChildGrade = (childIndex, event) => {
@@ -835,6 +960,13 @@ const RegisterStudentForm = ({
               id="register-student-form"
               className="flex flex-col gap-8 px-4 py-8 bg-white shadow-sm rounded-xl sm:px-8 lg:py-12"
             >
+              <FormPersist
+                storageKey={storageKey}
+                enabled={isDraftRestored}
+                termsAccepted={termsAccepted}
+                currentStep={currentStep}
+              />
+
               <BookingStepper
                 namespace="forms.registerForm.steps"
                 steps={steps}
@@ -871,9 +1003,6 @@ const RegisterStudentForm = ({
                     tripDuration={tripDuration}
                     tripPrice={tripPrice}
                     firstAvailableDate={firstAvailableDate}
-                    isSharedWithCompanions={isSharedWithCompanions}
-                    companionsCountList={companionsCountList}
-                    handleChangeCompanionsCount={handleChangeCompanionsCount}
                     t={t}
                     cn={cn}
                   />
@@ -1005,6 +1134,31 @@ const RegisterStudentForm = ({
                 </FieldArray>
               )}
 
+              {/* Opt-in for relative companions → adds the companions step */}
+              {stepKey === "students" &&
+                isSharedWithCompanions &&
+                (maxCompanions > 0 || values.withCompanions) && (
+                  <div className="p-4 bg-noticeBg rounded-xl">
+                    <FormControlLabel
+                      sx={checkboxLabelSx}
+                      control={
+                        <Checkbox
+                          checked={!!values.withCompanions}
+                          onChange={(e) =>
+                            handleToggleCompanions(e.target.checked)
+                          }
+                          sx={checkboxSx}
+                        />
+                      }
+                      label={
+                        <span className="font-semibold">
+                          {t("forms.registerForm.companions.toggleLabel")}
+                        </span>
+                      }
+                    />
+                  </div>
+                )}
+
               {stepKey === "companions" && (
                 <div className="flex flex-col gap-5">
                   <FormSectionHeader
@@ -1086,6 +1240,16 @@ const RegisterStudentForm = ({
                     className="flex-1 py-3 font-bold text-center transition-all duration-200 ease-in-out bg-white border-2 rounded-lg font-somar border-secColor text-mainColor hover:bg-secColor hover:text-white"
                   >
                     {t("forms.registerForm.actions.addStudent")}
+                  </button>
+                )}
+
+                {stepKey === "companions" && canAddCompanion && (
+                  <button
+                    type="button"
+                    onClick={handleAddCompanion}
+                    className="flex-1 py-3 font-bold text-center transition-all duration-200 ease-in-out bg-white border-2 rounded-lg font-somar border-secColor text-mainColor hover:bg-secColor hover:text-white"
+                  >
+                    {t("forms.registerForm.actions.addCompanion")}
                   </button>
                 )}
 

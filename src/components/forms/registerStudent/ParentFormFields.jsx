@@ -68,9 +68,6 @@ const ParentFormFields = ({
   tripDuration,
   tripPrice,
   firstAvailableDate,
-  isSharedWithCompanions,
-  companionsCountList,
-  handleChangeCompanionsCount,
   t,
   cn,
 }) => {
@@ -263,17 +260,6 @@ const ParentFormFields = ({
             </div>
           )}
         </div>
-
-        {isSharedWithCompanions && (
-          <SelectionGroup
-            labelClassName="font-somar"
-            label={t("forms.registerForm.companions.countLabel")}
-            placeholder={t("forms.registerForm.companions.countLabel")}
-            value={String(values.companionsCount ?? 0)}
-            onChange={handleChangeCompanionsCount}
-            menuItemsList={companionsCountList}
-          />
-        )}
 
         <div className="relative flex flex-col gap-2">
           <SelectionGroup

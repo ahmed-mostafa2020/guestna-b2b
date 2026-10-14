@@ -160,6 +160,7 @@ export const createRegisterChildSchema = (
 
           academicStage: Yup.string().required(t("forms.validation.require")),
           grade: Yup.string().required(t("forms.validation.require")),
+          note: Yup.string().max(500).optional(),
 
           // Conditional validation for nationalId - required only for OUTSIDE_RIYADH
           nationalId:

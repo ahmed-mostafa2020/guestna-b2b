@@ -75,7 +75,8 @@ const StudentNameInput = ({
             }}
             className="px-4 py-3 text-sm cursor-pointer font-somar text-textDark hover:bg-activityDetailsBg"
           >
-            {suggestion}
+            {/* Show the full resulting name: typed student name + father's name */}
+            {`${value}${suggestion}`}
           </li>
         </ul>
       )}
