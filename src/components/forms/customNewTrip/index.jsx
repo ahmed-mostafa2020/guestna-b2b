@@ -7,13 +7,7 @@ import { memo, useState, useRef, useMemo, useEffect, useCallback } from "react";
 import { Formik } from "formik";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import {
-  CircularProgress,
-  Stepper,
-  Step,
-  StepLabel,
-  Box,
-} from "@mui/material";
+import { CircularProgress, Stepper, Step, StepLabel, Box } from "@mui/material";
 
 import {
   createCustomNewTripSchema,
@@ -262,15 +256,12 @@ const CustomNewTripForm = ({
 
   const rawAvailableDaysSlots = useMemo(() => {
     return (
-      editData?.trip?.availableDaysSlots ||
-      editData?.availableDaysSlots ||
-      null
+      editData?.trip?.availableDaysSlots || editData?.availableDaysSlots || null
     );
   }, [editData]);
 
   const rawAvailableDays = useMemo(() => {
-    const directDays =
-      editData?.trip?.availableDays || editData?.availableDays;
+    const directDays = editData?.trip?.availableDays || editData?.availableDays;
     if (Array.isArray(directDays) && directDays.length > 0) return directDays;
 
     if (rawAvailableDaysSlots) {
@@ -285,8 +276,8 @@ const CustomNewTripForm = ({
       const daysList = Array.isArray(slotsObj)
         ? slotsObj
         : Array.isArray(slotsObj?.days)
-        ? slotsObj.days
-        : [];
+          ? slotsObj.days
+          : [];
       const extracted = daysList
         .map((d) =>
           typeof d.date === "string" ? d.date.split("T")[0] : d.date
@@ -339,24 +330,28 @@ const CustomNewTripForm = ({
 
   const [selectedBranch, setSelectedBranch] = useState(initialBranchId);
   const [branchAvailableDays, setBranchAvailableDays] = useState([]);
-  const [branchAvailableDaysSlots, setBranchAvailableDaysSlots] = useState(null);
+  const [branchAvailableDaysSlots, setBranchAvailableDaysSlots] =
+    useState(null);
   const [isLoadingBranchDays, setIsLoadingBranchDays] = useState(false);
 
   // Effective available days and slots (branch overrides base if selected)
   const effectiveAvailableDays = useMemo(() => {
-    if (selectedBranch && branchAvailableDays.length > 0) return branchAvailableDays;
+    if (selectedBranch && branchAvailableDays.length > 0)
+      return branchAvailableDays;
     return rawAvailableDays;
   }, [selectedBranch, branchAvailableDays, rawAvailableDays]);
 
   const effectiveAvailableDaysSlots = useMemo(() => {
-    if (selectedBranch && branchAvailableDaysSlots) return branchAvailableDaysSlots;
+    if (selectedBranch && branchAvailableDaysSlots)
+      return branchAvailableDaysSlots;
     return rawAvailableDaysSlots;
   }, [selectedBranch, branchAvailableDaysSlots, rawAvailableDaysSlots]);
 
   const hasNonApiIntegration =
     !isApiIntegration &&
     (Boolean(integrationType) ||
-      (Array.isArray(effectiveAvailableDays) && effectiveAvailableDays.length > 0) ||
+      (Array.isArray(effectiveAvailableDays) &&
+        effectiveAvailableDays.length > 0) ||
       Boolean(effectiveAvailableDaysSlots));
 
   // For API integration: use slot-based flow (same as old providerType !== DEFAULT)
@@ -381,53 +376,56 @@ const CustomNewTripForm = ({
     );
   }, [isEditMode, isNormalTrip, hasNonApiIntegration, effectiveAvailableDays]);
 
-  const fetchBranchAvailableDays = useCallback(async (branchId) => {
-    if (!branchId) {
-      setBranchAvailableDays([]);
-      setBranchAvailableDaysSlots(null);
-      return;
-    }
-    setIsLoadingBranchDays(true);
-    try {
-      const response = await axios.get(
-        getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.PROVIDER_BRANCH_AVAILABLE_DAYS}/${branchId}`
-        ),
-        { headers }
-      );
-      const data = response.data;
-      let days = data?.availableDays || [];
-      const slots = data?.availableDaysSlots || null;
-      if ((!days || days.length === 0) && slots) {
-        let slotsObj = slots;
-        if (typeof slotsObj === "string") {
-          try {
-            slotsObj = JSON.parse(slotsObj);
-          } catch {}
-        }
-        const daysList = Array.isArray(slotsObj)
-          ? slotsObj
-          : Array.isArray(slotsObj?.days)
-          ? slotsObj.days
-          : [];
-        days = daysList
-          .map((d) =>
-            typeof d.date === "string" ? d.date.split("T")[0] : d.date
-          )
-          .filter(Boolean);
+  const fetchBranchAvailableDays = useCallback(
+    async (branchId) => {
+      if (!branchId) {
+        setBranchAvailableDays([]);
+        setBranchAvailableDaysSlots(null);
+        return;
       }
-      setBranchAvailableDays(days);
-      setBranchAvailableDaysSlots(slots);
-    } catch (error) {
-      console.error("Error fetching branch available days:", error);
-      setBranchAvailableDays([]);
-      setBranchAvailableDaysSlots(null);
-      const errorMessage = getErrorMessage(error, t2);
-      enqueueSnackbar(errorMessage, { variant: "error" });
-    } finally {
-      setIsLoadingBranchDays(false);
-    }
-  }, [headers, enqueueSnackbar, t2]);
+      setIsLoadingBranchDays(true);
+      try {
+        const response = await axios.get(
+          getProxyUrl(
+            `${B2B_END_POINTS.PROFILE.PROVIDER_BRANCH_AVAILABLE_DAYS}/${branchId}`
+          ),
+          { headers }
+        );
+        const data = response.data;
+        let days = data?.availableDays || [];
+        const slots = data?.availableDaysSlots || null;
+        if ((!days || days.length === 0) && slots) {
+          let slotsObj = slots;
+          if (typeof slotsObj === "string") {
+            try {
+              slotsObj = JSON.parse(slotsObj);
+            } catch {}
+          }
+          const daysList = Array.isArray(slotsObj)
+            ? slotsObj
+            : Array.isArray(slotsObj?.days)
+              ? slotsObj.days
+              : [];
+          days = daysList
+            .map((d) =>
+              typeof d.date === "string" ? d.date.split("T")[0] : d.date
+            )
+            .filter(Boolean);
+        }
+        setBranchAvailableDays(days);
+        setBranchAvailableDaysSlots(slots);
+      } catch (error) {
+        console.error("Error fetching branch available days:", error);
+        setBranchAvailableDays([]);
+        setBranchAvailableDaysSlots(null);
+        const errorMessage = getErrorMessage(error, t2);
+        enqueueSnackbar(errorMessage, { variant: "error" });
+      } finally {
+        setIsLoadingBranchDays(false);
+      }
+    },
+    [headers, enqueueSnackbar, t2]
+  );
 
   // Sync selected branch and fetch its available days when editing
   useEffect(() => {
@@ -459,41 +457,44 @@ const CustomNewTripForm = ({
     }
   }, [isEditMode, isNormalTrip, orderId, headers]);
 
-  const fetchSlotsForDay = useCallback(async (day) => {
-    const targetTripId =
-      tripId ||
-      editData?.trip?._id ||
-      editData?.trip ||
-      editData?.tripId ||
-      editData?._id;
-    if (!day || !targetTripId) return;
-    setIsLoadingSlots(true);
-    try {
-      const response = await axios({
-        method: "get",
-        url: getProxyUrl(
-          `${B2B_END_POINTS.PROFILE.PROVIDER_SLOTS}/${targetTripId}?day=${day}`
-        ),
-        headers,
-      });
-      const rawSlots = response.data?.slots || [];
-      const normalizedSlots = rawSlots.map((s) => ({
-        slotName: s.slotName || s.slot_name || "",
-        minCapacity: s.minCapacity ?? s.min_capacity ?? 0,
-        maxCapacity: s.maxCapacity ?? s.max_capacity ?? 0,
-      }));
-      setSlotsData(normalizedSlots);
-    } catch (error) {
-      console.error("Error fetching slots:", error);
-      setSlotsData([]);
-      const errorMessage = getErrorMessage(error, t2);
-      enqueueSnackbar(errorMessage, {
-        variant: "error",
-      });
-    } finally {
-      setIsLoadingSlots(false);
-    }
-  }, [tripId, editData, headers, enqueueSnackbar, t2]);
+  const fetchSlotsForDay = useCallback(
+    async (day) => {
+      const targetTripId =
+        tripId ||
+        editData?.trip?._id ||
+        editData?.trip ||
+        editData?.tripId ||
+        editData?._id;
+      if (!day || !targetTripId) return;
+      setIsLoadingSlots(true);
+      try {
+        const response = await axios({
+          method: "get",
+          url: getProxyUrl(
+            `${B2B_END_POINTS.PROFILE.PROVIDER_SLOTS}/${targetTripId}?day=${day}`
+          ),
+          headers,
+        });
+        const rawSlots = response.data?.slots || [];
+        const normalizedSlots = rawSlots.map((s) => ({
+          slotName: s.slotName || s.slot_name || "",
+          minCapacity: s.minCapacity ?? s.min_capacity ?? 0,
+          maxCapacity: s.maxCapacity ?? s.max_capacity ?? 0,
+        }));
+        setSlotsData(normalizedSlots);
+      } catch (error) {
+        console.error("Error fetching slots:", error);
+        setSlotsData([]);
+        const errorMessage = getErrorMessage(error, t2);
+        enqueueSnackbar(errorMessage, {
+          variant: "error",
+        });
+      } finally {
+        setIsLoadingSlots(false);
+      }
+    },
+    [tripId, editData, headers, enqueueSnackbar, t2]
+  );
 
   // Fetch initial slots if editing a trip with API integration
   useEffect(() => {
@@ -501,7 +502,13 @@ const CustomNewTripForm = ({
       const initialDay = editData.day.split("T")[0];
       fetchSlotsForDay(initialDay);
     }
-  }, [hasProviderSpecificDays, editData?.day, tripId, fetchSlotsForDay, isEditMode]);
+  }, [
+    hasProviderSpecificDays,
+    editData?.day,
+    tripId,
+    fetchSlotsForDay,
+    isEditMode,
+  ]);
 
   useEffect(() => {
     if (isEditMode && !orderId) {
@@ -1026,6 +1033,11 @@ const CustomNewTripForm = ({
         } else if (isEditMode) {
           formData.append("toHour", "");
         }
+      } else if (key === "providerBranch") {
+        // Only send a branch when one is selected
+        if (values.providerBranch) {
+          formData.append("providerBranch", values.providerBranch);
+        }
       } else if (values[key] !== null && values[key] !== undefined) {
         if (Array.isArray(values[key])) {
           values[key].forEach((item, index) => {
@@ -1045,7 +1057,11 @@ const CustomNewTripForm = ({
     });
 
     // API requires totalAvailableSeats; for custom trip creation, default to availableSeats value
-    if (!isEditMode && !formData.has("totalAvailableSeats") && values.availableSeats) {
+    if (
+      !isEditMode &&
+      !formData.has("totalAvailableSeats") &&
+      values.availableSeats
+    ) {
       formData.append("totalAvailableSeats", String(values.availableSeats));
     }
 
@@ -1161,11 +1177,7 @@ const CustomNewTripForm = ({
             }
             const slotsSource = effectiveAvailableDaysSlots;
             const ranges = getTimeRangesForDate(values.day, slotsSource);
-            const formattedRanges = formatDisplayTimeRanges(
-              ranges,
-              locale,
-              t2
-            );
+            const formattedRanges = formatDisplayTimeRanges(ranges, locale, t2);
             if (ranges.length > 0) {
               if (values.fromHour) {
                 const fromResult = isTimeWithinAvailableRange(
@@ -1309,10 +1321,7 @@ const CustomNewTripForm = ({
                   {isEditMode ? t("edit") : t("title")}
                 </h3>
 
-                <Box
-                  className="w-full"
-                  dir={locale === "ar" ? "rtl" : "ltr"}
-                >
+                <Box className="w-full" dir={locale === "ar" ? "rtl" : "ltr"}>
                   <Stepper
                     activeStep={activeStep}
                     orientation="horizontal"
@@ -1454,14 +1463,17 @@ const CustomNewTripForm = ({
                                     : index < activeStep
                                       ? "var(--color-success)"
                                       : "white",
-                                color: index <= activeStep ? "white" : "#bdbdbd",
+                                color:
+                                  index <= activeStep ? "white" : "#bdbdbd",
                                 fontWeight: "bold",
                                 fontSize: { xs: "1rem", sm: "1.125rem" },
                                 zIndex: 1,
                                 transition: "transform 0.15s ease-in-out",
                                 "&:hover": {
                                   transform:
-                                    index !== activeStep ? "scale(1.08)" : "none",
+                                    index !== activeStep
+                                      ? "scale(1.08)"
+                                      : "none",
                                 },
                               },
                             },
