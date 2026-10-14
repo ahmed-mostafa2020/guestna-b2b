@@ -933,7 +933,6 @@ const getStageGradesField = (t) =>
 
 // Gathering location & school profit — used by `TripParticipationForm`
 export const getGatheringLocationFields = (t) => ({
-  city: Yup.string().nullable(),
   gatheringLocation: Yup.object().shape({
     mapLink: Yup.string()
       .trim()

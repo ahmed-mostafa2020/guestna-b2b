@@ -1,5 +1,4 @@
 export const INITIAL_VALUES = {
-  city: "",
   gatheringLocation: { lat: "", lng: "", mapLink: "" },
   proposedServices: [],
   hasSchoolProfit: false,

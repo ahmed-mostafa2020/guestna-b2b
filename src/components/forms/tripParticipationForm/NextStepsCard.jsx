@@ -11,11 +11,11 @@ const NextStepsCard = () => {
   return (
     <section
       aria-labelledby="participation-next-steps-title"
-      className="flex flex-col gap-4 p-5 md:p-6 rounded-2xl border border-[#cce5e6] bg-[#f0f7f7]"
+      className="flex flex-col gap-4 p-5 md:p-6 rounded-2xl border border-buttonsHover bg-buttonsHover"
     >
       <h3
         id="participation-next-steps-title"
-        className="ps-2.5 text-lg md:text-xl font-bold font-somar text-[#111827]"
+        className="ps-2.5 text-lg md:text-xl font-bold font-somar text-textDark"
       >
         {t("title")}
       </h3>
@@ -24,7 +24,7 @@ const NextStepsCard = () => {
         {NEXT_STEPS.map((step, index) => (
           <li
             key={step}
-            className="flex flex-col gap-1 px-4 py-4 rounded-xl border border-[#d6eaeb] bg-white/90"
+            className="flex flex-col gap-1 px-4 py-4 rounded-xl border border-buttonsHover bg-white/90"
           >
             <div className="flex items-center gap-2">
               <span
@@ -33,18 +33,18 @@ const NextStepsCard = () => {
               >
                 {index + 1}
               </span>
-              <h4 className="text-base font-medium font-somar text-[#111827]">
+              <h4 className="text-base font-medium font-somar text-textDark">
                 {t(`steps.${step}.title`)}
               </h4>
             </div>
-            <p className="ps-8 text-sm md:text-base font-somar text-[#4b5563]">
+            <p className="ps-8 text-sm md:text-base font-somar text-textLight">
               {t(`steps.${step}.description`)}
             </p>
           </li>
         ))}
       </ol>
 
-      <p className="flex items-center gap-1 pe-1 text-sm font-medium font-somar text-[#4b5563]">
+      <p className="flex items-center gap-1 pe-1 text-sm font-medium font-somar text-textLight">
         <NotificationsNoneOutlined sx={{ fontSize: 16 }} aria-hidden="true" />
         {t("notice")}
       </p>

@@ -19,7 +19,6 @@ import {
   isValidCoordinates,
   DEFAULT_COORDINATES,
   extractCityFromComponents,
-  matchCityFromLookups,
 } from "@utils/helpers/mapHelpers";
 import { cn } from "@utils/helpers/cn";
 
@@ -27,10 +26,7 @@ const GatheringLocationPicker = ({
   mapLink = "",
   lat = "",
   lng = "",
-  cities = [],
-  currentCityValue = "",
   onChange,
-  onCityChange,
   onBlur,
   error,
   touched,
@@ -55,7 +51,7 @@ const GatheringLocationPicker = ({
   const currentLat = hasCoords ? parseFloat(lat) : DEFAULT_COORDINATES.lat;
   const currentLng = hasCoords ? parseFloat(lng) : DEFAULT_COORDINATES.lng;
 
-  // Reverse geocode coordinates to extract city and match with cities lookups
+  // Reverse geocode coordinates to show the detected city name
   const reverseGeocodeCity = useCallback(
     (targetLat, targetLng) => {
       if (!geocoderRef.current || !targetLat || !targetLng) return;
@@ -69,25 +65,14 @@ const GatheringLocationPicker = ({
         (results, status) => {
           setIsDetectingCity(false);
           if (status === "OK" && results?.[0]) {
-            const rawCity = extractCityFromComponents(
-              results[0].address_components || []
+            setDetectedCityName(
+              extractCityFromComponents(results[0].address_components || [])
             );
-            const matched = matchCityFromLookups(rawCity, cities);
-            const displayCity =
-              (typeof matched?.name === "object"
-                ? matched.name[locale] || matched.name.ar || matched.name.en
-                : matched?.name) || rawCity;
-
-            setDetectedCityName(displayCity || "");
-            // City is stored as its display name (text), not the lookup id
-            if (onCityChange) {
-              onCityChange(displayCity || "");
-            }
           }
         }
       );
     },
-    [cities, locale, onCityChange]
+    [locale]
   );
 
   // Pan map and place marker at given coordinates
@@ -288,13 +273,6 @@ const GatheringLocationPicker = ({
     }
   }, [lat, lng, hasCoords]);
 
-  // Sync detectedCityName from the current city text if already present
-  useEffect(() => {
-    if (!detectedCityName && currentCityValue) {
-      setDetectedCityName(currentCityValue);
-    }
-  }, [currentCityValue, detectedCityName]);
-
   // Handle typing / changing map link input
   const handleLinkChange = (e) => {
     const value = e.target.value;
@@ -303,7 +281,6 @@ const GatheringLocationPicker = ({
     if (!value.trim()) {
       if (markerRef.current) markerRef.current.setVisible(false);
       setDetectedCityName("");
-      onCityChange?.("");
       onChange({ lat: "", lng: "", mapLink: "" });
       return;
     }
@@ -342,7 +319,6 @@ const GatheringLocationPicker = ({
     if (markerRef.current) markerRef.current.setVisible(false);
     setResolveStatus(null);
     setDetectedCityName("");
-    onCityChange?.("");
     onChange({ lat: "", lng: "", mapLink: "" });
   };
 

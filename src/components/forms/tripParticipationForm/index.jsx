@@ -8,7 +8,6 @@ import axios from "axios";
 
 import { createTripParticipationSchema } from "@utils/validators/validationSchemas";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
-import { useFetchData } from "@hooks/data/useFetchData";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import getErrorMessage from "@utils/helpers/getErrorMessage";
@@ -40,21 +39,6 @@ const TripParticipationForm = ({ tripId, services = [], onSuccess }) => {
       })),
     [services, t]
   );
-
-  // Lookups used by the map picker to match the detected city
-  const { data: citiesResponse } = useFetchData(
-    B2B_END_POINTS.ADDRESS.SELECTED_CITIES,
-    {},
-    { lang: locale }
-  );
-  const cities = useMemo(() => {
-    const raw =
-      citiesResponse?.data?.cities ||
-      citiesResponse?.cities ||
-      citiesResponse?.data ||
-      citiesResponse;
-    return Array.isArray(raw) ? raw : [];
-  }, [citiesResponse]);
 
   const validationSchema = useMemo(() => createTripParticipationSchema(t), [t]);
 
@@ -129,7 +113,7 @@ const TripParticipationForm = ({ tripId, services = [], onSuccess }) => {
                 />
               )}
 
-              <GatheringLocationFields cities={cities} />
+              <GatheringLocationFields />
 
               {/* Operating margin per student — optional, sent as 0 when unchecked */}
               <div className="flex flex-col gap-3">

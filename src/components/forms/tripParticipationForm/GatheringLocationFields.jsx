@@ -5,7 +5,7 @@ import { useFormikContext } from "formik";
 
 import GatheringLocationPicker from "./GatheringLocationPicker";
 
-const GatheringLocationFields = ({ cities = [] }) => {
+const GatheringLocationFields = () => {
   const { values, errors, touched, setFieldValue, setFieldTouched } =
     useFormikContext();
 
@@ -30,13 +30,6 @@ const GatheringLocationFields = ({ cities = [] }) => {
     [setFieldValue, setFieldTouched]
   );
 
-  const handleCityChange = useCallback(
-    (city) => {
-      setFieldValue("city", city || "");
-    },
-    [setFieldValue]
-  );
-
   const handleLinkBlur = useCallback(() => {
     setFieldTouched("gatheringLocation.mapLink", true, true);
   }, [setFieldTouched]);
@@ -46,10 +39,7 @@ const GatheringLocationFields = ({ cities = [] }) => {
       mapLink={values.gatheringLocation?.mapLink}
       lat={values.gatheringLocation?.lat}
       lng={values.gatheringLocation?.lng}
-      cities={cities}
-      currentCityValue={values.city}
       onChange={handleLocationChange}
-      onCityChange={handleCityChange}
       onBlur={handleLinkBlur}
       error={mapLinkError}
       touched={isLocationTouched}
