@@ -270,8 +270,7 @@ export const createAuthenticatedRequestQuoteSchema = (t) =>
     category: Yup.string().optional(), // readonly field
     tripType: Yup.string().optional(), // readonly field
     city: Yup.string().optional(), // readonly field
-    academicStages: Yup.array().min(1, t("forms.validation.require")),
-    grades: Yup.array().min(1, t("forms.validation.require")),
+    stageGrades: getStageGradesField(t),
     availableSeats: Yup.number()
       .required(t("forms.validation.require"))
       .min(1, t("forms.customTrip.expectedParticipants.error.min"))

@@ -31,8 +31,6 @@ const AuthanticatedRequestQuoteBox = ({ tripId, isMarketTemplate = false }) => {
   const [tripDetails, setTripDetails] = useState(null);
   const [lastFetchedTripId, setLastFetchedTripId] = useState(null);
   const [formSelectionData, setFormSelectionData] = useState(null);
-  const [gradesData, setGradesData] = useState([]);
-  const [lastFetchedGradesKey, setLastFetchedGradesKey] = useState(null);
 
   const fetchTripDetails = async () => {
     if (!tripId) return null;
@@ -76,39 +74,6 @@ const AuthanticatedRequestQuoteBox = ({ tripId, isMarketTemplate = false }) => {
     }
   };
 
-  const fetchGradesByStages = async (stageIds) => {
-    if (!stageIds || stageIds.length === 0) {
-      setGradesData([]);
-      return [];
-    }
-
-    // Create a cache key from stage IDs to avoid refetching same grades
-    const gradesKey = stageIds.sort().join(",");
-
-    // Return cached grades if same stages
-    if (lastFetchedGradesKey === gradesKey && gradesData.length > 0) {
-      return gradesData;
-    }
-
-    try {
-      const response = await axios.post(
-        getProxyUrl(
-          B2B_END_POINTS.PROFILE.BOOKINGS_MANAGEMENT.ORDERS.UPDATE_ORDER
-            .GRADES_BY_STAGES
-        ),
-        { stages: stageIds },
-        { headers }
-      );
-      setGradesData(response.data || []);
-      setLastFetchedGradesKey(gradesKey);
-      return response.data || [];
-    } catch (error) {
-      console.error("Error fetching grades:", error);
-      setGradesData([]);
-      return [];
-    }
-  };
-
   const showUpdateTripForm = async () => {
     try {
       setLoading(true);
@@ -136,12 +101,6 @@ const AuthanticatedRequestQuoteBox = ({ tripId, isMarketTemplate = false }) => {
         (lastFetchedTripId === tripId
           ? tripDetails
           : results.find((r) => r?.fromDay)) || tripDetails;
-
-      // Fetch grades for the trip's academic stages (cached if same stages)
-      if (details?.academicStages && details.academicStages.length > 0) {
-        const stageIds = details.academicStages.map((stage) => stage._id);
-        await fetchGradesByStages(stageIds);
-      }
 
       // Only open modal if both required data are available
       if (details && selectionData) {
@@ -199,8 +158,6 @@ const AuthanticatedRequestQuoteBox = ({ tripId, isMarketTemplate = false }) => {
             tripId={tripId}
             tripData={tripDetails}
             formSelectionData={formSelectionData}
-            gradesData={gradesData}
-            onFetchGrades={fetchGradesByStages}
             onClose={handleCloseEditModal}
           />
         </CustomizedModal>

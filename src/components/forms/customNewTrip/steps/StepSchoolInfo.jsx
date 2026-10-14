@@ -7,6 +7,10 @@ import React, {
 } from "react";
 
 import SelectionGroup from "@components/forms/SelectionGroup";
+import {
+  buildStageGradeOptions,
+  splitStageGrades,
+} from "@components/forms/schoolTripBookingForm/utils";
 import { useLocale, useTranslations } from "next-intl";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
@@ -259,30 +263,28 @@ const getAvailableAcademicStages = (
   }
 };
 
-// Get available grades based on selected academic stages and tracks
-const getAvailableGrades = (
+// All grades (deduped) of the selected track(s), regardless of selected stages
+const getTracksGrades = (
   tracksData,
   selectedTrackId,
   selectedTrackIds,
-  selectedAcademicStages,
   isEditMode
 ) => {
-  if (!selectedAcademicStages || selectedAcademicStages.length === 0) return [];
+  const relevantTracks = isEditMode
+    ? tracksData.filter((t) => t._id === selectedTrackId)
+    : tracksData.filter((t) => selectedTrackIds?.includes(t._id));
 
-  let relevantTracks;
-  if (isEditMode) {
-    relevantTracks = tracksData.filter((t) => t._id === selectedTrackId);
-  } else {
-    relevantTracks = tracksData.filter((t) =>
-      selectedTrackIds?.includes(t._id)
-    );
-  }
-
-  const allGrades = relevantTracks.flatMap((track) => track.grades || []);
-  return allGrades.filter((grade) =>
-    selectedAcademicStages.includes(grade.academicStage)
-  );
+  const gradesById = new Map();
+  relevantTracks
+    .flatMap((track) => track.grades || [])
+    .forEach((grade) => gradesById.set(grade._id, grade));
+  return [...gradesById.values()];
 };
+
+const getGradeStageId = (grade) =>
+  typeof grade?.academicStage === "object"
+    ? grade.academicStage?._id
+    : grade?.academicStage;
 
 // Filter grades to keep only valid ones when academic stages change
 const filterValidGrades = (currentGrades, availableGrades) => {
@@ -433,41 +435,57 @@ const SchoolInfoCard = ({
     academicStagesOptions,
   ]);
 
-  // Calculate available grades based on selected academic stages
-  const availableGrades = useMemo(() => {
-    const gradesFromTracks = getAvailableGrades(
+  // Available stages with their grades nested (for the combined stage/grade dropdown)
+  const stageGradeTree = useMemo(() => {
+    const gradesFromTracks = getTracksGrades(
       tracksData,
       school.track,
       school.tracks,
-      school.academicStages,
       isEditMode
     );
 
     // In edit mode, supplement with editGrades when tracks don't provide them
+    let grades = gradesFromTracks;
     if (isEditMode && editGrades?.length > 0) {
-      const filteredEditGrades = editGrades.filter((g) => {
-        const stageId =
-          typeof g.academicStage === "object"
-            ? g.academicStage?._id
-            : g.academicStage;
-        return school.academicStages?.includes(stageId);
-      });
       const existingIds = new Set(gradesFromTracks.map((g) => g._id));
-      const additional = filteredEditGrades.filter(
-        (g) => !existingIds.has(g._id)
-      );
-      return [...gradesFromTracks, ...additional];
+      grades = [
+        ...gradesFromTracks,
+        ...editGrades.filter((g) => !existingIds.has(g._id)),
+      ];
     }
 
-    return gradesFromTracks;
+    return availableAcademicStages.map((stage) => ({
+      ...stage,
+      grades: grades.filter((grade) => getGradeStageId(grade) === stage._id),
+    }));
   }, [
     tracksData,
     school.track,
     school.tracks,
-    school.academicStages,
     isEditMode,
     editGrades,
+    availableAcademicStages,
   ]);
+
+  const stageGradeOptions = useMemo(
+    () => buildStageGradeOptions(stageGradeTree, locale),
+    [stageGradeTree, locale]
+  );
+
+  // Selected grades + selected stages that have no grades
+  const stageGradeValue = useMemo(() => {
+    const gradelessStageIds = new Set(
+      stageGradeTree
+        .filter((stage) => stage.grades.length === 0)
+        .map((stage) => stage._id)
+    );
+    return [
+      ...(school.academicStages || []).filter((id) =>
+        gradelessStageIds.has(id)
+      ),
+      ...(school.grades || []),
+    ];
+  }, [stageGradeTree, school.academicStages, school.grades]);
 
   // Track the fieldPath in a ref to use it without triggering re-renders
   const fieldPathRef = useRef(fieldPath);
@@ -558,6 +576,34 @@ const SchoolInfoCard = ({
       grades: [],
     };
   }, [school.academicStages, school.grades, stableKey, setFieldValue]);
+
+  // Drop selected grades (and their stages) no longer offered by the selected track(s)
+  useEffect(() => {
+    if (isLoadingTracks || trackList.length === 0) return;
+    if (!school.grades?.length) return;
+
+    const { academicStages, grades } = splitStageGrades(
+      stageGradeValue,
+      stageGradeTree
+    );
+    if (grades.length === school.grades.length) return;
+
+    setFieldValue(fieldPathRef.current + ".academicStages", academicStages);
+    setFieldValue(fieldPathRef.current + ".grades", grades);
+    prevValuesRef.current[stableKey] = {
+      ...prevValuesRef.current[stableKey],
+      academicStages,
+      grades,
+    };
+  }, [
+    stageGradeValue,
+    stageGradeTree,
+    school.grades,
+    isLoadingTracks,
+    trackList.length,
+    setFieldValue,
+    stableKey,
+  ]);
 
   // Determine loading states
   const isAcademicStagesLoading = useMemo(() => {
@@ -726,41 +772,23 @@ const SchoolInfoCard = ({
     ]
   );
 
-  // Handle academic stages change — clear grades so user re-selects from scratch
-  const handleAcademicStagesChange = useCallback(
+  // Handle combined stage/grade change — split into academicStages + grades
+  const handleStageGradesChange = useCallback(
     (e) => {
-      const selectedNames = e.target.value;
-      const selectedIds = selectedNames
-        .map(
-          (name) => availableAcademicStages.find((s) => s.name === name)?._id
-        )
-        .filter(Boolean);
-      setFieldValue(`${fieldPath}.academicStages`, selectedIds);
-      setFieldValue(`${fieldPath}.grades`, []);
+      const { academicStages, grades } = splitStageGrades(
+        e.target.value || [],
+        stageGradeTree
+      );
+      setFieldValue(`${fieldPath}.academicStages`, academicStages);
+      setFieldValue(`${fieldPath}.grades`, grades);
 
-      // Update ref
+      // Update ref so the stage-cleanup effect doesn't clear grades
       if (prevValuesRef.current[stableKey]) {
-        prevValuesRef.current[stableKey].academicStages = selectedIds;
-        prevValuesRef.current[stableKey].grades = [];
+        prevValuesRef.current[stableKey].academicStages = academicStages;
+        prevValuesRef.current[stableKey].grades = grades;
       }
     },
-    [availableAcademicStages, setFieldValue, fieldPath, stableKey]
-  );
-
-  // Handle grades change
-  const handleGradesChange = useCallback(
-    (e) => {
-      const selectedNames = e.target.value;
-      const selectedIds = selectedNames
-        .map((name) => availableGrades.find((g) => g.name === name)?._id)
-        .filter(Boolean);
-      setFieldValue(`${fieldPath}.grades`, selectedIds);
-
-      if (prevValuesRef.current[stableKey]) {
-        prevValuesRef.current[stableKey].grades = selectedIds;
-      }
-    },
-    [availableGrades, setFieldValue, fieldPath, stableKey]
+    [stageGradeTree, setFieldValue, fieldPath, stableKey]
   );
 
   // Determine if fields are disabled
@@ -771,9 +799,6 @@ const SchoolInfoCard = ({
     }
     return !school.tracks || school.tracks.length === 0;
   }, [isEditMode, school.track, school.tracks]);
-
-  const isGradesDisabled =
-    !school.academicStages || school.academicStages.length === 0;
 
   // ============================================================================
   // Render
@@ -931,11 +956,11 @@ const SchoolInfoCard = ({
                   )}
               </div>
 
-              {/* Academic Stages Selection */}
-              <div>
+              {/* Stages & grades — one grouped dropdown from the selected track(s) */}
+              <div className="md:col-span-2">
                 <label className="block mb-2 text-sm text-textDark">
-                  {t("fields.academicStages.label")}
-                  <span className="text-error ml-1">*</span>
+                  {t2("schoolTripBooking.form.stageGrade.label")}
+                  <span className="text-error ms-1">*</span>
                 </label>
                 {isAcademicStagesLoading ? (
                   <Skeleton
@@ -946,19 +971,15 @@ const SchoolInfoCard = ({
                 ) : (
                   <SelectionGroup
                     name={`${fieldPath}.academicStages`}
-                    value={(school.academicStages || [])
-                      .map(
-                        (id) =>
-                          availableAcademicStages.find((s) => s._id === id)
-                            ?.name
-                      )
-                      .filter(Boolean)}
-                    onChange={handleAcademicStagesChange}
+                    value={stageGradeValue}
+                    onChange={handleStageGradesChange}
                     onBlur={handleBlur}
-                    touched={touched?.academicStages}
-                    errors={errors?.academicStages}
-                    placeholder={t("fields.academicStages.placeholder")}
-                    list={availableAcademicStages.map((s) => s.name)}
+                    touched={touched?.academicStages || touched?.grades}
+                    errors={errors?.academicStages || errors?.grades}
+                    placeholder={t2(
+                      "schoolTripBooking.form.stageGrade.placeholder"
+                    )}
+                    list={stageGradeOptions}
                     multiple={true}
                     disabled={isAcademicStagesDisabled}
                   />
@@ -975,35 +996,6 @@ const SchoolInfoCard = ({
                       {t("fields.academicStages.no_common_stages")}
                     </p>
                   )}
-              </div>
-
-              {/* Grades Selection */}
-              <div>
-                <label className="block mb-2 text-sm text-textDark">
-                  {t("fields.grades.label")}
-                  {isEditMode && <span className="text-error ml-1">*</span>}
-                </label>
-                <SelectionGroup
-                  name={`${fieldPath}.grades`}
-                  value={(school.grades || [])
-                    .map(
-                      (id) => availableGrades.find((g) => g._id === id)?.name
-                    )
-                    .filter(Boolean)}
-                  onChange={handleGradesChange}
-                  onBlur={handleBlur}
-                  placeholder={t("fields.grades.placeholder")}
-                  list={availableGrades.map((g) => g.name)}
-                  multiple={true}
-                  disabled={isGradesDisabled}
-                  touched={touched?.grades}
-                  errors={errors?.grades}
-                />
-                {isGradesDisabled && (
-                  <p className="!mt-2 ps-1 text-xs text-textLight">
-                    {t("fields.grades.helper_text")}
-                  </p>
-                )}
               </div>
             </div>
           </CardContent>

@@ -121,7 +121,6 @@ export const B2B_END_POINTS = {
           SUBMIT: "profile/askTrips/edit", // UpdateOrder
           CUSTOM_TRIP: "profile/trips/info", // Discover details info
           CUSTOM_TRIP_SUBMIT: "profile/askTrips/custom/Edit",
-          GRADES_BY_STAGES: "grades/stages/askTrip", // Get grades for selected academic stages,
           EDIT_CUSTOM_INFO: "profile/askTrips/edit/custom/info", // Get existing custom trip info
           EDIT_NORMAL_INFO: "profile/askTrips/edit/normal/info", // Get existing normal trip info
           REJECT: "profile/askTrips/custom/reject",

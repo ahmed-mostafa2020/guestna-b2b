@@ -27,6 +27,11 @@ import SelectionGroup from "../SelectionGroup";
 import FileUploadGroup from "../FileUploadGroup";
 import ThanksMessage from "./ThanksMessage";
 import AvailableDatePicker from "./AvailableDatePicker";
+import StageGradeSelect from "@components/forms/schoolTripBookingForm/steps/StageGradeSelect";
+import {
+  getTrackStages,
+  splitStageGrades,
+} from "@components/forms/schoolTripBookingForm/utils";
 
 import { Formik } from "formik";
 import axios from "axios";
@@ -47,17 +52,16 @@ const extractBranchId = (branch) => {
   return "";
 };
 
+const NO_STAGES = [];
+
 const AuthenticatedRequestQuote = ({
   tripId,
   tripData,
   formSelectionData,
-  gradesData = [],
-  onFetchGrades,
   onClose,
 }) => {
   const [formErrors, setFormErrors] = useState([]);
   const [showThanksMessage, setShowThanksMessage] = useState(false);
-  const [availableGrades, setAvailableGrades] = useState(gradesData || []);
   const [tracksData, setTracksData] = useState([]);
   const [isLoadingTracks, setIsLoadingTracks] = useState(false);
 
@@ -109,7 +113,6 @@ const AuthenticatedRequestQuote = ({
     },
   ];
   const cityData = formSelectionData?.cities || [];
-  const academicStageData = formSelectionData?.academicStages || [];
   const servicesData = formSelectionData?.services || [];
 
   // --- Integration type logic (replaces providerType check) ---
@@ -306,11 +309,6 @@ const AuthenticatedRequestQuote = ({
     }
   }, [initialBranchId, fetchBranchAvailableDays]);
 
-  // Update available grades when gradesData prop changes
-  useEffect(() => {
-    setAvailableGrades(gradesData || []);
-  }, [gradesData]);
-
   // Fetch initial slots if editing with API integration
   useEffect(() => {
     if (hasProviderSpecificDays && tripData?.fromDay) {
@@ -321,22 +319,28 @@ const AuthenticatedRequestQuote = ({
 
   // Extract names for dropdown display
   const organizationOptions = organizationData.map((item) => item.name);
-  const academicStageOptions = academicStageData.map((item) => item.name);
   const servicesOptions = servicesData.map((item) => item.name);
-  const gradeOptions = availableGrades.map((item) => item.name);
 
-  // Format track options: educationSystem + gender + academicStages
-  const trackOptions = tracksData.map((track) => {
-    const stages =
-      track.academicStages?.map((stage) => stage.name).join(", ") || "";
-    return {
-      name: `${track.educationSystem} - ${t(
-        `common.${track.gender}`
-      )} - ${stages}`,
-      _id: track._id,
-    };
-  });
+  // Format track options: educationSystem + gender + academicStages.
+  // Each track carries its stages (with nested grades) for the stage/grade dropdown.
+  const trackOptions = useMemo(
+    () =>
+      tracksData.map((track) => {
+        const stages =
+          track.academicStages?.map((stage) => stage.name).join(", ") || "";
+        return {
+          name: `${track.educationSystem} - ${t(
+            `common.${track.gender}`
+          )} - ${stages}`,
+          _id: track._id,
+          stages: getTrackStages(track),
+        };
+      }),
+    [tracksData, t]
+  );
   const trackDisplayOptions = trackOptions.map((item) => item.name);
+  const getTrackStagesByName = (trackName) =>
+    trackOptions.find((opt) => opt.name === trackName)?.stages || NO_STAGES;
 
   // Helper function to find _id by name
   const findIdByName = (options, name) => {
@@ -413,9 +417,7 @@ const AuthenticatedRequestQuote = ({
         category: tripData.category?.name || "",
         tripType: findNameById(tripTypeData, tripData.tripsType) || "",
         city: tripData.city?.name || "",
-        academicStages:
-          tripData.academicStages?.map((stage) => stage.name) || [],
-        grades: tripData.grades?.map((grade) => grade.name) || [],
+        stageGrades: [],
         availableSeats: `${tripData.availableSeats?.min}` || "",
         totalAvailableSeats: "",
         day:
@@ -449,8 +451,7 @@ const AuthenticatedRequestQuote = ({
         category: "",
         tripType: "",
         city: "",
-        academicStages: [],
-        grades: [],
+        stageGrades: [],
         availableSeats: "",
         totalAvailableSeats: "",
         basePrice: "",
@@ -472,8 +473,7 @@ const AuthenticatedRequestQuote = ({
       category: tripData.category?.name || "",
       tripType: findNameById(tripTypeData, tripData.tripsType) || "",
       city: tripData.city?.name || "",
-      academicStages: tripData.academicStages?.map((stage) => stage.name) || [],
-      grades: tripData.grades?.map((grade) => grade.name) || [],
+      stageGrades: [],
       availableSeats: `${tripData.availableSeats?.min}` || "",
       totalAvailableSeats: "",
       basePrice: `${tripData.price}` || "",
@@ -528,6 +528,12 @@ const AuthenticatedRequestQuote = ({
     // Check if file is being uploaded
     const hasFile = values.file && values.file instanceof File;
 
+    // Combined stage/grade selection → API's academicStages + grades
+    const { academicStages, grades } = splitStageGrades(
+      values.stageGrades,
+      getTrackStagesByName(values.track)
+    );
+
     let config;
 
     if (hasFile) {
@@ -555,6 +561,7 @@ const AuthenticatedRequestQuote = ({
         if (key === "fromHour" && hasProviderSpecificDays) return;
         if (key === "toHour" && hasProviderSpecificDays) return;
         if (key === "providerBranch") return; // handled separately below
+        if (key === "stageGrades") return; // sent as academicStages + grades
         if (key === "fromHour" || key === "toHour") {
           if (values[key]) {
             formData.append(key, formatTime12h(values[key]));
@@ -591,24 +598,6 @@ const AuthenticatedRequestQuote = ({
             case "city":
               valueToSend = findIdByName(cityData, values[key]);
               break;
-            case "academicStages":
-              if (Array.isArray(values[key])) {
-                valueToSend = values[key].map((name) =>
-                  findIdByName(academicStageData, name)
-                );
-              } else {
-                valueToSend = findIdByName(academicStageData, values[key]);
-              }
-              break;
-            case "grades":
-              if (Array.isArray(values[key])) {
-                valueToSend = values[key].map((name) =>
-                  findIdByName(availableGrades, name)
-                );
-              } else {
-                valueToSend = findIdByName(availableGrades, values[key]);
-              }
-              break;
             case "services":
               if (Array.isArray(values[key])) {
                 valueToSend = values[key].map((name) =>
@@ -630,6 +619,11 @@ const AuthenticatedRequestQuote = ({
           }
         }
       });
+
+      academicStages.forEach((id, index) =>
+        formData.append(`academicStages[${index}]`, id)
+      );
+      grades.forEach((id, index) => formData.append(`grades[${index}]`, id));
 
       // Include providerBranch if selected
       const branchToSend = selectedBranch || values.providerBranch;
@@ -681,6 +675,7 @@ const AuthenticatedRequestQuote = ({
         if (key === "fromHour" && hasProviderSpecificDays) return;
         if (key === "toHour" && hasProviderSpecificDays) return;
         if (key === "providerBranch") return; // handled separately below
+        if (key === "stageGrades") return; // sent as academicStages + grades
         if (key === "fromHour" || key === "toHour") {
           if (values[key]) {
             jsonData[key] = formatTime12h(values[key]);
@@ -714,24 +709,6 @@ const AuthenticatedRequestQuote = ({
             case "city":
               valueToSend = findIdByName(cityData, values[key]);
               break;
-            case "academicStages":
-              if (Array.isArray(values[key])) {
-                valueToSend = values[key].map((name) =>
-                  findIdByName(academicStageData, name)
-                );
-              } else {
-                valueToSend = findIdByName(academicStageData, values[key]);
-              }
-              break;
-            case "grades":
-              if (Array.isArray(values[key])) {
-                valueToSend = values[key].map((name) =>
-                  findIdByName(availableGrades, name)
-                );
-              } else {
-                valueToSend = findIdByName(availableGrades, values[key]);
-              }
-              break;
             case "services":
               if (Array.isArray(values[key])) {
                 valueToSend = values[key].map((name) =>
@@ -746,6 +723,9 @@ const AuthenticatedRequestQuote = ({
           jsonData[key] = valueToSend;
         }
       });
+
+      jsonData.academicStages = academicStages;
+      jsonData.grades = grades;
 
       // Include providerBranch if selected
       const branchToSend = selectedBranch || values.providerBranch;
@@ -959,6 +939,7 @@ const AuthenticatedRequestQuote = ({
                             );
                             fetchTracksByOrganization(orgId);
                             setFieldValue("track", "");
+                            setFieldValue("stageGrades", []);
                           }}
                           onBlur={handleBlur}
                           touched={touched.organization}
@@ -974,7 +955,11 @@ const AuthenticatedRequestQuote = ({
                         <SelectionGroup
                           name="track"
                           value={values.track}
-                          onChange={handleChange}
+                          onChange={(e) => {
+                            if (e.target.value === values.track) return;
+                            handleChange(e);
+                            setFieldValue("stageGrades", []);
+                          }}
                           onBlur={handleBlur}
                           touched={touched.track}
                           errors={errors.track}
@@ -997,77 +982,12 @@ const AuthenticatedRequestQuote = ({
                       </div>
                     </div>
                   )}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Academic Stage */}
-                    <div className="somar-placeholder w-full min-w-0">
-                      <SelectionGroup
-                        name="academicStages"
-                        value={values.academicStages}
-                        onChange={async (e) => {
-                          handleChange(e);
-                          // Fetch grades when academic stages change
-                          const selectedStages = e.target.value;
-                          if (
-                            selectedStages &&
-                            selectedStages.length > 0 &&
-                            onFetchGrades
-                          ) {
-                            const stageIds = selectedStages
-                              .map((stageName) => {
-                                const stage = academicStageData.find(
-                                  (s) => s.name === stageName
-                                );
-                                return stage?._id;
-                              })
-                              .filter(Boolean);
-
-                            if (stageIds.length > 0) {
-                              const grades = await onFetchGrades(stageIds);
-                              setAvailableGrades(grades || []);
-                              // Clear grades selection when stages change
-                              setFieldValue("grades", []);
-                            }
-                          } else {
-                            setAvailableGrades([]);
-                            setFieldValue("grades", []);
-                          }
-                        }}
-                        onBlur={handleBlur}
-                        touched={touched.academicStages}
-                        errors={errors.academicStages}
-                        placeholder={t(
-                          "forms.customTrip.targetedTrip.placeholder"
-                        )}
-                        list={academicStageOptions}
-                        multiple={true}
-                        label={t("forms.customTrip.targetedTrip.label")}
-                        labelClassName="font-somar"
-                        labelFontFamily="var(--font-somar-sans), sans-serif"
-                      />
-                    </div>
-
-                    {/* Grades */}
-                    <div className="somar-placeholder w-full min-w-0">
-                      <SelectionGroup
-                        name="grades"
-                        value={values.grades}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        touched={touched.grades}
-                        errors={errors.grades}
-                        placeholder={t("forms.registerForm.grade.placeholder")}
-                        list={gradeOptions}
-                        multiple={true}
-                        label={t("forms.registerForm.grade.label")}
-                        labelClassName="font-somar"
-                        labelFontFamily="var(--font-somar-sans), sans-serif"
-                        disabled={
-                          !values.academicStages ||
-                          values.academicStages.length === 0
-                        }
-                        required={true}
-                      />
-                    </div>
+                  {/* Stages & grades — from the selected track */}
+                  <div className="somar-placeholder w-full min-w-0">
+                    <StageGradeSelect
+                      stages={getTrackStagesByName(values.track)}
+                      disabled={!values.track}
+                    />
                   </div>
 
                   {/* Row 2: Expected Participants and Services */}
