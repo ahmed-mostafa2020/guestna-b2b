@@ -2529,6 +2529,11 @@
       "linkCreated": "تم إنشاء رابط التسجيل بنجاح!",
       "participation": {
         "title": "تفاصيل مشاركة المدرسة في الرحلة",
+        "priceSummary": {
+          "basePrice": "السعر الأساسي للرحلة",
+          "profit": "الهامش التشغيلي",
+          "total": "السعر الإجمالي"
+        },
         "services": {
           "label": "الخدمات",
           "placeholder": "اختر الخدمات"
@@ -2862,7 +2867,7 @@
             "parentName": "اسم ولي الأمر",
             "tripName": "اسم الرحلة",
             "schoolName": "اسم المدرسة",
-            "termsTitle": "الشروط والأحكام",
+            "termsTitle": "الأحكام والشروط",
             "parentSignature": "تأكيد ولي الأمر",
             "confirmed": "تم التأكيد والموافقة"
           }

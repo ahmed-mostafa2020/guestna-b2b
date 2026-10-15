@@ -46,7 +46,7 @@ import { Container } from "@mui/material";
 import madaLogo from "@assets/paymentLogos/mada.svg";
 import visaLogo from "@assets/paymentLogos/visa.svg";
 import mastercardLogo from "@assets/paymentLogos/master-card.svg";
-import amExpressLogo from "@assets/paymentLogos/amExpress.png";
+import amExpressLogo from "@assets/paymentLogos/amExpress.svg";
 import applePayLogo from "@assets/paymentLogos/apple-pay.svg";
 import tamaraArabic from "@assets/paymentLogos/tamaraArabic.jpg";
 import tamaraEnglish from "@assets/paymentLogos/tamaraEnglish.svg";

@@ -13,7 +13,7 @@ import madaLogo from "@assets/paymentLogos/mada.svg";
 import visaLogo from "@assets/paymentLogos/visa.svg";
 import masterCardLogo from "@assets/paymentLogos/master-card.svg";
 import applePayLogo from "@assets/paymentLogos/apple-pay.svg";
-import amExpressLogo from "@assets/paymentLogos/amExpress.png";
+import amExpressLogo from "@assets/paymentLogos/amExpress.svg";
 import tamaraLogo from "@assets/paymentLogos/tamaraEnglish.webp";
 
 const Footer = () => {
@@ -145,7 +145,7 @@ const Footer = () => {
   );
 
   return (
-    <footer className="py-10 lg:py-20 font-mulish">
+    <footer className="py-10 lg:py-20 font-somar">
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 4, sm: 5, md: 6 }}>
           <Grid

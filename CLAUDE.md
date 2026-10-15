@@ -27,6 +27,7 @@ Next.js 14.2 App Router · React 18 · **JavaScript only** (`.jsx`, no TS in `sr
 - CSP is built per request with a nonce in `middleware.js` — never add a static CSP in `next.config.mjs`. New third-party host → update `buildCSP()` (+ `images` domains for images).
 - New persisted Redux slice → add to `rootPersistConfig.whitelist` in `src/store/index.js`; never persist large/derived state.
 - Keep `middleware.js` matcher and `next.config.mjs` rewrites aligned; don't move the Apple Pay `.well-known` rewrite.
+- Prices/amounts shown in UI → always `formatCurrency(amount)` from `@utils/formatters/FormatCurrency` (renders SAR icon); never hand-format with `toLocaleString` + currency text. It returns JSX — for string-only props (e.g. select option descriptions) keep plain text.
 - Forms: Formik + Yup schema in `src/utils/validators`; submit via `FormSubmitButton`.
 - Don't commit secrets; never read `.env*`.
 

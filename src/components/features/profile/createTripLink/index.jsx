@@ -29,9 +29,15 @@ const CreateTripLink = ({ data }) => {
   const [tripStatus, setTripStatus] = useState(tripData?.status);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
-  // Scheduled trips without a gathering location need participation details first
+  // Price breakdown from the poster endpoint: price = tripCost + profitAmount
+  const savedProfit = Number(tripData?.profitAmount) || 0;
+  const basePrice =
+    tripData?.tripCost ?? (Number(tripData?.price) || 0) - savedProfit;
+
+  // Scheduled market-template trips without a gathering location need participation details first
   const needsParticipationDetails =
     tripStatus === TRIP_STATUS.SCHEDULED &&
+    Boolean(tripData?.marketTemplate) &&
     !isValidCoordinates(
       tripData?.gatheringLocation?.lat,
       tripData?.gatheringLocation?.lng
@@ -291,6 +297,8 @@ const CreateTripLink = ({ data }) => {
             <TripParticipationForm
               tripId={tripData?._id}
               services={tripData?.proposedServices}
+              basePrice={basePrice}
+              initialProfit={savedProfit}
               onSuccess={handleParticipationSuccess}
             />
           </div>

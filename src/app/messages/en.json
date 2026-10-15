@@ -2534,6 +2534,11 @@
       "linkCreated": "Booking link created successfully!",
       "participation": {
         "title": "School participation details",
+        "priceSummary": {
+          "basePrice": "Trip base price",
+          "profit": "Operating margin",
+          "total": "Total price"
+        },
         "services": {
           "label": "Services",
           "placeholder": "Select services"

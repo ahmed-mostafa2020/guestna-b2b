@@ -1,5 +1,4 @@
 import { CONSTANT_VALUES } from "@constants/constantValues";
-import { matchCityFromLookups } from "@utils/helpers/mapHelpers";
 
 const localize = (value, locale) =>
   value && typeof value === "object"
@@ -262,28 +261,9 @@ export const buildAuthBookingPayload = ({
   values,
   trip,
   tripSlug,
-  locale,
   lookups = {},
 }) => {
-  const { cities = [], stages = [], organizations = [] } = lookups;
-
-  const selectedOrg = organizations.find(
-    (org) =>
-      (org?._id || org?.id) ===
-      (values.organization?._id || values.organization)
-  );
-  const orgCity =
-    selectedOrg?.city?._id || selectedOrg?.city?.id || selectedOrg?.city || "";
-  const tripCity = trip?.city?._id || trip?.city?.id || trip?.city || "";
-
-  const rawCity = orgCity || tripCity || "";
-
-  const matchedCity =
-    cities.find((c) => c._id === rawCity || c.id === rawCity) ||
-    matchCityFromLookups(rawCity, cities) ||
-    findIdByLabel(cities, rawCity, locale);
-
-  const finalCity = matchedCity?._id || matchedCity?.id || rawCity || "";
+  const { stages = [] } = lookups;
 
   const orgId =
     typeof values.organization === "object"
@@ -299,7 +279,6 @@ export const buildAuthBookingPayload = ({
     organization: orgId,
     track: trackId,
     ...splitStageGrades(values.stageGrades, stages),
-    city: finalCity,
     trip: {
       trip: trip?._id || tripSlug || "",
       day: values.date || "",

@@ -18,14 +18,31 @@ import FormSubmitButton from "@components/ui/FormSubmitButton";
 
 import GatheringLocationFields from "./GatheringLocationFields";
 import NextStepsCard from "./NextStepsCard";
+import PriceSummaryCard from "./PriceSummaryCard";
 import HelpContactCard from "./HelpContactCard";
 import { INITIAL_VALUES } from "./constants";
 import { buildParticipationPayload } from "./utils";
 
-const TripParticipationForm = ({ tripId, services = [], onSuccess }) => {
+const TripParticipationForm = ({
+  tripId,
+  services = [],
+  basePrice = 0,
+  initialProfit = 0,
+  onSuccess,
+}) => {
   const t = useTranslations();
   const locale = useLocale();
   const { enqueueSnackbar } = useSnackbar();
+
+  // Prefill the margin saved on the trip (profitAmount) so it stays editable
+  const initialValues = useMemo(() => {
+    const profit = Number(initialProfit) || 0;
+    return {
+      ...INITIAL_VALUES,
+      hasSchoolProfit: profit > 0,
+      schoolProfit: profit > 0 ? String(profit) : "",
+    };
+  }, [initialProfit]);
 
   // Proposed services from the poster endpoint → multi-select options
   const serviceOptions = useMemo(
@@ -75,7 +92,7 @@ const TripParticipationForm = ({ tripId, services = [], onSuccess }) => {
       </h2>
 
       <Formik
-        initialValues={INITIAL_VALUES}
+        initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
@@ -167,6 +184,13 @@ const TripParticipationForm = ({ tripId, services = [], onSuccess }) => {
                 )}
               </div>
             </div>
+
+            <PriceSummaryCard
+              basePrice={basePrice}
+              profit={
+                values.hasSchoolProfit ? Number(values.schoolProfit) || 0 : 0
+              }
+            />
 
             <NextStepsCard />
 
